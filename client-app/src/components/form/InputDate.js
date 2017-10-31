@@ -1,0 +1,51 @@
+import React from 'react';
+import PropTypes from 'prop-types';
+import moment from 'moment';
+import DayPickerInput from 'react-day-picker/DayPickerInput';
+import 'react-day-picker/lib/style.css';
+
+const InputDate = props => {
+    const { label, className, size, id,value, onChangeAction, required, readOnly } = props;
+
+    return (
+        <div className="form-group col-sm-6">
+            <div><label htmlFor={ id } className={`col-sm-6 ${required}`}>{ label }</label></div>
+            <div className={`${size}`}>
+                <DayPickerInput
+                    className={`form-control input-sm ${className}`}
+                    id={ id }
+                    value={ value }
+                    onDayChange={ onChangeAction}
+                    required={ required }
+                    readOnly={ readOnly }
+                />
+            </div>
+        </div>
+    );
+};
+
+InputDate.defaultProps = {
+    className: '',
+    size: 'col-sm-6',
+    required: '',
+    readOnly: false,
+    value: null,
+};
+
+InputDate.propTypes = {
+    label: PropTypes.string.isRequired,
+    type: PropTypes.string,
+    className: PropTypes.string,
+    size: PropTypes.string,
+    id: PropTypes.string,
+    placeholder: PropTypes.string,
+    value: PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.number
+    ]),
+    onChangeAction: PropTypes.func,
+    required: PropTypes.string,
+    readOnly: PropTypes.bool
+};
+
+export default InputDate;

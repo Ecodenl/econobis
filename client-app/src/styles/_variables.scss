@@ -1,0 +1,55 @@
+// Body
+$body-bg: #f5f8fa;
+
+// Borders
+$laravel-border-color: darken($body-bg, 10%);
+$list-group-border: $laravel-border-color;
+$navbar-default-border: $laravel-border-color;
+$panel-default-border: $laravel-border-color;
+$panel-inner-border: $laravel-border-color;
+
+// Brands
+$brand-primary: #30815f;
+$brand-secundairy: #27ae60;
+$brand-tertiary: #2980b9;
+$brand-quaternary: #8e44ad;
+$brand-info: #8eb4cb;
+$brand-success: #2980b9;
+$brand-warning: #cbb956;
+$brand-danger: #e64a4a;
+
+// Typography
+$font-family-sans-serif: "Raleway", sans-serif;
+$font-size-base: 14px;
+$line-height-base: 1.6;
+$text-color: #636b6f;
+
+// Navbar
+$navbar-default-bg: #fff;
+$navbar-height: 50px;
+$navbar-default-color: #636b6f;
+$navbar-default-link-color: #636b6f;
+$navbar-default-link-hover-color:  #673ab7;
+$navbar-default-link-hover-bg: #fff;
+$navbar-default-link-active-color: #673ab7;
+$navbar-default-link-active-bg: #fff;
+
+//** Dropdown link text color.
+$dropdown-link-color:  #673ab7;
+//** Hover background for dropdown links.
+$dropdown-link-hover-bg:         #fff;
+
+// Buttons
+$btn-default-color: $text-color;
+
+// Inputs
+$input-border: lighten($text-color, 40%);
+$input-border-focus: lighten($brand-primary, 25%);
+$input-color-placeholder: lighten($text-color, 30%);
+
+// Panels
+$panel-default-heading-bg: #fff;
+
+// Tables
+$table-font-size: 12px;
+$table-bg-accent: #ececec;

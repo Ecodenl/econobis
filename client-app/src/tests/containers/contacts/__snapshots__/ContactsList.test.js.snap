@@ -1,0 +1,104 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`should render ContactsList with contacts 1`] = `
+<div>
+  <form
+    onKeyUp={[Function]}
+  >
+    <DataTable>
+      <DataTableHead>
+        <Connect(ContactsListHead)
+          refreshContactsData={[Function]}
+        />
+        <Connect(ContactsListFilter)
+          selectAllCheckboxes={[Function]}
+        />
+      </DataTableHead>
+      <DataTableBody>
+        <Connect(ContactsListItem)
+          city="Sint Pancras"
+          createdAt={
+            Object {
+              "date": "2017-01-01",
+            }
+          }
+          emailAddress="rob.rollenberg@xaris.nl"
+          fullName="Rob Rollenberg"
+          id={1}
+          number="2017-1"
+          phoneNumber="06-53987605"
+          postalCode="1834 TK "
+          showDeleteItemModal={[Function]}
+          status="nieuw"
+          streetAndNumber="Penant 34"
+          typeName="Persoon"
+        />
+        <Connect(ContactsListItem)
+          city="Alkmaar"
+          createdAt={
+            Object {
+              "date": "2017-02-02",
+            }
+          }
+          emailAddress="marco.tazelaar@xaris.nl"
+          fullName="Marco Tazelaar"
+          id={2}
+          number="2017-2"
+          phoneNumber="072-1234567"
+          postalCode="1800 AA "
+          showDeleteItemModal={[Function]}
+          status="open"
+          streetAndNumber="Straat 123"
+          typeName="Persoon"
+        />
+        <Connect(ContactsListItem)
+          city="Wognum"
+          createdAt={
+            Object {
+              "date": "2017-03-03",
+            }
+          }
+          emailAddress="info@xaris.nl"
+          fullName="Xaris"
+          id={2}
+          number="2017-3"
+          phoneNumber="088-0234567"
+          postalCode="1687 AZ "
+          showDeleteItemModal={[Function]}
+          status="open"
+          streetAndNumber="Westerspoor  1"
+          typeName="Bedrijf"
+        />
+      </DataTableBody>
+    </DataTable>
+  </form>
+</div>
+`;
+
+exports[`should render ContactsList with empty message 1`] = `
+<div>
+  <form
+    onKeyUp={[Function]}
+  >
+    <DataTable>
+      <DataTableHead>
+        <Connect(ContactsListHead)
+          refreshContactsData={[Function]}
+        />
+        <Connect(ContactsListFilter)
+          selectAllCheckboxes={[Function]}
+        />
+      </DataTableHead>
+      <DataTableBody>
+        <tr>
+          <td
+            colSpan={11}
+          >
+            Geen contacten gevonden!
+          </td>
+        </tr>
+      </DataTableBody>
+    </DataTable>
+  </form>
+</div>
+`;

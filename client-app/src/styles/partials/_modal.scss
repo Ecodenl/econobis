@@ -1,0 +1,14 @@
+.modal {
+  display: inline;
+  top: 30%;
+}
+
+.modal-header {
+  background-color: $brand-primary;
+  color: #fff;
+  button {
+    span {
+      color: #fff;
+    }
+  }
+}

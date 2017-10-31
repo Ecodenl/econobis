@@ -1,0 +1,13 @@
+{
+  "presets": ["env", "react", "stage-1"],
+  "plugins": [
+    "transform-object-rest-spread",
+    [
+      "transform-runtime",
+      {
+        "polyfill": true,
+        "regenerator": true
+      }
+    ]
+  ]
+}

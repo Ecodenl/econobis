@@ -1,0 +1,13 @@
+{
+  "extends": "airbnb",
+  "rules": {
+    "func-names": ["error", "never"],
+    "indent": [2, 4],
+    "linebreak-style": ["error", "windows"]
+  },
+  "plugins": [
+    "react",
+    "jsx-a11y",
+    "import"
+  ]
+}

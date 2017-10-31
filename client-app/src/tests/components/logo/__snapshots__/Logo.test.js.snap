@@ -1,0 +1,21 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`should render Logo correctly 1`] = `
+<img
+  alt="Logo Eco"
+  className="img-logo"
+  src={
+    Object {
+      "process": [Function],
+    }
+  }
+  style={
+    Object {
+      "height": "100px",
+      "paddingBottom": "10px",
+      "paddingTop": "10px",
+      "width": "auto",
+    }
+  }
+/>
+`;

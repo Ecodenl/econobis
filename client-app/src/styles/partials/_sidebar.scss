@@ -1,0 +1,31 @@
+.sidebar {
+  position: fixed;
+  top: 50px;
+  left: -240px;
+  height: 100%;
+  width: 240px;
+  transition: left .3s ease-in-out;
+  background-color: $brand-primary;
+  color: #fff;
+}
+
+.sidebar-menu {
+  padding-top: 10px;
+}
+
+.content {
+  position: absolute;
+  top: 60px;
+  left: 0px;
+  right: 0;
+  height: 100%;
+  transition: left .3s ease-in-out;
+}
+
+.sidebar.open {
+  left: 0;
+}
+
+.content.open {
+  left: 240px;
+}

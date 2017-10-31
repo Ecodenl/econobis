@@ -1,0 +1,40 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`should render InputSelect correctly 1`] = `
+<div
+  className="form-group col-sm-6"
+>
+  <label
+    className="col-sm-6 "
+  >
+    Naam
+  </label>
+  <div
+    className="col-sm-6"
+  >
+    <select
+      className="form-control input-sm false"
+      value={1}
+    >
+      <option>
+        Keuze ...
+      </option>
+      <option
+        value={1}
+      >
+        optie 1
+      </option>
+      <option
+        value={2}
+      >
+        optie 2
+      </option>
+      <option
+        value={3}
+      >
+        optie 3
+      </option>
+    </select>
+  </div>
+</div>
+`;

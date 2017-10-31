@@ -1,0 +1,32 @@
+th, tr {
+  font-size: $table-font-size;
+}
+
+th {
+  font-weight: 600;
+}
+
+table {
+  table-layout: fixed;
+}
+
+table th, table td {
+  overflow: hidden;
+}
+
+.thead-title {
+  background-color: $brand-primary;
+  color: #fff;
+}
+
+.thead-filter {
+  background-color: #e5e5e5;
+}
+
+.table-title {
+  margin: 0;
+}
+
+.highlight-row {
+  background-color: #ffa !important;
+}

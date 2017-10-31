@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import { connect } from 'react-redux';
 
 import PhoneNumberApi from '../../../api/PhoneNumberAPI';
-import * as contactDetailsActions from '../../../actions/ContactDetailsActions';
+import { updatePhoneNumber } from '../../../actions/ContactDetailsActions';
 import ContactDetailsFormPhoneView from './ContactDetailsFormPhoneView';
 import ContactDetailsFormPhoneEdit from './ContactDetailsFormPhoneEdit';
 import ContactDetailsFormPhoneDelete from './ContactDetailsFormPhoneDelete';
@@ -16,8 +16,8 @@ class ContactDetailFormPhoneItem extends Component {
             highlightLine: '',
             showEdit: false,
             showDelete: false,
-            errorNumber: false,
-            errorType: false,
+            typeIdError: false,
+            numberError: false,
             phoneNumber: {
                 ...props.phoneNumber,
             },
@@ -69,20 +69,45 @@ class ContactDetailFormPhoneItem extends Component {
         });
     };
 
+    processError(fieldName, value) {
+        this.setState({
+            [fieldName]: value,
+        })
+    };
+
+    validateForm(fieldNames) {
+        fieldNames.map((fieldName) => {
+            switch(fieldName) {
+                case 'typeId':
+                case 'number':
+                    this.state.phoneNumber[fieldName].length === 0 ?
+                        this.processError(fieldName + 'Error', true)
+                        :
+                        this.processError(fieldName + 'Error', false)
+                    break;
+                default:
+                    break;
+            }
+        });
+    };
+
     handleSubmit = event => {
         event.preventDefault();
 
-        const { phoneNumber } = this.state;
+        this.validateForm([
+            'typeId',
+            'number',
+        ]);
 
-        PhoneNumberApi.updatePhoneNumber(phoneNumber).then((payload) => {
-            if(payload.status === 422) {
-                payload.data.errors.number ? this.setState({errorNumber: true}) : this.setState({errorNumber: false});
-                payload.data.errors.type ? this.setState({errorType: true}) : this.setState({errorType: false});
-            }else{
-                this.props.dispatch(contactDetailsActions.updatePhoneNumber(payload));
-                this.toggleEdit();
-            }
-        });
+        const { phoneNumber } = this.state;
+        // Temp solution
+        setTimeout(() => {
+            !this.state.typeIdError && !this.state.numberError &&
+                PhoneNumberApi.updatePhoneNumber(phoneNumber).then((payload) => {
+                    this.props.updatePhoneNumber(payload);
+                    this.toggleEdit();
+                });
+        }, 100);
     };
 
     render() {
@@ -103,7 +128,8 @@ class ContactDetailFormPhoneItem extends Component {
                         phoneNumber={this.state.phoneNumber}
                         handleInputChange={this.handleInputChange}
                         handleSubmit={this.handleSubmit}
-                        errorType={this.state.errorType}
+                        typeIdError={this.state.typeIdError}
+                        numberError={this.state.numberError}
                         closeEdit={this.closeEdit}
                     />
                 }
@@ -119,4 +145,10 @@ class ContactDetailFormPhoneItem extends Component {
     }
 };
 
-export default connect()(ContactDetailFormPhoneItem);
+const mapDispatchToProps = dispatch => ({
+    updatePhoneNumber: (id) => {
+        dispatch(updatePhoneNumber(id));
+    },
+});
+
+export default connect(null, mapDispatchToProps)(ContactDetailFormPhoneItem);

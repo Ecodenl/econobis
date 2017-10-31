@@ -15,12 +15,14 @@ class ContactDetailsFormEmailNew extends Component {
         super(props);
 
         this.state = {
-            contactId: this.props.id,
-            email: '',
-            type: '',
-            primary: false,
-            errorEmail: false,
-            errorType: false,
+            emailAddress: {
+                contactId: this.props.id,
+                email: '',
+                typeId: '',
+                primary: false,
+            },
+            typeIdError: false,
+            emailError: false,
         }
     };
 
@@ -30,29 +32,59 @@ class ContactDetailsFormEmailNew extends Component {
         const name = target.name;
 
         this.setState({
-            [name]: value
+            ...this.state,
+            emailAddress: {
+                ...this.state.emailAddress,
+                [name]: value
+            },
+        });
+    };
+
+    processError(fieldName, value) {
+        this.setState({
+            [fieldName]: value,
+        })
+    };
+
+    validateForm(fieldNames) {
+        fieldNames.map((fieldName) => {
+            switch(fieldName) {
+                case 'typeId':
+                case 'email':
+                    this.state.emailAddress[fieldName].length === 0 ?
+                        this.processError(fieldName + 'Error', true)
+                        :
+                        this.processError(fieldName + 'Error', false)
+                    break;
+                default:
+                    break;
+            }
         });
     };
 
     handleSubmit = event => {
         event.preventDefault();
 
-        const emailAddress = this.state;
+        this.validateForm([
+            'typeId',
+            'email',
+        ]);
 
-        EmailAddressAPI.newEmailAddress(emailAddress).then((payload) => {
-            if(payload.status === 422) {
-                payload.data.errors.email ? this.setState({errorEmail: true}) : this.setState({errorEmail: false});
-                payload.data.errors.type ? this.setState({errorType: true}) : this.setState({errorType: false});
-            }else{
-                this.props.newEmailAddress(payload);
+        const { emailAddress } = this.state;
 
-                this.props.toggleShowNew();
-            }
-        });
+        // Temp solution
+        setTimeout(() => {
+            !this.state.typeIdError && !this.state.emailError &&
+                EmailAddressAPI.newEmailAddress(emailAddress).then((payload) => {
+                    this.props.newEmailAddress(payload);
+                    this.props.toggleShowNew();
+                });
+        }, 100);
     };
 
     render() {
-        const {email, type, primary, errorEmail, errorType} = this.state;
+        const {email, typeId, primary} = this.state.emailAddress;
+        const {emailError, typeIdError } = this.state;
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -67,19 +99,19 @@ class ContactDetailsFormEmailNew extends Component {
                                 value={email}
                                 onChangeAction={this.handleInputChange}
                                 required={"required"}
-                                error={errorEmail}
+                                error={emailError}
                             />
 
                             <InputSelect
                                 label={"Type"}
                                 id="type"
                                 size={"col-sm-6"}
-                                name={"type"}
+                                name={"typeId"}
                                 options={this.props.emailAddressTypes}
-                                value={type}
+                                value={typeId}
                                 onChangeAction={this.handleInputChange}
                                 required={"required"}
-                                error={errorType}
+                                error={typeIdError}
                             />
                         </div>
 

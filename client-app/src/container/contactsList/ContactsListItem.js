@@ -39,7 +39,7 @@ class ContactsListItem extends Component {
     };
 
     render() {
-        const { checked, id, number, typeName, fullName, streetAndNumber, postalCode, city, emailAddress, phoneNumber, status, createdAt } = this.props;
+        const { checked, id, number, typeName, fullName, streetAndNumber, postalCode, city, emailAddress, phoneNumber, statusName, createdAt } = this.props;
 
         return (
             <tr className={this.state.highlightRow} onDoubleClick={() => this.openItem(id)} onMouseEnter={() => this.onRowEnter()} onMouseLeave={() => this.onRowLeave()}>
@@ -52,7 +52,7 @@ class ContactsListItem extends Component {
                 <td className="hidden-xs">{city}</td>
                 <td className="hidden-xs">{emailAddress}</td>
                 <td>{phoneNumber}</td>
-                <td className="hidden-xs hidden-sm">{status}</td>
+                <td className="hidden-xs hidden-sm">{statusName}</td>
                 <td className="hidden-xs hidden-sm">{ moment(createdAt.date).format('DD-MM-Y') }</td>
                 <td>
                     {(this.state.showActionButtons ? <a role="button" onClick={() => this.openItem(id)}><span className="glyphicon glyphicon-pencil mybtn-success" /> </a> : '')}
@@ -70,8 +70,10 @@ function mapStateToProps(state) {
     };
 }
 
-const mapDispatchToProps = (dispatch) => {
-    return bindActionCreators({ setCheckedContact }, dispatch);
-};
+const mapDispatchToProps = dispatch => ({
+    setCheckedContact: (id) => {
+        dispatch(setCheckedContact(id));
+    },
+});
 
 export default connect(mapStateToProps, mapDispatchToProps)(ContactsListItem);

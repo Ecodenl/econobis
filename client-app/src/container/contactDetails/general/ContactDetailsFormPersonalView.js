@@ -28,7 +28,7 @@ const ContactDetailsFormPersonalView = props => {
 
                 <ViewText
                     label="Status"
-                    value={status.name}
+                    value={ status && status.name}
                 />
             </div>
 

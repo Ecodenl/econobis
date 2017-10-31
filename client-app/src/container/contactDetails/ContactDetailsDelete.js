@@ -1,13 +1,15 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { hashHistory } from 'react-router';
 
-import Modal from '../../../components/modal/Modal';
-import { deletePhoneNumber } from '../../../actions/ContactDetailsActions';
+import Modal from '../../components/modal/Modal';
+import { deleteContact } from '../../actions/ContactDetailsActions';
 
 const ContactDetailsPhoneDelete = (props) => {
     const confirmAction = () => {
-        props.deletePhoneNumber(props.id);
-        props.closeDeleteItemModal();
+        props.deleteContact(props.id);
+
+        hashHistory.push('/contacten');
     };
 
     return (
@@ -18,16 +20,14 @@ const ContactDetailsPhoneDelete = (props) => {
             confirmAction={() => confirmAction()}
             title="Verwijderen"
       >
-            <p>Verwijder telefoonnummer: <strong> {`${props.number}` } </strong></p>
-
-            { props.primary && <p className={'text-danger'}><strong>Let op!</strong> Dit is een primair adres</p> }
+            <p>Verwijder contact: <strong> {`${props.fullName}` } </strong></p>
       </Modal>
     );
 };
 
 const mapDispatchToProps = dispatch => ({
-    deletePhoneNumber: (id) => {
-        dispatch(deletePhoneNumber(id));
+    deleteContact: (id) => {
+        dispatch(deleteContact(id));
     },
 });
 

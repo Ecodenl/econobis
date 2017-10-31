@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import { connect } from 'react-redux';
 
 import EmailAddressAPI from '../../../api/EmailAddressAPI';
-import * as contactDetailsActions from '../../../actions/ContactDetailsActions';
+import { updateEmailAddress } from '../../../actions/ContactDetailsActions';
 import ContactDetailsFormEmailView from './ContactDetailsFormEmailView';
 import ContactDetailsFormEmailEdit from './ContactDetailsFormEmailEdit';
 import ContactDetailsFormEmailDelete from './ContactDetailsFormEmailDelete';
@@ -16,8 +16,8 @@ class ContactDetailFormEmailItem extends Component {
             highlightLine: '',
             showEdit: false,
             showDelete: false,
-            errorEmail: false,
-            errorType: false,
+            typeIdError: false,
+            emailError: false,
             emailAddress: {
                 ...props.emailAddress,
             },
@@ -69,20 +69,46 @@ class ContactDetailFormEmailItem extends Component {
         });
     };
 
+    processError(fieldName, value) {
+        this.setState({
+            [fieldName]: value,
+        })
+    };
+
+    validateForm(fieldNames) {
+        fieldNames.map((fieldName) => {
+            switch(fieldName) {
+                case 'typeId':
+                case 'email':
+                    this.state.emailAddress[fieldName].length === 0 ?
+                        this.processError(fieldName + 'Error', true)
+                        :
+                        this.processError(fieldName + 'Error', false)
+                    break;
+                default:
+                    break;
+            }
+        });
+    };
+
     handleSubmit = event => {
         event.preventDefault();
 
+        this.validateForm([
+            'typeId',
+            'email',
+        ]);
+
         const { emailAddress } = this.state;
 
-        EmailAddressAPI.updateEmailAddress(emailAddress).then((payload) => {
-            if(payload.status === 422) {
-                payload.data.errors.email ? this.setState({errorEmail: true}) : this.setState({errorEmail: false});
-                payload.data.errors.type ? this.setState({errorType: true}) : this.setState({errorType: false});
-            }else{
-                this.props.dispatch(contactDetailsActions.updateEmailAddress(payload));
-                this.toggleEdit();
-            }
-        });
+        // Temp solution
+        setTimeout(() => {
+            !this.state.typeIdError && !this.state.emailError &&
+                EmailAddressAPI.updateEmailAddress(emailAddress).then((payload) => {
+                    this.props.updateEmailAddress(payload);
+                    this.toggleEdit();
+                });
+        }, 100);
     };
 
     render() {
@@ -103,7 +129,8 @@ class ContactDetailFormEmailItem extends Component {
                         emailAddress={this.state.emailAddress}
                         handleInputChange={this.handleInputChange}
                         handleSubmit={this.handleSubmit}
-                        errorType={this.state.errorType}
+                        typeIdError={this.state.typeIdError}
+                        emailError={this.state.emailError}
                         closeEdit={this.closeEdit}
                     />
                 }
@@ -119,4 +146,10 @@ class ContactDetailFormEmailItem extends Component {
     }
 };
 
-export default connect()(ContactDetailFormEmailItem);
+const mapDispatchToProps = dispatch => ({
+    updateEmailAddress: (id) => {
+        dispatch(updateEmailAddress(id));
+    },
+});
+
+export default connect(null, mapDispatchToProps)(ContactDetailFormEmailItem);

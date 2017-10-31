@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment';
 
-import * as ContactDetailsActions from '../../../actions/ContactDetailsActions';
+import { updatePerson } from '../../../actions/ContactDetailsActions';
 import PersonAPI from '../../../api/PersonAPI';
 import AccountAPI from '../../../api/AccountAPI';
 import InputText from '../../../components/form/InputText';
@@ -39,7 +39,10 @@ class ContactDetailsFormPersonalEdit extends Component {
                 accountId: person.account ? person.account.id : '',
                 dateOfBirth: person.dateOfBirth ? moment(person.dateOfBirth.date).format('Y-MM-DD') : '',
                 newsletter: newsletter
-            }
+            },
+            statusIdError: false,
+            firstNameError: false,
+            lastNameError: false,
         }
     };
 
@@ -102,18 +105,48 @@ class ContactDetailsFormPersonalEdit extends Component {
         });
     };
 
+    validateForm(fieldNames) {
+        fieldNames.map((fieldName) => {
+            switch(fieldName) {
+                case 'statusId':
+                case 'firstName':
+                case 'lastName':
+                    this.state.person[fieldName].length === 0 ?
+                        this.processError(fieldName + 'Error', true)
+                        :
+                        this.processError(fieldName + 'Error', false)
+                    break;
+                default:
+                    break;
+            }
+        });
+    };
+
+    processError(fieldName, value) {
+        this.setState({
+            [fieldName]: value,
+        })
+    };
+
     handleSubmit = event => {
         event.preventDefault();
 
-        const person = {
-            ...this.state.person,
-        };
+        this.validateForm([
+            'statusId',
+            'firstName',
+            'lastName',
+        ]);
 
-        PersonAPI.updatePerson(person).then((payload) => {
-            this.props.dispatch(ContactDetailsActions.updatePerson(payload));
-        });
+        const { person }  = this.state;
 
-        this.props.switchToView();
+        // Temp solution
+        setTimeout(() => {
+            !this.state.statusIdError && !this.state.firstNameError && !this.state.lastNameError &&
+                PersonAPI.updatePerson(person).then((payload) => {
+                    this.props.updatePerson(payload);
+                    this.props.switchToView();
+                });
+        }, 100);
     };
 
     render() {
@@ -155,6 +188,7 @@ class ContactDetailsFormPersonalEdit extends Component {
                         value={statusId}
                         onChangeAction={this.handleInputChange}
                         required={"required"}
+                        error={this.state.statusIdError}
                     />
                 </div>
 
@@ -165,6 +199,8 @@ class ContactDetailsFormPersonalEdit extends Component {
                         name={"firstName"}
                         value={firstName}
                         onChangeAction={this.handleInputChange}
+                        required={"required"}
+                        error={this.state.firstNameError}
                     />
                     <InputDate
                         label={"Lid sinds"}
@@ -200,6 +236,8 @@ class ContactDetailsFormPersonalEdit extends Component {
                         name="lastName"
                         value={lastName}
                         onChangeAction={this.handleInputChange}
+                        required={"required"}
+                        error={this.state.lastNameError}
                     />
                     <InputSelect
                         label={"Soort contact"}
@@ -257,4 +295,10 @@ const mapStateToProps = (state) => {
     };
 };
 
-export default connect(mapStateToProps)(ContactDetailsFormPersonalEdit);
+const mapDispatchToProps = dispatch => ({
+    updatePerson: (id) => {
+        dispatch(updatePerson(id));
+    },
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(ContactDetailsFormPersonalEdit);

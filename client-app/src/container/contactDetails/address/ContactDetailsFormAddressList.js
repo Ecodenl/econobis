@@ -15,7 +15,7 @@ const ContactDetailsFormAddressList = props => {
                         />;
                     })
                     :
-                    <div>Geen adres gegevens gevonden!</div>
+                    <div>Geen adres bekend</div>
             }
         </div>
     );

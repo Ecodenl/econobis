@@ -7,7 +7,7 @@ export default function (state= [], action) {
         ];
     case 'CLEAR_CONTACTS':
         return state.contacts = [];
-    case 'DELETE_CONTACT':
+    case 'DELETE_CONTACT_SUCCESS':
         return state.filter((contact) => contact.id !== action.id);
     case 'DELETE_SELECTED_CONTACTS':
         return state.filter((contact) => contact.checked !== true);

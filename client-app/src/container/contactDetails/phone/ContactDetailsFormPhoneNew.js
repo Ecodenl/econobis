@@ -15,12 +15,14 @@ class ContactDetailsFormPhoneNew extends Component {
         super(props);
 
         this.state = {
-            contactId: this.props.id,
-            number: '',
-            type: '',
-            primary: false,
-            errorNumber: false,
-            errorType: false,
+            phoneNumber: {
+                contactId: this.props.id,
+                number: '',
+                typeId: '',
+                primary: false,
+            },
+            numberError: false,
+            typeIdError: false,
         }
     };
 
@@ -30,28 +32,59 @@ class ContactDetailsFormPhoneNew extends Component {
         const name = target.name;
 
         this.setState({
-            [name]: value
+            ...this.state,
+            phoneNumber: {
+                ...this.state.phoneNumber,
+                [name]: value
+            },
+        });
+    };
+
+    processError(fieldName, value) {
+        this.setState({
+            [fieldName]: value,
+        })
+    };
+
+    validateForm(fieldNames) {
+        fieldNames.map((fieldName) => {
+            switch(fieldName) {
+                case 'typeId':
+                case 'number':
+                    this.state.phoneNumber[fieldName].length === 0 ?
+                        this.processError(fieldName + 'Error', true)
+                        :
+                        this.processError(fieldName + 'Error', false)
+                    break;
+                default:
+                    break;
+            }
         });
     };
 
     handleSubmit = event => {
         event.preventDefault();
 
-        const phoneNumber = this.state;
+        this.validateForm([
+            'typeId',
+            'number',
+        ]);
 
-        PhoneNumberApi.newPhoneNumber(phoneNumber).then((payload) => {
-            if(payload.status === 422) {
-                payload.data.errors.number ? this.setState({errorNumber: true}) : this.setState({errorNumber: false});
-                payload.data.errors.type ? this.setState({errorType: true}) : this.setState({errorType: false});
-            }else{
-                this.props.newPhoneNumber(payload);
-                this.props.toggleShowNew();
-            }
-        });
+        const { phoneNumber } = this.state;
+
+        // Temp solution
+        setTimeout(() => {
+            !this.state.typeIdError && !this.state.numberError &&
+                PhoneNumberApi.newPhoneNumber(phoneNumber).then((payload) => {
+                    this.props.newPhoneNumber(payload);
+                    this.props.toggleShowNew();
+                });
+        }, 100);
     };
 
     render() {
-        const {number, type, primary, errorNumber, errorType} = this.state;
+        const {number, typeId, primary} = this.state.phoneNumber;
+        const {numberError, typeIdError } = this.state;
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -60,25 +93,23 @@ class ContactDetailsFormPhoneNew extends Component {
                         <div className="row">
                             <InputText
                                 label={"Nummer"}
-                                id={"nummer"}
                                 size={"col-sm-6"}
                                 name={"number"}
                                 value={number}
                                 onChangeAction={this.handleInputChange}
                                 required={"required"}
-                                error={errorNumber}
+                                error={numberError}
                             />
 
                             <InputSelect
                                 label={"Type"}
-                                id="type"
                                 size={"col-sm-6"}
-                                name={"type"}
+                                name={"typeId"}
                                 options={this.props.phoneNumberTypes}
-                                value={type}
+                                value={typeId}
                                 onChangeAction={this.handleInputChange}
                                 required={"required"}
-                                error={errorType}
+                                error={typeIdError}
                             />
                         </div>
 

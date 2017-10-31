@@ -4,12 +4,12 @@ import { connect } from 'react-redux';
 import GetNameByIdHelper from '../../../helpers/GetNameByIdHelper';
 
 const ContactDetailFormAddressView = props => {
-    const {type, street, number, postalCode, city, primary } = props.address;
+    const {typeId, street, number, postalCode, city, primary } = props.address;
 
     return (
         <div className={`row ${props.highlightLine}`} onMouseEnter={() => props.onLineEnter()} onMouseLeave={() => props.onLineLeave()}>
             <div className="col-sm-1">
-                <strong><GetNameByIdHelper id={type} items={props.addressTypes} /></strong>
+                <strong><GetNameByIdHelper id={typeId} items={props.addressTypes} /></strong>
             </div>
             <div className="col-sm-3">
                 { street + ' ' + number }

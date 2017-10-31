@@ -5,7 +5,7 @@ import PhoneNumberAPI from '../api/PhoneNumberAPI';
 import EmailAddressAPI from '../api/EmailAddressAPI';
 import ContactNoteAPI from '../api/ContactNoteAPI';
 
-export function* contactDetailsSaga({ payload }) {
+export function* fetchContactDetailsSaga({ payload }) {
     try {
         const contactDetails = yield call(ContactDetailsAPI.getContactDetails, payload);
         yield [
@@ -46,7 +46,7 @@ export function* deleteEmailAddressSaga({ id }) {
 export function* deleteContactNoteSaga({ id }) {
     try {
         yield call(ContactNoteAPI.deleteNote, id);
-        yield  put({ type: 'DELETE_NOTE_SUCCESS', id });
+        yield put({ type: 'DELETE_NOTE_SUCCESS', id });
     } catch (error) {
         yield put({ type: 'DELETE_NOTE_ERROR', error });
     }

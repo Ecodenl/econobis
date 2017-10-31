@@ -9,7 +9,7 @@ import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
 
 const ContactDetailsFormAddressEdit = props => {
-    const { street, number, postalCode, city, type, primary } = props.address;
+    const { street, number, postalCode, city, typeId, primary } = props.address;
 
     return (
         <div>
@@ -25,6 +25,7 @@ const ContactDetailsFormAddressEdit = props => {
                                 value={postalCode}
                                 onChangeAction={ props.handleInputChange }
                                 maxLength={"7"}
+                                error={props.postalCodeError}
                             />
                             <InputText
                                 label={"Nummer"}
@@ -33,6 +34,7 @@ const ContactDetailsFormAddressEdit = props => {
                                 name={"number"}
                                 value={number}
                                 onChangeAction={props.handleInputChange}
+                                error={props.numberError}
                             />
                         </div>
 
@@ -60,12 +62,12 @@ const ContactDetailsFormAddressEdit = props => {
                                 label={"Type"}
                                 id="type"
                                 size={"col-sm-6"}
-                                name={"type"}
+                                name={"typeId"}
                                 options={props.addressTypes}
-                                value={type}
+                                value={typeId}
                                 onChangeAction={props.handleInputChange}
                                 required={"required"}
-                                error={props.errorType}
+                                error={props.typeIdError}
                             />
                             <InputCheckbox
                                 label={"Primair adres"}

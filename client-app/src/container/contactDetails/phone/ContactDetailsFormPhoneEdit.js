@@ -9,7 +9,7 @@ import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
 
 const ContactDetailsFormPhoneEdit = props => {
-    const { number, type, primary } = props.phoneNumber;
+    const { number, typeId, primary } = props.phoneNumber;
 
     return (
         <form className="form-horizontal" onSubmit={props.handleSubmit}>
@@ -24,19 +24,19 @@ const ContactDetailsFormPhoneEdit = props => {
                             value={number}
                             onChangeAction={props.handleInputChange}
                             required={"required"}
-                            error={props.errorNumber}
+                            error={props.numberError}
                         />
 
                         <InputSelect
                             label={"Type"}
                             id="type"
                             size={"col-sm-6"}
-                            name={"type"}
+                            name={"typeId"}
                             options={props.phoneNumberTypes}
-                            value={type}
+                            value={typeId}
                             onChangeAction={props.handleInputChange}
                             required={"required"}
-                            error={props.errorType}
+                            error={props.typeIdError}
                         />
                     </div>
 

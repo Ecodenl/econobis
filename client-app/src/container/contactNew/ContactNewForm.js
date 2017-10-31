@@ -25,7 +25,17 @@ const ContactNewForm = () => {
             </Panel>
             <Panel>
                 <PanelHeader>
-                    <span className="h5 text-bold">Energie gegevens</span>
+                    <span className="h5 text-bold">Overige gegevens</span>
+                </PanelHeader>
+            </Panel>
+            <Panel>
+                <PanelHeader>
+                    <span className="h5 text-bold">Opmerkingen</span>
+                </PanelHeader>
+            </Panel>
+            <Panel>
+                <PanelHeader>
+                    <span className="h5 text-bold">Afsluiting gegevens</span>
                 </PanelHeader>
             </Panel>
         </div>

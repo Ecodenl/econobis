@@ -25,13 +25,7 @@ export default function (state = {}, action) {
                 addresses: [
                     ...state.addresses,
                     {
-                        id: action.address.id,
-                        street: action.address.street,
-                        number: action.address.number,
-                        postalCode: action.address.postalCode,
-                        city: action.address.city,
-                        type: action.address.type,
-                        primary: action.address.primary,
+                        ...action.address,
                     }
                 ]
             };
@@ -41,13 +35,7 @@ export default function (state = {}, action) {
                 addresses: state.addresses.map((address) =>
                     address.id === action.address.id ?
                         {
-                            ...address,
-                            street: action.address.street,
-                            number: action.address.number,
-                            postalCode: action.address.postalCode,
-                            city: action.address.city,
-                            type: action.address.type,
-                            primary: action.address.primary,
+                            ...action.address,
                         }
                         :
                         address
@@ -64,11 +52,7 @@ export default function (state = {}, action) {
                 phoneNumbers: [
                     ...state.phoneNumbers,
                     {
-                        id: action.phoneNumber.id,
-                        contactId: action.phoneNumber.contactId,
-                        number: action.phoneNumber.number,
-                        type: action.phoneNumber.type,
-                        primary: action.phoneNumber.primary,
+                        ...action.phoneNumber,
                     }
                 ]
             };
@@ -78,10 +62,7 @@ export default function (state = {}, action) {
                 phoneNumbers: state.phoneNumbers.map((phoneNumber) =>
                     phoneNumber.id === action.phoneNumber.id ?
                         {
-                            ...phoneNumber,
-                            number: action.phoneNumber.number,
-                            type: action.phoneNumber.type,
-                            primary: action.phoneNumber.primary,
+                            ...action.phoneNumber,
                         }
                         :
                         phoneNumber
@@ -98,11 +79,7 @@ export default function (state = {}, action) {
                 emailAddresses: [
                     ...state.emailAddresses,
                     {
-                        id: action.emailAddress.id,
-                        contactId: action.emailAddress.contactId,
-                        email: action.emailAddress.email,
-                        type: action.emailAddress.type,
-                        primary: action.emailAddress.primary,
+                        ...action.emailAddress,
                     }
                 ]
             };
@@ -111,10 +88,8 @@ export default function (state = {}, action) {
                 ...state,
                 emailAddresses: state.emailAddresses.map((emailAddress) =>
                     emailAddress.id === action.emailAddress.id ?
-                        {...emailAddress,
-                            email: action.emailAddress.email,
-                            type: action.emailAddress.type,
-                            primary: action.emailAddress.primary,
+                        {
+                            ...action.emailAddress,
                         }
                         :
                         emailAddress

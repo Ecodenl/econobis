@@ -18,7 +18,9 @@ const ContactDetailsAddressDelete = (props) => {
             confirmAction={() => confirmAction()}
             title="Verwijderen"
         >
-            Verwijder adres: <strong> {`${props.street} ${props.number}` } </strong>
+            <p>Verwijder adres: <strong> {`${props.street} ${props.number}` } </strong></p>
+
+            { props.primary && <p className={'text-danger'}><strong>Let op!</strong> Dit is een primair adres</p> }
         </Modal>
     );
 };

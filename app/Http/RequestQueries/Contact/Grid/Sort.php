@@ -38,7 +38,7 @@ class Sort extends RequestSort
         'city' => 'addresses.city',
         'emailAddress' => 'email_addresses.email',
         'phoneNumber' => 'phone_numbers.number',
-        'statusName' => 'contacts.status',
+        'statusName' => 'contacts.status_id',
         'createdAt' => 'contacts.created_at',
     ];
 

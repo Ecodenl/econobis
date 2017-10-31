@@ -1,6 +1,5 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import moment from 'moment';
 
 import ViewText from '../../../components/form/ViewText';
 
@@ -23,7 +22,7 @@ const ContactDetailsFormConclusionView = props => {
             <div className="row">
                 <ViewText
                     label="Eigenaar"
-                    value={owner.name}
+                    value={ owner && owner.name}
                 />
             </div>
         </div>

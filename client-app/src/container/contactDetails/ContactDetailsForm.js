@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import { isEmpty } from 'lodash';
 
-import * as actions from '../../actions/ContactDetailsActions';
+import { fetchContactDetails } from '../../actions/ContactDetailsActions';
 import ContactDetailsFormGeneral from './general/ContactDetailsFormGeneral';
 import ContactDetailsFormAddress from './address/ContactDetailsFormAddress';
 import ContactDetailsFormPhone from './phone/ContactDetailsFormPhone';
@@ -18,7 +18,7 @@ class ContactDetailsForm extends Component {
     };
 
     componentDidMount() {
-        this.props.dispatch(actions.getContactDetails(this.props.id));
+        this.props.fetchContactDetails(this.props.id);
     };
 
     render() {
@@ -46,4 +46,10 @@ const mapStateToProps = (state) => {
     };
 };
 
-export default connect(mapStateToProps)(ContactDetailsForm);
+const mapDispatchToProps = dispatch => ({
+    fetchContactDetails: (id) => {
+        dispatch(fetchContactDetails(id));
+    },
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(ContactDetailsForm);

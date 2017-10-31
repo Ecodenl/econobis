@@ -15,14 +15,18 @@ class ContactDetailsFormAddressNew extends Component {
         super(props);
 
         this.state = {
-            contactId: this.props.id,
-            street: '',
-            number: '',
-            postalCode: '',
-            city: '',
-            type: 'visit',
-            primary: false,
-            errorType: false,
+            address: {
+                contactId: this.props.id,
+                street: '',
+                number: '',
+                postalCode: '',
+                city: '',
+                typeId: 'visit',
+                primary: false,
+            },
+            typeIdError: false,
+            postalCodeError: false,
+            numberError: false,
         }
     };
 
@@ -32,27 +36,61 @@ class ContactDetailsFormAddressNew extends Component {
         const name = target.name;
 
         this.setState({
-            [name]: value
+            ...this.state,
+            address: {
+                ...this.state.address,
+                [name]: value
+            },
+        });
+    };
+
+    processError(fieldName, value) {
+        this.setState({
+            [fieldName]: value,
+        })
+    };
+
+    validateForm(fieldNames) {
+        fieldNames.map((fieldName) => {
+            switch(fieldName) {
+                case 'typeId':
+                case 'postalCode':
+                case 'number':
+                    this.state.address[fieldName].length === 0 ?
+                        this.processError(fieldName + 'Error', true)
+                        :
+                        this.processError(fieldName + 'Error', false)
+                    break;
+                default:
+                    break;
+            }
         });
     };
 
     handleSubmit = event => {
         event.preventDefault();
 
-        const address = this.state;
+        this.validateForm([
+            'typeId',
+            'number',
+            'postalCode',
+        ]);
 
-        AddressAPI.newAddress(address).then((payload) => {
-            if(payload.status === 422) {
-                payload.data.errors.type ? this.setState({errorType: true}) : this.setState({errorType: false});
-            }else{
-                newAddress(payload);
-                this.props.toggleShowNew();
-            }
-        });
+        const { address } = this.state;
+
+        // Temp solution
+        setTimeout(() => {
+            !this.state.typeIdError && !this.state.postalCodeError && !this.state.numberError &&
+                AddressAPI.newAddress(address).then((payload) => {
+                    this.props.newAddress(payload);
+                    this.props.toggleShowNew();
+                });
+        }, 100);
     };
 
     render() {
-        const {street, number, postalCode, city, type, primary, errorType} = this.state;
+        const {street, number, postalCode, city, typeId, primary } = this.state.address;
+        const {postalCodeError, numberError, typeIdError } = this.state;
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -63,10 +101,13 @@ class ContactDetailsFormAddressNew extends Component {
                                 label={"Postcode"}
                                 id={"postcode"}
                                 size={"col-sm-4"}
+                                maxLength={"7"}
                                 name={"postalCode"}
                                 value={postalCode}
                                 onChangeAction={ this.handleInputChange }
-                                maxLength={"7"}
+                                required={"required"}
+                                error={postalCodeError}
+
                             />
                             <InputText
                                 label={"Nummer"}
@@ -75,6 +116,8 @@ class ContactDetailsFormAddressNew extends Component {
                                 name={"number"}
                                 value={number}
                                 onChangeAction={this.handleInputChange}
+                                required={"required"}
+                                error={numberError}
                             />
                         </div>
 
@@ -102,12 +145,12 @@ class ContactDetailsFormAddressNew extends Component {
                                 label={"Type"}
                                 id="type"
                                 size={"col-sm-6"}
-                                name={"type"}
+                                name={"typeId"}
                                 options={this.props.addressTypes}
-                                value={type}
+                                value={typeId}
                                 onChangeAction={this.handleInputChange}
                                 required={"required"}
-                                error={errorType}
+                                error={typeIdError}
                             />
                             <InputCheckbox
                                 label={"Primair adres"}

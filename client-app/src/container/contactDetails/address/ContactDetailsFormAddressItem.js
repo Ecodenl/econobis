@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import { connect } from 'react-redux';
 
 import AddressAPI from '../../../api/AddressAPI';
-import * as contactDetailsActions from '../../../actions/ContactDetailsActions';
+import { updateAddress } from '../../../actions/ContactDetailsActions';
 import ContactDetailsFormAddressView from './ContactDetailsFormAddressView';
 import ContactDetailsFormAddressEdit from './ContactDetailsFormAddressEdit';
 import ContactDetailsFormAddressDelete from './ContactDetailsFormAddressDelete';
@@ -16,8 +16,9 @@ class ContactDetailFormAddressItem extends Component {
             highlightLine: '',
             showEdit: false,
             showDelete: false,
-            errorNumber: false,
-            errorType: false,
+            typeIdError: false,
+            postalCodeError: false,
+            numberError: false,
             address: {
                 ...props.address,
             },
@@ -69,19 +70,56 @@ class ContactDetailFormAddressItem extends Component {
         });
     };
 
+    processError(fieldName, value) {
+        this.setState({
+            [fieldName]: value,
+        })
+    };
+
+    validateForm(fieldNames) {
+        fieldNames.map((fieldName) => {
+            switch(fieldName) {
+                case 'typeId':
+                case 'postalCode':
+                case 'number':
+                    this.state.address[fieldName].length === 0 ?
+                        this.processError(fieldName + 'Error', true)
+                        :
+                        this.processError(fieldName + 'Error', false)
+                    break;
+                default:
+                    break;
+            }
+        });
+    };
+
     handleSubmit = event => {
         event.preventDefault();
 
-        const { address } = this.state;
+        this.validateForm([
+            'typeId',
+            'number',
+            'postalCode',
+        ]);
 
-        AddressAPI.updateAddress(address).then((payload) => {
-            if(payload.status === 422) {
-                payload.data.errors.type ? this.setState({errorType: true}) : this.setState({errorType: false});
-            }else{
-                this.props.dispatch(contactDetailsActions.updateAddress(payload));
-                this.toggleEdit();
-            }
-        });
+        const address = {
+            contactId: this.state.address.contactId,
+            street: this.state.address.street,
+            number: this.state.address.number,
+            postalCode: this.state.address.postalCode,
+            city: this.state.address.city,
+            typeId: this.state.address.typeId,
+            primary: this.state.address.primary,
+        };
+
+        // Temp solution
+        setTimeout(() => {
+            !this.state.typeIdError && !this.state.postalCodeError && !this.state.numberError &&
+                AddressAPI.updateAddress(address).then((payload) => {
+                    this.props.updateAddress(payload);
+                    this.toggleEdit();
+                });
+        }, 100);
     };
 
     render() {
@@ -102,7 +140,9 @@ class ContactDetailFormAddressItem extends Component {
                         address={this.state.address}
                         handleInputChange={this.handleInputChange}
                         handleSubmit={this.handleSubmit}
-                        errorType={this.state.errorType}
+                        typeIdError={this.state.typeIdError}
+                        postalCodeError={this.state.postalCodeError}
+                        numberError={this.state.numberError}
                         closeEdit={this.closeEdit}
                     />
                 }
@@ -118,4 +158,10 @@ class ContactDetailFormAddressItem extends Component {
     }
 };
 
-export default connect()(ContactDetailFormAddressItem);
+const mapDispatchToProps = dispatch => ({
+    updateAddress: (id) => {
+        dispatch(updateAddress(id));
+    },
+});
+
+export default connect(null, mapDispatchToProps)(ContactDetailFormAddressItem);

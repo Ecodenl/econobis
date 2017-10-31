@@ -15,7 +15,7 @@ const ContactDetailsFormNoteList = props => {
                         />;
                     })
                     :
-                    <div>Geen opmerkingen gevonden!</div>
+                    <div>Geen opmerkingen bekend</div>
             }
         </div>
     );

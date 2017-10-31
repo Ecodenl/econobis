@@ -1,8 +1,15 @@
-export const getContactDetails = (payload) => {
+export const fetchContactDetails = (payload) => {
     return {
         type: 'FETCH_CONTACT_DETAILS',
         payload
     }
+};
+
+export const deleteContact = (id) => {
+    return  {
+        type: 'DELETE_CONTACT',
+        id,
+    };
 };
 
 export const updatePerson = (contactDetails) => {

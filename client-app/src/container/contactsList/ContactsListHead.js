@@ -24,7 +24,7 @@ const ContactsListHead = (props) => {
             <DataTableHeadTitle RowClassName={'hidden-xs'} sortColumn={'city'} title={'Woonplaats'} width={'10%'} setSorts={setSorts} />
             <DataTableHeadTitle RowClassName={'hidden-xs'} sortColumn={'emailAddress'} title={'Email'} width={'12%'} setSorts={setSorts} />
             <DataTableHeadTitle sortColumn={'phoneNumber'} title={'Telefoon'} width={'7%'} setSorts={setSorts} />
-            <DataTableHeadTitle RowClassName={'hidden-xs hidden-sm'} sortColumn={'status'} title={'Status'} width={'9%'} setSorts={setSorts} />
+            <DataTableHeadTitle RowClassName={'hidden-xs hidden-sm'} sortColumn={'statusName'} title={'Status'} width={'9%'} setSorts={setSorts} />
             <DataTableHeadTitle RowClassName={'hidden-xs hidden-sm'} sortColumn={'createdAt'} title={'Gemaakt op'} width={'10%'} setSorts={setSorts} />
             <th width="3%" />
         </tr>

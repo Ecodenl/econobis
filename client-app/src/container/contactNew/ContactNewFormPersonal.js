@@ -33,7 +33,9 @@ class ContactNewFormPersonal extends Component {
                 dateOfBirth: '',
                 newsletter: false,
             },
-            errorStatus: false,
+            statusIdError: false,
+            firstNameError: false,
+            lastNameError: false,
         }
     };
 
@@ -84,20 +86,47 @@ class ContactNewFormPersonal extends Component {
         });
     };
 
+    validateForm(fieldNames) {
+        fieldNames.map((fieldName) => {
+            switch(fieldName) {
+                case 'statusId':
+                case 'firstName':
+                case 'lastName':
+                    this.state.person[fieldName].length === 0 ?
+                        this.processError(fieldName + 'Error', true)
+                        :
+                        this.processError(fieldName + 'Error', false)
+                    break;
+                default:
+                    break;
+            }
+        });
+    };
+
+    processError(fieldName, value) {
+        this.setState({
+            [fieldName]: value,
+        })
+    };
+
     handleSubmit = event => {
         event.preventDefault();
 
-        const person = {
-            ...this.state.person,
-        };
+        this.validateForm([
+            'statusId',
+            'firstName',
+            'lastName',
+        ]);
 
-        PersonAPI.newPerson(person).then((payload) => {
-            if(payload.status === 422) {
-                payload.data.errors.status ? this.setState({errorStatus: true}) : this.setState({errorStatus: false});
-            }else{
-                hashHistory.push(`/contact/${payload.id}`);
-            }
-        });
+        const { person }  = this.state;
+
+        // Temp solution
+        setTimeout(() => {
+            !this.state.statusIdError && !this.state.firstNameError && !this.state.lastNameError &&
+                PersonAPI.newPerson(person).then((payload) => {
+                    hashHistory.push(`/contact/${payload.id}`);
+                });
+        }, 100);
     };
 
     render() {
@@ -136,7 +165,7 @@ class ContactNewFormPersonal extends Component {
                         value={statusId}
                         onChangeAction={this.handleInputChange}
                         required={"required"}
-                        error={this.state.errorStatus}
+                        error={this.state.statusIdError}
                     />
                 </div>
 
@@ -148,6 +177,7 @@ class ContactNewFormPersonal extends Component {
                         value={firstName}
                         onChangeAction={this.handleInputChange}
                         required={"required"}
+                        error={this.state.firstNameError}
                     />
                     <InputDate
                         label={"Lid sinds"}
@@ -181,6 +211,7 @@ class ContactNewFormPersonal extends Component {
                         value={lastName}
                         onChangeAction={this.handleInputChange}
                         required={"required"}
+                        error={this.state.lastNameError}
                     />
                     <InputSelect
                         label={"Soort contact"}

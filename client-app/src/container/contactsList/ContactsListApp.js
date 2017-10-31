@@ -75,7 +75,7 @@ class ContactsListApp extends Component {
         const sorts = this.props.contactsSorts.reverse();
 
         this.props.clearContacts();
-        this.props.fetchontacts(filters, sorts);
+        this.props.fetchContacts(filters, sorts);
     };
 
     onSubmitFilter() {

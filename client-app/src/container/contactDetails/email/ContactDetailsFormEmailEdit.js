@@ -8,8 +8,8 @@ import InputCheckbox from "../../../components/form/InputCheckbox";
 import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
 
-const  ContactDetailsFormEmailEdit = props => {
-    const { email, type, primary } = props.emailAddress;
+const ContactDetailsFormEmailEdit = props => {
+    const { email, typeId, primary } = props.emailAddress;
 
     return (
         <form className="form-horizontal" onSubmit={props.handleSubmit}>
@@ -24,19 +24,19 @@ const  ContactDetailsFormEmailEdit = props => {
                             value={email}
                             onChangeAction={props.handleInputChange}
                             required={"required"}
-                            error={props.errorEmail}
+                            error={props.emailError}
                         />
 
                         <InputSelect
                             label={"Type"}
                             id="type"
                             size={"col-sm-6"}
-                            name={"type"}
+                            name={"typeId"}
                             options={props.emailAddressTypes}
-                            value={type}
+                            value={typeId}
                             onChangeAction={props.handleInputChange}
                             required={"required"}
-                            error={props.errorType}
+                            error={props.typeIdError}
                         />
                     </div>
 

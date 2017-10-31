@@ -19,6 +19,7 @@ class FullAccount extends Resource
             'id' => $this->id,
             'contactId' => $this->contact_id,
             'name' => $this->name,
+            'typeId' => $this->type_id,
             'type' => FullAccountType::make($this->whenLoaded('type')),
             'createdAt' => $this->created_at,
             'updatedAt' => $this->updated_at,

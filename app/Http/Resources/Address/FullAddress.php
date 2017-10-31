@@ -18,6 +18,7 @@ class FullAddress extends Resource
         return [
             'id' => $this->id,
             'contactId' => $this->contact_id,
+            'typeId' => $this->type_id,
             'type' => FullEnumWithIdAndName::make($this->getType()),
             'street' => $this->street,
             'number' => $this->number,

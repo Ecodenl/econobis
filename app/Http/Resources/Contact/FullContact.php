@@ -25,7 +25,9 @@ class FullContact extends Resource
         return [
             'id' => $this->id,
             'number' => $this->number,
+            'statusId' => $this->status_id,
             'status' => FullEnumWithIdAndName::make($this->getStatus()),
+            'typeId' => $this->type_id,
             'type' => FullEnumWithIdAndName::make($this->getType()),
             'person' => FullPerson::make($this->whenLoaded('person')),
             'account' => FullAccount::make($this->whenLoaded('account')),
@@ -42,8 +44,11 @@ class FullContact extends Resource
             'iban' => $this->iban,
             'liable' => $this->liable,
             'liabilityAmount' => $this->liability_amount,
+            'ownerId' => $this->owner_id,
             'owner' => FullUser::make($this->whenLoaded('owner')),
+            'createdById' => $this->created_by_id,
             'createdBy' => FullUser::make($this->whenLoaded('createdBy')),
+            'updatedById' => $this->updated_by_id,
             'updatedBy' => FullUser::make($this->whenLoaded('updatedBy')),
         ];
     }

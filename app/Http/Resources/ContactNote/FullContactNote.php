@@ -21,7 +21,9 @@ class FullContactNote extends Resource
             'note' => $this->note,
             'createdAt' => $this->created_at,
             'updatedAt' => $this->updated_at,
+            'createdById' => $this->created_by_id,
             'createdBy' => FullUser::make($this->whenLoaded('createdBy')),
+            'updatedById' => $this->updated_by_id,
             'updatedBy' => FullUser::make($this->whenLoaded('updatedBy')),
         ];
     }

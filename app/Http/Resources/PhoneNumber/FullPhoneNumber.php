@@ -18,6 +18,7 @@ class FullPhoneNumber extends Resource
         return [
             'id' => $this->id,
             'contactId' => $this->contact_id,
+            'typeId' => $this->type_id,
             'type' => FullEnumWithIdAndName::make($this->getType()),
             'number' => $this->number,
             'primary' => $this->primary,

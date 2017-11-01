@@ -12,7 +12,7 @@ class Logout extends Component {
         localStorage.removeItem('userId');
         localStorage.removeItem('userName');
 
-        authLogout();
+        this.props.authLogout();
 
         hashHistory.push('/login');
     }
@@ -27,8 +27,8 @@ class Logout extends Component {
 }
 
 const mapDispatchToProps = dispatch => ({
-    authSuccess: (id) => {
-        dispatch(authSuccess(id));
+    authLogout: () => {
+        dispatch(authLogout());
     },
 });
 

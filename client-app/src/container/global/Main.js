@@ -25,7 +25,11 @@ class Main extends Component {
         this.updateWindowDimensions();
         window.addEventListener('resize', this.updateWindowDimensions);
 
-        this.props.fetchSystemData();
+        const token = localStorage.getItem('access_token');
+
+        if(this.props.authenticated && token) {
+            this.props.fetchSystemData();
+        }
     };
 
     updateWindowDimensions = () => {

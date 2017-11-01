@@ -40,7 +40,7 @@ class Login extends Component {
                 localStorage.setItem('access_token', payload.data.access_token);
                 localStorage.setItem('refresh_token', payload.data.refresh_token);
 
-                authSuccess();
+                this.props.authSuccess();
 
                 hashHistory.push("/");
             } else {
@@ -104,8 +104,8 @@ class Login extends Component {
 };
 
 const mapDispatchToProps = dispatch => ({
-    authSuccess: (id) => {
-        dispatch(authSuccess(id));
+    authSuccess: () => {
+        dispatch(authSuccess());
     },
 });
 

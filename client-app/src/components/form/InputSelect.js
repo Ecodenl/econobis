@@ -9,7 +9,7 @@ const InputSelect = props => {
             <label htmlFor={ id } className={`col-sm-6 ${required}`}>{label}</label>
             <div className={`${size}`}>
                 <select className={`form-control input-sm ${className}` + (error && 'has-error')} id={ id } name={name} value={value} onChange={onChangeAction} onBlur={onBlurAction}>
-                    <option value=''>Keuze ...</option>
+                    <option value=''></option>
                     { options.map((option) => {
                         return <option key={ option.id } value={ option.id }>{ option.name }</option>
                     }) }

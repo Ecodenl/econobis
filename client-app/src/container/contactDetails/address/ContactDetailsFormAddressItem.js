@@ -39,17 +39,21 @@ class ContactDetailFormAddressItem extends Component {
         });
     };
 
-    toggleEdit = () => {
-        this.setState({showEdit: !this.state.showEdit});
+    openEdit = () => {
+        this.setState({showEdit: true});
     };
 
     closeEdit = () => {
+        this.setState({showEdit: false});
+    };
+
+    cancelEdit = () => {
         this.setState({
             ...this.state,
-            address: {...this.props.address}
+            address: {...this.props.address},
         });
 
-        this.toggleEdit();
+        this.closeEdit();
     };
 
     toggleDelete = () => {
@@ -102,22 +106,14 @@ class ContactDetailFormAddressItem extends Component {
             'postalCode',
         ]);
 
-        const address = {
-            contactId: this.state.address.contactId,
-            street: this.state.address.street,
-            number: this.state.address.number,
-            postalCode: this.state.address.postalCode,
-            city: this.state.address.city,
-            typeId: this.state.address.typeId,
-            primary: this.state.address.primary,
-        };
+        const { address } = this.state;
 
         // Temp solution
         setTimeout(() => {
             !this.state.typeIdError && !this.state.postalCodeError && !this.state.numberError &&
                 AddressAPI.updateAddress(address).then((payload) => {
                     this.props.updateAddress(payload);
-                    this.toggleEdit();
+                    this.closeEdit();
                 });
         }, 100);
     };
@@ -130,7 +126,7 @@ class ContactDetailFormAddressItem extends Component {
                     showActionButtons={this.state.showActionButtons}
                     onLineEnter={this.onLineEnter}
                     onLineLeave={this.onLineLeave}
-                    toggleEdit={this.toggleEdit}
+                    openEdit={this.openEdit}
                     toggleDelete={this.toggleDelete}
                     address={this.state.address}
                 />
@@ -143,7 +139,7 @@ class ContactDetailFormAddressItem extends Component {
                         typeIdError={this.state.typeIdError}
                         postalCodeError={this.state.postalCodeError}
                         numberError={this.state.numberError}
-                        closeEdit={this.closeEdit}
+                        cancelEdit={this.cancelEdit}
                     />
                 }
                 {

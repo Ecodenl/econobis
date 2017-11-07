@@ -8,17 +8,19 @@ const ContactDetailFormPhoneView = props => {
 
     return (
         <div className={`row ${props.highlightLine}`} onMouseEnter={() => props.onLineEnter()} onMouseLeave={() => props.onLineLeave()}>
-            <div className="col-sm-3">
-                <strong><GetNameByIdHelper id={typeId} items={props.phoneNumberTypes} /></strong>
-            </div>
-            <div className="col-sm-2">
-                {number}
-            </div>
-            <div className="col-sm-1 col-sm-offset-5">
-                { primary ? <span className="h6">Primair</span> : '' }
+            <div onClick={props.openEdit}>
+                <div className="col-sm-2">
+                    <strong><GetNameByIdHelper id={typeId} items={props.phoneNumberTypes} /></strong>
+                </div>
+                <div className="col-sm-8">
+                    {number}
+                </div>
+                <div className="col-sm-1">
+                    { primary ? <span className="h6">Primair</span> : '' }
+                </div>
             </div>
             <div className="col-sm-1">
-                {(props.showActionButtons ? <a role="button" onClick={props.toggleEdit}><span className="glyphicon glyphicon-pencil mybtn-success" /> </a> : '')}
+                {(props.showActionButtons ? <a role="button" onClick={props.openEdit}><span className="glyphicon glyphicon-pencil mybtn-success" /> </a> : '')}
                 {(props.showActionButtons ? <a role="button" onClick={props.toggleDelete}><span className="glyphicon glyphicon-trash mybtn-danger"  /> </a> : '')}
             </div>
         </div>

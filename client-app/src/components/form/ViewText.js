@@ -5,9 +5,9 @@ const ViewText = props => {
     const { label, className, id, value } = props;
 
     return (
-        <div className={className}>
-            <label htmlFor={ id } className="col-sm-6">{ label }</label>
-            <div id={ id }>
+        <div>
+            <label htmlFor={ id } className={className}>{ label }</label>
+            <div className={className} id={ id }>
                 {value}
             </div>
         </div>
@@ -15,7 +15,7 @@ const ViewText = props => {
 };
 
 ViewText.defaultProps = {
-    className: 'col-sm-6',
+    className: 'col-sm-3',
     value: ''
 };
 

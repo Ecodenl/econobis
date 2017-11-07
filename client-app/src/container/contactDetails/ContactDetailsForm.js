@@ -29,8 +29,8 @@ class ContactDetailsForm extends Component {
                 <div>
                     <ContactDetailsFormGeneral />
                     <ContactDetailsFormAddress />
-                    <ContactDetailsFormPhone />
                     <ContactDetailsFormEmail />
+                    <ContactDetailsFormPhone />
                     {/* <ContactDetailsFormEnergy /> */}
                     <ContactDetailsFormOther />
                     <ContactDetailsFormNote />

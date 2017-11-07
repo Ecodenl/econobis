@@ -15,12 +15,12 @@ const ContactNewForm = () => {
             </Panel>
             <Panel>
                 <PanelHeader>
-                    <span className="h5 text-bold">Telefoon gegevens</span>
+                    <span className="h5 text-bold">Email gegevens</span>
                 </PanelHeader>
             </Panel>
             <Panel>
                 <PanelHeader>
-                    <span className="h5 text-bold">Email gegevens</span>
+                    <span className="h5 text-bold">Telefoon gegevens</span>
                 </PanelHeader>
             </Panel>
             <Panel>

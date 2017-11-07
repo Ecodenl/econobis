@@ -29,7 +29,7 @@ class ContactDetailsToolbar extends Component {
                         <ButtonIcon iconName={"glyphicon-trash"} onClickAction={this.toggleDelete}/>
                     </div>
                 </div>
-                <div className="col-md-4"><h4 className="text-center">{this.props.fullName || 'Nieuw'}</h4></div>
+                <div className="col-md-4"><h4 className="text-center"><strong>{this.props.fullName || 'Nieuw'}</strong></h4></div>
                 <div className="col-md-4" />
 
                 {

@@ -38,17 +38,21 @@ class ContactDetailFormPhoneItem extends Component {
         });
     };
 
-    toggleEdit = () => {
-        this.setState({showEdit: !this.state.showEdit});
+    openEdit = () => {
+        this.setState({showEdit: true});
     };
 
     closeEdit = () => {
+        this.setState({showEdit: false});
+    };
+
+    cancelEdit = () => {
         this.setState({
             ...this.state,
             phoneNumber: {...this.props.phoneNumber}
         });
 
-        this.toggleEdit();
+        this.closeEdit();
     };
 
     toggleDelete = () => {
@@ -105,7 +109,7 @@ class ContactDetailFormPhoneItem extends Component {
             !this.state.typeIdError && !this.state.numberError &&
                 PhoneNumberApi.updatePhoneNumber(phoneNumber).then((payload) => {
                     this.props.updatePhoneNumber(payload);
-                    this.toggleEdit();
+                    this.closeEdit();
                 });
         }, 100);
     };
@@ -118,7 +122,7 @@ class ContactDetailFormPhoneItem extends Component {
                     showActionButtons={this.state.showActionButtons}
                     onLineEnter={this.onLineEnter}
                     onLineLeave={this.onLineLeave}
-                    toggleEdit={this.toggleEdit}
+                    openEdit={this.openEdit}
                     toggleDelete={this.toggleDelete}
                     phoneNumber={this.state.phoneNumber}
                 />
@@ -130,7 +134,7 @@ class ContactDetailFormPhoneItem extends Component {
                         handleSubmit={this.handleSubmit}
                         typeIdError={this.state.typeIdError}
                         numberError={this.state.numberError}
-                        closeEdit={this.closeEdit}
+                        cancelEdit={this.cancelEdit}
                     />
                 }
                 {

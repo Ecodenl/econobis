@@ -20,7 +20,7 @@ const ContactDetailsEmailDelete = (props) => {
       >
             <p>Verwijder e-mail adres: <strong> {`${props.email}` } </strong></p>
 
-            { props.primary && <p className={'text-danger'}><strong>Let op!</strong> Dit is een primair adres</p> }
+            { props.primary && <p className={'text-danger'}><strong>Let op!</strong> Dit is een primair e-mail adres</p> }
       </Modal>
     );
 };

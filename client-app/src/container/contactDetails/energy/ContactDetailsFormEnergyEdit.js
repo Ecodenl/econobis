@@ -80,7 +80,7 @@ class ContactDetailsFormEnergyEdit extends Component {
 
                 <div className="panel-footer">
                     <div className="pull-right">
-                        <ButtonText buttonClassName={"btn-default"} buttonText={"Sluiten"} onClickAction={this.props.switchToView}/>
+                        <ButtonText buttonClassName={"btn-default"} buttonText={"Annuleren"} onClickAction={this.props.switchToView}/>
                         <ButtonText buttonText={"Opslaan"} onClickAction={this.handleSubmit}/>
                     </div>
                 </div>

@@ -50,7 +50,7 @@ const ContactDetailsFormEmailEdit = props => {
                     </div>
 
                     <div className="pull-right btn-group" role="group">
-                        <ButtonText buttonClassName={"btn-default"} buttonText={"Sluiten"} onClickAction={props.closeEdit}/>
+                        <ButtonText buttonClassName={"btn-default"} buttonText={"Annuleren"} onClickAction={props.cancelEdit}/>
                         <ButtonText buttonText={"Opslaan"} onClickAction={props.handleSubmit} type={"submit"} value={"Submit"}/>
                     </div>
                 </PanelBody>

@@ -21,8 +21,6 @@ class ContactDetailFormNoteItem extends Component {
                 id: props.note.id,
                 note: props.note.note,
                 createdAt: props.note.createdAt ? moment(props.note.createdAt.date).format('DD-MM-Y') : '',
-                updatedAt: props.note.updatedAt ? moment(props.note.updatedAt.date).format('DD-MM-Y') : '',
-                updatedBy: props.note.updatedBy ? props.note.updatedBy.name : '',
             },
         };
     };
@@ -41,23 +39,25 @@ class ContactDetailFormNoteItem extends Component {
         });
     };
 
-    toggleEdit = () => {
-        this.setState({showEdit: !this.state.showEdit});
+    openEdit = () => {
+        this.setState({showEdit: true});
     };
 
     closeEdit = () => {
+        this.setState({showEdit: false});
+    };
+
+    cancelEdit = () => {
         this.setState({
             ...this.state,
             note: {
                 id: this.props.note.id,
                 note: this.props.note.note,
                 createdAt: this.props.note.createdAt ? moment(this.props.note.createdAt.date).format('DD-MM-Y') : '',
-                updatedAt: this.props.note.updatedAt ? moment(this.props.note.updatedAt.date).format('DD-MM-Y') : '',
-                updatedBy: this.props.note.updatedBy ? this.props.note.updatedBy.name : '',
-            }
+            },
         });
 
-        this.toggleEdit();
+        this.closeEdit();
     };
 
     toggleDelete = () => {
@@ -81,7 +81,7 @@ class ContactDetailFormNoteItem extends Component {
 
         ContactNoteAPI.updateNote(note).then((payload) => {
             this.props.dispatch(contactDetailsActions.updateNote(payload));
-            this.toggleEdit();
+            this.closeEdit();
         });
     };
 
@@ -94,7 +94,7 @@ class ContactDetailFormNoteItem extends Component {
                     showActionButtons={this.state.showActionButtons}
                     onLineEnter={this.onLineEnter}
                     onLineLeave={this.onLineLeave}
-                    toggleEdit={this.toggleEdit}
+                    openEdit={this.openEdit}
                     toggleDelete={this.toggleDelete}
                 />
                 {
@@ -104,7 +104,7 @@ class ContactDetailFormNoteItem extends Component {
                         handleInputChange={this.handleInputChange}
                         handleSubmit={this.handleSubmit}
                         errorType={this.state.errorType}
-                        closeEdit={this.closeEdit}
+                        cancelEdit={this.cancelEdit}
                     />
                 }
                 {

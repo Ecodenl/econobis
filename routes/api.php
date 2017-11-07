@@ -45,6 +45,9 @@ Route::namespace('Api')
         Route::post('/person', 'Person\PersonController@store');
         Route::post('/person/{person}', 'Person\PersonController@update');
 
+        Route::post('/account', 'Account\AccountController@store');
+        Route::post('/account/{account}', 'Account\AccountController@update');
+
         Route::post('/contact-note', 'ContactNote\ContactNoteController@store');
         Route::post('/contact-note/{contactNote}', 'ContactNote\ContactNoteController@update');
         Route::post('/contact-note/{contactNote}/delete', 'ContactNote\ContactNoteController@destroy');

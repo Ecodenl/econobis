@@ -17,6 +17,10 @@ class Person extends Model
 
     protected $guarded = ['id'];
 
+    protected $casts = [
+        'primary' => 'boolean',
+    ];
+
     protected $dates = [
         'date_of_birth',
     ];

@@ -22,7 +22,7 @@ const Routes = () => {
                 <IndexRoute component={ DashboardApp } />
                 <Route path="contacten/:filter/:value" component={ ContactsListApp } />
                 <Route path="contacten" component={ ContactsListApp } />
-                <Route path="contact/nieuw" component={ ContactNewApp } />
+                <Route path="contact/nieuw/:type" component={ ContactNewApp } />
                 <Route path="contact/:id" component={ ContactDetailsApp } />
                 <Route path="taak/:id" component={TasksApp} />
                 <Route path="aanmelding/:id" component={SignupsApp} />

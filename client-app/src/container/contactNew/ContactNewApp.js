@@ -14,7 +14,7 @@ const ContactNewApp = props => {
                         </div>
 
                         <div className="col-md-12 extra-space-above">
-                            <ContactNewForm />
+                            <ContactNewForm type={props.params.type}/>
                         </div>
                     </div>
                 </div>

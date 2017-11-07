@@ -4,10 +4,10 @@ import ContactNewFormGeneral from './ContactNewFormGeneral';
 import Panel from '../../components/panel/Panel';
 import PanelHeader from '../../components/panel/PanelHeader';
 
-const ContactNewForm = () => {
+const ContactNewForm = props => {
     return (
         <div>
-            <ContactNewFormGeneral />
+            <ContactNewFormGeneral type={props.type}/>
             <Panel>
                 <PanelHeader>
                     <span className="h5 text-bold">Adres gegevens</span>

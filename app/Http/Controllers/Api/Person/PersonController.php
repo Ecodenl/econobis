@@ -50,6 +50,7 @@ class PersonController extends ApiController
             'lastNamePartner' => '',
             'dateOfBirthPartner' => 'date',
             'primary' => 'boolean',
+            'occupationId' => 'exists:occupations,id',
         ]);
 
         $contactData = $this->sanitizeData($contactData, [
@@ -70,6 +71,7 @@ class PersonController extends ApiController
             'dateOfBirth' => 'nullable',
             'dateOfBirthPartner' => 'nullable',
             'primary' => 'boolean',
+            'occupationId' => 'nullable',
         ]);
         $person = new Person($this->arrayKeysToSnakeCase($personData));
 
@@ -110,6 +112,7 @@ class PersonController extends ApiController
             'lastNamePartner' => '',
             'dateOfBirthPartner' => 'date',
             'primary' => 'boolean',
+            'occupationId' => 'exists:occupations,id',
         ]);
 
         $contact = $person->contact;
@@ -133,6 +136,7 @@ class PersonController extends ApiController
             'dateOfBirth' => 'nullable',
             'dateOfBirthPartner' => 'nullable',
             'primary' => 'boolean',
+            'occupationId' => 'nullable',
         ]);
         $person->fill($this->arrayKeysToSnakeCase($personData));
         $person->save();

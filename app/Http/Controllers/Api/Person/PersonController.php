@@ -16,6 +16,7 @@ use App\Eco\User\User;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\Controllers\Api\Contact\ContactController;
 use App\Http\Resources\Contact\FullContact;
+use App\Http\Resources\Person\PersonPeek;
 use App\Rules\EnumExists;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -139,5 +140,12 @@ class PersonController extends ApiController
         // Contact exact zo teruggeven als bij het openen van een bestaand contact
         // Dus kan hier gebruik maken van bestaande controller
         return (new ContactController())->show($contact->fresh(), $request);
+    }
+
+    public function peekNoAccount()
+    {
+        $people = Person::whereNull('account_id')->get();
+
+        return PersonPeek::collection($people);
     }
 }

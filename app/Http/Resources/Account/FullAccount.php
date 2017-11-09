@@ -4,6 +4,7 @@ namespace App\Http\Resources\Account;
 
 use App\Http\Resources\AccountType\FullAccountType;
 use App\Http\Resources\Industry\FullIndustry;
+use App\Http\Resources\Person\FullPerson;
 use Illuminate\Http\Resources\Json\Resource;
 
 class FullAccount extends Resource
@@ -28,6 +29,7 @@ class FullAccount extends Resource
             'chamberOfCommerceNumber' => $this->chamber_of_commerce_number,
             'vatNumber' => $this->vat_number,
             'squareMeters' => $this->square_meters,
+            'people' => FullPerson::collection($this->whenLoaded('people')),
             'createdAt' => $this->created_at,
             'updatedAt' => $this->updated_at,
         ];

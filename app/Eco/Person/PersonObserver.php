@@ -62,8 +62,6 @@ class PersonObserver
 
     private function contactFullNameFormat(Person $person)
     {
-        if(empty($person->last_name)) return $person->first_name;
-        if(empty($person->first_name)) return $person->last_name;
-        return $person->last_name . ', ' . $person->first_name . ($person->lastNamePrefix ? ' ' . $person->lastNamePrefix->name : '');
+        return $person->present()->fullName();
     }
 }

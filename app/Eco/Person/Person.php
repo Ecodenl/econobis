@@ -9,11 +9,13 @@ use App\Eco\PersonType\PersonType;
 use App\Eco\Title\Title;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Laracasts\Presenter\PresentableTrait;
 use Venturecraft\Revisionable\RevisionableTrait;
 
 class Person extends Model
 {
-    use RevisionableTrait, SoftDeletes;
+    use RevisionableTrait, SoftDeletes, PresentableTrait;
+    protected $presenter = PersonPresenter::class;
 
     protected $guarded = ['id'];
 

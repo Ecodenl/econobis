@@ -12,6 +12,7 @@
         "laravel/framework": "5.5.*",
         "laravel/passport": "^3.0",
         "laravel/tinker": "~1.0",
+        "spatie/laravel-permission": "^2.7",
         "venturecraft/revisionable": "^1.28"
     },
     "require-dev": {

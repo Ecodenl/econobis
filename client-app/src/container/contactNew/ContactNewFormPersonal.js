@@ -29,9 +29,10 @@ class ContactNewFormPersonal extends Component {
                 memberSince: '',
                 memberUntil: '',
                 typeId: '',
-                accountId: '',
+                accountId: props.accountId || '',
                 dateOfBirth: '',
                 newsletter: false,
+                occupationId: '',
             },
             statusIdError: false,
             firstNameError: false,
@@ -130,7 +131,7 @@ class ContactNewFormPersonal extends Component {
     };
 
     render() {
-        const { typeId, statusId, titleId, firstName, lastNamePrefixId, lastName, memberSince, accountId, dateOfBirth, newsletter } = this.state.person;
+        const { typeId, statusId, titleId, firstName, lastNamePrefixId, lastName, memberSince, accountId, dateOfBirth, newsletter, occupationId } = this.state.person;
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -241,6 +242,19 @@ class ContactNewFormPersonal extends Component {
                 </div>
 
                 <div className="row">
+                    { accountId !== '' ?
+                        <InputSelect
+                            label={"Functie"}
+                            size={"col-sm-6"}
+                            name={"occupationId"}
+                            options={this.props.occupations}
+                            value={occupationId}
+                            onChangeAction={this.handleInputChange}
+                        />
+                        :
+                        <div className="form-group col-sm-6"/>
+                    }
+
                     <InputCheckbox
                         label={"Nieuwsbrief"}
                         name={"newsletter"}
@@ -265,6 +279,7 @@ const mapStateToProps = (state) => {
         lastNamePrefixes: state.systemData.lastNamePrefixes,
         personTypes: state.systemData.personTypes,
         contactStatuses: state.systemData.contactStatuses,
+        occupations: state.systemData.occupations,
     };
 };
 

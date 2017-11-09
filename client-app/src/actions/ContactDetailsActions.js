@@ -109,3 +109,10 @@ export const deleteNote = (id) => {
         id,
     };
 };
+
+export const makePrimary = (id) => {
+    return {
+        type: 'MAKE_PRIMARY',
+        id,
+    };
+};

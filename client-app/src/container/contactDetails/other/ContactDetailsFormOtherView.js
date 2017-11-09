@@ -4,7 +4,7 @@ import moment from 'moment';
 
 import ViewText from '../../../components/form/ViewText';
 
-const ContactDetailsFormOtherView = props => {
+const ContactDetailsFormOtherPersonView = props => {
     const { firstNamePartner, lastNamePartner, dateOfBirthPartner } = props.contactDetails.person;
     const { iban, liable, liabilityAmount } = props.contactDetails;
 
@@ -55,4 +55,4 @@ const mapStateToProps = (state) => {
     };
 };
 
-export default connect(mapStateToProps)(ContactDetailsFormOtherView);
+export default connect(mapStateToProps)(ContactDetailsFormOtherPersonView);

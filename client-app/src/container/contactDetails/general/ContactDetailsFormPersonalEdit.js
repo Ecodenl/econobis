@@ -38,7 +38,8 @@ class ContactDetailsFormPersonalEdit extends Component {
                 typeId: person.type ? person.type.id : '',
                 accountId: person.account ? person.account.id : '',
                 dateOfBirth: person.dateOfBirth ? moment(person.dateOfBirth.date).format('Y-MM-DD') : '',
-                newsletter: newsletter
+                newsletter: newsletter,
+                occupationId: person.occupation ? person.occupation.id : '',
             },
             statusIdError: false,
             firstNameError: false,
@@ -150,7 +151,7 @@ class ContactDetailsFormPersonalEdit extends Component {
     };
 
     render() {
-        const {number, createdAt, titleId, statusId, typeId, firstName, lastNamePrefixId, lastName, memberSince, memberUntil, accountId, dateOfBirth, newsletter} = this.state.person;
+        const {number, createdAt, titleId, statusId, typeId, firstName, lastNamePrefixId, lastName, memberSince, memberUntil, accountId, dateOfBirth, newsletter, occupationId} = this.state.person;
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -267,6 +268,18 @@ class ContactDetailsFormPersonalEdit extends Component {
                     />
                 </div>
                 <div className="row">
+                    { accountId !== '' ?
+                        <InputSelect
+                            label={"Functie"}
+                            size={"col-sm-6"}
+                            name={"occupationId"}
+                            options={this.props.occupations}
+                            value={occupationId}
+                            onChangeAction={this.handleInputChange}
+                        />
+                        :
+                        <div className="form-group col-sm-6"/>
+                    }
                     <InputCheckbox
                         label={"Nieuwsbrief"}
                         name={"newsletter"}
@@ -292,6 +305,7 @@ const mapStateToProps = (state) => {
         lastNamePrefixes: state.systemData.lastNamePrefixes,
         personTypes: state.systemData.personTypes,
         contactStatuses: state.systemData.contactStatuses,
+        occupations: state.systemData.occupations,
     };
 };
 

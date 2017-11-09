@@ -7,7 +7,14 @@ import PanelHeader from '../../components/panel/PanelHeader';
 const ContactNewForm = props => {
     return (
         <div>
-            <ContactNewFormGeneral type={props.type}/>
+            <ContactNewFormGeneral type={props.type} accountId={props.accountId}/>
+            {props.type === 'bedrijf' &&
+                <Panel>
+                    <PanelHeader>
+                        <span className="h5 text-bold">Contacten</span>
+                    </PanelHeader>
+                </Panel>
+            }
             <Panel>
                 <PanelHeader>
                     <span className="h5 text-bold">Adres gegevens</span>

@@ -20,6 +20,8 @@ class DatabaseSeeder extends Seeder
         $this->call(PersonTypesSeeder::class);
         // Person types
         $this->call(IndustriesSeeder::class);
+        // Person types
+        $this->call(OccupationsSeeder::class);
 
 
         // Accounts (includes Contacts)

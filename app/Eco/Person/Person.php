@@ -5,6 +5,7 @@ namespace App\Eco\Person;
 use App\Eco\Account\Account;
 use App\Eco\Contact\Contact;
 use App\Eco\LastNamePrefix\LastNamePrefix;
+use App\Eco\Occupation\Occupation;
 use App\Eco\PersonType\PersonType;
 use App\Eco\Title\Title;
 use Illuminate\Database\Eloquent\Model;
@@ -50,6 +51,11 @@ class Person extends Model
     public function account()
     {
         return $this->belongsTo(Account::class);
+    }
+
+    public function occupation()
+    {
+        return $this->belongsTo(Occupation::class);
     }
 
 }

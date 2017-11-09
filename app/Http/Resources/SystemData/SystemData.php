@@ -9,12 +9,14 @@ use App\Eco\Contact\ContactType;
 use App\Eco\EmailAddress\EmailAddressType;
 use App\Eco\Industry\Industry;
 use App\Eco\LastNamePrefix\LastNamePrefix;
+use App\Eco\Occupation\Occupation;
 use App\Eco\PersonType\PersonType;
 use App\Eco\PhoneNumber\PhoneNumberType;
 use App\Http\Resources\AccountType\FullAccountType;
 use App\Http\Resources\EnumWithIdAndName\FullEnumWithIdAndName;
 use App\Http\Resources\Industry\FullIndustry;
 use App\Http\Resources\LastNamePrefix\FullLastNamePrefix;
+use App\Http\Resources\Occupation\FullOccupation;
 use App\Http\Resources\PersonType\FullPersonType;
 use Illuminate\Http\Resources\Json\Resource;
 
@@ -38,6 +40,7 @@ class SystemData extends Resource
             'contactStatuses' => FullEnumWithIdAndName::collection(ContactStatus::collection()),
             'industries' => FullIndustry::collection(Industry::all()),
             'accountTypes' => FullAccountType::collection(AccountType::all()),
+            'occupations' => FullOccupation::collection(Occupation::all()),
         ];
     }
 }

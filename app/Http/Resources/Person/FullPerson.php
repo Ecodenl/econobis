@@ -4,6 +4,7 @@ namespace App\Http\Resources\Person;
 
 use App\Http\Resources\Account\FullAccount;
 use App\Http\Resources\LastNamePrefix\FullLastNamePrefix;
+use App\Http\Resources\Occupation\FullOccupation;
 use App\Http\Resources\PersonType\FullPersonType;
 use App\Http\Resources\Title\FullTitle;
 use Illuminate\Http\Resources\Json\Resource;
@@ -27,8 +28,11 @@ class FullPerson extends Resource
             'lastNamePrefixId' => $this->last_name_prefix_id,
             'lastNamePrefix' => FullLastNamePrefix::make($this->whenLoaded('lastNamePrefix')),
             'lastName' => $this->last_name,
+            'fullName' => $this->present()->fullName(),
             'accountId' => $this->account_id,
             'account' => FullAccount::make($this->whenLoaded('account')),
+            'occupationId' => $this->occupation_id,
+            'occupation' => FullOccupation::make($this->whenLoaded('occupation')),
             'typeId' => $this->type_id,
             'type' => FullPersonType::make($this->whenLoaded('type')),
             'dateOfBirth' => $this->date_of_birth,

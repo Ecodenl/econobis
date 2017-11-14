@@ -11,13 +11,8 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
+        // Users
         $this->call(UsersSeeder::class);
-
-        //BASISGEGEVENS
-        // Account types
-        $this->call(AccountTypesSeeder::class);
-        // Person types
-        $this->call(PersonTypesSeeder::class);
 
         // Accounts (includes Contacts)
         $this->call(AccountsSeeder::class);
@@ -31,6 +26,5 @@ class DatabaseSeeder extends Seeder
         $this->call(EmailAddressesSeeder::class);
         // ContactNotes on Contacts
         $this->call(ContactNotesSeeder::class);
-
     }
 }

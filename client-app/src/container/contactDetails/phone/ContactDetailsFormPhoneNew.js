@@ -124,8 +124,8 @@ class ContactDetailsFormPhoneNew extends Component {
                         </div>
 
                         <div className="pull-right btn-group" role="group">
-                            <ButtonText buttonClassName={"btn-default"} buttonText={"Sluiten"} onClickAction={this.props.toggleShowNew}/>
-                            <ButtonText buttonText={"Toevoegen"} onClickAction={this.handleSubmit} type={"submit"} value={"Submit"}/>
+                            <ButtonText buttonClassName={"btn-default"} buttonText={"Annuleren"} onClickAction={this.props.toggleShowNew}/>
+                            <ButtonText buttonText={"Bewaren"} onClickAction={this.handleSubmit} type={"submit"} value={"Submit"}/>
                         </div>
                     </PanelBody>
                 </Panel>

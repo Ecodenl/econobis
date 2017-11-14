@@ -38,17 +38,21 @@ class ContactDetailFormEmailItem extends Component {
         });
     };
 
-    toggleEdit = () => {
-        this.setState({showEdit: !this.state.showEdit});
+    openEdit = () => {
+        this.setState({showEdit: true});
     };
 
     closeEdit = () => {
+        this.setState({showEdit: false});
+    };
+
+    cancelEdit = () => {
         this.setState({
             ...this.state,
             emailAddress: {...this.props.emailAddress}
         });
 
-        this.toggleEdit();
+        this.closeEdit();
     };
 
     toggleDelete = () => {
@@ -106,7 +110,7 @@ class ContactDetailFormEmailItem extends Component {
             !this.state.typeIdError && !this.state.emailError &&
                 EmailAddressAPI.updateEmailAddress(emailAddress).then((payload) => {
                     this.props.updateEmailAddress(payload);
-                    this.toggleEdit();
+                    this.closeEdit();
                 });
         }, 100);
     };
@@ -119,7 +123,7 @@ class ContactDetailFormEmailItem extends Component {
                     showActionButtons={this.state.showActionButtons}
                     onLineEnter={this.onLineEnter}
                     onLineLeave={this.onLineLeave}
-                    toggleEdit={this.toggleEdit}
+                    openEdit={this.openEdit}
                     toggleDelete={this.toggleDelete}
                     emailAddress={this.state.emailAddress}
                 />
@@ -131,7 +135,7 @@ class ContactDetailFormEmailItem extends Component {
                         handleSubmit={this.handleSubmit}
                         typeIdError={this.state.typeIdError}
                         emailError={this.state.emailError}
-                        closeEdit={this.closeEdit}
+                        cancelEdit={this.cancelEdit}
                     />
                 }
                 {

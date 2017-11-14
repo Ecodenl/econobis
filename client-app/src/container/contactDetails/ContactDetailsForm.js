@@ -39,8 +39,8 @@ class ContactDetailsForm extends Component {
                         <ContactDetailsFormPerson />
                     }
                     <ContactDetailsFormAddress />
-                    <ContactDetailsFormPhone />
                     <ContactDetailsFormEmail />
+                    <ContactDetailsFormPhone />
                     {/* <ContactDetailsFormEnergy /> */}
                     { this.props.contactDetails.typeId == 'person' &&
                         <ContactDetailsFormOther />

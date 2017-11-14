@@ -16,8 +16,20 @@ const ContactDetailsFormOtherPersonView = props => {
                     value={firstNamePartner}
                 />
                 <ViewText
+                    label="IBAN"
+                    value={iban}
+                />
+
+            </div>
+
+            <div className="row">
+                <ViewText
                     label={"Achternaam partner"}
                     value={lastNamePartner}
+                />
+                <ViewText
+                    label={"Aansprakelijkheid"}
+                    value={liable ? 'Ja' : 'Nee'}
                 />
             </div>
 
@@ -26,22 +38,10 @@ const ContactDetailsFormOtherPersonView = props => {
                     label="Geboortedatum partner"
                     value={dateOfBirthPartner && moment(dateOfBirthPartner).format('DD-MM-Y')}
                 />
-
-                <ViewText
-                    label="IBAN"
-                    value={iban}
-                />
-            </div>
-
-            <div className="row">
-                <ViewText
-                    label={"Aansprakelijkheid"}
-                    value={liable ? 'Ja' : 'Nee'}
-                />
                 <div className="row">
                     <ViewText
                         label="Aansprakelijkheidsbedrag"
-                        value={liabilityAmount}
+                        value={'€ ' + liabilityAmount.toLocaleString(undefined, {minimumFractionDigits: 2})}
                     />
                 </div>
             </div>

@@ -233,4 +233,12 @@ return [
 
     'faker_locale' => 'nl_NL',
 
+    'admin_user' => [
+
+        'name' => env('ADMIN_USER_NAME', 'admin'),
+        'email' => env('ADMIN_USER_EMAIL', 'info@xaris.nl'),
+        'password' => env('ADMIN_USER_PASSWORD', 'secret'),
+
+    ]
+
 ];

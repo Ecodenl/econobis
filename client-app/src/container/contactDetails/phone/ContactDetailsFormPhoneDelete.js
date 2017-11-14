@@ -20,7 +20,7 @@ const ContactDetailsPhoneDelete = (props) => {
       >
             <p>Verwijder telefoonnummer: <strong> {`${props.number}` } </strong></p>
 
-            { props.primary && <p className={'text-danger'}><strong>Let op!</strong> Dit is een primair adres</p> }
+            { props.primary && <p className={'text-danger'}><strong>Let op!</strong> Dit is een primair telefoonnummer</p> }
       </Modal>
     );
 };

@@ -3,23 +3,26 @@
 namespace App\Eco\User;
 
 use App\Cooperation;
+use App\Eco\LastNamePrefix\LastNamePrefix;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Laracasts\Presenter\PresentableTrait;
 use Laravel\Passport\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 use Venturecraft\Revisionable\RevisionableTrait;
 
 class User extends Authenticatable
 {
-    use Notifiable, HasApiTokens, RevisionableTrait, HasRoles;
+    use Notifiable, HasApiTokens, RevisionableTrait, HasRoles, PresentableTrait;
+    protected $presenter = UserPresenter::class;
 
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
-    protected $fillable = [
-        'name', 'email', 'password',
+    protected $guarded = [
+        'id', 'remember_token'
     ];
 
     /**
@@ -31,8 +34,16 @@ class User extends Authenticatable
         'password', 'remember_token',
     ];
 
-    public function cooperations()
+    protected $casts = [
+        'visit_count',
+    ];
+
+    protected $dates = [
+        'last_visit',
+    ];
+
+    public function lastNamePrefix()
     {
-        return $this->belongsToMany(Cooperation::class, 'user_cooperations');
+        return $this->belongsTo(LastNamePrefix::class);
     }
 }

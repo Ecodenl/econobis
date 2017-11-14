@@ -1,22 +1,35 @@
 import React from 'react';
+import { Link } from 'react-router';
 import PropTypes from 'prop-types';
 
 const ViewText = props => {
-    const { label, className, id, value } = props;
+    const { label, className, id, value, link } = props;
 
-    return (
-        <div>
-            <label htmlFor={ id } className={className}>{ label }</label>
-            <div className={className} id={ id }>
-                {value}
+    if(link.length > 0) {
+        return (
+            <div className={className}>
+                <label htmlFor={ id } className="col-sm-6">{ label }</label>
+                <div id={ id } onClick={null}>
+                    <Link to={link} className="link-underline">{value}</Link>
+                </div>
             </div>
-        </div>
-    );
+        );
+    } else {
+        return (
+            <div className={className}>
+                <label htmlFor={ id } className="col-sm-6">{ label }</label>
+                <div id={ id }>
+                    {value}
+                </div>
+            </div>
+        );
+    }
 };
 
 ViewText.defaultProps = {
-    className: 'col-sm-3',
-    value: ''
+    className: 'col-sm-6',
+    value: '',
+    link: '',
 };
 
 ViewText.propTypes = {
@@ -27,6 +40,7 @@ ViewText.propTypes = {
         PropTypes.string,
         PropTypes.number
     ]),
+    link: PropTypes.string,
 };
 
 export default ViewText;

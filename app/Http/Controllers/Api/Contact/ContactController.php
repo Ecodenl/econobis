@@ -20,8 +20,8 @@ class ContactController extends Controller
         $contact->load('createdBy');
         $contact->load('updatedBy');
         $contact->load('owner');
-        if($contact->isAccount()) $contact->load('account.type');
-        if($contact->isPerson()) $contact->load(['person.lastNamePrefix', 'person.title', 'person.account', 'person.type']);
+        if($contact->isAccount()) $contact->load(['account.type', 'account.industry', 'account.people.occupation']);
+        if($contact->isPerson()) $contact->load(['person.lastNamePrefix', 'person.title', 'person.account', 'person.type', 'person.occupation']);
 
         return new FullContact($contact);
     }
@@ -29,10 +29,5 @@ class ContactController extends Controller
     public function destroy(Contact $contact)
     {
         SoftDeleteContact::dispatch($contact);
-
-        //\DB::enableQueryLog();
-        //$contact->delete();
-
-        //dd(\DB::getQueryLog());
     }
 }

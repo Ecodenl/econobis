@@ -1,39 +1,37 @@
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
+import { hashHistory } from 'react-router';
 import moment from 'moment';
 import validator from 'validator';
 
-import { updateAccount } from '../../../actions/ContactDetailsActions';
-import AccountAPI from '../../../api/AccountAPI';
-import InputText from '../../../components/form/InputText';
-import InputSelect from '../../../components/form/InputSelect';
-import InputCheckbox from '../../../components/form/InputCheckbox';
-import InputDate from '../../../components/form/InputDate';
-import ButtonText from '../../../components/button/ButtonText';
+import AccountAPI from '../../api/AccountAPI';
+import InputText from '../../components/form/InputText';
+import InputSelect from '../../components/form/InputSelect';
+import InputCheckbox from '../../components/form/InputCheckbox';
+import InputDate from '../../components/form/InputDate';
+import ButtonText from '../../components/button/ButtonText';
 
-class ContactDetailsFormAccountEdit extends Component {
+class ContactNewFormAccount extends Component {
     constructor(props) {
         super(props);
 
-        const { number, account, status, iban, createdAt, memberSince = {}, memberUntil = {}, newsletter } = props.contactDetails;
-
         this.state = {
             account: {
-                id: account.id,
-                number: number,
-                createdAt: createdAt.date,
-                name: account.name,
-                chamberOfCommerceNumber: account.chamberOfCommerceNumber,
-                vatNumber: account.vatNumber,
-                industryId: account.industryId ? account.industryId.id : '',
-                statusId: status.id,
-                memberSince: memberSince ? moment(memberSince.date).format('Y-MM-DD') : '',
-                memberUntil: memberUntil ? moment(memberUntil.date).format('Y-MM-DD') : '',
-                typeId: account.type ? account.type.id : '',
-                website: account.website,
-                iban: iban,
-                squareMeters: account.squareMeters,
-                newsletter: newsletter,
+                id: '',
+                number: '',
+                createdAt: '',
+                name: '',
+                chamberOfCommerceNumber: '',
+                vatNumber: '',
+                industryId: '',
+                statusId: '',
+                memberSince: '',
+                memberUntil: '',
+                typeId: '',
+                website: '',
+                iban: '',
+                squareMeters: '',
+                newsletter: false,
             },
             errors: {
                 name: false,
@@ -61,21 +59,9 @@ class ContactDetailsFormAccountEdit extends Component {
 
         this.setState({
             ...this.state,
-            account: {
-                ...this.state.account,
-                memberUntil: value
-            },
-        });
-    };
-
-    handleChangeMemberUntilDate = (date) => {
-        const value = moment(date).format('Y-MM-DD');
-
-        this.setState({
-            ...this.state,
-            account: {
-                ...this.state.account,
-                memberUntil: value
+            person: {
+                ...this.state.person,
+                memberSince: value
             },
         });
     };
@@ -98,17 +84,16 @@ class ContactDetailsFormAccountEdit extends Component {
             hasErrors = true;
         };
 
-        this.setState({ ...this.state, errors: errors });
+        this.setState({ ...this.state, errors: errors })
 
         !hasErrors &&
-            AccountAPI.updateAccount(account).then((payload) => {
-                this.props.updateAccount(payload);
-                this.props.switchToView();
+            AccountAPI.newAccount(account).then((payload) => {
+                hashHistory.push(`/contact/${payload.id}`);
             });
     };
 
     render() {
-        const { number, typeId, statusId, name, chamberOfCommerceNumber, vatNumber, industryId, createdAt, memberSince, memberUntil, newsletter, website, iban, squareMeters } = this.state.account;
+        const { typeId, statusId, name, chamberOfCommerceNumber, vatNumber, industryId, memberSince, newsletter, website, iban, squareMeters } = this.state.account;
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -116,13 +101,13 @@ class ContactDetailsFormAccountEdit extends Component {
                     <InputText
                         label={"Klantnummer"}
                         name={"number"}
-                        value={number}
+                        value={''}
                         readOnly={ true }
                     />
                     <InputText
                         label={"Gemaakt op"}
                         name={"createdAt"}
-                        value={ moment(createdAt).format('DD-MM-Y')  }
+                        value={ moment().format('DD-MM-Y') }
                         readOnly={ true }
                     />
                 </div>
@@ -173,10 +158,9 @@ class ContactDetailsFormAccountEdit extends Component {
                     />
                     <InputText
                         label={"Opzegdatum"}
-                        size={"col-sm-6"}
-                        name={"cancellationDate"}
-                        value={ memberUntil && moment(memberUntil).format('DD-MM-Y') }
-                        onChangeAction={this.handleChangeMemberUntilDate}
+                        name={"memberUntil"}
+                        value={ '' }
+                        readOnly={true}
                     />
                 </div>
 
@@ -233,7 +217,7 @@ class ContactDetailsFormAccountEdit extends Component {
 
                 <div className="panel-footer">
                     <div className="pull-right btn-group" role="group">
-                        <ButtonText buttonClassName={"btn-default"} buttonText={"Annuleren"} onClickAction={this.props.switchToView}/>
+                        <ButtonText buttonClassName={"btn-default"} buttonText={"Sluiten"} onClickAction={this.props.switchToView}/>
                         <ButtonText buttonText={"Opslaan"} onClickAction={this.handleSubmit}/>
                     </div>
                 </div>
@@ -244,17 +228,10 @@ class ContactDetailsFormAccountEdit extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        contactDetails: state.contactDetails,
         accountTypes: state.systemData.accountTypes,
         contactStatuses: state.systemData.contactStatuses,
         industries: state.systemData.industries,
     };
 };
 
-const mapDispatchToProps = dispatch => ({
-    updateAccount: (id) => {
-        dispatch(updateAccount(id));
-    },
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(ContactDetailsFormAccountEdit);
+export default connect(mapStateToProps)(ContactNewFormAccount);

@@ -5,11 +5,11 @@ import moment from 'moment';
 import ViewText from '../../../components/form/ViewText';
 
 const ContactDetailsFormPersonalView = props => {
-    const {number, createdAt, person, status, memberSince, memberUntil, newsletter} = props.contactDetails;
+    const { number, createdAt, person, status, memberSince, memberUntil, newsletter } = props.contactDetails;
 
     return (
-        <div onClick={props.switchToEdit}>
-            <div className="row">
+        <div>
+            <div className="row" onClick={props.switchToEdit}>
                 <ViewText
                     label={"Klantnummer"}
                     value={number}
@@ -20,7 +20,7 @@ const ContactDetailsFormPersonalView = props => {
                 />
             </div>
 
-            <div className="row">
+            <div className="row" onClick={props.switchToEdit}>
                 <ViewText
                     label="Aanspreektitel"
                     value={ person.title && person.title.name}
@@ -32,7 +32,7 @@ const ContactDetailsFormPersonalView = props => {
                 />
             </div>
 
-            <div className="row">
+            <div className="row" onClick={props.switchToEdit}>
                 <ViewText
                     label="Voornaam"
                     value={ person.firstName }
@@ -44,7 +44,7 @@ const ContactDetailsFormPersonalView = props => {
                 />
             </div>
 
-            <div className="row">
+            <div className="row" onClick={props.switchToEdit}>
                 <ViewText
                     label="Tussenvoegsel"
                     value={ person.lastNamePrefix && person.lastNamePrefix.name }
@@ -55,7 +55,7 @@ const ContactDetailsFormPersonalView = props => {
                 />
             </div>
 
-            <div className="row">
+            <div className="row" onClick={props.switchToEdit}>
                 <ViewText
                     label="Achternaam"
                     value={ person.lastName }
@@ -70,13 +70,24 @@ const ContactDetailsFormPersonalView = props => {
                 <ViewText
                     label="Organisatie"
                     value={ person.account && person.account.name }
+                    link={ person.account ? `/contact/${person.account.id}` : '' }
                 />
-                <ViewText
-                    label={"Geboortedatum"}
-                    value={ person.dateOfBirth && moment(person.dateOfBirth.date).format('DD-MM-Y') }
-                />
+                <div  onClick={props.switchToEdit}>
+                    <ViewText
+                        label={"Geboortedatum"}
+                        value={ person.dateOfBirth && moment(person.dateOfBirth.date).format('DD-MM-Y') }
+                    />
+                </div>
             </div>
-            <div className="row">
+            <div className="row" onClick={props.switchToEdit}>
+                { person.account ?
+                    <ViewText
+                        label="Functie"
+                        value={ person.occupation && person.occupation.name }
+                    />
+                    :
+                    <div className="col-sm-6"/>
+                }
                 <ViewText
                     label="Nieuwsbrief"
                     value={ (newsletter ? 'Ja' : 'Nee') }

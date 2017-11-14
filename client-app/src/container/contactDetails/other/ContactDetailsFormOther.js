@@ -1,4 +1,5 @@
 import React, { Component} from 'react';
+import {connect} from 'react-redux';
 
 import ContactDetailsFormOtherEdit from './ContactDetailsFormOtherEdit';
 import ContactDetailsFormOtherView from './ContactDetailsFormOtherView';
@@ -53,7 +54,7 @@ class ContactDetailsFormOther extends Component {
                             this.state.showEdit ?
                                 <ContactDetailsFormOtherEdit switchToView={this.switchToView} />
                                 :
-                                <ContactDetailsFormOtherView switchToEdit={this.switchToEdit}/>
+                               <ContactDetailsFormOtherView switchToEdit={this.switchToEdit}/>
                         }
                     </div>
                 </PanelBody>
@@ -62,4 +63,10 @@ class ContactDetailsFormOther extends Component {
     }
 };
 
-export default ContactDetailsFormOther;
+const mapStateToProps = (state) => {
+    return {
+        typeId: state.contactDetails.typeId,
+    };
+};
+
+export default connect(mapStateToProps, null)(ContactDetailsFormOther);

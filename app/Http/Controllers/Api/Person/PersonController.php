@@ -16,6 +16,7 @@ use App\Eco\User\User;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\Controllers\Api\Contact\ContactController;
 use App\Http\Resources\Contact\FullContact;
+use App\Http\Resources\Person\PersonPeek;
 use App\Rules\EnumExists;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -48,6 +49,8 @@ class PersonController extends ApiController
             'firstNamePartner' => '',
             'lastNamePartner' => '',
             'dateOfBirthPartner' => 'date',
+            'primary' => 'boolean',
+            'occupationId' => 'exists:occupations,id',
         ]);
 
         $contactData = $this->sanitizeData($contactData, [
@@ -67,6 +70,8 @@ class PersonController extends ApiController
             'typeId' => 'nullable',
             'dateOfBirth' => 'nullable',
             'dateOfBirthPartner' => 'nullable',
+            'primary' => 'boolean',
+            'occupationId' => 'nullable',
         ]);
         $person = new Person($this->arrayKeysToSnakeCase($personData));
 
@@ -106,6 +111,8 @@ class PersonController extends ApiController
             'firstNamePartner' => '',
             'lastNamePartner' => '',
             'dateOfBirthPartner' => 'date',
+            'primary' => 'boolean',
+            'occupationId' => 'exists:occupations,id',
         ]);
 
         $contact = $person->contact;
@@ -128,6 +135,8 @@ class PersonController extends ApiController
             'typeId' => 'nullable',
             'dateOfBirth' => 'nullable',
             'dateOfBirthPartner' => 'nullable',
+            'primary' => 'boolean',
+            'occupationId' => 'nullable',
         ]);
         $person->fill($this->arrayKeysToSnakeCase($personData));
         $person->save();
@@ -135,5 +144,12 @@ class PersonController extends ApiController
         // Contact exact zo teruggeven als bij het openen van een bestaand contact
         // Dus kan hier gebruik maken van bestaande controller
         return (new ContactController())->show($contact->fresh(), $request);
+    }
+
+    public function peekNoAccount()
+    {
+        $people = Person::whereNull('account_id')->get();
+
+        return PersonPeek::collection($people);
     }
 }

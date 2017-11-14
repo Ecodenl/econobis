@@ -7,6 +7,7 @@ use App\Eco\LastNamePrefix\LastNamePrefix;
 use App\Eco\Title\Title;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Support\Facades\Hash;
 use Laracasts\Presenter\PresentableTrait;
 use Laravel\Passport\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
@@ -52,5 +53,18 @@ class User extends Authenticatable
     public function title()
     {
         return $this->belongsTo(Title::class);
+    }
+
+    /**
+     * Laravel passport checkt op deze functie voor het valideren van logingegevens
+     *
+     * @param $password
+     * @return bool
+     */
+    public function validateForPassportPasswordGrant($password)
+    {
+        if(!$this->active) return false;
+
+        return Hash::check($password, $this->getAuthPassword());
     }
 }

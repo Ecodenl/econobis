@@ -11,7 +11,7 @@ const NavHeader = (props) => {
         props.toggleSidebar();
     };
 
-    const userName = (props.userDetails ? props.userDetails.name : '');
+    const fullName = (props.meDetails ? props.meDetails.firstName + ' ' + props.meDetails.lastName: '');
     const heightLogo = '44px';
 
     return (
@@ -32,7 +32,7 @@ const NavHeader = (props) => {
                     <ul className="nav navbar-nav">
                         <li className="dropdown">
                             <a href="#" className="dropdown-toggle" data-toggle="dropdown" role="button">
-                                { userName } <span className="caret" />
+                                { fullName } <span className="caret" />
                             </a>
                             <ul className="dropdown-menu">
                                 <li><Link to="loguit">Uitloggen</Link></li>
@@ -50,7 +50,7 @@ const NavHeader = (props) => {
 
 function mapStateToProps(state) {
     return {
-        userDetails: state.userDetails,
+        meDetails: state.meDetails,
     };
 }
 

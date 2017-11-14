@@ -14,9 +14,14 @@ class SeedPersonTypes extends Migration
     public function up()
     {
         $types = [
-            'PersonType 1',
-            'PersonType 2',
-            'PersonType 3',
+            'Particulier',
+            'Adviseur',
+            'Eigenaar bedrijf',
+            'ZZP\'er',
+            'Journalist',
+            'Wethouder',
+            'Kunstenaar',
+            'Collega cooperatie',
         ];
 
         foreach ($types as $type) {

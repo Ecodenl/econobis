@@ -9,9 +9,11 @@ use App\Eco\EmailAddress\EmailAddressType;
 use App\Eco\LastNamePrefix\LastNamePrefix;
 use App\Eco\PersonType\PersonType;
 use App\Eco\PhoneNumber\PhoneNumberType;
+use App\Eco\Title\Title;
 use App\Http\Resources\EnumWithIdAndName\FullEnumWithIdAndName;
 use App\Http\Resources\LastNamePrefix\FullLastNamePrefix;
 use App\Http\Resources\PersonType\FullPersonType;
+use App\Http\Resources\Title\FullTitle;
 use Illuminate\Http\Resources\Json\Resource;
 
 class SystemData extends Resource
@@ -32,6 +34,7 @@ class SystemData extends Resource
             'phoneNumberTypes' => FullEnumWithIdAndName::collection(PhoneNumberType::collection()),
             'personTypes' => FullPersonType::collection(PersonType::all()),
             'contactStatuses' => FullEnumWithIdAndName::collection(ContactStatus::collection()),
+            'titles' => FullTitle::collection(Title::all()),
         ];
     }
 }

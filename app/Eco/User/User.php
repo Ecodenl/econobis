@@ -4,6 +4,7 @@ namespace App\Eco\User;
 
 use App\Cooperation;
 use App\Eco\LastNamePrefix\LastNamePrefix;
+use App\Eco\Title\Title;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Laracasts\Presenter\PresentableTrait;
@@ -35,7 +36,8 @@ class User extends Authenticatable
     ];
 
     protected $casts = [
-        'visit_count',
+        'visit_count' => 'integer',
+        'active' => 'boolean',
     ];
 
     protected $dates = [
@@ -45,5 +47,10 @@ class User extends Authenticatable
     public function lastNamePrefix()
     {
         return $this->belongsTo(LastNamePrefix::class);
+    }
+
+    public function title()
+    {
+        return $this->belongsTo(Title::class);
     }
 }

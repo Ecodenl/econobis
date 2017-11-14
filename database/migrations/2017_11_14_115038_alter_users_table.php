@@ -15,6 +15,9 @@ class AlterUsersTable extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
+            $table->integer('title_id')->unsigned()->nullable()->default(null);
+            $table->foreign('title_id')->references('id')->on('titles') ->onDelete('restrict');
+
             $table->string('first_name')->default('');
             $table->integer('last_name_prefix_id')->unsigned()->nullable()->default(null);
             $table->foreign('last_name_prefix_id')->references('id')->on('last_name_prefixes') ->onDelete('restrict');
@@ -26,6 +29,8 @@ class AlterUsersTable extends Migration
 
             $table->dateTime('last_visit')->nullable()->default(null);
             $table->integer('visit_count')->default(0);
+
+            $table->boolean('active')->default(1);
 
             $table->dropColumn('name');
         });

@@ -22,6 +22,7 @@ class FullUser extends Resource
             'firstName' => $this->first_name,
             'titleId' => $this->title_id,
             'title' => FullTitle::make($this->whenLoaded('title')),
+            'fullName' => $this->present()->fullName(),
             'lastNamePrefixId' => $this->last_name_prefix_id,
             'lastNamePrefix' => FullLastNamePrefix::make($this->whenLoaded('lastNamePrefix')),
             'lastName' => $this->last_name,

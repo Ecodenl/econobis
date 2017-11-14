@@ -82,6 +82,9 @@ const SidebarMenu = props => {
                 <Nav id="instellinge">
                     <NavIcon><SvgIcon size={20} icon={cog} /></NavIcon>
                     <NavText> Instellingen </NavText>
+                    <Nav id="users">
+                        <NavText><Link className="sidebar-link" to="gebruikers">Gebruikers</Link></NavText>
+                    </Nav>
                 </Nav>
             </SideNav>
         </div>

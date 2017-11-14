@@ -5,6 +5,11 @@ export default function (state= {}, action) {
                 ...state,
                 ...action.userDetails,
             };
+        case 'UPDATE_USER':
+            return {
+                ...state,
+                ...action.userDetails,
+            };
         default:
             return state;
     }

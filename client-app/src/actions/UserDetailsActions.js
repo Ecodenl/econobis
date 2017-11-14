@@ -1,6 +1,20 @@
-export const fetchUserDetails = (userDetails) => {
+export const fetchUserDetails = (payload) => {
     return {
         type: 'FETCH_USER_DETAILS',
-        userDetails,
+        payload
     }
+};
+
+export const updateUser = (userDetails) => {
+    return {
+        type: 'UPDATE_USER',
+        userDetails,
+    };
+};
+
+export const deleteUser = (id) => {
+    return  {
+        type: 'DELETE_USER',
+        id,
+    };
 };

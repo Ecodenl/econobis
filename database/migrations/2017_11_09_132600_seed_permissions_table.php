@@ -28,7 +28,8 @@ class SeedPermissionsTable extends Migration
 
         foreach ($permissions as $permission) {
             DB::table('permissions')->insert([
-                    ['name' => $permission],
+                    'name' => $permission,
+                    'guard_name' => 'api',
                 ]
             );
         }

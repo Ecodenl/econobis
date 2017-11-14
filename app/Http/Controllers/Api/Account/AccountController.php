@@ -53,6 +53,7 @@ class AccountController extends ApiController
         $accountData = $this->sanitizeData($accountData, [
             'typeId' => 'nullable',
             'industryId' => 'nullable',
+            'squareMeters' => 'integer',
         ]);
         $account = new Account($this->arrayKeysToSnakeCase($accountData));
 
@@ -107,6 +108,7 @@ class AccountController extends ApiController
         $accountData = $this->sanitizeData($accountData, [
             'typeId' => 'nullable',
             'industryId' => 'nullable',
+            'squareMeters' => 'integer',
         ]);
         $account->fill($this->arrayKeysToSnakeCase($accountData));
         $account->save();

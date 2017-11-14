@@ -41,6 +41,11 @@ class ApiController extends Controller
                             $array[$key] = false;
                         }
                         break;
+                    case 'integer':
+                        if(empty($value)){
+                            $array[$key] = 0;
+                        }
+                        break;
                 }
             }
         }

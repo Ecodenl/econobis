@@ -15,6 +15,15 @@ use App\Eco\Contact\ContactType;
 class PersonObserver
 {
 
+
+    public function creating(Person $person)
+    {
+        // Als dit het eerste persoon voor deze account is wordt deze altijd primary
+        if($person->account && !$person->account->people()->exists()){
+            $person->primary = true;
+        }
+    }
+
     public function saved(Person $person)
     {
         if($person->isDirty('contact_id')){
@@ -34,12 +43,25 @@ class PersonObserver
             $contact->full_name = $this->contactFullNameFormat($person);
             $contact->save();
         }
+
+        if($person->isDirty('primary') && $person->primary == true){
+            // Als er een oud primary person is dan deze niet meer primary maken
+            if($person->account){
+                $oldPrimaryPerson = $person->account->people()
+                    ->where('primary', true)
+                    ->where('id', '<>', $person->id)
+                    ->first();
+
+                if($oldPrimaryPerson){
+                    $oldPrimaryPerson->primary = false;
+                    $oldPrimaryPerson->save();
+                }
+            }
+        }
     }
 
     private function contactFullNameFormat(Person $person)
     {
-        if(empty($person->last_name)) return $person->first_name;
-        if(empty($person->first_name)) return $person->last_name;
-        return $person->last_name . ', ' . $person->first_name . ($person->lastNamePrefix ? ' ' . $person->lastNamePrefix->name : '');
+        return $person->present()->fullName();
     }
 }

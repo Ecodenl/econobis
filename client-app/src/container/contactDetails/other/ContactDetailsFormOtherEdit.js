@@ -9,7 +9,7 @@ import InputCheckbox from '../../../components/form/InputCheckbox';
 import InputDate from '../../../components/form/InputDate';
 import ButtonText from '../../../components/button/ButtonText';
 
-class ContactDetailsFormOtherEdit extends Component {
+class ContactDetailsFormOtherPersonEdit extends Component {
     constructor(props) {
         super(props);
 
@@ -127,4 +127,4 @@ const mapStateToProps = (state) => {
     };
 };
 
-export default connect(mapStateToProps)(ContactDetailsFormOtherEdit);
+export default connect(mapStateToProps)(ContactDetailsFormOtherPersonEdit);

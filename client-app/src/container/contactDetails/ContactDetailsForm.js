@@ -7,6 +7,7 @@ import ContactDetailsFormGeneral from './general/ContactDetailsFormGeneral';
 import ContactDetailsFormAddress from './address/ContactDetailsFormAddress';
 import ContactDetailsFormPhone from './phone/ContactDetailsFormPhone';
 import ContactDetailsFormEmail from './email/ContactDetailsFormEmail';
+import ContactDetailsFormPerson from './person/ContactDetailsFormPerson';
 import ContactDetailsFormEnergy from './energy/ContactDetailsFormEnergy';
 import ContactDetailsFormOther from './other/ContactDetailsFormOther';
 import ContactDetailsFormNote from './note/ContactDetailsFormNote';
@@ -21,6 +22,12 @@ class ContactDetailsForm extends Component {
         this.props.fetchContactDetails(this.props.id);
     };
 
+    componentWillReceiveProps(nextProps) {
+        if(this.props.id !== nextProps.id) {
+            this.props.fetchContactDetails(nextProps.id);
+        }
+    }
+
     render() {
         return (
             isEmpty(this.props.contactDetails) ?
@@ -28,11 +35,16 @@ class ContactDetailsForm extends Component {
                 :
                 <div>
                     <ContactDetailsFormGeneral />
+                    { this.props.contactDetails.typeId == 'account' &&
+                        <ContactDetailsFormPerson />
+                    }
                     <ContactDetailsFormAddress />
                     <ContactDetailsFormEmail />
                     <ContactDetailsFormPhone />
                     {/* <ContactDetailsFormEnergy /> */}
-                    <ContactDetailsFormOther />
+                    { this.props.contactDetails.typeId == 'person' &&
+                        <ContactDetailsFormOther />
+                    }
                     <ContactDetailsFormNote />
                     <ContactDetailsFormConclusion />
                 </div>

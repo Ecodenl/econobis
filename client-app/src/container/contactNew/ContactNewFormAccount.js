@@ -23,11 +23,14 @@ class ContactNewFormAccount extends Component {
                 name: '',
                 chamberOfCommerceNumber: '',
                 vatNumber: '',
-                industrieId: '',
+                industryId: '',
                 statusId: '',
                 memberSince: '',
                 memberUntil: '',
                 typeId: '',
+                website: '',
+                iban: '',
+                squareMeters: '',
                 newsletter: false,
             },
             errors: {
@@ -81,7 +84,7 @@ class ContactNewFormAccount extends Component {
             hasErrors = true;
         };
 
-        this.setState({ ...this.state,errors: errors })
+        this.setState({ ...this.state, errors: errors })
 
         !hasErrors &&
             AccountAPI.newAccount(account).then((payload) => {
@@ -90,7 +93,7 @@ class ContactNewFormAccount extends Component {
     };
 
     render() {
-        const { typeId, statusId, name, chamberOfCommerceNumber, vatNumber, industryId, memberSince, newsletter } = this.state.account;
+        const { typeId, statusId, name, chamberOfCommerceNumber, vatNumber, industryId, memberSince, newsletter, website, iban, squareMeters } = this.state.account;
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -98,8 +101,8 @@ class ContactNewFormAccount extends Component {
                     <InputText
                         label={"Klantnummer"}
                         name={"number"}
-                        readOnly={ true }
                         value={''}
+                        readOnly={ true }
                     />
                     <InputText
                         label={"Gemaakt op"}
@@ -111,7 +114,7 @@ class ContactNewFormAccount extends Component {
 
                 <div className="row">
                     <InputText
-                        label="Organisatie"
+                        label="Naam"
                         name={"name"}
                         value={name}
                         onChangeAction={this.handleInputChange}
@@ -162,11 +165,26 @@ class ContactNewFormAccount extends Component {
                 </div>
 
                 <div className="row">
+                    <InputText
+                        label="Iban"
+                        name="iban"
+                        value={iban}
+                        onChangeAction={this.handleInputChange}
+                    />
+                    <InputText
+                        label={"Website"}
+                        name={"website"}
+                        value={website}
+                        onChangeAction={this.handleInputChange}
+                    />
+                </div>
+
+                <div className="row">
                     <InputSelect
                         label={"Industrie"}
                         size={"col-sm-6"}
                         name={"industryId"}
-                        options={this.props.personTypes}
+                        options={this.props.industries}
                         value={industryId}
                         onChangeAction={this.handleInputChange}
                         readOnly={true}
@@ -175,7 +193,7 @@ class ContactNewFormAccount extends Component {
                         label={"Soort contact"}
                         size={"col-sm-6"}
                         name={"typeId"}
-                        options={this.props.personTypes}
+                        options={this.props.accountTypes}
                         value={typeId}
                         onChangeAction={this.handleInputChange}
                         readOnly={true}
@@ -187,6 +205,12 @@ class ContactNewFormAccount extends Component {
                         label={"Nieuwsbrief"}
                         name={"newsletter"}
                         checked={newsletter}
+                        onChangeAction={this.handleInputChange}
+                    />
+                    <InputText
+                        label="Oppervlakte"
+                        name="squareMeters"
+                        value={squareMeters}
                         onChangeAction={this.handleInputChange}
                     />
                 </div>
@@ -204,8 +228,9 @@ class ContactNewFormAccount extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        personTypes: state.systemData.personTypes,
+        accountTypes: state.systemData.accountTypes,
         contactStatuses: state.systemData.contactStatuses,
+        industries: state.systemData.industries,
     };
 };
 

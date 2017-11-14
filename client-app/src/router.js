@@ -15,13 +15,14 @@ import OppertunitiesApp from './container/opportunities/OppertunitiesApp';
 
 const Routes = () => {
     return (
-        <Router history={ hashHistory }>
+        <Router onUpdate={() => window.scrollTo(0, 0)} history={ hashHistory }>
             <Route path="login" component={ Login } />
             <Route path="loguit" component={ Logout } />
             <Route path="/" component={ RequireAuth(Main) }>
                 <IndexRoute component={ DashboardApp } />
                 <Route path="contacten/:filter/:value" component={ ContactsListApp } />
                 <Route path="contacten" component={ ContactsListApp } />
+                <Route path="contact/nieuw/:type/bedrijf/:id" component={ ContactNewApp } />
                 <Route path="contact/nieuw/:type" component={ ContactNewApp } />
                 <Route path="contact/:id" component={ ContactDetailsApp } />
                 <Route path="taak/:id" component={TasksApp} />

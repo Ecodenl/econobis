@@ -50,12 +50,12 @@ class ContactDetailsFormGeneral extends Component {
                     <div className="col-md-12">
                         {
                             this.state.showEdit ?
-                                this.props.contactDetails.type === 'account' ?
+                                this.props.contactDetails.typeId === 'account' ?
                                     <ContactDetailsFormAccountEdit switchToView={this.switchToView} />
                                     :
                                     <ContactDetailsFormPersonalEdit switchToView={this.switchToView} />
                                 :
-                                this.props.contactDetails.type === 'account' ?
+                                this.props.contactDetails.typeId === 'account' ?
                                     <ContactDetailsFormAccountView switchToEdit={this.switchToEdit}/>
                                     :
                                     <ContactDetailsFormPersonalView switchToEdit={this.switchToEdit}/>

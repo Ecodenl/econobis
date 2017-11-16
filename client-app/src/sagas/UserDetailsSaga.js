@@ -1,9 +1,9 @@
 import { put, call } from 'redux-saga/effects';
 import UserAPI from '../api/UserAPI';
 
-export function* userDetailsSaga() {
+export function* fetchUserDetailsSaga({ payload }) {
     try {
-        const userDetails = yield call(UserAPI.fetchUserDetails, null);
+        const userDetails = yield call(UserAPI.fetchUserDetails, payload);
         yield [
             put({ type: 'FETCH_USER_DETAILS_SUCCESS', userDetails }),
         ];

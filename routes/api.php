@@ -18,17 +18,18 @@ Route::namespace('Api')
     ->middleware('auth:api')
     ->group(function () {
 
-        Route::get('/me', function (Request $request) {
-            return $request->user();
-        });
+        Route::get('/me', 'User\UserController@me');
 
-        Route::get('/system-data', function (Request $request){
-            return \App\Http\Resources\SystemData\SystemData::make($request);
-        });
+        Route::get('/system-data', 'SystemData\SystemDataController@get');
 
         Route::get('/contact/grid', 'Contact\GridController@index');
         Route::get('/contact/{contact}', 'Contact\ContactController@show');
         Route::post('/contact/{contact}/delete', 'Contact\ContactController@destroy');
+
+        Route::get('/user/grid', 'User\GridController@index');
+        Route::post('/user', 'User\UserController@store');
+        Route::get('/user/{user}', 'User\UserController@show');
+        Route::post('/user/{user}', 'User\UserController@update');
 
         Route::post('/address', 'Address\AddressController@store');
         Route::post('/address/{address}', 'Address\AddressController@update');

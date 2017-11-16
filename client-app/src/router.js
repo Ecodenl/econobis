@@ -12,6 +12,9 @@ import ContactNewApp from './container/contactNew/ContactNewApp';
 import TasksApp from './container/tasks/TasksApp';
 import SignupsApp from './container/signups/SignupsApp';
 import OppertunitiesApp from './container/opportunities/OppertunitiesApp';
+import UsersListApp from './container/users/list/UsersListApp';
+import UserNewApp from './container/users/new/UserNewApp';
+import UserDetailsApp from './container/users/details/UserDetailsApp';
 
 const Routes = () => {
     return (
@@ -28,6 +31,9 @@ const Routes = () => {
                 <Route path="taak/:id" component={TasksApp} />
                 <Route path="aanmelding/:id" component={SignupsApp} />
                 <Route path="kans/:id" component={OppertunitiesApp} />
+                <Route path="gebruikers" component={UsersListApp} />
+                <Route path="gebruiker/nieuw" component={UserNewApp} />
+                <Route path="gebruiker/:id" component={UserDetailsApp} />
             </Route>
         </Router>
     );

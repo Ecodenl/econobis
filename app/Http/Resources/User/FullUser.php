@@ -9,6 +9,8 @@
 namespace App\Http\Resources\User;
 
 
+use App\Http\Resources\LastNamePrefix\FullLastNamePrefix;
+use App\Http\Resources\Title\FullTitle;
 use Illuminate\Http\Resources\Json\Resource;
 
 class FullUser extends Resource
@@ -17,8 +19,20 @@ class FullUser extends Resource
     {
         return [
             'id' => $this->id,
-            'name' => $this->name,
+            'firstName' => $this->first_name,
+            'titleId' => $this->title_id,
+            'title' => FullTitle::make($this->whenLoaded('title')),
+            'fullName' => $this->present()->fullName(),
+            'lastNamePrefixId' => $this->last_name_prefix_id,
+            'lastNamePrefix' => FullLastNamePrefix::make($this->whenLoaded('lastNamePrefix')),
+            'lastName' => $this->last_name,
             'email' => $this->email,
+            'phoneNumber' => $this->phone_number,
+            'mobile' => $this->mobile,
+            'occupation' => $this->occupation,
+            'lastVisit' => $this->last_visit,
+            'visitCount' => $this->visit_count,
+            'active' => $this->active,
             'createdAt' => $this->created_at,
             'updatedAt' => $this->updated_at,
         ];

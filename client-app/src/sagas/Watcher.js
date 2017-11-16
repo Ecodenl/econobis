@@ -1,12 +1,16 @@
 import { takeLatest } from 'redux-saga/effects';
-import { userDetailsSaga } from './UserDetailsSaga';
+import { meDetailsSaga } from './MeDetailsSaga';
 import { systemDataSaga } from './SystemDataSaga';
 import { fetchContactsSaga, deleteContactSaga } from './ContactsSaga';
 import { fetchContactDetailsSaga, deleteAddressSaga, deletePhoneNumberSaga, deleteEmailAddressSaga, deleteContactNoteSaga } from './ContactDetailsSaga';
+import { fetchUserSaga } from './UsersSaga';
+import { fetchUserDetailsSaga } from './UserDetailsSaga';
 
 export default function* watchSagas() {
     yield takeLatest('FETCH_SYSTEM_DATA', systemDataSaga);
-    yield takeLatest('FETCH_USER_DETAILS', userDetailsSaga);
+    yield takeLatest('FETCH_ME_DETAILS', meDetailsSaga);
+    yield takeLatest('FETCH_USERS', fetchUserSaga);
+    yield takeLatest('FETCH_USER_DETAILS', fetchUserDetailsSaga);
     yield takeLatest('FETCH_CONTACTS', fetchContactsSaga);
     yield takeLatest('DELETE_CONTACT', deleteContactSaga);
     yield takeLatest('FETCH_CONTACT_DETAILS', fetchContactDetailsSaga);

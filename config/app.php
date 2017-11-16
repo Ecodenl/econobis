@@ -235,9 +235,11 @@ return [
 
     'admin_user' => [
 
-        'name' => env('ADMIN_USER_NAME', 'admin'),
-        'email' => env('ADMIN_USER_EMAIL', 'info@xaris.nl'),
-        'password' => env('ADMIN_USER_PASSWORD', 'secret'),
+        'first_name' => env('ADMIN_USER_FIRST_NAME'),
+        'last_name_prefix_id' => env('ADMIN_USER_LAST_NAME_PREFIX_ID'),
+        'last_name' => env('ADMIN_USER_LAST_NAME'),
+        'email' => env('ADMIN_USER_EMAIL'),
+        'password' => env('ADMIN_USER_PASSWORD'),
 
     ]
 

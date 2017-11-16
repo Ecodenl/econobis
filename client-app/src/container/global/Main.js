@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
 import { toggleSidebarClose, toggleSidebarOpen } from '../../actions/SidebarActions';
-import { fetchUserDetails } from '../../actions/UserDetailsActions';
+import { fetchMeDetails } from '../../actions/MeDetailsActions';
 import { fetchSystemData } from '../../actions/SystemDataActions';
 import NavHeader from '../../components/navigationHeader/NavHeader';
 import Sidebar from '../../components/navigationSidebar/Sidebar';
@@ -17,7 +17,7 @@ class Main extends Component {
         const token = localStorage.getItem('access_token');
 
         if(this.props.authenticated && token) {
-            props.fetchUserDetails();
+            props.fetchMeDetails();
         }
     };
 
@@ -68,7 +68,7 @@ function mapStateToProps(state) {
 }
 
 const mapDispatchToProps = (dispatch) => {
-    return bindActionCreators({ fetchUserDetails, fetchSystemData, toggleSidebarClose, toggleSidebarOpen }, dispatch);
+    return bindActionCreators({ fetchMeDetails, fetchSystemData, toggleSidebarClose, toggleSidebarOpen }, dispatch);
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Main);

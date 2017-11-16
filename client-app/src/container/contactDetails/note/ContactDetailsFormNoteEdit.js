@@ -1,5 +1,4 @@
 import React from 'react';
-import { connect } from 'react-redux';
 
 import ButtonText from '../../../components/button/ButtonText';
 import Panel from '../../../components/panel/Panel';
@@ -17,7 +16,7 @@ const  ContactDetailsFormNoteEdit = props => {
                     </div>
 
                     <div className="pull-right btn-group extra-space-above" role="group">
-                        <ButtonText buttonClassName={"btn-default"} buttonText={"Sluiten"} onClickAction={props.closeEdit}/>
+                        <ButtonText buttonClassName={"btn-default"} buttonText={"Annuleren"} onClickAction={props.cancelEdit}/>
                         <ButtonText buttonText={"Opslaan"} onClickAction={props.handleSubmit} type={"submit"} value={"Submit"}/>
                     </div>
                 </PanelBody>
@@ -26,10 +25,4 @@ const  ContactDetailsFormNoteEdit = props => {
     );
 };
 
-const mapStateToProps = (state) => {
-    return {
-        emailAddressTypes: state.systemData.emailAddressTypes
-    };
-};
-
-export default connect(mapStateToProps, null)(ContactDetailsFormNoteEdit);
+export default ContactDetailsFormNoteEdit;

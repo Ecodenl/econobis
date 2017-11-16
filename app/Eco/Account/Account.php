@@ -4,6 +4,7 @@ namespace App\Eco\Account;
 
 use App\Eco\AccountType\AccountType;
 use App\Eco\Contact\Contact;
+use App\Eco\Industry\Industry;
 use App\Eco\Person\Person;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -12,6 +13,8 @@ use Venturecraft\Revisionable\RevisionableTrait;
 class Account extends Model
 {
     use RevisionableTrait, SoftDeletes;
+
+    protected $guarded = ['id'];
 
     public function contact()
     {
@@ -26,5 +29,10 @@ class Account extends Model
     public function people()
     {
         return $this->hasMany(Person::class);
+    }
+
+    public function industry()
+    {
+        return $this->belongsTo(Industry::class);
     }
 }

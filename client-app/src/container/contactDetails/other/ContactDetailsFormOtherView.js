@@ -4,7 +4,7 @@ import moment from 'moment';
 
 import ViewText from '../../../components/form/ViewText';
 
-const ContactDetailsFormOtherView = props => {
+const ContactDetailsFormOtherPersonView = props => {
     const { firstNamePartner, lastNamePartner, dateOfBirthPartner } = props.contactDetails.person;
     const { iban, liable, liabilityAmount } = props.contactDetails;
 
@@ -16,8 +16,20 @@ const ContactDetailsFormOtherView = props => {
                     value={firstNamePartner}
                 />
                 <ViewText
+                    label="IBAN"
+                    value={iban}
+                />
+
+            </div>
+
+            <div className="row">
+                <ViewText
                     label={"Achternaam partner"}
                     value={lastNamePartner}
+                />
+                <ViewText
+                    label={"Aansprakelijkheid"}
+                    value={liable ? 'Ja' : 'Nee'}
                 />
             </div>
 
@@ -26,22 +38,10 @@ const ContactDetailsFormOtherView = props => {
                     label="Geboortedatum partner"
                     value={dateOfBirthPartner && moment(dateOfBirthPartner).format('DD-MM-Y')}
                 />
-
-                <ViewText
-                    label="IBAN"
-                    value={iban}
-                />
-            </div>
-
-            <div className="row">
-                <ViewText
-                    label={"Aansprakelijkheid"}
-                    value={liable ? 'Ja' : 'Nee'}
-                />
                 <div className="row">
                     <ViewText
                         label="Aansprakelijkheidsbedrag"
-                        value={liabilityAmount}
+                        value={'€ ' + liabilityAmount.toLocaleString(undefined, {minimumFractionDigits: 2})}
                     />
                 </div>
             </div>
@@ -55,4 +55,4 @@ const mapStateToProps = (state) => {
     };
 };
 
-export default connect(mapStateToProps)(ContactDetailsFormOtherView);
+export default connect(mapStateToProps)(ContactDetailsFormOtherPersonView);

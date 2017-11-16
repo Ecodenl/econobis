@@ -45,6 +45,10 @@ Route::namespace('Api')
 
         Route::post('/person', 'Person\PersonController@store');
         Route::post('/person/{person}', 'Person\PersonController@update');
+        Route::get('/person/peek/no-account', 'Person\PersonController@peekNoAccount');
+
+        Route::post('/account', 'Account\AccountController@store');
+        Route::post('/account/{account}', 'Account\AccountController@update');
 
         Route::post('/contact-note', 'ContactNote\ContactNoteController@store');
         Route::post('/contact-note/{contactNote}', 'ContactNote\ContactNoteController@update');

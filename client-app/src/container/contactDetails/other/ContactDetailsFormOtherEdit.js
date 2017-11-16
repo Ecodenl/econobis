@@ -9,7 +9,7 @@ import InputCheckbox from '../../../components/form/InputCheckbox';
 import InputDate from '../../../components/form/InputDate';
 import ButtonText from '../../../components/button/ButtonText';
 
-class ContactDetailsFormOtherEdit extends Component {
+class ContactDetailsFormOtherPersonEdit extends Component {
     constructor(props) {
         super(props);
 
@@ -72,9 +72,24 @@ class ContactDetailsFormOtherEdit extends Component {
                         onChangeAction={this.handleInputChange}
                     />
                     <InputText
+                        label={"IBAN"}
+                        name={"iban"}
+                        value={iban}
+                        onChangeAction={this.handleInputChange}
+                    />
+                </div>
+
+                <div className="row">
+                    <InputText
                         label="Achternaam partner"
                         name={"lastNamePartner"}
                         value={lastNamePartner}
+                        onChangeAction={this.handleInputChange}
+                    />
+                    <InputCheckbox
+                        label={"Aansprakelijkheid"}
+                        name={"liable"}
+                        checked={liable}
                         onChangeAction={this.handleInputChange}
                     />
                 </div>
@@ -87,21 +102,7 @@ class ContactDetailsFormOtherEdit extends Component {
                         onChangeAction={this.handleChangeDateOfBirthPartner}
                     />
                     <InputText
-                        label={"IBAN"}
-                        name={"iban"}
-                        value={iban}
-                        onChangeAction={this.handleInputChange}
-                    />
-                </div>
-
-                <div className="row">
-                    <InputCheckbox
-                        label={"Aansprakelijkheid"}
-                        name={"liable"}
-                        checked={liable}
-                        onChangeAction={this.handleInputChange}
-                    />
-                    <InputText
+                        type={"number"}
                         label={"Aansprakelijkheidsbedrag"}
                         name={"liabilityAmount"}
                         value={liabilityAmount}
@@ -111,7 +112,7 @@ class ContactDetailsFormOtherEdit extends Component {
 
                 <div className="panel-footer">
                     <div className="pull-right btn-group" role="group">
-                        <ButtonText buttonClassName={"btn-default"} buttonText={"Sluiten"} onClickAction={this.props.switchToView}/>
+                        <ButtonText buttonClassName={"btn-default"} buttonText={"Annuleren"} onClickAction={this.props.switchToView}/>
                         <ButtonText buttonText={"Opslaan"} onClickAction={this.handleSubmit}/>
                     </div>
                 </div>
@@ -126,4 +127,4 @@ const mapStateToProps = (state) => {
     };
 };
 
-export default connect(mapStateToProps)(ContactDetailsFormOtherEdit);
+export default connect(mapStateToProps)(ContactDetailsFormOtherPersonEdit);

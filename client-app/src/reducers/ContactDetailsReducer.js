@@ -14,10 +14,7 @@ export default function (state = {}, action) {
         case 'UPDATE_ACCOUNT':
             return {
                 ...state,
-                id: action.contactDetails.id,
-                account: {
-                    name: action.contactDetails.account.name,
-                },
+                ...action.contactDetails,
             };
         case 'NEW_ADDRESS':
             return {
@@ -127,6 +124,25 @@ export default function (state = {}, action) {
             return {
                 ...state,
                 notes: state.notes.filter(note => note.id !== action.id),
+            };
+        case 'MAKE_PRIMARY':
+            return {
+                ...state,
+                account: {
+                    ...state.account,
+                    people: state.account.people.map((person) =>
+                        person.id === action.id ?
+                            {
+                                ...person,
+                                primary: true,
+                            }
+                            :
+                            {
+                                ...person,
+                                primary: false,
+                            }
+                    )
+                }
             };
         default:
             return state;

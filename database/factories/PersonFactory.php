@@ -33,5 +33,9 @@ $factory->define(\App\Eco\Person\Person::class, function (Faker\Generator $faker
             if (random_int(0, 10) < 5) return null;
             return $faker->date();
         },
+        'occupation_id' => function () {
+            if (random_int(0, 10) < 5) return null;
+            return \App\Eco\Occupation\Occupation::inRandomOrder()->first()->id;
+        },
     ];
 });

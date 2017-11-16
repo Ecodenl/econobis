@@ -4,10 +4,17 @@ import ContactNewFormGeneral from './ContactNewFormGeneral';
 import Panel from '../../components/panel/Panel';
 import PanelHeader from '../../components/panel/PanelHeader';
 
-const ContactNewForm = () => {
+const ContactNewForm = props => {
     return (
         <div>
-            <ContactNewFormGeneral />
+            <ContactNewFormGeneral type={props.type} accountId={props.accountId}/>
+            {props.type === 'bedrijf' &&
+                <Panel>
+                    <PanelHeader>
+                        <span className="h5 text-bold">Contacten</span>
+                    </PanelHeader>
+                </Panel>
+            }
             <Panel>
                 <PanelHeader>
                     <span className="h5 text-bold">Adres gegevens</span>
@@ -15,12 +22,12 @@ const ContactNewForm = () => {
             </Panel>
             <Panel>
                 <PanelHeader>
-                    <span className="h5 text-bold">Telefoon gegevens</span>
+                    <span className="h5 text-bold">Email gegevens</span>
                 </PanelHeader>
             </Panel>
             <Panel>
                 <PanelHeader>
-                    <span className="h5 text-bold">Email gegevens</span>
+                    <span className="h5 text-bold">Telefoon gegevens</span>
                 </PanelHeader>
             </Panel>
             <Panel>

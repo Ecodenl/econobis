@@ -242,4 +242,5 @@ return [
         'password' => env('ADMIN_USER_PASSWORD'),
 
     ]
+
 ];

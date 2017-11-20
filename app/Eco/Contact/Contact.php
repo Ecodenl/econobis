@@ -6,6 +6,7 @@ use App\Eco\Account\Account;
 use App\Eco\Address\Address;
 use App\Eco\ContactNote\ContactNote;
 use App\Eco\EmailAddress\EmailAddress;
+use App\Eco\Registration\Registration;
 use App\Eco\Person\Person;
 use App\Eco\PhoneNumber\PhoneNumber;
 use App\Eco\User\User;
@@ -79,6 +80,10 @@ class Contact extends Model
     public function owner()
     {
         return $this->belongsTo(User::class);
+    }
+
+    function registrations() {
+        return $this->hasMany(Registration::class, 'contact_id');
     }
 
     public function getStatus()

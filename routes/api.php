@@ -26,6 +26,10 @@ Route::namespace('Api')
         Route::get('/contact/{contact}', 'Contact\ContactController@show');
         Route::post('/contact/{contact}/delete', 'Contact\ContactController@destroy');
 
+        Route::get('/registrations', 'Registration\RegistrationController@show');
+        Route::get('/contact/{contact}/registrations', 'Registration\RegistrationController@showContactRegistrations');
+//        Route::post('/contact/{contact}/registration', 'Registration\RegistrationController@store');
+
         Route::get('/user/grid', 'User\GridController@index');
         Route::post('/user', 'User\UserController@store');
         Route::get('/user/{user}', 'User\UserController@show');

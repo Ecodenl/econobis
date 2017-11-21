@@ -19,7 +19,7 @@ class User extends Authenticatable
     protected $presenter = UserPresenter::class;
 
     /**
-     * The attributes that are mass assignable.
+     * The attributes that are not mass assignable.
      *
      * @var array
      */

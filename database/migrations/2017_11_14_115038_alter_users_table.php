@@ -35,13 +35,15 @@ class AlterUsersTable extends Migration
             $table->dropColumn('name');
         });
 
-        User::firstOrCreate(['id' => 1], [
+        $adminUser = User::firstOrCreate(['id' => 1], [
             'first_name' => config('app.admin_user.first_name'),
             'last_name_prefix_id' => config('app.admin_user.last_name_prefix_id') ?: null,
             'last_name' => config('app.admin_user.last_name'),
             'email' => config('app.admin_user.email'),
             'password' => bcrypt(config('app.admin_user.password')),
         ]);
+
+        $adminUser->assignRole(\Spatie\Permission\Models\Role::findByName('superuser'));
     }
 
     /**

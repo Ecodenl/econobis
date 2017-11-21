@@ -32,6 +32,8 @@ class AddressController extends ApiController
         ]);
         $address = new Address($this->arrayKeysToSnakeCase($data));
 
+        $this->authorize('store', $address);
+
         $address->save();
 
         return new FullAddress($address->fresh());

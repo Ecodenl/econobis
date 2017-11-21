@@ -11,13 +11,27 @@ namespace App\Eco\Person;
 
 use App\Eco\Contact\Contact;
 use App\Eco\Contact\ContactType;
+use App\Exceptions\UnauthorizedException;
+use Illuminate\Support\Facades\Auth;
 
 class PersonObserver
 {
 
+    public function updating(Person $person)
+    {
+        if(!Auth::user()->can('update', $person)) throw new UnauthorizedException('Unauthorized person modification');
+    }
+
+    public function deleting(Person $person)
+    {
+        if(!Auth::user()->can('delete', $person)) throw new UnauthorizedException('Unauthorized person deletion');
+    }
+
 
     public function creating(Person $person)
     {
+        if(!Auth::user()->can('create', $person)) throw new UnauthorizedException('Unauthorized person creation');
+
         // Als dit het eerste persoon voor deze account is wordt deze altijd primary
         if($person->account && !$person->account->people()->exists()){
             $person->primary = true;

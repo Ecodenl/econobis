@@ -22,13 +22,6 @@ class CreateUsersTable extends Migration
             $table->timestamps();
         });
 
-        DB::table('users')->insert([
-                'name' => config('app.admin_user.name'),
-                'email' => config('app.admin_user.email'),
-                'password' => bcrypt(config('app.admin_user.password')),
-            ]
-        );
-
     }
 
     /**

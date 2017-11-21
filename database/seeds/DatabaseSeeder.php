@@ -1,6 +1,8 @@
 <?php
 
+use App\Eco\User\User;
 use Illuminate\Database\Seeder;
+use Laravel\Passport\Passport;
 
 class DatabaseSeeder extends Seeder
 {
@@ -11,6 +13,8 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
+        Passport::actingAs(User::find(1));
+
         // Users
         $this->call(UsersSeeder::class);
 

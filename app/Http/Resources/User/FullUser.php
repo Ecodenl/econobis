@@ -12,6 +12,7 @@ namespace App\Http\Resources\User;
 use App\Http\Resources\LastNamePrefix\FullLastNamePrefix;
 use App\Http\Resources\Title\FullTitle;
 use Illuminate\Http\Resources\Json\Resource;
+use Spatie\Permission\Models\Permission;
 
 class FullUser extends Resource
 {
@@ -35,7 +36,17 @@ class FullUser extends Resource
             'active' => $this->active,
             'createdAt' => $this->created_at,
             'updatedAt' => $this->updated_at,
+            'permissions' => $this->getPermissions(),
         ];
+    }
+
+    private function getPermissions()
+    {
+        $result = [];
+        foreach(Permission::all() as $permission){
+            $result[$permission->name] = $this->hasPermissionTo($permission);
+        }
+        return $result;
     }
 
 }

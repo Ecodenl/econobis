@@ -2,6 +2,12 @@
 
 namespace App\Providers;
 
+use App\Eco\Account\Account;
+use App\Eco\Account\AccountPolicy;
+use App\Eco\Address\Address;
+use App\Eco\Address\AddressPolicy;
+use App\Eco\Person\Person;
+use App\Eco\Person\PersonPolicy;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Laravel\Passport\Passport;
@@ -14,7 +20,9 @@ class AuthServiceProvider extends ServiceProvider
      * @var array
      */
     protected $policies = [
-        'App\Model' => 'App\Policies\ModelPolicy',
+        Account::class => AccountPolicy::class,
+        Address::class => AddressPolicy::class,
+        Person::class => PersonPolicy::class,
     ];
 
     /**

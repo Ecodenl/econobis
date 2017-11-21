@@ -10,16 +10,17 @@ class AddressPolicy
 {
     use HandlesAuthorization;
 
+
     /**
      * Determine whether the user can view the address.
      *
      * @param  \App\Eco\User\User  $user
-     * @param  \App\Eco\Address\Address  $address
+     * @param  \App\Eco\Account\Account  $address
      * @return mixed
      */
     public function view(User $user, Address $address)
     {
-        return true;
+        return $user->can('view', $address->contact);
     }
 
     /**
@@ -28,10 +29,9 @@ class AddressPolicy
      * @param  \App\Eco\User\User  $user
      * @return mixed
      */
-    public function create(User $user, $address)
+    public function create(User $user, Address $address)
     {
-        if($address->contact->isPerson()) return $user->can('update', $address->contact->person);
-        else return $user->can('update', $address->contact->account);
+        return $user->can('update', $address->contact);
     }
 
     /**
@@ -43,8 +43,7 @@ class AddressPolicy
      */
     public function update(User $user, Address $address)
     {
-        if($address->contact->isPerson()) return $user->can('update', $address->contact->person);
-        else return $user->can('update', $address->contact->account);
+        return $user->can('update', $address->contact);
     }
 
     /**
@@ -56,7 +55,6 @@ class AddressPolicy
      */
     public function delete(User $user, Address $address)
     {
-        if($address->contact->isPerson()) return $user->can('update', $address->contact->person);
-        else return $user->can('update', $address->contact->account);
+        return $user->can('update', $address->contact);
     }
 }

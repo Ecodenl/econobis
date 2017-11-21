@@ -16,12 +16,6 @@ use Illuminate\Support\Facades\DB;
 class AccountController extends ApiController
 {
 
-    public function __construct()
-    {
-        $this->middleware('can:create,App\Eco\Account\Account', ['only' => 'store']);
-        $this->middleware('can:update,account', ['only' => 'update']);
-    }
-
     public function store(Request $request)
     {
 

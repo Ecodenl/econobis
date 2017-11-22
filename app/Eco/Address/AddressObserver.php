@@ -8,27 +8,11 @@
 
 namespace App\Eco\Address;
 
-
-use App\Exceptions\UnauthorizedException;
-use Illuminate\Support\Facades\Auth;
-
 class AddressObserver
 {
 
-    public function updating(Address $address)
-    {
-        if(!Auth::user()->can('update', $address)) throw new UnauthorizedException('Unauthorized address modification');
-    }
-
-    public function deleting(Address $address)
-    {
-        if(!Auth::user()->can('delete', $address)) throw new UnauthorizedException('Unauthorized address deletion');
-    }
-
     public function creating(Address $address)
     {
-        if(!Auth::user()->can('create', $address)) throw new UnauthorizedException('Unauthorized address creation');
-
         // Als dit het eerste adres voor deze contact is wordt deze altijd primary
         if(!$address->contact->addresses()->exists()){
             $address->primary = true;

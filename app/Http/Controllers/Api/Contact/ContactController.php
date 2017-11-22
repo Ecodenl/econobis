@@ -12,6 +12,8 @@ class ContactController extends Controller
 {
     public function show(Contact $contact, Request $request)
     {
+        $this->authorize('show', $contact);
+
         $contact->load('addresses');
         $contact->load('emailAddresses');
         $contact->load('phoneNumbers');
@@ -28,6 +30,8 @@ class ContactController extends Controller
 
     public function destroy(Contact $contact)
     {
+        $this->authorize('delete', $contact);
+
         SoftDeleteContact::dispatch($contact);
     }
 }

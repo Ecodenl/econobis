@@ -15,7 +15,6 @@ class AddressController extends ApiController
 
     public function store(Request $request)
     {
-
         $data = $request->validate([
             'contactId' => ['required', 'exists:contacts,id'],
             'typeId' => new EnumExists(AddressType::class),
@@ -32,7 +31,7 @@ class AddressController extends ApiController
         ]);
         $address = new Address($this->arrayKeysToSnakeCase($data));
 
-        $this->authorize('store', $address);
+        $this->authorize('create', $address);
 
         $address->save();
 
@@ -41,6 +40,8 @@ class AddressController extends ApiController
 
     public function update(Request $request, Address $address)
     {
+        $this->authorize('update', $address);
+
         $data = $request->validate([
             'contactId' => 'exists:contacts,id',
             'typeId' => new EnumExists(AddressType::class),
@@ -63,6 +64,8 @@ class AddressController extends ApiController
 
     public function destroy(Address $address)
     {
+        $this->authorize('delete', $address);
+
         $address->forceDelete();
     }
 }

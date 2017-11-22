@@ -8,31 +8,11 @@
 
 namespace App\Eco\Account;
 
-
 use App\Eco\Contact\Contact;
 use App\Eco\Contact\ContactType;
-use App\Eco\User\User;
-use App\Exceptions\UnauthorizedException;
-use Illuminate\Support\Facades\Auth;
-use Laravel\Passport\Passport;
 
 class AccountObserver
 {
-
-    public function creating(Account $account)
-    {
-        if(!Auth::user()->can('create', $account)) throw new UnauthorizedException('Unauthorized account creation');
-    }
-
-    public function updating(Account $account)
-    {
-        if(!Auth::user()->can('update', $account)) throw new UnauthorizedException('Unauthorized account modification');
-    }
-
-    public function deleting(Account $account)
-    {
-        if(!Auth::user()->can('delete', $account)) throw new UnauthorizedException('Unauthorized account deletion');
-    }
 
     public function saved(Account $account)
     {

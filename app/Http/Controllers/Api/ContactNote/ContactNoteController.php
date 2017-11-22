@@ -28,6 +28,8 @@ class ContactNoteController extends ApiController
 
         $contactNote = new ContactNote($this->arrayKeysToSnakeCase($data));
 
+        $this->authorize('create', $contactNote);
+
         $contactNote->save();
 
         return new FullContactNote($contactNote->fresh());
@@ -35,6 +37,8 @@ class ContactNoteController extends ApiController
 
     public function update(Request $request, ContactNote $contactNote)
     {
+        $this->authorize('update', $contactNote);
+
         $data = $request->validate([
             'contactId' => 'exists:contacts,id',
             'note' => '',
@@ -48,6 +52,8 @@ class ContactNoteController extends ApiController
 
     public function destroy(ContactNote $contactNote)
     {
+        $this->authorize('delete', $contactNote);
+
         $contactNote->forceDelete();
     }
 

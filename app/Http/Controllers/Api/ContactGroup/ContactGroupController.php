@@ -27,7 +27,7 @@ class ContactGroupController extends Controller
     {
         $data = $requestInput->string('name')->whenMissing('')->next()
             ->string('description')->whenMissing('')->next()
-            ->boolean('closed')->whenMissing(false)->next()
+            ->boolean('closed')->validate('boolean')->whenMissing(false)->next()
             ->integer('responsibleUserId')->default(null)->validate('exists:users,id')->alias('responsible_user_id')->next()
             ->date('dateStarted')->default(null)->validate('date')->alias('date_started')->next()
             ->date('dateFinished')->default(null)->validate('date')->alias('date_finished')->next()
@@ -35,5 +35,28 @@ class ContactGroupController extends Controller
 
         $contactGroup = new ContactGroup($data);
         $contactGroup->save();
+
+        return FullContactGroup::make($contactGroup->fresh());
+    }
+
+    public function update(RequestInput $requestInput, ContactGroup $contactGroup)
+    {
+        $data = $requestInput->string('name')->next()
+            ->string('description')->next()
+            ->boolean('closed')->validate('boolean')->next()
+            ->integer('responsibleUserId')->onEmpty(null)->validate('exists:users,id')->alias('responsible_user_id')->next()
+            ->date('dateStarted')->onEmpty(null)->validate('date')->alias('date_started')->next()
+            ->date('dateFinished')->onEmpty(null)->validate('date')->alias('date_finished')->next()
+            ->get();
+
+        $contactGroup->fill($data);
+        $contactGroup->save();
+
+        return FullContactGroup::make($contactGroup->fresh());
+    }
+
+    public function destroy(ContactGroup $contactGroup)
+    {
+        $contactGroup->delete();
     }
 }

@@ -59,5 +59,7 @@ Route::namespace('Api')
         Route::get('contact-group/grid', 'ContactGroup\ContactGroupController@grid');
         Route::get('contact-group/{contactGroup}', 'ContactGroup\ContactGroupController@show');
         Route::post('contact-group/', 'ContactGroup\ContactGroupController@store');
+        Route::post('contact-group/{contactGroup}', 'ContactGroup\ContactGroupController@update');
+        Route::post('contact-group/{contactGroup}/delete', 'ContactGroup\ContactGroupController@destroy');
     }
 );

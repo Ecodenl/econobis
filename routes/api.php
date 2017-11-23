@@ -61,5 +61,9 @@ Route::namespace('Api')
         Route::post('contact-group/', 'ContactGroup\ContactGroupController@store');
         Route::post('contact-group/{contactGroup}', 'ContactGroup\ContactGroupController@update');
         Route::post('contact-group/{contactGroup}/delete', 'ContactGroup\ContactGroupController@destroy');
+        Route::get('contact-group/{contactGroup}/contacts', 'ContactGroup\ContactGroupController@contacts');
+        Route::get('contact-group/{contactGroup}/contacts/add/{contact}', 'ContactGroup\ContactGroupController@addContact');
+        Route::get('contact-group/{contactGroup}/contacts/remove/{contact}', 'ContactGroup\ContactGroupController@removeContact');
+        Route::post('contact-group/{contactGroup}/contacts/add-many', 'ContactGroup\ContactGroupController@addContacts');
     }
 );

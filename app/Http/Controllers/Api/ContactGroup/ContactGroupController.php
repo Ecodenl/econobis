@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers\Api\ContactGroup;
 
+use App\Eco\Contact\Contact;
 use App\Eco\ContactGroup\ContactGroup;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\RequestQueries\ContactGroup\Grid\RequestQuery;
+use App\Http\Resources\Contact\FullContact;
 use App\Http\Resources\ContactGroup\FullContactGroup;
 use App\Http\Resources\ContactGroup\GridContactGroup;
 use Illuminate\Http\Request;
@@ -58,5 +60,27 @@ class ContactGroupController extends Controller
     public function destroy(ContactGroup $contactGroup)
     {
         $contactGroup->delete();
+    }
+
+    public function contacts(ContactGroup $contactGroup)
+    {
+        return FullContact::collection($contactGroup->contacts);
+    }
+
+    public function addContact(ContactGroup $contactGroup, Contact $contact)
+    {
+        $contactGroup->contacts()->attach($contact);
+    }
+
+    public function removeContact(ContactGroup $contactGroup, Contact $contact)
+    {
+        $contactGroup->contacts()->detach($contact);
+    }
+
+    public function addContacts(ContactGroup $contactGroup, Request $request)
+    {
+        $contactIds = json_decode($request->input('ids'));
+
+        $contactGroup->contacts()->attach($contactIds);
     }
 }

@@ -12,7 +12,7 @@ class ContactController extends Controller
 {
     public function show(Contact $contact, Request $request)
     {
-        $this->authorize('show', $contact);
+        $this->authorize('view', $contact);
 
         $contact->load('addresses');
         $contact->load('emailAddresses');

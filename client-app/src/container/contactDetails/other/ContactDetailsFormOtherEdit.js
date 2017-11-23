@@ -38,11 +38,11 @@ class ContactDetailsFormOtherEdit extends Component {
     };
 
     handleChangeDateOfBirthPartner = (date) => {
-        const value = moment(date).format('Y-MM-DD');
+        const formattedDate = (date ? moment(date).format('Y-MM-DD') : '');
 
         this.setState({
             ...this.state,
-            dateOfBirthPartner: value
+            dateOfBirthPartner: formattedDate
         });
     };
 
@@ -99,7 +99,7 @@ class ContactDetailsFormOtherEdit extends Component {
                     <InputDate
                         label="Geboortedatum partner"
                         name={"dateOfBirthPartner"}
-                        value={ dateOfBirthPartner && moment(dateOfBirthPartner).format('DD-MM-Y') }
+                        value={ dateOfBirthPartner }
                         onChangeAction={this.handleChangeDateOfBirthPartner}
                     />
                     <InputText

@@ -56,13 +56,13 @@ class ContactNewFormAccount extends Component {
     };
 
     handleChangeMemberSince = (date) => {
-        const value = moment(date).format('Y-MM-DD');
+        const formattedDate = (date ? moment(date).format('Y-MM-DD') : '');
 
         this.setState({
             ...this.state,
-            person: {
-                ...this.state.person,
-                memberSince: value
+            account: {
+                ...this.state.account,
+                memberSince: formattedDate
             },
         });
     };
@@ -145,7 +145,7 @@ class ContactNewFormAccount extends Component {
                     <InputDate
                         label={"Lid sinds"}
                         name="memberSince"
-                        value={ memberSince && moment(memberSince).format('DD-MM-Y') }
+                        value={ memberSince }
                         onChangeAction={this.handleChangeMemberSince}
                     />
                 </div>

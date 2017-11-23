@@ -20,6 +20,7 @@ class UserDetailsFormGeneralEdit extends Component {
                 ...this.props.userDetails,
                 titleId: this.props.userDetails.title ? this.props.userDetails.title.id : '',
                 lastNamePrefixId: this.props.userDetails.lastNamePrefix ? this.props.userDetails.lastNamePrefix.id : '',
+                testArray: ['test1', 'test2'],
             },
             errors: {
                 email: false,

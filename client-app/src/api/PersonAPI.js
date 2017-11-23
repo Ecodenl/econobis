@@ -1,11 +1,11 @@
 import axios from 'axios';
 
 const URL_API = process.env.URL_API;
-const URL_TYPE = `${URL_API}/api/person`;
+const URL_PERSON = `${URL_API}/api/person`;
 
 export default {
     newPerson: (person) => {
-        const requestUrl = `${URL_TYPE}`;
+        const requestUrl = `${URL_PERSON}`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
@@ -19,7 +19,7 @@ export default {
     },
 
     updatePerson: (person) => {
-        const requestUrl = `${URL_TYPE}/${person.id}`;
+        const requestUrl = `${URL_PERSON}/${person.id}`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
@@ -33,7 +33,7 @@ export default {
     },
 
     getPersonPeek: () => {
-        const requestUrl = `${URL_TYPE}/peek/no-account`;
+        const requestUrl = `${URL_PERSON}/peek/no-account`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
@@ -47,7 +47,7 @@ export default {
     },
 
     makePrimary: (person) => {
-        const requestUrl = `${URL_TYPE}/${person.id}`;
+        const requestUrl = `${URL_PERSON}/${person.id}`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 

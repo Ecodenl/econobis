@@ -1,11 +1,11 @@
 import axios from 'axios';
 
 const URL_API = process.env.URL_API;
-const URL_TYPE = `${URL_API}/api/account`;
+const URL_ACCOUNT = `${URL_API}/api/account`;
 
 export default {
     newAccount: (account) => {
-        const requestUrl = `${URL_TYPE}`;
+        const requestUrl = `${URL_ACCOUNT}`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
@@ -19,7 +19,7 @@ export default {
     },
 
     updateAccount: (account) => {
-        const requestUrl = `${URL_TYPE}/${account.id}`;
+        const requestUrl = `${URL_ACCOUNT}/${account.id}`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
@@ -33,7 +33,7 @@ export default {
     },
 
     getAccountPeek: () => {
-        const requestUrl = `${URL_TYPE}/peek`;
+        const requestUrl = `${URL_ACCOUNT}/peek`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 

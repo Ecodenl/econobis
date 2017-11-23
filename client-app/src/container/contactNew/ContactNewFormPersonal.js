@@ -67,21 +67,25 @@ class ContactNewFormPersonal extends Component {
     };
 
     handleChangeMemberSince = (date) => {
+        const formattedDate = (date ? moment(date).format('Y-MM-DD') : '');
+
         this.setState({
             ...this.state,
             person: {
                 ...this.state.person,
-                memberSince: date
+                memberSince: formattedDate
             },
         });
     };
 
     handleChangeDateOfBirth = (date) => {
+        const formattedDate = (date ? moment(date).format('Y-MM-DD') : '');
+
         this.setState({
             ...this.state,
             person: {
                 ...this.state.person,
-                dateOfBirth: date
+                dateOfBirth: formattedDate
             },
         });
     };
@@ -116,7 +120,7 @@ class ContactNewFormPersonal extends Component {
 
     render() {
         const { typeId, statusId, titleId, firstName, lastNamePrefixId, lastName, memberSince, accountId, dateOfBirth, newsletter, occupationId } = this.state.person;
-        console.log(dateOfBirth);
+
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
                 <div className="row">

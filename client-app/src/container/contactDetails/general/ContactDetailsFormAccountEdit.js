@@ -58,25 +58,25 @@ class ContactDetailsFormAccountEdit extends Component {
     };
 
     handleChangeMemberSince = (date) => {
-        const value = moment(date).format('Y-MM-DD');
+        const formattedDate = (date ? moment(date).format('Y-MM-DD') : '');
 
         this.setState({
             ...this.state,
             account: {
                 ...this.state.account,
-                memberUntil: value
+                memberSince: formattedDate
             },
         });
     };
 
     handleChangeMemberUntilDate = (date) => {
-        const value = moment(date).format('Y-MM-DD');
+        const formattedDate = (date ? moment(date).format('Y-MM-DD') : '');
 
         this.setState({
             ...this.state,
             account: {
                 ...this.state.account,
-                memberUntil: value
+                memberUntil: formattedDate
             },
         });
     };
@@ -160,7 +160,7 @@ class ContactDetailsFormAccountEdit extends Component {
                     <InputDate
                         label={"Lid sinds"}
                         name="memberSince"
-                        value={ memberSince && moment(memberSince).format('DD-MM-Y') }
+                        value={ memberSince }
                         onChangeAction={this.handleChangeMemberSince}
                     />
                 </div>
@@ -172,11 +172,11 @@ class ContactDetailsFormAccountEdit extends Component {
                         value={vatNumber}
                         onChangeAction={this.handleInputChange}
                     />
-                    <InputText
+                    <InputDate
                         label={"Opzegdatum"}
                         size={"col-sm-6"}
-                        name={"cancellationDate"}
-                        value={ memberUntil && moment(memberUntil).format('DD-MM-Y') }
+                        name={"memberUntil"}
+                        value={ memberUntil }
                         onChangeAction={this.handleChangeMemberUntilDate}
                     />
                 </div>

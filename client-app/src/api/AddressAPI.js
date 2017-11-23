@@ -1,11 +1,11 @@
 import axios from 'axios';
 
 const URL_API = process.env.URL_API;
-const URL_TYPE = `${URL_API}/api/address`;
+const URL_ADDRESS = `${URL_API}/api/address`;
 
 export default {
     newAddress: (address) => {
-        const requestUrl = `${URL_TYPE}`;
+        const requestUrl = `${URL_ADDRESS}`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
@@ -19,7 +19,7 @@ export default {
     },
 
     updateAddress: (address) => {
-        const requestUrl = `${URL_TYPE}/${address.id}`;
+        const requestUrl = `${URL_ADDRESS}/${address.id}`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
@@ -33,7 +33,7 @@ export default {
     },
 
     deleteAddress: (id) => {
-        const requestUrl = `${URL_TYPE}/${id}/delete`;
+        const requestUrl = `${URL_ADDRESS}/${id}/delete`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 

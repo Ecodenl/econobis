@@ -74,37 +74,37 @@ class ContactDetailsFormPersonalEdit extends Component {
     };
 
     handleChangeMemberSince = (date) => {
-        const value = moment(date).format('Y-MM-DD');
+        const formattedDate = (date ? moment(date).format('Y-MM-DD') : '');
 
         this.setState({
             ...this.state,
             person: {
                 ...this.state.person,
-                memberSince: value
+                memberSince: formattedDate
             },
         });
     };
 
     handleChangeMemberUntilDate = (date) => {
-        const value = moment(date).format('Y-MM-DD');
+        const formattedDate = (date ? moment(date).format('Y-MM-DD') : '');
 
         this.setState({
             ...this.state,
             person: {
                 ...this.state.person,
-                memberUntil: value
+                memberUntil: formattedDate
             },
         });
     };
 
     handleChangeDateOfBirth = (date) => {
-        const value = moment(date).format('Y-MM-DD');
+        const formattedDate = (date ? moment(date).format('Y-MM-DD') : '');
 
         this.setState({
             ...this.state,
             person: {
                 ...this.state.person,
-                dateOfBirth: value
+                dateOfBirth: formattedDate
             },
         });
     };
@@ -195,7 +195,7 @@ class ContactDetailsFormPersonalEdit extends Component {
                         label={"Lid sinds"}
                         size={"col-sm-6"}
                         name={"memberSince"}
-                        value={ memberSince && moment(memberSince).format('DD-MM-Y') }
+                        value={ memberSince }
                         onChangeAction={this.handleChangeMemberSince}
                     />
                 </div>
@@ -213,7 +213,7 @@ class ContactDetailsFormPersonalEdit extends Component {
                         label={"Opzegdatum"}
                         size={"col-sm-6"}
                         name={"cancellationDate"}
-                        value={ memberUntil && moment(memberUntil).format('DD-MM-Y') }
+                        value={ memberUntil }
                         onChangeAction={this.handleChangeMemberUntilDate}
                     />
                 </div>
@@ -251,7 +251,7 @@ class ContactDetailsFormPersonalEdit extends Component {
                         label={"Geboortedatum"}
                         size={"col-sm-6"}
                         name={"dateOfBirth"}
-                        value={ dateOfBirth && moment(dateOfBirth).format('DD-MM-Y') }
+                        value={ dateOfBirth }
                         onChangeAction={this.handleChangeDateOfBirth}
                     />
                 </div>

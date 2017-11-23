@@ -7,7 +7,7 @@ moment.locale('nl');
 const InputDate = props => {
     const { label, className, size, id, value, onChangeAction, required, readOnly } = props;
 
-    const formattedDay = value
+    const formattedDate = value
         ? moment(value).format('L')
         : '';
 
@@ -18,7 +18,7 @@ const InputDate = props => {
                 <DayPickerInput
                     className={`form-control input-sm ${className}`}
                     id={ id }
-                    value={ formattedDay }
+                    value={ formattedDate }
                     onDayChange={onChangeAction}
                     dayPickerProps={{
                         showWeekNumbers: true,

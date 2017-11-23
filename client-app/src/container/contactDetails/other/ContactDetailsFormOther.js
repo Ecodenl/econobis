@@ -49,14 +49,12 @@ class ContactDetailsFormOther extends Component {
                     <span className="h5 text-bold">Overige gegevens</span>
                 </PanelHeader>
                 <PanelBody>
-                    <div className="col-md-12">
                         {
                             this.state.showEdit ?
                                 <ContactDetailsFormOtherEdit switchToView={this.switchToView} />
                                 :
                                <ContactDetailsFormOtherView switchToEdit={this.switchToEdit}/>
                         }
-                    </div>
                 </PanelBody>
             </Panel>
         );

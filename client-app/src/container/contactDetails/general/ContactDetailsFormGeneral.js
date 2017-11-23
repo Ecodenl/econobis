@@ -47,20 +47,18 @@ class ContactDetailsFormGeneral extends Component {
         return (
             <Panel className={this.state.activeDiv} onMouseEnter={() => this.onDivEnter()} onMouseLeave={() => this.onDivLeave()}>
                 <PanelBody>
-                    <div className="col-md-12">
-                        {
-                            this.state.showEdit ?
-                                this.props.contactDetails.typeId === 'account' ?
-                                    <ContactDetailsFormAccountEdit switchToView={this.switchToView} />
-                                    :
-                                    <ContactDetailsFormPersonalEdit switchToView={this.switchToView} />
+                    {
+                        this.state.showEdit ?
+                            this.props.contactDetails.typeId === 'account' ?
+                                <ContactDetailsFormAccountEdit switchToView={this.switchToView} />
                                 :
-                                this.props.contactDetails.typeId === 'account' ?
-                                    <ContactDetailsFormAccountView switchToEdit={this.switchToEdit}/>
-                                    :
-                                    <ContactDetailsFormPersonalView switchToEdit={this.switchToEdit}/>
-                        }
-                    </div>
+                                <ContactDetailsFormPersonalEdit switchToView={this.switchToView} />
+                            :
+                            this.props.contactDetails.typeId === 'account' ?
+                                <ContactDetailsFormAccountView switchToEdit={this.switchToEdit}/>
+                                :
+                                <ContactDetailsFormPersonalView switchToEdit={this.switchToEdit}/>
+                    }
                 </PanelBody>
             </Panel>
         );

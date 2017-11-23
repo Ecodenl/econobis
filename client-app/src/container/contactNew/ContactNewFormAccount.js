@@ -10,6 +10,7 @@ import InputSelect from '../../components/form/InputSelect';
 import InputCheckbox from '../../components/form/InputCheckbox';
 import InputDate from '../../components/form/InputDate';
 import ButtonText from '../../components/button/ButtonText';
+import PanelFooter from "../../components/panel/PanelFooter";
 
 class ContactNewFormAccount extends Component {
     constructor(props) {
@@ -215,12 +216,12 @@ class ContactNewFormAccount extends Component {
                     />
                 </div>
 
-                <div className="panel-footer">
+                <PanelFooter>
                     <div className="pull-right btn-group" role="group">
                         <ButtonText buttonClassName={"btn-default"} buttonText={"Sluiten"} onClickAction={this.props.switchToView}/>
                         <ButtonText buttonText={"Opslaan"} onClickAction={this.handleSubmit}/>
                     </div>
-                </div>
+                </PanelFooter>
             </form>
         );
     };

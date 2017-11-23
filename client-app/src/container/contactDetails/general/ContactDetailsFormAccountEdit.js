@@ -10,6 +10,7 @@ import InputSelect from '../../../components/form/InputSelect';
 import InputCheckbox from '../../../components/form/InputCheckbox';
 import InputDate from '../../../components/form/InputDate';
 import ButtonText from '../../../components/button/ButtonText';
+import PanelFooter from "../../../components/panel/PanelFooter";
 
 class ContactDetailsFormAccountEdit extends Component {
     constructor(props) {
@@ -25,7 +26,7 @@ class ContactDetailsFormAccountEdit extends Component {
                 name: account.name,
                 chamberOfCommerceNumber: account.chamberOfCommerceNumber,
                 vatNumber: account.vatNumber,
-                industryId: account.industryId ? account.industryId.id : '',
+                industryId: account.industryId ? account.industryId : '',
                 statusId: status.id,
                 memberSince: memberSince ? moment(memberSince.date).format('Y-MM-DD') : '',
                 memberUntil: memberUntil ? moment(memberUntil.date).format('Y-MM-DD') : '',
@@ -111,7 +112,7 @@ class ContactDetailsFormAccountEdit extends Component {
         const { number, typeId, statusId, name, chamberOfCommerceNumber, vatNumber, industryId, createdAt, memberSince, memberUntil, newsletter, website, iban, squareMeters } = this.state.account;
 
         return (
-            <form className="form-horizontal" onSubmit={this.handleSubmit}>
+            <form className="form-horizontal col-md-12" onSubmit={this.handleSubmit}>
                 <div className="row">
                     <InputText
                         label={"Klantnummer"}
@@ -231,12 +232,12 @@ class ContactDetailsFormAccountEdit extends Component {
                     />
                 </div>
 
-                <div className="panel-footer">
+                <PanelFooter>
                     <div className="pull-right btn-group" role="group">
                         <ButtonText buttonClassName={"btn-default"} buttonText={"Annuleren"} onClickAction={this.props.switchToView}/>
                         <ButtonText buttonText={"Opslaan"} onClickAction={this.handleSubmit}/>
                     </div>
-                </div>
+                </PanelFooter>
             </form>
         );
     };

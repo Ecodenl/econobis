@@ -9,21 +9,17 @@ const UserNewApp = () => {
     return (
         <div className="row">
             <div className="col-md-9">
-                <Panel>
-                    <PanelBody>
-                        <div className="col-md-12 extra-space-above">
-                            <UserNewToolbar />
-                        </div>
-
                         <div className="col-md-12 extra-space-above">
                             <Panel>
-                                <PanelBody>
-                                    <UserNewForm />
+                                <PanelBody className={"panel-small"}>
+                                    <UserNewToolbar />
                                 </PanelBody>
                             </Panel>
                         </div>
-                    </PanelBody>
-                </Panel>
+
+                        <div className="col-md-12 extra-space-above">
+                            <UserNewForm />
+                        </div>
             </div>
             <div className="col-md-3" />
         </div>

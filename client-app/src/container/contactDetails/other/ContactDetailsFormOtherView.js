@@ -4,7 +4,7 @@ import moment from 'moment';
 
 import ViewText from '../../../components/form/ViewText';
 
-const ContactDetailsFormOtherPersonView = props => {
+const ContactDetailsFormOtherView = props => {
     const { firstNamePartner, lastNamePartner, dateOfBirthPartner } = props.contactDetails.person;
     const { iban, liable, liabilityAmount } = props.contactDetails;
 
@@ -19,7 +19,6 @@ const ContactDetailsFormOtherPersonView = props => {
                     label="IBAN"
                     value={iban}
                 />
-
             </div>
 
             <div className="row">
@@ -55,4 +54,4 @@ const mapStateToProps = (state) => {
     };
 };
 
-export default connect(mapStateToProps)(ContactDetailsFormOtherPersonView);
+export default connect(mapStateToProps)(ContactDetailsFormOtherView);

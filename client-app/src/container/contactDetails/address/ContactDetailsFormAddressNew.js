@@ -162,7 +162,7 @@ class ContactDetailsFormAddressNew extends Component {
 
                         <div className="pull-right btn-group" role="group">
                             <ButtonText buttonClassName={"btn-default"} buttonText={"Annuleren"} onClickAction={this.props.toggleShowNew}/>
-                            <ButtonText buttonText={"Bewaren"} onClickAction={this.handleSubmit} type={"submit"} value={"Submit"}/>
+                            <ButtonText buttonText={"Opslaan"} onClickAction={this.handleSubmit} type={"submit"} value={"Submit"}/>
                         </div>
                     </PanelBody>
                 </Panel>

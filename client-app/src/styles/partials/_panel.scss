@@ -1,8 +1,16 @@
 .panel-heading {
   color: $brand-primary !important;
-  background-color: #f3f3f3 !important;
+  border: 0;
 }
 
 .panel-grey {
   background-color: #f3f3f3;
+}
+
+.panel-small {
+  padding: 5px;
+}
+
+.panel-no-border {
+  border: 0;
 }

@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import Routes from './router';
 import './styles/style.scss';
+import 'react-day-picker/lib/style.css';
 import 'babel-polyfill';
 
 import * as authActions from './actions/AuthActions';

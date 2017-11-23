@@ -1,11 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import moment from 'moment';
 import DayPickerInput from 'react-day-picker/DayPickerInput';
-import 'react-day-picker/lib/style.css';
+import moment from 'moment';
+moment.locale('nl');
 
 const InputDate = props => {
-    const { label, className, size, id,value, onChangeAction, required, readOnly } = props;
+    const { label, className, size, id, value, onChangeAction, required, readOnly } = props;
+
+    const formattedDay = value
+        ? moment(value).format('L')
+        : '';
 
     return (
         <div className="form-group col-sm-6">
@@ -14,8 +18,12 @@ const InputDate = props => {
                 <DayPickerInput
                     className={`form-control input-sm ${className}`}
                     id={ id }
-                    value={ value }
-                    onDayChange={ onChangeAction}
+                    value={ formattedDay }
+                    onDayChange={onChangeAction}
+                    dayPickerProps={{
+                        showWeekNumbers: true,
+                        locale: "nl",
+                    }}
                     required={ required }
                     readOnly={ readOnly }
                 />
@@ -41,7 +49,7 @@ InputDate.propTypes = {
     placeholder: PropTypes.string,
     value: PropTypes.oneOfType([
         PropTypes.string,
-        PropTypes.number
+        PropTypes.object
     ]),
     onChangeAction: PropTypes.func,
     required: PropTypes.string,

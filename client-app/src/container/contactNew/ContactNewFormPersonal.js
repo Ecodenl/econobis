@@ -214,18 +214,18 @@ class ContactNewFormPersonal extends Component {
                 </div>
 
                 <div className="row">
+                    <InputDate
+                        label={"Geboortedatum"}
+                        name={"dateOfBirth"}
+                        value={ dateOfBirth }
+                        onChangeAction={this.handleChangeDateOfBirth}
+                    />
                     <InputSelect
                         label={"Organisatie"}
                         name={"accountId"}
                         options={this.state.accountPeek}
                         value={accountId}
                         onChangeAction={this.handleInputChange}
-                    />
-                    <InputDate
-                        label={"Geboortedatum"}
-                        name={"dateOfBirth"}
-                        value={ dateOfBirth }
-                        onChangeAction={this.handleChangeDateOfBirth}
                     />
                 </div>
 

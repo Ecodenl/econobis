@@ -8,6 +8,8 @@
 
 namespace App\Helpers\RequestQuery;
 
+use Illuminate\Http\Request;
+
 abstract class RequestQuery
 {
 
@@ -24,10 +26,20 @@ abstract class RequestQuery
      */
     protected $sort;
 
-    public function __construct(RequestFilter $filter = null,
+    protected $offsetParameter = 'offset';
+    protected $limitParameter = 'limit';
+
+    /**
+     * @var Request
+     */
+    protected $request;
+
+    public function __construct(Request $request,
+                                RequestFilter $filter = null,
                                 RequestSort $sort = null,
                                 RequestJoiner $joiner = null)
     {
+        $this->request = $request;
         $this->filter = $filter;
         $this->sort = $sort;
         $this->joiner = $joiner;
@@ -39,6 +51,7 @@ abstract class RequestQuery
     {
         $this->applyFilter($query);
         $this->applySort($query);
+        $this->applyPagination($query);
     }
 
     protected function init()
@@ -78,4 +91,25 @@ abstract class RequestQuery
     }
 
     abstract protected function baseQuery();
+
+    protected function applyPagination($query)
+    {
+        $limit = $this->getLimit();
+        $offset = $this->getOffset();
+
+        if($limit) $query->limit($this->getLimit());
+        if($offset && $limit) $query->offset($this->getOffset()); // Offset kan alleen gezet werden icm limit
+
+        return $query;
+    }
+
+    protected function getLimit()
+    {
+        return (int) $this->request->input($this->limitParameter, null);
+    }
+
+    protected function getOffset()
+    {
+        return (int) $this->request->input($this->offsetParameter, null);
+    }
 }

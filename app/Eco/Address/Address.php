@@ -4,7 +4,7 @@ namespace App\Eco\Address;
 
 use App\Eco\Contact\Contact;
 use App\Eco\Measure\Measure;
-use App\Eco\BuildingFeature\BuildingFeature;
+use App\Eco\BuildingType\BuildingType;
 use App\Eco\Registration\Registration;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -49,9 +49,9 @@ class Address extends Model
         return $this->hasMany(BuildingFeature::class);
     }
 
-    public function notes()
+    public function building_type()
     {
-        return $this->hasMany(ContactNote::class);
+        return $this->hasOne(BuildingType::class);
     }
 
     public function getType()

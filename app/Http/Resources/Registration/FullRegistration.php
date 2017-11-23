@@ -13,17 +13,18 @@ class FullRegistration extends Resource
      * Transform the resource into an array.
      *
      * @param  \Illuminate\Http\Request
+     *
      * @return array
      */
     public function toArray($request)
     {
         return
             [
-            'fullName' => Contact::find(Address::find($this->address_id)->contact_id)->full_name,
-            'sourceNames' => FullRegistrationSource::collection($this->whenLoaded('sources')),
-            'createdAt' => $this->created_at,
-            'status' => $this->status_id,
-            'measureNames' => Measure::getAllMeasures($this->address)
-        ];
+                'fullName' => Contact::find($this->address->contact_id)->full_name,
+                'createdAt' => $this->created_at,
+                'sourceNames' => FullRegistrationSource::collection($this->whenLoaded('sources')),
+                'status' => $this->status->name,
+                'measuresRequested' => Measure::getRequestedMeasures($this->address)
+            ];
     }
 }

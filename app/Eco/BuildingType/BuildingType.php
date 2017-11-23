@@ -1,23 +1,23 @@
 <?php
 
-namespace App\Eco\BuildingFeature;
+namespace App\Eco\BuildingType;
 
 use App\Eco\Address\Address;
 use Illuminate\Database\Eloquent\Model;
 
-class BuildingFeature extends Model
+class BuildingType extends Model
 {
-    protected $table = 'building_features';
+    protected $table = 'building_types';
      /**
      * The attributes that are not mass assignable.
      *
      * @var array
      */
     protected $guarded = [
-        'id', 'address_id', 'build_year', 'building_type', 'owner_id'
+        'id', 'name'
     ];
 
-    public function roles()
+    public function addresses()
     {
         return $this->belongsToMany(Address::class);
     }

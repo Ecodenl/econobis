@@ -41,4 +41,32 @@ class Measure extends Model
         return $measures;
     }
 
+    public static function getRequestedMeasures(Address $address)
+    {
+        $address->load('measures_requested');
+
+        foreach ($address->measures_requested as $measure){
+            $measures[] = $measure->name;
+        }
+        if(empty($measures)){
+            $measures = 'Geen maatregelen aangevraagd';
+        }
+
+        return $measures;
+    }
+
+    public static function getTakenMeasures(Address $address)
+    {
+        $address->load('measures_taken');
+
+        foreach ($address->measures_taken as $measure){
+            $measures[] = $measure->name;
+        }
+        if(empty($measures)){
+            $measures = 'Geen maatregelen genomen';
+        }
+
+        return $measures;
+    }
+
 }

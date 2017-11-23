@@ -1,24 +1,25 @@
 <?php
 
-namespace App\Eco\Campaign;
+namespace App\Eco\Registration;
 
 use App\Eco\Registration\Registration;
 use Illuminate\Database\Eloquent\Model;
 
-class Campaign extends Model
+class RegistrationStatus extends Model
 {
-    protected $table = 'campaigns';
+    protected $table = 'registration_status';
+
      /**
-     * The attributes that are not mass assignable.
+     * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $guarded = [
-
+        'id', 'name'
     ];
 
-    public function registration()
-    {
+    public function registrations()
+    {;
         return $this->belongsToMany(Registration::class);
     }
 

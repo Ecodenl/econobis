@@ -27,8 +27,23 @@ Route::namespace('Api')
         Route::post('/contact/{contact}/delete', 'Contact\ContactController@destroy');
 
         Route::get('/registrations', 'Registration\RegistrationController@show');
-        Route::get('/contact/{contact}/registrations', 'Registration\RegistrationController@showContactRegistrations');
-//        Route::post('/contact/{contact}/registration', 'Registration\RegistrationController@store');
+
+        Route::get('/contact/{contact}/registration', 'Registration\RegistrationController@getStore');
+        Route::post('/contact/registration', 'Registration\RegistrationController@store');
+        Route::get('/registration/{registration}', 'Registration\RegistrationController@getRegistration');
+        Route::post('/registration/{registration}/update', 'Registration\RegistrationController@updateRegistration');
+        Route::delete('/registration/{registration}/delete', 'Registration\RegistrationController@deleteRegistration');
+
+        Route::post('/registration/{registration}/measure-taken', 'Registration\RegistrationController@storeMeasureTaken');
+        Route::post('/registration/{registration}/measure-taken/delete', 'Registration\RegistrationController@deleteMeasureTaken');
+
+        Route::post('/registration/{registration}/measure-requested', 'Registration\RegistrationController@storeMeasureRequested');
+        Route::post('/registration/{registration}/measure-requested/delete', 'Registration\RegistrationController@deleteMeasureRequested');
+
+        Route::post('/registration/{registration}/note', 'Registration\RegistrationController@storeNote');
+        Route::post('/registration/note/{note}/update', 'Registration\RegistrationController@updateNote');
+        Route::post('/registration/note/{note}/delete', 'Registration\RegistrationController@deleteNote');
+
 
         Route::get('/user/grid', 'User\GridController@index');
         Route::post('/user', 'User\UserController@store');

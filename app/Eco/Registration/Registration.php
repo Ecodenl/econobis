@@ -17,7 +17,7 @@ class Registration extends Model
      * @var array
      */
     protected $guarded = [
-        'id', 'status', 'address_id', 'status_id', 'important'
+        'id', 'address_id', 'status_id',
     ];
 
     public function sources()
@@ -33,6 +33,22 @@ class Registration extends Model
 
     public function campaigns()
     {
-        return $this->belongsToMany(Campaign::class);
+        return $this->hasOne(Campaign::class);
+    }
+
+    public function note()
+    {
+        return $this->hasMany(RegistrationNote::class);
+    }
+
+    public function reasons()
+    {
+        return $this->belongsToMany(RegistrationReason::class,
+            'reason_registration', 'registration_id', 'reason_id');
+    }
+
+    public function status()
+    {
+        return $this->hasOne(RegistrationStatus::class, 'id', 'registration_status_id');
     }
 }

@@ -5,6 +5,8 @@ import Main from './container/global/Main';
 import Login from './container/auth/Login';
 import Logout from './container/auth/Logout';
 import RequireAuth from './helpers/RequireAuth';
+import PermissionHelper from './helpers/PermissionHelper';
+
 import DashboardApp from './container/dashboard/DashboardApp';
 import ContactsListApp from './container/contactsList/ContactsListApp';
 import ContactDetailsApp from './container/contactDetails/ContactDetailsApp';
@@ -25,8 +27,8 @@ const Routes = () => {
                 <IndexRoute component={ DashboardApp } />
                 <Route path="contacten/:filter/:value" component={ ContactsListApp } />
                 <Route path="contacten" component={ ContactsListApp } />
-                <Route path="contact/nieuw/:type/bedrijf/:id" component={ ContactNewApp } />
-                <Route path="contact/nieuw/:type" component={ ContactNewApp } />
+                <Route path="contact/nieuw/:type/bedrijf/:id" component={ PermissionHelper(ContactNewApp, true) } />
+                <Route path="contact/nieuw/:type" component={ PermissionHelper(ContactNewApp, true) } />
                 <Route path="contact/:id" component={ ContactDetailsApp } />
                 <Route path="taak/:id" component={TasksApp} />
                 <Route path="aanmelding/:id" component={SignupsApp} />

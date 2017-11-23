@@ -16,6 +16,8 @@ use App\Eco\Person\Person;
 use App\Eco\Person\PersonPolicy;
 use App\Eco\PhoneNumber\PhoneNumber;
 use App\Eco\PhoneNumber\PhoneNumberPolicy;
+use App\Eco\User\User;
+use App\Eco\User\UserPolicy;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Laravel\Passport\Passport;
@@ -35,6 +37,7 @@ class AuthServiceProvider extends ServiceProvider
         EmailAddress::class => EmailAddressPolicy::class,
         Person::class => PersonPolicy::class,
         PhoneNumber::class => PhoneNumberPolicy::class,
+        User::class => UserPolicy::class,
     ];
 
     /**

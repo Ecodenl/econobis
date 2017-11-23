@@ -26,5 +26,7 @@ class DatabaseSeeder extends Seeder
         $this->call(EmailAddressesSeeder::class);
         // ContactNotes on Contacts
         $this->call(ContactNotesSeeder::class);
+        // ContactGroups
+        $this->call(ContactGroupsSeeder::class);
     }
 }

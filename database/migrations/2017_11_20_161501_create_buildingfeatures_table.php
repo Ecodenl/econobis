@@ -15,11 +15,17 @@ class CreateBuildingFeaturesTable extends Migration
     {
         Schema::create('building_features', function (Blueprint $table) {
             $table->increments('id');
+            $table->string('name');
+            $table->timestamps();
+        });
+
+        Schema::create('address_building_feature', function (Blueprint $table) {
             $table->integer('address_id')->unsigned();
             $table->foreign('address_id')->references('id')->on('addresses');
-            $table->integer('build_year');
-            $table->integer('building_type');
-            $table->integer('owner_id');
+            $table->integer('building_feature_id')->unsigned();
+            $table->foreign('building_feature_id')->references('id')->on('building_features');
+            $table->string('waarde');
+            $table->unique(['address_id','building_feature_id']);
             $table->timestamps();
         });
     }
@@ -32,5 +38,6 @@ class CreateBuildingFeaturesTable extends Migration
     public function down()
     {
         Schema::dropIfExists('building_features');
+        Schema::dropIfExists('address_building_features');
     }
 }

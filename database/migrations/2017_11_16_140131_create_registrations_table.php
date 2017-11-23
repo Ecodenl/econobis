@@ -13,12 +13,21 @@ class CreateRegistrationsTable extends Migration
      */
     public function up()
     {
+
+        Schema::create('registration_status', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('name');
+            $table->timestamps();
+        });
+
         Schema::create('registrations', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('address_id')->unsigned();
             $table->foreign('address_id')->references('id')->on('addresses');
-            $table->integer('status_id');
-            $table->string('important');
+            $table->integer('registration_status_id')->unsigned()->nullable();
+            $table->foreign('registration_status_id')->references('id')->on('registration_status');
+            $table->integer('campaign_id')->unsigned()->nullable();
+            $table->foreign('campaign_id')->references('id')->on('campaigns');
             $table->timestamps();
         });
     }

@@ -32,7 +32,7 @@ class CreateMeasuresTable extends Migration
             $table->foreign('address_id')->references('id')->on('addresses');
             $table->integer('measure_id')->unsigned();
             $table->foreign('measure_id')->references('id')->on('measures');
-            $table->date('measure_date');
+            $table->date('measure_date')->nullable();
             $table->unique(['address_id','measure_id']);
             $table->timestamps();
         });
@@ -42,8 +42,8 @@ class CreateMeasuresTable extends Migration
             $table->foreign('address_id')->references('id')->on('addresses');
             $table->integer('measure_id')->unsigned();
             $table->foreign('measure_id')->references('id')->on('measures');
-            $table->date('desired_date');
-            $table->tinyInteger('degree_interest');
+            $table->date('desired_date')->nullable();
+            $table->tinyInteger('degree_interest')->nullable();
             $table->unique(['address_id','measure_id']);
             $table->timestamps();
         });

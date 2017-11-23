@@ -19,15 +19,6 @@ class CreateCampaignsTable extends Migration
             $table->timestamps();
         });
 
-        Schema::create('campaign_registration', function (Blueprint $table) {
-            $table->integer('campaign_id')->unsigned();
-            $table->foreign('campaign_id')->references('id')->on('campaigns')->onDelete('cascade');
-            $table->integer('registration_id')->unsigned();
-            $table->foreign('registration_id')->references('id')->on('registrations')->onDelete('cascade');
-            $table->unique(['campaign_id','registration_id']);
-            $table->timestamps();
-        });
-
     }
 
     /**
@@ -37,7 +28,6 @@ class CreateCampaignsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('campaign_registration');
         Schema::dropIfExists('campaigns');
     }
 }

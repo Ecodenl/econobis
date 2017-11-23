@@ -1,6 +1,5 @@
-// SET_SORTS_FIELD_FILTER
-export const setSortsFilter = (field, order) => ({
-    type: 'SET_SORTS_FILTER',
+export const setContactsSortsFilter = (field, order) => ({
+    type: 'SET_CONTACTS_SORTS_FILTER',
     field,
     order,
 });

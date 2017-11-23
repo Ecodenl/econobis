@@ -9,6 +9,7 @@ import { ic_contacts } from 'react-icons-kit/md/ic_contacts';
 import { ic_email } from 'react-icons-kit/md/ic_email';
 import { cog } from 'react-icons-kit/icomoon/cog';
 import { drawer } from 'react-icons-kit/icomoon/drawer';
+import { pencil2 } from 'react-icons-kit/icomoon/pencil2';
 
 const SidebarMenu = props => {
     return (
@@ -38,6 +39,10 @@ const SidebarMenu = props => {
                     <Nav id="closed">
                         <NavText><Link className="sidebar-link" to="contacten/status/closed">Afgehandeld</Link></NavText>
                     </Nav>
+                </Nav>
+                <Nav id="aanmeldingen">
+                    <NavIcon><SvgIcon size={20} icon={pencil2} /></NavIcon>
+                    <NavText><Link className="sidebar-link" to="aanmeldingen">Aanmeldingen</Link></NavText>
                 </Nav>
                 <Nav id="projecten">
                     <NavIcon><SvgIcon size={20} icon={drawer} /></NavIcon>

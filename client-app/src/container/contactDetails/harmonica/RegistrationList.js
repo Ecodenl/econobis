@@ -1,7 +1,7 @@
 import React from 'react';
 import { hashHistory } from 'react-router';
 
-const SignUpList = () => {
+const RegistrationList = () => {
     const openItem = (id) => {
         hashHistory.push(`/aanmelding/${id}`);
     };
@@ -24,4 +24,4 @@ const SignUpList = () => {
     );
 };
 
-export default SignUpList;
+export default RegistrationList;

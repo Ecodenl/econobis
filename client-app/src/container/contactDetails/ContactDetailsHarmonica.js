@@ -1,7 +1,8 @@
 import React, {Component} from 'react';
+import { connect } from 'react-redux';
 import { hashHistory } from 'react-router';
 
-import SignUpList from './harmonica/SignUpList';
+import RegistrationList from './harmonica/RegistrationList';
 import OpportunityList from './harmonica/OpportunityList';
 import TaskList from './harmonica/TaskList';
 
@@ -10,19 +11,19 @@ class ContactDetailsHarmonica extends Component {
         super();
 
         this.state = {
-            toggleShowSignUps: false,
+            toggleShowRegistrations: false,
             toggleShowOpportunities: false,
             toggleShowTasks: false,
         }
     }
 
-    newSignup = () => {
-        hashHistory.push(`/aanmelding/nieuw`);
+    newRegistration = () => {
+        hashHistory.push(`/aanmelding/nieuw/${this.props.contactId}`);
     };
 
-    toggleSignup = () => {
+    toggleRegistration = () => {
         this.setState({
-           toggleShowSignUps: !this.state.toggleShowSignUps
+           toggleShowRegistrations: !this.state.toggleShowRegistrations
         });
     };
 
@@ -51,10 +52,10 @@ class ContactDetailsHarmonica extends Component {
             <div className="col-md-12 extra-space-above">
                 <div className="panel panel-default harmonica-button">
                     <div className="panel-body">
-                        <div className="col-sm-12" onClick={this.toggleSignup}>
+                        <div className="col-sm-12" onClick={this.toggleRegistration}>
                             <span className="">AANMELDINGEN <span className="badge">2</span></span>
-                            <a role="button" className="pull-right" onClick={this.newSignup}><span className="glyphicon glyphicon-plus glyphicon-white"/></a>
-                            { this.state.toggleShowSignUps && <SignUpList /> }
+                            <a role="button" className="pull-right" onClick={this.newRegistration}><span className="glyphicon glyphicon-plus glyphicon-white"/></a>
+                            { this.state.toggleShowRegistrations && <RegistrationList /> }
                         </div>
                     </div>
                 </div>
@@ -81,4 +82,10 @@ class ContactDetailsHarmonica extends Component {
     }
 };
 
-export default ContactDetailsHarmonica;
+const mapStateToProps = (state) => {
+    return {
+        contactId: state.contactDetails.id,
+    };
+};
+
+export default connect(mapStateToProps, null)(ContactDetailsHarmonica);

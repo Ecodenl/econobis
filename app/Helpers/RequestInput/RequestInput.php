@@ -40,6 +40,16 @@ class RequestInput
         return $this->input('string', $field);
     }
 
+    public function integer($field)
+    {
+        return $this->input('integer', $field);
+    }
+
+    public function date($field)
+    {
+        return $this->input('date', $field);
+    }
+
     public function password($field)
     {
         return $this->input('password', $field);

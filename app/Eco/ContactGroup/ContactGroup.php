@@ -16,6 +16,8 @@ class ContactGroup extends Model
         'closed' => 'boolean',
     ];
 
+    protected $guarded = ['id'];
+
     protected $dates = [
         'date_started',
         'date_finished',

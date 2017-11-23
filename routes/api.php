@@ -57,5 +57,7 @@ Route::namespace('Api')
         Route::get('/account/peek', 'Account\AccountController@peek');
 
         Route::get('contact-group/grid', 'ContactGroup\ContactGroupController@grid');
+        Route::get('contact-group/{contactGroup}', 'ContactGroup\ContactGroupController@show');
+        Route::post('contact-group/', 'ContactGroup\ContactGroupController@store');
     }
 );

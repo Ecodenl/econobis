@@ -5,10 +5,10 @@ const InputSelect = props => {
     const { label, className, size, id, name, value, options, onChangeAction, onBlurAction, required, error} = props;
 
     return (
-        <div className="form-group col-sm-6">
+        <div className={`form-group ${size}`}>
             <label htmlFor={ id } className={`col-sm-6 ${required}`}>{label}</label>
-            <div className={`${size}`}>
-                <select className={`form-control input-sm ${className}` + (error && 'has-error')} id={ id } name={name} value={value} onChange={onChangeAction} onBlur={onBlurAction}>
+            <div className={"col-sm-6"}>
+                <select className={`form-control input-sm ${className}` + (error && ' has-error')} id={ id } name={name} value={value} onChange={onChangeAction} onBlur={onBlurAction}>
                     <option value=''></option>
                     { options.map((option) => {
                         return <option key={ option.id } value={ option.id }>{ option.name }</option>

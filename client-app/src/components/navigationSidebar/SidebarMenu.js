@@ -61,7 +61,7 @@ const SidebarMenu = props => {
                 </Nav>
                 <Nav id="marketing">
                     <NavIcon><SvgIcon size={20} icon={ic_aspect_ratio} /></NavIcon>
-                    <NavText> Marketing </NavText>
+                    <NavText><Link className="sidebar-link" to="contact-groepen">Marketing</Link></NavText>
                 </Nav>
                 <Nav id="email">
                     <NavIcon><SvgIcon size={20} icon={ic_email} /></NavIcon>

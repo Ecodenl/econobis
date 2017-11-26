@@ -1,9 +1,12 @@
 import React, {Component} from 'react';
 import { hashHistory } from 'react-router';
 
+import PanelBody from '../../components/panel/PanelBody'
 import SignUpList from './harmonica/SignUpList';
 import OpportunityList from './harmonica/OpportunityList';
 import TaskList from './harmonica/TaskList';
+import ContactGroupList from './harmonica/ContactGroupList';
+import AddContactToGroup from './harmonica/AddContactToGroup';
 
 class ContactDetailsHarmonica extends Component {
     constructor(){
@@ -13,6 +16,8 @@ class ContactDetailsHarmonica extends Component {
             toggleShowSignUps: false,
             toggleShowOpportunities: false,
             toggleShowTasks: false,
+            toggleShowGroups: false,
+            showModalAddGroup: false,
         }
     }
 
@@ -46,6 +51,18 @@ class ContactDetailsHarmonica extends Component {
         });
     };
 
+    toggleAddGroup = () => {
+        this.setState({
+            showModalAddGroup: !this.state.showModalAddGroup
+        });
+    };
+
+    toggleGroup = () => {
+        this.setState({
+            toggleShowGroups: !this.state.toggleShowGroups
+        });
+    };
+
     render(){
         return (
             <div className="col-md-12 extra-space-above">
@@ -76,6 +93,21 @@ class ContactDetailsHarmonica extends Component {
                         </div>
                     </div>
                 </div>
+                <div className="panel panel-default harmonica-button">
+                    <PanelBody>
+                        <div className="col-sm-12" onClick={this.toggleGroup}>
+                            <span className="">GROEPEN <span className="badge">1</span></span>
+                            <a role="button" className="pull-right" onClick={this.toggleAddGroup}><span className="glyphicon glyphicon-plus glyphicon-white"/></a>
+                            { this.state.toggleShowGroups && <ContactGroupList /> }
+                        </div>
+                    </PanelBody>
+                </div>
+
+                { this.state.showModalAddGroup &&
+                    <AddContactToGroup
+                        toggleAddGroup={this.toggleAddGroup}
+                    />
+                }
             </div>
         )
     }

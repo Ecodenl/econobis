@@ -235,7 +235,7 @@ class RegistrationController extends ApiController
         $address = Address::find(Registration::find($request->registration)->address_id);
         $address->measures_taken()->detach($data['measure_id']);
 
-        return 'Genomen maatregel verwijderd';
+        return null;
     }
 
     public function deleteMeasureRequested(Request $request){
@@ -245,7 +245,7 @@ class RegistrationController extends ApiController
         $address = Address::find(Registration::find($request->registration)->address_id);
         $address->measures_requested()->detach($data['measure_id']);
 
-        return 'Aangevraagde maatregel verwijderd';
+        return null;
     }
 
     public function updateNote(Request $request){
@@ -265,7 +265,7 @@ class RegistrationController extends ApiController
             $note = RegistrationNote::find($request->note);
             $note->delete();
 
-            return 'Opmerking verwijderd';
+            return null;
         }
     }
     public function deleteRegistration(Request $request)
@@ -277,7 +277,7 @@ class RegistrationController extends ApiController
             $registration->reasons()->delete();
             $registration->delete();
 
-            return 'Aanmelding verwijderd';
+            return null;
         }
     }
 

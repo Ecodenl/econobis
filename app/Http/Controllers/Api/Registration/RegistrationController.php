@@ -14,6 +14,7 @@ use App\Eco\Registration\Registration;
 use App\Eco\Contact\Contact;
 use App\Eco\Registration\RegistrationNote;
 use App\Http\Controllers\Api\ApiController;
+use App\Http\RequestQueries\Registration\Grid\RequestQuery;
 use App\Http\Resources\Registration\FullRegistration;
 use Illuminate\Http\Request;
 use App\Helpers\RequestInput\RequestInput;
@@ -21,10 +22,11 @@ use App\Helpers\RequestInput\RequestInput;
 class RegistrationController extends ApiController
 {
 
-    public function show()
+    public function show(RequestQuery $requestQuery)
     {
-        $registrations = Registration::all()
-            ->load(['sources', 'address', 'status']);
+        $registrations = $requestQuery->get();
+
+        $registrations->load(['sources', 'address', 'status']);
 
         return FullRegistration::collection($registrations);
     }

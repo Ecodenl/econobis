@@ -38,7 +38,7 @@ class RegistrationController extends ApiController
         foreach ($addresses as $address) {
             $registration[] = [
                 'addressId' => $address->id,
-                'addressName' => $address->street . $address->number,
+                'addressName' => $address->street . ' ' . $address->number,
                 'addressRegistratedAt' => $address->registration()
                     ->pluck('created_at')
             ];

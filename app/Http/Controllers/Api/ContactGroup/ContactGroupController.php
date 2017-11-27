@@ -25,6 +25,14 @@ class ContactGroupController extends Controller
         return FullContactGroup::make($contactGroup);
     }
 
+    public function getContactGroups(Contact $contact)
+    {
+        $groups = $contact->groups()->pluck('name');
+
+        return $groups;
+    }
+
+
     public function store(RequestInput $requestInput)
     {
         $data = $requestInput->string('name')->whenMissing('')->next()

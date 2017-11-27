@@ -83,10 +83,6 @@ class Contact extends Model
         return $this->belongsTo(User::class);
     }
 
-    function registrations() {
-        return $this->hasMany(Registration::class, 'contact_id');
-    }
-
     public function getStatus()
     {
         if(!$this->status_id) return null;

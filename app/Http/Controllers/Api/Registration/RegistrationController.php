@@ -31,6 +31,22 @@ class RegistrationController extends ApiController
         return FullRegistration::collection($registrations);
     }
 
+    public function getContactRegistrations(Contact $contact)
+    {
+        $addresses = $contact->addresses()->get();
+
+        foreach ($addresses as $address) {
+            $registration[] = [
+                'addressId' => $address->id,
+                'addressName' => $address->street . $address->number,
+                'addressRegistratedAt' => $address->registration()
+                    ->pluck('created_at')
+            ];
+        }
+        return $registration;
+    }
+
+
     public function getStore(Request $request)
     {
         $contact = Contact::find($request->contact);
@@ -181,9 +197,13 @@ class RegistrationController extends ApiController
         //basic registration
         $registration = Registration::find($request->registration);
         if (!$registration) {
-            return 'Registratie met id:' . $request->registration . 'niet gevonden';
+            return 'Registratie met id:' . $request->registration
+                . 'niet gevonden';
         }
-        if (array_key_exists('address_id', $data) || array_key_exists('registration_status_id', $data) || array_key_exists('campaign_id', $data)) {
+        if (array_key_exists('address_id', $data)
+            || array_key_exists('registration_status_id', $data)
+            || array_key_exists('campaign_id', $data)
+        ) {
             if (array_key_exists('address_id', $data)) {
                 $registration->address_id = $data['address_id'];
             }
@@ -210,7 +230,10 @@ class RegistrationController extends ApiController
         }
 
         //rest is saved on Address
-        if(array_key_exists('building_type_id', $data) || array_key_exists('build_year', $data) || array_key_exists('owner', $data)) {
+        if (array_key_exists('building_type_id', $data)
+            || array_key_exists('build_year', $data)
+            || array_key_exists('owner', $data)
+        ) {
             $address = Address::find($registration->address_id);
             if (array_key_exists('building_type_id', $data)) {
                 $address->building_type_id = $data['building_type_id'];
@@ -228,27 +251,32 @@ class RegistrationController extends ApiController
         return $registration;
     }
 
-    public function deleteMeasureTaken(Request $request){
+    public function deleteMeasureTaken(Request $request)
+    {
         $data = $request->validate([
             'measure_id' => 'required:measures,id',
         ]);
-        $address = Address::find(Registration::find($request->registration)->address_id);
+        $address
+            = Address::find(Registration::find($request->registration)->address_id);
         $address->measures_taken()->detach($data['measure_id']);
 
         return null;
     }
 
-    public function deleteMeasureRequested(Request $request){
+    public function deleteMeasureRequested(Request $request)
+    {
         $data = $request->validate([
             'measure_id' => 'required:measures,id',
         ]);
-        $address = Address::find(Registration::find($request->registration)->address_id);
+        $address
+            = Address::find(Registration::find($request->registration)->address_id);
         $address->measures_requested()->detach($data['measure_id']);
 
         return null;
     }
 
-    public function updateNote(Request $request){
+    public function updateNote(Request $request)
+    {
         {
             $data = $request->validate([
                 'note_text' => 'required',
@@ -260,7 +288,9 @@ class RegistrationController extends ApiController
             return $note;
         }
     }
-    public function deleteNote(Request $request){
+
+    public function deleteNote(Request $request)
+    {
         {
             $note = RegistrationNote::find($request->note);
             $note->delete();
@@ -268,6 +298,7 @@ class RegistrationController extends ApiController
             return null;
         }
     }
+
     public function deleteRegistration(Request $request)
     {
         {

@@ -71,22 +71,22 @@ class RegistrationController extends ApiController
         //basic registration
         $registration = new Registration();
         $registration->address_id = $data['addressId'];
-        if (array_key_exists('statusId', $data)) {
+        if ($data['statusId']) {
             $registration->registration_status_id
                 = $data['statusId'];
         }
-        if (array_key_exists('campaignId', $data)) {
+        if ($data['campaignId']) {
             $registration->campaign_id = $data['campaignId'];
         }
         $registration->save();
 
         //relations
-        if (array_key_exists('sourceIds', $data)) {
+        if ($data['sourceIds']) {
             foreach ($data['sourceIds'] as $source_id) {
                 $registration->sources()->attach($source_id);
             }
         }
-        if (array_key_exists('registrationReasonIds', $data)) {
+        if ($data['registrationReasonIds']) {
             foreach ($data['registrationReasonIds'] as $registration_reason) {
                 $registration->reasons()->attach($registration_reason);
             }
@@ -94,13 +94,13 @@ class RegistrationController extends ApiController
 
         //rest is saved on Address
         $address = Address::find($data['addressId']);
-        if (array_key_exists('buildingTypeId', $data)) {
+        if ($data['buildingTypeId']) {
             $address->building_type_id = $data['buildingTypeId'];
         }
-        if (array_key_exists('buildYear', $data)) {
+        if ($data['buildYear']) {
             $address->build_year = $data['buildYear'];
         }
-        if (array_key_exists('owner', $data)) {
+        if ($data['owner']) {
             $address->owner = $data['owner'];
         }
 

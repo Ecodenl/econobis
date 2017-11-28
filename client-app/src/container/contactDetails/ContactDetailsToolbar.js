@@ -26,7 +26,14 @@ class ContactDetailsToolbar extends Component {
                 <div className="col-md-4">
                     <div className="btn-group" role="group">
                         <ButtonIcon iconName={"glyphicon-arrow-left"} onClickAction={browserHistory.goBack} />
-                        <ButtonIcon iconName={"glyphicon-trash"} onClickAction={this.toggleDelete}/>
+                        {
+                            this.props.typeId === 'account' && this.props.permissions.deleteAccount &&
+                            <ButtonIcon iconName={"glyphicon-trash"} onClickAction={this.toggleDelete}/>
+                        }
+                        {
+                            this.props.typeId === 'person' && this.props.permissions.deletePerson &&
+                            <ButtonIcon iconName={"glyphicon-trash"} onClickAction={this.toggleDelete}/>
+                        }
                     </div>
                 </div>
                 <div className="col-md-4"><h4 className="text-center"><strong>{this.props.fullName || 'Nieuw'}</strong></h4></div>
@@ -49,6 +56,8 @@ const mapStateToProps = (state) => {
     return {
         fullName: state.contactDetails.fullName,
         id: state.contactDetails.id,
+        typeId: state.contactDetails.typeId,
+        permissions: state.meDetails.permissions,
     }
 };
 

@@ -76,6 +76,7 @@ class ContactDetailsFormOtherPersonEdit extends Component {
                         name={"iban"}
                         value={iban}
                         onChangeAction={this.handleInputChange}
+                        readOnly={!this.props.permissions.updateContactIban}
                     />
                 </div>
 
@@ -124,6 +125,7 @@ class ContactDetailsFormOtherPersonEdit extends Component {
 const mapStateToProps = (state) => {
     return {
         contactDetails: state.contactDetails,
+        permissions: state.meDetails.permissions,
     };
 };
 

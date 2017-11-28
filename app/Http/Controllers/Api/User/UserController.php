@@ -70,4 +70,19 @@ class UserController extends Controller
 
         return $this->show($user->fresh());
     }
+
+    public function addRole(User $user, Role $role)
+    {
+        $this->authorize('update', $user);
+
+        $user->assignRole($role);
+    }
+
+    public function removeRole(User $user, Role $role)
+    {
+        $this->authorize('update', $user);
+
+        $user->removeRole($role);
+    }
+
 }

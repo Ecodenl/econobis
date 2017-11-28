@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\Api\Contact;
 
 use App\Eco\Contact\Contact;
+use App\Eco\User\User;
 use App\Http\Resources\Contact\FullContact;
 use App\Jobs\SoftDeleteContact;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Spatie\Permission\Models\Role;
 
 class ContactController extends Controller
 {

@@ -55,52 +55,52 @@ class RegistrationController extends ApiController
         return $info;
     }
 
-    public function store(RequestInput $request)
+    public function store(Request $request)
     {
         $data = $request->validate([
-            'address_id' => 'required|exists:addresses,id',
-            'registration_status_id' => 'exists:registration_status,id',
-            'campaign_id' => 'exists:campaigns,id',
-            'building_type_id' => 'exists:building_types,id',
-            'build_year' => 'integer|between:1500,3000',
+            'addressId' => 'required|exists:addresses,id',
+            'statusId' => 'exists:registration_status,id',
+            'campaignId' => 'exists:campaigns,id',
+            'buildingTypeId' => 'exists:building_types,id',
+            'buildYear' => 'integer|between:1500,3000',
             'owner' => 'boolean',
-            'source_ids' => '',
-            'registration_reasons' => ''
+            'sourceIds' => '',
+            'registrationReasonIds' => ''
         ]);
 
         //basic registration
         $registration = new Registration();
-        $registration->address_id = $data['address_id'];
-        if ($data['registration_status_id']) {
+        $registration->address_id = $data['addressId'];
+        if (array_key_exists('statusId', $data)) {
             $registration->registration_status_id
-                = $data['registration_status_id'];
+                = $data['statusId'];
         }
-        if ($data['campaign_id']) {
-            $registration->campaign_id = $data['campaign_id'];
+        if (array_key_exists('campaignId', $data)) {
+            $registration->campaign_id = $data['campaignId'];
         }
         $registration->save();
 
         //relations
-        if ($data['source_ids']) {
-            foreach ($data['source_ids'] as $source_id) {
+        if (array_key_exists('sourceIds', $data)) {
+            foreach ($data['sourceIds'] as $source_id) {
                 $registration->sources()->attach($source_id);
             }
         }
-        if ($data['registration_reasons']) {
-            foreach ($data['registration_reasons'] as $registration_reason) {
+        if (array_key_exists('registrationReasonIds', $data)) {
+            foreach ($data['registrationReasonIds'] as $registration_reason) {
                 $registration->reasons()->attach($registration_reason);
             }
         }
 
         //rest is saved on Address
-        $address = Address::find($data['address_id']);
-        if ($data['building_type_id']) {
-            $address->building_type_id = $data['building_type_id'];
+        $address = Address::find($data['addressId']);
+        if (array_key_exists('buildingTypeId', $data)) {
+            $address->building_type_id = $data['buildingTypeId'];
         }
-        if ($data['build_year']) {
-            $address->build_year = $data['build_year'];
+        if (array_key_exists('buildYear', $data)) {
+            $address->build_year = $data['buildYear'];
         }
-        if ($data['owner']) {
+        if (array_key_exists('owner', $data)) {
             $address->owner = $data['owner'];
         }
 

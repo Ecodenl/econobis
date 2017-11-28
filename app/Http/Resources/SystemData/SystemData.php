@@ -7,6 +7,7 @@ use App\Eco\Address\AddressType;
 use App\Eco\BuildingFeature\BuildingFeature;
 use App\Eco\BuildingType\BuildingType;
 use App\Eco\Measure\Measure;
+use App\Eco\Registration\RegistrationReason;
 use App\Eco\Registration\RegistrationSource;
 use App\Eco\Campaign\Campaign;
 use App\Eco\Registration\RegistrationStatus;
@@ -55,6 +56,7 @@ class SystemData extends Resource
             'registrationSources' => RegistrationSource::select(['id', 'name'])->get(),
             'campaigns' => Campaign::select(['id', 'name'])->get(),
             'registrationStatuses' => RegistrationStatus::select(['id', 'name'])->get(),
+            'registrationReasons' => RegistrationReason::select(['id', 'name'])->get(),
         ];
     }
 }

@@ -44,7 +44,7 @@ class FullUser extends Resource
     {
         $result = [];
         foreach(Permission::all() as $permission){
-            $result[$permission->name] = $this->hasPermissionTo($permission);
+            $result[camel_case($permission->name)] = $this->hasPermissionTo($permission);
         }
         return $result;
     }

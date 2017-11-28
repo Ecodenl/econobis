@@ -7,6 +7,7 @@ use App\Eco\ContactGroup\ContactGroup;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\RequestQueries\ContactGroup\Grid\RequestQuery;
 use App\Http\Resources\Contact\FullContact;
+use App\Http\Resources\Contact\GridContact;
 use App\Http\Resources\ContactGroup\FullContactGroup;
 use App\Http\Resources\ContactGroup\GridContactGroup;
 use Illuminate\Http\Request;
@@ -21,7 +22,7 @@ class ContactGroupController extends Controller
 
     public function show(ContactGroup $contactGroup)
     {
-        $contactGroup->load(['responsibleUser', 'createdBy', 'contacts']);
+        $contactGroup->load(['responsibleUser', 'createdBy']);
         return FullContactGroup::make($contactGroup);
     }
 
@@ -79,6 +80,11 @@ class ContactGroupController extends Controller
     public function contacts(ContactGroup $contactGroup)
     {
         return FullContact::collection($contactGroup->contacts);
+    }
+
+    public function gridContacts(ContactGroup $contactGroup)
+    {
+        return GridContact::collection($contactGroup->contacts);
     }
 
     public function addContact(ContactGroup $contactGroup, Contact $contact)

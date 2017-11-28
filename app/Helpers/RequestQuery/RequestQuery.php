@@ -74,6 +74,13 @@ abstract class RequestQuery
         return $this->getQuery()->get();
     }
 
+    public function total()
+    {
+        $query = $this->baseQuery();
+        $this->applyFilter($query);
+        return $query->count();
+    }
+
     /**
      * @param $query
      */

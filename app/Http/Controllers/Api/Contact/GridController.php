@@ -19,7 +19,11 @@ class GridController extends Controller
         $contacts->load('primaryEmailAddress');
         $contacts->load('primaryPhoneNumber');
 
-        return new GridContactCollection($contacts);
+        return (new GridContactCollection($contacts))
+            ->additional(['meta' => [
+                'total' => $requestQuery->total(),
+                ]
+            ]);
     }
 
 }

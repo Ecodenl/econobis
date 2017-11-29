@@ -5,7 +5,7 @@ export default function (state= {}, action) {
                 ...state,
                 ...action.contactGroupDetails,
             };
-        case 'UPDATE_CONTACT_GROUP_DETAILS_SUCCESS':
+        case 'UPDATE_CONTACT_GROUP_DETAILS':
             return {
                 ...state,
                 ...action.contactGroupDetails,

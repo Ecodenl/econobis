@@ -61,7 +61,6 @@ class ContactsInGroupListToolbar extends Component {
                                 <span className="glyphicon glyphicon-plus" />
                             </button>
                         </div>
-                        <ButtonIcon iconName={"glyphicon-save"} />
                     </div>
                 </div>
                 <div className="col-md-4"><h3 className="text-center table-title">Contacten in groep: {this.state.groupName}</h3></div>

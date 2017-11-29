@@ -68,12 +68,12 @@ export default {
             });
     },
 
-    updateContactGroup: (person) => {
-        const requestUrl = `${URL_CONTACT_GROUP}/${person.id}`;
+    updateContactGroup: (contactGroup) => {
+        const requestUrl = `${URL_CONTACT_GROUP}/${contactGroup.id}`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios.post(requestUrl, person)
+        return axios.post(requestUrl, contactGroup)
             .then(function (response) {
                 return response.data.data;
             })

@@ -3,6 +3,7 @@ export const fetchContactGroupDetails = (id) => ({
     id,
 });
 
-export const updateContactGroupDetails = () => ({
+export const updateContactGroupDetails = (contactGroupDetails) => ({
     type: 'UPDATE_CONTACT_GROUP_DETAILS',
+    contactGroupDetails
 });

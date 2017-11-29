@@ -25,7 +25,6 @@ export default function* watchSagas() {
     yield takeLatest('DELETE_CONTACT_GROUP', deleteContactGroupSaga);
     yield takeLatest('ADD_CONTACT_TO_GROUP', addContactToGroupSaga);
     yield takeLatest('FETCH_CONTACT_GROUP_DETAILS', fetchContactGroupDetailsSaga);
-    yield takeLatest('UPDATE_CONTACT_GROUP_DETAILS', updateContactGroupDetailsSaga);
     yield takeLatest('FETCH_CONTACTS_IN_GROUP', fetchContactsInGroupSaga);
     yield takeLatest('DELETE_CONTACT_IN_GROUP', deleteContactInGroupSaga);
 }

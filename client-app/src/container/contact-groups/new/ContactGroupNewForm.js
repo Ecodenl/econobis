@@ -68,6 +68,30 @@ class ContactGroupNewForm extends Component {
             });
     };
 
+    handleChangeStartedDate = (date) => {
+        const formattedDate = (date ? moment(date).format('Y-MM-DD') : '');
+
+        this.setState({
+            ...this.state,
+            contactGroup: {
+                ...this.state.contactGroup,
+                dateStarted: formattedDate
+            },
+        });
+    };
+
+    handleChangeFinishedDate = (date) => {
+        const formattedDate = (date ? moment(date).format('Y-MM-DD') : '');
+
+        this.setState({
+            ...this.state,
+            contactGroup: {
+                ...this.state.contactGroup,
+                dateFinished: formattedDate
+            },
+        });
+    };
+
     render() {
         const { name, description, responsibleUserId, closed, dateStarted, dateFinished } = this.state.contactGroup;
 
@@ -85,12 +109,12 @@ class ContactGroupNewForm extends Component {
                 </div>
 
                 <div className="row">
-                    <div className="form-group col-sm-12">
+                    <div className="form-group">
                         <label htmlFor="description" className="col-sm-3">Omschrijving</label>
                         <div className="col-sm-9">
                             <textarea name="description" value={description} onChange={this.handleInputChange} className="form-control input-sm" />
                         </div>
-                    </div>
+                        </div>
                 </div>
 
                 <div className="row">
@@ -116,7 +140,7 @@ class ContactGroupNewForm extends Component {
                         size={"col-sm-6"}
                         name="dateStarted"
                         value={dateStarted}
-                        onChangeAction={this.handleInputChange}
+                        onChangeAction={this.handleChangeStartedDate}
 
                     />
                     <InputDate
@@ -124,7 +148,7 @@ class ContactGroupNewForm extends Component {
                         size={"col-sm-6"}
                         name="dateFinished"
                         value={dateFinished}
-                        onChangeAction={this.handleInputChange}
+                        onChangeAction={this.handleChangeFinishedDate}
                     />
                 </div>
 

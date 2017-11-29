@@ -2,13 +2,11 @@ import React, {Component} from 'react';
 import { hashHistory } from 'react-router';
 import {connect} from 'react-redux';
 
+import Panel from "../../components/panel/Panel";
 import PanelBody from '../../components/panel/PanelBody'
 import SignUpList from './harmonica/SignUpList';
 import OpportunityList from './harmonica/OpportunityList';
 import TaskList from './harmonica/TaskList';
-
-import Panel from "../../components/panel/Panel";
-import PanelBody from "../../components/panel/PanelBody";
 import ContactGroupList from './harmonica/ContactGroupList';
 import AddContactToGroup from './harmonica/AddContactToGroup';
 

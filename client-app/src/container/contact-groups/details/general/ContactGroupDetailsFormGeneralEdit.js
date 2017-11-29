@@ -1,11 +1,11 @@
 import React, {Component} from 'react';
-import { connect } from 'react-redux';
-import { hashHistory } from 'react-router';
+import {connect} from 'react-redux';
+import {hashHistory} from 'react-router';
 import validator from 'validator';
 import moment from 'moment';
 
 import ContactGroupAPI from '../../../../api/ContactGroupAPI';
-import { updateContactGroup } from '../../../../actions/ContactGroupDetailsActions';
+import {updateContactGroupDetails} from '../../../../actions/ContactGroupDetailsActions';
 import InputText from '../../../../components/form/InputText';
 import InputSelect from '../../../../components/form/InputSelect';
 import InputCheckbox from '../../../../components/form/InputCheckbox';
@@ -16,9 +16,14 @@ class ContactGroupDetailsFormGeneralEdit extends Component {
     constructor(props) {
         super(props);
 
+        const { dateStarted } = props.contactGroupDetails;
+        const { dateFinished } = props.contactGroupDetails;
+
         this.state = {
             contactGroup: {
-                ...props.contactGroupDetails
+                ...props.contactGroupDetails,
+                dateStarted: dateStarted ? moment(dateStarted.date).format('Y-MM-DD') : '',
+                dateFinished: dateFinished ? moment(dateFinished.date).format('Y-MM-DD') : '',
             },
             errors: {
                 name: false,
@@ -43,28 +48,54 @@ class ContactGroupDetailsFormGeneralEdit extends Component {
     handleSubmit = event => {
         event.preventDefault();
 
-        const { contactGroup }  = this.state;
+        const {contactGroup} = this.state;
 
         // Validation
         let errors = {};
         let hasErrors = false;
 
-        if(validator.isEmpty(contactGroup.name)){
+        if (validator.isEmpty(contactGroup.name)) {
             errors.name = true;
             hasErrors = true;
-        };
+        }
+        ;
 
-        this.setState({ ...this.state, errors: errors })
+        this.setState({...this.state, errors: errors})
 
         // If no errors send form
         !hasErrors &&
-        ContactGroupAPI.newContactGroup(contactGroup).then((payload) => {
-            hashHistory.push("/contact-groepen");
+        ContactGroupAPI.updateContactGroup(contactGroup).then((payload) => {
+            this.props.updateContactGroupDetails(payload);
+            this.props.switchToView();
+        });
+    };
+
+    handleChangeStartedDate = (date) => {
+        const formattedDate = (date ? moment(date).format('Y-MM-DD') : '');
+
+        this.setState({
+            ...this.state,
+            contactGroup: {
+                ...this.state.contactGroup,
+                dateStarted: formattedDate
+            },
+        });
+    };
+
+    handleChangeFinishedDate = (date) => {
+        const formattedDate = (date ? moment(date).format('Y-MM-DD') : '');
+
+        this.setState({
+            ...this.state,
+            contactGroup: {
+                ...this.state.contactGroup,
+                dateFinished: formattedDate
+            },
         });
     };
 
     render() {
-        const { name, description, responsibleUserId, closed, dateStarted, dateFinished, createdAt } = this.state.contactGroup;
+        const {name, description, responsibleUserId, closed, dateStarted, dateFinished, createdAt} = this.state.contactGroup;
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -81,9 +112,14 @@ class ContactGroupDetailsFormGeneralEdit extends Component {
 
                 <div className="row">
                     <div className="form-group col-sm-12">
-                        <label htmlFor="description" className="col-sm-3">Omschrijving</label>
-                        <div className="col-sm-9">
-                            <textarea name={description} value={description} onChange={this.handleInputChange} className="form-control input-sm" />
+                        <div className="row">
+                            <div className="col-sm-12">
+                            <label htmlFor="description" className="col-sm-3">Omschrijving</label>
+                            <div className="col-sm-9">
+                                <textarea name={description} value={description} onChange={this.handleInputChange}
+                                          className="form-control input-sm"/>
+                            </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -110,16 +146,16 @@ class ContactGroupDetailsFormGeneralEdit extends Component {
                         label="Start datum"
                         size={"col-sm-6"}
                         name="dateStarted"
-                        value={dateStarted && dateStarted.date}
-                        onChangeAction={this.handleInputChange}
+                        value={dateStarted}
+                        onChangeAction={this.handleChangeStartedDate}
 
                     />
                     <InputDate
                         label="Datum gereed"
                         size={"col-sm-6"}
                         name="dateFinished"
-                        value={dateFinished && dateFinished.date}
-                        onChangeAction={this.handleInputChange}
+                        value={dateFinished}
+                        onChangeAction={this.handleChangeFinishedDate}
                     />
                 </div>
 
@@ -127,20 +163,21 @@ class ContactGroupDetailsFormGeneralEdit extends Component {
                     <InputText
                         label={"Gemaakt op"}
                         name={"createdAt"}
-                        value={ moment(createdAt.date).format('DD-MM-Y') }
+                        value={moment(createdAt.date).format('DD-MM-Y')}
                         readOnly={true}
                     />
                     <InputText
                         label={"Gemaakt door"}
                         name={"createdBy"}
-                        value={ this.props.meDetails.fullName}
+                        value={this.props.meDetails.fullName}
                         readOnly={true}
                     />
                 </div>
 
                 <div className="panel-footer">
                     <div className="pull-right btn-group" role="group">
-                        <ButtonText buttonClassName={"btn-default"} buttonText={"Sluiten"} onClickAction={this.props.switchToView}/>
+                        <ButtonText buttonClassName={"btn-default"} buttonText={"Sluiten"}
+                                    onClickAction={this.props.switchToView}/>
                         <ButtonText buttonText={"Opslaan"} onClickAction={this.handleSubmit}/>
                     </div>
                 </div>
@@ -157,8 +194,8 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = dispatch => ({
-    updateContactGroup: (id) => {
-        dispatch(updateContactGroup(id));
+    updateContactGroupDetails: (id) => {
+        dispatch(updateContactGroupDetails(id));
     },
 });
 

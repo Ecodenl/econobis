@@ -37,7 +37,6 @@ class ContactGroupController extends Controller
     public function store(RequestInput $requestInput)
     {
 //        $this->authorize('createGroup', ContactGroup::class);
-        //dd(\Request::all());
 
         $data = $requestInput->string('name')->whenMissing('')->next()
             ->string('description')->whenMissing('')->next()

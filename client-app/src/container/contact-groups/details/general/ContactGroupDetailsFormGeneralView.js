@@ -18,12 +18,12 @@ const ContactGroupDetailsFormGeneralView = props => {
 
             <div className="row">
                 <div className="col-sm-12">
-                    <label htmlFor="description" className="col-sm-3">Beschrijving</label>
-                    <div className="col-sm-9" id="description">
+                    <label htmlFor="description" className="col-sm-3">Omschrijving</label>
+                                    <div className="col-sm-9" id="description">
                         {description}
                     </div>
                 </div>
-            </div>
+                </div>
 
             <div className="row">
                 <ViewText

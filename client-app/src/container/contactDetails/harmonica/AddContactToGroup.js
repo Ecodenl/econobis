@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import validator from 'validator';
 
 import { addContactToGroup } from '../../../actions/ContactGroupsActions';
+import { fetchContactDetails } from '../../../actions/ContactDetailsActions';
 import GroupAPI from '../../../api/ContactGroupAPI';
 import Modal from '../../../components/modal/Modal';
 import ViewText from '../../../components/form/ViewText';
@@ -58,6 +59,8 @@ class AddContactToGroup extends Component {
 
         if(!hasErrors) {
             this.props.addContactToGroup(contact);
+            this.props.toggleGroup();
+            this.props.fetchContactDetails(contact.contactId);
             this.props.toggleAddGroup();
         }
     };
@@ -102,6 +105,9 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => ({
     addContactToGroup: (contact) => {
         dispatch(addContactToGroup(contact));
+    },
+    fetchContactDetails: (id) => {
+        dispatch(fetchContactDetails(id));
     },
 });
 

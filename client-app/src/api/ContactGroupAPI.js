@@ -31,13 +31,13 @@ export default {
             });
     },
 
-    fetchContactGroupsContact: (contactId) => {
-        const requestUrl = `${URL_CONTACT_GROUP}/grid`;
+    fetchGroupsByContact: (contactId) => {
+        const requestUrl = `${URL_API}/api/contact/${contactId}/groups`;
         const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
         axios.defaults.headers.common.Authorization = AUTH_TOKEN;
 
         return axios.get(requestUrl)
-            .then(response => response.data.data)
+            .then(response => response.data)
             .catch((error) => {
                 console.log(error);
             },
@@ -49,7 +49,7 @@ export default {
         const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
         axios.defaults.headers.common.Authorization = AUTH_TOKEN;
 
-        return axios.get(requestUrl)
+        return axios.post(requestUrl)
             .then(response => response.data.data)
             .catch(error => error.response);
     },
@@ -93,6 +93,20 @@ export default {
             })
             .catch(function (error) {
                 console.log(error);
+            });
+    },
+
+    deleteContactFromGroup: (groupId, contactId) => {
+        const requestUrl = `${URL_CONTACT_GROUP}/${groupId}/contacts/remove/${contactId}`;
+        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
+        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
+
+        return axios.post(requestUrl)
+            .then(function (response) {
+                return response.data;
+            })
+            .catch(function (error) {
+                return error.response;
             });
     },
 };

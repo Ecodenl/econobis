@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\Contact;
 
 use App\Eco\Contact\Contact;
+use App\Http\Resources\Contact\ContactPeek;
 use App\Http\Resources\Contact\FullContact;
 use App\Jobs\SoftDeleteContact;
 use Illuminate\Http\Request;
@@ -29,5 +30,12 @@ class ContactController extends Controller
     public function destroy(Contact $contact)
     {
         SoftDeleteContact::dispatch($contact);
+    }
+
+    public function peek()
+    {
+        $contact = Contact::select('id', 'full_name')->get();
+
+        return ContactPeek::collection($contact);
     }
 }

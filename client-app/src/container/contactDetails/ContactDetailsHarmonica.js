@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import { hashHistory } from 'react-router';
+import {connect} from 'react-redux';
 
 import PanelBody from '../../components/panel/PanelBody'
 import SignUpList from './harmonica/SignUpList';
@@ -19,7 +20,19 @@ class ContactDetailsHarmonica extends Component {
             toggleShowGroups: false,
             showModalAddGroup: false,
         }
-    }
+    };
+
+    componentWillReceiveProps(nextProps) {
+        if(this.props.id !== nextProps.id) {
+            this.setState({
+                toggleShowSignUps: false,
+                toggleShowOpportunities: false,
+                toggleShowTasks: false,
+                toggleShowGroups: false,
+                showModalAddGroup: false,
+            })
+        }
+    };
 
     newSignup = () => {
         hashHistory.push(`/aanmelding/nieuw`);
@@ -95,8 +108,8 @@ class ContactDetailsHarmonica extends Component {
                 </div>
                 <div className="panel panel-default harmonica-button">
                     <PanelBody>
-                        <div className="col-sm-12" onClick={this.toggleGroup}>
-                            <span className="">GROEPEN <span className="badge">1</span></span>
+                        <div className="col-sm-12">
+                            <span onClick={this.toggleGroup} className="">GROEPEN <span className="badge">{ this.props.contactDetails.groupCount }</span></span>
                             <a role="button" className="pull-right" onClick={this.toggleAddGroup}><span className="glyphicon glyphicon-plus glyphicon-white"/></a>
                             { this.state.toggleShowGroups && <ContactGroupList /> }
                         </div>
@@ -106,6 +119,7 @@ class ContactDetailsHarmonica extends Component {
                 { this.state.showModalAddGroup &&
                     <AddContactToGroup
                         toggleAddGroup={this.toggleAddGroup}
+                        toggleGroup={this.toggleGroup}
                     />
                 }
             </div>
@@ -113,4 +127,10 @@ class ContactDetailsHarmonica extends Component {
     }
 };
 
-export default ContactDetailsHarmonica;
+const mapStateToProps = (state) => {
+    return {
+        contactDetails: state.contactDetails,
+    };
+};
+
+export default connect(mapStateToProps, null)(ContactDetailsHarmonica);

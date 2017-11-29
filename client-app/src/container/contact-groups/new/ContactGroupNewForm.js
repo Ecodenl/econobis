@@ -88,7 +88,7 @@ class ContactGroupNewForm extends Component {
                     <div className="form-group col-sm-12">
                         <label htmlFor="description" className="col-sm-3">Omschrijving</label>
                         <div className="col-sm-9">
-                            <textarea name={description} value={description} onChange={this.handleInputChange} className="form-control input-sm" />
+                            <textarea name="description" value={description} onChange={this.handleInputChange} className="form-control input-sm" />
                         </div>
                     </div>
                 </div>
@@ -145,7 +145,6 @@ class ContactGroupNewForm extends Component {
 
                 <div className="panel-footer">
                     <div className="pull-right btn-group" role="group">
-                        <ButtonText buttonClassName={"btn-default"} buttonText={"Sluiten"} onClickAction={this.props.switchToView}/>
                         <ButtonText buttonText={"Opslaan"} onClickAction={this.handleSubmit}/>
                     </div>
                 </div>

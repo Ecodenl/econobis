@@ -23,7 +23,7 @@ const ContactDetailsApp = props => {
             <div className="col-md-3">
                 <div className="panel panel-default">
                     <div className="panel-body">
-                        <ContactDetailsHarmonica />
+                        <ContactDetailsHarmonica id={props.params.id} />
                     </div>
                 </div>
             </div>

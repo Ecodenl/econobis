@@ -10,7 +10,7 @@ const RegistrationNewForm = props => {
             <div>
                 <Panel>
                     <PanelBody>
-                        <RegistrationNewFormGeneral contactId={props.contactId} />
+                        <RegistrationNewFormGeneral contactId={props.contactId} addressId={props.addressId}/>
                     </PanelBody>
                 </Panel>
 

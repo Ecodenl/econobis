@@ -1,34 +1,55 @@
-import React from 'react';
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import { browserHistory } from 'react-router';
+import { isEmpty } from 'lodash';
 
+import { fetchContactDetails } from '../../../actions/ContactDetailsActions';
 import RegistrationNewForm from './RegistrationNewForm';
 import RegistrationNewToolbar from './RegistrationNewToolbar';
 
-const RegistrationNewApp = props => {
-    return (
-        <div className="row">
-            <div className="col-md-9">
-                <div className="panel panel-default">
-                    <div className="panel-body">
-                        <div className="col-md-12 extra-space-above">
-                            <RegistrationNewToolbar contactId={props.params.contactId} />
-                        </div>
+class RegistrationNewApp extends Component {
+    constructor(props) {
+        super(props);
+    }
 
-                        <div className="col-md-12 extra-space-above">
-                            <RegistrationNewForm contactId={props.params.contactId} />
+    componentDidMount() {
+        if(isEmpty(this.props.contactDetails)) {
+            this.props.fetchContactDetails(this.props.params.contactId);
+        }
+    };
+
+    render() {
+        return (
+            <div className="row">
+                <div className="col-md-9">
+                    <div className="panel panel-default">
+                        <div className="panel-body">
+                            <div className="col-md-12 extra-space-above">
+                                <RegistrationNewToolbar contactId={this.props.params.contactId} />
+                            </div>
+
+                            <div className="col-md-12 extra-space-above">
+                                <RegistrationNewForm contactId={this.props.params.contactId} addressId={this.props.params.addressId}/>
+                            </div>
                         </div>
                     </div>
                 </div>
+                <div className="col-md-3" />
             </div>
-            <div className="col-md-3">
-                <div className="panel panel-default">
-                    <div className="panel-body">
-                        Harmonica
-                    </div>
-                </div>
-            </div>
-        </div>
-    )
+        )
+    }
 };
 
-export default RegistrationNewApp;
+const mapStateToProps = (state) => {
+    return {
+        contactDetails: state.contactDetails,
+    };
+};
+
+const mapDispatchToProps = dispatch => ({
+    fetchContactDetails: (id) => {
+        dispatch(fetchContactDetails(id));
+    },
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(RegistrationNewApp);

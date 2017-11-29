@@ -4,63 +4,61 @@ import { connect } from 'react-redux';
 import ViewText from '../../../../components/form/ViewText';
 
 const RegistrationDetailsFormGeneralView = props => {
-    const { email, title, firstName, lastNamePrefix, lastName, phoneNumber, mobile, occupation, active } = props.userDetails;
+    const { address, buildYear, buildingTypeId, owner, status, sources, campaignId, registrationReasonIds } = props.registrationDetails;
 
     return (
         <div onClick={props.switchToEdit}>
             <div className="row">
                 <ViewText
-                    label={"Aanspreektitel"}
-                    value={title && title.name}
+                    label={"Adres"}
+                    value={address && address.street + ' ' + address.number}
                 />
                 <ViewText
-                    label={"E-mail"}
-                    value={email}
-                />
-            </div>
-
-            <div className="row">
-                <ViewText
-                    label="Voornaam"
-                    value={firstName}
-                />
-
-                <ViewText
-                    label="Telefoonnummer"
-                    value={phoneNumber}
+                    label={"Bouwjaar"}
+                    value={buildYear}
                 />
             </div>
 
             <div className="row">
                 <ViewText
-                    label={"Tussenvoegsel"}
-                    value={lastNamePrefix && lastNamePrefix.name}
+                    label="Woningtype"
+                    value={buildingTypeId}
+                />
+
+                <ViewText
+                    label="Eigendom"
+                    value={owner ? 'Ja' : 'Nee'}
+                />
+            </div>
+
+            <div className="row">
+                <ViewText
+                    label={"Aanmeld datum"}
+                    value={''}
+                />
+                <ViewText
+                    label="Status"
+                    value={status && status.name}
+                />
+            </div>
+
+            <div className="row">
+                <ViewText
+                    label={"Aanmeldingsbron"}
+                    value={ sources && sources.map((source) => source.name).join(', ') }
                 />
                 <div className="row">
                     <ViewText
-                        label="Mobiel nummer"
-                        value={mobile}
+                        label="Campagne"
+                        value={''}
                     />
                 </div>
             </div>
 
             <div className="row">
                 <ViewText
-                    label={"Achternaam"}
-                    value={lastName}
-                />
-                <div className="row">
-                    <ViewText
-                        label="Functie"
-                        value={occupation}
-                    />
-                </div>
-            </div>
-
-            <div className="row">
-                <ViewText
-                    label={"Actief"}
-                    value={active ? 'Ja' : 'Nee'}
+                    label={"Wat is belangrijk"}
+                    value={''}
                 />
 
             </div>
@@ -70,7 +68,7 @@ const RegistrationDetailsFormGeneralView = props => {
 
 const mapStateToProps = (state) => {
     return {
-        userDetails: state.userDetails,
+        registrationDetails: state.registrationDetails,
     };
 };
 

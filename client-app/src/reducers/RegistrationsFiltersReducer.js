@@ -1,65 +1,25 @@
 const filtersReducerDefaultState = {
-    number: {
-        field: 'number',
-        data: '',
-    },
-    typeId: {
-        field: 'typeId',
-        data: '',
-    },
     fullName: {
         field: 'fullName',
         data: '',
     },
-    streetAndNumber: {
-        field: 'streetAndNumber',
+    registration: {
+        field: 'registration',
         data: '',
     },
-    postalCode: {
-        field: 'postalCode',
-        data: '',
-    },
-    city: {
-        field: 'city',
-        data: '',
-    },
-    emailAddress: {
-        field: 'emailAddress',
-        data: '',
-    },
-    phoneNumber: {
-        field: 'phoneNumber',
+    sourceId: {
+        field: 'sourceId',
         data: '',
     },
     statusId: {
         field: 'statusId',
         data: '',
     },
-    createdAt: {
-        field: 'createdAt',
-        data: '',
-    }
 };
 
 export default (state = filtersReducerDefaultState, action) => {
     switch(action.type) {
-        case 'SET_NUMBER_FILTER':
-            return {
-                ...state,
-                number: {
-                    ...state.number,
-                    data: action.number,
-                }
-            };
-        case 'SET_TYPE_FILTER':
-            return {
-                ...state,
-                typeId: {
-                    ...state.typeId,
-                    data: action.typeId,
-                }
-            };
-        case 'SET_FULL_NAME_FILTER':
+        case 'SET_FILTER_REGISTRATION_FULL_NAME':
             return {
                 ...state,
                 fullName: {
@@ -67,60 +27,28 @@ export default (state = filtersReducerDefaultState, action) => {
                     data: action.fullName,
                 }
             };
-        case 'SET_STREET_AND_NUMBER_FILTER':
+        case 'SET_FILTER_REGISTRATION_SOURCE':
             return {
                 ...state,
-                streetAndNumber: {
-                    ...state.streetAndNumber,
-                    data: action.streetAndNumber,
+                sourceId: {
+                    ...state.sourceId,
+                    data: action.sourceId,
                 }
             };
-        case 'SET_POSTAL_CODE_FILTER':
+        case 'SET_FILTER_REGISTRATION_DATE':
             return {
                 ...state,
-                postalCode: {
-                    ...state.postalCode,
-                    data: action.postalCode,
+                registration: {
+                    ...state.registration,
+                    data: action.registration,
                 }
             };
-        case 'SET_CITY_FILTER':
-            return {
-                ...state,
-                city: {
-                    ...state.city,
-                    data: action.city,
-                }
-            };
-        case 'SET_EMAIL_ADDRESS_FILTER':
-            return {
-                ...state,
-                emailAddress: {
-                    ...state.emailAddress,
-                    data: action.emailAddress,
-                }
-            };
-        case 'SET_PHONE_NUMBER_FILTER':
-            return {
-                ...state,
-                phoneNumber: {
-                    ...state.phoneNumber,
-                    data: action.phoneNumber,
-                }
-            };
-        case 'SET_STATUS_FILTER':
+        case 'SET_FILTER_REGISTRATION_STATUS':
             return {
                 ...state,
                 statusId: {
                     ...state.statusId,
                     data: action.statusId,
-                }
-            };
-        case 'SET_CREATED_AT_FILTER':
-            return {
-                ...state,
-                createdAt: {
-                    ...state.createdAt,
-                    data: action.createdAt,
                 }
             };
         default:

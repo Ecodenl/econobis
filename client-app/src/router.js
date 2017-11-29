@@ -39,7 +39,7 @@ const Routes = () => {
                 <Route path="taak/:id" component={TasksApp} />
 
                 <Route path="aanmeldingen" component={ RegistrationsListApp } />
-                <Route path="aanmelding/nieuw/:contactId" component={RegistrationNewApp} />
+                <Route path="aanmelding/nieuw/contact/:contactId/adres/:addressId" component={RegistrationNewApp} />
                 <Route path="aanmelding/:id" component={RegistrationDetailsApp} />
 
                 <Route path="kans/:id" component={OppertunitiesApp} />

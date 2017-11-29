@@ -43,6 +43,7 @@ class RegistrationController extends ApiController
                     ->pluck('created_at')
             ];
         }
+
         return $registration;
     }
 
@@ -166,16 +167,17 @@ class RegistrationController extends ApiController
     public function getRegistration(Request $request)
     {
         $data = $request->validate([
-            'registration_id' => 'exists:registrations,id',
+            'registration' => 'exists:registrations,id',
         ]);
-        $registrations = Registration::find($data->registration)
+
+        $registrations = Registration::find($request->registration)
             ->load([
                 'address',
                 'address.measures_taken',
                 'address.measures_requested',
                 'sources',
                 'status',
-                'notes'
+                'note'
             ]);
 
         return $registrations;

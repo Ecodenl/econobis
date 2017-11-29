@@ -1,10 +1,10 @@
 import React from 'react';
 
-import ButtonText from '../../../components/button/ButtonText';
-import Panel from '../../../components/panel/Panel';
-import PanelBody from '../../../components/panel/PanelBody';
+import ButtonText from '../../../../components/button/ButtonText';
+import Panel from '../../../../components/panel/Panel';
+import PanelBody from '../../../../components/panel/PanelBody';
 
-const  ContactDetailsFormNoteEdit = props => {
+const  RegistrationDetailsFormNoteEdit = props => {
     const { note } = props.note;
 
     return (
@@ -12,9 +12,7 @@ const  ContactDetailsFormNoteEdit = props => {
             <Panel className={'panel-grey'}>
                 <PanelBody>
                     <div className="row">
-                        <div className="col-sm-12">
-                            <textarea name={note} value={note} onChange={this.handleInputChange} className="form-control input-sm" />
-                        </div>
+                        <textarea name={note} value={note} onChange={props.handleInputChange} className="col-sm-12" />
                     </div>
 
                     <div className="pull-right btn-group extra-space-above" role="group">
@@ -27,4 +25,4 @@ const  ContactDetailsFormNoteEdit = props => {
     );
 };
 
-export default ContactDetailsFormNoteEdit;
+export default RegistrationDetailsFormNoteEdit;

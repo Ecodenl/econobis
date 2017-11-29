@@ -38,3 +38,8 @@ label.required:after {
 .item-border:first-child {
   border-top: 0;
 }
+
+textarea {
+  resize: vertical;
+  overflow-x: hidden;
+}

@@ -3,6 +3,8 @@ import { connect } from 'react-redux';
 import { isEmpty } from 'lodash';
 
 import RegistrationDetailsFormGeneral from './general/RegistrationDetailsFormGeneral';
+import RegistrationMeasuresTaken from './measures-taken/RegistrationMeasuresTaken';
+import RegistrationDetailsFormNote from './note/RegistrationDetailsFormNote';
 
 class RegistrationDetailsForm extends Component {
     constructor(props){
@@ -16,6 +18,8 @@ class RegistrationDetailsForm extends Component {
                 :
                 <div>
                     <RegistrationDetailsFormGeneral />
+                    <RegistrationMeasuresTaken />
+                    <RegistrationDetailsFormNote />
                 </div>
         );
     }

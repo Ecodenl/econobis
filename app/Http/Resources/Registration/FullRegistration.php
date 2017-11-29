@@ -20,10 +20,11 @@ class FullRegistration extends Resource
     {
         return
             [
+                'id' => $this->id,
                 'fullName' => Contact::find($this->address->contact_id)->full_name,
                 'createdAt' => $this->created_at,
                 'sourceNames' => FullRegistrationSource::collection($this->whenLoaded('sources')),
-                'status' => $this->status->name,
+                'status' => optional($this->status)->name,
                 'measuresRequested' => Measure::getRequestedMeasures($this->address)
             ];
     }

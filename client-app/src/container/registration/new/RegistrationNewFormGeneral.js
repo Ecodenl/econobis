@@ -1,11 +1,14 @@
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import { hashHistory } from 'react-router';
+import moment from 'moment';
+moment.locale('nl');
 
-//import UserAPI from '../../../api/UserAPI';
+import RegistrationDetailsAPI from '../../../api/registration/RegistrationDetailsAPI';
 import InputText from '../../../components/form/InputText';
 import InputSelect from '../../../components/form/InputSelect';
-import InputDate from '../../../components/form/InputDate';
+import InputMultiSelect from '../../../components/form/InputMultiSelect';
+import InputCheckbox from '../../../components/form/InputCheckbox';
 import ButtonText from '../../../components/button/ButtonText';
 
 class RegistrationNewFormGeneral extends Component {
@@ -15,15 +18,14 @@ class RegistrationNewFormGeneral extends Component {
         this.state = {
             registration: {
                 id: '',
-                contactId: props.contactId,
+                addressId: props.addressId,
                 buildYear: '',
-                buildingType: '',
-                ownerId: '',
-                registration: '',
+                buildingTypeId: '',
+                owner: false,
                 statusId: '',
-                sourceId: '',
+                sourceIds: '',
                 campaignId: '',
-                importantId: '',
+                registrationReasonIds: '',
             },
         }
     };
@@ -42,29 +44,62 @@ class RegistrationNewFormGeneral extends Component {
         });
     };
 
+    handleSourceIds = (selectedOption) => {
+        this.setState({
+            ...this.state,
+            registration: {
+                ...this.state.registration,
+                sourceIds: selectedOption
+            },
+        });
+    };
+
+    handleRegistrationReasonsIds = (selectedOption) => {
+        this.setState({
+            ...this.state,
+            registration: {
+                ...this.state.registration,
+                registrationReasonIds: selectedOption
+            },
+        });
+    };
+
     handleSubmit = event => {
         event.preventDefault();
 
         const { registration }  = this.state;
 
-        RegistrationAPI.newRegistration(registration).then((payload) => {
+        if(registration.registrationReasonIds.length > 0){
+            registration.registrationReasonIds = registration.registrationReasonIds.split(',');
+        }
+
+        if(registration.sourceIds.length > 0){
+            registration.sourceIds = registration.sourceIds.split(',');
+        }
+
+        RegistrationDetailsAPI.newRegistration(registration).then((payload) => {
             hashHistory.push(`/aanmelding/${payload.id}`);
         });
 
     };
 
     render() {
-        const { contactId, buildYear, buildingType, ownerId, registration, statusId, sourceId, campaignId, importantId  } = this.state.registration;
+        const { addressId, buildYear, buildingTypeId, owner, statusId, sourceIds, campaignId, registrationReasonIds } = this.state.registration;
+        const { addresses = [] } = this.props.contactDetails;
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
                 <div className="row">
-                    <InputText
-                        label="Contact"
-                        name={"contactId"}
-                        value={contactId}
-                        readOnly={true}
-                    />
+                    <div className="form-group col-sm-6">
+                        <label htmlFor="addressId" className="col-sm-6">Adres</label>
+                        <div className='col-sm-6'>
+                            <select className="form-control input-sm" id="addressId" name="addressId" value={addressId} onChange={this.handleInputChange}>
+                                { addresses.map((address, i) => {
+                                    return <option key={i} value={ address.id }>{ address.street + ' ' + address.number }</option>
+                                }) }
+                            </select>
+                        </div>
+                    </div>
                     <InputText
                         type={"number"}
                         label={"Bouwjaar"}
@@ -75,63 +110,69 @@ class RegistrationNewFormGeneral extends Component {
                 </div>
 
                 <div className="row">
-                    <InputText
+                    <InputSelect
                         label={"Woningtype"}
-                        name={"buildingType"}
-                        value={buildingType}
+                        name={"buildingTypeId"}
+                        value={buildingTypeId}
+                        options={this.props.buildingTypes}
                         onChangeAction={this.handleInputChange}
                     />
-                    <InputText
+                    <InputCheckbox
                         label={"Eigendom"}
-                        name="ownerId"
-                        value={ownerId}
+                        name="owner"
+                        checked={owner}
                         onChangeAction={this.handleInputChange}
+                        id={"owner"}
+                        labelCheckbox={'Ja'}
                     />
                 </div>
 
                 <div className="row">
-                    <InputDate
+                    <InputText
                         label="Aanmeld datum"
                         name="registration"
-                        value={registration}
-                        onChangeAction={this.handleInputChange}
+                        value={ moment().format('LL') }
+                        readOnly={true}
                     />
-                    <InputText
+                    <InputSelect
                         label={"Status"}
                         size={"col-sm-6"}
                         name="statusId"
                         value={statusId}
+                        options={this.props.registrationStatuses}
                         onChangeAction={this.handleInputChange}
                     />
                 </div>
 
                 <div className="row">
-                    <InputText
+                    <InputMultiSelect
                         label="Aanmeldingsbron"
-                        name="sourceId"
-                        value={sourceId}
-                        onChangeAction={this.handleInputChange}
+                        name="sourceIds"
+                        value={sourceIds}
+                        options={this.props.registrationSources}
+                        onChangeAction={this.handleSourceIds}
                     />
-                    <InputText
+                    <InputSelect
                         label="Campagne"
                         name="campaignId"
                         value={campaignId}
+                        options={this.props.campaigns}
                         onChangeAction={this.handleInputChange}
                     />
                 </div>
 
                 <div className="row">
-                    <InputText
+                    <InputMultiSelect
                         label="Wat is belangrijk"
-                        name="importantId"
-                        value={importantId}
-                        onChangeAction={this.handleInputChange}
+                        name="registrationReasonIds"
+                        value={registrationReasonIds}
+                        options={this.props.registrationReasons}
+                        onChangeAction={this.handleRegistrationReasonsIds}
                     />
                 </div>
 
                 <div className="panel-footer">
                     <div className="pull-right btn-group" role="group">
-                        <ButtonText buttonClassName={"btn-default"} buttonText={"Sluiten"} onClickAction={this.props.switchToView}/>
                         <ButtonText buttonText={"Opslaan"} onClickAction={this.handleSubmit}/>
                     </div>
                 </div>
@@ -142,8 +183,13 @@ class RegistrationNewFormGeneral extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        contactStatuses: state.systemData.contactStatuses,
+        registrationStatuses: state.systemData.registrationStatuses,
+        registrationSources: state.systemData.registrationSources,
+        registrationReasons: state.systemData.registrationReasons,
+        campaigns: state.systemData.campaigns,
+        buildingTypes: state.systemData.buildingTypes,
+        contactDetails: state.contactDetails,
     };
 };
 
-export default connect(mapStateToProps)(RegistrationNewFormGeneral);
+export default connect(mapStateToProps, null)(RegistrationNewFormGeneral);

@@ -10,6 +10,7 @@ import contactDetailsReducer from './contactDetailsReducer';
 import registrationsReducer from './RegistrationsReducer';
 import registrationsFiltersReducer from './RegistrationsFiltersReducer';
 import registrationsSortsReducer from './RegistrationsSortsReducer';
+import registrationDetailsReducer from './RegistrationDetailsReducer'
 import systemDataReducer from './SystemDataReducer';
 import usersReducer from './UsersReducer';
 import userDetailsReducer from './userDetailsReducer';
@@ -27,6 +28,7 @@ const rootReducer = combineReducers({
     registrations: registrationsReducer,
     registrationsFilters: registrationsFiltersReducer,
     registrationsSorts: registrationsSortsReducer,
+    registrationDetails: registrationDetailsReducer,
 
     systemData: systemDataReducer,
     users: usersReducer,

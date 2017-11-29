@@ -5,7 +5,8 @@ import { fetchContactsSaga, deleteContactSaga } from './ContactsSaga';
 import { fetchContactDetailsSaga, deleteAddressSaga, deletePhoneNumberSaga, deleteEmailAddressSaga, deleteContactNoteSaga } from './ContactDetailsSaga';
 import { fetchUserSaga } from './UsersSaga';
 import { fetchUserDetailsSaga } from './UserDetailsSaga';
-import { fetchRegistrationsSaga } from "./RegistrationsSaga";
+import { fetchRegistrationsSaga } from './RegistrationsSaga';
+import { fetchRegistrationDetailsSaga, deleteRegistrationNoteSaga } from './RegistrationDetailsSaga';
 
 export default function* watchSagas() {
     yield takeLatest('FETCH_SYSTEM_DATA', systemDataSaga);
@@ -20,4 +21,6 @@ export default function* watchSagas() {
     yield takeLatest('DELETE_EMAIL_ADDRESS', deleteEmailAddressSaga);
     yield takeLatest('DELETE_NOTE', deleteContactNoteSaga);
     yield takeLatest('FETCH_REGISTRATIONS', fetchRegistrationsSaga);
+    yield takeLatest('FETCH_REGISTRATION_DETAILS', fetchRegistrationDetailsSaga);
+    yield takeLatest('DELETE_REGISTRATION_NOTE', deleteRegistrationNoteSaga);
 };

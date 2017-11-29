@@ -2,6 +2,8 @@
 
 namespace App\Http\Resources\Registration;
 
+use App\Http\Resources\Address\FullAddress;
+use App\Http\Resources\GenericResource;
 use Illuminate\Http\Resources\Json\Resource;
 use App\Eco\Contact\Contact;
 use App\Eco\Address\Address;
@@ -21,11 +23,14 @@ class FullRegistration extends Resource
         return
             [
                 'id' => $this->id,
-                'fullName' => Contact::find($this->address->contact_id)->full_name,
+                'address' => FullAddress::make($this->whenLoaded('address')),
+                'status' => GenericResource::make($this->whenLoaded('status')),
+                'campaign' => GenericResource::make($this->whenLoaded('campaign')),
+                'sources' => GenericResource::collection($this->whenLoaded('sources')),
+                'notes' => GenericResource::collection($this->whenLoaded('notes')),
+                'reasons' => GenericResource::collection($this->whenLoaded('reasons')),
                 'createdAt' => $this->created_at,
-                'sourceNames' => FullRegistrationSource::collection($this->whenLoaded('sources')),
-                'status' => optional($this->status)->name,
-                'measuresRequested' => Measure::getRequestedMeasures($this->address)
+                'updatedAt' => $this->updated_at,
             ];
     }
 }

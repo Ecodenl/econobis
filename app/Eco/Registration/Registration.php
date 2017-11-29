@@ -31,12 +31,12 @@ class Registration extends Model
         return $this->belongsTo(Address::class);
     }
 
-    public function campaigns()
+    public function campaign()
     {
-        return $this->hasOne(Campaign::class);
+        return $this->belongsTo(Campaign::class);
     }
 
-    public function note()
+    public function notes()
     {
         return $this->hasMany(RegistrationNote::class);
     }
@@ -49,6 +49,6 @@ class Registration extends Model
 
     public function status()
     {
-        return $this->hasOne(RegistrationStatus::class, 'id', 'registration_status_id');
+        return $this->belongsTo(RegistrationStatus::class, 'registration_status_id');
     }
 }

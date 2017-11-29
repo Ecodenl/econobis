@@ -6,6 +6,7 @@ use App\Eco\AccountType\AccountType;
 use App\Eco\Address\AddressType;
 use App\Eco\BuildingFeature\BuildingFeature;
 use App\Eco\BuildingType\BuildingType;
+use App\Eco\EnergyLabel\EnergyLabel;
 use App\Eco\Measure\Measure;
 use App\Eco\Registration\RegistrationReason;
 use App\Eco\Registration\RegistrationSource;
@@ -57,6 +58,7 @@ class SystemData extends Resource
             'campaigns' => Campaign::select(['id', 'name'])->get(),
             'registrationStatuses' => RegistrationStatus::select(['id', 'name'])->get(),
             'registrationReasons' => RegistrationReason::select(['id', 'name'])->get(),
+            'energyLabels' => EnergyLabel::select(['id', 'name'])->get(),
         ];
     }
 }

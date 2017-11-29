@@ -44,14 +44,9 @@ class Address extends Model
             'measure_requested_address', 'address_id', 'measure_id');
     }
 
-    public function building_features()
-    {
-        return $this->hasMany(BuildingFeature::class);
-    }
-
     public function building_type()
     {
-        return $this->hasOne(BuildingType::class);
+        return $this->belongsTo(BuildingType::class);
     }
 
     public function getType()

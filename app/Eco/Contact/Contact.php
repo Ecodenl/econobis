@@ -115,6 +115,11 @@ class Contact extends Model
         return ContactType::get($this->type_id);
     }
 
+    public function registrations()
+    {
+        return $this->hasManyThrough(Registration::class, Address::class);
+    }
+
     //Returns addresses array as Type - Streetname - Number
     //Primary address always comes first
     public function getPrettyAddresses(){

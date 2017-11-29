@@ -27,13 +27,13 @@ Route::namespace('Api')
         Route::get('/contact/{contact}/registrations', 'Registration\RegistrationController@getContactRegistrations');
         Route::post('/contact/{contact}/delete', 'Contact\ContactController@destroy');
 
-        Route::get('/registrations', 'Registration\RegistrationController@show');
+        Route::get('/registrations', 'Registration\RegistrationController@index');
 
         Route::get('/contact/{contact}/registration', 'Registration\RegistrationController@getStore');
         Route::post('/contact/registration', 'Registration\RegistrationController@store');
-        Route::get('/registration/{registration}', 'Registration\RegistrationController@getRegistration');
-        Route::post('/registration/{registration}/update', 'Registration\RegistrationController@updateRegistration');
-        Route::delete('/registration/{registration}/delete', 'Registration\RegistrationController@deleteRegistration');
+        Route::get('/registration/{registration}', 'Registration\RegistrationController@show');
+        Route::post('/registration/{registration}/update', 'Registration\RegistrationController@update');
+        Route::delete('/registration/{registration}/delete', 'Registration\RegistrationController@destroy');
 
         Route::post('/registration/{registration}/measure-taken', 'Registration\RegistrationController@storeMeasureTaken');
         Route::post('/registration/{registration}/measure-taken/delete', 'Registration\RegistrationController@deleteMeasureTaken');

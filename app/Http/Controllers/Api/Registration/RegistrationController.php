@@ -13,6 +13,7 @@ use App\Eco\Address\Address;
 use App\Eco\Registration\Registration;
 use App\Eco\Contact\Contact;
 use App\Eco\Registration\RegistrationNote;
+use App\Eco\Registration\RegistrationStatus;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\RequestQueries\Registration\Grid\RequestQuery;
 use App\Http\Resources\Registration\FullRegistration;
@@ -22,7 +23,7 @@ use App\Helpers\RequestInput\RequestInput;
 class RegistrationController extends ApiController
 {
 
-    public function show(RequestQuery $requestQuery)
+    public function index(RequestQuery $requestQuery)
     {
         $registrations = $requestQuery->get();
 
@@ -47,7 +48,9 @@ class RegistrationController extends ApiController
         return $registration;
     }
 
-
+    /**
+     * Geef de data die React nodig heeft om het scherm op te bouwen voor een nieuwe registration
+     */
     public function getStore(Request $request)
     {
         $contact = Contact::find($request->contact);
@@ -164,26 +167,23 @@ class RegistrationController extends ApiController
         return $registrationNote;
     }
 
-    public function getRegistration(Request $request)
+    public function show(Request $request, Registration $registration)
     {
-        $data = $request->validate([
-            'registration' => 'exists:registrations,id',
+        $registration->load([
+            'address.building_type',
+            'address.measures_taken',
+            'address.measures_requested',
+            'sources',
+            'status',
+            'notes',
+            'campaign',
+            'reasons',
         ]);
 
-        $registrations = Registration::find($request->registration)
-            ->load([
-                'address',
-                'address.measures_taken',
-                'address.measures_requested',
-                'sources',
-                'status',
-                'note'
-            ]);
-
-        return $registrations;
+        return FullRegistration::make($registration);
     }
 
-    public function updateRegistration(Request $request)
+    public function update(Request $request)
     {
 
         $data = $request->validate([
@@ -301,7 +301,7 @@ class RegistrationController extends ApiController
         }
     }
 
-    public function deleteRegistration(Request $request)
+    public function destroy(Request $request)
     {
         {
             $registration = Registration::find($request->registration);

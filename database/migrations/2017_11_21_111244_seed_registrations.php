@@ -63,19 +63,6 @@ class SeedRegistrations extends Migration
             );
         }
 
-        $buildingFeatures = [
-            'Bouwjaar',
-            'Eigendom',
-            'Dak type'
-        ];
-
-        foreach ($buildingFeatures as $feature) {
-            DB::table('building_features')->insert([
-                    ['name' => $feature],
-                ]
-            );
-        }
-
         $energyLabels = [
             'AA+',
             'AA',

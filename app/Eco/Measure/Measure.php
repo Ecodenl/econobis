@@ -28,45 +28,4 @@ class Measure extends Model
     {
         return $this->belongsToMany(Address::class);
     }
-
-    public static function getAllMeasures(Address $address)
-    {
-        $address->load(['measures_taken', 'measures_requested']);
-        foreach ($address->measures_taken as $measure){
-            $measures['taken'][] = $measure->name;
-        }
-        foreach ($address->measures_requested as $measure){
-            $measures['requested'][] = $measure->name;
-        }
-        return $measures;
-    }
-
-    public static function getRequestedMeasures(Address $address)
-    {
-        $address->load('measures_requested');
-
-        foreach ($address->measures_requested as $measure){
-            $measures[] = $measure->name;
-        }
-        if(empty($measures)){
-            $measures = 'Geen maatregelen aangevraagd';
-        }
-
-        return $measures;
-    }
-
-    public static function getTakenMeasures(Address $address)
-    {
-        $address->load('measures_taken');
-
-        foreach ($address->measures_taken as $measure){
-            $measures[] = $measure->name;
-        }
-        if(empty($measures)){
-            $measures = 'Geen maatregelen genomen';
-        }
-
-        return $measures;
-    }
-
 }

@@ -18,6 +18,13 @@ const ContactDetailsApp = props => {
                     <ContactDetailsForm id={props.params.id} />
                 </div>
             </div>
+            <div className="col-md-3">
+                <div className="panel panel-default">
+                    <div className="panel-body">
+                        <ContactDetailsHarmonica id={props.params.id} />
+                    </div>
+                </div>
+            </div>
             <Panel className="col-md-3">
                 <PanelBody>
                     <ContactDetailsHarmonica />

@@ -8,6 +8,8 @@ use App\Eco\Address\Address;
 use App\Eco\Address\AddressObserver;
 use App\Eco\Contact\Contact;
 use App\Eco\Contact\ContactObserver;
+use App\Eco\ContactGroup\ContactGroup;
+use App\Eco\ContactGroup\ContactGroupObserver;
 use App\Eco\ContactNote\ContactNote;
 use App\Eco\ContactNote\ContactNoteObserver;
 use App\Eco\EmailAddress\EmailAddress;
@@ -34,6 +36,7 @@ class ObserverServiceProvider extends ServiceProvider
         PhoneNumber::observe(PhoneNumberObserver::class);
         Contact::observe(ContactObserver::class);
         ContactNote::observe(ContactNoteObserver::class);
+        ContactGroup::observe(ContactGroupObserver::class);
     }
 
     /**

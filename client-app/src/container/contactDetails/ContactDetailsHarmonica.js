@@ -1,11 +1,16 @@
 import React, {Component} from 'react';
 import { hashHistory } from 'react-router';
+import {connect} from 'react-redux';
 
+import PanelBody from '../../components/panel/PanelBody'
 import SignUpList from './harmonica/SignUpList';
 import OpportunityList from './harmonica/OpportunityList';
 import TaskList from './harmonica/TaskList';
+
 import Panel from "../../components/panel/Panel";
 import PanelBody from "../../components/panel/PanelBody";
+import ContactGroupList from './harmonica/ContactGroupList';
+import AddContactToGroup from './harmonica/AddContactToGroup';
 
 class ContactDetailsHarmonica extends Component {
     constructor(){
@@ -15,8 +20,22 @@ class ContactDetailsHarmonica extends Component {
             toggleShowSignUps: false,
             toggleShowOpportunities: false,
             toggleShowTasks: false,
+            toggleShowGroups: false,
+            showModalAddGroup: false,
         }
-    }
+    };
+
+    componentWillReceiveProps(nextProps) {
+        if(this.props.id !== nextProps.id) {
+            this.setState({
+                toggleShowSignUps: false,
+                toggleShowOpportunities: false,
+                toggleShowTasks: false,
+                toggleShowGroups: false,
+                showModalAddGroup: false,
+            })
+        }
+    };
 
     newSignup = () => {
         hashHistory.push(`/aanmelding/nieuw`);
@@ -45,6 +64,18 @@ class ContactDetailsHarmonica extends Component {
     toggleTask = () => {
         this.setState({
             toggleShowTasks: !this.state.toggleShowTasks
+        });
+    };
+
+    toggleAddGroup = () => {
+        this.setState({
+            showModalAddGroup: !this.state.showModalAddGroup
+        });
+    };
+
+    toggleGroup = () => {
+        this.setState({
+            toggleShowGroups: !this.state.toggleShowGroups
         });
     };
 
@@ -78,9 +109,32 @@ class ContactDetailsHarmonica extends Component {
                         </div>
                     </PanelBody>
                 </Panel>
+
+                <div className="panel panel-default harmonica-button">
+                    <PanelBody>
+                        <div className="col-sm-12">
+                            <span onClick={this.toggleGroup} className="">GROEPEN <span className="badge">{ this.props.contactDetails.groupCount }</span></span>
+                            <a role="button" className="pull-right" onClick={this.toggleAddGroup}><span className="glyphicon glyphicon-plus glyphicon-white"/></a>
+                            { this.state.toggleShowGroups && <ContactGroupList /> }
+                        </div>
+                    </PanelBody>
+                </div>
+
+                { this.state.showModalAddGroup &&
+                    <AddContactToGroup
+                        toggleAddGroup={this.toggleAddGroup}
+                        toggleGroup={this.toggleGroup}
+                    />
+                }
             </div>
         )
     }
 };
 
-export default ContactDetailsHarmonica;
+const mapStateToProps = (state) => {
+    return {
+        contactDetails: state.contactDetails,
+    };
+};
+
+export default connect(mapStateToProps, null)(ContactDetailsHarmonica);

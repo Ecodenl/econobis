@@ -24,6 +24,7 @@ class SeedPermissionsTable extends Migration
             'delete_account',
             'update_contact_iban',
             'update_contact_owner',
+            'manage_group',
         ];
 
         foreach ($permissions as $permission) {

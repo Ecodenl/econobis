@@ -19,6 +19,11 @@ table th, table td {
   color: #fff;
 }
 
+.thead-title-quaternary {
+  background-color: $brand-quaternary;
+  color: #fff;
+}
+
 .thead-filter {
   background-color: #e5e5e5;
 }

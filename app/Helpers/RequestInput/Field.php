@@ -9,6 +9,8 @@
 namespace App\Helpers\RequestInput;
 
 
+use Carbon\Carbon;
+
 class Field
 {
 
@@ -111,6 +113,7 @@ class Field
         switch ($this->type){
             case 'int':
             case 'integer':
+                return (int) $value;
             case 'real':
             case 'float':
             case 'double':
@@ -124,6 +127,7 @@ class Field
             case 'json':
             case 'collection':
             case 'date':
+                return (new Carbon($value))->startOfDay();
             case 'datetime':
             case 'timestamp':
             case 'password':

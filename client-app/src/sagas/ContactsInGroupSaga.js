@@ -12,9 +12,9 @@ export function* fetchContactsInGroupSaga({ contactGroup }) {
     }
 }
 
-export function* deleteContactInGroupSaga({ id }) {
+export function* deleteContactInGroupSaga({contactGroup, id}) {
     try {
-        yield call(ContactsInGroupAPI.deleteContactInGroup, id);
+        yield call(ContactsInGroupAPI.deleteContactInGroup, contactGroup, id);
         yield put({ type: 'DELETE_CONTACT_IN_GROUP_SUCCESS', id });
     } catch (error) {
         yield put({ type: 'DELETE_CONTACT_IN_GROUP_ERROR', error });

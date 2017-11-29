@@ -37,13 +37,14 @@ class ContactGroupController extends Controller
     public function store(RequestInput $requestInput)
     {
 //        $this->authorize('createGroup', ContactGroup::class);
+        //dd(\Request::all());
 
         $data = $requestInput->string('name')->whenMissing('')->next()
             ->string('description')->whenMissing('')->next()
             ->boolean('closed')->validate('boolean')->whenMissing(false)->next()
             ->integer('responsibleUserId')->default(null)->validate('exists:users,id')->alias('responsible_user_id')->next()
-            ->date('dateStarted')->default(null)->validate('date')->alias('date_started')->next()
-            ->date('dateFinished')->default(null)->validate('date')->alias('date_finished')->next()
+            ->date('dateStarted')->default(null)->validate('nullable|date')->alias('date_started')->next()
+            ->date('dateFinished')->default(null)->validate('nullable|date')->alias('date_finished')->next()
             ->get();
 
         $contactGroup = new ContactGroup($data);
@@ -56,12 +57,13 @@ class ContactGroupController extends Controller
     {
 //        $this->authorize('editGroup', ContactGroup::class);
 
+
         $data = $requestInput->string('name')->next()
             ->string('description')->next()
             ->boolean('closed')->validate('boolean')->next()
             ->integer('responsibleUserId')->onEmpty(null)->validate('exists:users,id')->alias('responsible_user_id')->next()
-            ->date('dateStarted')->onEmpty(null)->validate('date')->alias('date_started')->next()
-            ->date('dateFinished')->onEmpty(null)->validate('date')->alias('date_finished')->next()
+            ->date('dateStarted')->onEmpty(null)->validate('nullable|date')->alias('date_started')->next()
+            ->date('dateFinished')->onEmpty(null)->validate('nullable|date')->alias('date_finished')->next()
             ->get();
 
         $contactGroup->fill($data);
@@ -106,10 +108,5 @@ class ContactGroupController extends Controller
         $contactIds = json_decode($request->input('ids'));
 
         $contactGroup->contacts()->attach($contactIds);
-    }
-
-    public function getName(ContactGroup $contactGroup)
-    {
-     return($contactGroup->name);
     }
 }

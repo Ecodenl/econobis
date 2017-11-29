@@ -17,8 +17,8 @@ export default {
             );
     },
 
-    deleteContactInGroup: (id) => {
-        const requestUrl = `${URL_CONTACT_GROUP}/${contactGroup}/contacts/remove/${contact}`;
+    deleteContactInGroup: (contactGroup, id) => {
+        const requestUrl = `${URL_CONTACT_GROUP}/${contactGroup}/contacts/remove/${id}`;
         const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
         axios.defaults.headers.common.Authorization = AUTH_TOKEN;
 

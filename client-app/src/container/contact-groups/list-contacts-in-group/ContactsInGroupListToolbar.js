@@ -21,13 +21,18 @@ class ContactsInGroupListToolbar extends Component {
     };
 
     componentDidMount() {
-        ContactGroupAPI.getContactGroupName(this.props.groupId).then((payload) => {
-            this.setState({ groupName: payload })
+        ContactGroupAPI.fetchContactGroup(this.props.groupId).then((payload) => {
+            this.setState({ groupName: payload.name })
         });
     };
 
     addPersonToGroup  = (contactId) => {
-        ContactGroupAPI.addContactToGroup(this.props.groupId, contactId).then((payload) => {
+        const contact = {
+            groupId: this.props.groupId,
+            contactId,
+        }
+
+        ContactGroupAPI.addContactToGroup(contact).then((payload) => {
             this.setState({
                 showModalAddToGroup: false,
             });

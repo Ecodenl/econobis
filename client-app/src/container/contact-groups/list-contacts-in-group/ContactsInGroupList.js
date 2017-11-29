@@ -76,6 +76,7 @@ class ContactsInGroupList extends Component {
                     this.state.showDeleteItem &&
                         <ContactsInGroupDeleteItem
                             closeDeleteItemModal={this.closeDeleteItemModal}
+                            groupId = {this.props.groupId}
                             {...this.state.deleteItem}
                         />
                 }

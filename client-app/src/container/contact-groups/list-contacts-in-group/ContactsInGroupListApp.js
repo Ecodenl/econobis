@@ -39,6 +39,7 @@ class ContactsInGroupListApp extends Component {
                         <div className="col-md-12 extra-space-above">
                             <ContactsInGroupList
                                 contactsInGroup={this.props.contactsInGroup}
+                                groupId = {this.props.params.contactGroup}
                                 refreshContactsInGroupData={() => this.refreshContactsInGroupData()}
                             />
                         </div>

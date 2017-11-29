@@ -32,6 +32,7 @@ class ContactsInGroupListApp extends Component {
                         <div className="col-md-12 extra-space-above">
                             <ContactsInGroupListToolbar
                                 refreshContactsInGroupData={() => this.refreshContactsInGroupData()}
+                                groupId = {this.props.params.contactGroup}
                             />
                         </div>
 

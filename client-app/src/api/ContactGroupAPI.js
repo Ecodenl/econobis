@@ -44,7 +44,7 @@ export default {
             );
     },
 
-    addContactToGroup: ({groupId, contactId}) => {
+    addContactToGroup: (groupId, contactId) => {
         const requestUrl = `${URL_CONTACT_GROUP}/${groupId}/contacts/add/${contactId}`;
         const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
         axios.defaults.headers.common.Authorization = AUTH_TOKEN;
@@ -90,6 +90,20 @@ export default {
         return axios.get(requestUrl)
             .then(function (response) {
                 return response.data.data;
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+    },
+
+    getContactGroupName: (id) => {
+        const requestUrl = `${URL_CONTACT_GROUP}/${id}/name`;
+        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
+        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
+
+        return axios.get(requestUrl)
+            .then(function (response) {
+                return response.data;
             })
             .catch(function (error) {
                 console.log(error);

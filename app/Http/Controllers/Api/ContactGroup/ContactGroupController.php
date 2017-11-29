@@ -107,4 +107,9 @@ class ContactGroupController extends Controller
 
         $contactGroup->contacts()->attach($contactIds);
     }
+
+    public function getName(ContactGroup $contactGroup)
+    {
+     return($contactGroup->name);
+    }
 }

@@ -5,7 +5,7 @@ const URL_CONTACT_GROUP = `${URL_API}/api/contact-group`;
 
 export default {
     fetchContactsInGroup: (contactGroup) => {
-        const requestUrl = `${URL_CONTACT_GROUP}/${contactGroup}/contacts`;
+        const requestUrl = `${URL_CONTACT_GROUP}/${contactGroup}/contacts/grid`;
         const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
         axios.defaults.headers.common.Authorization = AUTH_TOKEN;
 

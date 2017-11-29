@@ -30,7 +30,7 @@ class FullContactGroup extends Resource
             'responsibleUserId' => $this->responsible_user_id,
             'responsibleUser' => FullUser::make($this->whenLoaded('responsibleUser')),
             'createdAt' => $this->created_at,
-            'updated_at' => $this->updated_at,
+            'updatedAt' => $this->updated_at,
             'contacts' => FullContact::collection($this->whenLoaded('contacts')),
         ];
     }

@@ -1,15 +1,16 @@
 import React, {Component} from 'react';
 import { hashHistory, Link } from 'react-router';
 import AddContactToGroup from './ContactListAddPersonToGroup';
+import ContactGroupAPI  from '../../../api/ContactGroupAPI';
 
 import ButtonIcon from '../../../components/button/ButtonIcon';
 
 class ContactsInGroupListToolbar extends Component {
     constructor(props){
         super(props);
-
         this.state = {
             showModalAddToGroup: false,
+            groupName: '',
         };
     }
 
@@ -19,8 +20,19 @@ class ContactsInGroupListToolbar extends Component {
         });
     };
 
-    addPersonToGroup  = (contactId, groupId) => {
-      console.log('Person added to group id' + groupId  + 'with cotnact id' + contactId);
+    componentDidMount() {
+        ContactGroupAPI.getContactGroupName(this.props.groupId).then((payload) => {
+            this.setState({ groupName: payload })
+        });
+    };
+
+    addPersonToGroup  = (contactId) => {
+        ContactGroupAPI.addContactToGroup(this.props.groupId, contactId).then((payload) => {
+            this.setState({
+                showModalAddToGroup: false,
+            });
+            this.props.refreshContactsInGroupData();
+        });
     };
 
     toggleModalAddToGroup = () => {
@@ -47,13 +59,14 @@ class ContactsInGroupListToolbar extends Component {
                         <ButtonIcon iconName={"glyphicon-save"} />
                     </div>
                 </div>
-                <div className="col-md-4"><h3 className="text-center table-title">Contacten in groep</h3></div>
+                <div className="col-md-4"><h3 className="text-center table-title">Contacten in groep: {this.state.groupName}</h3></div>
                 <div className="col-md-4" />
 
                 {this.state.showModalAddToGroup &&
                 <AddContactToGroup
                     closeModalAddToGroup={this.closeModalAddToGroup}
                     addPersonToGroup={this.addPersonToGroup}
+                    groupName = {this.state.groupName}
                 />
                 }
 

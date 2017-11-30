@@ -27,13 +27,20 @@ class SeedPermissionsTable extends Migration
             'manage_group',
         ];
 
-        foreach ($permissions as $permission) {
-            DB::table('permissions')->insert([
-                    'name' => $permission,
+        foreach ($permissions as $permissionName) {
+            \Spatie\Permission\Models\Permission::create([
+                    'name' => $permissionName,
                     'guard_name' => 'api',
                 ]
             );
         }
+
+        $superuserRole = \Spatie\Permission\Models\Role::create([
+            'name' => 'superuser',
+            'guard_name' => 'api',
+        ]);
+
+        $superuserRole->syncPermissions(\Spatie\Permission\Models\Permission::all());
     }
 
     /**

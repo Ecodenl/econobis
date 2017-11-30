@@ -8,13 +8,11 @@
 
 namespace App\Eco\Person;
 
-
 use App\Eco\Contact\Contact;
 use App\Eco\Contact\ContactType;
 
 class PersonObserver
 {
-
 
     public function creating(Person $person)
     {

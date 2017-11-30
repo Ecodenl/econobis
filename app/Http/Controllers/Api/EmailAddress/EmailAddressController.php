@@ -29,6 +29,7 @@ class EmailAddressController extends ApiController
         ]);
         $emailAddress = new EmailAddress($this->arrayKeysToSnakeCase($data));
 
+        $this->authorize('create', $emailAddress);
         $emailAddress->save();
 
         return new FullEmailAddress($emailAddress->fresh());
@@ -36,6 +37,8 @@ class EmailAddressController extends ApiController
 
     public function update(Request $request, EmailAddress $emailAddress)
     {
+        $this->authorize('update', $emailAddress);
+
         $data = $request->validate([
             'contactId' => 'exists:contacts,id',
             'typeId' => new EnumExists(EmailAddressType::class),
@@ -55,6 +58,8 @@ class EmailAddressController extends ApiController
 
     public function destroy(EmailAddress $emailAddress)
     {
+        $this->authorize('delete', $emailAddress);
+
         $emailAddress->forceDelete();
     }
 }

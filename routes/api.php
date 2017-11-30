@@ -32,6 +32,8 @@ Route::namespace('Api')
         Route::post('/user', 'User\UserController@store');
         Route::get('/user/{user}', 'User\UserController@show');
         Route::post('/user/{user}', 'User\UserController@update');
+        Route::post('/user/{user}/roles/add/{role}', 'User\UserController@addRole');
+        Route::post('/user/{user}/roles/remove/{role}', 'User\UserController@removeRole');
 
         Route::post('/address', 'Address\AddressController@store');
         Route::post('/address/{address}', 'Address\AddressController@update');

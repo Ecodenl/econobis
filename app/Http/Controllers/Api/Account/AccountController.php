@@ -18,6 +18,7 @@ class AccountController extends ApiController
 
     public function store(Request $request)
     {
+        $this->authorize('create', Account::class);
 
         $contactData = $request->validate([
             'statusId' => new EnumExists(ContactStatus::class),
@@ -70,6 +71,7 @@ class AccountController extends ApiController
 
     public function update(Request $request, Account $account)
     {
+        $this->authorize('update', $account);
 
         $contactData = $request->validate([
             'statusId' => new EnumExists(ContactStatus::class),
@@ -103,6 +105,10 @@ class AccountController extends ApiController
 
         $contact = $account->contact;
         $contact->fill($this->arrayKeysToSnakeCase($contactData));
+
+        if($contact->isDirty('iban')) $this->authorize('update_iban', $contact);
+        if($contact->isDirty('owner_id')) $this->authorize('update_owner', $contact);
+
         $contact->save();
 
         $accountData = $this->sanitizeData($accountData, [

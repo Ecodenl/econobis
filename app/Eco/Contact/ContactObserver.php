@@ -8,8 +8,6 @@
 
 namespace App\Eco\Contact;
 
-
-use App\Eco\User\User;
 use Illuminate\Support\Facades\Auth;
 
 class ContactObserver
@@ -21,20 +19,21 @@ class ContactObserver
         // Daarom tijdelijke waarde erin zetten zodat query niet onderuit gaat.
         $contact->number = 'temp';
 
-        $userId = User::first()->id; //TODO
+        $userId = Auth::id();
         $contact->created_by_id = $userId;
         $contact->updated_by_id = $userId;
     }
 
     public function created(Contact $contact)
     {
-        $contact->number = '2017-' . $contact->id;
+        $contact->number = '2017-' . $contact->id; // TODO; goede nummers genereren
         $contact->save();
     }
 
     public function updating(Contact $contact)
     {
-        $userId = User::first()->id; //TODO
+        $userId = Auth::id();
         $contact->updated_by_id = $userId;
     }
+
 }

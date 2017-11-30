@@ -26,6 +26,7 @@ class PersonController extends ApiController
 
     public function store(Request $request)
     {
+        $this->authorize('create', Person::class);
 
         $contactData = $request->validate([
             'statusId' => new EnumExists(ContactStatus::class),
@@ -88,6 +89,7 @@ class PersonController extends ApiController
 
     public function update(Request $request, Person $person)
     {
+        $this->authorize('update', $person);
 
         $contactData = $request->validate([
             'statusId' => new EnumExists(ContactStatus::class),

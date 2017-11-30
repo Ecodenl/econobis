@@ -35,13 +35,20 @@ class Address extends Model
     public function measures_taken()
     {
         return $this->belongsToMany(Measure::class,
-            'measure_taken_address', 'address_id', 'measure_id');
+            'measure_taken_address', 'address_id', 'measure_id')
+            ->withPivot([
+                'measure_date',
+            ]);
     }
 
     public function measures_requested()
     {
         return $this->belongsToMany(Measure::class,
-            'measure_requested_address', 'address_id', 'measure_id');
+            'measure_requested_address', 'address_id', 'measure_id')
+            ->withPivot([
+                'desired_date',
+                'degree_interest',
+            ]);
     }
 
     public function building_type()
@@ -51,7 +58,7 @@ class Address extends Model
 
     public function getType()
     {
-        if(!$this->type_id) return null;
+        if (!$this->type_id) return null;
 
         return AddressType::get($this->type_id);
     }

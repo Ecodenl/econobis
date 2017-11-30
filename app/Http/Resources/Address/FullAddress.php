@@ -4,6 +4,8 @@ namespace App\Http\Resources\Address;
 
 use App\Http\Resources\EnumWithIdAndName\FullEnumWithIdAndName;
 use App\Http\Resources\GenericResource;
+use App\Http\Resources\Measure\MeasureRequested;
+use App\Http\Resources\Measure\MeasureTaken;
 use Illuminate\Http\Resources\Json\Resource;
 
 class FullAddress extends Resource
@@ -30,8 +32,8 @@ class FullAddress extends Resource
             'updatedAt' => $this->updated_at,
             'buidingTypeId' => $this->building_type_id,
             'buidingType' => GenericResource::make($this->whenLoaded('building_type')),
-            'measuresTaken' => GenericResource::collection($this->whenLoaded('measures_taken')),
-            'measuresRequested' => GenericResource::collection($this->whenLoaded('measures_requested')),
+            'measuresTaken' => MeasureTaken::collection($this->whenLoaded('measures_taken')),
+            'measuresRequested' => MeasureRequested::collection($this->whenLoaded('measures_requested')),
         ];
     }
 }

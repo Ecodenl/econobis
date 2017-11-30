@@ -27,8 +27,10 @@ class SeedRegistrations extends Migration
         }
 
         $registrationSources = [
-            'Web',
-            'Formulier',
+            'E-mail',
+            'Website',
+            'Evenement',
+            'Telefoon',
             'Enquete',
         ];
 
@@ -39,21 +41,14 @@ class SeedRegistrations extends Migration
             );
         }
 
-        $registrationCampaigns = [
-            'Reclameborden',
-            'Flyers',
-        ];
-
-        foreach ($registrationCampaigns as $campaign) {
-            DB::table('campaigns')->insert([
-                    ['name' => $campaign],
-                ]
-            );
-        }
-
         $buildingTypes = [
+            'Vrijstaand',
             'Hoekwoning',
-            'Alleenstaand',
+            'Tussenwoning',
+            'Appartement',
+            'Appartement VVE',
+            'Gehele tussenwoning',
+            'Beneden woning meerdere verdiepingen',
         ];
 
         foreach ($buildingTypes as $types) {
@@ -64,13 +59,15 @@ class SeedRegistrations extends Migration
         }
 
         $energyLabels = [
-            'AA+',
-            'AA',
+            'A+++',
+            'A++',
             'A+',
             'A',
             'B',
             'C',
-            'D'
+            'D',
+            'E',
+            'F',
         ];
 
         foreach ($energyLabels as $energyLabel) {
@@ -81,9 +78,16 @@ class SeedRegistrations extends Migration
         }
 
         $measures = [
-            'Dubbele wand',
-            'Isolatie',
-            'Zonnepanelen'
+            'Vloerisolatie',
+            'Gevelisolatie',
+            'Dakisolatie',
+            'Dubbelglas beter dan HR++',
+            'Dubbelglas',
+            'Zonnepanelen',
+            'Zonneboiler',
+            'Warmtepomp',
+            'HR-Ketel',
+            'Weet nog niet',
         ];
 
         foreach ($measures as $measure) {
@@ -94,9 +98,8 @@ class SeedRegistrations extends Migration
         }
 
         $statussen = [
-            'Aangevraagd',
-            'Behandeld',
-            'Ingediend'
+            'In behandeling',
+            'Afgehandeld',
         ];
 
         foreach ($statussen as $status) {
@@ -105,61 +108,6 @@ class SeedRegistrations extends Migration
                 ]
             );
         }
-
-
-        DB::table('measure_taken_address')->insert([
-                [
-                    'address_id' => 1,
-                    'measure_id' => 1,
-                    'measure_date' => '2017-11-15 13:43:15'
-                ],
-            ]
-        );
-
-        DB::table('measure_requested_address')->insert([
-                [
-                    'address_id' => 1,
-                    'measure_id' => 2,
-                    'desired_date' => '2017-11-15 13:43:15',
-                    'degree_interest' => 10
-                ],
-            ]
-        );
-
-        DB::table('registrations')->insert([
-                [
-                    'address_id' => 1,
-                    'campaign_id' => 1,
-                    'created_at' => '2017-11-15 13:43:15',
-                    'updated_at' => '2017-11-15 13:43:15',
-                    'registration_status_id' => 1
-                ],
-            ]
-        );
-
-        DB::table('reason_registration')->insert([
-                [
-                    'reason_id' => 1,
-                    'registration_id' => 1
-                ]
-            ]
-        );
-
-        DB::table('registration_source')->insert([
-                [
-                    'source_id' => 1,
-                    'registration_id' => 1
-                ]
-            ]
-        );
-
-        DB::table('notes_registration')->insert([
-                [
-                    'registration_id' => 1,
-                    'note' => 'Goed gesprek, veel interesse'
-                ],
-            ]
-        );
 
     }
 

@@ -12,7 +12,7 @@ class AddressesSeeder extends Seeder
     public function run()
     {
         foreach(\App\Eco\Contact\Contact::all() as $contact){
-            factory(\App\Eco\Address\Address::class, 2)->create(['contact_id' => $contact->id]);
+            factory(\App\Eco\Address\Address::class, random_int(0, 3))->create(['contact_id' => $contact->id]);
         }
     }
 }

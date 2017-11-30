@@ -15,6 +15,8 @@ class MeasureRequested extends Model
 {
     protected $table = 'measure_requested_address';
 
+    protected $guarded = ['id'];
+
     protected $dates = [
         'desired_date',
     ];

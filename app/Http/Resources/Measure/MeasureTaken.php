@@ -4,13 +4,6 @@ namespace App\Http\Resources\Measure;
 
 use Illuminate\Http\Resources\Json\Resource;
 
-/**
- * Deze Resource verwerkt taken Measures van Addresses met pivot data.
- * Het model waarop deze resource is dus een Measure (en geen MeasureTakenAddress)
- *
- * Class MeasureRequested
- * @package App\Http\Resources\Measure
- */
 class MeasureTaken extends Resource
 {
     /**
@@ -22,11 +15,11 @@ class MeasureTaken extends Resource
     public function toArray($request)
     {
         return [
-            'id' => $this->id,
-            'name' => $this->name,
-            'measureDate' => $this->whenPivotLoaded('measure_taken_address', function () {
-                return $this->pivot->measure_date;
-            }),
+            'id' => $this->measure->id,
+            'name' => $this->measure->name,
+            'measureDate' => $this->measure_date,
+            'energyLabelId' => $this->energy_label_id,
+            'energyLabel' => $this->energy_label,
         ];
     }
 }

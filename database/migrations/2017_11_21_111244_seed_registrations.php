@@ -92,7 +92,7 @@ class SeedRegistrations extends Migration
 
         foreach ($measures as $measure) {
             DB::table('measures')->insert([
-                    ['name' => $measure, 'energy_label_id' => 1],
+                    ['name' => $measure],
                 ]
             );
         }

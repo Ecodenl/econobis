@@ -19,8 +19,9 @@ class MeasuresSeeder extends Seeder
                 ->limit(random_int(0, 3))
                 ->get()
                 ->each(function ($measure) use ($address, $faker) {
-                    $address->measures_taken()->save($measure, [
-                            'measure_date' => $faker->date(),
+                    factory(\App\Eco\Measure\MeasureTaken::class, 1)->create([
+                            'address_id' => $address->id,
+                            'measure_id' => $measure->id,
                         ]
                     );
                 });
@@ -29,9 +30,9 @@ class MeasuresSeeder extends Seeder
                 ->limit(random_int(0, 3))
                 ->get()
                 ->each(function ($measure) use ($address, $faker) {
-                    $address->measures_requested()->save($measure, [
-                            'desired_date' => $faker->date(),
-                            'degree_interest' => $faker->numberBetween(0, 10),
+                    factory(\App\Eco\Measure\MeasureRequested::class, 1)->create([
+                            'address_id' => $address->id,
+                            'measure_id' => $measure->id,
                         ]
                     );
                 });

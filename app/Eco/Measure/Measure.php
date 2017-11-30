@@ -21,7 +21,7 @@ class Measure extends Model
 
     public function energy_label()
     {
-        return $this->hasOne(EnergyLabel::class);
+        return $this->belongsTo(EnergyLabel::class);
     }
 
     public function addresses()

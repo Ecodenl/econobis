@@ -10,12 +10,14 @@ namespace App\Http\Controllers\Api\Registration;
 
 
 use App\Eco\Address\Address;
+use App\Eco\Measure\MeasureTaken;
 use App\Eco\Registration\Registration;
 use App\Eco\Contact\Contact;
 use App\Eco\Registration\RegistrationNote;
 use App\Eco\Registration\RegistrationStatus;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\RequestQueries\Registration\Grid\RequestQuery;
+use App\Http\Resources\Measure\MeasureRequested;
 use App\Http\Resources\Registration\FullRegistration;
 use Illuminate\Http\Request;
 use App\Helpers\RequestInput\RequestInput;
@@ -97,44 +99,28 @@ class RegistrationController extends ApiController
         return $registration;
     }
 
-    public function storeMeasureTaken(Request $request)
+    public function storeMeasureTaken(Request $request, RequestInput $requestInput)
     {
-        $data = $request->validate([
-            'address_id' => 'required|exists:addresses,id',
-            'measure_id' => 'required|exists:measures,id',
-            'measure_date' => 'date',
-        ]);
+        $data = $requestInput->input('addressId')->validate('required|exists:addresses,id')->alias('address_id')->next()
+            ->input('measureId')->validate('required|exists:measures,id')->alias('measure_id')->next()
+            ->input('measureDate')->whenMissing(null)->alias('measure_date')->next()
+            ->input('energyLabelId')->whenMissing(null)->alias('energy_label_id')->next()
+            ->get();
 
-        if (!array_key_exists('measure_date', $data)) {
-            $data['measure_date'] = null;
-        }
-
-        Address::find($data['address_id'])->measures_taken()
-            ->attach($data['measure_id'],
-                ['measure_date' => $data['measure_date']]);
+        $measureTaken = new MeasureTaken($data);
+        $measureTaken->save();
     }
 
-    public function storeMeasureRequested(Request $request)
+    public function storeMeasureRequested(Request $request, RequestInput $requestInput)
     {
-        $data = $request->validate([
-            'address_id' => 'required|exists:addresses,id',
-            'measure_id' => 'required|exists:measures,id',
-            'desired_date' => 'date',
-            'degree_interest' => 'integer|between:1,10',
-        ]);
+        $data = $requestInput->input('addressId')->validate('required|exists:addresses,id')->alias('address_id')->next()
+            ->input('measureId')->validate('required|exists:measures,id')->alias('measure_id')->next()
+            ->input('desiredDate')->whenMissing(null)->alias('desired_date')->next()
+            ->input('degreeInterest')->whenMissing(0)->alias('degree_interest')->next()
+            ->get();
 
-        if (!array_key_exists('desired_date', $data)) {
-            $data['desired_date'] = null;
-        }
-        if (!array_key_exists('degree_interest', $data)) {
-            $data['degree_interest'] = null;
-        }
-        Address::find($data['address_id'])->measures_requested()
-            ->attach($data['measure_id'],
-                [
-                    'desired_date' => $data['desired_date'],
-                    'degree_interest' => $data['degree_interest']
-                ]);
+        $measureRequested = new \App\Eco\Measure\MeasureRequested($data);
+        $measureRequested->save();
     }
 
     public function storeNote(Request $request)
@@ -249,16 +235,14 @@ class RegistrationController extends ApiController
         return null;
     }
 
-    public function deleteMeasureRequested(Request $request)
+    public function deleteMeasureRequested(Request $request, Registration $registration)
     {
         $data = $request->validate([
             'measure_id' => 'required:measures,id',
         ]);
-        $address
-            = Address::find(Registration::find($request->registration)->address_id);
-        $address->measures_requested()->detach($data['measure_id']);
-
-        return null;
+        $measureTaken = MeasureTaken::where('address_id', $registration->address_id)
+            ->where('measure_id', $data['measure_id']);
+        $measureTaken->delete();
     }
 
     public function updateNote(Request $request)

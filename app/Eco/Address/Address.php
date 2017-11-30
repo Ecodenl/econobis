@@ -5,6 +5,8 @@ namespace App\Eco\Address;
 use App\Eco\Contact\Contact;
 use App\Eco\Measure\Measure;
 use App\Eco\BuildingType\BuildingType;
+use App\Eco\Measure\MeasureRequested;
+use App\Eco\Measure\MeasureTaken;
 use App\Eco\Registration\Registration;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -34,21 +36,12 @@ class Address extends Model
 
     public function measures_taken()
     {
-        return $this->belongsToMany(Measure::class,
-            'measure_taken_address', 'address_id', 'measure_id')
-            ->withPivot([
-                'measure_date',
-            ]);
+        return $this->hasMany(MeasureTaken::class);
     }
 
     public function measures_requested()
     {
-        return $this->belongsToMany(Measure::class,
-            'measure_requested_address', 'address_id', 'measure_id')
-            ->withPivot([
-                'desired_date',
-                'degree_interest',
-            ]);
+        return $this->hasMany(MeasureRequested::class);
     }
 
     public function building_type()

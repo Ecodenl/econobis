@@ -49,9 +49,9 @@ class ContactDetailFormPersonItem extends Component {
         const {occupation, fullName, primary} = this.props.person;
 
         return (
-            <div className={`row ${this.state.highlightLine}`} onMouseEnter={() => this.onLineEnter()} onMouseLeave={() => this.onLineLeave()}>
+            <div className={`row border ${this.state.highlightLine}`} onMouseEnter={() => this.onLineEnter()} onMouseLeave={() => this.onLineLeave()}>
                 <div className="col-sm-2">
-                    <strong>{ occupation ? occupation.name : '' }</strong>
+                    { occupation ? occupation.name : '' }
                 </div>
                 <div className="col-sm-8">
                     { fullName }

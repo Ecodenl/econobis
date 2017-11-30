@@ -123,6 +123,11 @@ export default (state = filtersReducerDefaultState, action) => {
                     data: action.createdAt,
                 }
             };
+        case 'CLEAR_FILTER':
+            return {
+                ...state,
+                ...filtersReducerDefaultState,
+            };
         default:
             return state;
     }

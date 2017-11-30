@@ -18,6 +18,8 @@ use App\Eco\PhoneNumber\PhoneNumber;
 use App\Eco\PhoneNumber\PhoneNumberPolicy;
 use App\Eco\User\User;
 use App\Eco\User\UserPolicy;
+use App\Eco\ContactGroup\ContactGroup;
+use App\Eco\ContactGroup\ContactGroupPolicy;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Laravel\Passport\Passport;
@@ -38,6 +40,7 @@ class AuthServiceProvider extends ServiceProvider
         Person::class => PersonPolicy::class,
         PhoneNumber::class => PhoneNumberPolicy::class,
         User::class => UserPolicy::class,
+        ContactGroup::class => ContactGroupPolicy::class,
     ];
 
     /**

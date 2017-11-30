@@ -8,8 +8,9 @@ import InputText from '../../../components/form/InputText';
 import InputCheckbox from '../../../components/form/InputCheckbox';
 import InputDate from '../../../components/form/InputDate';
 import ButtonText from '../../../components/button/ButtonText';
+import PanelFooter from "../../../components/panel/PanelFooter";
 
-class ContactDetailsFormOtherPersonEdit extends Component {
+class ContactDetailsFormOtherEdit extends Component {
     constructor(props) {
         super(props);
 
@@ -37,11 +38,11 @@ class ContactDetailsFormOtherPersonEdit extends Component {
     };
 
     handleChangeDateOfBirthPartner = (date) => {
-        const value = moment(date).format('Y-MM-DD');
+        const formattedDate = (date ? moment(date).format('Y-MM-DD') : '');
 
         this.setState({
             ...this.state,
-            dateOfBirthPartner: value
+            dateOfBirthPartner: formattedDate
         });
     };
 
@@ -63,7 +64,7 @@ class ContactDetailsFormOtherPersonEdit extends Component {
         const { firstNamePartner, lastNamePartner, dateOfBirthPartner, iban, liable, liabilityAmount  } = this.state;
 
         return (
-            <form className="form-horizontal" onSubmit={this.handleSubmit}>
+            <form className="form-horizontal col-md-12" onSubmit={this.handleSubmit}>
                 <div className="row">
                     <InputText
                         label="Voornaam partner"
@@ -99,7 +100,7 @@ class ContactDetailsFormOtherPersonEdit extends Component {
                     <InputDate
                         label="Geboortedatum partner"
                         name={"dateOfBirthPartner"}
-                        value={ dateOfBirthPartner && moment(dateOfBirthPartner).format('DD-MM-Y') }
+                        value={ dateOfBirthPartner }
                         onChangeAction={this.handleChangeDateOfBirthPartner}
                     />
                     <InputText
@@ -111,12 +112,12 @@ class ContactDetailsFormOtherPersonEdit extends Component {
                     />
                 </div>
 
-                <div className="panel-footer">
+                <PanelFooter>
                     <div className="pull-right btn-group" role="group">
                         <ButtonText buttonClassName={"btn-default"} buttonText={"Annuleren"} onClickAction={this.props.switchToView}/>
                         <ButtonText buttonText={"Opslaan"} onClickAction={this.handleSubmit}/>
                     </div>
-                </div>
+                </PanelFooter>
             </form>
         );
     };
@@ -129,4 +130,4 @@ const mapStateToProps = (state) => {
     };
 };
 
-export default connect(mapStateToProps)(ContactDetailsFormOtherPersonEdit);
+export default connect(mapStateToProps)(ContactDetailsFormOtherEdit);

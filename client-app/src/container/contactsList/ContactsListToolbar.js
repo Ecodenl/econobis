@@ -5,6 +5,7 @@ import { hashHistory, Link } from 'react-router';
 import ButtonIcon from '../../components/button/ButtonIcon';
 import ContactsListExtraFilters from './ContactsListExtraFilters';
 import ContactsDeleteSelectedItems from './ContactsDeleteSelectedItems';
+import ContactListAddContactsToGroup from './ContactListAddContactsToGroup';
 
 class ContactsListToolbar extends Component {
     constructor(props){
@@ -13,6 +14,7 @@ class ContactsListToolbar extends Component {
         this.state = {
             showExtraFilters: false,
             showDeleteSelectedItems: false,
+            showAddContactsToGroup: false,
         };
     }
 
@@ -28,6 +30,12 @@ class ContactsListToolbar extends Component {
         });
     };
 
+    toggleAddContactsToGroup = () => {
+        this.setState({
+            showAddContactsToGroup: !this.state.showAddContactsToGroup
+        });
+    };
+
     newContact = () => {
         hashHistory.push(`/contact/nieuw`);
     };
@@ -40,23 +48,28 @@ class ContactsListToolbar extends Component {
                 <div className="col-md-4">
                     <div className="btn-group" role="group">
                         <ButtonIcon iconName={"glyphicon-refresh"} onClickAction={this.props.refreshContactsData} />
-                        { (permissions.createPerson || permissions.createAccount) &&
-                            <div className="nav navbar-nav btn-group" role="group">
-                                <button className="btn btn-success btn-sm" data-toggle="dropdown">
-                                    <span className="glyphicon glyphicon-plus"/>
-                                </button>
-                                <ul className="dropdown-menu">
-                                    {   permissions.createPerson &&
+                        <div className="nav navbar-nav btn-group" role="group">
+                            <button className="btn btn-success btn-sm" data-toggle="dropdown">
+                                <span className="glyphicon glyphicon-plus" />
+                            </button>
+                            <ul className="dropdown-menu">
+                                {   permissions.createPerson &&
                                             <li><Link to="contact/nieuw/persoon">Persoon</Link></li>
                                     }
                                         {permissions.createAccount &&
                                             <li><Link to="contact/nieuw/bedrijf">Bedrijf</Link></li>
                                     }
-                                </ul>
-                            </div>
-                        }
+                            </ul>
+                        </div>
+                        <div className="nav navbar-nav btn-group" role="group">
+                            <button className="btn btn-success btn-sm" data-toggle="dropdown">
+                                <span className="glyphicon glyphicon-share-alt" />
+                            </button>
+                            <ul className="dropdown-menu">
+                                <li><a onClick={this.toggleAddContactsToGroup}>Voeg toe aan groep</a></li>
+                            </ul>
+                        </div>
                         <ButtonIcon iconName={"glyphicon-trash"} onClickAction={this.toggleShowDeleteSelectedItems} />
-                        <ButtonIcon iconName={"glyphicon-save"} />
                         <ButtonIcon iconName={"glyphicon-ok"} onClickAction={this.props.toggleShowCheckboxList} />
                     </div>
                 </div>
@@ -69,6 +82,9 @@ class ContactsListToolbar extends Component {
                 }
                 {
                     this.state.showDeleteSelectedItems && <ContactsDeleteSelectedItems toggleShowDeleteSelectedItems={this.toggleShowDeleteSelectedItems} />
+                }
+                {
+                    this.state.showAddContactsToGroup && <ContactListAddContactsToGroup toggleAddGroup={this.toggleAddContactsToGroup} />
                 }
             </div>
         );

@@ -7,10 +7,10 @@ const ContactDetailFormAddressView = props => {
     const {typeId, street, number, postalCode, city, primary } = props.address;
 
     return (
-        <div className={`row ${props.highlightLine}`} onMouseEnter={() => props.onLineEnter()} onMouseLeave={() => props.onLineLeave()}>
+        <div className={`row border ${props.highlightLine}`} onMouseEnter={() => props.onLineEnter()} onMouseLeave={() => props.onLineLeave()}>
             <div onClick={props.openEdit}>
                 <div className="col-sm-2">
-                    <strong><GetNameByIdHelper id={typeId} items={props.addressTypes} /></strong>
+                    <GetNameByIdHelper id={typeId} items={props.addressTypes} />
                 </div>
                 <div className="col-sm-3">
                     { street + ' ' + number }

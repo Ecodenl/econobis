@@ -24,7 +24,7 @@ const SidebarMenu = props => {
                     <NavIcon><SvgIcon size={20} icon={ic_contacts} /></NavIcon>
                     <NavText><Link className="sidebar-link" to="contacten">Contacten</Link></NavText>
                     <Nav id="alle-organisaties">
-                        <NavText><Link className="sidebar-link" to="contacten/type/account">Alle organisaties</Link></NavText>
+                        <NavText><Link className="sidebar-link" to="contacten/type/account">Alle bedrijven</Link></NavText>
                     </Nav>
                     <Nav id="alle-personen">
                         <NavText><Link className="sidebar-link" to="contacten/type/person">Alle personen</Link></NavText>
@@ -59,9 +59,9 @@ const SidebarMenu = props => {
                     <NavIcon><SvgIcon size={20} icon={ic_business} /></NavIcon>
                     <NavText> Werkgroepen </NavText>
                 </Nav>
-                <Nav id="marketing">
+                <Nav id="contact-groepen">
                     <NavIcon><SvgIcon size={20} icon={ic_aspect_ratio} /></NavIcon>
-                    <NavText> Marketing </NavText>
+                    <NavText><Link className="sidebar-link" to="contact-groepen">Groepen beheer</Link></NavText>
                 </Nav>
                 <Nav id="email">
                     <NavIcon><SvgIcon size={20} icon={ic_email} /></NavIcon>

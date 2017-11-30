@@ -5,7 +5,7 @@ const Panel = props => {
     const {children, className, onMouseEnter, onMouseLeave} = props;
 
     return (
-        <div className={`panel panel-default ${className}`} onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>
+        <div className={`panel panel-default panel-no-border ${className}`} onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>
             { children }
         </div>
     );

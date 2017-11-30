@@ -4,6 +4,7 @@ namespace App\Eco\Contact;
 
 use App\Eco\Account\Account;
 use App\Eco\Address\Address;
+use App\Eco\ContactGroup\ContactGroup;
 use App\Eco\ContactNote\ContactNote;
 use App\Eco\EmailAddress\EmailAddress;
 use App\Eco\Person\Person;
@@ -94,6 +95,11 @@ class Contact extends Model
 
     public function updatedBy(){
         return $this->belongsTo(User::class);
+    }
+
+    public function groups()
+    {
+        return $this->belongsToMany(ContactGroup::class, 'contact_groups_pivot');
     }
 
     public function isPerson()

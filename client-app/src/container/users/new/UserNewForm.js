@@ -8,6 +8,7 @@ import UserAPI from '../../../api/UserAPI';
 import InputText from '../../../components/form/InputText';
 import InputSelect from '../../../components/form/InputSelect';
 import ButtonText from '../../../components/button/ButtonText';
+import PanelFooter from "../../../components/panel/PanelFooter";
 
 class UserNewForm extends Component {
     constructor(props) {
@@ -96,7 +97,7 @@ class UserNewForm extends Component {
                     <InputSelect
                         label="Aanspreektitel"
                         name={"titleId"}
-                        options={ [{id: 1, name: 'De heer'}, {id: 2, name: 'Mevrouw'} ] }
+                        options={this.props.titles}
                         value={titleId}
                         onChangeAction={this.handleInputChange}
                     />
@@ -176,12 +177,11 @@ class UserNewForm extends Component {
                     />
                 </div>
 
-                <div className="panel-footer">
+                <PanelFooter>
                     <div className="pull-right btn-group" role="group">
-                        <ButtonText buttonClassName={"btn-default"} buttonText={"Sluiten"} onClickAction={this.props.switchToView}/>
-                        <ButtonText buttonText={"Opslaan"} onClickAction={this.handleSubmit}/>
+                        <ButtonText buttonText={"Opslaan"} onClickAction={this.handleSubmit} type={"submit"} value={"Submit"}/>
                     </div>
-                </div>
+                </PanelFooter>
             </form>
         );
     };
@@ -190,6 +190,7 @@ class UserNewForm extends Component {
 const mapStateToProps = (state) => {
     return {
         lastNamePrefixes: state.systemData.lastNamePrefixes,
+        titles: state.systemData.titles,
     };
 };
 

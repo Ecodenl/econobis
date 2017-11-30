@@ -1,11 +1,11 @@
 import axios from 'axios';
 
 const URL_API = process.env.URL_API;
-const URL_TYPE = `${URL_API}/api/email-address`;
+const URL_EMAIL_ADDRESS = `${URL_API}/api/email-address`;
 
 export default {
     newEmailAddress: (emailAddress) => {
-        const requestUrl = `${URL_TYPE}`;
+        const requestUrl = `${URL_EMAIL_ADDRESS}`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
@@ -19,7 +19,7 @@ export default {
     },
 
     updateEmailAddress: (emailAddress) => {
-        const requestUrl = `${URL_TYPE}/${emailAddress.id}`;
+        const requestUrl = `${URL_EMAIL_ADDRESS}/${emailAddress.id}`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
@@ -33,7 +33,7 @@ export default {
     },
 
     deleteEmailAddress: (id) => {
-        const requestUrl = `${URL_TYPE}/${id}/delete`;
+        const requestUrl = `${URL_EMAIL_ADDRESS}/${id}/delete`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 

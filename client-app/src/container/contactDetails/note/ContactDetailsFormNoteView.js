@@ -15,7 +15,8 @@ const ContactDetailFormNoteView = props => {
                 {(props.showActionButtons ? <a role="button" onClick={props.openEdit}><span className="glyphicon glyphicon-pencil mybtn-success" /> </a> : '')}
                 {(props.showActionButtons ? <a role="button" onClick={props.toggleDelete}><span className="glyphicon glyphicon-trash mybtn-danger"  /> </a> : '')}
             </div>
-            <ViewText label={"Gemaakt op"} value={createdAt} className={"col-sm-2 h6"} />
+            <ViewText label={"Gemaakt op"} value={createdAt} className={"col-sm-4 h6"} />
+            <ViewText label={"Gemaakt door"} value={createdAt} className={"col-sm-4 h6"} />
         </div>
     );
 };

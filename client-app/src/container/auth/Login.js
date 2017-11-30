@@ -67,7 +67,7 @@ class Login extends Component {
         const {username, password} = this.state;
 
         return (
-            <div className="col-md-4 col-md-offset-4 loginform">
+            <div className="col-md-4 col-sm-8 col-xs-10 login-form">
                 <div className="panel panel-default add">
                     <div className="panel-body">
                         <div className="text-center">

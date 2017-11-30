@@ -1,11 +1,11 @@
 import axios from 'axios';
 
 const URL_API = process.env.URL_API;
-const URL_TYPE = `${URL_API}/api/contact-note`;
+const URL_CONTACT_NOTE = `${URL_API}/api/contact-note`;
 
 export default {
     newNote: (note) => {
-        const requestUrl = `${URL_TYPE}`;
+        const requestUrl = `${URL_CONTACT_NOTE}`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
@@ -19,7 +19,7 @@ export default {
     },
 
     updateNote: (note) => {
-        const requestUrl = `${URL_TYPE}/${note.id}`;
+        const requestUrl = `${URL_CONTACT_NOTE}/${note.id}`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
@@ -33,7 +33,7 @@ export default {
     },
 
     deleteNote: (id) => {
-        const requestUrl = `${URL_TYPE}/${id}/delete`;
+        const requestUrl = `${URL_CONTACT_NOTE}/${id}/delete`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 

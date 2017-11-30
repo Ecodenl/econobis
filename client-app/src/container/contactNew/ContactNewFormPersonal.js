@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import { hashHistory } from 'react-router';
 import moment from 'moment';
+import validator from 'validator';
 
 import PersonAPI from '../../api/PersonAPI';
 import AccountAPI from '../../api/AccountAPI';
@@ -10,6 +11,7 @@ import InputSelect from '../../components/form/InputSelect';
 import InputCheckbox from '../../components/form/InputCheckbox';
 import InputDate from '../../components/form/InputDate';
 import ButtonText from '../../components/button/ButtonText';
+import PanelFooter from "../../components/panel/PanelFooter";
 
 class ContactNewFormPersonal extends Component {
     constructor(props) {
@@ -34,9 +36,10 @@ class ContactNewFormPersonal extends Component {
                 newsletter: false,
                 occupationId: '',
             },
-            statusIdError: false,
-            firstNameError: false,
-            lastNameError: false,
+            errors: {
+                name: false,
+                statusId: false,
+            },
         }
     };
 
@@ -64,70 +67,55 @@ class ContactNewFormPersonal extends Component {
     };
 
     handleChangeMemberSince = (date) => {
-        const value = moment(date).format('Y-MM-DD');
+        const formattedDate = (date ? moment(date).format('Y-MM-DD') : '');
 
         this.setState({
             ...this.state,
             person: {
                 ...this.state.person,
-                memberSince: value
+                memberSince: formattedDate
             },
         });
     };
 
     handleChangeDateOfBirth = (date) => {
-        const value = moment(date).format('Y-MM-DD');
+        const formattedDate = (date ? moment(date).format('Y-MM-DD') : '');
 
         this.setState({
             ...this.state,
             person: {
                 ...this.state.person,
-                dateOfBirth: value
+                dateOfBirth: formattedDate
             },
         });
-    };
-
-    validateForm(fieldNames) {
-        fieldNames.map((fieldName) => {
-            switch(fieldName) {
-                case 'statusId':
-                case 'firstName':
-                case 'lastName':
-                    this.state.person[fieldName].length === 0 ?
-                        this.processError(fieldName + 'Error', true)
-                        :
-                        this.processError(fieldName + 'Error', false)
-                    break;
-                default:
-                    break;
-            }
-        });
-    };
-
-    processError(fieldName, value) {
-        this.setState({
-            [fieldName]: value,
-        })
     };
 
     handleSubmit = event => {
         event.preventDefault();
 
-        this.validateForm([
-            'statusId',
-            'firstName',
-            'lastName',
-        ]);
-
         const { person }  = this.state;
 
-        // Temp solution
-        setTimeout(() => {
-            !this.state.statusIdError && !this.state.firstNameError && !this.state.lastNameError &&
-                PersonAPI.newPerson(person).then((payload) => {
-                    hashHistory.push(`/contact/${payload.id}`);
-                });
-        }, 100);
+        // Validation
+        let errors = {};
+        let hasErrors = false;
+
+        if(validator.isEmpty(person.firstName) && validator.isEmpty(person.lastName)){
+            errors.name = true;
+            hasErrors = true;
+        };
+
+        if(validator.isEmpty(person.statusId)){
+            errors.statusId = true;
+            hasErrors = true;
+        };
+
+        this.setState({ ...this.state, errors: errors })
+
+        // If no errors send form
+        !hasErrors &&
+            PersonAPI.newPerson(person).then((payload) => {
+                hashHistory.push(`/contact/${payload.id}`);
+            });
     };
 
     render() {
@@ -154,7 +142,7 @@ class ContactNewFormPersonal extends Component {
                     <InputSelect
                         label="Aanspreektitel"
                         name={"titleId"}
-                        options={ [{id: 1, name: 'De heer'}, {id: 2, name: 'Mevrouw'} ] }
+                        options={this.props.titles}
                         value={titleId}
                         onChangeAction={this.handleInputChange}
                     />
@@ -166,7 +154,7 @@ class ContactNewFormPersonal extends Component {
                         value={statusId}
                         onChangeAction={this.handleInputChange}
                         required={"required"}
-                        error={this.state.statusIdError}
+                        error={this.state.errors.statusId}
                     />
                 </div>
 
@@ -177,13 +165,13 @@ class ContactNewFormPersonal extends Component {
                         name="firstName"
                         value={firstName}
                         onChangeAction={this.handleInputChange}
-                        required={"required"}
-                        error={this.state.firstNameError}
+                        required={lastName === '' && "required"}
+                        error={this.state.errors.name}
                     />
                     <InputDate
                         label={"Lid sinds"}
                         name="memberSince"
-                        value={ memberSince && moment(memberSince).format('DD-MM-Y') }
+                        value={ memberSince }
                         onChangeAction={this.handleChangeMemberSince}
                     />
                 </div>
@@ -211,8 +199,8 @@ class ContactNewFormPersonal extends Component {
                         name="lastName"
                         value={lastName}
                         onChangeAction={this.handleInputChange}
-                        required={"required"}
-                        error={this.state.lastNameError}
+                        required={firstName === '' && "required"}
+                        error={this.state.errors.name}
                     />
                     <InputSelect
                         label={"Soort contact"}
@@ -226,18 +214,18 @@ class ContactNewFormPersonal extends Component {
                 </div>
 
                 <div className="row">
+                    <InputDate
+                        label={"Geboortedatum"}
+                        name={"dateOfBirth"}
+                        value={ dateOfBirth }
+                        onChangeAction={this.handleChangeDateOfBirth}
+                    />
                     <InputSelect
                         label={"Organisatie"}
                         name={"accountId"}
                         options={this.state.accountPeek}
                         value={accountId}
                         onChangeAction={this.handleInputChange}
-                    />
-                    <InputDate
-                        label={"Geboortedatum"}
-                        name={"dateOfBirth"}
-                        value={ dateOfBirth && moment(dateOfBirth).format('DD-MM-Y') }
-                        onChangeAction={this.handleChangeDateOfBirth}
                     />
                 </div>
 
@@ -263,12 +251,11 @@ class ContactNewFormPersonal extends Component {
                     />
                 </div>
 
-                <div className="panel-footer">
+                <PanelFooter>
                     <div className="pull-right btn-group" role="group">
-                        <ButtonText buttonClassName={"btn-default"} buttonText={"Annuleren"} onClickAction={this.props.switchToView}/>
-                        <ButtonText buttonText={"Opslaan"} onClickAction={this.handleSubmit}/>
+                        <ButtonText buttonText={"Opslaan"} onClickAction={this.handleSubmit} type={"submit"} value={"Submit"}/>
                     </div>
-                </div>
+                </PanelFooter>
             </form>
         );
     };
@@ -280,6 +267,7 @@ const mapStateToProps = (state) => {
         personTypes: state.systemData.personTypes,
         contactStatuses: state.systemData.contactStatuses,
         occupations: state.systemData.occupations,
+        titles: state.systemData.titles,
     };
 };
 

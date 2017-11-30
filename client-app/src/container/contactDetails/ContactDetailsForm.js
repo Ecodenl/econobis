@@ -29,20 +29,22 @@ class ContactDetailsForm extends Component {
     }
 
     render() {
+        const { typeId } = this.props.contactDetails;
+
         return (
             isEmpty(this.props.contactDetails) ?
                 <div>Geen gegevens gevonden!</div>
                 :
                 <div>
                     <ContactDetailsFormGeneral />
-                    { this.props.contactDetails.typeId == 'account' &&
-                        <ContactDetailsFormPerson />
-                    }
                     <ContactDetailsFormAddress />
                     <ContactDetailsFormEmail />
                     <ContactDetailsFormPhone />
+                    { typeId == 'account' &&
+                    <ContactDetailsFormPerson />
+                    }
                     {/* <ContactDetailsFormEnergy /> */}
-                    { this.props.contactDetails.typeId == 'person' &&
+                    { typeId == 'person' &&
                         <ContactDetailsFormOther />
                     }
                     <ContactDetailsFormNote />

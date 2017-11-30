@@ -1,10 +1,11 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import moment from 'moment';
 
 import ViewText from '../../../../components/form/ViewText';
 
 const RegistrationDetailsFormGeneralView = props => {
-    const { address, buildYear, buildingTypeId, owner, status, sources, campaignId, registrationReasonIds } = props.registrationDetails;
+    const { address, buildYear, owner, createdAt, status, sources, campaign, reasons } = props.registrationDetails;
 
     return (
         <div onClick={props.switchToEdit}>
@@ -22,7 +23,7 @@ const RegistrationDetailsFormGeneralView = props => {
             <div className="row">
                 <ViewText
                     label="Woningtype"
-                    value={buildingTypeId}
+                    value={ address.buildingType && address.buildingType.name}
                 />
 
                 <ViewText
@@ -34,7 +35,7 @@ const RegistrationDetailsFormGeneralView = props => {
             <div className="row">
                 <ViewText
                     label={"Aanmeld datum"}
-                    value={''}
+                    value={ createdAt && moment(createdAt.date).format('d-M-Y')}
                 />
                 <ViewText
                     label="Status"
@@ -47,18 +48,16 @@ const RegistrationDetailsFormGeneralView = props => {
                     label={"Aanmeldingsbron"}
                     value={ sources && sources.map((source) => source.name).join(', ') }
                 />
-                <div className="row">
-                    <ViewText
-                        label="Campagne"
-                        value={''}
-                    />
-                </div>
+                <ViewText
+                    label="Campagne"
+                    value={ campaign && campaign.name }
+                />
             </div>
 
             <div className="row">
                 <ViewText
                     label={"Wat is belangrijk"}
-                    value={''}
+                    value={ reasons && reasons.map((reason) => reason.name).join(', ') }
                 />
 
             </div>

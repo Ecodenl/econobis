@@ -1,27 +1,73 @@
-import React from 'react';
+import React, { Component } from 'react';
+import {connect} from 'react-redux';
 import { hashHistory } from 'react-router';
+import moment from 'moment';
+moment.locale('nl');
 
-const RegistrationList = () => {
-    const openItem = (id) => {
+import RegistrationsAPI from '../../../api/registration/RegistrationsAPI';
+
+class RegistrationList extends Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            registrations: '',
+            loading: true,
+        };
+    };
+
+    componentDidMount() {
+        RegistrationsAPI.fetchRegistrationsByContact(this.props.contactDetailsId).then((payload) => {
+            this.setState({registrations: payload, loading: false});
+        });
+    }
+
+    openItem = (id) => {
         hashHistory.push(`/aanmelding/${id}`);
     };
 
-    return (
-        <div className="col-sm-12 extra-space-above">
-            <table className="table">
-                <tbody>
-                    <tr onClick={() => openItem(1)}>
-                        <td>01-01-2018</td>
-                        <td>Klaas</td>
-                    </tr>
-                    <tr onClick={() => openItem(2)}>
-                        <td>01-03-2018</td>
-                        <td>Pietje</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    );
+    render() {
+        const {registrations, loading} = this.state;
+
+        return (
+            <div>
+                { loading &&
+                <div>Laden...</div>
+                }
+
+                {registrations == '' && !loading &&
+                <div>Geen aanmeldingen bekend</div>
+                }
+
+                {registrations != '' && !loading &&
+
+                <table className="table">
+                    <tbody>
+                    {registrations.map((registration, i) => {
+                        return (
+                            <tr key={i} onClick={() => this.openItem(registration.id)}>
+                                <td className='col-xs-4 clickable'>
+                                    { registration.createdAt ? moment(registration.createdAt.date).format('d-M-Y') : '' }
+                                </td>
+                                <td className='col-xs-8 clickable'>
+                                    {registration.addressName}
+                                </td>
+                            </tr>
+                        )
+                    })
+                    }
+                    </tbody>
+                </table>
+                }
+            </div>
+        );
+    }
 };
 
-export default RegistrationList;
+const mapStateToProps = (state) => {
+    return {
+        contactDetailsId: state.contactDetails.id,
+    };
+};
+
+export default connect(mapStateToProps, null)(RegistrationList);

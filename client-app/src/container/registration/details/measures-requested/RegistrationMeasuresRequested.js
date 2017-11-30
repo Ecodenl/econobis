@@ -1,12 +1,12 @@
 import React, { Component} from 'react';
 
-import RegistrationMeasuresTakenList from './RegistrationMeasuresTakenList';
-import RegistrationMeasuresTakenNew from './RegistrationMeasuresTakenNew';
+import RegistrationMeasuresRequestedList from './RegistrationMeasuresRequestedList';
+import RegistrationMeasuresRequestedNew from './RegistrationMeasuresRequestedNew';
 import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
 import PanelHeader from '../../../../components/panel/PanelHeader';
 
-class RegistrationMeasuresTaken extends Component {
+class RegistrationMeasuresRequested extends Component {
     constructor(props) {
         super(props);
 
@@ -25,15 +25,15 @@ class RegistrationMeasuresTaken extends Component {
         return (
             <Panel>
               <PanelHeader>
-                <span className="h5 text-bold">Reeds genomen maatregelen</span>
+                <span className="h5 text-bold">Gewenste maatregelen</span>
                 <a role="button" className="pull-right" onClick={this.toggleShowNew}><span className="glyphicon glyphicon-plus"/></a>
               </PanelHeader>
               <PanelBody>
                 <div className="col-md-12">
-                  <RegistrationMeasuresTakenList />
+                  <RegistrationMeasuresRequestedList />
                 </div>
                 <div className="col-md-12 extra-space-above">
-                    { this.state.showNew && <RegistrationMeasuresTakenNew toggleShowNew={this.toggleShowNew} /> }
+                    { this.state.showNew && <RegistrationMeasuresRequestedNew toggleShowNew={this.toggleShowNew} /> }
                 </div>
               </PanelBody>
             </Panel>
@@ -42,4 +42,4 @@ class RegistrationMeasuresTaken extends Component {
     }
 };
 
-export default RegistrationMeasuresTaken;
+export default RegistrationMeasuresRequested;

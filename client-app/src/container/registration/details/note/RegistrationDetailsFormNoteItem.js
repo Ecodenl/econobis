@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment';
 
-import RegistrationNoteAPI from '../../../../api/registration/RegistrationNoteAPI';
+import RegistrationDetailsAPI from '../../../../api/registration/RegistrationDetailsAPI';
 import * as registrationDetailsActions from '../../../../actions/registration/RegistrationDetailsActions';
 import RegistrationDetailsFormNoteView from './RegistrationDetailsFormNoteView';
 import RegistrationDetailsFormNoteEdit from './RegistrationDetailsFormNoteEdit';
@@ -79,7 +79,7 @@ class RegistrationDetailFormNoteItem extends Component {
 
         const { note } = this.state;
 
-        RegistrationNoteAPI.updateRegistrationNote(note).then((payload) => {
+        RegistrationDetailsAPI.updateRegistrationNote(note).then((payload) => {
             this.props.dispatch(registrationDetailsActions.updateRegistrationNote(payload));
             this.closeEdit();
         });

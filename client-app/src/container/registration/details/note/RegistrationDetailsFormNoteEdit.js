@@ -12,7 +12,9 @@ const  RegistrationDetailsFormNoteEdit = props => {
             <Panel className={'panel-grey'}>
                 <PanelBody>
                     <div className="row">
-                        <textarea name={note} value={note} onChange={props.handleInputChange} className="col-sm-12" />
+                        <div className="col-sm-12">
+                            <textarea name={note} value={note} onChange={props.handleInputChange} className="form-control input-sm" />
+                        </div>
                     </div>
 
                     <div className="pull-right btn-group extra-space-above" role="group">

@@ -5,6 +5,8 @@ import { isEmpty } from 'lodash';
 import RegistrationDetailsFormGeneral from './general/RegistrationDetailsFormGeneral';
 import RegistrationMeasuresTaken from './measures-taken/RegistrationMeasuresTaken';
 import RegistrationDetailsFormNote from './note/RegistrationDetailsFormNote';
+import RegistrationMeasuresRequested from "./measures-requested/RegistrationMeasuresRequested";
+import RegistrationDetailsFormConclusion from "./conclusion/RegistrationDetailsFormConclusion";
 
 class RegistrationDetailsForm extends Component {
     constructor(props){
@@ -19,7 +21,9 @@ class RegistrationDetailsForm extends Component {
                 <div>
                     <RegistrationDetailsFormGeneral />
                     <RegistrationMeasuresTaken />
+                    <RegistrationMeasuresRequested />
                     <RegistrationDetailsFormNote />
+                    <RegistrationDetailsFormConclusion />
                 </div>
         );
     }

@@ -23,7 +23,7 @@ const RegistrationDetailsFormNoteList = props => {
 
 const mapStateToProps = (state) => {
     return {
-        notes: state.registrationDetails.note,
+        notes: state.registrationDetails.notes,
     };
 };
 

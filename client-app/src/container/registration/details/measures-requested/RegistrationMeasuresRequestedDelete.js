@@ -2,11 +2,11 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import Modal from '../../../../components/modal/Modal';
-import { deleteRegistrationMeasureTaken } from '../../../../actions/registration/RegistrationDetailsActions';
+import { deleteRegistrationMeasureRequested } from '../../../../actions/registration/RegistrationDetailsActions';
 
-const RegistrationMeasuresTakenDelete = (props) => {
+const RegistrationMeasuresRequestedDelete = (props) => {
     const confirmAction = () => {
-        props.deleteRegistrationMeasureTaken(props.id);
+        props.deleteRegistrationMeasureRequested(props.id);
         props.closeDeleteItemModal();
     };
     console.log(props);
@@ -18,16 +18,16 @@ const RegistrationMeasuresTakenDelete = (props) => {
             confirmAction={() => confirmAction()}
             title="Verwijderen"
         >
-          <p>Verwijder maatregel genomen: <strong> {`${props.name}` } </strong></p>
+          <p>Verwijder maatregel gewenst: <strong> {`${props.name}` } </strong></p>
 
         </Modal>
     );
 };
 
 const mapDispatchToProps = dispatch => ({
-    deleteRegistrationMeasureTaken: (id) => {
-        dispatch(deleteRegistrationMeasureTaken(id));
+    deleteRegistrationMeasureRequested: (id) => {
+        dispatch(deleteRegistrationMeasureRequested(id));
     },
 });
 
-export default connect(null, mapDispatchToProps)(RegistrationMeasuresTakenDelete);
+export default connect(null, mapDispatchToProps)(RegistrationMeasuresRequestedDelete);

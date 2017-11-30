@@ -16,18 +16,20 @@ class RegistrationDetailsFormGeneralEdit extends Component {
     constructor(props) {
         super(props);
 
+        const { id, address = {}, reasons, createdAt, campaign, sources} = props.registrationDetails;
+
         this.state = {
             registration: {
-                id: '',
-                address: props.address,
-                buildYear: '',
-                buildingTypeId: '',
-                createdAt: '',
+                id,
+                address,
+                buildYear: address.buildYear,
+                buildingTypeId: address.buildingTypeId,
+                createdAt: createdAt ? createdAt.date : '',
                 owner: false,
-                statusId: '',
-                sourceIds: '',
-                campaignId: '',
-                registrationReasonIds: '',
+                statusId: campaign && campaign.id,
+                sourceIds: sources && sources.map((source) => source.id).join(','),
+                campaignId: campaign && campaign.id,
+                registrationReasonIds: reasons && reasons.map((reason) => reason.id).join(','),
             },
         }
     };
@@ -40,7 +42,7 @@ class RegistrationDetailsFormGeneralEdit extends Component {
         this.setState({
             ...this.state,
             registration: {
-                ...this.state.user,
+                ...this.state.registration,
                 [name]: value
             },
         });

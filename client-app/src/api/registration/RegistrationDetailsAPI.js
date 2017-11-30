@@ -11,7 +11,7 @@ export default {
 
         return axios.get(requestUrl)
             .then(function (response) {
-                return response.data;
+                return response.data.data;
             })
             .catch(function (error) {
                     console.log(error);
@@ -34,7 +34,7 @@ export default {
     },
 
     updateRegistration: (registration) => {
-        const requestUrl = `${URL_REGISTRATION}/${registration.id}`;
+        const requestUrl = `${URL_REGISTRATION}/${registration.id}/update`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
@@ -44,6 +44,118 @@ export default {
             })
             .catch(function (error) {
                 console.log(error);
+            });
+    },
+
+    deleteRegistration: (id) => {
+        const requestUrl = `${URL_REGISTRATION}/${id}/delete`;
+        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
+        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
+
+        return axios.post(requestUrl)
+            .then(function (response) {
+                return response.data.data;
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+    },
+
+    newRegistrationMeasureTaken: (measureTaken) => {
+        const requestUrl = `${URL_REGISTRATION}/${measureTaken.addressId}/measure-taken`;
+        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
+        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
+
+        return axios.post(requestUrl, measureTaken)
+            .then(function (response) {
+                return response.data.data;
+            })
+            .catch(function (error) {
+                return error.response;
+            });
+    },
+
+    deleteRegistrationMeasureTaken: (id) => {
+        const requestUrl = `${URL_REGISTRATION}/${id}/measure-taken/delete`;
+        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
+        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
+
+        return axios.post(requestUrl)
+            .then(function (response) {
+                return response.data.data;
+            })
+            .catch(function (error) {
+                return error.response;
+            });
+    },
+
+    newRegistrationMeasureRequested: (measureRequested) => {
+        const requestUrl = `${URL_REGISTRATION}/${measureRequested.addressId}/measure-requested`;
+        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
+        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
+
+        return axios.post(requestUrl, measureRequested)
+            .then(function (response) {
+                return response.data.data;
+            })
+            .catch(function (error) {
+                return error.response;
+            });
+    },
+
+    deleteRegistrationMeasureRequested: (id) => {
+        const requestUrl = `${URL_REGISTRATION}/${id}/measure-requested/delete`;
+        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
+        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
+
+        return axios.post(requestUrl)
+            .then(function (response) {
+                return response.data.data;
+            })
+            .catch(function (error) {
+                return error.response;
+            });
+    },
+
+    newRegistrationNote: (note) => {
+        const requestUrl = `${URL_REGISTRATION}/${note.registrationId}/note`;
+        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
+        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
+
+        return axios.post(requestUrl, note)
+            .then(function (response) {
+                return response.data.data;
+            })
+            .catch(function (error) {
+                return error.response;
+            });
+    },
+
+    updateRegistrationNote: (note) => {
+        const requestUrl = `${URL_REGISTRATION}/note/${note.id}/update`;
+        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
+        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
+
+        return axios.post(requestUrl, note)
+            .then(function (response) {
+                return response.data;
+            })
+            .catch(function (error) {
+                return error.response;
+            });
+    },
+
+    deleteRegistrationNote: (id) => {
+        const requestUrl = `${URL_REGISTRATION}/note/${id}/delete`;
+        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
+        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
+
+        return axios.post(requestUrl)
+            .then(function (response) {
+                return response.data;
+            })
+            .catch(function (error) {
+                return error;
             });
     },
 };

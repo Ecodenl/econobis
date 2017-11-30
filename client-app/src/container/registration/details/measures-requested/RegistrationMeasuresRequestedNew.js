@@ -3,23 +3,24 @@ import { connect } from 'react-redux';
 import moment from 'moment';
 
 import RegistrationDetailsAPI from '../../../../api/registration/RegistrationDetailsAPI';
-import { newRegistrationMeasureTaken } from '../../../../actions/registration/RegistrationDetailsActions';
+import { newRegistrationMeasureRequested } from '../../../../actions/registration/RegistrationDetailsActions';
 import InputDate from '../../../../components/form/InputDate';
+import InputText from '../../../../components/form/InputText';
 import ButtonText from '../../../../components/button/ButtonText';
 import InputSelect from "../../../../components/form/InputSelect";
 import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
 
-class RegistrationMeasuresTakenNew extends Component {
+class RegistrationMeasuresRequestedNew extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            measureTaken: {
+            measureRequested: {
                 addressId: this.props.id,
                 measureId: '',
-                measureDate: '',
-                energyLabelId: '',
+                desiredDate: '',
+                degreeInterest: '',
             },
         }
     };
@@ -31,8 +32,8 @@ class RegistrationMeasuresTakenNew extends Component {
 
         this.setState({
             ...this.state,
-            measureTaken: {
-                ...this.state.measureTaken,
+            measureRequested: {
+                ...this.state.measureRequested,
                 [name]: value
             },
         });
@@ -53,16 +54,16 @@ class RegistrationMeasuresTakenNew extends Component {
     handleSubmit = event => {
         event.preventDefault();
 
-        const { measureTaken } = this.state;
+        const { measureRequested } = this.state;
 
-        RegistrationDetailsAPI.newRegistrationMeasureTaken(measureTaken).then((payload) => {
-            this.props.newRegistrationMeasureTaken(payload);
+        RegistrationDetailsAPI.newRegistrationMeasureRequested(measureRequested).then((payload) => {
+            this.props.newRegistrationMeasureRequested(payload);
             this.props.toggleShowNew();
         })
     };
 
     render() {
-        const { measureId, measureDate, energyLabelId } = this.state.measureTaken;
+        const { measureId, desiredDate, degreeInterest } = this.state.measureRequested;
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -79,22 +80,24 @@ class RegistrationMeasuresTakenNew extends Component {
                             />
 
                             <InputDate
-                                label={"Gerealiseerd datum"}
+                                label={"Gewenste datum"}
                                 size={"col-sm-6"}
-                                name={"measureDate"}
-                                value={measureDate}
+                                name={"desiredDate"}
+                                value={desiredDate}
                                 onChangeAction={this.handleChangeMeasureDate}
                             />
                         </div>
 
                         <div className="row">
-                            <InputSelect
-                                label={"Energie label"}
+                            <InputText
+                                type={'number'}
+                                label={"Mate van interesse"}
                                 size={"col-sm-6"}
-                                name={"energyLabelId"}
-                                options={this.props.energyLabels}
-                                value={energyLabelId}
+                                name={"degreeInterest"}
+                                value={degreeInterest}
                                 onChangeAction={this.handleInputChange}
+                                min={'1'}
+                                max={'10'}
                             />
                         </div>
 
@@ -118,9 +121,9 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = dispatch => ({
-    newRegistrationMeasureTaken: (id) => {
-        dispatch(newRegistrationMeasureTaken(id));
+    newRegistrationMeasureRequested: (id) => {
+        dispatch(newRegistrationMeasureRequested(id));
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(RegistrationMeasuresTakenNew);
+export default connect(mapStateToProps, mapDispatchToProps)(RegistrationMeasuresRequestedNew);

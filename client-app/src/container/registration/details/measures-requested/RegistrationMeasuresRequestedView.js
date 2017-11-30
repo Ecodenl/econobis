@@ -2,10 +2,8 @@ import React from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment';
 
-import GetNameByIdHelper from '../../../../helpers/GetNameByIdHelper';
-
-const RegistrationMeasuresTakenView = props => {
-    const {name, measureDate, energyLabelId} = props.measureTaken;
+const RegistrationMeasuresRequestedView = props => {
+    const {name, desiredDate, degreeInterest } = props.measureRequested;
 
     return (
         <div className={`row border ${props.highlightLine}`} onMouseEnter={() => props.onLineEnter()} onMouseLeave={() => props.onLineLeave()}>
@@ -14,10 +12,10 @@ const RegistrationMeasuresTakenView = props => {
                 { name }
             </div>
             <div className="col-sm-3">
-                { measureDate && moment(measureDate.date).format('d-M-Y') }
+                { desiredDate && moment(desiredDate.date).format('d-M-Y') }
             </div>
             <div className="col-sm-4">
-                <GetNameByIdHelper id={energyLabelId} items={props.energyLabels} />
+                { degreeInterest }
             </div>
           </div>
           <div className="col-sm-1">
@@ -33,4 +31,4 @@ const mapStateToProps = (state) => {
     };
 };
 
-export default connect(mapStateToProps, null)(RegistrationMeasuresTakenView);
+export default connect(mapStateToProps, null)(RegistrationMeasuresRequestedView);

@@ -1,10 +1,10 @@
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
 
-import RegistrationMeasuresTakenView from './RegistrationMeasuresTakenView';
-import RegistrationMeasuresTakenDelete from './RegistrationMeasuresTakenDelete';
+import RegistrationMeasuresRequestedView from './RegistrationMeasuresRequestedView';
+import RegistrationMeasuresRequestedDelete from './RegistrationMeasuresRequestedDelete';
 
-class RegistrationMeasuresTakenItem extends Component {
+class RegistrationMeasuresRequestedItem extends Component {
     constructor(props) {
         super(props);
 
@@ -12,8 +12,8 @@ class RegistrationMeasuresTakenItem extends Component {
             showActionButtons: false,
             highlightLine: '',
             showDelete: false,
-            measureTaken: {
-                ...props.measureTaken,
+            measureRequested: {
+                ...props.measureRequested,
             },
         };
     };
@@ -39,19 +39,19 @@ class RegistrationMeasuresTakenItem extends Component {
     render() {
         return (
             <div>
-              <RegistrationMeasuresTakenView
+              <RegistrationMeasuresRequestedView
                   highlightLine={this.state.highlightLine}
                   showActionButtons={this.state.showActionButtons}
                   onLineEnter={this.onLineEnter}
                   onLineLeave={this.onLineLeave}
                   toggleDelete={this.toggleDelete}
-                  measureTaken={this.state.measureTaken}
+                  measureRequested={this.state.measureRequested}
               />
                 {
                     this.state.showDelete &&
-                    <RegistrationMeasuresTakenDelete
+                    <RegistrationMeasuresRequestedDelete
                         closeDeleteItemModal={this.toggleDelete}
-                        {...this.props.measureTaken}
+                        {...this.props.measureRequested}
                     />
                 }
             </div>
@@ -59,4 +59,4 @@ class RegistrationMeasuresTakenItem extends Component {
     }
 };
 
-export default RegistrationMeasuresTakenItem;
+export default RegistrationMeasuresRequestedItem;

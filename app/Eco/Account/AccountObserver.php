@@ -8,7 +8,6 @@
 
 namespace App\Eco\Account;
 
-
 use App\Eco\Contact\Contact;
 use App\Eco\Contact\ContactType;
 

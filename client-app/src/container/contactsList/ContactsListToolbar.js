@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import { connect } from 'react-redux';
 import { hashHistory, Link } from 'react-router';
 
 import ButtonIcon from '../../components/button/ButtonIcon';
@@ -40,6 +41,8 @@ class ContactsListToolbar extends Component {
     };
 
     render() {
+        const { permissions = {} } = this.props.meDetails;
+
         return (
             <div className="row">
                 <div className="col-md-4">
@@ -50,8 +53,12 @@ class ContactsListToolbar extends Component {
                                 <span className="glyphicon glyphicon-plus" />
                             </button>
                             <ul className="dropdown-menu">
-                                <li><Link to="contact/nieuw/persoon">Persoon</Link></li>
-                                <li><Link to="contact/nieuw/bedrijf">Bedrijf</Link></li>
+                                {   permissions.createPerson &&
+                                            <li><Link to="contact/nieuw/persoon">Persoon</Link></li>
+                                    }
+                                        {permissions.createAccount &&
+                                            <li><Link to="contact/nieuw/bedrijf">Bedrijf</Link></li>
+                                    }
                             </ul>
                         </div>
                         <div className="nav navbar-nav btn-group" role="group">
@@ -84,4 +91,10 @@ class ContactsListToolbar extends Component {
     };
 };
 
-export default ContactsListToolbar;
+const mapStateToProps = (state) => {
+    return {
+        meDetails: state.meDetails,
+    };
+};
+
+export default connect(mapStateToProps, null)(ContactsListToolbar);

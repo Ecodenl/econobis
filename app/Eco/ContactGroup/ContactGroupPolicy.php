@@ -7,26 +7,6 @@ use Illuminate\Auth\Access\HandlesAuthorization;
 class ContactGroupPolicy
 {
     use HandlesAuthorization;
-    /**
-     * Determine whether the user can add an user to a Group
-     *
-     * @param  \App\Eco\User\User  $user
-     * @return mixed
-     */
-    public function addToGroup(User $user)
-    {
-        return ($user->hasPermissionTo('update_person', 'api') || ($user->hasPermissionTo('update_account', 'api')));
-    }
-    /**
-     * Determine whether the user can delete an user from a Group
-     *
-     * @param  \App\Eco\User\User  $user
-     * @return mixed
-     */
-    public function removeFromGroup(User $user)
-    {
-        return ($user->hasPermissionTo('update_person', 'api') || ($user->hasPermissionTo('update_account', 'api')));
-    }
 
     /**
      * Determine whether the user can create a group
@@ -34,7 +14,7 @@ class ContactGroupPolicy
      * @param  \App\Eco\User\User  $user
      * @return mixed
      */
-    public function createGroup(User $user)
+    public function create(User $user)
     {
         return $user->hasPermissionTo('manage_groups', 'api');
     }
@@ -45,7 +25,7 @@ class ContactGroupPolicy
      * @param  \App\Eco\User\User  $user
      * @return mixed
      */
-    public function editGroup(User $user)
+    public function edit(User $user, ContactGroup $contactGroup)
     {
         return $user->hasPermissionTo('manage_groups', 'api');
     }
@@ -56,7 +36,7 @@ class ContactGroupPolicy
      * @param  \App\Eco\User\User  $user
      * @return mixed
      */
-    public function deleteGroup(User $user)
+    public function delete(User $user, ContactGroup $contactGroup)
     {
         return $user->hasPermissionTo('manage_groups', 'api');
     }

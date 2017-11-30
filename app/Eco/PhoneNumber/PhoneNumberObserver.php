@@ -8,7 +8,6 @@
 
 namespace App\Eco\PhoneNumber;
 
-
 class PhoneNumberObserver
 {
 

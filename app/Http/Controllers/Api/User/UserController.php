@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Validation\Rule;
 use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
 {
@@ -25,6 +26,8 @@ class UserController extends Controller
 
     public function store(RequestInput $input)
     {
+        $this->authorize('create', User::class);
+
         $data = $input->string('email')->validate(['required', 'email', 'unique:users,email'])->next()
             ->password('password')->validate('required')->next()
             ->string('titleId')->validate('exists:titles,id')->default(null)->alias('title_id')->next()
@@ -39,13 +42,18 @@ class UserController extends Controller
 
         $user = new User();
         $user->fill($data);
+
         $user->save();
+
+        $user->assignRole(Role::findByName('superuser'));
 
         return $this->show($user->fresh());
     }
 
     public function update(User $user, RequestInput $input)
     {
+        $this->authorize('update', $user);
+
         $data = $input->string('email')->validate(['required', 'email', Rule::unique('users', 'email')->ignore($user->id)])->next()
             ->password('password')->next()
             ->string('titleId')->validate('exists:titles,id')->onEmpty(null)->alias('title_id')->next()
@@ -67,5 +75,19 @@ class UserController extends Controller
     public function withPermission(Permission $permission){
         $users = User::permission($permission)->with(['lastNamePrefix', 'title'])->get();
         return FullUser::collection($users);
+    }
+
+    public function addRole(User $user, Role $role)
+    {
+        $this->authorize('update', $user);
+
+        $user->assignRole($role);
+    }
+
+    public function removeRole(User $user, Role $role)
+    {
+        $this->authorize('update', $user);
+
+        $user->removeRole($role);
     }
 }

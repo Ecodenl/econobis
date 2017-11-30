@@ -22,6 +22,7 @@ use App\Http\Resources\PersonType\FullPersonType;
 use App\Http\Resources\Title\FullTitle;
 use Illuminate\Http\Resources\Json\Resource;
 use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
 
 class SystemData extends Resource
 {
@@ -46,6 +47,7 @@ class SystemData extends Resource
             'occupations' => FullOccupation::collection(Occupation::all()),
             'titles' => FullTitle::collection(Title::all()),
             'permissions' => FullEnumWithIdAndName::collection(Permission::all()),
+            'roles' => Role::select(['id', 'name'])->get()->toArray(),
         ];
     }
 }

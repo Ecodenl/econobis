@@ -19,6 +19,11 @@ class ContactDetailsFormGeneral extends Component {
     }
 
     switchToEdit = () => {
+        const { typeId } = this.props.contactDetails;
+
+        if(typeId === 'account' && !this.props.permissions.updateAccount) return;
+        if(typeId === 'person' && !this.props.permissions.updatePerson) return;
+
         this.setState({
             showEdit: true,
         })
@@ -68,6 +73,7 @@ class ContactDetailsFormGeneral extends Component {
 const mapStateToProps = (state) => {
     return {
         contactDetails: state.contactDetails,
+        permissions: state.meDetails.permissions,
     };
 };
 

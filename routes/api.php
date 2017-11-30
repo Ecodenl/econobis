@@ -25,7 +25,7 @@ Route::namespace('Api')
         Route::get('/contact/grid', 'Contact\GridController@index');
         Route::get('/contact/peek', 'Contact\ContactController@peek');
         Route::get('/contact/{contact}', 'Contact\ContactController@show');
-        Route::get('/contact/{contact}/groups', 'ContactGroup\ContactGroupController@getContactGroups');
+        Route::get('/contact/{contact}/groups', 'Contact\ContactController@groups');
         Route::post('/contact/{contact}/delete', 'Contact\ContactController@destroy');
 
         Route::get('/user/grid', 'User\GridController@index');
@@ -33,6 +33,8 @@ Route::namespace('Api')
         Route::get('/user/{user}', 'User\UserController@show');
         Route::post('/user/{user}', 'User\UserController@update');
         Route::get('/user/with-permission/{permission}', 'User\UserController@withPermission');
+        Route::post('/user/{user}/roles/add/{role}', 'User\UserController@addRole');
+        Route::post('/user/{user}/roles/remove/{role}', 'User\UserController@removeRole');
 
         Route::post('/address', 'Address\AddressController@store');
         Route::post('/address/{address}', 'Address\AddressController@update');

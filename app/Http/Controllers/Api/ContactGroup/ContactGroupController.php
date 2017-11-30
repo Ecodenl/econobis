@@ -26,17 +26,9 @@ class ContactGroupController extends Controller
         return FullContactGroup::make($contactGroup);
     }
 
-    public function getContactGroups(Contact $contact)
-    {
-        $groups = $contact->groups()->select('name', 'id')->get();
-
-        return $groups;
-    }
-
-
     public function store(RequestInput $requestInput)
     {
-//        $this->authorize('createGroup', ContactGroup::class);
+        $this->authorize('create', ContactGroup::class);
 
         $data = $requestInput->string('name')->whenMissing('')->next()
             ->string('description')->whenMissing('')->next()
@@ -59,7 +51,7 @@ class ContactGroupController extends Controller
         RequestInput $requestInput,
         ContactGroup $contactGroup
     ) {
-//        $this->authorize('editGroup', ContactGroup::class);
+        $this->authorize('edit', $contactGroup);
 
 
         $data = $requestInput->string('name')->next()
@@ -81,7 +73,7 @@ class ContactGroupController extends Controller
 
     public function destroy(ContactGroup $contactGroup)
     {
-//        $this->authorize('deleteGroup', ContactGroup::class);
+        $this->authorize('delete', $contactGroup);
 
         $contactGroup->delete();
     }
@@ -98,13 +90,13 @@ class ContactGroupController extends Controller
 
     public function addContact(ContactGroup $contactGroup, Contact $contact)
     {
-//        $this->authorize('addToGroup', ContactGroup::class);
+        $this->authorize('addToGroup', $contact);
         $contactGroup->contacts()->attach($contact);
     }
 
     public function removeContact(ContactGroup $contactGroup, Contact $contact)
     {
-//        $this->authorize('removeFromGroup', ContactGroup::class);
+        $this->authorize('removeFromGroup', $contact);
         $contactGroup->contacts()->detach($contact);
     }
 

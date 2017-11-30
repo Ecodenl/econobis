@@ -30,4 +30,20 @@ class ContactController extends Controller
     {
         SoftDeleteContact::dispatch($contact);
     }
+
+    public function registrations(Contact $contact)
+    {
+        $registrations = $contact->registrations;
+
+        $result = [];
+        foreach ($registrations as $registration){
+            $result[] = [
+                'id' => $registration->id,
+                'addressName' =>  $registration->address->present()->streetAndNumber(),
+                'createdAt' => $registration->created_at,
+            ];
+        }
+
+        return $result;
+    }
 }

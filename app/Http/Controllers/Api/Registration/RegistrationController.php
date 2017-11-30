@@ -32,22 +32,6 @@ class RegistrationController extends ApiController
         return FullRegistration::collection($registrations);
     }
 
-    public function getContactRegistrations(Contact $contact)
-    {
-        $addresses = $contact->addresses()->get();
-
-        foreach ($addresses as $address) {
-            $registration[] = [
-                'addressId' => $address->id,
-                'addressName' => $address->street . ' ' . $address->number,
-                'addressRegistratedAt' => $address->registration()
-                    ->pluck('created_at')
-            ];
-        }
-
-        return $registration;
-    }
-
     /**
      * Geef de data die React nodig heeft om het scherm op te bouwen voor een nieuwe registration
      */

@@ -57,7 +57,7 @@ class ContactDetailsHarmonica extends Component {
                 <div className="panel panel-default harmonica-button">
                     <div className="panel-body">
                         <div className="col-sm-9" onClick={this.toggleRegistration}>
-                            <span className="">AANMELDINGEN <span className="badge">2</span></span>
+                            <span className="">AANMELDINGEN <span className="badge">{ this.props.contactDetails.registrationCount }</span></span>
                         </div>
                         <div className="col-sm-3">
                                 <a role="button" className="pull-right" onClick={this.newRegistration}><span className="glyphicon glyphicon-plus glyphicon-white"/></a>

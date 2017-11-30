@@ -10,6 +10,48 @@ export default function (state= {}, action) {
                 ...state,
                 ...action.registrationDetails,
             };
+        case 'NEW_REGISTRATION_MEASURE_TAKEN':
+            return {
+                ...state,
+                address: {
+                    ...state.address,
+                    measuresTaken: [
+                        ...state.address.measuresTaken,
+                        {
+                            ...action.measureTaken,
+                        }
+                    ]
+                }
+            };
+        case 'DELETE_REGISTRATION_MEASURE_TAKEN_SUCCESS':
+            return {
+                ...state,
+                address: {
+                    ...state.address,
+                    measuresTaken: state.address.measuresTaken.filter(measureTaken => measureTaken.id !== action.id),
+                }
+            };
+        case 'NEW_REGISTRATION_MEASURE_REQUESTED':
+            return {
+                ...state,
+                address: {
+                    ...state.address,
+                    measuresRequested: [
+                        ...state.address.measuresRequested,
+                        {
+                            ...action.measureRequested,
+                        }
+                    ]
+                }
+            };
+        case 'DELETE_REGISTRATION_MEASURE_REQUESTED_SUCCESS':
+            return {
+                ...state,
+                address: {
+                    ...state.address,
+                    measuresRequested: state.address.measuresRequested.filter(measureRequested => measureRequested.id !== action.id),
+                }
+            };
         case 'NEW_REGISTRATION_NOTE':
             return {
                 ...state,

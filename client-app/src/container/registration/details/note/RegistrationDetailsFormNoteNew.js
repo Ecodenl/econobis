@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import RegistrationNoteAPI from '../../../../api/registration/RegistrationNoteAPI';
+import RegistrationDetailsAPI from '../../../../api/registration/RegistrationDetailsAPI';
 import { newRegistrationNote } from '../../../../actions/registration/RegistrationDetailsActions';
 import ButtonText from '../../../../components/button/ButtonText';
 import Panel from '../../../../components/panel/Panel';
@@ -26,7 +26,7 @@ class RegistrationDetailsFormNoteNew extends Component {
 
         const note = this.state;
 
-        RegistrationNoteAPI.newRegistrationNote(note).then((payload) => {
+        RegistrationDetailsAPI.newRegistrationNote(note).then((payload) => {
             this.props.newRegistrationNote(payload);
 
             this.props.toggleShowNew();

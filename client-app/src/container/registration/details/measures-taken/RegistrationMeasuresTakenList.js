@@ -21,7 +21,7 @@ const RegistrationMeasuresTakenList = props => {
                         />;
                     })
                     :
-                    <div>Geen maatregelen genomen gevonden</div>
+                    <div>Geen maatregelen genomen bekend</div>
             }
         </div>
     );
@@ -29,7 +29,7 @@ const RegistrationMeasuresTakenList = props => {
 
 const mapStateToProps = (state) => {
     return {
-        measuresTaken: state.registrationDetails.address.measures_taken,
+        measuresTaken: state.registrationDetails.address.measuresTaken,
     };
 };
 

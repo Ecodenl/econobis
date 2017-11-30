@@ -31,7 +31,7 @@ class RegistrationsListItem extends Component {
     };
 
     render() {
-        const { id, fullName, createdAt, sourceNames = [], status, measuresRequested = [] } = this.props;
+        const { id, fullName, createdAt, sourceNames = [], status, measuresRequestedNames  = [] } = this.props;
 
         return (
             <tr className={this.state.highlightRow} onDoubleClick={() => this.openItem(id)} onMouseEnter={() => this.onRowEnter()} onMouseLeave={() => this.onRowLeave()}>
@@ -39,7 +39,7 @@ class RegistrationsListItem extends Component {
                 <td>{ moment(createdAt.date).format('DD-MM-Y') }</td>
                 <td>{ sourceNames.join(', ') }</td>
                 <td>{ status }</td>
-                <td>{ measuresRequested }</td>
+                <td>{ measuresRequestedNames  }</td>
                 <td>
                     {(this.state.showActionButtons ? <a role="button" onClick={() => this.openItem(id)}><span className="glyphicon glyphicon-pencil mybtn-success" /> </a> : '')}
                 </td>

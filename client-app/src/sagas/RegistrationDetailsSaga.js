@@ -1,6 +1,5 @@
 import { put, call } from 'redux-saga/effects';
 import RegistrationDetailsAPI from '../api/registration/RegistrationDetailsAPI';
-import RegistrationNoteAPI from '../api/registration/RegistrationNoteAPI';
 
 export function* fetchRegistrationDetailsSaga({ payload }) {
     try {
@@ -13,9 +12,36 @@ export function* fetchRegistrationDetailsSaga({ payload }) {
     }
 }
 
+export function* deleteRegistrationSaga({ id }) {
+    try {
+        yield call(RegistrationsAPI.deleteRegistration, id);
+        yield put({ type: 'DELETE_CONTACT_SUCCESS', id });
+    } catch (error) {
+        yield put({ type: 'DELETE_CONTACT_ERROR', error });
+    }
+}
+
+export function* deleteRegistrationMeasureTakenSaga({ id }) {
+    try {
+        yield call(RegistrationDetailsAPI.deleteRegistrationMeasureTaken, id);
+        yield put({ type: 'DELETE_REGISTRATION_MEASURE_TAKEN_SUCCESS', id });
+    } catch (error) {
+        yield put({ type: 'DELETE_REGISTRATION_MEASURE_TAKEN_ERROR', error });
+    }
+}
+
+export function* deleteRegistrationMeasureRequestedSaga({ id }) {
+    try {
+        yield call(RegistrationDetailsAPI.deleteRegistrationMeasureRequested, id);
+        yield put({ type: 'DELETE_REGISTRATION_MEASURE_REQUESTED_SUCCESS', id });
+    } catch (error) {
+        yield put({ type: 'DELETE_REGISTRATION_MEASURE_REQUESTED_ERROR', error });
+    }
+}
+
 export function* deleteRegistrationNoteSaga({ id }) {
     try {
-        yield call(RegistrationNoteAPI.deleteRegistrationNote, id);
+        yield call(RegistrationDetailsAPI.deleteRegistrationNote, id);
         yield put({ type: 'DELETE_REGISTRATION_NOTE_SUCCESS', id });
     } catch (error) {
         yield put({ type: 'DELETE_REGISTRATION_NOTE_ERROR', error });

@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 const InputText = props => {
-    const { label, type, className, size, id, placeholder, name, value, onChangeAction, required, readOnly, maxLength, error } = props;
+    const { label, type, className, size, id, placeholder, name, value, onChangeAction, required, readOnly, maxLength, error, min, max } = props;
 
     return (
         <div className="form-group col-sm-6">
@@ -18,6 +18,8 @@ const InputText = props => {
                     onChange={ onChangeAction }
                     readOnly={ readOnly }
                     maxLength={ maxLength }
+                    min={ min }
+                    max={ max }
                 />
             </div>
         </div>
@@ -33,6 +35,8 @@ InputText.defaultProps = {
     readOnly: false,
     maxLength: null,
     error: false,
+    min: '',
+    max: '',
 };
 
 InputText.propTypes = {
@@ -52,6 +56,8 @@ InputText.propTypes = {
     readOnly: PropTypes.bool,
     maxLength: PropTypes.string,
     error: PropTypes.bool,
+    min: PropTypes.string,
+    max: PropTypes.string,
 };
 
 export default InputText;

@@ -103,7 +103,7 @@ class RegistrationController extends ApiController
     {
         $data = $requestInput->string('addressId')->validate('required|exists:addresses,id')->alias('address_id')->next()
             ->string('measureId')->validate('required|exists:measures,id')->alias('measure_id')->next()
-            ->string('measureDate')->whenMissing(null)->alias('measure_date')->next()
+            ->string('measureDate')->whenMissing(null)->onEmpty(null)->alias('measure_date')->next()
             ->string('energyLabelId')->whenMissing(null)->alias('energy_label_id')->next()
             ->get();
 
@@ -115,7 +115,7 @@ class RegistrationController extends ApiController
     {
         $data = $requestInput->string('addressId')->validate('required|exists:addresses,id')->alias('address_id')->next()
             ->string('measureId')->validate('required|exists:measures,id')->alias('measure_id')->next()
-            ->string('desiredDate')->whenMissing(null)->alias('desired_date')->next()
+            ->string('desiredDate')->whenMissing(null)->onEmpty(null)->alias('desired_date')->next()
             ->string('degreeInterest')->whenMissing(0)->alias('degree_interest')->next()
             ->get();
 

@@ -123,4 +123,18 @@ export default {
                 return error.response;
             });
     },
+
+    addManyContactsToGroup: (contactIds, groupId) => {
+        const requestUrl = `${URL_CONTACT_GROUP}/${groupId}/contacts/add-many`;
+        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
+        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
+
+        return axios.post(requestUrl, contactIds)
+            .then(function (response) {
+                return response.data;
+            })
+            .catch(function (error) {
+                return error.response;
+            });
+    }
 };

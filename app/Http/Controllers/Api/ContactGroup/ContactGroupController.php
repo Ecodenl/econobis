@@ -41,9 +41,12 @@ class ContactGroupController extends Controller
         $data = $requestInput->string('name')->whenMissing('')->next()
             ->string('description')->whenMissing('')->next()
             ->boolean('closed')->validate('boolean')->whenMissing(false)->next()
-            ->integer('responsibleUserId')->default(null)->validate('exists:users,id')->alias('responsible_user_id')->next()
-            ->date('dateStarted')->default(null)->validate('nullable|date')->alias('date_started')->next()
-            ->date('dateFinished')->default(null)->validate('nullable|date')->alias('date_finished')->next()
+            ->integer('responsibleUserId')->default(null)
+            ->validate('exists:users,id')->alias('responsible_user_id')->next()
+            ->date('dateStarted')->default(null)->validate('nullable|date')
+            ->alias('date_started')->next()
+            ->date('dateFinished')->default(null)->validate('nullable|date')
+            ->alias('date_finished')->next()
             ->get();
 
         $contactGroup = new ContactGroup($data);
@@ -52,17 +55,22 @@ class ContactGroupController extends Controller
         return FullContactGroup::make($contactGroup->fresh());
     }
 
-    public function update(RequestInput $requestInput, ContactGroup $contactGroup)
-    {
+    public function update(
+        RequestInput $requestInput,
+        ContactGroup $contactGroup
+    ) {
 //        $this->authorize('editGroup', ContactGroup::class);
 
 
         $data = $requestInput->string('name')->next()
             ->string('description')->next()
             ->boolean('closed')->validate('boolean')->next()
-            ->integer('responsibleUserId')->onEmpty(null)->validate('exists:users,id')->alias('responsible_user_id')->next()
-            ->date('dateStarted')->onEmpty(null)->validate('nullable|date')->alias('date_started')->next()
-            ->date('dateFinished')->onEmpty(null)->validate('nullable|date')->alias('date_finished')->next()
+            ->integer('responsibleUserId')->onEmpty(null)
+            ->validate('exists:users,id')->alias('responsible_user_id')->next()
+            ->date('dateStarted')->onEmpty(null)->validate('nullable|date')
+            ->alias('date_started')->next()
+            ->date('dateFinished')->onEmpty(null)->validate('nullable|date')
+            ->alias('date_finished')->next()
             ->get();
 
         $contactGroup->fill($data);
@@ -102,10 +110,9 @@ class ContactGroupController extends Controller
 
     public function addContacts(ContactGroup $contactGroup, Request $request)
     {
-//        $this->authorize('addToGroup', ContactGroup::class);
 
-        $contactIds = json_decode($request->input('ids'));
+        $contactIds = $request->input();
 
-        $contactGroup->contacts()->attach($contactIds);
+        $contactGroup->contacts()->syncWithoutDetaching($contactIds);
     }
 }

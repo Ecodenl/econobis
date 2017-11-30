@@ -4,6 +4,7 @@ import { hashHistory, Link } from 'react-router';
 import ButtonIcon from '../../components/button/ButtonIcon';
 import ContactsListExtraFilters from './ContactsListExtraFilters';
 import ContactsDeleteSelectedItems from './ContactsDeleteSelectedItems';
+import ContactListAddContactsToGroup from './ContactListAddContactsToGroup';
 
 class ContactsListToolbar extends Component {
     constructor(props){
@@ -12,6 +13,7 @@ class ContactsListToolbar extends Component {
         this.state = {
             showExtraFilters: false,
             showDeleteSelectedItems: false,
+            showAddContactsToGroup: false,
         };
     }
 
@@ -24,6 +26,12 @@ class ContactsListToolbar extends Component {
     toggleShowDeleteSelectedItems = () => {
         this.setState({
             showDeleteSelectedItems: !this.state.showDeleteSelectedItems
+        });
+    };
+
+    toggleAddContactsToGroup = () => {
+        this.setState({
+            showAddContactsToGroup: !this.state.showAddContactsToGroup
         });
     };
 
@@ -46,8 +54,15 @@ class ContactsListToolbar extends Component {
                                 <li><Link to="contact/nieuw/bedrijf">Bedrijf</Link></li>
                             </ul>
                         </div>
+                        <div className="nav navbar-nav btn-group" role="group">
+                            <button className="btn btn-success btn-sm" data-toggle="dropdown">
+                                <span className="glyphicon glyphicon-share-alt" />
+                            </button>
+                            <ul className="dropdown-menu">
+                                <li><a onClick={this.toggleAddContactsToGroup}>Voeg toe aan groep</a></li>
+                            </ul>
+                        </div>
                         <ButtonIcon iconName={"glyphicon-trash"} onClickAction={this.toggleShowDeleteSelectedItems} />
-                        <ButtonIcon iconName={"glyphicon-save"} />
                         <ButtonIcon iconName={"glyphicon-ok"} onClickAction={this.props.toggleShowCheckboxList} />
                     </div>
                 </div>
@@ -60,6 +75,9 @@ class ContactsListToolbar extends Component {
                 }
                 {
                     this.state.showDeleteSelectedItems && <ContactsDeleteSelectedItems toggleShowDeleteSelectedItems={this.toggleShowDeleteSelectedItems} />
+                }
+                {
+                    this.state.showAddContactsToGroup && <ContactListAddContactsToGroup toggleAddGroup={this.toggleAddContactsToGroup} />
                 }
             </div>
         );

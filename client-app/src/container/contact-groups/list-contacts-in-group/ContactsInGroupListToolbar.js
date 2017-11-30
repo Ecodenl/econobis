@@ -1,8 +1,9 @@
 import React, {Component} from 'react';
 import { hashHistory, Link } from 'react-router';
+import {connect} from 'react-redux';
+
 import AddContactToGroup from './ContactListAddPersonToGroup';
 import ContactGroupAPI  from '../../../api/ContactGroupAPI';
-
 import ButtonIcon from '../../../components/button/ButtonIcon';
 
 class ContactsInGroupListToolbar extends Component {
@@ -51,16 +52,20 @@ class ContactsInGroupListToolbar extends Component {
     };
 
     render() {
+        const { permissions } = this.props;
         return (
             <div className="row">
                 <div className="col-md-4">
                     <div className="btn-group" role="group">
                         <ButtonIcon iconName={"glyphicon-refresh"} onClickAction={this.props.refreshContactsInGroupData} />
-                        <div className="nav navbar-nav btn-group">
+                        {
+                            this.props.permissions.updatePerson && this.props.permissions.updateAccount &&
+                            <div className="nav navbar-nav btn-group">
                             <button onClick={this.toggleModalAddToGroup} className="btn btn-success btn-sm">
-                                <span className="glyphicon glyphicon-plus" />
+                                <span className="glyphicon glyphicon-plus"/>
                             </button>
                         </div>
+                        }
                     </div>
                 </div>
                 <div className="col-md-4"><h3 className="text-center table-title">Contacten in groep: {this.state.groupName}</h3></div>
@@ -78,5 +83,10 @@ class ContactsInGroupListToolbar extends Component {
         );
     };
 };
+const mapStateToProps = (state) => {
+    return {
+        permissions: state.meDetails.permissions,
+    }
+};
 
-export default ContactsInGroupListToolbar;
+export default connect(mapStateToProps)(ContactsInGroupListToolbar);

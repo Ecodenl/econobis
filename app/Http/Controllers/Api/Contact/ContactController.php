@@ -44,4 +44,12 @@ class ContactController extends Controller
 
         return ContactPeek::collection($contact);
     }
+
+    public function groups(Contact $contact)
+    {
+        $groups = $contact->groups()->select('name', 'id')->get();
+
+        return $groups;
+    }
+
 }

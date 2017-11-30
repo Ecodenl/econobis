@@ -82,4 +82,26 @@ class ContactPolicy
     {
         return $user->hasPermissionTo('update_contact_owner', 'api');
     }
+
+    /**
+     * Determine whether the user can add a contact to a Group
+     *
+     * @param  \App\Eco\User\User  $user
+     * @return mixed
+     */
+    public function addToGroup(User $user, Contact $contact)
+    {
+        return $user->hasPermissionTo('update', $contact);
+    }
+
+    /**
+     * Determine whether the user can remove a contact from a Group
+     *
+     * @param  \App\Eco\User\User  $user
+     * @return mixed
+     */
+    public function removeFromGroup(User $user, Contact $contact)
+    {
+        return $user->hasPermissionTo('update', $contact);
+    }
 }

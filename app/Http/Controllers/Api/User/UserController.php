@@ -8,6 +8,7 @@ use App\Http\Resources\User\FullUser;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Validation\Rule;
+use Spatie\Permission\Models\Permission;
 
 class UserController extends Controller
 {
@@ -61,5 +62,10 @@ class UserController extends Controller
         $user->save();
 
         return $this->show($user->fresh());
+    }
+
+    public function withPermission(Permission $permission){
+        $users = User::permission($permission)->with(['lastNamePrefix', 'title'])->get();
+        return FullUser::collection($users);
     }
 }

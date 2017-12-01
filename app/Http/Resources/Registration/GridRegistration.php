@@ -21,7 +21,8 @@ class GridRegistration extends Resource
                 'fullName' => $this->address->contact->full_name,
                 'sourceNames' => $this->sources->pluck('name'),
                 'status' => optional($this->status)->name,
-                'measuresRequestedNames' => $this->address->measures_requested->pluck('name'),
+                'createdAt' => $this->created_at,
+                'measuresRequestedNames' => $this->address->measures_requested->measures()->pluck('name'),
             ];
     }
 }

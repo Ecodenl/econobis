@@ -29,4 +29,9 @@ class MeasureRequested extends Model
     {
         return $this->belongsTo(Measure::class);
     }
+
+    public function newCollection(array $models = [])
+    {
+        return new MeasureRequestedCollection($models);
+    }
 }

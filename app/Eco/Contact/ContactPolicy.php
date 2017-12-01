@@ -91,7 +91,7 @@ class ContactPolicy
      */
     public function addToGroup(User $user, Contact $contact)
     {
-        return $user->hasPermissionTo('update', $contact);
+        return $user->can('update', $contact);
     }
 
     /**
@@ -102,6 +102,6 @@ class ContactPolicy
      */
     public function removeFromGroup(User $user, Contact $contact)
     {
-        return $user->hasPermissionTo('update', $contact);
+        return $user->can('update', $contact);
     }
 }

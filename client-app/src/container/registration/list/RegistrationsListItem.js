@@ -39,7 +39,7 @@ class RegistrationsListItem extends Component {
                 <td>{ moment(createdAt.date).format('DD-MM-Y') }</td>
                 <td>{ sourceNames.join(', ') }</td>
                 <td>{ status }</td>
-                <td>{ measuresRequestedNames  }</td>
+                <td>{ measuresRequestedNames.join(', ')  }</td>
                 <td>
                     {(this.state.showActionButtons ? <a role="button" onClick={() => this.openItem(id)}><span className="glyphicon glyphicon-pencil mybtn-success" /> </a> : '')}
                 </td>

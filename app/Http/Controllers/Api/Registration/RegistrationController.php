@@ -158,65 +158,62 @@ class RegistrationController extends ApiController
         return FullRegistration::make($registration);
     }
 
-    public function update(Request $request)
+    public function update(Request $request, Registration $registration)
     {
 
         $data = $request->validate([
-            'registration_status_id' => 'exists:registration_status,id',
-            'campaign_id' => 'exists:campaigns,id',
-            'building_type_id' => 'exists:building_types,id',
-            'build_year' => 'integer|between:1500,3000',
-            'owner' => 'boolean',
-            'source_ids' => '',
-            'registration_reasons' => ''
+            'registrationStatusId' => 'nullable|exists:registration_status,id',
+            'campaignId' => 'nullable|exists:campaigns,id',
+            'buildingTypeId' => 'nullable|exists:building_types,id',
+            'buildYear' => 'nullable|integer|between:1500,3000',
+            'owner' => 'nullable|boolean',
+            'sourceIds' => 'nullable',
+            'registrationReasonIds' => 'nullable',
+            'statusId' => '',
         ]);
 
-        //basic registration
-        $registration = Registration::find($request->registration);
-        if (!$registration) {
-            return 'Registratie met id:' . $request->registration
-                . 'niet gevonden';
-        }
-        if (array_key_exists('address_id', $data)
-            || array_key_exists('registration_status_id', $data)
-            || array_key_exists('campaign_id', $data)
+        if (array_key_exists('addressId', $data)
+            || array_key_exists('registrationStatusId', $data)
+            || array_key_exists('campaignId', $data)
         ) {
-            if (array_key_exists('address_id', $data)) {
-                $registration->address_id = $data['address_id'];
+            if (array_key_exists('addressId', $data)) {
+                $registration->address_id = $data['addressId'];
             }
-            if (array_key_exists('registration_status_id', $data)) {
+            if (array_key_exists('registrationStatusId', $data)) {
                 $registration->registration_status_id
-                    = $data['registration_status_id'];
+                    = $data['registrationStatusId'];
             }
-            if (array_key_exists('campaign_id', $data)) {
-                $registration->campaign_id = $data['campaign_id'];
+            if (array_key_exists('campaignId', $data)) {
+                $registration->campaign_id = $data['campaignId'];
+            }
+            if (array_key_exists('statusId', $data)) {
+                $statusId = $data['statusId'];
+                if(empty($statusId)) $statusId = null;
+                $registration->registration_status_id = $statusId;
             }
             $registration->save();
         }
 
         //relations
-        if (array_key_exists('source_ids', $data)) {
-            foreach ($data['source_ids'] as $source_id) {
-                $registration->sources()->attach($source_id);
-            }
+        if (array_key_exists('sourceIds', $data)) {
+            $registration->sources()->sync($data['sourceIds']);
         }
-        if (array_key_exists('registration_reasons', $data)) {
-            foreach ($data['registration_reasons'] as $registration_reason) {
-                $registration->reasons()->attach($registration_reason);
-            }
+        if (array_key_exists('registrationReasonIds', $data)) {
+            $registration->reasons()->sync($data['registrationReasonIds']);
+
         }
 
         //rest is saved on Address
-        if (array_key_exists('building_type_id', $data)
-            || array_key_exists('build_year', $data)
+        if (array_key_exists('buildingTypeId', $data)
+            || array_key_exists('buildYear', $data)
             || array_key_exists('owner', $data)
         ) {
-            $address = Address::find($registration->address_id);
-            if (array_key_exists('building_type_id', $data)) {
-                $address->building_type_id = $data['building_type_id'];
+            $address = $registration->address;
+            if (array_key_exists('buildingTypeId', $data)) {
+                $address->building_type_id = $data['buildingTypeId'];
             }
-            if (array_key_exists('build_year', $data)) {
-                $address->build_year = $data['build_year'];
+            if (array_key_exists('buildYear', $data)) {
+                $address->build_year = $data['buildYear'];
             }
             if (array_key_exists('owner', $data)) {
                 $address->owner = $data['owner'];

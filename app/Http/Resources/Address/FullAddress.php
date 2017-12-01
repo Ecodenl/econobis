@@ -32,6 +32,7 @@ class FullAddress extends Resource
             'updatedAt' => $this->updated_at,
             'buildYear' => $this->build_year,
             'buildingTypeId' => $this->building_type_id,
+            'owner' => $this->owner,
             'buildingType' => GenericResource::make($this->whenLoaded('building_type')),
             'measuresTaken' => MeasureTaken::collection($this->whenLoaded('measures_taken')),
             'measuresRequested' => MeasureRequested::collection($this->whenLoaded('measures_requested')),

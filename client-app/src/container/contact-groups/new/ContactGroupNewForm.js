@@ -119,12 +119,17 @@ class ContactGroupNewForm extends Component {
                 </div>
 
                 <div className="row">
-                    <div className="form-group">
-                        <label htmlFor="description" className="col-sm-3">Omschrijving</label>
-                        <div className="col-sm-9">
-                            <textarea name="description" value={description} onChange={this.handleInputChange} className="form-control input-sm" />
+                    <div className="form-group col-sm-12">
+                        <div className="row">
+                            <div className="col-sm-3">
+                                <label htmlFor="description" className="col-sm-12">Omschrijving</label>
+                            </div>
+                            <div className="col-sm-9">
+                                <textarea name={description} value={description} onChange={this.handleInputChange}
+                                          className="form-control input-sm"/>
+                            </div>
                         </div>
-                        </div>
+                    </div>
                 </div>
 
                 <div className="row">

@@ -122,12 +122,12 @@ class ContactGroupDetailsFormGeneralEdit extends Component {
                 <div className="row">
                     <div className="form-group col-sm-12">
                         <div className="row">
-                            <div className="col-sm-12">
-                            <label htmlFor="description" className="col-sm-3">Omschrijving</label>
+                            <div className="col-sm-3">
+                                <label htmlFor="description" className="col-sm-12">Omschrijving</label>
+                            </div>
                             <div className="col-sm-9">
                                 <textarea name={description} value={description} onChange={this.handleInputChange}
                                           className="form-control input-sm"/>
-                            </div>
                             </div>
                         </div>
                     </div>

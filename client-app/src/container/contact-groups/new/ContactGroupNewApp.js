@@ -9,21 +9,19 @@ const ContactGroupNewApp = () => {
     return (
         <div className="row">
             <div className="col-md-9">
-                <Panel>
-                    <PanelBody>
-                        <div className="col-md-12 extra-space-above">
-                            <ContactGroupNewToolbar />
-                        </div>
+                    <div className="col-md-12">
+                        <ContactGroupNewToolbar />
+                    </div>
 
-                        <div className="col-md-12 extra-space-above">
-                            <Panel>
-                                <PanelBody>
+                    <div className="col-md-12">
+                        <Panel>
+                            <PanelBody>
+                                <div className="col-md-12">
                                     <ContactGroupNewForm />
-                                </PanelBody>
-                            </Panel>
-                        </div>
-                    </PanelBody>
-                </Panel>
+                                </div>
+                            </PanelBody>
+                        </Panel>
+                    </div>
             </div>
             <div className="col-md-3" />
         </div>

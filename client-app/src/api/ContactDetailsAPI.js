@@ -1,11 +1,11 @@
 import axios from 'axios';
 
 const URL_API = process.env.URL_API;
-const URL_TYPE = `${URL_API}/api/contact`;
+const URL_CONTACTDETAILS = `${URL_API}/api/contact`;
 
 export default {
     getContactDetails: (id) => {
-        const requestUrl = `${URL_TYPE}/${id}`;
+        const requestUrl = `${URL_CONTACTDETAILS}/${id}`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 

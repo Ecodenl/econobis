@@ -23,8 +23,10 @@ Route::namespace('Api')
         Route::get('/system-data', 'SystemData\SystemDataController@get');
 
         Route::get('/contact/grid', 'Contact\GridController@index');
+        Route::get('/contact/peek', 'Contact\ContactController@peek');
         Route::get('/contact/{contact}', 'Contact\ContactController@show');
         Route::get('/contact/{contact}/registrations', 'Contact\ContactController@registrations');
+        Route::get('/contact/{contact}/groups', 'Contact\ContactController@groups');
         Route::post('/contact/{contact}/delete', 'Contact\ContactController@destroy');
 
         Route::get('/registration/grid', 'Registration\RegistrationController@grid');
@@ -49,6 +51,9 @@ Route::namespace('Api')
         Route::post('/user', 'User\UserController@store');
         Route::get('/user/{user}', 'User\UserController@show');
         Route::post('/user/{user}', 'User\UserController@update');
+        Route::get('/user/with-permission/{permission}', 'User\UserController@withPermission');
+        Route::post('/user/{user}/roles/add/{role}', 'User\UserController@addRole');
+        Route::post('/user/{user}/roles/remove/{role}', 'User\UserController@removeRole');
 
         Route::post('/address', 'Address\AddressController@store');
         Route::post('/address/{address}', 'Address\AddressController@update');
@@ -73,6 +78,19 @@ Route::namespace('Api')
         Route::post('/contact-note/{contactNote}', 'ContactNote\ContactNoteController@update');
         Route::post('/contact-note/{contactNote}/delete', 'ContactNote\ContactNoteController@destroy');
 
-        Route::get('/account/peek', 'Account\AccountController@peek');
+        Route::get('/contacts/peek', 'Contact\ContactController@peek');
+
+        Route::get('contact-group/grid', 'ContactGroup\ContactGroupController@grid');
+        Route::get('contact-group/{contactGroup}', 'ContactGroup\ContactGroupController@show');
+        Route::get('contact-group/{contactGroup}/name', 'ContactGroup\ContactGroupController@getName');
+        Route::post('contact-group/', 'ContactGroup\ContactGroupController@store');
+        Route::post('contact-group/{contactGroup}', 'ContactGroup\ContactGroupController@update');
+        Route::post('contact-group/{contactGroup}/delete', 'ContactGroup\ContactGroupController@destroy');
+        Route::get('contact-group/{contactGroup}/contacts', 'ContactGroup\ContactGroupController@contacts');
+        Route::post('contact-group/{contactGroup}/contacts/add/{contact}', 'ContactGroup\ContactGroupController@addContact');
+        Route::post('contact-group/{contactGroup}/contacts/remove/{contact}', 'ContactGroup\ContactGroupController@removeContact');
+        Route::get('contact-group/{contactGroup}/contacts/grid', 'ContactGroup\ContactGroupController@gridContacts');
+
+        Route::post('contact-group/{contactGroup}/contacts/add-many', 'ContactGroup\ContactGroupController@addContacts');
     }
 );

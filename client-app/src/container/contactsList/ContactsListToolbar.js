@@ -1,9 +1,11 @@
 import React, {Component} from 'react';
+import { connect } from 'react-redux';
 import { hashHistory, Link } from 'react-router';
 
 import ButtonIcon from '../../components/button/ButtonIcon';
 import ContactsListExtraFilters from './ContactsListExtraFilters';
 import ContactsDeleteSelectedItems from './ContactsDeleteSelectedItems';
+import ContactListAddContactsToGroup from './ContactListAddContactsToGroup';
 
 class ContactsListToolbar extends Component {
     constructor(props){
@@ -12,6 +14,7 @@ class ContactsListToolbar extends Component {
         this.state = {
             showExtraFilters: false,
             showDeleteSelectedItems: false,
+            showAddContactsToGroup: false,
         };
     }
 
@@ -27,11 +30,19 @@ class ContactsListToolbar extends Component {
         });
     };
 
+    toggleAddContactsToGroup = () => {
+        this.setState({
+            showAddContactsToGroup: !this.state.showAddContactsToGroup
+        });
+    };
+
     newContact = () => {
         hashHistory.push(`/contact/nieuw`);
     };
 
     render() {
+        const { permissions = {} } = this.props.meDetails;
+
         return (
             <div className="row">
                 <div className="col-md-4">
@@ -42,12 +53,26 @@ class ContactsListToolbar extends Component {
                                 <span className="glyphicon glyphicon-plus" />
                             </button>
                             <ul className="dropdown-menu">
-                                <li><Link to="contact/nieuw/persoon">Persoon</Link></li>
-                                <li><Link to="contact/nieuw/bedrijf">Bedrijf</Link></li>
+                                {   permissions.createPerson &&
+                                            <li><Link to="contact/nieuw/persoon">Persoon</Link></li>
+                                    }
+                                        {permissions.createAccount &&
+                                            <li><Link to="contact/nieuw/bedrijf">Bedrijf</Link></li>
+                                    }
                             </ul>
                         </div>
+                        {
+                            permissions.updatePerson && permissions.updateAccount &&
+                        <div className="nav navbar-nav btn-group" role="group">
+                            <button className="btn btn-success btn-sm" data-toggle="dropdown">
+                                <span className="glyphicon glyphicon-share-alt" />
+                            </button>
+                            <ul className="dropdown-menu">
+                                <li><a onClick={this.toggleAddContactsToGroup}>Voeg toe aan groep</a></li>
+                            </ul>
+                        </div>
+                        }
                         <ButtonIcon iconName={"glyphicon-trash"} onClickAction={this.toggleShowDeleteSelectedItems} />
-                        <ButtonIcon iconName={"glyphicon-save"} />
                         <ButtonIcon iconName={"glyphicon-ok"} onClickAction={this.props.toggleShowCheckboxList} />
                     </div>
                 </div>
@@ -61,9 +86,19 @@ class ContactsListToolbar extends Component {
                 {
                     this.state.showDeleteSelectedItems && <ContactsDeleteSelectedItems toggleShowDeleteSelectedItems={this.toggleShowDeleteSelectedItems} />
                 }
+                {
+                    this.state.showAddContactsToGroup && <ContactListAddContactsToGroup toggleAddGroup={this.toggleAddContactsToGroup} />
+                }
             </div>
         );
     };
 };
 
-export default ContactsListToolbar;
+const mapStateToProps = (state) => {
+    return {
+        meDetails: state.meDetails,
+        permissions: state.meDetails.permissions,
+    };
+};
+
+export default connect(mapStateToProps, null)(ContactsListToolbar);

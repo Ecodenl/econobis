@@ -8,7 +8,6 @@
 
 namespace App\Eco\EmailAddress;
 
-
 class EmailAddressObserver
 {
 

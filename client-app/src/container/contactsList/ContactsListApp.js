@@ -4,7 +4,7 @@ import { bindActionCreators } from 'redux';
 import { isEmpty } from 'lodash';
 
 import { fetchContacts, clearContacts, setCheckedContactAll } from '../../actions/ContactsActions';
-import { setTypeFilter, setStatusFilter } from '../../actions/ContactsFiltersActions';
+import { setTypeFilter, setStatusFilter, clearFilter } from '../../actions/ContactsFiltersActions';
 import ContactsList from './ContactsList';
 import ContactsListToolbar from './ContactsListToolbar';
 import filterHelper from '../../helpers/FilterHelper';
@@ -16,9 +16,11 @@ class ContactsListApp extends Component {
         if(!isEmpty(props.params)) {
             switch(props.params.filter){
                 case 'type':
+                    this.props.clearFilter();
                     this.props.setTypeFilter(props.params.value);
                     break;
                 case 'status':
+                    this.props.clearFilter();
                     this.props.setStatusFilter(props.params.value);
                     break;
                 default:
@@ -46,9 +48,11 @@ class ContactsListApp extends Component {
             if(!isEmpty(nextProps.params)) {
                 switch(nextProps.params.filter){
                     case 'type':
+                        this.props.clearFilter();
                         this.props.setTypeFilter(nextProps.params.value);
                         break;
                     case 'status':
+                        this.props.clearFilter();
                         this.props.setStatusFilter(nextProps.params.value);
                         break;
                     default:
@@ -140,7 +144,7 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = (dispatch) => {
-    return bindActionCreators({ fetchContacts, clearContacts, setCheckedContactAll, setTypeFilter, setStatusFilter }, dispatch);
+    return bindActionCreators({ fetchContacts, clearContacts, setCheckedContactAll, setTypeFilter, setStatusFilter, clearFilter }, dispatch);
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(ContactsListApp);

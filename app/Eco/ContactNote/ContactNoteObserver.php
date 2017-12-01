@@ -8,25 +8,22 @@
 
 namespace App\Eco\ContactNote;
 
-
-use App\Eco\ContactNote\ContactNote;
 use App\Eco\User\User;
-use Illuminate\Support\Facades\Auth;
 
 class ContactNoteObserver
 {
 
-    public function creating(ContactNote $contact)
+    public function creating(ContactNote $contactNote)
     {
         $userId = User::first()->id; //TODO
-        $contact->created_by_id = $userId;
-        $contact->updated_by_id = $userId;
+        $contactNote->created_by_id = $userId;
+        $contactNote->updated_by_id = $userId;
     }
 
-    public function updating(ContactNote $contact)
+    public function updating(ContactNote $contactNote)
     {
         $userId = User::first()->id; //TODO
-        $contact->updated_by_id = $userId;
+        $contactNote->updated_by_id = $userId;
     }
 
 }

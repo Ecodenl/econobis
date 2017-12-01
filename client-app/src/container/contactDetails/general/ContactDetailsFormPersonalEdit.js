@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment';
+import validator from 'validator';
 
 import { updatePerson } from '../../../actions/ContactDetailsActions';
 import PersonAPI from '../../../api/PersonAPI';
@@ -10,6 +11,7 @@ import InputSelect from '../../../components/form/InputSelect';
 import InputCheckbox from "../../../components/form/InputCheckbox";
 import InputDate from '../../../components/form/InputDate';
 import ButtonText from '../../../components/button/ButtonText';
+import PanelFooter from "../../../components/panel/PanelFooter";
 
 class ContactDetailsFormPersonalEdit extends Component {
     constructor(props) {
@@ -41,9 +43,10 @@ class ContactDetailsFormPersonalEdit extends Component {
                 newsletter: newsletter,
                 occupationId: person.occupation ? person.occupation.id : '',
             },
-            statusIdError: false,
-            firstNameError: false,
-            lastNameError: false,
+            errors: {
+                name: false,
+                statusId: false,
+            },
         }
     };
 
@@ -71,90 +74,75 @@ class ContactDetailsFormPersonalEdit extends Component {
     };
 
     handleChangeMemberSince = (date) => {
-        const value = moment(date).format('Y-MM-DD');
+        const formattedDate = (date ? moment(date).format('Y-MM-DD') : '');
 
         this.setState({
             ...this.state,
             person: {
                 ...this.state.person,
-                memberSince: value
+                memberSince: formattedDate
             },
         });
     };
 
     handleChangeMemberUntilDate = (date) => {
-        const value = moment(date).format('Y-MM-DD');
+        const formattedDate = (date ? moment(date).format('Y-MM-DD') : '');
 
         this.setState({
             ...this.state,
             person: {
                 ...this.state.person,
-                memberUntil: value
+                memberUntil: formattedDate
             },
         });
     };
 
     handleChangeDateOfBirth = (date) => {
-        const value = moment(date).format('Y-MM-DD');
+        const formattedDate = (date ? moment(date).format('Y-MM-DD') : '');
 
         this.setState({
             ...this.state,
             person: {
                 ...this.state.person,
-                dateOfBirth: value
+                dateOfBirth: formattedDate
             },
         });
-    };
-
-    validateForm(fieldNames) {
-        fieldNames.map((fieldName) => {
-            switch(fieldName) {
-                case 'statusId':
-                case 'firstName':
-                case 'lastName':
-                    this.state.person[fieldName].length === 0 ?
-                        this.processError(fieldName + 'Error', true)
-                        :
-                        this.processError(fieldName + 'Error', false)
-                    break;
-                default:
-                    break;
-            }
-        });
-    };
-
-    processError(fieldName, value) {
-        this.setState({
-            [fieldName]: value,
-        })
     };
 
     handleSubmit = event => {
         event.preventDefault();
 
-        this.validateForm([
-            'statusId',
-            'firstName',
-            'lastName',
-        ]);
-
         const { person }  = this.state;
 
-        // Temp solution
-        setTimeout(() => {
-            !this.state.statusIdError && !this.state.firstNameError && !this.state.lastNameError &&
-                PersonAPI.updatePerson(person).then((payload) => {
-                    this.props.updatePerson(payload);
-                    this.props.switchToView();
-                });
-        }, 100);
+        // Validation
+        let errors = {};
+        let hasErrors = false;
+
+        if(validator.isEmpty(person.firstName) && validator.isEmpty(person.lastName)){
+            errors.name = true;
+            hasErrors = true;
+        };
+
+        if(validator.isEmpty(person.statusId)){
+            errors.statusId = true;
+            hasErrors = true;
+        };
+
+        this.setState({ ...this.state, errors: errors })
+
+        // If no errors send form
+        !hasErrors &&
+        PersonAPI.updatePerson(person).then((payload) => {
+            this.props.updatePerson(payload);
+            this.props.switchToView();
+        });
     };
 
     render() {
         const {number, createdAt, titleId, statusId, typeId, firstName, lastNamePrefixId, lastName, memberSince, memberUntil, accountId, dateOfBirth, newsletter, occupationId} = this.state.person;
 
         return (
-            <form className="form-horizontal" onSubmit={this.handleSubmit}>
+            <form className="form-horizontal col-md-12" onSubmit={this.handleSubmit}>
                 <div className="row">
                     <InputText
                         label={"Klantnummer"}
@@ -177,7 +165,7 @@ class ContactDetailsFormPersonalEdit extends Component {
                         label={"Aanspreektitel"}
                         size={"col-sm-6"}
                         name={"titleId"}
-                        options={ [{id: 1, name: 'Dhr'}, {id: 2, name: 'Mevr'} ] }
+                        options={this.props.titles}
                         value={titleId}
                         onChangeAction={this.handleInputChange}
                     />
@@ -189,7 +177,7 @@ class ContactDetailsFormPersonalEdit extends Component {
                         value={statusId}
                         onChangeAction={this.handleInputChange}
                         required={"required"}
-                        error={this.state.statusIdError}
+                        error={this.state.errors.statusId}
                     />
                 </div>
 
@@ -200,14 +188,14 @@ class ContactDetailsFormPersonalEdit extends Component {
                         name={"firstName"}
                         value={firstName}
                         onChangeAction={this.handleInputChange}
-                        required={"required"}
-                        error={this.state.firstNameError}
+                        required={lastName === '' && "required"}
+                        error={this.state.errors.name}
                     />
                     <InputDate
                         label={"Lid sinds"}
                         size={"col-sm-6"}
                         name={"memberSince"}
-                        value={ memberSince && moment(memberSince).format('DD-MM-Y') }
+                        value={ memberSince }
                         onChangeAction={this.handleChangeMemberSince}
                     />
                 </div>
@@ -225,7 +213,7 @@ class ContactDetailsFormPersonalEdit extends Component {
                         label={"Opzegdatum"}
                         size={"col-sm-6"}
                         name={"cancellationDate"}
-                        value={ memberUntil && moment(memberUntil).format('DD-MM-Y') }
+                        value={ memberUntil }
                         onChangeAction={this.handleChangeMemberUntilDate}
                     />
                 </div>
@@ -237,8 +225,8 @@ class ContactDetailsFormPersonalEdit extends Component {
                         name="lastName"
                         value={lastName}
                         onChangeAction={this.handleInputChange}
-                        required={"required"}
-                        error={this.state.lastNameError}
+                        required={firstName === '' && "required"}
+                        error={this.state.errors.name}
                     />
                     <InputSelect
                         label={"Soort contact"}
@@ -251,6 +239,13 @@ class ContactDetailsFormPersonalEdit extends Component {
                 </div>
 
                 <div className="row">
+                    <InputDate
+                        label={"Geboortedatum"}
+                        size={"col-sm-6"}
+                        name={"dateOfBirth"}
+                        value={ dateOfBirth }
+                        onChangeAction={this.handleChangeDateOfBirth}
+                    />
                     <InputSelect
                         label={"Organisatie"}
                         size={"col-sm-6"}
@@ -258,13 +253,6 @@ class ContactDetailsFormPersonalEdit extends Component {
                         options={this.state.accountPeek}
                         value={accountId}
                         onChangeAction={this.handleInputChange}
-                    />
-                    <InputDate
-                        label={"Geboortedatum"}
-                        size={"col-sm-6"}
-                        name={"dateOfBirth"}
-                        value={ dateOfBirth && moment(dateOfBirth).format('DD-MM-Y') }
-                        onChangeAction={this.handleChangeDateOfBirth}
                     />
                 </div>
                 <div className="row">
@@ -288,12 +276,12 @@ class ContactDetailsFormPersonalEdit extends Component {
                     />
                 </div>
 
-                <div className="panel-footer">
+                <PanelFooter>
                     <div className="pull-right btn-group" role="group">
                         <ButtonText buttonClassName={"btn-default"} buttonText={"Annuleren"} onClickAction={this.props.switchToView}/>
-                        <ButtonText buttonText={"Opslaan"} onClickAction={this.handleSubmit}/>
+                        <ButtonText buttonText={"Opslaan"} onClickAction={this.handleSubmit} type={"submit"} value={"Submit"}/>
                     </div>
-                </div>
+                </PanelFooter>
             </form>
         );
     };
@@ -306,6 +294,7 @@ const mapStateToProps = (state) => {
         personTypes: state.systemData.personTypes,
         contactStatuses: state.systemData.contactStatuses,
         occupations: state.systemData.occupations,
+        titles: state.systemData.titles,
     };
 };
 

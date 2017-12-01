@@ -7,10 +7,10 @@ const ContactDetailFormEmailView = props => {
     const {email, typeId, primary} = props.emailAddress;
 
     return (
-        <div className={`row ${props.highlightLine}`} onMouseEnter={() => props.onLineEnter()} onMouseLeave={() => props.onLineLeave()}>
+        <div className={`row border ${props.highlightLine}`} onMouseEnter={() => props.onLineEnter()} onMouseLeave={() => props.onLineLeave()}>
             <div onClick={props.openEdit}>
                 <div className="col-sm-2">
-                    <strong><GetNameByIdHelper id={typeId} items={props.emailAddressTypes} /></strong>
+                    <GetNameByIdHelper id={typeId} items={props.emailAddressTypes} />
                 </div>
                 <div className="col-sm-8">
                     {email}

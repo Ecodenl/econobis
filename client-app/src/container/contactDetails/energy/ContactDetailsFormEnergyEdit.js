@@ -7,6 +7,7 @@ import InputText from '../../../components/form/InputText';
 import InputSelect from '../../../components/form/InputSelect';
 import InputDate from '../../../components/form/InputDate';
 import ButtonText from '../../../components/button/ButtonText';
+import PanelFooter from "../../../components/panel/PanelFooter";
 
 class ContactDetailsFormEnergyEdit extends Component {
     constructor(props) {
@@ -78,12 +79,12 @@ class ContactDetailsFormEnergyEdit extends Component {
                     />
                 </div>
 
-                <div className="panel-footer">
+                <PanelFooter>
                     <div className="pull-right">
                         <ButtonText buttonClassName={"btn-default"} buttonText={"Annuleren"} onClickAction={this.props.switchToView}/>
                         <ButtonText buttonText={"Opslaan"} onClickAction={this.handleSubmit}/>
                     </div>
-                </div>
+                </PanelFooter>
             </form>
         );
     };

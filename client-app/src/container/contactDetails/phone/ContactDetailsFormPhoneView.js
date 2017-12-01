@@ -7,10 +7,10 @@ const ContactDetailFormPhoneView = props => {
     const {number, typeId, primary} = props.phoneNumber;
 
     return (
-        <div className={`row ${props.highlightLine}`} onMouseEnter={() => props.onLineEnter()} onMouseLeave={() => props.onLineLeave()}>
+        <div className={`row border ${props.highlightLine}`} onMouseEnter={() => props.onLineEnter()} onMouseLeave={() => props.onLineLeave()}>
             <div onClick={props.openEdit}>
                 <div className="col-sm-2">
-                    <strong><GetNameByIdHelper id={typeId} items={props.phoneNumberTypes} /></strong>
+                    <GetNameByIdHelper id={typeId} items={props.phoneNumberTypes} />
                 </div>
                 <div className="col-sm-8">
                     {number}

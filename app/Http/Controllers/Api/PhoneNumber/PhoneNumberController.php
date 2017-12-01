@@ -23,7 +23,6 @@ class PhoneNumberController extends ApiController
 
     public function store(Request $request)
     {
-
         $data = $request->validate([
             'contactId' => ['required', 'exists:contacts,id'],
             'typeId' => new EnumExists(PhoneNumberType::class),
@@ -37,6 +36,8 @@ class PhoneNumberController extends ApiController
         ]);
         $phoneNumber = new PhoneNumber($this->arrayKeysToSnakeCase($data));
 
+        $this->authorize('create', $phoneNumber);
+
         $phoneNumber->save();
 
         return new FullPhoneNumber($phoneNumber->fresh());
@@ -44,6 +45,8 @@ class PhoneNumberController extends ApiController
 
     public function update(Request $request, PhoneNumber $phoneNumber)
     {
+        $this->authorize('update', $phoneNumber);
+
         $data = $request->validate([
             'contactId' => 'exists:contacts,id',
             'typeId' => new EnumExists(PhoneNumberType::class),
@@ -63,6 +66,8 @@ class PhoneNumberController extends ApiController
 
     public function destroy(PhoneNumber $phoneNumber)
     {
+        $this->authorize('delete', $phoneNumber);
+
         $phoneNumber->forceDelete();
     }
 }

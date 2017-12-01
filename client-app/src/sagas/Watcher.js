@@ -7,6 +7,9 @@ import { fetchUserSaga } from './UsersSaga';
 import { fetchUserDetailsSaga } from './UserDetailsSaga';
 import { fetchRegistrationsSaga } from './RegistrationsSaga';
 import { fetchRegistrationDetailsSaga, deleteRegistrationNoteSaga, deleteRegistrationMeasureTakenSaga, deleteRegistrationMeasureRequestedSaga, deleteRegistrationSaga } from './RegistrationDetailsSaga';
+import { fetchContactGroupsSaga, deleteContactGroupSaga, addContactToGroupSaga } from './ContactGroupsSaga';
+import { fetchContactGroupDetailsSaga, updateContactGroupDetailsSaga } from './ContactGroupDetailsSaga';
+import { fetchContactsInGroupSaga, deleteContactInGroupSaga } from './ContactsInGroupSaga';
 
 export default function* watchSagas() {
     yield takeLatest('FETCH_SYSTEM_DATA', systemDataSaga);
@@ -26,4 +29,10 @@ export default function* watchSagas() {
     yield takeLatest('DELETE_REGISTRATION_NOTE', deleteRegistrationNoteSaga);
     yield takeLatest('DELETE_REGISTRATION_MEASURE_TAKEN', deleteRegistrationMeasureTakenSaga);
     yield takeLatest('DELETE_REGISTRATION_MEASURE_REQUESTED', deleteRegistrationMeasureRequestedSaga);
+    yield takeLatest('FETCH_CONTACT_GROUPS', fetchContactGroupsSaga);
+    yield takeLatest('DELETE_CONTACT_GROUP', deleteContactGroupSaga);
+    yield takeLatest('ADD_CONTACT_TO_GROUP', addContactToGroupSaga);
+    yield takeLatest('FETCH_CONTACT_GROUP_DETAILS', fetchContactGroupDetailsSaga);
+    yield takeLatest('FETCH_CONTACTS_IN_GROUP', fetchContactsInGroupSaga);
+    yield takeLatest('DELETE_CONTACT_IN_GROUP', deleteContactInGroupSaga);
 };

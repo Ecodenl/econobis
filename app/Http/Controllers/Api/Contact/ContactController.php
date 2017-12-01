@@ -3,15 +3,20 @@
 namespace App\Http\Controllers\Api\Contact;
 
 use App\Eco\Contact\Contact;
+use App\Eco\User\User;
+use App\Http\Resources\Contact\ContactPeek;
 use App\Http\Resources\Contact\FullContact;
 use App\Jobs\SoftDeleteContact;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Spatie\Permission\Models\Role;
 
 class ContactController extends Controller
 {
     public function show(Contact $contact, Request $request)
     {
+        $this->authorize('view', $contact);
+
         $contact->load('addresses');
         $contact->load('emailAddresses');
         $contact->load('phoneNumbers');
@@ -28,6 +33,8 @@ class ContactController extends Controller
 
     public function destroy(Contact $contact)
     {
+        $this->authorize('delete', $contact);
+
         SoftDeleteContact::dispatch($contact);
     }
 
@@ -46,4 +53,19 @@ class ContactController extends Controller
 
         return $result;
     }
+
+    public function peek()
+    {
+        $contact = Contact::select('id', 'full_name')->get();
+
+        return ContactPeek::collection($contact);
+    }
+
+    public function groups(Contact $contact)
+    {
+        $groups = $contact->groups()->select('name', 'id')->get();
+
+        return $groups;
+    }
+
 }

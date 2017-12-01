@@ -45,14 +45,12 @@ class UserDetailsFormGeneral extends Component {
         return (
             <Panel className={this.state.activeDiv} onMouseEnter={() => this.onDivEnter()} onMouseLeave={() => this.onDivLeave()}>
                 <PanelBody>
-                    <div className="col-md-12">
-                        {
-                            this.state.showEdit ?
-                                <UserDetailsFormGeneralEdit switchToView={this.switchToView} />
-                                :
-                                <UserDetailsFormGeneralView switchToEdit={this.switchToEdit}/>
-                        }
-                    </div>
+                    {
+                        this.state.showEdit ?
+                            <UserDetailsFormGeneralEdit switchToView={this.switchToView} />
+                            :
+                            <UserDetailsFormGeneralView switchToEdit={this.switchToEdit}/>
+                    }
                 </PanelBody>
             </Panel>
         );

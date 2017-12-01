@@ -19,6 +19,11 @@ class ContactDetailsFormGeneral extends Component {
     }
 
     switchToEdit = () => {
+        const { typeId } = this.props.contactDetails;
+
+        if(typeId === 'account' && !this.props.permissions.updateAccount) return;
+        if(typeId === 'person' && !this.props.permissions.updatePerson) return;
+
         this.setState({
             showEdit: true,
         })
@@ -47,20 +52,18 @@ class ContactDetailsFormGeneral extends Component {
         return (
             <Panel className={this.state.activeDiv} onMouseEnter={() => this.onDivEnter()} onMouseLeave={() => this.onDivLeave()}>
                 <PanelBody>
-                    <div className="col-md-12">
-                        {
-                            this.state.showEdit ?
-                                this.props.contactDetails.typeId === 'account' ?
-                                    <ContactDetailsFormAccountEdit switchToView={this.switchToView} />
-                                    :
-                                    <ContactDetailsFormPersonalEdit switchToView={this.switchToView} />
+                    {
+                        this.state.showEdit ?
+                            this.props.contactDetails.typeId === 'account' ?
+                                <ContactDetailsFormAccountEdit switchToView={this.switchToView} />
                                 :
-                                this.props.contactDetails.typeId === 'account' ?
-                                    <ContactDetailsFormAccountView switchToEdit={this.switchToEdit}/>
-                                    :
-                                    <ContactDetailsFormPersonalView switchToEdit={this.switchToEdit}/>
-                        }
-                    </div>
+                                <ContactDetailsFormPersonalEdit switchToView={this.switchToView} />
+                            :
+                            this.props.contactDetails.typeId === 'account' ?
+                                <ContactDetailsFormAccountView switchToEdit={this.switchToEdit}/>
+                                :
+                                <ContactDetailsFormPersonalView switchToEdit={this.switchToEdit}/>
+                    }
                 </PanelBody>
             </Panel>
         );
@@ -70,6 +73,7 @@ class ContactDetailsFormGeneral extends Component {
 const mapStateToProps = (state) => {
     return {
         contactDetails: state.contactDetails,
+        permissions: state.meDetails.permissions,
     };
 };
 

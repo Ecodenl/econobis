@@ -1,11 +1,11 @@
 import axios from 'axios';
 
 const URL_API = process.env.URL_API;
-const URL_TYPE = `${URL_API}/api/user`;
+const URL_USER = `${URL_API}/api/user`;
 
 export default {
     fetchUserDetails: function (id) {
-        const requestUrl = `${URL_TYPE}/${id}`;
+        const requestUrl = `${URL_USER}/${id}`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
@@ -20,7 +20,7 @@ export default {
     },
 
     newUser: (person) => {
-        const requestUrl = `${URL_TYPE}`;
+        const requestUrl = `${URL_USER}`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
@@ -34,7 +34,7 @@ export default {
     },
 
     updateUser: (person) => {
-        const requestUrl = `${URL_TYPE}/${person.id}`;
+        const requestUrl = `${URL_USER}/${person.id}`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 

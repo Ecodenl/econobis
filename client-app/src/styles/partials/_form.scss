@@ -7,10 +7,6 @@
   background-color: #f3f3f3 !important;
 }
 
-.required-input{
-  color: $brand-danger;
-}
-
 label.required:after {
   content: " *";
   color: $brand-danger;
@@ -27,16 +23,12 @@ label.required:after {
   background: pink;
 }
 
-.error-text {
-  color: $brand-danger;
-}
-
 .item-border {
   border-top: 1px solid #d3e0e9;
-}
 
-.item-border:first-child {
-  border-top: 0;
+  &:first-child {
+    border-top: 0;
+  }
 }
 
 textarea {

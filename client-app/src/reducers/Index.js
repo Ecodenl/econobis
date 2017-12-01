@@ -13,7 +13,10 @@ import registrationsSortsReducer from './RegistrationsSortsReducer';
 import registrationDetailsReducer from './RegistrationDetailsReducer'
 import systemDataReducer from './SystemDataReducer';
 import usersReducer from './UsersReducer';
-import userDetailsReducer from './userDetailsReducer';
+import userDetailsReducer from './UserDetailsReducer';
+import contactGroupReducer from './ContactGroupReducer';
+import contactGroupDetailsReducer from './ContactGroupDetailsReducer';
+import contactsInGroupReducer from './ContactsInGroupReducer';
 
 const rootReducer = combineReducers({
     auth: authReducer,
@@ -33,6 +36,9 @@ const rootReducer = combineReducers({
     systemData: systemDataReducer,
     users: usersReducer,
     userDetails: userDetailsReducer,
+    contactGroups: contactGroupReducer,
+    contactGroupDetails: contactGroupDetailsReducer,
+    contactsInGroup: contactsInGroupReducer,
 });
 
 export default rootReducer;

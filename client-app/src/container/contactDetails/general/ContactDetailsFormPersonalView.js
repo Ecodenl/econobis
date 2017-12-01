@@ -67,17 +67,17 @@ const ContactDetailsFormPersonalView = props => {
             </div>
 
             <div className="row">
-                <ViewText
-                    label="Organisatie"
-                    value={ person.account && person.account.name }
-                    link={ person.account ? `/contact/${person.account.id}` : '' }
-                />
-                <div  onClick={props.switchToEdit}>
+                <div onClick={props.switchToEdit}>
                     <ViewText
                         label={"Geboortedatum"}
                         value={ person.dateOfBirth && moment(person.dateOfBirth.date).format('DD-MM-Y') }
                     />
                 </div>
+                <ViewText
+                    label="Organisatie"
+                    value={ person.account && person.account.name }
+                    link={ person.account ? `/contact/${person.account.id}` : '' }
+                />
             </div>
             <div className="row" onClick={props.switchToEdit}>
                 { person.account ?

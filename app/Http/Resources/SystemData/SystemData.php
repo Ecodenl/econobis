@@ -29,6 +29,8 @@ use App\Http\Resources\Occupation\FullOccupation;
 use App\Http\Resources\PersonType\FullPersonType;
 use App\Http\Resources\Title\FullTitle;
 use Illuminate\Http\Resources\Json\Resource;
+use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
 
 class SystemData extends Resource
 {
@@ -59,6 +61,8 @@ class SystemData extends Resource
             'registrationStatuses' => RegistrationStatus::select(['id', 'name'])->get(),
             'registrationReasons' => RegistrationReason::select(['id', 'name'])->get(),
             'energyLabels' => EnergyLabel::select(['id', 'name'])->get(),
+            'permissions' => FullEnumWithIdAndName::collection(Permission::all()),
+            'roles' => Role::select(['id', 'name'])->get()->toArray(),
         ];
     }
 }

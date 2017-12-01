@@ -9,6 +9,7 @@ import InputText from '../../../../components/form/InputText';
 import InputSelect from '../../../../components/form/InputSelect';
 import InputCheckbox from '../../../../components/form/InputCheckbox';
 import ButtonText from '../../../../components/button/ButtonText';
+import PanelFooter from "../../../../components/panel/PanelFooter";
 
 class UserDetailsFormGeneralEdit extends Component {
     constructor(props) {
@@ -19,6 +20,7 @@ class UserDetailsFormGeneralEdit extends Component {
                 ...this.props.userDetails,
                 titleId: this.props.userDetails.title ? this.props.userDetails.title.id : '',
                 lastNamePrefixId: this.props.userDetails.lastNamePrefix ? this.props.userDetails.lastNamePrefix.id : '',
+                testArray: ['test1', 'test2'],
             },
             errors: {
                 email: false,
@@ -80,12 +82,12 @@ class UserDetailsFormGeneralEdit extends Component {
         const { email, titleId, firstName, lastNamePrefixId, lastName, phoneNumber, mobile, occupation, active } = this.state.user;
 
         return (
-            <form className="form-horizontal" onSubmit={this.handleSubmit}>
+            <form className="form-horizontal col-md-12" onSubmit={this.handleSubmit}>
                 <div className="row">
                     <InputSelect
                         label="Aanspreektitel"
                         name={"titleId"}
-                        options={ [{id: 1, name: 'De heer'}, {id: 2, name: 'Mevrouw'} ] }
+                        options={this.props.titles}
                         value={titleId}
                         onChangeAction={this.handleInputChange}
                     />
@@ -162,12 +164,12 @@ class UserDetailsFormGeneralEdit extends Component {
                     />
                 </div>
 
-                <div className="panel-footer">
+                <PanelFooter>
                     <div className="pull-right btn-group" role="group">
                         <ButtonText buttonClassName={"btn-default"} buttonText={"Sluiten"} onClickAction={this.props.switchToView}/>
-                        <ButtonText buttonText={"Opslaan"} onClickAction={this.handleSubmit}/>
+                        <ButtonText buttonText={"Opslaan"} onClickAction={this.handleSubmit} type={"submit"} value={"Submit"}/>
                     </div>
-                </div>
+                </PanelFooter>
             </form>
         );
     };
@@ -177,6 +179,7 @@ const mapStateToProps = (state) => {
     return {
         userDetails: state.userDetails,
         lastNamePrefixes: state.systemData.lastNamePrefixes,
+        titles: state.systemData.titles,
     };
 };
 

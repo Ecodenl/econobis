@@ -12,9 +12,7 @@ const ContactDetailsFormConclusion = props => {
                 <span className="h5 text-bold">Afsluiting gegevens</span>
             </PanelHeader>
             <PanelBody>
-                <div className="col-md-12">
-                    <ContactDetailsFormConclusionView />
-                </div>
+                <ContactDetailsFormConclusionView />
             </PanelBody>
         </Panel>
     );

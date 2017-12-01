@@ -9,7 +9,7 @@ const ViewText = props => {
         return (
             <div className={className}>
                 <label htmlFor={ id } className="col-sm-6">{ label }</label>
-                <div id={ id } onClick={null}>
+                <div className="col-sm-6" id={ id } onClick={null}>
                     <Link to={link} className="link-underline">{value}</Link>
                 </div>
             </div>
@@ -18,7 +18,7 @@ const ViewText = props => {
         return (
             <div className={className}>
                 <label htmlFor={ id } className="col-sm-6">{ label }</label>
-                <div id={ id }>
+                <div className="col-sm-6" id={ id }>
                     {value}
                 </div>
             </div>

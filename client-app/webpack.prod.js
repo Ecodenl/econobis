@@ -11,7 +11,8 @@ require('dotenv').config({ path: '.env.production' });
 module.exports = merge(common, {
     output: {
         path: path.join(__dirname, '../public/js'),
-        filename: '[name].[chunkhash].js'
+        filename: '[name].[chunkhash].js',
+        publicPath: './js/'
     },
     plugins: [
         new CleanWebpackPlugin(['../public/js']),
@@ -19,7 +20,7 @@ module.exports = merge(common, {
         new UglifyJSPlugin(),
         new HtmlWebpackPlugin({
             template: './src/welcome.blade.php',
-            filename: '../../resources/views/welcome.blade.php'
+            filename: '../../resources/views/welcome.blade.php',
         }),
         new webpack.DefinePlugin({
             'process.env.URL_API': JSON.stringify(process.env.URL_API),

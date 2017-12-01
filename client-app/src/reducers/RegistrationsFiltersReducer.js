@@ -3,8 +3,8 @@ const filtersReducerDefaultState = {
         field: 'fullName',
         data: '',
     },
-    registration: {
-        field: 'registration',
+    createdAt: {
+        field: 'createdAt',
         data: '',
     },
     sourceId: {
@@ -15,6 +15,10 @@ const filtersReducerDefaultState = {
         field: 'statusId',
         data: '',
     },
+    measureRequested: {
+        field: 'measureRequestedId',
+        data: '',
+    }
 };
 
 export default (state = filtersReducerDefaultState, action) => {
@@ -38,9 +42,9 @@ export default (state = filtersReducerDefaultState, action) => {
         case 'SET_FILTER_REGISTRATION_DATE':
             return {
                 ...state,
-                registration: {
-                    ...state.registration,
-                    data: action.registration,
+                createdAt: {
+                    ...state.createdAt,
+                    data: action.createdAt,
                 }
             };
         case 'SET_FILTER_REGISTRATION_STATUS':
@@ -49,6 +53,14 @@ export default (state = filtersReducerDefaultState, action) => {
                 statusId: {
                     ...state.statusId,
                     data: action.statusId,
+                }
+            };
+        case 'SET_FILTER_REGISTRATION_MEASURE_REQUESTED':
+            return {
+                ...state,
+                measureRequested: {
+                    ...state.measureRequested,
+                    data: action.measureRequested,
                 }
             };
         default:

@@ -1,5 +1,4 @@
 import React, { Component} from 'react';
-import {connect} from 'react-redux';
 
 import RegistrationDetailsFormGeneralEdit from './RegistrationDetailsFormGeneralEdit';
 import RegistrationDetailsFormGeneralView from './RegistrationDetailsFormGeneralView';
@@ -59,10 +58,4 @@ class RegistrationDetailsFormGeneral extends Component {
     };
 }
 
-const mapStateToProps = (state) => {
-    return {
-        contactDetails: state.contactDetails,
-    };
-};
-
-export default connect(mapStateToProps)(RegistrationDetailsFormGeneral);
+export default RegistrationDetailsFormGeneral;

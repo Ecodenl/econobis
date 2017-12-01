@@ -4,6 +4,14 @@ namespace App\Http\Resources\SystemData;
 
 use App\Eco\AccountType\AccountType;
 use App\Eco\Address\AddressType;
+use App\Eco\BuildingFeature\BuildingFeature;
+use App\Eco\BuildingType\BuildingType;
+use App\Eco\EnergyLabel\EnergyLabel;
+use App\Eco\Measure\Measure;
+use App\Eco\Registration\RegistrationReason;
+use App\Eco\Registration\RegistrationSource;
+use App\Eco\Campaign\Campaign;
+use App\Eco\Registration\RegistrationStatus;
 use App\Eco\Contact\ContactStatus;
 use App\Eco\Contact\ContactType;
 use App\Eco\EmailAddress\EmailAddressType;
@@ -46,6 +54,13 @@ class SystemData extends Resource
             'accountTypes' => FullAccountType::collection(AccountType::all()),
             'occupations' => FullOccupation::collection(Occupation::all()),
             'titles' => FullTitle::collection(Title::all()),
+            'buildingTypes' => BuildingType::select(['id', 'name'])->get(),
+            'measures' => Measure::select(['id', 'name'])->get(),
+            'registrationSources' => RegistrationSource::select(['id', 'name'])->get(),
+            'campaigns' => Campaign::select(['id', 'name'])->get(),
+            'registrationStatuses' => RegistrationStatus::select(['id', 'name'])->get(),
+            'registrationReasons' => RegistrationReason::select(['id', 'name'])->get(),
+            'energyLabels' => EnergyLabel::select(['id', 'name'])->get(),
             'permissions' => FullEnumWithIdAndName::collection(Permission::all()),
             'roles' => Role::select(['id', 'name'])->get()->toArray(),
         ];

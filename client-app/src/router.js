@@ -8,11 +8,17 @@ import RequireAuth from './helpers/RequireAuth';
 import PermissionHelper from './helpers/PermissionHelper';
 
 import DashboardApp from './container/dashboard/DashboardApp';
+
 import ContactsListApp from './container/contactsList/ContactsListApp';
 import ContactDetailsApp from './container/contactDetails/ContactDetailsApp';
 import ContactNewApp from './container/contactNew/ContactNewApp';
+
 import TasksApp from './container/tasks/TasksApp';
-import SignupsApp from './container/signups/SignupsApp';
+
+import RegistrationsListApp from './container/registration/list/RegistrationsListApp';
+import RegistrationDetailsApp from './container/registration/details/RegistrationDetailsApp';
+import RegistrationNewApp from './container/registration/new/RegistrationNewApp';
+
 import OppertunitiesApp from './container/opportunities/OppertunitiesApp';
 import UsersListApp from './container/users/list/UsersListApp';
 import UserNewApp from './container/users/new/UserNewApp';
@@ -30,14 +36,21 @@ const Routes = () => {
             <Route path="loguit" component={ Logout } />
             <Route path="/" component={ RequireAuth(Main) }>
                 <IndexRoute component={ DashboardApp } />
+
                 <Route path="contacten/:filter/:value" component={ ContactsListApp } />
                 <Route path="contacten" component={ ContactsListApp } />
                 <Route path="contact/nieuw/:type/bedrijf/:id" component={ PermissionHelper(ContactNewApp, true) } />
                 <Route path="contact/nieuw/:type" component={ PermissionHelper(ContactNewApp, true) } />
                 <Route path="contact/:id" component={ ContactDetailsApp } />
+
                 <Route path="taak/:id" component={TasksApp} />
-                <Route path="aanmelding/:id" component={SignupsApp} />
+
+                <Route path="aanmeldingen" component={ RegistrationsListApp } />
+                <Route path="aanmelding/nieuw/contact/:contactId/adres/:addressId" component={RegistrationNewApp} />
+                <Route path="aanmelding/:id" component={RegistrationDetailsApp} />
+
                 <Route path="kans/:id" component={OppertunitiesApp} />
+
                 <Route path="gebruikers" component={UsersListApp} />
                 <Route path="gebruiker/nieuw" component={UserNewApp} />
                 <Route path="gebruiker/:id" component={UserDetailsApp} />

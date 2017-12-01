@@ -1,21 +1,22 @@
 import React, {Component} from 'react';
+import { connect } from 'react-redux';
 import { hashHistory } from 'react-router';
 import {connect} from 'react-redux';
 
+import RegistrationList from './harmonica/RegistrationList';
 import Panel from "../../components/panel/Panel";
 import PanelBody from '../../components/panel/PanelBody'
-import SignUpList from './harmonica/SignUpList';
 import OpportunityList from './harmonica/OpportunityList';
 import TaskList from './harmonica/TaskList';
 import ContactGroupList from './harmonica/ContactGroupList';
 import AddContactToGroup from './harmonica/AddContactToGroup';
 
 class ContactDetailsHarmonica extends Component {
-    constructor(){
-        super();
+    constructor(props){
+        super(props);
 
         this.state = {
-            toggleShowSignUps: false,
+            toggleShowRegistrations: false,
             toggleShowOpportunities: false,
             toggleShowTasks: false,
             toggleShowGroups: false,
@@ -35,13 +36,17 @@ class ContactDetailsHarmonica extends Component {
         }
     };
 
-    newSignup = () => {
-        hashHistory.push(`/aanmelding/nieuw`);
+    newRegistration = () => {
+        const address = this.props.contactDetails.addresses.find((address) => {
+            return address.primary
+        });
+
+        hashHistory.push(`/aanmelding/nieuw/contact/${this.props.contactDetails.id}/adres/${address.id}`);
     };
 
-    toggleSignup = () => {
+    toggleRegistration = () => {
         this.setState({
-           toggleShowSignUps: !this.state.toggleShowSignUps
+           toggleShowRegistrations: !this.state.toggleShowRegistrations
         });
     };
 
@@ -80,17 +85,19 @@ class ContactDetailsHarmonica extends Component {
     render(){
         return (
             <div className="col-md-12 extra-space-above">
-                <Panel className={"harmonica-button"}>
-                    <PanelBody>
-                        <div className="col-sm-12" onClick={this.toggleSignup}>
-                            <span className="">AANMELDINGEN <span className="badge">2</span></span>
-                            <a role="button" className="pull-right" onClick={this.newSignup}><span className="glyphicon glyphicon-plus glyphicon-white"/></a>
-                            { this.state.toggleShowSignUps && <SignUpList /> }
+                <div className="panel panel-default harmonica-button">
+                    <div className="panel-body">
+                        <div className="col-sm-9" onClick={this.toggleRegistration}>
+                            <span className="">AANMELDINGEN <span className="badge">{ this.props.contactDetails.registrationCount }</span></span>
                         </div>
-                    </PanelBody>
-                </Panel>
-                <Panel className={"harmonica-button"}>
-                    <PanelBody>
+                        <div className="col-sm-3">
+                                <a role="button" className="pull-right" onClick={this.newRegistration}><span className="glyphicon glyphicon-plus glyphicon-white"/></a>
+                        </div>
+                        { this.state.toggleShowRegistrations && <RegistrationList /> }
+                    </div>
+                </div>
+                <div className="panel panel-default harmonica-button">
+                    <div className="panel-body">
                         <div className="col-sm-12" onClick={this.toggleOpportunity}>
                             <span className="">KANSEN <span className="badge">4</span></span>
                             <a role="button" className="pull-right" onClick={this.newOpportunity}><span className="glyphicon glyphicon-plus glyphicon-white"/></a>

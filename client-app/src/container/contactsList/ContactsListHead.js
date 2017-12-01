@@ -2,11 +2,11 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import DataTableHeadTitleAndSort from '../../components/dataTable/DataTableHeadTitleAndSort';
-import { setSortsFilter } from '../../actions/ContactsSortsActions';
+import { setContactsSortsFilter } from '../../actions/ContactsSortsActions';
 
 const ContactsListHead = (props) => {
     const setSorts = (field, order) => {
-        props.setSortsFilter(field, order);
+        props.setContactsSortsFilter(field, order);
 
         setTimeout(() => {
             props.refreshContactsData();
@@ -32,8 +32,8 @@ const ContactsListHead = (props) => {
 };
 
 const mapDispatchToProps = dispatch => ({
-    setSortsFilter: (field, order) => {
-        dispatch(setSortsFilter(field, order));
+    setContactsSortsFilter: (field, order) => {
+        dispatch(setContactsSortsFilter(field, order));
     },
 });
 

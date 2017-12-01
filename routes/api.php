@@ -25,8 +25,27 @@ Route::namespace('Api')
         Route::get('/contact/grid', 'Contact\GridController@index');
         Route::get('/contact/peek', 'Contact\ContactController@peek');
         Route::get('/contact/{contact}', 'Contact\ContactController@show');
+        Route::get('/contact/{contact}/registrations', 'Contact\ContactController@registrations');
         Route::get('/contact/{contact}/groups', 'Contact\ContactController@groups');
         Route::post('/contact/{contact}/delete', 'Contact\ContactController@destroy');
+
+        Route::get('/registration/grid', 'Registration\RegistrationController@grid');
+        Route::get('/contact/{contact}/registration', 'Registration\RegistrationController@getStore');
+        Route::post('/contact/registration', 'Registration\RegistrationController@store');
+        Route::get('/registration/{registration}', 'Registration\RegistrationController@show');
+        Route::post('/registration/{registration}/update', 'Registration\RegistrationController@update');
+        Route::post('/registration/{registration}/delete', 'Registration\RegistrationController@destroy');
+
+        Route::post('/registration/{registration}/measure-taken', 'Registration\RegistrationController@storeMeasureTaken');
+        Route::post('/registration/{registration}/measure-taken/delete', 'Registration\RegistrationController@deleteMeasureTaken');
+
+        Route::post('/registration/{registration}/measure-requested', 'Registration\RegistrationController@storeMeasureRequested');
+        Route::post('/registration/{registration}/measure-requested/delete', 'Registration\RegistrationController@deleteMeasureRequested');
+
+        Route::post('/registration/{registration}/note', 'Registration\RegistrationController@storeNote');
+        Route::post('/registration/note/{note}/update', 'Registration\RegistrationController@updateNote');
+        Route::post('/registration/note/{note}/delete', 'Registration\RegistrationController@deleteNote');
+
 
         Route::get('/user/grid', 'User\GridController@index');
         Route::post('/user', 'User\UserController@store');

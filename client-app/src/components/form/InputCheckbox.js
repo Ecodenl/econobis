@@ -2,19 +2,21 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 const InputCheckbox = props => {
-    const { label, name,  size, id, onChangeAction, checked } = props;
+    const { label, name,  size, id, onChangeAction, checked, labelCheckbox } = props;
 
     return (
         <div className="form-group col-sm-6">
-            <label htmlFor={ id } className="col-sm-6">{ label }</label>
+            <label className="col-sm-6">{ label }</label>
             <div className={`${size}`}>
-            <input
-                name={name}
-                type="checkbox"
-                id={id}
-                onChange={onChangeAction}
-                checked={checked}
-            />
+                <label htmlFor={ id }>
+                <input
+                    name={name}
+                    type="checkbox"
+                    id={id}
+                    onChange={onChangeAction}
+                    checked={checked}
+                />{ labelCheckbox }
+                </label>
             </div>
         </div>
     );
@@ -23,6 +25,7 @@ const InputCheckbox = props => {
 InputCheckbox.defaultProps = {
     type: 'checkbox',
     size: 'col-sm-6',
+    labelCheckbox: '',
 };
 
 InputCheckbox.propTypes = {
@@ -35,6 +38,7 @@ InputCheckbox.propTypes = {
         PropTypes.bool,
         PropTypes.number
     ]).isRequired,
+    labelCheckbox: PropTypes.string,
 };
 
 export default InputCheckbox;

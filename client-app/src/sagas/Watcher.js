@@ -5,6 +5,8 @@ import { fetchContactsSaga, deleteContactSaga } from './ContactsSaga';
 import { fetchContactDetailsSaga, deleteAddressSaga, deletePhoneNumberSaga, deleteEmailAddressSaga, deleteContactNoteSaga } from './ContactDetailsSaga';
 import { fetchUserSaga } from './UsersSaga';
 import { fetchUserDetailsSaga } from './UserDetailsSaga';
+import { fetchRegistrationsSaga } from './RegistrationsSaga';
+import { fetchRegistrationDetailsSaga, deleteRegistrationNoteSaga, deleteRegistrationMeasureTakenSaga, deleteRegistrationMeasureRequestedSaga, deleteRegistrationSaga } from './RegistrationDetailsSaga';
 import { fetchContactGroupsSaga, deleteContactGroupSaga, addContactToGroupSaga } from './ContactGroupsSaga';
 import { fetchContactGroupDetailsSaga, updateContactGroupDetailsSaga } from './ContactGroupDetailsSaga';
 import { fetchContactsInGroupSaga, deleteContactInGroupSaga } from './ContactsInGroupSaga';
@@ -21,10 +23,16 @@ export default function* watchSagas() {
     yield takeLatest('DELETE_PHONE_NUMBER', deletePhoneNumberSaga);
     yield takeLatest('DELETE_EMAIL_ADDRESS', deleteEmailAddressSaga);
     yield takeLatest('DELETE_NOTE', deleteContactNoteSaga);
+    yield takeLatest('FETCH_REGISTRATIONS', fetchRegistrationsSaga);
+    yield takeLatest('FETCH_REGISTRATION_DETAILS', fetchRegistrationDetailsSaga);
+    yield takeLatest('DELETE_REGISTRATION', deleteRegistrationSaga);
+    yield takeLatest('DELETE_REGISTRATION_NOTE', deleteRegistrationNoteSaga);
+    yield takeLatest('DELETE_REGISTRATION_MEASURE_TAKEN', deleteRegistrationMeasureTakenSaga);
+    yield takeLatest('DELETE_REGISTRATION_MEASURE_REQUESTED', deleteRegistrationMeasureRequestedSaga);
     yield takeLatest('FETCH_CONTACT_GROUPS', fetchContactGroupsSaga);
     yield takeLatest('DELETE_CONTACT_GROUP', deleteContactGroupSaga);
     yield takeLatest('ADD_CONTACT_TO_GROUP', addContactToGroupSaga);
     yield takeLatest('FETCH_CONTACT_GROUP_DETAILS', fetchContactGroupDetailsSaga);
     yield takeLatest('FETCH_CONTACTS_IN_GROUP', fetchContactsInGroupSaga);
     yield takeLatest('DELETE_CONTACT_IN_GROUP', deleteContactInGroupSaga);
-}
+};

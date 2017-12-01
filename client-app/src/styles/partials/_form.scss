@@ -31,5 +31,7 @@ label.required:after {
   }
 }
 
-
-
+textarea {
+  resize: vertical;
+  overflow-x: hidden;
+}

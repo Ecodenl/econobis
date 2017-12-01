@@ -6,7 +6,9 @@ use App\Eco\Account\Account;
 use App\Eco\Address\Address;
 use App\Eco\ContactGroup\ContactGroup;
 use App\Eco\ContactNote\ContactNote;
+use App\Eco\Address\AddressType;
 use App\Eco\EmailAddress\EmailAddress;
+use App\Eco\Registration\Registration;
 use App\Eco\Person\Person;
 use App\Eco\PhoneNumber\PhoneNumber;
 use App\Eco\User\User;
@@ -117,5 +119,27 @@ class Contact extends Model
         if(!$this->type_id) return null;
 
         return ContactType::get($this->type_id);
+    }
+
+    public function registrations()
+    {
+        return $this->hasManyThrough(Registration::class, Address::class);
+    }
+
+    //Returns addresses array as Type - Streetname - Number
+    //Primary address always comes first
+    public function getPrettyAddresses(){
+        $this->load('addresses');
+        $addresses = [];
+        foreach ($this->addresses as $address){
+            if($address->primary == 1){
+                array_unshift($addresses, $address->getType()->name . ' - ' . $address->street . ' - ' . $address->number);
+            }
+            else{
+                $addresses[] = $address->getType()->name . ' - ' . $address->street . ' - ' . $address->number;
+            }
+        }
+
+        return $addresses;
     }
 }

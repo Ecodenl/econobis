@@ -6,7 +6,7 @@ import { fetchContactDetailsSaga, deleteAddressSaga, deletePhoneNumberSaga, dele
 import { fetchUserSaga } from './UsersSaga';
 import { fetchUserDetailsSaga } from './UserDetailsSaga';
 import { fetchRegistrationsSaga } from './RegistrationsSaga';
-import { fetchRegistrationDetailsSaga, deleteRegistrationNoteSaga, deleteRegistrationMeasureTakenSaga, deleteRegistrationMeasureRequestedSaga, deleteRegistrationSaga} from './RegistrationDetailsSaga';
+import { fetchRegistrationDetailsSaga, deleteRegistrationNoteSaga, deleteRegistrationMeasureTakenSaga, deleteRegistrationMeasureRequestedSaga, deleteRegistrationSaga } from './RegistrationDetailsSaga';
 
 export default function* watchSagas() {
     yield takeLatest('FETCH_SYSTEM_DATA', systemDataSaga);

@@ -31,7 +31,7 @@ class CreateMeasuresTable extends Migration
             $table->foreign('address_id')->references('id')->on('addresses');
             $table->integer('measure_id')->unsigned();
             $table->foreign('measure_id')->references('id')->on('measures');
-            $table->integer('energy_label_id')->unsigned();
+            $table->integer('energy_label_id')->unsigned()->nullable();
             $table->foreign('energy_label_id')->references('id')->on('energy_labels');
             $table->date('measure_date')->nullable();
             $table->unique(['address_id','measure_id']);

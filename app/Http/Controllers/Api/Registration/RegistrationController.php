@@ -110,6 +110,8 @@ class RegistrationController extends ApiController
 
         $measureTaken = new MeasureTaken($data);
         $measureTaken->save();
+
+        return \App\Http\Resources\Measure\MeasureTaken::make($measureTaken->fresh());
     }
 
     public function storeMeasureRequested(Request $request, RequestInput $requestInput)
@@ -122,6 +124,8 @@ class RegistrationController extends ApiController
 
         $measureRequested = new \App\Eco\Measure\MeasureRequested($data);
         $measureRequested->save();
+
+        return \App\Http\Resources\Measure\MeasureTaken::make($measureRequested->fresh());
     }
 
     public function storeNote(Request $request)
@@ -221,7 +225,19 @@ class RegistrationController extends ApiController
             $address->save();
         }
 
-        return $registration;
+        $registration = $registration->fresh();
+        $registration->load([
+            'address.building_type',
+            'address.measures_taken',
+            'address.measures_requested',
+            'sources',
+            'status',
+            'notes',
+            'campaign',
+            'reasons',
+        ]);
+
+        return FullRegistration::make($registration);
     }
 
     public function deleteMeasureTaken(Request $request)

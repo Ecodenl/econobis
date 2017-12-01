@@ -32,7 +32,7 @@ Route::namespace('Api')
         Route::post('/contact/registration', 'Registration\RegistrationController@store');
         Route::get('/registration/{registration}', 'Registration\RegistrationController@show');
         Route::post('/registration/{registration}/update', 'Registration\RegistrationController@update');
-        Route::delete('/registration/{registration}/delete', 'Registration\RegistrationController@destroy');
+        Route::post('/registration/{registration}/delete', 'Registration\RegistrationController@destroy');
 
         Route::post('/registration/{registration}/measure-taken', 'Registration\RegistrationController@storeMeasureTaken');
         Route::post('/registration/{registration}/measure-taken/delete', 'Registration\RegistrationController@deleteMeasureTaken');

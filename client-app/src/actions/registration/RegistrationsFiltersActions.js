@@ -3,9 +3,9 @@ export const setFilterFullName = (fullName) => ({
     fullName,
 });
 
-export const setRegistrationDateFilter = (registrationDate) => ({
+export const setRegistrationDateFilter = (createdAt) => ({
     type: 'SET_FILTER_REGISTRATION_DATE',
-    registrationDate,
+    createdAt,
 });
 
 export const setFilterRegistrationSource = (sourceId) => ({
@@ -16,4 +16,9 @@ export const setFilterRegistrationSource = (sourceId) => ({
 export const setFilterRegistrationStatus = (statusId) => ({
     type: 'SET_FILTER_REGISTRATION_STATUS',
     statusId,
+});
+
+export const setFilterMeasureRequested = (measureRequested) => ({
+    type: 'SET_FILTER_REGISTRATION_MEASURE_REQUESTED',
+    measureRequested,
 });

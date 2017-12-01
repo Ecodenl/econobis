@@ -17,7 +17,7 @@ class RegistrationMeasuresTakenNew extends Component {
 
         this.state = {
             measureTaken: {
-                addressId: this.props.id,
+                addressId: this.props.addressId,
                 measureId: '',
                 measureDate: '',
                 energyLabelId: '',
@@ -130,7 +130,7 @@ const mapStateToProps = (state) => {
     return {
         measures: state.systemData.measures,
         energyLabels: state.systemData.energyLabels,
-        id: state.registrationDetails.id,
+        addressId: state.registrationDetails.address.id,
     };
 };
 

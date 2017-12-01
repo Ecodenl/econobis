@@ -42,12 +42,13 @@ class ContactGroupDetailsFormGeneral extends Component {
     };
 
     render() {
+        const { permissions } = this.props;
         return (
             <Panel className={this.state.activeDiv} onMouseEnter={() => this.onDivEnter()} onMouseLeave={() => this.onDivLeave()}>
                 <PanelBody>
                     <div className="col-md-12">
                         {
-                            this.state.showEdit ?
+                            this.state.showEdit && permissions.manageGroup ?
                                 <ContactGroupDetailsFormGeneralEdit switchToView={this.switchToView} />
                                 :
                                 <ContactGroupDetailsFormGeneralView switchToEdit={this.switchToEdit}/>
@@ -59,4 +60,10 @@ class ContactGroupDetailsFormGeneral extends Component {
     }
 };
 
-export default ContactGroupDetailsFormGeneral;
+const mapStateToProps = (state) => {
+    return {
+        permissions: state.meDetails.permissions,
+    }
+};
+
+export default connect(mapStateToProps)(ContactGroupDetailsFormGeneral);

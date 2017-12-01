@@ -61,6 +61,8 @@ class ContactsListToolbar extends Component {
                                     }
                             </ul>
                         </div>
+                        {
+                            permissions.updatePerson && permissions.updateAccount &&
                         <div className="nav navbar-nav btn-group" role="group">
                             <button className="btn btn-success btn-sm" data-toggle="dropdown">
                                 <span className="glyphicon glyphicon-share-alt" />
@@ -69,6 +71,7 @@ class ContactsListToolbar extends Component {
                                 <li><a onClick={this.toggleAddContactsToGroup}>Voeg toe aan groep</a></li>
                             </ul>
                         </div>
+                        }
                         <ButtonIcon iconName={"glyphicon-trash"} onClickAction={this.toggleShowDeleteSelectedItems} />
                         <ButtonIcon iconName={"glyphicon-ok"} onClickAction={this.props.toggleShowCheckboxList} />
                     </div>
@@ -94,6 +97,7 @@ class ContactsListToolbar extends Component {
 const mapStateToProps = (state) => {
     return {
         meDetails: state.meDetails,
+        permissions: state.meDetails.permissions,
     };
 };
 

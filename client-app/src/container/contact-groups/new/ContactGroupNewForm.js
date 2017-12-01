@@ -4,6 +4,7 @@ import { hashHistory } from 'react-router';
 import validator from 'validator';
 import moment from 'moment';
 
+import UsersAPI from '../../../api/UsersAPI';
 import ContactGroupAPI from '../../../api/ContactGroupAPI';
 import InputText from '../../../components/form/InputText';
 import InputSelect from '../../../components/form/InputSelect';
@@ -16,6 +17,7 @@ class ContactGroupNewForm extends Component {
         super(props);
 
         this.state = {
+            contactsWithPermission: [],
             contactGroup: {
                 id: '',
                 name: '',
@@ -29,6 +31,14 @@ class ContactGroupNewForm extends Component {
                 name: false,
             },
         }
+    };
+
+    componentDidMount() {
+        const { permissions } = this.props;
+
+        UsersAPI.fetchUsersWithPermission(permissions.find((permission) => permission.name === 'manage_group').id).then((payload) => {
+            this.setState({ contactsWithPermission: payload });
+        });
     };
 
     handleInputChange = event => {
@@ -118,13 +128,18 @@ class ContactGroupNewForm extends Component {
                 </div>
 
                 <div className="row">
-                    <InputSelect
-                        label="Verantwoordelijke"
-                        name="responsibleUserId"
-                        options={[{id: 1, name: 'test'}, {id: 2, name: 'test 2'}]}
-                        value={responsibleUserId}
-                        onChangeAction={this.handleInputChange}
-                    />
+                    <div className='form-group col-sm-6'>
+                        <label htmlFor='responsibleUserId' className='col-sm-6'>Verantwoordelijke</label>
+                        <div className={"col-sm-6"}>
+                            <select className='form-control input-sm' id='responsibleUserId' name='responsibleUserId' value={responsibleUserId} onChange={this.handleInputChange} >
+                                <option value=''></option>
+                                { this.state.contactsWithPermission.map((option) => {
+                                    return <option key={ option.id } value={ option.id }>{ option.fullName }</option>
+                                }) }
+                            </select>
+                        </div>
+                    </div>
+
                     <InputCheckbox
                         label={"Gesloten"}
                         size={"col-sm-6"}
@@ -180,6 +195,7 @@ class ContactGroupNewForm extends Component {
 const mapStateToProps = (state) => {
     return {
         meDetails: state.meDetails,
+        permissions: state.systemData.permissions,
     };
 };
 

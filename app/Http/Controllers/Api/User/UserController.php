@@ -8,6 +8,7 @@ use App\Http\Resources\User\FullUser;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Validation\Rule;
+use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
@@ -71,6 +72,11 @@ class UserController extends Controller
         return $this->show($user->fresh());
     }
 
+    public function withPermission(Permission $permission){
+        $users = User::permission($permission)->with(['lastNamePrefix', 'title'])->get();
+        return FullUser::collection($users);
+    }
+
     public function addRole(User $user, Role $role)
     {
         $this->authorize('update', $user);
@@ -84,5 +90,4 @@ class UserController extends Controller
 
         $user->removeRole($role);
     }
-
 }

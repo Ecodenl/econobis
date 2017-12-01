@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { hashHistory } from 'react-router';
-import moment from 'moment';
+import { connect } from 'react-redux';
 
 class ContactGroupsListItem extends Component {
     constructor(props) {
@@ -35,7 +35,7 @@ class ContactGroupsListItem extends Component {
     }
 
     render() {
-        const { id, name, numberOfContacts, closedStatus } = this.props;
+        const { id, name, numberOfContacts, closedStatus, permissions } = this.props;
 
         return (
           <tr className={this.state.highlightRow} onDoubleClick={() => this.openItem(id)} onMouseEnter={() => this.onRowEnter()} onMouseLeave={() => this.onRowLeave()}>
@@ -43,12 +43,18 @@ class ContactGroupsListItem extends Component {
               <td className="link-underline" onClick={() => this.openContactsInGroup(id)}>{ numberOfContacts }</td>
               <td>{ closedStatus }</td>
               <td>
-                  {(this.state.showActionButtons ? <a role="button" onClick={() => this.openItem(id)}><span className="glyphicon glyphicon-pencil mybtn-success" /> </a> : '')}
-                  {(this.state.showActionButtons ? <a role="button" onClick={this.props.showDeleteItemModal.bind(this, id, name)}><span className="glyphicon glyphicon-trash mybtn-danger"  /> </a> : '')}
+                  {(this.state.showActionButtons && permissions.manageGroup ? <a role="button" onClick={() => this.openItem(id)}><span className="glyphicon glyphicon-pencil mybtn-success" /> </a> : '')}
+                  {(this.state.showActionButtons && permissions.manageGroup ? <a role="button" onClick={this.props.showDeleteItemModal.bind(this, id, name)}><span className="glyphicon glyphicon-trash mybtn-danger"  /> </a> : '')}
               </td>
             </tr>
         );
     }
 }
 
-export default ContactGroupsListItem;
+const mapStateToProps = (state) => {
+    return {
+        permissions: state.meDetails.permissions,
+    }
+};
+
+export default connect(mapStateToProps)(ContactGroupsListItem);

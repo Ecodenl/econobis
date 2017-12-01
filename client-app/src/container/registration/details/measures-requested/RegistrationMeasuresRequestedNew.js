@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment';
+import validator from 'validator';
 
 import RegistrationDetailsAPI from '../../../../api/registration/RegistrationDetailsAPI';
 import { newRegistrationMeasureRequested } from '../../../../actions/registration/RegistrationDetailsActions';
@@ -21,6 +22,9 @@ class RegistrationMeasuresRequestedNew extends Component {
                 measureId: '',
                 desiredDate: '',
                 degreeInterest: '',
+            },
+            errors: {
+                measureId: false,
             },
         }
     };
@@ -44,9 +48,9 @@ class RegistrationMeasuresRequestedNew extends Component {
 
         this.setState({
             ...this.state,
-            person: {
-                ...this.state.person,
-                memberSince: formattedDate
+            measureRequested: {
+                ...this.state.measureRequested,
+                desiredDate: formattedDate
             },
         });
     };
@@ -54,12 +58,23 @@ class RegistrationMeasuresRequestedNew extends Component {
     handleSubmit = event => {
         event.preventDefault();
 
-        const { measureRequested } = this.state;
+        const {measureRequested} = this.state;
 
-        RegistrationDetailsAPI.newRegistrationMeasureRequested(measureRequested).then((payload) => {
-            this.props.newRegistrationMeasureRequested(payload);
-            this.props.toggleShowNew();
-        })
+        let errors = {};
+        let hasErrors = false;
+
+        if (validator.isEmpty(measureRequested.measureId)) {
+            errors.measureId = true;
+            hasErrors = true;
+        };
+
+        this.setState({ ...this.state, errors: errors })
+
+        !hasErrors &&
+            RegistrationDetailsAPI.newRegistrationMeasureRequested(measureRequested).then((payload) => {
+                this.props.newRegistrationMeasureRequested(payload);
+                this.props.toggleShowNew();
+            })
     };
 
     render() {
@@ -77,6 +92,8 @@ class RegistrationMeasuresRequestedNew extends Component {
                                 options={this.props.measures}
                                 value={measureId}
                                 onChangeAction={this.handleInputChange}
+                                required={"required"}
+                                error={this.state.errors.measureId}
                             />
 
                             <InputDate

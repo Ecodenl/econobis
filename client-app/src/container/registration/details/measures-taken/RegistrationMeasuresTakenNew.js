@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment';
+import validator from 'validator';
 
 import RegistrationDetailsAPI from '../../../../api/registration/RegistrationDetailsAPI';
 import { newRegistrationMeasureTaken } from '../../../../actions/registration/RegistrationDetailsActions';
@@ -20,6 +21,9 @@ class RegistrationMeasuresTakenNew extends Component {
                 measureId: '',
                 measureDate: '',
                 energyLabelId: '',
+            },
+            errors: {
+                measureId: false,
             },
         }
     };
@@ -43,9 +47,9 @@ class RegistrationMeasuresTakenNew extends Component {
 
         this.setState({
             ...this.state,
-            person: {
-                ...this.state.person,
-                memberSince: formattedDate
+            measureTaken: {
+                ...this.state.measureTaken,
+                measureDate: formattedDate
             },
         });
     };
@@ -55,10 +59,21 @@ class RegistrationMeasuresTakenNew extends Component {
 
         const { measureTaken } = this.state;
 
-        RegistrationDetailsAPI.newRegistrationMeasureTaken(measureTaken).then((payload) => {
-            this.props.newRegistrationMeasureTaken(payload);
-            this.props.toggleShowNew();
-        })
+        let errors = {};
+        let hasErrors = false;
+
+        if(validator.isEmpty(measureTaken.measureId)){
+            errors.measureId = true;
+            hasErrors = true;
+        };
+
+        this.setState({ ...this.state, errors: errors })
+
+        !hasErrors &&
+            RegistrationDetailsAPI.newRegistrationMeasureTaken(measureTaken).then((payload) => {
+                this.props.newRegistrationMeasureTaken(payload);
+                this.props.toggleShowNew();
+            })
     };
 
     render() {
@@ -76,6 +91,8 @@ class RegistrationMeasuresTakenNew extends Component {
                                 options={this.props.measures}
                                 value={measureId}
                                 onChangeAction={this.handleInputChange}
+                                required={"required"}
+                                error={this.state.errors.measureId}
                             />
 
                             <InputDate

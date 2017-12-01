@@ -16,7 +16,7 @@ class ContactGroupPolicy
      */
     public function create(User $user)
     {
-        return $user->hasPermissionTo('manage_groups', 'api');
+        return $user->hasPermissionTo('manage_group', 'api');
     }
 
     /**
@@ -27,7 +27,7 @@ class ContactGroupPolicy
      */
     public function edit(User $user, ContactGroup $contactGroup)
     {
-        return $user->hasPermissionTo('manage_groups', 'api');
+        return $user->hasPermissionTo('manage_group', 'api');
     }
 
     /**
@@ -38,6 +38,6 @@ class ContactGroupPolicy
      */
     public function delete(User $user, ContactGroup $contactGroup)
     {
-        return $user->hasPermissionTo('manage_groups', 'api');
+        return $user->hasPermissionTo('manage_group', 'api');
     }
 }

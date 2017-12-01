@@ -56,6 +56,7 @@ class RegistrationDetailsToolbar extends Component {
 const mapStateToProps = (state) => {
     return {
         registrationAddress: state.registrationDetails.address,
+        id: state.registrationDetails.id,
     };
 };
 

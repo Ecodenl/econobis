@@ -12,10 +12,6 @@ module.exports = {
         bundle: './src/index.js',
         vendor: VENDOR_LIBS
     },
-    output: {
-        path: path.join(__dirname, 'dist'),
-        filename: '[name].[chunkhash].js'
-    },
     resolve: {
         modules: [
             path.join(__dirname, "src"),

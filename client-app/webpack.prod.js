@@ -4,16 +4,22 @@ const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const common = require('./webpack.common.js');
+const path = require('path');
 
 require('dotenv').config({ path: '.env.production' });
 
 module.exports = merge(common, {
+    output: {
+        path: path.join(__dirname, '../public/js'),
+        filename: '[name].[chunkhash].js'
+    },
     plugins: [
-        new CleanWebpackPlugin(['dist']),
+        new CleanWebpackPlugin(['../public/js']),
         new webpack.optimize.ModuleConcatenationPlugin(),
         new UglifyJSPlugin(),
         new HtmlWebpackPlugin({
-            template: 'src/index.html',
+            template: './src/welcome.blade.php',
+            filename: '../../resources/views/welcome.blade.php'
         }),
         new webpack.DefinePlugin({
             'process.env.URL_API': JSON.stringify(process.env.URL_API),

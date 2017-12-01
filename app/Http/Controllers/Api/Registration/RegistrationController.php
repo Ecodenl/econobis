@@ -19,19 +19,20 @@ use App\Http\Controllers\Api\ApiController;
 use App\Http\RequestQueries\Registration\Grid\RequestQuery;
 use App\Http\Resources\Measure\MeasureRequested;
 use App\Http\Resources\Registration\FullRegistration;
+use App\Http\Resources\Registration\GridRegistration;
 use Illuminate\Http\Request;
 use App\Helpers\RequestInput\RequestInput;
 
 class RegistrationController extends ApiController
 {
 
-    public function index(RequestQuery $requestQuery)
+    public function grid(RequestQuery $requestQuery)
     {
         $registrations = $requestQuery->get();
 
         $registrations->load(['sources', 'address', 'status']);
 
-        return FullRegistration::collection($registrations);
+        return GridRegistration::collection($registrations);
     }
 
     /**
@@ -116,7 +117,7 @@ class RegistrationController extends ApiController
         $data = $requestInput->string('addressId')->validate('required|exists:addresses,id')->alias('address_id')->next()
             ->string('measureId')->validate('required|exists:measures,id')->alias('measure_id')->next()
             ->string('desiredDate')->whenMissing(null)->onEmpty(null)->alias('desired_date')->next()
-            ->string('degreeInterest')->whenMissing(0)->alias('degree_interest')->next()
+            ->string('degreeInterest')->whenMissing(0)->onEmpty(0)->alias('degree_interest')->next()
             ->get();
 
         $measureRequested = new \App\Eco\Measure\MeasureRequested($data);

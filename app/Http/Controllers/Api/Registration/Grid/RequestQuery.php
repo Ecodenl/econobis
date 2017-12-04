@@ -10,15 +10,17 @@ namespace App\Http\RequestQueries\Registration\Grid;
 
 
 use App\Eco\Registration\Registration;
+use Illuminate\Http\Request;
 
 class RequestQuery extends \App\Helpers\RequestQuery\RequestQuery
 {
 
-    public function __construct(Filter $filter,
+    public function __construct(Request $request,
+                                Filter $filter,
                                 Sort $sort,
                                 Joiner $joiner)
     {
-        parent::__construct($filter, $sort, $joiner);
+        parent::__construct($request, $filter, $sort, $joiner);
     }
 
     protected function baseQuery()

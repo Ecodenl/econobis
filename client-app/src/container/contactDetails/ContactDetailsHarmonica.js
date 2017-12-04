@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import { hashHistory } from 'react-router';
-import {connect} from 'react-redux';
 
 import RegistrationList from './harmonica/RegistrationList';
 import Panel from "../../components/panel/Panel";
@@ -96,8 +95,8 @@ class ContactDetailsHarmonica extends Component {
                         { this.state.toggleShowRegistrations && <RegistrationList /> }
                     </div>
                 </div>
-                <div className="panel panel-default harmonica-button">
-                    <div className="panel-body">
+                <Panel className={"harmonica-button"}>
+                    <PanelBody>
                         <div className="col-sm-12" onClick={this.toggleOpportunity}>
                             <span className="">KANSEN <span className="badge">4</span></span>
                             <a role="button" className="pull-right" onClick={this.newOpportunity}><span className="glyphicon glyphicon-plus glyphicon-white"/></a>

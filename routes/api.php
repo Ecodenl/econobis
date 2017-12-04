@@ -79,6 +79,7 @@ Route::namespace('Api')
         Route::post('/contact-note/{contactNote}/delete', 'ContactNote\ContactNoteController@destroy');
 
         Route::get('/contacts/peek', 'Contact\ContactController@peek');
+        Route::get('/account/peek', 'Account\AccountController@peek');
 
         Route::get('contact-group/grid', 'ContactGroup\ContactGroupController@grid');
         Route::get('contact-group/{contactGroup}', 'ContactGroup\ContactGroupController@show');

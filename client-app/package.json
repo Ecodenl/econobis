@@ -7,7 +7,7 @@
     "serve": "webpack-dev-server --open --config webpack.dev.js",
     "build": "webpack --config webpack.prod.js -p",
     "test": "jest --config=jest.config.json",
-    "test:global": "testcafe safari tests/ -s tests/fixtures"
+    "test:global": "testcafe chrome tests/ -s tests/fixtures"
   },
   "repository": "",
   "author": "Xaris",

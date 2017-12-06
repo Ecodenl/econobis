@@ -79,19 +79,19 @@ class Login extends Component {
                                 <div className="form-group">
                                     <label htmlFor="username" className="control-label">Email:</label>
                                     <input type="text" name="username" value={username} className="form-control"
-                                           placeholder="Email..." onChange={this.handleInputChange}/>
+                                           id="email" placeholder="Email..." onChange={this.handleInputChange}/>
                                 </div>
                                 <div className="form-group">
                                     <label htmlFor="password" className="control-label">Wachtwoord:</label>
                                     <input type="password" name="password" value={password} className="form-control"
-                                           placeholder="Wachtwoord ..." onChange={this.handleInputChange}/>
+                                           id="password" placeholder="Wachtwoord ..." onChange={this.handleInputChange}/>
                                 </div>
                             </div>
                             {this.renderAlert()}
                             <div className="row extra-space-above">
                                 <div className="col-sm-10 col-md-offset-1">
                                     <div className="btn-group pull-right">
-                                        <button type="submit" className="btn btn-primary">Login</button>
+                                        <button type="submit" className="btn btn-primary" id="submit-button">Login</button>
                                     </div>
                                 </div>
                             </div>

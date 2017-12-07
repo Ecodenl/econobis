@@ -1,7 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment';
-moment.locale('nl');
 
 const RegistrationMeasuresRequestedView = props => {
     const {name, desiredDate, degreeInterest } = props.measureRequested;

@@ -14,7 +14,7 @@ const RegistrationMeasuresTakenView = props => {
                 { name }
             </div>
             <div className="col-sm-3">
-                { measureDate && moment(measureDate.date).format('d-M-Y') }
+                { measureDate && moment(measureDate.date).format('L') }
             </div>
             <div className="col-sm-4">
                 <GetNameByIdHelper id={energyLabelId} items={props.energyLabels} />

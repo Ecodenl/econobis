@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 const InputText = props => {
-    const { label, type, className, size, id, placeholder, name, value, onChangeAction, required, readOnly, maxLength, error, min, max } = props;
+    const { label, type, className, size, id, placeholder, name, value, onChangeAction, required, readOnly, maxLength, error, min, max, errorMessage } = props;
 
     return (
         <div className="form-group col-sm-6">
@@ -22,6 +22,11 @@ const InputText = props => {
                     max={ max }
                 />
             </div>
+            {error &&
+                <div className="col-sm-offset-6 col-sm-6">
+            <span className='has-error-message'> { errorMessage }</span>
+                </div>
+            }
         </div>
     );
 };
@@ -37,6 +42,7 @@ InputText.defaultProps = {
     error: false,
     min: '',
     max: '',
+    errorMessage: '',
 };
 
 InputText.propTypes = {
@@ -58,6 +64,7 @@ InputText.propTypes = {
     error: PropTypes.bool,
     min: PropTypes.string,
     max: PropTypes.string,
+    errorMessage: PropTypes.string,
 };
 
 export default InputText;

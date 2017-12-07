@@ -23,6 +23,11 @@ label.required:after {
   background: pink;
 }
 
+.has-error-message {
+  color: $brand-danger;
+  font-size: 12px;
+}
+
 .item-border {
   border-top: 1px solid #d3e0e9;
 

@@ -11,6 +11,7 @@ import ButtonText from '../../../../components/button/ButtonText';
 import InputSelect from "../../../../components/form/InputSelect";
 import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
+import Modal from '../../../../components/modal/Modal';
 
 class RegistrationMeasuresRequestedNew extends Component {
     constructor(props) {

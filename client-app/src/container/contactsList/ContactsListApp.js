@@ -82,6 +82,14 @@ class ContactsListApp extends Component {
         this.props.fetchContacts(filters, sorts);
     };
 
+    resetContactFilters = () => {
+        this.props.clearFilter();
+
+        setTimeout(() => {
+            this.refreshContactsData();
+        }, 100);
+    };
+
     onSubmitFilter() {
         const filters = filterHelper(this.props.contactsFilters);
         const sorts = this.props.contactsSorts.reverse();
@@ -111,10 +119,11 @@ class ContactsListApp extends Component {
                     <div className="panel-body">
                         <div className="col-md-12 extra-space-above">
                             <ContactsListToolbar
-                                refreshContactsData={() => this.refreshContactsData()}
                                 toggleShowCheckboxList={() => this.toggleShowCheckboxList()}
+                                resetContactFilters={() => this.resetContactFilters()}
                                 selectAllCheckboxes={() => this.selectAllCheckboxes()}
                                 checkedAllCheckboxes={this.state.checkedAllCheckboxes}
+
                             />
                         </div>
 

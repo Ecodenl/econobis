@@ -121,11 +121,10 @@ class RegistrationController extends ApiController
             ->string('desiredDate')->whenMissing(null)->onEmpty(null)->alias('desired_date')->next()
             ->string('degreeInterest')->whenMissing(0)->onEmpty(0)->alias('degree_interest')->next()
             ->get();
-
         $measureRequested = new \App\Eco\Measure\MeasureRequested($data);
         $measureRequested->save();
 
-        return \App\Http\Resources\Measure\MeasureTaken::make($measureRequested->fresh());
+        return \App\Http\Resources\Measure\MeasureRequested::make($measureRequested->fresh());
     }
 
     public function storeNote(Request $request)

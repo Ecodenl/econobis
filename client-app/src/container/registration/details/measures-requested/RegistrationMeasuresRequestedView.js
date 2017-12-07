@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment';
+moment.locale('nl');
 
 const RegistrationMeasuresRequestedView = props => {
     const {name, desiredDate, degreeInterest } = props.measureRequested;
@@ -12,7 +13,7 @@ const RegistrationMeasuresRequestedView = props => {
                 { name }
             </div>
             <div className="col-sm-3">
-                { desiredDate && moment(desiredDate.date).format('d-M-Y') }
+                { desiredDate && moment(desiredDate.date).format('L') }
             </div>
             <div className="col-sm-4">
                 { degreeInterest }

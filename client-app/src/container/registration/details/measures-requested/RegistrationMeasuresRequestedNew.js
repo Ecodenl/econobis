@@ -74,9 +74,11 @@ class RegistrationMeasuresRequestedNew extends Component {
 
         !hasErrors &&
             RegistrationDetailsAPI.newRegistrationMeasureRequested(measureRequested).then((payload) => {
-                this.props.newRegistrationMeasureRequested(payload);
+                this.props.newRegistrationMeasureRequested(payload.data.data);
                 this.props.toggleShowNew();
-            })
+            }).catch(function (error) {
+                alert(error.response.data.message);
+            });
     };
 
     render() {

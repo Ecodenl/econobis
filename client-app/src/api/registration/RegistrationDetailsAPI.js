@@ -66,13 +66,13 @@ export default {
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios.post(requestUrl, measureTaken)
-            .then(function (response) {
-                return response.data.data;
-            })
-            .catch(function (error) {
-                return error.response;
-            });
+        return axios.post(requestUrl, measureTaken);
+            // .then(function (response) {
+            //     return response.data.data;
+            // })
+            // .catch(function (error) {
+            //     return error;
+            // });
     },
 
     deleteRegistrationMeasureTaken: (id) => {
@@ -94,13 +94,7 @@ export default {
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios.post(requestUrl, measureRequested)
-            .then(function (response) {
-                return response.data.data;
-            })
-            .catch(function (error) {
-                return error.response;
-            });
+        return axios.post(requestUrl, measureRequested);
     },
 
     deleteRegistrationMeasureRequested: (id) => {

@@ -15,11 +15,11 @@ class MeasureTaken extends Resource
     public function toArray($request)
     {
         return [
-            'id' => $this->measure->id,
+            'id' => $this->id,
             'name' => $this->measure->name,
             'measureDate' => $this->measure_date,
             'energyLabelId' => $this->energy_label_id,
-            'energyLabel' => $this->energy_label,
+            'energyLabel' => $this->energy_label->name,
         ];
     }
 }

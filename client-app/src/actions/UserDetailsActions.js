@@ -18,3 +18,11 @@ export const deleteUser = (id) => {
         id,
     };
 };
+
+export const updateRole = (id, value) => {
+    return  {
+        type: 'UPDATE_ROLE',
+        id,
+        value,
+    };
+};

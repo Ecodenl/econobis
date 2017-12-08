@@ -1,18 +1,16 @@
-import React, { Component} from 'react';
-import {connect} from 'react-redux';
+import React, { Component }from 'react';
+import { connect } from 'react-redux';
 
-import UserDetailsFormGeneralEdit from './UserDetailsFormGeneralEdit';
-import UserDetailsFormGeneralView from './UserDetailsFormGeneralView';
+import UserDetailsFormRolesView from './UserDetailsFormRolesView';
+import UserDetailsFormRolesEdit from './UserDetailsFormRolesEdit';
 import Panel from '../../../../components/panel/Panel';
-import PanelBody from '../../../../components/panel/PanelBody';
 
-class UserDetailsFormGeneral extends Component {
+class UserDetailsFormRoles extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
             showEdit: false,
-            activeDiv: '',
         };
     }
 
@@ -25,7 +23,6 @@ class UserDetailsFormGeneral extends Component {
     switchToView = () => {
         this.setState({
             showEdit: false,
-            activeDiv: '',
         })
     };
 
@@ -45,24 +42,21 @@ class UserDetailsFormGeneral extends Component {
         const { permissions = {} } = this.props.meDetails;
         return (
             <Panel className={this.state.activeDiv} onMouseEnter={() => this.onDivEnter()} onMouseLeave={() => this.onDivLeave()}>
-                <PanelBody>
-                    {
+                {
                         this.state.showEdit && permissions.manageUser ?
-                            <UserDetailsFormGeneralEdit switchToView={this.switchToView} />
+                            <UserDetailsFormRolesEdit switchToView={this.switchToView} />
                             :
-                            <UserDetailsFormGeneralView switchToEdit={this.switchToEdit}/>
+                            <UserDetailsFormRolesView switchToEdit={this.switchToEdit}/>
                     }
-                </PanelBody>
             </Panel>
         );
     }
-};
+}
 
 const mapStateToProps = (state) => {
     return {
-        contactDetails: state.contactDetails,
         meDetails: state.meDetails,
     };
 };
 
-export default connect(mapStateToProps)(UserDetailsFormGeneral);
+export default connect(mapStateToProps)(UserDetailsFormRoles);

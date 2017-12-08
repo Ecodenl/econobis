@@ -40,4 +40,20 @@ export default {
                 console.log(error);
             });
     },
+
+    addRole: (userId, roleId) => {
+        const requestUrl = `${URL_USER}/${userId}/roles/add/${roleId}`;
+        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
+        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
+
+        return axios.post(requestUrl);
+    },
+
+    removeRole: (userId, roleId) => {
+        const requestUrl = `${URL_USER}/${userId}/roles/remove/${roleId}`;
+        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
+        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
+
+        return axios.post(requestUrl);
+    },
 };

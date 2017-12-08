@@ -97,7 +97,6 @@ class ContactsListToolbar extends Component {
 const mapStateToProps = (state) => {
     return {
         meDetails: state.meDetails,
-        permissions: state.meDetails.permissions,
     };
 };
 

@@ -11,7 +11,7 @@ const ContactGroupDetailsFormGeneralView = props => {
         <div onClick={props.switchToEdit}>
             <div className="row">
                 <ViewText
-                    label={"Name"}
+                    label={"Naam"}
                     value={name}
                 />
             </div>

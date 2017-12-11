@@ -20,11 +20,13 @@ class ContactController extends Controller
         $contact->load('addresses');
         $contact->load('emailAddresses');
         $contact->load('phoneNumbers');
-        $contact->load('notes.createdBy');
-        $contact->load('notes.updatedBy');
+        $contact->load('notes');
+        $contact->notes->load('createdBy');
+        $contact->notes->load('updatedBy');
         $contact->load('createdBy');
         $contact->load('updatedBy');
         $contact->load('owner');
+
         if($contact->isAccount()) $contact->load(['account.type', 'account.industry', 'account.people.occupation']);
         if($contact->isPerson()) $contact->load(['person.lastNamePrefix', 'person.title', 'person.account', 'person.type', 'person.occupation']);
 

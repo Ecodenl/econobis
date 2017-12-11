@@ -1,10 +1,9 @@
 import React from 'react';
-import { connect } from 'react-redux';
 
 import ViewText from "../../../components/form/ViewText";
 
 const ContactDetailFormNoteView = props => {
-    const { note, createdAt } = props.note;
+    const { note, createdAt, createdBy } = props.note;
 
     return (
         <div className={`row item-border ${props.highlightLine}`} onMouseEnter={() => props.onLineEnter()} onMouseLeave={() => props.onLineLeave()}>
@@ -16,15 +15,9 @@ const ContactDetailFormNoteView = props => {
                 {(props.showActionButtons ? <a role="button" onClick={props.toggleDelete}><span className="glyphicon glyphicon-trash mybtn-danger"  /> </a> : '')}
             </div>
             <ViewText label={"Gemaakt op"} value={createdAt} className={"col-sm-4 h6"} />
-            <ViewText label={"Gemaakt door"} value={createdAt} className={"col-sm-4 h6"} />
+            <ViewText label={"Gemaakt door"} value={createdBy.fullName} className={"col-sm-4 h6"} />
         </div>
     );
 };
 
-const mapStateToProps = (state) => {
-    return {
-        emailAddressTypes: state.systemData.emailAddressTypes,
-    };
-};
-
-export default connect(mapStateToProps, null)(ContactDetailFormNoteView);
+export default ContactDetailFormNoteView;

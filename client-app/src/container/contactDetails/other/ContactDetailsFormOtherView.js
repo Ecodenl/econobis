@@ -37,12 +37,10 @@ const ContactDetailsFormOtherView = props => {
                     label="Geboortedatum partner"
                     value={dateOfBirthPartner && moment(dateOfBirthPartner).format('DD-MM-Y')}
                 />
-                <div className="row">
-                    <ViewText
-                        label="Aansprakelijkheidsbedrag"
-                        value={'€ ' + liabilityAmount.toLocaleString(undefined, {minimumFractionDigits: 2})}
-                    />
-                </div>
+                <ViewText
+                    label="Aansprakelijkheidsbedrag"
+                    value={'€ ' + liabilityAmount.toLocaleString(undefined, {minimumFractionDigits: 2})}
+                />
             </div>
         </div>
     );

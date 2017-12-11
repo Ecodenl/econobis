@@ -11,18 +11,18 @@ const ContactDetailsFormConclusionView = props => {
             <div className="row">
                 <ViewText
                     label={"Ingevoerd door"}
-                    value={createdBy.name}
+                    value={createdBy.fullName}
                 />
                 <ViewText
                     label={"Laatst bewerkt door"}
-                    value={updatedBy.name}
+                    value={updatedBy.fullName}
                 />
             </div>
 
             <div className="row">
                 <ViewText
                     label="Eigenaar"
-                    value={ owner && owner.name}
+                    value={ owner && owner.fullName}
                 />
             </div>
         </div>

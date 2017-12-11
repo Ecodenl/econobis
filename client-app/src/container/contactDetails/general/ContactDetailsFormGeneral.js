@@ -1,8 +1,8 @@
 import React, { Component} from 'react';
 import {connect} from 'react-redux';
 
-import ContactDetailsFormAccountEdit from './ContactDetailsFormAccountEdit';
-import ContactDetailsFormAccountView from './ContactDetailsFormAccountView';
+import ContactDetailsFormOrganisationEdit from './ContactDetailsFormOrganisationEdit';
+import ContactDetailsFormOrganisationView from './ContactDetailsFormOrganisationView';
 import ContactDetailsFormPersonalEdit from './ContactDetailsFormPersonalEdit';
 import ContactDetailsFormPersonalView from './ContactDetailsFormPersonalView';
 import Panel from '../../../components/panel/Panel';
@@ -21,7 +21,7 @@ class ContactDetailsFormGeneral extends Component {
     switchToEdit = () => {
         const { typeId } = this.props.contactDetails;
 
-        if(typeId === 'account' && !this.props.permissions.updateAccount) return;
+        if(typeId === 'organisation' && !this.props.permissions.updateOrganisation) return;
         if(typeId === 'person' && !this.props.permissions.updatePerson) return;
 
         this.setState({
@@ -54,13 +54,13 @@ class ContactDetailsFormGeneral extends Component {
                 <PanelBody>
                     {
                         this.state.showEdit ?
-                            this.props.contactDetails.typeId === 'account' ?
-                                <ContactDetailsFormAccountEdit switchToView={this.switchToView} />
+                            this.props.contactDetails.typeId === 'organisation' ?
+                                <ContactDetailsFormOrganisationEdit switchToView={this.switchToView} />
                                 :
                                 <ContactDetailsFormPersonalEdit switchToView={this.switchToView} />
                             :
-                            this.props.contactDetails.typeId === 'account' ?
-                                <ContactDetailsFormAccountView switchToEdit={this.switchToEdit}/>
+                            this.props.contactDetails.typeId === 'organisation' ?
+                                <ContactDetailsFormOrganisationView switchToEdit={this.switchToEdit}/>
                                 :
                                 <ContactDetailsFormPersonalView switchToEdit={this.switchToEdit}/>
                     }

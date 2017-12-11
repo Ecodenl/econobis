@@ -19,9 +19,9 @@ export const updatePerson = (contactDetails) => {
     };
 };
 
-export const updateAccount = (contactDetails) => {
+export const updateOrganisation = (contactDetails) => {
     return {
-        type: 'UPDATE_ACCOUNT',
+        type: 'UPDATE_ORGANISATION',
         contactDetails,
     };
 };

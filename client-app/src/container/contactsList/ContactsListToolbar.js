@@ -56,13 +56,13 @@ class ContactsListToolbar extends Component {
                                 {   permissions.createPerson &&
                                             <li><Link to="contact/nieuw/persoon">Persoon</Link></li>
                                     }
-                                        {permissions.createAccount &&
-                                            <li><Link to="contact/nieuw/bedrijf">Bedrijf</Link></li>
+                                        {permissions.createOrganisation &&
+                                            <li><Link to="contact/nieuw/organisatie">Organisatie</Link></li>
                                     }
                             </ul>
                         </div>
                         {
-                            permissions.updatePerson && permissions.updateAccount &&
+                            permissions.updatePerson && permissions.updateOrganisation &&
                         <div className="nav navbar-nav btn-group" role="group">
                             <button className="btn btn-success btn-sm" data-toggle="dropdown">
                                 <span className="glyphicon glyphicon-share-alt" />

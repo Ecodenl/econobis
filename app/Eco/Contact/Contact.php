@@ -2,11 +2,11 @@
 
 namespace App\Eco\Contact;
 
-use App\Eco\Account\Account;
+use App\Eco\Organisation\Organisation;
 use App\Eco\Address\Address;
 use App\Eco\ContactGroup\ContactGroup;
 use App\Eco\ContactNote\ContactNote;
-use App\Eco\Address\AddressType;
+use App\Eco\Organisation\OrganisationType;
 use App\Eco\EmailAddress\EmailAddress;
 use App\Eco\Registration\Registration;
 use App\Eco\Person\Person;
@@ -69,9 +69,9 @@ class Contact extends Model
         return $this->hasMany(ContactNote::class);
     }
 
-    public function account()
+    public function organisation()
     {
-        return $this->hasOne(Account::class);
+        return $this->hasOne(Organisation::class);
     }
 
     public function person()
@@ -109,9 +109,9 @@ class Contact extends Model
         return ($this->type_id == ContactType::PERSON);
     }
 
-    public function isAccount()
+    public function isOrganisation()
     {
-        return ($this->type_id == ContactType::ACCOUNT);
+        return ($this->type_id == ContactType::ORGANISATION);
     }
 
     public function getType()

@@ -27,8 +27,8 @@ class ContactController extends Controller
         $contact->load('updatedBy');
         $contact->load('owner');
 
-        if($contact->isAccount()) $contact->load(['account.type', 'account.industry', 'account.people.occupation']);
-        if($contact->isPerson()) $contact->load(['person.lastNamePrefix', 'person.title', 'person.account', 'person.type', 'person.occupation']);
+        if($contact->isOrganisation()) $contact->load(['organisation.type', 'organisation.industry', 'organisation.people.occupation']);
+        if($contact->isPerson()) $contact->load(['person.lastNamePrefix', 'person.title', 'person.organisation', 'person.type', 'person.occupation']);
 
         return new FullContact($contact);
     }

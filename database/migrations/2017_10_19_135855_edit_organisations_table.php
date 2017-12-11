@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class SeedAccountTypes extends Migration
+class EditOrganisationsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,18 +13,10 @@ class SeedAccountTypes extends Migration
      */
     public function up()
     {
-        $types = [
-            'Leverancier',
-            'Afnemer',
-            'Cooperatie',
-        ];
-
-        foreach ($types as $type) {
-            DB::table('account_types')->insert([
-                    ['name' => $type],
-                ]
-            );
-        }
+        Schema::table('organisations', function (Blueprint $table) {
+            $table->integer('type_id')->nullable()->unsigned();
+            $table->foreign('type_id')->references('id')->on('organisation_types') ->onDelete('restrict');
+        });
     }
 
     /**
@@ -34,7 +26,7 @@ class SeedAccountTypes extends Migration
      */
     public function down()
     {
-        Schema::table('account_types', function (Blueprint $table) {
+        Schema::table('organisations', function (Blueprint $table) {
             //
         });
     }

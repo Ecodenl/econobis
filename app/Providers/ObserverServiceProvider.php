@@ -2,8 +2,8 @@
 
 namespace App\Providers;
 
-use App\Eco\Account\Account;
-use App\Eco\Account\AccountObserver;
+use App\Eco\Organisation\Organisation;
+use App\Eco\Organisation\OrganisationObserver;
 use App\Eco\Address\Address;
 use App\Eco\Address\AddressObserver;
 use App\Eco\Contact\Contact;
@@ -30,7 +30,7 @@ class ObserverServiceProvider extends ServiceProvider
     public function boot()
     {
         Person::observe(PersonObserver::class);
-        Account::observe(AccountObserver::class);
+        Organisation::observe(OrganisationObserver::class);
         Address::observe(AddressObserver::class);
         EmailAddress::observe(EmailAddressObserver::class);
         PhoneNumber::observe(PhoneNumberObserver::class);

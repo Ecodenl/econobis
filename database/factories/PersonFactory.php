@@ -15,9 +15,9 @@ $factory->define(\App\Eco\Person\Person::class, function (Faker\Generator $faker
         'contact_id' => function () {
             return factory('App\Eco\Contact\Contact')->create()->id;
         },
-        'account_id' => function () {
+        'organisation_id' => function () {
             if (random_int(0, 10) < 5) return null;
-            return \App\Eco\Account\Account::inRandomOrder()->first()->id;
+            return \App\Eco\organisation\Organisation::inRandomOrder()->first()->id;
         },
         'type_id' => function () {
             if (random_int(0, 10) < 5) return null;

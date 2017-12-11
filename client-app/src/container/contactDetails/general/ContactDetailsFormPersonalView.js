@@ -75,12 +75,12 @@ const ContactDetailsFormPersonalView = props => {
                 </div>
                 <ViewText
                     label="Organisatie"
-                    value={ person.account && person.account.name }
-                    link={ person.account ? `/contact/${person.account.id}` : '' }
+                    value={ person.organisation && person.organisation.name }
+                    link={ person.organisation ? `/contact/${person.organisation.id}` : '' }
                 />
             </div>
             <div className="row" onClick={props.switchToEdit}>
-                { person.account ?
+                { person.organisation ?
                     <ViewText
                         label="Functie"
                         value={ person.occupation && person.occupation.name }

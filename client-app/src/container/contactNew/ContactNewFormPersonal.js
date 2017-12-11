@@ -5,7 +5,7 @@ import moment from 'moment';
 import validator from 'validator';
 
 import PersonAPI from '../../api/PersonAPI';
-import AccountAPI from '../../api/AccountAPI';
+import OrganisationAPI from '../../api/OrganisationAPI';
 import InputText from '../../components/form/InputText';
 import InputSelect from '../../components/form/InputSelect';
 import InputCheckbox from '../../components/form/InputCheckbox';
@@ -18,7 +18,7 @@ class ContactNewFormPersonal extends Component {
         super(props);
 
         this.state = {
-            accountPeek: [],
+            organisationPeek: [],
             person: {
                 id: '',
                 number: '',
@@ -31,7 +31,7 @@ class ContactNewFormPersonal extends Component {
                 memberSince: '',
                 memberUntil: '',
                 typeId: '',
-                accountId: props.accountId || '',
+                organisationId: props.organisationId || '',
                 dateOfBirth: '',
                 newsletter: false,
                 occupationId: '',
@@ -44,10 +44,10 @@ class ContactNewFormPersonal extends Component {
     };
 
     componentDidMount() {
-        AccountAPI.getAccountPeek().then(payload => {
+        OrganisationAPI.getOrganisationPeek().then(payload => {
             this.setState({
                 ...this.state,
-                accountPeek: payload,
+                organisationPeek: payload,
             })
         })
     };
@@ -119,7 +119,7 @@ class ContactNewFormPersonal extends Component {
     };
 
     render() {
-        const { typeId, statusId, titleId, firstName, lastNamePrefixId, lastName, memberSince, accountId, dateOfBirth, newsletter, occupationId } = this.state.person;
+        const { typeId, statusId, titleId, firstName, lastNamePrefixId, lastName, memberSince, organisationId, dateOfBirth, newsletter, occupationId } = this.state.person;
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -222,15 +222,15 @@ class ContactNewFormPersonal extends Component {
                     />
                     <InputSelect
                         label={"Organisatie"}
-                        name={"accountId"}
-                        options={this.state.accountPeek}
-                        value={accountId}
+                        name={"organisationId"}
+                        options={this.state.organisationPeek}
+                        value={organisationId}
                         onChangeAction={this.handleInputChange}
                     />
                 </div>
 
                 <div className="row">
-                    { accountId !== '' ?
+                    { organisationId !== '' ?
                         <InputSelect
                             label={"Functie"}
                             size={"col-sm-6"}

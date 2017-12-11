@@ -2,9 +2,8 @@
 
 namespace App\Http\Resources\SystemData;
 
-use App\Eco\AccountType\AccountType;
+use App\Eco\OrganisationType\OrganisationType;
 use App\Eco\Address\AddressType;
-use App\Eco\BuildingFeature\BuildingFeature;
 use App\Eco\BuildingType\BuildingType;
 use App\Eco\EnergyLabel\EnergyLabel;
 use App\Eco\Measure\Measure;
@@ -20,7 +19,7 @@ use App\Eco\LastNamePrefix\LastNamePrefix;
 use App\Eco\Occupation\Occupation;
 use App\Eco\PersonType\PersonType;
 use App\Eco\PhoneNumber\PhoneNumberType;
-use App\Http\Resources\AccountType\FullAccountType;
+use App\Http\Resources\OrganisationType\FullOrganisationType;
 use App\Eco\Title\Title;
 use App\Http\Resources\EnumWithIdAndName\FullEnumWithIdAndName;
 use App\Http\Resources\Industry\FullIndustry;
@@ -51,7 +50,7 @@ class SystemData extends Resource
             'personTypes' => FullPersonType::collection(PersonType::all()),
             'contactStatuses' => FullEnumWithIdAndName::collection(ContactStatus::collection()),
             'industries' => FullIndustry::collection(Industry::all()),
-            'accountTypes' => FullAccountType::collection(AccountType::all()),
+            'organisationTypes' => FullOrganisationType::collection(OrganisationType::all()),
             'occupations' => FullOccupation::collection(Occupation::all()),
             'titles' => FullTitle::collection(Title::all()),
             'buildingTypes' => BuildingType::select(['id', 'name'])->get(),

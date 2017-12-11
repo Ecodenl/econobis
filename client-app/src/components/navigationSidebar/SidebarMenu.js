@@ -25,7 +25,7 @@ const SidebarMenu = props => {
                     <NavIcon><SvgIcon size={20} icon={ic_contacts} /></NavIcon>
                     <NavText><Link className="sidebar-link" to="contacten">Contacten</Link></NavText>
                     <Nav id="alle-organisaties">
-                        <NavText><Link className="sidebar-link" to="contacten/type/account">Alle bedrijven</Link></NavText>
+                        <NavText><Link className="sidebar-link" to="contacten/type/organisation">Alle organisaties</Link></NavText>
                     </Nav>
                     <Nav id="alle-personen">
                         <NavText><Link className="sidebar-link" to="contacten/type/person">Alle personen</Link></NavText>

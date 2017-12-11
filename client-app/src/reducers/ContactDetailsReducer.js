@@ -11,7 +11,7 @@ export default function (state = {}, action) {
                 ...state,
                 ...action.contactDetails,
             };
-        case 'UPDATE_ACCOUNT':
+        case 'UPDATE_ORGANISATION':
             return {
                 ...state,
                 ...action.contactDetails,
@@ -128,9 +128,9 @@ export default function (state = {}, action) {
         case 'MAKE_PRIMARY':
             return {
                 ...state,
-                account: {
-                    ...state.account,
-                    people: state.account.people.map((person) =>
+                organisation: {
+                    ...state.organisation,
+                    people: state.organisation.people.map((person) =>
                         person.id === action.id ?
                             {
                                 ...person,

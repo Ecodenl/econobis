@@ -20,7 +20,7 @@ const OpportunityList = () => {
                     </tr>
                     <tr onClick={() => openItem(1)}>
                         <td>14-03-2018</td>
-                        <td>Via bedrijf</td>
+                        <td>Via organisatie</td>
                     </tr>
                     <tr onClick={() => openItem(2)}>
                         <td>01-04-2018</td>

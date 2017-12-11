@@ -2,7 +2,7 @@
 
 namespace App\Http\Resources\Person;
 
-use App\Http\Resources\Account\FullAccount;
+use App\Http\Resources\Organisation\FullOrganisation;
 use App\Http\Resources\LastNamePrefix\FullLastNamePrefix;
 use App\Http\Resources\Occupation\FullOccupation;
 use App\Http\Resources\PersonType\FullPersonType;
@@ -29,8 +29,8 @@ class FullPerson extends Resource
             'lastNamePrefix' => FullLastNamePrefix::make($this->whenLoaded('lastNamePrefix')),
             'lastName' => $this->last_name,
             'fullName' => $this->present()->fullName(),
-            'accountId' => $this->account_id,
-            'account' => FullAccount::make($this->whenLoaded('account')),
+            'organisationId' => $this->organisation_id,
+            'organisation' => FullOrganisation::make($this->whenLoaded('organisation')),
             'occupationId' => $this->occupation_id,
             'occupation' => FullOccupation::make($this->whenLoaded('occupation')),
             'typeId' => $this->type_id,

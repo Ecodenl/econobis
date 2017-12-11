@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Resources\AccountType;
+namespace App\Http\Resources\OrganisationType;
 
 use Illuminate\Http\Resources\Json\Resource;
 
-class FullAccountType extends Resource
+class FullOrganisationType extends Resource
 {
     /**
      * Transform the resource into an array.

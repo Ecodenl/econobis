@@ -50,12 +50,12 @@ class SoftDeleteContact implements ShouldQueue
             $contact->person()->delete();
         }
 
-        // Als het een account is, de account soft deleten samen met de gerelateerde personen
-        if($contact->isAccount() && $contact->account){
-            $account = $contact->account;
-            $account->delete();
+        // Als het een organisation is, de organisation soft deleten samen met de gerelateerde personen
+        if($contact->isOrganisation() && $contact->organisation){
+            $organisation = $contact->organisation;
+            $organisation->delete();
 
-            foreach ($account->people as $person) {
+            foreach ($organisation->people as $person) {
                 $person->delete();
 
                 $personContact = $person->contact;

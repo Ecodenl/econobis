@@ -5,7 +5,7 @@ import validator from 'validator';
 
 import { updatePerson } from '../../../actions/ContactDetailsActions';
 import PersonAPI from '../../../api/PersonAPI';
-import AccountAPI from '../../../api/AccountAPI';
+import OrganisationAPI from '../../../api/OrganisationAPI';
 import InputText from '../../../components/form/InputText';
 import InputSelect from '../../../components/form/InputSelect';
 import InputCheckbox from "../../../components/form/InputCheckbox";
@@ -20,10 +20,10 @@ class ContactDetailsFormPersonalEdit extends Component {
         const { number, createdAt, person, status, memberSince = {}, memberUntil = {}, newsletter } = props.contactDetails;
 
         this.state = {
-            accountPeek: [
+            organisationPeek: [
                 {
-                    id: person.account ? person.account.id : '',
-                    name: person.account ? person.account.name : '',
+                    id: person.organisation ? person.organisation.id : '',
+                    name: person.organisation ? person.organisation.name : '',
                 }
             ],
             person: {
@@ -38,7 +38,7 @@ class ContactDetailsFormPersonalEdit extends Component {
                 memberSince: memberSince ? moment(memberSince.date).format('Y-MM-DD') : '',
                 memberUntil: memberUntil ? moment(memberUntil.date).format('Y-MM-DD') : '',
                 typeId: person.type ? person.type.id : '',
-                accountId: person.account ? person.account.id : '',
+                organisationId: person.organisation ? person.organisation.id : '',
                 dateOfBirth: person.dateOfBirth ? moment(person.dateOfBirth.date).format('Y-MM-DD') : '',
                 newsletter: newsletter,
                 occupationId: person.occupation ? person.occupation.id : '',
@@ -51,10 +51,10 @@ class ContactDetailsFormPersonalEdit extends Component {
     };
 
     componentDidMount() {
-        AccountAPI.getAccountPeek().then(payload => {
+        OrganisationAPI.getOrganisationPeek().then(payload => {
             this.setState({
                 ...this.state,
-                accountPeek: payload,
+                organisationPeek: payload,
             })
         })
     };
@@ -139,7 +139,7 @@ class ContactDetailsFormPersonalEdit extends Component {
     };
 
     render() {
-        const {number, createdAt, titleId, statusId, typeId, firstName, lastNamePrefixId, lastName, memberSince, memberUntil, accountId, dateOfBirth, newsletter, occupationId} = this.state.person;
+        const {number, createdAt, titleId, statusId, typeId, firstName, lastNamePrefixId, lastName, memberSince, memberUntil, organisationId, dateOfBirth, newsletter, occupationId} = this.state.person;
 
         return (
             <form className="form-horizontal col-md-12" onSubmit={this.handleSubmit}>
@@ -249,14 +249,14 @@ class ContactDetailsFormPersonalEdit extends Component {
                     <InputSelect
                         label={"Organisatie"}
                         size={"col-sm-6"}
-                        name={"accountId"}
-                        options={this.state.accountPeek}
-                        value={accountId}
+                        name={"organisationId"}
+                        options={this.state.organisationPeek}
+                        value={organisationId}
                         onChangeAction={this.handleInputChange}
                     />
                 </div>
                 <div className="row">
-                    { accountId !== '' ?
+                    { organisationId !== '' ?
                         <InputSelect
                             label={"Functie"}
                             size={"col-sm-6"}

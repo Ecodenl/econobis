@@ -31,7 +31,7 @@ class ContactDetailsToolbar extends Component {
                                 <div className="btn-group margin-small" role="group">
                                     <ButtonIcon iconName={"glyphicon-arrow-left"} onClickAction={browserHistory.goBack} />
                                     {
-                                        this.props.typeId === 'account' && this.props.permissions.deleteAccount &&
+                                        this.props.typeId === 'organisation' && this.props.permissions.deleteOrganisation &&
                                         <ButtonIcon iconName={"glyphicon-trash"} onClickAction={this.toggleDelete}/>
                                     }
                                     {

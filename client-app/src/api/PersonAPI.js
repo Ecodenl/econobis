@@ -33,7 +33,7 @@ export default {
     },
 
     getPersonPeek: () => {
-        const requestUrl = `${URL_PERSON}/peek/no-account`;
+        const requestUrl = `${URL_PERSON}/peek/no-organisation`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 

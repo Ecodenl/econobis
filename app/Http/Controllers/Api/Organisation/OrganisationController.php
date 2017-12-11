@@ -1,24 +1,23 @@
 <?php
 
-namespace App\Http\Controllers\Api\Account;
+namespace App\Http\Controllers\Api\Organisation;
 
-use App\Eco\Account\Account;
+use App\Eco\Organisation\Organisation;
 use App\Eco\Contact\Contact;
 use App\Eco\Contact\ContactStatus;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\Controllers\Api\Contact\ContactController;
-use App\Http\Resources\Account\AccountPeek;
+use App\Http\Resources\Organisation\OrganisationPeek;
 use App\Rules\EnumExists;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 
-class AccountController extends ApiController
+class OrganisationController extends ApiController
 {
 
     public function store(Request $request)
     {
-        $this->authorize('create', Account::class);
+        $this->authorize('create', Organisation::class);
 
         $contactData = $request->validate([
             'statusId' => new EnumExists(ContactStatus::class),
@@ -31,8 +30,8 @@ class AccountController extends ApiController
             'ownerId' => 'exists:users,id',
         ]);
 
-        $accountData = $request->validate([
-            'typeId' => 'exists:account_types,id',
+        $organisationData = $request->validate([
+            'typeId' => 'exists:organisation_types,id',
             'name' => '',
             'website' => '',
             'chamberOfCommerceNumber' => '',
@@ -51,17 +50,17 @@ class AccountController extends ApiController
         ]);
         $contact = new Contact($this->arrayKeysToSnakeCase($contactData));
 
-        $accountData = $this->sanitizeData($accountData, [
+        $organisationData = $this->sanitizeData($organisationData, [
             'typeId' => 'nullable',
             'industryId' => 'nullable',
             'squareMeters' => 'integer',
         ]);
-        $account = new Account($this->arrayKeysToSnakeCase($accountData));
+        $organisation = new Organisation($this->arrayKeysToSnakeCase($organisationData));
 
-        DB::transaction(function () use ($account, $contact) {
+        DB::transaction(function () use ($organisation, $contact) {
             $contact->save();
-            $account->contact_id = $contact->id;
-            $account->save();
+            $organisation->contact_id = $contact->id;
+            $organisation->save();
         });
 
         // Contact exact zo teruggeven als bij het openen van een bestaand contact
@@ -69,9 +68,9 @@ class AccountController extends ApiController
         return (new ContactController())->show($contact->fresh(), $request);
     }
 
-    public function update(Request $request, Account $account)
+    public function update(Request $request, Organisation $organisation)
     {
-        $this->authorize('update', $account);
+        $this->authorize('update', $organisation);
 
         $contactData = $request->validate([
             'statusId' => new EnumExists(ContactStatus::class),
@@ -84,8 +83,8 @@ class AccountController extends ApiController
             'ownerId' => 'exists:users,id',
         ]);
 
-        $accountData = $request->validate([
-            'typeId' => 'exists:account_types,id',
+        $organisationData = $request->validate([
+            'typeId' => 'exists:organisation_types,id',
             'name' => '',
             'website' => '',
             'chamberOfCommerceNumber' => '',
@@ -103,7 +102,7 @@ class AccountController extends ApiController
             'liable' => 'boolean',
         ]);
 
-        $contact = $account->contact;
+        $contact = $organisation->contact;
         $contact->fill($this->arrayKeysToSnakeCase($contactData));
 
         if($contact->isDirty('iban')) $this->authorize('update_iban', $contact);
@@ -111,13 +110,13 @@ class AccountController extends ApiController
 
         $contact->save();
 
-        $accountData = $this->sanitizeData($accountData, [
+        $organisationData = $this->sanitizeData($organisationData, [
             'typeId' => 'nullable',
             'industryId' => 'nullable',
             'squareMeters' => 'integer',
         ]);
-        $account->fill($this->arrayKeysToSnakeCase($accountData));
-        $account->save();
+        $organisation->fill($this->arrayKeysToSnakeCase($organisationData));
+        $organisation->save();
 
         // Contact exact zo teruggeven als bij het openen van een bestaand contact
         // Dus kan hier gebruik maken van bestaande controller
@@ -126,8 +125,8 @@ class AccountController extends ApiController
 
     public function peek(Request $request)
     {
-        $accounts = Account::orderBy('name', 'asc')->get();
+        $organisations = Organisation::orderBy('name', 'asc')->get();
 
-        return AccountPeek::collection($accounts);
+        return OrganisationPeek::collection($organisations);
     }
 }

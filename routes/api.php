@@ -69,17 +69,17 @@ Route::namespace('Api')
 
         Route::post('/person', 'Person\PersonController@store');
         Route::post('/person/{person}', 'Person\PersonController@update');
-        Route::get('/person/peek/no-account', 'Person\PersonController@peekNoAccount');
+        Route::get('/person/peek/no-organisation', 'Person\PersonController@peekNoOrganisation');
 
-        Route::post('/account', 'Account\AccountController@store');
-        Route::post('/account/{account}', 'Account\AccountController@update');
+        Route::post('/organisation', 'Organisation\OrganisationController@store');
+        Route::post('/organisation/{organisation}', 'Organisation\OrganisationController@update');
 
         Route::post('/contact-note', 'ContactNote\ContactNoteController@store');
         Route::post('/contact-note/{contactNote}', 'ContactNote\ContactNoteController@update');
         Route::post('/contact-note/{contactNote}/delete', 'ContactNote\ContactNoteController@destroy');
 
         Route::get('/contacts/peek', 'Contact\ContactController@peek');
-        Route::get('/account/peek', 'Account\AccountController@peek');
+        Route::get('/organisation/peek', 'Organisation\OrganisationController@peek');
 
         Route::get('contact-group/grid', 'ContactGroup\ContactGroupController@grid');
         Route::get('contact-group/{contactGroup}', 'ContactGroup\ContactGroupController@show');

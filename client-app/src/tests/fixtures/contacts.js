@@ -29,7 +29,7 @@ export default [{
 }, {
     id: 2,
     number: '2017-3',
-    typeName: 'Bedrijf',
+    typeName: 'Organisatie',
     fullName: 'Xaris',
     streetAndNumber: 'Westerspoor  1',
     postalCode: '1687 AZ ',

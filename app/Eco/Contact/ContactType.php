@@ -15,13 +15,13 @@ class ContactType extends EnumWithIdAndName
 {
 
     const PERSON = 'person';
-    const ACCOUNT = 'account';
+    const ORGANISATION = 'organisation';
 
     protected static function seed()
     {
         return [
             new static(static::PERSON, 'Persoon'),
-            new static(static::ACCOUNT, 'Bedrijf'),
+            new static(static::ORGANISATION, 'Organisatie'),
         ];
     }
 

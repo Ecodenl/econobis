@@ -29,7 +29,7 @@ const ContactDetailsFormPersonList = props => {
 
 const mapStateToProps = (state) => {
     return {
-        people: state.contactDetails.account.people,
+        people: state.contactDetails.organisation.people,
     };
 };
 

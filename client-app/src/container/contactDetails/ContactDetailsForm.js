@@ -40,7 +40,7 @@ class ContactDetailsForm extends Component {
                     <ContactDetailsFormAddress />
                     <ContactDetailsFormEmail />
                     <ContactDetailsFormPhone />
-                    { typeId == 'account' &&
+                    { typeId == 'organisation' &&
                     <ContactDetailsFormPerson />
                     }
                     {/* <ContactDetailsFormEnergy /> */}

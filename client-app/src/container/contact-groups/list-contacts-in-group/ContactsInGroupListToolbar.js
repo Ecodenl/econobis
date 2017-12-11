@@ -59,7 +59,7 @@ class ContactsInGroupListToolbar extends Component {
                     <div className="btn-group" role="group">
                         <ButtonIcon iconName={"glyphicon-refresh"} onClickAction={this.props.refreshContactsInGroupData} />
                         {
-                            this.props.permissions.updatePerson && this.props.permissions.updateAccount &&
+                            this.props.permissions.updatePerson && this.props.permissions.updateOrganisation &&
                             <div className="nav navbar-nav btn-group">
                             <button onClick={this.toggleModalAddToGroup} className="btn btn-success btn-sm">
                                 <span className="glyphicon glyphicon-plus"/>

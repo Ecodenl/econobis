@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Http\Resources\Account;
+namespace App\Http\Resources\Organisation;
 
-use App\Http\Resources\AccountType\FullAccountType;
+use App\Http\Resources\OrganisationType\FullOrganisationType;
 use App\Http\Resources\Industry\FullIndustry;
 use App\Http\Resources\Person\FullPerson;
 use Illuminate\Http\Resources\Json\Resource;
 
-class FullAccount extends Resource
+class FullOrganisation extends Resource
 {
     /**
      * Transform the resource into an array.
@@ -22,7 +22,7 @@ class FullAccount extends Resource
             'contactId' => $this->contact_id,
             'name' => $this->name,
             'typeId' => $this->type_id,
-            'type' => FullAccountType::make($this->whenLoaded('type')),
+            'type' => FullOrganisationType::make($this->whenLoaded('type')),
             'industryId' => $this->industry_id,
             'industry' => FullIndustry::make($this->whenLoaded('industry')),
             'website' => $this->website,

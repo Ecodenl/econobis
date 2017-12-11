@@ -44,7 +44,7 @@ class PersonController extends ApiController
             'lastName' => '',
             'lastNamePrefixId' => 'exists:last_name_prefixes,id',
             'titleId' => 'exists:titles,id',
-            'accountId' => 'exists:accounts,id',
+            'organisationId' => 'exists:organisations,id',
             'typeId' => 'exists:person_types,id',
             'dateOfBirth' => 'date',
             'firstNamePartner' => '',
@@ -67,7 +67,7 @@ class PersonController extends ApiController
         $personData = $this->sanitizeData($personData, [
             'lastNamePrefixId' => 'nullable',
             'titleId' => 'nullable',
-            'accountId' => 'nullable',
+            'organisationId' => 'nullable',
             'typeId' => 'nullable',
             'dateOfBirth' => 'nullable',
             'dateOfBirthPartner' => 'nullable',
@@ -107,7 +107,7 @@ class PersonController extends ApiController
             'lastName' => '',
             'lastNamePrefixId' => 'exists:last_name_prefixes,id',
             'titleId' => 'exists:titles,id',
-            'accountId' => 'exists:accounts,id',
+            'organisationId' => 'exists:organisations,id',
             'typeId' => 'exists:person_types,id',
             'dateOfBirth' => 'date',
             'firstNamePartner' => '',
@@ -133,7 +133,7 @@ class PersonController extends ApiController
         $personData = $this->sanitizeData($personData, [
             'lastNamePrefixId' => 'nullable',
             'titleId' => 'nullable',
-            'accountId' => 'nullable',
+            'organisationId' => 'nullable',
             'typeId' => 'nullable',
             'dateOfBirth' => 'nullable',
             'dateOfBirthPartner' => 'nullable',
@@ -148,9 +148,9 @@ class PersonController extends ApiController
         return (new ContactController())->show($contact->fresh(), $request);
     }
 
-    public function peekNoAccount()
+    public function peekNoOrganisation()
     {
-        $people = Person::whereNull('account_id')->get();
+        $people = Person::whereNull('organisation_id')->get();
 
         return PersonPeek::collection($people);
     }

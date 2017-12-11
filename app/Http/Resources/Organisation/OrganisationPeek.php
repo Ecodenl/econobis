@@ -6,12 +6,12 @@
  * Time: 12:08
  */
 
-namespace App\Http\Resources\Account;
+namespace App\Http\Resources\Organisation;
 
 
 use Illuminate\Http\Resources\Json\Resource;
 
-class AccountPeek extends Resource
+class OrganisationPeek extends Resource
 {
     public function toArray($request)
     {

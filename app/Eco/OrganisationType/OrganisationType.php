@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Eco\AccountType;
+namespace App\Eco\OrganisationType;
 
 use Illuminate\Database\Eloquent\Model;
 use Venturecraft\Revisionable\RevisionableTrait;
 
-class AccountType extends Model
+class OrganisationType extends Model
 {
     use RevisionableTrait;
 }

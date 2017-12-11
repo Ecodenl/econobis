@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Seeder;
 
-class AccountsSeeder extends Seeder
+class OrganisationsSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -11,6 +11,6 @@ class AccountsSeeder extends Seeder
      */
     public function run()
     {
-        factory(\App\Eco\Account\Account::class, 5)->create();
+        factory(\App\Eco\Organisation\Organisation::class, 5)->create();
     }
 }

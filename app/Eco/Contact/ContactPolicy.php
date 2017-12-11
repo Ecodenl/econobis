@@ -10,16 +10,16 @@ class ContactPolicy
     use HandlesAuthorization;
 
     /**
-     * Determine whether the user can view the account.
+     * Determine whether the user can view the contact.
      *
      * @param  \App\Eco\User\User  $user
-     * @param  \App\Eco\Account\Account  $account
+     * @param  \App\Eco\Contact\Contact  $contact
      * @return mixed
      */
     public function view(User $user, Contact $contact)
     {
         if($contact->isPerson()) return $user->can('view', $contact->person);
-        else return $user->can('view', $contact->account);
+        else return $user->can('view', $contact->organisation);
     }
 
     /**
@@ -30,7 +30,7 @@ class ContactPolicy
      */
     public function create(User $user, Contact $contact)
     {
-        return true; // bij aanmaken van het contact record is nog niet bekend of het een person of account is
+        return true; // bij aanmaken van het contact record is nog niet bekend of het een person of organisation is
     }
 
     /**
@@ -43,7 +43,7 @@ class ContactPolicy
     public function update(User $user, Contact $contact)
     {
         if($contact->isPerson()) return $user->can('update', $contact->person);
-        else return $user->can('update', $contact->account);
+        else return $user->can('update', $contact->organisation);
     }
 
     /**
@@ -56,7 +56,7 @@ class ContactPolicy
     public function delete(User $user, Contact $contact)
     {
         if($contact->isPerson()) return $user->can('delete', $contact->person);
-        else return $user->can('delete', $contact->account);
+        else return $user->can('delete', $contact->organisation);
     }
 
     /**

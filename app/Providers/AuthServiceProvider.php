@@ -2,8 +2,8 @@
 
 namespace App\Providers;
 
-use App\Eco\Account\Account;
-use App\Eco\Account\AccountPolicy;
+use App\Eco\Organisation\Organisation;
+use App\Eco\Organisation\OrganisationPolicy;
 use App\Eco\Address\Address;
 use App\Eco\Address\AddressPolicy;
 use App\Eco\Contact\Contact;
@@ -32,7 +32,7 @@ class AuthServiceProvider extends ServiceProvider
      * @var array
      */
     protected $policies = [
-        Account::class => AccountPolicy::class,
+        Organisation::class => OrganisationPolicy::class,
         Address::class => AddressPolicy::class,
         Contact::class => ContactPolicy::class,
         ContactNote::class => ContactNotePolicy::class,

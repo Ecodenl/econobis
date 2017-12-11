@@ -1,15 +1,15 @@
 import axios from 'axios';
 
 const URL_API = process.env.URL_API;
-const URL_ACCOUNT = `${URL_API}/api/account`;
+const URL_ORGANISATION = `${URL_API}/api/organisation`;
 
 export default {
-    newAccount: (account) => {
-        const requestUrl = `${URL_ACCOUNT}`;
+    newOrganisation: (organisation) => {
+        const requestUrl = `${URL_ORGANISATION}`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios.post(requestUrl, account)
+        return axios.post(requestUrl, organisation)
             .then(function (response) {
                 return response.data.data;
             })
@@ -18,12 +18,12 @@ export default {
             });
     },
 
-    updateAccount: (account) => {
-        const requestUrl = `${URL_ACCOUNT}/${account.id}`;
+    updateOrganisation: (organisation) => {
+        const requestUrl = `${URL_ORGANISATION}/${organisation.id}`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios.post(requestUrl, account)
+        return axios.post(requestUrl, organisation)
             .then(function (response) {
                 return response.data.data;
             })
@@ -32,8 +32,8 @@ export default {
             });
     },
 
-    getAccountPeek: () => {
-        const requestUrl = `${URL_ACCOUNT}/peek`;
+    getOrganisationPeek: () => {
+        const requestUrl = `${URL_ORGANISATION}/peek`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 

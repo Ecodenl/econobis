@@ -18,8 +18,8 @@ class DatabaseSeeder extends Seeder
         // Users
         $this->call(UsersSeeder::class);
 
-        // Accounts (includes Contacts)
-        $this->call(AccountsSeeder::class);
+        // Organisations (includes Contacts)
+        $this->call(OrganisationsSeeder::class);
         // People (includes Contacts)
         $this->call(PeopleSeeder::class);
         // Addresses on Contacts

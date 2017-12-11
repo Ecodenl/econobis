@@ -1,7 +1,7 @@
 <?php
 
 /** @var \Illuminate\Database\Eloquent\Factory $factory */
-$factory->define(\App\Eco\Account\Account::class, function (Faker\Generator $faker) {
+$factory->define(\App\Eco\Organisation\Organisation::class, function (Faker\Generator $faker) {
     return [
         'name' => $faker->company,
         'contact_id' => function(){
@@ -9,7 +9,7 @@ $factory->define(\App\Eco\Account\Account::class, function (Faker\Generator $fak
         },
         'type_id' => function(){
             if(random_int(0,10) < 5) return null;
-            return \App\Eco\AccountType\AccountType::inRandomOrder()->first()->id;
+            return \App\Eco\OrganisationType\OrganisationType::inRandomOrder()->first()->id;
         },
         'website' => $faker->url,
         'vat_number' => $faker->vat,

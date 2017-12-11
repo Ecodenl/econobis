@@ -39,7 +39,7 @@ const Routes = () => {
 
                 <Route path="contacten/:filter/:value" component={ ContactsListApp } />
                 <Route path="contacten" component={ ContactsListApp } />
-                <Route path="contact/nieuw/:type/bedrijf/:id" component={ PermissionHelper(ContactNewApp, true) } />
+                <Route path="contact/nieuw/:type/organisatie/:id" component={ PermissionHelper(ContactNewApp, true) } />
                 <Route path="contact/nieuw/:type" component={ PermissionHelper(ContactNewApp, true) } />
                 <Route path="contact/:id" component={ ContactDetailsApp } />
 

@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class EditAccountsTable extends Migration
+class AddNameToOrganisationsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,8 @@ class EditAccountsTable extends Migration
      */
     public function up()
     {
-        Schema::table('accounts', function (Blueprint $table) {
-            $table->integer('type_id')->nullable()->unsigned();
-            $table->foreign('type_id')->references('id')->on('account_types') ->onDelete('restrict');
+        Schema::table('organisations', function (Blueprint $table) {
+            $table->string('name')->default('');
         });
     }
 
@@ -26,8 +25,8 @@ class EditAccountsTable extends Migration
      */
     public function down()
     {
-        Schema::table('accounts', function (Blueprint $table) {
-            //
+        Schema::table('organisations', function (Blueprint $table) {
+            $table->dropColumn('name');
         });
     }
 }

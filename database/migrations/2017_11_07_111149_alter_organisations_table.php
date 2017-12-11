@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AlterAccountsTable extends Migration
+class AlterOrganisationsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class AlterAccountsTable extends Migration
      */
     public function up()
     {
-        Schema::table('accounts', function (Blueprint $table) {
+        Schema::table('organisations', function (Blueprint $table) {
             $table->string('website')->default('');
             $table->string('chamber_of_commerce_number')->default('');
             $table->string('vat_number')->default('');
@@ -32,7 +32,7 @@ class AlterAccountsTable extends Migration
      */
     public function down()
     {
-        Schema::table('accounts', function (Blueprint $table) {
+        Schema::table('organisations', function (Blueprint $table) {
             //
         });
     }

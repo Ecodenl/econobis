@@ -11,7 +11,7 @@ class ContactDetailsEmailDelete extends Component {
         super(props);
 
         this.state = {
-            peopleNoAccount: [],
+            peopleNoOrganisation: [],
             personId: '',
         };
     };
@@ -20,7 +20,7 @@ class ContactDetailsEmailDelete extends Component {
         PersonAPI.getPersonPeek().then(payload => {
             this.setState({
                 ...this.state,
-                peopleNoAccount: payload,
+                peopleNoOrganisation: payload,
             })
         })
     };
@@ -46,7 +46,7 @@ class ContactDetailsEmailDelete extends Component {
 
         const person  = {
             id: this.state.personId,
-            accountId: this.props.id,
+            organisationId: this.props.id,
         };
 
         PersonAPI.updatePerson(person).then((payload) => {
@@ -69,14 +69,14 @@ class ContactDetailsEmailDelete extends Component {
                         <div className="col-sm-6">
                             <select className="form-control input-sm" name="personId" value={this.state.personId} onChange={this.handleInputChange}>
                                 <option value=''></option>
-                                {this.state.peopleNoAccount.map((option) => {
+                                {this.state.peopleNoOrganisation.map((option) => {
                                     return <option key={option.id} value={option.id}>{option.fullName}</option>
                                 })}
                             </select>
                         </div>
                     </div>
                     <div className="row">
-                        <div className="col-sm-12">Of maak een <Link to={`/contact/nieuw/persoon/bedrijf/${this.props.id}`} className="link-underline">Nieuw</Link> contact persoon aan.</div>
+                        <div className="col-sm-12">Of maak een <Link to={`/contact/nieuw/persoon/organisatie/${this.props.id}`} className="link-underline">Nieuw</Link> contact persoon aan.</div>
                     </div>
                 </form>
             </Modal>

@@ -16,8 +16,8 @@ class PersonObserver
 
     public function creating(Person $person)
     {
-        // Als dit het eerste persoon voor deze account is wordt deze altijd primary
-        if($person->account && !$person->account->people()->exists()){
+        // Als dit het eerste persoon voor deze organisation is wordt deze altijd primary
+        if($person->organisation && !$person->organisation->people()->exists()){
             $person->primary = true;
         }
     }
@@ -44,8 +44,8 @@ class PersonObserver
 
         if($person->isDirty('primary') && $person->primary == true){
             // Als er een oud primary person is dan deze niet meer primary maken
-            if($person->account){
-                $oldPrimaryPerson = $person->account->people()
+            if($person->organisation){
+                $oldPrimaryPerson = $person->organisation->people()
                     ->where('primary', true)
                     ->where('id', '<>', $person->id)
                     ->first();

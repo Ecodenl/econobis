@@ -5,6 +5,6 @@ export default [
     },
     {
         id: 2,
-        name: 'Bedrijf'
+        name: 'Organisatie'
     }
 ];

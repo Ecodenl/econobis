@@ -4,8 +4,8 @@ import moment from 'moment';
 
 import ViewText from '../../../components/form/ViewText';
 
-const ContactDetailsFormAccountView = props => {
-    const {number, account, status, iban, createdAt, memberSince, memberUntil, newsletter} = props.contactDetails;
+const ContactDetailsFormOrganisationView = props => {
+    const {number, organisation, status, iban, createdAt, memberSince, memberUntil, newsletter} = props.contactDetails;
 
     return (
         <div onClick={props.switchToEdit}>
@@ -23,7 +23,7 @@ const ContactDetailsFormAccountView = props => {
             <div className="row">
                 <ViewText
                     label="Naam"
-                    value={ account.name }
+                    value={ organisation.name }
                 />
                 <ViewText
                     label="Status"
@@ -34,7 +34,7 @@ const ContactDetailsFormAccountView = props => {
             <div className="row">
                 <ViewText
                     label="Kvk"
-                    value={ account.chamberOfCommerceNumber }
+                    value={ organisation.chamberOfCommerceNumber }
                 />
                 <ViewText
                     label={"Lid sinds"}
@@ -45,7 +45,7 @@ const ContactDetailsFormAccountView = props => {
             <div className="row">
                 <ViewText
                     label="Btw nummer"
-                    value={ account.vatNumber }
+                    value={ organisation.vatNumber }
                 />
                 <ViewText
                     label={"Opzegdatum"}
@@ -60,18 +60,18 @@ const ContactDetailsFormAccountView = props => {
                 />
                 <ViewText
                     label="Website"
-                    value={ account.website}
+                    value={ organisation.website}
                 />
             </div>
 
             <div className="row">
                 <ViewText
                     label="Industrie"
-                    value={ account.industry && account.industry.name }
+                    value={ organisation.industry && organisation.industry.name }
                 />
                 <ViewText
                     label="Soort contact"
-                    value={ account.type && account.type.name }
+                    value={ organisation.type && organisation.type.name }
                 />
             </div>
 
@@ -82,7 +82,7 @@ const ContactDetailsFormAccountView = props => {
                 />
                 <ViewText
                     label="Oppervlakte dak"
-                    value={ account.squareMeters }
+                    value={ organisation.squareMeters }
                 />
             </div>
         </div>
@@ -95,4 +95,4 @@ const mapStateToProps = (state) => {
     };
 };
 
-export default connect(mapStateToProps, null)(ContactDetailsFormAccountView);
+export default connect(mapStateToProps, null)(ContactDetailsFormOrganisationView);

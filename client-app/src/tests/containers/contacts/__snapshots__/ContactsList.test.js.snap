@@ -67,7 +67,7 @@ exports[`should render ContactsList with contacts 1`] = `
           showDeleteItemModal={[Function]}
           status="open"
           streetAndNumber="Westerspoor  1"
-          typeName="Bedrijf"
+          typeName="Organisatie"
         />
       </DataTableBody>
     </DataTable>

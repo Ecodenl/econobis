@@ -15,7 +15,7 @@ class AddressPolicy
      * Determine whether the user can view the address.
      *
      * @param  \App\Eco\User\User  $user
-     * @param  \App\Eco\Account\Account  $address
+     * @param  \App\Eco\Address\Address  $address
      * @return mixed
      */
     public function view(User $user, Address $address)

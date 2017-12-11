@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Eco\Account;
+namespace App\Eco\Organisation;
 
-use App\Eco\AccountType\AccountType;
+use App\Eco\OrganisationType\OrganisationType;
 use App\Eco\Contact\Contact;
 use App\Eco\Industry\Industry;
 use App\Eco\Person\Person;
@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Venturecraft\Revisionable\RevisionableTrait;
 
-class Account extends Model
+class Organisation extends Model
 {
     use RevisionableTrait, SoftDeletes;
 
@@ -23,7 +23,7 @@ class Account extends Model
 
     public function type()
     {
-        return $this->belongsTo(AccountType::class);
+        return $this->belongsTo(OrganisationType::class);
     }
 
     public function people()

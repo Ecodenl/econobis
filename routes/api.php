@@ -96,5 +96,6 @@ Route::namespace('Api')
 
         Route::get('task/grid', 'Task\TaskController@grid');
         Route::get('task/{task}', 'Task\TaskController@show');
+        Route::post('task', 'Task\TaskController@store');
     }
 );

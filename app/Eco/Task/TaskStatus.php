@@ -78,4 +78,13 @@ class TaskStatus extends Enum
             'name' => $this->name,
         ];
     }
+
+    public static function ids()
+    {
+        $result = [];
+        foreach(static::collection() as $status){
+            $result[] = $status->id;
+        }
+        return $result;
+    }
 }

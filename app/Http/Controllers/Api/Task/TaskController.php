@@ -3,11 +3,14 @@
 namespace App\Http\Controllers\Api\Task;
 
 use App\Eco\Task\Task;
+use App\Eco\Task\TaskStatus;
+use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Api\Task\Grid\RequestQuery;
 use App\Http\Resources\Registration\GridTask;
 use App\Http\Resources\Task\FullTask;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Validation\Rule;
 
 class TaskController extends Controller
 {
@@ -31,6 +34,27 @@ class TaskController extends Controller
         ]);
 
         return FullTask::make($task);
+    }
+
+    public function store(RequestInput $input)
+    {
+        $data = $input->string('name')->whenMissing('')->onEmpty('')->next()
+            ->string('description')->whenMissing('')->onEmpty('')->next()
+            ->integer('typeId')->validate(['required', 'exists:task_types,id'])->alias('type_id')->next()
+            ->integer('contactId')->validate('exists:contacts,id')->whenMissing(null)->onEmpty(null)->alias('contact_id')->next()
+            ->integer('statusId')->validate(['required', Rule::in(TaskStatus::ids())])->alias('status_id')->next()
+            ->integer('registrationId')->validate('exists:registrations,id')->whenMissing(null)->onEmpty(null)->alias('registration_id')->next()
+            ->integer('contactGroupId')->validate('exists:contact_groups,id')->whenMissing(null)->onEmpty(null)->alias('contact_group_id')->next()
+            ->date('datePlanned')->validate('date')->whenMissing(null)->onEmpty(null)->alias('date_planned')->next()
+            ->date('dateStarted')->validate('date')->whenMissing(null)->onEmpty(null)->alias('date_started')->next()
+            ->date('dateFinished')->validate('date')->whenMissing(null)->onEmpty(null)->alias('date_finished')->next()
+            ->integer('responsibleUserId')->validate(['required', 'exists:users,id'])->alias('responsible_user_id')->next()
+            ->get();
+
+        $task = new Task($data);
+        $task->save();
+
+        return $this->show($task);
     }
 
 }

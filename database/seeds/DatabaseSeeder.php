@@ -39,5 +39,8 @@ class DatabaseSeeder extends Seeder
 
         // ContactGroups
         $this->call(ContactGroupsSeeder::class);
+
+        // Tasks
+        $this->call(TasksSeeder::class);
     }
 }

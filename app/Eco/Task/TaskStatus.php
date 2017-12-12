@@ -69,4 +69,13 @@ class TaskStatus extends Enum
 
         throw new EnumNotFoundException();
     }
+
+    public function toArray()
+    {
+        return [
+            'id' => $this->id,
+            'code' => $this->code,
+            'name' => $this->name,
+        ];
+    }
 }

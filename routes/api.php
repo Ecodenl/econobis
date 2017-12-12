@@ -93,5 +93,8 @@ Route::namespace('Api')
         Route::get('contact-group/{contactGroup}/contacts/grid', 'ContactGroup\ContactGroupController@gridContacts');
 
         Route::post('contact-group/{contactGroup}/contacts/add-many', 'ContactGroup\ContactGroupController@addContacts');
+
+        Route::get('task/grid', 'Task\TaskController@grid');
+        Route::get('task/{task}', 'Task\TaskController@show');
     }
 );

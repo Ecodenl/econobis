@@ -13,6 +13,7 @@ use App\Http\Resources\LastNamePrefix\FullLastNamePrefix;
 use App\Http\Resources\Title\FullTitle;
 use Illuminate\Http\Resources\Json\Resource;
 use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
 
 class FullUser extends Resource
 {
@@ -37,6 +38,7 @@ class FullUser extends Resource
             'createdAt' => $this->created_at,
             'updatedAt' => $this->updated_at,
             'permissions' => $this->getPermissions(),
+            'roles' => $this->getRoles(),
         ];
     }
 
@@ -45,6 +47,19 @@ class FullUser extends Resource
         $result = [];
         foreach(Permission::all() as $permission){
             $result[camel_case($permission->name)] = $this->hasPermissionTo($permission);
+        }
+        return $result;
+    }
+
+    private function getRoles()
+    {
+        $i = 0;
+        $result = [];
+        foreach(Role::all() as $role){
+            $result[$i]['id'] = $role->id;
+            $result[$i]['name'] = $role->name;
+            $result[$i]['hasRole'] = $this->hasRole($role);
+            $i++;
         }
         return $result;
     }

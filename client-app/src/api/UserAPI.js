@@ -24,13 +24,7 @@ export default {
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios.post(requestUrl, person)
-            .then(function (response) {
-                return response.data.data;
-            })
-            .catch(function (error) {
-                console.log(error);
-            });
+        return axios.post(requestUrl, person);
     },
 
     updateUser: (person) => {
@@ -45,5 +39,21 @@ export default {
             .catch(function (error) {
                 console.log(error);
             });
+    },
+
+    addRole: (userId, roleId) => {
+        const requestUrl = `${URL_USER}/${userId}/roles/add/${roleId}`;
+        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
+        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
+
+        return axios.post(requestUrl);
+    },
+
+    removeRole: (userId, roleId) => {
+        const requestUrl = `${URL_USER}/${userId}/roles/remove/${roleId}`;
+        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
+        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
+
+        return axios.post(requestUrl);
     },
 };

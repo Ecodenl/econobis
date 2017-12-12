@@ -11,6 +11,7 @@ import ButtonText from '../../../../components/button/ButtonText';
 import InputSelect from "../../../../components/form/InputSelect";
 import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
+import Modal from '../../../../components/modal/Modal';
 
 class RegistrationMeasuresRequestedNew extends Component {
     constructor(props) {
@@ -74,9 +75,11 @@ class RegistrationMeasuresRequestedNew extends Component {
 
         !hasErrors &&
             RegistrationDetailsAPI.newRegistrationMeasureRequested(measureRequested).then((payload) => {
-                this.props.newRegistrationMeasureRequested(payload);
+                this.props.newRegistrationMeasureRequested(payload.data.data);
                 this.props.toggleShowNew();
-            })
+            }).catch(function (error) {
+                alert(error.response.data.message);
+            });
     };
 
     render() {

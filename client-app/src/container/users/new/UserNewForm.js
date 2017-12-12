@@ -33,7 +33,7 @@ class UserNewForm extends Component {
                 firstName: false,
                 lastName: false,
             },
-        }
+        };
     };
 
     handleInputChange = event => {
@@ -79,13 +79,19 @@ class UserNewForm extends Component {
             hasErrors = true;
         };
 
-        this.setState({ ...this.state, errors: errors })
+        this.setState({ ...this.state, errors: errors });
 
         // If no errors send form
         !hasErrors &&
             UserAPI.newUser(user).then((payload) => {
-                hashHistory.push(`/gebruiker/${payload.id}`);
-            });
+                hashHistory.push(`/gebruiker/${payload.data.data.id}`);
+            }).catch(function (error) {
+                if(typeof error.response.data.errors.email !== 'undefined'){
+                    errors.email = true;
+                    this.setState({ ...this.state, errors: errors });
+                    this.setState({ ...this.state, backendEmailError: 'Dit email is al in gebruik.' });
+                }
+            }.bind(this));
     };
 
     render() {
@@ -108,6 +114,7 @@ class UserNewForm extends Component {
                         onChangeAction={this.handleInputChange}
                         required={"required"}
                         error={this.state.errors.email}
+                        errorMessage={this.state.backendEmailError}
                     />
                 </div>
 
@@ -174,6 +181,7 @@ class UserNewForm extends Component {
                         onChangeAction={this.handleInputChange}
                         required={"required"}
                         error={this.state.errors.password}
+                        errorMessage={'Het wachtwoord moet minmaal 8 karakters lang zijn en moet minimaal 1 cijfer en  1 hoofdletter bevatten.'}
                     />
                 </div>
 

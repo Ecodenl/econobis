@@ -9,6 +9,7 @@ import OpportunityList from './harmonica/OpportunityList';
 import TaskList from './harmonica/TaskList';
 import ContactGroupList from './harmonica/ContactGroupList';
 import AddContactToGroup from './harmonica/AddContactToGroup';
+import ErrorModal from '../../components/modal/ErrorModal';
 
 class ContactDetailsHarmonica extends Component {
     constructor(props){
@@ -31,18 +32,39 @@ class ContactDetailsHarmonica extends Component {
                 toggleShowTasks: false,
                 toggleShowGroups: false,
                 showModalAddGroup: false,
+                showModalError: false,
             })
         }
     };
 
     newRegistration = () => {
-        const address = this.props.contactDetails.addresses.find((address) => {
+        let address = this.props.contactDetails.addresses.find((address) => {
             return address.primary
         });
-
-        hashHistory.push(`/aanmelding/nieuw/contact/${this.props.contactDetails.id}/adres/${address.id}`);
+        if (typeof address === 'undefined') {
+            address = this.props.contactDetails.addresses[0];
+            if (typeof address === 'undefined') {
+                this.setState({
+                    showModalError: !this.state.showModalError,
+                    modalErrorTitle: 'Waaschuwing',
+                    modalErrorMessage: 'Dit contact heeft nog geen adres.',
+                });
+            }
+            else
+                {
+                    hashHistory.push(`/aanmelding/nieuw/contact/${this.props.contactDetails.id}/adres/${address.id}`);
+                }
+            }
+        else {
+            hashHistory.push(`/aanmelding/nieuw/contact/${this.props.contactDetails.id}/adres/${address.id}`);
+        }
     };
 
+    toggleErrorModal = () => {
+        this.setState({
+            showModalError: !this.state.showModalError
+        });
+    };
     toggleRegistration = () => {
         this.setState({
            toggleShowRegistrations: !this.state.toggleShowRegistrations
@@ -124,11 +146,18 @@ class ContactDetailsHarmonica extends Component {
                     </PanelBody>
                 </div>
 
+                { this.state.showModalError &&
+                <ErrorModal
+                    closeModal={this.toggleErrorModal}
+                    title={this.state.modalErrorTitle}
+                    errorMessage={this.state.modalErrorMessage}
+                />
+                }
                 { this.state.showModalAddGroup &&
-                    <AddContactToGroup
-                        toggleAddGroup={this.toggleAddGroup}
-                        toggleGroup={this.toggleGroup}
-                    />
+                <AddContactToGroup
+                    toggleAddGroup={this.toggleAddGroup}
+                    toggleGroup={this.toggleGroup}
+                />
                 }
             </div>
         )

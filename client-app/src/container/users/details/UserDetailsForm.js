@@ -5,6 +5,7 @@ import { isEmpty } from 'lodash';
 import { fetchUserDetails } from '../../../actions/UserDetailsActions';
 import UserDetailsFormGeneral from './general/UserDetailsFormGeneral';
 import UserDetailsFormLog from './log/UserDetailsFormLog';
+import UserDetailsFormRoles from './roles/UserDetailsFormRoles';
 
 class UserDetailsForm extends Component {
     constructor(props){
@@ -18,6 +19,7 @@ class UserDetailsForm extends Component {
                 :
                 <div>
                     <UserDetailsFormGeneral />
+                    <UserDetailsFormRoles/>
                     <UserDetailsFormLog />
                 </div>
         );

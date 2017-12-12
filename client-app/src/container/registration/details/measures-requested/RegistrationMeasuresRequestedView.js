@@ -12,7 +12,7 @@ const RegistrationMeasuresRequestedView = props => {
                 { name }
             </div>
             <div className="col-sm-3">
-                { desiredDate && moment(desiredDate.date).format('d-M-Y') }
+                { desiredDate && moment(desiredDate.date).format('L') }
             </div>
             <div className="col-sm-4">
                 { degreeInterest }

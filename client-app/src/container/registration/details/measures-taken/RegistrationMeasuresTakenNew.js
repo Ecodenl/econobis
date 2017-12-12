@@ -71,9 +71,11 @@ class RegistrationMeasuresTakenNew extends Component {
 
         !hasErrors &&
             RegistrationDetailsAPI.newRegistrationMeasureTaken(measureTaken).then((payload) => {
-                this.props.newRegistrationMeasureTaken(payload);
+                this.props.newRegistrationMeasureTaken(payload.data.data);
                 this.props.toggleShowNew();
-            })
+            }).catch(function (error) {
+                alert(error.response.data.message);
+            });
     };
 
     render() {

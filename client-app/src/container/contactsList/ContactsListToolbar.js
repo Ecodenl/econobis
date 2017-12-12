@@ -47,7 +47,7 @@ class ContactsListToolbar extends Component {
             <div className="row">
                 <div className="col-md-4">
                     <div className="btn-group" role="group">
-                        <ButtonIcon iconName={"glyphicon-refresh"} onClickAction={this.props.refreshContactsData} />
+                        <ButtonIcon iconName={"glyphicon-refresh"} onClickAction={this.props.resetContactFilters} />
                         <div className="nav navbar-nav btn-group" role="group">
                             <button className="btn btn-success btn-sm" data-toggle="dropdown">
                                 <span className="glyphicon glyphicon-plus" />
@@ -97,7 +97,6 @@ class ContactsListToolbar extends Component {
 const mapStateToProps = (state) => {
     return {
         meDetails: state.meDetails,
-        permissions: state.meDetails.permissions,
     };
 };
 

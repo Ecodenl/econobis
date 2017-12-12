@@ -125,7 +125,7 @@ class ContactGroupNewForm extends Component {
                                 <label htmlFor="description" className="col-sm-12">Omschrijving</label>
                             </div>
                             <div className="col-sm-9">
-                                <textarea name={description} value={description} onChange={this.handleInputChange}
+                                <textarea name='description' value={description} onChange={this.handleInputChange}
                                           className="form-control input-sm"/>
                             </div>
                         </div>

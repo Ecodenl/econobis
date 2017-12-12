@@ -14,10 +14,8 @@ use App\Eco\Measure\MeasureTaken;
 use App\Eco\Registration\Registration;
 use App\Eco\Contact\Contact;
 use App\Eco\Registration\RegistrationNote;
-use App\Eco\Registration\RegistrationStatus;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\RequestQueries\Registration\Grid\RequestQuery;
-use App\Http\Resources\Measure\MeasureRequested;
 use App\Http\Resources\Registration\FullRegistration;
 use App\Http\Resources\Registration\GridRegistration;
 use Illuminate\Http\Request;
@@ -109,7 +107,16 @@ class RegistrationController extends ApiController
             ->get();
 
         $measureTaken = new MeasureTaken($data);
-        $measureTaken->save();
+        try {
+            $measureTaken->save();
+        }catch(\Exception $e){
+            if($e->getCode() == 23000){
+                return abort(409, 'Maatregel genomen bestaat al op dit adres');
+            }
+            else{
+                return abort(500, 'Er is een onbekende fout opgetreden');
+            }
+        }
 
         return \App\Http\Resources\Measure\MeasureTaken::make($measureTaken->fresh());
     }
@@ -121,11 +128,18 @@ class RegistrationController extends ApiController
             ->string('desiredDate')->whenMissing(null)->onEmpty(null)->alias('desired_date')->next()
             ->string('degreeInterest')->whenMissing(0)->onEmpty(0)->alias('degree_interest')->next()
             ->get();
-
         $measureRequested = new \App\Eco\Measure\MeasureRequested($data);
-        $measureRequested->save();
-
-        return \App\Http\Resources\Measure\MeasureTaken::make($measureRequested->fresh());
+        try {
+            $measureRequested->save();
+        }catch(\Exception $e){
+            if($e->getCode() == 23000){
+                return abort(409, 'Deze maatregel is al aangevraagd op dit adres');
+            }
+            else{
+                return abort(500, 'Er is een onbekende fout opgetreden');
+            }
+        }
+        return \App\Http\Resources\Measure\MeasureRequested::make($measureRequested->fresh());
     }
 
     public function storeNote(Request $request)

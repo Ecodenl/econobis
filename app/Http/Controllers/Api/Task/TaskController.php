@@ -8,6 +8,7 @@ use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Api\Task\Grid\RequestQuery;
 use App\Http\Resources\Registration\GridTask;
 use App\Http\Resources\Task\FullTask;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -78,6 +79,20 @@ class TaskController extends Controller
         $task->save();
 
         return $this->show($task);
+    }
+
+    public function destroy(Task $task)
+    {
+        $task->delete();
+    }
+
+    public function finish(Task $task)
+    {
+        $task->date_finished = Carbon::today();
+        $task->status_id = TaskStatus::get('done')->id;
+        $task->save();
+
+        return $this->show($task->fresh());
     }
 
 }

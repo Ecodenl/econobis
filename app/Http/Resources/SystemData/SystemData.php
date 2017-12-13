@@ -19,6 +19,9 @@ use App\Eco\LastNamePrefix\LastNamePrefix;
 use App\Eco\Occupation\Occupation;
 use App\Eco\PersonType\PersonType;
 use App\Eco\PhoneNumber\PhoneNumberType;
+use App\Eco\Task\TaskType;
+use App\Eco\User\User;
+use App\Http\Resources\GenericResource;
 use App\Http\Resources\OrganisationType\FullOrganisationType;
 use App\Eco\Title\Title;
 use App\Http\Resources\EnumWithIdAndName\FullEnumWithIdAndName;
@@ -27,6 +30,7 @@ use App\Http\Resources\LastNamePrefix\FullLastNamePrefix;
 use App\Http\Resources\Occupation\FullOccupation;
 use App\Http\Resources\PersonType\FullPersonType;
 use App\Http\Resources\Title\FullTitle;
+use App\Http\Resources\User\FullUser;
 use Illuminate\Http\Resources\Json\Resource;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
@@ -62,6 +66,8 @@ class SystemData extends Resource
             'energyLabels' => EnergyLabel::select(['id', 'name'])->get(),
             'permissions' => FullEnumWithIdAndName::collection(Permission::all()),
             'roles' => Role::select(['id', 'name'])->get()->toArray(),
+            'taskTypes' => GenericResource::collection(TaskType::all()),
+            'users' => FullUser::collection(User::all()),
         ];
     }
 }

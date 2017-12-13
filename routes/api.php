@@ -98,5 +98,7 @@ Route::namespace('Api')
         Route::get('task/{task}', 'Task\TaskController@show');
         Route::post('task', 'Task\TaskController@store');
         Route::post('task/{task}', 'Task\TaskController@update');
+        Route::post('task/{task}/delete', 'Task\TaskController@destroy');
+        Route::post('task/{task}/finish', 'Task\TaskController@finish');
     }
 );

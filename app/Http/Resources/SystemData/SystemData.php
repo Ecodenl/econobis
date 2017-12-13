@@ -19,6 +19,7 @@ use App\Eco\LastNamePrefix\LastNamePrefix;
 use App\Eco\Occupation\Occupation;
 use App\Eco\PersonType\PersonType;
 use App\Eco\PhoneNumber\PhoneNumberType;
+use App\Eco\Task\TaskProperty;
 use App\Eco\Task\TaskStatus;
 use App\Eco\Task\TaskType;
 use App\Eco\User\User;
@@ -69,6 +70,7 @@ class SystemData extends Resource
             'roles' => Role::select(['id', 'name'])->get()->toArray(),
             'taskTypes' => GenericResource::collection(TaskType::all()),
             'taskStatuses' => TaskStatus::collection()->toArray(),
+            'taskProperties' => GenericResource::collection(TaskProperty::all()),
             'users' => FullUser::collection(User::all()),
         ];
     }

@@ -36,6 +36,8 @@ class TaskController extends Controller
             'responsibleUser',
             'createdBy',
             'finishedBy',
+            'attachments',
+            'properties',
         ]);
 
         return FullTask::make($task);

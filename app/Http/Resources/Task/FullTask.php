@@ -51,6 +51,8 @@ class FullTask extends Resource
                 'finishedBy' => FullUser::make($this->whenLoaded('finishedBy')),
                 'createdById' => $this->created_by_id,
                 'createdBy' => FullUser::make($this->whenLoaded('createdBy')),
+                'attachments' => FullTaskAttachment::collection($this->whenLoaded('attachments')),
+                'properties' => FullTaskPropertyValue::collection($this->whenLoaded('properties')),
                 'createdAt' => $this->created_at,
                 'updatedAt' => $this->updated_at,
             ];

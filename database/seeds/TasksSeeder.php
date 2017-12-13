@@ -11,6 +11,12 @@ class TasksSeeder extends Seeder
      */
     public function run()
     {
-        factory(\App\Eco\Task\Task::class, 100)->create();
+        factory(\App\Eco\Task\Task::class, 100)
+            ->create()
+            ->each(function ($task) {
+                factory(\App\Eco\Task\TaskPropertyValue::class, random_int(0, 5))
+                    ->create(['task_id' => $task->id]);
+            });
+
     }
 }

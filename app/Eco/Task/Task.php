@@ -94,4 +94,12 @@ class Task extends Model
     {
         return $this->hasMany(TaskAttachment::class);
     }
+
+    /**
+     *
+     */
+    public function properties()
+    {
+        return $this->hasMany(TaskPropertyValue::class);
+    }
 }

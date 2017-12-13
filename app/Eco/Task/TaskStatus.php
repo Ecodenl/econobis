@@ -9,10 +9,11 @@
 namespace App\Eco\Task;
 
 
+use Illuminate\Contracts\Support\Arrayable;
 use JosKolenberg\Enum\Enum;
 use JosKolenberg\Enum\EnumNotFoundException;
 
-class TaskStatus extends Enum
+class TaskStatus extends Enum implements Arrayable
 {
 
     /**

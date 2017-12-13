@@ -48,6 +48,11 @@ return [
             'root' => storage_path('app'),
         ],
 
+        'task_attachments' => [
+            'driver' => 'local',
+            'root' => storage_path('app/tasks'),
+        ],
+
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),

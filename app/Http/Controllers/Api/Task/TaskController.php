@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\Task;
 
 use App\Eco\Task\Task;
+use App\Eco\Task\TaskAttachment;
 use App\Eco\Task\TaskStatus;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Api\Task\Grid\RequestQuery;

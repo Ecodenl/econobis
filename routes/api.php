@@ -101,6 +101,7 @@ Route::namespace('Api')
         Route::post('task/{task}/delete', 'Task\TaskController@destroy');
         Route::post('task/{task}/finish', 'Task\TaskController@finish');
         Route::post('task/{task}/attachments/add', 'Task\TaskAttachmentController@store');
-        Route::get('task-attachment/{taskAttachment}', 'Task\TaskAttachmentController@download');
+        Route::get('task-attachment/{taskAttachment}/download', 'Task\TaskAttachmentController@download');
+        Route::post('task-attachment/{taskAttachment}/delete', 'Task\TaskAttachmentController@delete');
     }
 );

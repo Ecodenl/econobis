@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\Task;
 
+use App\Eco\Task\Jobs\DeleteTask;
 use App\Eco\Task\Task;
 use App\Eco\Task\TaskAttachment;
 use App\Eco\Task\TaskStatus;
@@ -96,7 +97,7 @@ class TaskController extends Controller
 
     public function destroy(Task $task)
     {
-        $task->delete();
+        (new DeleteTask($task))->handle();
     }
 
     public function finish(Task $task)

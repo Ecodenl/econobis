@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\Task;
 
+use App\Eco\Task\Jobs\DeleteTaskAttachment;
 use App\Eco\Task\Task;
 use App\Eco\Task\TaskAttachment;
 use Illuminate\Http\Request;
@@ -30,5 +31,10 @@ class TaskAttachmentController extends Controller
         $filePath = Storage::disk('task_attachments')->getDriver()->getAdapter()->applyPathPrefix($taskAttachment->filename);
 
         return response()->download($filePath, $taskAttachment->name);
+    }
+
+    public function delete(TaskAttachment $taskAttachment)
+    {
+        (new DeleteTaskAttachment($taskAttachment))->handle();
     }
 }

@@ -28,6 +28,7 @@ Route::namespace('Api')
         Route::get('/contact/{contact}/registrations', 'Contact\ContactController@registrations');
         Route::get('/contact/{contact}/groups', 'Contact\ContactController@groups');
         Route::post('/contact/{contact}/delete', 'Contact\ContactController@destroy');
+        Route::get('/contact/{contact}/tasks', 'Contact\ContactController@tasks');
 
         Route::get('/registration/grid', 'Registration\RegistrationController@grid');
         Route::get('/contact/{contact}/registration', 'Registration\RegistrationController@getStore');

@@ -53,6 +53,7 @@ class FullContact extends Resource
             'updatedBy' => FullUser::make($this->whenLoaded('updatedBy')),
             'registrationCount' => $this->registrations()->count(),
             'groupCount' => $this->groups()->count(),
+            'taskCount' => $this->tasks()->count(),
         ];
     }
 }

@@ -6,6 +6,7 @@ use App\Eco\Contact\Contact;
 use App\Eco\User\User;
 use App\Http\Resources\Contact\ContactPeek;
 use App\Http\Resources\Contact\FullContact;
+use App\Http\Resources\Task\SidebarTask;
 use App\Jobs\SoftDeleteContact;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -68,6 +69,11 @@ class ContactController extends Controller
         $groups = $contact->groups()->select('name', 'id')->get();
 
         return $groups;
+    }
+
+    public function tasks(Contact $contact)
+    {
+        return SidebarTask::collection($contact->tasks);
     }
 
 }

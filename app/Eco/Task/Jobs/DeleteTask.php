@@ -26,10 +26,25 @@ class DeleteTask
 
     public function handle()
     {
-        foreach($this->task->attachments as $attachment){
+        $this->deleteProperties();
+        $this->deleteAttachments();
+        $this->deleteTask();
+    }
+
+    protected function deleteAttachments()
+    {
+        foreach ($this->task->attachments as $attachment) {
             (new DeleteTaskAttachment($attachment))->handle();
         }
+    }
 
+    private function deleteProperties()
+    {
+        $this->task->properties()->delete();
+    }
+
+    protected function deleteTask()
+    {
         $this->task->delete();
     }
 }

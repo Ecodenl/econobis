@@ -47,7 +47,7 @@ class TaskStatus extends Enum
             new static(1, 'not_started', 'Niet gestart'),
             new static(2, 'started', 'Gestart'),
             new static(3, 'pending', 'In afwachting'),
-            new static(4, 'done', 'Klaar'),
+            new static(4, 'finished', 'Klaar'),
         ];
     }
 

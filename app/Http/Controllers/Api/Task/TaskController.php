@@ -33,6 +33,7 @@ class TaskController extends Controller
             'contactGroup',
             'responsibleUser',
             'createdBy',
+            'finishedBy',
         ]);
 
         return FullTask::make($task);
@@ -51,10 +52,15 @@ class TaskController extends Controller
             ->date('dateStarted')->validate('date')->whenMissing(null)->onEmpty(null)->alias('date_started')->next()
             ->date('dateFinished')->validate('date')->whenMissing(null)->onEmpty(null)->alias('date_finished')->next()
             ->integer('responsibleUserId')->validate(['required', 'exists:users,id'])->alias('responsible_user_id')->next()
+            ->integer('finishedById')->validate('exists:users,id')->whenMissing(null)->onEmpty(null)->alias('finished_by_id')->next()
             ->get();
 
         $task = new Task($data);
         $task->created_by_id = Auth::id();
+        if($task->getStatus()->equals(TaskStatus::finished())){
+            $task->date_finished = Carbon::today();
+            $task->finished_by_id = Auth::id();
+        }
         $task->save();
 
         return $this->show($task);
@@ -73,9 +79,15 @@ class TaskController extends Controller
             ->date('dateStarted')->validate('date')->alias('date_started')->next()
             ->date('dateFinished')->validate('date')->alias('date_finished')->next()
             ->integer('responsibleUserId')->validate('exists:users,id')->alias('responsible_user_id')->next()
+            ->integer('finishedById')->validate('exists:users,id')->alias('finished_by_id')->next()
             ->get();
 
         $task->fill($data);
+
+        if($task->isDirty('status_id') && $task->getStatus()->equals(TaskStatus::finished())){
+            $task->date_finished = Carbon::today();
+            $task->finished_by_id = Auth::id();
+        }
         $task->save();
 
         return $this->show($task);
@@ -89,7 +101,8 @@ class TaskController extends Controller
     public function finish(Task $task)
     {
         $task->date_finished = Carbon::today();
-        $task->status_id = TaskStatus::get('done')->id;
+        $task->status_id = TaskStatus::finished()->id;
+        $task->finished_by_id = Auth::id();
         $task->save();
 
         return $this->show($task->fresh());

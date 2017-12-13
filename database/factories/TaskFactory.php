@@ -33,5 +33,8 @@ $factory->define(App\Eco\Task\Task::class, function (Faker\Generator $faker) {
         'created_by_id' => function () use ($faker) {
             return \App\Eco\User\User::inRandomOrder()->first()->id;
         },
+        'finished_by_id' => function () use ($faker) {
+            if ($faker->boolean(50)) return \App\Eco\User\User::inRandomOrder()->first()->id;
+        },
     ];
 });

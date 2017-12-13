@@ -47,6 +47,8 @@ class FullTask extends Resource
                 'dateFinished' => $this->date_finished,
                 'responsibleUserId' => $this->responsible_user_id,
                 'responsibleUser' => FullUser::make($this->whenLoaded('responsibleUser')),
+                'finishedById' => $this->finished_by_id,
+                'finishedBy' => FullUser::make($this->whenLoaded('finishedBy')),
                 'createdById' => $this->created_by_id,
                 'createdBy' => FullUser::make($this->whenLoaded('createdBy')),
                 'createdAt' => $this->created_at,

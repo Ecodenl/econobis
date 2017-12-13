@@ -49,6 +49,11 @@ class CreateTasksTable extends Migration
                 ->references('id')->on('users')
                 ->onDelete('restrict');
 
+            $table->unsignedInteger('finished_by_id')->nullable()->default(null);
+            $table->foreign('finished_by_id')
+                ->references('id')->on('users')
+                ->onDelete('restrict');
+
             $table->unsignedInteger('created_by_id');
             $table->foreign('created_by_id')
                 ->references('id')->on('users')

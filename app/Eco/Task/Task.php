@@ -7,11 +7,12 @@ use App\Eco\ContactGroup\ContactGroup;
 use App\Eco\Registration\Registration;
 use App\Eco\User\User;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Venturecraft\Revisionable\RevisionableTrait;
 
 class Task extends Model
 {
-    use RevisionableTrait;
+    use RevisionableTrait, SoftDeletes;
 
     protected $guarded = ['id'];
 

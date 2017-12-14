@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\Task;
 
 use App\Eco\Task\Task;
 use App\Eco\Task\TaskPropertyValue;
+use App\Helpers\Jobs\GenericDeleteModelJob;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\Resources\GenericResource;
 use Illuminate\Http\Request;
@@ -39,9 +40,9 @@ class TaskPropertyValueController extends Controller
         return GenericResource::make($taskPropertyValue);
     }
 
-    public function delete(TaskPropertyValue $taskPropertyValue)
+    public function destroy(TaskPropertyValue $taskPropertyValue)
     {
-        $taskPropertyValue->delete();
+        GenericDeleteModelJob::single($taskPropertyValue, true);
     }
 
 }

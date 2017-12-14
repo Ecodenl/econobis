@@ -4,6 +4,7 @@ import SideNav, { Nav, NavIcon, NavText } from 'react-sidenav';
 import SvgIcon from 'react-icons-kit';
 
 import { ic_aspect_ratio } from 'react-icons-kit/md/ic_aspect_ratio';
+import { starEmpty } from 'react-icons-kit/icomoon/starEmpty';
 import { ic_business } from 'react-icons-kit/md/ic_business';
 import { ic_contacts } from 'react-icons-kit/md/ic_contacts';
 import { ic_email } from 'react-icons-kit/md/ic_email';
@@ -75,6 +76,10 @@ const SidebarMenu = props => {
                 <Nav id="taken">
                     <NavIcon><SvgIcon size={20} icon={ic_business} /></NavIcon>
                     <NavText> Taken </NavText>
+                </Nav>
+                <Nav id="kansen">
+                    <NavIcon><SvgIcon size={20} icon={starEmpty} /></NavIcon>
+                    <NavText><Link className="sidebar-link" to="kansen">Kansen</Link></NavText>
                 </Nav>
                 <Nav id="documenten">
                     <NavIcon><SvgIcon size={20} icon={ic_aspect_ratio} /></NavIcon>

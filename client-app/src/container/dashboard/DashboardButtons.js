@@ -1,6 +1,23 @@
 import React, { Component } from 'react';
 
+import OpportunityAPI from './../../api/OpportunityAPI';
+
 class DashboardButtons extends Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            amountActiveOpportunities: []
+        }
+    };
+    componentWillMount() {
+        OpportunityAPI.getAmountActive().then(payload => {
+            this.setState({
+                amountActiveOpportunities: payload
+            });
+        });
+    }
+
     render() {
         return (
             <div className="row">
@@ -24,7 +41,7 @@ class DashboardButtons extends Component {
                     <div className="panel panel-default" id="dashboardbutton-green">
                         <div className="panel-body">
                             <h4 className="text-center text-bold">KANSEN</h4>
-                            <h4 className="text-center text-bold">6</h4>
+                            <h4 className="text-center text-bold">{this.state.amountActiveOpportunities}</h4>
                         </div>
                     </div>
                 </div>

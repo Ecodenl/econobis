@@ -4,6 +4,7 @@ namespace App\Eco\Measure;
 
 use App\Eco\Address\Address;
 use App\Eco\EnergyLabel\EnergyLabel;
+use App\Eco\Opportunity\Opportunity;
 use Illuminate\Database\Eloquent\Model;
 
 class Measure extends Model
@@ -27,5 +28,10 @@ class Measure extends Model
     public function addresses()
     {
         return $this->belongsToMany(Address::class);
+    }
+
+    public function opportunities()
+    {
+        return $this->hasMany(Opportunity::class);
     }
 }

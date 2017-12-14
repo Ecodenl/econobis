@@ -31,6 +31,8 @@ class FullRegistration extends Resource
                 'reasons' => GenericResource::collection($this->whenLoaded('reasons')),
                 'createdAt' => $this->created_at,
                 'updatedAt' => $this->updated_at,
+                'opportunityCount' => $this->opportunities()->count(),
+                'relatedOpportunities' => ($this->opportunities()->with('measure', 'status')->get()),
             ];
     }
 }

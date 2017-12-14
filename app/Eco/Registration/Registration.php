@@ -4,6 +4,7 @@ namespace App\Eco\Registration;
 
 use App\Eco\Address\Address;
 use App\Eco\Campaign\Campaign;
+use App\Eco\Opportunity\Opportunity;
 use Illuminate\Database\Eloquent\Model;
 
 class Registration extends Model
@@ -39,6 +40,11 @@ class Registration extends Model
     public function notes()
     {
         return $this->hasMany(RegistrationNote::class);
+    }
+
+    public function opportunities()
+    {
+        return $this->hasMany(Opportunity::class);
     }
 
     public function reasons()

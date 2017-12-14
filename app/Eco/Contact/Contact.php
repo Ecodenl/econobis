@@ -2,6 +2,7 @@
 
 namespace App\Eco\Contact;
 
+use App\Eco\Opportunity\Opportunity;
 use App\Eco\Organisation\Organisation;
 use App\Eco\Address\Address;
 use App\Eco\ContactGroup\ContactGroup;
@@ -67,6 +68,11 @@ class Contact extends Model
     public function notes()
     {
         return $this->hasMany(ContactNote::class);
+    }
+
+    public function opportunities()
+    {
+        return $this->hasMany(Opportunity::class);
     }
 
     public function organisation()

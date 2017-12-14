@@ -4,7 +4,7 @@ import { hashHistory } from 'react-router';
 
 import RegistrationList from './harmonica/RegistrationList';
 import Panel from "../../components/panel/Panel";
-import PanelBody from '../../components/panel/PanelBody'
+import PanelBody from '../../components/panel/PanelBody';
 import OpportunityList from './harmonica/OpportunityList';
 import TaskList from './harmonica/TaskList';
 import ContactGroupList from './harmonica/ContactGroupList';
@@ -72,7 +72,7 @@ class ContactDetailsHarmonica extends Component {
     };
 
     newOpportunity = () => {
-        hashHistory.push(`/kans/nieuw`);
+        hashHistory.push(`/kans/nieuw/contact/${this.props.id}`);
     };
 
     toggleOpportunity = () => {
@@ -104,6 +104,7 @@ class ContactDetailsHarmonica extends Component {
     };
 
     render(){
+        const { permissions = {} } = this.props;
         return (
             <div className="col-md-12 extra-space-above">
                 <div className="panel panel-default harmonica-button">
@@ -120,8 +121,13 @@ class ContactDetailsHarmonica extends Component {
                 <Panel className={"harmonica-button"}>
                     <PanelBody>
                         <div className="col-sm-12" onClick={this.toggleOpportunity}>
-                            <span className="">KANSEN <span className="badge">4</span></span>
-                            <a role="button" className="pull-right" onClick={this.newOpportunity}><span className="glyphicon glyphicon-plus glyphicon-white"/></a>
+                                <span className="">KANSEN <span
+                                    className="badge">{this.props.contactDetails.opportunityCount}</span></span>
+                            {
+                                permissions.manageChanges &&
+                                <a role="button" className="pull-right" onClick={this.newOpportunity}><span
+                                    className="glyphicon glyphicon-plus glyphicon-white"/></a>
+                            }
                             { this.state.toggleShowOpportunities && <OpportunityList /> }
                         </div>
                     </PanelBody>
@@ -140,7 +146,8 @@ class ContactDetailsHarmonica extends Component {
                     <PanelBody>
                         <div className="col-sm-12">
                             <span onClick={this.toggleGroup} className="">GROEPEN <span className="badge">{ this.props.contactDetails.groupCount }</span></span>
-                            <a role="button" className="pull-right" onClick={this.toggleAddGroup}><span className="glyphicon glyphicon-plus glyphicon-white"/></a>
+                                <a role="button" className="pull-right" onClick={this.toggleAddGroup}><span
+                                    className="glyphicon glyphicon-plus glyphicon-white"/></a>
                             { this.state.toggleShowGroups && <ContactGroupList /> }
                         </div>
                     </PanelBody>
@@ -167,6 +174,7 @@ class ContactDetailsHarmonica extends Component {
 const mapStateToProps = (state) => {
     return {
         contactDetails: state.contactDetails,
+        permissions: state.meDetails.permissions
     };
 };
 

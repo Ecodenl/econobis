@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\User;
 use App\Eco\User\User;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\Resources\User\FullUser;
+use App\Http\Resources\User\UserPeek;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Validation\Rule;
@@ -89,5 +90,12 @@ class UserController extends Controller
         $this->authorize('update', $user);
 
         $user->removeRole($role);
+    }
+
+    public function peek()
+    {
+        $users = User::select('id', 'first_name', 'last_name', 'last_name_prefix_id')->get();
+
+        return UserPeek::collection($users);
     }
 }

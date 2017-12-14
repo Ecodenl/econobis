@@ -15,8 +15,7 @@ class GridRegistration extends Resource
 {
     public function toArray($request)
     {
-        return
-            [
+           return [
                 'id' => $this->id,
                 'fullName' => $this->address->contact->full_name,
                 'sourceNames' => $this->sources->pluck('name'),

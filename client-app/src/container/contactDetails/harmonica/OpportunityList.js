@@ -1,35 +1,52 @@
-import React from 'react';
-import { hashHistory } from 'react-router';
+import React, {Component} from 'react';
+import {hashHistory} from 'react-router';
+import { connect } from 'react-redux';
+import moment from 'moment';
 
-const OpportunityList = () => {
-    const openItem = (id) => {
+class OpportunitiesList extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            relatedOpportunities: '',
+        };
+    }
+
+    openItem = (id) => {
         hashHistory.push(`/kans/${id}`);
     };
 
-    return (
-        <div className="col-sm-12 extra-space-above">
-            <table className="table">
-                <tbody>
-                    <tr onClick={() => openItem(1)}>
-                        <td>12-12-2017</td>
-                        <td>Nieuw</td>
-                    </tr>
-                    <tr onClick={() => openItem(2)}>
-                        <td>01-02-2018</td>
-                        <td>Uitbreiding</td>
-                    </tr>
-                    <tr onClick={() => openItem(1)}>
-                        <td>14-03-2018</td>
-                        <td>Via organisatie</td>
-                    </tr>
-                    <tr onClick={() => openItem(2)}>
-                        <td>01-04-2018</td>
-                        <td>Nog een kans </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    );
+    render() {
+        const {relatedOpportunities} = this.props;
+        return (
+            <div>
+                {relatedOpportunities == '' &&
+                <div>Geen groepen gevonden</div>
+                }
+
+                {relatedOpportunities != '' &&
+                <table className="table harmonica-table">
+                    <tbody>
+                    {relatedOpportunities.map((relatedOpportunity, i) => {
+                        return (
+                            <tr key={i}>
+                                <td className='col-xs-10 clickable'
+                                    onClick={() => this.openItem(relatedOpportunity.id)}>{moment(relatedOpportunity.created_at).format('L')} - {relatedOpportunity.measure.name} - {relatedOpportunity.status.name}</td>
+                            </tr>
+                        )
+                    })
+                    }
+                    </tbody>
+                </table>
+                }
+            </div>
+        );
+    };
+}
+
+const mapStateToProps = (state) => {
+    return {
+        relatedOpportunities: state.contactDetails.relatedOpportunities,
+    };
 };
 
-export default OpportunityList;
+export default connect(mapStateToProps)(OpportunitiesList);

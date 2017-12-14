@@ -4,6 +4,10 @@ import { connect } from 'react-redux';
 import { fetchRegistrationDetails } from '../../../actions/registration/RegistrationDetailsActions';
 import RegistrationDetailsToolbar from './RegistrationDetailsToolbar';
 import RegistrationDetailsForm from './RegistrationDetailsForm';
+import RegistrationDetailsHarmonica from './harmonica/RegistrationDetailsHarmonica';
+
+import PanelBody from "../../../components/panel/PanelBody";
+import Panel from "../../../components/panel/Panel";
 
 class RegistrationDetailsApp extends Component {
     constructor(props) {
@@ -26,7 +30,11 @@ class RegistrationDetailsApp extends Component {
                       <RegistrationDetailsForm />
                     </div>
                 </div>
-              <div className="col-md-3" />
+              <Panel className="col-md-3" >
+                  <PanelBody>
+                    <RegistrationDetailsHarmonica id={this.props.params.id}/>
+                  </PanelBody>
+              </Panel>
             </div>
         );
     }

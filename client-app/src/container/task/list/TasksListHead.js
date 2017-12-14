@@ -20,7 +20,7 @@ const TasksListHead = (props) => {
             <DataTableHeadTitleAndSort sortColumn={'contactName'} title={'Contact'} width={'15%'} setSorts={setSorts} />
             <DataTableHeadTitleAndSort sortColumn={'datePlanned'} title={'Plandatum'} width={'14%'} setSorts={setSorts} />
             <DataTableHeadTitleAndSort sortColumn={'dateStarted'} title={'Gestart op'} width={'14%'} setSorts={setSorts} />
-            <DataTableHeadTitleAndSort sortColumn={'statusdId'} title={'Status'} width={'13%'} setSorts={setSorts} />
+            <DataTableHeadTitleAndSort sortColumn={'statusId'} title={'Status'} width={'13%'} setSorts={setSorts} />
             <DataTableHeadTitleAndSort sortColumn={'responsibleUserName'} title={'Uitvoerder'} width={'15%'} setSorts={setSorts} />
             <th width="5%" />
         </tr>

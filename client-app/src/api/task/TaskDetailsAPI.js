@@ -28,31 +28,19 @@ export default {
     },
 
     updateTask: (task) => {
-        const requestUrl = `${URL_TASK}/${task.id}/update`;
+        const requestUrl = `${URL_TASK}/${task.id}`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios.post(requestUrl, task)
-            .then(function (response) {
-                return response.data.data;
-            })
-            .catch(function (error) {
-                console.log(error);
-            });
+        return axios.post(requestUrl, task);
     },
 
     deleteTask: (id) => {
-        const requestUrl = `${URL_TASK}/${id}/delete`;
+        const requestUrl = `${URL_API}/api/task/${id}/delete`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios.post(requestUrl)
-            .then(function (response) {
-                return response.data.data;
-            })
-            .catch(function (error) {
-                console.log(error);
-            });
+        return axios.post(requestUrl);
     },
 
     newTaskNote: (note) => {

@@ -1,6 +1,10 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+
 import { hashHistory } from 'react-router';
 import moment from 'moment';
+
+import  { setTaskCompleted } from '../../../actions/task/TasksActions';
 
 class TasksListItem extends Component {
     constructor(props) {
@@ -10,6 +14,9 @@ class TasksListItem extends Component {
             showActionButtons: false,
             highlightRow: '',
         };
+
+        this.openItem = this.openItem.bind(this);
+        this.setItemCompleted = this.setItemCompleted.bind(this);
     }
 
     onRowEnter() {
@@ -26,8 +33,19 @@ class TasksListItem extends Component {
         });
     };
 
-    openItem(id) {
-        hashHistory.push(`/taak/${id}`);
+    openItem() {
+        hashHistory.push(`/taak/${this.props.id}`);
+    };
+
+    setItemCompleted() {
+        const statusFinished = this.props.taskStatuses.find((taskStatus) => taskStatus.code === 'finished');
+
+        const task = {
+            id: this.props.id,
+            statusId: statusFinished.id,
+        };
+
+        this.props.setTaskCompleted(task);
     };
 
     render() {
@@ -43,11 +61,24 @@ class TasksListItem extends Component {
                 <td>{ statusName }</td>
                 <td>{ responsibleUserName }</td>
                 <td>
-                    {(this.state.showActionButtons ? <a role="button" onClick={() => this.openItem(id)}><span className="glyphicon glyphicon-pencil mybtn-success" /> </a> : '')}
+                    {(this.state.showActionButtons ? <a role="button" onClick={this.openItem}><span className="glyphicon glyphicon-pencil mybtn-success" /> </a> : '')}
+                    {(this.state.showActionButtons ? <a role="button" onClick={this.props.showDeleteItemModal.bind(this, id, name)}><span className="glyphicon glyphicon-trash mybtn-danger"  /> </a> : '')}
+                    {(this.state.showActionButtons && statusName !== 'Klaar' ? <a role="button" onClick={this.setItemCompleted}><span className="glyphicon glyphicon-ok mybtn-success" /> </a> : '')}
                 </td>
             </tr>
         );
     }
-}
+};
 
-export default TasksListItem;
+const mapStateToProps = (state) => ({
+    taskStatuses: state.systemData.taskStatuses,
+});
+
+
+const mapDispatchToProps = dispatch => ({
+    setTaskCompleted: (id) => {
+        dispatch(setTaskCompleted(id));
+    },
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(TasksListItem);

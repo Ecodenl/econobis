@@ -46,6 +46,7 @@ Route::namespace('Api')
         Route::post('/registration/{registration}/note', 'Registration\RegistrationController@storeNote');
         Route::post('/registration/note/{note}/update', 'Registration\RegistrationController@updateNote');
         Route::post('/registration/note/{note}/delete', 'Registration\RegistrationController@deleteNote');
+        Route::get('/registration/{registration}/tasks', 'Registration\RegistrationController@tasks');
 
 
         Route::get('/user/grid', 'User\GridController@index');
@@ -92,8 +93,8 @@ Route::namespace('Api')
         Route::post('contact-group/{contactGroup}/contacts/add/{contact}', 'ContactGroup\ContactGroupController@addContact');
         Route::post('contact-group/{contactGroup}/contacts/remove/{contact}', 'ContactGroup\ContactGroupController@removeContact');
         Route::get('contact-group/{contactGroup}/contacts/grid', 'ContactGroup\ContactGroupController@gridContacts');
-
         Route::post('contact-group/{contactGroup}/contacts/add-many', 'ContactGroup\ContactGroupController@addContacts');
+        Route::get('contact-group/{contactGroup}/tasks', 'ContactGroup\ContactGroupController@tasks');
 
         Route::get('task/grid', 'Task\TaskController@grid');
         Route::get('task/{task}', 'Task\TaskController@show');
@@ -103,7 +104,12 @@ Route::namespace('Api')
         Route::post('task/{task}/finish', 'Task\TaskController@finish');
         Route::get('task/{task}/attachments', 'Task\TaskController@attachments');
         Route::post('task/{task}/attachments/add', 'Task\TaskAttachmentController@store');
+        Route::post('task/{task}/properties', 'Task\TaskPropertyValueController@store');
+
         Route::get('task-attachment/{taskAttachment}/download', 'Task\TaskAttachmentController@download');
         Route::post('task-attachment/{taskAttachment}/delete', 'Task\TaskAttachmentController@delete');
+
+        Route::post('task-property-value/{taskPropertyValue}', 'Task\TaskPropertyValueController@update');
+        Route::post('task-property-value/{taskPropertyValue}/delete', 'Task\TaskPropertyValueController@delete');
     }
 );

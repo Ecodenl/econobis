@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 class TaskPropertyValue extends Model
 {
 
+    protected $guarded = ['id'];
+
     /**
      * required
      */

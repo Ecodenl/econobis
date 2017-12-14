@@ -29,6 +29,7 @@ class FullRegistration extends Resource
                 'sources' => GenericResource::collection($this->whenLoaded('sources')),
                 'notes' => GenericResource::collection($this->whenLoaded('notes')),
                 'reasons' => GenericResource::collection($this->whenLoaded('reasons')),
+                'taskCount' => $this->tasks()->count(),
                 'createdAt' => $this->created_at,
                 'updatedAt' => $this->updated_at,
             ];

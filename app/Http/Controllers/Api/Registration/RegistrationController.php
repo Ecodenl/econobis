@@ -18,6 +18,7 @@ use App\Http\Controllers\Api\ApiController;
 use App\Http\RequestQueries\Registration\Grid\RequestQuery;
 use App\Http\Resources\Registration\FullRegistration;
 use App\Http\Resources\Registration\GridRegistration;
+use App\Http\Resources\Task\SidebarTask;
 use Illuminate\Http\Request;
 use App\Helpers\RequestInput\RequestInput;
 
@@ -308,6 +309,11 @@ class RegistrationController extends ApiController
 
             return null;
         }
+    }
+
+    public function tasks(Registration $registration)
+    {
+        return SidebarTask::collection($registration->tasks);
     }
 
 }

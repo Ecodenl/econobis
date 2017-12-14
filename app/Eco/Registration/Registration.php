@@ -4,6 +4,7 @@ namespace App\Eco\Registration;
 
 use App\Eco\Address\Address;
 use App\Eco\Campaign\Campaign;
+use App\Eco\Task\Task;
 use Illuminate\Database\Eloquent\Model;
 
 class Registration extends Model
@@ -50,5 +51,10 @@ class Registration extends Model
     public function status()
     {
         return $this->belongsTo(RegistrationStatus::class, 'registration_status_id');
+    }
+
+    public function tasks()
+    {
+        return $this->hasMany(Task::class);
     }
 }

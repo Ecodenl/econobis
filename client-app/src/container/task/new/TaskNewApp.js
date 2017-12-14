@@ -23,7 +23,7 @@ class TaskNewApp extends Component {
                 description: '',
                 typeId: '',
                 contactId: '',
-                statusId: '1',
+                statusId: '',
                 registrationId: '',
                 contactGroupId: '',
                 datePlanned: '',

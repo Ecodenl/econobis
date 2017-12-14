@@ -78,7 +78,7 @@ const TaskNewForm = props => {
                     label={"Status"}
                     size={"col-sm-6"}
                     name={"statusId"}
-                    options={[]}
+                    options={props.taskStatuses}
                     value={statusId}
                     onChangeAction={props.handleInputChange}
                     required={"required"}
@@ -188,6 +188,7 @@ const mapStateToProps = (state) => {
     return {
         meDetails: state.meDetails,
         permissions: state.systemData.permissions,
+        taskStatuses: state.systemData.taskStatuses,
         taskTypes: state.systemData.taskTypes,
         users: state.systemData.users,
     };

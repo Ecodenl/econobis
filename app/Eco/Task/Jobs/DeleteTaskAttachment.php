@@ -9,24 +9,18 @@
 namespace App\Eco\Task\Jobs;
 
 
+use App\Helpers\Jobs\GenericDeleteModelJob;
 use Storage;
 
-class DeleteTaskAttachment
+class DeleteTaskAttachment extends GenericDeleteModelJob
 {
-    private $taskAttachment;
-
-    /**
-     * DeleteTaskAttachment constructor.
-     * @param $taskAttachment
-     */
-    public function __construct($taskAttachment)
-    {
-        $this->taskAttachment = $taskAttachment;
-    }
 
     public function handle()
     {
-        Storage::disk('task_attachments')->delete($this->taskAttachment->filename);
-        $this->taskAttachment->delete();
+        // Als het een force delete is wordt het record niet softgedelete maar echt verwijderd
+        // In dat geval de bijlage zelf ook verwijderen.
+        if($this->force) Storage::disk('task_attachments')->delete($this->model->filename);
+
+        $this->deleteModel();
     }
 }

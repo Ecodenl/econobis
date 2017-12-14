@@ -99,7 +99,7 @@ class TaskController extends Controller
 
     public function destroy(Task $task)
     {
-        (new DeleteTask($task))->handle();
+        DeleteTask::single($task, true);
     }
 
     public function finish(Task $task)

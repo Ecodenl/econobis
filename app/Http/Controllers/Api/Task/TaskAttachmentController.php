@@ -35,6 +35,6 @@ class TaskAttachmentController extends Controller
 
     public function delete(TaskAttachment $taskAttachment)
     {
-        (new DeleteTaskAttachment($taskAttachment))->handle();
+        DeleteTaskAttachment::single($taskAttachment, true);
     }
 }

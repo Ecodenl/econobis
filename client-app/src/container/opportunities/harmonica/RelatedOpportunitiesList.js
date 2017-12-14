@@ -23,7 +23,7 @@ class RelatedOpportunitiesList extends Component {
         return (
             <div>
                 {relatedOpportunities == '' &&
-                <div>Geen groepen gevonden</div>
+                <div>Geen kansen gevonden</div>
                 }
 
                 {relatedOpportunities != '' &&

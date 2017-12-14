@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import UserAPI from "../../../../api/UserAPI";
 
-import { updateRole } from '../../../../actions/userDetailsActions';
+import { updateRole } from '../../../../actions/UserDetailsActions';
 
 class UserDetailsFormRoleListItem extends Component {
     constructor(props) {

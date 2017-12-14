@@ -13,7 +13,9 @@ import ContactsListApp from './container/contactsList/ContactsListApp';
 import ContactDetailsApp from './container/contactDetails/ContactDetailsApp';
 import ContactNewApp from './container/contactNew/ContactNewApp';
 
-import TasksApp from './container/tasks/TasksApp';
+import TasksApp from './container/task/TasksApp';
+import TasksListApp from './container/task/list/TasksListApp';
+import TaskNewApp from './container/task/new/TaskNewApp';
 
 import RegistrationsListApp from './container/registration/list/RegistrationsListApp';
 import RegistrationDetailsApp from './container/registration/details/RegistrationDetailsApp';
@@ -43,6 +45,8 @@ const Routes = () => {
                 <Route path="contact/nieuw/:type" component={ PermissionHelper(ContactNewApp, true) } />
                 <Route path="contact/:id" component={ ContactDetailsApp } />
 
+                <Route path="taken" component={TasksListApp} />
+                <Route path="taak/nieuw/:type/:id" component={TaskNewApp} />
                 <Route path="taak/:id" component={TasksApp} />
 
                 <Route path="aanmeldingen" component={ RegistrationsListApp } />

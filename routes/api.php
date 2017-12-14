@@ -46,6 +46,7 @@ Route::namespace('Api')
         Route::post('/registration/{registration}/note', 'Registration\RegistrationController@storeNote');
         Route::post('/registration/note/{note}/update', 'Registration\RegistrationController@updateNote');
         Route::post('/registration/note/{note}/delete', 'Registration\RegistrationController@deleteNote');
+        Route::get('/registration/{registration}/tasks', 'Registration\RegistrationController@tasks');
 
 
         Route::get('/user/grid', 'User\GridController@index');

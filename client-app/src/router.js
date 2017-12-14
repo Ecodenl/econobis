@@ -13,7 +13,7 @@ import ContactsListApp from './container/contactsList/ContactsListApp';
 import ContactDetailsApp from './container/contactDetails/ContactDetailsApp';
 import ContactNewApp from './container/contactNew/ContactNewApp';
 
-import TasksApp from './container/task/TasksApp';
+import TaskDetailsApp from './container/task/details/TaskDetailsApp';
 import TasksListApp from './container/task/list/TasksListApp';
 import TaskNewApp from './container/task/new/TaskNewApp';
 
@@ -47,7 +47,7 @@ const Routes = () => {
 
                 <Route path="taken" component={TasksListApp} />
                 <Route path="taak/nieuw/:type/:id" component={TaskNewApp} />
-                <Route path="taak/:id" component={TasksApp} />
+                <Route path="taak/:id" component={TaskDetailsApp} />
 
                 <Route path="aanmeldingen" component={ RegistrationsListApp } />
                 <Route path="aanmelding/nieuw/contact/:contactId/adres/:addressId" component={RegistrationNewApp} />

@@ -23,7 +23,7 @@ const ContactGroupDetailsFormGeneralView = props => {
                 <div className="col-sm-9" id="description">
                     {description}
                 </div>
-                </div>
+            </div>
 
             <div className="row">
                 <ViewText

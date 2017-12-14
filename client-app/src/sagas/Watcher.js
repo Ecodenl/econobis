@@ -10,8 +10,8 @@ import { fetchRegistrationDetailsSaga, deleteRegistrationNoteSaga, deleteRegistr
 import { fetchContactGroupsSaga, deleteContactGroupSaga, addContactToGroupSaga } from './ContactGroupsSaga';
 import { fetchContactGroupDetailsSaga, updateContactGroupDetailsSaga } from './ContactGroupDetailsSaga';
 import { fetchContactsInGroupSaga, deleteContactInGroupSaga } from './ContactsInGroupSaga';
-import { fetchTasksSaga, setTaskCompletedSaga } from './TasksSaga';
-import { deleteTaskSaga } from './TaskDetailsSaga';
+import { fetchTasksSaga, setTaskCompletedSaga } from './task/TasksSaga';
+import { fetchTaskDetailsSaga, deleteTaskSaga } from './task/TaskDetailsSaga';
 
 export default function* watchSagas() {
     yield takeLatest('FETCH_SYSTEM_DATA', systemDataSaga);
@@ -43,5 +43,6 @@ export default function* watchSagas() {
     // Task
     yield takeLatest('FETCH_TASKS', fetchTasksSaga);
     yield takeLatest('SET_TASK_COMPLETED', setTaskCompletedSaga);
+    yield takeLatest('FETCH_TASK_DETAILS', fetchTaskDetailsSaga);
     yield takeLatest('DELETE_TASK', deleteTaskSaga);
 };

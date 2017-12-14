@@ -20,6 +20,7 @@ import contactsInGroupReducer from './ContactsInGroupReducer';
 import tasksReducer from './task/TasksReducer';
 import tasksFiltersReducer from './task/TasksFiltersReducer';
 import tasksSortsReducer from './task/TasksSortsReducer';
+import taskDetailsReducer from './task/TaskDetailsReducer';
 
 const rootReducer = combineReducers({
     auth: authReducer,
@@ -46,6 +47,7 @@ const rootReducer = combineReducers({
     tasks: tasksReducer,
     tasksFilters: tasksFiltersReducer,
     tasksSorts: tasksSortsReducer,
+    taskDetails: taskDetailsReducer,
 });
 
 export default rootReducer;

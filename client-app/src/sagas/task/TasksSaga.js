@@ -1,6 +1,6 @@
 import { put, call } from 'redux-saga/effects';
-import TasksAPI from '../api/task/TasksAPI';
-import TaskDetailsAPI from "../api/task/TaskDetailsAPI";
+import TasksAPI from '../../api/task/TasksAPI';
+import TaskDetailsAPI from "../../api/task/TaskDetailsAPI";
 
 export function* fetchTasksSaga({filters, sorts}) {
     try {

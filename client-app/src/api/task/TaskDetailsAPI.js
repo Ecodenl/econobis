@@ -9,14 +9,7 @@ export default {
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios.get(requestUrl)
-            .then(function (response) {
-                return response.data.data;
-            })
-            .catch(function (error) {
-                    console.log(error);
-                }
-            );
+        return axios.get(requestUrl);
     },
 
     newTask: (task) => {
@@ -41,47 +34,5 @@ export default {
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
         return axios.post(requestUrl);
-    },
-
-    newTaskNote: (note) => {
-        const requestUrl = `${URL_TASK}/${note.taskId}/note`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
-
-        return axios.post(requestUrl, note)
-            .then(function (response) {
-                return response.data.data;
-            })
-            .catch(function (error) {
-                return error.response;
-            });
-    },
-
-    updateTaskNote: (note) => {
-        const requestUrl = `${URL_TASK}/note/${note.id}/update`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
-
-        return axios.post(requestUrl, note)
-            .then(function (response) {
-                return response.data;
-            })
-            .catch(function (error) {
-                return error.response;
-            });
-    },
-
-    deleteTaskNote: (id) => {
-        const requestUrl = `${URL_TASK}/note/${id}/delete`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
-
-        return axios.post(requestUrl)
-            .then(function (response) {
-                return response.data;
-            })
-            .catch(function (error) {
-                return error;
-            });
     },
 };

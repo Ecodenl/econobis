@@ -75,15 +75,15 @@ class TaskController extends Controller
         $data = $input->string('name')->next()
             ->string('description')->next()
             ->integer('typeId')->validate('exists:task_types,id')->alias('type_id')->next()
-            ->integer('contactId')->validate('exists:contacts,id')->alias('contact_id')->next()
+            ->integer('contactId')->validate('exists:contacts,id')->onEmpty(null)->alias('contact_id')->next()
             ->integer('statusId')->validate(Rule::in(TaskStatus::ids()))->alias('status_id')->next()
-            ->integer('registrationId')->validate('exists:registrations,id')->alias('registration_id')->next()
-            ->integer('contactGroupId')->validate('exists:contact_groups,id')->alias('contact_group_id')->next()
-            ->date('datePlanned')->validate('date')->alias('date_planned')->next()
-            ->date('dateStarted')->validate('date')->alias('date_started')->next()
-            ->date('dateFinished')->validate('date')->alias('date_finished')->next()
+            ->integer('registrationId')->validate('exists:registrations,id')->onEmpty(null)->alias('registration_id')->next()
+            ->integer('contactGroupId')->validate('exists:contact_groups,id')->onEmpty(null)->alias('contact_group_id')->next()
+            ->date('datePlanned')->validate('date')->onEmpty(null)->alias('date_planned')->next()
+            ->date('dateStarted')->validate('date')->onEmpty(null)->alias('date_started')->next()
+            ->date('dateFinished')->validate('date')->onEmpty(null)->alias('date_finished')->next()
             ->integer('responsibleUserId')->validate('exists:users,id')->alias('responsible_user_id')->next()
-            ->integer('finishedById')->validate('exists:users,id')->alias('finished_by_id')->next()
+            ->integer('finishedById')->validate('exists:users,id')->onEmpty(null)->alias('finished_by_id')->next()
             ->get();
 
         $task->fill($data);

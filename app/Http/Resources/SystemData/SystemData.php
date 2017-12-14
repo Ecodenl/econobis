@@ -2,6 +2,8 @@
 
 namespace App\Http\Resources\SystemData;
 
+use App\Eco\Opportunity\OpportunityReaction;
+use App\Eco\Opportunity\OpportunityStatus;
 use App\Eco\OrganisationType\OrganisationType;
 use App\Eco\Address\AddressType;
 use App\Eco\BuildingType\BuildingType;
@@ -62,6 +64,8 @@ class SystemData extends Resource
             'energyLabels' => EnergyLabel::select(['id', 'name'])->get(),
             'permissions' => FullEnumWithIdAndName::collection(Permission::all()),
             'roles' => Role::select(['id', 'name'])->get()->toArray(),
+            'opportunityStatus' => FullEnumWithIdAndName::collection(OpportunityStatus::all()),
+            'opportunityReactions' => FullEnumWithIdAndName::collection(OpportunityReaction::all()),
         ];
     }
 }

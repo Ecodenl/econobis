@@ -13,7 +13,7 @@ class CreateOpportunitiesTable extends Migration
      */
     public function up()
     {
-        $superuserRole = \Spatie\Permission\Models\Role::get(1);
+        $superuserRole = \Spatie\Permission\Models\Role::find(1);
 
         $permissions = [
             'manage_changes'
@@ -101,7 +101,7 @@ class CreateOpportunitiesTable extends Migration
                 ->references('id')->on('users')
                 ->onDelete('restrict');
             $table->unsignedInteger('owned_by_id')->nullable();
-            $table->foreign('created_by_id')
+            $table->foreign('owned_by_id')
                 ->references('id')->on('users')
                 ->onDelete('restrict');
             $table->timestamps();

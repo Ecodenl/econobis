@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Eco\Address;
+namespace App\Eco\Opportunity;
 
 use App\Eco\User\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
@@ -11,6 +11,6 @@ class OpportunityPolicy
 
         public function manage(User $user)
     {
-        return $user->hasPermissionTo('manage_changse', 'api');
+        return $user->hasPermissionTo('manage_changes', 'api');
     }
 }

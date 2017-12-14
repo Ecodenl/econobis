@@ -30,6 +30,7 @@ Route::namespace('Api')
         Route::post('/contact/{contact}/delete', 'Contact\ContactController@destroy');
 
         Route::get('/registration/grid', 'Registration\RegistrationController@grid');
+        Route::get('/registration/peek', 'Registration\RegistrationController@peek');
         Route::get('/contact/{contact}/registration', 'Registration\RegistrationController@getStore');
         Route::post('/contact/registration', 'Registration\RegistrationController@store');
         Route::get('/registration/{registration}', 'Registration\RegistrationController@show');
@@ -46,8 +47,8 @@ Route::namespace('Api')
         Route::post('/registration/note/{note}/update', 'Registration\RegistrationController@updateNote');
         Route::post('/registration/note/{note}/delete', 'Registration\RegistrationController@deleteNote');
 
-
         Route::get('/user/grid', 'User\GridController@index');
+        Route::get('/user/peek', 'User\UserController@peek');
         Route::post('/user', 'User\UserController@store');
         Route::get('/user/{user}', 'User\UserController@show');
         Route::post('/user/{user}', 'User\UserController@update');
@@ -91,7 +92,17 @@ Route::namespace('Api')
         Route::post('contact-group/{contactGroup}/contacts/add/{contact}', 'ContactGroup\ContactGroupController@addContact');
         Route::post('contact-group/{contactGroup}/contacts/remove/{contact}', 'ContactGroup\ContactGroupController@removeContact');
         Route::get('contact-group/{contactGroup}/contacts/grid', 'ContactGroup\ContactGroupController@gridContacts');
-
         Route::post('contact-group/{contactGroup}/contacts/add-many', 'ContactGroup\ContactGroupController@addContacts');
+
+        Route::get('opportunity/grid', 'Opportunity\OpportunityController@grid');
+        Route::get('opportunity/amount-active', 'Opportunity\OpportunityController@getAmountOfActiveOpportunities');
+        Route::get('opportunity/{opportunity}', 'Opportunity\OpportunityController@show');
+        Route::post('opportunity/', 'Opportunity\OpportunityController@store');
+        Route::post('opportunity/{opportunity}', 'Opportunity\OpportunityController@update');
+        Route::post('opportunity/{opportunity}/delete', 'Opportunity\OpportunityController@destroy');
+
+        Route::post('opportunity/{opportunity}/quotation', 'Opportunity\OpportunityQuotationController@store');
+        Route::post('opportunity/quotation/{opportunityQuotation}', 'Opportunity\OpportunityQuotationController@update');
+        Route::post('opportunity/quotation/{opportunityQuotation}/delete', 'Opportunity\OpportunityQuotationController@destroy');
     }
 );

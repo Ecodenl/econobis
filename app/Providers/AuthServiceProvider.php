@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Eco\Opportunity\OpportunityPolicy;
+use App\Eco\Opportunity\Opportunity;
 use App\Eco\Organisation\Organisation;
 use App\Eco\Organisation\OrganisationPolicy;
 use App\Eco\Address\Address;
@@ -41,6 +43,7 @@ class AuthServiceProvider extends ServiceProvider
         PhoneNumber::class => PhoneNumberPolicy::class,
         User::class => UserPolicy::class,
         ContactGroup::class => ContactGroupPolicy::class,
+        Opportunity::class => OpportunityPolicy::class,
     ];
 
     /**

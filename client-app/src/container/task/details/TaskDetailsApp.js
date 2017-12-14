@@ -4,6 +4,7 @@ import {connect} from 'react-redux';
 import {fetchTaskDetails} from '../../../actions/task/TaskDetailsActions';
 import TaskDetailsToolbar from './TaskDetailsToolbar';
 import TaskDetailsForm from './TaskDetailsForm';
+import TaskDetailsHarmonica from './TaskDetailsHarmonica';
 
 class TaskDetailsApp extends Component {
     constructor(props) {
@@ -26,7 +27,9 @@ class TaskDetailsApp extends Component {
                         <TaskDetailsForm/>
                     </div>
                 </div>
-                <div className="col-md-3"/>
+                <div className="col-md-3">
+                    <TaskDetailsHarmonica />
+                </div>
             </div>
         );
     }

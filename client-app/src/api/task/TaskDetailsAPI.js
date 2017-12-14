@@ -29,10 +29,18 @@ export default {
     },
 
     deleteTask: (id) => {
-        const requestUrl = `${URL_API}/api/task/${id}/delete`;
+        const requestUrl = `${URL_TASK}/${id}/delete`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
         return axios.post(requestUrl);
     },
+
+    uploadTaskFile: function(id, file) {
+        const requestUrl = `${URL_TASK}/${id}/attachments`;
+        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
+        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
+
+        return axios.post(requestUrl, file);
+    }
 };

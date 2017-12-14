@@ -10,6 +10,7 @@ import { fetchRegistrationDetailsSaga, deleteRegistrationNoteSaga, deleteRegistr
 import { fetchContactGroupsSaga, deleteContactGroupSaga, addContactToGroupSaga } from './ContactGroupsSaga';
 import { fetchContactGroupDetailsSaga, updateContactGroupDetailsSaga } from './ContactGroupDetailsSaga';
 import { fetchContactsInGroupSaga, deleteContactInGroupSaga } from './ContactsInGroupSaga';
+import { fetchTasksSaga } from './TasksSaga';
 
 export default function* watchSagas() {
     yield takeLatest('FETCH_SYSTEM_DATA', systemDataSaga);
@@ -35,4 +36,5 @@ export default function* watchSagas() {
     yield takeLatest('FETCH_CONTACT_GROUP_DETAILS', fetchContactGroupDetailsSaga);
     yield takeLatest('FETCH_CONTACTS_IN_GROUP', fetchContactsInGroupSaga);
     yield takeLatest('DELETE_CONTACT_IN_GROUP', deleteContactInGroupSaga);
+    yield takeLatest('FETCH_TASKS', fetchTasksSaga);
 };

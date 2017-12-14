@@ -84,6 +84,7 @@ Route::namespace('Api')
         Route::get('/organisation/peek', 'Organisation\OrganisationController@peek');
 
         Route::get('contact-group/grid', 'ContactGroup\ContactGroupController@grid');
+        Route::get('contact-group/peek', 'ContactGroup\ContactGroupController@peek');
         Route::get('contact-group/{contactGroup}', 'ContactGroup\ContactGroupController@show');
         Route::get('contact-group/{contactGroup}/name', 'ContactGroup\ContactGroupController@getName');
         Route::post('contact-group/', 'ContactGroup\ContactGroupController@store');

@@ -45,6 +45,8 @@ class TaskController extends Controller
 
     public function store(RequestInput $input)
     {
+        $this->authorize('manage', Task::class);
+
         $data = $input->string('name')->whenMissing('')->onEmpty('')->next()
             ->string('description')->whenMissing('')->onEmpty('')->next()
             ->integer('typeId')->validate(['required', 'exists:task_types,id'])->alias('type_id')->next()
@@ -72,6 +74,8 @@ class TaskController extends Controller
 
     public function update(Task $task, RequestInput $input)
     {
+        $this->authorize('manage', Task::class);
+
         $data = $input->string('name')->next()
             ->string('description')->next()
             ->integer('typeId')->validate('exists:task_types,id')->alias('type_id')->next()
@@ -99,11 +103,15 @@ class TaskController extends Controller
 
     public function destroy(Task $task)
     {
+        $this->authorize('manage', Task::class);
+
         DeleteTask::single($task, true);
     }
 
     public function finish(Task $task)
     {
+        $this->authorize('manage', Task::class);
+
         $task->date_finished = Carbon::today();
         $task->status_id = TaskStatus::finished()->id;
         $task->finished_by_id = Auth::id();

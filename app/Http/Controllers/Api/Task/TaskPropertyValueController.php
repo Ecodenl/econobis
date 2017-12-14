@@ -40,7 +40,7 @@ class TaskPropertyValueController extends Controller
         return GenericResource::make($taskPropertyValue);
     }
 
-    public function delete(TaskPropertyValue $taskPropertyValue)
+    public function destroy(TaskPropertyValue $taskPropertyValue)
     {
         GenericDeleteModelJob::single($taskPropertyValue, true);
     }

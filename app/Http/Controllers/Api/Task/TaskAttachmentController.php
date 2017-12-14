@@ -33,7 +33,7 @@ class TaskAttachmentController extends Controller
         return response()->download($filePath, $taskAttachment->name);
     }
 
-    public function delete(TaskAttachment $taskAttachment)
+    public function destroy(TaskAttachment $taskAttachment)
     {
         DeleteTaskAttachment::single($taskAttachment, true);
     }

@@ -14,6 +14,7 @@ use App\Eco\Measure\MeasureTaken;
 use App\Eco\Registration\Registration;
 use App\Eco\Contact\Contact;
 use App\Eco\Registration\RegistrationNote;
+use App\Eco\Task\Jobs\DeleteTask;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\RequestQueries\Registration\Grid\RequestQuery;
 use App\Http\Resources\Registration\FullRegistration;
@@ -110,11 +111,10 @@ class RegistrationController extends ApiController
         $measureTaken = new MeasureTaken($data);
         try {
             $measureTaken->save();
-        }catch(\Exception $e){
-            if($e->getCode() == 23000){
+        } catch (\Exception $e) {
+            if ($e->getCode() == 23000) {
                 return abort(409, 'Maatregel genomen bestaat al op dit adres');
-            }
-            else{
+            } else {
                 return abort(500, 'Er is een onbekende fout opgetreden');
             }
         }
@@ -132,11 +132,10 @@ class RegistrationController extends ApiController
         $measureRequested = new \App\Eco\Measure\MeasureRequested($data);
         try {
             $measureRequested->save();
-        }catch(\Exception $e){
-            if($e->getCode() == 23000){
+        } catch (\Exception $e) {
+            if ($e->getCode() == 23000) {
                 return abort(409, 'Deze maatregel is al aangevraagd op dit adres');
-            }
-            else{
+            } else {
                 return abort(500, 'Er is een onbekende fout opgetreden');
             }
         }
@@ -203,7 +202,7 @@ class RegistrationController extends ApiController
             }
             if (array_key_exists('statusId', $data)) {
                 $statusId = $data['statusId'];
-                if(empty($statusId)) $statusId = null;
+                if (empty($statusId)) $statusId = null;
                 $registration->registration_status_id = $statusId;
             }
             $registration->save();
@@ -276,39 +275,34 @@ class RegistrationController extends ApiController
 
     public function updateNote(Request $request)
     {
-        {
-            $data = $request->validate([
-                'note_text' => 'required',
-            ]);
-            $note = registrationNote::find($request->note);
-            $note->note = $data['note_text'];
-            $note->save();
+        $data = $request->validate([
+            'note_text' => 'required',
+        ]);
+        $note = registrationNote::find($request->note);
+        $note->note = $data['note_text'];
+        $note->save();
 
-            return $note;
-        }
+        return $note;
     }
 
     public function deleteNote(Request $request)
     {
-        {
-            $note = RegistrationNote::find($request->note);
-            $note->delete();
+        $note = RegistrationNote::find($request->note);
+        $note->delete();
 
-            return null;
-        }
+        return null;
     }
 
     public function destroy(Request $request)
     {
-        {
-            $registration = Registration::find($request->registration);
-            $registration->notes()->delete();
-            $registration->sources()->delete();
-            $registration->reasons()->delete();
-            $registration->delete();
+        $registration = Registration::find($request->registration);
+        $registration->notes()->delete();
+        $registration->sources()->delete();
+        $registration->reasons()->delete();
+        DeleteTask::collection($registration->tasks, true);
+        $registration->delete();
 
-            return null;
-        }
+        return null;
     }
 
     public function tasks(Registration $registration)

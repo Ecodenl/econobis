@@ -32,6 +32,7 @@ class FullContactGroup extends Resource
             'createdAt' => $this->created_at,
             'updatedAt' => $this->updated_at,
             'contacts' => FullContact::collection($this->whenLoaded('contacts')),
+            'taskCount' => $this->tasks()->count(),
         ];
     }
 }

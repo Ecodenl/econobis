@@ -45,7 +45,7 @@ class OpportunitiesList extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        relatedOpportunities: state.contactDetails.relatedOpportunities,
+        relatedOpportunities: state.registrationDetails.relatedOpportunities,
     };
 };
 

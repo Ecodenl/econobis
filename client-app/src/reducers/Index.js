@@ -17,6 +17,7 @@ import userDetailsReducer from './UserDetailsReducer';
 import contactGroupReducer from './ContactGroupReducer';
 import contactGroupDetailsReducer from './ContactGroupDetailsReducer';
 import contactsInGroupReducer from './ContactsInGroupReducer';
+import opportunitiesReducer from './OpportunitiesReducer';
 
 const rootReducer = combineReducers({
     auth: authReducer,
@@ -39,6 +40,9 @@ const rootReducer = combineReducers({
     contactGroups: contactGroupReducer,
     contactGroupDetails: contactGroupDetailsReducer,
     contactsInGroup: contactsInGroupReducer,
+
+    opportunities: opportunitiesReducer,
+    opportunity: opportunitiesReducer,
 });
 
 export default rootReducer;

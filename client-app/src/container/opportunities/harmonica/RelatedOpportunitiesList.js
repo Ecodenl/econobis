@@ -3,7 +3,8 @@ import {hashHistory} from 'react-router';
 import { connect } from 'react-redux';
 import moment from 'moment';
 
-class OpportunitiesList extends Component {
+import { fetchOpportunity, clearOpportunity } from '../../../actions/OpportunitiesActions';
+class RelatedOpportunitiesList extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -12,6 +13,8 @@ class OpportunitiesList extends Component {
     }
 
     openItem = (id) => {
+        this.props.clearOpportunity();
+        this.props.fetchOpportunity(id);
         hashHistory.push(`/kans/${id}`);
     };
 
@@ -42,11 +45,19 @@ class OpportunitiesList extends Component {
         );
     };
 }
+const mapDispatchToProps = dispatch => ({
+    fetchOpportunity: (id) => {
+        dispatch(fetchOpportunity(id));
+    },
+    clearOpportunity: () => {
+        dispatch(clearOpportunity());
+    },
+});
 
 const mapStateToProps = (state) => {
     return {
-        relatedOpportunities: state.contactDetails.relatedOpportunities,
+        relatedOpportunities: state.opportunity.relatedOpportunities,
     };
 };
 
-export default connect(mapStateToProps)(OpportunitiesList);
+export default connect(mapStateToProps, mapDispatchToProps)(RelatedOpportunitiesList);

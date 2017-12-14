@@ -19,7 +19,9 @@ import RegistrationsListApp from './container/registration/list/RegistrationsLis
 import RegistrationDetailsApp from './container/registration/details/RegistrationDetailsApp';
 import RegistrationNewApp from './container/registration/new/RegistrationNewApp';
 
-import OppertunitiesApp from './container/opportunities/OppertunitiesApp';
+import OpportunitiesListApp from './container/opportunities/list/OpportunitiesListApp';
+import OpportunityDetailsApp from './container/opportunities/details/OpportunityDetailsApp';
+import OpportunityNewApp from './container/opportunities/new/OpportunityNewApp';
 import UsersListApp from './container/users/list/UsersListApp';
 import UserNewApp from './container/users/new/UserNewApp';
 import UserDetailsApp from './container/users/details/UserDetailsApp';
@@ -49,11 +51,15 @@ const Routes = () => {
                 <Route path="aanmelding/nieuw/contact/:contactId/adres/:addressId" component={RegistrationNewApp} />
                 <Route path="aanmelding/:id" component={RegistrationDetailsApp} />
 
-                <Route path="kans/:id" component={OppertunitiesApp} />
+                <Route path="kansen" component={OpportunitiesListApp} />
+                <Route path="kans/nieuw" component={OpportunityNewApp} />
+                <Route path="kans/nieuw/:type/:id" component={OpportunityNewApp} />
+                <Route path="kans/:id" component={OpportunityDetailsApp} />
 
                 <Route path="gebruikers" component={UsersListApp} />
                 <Route path="gebruiker/nieuw" component={UserNewApp} />
                 <Route path="gebruiker/:id" component={UserDetailsApp} />
+
                 <Route path="contact-groepen" component={ ContactGroupsListApp } />
                 <Route path="contact-groep/nieuw" component={ContactGroupNewApp} />
                 <Route path="contact-groep/:id" component={ContactGroupDetailsApp} />

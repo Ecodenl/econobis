@@ -16,10 +16,10 @@ class Sort extends RequestSort
     protected $fields = [
         'createdAt',
         'name',
-        'contactFullName',
+        'contactName',
         'datePlanned',
         'dateStarted',
-        'statusName',
+        'statusId',
         'responsibleUserName',
     ];
 
@@ -29,8 +29,8 @@ class Sort extends RequestSort
         'contactName' => 'contacts.full_name',
         'datePlanned' => 'tasks.date_planned',
         'dateStarted' => 'tasks.date_started',
-        'statusName' => 'tasks.status_id',
-        'responsibleUserName' => 'responsible_user.name',
+        'statusId' => 'tasks.status_id',
+        'responsibleUserName' => 'users.last_name',
     ];
 
     protected $joins = [

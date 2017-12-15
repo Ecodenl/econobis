@@ -47,6 +47,11 @@ class ContactsInGroupList extends Component {
     render() {
         return (
             <div>
+                <div className="row">
+                    <div className="col-xs-12">
+                        <span>Totaal leden in groep: <strong>{this.props.contactsInGroup.length}</strong></span>
+                    </div>
+                </div>
                 <form onKeyUp={this.handleKeyUp}>
                     <DataTable>
                         <DataTableHead>

@@ -8,8 +8,10 @@ use App\Helpers\RequestInput\RequestInput;
 use App\Http\RequestQueries\ContactGroup\Grid\RequestQuery;
 use App\Http\Resources\Contact\FullContact;
 use App\Http\Resources\Contact\GridContact;
+use App\Http\Resources\ContactGroup\ContactGroupPeek;
 use App\Http\Resources\ContactGroup\FullContactGroup;
 use App\Http\Resources\ContactGroup\GridContactGroup;
+use App\Http\Resources\Task\SidebarTask;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -18,6 +20,11 @@ class ContactGroupController extends Controller
     public function grid(RequestQuery $query)
     {
         return GridContactGroup::collection($query->get());
+    }
+
+    public function peek()
+    {
+        return ContactGroupPeek::collection(ContactGroup::orderBy('name')->get());
     }
 
     public function show(ContactGroup $contactGroup)
@@ -106,5 +113,10 @@ class ContactGroupController extends Controller
         $contactIds = $request->input();
 
         $contactGroup->contacts()->syncWithoutDetaching($contactIds);
+    }
+
+    public function tasks(ContactGroup $contactGroup)
+    {
+        return SidebarTask::collection($contactGroup->tasks);
     }
 }

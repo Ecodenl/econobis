@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
 
 import OpportunityAPI from './../../api/OpportunityAPI';
+import TaskAPI from './../../api/task/TasksAPI';
 
 class DashboardButtons extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
+            amountActiveTasks: [],
             amountActiveOpportunities: []
         }
     };
@@ -14,6 +16,11 @@ class DashboardButtons extends Component {
         OpportunityAPI.getAmountActive().then(payload => {
             this.setState({
                 amountActiveOpportunities: payload
+            });
+        });
+        TaskAPI.getAmountActive().then(payload => {
+            this.setState({
+                amountActiveTasks: payload
             });
         });
     }
@@ -49,7 +56,7 @@ class DashboardButtons extends Component {
                     <div className="panel panel-default" id="dashboardbutton-yellow">
                         <div className="panel-body">
                             <h4 className="text-center text-bold">TAKEN</h4>
-                            <h4 className="text-center text-bold">4</h4>
+                            <h4 className="text-center text-bold">{this.state.amountActiveTasks}</h4>
                         </div>
                     </div>
                 </div>

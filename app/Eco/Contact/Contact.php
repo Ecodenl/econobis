@@ -12,6 +12,7 @@ use App\Eco\EmailAddress\EmailAddress;
 use App\Eco\Registration\Registration;
 use App\Eco\Person\Person;
 use App\Eco\PhoneNumber\PhoneNumber;
+use App\Eco\Task\Task;
 use App\Eco\User\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -130,6 +131,11 @@ class Contact extends Model
     public function registrations()
     {
         return $this->hasManyThrough(Registration::class, Address::class);
+    }
+
+    public function tasks()
+    {
+        return $this->hasMany(Task::class);
     }
 
     //Returns addresses array as Type - Streetname - Number

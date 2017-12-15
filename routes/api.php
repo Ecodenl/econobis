@@ -28,6 +28,7 @@ Route::namespace('Api')
         Route::get('/contact/{contact}/registrations', 'Contact\ContactController@registrations');
         Route::get('/contact/{contact}/groups', 'Contact\ContactController@groups');
         Route::post('/contact/{contact}/delete', 'Contact\ContactController@destroy');
+        Route::get('/contact/{contact}/tasks', 'Contact\ContactController@tasks');
 
         Route::get('/registration/grid', 'Registration\RegistrationController@grid');
         Route::get('/registration/peek', 'Registration\RegistrationController@peek');
@@ -46,6 +47,7 @@ Route::namespace('Api')
         Route::post('/registration/{registration}/note', 'Registration\RegistrationController@storeNote');
         Route::post('/registration/note/{note}/update', 'Registration\RegistrationController@updateNote');
         Route::post('/registration/note/{note}/delete', 'Registration\RegistrationController@deleteNote');
+        Route::get('/registration/{registration}/tasks', 'Registration\RegistrationController@tasks');
 
         Route::get('/user/grid', 'User\GridController@index');
         Route::get('/user/peek', 'User\UserController@peek');
@@ -83,6 +85,7 @@ Route::namespace('Api')
         Route::get('/organisation/peek', 'Organisation\OrganisationController@peek');
 
         Route::get('contact-group/grid', 'ContactGroup\ContactGroupController@grid');
+        Route::get('contact-group/peek', 'ContactGroup\ContactGroupController@peek');
         Route::get('contact-group/{contactGroup}', 'ContactGroup\ContactGroupController@show');
         Route::get('contact-group/{contactGroup}/name', 'ContactGroup\ContactGroupController@getName');
         Route::post('contact-group/', 'ContactGroup\ContactGroupController@store');
@@ -94,6 +97,7 @@ Route::namespace('Api')
         Route::get('contact-group/{contactGroup}/contacts/grid', 'ContactGroup\ContactGroupController@gridContacts');
         Route::post('contact-group/{contactGroup}/contacts/add-many', 'ContactGroup\ContactGroupController@addContacts');
 
+
         Route::get('opportunity/grid', 'Opportunity\OpportunityController@grid');
         Route::get('opportunity/amount-active', 'Opportunity\OpportunityController@getAmountOfActiveOpportunities');
         Route::get('opportunity/{opportunity}', 'Opportunity\OpportunityController@show');
@@ -104,5 +108,25 @@ Route::namespace('Api')
         Route::post('opportunity/{opportunity}/quotation', 'Opportunity\OpportunityQuotationController@store');
         Route::post('opportunity/quotation/{opportunityQuotation}', 'Opportunity\OpportunityQuotationController@update');
         Route::post('opportunity/quotation/{opportunityQuotation}/delete', 'Opportunity\OpportunityQuotationController@destroy');
+
+        Route::get('contact-group/{contactGroup}/tasks', 'ContactGroup\ContactGroupController@tasks');
+
+        Route::get('task/grid', 'Task\TaskController@grid');
+        Route::get('task/amount-active', 'Task\TaskController@getAmountOfActiveTasks');
+        Route::get('task/{task}', 'Task\TaskController@show');
+        Route::post('task', 'Task\TaskController@store');
+        Route::post('task/{task}', 'Task\TaskController@update');
+        Route::post('task/{task}/delete', 'Task\TaskController@destroy');
+        Route::post('task/{task}/finish', 'Task\TaskController@finish');
+        Route::get('task/{task}/attachments', 'Task\TaskController@attachments');
+        Route::post('task/{task}/attachments', 'Task\TaskAttachmentController@store');
+        Route::post('task/{task}/properties', 'Task\TaskPropertyValueController@store');
+
+        Route::get('task-attachment/{taskAttachment}/download', 'Task\TaskAttachmentController@download');
+        Route::post('task-attachment/{taskAttachment}/delete', 'Task\TaskAttachmentController@destroy');
+
+        Route::post('task-property-value/{taskPropertyValue}', 'Task\TaskPropertyValueController@update');
+        Route::post('task-property-value/{taskPropertyValue}/delete', 'Task\TaskPropertyValueController@destroy');
+
     }
 );

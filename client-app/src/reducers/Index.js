@@ -18,31 +18,41 @@ import contactGroupReducer from './ContactGroupReducer';
 import contactGroupDetailsReducer from './ContactGroupDetailsReducer';
 import contactsInGroupReducer from './ContactsInGroupReducer';
 import opportunitiesReducer from './OpportunitiesReducer';
+import tasksReducer from './task/TasksReducer';
+import tasksFiltersReducer from './task/TasksFiltersReducer';
+import tasksSortsReducer from './task/TasksSortsReducer';
+import taskDetailsReducer from './task/TaskDetailsReducer';
 
 const rootReducer = combineReducers({
     auth: authReducer,
     meDetails: meDetailsReducer,
     toggleSidebar: sidebarReducer,
-
+    // Contacts
     contacts: contactsReducer,
     contactsFilters: contactsFiltersReducer,
     contactsSorts: contactsSortsReducer,
     contactDetails: contactDetailsReducer,
-
+    // Registrations
     registrations: registrationsReducer,
     registrationsFilters: registrationsFiltersReducer,
     registrationsSorts: registrationsSortsReducer,
     registrationDetails: registrationDetailsReducer,
-
+    //Systemdata
     systemData: systemDataReducer,
     users: usersReducer,
     userDetails: userDetailsReducer,
     contactGroups: contactGroupReducer,
     contactGroupDetails: contactGroupDetailsReducer,
     contactsInGroup: contactsInGroupReducer,
-
     opportunities: opportunitiesReducer,
     opportunity: opportunitiesReducer,
+
+    //Tasks
+    tasks: tasksReducer,
+    tasksFilters: tasksFiltersReducer,
+    tasksSorts: tasksSortsReducer,
+    taskDetails: taskDetailsReducer,
+
 });
 
 export default rootReducer;

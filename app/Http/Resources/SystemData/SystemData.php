@@ -21,6 +21,11 @@ use App\Eco\LastNamePrefix\LastNamePrefix;
 use App\Eco\Occupation\Occupation;
 use App\Eco\PersonType\PersonType;
 use App\Eco\PhoneNumber\PhoneNumberType;
+use App\Eco\Task\TaskProperty;
+use App\Eco\Task\TaskStatus;
+use App\Eco\Task\TaskType;
+use App\Eco\User\User;
+use App\Http\Resources\GenericResource;
 use App\Http\Resources\OrganisationType\FullOrganisationType;
 use App\Eco\Title\Title;
 use App\Http\Resources\EnumWithIdAndName\FullEnumWithIdAndName;
@@ -29,6 +34,7 @@ use App\Http\Resources\LastNamePrefix\FullLastNamePrefix;
 use App\Http\Resources\Occupation\FullOccupation;
 use App\Http\Resources\PersonType\FullPersonType;
 use App\Http\Resources\Title\FullTitle;
+use App\Http\Resources\User\FullUser;
 use Illuminate\Http\Resources\Json\Resource;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
@@ -66,6 +72,10 @@ class SystemData extends Resource
             'roles' => Role::select(['id', 'name'])->get()->toArray(),
             'opportunityStatus' => FullEnumWithIdAndName::collection(OpportunityStatus::all()),
             'opportunityReactions' => FullEnumWithIdAndName::collection(OpportunityReaction::all()),
+            'taskTypes' => GenericResource::collection(TaskType::all()),
+            'taskStatuses' => TaskStatus::collection()->toArray(),
+            'taskProperties' => GenericResource::collection(TaskProperty::all()),
+            'users' => FullUser::collection(User::all()),
         ];
     }
 }

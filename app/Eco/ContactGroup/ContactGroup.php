@@ -3,6 +3,7 @@
 namespace App\Eco\ContactGroup;
 
 use App\Eco\Contact\Contact;
+use App\Eco\Task\Task;
 use App\Eco\User\User;
 use Illuminate\Database\Eloquent\Model;
 use Laracasts\Presenter\PresentableTrait;
@@ -40,4 +41,8 @@ class ContactGroup extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function tasks()
+    {
+        return $this->hasMany(Task::class);
+    }
 }

@@ -6,7 +6,8 @@ use App\Eco\Contact\Contact;
 use App\Eco\User\User;
 use App\Http\Resources\Contact\ContactPeek;
 use App\Http\Resources\Contact\FullContact;
-use App\Jobs\SoftDeleteContact;
+use App\Http\Resources\Task\SidebarTask;
+use App\Eco\Contact\Jobs\DeleteContact;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Spatie\Permission\Models\Role;
@@ -37,7 +38,7 @@ class ContactController extends Controller
     {
         $this->authorize('delete', $contact);
 
-        SoftDeleteContact::dispatch($contact);
+        DeleteContact::single($contact);
     }
 
     public function registrations(Contact $contact)
@@ -68,6 +69,11 @@ class ContactController extends Controller
         $groups = $contact->groups()->select('name', 'id')->get();
 
         return $groups;
+    }
+
+    public function tasks(Contact $contact)
+    {
+        return SidebarTask::collection($contact->tasks);
     }
 
 }

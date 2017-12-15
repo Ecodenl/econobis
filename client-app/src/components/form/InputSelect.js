@@ -46,6 +46,7 @@ InputSelect.propTypes = {
     readOnly: PropTypes.bool,
     error: PropTypes.bool,
     optionName: PropTypes.string
+
 };
 
 export default InputSelect;

@@ -18,6 +18,8 @@ use App\Eco\Person\Person;
 use App\Eco\Person\PersonPolicy;
 use App\Eco\PhoneNumber\PhoneNumber;
 use App\Eco\PhoneNumber\PhoneNumberPolicy;
+use App\Eco\Task\Task;
+use App\Eco\Task\TaskPolicy;
 use App\Eco\User\User;
 use App\Eco\User\UserPolicy;
 use App\Eco\ContactGroup\ContactGroup;
@@ -44,6 +46,7 @@ class AuthServiceProvider extends ServiceProvider
         User::class => UserPolicy::class,
         ContactGroup::class => ContactGroupPolicy::class,
         Opportunity::class => OpportunityPolicy::class,
+        Task::class => TaskPolicy::class,
     ];
 
     /**

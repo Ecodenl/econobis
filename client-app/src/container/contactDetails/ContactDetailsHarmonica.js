@@ -82,7 +82,7 @@ class ContactDetailsHarmonica extends Component {
     };
 
     newTask = () => {
-        hashHistory.push(`/taak/nieuw`);
+        hashHistory.push(`/taak/nieuw/contact/${this.props.contactDetails.id}`);
     };
 
     toggleTask = () => {

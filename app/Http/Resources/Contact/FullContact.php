@@ -55,6 +55,7 @@ class FullContact extends Resource
             'opportunityCount' => $this->opportunities()->count(),
             'relatedOpportunities' => ($this->opportunities()->with('measure', 'status')->get()),
             'groupCount' => $this->groups()->count(),
+            'taskCount' => $this->tasks()->count(),
         ];
     }
 }

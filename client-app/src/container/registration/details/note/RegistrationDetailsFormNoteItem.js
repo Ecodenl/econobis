@@ -98,7 +98,7 @@ class RegistrationDetailFormNoteItem extends Component {
                     toggleDelete={this.toggleDelete}
                 />
                 {
-                    this.state.showEdit &&
+                    this.state.showEdit && this.props.permissions.manageRegistration &&
                     <RegistrationDetailsFormNoteEdit
                         note={this.state.note}
                         handleInputChange={this.handleInputChange}
@@ -119,4 +119,10 @@ class RegistrationDetailFormNoteItem extends Component {
     }
 };
 
-export default connect()(RegistrationDetailFormNoteItem);
+const mapStateToProps = (state) => {
+    return {
+        permissions: state.meDetails.permissions
+    };
+};
+
+export default connect(mapStateToProps)(RegistrationDetailFormNoteItem);

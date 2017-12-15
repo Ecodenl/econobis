@@ -48,7 +48,7 @@ class OpportunityFormGeneral extends Component {
                    onMouseLeave={() => this.onDivLeave()}>
                 <PanelBody>
                     {
-                        this.state.showEdit && this.props.permissions.manageChanges ?
+                        this.state.showEdit && this.props.permissions.manageOpportunity ?
                             <OpportunityFormEdit switchToView={this.switchToView}/>
                             :
                             <OpportunityFormView switchToEdit={this.switchToEdit}/>

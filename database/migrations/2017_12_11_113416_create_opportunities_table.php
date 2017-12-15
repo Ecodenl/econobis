@@ -16,7 +16,7 @@ class CreateOpportunitiesTable extends Migration
         $superuserRole = \Spatie\Permission\Models\Role::find(1);
 
         $permissions = [
-            'manage_changes'
+            'manage_opportunity'
         ];
 
         foreach ($permissions as $permissionName) {

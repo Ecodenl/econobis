@@ -124,7 +124,7 @@ class ContactDetailsHarmonica extends Component {
                                 <span className="">KANSEN <span
                                     className="badge">{this.props.contactDetails.opportunityCount}</span></span>
                             {
-                                permissions.manageChanges &&
+                                permissions.manageOpportunity &&
                                 <a role="button" className="pull-right" onClick={this.newOpportunity}><span
                                     className="glyphicon glyphicon-plus glyphicon-white"/></a>
                             }

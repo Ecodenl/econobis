@@ -57,7 +57,7 @@ class OpportunityDetailsHarmonica extends Component {
                         <div className="col-sm-12" onClick={this.toggleRelatedOpportunities}>
                             <span className="">ANDERE KANSEN <span className="badge">{ this.props.opportunity.amountRelatedOpportunities }</span></span>
                             {
-                            permissions.manageChanges &&
+                            permissions.manageOpportunity &&
                                 <a role="button" className="pull-right" onClick={this.newRelatedOpportunity}><span
                                     className="glyphicon glyphicon-plus glyphicon-white"/></a>
                             }

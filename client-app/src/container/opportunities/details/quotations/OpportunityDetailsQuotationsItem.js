@@ -38,7 +38,7 @@ class OpportunityDetailsQuotationsItem extends Component {
     };
 
     openEdit = () => {
-        if(this.props.permissions.manageChanges) {
+        if(this.props.permissions.manageOpportunity) {
             this.setState({showEdit: true});
         }
     };

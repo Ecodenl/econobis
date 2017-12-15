@@ -17,7 +17,7 @@ const OpportunitiesListToolbar = (props) => {
             <div className="col-md-4">
                 <div className="btn-group" role="group">
                     <ButtonIcon iconName={"glyphicon-arrow-left"} onClickAction={browserHistory.goBack}/>
-                    {permissions.manageChanges &&
+                    {permissions.manageOpportunity &&
                     <ButtonIcon iconName={'glyphicon-plus'} onClickAction={newContactGroup}/>
                     }
                 </div>

@@ -18,7 +18,7 @@ const OpportunityDetailQuotationsView = props => {
                 <div className="col-sm-1">{dateRealised ? moment(dateRealised).format('L') : ''}</div>
             </div>
             <div className="col-sm-1">
-                {(props.showActionButtons && props.permissions.manageChanges ? <a role="button" onClick={props.openEdit}><span className="glyphicon glyphicon-pencil mybtn-success" /> </a> : '')}
+                {(props.showActionButtons && props.permissions.manageOpportunity ? <a role="button" onClick={props.openEdit}><span className="glyphicon glyphicon-pencil mybtn-success" /> </a> : '')}
                 {/*{(props.showActionButtons ? <a role="button"><span className="glyphicon glyphicon-copy"  /> </a> : '')}*/}
             </div>
         </div>

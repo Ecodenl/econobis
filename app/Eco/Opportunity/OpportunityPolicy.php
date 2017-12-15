@@ -11,6 +11,6 @@ class OpportunityPolicy
 
         public function manage(User $user)
     {
-        return $user->hasPermissionTo('manage_changes', 'api');
+        return $user->hasPermissionTo('manage_opportunity', 'api');
     }
 }

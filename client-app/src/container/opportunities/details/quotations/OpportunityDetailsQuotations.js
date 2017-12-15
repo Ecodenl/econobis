@@ -28,7 +28,7 @@ import {connect} from "react-redux";
                     <Panel>
                         <PanelHeader>
                             <span className="h5 text-bold">Offertes</span>
-                            {this.props.permissions.manageChanges &&
+                            {this.props.permissions.manageOpportunity &&
                             <a role="button" className="pull-right" onClick={this.toggleShowNew}><span
                                 className="glyphicon glyphicon-plus"/></a>
                             }

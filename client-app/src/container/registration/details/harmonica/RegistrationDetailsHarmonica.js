@@ -44,7 +44,7 @@ class RegistrationDetailsHarmonica extends Component {
                     <PanelBody>
                         <div className="col-sm-12" onClick={this.toggleOpportunity}>
                             <span className="">KANSEN <span className="badge">{ this.props.registrationDetails.opportunityCount }</span></span>
-                            {permissions.manageChanges &&
+                            {permissions.manageOpportunity &&
                                 <a role="button" className="pull-right" onClick={this.newOpportunity}><span
                                     className="glyphicon glyphicon-plus glyphicon-white"/></a>
                             }

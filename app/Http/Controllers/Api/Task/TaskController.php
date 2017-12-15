@@ -125,4 +125,10 @@ class TaskController extends Controller
         return FullTaskAttachment::collection($task->attachments);
     }
 
+    public function getAmountOfActiveTasks(){
+        $taskIds = [TaskStatus::not_started()->id, TaskStatus::started()->id, TaskStatus::pending()->id];
+        return Task::whereIn('status_id', $taskIds)->count();
+    }
+
+
 }

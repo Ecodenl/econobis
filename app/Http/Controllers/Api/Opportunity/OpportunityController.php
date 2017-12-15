@@ -14,6 +14,7 @@ use App\Http\Controllers\Api\ApiController;
 use App\Http\RequestQueries\Opportunity\Grid\RequestQuery;
 use App\Http\Resources\Opportunity\FullOpportunity;
 use App\Http\Resources\Opportunity\GridOpportunity;
+use App\Http\Resources\Opportunity\OpportunityPeek;
 
 class OpportunityController extends ApiController
 {
@@ -87,10 +88,19 @@ class OpportunityController extends ApiController
         foreach($opportunity->quotations as $quotation){
             $quotation->delete();
         }
+
+        foreach($opportunity->tasks as $task){
+            $task->delete();
+        }
         $opportunity->delete();
     }
 
     public function getAmountOfActiveOpportunities(){
         return Opportunity::where('status_id', 1)->count();
+    }
+
+    public function peek()
+    {
+        return OpportunityPeek::collection(Opportunity::orderBy('id')->get());
     }
 }

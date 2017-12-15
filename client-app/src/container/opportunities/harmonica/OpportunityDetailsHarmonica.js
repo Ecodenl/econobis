@@ -44,7 +44,7 @@ class OpportunityDetailsHarmonica extends Component {
                 <Panel className={"harmonica-button"}>
                     <PanelBody>
                         <div className="col-sm-12" onClick={this.toggleTask}>
-                            <span className="">TAKEN <span className="badge">1</span></span>
+                            <span className="">TAKEN <span className="badge">{ this.props.opportunity.taskCount }</span></span>
                             <a role="button" className="pull-right" onClick={this.newTask}><span className="glyphicon glyphicon-plus glyphicon-white"/></a>
                             { this.state.toggleShowTasks && <TaskList /> }
                         </div>

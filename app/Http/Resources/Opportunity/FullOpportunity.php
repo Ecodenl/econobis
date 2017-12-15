@@ -37,6 +37,8 @@ class FullOpportunity extends Resource
             'updatedAt' => $this->updated_at,
             'relatedOpportunities' => $this->relatedOpportunities(),
             'amountRelatedOpportunities' => count($this->relatedOpportunities()),
+            'taskCount' => $this->tasks()->count(),
+            'relatedTasks' => $this->tasks()->get(),
         ];
     }
 }

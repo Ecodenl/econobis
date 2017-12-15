@@ -10,6 +10,9 @@ import TaskNewForm from './TaskNewForm';
 import TaskNewToolbar from './TaskNewToolbar';
 import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
+import RegistrationsAPI from "../../../api/registration/RegistrationsAPI";
+import ContactGroupAPI from "../../../api/ContactGroupAPI";
+import OpportunityAPI from "../../../api/OpportunityAPI";
 
 class TaskNewApp extends Component {
     constructor(props) {
@@ -17,6 +20,9 @@ class TaskNewApp extends Component {
 
         this.state = {
             contacts: [],
+            registrations: [],
+            contactGroups: [],
+            opportunities: [],
             task: {
                 id: '',
                 name: '',
@@ -31,6 +37,7 @@ class TaskNewApp extends Component {
                 dateFinished: '',
                 responsibleUserId: '',
                 finishedById: '',
+                opportunityId: '',
             },
             errors: {
                 name: false,
@@ -56,6 +63,18 @@ class TaskNewApp extends Component {
         ContactsAPI.getContactsPeek().then((payload) => {
             this.setState({ contacts: payload });
         });
+
+        RegistrationsAPI.peekRegistrations().then((payload) => {
+            this.setState({ registrations: payload });
+        });
+
+        ContactGroupAPI.peekContactGroups().then((payload) => {
+            this.setState({ contactGroups: payload });
+        });
+
+        OpportunityAPI.peekOpportunities().then((payload) => {
+            this.setState({ opportunities: payload });
+        });
     };
 
     componentWillReceiveProps(nextProps) {
@@ -75,6 +94,7 @@ class TaskNewApp extends Component {
                             contactId: params.id,
                             registrationId: '',
                             contactGroupId: '',
+                            opportunityId: '',
                         }
                     });
                     break;
@@ -86,6 +106,7 @@ class TaskNewApp extends Component {
                             contactId: '',
                             registrationId: params.id,
                             contactGroupId: '',
+                            opportunityId: '',
                         }
                     });
                     break;
@@ -97,6 +118,19 @@ class TaskNewApp extends Component {
                             contactId: '',
                             registrationId: '',
                             contactGroupId: params.id,
+                            opportunityId: '',
+                        }
+                    });
+                    break;
+                case 'kans':
+                    this.setState({
+                        ...this.state,
+                        task: {
+                            ...this.state.task,
+                            contactId: '',
+                            registrationId: '',
+                            contactGroupId: '',
+                            opportunityId: params.id,
                         }
                     });
                     break;
@@ -212,6 +246,9 @@ class TaskNewApp extends Component {
                                     <TaskNewForm
                                         task={this.state.task}
                                         contacts={this.state.contacts}
+                                        registrations={this.state.registrations}
+                                        contactGroups={this.state.contactGroups}
+                                        opportunities={this.state.opportunities}
                                         errors={this.state.errors}
                                         meDetails={this.props.meDetails}
                                         handleInputChange={this.handleInputChange}

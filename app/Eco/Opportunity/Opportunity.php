@@ -6,6 +6,7 @@ use App\Eco\Campaign\Campaign;
 use App\Eco\Contact\Contact;
 use App\Eco\Measure\Measure;
 use App\Eco\Registration\Registration;
+use App\Eco\Task\Task;
 use App\Eco\User\User;
 use Illuminate\Database\Eloquent\Model;
 use Venturecraft\Revisionable\RevisionableTrait;
@@ -58,6 +59,11 @@ class Opportunity extends Model
 
     public function ownedBy(){
         return $this->belongsTo(User::class);
+    }
+
+    public function tasks()
+    {
+        return $this->hasMany(Task::class);
     }
 
     //custom methods

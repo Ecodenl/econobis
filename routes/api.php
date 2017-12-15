@@ -99,6 +99,7 @@ Route::namespace('Api')
 
 
         Route::get('opportunity/grid', 'Opportunity\OpportunityController@grid');
+        Route::get('opportunity/peek', 'Opportunity\OpportunityController@peek');
         Route::get('opportunity/amount-active', 'Opportunity\OpportunityController@getAmountOfActiveOpportunities');
         Route::get('opportunity/{opportunity}', 'Opportunity\OpportunityController@show');
         Route::post('opportunity/', 'Opportunity\OpportunityController@store');

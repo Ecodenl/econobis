@@ -4,6 +4,7 @@ namespace App\Eco\Task;
 
 use App\Eco\Contact\Contact;
 use App\Eco\ContactGroup\ContactGroup;
+use App\Eco\Opportunity\Opportunity;
 use App\Eco\Registration\Registration;
 use App\Eco\User\User;
 use Illuminate\Database\Eloquent\Model;
@@ -62,6 +63,14 @@ class Task extends Model
     public function contactGroup()
     {
         return $this->belongsTo(ContactGroup::class);
+    }
+
+    /**
+     * optional
+     */
+    public function opportunity()
+    {
+        return $this->belongsTo(Opportunity::class);
     }
 
     /**

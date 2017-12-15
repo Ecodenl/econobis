@@ -38,6 +38,8 @@ class TaskController extends Controller
             'createdBy',
             'finishedBy',
             'attachments',
+            'opportunity.status',
+            'opportunity.measure',
             'properties.property',
         ]);
 
@@ -60,6 +62,7 @@ class TaskController extends Controller
             ->date('dateFinished')->validate('date')->whenMissing(null)->onEmpty(null)->alias('date_finished')->next()
             ->integer('responsibleUserId')->validate(['required', 'exists:users,id'])->alias('responsible_user_id')->next()
             ->integer('finishedById')->validate('exists:users,id')->whenMissing(null)->onEmpty(null)->alias('finished_by_id')->next()
+            ->integer('opportunityId')->validate('exists:opportunities,id')->onEmpty(null)->alias('opportunity_id')->next()
             ->get();
 
         $task = new Task($data);
@@ -89,6 +92,7 @@ class TaskController extends Controller
             ->date('dateFinished')->validate('date')->onEmpty(null)->alias('date_finished')->next()
             ->integer('responsibleUserId')->validate('exists:users,id')->alias('responsible_user_id')->next()
             ->integer('finishedById')->validate('exists:users,id')->onEmpty(null)->alias('finished_by_id')->next()
+            ->integer('opportunityId')->validate('exists:opportunities,id')->onEmpty(null)->alias('opportunity_id')->next()
             ->get();
 
         $task->fill($data);

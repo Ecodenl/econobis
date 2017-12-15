@@ -6,18 +6,18 @@
  * Time: 12:08
  */
 
-namespace App\Http\Resources\Registration;
+namespace App\Http\Resources\Opportunity;
 
 
 use Illuminate\Http\Resources\Json\Resource;
 
-class RegistrationPeek extends Resource
+class OpportunityPeek extends Resource
 {
     public function toArray($request)
     {
         return [
             'id' => $this->id,
-            'name' => $this->address ? $this->address->present()->streetAndNumber(): 'Aanmelding: ' . $this->id,
+            'name' => $this->measure->name . ' ' . $this->status->name,
         ];
     }
 }

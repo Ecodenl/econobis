@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 
 import Panel from "../../../../components/panel/Panel";
 import PanelBody from '../../../../components/panel/PanelBody';
-import OpportunityList from './OpportunityList';
 import TaskList from './TaskList';
 
 class RegistrationDetailsHarmonica extends Component {
@@ -17,18 +16,8 @@ class RegistrationDetailsHarmonica extends Component {
         }
     };
 
-    newOpportunity = () => {
-        hashHistory.push(`/kans/nieuw/aanmelding/${this.props.id}`);
-    };
-
-    toggleOpportunity = () => {
-        this.setState({
-            toggleShowOpportunities: !this.state.toggleShowOpportunities
-        });
-    };
-
     newTask = () => {
-        hashHistory.push(`/taak/nieuw/aanmelding/${this.props.id}`);
+        hashHistory.push(`/taak/nieuw/contact-groep/${this.props.id}`);
     };
 
     toggleTask = () => {
@@ -42,21 +31,8 @@ class RegistrationDetailsHarmonica extends Component {
             <div className="col-md-12 extra-space-above">
                 <Panel className={"harmonica-button"}>
                     <PanelBody>
-                        <div className="col-sm-12" onClick={this.toggleOpportunity}>
-                            <span className="">KANSEN <span className="badge">{ this.props.registrationDetails.opportunityCount }</span></span>
-                            {
-                                permissions.manageChanges &&
-                                <a role="button" className="pull-right" onClick={this.newOpportunity}><span
-                                    className="glyphicon glyphicon-plus glyphicon-white"/></a>
-                            }
-                            { this.state.toggleShowOpportunities && <OpportunityList /> }
-                        </div>
-                    </PanelBody>
-                </Panel>
-                <Panel className={"harmonica-button"}>
-                    <PanelBody>
                         <div className="col-sm-12" onClick={this.toggleTask}>
-                            <span className="">TAKEN <span className="badge">{ this.props.registrationDetails.taskCount }</span></span>
+                            <span className="">TAKEN <span className="badge">{ this.props.contactGroupDetails.taskCount }</span></span>
                             <a role="button" className="pull-right" onClick={this.newTask}><span className="glyphicon glyphicon-plus glyphicon-white"/></a>
                             { this.state.toggleShowTasks && <TaskList /> }
                         </div>
@@ -69,7 +45,7 @@ class RegistrationDetailsHarmonica extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        registrationDetails: state.registrationDetails,
+        contactGroupDetails: state.contactGroupDetails,
         permissions: state.meDetails.permissions
     };
 };

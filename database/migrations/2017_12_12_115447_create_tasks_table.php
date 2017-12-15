@@ -40,6 +40,11 @@ class CreateTasksTable extends Migration
                 ->references('id')->on('contact_groups')
                 ->onDelete('restrict');
 
+            $table->unsignedInteger('opportunity_id')->nullable()->default(null);
+            $table->foreign('opportunity_id')
+                ->references('id')->on('opportunities')
+                ->onDelete('restrict');
+
             $table->date('date_planned')->nullable();
             $table->date('date_started')->nullable();
             $table->date('date_finished')->nullable();

@@ -12,6 +12,7 @@ namespace App\Http\Resources\Task;
 use App\Http\Resources\Contact\FullContact;
 use App\Http\Resources\ContactGroup\FullContactGroup;
 use App\Http\Resources\GenericResource;
+use App\Http\Resources\Opportunity\FullOpportunity;
 use App\Http\Resources\Registration\FullRegistration;
 use App\Http\Resources\User\FullUser;
 use Illuminate\Http\Resources\Json\Resource;
@@ -54,6 +55,9 @@ class FullTask extends Resource
                 'attachments' => FullTaskAttachment::collection($this->whenLoaded('attachments')),
                 'attachmentCount' => $this->attachments()->count(),
                 'properties' => FullTaskPropertyValue::collection($this->whenLoaded('properties')),
+                'opportunityId' => $this->opportunity_id,
+                'opportunity' => FullOpportunity::make($this->whenLoaded('opportunity')),
+                'opportunityName' => $this->opportunity ? $this->opportunity->measure->name . ' ' . $this->opportunity->status->name : '',
                 'createdAt' => $this->created_at,
                 'updatedAt' => $this->updated_at,
             ];

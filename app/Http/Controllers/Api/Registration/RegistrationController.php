@@ -313,9 +313,7 @@ class RegistrationController extends ApiController
 
     public function peek()
     {
-        $registrations = Registration::select('id')->get();
-
-        return RegistrationPeek::collection($registrations);
+        return RegistrationPeek::collection(Registration::orderBy('id')->get());
     }
 
 }

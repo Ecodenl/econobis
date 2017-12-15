@@ -11,29 +11,36 @@ import InputText from '../../../../components/form/InputText';
 import InputSelect from '../../../../components/form/InputSelect';
 import InputDate from '../../../../components/form/InputDate';
 import validator from "validator";
+import RegistrationsAPI from "../../../../api/registration/RegistrationsAPI";
+import ContactGroupAPI from "../../../../api/ContactGroupAPI";
+import OpportunityAPI from "../../../../api/OpportunityAPI";
 
 class TaskDetailsFormGeneralEdit extends Component {
     constructor(props) {
         super(props);
 
-        const { id, name, description, typeId, contactId, statusId, registrationId, contactGroupId, datePlanned, dateStarted, dateFinished, responsibleUserId, finishedById, createdAt, createdBy} = props.taskDetails;
+        const { id, name, description, typeId, opportunityId, contactId, statusId, registrationId, contactGroupId, datePlanned, dateStarted, dateFinished, responsibleUserId, finishedById, createdAt, createdBy} = props.taskDetails;
 
         this.state = {
             contacts: [],
+            registrations: [],
+            contactGroups: [],
+            opportunities: [],
             task: {
                 id,
                 name,
                 description,
                 typeId,
-                contactId,
+                opportunityId,
+                contactId: contactId ? contactId : '',
                 statusId,
                 registrationId,
-                contactGroupId,
+                contactGroupId: contactGroupId ? contactGroupId: '',
                 datePlanned: datePlanned ? datePlanned.date : '',
                 dateStarted: dateStarted ? dateStarted.date : '',
                 dateFinished: dateFinished ? dateFinished.date : '',
                 responsibleUserId,
-                finishedById,
+                finishedById: finishedById ? finishedById : '',
                 createdAt: createdAt ? createdAt.date : '',
                 createdBy,
             },
@@ -55,6 +62,18 @@ class TaskDetailsFormGeneralEdit extends Component {
     componentDidMount() {
         ContactsAPI.getContactsPeek().then((payload) => {
             this.setState({ contacts: payload });
+        });
+
+        RegistrationsAPI.peekRegistrations().then((payload) => {
+            this.setState({ registrations: payload });
+        });
+
+        ContactGroupAPI.peekContactGroups().then((payload) => {
+            this.setState({ contactGroups: payload });
+        });
+
+        OpportunityAPI.peekOpportunities().then((payload) => {
+            this.setState({ opportunities: payload });
         });
     };
 
@@ -162,7 +181,8 @@ class TaskDetailsFormGeneralEdit extends Component {
             responsibleUserId,
             finishedById,
             createdAt,
-            createdBy
+            createdBy,
+            opportunityId
         } = this.state.task;
 
         return (
@@ -233,8 +253,17 @@ class TaskDetailsFormGeneralEdit extends Component {
                         label={"Aanmelding"}
                         size={"col-sm-6"}
                         name={"registrationId"}
-                        options={[]}
+                        options={this.state.registrations}
                         value={registrationId}
+                        onChangeAction={this.handleInputChange}
+                    />
+
+                    <InputSelect
+                        label={"Kans"}
+                        size={"col-sm-6"}
+                        name={"opportunityId"}
+                        options={this.state.opportunities}
+                        value={opportunityId}
                         onChangeAction={this.handleInputChange}
                     />
                 </div>
@@ -244,7 +273,7 @@ class TaskDetailsFormGeneralEdit extends Component {
                         label={"Groep"}
                         size={"col-sm-6"}
                         name={"contactGroupId"}
-                        options={[]}
+                        options={this.state.contactGroups}
                         value={contactGroupId}
                         onChangeAction={this.handleInputChange}
                     />

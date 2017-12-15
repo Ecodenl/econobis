@@ -11,7 +11,7 @@ const TaskDetailsFormGeneralView = props => {
         type,
         contact,
         status,
-        registration,
+        registrationName,
         contactGroup,
         datePlanned,
         dateStarted,
@@ -20,6 +20,7 @@ const TaskDetailsFormGeneralView = props => {
         finishedBy,
         createdAt,
         createdBy,
+        opportunityName
     } = props.taskDetails;
 
     return (
@@ -61,7 +62,11 @@ const TaskDetailsFormGeneralView = props => {
             <div className="row">
                 <ViewText
                     label={"Aanmelding"}
-                    value={registration && registration.taskCount}
+                    value={registrationName}
+                />
+                <ViewText
+                    label={"Kans"}
+                    value={opportunityName}
                 />
             </div>
 

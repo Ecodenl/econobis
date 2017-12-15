@@ -4,6 +4,9 @@ import { connect } from 'react-redux';
 import { fetchContactGroupDetails } from '../../../actions/ContactGroupDetailsActions';
 import ContactGroupDetailsToolbar from './ContactGroupDetailsToolbar';
 import ContactGroupDetailsForm from './ContactGroupDetailsForm';
+import Panel from "../../../components/panel/Panel";
+import PanelBody from "../../../components/panel/PanelBody";
+import ContactGroupsDetailsHarmonica from "./harmonica/ContactGroupsDetailsHarmonica";
 
 class ContactGroupDetailsApp extends Component {
     constructor(props){
@@ -26,7 +29,11 @@ class ContactGroupDetailsApp extends Component {
                         <ContactGroupDetailsForm />
                     </div>
                 </div>
-                <div className="col-md-3" />
+                <Panel className="col-md-3">
+                    <PanelBody>
+                        <ContactGroupsDetailsHarmonica id={this.props.params.id}/>
+                    </PanelBody>
+                </Panel>
             </div>
         )
     }

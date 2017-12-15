@@ -20,7 +20,8 @@ const TaskNewForm = props => {
         dateStarted,
         dateFinished,
         responsibleUserId,
-        finishedById
+        finishedById,
+        opportunityId
     } = props.task;
 
     return (
@@ -91,8 +92,16 @@ const TaskNewForm = props => {
                     label={"Aanmelding"}
                     size={"col-sm-6"}
                     name={"registrationId"}
-                    options={[]}
+                    options={props.registrations}
                     value={registrationId}
+                    onChangeAction={props.handleInputChange}
+                />
+                <InputSelect
+                    label={"Kans"}
+                    size={"col-sm-6"}
+                    name={"opportunityId"}
+                    options={props.opportunities}
+                    value={opportunityId}
                     onChangeAction={props.handleInputChange}
                 />
             </div>
@@ -102,7 +111,7 @@ const TaskNewForm = props => {
                     label={"Groep"}
                     size={"col-sm-6"}
                     name={"contactGroupId"}
-                    options={[]}
+                    options={props.contactGroups}
                     value={contactGroupId}
                     onChangeAction={props.handleInputChange}
                 />

@@ -292,10 +292,11 @@ class RegistrationController extends ApiController
         $this->authorize('manage', Registration::class);
 
         $data = $request->validate([
-            'note_text' => 'required',
+            'note' => 'required',
+            'id' => 'required',
         ]);
-        $note = registrationNote::find($request->note);
-        $note->note = $data['note_text'];
+        $note = registrationNote::find($request->id);
+        $note->note = $data['note'];
         $note->save();
 
         return $note;

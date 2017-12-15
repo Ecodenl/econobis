@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import RegistrationDetailsAPI from '../../../../api/registration/RegistrationDetailsAPI';
-import { newRegistrationNote } from '../../../../actions/registration/RegistrationDetailsActions';
+import { fetchRegistrationDetails } from '../../../../actions/registration/RegistrationDetailsActions';
 import ButtonText from '../../../../components/button/ButtonText';
 import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
@@ -27,7 +27,7 @@ class RegistrationDetailsFormNoteNew extends Component {
         const note = this.state;
 
         RegistrationDetailsAPI.newRegistrationNote(note).then((payload) => {
-            this.props.newRegistrationNote(payload);
+            this.props.fetchRegistrationDetails(this.state.registrationId);
 
             this.props.toggleShowNew();
         });
@@ -64,8 +64,8 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = dispatch => ({
-    newRegistrationNote: (id) => {
-        dispatch(newRegistrationNote(id));
+    fetchRegistrationDetails: (id) => {
+        dispatch(fetchRegistrationDetails(id));
     },
 });
 

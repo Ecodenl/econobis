@@ -49,6 +49,8 @@ class RegistrationController extends ApiController
 
     public function store(Request $request)
     {
+        $this->authorize('manage', Registration::class);
+
         $data = $request->validate([
             'addressId' => 'required|exists:addresses,id',
             'statusId' => 'exists:registration_status,id',
@@ -103,6 +105,8 @@ class RegistrationController extends ApiController
 
     public function storeMeasureTaken(Request $request, RequestInput $requestInput)
     {
+        $this->authorize('manage', Registration::class);
+
         $data = $requestInput->string('addressId')->validate('required|exists:addresses,id')->alias('address_id')->next()
             ->string('measureId')->validate('required|exists:measures,id')->alias('measure_id')->next()
             ->string('measureDate')->whenMissing(null)->onEmpty(null)->alias('measure_date')->next()
@@ -125,6 +129,8 @@ class RegistrationController extends ApiController
 
     public function storeMeasureRequested(Request $request, RequestInput $requestInput)
     {
+        $this->authorize('manage', Registration::class);
+
         $data = $requestInput->string('addressId')->validate('required|exists:addresses,id')->alias('address_id')->next()
             ->string('measureId')->validate('required|exists:measures,id')->alias('measure_id')->next()
             ->string('desiredDate')->whenMissing(null)->onEmpty(null)->alias('desired_date')->next()
@@ -145,6 +151,8 @@ class RegistrationController extends ApiController
 
     public function storeNote(Request $request)
     {
+        $this->authorize('manage', Registration::class);
+
         $data = $request->validate([
             'registrationId' => 'required|exists:registrations,id',
             'note' => 'required',
@@ -175,6 +183,7 @@ class RegistrationController extends ApiController
 
     public function update(Request $request, Registration $registration)
     {
+        $this->authorize('manage', Registration::class);
 
         $data = $request->validate([
             'registrationStatusId' => 'nullable|exists:registration_status,id',
@@ -254,6 +263,8 @@ class RegistrationController extends ApiController
 
     public function deleteMeasureTaken(Request $request)
     {
+        $this->authorize('manage', Registration::class);
+
         $data = $request->validate([
             'measure_id' => 'required:measures,id',
         ]);
@@ -266,6 +277,8 @@ class RegistrationController extends ApiController
 
     public function deleteMeasureRequested(Request $request, Registration $registration)
     {
+        $this->authorize('manage', Registration::class);
+
         $data = $request->validate([
             'measure_id' => 'required:measures,id',
         ]);
@@ -276,6 +289,8 @@ class RegistrationController extends ApiController
 
     public function updateNote(Request $request)
     {
+        $this->authorize('manage', Registration::class);
+
         $data = $request->validate([
             'note_text' => 'required',
         ]);
@@ -288,6 +303,8 @@ class RegistrationController extends ApiController
 
     public function deleteNote(Request $request)
     {
+        $this->authorize('manage', Registration::class);
+
         $note = RegistrationNote::find($request->note);
         $note->delete();
 
@@ -296,6 +313,8 @@ class RegistrationController extends ApiController
 
     public function destroy(Request $request)
     {
+        $this->authorize('manage', Registration::class);
+
         $registration = Registration::find($request->registration);
         $registration->notes()->delete();
         $registration->sources()->delete();

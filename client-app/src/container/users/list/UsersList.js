@@ -13,8 +13,9 @@ const UsersList = props => {
                     <DataTableHead>
                         <tr className="thead-title">
                             <DataTableHeadTitle title={'Voornaam'} width={"30%"}/>
-                            <DataTableHeadTitle title={'Achternaam'} width={"30%"} />
-                            <DataTableHeadTitle title={'Email'} width={"35%"} />
+                            <DataTableHeadTitle title={'Achternaam'} width={"25%"} />
+                            <DataTableHeadTitle title={'Email'} width={"30%"} />
+                            <DataTableHeadTitle title={'Status'} width={"10%"} />
                             <DataTableHeadTitle title={''} width={"5%"} />
                         </tr>
                     </DataTableHead>

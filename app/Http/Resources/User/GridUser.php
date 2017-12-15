@@ -26,6 +26,7 @@ class GridUser extends Resource
             'firstName' => $this->first_name,
             'fullLastName' => $this->present()->fullLastName(),
             'email' => $this->email,
+            'status' => $this->active ? 'Actief' : 'Inactief',
         ];
     }
 }

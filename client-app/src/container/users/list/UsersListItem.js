@@ -31,13 +31,14 @@ class UsersListItem extends Component {
     };
 
     render() {
-        const { id, firstName, fullLastName, email } = this.props;
+        const { id, firstName, fullLastName, email, status } = this.props;
 
         return (
             <tr className={this.state.highlightRow} onDoubleClick={() => this.openItem(id)} onMouseEnter={() => this.onRowEnter()} onMouseLeave={() => this.onRowLeave()}>
                 <td>{ firstName }</td>
                 <td>{ fullLastName }</td>
                 <td>{ email }</td>
+                <td>{ status }</td>
                 <td>
                     {(this.state.showActionButtons ? <a role="button" onClick={() => this.openItem(id)}><span className="glyphicon glyphicon-pencil mybtn-success" /> </a> : '')}
                 </td>

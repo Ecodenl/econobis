@@ -15,6 +15,8 @@ class TaskPropertyValueController extends Controller
 
     public function store(RequestInput $input, Task $task)
     {
+        $this->authorize('manage', Task::class);
+
         $data = $input
             ->integer('propertyId')->validate(['required', 'exists:task_properties,id'])->alias('property_id')->next()
             ->string('value')->whenMissing('')->onEmpty('')->next()
@@ -29,6 +31,8 @@ class TaskPropertyValueController extends Controller
 
     public function update(RequestInput $input, TaskPropertyValue $taskPropertyValue)
     {
+        $this->authorize('manage', Task::class);
+
         $data = $input
             ->integer('propertyId')->validate('exists:task_properties,id')->alias('property_id')->next()
             ->string('value')->next()
@@ -42,6 +46,8 @@ class TaskPropertyValueController extends Controller
 
     public function destroy(TaskPropertyValue $taskPropertyValue)
     {
+        $this->authorize('manage', Task::class);
+
         GenericDeleteModelJob::single($taskPropertyValue, true);
     }
 

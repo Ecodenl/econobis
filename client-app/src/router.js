@@ -62,6 +62,9 @@ const Routes = () => {
                 <Route path="contact-groep/nieuw" component={ContactGroupNewApp} />
                 <Route path="contact-groep/:id" component={ContactGroupDetailsApp} />
                 <Route path="contacten-in-groep/:contactGroup" component={ ContactsInGroupListApp } />
+
+                // 404 route
+                <Route path="*" component={ DashboardApp } />
             </Route>
         </Router>
     );

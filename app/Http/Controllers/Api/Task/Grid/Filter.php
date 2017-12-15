@@ -18,14 +18,14 @@ class Filter extends RequestFilter
         'contactFullName',
         'datePlanned',
         'dateStarted',
-        'statusName',
+        'statusId',
         'responsibleUserName',
     ];
 
     protected $mapping = [
         'createdAt' => 'tasks.created_at',
         'name' => 'tasks.name',
-        'contactName' => 'contacts.full_name',
+        'contactFullName' => 'contacts.full_name',
         'datePlanned' => 'tasks.date_planned',
         'dateStarted' => 'tasks.date_started',
         'statusId' => 'tasks.status_id',
@@ -33,7 +33,7 @@ class Filter extends RequestFilter
     ];
 
     protected $joins = [
-        'contactName' => 'contact',
+        'contactFullName' => 'contact',
         'responsibleUserName' => 'responsibleUser',
     ];
 

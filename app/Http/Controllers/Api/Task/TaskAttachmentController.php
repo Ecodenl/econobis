@@ -14,6 +14,8 @@ class TaskAttachmentController extends Controller
 
     public function store(Request $request, Task $task)
     {
+        $this->authorize('manage', Task::class);
+
         $file = $request->file('file');
         if($file == null || !$file->isValid()) abort('422', 'Error uploading file');
 
@@ -35,6 +37,8 @@ class TaskAttachmentController extends Controller
 
     public function destroy(TaskAttachment $taskAttachment)
     {
+        $this->authorize('manage', Task::class);
+
         DeleteTaskAttachment::single($taskAttachment, true);
     }
 }

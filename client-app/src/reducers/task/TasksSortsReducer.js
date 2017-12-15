@@ -1,6 +1,6 @@
 export default (state = [], action) => {
     switch(action.type) {
-        case 'SET_TASKS_SORTS_FILTER':
+        case 'SET_TASKS_SORTS':
             if(state.length === 3) state.shift();
 
             return [

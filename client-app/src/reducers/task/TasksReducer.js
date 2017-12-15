@@ -12,7 +12,7 @@ export default function (state= [], action) {
                 return {
                     ...task,
                     statusId: action.task.data.data.statusId,
-                    statusCode: action.task.data.data.statusCode,
+                    statusCode: action.task.data.data.status.code,
                     statusName: action.task.data.data.status.name,
                 };
             } else {

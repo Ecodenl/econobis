@@ -22,8 +22,10 @@ class GridTask extends Resource
                 'contactFullName' => optional($this->contact)->full_name,
                 'datePlanned' => $this->date_planned,
                 'dateStarted' => $this->date_started,
+                'statusCode' => $this->getStatus()->code,
                 'statusName' => $this->getStatus()->name,
                 'createdAt' => $this->updated_at,
+                'responsibleUserName' => $this->responsibleUser->present()->fullName(),
             ];
     }
 }

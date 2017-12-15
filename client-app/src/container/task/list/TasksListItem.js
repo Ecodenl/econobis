@@ -49,7 +49,7 @@ class TasksListItem extends Component {
     };
 
     render() {
-        const { id, createdAt, name, contactFullName, datePlanned, dateStarted, statusName, responsibleUserName } = this.props;
+        const { id, createdAt, name, contactFullName, datePlanned, dateStarted, statusName, statusCode, responsibleUserName } = this.props;
 
         return (
             <tr className={this.state.highlightRow} onDoubleClick={() => this.openItem(id)} onMouseEnter={() => this.onRowEnter()} onMouseLeave={() => this.onRowLeave()}>
@@ -63,7 +63,7 @@ class TasksListItem extends Component {
                 <td>
                     {(this.state.showActionButtons ? <a role="button" onClick={this.openItem}><span className="glyphicon glyphicon-pencil mybtn-success" /> </a> : '')}
                     {(this.state.showActionButtons ? <a role="button" onClick={this.props.showDeleteItemModal.bind(this, id, name)}><span className="glyphicon glyphicon-trash mybtn-danger"  /> </a> : '')}
-                    {(this.state.showActionButtons && statusName !== 'Klaar' ? <a role="button" onClick={this.setItemCompleted}><span className="glyphicon glyphicon-ok mybtn-success" /> </a> : '')}
+                    {(this.state.showActionButtons && statusCode !== 'finished' ? <a role="button" onClick={this.setItemCompleted}><span className="glyphicon glyphicon-ok mybtn-success" /> </a> : '')}
                 </td>
             </tr>
         );

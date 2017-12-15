@@ -39,7 +39,7 @@ class FullTask extends Resource
                 'statusId' => $this->status_id,
                 'status' => GenericResource::make($this->getStatus()),
                 'registrationId' => $this->registration_id,
-                'registration' => FullRegistration::make($this->whenLoaded('registration')),
+                'registrationName' => optional($this->registration)->address->present()->streetAndNumber(),
                 'contactGroupId' => $this->contact_group_id,
                 'contactGroup' => FullContactGroup::make($this->whenLoaded('contactGroup')),
                 'datePlanned' => $this->date_planned,

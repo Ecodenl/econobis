@@ -53,7 +53,6 @@ export default function (state= {}, action) {
                 }
             };
         case 'NEW_REGISTRATION_NOTE':
-            console.log(action);
             return {
                 ...state,
                 notes: [

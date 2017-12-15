@@ -4,6 +4,7 @@ import RegistrationDetailsFormGeneralEdit from './RegistrationDetailsFormGeneral
 import RegistrationDetailsFormGeneralView from './RegistrationDetailsFormGeneralView';
 import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
+import {connect} from "react-redux";
 
 class RegistrationDetailsFormGeneral extends Component {
     constructor(props) {
@@ -46,7 +47,7 @@ class RegistrationDetailsFormGeneral extends Component {
                 <PanelBody>
                     <div className="col-md-12">
                         {
-                            this.state.showEdit ?
+                            this.state.showEdit && this.props.permissions.manageRegistration ?
                                 <RegistrationDetailsFormGeneralEdit switchToView={this.switchToView} />
                                 :
                                 <RegistrationDetailsFormGeneralView switchToEdit={this.switchToEdit}/>
@@ -58,4 +59,10 @@ class RegistrationDetailsFormGeneral extends Component {
     };
 }
 
-export default RegistrationDetailsFormGeneral;
+const mapStateToProps = (state) => {
+    return {
+        permissions: state.meDetails.permissions
+    };
+};
+
+export default connect(mapStateToProps, null)(RegistrationDetailsFormGeneral);

@@ -5,6 +5,7 @@ import RegistrationMeasuresTakenNew from './RegistrationMeasuresTakenNew';
 import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
 import PanelHeader from '../../../../components/panel/PanelHeader';
+import {connect} from "react-redux";
 
 class RegistrationMeasuresTaken extends Component {
     constructor(props) {
@@ -26,8 +27,11 @@ class RegistrationMeasuresTaken extends Component {
             <Panel>
               <PanelHeader>
                 <span className="h5 text-bold">Reeds genomen maatregelen</span>
-                <a role="button" className="pull-right" onClick={this.toggleShowNew}><span className="glyphicon glyphicon-plus"/></a>
-              </PanelHeader>
+                  {this.props.permissions.manageRegistration &&
+                  <a role="button" className="pull-right" onClick={this.toggleShowNew}><span
+                      className="glyphicon glyphicon-plus"/></a>
+                  }
+                  </PanelHeader>
               <PanelBody>
                 <div className="col-md-12">
                   <RegistrationMeasuresTakenList />
@@ -42,4 +46,10 @@ class RegistrationMeasuresTaken extends Component {
     }
 };
 
-export default RegistrationMeasuresTaken;
+const mapStateToProps = (state) => {
+    return {
+        permissions: state.meDetails.permissions
+    };
+};
+
+export default connect(mapStateToProps)(RegistrationMeasuresTaken);

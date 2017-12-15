@@ -5,6 +5,7 @@ import RegistrationDetailsFormNoteNew from './RegistrationDetailsFormNoteNew';
 import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
 import PanelHeader from '../../../../components/panel/PanelHeader';
+import {connect} from "react-redux";
 
 class RegistrationDetailsFormNote extends Component {
     constructor(props) {
@@ -27,7 +28,9 @@ class RegistrationDetailsFormNote extends Component {
             <Panel>
                 <PanelHeader>
                     <span className="h5 text-bold">Opmerkingen</span>
+                    {this.props.permissions.manageRegistration &&
                     <a role="button" className="pull-right" onClick={this.toggleShowNew}><span className="glyphicon glyphicon-plus"/></a>
+                    }
                 </PanelHeader>
                 <PanelBody>
                     <div className="col-md-12">
@@ -42,5 +45,10 @@ class RegistrationDetailsFormNote extends Component {
         );
     }
 };
+const mapStateToProps = (state) => {
+    return {
+        permissions: state.meDetails.permissions
+    };
+};
 
-export default RegistrationDetailsFormNote;
+export default connect(mapStateToProps)(RegistrationDetailsFormNote);

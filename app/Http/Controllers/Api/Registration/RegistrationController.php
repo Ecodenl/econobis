@@ -146,11 +146,11 @@ class RegistrationController extends ApiController
     public function storeNote(Request $request)
     {
         $data = $request->validate([
-            'registration_id' => 'required|exists:registrations,id',
+            'registrationId' => 'required|exists:registrations,id',
             'note' => 'required',
         ]);
         $registrationNote = new RegistrationNote();
-        $registrationNote->registration_id = $data['registration_id'];
+        $registrationNote->registration_id = $data['registrationId'];
         $registrationNote->note = $data['note'];
         $registrationNote->save();
 

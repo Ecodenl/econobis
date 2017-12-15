@@ -32,7 +32,9 @@ class RegistrationDetailsToolbar extends Component {
                             <div className="col-md-2">
                                 <div className="btn-group" role="group">
                                     <ButtonIcon iconName={"glyphicon-arrow-left"} onClickAction={browserHistory.goBack} />
-                                    <ButtonIcon iconName={"glyphicon-trash"} onClickAction={this.toggleDelete}/>
+                                    {this.props.permissions.manageRegistration &&
+                                    < ButtonIcon iconName={"glyphicon-trash"} onClickAction={this.toggleDelete}/>
+                                    }
                                 </div>
                             </div>
                             <div className="col-md-8"><h4 className="text-center">{ `Aanmelding voor: ${fullStreet}` }</h4></div>
@@ -57,7 +59,8 @@ const mapStateToProps = (state) => {
     return {
         registrationAddress: state.registrationDetails.address,
         id: state.registrationDetails.id,
+        permissions: state.meDetails.permissions
     };
 };
 
-export default connect(mapStateToProps, null)(RegistrationDetailsToolbar);
+export default connect(mapStateToProps)(RegistrationDetailsToolbar);

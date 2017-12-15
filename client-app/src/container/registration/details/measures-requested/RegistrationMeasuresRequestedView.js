@@ -19,7 +19,7 @@ const RegistrationMeasuresRequestedView = props => {
             </div>
           </div>
           <div className="col-sm-1">
-              {(props.showActionButtons ? <a role="button" onClick={props.toggleDelete}><span className="glyphicon glyphicon-trash mybtn-danger"  /> </a> : '')}
+              {(props.permissions.manageRegistration && props.showActionButtons ? <a role="button" onClick={props.toggleDelete}><span className="glyphicon glyphicon-trash mybtn-danger"  /> </a> : '')}
           </div>
         </div>
     );
@@ -28,6 +28,7 @@ const RegistrationMeasuresRequestedView = props => {
 const mapStateToProps = (state) => {
     return {
         energyLabels: state.systemData.energyLabels,
+        permissions: state.meDetails.permissions
     };
 };
 

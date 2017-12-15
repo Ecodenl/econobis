@@ -113,7 +113,10 @@ class ContactDetailsHarmonica extends Component {
                             <span className="">AANMELDINGEN <span className="badge">{ this.props.contactDetails.registrationCount }</span></span>
                         </div>
                         <div className="col-sm-3">
-                                <a role="button" className="pull-right" onClick={this.newRegistration}><span className="glyphicon glyphicon-plus glyphicon-white"/></a>
+                            {permissions.manageRegistration &&
+                            <a role="button" className="pull-right" onClick={this.newRegistration}><span
+                                className="glyphicon glyphicon-plus glyphicon-white"/></a>
+                            }
                         </div>
                         { this.state.toggleShowRegistrations && <RegistrationList /> }
                     </div>

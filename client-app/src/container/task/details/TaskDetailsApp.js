@@ -1,10 +1,13 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 
+import Panel from "../../../components/panel/Panel";
+
 import {fetchTaskDetails} from '../../../actions/task/TaskDetailsActions';
 import TaskDetailsToolbar from './TaskDetailsToolbar';
 import TaskDetailsForm from './TaskDetailsForm';
 import TaskDetailsHarmonica from './TaskDetailsHarmonica';
+import PanelBody from "../../../components/panel/PanelBody";
 
 class TaskDetailsApp extends Component {
     constructor(props) {
@@ -27,9 +30,11 @@ class TaskDetailsApp extends Component {
                         <TaskDetailsForm/>
                     </div>
                 </div>
-                <div className="col-md-3">
-                    <TaskDetailsHarmonica />
-                </div>
+                <Panel className="col-md-3">
+                    <PanelBody>
+                        <TaskDetailsHarmonica/>
+                    </PanelBody>
+                </Panel>
             </div>
         );
     }

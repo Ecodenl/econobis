@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import { connect } from 'react-redux';
 
 import Panel from "../../../components/panel/Panel";
-import PanelBody from '../../../components/panel/PanelBody'
+import PanelBody from '../../../components/panel/PanelBody';
 import TaskUploadsList from './harmonica/TaskUploadsList';
 import TaskUploadFile from './harmonica/TaskUploadFile';
 

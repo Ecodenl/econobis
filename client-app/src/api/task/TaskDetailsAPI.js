@@ -57,6 +57,14 @@ export default {
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
         return axios.post(requestUrl, file);
+    },
+
+    downloadAttachment: function(id) {
+        const requestUrl = `${URL_API}/api/task-attachment/${id}/download`;
+        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
+        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
+
+        return axios.get(requestUrl);
     }
 
 };

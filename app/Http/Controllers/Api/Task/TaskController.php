@@ -37,6 +37,7 @@ class TaskController extends Controller
             'responsibleUser',
             'createdBy',
             'finishedBy',
+            'attachments',
             'properties.property',
         ]);
 

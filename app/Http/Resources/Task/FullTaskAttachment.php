@@ -27,6 +27,7 @@ class FullTaskAttachment extends Resource
                 'id' => $this->id,
                 'name' => $this->name,
                 'taskId' => $this->task_id,
+                'createdAt' => $this->created_at,
                 'task' => FullTask::make($this->whenLoaded('task')),
             ];
     }

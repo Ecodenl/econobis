@@ -7,7 +7,7 @@ use App\Eco\Task\Task;
 use App\Eco\Task\TaskAttachment;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Storage;
+use Illuminate\Support\Facades\Storage;
 
 class TaskAttachmentController extends Controller
 {

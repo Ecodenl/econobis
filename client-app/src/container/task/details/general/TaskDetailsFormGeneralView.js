@@ -102,7 +102,7 @@ const TaskDetailsFormGeneralView = props => {
             <div className="row">
                 <ViewText
                     label={"Verantwoordelijk"}
-                    value={responsibleUser && responsibleUser.name}
+                    value={responsibleUser && responsibleUser.fullName}
                 />
             </div>
 

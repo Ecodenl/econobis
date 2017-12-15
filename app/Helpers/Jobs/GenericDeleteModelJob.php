@@ -66,7 +66,7 @@ class GenericDeleteModelJob
     public static function collection(Collection $collection, $force = false)
     {
         foreach($collection as $model){
-            return (new static($model))->force($force)->handle();
+            (new static($model))->force($force)->handle();
         }
     }
 

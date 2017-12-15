@@ -29,7 +29,7 @@ class TaskDetailsToolbar extends Component {
                             <div className="col-md-2">
                                 <div className="btn-group" role="group">
                                     <ButtonIcon iconName={"glyphicon-arrow-left"} onClickAction={browserHistory.goBack} />
-                                    {this.props.permissions.manageTasks &&
+                                    {this.props.permissions.manageTask &&
                                     <ButtonIcon iconName={"glyphicon-trash"} onClickAction={this.toggleDelete}/>
                                     }
                                 </div>

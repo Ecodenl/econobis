@@ -35,7 +35,9 @@ class TaskDetailsFormPropertyItem extends Component {
     };
 
     openEdit = () => {
+        if(this.props.permissions.manageTask) {
             this.setState({showEdit: true});
+        }
     };
 
     closeEdit = () => {

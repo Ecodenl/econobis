@@ -44,8 +44,7 @@ class RegistrationDetailsHarmonica extends Component {
                     <PanelBody>
                         <div className="col-sm-12" onClick={this.toggleOpportunity}>
                             <span className="">KANSEN <span className="badge">{ this.props.registrationDetails.opportunityCount }</span></span>
-                            {
-                                permissions.manageChanges &&
+                            {permissions.manageChanges &&
                                 <a role="button" className="pull-right" onClick={this.newOpportunity}><span
                                     className="glyphicon glyphicon-plus glyphicon-white"/></a>
                             }
@@ -57,7 +56,10 @@ class RegistrationDetailsHarmonica extends Component {
                     <PanelBody>
                         <div className="col-sm-12" onClick={this.toggleTask}>
                             <span className="">TAKEN <span className="badge">{ this.props.registrationDetails.taskCount }</span></span>
-                            <a role="button" className="pull-right" onClick={this.newTask}><span className="glyphicon glyphicon-plus glyphicon-white"/></a>
+                            {permissions.manageTask &&
+                                <a role="button" className="pull-right" onClick={this.newTask}><span
+                                    className="glyphicon glyphicon-plus glyphicon-white"/></a>
+                            }
                             { this.state.toggleShowTasks && <TaskList /> }
                         </div>
                     </PanelBody>

@@ -5,6 +5,7 @@ import TaskDetailsFormPropertyNew from './TaskDetailsFormPropertyNew';
 import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
 import PanelHeader from '../../../../components/panel/PanelHeader';
+import {connect} from "react-redux";
 
 class TaskDetailsFormProperties extends Component {
     constructor(props) {
@@ -27,8 +28,10 @@ class TaskDetailsFormProperties extends Component {
                 <Panel>
                     <PanelHeader>
                         <span className="h5 text-bold">Extra kenmerken gegevens</span>
+                        {this.props.permissions.manageTask &&
                         <a role="button" className="pull-right" onClick={this.toggleShowNew}><span
                             className="glyphicon glyphicon-plus"/></a>
+                        }
                     </PanelHeader>
                     <PanelBody>
                         <div className="col-md-12">
@@ -45,4 +48,10 @@ class TaskDetailsFormProperties extends Component {
     }
 }
 
-export default TaskDetailsFormProperties;
+const mapStateToProps = (state) => {
+    return {
+        permissions: state.meDetails.permissions
+    }
+};
+
+export default connect(mapStateToProps)(TaskDetailsFormProperties);

@@ -46,7 +46,10 @@ class TaskDetailsHarmonica extends Component {
                     <PanelBody>
                         <div className="col-sm-12">
                             <span onClick={this.toggleUploads} className="">UPLOADS <span className="badge">{ this.props.taskDetails.attachmentCount }</span></span>
-                            <a role="button" className="pull-right" onClick={this.toggleUploadfile}><span className="glyphicon glyphicon-plus glyphicon-white"/></a>
+                            {this.props.permissions.manageTask &&
+                            <a role="button" className="pull-right" onClick={this.toggleUploadfile}><span
+                                className="glyphicon glyphicon-plus glyphicon-white"/></a>
+                            }
                             { this.state.showUploads && <TaskUploadsList /> }
                         </div>
                     </PanelBody>
@@ -63,6 +66,7 @@ class TaskDetailsHarmonica extends Component {
 const mapStateToProps = (state) => {
     return {
         taskDetails: state.taskDetails,
+        permissions: state.meDetails.permissions
     };
 };
 

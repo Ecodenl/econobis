@@ -29,7 +29,9 @@ class TaskDetailsToolbar extends Component {
                             <div className="col-md-2">
                                 <div className="btn-group" role="group">
                                     <ButtonIcon iconName={"glyphicon-arrow-left"} onClickAction={browserHistory.goBack} />
+                                    {this.props.permissions.manageTasks &&
                                     <ButtonIcon iconName={"glyphicon-trash"} onClickAction={this.toggleDelete}/>
+                                    }
                                 </div>
                             </div>
                             <div className="col-md-2"><h4><strong>Taak</strong></h4></div>
@@ -55,6 +57,7 @@ const mapStateToProps = (state) => {
     return {
         taskDetailsName: state.taskDetails.name,
         id: state.taskDetails.id,
+        permissions: state.meDetails.permissions
     };
 };
 

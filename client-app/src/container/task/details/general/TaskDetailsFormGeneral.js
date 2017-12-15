@@ -4,6 +4,7 @@ import TaskDetailsFormGeneralEdit from './TaskDetailsFormGeneralEdit';
 import TaskDetailsFormGeneralView from './TaskDetailsFormGeneralView';
 import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
+import {connect} from "react-redux";
 
 class TaskDetailsFormGeneral extends Component {
     constructor(props) {
@@ -46,7 +47,7 @@ class TaskDetailsFormGeneral extends Component {
                 <PanelBody>
                     <div className="col-md-12">
                         {
-                            this.state.showEdit ?
+                            this.state.showEdit && this.props.permissions.manageTask ?
                                 <TaskDetailsFormGeneralEdit switchToView={this.switchToView} />
                                 :
                                 <TaskDetailsFormGeneralView switchToEdit={this.switchToEdit}/>
@@ -58,4 +59,10 @@ class TaskDetailsFormGeneral extends Component {
     };
 }
 
-export default TaskDetailsFormGeneral;
+const mapStateToProps = (state) => {
+    return {
+        permissions: state.meDetails.permissions
+    }
+};
+
+export default connect(mapStateToProps)(TaskDetailsFormGeneral);

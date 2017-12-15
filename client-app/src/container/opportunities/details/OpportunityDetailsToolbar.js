@@ -33,7 +33,9 @@ class OpportunityDetailsToolbar extends Component {
                             <div className="col-md-2">
                                 <div className="btn-group margin-small" role="group">
                                     <ButtonIcon iconName={"glyphicon-arrow-left"} onClickAction={browserHistory.goBack} />
-                                        <ButtonIcon iconName={"glyphicon-trash"} onClickAction={this.toggleDelete}/>
+                                    {this.props.permissions.manageChanges &&
+                                    <ButtonIcon iconName={"glyphicon-trash"} onClickAction={this.toggleDelete}/>
+                                    }
                                 </div>
                             </div>
                             <div className="col-md-8"><h4 className="text-center text-success margin-small"><strong>{measure ? 'Kans: ' + measure.name : ''} {contact ? 'voor ' + contact.fullName : ''}</strong></h4></div>
@@ -57,6 +59,7 @@ class OpportunityDetailsToolbar extends Component {
 const mapStateToProps = (state) => {
     return {
         opportunity: state.opportunity,
+        permissions: state.meDetails.permissions,
     }
 };
 

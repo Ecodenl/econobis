@@ -62,7 +62,7 @@ class TasksListItem extends Component {
                 <td>{ responsibleUserName }</td>
                 <td>
                     {(this.state.showActionButtons ? <a role="button" onClick={this.openItem}><span className="glyphicon glyphicon-pencil mybtn-success" /> </a> : '')}
-                    {(this.state.showActionButtons ? <a role="button" onClick={this.props.showDeleteItemModal.bind(this, id, name)}><span className="glyphicon glyphicon-trash mybtn-danger"  /> </a> : '')}
+                    {(this.state.showActionButtons && this.props.permissions.manageTask ? <a role="button" onClick={this.props.showDeleteItemModal.bind(this, id, name)}><span className="glyphicon glyphicon-trash mybtn-danger"  /> </a> : '')}
                     {(this.state.showActionButtons && statusCode !== 'finished' ? <a role="button" onClick={this.setItemCompleted}><span className="glyphicon glyphicon-ok mybtn-success" /> </a> : '')}
                 </td>
             </tr>
@@ -72,6 +72,7 @@ class TasksListItem extends Component {
 
 const mapStateToProps = (state) => ({
     taskStatuses: state.systemData.taskStatuses,
+    permissions: state.meDetails.permissions,
 });
 
 

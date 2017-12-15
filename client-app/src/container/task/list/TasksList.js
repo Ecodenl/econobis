@@ -68,7 +68,7 @@ class TasksList extends Component {
                         <DataTableBody>
                             {
                                 this.props.tasks.length === 0 ? (
-                                    <tr><td colSpan={8}>Geen aanmeldingen gevonden!</td></tr>
+                                    <tr><td colSpan={8}>Geen taken gevonden!</td></tr>
                                 ) : (
                                     this.props.tasks.map((task) => {
                                         return <TasksListItem

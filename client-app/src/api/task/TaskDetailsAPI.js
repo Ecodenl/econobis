@@ -35,4 +35,19 @@ export default {
 
         return axios.post(requestUrl);
     },
+
+    storeTaskProperty: (id, data) => {
+        const requestUrl = `${URL_API}/api/task/${id}/properties`;
+        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
+        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
+
+        return axios.post(requestUrl, data);
+    },
+    updateTaskProperty: (id, data) => {
+        const requestUrl = `${URL_API}/api/task-property-value/${id}`;
+        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
+        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
+
+        return axios.post(requestUrl, data);
+    },
 };

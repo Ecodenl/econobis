@@ -7,6 +7,7 @@ use App\Eco\Measure\Measure;
 use App\Eco\Opportunity\Opportunity;
 use App\Eco\Organisation\Organisation;
 use App\Eco\Registration\Registration;
+use App\Eco\Task\Task;
 use App\Eco\User\User;
 use Illuminate\Database\Eloquent\Model;
 
@@ -61,5 +62,10 @@ class Campaign extends Model
 
     public function ownedBy(){
         return $this->belongsTo(User::class);
+    }
+
+    public function tasks()
+    {
+        return $this->hasMany(Task::class);
     }
 }

@@ -15,6 +15,7 @@ use App\Eco\Opportunity\Opportunity;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\RequestQueries\Campaign\Grid\RequestQuery;
+use App\Http\Resources\Campaign\CampaignPeek;
 use App\Http\Resources\Campaign\FullCampaign;
 use App\Http\Resources\Campaign\GridCampaign;
 use Carbon\Carbon;
@@ -45,6 +46,7 @@ class CampaignController extends ApiController
             'organisations',
             'createdBy',
             'ownedBy',
+            'tasks',
         ]);
 
         return FullCampaign::make($campaign);
@@ -126,6 +128,11 @@ class CampaignController extends ApiController
             $registration->save();
         }
 
+        foreach ($campaign->tasks as $task) {
+            $task->campaign()->dissociate();
+            $task->save();
+        }
+
         $campaign->organisations()->detach();
         $campaign->responses()->delete();
 
@@ -161,6 +168,11 @@ class CampaignController extends ApiController
     public function detachResponse(Campaign $campaign, Contact $contact)
     {
         $campaign->responses()->where('contact_id', $contact->id)->delete();
+    }
+
+    public function peek()
+    {
+        return CampaignPeek::collection(Campaign::orderBy('id')->get());
     }
 
 }

@@ -35,6 +35,8 @@ class FullCampaign extends Resource
             'organisations' => FullOrganisation::collection($this->whenLoaded('organisations')),
             'createdBy' => FullUser::make($this->whenLoaded('createdBy')),
             'ownedBy' => FullUser::make($this->whenLoaded('ownedBy')),
+            'taskCount' => $this->tasks()->count(),
+            'relatedTasks' => $this->tasks()->get(),
         ];
     }
 }

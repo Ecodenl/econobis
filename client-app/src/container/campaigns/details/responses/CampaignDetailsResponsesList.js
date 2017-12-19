@@ -1,31 +1,31 @@
 import React from 'react';
 import {connect} from 'react-redux';
 
-import CampaignDetailsResponseList from "./CampaignDetailsOpportunityItem";
+import CampaignDetailsResponseItem from "./CampaignDetailsResponseItem";
 
-const CampaignDetailsOpportunitiesList = props => {
+const CampaignDetailsResponseList = props => {
     return (
         <div>
             <div className="row border header">
-                <div className="col-sm-2">Nummer</div>
-                <div className="col-sm-2">Datum</div>
+                <div className="col-sm-1">Nummer</div>
+                <div className="col-sm-1">Type</div>
                 <div className="col-sm-2">Naam</div>
-                <div className="col-sm-2">Maatregel</div>
-                <div className="col-sm-1">Status</div>
-                <div className="col-sm-1">Aantal offertes</div>
-                <div className="col-sm-1">Gerelateerde kansen</div>
+                <div className="col-sm-2">Adres</div>
+                <div className="col-sm-1">Postcode</div>
+                <div className="col-sm-2">Woonplaats</div>
+                <div className="col-sm-2">Gereageerd op</div>
                 <div className="col-sm-1"></div>
             </div>
             {
-                props.opportunities.length > 0 ?
-                    props.opportunities.map(opportunity => {
-                        return <CampaignDetailsOpportunityItem
-                            key={opportunity.id}
-                            opportunity={opportunity}
+                props.responses.length > 0 ?
+                    props.responses.map(response => {
+                        return <CampaignDetailsResponseItem
+                            key={response.id}
+                            response={response}
                         />;
                     })
                     :
-                    <div>Geen kansen bekend</div>
+                    <div>Geen reponses bekend</div>
             }
         </div>
     );
@@ -33,7 +33,7 @@ const CampaignDetailsOpportunitiesList = props => {
 
 const mapStateToProps = (state) => {
     return {
-        opportunities: state.campaign.opportunities,
+        responses: state.campaign.responses,
     };
 };
 export default connect(mapStateToProps)(CampaignDetailsResponseList);

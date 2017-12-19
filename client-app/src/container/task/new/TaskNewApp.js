@@ -5,6 +5,7 @@ import {hashHistory} from "react-router";
 import validator from "validator";
 
 import ContactsAPI from "../../../api/ContactsAPI";
+import CampaignAPI from "../../../api/CampaignAPI";
 import TaskDetailsAPI from "../../../api/task/TaskDetailsAPI";
 import TaskNewForm from './TaskNewForm';
 import TaskNewToolbar from './TaskNewToolbar';
@@ -23,12 +24,14 @@ class TaskNewApp extends Component {
             registrations: [],
             contactGroups: [],
             opportunities: [],
+            campaigns: [],
             task: {
                 id: '',
                 name: '',
                 description: '',
                 typeId: '',
                 contactId: '',
+                campaignId: '',
                 statusId: '',
                 registrationId: '',
                 contactGroupId: '',
@@ -75,6 +78,10 @@ class TaskNewApp extends Component {
         OpportunityAPI.peekOpportunities().then((payload) => {
             this.setState({ opportunities: payload });
         });
+
+        CampaignAPI.peekCampaigns().then((payload) => {
+            this.setState({ campaigns: payload });
+        });
     };
 
     componentWillReceiveProps(nextProps) {
@@ -91,6 +98,7 @@ class TaskNewApp extends Component {
                         ...this.state,
                         task: {
                             ...this.state.task,
+                            campaignId: '',
                             contactId: params.id,
                             registrationId: '',
                             contactGroupId: '',
@@ -103,6 +111,7 @@ class TaskNewApp extends Component {
                         ...this.state,
                         task: {
                             ...this.state.task,
+                            campaignId: '',
                             contactId: '',
                             registrationId: params.id,
                             contactGroupId: '',
@@ -115,6 +124,7 @@ class TaskNewApp extends Component {
                         ...this.state,
                         task: {
                             ...this.state.task,
+                            campaignId: '',
                             contactId: '',
                             registrationId: '',
                             contactGroupId: params.id,
@@ -127,10 +137,24 @@ class TaskNewApp extends Component {
                         ...this.state,
                         task: {
                             ...this.state.task,
+                            campaignId: '',
                             contactId: '',
                             registrationId: '',
                             contactGroupId: '',
                             opportunityId: params.id,
+                        }
+                    });
+                    break;
+                case 'campagne':
+                    this.setState({
+                        ...this.state,
+                        task: {
+                            ...this.state.task,
+                            campaignId: params.id,
+                            contactId: '',
+                            registrationId: '',
+                            contactGroupId: '',
+                            opportunityId: '',
                         }
                     });
                     break;
@@ -249,6 +273,7 @@ class TaskNewApp extends Component {
                                         registrations={this.state.registrations}
                                         contactGroups={this.state.contactGroups}
                                         opportunities={this.state.opportunities}
+                                        campaigns={this.state.campaigns}
                                         errors={this.state.errors}
                                         meDetails={this.props.meDetails}
                                         handleInputChange={this.handleInputChange}

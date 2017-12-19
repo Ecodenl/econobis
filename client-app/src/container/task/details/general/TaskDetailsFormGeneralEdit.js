@@ -14,28 +14,31 @@ import validator from "validator";
 import RegistrationsAPI from "../../../../api/registration/RegistrationsAPI";
 import ContactGroupAPI from "../../../../api/ContactGroupAPI";
 import OpportunityAPI from "../../../../api/OpportunityAPI";
+import CampaignAPI from "../../../../api/CampaignAPI";
 
 class TaskDetailsFormGeneralEdit extends Component {
     constructor(props) {
         super(props);
 
-        const { id, name, description, typeId, opportunityId, contactId, statusId, registrationId, contactGroupId, datePlanned, dateStarted, dateFinished, responsibleUserId, finishedById, createdAt, createdBy} = props.taskDetails;
+        const { id, name, description, typeId, opportunityId, contactId, statusId, registrationId, contactGroupId, campaignId, datePlanned, dateStarted, dateFinished, responsibleUserId, finishedById, createdAt, createdBy} = props.taskDetails;
 
         this.state = {
             contacts: [],
             registrations: [],
             contactGroups: [],
             opportunities: [],
+            campaigns: [],
             task: {
                 id,
                 name,
                 description,
                 typeId,
-                opportunityId,
+                opportunityId: opportunityId ? opportunityId : '',
                 contactId: contactId ? contactId : '',
                 statusId,
                 registrationId,
                 contactGroupId: contactGroupId ? contactGroupId: '',
+                campaignId: campaignId ? campaignId: '',
                 datePlanned: datePlanned ? datePlanned.date : '',
                 dateStarted: dateStarted ? dateStarted.date : '',
                 dateFinished: dateFinished ? dateFinished.date : '',
@@ -74,6 +77,10 @@ class TaskDetailsFormGeneralEdit extends Component {
 
         OpportunityAPI.peekOpportunities().then((payload) => {
             this.setState({ opportunities: payload });
+        });
+
+        CampaignAPI.peekCampaigns().then((payload) => {
+            this.setState({ campaigns: payload });
         });
     };
 
@@ -175,6 +182,7 @@ class TaskDetailsFormGeneralEdit extends Component {
             statusId,
             registrationId,
             contactGroupId,
+            campaignId,
             datePlanned,
             dateStarted,
             dateFinished,
@@ -224,6 +232,16 @@ class TaskDetailsFormGeneralEdit extends Component {
                         required={"required"}
                         error={this.state.errors.typeId}
                     />
+                    <InputSelect
+                        label={"Status"}
+                        size={"col-sm-6"}
+                        name={"statusId"}
+                        options={this.props.taskStatuses}
+                        value={statusId}
+                        onChangeAction={this.handleInputChange}
+                        required={"required"}
+                        error={this.state.errors.statusId}
+                    />
                 </div>
 
                 <div className="row">
@@ -237,14 +255,12 @@ class TaskDetailsFormGeneralEdit extends Component {
                         optionName={'fullName'}
                     />
                     <InputSelect
-                        label={"Status"}
+                        label={"Campagne"}
                         size={"col-sm-6"}
-                        name={"statusId"}
-                        options={this.props.taskStatuses}
-                        value={statusId}
+                        name={"campaignId"}
+                        options={this.state.campaigns}
+                        value={campaignId}
                         onChangeAction={this.handleInputChange}
-                        required={"required"}
-                        error={this.state.errors.statusId}
                     />
                 </div>
 

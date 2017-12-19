@@ -9,6 +9,7 @@
 namespace App\Http\Resources\Task;
 
 
+use App\Http\Resources\Campaign\FullCampaign;
 use App\Http\Resources\Contact\FullContact;
 use App\Http\Resources\ContactGroup\FullContactGroup;
 use App\Http\Resources\GenericResource;
@@ -43,6 +44,8 @@ class FullTask extends Resource
                 'registrationName' => $this->registration ? $this->registration->address->present()->streetAndNumber() : '',
                 'contactGroupId' => $this->contact_group_id,
                 'contactGroup' => FullContactGroup::make($this->whenLoaded('contactGroup')),
+                'campaignId' => $this->campaign_id,
+                'campaign' => FullCampaign::make($this->whenLoaded('campaign')),
                 'datePlanned' => $this->date_planned,
                 'dateStarted' => $this->date_started,
                 'dateFinished' => $this->date_finished,

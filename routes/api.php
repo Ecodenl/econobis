@@ -130,6 +130,7 @@ Route::namespace('Api')
         Route::post('task-property-value/{taskPropertyValue}/delete', 'Task\TaskPropertyValueController@destroy');
 
         Route::get('campaign/grid', 'Campaign\CampaignController@grid');
+        Route::get('campaign/peek', 'Campaign\CampaignController@peek');
         Route::get('campaign/{campaign}', 'Campaign\CampaignController@show');
         Route::post('campaign/', 'Campaign\CampaignController@store');
         Route::post('campaign/{campaign}/opportunity/{opportunity}/associate', 'Campaign\CampaignController@associateOpportunity');

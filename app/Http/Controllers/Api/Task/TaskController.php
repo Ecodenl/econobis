@@ -34,6 +34,7 @@ class TaskController extends Controller
             'contact',
             'registration',
             'contactGroup',
+            'campaign',
             'responsibleUser',
             'createdBy',
             'finishedBy',
@@ -57,6 +58,7 @@ class TaskController extends Controller
             ->integer('statusId')->validate(['required', Rule::in(TaskStatus::ids())])->alias('status_id')->next()
             ->integer('registrationId')->validate('exists:registrations,id')->whenMissing(null)->onEmpty(null)->alias('registration_id')->next()
             ->integer('contactGroupId')->validate('exists:contact_groups,id')->whenMissing(null)->onEmpty(null)->alias('contact_group_id')->next()
+            ->integer('campaignId')->validate('exists:campaigns,id')->whenMissing(null)->onEmpty(null)->alias('campaign_id')->next()
             ->date('datePlanned')->validate('date')->whenMissing(null)->onEmpty(null)->alias('date_planned')->next()
             ->date('dateStarted')->validate('date')->whenMissing(null)->onEmpty(null)->alias('date_started')->next()
             ->date('dateFinished')->validate('date')->whenMissing(null)->onEmpty(null)->alias('date_finished')->next()
@@ -87,6 +89,7 @@ class TaskController extends Controller
             ->integer('statusId')->validate(Rule::in(TaskStatus::ids()))->alias('status_id')->next()
             ->integer('registrationId')->validate('exists:registrations,id')->onEmpty(null)->alias('registration_id')->next()
             ->integer('contactGroupId')->validate('exists:contact_groups,id')->onEmpty(null)->alias('contact_group_id')->next()
+            ->integer('campaignId')->validate('exists:campaigns,id')->onEmpty(null)->alias('campaign_id')->next()
             ->date('datePlanned')->validate('date')->onEmpty(null)->alias('date_planned')->next()
             ->date('dateStarted')->validate('date')->onEmpty(null)->alias('date_started')->next()
             ->date('dateFinished')->validate('date')->onEmpty(null)->alias('date_finished')->next()

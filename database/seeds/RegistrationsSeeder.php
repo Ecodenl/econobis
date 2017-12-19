@@ -11,9 +11,6 @@ class RegistrationsSeeder extends Seeder
      */
     public function run()
     {
-        // Eerst wat campgnes toevoegen
-        factory(\App\Eco\Campaign\Campaign::class, 10)->create();
-
         // Per adres registrations aanmaken
         foreach (\App\Eco\Address\Address::all() as $address) {
             factory(\App\Eco\Registration\Registration::class, random_int(0, 2))

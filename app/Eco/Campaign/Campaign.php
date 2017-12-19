@@ -48,7 +48,7 @@ class Campaign extends Model
     }
 
     public function responses(){
-        return $this->belongsToMany(Contact::class);
+        return $this->hasMany(CampaignResponse::class);
     }
 
     public function organisations(){

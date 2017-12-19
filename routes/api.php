@@ -132,9 +132,15 @@ Route::namespace('Api')
         Route::get('campaign/grid', 'Campaign\CampaignController@grid');
         Route::get('campaign/{campaign}', 'Campaign\CampaignController@show');
         Route::post('campaign/', 'Campaign\CampaignController@store');
-        Route::post('campaign/{campaign}/associate/opportunity/{opportunity}', 'Campaign\CampaignController@associateOpportunity');
-        Route::post('campaign/dissociate/opportunity/{opportunity}', 'Campaign\CampaignController@dissociateOpportunity');
+        Route::post('campaign/{campaign}/opportunity/{opportunity}/associate', 'Campaign\CampaignController@associateOpportunity');
+        Route::post('campaign/opportunity/{opportunity}/dissociate', 'Campaign\CampaignController@dissociateOpportunity');
         Route::post('campaign/{campaign}', 'Campaign\CampaignController@update');
         Route::post('campaign/{campaign}/delete', 'Campaign\CampaignController@destroy');
+        Route::post('campaign/{campaign}/response/{contact}/attach', 'Campaign\CampaignController@attachResponse');
+        Route::post('campaign/{campaign}/response/{contact}/detach', 'Campaign\CampaignController@detachResponse');
+        //Route::post('campaign/{campaign}/detach/response/{contact}', 'Campaign\CampaignController@associateOpportunity');
+        //Route::post('campaign/dissociate/opportunity/{opportunity}', 'Campaign\CampaignController@dissociateOpportunity');
+        //Route::post('campaign/{campaign}/attach/', 'Campaign\CampaignController@update');
+        //Route::post('campaign/{campaign}/delete', 'Campaign\CampaignController@destroy');
     }
 );

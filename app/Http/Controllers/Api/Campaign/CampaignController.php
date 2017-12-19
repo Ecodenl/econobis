@@ -9,12 +9,15 @@
 namespace App\Http\Controllers\Api\Campaign;
 
 use App\Eco\Campaign\Campaign;
+use App\Eco\Campaign\CampaignResponse;
+use App\Eco\Contact\Contact;
 use App\Eco\Opportunity\Opportunity;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\RequestQueries\Campaign\Grid\RequestQuery;
 use App\Http\Resources\Campaign\FullCampaign;
 use App\Http\Resources\Campaign\GridCampaign;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class CampaignController extends ApiController
@@ -31,7 +34,18 @@ class CampaignController extends ApiController
 
     public function show(Campaign $campaign)
     {
-        $campaign->load(['opportunities.contact', 'opportunities.measure', 'opportunities.status', 'opportunities.quotations', 'measures', 'status', 'type', 'responses', 'organisations', 'createdBy', 'ownedBy']);
+        $campaign->load(['opportunities.contact',
+            'opportunities.measure',
+            'opportunities.status',
+            'opportunities.quotations',
+            'measures',
+            'status',
+            'type',
+            'responses.contact',
+            'organisations',
+            'createdBy',
+            'ownedBy',
+        ]);
 
         return FullCampaign::make($campaign);
     }
@@ -56,7 +70,7 @@ class CampaignController extends ApiController
 
         $measureIds = explode(',', $request->measureIds);
 
-        if($measureIds[0] == '') {
+        if ($measureIds[0] == '') {
             $measureIds = [];
         }
 
@@ -65,7 +79,8 @@ class CampaignController extends ApiController
         return FullCampaign::make($campaign->fresh());
     }
 
-    public function update(Request $request, RequestInput $requestInput, Campaign $campaign) {
+    public function update(Request $request, RequestInput $requestInput, Campaign $campaign)
+    {
 
         $this->authorize('manage', Campaign::class);
 
@@ -82,8 +97,8 @@ class CampaignController extends ApiController
 
         $measureIds = explode(',', $request->measureIds);
 
-        if($measureIds[0] == '') {
-           $measureIds = [];
+        if ($measureIds[0] == '') {
+            $measureIds = [];
         }
 
         $campaign->measures()->sync($measureIds);
@@ -101,34 +116,51 @@ class CampaignController extends ApiController
         //First delete relations
         $campaign->measures()->detach();
 
-        foreach($campaign->opportunities as $opportunity){
+        foreach ($campaign->opportunities as $opportunity) {
             $opportunity->campaign()->dissociate();
             $opportunity->save();
         }
 
-        foreach($campaign->registrations as $registration){
+        foreach ($campaign->registrations as $registration) {
             $registration->campaign()->dissociate();
             $registration->save();
         }
 
         $campaign->organisations()->detach();
-        $campaign->responses()->detach();
+        $campaign->responses()->delete();
 
         $campaign->delete();
     }
 
-    public function associateOpportunity(Campaign $campaign, Opportunity $opportunity){
+    public function associateOpportunity(Campaign $campaign, Opportunity $opportunity)
+    {
         $opportunity->campaign()->associate($campaign);
         $opportunity->save();
 
         return FullCampaign::make($opportunity->fresh());
     }
 
-    public function dissociateOpportunity(Opportunity $opportunity){
+    public function dissociateOpportunity(Opportunity $opportunity)
+    {
         $opportunity->campaign()->dissociate();
         $opportunity->save();
 
         return FullCampaign::make($opportunity->fresh());
+    }
+
+    public function attachResponse(Campaign $campaign, Contact $contact)
+    {
+        $campaignResponse = new CampaignResponse([
+            'campaign_id' => $campaign->id,
+            'contact_id' => $contact->id,
+            'date_responded' => new Carbon(),
+        ]);
+        $campaignResponse->save();
+    }
+
+    public function detachResponse(Campaign $campaign, Contact $contact)
+    {
+        $campaign->responses()->where('contact_id', $contact->id)->delete();
     }
 
 }

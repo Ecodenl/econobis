@@ -84,7 +84,7 @@ class AlterCampaignsTable extends Migration
 
             $table->string('goal')->nullable();
 
-            $table->unsignedInteger('type_id')->default(1);
+            $table->unsignedInteger('type_id');
             $table->foreign('type_id')
                 ->references('id')->on('campaign_types')
                 ->onDelete('restrict');
@@ -100,11 +100,12 @@ class AlterCampaignsTable extends Migration
                 ->onDelete('restrict');
         });
 
-        Schema::create('campaign_contact', function (Blueprint $table) {
+        Schema::create('campaign_responses', function (Blueprint $table) {
+            $table->increments('id');
             $table->unsignedInteger('campaign_id');
             $table->unsignedInteger('contact_id');
+            $table->date('date_responded');
             $table->timestamps();
-            $table->primary(['campaign_id', 'contact_id']);
         });
 
         Schema::create('campaign_measure', function (Blueprint $table) {

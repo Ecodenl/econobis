@@ -31,7 +31,7 @@ class FullCampaign extends Resource
             'type' => GenericResource::make($this->whenLoaded('type')),
             'measures' => GenericResource::collection($this->whenLoaded('measures')),
             'opportunities' => FullOpportunity::collection($this->whenLoaded('opportunities')),
-            'responses' => FullContact::collection($this->whenLoaded('responses')),
+            'responses' => FullCampaignResponse::collection($this->whenLoaded('responses')),
             'organisations' => FullOrganisation::collection($this->whenLoaded('organisations')),
             'createdBy' => FullUser::make($this->whenLoaded('createdBy')),
             'ownedBy' => FullUser::make($this->whenLoaded('ownedBy')),

@@ -5,6 +5,8 @@ import { isEmpty } from 'lodash';
 import CampaignFormGeneral from './form/CampaignFormGeneral';
 import CampaignDetailsConclusionForm from './conclusion/CampaignDetailsConclusionForm';
 import CampaignDetailsOpportunities from './opportunities/CampaignDetailsOpportunities';
+import CampaignDetailsResponses from "./responses/CampaignDetailsResponses";
+import CampaignDetailsOrganisations from "./organisations/CampaignDetailsOrganisations";
 
 class CampaignDetailsForm extends Component {
     constructor(props){
@@ -22,6 +24,7 @@ class CampaignDetailsForm extends Component {
                     <CampaignFormGeneral />
                     <CampaignDetailsOpportunities />
                     <CampaignDetailsResponses />
+                    <CampaignDetailsOrganisations />
                     <CampaignDetailsConclusionForm />
                 </div>
         );

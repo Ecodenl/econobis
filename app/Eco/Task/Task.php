@@ -2,6 +2,7 @@
 
 namespace App\Eco\Task;
 
+use App\Eco\Campaign\Campaign;
 use App\Eco\Contact\Contact;
 use App\Eco\ContactGroup\ContactGroup;
 use App\Eco\Opportunity\Opportunity;
@@ -55,6 +56,14 @@ class Task extends Model
     public function registration()
     {
         return $this->belongsTo(Registration::class);
+    }
+
+    /**
+     * optional
+     */
+    public function campaign()
+    {
+        return $this->belongsTo(Campaign::class);
     }
 
     /**

@@ -70,7 +70,7 @@ export default {
     },
 
     associateOpportunity: (campaignId, opportunityId) => {
-        const requestUrl = `${URL_CAMPAIGN}/${campaignId}/associate/opportunity/${opportunityId}`;
+        const requestUrl = `${URL_CAMPAIGN}/${campaignId}/opportunity/${opportunityId}/associate`;
         const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
         axios.defaults.headers.common.Authorization = AUTH_TOKEN;
 
@@ -83,7 +83,7 @@ export default {
     },
 
     dissociateOpportunity: (opportunityId) => {
-        const requestUrl = `${URL_CAMPAIGN}/dissociate/opportunity/${opportunityId}`;
+        const requestUrl = `${URL_CAMPAIGN}/opportunity/${opportunityId}/dissociate`;
         const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
         axios.defaults.headers.common.Authorization = AUTH_TOKEN;
 
@@ -92,6 +92,73 @@ export default {
             .catch((error) => {
                     console.log(error);
                 },
+            );
+    },
+
+    attachResponse: (campaignId, contactId) => {
+        const requestUrl = `${URL_CAMPAIGN}/${campaignId}/reponse/${contactId}/attach`;
+        const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
+        axios.defaults.headers.common.Authorization = AUTH_TOKEN;
+
+        return axios.post(requestUrl)
+            .then(response => response.data.data)
+            .catch((error) => {
+                    console.log(error);
+                },
+            );
+    },
+
+    dettachResponse: (campaignId, contactId) => {
+        const requestUrl = `${URL_CAMPAIGN}/${campaignId}/reponse/${contactId}/detach`;
+        const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
+        axios.defaults.headers.common.Authorization = AUTH_TOKEN;
+
+        return axios.post(requestUrl)
+            .then(response => response.data.data)
+            .catch((error) => {
+                    console.log(error);
+                },
+            );
+    },
+
+    attachOrganisation: (campaignId, organisationId) => {
+        const requestUrl = `${URL_CAMPAIGN}/${campaignId}/organisation/${organisationId}/attach`;
+        const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
+        axios.defaults.headers.common.Authorization = AUTH_TOKEN;
+
+        return axios.post(requestUrl)
+            .then(response => response.data.data)
+            .catch((error) => {
+                    console.log(error);
+                },
+            );
+    },
+
+    dettachOrganisation: (campaignId, organisationId) => {
+        const requestUrl = `${URL_CAMPAIGN}/${campaignId}/organisation/${organisationId}/detach`;
+        const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
+        axios.defaults.headers.common.Authorization = AUTH_TOKEN;
+
+        return axios.post(requestUrl)
+            .then(response => response.data.data)
+            .catch((error) => {
+                    console.log(error);
+                },
+            );
+    },
+
+    peekCampaigns: () => {
+        const requestUrl = `${URL_CAMPAIGN}/peek`;
+        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
+        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
+
+        return axios.get(requestUrl)
+            .then(function (response) {
+                return response.data.data;
+            })
+            .catch(function (error) {
+                    console.log(error);
+                }
             );
     },
 

@@ -4,16 +4,26 @@ import { connect } from 'react-redux';
 
 import Panel from "../../../components/panel/Panel";
 import PanelBody from '../../../components/panel/PanelBody';
+import TaskList from "./TaskList";
 
 class CampaignDetailsHarmonica extends Component {
     constructor(props){
         super(props);
+
+        this.state = {
+            toggleShowTasks: false,
+        }
     };
 
     newTask = () => {
         hashHistory.push(`/taak/nieuw/campagne/${this.props.id}`);
     };
 
+    toggleTask = () => {
+        this.setState({
+            toggleShowTasks: !this.state.toggleShowTasks
+        });
+    };
 
     newDocument = () => {
         hashHistory.push(`/document/nieuw/`);
@@ -25,12 +35,13 @@ class CampaignDetailsHarmonica extends Component {
             <div className="col-md-12 extra-space-above">
                 <Panel className={"harmonica-button"}>
                     <PanelBody>
-                        <div className="col-sm-12">
-                            <span className="">TAKEN <span className="badge">5</span></span>
+                        <div className="col-sm-12" onClick={this.toggleTask}>
+                            <span className="">TAKEN <span className="badge">{ this.props.campaign.taskCount }</span></span>
                             {permissions.manageTask &&
                             <a role="button" className="pull-right" onClick={this.newTask}><span
                                 className="glyphicon glyphicon-plus glyphicon-white"/></a>
                             }
+                            { this.state.toggleShowTasks && <TaskList /> }
                         </div>
                     </PanelBody>
                 </Panel>

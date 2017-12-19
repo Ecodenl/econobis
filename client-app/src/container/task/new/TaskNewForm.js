@@ -21,7 +21,8 @@ const TaskNewForm = props => {
         dateFinished,
         responsibleUserId,
         finishedById,
-        opportunityId
+        opportunityId,
+        campaignId,
     } = props.task;
 
     return (
@@ -63,6 +64,16 @@ const TaskNewForm = props => {
                     required={"required"}
                     error={props.errors.typeId}
                 />
+                <InputSelect
+                    label={"Status"}
+                    size={"col-sm-6"}
+                    name={"statusId"}
+                    options={props.taskStatuses}
+                    value={statusId}
+                    onChangeAction={props.handleInputChange}
+                    required={"required"}
+                    error={props.errors.statusId}
+                />
             </div>
 
             <div className="row">
@@ -76,15 +87,14 @@ const TaskNewForm = props => {
                     optionName={'fullName'}
                 />
                 <InputSelect
-                    label={"Status"}
+                    label={"Campagne"}
                     size={"col-sm-6"}
-                    name={"statusId"}
-                    options={props.taskStatuses}
-                    value={statusId}
+                    name={"campaignId"}
+                    options={props.campaigns}
+                    value={campaignId}
                     onChangeAction={props.handleInputChange}
-                    required={"required"}
-                    error={props.errors.statusId}
                 />
+
             </div>
 
             <div className="row">

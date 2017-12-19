@@ -5,9 +5,9 @@ import Modal from '../../../../components/modal/Modal';
 import { fetchCampaign } from '../../../../actions/CampaignsActions';
 import CampaignAPI from "../../../../api/CampaignAPI";
 
-const CampaignDetailsReponseItemDelete = (props) => {
+const CampaignDetailsOrganisationDelete = (props) => {
     const confirmAction = () => {
-        CampaignAPI.dettachResponse(props.responseId).then(() => {
+        CampaignAPI.dettachOrganisation(props.organisationId).then(() => {
             props.fetchCampaign(props.campaignId);
             props.toggleDelete();
         });
@@ -41,4 +41,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(CampaignDetailsReponseItemDelete);
+export default connect(mapStateToProps, mapDispatchToProps)(CampaignDetailsOrganisationDelete);

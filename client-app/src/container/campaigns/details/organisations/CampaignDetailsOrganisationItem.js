@@ -1,9 +1,9 @@
 import React, {Component} from 'react';
 
-import CampaignDetailsResponseView from './CampaignDetailsResponseView';
-import CampaignDetailsResponseItemDelete from "./CampaignDetailsReponseItemDelete";
+import CampaignDetailsOrganisationView from './CampaignDetailsOrganisationView';
+import CampaignDetailsOrganisationItemDelete from "./CampaignDetailsOrganisationItemDelete";
 
-class CampaignDetailsResponseItem extends Component {
+class CampaignDetailsOrganisationNew extends Component {
     constructor(props) {
         super(props);
 
@@ -12,8 +12,8 @@ class CampaignDetailsResponseItem extends Component {
             highlightLine: '',
             showDelete: false,
 
-            response: {
-                ...props.response,
+            organisation: {
+                ...props.organisation,
             },
         };
     };
@@ -39,19 +39,19 @@ class CampaignDetailsResponseItem extends Component {
     render() {
         return (
             <div>
-                <CampaignDetailsResponseView
+                <CampaignDetailsOrganisationView
                     highlightLine={this.state.highlightLine}
                     showActionButtons={this.state.showActionButtons}
                     onLineEnter={this.onLineEnter}
                     onLineLeave={this.onLineLeave}
                     toggleDelete={this.toggleDelete}
-                    response={this.state.response}
+                    organisation={this.state.organisation}
                 />
                 {
                     this.state.showDelete &&
-                    <CampaignDetailsResponseItemDelete
+                    <CampaignDetailsOrganisationItemDelete
                         toggleDelete={this.toggleDelete}
-                        responseId={this.state.response.id}
+                        organisationId={this.state.organisation.id}
                     />
                 }
             </div>
@@ -59,4 +59,4 @@ class CampaignDetailsResponseItem extends Component {
     }
 };
 
-export default CampaignDetailsResponseItem;
+export default CampaignDetailsOrganisationNew;

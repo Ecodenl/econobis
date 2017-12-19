@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import ContactsAPI from '../../../../api/ContactsAPI';
+import OrganisationAPI from '../../../../api/OrganisationAPI';
 import CampaignAPI from '../../../../api/CampaignAPI';
 import InputText from '../../../../components/form/InputText';
 import ButtonText from '../../../../components/button/ButtonText';
@@ -15,33 +15,33 @@ class CampaignDetailsResponseNew extends Component {
         super(props);
 
         this.state = {
-            contactId:'',
-            contacts: [],
+            organisationId:'',
+            organisations: [],
             errors: {
-                contact: false,
+                organisation: false,
                 hasErrors: true,
             },
         };
     };
 
     componentWillMount() {
-        ContactsAPI.getContactsPeek().then(payload => {
+        OrganisationAPI.getOrganisationPeek().then(payload => {
             this.setState({
-                contacts: payload
+                organisations: payload
             });
         });
     }
 
-    handleContactChange = event => {
+    handleOrganisationChange = event => {
         const target = event.target;
         const value = target.type === 'checkbox' ? target.checked : target.value;
 
         if (value === '') {
             this.setState({
                 ...this.state,
-                contactId: '',
+                organisationId: '',
                 errors: {
-                    contact: true,
+                    organisation: true,
                     hasErrors: true
                 },
             });
@@ -49,9 +49,9 @@ class CampaignDetailsResponseNew extends Component {
         else {
             this.setState({
                 ...this.state,
-                contactId: value,
+                organisationId: value,
                 errors: {
-                    contact: false,
+                    organisation: false,
                     hasErrors: false
                 },
             });
@@ -62,7 +62,7 @@ class CampaignDetailsResponseNew extends Component {
         event.preventDefault();
 
         if(!this.state.errors.hasErrors){
-            CampaignAPI.attachResponse(this.props.campaignId, this.state.contactId).then(() => {
+            CampaignAPI.attachOrganisation(this.props.campaignId, this.state.organisationId).then(() => {
                this.props.fetchCampaign(this.props.campaignId);
                this.props.toggleShowNew();
             });
@@ -71,7 +71,7 @@ class CampaignDetailsResponseNew extends Component {
             this.setState({
                 ...this.state,
                 errors: {
-                    contact: true,
+                    organisation: true,
                     hasErrors: true
                 },
             });
@@ -79,7 +79,7 @@ class CampaignDetailsResponseNew extends Component {
     };
 
     render() {
-        const {contactId} = this.state;
+        const {organisationId} = this.state;
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
                 <Panel className={'panel-grey'}>
@@ -92,15 +92,14 @@ class CampaignDetailsResponseNew extends Component {
                                 readOnly={true}
                             />
                             <InputSelect
-                                label={"Contact"}
+                                label={"Organisatie"}
                                 size={"col-sm-6"}
-                                name={"contactId"}
-                                options={this.state.contacts}
-                                value={contactId}
-                                onChangeAction={this.handleContactChange}
+                                name={"organisationId"}
+                                options={this.state.organisations}
+                                value={organisationId}
+                                onChangeAction={this.handleOrganisationChange}
                                 required={"required"}
-                                optionName={"fullName"}
-                                error={this.state.errors.contact}
+                                error={this.state.errors.organisation}
                             />
                         </div>
 

@@ -13,6 +13,10 @@ import ContactsListApp from './container/contactsList/ContactsListApp';
 import ContactDetailsApp from './container/contactDetails/ContactDetailsApp';
 import ContactNewApp from './container/contactNew/ContactNewApp';
 
+import CampaignsListApp from './container/campaigns/list/CampaignsListApp';
+import CampaignDetailsApp from './container/campaigns/details/CampaignDetailsApp';
+import CampaignNewApp from './container/campaigns/new/CampaignNewApp';
+
 import TaskDetailsApp from './container/task/details/TaskDetailsApp';
 import TasksListApp from './container/task/list/TasksListApp';
 import TaskNewApp from './container/task/new/TaskNewApp';
@@ -59,6 +63,10 @@ const Routes = () => {
                 <Route path="kans/nieuw" component={OpportunityNewApp} />
                 <Route path="kans/nieuw/:type/:id" component={OpportunityNewApp} />
                 <Route path="kans/:id" component={OpportunityDetailsApp} />
+
+                <Route path="campagnes" component={CampaignsListApp} />
+                <Route path="campagne/nieuw" component={CampaignNewApp} />
+                <Route path="campagne/:id" component={CampaignDetailsApp} />
 
                 <Route path="gebruikers" component={UsersListApp} />
                 <Route path="gebruiker/nieuw" component={UserNewApp} />

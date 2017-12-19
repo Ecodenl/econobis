@@ -8,7 +8,6 @@
 
 namespace App\Http\RequestQueries\Opportunity\Grid;
 
-use App\Eco\ContactGroup\ContactGroup;
 use App\Eco\Opportunity\Opportunity;
 use Illuminate\Http\Request;
 

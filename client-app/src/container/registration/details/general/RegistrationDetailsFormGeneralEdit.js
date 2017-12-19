@@ -16,7 +16,7 @@ class RegistrationDetailsFormGeneralEdit extends Component {
     constructor(props) {
         super(props);
 
-        const { id, address = {}, reasons, createdAt, campaign, sources} = props.registrationDetails;
+        const { id, address = {}, reasons, createdAt, campaign, sources, status} = props.registrationDetails;
 
         this.state = {
             registration: {
@@ -26,7 +26,7 @@ class RegistrationDetailsFormGeneralEdit extends Component {
                 buildingTypeId: address.buildingTypeId,
                 createdAt: createdAt ? createdAt.date : '',
                 owner: false,
-                statusId: campaign && campaign.id,
+                statusId: status && status.id,
                 sourceIds: sources && sources.map((source) => source.id).join(','),
                 campaignId: campaign && campaign.id,
                 registrationReasonIds: reasons && reasons.map((reason) => reason.id).join(','),

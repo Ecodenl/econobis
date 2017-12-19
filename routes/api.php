@@ -129,5 +129,12 @@ Route::namespace('Api')
         Route::post('task-property-value/{taskPropertyValue}', 'Task\TaskPropertyValueController@update');
         Route::post('task-property-value/{taskPropertyValue}/delete', 'Task\TaskPropertyValueController@destroy');
 
+        Route::get('campaign/grid', 'Campaign\CampaignController@grid');
+        Route::get('campaign/{campaign}', 'Campaign\CampaignController@show');
+        Route::post('campaign/', 'Campaign\CampaignController@store');
+        Route::post('campaign/{campaign}/associate/opportunity/{opportunity}', 'Campaign\CampaignController@associateOpportunity');
+        Route::post('campaign/dissociate/opportunity/{opportunity}', 'Campaign\CampaignController@dissociateOpportunity');
+        Route::post('campaign/{campaign}', 'Campaign\CampaignController@update');
+        Route::post('campaign/{campaign}/delete', 'Campaign\CampaignController@destroy');
     }
 );

@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Eco\Campaign\Campaign;
+use App\Eco\Campaign\CampaignPolicy;
 use App\Eco\Opportunity\OpportunityPolicy;
 use App\Eco\Opportunity\Opportunity;
 use App\Eco\Organisation\Organisation;
@@ -50,6 +52,7 @@ class AuthServiceProvider extends ServiceProvider
         Opportunity::class => OpportunityPolicy::class,
         Task::class => TaskPolicy::class,
         Registration::class => RegistrationPolicy::class,
+        Campaign::class => CampaignPolicy::class,
     ];
 
     /**

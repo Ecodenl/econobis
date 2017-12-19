@@ -11,6 +11,7 @@ import { ic_email } from 'react-icons-kit/md/ic_email';
 import { cog } from 'react-icons-kit/icomoon/cog';
 import { drawer } from 'react-icons-kit/icomoon/drawer';
 import { pencil2 } from 'react-icons-kit/icomoon/pencil2';
+import { speech_bubbles } from 'react-icons-kit/ikons/speech_bubbles';
 
 const SidebarMenu = props => {
     return (
@@ -73,6 +74,10 @@ const SidebarMenu = props => {
                     <NavIcon><SvgIcon size={20} icon={ic_email} /></NavIcon>
                     <NavText> Email </NavText>
                 </Nav>
+                <Nav id="marketing">
+                    <NavIcon><SvgIcon size={20} icon={speech_bubbles} /></NavIcon>
+                    <NavText><Link className="sidebar-link" to="campagnes">Marketing</Link></NavText>
+                </Nav>
                 <Nav id="taken">
                     <NavIcon><SvgIcon size={20} icon={ic_business} /></NavIcon>
                     <NavText><Link className="sidebar-link" to="taken">Taken</Link></NavText>
@@ -89,7 +94,7 @@ const SidebarMenu = props => {
                     <NavIcon><SvgIcon size={20} icon={ic_business} /></NavIcon>
                     <NavText> Variabelen </NavText>
                 </Nav>
-                <Nav id="instellinge">
+                <Nav id="instellingen">
                     <NavIcon><SvgIcon size={20} icon={cog} /></NavIcon>
                     <NavText> Instellingen </NavText>
                     <Nav id="users">

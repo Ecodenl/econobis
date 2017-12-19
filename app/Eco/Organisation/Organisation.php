@@ -2,6 +2,7 @@
 
 namespace App\Eco\Organisation;
 
+use App\Eco\Campaign\Campaign;
 use App\Eco\OrganisationType\OrganisationType;
 use App\Eco\Contact\Contact;
 use App\Eco\Industry\Industry;
@@ -34,5 +35,9 @@ class Organisation extends Model
     public function industry()
     {
         return $this->belongsTo(Industry::class);
+    }
+
+    public function campaigns(){
+        return $this->belongsToMany(Campaign::class);
     }
 }

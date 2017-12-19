@@ -34,7 +34,6 @@ class OpportunityDetailsQuotationNew extends Component {
 
     componentWillMount() {
         OrganisationAPI.getOrganisationPeek().then(payload => {
-            console.log(payload);
             this.setState({
                 organisations: payload
             });

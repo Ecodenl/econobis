@@ -78,7 +78,6 @@ class RegistrationNewFormGeneral extends Component {
         }
 
         RegistrationDetailsAPI.newRegistration(registration).then((payload) => {
-            console.log(payload);
             hashHistory.push(`/aanmelding/${payload.id}`);
         });
 

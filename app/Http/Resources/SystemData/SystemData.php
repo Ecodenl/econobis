@@ -2,6 +2,8 @@
 
 namespace App\Http\Resources\SystemData;
 
+use App\Eco\Campaign\CampaignStatus;
+use App\Eco\Campaign\CampaignType;
 use App\Eco\Opportunity\OpportunityReaction;
 use App\Eco\Opportunity\OpportunityStatus;
 use App\Eco\OrganisationType\OrganisationType;
@@ -76,6 +78,8 @@ class SystemData extends Resource
             'taskStatuses' => TaskStatus::collection()->toArray(),
             'taskProperties' => GenericResource::collection(TaskProperty::all()),
             'users' => FullUser::collection(User::all()),
+            'campaignStatuses' => FullEnumWithIdAndName::collection(CampaignStatus::all()),
+            'campaignTypes' => FullEnumWithIdAndName::collection(CampaignType::all()),
         ];
     }
 }

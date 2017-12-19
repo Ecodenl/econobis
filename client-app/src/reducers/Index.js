@@ -18,6 +18,7 @@ import contactGroupReducer from './ContactGroupReducer';
 import contactGroupDetailsReducer from './ContactGroupDetailsReducer';
 import contactsInGroupReducer from './ContactsInGroupReducer';
 import opportunitiesReducer from './OpportunitiesReducer';
+import campaignsReducer from './CampaignsReducer';
 import tasksReducer from './task/TasksReducer';
 import tasksFiltersReducer from './task/TasksFiltersReducer';
 import tasksSortsReducer from './task/TasksSortsReducer';
@@ -44,8 +45,12 @@ const rootReducer = combineReducers({
     contactGroups: contactGroupReducer,
     contactGroupDetails: contactGroupDetailsReducer,
     contactsInGroup: contactsInGroupReducer,
+
     opportunities: opportunitiesReducer,
     opportunity: opportunitiesReducer,
+
+    campaigns: campaignsReducer,
+    campaign: campaignsReducer,
 
     //Tasks
     tasks: tasksReducer,

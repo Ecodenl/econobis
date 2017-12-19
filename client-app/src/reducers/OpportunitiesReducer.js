@@ -7,7 +7,7 @@ export default function (state = [], action) {
         case 'FETCH_OPPORTUNITY_SUCCESS':
             return {
                 ...action.opportunity,
-            }
+            };
         case 'CLEAR_OPPORTUNITIES':
             return state.opportunities = [];
         case 'CLEAR_OPPORTUNITY':

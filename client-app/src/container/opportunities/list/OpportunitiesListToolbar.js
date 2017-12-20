@@ -6,7 +6,7 @@ import { browserHistory } from 'react-router';
 import ButtonIcon from '../../../components/button/ButtonIcon';
 
 const OpportunitiesListToolbar = (props) => {
-    const newContactGroup = () => {
+    const newOpportunity = () => {
         hashHistory.push('kans/nieuw');
     };
 
@@ -18,7 +18,7 @@ const OpportunitiesListToolbar = (props) => {
                 <div className="btn-group" role="group">
                     <ButtonIcon iconName={"glyphicon-arrow-left"} onClickAction={browserHistory.goBack}/>
                     {permissions.manageOpportunity &&
-                    <ButtonIcon iconName={'glyphicon-plus'} onClickAction={newContactGroup}/>
+                    <ButtonIcon iconName={'glyphicon-plus'} onClickAction={newOpportunity}/>
                     }
                 </div>
 

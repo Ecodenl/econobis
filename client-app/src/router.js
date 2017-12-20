@@ -52,6 +52,7 @@ const Routes = () => {
                 <Route path="contact/:id" component={ ContactDetailsApp } />
 
                 <Route path="taken" component={TasksListApp} />
+                <Route path="taak/nieuw" component={TaskNewApp} />
                 <Route path="taak/nieuw/:type/:id" component={TaskNewApp} />
                 <Route path="taak/:id" component={TaskDetailsApp} />
 

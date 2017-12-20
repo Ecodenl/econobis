@@ -10,6 +10,10 @@ class TaskUploadFile extends Component {
     constructor(props) {
         super(props);
 
+        this.state = {
+          error: false,
+        };
+
         this.onDrop = this.onDrop.bind(this);
     }
 
@@ -23,8 +27,8 @@ class TaskUploadFile extends Component {
                 this.props.toggleUploadfile();
             }, 100);
         })
-        .catch(function (error) {
-            console.log(error);
+        .catch((error) => {
+            this.setState({error: true});
         });
     };
 
@@ -41,6 +45,9 @@ class TaskUploadFile extends Component {
                         <p><strong>of</strong> sleep het bestand hierheen</p>
                     </Dropzone>
                 </div>
+                {
+                    this.state.error && <p className="has-error-message">Uploaden mislukt. Probeer nogmaals een bestand te uploaden.</p>
+                }
             </Modal>
         );
     }

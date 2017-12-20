@@ -24,6 +24,7 @@ Route::namespace('Api')
 
         Route::get('/contact/grid', 'Contact\GridController@index');
         Route::get('/contact/peek', 'Contact\ContactController@peek');
+        Route::post('contact/{contact}/owner/{user}/associate', 'Contact\ContactController@associateOwner');
         Route::get('/contact/{contact}', 'Contact\ContactController@show');
         Route::get('/contact/{contact}/registrations', 'Contact\ContactController@registrations');
         Route::get('/contact/{contact}/groups', 'Contact\ContactController@groups');

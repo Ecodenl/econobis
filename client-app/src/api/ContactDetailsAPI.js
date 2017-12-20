@@ -17,4 +17,17 @@ export default {
                 console.log(error);
             });
     },
+
+    updateContactOwner: (contactId, userId) => {
+        const requestUrl = `${URL_CONTACTDETAILS}/${contactId}/owner/${userId}/associate`;
+        const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
+        axios.defaults.headers.common.Authorization = AUTH_TOKEN;
+
+        return axios.post(requestUrl)
+            .then(response => response.data.data)
+            .catch((error) => {
+                    console.log(error);
+                },
+            );
+    },
 };

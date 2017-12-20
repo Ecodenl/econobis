@@ -35,6 +35,7 @@ class ContactNewFormPersonal extends Component {
                 dateOfBirth: '',
                 newsletter: false,
                 occupationId: '',
+                ownerId: props.userId,
             },
             errors: {
                 name: false,
@@ -119,7 +120,7 @@ class ContactNewFormPersonal extends Component {
     };
 
     render() {
-        const { typeId, statusId, titleId, firstName, lastNamePrefixId, lastName, memberSince, organisationId, dateOfBirth, newsletter, occupationId } = this.state.person;
+        const { typeId, statusId, titleId, firstName, lastNamePrefixId, lastName, memberSince, organisationId, dateOfBirth, newsletter, occupationId, ownerId } = this.state.person;
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -230,6 +231,15 @@ class ContactNewFormPersonal extends Component {
                 </div>
 
                 <div className="row">
+                    <InputSelect
+                        label={"Eigenaar"}
+                        size={"col-sm-6"}
+                        name={"ownerId"}
+                        options={this.props.users}
+                        value={ownerId}
+                        optionName={"fullName"}
+                        onChangeAction={this.handleInputChange}
+                    />
                     { organisationId !== '' ?
                         <InputSelect
                             label={"Functie"}
@@ -242,7 +252,9 @@ class ContactNewFormPersonal extends Component {
                         :
                         <div className="form-group col-sm-6"/>
                     }
+                </div>
 
+                <div className="row">
                     <InputCheckbox
                         label={"Nieuwsbrief"}
                         name={"newsletter"}
@@ -267,7 +279,9 @@ const mapStateToProps = (state) => {
         personTypes: state.systemData.personTypes,
         contactStatuses: state.systemData.contactStatuses,
         occupations: state.systemData.occupations,
+        users: state.systemData.users,
         titles: state.systemData.titles,
+        userId: state.meDetails.id,
     };
 };
 

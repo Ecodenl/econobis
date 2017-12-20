@@ -33,6 +33,7 @@ class ContactNewFormOrganisation extends Component {
                 iban: '',
                 squareMeters: '',
                 newsletter: false,
+                ownerId: props.userId
             },
             errors: {
                 name: false,
@@ -94,7 +95,7 @@ class ContactNewFormOrganisation extends Component {
     };
 
     render() {
-        const { typeId, statusId, name, chamberOfCommerceNumber, vatNumber, industryId, memberSince, newsletter, website, iban, squareMeters } = this.state.organisation;
+        const { typeId, statusId, name, chamberOfCommerceNumber, vatNumber, industryId, memberSince, newsletter, website, iban, squareMeters, ownerId } = this.state.organisation;
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -202,12 +203,16 @@ class ContactNewFormOrganisation extends Component {
                 </div>
 
                 <div className="row">
-                    <InputCheckbox
-                        label={"Nieuwsbrief"}
-                        name={"newsletter"}
-                        checked={newsletter}
+                    <InputSelect
+                        label={"Eigenaar"}
+                        size={"col-sm-6"}
+                        name={"ownerId"}
+                        options={this.props.users}
+                        value={ownerId}
+                        optionName={"fullName"}
                         onChangeAction={this.handleInputChange}
                     />
+
                     <InputText
                         label="Oppervlakte"
                         name="squareMeters"
@@ -215,7 +220,14 @@ class ContactNewFormOrganisation extends Component {
                         onChangeAction={this.handleInputChange}
                     />
                 </div>
-
+                <div className="row">
+                    <InputCheckbox
+                        label={"Nieuwsbrief"}
+                        name={"newsletter"}
+                        checked={newsletter}
+                        onChangeAction={this.handleInputChange}
+                    />
+                </div>
                 <PanelFooter>
                     <div className="pull-right btn-group" role="group">
                         <ButtonText buttonClassName={"btn-default"} buttonText={"Sluiten"} onClickAction={this.props.switchToView}/>
@@ -232,6 +244,8 @@ const mapStateToProps = (state) => {
         organisationTypes: state.systemData.organisationTypes,
         contactStatuses: state.systemData.contactStatuses,
         industries: state.systemData.industries,
+        users: state.systemData.users,
+        userId: state.meDetails.id,
     };
 };
 

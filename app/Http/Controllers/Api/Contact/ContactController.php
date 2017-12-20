@@ -76,4 +76,10 @@ class ContactController extends Controller
         return SidebarTask::collection($contact->tasks);
     }
 
+    public function associateOwner(Contact $contact, User $user)
+    {
+        $contact->owner()->associate($user);
+        $contact->save();
+    }
+
 }

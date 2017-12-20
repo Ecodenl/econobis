@@ -40,10 +40,10 @@ Route::namespace('Api')
         Route::post('/registration/{registration}/delete', 'Registration\RegistrationController@destroy');
 
         Route::post('/registration/{registration}/measure-taken', 'Registration\RegistrationController@storeMeasureTaken');
-        Route::post('/registration/{registration}/measure-taken/delete', 'Registration\RegistrationController@deleteMeasureTaken');
+        Route::post('/registration/{measureTaken}/measure-taken/delete', 'Registration\RegistrationController@deleteMeasureTaken');
 
         Route::post('/registration/{registration}/measure-requested', 'Registration\RegistrationController@storeMeasureRequested');
-        Route::post('/registration/{registration}/measure-requested/delete', 'Registration\RegistrationController@deleteMeasureRequested');
+        Route::post('/registration/{measureRequested}/measure-requested/delete', 'Registration\RegistrationController@deleteMeasureRequested');
 
         Route::post('/registration/{registration}/note', 'Registration\RegistrationController@storeNote');
         Route::post('/registration/note/{note}/update', 'Registration\RegistrationController@updateNote');

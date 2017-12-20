@@ -9,7 +9,7 @@ const RegistrationMeasuresTakenDelete = (props) => {
         props.deleteRegistrationMeasureTaken(props.id);
         props.closeDeleteItemModal();
     };
-    console.log(props);
+
     return (
         <Modal
             buttonConfirmText="Verwijder"

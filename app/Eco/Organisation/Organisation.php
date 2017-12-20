@@ -30,7 +30,7 @@ class Organisation extends Model
 
     public function people()
     {
-        return $this->hasMany(Person::class);
+        return $this->hasMany(Person::class)->orderBy('last_name');
     }
 
     public function contactPerson()

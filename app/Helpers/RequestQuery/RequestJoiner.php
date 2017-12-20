@@ -31,4 +31,8 @@ abstract class RequestJoiner
         return 'apply' . studly_case($joinName) . 'Join';
     }
 
+    public function resetProcessedJoins()
+    {
+        $this->processedJoins = [];
+    }
 }

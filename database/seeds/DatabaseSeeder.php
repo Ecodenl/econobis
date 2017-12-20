@@ -31,6 +31,8 @@ class DatabaseSeeder extends Seeder
         // ContactNotes on Contacts
         $this->call(ContactNotesSeeder::class);
 
+        $this->call(CampaignsSeeder::class);
+
         // Aanmeldingen (en aanverwante data) toevoegen
         $this->call(RegistrationsSeeder::class);
 

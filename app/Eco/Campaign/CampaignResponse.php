@@ -11,12 +11,19 @@ namespace App\Eco\Campaign;
 
 use App\Eco\Contact\Contact;
 use Illuminate\Database\Eloquent\Model;
+use Venturecraft\Revisionable\RevisionableTrait;
 
 class CampaignResponse extends Model
 {
 
+    use RevisionableTrait;
+
     protected $dates = [
         'date_responded',
+    ];
+
+    protected $guarded = [
+        'id',
     ];
 
     /**

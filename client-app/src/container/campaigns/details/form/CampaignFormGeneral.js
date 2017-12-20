@@ -61,7 +61,6 @@ class OpportunityFormGeneral extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        campaign: state.campaign,
         permissions: state.meDetails.permissions
     }
 };

@@ -7,7 +7,7 @@ import CampaignAPI from "../../../../api/CampaignAPI";
 
 const CampaignDetailsOrganisationDelete = (props) => {
     const confirmAction = () => {
-        CampaignAPI.dettachOrganisation(props.organisationId).then(() => {
+        CampaignAPI.detachOrganisation(props.campaignId, props.organisationId).then(() => {
             props.fetchCampaign(props.campaignId);
             props.toggleDelete();
         });
@@ -21,7 +21,7 @@ const CampaignDetailsOrganisationDelete = (props) => {
             confirmAction={() => confirmAction()}
             title="Verwijderen"
         >
-            <p>Wil je deze kans ontkoppelen van deze campagne?</p>
+            <p>Wil je deze organisatie ontkoppelen van deze campagne?</p>
 
 
 

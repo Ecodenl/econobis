@@ -96,7 +96,7 @@ export default {
     },
 
     attachResponse: (campaignId, contactId) => {
-        const requestUrl = `${URL_CAMPAIGN}/${campaignId}/reponse/${contactId}/attach`;
+        const requestUrl = `${URL_CAMPAIGN}/${campaignId}/response/${contactId}/attach`;
         const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
         axios.defaults.headers.common.Authorization = AUTH_TOKEN;
 
@@ -108,8 +108,8 @@ export default {
             );
     },
 
-    dettachResponse: (campaignId, contactId) => {
-        const requestUrl = `${URL_CAMPAIGN}/${campaignId}/reponse/${contactId}/detach`;
+    detachResponse: (campaignId, contactId) => {
+        const requestUrl = `${URL_CAMPAIGN}/${campaignId}/response/${contactId}/detach`;
         const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
         axios.defaults.headers.common.Authorization = AUTH_TOKEN;
 
@@ -134,7 +134,7 @@ export default {
             );
     },
 
-    dettachOrganisation: (campaignId, organisationId) => {
+    detachOrganisation: (campaignId, organisationId) => {
         const requestUrl = `${URL_CAMPAIGN}/${campaignId}/organisation/${organisationId}/detach`;
         const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
         axios.defaults.headers.common.Authorization = AUTH_TOKEN;
@@ -159,6 +159,20 @@ export default {
             .catch(function (error) {
                     console.log(error);
                 }
+            );
+    },
+
+
+    updateCampaignOwner: (campaignId, userId) => {
+        const requestUrl = `${URL_CAMPAIGN}/${campaignId}/owner/${userId}/associate`;
+        const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
+        axios.defaults.headers.common.Authorization = AUTH_TOKEN;
+
+        return axios.post(requestUrl)
+            .then(response => response.data.data)
+            .catch((error) => {
+                    console.log(error);
+                },
             );
     },
 

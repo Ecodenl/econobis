@@ -10,9 +10,12 @@ use App\Eco\Registration\Registration;
 use App\Eco\Task\Task;
 use App\Eco\User\User;
 use Illuminate\Database\Eloquent\Model;
+use Venturecraft\Revisionable\RevisionableTrait;
 
 class Campaign extends Model
 {
+    use RevisionableTrait;
+
     protected $table = 'campaigns';
      /**
      * The attributes that are not mass assignable.

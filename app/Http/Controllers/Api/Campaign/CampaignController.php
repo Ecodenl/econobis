@@ -12,6 +12,8 @@ use App\Eco\Campaign\Campaign;
 use App\Eco\Campaign\CampaignResponse;
 use App\Eco\Contact\Contact;
 use App\Eco\Opportunity\Opportunity;
+use App\Eco\Organisation\Organisation;
+use App\Eco\User\User;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\RequestQueries\Campaign\Grid\RequestQuery;
@@ -42,8 +44,8 @@ class CampaignController extends ApiController
             'measures',
             'status',
             'type',
-            'responses.contact',
-            'organisations',
+            'responses.contact.primaryAddress',
+            'organisations.contactPerson',
             'createdBy',
             'ownedBy',
             'tasks',
@@ -168,6 +170,17 @@ class CampaignController extends ApiController
     public function detachResponse(Campaign $campaign, Contact $contact)
     {
         $campaign->responses()->where('contact_id', $contact->id)->delete();
+        $campaign->save();
+    }
+
+    public function attachOrganisation(Campaign $campaign, Organisation $organisation)
+    {
+        $campaign->organisations()->attach($organisation);
+    }
+
+    public function detachOrganisation(Campaign $campaign, Organisation $organisation)
+    {
+        $campaign->organisations()->detach($organisation);
     }
 
     public function peek()
@@ -175,4 +188,9 @@ class CampaignController extends ApiController
         return CampaignPeek::collection(Campaign::orderBy('id')->get());
     }
 
+    public function associateOwner(Campaign $campaign, User $user)
+    {
+        $campaign->ownedBy()->associate($user);
+        $campaign->save();
+    }
 }

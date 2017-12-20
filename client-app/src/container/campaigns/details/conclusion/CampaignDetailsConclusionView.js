@@ -9,13 +9,13 @@ const CampaignDetailsFormConclusionView = props => {
 
     return (
         <div>
-            <div className="row">
+            <div className="row" onClick={props.switchToEdit}>
                 <ViewText
                     label={"Verantwoordelijke"}
                     value={ownedBy ? ownedBy.fullName: 'Onbekend'}
                 />
             </div>
-            <div className="row">
+            <div className="row" onClick={props.switchToEdit}>
                 <ViewText
                     label={"Gemaakt op"}
                     value={createdAt ? moment(createdAt.date).format('L') : 'Onbekend'}

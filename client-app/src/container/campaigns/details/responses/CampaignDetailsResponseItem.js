@@ -51,7 +51,7 @@ class CampaignDetailsResponseItem extends Component {
                     this.state.showDelete &&
                     <CampaignDetailsResponseItemDelete
                         toggleDelete={this.toggleDelete}
-                        responseId={this.state.response.id}
+                        contactId={this.state.response.contact.id}
                     />
                 }
             </div>

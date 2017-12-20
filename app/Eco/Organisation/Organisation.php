@@ -3,6 +3,7 @@
 namespace App\Eco\Organisation;
 
 use App\Eco\Campaign\Campaign;
+use App\Eco\Opportunity\OpportunityQuotation;
 use App\Eco\OrganisationType\OrganisationType;
 use App\Eco\Contact\Contact;
 use App\Eco\Industry\Industry;
@@ -32,6 +33,11 @@ class Organisation extends Model
         return $this->hasMany(Person::class);
     }
 
+    public function contactPerson()
+    {
+        return $this->hasOne(Person::class)->where('primary', true);
+    }
+
     public function industry()
     {
         return $this->belongsTo(Industry::class);
@@ -39,5 +45,25 @@ class Organisation extends Model
 
     public function campaigns(){
         return $this->belongsToMany(Campaign::class);
+    }
+
+    public function quotations(){
+        return $this->hasMany(OpportunityQuotation::class);
+    }
+
+    public function amountOfWonQuotations()
+    {
+        $quotations = $this->quotations()->with('opportunity.status')->get();
+        $count = 0;
+        foreach ($quotations as $quotation) {
+            if ($quotation->opportunity->status->name == 'Gewonnen'
+                || $quotation->opportunity->status->name
+                == 'Gewonnen, doe het zelf'
+            ) {
+                $count++;
+            }
+        }
+
+        return $count;
     }
 }

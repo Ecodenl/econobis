@@ -137,11 +137,10 @@ Route::namespace('Api')
         Route::post('campaign/opportunity/{opportunity}/dissociate', 'Campaign\CampaignController@dissociateOpportunity');
         Route::post('campaign/{campaign}', 'Campaign\CampaignController@update');
         Route::post('campaign/{campaign}/delete', 'Campaign\CampaignController@destroy');
+        Route::post('campaign/{campaign}/owner/{user}/associate', 'Campaign\CampaignController@associateOwner');
         Route::post('campaign/{campaign}/response/{contact}/attach', 'Campaign\CampaignController@attachResponse');
         Route::post('campaign/{campaign}/response/{contact}/detach', 'Campaign\CampaignController@detachResponse');
-        //Route::post('campaign/{campaign}/detach/response/{contact}', 'Campaign\CampaignController@associateOpportunity');
-        //Route::post('campaign/dissociate/opportunity/{opportunity}', 'Campaign\CampaignController@dissociateOpportunity');
-        //Route::post('campaign/{campaign}/attach/', 'Campaign\CampaignController@update');
-        //Route::post('campaign/{campaign}/delete', 'Campaign\CampaignController@destroy');
+        Route::post('campaign/{campaign}/organisation/{organisation}/attach', 'Campaign\CampaignController@attachOrganisation');
+        Route::post('campaign/{campaign}/organisation/{organisation}/detach', 'Campaign\CampaignController@detachOrganisation');
     }
 );

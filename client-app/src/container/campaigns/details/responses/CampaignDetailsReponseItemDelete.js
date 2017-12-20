@@ -7,7 +7,7 @@ import CampaignAPI from "../../../../api/CampaignAPI";
 
 const CampaignDetailsReponseItemDelete = (props) => {
     const confirmAction = () => {
-        CampaignAPI.dettachResponse(props.responseId).then(() => {
+        CampaignAPI.detachResponse(props.campaignId, props.contactId).then(() => {
             props.fetchCampaign(props.campaignId);
             props.toggleDelete();
         });
@@ -21,7 +21,7 @@ const CampaignDetailsReponseItemDelete = (props) => {
             confirmAction={() => confirmAction()}
             title="Verwijderen"
         >
-            <p>Wil je deze kans ontkoppelen van deze campagne?</p>
+            <p>Wil je deze response ontkoppelen van deze campagne?</p>
 
 
 

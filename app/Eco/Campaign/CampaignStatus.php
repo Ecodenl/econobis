@@ -3,9 +3,11 @@
 namespace App\Eco\Campaign;
 
 use Illuminate\Database\Eloquent\Model;
+use Venturecraft\Revisionable\RevisionableTrait;
 
 class CampaignStatus extends Model
 {
+    use RevisionableTrait;
 
     protected $table = 'campaign_status';
 

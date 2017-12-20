@@ -2,6 +2,9 @@
 
 namespace App\Http\Resources\Organisation;
 
+use App\Http\Resources\Campaign\FullCampaign;
+use App\Http\Resources\Contact\FullContact;
+use App\Http\Resources\Opportunity\FullOpportunityQuotation;
 use App\Http\Resources\OrganisationType\FullOrganisationType;
 use App\Http\Resources\Industry\FullIndustry;
 use App\Http\Resources\Person\FullPerson;
@@ -20,6 +23,7 @@ class FullOrganisation extends Resource
         return [
             'id' => $this->id,
             'contactId' => $this->contact_id,
+            'address' => $this->contact->primaryAddress,
             'name' => $this->name,
             'typeId' => $this->type_id,
             'type' => FullOrganisationType::make($this->whenLoaded('type')),
@@ -30,6 +34,11 @@ class FullOrganisation extends Resource
             'vatNumber' => $this->vat_number,
             'squareMeters' => $this->square_meters,
             'people' => FullPerson::collection($this->whenLoaded('people')),
+            'contactPerson' => FullPerson::make($this->whenLoaded('contactPerson')),
+            'amountOfQuotations' => $this->quotations->count(),
+            'amountOfWonQuotations' => $this->amountOfWonQuotations(),
+            'quotations' => FullOpportunityQuotation::collection($this->whenLoaded('quotations')),
+            'campaigns' => FullCampaign::collection($this->whenLoaded('campaigns')),
             'createdAt' => $this->created_at,
             'updatedAt' => $this->updated_at,
         ];

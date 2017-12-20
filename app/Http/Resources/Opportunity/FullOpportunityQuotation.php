@@ -23,6 +23,7 @@ class FullOpportunityQuotation extends Resource
         return [
             'id' => $this->id,
             'organisation' => FullOrganisation::make($this->whenLoaded('organisation')),
+            'opportunity' => FullOpportunity::make($this->whenLoaded('opportunity')),
             'dateRequested' => $this->date_requested,
             'dateTaken' => $this->date_taken,
             'dateValidTill' => $this->date_valid_till,

@@ -8,7 +8,6 @@
 
 namespace App\Http\Resources\Campaign;
 
-
 use App\Http\Resources\Contact\FullContact;
 use Illuminate\Http\Resources\Json\Resource;
 
@@ -25,6 +24,7 @@ class FullCampaignResponse extends Resource
         return [
             'id' => $this->id,
             'contact' => FullContact::make($this->whenLoaded('contact')),
+            'address' => $this->contact->primaryAddress,
             'dateResponded' => $this->date_responded,
             'createdAt' => $this->created_at,
             'updatedAt' => $this->updated_at,

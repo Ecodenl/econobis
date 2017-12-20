@@ -32,6 +32,7 @@ Route::namespace('Api')
 
         Route::get('/registration/grid', 'Registration\RegistrationController@grid');
         Route::get('/registration/peek', 'Registration\RegistrationController@peek');
+        Route::get('/registration/amount-active', 'Registration\RegistrationController@getAmountOfActiveRegistrations');
         Route::get('/contact/{contact}/registration', 'Registration\RegistrationController@getStore');
         Route::post('/contact/registration', 'Registration\RegistrationController@store');
         Route::get('/registration/{registration}', 'Registration\RegistrationController@show');

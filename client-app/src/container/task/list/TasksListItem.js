@@ -53,11 +53,11 @@ class TasksListItem extends Component {
 
         return (
             <tr className={this.state.highlightRow} onDoubleClick={() => this.openItem(id)} onMouseEnter={() => this.onRowEnter()} onMouseLeave={() => this.onRowLeave()}>
-                <td>{ moment(createdAt.date).format('DD-MM-Y') }</td>
+                <td>{ moment(createdAt.date).format('L') }</td>
                 <td>{ name }</td>
                 <td>{ contactFullName }</td>
-                <td>{ datePlanned && moment(datePlanned.date).format('DD-MM-Y') }</td>
-                <td>{ dateStarted && moment(dateStarted.date).format('DD-MM-Y') }</td>
+                <td>{ datePlanned && moment(datePlanned.date).format('L') }</td>
+                <td>{ dateStarted && moment(dateStarted.date).format('L') }</td>
                 <td>{ statusName }</td>
                 <td>{ responsibleUserName }</td>
                 <td>

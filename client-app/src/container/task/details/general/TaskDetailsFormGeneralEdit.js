@@ -36,7 +36,7 @@ class TaskDetailsFormGeneralEdit extends Component {
                 opportunityId: opportunityId ? opportunityId : '',
                 contactId: contactId ? contactId : '',
                 statusId,
-                registrationId,
+                registrationId: registrationId ? registrationId : '',
                 contactGroupId: contactGroupId ? contactGroupId: '',
                 campaignId: campaignId ? campaignId: '',
                 datePlanned: datePlanned ? datePlanned.date : '',

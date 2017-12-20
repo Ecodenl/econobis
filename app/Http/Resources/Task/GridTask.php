@@ -24,7 +24,7 @@ class GridTask extends Resource
                 'dateStarted' => $this->date_started,
                 'statusCode' => $this->getStatus()->code,
                 'statusName' => $this->getStatus()->name,
-                'createdAt' => $this->updated_at,
+                'createdAt' => $this->created_at,
                 'responsibleUserName' => $this->responsibleUser->present()->fullName(),
             ];
     }

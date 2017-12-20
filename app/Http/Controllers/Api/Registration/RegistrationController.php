@@ -336,4 +336,8 @@ class RegistrationController extends ApiController
         return RegistrationPeek::collection(Registration::orderBy('id')->get());
     }
 
+    public function getAmountOfActiveRegistrations(){
+        return Registration::count();
+    }
+
 }

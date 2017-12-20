@@ -87,18 +87,18 @@ const TaskDetailsFormGeneralView = props => {
             <div className="row margin-20-top">
                 <ViewText
                     label={"Plan datum"}
-                    value={datePlanned && moment(datePlanned.date).format('d-M-Y')}
+                    value={datePlanned && moment(datePlanned.date).format('L')}
                 />
                 <ViewText
                     label="Datum gestart"
-                    value={dateStarted && moment(dateStarted.date).format('d-M-Y')}
+                    value={dateStarted && moment(dateStarted.date).format('L')}
                 />
             </div>
 
             <div className="row">
                 <ViewText
                     label={"Datum gereed"}
-                    value={dateFinished && moment(dateFinished.date).format('d-M-Y')}
+                    value={dateFinished && moment(dateFinished.date).format('L')}
                 />
                 <ViewText
                     label="Afgerond door"
@@ -116,7 +116,7 @@ const TaskDetailsFormGeneralView = props => {
             <div className="row margin-20-top">
                 <ViewText
                     label={"Gemaakt op"}
-                    value={createdAt && moment(createdAt.date).format('d-M-Y')}
+                    value={createdAt && moment(createdAt.date).format('L')}
                 />
                 <ViewText
                     label="Gemaakt door"

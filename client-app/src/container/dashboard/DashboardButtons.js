@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { hashHistory } from 'react-router';
 
+import RegistrationsAPI from './../../api/registration/RegistrationsAPI';
 import OpportunityAPI from './../../api/OpportunityAPI';
 import TaskAPI from './../../api/task/TasksAPI';
 
@@ -9,11 +10,17 @@ class DashboardButtons extends Component {
         super(props);
 
         this.state = {
+            amountActiveRegistrations: [],
             amountActiveTasks: [],
             amountActiveOpportunities: []
         }
     };
     componentWillMount() {
+        RegistrationsAPI.getAmountActive().then(payload => {
+            this.setState({
+                amountActiveRegistrations: payload
+            });
+        });
         OpportunityAPI.getAmountActive().then(payload => {
             this.setState({
                 amountActiveOpportunities: payload
@@ -41,7 +48,7 @@ class DashboardButtons extends Component {
                     <div className="panel panel-default" id="dashboardbutton-blue">
                         <div className="panel-body">
                             <h4 className="text-center text-bold">AANMELDINGEN</h4>
-                            <h4 className="text-center text-bold">8</h4>
+                            <h4 className="text-center text-bold">{this.state.amountActiveRegistrations}</h4>
                         </div>
                     </div>
                 </div>

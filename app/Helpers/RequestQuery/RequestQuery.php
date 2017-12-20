@@ -71,11 +71,13 @@ abstract class RequestQuery
 
     public function get()
     {
+        $this->joiner->resetProcessedJoins();
         return $this->getQuery()->get();
     }
 
     public function total()
     {
+        $this->joiner->resetProcessedJoins();
         $query = $this->baseQuery();
         $this->applyFilter($query);
         return $query->count();

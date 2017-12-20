@@ -38,7 +38,7 @@ export default {
     },
 
     getPerson: () => {
-        const requestUrl = `${URL_API}/api/contacts/peek`;
+        const requestUrl = `${URL_API}/api/contact/peek`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
@@ -52,7 +52,7 @@ export default {
     },
 
     getContactsPeek: () => {
-        const requestUrl = `${URL_API}/api/contacts/peek`;
+        const requestUrl = `${URL_API}/api/contact/peek`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 

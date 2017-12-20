@@ -5,6 +5,8 @@ import { browserHistory } from 'react-router';
 import ButtonIcon from '../../../components/button/ButtonIcon';
 import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
+import ButtonText from "../../../components/button/ButtonText";
+import { hashHistory } from 'react-router';
 
 const UserDetailsToolbar = props => {
     return (
@@ -15,9 +17,10 @@ const UserDetailsToolbar = props => {
                         <div className="col-md-2">
                             <div className="btn-group" role="group">
                                 <ButtonIcon iconName={"glyphicon-arrow-left"} onClickAction={browserHistory.goBack} />
+                                <ButtonText buttonText={`Open lijst (${props.contactGroup.numberOfContacts})` }  onClickAction={() => hashHistory.push(`/contacten-in-groep/${props.contactGroup.id}`)} />
                             </div>
                         </div>
-                        <div className="col-md-8"><h4 className="text-center">{props.name}</h4></div>
+                        <div className="col-md-8"><h4 className="text-center">{props.contactGroup.name}</h4></div>
                         <div className="col-md-2" />
                     </PanelBody>
                 </Panel>
@@ -28,7 +31,7 @@ const UserDetailsToolbar = props => {
 
 const mapStateToProps = (state) => {
     return {
-        name: state.contactGroupDetails.name,
+        contactGroup: state.contactGroupDetails,
     };
 };
 

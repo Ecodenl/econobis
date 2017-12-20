@@ -100,7 +100,7 @@ const ContactsListFilter = props => {
                 </select>
             </th>
             <th className="DayPicker-overflow hidden-xs hidden-sm">
-                <DayPickerInput value={ props.filters.createdAt.data && moment(props.filters.createdAt.data).format('DD-MM-Y') } onDayChange={onCreatedAtChange} />
+                <DayPickerInput className={"form-control input-sm"} value={ props.filters.createdAt.data && moment(props.filters.createdAt.data).format('DD-MM-Y') } onDayChange={onCreatedAtChange} />
             </th>
             <th/>
         </tr>

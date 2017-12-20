@@ -22,6 +22,7 @@ class ContactDetailsToolbar extends Component {
     };
 
     render() {
+        const { type = {} } = this.props;
         return (
             <div className="row">
                 <div className="col-sm-12">
@@ -31,16 +32,16 @@ class ContactDetailsToolbar extends Component {
                                 <div className="btn-group margin-small" role="group">
                                     <ButtonIcon iconName={"glyphicon-arrow-left"} onClickAction={browserHistory.goBack} />
                                     {
-                                        this.props.typeId === 'organisation' && this.props.permissions.deleteOrganisation &&
+                                        type.id === 'organisation' && this.props.permissions.deleteOrganisation &&
                                         <ButtonIcon iconName={"glyphicon-trash"} onClickAction={this.toggleDelete}/>
                                     }
                                     {
-                                        this.props.typeId === 'person' && this.props.permissions.deletePerson &&
+                                        type.id === 'person' && this.props.permissions.deletePerson &&
                                         <ButtonIcon iconName={"glyphicon-trash"} onClickAction={this.toggleDelete}/>
                                     }
                                 </div>
                             </div>
-                            <div className="col-md-4"><h4 className="text-center text-success margin-small"><strong>{this.props.fullName || 'Nieuw'}</strong></h4></div>
+                            <div className="col-md-4"><h4 className="text-center text-success margin-small"><strong>{this.props.fullName || 'Nieuw'} ({type.name})</strong></h4></div>
                             <div className="col-md-4" />
                         </PanelBody>
                     </Panel>
@@ -63,7 +64,7 @@ const mapStateToProps = (state) => {
     return {
         fullName: state.contactDetails.fullName,
         id: state.contactDetails.id,
-        typeId: state.contactDetails.typeId,
+        type: state.contactDetails.type,
         permissions: state.meDetails.permissions,
     }
 };

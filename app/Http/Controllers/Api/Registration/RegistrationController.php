@@ -10,6 +10,7 @@ namespace App\Http\Controllers\Api\Registration;
 
 
 use App\Eco\Address\Address;
+use App\Eco\Measure\MeasureRequested;
 use App\Eco\Measure\MeasureTaken;
 use App\Eco\Registration\Registration;
 use App\Eco\Contact\Contact;
@@ -261,30 +262,18 @@ class RegistrationController extends ApiController
         return FullRegistration::make($registration);
     }
 
-    public function deleteMeasureTaken(Request $request)
+    public function deleteMeasureTaken(MeasureTaken $measureTaken)
     {
         $this->authorize('manage', Registration::class);
 
-        $data = $request->validate([
-            'measure_id' => 'required:measures,id',
-        ]);
-        $address
-            = Address::find(Registration::find($request->registration)->address_id);
-        $address->measures_taken()->detach($data['measure_id']);
-
-        return null;
+        $measureTaken->delete();
     }
 
-    public function deleteMeasureRequested(Request $request, Registration $registration)
+    public function deleteMeasureRequested(MeasureRequested $measureRequested)
     {
         $this->authorize('manage', Registration::class);
 
-        $data = $request->validate([
-            'measure_id' => 'required:measures,id',
-        ]);
-        $measureTaken = MeasureTaken::where('address_id', $registration->address_id)
-            ->where('measure_id', $data['measure_id']);
-        $measureTaken->delete();
+        $measureRequested->delete();
     }
 
     public function updateNote(Request $request)

@@ -15,7 +15,7 @@ class MeasureRequested extends Resource
     public function toArray($request)
     {
         return [
-            'id' => $this->measure->id,
+            'id' => $this->id,
             'name' => $this->measure->name,
             'desiredDate' => $this->desired_date,
             'degreeInterest' => $this->degree_interest,

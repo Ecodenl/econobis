@@ -91,11 +91,4 @@ class UserController extends Controller
 
         $user->removeRole($role);
     }
-
-    public function peek()
-    {
-        $users = User::select('id', 'first_name', 'last_name', 'last_name_prefix_id')->get();
-
-        return UserPeek::collection($users);
-    }
 }

@@ -10,7 +10,6 @@ import ButtonText from '../../../../components/button/ButtonText';
 import PanelFooter from "../../../../components/panel/PanelFooter";
 
 import ContactsAPI from '../../../../api/ContactsAPI';
-import UsersAPI from '../../../../api/UsersAPI';
 import RegistrationsAPI from '../../../../api/registration/RegistrationsAPI';
 import OpportunityAPI from '../../../../api/OpportunityAPI';
 
@@ -38,7 +37,6 @@ class OpportunityFormEdit extends Component {
                 registrationId: registration ? registration.id : '',
             },
             contacts: [],
-            users: [],
             registrations: [],
             errors: {
                 contact: false,
@@ -51,12 +49,6 @@ class OpportunityFormEdit extends Component {
         ContactsAPI.getPerson().then(payload => {
             this.setState({
                 contacts: payload
-            });
-        });
-
-        UsersAPI.peekUsers().then(payload => {
-            this.setState({
-                users: payload
             });
         });
 
@@ -226,7 +218,7 @@ class OpportunityFormEdit extends Component {
                         label={"Verantwoordelijke"}
                         size={"col-sm-6"}
                         name={"ownedById"}
-                        options={this.state.users}
+                        options={this.props.users}
                         value={ownedById}
                         onChangeAction={this.handleInputChange}
                         optionName={'fullName'}
@@ -259,6 +251,7 @@ const mapStateToProps = (state) => {
         reactions: state.systemData.opportunityReactions,
         measures: state.systemData.measures,
         campaigns: state.systemData.campaigns,
+        users: state.systemData.users,
     }
 };
 

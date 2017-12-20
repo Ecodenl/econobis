@@ -51,7 +51,6 @@ Route::namespace('Api')
         Route::get('/registration/{registration}/tasks', 'Registration\RegistrationController@tasks');
 
         Route::get('/user/grid', 'User\GridController@index');
-        Route::get('/user/peek', 'User\UserController@peek');
         Route::post('/user', 'User\UserController@store');
         Route::get('/user/{user}', 'User\UserController@show');
         Route::post('/user/{user}', 'User\UserController@update');

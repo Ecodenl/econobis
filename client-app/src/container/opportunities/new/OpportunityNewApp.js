@@ -9,9 +9,9 @@ import OpportunityNew from './OpportunityNew';
 
 
 import ContactsAPI from '../../../api/ContactsAPI';
-import UsersAPI from '../../../api/UsersAPI';
 import RegistrationsAPI from '../../../api/registration/RegistrationsAPI';
 import OpportunityAPI from '../../../api/OpportunityAPI';
+import {connect} from "react-redux";
 
 
 class OppportunitiesNewApp extends Component {
@@ -31,7 +31,6 @@ class OppportunitiesNewApp extends Component {
                 registrationId: '',
             },
             contacts: [],
-            users: [],
             registrations: [],
             errors: {
                 measure: false,
@@ -50,12 +49,6 @@ class OppportunitiesNewApp extends Component {
         ContactsAPI.getPerson().then(payload => {
             this.setState({
                 contacts: payload
-            });
-        });
-
-        UsersAPI.peekUsers().then(payload => {
-            this.setState({
-                users: payload
             });
         });
 
@@ -168,7 +161,7 @@ class OppportunitiesNewApp extends Component {
                             <OpportunityNew
                                 opportunity={this.state.opportunity}
                                 contacts={this.state.contacts}
-                                users={this.state.users}
+                                users={this.props.users}
                                 registrations={this.state.registrations}
                                 errors={this.state.errors}
                                 handleInputChange={this.handleInputChange}
@@ -183,4 +176,10 @@ class OppportunitiesNewApp extends Component {
     }
 };
 
-export default OppportunitiesNewApp;
+const mapStateToProps = (state) => {
+    return {
+        users: state.systemData.users,
+    }
+};
+
+export default connect(mapStateToProps)(OppportunitiesNewApp);

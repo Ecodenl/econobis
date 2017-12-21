@@ -205,11 +205,15 @@ class RegistrationController extends ApiController
                 $registration->address_id = $data['addressId'];
             }
             if (array_key_exists('registrationStatusId', $data)) {
+                $registration_status_id = $data['registrationStatusId'];
+                if (empty($registration_status_id)) $registration_status_id = null;
                 $registration->registration_status_id
-                    = $data['registrationStatusId'];
+                    = $registration_status_id;
             }
             if (array_key_exists('campaignId', $data)) {
-                $registration->campaign_id = $data['campaignId'];
+                $campaign_id = $data['campaignId'];
+                if (empty($campaign_id)) $campaign_id = null;
+                $registration->campaign_id = $campaign_id;
             }
             if (array_key_exists('statusId', $data)) {
                 $statusId = $data['statusId'];
@@ -221,10 +225,14 @@ class RegistrationController extends ApiController
 
         //relations
         if (array_key_exists('sourceIds', $data)) {
-            $registration->sources()->sync($data['sourceIds']);
+            $source_ids = $data['sourceIds'];
+            if (empty($source_ids)) $source_ids = null;
+            $registration->sources()->sync($source_ids);
         }
         if (array_key_exists('registrationReasonIds', $data)) {
-            $registration->reasons()->sync($data['registrationReasonIds']);
+            $registration_reason_ids = $data['registrationReasonIds'];
+            if (empty($registration_reason_ids)) $registration_reason_ids = null;
+            $registration->reasons()->sync($registration_reason_ids);
 
         }
 
@@ -235,7 +243,9 @@ class RegistrationController extends ApiController
         ) {
             $address = $registration->address;
             if (array_key_exists('buildingTypeId', $data)) {
-                $address->building_type_id = $data['buildingTypeId'];
+                $building_type_id = $data['buildingTypeId'];
+                if (empty($building_type_id)) $building_type_id = null;
+                $address->building_type_id = $building_type_id;
             }
             if (array_key_exists('buildYear', $data)) {
                 $address->build_year = $data['buildYear'];

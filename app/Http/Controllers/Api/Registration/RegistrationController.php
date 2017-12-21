@@ -329,4 +329,39 @@ class RegistrationController extends ApiController
         return Registration::count();
     }
 
+    public function updateMeasureRequested(Request $request, MeasureRequested $measureRequested)
+    {
+        $this->authorize('manage', Registration::class);
+
+        $data = $request->validate([
+            'desiredDateNew' => '',
+            'degreeInterest' => 'integer',
+        ]);
+
+        $measureRequested->desired_date = $data['desiredDateNew'];
+        $measureRequested->degree_interest = $data['degreeInterest'];
+
+        $measureRequested->save();
+
+        return $measureRequested;
+    }
+
+    public function updateMeasureTaken(Request $request, MeasureTaken $measureTaken)
+    {
+        $this->authorize('manage', Registration::class);
+
+        $data = $request->validate([
+            'measureDateNew' => '',
+            'energyLabelId' => 'integer|exists:energy_labels,id',
+        ]);
+
+        $measureTaken->measure_date = $data['measureDateNew'];
+        $measureTaken->energy_label_id = $data['energyLabelId'];
+
+        $measureTaken->save();
+
+        return $measureTaken;
+    }
+
+
 }

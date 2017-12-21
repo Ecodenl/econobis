@@ -148,19 +148,6 @@ export default {
             );
     },
 
-    dissociateOpportunity: (opportunityId) => {
-        const requestUrl = `${URL_MEASURE}/opportunity/${opportunityId}/dissociate`;
-        const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
-        axios.defaults.headers.common.Authorization = AUTH_TOKEN;
-
-        return axios.post(requestUrl)
-            .then(response => response.data.data)
-            .catch((error) => {
-                    console.log(error);
-                },
-            );
-    },
-
     // peekMeasures: () => {
     //     const requestUrl = `${URL_MEASURE}/peek`;
     //     const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');

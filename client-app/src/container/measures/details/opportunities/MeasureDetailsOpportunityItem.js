@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 
 import MeasureDetailsOpportunityView from './MeasureDetailsOpportunityView';
-import MeasureDetailsOpportunityItemDelete from "./MeasureDetailsOpportunityItemDelete";
 
 class MeasureDetailsOpportunityItem extends Component {
     constructor(props) {
@@ -47,13 +46,6 @@ class MeasureDetailsOpportunityItem extends Component {
                     toggleDelete={this.toggleDelete}
                     opportunity={this.state.opportunity}
                 />
-                {
-                    this.state.showDelete &&
-                    <MeasureDetailsOpportunityItemDelete
-                        toggleDelete={this.toggleDelete}
-                        opportunityId={this.state.opportunity.id}
-                    />
-                }
             </div>
         );
     }

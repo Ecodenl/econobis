@@ -150,7 +150,6 @@ Route::namespace('Api')
         Route::post('measure/', 'Measure\MeasureController@store');
         Route::post('measure/faq/{measureFaq}/delete', 'Measure\MeasureController@destroyFaq');
         Route::post('measure/faq/{measureFaq}/update', 'Measure\MeasureController@updateFaq');
-        Route::post('measure/opportunity/{opportunity}/dissociate', 'Measure\MeasureController@dissociateOpportunity');
         Route::post('measure/{measure}/opportunity/{opportunity}/associate', 'Measure\MeasureController@associateOpportunity');
         Route::post('measure/{measure}/supplier/{organisation}/attach', 'Measure\MeasureController@attachSupplier');
         Route::post('measure/{measure}/supplier/{organisation}/detach', 'Measure\MeasureController@detachSupplier');

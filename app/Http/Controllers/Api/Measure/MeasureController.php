@@ -149,14 +149,4 @@ class MeasureController extends ApiController
 
         return FullMeasure::make($measure->fresh());
     }
-
-    public function dissociateOpportunity(Opportunity $opportunity)
-    {
-        $this->authorize('manage', Measure::class);
-        $opportunity->measure()->dissociate();
-        $opportunity->save();
-
-        return FullOpportunity::make($opportunity->fresh());
-    }
-
 }

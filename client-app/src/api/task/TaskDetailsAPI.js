@@ -51,7 +51,7 @@ export default {
         return axios.post(requestUrl, data);
     },
 
-    uploadTaskFile: function(id, file) {
+    uploadTaskFile: (id, file) => {
         const requestUrl = `${URL_TASK}/${id}/attachments`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
@@ -59,12 +59,12 @@ export default {
         return axios.post(requestUrl, file);
     },
 
-    downloadAttachment: function(id) {
+    downloadAttachment: (id) => {
         const requestUrl = `${URL_API}/api/task-attachment/${id}/download`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
-
-        return axios.get(requestUrl);
+        
+        return axios.get(requestUrl, {responseType: 'blob'});
     }
 
 };

@@ -26,7 +26,7 @@ class MeasureObserver
 
     public function created(Measure $measure)
     {
-        $measure->number = 'M' . Carbon::now()->year . $measure->id;
+        $measure->number = 'M' . Carbon::now()->year . '-' .$measure->id;
         $measure->save();
     }
 }

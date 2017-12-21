@@ -26,7 +26,7 @@ class OpportunityObserver
 
     public function created(Opportunity $opportunity)
     {
-        $opportunity->number = 'K' . Carbon::now()->year . $opportunity->id;
+        $opportunity->number = 'K' . Carbon::now()->year . '-' . $opportunity->id;
         $opportunity->save();
     }
 }

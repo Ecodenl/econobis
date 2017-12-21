@@ -6,7 +6,7 @@ import PanelBody from '../../../components/panel/PanelBody';
 import ButtonIcon from '../../../components/button/ButtonIcon';
 
 
-class CampaignNewToolbar extends Component {
+class MeasureNewToolbar extends Component {
     constructor(props){
         super(props);
 
@@ -27,7 +27,7 @@ class CampaignNewToolbar extends Component {
                                     <ButtonIcon iconName={"glyphicon-arrow-left"} onClickAction={browserHistory.goBack} />
                                 </div>
                             </div>
-                            <div className="col-md-4"><h3 className="text-center table-title">Nieuwe campagne</h3></div>
+                            <div className="col-md-4"><h3 className="text-center table-title">Nieuwe maatregel</h3></div>
                             <div className="col-md-4" />
                         </PanelBody>
                     </Panel>
@@ -37,4 +37,4 @@ class CampaignNewToolbar extends Component {
     };
 };
 
-export default CampaignNewToolbar;
+export default MeasureNewToolbar;

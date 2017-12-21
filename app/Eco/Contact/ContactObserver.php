@@ -27,7 +27,7 @@ class ContactObserver
 
     public function created(Contact $contact)
     {
-        $contact->number = 'C' . Carbon::now()->year . $contact->id;
+        $contact->number = 'C' . Carbon::now()->year . '-' . $contact->id;
         $contact->save();
     }
 

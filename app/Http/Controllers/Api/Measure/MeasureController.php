@@ -8,8 +8,11 @@
 
 namespace App\Http\Controllers\Api\Measure;
 
+use App\Eco\Measure\Measure;
+use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\RequestQueries\Measure\Grid\RequestQuery;
+use App\Http\Resources\Measure\FullMeasure;
 use App\Http\Resources\Measure\GridMeasure;
 
 class MeasureController extends ApiController
@@ -41,34 +44,21 @@ class MeasureController extends ApiController
 //        return FullCampaign::make($campaign);
 //    }
 //
-//    public function store(Request $request, RequestInput $requestInput)
-//    {
-//        $this->authorize('manage', Campaign::class);
-//
-//        $data = $requestInput
-//            ->string('name')->validate('required')->next()
-//            ->string('description')->onEmpty(null)->next()
-//            ->string('startDate')->validate('date')->onEmpty(null)->alias('start_date')->next()
-//            ->string('endDate')->validate('date')->onEmpty(null)->alias('end_date')->next()
-//            ->string('goal')->onEmpty(null)->next()
-//            ->integer('statusId')->validate('exists:campaign_status,id')->onEmpty(null)->alias('status_id')->next()
-//            ->integer('typeId')->validate('required|exists:campaign_types,id')->alias('type_id')->next()
-//            ->get();
-//
-//        $campaign = new Campaign();
-//        $campaign->fill($data);
-//        $campaign->save();
-//
-//        $measureIds = explode(',', $request->measureIds);
-//
-//        if ($measureIds[0] == '') {
-//            $measureIds = [];
-//        }
-//
-//        $campaign->measures()->sync($measureIds);
-//
-//        return FullCampaign::make($campaign->fresh());
-//    }
+    public function store(RequestInput $requestInput)
+    {
+        $this->authorize('manage', Measure::class);
+
+        $data = $requestInput
+            ->string('name')->validate('required')->next()
+            ->string('description')->onEmpty(null)->next()
+            ->get();
+
+        $measure = new Measure();
+        $measure->fill($data);
+        $measure->save();
+
+        return FullMeasure::make($measure->fresh());
+    }
 //
 //    public function update(Request $request, RequestInput $requestInput, Campaign $campaign)
 //    {

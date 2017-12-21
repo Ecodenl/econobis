@@ -27,7 +27,7 @@ class CampaignObserver
 
     public function created(Campaign $campaign)
     {
-        $campaign->number = 'C' . Carbon::now()->year . $campaign->id;
+        $campaign->number = 'C' . Carbon::now()->year . '-' . $campaign->id;
         $campaign->save();
     }
 }

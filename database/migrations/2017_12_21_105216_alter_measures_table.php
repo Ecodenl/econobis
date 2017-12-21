@@ -60,7 +60,7 @@ class AlterMeasuresTable extends Migration
 
         Schema::table('measures', function (Blueprint $table) {
             $table->string('number');
-            $table->string('description');
+            $table->string('description')->nullable();
             $table->unsignedInteger('created_by_id')->nullable();
             $table->foreign('created_by_id')
                 ->references('id')->on('users')

@@ -26,7 +26,7 @@ class MeasureDetailsOpportunityNew extends Component {
     };
 
     componentWillMount() {
-        OpportunityAPI.getOrganisationPeek().then(payload => {
+        OpportunityAPI.peekOpportunities().then(payload => {
             this.setState({
                 opportunities: payload
             });
@@ -98,7 +98,7 @@ class MeasureDetailsOpportunityNew extends Component {
                                 name={"opportunityId"}
                                 options={this.state.opportunities}
                                 value={opportunityId}
-                                onChangeAction={this.handleOpportunityChange()}
+                                onChangeAction={this.handleOpportunityChange}
                                 required={"required"}
                                 error={this.state.errors.opportunity}
                             />

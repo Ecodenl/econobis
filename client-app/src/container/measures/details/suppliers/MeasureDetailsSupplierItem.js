@@ -1,9 +1,9 @@
 import React, {Component} from 'react';
 
-import CampaignDetailsOpportunityView from './CampaignDetailsOpportunityView';
-import CampaignDetailsOpportunityItemDelete from "./CampaignDetailsOpportunityItemDelete";
+import MeasureDetailsSupplierView from './MeasureDetailsSupplierView';
+import MeasureDetailsSupplierItemDelete from "./MeasureDetailsSupplierItemDelete";
 
-class CampaignDetailsOpportunityItem extends Component {
+class MeasureDetailsSupplierItem extends Component {
     constructor(props) {
         super(props);
 
@@ -12,8 +12,8 @@ class CampaignDetailsOpportunityItem extends Component {
             highlightLine: '',
             showDelete: false,
 
-            opportunity: {
-                ...props.opportunity,
+            supplier: {
+                ...props.supplier,
             },
         };
     };
@@ -39,19 +39,19 @@ class CampaignDetailsOpportunityItem extends Component {
     render() {
         return (
             <div>
-                <CampaignDetailsOpportunityView
+                <MeasureDetailsSupplierView
                     highlightLine={this.state.highlightLine}
                     showActionButtons={this.state.showActionButtons}
                     onLineEnter={this.onLineEnter}
                     onLineLeave={this.onLineLeave}
                     toggleDelete={this.toggleDelete}
-                    opportunity={this.state.opportunity}
+                    supplier={this.state.supplier}
                 />
                 {
                     this.state.showDelete &&
-                    <CampaignDetailsOpportunityItemDelete
+                    <MeasureDetailsSupplierItemDelete
                         toggleDelete={this.toggleDelete}
-                        opportunityId={this.state.opportunity.id}
+                        supplierId={this.state.supplier.id}
                     />
                 }
             </div>
@@ -59,4 +59,4 @@ class CampaignDetailsOpportunityItem extends Component {
     }
 };
 
-export default CampaignDetailsOpportunityItem;
+export default MeasureDetailsSupplierItem;

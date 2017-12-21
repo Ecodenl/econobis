@@ -21,6 +21,7 @@ use App\Http\Resources\Campaign\CampaignPeek;
 use App\Http\Resources\Campaign\FullCampaign;
 use App\Http\Resources\Campaign\GridCampaign;
 use App\Http\Resources\Campaign\GridMeasure;
+use App\Http\Resources\Opportunity\FullOpportunity;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -148,7 +149,7 @@ class CampaignController extends ApiController
         $opportunity->campaign()->associate($campaign);
         $opportunity->save();
 
-        return FullCampaign::make($opportunity->fresh());
+        return FullOpportunity::make($opportunity->fresh());
     }
 
     public function dissociateOpportunity(Opportunity $opportunity)
@@ -157,7 +158,7 @@ class CampaignController extends ApiController
         $opportunity->campaign()->dissociate();
         $opportunity->save();
 
-        return FullCampaign::make($opportunity->fresh());
+        return FullOpportunity::make($opportunity->fresh());
     }
 
     public function attachResponse(Campaign $campaign, Contact $contact)

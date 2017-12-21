@@ -1,9 +1,9 @@
 import React, {Component} from 'react';
 
-import CampaignDetailsOrganisationView from './CampaignDetailsOrganisationView';
-import CampaignDetailsOrganisationItemDelete from "./CampaignDetailsOrganisationItemDelete";
+import MeasureDetailsOpportunityView from './MeasureDetailsOpportunityView';
+import MeasureDetailsOpportunityItemDelete from "./MeasureDetailsOpportunityItemDelete";
 
-class CampaignDetailsOrganisationNew extends Component {
+class MeasureDetailsOpportunityItem extends Component {
     constructor(props) {
         super(props);
 
@@ -12,8 +12,8 @@ class CampaignDetailsOrganisationNew extends Component {
             highlightLine: '',
             showDelete: false,
 
-            organisation: {
-                ...props.organisation,
+            opportunity: {
+                ...props.opportunity,
             },
         };
     };
@@ -39,19 +39,19 @@ class CampaignDetailsOrganisationNew extends Component {
     render() {
         return (
             <div>
-                <CampaignDetailsOrganisationView
+                <MeasureDetailsOpportunityView
                     highlightLine={this.state.highlightLine}
                     showActionButtons={this.state.showActionButtons}
                     onLineEnter={this.onLineEnter}
                     onLineLeave={this.onLineLeave}
                     toggleDelete={this.toggleDelete}
-                    organisation={this.state.organisation}
+                    opportunity={this.state.opportunity}
                 />
                 {
                     this.state.showDelete &&
-                    <CampaignDetailsOrganisationItemDelete
+                    <MeasureDetailsOpportunityItemDelete
                         toggleDelete={this.toggleDelete}
-                        organisationId={this.state.organisation.id}
+                        opportunityId={this.state.opportunity.id}
                     />
                 }
             </div>
@@ -59,4 +59,4 @@ class CampaignDetailsOrganisationNew extends Component {
     }
 };
 
-export default CampaignDetailsOrganisationNew;
+export default MeasureDetailsOpportunityItem;

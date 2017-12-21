@@ -4,10 +4,9 @@ import { isEmpty } from 'lodash';
 
 import MeasureFormGeneral from './form/MeasureFormGeneral';
 import MeasureDetailsFaqs from './FAQs/MeasureDetailsFaqs';
-// import CampaignDetailsConclusionForm from './conclusion/CampaignDetailsConclusionForm';
-// import CampaignDetailsOpportunities from './opportunities/CampaignDetailsOpportunities';
-// import CampaignDetailsResponses from "./responses/CampaignDetailsResponses";
-// import CampaignDetailsOrganisations from "./organisations/CampaignDetailsOrganisations";
+import MeasureDetailsSuppliers from './suppliers/MeasureDetailsSuppliers';
+import MeasureDetailsOpportunity from './opportunities/MeasureDetailsOpportunity';
+
 
 class MeasureDetailsForm extends Component {
     constructor(props){
@@ -24,9 +23,8 @@ class MeasureDetailsForm extends Component {
                 <div>
                     <MeasureFormGeneral />
                     <MeasureDetailsFaqs />
-                    {/*<CampaignDetailsResponses />*/}
-                    {/*<CampaignDetailsOrganisations />*/}
-                    {/*<CampaignDetailsConclusionForm />*/}
+                    <MeasureDetailsSuppliers />
+                    <MeasureDetailsOpportunity />
                 </div>
         );
     }

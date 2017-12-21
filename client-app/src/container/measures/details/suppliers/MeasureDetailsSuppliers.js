@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 
-import CampaignDetailsOpportunitiesList from './CampaignDetailsOpportunitiesList';
-import CampaignDetailsOpportunityNew from './CampaignDetailsOpportunityNew';
+import MeasureDetailsSuppliersList from './MeasureDetailsSuppliersList';
+import MeasureDetailsSupplierNew from './MeasureDetailsSupplierNew';
 import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
 import PanelHeader from '../../../../components/panel/PanelHeader';
 import {connect} from "react-redux";
 
-    class CampaignDetailsOpportunities extends Component {
+    class MeasureDetailsSuppliers extends Component {
         constructor(props) {
             super(props);
 
@@ -27,19 +27,19 @@ import {connect} from "react-redux";
                 <Panel>
                     <Panel>
                         <PanelHeader>
-                            <span className="h5 text-bold">Kansen</span>
-                            {this.props.permissions.manageMarketing &&
+                            <span className="h5 text-bold">Mogelijke leveranciers</span>
+                            {this.props.permissions.manageMeasure &&
                             <a role="button" className="pull-right" onClick={this.toggleShowNew}><span
                                 className="glyphicon glyphicon-plus"/></a>
                             }
                         </PanelHeader>
                         <PanelBody>
                             <div className="col-md-12">
-                                <CampaignDetailsOpportunitiesList/>
+                                <MeasureDetailsSuppliersList/>
                             </div>
                             <div className="col-md-12 extra-space-above">
                                 {this.state.showNew &&
-                                <CampaignDetailsOpportunityNew toggleShowNew={this.toggleShowNew}/>}
+                                <MeasureDetailsSupplierNew toggleShowNew={this.toggleShowNew}/>}
                             </div>
                         </PanelBody>
                     </Panel>
@@ -54,4 +54,4 @@ const mapStateToProps = (state) => {
     }
 };
 
-export default connect(mapStateToProps)(CampaignDetailsOpportunities);
+export default connect(mapStateToProps)(MeasureDetailsSuppliers);

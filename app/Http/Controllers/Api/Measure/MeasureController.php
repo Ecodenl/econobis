@@ -10,11 +10,14 @@ namespace App\Http\Controllers\Api\Measure;
 
 use App\Eco\Measure\Measure;
 use App\Eco\Measure\MeasureFaq;
+use App\Eco\Opportunity\Opportunity;
+use App\Eco\Organisation\Organisation;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\RequestQueries\Measure\Grid\RequestQuery;
 use App\Http\Resources\Measure\FullMeasure;
 use App\Http\Resources\Measure\GridMeasure;
+use App\Http\Resources\Opportunity\FullOpportunity;
 
 class MeasureController extends ApiController
 {
@@ -30,7 +33,9 @@ class MeasureController extends ApiController
     {
         $measure->load(['campaigns',
             'faqs',
-
+            'deliveredByOrganisations.contact.primaryAddress',
+            'opportunities.campaign',
+            'opportunities.contact',
         ]);
 
         return FullMeasure::make($measure);
@@ -124,58 +129,34 @@ class MeasureController extends ApiController
         $measureFaq->delete();
     }
 
-//    public function associateOpportunity(Campaign $campaign, Opportunity $opportunity)
-//    {
-//        $this->authorize('manage', Campaign::class);
-//        $opportunity->campaign()->associate($campaign);
-//        $opportunity->save();
-//
-//        return FullCampaign::make($opportunity->fresh());
-//    }
-//
-//    public function dissociateOpportunity(Opportunity $opportunity)
-//    {
-//        $this->authorize('manage', Campaign::class);
-//        $opportunity->campaign()->dissociate();
-//        $opportunity->save();
-//
-//        return FullCampaign::make($opportunity->fresh());
-//    }
-//
-//    public function attachResponse(Campaign $campaign, Contact $contact)
-//    {
-//        $this->authorize('manage', Campaign::class);
-//        $campaignResponse = new CampaignResponse([
-//            'campaign_id' => $campaign->id,
-//            'contact_id' => $contact->id,
-//            'date_responded' => new Carbon(),
-//        ]);
-//        $campaignResponse->save();
-//    }
-//
-//    public function detachResponse(Campaign $campaign, Contact $contact)
-//    {
-//        $this->authorize('manage', Campaign::class);
-//        $campaign->responses()->where('contact_id', $contact->id)->delete();
-//        $campaign->save();
-//    }
-//
-//    public function attachOrganisation(Campaign $campaign, Organisation $organisation)
-//    {
-//        $this->authorize('manage', Campaign::class);
-//        $campaign->organisations()->attach($organisation);
-//    }
-//
-//    public function detachOrganisation(Campaign $campaign, Organisation $organisation)
-//    {
-//        $this->authorize('manage', Campaign::class);
-//        $campaign->organisations()->detach($organisation);
-//    }
-//
-//    public function associateOwner(Campaign $campaign, User $user)
-//    {
-//        $this->authorize('manage', Campaign::class);
-//        $campaign->ownedBy()->associate($user);
-//        $campaign->save();
-//    }
+    public function attachSupplier(Measure $measure, Organisation $organisation)
+    {
+        $this->authorize('manage', Measure::class);
+        $measure->deliveredByOrganisations()->attach($organisation);
+    }
+
+    public function detachSupplier(Measure $measure, Organisation $organisation)
+    {
+        $this->authorize('manage', Measure::class);
+        $measure->deliveredByOrganisations()->detach($organisation);
+    }
+
+    public function associateOpportunity(Measure $measure, Opportunity $opportunity)
+    {
+        $this->authorize('manage', Measure::class);
+        $opportunity->measure()->associate($measure);
+        $opportunity->save();
+
+        return FullMeasure::make($measure->fresh());
+    }
+
+    public function dissociateOpportunity(Opportunity $opportunity)
+    {
+        $this->authorize('manage', Measure::class);
+        $opportunity->measure()->dissociate();
+        $opportunity->save();
+
+        return FullOpportunity::make($opportunity->fresh());
+    }
+
 }

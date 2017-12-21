@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 
-import CampaignDetailsOrganisationsList from './CampaignDetailsOrganisationsList';
-import CampaignDetailsOrganisationNew from './CampaignDetailsOrganisationNew';
+import MeasureDetailsOpportunityList from './MeasureDetailsOpportunityList';
+import MeasureDetailsOpportunityNew from './MeasureDetailsOpportunityNew';
 import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
 import PanelHeader from '../../../../components/panel/PanelHeader';
 import {connect} from "react-redux";
 
-    class CampaignDetailsOrganisations extends Component {
+    class MeasureDetailsOpportunity extends Component {
         constructor(props) {
             super(props);
 
@@ -27,19 +27,19 @@ import {connect} from "react-redux";
                 <Panel>
                     <Panel>
                         <PanelHeader>
-                            <span className="h5 text-bold">Betrokken bedrijven</span>
-                            {this.props.permissions.manageMarketing &&
+                            <span className="h5 text-bold">Gerelateerde kansen</span>
+                            {this.props.permissions.manageMeasure &&
                             <a role="button" className="pull-right" onClick={this.toggleShowNew}><span
                                 className="glyphicon glyphicon-plus"/></a>
                             }
                         </PanelHeader>
                         <PanelBody>
                             <div className="col-md-12">
-                                <CampaignDetailsOrganisationsList/>
+                                <MeasureDetailsOpportunityList/>
                             </div>
                             <div className="col-md-12 extra-space-above">
                                 {this.state.showNew &&
-                                <CampaignDetailsOrganisationNew toggleShowNew={this.toggleShowNew}/>}
+                                <MeasureDetailsOpportunityNew toggleShowNew={this.toggleShowNew}/>}
                             </div>
                         </PanelBody>
                     </Panel>
@@ -54,4 +54,4 @@ const mapStateToProps = (state) => {
     }
 };
 
-export default connect(mapStateToProps)(CampaignDetailsOrganisations);
+export default connect(mapStateToProps)(MeasureDetailsOpportunity);

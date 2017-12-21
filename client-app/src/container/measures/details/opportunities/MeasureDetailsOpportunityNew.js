@@ -1,47 +1,48 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import OrganisationAPI from '../../../../api/OrganisationAPI';
-import CampaignAPI from '../../../../api/CampaignAPI';
+import OpportunityAPI from '../../../../api/OpportunityAPI';
+import MeasureAPI from '../../../../api/measure/MeasureAPI';
+
 import InputText from '../../../../components/form/InputText';
 import ButtonText from '../../../../components/button/ButtonText';
 import InputSelect from "../../../../components/form/InputSelect";
 import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
-import { fetchCampaign } from '../../../../actions/CampaignsActions';
+import { fetchMeasure } from '../../../../actions/measure/MeasureActions';
 
-class CampaignDetailsResponseNew extends Component {
+class MeasureDetailsOpportunityNew extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            organisationId:'',
-            organisations: [],
+            opportunityId:'',
+            opportunities: [],
             errors: {
-                organisation: false,
+                opportunity: false,
                 hasErrors: true,
             },
         };
     };
 
     componentWillMount() {
-        OrganisationAPI.getOrganisationPeek().then(payload => {
+        OpportunityAPI.getOrganisationPeek().then(payload => {
             this.setState({
-                organisations: payload
+                opportunities: payload
             });
         });
     }
 
-    handleOrganisationChange = event => {
+    handleOpportunityChange = event => {
         const target = event.target;
         const value = target.type === 'checkbox' ? target.checked : target.value;
 
         if (value === '') {
             this.setState({
                 ...this.state,
-                organisationId: '',
+                opportunityId: '',
                 errors: {
-                    organisation: true,
+                    opportunity: true,
                     hasErrors: true
                 },
             });
@@ -49,9 +50,9 @@ class CampaignDetailsResponseNew extends Component {
         else {
             this.setState({
                 ...this.state,
-                organisationId: value,
+                opportunityId: value,
                 errors: {
-                    organisation: false,
+                    opportunity: false,
                     hasErrors: false
                 },
             });
@@ -62,8 +63,8 @@ class CampaignDetailsResponseNew extends Component {
         event.preventDefault();
 
         if(!this.state.errors.hasErrors){
-            CampaignAPI.attachOrganisation(this.props.campaignId, this.state.organisationId).then(() => {
-               this.props.fetchCampaign(this.props.campaignId);
+            MeasureAPI.associateOpportunity(this.props.measureId, this.state.opportunityId).then(() => {
+               this.props.fetchMeasure(this.props.measureId);
                this.props.toggleShowNew();
             });
         }
@@ -71,7 +72,7 @@ class CampaignDetailsResponseNew extends Component {
             this.setState({
                 ...this.state,
                 errors: {
-                    organisation: true,
+                    opportunity: true,
                     hasErrors: true
                 },
             });
@@ -79,27 +80,27 @@ class CampaignDetailsResponseNew extends Component {
     };
 
     render() {
-        const {organisationId} = this.state;
+        const {opportunityId} = this.state;
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
                 <Panel className={'panel-grey'}>
                     <PanelBody>
                         <div className="row">
                             <InputText
-                                label={"Campagne"}
-                                name={"campaign"}
-                                value={this.props.campaignName}
+                                label={"Maatregel"}
+                                name={"measure"}
+                                value={this.props.measureName}
                                 readOnly={true}
                             />
                             <InputSelect
-                                label={"Organisatie"}
+                                label={"Kans"}
                                 size={"col-sm-6"}
-                                name={"organisationId"}
-                                options={this.state.organisations}
-                                value={organisationId}
-                                onChangeAction={this.handleOrganisationChange}
+                                name={"opportunityId"}
+                                options={this.state.opportunities}
+                                value={opportunityId}
+                                onChangeAction={this.handleOpportunityChange()}
                                 required={"required"}
-                                error={this.state.errors.organisation}
+                                error={this.state.errors.opportunity}
                             />
                         </div>
 
@@ -116,16 +117,16 @@ class CampaignDetailsResponseNew extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        campaignId: state.campaign.id,
-        campaignName: state.campaign.name,
+        measureId: state.measure.id,
+        measureName: state.measure.name,
     };
 };
 
 const mapDispatchToProps = dispatch => ({
-    fetchCampaign: (id) => {
-        dispatch(fetchCampaign(id));
+    fetchMeasure: (id) => {
+        dispatch(fetchMeasure(id));
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(CampaignDetailsResponseNew);
+export default connect(mapStateToProps, mapDispatchToProps)(MeasureDetailsOpportunityNew);
 

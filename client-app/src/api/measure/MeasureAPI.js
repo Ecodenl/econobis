@@ -109,8 +109,8 @@ export default {
             });
     },
 
-    associateOrganisation: (measureId, organisationId) => {
-        const requestUrl = `${URL_MEASURE}/${measureId}/organisation/${organisationId}/associate`;
+    attachSupplier: (measureId, organisationId) => {
+        const requestUrl = `${URL_MEASURE}/${measureId}/supplier/${organisationId}/attach`;
         const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
         axios.defaults.headers.common.Authorization = AUTH_TOKEN;
 
@@ -122,8 +122,8 @@ export default {
             );
     },
 
-    dissociateOrganisation: (organisationId) => {
-        const requestUrl = `${URL_MEASURE}/organisation/${organisationId}/dissociate`;
+    detachSupplier: (measureId, organisationId) => {
+        const requestUrl = `${URL_MEASURE}/${measureId}/supplier/${organisationId}/detach`;
         const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
         axios.defaults.headers.common.Authorization = AUTH_TOKEN;
 
@@ -135,8 +135,8 @@ export default {
             );
     },
 
-    attachOpportunity: (measureId, opportunityId) => {
-        const requestUrl = `${URL_MEASURE}/${measureId}/opportunity/${opportunityId}/attach`;
+    associateOpportunity: (measureId, opportunityId) => {
+        const requestUrl = `${URL_MEASURE}/${measureId}/opportunity/${opportunityId}/associate`;
         const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
         axios.defaults.headers.common.Authorization = AUTH_TOKEN;
 
@@ -148,8 +148,8 @@ export default {
             );
     },
 
-    detachOpportunity: (measureId, opportunityId) => {
-        const requestUrl = `${URL_MEASURE}/${measureId}/opportunity/${opportunityId}/detach`;
+    dissociateOpportunity: (opportunityId) => {
+        const requestUrl = `${URL_MEASURE}/opportunity/${opportunityId}/dissociate`;
         const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
         axios.defaults.headers.common.Authorization = AUTH_TOKEN;
 

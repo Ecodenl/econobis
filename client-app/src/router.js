@@ -15,6 +15,7 @@ import DashboardApp from './container/dashboard/DashboardApp';
 import Login from './container/auth/Login';
 import Logout from './container/auth/Logout';
 import Main from './container/global/Main';
+import NotFoundedPage from './container/global/NotFoundedPage';
 import OpportunitiesListApp from './container/opportunities/list/OpportunitiesListApp';
 import OpportunityDetailsApp from './container/opportunities/details/OpportunityDetailsApp';
 import OpportunityNewApp from './container/opportunities/new/OpportunityNewApp';
@@ -71,7 +72,7 @@ const Routes = () => {
                 <Route path="taak/nieuw/:type/:id" component={TaskNewApp} />
                 <Route path="taken" component={TasksListApp} />
                 /* 404 route */
-                <Route path="*" component={ DashboardApp } />
+                <Route path="*" component={ NotFoundedPage } />
             </Route>
         </Router>
     );

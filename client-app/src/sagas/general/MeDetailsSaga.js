@@ -1,13 +1,22 @@
+import { delay } from 'redux-saga';
 import { put, call } from 'redux-saga/effects';
 import MeAPI from '../../api/general/MeAPI';
 
 export function* meDetailsSaga() {
-    try {
-        const meDetails = yield call(MeAPI.fetchMeDetails, null);
-        yield [
-            put({ type: 'FETCH_ME_DETAILS_SUCCESS', meDetails }),
-        ];
-    } catch (error) {
-        yield put({ type: 'FETCH_ME_DETAILS_ERROR', error });
+    for (let i = 0; i < 3; i++) {
+        try {
+            const meDetails = yield call(MeAPI.fetchMeDetails, null);
+            yield [
+                put({ type: 'FETCH_ME_DETAILS_SUCCESS', meDetails }),
+                put({ type: 'FETCH_ME_DETAILS_LOADED' }),
+            ];
+            return;
+        } catch (error) {
+            if (i < 2) {
+                yield call(delay, 2000);
+            } else {
+                yield put({ type: 'FETCH_ME_DETAILS_ERROR', error });
+            }
+        }
     }
 }

@@ -19,7 +19,7 @@ class MeasureTaken extends Resource
             'name' => $this->measure->name,
             'measureDate' => $this->measure_date,
             'energyLabelId' => $this->energy_label_id,
-            'energyLabel' => $this->energy_label->name,
+            'energyLabel' => optional($this->energy_label)->name,
         ];
     }
 }

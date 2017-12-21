@@ -8,6 +8,7 @@
 
 namespace App\Eco\Contact;
 
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 
 class ContactObserver
@@ -26,7 +27,7 @@ class ContactObserver
 
     public function created(Contact $contact)
     {
-        $contact->number = '2017-' . $contact->id; // TODO; goede nummers genereren
+        $contact->number = 'C' . Carbon::now()->year . $contact->id;
         $contact->save();
     }
 

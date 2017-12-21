@@ -17,6 +17,10 @@ import CampaignsListApp from './container/campaigns/list/CampaignsListApp';
 import CampaignDetailsApp from './container/campaigns/details/CampaignDetailsApp';
 import CampaignNewApp from './container/campaigns/new/CampaignNewApp';
 
+import MeasuresListApp from './container/measures/list/MeasuresListApp';
+// import MeasureDetailsApp from './container/measures/details/MeasureDetailsApp';
+// import MeasureNewApp from './container/measures/new/MeasureNewApp';
+
 import TaskDetailsApp from './container/task/details/TaskDetailsApp';
 import TasksListApp from './container/task/list/TasksListApp';
 import TaskNewApp from './container/task/new/TaskNewApp';
@@ -68,6 +72,10 @@ const Routes = () => {
                 <Route path="campagnes" component={CampaignsListApp} />
                 <Route path="campagne/nieuw" component={CampaignNewApp} />
                 <Route path="campagne/:id" component={CampaignDetailsApp} />
+
+                <Route path="maatregelen" component={MeasuresListApp} />
+                {/*<Route path="maatregel/nieuw" component={MeasureNewApp} />*/}
+                {/*<Route path="maatregel/:id" component={MeasureDetailsApp} />*/}
 
                 <Route path="gebruikers" component={UsersListApp} />
                 <Route path="gebruiker/nieuw" component={UserNewApp} />

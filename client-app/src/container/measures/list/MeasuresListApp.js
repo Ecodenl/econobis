@@ -1,22 +1,21 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import { fetchCampaigns, clearCampaigns } from '../../../actions/CampaignsActions';
-import CampaignsListToolbar from './CampaignsListToolbar';
-import CampaignsList from './CampaignsList';
+import { fetchMeasures, clearMeasures } from '../../../actions/measure/MeasureActions';
+import MeasuresListToolbar from './MeasuresListToolbar';
+import MeasuresList from './MeasuresList';
 
-class CampaignsListApp extends Component {
+class MeasuresListApp extends Component {
     constructor(props){
         super(props);
-
     }
 
     componentDidMount() {
-        this.props.fetchCampaigns();
+        this.props.fetchMeasures();
     }
 
     componentWillUnmount() {
-        this.props.clearCampaigns();
+        this.props.clearMeasures();
     };
 
     render() {
@@ -25,10 +24,10 @@ class CampaignsListApp extends Component {
                 <div className="panel panel-default">
                     <div className="panel-body">
                         <div className="col-md-12 extra-space-above">
-                            <CampaignsListToolbar/>
+                            <MeasuresListToolbar/>
                         </div>
                         <div className="col-md-12 extra-space-above">
-                            <CampaignsList/>
+                            <MeasuresList/>
                         </div>
                     </div>
                 </div>
@@ -38,11 +37,11 @@ class CampaignsListApp extends Component {
 };
 
 const mapDispatchToProps = dispatch => ({
-    fetchCampaigns: () => {
-        dispatch(fetchCampaigns());
+    fetchMeasures: () => {
+        dispatch(fetchMeasures());
     },
-    clearCampaigns: () => {
-        dispatch(clearCampaigns());
+    clearMeasures: () => {
+        dispatch(clearMeasures());
     },
 });
-export default connect(null, mapDispatchToProps)(CampaignsListApp);
+export default connect(null, mapDispatchToProps)(MeasuresListApp);

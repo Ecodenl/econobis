@@ -22,6 +22,15 @@ class Measure extends Model
         'id'
     ];
 
+    public function measuresTaken()
+    {
+        return $this->hasMany(MeasureTaken::class);
+    }
+
+    public function measuresRequested()
+    {
+        return $this->hasMany(MeasureRequested::class);
+    }
     public function energy_label()
     {
         return $this->belongsTo(EnergyLabel::class);

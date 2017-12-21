@@ -6,27 +6,27 @@
  * Time: 10:00
  */
 
-namespace App\Eco\Opportunity;
+namespace App\Eco\Measure;
 
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 
-class OpportunityObserver
+class MeasureObserver
 {
 
-    public function creating(Opportunity $opportunity)
+    public function creating(Measure $measure)
     {
         // number kolom willen we NOT NULL houden, deze wordt meteen na opslaan bepaald op basis van het ID
         // Daarom tijdelijke waarde erin zetten zodat query niet onderuit gaat.
-        $opportunity->number = 'temp';
+        $measure->number = 'temp';
 
         $userId = Auth::id();
-        $opportunity->created_by_id = $userId;
+        $measure->created_by_id = $userId;
     }
 
-    public function created(Opportunity $opportunity)
+    public function created(Measure $measure)
     {
-        $opportunity->number = 'K' . Carbon::now()->year . $opportunity->id;
-        $opportunity->save();
+        $measure->number = 'M' . Carbon::now()->year . $measure->id;
+        $measure->save();
     }
 }

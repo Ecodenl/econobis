@@ -5,9 +5,9 @@ import { browserHistory } from 'react-router';
 
 import ButtonIcon from '../../../components/button/ButtonIcon';
 
-const CampaignsListToolbar = (props) => {
-    const newCampaign = () => {
-        hashHistory.push('campagne/nieuw');
+const MeasuresListToolbar = (props) => {
+    const newMeasure = () => {
+        hashHistory.push('maatregel/nieuw');
     };
 
     const { permissions = {} } = props;
@@ -17,13 +17,13 @@ const CampaignsListToolbar = (props) => {
             <div className="col-md-4">
                 <div className="btn-group" role="group">
                     <ButtonIcon iconName={"glyphicon-arrow-left"} onClickAction={browserHistory.goBack}/>
-                    {permissions.manageMarketing &&
-                    <ButtonIcon iconName={'glyphicon-plus'} onClickAction={newCampaign}/>
+                    {permissions.manageMeasure &&
+                    <ButtonIcon iconName={'glyphicon-plus'} onClickAction={newMeasure}/>
                     }
                 </div>
 
             </div>
-            <div className="col-md-4"><h3 className="text-center table-title">Campagnes</h3></div>
+            <div className="col-md-4"><h3 className="text-center table-title">Maatregelen</h3></div>
             <div className="col-md-4"/>
         </div>
     );
@@ -35,5 +35,5 @@ const mapStateToProps = (state) => {
     }
 };
 
-export default connect(mapStateToProps)(CampaignsListToolbar);
+export default connect(mapStateToProps)(MeasuresListToolbar);
 

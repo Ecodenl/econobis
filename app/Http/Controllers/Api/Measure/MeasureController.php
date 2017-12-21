@@ -36,6 +36,10 @@ class MeasureController extends ApiController
             'deliveredByOrganisations.contact.primaryAddress',
             'opportunities.campaign',
             'opportunities.contact',
+            'measuresTaken.address.contact',
+            'measuresTaken.address.registration',
+            'measuresRequested.address.contact',
+            'measuresRequested.address.registration',
         ]);
 
         return FullMeasure::make($measure);

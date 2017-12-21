@@ -6,6 +6,8 @@ import MeasureFormGeneral from './form/MeasureFormGeneral';
 import MeasureDetailsFaqs from './FAQs/MeasureDetailsFaqs';
 import MeasureDetailsSuppliers from './suppliers/MeasureDetailsSuppliers';
 import MeasureDetailsOpportunity from './opportunities/MeasureDetailsOpportunity';
+import MeasureDetailsMeasuresTaken from './measuresTaken/MeasureDetailsMeasuresTaken';
+import MeasureDetailsMeasuresRequested from "./measuresRequested/MeasureDetailsMeasuresRequested";
 
 
 class MeasureDetailsForm extends Component {
@@ -25,6 +27,8 @@ class MeasureDetailsForm extends Component {
                     <MeasureDetailsFaqs />
                     <MeasureDetailsSuppliers />
                     <MeasureDetailsOpportunity />
+                    <MeasureDetailsMeasuresTaken />
+                    <MeasureDetailsMeasuresRequested />
                 </div>
         );
     }

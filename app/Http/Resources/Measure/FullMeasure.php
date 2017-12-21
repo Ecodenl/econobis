@@ -29,6 +29,8 @@ class FullMeasure extends Resource
             'faqs' => $this->faqs()->get(),
             'suppliers' => FullOrganisation::collection($this->whenLoaded('deliveredByOrganisations')),
             'opportunities' => FullOpportunity::collection($this->whenLoaded('opportunities')),
+            'measuresTaken' => MeasureTaken::collection($this->whenLoaded('measuresTaken')),
+            'measuresRequested' => MeasureRequested::collection($this->whenLoaded('measuresRequested')),
             'campaignCount' => $this->campaigns()->count(),
             'relatedCampaigns' => $this->campaigns()->get(),
         ];

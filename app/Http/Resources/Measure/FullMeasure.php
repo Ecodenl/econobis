@@ -22,7 +22,10 @@ class FullMeasure extends Resource
         return [
             'id' => $this->id,
             'number' => $this->number,
+            'name' => $this->name,
             'description' => $this->description,
+            'campaignCount' => $this->campaigns()->count(),
+            'relatedCampaigns' => $this->campaigns()->get(),
         ];
     }
 }

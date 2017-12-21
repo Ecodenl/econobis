@@ -5,10 +5,10 @@ import { browserHistory } from 'react-router';
 import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
 import ButtonIcon from '../../../components/button/ButtonIcon';
-import CampaignDetailsDelete from './CampaignDetailsDelete';
+import MeasureDetailsDelete from './MeasureDetailsDelete';
 
 
-class CampaignDetailsToolbar extends Component {
+class MeasureDetailsToolbar extends Component {
     constructor(props){
         super(props);
 
@@ -23,7 +23,7 @@ class CampaignDetailsToolbar extends Component {
 
 
     render() {
-        const { campaign }  = this.props;
+        const { measure }  = this.props;
 
         return (
             <div className="row">
@@ -33,12 +33,12 @@ class CampaignDetailsToolbar extends Component {
                             <div className="col-md-2">
                                 <div className="btn-group margin-small" role="group">
                                     <ButtonIcon iconName={"glyphicon-arrow-left"} onClickAction={browserHistory.goBack} />
-                                    {this.props.permissions.manageMarketing &&
+                                    {this.props.permissions.manageMeasure &&
                                     <ButtonIcon iconName={"glyphicon-trash"} onClickAction={this.toggleDelete}/>
                                     }
                                 </div>
                             </div>
-                            <div className="col-md-8"><h4 className="text-center text-success margin-small"><strong>{campaign ? 'Campagne: ' + campaign.name : ''}</strong></h4></div>
+                            <div className="col-md-8"><h4 className="text-center text-success margin-small"><strong>{measure ? 'Maatregel: ' + measure.name : ''}</strong></h4></div>
                             <div className="col-md-2" />
                         </PanelBody>
                     </Panel>
@@ -46,9 +46,9 @@ class CampaignDetailsToolbar extends Component {
 
                 {
                     this.state.showDelete &&
-                    <CampaignDetailsDelete
+                    <MeasureDetailsDelete
                         closeDeleteItemModal={this.toggleDelete}
-                        id={campaign.id}
+                        id={measure.id}
                     />
                 }
             </div>
@@ -58,9 +58,9 @@ class CampaignDetailsToolbar extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        campaign: state.campaign,
+        measure: state.measure,
         permissions: state.meDetails.permissions,
     }
 };
 
-export default connect(mapStateToProps)(CampaignDetailsToolbar);
+export default connect(mapStateToProps)(MeasureDetailsToolbar);

@@ -19,6 +19,7 @@ use App\Http\Controllers\Api\ApiController;
 use App\Http\RequestQueries\Campaign\Grid\RequestQuery;
 use App\Http\Resources\Campaign\CampaignPeek;
 use App\Http\Resources\Campaign\FullCampaign;
+use App\Http\Resources\Campaign\GridCampaign;
 use App\Http\Resources\Campaign\GridMeasure;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -32,7 +33,7 @@ class CampaignController extends ApiController
 
         $campaigns->load(['type', 'status', 'responses']);
 
-        return GridMeasure::collection($campaigns);
+        return GridCampaign::collection($campaigns);
     }
 
     public function show(Campaign $campaign)

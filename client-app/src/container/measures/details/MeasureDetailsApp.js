@@ -1,41 +1,41 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import CampaignDetailsToolbar from './CampaignDetailsToolbar';
-import CampaignDetailsForm from './CampaignDetailsForm';
-import CampaignDetailsHarmonica from './../harmonica/CampaignDetailsHarmonica';
+import MeasureDetailsToolbar from './MeasureDetailsToolbar';
+import MeasureDetailsForm from './MeasureDetailsForm';
+import MeasureDetailsHarmonica from './../harmonica/MeasureDetailsHarmonica';
 import Panel from "../../../components/panel/Panel";
 import PanelBody from '../../../components/panel/PanelBody';
 
-import { fetchCampaign, clearCampaign } from '../../../actions/CampaignsActions';
+import { fetchMeasure, clearMeasure } from '../../../actions/measure/MeasureActions';
 
-class CampaignDetailsApp extends Component {
+class MeasureDetailsApp extends Component {
     constructor(props) {
         super(props);
     }
 
     componentDidMount() {
-        this.props.fetchCampaign(this.props.params.id);
+        this.props.fetchMeasure(this.props.params.id);
     }
 
     componentWillUnmount() {
-        this.props.clearCampaign();
+        this.props.clearMeasure();
     };
     render() {
         return (
             <div className="row">
                 <div className="col-md-9">
                     <div className="col-md-12">
-                        <CampaignDetailsToolbar/>
+                        <MeasureDetailsToolbar/>
                     </div>
 
                     <div className="col-md-12">
-                        <CampaignDetailsForm/>
+                        <MeasureDetailsForm/>
                     </div>
                 </div>
                 <Panel className="col-md-3">
                     <PanelBody>
-                        <CampaignDetailsHarmonica id={this.props.params.id}/>
+                        <MeasureDetailsHarmonica id={this.props.params.id}/>
                     </PanelBody>
                 </Panel>
             </div>
@@ -44,12 +44,12 @@ class CampaignDetailsApp extends Component {
 };
 
 const mapDispatchToProps = dispatch => ({
-    fetchCampaign: (id) => {
-        dispatch(fetchCampaign(id));
+    fetchMeasure: (id) => {
+        dispatch(fetchMeasure(id));
     },
-    clearCampaign: () => {
-        dispatch(clearCampaign());
+    clearMeasure: () => {
+        dispatch(clearMeasure());
     },
 });
 
-export default connect(null, mapDispatchToProps)(CampaignDetailsApp);
+export default connect(null, mapDispatchToProps)(MeasureDetailsApp);

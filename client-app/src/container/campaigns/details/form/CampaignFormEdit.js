@@ -25,7 +25,7 @@ class CampaignFormEdit extends Component {
                 id,
                 name,
                 number,
-                description,
+                description: description ? description : '',
                 startDate: startDate ? startDate : '',
                 endDate: endDate ? endDate : '',
                 goal,

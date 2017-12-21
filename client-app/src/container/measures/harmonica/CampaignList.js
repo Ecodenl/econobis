@@ -3,35 +3,35 @@ import {hashHistory} from 'react-router';
 import { connect } from 'react-redux';
 import moment from 'moment';
 
-class TaskList extends Component {
+class CampaignList extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            relatedTasks: '',
+            relatedCampaigns: '',
         };
     }
 
     openItem = (id) => {
-        hashHistory.push(`/taak/${id}`);
+        hashHistory.push(`/campagne/${id}`);
     };
 
     render() {
-        const {relatedTasks} = this.props;
+        const {relatedCampaigns} = this.props;
         return (
             <div>
-                {relatedTasks == '' &&
-                <div>Geen taken gevonden</div>
+                {relatedCampaigns == '' &&
+                <div>Geen campagnes gevonden</div>
                 }
 
-                {relatedTasks != '' &&
+                {relatedCampaigns != '' &&
                 <table className="table harmonica-table">
                     <tbody>
-                    {relatedTasks.map((relatedTask, i) => {
+                    {relatedCampaigns.map((relatedCampaign, i) => {
                         return (
-                            <tr onClick={() => this.openItem(relatedTask.id)} key={i}>
-                                <td className='col-xs-5 clickable'>{moment(relatedTask.created_at).format('L')}</td>
+                            <tr onClick={() => this.openItem(relatedCampaign.id)} key={i}>
+                                <td className='col-xs-5 clickable'>{moment(relatedCampaign.created_at).format('L')}</td>
                                 <td className='col-xs-1 clickable'>-</td>
-                                <td className='col-xs-6 clickable'>{relatedTask.name}</td>
+                                <td className='col-xs-6 clickable'>{relatedCampaign.name}</td>
                             </tr>
                         )
                     })
@@ -46,8 +46,8 @@ class TaskList extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        relatedTasks: state.campaign.relatedTasks,
+        relatedCampaigns: state.measure.relatedCampaigns,
     };
 };
 
-export default connect(mapStateToProps)(TaskList);
+export default connect(mapStateToProps)(CampaignList);

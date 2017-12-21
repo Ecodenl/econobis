@@ -25,25 +25,14 @@ class MeasureController extends ApiController
         return GridMeasure::collection($measures);
     }
 
-//    public function show(Campaign $campaign)
-//    {
-//        $campaign->load(['opportunities.contact',
-//            'opportunities.measure',
-//            'opportunities.status',
-//            'opportunities.quotations',
-//            'measures',
-//            'status',
-//            'type',
-//            'responses.contact.primaryAddress',
-//            'organisations.contactPerson',
-//            'createdBy',
-//            'ownedBy',
-//            'tasks',
-//        ]);
-//
-//        return FullCampaign::make($campaign);
-//    }
-//
+    public function show(Measure $measure)
+    {
+        $measure->load(['campaigns',
+        ]);
+
+        return FullMeasure::make($measure);
+    }
+
     public function store(RequestInput $requestInput)
     {
         $this->authorize('manage', Measure::class);
@@ -59,65 +48,43 @@ class MeasureController extends ApiController
 
         return FullMeasure::make($measure->fresh());
     }
-//
-//    public function update(Request $request, RequestInput $requestInput, Campaign $campaign)
-//    {
-//
-//        $this->authorize('manage', Campaign::class);
-//
-//        $data = $requestInput
-//            ->string('name')->validate('required')->next()
-//            ->string('number')->validate('required')->next()
-//            ->string('description')->onEmpty(null)->next()
-//            ->string('goal')->onEmpty(null)->next()
-//            ->string('startDate')->validate('date')->onEmpty(null)->alias('start_date')->next()
-//            ->string('endDate')->validate('date')->onEmpty(null)->alias('end_date')->next()
-//            ->integer('statusId')->validate('exists:campaign_status,id')->onEmpty(null)->alias('status_id')->next()
-//            ->integer('typeId')->validate('required|exists:campaign_types,id')->alias('type_id')->next()
-//            ->get();
-//
-//        $measureIds = explode(',', $request->measureIds);
-//
-//        if ($measureIds[0] == '') {
-//            $measureIds = [];
-//        }
-//
-//        $campaign->measures()->sync($measureIds);
-//
-//        $campaign->fill($data);
-//        $campaign->save();
-//
-//        return FullCampaign::make($campaign->fresh());
-//    }
-//
-//    public function destroy(Campaign $campaign)
-//    {
-//        $this->authorize('manage', Campaign::class);
-//
-//        //First delete relations
-//        $campaign->measures()->detach();
-//
-//        foreach ($campaign->opportunities as $opportunity) {
-//            $opportunity->campaign()->dissociate();
-//            $opportunity->save();
-//        }
-//
-//        foreach ($campaign->registrations as $registration) {
-//            $registration->campaign()->dissociate();
-//            $registration->save();
-//        }
-//
-//        foreach ($campaign->tasks as $task) {
-//            $task->campaign()->dissociate();
-//            $task->save();
-//        }
-//
-//        $campaign->organisations()->detach();
-//        $campaign->responses()->delete();
-//
-//        $campaign->delete();
-//    }
-//
+
+    public function update(RequestInput $requestInput, Measure $measure)
+    {
+
+        $this->authorize('manage', Measure::class);
+
+        $data = $requestInput
+            ->string('name')->validate('required')->next()
+            ->string('number')->validate('required')->next()
+            ->string('description')->onEmpty(null)->next()
+            ->get();
+
+        $measure->fill($data);
+        $measure->save();
+
+        return FullMeasure::make($measure->fresh());
+    }
+
+    public function destroy(Measure $measure)
+    {
+        $this->authorize('manage', Measure::class);
+
+        //First delete relations
+        $measure->addresses()->detach();
+
+        foreach ($measure->opportunities as $opportunity) {
+            $opportunity->measure()->dissociate();
+            $opportunity->save();
+        }
+
+        $measure->faqs()->delete();
+        $measure->measuresTaken()->delete();
+        $measure->measuresRequested()->delete();
+
+        $measure->delete();
+    }
+
 //    public function associateOpportunity(Campaign $campaign, Opportunity $opportunity)
 //    {
 //        $this->authorize('manage', Campaign::class);

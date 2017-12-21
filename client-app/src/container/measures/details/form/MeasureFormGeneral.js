@@ -4,10 +4,10 @@ import {connect} from 'react-redux';
 import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
 
-import CampaignFormEdit from './CampaignFormEdit';
-import CampaignFormView from './CampaignFormView';
+import MeasureFormEdit from './MeasureFormEdit';
+import MeasureFormView from './MeasureFormView';
 
-class OpportunityFormGeneral extends Component {
+class MeasureFormGeneral extends Component {
     constructor(props) {
         super(props);
 
@@ -48,10 +48,10 @@ class OpportunityFormGeneral extends Component {
                    onMouseLeave={() => this.onDivLeave()}>
                 <PanelBody>
                     {
-                        this.state.showEdit && this.props.permissions.manageMarketing ?
-                            <CampaignFormEdit switchToView={this.switchToView}/>
+                        this.state.showEdit && this.props.permissions.manageMeasure ?
+                            <MeasureFormEdit switchToView={this.switchToView}/>
                             :
-                            <CampaignFormView switchToEdit={this.switchToEdit}/>
+                            <MeasureFormView switchToEdit={this.switchToEdit}/>
                     }
                 </PanelBody>
             </Panel>
@@ -65,4 +65,4 @@ const mapStateToProps = (state) => {
     }
 };
 
-export default connect(mapStateToProps)(OpportunityFormGeneral);
+export default connect(mapStateToProps)(MeasureFormGeneral);

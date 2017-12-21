@@ -2,12 +2,12 @@ import React from 'react';
 import { hashHistory } from 'react-router';
 
 import Modal from '../../../components/modal/Modal';
-import CampaignAPI from './../../../api/CampaignAPI';
+import MeasureAPI from './../../../api/measure/MeasureAPI';
 
-const CampaignDetailsDelete = (props) => {
+const MeasureDetailsDelete = (props) => {
     const confirmAction = () => {
-        CampaignAPI.deleteCampaign(props.id).then(() => {
-            hashHistory.push('/campagnes');
+        MeasureAPI.deleteMeasure(props.id).then(() => {
+            hashHistory.push('/maatregelen');
         });
 
 
@@ -21,9 +21,9 @@ const CampaignDetailsDelete = (props) => {
             confirmAction={() => confirmAction()}
             title="Verwijderen"
       >
-            <p>Weet u zeker dat u deze campagne wilt verwijderen?</p>
+            <p>Weet u zeker dat u deze maatregel wilt verwijderen?</p>
       </Modal>
     );
 };
 
-export default CampaignDetailsDelete;
+export default MeasureDetailsDelete;

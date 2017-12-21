@@ -19,7 +19,7 @@ class Measure extends Model
      * @var array
      */
     protected $guarded = [
-        'id', 'name'
+        'id'
     ];
 
     public function energy_label()

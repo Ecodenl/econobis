@@ -8,6 +8,7 @@ import { fetchUserDetailsSaga } from './UserDetailsSaga';
 import { fetchRegistrationsSaga } from './RegistrationsSaga';
 import { fetchOpportunitiesSaga, fetchOpportunitySaga } from './OpportunitiesSaga';
 import { fetchCampaignsSaga, fetchCampaignSaga } from './CampaignsSaga';
+import { fetchMeasuresSaga, fetchMeasureSaga } from './measure/MeasuresSaga';
 import { fetchRegistrationDetailsSaga, deleteRegistrationNoteSaga, deleteRegistrationMeasureTakenSaga, deleteRegistrationMeasureRequestedSaga, deleteRegistrationSaga } from './RegistrationDetailsSaga';
 import { fetchContactGroupsSaga, deleteContactGroupSaga, addContactToGroupSaga } from './ContactGroupsSaga';
 import { fetchContactGroupDetailsSaga, updateContactGroupDetailsSaga } from './ContactGroupDetailsSaga';
@@ -49,6 +50,8 @@ export default function* watchSagas() {
     yield takeLatest('FETCH_CAMPAIGNS', fetchCampaignsSaga);
     yield takeLatest('FETCH_CAMPAIGN', fetchCampaignSaga);
 
+    yield takeLatest('FETCH_MEASURES', fetchMeasuresSaga);
+    yield takeLatest('FETCH_MEASURE', fetchMeasureSaga);
     // Task
     yield takeLatest('FETCH_TASKS', fetchTasksSaga);
     yield takeLatest('SET_TASK_COMPLETED', setTaskCompletedSaga);

@@ -18,6 +18,7 @@ import contactGroupReducer from './ContactGroupReducer';
 import contactGroupDetailsReducer from './ContactGroupDetailsReducer';
 import contactsInGroupReducer from './ContactsInGroupReducer';
 import opportunitiesReducer from './OpportunitiesReducer';
+import measuresReducer from './measure/MeasureReducer';
 import campaignsReducer from './CampaignsReducer';
 import tasksReducer from './task/TasksReducer';
 import tasksFiltersReducer from './task/TasksFiltersReducer';
@@ -48,6 +49,9 @@ const rootReducer = combineReducers({
 
     opportunities: opportunitiesReducer,
     opportunity: opportunitiesReducer,
+
+    measures: measuresReducer,
+    measure: measuresReducer,
 
     campaigns: campaignsReducer,
     campaign: campaignsReducer,

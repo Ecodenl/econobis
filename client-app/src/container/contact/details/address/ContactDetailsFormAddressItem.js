@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
+import validator from 'validator';
 
 import AddressAPI from '../../../../api/contact/AddressAPI';
 import { updateAddress } from '../../../../actions/contact/ContactDetailsActions';
@@ -16,11 +17,13 @@ class ContactDetailFormAddressItem extends Component {
             highlightLine: '',
             showEdit: false,
             showDelete: false,
-            typeIdError: false,
-            postalCodeError: false,
-            numberError: false,
             address: {
                 ...props.address,
+            },
+            errors: {
+                typeId: false,
+                postalCode: false,
+                number: false,
             },
         };
     };
@@ -74,48 +77,37 @@ class ContactDetailFormAddressItem extends Component {
         });
     };
 
-    processError(fieldName, value) {
-        this.setState({
-            [fieldName]: value,
-        })
-    };
-
-    validateForm(fieldNames) {
-        fieldNames.map((fieldName) => {
-            switch(fieldName) {
-                case 'typeId':
-                case 'postalCode':
-                case 'number':
-                    this.state.address[fieldName].length === 0 ?
-                        this.processError(fieldName + 'Error', true)
-                        :
-                        this.processError(fieldName + 'Error', false)
-                    break;
-                default:
-                    break;
-            }
-        });
-    };
-
     handleSubmit = event => {
         event.preventDefault();
 
-        this.validateForm([
-            'typeId',
-            'number',
-            'postalCode',
-        ]);
-
         const { address } = this.state;
 
-        // Temp solution
-        setTimeout(() => {
-            !this.state.typeIdError && !this.state.postalCodeError && !this.state.numberError &&
-                AddressAPI.updateAddress(address).then((payload) => {
-                    this.props.updateAddress(payload);
-                    this.closeEdit();
-                });
-        }, 100);
+        let errors = {};
+        let hasErrors = false;
+
+        if(validator.isEmpty(address.postalCode)){
+            errors.postalCode = true;
+            hasErrors = true;
+        };
+
+        if(validator.isEmpty(address.number)){
+            errors.number = true;
+            hasErrors = true;
+        };
+
+        if(validator.isEmpty(address.typeId)){
+            errors.typeId = true;
+            hasErrors = true;
+        };
+
+        this.setState({ ...this.state, errors: errors });
+
+        // If no errors send form
+        !hasErrors &&
+            AddressAPI.updateAddress(address).then((payload) => {
+                this.props.updateAddress(payload);
+                this.closeEdit();
+            });
     };
 
     render() {
@@ -136,9 +128,9 @@ class ContactDetailFormAddressItem extends Component {
                         address={this.state.address}
                         handleInputChange={this.handleInputChange}
                         handleSubmit={this.handleSubmit}
-                        typeIdError={this.state.typeIdError}
-                        postalCodeError={this.state.postalCodeError}
-                        numberError={this.state.numberError}
+                        typeIdError={this.state.errors.typeId}
+                        postalCodeError={this.state.errors.postalCode}
+                        numberError={this.state.errors.number}
                         cancelEdit={this.cancelEdit}
                     />
                 }

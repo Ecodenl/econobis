@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
+import validator from 'validator';
 
 import EmailAddressAPI from '../../../../api/contact/EmailAddressAPI';
 import { updateEmailAddress } from '../../../../actions/contact/ContactDetailsActions';
@@ -20,6 +21,10 @@ class ContactDetailFormEmailItem extends Component {
             emailError: false,
             emailAddress: {
                 ...props.emailAddress,
+            },
+            errors: {
+                typeId: false,
+                email: false,
             },
         };
     };
@@ -73,46 +78,32 @@ class ContactDetailFormEmailItem extends Component {
         });
     };
 
-    processError(fieldName, value) {
-        this.setState({
-            [fieldName]: value,
-        })
-    };
-
-    validateForm(fieldNames) {
-        fieldNames.map((fieldName) => {
-            switch(fieldName) {
-                case 'typeId':
-                case 'email':
-                    this.state.emailAddress[fieldName].length === 0 ?
-                        this.processError(fieldName + 'Error', true)
-                        :
-                        this.processError(fieldName + 'Error', false)
-                    break;
-                default:
-                    break;
-            }
-        });
-    };
-
     handleSubmit = event => {
         event.preventDefault();
 
-        this.validateForm([
-            'typeId',
-            'email',
-        ]);
-
         const { emailAddress } = this.state;
 
-        // Temp solution
-        setTimeout(() => {
-            !this.state.typeIdError && !this.state.emailError &&
-                EmailAddressAPI.updateEmailAddress(emailAddress).then((payload) => {
-                    this.props.updateEmailAddress(payload);
-                    this.closeEdit();
-                });
-        }, 100);
+        let errors = {};
+        let hasErrors = false;
+
+        if(validator.isEmpty(emailAddress.email)){
+            errors.email = true;
+            hasErrors = true;
+        };
+
+        if(validator.isEmpty(emailAddress.typeId)){
+            errors.typeId = true;
+            hasErrors = true;
+        };
+
+        this.setState({ ...this.state, errors: errors });
+
+        // If no errors send form
+        !hasErrors &&
+            EmailAddressAPI.updateEmailAddress(emailAddress).then((payload) => {
+                this.props.updateEmailAddress(payload);
+                this.closeEdit();
+            });
     };
 
     render() {
@@ -133,8 +124,8 @@ class ContactDetailFormEmailItem extends Component {
                         emailAddress={this.state.emailAddress}
                         handleInputChange={this.handleInputChange}
                         handleSubmit={this.handleSubmit}
-                        typeIdError={this.state.typeIdError}
-                        emailError={this.state.emailError}
+                        typeIdError={this.state.errors.typeId}
+                        emailError={this.state.errors.email}
                         cancelEdit={this.cancelEdit}
                     />
                 }

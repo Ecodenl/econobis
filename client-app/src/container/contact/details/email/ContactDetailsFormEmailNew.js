@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import validator from 'validator';
 
 import EmailAddressAPI from '../../../../api/contact/EmailAddressAPI';
 import { newEmailAddress } from '../../../../actions/contact/ContactDetailsActions';
@@ -21,8 +22,10 @@ class ContactDetailsFormEmailNew extends Component {
                 typeId: '',
                 primary: false,
             },
-            typeIdError: false,
-            emailError: false,
+            errors: {
+                typeId: false,
+                email: false,
+            },
         }
     };
 
@@ -40,51 +43,36 @@ class ContactDetailsFormEmailNew extends Component {
         });
     };
 
-    processError(fieldName, value) {
-        this.setState({
-            [fieldName]: value,
-        })
-    };
-
-    validateForm(fieldNames) {
-        fieldNames.map((fieldName) => {
-            switch(fieldName) {
-                case 'typeId':
-                case 'email':
-                    this.state.emailAddress[fieldName].length === 0 ?
-                        this.processError(fieldName + 'Error', true)
-                        :
-                        this.processError(fieldName + 'Error', false)
-                    break;
-                default:
-                    break;
-            }
-        });
-    };
-
     handleSubmit = event => {
         event.preventDefault();
 
-        this.validateForm([
-            'typeId',
-            'email',
-        ]);
-
         const { emailAddress } = this.state;
 
-        // Temp solution
-        setTimeout(() => {
-            !this.state.typeIdError && !this.state.emailError &&
-                EmailAddressAPI.newEmailAddress(emailAddress).then((payload) => {
-                    this.props.newEmailAddress(payload);
-                    this.props.toggleShowNew();
-                });
-        }, 100);
+        let errors = {};
+        let hasErrors = false;
+
+        if(validator.isEmpty(emailAddress.email)){
+            errors.email = true;
+            hasErrors = true;
+        };
+
+        if(validator.isEmpty(emailAddress.typeId)){
+            errors.typeId = true;
+            hasErrors = true;
+        };
+
+        this.setState({ ...this.state, errors: errors });
+
+        // If no errors send form
+        !hasErrors &&
+            EmailAddressAPI.newEmailAddress(emailAddress).then((payload) => {
+                this.props.newEmailAddress(payload);
+                this.props.toggleShowNew();
+            });
     };
 
     render() {
         const {email, typeId, primary} = this.state.emailAddress;
-        const {emailError, typeIdError } = this.state;
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -99,7 +87,7 @@ class ContactDetailsFormEmailNew extends Component {
                                 value={email}
                                 onChangeAction={this.handleInputChange}
                                 required={"required"}
-                                error={emailError}
+                                error={this.state.errors.email}
                             />
 
                             <InputSelect
@@ -111,7 +99,7 @@ class ContactDetailsFormEmailNew extends Component {
                                 value={typeId}
                                 onChangeAction={this.handleInputChange}
                                 required={"required"}
-                                error={typeIdError}
+                                error={this.state.errors.typeId}
                             />
                         </div>
 

@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
+import validator from 'validator';
 
 import PhoneNumberApi from '../../../../api/contact/PhoneNumberAPI';
 import { updatePhoneNumber } from '../../../../actions/contact/ContactDetailsActions';
@@ -20,6 +21,10 @@ class ContactDetailFormPhoneItem extends Component {
             numberError: false,
             phoneNumber: {
                 ...props.phoneNumber,
+            },
+            errors: {
+                typeId: false,
+                number: false,
             },
         };
     };
@@ -73,45 +78,32 @@ class ContactDetailFormPhoneItem extends Component {
         });
     };
 
-    processError(fieldName, value) {
-        this.setState({
-            [fieldName]: value,
-        })
-    };
-
-    validateForm(fieldNames) {
-        fieldNames.map((fieldName) => {
-            switch(fieldName) {
-                case 'typeId':
-                case 'number':
-                    this.state.phoneNumber[fieldName].length === 0 ?
-                        this.processError(fieldName + 'Error', true)
-                        :
-                        this.processError(fieldName + 'Error', false)
-                    break;
-                default:
-                    break;
-            }
-        });
-    };
-
     handleSubmit = event => {
         event.preventDefault();
 
-        this.validateForm([
-            'typeId',
-            'number',
-        ]);
-
         const { phoneNumber } = this.state;
-        // Temp solution
-        setTimeout(() => {
-            !this.state.typeIdError && !this.state.numberError &&
-                PhoneNumberApi.updatePhoneNumber(phoneNumber).then((payload) => {
-                    this.props.updatePhoneNumber(payload);
-                    this.closeEdit();
-                });
-        }, 100);
+        // Validation
+        let errors = {};
+        let hasErrors = false;
+
+        if(validator.isEmpty(phoneNumber.number)){
+            errors.number = true;
+            hasErrors = true;
+        };
+
+        if(validator.isEmpty(phoneNumber.typeId)){
+            errors.typeId = true;
+            hasErrors = true;
+        };
+
+        this.setState({ ...this.state, errors: errors });
+
+        // If no errors send form
+        !hasErrors &&
+            PhoneNumberApi.updatePhoneNumber(phoneNumber).then((payload) => {
+                this.props.updatePhoneNumber(payload);
+                this.closeEdit();
+            });
     };
 
     render() {
@@ -132,8 +124,8 @@ class ContactDetailFormPhoneItem extends Component {
                         phoneNumber={this.state.phoneNumber}
                         handleInputChange={this.handleInputChange}
                         handleSubmit={this.handleSubmit}
-                        typeIdError={this.state.typeIdError}
-                        numberError={this.state.numberError}
+                        typeIdError={this.state.errors.typeId}
+                        numberError={this.state.errors.number}
                         cancelEdit={this.cancelEdit}
                     />
                 }

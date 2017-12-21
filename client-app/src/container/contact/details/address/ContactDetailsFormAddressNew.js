@@ -9,6 +9,7 @@ import InputSelect from "../../../../components/form/InputSelect";
 import InputCheckbox from "../../../../components/form/InputCheckbox";
 import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
+import validator from "validator";
 
 class ContactDetailsFormAddressNew extends Component {
     constructor(props) {
@@ -24,9 +25,11 @@ class ContactDetailsFormAddressNew extends Component {
                 typeId: 'visit',
                 primary: false,
             },
-            typeIdError: false,
-            postalCodeError: false,
-            numberError: false,
+            errors: {
+                typeId: false,
+                postalCode: false,
+                number: false,
+            },
         }
     };
 
@@ -44,53 +47,41 @@ class ContactDetailsFormAddressNew extends Component {
         });
     };
 
-    processError(fieldName, value) {
-        this.setState({
-            [fieldName]: value,
-        })
-    };
-
-    validateForm(fieldNames) {
-        fieldNames.map((fieldName) => {
-            switch(fieldName) {
-                case 'typeId':
-                case 'postalCode':
-                case 'number':
-                    this.state.address[fieldName].length === 0 ?
-                        this.processError(fieldName + 'Error', true)
-                        :
-                        this.processError(fieldName + 'Error', false)
-                    break;
-                default:
-                    break;
-            }
-        });
-    };
-
     handleSubmit = event => {
         event.preventDefault();
 
-        this.validateForm([
-            'typeId',
-            'number',
-            'postalCode',
-        ]);
-
         const { address } = this.state;
 
-        // Temp solution
-        setTimeout(() => {
-            !this.state.typeIdError && !this.state.postalCodeError && !this.state.numberError &&
-                AddressAPI.newAddress(address).then((payload) => {
-                    this.props.newAddress(payload);
-                    this.props.toggleShowNew();
-                });
-        }, 100);
+        let errors = {};
+        let hasErrors = false;
+
+        if(validator.isEmpty(address.postalCode)){
+            errors.postalCode = true;
+            hasErrors = true;
+        };
+
+        if(validator.isEmpty(address.number)){
+            errors.number = true;
+            hasErrors = true;
+        };
+
+        if(validator.isEmpty(address.typeId)){
+            errors.typeId = true;
+            hasErrors = true;
+        };
+
+        this.setState({ ...this.state, errors: errors });
+
+        // If no errors send form
+        !hasErrors &&
+            AddressAPI.newAddress(address).then((payload) => {
+                this.props.newAddress(payload);
+                this.props.toggleShowNew();
+            });
     };
 
     render() {
         const {street, number, postalCode, city, typeId, primary } = this.state.address;
-        const {postalCodeError, numberError, typeIdError } = this.state;
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -106,7 +97,7 @@ class ContactDetailsFormAddressNew extends Component {
                                 value={postalCode}
                                 onChangeAction={ this.handleInputChange }
                                 required={"required"}
-                                error={postalCodeError}
+                                error={this.state.errors.postalCode}
 
                             />
                             <InputText
@@ -117,7 +108,7 @@ class ContactDetailsFormAddressNew extends Component {
                                 value={number}
                                 onChangeAction={this.handleInputChange}
                                 required={"required"}
-                                error={numberError}
+                                error={this.state.errors.number}
                             />
                         </div>
 
@@ -150,7 +141,7 @@ class ContactDetailsFormAddressNew extends Component {
                                 value={typeId}
                                 onChangeAction={this.handleInputChange}
                                 required={"required"}
-                                error={typeIdError}
+                                error={this.state.errors.typeId}
                             />
                             <InputCheckbox
                                 label={"Primair adres"}

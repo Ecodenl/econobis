@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
+import validator from 'validator';
 
 import PhoneNumberApi from '../../../../api/contact/PhoneNumberAPI';
 import { newPhoneNumber } from '../../../../actions/contact/ContactDetailsActions';
@@ -21,8 +22,10 @@ class ContactDetailsFormPhoneNew extends Component {
                 typeId: '',
                 primary: false,
             },
-            numberError: false,
-            typeIdError: false,
+            errors: {
+                typeId: false,
+                number: false,
+            },
         }
     };
 
@@ -40,51 +43,36 @@ class ContactDetailsFormPhoneNew extends Component {
         });
     };
 
-    processError(fieldName, value) {
-        this.setState({
-            [fieldName]: value,
-        })
-    };
-
-    validateForm(fieldNames) {
-        fieldNames.map((fieldName) => {
-            switch(fieldName) {
-                case 'typeId':
-                case 'number':
-                    this.state.phoneNumber[fieldName].length === 0 ?
-                        this.processError(fieldName + 'Error', true)
-                        :
-                        this.processError(fieldName + 'Error', false)
-                    break;
-                default:
-                    break;
-            }
-        });
-    };
-
     handleSubmit = event => {
         event.preventDefault();
 
-        this.validateForm([
-            'typeId',
-            'number',
-        ]);
-
         const { phoneNumber } = this.state;
+        // Validation
+        let errors = {};
+        let hasErrors = false;
 
-        // Temp solution
-        setTimeout(() => {
-            !this.state.typeIdError && !this.state.numberError &&
-                PhoneNumberApi.newPhoneNumber(phoneNumber).then((payload) => {
-                    this.props.newPhoneNumber(payload);
-                    this.props.toggleShowNew();
-                });
-        }, 100);
+        if(validator.isEmpty(phoneNumber.number)){
+            errors.number = true;
+            hasErrors = true;
+        };
+
+        if(validator.isEmpty(phoneNumber.typeId)){
+            errors.typeId = true;
+            hasErrors = true;
+        };
+
+        this.setState({ ...this.state, errors: errors });
+
+        // If no errors send form
+        !hasErrors &&
+            PhoneNumberApi.newPhoneNumber(phoneNumber).then((payload) => {
+                this.props.newPhoneNumber(payload);
+                this.props.toggleShowNew();
+            });
     };
 
     render() {
         const {number, typeId, primary} = this.state.phoneNumber;
-        const {numberError, typeIdError } = this.state;
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -98,7 +86,7 @@ class ContactDetailsFormPhoneNew extends Component {
                                 value={number}
                                 onChangeAction={this.handleInputChange}
                                 required={"required"}
-                                error={numberError}
+                                error={this.state.errors.number}
                             />
 
                             <InputSelect
@@ -109,7 +97,7 @@ class ContactDetailsFormPhoneNew extends Component {
                                 value={typeId}
                                 onChangeAction={this.handleInputChange}
                                 required={"required"}
-                                error={typeIdError}
+                                error={this.state.errors.typeId}
                             />
                         </div>
 

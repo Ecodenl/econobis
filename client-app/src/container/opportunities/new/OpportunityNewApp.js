@@ -8,9 +8,9 @@ import OpportunityNewToolbar from './OpportunityNewToolbar';
 import OpportunityNew from './OpportunityNew';
 
 
-import ContactsAPI from '../../../api/ContactsAPI';
+import ContactsAPI from '../../../api/contact/ContactsAPI';
 import RegistrationsAPI from '../../../api/registration/RegistrationsAPI';
-import OpportunityAPI from '../../../api/OpportunityAPI';
+import OpportunityAPI from '../../../api/opportunity/OpportunityAPI';
 import {connect} from "react-redux";
 
 

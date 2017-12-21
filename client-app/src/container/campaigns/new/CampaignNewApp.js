@@ -7,7 +7,7 @@ import { hashHistory } from 'react-router';
 import CampaignNewToolbar from './CampaignNewToolbar';
 import CampaignNew from './CampaignNew';
 
-import CampaignAPI from '../../../api/CampaignAPI';
+import CampaignAPI from '../../../api/campaign/CampaignAPI';
 
 class CampaignNewApp extends Component {
     constructor(props) {

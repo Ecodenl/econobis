@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
 
-import { fetchUserDetails } from '../../../actions/UserDetailsActions';
+import { fetchUserDetails } from '../../../actions/user/UserDetailsActions';
 import UserDetailsToolbar from './UserDetailsToolbar';
 import UserDetailsForm from './UserDetailsForm';
 import Panel from '../../../components/panel/Panel';

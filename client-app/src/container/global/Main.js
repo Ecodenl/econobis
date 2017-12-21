@@ -2,9 +2,9 @@ import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import { toggleSidebarClose, toggleSidebarOpen } from '../../actions/SidebarActions';
-import { fetchMeDetails } from '../../actions/MeDetailsActions';
-import { fetchSystemData } from '../../actions/SystemDataActions';
+import { toggleSidebarClose, toggleSidebarOpen } from '../../actions/general/SidebarActions';
+import { fetchMeDetails } from '../../actions/general/MeDetailsActions';
+import { fetchSystemData } from '../../actions/general/SystemDataActions';
 import NavHeader from '../../components/navigationHeader/NavHeader';
 import Sidebar from '../../components/navigationSidebar/Sidebar';
 import LoadingPage from '../../components/loadingPage/LoadingPage';

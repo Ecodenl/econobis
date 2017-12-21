@@ -1,14 +1,14 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import OrganisationAPI from '../../../../api/OrganisationAPI';
-import CampaignAPI from '../../../../api/CampaignAPI';
+import OrganisationAPI from '../../../../api/contact/OrganisationAPI';
+import CampaignAPI from '../../../../api/campaign/CampaignAPI';
 import InputText from '../../../../components/form/InputText';
 import ButtonText from '../../../../components/button/ButtonText';
 import InputSelect from "../../../../components/form/InputSelect";
 import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
-import { fetchCampaign } from '../../../../actions/CampaignsActions';
+import { fetchCampaign } from '../../../../actions/campaign/CampaignsActions';
 
 class CampaignDetailsResponseNew extends Component {
     constructor(props) {

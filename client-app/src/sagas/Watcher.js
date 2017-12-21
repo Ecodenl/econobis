@@ -1,25 +1,36 @@
 import { takeLatest } from 'redux-saga/effects';
-import { meDetailsSaga } from './MeDetailsSaga';
-import { systemDataSaga } from './SystemDataSaga';
-import { fetchContactsSaga, deleteContactSaga } from './ContactsSaga';
-import { fetchContactDetailsSaga, deleteAddressSaga, deletePhoneNumberSaga, deleteEmailAddressSaga, deleteContactNoteSaga } from './ContactDetailsSaga';
-import { fetchUserSaga } from './UsersSaga';
-import { fetchUserDetailsSaga } from './UserDetailsSaga';
-import { fetchRegistrationsSaga } from './RegistrationsSaga';
-import { fetchOpportunitiesSaga, fetchOpportunitySaga } from './OpportunitiesSaga';
-import { fetchCampaignsSaga, fetchCampaignSaga } from './CampaignsSaga';
-import { fetchRegistrationDetailsSaga, deleteRegistrationNoteSaga, deleteRegistrationMeasureTakenSaga, deleteRegistrationMeasureRequestedSaga, deleteRegistrationSaga } from './RegistrationDetailsSaga';
-import { fetchContactGroupsSaga, deleteContactGroupSaga, addContactToGroupSaga } from './ContactGroupsSaga';
-import { fetchContactGroupDetailsSaga, updateContactGroupDetailsSaga } from './ContactGroupDetailsSaga';
-import { fetchContactsInGroupSaga, deleteContactInGroupSaga } from './ContactsInGroupSaga';
-import { fetchTasksSaga, setTaskCompletedSaga } from './task/TasksSaga';
+
+import { fetchCampaignsSaga, fetchCampaignSaga } from './campaign/CampaignsSaga';
+import { fetchContactDetailsSaga, deleteAddressSaga, deletePhoneNumberSaga, deleteEmailAddressSaga, deleteContactNoteSaga } from './contact/ContactDetailsSaga';
+import { fetchContactGroupDetailsSaga, updateContactGroupDetailsSaga } from './contact-group/ContactGroupDetailsSaga';
+import { fetchContactGroupsSaga, deleteContactGroupSaga, addContactToGroupSaga } from './contact-group/ContactGroupsSaga';
+import { fetchContactsInGroupSaga, deleteContactInGroupSaga } from './contact-group/ContactsInGroupSaga';
+import { fetchContactsSaga, deleteContactSaga } from './contact/ContactsSaga';
+import { fetchOpportunitiesSaga, fetchOpportunitySaga } from './opportunity/OpportunitiesSaga';
+import {
+    fetchRegistrationDetailsSaga,
+    deleteRegistrationNoteSaga,
+    deleteRegistrationMeasureTakenSaga,
+    deleteRegistrationMeasureRequestedSaga,
+    deleteRegistrationSaga,
+} from './registration/RegistrationDetailsSaga';
+import { fetchRegistrationsSaga } from './registration/RegistrationsSaga';
 import { fetchTaskDetailsSaga, deleteTaskSaga } from './task/TaskDetailsSaga';
+import { fetchTasksSaga, setTaskCompletedSaga } from './task/TasksSaga';
+import { fetchUserDetailsSaga } from './user/UserDetailsSaga';
+import { fetchUserSaga } from './user/UsersSaga';
+import { meDetailsSaga } from './general/MeDetailsSaga';
+import { systemDataSaga } from './general/SystemDataSaga';
 
 export default function* watchSagas() {
+    // General
     yield takeLatest('FETCH_SYSTEM_DATA', systemDataSaga);
     yield takeLatest('FETCH_ME_DETAILS', meDetailsSaga);
     yield takeLatest('FETCH_USERS', fetchUserSaga);
     yield takeLatest('FETCH_USER_DETAILS', fetchUserDetailsSaga);
+    // Campaign
+    yield takeLatest('FETCH_CAMPAIGNS', fetchCampaignsSaga);
+    yield takeLatest('FETCH_CAMPAIGN', fetchCampaignSaga);
     // Contact
     yield takeLatest('FETCH_CONTACTS', fetchContactsSaga);
     yield takeLatest('DELETE_CONTACT', deleteContactSaga);
@@ -28,13 +39,6 @@ export default function* watchSagas() {
     yield takeLatest('DELETE_PHONE_NUMBER', deletePhoneNumberSaga);
     yield takeLatest('DELETE_EMAIL_ADDRESS', deleteEmailAddressSaga);
     yield takeLatest('DELETE_NOTE', deleteContactNoteSaga);
-    // Registration
-    yield takeLatest('FETCH_REGISTRATIONS', fetchRegistrationsSaga);
-    yield takeLatest('FETCH_REGISTRATION_DETAILS', fetchRegistrationDetailsSaga);
-    yield takeLatest('DELETE_REGISTRATION', deleteRegistrationSaga);
-    yield takeLatest('DELETE_REGISTRATION_NOTE', deleteRegistrationNoteSaga);
-    yield takeLatest('DELETE_REGISTRATION_MEASURE_TAKEN', deleteRegistrationMeasureTakenSaga);
-    yield takeLatest('DELETE_REGISTRATION_MEASURE_REQUESTED', deleteRegistrationMeasureRequestedSaga);
     // Contact group
     yield takeLatest('FETCH_CONTACT_GROUPS', fetchContactGroupsSaga);
     yield takeLatest('DELETE_CONTACT_GROUP', deleteContactGroupSaga);
@@ -42,17 +46,19 @@ export default function* watchSagas() {
     yield takeLatest('FETCH_CONTACT_GROUP_DETAILS', fetchContactGroupDetailsSaga);
     yield takeLatest('FETCH_CONTACTS_IN_GROUP', fetchContactsInGroupSaga);
     yield takeLatest('DELETE_CONTACT_IN_GROUP', deleteContactInGroupSaga);
-
+    // Opportunity
     yield takeLatest('FETCH_OPPORTUNITIES', fetchOpportunitiesSaga);
     yield takeLatest('FETCH_OPPORTUNITY', fetchOpportunitySaga);
-
-    yield takeLatest('FETCH_CAMPAIGNS', fetchCampaignsSaga);
-    yield takeLatest('FETCH_CAMPAIGN', fetchCampaignSaga);
-
+    // Registration
+    yield takeLatest('FETCH_REGISTRATIONS', fetchRegistrationsSaga);
+    yield takeLatest('FETCH_REGISTRATION_DETAILS', fetchRegistrationDetailsSaga);
+    yield takeLatest('DELETE_REGISTRATION', deleteRegistrationSaga);
+    yield takeLatest('DELETE_REGISTRATION_NOTE', deleteRegistrationNoteSaga);
+    yield takeLatest('DELETE_REGISTRATION_MEASURE_TAKEN', deleteRegistrationMeasureTakenSaga);
+    yield takeLatest('DELETE_REGISTRATION_MEASURE_REQUESTED', deleteRegistrationMeasureRequestedSaga);
     // Task
     yield takeLatest('FETCH_TASKS', fetchTasksSaga);
     yield takeLatest('SET_TASK_COMPLETED', setTaskCompletedSaga);
     yield takeLatest('FETCH_TASK_DETAILS', fetchTaskDetailsSaga);
     yield takeLatest('DELETE_TASK', deleteTaskSaga);
-
-};
+}

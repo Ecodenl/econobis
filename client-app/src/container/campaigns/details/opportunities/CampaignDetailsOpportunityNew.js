@@ -1,14 +1,14 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import OpportunityAPI from '../../../../api/OpportunityAPI';
-import CampaignAPI from '../../../../api/CampaignAPI';
+import OpportunityAPI from '../../../../api/opportunity/OpportunityAPI';
+import CampaignAPI from '../../../../api/campaign/CampaignAPI';
 import InputText from '../../../../components/form/InputText';
 import ButtonText from '../../../../components/button/ButtonText';
 import InputSelect from "../../../../components/form/InputSelect";
 import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
-import { fetchCampaign } from '../../../../actions/CampaignsActions';
+import { fetchCampaign } from '../../../../actions/campaign/CampaignsActions';
 
 class CampaignDetailsOpportunityNew extends Component {
     constructor(props) {

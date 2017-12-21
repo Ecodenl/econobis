@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { hashHistory } from 'react-router';
 
-import { authSuccess } from '../../actions/AuthActions';
-import AuthAPI from '../../api/AuthAPI';
+import { authSuccess } from '../../actions/general/AuthActions';
+import AuthAPI from '../../api/general/AuthAPI';
 import Logo from '../../components/logo/Logo';
 
 class Login extends Component {

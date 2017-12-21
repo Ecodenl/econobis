@@ -7,7 +7,7 @@ import OpportunityDetailsHarmonica from './../harmonica/OpportunityDetailsHarmon
 import Panel from "../../../components/panel/Panel";
 import PanelBody from '../../../components/panel/PanelBody';
 
-import { fetchOpportunity, clearOpportunity } from '../../../actions/OpportunitiesActions';
+import { fetchOpportunity, clearOpportunity } from '../../../actions/opportunity/OpportunitiesActions';
 
 class OpportunityDetailsApp extends Component {
     constructor(props) {

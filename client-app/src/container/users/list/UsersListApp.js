@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import { fetchUsers, clearUsers } from '../../../actions/UsersActions';
+import { fetchUsers, clearUsers } from '../../../actions/user/UsersActions';
 import UsersList from './UsersList';
 import UsersListToolbar from './UsersListToolbar';
 

@@ -1,4 +1,4 @@
-import { authSuccess } from '../../actions/AuthActions';
+import { authSuccess } from '../../actions/general/AuthActions';
 
 test('should set auth to success', () => {
     const action = authSuccess();

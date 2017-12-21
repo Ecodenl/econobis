@@ -2,15 +2,15 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment';
 
-import OrganisationAPI from '../../../../api/OrganisationAPI';
-import OpportunityAPI from '../../../../api/OpportunityAPI';
+import OrganisationAPI from '../../../../api/contact/OrganisationAPI';
+import OpportunityAPI from '../../../../api/opportunity/OpportunityAPI';
 import InputText from '../../../../components/form/InputText';
 import InputDate from '../../../../components/form/InputDate';
 import ButtonText from '../../../../components/button/ButtonText';
 import InputSelect from "../../../../components/form/InputSelect";
 import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
-import { fetchOpportunity } from '../../../../actions/OpportunitiesActions';
+import { fetchOpportunity } from '../../../../actions/opportunity/OpportunitiesActions';
 
 class OpportunityDetailsQuotationNew extends Component {
     constructor(props) {

@@ -3,7 +3,7 @@ import { hashHistory, Link } from 'react-router';
 import {connect} from 'react-redux';
 
 import AddContactToGroup from './ContactListAddPersonToGroup';
-import ContactGroupAPI  from '../../../api/ContactGroupAPI';
+import ContactGroupAPI  from '../../../api/contact-group/ContactGroupAPI';
 import ButtonIcon from '../../../components/button/ButtonIcon';
 
 class ContactsInGroupListToolbar extends Component {

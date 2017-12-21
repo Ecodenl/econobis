@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import moment from 'moment';
 
-import OpportunityAPI from '../../../../api/OpportunityAPI';
+import OpportunityAPI from '../../../../api/opportunity/OpportunityAPI';
 import OpportunityDetailsQuotationView from './OpportunityDetailsQuotationView';
 import OpportunityDetailsQuotationEdit from './OpportunityDetailsQuotationEdit';
 import {connect} from "react-redux";

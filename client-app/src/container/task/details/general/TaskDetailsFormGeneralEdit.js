@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import moment from 'moment';
 moment.locale('nl');
 
-import ContactsAPI from "../../../../api/ContactsAPI";
+import ContactsAPI from "../../../../api/contact/ContactsAPI";
 import TaskDetailsAPI from '../../../../api/task/TaskDetailsAPI';
 import { updateTask } from '../../../../actions/task/TaskDetailsActions';
 import ButtonText from '../../../../components/button/ButtonText';
@@ -12,9 +12,9 @@ import InputSelect from '../../../../components/form/InputSelect';
 import InputDate from '../../../../components/form/InputDate';
 import validator from "validator";
 import RegistrationsAPI from "../../../../api/registration/RegistrationsAPI";
-import ContactGroupAPI from "../../../../api/ContactGroupAPI";
-import OpportunityAPI from "../../../../api/OpportunityAPI";
-import CampaignAPI from "../../../../api/CampaignAPI";
+import ContactGroupAPI from "../../../../api/contact-group/ContactGroupAPI";
+import OpportunityAPI from "../../../../api/opportunity/OpportunityAPI";
+import CampaignAPI from "../../../../api/campaign/CampaignAPI";
 
 class TaskDetailsFormGeneralEdit extends Component {
     constructor(props) {

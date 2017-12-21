@@ -2,7 +2,7 @@ import React from 'react';
 import { hashHistory } from 'react-router';
 
 import Modal from '../../../components/modal/Modal';
-import CampaignAPI from './../../../api/CampaignAPI';
+import CampaignAPI from '../../../api/campaign/CampaignAPI';
 
 const CampaignDetailsDelete = (props) => {
     const confirmAction = () => {

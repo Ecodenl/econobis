@@ -9,9 +9,9 @@ import InputDate from '../../../../components/form/InputDate';
 import ButtonText from '../../../../components/button/ButtonText';
 import PanelFooter from "../../../../components/panel/PanelFooter";
 
-import CampaignAPI from '../../../../api/CampaignAPI';
+import CampaignAPI from '../../../../api/campaign/CampaignAPI';
 
-import { fetchCampaign } from '../../../../actions/CampaignsActions';
+import { fetchCampaign } from '../../../../actions/campaign/CampaignsActions';
 import InputMultiSelect from "../../../../components/form/InputMultiSelect";
 
 class CampaignFormEdit extends Component {

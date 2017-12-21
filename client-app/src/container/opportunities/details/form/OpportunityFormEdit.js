@@ -9,11 +9,11 @@ import InputDate from '../../../../components/form/InputDate';
 import ButtonText from '../../../../components/button/ButtonText';
 import PanelFooter from "../../../../components/panel/PanelFooter";
 
-import ContactsAPI from '../../../../api/ContactsAPI';
+import ContactsAPI from '../../../../api/contact/ContactsAPI';
 import RegistrationsAPI from '../../../../api/registration/RegistrationsAPI';
-import OpportunityAPI from '../../../../api/OpportunityAPI';
+import OpportunityAPI from '../../../../api/opportunity/OpportunityAPI';
 
-import { fetchOpportunity } from '../../../../actions/OpportunitiesActions';
+import { fetchOpportunity } from '../../../../actions/opportunity/OpportunitiesActions';
 
 class OpportunityFormEdit extends Component {
     constructor(props) {

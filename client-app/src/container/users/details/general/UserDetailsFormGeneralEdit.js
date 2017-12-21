@@ -3,8 +3,8 @@ import { connect } from 'react-redux';
 import { hashHistory } from 'react-router';
 import validator from 'validator';
 
-import UserAPI from '../../../../api/UserAPI';
-import { updateUser } from '../../../../actions/UserDetailsActions';
+import UserAPI from '../../../../api/user/UserAPI';
+import { updateUser } from '../../../../actions/user/UserDetailsActions';
 import InputText from '../../../../components/form/InputText';
 import InputSelect from '../../../../components/form/InputSelect';
 import InputCheckbox from '../../../../components/form/InputCheckbox';

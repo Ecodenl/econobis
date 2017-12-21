@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import { fetchCampaigns, clearCampaigns } from '../../../actions/CampaignsActions';
+import { fetchCampaigns, clearCampaigns } from '../../../actions/campaign/CampaignsActions';
 import CampaignsListToolbar from './CampaignsListToolbar';
 import CampaignsList from './CampaignsList';
 

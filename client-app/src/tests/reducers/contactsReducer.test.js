@@ -1,4 +1,4 @@
-import contactsReducer from '../../reducers/contactsReducer';
+import contactsReducer from '../../reducers/contact/ContactsReducer';
 import contacts from './../fixtures/contacts';
 
 test('should set default state', () => {

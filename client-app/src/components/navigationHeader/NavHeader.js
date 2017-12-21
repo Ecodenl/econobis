@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router';
 
-import { toggleSidebar } from '../../actions/SidebarActions';
+import { toggleSidebar } from '../../actions/general/SidebarActions';
 import Logo from '../logo/Logo';
 import NavSearch from './NavSearch';
 

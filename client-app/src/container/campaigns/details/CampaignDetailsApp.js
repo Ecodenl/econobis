@@ -7,7 +7,7 @@ import CampaignDetailsHarmonica from './../harmonica/CampaignDetailsHarmonica';
 import Panel from "../../../components/panel/Panel";
 import PanelBody from '../../../components/panel/PanelBody';
 
-import { fetchCampaign, clearCampaign } from '../../../actions/CampaignsActions';
+import { fetchCampaign, clearCampaign } from '../../../actions/campaign/CampaignsActions';
 
 class CampaignDetailsApp extends Component {
     constructor(props) {

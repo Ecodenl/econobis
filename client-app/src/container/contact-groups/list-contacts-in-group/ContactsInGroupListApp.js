@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import { fetchContactsInGroup, clearContactsInGroup } from '../../../actions/ContactsInGroupActions';
+import { fetchContactsInGroup, clearContactsInGroup } from '../../../actions/contact-group/ContactsInGroupActions';
 import ContactsInGroupList from './ContactsInGroupList';
 import ContactsInGroupListToolbar from './ContactsInGroupListToolbar';
 

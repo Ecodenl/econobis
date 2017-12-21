@@ -1,6 +1,6 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-import ContactsList from '../../../container/contactsList/ContactsList';
+import ContactsList from '../../../container/contact/list/ContactsList';
 import contacts from '../../fixtures/contacts';
 
 test('should render ContactsList with empty message', () => {

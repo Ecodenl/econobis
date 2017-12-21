@@ -3,7 +3,7 @@ import { hashHistory } from 'react-router';
 import moment from 'moment';
 import { connect } from 'react-redux';
 
-import { setCheckedContact } from '../../../actions/ContactsInGroupActions';
+import { setCheckedContact } from '../../../actions/contact-group/ContactsInGroupActions';
 
 class ContactsInGroupListItem extends Component {
     constructor(props) {

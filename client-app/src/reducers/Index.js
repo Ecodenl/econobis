@@ -1,63 +1,63 @@
-import { combineReducers } from 'redux';
+import {combineReducers} from 'redux';
 
-import authReducer from './AuthReducer';
-import meDetailsReducer from './MeDetailsReducer';
-import sidebarReducer from './SidebarReducer';
-import contactsReducer from './ContactsReducer';
-import contactsFiltersReducer from './ContactsFiltersReducer';
-import contactsSortsReducer from './ContactsSortsReducer';
-import contactDetailsReducer from './contactDetailsReducer';
-import registrationsReducer from './RegistrationsReducer';
-import registrationsFiltersReducer from './RegistrationsFiltersReducer';
-import registrationsSortsReducer from './RegistrationsSortsReducer';
-import registrationDetailsReducer from './RegistrationDetailsReducer'
-import systemDataReducer from './SystemDataReducer';
-import usersReducer from './UsersReducer';
-import userDetailsReducer from './UserDetailsReducer';
-import contactGroupReducer from './ContactGroupReducer';
-import contactGroupDetailsReducer from './ContactGroupDetailsReducer';
-import contactsInGroupReducer from './ContactsInGroupReducer';
-import opportunitiesReducer from './OpportunitiesReducer';
-import campaignsReducer from './CampaignsReducer';
-import tasksReducer from './task/TasksReducer';
-import tasksFiltersReducer from './task/TasksFiltersReducer';
-import tasksSortsReducer from './task/TasksSortsReducer';
+import authReducer from './general/AuthReducer';
+import campaignsReducer from './campaign/CampaignsReducer';
+import contactDetailsReducer from './contact/ContactDetailsReducer';
+import contactGroupDetailsReducer from './contact-group/ContactGroupDetailsReducer';
+import contactGroupReducer from './contact-group/ContactGroupReducer';
+import contactsFiltersReducer from './contact/ContactsFiltersReducer';
+import contactsInGroupReducer from './contact-group/ContactsInGroupReducer';
+import contactsReducer from './contact/ContactsReducer';
+import contactsSortsReducer from './contact/ContactsSortsReducer';
+import meDetailsReducer from './general/MeDetailsReducer';
+import opportunitiesReducer from './opportunity/OpportunitiesReducer';
+import registrationDetailsReducer from './registration/RegistrationDetailsReducer'
+import registrationsFiltersReducer from './registration/RegistrationsFiltersReducer';
+import registrationsReducer from './registration/RegistrationsReducer';
+import registrationsSortsReducer from './registration/RegistrationsSortsReducer';
+import sidebarReducer from './general/SidebarReducer';
+import systemDataReducer from './general/SystemDataReducer';
 import taskDetailsReducer from './task/TaskDetailsReducer';
+import tasksFiltersReducer from './task/TasksFiltersReducer';
+import tasksReducer from './task/TasksReducer';
+import tasksSortsReducer from './task/TasksSortsReducer';
+import userDetailsReducer from './user/UserDetailsReducer';
+import usersReducer from './user/UsersReducer';
 
 const rootReducer = combineReducers({
+    // General
     auth: authReducer,
     meDetails: meDetailsReducer,
+    systemData: systemDataReducer,
     toggleSidebar: sidebarReducer,
-    // Contacts
+    // Campaign
+    campaigns: campaignsReducer,
+    campaign: campaignsReducer,
+    // Contact
     contacts: contactsReducer,
     contactsFilters: contactsFiltersReducer,
     contactsSorts: contactsSortsReducer,
     contactDetails: contactDetailsReducer,
-    // Registrations
+    // Contact group
+    contactGroups: contactGroupReducer,
+    contactGroupDetails: contactGroupDetailsReducer,
+    contactsInGroup: contactsInGroupReducer,
+    // Opportunity
+    opportunities: opportunitiesReducer,
+    opportunity: opportunitiesReducer,
+    // Registration
     registrations: registrationsReducer,
     registrationsFilters: registrationsFiltersReducer,
     registrationsSorts: registrationsSortsReducer,
     registrationDetails: registrationDetailsReducer,
-    //Systemdata
-    systemData: systemDataReducer,
-    users: usersReducer,
-    userDetails: userDetailsReducer,
-    contactGroups: contactGroupReducer,
-    contactGroupDetails: contactGroupDetailsReducer,
-    contactsInGroup: contactsInGroupReducer,
-
-    opportunities: opportunitiesReducer,
-    opportunity: opportunitiesReducer,
-
-    campaigns: campaignsReducer,
-    campaign: campaignsReducer,
-
-    //Tasks
+    //Task
+    taskDetails: taskDetailsReducer,
     tasks: tasksReducer,
     tasksFilters: tasksFiltersReducer,
     tasksSorts: tasksSortsReducer,
-    taskDetails: taskDetailsReducer,
-
+    // User
+    users: usersReducer,
+    userDetails: userDetailsReducer,
 });
 
 export default rootReducer;

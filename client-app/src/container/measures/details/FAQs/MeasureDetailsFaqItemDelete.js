@@ -2,13 +2,13 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import Modal from '../../../../components/modal/Modal';
-import { fetchCampaign } from '../../../../actions/CampaignsActions';
-import CampaignAPI from "../../../../api/CampaignAPI";
+import { fetchMeasure } from '../../../../actions/measure/MeasureActions';
+import MeasureAPI from "../../../../api/measure/MeasureAPI";
 
-const CampaignDetailsReponseItemDelete = (props) => {
+const MeasureDetailsFaqItemDelete = (props) => {
     const confirmAction = () => {
-        CampaignAPI.detachResponse(props.campaignId, props.contactId).then(() => {
-            props.fetchCampaign(props.campaignId);
+        MeasureAPI.deleteFaq(props.id).then(() => {
+            props.fetchMeasure(props.measureId);
             props.toggleDelete();
         });
     };
@@ -31,14 +31,14 @@ const CampaignDetailsReponseItemDelete = (props) => {
 
 const mapStateToProps = (state) => {
     return {
-        campaignId: state.campaign.id,
+        measureId: state.measure.id,
     };
 };
 
 const mapDispatchToProps = dispatch => ({
-    fetchCampaign: (id) => {
-        dispatch(fetchCampaign(id));
+    fetchMeasure: (id) => {
+        dispatch(fetchMeasure(id));
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(CampaignDetailsReponseItemDelete);
+export default connect(mapStateToProps, mapDispatchToProps)(MeasureDetailsFaqItemDelete);

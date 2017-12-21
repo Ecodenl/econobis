@@ -69,6 +69,46 @@ export default {
             );
     },
 
+    storeFaq: (measureId, data) => {
+        const requestUrl = `${URL_MEASURE}/${measureId}/faq`;
+        const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
+        axios.defaults.headers.common.Authorization = AUTH_TOKEN;
+
+        return axios.post(requestUrl, data)
+            .then(response => response.data.data)
+            .catch((error) => {
+                    console.log(error);
+                },
+            );
+    },
+
+    deleteFaq: (id) => {
+        const requestUrl = `${URL_MEASURE}/faq/${id}/delete`;
+        const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
+        axios.defaults.headers.common.Authorization = AUTH_TOKEN;
+
+        return axios.post(requestUrl)
+            .then(response => response.data.data)
+            .catch((error) => {
+                    console.log(error);
+                },
+            );
+    },
+
+    updateFaq: (faq) => {
+        const requestUrl = `${URL_MEASURE}/faq/${faq.id}/update`;
+        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
+        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
+
+        return axios.post(requestUrl, faq)
+            .then(function (response) {
+                return response.data;
+            })
+            .catch(function (error) {
+                return error.response;
+            });
+    },
+
     associateOrganisation: (measureId, organisationId) => {
         const requestUrl = `${URL_MEASURE}/${measureId}/organisation/${organisationId}/associate`;
         const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;

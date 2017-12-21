@@ -9,6 +9,7 @@
 namespace App\Http\Controllers\Api\Measure;
 
 use App\Eco\Measure\Measure;
+use App\Eco\Measure\MeasureFaq;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\RequestQueries\Measure\Grid\RequestQuery;
@@ -28,6 +29,8 @@ class MeasureController extends ApiController
     public function show(Measure $measure)
     {
         $measure->load(['campaigns',
+            'faqs',
+
         ]);
 
         return FullMeasure::make($measure);
@@ -83,6 +86,42 @@ class MeasureController extends ApiController
         $measure->measuresRequested()->delete();
 
         $measure->delete();
+    }
+
+    public function storeFaq(RequestInput $requestInput, Measure $measure)
+    {
+        $this->authorize('manage', Measure::class);
+
+        $data = $requestInput
+            ->string('question')->validate('required')->next()
+            ->string('answer')->validate('required')->next()
+            ->get();
+
+        $measureFaq = new MeasureFaq();
+        $measureFaq->fill($data);
+        $measureFaq->measure()->associate($measure);
+        $measureFaq->save();
+
+        return FullMeasure::make($measure->fresh());
+    }
+
+    public function updateFaq(RequestInput $requestInput, MeasureFaq $measureFaq)
+    {
+
+        $this->authorize('manage', Measure::class);
+
+        $data = $requestInput
+            ->string('question')->validate('required')->next()
+            ->string('answer')->validate('required')->next()
+            ->get();
+
+        $measureFaq->fill($data);
+        $measureFaq->save();
+    }
+
+    public function destroyFaq(MeasureFaq $measureFaq)
+    {
+        $measureFaq->delete();
     }
 
 //    public function associateOpportunity(Campaign $campaign, Opportunity $opportunity)

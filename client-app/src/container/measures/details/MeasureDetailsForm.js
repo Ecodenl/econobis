@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { isEmpty } from 'lodash';
 
 import MeasureFormGeneral from './form/MeasureFormGeneral';
+import MeasureDetailsFaqs from './FAQs/MeasureDetailsFaqs';
 // import CampaignDetailsConclusionForm from './conclusion/CampaignDetailsConclusionForm';
 // import CampaignDetailsOpportunities from './opportunities/CampaignDetailsOpportunities';
 // import CampaignDetailsResponses from "./responses/CampaignDetailsResponses";
@@ -22,7 +23,7 @@ class MeasureDetailsForm extends Component {
                 :
                 <div>
                     <MeasureFormGeneral />
-                    {/*<CampaignDetailsOpportunities />*/}
+                    <MeasureDetailsFaqs />
                     {/*<CampaignDetailsResponses />*/}
                     {/*<CampaignDetailsOrganisations />*/}
                     {/*<CampaignDetailsConclusionForm />*/}

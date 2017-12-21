@@ -24,6 +24,7 @@ class FullMeasure extends Resource
             'number' => $this->number,
             'name' => $this->name,
             'description' => $this->description,
+            'faqs' => $this->faqs()->get(),
             'campaignCount' => $this->campaigns()->count(),
             'relatedCampaigns' => $this->campaigns()->get(),
         ];

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import OrganisationAPI from '../../../../api/OrganisationAPI';
+import OrganisationAPI from '../../../../api/contact/OrganisationAPI';
 import MeasureAPI from '../../../../api/measure/MeasureAPI';
 
 import InputText from '../../../../components/form/InputText';

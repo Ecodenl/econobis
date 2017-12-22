@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import OpportunityAPI from '../../../../api/OpportunityAPI';
+import OpportunityAPI from '../../../../api/opportunity/OpportunityAPI';
 import MeasureAPI from '../../../../api/measure/MeasureAPI';
 
 import InputText from '../../../../components/form/InputText';

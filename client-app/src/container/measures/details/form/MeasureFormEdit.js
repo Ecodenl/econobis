@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import moment from 'moment';
+
 import validator from 'validator';
 
 import InputText from '../../../../components/form/InputText';

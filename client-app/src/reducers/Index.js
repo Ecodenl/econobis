@@ -9,6 +9,7 @@ import contactsFiltersReducer from './contact/ContactsFiltersReducer';
 import contactsInGroupReducer from './contact-group/ContactsInGroupReducer';
 import contactsReducer from './contact/ContactsReducer';
 import contactsSortsReducer from './contact/ContactsSortsReducer';
+import measuresReducer from './measure/MeasureReducer';
 import meDetailsReducer from './general/MeDetailsReducer';
 import opportunitiesReducer from './opportunity/OpportunitiesReducer';
 import registrationDetailsReducer from './registration/RegistrationDetailsReducer'
@@ -45,11 +46,17 @@ const rootReducer = combineReducers({
     // Opportunity
     opportunities: opportunitiesReducer,
     opportunity: opportunitiesReducer,
+
     // Registration
     registrations: registrationsReducer,
     registrationsFilters: registrationsFiltersReducer,
     registrationsSorts: registrationsSortsReducer,
     registrationDetails: registrationDetailsReducer,
+
+    // Measures
+    measures: measuresReducer,
+    measure: measuresReducer,
+
     //Task
     taskDetails: taskDetailsReducer,
     tasks: tasksReducer,

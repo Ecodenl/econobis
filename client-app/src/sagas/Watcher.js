@@ -6,6 +6,7 @@ import { fetchContactGroupDetailsSaga, updateContactGroupDetailsSaga } from './c
 import { fetchContactGroupsSaga, deleteContactGroupSaga, addContactToGroupSaga } from './contact-group/ContactGroupsSaga';
 import { fetchContactsInGroupSaga, deleteContactInGroupSaga } from './contact-group/ContactsInGroupSaga';
 import { fetchContactsSaga, deleteContactSaga } from './contact/ContactsSaga';
+import { fetchMeasuresSaga, fetchMeasureSaga } from './measure/MeasuresSaga';
 import { fetchOpportunitiesSaga, fetchOpportunitySaga } from './opportunity/OpportunitiesSaga';
 import {
     fetchRegistrationDetailsSaga,
@@ -46,6 +47,9 @@ export default function* watchSagas() {
     yield takeLatest('FETCH_CONTACT_GROUP_DETAILS', fetchContactGroupDetailsSaga);
     yield takeLatest('FETCH_CONTACTS_IN_GROUP', fetchContactsInGroupSaga);
     yield takeLatest('DELETE_CONTACT_IN_GROUP', deleteContactInGroupSaga);
+    // Measure
+    yield takeLatest('FETCH_MEASURES', fetchMeasuresSaga);
+    yield takeLatest('FETCH_MEASURE', fetchMeasureSaga);
     // Opportunity
     yield takeLatest('FETCH_OPPORTUNITIES', fetchOpportunitiesSaga);
     yield takeLatest('FETCH_OPPORTUNITY', fetchOpportunitySaga);

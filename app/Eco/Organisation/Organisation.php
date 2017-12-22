@@ -3,6 +3,7 @@
 namespace App\Eco\Organisation;
 
 use App\Eco\Campaign\Campaign;
+use App\Eco\Measure\Measure;
 use App\Eco\Opportunity\OpportunityQuotation;
 use App\Eco\OrganisationType\OrganisationType;
 use App\Eco\Contact\Contact;
@@ -49,6 +50,11 @@ class Organisation extends Model
 
     public function quotations(){
         return $this->hasMany(OpportunityQuotation::class);
+    }
+
+    public function deliversMeasures()
+    {
+        return $this->belongsToMany(Measure::class, 'organisation_delivers_measure');
     }
 
     public function amountOfWonQuotations()

@@ -8,6 +8,7 @@
 
 namespace App\Eco\Campaign;
 
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 
 class CampaignObserver
@@ -26,7 +27,7 @@ class CampaignObserver
 
     public function created(Campaign $campaign)
     {
-        $campaign->number = 'c2017-' . $campaign->id; // TODO; goede nummers genereren
+        $campaign->number = 'C' . Carbon::now()->year . '-' . $campaign->id;
         $campaign->save();
     }
 }

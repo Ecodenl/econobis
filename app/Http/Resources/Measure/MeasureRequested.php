@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\Measure;
 
+use App\Http\Resources\Address\FullAddress;
 use Illuminate\Http\Resources\Json\Resource;
 
 class MeasureRequested extends Resource
@@ -19,6 +20,8 @@ class MeasureRequested extends Resource
             'name' => $this->measure->name,
             'desiredDate' => $this->desired_date,
             'degreeInterest' => $this->degree_interest,
+            'createdAt' => $this->created_at,
+            'address' => FullAddress::make($this->whenLoaded('address'))
         ];
     }
 }

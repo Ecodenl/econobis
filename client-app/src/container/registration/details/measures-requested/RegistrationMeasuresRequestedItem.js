@@ -16,6 +16,7 @@ class RegistrationMeasuresRequestedItem extends Component {
             showActionButtons: false,
             highlightLine: '',
             showDelete: false,
+            showEdit: false,
             measureRequested: {
                 ...props.measureRequested,
             },

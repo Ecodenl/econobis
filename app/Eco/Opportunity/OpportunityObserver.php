@@ -8,6 +8,7 @@
 
 namespace App\Eco\Opportunity;
 
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 
 class OpportunityObserver
@@ -25,7 +26,7 @@ class OpportunityObserver
 
     public function created(Opportunity $opportunity)
     {
-        $opportunity->number = 'k2017-' . $opportunity->id; // TODO; goede nummers genereren
+        $opportunity->number = 'K' . Carbon::now()->year . '-' . $opportunity->id;
         $opportunity->save();
     }
 }

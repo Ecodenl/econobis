@@ -15,6 +15,9 @@ import DashboardApp from './container/dashboard/DashboardApp';
 import Login from './container/auth/Login';
 import Logout from './container/auth/Logout';
 import Main from './container/global/Main';
+import MeasuresListApp from './container/measures/list/MeasuresListApp';
+import MeasureNewApp from './container/measures/new/MeasureNewApp';
+import MeasureDetailsApp from './container/measures/details/MeasureDetailsApp';
 import NotFoundedPage from './container/global/NotFoundedPage';
 import OpportunitiesListApp from './container/opportunities/list/OpportunitiesListApp';
 import OpportunityDetailsApp from './container/opportunities/details/OpportunityDetailsApp';
@@ -53,6 +56,11 @@ const Routes = () => {
                 <Route path="campagne/nieuw" component={CampaignNewApp} />
                 <Route path="campagnes" component={CampaignsListApp} />
                 <Route path="contacten/:filter/:value" component={ ContactsListApp } />
+
+                <Route path="maatregelen" component={MeasuresListApp} />
+                <Route path="maatregel/nieuw" component={MeasureNewApp} />
+                <Route path="maatregel/:id" component={MeasureDetailsApp} />
+
                 /* Registration */
                 <Route path="aanmelding/:id" component={RegistrationDetailsApp} />
                 <Route path="aanmelding/nieuw/contact/:contactId/adres/:addressId" component={RegistrationNewApp} />

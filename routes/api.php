@@ -144,5 +144,17 @@ Route::namespace('Api')
         Route::post('campaign/{campaign}/response/{contact}/detach', 'Campaign\CampaignController@detachResponse');
         Route::post('campaign/{campaign}/organisation/{organisation}/attach', 'Campaign\CampaignController@attachOrganisation');
         Route::post('campaign/{campaign}/organisation/{organisation}/detach', 'Campaign\CampaignController@detachOrganisation');
+
+        Route::get('measure/grid', 'Measure\MeasureController@grid');
+        Route::get('measure/{measure}', 'Measure\MeasureController@show');
+        Route::post('measure/', 'Measure\MeasureController@store');
+        Route::post('measure/faq/{measureFaq}/delete', 'Measure\MeasureController@destroyFaq');
+        Route::post('measure/faq/{measureFaq}/update', 'Measure\MeasureController@updateFaq');
+        Route::post('measure/{measure}/opportunity/{opportunity}/associate', 'Measure\MeasureController@associateOpportunity');
+        Route::post('measure/{measure}/supplier/{organisation}/attach', 'Measure\MeasureController@attachSupplier');
+        Route::post('measure/{measure}/supplier/{organisation}/detach', 'Measure\MeasureController@detachSupplier');
+        Route::post('measure/{measure}/faq', 'Measure\MeasureController@storeFaq');
+        Route::post('measure/{measure}', 'Measure\MeasureController@update');
+        Route::post('measure/{measure}/delete', 'Measure\MeasureController@destroy');
     }
 );

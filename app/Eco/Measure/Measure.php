@@ -6,10 +6,14 @@ use App\Eco\Address\Address;
 use App\Eco\Campaign\Campaign;
 use App\Eco\EnergyLabel\EnergyLabel;
 use App\Eco\Opportunity\Opportunity;
+use App\Eco\Organisation\Organisation;
 use Illuminate\Database\Eloquent\Model;
+use Venturecraft\Revisionable\RevisionableTrait;
 
 class Measure extends Model
 {
+    use RevisionableTrait;
+
     protected $table = 'measures';
 
     /**
@@ -18,9 +22,18 @@ class Measure extends Model
      * @var array
      */
     protected $guarded = [
-        'id', 'name'
+        'id'
     ];
 
+    public function measuresTaken()
+    {
+        return $this->hasMany(MeasureTaken::class);
+    }
+
+    public function measuresRequested()
+    {
+        return $this->hasMany(MeasureRequested::class);
+    }
     public function energy_label()
     {
         return $this->belongsTo(EnergyLabel::class);
@@ -39,5 +52,15 @@ class Measure extends Model
     public function campaigns()
     {
         return $this->belongsToMany(Campaign::class);
+    }
+
+    public function deliveredByOrganisations()
+    {
+        return $this->belongsToMany(Organisation::class, 'organisation_delivers_measure');
+    }
+
+    public function faqs()
+    {
+        return $this->hasMany(MeasureFaq::class);
     }
 }

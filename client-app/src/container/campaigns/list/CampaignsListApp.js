@@ -8,9 +8,6 @@ import CampaignsList from './CampaignsList';
 class CampaignsListApp extends Component {
     constructor(props){
         super(props);
-        this.state = {
-            opportunities: [],
-        };
 
     }
 

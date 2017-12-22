@@ -8,9 +8,12 @@ use App\Eco\EnergyLabel\EnergyLabel;
 use App\Eco\Opportunity\Opportunity;
 use App\Eco\Organisation\Organisation;
 use Illuminate\Database\Eloquent\Model;
+use Venturecraft\Revisionable\RevisionableTrait;
 
 class Measure extends Model
 {
+    use RevisionableTrait;
+
     protected $table = 'measures';
 
     /**

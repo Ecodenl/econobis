@@ -10,9 +10,12 @@ namespace App\Eco\Measure;
 
 
 use Illuminate\Database\Eloquent\Model;
+use Venturecraft\Revisionable\RevisionableTrait;
 
 class MeasureFaq extends Model
 {
+    use RevisionableTrait;
+
     protected $table = 'faq_measure';
 
     protected $guarded = ['id'];

@@ -13,6 +13,7 @@ const CampaignDetailsFormConclusionView = props => {
                 <ViewText
                     label={"Verantwoordelijke"}
                     value={ownedBy ? ownedBy.fullName: 'Onbekend'}
+                    link={ownedBy ? 'gebruiker/' + ownedBy.id : ''}
                 />
             </div>
             <div className="row" onClick={props.switchToEdit}>
@@ -23,6 +24,7 @@ const CampaignDetailsFormConclusionView = props => {
                 <ViewText
                     label={"Gemaakt door"}
                     value={createdBy ? createdBy.fullName: 'Onbekend'}
+                    link={createdBy ? 'gebruiker/' + createdBy.id : ''}
                 />
             </div>
         </div>

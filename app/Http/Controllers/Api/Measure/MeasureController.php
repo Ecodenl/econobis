@@ -40,6 +40,7 @@ class MeasureController extends ApiController
             'measuresTaken.address.registration',
             'measuresRequested.address.contact',
             'measuresRequested.address.registration',
+            'createdBy',
         ]);
 
         return FullMeasure::make($measure);

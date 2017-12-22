@@ -8,6 +8,7 @@ import MeasureDetailsSuppliers from './suppliers/MeasureDetailsSuppliers';
 import MeasureDetailsOpportunity from './opportunities/MeasureDetailsOpportunity';
 import MeasureDetailsMeasuresTaken from './measuresTaken/MeasureDetailsMeasuresTaken';
 import MeasureDetailsMeasuresRequested from "./measuresRequested/MeasureDetailsMeasuresRequested";
+import MeasureDetailsConclusionForm from "./conclusion/MeasureDetailsConclusionForm";
 
 
 class MeasureDetailsForm extends Component {
@@ -29,6 +30,7 @@ class MeasureDetailsForm extends Component {
                     <MeasureDetailsOpportunity />
                     <MeasureDetailsMeasuresTaken />
                     <MeasureDetailsMeasuresRequested />
+                    <MeasureDetailsConclusionForm />
                 </div>
         );
     }

@@ -13,16 +13,19 @@ const ContactDetailsConclusionView = props => {
                 <ViewText
                     label={"Eigenaar"}
                     value={owner ? owner.fullName: 'Onbekend'}
+                    link={owner ? 'gebruiker/' + owner.id : ''}
                 />
             </div>
             <div className="row" onClick={props.switchToEdit}>
                 <ViewText
                     label={"Gemaakt door"}
                     value={createdBy ? createdBy.fullName: 'Onbekend'}
+                    link={createdBy ? 'gebruiker/' + createdBy.id : ''}
                 />
                 <ViewText
                     label={"Laatste update door"}
                     value={updatedBy ? updatedBy.fullName: 'Onbekend'}
+                    link={updatedBy ? 'gebruiker/' + updatedBy.id : ''}
                 />
             </div>
             <div className="row" onClick={props.switchToEdit}>

@@ -26,6 +26,8 @@ class FullMeasure extends Resource
             'number' => $this->number,
             'name' => $this->name,
             'description' => $this->description,
+            'createdAt' => $this->created_at,
+            'createdBy' => FullUser::make($this->whenLoaded('createdBy')),
             'faqs' => $this->faqs()->get(),
             'suppliers' => FullOrganisation::collection($this->whenLoaded('deliveredByOrganisations')),
             'opportunities' => FullOpportunity::collection($this->whenLoaded('opportunities')),

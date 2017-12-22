@@ -77,6 +77,7 @@ const OpportunityFormView = props => {
                 <ViewText
                     label={"Verantwoordelijke"}
                     value={ownedBy ? ownedBy.fullName : ''}
+                    link={ownedBy ? 'gebruiker/' + ownedBy.id : ''}
                 />
             </div>
         </div>

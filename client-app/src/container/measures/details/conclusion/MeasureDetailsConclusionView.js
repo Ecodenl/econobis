@@ -4,18 +4,12 @@ import moment from 'moment';
 
 import ViewText from '../../../../components/form/ViewText';
 
-const CampaignDetailsFormConclusionView = props => {
-    const { createdBy = {}, createdAt = {}, ownedBy = {} } = props.campaign;
+const MeasureDetailsConclusionView = props => {
+    const { createdBy = {}, createdAt = {}} = props.measure;
 
     return (
         <div>
-            <div className="row" onClick={props.switchToEdit}>
-                <ViewText
-                    label={"Verantwoordelijke"}
-                    value={ownedBy ? ownedBy.fullName: 'Onbekend'}
-                />
-            </div>
-            <div className="row" onClick={props.switchToEdit}>
+            <div className="row">
                 <ViewText
                     label={"Gemaakt op"}
                     value={createdAt ? moment(createdAt.date).format('L') : 'Onbekend'}
@@ -23,6 +17,7 @@ const CampaignDetailsFormConclusionView = props => {
                 <ViewText
                     label={"Gemaakt door"}
                     value={createdBy ? createdBy.fullName: 'Onbekend'}
+                    link={createdBy ? 'gebruiker/' + createdBy.id : ''}
                 />
             </div>
         </div>
@@ -31,8 +26,8 @@ const CampaignDetailsFormConclusionView = props => {
 
 const mapStateToProps = (state) => {
     return {
-        campaign: state.campaign,
+        measure: state.measure,
     };
 };
 
-export default connect(mapStateToProps)(CampaignDetailsFormConclusionView);
+export default connect(mapStateToProps)(MeasureDetailsConclusionView);

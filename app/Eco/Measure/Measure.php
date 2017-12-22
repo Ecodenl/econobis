@@ -7,6 +7,7 @@ use App\Eco\Campaign\Campaign;
 use App\Eco\EnergyLabel\EnergyLabel;
 use App\Eco\Opportunity\Opportunity;
 use App\Eco\Organisation\Organisation;
+use App\Eco\User\User;
 use Illuminate\Database\Eloquent\Model;
 use Venturecraft\Revisionable\RevisionableTrait;
 
@@ -62,5 +63,10 @@ class Measure extends Model
     public function faqs()
     {
         return $this->hasMany(MeasureFaq::class);
+    }
+
+    public function createdBy()
+    {
+        return $this->belongsTo(User::class);
     }
 }

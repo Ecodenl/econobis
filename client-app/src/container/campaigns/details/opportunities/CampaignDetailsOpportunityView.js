@@ -12,7 +12,7 @@ const CampaignDetailsOpportunityView = props => {
         <div onClick={() => hashHistory.push(`/kans/${id}`)}>
             <div className="col-sm-2" >{number}</div>
                 <div className="col-sm-2">{createdAt ? moment(createdAt.date).format('L') : ''}</div>
-                <div className="col-sm-2">{contact ? contact.fullName : ''}</div>
+                <div className="col-sm-2 link-underline">{contact ? contact.fullName : ''}</div>
                 <div className="col-sm-2">{measure ? measure.name : ''}</div>
                 <div className="col-sm-1">{status ? status.name : ''}</div>
                 <div className="col-sm-1">{ quotations.length }</div>

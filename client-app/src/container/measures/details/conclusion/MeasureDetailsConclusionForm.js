@@ -1,33 +1,18 @@
 import React, { Component } from 'react';
 
-import CampaignDetailsConclusionView from './CampaignDetailsConclusionView';
+import MeasureDetailsConclusionView from './MeasureDetailsConclusionView';
 import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
-import CampaignDetailsConclusionEdit from "./CampaignDetailsConclusionEdit";
 import {connect} from "react-redux";
 
-class CampaignDetailsConclusionForm extends Component {
+class MeasureDetailsConclusionForm extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            showEdit: false,
             activeDiv: '',
         };
     }
-
-    switchToEdit = () => {
-        this.setState({
-            showEdit: true,
-        })
-    };
-
-    switchToView = () => {
-        this.setState({
-            showEdit: false,
-            activeDiv: '',
-        })
-    };
 
     onDivEnter() {
         this.setState({
@@ -46,12 +31,7 @@ class CampaignDetailsConclusionForm extends Component {
             <Panel className={this.state.activeDiv} onMouseEnter={() => this.onDivEnter()}
                    onMouseLeave={() => this.onDivLeave()}>
                 <PanelBody>
-                    {
-                        this.state.showEdit && this.props.permissions.manageMarketing ?
-                            <CampaignDetailsConclusionEdit switchToView={this.switchToView}/>
-                            :
-                            <CampaignDetailsConclusionView switchToEdit={this.switchToEdit}/>
-                    }
+                            <MeasureDetailsConclusionView/>
                 </PanelBody>
             </Panel>
         );
@@ -64,4 +44,4 @@ const mapStateToProps = (state) => {
     }
 };
 
-export default connect(mapStateToProps)(CampaignDetailsConclusionForm);
+export default connect(mapStateToProps)(MeasureDetailsConclusionForm);

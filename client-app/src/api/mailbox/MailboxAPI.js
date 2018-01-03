@@ -9,7 +9,7 @@ export default {
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios.get();
+        return axios.get(requestUrl);
     },
 
     fetchMailboxDetails: (id) => {

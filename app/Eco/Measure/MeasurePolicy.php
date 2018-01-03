@@ -9,7 +9,7 @@ class MeasurePolicy
 {
     use HandlesAuthorization;
 
-        public function manage(User $user)
+    public function manage(User $user)
     {
         return $user->hasPermissionTo('manage_measure', 'api');
     }

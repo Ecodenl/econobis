@@ -14,6 +14,9 @@ import ContactsListApp from './container/contact/list/ContactsListApp';
 import DashboardApp from './container/dashboard/DashboardApp';
 import Login from './container/auth/Login';
 import Logout from './container/auth/Logout';
+//import MailboxDetailsApp from './container/mailbox/details/MailboxDetailsApp';
+import MailboxNewApp from './container/mailbox/new/MailboxNewApp';
+import MailboxesListApp from './container/mailbox/list/MailboxesListApp';
 import Main from './container/global/Main';
 import MeasuresListApp from './container/measures/list/MeasuresListApp';
 import MeasureNewApp from './container/measures/new/MeasureNewApp';
@@ -44,40 +47,44 @@ const Routes = () => {
                 /* Contact */
                 <Route path="contact-groep/nieuw" component={ContactGroupNewApp} />
                 <Route path="contact-groepen" component={ ContactGroupsListApp } />
-                <Route path="contact/:id" component={ ContactDetailsApp } />
                 <Route path="contact/nieuw/:type" component={ PermissionHelper(ContactNewApp, true) } />
                 <Route path="contact/nieuw/:type/organisatie/:id" component={ PermissionHelper(ContactNewApp, true) } />
+                <Route path="contact/:id" component={ ContactDetailsApp } />
                 <Route path="contacten" component={ ContactsListApp } />
                 /* Contacts in group */
                 <Route path="contact-groep/:id" component={ContactGroupDetailsApp} />
                 <Route path="contacten-in-groep/:contactGroup" component={ ContactsInGroupListApp } />
                 /* Campaign */
-                <Route path="campagne/:id" component={CampaignDetailsApp} />
                 <Route path="campagne/nieuw" component={CampaignNewApp} />
+                <Route path="campagne/:id" component={CampaignDetailsApp} />
                 <Route path="campagnes" component={CampaignsListApp} />
                 <Route path="contacten/:filter/:value" component={ ContactsListApp } />
+
 
                 <Route path="maatregelen" component={MeasuresListApp} />
                 <Route path="maatregel/nieuw" component={MeasureNewApp} />
                 <Route path="maatregel/:id" component={MeasureDetailsApp} />
+                /* Mailboxes */
 
+                <Route path="mailbox/nieuw" component={MailboxNewApp} />
+                <Route path="mailboxen" component={MailboxesListApp} />
                 /* Registration */
-                <Route path="aanmelding/:id" component={RegistrationDetailsApp} />
                 <Route path="aanmelding/nieuw/contact/:contactId/adres/:addressId" component={RegistrationNewApp} />
+                <Route path="aanmelding/:id" component={RegistrationDetailsApp} />
                 <Route path="aanmeldingen" component={ RegistrationsListApp } />
                 /*  User */
-                <Route path="gebruiker/:id" component={UserDetailsApp} />
                 <Route path="gebruiker/nieuw" component={UserNewApp} />
+                <Route path="gebruiker/:id" component={UserDetailsApp} />
                 <Route path="gebruikers" component={UsersListApp} />
                 /* Opportunity */
-                <Route path="kans/:id" component={OpportunityDetailsApp} />
                 <Route path="kans/nieuw" component={OpportunityNewApp} />
                 <Route path="kans/nieuw/:type/:id" component={OpportunityNewApp} />
+                <Route path="kans/:id" component={OpportunityDetailsApp} />
                 <Route path="kansen" component={OpportunitiesListApp} />
                 /* Task */
-                <Route path="taak/:id" component={TaskDetailsApp} />
                 <Route path="taak/nieuw" component={TaskNewApp} />
                 <Route path="taak/nieuw/:type/:id" component={TaskNewApp} />
+                <Route path="taak/:id" component={TaskDetailsApp} />
                 <Route path="taken" component={TasksListApp} />
                 /* 404 route */
                 <Route path="*" component={ NotFoundedPage } />

@@ -120,4 +120,12 @@ return [
         ],
     ],
 
+    'stream' => [
+        'ssl' => [
+            'allow_self_signed' => env('MAIL_SSLOPTIONS_ALLOW_SELF_SIGNED', true),
+            'verify_peer' => env('MAIL_SSLOPTIONS_VERIFY_PEER', false),
+            'verify_peer_name' => env('MAIL_SSLOPTIONS_VERIFY_PEER_NAME', false),
+        ],
+    ],
+
 ];

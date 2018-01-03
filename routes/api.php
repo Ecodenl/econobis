@@ -156,5 +156,7 @@ Route::namespace('Api')
         Route::post('measure/{measure}/faq', 'Measure\MeasureController@storeFaq');
         Route::post('measure/{measure}', 'Measure\MeasureController@update');
         Route::post('measure/{measure}/delete', 'Measure\MeasureController@destroy');
+
+        Route::post('mailbox', 'Mailbox\MailboxController@store');
     }
 );

@@ -21,7 +21,7 @@ const CampaignFormView = props => {
                 />
             </div>
 
-            <div className="row">
+            <div className="row" onClick={props.switchToEdit}>
                 <div className="col-sm-3">
                     <label htmlFor="description" className="col-sm-12">Beschrijving</label>
                 </div>

@@ -1,4 +1,4 @@
-import { fetchContacts, clearContacts, setCheckedContact, setCheckedContactAll, deleteContact, deleteSelectedContacts } from '../../actions/ContactsActions';
+import { fetchContacts, clearContacts, setCheckedContact, setCheckedContactAll, deleteContact, deleteSelectedContacts } from '../../actions/contact/ContactsActions';
 
 test('should get contacts', () => {
     const action = fetchContacts();

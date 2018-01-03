@@ -92,7 +92,7 @@ const SidebarMenu = props => {
                 </Nav>
                 <Nav id="variabelen">
                     <NavIcon><SvgIcon size={20} icon={ic_business} /></NavIcon>
-                    <NavText> Variabelen </NavText>
+                    <NavText><Link className="sidebar-link" to="maatregelen">Variabelen</Link></NavText>
                 </Nav>
                 <Nav id="instellingen">
                     <NavIcon><SvgIcon size={20} icon={cog} /></NavIcon>

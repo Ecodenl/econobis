@@ -1,41 +1,38 @@
 import React from 'react';
 import { Router, Route, IndexRoute, hashHistory } from 'react-router';
 
-import Main from './container/global/Main';
-import Login from './container/auth/Login';
-import Logout from './container/auth/Logout';
-import RequireAuth from './helpers/RequireAuth';
-import PermissionHelper from './helpers/PermissionHelper';
-
-import DashboardApp from './container/dashboard/DashboardApp';
-
-import ContactsListApp from './container/contactsList/ContactsListApp';
-import ContactDetailsApp from './container/contactDetails/ContactDetailsApp';
-import ContactNewApp from './container/contactNew/ContactNewApp';
-
-import CampaignsListApp from './container/campaigns/list/CampaignsListApp';
 import CampaignDetailsApp from './container/campaigns/details/CampaignDetailsApp';
 import CampaignNewApp from './container/campaigns/new/CampaignNewApp';
-
-import TaskDetailsApp from './container/task/details/TaskDetailsApp';
-import TasksListApp from './container/task/list/TasksListApp';
-import TaskNewApp from './container/task/new/TaskNewApp';
-
-import RegistrationsListApp from './container/registration/list/RegistrationsListApp';
-import RegistrationDetailsApp from './container/registration/details/RegistrationDetailsApp';
-import RegistrationNewApp from './container/registration/new/RegistrationNewApp';
-
+import CampaignsListApp from './container/campaigns/list/CampaignsListApp';
+import ContactDetailsApp from './container/contact/details/ContactDetailsApp';
+import ContactGroupDetailsApp from './container/contact-groups/details/ContactGroupDetailsApp';
+import ContactGroupNewApp from './container/contact-groups/new/ContactGroupNewApp';
+import ContactGroupsListApp from './container/contact-groups/list-groups/ContactGroupsListApp';
+import ContactNewApp from './container/contact/new/ContactNewApp';
+import ContactsInGroupListApp from './container/contact-groups/list-contacts-in-group/ContactsInGroupListApp';
+import ContactsListApp from './container/contact/list/ContactsListApp';
+import DashboardApp from './container/dashboard/DashboardApp';
+import Login from './container/auth/Login';
+import Logout from './container/auth/Logout';
+import Main from './container/global/Main';
+import MeasuresListApp from './container/measures/list/MeasuresListApp';
+import MeasureNewApp from './container/measures/new/MeasureNewApp';
+import MeasureDetailsApp from './container/measures/details/MeasureDetailsApp';
+import NotFoundedPage from './container/global/NotFoundedPage';
 import OpportunitiesListApp from './container/opportunities/list/OpportunitiesListApp';
 import OpportunityDetailsApp from './container/opportunities/details/OpportunityDetailsApp';
 import OpportunityNewApp from './container/opportunities/new/OpportunityNewApp';
-import UsersListApp from './container/users/list/UsersListApp';
-import UserNewApp from './container/users/new/UserNewApp';
+import PermissionHelper from './helpers/PermissionHelper';
+import RegistrationDetailsApp from './container/registration/details/RegistrationDetailsApp';
+import RegistrationNewApp from './container/registration/new/RegistrationNewApp';
+import RegistrationsListApp from './container/registration/list/RegistrationsListApp';
+import RequireAuth from './helpers/RequireAuth';
+import TaskDetailsApp from './container/task/details/TaskDetailsApp';
+import TaskNewApp from './container/task/new/TaskNewApp';
+import TasksListApp from './container/task/list/TasksListApp';
 import UserDetailsApp from './container/users/details/UserDetailsApp';
-import ContactGroupsListApp from './container/contact-groups/list-groups/ContactGroupsListApp';
-import ContactGroupNewApp from './container/contact-groups/new/ContactGroupNewApp';
-import ContactGroupDetailsApp from './container/contact-groups/details/ContactGroupDetailsApp';
-import ContactsInGroupListApp from './container/contact-groups/list-contacts-in-group/ContactsInGroupListApp';
-
+import UserNewApp from './container/users/new/UserNewApp';
+import UsersListApp from './container/users/list/UsersListApp';
 
 const Routes = () => {
     return (
@@ -44,42 +41,46 @@ const Routes = () => {
             <Route path="loguit" component={ Logout } />
             <Route path="/" component={ RequireAuth(Main) }>
                 <IndexRoute component={ DashboardApp } />
-
-                <Route path="contacten/:filter/:value" component={ ContactsListApp } />
-                <Route path="contacten" component={ ContactsListApp } />
-                <Route path="contact/nieuw/:type/organisatie/:id" component={ PermissionHelper(ContactNewApp, true) } />
-                <Route path="contact/nieuw/:type" component={ PermissionHelper(ContactNewApp, true) } />
-                <Route path="contact/:id" component={ ContactDetailsApp } />
-
-                <Route path="taken" component={TasksListApp} />
-                <Route path="taak/nieuw" component={TaskNewApp} />
-                <Route path="taak/nieuw/:type/:id" component={TaskNewApp} />
-                <Route path="taak/:id" component={TaskDetailsApp} />
-
-                <Route path="aanmeldingen" component={ RegistrationsListApp } />
-                <Route path="aanmelding/nieuw/contact/:contactId/adres/:addressId" component={RegistrationNewApp} />
-                <Route path="aanmelding/:id" component={RegistrationDetailsApp} />
-
-                <Route path="kansen" component={OpportunitiesListApp} />
-                <Route path="kans/nieuw" component={OpportunityNewApp} />
-                <Route path="kans/nieuw/:type/:id" component={OpportunityNewApp} />
-                <Route path="kans/:id" component={OpportunityDetailsApp} />
-
-                <Route path="campagnes" component={CampaignsListApp} />
-                <Route path="campagne/nieuw" component={CampaignNewApp} />
-                <Route path="campagne/:id" component={CampaignDetailsApp} />
-
-                <Route path="gebruikers" component={UsersListApp} />
-                <Route path="gebruiker/nieuw" component={UserNewApp} />
-                <Route path="gebruiker/:id" component={UserDetailsApp} />
-
-                <Route path="contact-groepen" component={ ContactGroupsListApp } />
+                /* Contact */
                 <Route path="contact-groep/nieuw" component={ContactGroupNewApp} />
+                <Route path="contact-groepen" component={ ContactGroupsListApp } />
+                <Route path="contact/:id" component={ ContactDetailsApp } />
+                <Route path="contact/nieuw/:type" component={ PermissionHelper(ContactNewApp, true) } />
+                <Route path="contact/nieuw/:type/organisatie/:id" component={ PermissionHelper(ContactNewApp, true) } />
+                <Route path="contacten" component={ ContactsListApp } />
+                /* Contacts in group */
                 <Route path="contact-groep/:id" component={ContactGroupDetailsApp} />
                 <Route path="contacten-in-groep/:contactGroup" component={ ContactsInGroupListApp } />
+                /* Campaign */
+                <Route path="campagne/:id" component={CampaignDetailsApp} />
+                <Route path="campagne/nieuw" component={CampaignNewApp} />
+                <Route path="campagnes" component={CampaignsListApp} />
+                <Route path="contacten/:filter/:value" component={ ContactsListApp } />
 
-                // 404 route
-                <Route path="*" component={ DashboardApp } />
+                <Route path="maatregelen" component={MeasuresListApp} />
+                <Route path="maatregel/nieuw" component={MeasureNewApp} />
+                <Route path="maatregel/:id" component={MeasureDetailsApp} />
+
+                /* Registration */
+                <Route path="aanmelding/:id" component={RegistrationDetailsApp} />
+                <Route path="aanmelding/nieuw/contact/:contactId/adres/:addressId" component={RegistrationNewApp} />
+                <Route path="aanmeldingen" component={ RegistrationsListApp } />
+                /*  User */
+                <Route path="gebruiker/:id" component={UserDetailsApp} />
+                <Route path="gebruiker/nieuw" component={UserNewApp} />
+                <Route path="gebruikers" component={UsersListApp} />
+                /* Opportunity */
+                <Route path="kans/:id" component={OpportunityDetailsApp} />
+                <Route path="kans/nieuw" component={OpportunityNewApp} />
+                <Route path="kans/nieuw/:type/:id" component={OpportunityNewApp} />
+                <Route path="kansen" component={OpportunitiesListApp} />
+                /* Task */
+                <Route path="taak/:id" component={TaskDetailsApp} />
+                <Route path="taak/nieuw" component={TaskNewApp} />
+                <Route path="taak/nieuw/:type/:id" component={TaskNewApp} />
+                <Route path="taken" component={TasksListApp} />
+                /* 404 route */
+                <Route path="*" component={ NotFoundedPage } />
             </Route>
         </Router>
     );

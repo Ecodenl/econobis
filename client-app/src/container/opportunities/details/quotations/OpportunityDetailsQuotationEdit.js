@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 
-import OrganisationAPI from '../../../../api/OrganisationAPI';
+import OrganisationAPI from '../../../../api/contact/OrganisationAPI';
 
 import InputText from '../../../../components/form/InputText';
 import InputDate from '../../../../components/form/InputDate';

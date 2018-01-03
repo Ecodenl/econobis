@@ -4,16 +4,16 @@ import moment from "moment/moment";
 import {hashHistory} from "react-router";
 import validator from "validator";
 
-import ContactsAPI from "../../../api/ContactsAPI";
-import CampaignAPI from "../../../api/CampaignAPI";
+import ContactsAPI from "../../../api/contact/ContactsAPI";
+import CampaignAPI from "../../../api/campaign/CampaignAPI";
 import TaskDetailsAPI from "../../../api/task/TaskDetailsAPI";
 import TaskNewForm from './TaskNewForm';
 import TaskNewToolbar from './TaskNewToolbar';
 import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
 import RegistrationsAPI from "../../../api/registration/RegistrationsAPI";
-import ContactGroupAPI from "../../../api/ContactGroupAPI";
-import OpportunityAPI from "../../../api/OpportunityAPI";
+import ContactGroupAPI from "../../../api/contact-group/ContactGroupAPI";
+import OpportunityAPI from "../../../api/opportunity/OpportunityAPI";
 
 class TaskNewApp extends Component {
     constructor(props) {

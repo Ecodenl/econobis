@@ -1,9 +1,9 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import { fetchCampaigns } from '../../../actions/CampaignsActions';
+import { fetchCampaigns } from '../../../actions/campaign/CampaignsActions';
 import Modal from '../../../components/modal/Modal';
-import CampaignAPI from './../../../api/CampaignAPI';
+import CampaignAPI from '../../../api/campaign/CampaignAPI';
 
 
 const CampaignsDeleteItem = (props) => {

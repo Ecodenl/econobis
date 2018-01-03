@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import Modal from '../../../components/modal/Modal';
-import { deleteContactGroup } from '../../../actions/ContactGroupsActions';
+import { deleteContactGroup } from '../../../actions/contact/ContactGroupsActions';
 
 const ContactGroupsDeleteItem = (props) => {
     const confirmAction = () => {

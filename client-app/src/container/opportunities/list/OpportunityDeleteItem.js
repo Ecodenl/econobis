@@ -1,9 +1,9 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import { fetchOpportunities } from '../../../actions/OpportunitiesActions';
+import { fetchOpportunities } from '../../../actions/opportunity/OpportunitiesActions';
 import Modal from '../../../components/modal/Modal';
-import OpportunityAPI from './../../../api/OpportunityAPI';
+import OpportunityAPI from '../../../api/opportunity/OpportunityAPI';
 
 
 const OpportunityDeleteItem = (props) => {

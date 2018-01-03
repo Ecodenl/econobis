@@ -5,7 +5,7 @@ import moment from 'moment';
 moment.locale('nl');
 
 import RegistrationDetailsAPI from '../../../../api/registration/RegistrationDetailsAPI';
-import { updateRegistration } from '../../../../actions/registration/RegistrationDetailsActions';
+import { fetchRegistrationDetails } from '../../../../actions/registration/RegistrationDetailsActions';
 import InputText from '../../../../components/form/InputText';
 import InputSelect from '../../../../components/form/InputSelect';
 import InputMultiSelect from '../../../../components/form/InputMultiSelect';
@@ -81,8 +81,8 @@ class RegistrationDetailsFormGeneralEdit extends Component {
             registration.sourceIds = registration.sourceIds.split(',');
         }
 
-        RegistrationDetailsAPI.updateRegistration(registration).then((payload) => {
-            this.props.updateRegistration(payload);
+        RegistrationDetailsAPI.updateRegistration(registration).then(() => {
+            this.props.fetchRegistrationDetails(registration.id);
             this.props.switchToView();
         });
     };
@@ -194,8 +194,8 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = dispatch => ({
-    updateRegistration: (id) => {
-        dispatch(updateRegistration(id));
+    fetchRegistrationDetails: (id) => {
+        dispatch(fetchRegistrationDetails(id));
     },
 });
 

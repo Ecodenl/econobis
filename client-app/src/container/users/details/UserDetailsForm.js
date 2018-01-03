@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import { isEmpty } from 'lodash';
 
-import { fetchUserDetails } from '../../../actions/UserDetailsActions';
+import { fetchUserDetails } from '../../../actions/user/UserDetailsActions';
 import UserDetailsFormGeneral from './general/UserDetailsFormGeneral';
 import UserDetailsFormLog from './log/UserDetailsFormLog';
 import UserDetailsFormRoles from './roles/UserDetailsFormRoles';

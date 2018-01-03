@@ -9,6 +9,7 @@
 namespace App\Eco\Measure;
 
 
+use App\Eco\Address\Address;
 use App\Eco\EnergyLabel\EnergyLabel;
 use Illuminate\Database\Eloquent\Model;
 
@@ -25,6 +26,11 @@ class MeasureTaken extends Model
     public function measure()
     {
         return $this->belongsTo(Measure::class);
+    }
+
+    public function address()
+    {
+        return $this->belongsTo(Address::class);
     }
 
     public function energy_label()

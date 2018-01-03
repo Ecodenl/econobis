@@ -12,10 +12,12 @@ const RegistrationDetailsFormConclusionView = props => {
                 <ViewText
                     label={"Ingevoerd door"}
                     value={'Admin'}
+                    link={''}
                 />
                 <ViewText
                     label={"Laatst bewerkt door"}
                     value={''}
+                    link={''}
                 />
             </div>
 

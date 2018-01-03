@@ -24,6 +24,7 @@ Route::namespace('Api')
 
         Route::get('/contact/grid', 'Contact\GridController@index');
         Route::get('/contact/peek', 'Contact\ContactController@peek');
+        Route::post('contact/{contact}/owner/{user}/associate', 'Contact\ContactController@associateOwner');
         Route::get('/contact/{contact}', 'Contact\ContactController@show');
         Route::get('/contact/{contact}/registrations', 'Contact\ContactController@registrations');
         Route::get('/contact/{contact}/groups', 'Contact\ContactController@groups');
@@ -40,9 +41,11 @@ Route::namespace('Api')
         Route::post('/registration/{registration}/delete', 'Registration\RegistrationController@destroy');
 
         Route::post('/registration/{registration}/measure-taken', 'Registration\RegistrationController@storeMeasureTaken');
+        Route::post('/registration/{measureTaken}/measure-taken/update', 'Registration\RegistrationController@updateMeasureTaken');
         Route::post('/registration/{measureTaken}/measure-taken/delete', 'Registration\RegistrationController@deleteMeasureTaken');
 
         Route::post('/registration/{registration}/measure-requested', 'Registration\RegistrationController@storeMeasureRequested');
+        Route::post('/registration/{measureRequested}/measure-requested/update', 'Registration\RegistrationController@updateMeasureRequested');
         Route::post('/registration/{measureRequested}/measure-requested/delete', 'Registration\RegistrationController@deleteMeasureRequested');
 
         Route::post('/registration/{registration}/note', 'Registration\RegistrationController@storeNote');
@@ -141,5 +144,17 @@ Route::namespace('Api')
         Route::post('campaign/{campaign}/response/{contact}/detach', 'Campaign\CampaignController@detachResponse');
         Route::post('campaign/{campaign}/organisation/{organisation}/attach', 'Campaign\CampaignController@attachOrganisation');
         Route::post('campaign/{campaign}/organisation/{organisation}/detach', 'Campaign\CampaignController@detachOrganisation');
+
+        Route::get('measure/grid', 'Measure\MeasureController@grid');
+        Route::get('measure/{measure}', 'Measure\MeasureController@show');
+        Route::post('measure/', 'Measure\MeasureController@store');
+        Route::post('measure/faq/{measureFaq}/delete', 'Measure\MeasureController@destroyFaq');
+        Route::post('measure/faq/{measureFaq}/update', 'Measure\MeasureController@updateFaq');
+        Route::post('measure/{measure}/opportunity/{opportunity}/associate', 'Measure\MeasureController@associateOpportunity');
+        Route::post('measure/{measure}/supplier/{organisation}/attach', 'Measure\MeasureController@attachSupplier');
+        Route::post('measure/{measure}/supplier/{organisation}/detach', 'Measure\MeasureController@detachSupplier');
+        Route::post('measure/{measure}/faq', 'Measure\MeasureController@storeFaq');
+        Route::post('measure/{measure}', 'Measure\MeasureController@update');
+        Route::post('measure/{measure}/delete', 'Measure\MeasureController@destroy');
     }
 );

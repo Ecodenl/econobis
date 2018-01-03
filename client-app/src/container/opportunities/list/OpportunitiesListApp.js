@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import { fetchOpportunities, clearOpportunities } from '../../../actions/OpportunitiesActions';
+import { fetchOpportunities, clearOpportunities } from '../../../actions/opportunity/OpportunitiesActions';
 import OpportunitiesListToolbar from './OpportunitiesListToolbar';
 import OpportunitiesList from './OpportunitiesList';
 

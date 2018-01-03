@@ -9,6 +9,7 @@
 namespace App\Eco\Measure;
 
 
+use App\Eco\Address\Address;
 use Illuminate\Database\Eloquent\Model;
 
 class MeasureRequested extends Model
@@ -28,6 +29,11 @@ class MeasureRequested extends Model
     public function measure()
     {
         return $this->belongsTo(Measure::class);
+    }
+
+    public function address()
+    {
+        return $this->belongsTo(Address::class);
     }
 
     public function newCollection(array $models = [])

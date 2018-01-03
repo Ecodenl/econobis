@@ -20,6 +20,8 @@ use App\Http\RequestQueries\Campaign\Grid\RequestQuery;
 use App\Http\Resources\Campaign\CampaignPeek;
 use App\Http\Resources\Campaign\FullCampaign;
 use App\Http\Resources\Campaign\GridCampaign;
+use App\Http\Resources\Campaign\GridMeasure;
+use App\Http\Resources\Opportunity\FullOpportunity;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -143,22 +145,25 @@ class CampaignController extends ApiController
 
     public function associateOpportunity(Campaign $campaign, Opportunity $opportunity)
     {
+        $this->authorize('manage', Campaign::class);
         $opportunity->campaign()->associate($campaign);
         $opportunity->save();
 
-        return FullCampaign::make($opportunity->fresh());
+        return FullOpportunity::make($opportunity->fresh());
     }
 
     public function dissociateOpportunity(Opportunity $opportunity)
     {
+        $this->authorize('manage', Campaign::class);
         $opportunity->campaign()->dissociate();
         $opportunity->save();
 
-        return FullCampaign::make($opportunity->fresh());
+        return FullOpportunity::make($opportunity->fresh());
     }
 
     public function attachResponse(Campaign $campaign, Contact $contact)
     {
+        $this->authorize('manage', Campaign::class);
         $campaignResponse = new CampaignResponse([
             'campaign_id' => $campaign->id,
             'contact_id' => $contact->id,
@@ -169,17 +174,20 @@ class CampaignController extends ApiController
 
     public function detachResponse(Campaign $campaign, Contact $contact)
     {
+        $this->authorize('manage', Campaign::class);
         $campaign->responses()->where('contact_id', $contact->id)->delete();
         $campaign->save();
     }
 
     public function attachOrganisation(Campaign $campaign, Organisation $organisation)
     {
+        $this->authorize('manage', Campaign::class);
         $campaign->organisations()->attach($organisation);
     }
 
     public function detachOrganisation(Campaign $campaign, Organisation $organisation)
     {
+        $this->authorize('manage', Campaign::class);
         $campaign->organisations()->detach($organisation);
     }
 
@@ -190,6 +198,7 @@ class CampaignController extends ApiController
 
     public function associateOwner(Campaign $campaign, User $user)
     {
+        $this->authorize('manage', Campaign::class);
         $campaign->ownedBy()->associate($user);
         $campaign->save();
     }

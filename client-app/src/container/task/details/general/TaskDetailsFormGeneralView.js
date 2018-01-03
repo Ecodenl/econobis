@@ -11,6 +11,7 @@ const TaskDetailsFormGeneralView = props => {
         type,
         contact,
         status,
+        registrationId,
         registrationName,
         contactGroup,
         campaign,
@@ -21,6 +22,7 @@ const TaskDetailsFormGeneralView = props => {
         finishedBy,
         createdAt,
         createdBy,
+        opportunityId,
         opportunityName
     } = props.taskDetails;
 
@@ -58,11 +60,13 @@ const TaskDetailsFormGeneralView = props => {
                 <ViewText
                     label={"Contact"}
                     value={contact && contact.fullName}
+                    link={contact ? 'contact/' + contact.id : ''}
                 />
 
                 <ViewText
                     label={"Campagne"}
                     value={campaign && campaign.name}
+                    link={campaign ? 'campagne/' + campaign.id : ''}
                 />
             </div>
 
@@ -70,10 +74,12 @@ const TaskDetailsFormGeneralView = props => {
                 <ViewText
                     label={"Aanmelding"}
                     value={registrationName}
+                    link={registrationId ? 'aanmelding/' + registrationId : ''}
                 />
                 <ViewText
                     label={"Kans"}
                     value={opportunityName}
+                    link={opportunityId ? 'kans/' + opportunityId : ''}
                 />
             </div>
 
@@ -81,6 +87,7 @@ const TaskDetailsFormGeneralView = props => {
                 <ViewText
                     label={"Groep"}
                     value={contactGroup && contactGroup.name}
+                    link={contactGroup ? 'contact-groep/' + contactGroup.id : ''}
                 />
             </div>
 
@@ -102,7 +109,8 @@ const TaskDetailsFormGeneralView = props => {
                 />
                 <ViewText
                     label="Afgerond door"
-                    value={finishedBy && finishedBy.name}
+                    value={finishedBy && finishedBy.fullName}
+                    link={finishedBy ? 'gebruiker/' + finishedBy.id : ''}
                 />
             </div>
 
@@ -110,6 +118,7 @@ const TaskDetailsFormGeneralView = props => {
                 <ViewText
                     label={"Verantwoordelijk"}
                     value={responsibleUser && responsibleUser.fullName}
+                    link={responsibleUser ? 'gebruiker/' + responsibleUser.id : ''}
                 />
             </div>
 
@@ -121,6 +130,7 @@ const TaskDetailsFormGeneralView = props => {
                 <ViewText
                     label="Gemaakt door"
                     value={createdBy && createdBy.fullName}
+                    link={createdBy ? 'gebruiker/' + createdBy.id : ''}
                 />
             </div>
         </div>

@@ -1,12 +1,12 @@
 .loader {
-  align-items: center;
-  display: flex;
-  height: 100vh;
-  justify-content: center;
-  width: 100vw;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 
 .loader-image {
   height: 100px;
   width: 100px;
+  transform: translateX(100%);
 }

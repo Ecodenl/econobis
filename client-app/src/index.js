@@ -6,7 +6,7 @@ import './styles/style.scss';
 import 'react-day-picker/lib/style.css';
 import 'babel-polyfill';
 
-import * as authActions from './actions/AuthActions';
+import * as authActions from './actions/general/AuthActions';
 
 const store = require('./store/configureStore').configure();
 

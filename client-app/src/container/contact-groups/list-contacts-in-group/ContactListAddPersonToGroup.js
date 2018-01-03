@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import contactAPI from '../../../api/ContactsAPI';
+import contactAPI from '../../../api/contact/ContactsAPI';
 import Modal from '../../../components/modal/Modal';
 
 class ContactListAddPersonToGroup extends Component {

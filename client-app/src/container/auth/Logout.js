@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { hashHistory } from 'react-router';
 
-import { authLogout } from '../../actions/AuthActions';
+import { authLogout } from '../../actions/general/AuthActions';
 
 class Logout extends Component {
     componentWillMount() {

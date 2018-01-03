@@ -4,7 +4,7 @@ import { hashHistory } from 'react-router';
 import validator from 'validator';
 
 import passwordValidator from '../../../helpers/PasswordValidator';
-import UserAPI from '../../../api/UserAPI';
+import UserAPI from '../../../api/user/UserAPI';
 import InputText from '../../../components/form/InputText';
 import InputSelect from '../../../components/form/InputSelect';
 import ButtonText from '../../../components/button/ButtonText';

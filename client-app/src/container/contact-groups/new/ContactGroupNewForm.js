@@ -4,8 +4,8 @@ import { hashHistory } from 'react-router';
 import validator from 'validator';
 import moment from 'moment';
 
-import UsersAPI from '../../../api/UsersAPI';
-import ContactGroupAPI from '../../../api/ContactGroupAPI';
+import UsersAPI from '../../../api/user/UsersAPI';
+import ContactGroupAPI from '../../../api/contact-group/ContactGroupAPI';
 import InputText from '../../../components/form/InputText';
 import InputSelect from '../../../components/form/InputSelect';
 import InputDate from '../../../components/form/InputDate';

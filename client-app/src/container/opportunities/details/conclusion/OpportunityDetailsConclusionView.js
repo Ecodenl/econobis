@@ -17,6 +17,7 @@ const ContactDetailsFormConclusionView = props => {
                 <ViewText
                     label={"Gemaakt door"}
                     value={createdBy ? createdBy.fullName: 'Onbekend'}
+                    link={createdBy ? 'gebruiker/' + createdBy.id : ''}
                 />
             </div>
         </div>

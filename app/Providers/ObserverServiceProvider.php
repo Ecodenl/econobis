@@ -4,6 +4,8 @@ namespace App\Providers;
 
 use App\Eco\Campaign\Campaign;
 use App\Eco\Campaign\CampaignObserver;
+use App\Eco\Measure\Measure;
+use App\Eco\Measure\MeasureObserver;
 use App\Eco\Opportunity\Opportunity;
 use App\Eco\Opportunity\OpportunityObserver;
 use App\Eco\Opportunity\OpportunityQuotation;
@@ -46,6 +48,7 @@ class ObserverServiceProvider extends ServiceProvider
         Opportunity::observe(OpportunityObserver::class);
         OpportunityQuotation::observe(OpportunityQuotationObserver::class);
         Campaign::observe(CampaignObserver::class);
+        Measure::observe(MeasureObserver::class);
     }
 
     /**

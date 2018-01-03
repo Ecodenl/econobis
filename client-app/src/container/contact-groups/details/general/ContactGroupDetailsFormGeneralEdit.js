@@ -4,9 +4,9 @@ import {hashHistory} from 'react-router';
 import validator from 'validator';
 import moment from 'moment';
 
-import ContactGroupAPI from '../../../../api/ContactGroupAPI';
-import UsersAPI from '../../../../api/UsersAPI';
-import {updateContactGroupDetails} from '../../../../actions/ContactGroupDetailsActions';
+import ContactGroupAPI from '../../../../api/contact-group/ContactGroupAPI';
+import UsersAPI from '../../../../api/user/UsersAPI';
+import {updateContactGroupDetails} from '../../../../actions/contact-group/ContactGroupDetailsActions';
 import InputText from '../../../../components/form/InputText';
 import InputSelect from '../../../../components/form/InputSelect';
 import InputCheckbox from '../../../../components/form/InputCheckbox';

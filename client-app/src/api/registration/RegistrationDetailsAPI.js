@@ -152,4 +152,32 @@ export default {
                 return error;
             });
     },
+
+    updateMeasureRequested: (measure) => {
+        const requestUrl = `${URL_REGISTRATION}/${measure.id}/measure-requested/update`;
+        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
+        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
+
+        return axios.post(requestUrl, measure)
+            .then(function (response) {
+                return response.data;
+            })
+            .catch(function (error) {
+                return error.response;
+            });
+    },
+
+    updateMeasureTaken: (measure) => {
+        const requestUrl = `${URL_REGISTRATION}/${measure.id}/measure-taken/update`;
+        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
+        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
+
+        return axios.post(requestUrl, measure)
+            .then(function (response) {
+                return response.data;
+            })
+            .catch(function (error) {
+                return error.response;
+            });
+    },
 };

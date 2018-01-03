@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
 
-import { fetchContactGroupDetails } from '../../../actions/ContactGroupDetailsActions';
+import { fetchContactGroupDetails } from '../../../actions/contact-group/ContactGroupDetailsActions';
 import ContactGroupDetailsToolbar from './ContactGroupDetailsToolbar';
 import ContactGroupDetailsForm from './ContactGroupDetailsForm';
 import Panel from "../../../components/panel/Panel";

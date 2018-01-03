@@ -12,6 +12,7 @@
   "author": "Xaris",
   "license": "ISC",
   "dependencies": {
+    "@tinymce/tinymce-react": "^2.1.0",
     "axios": "^0.16.1",
     "babel-polyfill": "^6.26.0",
     "chart.js": "^2.6.0",
@@ -35,6 +36,7 @@
     "react-sidenav": "^2.1.2",
     "redux": "^3.6.0",
     "redux-saga": "^0.15.6",
+    "tinymce": "^4.7.4",
     "validator": "^9.1.1"
   },
   "devDependencies": {

@@ -8,6 +8,7 @@ import InputSelect from '../../../components/form/InputSelect';
 import ButtonText from '../../../components/button/ButtonText';
 import PanelBody from "../../../components/panel/PanelBody";
 import PanelHeader from "../../../components/panel/PanelHeader";
+import PanelFooter from "../../../components/panel/PanelFooter";
 import Panel from "../../../components/panel/Panel";
 import MailboxAPI from '../../../api/mailbox/MailboxAPI';
 
@@ -175,14 +176,12 @@ class MailboxNewForm extends Component {
                             />
                         </div>
                     </PanelBody>
-                </Panel>
 
-                <Panel>
                     <PanelHeader>
                         <span className="h5 text-bold">Servergegevens</span>
                     </PanelHeader>
                     <PanelBody>
-                        <div className="row margin-10-top">
+                        <div className="row">
                             <InputText
                                 label="Inkomende server"
                                 name={"imapHost"}
@@ -203,14 +202,12 @@ class MailboxNewForm extends Component {
 
                         </div>
                     </PanelBody>
-                </Panel>
 
-                <Panel>
                     <PanelHeader>
                         <span className="h5 text-bold">Extra instellingen</span>
                     </PanelHeader>
                     <PanelBody>
-                        <div className="row margin-10-top">
+                        <div className="row">
                             <InputText
                                 label={"Imap poort"}
                                 name={"imapPort"}
@@ -259,10 +256,8 @@ class MailboxNewForm extends Component {
                             />
                         </div>
                     </PanelBody>
-                </Panel>
 
-                <Panel>
-                    <PanelBody className="panel-small">
+                    <PanelBody>
                         <div className="pull-right btn-group" role="group">
                             <ButtonText buttonText={"Opslaan"} onClickAction={this.handleSubmit} type={"submit"} value={"Submit"}/>
                         </div>

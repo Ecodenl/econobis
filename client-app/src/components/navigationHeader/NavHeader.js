@@ -2,15 +2,10 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router';
 
-import { toggleSidebar } from '../../actions/general/SidebarActions';
 import Logo from '../logo/Logo';
 import NavSearch from './NavSearch';
 
 const NavHeader = (props) => {
-    const toggleSidebar = () => {
-        props.toggleSidebar();
-    };
-
     const fullName = (props.meDetails ? props.meDetails.firstName + ' ' + props.meDetails.lastName: '');
     const heightLogo = '44px';
 
@@ -18,7 +13,7 @@ const NavHeader = (props) => {
         <nav className="navbar navbar-default navbar-fixed-top">
             <div className="fluid-container">
                 <div className="col-xs-2 col-md-1 nav-item">
-                    <a className="btn btn-sm" onClick={toggleSidebar}>
+                    <a className="btn btn-sm" onClick={props.toggleMenu}>
                         <span className="glyphicon glyphicon-menu-hamburger" />
                     </a>
                 </div>
@@ -54,10 +49,4 @@ function mapStateToProps(state) {
     };
 }
 
-const mapDispatchToProps = dispatch => ({
-    toggleSidebar: () => {
-        dispatch(toggleSidebar());
-    },
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(NavHeader);
+export default connect(mapStateToProps, null)(NavHeader);

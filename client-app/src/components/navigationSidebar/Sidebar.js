@@ -1,20 +1,20 @@
 import React from 'react';
-import { connect } from 'react-redux';
 
 import SidebarMenu from './SidebarMenu';
+import SidebarMenuSmall from './SidebarMenuSmall';
 
-const Sidebar = (props) => {
-    const sidebarClass = (props.toggleSidebar ? 'sidebar open' : 'sidebar');
+const Sidebar = ({menuActive, onMenuEnter, onMenuLeave}) => {
+    const sidebarClass = (menuActive ? 'sidebar open' : 'sidebar');
 
     return (
-        <div className={ sidebarClass }>
-            <SidebarMenu/>
-        </div>
+        <nav className={ sidebarClass } onMouseEnter={onMenuEnter} onMouseLeave={onMenuLeave} >
+            { menuActive ?
+                <SidebarMenu  />
+                :
+                <SidebarMenuSmall />
+            }
+        </nav>
     )
 };
 
-function mapStateToProps(state) {
-    return { toggleSidebar: state.toggleSidebar };
-}
-
-export default connect(mapStateToProps)(Sidebar);
+export default Sidebar;

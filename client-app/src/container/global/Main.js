@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
@@ -15,54 +15,78 @@ class Main extends Component {
     constructor(props) {
         super(props);
 
+        this.state = {
+            menuActive: false,
+        };
+
         const token = localStorage.getItem('access_token');
 
-        if(this.props.authenticated && token) {
+        if (this.props.authenticated && token) {
             props.fetchMeDetails();
         }
-    };
+
+        this.onMenuEnter = this.onMenuEnter.bind(this);
+        this.onMenuLeave = this.onMenuLeave.bind(this);
+        this.toggleMenu = this.toggleMenu.bind(this);
+    }
 
     componentDidMount() {
-        this.updateWindowDimensions();
-        window.addEventListener('resize', this.updateWindowDimensions);
-
         const token = localStorage.getItem('access_token');
 
-        if(this.props.authenticated && token) {
+        if (this.props.authenticated && token) {
             this.props.fetchSystemData();
         }
-    };
+    }
 
-    updateWindowDimensions = () => {
-        if(window.innerWidth < 1440){
-            this.props.toggleSidebarClose();
-        }else{
-            this.props.toggleSidebarOpen();
-        }
-    };
+    onMenuEnter() {
+        this.setState({
+            menuActive: true,
+        });
+    }
+
+    onMenuLeave() {
+        this.setState({
+            menuActive: false,
+        });
+    }
+
+    toggleMenu() {
+        this.setState({
+            menuActive: !this.state.menuActive,
+        });
+    }
 
     render() {
+        const contentClass = (this.state.menuActive ? 'content open' : 'content');
+
         return (
-                <div className="container-fluid">
-                    {
-                        this.props.systemDataHasError || this.props.meDetailsHasError ?
-                            <ErrorPage />
-                            :
-                            this.props.systemDataLoaded && this.props.meDetailsLoaded ?
-                            <div>
-                                <NavHeader />
-                                <div className="row">
-                                    <Sidebar />
-                                     <Content children={ this.props.children }/>
+          <div>
+              {
+                    this.props.systemDataHasError || this.props.meDetailsHasError ?
+                      <ErrorPage />
+                        :
+                        this.props.systemDataLoaded && this.props.meDetailsLoaded ?
+                            <div className="wrapper">
+                                <div>
+                                    <NavHeader toggleMenu={this.toggleMenu} />
+                                    <Sidebar onMenuEnter={this.onMenuEnter} onMenuLeave={this.onMenuLeave} menuActive={this.state.menuActive} />
                                 </div>
-                            </div>
+
+                                    <div className={ contentClass }>
+                                        <div className="container-fluid">
+                                            <div className="col-md-12">
+                                                <Content children={this.props.children} menuActive={this.state.menuActive} />
+                                            </div>
+                                    </div>
+                                </div>
+                          </div>
                             :
-                            <LoadingPage />
-                    }
-                </div>
+                          <LoadingPage />
+                }
+            </div>
 
         );
-    };
+    }
 }
 
 function mapStateToProps(state) {
@@ -75,8 +99,6 @@ function mapStateToProps(state) {
     };
 }
 
-const mapDispatchToProps = (dispatch) => {
-    return bindActionCreators({ fetchMeDetails, fetchSystemData, toggleSidebarClose, toggleSidebarOpen }, dispatch);
-};
+const mapDispatchToProps = dispatch => bindActionCreators({ fetchMeDetails, fetchSystemData, toggleSidebarClose, toggleSidebarOpen }, dispatch);
 
 export default connect(mapStateToProps, mapDispatchToProps)(Main);

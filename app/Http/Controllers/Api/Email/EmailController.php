@@ -19,10 +19,9 @@ use Config;
 class EmailController
 {
 
-    public function grid(Mailbox $mailbox, $folder)
+    public function grid($folder)
     {
         $emails = Email::whereFolder($folder)
-            ->whereMailboxId($mailbox->id)
             ->get();
 
         $emails->load('mailbox');

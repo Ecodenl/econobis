@@ -1,28 +1,30 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import { fetchMailboxes, clearMailboxes } from '../../../actions/mailbox/MailboxesActions';
-import MailboxesList from './MailboxesList';
-import MailboxesListToolbar from './MailboxesListToolbar';
+import { fetchEmails, clearEmails } from '../../../actions/email/EmailsActions';
+import EmailsInList from './EmailsInList';
+import EmailsInListToolbar from './EmailsInListToolbar';
 import Panel from "../../../components/panel/Panel";
 import PanelBody from "../../../components/panel/PanelBody";
 
-class MailboxesListApp extends Component {
+class EmailsInListApp extends Component {
     constructor(props) {
         super(props);
+
+        this.refreshData = this.refreshData.bind(this);
     }
 
     componentDidMount() {
-        this.props.fetchMailboxes();
+        this.props.fetchEmails();
     };
 
     componentWillUnmount() {
-        this.props.clearMailboxes();
+        this.props.clearEmails();
     };
 
-    refreshData = () => {
-        this.props.clearMailboxes();
-        this.props.fetchMailboxes();
+    refreshData() {
+        this.props.clearEmails();
+        this.props.fetchEmails();
     };
 
     render() {
@@ -30,13 +32,13 @@ class MailboxesListApp extends Component {
                 <Panel className="col-md-9">
                     <PanelBody>
                         <div className="col-md-12 extra-space-above">
-                            <MailboxesListToolbar
-                                refreshData={() => this.refreshData()}
+                            <EmailsInListToolbar
+                                refreshData={this.refreshData}
                             />
                         </div>
 
                         <div className="col-md-12 extra-space-above">
-                            <MailboxesList />
+                            <EmailsInList />
                         </div>
                     </PanelBody>
                 </Panel>
@@ -47,12 +49,12 @@ class MailboxesListApp extends Component {
 
 
 const mapDispatchToProps = dispatch => ({
-    fetchMailboxes: () => {
-        dispatch(fetchMailboxes());
+    fetchEmails: () => {
+        dispatch(fetchEmails());
     },
-    clearMailboxes: () => {
-        dispatch(clearMailboxes());
+    clearEmails: () => {
+        dispatch(clearEmails());
     },
 });
 
-export default connect(null, mapDispatchToProps)(MailboxesListApp);
+export default connect(null, mapDispatchToProps)(EmailsInListApp);

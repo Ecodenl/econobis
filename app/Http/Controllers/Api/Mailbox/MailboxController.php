@@ -17,6 +17,7 @@ use App\Eco\User\User;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\Resources\GenericResource;
 use App\Http\Resources\Mailbox\FullMailbox;
+use App\Http\Resources\User\UserPeek;
 use App\Rules\EnumExists;
 use Doctrine\Common\Annotations\Annotation\Enum;
 
@@ -81,6 +82,8 @@ class MailboxController
     public function addUser(Mailbox $mailbox, User $user)
     {
         $mailbox->users()->attach($user);
+
+        return UserPeek::make($user);
     }
 
     public function removeUser(Mailbox $mailbox, User $user)

@@ -16,7 +16,13 @@ class CreateMailboxUserTable extends Migration
         Schema::create('mailbox_user', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('mailbox_id');
+            $table->foreign('mailbox_id')
+                ->references('id')->on('mailboxes')
+                ->onDelete('restrict');
             $table->unsignedInteger('user_id');
+            $table->foreign('user_id')
+                ->references('id')->on('users')
+                ->onDelete('restrict');
         });
     }
 

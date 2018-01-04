@@ -11,6 +11,7 @@ namespace App\Http\Controllers\Api\Mailbox;
 
 use App\Eco\Mailbox\ImapEncryptionType;
 use App\Eco\Mailbox\Mailbox;
+use App\Eco\Mailbox\MailFetcher;
 use App\Eco\Mailbox\SmtpEncryptionType;
 use App\Eco\User\User;
 use App\Helpers\RequestInput\RequestInput;
@@ -18,7 +19,7 @@ use App\Http\Resources\GenericResource;
 use App\Rules\EnumExists;
 use Doctrine\Common\Annotations\Annotation\Enum;
 
-class Mailboxcontroller
+class MailboxController
 {
 
     public function grid()
@@ -34,10 +35,10 @@ class Mailboxcontroller
             ->string('email')->whenMissing('')->onEmpty('')->alias('email')->next()
             ->string('smtpHost')->whenMissing('')->onEmpty('')->alias('smtp_host')->next()
             ->string('smtpPort')->whenMissing('')->onEmpty('')->alias('smtp_port')->next()
-            ->string('smtpEncryption')->validate(new EnumExists(SmtpEncryptionType::class))->whenMissing(null)->onEmpty(null)->alias('smtp_encryption')->next()
+            ->string('smtpEncryption')->whenMissing(null)->onEmpty(null)->alias('smtp_encryption')->next()
             ->string('imapHost')->whenMissing('')->onEmpty('')->alias('imap_host')->next()
             ->string('imapPort')->whenMissing('')->onEmpty('')->alias('imap_port')->next()
-            ->string('imapEncryption')->validate(new EnumExists(ImapEncryptionType::class))->whenMissing(null)->onEmpty(null)->alias('imap_encryption')->next()
+            ->string('imapEncryption')->whenMissing(null)->onEmpty(null)->alias('imap_encryption')->next()
             ->string('imapInboxPrefix')->whenMissing('')->onEmpty('')->alias('imap_inbox_prefix')->next()
             ->string('username')->whenMissing('')->onEmpty('')->alias('username')->next()
             ->string('password')->whenMissing('')->onEmpty('')->alias('password')->next()
@@ -55,10 +56,10 @@ class Mailboxcontroller
             ->string('email')->alias('email')->next()
             ->string('smtpHost')->alias('smtp_host')->next()
             ->string('smtpPort')->alias('smtp_port')->next()
-            ->string('smtpEncryption')->validate(new EnumExists(SmtpEncryptionType::class))->alias('smtp_encryption')->next()
+            ->string('smtpEncryption')->onEmpty(null)->alias('smtp_encryption')->next()
             ->string('imapHost')->alias('imap_host')->next()
             ->string('imapPort')->alias('imap_port')->next()
-            ->string('imapEncryption')->validate(new EnumExists(ImapEncryptionType::class))->alias('imap_encryption')->next()
+            ->string('imapEncryption')->onEmpty(null)->alias('imap_encryption')->next()
             ->string('imapInboxPrefix')->alias('imap_inbox_prefix')->next()
             ->string('username')->alias('username')->next()
             ->string('password')->alias('password')->next()
@@ -79,4 +80,40 @@ class Mailboxcontroller
     {
         $mailbox->users()->detach($user);
     }
+
+    public function receive(Mailbox $mailbox)
+    {
+        $mailFetcher = new MailFetcher($mailbox);
+        $mailFetcher->fetchNew();
+
+        dd($mailFetcher->getFetchedEmails());
+    }
+
+//    public function test()
+//    {
+//        $mailbox = new Mailbox('{imap.gmail.com:993/imap/ssl}INBOX', 'xariseconobis@gmail.com', 'Januari2018!', __DIR__);
+//
+//        dd($mailbox->getMail(1));
+//    }
+//
+//    public function send()
+//    {
+//        $config = Config::get('mail');
+//
+//        $config['driver'] = 'smtp';
+//        $config['host'] = 'smtp.gmail.com';
+//        $config['port'] = 587;
+//        $config['from'] = ['address' => 'xariseconobis@gmail.com', 'name' => 'Xaris Econobis'];
+//        $config['encryption'] = 'tls';
+//        $config['username'] = 'xariseconobis@gmail.com';
+//        $config['password'] = 'pocolhrwebelumul';
+//
+//        Config::set('mail', $config);
+//
+//        Mail::raw('Hi, welcome user4', function ($message) {
+//            $message->to('jos.kolenberg@xaris.nl')
+//                ->subject('test');
+//        });
+//    }
+//
 }

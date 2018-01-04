@@ -162,5 +162,6 @@ Route::namespace('Api')
         Route::post('mailbox/{mailbox}', 'Mailbox\MailboxController@update');
         Route::post('mailbox/{mailbox}/users/add/{user}', 'Mailbox\MailboxController@addUser');
         Route::post('mailbox/{mailbox}/users/remove/{user}', 'Mailbox\MailboxController@removeUser');
+        Route::get('mailbox/{mailbox}/receive', 'Mailbox\MailboxController@receive');
     }
 );

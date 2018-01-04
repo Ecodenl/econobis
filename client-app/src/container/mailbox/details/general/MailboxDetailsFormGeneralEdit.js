@@ -1,34 +1,22 @@
 import React, {Component} from 'react';
-import { hashHistory } from 'react-router';
+import { connect } from 'react-redux';
 import validator from 'validator';
 
-import InputText from '../../../components/form/InputText';
-import InputSelect from '../../../components/form/InputSelect';
-import ButtonText from '../../../components/button/ButtonText';
-import PanelBody from "../../../components/panel/PanelBody";
-import PanelHeader from "../../../components/panel/PanelHeader";
-import Panel from "../../../components/panel/Panel";
-import MailboxAPI from '../../../api/mailbox/MailboxAPI';
+import MailboxAPI from '../../../../api/mailbox/MailboxAPI';
+import { updateMailbox } from '../../../../actions/mailbox/MailboxDetailsActions';
+import InputText from '../../../../components/form/InputText';
+import InputSelect from '../../../../components/form/InputSelect';
+import ButtonText from '../../../../components/button/ButtonText';
+import Panel from "../../../../components/panel/Panel";
+import PanelHeader from "../../../../components/panel/PanelHeader";
+import PanelBody from "../../../../components/panel/PanelBody";
 
-class MailboxNewForm extends Component {
+class MailboxDetailsFormGeneralEdit extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            mailbox: {
-                id: '',
-                name: '',
-                email: '',
-                username: '',
-                password: '',
-                smtpHost: '',
-                smtpPort: '',
-                smtpEncryption: '',
-                imapHost: '',
-                imapPort: '',
-                imapEncryption: '',
-                imapInboxPrefix: '',
-            },
+            mailbox: props.mailboxDetails,
             errors: {
                 name: false,
                 email: false,
@@ -39,10 +27,13 @@ class MailboxNewForm extends Component {
                 imapHost: false,
                 imapPort: false,
             },
-        };
+        }
+
+        this.handleInputChange = this.handleInputChange.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
     };
 
-    handleInputChange = event => {
+    handleInputChange(event) {
         const target = event.target;
         const value = target.type === 'checkbox' ? target.checked : target.value;
         const name = target.name;
@@ -56,10 +47,10 @@ class MailboxNewForm extends Component {
         });
     };
 
-    handleSubmit = event => {
+    handleSubmit(event) {
         event.preventDefault();
 
-        const { mailbox }  = this.state;
+        const { mailbox } = this.state;
 
         // Validation
         let errors = {};
@@ -109,10 +100,9 @@ class MailboxNewForm extends Component {
 
         // If no errors send form
         !hasErrors &&
-            MailboxAPI.newMailbox(mailbox).then((payload) => {
-                hashHistory.push(`/mailbox/${payload.data.data.id}`);
-            }).catch(function (error) {
-                console.log(error)
+            MailboxAPI.updateMailbox(mailbox).then((payload) => {
+                this.props.updateMailbox(payload);
+                this.props.switchToView();
             });
     };
 
@@ -239,6 +229,7 @@ class MailboxNewForm extends Component {
 
                     <PanelBody>
                         <div className="pull-right btn-group" role="group">
+                            <ButtonText buttonClassName={"btn-default"} buttonText={"Sluiten"} onClickAction={this.props.switchToView}/>
                             <ButtonText buttonText={"Opslaan"} onClickAction={this.handleSubmit} type={"submit"} value={"Submit"}/>
                         </div>
                     </PanelBody>
@@ -248,4 +239,16 @@ class MailboxNewForm extends Component {
     };
 };
 
-export default MailboxNewForm;
+const mapStateToProps = (state) => {
+    return {
+        mailboxDetails: state.mailboxDetails,
+    };
+};
+
+const mapDispatchToProps = dispatch => ({
+    updateMailbox: (id) => {
+        dispatch(updateMailbox(id));
+    },
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(MailboxDetailsFormGeneralEdit);

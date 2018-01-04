@@ -1,0 +1,53 @@
+import React, {Component} from 'react';
+import { connect } from 'react-redux';
+
+import { fetchMailboxDetails } from '../../../actions/mailbox/MailboxDetailsActions';
+import MailboxDetailsToolbar from './MailboxDetailsToolbar';
+import MailboxDetailsForm from './MailboxDetailsForm';
+import Panel from '../../../components/panel/Panel';
+import PanelBody from '../../../components/panel/PanelBody';
+
+class MailboxDetailsApp extends Component {
+    constructor(props){
+        super(props);
+    };
+
+    componentDidMount() {
+        this.props.fetchMailboxDetails(this.props.params.id);
+    };
+
+    render() {
+        return (
+            <div className="row">
+                <div className="col-md-9">
+                    <div className="col-md-12 extra-space-above">
+                        <Panel>
+                            <PanelBody className={"panel-small"}>
+                                < MailboxDetailsToolbar />
+                            </PanelBody>
+                        </Panel>
+                    </div>
+
+                    <div className="col-md-12 extra-space-above">
+                        <MailboxDetailsForm />
+                    </div>
+                </div>
+                <div className="col-md-3" />
+            </div>
+        )
+    }
+};
+
+const mapStateToProps = (state) => {
+    return {
+        mailboxDetails: state.mailboxDetails,
+    };
+};
+
+const mapDispatchToProps = dispatch => ({
+    fetchMailboxDetails: (id) => {
+        dispatch(fetchMailboxDetails(id));
+    },
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(MailboxDetailsApp);

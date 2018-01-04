@@ -14,7 +14,7 @@ import ContactsListApp from './container/contact/list/ContactsListApp';
 import DashboardApp from './container/dashboard/DashboardApp';
 import Login from './container/auth/Login';
 import Logout from './container/auth/Logout';
-//import MailboxDetailsApp from './container/mailbox/details/MailboxDetailsApp';
+import MailboxDetailsApp from './container/mailbox/details/MailboxDetailsApp';
 import MailboxNewApp from './container/mailbox/new/MailboxNewApp';
 import MailboxesListApp from './container/mailbox/list/MailboxesListApp';
 import Main from './container/global/Main';
@@ -65,8 +65,8 @@ const Routes = () => {
                 <Route path="maatregel/nieuw" component={MeasureNewApp} />
                 <Route path="maatregel/:id" component={MeasureDetailsApp} />
                 /* Mailboxes */
-
                 <Route path="mailbox/nieuw" component={MailboxNewApp} />
+                <Route path="mailbox/:id" component={MailboxDetailsApp} />
                 <Route path="mailboxen" component={MailboxesListApp} />
                 /* Registration */
                 <Route path="aanmelding/nieuw/contact/:contactId/adres/:addressId" component={RegistrationNewApp} />

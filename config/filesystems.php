@@ -55,7 +55,7 @@ return [
 
         'mail_attachments' => [
             'driver' => 'local',
-            'root' => storage_path('app/mails'),
+            'root' => storage_path('app' . DIRECTORY_SEPARATOR . 'mails'),
         ],
 
         'public' => [

@@ -6,6 +6,6 @@ export const fetchMailboxes = () => {
 
 export const clearMailboxes = () => {
     return {
-        type: 'CLEAR_BOXES'
+        type: 'CLEAR_MAILBOXES'
     };
 };

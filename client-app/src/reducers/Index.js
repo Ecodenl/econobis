@@ -9,6 +9,8 @@ import contactsFiltersReducer from './contact/ContactsFiltersReducer';
 import contactsInGroupReducer from './contact-group/ContactsInGroupReducer';
 import contactsReducer from './contact/ContactsReducer';
 import contactsSortsReducer from './contact/ContactsSortsReducer';
+import mailboxDetailsReducer from './mailbox/mailboxDetailsReducer';
+import mailboxesReducer from './mailbox/mailboxesReducer';
 import measuresReducer from './measure/MeasureReducer';
 import meDetailsReducer from './general/MeDetailsReducer';
 import opportunitiesReducer from './opportunity/OpportunitiesReducer';
@@ -52,6 +54,10 @@ const rootReducer = combineReducers({
     registrationsFilters: registrationsFiltersReducer,
     registrationsSorts: registrationsSortsReducer,
     registrationDetails: registrationDetailsReducer,
+
+    // Mailbox
+    mailboxes: mailboxesReducer,
+    mailboxDetails: mailboxDetailsReducer,
 
     // Measures
     measures: measuresReducer,

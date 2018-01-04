@@ -100,6 +100,9 @@ const SidebarMenu = props => {
                     <Nav id="users">
                         <NavText><Link className="sidebar-link" to="gebruikers">Gebruikers</Link></NavText>
                     </Nav>
+                    <Nav id="mailboxes">
+                        <NavText><Link className="sidebar-link" to="mailboxen">Mailboxen</Link></NavText>
+                    </Nav>
                 </Nav>
             </SideNav>
         </div>

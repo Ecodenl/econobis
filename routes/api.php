@@ -159,6 +159,7 @@ Route::namespace('Api')
 
         Route::get('mailbox/grid', 'Mailbox\MailboxController@grid');
         Route::post('mailbox', 'Mailbox\MailboxController@store');
+        Route::get('mailbox/{mailbox}', 'Mailbox\MailboxController@show');
         Route::post('mailbox/{mailbox}', 'Mailbox\MailboxController@update');
         Route::post('mailbox/{mailbox}/users/add/{user}', 'Mailbox\MailboxController@addUser');
         Route::post('mailbox/{mailbox}/users/remove/{user}', 'Mailbox\MailboxController@removeUser');

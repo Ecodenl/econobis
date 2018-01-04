@@ -6,6 +6,7 @@ import validator from 'validator';
 import InputText from '../../../../components/form/InputText';
 import InputSelect from '../../../../components/form/InputSelect';
 import InputDate from '../../../../components/form/InputDate';
+import InputTinyMCE from '../../../../components/form/InputTinyMCE';
 import ButtonText from '../../../../components/button/ButtonText';
 import PanelFooter from "../../../../components/panel/PanelFooter";
 
@@ -69,6 +70,16 @@ class OpportunityFormEdit extends Component {
             opportunity: {
                 ...this.state.opportunity,
                 [name]: value
+            },
+        });
+    };
+
+    handleEditorChange = (e) => {
+        this.setState({
+            ...this.state,
+            opportunity: {
+                ...this.state.opportunity,
+                quotationText: e.target.getContent()
             },
         });
     };
@@ -196,13 +207,11 @@ class OpportunityFormEdit extends Component {
                 <div className="row">
                     <div className="form-group col-sm-12">
                         <div className="row">
-                            <div className="col-sm-3">
-                                <label htmlFor="quotationText" className="col-sm-12">Offerte tekst</label>
-                            </div>
-                            <div className="col-sm-8">
-                                <textarea name='quotationText' value={quotationText} onChange={this.handleInputChange}
-                                          className="form-control input-sm"/>
-                            </div>
+                            <InputTinyMCE
+                                label={"Offerte tekst"}
+                                value={quotationText}
+                                onChangeAction={this.handleEditorChange}
+                            />
                         </div>
                     </div>
                 </div>

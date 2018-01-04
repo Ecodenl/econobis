@@ -94,7 +94,7 @@ class CreateOpportunitiesTable extends Migration
             $table->foreign('campaign_id')
                 ->references('id')->on('campaigns')
                 ->onDelete('restrict');
-            $table->string('quotation_text')->nullable();
+            $table->text('quotation_text')->nullable();
             $table->date('desired_date')->nullable();
             $table->unsignedInteger('created_by_id')->nullable();
             $table->foreign('created_by_id')

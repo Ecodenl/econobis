@@ -49,6 +49,11 @@ class Mailboxcontroller
         return GenericResource::make($mailbox);
     }
 
+    public function show(Mailbox $mailbox)
+    {
+        return GenericResource::make($mailbox);
+    }
+
     public function update(Mailbox $mailbox, RequestInput $input)
     {
         $data = $input->string('name')->next()

@@ -9,12 +9,14 @@
 namespace App\Http\Controllers\Api\Mailbox;
 
 
+use App\Eco\Email\Email;
 use App\Eco\Mailbox\ImapEncryptionType;
 use App\Eco\Mailbox\Mailbox;
 use App\Eco\Mailbox\MailFetcher;
 use App\Eco\Mailbox\SmtpEncryptionType;
 use App\Eco\User\User;
 use App\Helpers\RequestInput\RequestInput;
+use App\Http\Resources\Email\GridEmail;
 use App\Http\Resources\GenericResource;
 use App\Http\Resources\Mailbox\FullMailbox;
 use App\Rules\EnumExists;
@@ -92,35 +94,6 @@ class MailboxController
     {
         $mailFetcher = new MailFetcher($mailbox);
         $mailFetcher->fetchNew();
-
-        dd($mailFetcher->getFetchedEmails());
     }
 
-//    public function test()
-//    {
-//        $mailbox = new Mailbox('{imap.gmail.com:993/imap/ssl}INBOX', 'xariseconobis@gmail.com', 'Januari2018!', __DIR__);
-//
-//        dd($mailbox->getMail(1));
-//    }
-//
-//    public function send()
-//    {
-//        $config = Config::get('mail');
-//
-//        $config['driver'] = 'smtp';
-//        $config['host'] = 'smtp.gmail.com';
-//        $config['port'] = 587;
-//        $config['from'] = ['address' => 'xariseconobis@gmail.com', 'name' => 'Xaris Econobis'];
-//        $config['encryption'] = 'tls';
-//        $config['username'] = 'xariseconobis@gmail.com';
-//        $config['password'] = 'pocolhrwebelumul';
-//
-//        Config::set('mail', $config);
-//
-//        Mail::raw('Hi, welcome user4', function ($message) {
-//            $message->to('jos.kolenberg@xaris.nl')
-//                ->subject('test');
-//        });
-//    }
-//
 }

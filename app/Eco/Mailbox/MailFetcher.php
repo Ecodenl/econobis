@@ -10,6 +10,7 @@ namespace App\Eco\Mailbox;
 
 
 use App\Eco\Email\Email;
+use App\Eco\Email\EmailAttachment;
 use Storage;
 
 class MailFetcher
@@ -41,7 +42,7 @@ class MailFetcher
 
                 // Deze mail bestaat al, er vanuit gaan dat alle opvolgende dus ook al eerder zijn opgehaald
                 // Dus kunnen we helemaal stoppen met de loop
-                //return;
+                return;
             }
 
             // Als we hier komen is de mail blijkbaar nog niet eerder opgehaald, bij deze gaan doen
@@ -79,15 +80,21 @@ class MailFetcher
      */
     private function getStorageDir()
     {
-        $storageDir = Storage::disk('mail_attachments')->getDriver()->getAdapter()->getPathPrefix() . DIRECTORY_SEPARATOR . 'mailbox_' . $this->mailbox->id;
-        return $storageDir;
+        return $this->getStorageRootDir() . DIRECTORY_SEPARATOR . 'mailbox_' . $this->mailbox->id;
+    }
+
+    /**
+     * @return string
+     */
+    private function getStorageRootDir()
+    {
+        return Storage::disk('mail_attachments')->getDriver()->getAdapter()->getPathPrefix();
     }
 
     private function fetchEmail($mailId)
     {
         $emailData = $this->imap->getMail($mailId);
-        dump($emailData);
-return;
+
         $email = new Email([
             'mailbox_id' => $this->mailbox->id,
             'from' => $emailData->fromAddress,
@@ -102,6 +109,16 @@ return;
             'message_id' => $emailData->messageId,
         ]);
         $email->save();
+
+        foreach ($emailData->getAttachments() as $attachment){
+            $filename = str_replace($this->getStorageRootDir(), '', $attachment->filePath);
+            $emailAttachment = new EmailAttachment([
+                'filename' => $filename,
+                'name' => $attachment->name,
+                'email_id' => $email->id,
+            ]);
+            $emailAttachment->save();
+        }
 
         $this->fetchedEmails[] = $email;
     }

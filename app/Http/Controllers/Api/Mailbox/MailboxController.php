@@ -16,6 +16,7 @@ use App\Eco\Mailbox\SmtpEncryptionType;
 use App\Eco\User\User;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\Resources\GenericResource;
+use App\Http\Resources\Mailbox\FullMailbox;
 use App\Rules\EnumExists;
 use Doctrine\Common\Annotations\Annotation\Enum;
 
@@ -52,7 +53,8 @@ class MailboxController
 
     public function show(Mailbox $mailbox)
     {
-        return GenericResource::make($mailbox);
+        $mailbox->load('users');
+        return FullMailbox::make($mailbox);
     }
 
     public function update(Mailbox $mailbox, RequestInput $input)

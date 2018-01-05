@@ -11,7 +11,7 @@ class Email extends Model
     protected $guarded = ['id'];
 
     protected $casts = [
-        'date' => 'datetime',
+        'date_sent' => 'datetime',
         'to' => 'array',
         'cc' => 'array',
         'bcc' => 'array',

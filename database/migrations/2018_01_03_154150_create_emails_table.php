@@ -32,8 +32,8 @@ class CreateEmailsTable extends Migration
             $table->dateTime('date');
 
             $table->string('folder')->default('');
-            $table->unsignedInteger('imap_id');
-            $table->string('message_id');
+            $table->unsignedInteger('imap_id')->nullable();
+            $table->string('message_id')->nullable();
 
             $table->timestamps();
         });

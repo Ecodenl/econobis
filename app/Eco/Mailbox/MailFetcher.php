@@ -103,7 +103,7 @@ class MailFetcher
             'bcc' => json_encode(array_keys($emailData->bcc)),
             'subject' => $emailData->subject,
             'html_body' => $emailData->textHtml,
-            'date' => $emailData->date,
+            'date_sent' => $emailData->date,
             'folder' => 'inbox',
             'imap_id' => $emailData->id,
             'message_id' => $emailData->messageId,

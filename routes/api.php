@@ -168,5 +168,6 @@ Route::namespace('Api')
         Route::get('email/grid/in-mailbox/{mailbox}/in-folder/{folder}', 'Email\EmailController@grid');
         Route::get('email/{email}', 'Email\EmailController@show');
         Route::post('email/{email}', 'Email\EmailController@update');
+        Route::post('email/send/{mailbox}', 'Email\EmailController@send');
     }
 );

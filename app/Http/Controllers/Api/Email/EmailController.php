@@ -10,6 +10,8 @@ namespace App\Http\Controllers\Api\Email;
 
 
 use App\Eco\Email\Email;
+use App\Eco\Email\Jobs\SendEmail;
+use App\Eco\Email\Jobs\StoreConceptEmail;
 use App\Eco\Mailbox\Mailbox;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\Resources\Email\FullEmail;
@@ -44,6 +46,25 @@ class EmailController
         $email->save();
 
         return FullEmail::make($email);
+    }
+
+    public function send(Mailbox $mailbox, RequestInput $input)
+    {
+        // Todo; deze hele functie is nog in aanbouw
+
+        $data = $input->string('from')->next()
+            ->string('to')->validate('json')->next()
+            ->string('cc')->validate('json')->next()
+            ->string('bcc')->validate('json')->next()
+            ->string('subject')->next()
+            ->string('htmlBody')->whenMissing('')->onEmpty('')->alias('html_body')->next()
+            ->string('date')->validate('date')->next()
+            ->string('contactId')->alias('contact_id')->next()
+            ->get();
+
+        $email = (new StoreConceptEmail($mailbox, $data))->handle();
+
+        (new SendEmail($email))->handle();
     }
 
 }

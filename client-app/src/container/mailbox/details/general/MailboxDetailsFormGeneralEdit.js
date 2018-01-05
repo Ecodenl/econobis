@@ -27,7 +27,7 @@ class MailboxDetailsFormGeneralEdit extends Component {
                 imapHost: false,
                 imapPort: false,
             },
-        }
+        };
 
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);

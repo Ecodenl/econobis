@@ -4,6 +4,7 @@ import { isEmpty } from 'lodash';
 
 import { fetchMailboxDetails } from '../../../actions/mailbox/MailboxDetailsActions';
 import MailboxDetailsFormGeneral from './general/MailboxDetailsFormGeneral';
+import MailboxDetailsUsers from './mailbox-users/MailboxDetailsUsers';
 
 class MailboxDetailsForm extends Component {
     constructor(props){
@@ -17,6 +18,7 @@ class MailboxDetailsForm extends Component {
                 :
                 <div>
                     <MailboxDetailsFormGeneral />
+                    <MailboxDetailsUsers />
                 </div>
         );
     }

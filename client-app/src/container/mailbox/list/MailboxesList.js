@@ -24,7 +24,7 @@ const MailboxesList = props => {
                     <DataTableBody>
                         {
                             props.mailboxes.length === 0 ? (
-                                <tr><td colSpan={11}>Geen mailboxen gevonden!</td></tr>
+                                <tr><td colSpan={6}>Geen mailboxen gevonden!</td></tr>
                             ) : (
                                 props.mailboxes.map((mailbox) => {
                                     return <MailboxesListItem

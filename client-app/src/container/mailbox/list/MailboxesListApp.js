@@ -31,7 +31,7 @@ class MailboxesListApp extends Component {
                     <PanelBody>
                         <div className="col-md-12 extra-space-above">
                             <MailboxesListToolbar
-                                refreshContactsData={() => this.refreshData()}
+                                refreshData={() => this.refreshData()}
                             />
                         </div>
 

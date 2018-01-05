@@ -1,10 +1,11 @@
 import axios from 'axios';
 
 const URL_API = process.env.URL_API;
+const URL_USER = `${URL_API}/api/user`;
 
 export default {
     fetchUsers: () => {
-        const requestUrl = `${URL_API}/api/user/grid`;
+        const requestUrl = `${URL_USER}/grid`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
@@ -19,7 +20,7 @@ export default {
     },
 
     fetchUsersWithPermission: (permissionId) => {
-        const requestUrl = `${URL_API}/api/user/with-permission/${permissionId}`;
+        const requestUrl = `${URL_USER}/with-permission/${permissionId}`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 

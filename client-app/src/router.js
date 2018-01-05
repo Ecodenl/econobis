@@ -12,6 +12,7 @@ import ContactNewApp from './container/contact/new/ContactNewApp';
 import ContactsInGroupListApp from './container/contact-groups/list-contacts-in-group/ContactsInGroupListApp';
 import ContactsListApp from './container/contact/list/ContactsListApp';
 import DashboardApp from './container/dashboard/DashboardApp';
+import EmailsInListApp from './container/email/list/EmailsInListApp';
 import Login from './container/auth/Login';
 import Logout from './container/auth/Logout';
 import MailboxDetailsApp from './container/mailbox/details/MailboxDetailsApp';
@@ -59,8 +60,10 @@ const Routes = () => {
                 <Route path="campagne/:id" component={CampaignDetailsApp} />
                 <Route path="campagnes" component={CampaignsListApp} />
                 <Route path="contacten/:filter/:value" component={ ContactsListApp } />
+                /* Emails */
+                <Route path="email-in" component={EmailsInListApp} />
 
-
+                /* Measures */
                 <Route path="maatregelen" component={MeasuresListApp} />
                 <Route path="maatregel/nieuw" component={MeasureNewApp} />
                 <Route path="maatregel/:id" component={MeasureDetailsApp} />

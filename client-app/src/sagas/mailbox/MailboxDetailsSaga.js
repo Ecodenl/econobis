@@ -1,5 +1,6 @@
 import { put, call } from 'redux-saga/effects';
 import MailboxAPI from '../../api/mailbox/MailboxAPI';
+import AddressAPI from "../../api/contact/AddressAPI";
 
 export function* fetchMailboxDetailsSaga({ id }) {
     try {
@@ -21,3 +22,11 @@ export function* deleteMailboxSaga({ id }) {
     }
 }
 
+export function* deleteMailboxUserSaga({ mailboxId, userId }) {
+    try {
+        yield call(MailboxAPI.deleteMailboxUser, { mailboxId, userId });
+        yield put({ type: 'DELETE_MAILBOX_USER_SUCCESS', userId });
+    } catch (error) {
+        yield put({ type: 'DELETE_MAILBOX_USER_ERROR', error });
+    }
+}

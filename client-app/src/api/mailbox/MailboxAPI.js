@@ -44,6 +44,19 @@ export default {
         return axios.post(requestUrl);
     },
 
+    newMailboxUser: ({mailboxId, userId}) => {
+        const requestUrl = `${URL_MAILBOX}/${mailboxId}/users/add/${userId}`;
+        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
+        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
+        return axios.post(requestUrl);
+    },
 
+    deleteMailboxUser: ({mailboxId, userId}) => {
+        const requestUrl = `${URL_MAILBOX}/${mailboxId}/users/remove/${userId}`;
+        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
+        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
+
+        return axios.post(requestUrl);
+    },
 };

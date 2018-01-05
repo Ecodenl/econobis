@@ -10,6 +10,21 @@ export default function (state= [], action) {
                 ...state,
                 ...action.mailbox.data.data,
             };
+        case 'NEW_MAILBOX_USER':
+            return {
+                ...state,
+                users: [
+                    ...state.users,
+                    {
+                        ...action.mailboxUser,
+                    }
+                ]
+            };
+        case 'DELETE_MAILBOX_USER_SUCCESS':
+            return {
+                ...state,
+                users: state.users.filter((user) => user.id !== action.userId),
+            };
         default:
             return state;
     }

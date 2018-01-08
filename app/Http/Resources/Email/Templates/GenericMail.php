@@ -22,9 +22,10 @@ class GenericMail extends Mailable
      *
      * @param Email $email
      */
-    public function __construct(Email $email)
+    public function __construct(Email $email, $html_body)
     {
         $this->email = $email;
+        $this->html_body = $html_body;
     }
 
     /**

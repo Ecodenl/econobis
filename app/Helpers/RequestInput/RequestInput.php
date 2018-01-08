@@ -40,6 +40,11 @@ class RequestInput
         return $this->input('string', $field);
     }
 
+    public function json($field)
+    {
+        return $this->input('json', $field);
+    }
+
     public function integer($field)
     {
         return $this->input('integer', $field);

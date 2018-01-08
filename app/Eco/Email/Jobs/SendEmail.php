@@ -47,10 +47,20 @@ class SendEmail
 
         Config::set('mail', $config);
 
-        Mail::to($email->to)
-            ->cc($email->cc)
-            ->bcc($email->bcc)
-            ->send(new GenericMail($email));
+        if ($email->cc[0] != '' && $email->bcc[0] != '') {
+            Mail::to($email->to)
+                ->cc($email->cc)
+                ->bcc($email->bcc)
+                ->send(new GenericMail($email, $email->html_body));
+        } elseif ($email->cc[0] == '') {
+            Mail::to($email->to)
+                ->bcc($email->bcc)
+                ->send(new GenericMail($email, $email->html_body));
+        } else {
+            Mail::to($email->to)
+                ->cc($email->cc)
+                ->send(new GenericMail($email, $email->html_body));
+        }
 
         $email->date_sent = new Carbon();
         $email->folder = 'sent';

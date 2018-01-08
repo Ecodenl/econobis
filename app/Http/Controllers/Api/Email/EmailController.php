@@ -55,15 +55,49 @@ class EmailController
     public function send(Mailbox $mailbox, RequestInput $input, Request $request)
     {
         //Get all basic mail info
-        $data = $input
-            ->string('to')->next()
-            ->string('cc')->whenMissing('')->onEmpty('')->next()
-            ->string('bcc')->whenMissing('')->onEmpty('')->next()
-            ->string('subject')->whenMissing('Econobis')->onEmpty('Econobis')->next()
-            ->string('htmlBody')->whenMissing('')->onEmpty('')->alias('html_body')->next()
-            ->get();
+        $data = $request->validate([
+            'to' => 'required',
+            'cc' => '',
+            'bcc' => '',
+            'subject' => 'string',
+            'htmlBody' => 'required|string',
+        ]);
 
-        $email = (new StoreConceptEmail($mailbox, $data))->handle();
+        //get emails by contact_id
+        $emails = [];
+
+        $sendVariations = ['to'];
+        if (array_key_exists('cc', $data)) {
+            array_push($sendVariations, 'cc');
+        }
+        else{
+            $emails['cc'][0] = '';
+        }
+        if (array_key_exists('bcc', $data)) {
+            array_push($sendVariations, 'bcc');
+        }
+        else{
+            $emails['bcc'][0] = '';
+        }
+
+        foreach ($sendVariations as $sendVariation){
+            foreach ($data[$sendVariation] as $emailData) {
+                if (is_numeric($emailData)){
+                    $emails[$sendVariation][] =  Contact::find($emailData)->primaryEmailAddress()->value('email');
+                }
+                else{
+                    $emails[$sendVariation][] = $emailData;
+                }}
+        }
+
+        $santizedData = [
+            'to' => $emails['to'],
+            'cc' => $emails['cc'],
+            'bcc' => $emails['bcc'],
+            'subject' => array_key_exists('subject', $data) ? $data['subject'] : 'Econobis',
+            'html_body' => $data['htmlBody'],
+        ];
+        $email = (new StoreConceptEmail($mailbox, $santizedData))->handle();
 
         //Email attachments
         //Check if storage map exists
@@ -74,7 +108,7 @@ class EmailController
         }
 
         //get attachments
-        $attachments = $request->file('files');
+        $attachments = $request->file('attachments') ? $request->file('attachments') : [];
 
         //store attachments
         foreach ($attachments as $attachment) {

@@ -80,7 +80,7 @@ class MailFetcher
      */
     private function getStorageDir()
     {
-        return $this->getStorageRootDir() . DIRECTORY_SEPARATOR . 'mailbox_' . $this->mailbox->id;
+        return $this->getStorageRootDir() . DIRECTORY_SEPARATOR . 'mailbox_' . $this->mailbox->id . DIRECTORY_SEPARATOR . 'inbox' ;
     }
 
     /**

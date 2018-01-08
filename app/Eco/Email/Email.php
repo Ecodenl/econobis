@@ -22,6 +22,11 @@ class Email extends Model
         return $this->belongsTo(Mailbox::class);
     }
 
+    public function attachments()
+    {
+        return $this->hasMany(EmailAttachment::class);
+    }
+
     public function contact()
     {
         return $this->belongsTo(Contact::class);

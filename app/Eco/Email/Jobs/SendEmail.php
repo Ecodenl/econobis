@@ -10,6 +10,7 @@ namespace App\Eco\Email\Jobs;
 
 
 use App\Eco\Email\Email;
+use App\Http\Resources\Email\Templates\GenericMail;
 use Carbon\Carbon;
 use Config;
 use Mail;
@@ -46,11 +47,10 @@ class SendEmail
 
         Config::set('mail', $config);
 
-        // Todo; mail samenstellen
-//        Mail::raw($email->html_body, function ($message) use ($email) {
-//            $message->to($email->to)
-//                ->subject($email->subject);
-//        });
+        Mail::to($email->to)
+            ->cc($email->cc)
+            ->bcc($email->bcc)
+            ->send(new GenericMail($email));
 
         $email->date_sent = new Carbon();
         $email->folder = 'sent';

@@ -9,11 +9,13 @@
 namespace App\Http\Controllers\Api\Email;
 
 
+use App\Eco\Contact\Contact;
 use App\Eco\Email\Email;
 use App\Eco\Email\EmailAttachment;
 use App\Eco\Email\Jobs\SendEmail;
 use App\Eco\Email\Jobs\StoreConceptEmail;
 use App\Eco\Mailbox\Mailbox;
+use App\Eco\User\User;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\Resources\Email\FullEmail;
 use App\Http\Resources\Email\GridEmail;
@@ -88,5 +90,30 @@ class EmailController
         }
 
         (new SendEmail($email))->handle();
+    }
+
+    public function peek(){
+        $contacts = Contact::select('id', 'full_name')->with('primaryEmailAddress')->get();
+//        $users = User::select('id', 'email', 'first_name', 'last_name')->with('lastNamePrefix')->get();
+
+        foreach($contacts as $contact){
+            if($contact->primaryEmailAddress) {
+                $people[] = [
+                    'id' => $contact->id,
+                    'name' => $contact->full_name . ' (' . $contact->primaryEmailAddress->email . ')' ,
+                    'email' => $contact->primaryEmailAddress->email
+                ];
+            }
+        }
+
+//        foreach($users as $user){
+//            $people[] = [
+//                'id' => $user->id,
+//                'name' => $user->present()->fullName() . ' (' . $user->email . ')',
+//                'email' =>
+//            ];
+//        }
+
+        return $people;
     }
 }

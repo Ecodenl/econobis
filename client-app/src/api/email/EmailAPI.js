@@ -38,13 +38,21 @@ export default {
             );
     },
 
+    newEmail: (email) => {
+        const requestUrl = `${URL_EMAIL}/send/3`;
+        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
+        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
+
+        return axios.post(requestUrl, email);
+    },
+
     downloadAttachment: (id) => {
         const requestUrl = `${URL_EMAIL}/email-attachment/${id}/download`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
         return axios.get(requestUrl, {responseType: 'blob'});
-    }
+    },
 
 };
 

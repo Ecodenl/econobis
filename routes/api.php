@@ -170,8 +170,8 @@ Route::namespace('Api')
         Route::get('email/{email}', 'Email\EmailController@show');
         Route::post('email/{email}', 'Email\EmailController@update');
         Route::get('email/email-attachment/{emailAttachment}/download', 'Email\EmailController@download');
-        Route::post('email/{email}/{contact}', 'Email\EmailController@associateContact');
         Route::post('email/send/{mailbox}', 'Email\EmailController@send');
+        Route::post('email/{email}/{contact}', 'Email\EmailController@associateContact');
         Route::post('email/store-concept/{mailbox}', 'Email\EmailController@storeConcept');
     }
 );

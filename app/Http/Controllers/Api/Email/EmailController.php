@@ -75,13 +75,13 @@ class EmailController
         $emails = [];
 
         $sendVariations = ['to'];
-        if (array_key_exists('cc', $data)) {
+        if ($data['cc'] != '') {
             array_push($sendVariations, 'cc');
         }
         else{
             $emails['cc'][0] = '';
         }
-        if (array_key_exists('bcc', $data)) {
+        if ($data['bcc'] != '') {
             array_push($sendVariations, 'bcc');
         }
         else{

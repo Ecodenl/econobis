@@ -46,13 +46,16 @@ class SendEmail
         $config['password'] = $mailbox->password;
 
         Config::set('mail', $config);
-
         if ($email->cc[0] != '' && $email->bcc[0] != '') {
             Mail::to($email->to)
                 ->cc($email->cc)
                 ->bcc($email->bcc)
                 ->send(new GenericMail($email, $email->html_body));
-        } elseif ($email->cc[0] == '') {
+        } elseif ($email->cc[0] == '' && $email->bcc[0] == '') {
+            Mail::to($email->to)
+                ->send(new GenericMail($email, $email->html_body));
+        }
+        elseif ($email->cc[0] == '') {
             Mail::to($email->to)
                 ->bcc($email->bcc)
                 ->send(new GenericMail($email, $email->html_body));

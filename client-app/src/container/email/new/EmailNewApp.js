@@ -152,10 +152,9 @@ class MailboxNewApp extends Component {
                 email.bcc = email.bcc.split(',');
             }
 
-            console.log(email);
-
             EmailAPI.newEmail(email).then((payload) => {
-                hashHistory.push(`/email/${payload.data.data.id}`);
+                console.log(payload);
+                //hashHistory.push(`/email/${payload.data.data.id}`);
             }).catch(function (error) {
                 console.log(error)
             });

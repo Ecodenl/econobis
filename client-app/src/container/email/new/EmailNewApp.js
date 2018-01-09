@@ -8,7 +8,7 @@ import PanelBody from '../../../components/panel/PanelBody';
 import EmailAPI from '../../../api/email/EmailAPI';
 import EmailAddressAPI from '../../../api/contact/EmailAddressAPI';
 
-class MailboxNewApp extends Component {
+class EmailNewApp extends Component {
     constructor(props) {
         super(props);
 
@@ -116,8 +116,6 @@ class MailboxNewApp extends Component {
 
         const { email } = this.state;
 
-        let prepareAttachmentsForSending = [];
-
         // Validation
         let errors = {};
         let hasErrors = false;
@@ -130,34 +128,36 @@ class MailboxNewApp extends Component {
         this.setState({ ...this.state, errors: errors });
 
         // If no errors send form
-        !hasErrors &&
-            email.attachments.map((file) => {
-                let data = new FormData();
-                data.set('file', file);
+    if(!hasErrors) {
+        if (email.to.length > 0) {
+            email.to = email.to.split(',');
+        }
 
-                prepareAttachmentsForSending.push(data);
-            });
+        if (email.cc.length > 0) {
+            email.cc = email.cc.split(',');
+        }
 
-            email.attachments = prepareAttachmentsForSending;
+        if (email.bcc.length > 0) {
+            email.bcc = email.bcc.split(',');
+        }
+        const data = new FormData();
 
-            if(email.to.length > 0){
-                email.to = email.to.split(',');
-            }
+        data.append('to', JSON.stringify(email.to));
+        data.append('cc', JSON.stringify(email.cc));
+        data.append('bcc', JSON.stringify(email.bcc));
+        data.append('subject', email.subject);
+        data.append('htmlBody', email.htmlBody);
+        email.attachments.map((file, key) => {
+            data.append('attachments[' +  key +  ']', file);
+        });
 
-            if(email.cc.length > 0){
-                email.cc = email.cc.split(',');
-            }
-
-            if(email.bcc.length > 0){
-                email.bcc = email.bcc.split(',');
-            }
-
-            EmailAPI.newEmail(email).then((payload) => {
-                console.log(payload);
-                //hashHistory.push(`/email/${payload.data.data.id}`);
-            }).catch(function (error) {
-                console.log(error)
-            });
+        EmailAPI.newEmail(data).then((payload) => {
+            console.log(payload);
+            //hashHistory.push(`/email/${payload.data.data.id}`);
+        }).catch(function (error) {
+            console.log(error)
+        });
+    }
     };
 
     render() {
@@ -194,4 +194,4 @@ class MailboxNewApp extends Component {
     }
 };
 
-export default MailboxNewApp;
+export default EmailNewApp;

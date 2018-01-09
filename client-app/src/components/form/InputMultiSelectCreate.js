@@ -3,15 +3,21 @@ import PropTypes from 'prop-types';
 import Select from 'react-select';
 import 'react-select/dist/react-select.css';
 
-const InputMultiSelect = props => {
-    const { label, className, size, id, name, value, options, optionId, optionName, onChangeAction, required } = props;
+const InputMultiSelectCreate = props => {
+    const { label, className, size, id, name, value, options, optionId, optionName, onChangeAction, required, allowCreate } = props;
 
+    const promptTextCreator = () => {
+
+    }
 
     return (
-        <div className="form-group col-sm-6">
-            <label htmlFor={ id } className={`col-sm-6 ${required}`}>{label}</label>
-            <div className={`${size}`}>
-                <Select
+        <div className="form-group col-sm-12">
+            <div className="row">
+                <div className="col-sm-3">
+                    <label htmlFor={ id } className={`col-sm-12 ${required}`}>{label}</label>
+                </div>
+                <div className={`${size}`}>
+                    <Select.Creatable
                         id={ id }
                         name={name}
                         value={value}
@@ -24,13 +30,15 @@ const InputMultiSelect = props => {
                         multi
                         simpleValue
                         removeSelected
-                        />
+                    />
+                </div>
             </div>
         </div>
     );
 };
 
-InputMultiSelect.defaultProps = {
+InputMultiSelectCreate.defaultProps = {
+    allowCreate: false,
     className: '',
     size: 'col-sm-6',
     optionId: 'id',
@@ -41,7 +49,8 @@ InputMultiSelect.defaultProps = {
     value: '',
 };
 
-InputMultiSelect.propTypes = {
+InputMultiSelectCreate.propTypes = {
+    allowCreate: PropTypes.bool,
     label: PropTypes.string.isRequired,
     className: PropTypes.string,
     size: PropTypes.string,
@@ -58,4 +67,4 @@ InputMultiSelect.propTypes = {
     error: PropTypes.bool,
 };
 
-export default InputMultiSelect;
+export default InputMultiSelectCreate;

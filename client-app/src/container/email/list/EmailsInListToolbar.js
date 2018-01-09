@@ -5,7 +5,7 @@ import ButtonIcon from '../../../components/button/ButtonIcon';
 
 const EmailsInListToolbar = props => {
     const newMailbox = () => {
-        hashHistory.push(`/mailbox/nieuw`);
+        hashHistory.push(`/email/nieuw`);
     };
 
     return (

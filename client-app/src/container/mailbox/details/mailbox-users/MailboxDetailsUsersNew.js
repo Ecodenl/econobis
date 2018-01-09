@@ -9,7 +9,6 @@ import ButtonText from '../../../../components/button/ButtonText';
 import InputSelect from "../../../../components/form/InputSelect";
 import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
-import { fetchCampaign } from '../../../../actions/campaign/CampaignsActions';
 
 class MailboxDetailsUsersNew extends Component {
     constructor(props) {

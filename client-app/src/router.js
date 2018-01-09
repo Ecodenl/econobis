@@ -13,6 +13,7 @@ import ContactsInGroupListApp from './container/contact-groups/list-contacts-in-
 import ContactsListApp from './container/contact/list/ContactsListApp';
 import DashboardApp from './container/dashboard/DashboardApp';
 import EmailsInListApp from './container/email/list/EmailsInListApp';
+import EmailNewApp from './container/email/new/EmailNewApp';
 import Login from './container/auth/Login';
 import Logout from './container/auth/Logout';
 import MailboxDetailsApp from './container/mailbox/details/MailboxDetailsApp';
@@ -62,7 +63,7 @@ const Routes = () => {
                 <Route path="contacten/:filter/:value" component={ ContactsListApp } />
                 /* Emails */
                 <Route path="email-in" component={EmailsInListApp} />
-
+                <Route path="email/nieuw" component={EmailNewApp} />
                 /* Measures */
                 <Route path="maatregelen" component={MeasuresListApp} />
                 <Route path="maatregel/nieuw" component={MeasureNewApp} />

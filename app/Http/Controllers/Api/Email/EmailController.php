@@ -62,6 +62,9 @@ class EmailController
 
     public function send(Mailbox $mailbox, Request $request)
     {
+        //get attachments
+        $attachments = $request->file('attachments') ? $request->file('attachments') : [];
+
         //Get all basic mail info
         $data = $request->validate([
             'to' => 'required',
@@ -71,6 +74,9 @@ class EmailController
             'htmlBody' => 'required|string',
         ]);
 
+        $data['to'] = json_decode($data['to']);
+        $data['cc'] = json_decode($data['cc']);
+        $data['bcc'] = json_decode($data['bcc']);
         //get emails by contact_id
         $emails = [];
 
@@ -115,12 +121,9 @@ class EmailController
             mkdir($storageDir, 0777, true);
         }
 
-        //get attachments
-        $attachments = $request->file('attachments') ? $request->file('attachments') : [];
-
         //store attachments
         foreach ($attachments as $attachment) {
-
+            if(!$attachment->isValid()) abort('422', 'Error uploading file');
             $filename = $attachment->store('mailbox_' . $mailbox->id . DIRECTORY_SEPARATOR . 'outbox', 'mail_attachments');
 
             $emailAttachment = new EmailAttachment([

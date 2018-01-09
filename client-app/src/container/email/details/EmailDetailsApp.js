@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 
 import EmailDetailsToolbar from './EmailDetailsToolbar';
 import EmailDetailsForm from './EmailDetailsForm';
+import EmailDetailsAttachments from "./attachments/EmailDetailsAttachments";
 
 import { fetchEmail, clearEmail } from '../../../actions/email/EmailDetailsActions';
 
@@ -28,6 +29,7 @@ class EmailDetailsApp extends Component {
 
                     <div className="col-md-12">
                         <EmailDetailsForm/>
+                        <EmailDetailsAttachments/>
                     </div>
                 </div>
             </div>

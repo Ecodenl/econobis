@@ -30,8 +30,6 @@ const EmailNewFormGeneral = ({email, emailAddresses, errors, handleSubmit, handl
                         options={emailAddresses}
                         optionName={"name"}
                         onChangeAction={handleCcIds}
-                        required={"required"}
-                        error={errors.to}
                     />
                 </div>
                 <div className="row">
@@ -42,8 +40,6 @@ const EmailNewFormGeneral = ({email, emailAddresses, errors, handleSubmit, handl
                         options={emailAddresses}
                         optionName={"name"}
                         onChangeAction={handleBccIds}
-                        required={"required"}
-                        error={errors.to}
                     />
                 </div>
                 <div className="row">

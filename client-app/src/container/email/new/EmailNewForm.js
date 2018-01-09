@@ -1,21 +1,10 @@
-import React, {Component} from 'react';
-import { hashHistory } from 'react-router';
-import validator from 'validator';
+import React from 'react';
 
-import InputText from '../../../components/form/InputText';
-import InputSelect from '../../../components/form/InputSelect';
-import ButtonText from '../../../components/button/ButtonText';
-import PanelBody from "../../../components/panel/PanelBody";
-import PanelHeader from "../../../components/panel/PanelHeader";
 import Panel from "../../../components/panel/Panel";
-import InputTinyMCE from "../../../components/form/InputTinyMCE";
-import InputMultiSelect from "../../../components/form/InputMultiSelect";
-import InputMultiSelectCreate from "../../../components/form/InputMultiSelectCreate";
-
 import EmailAttachments from "./attachments/EmailAttachments";
 import EmailNewFormGeneral from "./general/EmailNewFormGeneral";
 
-const EmailNewForm = ({email, emailAddresses, errors, handleSubmit, handleToIds, handleCcIds, handleBccIds, handleInputChange, handleTextChange, onDrop}) => {
+const EmailNewForm = ({email, emailAddresses, errors, handleSubmit, handleToIds, handleCcIds, handleBccIds, handleInputChange, handleTextChange, addAttachment, deleteAttachment}) => {
     return (
         <form className="form-horizontal" onSubmit={handleSubmit}>
             <Panel>
@@ -31,7 +20,7 @@ const EmailNewForm = ({email, emailAddresses, errors, handleSubmit, handleToIds,
                     handleTextChange={handleTextChange}
                 />
 
-                <EmailAttachments attachments={email.attachments} onDrop={onDrop} />
+                <EmailAttachments attachments={email.attachments} addAttachment={addAttachment} deleteAttachment={deleteAttachment} />
 
             </Panel>
         </form>

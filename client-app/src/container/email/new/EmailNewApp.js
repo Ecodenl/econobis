@@ -32,7 +32,8 @@ class MailboxNewApp extends Component {
         this.handleCcIds = this.handleCcIds.bind(this);
         this.handleBccIds = this.handleBccIds.bind(this);
         this.handleTextChange = this.handleTextChange.bind(this);
-        this.onDrop = this.onDrop.bind(this);
+        this.addAttachment = this.addAttachment.bind(this);
+        this.deleteAttachment = this.deleteAttachment.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
     };
 
@@ -98,7 +99,7 @@ class MailboxNewApp extends Component {
         });
     };
 
-    onDrop(files) {
+    addAttachment(files) {
         this.setState({
             ...this.state,
             email: {
@@ -107,6 +108,16 @@ class MailboxNewApp extends Component {
                     ...this.state.email.attachments,
                     ...files,
                 ]
+            },
+        });
+    };
+
+    deleteAttachment(attachmentName) {
+        this.setState({
+            ...this.state,
+            email: {
+                ...this.state.email,
+                attachments: this.state.email.attachments.filter((attachment) => attachment.name !== attachmentName),
             },
         });
     };
@@ -183,7 +194,8 @@ class MailboxNewApp extends Component {
                             handleBccIds={this.handleBccIds}
                             handleInputChange={this.handleInputChange}
                             handleTextChange={this.handleTextChange}
-                            onDrop={this.onDrop}
+                            addAttachment={this.addAttachment}
+                            deleteAttachment={this.deleteAttachment}
                         />
 
                     </div>

@@ -37,6 +37,8 @@ class EmailController
     }
 
     public function show(Email $email){
+        $email->load('contact', 'attachments');
+
         return FullEmail::make($email);
     }
 
@@ -50,6 +52,12 @@ class EmailController
         $email->save();
 
         return FullEmail::make($email);
+    }
+
+    public function associateContact(Email $email, Contact $contact)
+    {
+        $email->contact()->associate($contact);
+        $email->save();
     }
 
     public function send(Mailbox $mailbox, RequestInput $input, Request $request)

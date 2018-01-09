@@ -11,4 +11,32 @@ export default {
 
         return axios.get(requestUrl);
     },
+
+    fetchEmail: (id) => {
+        const requestUrl = `${URL_EMAIL}/${id}`;
+        const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
+        axios.defaults.headers.common.Authorization = AUTH_TOKEN;
+
+        return axios.get(requestUrl)
+            .then(response => response.data.data)
+            .catch((error) => {
+                    console.log(error);
+                },
+            );
+    },
+
+    associateContact: (emailId, contactId) => {
+        const requestUrl = `${URL_EMAIL}/${emailId}/${contactId}`;
+        const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
+        axios.defaults.headers.common.Authorization = AUTH_TOKEN;
+
+        return axios.post(requestUrl)
+            .then(response => response.data.data)
+            .catch((error) => {
+                    console.log(error);
+                },
+            );
+    },
+
 };
+

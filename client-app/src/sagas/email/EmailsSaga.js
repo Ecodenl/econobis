@@ -13,3 +13,15 @@ export function* fetchEmailsSaga() {
         yield put({ type: 'FETCH_EMAILS_ERROR', error });
     }
 }
+
+export function* fetchEmailSaga({ id }) {
+    try {
+        const email = yield call(EmailAPI.fetchEmail, id);
+
+        yield [
+            put({ type: 'FETCH_EMAIL_SUCCESS', email }),
+        ];
+    } catch (error) {
+        yield put({ type: 'FETCH_EMAIL_ERROR', error });
+    }
+}

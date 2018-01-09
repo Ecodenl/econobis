@@ -13,7 +13,11 @@ import ContactsInGroupListApp from './container/contact-groups/list-contacts-in-
 import ContactsListApp from './container/contact/list/ContactsListApp';
 import DashboardApp from './container/dashboard/DashboardApp';
 import EmailsInListApp from './container/email/list/EmailsInListApp';
+<<<<<<< HEAD
 import EmailNewApp from './container/email/new/EmailNewApp';
+=======
+import EmailDetailsApp from './container/email/details/EmailDetailsApp';
+>>>>>>> 1075c651696fcfc8563ec821a9d0fea96838422a
 import Login from './container/auth/Login';
 import Logout from './container/auth/Logout';
 import MailboxDetailsApp from './container/mailbox/details/MailboxDetailsApp';
@@ -64,6 +68,7 @@ const Routes = () => {
                 /* Emails */
                 <Route path="email-in" component={EmailsInListApp} />
                 <Route path="email/nieuw" component={EmailNewApp} />
+                <Route path="email/:id" component={EmailDetailsApp} />
                 /* Measures */
                 <Route path="maatregelen" component={MeasuresListApp} />
                 <Route path="maatregel/nieuw" component={MeasureNewApp} />

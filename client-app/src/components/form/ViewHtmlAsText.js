@@ -7,7 +7,7 @@ const ViewHtmlAsText = props => {
 
     const createMarkup = () => {
         return {__html: value};
-    }
+    };
 
     return (
         <div className={className}>

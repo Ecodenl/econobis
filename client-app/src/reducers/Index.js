@@ -10,6 +10,7 @@ import contactsInGroupReducer from './contact-group/ContactsInGroupReducer';
 import contactsReducer from './contact/ContactsReducer';
 import contactsSortsReducer from './contact/ContactsSortsReducer';
 import emailsReducer from './email/EmailsReducer';
+import emailDetailsReducer from './email/emailDetailsReducer';
 import mailboxDetailsReducer from './mailbox/mailboxDetailsReducer';
 import mailboxesReducer from './mailbox/mailboxesReducer';
 import measuresReducer from './measure/MeasureReducer';
@@ -49,6 +50,7 @@ const rootReducer = combineReducers({
 
     // Emails
     emails: emailsReducer,
+    email: emailDetailsReducer,
 
     // Opportunity
     opportunities: opportunitiesReducer,

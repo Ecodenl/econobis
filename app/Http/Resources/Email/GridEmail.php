@@ -17,7 +17,7 @@ class GridEmail extends Resource
     {
         return [
             'id' => $this->id,
-            'date' => $this->date,
+            'date' => $this->date_sent,
             'mailboxName' => $this->mailbox->name,
             'from' => $this->from,
             'subject' => $this->subject,

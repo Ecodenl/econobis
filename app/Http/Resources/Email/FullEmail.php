@@ -10,6 +10,7 @@ namespace App\Http\Resources\Email;
 
 
 use App\Http\Resources\Contact\FullContact;
+use App\Http\Resources\GenericResource;
 use App\Http\Resources\Mailbox\FullMailbox;
 use Illuminate\Http\Resources\Json\Resource;
 
@@ -22,12 +23,12 @@ class FullEmail extends Resource
             'mailbox_id' => $this->mailbox_id,
             'mailbox' => FullMailbox::make($this->whenLoaded('mailbox')),
             'from' => $this->from,
-            'to' => $this->to,
-            'cc' => $this->cc,
-            'bcc' => $this->bcc,
+            'to' => \GuzzleHttp\json_decode($this->to),
+            'cc' => \GuzzleHttp\json_decode($this->cc),
+            'bcc' => \GuzzleHttp\json_decode($this->bcc),
             'subject' => $this->subject,
             'html_body' => $this->html_body,
-            'date' => $this->date,
+            'date_sent' => $this->date_sent,
             'folder' => $this->folder,
             'imap_id' => $this->imap_id,
             'message_id' => $this->message_id,
@@ -35,6 +36,7 @@ class FullEmail extends Resource
             'updated_at' => $this->updated_at,
             'contact_id' => $this->contact_id,
             'contact' => FullContact::make($this->whenLoaded('contact')),
+            'attachments' => GenericResource::collection($this->whenLoaded('attachments'))
         ];
     }
 }

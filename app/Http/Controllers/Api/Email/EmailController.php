@@ -29,7 +29,7 @@ class EmailController
     public function grid($folder)
     {
         $emails = Email::whereFolder($folder)
-            ->get();
+            ->orderBy('date_sent', 'desc')->get();
 
         $emails->load('mailbox');
 

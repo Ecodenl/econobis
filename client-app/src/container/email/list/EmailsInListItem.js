@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { hashHistory } from 'react-router';
 import moment from 'moment';
+moment.locale('nl');
 
 class EmailsInListItem extends Component {
     constructor(props) {
@@ -35,7 +36,7 @@ class EmailsInListItem extends Component {
 
         return (
             <tr className={this.state.highlightRow} onDoubleClick={() => this.openItem(id)} onMouseEnter={() => this.onRowEnter()} onMouseLeave={() => this.onRowLeave()}>
-                <td>{ date && moment(date.date).format('d-M-Y')}</td>
+                <td>{ date && moment(date.date).format('L')}</td>
                 <td>{ mailboxName }</td>
                 <td>{ from }</td>
                 <td>{ subject }</td>

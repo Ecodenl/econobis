@@ -60,7 +60,7 @@ class EmailController
         $email->save();
     }
 
-    public function send(Mailbox $mailbox, RequestInput $input, Request $request)
+    public function send(Mailbox $mailbox, Request $request)
     {
         //Get all basic mail info
         $data = $request->validate([
@@ -196,4 +196,12 @@ class EmailController
 
         return $people;
     }
+
+    public function download(EmailAttachment $emailAttachment)
+    {
+        $filePath = Storage::disk('mail_attachments')->getDriver()->getAdapter()->applyPathPrefix($emailAttachment->filename);
+
+        return response()->download($filePath, $emailAttachment->name);
+    }
+
 }

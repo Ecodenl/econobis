@@ -97,13 +97,13 @@ class EmailController
             array_push($sendVariations, 'cc');
         }
         else{
-            $emails['cc'][0] = '';
+            $emails['cc'] = [];
         }
         if ($data['bcc'] != '') {
             array_push($sendVariations, 'bcc');
         }
         else{
-            $emails['bcc'][0] = '';
+            $emails['bcc'] = [];
         }
 
         foreach ($sendVariations as $sendVariation){
@@ -178,13 +178,13 @@ class EmailController
             array_push($sendVariations, 'cc');
         }
         else{
-            $emails['cc'][0] = '';
+            $emails['cc'] = [];
         }
         if ($data['bcc'] != '') {
             array_push($sendVariations, 'bcc');
         }
         else{
-            $emails['bcc'][0] = '';
+            $emails['bcc'] = [];
         }
 
         foreach ($sendVariations as $sendVariation){

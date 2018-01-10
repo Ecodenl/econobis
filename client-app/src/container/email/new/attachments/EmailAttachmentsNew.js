@@ -12,6 +12,11 @@ class EmailAttachmentsNew extends Component {
         };
     };
 
+    onDrop(files) {
+        this.props.addAttachment(files);
+        this.props.toggleShowNew();
+    };
+
     render() {
         return (
             <Modal
@@ -20,7 +25,7 @@ class EmailAttachmentsNew extends Component {
                 title="Upload file"
             >
                 <div className="upload-file-content">
-                    <Dropzone className="dropzone" onDrop={this.props.onDrop.bind(this)}>
+                    <Dropzone className="dropzone" onDrop={this.onDrop.bind(this)}>
                         <p>Druk hier voor het uploaden van een file</p>
                         <p><strong>of</strong> sleep het bestand hierheen</p>
                     </Dropzone>

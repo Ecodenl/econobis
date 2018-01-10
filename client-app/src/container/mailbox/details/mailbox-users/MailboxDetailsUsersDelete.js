@@ -18,7 +18,7 @@ const MailboxDetailsUsersDelete = (props) => {
             confirmAction={() => confirmAction()}
             title="Verwijderen"
         >
-            <p>Wil je deze bijlage verwijderen?</p>
+            <p>Wil je deze gebruiker ontkoppelen van deze mailbox?</p>
 
         </Modal>
     );

@@ -1,10 +1,10 @@
 import React from 'react';
-import Panel from "../../../components/panel/Panel";
 
+import Panel from "../../../components/panel/Panel";
 import EmailAttachments from "./attachments/EmailAttachments";
 import EmailNewFormGeneral from "./general/EmailNewFormGeneral";
 
-const EmailNewForm = ({email, emailAddresses, errors, handleSubmit, handleToIds, handleCcIds, handleBccIds, handleInputChange, handleTextChange, onDrop}) => {
+const EmailNewForm = ({email, emailAddresses, errors, handleSubmit, handleToIds, handleCcIds, handleBccIds, handleInputChange, handleTextChange, addAttachment, deleteAttachment}) => {
     return (
         <form className="form-horizontal" onSubmit={handleSubmit}>
             <Panel>
@@ -20,7 +20,7 @@ const EmailNewForm = ({email, emailAddresses, errors, handleSubmit, handleToIds,
                     handleTextChange={handleTextChange}
                 />
 
-                <EmailAttachments attachments={email.attachments} onDrop={onDrop} />
+                <EmailAttachments attachments={email.attachments} addAttachment={addAttachment} deleteAttachment={deleteAttachment} />
 
             </Panel>
         </form>

@@ -48,6 +48,7 @@ class EmailAttachmentsItem extends Component {
                     <EmailAttachmentsItemDelete
                         toggleDelete={this.toggleDelete}
                         attachment={this.props.attachment}
+                        deleteAttachment={this.props.deleteAttachment}
                     />
                 }
             </div>

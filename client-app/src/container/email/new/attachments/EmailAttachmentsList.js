@@ -2,9 +2,7 @@ import React from 'react';
 
 import EmailAttachmentsItem from "./EmailAttachmentsItem";
 
-const EmailAttachmentsList = props => {
-    const { attachments } = props;
-
+const EmailAttachmentsList = ({attachments, deleteAttachment}) => {
     return (
         <div>
             <div className="row border header">
@@ -17,6 +15,7 @@ const EmailAttachmentsList = props => {
                         return <EmailAttachmentsItem
                             key={attachment.name}
                             attachment={attachment}
+                            deleteAttachment={deleteAttachment}
                         />;
                     })
                     :

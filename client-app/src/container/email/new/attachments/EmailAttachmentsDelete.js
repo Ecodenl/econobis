@@ -6,7 +6,7 @@ import { deleteMailboxUser } from '../../../../actions/mailbox/MailboxDetailsAct
 
 const EmailAttachmentsDelete = (props) => {
     const confirmAction = () => {
-        props.deleteMailboxUser(props.mailboxId, props.userId);
+        props.deleteAttachment(props.attachment.name);
         props.toggleDelete();
     };
 
@@ -18,22 +18,10 @@ const EmailAttachmentsDelete = (props) => {
             confirmAction={() => confirmAction()}
             title="Verwijderen"
         >
-            <p>Wil je deze gebruiker ontkoppelen van deze mailbox?</p>
+            <p>Wil je deze bijlage verwijderen?</p>
 
         </Modal>
     );
 };
 
-const mapStateToProps = (state) => {
-    return {
-        mailboxId: state.mailboxDetails.id,
-    };
-};
-
-const mapDispatchToProps = dispatch => ({
-    deleteMailboxUser: (mailboxId, userId) => {
-        dispatch(deleteMailboxUser(mailboxId, userId));
-    },
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(EmailAttachmentsDelete);
+export default EmailAttachmentsDelete;

@@ -158,6 +158,7 @@ Route::namespace('Api')
         Route::post('measure/{measure}/delete', 'Measure\MeasureController@destroy');
 
         Route::get('mailbox/grid', 'Mailbox\MailboxController@grid');
+        Route::get('mailbox/logged-in/email-peek', 'Mailbox\MailboxController@loggedInEmailPeek');
         Route::post('mailbox', 'Mailbox\MailboxController@store');
         Route::get('mailbox/{mailbox}', 'Mailbox\MailboxController@show');
         Route::post('mailbox/{mailbox}', 'Mailbox\MailboxController@update');
@@ -171,7 +172,8 @@ Route::namespace('Api')
         Route::post('email/{email}', 'Email\EmailController@update');
         Route::get('email/email-attachment/{emailAttachment}/download', 'Email\EmailController@download');
         Route::post('email/send/{mailbox}', 'Email\EmailController@send');
-        Route::post('email/{email}/{contact}', 'Email\EmailController@associateContact');
         Route::post('email/store-concept/{mailbox}', 'Email\EmailController@storeConcept');
+        Route::post('email/{email}/{contact}', 'Email\EmailController@associateContact');
+
     }
 );

@@ -8,6 +8,7 @@ import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
 import EmailAPI from '../../../api/email/EmailAPI';
 import EmailAddressAPI from '../../../api/contact/EmailAddressAPI';
+import MailboxAPI from '../../../api/mailbox/MailboxAPI';
 
 class EmailNewApp extends Component {
     constructor(props) {
@@ -15,7 +16,9 @@ class EmailNewApp extends Component {
 
         this.state = {
             emailAddresses: [],
+            mailboxAddresses: [],
             email: {
+                from: '',
                 to: '',
                 cc: '',
                 bcc: '',
@@ -24,11 +27,13 @@ class EmailNewApp extends Component {
                 attachments: [],
             },
             errors: {
+                from: false,
                 to: false,
             },
         };
 
         this.handleInputChange = this.handleInputChange.bind(this);
+        this.handleFromIds = this.handleFromIds.bind(this);
         this.handleToIds = this.handleToIds.bind(this);
         this.handleCcIds = this.handleCcIds.bind(this);
         this.handleBccIds = this.handleBccIds.bind(this);
@@ -44,6 +49,11 @@ class EmailNewApp extends Component {
                 emailAddresses: payload,
             });
         });
+        MailboxAPI.fetchEmailsLoggedInUserPeek().then((payload) => {
+            this.setState({
+                mailboxAddresses: payload,
+            });
+        });
     };
 
     handleInputChange(event) {
@@ -56,6 +66,16 @@ class EmailNewApp extends Component {
             email: {
                 ...this.state.email,
                 [name]: value
+            },
+        });
+    };
+
+    handleFromIds(selectedOption) {
+        this.setState({
+            ...this.state,
+            email: {
+                ...this.state.email,
+                from: selectedOption
             },
         });
     };
@@ -123,7 +143,7 @@ class EmailNewApp extends Component {
         });
     };
 
-    handleSubmit(event) {
+    handleSubmit(event, concept = false) {
         event.preventDefault();
 
         const { email } = this.state;
@@ -134,6 +154,11 @@ class EmailNewApp extends Component {
 
         if(validator.isEmpty(email.to)){
             errors.to = true;
+            hasErrors = true;
+        };
+
+        if(validator.isEmpty('' + email.from)){
+            errors.from = true;
             hasErrors = true;
         };
 
@@ -163,13 +188,23 @@ class EmailNewApp extends Component {
                 data.append('attachments[' +  key +  ']', file);
             });
 
-            EmailAPI.newEmail(data).then(() => {
-                hashHistory.push(`/email-in`);
-            }).catch(function (error) {
-                console.log(error)
-            });
+            if(concept) {
+                EmailAPI.newConcept(data, email.from).then(() => {
+                    hashHistory.push(`/emails/concept`);
+                }).catch(function (error) {
+                    console.log(error)
+                });
+            }
+            else{
+                EmailAPI.newEmail(data, email.from).then(() => {
+                    hashHistory.push(`/emails/sent`);
+                }).catch(function (error) {
+                    console.log(error)
+                });
+            }
         }
     };
+
 
     render() {
         return (
@@ -187,8 +222,10 @@ class EmailNewApp extends Component {
                         <EmailNewForm
                             email={this.state.email}
                             emailAddresses={this.state.emailAddresses}
+                            mailboxAddresses={this.state.mailboxAddresses}
                             errors={this.state.errors}
                             handleSubmit={this.handleSubmit}
+                            handleFromIds={this.handleFromIds}
                             handleToIds={this.handleToIds}
                             handleCcIds={this.handleCcIds}
                             handleBccIds={this.handleBccIds}

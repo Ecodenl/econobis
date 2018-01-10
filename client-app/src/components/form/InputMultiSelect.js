@@ -4,7 +4,7 @@ import Select from 'react-select';
 import 'react-select/dist/react-select.css';
 
 const InputMultiSelect = props => {
-    const { label, className, size, id, name, value, options, optionId, optionName, onChangeAction, required } = props;
+    const { label, className, size, id, name, value, options, optionId, optionName, onChangeAction, required, multi, error} = props;
 
 
     return (
@@ -21,7 +21,7 @@ const InputMultiSelect = props => {
                         labelKey={optionName}
                         placeholder={""}
                         noResultsText={"Geen resultaat gevonden"}
-                        multi
+                        multi={multi}
                         simpleValue
                         removeSelected
                         />
@@ -39,6 +39,7 @@ InputMultiSelect.defaultProps = {
     required: '',
     error: false,
     value: '',
+    multi: true,
 };
 
 InputMultiSelect.propTypes = {
@@ -56,6 +57,7 @@ InputMultiSelect.propTypes = {
     required: PropTypes.string,
     readOnly: PropTypes.bool,
     error: PropTypes.bool,
+    multi: PropTypes.bool,
 };
 
 export default InputMultiSelect;

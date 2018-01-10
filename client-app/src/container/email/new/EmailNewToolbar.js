@@ -12,7 +12,7 @@ const EmailNewToolbar = ({handleSubmit}) => {
                     <ButtonIcon iconName={"glyphicon-arrow-left"} onClickAction={browserHistory.goBack} />
                 </div>
                 <div className="btn-group margin-small" role="group">
-                    <ButtonText buttonText={"Opslaan als concept"}/>
+                    <ButtonText buttonText={"Opslaan als concept"} onClickAction={(e) => {handleSubmit(e, true)}}/>
                     <ButtonText buttonText={"Verstuur email"} onClickAction={handleSubmit}/>
                 </div>
             </div>

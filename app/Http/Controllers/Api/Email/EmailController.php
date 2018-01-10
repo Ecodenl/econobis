@@ -21,6 +21,7 @@ use App\Http\Resources\Email\FullEmail;
 use App\Http\Resources\Email\GridEmail;
 use Config;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
 class EmailController
@@ -28,14 +29,20 @@ class EmailController
 
     public function grid($folder)
     {
+        $user = Auth::user();
+
+        $mailboxIds = $user->mailboxes()->pluck('mailbox_id');
+
+
         if($folder == 'concept'){
-            $emails = Email::whereFolder($folder)
+            $emails = Email::whereFolder($folder)->whereIn('mailbox_id', $mailboxIds)
                 ->orderBy('created_at', 'desc')->get();
         }
         else {
-            $emails = Email::whereFolder($folder)
+            $emails = Email::whereFolder($folder)->whereIn('mailbox_id', $mailboxIds)
                 ->orderBy('date_sent', 'desc')->get();
         }
+
         $emails->load('mailbox');
 
         return GridEmail::collection($emails);
@@ -75,8 +82,8 @@ class EmailController
             'to' => 'required',
             'cc' => '',
             'bcc' => '',
-            'subject' => 'string',
-            'htmlBody' => 'required|string',
+            'subject' => '',
+            'htmlBody' => '',
         ]);
 
         $data['to'] = json_decode($data['to']);
@@ -109,16 +116,18 @@ class EmailController
                 }}
         }
 
-        $santizedData = [
+        $subject = $data['subject'] ?: 'Econobis';
+
+        $sanitizedData = [
             'to' => $emails['to'],
             'cc' => $emails['cc'],
             'bcc' => $emails['bcc'],
-            'subject' => array_key_exists('subject', $data) ? $data['subject'] : 'Econobis',
-            'html_body' => '<html>' . $data['htmlBody'] . '</html>',
+            'subject' => $subject,
+            'html_body' => '<!DOCTYPE html><html><head><meta http-equiv="content-type" content="text/html;charset=UTF-8"/><title>' . $subject . '</title></head>' . $data['htmlBody'] . '</html>',
         ];
 
         //Save as concept, if sending fails we still have the concept
-        $email = (new StoreConceptEmail($mailbox, $santizedData))->handle();
+        $email = (new StoreConceptEmail($mailbox, $sanitizedData))->handle();
 
         //Email attachments
         //Check if storage map exists
@@ -154,8 +163,8 @@ class EmailController
             'to' => 'required',
             'cc' => '',
             'bcc' => '',
-            'subject' => 'string',
-            'htmlBody' => 'required|string',
+            'subject' => '',
+            'htmlBody' => '',
         ]);
 
         $data['to'] = json_decode($data['to']);
@@ -192,8 +201,8 @@ class EmailController
             'to' => $emails['to'],
             'cc' => $emails['cc'],
             'bcc' => $emails['bcc'],
-            'subject' => array_key_exists('subject', $data) ? $data['subject'] : 'Econobis',
-            'html_body' => '<html>' . $data['htmlBody'] . '</html>',
+            'subject' => $data['subject'] ?: 'Econobis',
+            'html_body' => $data['htmlBody'],
         ];
         $email = (new StoreConceptEmail($mailbox, $santizedData))->handle();
 

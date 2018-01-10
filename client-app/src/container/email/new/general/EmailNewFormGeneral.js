@@ -5,12 +5,27 @@ import PanelBody from "../../../../components/panel/PanelBody";
 import InputTinyMCE from "../../../../components/form/InputTinyMCE";
 import InputMultiSelectCreate from "../../../../components/form/InputMultiSelectCreate";
 
-const EmailNewFormGeneral = ({email, emailAddresses, errors, handleSubmit, handleToIds, handleCcIds, handleBccIds, handleInputChange, handleTextChange}) => {
-    const { to, cc, bcc, subject, htmlBody } = email;
+import InputMultiSelect from "../../../../components/form/InputMultiSelect";
+
+const EmailNewFormGeneral = ({email, emailAddresses, mailboxAddresses, errors,handleFromIds,  handleToIds, handleCcIds, handleBccIds, handleInputChange, handleTextChange}) => {
+    const { from, to, cc, bcc, subject, htmlBody } = email;
 
     return (
         <Panel>
             <PanelBody>
+                <div className="row">
+                    <InputMultiSelect
+                        label="Van selecteren"
+                        name={"from"}
+                        value={from}
+                        options={mailboxAddresses}
+                        optionName={"email"}
+                        onChangeAction={handleFromIds}
+                        required={"required"}
+                        error={errors.from}
+                        multi={false}
+                    />
+                </div>
                 <div className="row">
                     <InputMultiSelectCreate
                         label="Aan selecteren"

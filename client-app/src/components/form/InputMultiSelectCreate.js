@@ -4,7 +4,7 @@ import Select from 'react-select';
 import 'react-select/dist/react-select.css';
 
 const InputMultiSelectCreate = (props) => {
-    const { label, className, size, id, name, value, options, optionId, optionName, onChangeAction, required, allowCreate } = props;
+    const { label, className, size, id, name, value, options, optionId, optionName, onChangeAction, required, allowCreate, error } = props;
 
     const onPromptTextCreator = (label) => {
         return `Maak optie "${label}" aan`;

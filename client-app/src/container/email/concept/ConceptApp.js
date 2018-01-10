@@ -16,6 +16,7 @@ class ConceptApp extends Component {
         this.state = {
             emailAddresses: [],
             email: {
+                from: '',
                 to: '',
                 cc: '',
                 bcc: '',
@@ -50,6 +51,7 @@ class ConceptApp extends Component {
             this.setState({
                 ...this.state,
                 email: {
+                    from: payload.from,
                     to: payload.to ? payload.to.join(',') : '',
                     cc: payload.cc ? payload.cc.join(',') : '',
                     bcc: payload.bcc ? payload.bcc.join(',') : '',

@@ -52,8 +52,8 @@ const Routes = () => {
                 <Route path="contact-groep/:id" component={ContactGroupDetailsApp} />
                 <Route path="contacten-in-groep/:contactGroup" component={ ContactsInGroupListApp } />
                 /* Campaign */
-                <Route path="campagne/:id" component={CampaignDetailsApp} />
                 <Route path="campagne/nieuw" component={CampaignNewApp} />
+                <Route path="campagne/:id" component={CampaignDetailsApp} />
                 <Route path="campagnes" component={CampaignsListApp} />
                 <Route path="contacten/:filter/:value" component={ ContactsListApp } />
 
@@ -62,21 +62,21 @@ const Routes = () => {
                 <Route path="maatregel/:id" component={MeasureDetailsApp} />
 
                 /* Registration */
-                <Route path="aanmelding/:id" component={RegistrationDetailsApp} />
                 <Route path="aanmelding/nieuw/contact/:contactId/adres/:addressId" component={RegistrationNewApp} />
+                <Route path="aanmelding/:id" component={RegistrationDetailsApp} />
                 <Route path="aanmeldingen" component={ RegistrationsListApp } />
                 /*  User */
-                <Route path="gebruiker/:id" component={UserDetailsApp} />
                 <Route path="gebruiker/nieuw" component={UserNewApp} />
+                <Route path="gebruiker/:id" component={UserDetailsApp} />
                 <Route path="gebruikers" component={UsersListApp} />
                 /* Opportunity */
-                <Route path="kans/:id" component={OpportunityDetailsApp} />
                 <Route path="kans/nieuw" component={OpportunityNewApp} />
                 <Route path="kans/nieuw/:type/:id" component={OpportunityNewApp} />
+                <Route path="kans/:id" component={OpportunityDetailsApp} />
                 <Route path="kansen" component={OpportunitiesListApp} />
                 /* Task */
-                <Route path="taak/:id" component={TaskDetailsApp} />
                 <Route path="taak/nieuw" component={TaskNewApp} />
+                <Route path="taak/:id" component={TaskDetailsApp} />
                 <Route path="taak/nieuw/:type/:id" component={TaskNewApp} />
                 <Route path="taken" component={TasksListApp} />
                 /* 404 route */

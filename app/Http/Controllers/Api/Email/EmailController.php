@@ -28,9 +28,14 @@ class EmailController
 
     public function grid($folder)
     {
-        $emails = Email::whereFolder($folder)
-            ->orderBy('date_sent', 'desc')->get();
-
+        if($folder == 'concept'){
+            $emails = Email::whereFolder($folder)
+                ->orderBy('created_at', 'desc')->get();
+        }
+        else {
+            $emails = Email::whereFolder($folder)
+                ->orderBy('date_sent', 'desc')->get();
+        }
         $emails->load('mailbox');
 
         return GridEmail::collection($emails);
@@ -77,7 +82,7 @@ class EmailController
         $data['to'] = json_decode($data['to']);
         $data['cc'] = json_decode($data['cc']);
         $data['bcc'] = json_decode($data['bcc']);
-        //get emails by contact_id
+
         $emails = [];
 
         $sendVariations = ['to'];
@@ -109,8 +114,10 @@ class EmailController
             'cc' => $emails['cc'],
             'bcc' => $emails['bcc'],
             'subject' => array_key_exists('subject', $data) ? $data['subject'] : 'Econobis',
-            'html_body' => $data['htmlBody'],
+            'html_body' => '<html>' . $data['htmlBody'] . '</html>',
         ];
+
+        //Save as concept, if sending fails we still have the concept
         $email = (new StoreConceptEmail($mailbox, $santizedData))->handle();
 
         //Email attachments
@@ -139,16 +146,56 @@ class EmailController
 
     public function storeConcept(Mailbox $mailbox, RequestInput $input, Request $request)
     {
-        //Get all basic mail info
-        $data = $input
-            ->string('to')->next()
-            ->string('cc')->whenMissing('')->onEmpty('')->next()
-            ->string('bcc')->whenMissing('')->onEmpty('')->next()
-            ->string('subject')->whenMissing('Econobis')->onEmpty('Econobis')->next()
-            ->string('htmlBody')->whenMissing('')->onEmpty('')->alias('html_body')->next()
-            ->get();
+        //get attachments
+        $attachments = $request->file('attachments') ? $request->file('attachments') : [];
 
-        $email = (new StoreConceptEmail($mailbox, $data))->handle();
+        //Get all basic mail info
+        $data = $request->validate([
+            'to' => 'required',
+            'cc' => '',
+            'bcc' => '',
+            'subject' => 'string',
+            'htmlBody' => 'required|string',
+        ]);
+
+        $data['to'] = json_decode($data['to']);
+        $data['cc'] = json_decode($data['cc']);
+        $data['bcc'] = json_decode($data['bcc']);
+
+        $emails = [];
+
+        $sendVariations = ['to'];
+        if ($data['cc'] != '') {
+            array_push($sendVariations, 'cc');
+        }
+        else{
+            $emails['cc'][0] = '';
+        }
+        if ($data['bcc'] != '') {
+            array_push($sendVariations, 'bcc');
+        }
+        else{
+            $emails['bcc'][0] = '';
+        }
+
+        foreach ($sendVariations as $sendVariation){
+            foreach ($data[$sendVariation] as $emailData) {
+                if (is_numeric($emailData)){
+                    $emails[$sendVariation][] =  Contact::find($emailData)->primaryEmailAddress()->value('email');
+                }
+                else{
+                    $emails[$sendVariation][] = $emailData;
+                }}
+        }
+
+        $santizedData = [
+            'to' => $emails['to'],
+            'cc' => $emails['cc'],
+            'bcc' => $emails['bcc'],
+            'subject' => array_key_exists('subject', $data) ? $data['subject'] : 'Econobis',
+            'html_body' => '<html>' . $data['htmlBody'] . '</html>',
+        ];
+        $email = (new StoreConceptEmail($mailbox, $santizedData))->handle();
 
         //Email attachments
         //Check if storage map exists
@@ -158,12 +205,9 @@ class EmailController
             mkdir($storageDir, 0777, true);
         }
 
-        //get attachments
-        $attachments = $request->file('files');
-
         //store attachments
         foreach ($attachments as $attachment) {
-
+            if(!$attachment->isValid()) abort('422', 'Error uploading file');
             $filename = $attachment->store('mailbox_' . $mailbox->id . DIRECTORY_SEPARATOR . 'outbox', 'mail_attachments');
 
             $emailAttachment = new EmailAttachment([

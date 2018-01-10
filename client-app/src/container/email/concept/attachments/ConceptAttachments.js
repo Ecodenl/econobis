@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 
-import EmailAttachmentsList from './EmailAttachmentsList';
-import EmailAttachmentsNew from './EmailAttachmentsNew';
+import ConceptAttachmentsList from './ConceptAttachmentsList';
+import ConceptAttachmentsNew from './ConceptAttachmentsNew';
 import PanelBody from '../../../../components/panel/PanelBody';
 import PanelHeader from '../../../../components/panel/PanelHeader';
 import {connect} from "react-redux";
 
-class EmailAttachments extends Component {
+class ConceptAttachments extends Component {
     constructor(props) {
         super(props);
 
@@ -32,11 +32,11 @@ class EmailAttachments extends Component {
                 </PanelHeader>
                 <PanelBody>
                     <div className="col-md-12">
-                        <EmailAttachmentsList attachments={this.props.attachments}/>
+                        <ConceptAttachmentsList attachments={this.props.attachments}/>
                     </div>
                     <div className="col-md-12 extra-space-above">
                         {this.state.showNew &&
-                        <EmailAttachmentsNew toggleShowNew={this.toggleShowNew} onDrop={this.props.onDrop}/>}
+                        <ConceptAttachmentsNew toggleShowNew={this.toggleShowNew} onDrop={this.props.onDrop}/>}
                     </div>
                 </PanelBody>
             </div>
@@ -50,4 +50,4 @@ const mapStateToProps = (state) => {
     }
 };
 
-export default connect(mapStateToProps)(EmailAttachments);
+export default connect(mapStateToProps)(ConceptAttachments);

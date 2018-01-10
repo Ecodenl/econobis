@@ -46,24 +46,13 @@ class SendEmail
         $config['password'] = $mailbox->password;
 
         Config::set('mail', $config);
-        if ($email->cc[0] != '' && $email->bcc[0] != '') {
-            Mail::to($email->to)
-                ->cc($email->cc)
-                ->bcc($email->bcc)
-                ->send(new GenericMail($email, $email->html_body));
-        } elseif ($email->cc[0] == '' && $email->bcc[0] == '') {
-            Mail::to($email->to)
-                ->send(new GenericMail($email, $email->html_body));
-        }
-        elseif ($email->cc[0] == '') {
-            Mail::to($email->to)
-                ->bcc($email->bcc)
-                ->send(new GenericMail($email, $email->html_body));
-        } else {
-            Mail::to($email->to)
-                ->cc($email->cc)
-                ->send(new GenericMail($email, $email->html_body));
-        }
+
+        $mail = Mail::to($email->to);
+
+        ($email->cc[0] != '') ? $mail->cc($email->cc) : null;
+        ($email->bcc[0] != '') ? $mail->bcc($email->bcc) : null;
+
+        $mail->send(new GenericMail($email, $email->html_body));
 
         $email->date_sent = new Carbon();
         $email->folder = 'sent';

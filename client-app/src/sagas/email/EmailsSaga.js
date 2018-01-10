@@ -1,9 +1,9 @@
 import { put, call } from 'redux-saga/effects';
 import EmailAPI from '../../api/email/EmailAPI';
 
-export function* fetchEmailsSaga() {
+export function* fetchEmailsSaga({ folder }) {
     try {
-        const emails = yield call(EmailAPI.fetchEmails);
+        const emails = yield call(EmailAPI.fetchEmails, folder);
 
         yield [
             put({ type: 'FETCH_EMAILS_LOADING_SUCCESS'}),

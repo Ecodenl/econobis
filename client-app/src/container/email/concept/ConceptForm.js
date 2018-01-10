@@ -1,14 +1,14 @@
 import React from 'react';
 import Panel from "../../../components/panel/Panel";
 
-import EmailAttachments from "./attachments/EmailAttachments";
-import EmailNewFormGeneral from "./general/EmailNewFormGeneral";
+import ConceptAttachments from "./attachments/ConceptAttachments";
+import ConceptFormGeneral from "./general/ConceptFormGeneral";
 
-const EmailNewForm = ({email, emailAddresses, errors, handleSubmit, handleToIds, handleCcIds, handleBccIds, handleInputChange, handleTextChange, onDrop}) => {
+const ConceptNewForm = ({email, emailAddresses, errors, handleSubmit, handleToIds, handleCcIds, handleBccIds, handleInputChange, handleTextChange, onDrop}) => {
     return (
         <form className="form-horizontal" onSubmit={handleSubmit}>
             <Panel>
-                <EmailNewFormGeneral
+                <ConceptFormGeneral
                     email={email}
                     emailAddresses={emailAddresses}
                     errors={errors}
@@ -20,11 +20,11 @@ const EmailNewForm = ({email, emailAddresses, errors, handleSubmit, handleToIds,
                     handleTextChange={handleTextChange}
                 />
 
-                <EmailAttachments attachments={email.attachments} onDrop={onDrop} />
+                <ConceptAttachments attachments={email.attachments} onDrop={onDrop} />
 
             </Panel>
         </form>
     );
 };
 
-export default EmailNewForm;
+export default ConceptNewForm;

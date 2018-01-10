@@ -36,7 +36,7 @@ class DashboardButtons extends Component {
     render() {
         return (
             <div className="row">
-                <div className="col-md-3" onClick={() => hashHistory.push(`/emails`)}>
+                <div className="col-md-3" onClick={() => hashHistory.push(`/emails/inbox`)}>
                     <div className="panel panel-default" id="dashboardbutton-red">
                         <div className="panel-body">
                             <h4 className="text-center text-bold">EMAIL</h4>

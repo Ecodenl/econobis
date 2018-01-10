@@ -1,7 +1,7 @@
 import React from 'react';
 import {connect} from "react-redux";
 
-const EmailAttachmentsView = props => {
+const ConceptAttachmentsView = props => {
     const {name} = props.attachment;
 
     return (
@@ -20,4 +20,4 @@ const mapStateToProps = (state) => {
     }
 };
 
-export default connect(mapStateToProps)(EmailAttachmentsView);
+export default connect(mapStateToProps)(ConceptAttachmentsView);

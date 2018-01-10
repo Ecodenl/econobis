@@ -1,6 +1,5 @@
 import React from 'react';
 
-import Panel from "../../../components/panel/Panel";
 import EmailAttachments from "./attachments/EmailAttachments";
 import EmailNewFormGeneral from "./general/EmailNewFormGeneral";
 

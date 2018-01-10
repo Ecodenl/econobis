@@ -16,7 +16,7 @@ const ConceptNewToolbar = ({handleSubmit}) => {
                     <ButtonText buttonText={"Verstuur email"} onClickAction={handleSubmit}/>
                 </div>
             </div>
-            <div className="col-md-4"><h4 className="text-center margin-small">Nieuwe email</h4></div>
+            <div className="col-md-4"><h4 className="text-center margin-small">Concept bewerken</h4></div>
             <div className="col-md-4" />
         </div>
     );

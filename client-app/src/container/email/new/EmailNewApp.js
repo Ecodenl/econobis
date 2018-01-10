@@ -123,7 +123,7 @@ class EmailNewApp extends Component {
         });
     };
 
-    handleSubmit(event) {
+    handleSubmit(event, concept = false) {
         event.preventDefault();
 
         const { email } = this.state;
@@ -163,13 +163,23 @@ class EmailNewApp extends Component {
                 data.append('attachments[' +  key +  ']', file);
             });
 
-            EmailAPI.newEmail(data).then(() => {
-                hashHistory.push(`/email-in`);
-            }).catch(function (error) {
-                console.log(error)
-            });
+            if(concept) {
+                EmailAPI.newConcept(data).then(() => {
+                    hashHistory.push(`/emails/concept`);
+                }).catch(function (error) {
+                    console.log(error)
+                });
+            }
+            else{
+                EmailAPI.newEmail(data).then(() => {
+                    hashHistory.push(`/emails/inbox`);
+                }).catch(function (error) {
+                    console.log(error)
+                });
+            }
         }
     };
+
 
     render() {
         return (

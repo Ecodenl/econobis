@@ -76,7 +76,7 @@ class EmailController
             'to' => 'required',
             'cc' => '',
             'bcc' => '',
-            'subject' => 'string',
+            'subject' => '',
             'htmlBody' => '',
         ]);
 
@@ -157,8 +157,8 @@ class EmailController
             'to' => 'required',
             'cc' => '',
             'bcc' => '',
-            'subject' => 'string',
-            'htmlBody' => 'required|string',
+            'subject' => '',
+            'htmlBody' => '',
         ]);
 
         $data['to'] = json_decode($data['to']);
@@ -196,7 +196,7 @@ class EmailController
             'cc' => $emails['cc'],
             'bcc' => $emails['bcc'],
             'subject' => array_key_exists('subject', $data) ? $data['subject'] : 'Econobis',
-            'html_body' => '<html>' . $data['htmlBody'] . '</html>',
+            'html_body' => $data['htmlBody'],
         ];
         $email = (new StoreConceptEmail($mailbox, $santizedData))->handle();
 

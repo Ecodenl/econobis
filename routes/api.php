@@ -158,6 +158,7 @@ Route::namespace('Api')
         Route::post('measure/{measure}/delete', 'Measure\MeasureController@destroy');
 
         Route::get('mailbox/grid', 'Mailbox\MailboxController@grid');
+        Route::get('mailbox/logged-in/email-peek', 'Mailbox\MailboxController@loggedInEmailPeek');
         Route::post('mailbox', 'Mailbox\MailboxController@store');
         Route::get('mailbox/{mailbox}', 'Mailbox\MailboxController@show');
         Route::post('mailbox/{mailbox}', 'Mailbox\MailboxController@update');

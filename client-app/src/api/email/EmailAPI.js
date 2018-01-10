@@ -38,16 +38,16 @@ export default {
             );
     },
 
-    newEmail: (email) => {
-        const requestUrl = `${URL_EMAIL}/send/3`;
+    newEmail: (email, mailbox_id) => {
+        const requestUrl = `${URL_EMAIL}/send/${mailbox_id}`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
         return axios.post(requestUrl, email);
     },
 
-    newConcept: (email) => {
-        const requestUrl = `${URL_EMAIL}/store-concept/3`;
+    newConcept: (email, mailbox_id) => {
+        const requestUrl = `${URL_EMAIL}/store-concept/${mailbox_id}`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 

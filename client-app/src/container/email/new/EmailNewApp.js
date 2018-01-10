@@ -197,7 +197,7 @@ class EmailNewApp extends Component {
             }
             else{
                 EmailAPI.newEmail(data, email.from).then(() => {
-                    hashHistory.push(`/emails/inbox`);
+                    hashHistory.push(`/emails/sent`);
                 }).catch(function (error) {
                     console.log(error)
                 });

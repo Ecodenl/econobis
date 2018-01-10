@@ -211,8 +211,6 @@ class ConceptApp extends Component {
     };
 
     render() {
-        console.log(this.state)
-
         return (
             <div className="row">
                 <div className="col-md-9">

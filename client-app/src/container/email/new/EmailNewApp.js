@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import { hashHistory } from 'react-router';
 import validator from 'validator';
 
 import EmailNewForm from './EmailNewForm';
@@ -139,36 +140,35 @@ class EmailNewApp extends Component {
         this.setState({ ...this.state, errors: errors });
 
         // If no errors send form
-    if(!hasErrors) {
-        if (email.to.length > 0) {
-            email.to = email.to.split(',');
+        if(!hasErrors) {
+            if (email.to.length > 0) {
+                email.to = email.to.split(',');
+            }
+
+            if (email.cc.length > 0) {
+                email.cc = email.cc.split(',');
+            }
+
+            if (email.bcc.length > 0) {
+                email.bcc = email.bcc.split(',');
+            }
+            const data = new FormData();
+
+            data.append('to', JSON.stringify(email.to));
+            data.append('cc', JSON.stringify(email.cc));
+            data.append('bcc', JSON.stringify(email.bcc));
+            data.append('subject', email.subject);
+            data.append('htmlBody', email.htmlBody);
+            email.attachments.map((file, key) => {
+                data.append('attachments[' +  key +  ']', file);
+            });
+
+            EmailAPI.newEmail(data).then(() => {
+                hashHistory.push(`/email-in`);
+            }).catch(function (error) {
+                console.log(error)
+            });
         }
-
-        if (email.cc.length > 0) {
-            email.cc = email.cc.split(',');
-        }
-
-        if (email.bcc.length > 0) {
-            email.bcc = email.bcc.split(',');
-        }
-        const data = new FormData();
-
-        data.append('to', JSON.stringify(email.to));
-        data.append('cc', JSON.stringify(email.cc));
-        data.append('bcc', JSON.stringify(email.bcc));
-        data.append('subject', email.subject);
-        data.append('htmlBody', email.htmlBody);
-        email.attachments.map((file, key) => {
-            data.append('attachments[' +  key +  ']', file);
-        });
-
-        EmailAPI.newEmail(data).then((payload) => {
-            console.log(payload);
-            //hashHistory.push(`/email/${payload.data.data.id}`);
-        }).catch(function (error) {
-            console.log(error)
-        });
-    }
     };
 
     render() {

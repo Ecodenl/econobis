@@ -31,6 +31,7 @@ const InputMultiSelectCreate = (props) => {
                         simpleValue
                         removeSelected
                         promptTextCreator={onPromptTextCreator}
+                        className={error ? ' has-error' : ''}
                     />
                 </div>
             </div>

@@ -24,6 +24,7 @@ const InputMultiSelect = props => {
                         multi={multi}
                         simpleValue
                         removeSelected
+                        className={error ? ' has-error' : ''}
                         />
             </div>
         </div>

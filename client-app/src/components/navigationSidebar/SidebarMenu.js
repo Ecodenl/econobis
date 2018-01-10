@@ -72,7 +72,16 @@ const SidebarMenu = props => {
                 </Nav>
                 <Nav id="email">
                     <NavIcon><SvgIcon size={20} icon={ic_email} /></NavIcon>
-                    <NavText><Link className="sidebar-link" to="email-in">Email</Link></NavText>
+                    <NavText><Link className="sidebar-link" to="emails/inbox">Email</Link></NavText>
+                    <Nav id="inbox">
+                        <NavText><Link className="sidebar-link" to="emails/inbox">Inbox</Link></NavText>
+                    </Nav>
+                    <Nav id="sent">
+                        <NavText><Link className="sidebar-link" to="emails/sent">Verzonden</Link></NavText>
+                    </Nav>
+                    <Nav id="concepts">
+                        <NavText><Link className="sidebar-link" to="emails/concept">Concepten</Link></NavText>
+                    </Nav>
                 </Nav>
                 <Nav id="marketing">
                     <NavIcon><SvgIcon size={20} icon={speech_bubbles} /></NavIcon>

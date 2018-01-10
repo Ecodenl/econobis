@@ -16,6 +16,7 @@ class GridEmail extends Resource
     public function toArray($request)
     {
         return [
+            'createdAt' => $this->created_at,
             'id' => $this->id,
             'date' => $this->date_sent,
             'mailboxName' => $this->mailbox->name,

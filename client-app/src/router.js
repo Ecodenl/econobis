@@ -1,6 +1,8 @@
 import React from 'react';
 import { Router, Route, IndexRoute, hashHistory } from 'react-router';
 
+import ConceptsInListApp from './container/email/concept-list/ConceptsInListApp';
+import ConceptApp from './container/email/concept/ConceptApp';
 import CampaignDetailsApp from './container/campaigns/details/CampaignDetailsApp';
 import CampaignNewApp from './container/campaigns/new/CampaignNewApp';
 import CampaignsListApp from './container/campaigns/list/CampaignsListApp';
@@ -63,7 +65,9 @@ const Routes = () => {
                 <Route path="campagnes" component={CampaignsListApp} />
                 <Route path="contacten/:filter/:value" component={ ContactsListApp } />
                 /* Emails */
-                <Route path="email-in" component={EmailsInListApp} />
+                <Route path="emails/concept" component={ConceptsInListApp} />
+                <Route path="email/concept/:id" component={ConceptApp} />
+                <Route path="emails/:folder" component={EmailsInListApp} />
                 <Route path="email/nieuw" component={EmailNewApp} />
                 <Route path="email/:id" component={EmailDetailsApp} />
                 /* Measures */

@@ -1,6 +1,7 @@
-export const fetchEmails = () => {
+export const fetchEmails = (folder) => {
     return {
         type: 'FETCH_EMAILS',
+        folder,
     };
 };
 

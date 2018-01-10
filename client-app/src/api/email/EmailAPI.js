@@ -4,12 +4,12 @@ const URL_API = process.env.URL_API;
 const URL_EMAIL = `${URL_API}/api/email`;
 
 export default {
-    fetchEmails: () => {
-        const requestUrl = `${URL_EMAIL}/grid/in-folder/inbox`;
+    fetchEmails: (folder) => {
+        const requestUrl = `${URL_EMAIL}/grid/in-folder/${folder}`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios.get(requestUrl);
+        return axios.get(requestUrl, folder);
     },
 
     fetchEmail: (id) => {

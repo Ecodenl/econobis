@@ -2,13 +2,12 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import { fetchEmails, clearEmails } from '../../../actions/email/EmailsActions';
-import EmailsInList from './EmailsInList';
-import EmailsInListToolbar from './EmailsInListToolbar';
+import ConceptsInList from './ConceptsInList';
+import ConceptsInListToolbar from './ConceptsInListToolbar';
 import Panel from "../../../components/panel/Panel";
 import PanelBody from "../../../components/panel/PanelBody";
-import { isEmpty } from 'lodash';
 
-class EmailsInListApp extends Component {
+class ConceptsInListApp extends Component {
     constructor(props) {
         super(props);
 
@@ -16,39 +15,30 @@ class EmailsInListApp extends Component {
     }
 
     componentDidMount() {
-        this.props.fetchEmails(this.props.params.folder);
+        this.props.fetchEmails('concept');
     };
 
     componentWillUnmount() {
         this.props.clearEmails();
     };
 
-    componentWillReceiveProps(nextProps) {
-        if(this.props.params.folder !== nextProps.params.folder) {
-            if (!isEmpty(nextProps.params.folder)) {
-             this.refreshData();
-                }
-            }
-        }
-
     refreshData() {
         this.props.clearEmails();
-        this.props.fetchEmails(this.props.params.folder);
-    }
+        this.props.fetchEmails('concept');
+    };
 
     render() {
         return (
                 <Panel className="col-md-9">
                     <PanelBody>
                         <div className="col-md-12 extra-space-above">
-                            <EmailsInListToolbar
+                            <ConceptsInListToolbar
                                 refreshData={this.refreshData}
-                                folder={this.props.params.folder == 'inbox' ? 'inbox' : 'verzonden'}
                             />
                         </div>
 
                         <div className="col-md-12 extra-space-above">
-                            <EmailsInList />
+                            <ConceptsInList />
                         </div>
                     </PanelBody>
                 </Panel>
@@ -67,4 +57,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(null, mapDispatchToProps)(EmailsInListApp);
+export default connect(null, mapDispatchToProps)(ConceptsInListApp);

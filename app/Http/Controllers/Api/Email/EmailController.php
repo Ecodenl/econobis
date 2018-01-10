@@ -77,7 +77,7 @@ class EmailController
             'cc' => '',
             'bcc' => '',
             'subject' => 'string',
-            'htmlBody' => 'required|string',
+            'htmlBody' => '',
         ]);
 
         $data['to'] = json_decode($data['to']);

@@ -29,6 +29,7 @@ class ConceptApp extends Component {
             errors: {
                 to: false,
             },
+            hasLoaded: false,
         };
 
         this.handleInputChange = this.handleInputChange.bind(this);
@@ -63,6 +64,7 @@ class ConceptApp extends Component {
                     attachments: payload.attachments ? payload.attachments : '',
                 },
                 emailAddresses: [...this.state.emailAddresses, ...extraOptions],
+                hasLoaded: true,
             });
         });
     };
@@ -209,6 +211,8 @@ class ConceptApp extends Component {
     };
 
     render() {
+        console.log(this.state)
+
         return (
             <div className="row">
                 <div className="col-md-9">
@@ -225,6 +229,7 @@ class ConceptApp extends Component {
                             email={this.state.email}
                             emailAddresses={this.state.emailAddresses}
                             errors={this.state.errors}
+                            hasLoaded={this.state.hasLoaded}
                             handleSubmit={this.handleSubmit}
                             handleToIds={this.handleToIds}
                             handleCcIds={this.handleCcIds}

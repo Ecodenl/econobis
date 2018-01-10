@@ -6,7 +6,7 @@ import InputMultiSelectCreate from "../../../../components/form/InputMultiSelect
 import ViewText from "../../../../components/form/ViewText";
 import moment from "moment/moment";
 
-const ConceptFormGeneral = ({email, emailAddresses, errors, handleSubmit, handleToIds, handleCcIds, handleBccIds, handleInputChange, handleTextChange}) => {
+const ConceptFormGeneral = ({email, emailAddresses, errors, hasLoaded, handleSubmit, handleToIds, handleCcIds, handleBccIds, handleInputChange, handleTextChange}) => {
     const { from, to, cc, bcc, subject, htmlBody } = email;
 
     return (
@@ -79,11 +79,14 @@ const ConceptFormGeneral = ({email, emailAddresses, errors, handleSubmit, handle
                 <div className="row">
                     <div className="form-group col-sm-12">
                         <div className="row">
-                            <InputTinyMCE
-                                label={"Tekst"}
-                                value={htmlBody}
-                                onChangeAction={handleTextChange}
-                            />
+                            {
+                                hasLoaded &&
+                                <InputTinyMCE
+                                    label={"Tekst"}
+                                    value={htmlBody}
+                                    onChangeAction={handleTextChange}
+                                />
+                            }
                         </div>
                     </div>
                 </div>

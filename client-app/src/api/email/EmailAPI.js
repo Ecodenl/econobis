@@ -38,8 +38,8 @@ export default {
             );
     },
 
-    newEmail: (email, mailbox_id) => {
-        const requestUrl = `${URL_EMAIL}/send/${mailbox_id}`;
+    newEmail: (email, mailbox_id, email_id) => {
+        const requestUrl = `${URL_EMAIL}/send/${mailbox_id}/${email_id}`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 

@@ -49,8 +49,8 @@ class SendEmail
 
         $mail = Mail::to($email->to);
 
-        ($email->cc[0] != '') ? $mail->cc($email->cc) : null;
-        ($email->bcc[0] != '') ? $mail->bcc($email->bcc) : null;
+        ($email->cc != []) ? $mail->cc($email->cc) : null;
+        ($email->bcc != []) ? $mail->bcc($email->bcc) : null;
 
         $mail->send(new GenericMail($email, $email->html_body));
 

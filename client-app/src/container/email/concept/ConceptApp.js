@@ -8,6 +8,7 @@ import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
 import EmailAPI from '../../../api/email/EmailAPI';
 import EmailAddressAPI from '../../../api/contact/EmailAddressAPI';
+import {hashHistory} from "react-router";
 
 class ConceptApp extends Component {
     constructor(props) {
@@ -16,6 +17,8 @@ class ConceptApp extends Component {
         this.state = {
             emailAddresses: [],
             email: {
+                from: '',
+                mailboxId: '',
                 to: '',
                 cc: '',
                 bcc: '',
@@ -50,6 +53,8 @@ class ConceptApp extends Component {
             this.setState({
                 ...this.state,
                 email: {
+                    from: payload.from,
+                    mailboxId: payload.mailboxId,
                     to: payload.to ? payload.to.join(',') : '',
                     cc: payload.cc ? payload.cc.join(',') : '',
                     bcc: payload.bcc ? payload.bcc.join(',') : '',
@@ -141,12 +146,10 @@ class ConceptApp extends Component {
         });
     };
 
-    handleSubmit(event) {
+    handleSubmit(event, concept = false) {
         event.preventDefault();
 
         const { email } = this.state;
-
-        let prepareAttachmentsForSending = [];
 
         // Validation
         let errors = {};
@@ -157,35 +160,52 @@ class ConceptApp extends Component {
             hasErrors = true;
         };
 
+        if(validator.isEmpty('' + email.from)){
+            errors.from = true;
+            hasErrors = true;
+        };
+
         this.setState({ ...this.state, errors: errors });
 
         // If no errors send form
-        !hasErrors &&
-            email.attachments.map((file) => {
-                let data = new FormData();
-                data.set('file', file);
-
-                prepareAttachmentsForSending.push(data);
-            });
-
-            email.attachments = prepareAttachmentsForSending;
-
-            if(email.to.length > 0){
+        if(!hasErrors) {
+            if (email.to.length > 0) {
                 email.to = email.to.split(',');
             }
 
-            if(email.cc.length > 0){
+            if (email.cc.length > 0) {
                 email.cc = email.cc.split(',');
             }
 
-            if(email.bcc.length > 0){
+            if (email.bcc.length > 0) {
                 email.bcc = email.bcc.split(',');
             }
+            const data = new FormData();
 
-            EmailAPI.newEmail(email).then((payload) => {
-            }).catch(function (error) {
-                alert(error);
+            data.append('to', JSON.stringify(email.to));
+            data.append('cc', JSON.stringify(email.cc));
+            data.append('bcc', JSON.stringify(email.bcc));
+            data.append('subject', email.subject);
+            data.append('htmlBody', email.htmlBody);
+            email.attachments.map((file, key) => {
+                data.append('attachments[' +  key +  ']', file);
             });
+
+            if(concept) {
+                EmailAPI.newConcept(data, email.mailboxId).then(() => {
+                    hashHistory.push(`/emails/concept`);
+                }).catch(function (error) {
+                    console.log(error)
+                });
+            }
+            else{
+                EmailAPI.newEmail(data, email.mailboxId, this.props.params.id).then(() => {
+                    hashHistory.push(`/emails/sent`);
+                }).catch(function (error) {
+                    console.log(error)
+                });
+            }
+        }
     };
 
     render() {

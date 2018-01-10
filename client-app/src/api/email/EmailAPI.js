@@ -38,8 +38,8 @@ export default {
             );
     },
 
-    newEmail: (email, mailbox_id, email_id) => {
-        const requestUrl = `${URL_EMAIL}/send/${mailbox_id}/${email_id}`;
+    newEmail: (email, mailbox_id) => {
+        const requestUrl = `${URL_EMAIL}/send/${mailbox_id}`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
@@ -47,7 +47,7 @@ export default {
     },
 
     newConcept: (email, mailbox_id) => {
-        const requestUrl = `${URL_EMAIL}/store-concept/${mailbox_id}`;
+        const requestUrl = `${URL_EMAIL}/concept/${mailbox_id}/store`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
@@ -60,6 +60,22 @@ export default {
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
         return axios.get(requestUrl, {responseType: 'blob'});
+    },
+
+    updateConcept: (email, email_id) => {
+        const requestUrl = `${URL_EMAIL}/concept/${email_id}/update`;
+        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
+        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
+
+        return axios.post(requestUrl, email);
+    },
+
+    sendConcept: (email, email_id) => {
+        const requestUrl = `${URL_EMAIL}/concept/${email_id}/send`;
+        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
+        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
+
+        return axios.post(requestUrl, email);
     },
 
 };

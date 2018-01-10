@@ -37,7 +37,7 @@ class ConceptApp extends Component {
         this.handleCcIds = this.handleCcIds.bind(this);
         this.handleBccIds = this.handleBccIds.bind(this);
         this.handleTextChange = this.handleTextChange.bind(this);
-        this.onDrop = this.onDrop.bind(this);
+        this.addAttachment = this.addAttachment.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
     };
 
@@ -135,7 +135,7 @@ class ConceptApp extends Component {
         });
     };
 
-    onDrop(files) {
+    addAttachment(files) {
         this.setState({
             ...this.state,
             email: {
@@ -194,14 +194,14 @@ class ConceptApp extends Component {
             });
 
             if(concept) {
-                EmailAPI.newConcept(data, email.mailboxId).then(() => {
+                EmailAPI.updateConcept(data, this.props.params.id).then(() => {
                     hashHistory.push(`/emails/concept`);
                 }).catch(function (error) {
                     console.log(error)
                 });
             }
             else{
-                EmailAPI.newEmail(data, email.mailboxId, this.props.params.id).then(() => {
+                EmailAPI.sendConcept(data, this.props.params.id).then(() => {
                     hashHistory.push(`/emails/sent`);
                 }).catch(function (error) {
                     console.log(error)
@@ -234,7 +234,7 @@ class ConceptApp extends Component {
                             handleBccIds={this.handleBccIds}
                             handleInputChange={this.handleInputChange}
                             handleTextChange={this.handleTextChange}
-                            onDrop={this.onDrop}
+                            addAttachment={this.addAttachment}
                         />
 
                     </div>

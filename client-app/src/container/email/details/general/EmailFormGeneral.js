@@ -45,14 +45,14 @@ class EmailFormGeneral extends Component {
     render() {
         return (
             <Panel className={this.state.activeDiv} onMouseEnter={() => this.onDivEnter()}
-                   onMouseLeave={() => this.onDivLeave()}>
+                   onMouseLeave={() => this.onDivLeave()} >
                 <PanelBody>
-                    {
-                        this.state.showEdit /*&& this.props.permissions.manageOpportunity*/ ?
-                            <EmailFormEdit switchToView={this.switchToView}/>
-                            :
-                            <EmailFormView switchToEdit={this.switchToEdit}/>
-                    }
+                {
+                    this.state.showEdit /*&& this.props.permissions.manageOpportunity*/ ?
+                        <EmailFormEdit switchToView={this.switchToView}/>
+                        :
+                        <EmailFormView switchToEdit={this.switchToEdit}/>
+                }
                 </PanelBody>
             </Panel>
         );

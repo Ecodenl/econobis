@@ -6,7 +6,7 @@ const EmailAttachmentsList = ({attachments, deleteAttachment}) => {
     return (
         <div>
             <div className="row border header">
-                <div className="col-sm-11">Naam</div>
+                <div className="col-sm-11">Bestand</div>
                 <div className="col-sm-1"></div>
             </div>
             {
@@ -19,7 +19,7 @@ const EmailAttachmentsList = ({attachments, deleteAttachment}) => {
                         />;
                     })
                     :
-                    <div>Geen bijlages bekend</div>
+                    <div>Geen bijlagen bekend</div>
             }
         </div>
     );

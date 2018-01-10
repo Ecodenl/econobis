@@ -175,7 +175,7 @@ class EmailNewApp extends Component {
         return (
             <div className="row">
                 <div className="col-md-9">
-                    <div className="col-md-12 extra-space-above">
+                    <div className="col-md-12">
                         <Panel>
                             <PanelBody className="panel-small">
                                 <EmailNewToolbar handleSubmit={this.handleSubmit}/>
@@ -183,7 +183,7 @@ class EmailNewApp extends Component {
                         </Panel>
                     </div>
 
-                    <div className="col-md-12 extra-space-above">
+                    <div className="col-md-12">
                         <EmailNewForm
                             email={this.state.email}
                             emailAddresses={this.state.emailAddresses}

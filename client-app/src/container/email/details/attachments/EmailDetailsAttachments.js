@@ -12,16 +12,14 @@ import PanelHeader from '../../../../components/panel/PanelHeader';
         render() {
             return (
                 <Panel>
-                    <Panel>
-                        <PanelHeader>
-                            <span className="h5 text-bold">Bijlagen</span>
-                        </PanelHeader>
-                        <PanelBody>
-                            <div className="col-md-12">
-                                <EmailDetailsAttachmentsList/>
-                            </div>
-                        </PanelBody>
-                    </Panel>
+                    <PanelHeader>
+                        <span className="h5 text-bold">Bijlagen</span>
+                    </PanelHeader>
+                    <PanelBody>
+                        <div className="col-md-12">
+                            <EmailDetailsAttachmentsList/>
+                        </div>
+                    </PanelBody>
                 </Panel>
             );
         }

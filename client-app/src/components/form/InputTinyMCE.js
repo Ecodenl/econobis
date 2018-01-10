@@ -32,7 +32,8 @@ const InputTinyMCE = props => {
                         language: 'nl',
                         menubar: false,
                         plugins: 'link image code table textcolor contextmenu',
-                        toolbar: 'undo redo | formatselect | bold italic forecolor | alignleft aligncenter alignright | bullist numlist outdent indent | table | link image | code'
+                        toolbar: 'undo redo | formatselect | bold italic forecolor | alignleft aligncenter alignright | bullist numlist outdent indent | table | link image | code',
+                        height: "300",
                     }}
                     onChange={onChangeAction}
                 />

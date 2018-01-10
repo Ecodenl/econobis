@@ -7,7 +7,7 @@ import EmailNewFormGeneral from "./general/EmailNewFormGeneral";
 const EmailNewForm = ({email, emailAddresses, errors, handleSubmit, handleToIds, handleCcIds, handleBccIds, handleInputChange, handleTextChange, addAttachment, deleteAttachment}) => {
     return (
         <form className="form-horizontal" onSubmit={handleSubmit}>
-            <Panel>
+
                 <EmailNewFormGeneral
                     email={email}
                     emailAddresses={emailAddresses}
@@ -22,7 +22,6 @@ const EmailNewForm = ({email, emailAddresses, errors, handleSubmit, handleToIds,
 
                 <EmailAttachments attachments={email.attachments} addAttachment={addAttachment} deleteAttachment={deleteAttachment} />
 
-            </Panel>
         </form>
     );
 };

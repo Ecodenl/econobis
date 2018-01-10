@@ -1,5 +1,6 @@
 import React from 'react';
 
+import Panel from "../../../../components/panel/Panel";
 import PanelBody from "../../../../components/panel/PanelBody";
 import InputTinyMCE from "../../../../components/form/InputTinyMCE";
 import InputMultiSelectCreate from "../../../../components/form/InputMultiSelectCreate";
@@ -8,6 +9,7 @@ const EmailNewFormGeneral = ({email, emailAddresses, errors, handleSubmit, handl
     const { to, cc, bcc, subject, htmlBody } = email;
 
     return (
+        <Panel>
             <PanelBody>
                 <div className="row">
                     <InputMultiSelectCreate
@@ -72,6 +74,7 @@ const EmailNewFormGeneral = ({email, emailAddresses, errors, handleSubmit, handl
                     </div>
                 </div>
             </PanelBody>
+        </Panel>
     );
 };
 

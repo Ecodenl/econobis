@@ -3,6 +3,7 @@ import {connect} from 'react-redux';
 import moment from 'moment';
 
 import InputSelect from '../../../../components/form/InputSelect';
+import ViewHtmlAsText from '../../../../components/form/ViewHtmlAsText';
 import ButtonText from '../../../../components/button/ButtonText';
 import PanelFooter from "../../../../components/panel/PanelFooter";
 import ViewText from '../../../../components/form/ViewText';
@@ -25,10 +26,6 @@ class EmailFormEdit extends Component {
             },
             contacts: [],
         }
-    };
-
-    createMarkup = (value) => {
-        return {__html: value};
     };
 
     componentWillMount() {
@@ -71,8 +68,19 @@ class EmailFormEdit extends Component {
             <div>
                 <div className="row">
                     <ViewText
+                        label={"Van"}
+                        value={from}
+                    />
+                    <ViewText
                         label={"Ontvangen datum tijd"}
                         value={created_at ? moment(created_at.date).format('DD-MM-YYYY hh:mm') : ''}
+                    />
+
+                </div>
+                <div className="row">
+                    <ViewText
+                        label={"Aan"}
+                        value={to && to.map((to) => to).join(', ')}
                     />
                     <ViewText
                         label={"Verzonden datum tijd"}
@@ -81,25 +89,9 @@ class EmailFormEdit extends Component {
                 </div>
                 <div className="row">
                     <ViewText
-                        label={"Van"}
-                        value={from}
-                    />
-                    <ViewText
-                        label={"Aan"}
-                        value={to && to.map((to) => to).join(', ')}
-                    />
-                </div>
-                <div className="row">
-                    <ViewText
                         label={"Cc"}
                         value={cc && cc.map((cc) => cc).join(', ')}
                     />
-                    <ViewText
-                        label={"Bcc"}
-                        value={bcc && bcc.map((bcc) => bcc).join(', ')}
-                    />
-                </div>
-                <div className="row">
                     <InputSelect
                         label={"Contact"}
                         size={"col-sm-6"}
@@ -109,16 +101,15 @@ class EmailFormEdit extends Component {
                         onChangeAction={this.handleInputChange}
                         optionName={'fullName'}
                     />
-
                 </div>
 
-                <div className="row">
+                <div className="row margin-10-top">
                     <div className='col-sm-12'>
                         <div className="row">
                             <div className="col-sm-3">
                                 <label className="col-sm-12">Onderwerp</label>
                             </div>
-                            <div className="col-sm-8">
+                            <div className="col-sm-9">
                                 {subject}
                             </div>
                         </div>
@@ -126,7 +117,7 @@ class EmailFormEdit extends Component {
                 </div>
 
                 <div className="row">
-                    <div className="col-sm-12" dangerouslySetInnerHTML={this.createMarkup(html_body)} />
+                    <ViewHtmlAsText label={"Tekst"} value={html_body}/>
                 </div>
 
                 <PanelFooter>

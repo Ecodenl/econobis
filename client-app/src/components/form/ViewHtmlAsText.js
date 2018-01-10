@@ -1,6 +1,7 @@
 import React from 'react';
-import { Link } from 'react-router';
+import Frame from 'react-frame-component';
 import PropTypes from 'prop-types';
+import Panel from "../panel/Panel";
 
 const ViewHtmlAsText = props => {
     const { label, className, id, value } = props;
@@ -12,7 +13,11 @@ const ViewHtmlAsText = props => {
     return (
         <div className={className}>
             <label htmlFor={ id } className="col-sm-3">{ label }</label>
-            <div className="col-sm-9" id={ id } dangerouslySetInnerHTML={createMarkup()} />
+            <Panel className="col-sm-9">
+                <Frame>
+                    <div id={ id } dangerouslySetInnerHTML={createMarkup()} />
+                </Frame>
+            </Panel>
         </div>
     );
 };

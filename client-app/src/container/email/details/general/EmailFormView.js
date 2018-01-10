@@ -1,9 +1,10 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import moment from 'moment';
-
+import Frame from 'react-frame-component';
 
 import ViewText from '../../../../components/form/ViewText';
+import ViewHtmlAsText from '../../../../components/form/ViewHtmlAsText';
 
 const createMarkup = (value) => {
     return {__html: value};
@@ -16,8 +17,18 @@ const EmailFormView = props => {
         <div>
             <div className="row" onClick={props.switchToEdit}>
                 <ViewText
+                    label={"Van"}
+                    value={from}
+                />
+                <ViewText
                     label={"Ontvangen datum tijd"}
                     value={created_at ? moment(created_at.date).format('DD-MM-YYYY hh:mm') : ''}
+                />
+            </div>
+            <div className="row" onClick={props.switchToEdit}>
+                <ViewText
+                    label={"Aan"}
+                    value={to && to.map((to) => to).join(', ')}
                 />
                 <ViewText
                     label={"Verzonden datum tijd"}
@@ -26,25 +37,9 @@ const EmailFormView = props => {
             </div>
             <div className="row" onClick={props.switchToEdit}>
                 <ViewText
-                    label={"Van"}
-                    value={from}
-                />
-                <ViewText
-                    label={"Aan"}
-                    value={to && to.map((to) => to).join(', ')}
-                />
-            </div>
-            <div className="row" onClick={props.switchToEdit}>
-                <ViewText
                     label={"Cc"}
                     value={cc && cc.map((cc) => cc).join(', ')}
                 />
-                <ViewText
-                    label={"Bcc"}
-                    value={bcc && bcc.map((bcc) => bcc).join(', ')}
-                />
-            </div>
-            <div className="row" onClick={props.switchToEdit}>
                 <ViewText
                     label={"Contact"}
                     value={contact ? contact.fullName : ''}
@@ -52,13 +47,13 @@ const EmailFormView = props => {
                 />
             </div>
 
-            <div className="row" onClick={props.switchToEdit}>
+            <div className="row margin-10-top" onClick={props.switchToEdit}>
                 <div className='col-sm-12'>
                     <div className="row">
                         <div className="col-sm-3">
                             <label className="col-sm-12">Onderwerp</label>
                         </div>
-                        <div className="col-sm-8">
+                        <div className="col-sm-9">
                             {subject}
                         </div>
                     </div>
@@ -66,7 +61,7 @@ const EmailFormView = props => {
             </div>
 
             <div className="row" onClick={props.switchToEdit}>
-                <div className="col-sm-12" dangerouslySetInnerHTML={createMarkup(html_body)} />
+                <ViewHtmlAsText label={"Tekst"} value={html_body}/>
             </div>
         </div>
     );

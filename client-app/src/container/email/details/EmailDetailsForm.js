@@ -2,7 +2,8 @@ import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import { isEmpty } from 'lodash';
 
-import EmailFormGeneral from './form/EmailFormGeneral';
+import EmailFormGeneral from './general/EmailFormGeneral';
+import EmailDetailsAttachments from './attachments/EmailDetailsAttachments';
 
 class EmailDetailsForm extends Component {
     constructor(props){
@@ -18,6 +19,7 @@ class EmailDetailsForm extends Component {
                 :
                 <div>
                     <EmailFormGeneral />
+                    <EmailDetailsAttachments/>
                 </div>
         );
     }

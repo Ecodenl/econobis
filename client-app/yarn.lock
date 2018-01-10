@@ -5410,6 +5410,10 @@ react-dropzone@^4.2.3:
     attr-accept "^1.0.3"
     prop-types "^15.5.7"
 
+react-frame-component@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/react-frame-component/-/react-frame-component-2.0.1.tgz#89f5adbf6a4f4ea2a1e61600dff8e1afa58b9844"
+
 react-icons-kit@^1.0.7:
   version "1.0.7"
   resolved "https://registry.yarnpkg.com/react-icons-kit/-/react-icons-kit-1.0.7.tgz#c5d9e31d71b2bcfe0baf653938ea2c15802c2ee4"

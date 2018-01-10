@@ -19,6 +19,7 @@ class EmailDetailsApp extends Component {
     componentWillUnmount() {
         this.props.clearEmail();
     };
+
     render() {
         return (
             <div className="row">
@@ -29,7 +30,6 @@ class EmailDetailsApp extends Component {
 
                     <div className="col-md-12">
                         <EmailDetailsForm/>
-                        <EmailDetailsAttachments/>
                     </div>
                 </div>
             </div>

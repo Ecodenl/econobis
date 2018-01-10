@@ -24,9 +24,9 @@ class EmailAttachments extends Component {
 
     render() {
         return (
-            <div>
+            <Panel>
                 <PanelHeader>
-                    <span className="h5 text-bold">Bijlages</span>
+                    <span className="h5 text-bold">Bijlagen</span>
                     <a role="button" className="pull-right" onClick={this.toggleShowNew}><span
                         className="glyphicon glyphicon-plus"/>
                     </a>
@@ -40,7 +40,7 @@ class EmailAttachments extends Component {
                         <EmailAttachmentsNew toggleShowNew={this.toggleShowNew} addAttachment={this.props.addAttachment} />}
                     </div>
                 </PanelBody>
-            </div>
+            </Panel>
         );
     }
 }

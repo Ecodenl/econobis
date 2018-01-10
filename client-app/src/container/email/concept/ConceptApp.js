@@ -59,7 +59,6 @@ class ConceptApp extends Component {
                 },
                 emailAddresses: [...this.state.emailAddresses, ...extraOptions],
             });
-
         });
     };
 

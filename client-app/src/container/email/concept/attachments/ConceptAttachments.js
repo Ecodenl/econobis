@@ -36,7 +36,7 @@ class ConceptAttachments extends Component {
                     </div>
                     <div className="col-md-12 extra-space-above">
                         {this.state.showNew &&
-                        <ConceptAttachmentsNew toggleShowNew={this.toggleShowNew} onDrop={this.props.onDrop}/>}
+                        <ConceptAttachmentsNew toggleShowNew={this.toggleShowNew} addAttachment={this.props.addAttachment}/>}
                     </div>
                 </PanelBody>
             </div>

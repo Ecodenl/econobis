@@ -4,7 +4,7 @@ import Panel from "../../../components/panel/Panel";
 import ConceptAttachments from "./attachments/ConceptAttachments";
 import ConceptFormGeneral from "./general/ConceptFormGeneral";
 
-const ConceptNewForm = ({email, emailAddresses, errors, handleSubmit, handleToIds, handleCcIds, handleBccIds, handleInputChange, handleTextChange, onDrop}) => {
+const ConceptNewForm = ({email, emailAddresses, errors, handleSubmit, handleToIds, handleCcIds, handleBccIds, handleInputChange, handleTextChange, addAttachment}) => {
     return (
         <form className="form-horizontal" onSubmit={handleSubmit}>
             <Panel>
@@ -20,7 +20,7 @@ const ConceptNewForm = ({email, emailAddresses, errors, handleSubmit, handleToId
                     handleTextChange={handleTextChange}
                 />
 
-                <ConceptAttachments attachments={email.attachments} onDrop={onDrop} />
+                <ConceptAttachments attachments={email.attachments} addAttachment={addAttachment} />
 
             </Panel>
         </form>

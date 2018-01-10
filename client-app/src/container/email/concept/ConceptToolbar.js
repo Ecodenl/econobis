@@ -12,7 +12,7 @@ const ConceptNewToolbar = ({handleSubmit}) => {
                     <ButtonIcon iconName={"glyphicon-arrow-left"} onClickAction={browserHistory.goBack} />
                 </div>
                 <div className="btn-group margin-small" role="group">
-                    <ButtonText buttonText={"Opslaan"}/>
+                    <ButtonText buttonText={"Opslaan" } onClickAction={(e) => {handleSubmit(e, true)}}/>
                     <ButtonText buttonText={"Verstuur email"} onClickAction={handleSubmit}/>
                 </div>
             </div>

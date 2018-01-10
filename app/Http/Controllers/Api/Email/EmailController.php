@@ -72,7 +72,7 @@ class EmailController
         $email->save();
     }
 
-    public function send(Mailbox $mailbox, Request $request)
+    public function send(Mailbox $mailbox, Email $email = null, Request $request)
     {
         //get attachments
         $attachments = $request->file('attachments') ? $request->file('attachments') : [];

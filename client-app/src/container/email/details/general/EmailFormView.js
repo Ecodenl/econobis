@@ -11,7 +11,7 @@ const createMarkup = (value) => {
 };
 
 const EmailFormView = props => {
-    const {from, to, cc, bcc, contact, subject, html_body, created_at, date_sent} = props.email;
+    const {from, to, cc, bcc, contact, subject, htmlBody, createdAt, dateSent} = props.email;
 
     return (
         <div>
@@ -22,7 +22,7 @@ const EmailFormView = props => {
                 />
                 <ViewText
                     label={"Ontvangen datum tijd"}
-                    value={created_at ? moment(created_at.date).format('DD-MM-YYYY hh:mm') : ''}
+                    value={createdAt ? moment(createdAt.date).format('DD-MM-YYYY hh:mm') : ''}
                 />
             </div>
             <div className="row" onClick={props.switchToEdit}>
@@ -32,7 +32,7 @@ const EmailFormView = props => {
                 />
                 <ViewText
                     label={"Verzonden datum tijd"}
-                    value={date_sent ? moment(date_sent.date).format('DD-MM-YYYY hh:mm') : ''}
+                    value={dateSent ? moment(dateSent.date).format('DD-MM-YYYY hh:mm') : ''}
                 />
             </div>
             <div className="row" onClick={props.switchToEdit}>
@@ -61,7 +61,7 @@ const EmailFormView = props => {
             </div>
 
             <div className="row" onClick={props.switchToEdit}>
-                <ViewHtmlAsText label={"Tekst"} value={html_body}/>
+                <ViewHtmlAsText label={"Tekst"} value={htmlBody}/>
             </div>
         </div>
     );

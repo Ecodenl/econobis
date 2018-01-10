@@ -63,7 +63,7 @@ class EmailFormEdit extends Component {
 
     render() {
         const {contactId} = this.state.email;
-        const {from, to, cc, bcc, subject, html_body, created_at, date_sent} = this.props.email;
+        const {from, to, cc, bcc, subject, htmlBody, createdAt, dateSent} = this.props.email;
         return (
             <div>
                 <div className="row">
@@ -73,7 +73,7 @@ class EmailFormEdit extends Component {
                     />
                     <ViewText
                         label={"Ontvangen datum tijd"}
-                        value={created_at ? moment(created_at.date).format('DD-MM-YYYY hh:mm') : ''}
+                        value={createdAt ? moment(createdAt.date).format('DD-MM-YYYY hh:mm') : ''}
                     />
 
                 </div>
@@ -84,7 +84,7 @@ class EmailFormEdit extends Component {
                     />
                     <ViewText
                         label={"Verzonden datum tijd"}
-                        value={date_sent ? moment(date_sent.date).format('DD-MM-YYYY hh:mm') : ''}
+                        value={dateSent ? moment(dateSent.date).format('DD-MM-YYYY hh:mm') : ''}
                     />
                 </div>
                 <div className="row">
@@ -117,7 +117,7 @@ class EmailFormEdit extends Component {
                 </div>
 
                 <div className="row">
-                    <ViewHtmlAsText label={"Tekst"} value={html_body}/>
+                    <ViewHtmlAsText label={"Tekst"} value={htmlBody}/>
                 </div>
 
                 <PanelFooter>

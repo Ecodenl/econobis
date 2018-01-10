@@ -3,33 +3,34 @@ import PropTypes from 'prop-types';
 import Select from 'react-select';
 import 'react-select/dist/react-select.css';
 
-const InputMultiSelectCreate = props => {
+const InputMultiSelectCreate = (props) => {
     const { label, className, size, id, name, value, options, optionId, optionName, onChangeAction, required, allowCreate } = props;
 
-    const promptTextCreator = () => {
-
-    }
+    const onPromptTextCreator = (label) => {
+        return `Maak optie "${label}" aan`;
+    };
 
     return (
         <div className="form-group col-sm-12">
             <div className="row">
                 <div className="col-sm-3">
-                    <label htmlFor={ id } className={`col-sm-12 ${required}`}>{label}</label>
+                    <label htmlFor={id} className={`col-sm-12 ${required}`}>{label}</label>
                 </div>
                 <div className={`${size}`}>
                     <Select.Creatable
-                        id={ id }
+                        id={id}
                         name={name}
                         value={value}
                         onChange={onChangeAction}
                         options={options}
                         valueKey={optionId}
                         labelKey={optionName}
-                        placeholder={""}
-                        noResultsText={"Geen resultaat gevonden"}
+                        placeholder={''}
+                        noResultsText={'Geen resultaat gevonden'}
                         multi
                         simpleValue
                         removeSelected
+                        promptTextCreator={onPromptTextCreator}
                     />
                 </div>
             </div>

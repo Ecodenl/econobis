@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import validator from 'validator';
+import {union} from 'lodash';
 
 import ConceptForm from './ConceptForm';
 import ConceptToolbar from './ConceptToolbar';
@@ -39,24 +40,39 @@ class ConceptApp extends Component {
     componentDidMount() {
         EmailAddressAPI.fetchEmailAddressessPeek().then((payload) => {
             this.setState({
-                emailAddresses: payload,
+                emailAddresses: [...this.state.emailAddresses, ...payload],
             });
         });
 
         EmailAPI.fetchEmail(this.props.params.id).then((payload) => {
+            const extraOptions = this.createExtraOptions(payload.to, payload.cc, payload.bcc);
+
             this.setState({
                 ...this.state,
                 email: {
-                    to: payload.to ? 1 : '',
-                    cc: payload.cc ? 1 : '',
-                    bcc: payload.bcc ? 1 : '',
+                    to: payload.to ? payload.to.join(',') : '',
+                    cc: payload.cc ? payload.cc.join(',') : '',
+                    bcc: payload.bcc ? payload.bcc.join(',') : '',
                     subject: payload.subject ? payload.subject : '',
                     htmlBody: payload.htmlBody ? payload.htmlBody : '',
                     attachments: payload.attachments ? payload.attachments : '',
                 },
+                emailAddresses: [...this.state.emailAddresses, ...extraOptions],
             });
 
         });
+    };
+
+    createExtraOptions(to, cc, bcc) {
+        const emailAddresses = union(to, cc, bcc);
+
+        let options = [];
+
+        emailAddresses.map((emailAddress) => {
+            options.push({id: emailAddress, name: emailAddress});
+        });
+
+        return options;
     };
 
     handleInputChange(event) {

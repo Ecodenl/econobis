@@ -5,6 +5,7 @@ import EmailAttachmentsNew from './EmailAttachmentsNew';
 import PanelBody from '../../../../components/panel/PanelBody';
 import PanelHeader from '../../../../components/panel/PanelHeader';
 import {connect} from "react-redux";
+import Panel from "../../../../components/panel/Panel";
 
 class EmailAttachments extends Component {
     constructor(props) {

@@ -36,6 +36,7 @@ class EmailController
             $emails = Email::whereFolder($folder)
                 ->orderBy('date_sent', 'desc')->get();
         }
+
         $emails->load('mailbox');
 
         return GridEmail::collection($emails);
@@ -109,16 +110,18 @@ class EmailController
                 }}
         }
 
-        $santizedData = [
+        $subject = $data['subject'] ?: 'Econobis';
+
+        $sanitizedData = [
             'to' => $emails['to'],
             'cc' => $emails['cc'],
             'bcc' => $emails['bcc'],
-            'subject' => array_key_exists('subject', $data) ? $data['subject'] : 'Econobis',
-            'html_body' => '<html>' . $data['htmlBody'] . '</html>',
+            'subject' => $subject,
+            'html_body' => '<!DOCTYPE html><html><head><meta http-equiv="content-type" content="text/html;charset=UTF-8"/><title>' . $subject . '</title></head>' . $data['htmlBody'] . '</html>',
         ];
 
         //Save as concept, if sending fails we still have the concept
-        $email = (new StoreConceptEmail($mailbox, $santizedData))->handle();
+        $email = (new StoreConceptEmail($mailbox, $sanitizedData))->handle();
 
         //Email attachments
         //Check if storage map exists

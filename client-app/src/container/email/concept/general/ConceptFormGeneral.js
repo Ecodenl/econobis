@@ -12,7 +12,7 @@ const ConceptFormGeneral = ({email, emailAddresses, errors, hasLoaded, handleSub
     return (
             <PanelBody>
                 <div className="row">
-                    <div className="row">
+                    <div className="row margin-10-bottom">
                         <div className="col-sm-3">
                             <label htmlFor="description" className="col-sm-12">Van</label>
                         </div>

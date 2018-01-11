@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import ReactPaginate from 'react-paginate';
 
 import DataTable from '../../../components/dataTable/DataTable';
 import DataTableHead from '../../../components/dataTable/DataTableHead';
@@ -20,6 +21,8 @@ class RegistrationsList extends Component {
     };
 
     render() {
+        const { data = [], meta = {}, isLoading } = this.props.registrations;
+
         return (
             <form onKeyUp={this.handleKeyUp}>
                 <DataTable>
@@ -33,10 +36,10 @@ class RegistrationsList extends Component {
                     </DataTableHead>
                     <DataTableBody>
                         {
-                            this.props.registrations.length === 0 ? (
+                            data.length === 0 ? (
                                 <tr><td colSpan={7}>Geen aanmeldingen gevonden!</td></tr>
                             ) : (
-                                this.props.registrations.map((registration) => {
+                                data.map((registration) => {
                                     return <RegistrationsListItem
                                         key={registration.id}
                                         {...registration}
@@ -46,6 +49,23 @@ class RegistrationsList extends Component {
                         }
                     </DataTableBody>
                 </DataTable>
+                <div className="col-md-4 col-md-offset-4">
+                    <ReactPaginate
+                        onPageChange={this.props.handlePageClick}
+                        pageCount={ Math.ceil(meta.total / 20) }
+                        pageRangeDisplayed={20}
+                        marginPagesDisplayed={2}
+                        containerClassName={"pagination"}
+                        activeClassName={"active"}
+                        previousLabel={<span aria-hidden="true">&laquo;</span>}
+                        nextLabel={<span aria-hidden='true'>&raquo;</span>}
+                        initialPage={this.props.registrationsPagination.page || 0}
+                        forcePage={this.props.registrationsPagination.page}
+                    />
+                </div>
+                <div className="col-md-4">
+                    <div className="pull-right">Resultaten: { meta.total || 0 }</div>
+                </div>
             </form>
         );
     };

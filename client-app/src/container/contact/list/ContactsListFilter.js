@@ -108,7 +108,7 @@ const ContactsListFilter = props => {
 };
 
 const mapStateToProps = (state) => ({
-    filters: state.contactsFilters,
+    filters: state.contacts.filters,
     contactStatuses: state.systemData.contactStatuses,
     contactTypes: state.systemData.contactTypes,
 });

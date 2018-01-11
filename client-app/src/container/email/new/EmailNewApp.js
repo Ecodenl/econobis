@@ -54,6 +54,18 @@ class EmailNewApp extends Component {
                 mailboxAddresses: payload,
             });
         });
+
+        if(this.props.params.groupId){
+            EmailAPI.fetchEmailGroup(this.props.params.groupId).then((payload) => {
+                this.setState({
+                    ...this.state,
+                    email: {
+                        ...this.state.email,
+                        to: payload.join(',')
+                    },
+                });
+            });
+        }
     };
 
     handleInputChange(event) {
@@ -163,7 +175,7 @@ class EmailNewApp extends Component {
         };
 
         this.setState({ ...this.state, errors: errors });
-
+        
         // If no errors send form
         if(!hasErrors) {
             if (email.to.length > 0) {

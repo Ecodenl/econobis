@@ -60,6 +60,9 @@ class EmailAnswerApp extends Component {
             case 'doorsturen':
                 type = 'forward';
                 break;
+            case 'groep':
+                type = 'group';
+                break;
             default:
                 type = 'reply';
         };

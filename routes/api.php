@@ -172,6 +172,7 @@ Route::namespace('Api')
         Route::get('email/{email}/reply', 'Email\EmailController@getReply');
         Route::get('email/{email}/reply-all', 'Email\EmailController@getReplyAll');
         Route::get('email/{email}/forward', 'Email\EmailController@getForward');
+        Route::get('email/group/{contactGroup}', 'Email\EmailController@getEmailGroup');
         Route::post('email/{email}', 'Email\EmailController@update');
         Route::get('email/email-attachment/{emailAttachment}/download', 'Email\EmailController@download');
         Route::post('email/send/{mailbox}', 'Email\EmailController@send');

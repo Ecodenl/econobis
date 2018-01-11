@@ -10,6 +10,7 @@ namespace App\Http\Controllers\Api\Email;
 
 
 use App\Eco\Contact\Contact;
+use App\Eco\ContactGroup\ContactGroup;
 use App\Eco\Email\Email;
 use App\Eco\Email\EmailAttachment;
 use App\Eco\Email\Jobs\SendEmail;
@@ -110,6 +111,16 @@ class EmailController
         $email->bcc = [];
 
         return FullEmail::make($email);
+    }
+
+    public function getEmailGroup(ContactGroup $contactGroup){
+        //Get the primary email from all contacts in this group
+        $emails = $contactGroup->contacts()->pluck('id')->toArray();
+
+        //int array to string array for front-end
+        $emailsString  = array_map('strval',$emails);
+
+        return $emailsString;
     }
 
     public function update(Email $email, RequestInput $input)

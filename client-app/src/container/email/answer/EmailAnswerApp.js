@@ -55,7 +55,7 @@ class EmailAnswerApp extends Component {
                 type = 'reply';
                 break;
             case 'allenbeantwoorden':
-                type = 'replytoall';
+                type = 'reply-all';
                 break;
             case 'doorsturen':
                 type = 'forward';
@@ -209,7 +209,7 @@ class EmailAnswerApp extends Component {
                 data.append('attachments[' +  key +  ']', file);
             });
 
-            EmailAPI.sendConcept(data, this.props.params.id).then(() => {
+            EmailAPI.newEmail(data, email.mailboxId).then(() => {
                 hashHistory.push(`/emails/sent`);
             }).catch(function (error) {
                 console.log(error)

@@ -26,7 +26,8 @@ class EmailsInListApp extends Component {
     componentWillReceiveProps(nextProps) {
         if(this.props.params.folder !== nextProps.params.folder) {
             if (!isEmpty(nextProps.params.folder)) {
-             this.refreshData();
+                this.props.clearEmails();
+                this.props.fetchEmails(nextProps.params.folder);
                 }
             }
         }

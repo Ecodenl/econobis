@@ -62,7 +62,7 @@ class EmailController
         //From -> mailbox email
         //Cc -> empty
         //Bcc -> empty
-        $email->to = $email->from;
+        $email->to = [$email->from];
         $email->from = $email->mailbox->email;
         $email->cc = [];
         $email->bcc = [];

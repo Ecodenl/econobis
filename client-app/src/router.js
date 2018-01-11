@@ -17,6 +17,7 @@ import DashboardApp from './container/dashboard/DashboardApp';
 import EmailsInListApp from './container/email/list/EmailsInListApp';
 import EmailNewApp from './container/email/new/EmailNewApp';
 import EmailDetailsApp from './container/email/details/EmailDetailsApp';
+import EmailAnswerApp from './container/email/answer/EmailAnswerApp';
 import Login from './container/auth/Login';
 import Logout from './container/auth/Logout';
 import MailboxDetailsApp from './container/mailbox/details/MailboxDetailsApp';
@@ -70,6 +71,7 @@ const Routes = () => {
                 <Route path="emails/:folder" component={EmailsInListApp} />
                 <Route path="email/nieuw" component={EmailNewApp} />
                 <Route path="email/:id" component={EmailDetailsApp} />
+                <Route path="email/:id/:type" component={EmailAnswerApp} />
                 /* Measures */
                 <Route path="maatregelen" component={MeasuresListApp} />
                 <Route path="maatregel/nieuw" component={MeasureNewApp} />

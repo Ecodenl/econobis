@@ -1,38 +1,47 @@
-import React, {Component} from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
-import { browserHistory } from 'react-router';
+import { browserHistory, hashHistory } from 'react-router';
+import Icon from 'react-icons-kit';
+import { mailReply } from 'react-icons-kit/fa/mailReply';
+import { mailReplyAll } from 'react-icons-kit/fa/mailReplyAll';
+import { mailForward } from 'react-icons-kit/fa/mailForward';
 
 import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
 import ButtonIcon from '../../../components/button/ButtonIcon';
 
-class EmailDetailsToolbar extends Component {
-    constructor(props){
-        super(props);
-    }
+const EmailDetailsToolbar = ({email, id}) => {
+    const { from } = email;
 
-    render() {
-        const { from }  = this.props.email;
-
-        return (
-            <div className="row">
-                <div className="col-sm-12">
-                    <Panel>
-                        <PanelBody className={"panel-small"}>
-                            <div className="col-md-2">
-                                <div className="btn-group margin-small" role="group">
-                                    <ButtonIcon iconName={"glyphicon-arrow-left"} onClickAction={browserHistory.goBack} />
-                                </div>
+    return (
+        <div className="row">
+            <div className="col-sm-12">
+                <Panel>
+                    <PanelBody className={"panel-small"}>
+                        <div className="col-md-4">
+                            <div className="btn-group margin-small margin-10-right" role="group">
+                                <ButtonIcon iconName={"glyphicon-arrow-left"} onClickAction={browserHistory.goBack} />
                             </div>
-                            <div className="col-md-8"><h4 className="text-center text-success margin-small"><strong>{ from ? 'Email van: ' + from : '' }</strong></h4></div>
-                            <div className="col-md-2" />
-                        </PanelBody>
-                    </Panel>
-                </div>
-
+                            <div className="btn-group margin-small" role="group">
+                                <button type="button" title="Beantwoorden" className={'btn btn-success btn-sm'} onClick={() => { hashHistory.push(`/email/${id}/beantwoorden`) }}>
+                                    <Icon icon={mailReply} size={13} />
+                                </button>
+                                <button type="button" title="Allen beantwoorden" className={'btn btn-success btn-sm'} onClick={() => { hashHistory.push(`/email/${id}/allenbeantwoorden`) }}>
+                                    <Icon icon={mailReplyAll} size={13} />
+                                </button>
+                                <button type="button" title="Doorsturen" className={'btn btn-success btn-sm'} onClick={() => { hashHistory.push(`/email/${id}/doorsturen`) }}>
+                                    <Icon icon={mailForward} size={13} />
+                                </button>
+                            </div>
+                        </div>
+                        <div className="col-md-4"><h4 className="text-center text-success margin-small"><strong>{ from ? 'Email van: ' + from : '' }</strong></h4></div>
+                        <div className="col-md-4" />
+                    </PanelBody>
+                </Panel>
             </div>
-        );
-    };
+
+        </div>
+    );
 };
 
 const mapStateToProps = (state) => {

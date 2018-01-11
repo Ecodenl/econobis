@@ -4,6 +4,7 @@ namespace App\Eco\Email;
 
 use App\Eco\Contact\Contact;
 use App\Eco\Mailbox\Mailbox;
+use App\Eco\User\User;
 use Illuminate\Database\Eloquent\Model;
 
 class Email extends Model
@@ -30,5 +31,17 @@ class Email extends Model
     public function contact()
     {
         return $this->belongsTo(Contact::class);
+    }
+
+    public function closedBy()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function getStatus()
+    {
+        if(!$this->status) return null;
+
+        return EmailStatus::get($this->status);
     }
 }

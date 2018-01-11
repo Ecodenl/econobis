@@ -13,6 +13,7 @@ use App\Eco\Contact\Contact;
 use App\Eco\ContactGroup\ContactGroup;
 use App\Eco\Email\Email;
 use App\Eco\Email\EmailAttachment;
+use App\Eco\Email\EmailStatus;
 use App\Eco\Email\Jobs\SendEmail;
 use App\Eco\Email\Jobs\StoreConceptEmail;
 use App\Eco\Mailbox\Mailbox;
@@ -20,6 +21,7 @@ use App\Eco\User\User;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\Resources\Email\FullEmail;
 use App\Http\Resources\Email\GridEmail;
+use Carbon\Carbon;
 use Config;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -50,7 +52,7 @@ class EmailController
     }
 
     public function show(Email $email){
-        $email->load('contact', 'attachments');
+        $email->load('contact', 'attachments', 'closedBy');
 
         return FullEmail::make($email);
     }
@@ -314,6 +316,20 @@ class EmailController
         if (!is_dir($storageDir)) {
             mkdir($storageDir, 0777, true);
         }
+    }
+
+    public function setEmailStatus(Email $email, $emailStatusId){
+
+        $email->status = $emailStatusId;
+
+        if($emailStatusId == 'closed'){
+            $email->closedBy()->associate(Auth::user());
+            $email->date_closed = new Carbon();
+        }
+
+        $email->save();
+
+        return FullEmail::make($email);
     }
 
 }

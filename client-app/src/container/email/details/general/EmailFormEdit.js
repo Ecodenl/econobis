@@ -17,12 +17,13 @@ class EmailFormEdit extends Component {
     constructor(props) {
         super(props);
 
-        const {id, contactId} = props.email;
+        const {id, contactId, status} = props.email;
 
         this.state = {
             email: {
                 id,
                 contactId: contactId,
+                statusId: status ? status.id : '',
             },
             contacts: [],
         }
@@ -55,15 +56,23 @@ class EmailFormEdit extends Component {
 
         const {email} = this.state;
 
-        EmailAPI.associateContact(email.id, email.contactId).then(payload => {
-            this.props.fetchEmail(email.id);
-            this.props.switchToView();
-        });
+        if(email.contactId) {
+            EmailAPI.associateContact(email.id, email.contactId).then(payload => {
+                this.props.fetchEmail(email.id);
+            });
+        }
+        if(email.statusId){
+            EmailAPI.setStatus(email.id, email.statusId).then(payload => {
+                this.props.fetchEmail(email.id);
+            });
+        }
+
+        this.props.switchToView();
     };
 
     render() {
-        const {contactId} = this.state.email;
-        const {from, to, cc, bcc, subject, htmlBody, createdAt, dateSent} = this.props.email;
+        const {contactId, statusId} = this.state.email;
+        const {from, to, cc, bcc, subject, htmlBody, createdAt, dateSent, folder, status} = this.props.email;
         return (
             <div>
                 <div className="row">
@@ -73,7 +82,7 @@ class EmailFormEdit extends Component {
                     />
                     <ViewText
                         label={"Ontvangen datum tijd"}
-                        value={createdAt ? moment(createdAt.date).format('DD-MM-YYYY hh:mm') : ''}
+                        value={createdAt ? moment(createdAt.date).format('DD-MM-YYYY HH:mm') : ''}
                     />
 
                 </div>
@@ -84,7 +93,7 @@ class EmailFormEdit extends Component {
                     />
                     <ViewText
                         label={"Verzonden datum tijd"}
-                        value={dateSent ? moment(dateSent.date).format('DD-MM-YYYY hh:mm') : ''}
+                        value={dateSent ? moment(dateSent.date).format('DD-MM-YYYY HH:mm') : ''}
                     />
                 </div>
                 <div className="row">
@@ -120,6 +129,19 @@ class EmailFormEdit extends Component {
                     <ViewHtmlAsText label={"Tekst"} value={htmlBody}/>
                 </div>
 
+                {((folder == 'inbox' && status && status.id != 'closed') || (folder == 'inbox' && status == null)) &&
+                <div className="row">
+                    <InputSelect
+                        label={"Status"}
+                        size={"col-sm-6"}
+                        name={"statusId"}
+                        options={this.props.emailStatuses}
+                        value={statusId}
+                        onChangeAction={this.handleInputChange}
+                    />
+                </div>
+                }
+
                 <PanelFooter>
                     <div className="pull-right btn-group" role="group">
                         <ButtonText buttonClassName={"btn-default"} buttonText={"Annuleren"}
@@ -128,6 +150,7 @@ class EmailFormEdit extends Component {
                                     value={"Submit"}/>
                     </div>
                 </PanelFooter>
+
             </div>
         );
     };
@@ -142,6 +165,7 @@ const mapDispatchToProps = dispatch => ({
 const mapStateToProps = (state) => {
     return {
         email: state.email,
+        emailStatuses: state.systemData.emailStatuses
     }
 };
 

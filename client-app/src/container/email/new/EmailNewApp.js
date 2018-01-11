@@ -175,7 +175,7 @@ class EmailNewApp extends Component {
         };
 
         this.setState({ ...this.state, errors: errors });
-        
+
         // If no errors send form
         if(!hasErrors) {
             if (email.to.length > 0) {

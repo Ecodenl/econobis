@@ -10,8 +10,10 @@ namespace App\Http\Resources\Email;
 
 
 use App\Http\Resources\Contact\FullContact;
+use App\Http\Resources\EnumWithIdAndName\FullEnumWithIdAndName;
 use App\Http\Resources\GenericResource;
 use App\Http\Resources\Mailbox\FullMailbox;
+use App\Http\Resources\User\FullUser;
 use Illuminate\Http\Resources\Json\Resource;
 
 class FullEmail extends Resource
@@ -36,7 +38,11 @@ class FullEmail extends Resource
             'updatedAt' => $this->updated_at,
             'contactId' => $this->contact_id,
             'contact' => FullContact::make($this->whenLoaded('contact')),
-            'attachments' => GenericResource::collection($this->whenLoaded('attachments'))
+            'attachments' => GenericResource::collection($this->whenLoaded('attachments')),
+            'status' => FullEnumWithIdAndName::make($this->getStatus()),
+            'dateClosed' => $this->date_closed,
+            'closedById' => $this->closed_by_id,
+            'closedBy' => FullUser::make($this->whenLoaded('closedBy')),
         ];
     }
 }

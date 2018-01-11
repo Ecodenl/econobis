@@ -1,7 +1,7 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import moment from 'moment';
-import Frame from 'react-frame-component';
+moment.locale('nl');
 
 import ViewText from '../../../../components/form/ViewText';
 import ViewHtmlAsText from '../../../../components/form/ViewHtmlAsText';
@@ -11,7 +11,7 @@ const createMarkup = (value) => {
 };
 
 const EmailFormView = props => {
-    const {from, to, cc, bcc, contact, subject, htmlBody, createdAt, dateSent} = props.email;
+    const {from, to, cc, bcc, contact, subject, htmlBody, createdAt, dateSent, folder, status, closedBy, dateClosed} = props.email;
 
     return (
         <div>
@@ -22,7 +22,7 @@ const EmailFormView = props => {
                 />
                 <ViewText
                     label={"Ontvangen datum tijd"}
-                    value={createdAt ? moment(createdAt.date).format('DD-MM-YYYY hh:mm') : ''}
+                    value={createdAt ? moment(createdAt.date).format('DD-MM-YYYY HH:mm') : ''}
                 />
             </div>
             <div className="row" onClick={props.switchToEdit}>
@@ -32,7 +32,7 @@ const EmailFormView = props => {
                 />
                 <ViewText
                     label={"Verzonden datum tijd"}
-                    value={dateSent ? moment(dateSent.date).format('DD-MM-YYYY hh:mm') : ''}
+                    value={dateSent ? moment(dateSent.date).format('DD-MM-YYYY HH:mm') : ''}
                 />
             </div>
             <div className="row" onClick={props.switchToEdit}>
@@ -63,6 +63,27 @@ const EmailFormView = props => {
             <div className="row" onClick={props.switchToEdit}>
                 <ViewHtmlAsText label={"Tekst"} value={htmlBody}/>
             </div>
+            {folder == 'inbox' &&
+            <div>
+                <div className="row" onClick={props.switchToEdit}>
+                    <ViewText
+                        label={"Status"}
+                        value={status ? status.name : ''}
+                    />
+                    <ViewText
+                        label={"Datum afgehandeld"}
+                        value={dateClosed ? moment(dateClosed.date).format('DD-MM-YYYY HH:mm') : ''}
+                    />
+                </div>
+                <div className="row" onClick={props.switchToEdit}>
+                    <ViewText
+                        label={"Door"}
+                        value={closedBy ? closedBy.fullName : ''}
+                        link={closedBy ? 'gebruiker/' + closedBy.id : ''}
+                    />
+                </div>
+            </div>
+            }
         </div>
     );
 };

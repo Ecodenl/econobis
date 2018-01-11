@@ -9,6 +9,7 @@
 namespace App\Http\Resources\Email;
 
 
+use App\Http\Resources\EnumWithIdAndName\FullEnumWithIdAndName;
 use Illuminate\Http\Resources\Json\Resource;
 
 class GridEmail extends Resource
@@ -22,6 +23,8 @@ class GridEmail extends Resource
             'mailboxName' => $this->mailbox->name,
             'from' => $this->from,
             'subject' => $this->subject,
+            'status' => FullEnumWithIdAndName::make($this->getStatus()),
+            'folder' => $this->folder,
         ];
     }
 }

@@ -16,14 +16,15 @@ const EmailsInList = props => {
                             <DataTableHeadTitle title={'Datum'} width={"10%"}/>
                             <DataTableHeadTitle title={'Mailbox'} width={"20%"} />
                             <DataTableHeadTitle title={'Afzender'} width={"20%"} />
-                            <DataTableHeadTitle title={'Onderwerp'} width={"45%"} />
+                            <DataTableHeadTitle title={'Onderwerp'} width={"25%"} />
+                            <DataTableHeadTitle title={'Status'} width={"10%"} />
                             <DataTableHeadTitle title={''} width={"5%"} />
                         </tr>
                     </DataTableHead>
                     <DataTableBody>
                         {
                             props.emails.length === 0 ? (
-                                <tr><td colSpan={5}>Geen e-mails gevonden!</td></tr>
+                                <tr><td colSpan={6}>Geen e-mails gevonden!</td></tr>
                             ) : (
                                 props.emails.map((email) => {
                                     return <EmailsInListItem

@@ -32,7 +32,7 @@ class EmailsInListItem extends Component {
     };
 
     render() {
-        const { id, date, mailboxName, from, subject } = this.props;
+        const { id, date, mailboxName, from, subject, status, folder } = this.props;
 
         return (
             <tr className={this.state.highlightRow} onDoubleClick={() => this.openItem(id)} onMouseEnter={() => this.onRowEnter()} onMouseLeave={() => this.onRowLeave()}>
@@ -40,6 +40,11 @@ class EmailsInListItem extends Component {
                 <td>{ mailboxName }</td>
                 <td>{ from }</td>
                 <td>{ subject }</td>
+                {folder == 'inbox' ?
+                    <td>{status ? status.name : ''}</td>
+                    :
+                    <td>{"Verzonden"}</td>
+                }
                 <td>
                     {(this.state.showActionButtons ? <a role="button" onClick={() => this.openItem(id)}><span className="glyphicon glyphicon-pencil mybtn-success" /> </a> : '')}
                 </td>

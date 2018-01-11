@@ -169,6 +169,9 @@ Route::namespace('Api')
         Route::get('email/grid/in-folder/{folder}', 'Email\EmailController@grid');
         Route::get('email/new/peek', 'Email\EmailController@peek');
         Route::get('email/{email}', 'Email\EmailController@show');
+        Route::get('email/{email}/reply', 'Email\EmailController@getReply');
+        Route::get('email/{email}/reply-all', 'Email\EmailController@getReplyAll');
+        Route::get('email/{email}/forward', 'Email\EmailController@getForward');
         Route::post('email/{email}', 'Email\EmailController@update');
         Route::get('email/email-attachment/{emailAttachment}/download', 'Email\EmailController@download');
         Route::post('email/send/{mailbox}', 'Email\EmailController@send');

@@ -54,6 +54,64 @@ class EmailController
         return FullEmail::make($email);
     }
 
+    public function getReply(Email $email){
+        $email->load('contact', 'attachments');
+
+        //Reply logic:
+        //To -> from
+        //From -> mailbox email
+        //Cc -> empty
+        //Bcc -> empty
+        $email->to = $email->from;
+        $email->from = $email->mailbox->email;
+        $email->cc = [];
+        $email->bcc = [];
+
+        return FullEmail::make($email);
+    }
+
+    public function getReplyAll(Email $email){
+        $email->load('contact', 'attachments');
+
+        //Reply all logic:
+        //To -> (To without own email) + (From)
+        //From -> mailbox email
+        //Cc -> (Cc without own email)
+        //Bcc -> empty
+
+
+        $to = $email->to;
+        unset($to[array_search($email->mailbox->email, $email->to)]);
+        array_unshift($to, $email->from);
+        $cc = $email->cc;
+
+        unset($cc[array_search($email->mailbox->email, $email->cc)]);
+
+        $email->to = $to;
+        $email->from = $email->mailbox->email;
+        $email->cc = $cc;
+        $email->bcc = [];
+
+        return FullEmail::make($email);
+    }
+
+    public function getForward(Email $email){
+        $email->load('contact', 'attachments');
+
+        //Forward logic:
+        //To -> empty
+        //From -> mailbox email
+        //Cc -> empty
+        //Bcc -> empty
+
+        $email->to = [];
+        $email->from = $email->mailbox->email;
+        $email->cc = [];
+        $email->bcc = [];
+
+        return FullEmail::make($email);
+    }
+
     public function update(Email $email, RequestInput $input)
     {
         $data = $input->string('contactId')->validate('exists:contacts,id')->alias('contact_id')->next()

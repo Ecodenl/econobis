@@ -2,15 +2,15 @@ import React, {Component} from 'react';
 import validator from 'validator';
 import {union} from 'lodash';
 
-import ConceptForm from './ConceptForm';
-import ConceptToolbar from './ConceptToolbar';
+import EmailAnswerForm from './EmailAnswerForm';
+import EmailAnswerToolbar from './EmailAnswerToolbar';
 import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
 import EmailAPI from '../../../api/email/EmailAPI';
 import EmailAddressAPI from '../../../api/contact/EmailAddressAPI';
 import {hashHistory} from "react-router";
 
-class ConceptApp extends Component {
+class EmailAnswerApp extends Component {
     constructor(props) {
         super(props);
 
@@ -48,7 +48,23 @@ class ConceptApp extends Component {
             });
         });
 
-        EmailAPI.fetchEmail(this.props.params.id).then((payload) => {
+        let type = '';
+
+        switch(this.props.params.type) {
+            case 'beantwoorden':
+                type = 'reply';
+                break;
+            case 'allenbeantwoorden':
+                type = 'replytoall';
+                break;
+            case 'doorsturen':
+                type = 'forward';
+                break;
+            default:
+                type = 'reply';
+        };
+
+        EmailAPI.fetchEmailByType(this.props.params.id, type).then((payload) => {
             const extraOptions = this.createExtraOptions(payload.to, payload.cc, payload.bcc);
 
             this.setState({
@@ -148,7 +164,7 @@ class ConceptApp extends Component {
         });
     };
 
-    handleSubmit(event, concept = false) {
+    handleSubmit(event) {
         event.preventDefault();
 
         const { email } = this.state;
@@ -193,20 +209,11 @@ class ConceptApp extends Component {
                 data.append('attachments[' +  key +  ']', file);
             });
 
-            if(concept) {
-                EmailAPI.updateConcept(data, this.props.params.id).then(() => {
-                    hashHistory.push(`/emails/concept`);
-                }).catch(function (error) {
-                    console.log(error)
-                });
-            }
-            else{
-                EmailAPI.sendConcept(data, this.props.params.id).then(() => {
-                    hashHistory.push(`/emails/sent`);
-                }).catch(function (error) {
-                    console.log(error)
-                });
-            }
+            EmailAPI.sendConcept(data, this.props.params.id).then(() => {
+                hashHistory.push(`/emails/sent`);
+            }).catch(function (error) {
+                console.log(error)
+            });
         }
     };
 
@@ -217,13 +224,13 @@ class ConceptApp extends Component {
                     <div className="col-md-12 extra-space-above">
                         <Panel>
                             <PanelBody className="panel-small">
-                                <ConceptToolbar handleSubmit={this.handleSubmit}/>
+                                <EmailAnswerToolbar handleSubmit={this.handleSubmit} type={this.props.params.type} />
                             </PanelBody>
                         </Panel>
                     </div>
 
                     <div className="col-md-12 extra-space-above">
-                        <ConceptForm
+                        <EmailAnswerForm
                             email={this.state.email}
                             emailAddresses={this.state.emailAddresses}
                             errors={this.state.errors}
@@ -245,4 +252,4 @@ class ConceptApp extends Component {
     }
 };
 
-export default ConceptApp;
+export default EmailAnswerApp;

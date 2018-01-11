@@ -25,7 +25,7 @@ class EmailDetailsApp extends Component {
             <div className="row">
                 <div className="col-md-9">
                     <div className="col-md-12">
-                        <EmailDetailsToolbar/>
+                        <EmailDetailsToolbar id={this.props.params.id}/>
                     </div>
 
                     <div className="col-md-12">

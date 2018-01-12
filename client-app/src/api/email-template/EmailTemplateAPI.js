@@ -25,6 +25,19 @@ export default {
             );
     },
 
+    fetchEmailTemplateWithUser: (id) => {
+        const requestUrl = `${URL_EMAIL_TEMPLATE}/with-user/${id}`;
+        const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
+        axios.defaults.headers.common.Authorization = AUTH_TOKEN;
+
+        return axios.get(requestUrl)
+            .then(response => response.data.data)
+            .catch((error) => {
+                    console.log(error);
+                },
+            );
+    },
+
     storeEmailTemplate: (data) => {
         const requestUrl = `${URL_EMAIL_TEMPLATE}`;
         const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;

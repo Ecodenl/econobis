@@ -15,6 +15,7 @@ use App\Eco\Email\Email;
 use App\Eco\Email\EmailAttachment;
 
 use App\Eco\Email\Jobs\SendEmail;
+use App\Eco\Email\Jobs\SendEmailsWithVariables;
 use App\Eco\Email\Jobs\StoreConceptEmail;
 use App\Eco\Mailbox\Mailbox;
 use App\Eco\User\User;
@@ -145,23 +146,35 @@ class EmailController
 
     public function send(Mailbox $mailbox, Request $request)
     {
-        $sanitizedData = $this->getEmailData($request);
+            $sanitizedData = $this->getEmailData($request);
 
-        //add basic html tags for new emails
-        $sanitizedData['html_body'] = '<!DOCTYPE html><html><head><meta http-equiv="content-type" content="text/html;charset=UTF-8"/><title>' . $sanitizedData['subject'] . '</title></head>' . $sanitizedData['html_body'] . '</html>';
+            //add basic html tags for new emails
+            $sanitizedData['html_body']
+                = '<!DOCTYPE html><html><head><meta http-equiv="content-type" content="text/html;charset=UTF-8"/><title>'
+                . $sanitizedData['subject'] . '</title></head>'
+                . $sanitizedData['html_body'] . '</html>';
 
-        //Save as concept, if sending fails we still have the concept
-        $email = (new StoreConceptEmail($mailbox, $sanitizedData))->handle();
+            //Save as concept, if sending fails we still have the concept
+            $email = (new StoreConceptEmail($mailbox,
+                $sanitizedData))->handle();
 
-        //Email attachments
-        $this->checkStorageDir($mailbox->id);
+            //Email attachments
+            $this->checkStorageDir($mailbox->id);
 
-        //get attachments
-        $attachments = $request->file('attachments') ? $request->file('attachments') : [];
+            //get attachments
+            $attachments = $request->file('attachments')
+                ? $request->file('attachments') : [];
 
-        $this->storeEmailAttachments($attachments, $mailbox->id, $email->id);
+            $this->storeEmailAttachments($attachments, $mailbox->id,
+                $email->id);
 
-        (new SendEmail($email))->handle();
+        //if there are contact variables to replace
+        if ((strpos($sanitizedData['html_body'], '{contact_') !== false) || (strpos($request['htmlBody'], '{user_') !== false)
+        ) {
+            (new SendEmailsWithVariables($email, json_decode($request['to'])))->handle();
+        } else {
+            (new SendEmail($email))->handle();
+        }
     }
 
     public function storeConcept(Mailbox $mailbox, Request $request)
@@ -173,7 +186,8 @@ class EmailController
         $this->checkStorageDir($mailbox->id);
 
         //get attachments
-        $attachments = $request->file('attachments') ? $request->file('attachments') : [];
+        $attachments = $request->file('attachments')
+            ? $request->file('attachments') : [];
 
         $this->storeEmailAttachments($attachments, $mailbox->id, $email->id);
     }
@@ -252,6 +266,9 @@ class EmailController
         $data['to'] = json_decode($data['to']);
         $data['cc'] = json_decode($data['cc']);
         $data['bcc'] = json_decode($data['bcc']);
+
+        //to, cc, bcc example data:
+        //1,2, fren.dehaan@xaris.nl, @user_1, @user_2, 3, rob.rollenberg@xaris.nl
 
         $emails = [];
 

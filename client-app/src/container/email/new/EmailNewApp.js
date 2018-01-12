@@ -122,7 +122,7 @@ class EmailNewApp extends Component {
                 emailTemplateId: selectedOption
             },
         });
-        EmailTemplateAPI.fetchEmailTemplate(selectedOption).then((payload) => {
+        EmailTemplateAPI.fetchEmailTemplateWithUser(selectedOption).then((payload) => {
             this.setState({
                 ...this.state,
                 email: {

@@ -185,6 +185,7 @@ Route::namespace('Api')
         Route::get('email-template/grid', 'EmailTemplate\EmailTemplateController@grid');
         Route::get('email-template/peek', 'EmailTemplate\EmailTemplateController@peek');
         Route::get('email-template/{emailTemplate}', 'EmailTemplate\EmailTemplateController@show');
+        Route::get('email-template/with-user/{emailTemplate}', 'EmailTemplate\EmailTemplateController@showWithUser');
         Route::post('email-template', 'EmailTemplate\EmailTemplateController@store');
         Route::post('email-template/{emailTemplate}', 'EmailTemplate\EmailTemplateController@update');
 

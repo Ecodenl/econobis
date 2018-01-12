@@ -11,6 +11,8 @@ import contactsReducer from './contact/ContactsReducer';
 import contactsSortsReducer from './contact/ContactsSortsReducer';
 import emailsReducer from './email/EmailsReducer';
 import emailDetailsReducer from './email/emailDetailsReducer';
+import emailTemplatesReducer from './email-template/emailTemplatesReducer';
+import emailTemplateDetailsReducer from './email-template/emailTemplateDetailsReducer';
 import mailboxDetailsReducer from './mailbox/mailboxDetailsReducer';
 import mailboxesReducer from './mailbox/mailboxesReducer';
 import measuresReducer from './measure/MeasureReducer';
@@ -51,6 +53,10 @@ const rootReducer = combineReducers({
     // Emails
     emails: emailsReducer,
     email: emailDetailsReducer,
+
+    // Email templates
+    emailTemplates: emailTemplatesReducer,
+    emailTemplate: emailTemplateDetailsReducer,
 
     // Opportunity
     opportunities: opportunitiesReducer,

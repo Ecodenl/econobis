@@ -7,6 +7,7 @@ import { fetchContactGroupsSaga, deleteContactGroupSaga, addContactToGroupSaga }
 import { fetchContactsInGroupSaga, deleteContactInGroupSaga } from './contact-group/ContactsInGroupSaga';
 import { fetchContactsSaga, deleteContactSaga } from './contact/ContactsSaga';
 import { fetchEmailsSaga, fetchEmailSaga } from './email/EmailsSaga';
+import { fetchEmailTemplatesSaga, fetchEmailTemplateSaga } from './email-template/EmailTemplatesSaga';
 import { fetchMailboxDetailsSaga, deleteMailboxSaga, newMailboxUserSaga, deleteMailboxUserSaga } from './mailbox/MailboxDetailsSaga';
 import { fetchMailboxesSaga } from './mailbox/MailboxesSaga';
 import { fetchMeasuresSaga, fetchMeasureSaga } from './measure/MeasuresSaga';
@@ -53,6 +54,9 @@ export default function* watchSagas() {
     // Emails
     yield takeLatest('FETCH_EMAILS', fetchEmailsSaga);
     yield takeLatest('FETCH_EMAIL', fetchEmailSaga);
+    // Email templates
+    yield takeLatest('FETCH_EMAIL_TEMPLATES', fetchEmailTemplatesSaga);
+    yield takeLatest('FETCH_EMAIL_TEMPLATE', fetchEmailTemplateSaga);
     // Mailbox
     yield takeLatest('FETCH_MAILBOXES', fetchMailboxesSaga);
     yield takeLatest('FETCH_MAILBOX_DETAILS', fetchMailboxDetailsSaga);

@@ -16,7 +16,7 @@ use App\Eco\Mailbox\MailFetcher;
 use App\Eco\Mailbox\SmtpEncryptionType;
 use App\Eco\User\User;
 use App\Helpers\RequestInput\RequestInput;
-use App\Http\Resources\Email\GridEmail;
+use App\Http\Resources\Email\GridEmailTemplate;
 use App\Http\Resources\GenericResource;
 use App\Http\Resources\Mailbox\FullMailbox;
 use App\Http\Resources\Mailbox\LoggedInEmailPeek;

@@ -76,26 +76,7 @@ class SeedRegistrations extends Migration
                 ]
             );
         }
-
-        $measures = [
-            'Vloerisolatie',
-            'Gevelisolatie',
-            'Dakisolatie',
-            'Dubbelglas beter dan HR++',
-            'Dubbelglas',
-            'Zonnepanelen',
-            'Zonneboiler',
-            'Warmtepomp',
-            'HR-Ketel',
-            'Weet nog niet',
-        ];
-
-        foreach ($measures as $measure) {
-            DB::table('measures')->insert([
-                    ['name' => $measure],
-                ]
-            );
-        }
+        
 
         $statussen = [
             'In behandeling',

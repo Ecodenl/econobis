@@ -29,7 +29,7 @@ class CampaignFormEdit extends Component {
                 startDate: startDate ? startDate : '',
                 endDate: endDate ? endDate : '',
                 goal,
-                statusId: status && status.id,
+                statusId: status ? status.id : '',
                 typeId: type && type.id,
                 measureIds: measures && measures.map((measure) => measure.id).join(','),
             },

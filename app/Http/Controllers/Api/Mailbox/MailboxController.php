@@ -109,5 +109,13 @@ class MailboxController
         return LoggedInEmailPeek::collection($mailboxes);
     }
 
+    static public function receiveAllEmail()
+    {
+        $mailboxes = Mailbox::all();
+        foreach ($mailboxes as $mailbox) {
+            $mailFetcher = new MailFetcher($mailbox);
+            $mailFetcher->fetchNew();
+        }
+    }
 
 }

@@ -3,7 +3,7 @@ import React from 'react';
 import EmailAttachments from "./attachments/EmailAttachments";
 import EmailNewFormGeneral from "./general/EmailNewFormGeneral";
 
-const EmailNewForm = ({email ,mailboxAddresses, emailAddresses, errors, handleSubmit, handleFromIds, handleToIds, handleCcIds, handleBccIds, handleInputChange, handleTextChange, addAttachment, deleteAttachment}) => {
+const EmailNewForm = ({email ,mailboxAddresses, emailAddresses, emailTemplates, errors, handleSubmit, handleFromIds, handleEmailTemplates, handleToIds, handleCcIds, handleBccIds, handleInputChange, handleTextChange, addAttachment, deleteAttachment}) => {
     return (
         <form className="form-horizontal" onSubmit={handleSubmit}>
 
@@ -11,9 +11,11 @@ const EmailNewForm = ({email ,mailboxAddresses, emailAddresses, errors, handleSu
                     email={email}
                     emailAddresses={emailAddresses}
                     mailboxAddresses={mailboxAddresses}
+                    emailTemplates={emailTemplates}
                     errors={errors}
                     handleSubmit={handleSubmit}
                     handleFromIds={handleFromIds}
+                    handleEmailTemplates={handleEmailTemplates}
                     handleToIds={handleToIds}
                     handleCcIds={handleCcIds}
                     handleBccIds={handleBccIds}

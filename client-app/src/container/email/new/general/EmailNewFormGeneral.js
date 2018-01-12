@@ -6,9 +6,10 @@ import InputTinyMCE from "../../../../components/form/InputTinyMCE";
 import InputMultiSelectCreate from "../../../../components/form/InputMultiSelectCreate";
 
 import InputMultiSelect from "../../../../components/form/InputMultiSelect";
+import InputTinyMCEUpdateable from "../../../../components/form/InputTinyMCEUpdateable";
 
-const EmailNewFormGeneral = ({email, emailAddresses, mailboxAddresses, errors,handleFromIds,  handleToIds, handleCcIds, handleBccIds, handleInputChange, handleTextChange}) => {
-    const { from, to, cc, bcc, subject, htmlBody } = email;
+const EmailNewFormGeneral = ({email, emailAddresses, mailboxAddresses, emailTemplates, errors,handleFromIds,  handleToIds, handleEmailTemplates, handleCcIds, handleBccIds, handleInputChange, handleTextChange}) => {
+    const { from, to, cc, bcc, subject, htmlBody, emailTemplateId } = email;
 
     return (
         <Panel>
@@ -60,6 +61,16 @@ const EmailNewFormGeneral = ({email, emailAddresses, mailboxAddresses, errors,ha
                     />
                 </div>
                 <div className="row">
+                    <InputMultiSelect
+                        label="Template"
+                        name={"emailTemplateId"}
+                        value={emailTemplateId}
+                        options={emailTemplates}
+                        onChangeAction={handleEmailTemplates}
+                        multi={false}
+                    />
+                </div>
+                <div className="row">
                     <div className="form-group col-sm-12">
                         <div className="row">
                             <div className="col-sm-3">
@@ -80,7 +91,7 @@ const EmailNewFormGeneral = ({email, emailAddresses, mailboxAddresses, errors,ha
                 <div className="row">
                     <div className="form-group col-sm-12">
                         <div className="row">
-                            <InputTinyMCE
+                            <InputTinyMCEUpdateable
                                 label={"Tekst"}
                                 value={htmlBody}
                                 onChangeAction={handleTextChange}

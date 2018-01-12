@@ -17,6 +17,7 @@ import { Editor } from '@tinymce/tinymce-react';
 import InputText from "./InputText";
 
 const InputTinyMCE = props => {
+
     const { label, className, size, value, onChangeAction, readOnly } = props;
 
     return (

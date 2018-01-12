@@ -9,6 +9,8 @@ import PanelBody from '../../../components/panel/PanelBody';
 import EmailAPI from '../../../api/email/EmailAPI';
 import EmailAddressAPI from '../../../api/contact/EmailAddressAPI';
 import MailboxAPI from '../../../api/mailbox/MailboxAPI';
+import EmailTemplateAPI from '../../../api/email-template/EmailTemplateAPI';
+import {isEqual} from "lodash";
 
 class EmailNewApp extends Component {
     constructor(props) {
@@ -17,11 +19,13 @@ class EmailNewApp extends Component {
         this.state = {
             emailAddresses: [],
             mailboxAddresses: [],
+            emailTemplates: [],
             email: {
                 from: '',
                 to: '',
                 cc: '',
                 bcc: '',
+                templateId: '',
                 subject: '',
                 htmlBody: '',
                 attachments: [],
@@ -34,6 +38,7 @@ class EmailNewApp extends Component {
 
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleFromIds = this.handleFromIds.bind(this);
+        this.handleEmailTemplates = this.handleEmailTemplates.bind(this);
         this.handleToIds = this.handleToIds.bind(this);
         this.handleCcIds = this.handleCcIds.bind(this);
         this.handleBccIds = this.handleBccIds.bind(this);
@@ -52,6 +57,12 @@ class EmailNewApp extends Component {
         MailboxAPI.fetchEmailsLoggedInUserPeek().then((payload) => {
             this.setState({
                 mailboxAddresses: payload,
+            });
+        });
+
+        EmailTemplateAPI.fetchEmailTemplatesPeek().then((payload) => {
+            this.setState({
+                emailTemplates: payload,
             });
         });
 
@@ -100,6 +111,29 @@ class EmailNewApp extends Component {
                 to: selectedOption
             },
         });
+    };
+
+    handleEmailTemplates(selectedOption) {
+        // .setContent(content, {format : 'raw'})
+        this.setState({
+            ...this.state,
+            email: {
+                ...this.state.email,
+                emailTemplateId: selectedOption
+            },
+        });
+        EmailTemplateAPI.fetchEmailTemplate(selectedOption).then((payload) => {
+            this.setState({
+                ...this.state,
+                email: {
+                    ...this.state.email,
+                    subject: payload.subject ? payload.subject : this.state.subject,
+                    htmlBody: payload.htmlBody ? payload.htmlBody : this.state.htmlBody,
+                },
+            });
+        });
+
+
     };
 
     handleCcIds(selectedOption) {
@@ -235,9 +269,11 @@ class EmailNewApp extends Component {
                             email={this.state.email}
                             emailAddresses={this.state.emailAddresses}
                             mailboxAddresses={this.state.mailboxAddresses}
+                            emailTemplates={this.state.emailTemplates}
                             errors={this.state.errors}
                             handleSubmit={this.handleSubmit}
                             handleFromIds={this.handleFromIds}
+                            handleEmailTemplates={this.handleEmailTemplates}
                             handleToIds={this.handleToIds}
                             handleCcIds={this.handleCcIds}
                             handleBccIds={this.handleBccIds}

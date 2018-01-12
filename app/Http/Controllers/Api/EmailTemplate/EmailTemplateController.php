@@ -10,7 +10,7 @@ namespace App\Http\Controllers\Api\EmailTemplate;
 
 use App\Eco\EmailTemplate\EmailTemplate;
 use App\Helpers\RequestInput\RequestInput;
-use App\Http\Resources\Email\FullEmail;
+use App\Http\Resources\EmailTemplate\EmailTemplatePeek;
 use App\Http\Resources\EmailTemplate\FullEmailTemplate;
 use App\Http\Resources\EmailTemplate\GridEmailTemplate;
 
@@ -59,6 +59,11 @@ class EmailTemplateController
         $emailTemplate->save();
 
         return FullEmailTemplate::make($emailTemplate->fresh());
+    }
+
+    public function peek()
+    {
+        return EmailTemplatePeek::collection(EmailTemplate::get());
     }
 
 }

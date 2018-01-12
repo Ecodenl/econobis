@@ -183,6 +183,7 @@ Route::namespace('Api')
         Route::post('email/{email}/status/{emailStatusId}', 'Email\EmailController@setEmailStatus');
 
         Route::get('email-template/grid', 'EmailTemplate\EmailTemplateController@grid');
+        Route::get('email-template/peek', 'EmailTemplate\EmailTemplateController@peek');
         Route::get('email-template/{emailTemplate}', 'EmailTemplate\EmailTemplateController@show');
         Route::post('email-template', 'EmailTemplate\EmailTemplateController@store');
         Route::post('email-template/{emailTemplate}', 'EmailTemplate\EmailTemplateController@update');

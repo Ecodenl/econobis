@@ -59,7 +59,12 @@ class MailFetcher
     {
         $mb = $this->mailbox;
         $connectionString = '{' . $mb->imap_host . ':' . $mb->imap_port . '/imap';
-        if ($mb->imap_encryption) $connectionString .= '/' . $mb->imap_encryption;
+        if ($mb->imap_encryption) {
+            $connectionString .= '/' . $mb->imap_encryption;
+        }
+        else{
+            $connectionString .= '/novalidate-cert';
+        }
         $connectionString .= '}' . $mb->imap_inbox_prefix;
 
         $storageDir = $this->getStorageDir();
@@ -109,6 +114,11 @@ class MailFetcher
     {
         $emailData = $this->imap->getMail($mailId);
 
+        $textHtml = $emailData->textHtml ?: '';
+        if(strlen($textHtml) > 50000){
+            $textHtml = substr($emailData->textHtml, 0, 50000);
+            $textHtml .= '<p>Deze mail is langer dan 50.000 karakters en hierdoor ingekort.</p>';
+        }
         $email = new Email([
             'mailbox_id' => $this->mailbox->id,
             'from' => $emailData->fromAddress,
@@ -116,7 +126,7 @@ class MailFetcher
             'cc' => array_keys($emailData->cc),
             'bcc' => array_keys($emailData->bcc),
             'subject' => $emailData->subject ?: '',
-            'html_body' => $emailData->textHtml ?: '',
+            'html_body' => $textHtml,
             'date_sent' => $emailData->date,
             'folder' => 'inbox',
             'imap_id' => $emailData->id,

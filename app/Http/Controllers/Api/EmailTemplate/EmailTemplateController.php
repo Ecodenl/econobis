@@ -96,7 +96,7 @@ class EmailTemplateController
 
         $user->full_name = $user->present()->fullName();
 
-        if (preg_match_all("/{user_(.*?)}/", $html_body,$m)) {
+        if (preg_match_all("/{user_(\S*?)}/", $html_body,$m)) {
             foreach ($m[1] as $i => $varname) {
                 $html_body = str_replace($m[0][$i], $user->$varname, $html_body);
             }
@@ -109,7 +109,7 @@ class EmailTemplateController
 
     static public function replaceContactVariables($html_body, $contact){
 
-        if (preg_match_all("/{contact_(.*?)}/", $html_body,$m)) {
+        if (preg_match_all("/{contact_(\S*?)}/", $html_body,$m)) {
             foreach ($m[1] as $i => $varname) {
                 $html_body = str_replace($m[0][$i], $contact->$varname, $html_body);
             }
@@ -121,7 +121,7 @@ class EmailTemplateController
     }
 
     static  public function stripRemainingVariableTags($html_body){
-        if (preg_match_all("/{(.*?)}/", $html_body,$m)) {
+        if (preg_match_all("/{(\S*?)}/", $html_body,$m)) {
             foreach ($m[1] as $i => $varname) {
                 $html_body = str_replace($m[0][$i], '', $html_body);
             }

@@ -61,7 +61,7 @@ class CampaignDetailsHarmonica extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        campaign: state.campaign,
+        campaign: state.campaignDetails,
         permissions: state.meDetails.permissions
     };
 };

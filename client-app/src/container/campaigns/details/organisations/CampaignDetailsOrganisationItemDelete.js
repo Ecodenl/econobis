@@ -2,12 +2,12 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import Modal from '../../../../components/modal/Modal';
-import { fetchCampaign } from '../../../../actions/campaign/CampaignsActions';
-import CampaignAPI from "../../../../api/campaign/CampaignAPI";
+import { fetchCampaign } from '../../../../actions/campaign/CampaignDetailsActions';
+import CampaignDetailsAPI from "../../../../api/campaign/CampaignDetailsAPI";
 
 const CampaignDetailsOrganisationDelete = (props) => {
     const confirmAction = () => {
-        CampaignAPI.detachOrganisation(props.campaignId, props.organisationId).then(() => {
+        CampaignDetailsAPI.detachOrganisation(props.campaignId, props.organisationId).then(() => {
             props.fetchCampaign(props.campaignId);
             props.toggleDelete();
         });
@@ -31,7 +31,7 @@ const CampaignDetailsOrganisationDelete = (props) => {
 
 const mapStateToProps = (state) => {
     return {
-        campaignId: state.campaign.id,
+        campaignId: state.campaignDetails.id,
     };
 };
 

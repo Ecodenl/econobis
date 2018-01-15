@@ -7,7 +7,7 @@ import CampaignDetailsHarmonica from './../harmonica/CampaignDetailsHarmonica';
 import Panel from "../../../components/panel/Panel";
 import PanelBody from '../../../components/panel/PanelBody';
 
-import { fetchCampaign, clearCampaign } from '../../../actions/campaign/CampaignsActions';
+import { fetchCampaign, clearCampaign } from '../../../actions/campaign/CampaignDetailsActions';
 
 class CampaignDetailsApp extends Component {
     constructor(props) {
@@ -21,6 +21,7 @@ class CampaignDetailsApp extends Component {
     componentWillUnmount() {
         this.props.clearCampaign();
     };
+
     render() {
         return (
             <div className="row">

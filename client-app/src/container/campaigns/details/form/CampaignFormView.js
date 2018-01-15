@@ -68,7 +68,7 @@ const CampaignFormView = props => {
 
 const mapStateToProps = (state) => {
     return {
-        campaign: state.campaign,
+        campaign: state.campaignDetails,
     }
 };
 

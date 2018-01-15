@@ -2,12 +2,12 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import Modal from '../../../../components/modal/Modal';
-import { fetchCampaign } from '../../../../actions/campaign/CampaignsActions';
-import CampaignAPI from "../../../../api/campaign/CampaignAPI";
+import { fetchCampaign } from '../../../../actions/campaign/CampaignDetailsActions';
+import CampaignDetailsAPI from "../../../../api/campaign/CampaignDetailsAPI";
 
 const CampaignDetailsReponseItemDelete = (props) => {
     const confirmAction = () => {
-        CampaignAPI.detachResponse(props.campaignId, props.contactId).then(() => {
+        CampaignDetailsAPI.detachResponse(props.campaignId, props.contactId).then(() => {
             props.fetchCampaign(props.campaignId);
             props.toggleDelete();
         });
@@ -31,7 +31,7 @@ const CampaignDetailsReponseItemDelete = (props) => {
 
 const mapStateToProps = (state) => {
     return {
-        campaignId: state.campaign.id,
+        campaignId: state.campaignDetails.id,
     };
 };
 

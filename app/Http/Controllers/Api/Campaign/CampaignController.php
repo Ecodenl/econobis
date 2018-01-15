@@ -34,7 +34,11 @@ class CampaignController extends ApiController
 
         $campaigns->load(['type', 'status', 'responses']);
 
-        return GridCampaign::collection($campaigns);
+        return GridCampaign::collection($campaigns)
+            ->additional(['meta' => [
+            'total' => $requestQuery->total(),
+            ]
+        ]);
     }
 
     public function show(Campaign $campaign)

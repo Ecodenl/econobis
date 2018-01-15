@@ -63,7 +63,7 @@ class ContactsList extends Component {
                         <DataTableHead>
                             <ContactsListHead
                                 showCheckbox={this.props.showCheckboxList}
-                                refreshContactsData={() => this.props.refreshContactsData()}
+                                fetchContactsData={() => this.props.fetchContactsData()}
                             />
                             <ContactsListFilter
                                 showCheckbox={this.props.showCheckboxList}
@@ -89,12 +89,14 @@ class ContactsList extends Component {
                             }
                         </DataTableBody>
                     </DataTable>
-                    <div className="col-md-4 col-md-offset-4">
+                    <div className="col-md-6 col-md-offset-3">
                         <ReactPaginate
                             onPageChange={this.props.handlePageClick}
                             pageCount={ Math.ceil(meta.total / 20) }
-                            pageRangeDisplayed={20}
+                            pageRangeDisplayed={5}
                             marginPagesDisplayed={2}
+                            breakLabel={<a>...</a>}
+                            breakClassName={"break-me"}
                             containerClassName={"pagination"}
                             activeClassName={"active"}
                             previousLabel={<span aria-hidden="true">&laquo;</span>}
@@ -103,7 +105,7 @@ class ContactsList extends Component {
                             forcePage={this.props.contactsPagination.page}
                         />
                     </div>
-                    <div className="col-md-4">
+                    <div className="col-md-3">
                         <div className="pull-right">Resultaten: { meta.total || 0 }</div>
                     </div>
                 </form>

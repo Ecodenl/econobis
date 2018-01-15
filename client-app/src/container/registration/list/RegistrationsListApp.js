@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
 import { fetchRegistrations, clearRegistrations } from '../../../actions/registration/RegistrationsActions';
+import { clearFilterRegistration } from '../../../actions/registration/RegistrationsFiltersActions';
 import { setRegistrationsPagination } from '../../../actions/registration/RegistrationsPaginationActions';
 import RegistrationsList from './RegistrationsList';
 import RegistrationsListToolbar from './RegistrationsListToolbar';
@@ -33,6 +34,12 @@ class RegistrationsListApp extends Component {
 
             this.props.fetchRegistrations(filters, sorts, pagination);
         },100 );
+    };
+
+    resetRegistrationFilters = () => {
+        this.props.clearFilterRegistration();
+
+        this.fetchContactsData();
     };
 
     onSubmitFilter() {
@@ -84,7 +91,7 @@ class RegistrationsListApp extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        registrations: state.registrations.data,
+        registrations: state.registrations.list,
         registrationsFilters: state.registrations.filters,
         registrationsSorts: state.registrations.sorts,
         registrationsPagination: state.registrations.pagination,
@@ -92,7 +99,7 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = (dispatch) => {
-    return bindActionCreators({ fetchRegistrations, clearRegistrations, setRegistrationsPagination }, dispatch);
+    return bindActionCreators({ fetchRegistrations, clearRegistrations, setRegistrationsPagination, clearFilterRegistration }, dispatch);
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(RegistrationsListApp);

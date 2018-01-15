@@ -63,6 +63,11 @@ export default (state = filtersReducerDefaultState, action) => {
                     data: action.measureRequested,
                 }
             };
+        case 'CLEAR_FILTER_REGISTRATIONS':
+            return {
+                ...state,
+                ...filtersReducerDefaultState,
+            };
         default:
             return state;
     }

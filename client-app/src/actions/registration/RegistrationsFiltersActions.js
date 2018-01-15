@@ -22,3 +22,7 @@ export const setFilterMeasureRequested = (measureRequested) => ({
     type: 'SET_FILTER_REGISTRATION_MEASURE_REQUESTED',
     measureRequested,
 });
+
+export const clearFilterRegistration = () => ({
+    type: 'CLEAR_FILTER_REGISTRATIONS',
+});

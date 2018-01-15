@@ -58,7 +58,7 @@ export const setCreatedAtFilter = (createdAt) => ({
     createdAt,
 });
 
-export const clearFilter = () => ({
-    type: 'CLEAR_FILTER',
+export const clearFilterContacts = () => ({
+    type: 'CLEAR_FILTER_CONTACTS',
 });
 

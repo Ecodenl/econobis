@@ -14,7 +14,12 @@ export default function (state = { isLoading: false }, action) {
                 isLoading: false,
             };
         case 'CLEAR_REGISTRATIONS':
-            return state.registrations.data.data = {};
+            return {
+                ...state,
+                data: [],
+                meta: {},
+                isLoading: false,
+            };
         default:
             return state;
     }

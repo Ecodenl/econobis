@@ -53,8 +53,10 @@ class RegistrationsList extends Component {
                     <ReactPaginate
                         onPageChange={this.props.handlePageClick}
                         pageCount={ Math.ceil(meta.total / 20) }
-                        pageRangeDisplayed={20}
+                        pageRangeDisplayed={5}
                         marginPagesDisplayed={2}
+                        breakLabel={<a>...</a>}
+                        breakClassName={"break-me"}
                         containerClassName={"pagination"}
                         activeClassName={"active"}
                         previousLabel={<span aria-hidden="true">&laquo;</span>}

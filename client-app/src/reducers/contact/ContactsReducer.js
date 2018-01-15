@@ -14,29 +14,46 @@ export default function (state= { isLoading: false }, action) {
                 isLoading: false,
             };
         case 'CLEAR_CONTACTS':
-            return state.contacts = {};
+            return {
+                ...state,
+                data: [],
+                meta: {},
+                isLoading: false,
+            };
         case 'DELETE_CONTACT_SUCCESS':
-            return state.data.filter((contact) => contact.id !== action.id);
+            return {
+                ...state,
+                data: state.data.filter((contact) => contact.id !== action.id),
+            };
         case 'DELETE_SELECTED_CONTACTS':
-            return state.data.filter((contact) => contact.checked !== true);
+            return {
+                ...state,
+                data: state.data.filter((contact) => contact.checked !== true),
+            };
         case 'SET_CHECKED_CONTACT':
-            return state.data.map((contact) => {
-                if (contact.id === action.id) {
+            return {
+                ...state,
+                data: state.data.map((contact) => {
+                    if (contact.id === action.id) {
+                        return {
+                            ...contact,
+                            checked: !contact.checked
+                        };
+                    } else {
+                        return contact;
+                    };
+                }),
+            };
+        case 'SET_CHECKED_CONTACT_ALL':
+            return {
+                ...state,
+                data: state.data.map((contact) => {
                     return {
                         ...contact,
-                        checked: !contact.checked
+                        checked: action.checkedValue
                     };
-                } else {
-                    return contact;
-                };
-            });
-        case 'SET_CHECKED_CONTACT_ALL':
-            return state.data.map((contact) => {
-                return {
-                    ...contact,
-                    checked: action.checkedValue
-                };
-            });
+                }),
+            };
         default:
             return state;
     }

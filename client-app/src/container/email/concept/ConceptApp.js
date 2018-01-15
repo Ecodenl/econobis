@@ -38,6 +38,7 @@ class ConceptApp extends Component {
         this.handleBccIds = this.handleBccIds.bind(this);
         this.handleTextChange = this.handleTextChange.bind(this);
         this.addAttachment = this.addAttachment.bind(this);
+        this.deleteAttachment = this.deleteAttachment.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
     };
 
@@ -54,6 +55,7 @@ class ConceptApp extends Component {
             this.setState({
                 ...this.state,
                 email: {
+                    id: payload.id,
                     from: payload.from,
                     mailboxId: payload.mailboxId,
                     to: payload.to ? payload.to.join(',') : '',
@@ -136,17 +138,34 @@ class ConceptApp extends Component {
     };
 
     addAttachment(files) {
-        this.setState({
-            ...this.state,
-            email: {
-                ...this.state.email,
-                attachments: [
-                    ...this.state.email.attachments,
-                    ...files,
-                ]
-            },
+
+        const data = new FormData();
+
+        files.map((file, key) => {
+            data.append('attachments[' +  key +  ']', file);
         });
-    };
+        EmailAPI.storeAttachment(this.state.email.id, data).then((payload) => {
+            this.setState({
+                ...this.state,
+                email: {
+                    ...this.state.email,
+                    attachments: payload.data.data,
+                },
+            });
+        });
+    }
+
+    deleteAttachment(name, id){
+        EmailAPI.deleteAttachment(id).then(() => {
+            this.setState({
+                ...this.state,
+                email: {
+                    ...this.state.email,
+                    attachments: this.state.email.attachments.filter((attachment) => attachment.name !== name),
+                },
+            });
+        });
+    }
 
     handleSubmit(event, concept = false) {
         event.preventDefault();
@@ -189,9 +208,6 @@ class ConceptApp extends Component {
             data.append('bcc', JSON.stringify(email.bcc));
             data.append('subject', email.subject);
             data.append('htmlBody', email.htmlBody);
-            email.attachments.map((file, key) => {
-                data.append('attachments[' +  key +  ']', file);
-            });
 
             if(concept) {
                 EmailAPI.updateConcept(data, this.props.params.id).then(() => {
@@ -235,6 +251,7 @@ class ConceptApp extends Component {
                             handleInputChange={this.handleInputChange}
                             handleTextChange={this.handleTextChange}
                             addAttachment={this.addAttachment}
+                            deleteAttachment={this.deleteAttachment}
                         />
 
                     </div>

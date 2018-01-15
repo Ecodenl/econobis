@@ -1,13 +1,16 @@
 import React, {Component} from 'react';
 
 import ConceptAttachmentsView from './ConceptAttachmentsView';
+import EmailAttachmentsItemDelete from './ConceptAttachmentsDelete';
 
 class ConceptAttachmentsItem extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
+            showActionButtons: false,
             highlightLine: '',
+            showDelete: false,
         };
     };
 
@@ -24,6 +27,12 @@ class ConceptAttachmentsItem extends Component {
             highlightLine: '',
         });
     };
+
+    toggleDelete = () => {
+        this.setState({showDelete: !this.state.showDelete});
+    };
+
+
     render() {
         return (
             <div>
@@ -35,6 +44,14 @@ class ConceptAttachmentsItem extends Component {
                     toggleDelete={this.toggleDelete}
                     attachment={this.props.attachment}
                 />
+                {
+                    this.state.showDelete &&
+                    <EmailAttachmentsItemDelete
+                        toggleDelete={this.toggleDelete}
+                        attachment={this.props.attachment}
+                        deleteAttachment={this.props.deleteAttachment}
+                    />
+                }
             </div>
         );
     }

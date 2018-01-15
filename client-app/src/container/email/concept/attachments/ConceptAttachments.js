@@ -32,7 +32,7 @@ class ConceptAttachments extends Component {
                 </PanelHeader>
                 <PanelBody>
                     <div className="col-md-12">
-                        <ConceptAttachmentsList attachments={this.props.attachments}/>
+                        <ConceptAttachmentsList attachments={this.props.attachments} deleteAttachment={this.props.deleteAttachment}/>
                     </div>
                     <div className="col-md-12 extra-space-above">
                         {this.state.showNew &&

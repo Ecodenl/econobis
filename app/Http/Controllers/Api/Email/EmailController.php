@@ -22,6 +22,7 @@ use App\Eco\User\User;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\Resources\Email\FullEmail;
 use App\Http\Resources\Email\GridEmail;
+use App\Http\Resources\GenericResource;
 use Carbon\Carbon;
 use Config;
 use Illuminate\Http\Request;
@@ -228,9 +229,11 @@ class EmailController
     public function storeEmailAttachment(Email $email, Request $request)
     {
         //get attachment
-        $attachment = $request->file('attachment') ? $request->file('attachment') : [];
+        $attachments = $request->file('attachments') ? $request->file('attachments') : [];
 
-        $this->storeEmailAttachments($attachment, $email->mailbox_id, $email->id);
+        $this->storeEmailAttachments($attachments, $email->mailbox_id, $email->id);
+
+        return GenericResource::collection($email->attachments);
     }
 
     public function deleteEmailAttachment(EmailAttachment $emailAttachment)

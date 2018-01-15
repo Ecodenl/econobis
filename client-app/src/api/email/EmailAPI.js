@@ -101,6 +101,22 @@ export default {
         return axios.get(requestUrl, {responseType: 'blob'});
     },
 
+    storeAttachment: (email_id, data) => {
+        const requestUrl = `${URL_EMAIL}/email-attachment/${email_id}/store`;
+        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
+        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
+
+        return axios.post(requestUrl, data);
+    },
+
+    deleteAttachment: (email_attachment_id) => {
+        const requestUrl = `${URL_EMAIL}/email-attachment/${email_attachment_id}/delete`;
+        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
+        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
+
+        return axios.post(requestUrl);
+    },
+
     updateConcept: (email, email_id) => {
         const requestUrl = `${URL_EMAIL}/concept/${email_id}/update`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');

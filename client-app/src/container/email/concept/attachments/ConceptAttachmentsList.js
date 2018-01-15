@@ -17,6 +17,7 @@ const ConceptAttachmentsList = props => {
                         return <ConceptAttachmentsItem
                             key={attachment.name}
                             attachment={attachment}
+                            deleteAttachment={props.deleteAttachment}
                         />;
                     })
                     :

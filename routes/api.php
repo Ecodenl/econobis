@@ -175,8 +175,8 @@ Route::namespace('Api')
         Route::get('email/group/{contactGroup}', 'Email\EmailController@getEmailGroup');
         Route::post('email/{email}', 'Email\EmailController@update');
         Route::get('email/email-attachment/{emailAttachment}/download', 'Email\EmailController@downloadEmailAttachment');
-        Route::get('email/email-attachment/{email}/store', 'Email\EmailController@storeEmailAttachment');
-        Route::get('email/email-attachment/{emailAttachment}/delete', 'Email\EmailController@deleteEmailAttachment');
+        Route::post('email/email-attachment/{email}/store', 'Email\EmailController@storeEmailAttachment');
+        Route::post('email/email-attachment/{emailAttachment}/delete', 'Email\EmailController@deleteEmailAttachment');
         Route::post('email/send/{mailbox}', 'Email\EmailController@send');
         Route::post('email/concept/{mailbox}/store', 'Email\EmailController@storeConcept');
         Route::post('email/concept/{email}/update', 'Email\EmailController@updateConcept');

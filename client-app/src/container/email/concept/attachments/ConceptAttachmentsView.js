@@ -14,7 +14,10 @@ const ConceptAttachmentsView = props => {
 
     return (
         <div className={`row border ${props.highlightLine}`} onMouseEnter={() => props.onLineEnter()} onMouseLeave={() => props.onLineLeave()}>
-            <div onClick={() => downloadItem(id, name)} className="col-sm-12" >{name}</div>
+            <div onClick={() => downloadItem(id, name)} className="col-sm-11" >{name}</div>
+            <div className="col-sm-1">
+                {(props.showActionButtons ? <a role="button" onClick={props.toggleDelete}><span className="glyphicon glyphicon-trash mybtn-danger"  /> </a> : '')}
+            </div>
         </div>
     );
 };

@@ -9,13 +9,21 @@ class ConceptAttachmentsNew extends Component {
 
         this.state = {
             error: false,
+            errorMaxSize: false,
         };
     };
 
-    onDrop(files) {
+    onDropAccepted(files) {
         this.props.addAttachment(files);
         this.props.toggleShowNew();
-    }
+    };
+
+    onDropRejected() {
+        this.setState({
+            errorMaxSize: true,
+        });
+    };
+
 
     render() {
         return (
@@ -25,13 +33,16 @@ class ConceptAttachmentsNew extends Component {
                 title="Upload file"
             >
                 <div className="upload-file-content">
-                    <Dropzone className="dropzone" onDrop={this.onDrop.bind(this)}>
+                    <Dropzone className="dropzone" onDropAccepted={this.onDropAccepted.bind(this)} onDropRejected={this.onDropRejected.bind(this)} maxSize={2000000}>
                         <p>Druk hier voor het uploaden van een file</p>
                         <p><strong>of</strong> sleep het bestand hierheen</p>
                     </Dropzone>
                 </div>
                 {
                     this.state.error && <p className="has-error-message">Uploaden mislukt. Probeer nogmaals een bestand te uploaden.</p>
+                }
+                {
+                    this.state.errorMaxSize && <p className="has-error-message">Uploaden mislukt. Het bestand mag maximaal 2MB groot zijn.</p>
                 }
             </Modal>
         );

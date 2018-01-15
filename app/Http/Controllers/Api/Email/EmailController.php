@@ -218,11 +218,28 @@ class EmailController
         return $people;
     }
 
-    public function download(EmailAttachment $emailAttachment)
+    public function downloadEmailAttachment(EmailAttachment $emailAttachment)
     {
         $filePath = Storage::disk('mail_attachments')->getDriver()->getAdapter()->applyPathPrefix($emailAttachment->filename);
 
         return response()->download($filePath, $emailAttachment->name);
+    }
+
+    public function storeEmailAttachment(Email $email, Request $request)
+    {
+        //get attachment
+        $attachment = $request->file('attachment') ? $request->file('attachment') : [];
+
+        $this->storeEmailAttachments($attachment, $email->mailbox_id, $email->id);
+    }
+
+    public function deleteEmailAttachment(EmailAttachment $emailAttachment)
+    {
+        //delete real file
+        Storage::disk('mail_attachments')->delete($emailAttachment->filename);
+
+        //delete db record
+        $emailAttachment->delete();
     }
 
     public function updateConcept(Email $email, Request $request){

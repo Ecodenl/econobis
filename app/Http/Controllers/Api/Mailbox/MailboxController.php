@@ -109,6 +109,9 @@ class MailboxController
         if($mailbox->valid) {
             $mailFetcher->fetchNew();
         }
+        else{
+            return 'This mailbox is invalid';
+        }
     }
 
     public function loggedInEmailPeek()

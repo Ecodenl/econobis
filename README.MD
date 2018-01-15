@@ -2,9 +2,7 @@
 ## Vereisten
 NPM of Yarn geinstalleerd:
 
-[Download Yarn](https://yarnpkg.com/lang/en/docs/install/)
-- 
-[Of NPM](https://www.npmjs.com/get-npm)
+[Download Yarn](https://yarnpkg.com/lang/en/docs/install/)  [Of NPM](https://www.npmjs.com/get-npm)
 
 CORS toestaan met behulp van:
 

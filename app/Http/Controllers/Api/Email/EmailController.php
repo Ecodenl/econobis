@@ -255,15 +255,7 @@ class EmailController
         $email->subject = $sanitizedData['subject'];
         $email->html_body = $sanitizedData['html_body'];
         $email->save();
-
-        $this->checkStorageDir($email->mailbox_id);
-
-        //get attachments
-        $attachments = $request->file('attachments') ? $request->file('attachments') : [];
-
-        $this->storeEmailAttachments($attachments, $email->mailbox_id, $email->id);
-
-
+        
         return $email;
     }
 

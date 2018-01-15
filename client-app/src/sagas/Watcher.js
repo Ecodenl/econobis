@@ -1,6 +1,7 @@
 import { takeLatest } from 'redux-saga/effects';
 
-import { fetchCampaignsSaga, fetchCampaignSaga } from './campaign/CampaignsSaga';
+import { fetchCampaignsSaga } from './campaign/CampaignsSaga';
+import { fetchCampaignSaga } from './campaign/CampaignDetailsSaga';
 import { fetchContactDetailsSaga, deleteAddressSaga, deletePhoneNumberSaga, deleteEmailAddressSaga, deleteContactNoteSaga } from './contact/ContactDetailsSaga';
 import { fetchContactGroupDetailsSaga, updateContactGroupDetailsSaga } from './contact-group/ContactGroupDetailsSaga';
 import { fetchContactGroupsSaga, deleteContactGroupSaga, addContactToGroupSaga } from './contact-group/ContactGroupsSaga';

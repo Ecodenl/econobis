@@ -5,7 +5,7 @@ import {hashHistory} from "react-router";
 import validator from "validator";
 
 import ContactsAPI from "../../../api/contact/ContactsAPI";
-import CampaignAPI from "../../../api/campaign/CampaignAPI";
+import CampaignsAPI from "../../../api/campaign/CampaignsAPI";
 import TaskDetailsAPI from "../../../api/task/TaskDetailsAPI";
 import TaskNewForm from './TaskNewForm';
 import TaskNewToolbar from './TaskNewToolbar';
@@ -79,7 +79,7 @@ class TaskNewApp extends Component {
             this.setState({ opportunities: payload });
         });
 
-        CampaignAPI.peekCampaigns().then((payload) => {
+        CampaignsAPI.peekCampaigns().then((payload) => {
             this.setState({ campaigns: payload });
         });
     };

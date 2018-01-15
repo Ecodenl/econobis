@@ -2,19 +2,20 @@ import {combineReducers} from 'redux';
 
 import authReducer from './general/AuthReducer';
 import campaignsReducer from './campaign/CampaignsReducer';
+import CampaignDetailsReducer from './campaign/CampaignDetailsReducer';
 import contactDetailsReducer from './contact/ContactDetailsReducer';
 import contactGroupDetailsReducer from './contact-group/ContactGroupDetailsReducer';
 import contactGroupReducer from './contact-group/ContactGroupReducer';
 import contactsInGroupReducer from './contact-group/ContactsInGroupReducer';
-import contactsListReducer from './contact/ContactsListReducer';
+import contactsReducer from './contact/ContactsReducer';
 import measuresReducer from './measure/MeasureReducer';
 import meDetailsReducer from './general/MeDetailsReducer';
 import opportunitiesReducer from './opportunity/OpportunitiesReducer';
 import registrationDetailsReducer from './registration/RegistrationDetailsReducer'
-import registrationsListReducer from './registration/RegistrationsListReducer';
+import registrationsReducer from './registration/RegistrationsReducer';
 import sidebarReducer from './general/SidebarReducer';
 import systemDataReducer from './general/SystemDataReducer';
-import tasksListReducer from './task/TasksListReducer';
+import tasksReducer from './task/TasksReducer';
 import taskDetailsReducer from './task/TaskDetailsReducer';
 import userDetailsReducer from './user/UserDetailsReducer';
 import usersReducer from './user/UsersReducer';
@@ -27,9 +28,9 @@ const rootReducer = combineReducers({
     toggleSidebar: sidebarReducer,
     // Campaign
     campaigns: campaignsReducer,
-    campaign: campaignsReducer,
+    campaignDetails: CampaignDetailsReducer,
     // Contact
-    contacts: contactsListReducer,
+    contacts: contactsReducer,
     contactDetails: contactDetailsReducer,
     // Contact group
     contactGroups: contactGroupReducer,
@@ -40,7 +41,7 @@ const rootReducer = combineReducers({
     opportunity: opportunitiesReducer,
 
     // Registration
-    registrations: registrationsListReducer,
+    registrations: registrationsReducer,
     registrationDetails: registrationDetailsReducer,
 
     // Measures
@@ -49,7 +50,7 @@ const rootReducer = combineReducers({
 
     //Task
     taskDetails: taskDetailsReducer,
-    tasks: tasksListReducer,
+    tasks: tasksReducer,
     // User
     users: usersReducer,
     userDetails: userDetailsReducer,

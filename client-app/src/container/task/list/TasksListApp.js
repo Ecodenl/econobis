@@ -15,6 +15,8 @@ class TasksListApp extends Component {
     constructor(props) {
         super(props);
 
+        this.fetchTasksData = this.fetchTasksData.bind(this);
+        this.resetTaskFilters = this.resetTaskFilters.bind(this);
         this.handlePageClick = this.handlePageClick.bind(this);
     }
 
@@ -26,7 +28,7 @@ class TasksListApp extends Component {
         this.props.clearTasks();
     };
 
-    fetchTasksData = () => {
+    fetchTasksData() {
         setTimeout(() => {
             const filters = filterHelper(this.props.tasksFilters);
             const sorts = this.props.tasksSorts.reverse();
@@ -37,7 +39,7 @@ class TasksListApp extends Component {
         },100 );
     };
 
-    resetTaskFilters = () => {
+    resetTaskFilters() {
         this.props.clearFilterTask();
 
         this.fetchTasksData();

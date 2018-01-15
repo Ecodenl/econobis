@@ -9,7 +9,7 @@ const TasksListHead = (props) => {
         props.setTasksSortsFilter(field, order);
 
         setTimeout(() => {
-            props.refreshTasksData();
+            props.fetchTasksData();
         }, 100);
     };
 

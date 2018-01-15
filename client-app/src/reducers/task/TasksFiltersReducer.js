@@ -87,6 +87,11 @@ export default (state = filtersReducerDefaultState, action) => {
                     data: action.responsibleUserName,
                 }
             };
+        case 'CLEAR_FILTER_TASKS':
+            return {
+                ...state,
+                ...filtersReducerDefaultState,
+            };
         default:
             return state;
     }

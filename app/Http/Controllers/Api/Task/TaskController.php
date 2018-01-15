@@ -20,11 +20,15 @@ use Illuminate\Validation\Rule;
 class TaskController extends Controller
 {
 
-    public function grid(RequestQuery $query)
+    public function grid(RequestQuery $requestQuery)
     {
-        $tasks = $query->get();
+        $tasks = $requestQuery->get();
 
-        return GridTask::collection($tasks);
+        return GridTask::collection($tasks)
+            ->additional(['meta' => [
+                'total' => $requestQuery->total(),
+            ]
+        ]);
     }
 
     public function show(Task $task)

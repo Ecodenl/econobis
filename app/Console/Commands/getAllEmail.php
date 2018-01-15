@@ -38,6 +38,6 @@ class getAllEmail extends Command
      */
     public function handle()
     {
-    MailboxController::receiveAllEmail();
+        MailboxController::receiveAllEmail();
     }
 }

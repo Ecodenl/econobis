@@ -31,10 +31,10 @@ class MailboxesListItem extends Component {
     };
 
     render() {
-        const { id, name, email, username, imapHost, smtpHost } = this.props;
+        const { id, name, email, username, imapHost, smtpHost, valid } = this.props;
 
         return (
-            <tr className={this.state.highlightRow} onDoubleClick={() => this.openItem(id)} onMouseEnter={() => this.onRowEnter()} onMouseLeave={() => this.onRowLeave()}>
+            <tr className={`${this.state.highlightRow}  ${valid ? '' : 'has-error'}`} onDoubleClick={() => this.openItem(id)} onMouseEnter={() => this.onRowEnter()} onMouseLeave={() => this.onRowLeave()}>
                 <td>{ name }</td>
                 <td>{ email }</td>
                 <td>{ username }</td>

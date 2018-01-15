@@ -13,6 +13,7 @@ use App\Eco\Email\Email;
 use App\Eco\Mailbox\ImapEncryptionType;
 use App\Eco\Mailbox\Mailbox;
 use App\Eco\Mailbox\MailFetcher;
+use App\Eco\Mailbox\MailValidator;
 use App\Eco\Mailbox\SmtpEncryptionType;
 use App\Eco\User\User;
 use App\Helpers\RequestInput\RequestInput;
@@ -53,6 +54,9 @@ class MailboxController
         $mailbox = new Mailbox($data);
         $mailbox->save();
 
+        //Create a new mailfetcher. This will check if the mailbox is valid and set it in the db.
+        new MailFetcher($mailbox);
+
         return GenericResource::make($mailbox);
     }
 
@@ -80,6 +84,9 @@ class MailboxController
         $mailbox->update($data);
         $mailbox->save();
 
+        //Create a new mailfetcher. This will check if the mailbox is valid and set it in the db.
+        new MailFetcher($mailbox);
+
         return GenericResource::make($mailbox);
     }
 
@@ -98,8 +105,12 @@ class MailboxController
     public function receive(Mailbox $mailbox)
     {
         $mailFetcher = new MailFetcher($mailbox);
-        $mailFetcher->fetchNew();
+
+        if($mailbox->valid) {
+            $mailFetcher->fetchNew();
+        }
     }
+
     public function loggedInEmailPeek()
     {
         $user = Auth::user();
@@ -114,7 +125,9 @@ class MailboxController
         $mailboxes = Mailbox::all();
         foreach ($mailboxes as $mailbox) {
             $mailFetcher = new MailFetcher($mailbox);
-            $mailFetcher->fetchNew();
+            if($mailbox->valid) {
+                $mailFetcher->fetchNew();
+            }
         }
     }
 

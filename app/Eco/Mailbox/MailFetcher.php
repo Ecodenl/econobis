@@ -63,7 +63,21 @@ class MailFetcher
         $connectionString .= '}' . $mb->imap_inbox_prefix;
 
         $storageDir = $this->getStorageDir();
+
         $this->imap = new \PhpImap\Mailbox($connectionString, $mb->username, $mb->password, $storageDir);
+
+        try {
+            $this->imap->checkMailbox();
+            if($mb->valid == false){
+                $mb->valid = true;
+                $mb->save();
+            }
+        }
+        catch(\Exception $e){
+            $mb->valid = false;
+            $mb->save();
+        }
+
     }
 
     private function initStorageDir()
@@ -127,4 +141,6 @@ class MailFetcher
     {
         return $this->fetchedEmails;
     }
+
+
 }

@@ -2,7 +2,7 @@ import React from 'react';
 import { hashHistory } from 'react-router';
 
 import Modal from '../../../components/modal/Modal';
-import OpportunityAPI from '../../../api/opportunity/OpportunityAPI';
+import OpportunityAPI from '../../../api/opportunity/OpportunityDetailsAPI';
 
 const OpportunityDetailsDelete = (props) => {
     const confirmAction = () => {

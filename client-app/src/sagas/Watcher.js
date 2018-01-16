@@ -8,7 +8,8 @@ import { fetchContactGroupsSaga, deleteContactGroupSaga, addContactToGroupSaga }
 import { fetchContactsInGroupSaga, deleteContactInGroupSaga } from './contact-group/ContactsInGroupSaga';
 import { fetchContactsSaga, deleteContactSaga } from './contact/ContactsSaga';
 import { fetchMeasuresSaga, fetchMeasureSaga } from './measure/MeasuresSaga';
-import { fetchOpportunitiesSaga, fetchOpportunitySaga } from './opportunity/OpportunitiesSaga';
+import { fetchOpportunitiesSaga } from './opportunity/OpportunitiesSaga';
+import { fetchOpportunitySaga } from './opportunity/OpportunityDetailsSaga';
 import {
     fetchRegistrationDetailsSaga,
     deleteRegistrationNoteSaga,

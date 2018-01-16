@@ -11,6 +11,7 @@ import contactsReducer from './contact/ContactsReducer';
 import measuresReducer from './measure/MeasureReducer';
 import meDetailsReducer from './general/MeDetailsReducer';
 import opportunitiesReducer from './opportunity/OpportunitiesReducer';
+import opportunityDetailsReducer from './opportunity/OpportunityDetailsReducer';
 import registrationDetailsReducer from './registration/RegistrationDetailsReducer'
 import registrationsReducer from './registration/RegistrationsReducer';
 import sidebarReducer from './general/SidebarReducer';
@@ -38,16 +39,13 @@ const rootReducer = combineReducers({
     contactsInGroup: contactsInGroupReducer,
     // Opportunity
     opportunities: opportunitiesReducer,
-    opportunity: opportunitiesReducer,
-
+    opportunityDetails: opportunityDetailsReducer,
     // Registration
     registrations: registrationsReducer,
     registrationDetails: registrationDetailsReducer,
-
     // Measures
     measures: measuresReducer,
     measure: measuresReducer,
-
     //Task
     taskDetails: taskDetailsReducer,
     tasks: tasksReducer,

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { hashHistory } from 'react-router';
 
 import RegistrationsAPI from './../../api/registration/RegistrationsAPI';
-import OpportunityAPI from '../../api/opportunity/OpportunityAPI';
+import OpportunitiesAPI from '../../api/opportunity/OpportunitiesAPI';
 import TaskAPI from './../../api/task/TasksAPI';
 
 class DashboardButtons extends Component {
@@ -21,7 +21,7 @@ class DashboardButtons extends Component {
                 amountActiveRegistrations: payload
             });
         });
-        OpportunityAPI.getAmountActive().then(payload => {
+        OpportunitiesAPI.getAmountActive().then(payload => {
             this.setState({
                 amountActiveOpportunities: payload
             });

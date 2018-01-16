@@ -58,7 +58,7 @@ class OpportunityDetailsToolbar extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        opportunity: state.opportunity,
+        opportunity: state.opportunityDetails,
         permissions: state.meDetails.permissions,
     }
 };

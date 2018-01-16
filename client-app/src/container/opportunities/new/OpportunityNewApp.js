@@ -7,10 +7,9 @@ import { hashHistory } from 'react-router';
 import OpportunityNewToolbar from './OpportunityNewToolbar';
 import OpportunityNew from './OpportunityNew';
 
-
 import ContactsAPI from '../../../api/contact/ContactsAPI';
 import RegistrationsAPI from '../../../api/registration/RegistrationsAPI';
-import OpportunityAPI from '../../../api/opportunity/OpportunityAPI';
+import OpportunityDetailsAPI from '../../../api/opportunity/OpportunityDetailsAPI';
 import {connect} from "react-redux";
 
 
@@ -144,7 +143,7 @@ class OppportunitiesNewApp extends Component {
         this.setState({ ...this.state, errors: errors });
 
         !hasErrors &&
-        OpportunityAPI.storeOpportunity(opportunity).then(payload => {
+        OpportunityDetailsAPI.storeOpportunity(opportunity).then(payload => {
             hashHistory.push('/kans/' + payload.id);
         });
     };

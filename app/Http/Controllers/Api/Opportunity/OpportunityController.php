@@ -25,7 +25,11 @@ class OpportunityController extends ApiController
 
         $opportunities->load(['contact', 'measure', 'campaign', 'status', 'quotations']);
 
-        return GridOpportunity::collection($opportunities);
+        return GridOpportunity::collection($opportunities)
+            ->additional(['meta' => [
+                'total' => $requestQuery->total(),
+            ]
+            ]);
     }
 
     public function show(Opportunity $opportunity)

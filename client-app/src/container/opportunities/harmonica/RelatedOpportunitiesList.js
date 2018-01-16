@@ -3,7 +3,8 @@ import {hashHistory} from 'react-router';
 import { connect } from 'react-redux';
 import moment from 'moment';
 
-import { fetchOpportunity, clearOpportunity } from '../../../actions/opportunity/OpportunitiesActions';
+import { fetchOpportunity, clearOpportunity } from '../../../actions/opportunity/OpportunityDetailsActions';
+
 class RelatedOpportunitiesList extends Component {
     constructor(props) {
         super(props);
@@ -56,7 +57,7 @@ const mapDispatchToProps = dispatch => ({
 
 const mapStateToProps = (state) => {
     return {
-        relatedOpportunities: state.opportunity.relatedOpportunities,
+        relatedOpportunities: state.opportunityDetails.relatedOpportunities,
     };
 };
 

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import ReactPaginate from 'react-paginate';
 
 import DataTable from '../../../components/dataTable/DataTable';
 import DataTableHead from '../../../components/dataTable/DataTableHead';
@@ -51,6 +52,8 @@ class OpportunitiesList extends Component {
     };
 
     render() {
+        const { data = [], meta = {}, isLoading } = this.props.opportunities;
+
         return (
         <div>
             <DataTable>
@@ -69,12 +72,12 @@ class OpportunitiesList extends Component {
                 </DataTableHead>
                 <DataTableBody>
                     {
-                        this.props.opportunities.length === 0 ? (
+                        data.length === 0 ? (
                             <tr>
                                 <td colSpan={9}>Geen kansen gevonden!</td>
                             </tr>
                         ) : (
-                            this.props.opportunities.map(opportunities => (
+                            data.map(opportunities => (
                                 <OpportunitiesListItem
                                     key={opportunities.id}
                                     {...opportunities}
@@ -85,6 +88,25 @@ class OpportunitiesList extends Component {
                     }
                 </DataTableBody>
             </DataTable>
+            <div className="col-md-6 col-md-offset-3">
+                <ReactPaginate
+                    onPageChange={this.props.handlePageClick}
+                    pageCount={ Math.ceil(meta.total / 20) }
+                    pageRangeDisplayed={5}
+                    marginPagesDisplayed={2}
+                    breakLabel={<a>...</a>}
+                    breakClassName={"break-me"}
+                    containerClassName={"pagination"}
+                    activeClassName={"active"}
+                    previousLabel={<span aria-hidden="true">&laquo;</span>}
+                    nextLabel={<span aria-hidden='true'>&raquo;</span>}
+                    initialPage={this.props.opportunitiesPagination.page || 0}
+                    forcePage={this.props.opportunitiesPagination.page}
+                />
+            </div>
+            <div className="col-md-3">
+                <div className="pull-right">Resultaten: { meta.total || 0 }</div>
+            </div>
             {
                 this.state.showDeleteItem &&
                 <OpportunityDeleteItem
@@ -99,7 +121,8 @@ class OpportunitiesList extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        opportunities: state.opportunities,
+        opportunities: state.opportunities.list,
+        opportunitiesPagination: state.opportunities.pagination,
     };
 };
 

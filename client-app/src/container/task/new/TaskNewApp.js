@@ -13,7 +13,7 @@ import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
 import RegistrationsAPI from "../../../api/registration/RegistrationsAPI";
 import ContactGroupAPI from "../../../api/contact-group/ContactGroupAPI";
-import OpportunityAPI from "../../../api/opportunity/OpportunityAPI";
+import OpportunitiesAPI from "../../../api/opportunity/OpportunitiesAPI";
 
 class TaskNewApp extends Component {
     constructor(props) {
@@ -75,7 +75,7 @@ class TaskNewApp extends Component {
             this.setState({ contactGroups: payload });
         });
 
-        OpportunityAPI.peekOpportunities().then((payload) => {
+        OpportunitiesAPI.peekOpportunities().then((payload) => {
             this.setState({ opportunities: payload });
         });
 

@@ -49,7 +49,6 @@ class CampaignsListApp extends Component {
                         </div>
                         <div className="col-md-12 extra-space-above">
                             <CampaignsList
-                                campaignsPagination={this.props.campaignsPagination}
                                 handlePageClick={this.handlePageClick}
                             />
                         </div>
@@ -67,7 +66,7 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = dispatch => ({
-    fetchCampaigns: ({pagination}) => {
+    fetchCampaigns: (pagination) => {
         dispatch(fetchCampaigns(pagination));
     },
     clearCampaigns: () => {

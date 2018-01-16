@@ -1,7 +1,7 @@
 import { put, call } from 'redux-saga/effects';
 import CampaignsAPI from '../../api/campaign/CampaignsAPI';
 
-export function* fetchCampaignsSaga(pagination) {
+export function* fetchCampaignsSaga({pagination}) {
     try {
         yield [
             put({ type: 'FETCH_CAMPAIGNS_LOADING' }),

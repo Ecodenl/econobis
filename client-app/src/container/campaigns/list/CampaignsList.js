@@ -118,6 +118,7 @@ class CampaignsList extends Component {
 const mapStateToProps = (state) => {
     return {
         campaigns: state.campaigns.list,
+        campaignsPagination: state.campaigns.pagination,
     };
 };
 

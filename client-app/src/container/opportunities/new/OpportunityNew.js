@@ -3,9 +3,9 @@ import {connect} from 'react-redux';
 
 import InputSelect from '../../../components/form/InputSelect';
 import InputDate from '../../../components/form/InputDate';
+import InputTinyMCE from '../../../components/form/InputTinyMCE';
 import ButtonText from '../../../components/button/ButtonText';
-import PanelFooter from "../../../components/panel/PanelFooter";
-
+import PanelFooter from '../../../components/panel/PanelFooter';
 
 const OpportunityFormEdit = props => {
     const {contactId, desiredDate, measureId, quotationText, reactionId, statusId, ownedById, registrationId} = props.opportunity;
@@ -85,16 +85,16 @@ const OpportunityFormEdit = props => {
                     </div>
                 </div>
             </div>
+
+
             <div className="row">
                 <div className="form-group col-sm-12">
                     <div className="row">
-                        <div className="col-sm-3">
-                            <label htmlFor="quotationText" className="col-sm-12">Offerte tekst</label>
-                        </div>
-                        <div className="col-sm-8">
-                            <textarea name='quotationText' value={quotationText} onChange={props.handleInputChange}
-                                      className="form-control input-sm"/>
-                        </div>
+                        <InputTinyMCE
+                            label={"Offerte tekst"}
+                            value={quotationText}
+                            onChangeAction={props.handleEditorChange}
+                        />
                     </div>
                 </div>
             </div>

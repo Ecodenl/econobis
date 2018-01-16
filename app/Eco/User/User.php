@@ -4,6 +4,7 @@ namespace App\Eco\User;
 
 use App\Cooperation;
 use App\Eco\LastNamePrefix\LastNamePrefix;
+use App\Eco\Mailbox\Mailbox;
 use App\Eco\Title\Title;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -53,6 +54,11 @@ class User extends Authenticatable
     public function title()
     {
         return $this->belongsTo(Title::class);
+    }
+
+    public function mailboxes()
+    {
+        return $this->belongsToMany(Mailbox::class);
     }
 
     /**

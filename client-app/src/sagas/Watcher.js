@@ -7,6 +7,10 @@ import { fetchContactGroupDetailsSaga, updateContactGroupDetailsSaga } from './c
 import { fetchContactGroupsSaga, deleteContactGroupSaga, addContactToGroupSaga } from './contact-group/ContactGroupsSaga';
 import { fetchContactsInGroupSaga, deleteContactInGroupSaga } from './contact-group/ContactsInGroupSaga';
 import { fetchContactsSaga, deleteContactSaga } from './contact/ContactsSaga';
+import { fetchEmailsSaga, fetchEmailSaga } from './email/EmailsSaga';
+import { fetchEmailTemplatesSaga, fetchEmailTemplateSaga } from './email-template/EmailTemplatesSaga';
+import { fetchMailboxDetailsSaga, deleteMailboxSaga, newMailboxUserSaga, deleteMailboxUserSaga } from './mailbox/MailboxDetailsSaga';
+import { fetchMailboxesSaga } from './mailbox/MailboxesSaga';
 import { fetchMeasuresSaga, fetchMeasureSaga } from './measure/MeasuresSaga';
 import { fetchOpportunitiesSaga } from './opportunity/OpportunitiesSaga';
 import { fetchOpportunitySaga } from './opportunity/OpportunityDetailsSaga';
@@ -49,6 +53,17 @@ export default function* watchSagas() {
     yield takeLatest('FETCH_CONTACT_GROUP_DETAILS', fetchContactGroupDetailsSaga);
     yield takeLatest('FETCH_CONTACTS_IN_GROUP', fetchContactsInGroupSaga);
     yield takeLatest('DELETE_CONTACT_IN_GROUP', deleteContactInGroupSaga);
+    // Emails
+    yield takeLatest('FETCH_EMAILS', fetchEmailsSaga);
+    yield takeLatest('FETCH_EMAIL', fetchEmailSaga);
+    // Email templates
+    yield takeLatest('FETCH_EMAIL_TEMPLATES', fetchEmailTemplatesSaga);
+    yield takeLatest('FETCH_EMAIL_TEMPLATE', fetchEmailTemplateSaga);
+    // Mailbox
+    yield takeLatest('FETCH_MAILBOXES', fetchMailboxesSaga);
+    yield takeLatest('FETCH_MAILBOX_DETAILS', fetchMailboxDetailsSaga);
+    yield takeLatest('DELETE_MAILBOX', deleteMailboxSaga);
+    yield takeLatest('DELETE_MAILBOX_USER', deleteMailboxUserSaga);
     // Measure
     yield takeLatest('FETCH_MEASURES', fetchMeasuresSaga);
     yield takeLatest('FETCH_MEASURE', fetchMeasureSaga);

@@ -51,6 +51,11 @@ class ContactsInGroupListToolbar extends Component {
         hashHistory.push(`/contact/nieuw`);
     };
 
+    sendBulkMailToGroup = () => {
+        hashHistory.push(`/email/nieuw/groep/${this.props.groupId}`);
+    };
+
+
     render() {
         const { permissions } = this.props;
         return (
@@ -66,6 +71,7 @@ class ContactsInGroupListToolbar extends Component {
                             </button>
                         </div>
                         }
+                        <ButtonIcon iconName={"glyphicon-envelope"} onClickAction={this.sendBulkMailToGroup} />
                     </div>
                 </div>
                 <div className="col-md-4"><h3 className="text-center table-title">Contacten in groep: {this.state.groupName}</h3></div>

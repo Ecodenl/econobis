@@ -2,6 +2,14 @@
 # yarn lockfile v1
 
 
+"@tinymce/tinymce-react@^2.1.0":
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/@tinymce/tinymce-react/-/tinymce-react-2.1.0.tgz#d0bcb960dde2133e8d6447d6bf8e22e80c944a5f"
+  dependencies:
+    prop-types "^15.6.0"
+    react "^16.2.0"
+    react-dom "^16.2.0"
+
 abab@^1.0.3:
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/abab/-/abab-1.0.4.tgz#5faad9c2c07f60dd76770f71cf025b62a63cfd4e"
@@ -5394,12 +5402,25 @@ react-dom@15.6.2:
     object-assign "^4.1.0"
     prop-types "^15.5.10"
 
+react-dom@^16.2.0:
+  version "16.2.0"
+  resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-16.2.0.tgz#69003178601c0ca19b709b33a83369fe6124c044"
+  dependencies:
+    fbjs "^0.8.16"
+    loose-envify "^1.1.0"
+    object-assign "^4.1.1"
+    prop-types "^15.6.0"
+
 react-dropzone@^4.2.3:
   version "4.2.3"
   resolved "https://registry.yarnpkg.com/react-dropzone/-/react-dropzone-4.2.3.tgz#f7bc92aa5fe4253fdb1fd3792114d2d29b47119a"
   dependencies:
     attr-accept "^1.0.3"
     prop-types "^15.5.7"
+
+react-frame-component@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/react-frame-component/-/react-frame-component-2.0.1.tgz#89f5adbf6a4f4ea2a1e61600dff8e1afa58b9844"
 
 react-icons-kit@^1.0.7:
   version "1.0.7"
@@ -5492,6 +5513,15 @@ react@15.6.2:
     loose-envify "^1.1.0"
     object-assign "^4.1.0"
     prop-types "^15.5.10"
+
+react@^16.2.0:
+  version "16.2.0"
+  resolved "https://registry.yarnpkg.com/react/-/react-16.2.0.tgz#a31bd2dab89bff65d42134fa187f24d054c273ba"
+  dependencies:
+    fbjs "^0.8.16"
+    loose-envify "^1.1.0"
+    object-assign "^4.1.1"
+    prop-types "^15.6.0"
 
 read-pkg-up@^1.0.1:
   version "1.0.1"
@@ -6379,6 +6409,10 @@ timers-browserify@^2.0.2:
   resolved "https://registry.yarnpkg.com/timers-browserify/-/timers-browserify-2.0.4.tgz#96ca53f4b794a5e7c0e1bd7cc88a372298fa01e6"
   dependencies:
     setimmediate "^1.0.4"
+
+tinymce@^4.7.4:
+  version "4.7.4"
+  resolved "https://registry.yarnpkg.com/tinymce/-/tinymce-4.7.4.tgz#1d7ebb192aa1c238cb9fc8350376c2ea2efb8891"
 
 tmp@^0.0.33:
   version "0.0.33"

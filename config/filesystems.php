@@ -53,6 +53,11 @@ return [
             'root' => storage_path('app/tasks'),
         ],
 
+        'mail_attachments' => [
+            'driver' => 'local',
+            'root' => storage_path('app' . DIRECTORY_SEPARATOR . 'mails'),
+        ],
+
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),

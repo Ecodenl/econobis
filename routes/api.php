@@ -156,5 +156,41 @@ Route::namespace('Api')
         Route::post('measure/{measure}/faq', 'Measure\MeasureController@storeFaq');
         Route::post('measure/{measure}', 'Measure\MeasureController@update');
         Route::post('measure/{measure}/delete', 'Measure\MeasureController@destroy');
+
+        Route::get('mailbox/grid', 'Mailbox\MailboxController@grid');
+        Route::get('mailbox/logged-in/email-peek', 'Mailbox\MailboxController@loggedInEmailPeek');
+        Route::post('mailbox', 'Mailbox\MailboxController@store');
+        Route::get('mailbox/{mailbox}', 'Mailbox\MailboxController@show');
+        Route::post('mailbox/{mailbox}', 'Mailbox\MailboxController@update');
+        Route::post('mailbox/{mailbox}/users/add/{user}', 'Mailbox\MailboxController@addUser');
+        Route::post('mailbox/{mailbox}/users/remove/{user}', 'Mailbox\MailboxController@removeUser');
+        Route::get('mailbox/{mailbox}/receive', 'Mailbox\MailboxController@receive');
+
+        Route::get('email/grid/in-folder/{folder}', 'Email\EmailController@grid');
+        Route::get('email/new/peek', 'Email\EmailController@peek');
+        Route::get('email/{email}', 'Email\EmailController@show');
+        Route::get('email/{email}/reply', 'Email\EmailController@getReply');
+        Route::get('email/{email}/reply-all', 'Email\EmailController@getReplyAll');
+        Route::get('email/{email}/forward', 'Email\EmailController@getForward');
+        Route::get('email/group/{contactGroup}', 'Email\EmailController@getEmailGroup');
+        Route::post('email/{email}', 'Email\EmailController@update');
+        Route::get('email/email-attachment/{emailAttachment}/download', 'Email\EmailController@downloadEmailAttachment');
+        Route::post('email/email-attachment/{email}/store', 'Email\EmailController@storeEmailAttachment');
+        Route::post('email/email-attachment/{emailAttachment}/delete', 'Email\EmailController@deleteEmailAttachment');
+        Route::post('email/send/{mailbox}', 'Email\EmailController@send');
+        Route::post('email/concept/{mailbox}/store', 'Email\EmailController@storeConcept');
+        Route::post('email/concept/{email}/update', 'Email\EmailController@updateConcept');
+        Route::post('email/concept/{email}/send', 'Email\EmailController@sendConcept');
+        Route::post('email/{email}/{contact}', 'Email\EmailController@associateContact');
+        Route::post('email/{email}/status/{emailStatusId}', 'Email\EmailController@setEmailStatus');
+
+        Route::get('email-template/grid', 'EmailTemplate\EmailTemplateController@grid');
+        Route::get('email-template/peek', 'EmailTemplate\EmailTemplateController@peek');
+        Route::get('email-template/{emailTemplate}', 'EmailTemplate\EmailTemplateController@show');
+        Route::get('email-template/with-user/{emailTemplate}', 'EmailTemplate\EmailTemplateController@showWithUser');
+        Route::post('email-template', 'EmailTemplate\EmailTemplateController@store');
+        Route::post('email-template/{emailTemplate}', 'EmailTemplate\EmailTemplateController@update');
+
+
     }
 );

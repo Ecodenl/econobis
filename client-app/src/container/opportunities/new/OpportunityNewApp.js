@@ -105,6 +105,16 @@ class OppportunitiesNewApp extends Component {
         });
     };
 
+    handleEditorChange = (e) => {
+        this.setState({
+            ...this.state,
+            opportunity: {
+                ...this.state.opportunity,
+                quotationText: e.target.getContent()
+            },
+        });
+    };
+
     handleChangeDesiredDate = (date) => {
         const formattedDate = (date ? moment(date).format('Y-MM-DD') : '');
 
@@ -150,23 +160,26 @@ class OppportunitiesNewApp extends Component {
 
     render() {
         return (
-            <div>
-                <div className="panel panel-default">
-                    <div className="panel-body">
-                        <div className="col-md-12 extra-space-above">
-                            <OpportunityNewToolbar/>
-                        </div>
-                        <div className="col-md-12 extra-space-above">
-                            <OpportunityNew
-                                opportunity={this.state.opportunity}
-                                contacts={this.state.contacts}
-                                users={this.props.users}
-                                registrations={this.state.registrations}
-                                errors={this.state.errors}
-                                handleInputChange={this.handleInputChange}
-                                handleChangeDesiredDate={this.handleChangeDesiredDate}
-                                handleSubmit={this.handleSubmit}
-                            />
+            <div className="row">
+                <div className="col-md-9">
+                    <div className="panel panel-default">
+                        <div className="panel-body">
+                            <div className="col-md-12 extra-space-above">
+                                <OpportunityNewToolbar/>
+                            </div>
+                            <div className="col-md-12 extra-space-above">
+                                <OpportunityNew
+                                    opportunity={this.state.opportunity}
+                                    contacts={this.state.contacts}
+                                    users={this.props.users}
+                                    registrations={this.state.registrations}
+                                    errors={this.state.errors}
+                                    handleInputChange={this.handleInputChange}
+                                    handleChangeDesiredDate={this.handleChangeDesiredDate}
+                                    handleSubmit={this.handleSubmit}
+                                    handleEditorChange={this.handleEditorChange}
+                                />
+                            </div>
                         </div>
                     </div>
                 </div>

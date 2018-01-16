@@ -8,6 +8,12 @@ import contactGroupDetailsReducer from './contact-group/ContactGroupDetailsReduc
 import contactGroupReducer from './contact-group/ContactGroupReducer';
 import contactsInGroupReducer from './contact-group/ContactsInGroupReducer';
 import contactsReducer from './contact/ContactsReducer';
+import emailsReducer from './email/EmailsReducer';
+import emailDetailsReducer from './email/emailDetailsReducer';
+import emailTemplatesReducer from './email-template/emailTemplatesReducer';
+import emailTemplateDetailsReducer from './email-template/emailTemplateDetailsReducer';
+import mailboxDetailsReducer from './mailbox/mailboxDetailsReducer';
+import mailboxesReducer from './mailbox/mailboxesReducer';
 import measuresReducer from './measure/MeasureReducer';
 import meDetailsReducer from './general/MeDetailsReducer';
 import opportunitiesReducer from './opportunity/OpportunitiesReducer';
@@ -37,12 +43,24 @@ const rootReducer = combineReducers({
     contactGroups: contactGroupReducer,
     contactGroupDetails: contactGroupDetailsReducer,
     contactsInGroup: contactsInGroupReducer,
+
+    // Emails
+    emails: emailsReducer,
+    email: emailDetailsReducer,
+
+    // Email templates
+    emailTemplates: emailTemplatesReducer,
+    emailTemplate: emailTemplateDetailsReducer,
+
     // Opportunity
     opportunities: opportunitiesReducer,
     opportunityDetails: opportunityDetailsReducer,
     // Registration
     registrations: registrationsReducer,
     registrationDetails: registrationDetailsReducer,
+    // Mailbox
+    mailboxes: mailboxesReducer,
+    mailboxDetails: mailboxDetailsReducer,
     // Measures
     measures: measuresReducer,
     measure: measuresReducer,

@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import ReactPaginate from 'react-paginate';
 
 import DataTable from '../../../components/dataTable/DataTable';
 import DataTableHead from '../../../components/dataTable/DataTableHead';
@@ -53,6 +54,8 @@ class ContactsList extends Component {
     };
 
     render() {
+        const { data = [], meta = {}, isLoading } = this.props.contacts;
+
         return (
             <div>
                 <form onKeyUp={this.handleKeyUp}>
@@ -60,7 +63,7 @@ class ContactsList extends Component {
                         <DataTableHead>
                             <ContactsListHead
                                 showCheckbox={this.props.showCheckboxList}
-                                refreshContactsData={() => this.props.refreshContactsData()}
+                                fetchContactsData={() => this.props.fetchContactsData()}
                             />
                             <ContactsListFilter
                                 showCheckbox={this.props.showCheckboxList}
@@ -70,10 +73,10 @@ class ContactsList extends Component {
                         </DataTableHead>
                         <DataTableBody>
                             {
-                                this.props.contacts.length === 0 ? (
+                                data.length === 0 ? (
                                     <tr><td colSpan={11}>Geen contacten gevonden!</td></tr>
                                 ) : (
-                                    this.props.contacts.map((contact) => {
+                                    data.map((contact) => {
                                         return <ContactsListItem
                                             key={contact.id}
                                             {...contact}
@@ -86,6 +89,25 @@ class ContactsList extends Component {
                             }
                         </DataTableBody>
                     </DataTable>
+                    <div className="col-md-6 col-md-offset-3">
+                        <ReactPaginate
+                            onPageChange={this.props.handlePageClick}
+                            pageCount={ Math.ceil(meta.total / 20) }
+                            pageRangeDisplayed={5}
+                            marginPagesDisplayed={2}
+                            breakLabel={<a>...</a>}
+                            breakClassName={"break-me"}
+                            containerClassName={"pagination"}
+                            activeClassName={"active"}
+                            previousLabel={<span aria-hidden="true">&laquo;</span>}
+                            nextLabel={<span aria-hidden='true'>&raquo;</span>}
+                            initialPage={this.props.contactsPagination.page || 0}
+                            forcePage={this.props.contactsPagination.page}
+                        />
+                    </div>
+                    <div className="col-md-3">
+                        <div className="pull-right">Resultaten: { meta.total || 0 }</div>
+                    </div>
                 </form>
                 {
                     this.state.showDeleteItem &&

@@ -34,7 +34,11 @@ class RegistrationController extends ApiController
 
         $registrations->load(['sources', 'address', 'status']);
 
-        return GridRegistration::collection($registrations);
+        return GridRegistration::collection($registrations)
+            ->additional(['meta' => [
+            'total' => $requestQuery->total(),
+            ]
+        ]);
     }
 
     /**

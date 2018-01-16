@@ -1,6 +1,7 @@
 import { takeLatest } from 'redux-saga/effects';
 
-import { fetchCampaignsSaga, fetchCampaignSaga } from './campaign/CampaignsSaga';
+import { fetchCampaignsSaga } from './campaign/CampaignsSaga';
+import { fetchCampaignSaga } from './campaign/CampaignDetailsSaga';
 import { fetchContactDetailsSaga, deleteAddressSaga, deletePhoneNumberSaga, deleteEmailAddressSaga, deleteContactNoteSaga } from './contact/ContactDetailsSaga';
 import { fetchContactGroupDetailsSaga, updateContactGroupDetailsSaga } from './contact-group/ContactGroupDetailsSaga';
 import { fetchContactGroupsSaga, deleteContactGroupSaga, addContactToGroupSaga } from './contact-group/ContactGroupsSaga';
@@ -11,7 +12,8 @@ import { fetchEmailTemplatesSaga, fetchEmailTemplateSaga } from './email-templat
 import { fetchMailboxDetailsSaga, deleteMailboxSaga, newMailboxUserSaga, deleteMailboxUserSaga } from './mailbox/MailboxDetailsSaga';
 import { fetchMailboxesSaga } from './mailbox/MailboxesSaga';
 import { fetchMeasuresSaga, fetchMeasureSaga } from './measure/MeasuresSaga';
-import { fetchOpportunitiesSaga, fetchOpportunitySaga } from './opportunity/OpportunitiesSaga';
+import { fetchOpportunitiesSaga } from './opportunity/OpportunitiesSaga';
+import { fetchOpportunitySaga } from './opportunity/OpportunityDetailsSaga';
 import {
     fetchRegistrationDetailsSaga,
     deleteRegistrationNoteSaga,

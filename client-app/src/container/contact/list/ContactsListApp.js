@@ -4,7 +4,8 @@ import { bindActionCreators } from 'redux';
 import { isEmpty } from 'lodash';
 
 import { fetchContacts, clearContacts, setCheckedContactAll } from '../../../actions/contact/ContactsActions';
-import { setTypeFilter, setStatusFilter, clearFilter } from '../../../actions/contact/ContactsFiltersActions';
+import { setTypeFilter, setStatusFilter, clearFilterContacts } from '../../../actions/contact/ContactsFiltersActions';
+import { setContactsPagination } from '../../../actions/contact/ContactsPaginationActions';
 import ContactsList from './ContactsList';
 import ContactsListToolbar from './ContactsListToolbar';
 import filterHelper from '../../../helpers/FilterHelper';
@@ -16,11 +17,11 @@ class ContactsListApp extends Component {
         if(!isEmpty(props.params)) {
             switch(props.params.filter){
                 case 'type':
-                    this.props.clearFilter();
+                    this.props.clearFilterContacts();
                     this.props.setTypeFilter(props.params.value);
                     break;
                 case 'status':
-                    this.props.clearFilter();
+                    this.props.clearFilterContacts();
                     this.props.setStatusFilter(props.params.value);
                     break;
                 default:
@@ -32,15 +33,12 @@ class ContactsListApp extends Component {
             showCheckboxList: false,
             checkedAllCheckboxes: false,
         };
+
+        this.handlePageClick = this.handlePageClick.bind(this);
     }
 
     componentDidMount() {
-        setTimeout(() => {
-            const filters = filterHelper(this.props.contactsFilters);
-            const sorts = this.props.contactsSorts.reverse();
-
-            this.props.fetchContacts(filters, sorts);
-        },100 );
+        this.fetchContactsData();
     };
 
     componentWillReceiveProps(nextProps) {
@@ -48,11 +46,11 @@ class ContactsListApp extends Component {
             if(!isEmpty(nextProps.params)) {
                 switch(nextProps.params.filter){
                     case 'type':
-                        this.props.clearFilter();
+                        this.props.clearFilterContacts();
                         this.props.setTypeFilter(nextProps.params.value);
                         break;
                     case 'status':
-                        this.props.clearFilter();
+                        this.props.clearFilterContacts();
                         this.props.setStatusFilter(nextProps.params.value);
                         break;
                     default:
@@ -61,11 +59,7 @@ class ContactsListApp extends Component {
             };
 
             setTimeout(() => {
-                const filters = filterHelper(this.props.contactsFilters);
-                const sorts = this.props.contactsSorts.reverse();
-
-                this.props.clearContacts();
-                this.props.fetchContacts(filters, sorts);
+                this.fetchContactsData();
             }, 100);
         }
     }
@@ -74,28 +68,37 @@ class ContactsListApp extends Component {
         this.props.clearContacts();
     };
 
-    refreshContactsData = () => {
-        const filters = filterHelper(this.props.contactsFilters);
-        const sorts = this.props.contactsSorts.reverse();
+    fetchContactsData = () => {
+        setTimeout(() => {
+            const filters = filterHelper(this.props.contactsFilters);
+            const sorts = this.props.contactsSorts.reverse();
+            const pagination = { limit: 20, offset: this.props.contactsPagination.offset };
 
-        this.props.clearContacts();
-        this.props.fetchContacts(filters, sorts);
+            this.props.fetchContacts(filters, sorts, pagination);
+        },100 );
     };
 
     resetContactFilters = () => {
-        this.props.clearFilter();
+        this.props.clearFilterContacts();
 
-        setTimeout(() => {
-            this.refreshContactsData();
-        }, 100);
+        this.fetchContactsData();
     };
 
     onSubmitFilter() {
-        const filters = filterHelper(this.props.contactsFilters);
-        const sorts = this.props.contactsSorts.reverse();
-
         this.props.clearContacts();
-        this.props.fetchContacts(filters, sorts);
+
+        this.props.setContactsPagination({page: 0, offset: 0});
+
+        this.fetchContactsData();
+    };
+
+    handlePageClick(data) {
+        let page = data.selected;
+        let offset = Math.ceil(page * 20);
+
+        this.props.setContactsPagination({page, offset});
+
+        this.fetchContactsData();
     };
 
     toggleShowCheckboxList = () => {
@@ -130,11 +133,13 @@ class ContactsListApp extends Component {
                         <div className="col-md-12 extra-space-above">
                             <ContactsList
                                 contacts={this.props.contacts}
+                                contactsPagination={this.props.contactsPagination}
                                 showCheckboxList={this.state.showCheckboxList}
                                 selectAllCheckboxes={() => this.selectAllCheckboxes()}
                                 checkedAllCheckboxes={this.state.checkedAllCheckboxes}
                                 onSubmitFilter={() => this.onSubmitFilter()}
-                                refreshContactsData={() => this.refreshContactsData()}
+                                fetchContactsData={() => this.fetchContactsData()}
+                                handlePageClick={this.handlePageClick}
                             />
                         </div>
                     </div>
@@ -146,14 +151,15 @@ class ContactsListApp extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        contacts: state.contacts,
-        contactsFilters: state.contactsFilters,
-        contactsSorts: state.contactsSorts,
+        contacts: state.contacts.list,
+        contactsFilters: state.contacts.filters,
+        contactsSorts: state.contacts.sorts,
+        contactsPagination: state.contacts.pagination,
     };
 };
 
 const mapDispatchToProps = (dispatch) => {
-    return bindActionCreators({ fetchContacts, clearContacts, setCheckedContactAll, setTypeFilter, setStatusFilter, clearFilter }, dispatch);
+    return bindActionCreators({ fetchContacts, clearContacts, setCheckedContactAll, setTypeFilter, setStatusFilter, clearFilterContacts, setContactsPagination }, dispatch);
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(ContactsListApp);

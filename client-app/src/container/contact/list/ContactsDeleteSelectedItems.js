@@ -13,7 +13,7 @@ const ContactsDeleteSelectedItems = (props) => {
 
     const countCheckedContact = () => {
         let count = 0;
-
+        console.log(props)
         props.contacts.map((contact) => (contact.checked === true && count++));
 
         return count;
@@ -40,7 +40,7 @@ const ContactsDeleteSelectedItems = (props) => {
 
 const mapStateToProps = (state) => {
     return {
-        contacts: state.contacts,
+        contacts: state.contacts.list.data,
     };
 };
 

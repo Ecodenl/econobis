@@ -1,14 +1,14 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import OpportunityAPI from '../../../../api/opportunity/OpportunityAPI';
-import CampaignAPI from '../../../../api/campaign/CampaignAPI';
+import OpportunitiesAPI from '../../../../api/opportunity/OpportunitiesAPI';
+import CampaignDetailsAPI from '../../../../api/campaign/CampaignDetailsAPI';
 import InputText from '../../../../components/form/InputText';
 import ButtonText from '../../../../components/button/ButtonText';
 import InputSelect from "../../../../components/form/InputSelect";
 import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
-import { fetchCampaign } from '../../../../actions/campaign/CampaignsActions';
+import { fetchCampaign } from '../../../../actions/campaign/CampaignDetailsActions';
 
 class CampaignDetailsOpportunityNew extends Component {
     constructor(props) {
@@ -25,7 +25,7 @@ class CampaignDetailsOpportunityNew extends Component {
     };
 
     componentWillMount() {
-        OpportunityAPI.peekOpportunities().then(payload => {
+        OpportunitiesAPI.peekOpportunities().then(payload => {
             this.setState({
                 opportunities: payload
             });
@@ -62,7 +62,7 @@ class CampaignDetailsOpportunityNew extends Component {
         event.preventDefault();
 
         if(!this.state.errors.hasErrors){
-            CampaignAPI.associateOpportunity(this.props.campaignId, this.state.opportunityId).then(() => {
+            CampaignDetailsAPI.associateOpportunity(this.props.campaignId, this.state.opportunityId).then(() => {
                this.props.fetchCampaign(this.props.campaignId);
                this.props.toggleShowNew();
             });
@@ -116,8 +116,8 @@ class CampaignDetailsOpportunityNew extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        campaignId: state.campaign.id,
-        campaignName: state.campaign.name,
+        campaignId: state.campaignDetails.id,
+        campaignName: state.campaignDetails.name,
     };
 };
 

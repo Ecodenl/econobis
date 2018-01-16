@@ -90,7 +90,7 @@ const TasksListFilter = props => {
 };
 
 const mapStateToProps = (state) => ({
-    filters: state.tasksFilters,
+    filters: state.tasks.filters,
     taskStatuses: state.systemData.taskStatuses,
 });
 

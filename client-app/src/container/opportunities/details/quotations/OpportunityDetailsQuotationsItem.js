@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import moment from 'moment';
 
-import OpportunityAPI from '../../../../api/opportunity/OpportunityAPI';
+import OpportunityDetailsAPI from '../../../../api/opportunity/OpportunityDetailsAPI';
 import OpportunityDetailsQuotationView from './OpportunityDetailsQuotationView';
 import OpportunityDetailsQuotationEdit from './OpportunityDetailsQuotationEdit';
 import {connect} from "react-redux";
@@ -119,7 +119,7 @@ class OpportunityDetailsQuotationsItem extends Component {
     handleSubmit = () => {
         const { quotation } = this.state;
 
-        OpportunityAPI.updateOpportunityQuotation(quotation).then(() => {
+        OpportunityDetailsAPI.updateOpportunityQuotation(quotation).then(() => {
             this.closeEdit();
         });
     };

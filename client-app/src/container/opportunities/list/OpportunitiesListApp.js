@@ -2,8 +2,10 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import { fetchOpportunities, clearOpportunities } from '../../../actions/opportunity/OpportunitiesActions';
+import { setOpportunitiesPagination } from '../../../actions/opportunity/OpportunitiesPaginationActions';
 import OpportunitiesListToolbar from './OpportunitiesListToolbar';
 import OpportunitiesList from './OpportunitiesList';
+import {setCampaignsPagination} from "../../../actions/campaign/CampaignsPaginationActions";
 
 class OpportunitiesListApp extends Component {
     constructor(props){
@@ -12,14 +14,33 @@ class OpportunitiesListApp extends Component {
             opportunities: [],
         };
 
+        this.fetchOpportunitiesData = this.fetchOpportunitiesData.bind(this);
+        this.handlePageClick = this.handlePageClick.bind(this);
     }
 
     componentDidMount() {
-        this.props.fetchOpportunities();
+        this.fetchOpportunitiesData();
     }
 
     componentWillUnmount() {
         this.props.clearOpportunities();
+    };
+
+    fetchOpportunitiesData() {
+        setTimeout(() => {
+            const pagination = { limit: 20, offset: this.props.opportunitiesPagination.offset };
+
+            this.props.fetchOpportunities(pagination);
+        },100 );
+    };
+
+    handlePageClick(data) {
+        let page = data.selected;
+        let offset = Math.ceil(page * 20);
+
+        this.props.setOpportunitiesPagination({page, offset});
+
+        this.fetchOpportunitiesData();
     };
 
     render() {
@@ -31,7 +52,7 @@ class OpportunitiesListApp extends Component {
                             <OpportunitiesListToolbar/>
                         </div>
                         <div className="col-md-12 extra-space-above">
-                            <OpportunitiesList/>
+                            <OpportunitiesList handlePageClick={this.handlePageClick} />
                         </div>
                     </div>
                 </div>
@@ -40,12 +61,21 @@ class OpportunitiesListApp extends Component {
     }
 };
 
+const mapStateToProps = (state) => {
+    return {
+        opportunitiesPagination: state.opportunities.pagination,
+    };
+};
+
 const mapDispatchToProps = dispatch => ({
-    fetchOpportunities: () => {
-        dispatch(fetchOpportunities());
+    fetchOpportunities: (pagination) => {
+        dispatch(fetchOpportunities(pagination));
     },
     clearOpportunities: () => {
         dispatch(clearOpportunities());
     },
+    setOpportunitiesPagination: (pagination) => {
+        dispatch(setOpportunitiesPagination(pagination));
+    },
 });
-export default connect(null, mapDispatchToProps)(OpportunitiesListApp);
+export default connect(mapStateToProps, mapDispatchToProps)(OpportunitiesListApp);

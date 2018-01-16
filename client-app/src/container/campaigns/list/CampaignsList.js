@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import ReactPaginate from 'react-paginate';
 
 import DataTable from '../../../components/dataTable/DataTable';
 import DataTableHead from '../../../components/dataTable/DataTableHead';
@@ -48,6 +49,8 @@ class CampaignsList extends Component {
     };
 
     render() {
+        const { data = [], meta = {}, isLoading } = this.props.campaigns;
+
         return (
         <div>
             <DataTable>
@@ -65,12 +68,12 @@ class CampaignsList extends Component {
                 </DataTableHead>
                 <DataTableBody>
                     {
-                        this.props.campaigns.length === 0 ? (
+                        data.length === 0 ? (
                             <tr>
                                 <td colSpan={9}>Geen campagnes gevonden!</td>
                             </tr>
                         ) : (
-                            this.props.campaigns.map(campaign => (
+                            data.map(campaign => (
                                 <CampaignsListItem
                                     key={campaign.id}
                                     {...campaign}
@@ -81,6 +84,25 @@ class CampaignsList extends Component {
                     }
                 </DataTableBody>
             </DataTable>
+            <div className="col-md-6 col-md-offset-3">
+                <ReactPaginate
+                    onPageChange={this.props.handlePageClick}
+                    pageCount={ Math.ceil(meta.total / 20) }
+                    pageRangeDisplayed={5}
+                    marginPagesDisplayed={2}
+                    breakLabel={<a>...</a>}
+                    breakClassName={"break-me"}
+                    containerClassName={"pagination"}
+                    activeClassName={"active"}
+                    previousLabel={<span aria-hidden="true">&laquo;</span>}
+                    nextLabel={<span aria-hidden='true'>&raquo;</span>}
+                    initialPage={this.props.campaignsPagination.page || 0}
+                    forcePage={this.props.campaignsPagination.page}
+                />
+            </div>
+            <div className="col-md-3">
+                <div className="pull-right">Resultaten: { meta.total || 0 }</div>
+            </div>
             {
                 this.state.showDeleteItem &&
                 <CampaignsDeleteItem
@@ -95,7 +117,8 @@ class CampaignsList extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        campaigns: state.campaigns,
+        campaigns: state.campaigns.list,
+        campaignsPagination: state.campaigns.pagination,
     };
 };
 

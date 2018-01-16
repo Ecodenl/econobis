@@ -4,19 +4,6 @@ const URL_API = process.env.URL_API;
 const URL_CAMPAIGN = `${URL_API}/api/campaign`;
 
 export default {
-    fetchCampaignGrid: () => {
-        const requestUrl = `${URL_CAMPAIGN}/grid`;
-        const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
-        axios.defaults.headers.common.Authorization = AUTH_TOKEN;
-
-        return axios.get(requestUrl)
-            .then(response => response.data.data)
-            .catch((error) => {
-                console.log(error);
-            },
-            );
-    },
-
     fetchCampaign: (id) => {
         const requestUrl = `${URL_CAMPAIGN}/${id}`;
         const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
@@ -146,22 +133,6 @@ export default {
                 },
             );
     },
-
-    peekCampaigns: () => {
-        const requestUrl = `${URL_CAMPAIGN}/peek`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
-
-        return axios.get(requestUrl)
-            .then(function (response) {
-                return response.data.data;
-            })
-            .catch(function (error) {
-                    console.log(error);
-                }
-            );
-    },
-
 
     updateCampaignOwner: (campaignId, userId) => {
         const requestUrl = `${URL_CAMPAIGN}/${campaignId}/owner/${userId}/associate`;

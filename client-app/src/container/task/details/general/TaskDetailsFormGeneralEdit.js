@@ -13,8 +13,8 @@ import InputDate from '../../../../components/form/InputDate';
 import validator from "validator";
 import RegistrationsAPI from "../../../../api/registration/RegistrationsAPI";
 import ContactGroupAPI from "../../../../api/contact-group/ContactGroupAPI";
-import OpportunityAPI from "../../../../api/opportunity/OpportunityAPI";
-import CampaignAPI from "../../../../api/campaign/CampaignAPI";
+import OpportunitiesAPI from "../../../../api/opportunity/OpportunitiesAPI";
+import CampaignDetailsAPI from "../../../../api/campaign/CampaignDetailsAPI";
 
 class TaskDetailsFormGeneralEdit extends Component {
     constructor(props) {
@@ -75,11 +75,11 @@ class TaskDetailsFormGeneralEdit extends Component {
             this.setState({ contactGroups: payload });
         });
 
-        OpportunityAPI.peekOpportunities().then((payload) => {
+        OpportunitiesAPI.peekOpportunities().then((payload) => {
             this.setState({ opportunities: payload });
         });
 
-        CampaignAPI.peekCampaigns().then((payload) => {
+        CampaignDetailsAPI.peekCampaigns().then((payload) => {
             this.setState({ campaigns: payload });
         });
     };

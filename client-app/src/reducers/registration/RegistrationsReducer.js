@@ -1,12 +1,15 @@
-export default function (state= [], action) {
-    switch (action.type) {
-    case 'FETCH_REGISTRATIONS_SUCCESS':
-        return [
-            ...action.registrations,
-        ];
-    case 'CLEAR_REGISTRATIONS':
-        return state.registrations = [];
-    default:
-        return state;
-    }
-}
+import { combineReducers } from 'redux';
+
+import registrationsListReducer from './RegistrationsListReducer';
+import registrationsFiltersReducer from './RegistrationsFiltersReducer';
+import registrationsSortsReducer from './RegistrationsSortsReducer';
+import registrationsPaginationReducer from './RegistrationsPaginationReducer';
+
+const registrationsReducer = combineReducers({
+    list: registrationsListReducer,
+    filters: registrationsFiltersReducer,
+    sorts: registrationsSortsReducer,
+    pagination: registrationsPaginationReducer,
+});
+
+export default registrationsReducer;

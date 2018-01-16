@@ -1,8 +1,9 @@
-export const fetchTasks = (filters, sorts) => {
+export const fetchTasks = (filters, sorts, pagination) => {
     return {
         type: 'FETCH_TASKS',
         filters,
         sorts,
+        pagination,
     };
 };
 

@@ -32,3 +32,7 @@ export const setFilterTaskResponsibleUserName = (responsibleUserName) => ({
     type: 'SET_FILTER_TASK_RESPONSIBLE_USER_NAME',
     responsibleUserName,
 });
+
+export const clearFilterTask = () => ({
+    type: 'CLEAR_FILTER_TASKS',
+});

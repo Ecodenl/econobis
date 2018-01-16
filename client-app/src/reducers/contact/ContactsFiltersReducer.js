@@ -123,7 +123,7 @@ export default (state = filtersReducerDefaultState, action) => {
                     data: action.createdAt,
                 }
             };
-        case 'CLEAR_FILTER':
+        case 'CLEAR_FILTER_CONTACTS':
             return {
                 ...state,
                 ...filtersReducerDefaultState,

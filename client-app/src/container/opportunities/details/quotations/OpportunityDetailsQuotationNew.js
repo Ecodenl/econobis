@@ -3,14 +3,14 @@ import { connect } from 'react-redux';
 import moment from 'moment';
 
 import OrganisationAPI from '../../../../api/contact/OrganisationAPI';
-import OpportunityAPI from '../../../../api/opportunity/OpportunityAPI';
+import OpportunityDetailsAPI from '../../../../api/opportunity/OpportunityDetailsAPI';
 import InputText from '../../../../components/form/InputText';
 import InputDate from '../../../../components/form/InputDate';
 import ButtonText from '../../../../components/button/ButtonText';
 import InputSelect from "../../../../components/form/InputSelect";
 import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
-import { fetchOpportunity } from '../../../../actions/opportunity/OpportunitiesActions';
+import { fetchOpportunity } from '../../../../actions/opportunity/OpportunityDetailsActions';
 
 class OpportunityDetailsQuotationNew extends Component {
     constructor(props) {
@@ -125,7 +125,7 @@ class OpportunityDetailsQuotationNew extends Component {
         const { quotation } = this.state;
 
         if(!this.state.errors.hasErrors){
-            OpportunityAPI.storeOpportunityQuotation(this.props.opportunityId, quotation).then(() => {
+            OpportunityDetailsAPI.storeOpportunityQuotation(this.props.opportunityId, quotation).then(() => {
                this.props.fetchOpportunity(this.props.opportunityId);
                this.props.toggleShowNew();
             });
@@ -218,9 +218,9 @@ class OpportunityDetailsQuotationNew extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        opportunityMeasure: state.opportunity.measure.name,
-        opportunityStatus: state.opportunity.status.name,
-        opportunityId: state.opportunity.id,
+        opportunityMeasure: state.opportunityDetails.measure.name,
+        opportunityStatus: state.opportunityDetails.status.name,
+        opportunityId: state.opportunityDetails.id,
     };
 };
 

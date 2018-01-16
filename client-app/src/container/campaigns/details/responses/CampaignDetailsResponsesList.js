@@ -25,7 +25,7 @@ const CampaignDetailsResponseList = props => {
                         />;
                     })
                     :
-                    <div>Geen reponses bekend</div>
+                    <div>Geen responses bekend</div>
             }
         </div>
     );
@@ -33,7 +33,7 @@ const CampaignDetailsResponseList = props => {
 
 const mapStateToProps = (state) => {
     return {
-        responses: state.campaign.responses,
+        responses: state.campaignDetails.responses,
     };
 };
 export default connect(mapStateToProps)(CampaignDetailsResponseList);

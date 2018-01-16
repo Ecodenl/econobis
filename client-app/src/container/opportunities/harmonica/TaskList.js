@@ -46,7 +46,7 @@ class TaskList extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        relatedTasks: state.opportunity.relatedTasks,
+        relatedTasks: state.opportunityDetails.relatedTasks,
     };
 };
 

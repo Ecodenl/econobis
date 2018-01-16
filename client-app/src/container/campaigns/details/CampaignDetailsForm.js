@@ -13,7 +13,6 @@ class CampaignDetailsForm extends Component {
         super(props);
     };
 
-
     render() {
 
         return (
@@ -33,7 +32,7 @@ class CampaignDetailsForm extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        campaign: state.campaign,
+        campaign: state.campaignDetails,
     }
 };
 

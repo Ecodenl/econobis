@@ -8,9 +8,9 @@ import InputSelect from '../../../../components/form/InputSelect';
 import ButtonText from '../../../../components/button/ButtonText';
 import PanelFooter from "../../../../components/panel/PanelFooter";
 
-import CampaignAPI from '../../../../api/campaign/CampaignAPI';
+import CampaignDetailsAPI from '../../../../api/campaign/CampaignDetailsAPI';
 
-import { fetchCampaign } from '../../../../actions/campaign/CampaignsActions';
+import { fetchCampaign } from '../../../../actions/campaign/CampaignDetailsActions';
 import InputDate from "../../../../components/form/InputDate";
 
 class CampaignFormEdit extends Component {
@@ -61,7 +61,7 @@ class CampaignFormEdit extends Component {
         this.setState({ ...this.state, errors: errors });
 
         !hasErrors &&
-        CampaignAPI.updateCampaignOwner(campaign.id, campaign.ownedById).then(payload => {
+        CampaignDetailsAPI.updateCampaignOwner(campaign.id, campaign.ownedById).then(payload => {
             this.props.fetchCampaign(campaign.id);
             this.props.switchToView();
         });
@@ -121,7 +121,7 @@ const mapDispatchToProps = dispatch => ({
 
 const mapStateToProps = (state) => {
     return {
-        campaign: state.campaign,
+        campaign: state.campaignDetails,
         users: state.systemData.users,
     }
 };

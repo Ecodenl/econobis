@@ -3,13 +3,12 @@ import { connect } from 'react-redux';
 
 import { fetchCampaigns } from '../../../actions/campaign/CampaignsActions';
 import Modal from '../../../components/modal/Modal';
-import CampaignAPI from '../../../api/campaign/CampaignAPI';
-
+import CampaignDetailsAPI from '../../../api/campaign/CampaignDetailsAPI';
 
 const CampaignsDeleteItem = (props) => {
 
     const confirmAction = () => {
-        CampaignAPI.deleteCampaign(props.id).then(() => {
+        CampaignDetailsAPI.deleteCampaign(props.id).then(() => {
             props.fetchCampaigns();
         });
         props.closeDeleteItemModal();

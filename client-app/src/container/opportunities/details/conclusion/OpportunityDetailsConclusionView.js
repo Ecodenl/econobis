@@ -26,7 +26,7 @@ const ContactDetailsFormConclusionView = props => {
 
 const mapStateToProps = (state) => {
     return {
-        opportunity: state.opportunity,
+        opportunity: state.opportunityDetails,
     };
 };
 

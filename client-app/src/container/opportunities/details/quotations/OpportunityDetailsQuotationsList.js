@@ -35,9 +35,9 @@ const OpportunityDetailsQuotationsList = props => {
 
 const mapStateToProps = (state) => {
     return {
-        opportunityMeasure: state.opportunity.measure.name,
-        opportunityStatus: state.opportunity.status.name,
-        quotations: state.opportunity.quotations,
+        opportunityMeasure: state.opportunityDetails.measure.name,
+        opportunityStatus: state.opportunityDetails.status.name,
+        quotations: state.opportunityDetails.quotations,
     };
 };
 export default connect(mapStateToProps)(OpportunityDetailsQuotationsList);

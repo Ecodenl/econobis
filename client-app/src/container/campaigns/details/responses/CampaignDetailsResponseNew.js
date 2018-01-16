@@ -2,13 +2,13 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import ContactsAPI from '../../../../api/contact/ContactsAPI';
-import CampaignAPI from '../../../../api/campaign/CampaignAPI';
+import CampaignDetailsAPI from '../../../../api/campaign/CampaignDetailsAPI';
 import InputText from '../../../../components/form/InputText';
 import ButtonText from '../../../../components/button/ButtonText';
 import InputSelect from "../../../../components/form/InputSelect";
 import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
-import { fetchCampaign } from '../../../../actions/campaign/CampaignsActions';
+import { fetchCampaign } from '../../../../actions/campaign/CampaignDetailsActions';
 
 class CampaignDetailsResponseNew extends Component {
     constructor(props) {
@@ -62,7 +62,7 @@ class CampaignDetailsResponseNew extends Component {
         event.preventDefault();
 
         if(!this.state.errors.hasErrors){
-            CampaignAPI.attachResponse(this.props.campaignId, this.state.contactId).then(() => {
+            CampaignDetailsAPI.attachResponse(this.props.campaignId, this.state.contactId).then(() => {
                this.props.fetchCampaign(this.props.campaignId);
                this.props.toggleShowNew();
             });
@@ -117,8 +117,8 @@ class CampaignDetailsResponseNew extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        campaignId: state.campaign.id,
-        campaignName: state.campaign.name,
+        campaignId: state.campaignDetails.id,
+        campaignName: state.campaignDetails.name,
     };
 };
 

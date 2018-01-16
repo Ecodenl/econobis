@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import ReactPaginate from 'react-paginate';
 
 import DataTable from '../../../components/dataTable/DataTable';
 import DataTableHead from '../../../components/dataTable/DataTableHead';
@@ -53,13 +54,15 @@ class TasksList extends Component {
     };
 
     render() {
+        const { data = [], meta = {}, isLoading } = this.props.tasks;
+
         return (
             <div>
                 <form onKeyUp={this.handleKeyUp}>
                     <DataTable>
                         <DataTableHead>
                             <TasksListHead
-                                refreshTasksData={() => this.props.refreshTasksData()}
+                                fetchTasksData={() => this.props.fetchTasksData()}
                             />
                             <TasksListFilter
                                 onSubmitFilter={this.props.onSubmitFilter}
@@ -67,10 +70,10 @@ class TasksList extends Component {
                         </DataTableHead>
                         <DataTableBody>
                             {
-                                this.props.tasks.length === 0 ? (
+                                data.length === 0 ? (
                                     <tr><td colSpan={8}>Geen taken gevonden!</td></tr>
                                 ) : (
-                                    this.props.tasks.map((task) => {
+                                    data.map((task) => {
                                         return <TasksListItem
                                             key={task.id}
                                             {...task}
@@ -81,6 +84,25 @@ class TasksList extends Component {
                             }
                         </DataTableBody>
                     </DataTable>
+                    <div className="col-md-6 col-md-offset-3">
+                        <ReactPaginate
+                            onPageChange={this.props.handlePageClick}
+                            pageCount={ Math.ceil(meta.total / 20) }
+                            pageRangeDisplayed={5}
+                            marginPagesDisplayed={2}
+                            breakLabel={<a>...</a>}
+                            breakClassName={"break-me"}
+                            containerClassName={"pagination"}
+                            activeClassName={"active"}
+                            previousLabel={<span aria-hidden="true">&laquo;</span>}
+                            nextLabel={<span aria-hidden='true'>&raquo;</span>}
+                            initialPage={this.props.tasksPagination.page || 0}
+                            forcePage={this.props.tasksPagination.page}
+                        />
+                    </div>
+                    <div className="col-md-3">
+                        <div className="pull-right">Resultaten: { meta.total || 0 }</div>
+                    </div>
                 </form>
                 {
                     this.state.showDeleteItem &&

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import OpportunityAPI from '../../../../api/opportunity/OpportunityAPI';
+import OpportunitiesAPI from '../../../../api/opportunity/OpportunitiesAPI';
 import MeasureAPI from '../../../../api/measure/MeasureAPI';
 
 import InputText from '../../../../components/form/InputText';
@@ -26,7 +26,7 @@ class MeasureDetailsOpportunityNew extends Component {
     };
 
     componentWillMount() {
-        OpportunityAPI.peekOpportunities().then(payload => {
+        OpportunitiesAPI.peekOpportunities().then(payload => {
             this.setState({
                 opportunities: payload
             });

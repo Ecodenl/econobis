@@ -12,9 +12,9 @@ import PanelFooter from "../../../../components/panel/PanelFooter";
 
 import ContactsAPI from '../../../../api/contact/ContactsAPI';
 import RegistrationsAPI from '../../../../api/registration/RegistrationsAPI';
-import OpportunityAPI from '../../../../api/opportunity/OpportunityAPI';
+import OpportunityDetailsAPI from '../../../../api/opportunity/OpportunityDetailsAPI';
 
-import { fetchOpportunity } from '../../../../actions/opportunity/OpportunitiesActions';
+import { fetchOpportunity } from '../../../../actions/opportunity/OpportunityDetailsActions';
 
 class OpportunityFormEdit extends Component {
     constructor(props) {
@@ -117,7 +117,7 @@ class OpportunityFormEdit extends Component {
         this.setState({ ...this.state, errors: errors });
 
         !hasErrors &&
-        OpportunityAPI.updateOpportunity(opportunity.id, opportunity).then(payload => {
+        OpportunityDetailsAPI.updateOpportunity(opportunity.id, opportunity).then(payload => {
             this.props.fetchOpportunity(opportunity.id);
             this.props.switchToView();
         });
@@ -255,7 +255,7 @@ const mapDispatchToProps = dispatch => ({
 
 const mapStateToProps = (state) => {
     return {
-        opportunity: state.opportunity,
+        opportunity: state.opportunityDetails,
         status: state.systemData.opportunityStatus,
         reactions: state.systemData.opportunityReactions,
         measures: state.systemData.measures,

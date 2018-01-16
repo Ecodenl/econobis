@@ -87,7 +87,7 @@ class AddContactToGroup extends Component {
 const mapStateToProps = state => {
     return {
         contactDetails: state.contactDetails,
-        contacts: state.contacts,
+        contacts: state.contacts.list.data,
     }
 };
 

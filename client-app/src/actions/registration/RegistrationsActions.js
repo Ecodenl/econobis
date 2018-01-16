@@ -1,8 +1,9 @@
-export const fetchRegistrations = (filters, sorts) => {
+export const fetchRegistrations = (filters, sorts, pagination) => {
     return {
         type: 'FETCH_REGISTRATIONS',
         filters,
         sorts,
+        pagination,
     };
 };
 

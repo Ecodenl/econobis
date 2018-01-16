@@ -7,7 +7,7 @@ import { hashHistory } from 'react-router';
 import CampaignNewToolbar from './CampaignNewToolbar';
 import CampaignNew from './CampaignNew';
 
-import CampaignAPI from '../../../api/campaign/CampaignAPI';
+import CampaignDetailsAPI from '../../../api/campaign/CampaignDetailsAPI';
 
 class CampaignNewApp extends Component {
     constructor(props) {
@@ -100,7 +100,7 @@ class CampaignNewApp extends Component {
         this.setState({ ...this.state, errors: errors });
 
         !hasErrors &&
-        CampaignAPI.storeCampaign(campaign).then(payload => {
+        CampaignDetailsAPI.storeCampaign(campaign).then(payload => {
             hashHistory.push(`/campagne/${payload.id}`);
         });
     };

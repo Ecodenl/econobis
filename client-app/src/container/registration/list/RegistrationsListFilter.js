@@ -92,7 +92,7 @@ const RegistrationsListFilter = props => {
 };
 
 const mapStateToProps = (state) => ({
-    filters: state.registrationsFilters,
+    filters: state.registrations.filters,
     registrationSources: state.systemData.registrationSources,
     registrationStatuses: state.systemData.registrationStatuses,
     measures: state.systemData.measures,

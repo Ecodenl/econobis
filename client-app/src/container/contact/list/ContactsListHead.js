@@ -9,7 +9,7 @@ const ContactsListHead = (props) => {
         props.setContactsSortsFilter(field, order);
 
         setTimeout(() => {
-            props.refreshContactsData();
+            props.fetchContactsData();
         }, 100);
     };
 

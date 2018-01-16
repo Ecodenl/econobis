@@ -1,24 +1,12 @@
-export const fetchOpportunities = () => {
+export const fetchOpportunities = (pagination) => {
     return {
         type: 'FETCH_OPPORTUNITIES',
+        pagination
     };
 };
 
 export const clearOpportunities = () => {
     return {
         type: 'CLEAR_OPPORTUNITIES'
-    };
-};
-
-export const fetchOpportunity = (id) => {
-    return {
-        type: 'FETCH_OPPORTUNITY',
-        id,
-    };
-};
-
-export const clearOpportunity = () => {
-    return {
-        type: 'CLEAR_OPPORTUNITY'
     };
 };

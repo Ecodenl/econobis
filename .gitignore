@@ -13,4 +13,3 @@ yarn-error.log
 /.env.development
 _ide_helper.php
 public/js/
-resources/views/

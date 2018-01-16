@@ -1,6 +1,8 @@
 import React from 'react';
 import { Router, Route, IndexRoute, hashHistory } from 'react-router';
 
+import ConceptsInListApp from './container/email/concept-list/ConceptsInListApp';
+import ConceptApp from './container/email/concept/ConceptApp';
 import CampaignDetailsApp from './container/campaigns/details/CampaignDetailsApp';
 import CampaignNewApp from './container/campaigns/new/CampaignNewApp';
 import CampaignsListApp from './container/campaigns/list/CampaignsListApp';
@@ -12,8 +14,18 @@ import ContactNewApp from './container/contact/new/ContactNewApp';
 import ContactsInGroupListApp from './container/contact-groups/list-contacts-in-group/ContactsInGroupListApp';
 import ContactsListApp from './container/contact/list/ContactsListApp';
 import DashboardApp from './container/dashboard/DashboardApp';
+import EmailsInListApp from './container/email/list/EmailsInListApp';
+import EmailNewApp from './container/email/new/EmailNewApp';
+import EmailDetailsApp from './container/email/details/EmailDetailsApp';
+import EmailTemplatesListApp from './container/email-templates/list/EmailTemplatesListApp';
+import EmailTemplateDetailsApp from './container/email-templates/details/EmailTemplateDetailsApp';
+import EmailTemplateNewApp from './container/email-templates/new/EmailTemplateNewApp';
+import EmailAnswerApp from './container/email/answer/EmailAnswerApp';
 import Login from './container/auth/Login';
 import Logout from './container/auth/Logout';
+import MailboxDetailsApp from './container/mailbox/details/MailboxDetailsApp';
+import MailboxNewApp from './container/mailbox/new/MailboxNewApp';
+import MailboxesListApp from './container/mailbox/list/MailboxesListApp';
 import Main from './container/global/Main';
 import MeasuresListApp from './container/measures/list/MeasuresListApp';
 import MeasureNewApp from './container/measures/new/MeasureNewApp';
@@ -44,9 +56,9 @@ const Routes = () => {
                 /* Contact */
                 <Route path="contact-groep/nieuw" component={ContactGroupNewApp} />
                 <Route path="contact-groepen" component={ ContactGroupsListApp } />
-                <Route path="contact/:id" component={ ContactDetailsApp } />
                 <Route path="contact/nieuw/:type" component={ PermissionHelper(ContactNewApp, true) } />
                 <Route path="contact/nieuw/:type/organisatie/:id" component={ PermissionHelper(ContactNewApp, true) } />
+                <Route path="contact/:id" component={ ContactDetailsApp } />
                 <Route path="contacten" component={ ContactsListApp } />
                 /* Contacts in group */
                 <Route path="contact-groep/:id" component={ContactGroupDetailsApp} />
@@ -56,11 +68,30 @@ const Routes = () => {
                 <Route path="campagne/:id" component={CampaignDetailsApp} />
                 <Route path="campagnes" component={CampaignsListApp} />
                 <Route path="contacten/:filter/:value" component={ ContactsListApp } />
-
+                /* Emails */
+                <Route path="emails/concept" component={ConceptsInListApp} />
+                <Route path="email/concept/:id" component={ConceptApp} />
+                <Route path="emails/:folder" component={EmailsInListApp} />
+                <Route path="email/nieuw" component={EmailNewApp} />
+                <Route path="email/nieuw/groep/:groupId" component={EmailNewApp} />
+                <Route path="email/:id" component={EmailDetailsApp} />
+                <Route path="email/:id/:type" component={EmailAnswerApp} />
+                /* Email templates */
+                <Route path="email-templates" component={EmailTemplatesListApp} />
+                <Route path="email-template/nieuw" component={EmailTemplateNewApp} />
+                <Route path="email-template/:id" component={EmailTemplateDetailsApp} />
+                /* Campagnes */
+                <Route path="campagne/nieuw" component={CampaignNewApp} />
+                <Route path="campagne/:id" component={CampaignDetailsApp} />
+                <Route path="campagnes" component={CampaignsListApp} />
+                /* Measures */
                 <Route path="maatregelen" component={MeasuresListApp} />
                 <Route path="maatregel/nieuw" component={MeasureNewApp} />
                 <Route path="maatregel/:id" component={MeasureDetailsApp} />
-
+                /* Mailboxes */
+                <Route path="mailbox/nieuw" component={MailboxNewApp} />
+                <Route path="mailbox/:id" component={MailboxDetailsApp} />
+                <Route path="mailboxen" component={MailboxesListApp} />
                 /* Registration */
                 <Route path="aanmelding/nieuw/contact/:contactId/adres/:addressId" component={RegistrationNewApp} />
                 <Route path="aanmelding/:id" component={RegistrationDetailsApp} />
@@ -78,6 +109,7 @@ const Routes = () => {
                 <Route path="taak/nieuw" component={TaskNewApp} />
                 <Route path="taak/:id" component={TaskDetailsApp} />
                 <Route path="taak/nieuw/:type/:id" component={TaskNewApp} />
+                <Route path="taak/:id" component={TaskDetailsApp} />
                 <Route path="taken" component={TasksListApp} />
                 /* 404 route */
                 <Route path="*" component={ NotFoundedPage } />

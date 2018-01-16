@@ -27,6 +27,7 @@ class FullCampaign extends Resource
             'startDate' => $this->start_date,
             'endDate' => $this->end_date,
             'goal' => $this->goal,
+            'createdAt' => $this->created_at,
             'status' => GenericResource::make($this->whenLoaded('status')),
             'type' => GenericResource::make($this->whenLoaded('type')),
             'measures' => GenericResource::collection($this->whenLoaded('measures')),

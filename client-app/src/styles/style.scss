@@ -7,21 +7,22 @@
 // Bootstrap
 @import "node_modules/bootstrap-sass/assets/stylesheets/bootstrap";
 
+@import "./partials/button";
+@import "./partials/dashboard";
+@import "./partials/daypicker_custom";
+@import "./partials/form";
+@import "./partials/glyphicon";
+@import "./partials/harmonica";
+@import "./partials/iframe";
+@import "./partials/loader";
 @import "./partials/login";
+@import "./partials/modal";
 @import "./partials/nav";
+@import "./partials/panel";
 @import "./partials/sidebar";
 @import "./partials/sidebarmenu";
-@import "./partials/table";
-@import "./partials/daypicker_custom";
-@import "./partials/modal";
-@import "./partials/dashboard";
-@import "./partials/form";
-@import "./partials/button";
-@import "./partials/loader";
-@import "./partials/panel";
-@import "./partials/harmonica";
-@import "./partials/glyphicon";
 @import "./partials/spacing";
+@import "./partials/table";
 @import "./partials/upload-file";
 
 /* TEMPORARY */
@@ -60,4 +61,3 @@ body {
     margin-top: 5px;
     margin-bottom: 5px;
 }
-

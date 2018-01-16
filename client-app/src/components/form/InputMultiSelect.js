@@ -4,11 +4,8 @@ import Select from 'react-select';
 import 'react-select/dist/react-select.css';
 
 const InputMultiSelect = props => {
-    const { label, className, size, id, name, value, options, onChangeAction, required } = props;
+    const { label, className, size, id, name, value, options, optionId, optionName, onChangeAction, required, multi, error} = props;
 
-    const optionsFormatted = options.map((option) => {
-       return {value: option.id, label: option.name}
-    });
 
     return (
         <div className="form-group col-sm-6">
@@ -19,12 +16,16 @@ const InputMultiSelect = props => {
                         name={name}
                         value={value}
                         onChange={onChangeAction}
-                        options={optionsFormatted}
-                        multi
+                        options={options}
+                        valueKey={optionId}
+                        labelKey={optionName}
+                        placeholder={""}
+                        noResultsText={"Geen resultaat gevonden"}
+                        multi={multi}
                         simpleValue
                         removeSelected
-                        >
-                </Select>
+                        className={error ? ' has-error' : ''}
+                        />
             </div>
         </div>
     );
@@ -33,10 +34,13 @@ const InputMultiSelect = props => {
 InputMultiSelect.defaultProps = {
     className: '',
     size: 'col-sm-6',
+    optionId: 'id',
+    optionName: 'name',
     readOnly: false,
     required: '',
     error: false,
     value: '',
+    multi: true,
 };
 
 InputMultiSelect.propTypes = {
@@ -46,12 +50,15 @@ InputMultiSelect.propTypes = {
     id: PropTypes.string,
     name: PropTypes.string.isRequired,
     options: PropTypes.array,
+    optionId: PropTypes.string,
+    optionName: PropTypes.string,
     value: PropTypes.string,
     onChangeAction: PropTypes.func,
     onBlurAction: PropTypes.func,
     required: PropTypes.string,
     readOnly: PropTypes.bool,
     error: PropTypes.bool,
+    multi: PropTypes.bool,
 };
 
 export default InputMultiSelect;

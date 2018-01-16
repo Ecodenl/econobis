@@ -4,6 +4,7 @@ import moment from 'moment';
 import { Link } from 'react-router';
 
 import ViewText from '../../../../components/form/ViewText';
+import ViewHtmlAsText from '../../../../components/form/ViewHtmlAsText';
 
 const OpportunityFormView = props => {
     const {campaign, contact, desiredDate, measure, number, quotationText, reaction, status, ownedBy, registration} = props.opportunity;
@@ -58,16 +59,10 @@ const OpportunityFormView = props => {
             </div>
 
             <div className="row" onClick={props.switchToEdit}>
-                <div className='col-sm-12'>
-                    <div className="row">
-                        <div className="col-sm-3">
-                            <label className="col-sm-12">Offerte tekst</label>
-                        </div>
-                        <div className="col-sm-8">
-                            {quotationText}
-                        </div>
-                    </div>
-                </div>
+                <ViewHtmlAsText
+                    label={"Offerte tekst"}
+                    value={quotationText}
+                />
             </div>
             <div className="row" onClick={props.switchToEdit}>
                 <ViewText

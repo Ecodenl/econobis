@@ -17,7 +17,7 @@ label.required:after {
   color: #f3f3f3 !important;
 }
 
-.has-error {
+.has-error, .has-error .Select-control {
   border-color: $brand-danger;
   color: $brand-danger;
   background: pink;

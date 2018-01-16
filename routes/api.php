@@ -191,6 +191,10 @@ Route::namespace('Api')
         Route::post('email-template', 'EmailTemplate\EmailTemplateController@store');
         Route::post('email-template/{emailTemplate}', 'EmailTemplate\EmailTemplateController@update');
 
+        Route::get('document/grid', 'Document\DocumentController@grid');
+        Route::get('document/{document}', 'Document\DocumentController@show');
+        Route::post('document', 'Document\DocumentController@store');
+        Route::post('document/{document}', 'Document\DocumentController@update');
 
     }
 );

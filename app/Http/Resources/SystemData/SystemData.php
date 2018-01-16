@@ -4,6 +4,8 @@ namespace App\Http\Resources\SystemData;
 
 use App\Eco\Campaign\CampaignStatus;
 use App\Eco\Campaign\CampaignType;
+use App\Eco\Document\DocumentGroup;
+use App\Eco\Document\DocumentType;
 use App\Eco\Email\EmailStatus;
 use App\Eco\Opportunity\OpportunityReaction;
 use App\Eco\Opportunity\OpportunityStatus;
@@ -82,6 +84,8 @@ class SystemData extends Resource
             'campaignStatuses' => FullEnumWithIdAndName::collection(CampaignStatus::all()),
             'campaignTypes' => FullEnumWithIdAndName::collection(CampaignType::all()),
             'emailStatuses' => FullEnumWithIdAndName::collection(EmailStatus::collection()),
+            'documentGroups' => FullEnumWithIdAndName::collection(DocumentGroup::collection()),
+            'documentTypes' => FullEnumWithIdAndName::collection(DocumentType::collection()),
         ];
     }
 }

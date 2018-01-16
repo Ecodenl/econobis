@@ -12,8 +12,8 @@ use App\Eco\EmailTemplate\EmailTemplate;
 use App\Eco\User\User;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\Resources\EmailTemplate\EmailTemplatePeek;
-use App\Http\Resources\EmailTemplate\FullEmailTemplate;
-use App\Http\Resources\EmailTemplate\GridEmailTemplate;
+use App\Http\Resources\EmailTemplate\FullDocument;
+use App\Http\Resources\EmailTemplate\GridDocument;
 use Illuminate\Support\Facades\Auth;
 
 
@@ -24,14 +24,14 @@ class EmailTemplateController
     {
         $emailTemplates = EmailTemplate::with('createdBy')->get();
 
-        return GridEmailTemplate::collection($emailTemplates);
+        return GridDocument::collection($emailTemplates);
     }
 
     public function show(EmailTemplate $emailTemplate)
     {
         $emailTemplate->load('createdBy');
 
-        return FullEmailTemplate::make($emailTemplate);
+        return FullDocument::make($emailTemplate);
     }
 
     public function showWithUser(EmailTemplate $emailTemplate)
@@ -42,7 +42,7 @@ class EmailTemplateController
 
         $emailTemplate->html_body = $this->replaceCurrentUserVariables($emailTemplate->html_body, $user);
 
-        return FullEmailTemplate::make($emailTemplate);
+        return FullDocument::make($emailTemplate);
     }
 
     public function store(RequestInput $requestInput)
@@ -57,7 +57,7 @@ class EmailTemplateController
         $emailTemplate->fill($data);
         $emailTemplate->save();
 
-        return FullEmailTemplate::make($emailTemplate->fresh());
+        return FullDocument::make($emailTemplate->fresh());
     }
 
     public function update(RequestInput $requestInput, EmailTemplate $emailTemplate) {
@@ -71,7 +71,7 @@ class EmailTemplateController
         $emailTemplate->fill($data);
         $emailTemplate->save();
 
-        return FullEmailTemplate::make($emailTemplate->fresh());
+        return FullDocument::make($emailTemplate->fresh());
     }
 
     public function peek()
@@ -102,7 +102,7 @@ class EmailTemplateController
             }
         }
 
-        $html_body = EmailTemplateController::stripRemainingVariableTags($html_body);
+        $html_body = DocumentController::stripRemainingVariableTags($html_body);
 
         return $html_body;
     }
@@ -115,7 +115,7 @@ class EmailTemplateController
             }
         }
 
-        $html_body = EmailTemplateController::stripRemainingVariableTags($html_body);
+        $html_body = DocumentController::stripRemainingVariableTags($html_body);
 
         return $html_body;
     }

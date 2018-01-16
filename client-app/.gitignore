@@ -1,5 +1,4 @@
 node_modules/
 .idea/
-dist/
 .env.production
 .env.development

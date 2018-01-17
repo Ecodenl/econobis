@@ -4,6 +4,7 @@ namespace App\Eco\Document;
 
 use App\Eco\Contact\Contact;
 use App\Eco\ContactGroup\ContactGroup;
+use App\Eco\DocumentTemplate\DocumentTemplate;
 use App\Eco\Opportunity\Opportunity;
 use App\Eco\User\User;
 use Illuminate\Database\Eloquent\Model;
@@ -49,6 +50,10 @@ class Document extends Model
         if(!$this->document_type) return null;
 
         return DocumentType::get($this->document_type);
+    }
+
+    public function template(){
+        return $this->belongsTo(DocumentTemplate::class);
     }
 
 }

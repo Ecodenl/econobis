@@ -13,6 +13,7 @@ use App\Helpers\RequestInput\RequestInput;
 use App\Http\RequestQueries\Document\Grid\RequestQuery;
 use App\Http\Resources\Document\FullDocument;
 use App\Http\Resources\Document\GridDocument;
+use Illuminate\Support\Facades\App;
 
 class DocumentController
 {
@@ -50,6 +51,7 @@ class DocumentController
             ->integer('contactGroupId')->validate('exists:contact_groups,id')->alias('contact_group_id')->next()
             ->integer('opportunityId')->validate('exists:opportunities,id')->alias('opportunity_id')->next()
             ->integer('sentById')->validate('exists:users,id')->alias('sent_by_id')->next()
+            ->integer('templateId')->validate('exists:document_templates,id')->alias('template_id')->next()
             ->get();
 
         if($data['document_type' == 'document']){
@@ -85,6 +87,7 @@ class DocumentController
             ->integer('contactGroupId')->validate('exists:contact_groups,id')->alias('contact_group_id')->next()
             ->integer('opportunityId')->validate('exists:opportunities,id')->alias('opportunity_id')->next()
             ->integer('sentById')->validate('exists:users,id')->alias('sent_by_id')->next()
+            ->integer('templateId')->validate('exists:document_templates,id')->alias('template_id')->next()
             ->get();
 
         $document->fill($data);
@@ -96,6 +99,15 @@ class DocumentController
     public function destroy(Document $document)
     {
         $document->forceDelete();
+    }
+
+    public function create(Document $document){
+
+        dd($document->base);
+        View::make();
+        $pdf = App::make('dompdf.wrapper');
+        $pdf->loadHTML('<h1>Test</h1>');
+        return $pdf->stream();
     }
 
 }

@@ -10,17 +10,24 @@ namespace App\Http\Controllers\Api\Document;
 
 use App\Eco\Document\Document;
 use App\Helpers\RequestInput\RequestInput;
+use App\Http\RequestQueries\Document\Grid\RequestQuery;
 use App\Http\Resources\Document\FullDocument;
 use App\Http\Resources\Document\GridDocument;
 
 class DocumentController
 {
 
-    public function grid()
+    public function grid(RequestQuery $requestQuery)
     {
-        $documents = Document::with('contact')->get();
+        $documents = $requestQuery->get();
 
-        return GridDocument::collection($documents);
+        $documents->load(['contact']);
+
+        return GridDocument::collection($documents)
+            ->additional(['meta' => [
+                'total' => $requestQuery->total(),
+            ]
+            ]);
     }
 
     public function show(Document $document)

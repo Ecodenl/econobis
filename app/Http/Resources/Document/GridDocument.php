@@ -19,6 +19,7 @@ class GridDocument extends Resource
         return [
             'id' => $this->id,
             'number' => $this->number,
+            'createdAt' => $this->created_at,
             'filename' => $this->filename,
             'contact' => FullContact::make($this->whenLoaded('contact')),
             'documentType' => FullEnumWithIdAndName::make($this->getDocumentType()),

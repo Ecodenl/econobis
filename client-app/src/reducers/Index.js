@@ -8,6 +8,7 @@ import contactGroupDetailsReducer from './contact-group/ContactGroupDetailsReduc
 import contactGroupReducer from './contact-group/ContactGroupReducer';
 import contactsInGroupReducer from './contact-group/ContactsInGroupReducer';
 import contactsReducer from './contact/ContactsReducer';
+import documentsReducer from './document/DocumentsReducer';
 import emailsReducer from './email/EmailsReducer';
 import emailDetailsReducer from './email/emailDetailsReducer';
 import emailTemplatesReducer from './email-template/emailTemplatesReducer';
@@ -43,7 +44,8 @@ const rootReducer = combineReducers({
     contactGroups: contactGroupReducer,
     contactGroupDetails: contactGroupDetailsReducer,
     contactsInGroup: contactsInGroupReducer,
-
+    // Documents
+    documents: documentsReducer,
     // Emails
     emails: emailsReducer,
     email: emailDetailsReducer,

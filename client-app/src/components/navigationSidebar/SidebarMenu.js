@@ -4,14 +4,15 @@ import SideNav, { Nav, NavIcon, NavText } from 'react-sidenav';
 import SvgIcon from 'react-icons-kit';
 
 import { ic_aspect_ratio } from 'react-icons-kit/md/ic_aspect_ratio';
+import { ic_dashboard } from 'react-icons-kit/md/ic_dashboard';
 import { starEmpty } from 'react-icons-kit/icomoon/starEmpty';
 import { ic_business } from 'react-icons-kit/md/ic_business';
 import { ic_contacts } from 'react-icons-kit/md/ic_contacts';
 import { ic_email } from 'react-icons-kit/md/ic_email';
 import { cog } from 'react-icons-kit/icomoon/cog';
-import { drawer } from 'react-icons-kit/icomoon/drawer';
 import { pencil2 } from 'react-icons-kit/icomoon/pencil2';
 import { speech_bubbles } from 'react-icons-kit/ikons/speech_bubbles';
+import { documents } from 'react-icons-kit/ikons/documents';
 
 const SidebarMenu = props => {
     return (
@@ -19,7 +20,7 @@ const SidebarMenu = props => {
             <SideNav highlightColor="#FFF" highlightBgColor="#27AE60" defaultSelected="dashboard">
                 <Link className="sidebar-link" to="/">
                     <Nav id="dashboard">
-                        <NavIcon><SvgIcon size={20} icon={ic_aspect_ratio} /></NavIcon>
+                        <NavIcon><SvgIcon size={20} icon={ic_dashboard} /></NavIcon>
                         <NavText>Dashboard</NavText>
                     </Nav>
                 </Link>
@@ -45,26 +46,6 @@ const SidebarMenu = props => {
                 <Nav id="aanmeldingen">
                     <NavIcon><SvgIcon size={20} icon={pencil2} /></NavIcon>
                     <NavText><Link className="sidebar-link" to="aanmeldingen">Aanmeldingen</Link></NavText>
-                </Nav>
-                <Nav id="projecten">
-                    <NavIcon><SvgIcon size={20} icon={drawer} /></NavIcon>
-                    <NavText> Projecten </NavText>
-                    <Nav id="lopende-projecten">
-                        <NavText> Lopende projecten </NavText>
-                    </Nav>
-                    <Nav id="productie-projecten">
-                        <NavText> Productie projecten </NavText>
-                    </Nav>
-                    <Nav id="projecten-gereed">
-                        <NavText> Projecten gereed </NavText>
-                    </Nav>
-                    <Nav id="productie-overzichten">
-                        <NavText> Productie overzichten </NavText>
-                    </Nav>
-                </Nav>
-                <Nav id="werkgroepen">
-                    <NavIcon><SvgIcon size={20} icon={ic_business} /></NavIcon>
-                    <NavText> Werkgroepen </NavText>
                 </Nav>
                 <Nav id="contact-groepen">
                     <NavIcon><SvgIcon size={20} icon={ic_aspect_ratio} /></NavIcon>
@@ -96,8 +77,8 @@ const SidebarMenu = props => {
                     <NavText><Link className="sidebar-link" to="kansen">Kansen</Link></NavText>
                 </Nav>
                 <Nav id="documenten">
-                    <NavIcon><SvgIcon size={20} icon={ic_aspect_ratio} /></NavIcon>
-                    <NavText> Documenten </NavText>
+                    <NavIcon><SvgIcon size={20} icon={documents} /></NavIcon>
+                    <NavText><Link className="sidebar-link" to="documenten">Documenten</Link></NavText>
                 </Nav>
                 <Nav id="variabelen">
                     <NavIcon><SvgIcon size={20} icon={ic_business} /></NavIcon>

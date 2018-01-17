@@ -12,8 +12,6 @@ namespace App\Http\Resources\Document;
 use App\Http\Resources\Contact\FullContact;
 use App\Http\Resources\ContactGroup\FullContactGroup;
 use App\Http\Resources\EnumWithIdAndName\FullEnumWithIdAndName;
-use App\Http\Resources\GenericResource;
-use App\Http\Resources\Mailbox\FullMailbox;
 use App\Http\Resources\Opportunity\FullOpportunity;
 use App\Http\Resources\User\FullUser;
 use Illuminate\Http\Resources\Json\Resource;

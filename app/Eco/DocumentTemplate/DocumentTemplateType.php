@@ -6,13 +6,13 @@
  * Time: 11:55
  */
 
-namespace App\Eco\Document;
+namespace App\Eco\DocumentTemplate;
 
 
 use JosKolenberg\Enum\Enum;
 use JosKolenberg\Enum\EnumWithIdAndName;
 
-class DocumentGroup extends EnumWithIdAndName
+class DocumentTemplateType extends EnumWithIdAndName
 {
 
     /**
@@ -23,11 +23,10 @@ class DocumentGroup extends EnumWithIdAndName
     protected static function seed()
     {
         return [
-            new static('general', 'Algemeen'),
-            new static('quotation', 'Offerte'),
-            new static('order', 'Order'),
-            new static('contract', 'Contract'),
-            new static('membership', 'Lidmaatschap'),
+            new static('general', 'Template'),
+            new static('base', 'Basis'),
+            new static('header', 'Koptekst'),
+            new static('footer', 'Voettekst'),
         ];
     }
 }

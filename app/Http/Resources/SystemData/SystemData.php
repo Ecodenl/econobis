@@ -6,6 +6,7 @@ use App\Eco\Campaign\CampaignStatus;
 use App\Eco\Campaign\CampaignType;
 use App\Eco\Document\DocumentGroup;
 use App\Eco\Document\DocumentType;
+use App\Eco\DocumentTemplate\DocumentTemplateType;
 use App\Eco\Email\EmailStatus;
 use App\Eco\Opportunity\OpportunityReaction;
 use App\Eco\Opportunity\OpportunityStatus;
@@ -86,6 +87,7 @@ class SystemData extends Resource
             'emailStatuses' => FullEnumWithIdAndName::collection(EmailStatus::collection()),
             'documentGroups' => FullEnumWithIdAndName::collection(DocumentGroup::collection()),
             'documentTypes' => FullEnumWithIdAndName::collection(DocumentType::collection()),
+            'documentTemplateTypes' => FullEnumWithIdAndName::collection(DocumentTemplateType::collection()),
         ];
     }
 }

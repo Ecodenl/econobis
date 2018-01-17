@@ -36,7 +36,7 @@ class DocumentController
             ->string('description')->next()
             ->string('documentType')->validate('required')->alias('document_type')->next()
             ->string('documentGroup')->validate('required')->alias('document_group')->next()
-            ->string('filename')->validate('required')->next()
+            ->string('filename')->next()
             ->string('freeText1')->alias('free_text_1')->next()
             ->string('freeText2')->alias('free_text_2')->next()
             ->integer('contactId')->validate('exists:contacts,id')->alias('contact_id')->next()
@@ -45,10 +45,19 @@ class DocumentController
             ->integer('sentById')->validate('exists:users,id')->alias('sent_by_id')->next()
             ->get();
 
-        //todo
-        //validate if filename exist in Alfresco
-        //create document
-        //save in alfresco
+        if($data['document_type' == 'document']){
+            //validate if filename exist in Alfresco
+            //create document
+            //save in alfresco
+
+        }
+        else{
+            //get file from request
+            // get name of file
+            //validate name
+            //save in alfresco
+        }
+
 
         $document = new Document();
         $document->fill($data);
@@ -76,4 +85,10 @@ class DocumentController
 
         return FullDocument::make($document->fresh());
     }
+
+    public function destroy(Document $document)
+    {
+        $document->forceDelete();
+    }
+
 }

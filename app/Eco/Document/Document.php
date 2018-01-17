@@ -39,16 +39,16 @@ class Document extends Model
 
     public function getDocumentGroup()
     {
-        if(!$this->status) return null;
+        if(!$this->document_group) return null;
 
-        return DocumentGroup::get($this->status);
+        return DocumentGroup::get($this->document_group);
     }
 
     public function getDocumentType()
     {
-        if(!$this->status) return null;
+        if(!$this->document_type) return null;
 
-        return DocumentType::get($this->status);
+        return DocumentType::get($this->document_type);
     }
 
 }

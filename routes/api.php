@@ -193,8 +193,15 @@ Route::namespace('Api')
 
         Route::get('document/grid', 'Document\DocumentController@grid');
         Route::get('document/{document}', 'Document\DocumentController@show');
+        Route::post('document/{document}/delete', 'Document\DocumentController@destroy');
         Route::post('document', 'Document\DocumentController@store');
         Route::post('document/{document}', 'Document\DocumentController@update');
 
+        Route::get('document-template/grid', 'DocumentTemplate\DocumentTemplateController@grid');
+        Route::get('document-template/peek', 'DocumentTemplate\DocumentTemplateController@peek');
+        Route::get('document-template/{documentTemplate}', 'DocumentTemplate\DocumentTemplateController@show');
+        Route::post('document-template', 'DocumentTemplate\DocumentTemplateController@store');
+        Route::post('document-template/{documentTemplate}/delete', 'DocumentTemplate\DocumentTemplateController@destroy');
+        Route::post('document-template/{documentTemplate}', 'DocumentTemplate\DocumentTemplateController@update');
     }
 );

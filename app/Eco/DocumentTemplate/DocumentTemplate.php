@@ -2,6 +2,7 @@
 
 namespace App\Eco\DocumentTemplate;
 
+use App\Eco\Document\Document;
 use App\Eco\Document\DocumentGroup;
 use App\Eco\User\User;
 use Illuminate\Database\Eloquent\Model;
@@ -48,6 +49,11 @@ class DocumentTemplate extends Model
     public function roles()
     {
         return $this->belongsToMany(Role::class);
+    }
+
+    public function documents()
+    {
+        return $this->hasMany(Document::class);
     }
 
 }

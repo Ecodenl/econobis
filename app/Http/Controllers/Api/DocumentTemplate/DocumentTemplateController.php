@@ -111,15 +111,30 @@ class DocumentTemplateController extends Controller
         $documentTemplate->forceDelete();
     }
 
-    public function peek()
+    public function peekGeneral()
     {
         $userRole = Auth::user()->roles()->value('name');
 
-        $documentTemplates = DocumentTemplate::with('roles')->get();
+        $documentTemplates = DocumentTemplate::where('template_type', 'general')->with('roles')->get();
 
         foreach($documentTemplates as $key => $documentTemplate){
             if(!in_array($userRole, $documentTemplate->roles()->pluck('name')->toArray())){
               $documentTemplates->forget($key);
+            }
+        }
+
+        return DocumentTemplatePeek::collection($documentTemplates);
+    }
+
+    public function peekNotGeneral()
+    {
+        $userRole = Auth::user()->roles()->value('name');
+
+        $documentTemplates = DocumentTemplate::whereNot('template_type', 'general')->with('roles')->get();
+
+        foreach($documentTemplates as $key => $documentTemplate){
+            if(!in_array($userRole, $documentTemplate->roles()->pluck('name')->toArray())){
+                $documentTemplates->forget($key);
             }
         }
 

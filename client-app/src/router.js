@@ -15,6 +15,7 @@ import ContactsInGroupListApp from './container/contact-groups/list-contacts-in-
 import ContactsListApp from './container/contact/list/ContactsListApp';
 import DashboardApp from './container/dashboard/DashboardApp';
 import DocumentsListApp from './container/document/list/DocumentsListApp';
+import DocumentNewApp from './container/document/new/DocumentNewApp';
 import EmailsInListApp from './container/email/list/EmailsInListApp';
 import EmailNewApp from './container/email/new/EmailNewApp';
 import EmailDetailsApp from './container/email/details/EmailDetailsApp';
@@ -71,6 +72,7 @@ const Routes = () => {
                 <Route path="contacten/:filter/:value" component={ ContactsListApp } />
                 /* Documents */
                 <Route path="documenten" component={DocumentsListApp} />
+                <Route path="document/nieuw/:type" component={DocumentNewApp} />
                 /* Emails */
                 <Route path="emails/concept" component={ConceptsInListApp} />
                 <Route path="email/concept/:id" component={ConceptApp} />

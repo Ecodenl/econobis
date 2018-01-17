@@ -6,8 +6,8 @@ import { browserHistory } from 'react-router';
 import ButtonIcon from '../../../components/button/ButtonIcon';
 
 const DocumentsListToolbar = (props) => {
-    const newDocument = () => {
-        hashHistory.push('document/nieuw');
+    const newDocument = (type) => {
+        hashHistory.push(`document/nieuw/${type}`);
     };
 
     const { permissions = {} } = props;
@@ -17,7 +17,15 @@ const DocumentsListToolbar = (props) => {
             <div className="col-md-4">
                 <div className="btn-group" role="group">
                     <ButtonIcon iconName={"glyphicon-arrow-left"} onClickAction={browserHistory.goBack}/>
-                    <ButtonIcon iconName={'glyphicon-plus'} onClickAction={newDocument}/>
+                    <div className="nav navbar-nav btn-group" role="group">
+                        <button className="btn btn-success btn-sm" data-toggle="dropdown">
+                            <span className="glyphicon glyphicon-plus" />
+                        </button>
+                        <ul className="dropdown-menu">
+                            <li><a className="btn" onClick={() => newDocument('internal')}>Maak document</a></li>
+                            <li><a className="btn" onClick={() => newDocument('upload')}>Upload document</a></li>
+                        </ul>
+                    </div>
                 </div>
 
             </div>

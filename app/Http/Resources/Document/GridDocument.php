@@ -22,8 +22,8 @@ class GridDocument extends Resource
             'createdAt' => $this->created_at,
             'filename' => $this->filename,
             'contact' => FullContact::make($this->whenLoaded('contact')),
-            'documentType' => FullEnumWithIdAndName::make($this->getDocumentType()),
-            'documentGroup' => FullEnumWithIdAndName::make($this->getDocumentGroup()),
+            'documentType' => $this->getDocumentType()->name,
+            'documentGroup' => $this->getDocumentGroup()->name,
         ];
     }
 }

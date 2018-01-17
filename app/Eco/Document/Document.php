@@ -6,6 +6,7 @@ use App\Eco\Contact\Contact;
 use App\Eco\ContactGroup\ContactGroup;
 use App\Eco\DocumentTemplate\DocumentTemplate;
 use App\Eco\Opportunity\Opportunity;
+use App\Eco\Registration\Registration;
 use App\Eco\User\User;
 use Illuminate\Database\Eloquent\Model;
 
@@ -16,6 +17,11 @@ class Document extends Model
     public function contact()
     {
         return $this->belongsTo(Contact::class);
+    }
+
+    public function registration()
+    {
+        return $this->belongsTo(Registration::class);
     }
 
     public function contactGroup()

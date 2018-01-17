@@ -13,6 +13,7 @@ use App\Http\Resources\Contact\FullContact;
 use App\Http\Resources\ContactGroup\FullContactGroup;
 use App\Http\Resources\EnumWithIdAndName\FullEnumWithIdAndName;
 use App\Http\Resources\Opportunity\FullOpportunity;
+use App\Http\Resources\Registration\FullRegistration;
 use App\Http\Resources\User\FullUser;
 use Illuminate\Http\Resources\Json\Resource;
 
@@ -31,6 +32,7 @@ class FullDocument extends Resource
             'freeText2' => $this->free_text_2,
             'filename' => $this->filename,
             'contact' => FullContact::make($this->whenLoaded('contact')),
+            'registration' => FullRegistration::make($this->whenLoaded('registration')),
             'contactGroup' => FullContactGroup::make($this->whenLoaded('contactGroup')),
             'opportunity' => FullOpportunity::make($this->whenLoaded('opportunity')),
             'sentBy' => FullUser::make($this->whenLoaded('sentBy')),

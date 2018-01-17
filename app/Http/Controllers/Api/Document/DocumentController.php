@@ -33,7 +33,7 @@ class DocumentController
 
     public function show(Document $document)
     {
-        $document->load('contact, contactGroup, oppportunity, sentBy, createdBy');
+        $document->load('contact', 'registration', 'contactGroup', 'opportunity', 'sentBy', 'createdBy');
 
         return FullDocument::make($document);
     }
@@ -48,6 +48,7 @@ class DocumentController
             ->string('freeText1')->alias('free_text_1')->next()
             ->string('freeText2')->alias('free_text_2')->next()
             ->integer('contactId')->validate('exists:contacts,id')->onEmpty(null)->alias('contact_id')->next()
+            ->integer('registrationId')->validate('exists:registrations,id')->onEmpty(null)->alias('registration_id')->next()
             ->integer('contactGroupId')->validate('exists:contact_groups,id')->onEmpty(null)->alias('contact_group_id')->next()
             ->integer('opportunityId')->validate('exists:opportunities,id')->onEmpty(null)->alias('opportunity_id')->next()
             ->integer('sentById')->validate('exists:users,id')->onEmpty(null)->alias('sent_by_id')->next()
@@ -83,11 +84,12 @@ class DocumentController
             ->string('documentGroup')->validate('required')->alias('document_group')->next()
             ->string('freeText1')->alias('free_text_1')->next()
             ->string('freeText2')->alias('free_text_2')->next()
-            ->integer('contactId')->validate('exists:contacts,id')->alias('contact_id')->next()
-            ->integer('contactGroupId')->validate('exists:contact_groups,id')->alias('contact_group_id')->next()
-            ->integer('opportunityId')->validate('exists:opportunities,id')->alias('opportunity_id')->next()
-            ->integer('sentById')->validate('exists:users,id')->alias('sent_by_id')->next()
-            ->integer('templateId')->validate('exists:document_templates,id')->alias('template_id')->next()
+            ->integer('contactId')->validate('exists:contacts,id')->onEmpty(null)->alias('contact_id')->next()
+            ->integer('registrationId')->validate('exists:registrations,id')->onEmpty(null)->alias('registration_id')->next()
+            ->integer('contactGroupId')->validate('exists:contact_groups,id')->onEmpty(null)->alias('contact_group_id')->next()
+            ->integer('opportunityId')->validate('exists:opportunities,id')->onEmpty(null)->alias('opportunity_id')->next()
+            ->integer('sentById')->validate('exists:users,id')->onEmpty(null)->alias('sent_by_id')->next()
+            ->integer('templateId')->validate('exists:document_templates,id')->onEmpty(null)->alias('template_id')->next()
             ->get();
 
         $document->fill($data);

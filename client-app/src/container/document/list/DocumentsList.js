@@ -18,20 +18,20 @@ class DocumentsList extends Component {
             showDeleteItem: false,
             deleteItem: {
                 id: '',
-                name: '',
+                filename: '',
             }
         };
 
     }
 
-    showDeleteItemModal = (id, name) => {
+    showDeleteItemModal = (id, filename) => {
         this.setState({
             ...this.state,
             showDeleteItem: true,
             deleteItem:{
                 ...this.state.deleteItem,
                 id,
-                name
+                filename
             }
         });
     };
@@ -43,7 +43,7 @@ class DocumentsList extends Component {
             deleteItem:{
                 ...this.state.deleteItem,
                 id: '',
-                name: '',
+                filename: '',
             }
         });
     };

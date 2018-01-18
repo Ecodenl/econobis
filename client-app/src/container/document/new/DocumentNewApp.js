@@ -89,7 +89,8 @@ class DocumentNewApp extends Component {
             ...this.state,
             document: {
                 ...this.state.document,
-                attachment: files[0]
+                attachment: files[0],
+                filename: files[0].name,
             },
         });
     };

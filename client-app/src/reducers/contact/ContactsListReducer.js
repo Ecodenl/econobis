@@ -1,6 +1,6 @@
 export default function (state= { isLoading: false }, action) {
     switch (action.type) {
-        case 'FETCH_REGISTRATIONS_LOADING':
+        case 'FETCH_CONTACTS_LOADING':
             return {
                 ...state,
                 isLoading: true,
@@ -24,6 +24,9 @@ export default function (state= { isLoading: false }, action) {
             return {
                 ...state,
                 data: state.data.filter((contact) => contact.id !== action.id),
+                meta: {
+                    total: state.meta.total - 1
+                },
             };
         case 'DELETE_SELECTED_CONTACTS':
             return {

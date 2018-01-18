@@ -1,36 +1,32 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import { fetchCampaigns } from '../../../actions/campaign/CampaignsActions';
 import Modal from '../../../components/modal/Modal';
-import CampaignDetailsAPI from '../../../api/campaign/CampaignDetailsAPI';
+import { deleteDocument } from '../../../actions/document/DocumentsActions';
 
-const CampaignsDeleteItem = (props) => {
-
+const ContactsDeleteItem = (props) => {
     const confirmAction = () => {
-        CampaignDetailsAPI.deleteCampaign(props.id).then(() => {
-            props.fetchCampaigns();
-        });
+        props.deleteDocument(props.id);
         props.closeDeleteItemModal();
     };
 
     return (
         <Modal
-        buttonConfirmText="Verwijder"
+            buttonConfirmText="Verwijder"
             buttonClassName={'btn-danger'}
             closeModal={props.closeDeleteItemModal}
             confirmAction={() => confirmAction()}
             title="Verwijderen"
-      >
-            Verwijder campagne <strong>{ props.name }</strong>?
-      </Modal>
+        >
+            Verwijder document: <strong> { props.filename } </strong>
+        </Modal>
     );
 };
 
 const mapDispatchToProps = dispatch => ({
-    fetchCampaigns: () => {
-        dispatch(fetchCampaigns());
+    deleteDocument: (id) => {
+        dispatch(deleteDocument(id));
     },
 });
 
-export default connect(null, mapDispatchToProps)(CampaignsDeleteItem);
+export default connect(null, mapDispatchToProps)(ContactsDeleteItem);

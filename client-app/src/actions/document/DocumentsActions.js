@@ -10,3 +10,10 @@ export const clearDocuments = () => {
         type: 'CLEAR_DOCUMENTS'
     };
 };
+
+export const deleteDocument = (id) => {
+    return  {
+        type: 'DELETE_DOCUMENT',
+        id,
+    };
+};

@@ -8,6 +8,10 @@ CORS toestaan met behulp van:
 
 [CORS extensie](https://chrome.google.com/webstore/detail/allow-control-allow-origi/nlfbmbojpeacfghkpbjhddihlkkiljbi)
 
+Om emails te kunnen verzenden moet imap aan staan:
+
+Zet php_imap aan in php.ini: extension=php_imap.dll
+
 ## Backend
 Command prompt in eco/econobis
 

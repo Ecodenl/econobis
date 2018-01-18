@@ -2,7 +2,6 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import InputSelect from "../../../../components/form/InputSelect";
-import InputText from "../../../../components/form/InputText";
 
 const DocumentNewFormCreateDocument = ({document, errors, handleInputChange, documentGroups, users}) => {
     const { documentGroup, template, freeText1, freeText2, filename, sentById } = document;

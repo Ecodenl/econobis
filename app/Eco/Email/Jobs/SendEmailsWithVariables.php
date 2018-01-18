@@ -12,7 +12,7 @@ namespace App\Eco\Email\Jobs;
 use App\Eco\Contact\Contact;
 use App\Eco\Email\Email;
 use App\Eco\User\User;
-use App\Http\Controllers\Api\EmailTemplate\DocumentController;
+use App\Http\Controllers\Api\EmailTemplate\EmailTemplateController;
 use App\Http\Resources\Email\Templates\GenericMail;
 use Carbon\Carbon;
 use Config;
@@ -77,7 +77,7 @@ class SendEmailsWithVariables
 
             ($email->cc != []) ? $mail->cc($email->cc) : null;
             ($email->bcc != []) ? $mail->bcc($email->bcc) : null;
-            $htmlBodyWithoutVariables = DocumentController::stripRemainingVariableTags($email->html_body);
+            $htmlBodyWithoutVariables = EmailTemplateController::stripRemainingVariableTags($email->html_body);
             $mail->send(new GenericMail($email, $htmlBodyWithoutVariables));
             $ccBccSent = true;
         }
@@ -94,7 +94,7 @@ class SendEmailsWithVariables
                     $email->cc == null;
                     $email->bcc == null;
                 }
-                $htmlBodyWithContactVariables = DocumentController::replaceContactVariables($email->html_body, $emailToContact);
+                $htmlBodyWithContactVariables = EmailTemplateController::replaceContactVariables($email->html_body, $emailToContact);
                 $mail->send(new GenericMail($email, $htmlBodyWithContactVariables));
             }
         }
@@ -111,7 +111,7 @@ class SendEmailsWithVariables
                     $email->cc == null;
                     $email->bcc == null;
                 }
-                $htmlBodyWithContactVariables = DocumentController::replaceUserVariables($email->html_body, $emailToUser);
+                $htmlBodyWithContactVariables = EmailTemplateController::replaceUserVariables($email->html_body, $emailToUser);
                 $mail->send(new GenericMail($email, $htmlBodyWithContactVariables));
             }
         }

@@ -41,11 +41,14 @@ class DocumentNewApp extends Component {
             errors: {
                 docLinkedAtAny: false,
                 documentGroup: false,
+                uploadFailed: false,
             },
         };
 
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.onDropAccepted = this.onDropAccepted.bind(this);
+        this.onDropRejected = this.onDropRejected.bind(this);
     };
 
     componentDidMount() {
@@ -81,7 +84,27 @@ class DocumentNewApp extends Component {
         });
     };
 
-    handleSubmit(event, concept = false) {
+    onDropAccepted(files) {
+        this.setState({
+            ...this.state,
+            document: {
+                ...this.state.document,
+                attachment: files[0]
+            },
+        });
+    };
+
+    onDropRejected() {
+        this.setState({
+            ...this.state,
+            errors: {
+                ...this.state.errors,
+                uploadFailed: true
+            }
+        });
+    };
+
+    handleSubmit(event) {
         event.preventDefault();
 
         const {
@@ -132,7 +155,7 @@ class DocumentNewApp extends Component {
             data.append('freeText2', freeText2);
             data.append('filename', filename);
             data.append('sentById', sentById);
-            data.append('attachments', '');
+            data.append('attachment', attachment);
 
             DocumentDetailsAPI.newDocument(data).then((payload) => {
                 console.log(payload);
@@ -165,6 +188,8 @@ class DocumentNewApp extends Component {
                             errors={this.state.errors}
                             handleSubmit={this.handleSubmit}
                             handleInputChange={this.handleInputChange}
+                            onDropAccepted={this.onDropAccepted}
+                            onDropRejected={this.onDropRejected}
                         />
 
                     </div>

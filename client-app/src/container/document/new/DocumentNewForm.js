@@ -8,7 +8,9 @@ import ButtonText from '../../../components/button/ButtonText';
 import DocumentNewFormCreateDocument from "./create-document/DocumentNewFormCreateDocument";
 import DocumentNewFormUpload from "./upload/DocumentNewFormUpload";
 
-const DocumentNewForm = ({document, contacts, contactGroups, registrations, opportunities, errors, handleSubmit, handleInputChange}) => {
+const DocumentNewForm = ({document, contacts, contactGroups, registrations, opportunities, errors, handleSubmit, handleInputChange, onDropAccepted, onDropRejected}) => {
+    const submitText = document.documentType === 'internal' ? 'Maak document' : 'Upload document';
+
     return (
         <form className="form-horizontal" onSubmit={handleSubmit}>
             <Panel>
@@ -34,12 +36,14 @@ const DocumentNewForm = ({document, contacts, contactGroups, registrations, oppo
                                 document={document}
                                 errors={errors}
                                 handleInputChange={handleInputChange}
+                                onDropAccepted={onDropAccepted}
+                                onDropRejected={onDropRejected}
                             />
                     }
 
                     <PanelFooter>
                         <div className="pull-right">
-                            <ButtonText buttonText={"Maak document"} onClickAction={handleSubmit} type={"submit"} value={"Submit"}/>
+                            <ButtonText buttonText={submitText} onClickAction={handleSubmit} type={"submit"} value={"Submit"}/>
                         </div>
                     </PanelFooter>
                 </PanelBody>

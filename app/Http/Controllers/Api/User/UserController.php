@@ -6,6 +6,7 @@ use App\Eco\User\User;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\Resources\User\FullUser;
 use App\Http\Resources\User\UserPeek;
+use App\Jobs\CreateAlfrescoUserJob;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Validation\Rule;
@@ -41,6 +42,7 @@ class UserController extends Controller
             ->boolean('active')->whenMissing(true)->next()
             ->get();
 
+
         $user = new User();
         $user->fill($data);
 
@@ -66,6 +68,7 @@ class UserController extends Controller
             ->string('occupation')->next()
             ->boolean('active')->next()
             ->get();
+
 
         $user->fill($data);
         $user->save();

@@ -13,7 +13,13 @@ use App\Eco\Document\Document;
 
 class TemplateVariableHelper
 {
-
+    /**
+     * @param $html_body String - a string that has tags to replace
+     * @param $var_prefix - the tag name, bv contact searches for {contact_
+     * @param $model - the model to get the data from
+     *
+     * @return string - html with replaced tags
+     */
     static public function replaceTemplateVariables($html_body, $var_prefix, $model){
 
         $regex = "/{" . $var_prefix . "_(\S*?)}/";
@@ -26,6 +32,11 @@ class TemplateVariableHelper
         return $html_body;
     }
 
+    /**
+     * @param $html_body String - a html string
+     *
+     * @return String - the html string without {xxx} tags
+     */
     public static function stripRemainingVariableTags($html_body)
     {
         if (preg_match_all("/{(\S*?)}/", $html_body, $m)) {
@@ -131,6 +142,13 @@ class TemplateVariableHelper
         return $base_html;
     }
 
+    /** replaces {vrije_text_1} and {vrije_text_2} with $free_text_1 and $free_text_2
+     * @param $template_html
+     * @param $free_text_1
+     * @param $free_text_2
+     *
+     * @return mixed replaces
+     */
     static public function replaceTemplateFreeTextVariables($template_html, $free_text_1, $free_text_2){
 
 

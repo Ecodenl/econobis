@@ -20,6 +20,14 @@ export default function (state = { isLoading: false }, action) {
                 meta: {},
                 isLoading: false,
             };
+        case 'DELETE_DOCUMENT_SUCCESS':
+            return {
+                ...state,
+                data: state.data.filter((document) => document.id !== action.id),
+                meta: {
+                    total: state.meta.total - 1
+                },
+            };
         default:
             return state;
     }

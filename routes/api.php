@@ -193,7 +193,7 @@ Route::namespace('Api')
 
         Route::get('document/grid', 'Document\DocumentController@grid');
         Route::get('document/{document}', 'Document\DocumentController@show');
-        Route::get('document/{document}/create', 'Document\DocumentController@create');
+        Route::get('document/{document}/get', 'Document\DocumentController@get');
         Route::post('document/{document}/delete', 'Document\DocumentController@destroy');
         Route::post('document', 'Document\DocumentController@store');
         Route::post('document/{document}', 'Document\DocumentController@update');

@@ -9,11 +9,16 @@
 namespace App\Http\Controllers\Api\Document;
 
 use App\Eco\Document\Document;
+use App\Eco\DocumentTemplate\DocumentTemplate;
 use App\Helpers\RequestInput\RequestInput;
+use App\Helpers\Template\TemplateTableHelper;
+use App\Helpers\Template\TemplateVariableHelper;
 use App\Http\RequestQueries\Document\Grid\RequestQuery;
 use App\Http\Resources\Document\FullDocument;
 use App\Http\Resources\Document\GridDocument;
-use Illuminate\Support\Facades\App;
+use Barryvdh\DomPDF\Facade as PDF;
+use Flynsarmy\DbBladeCompiler\Facades\DbView;
+use Illuminate\Support\Facades\Blade;
 
 class DocumentController
 {
@@ -103,13 +108,28 @@ class DocumentController
         $document->forceDelete();
     }
 
-    public function create(Document $document){
+    public function get(Document $document){
 
-        dd($document->base);
-        View::make();
-        $pdf = App::make('dompdf.wrapper');
-        $pdf->loadHTML('<h1>Test</h1>');
+        //load template parts
+        $document->load('template.footer', 'template.baseTemplate', 'template.header');
+
+        $html = $document->template->header->html_body;
+
+        if($document->template->baseTemplate){
+            $html .= TemplateVariableHelper::replaceTemplateTagVariable($document->template->baseTemplate->html_body, $document->template->html_body, $document->free_text_1, $document->free_text_2);
+        }
+        else{
+            $html .= TemplateVariableHelper::replaceTemplateFreeTextVariables($document->template->html_body, $document->free_text_1, $document->free_text_2);
+        }
+
+        $html .= $document->template->footer->html_body;
+
+        $html = TemplateVariableHelper::replaceDocumentTemplateVariables($document, $html);
+
+        $pdf = PDF::loadView('documents.generic', [
+            'html' => $html,
+            ]);
         return $pdf->stream();
-    }
 
+    }
 }

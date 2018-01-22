@@ -87,7 +87,7 @@ class RegistrationDetailFormNoteItem extends Component {
 
     render() {
         return (
-            <div className="extra-space-above item-border">
+            <div className="margin-10-top item-border">
                 <RegistrationDetailsFormNoteView
                     note={this.state.note}
                     highlightLine={this.state.highlightLine}

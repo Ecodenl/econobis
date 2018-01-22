@@ -28,13 +28,13 @@ class EmailTemplatesListApp extends Component {
             <div>
                 <div className="panel panel-default">
                     <div className="panel-body">
-                        <div className="col-md-12 extra-space-above">
+                        <div className="col-md-12 margin-10-top">
                             <EmailTemplatesListToolbar
                                 refreshEmailTemplatesData={() => this.refreshEmailTemplatesData()}
                             />
                         </div>
 
-                        <div className="col-md-12 extra-space-above">
+                        <div className="col-md-12 margin-10-top">
                             <EmailTemplatesList
                                 emailTemplates={this.props.emailTemplates}
                             />

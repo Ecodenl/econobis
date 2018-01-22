@@ -37,7 +37,7 @@ class TaskDetailsFormProperties extends Component {
                         <div className="col-md-12">
                             <TaskDetailsFormPropertiesList/>
                         </div>
-                        <div className="col-md-12 extra-space-above">
+                        <div className="col-md-12 margin-10-top">
                             {this.state.showNew &&
                             <TaskDetailsFormPropertyNew toggleShowNew={this.toggleShowNew}/>}
                         </div>

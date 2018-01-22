@@ -42,6 +42,7 @@ class ContactsListToolbar extends Component {
 
     render() {
         const { permissions = {} } = this.props.meDetails;
+        const { meta = {} } = this.props.contacts;
 
         return (
             <div className="row">
@@ -78,7 +79,7 @@ class ContactsListToolbar extends Component {
                 </div>
                 <div className="col-md-4"><h3 className="text-center table-title">Contacten</h3></div>
                 <div className="col-md-4">
-                    {/*<button type="button" className="btn btn-success btn-sm pull-right" onClick={this.toggleShowExtraFilters}>Extra filters</button>*/}
+                    <div className="pull-right">Resultaten: { meta.total || 0 }</div>
                 </div>
                 {
                     this.state.showExtraFilters && <ContactsListExtraFilters toggleShowExtraFilters={this.toggleShowExtraFilters} />
@@ -97,6 +98,7 @@ class ContactsListToolbar extends Component {
 const mapStateToProps = (state) => {
     return {
         meDetails: state.meDetails,
+        contacts: state.contacts.list,
     };
 };
 

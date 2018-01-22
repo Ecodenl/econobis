@@ -9,21 +9,21 @@ const ContactNewApp = props => {
     return (
         <div className="row">
             <div className="col-md-9">
-                <div className="col-md-12 extra-space-above">
+                <div className="col-md-12 margin-10-top">
                     <ContactNewToolbar />
                 </div>
 
-                <div className="col-md-12 extra-space-above">
+                <div className="col-md-12 margin-10-top">
                     <ContactNewForm type={props.params.type} organisationId={props.params.id}/>
                 </div>
             </div>
             <Panel className="col-md-3">
                 <PanelBody>
-                    <div className="col-md-12 extra-space-above">
+                    <div className="col-md-12 margin-10-top">
                         Buttons met openstaande items, zoals email, taken, etc.
                     </div>
 
-                    <div className="col-md-12 extra-space-above">
+                    <div className="col-md-12 margin-10-top">
                         <div className="panel panel-default harmonica-button">
                             <div className="panel-body">
                                 <p className="text-center">AANMELDINGEN <span className="badge">0</span></p>

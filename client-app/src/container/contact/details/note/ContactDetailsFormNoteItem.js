@@ -88,7 +88,7 @@ class ContactDetailFormNoteItem extends Component {
 
     render() {
         return (
-            <div className="extra-space-above item-border">
+            <div className="margin-10-top item-border">
                 <ContactDetailsFormNoteView
                     note={this.state.note}
                     highlightLine={this.state.highlightLine}

@@ -32,7 +32,7 @@ class CampaignDetailsHarmonica extends Component {
     render(){
         const { permissions = {} } = this.props;
         return (
-            <div className="col-md-12 extra-space-above">
+            <div className="col-md-12 margin-10-top">
                 <Panel className={"harmonica-button"}>
                     <PanelBody>
                         <div className="col-sm-12" onClick={this.toggleTask}>

@@ -80,10 +80,10 @@ class EmailTemplateNewApp extends Component {
             <div>
                 <div className="panel panel-default">
                     <div className="panel-body">
-                        <div className="col-md-12 extra-space-above">
+                        <div className="col-md-12 margin-10-top">
                             <EmailTemplateNewToolbar/>
                         </div>
-                        <div className="col-md-12 extra-space-above">
+                        <div className="col-md-12 margin-10-top">
                             <EmailTemplateNew
                                 emailTemplate={this.state.emailTemplate}
                                 errors={this.state.errors}

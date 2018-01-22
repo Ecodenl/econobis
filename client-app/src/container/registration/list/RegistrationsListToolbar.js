@@ -1,9 +1,11 @@
 import React from 'react';
-import { hashHistory, Link } from 'react-router';
+import {connect} from "react-redux";
 
 import ButtonIcon from '../../../components/button/ButtonIcon';
 
 const RegistrationsListToolbar = props => {
+    const { meta = {} } = props.registrations;
+
     return (
         <div className="row">
             <div className="col-md-4">
@@ -12,9 +14,17 @@ const RegistrationsListToolbar = props => {
                 </div>
             </div>
             <div className="col-md-4"><h3 className="text-center table-title">Aanmeldingen</h3></div>
-            <div className="col-md-4" />
+            <div className="col-md-4">
+                <div className="pull-right">Resultaten: { meta.total || 0 }</div>
+            </div>
         </div>
     );
 };
 
-export default RegistrationsListToolbar;
+const mapStateToProps = (state) => {
+    return {
+        registrations: state.registrations.list,
+    };
+};
+
+export default connect(mapStateToProps, null)(RegistrationsListToolbar);

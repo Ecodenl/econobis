@@ -361,4 +361,11 @@ class EmailController
         return FullEmail::make($email);
     }
 
+    public function getAmountOfOpenEmails(){
+        $user = Auth::user();
+
+        $mailboxIds = $user->mailboxes()->pluck('mailbox_id');
+
+        return Email::whereIn('mailbox_id', $mailboxIds)->whereNull('status')->count();
+    }
 }

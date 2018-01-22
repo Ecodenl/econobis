@@ -85,7 +85,7 @@ class ContactDetailFormAddressItem extends Component {
         let errors = {};
         let hasErrors = false;
 
-        if(validator.isEmpty(address.postalCode)){
+        if(!validator.isPostalCode(address.postalCode, 'NL')){
             errors.postalCode = true;
             hasErrors = true;
         };

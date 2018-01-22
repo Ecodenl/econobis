@@ -6,7 +6,6 @@ import Logo from '../logo/Logo';
 import NavSearch from './NavSearch';
 
 const NavHeader = (props) => {
-    const fullName = (props.meDetails ? props.meDetails.firstName + ' ' + props.meDetails.lastName: '');
     const heightLogo = '44px';
 
     return (
@@ -27,16 +26,13 @@ const NavHeader = (props) => {
                     <ul className="nav navbar-nav">
                         <li className="dropdown">
                             <a href="#" className="dropdown-toggle" data-toggle="dropdown" role="button">
-                                { fullName } <span className="caret" />
+                                { props.meDetails.fullName } <span className="caret" />
                             </a>
                             <ul className="dropdown-menu">
                                 <li><Link to="loguit">Uitloggen</Link></li>
                             </ul>
                         </li>
                     </ul>
-                </div>
-                <div className="col-md-2 hidden-sm hidden-xs nav-item">
-                    <h5 className="text-center">Meldingen: <strong>3</strong></h5>
                 </div>
             </div>
         </nav>

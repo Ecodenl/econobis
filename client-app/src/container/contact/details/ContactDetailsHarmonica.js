@@ -106,7 +106,7 @@ class ContactDetailsHarmonica extends Component {
     render(){
         const { permissions = {} } = this.props;
         return (
-            <div className="col-md-12 extra-space-above">
+            <div className="col-md-12 margin-10-top">
                 <div className="panel panel-default harmonica-button">
                     <div className="panel-body">
                         <div className="col-sm-9" onClick={this.toggleRegistration}>

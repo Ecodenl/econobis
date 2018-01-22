@@ -164,10 +164,10 @@ class OppportunitiesNewApp extends Component {
                 <div className="col-md-9">
                     <div className="panel panel-default">
                         <div className="panel-body">
-                            <div className="col-md-12 extra-space-above">
+                            <div className="col-md-12 margin-10-top">
                                 <OpportunityNewToolbar/>
                             </div>
-                            <div className="col-md-12 extra-space-above">
+                            <div className="col-md-12 margin-10-top">
                                 <OpportunityNew
                                     opportunity={this.state.opportunity}
                                     contacts={this.state.contacts}

@@ -22,11 +22,11 @@ class RegistrationNewApp extends Component {
         return (
             <div className="row">
                 <div className="col-md-9">
-                    <div className="col-md-12 extra-space-above">
+                    <div className="col-md-12 margin-10-top">
                         <RegistrationNewToolbar contactId={this.props.params.contactId} />
                     </div>
 
-                    <div className="col-md-12 extra-space-above">
+                    <div className="col-md-12 margin-10-top">
                         <RegistrationNewForm contactId={this.props.params.contactId} addressId={this.props.params.addressId}/>
                     </div>
                 </div>

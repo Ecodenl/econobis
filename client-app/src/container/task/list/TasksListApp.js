@@ -66,13 +66,13 @@ class TasksListApp extends Component {
         return (
             <Panel>
                 <PanelBody>
-                    <div className="col-md-12 extra-space-above">
+                    <div className="col-md-12 margin-10-top">
                         <TasksListToolbar
                             resetTaskFilters={() => this.resetTaskFilters()}
                         />
                     </div>
 
-                    <div className="col-md-12 extra-space-above">
+                    <div className="col-md-12 margin-10-top">
                         <TasksList
                             tasks={this.props.tasks}
                             tasksPagination={this.props.tasksPagination}

@@ -35,7 +35,7 @@ const EmailTemplateFormView = props => {
                     />
                     <ViewText
                         label={"Aanmelding"}
-                        value={ registration && registration.name }
+                        value={ registration && registration.fullAddress }
                     />
                 </div>
             </div>

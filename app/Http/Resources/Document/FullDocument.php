@@ -35,7 +35,7 @@ class FullDocument extends Resource
             'contact' => FullContact::make($this->whenLoaded('contact')),
             'registrationId' => $this->registration_id,
             'registration' => FullRegistration::make($this->whenLoaded('registration')),
-            'contactGroupId' => $this->contactGroup_id,
+            'contactGroupId' => $this->contact_group_id,
             'contactGroup' => FullContactGroup::make($this->whenLoaded('contactGroup')),
             'opportunityId' => $this->opportunity_id,
             'opportunity' => FullOpportunity::make($this->whenLoaded('opportunity')),

@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { isEmpty } from 'lodash';
 
 import DocumentFormGeneral from './general/DocumentFormGeneral';
+import DocumentDetailsFormConclusion from "./conclusion/DocumentDetailsFormConclusion";
 
 class DocumentDetailsForm extends Component {
     constructor(props){
@@ -16,6 +17,7 @@ class DocumentDetailsForm extends Component {
                 :
                 <div>
                     <DocumentFormGeneral />
+                    <DocumentDetailsFormConclusion />
                 </div>
         );
     }

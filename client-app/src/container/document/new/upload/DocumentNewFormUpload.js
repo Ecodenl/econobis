@@ -33,7 +33,7 @@ class DocumentNewFormUpload extends Component {
                         options={documentGroups}
                         onChangeAction={handleInputChange}
                         required={"required"}
-                        errors={errors.documentGroup}
+                        error={errors.documentGroup}
                     />
                 </div>
                 <div className="row">

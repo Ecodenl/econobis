@@ -9,6 +9,7 @@
 namespace App\Http\Resources\DocumentTemplate;
 
 use App\Http\Resources\EnumWithIdAndName\FullEnumWithIdAndName;
+use App\Http\Resources\GenericResource;
 use App\Http\Resources\User\FullUser;
 use Illuminate\Http\Resources\Json\Resource;
 
@@ -28,6 +29,7 @@ class FullDocumentTemplate extends Resource
             'footerTemplate' => FullDocumentTemplate::make($this->whenLoaded('footer')),
             'headerTemplate' => FullDocumentTemplate::make($this->whenLoaded('header')),
             'active' => $this->active,
+            'roles' => GenericResource::make($this->whenLoaded('roles')),
             'createdBy' => FullUser::make($this->whenLoaded('createdBy')),
             'createdAt' => $this->created_at,
             'updatedAt' => $this->updated_at,

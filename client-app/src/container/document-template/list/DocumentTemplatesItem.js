@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import { hashHistory } from 'react-router';
+import moment from "moment";
+moment.locale('nl');
 
 class DocumentTemplatesItem extends Component {
     constructor(props) {
@@ -26,20 +28,23 @@ class DocumentTemplatesItem extends Component {
     };
 
     openItem(id) {
-        hashHistory.push(`/email-template/${id}`);
+        hashHistory.push(`/document-template/${id}`);
     };
 
     render() {
-        const { id, name, subject, createdBy } = this.props;
+        const { id, number, createdAt, name, documentGroup, active } = this.props;
 
         return (
             <tr className={this.state.highlightRow} onDoubleClick={() => this.openItem(id)} onMouseEnter={() => this.onRowEnter()} onMouseLeave={() => this.onRowLeave()}>
+                <td>{ number }</td>
+                <td>{ createdAt ? moment(createdAt.date).format('L') : 'Onbekend'}</td>
                 <td>{ name }</td>
-                <td>{ subject }</td>
-                <td>{ createdBy ? createdBy.fullName : '' }</td>
+                <td>{ documentGroup ? documentGroup.name : 'Onbekend' }</td>
+                <td>{ active ? 'Ja' : 'Nee' }</td>
                 <td>
                     {(this.state.showActionButtons ? <a role="button" onClick={() => this.openItem(id)}><span className="glyphicon glyphicon-pencil mybtn-success" /> </a> : '')}
-                </td>
+                    {(this.state.showActionButtons ? <a role="button" onClick={this.props.showDeleteItemModal.bind(this, id, name)}><span className="glyphicon glyphicon-trash mybtn-danger"  /> </a> : '')}
+                    </td>
             </tr>
         );
     }

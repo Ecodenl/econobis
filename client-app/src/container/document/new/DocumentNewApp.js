@@ -13,6 +13,7 @@ import ContactGroupAPI from "../../../api/contact-group/ContactGroupAPI";
 import RegistrationsAPI from "../../../api/registration/RegistrationsAPI";
 import OpportunitiesAPI from "../../../api/opportunity/OpportunitiesAPI";
 import ContactsAPI from "../../../api/contact/ContactsAPI";
+import DocumentTemplateAPI from "../../../api/document-template/DocumentTemplateAPI";
 
 class DocumentNewApp extends Component {
     constructor(props) {
@@ -23,6 +24,7 @@ class DocumentNewApp extends Component {
             contactsGroups: [],
             registrations: [],
             opportunities: [],
+            templates: [],
             document: {
                 contactId: '',
                 contactGroupId: '',
@@ -49,6 +51,7 @@ class DocumentNewApp extends Component {
         this.handleSubmit = this.handleSubmit.bind(this);
         this.onDropAccepted = this.onDropAccepted.bind(this);
         this.onDropRejected = this.onDropRejected.bind(this);
+        this.handleDocumentGroupChange = this.handleDocumentGroupChange.bind(this);
     };
 
     componentDidMount() {
@@ -68,6 +71,10 @@ class DocumentNewApp extends Component {
             this.setState({ opportunities: payload });
         });
 
+        DocumentTemplateAPI.fetchDocumentTemplatesPeekGeneral().then((payload) => {
+            this.setState({ templates: payload });
+        });
+
     };
 
     handleInputChange(event) {
@@ -81,6 +88,34 @@ class DocumentNewApp extends Component {
                 ...this.state.document,
                 [name]: value
             },
+        });
+    };
+
+    handleDocumentGroupChange(event) {
+        const target = event.target;
+        const value = target.type === 'checkbox' ? target.checked : target.value;
+        const name = target.name;
+
+        this.setState({
+            ...this.state,
+            document: {
+                ...this.state.document,
+                [name]: value
+            },
+        });
+
+        DocumentTemplateAPI.fetchDocumentTemplatesPeekGeneral().then((payload) => {
+            let templates = [];
+
+            payload.forEach(function (template) {
+                if (template.type == value) {
+                    templates.push({id: template.id, name: template.name});
+                }
+            });
+
+            this.setState({
+                templates: templates,
+            });
         });
     };
 
@@ -159,7 +194,6 @@ class DocumentNewApp extends Component {
             data.append('attachment', attachment);
 
             DocumentDetailsAPI.newDocument(data).then((payload) => {
-                console.log(payload);
                 hashHistory.push(`/documenten`);
             }).catch(function (error) {
                 console.log(error)
@@ -186,8 +220,10 @@ class DocumentNewApp extends Component {
                             contactGroups={this.state.contactGroups}
                             registrations={this.state.registrations}
                             opportunities={this.state.opportunities}
+                            templates={this.state.templates}
                             errors={this.state.errors}
                             handleSubmit={this.handleSubmit}
+                            handleDocumentGroupChange={this.handleDocumentGroupChange}
                             handleInputChange={this.handleInputChange}
                             onDropAccepted={this.onDropAccepted}
                             onDropRejected={this.onDropRejected}

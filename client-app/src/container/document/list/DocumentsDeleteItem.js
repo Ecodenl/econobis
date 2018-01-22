@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import Modal from '../../../components/modal/Modal';
 import { deleteDocument } from '../../../actions/document/DocumentsActions';
 
-const ContactsDeleteItem = (props) => {
+const DocumentsDeleteItem = (props) => {
     const confirmAction = () => {
         props.deleteDocument(props.id);
         props.closeDeleteItemModal();
@@ -29,4 +29,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(null, mapDispatchToProps)(ContactsDeleteItem);
+export default connect(null, mapDispatchToProps)(DocumentsDeleteItem);

@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 
 import InputSelect from "../../../../components/form/InputSelect";
 
-const DocumentNewFormCreateDocument = ({document, errors, handleInputChange, documentGroups, users}) => {
+const DocumentNewFormCreateDocument = ({document, templates, errors, handleInputChange, handleDocumentGroupChange, documentGroups, users}) => {
     const { documentGroup, template, freeText1, freeText2, filename, sentById } = document;
 
     return (
@@ -14,7 +14,7 @@ const DocumentNewFormCreateDocument = ({document, errors, handleInputChange, doc
                     name={"documentGroup"}
                     value={documentGroup}
                     options={documentGroups}
-                    onChangeAction={handleInputChange}
+                    onChangeAction={handleDocumentGroupChange}
                     required={"required"}
                     errors={errors.documentGroup}
                 />
@@ -22,7 +22,7 @@ const DocumentNewFormCreateDocument = ({document, errors, handleInputChange, doc
                     label="Template"
                     name={"template"}
                     value={template}
-                    options={[]}
+                    options={templates}
                     onChangeAction={handleInputChange}
                     required={"required"}
                 />

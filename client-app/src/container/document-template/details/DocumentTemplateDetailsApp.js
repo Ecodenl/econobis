@@ -16,6 +16,12 @@ class DocumentTemplateDetailsApp extends Component {
         this.props.fetchDocumentTemplate(this.props.params.id);
     };
 
+    componentWillReceiveProps(nextProps) {
+        if(this.props.params.id !== nextProps.params.id) {
+            this.props.fetchDocumentTemplate(nextProps.params.id);
+        }
+    };
+
     render() {
         return (
             <div className="row">

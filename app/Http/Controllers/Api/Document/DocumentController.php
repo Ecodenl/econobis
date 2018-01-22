@@ -108,24 +108,34 @@ class DocumentController
         $document->forceDelete();
     }
 
-    public function get(Document $document){
+    public function download(Document $document){
 
         //load template parts
         $document->load('template.footer', 'template.baseTemplate', 'template.header');
 
-        $html = $document->template->header->html_body;
+        if($document->template) {
+            $html = $document->template->header
+                ? $document->template->header->html_body : '';
 
-        if($document->template->baseTemplate){
-            $html .= TemplateVariableHelper::replaceTemplateTagVariable($document->template->baseTemplate->html_body, $document->template->html_body, $document->free_text_1, $document->free_text_2);
+            if ($document->template->baseTemplate) {
+                $html .= TemplateVariableHelper::replaceTemplateTagVariable($document->template->baseTemplate->html_body,
+                    $document->template->html_body, $document->free_text_1,
+                    $document->free_text_2);
+            } else {
+                $html .= TemplateVariableHelper::replaceTemplateFreeTextVariables($document->template->html_body,
+                    $document->free_text_1, $document->free_text_2);
+            }
+
+            $html .= $document->template->footer
+                ? $document->template->footer->html_body : '';
+
+            $html
+                = TemplateVariableHelper::replaceDocumentTemplateVariables($document,
+                $html);
         }
         else{
-            $html .= TemplateVariableHelper::replaceTemplateFreeTextVariables($document->template->html_body, $document->free_text_1, $document->free_text_2);
+            $html = 'Dit bestand is leeg';
         }
-
-        $html .= $document->template->footer->html_body;
-
-        $html = TemplateVariableHelper::replaceDocumentTemplateVariables($document, $html);
-
         $pdf = PDF::loadView('documents.generic', [
             'html' => $html,
             ]);

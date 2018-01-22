@@ -25,7 +25,7 @@ class DocumentTemplateDetailsForm extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        documentTemplate: state.documentTemplate,
+        documentTemplate: state.documentTemplateDetails,
     };
 };
 

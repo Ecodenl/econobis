@@ -25,19 +25,6 @@ export default {
             );
     },
 
-    fetchDocumentTemplateWithUser: (id) => {
-        const requestUrl = `${URL_DOCUMENT_TEMPLATE}/with-user/${id}`;
-        const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
-        axios.defaults.headers.common.Authorization = AUTH_TOKEN;
-
-        return axios.get(requestUrl)
-            .then(response => response.data.data)
-            .catch((error) => {
-                    console.log(error);
-                },
-            );
-    },
-
     storeDocumentTemplate: (data) => {
         const requestUrl = `${URL_DOCUMENT_TEMPLATE}`;
         const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
@@ -64,8 +51,8 @@ export default {
             );
     },
 
-    fetchDocumentTemplatesPeek: () => {
-        const requestUrl = `${URL_DOCUMENT_TEMPLATE}/peek`;
+    fetchDocumentTemplatesPeekGeneral: () => {
+        const requestUrl = `${URL_DOCUMENT_TEMPLATE}/peekGeneral`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
@@ -79,6 +66,27 @@ export default {
     },
 
 
+    fetchDocumentTemplatesPeekNotGeneral: () => {
+        const requestUrl = `${URL_DOCUMENT_TEMPLATE}/peekNotGeneral`;
+        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
+        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
+
+        return axios.get(requestUrl)
+            .then(function (response) {
+                return response.data.data;
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+    },
+
+    deleteDocumentTemplate: (id) => {
+        const requestUrl = `${URL_DOCUMENT_TEMPLATE}/${id}/delete`;
+        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
+        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
+
+        return axios.post(requestUrl)
+    },
 
 };
 

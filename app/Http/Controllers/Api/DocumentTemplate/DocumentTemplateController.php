@@ -35,7 +35,7 @@ class DocumentTemplateController extends Controller
 
     public function show(DocumentTemplate $documentTemplate)
     {
-        $documentTemplate->load('baseTemplate', 'header', 'footer', 'createdBy');
+        $documentTemplate->load('baseTemplate', 'header', 'footer', 'createdBy', 'roles');
 
         return FullDocumentTemplate::make($documentTemplate);
     }
@@ -45,13 +45,13 @@ class DocumentTemplateController extends Controller
     {
         $data = $requestInput
             ->string('characteristic')->next()
-            ->string('htmlBody')->validate('required')->alias('html_body')->next()
+            ->string('htmlBody')->alias('html_body')->next()
             ->string('name')->next()
-            ->string('documentTemplateType')->validate('required')->alias('template_type')->next()
-            ->string('documentGroup')->alias('document_group')->next()
-            ->string('baseTemplateId')->validate('required|exists:document_templates,id')->alias('base_template_id')->next()
-            ->string('headerTemplateId')->validate('required|exists:document_templates,id')->alias('header_id')->next()
-            ->string('footerTemplateId')->validate('required|exists:document_templates,id')->alias('footer_id')->next()
+            ->string('documentTemplateTypeId')->validate('required')->alias('template_type')->next()
+            ->string('documentGroupId')->alias('document_group')->next()
+            ->string('baseTemplateId')->validate('exists:document_templates,id')->onEmpty(null)->alias('base_template_id')->next()
+            ->string('headerTemplateId')->validate('exists:document_templates,id')->onEmpty(null)->alias('header_id')->next()
+            ->string('footerTemplateId')->validate('exists:document_templates,id')->onEmpty(null)->alias('footer_id')->next()
             ->boolean('active')->validate('required')->next()
             ->get();
 
@@ -74,12 +74,12 @@ class DocumentTemplateController extends Controller
 
         $data = $requestInput
             ->string('characteristic')->next()
-            ->string('htmlBody')->validate('required')->alias('html_body')->next()
+            ->string('htmlBody')->alias('html_body')->next()
             ->string('name')->next()
-            ->string('documentGroup')->alias('document_group')->next()
-            ->string('baseTemplateId')->validate('required|exists:document_templates,id')->alias('base_template_id')->next()
-            ->string('headerTemplateId')->validate('required|exists:document_templates,id')->alias('header_id')->next()
-            ->string('footerTemplateId')->validate('required|exists:document_templates,id')->alias('footer_id')->next()
+            ->string('documentGroupId')->alias('document_group')->next()
+            ->string('baseTemplateId')->validate('exists:document_templates,id')->onEmpty(null)->alias('base_template_id')->next()
+            ->string('headerTemplateId')->validate('exists:document_templates,id')->onEmpty(null)->alias('header_id')->next()
+            ->string('footerTemplateId')->validate('exists:document_templates,id')->onEmpty(null)->alias('footer_id')->next()
             ->boolean('active')->validate('required')->next()
             ->get();
 
@@ -115,7 +115,7 @@ class DocumentTemplateController extends Controller
     {
         $userRole = Auth::user()->roles()->value('name');
 
-        $documentTemplates = DocumentTemplate::where('template_type', 'general')->with('roles')->get();
+        $documentTemplates = DocumentTemplate::where('template_type', 'general')->where('active', true)->with('roles')->get();
 
         foreach($documentTemplates as $key => $documentTemplate){
             if(!in_array($userRole, $documentTemplate->roles()->pluck('name')->toArray())){
@@ -128,15 +128,7 @@ class DocumentTemplateController extends Controller
 
     public function peekNotGeneral()
     {
-        $userRole = Auth::user()->roles()->value('name');
-
-        $documentTemplates = DocumentTemplate::whereNot('template_type', 'general')->with('roles')->get();
-
-        foreach($documentTemplates as $key => $documentTemplate){
-            if(!in_array($userRole, $documentTemplate->roles()->pluck('name')->toArray())){
-                $documentTemplates->forget($key);
-            }
-        }
+        $documentTemplates = DocumentTemplate::where('template_type', '!=', 'general')->where('active', true)->get();
 
         return DocumentTemplatePeek::collection($documentTemplates);
     }

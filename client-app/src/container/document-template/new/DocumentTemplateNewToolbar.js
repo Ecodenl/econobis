@@ -9,10 +9,6 @@ import ButtonIcon from '../../../components/button/ButtonIcon';
 class DocumentTemplateNewToolbar extends Component {
     constructor(props){
         super(props);
-
-        this.state = {
-            showDelete: false,
-        }
     }
 
     render() {

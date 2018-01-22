@@ -36,7 +36,8 @@ class DocumentTemplatesListApp extends Component {
 
                         <div className="col-md-12 extra-space-above">
                             <DocumentTemplatesList
-                                emailTemplates={this.props.emailTemplates}
+                                documentTemplates={this.props.documentTemplates}
+                                refreshDocumentTemplatesData={this.refreshDocumentTemplatesData}
                             />
                         </div>
                     </div>
@@ -48,7 +49,7 @@ class DocumentTemplatesListApp extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        emailTemplates: state.emailTemplates,
+        documentTemplates: state.documentTemplates,
     };
 };
 

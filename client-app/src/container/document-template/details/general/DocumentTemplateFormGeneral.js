@@ -61,7 +61,7 @@ class DocumentTemplateFormGeneral extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        documentTemplate: state.documentTemplate,
+        documentTemplate: state.documentTemplateDetails,
         // permissions: state.meDetails.permissions
     }
 };

@@ -22,6 +22,7 @@ class GridDocumentTemplate extends Resource
             'name' => $this->name,
             'documentGroup' => FullEnumWithIdAndName::make($this->getDocumentGroup()),
             'documentTemplateType' => FullEnumWithIdAndName::make($this->getTemplateType()),
+            'active' => $this->active,
         ];
     }
 }

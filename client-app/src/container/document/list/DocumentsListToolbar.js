@@ -1,7 +1,7 @@
-import React from 'react';
-import { connect } from 'react-redux';
-import { hashHistory } from 'react-router';
-import { browserHistory } from 'react-router';
+import React, {Component} from 'react';
+import {connect} from 'react-redux';
+import {hashHistory} from 'react-router';
+import {browserHistory} from 'react-router';
 
 import ButtonIcon from '../../../components/button/ButtonIcon';
 

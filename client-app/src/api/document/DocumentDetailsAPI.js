@@ -35,4 +35,12 @@ export default {
 
         return axios.post(requestUrl);
     },
+
+    download: (id) => {
+        const requestUrl = `${URL_DOCUMENT}/${id}/download`;
+        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
+        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
+
+        return axios.get(requestUrl, {responseType: 'blob'});
+    },
 };

@@ -100,7 +100,9 @@ class DocumentController
         $document->fill($data);
         $document->save();
 
-        return FullDocument::make($document->fresh());
+        $document->load('contact', 'contactGroup', 'opportunity', 'registration.address');
+
+        return FullDocument::make($document);
     }
 
     public function destroy(Document $document)

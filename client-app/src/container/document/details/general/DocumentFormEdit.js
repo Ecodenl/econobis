@@ -12,6 +12,7 @@ import ContactGroupAPI from "../../../../api/contact-group/ContactGroupAPI";
 import RegistrationsAPI from "../../../../api/registration/RegistrationsAPI";
 import OpportunitiesAPI from "../../../../api/opportunity/OpportunitiesAPI";
 import ContactsAPI from "../../../../api/contact/ContactsAPI";
+import ViewText from "../../../../components/form/ViewText";
 
 class DocumentDetailsAPIFormEdit extends Component {
     constructor(props) {
@@ -155,6 +156,10 @@ class DocumentDetailsAPIFormEdit extends Component {
                             onChangeAction={this.handleInputChange}
                             required={oneOfFieldRequired && "required"}
                             error={errors.docLinkedAtAny}
+                        />
+                        <ViewText
+                            label={"Template"}
+                            value={ this.props.documentDetails.template && this.props.documentDetails.template.name }
                         />
                     </div>
                     <div className="row">

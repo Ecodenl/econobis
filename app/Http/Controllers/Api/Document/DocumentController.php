@@ -38,7 +38,7 @@ class DocumentController
 
     public function show(Document $document)
     {
-        $document->load('contact', 'registration', 'contactGroup', 'opportunity', 'sentBy', 'createdBy');
+        $document->load('contact', 'registration', 'contactGroup', 'opportunity', 'sentBy', 'createdBy', 'template');
 
         return FullDocument::make($document);
     }

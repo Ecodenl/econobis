@@ -11,6 +11,7 @@ namespace App\Http\Resources\Document;
 
 use App\Http\Resources\Contact\FullContact;
 use App\Http\Resources\ContactGroup\FullContactGroup;
+use App\Http\Resources\DocumentTemplate\FullDocumentTemplate;
 use App\Http\Resources\EnumWithIdAndName\FullEnumWithIdAndName;
 use App\Http\Resources\Opportunity\FullOpportunity;
 use App\Http\Resources\Registration\FullRegistration;
@@ -41,6 +42,7 @@ class FullDocument extends Resource
             'opportunity' => FullOpportunity::make($this->whenLoaded('opportunity')),
             'sentBy' => FullUser::make($this->whenLoaded('sentBy')),
             'createdBy' => FullUser::make($this->whenLoaded('createdBy')),
+            'template' => FullDocumentTemplate::make($this->whenLoaded('template')),
             'createdAt' => $this->created_at,
             'updatedAt' => $this->updated_at,
         ];

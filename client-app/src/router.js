@@ -17,6 +17,9 @@ import DashboardApp from './container/dashboard/DashboardApp';
 import DocumentsListApp from './container/document/list/DocumentsListApp';
 import DocumentDetailsApp from './container/document/details/DocumentDetailsApp';
 import DocumentNewApp from './container/document/new/DocumentNewApp';
+import DocumentTemplatesListApp from './container/document-template/list/DocumentTemplatesListApp';
+import DocumentTemplateDetailsApp from './container/document-template/details/DocumentTemplateDetailsApp';
+import DocumentTemplateNewApp from './container/document-template/new/DocumentTemplateNewApp';
 import EmailsInListApp from './container/email/list/EmailsInListApp';
 import EmailNewApp from './container/email/new/EmailNewApp';
 import EmailDetailsApp from './container/email/details/EmailDetailsApp';
@@ -75,6 +78,10 @@ const Routes = () => {
                 <Route path="documenten" component={DocumentsListApp} />
                 <Route path="document/nieuw/:type" component={DocumentNewApp} />
                 <Route path="document/:id" component={DocumentDetailsApp} />
+                /* Document templates */
+                <Route path="document-templates" component={DocumentTemplatesListApp} />
+                <Route path="document-template/nieuw" component={DocumentTemplateNewApp} />
+                <Route path="document-template/:id" component={DocumentTemplateDetailsApp} />
                 /* Emails */
                 <Route path="emails/concept" component={ConceptsInListApp} />
                 <Route path="email/concept/:id" component={ConceptApp} />

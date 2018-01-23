@@ -3166,6 +3166,10 @@ hyphenate-style-name@^1.0.1:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/hyphenate-style-name/-/hyphenate-style-name-1.0.2.tgz#31160a36930adaf1fc04c6074f7eb41465d4ec4b"
 
+ibantools@^1.5.1:
+  version "1.5.1"
+  resolved "https://registry.yarnpkg.com/ibantools/-/ibantools-1.5.1.tgz#855ca8d0ddc209a62f1b17c10618849879866fe7"
+
 iconv-lite@0.4.13:
   version "0.4.13"
   resolved "https://registry.yarnpkg.com/iconv-lite/-/iconv-lite-0.4.13.tgz#1f88aba4ab0b1508e8312acc39345f36e992e2f2"

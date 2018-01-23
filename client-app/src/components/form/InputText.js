@@ -10,7 +10,7 @@ const InputText = props => {
             <div className={`${size}`}>
                 <input
                     type={ type }
-                    className={`form-control input-sm ${className}` + (error && 'has-error')}
+                    className={`form-control input-sm ${className}` + (error ? 'has-error' : '')}
                     id={ id }
                     placeholder={ placeholder }
                     name= { name }

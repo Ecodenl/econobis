@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import InputSelect from "../../../../components/form/InputSelect";
 
 const DocumentNewFormCreateDocument = ({document, templates, errors, handleInputChange, handleDocumentGroupChange, documentGroups, users}) => {
-    const { documentGroup, template, freeText1, freeText2, filename, sentById } = document;
+    const { documentGroup, templateId, freeText1, freeText2, filename, sentById } = document;
 
     return (
         <div>
@@ -20,8 +20,8 @@ const DocumentNewFormCreateDocument = ({document, templates, errors, handleInput
                 />
                 <InputSelect
                     label="Template"
-                    name={"template"}
-                    value={template}
+                    name={"templateId"}
+                    value={templateId}
                     options={templates}
                     onChangeAction={handleInputChange}
                     required={"required"}

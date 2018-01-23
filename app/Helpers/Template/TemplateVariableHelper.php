@@ -78,7 +78,13 @@ class TemplateVariableHelper
                 return optional(optional($model->person)->title)->name;
                 break;
             case 'naam':
-                return $model->full_name;
+                if($model->type_id == 'person'){
+                    $prefix = optional($model->person->lastNamePrefix)->name;
+                    return $prefix ? $model->person->first_name . ' ' . $prefix . ' ' . $model->person->last_name : $model->person->first_name . ' ' . $model->person->last_name;
+                }
+                elseif($model->type_id == 'organisation'){
+                    return $model->full_name;
+                }
                 break;
             case 'adres':
                 return optional($model->primaryAddress)->street . ' ' . optional($model->primaryAddress)->number;

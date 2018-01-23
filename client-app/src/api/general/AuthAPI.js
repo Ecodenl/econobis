@@ -10,6 +10,7 @@ const AUTH_KEY = {
 export default {
     loginUser: (loginCredentials) => {
         const requestUrl = `${URL_API}/oauth/token`;
+        delete axios.defaults.headers.common['Authorization'];
 
         return axios.post(requestUrl, {...AUTH_KEY, ...loginCredentials})
             .then(function (response) {

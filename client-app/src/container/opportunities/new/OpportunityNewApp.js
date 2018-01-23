@@ -36,7 +36,9 @@ class OppportunitiesNewApp extends Component {
                 contact: false,
                 status: false,
             },
-        }
+        };
+
+        this.handleReactSelectChange = this.handleReactSelectChange.bind(this);
     };
 
 
@@ -101,6 +103,16 @@ class OppportunitiesNewApp extends Component {
             opportunity: {
                 ...this.state.opportunity,
                 [name]: value
+            },
+        });
+    };
+
+    handleReactSelectChange(selectedOption, name) {
+        this.setState({
+            ...this.state,
+            opportunity: {
+                ...this.state.opportunity,
+                [name]: selectedOption
             },
         });
     };
@@ -177,6 +189,7 @@ class OppportunitiesNewApp extends Component {
                                     handleInputChange={this.handleInputChange}
                                     handleChangeDesiredDate={this.handleChangeDesiredDate}
                                     handleSubmit={this.handleSubmit}
+                                    handleReactSelectChange={this.handleReactSelectChange}
                                     handleEditorChange={this.handleEditorChange}
                                 />
                             </div>

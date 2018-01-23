@@ -13,16 +13,14 @@ class ContactDetailsQuotations extends Component {
     render() {
         return (
             <Panel>
-                <Panel>
-                    <PanelHeader>
-                        <span className="h5 text-bold">Offertes</span>
-                    </PanelHeader>
-                    <PanelBody>
-                        <div className="col-md-12">
-                            <ContactDetailsQuotationsList/>
-                        </div>
-                    </PanelBody>
-                </Panel>
+                <PanelHeader>
+                    <span className="h5 text-bold">Offertes</span>
+                </PanelHeader>
+                <PanelBody>
+                    <div className="col-md-12">
+                        <ContactDetailsQuotationsList/>
+                    </div>
+                </PanelBody>
             </Panel>
         );
     }

@@ -25,24 +25,22 @@ class TaskDetailsFormProperties extends Component {
     render() {
         return (
             <Panel>
-                <Panel>
-                    <PanelHeader>
-                        <span className="h5 text-bold">Extra kenmerken gegevens</span>
-                        {this.props.permissions.manageTask &&
-                        <a role="button" className="pull-right" onClick={this.toggleShowNew}><span
-                            className="glyphicon glyphicon-plus"/></a>
-                        }
-                    </PanelHeader>
-                    <PanelBody>
-                        <div className="col-md-12">
-                            <TaskDetailsFormPropertiesList/>
-                        </div>
-                        <div className="col-md-12 margin-10-top">
-                            {this.state.showNew &&
-                            <TaskDetailsFormPropertyNew toggleShowNew={this.toggleShowNew}/>}
-                        </div>
-                    </PanelBody>
-                </Panel>
+                <PanelHeader>
+                    <span className="h5 text-bold">Extra kenmerken gegevens</span>
+                    {this.props.permissions.manageTask &&
+                    <a role="button" className="pull-right" onClick={this.toggleShowNew}><span
+                        className="glyphicon glyphicon-plus"/></a>
+                    }
+                </PanelHeader>
+                <PanelBody>
+                    <div className="col-md-12">
+                        <TaskDetailsFormPropertiesList/>
+                    </div>
+                    <div className="col-md-12 margin-10-top">
+                        {this.state.showNew &&
+                        <TaskDetailsFormPropertyNew toggleShowNew={this.toggleShowNew}/>}
+                    </div>
+                </PanelBody>
             </Panel>
         );
     }

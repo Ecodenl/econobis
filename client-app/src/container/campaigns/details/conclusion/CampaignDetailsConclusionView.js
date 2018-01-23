@@ -12,6 +12,11 @@ const CampaignDetailsFormConclusionView = props => {
         <div>
             <div className="row" onClick={props.switchToEdit}>
                 <ViewText
+                    label={"Gemaakt door"}
+                    value={createdBy ? createdBy.fullName: 'Onbekend'}
+                    link={createdBy ? 'gebruiker/' + createdBy.id : ''}
+                />
+                <ViewText
                     label={"Verantwoordelijke"}
                     value={ownedBy ? ownedBy.fullName: 'Onbekend'}
                     link={ownedBy ? 'gebruiker/' + ownedBy.id : ''}
@@ -21,11 +26,6 @@ const CampaignDetailsFormConclusionView = props => {
                 <ViewText
                     label={"Gemaakt op"}
                     value={createdAt ? moment(createdAt.date).format('L') : 'Onbekend'}
-                />
-                <ViewText
-                    label={"Gemaakt door"}
-                    value={createdBy ? createdBy.fullName: 'Onbekend'}
-                    link={createdBy ? 'gebruiker/' + createdBy.id : ''}
                 />
             </div>
         </div>

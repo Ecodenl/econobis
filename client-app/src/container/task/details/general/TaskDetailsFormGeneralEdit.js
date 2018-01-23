@@ -14,7 +14,8 @@ import validator from "validator";
 import RegistrationsAPI from "../../../../api/registration/RegistrationsAPI";
 import ContactGroupAPI from "../../../../api/contact-group/ContactGroupAPI";
 import OpportunitiesAPI from "../../../../api/opportunity/OpportunitiesAPI";
-import CampaignDetailsAPI from "../../../../api/campaign/CampaignDetailsAPI";
+import CampaignsAPI from "../../../../api/campaign/CampaignsAPI";
+import InputReactSelect from "../../../../components/form/InputReactSelect";
 
 class TaskDetailsFormGeneralEdit extends Component {
     constructor(props) {
@@ -60,6 +61,7 @@ class TaskDetailsFormGeneralEdit extends Component {
         this.handleChangeStartedDate = this.handleChangeStartedDate.bind(this);
         this.handleChangeFinishedDate = this.handleChangeFinishedDate.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.handleReactSelectChange = this.handleReactSelectChange.bind(this);
     };
 
     componentDidMount() {
@@ -79,7 +81,7 @@ class TaskDetailsFormGeneralEdit extends Component {
             this.setState({ opportunities: payload });
         });
 
-        CampaignDetailsAPI.peekCampaigns().then((payload) => {
+        CampaignsAPI.peekCampaigns().then((payload) => {
             this.setState({ campaigns: payload });
         });
     };
@@ -94,6 +96,16 @@ class TaskDetailsFormGeneralEdit extends Component {
             task: {
                 ...this.state.task,
                 [name]: value
+            },
+        });
+    };
+
+    handleReactSelectChange(selectedOption, name) {
+        this.setState({
+            ...this.state,
+            task: {
+                ...this.state.task,
+                [name]: selectedOption
             },
         });
     };
@@ -245,53 +257,62 @@ class TaskDetailsFormGeneralEdit extends Component {
                 </div>
 
                 <div className="row">
-                    <InputSelect
+                    <InputReactSelect
                         label={"Contact"}
                         size={"col-sm-6"}
                         name={"contactId"}
                         options={this.state.contacts}
                         value={contactId}
-                        onChangeAction={this.handleInputChange}
+                        onChangeAction={this.handleReactSelectChange}
                         optionName={'fullName'}
+                        multi={false}
                     />
-                    <InputSelect
+                    <InputReactSelect
                         label={"Campagne"}
                         size={"col-sm-6"}
                         name={"campaignId"}
                         options={this.state.campaigns}
                         value={campaignId}
                         onChangeAction={this.handleInputChange}
+                        onChangeAction={this.handleReactSelectChange}
+                        multi={false}
                     />
                 </div>
 
                 <div className="row">
-                    <InputSelect
+                    <InputReactSelect
                         label={"Aanmelding"}
                         size={"col-sm-6"}
                         name={"registrationId"}
                         options={this.state.registrations}
                         value={registrationId}
                         onChangeAction={this.handleInputChange}
+                        onChangeAction={this.handleReactSelectChange}
+                        multi={false}
                     />
 
-                    <InputSelect
+                    <InputReactSelect
                         label={"Kans"}
                         size={"col-sm-6"}
                         name={"opportunityId"}
                         options={this.state.opportunities}
                         value={opportunityId}
                         onChangeAction={this.handleInputChange}
+                        onChangeAction={this.handleReactSelectChange}
+                        multi={false}
                     />
                 </div>
 
                 <div className="row">
-                    <InputSelect
+                    <InputReactSelect
                         label={"Groep"}
                         size={"col-sm-6"}
                         name={"contactGroupId"}
                         options={this.state.contactGroups}
                         value={contactGroupId}
                         onChangeAction={this.handleInputChange}
+                        onChangeAction={this.handleReactSelectChange}
+                        multi={false}
                     />
                 </div>
 

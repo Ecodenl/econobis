@@ -18,7 +18,6 @@ class UserNewForm extends Component {
             user: {
                 id: '',
                 email: '',
-                password: '',
                 titleId: '',
                 firstName: '',
                 lastNamePrefixId: '',
@@ -29,7 +28,6 @@ class UserNewForm extends Component {
             },
             errors: {
                 email: false,
-                password: false,
                 firstName: false,
                 lastName: false,
             },
@@ -61,11 +59,6 @@ class UserNewForm extends Component {
 
         if(!validator.isEmail(user.email)){
             errors.email = true;
-            hasErrors = true;
-        };
-
-        if(!passwordValidator(user.password)){
-            errors.password = true;
             hasErrors = true;
         };
 
@@ -169,19 +162,6 @@ class UserNewForm extends Component {
                         name="occupation"
                         value={occupation}
                         onChangeAction={this.handleInputChange}
-                    />
-                </div>
-
-                <div className="row">
-                    <InputText
-                        type={"password"}
-                        label={"Wachtwoord"}
-                        name={"password"}
-                        value={password}
-                        onChangeAction={this.handleInputChange}
-                        required={"required"}
-                        error={this.state.errors.password}
-                        errorMessage={'Het wachtwoord moet minmaal 8 karakters lang zijn en moet minimaal 1 cijfer en  1 hoofdletter bevatten.'}
                     />
                 </div>
 

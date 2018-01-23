@@ -4,11 +4,13 @@ namespace App\Http\Controllers\Api\User;
 
 use App\Eco\User\User;
 use App\Helpers\RequestInput\RequestInput;
+use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Resources\User\FullUser;
 use App\Http\Resources\User\UserPeek;
 use App\Jobs\CreateAlfrescoUserJob;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
@@ -26,12 +28,11 @@ class UserController extends Controller
         return FullUser::make($user);
     }
 
-    public function store(RequestInput $input)
+    public function store(RequestInput $input, Request $request)
     {
         $this->authorize('create', User::class);
 
         $data = $input->string('email')->validate(['required', 'email', 'unique:users,email'])->next()
-            ->password('password')->validate('required')->next()
             ->string('titleId')->validate('exists:titles,id')->default(null)->alias('title_id')->next()
             ->string('firstName')->whenMissing('')->alias('first_name')->next()
             ->string('lastNamePrefixId')->validate('exists:last_name_prefixes,id')->default(null)->alias('last_name_prefix_id')->next()
@@ -42,6 +43,8 @@ class UserController extends Controller
             ->boolean('active')->whenMissing(true)->next()
             ->get();
 
+        //create random password
+        $data['password'] = Str::random(20);
 
         $user = new User();
         $user->fill($data);
@@ -49,6 +52,10 @@ class UserController extends Controller
         $user->save();
 
         $user->assignRole(Role::findByName('superuser'));
+
+        //Send link to set password
+        $forgotPassWordController = new ForgotPasswordController();
+        $forgotPassWordController->sendResetLinkEmail($request);
 
         return $this->show($user->fresh());
     }

@@ -6,6 +6,8 @@ use App\Cooperation;
 use App\Eco\LastNamePrefix\LastNamePrefix;
 use App\Eco\Mailbox\Mailbox;
 use App\Eco\Title\Title;
+use App\Notifications\MailResetPasswordToken;
+use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Support\Facades\Hash;
@@ -16,7 +18,7 @@ use Venturecraft\Revisionable\RevisionableTrait;
 
 class User extends Authenticatable
 {
-    use Notifiable, HasApiTokens, RevisionableTrait, HasRoles, PresentableTrait;
+    use Notifiable, HasApiTokens, RevisionableTrait, HasRoles, PresentableTrait, CanResetPassword;
     protected $presenter = UserPresenter::class;
 
     /**
@@ -73,4 +75,13 @@ class User extends Authenticatable
 
         return Hash::check($password, $this->getAuthPassword());
     }
+
+    /**
+     * Send a password reset email to the user
+     */
+    public function sendPasswordResetNotification($token)
+    {
+        $this->notify(new MailResetPasswordToken($token));
+    }
+
 }

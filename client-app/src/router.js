@@ -27,6 +27,8 @@ import EmailTemplatesListApp from './container/email-templates/list/EmailTemplat
 import EmailTemplateDetailsApp from './container/email-templates/details/EmailTemplateDetailsApp';
 import EmailTemplateNewApp from './container/email-templates/new/EmailTemplateNewApp';
 import EmailAnswerApp from './container/email/answer/EmailAnswerApp';
+import Forgot from './container/auth/Forgot';
+import Reset from './container/auth/Reset';
 import Login from './container/auth/Login';
 import Logout from './container/auth/Logout';
 import MailboxDetailsApp from './container/mailbox/details/MailboxDetailsApp';
@@ -57,6 +59,8 @@ const Routes = () => {
         <Router onUpdate={() => window.scrollTo(0, 0)} history={ hashHistory }>
             <Route path="login" component={ Login } />
             <Route path="loguit" component={ Logout } />
+            <Route path='wachtwoord-vergeten' component={Forgot}/>
+            <Route path='wachtwoord-wijzig/:token' component={Reset}/>
             <Route path="/" component={ RequireAuth(Main) }>
                 <IndexRoute component={ DashboardApp } />
                 /* Contact */

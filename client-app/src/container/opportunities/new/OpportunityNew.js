@@ -14,7 +14,7 @@ const OpportunityFormEdit = props => {
 
             <div className="row">
                 <InputSelect
-                    label={"Kans"}
+                    label={"Type kans"}
                     size={"col-sm-6"}
                     name={"measureId"}
                     value={measureId}

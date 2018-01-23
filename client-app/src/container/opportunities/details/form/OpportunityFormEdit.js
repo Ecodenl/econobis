@@ -130,7 +130,7 @@ class OpportunityFormEdit extends Component {
             <form className="form-horizontal col-md-12" onSubmit={this.handleSubmit}>
                 <div className="row">
                     <InputText
-                        label={"Kans"}
+                        label={"Type kans"}
                         size={"col-sm-6"}
                         name={"measureId"}
                         value={measureName}

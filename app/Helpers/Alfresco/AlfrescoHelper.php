@@ -101,21 +101,20 @@ class AlfrescoHelper
 
 
     public function assignUserToSite($alfresco_username){
-
         $curl = curl_init();
 
         curl_setopt_array($curl, array(
             CURLOPT_SSL_VERIFYPEER => false,
             CURLOPT_SSL_VERIFYHOST => false,
             CURLOPT_PORT => "8443",
-            CURLOPT_URL => "https://185.63.154.15:8443/alfresco/api/-default-/public/alfresco/versions/1/sites/". env('ALFRESCO_SITE_ID'). "/members",
+            CURLOPT_URL => "https://185.63.154.15:8443/alfresco/api/-default-/public/alfresco/versions/1/sites/". env('ALFRESCO_SITE_MAP'). "/members",
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_ENCODING => "",
             CURLOPT_MAXREDIRS => 10,
             CURLOPT_TIMEOUT => 30,
             CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
             CURLOPT_CUSTOMREQUEST => "POST",
-            CURLOPT_POSTFIELDS => "{\"role\": \"SiteCollaborator\",\"id\": \"$alfresco_username\"}",
+            CURLOPT_POSTFIELDS => "{\"role\": \"SiteContributor\",\"id\": \"$alfresco_username\"}",
             CURLOPT_HTTPHEADER => array(
                 "Accept: application/json",
                 "Authorization: Basic " . $this->ticket,

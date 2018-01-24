@@ -40,7 +40,7 @@ class Reset extends Component{
                         passwordError: false});
                     setTimeout(() => {
                     hashHistory.push("/login");
-                    },3000 );
+                    },2000 );
                 })
                 .catch(error => {
                     this.refs.password.value = "";

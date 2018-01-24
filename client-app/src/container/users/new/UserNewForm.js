@@ -184,7 +184,7 @@ class UserNewForm extends Component {
                         errorMessage={'Het wachtwoord moet minmaal 8 karakters lang zijn en moet minimaal 1 cijfer en  1 hoofdletter bevatten.'}
                     />
                 </div>
-                
+
                 <PanelFooter>
                     <div className="pull-right btn-group" role="group">
                         <ButtonText buttonText={"Opslaan"} onClickAction={this.handleSubmit} type={"submit"} value={"Submit"}/>

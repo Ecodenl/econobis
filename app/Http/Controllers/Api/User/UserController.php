@@ -51,8 +51,9 @@ class UserController extends Controller
 
         $user->save();
 
-        $alfrescoHelper = new AlfrescoHelper(config('ALFRESCO_ADMIN_USERNAME'), config('ALFRESCO_ADMIN_PASSWORD'));
+        $alfrescoHelper = new AlfrescoHelper(config('app.ALFRESCO_ADMIN_USERNAME'), config('app.ALFRESCO_ADMIN_PASSWORD'));
 
+        //creates new account in alfresco and assigns to site
         $alfrescoHelper->createNewAccount($user);
 
         $user->assignRole(Role::findByName('superuser'));

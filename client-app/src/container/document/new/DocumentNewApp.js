@@ -108,7 +108,7 @@ class DocumentNewApp extends Component {
             let templates = [];
 
             payload.forEach(function (template) {
-                if (template.type == value) {
+                if (template.group == value) {
                     templates.push({id: template.id, name: template.name});
                 }
             });

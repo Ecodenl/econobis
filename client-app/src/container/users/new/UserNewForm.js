@@ -18,7 +18,7 @@ class UserNewForm extends Component {
             user: {
                 id: '',
                 email: '',
-                password: '',
+                alfrescoPassword: '',
                 titleId: '',
                 firstName: '',
                 lastNamePrefixId: '',
@@ -29,7 +29,7 @@ class UserNewForm extends Component {
             },
             errors: {
                 email: false,
-                password: false,
+                alfrescoPassword: false,
                 firstName: false,
                 lastName: false,
             },
@@ -64,8 +64,8 @@ class UserNewForm extends Component {
             hasErrors = true;
         };
 
-        if(!passwordValidator(user.password)){
-            errors.password = true;
+        if(!passwordValidator(user.alfrescoPassword)){
+            errors.alfrescoPassword = true;
             hasErrors = true;
         };
 
@@ -95,7 +95,7 @@ class UserNewForm extends Component {
     };
 
     render() {
-        const { email, password, titleId, firstName, lastNamePrefixId, lastName, telephoneNumber, mobileNumber, occupation } = this.state.user;
+        const { email, alfrescoPassword, titleId, firstName, lastNamePrefixId, lastName, telephoneNumber, mobileNumber, occupation } = this.state.user;
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -175,12 +175,12 @@ class UserNewForm extends Component {
                 <div className="row">
                     <InputText
                         type={"password"}
-                        label={"Wachtwoord"}
-                        name={"password"}
-                        value={password}
+                        label={"Alfresco wachtwoord"}
+                        name={"alfrescoPassword"}
+                        value={alfrescoPassword}
                         onChangeAction={this.handleInputChange}
                         required={"required"}
-                        error={this.state.errors.password}
+                        error={this.state.errors.alfrescoPassword}
                         errorMessage={'Het wachtwoord moet minmaal 8 karakters lang zijn en moet minimaal 1 cijfer en  1 hoofdletter bevatten.'}
                     />
                 </div>

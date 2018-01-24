@@ -3,12 +3,14 @@
 namespace App\Http\Controllers\Api\User;
 
 use App\Eco\User\User;
+use App\Helpers\Alfresco\AlfrescoHelper;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\Resources\User\FullUser;
 use App\Http\Resources\User\UserPeek;
 use App\Jobs\CreateAlfrescoUserJob;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
@@ -31,7 +33,7 @@ class UserController extends Controller
         $this->authorize('create', User::class);
 
         $data = $input->string('email')->validate(['required', 'email', 'unique:users,email'])->next()
-            ->password('password')->validate('required')->next()
+            ->string('alfrescoPassword')->validate('required')->alias('alfresco_password')->next()
             ->string('titleId')->validate('exists:titles,id')->default(null)->alias('title_id')->next()
             ->string('firstName')->whenMissing('')->alias('first_name')->next()
             ->string('lastNamePrefixId')->validate('exists:last_name_prefixes,id')->default(null)->alias('last_name_prefix_id')->next()
@@ -42,11 +44,14 @@ class UserController extends Controller
             ->boolean('active')->whenMissing(true)->next()
             ->get();
 
-
         $user = new User();
         $user->fill($data);
 
         $user->save();
+
+        $alfrescoHelper = new AlfrescoHelper(config('ALFRESCO_ADMIN_USERNAME'), config('ALFRESCO_ADMIN_PASSWORD'));
+
+        $alfrescoHelper->createNewAccount($user);
 
         $user->assignRole(Role::findByName('superuser'));
 

@@ -9,16 +9,18 @@
 namespace App\Http\Controllers\Api\Document;
 
 use App\Eco\Document\Document;
-use App\Eco\DocumentTemplate\DocumentTemplate;
+
+use App\Helpers\Alfresco\AlfrescoHelper;
 use App\Helpers\RequestInput\RequestInput;
-use App\Helpers\Template\TemplateTableHelper;
 use App\Helpers\Template\TemplateVariableHelper;
 use App\Http\RequestQueries\Document\Grid\RequestQuery;
 use App\Http\Resources\Document\FullDocument;
 use App\Http\Resources\Document\GridDocument;
 use Barryvdh\DomPDF\Facade as PDF;
-use Flynsarmy\DbBladeCompiler\Facades\DbView;
-use Illuminate\Support\Facades\Blade;
+use Carbon\Carbon;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class DocumentController
 {
@@ -43,7 +45,7 @@ class DocumentController
         return FullDocument::make($document);
     }
 
-    public function store(RequestInput $requestInput)
+    public function store(RequestInput $requestInput, Request $request)
     {
         $data = $requestInput
             ->string('description')->next()
@@ -60,23 +62,59 @@ class DocumentController
             ->integer('templateId')->validate('exists:document_templates,id')->onEmpty(null)->alias('template_id')->next()
             ->get();
 
-        if($data['document_type'] == 'document'){
-            //validate if filename exist in Alfresco
-            //create document
-            //save in alfresco
-
-        }
-        else{
-            //get file from request
-            // get name of file
-            //validate name
-            //save in alfresco
-        }
-
-
         $document = new Document();
         $document->fill($data);
         $document->save();
+
+        //store the actual file in Alfresco
+        $user = Auth::user();
+
+        $alfrescoHelper = new AlfrescoHelper($user->email, $user->alfresco_password);
+
+        if($data['document_type'] == 'internal'){
+
+            $pdf = $this->create($document);
+
+            $time = Carbon::now();
+
+            $name = '';
+            $document->contact && $name .=  '-' . str_replace(' ', '', $document->contact->full_name);
+            $document->registration && $name .= '-aanmelding-' . $document->registration->id;
+            $document->contactGroup && $name .= '-' . str_replace(' ', '', $document->contactGroup->name);
+            $document->opportunity && $name .= '-' . $document->opportunity->number;
+
+            $document->filename = $time->format('Ymd') . $name . '.pdf';
+            $document->save();
+
+            $filePath = (storage_path('app' . DIRECTORY_SEPARATOR . 'documents/' . $document->filename));
+            file_put_contents($filePath, $pdf);
+
+            $alfrescoResponse = $alfrescoHelper->createFile($filePath, $document->filename, $document->getDocumentGroup()->name);
+
+            $document->alfresco_node_id = $alfrescoResponse['entry']['id'];
+            $document->save();
+
+            Storage::disk('documents')->delete($document->filename);
+        }
+        else{
+            $file = $request->file('attachment');
+
+            if($file == null || !$file->isValid()) abort('422', 'Error uploading file');
+
+
+            $file_tmp = $file->store('', 'documents');
+            $filePath_tmp = Storage::disk('documents')->getDriver()->getAdapter()->applyPathPrefix($file_tmp);
+
+
+
+            $alfrescoResponse = $alfrescoHelper->createFile($filePath_tmp, $file->getClientOriginalName(), $document->getDocumentGroup()->name);
+
+            $document->filename = $file->getClientOriginalName();
+            $document->alfresco_node_id = $alfrescoResponse['entry']['id'];
+            $document->save();
+
+            Storage::disk('documents')->delete($file_tmp);
+        }
 
         return FullDocument::make($document->fresh());
     }
@@ -110,7 +148,7 @@ class DocumentController
         $document->forceDelete();
     }
 
-    public function download(Document $document){
+    public function create(Document $document){
 
         //load template parts
         $document->load('template.footer', 'template.baseTemplate', 'template.header');
@@ -141,7 +179,16 @@ class DocumentController
         $pdf = PDF::loadView('documents.generic', [
             'html' => $html,
             ]);
-        return $pdf->stream();
 
+        return $pdf->output();
+    }
+
+    public function download(Document $document){
+
+        $user = Auth::user();
+
+        $alfrescoHelper = new AlfrescoHelper($user->email, $user->alfresco_password);
+
+        return $alfrescoHelper->downloadFile($document->alfresco_node_id);
     }
 }

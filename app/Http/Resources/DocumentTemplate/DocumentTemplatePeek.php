@@ -17,7 +17,7 @@ class DocumentTemplatePeek extends Resource
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'type' => $this->template_type
+            'group' => $this->document_group,
         ];
     }
 }

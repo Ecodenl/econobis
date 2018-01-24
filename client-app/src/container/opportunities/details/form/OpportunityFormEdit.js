@@ -15,6 +15,7 @@ import RegistrationsAPI from '../../../../api/registration/RegistrationsAPI';
 import OpportunityDetailsAPI from '../../../../api/opportunity/OpportunityDetailsAPI';
 
 import { fetchOpportunity } from '../../../../actions/opportunity/OpportunityDetailsActions';
+import InputReactSelect from "../../../../components/form/InputReactSelect";
 
 class OpportunityFormEdit extends Component {
     constructor(props) {
@@ -44,6 +45,8 @@ class OpportunityFormEdit extends Component {
                 status: false,
             },
         }
+
+        this.handleReactSelectChange = this.handleReactSelectChange.bind(this);
     };
 
     componentWillMount() {
@@ -70,6 +73,16 @@ class OpportunityFormEdit extends Component {
             opportunity: {
                 ...this.state.opportunity,
                 [name]: value
+            },
+        });
+    };
+
+    handleReactSelectChange(selectedOption, name) {
+        this.setState({
+            ...this.state,
+            opportunity: {
+                ...this.state.opportunity,
+                [name]: selectedOption
             },
         });
     };
@@ -145,16 +158,16 @@ class OpportunityFormEdit extends Component {
                 </div>
 
                 <div className="row">
-                    <InputSelect
+                    <InputReactSelect
                         label={"Contact"}
-                        size={"col-sm-6"}
                         name={"contactId"}
-                        options={this.state.contacts}
                         value={contactId}
-                        onChangeAction={this.handleInputChange}
+                        options={this.props.contacts}
+                        onChangeAction={this.handleReactSelectChange}
                         optionName={'fullName'}
                         required={"required"}
-                        error={this.state.errors.contact}
+                        error={this.props.errors.contact}
+                        multi={false}
                     />
                     <InputSelect
                         label={"Reactie"}
@@ -167,13 +180,13 @@ class OpportunityFormEdit extends Component {
                 </div>
 
                 <div className="row">
-                    <InputSelect
+                    <InputReactSelect
                         label={"Aanmelding"}
-                        size={"col-sm-6"}
                         name={"registrationId"}
-                        options={this.state.registrations}
                         value={registrationId}
-                        onChangeAction={this.handleInputChange}
+                        options={this.props.registrations}
+                        onChangeAction={this.props.handleReactSelectChange}
+                        multi={false}
                     />
                     <InputSelect
                         label={"Status"}
@@ -188,21 +201,14 @@ class OpportunityFormEdit extends Component {
                 </div>
 
                 <div className="row">
-                    <div className='form-group col-sm-12'>
-                        <div className="row">
-                            <div className="col-sm-3">
-                                <label htmlFor="campaignId" className="col-sm-12">Campagne</label>
-                            </div>
-                            <div className="col-sm-8">
-                                <select className='form-control input-sm' name='campaignId' value={campaignId} onChange={this.handleInputChange}>
-                                    <option value=''></option>
-                                    {this.props.campaigns.map((option) => {
-                                        return <option key={option.id} value={option.id}>{option.name}</option>
-                                    })}
-                                </select>
-                            </div>
-                        </div>
-                    </div>
+                    <InputReactSelect
+                        label={"Campagne"}
+                        name={"campaignId"}
+                        value={campaignId}
+                        options={this.props.campaigns}
+                        onChangeAction={this.props.handleReactSelectChange}
+                        multi={false}
+                    />
                 </div>
                 <div className="row">
                     <div className="form-group col-sm-12">

@@ -9,6 +9,7 @@ export const configure = (initialState = {}) => {
 
     const store = createStore(reducers, initialState, compose(
         applyMiddleware(sagaMiddleware),
+        process.env.NODE_ENV !== 'production' &&
         window.devToolsExtension ? window.devToolsExtension() : f => f
     ));
 

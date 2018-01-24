@@ -5,9 +5,8 @@ namespace App\Http\Controllers\Api\User;
 use App\Eco\User\User;
 use App\Helpers\Alfresco\AlfrescoHelper;
 use App\Helpers\RequestInput\RequestInput;
+use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Resources\User\FullUser;
-use App\Http\Resources\User\UserPeek;
-use App\Jobs\CreateAlfrescoUserJob;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Str;
@@ -28,7 +27,7 @@ class UserController extends Controller
         return FullUser::make($user);
     }
 
-    public function store(RequestInput $input)
+    public function store(RequestInput $input, Request $request)
     {
         $this->authorize('create', User::class);
 
@@ -44,6 +43,9 @@ class UserController extends Controller
             ->boolean('active')->whenMissing(true)->next()
             ->get();
 
+        //create random password
+        $data['password'] = Str::random(20);
+
         $user = new User();
         $user->fill($data);
 
@@ -54,6 +56,10 @@ class UserController extends Controller
         $alfrescoHelper->createNewAccount($user);
 
         $user->assignRole(Role::findByName('superuser'));
+
+        //Send link to set password
+        $forgotPassWordController = new ForgotPasswordController();
+        $forgotPassWordController->sendResetLinkEmail($request);
 
         return $this->show($user->fresh());
     }

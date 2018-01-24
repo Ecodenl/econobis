@@ -14,6 +14,13 @@ use Illuminate\Http\Request;
 |
 */
 
+Route::post('password/email','Auth\ForgotPasswordController@sendResetLinkEmail');
+Route::post('password/reset','Auth\ResetPasswordController@reset');
+Route::get('password/reset/{token}', [
+    'as' => 'password.reset',
+    'uses' => 'Auth\ResetPasswordController@showResetForm'
+]);
+
 Route::namespace('Api')
     ->middleware('auth:api')
     ->group(function () {

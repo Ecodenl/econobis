@@ -31,6 +31,7 @@ const NavHeader = (props) => {
                             </a>
                             <ul className="dropdown-menu">
                                 <li><Link to="loguit">Uitloggen</Link></li>
+                                <li onClick={props.toggleChangePassword}><Link>Wachtwoord wijzigen</Link></li>
                             </ul>
                         </li>
                     </ul>

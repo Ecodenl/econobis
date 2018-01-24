@@ -17,6 +17,7 @@ class Main extends Component {
 
         this.state = {
             menuActive: false,
+            changePasswordActive: false,
         };
 
         const token = localStorage.getItem('access_token');
@@ -28,6 +29,7 @@ class Main extends Component {
         this.onMenuEnter = this.onMenuEnter.bind(this);
         this.onMenuLeave = this.onMenuLeave.bind(this);
         this.toggleMenu = this.toggleMenu.bind(this);
+        this.toggleChangePassword = this.toggleChangePassword.bind(this);
     }
 
     componentDidMount() {
@@ -56,6 +58,12 @@ class Main extends Component {
         });
     }
 
+    toggleChangePassword() {
+        this.setState({
+            changePasswordActive: !this.state.changePasswordActive,
+        });
+    }
+
     render() {
         const contentClass = (this.state.menuActive ? 'content open' : 'content');
 
@@ -68,14 +76,14 @@ class Main extends Component {
                         this.props.systemDataLoaded && this.props.meDetailsLoaded ?
                             <div className="wrapper">
                                 <div>
-                                    <NavHeader toggleMenu={this.toggleMenu} />
+                                    <NavHeader toggleMenu={this.toggleMenu} toggleChangePassword={this.toggleChangePassword}/>
                                     <Sidebar onMenuEnter={this.onMenuEnter} onMenuLeave={this.onMenuLeave} menuActive={this.state.menuActive} />
                                 </div>
 
                                     <div className={ contentClass }>
                                         <div className="container-fluid">
                                             <div className="col-md-12">
-                                                <Content children={this.props.children} menuActive={this.state.menuActive} />
+                                                <Content children={this.props.children} menuActive={this.state.menuActive} toggleChangePassword={this.toggleChangePassword} changePasswordActive={this.state.changePasswordActive}/>
                                             </div>
                                     </div>
                                 </div>

@@ -14,6 +14,9 @@ import RegistrationsAPI from "../../../api/registration/RegistrationsAPI";
 import OpportunitiesAPI from "../../../api/opportunity/OpportunitiesAPI";
 import ContactsAPI from "../../../api/contact/ContactsAPI";
 import DocumentTemplateAPI from "../../../api/document-template/DocumentTemplateAPI";
+import {setError} from "../../../actions/general/ErrorActions";
+import {connect} from "react-redux";
+import {fetchRegistrationDetails} from "../../../actions/registration/RegistrationDetailsActions";
 
 class DocumentNewApp extends Component {
     constructor(props) {
@@ -195,8 +198,8 @@ class DocumentNewApp extends Component {
 
             DocumentDetailsAPI.newDocument(data).then((payload) => {
                 hashHistory.push(`/documenten`);
-            }).catch(function (error) {
-                console.log(error)
+            }).catch(error => {
+                this.props.setError(error.response.status);
             });
         }
     };
@@ -237,4 +240,10 @@ class DocumentNewApp extends Component {
     }
 };
 
-export default DocumentNewApp;
+const mapDispatchToProps = dispatch => ({
+    setError: (http_code) => {
+        dispatch(setError(http_code));
+    },
+});
+
+export default connect(null, mapDispatchToProps)(DocumentNewApp);

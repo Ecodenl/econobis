@@ -24,21 +24,21 @@ class AlfrescoHelper
      * @param $username String username in Alfresco(User email)
      * @param $password String password in Alfresco(User alfresco_password)
      *
-     * @return mixed|string if succes returns ticket, else return curl error message
+     * @return mixed|string if success returns ticket, else return curl error message
      */
     public function getTicket($username, $password)
     {
+        if($password === ''){
+            abort(403);
+        }
         $url = 'https://185.63.154.15:8443/alfresco/api/-default-/public/authentication/versions/1/tickets';
         $args['userId'] = $username;
         $args['password'] = $password;
 
         $response = $this->executeCurl($url, $args);
 
-        if($response['succes']){
-            return base64_encode($response['message']['entry']['id']);
-        }else{
-            return $response['message'];
-        }
+        return base64_encode($response['message']['entry']['id']);
+
     }
 
     public function createNewAccount(User $user){
@@ -59,14 +59,12 @@ class AlfrescoHelper
         $args['email'] = $user->email;
         $args['password'] = $user->alfresco_password;
 
-        $response = $this->executeCurl($url, $args);
+        $this->executeCurl($url, $args);
 
-        if($response['succes']){
-            $response = $this->assignUserToSite($user->email);
-            return $response;
-        }else{
-            return $response['message'];
-        }
+        $response = $this->assignUserToSite($user->email);
+
+        return $response;
+
     }
 
 
@@ -177,20 +175,29 @@ class AlfrescoHelper
 
         curl_close($curl);
 
+        //catch curl errors
         if ($err) {
-            return  [
-                'succes' => false,
-                'message' => $err
-            ];
-        } else {
+            $err = json_decode($err);
+            abort($err['error']['statusCode']);
+        }
+        else {
             if($is_file) {
                 return $response;
             }
             else{
-                return [
-                    'succes' => true,
-                    'message' => json_decode($response, true)
-                ];
+                $decoded_response = json_decode($response, true);
+
+                //catch alfresco errors
+                if(array_key_exists('error', $decoded_response)){
+                    abort($decoded_response['error']['statusCode']);
+                }
+                //else success
+                else {
+                    return [
+                        'succes' => true,
+                        'message' => $decoded_response
+                    ];
+                }
             }
         }
     }

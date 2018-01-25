@@ -16,6 +16,7 @@ import emailsReducer from './email/EmailsReducer';
 import emailDetailsReducer from './email/emailDetailsReducer';
 import emailTemplatesReducer from './email-template/emailTemplatesReducer';
 import emailTemplateDetailsReducer from './email-template/emailTemplateDetailsReducer';
+import errorReducer from './general/ErrorReducer';
 import mailboxDetailsReducer from './mailbox/mailboxDetailsReducer';
 import mailboxesReducer from './mailbox/mailboxesReducer';
 import measuresReducer from './measure/MeasureReducer';
@@ -34,6 +35,7 @@ import usersReducer from './user/UsersReducer';
 const rootReducer = combineReducers({
     // General
     auth: authReducer,
+    error: errorReducer,
     meDetails: meDetailsReducer,
     systemData: systemDataReducer,
     toggleSidebar: sidebarReducer,

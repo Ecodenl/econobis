@@ -4,6 +4,10 @@ namespace App\Providers;
 
 use App\Eco\Campaign\Campaign;
 use App\Eco\Campaign\CampaignObserver;
+use App\Eco\Document\Document;
+use App\Eco\Document\DocumentObserver;
+use App\Eco\DocumentTemplate\DocumentTemplateObserver;
+use App\Eco\DocumentTemplate\DocumentTemplate;
 use App\Eco\EmailTemplate\EmailTemplate;
 use App\Eco\EmailTemplate\EmailTemplateObserver;
 use App\Eco\Measure\Measure;
@@ -52,6 +56,8 @@ class ObserverServiceProvider extends ServiceProvider
         Campaign::observe(CampaignObserver::class);
         Measure::observe(MeasureObserver::class);
         EmailTemplate::observe(EmailTemplateObserver::class);
+        Document::observe(DocumentObserver::class);
+        DocumentTemplate::observe(DocumentTemplateObserver::class);
     }
 
     /**

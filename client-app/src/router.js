@@ -14,6 +14,12 @@ import ContactNewApp from './container/contact/new/ContactNewApp';
 import ContactsInGroupListApp from './container/contact-groups/list-contacts-in-group/ContactsInGroupListApp';
 import ContactsListApp from './container/contact/list/ContactsListApp';
 import DashboardApp from './container/dashboard/DashboardApp';
+import DocumentsListApp from './container/document/list/DocumentsListApp';
+import DocumentDetailsApp from './container/document/details/DocumentDetailsApp';
+import DocumentNewApp from './container/document/new/DocumentNewApp';
+import DocumentTemplatesListApp from './container/document-template/list/DocumentTemplatesListApp';
+import DocumentTemplateDetailsApp from './container/document-template/details/DocumentTemplateDetailsApp';
+import DocumentTemplateNewApp from './container/document-template/new/DocumentTemplateNewApp';
 import EmailsInListApp from './container/email/list/EmailsInListApp';
 import EmailNewApp from './container/email/new/EmailNewApp';
 import EmailDetailsApp from './container/email/details/EmailDetailsApp';
@@ -21,6 +27,8 @@ import EmailTemplatesListApp from './container/email-templates/list/EmailTemplat
 import EmailTemplateDetailsApp from './container/email-templates/details/EmailTemplateDetailsApp';
 import EmailTemplateNewApp from './container/email-templates/new/EmailTemplateNewApp';
 import EmailAnswerApp from './container/email/answer/EmailAnswerApp';
+import Forgot from './container/auth/Forgot';
+import Reset from './container/auth/Reset';
 import Login from './container/auth/Login';
 import Logout from './container/auth/Logout';
 import MailboxDetailsApp from './container/mailbox/details/MailboxDetailsApp';
@@ -51,6 +59,8 @@ const Routes = () => {
         <Router onUpdate={() => window.scrollTo(0, 0)} history={ hashHistory }>
             <Route path="login" component={ Login } />
             <Route path="loguit" component={ Logout } />
+            <Route path='wachtwoord-vergeten' component={Forgot}/>
+            <Route path='wachtwoord-wijzig/:token' component={Reset}/>
             <Route path="/" component={ RequireAuth(Main) }>
                 <IndexRoute component={ DashboardApp } />
                 /* Contact */
@@ -68,6 +78,14 @@ const Routes = () => {
                 <Route path="campagne/:id" component={CampaignDetailsApp} />
                 <Route path="campagnes" component={CampaignsListApp} />
                 <Route path="contacten/:filter/:value" component={ ContactsListApp } />
+                /* Documents */
+                <Route path="documenten" component={DocumentsListApp} />
+                <Route path="document/nieuw/:type" component={DocumentNewApp} />
+                <Route path="document/:id" component={DocumentDetailsApp} />
+                /* Document templates */
+                <Route path="document-templates" component={DocumentTemplatesListApp} />
+                <Route path="document-template/nieuw" component={DocumentTemplateNewApp} />
+                <Route path="document-template/:id" component={DocumentTemplateDetailsApp} />
                 /* Emails */
                 <Route path="emails/concept" component={ConceptsInListApp} />
                 <Route path="email/concept/:id" component={ConceptApp} />

@@ -4,6 +4,10 @@ namespace App\Providers;
 
 use App\Eco\Campaign\Campaign;
 use App\Eco\Campaign\CampaignPolicy;
+use App\Eco\Document\Document;
+use App\Eco\Document\DocumentPolicy;
+use App\Eco\DocumentTemplate\DocumentTemplate;
+use App\Eco\DocumentTemplate\DocumentTemplatePolicy;
 use App\Eco\Measure\Measure;
 use App\Eco\Measure\MeasurePolicy;
 use App\Eco\Opportunity\OpportunityPolicy;
@@ -56,6 +60,8 @@ class AuthServiceProvider extends ServiceProvider
         Registration::class => RegistrationPolicy::class,
         Campaign::class => CampaignPolicy::class,
         Measure::class => MeasurePolicy::class,
+        Document::class => DocumentPolicy::class,
+        DocumentTemplate::class => DocumentTemplatePolicy::class,
     ];
 
     /**
@@ -66,6 +72,10 @@ class AuthServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->registerPolicies();
+
+        Passport::tokensExpireIn(now()->addHours(2));
+
+        Passport::refreshTokensExpireIn(now()->addHours(2));
 
         Passport::routes();
     }

@@ -180,6 +180,9 @@ return [
 
         Laravel\Passport\PassportServiceProvider::class,
 
+        //custom packages for document templates
+        Barryvdh\DomPDF\ServiceProvider::class,
+
     ],
 
     /*
@@ -228,7 +231,7 @@ return [
         'URL' => Illuminate\Support\Facades\URL::class,
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
-
+        'PDF' => Barryvdh\DomPDF\Facade::class,
     ],
 
     'faker_locale' => 'nl_NL',
@@ -241,6 +244,5 @@ return [
         'email' => env('ADMIN_USER_EMAIL'),
         'password' => env('ADMIN_USER_PASSWORD'),
 
-    ]
-
+    ],
 ];

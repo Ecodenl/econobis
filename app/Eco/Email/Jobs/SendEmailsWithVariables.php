@@ -12,10 +12,12 @@ namespace App\Eco\Email\Jobs;
 use App\Eco\Contact\Contact;
 use App\Eco\Email\Email;
 use App\Eco\User\User;
-use App\Http\Controllers\Api\EmailTemplate\EmailTemplateController;
+use App\Helpers\Template\TemplateTableHelper;
+use App\Helpers\Template\TemplateVariableHelper;
 use App\Http\Resources\Email\Templates\GenericMail;
 use Carbon\Carbon;
 use Config;
+use Illuminate\Support\Facades\Auth;
 use Mail;
 
 class SendEmailsWithVariables
@@ -77,7 +79,7 @@ class SendEmailsWithVariables
 
             ($email->cc != []) ? $mail->cc($email->cc) : null;
             ($email->bcc != []) ? $mail->bcc($email->bcc) : null;
-            $htmlBodyWithoutVariables = EmailTemplateController::stripRemainingVariableTags($email->html_body);
+            $htmlBodyWithoutVariables = TemplateVariableHelper::stripRemainingVariableTags($email->html_body);
             $mail->send(new GenericMail($email, $htmlBodyWithoutVariables));
             $ccBccSent = true;
         }
@@ -91,10 +93,13 @@ class SendEmailsWithVariables
                     ($email->bcc != []) ? $mail->bcc($email->bcc) : null;
                     $ccBccSent = true;
                 } else {
-                    $email->cc == null;
-                    $email->bcc == null;
+                    $email->cc = null;
+                    $email->bcc = null;
                 }
-                $htmlBodyWithContactVariables = EmailTemplateController::replaceContactVariables($email->html_body, $emailToContact);
+                $htmlBodyWithContactVariables = TemplateTableHelper::replaceTemplateTables($email->html_body, $emailToContact);
+                $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables, 'contact' ,$emailToContact);
+                $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables, 'ik', Auth::user());
+                $htmlBodyWithContactVariables = TemplateVariableHelper::stripRemainingVariableTags($htmlBodyWithContactVariables);
                 $mail->send(new GenericMail($email, $htmlBodyWithContactVariables));
             }
         }
@@ -108,11 +113,16 @@ class SendEmailsWithVariables
                     ($email->cc != []) ? $mail->cc($email->cc) : null;
                     ($email->bcc != []) ? $mail->bcc($email->bcc) : null;
                 } else {
-                    $email->cc == null;
-                    $email->bcc == null;
+                    $email->cc = null;
+                    $email->bcc = null;
                 }
-                $htmlBodyWithContactVariables = EmailTemplateController::replaceUserVariables($email->html_body, $emailToUser);
-                $mail->send(new GenericMail($email, $htmlBodyWithContactVariables));
+
+                $htmlBodyWithUserVariables = TemplateTableHelper::replaceTemplateTables($email->html_body, $emailToUser);
+                $htmlBodyWithUserVariables = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithUserVariables, 'gebruiker' ,$emailToUser);
+                $htmlBodyWithUserVariables = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithUserVariables, 'ik', Auth::user());
+                $htmlBodyWithUserVariables = TemplateVariableHelper::stripRemainingVariableTags($htmlBodyWithUserVariables);
+
+                $mail->send(new GenericMail($email, $htmlBodyWithUserVariables));
             }
         }
 

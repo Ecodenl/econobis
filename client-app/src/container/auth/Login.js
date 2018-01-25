@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { hashHistory } from 'react-router';
+import {hashHistory, Link} from 'react-router';
 
 import { authSuccess } from '../../actions/general/AuthActions';
 import AuthAPI from '../../api/general/AuthAPI';
@@ -90,6 +90,7 @@ class Login extends Component {
                             {this.renderAlert()}
                             <div className="row extra-space-above">
                                 <div className="col-sm-10 col-md-offset-1">
+                                    <Link to='wachtwoord-vergeten' className="link-underline">Wachtwoord vergeten?</Link>
                                     <div className="btn-group pull-right">
                                         <button type="submit" className="btn btn-primary">Login</button>
                                     </div>

@@ -9,19 +9,22 @@ const UserNewApp = () => {
     return (
         <div className="row">
             <div className="col-md-9">
-                        <div className="col-md-12 extra-space-above">
-                            <Panel>
-                                <PanelBody className={"panel-small"}>
-                                    <UserNewToolbar />
-                                </PanelBody>
-                            </Panel>
-                        </div>
-
-                        <div className="col-md-12 extra-space-above">
-                            <UserNewForm />
-                        </div>
+                <div className="col-md-12 extra-space-above">
+                    <Panel>
+                        <PanelBody className={"panel-small"}>
+                            <UserNewToolbar/>
+                        </PanelBody>
+                    </Panel>
+                </div>
+                <div className="col-md-12">
+                    <Panel>
+                        <PanelBody>
+                            <UserNewForm/>
+                        </PanelBody>
+                    </Panel>
+                </div>
             </div>
-            <div className="col-md-3" />
+            <div className="col-md-3"/>
         </div>
     )
 };

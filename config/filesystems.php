@@ -50,7 +50,12 @@ return [
 
         'task_attachments' => [
             'driver' => 'local',
-            'root' => storage_path('app/tasks'),
+            'root' => storage_path('app' . DIRECTORY_SEPARATOR . 'tasks'),
+        ],
+
+        'documents' => [
+            'driver' => 'local',
+            'root' => storage_path('app' . DIRECTORY_SEPARATOR . 'documents'),
         ],
 
         'mail_attachments' => [

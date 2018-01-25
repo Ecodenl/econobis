@@ -24,6 +24,7 @@ class FullRegistration extends Resource
             [
                 'id' => $this->id,
                 'address' => FullAddress::make($this->whenLoaded('address')),
+                'fullAddress' => $this->address->present()->streetAndNumber(),
                 'status' => GenericResource::make($this->whenLoaded('status')),
                 'campaign' => GenericResource::make($this->whenLoaded('campaign')),
                 'sources' => GenericResource::collection($this->whenLoaded('sources')),

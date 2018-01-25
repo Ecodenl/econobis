@@ -13,21 +13,21 @@ class AlterMeasuresTable extends Migration
      */
     public function up()
     {
-//        $superuserRole = \Spatie\Permission\Models\Role::find(1);
-//
-//        $permissions = [
-//            'manage_measure'
-//        ];
-//
-//        foreach ($permissions as $permissionName) {
-//            \Spatie\Permission\Models\Permission::create([
-//                    'name' => $permissionName,
-//                    'guard_name' => 'api',
-//                ]
-//            );
-//        }
-//
-//        $superuserRole->syncPermissions(\Spatie\Permission\Models\Permission::all());
+        $superuserRole = \Spatie\Permission\Models\Role::find(1);
+
+        $permissions = [
+            'manage_measure'
+        ];
+
+        foreach ($permissions as $permissionName) {
+            \Spatie\Permission\Models\Permission::create([
+                    'name' => $permissionName,
+                    'guard_name' => 'api',
+                ]
+            );
+        }
+
+        $superuserRole->syncPermissions(\Spatie\Permission\Models\Permission::all());
 
         Schema::create('faq_measure', function (Blueprint $table) {
             $table->increments('id');

@@ -19,6 +19,16 @@ table th, table td {
   color: #fff;
 }
 
+.thead-title-secundairy {
+  background-color: $brand-secundairy;
+  color: #fff;
+}
+
+.thead-title-tertiary {
+  background-color: $brand-tertiary;
+  color: #fff;
+}
+
 .thead-title-quaternary {
   background-color: $brand-quaternary;
   color: #fff;

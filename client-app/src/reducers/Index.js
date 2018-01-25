@@ -8,10 +8,15 @@ import contactGroupDetailsReducer from './contact-group/ContactGroupDetailsReduc
 import contactGroupReducer from './contact-group/ContactGroupReducer';
 import contactsInGroupReducer from './contact-group/ContactsInGroupReducer';
 import contactsReducer from './contact/ContactsReducer';
+import documentTemplateReducer from './document-template/DocumentTemplatesReducer';
+import documentTemplateDetailsReducer from './document-template/DocumentTemplateDetailsReducer';
+import documentsReducer from './document/DocumentsReducer';
+import documentDetailsReducer from './document/DocumentDetailsReducer';
 import emailsReducer from './email/EmailsReducer';
 import emailDetailsReducer from './email/emailDetailsReducer';
 import emailTemplatesReducer from './email-template/emailTemplatesReducer';
 import emailTemplateDetailsReducer from './email-template/emailTemplateDetailsReducer';
+import errorReducer from './general/ErrorReducer';
 import mailboxDetailsReducer from './mailbox/mailboxDetailsReducer';
 import mailboxesReducer from './mailbox/mailboxesReducer';
 import measuresReducer from './measure/MeasureReducer';
@@ -30,6 +35,7 @@ import usersReducer from './user/UsersReducer';
 const rootReducer = combineReducers({
     // General
     auth: authReducer,
+    error: errorReducer,
     meDetails: meDetailsReducer,
     systemData: systemDataReducer,
     toggleSidebar: sidebarReducer,
@@ -43,7 +49,12 @@ const rootReducer = combineReducers({
     contactGroups: contactGroupReducer,
     contactGroupDetails: contactGroupDetailsReducer,
     contactsInGroup: contactsInGroupReducer,
-
+    // Documents
+    documents: documentsReducer,
+    documentDetails: documentDetailsReducer,
+    // Document templates
+    documentTemplates: documentTemplateReducer,
+    documentTemplateDetails: documentTemplateDetailsReducer,
     // Emails
     emails: emailsReducer,
     email: emailDetailsReducer,

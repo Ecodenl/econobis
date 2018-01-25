@@ -3,11 +3,13 @@
 namespace App\Http\Controllers\Api\User;
 
 use App\Eco\User\User;
+use App\Helpers\Alfresco\AlfrescoHelper;
 use App\Helpers\RequestInput\RequestInput;
+use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Resources\User\FullUser;
-use App\Http\Resources\User\UserPeek;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
@@ -25,12 +27,12 @@ class UserController extends Controller
         return FullUser::make($user);
     }
 
-    public function store(RequestInput $input)
+    public function store(RequestInput $input, Request $request)
     {
         $this->authorize('create', User::class);
 
         $data = $input->string('email')->validate(['required', 'email', 'unique:users,email'])->next()
-            ->password('password')->validate('required')->next()
+            ->string('alfrescoPassword')->validate('required')->alias('alfresco_password')->next()
             ->string('titleId')->validate('exists:titles,id')->default(null)->alias('title_id')->next()
             ->string('firstName')->whenMissing('')->alias('first_name')->next()
             ->string('lastNamePrefixId')->validate('exists:last_name_prefixes,id')->default(null)->alias('last_name_prefix_id')->next()
@@ -41,12 +43,24 @@ class UserController extends Controller
             ->boolean('active')->whenMissing(true)->next()
             ->get();
 
+        //create random password
+        $data['password'] = Str::random(20);
+
         $user = new User();
         $user->fill($data);
+
+        $alfrescoHelper = new AlfrescoHelper(env('ALFRESCO_ADMIN_USERNAME'), env('ALFRESCO_ADMIN_PASSWORD'));
+
+        //creates new account in alfresco and assigns to site
+        $alfrescoHelper->createNewAccount($user);
 
         $user->save();
 
         $user->assignRole(Role::findByName('superuser'));
+
+        //Send link to set password
+        $forgotPassWordController = new ForgotPasswordController();
+        $forgotPassWordController->sendResetLinkEmail($request);
 
         return $this->show($user->fresh());
     }
@@ -66,6 +80,7 @@ class UserController extends Controller
             ->string('occupation')->next()
             ->boolean('active')->next()
             ->get();
+
 
         $user->fill($data);
         $user->save();

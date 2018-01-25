@@ -7,9 +7,12 @@ use App\Eco\Document\DocumentGroup;
 use App\Eco\User\User;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Permission\Models\Role;
+use Venturecraft\Revisionable\RevisionableTrait;
 
 class DocumentTemplate extends Model
 {
+    use RevisionableTrait;
+
     protected $guarded = ['id'];
 
     public function createdBy()

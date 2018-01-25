@@ -9,9 +9,12 @@ use App\Eco\Opportunity\Opportunity;
 use App\Eco\Registration\Registration;
 use App\Eco\User\User;
 use Illuminate\Database\Eloquent\Model;
+use Venturecraft\Revisionable\RevisionableTrait;
 
 class Document extends Model
 {
+    use RevisionableTrait;
+
     protected $guarded = ['id'];
 
     public function contact()

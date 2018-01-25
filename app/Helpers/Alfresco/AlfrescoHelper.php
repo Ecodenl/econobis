@@ -117,6 +117,13 @@ class AlfrescoHelper
         return $response['message'];
     }
 
+    /**
+     * @param        $CURLOPT_URL string The Alfresco API url
+     * @param null   $CURLOPT_POSTFIELDS Array with the fields to be posted, if present curl will be post instead of get
+     * @param string $CURLOPT_HTTPHEADER_CONTENT_TYPE string the content type
+     *
+     * @return array
+     */
     public function executeCurl($CURLOPT_URL, $CURLOPT_POSTFIELDS = null, $CURLOPT_HTTPHEADER_CONTENT_TYPE = 'application/json'){
         $curl = curl_init();
 

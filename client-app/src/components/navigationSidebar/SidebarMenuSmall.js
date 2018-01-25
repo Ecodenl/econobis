@@ -10,6 +10,7 @@ import { drawer } from 'react-icons-kit/icomoon/drawer';
 import { pencil2 } from 'react-icons-kit/icomoon/pencil2';
 import { speech_bubbles } from 'react-icons-kit/ikons/speech_bubbles';
 import {starEmpty} from "react-icons-kit/icomoon/starEmpty";
+import { calendar } from 'react-icons-kit/icomoon/calendar';
 
 const SidebarMenuSmall = props => {
     return (
@@ -23,6 +24,7 @@ const SidebarMenuSmall = props => {
             <div className="sidebar-menu-small-item"><SvgIcon size={20} icon={ic_email}/></div>
             <div className="sidebar-menu-small-item"><SvgIcon size={20} icon={speech_bubbles}/></div>
             <div className="sidebar-menu-small-item"><SvgIcon size={20} icon={ic_business}/></div>
+            <div className="sidebar-menu-small-item"><SvgIcon size={20} icon={calendar}/></div>
             <div className="sidebar-menu-small-item"><SvgIcon size={20} icon={starEmpty}/></div>
             <div className="sidebar-menu-small-item"><SvgIcon size={20} icon={ic_aspect_ratio}/></div>
             <div className="sidebar-menu-small-item"><SvgIcon size={20} icon={ic_business}/></div>

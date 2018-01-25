@@ -1,6 +1,7 @@
 import React from 'react';
 import { Router, Route, IndexRoute, hashHistory } from 'react-router';
 
+import CalendarApp from './container/calendar/CalendarApp';
 import ConceptsInListApp from './container/email/concept-list/ConceptsInListApp';
 import ConceptApp from './container/email/concept/ConceptApp';
 import CampaignDetailsApp from './container/campaigns/details/CampaignDetailsApp';
@@ -53,6 +54,8 @@ const Routes = () => {
             <Route path="loguit" component={ Logout } />
             <Route path="/" component={ RequireAuth(Main) }>
                 <IndexRoute component={ DashboardApp } />
+                /* Calender/agenda*/
+                <Route path="agenda" component={CalendarApp} />
                 /* Contact */
                 <Route path="contact-groep/nieuw" component={ContactGroupNewApp} />
                 <Route path="contact-groepen" component={ ContactGroupsListApp } />
@@ -93,7 +96,7 @@ const Routes = () => {
                 <Route path="mailbox/:id" component={MailboxDetailsApp} />
                 <Route path="mailboxen" component={MailboxesListApp} />
                 /* Registration */
-                <Route path="aanmelding/nieuw/contact/:contactId/adres/:addressId" component={RegistrationNewApp} />
+                <Route path="aanmelding/nieuw/contact/:contactId/adres/:addressId" component={RegistrationNewApp} />im
                 <Route path="aanmelding/:id" component={RegistrationDetailsApp} />
                 <Route path="aanmeldingen" component={ RegistrationsListApp } />
                 /*  User */

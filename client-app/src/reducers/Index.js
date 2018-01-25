@@ -1,8 +1,9 @@
 import {combineReducers} from 'redux';
 
 import authReducer from './general/AuthReducer';
+import calendarReducer from './calendar/CalendarReducer';
 import campaignsReducer from './campaign/CampaignsReducer';
-import CampaignDetailsReducer from './campaign/CampaignDetailsReducer';
+import campaignDetailsReducer from './campaign/CampaignDetailsReducer';
 import contactDetailsReducer from './contact/ContactDetailsReducer';
 import contactGroupDetailsReducer from './contact-group/ContactGroupDetailsReducer';
 import contactGroupReducer from './contact-group/ContactGroupReducer';
@@ -33,9 +34,11 @@ const rootReducer = combineReducers({
     meDetails: meDetailsReducer,
     systemData: systemDataReducer,
     toggleSidebar: sidebarReducer,
+    // Calendar
+    calendar: calendarReducer,
     // Campaign
     campaigns: campaignsReducer,
-    campaignDetails: CampaignDetailsReducer,
+    campaignDetails: campaignDetailsReducer,
     // Contact
     contacts: contactsReducer,
     contactDetails: contactDetailsReducer,

@@ -15,12 +15,13 @@ import RegistrationsAPI from "../../../../api/registration/RegistrationsAPI";
 import ContactGroupAPI from "../../../../api/contact-group/ContactGroupAPI";
 import OpportunitiesAPI from "../../../../api/opportunity/OpportunitiesAPI";
 import CampaignDetailsAPI from "../../../../api/campaign/CampaignDetailsAPI";
+import InputTime from "../../../../components/form/InputTime";
 
 class TaskDetailsFormGeneralEdit extends Component {
     constructor(props) {
         super(props);
 
-        const { id, name, description, typeId, opportunityId, contactId, statusId, registrationId, contactGroupId, campaignId, datePlanned, dateStarted, dateFinished, responsibleUserId, finishedById, createdAt, createdBy} = props.taskDetails;
+        const { id, name, description, typeId, opportunityId, contactId, statusId, registrationId, contactGroupId, campaignId, datePlanned, startTimePlanned, endTimePlanned, dateFinished, responsibleUserId, finishedById, createdAt, createdBy} = props.taskDetails;
 
         this.state = {
             contacts: [],
@@ -40,7 +41,8 @@ class TaskDetailsFormGeneralEdit extends Component {
                 contactGroupId: contactGroupId ? contactGroupId: '',
                 campaignId: campaignId ? campaignId: '',
                 datePlanned: datePlanned ? datePlanned.date : '',
-                dateStarted: dateStarted ? dateStarted.date : '',
+                startTimePlanned: startTimePlanned ? startTimePlanned : '',
+                endTimePlanned: endTimePlanned ? endTimePlanned : '',
                 dateFinished: dateFinished ? dateFinished.date : '',
                 responsibleUserId,
                 finishedById: finishedById ? finishedById : '',
@@ -59,13 +61,16 @@ class TaskDetailsFormGeneralEdit extends Component {
         this.handleChangeDatePlanned = this.handleChangeDatePlanned.bind(this);
         this.handleChangeStartedDate = this.handleChangeStartedDate.bind(this);
         this.handleChangeFinishedDate = this.handleChangeFinishedDate.bind(this);
+        this.handleInputChangeTime = this.handleInputChangeTime.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
     };
 
     componentDidMount() {
         ContactsAPI.getContactsPeek().then((payload) => {
             this.setState({ contacts: payload });
-        });
+        })
+            .catch()
+        ;
 
         RegistrationsAPI.peekRegistrations().then((payload) => {
             this.setState({ registrations: payload });
@@ -89,6 +94,16 @@ class TaskDetailsFormGeneralEdit extends Component {
         const value = target.type === 'checkbox' ? target.checked : target.value;
         const name = target.name;
 
+        this.setState({
+            ...this.state,
+            task: {
+                ...this.state.task,
+                [name]: value
+            },
+        });
+    };
+
+    handleInputChangeTime(value, name) {
         this.setState({
             ...this.state,
             task: {
@@ -184,7 +199,8 @@ class TaskDetailsFormGeneralEdit extends Component {
             contactGroupId,
             campaignId,
             datePlanned,
-            dateStarted,
+            startTimePlanned,
+            endTimePlanned,
             dateFinished,
             responsibleUserId,
             finishedById,
@@ -305,16 +321,6 @@ class TaskDetailsFormGeneralEdit extends Component {
 
                     />
                     <InputDate
-                        label="Datum gestart"
-                        size={"col-sm-6"}
-                        name="dateStarted"
-                        value={dateStarted}
-                        onChangeAction={this.handleChangeStartedDate}
-                    />
-                </div>
-
-                <div className="row">
-                    <InputDate
                         label="Datum gereed"
                         size={"col-sm-6"}
                         name="dateFinished"
@@ -322,14 +328,20 @@ class TaskDetailsFormGeneralEdit extends Component {
                         onChangeAction={this.handleChangeFinishedDate}
 
                     />
-                    <InputSelect
-                        label={"Afgerond door"}
-                        size={"col-sm-6"}
-                        name={"finishedById"}
-                        options={this.props.users}
-                        value={finishedById}
-                        onChangeAction={this.handleInputChange}
-                        optionName={'fullName'}
+                </div>
+
+                <div className="row">
+                    <InputTime
+                        label={"Begin tijd"}
+                        name={"startTimePlanned"}
+                        value={startTimePlanned}
+                        onChangeAction={this.handleInputChangeTime}
+                    />
+                    <InputTime
+                        label={"Eind tijd"}
+                        name={"endTimePlanned"}
+                        value={endTimePlanned}
+                        onChangeAction={this.handleInputChangeTime}
                     />
                 </div>
 
@@ -344,6 +356,15 @@ class TaskDetailsFormGeneralEdit extends Component {
                         optionName={'fullName'}
                         required={"required"}
                         error={this.state.errors.responsibleUserId}
+                    />
+                    <InputSelect
+                        label={"Afgerond door"}
+                        size={"col-sm-6"}
+                        name={"finishedById"}
+                        options={this.props.users}
+                        value={finishedById}
+                        onChangeAction={this.handleInputChange}
+                        optionName={'fullName'}
                     />
                 </div>
 

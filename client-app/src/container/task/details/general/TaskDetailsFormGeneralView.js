@@ -16,7 +16,8 @@ const TaskDetailsFormGeneralView = props => {
         contactGroup,
         campaign,
         datePlanned,
-        dateStarted,
+        startTimePlanned,
+        endTimePlanned,
         dateFinished,
         responsibleUser,
         finishedBy,
@@ -97,20 +98,19 @@ const TaskDetailsFormGeneralView = props => {
                     value={datePlanned && moment(datePlanned.date).format('L')}
                 />
                 <ViewText
-                    label="Datum gestart"
-                    value={dateStarted && moment(dateStarted.date).format('L')}
+                    label={"Datum gereed"}
+                    value={dateFinished && moment(dateFinished.date).format('L')}
                 />
             </div>
 
             <div className="row">
                 <ViewText
-                    label={"Datum gereed"}
-                    value={dateFinished && moment(dateFinished.date).format('L')}
+                    label={"Start tijd"}
+                    value={startTimePlanned && moment('1900-01-01 ' + startTimePlanned).format("HH:mm")}
                 />
                 <ViewText
-                    label="Afgerond door"
-                    value={finishedBy && finishedBy.fullName}
-                    link={finishedBy ? 'gebruiker/' + finishedBy.id : ''}
+                    label={"Eind tijd"}
+                    value={endTimePlanned && moment('1900-01-01 ' + endTimePlanned).format("HH:mm")}
                 />
             </div>
 
@@ -119,6 +119,11 @@ const TaskDetailsFormGeneralView = props => {
                     label={"Verantwoordelijk"}
                     value={responsibleUser && responsibleUser.fullName}
                     link={responsibleUser ? 'gebruiker/' + responsibleUser.id : ''}
+                />
+                <ViewText
+                    label="Afgerond door"
+                    value={finishedBy && finishedBy.fullName}
+                    link={finishedBy ? 'gebruiker/' + finishedBy.id : ''}
                 />
             </div>
 

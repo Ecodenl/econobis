@@ -30,4 +30,17 @@ export default {
                 },
             );
     },
+
+    fetchTasksCalendarEvents: (startDate, endDate) => {
+        const requestUrl = `${URL_API}/api/task/calendar`;
+        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
+        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
+
+        return axios.get(requestUrl, {
+            params: {
+                startDate,
+                endDate,
+            },
+        });
+    },
 };

@@ -63,7 +63,7 @@ class SidebarMenu extends Component {
                     </Nav>
                     <Nav id="email">
                         <NavIcon><SvgIcon size={20} icon={ic_email}/></NavIcon>
-                        <NavText><Link className="sidebar-link" to="emails/inbox">Email</Link></NavText>
+                        <NavText><Link className="sidebar-link" to="emails/inbox">E-mail</Link></NavText>
                         <Nav id="inbox">
                             <NavText><Link className="sidebar-link" to="emails/inbox">Inbox</Link></NavText>
                         </Nav>

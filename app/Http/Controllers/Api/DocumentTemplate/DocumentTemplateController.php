@@ -24,6 +24,8 @@ class DocumentTemplateController extends Controller
 
     public function grid(RequestQuery $requestQuery)
     {
+        $this->authorize('view', DocumentTemplate::class);
+
         $documentTemplates = $requestQuery->get();
 
         return GridDocumentTemplate::collection($documentTemplates)
@@ -35,6 +37,8 @@ class DocumentTemplateController extends Controller
 
     public function show(DocumentTemplate $documentTemplate)
     {
+        $this->authorize('view', DocumentTemplate::class);
+
         $documentTemplate->load('baseTemplate', 'header', 'footer', 'createdBy', 'roles');
 
         return FullDocumentTemplate::make($documentTemplate);
@@ -43,6 +47,8 @@ class DocumentTemplateController extends Controller
 
     public function store(RequestInput $requestInput, Request $request)
     {
+        $this->authorize('create', DocumentTemplate::class);
+
         $data = $requestInput
             ->string('characteristic')->next()
             ->string('htmlBody')->alias('html_body')->next()
@@ -72,6 +78,8 @@ class DocumentTemplateController extends Controller
 
     public function update(RequestInput $requestInput, Request $request, DocumentTemplate $documentTemplate) {
 
+        $this->authorize('create', DocumentTemplate::class);
+
         $data = $requestInput
             ->string('characteristic')->next()
             ->string('htmlBody')->alias('html_body')->next()
@@ -100,6 +108,8 @@ class DocumentTemplateController extends Controller
 
     public function destroy(DocumentTemplate $documentTemplate)
     {
+        $this->authorize('create', DocumentTemplate::class);
+
         //Kijk of er foreign keys zijn
         $documentNames = DocumentTemplate::where('base_template_id', $documentTemplate->id)->orWhere('header_id', $documentTemplate->id)->orWhere('footer_id', $documentTemplate->id)->pluck('name')->toArray();
         if($documentNames){

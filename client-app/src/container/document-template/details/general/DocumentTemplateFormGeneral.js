@@ -48,7 +48,7 @@ class DocumentTemplateFormGeneral extends Component {
                    onMouseLeave={() => this.onDivLeave()} >
                 <PanelBody>
                 {
-                    this.state.showEdit /*&& this.props.permissions.manageOpportunity*/ ?
+                    this.state.showEdit && this.props.permissions.createDocumentTemplate ?
                         <DocumentTemplateFormEdit switchToView={this.switchToView}/>
                         :
                         <DocumentTemplateFormView switchToEdit={this.switchToEdit}/>
@@ -62,7 +62,7 @@ class DocumentTemplateFormGeneral extends Component {
 const mapStateToProps = (state) => {
     return {
         documentTemplate: state.documentTemplateDetails,
-        // permissions: state.meDetails.permissions
+        permissions: state.meDetails.permissions
     }
 };
 

@@ -13,6 +13,7 @@ use App\Eco\Document\Document;
 use App\Helpers\Alfresco\AlfrescoHelper;
 use App\Helpers\RequestInput\RequestInput;
 use App\Helpers\Template\TemplateVariableHelper;
+use App\Http\Controllers\Controller;
 use App\Http\RequestQueries\Document\Grid\RequestQuery;
 use App\Http\Resources\Document\FullDocument;
 use App\Http\Resources\Document\GridDocument;
@@ -22,11 +23,13 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
-class DocumentController
+class DocumentController extends Controller
 {
 
     public function grid(RequestQuery $requestQuery)
     {
+        $this->authorize('view', Document::class);
+
         $documents = $requestQuery->get();
 
         $documents->load(['contact']);
@@ -40,6 +43,8 @@ class DocumentController
 
     public function show(Document $document)
     {
+        $this->authorize('view', Document::class);
+
         $document->load('contact', 'registration', 'contactGroup', 'opportunity', 'sentBy', 'createdBy', 'template');
 
         return FullDocument::make($document);
@@ -47,6 +52,8 @@ class DocumentController
 
     public function store(RequestInput $requestInput, Request $request)
     {
+        $this->authorize('create', Document::class);
+
         $data = $requestInput
             ->string('description')->next()
             ->string('documentType')->validate('required')->alias('document_type')->next()
@@ -121,6 +128,8 @@ class DocumentController
 
     public function update(RequestInput $requestInput, Document $document) {
 
+        $this->authorize('create', Document::class);
+
         $data = $requestInput
             ->string('description')->next()
             ->string('documentType')->validate('required')->alias('document_type')->next()
@@ -145,6 +154,8 @@ class DocumentController
 
     public function destroy(Document $document)
     {
+        $this->authorize('create', Document::class);
+
         $document->forceDelete();
     }
 
@@ -184,6 +195,8 @@ class DocumentController
     }
 
     public function download(Document $document){
+
+        $this->authorize('view', Document::class);
 
         $user = Auth::user();
 

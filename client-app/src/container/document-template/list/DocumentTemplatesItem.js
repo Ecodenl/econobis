@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { hashHistory } from 'react-router';
 import moment from "moment";
+import {connect} from "react-redux";
 moment.locale('nl');
 
 class DocumentTemplatesItem extends Component {
@@ -43,11 +44,17 @@ class DocumentTemplatesItem extends Component {
                 <td>{ active ? 'Ja' : 'Nee' }</td>
                 <td>
                     {(this.state.showActionButtons ? <a role="button" onClick={() => this.openItem(id)}><span className="glyphicon glyphicon-pencil mybtn-success" /> </a> : '')}
-                    {(this.state.showActionButtons ? <a role="button" onClick={this.props.showDeleteItemModal.bind(this, id, name)}><span className="glyphicon glyphicon-trash mybtn-danger"  /> </a> : '')}
+                    {(this.state.showActionButtons && this.props.permissions.createDocumentTemplate ?<a role="button" onClick={this.props.showDeleteItemModal.bind(this, id, name)}><span className="glyphicon glyphicon-trash mybtn-danger"  /> </a> : '')}
                     </td>
             </tr>
         );
     }
 }
 
-export default DocumentTemplatesItem;
+const mapStateToProps = (state) => {
+    return {
+        permissions: state.meDetails.permissions,
+    }
+};
+
+export default connect(mapStateToProps)(DocumentTemplatesItem);

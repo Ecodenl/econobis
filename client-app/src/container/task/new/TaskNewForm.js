@@ -8,6 +8,7 @@ import InputDate from '../../../components/form/InputDate';
 import ButtonText from '../../../components/button/ButtonText';
 import InputMultiSelect from "../../../components/form/InputMultiSelect";
 import InputReactSelect from "../../../components/form/InputReactSelect";
+import InputTime from "../../../components/form/InputTime";
 
 const TaskNewForm = props => {
     const {
@@ -19,7 +20,8 @@ const TaskNewForm = props => {
         registrationId,
         contactGroupId,
         datePlanned,
-        dateStarted,
+        startTimePlanned,
+        endTimePlanned,
         dateFinished,
         responsibleUserId,
         finishedById,
@@ -142,31 +144,26 @@ const TaskNewForm = props => {
 
                 />
                 <InputDate
-                    label="Datum gestart"
-                    size={"col-sm-6"}
-                    name="dateStarted"
-                    value={dateStarted}
-                    onChangeAction={props.handleChangeStartedDate}
-                />
-            </div>
-
-            <div className="row">
-                <InputDate
                     label="Datum gereed"
                     size={"col-sm-6"}
                     name="dateFinished"
                     value={dateFinished}
                     onChangeAction={props.handleChangeFinishedDate}
-
                 />
-                <InputSelect
-                    label={"Afgerond door"}
-                    size={"col-sm-6"}
-                    name={"finishedById"}
-                    options={props.users}
-                    value={finishedById}
-                    onChangeAction={props.handleInputChange}
-                    optionName={'fullName'}
+            </div>
+
+            <div className="row">
+                <InputTime
+                    label={"Begin tijd"}
+                    name={"startTimePlanned"}
+                    value={startTimePlanned}
+                    onChangeAction={props.handleInputChangeTime}
+                />
+                <InputTime
+                    label={"Eind tijd"}
+                    name={"endTimePlanned"}
+                    value={endTimePlanned}
+                    onChangeAction={props.handleInputChangeTime}
                 />
             </div>
 
@@ -181,6 +178,15 @@ const TaskNewForm = props => {
                     optionName={'fullName'}
                     required={"required"}
                     error={props.errors.responsibleUserId}
+                />
+                <InputSelect
+                    label={"Afgerond door"}
+                    size={"col-sm-6"}
+                    name={"finishedById"}
+                    options={props.users}
+                    value={finishedById}
+                    onChangeAction={props.handleInputChange}
+                    optionName={'fullName'}
                 />
             </div>
 

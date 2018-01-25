@@ -36,7 +36,8 @@ class TaskNewApp extends Component {
                 registrationId: '',
                 contactGroupId: '',
                 datePlanned: '',
-                dateStarted: '',
+                startTimePlanned: '',
+                endTimePlanned: '',
                 dateFinished: '',
                 responsibleUserId: '',
                 finishedById: '',
@@ -55,6 +56,7 @@ class TaskNewApp extends Component {
         this.handleChangeDatePlanned = this.handleChangeDatePlanned.bind(this);
         this.handleChangeStartedDate = this.handleChangeStartedDate.bind(this);
         this.handleChangeFinishedDate = this.handleChangeFinishedDate.bind(this);
+        this.handleInputChangeTime = this.handleInputChangeTime.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleReactSelectChange = this.handleReactSelectChange.bind(this);
     };
@@ -189,6 +191,16 @@ class TaskNewApp extends Component {
         });
     };
 
+    handleInputChangeTime(value, name) {
+        this.setState({
+            ...this.state,
+            task: {
+                ...this.state.task,
+                [name]: value
+            },
+        });
+    };
+
     handleChangeDatePlanned(date) {
         const formattedDate = (date ? moment(date).format('Y-MM-DD') : '');
 
@@ -291,6 +303,7 @@ class TaskNewApp extends Component {
                                         handleChangeDatePlanned={this.handleChangeDatePlanned}
                                         handleChangeStartedDate={this.handleChangeStartedDate}
                                         handleChangeFinishedDate={this.handleChangeFinishedDate}
+                                        handleInputChangeTime={this.handleInputChangeTime}
                                         handleSubmit={this.handleSubmit}
                                         handleReactSelectChange={this.handleReactSelectChange}
                                     />

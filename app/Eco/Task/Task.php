@@ -11,6 +11,7 @@ use App\Eco\User\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Venturecraft\Revisionable\RevisionableTrait;
+use Carbon\Carbon;
 
 class Task extends Model
 {
@@ -20,7 +21,6 @@ class Task extends Model
 
     protected $dates = [
         'date_planned',
-        'date_started',
         'date_finished',
         'created_at',
         'updated_at',
@@ -120,5 +120,37 @@ class Task extends Model
     public function properties()
     {
         return $this->hasMany(TaskPropertyValue::class);
+    }
+
+    /**
+     *
+     */
+    public function datePlannedWithStartTime()
+    {
+        $datePlanned = new Carbon($this->date_planned);
+
+        if($this->start_time_planned) {
+            $startTimePlanned = new Carbon($this->start_time_planned);
+
+            $datePlanned->setTime($startTimePlanned->hour, $startTimePlanned->minute);
+        }
+
+        return $datePlanned;
+    }
+
+    /**
+     *
+     */
+    public function datePlannedWithEndTime()
+    {
+        $datePlanned = new Carbon($this->date_planned);
+
+        if($this->end_time_planned) {
+            $endTimePlanned = new Carbon($this->end_time_planned);
+
+            $datePlanned->setTime($endTimePlanned->hour, $endTimePlanned->minute);
+        }
+
+        return $datePlanned;
     }
 }

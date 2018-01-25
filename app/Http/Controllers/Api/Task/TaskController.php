@@ -9,6 +9,7 @@ use App\Eco\Task\TaskStatus;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Api\Task\Grid\RequestQuery;
 use App\Http\Resources\Registration\GridTask;
+use App\Http\Resources\Task\CalendarTask;
 use App\Http\Resources\Task\FullTask;
 use App\Http\Resources\Task\FullTaskAttachment;
 use Carbon\Carbon;
@@ -29,6 +30,14 @@ class TaskController extends Controller
                 'total' => $requestQuery->total(),
             ]
         ]);
+    }
+
+    public function calendar(Request $request)
+    {
+//        dd($request->startDate);
+        $tasks = Task::whereBetween('date_planned', [$request->startDate, $request->endDate])->get();
+
+        return CalendarTask::collection($tasks);
     }
 
     public function show(Task $task)
@@ -64,7 +73,8 @@ class TaskController extends Controller
             ->integer('contactGroupId')->validate('exists:contact_groups,id')->whenMissing(null)->onEmpty(null)->alias('contact_group_id')->next()
             ->integer('campaignId')->validate('exists:campaigns,id')->whenMissing(null)->onEmpty(null)->alias('campaign_id')->next()
             ->date('datePlanned')->validate('date')->whenMissing(null)->onEmpty(null)->alias('date_planned')->next()
-            ->date('dateStarted')->validate('date')->whenMissing(null)->onEmpty(null)->alias('date_started')->next()
+            ->string('startTimePlanned')->whenMissing(null)->onEmpty(null)->alias('start_time_planned')->next()
+            ->string('endTimePlanned')->whenMissing(null)->onEmpty(null)->alias('end_time_planned')->next()
             ->date('dateFinished')->validate('date')->whenMissing(null)->onEmpty(null)->alias('date_finished')->next()
             ->integer('responsibleUserId')->validate(['required', 'exists:users,id'])->alias('responsible_user_id')->next()
             ->integer('finishedById')->validate('exists:users,id')->whenMissing(null)->onEmpty(null)->alias('finished_by_id')->next()
@@ -95,7 +105,8 @@ class TaskController extends Controller
             ->integer('contactGroupId')->validate('exists:contact_groups,id')->onEmpty(null)->alias('contact_group_id')->next()
             ->integer('campaignId')->validate('exists:campaigns,id')->onEmpty(null)->alias('campaign_id')->next()
             ->date('datePlanned')->validate('date')->onEmpty(null)->alias('date_planned')->next()
-            ->date('dateStarted')->validate('date')->onEmpty(null)->alias('date_started')->next()
+            ->string('startTimePlanned')->whenMissing(null)->onEmpty(null)->alias('start_time_planned')->next()
+            ->string('endTimePlanned')->whenMissing(null)->onEmpty(null)->alias('end_time_planned')->next()
             ->date('dateFinished')->validate('date')->onEmpty(null)->alias('date_finished')->next()
             ->integer('responsibleUserId')->validate('exists:users,id')->alias('responsible_user_id')->next()
             ->integer('finishedById')->validate('exists:users,id')->onEmpty(null)->alias('finished_by_id')->next()

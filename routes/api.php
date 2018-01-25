@@ -122,6 +122,7 @@ Route::namespace('Api')
         Route::get('contact-group/{contactGroup}/tasks', 'ContactGroup\ContactGroupController@tasks');
 
         Route::get('task/grid', 'Task\TaskController@grid');
+        Route::get('task/calendar', 'Task\TaskController@calendar');
         Route::get('task/amount-active', 'Task\TaskController@getAmountOfActiveTasks');
         Route::get('task/{task}', 'Task\TaskController@show');
         Route::post('task', 'Task\TaskController@store');

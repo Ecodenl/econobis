@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import { Link, hashHistory } from 'react-router';
 import SideNav, { Nav, NavIcon, NavText } from 'react-sidenav';
 import SvgIcon from 'react-icons-kit';
+import {connect} from "react-redux";
 
 import { ic_aspect_ratio } from 'react-icons-kit/md/ic_aspect_ratio';
 import { ic_dashboard } from 'react-icons-kit/md/ic_dashboard';
@@ -13,7 +14,7 @@ import { cog } from 'react-icons-kit/icomoon/cog';
 import { pencil2 } from 'react-icons-kit/icomoon/pencil2';
 import { speech_bubbles } from 'react-icons-kit/ikons/speech_bubbles';
 import { documents } from 'react-icons-kit/ikons/documents';
-import {connect} from "react-redux";
+import { calendar } from 'react-icons-kit/icomoon/calendar';
 
 class SidebarMenu extends Component {
     constructor(props) {
@@ -80,6 +81,10 @@ class SidebarMenu extends Component {
                     <Nav id="taken">
                         <NavIcon><SvgIcon size={20} icon={ic_business}/></NavIcon>
                         <NavText><Link className="sidebar-link" to="taken">Taken</Link></NavText>
+                    </Nav>
+                    <Nav id="agenda">
+                        <NavIcon><SvgIcon size={20} icon={calendar} /></NavIcon>
+                        <NavText><Link className="sidebar-link" to="agenda">Agenda</Link></NavText>
                     </Nav>
                     <Nav id="kansen">
                         <NavIcon><SvgIcon size={20} icon={starEmpty}/></NavIcon>

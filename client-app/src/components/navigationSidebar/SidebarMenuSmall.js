@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import SvgIcon from 'react-icons-kit';
+import {connect} from "react-redux";
 
 import { ic_aspect_ratio } from 'react-icons-kit/md/ic_aspect_ratio';
 import { ic_dashboard } from 'react-icons-kit/md/ic_dashboard';
@@ -11,7 +12,7 @@ import { pencil2 } from 'react-icons-kit/icomoon/pencil2';
 import { speech_bubbles } from 'react-icons-kit/ikons/speech_bubbles';
 import {starEmpty} from "react-icons-kit/icomoon/starEmpty";
 import { documents } from 'react-icons-kit/ikons/documents';
-import {connect} from "react-redux";
+import { calendar } from 'react-icons-kit/icomoon/calendar';
 
 class SidebarMenuSmall extends Component {
     constructor(props) {
@@ -35,6 +36,8 @@ class SidebarMenuSmall extends Component {
                 <div className="sidebar-menu-small-item"><SvgIcon size={20} icon={ic_business}/></div>
                 {/* Taken */}
                 <div className="sidebar-menu-small-item"><SvgIcon size={20} icon={starEmpty}/></div>
+                {/* Agenda */}
+                <div className="sidebar-menu-small-item"><SvgIcon size={20} icon={calendar}/></div>
                 {/* Kansen */}
                 {this.props.permissions.viewDocumentTemplate &&
                 <div className="sidebar-menu-small-item"><SvgIcon size={20} icon={documents}/></div>

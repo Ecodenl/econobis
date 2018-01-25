@@ -20,38 +20,24 @@ class AlfrescoHelper
         $this->ticket = $this->getTicket($username, $password);
     }
 
+    /**
+     * @param $username String username in Alfresco(User email)
+     * @param $password String password in Alfresco(User alfresco_password)
+     *
+     * @return mixed|string if succes returns ticket, else return curl error message
+     */
     public function getTicket($username, $password)
     {
-        $curl = curl_init();
+        $url = 'https://185.63.154.15:8443/alfresco/api/-default-/public/authentication/versions/1/tickets';
+        $args['userId'] = $username;
+        $args['password'] = $password;
 
-        curl_setopt_array($curl, array(
-            CURLOPT_SSL_VERIFYPEER => false,
-            CURLOPT_SSL_VERIFYHOST => false,
-            CURLOPT_PORT => "8443",
-            CURLOPT_URL => "https://185.63.154.15:8443/alfresco/api/-default-/public/authentication/versions/1/tickets",
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_ENCODING => "",
-            CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 30,
-            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            CURLOPT_CUSTOMREQUEST => "POST",
-            CURLOPT_POSTFIELDS => "{\n\t\"userId\": \"$username\",\n\t\"password\": \"$password\"\n}",
-            CURLOPT_HTTPHEADER => array(
-                "Cache-Control: no-cache",
-                "Content-Type: application/json",
-            ),
-        ));
+        $response = $this->executeCurl($url, $args);
 
-        $response = curl_exec($curl);
-        $err = curl_error($curl);
-
-        curl_close($curl);
-
-        if ($err) {
-            return("cURL Error #:" . $err);
-        } else {
-            $response = json_decode($response, true);
-            return base64_encode($response['entry']['id']);
+        if($response['succes']){
+            return base64_encode($response['message']['entry']['id']);
+        }else{
+            return $response['message'];
         }
     }
 
@@ -64,172 +50,112 @@ class AlfrescoHelper
         else{
             $lastname = $user->last_name;
         }
-        $curl = curl_init();
 
-        curl_setopt_array($curl, array(
-            CURLOPT_SSL_VERIFYPEER => false,
-            CURLOPT_SSL_VERIFYHOST => false,
-            CURLOPT_PORT => "8443",
-            CURLOPT_URL => "https://185.63.154.15:8443/alfresco/api/-default-/public/alfresco/versions/1/people",
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_ENCODING => "",
-            CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 30,
-            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            CURLOPT_CUSTOMREQUEST => "POST",
-            CURLOPT_POSTFIELDS => "{\r\n  \"id\": \"$user->email\",\"firstName\": \"$user->first_name\",\"lastName\": \"$lastname\",\r\n  \"email\": \"$user->email\",\"password\": \"$user->alfresco_password\"}",
-            CURLOPT_HTTPHEADER => array(
-                "Accept: application/json",
-                "Authorization: Basic " . $this->ticket,
-                "Cache-Control: no-cache",
-                "Content-Type: application/json",
-            ),
-        ));
+        $url = 'https://185.63.154.15:8443/alfresco/api/-default-/public/alfresco/versions/1/people';
 
-        $response = curl_exec($curl);
-        $err = curl_error($curl);
+        $args['id'] = $user->email;
+        $args['firstName'] = $user->first_name;
+        $args['lastName'] = $lastname;
+        $args['email'] = $user->email;
+        $args['password'] = $user->alfresco_password;
 
-        curl_close($curl);
+        $response = $this->executeCurl($url, $args);
 
-        if ($err) {
-            return "cURL Error #:" . $err;
-        } else {
+        if($response['succes']){
             $response = $this->assignUserToSite($user->email);
             return $response;
+        }else{
+            return $response['message'];
         }
     }
 
 
     public function assignUserToSite($alfresco_username){
-        $curl = curl_init();
 
-        curl_setopt_array($curl, array(
-            CURLOPT_SSL_VERIFYPEER => false,
-            CURLOPT_SSL_VERIFYHOST => false,
-            CURLOPT_PORT => "8443",
-            CURLOPT_URL => "https://185.63.154.15:8443/alfresco/api/-default-/public/alfresco/versions/1/sites/". env('ALFRESCO_SITE_MAP'). "/members",
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_ENCODING => "",
-            CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 30,
-            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            CURLOPT_CUSTOMREQUEST => "POST",
-            CURLOPT_POSTFIELDS => "{\"role\": \"SiteContributor\",\"id\": \"$alfresco_username\"}",
-            CURLOPT_HTTPHEADER => array(
-                "Accept: application/json",
-                "Authorization: Basic " . $this->ticket,
-                "Cache-Control: no-cache",
-                "Content-Type: application/json",
-            ),
-        ));
+        $url = "https://185.63.154.15:8443/alfresco/api/-default-/public/alfresco/versions/1/sites/". env('ALFRESCO_SITE_MAP'). "/members";
 
-        $response = curl_exec($curl);
-        $err = curl_error($curl);
+        $args['role'] = 'SiteContributor';
+        $args['id'] = $alfresco_username;
 
-        curl_close($curl);
+        $response = $this->executeCurl($url, $args);
 
-        if ($err) {
-            return "cURL Error #:" . $err;
-        } else {
-            return json_decode($response, true);
-        }
+        return $response['message'];
     }
 
     public function createFile($file, $filename, $map){
-        //first get site node
-        $curl = curl_init();
 
-        curl_setopt_array($curl, array(
-            CURLOPT_SSL_VERIFYPEER => false,
-            CURLOPT_SSL_VERIFYHOST => false,
-            CURLOPT_PORT => "8443",
-            CURLOPT_URL => "https://185.63.154.15:8443/alfresco/api/-default-/public/alfresco/versions/1/sites/" . env('ALFRESCO_SITE_MAP'),
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_ENCODING => "",
-            CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 30,
-            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            CURLOPT_CUSTOMREQUEST => "GET",
-            CURLOPT_HTTPHEADER => array(
-                "Accept: ",
-                "Authorization: Basic " . $this->ticket,
-                "Cache-Control: no-cache",
-            ),
-        ));
+        $url = "https://185.63.154.15:8443/alfresco/api/-default-/public/alfresco/versions/1/sites/" . env('ALFRESCO_SITE_MAP');
 
-        $response = curl_exec($curl);
-        $err = curl_error($curl);
+        $response = $this->executeCurl($url);
 
-        curl_close($curl);
-
-        if ($err) {
-            dd("cURL Error #:" . $err);
-        } else {
-            $response = json_decode($response, true);
-            $siteNodeId =  $response['entry']['guid'];
+        if($response['succes']){
+            $siteNodeId =  $response['message']['entry']['guid'];
+        }else{
+            return $response['message'];
         }
 
-        //post file
-        $curl = curl_init();
-
-        curl_setopt_array($curl, array(
-            CURLOPT_SSL_VERIFYPEER => false,
-            CURLOPT_SSL_VERIFYHOST => false,
-            CURLOPT_PORT => "8443",
-            CURLOPT_URL => "https://185.63.154.15:8443/alfresco/api/-default-/public/alfresco/versions/1/nodes/". $siteNodeId . "/children",
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_ENCODING => "",
-            CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 30,
-            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            CURLOPT_CUSTOMREQUEST => "POST",
-            CURLOPT_HTTPHEADER => array(
-                "Accept: application/json",
-                "Authorization: Basic " . $this->ticket,
-                "Cache-Control: no-cache",
-                "Content-Type: multipart/form-data",
-            ),
-        ));
+        $url = "https://185.63.154.15:8443/alfresco/api/-default-/public/alfresco/versions/1/nodes/". $siteNodeId . "/children";
 
         $args['name'] = $filename;
         $args['autoRename'] = 'true';
         $args['relativePath'] = '/documentLibrary/' . $map;
         $args['filedata'] = new \CURLFile($file);
 
-        curl_setopt($curl, CURLOPT_POSTFIELDS, $args);
+        $content_type = 'multipart/form-data';
 
-        $response = curl_exec($curl);
-        $err = curl_error($curl);
+        $response = $this->executeCurl($url, $args, $content_type);
 
-        curl_close($curl);
-
-        if ($err) {
-            dd("cURL Error #:" . $err);
-        } else {
-            return json_decode($response, true);
-        }
+        return $response['message'];
     }
 
     public function downloadFile($file_node){
+
+        $url = "https://185.63.154.15:8443/alfresco/api/-default-/public/alfresco/versions/1/nodes/". $file_node . "/content";
+
+        $response = $this->executeCurl($url);
+
+        return $response['message'];
+    }
+
+    public function executeCurl($CURLOPT_URL, $CURLOPT_POSTFIELDS = null, $CURLOPT_HTTPHEADER_CONTENT_TYPE = 'application/json'){
         $curl = curl_init();
 
         curl_setopt_array($curl, array(
             CURLOPT_SSL_VERIFYPEER => false,
             CURLOPT_SSL_VERIFYHOST => false,
             CURLOPT_PORT => "8443",
-            CURLOPT_URL => "https://185.63.154.15:8443/alfresco/api/-default-/public/alfresco/versions/1/nodes/". $file_node . "/content",
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_ENCODING => "",
             CURLOPT_MAXREDIRS => 10,
             CURLOPT_TIMEOUT => 30,
             CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            CURLOPT_CUSTOMREQUEST => "GET",
-            CURLOPT_HTTPHEADER => array(
+        ));
+
+        curl_setopt($curl, CURLOPT_URL, $CURLOPT_URL);
+
+
+        if($CURLOPT_POSTFIELDS){
+            curl_setopt($curl, CURLOPT_CUSTOMREQUEST, 'POST');
+            curl_setopt($curl, CURLOPT_POSTFIELDS, $CURLOPT_POSTFIELDS);
+
+            $CURLOPT_HTTPHEADER =  array(
                 "Accept: application/json",
                 "Authorization: Basic " . $this->ticket,
                 "Cache-Control: no-cache",
-            ),
-        ));
+                "Content-Type: " . $CURLOPT_HTTPHEADER_CONTENT_TYPE,
+            );
+            curl_setopt($curl, CURLOPT_HTTPHEADER, $CURLOPT_HTTPHEADER);
+        }
+        else{
+            curl_setopt($curl, CURLOPT_CUSTOMREQUEST, 'GET');
+            $CURLOPT_HTTPHEADER =  array(
+                "Accept: application/json",
+                "Authorization: Basic " . $this->ticket,
+                "Cache-Control: no-cache",
+            );
+
+            curl_setopt($curl, CURLOPT_HTTPHEADER, $CURLOPT_HTTPHEADER);
+        }
 
         $response = curl_exec($curl);
         $err = curl_error($curl);
@@ -237,9 +163,15 @@ class AlfrescoHelper
         curl_close($curl);
 
         if ($err) {
-            return "cURL Error #:" . $err;
+            return  [
+                'succes' => false,
+                'message' => $err
+            ];
         } else {
-            return $response;
+            return  [
+                'succes' => true,
+                'message' => json_decode($response, true)
+            ];
         }
     }
 

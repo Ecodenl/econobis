@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import validator from 'validator';
 
+import validateNumber from '../../../../helpers/ValidateNumber';
 import PhoneNumberApi from '../../../../api/contact/PhoneNumberAPI';
 import { newPhoneNumber } from '../../../../actions/contact/ContactDetailsActions';
 import InputText from '../../../../components/form/InputText';
@@ -51,7 +52,7 @@ class ContactDetailsFormPhoneNew extends Component {
         let errors = {};
         let hasErrors = false;
 
-        if(validator.isEmpty(phoneNumber.number)){
+        if(validateNumber(phoneNumber.number)){
             errors.number = true;
             hasErrors = true;
         };

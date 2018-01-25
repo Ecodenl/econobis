@@ -6,6 +6,7 @@ const URL_EMAIL = `${URL_API}/api/email`;
 export default {
     fetchEmails: (folder) => {
         const requestUrl = `${URL_EMAIL}/grid/in-folder/${folder}`;
+
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
@@ -133,5 +134,17 @@ export default {
         return axios.post(requestUrl, email);
     },
 
+    getAmountOpen: () => {
+        const requestUrl = `${URL_EMAIL}/amount-open`;
+        const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
+        axios.defaults.headers.common.Authorization = AUTH_TOKEN;
+
+        return axios.get(requestUrl)
+            .then(response => response.data)
+            .catch((error) => {
+                    console.log(error);
+                },
+            );
+    },
 };
 

@@ -33,7 +33,7 @@ class EmailAttachmentsNew extends Component {
             >
                 <div className="upload-file-content">
                     <Dropzone className="dropzone" onDropAccepted={this.onDropAccepted.bind(this)} onDropRejected={this.onDropRejected.bind(this)} maxSize={2000000}>
-                        <p>Druk hier voor het uploaden van een file</p>
+                        <p>Klik hier voor het uploaden van een file</p>
                         <p><strong>of</strong> sleep het bestand hierheen</p>
                     </Dropzone>
                 </div>

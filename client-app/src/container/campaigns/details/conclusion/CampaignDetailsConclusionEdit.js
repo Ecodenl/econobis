@@ -61,7 +61,7 @@ class CampaignFormEdit extends Component {
         this.setState({ ...this.state, errors: errors });
 
         !hasErrors &&
-        CampaignDetailsAPI.updateCampaignOwner(campaign.id, campaign.ownedById).then(payload => {
+        CampaignDetailsAPI.updateCampaign(campaign.id, campaign).then(payload => {
             this.props.fetchCampaign(campaign.id);
             this.props.switchToView();
         });
@@ -73,6 +73,12 @@ class CampaignFormEdit extends Component {
         return (
             <form className="form-horizontal col-md-12" onSubmit={this.handleSubmit}>
                 <div className="row">
+                    <InputText
+                        label={"Gemaakt door"}
+                        name={"createdBy"}
+                        value={createdBy}
+                        readOnly={true}
+                    />
                     <InputSelect
                         label={"Verantwoordelijke"}
                         size={"col-sm-6"}
@@ -85,17 +91,11 @@ class CampaignFormEdit extends Component {
                     />
                 </div>
                 <div className="row">
-                    <InputText
-                        label={"Gemaakt door"}
-                        name={"createdBy"}
-                        value={createdBy}
-                        readOnly={true}
-                    />
                     <InputDate
                         label={"Gemaakt op"}
                         size={"col-sm-6"}
                         name={"createdAt"}
-                        value={ createdAt ? moment(createdAt).format('LL') : createdAt}
+                        value={ createdAt ? createdAt.date : '' }
                         readOnly={true}
                     />
                 </div>

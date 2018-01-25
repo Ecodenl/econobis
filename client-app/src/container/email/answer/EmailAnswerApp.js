@@ -224,7 +224,7 @@ class EmailAnswerApp extends Component {
         return (
             <div className="row">
                 <div className="col-md-9">
-                    <div className="col-md-12 extra-space-above">
+                    <div className="col-md-12 margin-10-top">
                         <Panel>
                             <PanelBody className="panel-small">
                                 <EmailAnswerToolbar handleSubmit={this.handleSubmit} type={this.props.params.type} />
@@ -232,7 +232,7 @@ class EmailAnswerApp extends Component {
                         </Panel>
                     </div>
 
-                    <div className="col-md-12 extra-space-above">
+                    <div className="col-md-12 margin-10-top">
                         <EmailAnswerForm
                             email={this.state.email}
                             emailAddresses={this.state.emailAddresses}

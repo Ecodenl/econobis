@@ -25,24 +25,22 @@ import {connect} from "react-redux";
         render() {
             return (
                 <Panel>
-                    <Panel>
-                        <PanelHeader>
-                            <span className="h5 text-bold">Responses</span>
-                            {this.props.permissions.manageMarketing &&
-                            <a role="button" className="pull-right" onClick={this.toggleShowNew}><span
-                                className="glyphicon glyphicon-plus"/></a>
-                            }
-                        </PanelHeader>
-                        <PanelBody>
-                            <div className="col-md-12">
-                                <CampaignDetailsResponsesList/>
-                            </div>
-                            <div className="col-md-12 extra-space-above">
-                                {this.state.showNew &&
-                                <CampaignDetailsResponseNew toggleShowNew={this.toggleShowNew}/>}
-                            </div>
-                        </PanelBody>
-                    </Panel>
+                    <PanelHeader>
+                        <span className="h5 text-bold">Responses</span>
+                        {this.props.permissions.manageMarketing &&
+                        <a role="button" className="pull-right" onClick={this.toggleShowNew}><span
+                            className="glyphicon glyphicon-plus"/></a>
+                        }
+                    </PanelHeader>
+                    <PanelBody>
+                        <div className="col-md-12">
+                            <CampaignDetailsResponsesList/>
+                        </div>
+                        <div className="col-md-12 margin-10-top">
+                            {this.state.showNew &&
+                            <CampaignDetailsResponseNew toggleShowNew={this.toggleShowNew}/>}
+                        </div>
+                    </PanelBody>
                 </Panel>
             );
         }

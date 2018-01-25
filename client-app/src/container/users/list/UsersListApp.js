@@ -28,13 +28,13 @@ class UsersListApp extends Component {
             <div>
                 <div className="panel panel-default">
                     <div className="panel-body">
-                        <div className="col-md-12 extra-space-above">
+                        <div className="col-md-12 margin-10-top">
                             <UsersListToolbar
                                 refreshContactsData={() => this.refreshContactsData()}
                             />
                         </div>
 
-                        <div className="col-md-12 extra-space-above">
+                        <div className="col-md-12 margin-10-top">
                             <UsersList
                                 users={this.props.users}
                             />

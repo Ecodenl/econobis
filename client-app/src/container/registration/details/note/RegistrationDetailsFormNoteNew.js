@@ -46,7 +46,7 @@ class RegistrationDetailsFormNoteNew extends Component {
                             </div>
                         </div>
 
-                        <div className="pull-right btn-group extra-space-above" role="group">
+                        <div className="pull-right btn-group margin-10-top" role="group">
                             <ButtonText buttonClassName={"btn-default"} buttonText={"Annuleren"} onClickAction={this.props.toggleShowNew}/>
                             <ButtonText buttonText={"Bewaren"} onClickAction={this.handleSubmit} type={"submit"} value={"Submit"}/>
                         </div>

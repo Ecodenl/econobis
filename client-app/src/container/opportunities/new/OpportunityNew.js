@@ -6,15 +6,17 @@ import InputDate from '../../../components/form/InputDate';
 import InputTinyMCE from '../../../components/form/InputTinyMCE';
 import ButtonText from '../../../components/button/ButtonText';
 import PanelFooter from '../../../components/panel/PanelFooter';
+import InputReactSelect from "../../../components/form/InputReactSelect";
 
 const OpportunityFormEdit = props => {
-    const {contactId, desiredDate, measureId, quotationText, reactionId, statusId, ownedById, registrationId} = props.opportunity;
+    const { contactId, desiredDate, measureId, quotationText, reactionId, statusId, ownedById, registrationId, campaignId } = props.opportunity;
+
     return (
         <form className="form-horizontal col-md-12" onSubmit={props.handleSubmit}>
 
             <div className="row">
                 <InputSelect
-                    label={"Kans"}
+                    label={"Type kans"}
                     size={"col-sm-6"}
                     name={"measureId"}
                     value={measureId}
@@ -26,16 +28,16 @@ const OpportunityFormEdit = props => {
             </div>
 
             <div className="row">
-                <InputSelect
+                <InputReactSelect
                     label={"Contact"}
-                    size={"col-sm-6"}
                     name={"contactId"}
                     value={contactId}
                     options={props.contacts}
-                    onChangeAction={props.handleInputChange}
+                    onChangeAction={props.handleReactSelectChange}
                     optionName={'fullName'}
                     required={"required"}
                     error={props.errors.contact}
+                    multi={false}
                 />
                 <InputSelect
                     label={"Reactie"}
@@ -48,13 +50,13 @@ const OpportunityFormEdit = props => {
             </div>
 
             <div className="row">
-                <InputSelect
+                <InputReactSelect
                     label={"Aanmelding"}
-                    size={"col-sm-6"}
                     name={"registrationId"}
                     value={registrationId}
                     options={props.registrations}
-                    onChangeAction={props.handleInputChange}
+                    onChangeAction={props.handleReactSelectChange}
+                    multi={false}
                 />
                 <InputSelect
                     label={"Status"}
@@ -69,23 +71,15 @@ const OpportunityFormEdit = props => {
             </div>
 
             <div className="row">
-                <div className='form-group col-sm-12'>
-                    <div className="row">
-                        <div className="col-sm-3">
-                            <label htmlFor="campaignId" className="col-sm-12">Campagne</label>
-                        </div>
-                        <div className="col-sm-8">
-                            <select className='form-control input-sm' name='campaignId' onChange={props.handleInputChange}>
-                                <option value=''></option>
-                                {props.campaigns.map((option) => {
-                                    return <option key={option.id} value={option.id}>{option.name}</option>
-                                })}
-                            </select>
-                        </div>
-                    </div>
-                </div>
+                <InputReactSelect
+                    label={"Campagne"}
+                    name={"campaignId"}
+                    value={campaignId}
+                    options={props.campaigns}
+                    onChangeAction={props.handleReactSelectChange}
+                    multi={false}
+                />
             </div>
-
 
             <div className="row">
                 <div className="form-group col-sm-12">

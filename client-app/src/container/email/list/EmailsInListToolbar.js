@@ -16,7 +16,7 @@ const EmailsInListToolbar = props => {
                     <ButtonIcon iconName={"glyphicon-plus"} onClickAction={newMailbox} />
                 </div>
             </div>
-            <div className="col-md-4"><h3 className="text-center table-title">Email {props.folder} </h3></div>
+            <div className="col-md-4"><h3 className="text-center table-title">E-mail {props.folder} </h3></div>
             <div className="col-md-4" />
         </div>
     );

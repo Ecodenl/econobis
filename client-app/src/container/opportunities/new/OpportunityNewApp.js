@@ -36,7 +36,9 @@ class OppportunitiesNewApp extends Component {
                 contact: false,
                 status: false,
             },
-        }
+        };
+
+        this.handleReactSelectChange = this.handleReactSelectChange.bind(this);
     };
 
 
@@ -105,6 +107,16 @@ class OppportunitiesNewApp extends Component {
         });
     };
 
+    handleReactSelectChange(selectedOption, name) {
+        this.setState({
+            ...this.state,
+            opportunity: {
+                ...this.state.opportunity,
+                [name]: selectedOption
+            },
+        });
+    };
+
     handleEditorChange = (e) => {
         this.setState({
             ...this.state,
@@ -164,10 +176,10 @@ class OppportunitiesNewApp extends Component {
                 <div className="col-md-9">
                     <div className="panel panel-default">
                         <div className="panel-body">
-                            <div className="col-md-12 extra-space-above">
+                            <div className="col-md-12 margin-10-top">
                                 <OpportunityNewToolbar/>
                             </div>
-                            <div className="col-md-12 extra-space-above">
+                            <div className="col-md-12 margin-10-top">
                                 <OpportunityNew
                                     opportunity={this.state.opportunity}
                                     contacts={this.state.contacts}
@@ -177,6 +189,7 @@ class OppportunitiesNewApp extends Component {
                                     handleInputChange={this.handleInputChange}
                                     handleChangeDesiredDate={this.handleChangeDesiredDate}
                                     handleSubmit={this.handleSubmit}
+                                    handleReactSelectChange={this.handleReactSelectChange}
                                     handleEditorChange={this.handleEditorChange}
                                 />
                             </div>

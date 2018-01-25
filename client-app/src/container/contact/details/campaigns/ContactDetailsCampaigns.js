@@ -13,16 +13,14 @@ class ContactDetailsCampaigns extends Component {
     render() {
         return (
             <Panel>
-                <Panel>
-                    <PanelHeader>
-                        <span className="h5 text-bold">Campagnes</span>
-                    </PanelHeader>
-                    <PanelBody>
-                        <div className="col-md-12">
-                            <ContactDetailsCampaignsList/>
-                        </div>
-                    </PanelBody>
-                </Panel>
+                <PanelHeader>
+                    <span className="h5 text-bold">Campagnes</span>
+                </PanelHeader>
+                <PanelBody>
+                    <div className="col-md-12">
+                        <ContactDetailsCampaignsList/>
+                    </div>
+                </PanelBody>
             </Panel>
         );
     }

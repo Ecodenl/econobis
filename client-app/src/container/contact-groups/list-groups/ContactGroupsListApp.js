@@ -4,6 +4,8 @@ import { connect } from 'react-redux';
 import { fetchContactGroups, clearContactGroups } from '../../../actions/contact/ContactGroupsActions';
 import ContactGroupsList from './ContactGroupsList';
 import ContactGroupsListToolbar from './ContactGroupsListToolbar';
+import Panel from "../../../components/panel/Panel";
+import PanelBody from "../../../components/panel/PanelBody";
 
 class ContactGroupsListApp extends Component {
     constructor(props) {
@@ -25,23 +27,21 @@ class ContactGroupsListApp extends Component {
 
     render() {
         return (
-            <div>
-                <div className="panel panel-default">
-                    <div className="panel-body">
-                        <div className="col-md-9 extra-space-above">
-                            <ContactGroupsListToolbar
-                                refreshContactGroupsData={() => this.refreshContactGroupsData()}
-                            />
-                        </div>
-
-                        <div className="col-md-9 extra-space-above">
-                            <ContactGroupsList
-                                contactGroups={this.props.contactGroups}
-                            />
-                        </div>
+            <Panel className="col-md-9">
+                <PanelBody>
+                    <div className="col-md-12 margin-10-top">
+                        <ContactGroupsListToolbar
+                            refreshContactGroupsData={() => this.refreshContactGroupsData()}
+                        />
                     </div>
-                </div>
-            </div>
+
+                    <div className="col-md-12 margin-10-top">
+                        <ContactGroupsList
+                            contactGroups={this.props.contactGroups}
+                        />
+                    </div>
+                </PanelBody>
+            </Panel>
         )
     }
 }

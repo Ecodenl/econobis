@@ -52,7 +52,7 @@ class RegistrationsList extends Component {
                 <div className="col-md-4 col-md-offset-4">
                     <ReactPaginate
                         onPageChange={this.props.handlePageClick}
-                        pageCount={ Math.ceil(meta.total / 20) }
+                        pageCount={ Math.ceil(meta.total / 20) || 1 }
                         pageRangeDisplayed={5}
                         marginPagesDisplayed={2}
                         breakLabel={<a>...</a>}
@@ -64,9 +64,6 @@ class RegistrationsList extends Component {
                         initialPage={this.props.registrationsPagination.page || 0}
                         forcePage={this.props.registrationsPagination.page}
                     />
-                </div>
-                <div className="col-md-4">
-                    <div className="pull-right">Resultaten: { meta.total || 0 }</div>
                 </div>
             </form>
         );

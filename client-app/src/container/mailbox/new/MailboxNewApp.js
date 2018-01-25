@@ -9,7 +9,7 @@ const MailboxNewApp = () => {
     return (
         <div className="row">
             <div className="col-md-9">
-                        <div className="col-md-12 extra-space-above">
+                        <div className="col-md-12 margin-10-top">
                             <Panel>
                                 <PanelBody className="panel-small">
                                     <MailboxNewToolbar />
@@ -17,7 +17,7 @@ const MailboxNewApp = () => {
                             </Panel>
                         </div>
 
-                        <div className="col-md-12 extra-space-above">
+                        <div className="col-md-12 margin-10-top">
                             <MailboxNewForm />
                         </div>
             </div>

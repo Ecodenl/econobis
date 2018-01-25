@@ -59,7 +59,7 @@ class ContactController extends Controller
 
     public function peek()
     {
-        $contact = Contact::select('id', 'full_name')->get();
+        $contact = Contact::select('id', 'full_name')->orderBy('full_name')->get();
 
         return ContactPeek::collection($contact);
     }

@@ -9,14 +9,14 @@ const UserNewApp = () => {
     return (
         <div className="row">
             <div className="col-md-9">
-                <div className="col-md-12 extra-space-above">
+                <div className="col-md-12  margin-10-top">
                     <Panel>
                         <PanelBody className={"panel-small"}>
                             <UserNewToolbar/>
                         </PanelBody>
                     </Panel>
                 </div>
-                <div className="col-md-12">
+                <div className="col-md-12  margin-10-top">
                     <Panel>
                         <PanelBody>
                             <UserNewForm/>

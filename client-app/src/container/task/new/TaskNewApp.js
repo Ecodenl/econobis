@@ -56,6 +56,7 @@ class TaskNewApp extends Component {
         this.handleChangeStartedDate = this.handleChangeStartedDate.bind(this);
         this.handleChangeFinishedDate = this.handleChangeFinishedDate.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.handleReactSelectChange = this.handleReactSelectChange.bind(this);
     };
 
     componentDidMount() {
@@ -162,7 +163,7 @@ class TaskNewApp extends Component {
                     break;
             }
         }
-    }
+    };
 
     handleInputChange(event) {
         const target = event.target;
@@ -174,6 +175,16 @@ class TaskNewApp extends Component {
             task: {
                 ...this.state.task,
                 [name]: value
+            },
+        });
+    };
+
+    handleReactSelectChange(selectedOption, name) {
+        this.setState({
+            ...this.state,
+            task: {
+                ...this.state.task,
+                [name]: selectedOption
             },
         });
     };
@@ -281,6 +292,7 @@ class TaskNewApp extends Component {
                                         handleChangeStartedDate={this.handleChangeStartedDate}
                                         handleChangeFinishedDate={this.handleChangeFinishedDate}
                                         handleSubmit={this.handleSubmit}
+                                        handleReactSelectChange={this.handleReactSelectChange}
                                     />
                                 </div>
                             </PanelBody>

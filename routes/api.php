@@ -175,6 +175,7 @@ Route::namespace('Api')
 
         Route::get('email/grid/in-folder/{folder}', 'Email\EmailController@grid');
         Route::get('email/new/peek', 'Email\EmailController@peek');
+        Route::get('email/amount-open', 'Email\EmailController@getAmountOfOpenEmails');
         Route::get('email/{email}', 'Email\EmailController@show');
         Route::get('email/{email}/reply', 'Email\EmailController@getReply');
         Route::get('email/{email}/reply-all', 'Email\EmailController@getReplyAll');

@@ -31,13 +31,13 @@ class ConceptsInListApp extends Component {
         return (
                 <Panel className="col-md-9">
                     <PanelBody>
-                        <div className="col-md-12 extra-space-above">
+                        <div className="col-md-12 margin-10-top">
                             <ConceptsInListToolbar
                                 refreshData={this.refreshData}
                             />
                         </div>
 
-                        <div className="col-md-12 extra-space-above">
+                        <div className="col-md-12 margin-10-top">
                             <ConceptsInList />
                         </div>
                     </PanelBody>

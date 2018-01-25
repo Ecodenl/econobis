@@ -37,7 +37,7 @@ import {connect} from "react-redux";
                             <div className="col-md-12">
                                 <OpportunityDetailsQuotationsList/>
                             </div>
-                            <div className="col-md-12 extra-space-above">
+                            <div className="col-md-12 margin-10-top">
                                 {this.state.showNew &&
                                 <OpportunityDetailsQuotationNew toggleShowNew={this.toggleShowNew}/>}
                             </div>

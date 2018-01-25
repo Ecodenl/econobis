@@ -1,8 +1,8 @@
 import React from 'react';
+import {connect} from "react-redux";
 import { hashHistory, Link } from 'react-router';
 
 import ButtonIcon from '../../../components/button/ButtonIcon';
-import {connect} from "react-redux";
 
 const TasksListToolbar = props => {
     const newTask = () => {
@@ -10,6 +10,7 @@ const TasksListToolbar = props => {
     };
 
     const { permissions = {} } = props;
+    const { meta = {} } = props.tasks;
 
     return (
         <div className="row">
@@ -23,14 +24,17 @@ const TasksListToolbar = props => {
 
             </div>
             <div className="col-md-4"><h3 className="text-center table-title">Taken</h3></div>
-            <div className="col-md-4" />
+            <div className="col-md-4">
+                <div className="pull-right">Resultaten: { meta.total || 0 }</div>
+            </div>
         </div>
     );
 };
 
 const mapStateToProps = (state) => {
     return {
-        permissions: state.meDetails.permissions
+        permissions: state.meDetails.permissions,
+        tasks: state.tasks.list,
     };
 };
 

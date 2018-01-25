@@ -13,7 +13,7 @@ const OpportunityFormView = props => {
         <div>
             <div className="row" onClick={props.switchToEdit}>
                 <ViewText
-                    label={"Kans"}
+                    label={"Type kans"}
                     value={measure.name}
                 />
                 <ViewText

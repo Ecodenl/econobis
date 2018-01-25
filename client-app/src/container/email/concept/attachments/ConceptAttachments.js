@@ -34,7 +34,7 @@ class ConceptAttachments extends Component {
                     <div className="col-md-12">
                         <ConceptAttachmentsList attachments={this.props.attachments} deleteAttachment={this.props.deleteAttachment}/>
                     </div>
-                    <div className="col-md-12 extra-space-above">
+                    <div className="col-md-12 margin-10-top">
                         {this.state.showNew &&
                         <ConceptAttachmentsNew toggleShowNew={this.toggleShowNew} addAttachment={this.props.addAttachment}/>}
                     </div>

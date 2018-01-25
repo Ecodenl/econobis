@@ -77,9 +77,9 @@ class Login extends Component {
 
                             <div className="col-sm-10 col-md-offset-1">
                                 <div className="form-group">
-                                    <label htmlFor="username" className="control-label">Email:</label>
+                                    <label htmlFor="username" className="control-label">E-mail:</label>
                                     <input type="text" name="username" value={username} className="form-control"
-                                           placeholder="Email..." onChange={this.handleInputChange}/>
+                                           placeholder="E-mail..." onChange={this.handleInputChange}/>
                                 </div>
                                 <div className="form-group">
                                     <label htmlFor="password" className="control-label">Wachtwoord:</label>
@@ -88,7 +88,7 @@ class Login extends Component {
                                 </div>
                             </div>
                             {this.renderAlert()}
-                            <div className="row extra-space-above">
+                            <div className="row margin-10-top">
                                 <div className="col-sm-10 col-md-offset-1">
                                     <Link to='wachtwoord-vergeten' className="link-underline">Wachtwoord vergeten?</Link>
                                     <div className="btn-group pull-right">

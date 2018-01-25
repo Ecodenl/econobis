@@ -20,7 +20,7 @@ class EmailTemplateDetailsApp extends Component {
         return (
             <div className="row">
                 <div className="col-md-9">
-                    <div className="col-md-12 extra-space-above">
+                    <div className="col-md-12 margin-10-top">
                         <Panel>
                             <PanelBody className={"panel-small"}>
                                 < EmailTemplateDetailsToolbar />
@@ -28,7 +28,7 @@ class EmailTemplateDetailsApp extends Component {
                         </Panel>
                     </div>
 
-                    <div className="col-md-12 extra-space-above">
+                    <div className="col-md-12 margin-10-top">
                         <EmailTemplateDetailsForm />
                     </div>
                 </div>

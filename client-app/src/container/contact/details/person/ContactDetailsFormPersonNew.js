@@ -76,7 +76,7 @@ class ContactDetailsEmailDelete extends Component {
                         </div>
                     </div>
                     <div className="row">
-                        <div className="col-sm-12">Of maak een <Link to={`/contact/nieuw/persoon/organisatie/${this.props.id}`} className="link-underline">Nieuw</Link> contact persoon aan.</div>
+                        <div className="col-sm-12">Of maak een <Link to={`/contact/nieuw/persoon/organisatie/${this.props.id}`} className="link-underline">Nieuw</Link> contactpersoon aan.</div>
                     </div>
                 </form>
             </Modal>

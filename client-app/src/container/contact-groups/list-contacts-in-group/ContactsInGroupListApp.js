@@ -29,14 +29,14 @@ class ContactsInGroupListApp extends Component {
             <div>
                 <div className="panel panel-default">
                     <div className="panel-body">
-                        <div className="col-md-12 extra-space-above">
+                        <div className="col-md-12 margin-10-top">
                             <ContactsInGroupListToolbar
                                 refreshContactsInGroupData={() => this.refreshContactsInGroupData()}
                                 groupId = {this.props.params.contactGroup}
                             />
                         </div>
 
-                        <div className="col-md-12 extra-space-above">
+                        <div className="col-md-12 margin-10-top">
                             <ContactsInGroupList
                                 contactsInGroup={this.props.contactsInGroup}
                                 groupId = {this.props.params.contactGroup}

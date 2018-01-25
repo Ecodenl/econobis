@@ -11,6 +11,7 @@ const CampaignsListToolbar = (props) => {
     };
 
     const { permissions = {} } = props;
+    const { meta = {} } = props.campaigns;
 
     return (
         <div className="row">
@@ -24,7 +25,9 @@ const CampaignsListToolbar = (props) => {
 
             </div>
             <div className="col-md-4"><h3 className="text-center table-title">Campagnes</h3></div>
-            <div className="col-md-4"/>
+            <div className="col-md-4">
+                <div className="pull-right">Resultaten: { meta.total || 0 }</div>
+            </div>
         </div>
     );
 };
@@ -32,6 +35,7 @@ const CampaignsListToolbar = (props) => {
 const mapStateToProps = (state) => {
     return {
         permissions: state.meDetails.permissions,
+        campaigns: state.campaigns.list,
     }
 };
 

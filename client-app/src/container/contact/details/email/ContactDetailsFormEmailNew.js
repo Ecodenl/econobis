@@ -51,7 +51,7 @@ class ContactDetailsFormEmailNew extends Component {
         let errors = {};
         let hasErrors = false;
 
-        if(validator.isEmpty(emailAddress.email)){
+        if(!validator.isEmail(emailAddress.email)){
             errors.email = true;
             hasErrors = true;
         };

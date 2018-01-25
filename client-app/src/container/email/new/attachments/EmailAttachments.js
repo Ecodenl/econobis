@@ -35,7 +35,7 @@ class EmailAttachments extends Component {
                     <div className="col-md-12">
                         <EmailAttachmentsList attachments={this.props.attachments} deleteAttachment={this.props.deleteAttachment}/>
                     </div>
-                    <div className="col-md-12 extra-space-above">
+                    <div className="col-md-12 margin-10-top">
                         {this.state.showNew &&
                         <EmailAttachmentsNew toggleShowNew={this.toggleShowNew} addAttachment={this.props.addAttachment} />}
                     </div>

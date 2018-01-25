@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment';
+var ibantools = require('ibantools');
 
 import * as ContactDetailsActions from '../../../../actions/contact/ContactDetailsActions';
 import PersonAPI from '../../../../api/contact/PersonAPI';
@@ -17,13 +18,18 @@ class ContactDetailsFormOtherEdit extends Component {
         const {  person, iban, liable, liabilityAmount } = props.contactDetails;
 
         this.state = {
-            id: person.id,
-            firstNamePartner: person.firstNamePartner,
-            lastNamePartner: person.lastNamePartner,
-            dateOfBirthPartner: person.dateOfBirthPartner ? moment(person.dateOfBirthPartner).format('Y-MM-DD') : '',
-            iban: iban,
-            liable: liable,
-            liabilityAmount: liabilityAmount,
+            other: {
+                id: person.id,
+                firstNamePartner: person.firstNamePartner,
+                lastNamePartner: person.lastNamePartner,
+                dateOfBirthPartner: person.dateOfBirthPartner ? moment(person.dateOfBirthPartner).format('Y-MM-DD') : '',
+                iban: iban,
+                liable: liable,
+                liabilityAmount: liabilityAmount,
+            },
+            errors: {
+                iban: false
+            },
         }
     };
 
@@ -33,7 +39,11 @@ class ContactDetailsFormOtherEdit extends Component {
         const name = target.name;
 
         this.setState({
-            [name]: value
+            ...this.state,
+            other: {
+                ...this.state.other,
+                [name]: value
+            },
         });
     };
 
@@ -42,26 +52,39 @@ class ContactDetailsFormOtherEdit extends Component {
 
         this.setState({
             ...this.state,
-            dateOfBirthPartner: formattedDate
+            other: {
+                ...this.state.other,
+                dateOfBirthPartner: formattedDate
+            }
         });
     };
 
     handleSubmit = event => {
         event.preventDefault();
 
-        const person = {
-            ...this.state,
+        const { other } = this.state;
+
+        // Validation
+        let errors = {};
+        let hasErrors = false;
+
+        if(!ibantools.isValidIBAN(other.iban)){
+            errors.iban = true;
+            hasErrors = true;
         };
 
-        PersonAPI.updatePerson(person).then((payload) => {
-            this.props.dispatch(ContactDetailsActions.updatePerson(payload));
-        });
+        this.setState({ ...this.state, errors: errors });
 
-        this.props.switchToView();
+        // If no errors send form
+        !hasErrors &&
+        PersonAPI.updatePerson(other).then((payload) => {
+            this.props.dispatch(ContactDetailsActions.updatePerson(payload));
+            this.props.switchToView();
+        });
     };
 
     render() {
-        const { firstNamePartner, lastNamePartner, dateOfBirthPartner, iban, liable, liabilityAmount  } = this.state;
+        const { firstNamePartner, lastNamePartner, dateOfBirthPartner, iban, liable, liabilityAmount  } = this.state.other;
 
         return (
             <form className="form-horizontal col-md-12" onSubmit={this.handleSubmit}>
@@ -78,6 +101,7 @@ class ContactDetailsFormOtherEdit extends Component {
                         value={iban}
                         onChangeAction={this.handleInputChange}
                         readOnly={!this.props.permissions.updateContactIban}
+                        error={this.state.errors.iban}
                     />
                 </div>
 

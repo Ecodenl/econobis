@@ -6,6 +6,8 @@ import InputText from '../../../components/form/InputText';
 import InputSelect from '../../../components/form/InputSelect';
 import InputDate from '../../../components/form/InputDate';
 import ButtonText from '../../../components/button/ButtonText';
+import InputMultiSelect from "../../../components/form/InputMultiSelect";
+import InputReactSelect from "../../../components/form/InputReactSelect";
 
 const TaskNewForm = props => {
     const {
@@ -77,53 +79,56 @@ const TaskNewForm = props => {
             </div>
 
             <div className="row">
-                <InputSelect
+                <InputReactSelect
                     label={"Contact"}
-                    size={"col-sm-6"}
                     name={"contactId"}
                     options={props.contacts}
                     value={contactId}
-                    onChangeAction={props.handleInputChange}
+                    onChangeAction={props.handleReactSelectChange}
                     optionName={'fullName'}
+                    multi={false}
                 />
-                <InputSelect
+                <InputReactSelect
                     label={"Campagne"}
-                    size={"col-sm-6"}
                     name={"campaignId"}
                     options={props.campaigns}
                     value={campaignId}
-                    onChangeAction={props.handleInputChange}
+                    onChangeAction={props.handleReactSelectChange}
+                    multi={false}
                 />
 
             </div>
 
             <div className="row">
-                <InputSelect
+                <InputReactSelect
                     label={"Aanmelding"}
                     size={"col-sm-6"}
                     name={"registrationId"}
                     options={props.registrations}
                     value={registrationId}
-                    onChangeAction={props.handleInputChange}
+                    onChangeAction={props.handleReactSelectChange}
+                    multi={false}
                 />
-                <InputSelect
+                <InputReactSelect
                     label={"Kans"}
                     size={"col-sm-6"}
                     name={"opportunityId"}
                     options={props.opportunities}
                     value={opportunityId}
-                    onChangeAction={props.handleInputChange}
+                    onChangeAction={props.handleReactSelectChange}
+                    multi={false}
                 />
             </div>
 
             <div className="row">
-                <InputSelect
+                <InputReactSelect
                     label={"Groep"}
                     size={"col-sm-6"}
                     name={"contactGroupId"}
                     options={props.contactGroups}
                     value={contactGroupId}
-                    onChangeAction={props.handleInputChange}
+                    onChangeAction={props.handleReactSelectChange}
+                    multi={false}
                 />
             </div>
 

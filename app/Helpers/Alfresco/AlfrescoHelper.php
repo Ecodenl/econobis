@@ -112,19 +112,21 @@ class AlfrescoHelper
 
         $url = "https://185.63.154.15:8443/alfresco/api/-default-/public/alfresco/versions/1/nodes/". $file_node . "/content";
 
-        $response = $this->executeCurl($url);
+        $response = $this->executeCurl($url, null, 'application/json', true);
 
-        return $response['message'];
+        return $response;
     }
 
     /**
-     * @param        $CURLOPT_URL string The Alfresco API url
-     * @param null   $CURLOPT_POSTFIELDS Array with the fields to be posted, if present curl will be post instead of get
+     * @param        $CURLOPT_URL                     string The Alfresco API url
+     * @param null   $CURLOPT_POSTFIELDS              Array with the fields to be posted, if present curl will be post instead of get
      * @param string $CURLOPT_HTTPHEADER_CONTENT_TYPE string the content type
+     *
+     * @param bool   $is_file boolean If response file
      *
      * @return array
      */
-    public function executeCurl($CURLOPT_URL, $CURLOPT_POSTFIELDS = null, $CURLOPT_HTTPHEADER_CONTENT_TYPE = 'application/json'){
+    public function executeCurl($CURLOPT_URL, $CURLOPT_POSTFIELDS = null, $CURLOPT_HTTPHEADER_CONTENT_TYPE = 'application/json', $is_file = false){
         $curl = curl_init();
 
         curl_setopt_array($curl, array(
@@ -143,7 +145,13 @@ class AlfrescoHelper
 
         if($CURLOPT_POSTFIELDS){
             curl_setopt($curl, CURLOPT_CUSTOMREQUEST, 'POST');
-            curl_setopt($curl, CURLOPT_POSTFIELDS, $CURLOPT_POSTFIELDS);
+
+            if($CURLOPT_HTTPHEADER_CONTENT_TYPE == 'application/json') {
+                curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($CURLOPT_POSTFIELDS));
+            }
+            else{
+                curl_setopt($curl, CURLOPT_POSTFIELDS, $CURLOPT_POSTFIELDS);
+            }
 
             $CURLOPT_HTTPHEADER =  array(
                 "Accept: application/json",
@@ -175,10 +183,15 @@ class AlfrescoHelper
                 'message' => $err
             ];
         } else {
-            return  [
-                'succes' => true,
-                'message' => json_decode($response, true)
-            ];
+            if($is_file) {
+                return $response;
+            }
+            else{
+                return [
+                    'succes' => true,
+                    'message' => json_decode($response, true)
+                ];
+            }
         }
     }
 

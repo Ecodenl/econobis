@@ -21,32 +21,32 @@ class SidebarMenuSmall extends Component {
     render() {
         return (
             <div className="sidebar-menu-small">
-                <div className="sidebar-menu-small-item"><SvgIcon size={20} icon={ic_dashboard}/></div>
                 {/* Dashboard */}
-                <div className="sidebar-menu-small-item"><SvgIcon size={20} icon={ic_contacts}/></div>
+                <div className="sidebar-menu-small-item"><SvgIcon size={20} icon={ic_dashboard}/></div>
                 {/* Contacten */}
-                <div className="sidebar-menu-small-item"><SvgIcon size={20} icon={pencil2}/></div>
+                <div className="sidebar-menu-small-item"><SvgIcon size={20} icon={ic_contacts}/></div>
                 {/* Aanmeldingen */}
-                <div className="sidebar-menu-small-item"><SvgIcon size={20} icon={ic_aspect_ratio}/></div>
+                <div className="sidebar-menu-small-item"><SvgIcon size={20} icon={pencil2}/></div>
                 {/* Groepen beheer */}
-                <div className="sidebar-menu-small-item"><SvgIcon size={20} icon={ic_email}/></div>
+                <div className="sidebar-menu-small-item"><SvgIcon size={20} icon={ic_aspect_ratio}/></div>
                 {/* Email */}
-                <div className="sidebar-menu-small-item"><SvgIcon size={20} icon={speech_bubbles}/></div>
+                <div className="sidebar-menu-small-item"><SvgIcon size={20} icon={ic_email}/></div>
                 {/* Marketing */}
-                <div className="sidebar-menu-small-item"><SvgIcon size={20} icon={ic_business}/></div>
+                <div className="sidebar-menu-small-item"><SvgIcon size={20} icon={speech_bubbles}/></div>
                 {/* Taken */}
-                <div className="sidebar-menu-small-item"><SvgIcon size={20} icon={starEmpty}/></div>
-                {/* Agenda */}
-                <div className="sidebar-menu-small-item"><SvgIcon size={20} icon={calendar}/></div>
+                <div className="sidebar-menu-small-item"><SvgIcon size={20} icon={ic_business}/></div>
                 {/* Kansen */}
+                <div className="sidebar-menu-small-item"><SvgIcon size={20} icon={calendar}/></div>
+                {/* Agenda */}
+                <div className="sidebar-menu-small-item"><SvgIcon size={20} icon={starEmpty}/></div>
+                {/* Documenten */}
                 {this.props.permissions.viewDocumentTemplate &&
                 <div className="sidebar-menu-small-item"><SvgIcon size={20} icon={documents}/></div>
                 }
-                {/* Documenten */}
-                <div className="sidebar-menu-small-item"><SvgIcon size={20} icon={ic_business}/></div>
                 {/* Variabelen */}
-                <div className="sidebar-menu-small-item"><SvgIcon size={20} icon={cog}/></div>
+                <div className="sidebar-menu-small-item"><SvgIcon size={20} icon={ic_business}/></div>
                 {/* Instellingen */}
+                <div className="sidebar-menu-small-item"><SvgIcon size={20} icon={cog}/></div>
             </div>
         )
     }

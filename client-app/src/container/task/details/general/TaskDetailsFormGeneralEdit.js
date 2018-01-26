@@ -220,8 +220,6 @@ class TaskDetailsFormGeneralEdit extends Component {
             opportunityId
         } = this.state.task;
 
-        console.log(this.state.contacts);
-
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
                 <div className="row">

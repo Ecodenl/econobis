@@ -10,10 +10,15 @@ import AuditTrailListToolbar from './AuditTrailListToolbar';
 import filterHelper from '../../../helpers/FilterHelper';
 import Panel from '../../../components/panel/Panel';
 import PanelBody from "../../../components/panel/PanelBody";
+import AuditTrailAPI from "../../../api/audit-trail/AuditTrailAPI";
 
 class AuditTrailListApp extends Component {
     constructor(props) {
         super(props);
+
+        this.state = {
+            models: [],
+        };
 
         this.fetchAuditTrailData = this.fetchAuditTrailData.bind(this);
         this.resetAuditTrailFilters = this.resetAuditTrailFilters.bind(this);
@@ -22,6 +27,10 @@ class AuditTrailListApp extends Component {
 
     componentDidMount() {
         this.fetchAuditTrailData();
+
+        AuditTrailAPI.fetchAuditTrailModels().then((payload) => {
+            this.setState({ models: payload });
+        });
     };
 
     componentWillUnmount() {
@@ -74,6 +83,7 @@ class AuditTrailListApp extends Component {
                     <div className="col-md-12 margin-10-top">
                         <AuditTrailList
                             auditTrail={this.props.auditTrail}
+                            models={this.state.models}
                             auditTrailPagination={this.props.auditTrailPagination}
                             onSubmitFilter={() => this.onSubmitFilter()}
                             fetchAuditTrailData={() => this.fetchAuditTrailData()}

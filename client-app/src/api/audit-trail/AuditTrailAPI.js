@@ -17,4 +17,19 @@ export default {
             },
         });
     },
+
+    fetchAuditTrailModels: () => {
+        const requestUrl = `${URL_API}/api/audit-trail/peek-models`;
+        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
+        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
+
+        return axios.get(requestUrl)
+            .then(function (response) {
+                return response.data;
+            })
+            .catch(function (error) {
+                    console.log(error);
+                }
+            );
+    },
 };

@@ -38,6 +38,7 @@ class Filter extends RequestFilter
     protected $defaultTypes = [
         '*' => 'ct',
         'changedById' => 'eq',
+        'model' => 'eq',
     ];
 
 }

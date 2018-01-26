@@ -33,6 +33,7 @@ class AuditTrailList extends Component {
                             />
                             <AuditTrailListFilter
                                 onSubmitFilter={this.props.onSubmitFilter}
+                                models={this.props.models}
                             />
                         </DataTableHead>
                         <DataTableBody>

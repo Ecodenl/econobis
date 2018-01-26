@@ -215,5 +215,6 @@ Route::namespace('Api')
         Route::post('document-template/{documentTemplate}', 'DocumentTemplate\DocumentTemplateController@update');
 
         Route::get('audit-trail/grid', 'AuditTrail\AuditTrailController@grid');
+        Route::get('audit-trail/peek-models', 'AuditTrail\AuditTrailController@peekModels');
     }
 );

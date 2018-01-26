@@ -18,6 +18,11 @@ const AuditTrailListFilter = props => {
 
     const onModelChange = (e) => {
         props.setFilterAuditTrailModel(e.target.value);
+
+        setTimeout(() => {
+            props.onSubmitFilter();
+        }, 100);
+
     };
 
     const onFieldChange = (e) => {
@@ -50,9 +55,17 @@ const AuditTrailListFilter = props => {
 
     return (
         <tr className="thead-filter">
+            <th>
+                <select className="form-control input-sm" value={ props.filters.model.data } onChange={onModelChange}>
+                    <option/>
+                    {
+                        props.models.map((model) => {
+                            return <option key={model.id } value={ model.id }>{ model.name }</option>
+                        })
+                    }
+                </select>
+            </th>
 
-
-            <th><input type="text" className="form-control input-sm" value={ props.filters.model.data} onChange={onModelChange} /></th>
             <th><input type="text" className="form-control input-sm" value={ props.filters.field.data} onChange={onFieldChange} /></th>
             <th><input type="text" className="form-control input-sm" value={ props.filters.oldValue.data} onChange={onOldValueChange} /></th>
             <th><input type="text" className="form-control input-sm" value={ props.filters.newValue.data} onChange={onNewValueChange} /></th>

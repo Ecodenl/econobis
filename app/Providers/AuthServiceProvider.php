@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Eco\AuditTrail\AuditTrail;
+use App\Eco\AuditTrail\AuditTrailPolicy;
 use App\Eco\Campaign\Campaign;
 use App\Eco\Campaign\CampaignPolicy;
 use App\Eco\Document\Document;
@@ -62,6 +64,7 @@ class AuthServiceProvider extends ServiceProvider
         Measure::class => MeasurePolicy::class,
         Document::class => DocumentPolicy::class,
         DocumentTemplate::class => DocumentTemplatePolicy::class,
+        AuditTrail::class => AuditTrailPolicy::class,
     ];
 
     /**

@@ -104,7 +104,7 @@ class SidebarMenu extends Component {
                                 templates</Link></NavText>
                         </Nav>
                         }
-                        <Nav id="mailboxes">
+                        <Nav id="email-templates">
                             <NavText><Link className="sidebar-link" to="email-templates">Email
                                 templates</Link></NavText>
                         </Nav>
@@ -113,6 +113,9 @@ class SidebarMenu extends Component {
                         </Nav>
                         <Nav id="mailboxes">
                             <NavText><Link className="sidebar-link" to="mailboxen">Mailboxen</Link></NavText>
+                        </Nav>
+                        <Nav id="audit-trail">
+                            <NavText><Link className="sidebar-link" to="audit-trail">Audit trail</Link></NavText>
                         </Nav>
                     </Nav>
                 </SideNav>

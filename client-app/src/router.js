@@ -1,6 +1,7 @@
 import React from 'react';
 import { Router, Route, IndexRoute, hashHistory } from 'react-router';
 
+import AuditTrailListApp from './container/audit-trail/list/AuditTrailListApp';
 import ConceptsInListApp from './container/email/concept-list/ConceptsInListApp';
 import ConceptApp from './container/email/concept/ConceptApp';
 import CampaignDetailsApp from './container/campaigns/details/CampaignDetailsApp';
@@ -63,6 +64,8 @@ const Routes = () => {
             <Route path='wachtwoord-wijzig/:token' component={Reset}/>
             <Route path="/" component={ RequireAuth(Main) }>
                 <IndexRoute component={ DashboardApp } />
+                /* Audit trail*/
+                <Route path="audit-trail" component={ AuditTrailListApp } />
                 /* Contact */
                 <Route path="contact-groep/nieuw" component={ContactGroupNewApp} />
                 <Route path="contact-groepen" component={ ContactGroupsListApp } />

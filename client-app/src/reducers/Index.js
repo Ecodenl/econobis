@@ -1,5 +1,6 @@
 import {combineReducers} from 'redux';
 
+import auditTrailReducer from './audit-trail/AuditTrailReducer';
 import authReducer from './general/AuthReducer';
 import calendarReducer from './calendar/CalendarReducer';
 import campaignsReducer from './campaign/CampaignsReducer';
@@ -24,7 +25,7 @@ import measuresReducer from './measure/MeasureReducer';
 import meDetailsReducer from './general/MeDetailsReducer';
 import opportunitiesReducer from './opportunity/OpportunitiesReducer';
 import opportunityDetailsReducer from './opportunity/OpportunityDetailsReducer';
-import registrationDetailsReducer from './registration/RegistrationDetailsReducer'
+import registrationDetailsReducer from './registration/RegistrationDetailsReducer';
 import registrationsReducer from './registration/RegistrationsReducer';
 import sidebarReducer from './general/SidebarReducer';
 import systemDataReducer from './general/SystemDataReducer';
@@ -40,8 +41,13 @@ const rootReducer = combineReducers({
     meDetails: meDetailsReducer,
     systemData: systemDataReducer,
     toggleSidebar: sidebarReducer,
+
+    //Audit trail
+    auditTrail: auditTrailReducer,
+
     // Calendar
     calendar: calendarReducer,
+
     // Campaign
     campaigns: campaignsReducer,
     campaignDetails: campaignDetailsReducer,

@@ -214,5 +214,8 @@ Route::namespace('Api')
         Route::post('document-template', 'DocumentTemplate\DocumentTemplateController@store');
         Route::post('document-template/{documentTemplate}/delete', 'DocumentTemplate\DocumentTemplateController@destroy');
         Route::post('document-template/{documentTemplate}', 'DocumentTemplate\DocumentTemplateController@update');
+
+        Route::get('audit-trail/grid', 'AuditTrail\AuditTrailController@grid');
+        Route::get('audit-trail/peek-models', 'AuditTrail\AuditTrailController@peekModels');
     }
 );

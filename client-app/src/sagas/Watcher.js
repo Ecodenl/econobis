@@ -1,5 +1,6 @@
 import { takeLatest } from 'redux-saga/effects';
 
+import { fetchAuditTrailSaga } from './audit-trail/AuditTrailSaga';
 import { fetchCampaignsSaga } from './campaign/CampaignsSaga';
 import { fetchCampaignSaga } from './campaign/CampaignDetailsSaga';
 import { fetchContactDetailsSaga, deleteAddressSaga, deletePhoneNumberSaga, deleteEmailAddressSaga, deleteContactNoteSaga } from './contact/ContactDetailsSaga';
@@ -38,6 +39,8 @@ export default function* watchSagas() {
     yield takeLatest('FETCH_ME_DETAILS', meDetailsSaga);
     yield takeLatest('FETCH_USERS', fetchUserSaga);
     yield takeLatest('FETCH_USER_DETAILS', fetchUserDetailsSaga);
+    // Audit trail
+    yield takeLatest('FETCH_AUDIT_TRAIL', fetchAuditTrailSaga);
     // Campaign
     yield takeLatest('FETCH_CAMPAIGNS', fetchCampaignsSaga);
     yield takeLatest('FETCH_CAMPAIGN', fetchCampaignSaga);

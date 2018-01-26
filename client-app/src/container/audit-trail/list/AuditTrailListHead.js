@@ -19,7 +19,7 @@ const AuditTrailListHead = (props) => {
             <DataTableHeadTitleAndSort sortColumn={'field'} title={'Veldnaam'} width={'20%'} setSorts={setSorts} />
             <DataTableHeadTitleAndSort sortColumn={'oldValue'} title={'Oude waarde'} width={'15%'} setSorts={setSorts} />
             <DataTableHeadTitleAndSort sortColumn={'newValue'} title={'Nieuwe waarde'} width={'15%'} setSorts={setSorts} />
-            <DataTableHeadTitleAndSort sortColumn={'changedBy'} title={'Gewijzigd door'} width={'20%'} setSorts={setSorts} />
+            <DataTableHeadTitleAndSort sortColumn={'changedById'} title={'Gewijzigd door'} width={'20%'} setSorts={setSorts} />
             <DataTableHeadTitleAndSort sortColumn={'updatedAt'} title={'Gewijzigd op'} width={'15%'} setSorts={setSorts} />
         </tr>
     );

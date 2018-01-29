@@ -47,7 +47,7 @@ class RegistrationList extends Component {
                         return (
                             <tr key={i} onClick={() => this.openItem(registration.id)}>
                                 <td className='col-xs-4 clickable'>
-                                    { registration.createdAt ? moment(registration.createdAt.date).format('d-M-Y') : '' }
+                                    { registration.createdAt ? moment(registration.createdAt.date).format('DD-MM-Y') : '' }
                                 </td>
                                 <td className='col-xs-8 clickable'>
                                     {registration.addressName}

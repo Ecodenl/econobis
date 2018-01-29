@@ -36,7 +36,7 @@ const RegistrationDetailsFormGeneralView = props => {
             <div className="row">
                 <ViewText
                     label={"Aanmeld datum"}
-                    value={ createdAt && moment(createdAt.date).format('L')}
+                    value={ createdAt && moment(createdAt.date).format('DD-MM-Y')}
                 />
                 <ViewText
                     label="Status"

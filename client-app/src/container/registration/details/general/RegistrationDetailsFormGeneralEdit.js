@@ -131,7 +131,7 @@ class RegistrationDetailsFormGeneralEdit extends Component {
                     <InputText
                         label="Aanmeld datum"
                         name="registration"
-                        value={ moment(createdAt).format('L') }
+                        value={ moment(createdAt.date).format('DD-MM-Y') }
                         readOnly
                     />
                     <InputSelect

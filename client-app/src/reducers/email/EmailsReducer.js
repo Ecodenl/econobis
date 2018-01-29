@@ -1,13 +1,11 @@
-export default function (state = [], action) {
-    switch (action.type) {
-        case 'FETCH_EMAILS_SUCCESS':
-            return [
-                ...action.emails.data.data,
-            ];
-        case 'CLEAR_EMAILS':
-            return state.emails = [];
-        default:
-            return state;
+import { combineReducers } from 'redux';
 
-    }
-}
+import emailsListReducer from './EmailsListReducer';
+import emailsPaginationReducer from './EmailsPaginationReducer';
+
+const emailsReducer = combineReducers({
+    list: emailsListReducer,
+    pagination: emailsPaginationReducer,
+});
+
+export default emailsReducer;

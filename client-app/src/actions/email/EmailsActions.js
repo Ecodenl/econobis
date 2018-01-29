@@ -1,7 +1,8 @@
-export const fetchEmails = (folder) => {
+export const fetchEmails = (folder, pagination) => {
     return {
         type: 'FETCH_EMAILS',
         folder,
+        pagination,
     };
 };
 

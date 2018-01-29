@@ -20,6 +20,7 @@ use App\Eco\Email\Jobs\StoreConceptEmail;
 use App\Eco\Mailbox\Mailbox;
 use App\Eco\User\User;
 use App\Helpers\RequestInput\RequestInput;
+use App\Http\RequestQueries\Email\Grid\RequestQuery;
 use App\Http\Resources\Email\FullEmail;
 use App\Http\Resources\Email\GridEmail;
 use App\Http\Resources\GenericResource;
@@ -32,25 +33,44 @@ use Illuminate\Support\Facades\Storage;
 class EmailController
 {
 
-    public function grid($folder)
+    public function grid(RequestQuery $requestQuery, $folder)
     {
         $user = Auth::user();
 
         $mailboxIds = $user->mailboxes()->pluck('mailbox_id');
 
+        $queryBuilderPagination = $requestQuery->getQuery();
 
-        if($folder == 'concept'){
-            $emails = Email::whereFolder($folder)->whereIn('mailbox_id', $mailboxIds)
-                ->orderBy('created_at', 'desc')->get();
+        $queryBuilderNoPagination = $requestQuery->getQueryNoPagination();
+
+        if ($folder == 'concept') {
+            $queryBuilderPagination->where('folder', $folder)
+                ->whereIn('mailbox_id', $mailboxIds)
+                ->orderBy('created_at', 'desc');
+            $queryBuilderNoPagination->where('folder', $folder)
+                ->whereIn('mailbox_id', $mailboxIds)
+                ->orderBy('created_at', 'desc');
+        } else {
+            $queryBuilderPagination->where('folder', $folder)
+                ->whereIn('mailbox_id', $mailboxIds)
+                ->orderBy('date_sent', 'desc');
+            $queryBuilderNoPagination->where('folder', $folder)
+                ->whereIn('mailbox_id', $mailboxIds)
+                ->orderBy('date_sent', 'desc');
         }
-        else {
-            $emails = Email::whereFolder($folder)->whereIn('mailbox_id', $mailboxIds)
-                ->orderBy('date_sent', 'desc')->get();
-        }
+
+        $total = $queryBuilderNoPagination->count();
+
+        $emails = $queryBuilderPagination->get();
 
         $emails->load('mailbox');
 
-        return GridEmail::collection($emails);
+        return GridEmail::collection($emails)
+            ->additional([
+                'meta' => [
+                    'total' => $total,
+                ]
+            ]);
     }
 
     public function show(Email $email){

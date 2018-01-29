@@ -14,7 +14,7 @@ class AlterContactsTable extends Migration
     public function up()
     {
         Schema::table('contacts', function (Blueprint $table) {
-            $table->text('iban')->default('');
+            $table->text('iban');
             $table->boolean('liable')->default(false);
             $table->float('liability_amount')->default(0);
 

@@ -21,9 +21,6 @@ $factory->define(App\Eco\Task\Task::class, function (Faker\Generator $faker) {
         'date_planned' => function () use ($faker) {
             if ($faker->boolean(50)) return $faker->date();
         },
-        'date_started' => function () use ($faker) {
-            if ($faker->boolean(50)) return $faker->date();
-        },
         'date_finished' => function () use ($faker) {
             if ($faker->boolean(50)) return $faker->date();
         },

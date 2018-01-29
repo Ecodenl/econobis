@@ -24,5 +24,6 @@ $factory->define(\App\Eco\User\User::class, function (Faker\Generator $faker) {
         'visit_count' => $faker->numberBetween(0, 200),
         'last_visit' => $faker->dateTimeBetween('-2 years', 'now'),
         'active' => $faker->boolean(85),
+        'alfresco_password' => '',
     ];
 });

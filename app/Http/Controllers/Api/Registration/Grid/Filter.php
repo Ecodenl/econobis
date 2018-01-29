@@ -25,7 +25,7 @@ class Filter extends RequestFilter
         'fullName' => 'contacts.full_name',
         'createdAt' => 'registrations.created_at',
         'sourceId' => 'registration_source.source_id',
-        'statusId' => 'registrations.registration_status.id',
+        'statusId' => 'registrations.registration_status_id',
         'measureRequestedId' => 'measure_requested_address.measure_id',
     ];
 

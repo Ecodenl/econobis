@@ -39,7 +39,7 @@ class RegistrationsListApp extends Component {
     resetRegistrationFilters = () => {
         this.props.clearFilterRegistration();
 
-        this.fetchContactsData();
+        this.fetchRegistrationsData();
     };
 
     onSubmitFilter() {
@@ -70,7 +70,7 @@ class RegistrationsListApp extends Component {
                 <PanelBody>
                     <div className="col-md-12 margin-10-top">
                         <RegistrationsListToolbar
-                            refreshRegistrationsData={() => this.fetchRegistrationsData()}
+                            resetRegistrationFilters={() => this.resetRegistrationFilters()}
                         />
                     </div>
 

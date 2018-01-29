@@ -73,4 +73,12 @@ export default {
                 console.log(error);
             });
     },
+
+    receiveMailFromMailboxesUser: () => {
+        const requestUrl = `${URL_MAILBOX}/receive/from-mailboxes-user`;
+        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
+        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
+
+        return axios.get(requestUrl);
+    },
 };

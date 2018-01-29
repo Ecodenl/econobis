@@ -20,7 +20,7 @@ class DocumentDetailsApp extends Component {
         return (
             <div className="row">
                 <div className="col-md-9">
-                    <div className="col-md-12 extra-space-above">
+                    <div className="col-md-12 margin-10-top">
                         <Panel>
                             <PanelBody className={"panel-small"}>
                                 <DocumentDetailsToolbar />
@@ -28,7 +28,7 @@ class DocumentDetailsApp extends Component {
                         </Panel>
                     </div>
 
-                    <div className="col-md-12 extra-space-above">
+                    <div className="col-md-12 margin-10-top">
                         <DocumentDetailsForm />
                     </div>
                 </div>

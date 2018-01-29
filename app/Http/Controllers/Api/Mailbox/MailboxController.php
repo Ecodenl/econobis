@@ -114,6 +114,17 @@ class MailboxController
         }
     }
 
+    public function receiveMailFromMailboxesUser()
+    {
+        $user = Auth::user();
+
+        $mailboxes = $user->mailboxes()->get();
+
+        foreach($mailboxes as $mailbox){
+            $this->receive($mailbox);
+        }
+    }
+
     public function loggedInEmailPeek()
     {
         $user = Auth::user();

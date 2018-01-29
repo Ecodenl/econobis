@@ -7,6 +7,7 @@ import EmailsInListToolbar from './EmailsInListToolbar';
 import Panel from "../../../components/panel/Panel";
 import PanelBody from "../../../components/panel/PanelBody";
 import { isEmpty } from 'lodash';
+import MailboxAPI from '../../../api/mailbox/MailboxAPI';
 
 class EmailsInListApp extends Component {
     constructor(props) {
@@ -33,8 +34,10 @@ class EmailsInListApp extends Component {
         }
 
     refreshData() {
-        this.props.clearEmails();
-        this.props.fetchEmails(this.props.params.folder);
+        MailboxAPI.receiveMailFromMailboxesUser().then(payload => {
+            this.props.clearEmails();
+            this.props.fetchEmails(this.props.params.folder);
+        });
     }
 
     render() {

@@ -217,5 +217,7 @@ Route::namespace('Api')
 
         Route::get('audit-trail/grid', 'AuditTrail\AuditTrailController@grid');
         Route::get('audit-trail/peek-models', 'AuditTrail\AuditTrailController@peekModels');
+
+        Route::post('general-search', 'GeneralSearch\GeneralSearchController@search');
     }
 );

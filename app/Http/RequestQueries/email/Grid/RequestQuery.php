@@ -8,9 +8,10 @@
 
 namespace App\Http\RequestQueries\Email\Grid;
 
-use App\Eco\Campaign\Campaign;
 use App\Eco\Email\Email;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class RequestQuery extends \App\Helpers\RequestQuery\RequestQuery
 {
@@ -29,4 +30,15 @@ class RequestQuery extends \App\Helpers\RequestQuery\RequestQuery
         return Email::query()
             ->select('emails.*');
     }
+
+    public function getQueryNoPagination()
+    {
+        $query = $this->baseQuery();
+
+        $this->applyFilter($query);
+        $this->applySort($query);
+
+        return $query;
+    }
+
 }

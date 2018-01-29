@@ -82,6 +82,9 @@ class ContactDetailFormAddressItem extends Component {
 
         const { address } = this.state;
 
+        // Postalcode always to uppercase
+        address.postalCode = address.postalCode.toUpperCase();
+
         let errors = {};
         let hasErrors = false;
 

@@ -6,6 +6,7 @@ import { newAddress } from '../../../../actions/contact/ContactDetailsActions';
 import InputText from '../../../../components/form/InputText';
 import ButtonText from '../../../../components/button/ButtonText';
 import InputSelect from "../../../../components/form/InputSelect";
+import InputMask from '../../../../components/form/InputMask';
 import InputCheckbox from "../../../../components/form/InputCheckbox";
 import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
@@ -52,6 +53,9 @@ class ContactDetailsFormAddressNew extends Component {
 
         const { address } = this.state;
 
+        // Postalcode always to uppercase
+        address.postalCode = address.postalCode.toUpperCase();
+
         let errors = {};
         let hasErrors = false;
 
@@ -88,17 +92,15 @@ class ContactDetailsFormAddressNew extends Component {
                 <Panel className={'panel-grey'}>
                     <PanelBody>
                         <div className="row">
-                            <InputText
+                            <InputMask
                                 label={"Postcode"}
-                                id={"postcode"}
                                 size={"col-sm-4"}
-                                maxLength={"7"}
                                 name={"postalCode"}
                                 value={postalCode}
                                 onChangeAction={ this.handleInputChange }
                                 required={"required"}
                                 error={this.state.errors.postalCode}
-
+                                mask={'9999 aa'}
                             />
                             <InputText
                                 label={"Nummer"}

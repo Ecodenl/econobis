@@ -7,6 +7,7 @@ import InputSelect from "../../../../components/form/InputSelect";
 import InputCheckbox from "../../../../components/form/InputCheckbox";
 import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
+import InputMask from "../../../../components/form/InputMask";
 
 const ContactDetailsFormAddressEdit = props => {
     const { street, number, postalCode, city, typeId, primary } = props.address;
@@ -17,15 +18,15 @@ const ContactDetailsFormAddressEdit = props => {
                 <Panel className={'panel-grey'}>
                     <PanelBody>
                         <div className="row">
-                            <InputText
+                            <InputMask
                                 label={"Postcode"}
-                                id={"postcode"}
                                 size={"col-sm-4"}
                                 name={"postalCode"}
                                 value={postalCode}
                                 onChangeAction={ props.handleInputChange }
-                                maxLength={"7"}
+                                required={"required"}
                                 error={props.postalCodeError}
+                                mask={'9999 aa'}
                             />
                             <InputText
                                 label={"Nummer"}

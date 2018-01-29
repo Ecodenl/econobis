@@ -130,7 +130,7 @@ class ContactsListApp extends Component {
                             />
                         </div>
 
-                        <div className="col-md-12 extra-space-above">
+                        <div className="col-md-12 margin-10-top">
                             <ContactsList
                                 contacts={this.props.contacts}
                                 contactsPagination={this.props.contactsPagination}

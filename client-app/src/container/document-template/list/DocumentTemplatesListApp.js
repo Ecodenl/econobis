@@ -28,13 +28,13 @@ class DocumentTemplatesListApp extends Component {
             <div>
                 <div className="panel panel-default">
                     <div className="panel-body">
-                        <div className="col-md-12 extra-space-above">
+                        <div className="col-md-12 margin-10-top">
                             <DocumentTemplatesListToolbar
                                 refreshDocumentTemplatesData={() => this.refreshDocumentTemplatesData()}
                             />
                         </div>
 
-                        <div className="col-md-12 extra-space-above">
+                        <div className="col-md-12 margin-10-top">
                             <DocumentTemplatesList
                                 documentTemplates={this.props.documentTemplates}
                                 refreshDocumentTemplatesData={this.refreshDocumentTemplatesData}

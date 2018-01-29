@@ -12,3 +12,17 @@
     }
   }
 }
+
+.search-modal {
+  top: 10%;
+}
+
+.search-modal-dialog {
+  width: 80%;
+  max-height: 80%;
+}
+
+.search-modal-body {
+  max-height: 600px;
+  overflow-y: scroll;
+}

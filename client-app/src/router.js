@@ -75,8 +75,8 @@ const Routes = () => {
                 /* Contact */
                 <Route path="contact-groep/nieuw" component={ContactGroupNewApp} />
                 <Route path="contact-groepen" component={ ContactGroupsListApp } />
-                <Route path="contact/nieuw/:type" component={ PermissionHelper(ContactNewApp, true) } />
-                <Route path="contact/nieuw/:type/organisatie/:id" component={ PermissionHelper(ContactNewApp, true) } />
+                <Route path="contact/nieuw/:type" component={ ContactNewApp } />
+                <Route path="contact/nieuw/:type/organisatie/:id" component={ ContactNewApp } />
                 <Route path="contact/:id" component={ ContactDetailsApp } />
                 <Route path="contacten" component={ ContactsListApp } />
                 /* Contacts in group */

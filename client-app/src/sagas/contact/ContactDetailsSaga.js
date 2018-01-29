@@ -8,9 +8,7 @@ import ContactNoteAPI from '../../api/contact/ContactNoteAPI';
 export function* fetchContactDetailsSaga({ payload }) {
     try {
         const contactDetails = yield call(ContactDetailsAPI.getContactDetails, payload);
-        yield [
-            put({ type: 'FETCH_CONTACT_DETAILS_SUCCESS', contactDetails }),
-        ];
+        yield put({ type: 'FETCH_CONTACT_DETAILS_SUCCESS', contactDetails });
     } catch (error) {
         yield put({ type: 'FETCH_CONTACT_DETAILS_ERROR', error });
     }

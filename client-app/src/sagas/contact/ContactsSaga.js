@@ -4,9 +4,7 @@ import ContactsAPI from '../../api/contact/ContactsAPI';
 export function* fetchContactsSaga({filters, sorts, pagination}) {
     try {
         const contacts = yield call(ContactsAPI.fetchContacts, {filters, sorts, pagination});
-        yield [
-            put({ type: 'FETCH_CONTACTS_SUCCESS', contacts }),
-        ];
+        yield put({ type: 'FETCH_CONTACTS_SUCCESS', contacts })
     } catch (error) {
         yield put({ type: 'FETCH_CONTACTS_ERROR', error });
     }

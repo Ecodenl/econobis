@@ -1,17 +1,15 @@
-import { put, call } from 'redux-saga/effects';
+import { put, call, all } from 'redux-saga/effects';
 import TasksAPI from '../../api/task/TasksAPI';
 import TaskDetailsAPI from "../../api/task/TaskDetailsAPI";
 
 export function* fetchTasksSaga({filters, sorts, pagination}) {
     try {
-        yield [
-            put({ type: 'FETCH_TASKS_LOADING' }),
-        ];
+        yield put({ type: 'FETCH_TASKS_LOADING' });
         const tasks = yield call(TasksAPI.fetchTasks, {filters, sorts, pagination});
-        yield [
+        yield all([
             put({ type: 'FETCH_TASKS_LOADING_SUCCESS'}),
             put({ type: 'FETCH_TASKS_SUCCESS', tasks }),
-        ];
+        ]);
     } catch (error) {
         yield put({ type: 'FETCH_TASKS_ERROR', error });
     }

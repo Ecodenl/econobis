@@ -4,9 +4,7 @@ import TaskDetailsAPI from '../../api/task/TaskDetailsAPI';
 export function* fetchTaskDetailsSaga({ id }) {
     try {
         const taskDetails = yield call(TaskDetailsAPI.fetchTaskDetails, id);
-        yield [
-            put({ type: 'FETCH_TASK_DETAILS_SUCCESS', taskDetails }),
-        ];
+        yield put({ type: 'FETCH_TASK_DETAILS_SUCCESS', taskDetails });
     } catch (error) {
         yield put({ type: 'FETCH_TASK_DETAILS_ERROR', error });
     }

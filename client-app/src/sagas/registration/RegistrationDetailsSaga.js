@@ -4,9 +4,7 @@ import RegistrationDetailsAPI from '../../api/registration/RegistrationDetailsAP
 export function* fetchRegistrationDetailsSaga({ payload }) {
     try {
         const registrationDetails = yield call(RegistrationDetailsAPI.fetchRegistrationDetails, payload);
-        yield [
-            put({ type: 'FETCH_REGISTRATION_DETAILS_SUCCESS', registrationDetails }),
-        ];
+        yield put({ type: 'FETCH_REGISTRATION_DETAILS_SUCCESS', registrationDetails });
     } catch (error) {
         yield put({ type: 'FETCH_REGISTRATION_DETAILS_ERROR', error });
     }

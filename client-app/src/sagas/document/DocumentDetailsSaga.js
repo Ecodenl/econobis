@@ -4,9 +4,7 @@ import DocumentDetailsAPI from "../../api/document/DocumentDetailsAPI";
 export function* fetchDocumentDetailsSaga({ id }) {
     try {
         const documentDetails = yield call(DocumentDetailsAPI.fetchDocumentDetails, id);
-        yield [
-            put({ type: 'FETCH_DOCUMENT_DETAILS_SUCCESS', documentDetails }),
-        ];
+        yield put({ type: 'FETCH_DOCUMENT_DETAILS_SUCCESS', documentDetails });
     } catch (error) {
         yield put({ type: 'FETCH_DOCUMENT_DETAILS_ERROR', error });
     }

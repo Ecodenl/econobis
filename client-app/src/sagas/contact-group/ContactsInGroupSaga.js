@@ -4,9 +4,7 @@ import ContactsInGroupAPI from '../../api/contact-group/ContactsInGroupAPI';
 export function* fetchContactsInGroupSaga({ contactGroup }) {
     try {
         const contactsInGroup = yield call(ContactsInGroupAPI.fetchContactsInGroup, contactGroup);
-        yield [
-            put({ type: 'FETCH_CONTACTS_IN_GROUP_SUCCESS', contactsInGroup }),
-        ];
+        yield put({ type: 'FETCH_CONTACTS_IN_GROUP_SUCCESS', contactsInGroup });
     } catch (error) {
         yield put({ type: 'FETCH_CONTACTS_IN_GROUP_ERROR', error });
     }

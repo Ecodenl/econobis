@@ -5,9 +5,7 @@ import AddressAPI from "../../api/contact/AddressAPI";
 export function* fetchMailboxDetailsSaga({ id }) {
     try {
         const mailboxDetails = yield call(MailboxAPI.fetchMailboxDetails, id);
-        yield [
-            put({ type: 'FETCH_MAILBOX_DETAILS_SUCCESS', mailboxDetails }),
-        ];
+        yield put({ type: 'FETCH_MAILBOX_DETAILS_SUCCESS', mailboxDetails });
     } catch (error) {
         yield put({ type: 'FETCH_MAILBOX_DETAILS_ERROR', error });
     }

@@ -26,7 +26,7 @@ class GeneralSearchModalList extends Component {
         return (
             <div>
                 <div className="row">
-                    <div className="col-md-12"><h3 className="text-center table-title">{this.props.modelName}</h3></div>
+                    <div className="col-md-12"><h3 className="text-center table-title">{this.props.modelName}({this.props.records.length})</h3></div>
                 </div>
                 {!this.state.gridVisible ?
                     <div>

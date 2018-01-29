@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {hashHistory, Link} from "react-router";
+import {hashHistory} from "react-router";
 
 class GeneralSearchModalListItem extends Component {
     constructor(props) {
@@ -35,7 +35,7 @@ class GeneralSearchModalListItem extends Component {
         return (
             <tr className={this.state.highlightRow} onMouseEnter={() => this.onRowEnter()}
                 onMouseLeave={() => this.onRowLeave()}>
-                <td><Link className="link-underline" onClick={() => this.redirect()}> {relation}</Link></td>
+                <td className="link-underline" onClick={() => this.redirect()}> {relation} </td>
                 <td>{found_in}</td>
                 <td>{found_value}</td>
             </tr>

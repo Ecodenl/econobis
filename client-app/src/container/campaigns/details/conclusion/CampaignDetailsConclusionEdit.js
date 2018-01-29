@@ -61,7 +61,7 @@ class CampaignFormEdit extends Component {
         this.setState({ ...this.state, errors: errors });
 
         !hasErrors &&
-        CampaignDetailsAPI.updateCampaign(campaign.id, campaign).then(payload => {
+        CampaignDetailsAPI.updateCampaignOwner(campaign.id, campaign.ownedById).then(payload => {
             this.props.fetchCampaign(campaign.id);
             this.props.switchToView();
         });

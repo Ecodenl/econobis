@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import { fetchEmails, clearEmails } from '../../../actions/email/EmailsActions';
+import { setEmailsPagination } from '../../../actions/email/EmailsPaginationActions';
 import EmailsInList from './EmailsInList';
 import EmailsInListToolbar from './EmailsInListToolbar';
 import Panel from "../../../components/panel/Panel";
@@ -14,10 +15,11 @@ class EmailsInListApp extends Component {
         super(props);
 
         this.refreshData = this.refreshData.bind(this);
+        this.handlePageClick = this.handlePageClick.bind(this);
     }
 
     componentDidMount() {
-        this.props.fetchEmails(this.props.params.folder);
+        this.fetchEmailsData();
     };
 
     componentWillUnmount() {
@@ -27,11 +29,20 @@ class EmailsInListApp extends Component {
     componentWillReceiveProps(nextProps) {
         if(this.props.params.folder !== nextProps.params.folder) {
             if (!isEmpty(nextProps.params.folder)) {
+                this.props.setEmailsPagination({page: 0, offset: 0});
                 this.props.clearEmails();
-                this.props.fetchEmails(nextProps.params.folder);
+                this.props.fetchEmailsData;
                 }
             }
         }
+
+    fetchEmailsData() {
+        setTimeout(() => {
+            const pagination = { limit: 20, offset: this.props.emailsPagination.offset };
+
+            this.props.fetchEmails(this.props.params.folder, pagination);
+        },100 );
+    };
 
     refreshData() {
         MailboxAPI.receiveMailFromMailboxesUser().then(payload => {
@@ -39,6 +50,15 @@ class EmailsInListApp extends Component {
             this.props.fetchEmails(this.props.params.folder);
         });
     }
+
+    handlePageClick(data) {
+        let page = data.selected;
+        let offset = Math.ceil(page * 20);
+
+        this.props.setEmailsPagination({page, offset});
+
+        this.fetchEmailsData();
+    };
 
     render() {
         return (
@@ -52,23 +72,30 @@ class EmailsInListApp extends Component {
                         </div>
 
                         <div className="col-md-12 margin-10-top">
-                            <EmailsInList />
+                            <EmailsInList handlePageClick={this.handlePageClick}/>
                         </div>
                     </PanelBody>
                 </Panel>
         )
     }
-}
+};
 
-
+const mapStateToProps = (state) => {
+    return {
+        emailsPagination: state.emails.pagination,
+    };
+};
 
 const mapDispatchToProps = dispatch => ({
-    fetchEmails: (folder) => {
-        dispatch(fetchEmails(folder));
+    fetchEmails: (folder, pagination) => {
+        dispatch(fetchEmails(folder, pagination));
     },
     clearEmails: () => {
         dispatch(clearEmails());
     },
+    setEmailsPagination: (pagination) => {
+        dispatch(setEmailsPagination(pagination));
+    },
 });
 
-export default connect(null, mapDispatchToProps)(EmailsInListApp);
+export default connect(mapStateToProps, mapDispatchToProps)(EmailsInListApp);

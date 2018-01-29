@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment';
+moment.locale('nl');
 
 import ViewText from '../../../../components/form/ViewText';
 
@@ -35,7 +36,7 @@ const RegistrationDetailsFormGeneralView = props => {
             <div className="row">
                 <ViewText
                     label={"Aanmeld datum"}
-                    value={ createdAt && moment(createdAt.date).format('d-M-Y')}
+                    value={ createdAt && moment(createdAt.date).format('L')}
                 />
                 <ViewText
                     label="Status"

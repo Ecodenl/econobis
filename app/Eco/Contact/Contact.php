@@ -16,6 +16,7 @@ use App\Eco\Person\Person;
 use App\Eco\PhoneNumber\PhoneNumber;
 use App\Eco\Task\Task;
 use App\Eco\User\User;
+use App\Http\Traits\Encryptable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Laracasts\Presenter\PresentableTrait;
@@ -23,7 +24,7 @@ use Venturecraft\Revisionable\RevisionableTrait;
 
 class Contact extends Model
 {
-    use PresentableTrait, RevisionableTrait, SoftDeletes;
+    use PresentableTrait, RevisionableTrait, SoftDeletes, Encryptable;
     protected $presenter = ContactPresenter::class;
 
     protected $guarded = ['id'];
@@ -36,6 +37,10 @@ class Contact extends Model
     protected $dates = [
         'member_since',
         'member_until',
+    ];
+
+    protected $encryptable = [
+      'iban'
     ];
 
     public function addresses()

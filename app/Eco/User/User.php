@@ -6,6 +6,7 @@ use App\Cooperation;
 use App\Eco\LastNamePrefix\LastNamePrefix;
 use App\Eco\Mailbox\Mailbox;
 use App\Eco\Title\Title;
+use App\Http\Traits\Encryptable;
 use App\Notifications\MailResetPasswordToken;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Notifications\Notifiable;
@@ -18,7 +19,7 @@ use Venturecraft\Revisionable\RevisionableTrait;
 
 class User extends Authenticatable
 {
-    use Notifiable, HasApiTokens, RevisionableTrait, HasRoles, PresentableTrait, CanResetPassword;
+    use Notifiable, HasApiTokens, RevisionableTrait, HasRoles, PresentableTrait, CanResetPassword, Encryptable;
     protected $presenter = UserPresenter::class;
 
     /**
@@ -46,6 +47,10 @@ class User extends Authenticatable
 
     protected $dates = [
         'last_visit',
+    ];
+
+    protected $encryptable = [
+        'alfresco_password'
     ];
 
     public function lastNamePrefix()

@@ -14,7 +14,7 @@ class AlterUserAddAlfresco extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->string('alfresco_password');
+            $table->text('alfresco_password');
         });
     }
 

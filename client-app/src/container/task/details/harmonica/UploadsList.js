@@ -5,7 +5,7 @@ import fileDownload from 'js-file-download';
 
 import TaskDetailsAPI from "../../../../api/task/TaskDetailsAPI";
 
-class TaskUploadsList extends Component {
+class UploadsList extends Component {
     downloadItem = (id, name) => {
         TaskDetailsAPI.downloadAttachment(id).then((payload) => {
             fileDownload(payload.data, name);
@@ -47,4 +47,4 @@ const mapStateToProps = (state) => {
     };
 };
 
-export default connect(mapStateToProps)(TaskUploadsList);
+export default connect(mapStateToProps)(UploadsList);

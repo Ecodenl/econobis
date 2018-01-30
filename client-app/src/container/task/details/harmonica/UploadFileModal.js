@@ -6,7 +6,7 @@ import TaskDetailsAPI from '../../../../api/task/TaskDetailsAPI';
 import Modal from '../../../../components/modal/Modal';
 import {fetchTaskDetails} from "../../../../actions/task/TaskDetailsActions";
 
-class TaskUploadFile extends Component {
+class UploadFileModal extends Component {
     constructor(props) {
         super(props);
 
@@ -15,7 +15,8 @@ class TaskUploadFile extends Component {
             errorMaxSize: false,
         };
 
-        this.onDrop = this.onDrop.bind(this);
+        this.onDropAccepted = this.onDropAccepted.bind(this);
+        this.onDropRejected = this.onDropRejected.bind(this);
     }
 
     onDropAccepted(files) {
@@ -69,4 +70,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(null, mapDispatchToProps)(TaskUploadFile);
+export default connect(null, mapDispatchToProps)(UploadFileModal);

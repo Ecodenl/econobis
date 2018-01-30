@@ -22,7 +22,7 @@ Route::get('password/reset/{token}', [
 ]);
 
 Route::namespace('Api')
-    ->middleware('auth:api', 'refreshAuthToken')
+    ->middleware('auth:api')
     ->group(function () {
 
         Route::get('/me', 'User\UserController@me');

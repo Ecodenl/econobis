@@ -31,7 +31,7 @@ class EmailsInListApp extends Component {
             if (!isEmpty(nextProps.params.folder)) {
                 this.props.setEmailsPagination({page: 0, offset: 0});
                 this.props.clearEmails();
-                this.fetchEmailsData;
+                this.fetchEmailsData();
                 }
             }
         }

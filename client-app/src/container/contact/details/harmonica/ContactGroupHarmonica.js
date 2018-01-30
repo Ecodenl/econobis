@@ -2,17 +2,21 @@ import React from 'react';
 
 import Panel from "../../../../components/panel/Panel";
 import PanelBody from "../../../../components/panel/PanelBody";
-import ContactGroupList from './ContactGroupList';
+import ContactGroupsList from './ContactGroupsList';
 
 const ContactGroupHarmonica = ({toggleShowList, showContactGroupsList, toggleAddGroup, groupCount}) => {
     return (
         <Panel className={"harmonica-button"}>
             <PanelBody>
-                <div className="col-sm-12">
+                <div className="col-sm-11" onClick={toggleShowList} role="button">
                     <span onClick={toggleShowList} className="">GROEPEN <span className="badge">{ groupCount }</span></span>
+                </div>
+                <div className={"col-sm-1"}>
                     <a role="button" className="pull-right" onClick={toggleAddGroup}><span
                         className="glyphicon glyphicon-plus glyphicon-white"/></a>
-                    { showContactGroupsList && <ContactGroupList /> }
+                </div>
+                <div className="col-sm-12">
+                    { showContactGroupsList && <ContactGroupsList /> }
                 </div>
             </PanelBody>
         </Panel>

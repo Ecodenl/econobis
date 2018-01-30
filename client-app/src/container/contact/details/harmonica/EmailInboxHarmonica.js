@@ -2,16 +2,20 @@ import React from 'react';
 
 import Panel from "../../../../components/panel/Panel";
 import PanelBody from "../../../../components/panel/PanelBody";
-import EmailInboxList from './EmailInboxList';
+import EmailInboxList from './EmailsInboxList';
 
-const EmailInboxHarmonica = ({toggleShowList, showEmailsInboxList, toggleAddEmail, emailInboxCount}) => {
+const EmailInboxHarmonica = ({toggleShowList, showEmailsInboxList, newEmail, emailInboxCount}) => {
     return (
         <Panel className={"harmonica-button"}>
             <PanelBody>
-                <div className="col-sm-12">
-                    <span onClick={toggleShowList} className="">E-MAIL INBOX <span className="badge">{ emailInboxCount }</span></span>
-                    <a role="button" className="pull-right" onClick={toggleAddEmail}><span
+                <div className="col-sm-11" onClick={toggleShowList} role="button">
+                    <span onClick={toggleShowList} role="button" className="">E-MAIL INBOX <span className="badge">{ emailInboxCount }</span></span>
+                </div>
+                <div className={"col-sm-1"}>
+                    <a role="button" className="pull-right" onClick={newEmail}><span
                         className="glyphicon glyphicon-plus glyphicon-white"/></a>
+                </div>
+                <div className="col-sm-12">
                     { showEmailsInboxList && <EmailInboxList /> }
                 </div>
             </PanelBody>

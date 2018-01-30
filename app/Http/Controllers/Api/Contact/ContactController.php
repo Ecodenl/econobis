@@ -30,12 +30,13 @@ class ContactController extends Controller
         $contact->load('updatedBy');
         $contact->load('owner');
         $contact->load('tasks');
+        $contact->load('documents');
 
         if($contact->isOrganisation()) $contact->load(['organisation.type', 'organisation.industry', 'organisation.people.occupation', 'organisation.quotations.opportunity.measure', 'organisation.quotations.opportunity.status', 'organisation.campaigns']);
         if($contact->isPerson()) $contact->load(['person.lastNamePrefix', 'person.title', 'person.organisation', 'person.type', 'person.occupation']);
 
-        $contact->relatedEmailInbox = $this->getRelatedEmails($contact->id, 'inbox');
-        $contact->relatedEmailSent = $this->getRelatedEmails($contact->id, 'sent');
+        $contact->relatedEmailsInbox = $this->getRelatedEmails($contact->id, 'inbox');
+        $contact->relatedEmailsSent = $this->getRelatedEmails($contact->id, 'sent');
 
         return new FullContact($contact);
     }

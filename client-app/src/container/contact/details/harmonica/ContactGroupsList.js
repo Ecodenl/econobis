@@ -6,7 +6,7 @@ import DeleteContactFromGroup from './ContactDetailsFormGroupDelete';
 import ContactGroupAPI from '../../../../api/contact-group/ContactGroupAPI';
 import { fetchContactDetails } from '../../../../actions/contact/ContactDetailsActions';
 
-class ContactGroupList extends Component {
+class ContactGroupsList extends Component {
     constructor(props) {
         super(props);
 
@@ -108,4 +108,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(ContactGroupList);
+export default connect(mapStateToProps, mapDispatchToProps)(ContactGroupsList);

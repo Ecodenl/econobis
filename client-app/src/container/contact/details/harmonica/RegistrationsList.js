@@ -6,7 +6,7 @@ moment.locale('nl');
 
 import RegistrationsAPI from '../../../../api/registration/RegistrationsAPI';
 
-class RegistrationList extends Component {
+class RegistrationsList extends Component {
     constructor(props) {
         super(props);
 
@@ -70,4 +70,4 @@ const mapStateToProps = (state) => {
     };
 };
 
-export default connect(mapStateToProps, null)(RegistrationList);
+export default connect(mapStateToProps, null)(RegistrationsList);

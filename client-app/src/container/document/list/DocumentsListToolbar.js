@@ -18,7 +18,7 @@ const DocumentsListToolbar = (props) => {
                 <div className="btn-group" role="group">
                     <ButtonIcon iconName={"glyphicon-arrow-left"} onClickAction={browserHistory.goBack}/>
                     {permissions.createDocument &&
-                    < div className="nav navbar-nav btn-group" role="group">
+                    <div className="nav navbar-nav btn-group" role="group">
                         <button className="btn btn-success btn-sm" data-toggle="dropdown">
                         <span className="glyphicon glyphicon-plus" />
                         </button>
@@ -26,7 +26,7 @@ const DocumentsListToolbar = (props) => {
                         <li><a className="btn" onClick={() => newDocument('internal')}>Maak document</a></li>
                         <li><a className="btn" onClick={() => newDocument('upload')}>Upload document</a></li>
                         </ul>
-                        </div>
+                    </div>
                     }
                 </div>
 

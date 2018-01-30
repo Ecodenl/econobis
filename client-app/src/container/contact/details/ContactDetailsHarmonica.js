@@ -10,6 +10,7 @@ import TaskHarmonica from "./harmonica/TaskHarmonica";
 import ContactGroupHarmonica from "./harmonica/ContactGroupHarmonica";
 import EmailInboxHarmonica from './harmonica/EmailInboxHarmonica';
 import EmailSentHarmonica from "./harmonica/EmailSentHarmonica";
+import DocumentHarmonica from '../../contact-groups/details/harmonica/DocumentHarmonica';
 
 class ContactDetailsHarmonica extends Component {
     constructor(props){
@@ -20,10 +21,10 @@ class ContactDetailsHarmonica extends Component {
                 registrations: false,
                 opportunities: false,
                 tasks: false,
-                opportunities: false,
                 contactGroups: false,
-                emailInbox: false,
-                emailSent: false,
+                emailsInbox: false,
+                emailsSent: false,
+                documents: false,
             },
             showModalAddGroup: false,
         };
@@ -38,10 +39,10 @@ class ContactDetailsHarmonica extends Component {
                     registrations: false,
                     opportunities: false,
                     tasks: false,
-                    opportunities: false,
                     contactGroups: false,
-                    emailInbox: false,
-                    emailSent: false,
+                    emailsInbox: false,
+                    emailsSent: false,
+                    documents: false,
                 },
             })
         }
@@ -94,6 +95,14 @@ class ContactDetailsHarmonica extends Component {
         hashHistory.push(`/taak/nieuw/contact/${this.props.contactDetails.id}`);
     };
 
+    newEmail = () => {
+        hashHistory.push(`/email/nieuw`);
+    };
+
+    newDocument = (type) => {
+        hashHistory.push(`/document/nieuw/${type}/contact/${this.props.contactDetails.id}`);
+    };
+
     toggleAddGroup = () => {
         this.setState({
             showModalAddGroup: !this.state.showModalAddGroup
@@ -111,7 +120,7 @@ class ContactDetailsHarmonica extends Component {
                 />
 
                 <OpportunityHarmonica
-                    toggleShowList={() => this.toggleShowList('opportunties')}
+                    toggleShowList={() => this.toggleShowList('opportunities')}
                     showOpportunitiesList={this.state.toggleShowList.opportunities}
                     opportunityCount={this.props.contactDetails.opportunityCount}
                     newOpportunity={this.newOpportunity}
@@ -132,17 +141,24 @@ class ContactDetailsHarmonica extends Component {
                 />
 
                 <EmailInboxHarmonica
-                    toggleShowList={() => this.toggleShowList('emailInbox')}
-                    showEmailsInboxList={this.state.toggleShowList.emailInbox}
-                    toggleAddEmail={this.toggleAddGroup}
+                    toggleShowList={() => this.toggleShowList('emailsInbox')}
+                    showEmailsInboxList={this.state.toggleShowList.emailsInbox}
+                    newEmail={this.newEmail}
                     emailInboxCount={this.props.contactDetails.emailInboxCount}
                 />
 
                 <EmailSentHarmonica
-                    toggleShowList={() => this.toggleShowList('emailSent')}
-                    showEmailsSentList={this.state.toggleShowList.emailSent}
-                    toggleAddEmail={this.toggleAddGroup}
+                    toggleShowList={() => this.toggleShowList('emailsSent')}
+                    showEmailsSentList={this.state.toggleShowList.emailsSent}
+                    newEmail={this.newEmail}
                     emailSentCount={this.props.contactDetails.emailSentCount}
+                />
+
+                <DocumentHarmonica
+                    toggleShowList={() => this.toggleShowList('documents')}
+                    showDocumentsList={this.state.toggleShowList.documents}
+                    newDocument={this.newDocument}
+                    documentCount={this.props.contactDetails.documentCount}
                 />
 
 

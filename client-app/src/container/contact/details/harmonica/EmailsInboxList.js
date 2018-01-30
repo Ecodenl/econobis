@@ -3,7 +3,7 @@ import {hashHistory} from 'react-router';
 import { connect } from 'react-redux';
 import moment from 'moment';
 
-class EmailSent extends Component {
+class EmailsInboxList extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -16,17 +16,17 @@ class EmailSent extends Component {
     };
 
     render() {
-        const {relatedEmailSent} = this.props;
+        const {relatedEmailsInbox} = this.props;
         return (
             <div>
-                {relatedEmailSent == '' &&
+                {relatedEmailsInbox == '' &&
                 <div>Geen e-mails gevonden</div>
                 }
 
-                {relatedEmailSent != '' &&
+                {relatedEmailsInbox != '' &&
                 <table className="table harmonica-table">
                     <tbody>
-                    {relatedEmailSent.map((item, i) => {
+                    {relatedEmailsInbox.map((item, i) => {
                         return (
                             <tr key={i}>
                                 <td className='col-xs-4 clickable' onClick={() => this.openItem(item.id)}>
@@ -49,8 +49,8 @@ class EmailSent extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        relatedEmailSent: state.contactDetails.relatedEmailSent,
+        relatedEmailsInbox: state.contactDetails.relatedEmailsInbox,
     };
 };
 
-export default connect(mapStateToProps)(EmailSent);
+export default connect(mapStateToProps)(EmailsInboxList);

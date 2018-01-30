@@ -29,7 +29,7 @@ class DocumentNewApp extends Component {
             opportunities: [],
             templates: [],
             document: {
-                contactId: '',
+                contactId: this.props.params.contactId || '',
                 contactGroupId: '',
                 registrationId: '',
                 opportunityId: '',

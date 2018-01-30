@@ -3,6 +3,7 @@
 namespace App\Eco\Contact;
 
 use App\Eco\Campaign\Campaign;
+use App\Eco\Document\Document;
 use App\Eco\Email\Email;
 use App\Eco\Opportunity\Opportunity;
 use App\Eco\Organisation\Organisation;
@@ -152,6 +153,11 @@ class Contact extends Model
 
     public function campaigns(){
         return $this->belongsToMany(Campaign::class);
+    }
+
+    public function documents()
+    {
+        return $this->hasMany(Document::class);
     }
 
     //Returns addresses array as Type - Streetname - Number

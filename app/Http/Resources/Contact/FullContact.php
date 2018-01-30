@@ -3,6 +3,7 @@
 namespace App\Http\Resources\Contact;
 
 use App\Eco\ContactGroup\ContactGroup;
+use App\Http\Resources\Document\FullDocument;
 use App\Http\Resources\Organisation\FullOrganisation;
 use App\Http\Resources\Address\FullAddress;
 use App\Http\Resources\ContactNote\FullContactNote;
@@ -58,10 +59,12 @@ class FullContact extends Resource
             'groupCount' => $this->groups()->count(),
             'taskCount' => $this->tasks()->count(),
             'relatedTasks' => FullTask::collection($this->whenLoaded('tasks')),
-            'emailInboxCount' => $this->relatedEmailInbox ? $this->relatedEmailInbox->count() : 0,
-            'relatedEmailInbox' => $this->relatedEmailInbox,
-            'emailSentCount' => $this->relatedEmailSent ? $this->relatedEmailSent->count() : 0,
-            'relatedEmailSent' => $this->relatedEmailSent,
+            'emailInboxCount' => $this->relatedEmailsInbox ? $this->relatedEmailsInbox->count() : 0,
+            'relatedEmailsInbox' => $this->relatedEmailsInbox,
+            'emailSentCount' => $this->relatedEmailsSent ? $this->relatedEmailsSent->count() : 0,
+            'relatedEmailsSent' => $this->relatedEmailsSent,
+            'documentCount' => $this->documents()->count(),
+            'relatedDocuments' => FullDocument::collection($this->whenLoaded('documents')),
         ];
     }
 }

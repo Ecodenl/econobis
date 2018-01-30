@@ -3,18 +3,23 @@ import {connect} from 'react-redux';
 
 import Panel from "../../../../components/panel/Panel";
 import PanelBody from "../../../../components/panel/PanelBody";
-import TasksList from './TaskList';
+import TasksList from './TasksList';
 
 const TaskHarmonica = ({toggleShowList, showTasksList, newTask, taskCount, permissions}) => {
     return (
         <Panel className={"harmonica-button"}>
             <PanelBody>
-                <div className="col-sm-12" onClick={toggleShowList}>
+                <div className="col-sm-11" onClick={toggleShowList} role="button">
                     <span className="">TAKEN <span className="badge">{ taskCount }</span></span>
+                </div>
+                <div className={"col-sm-1"}>
                     {permissions.manageTask &&
                     <a role="button" className="pull-right" onClick={newTask}><span
                         className="glyphicon glyphicon-plus glyphicon-white"/></a>
-                    } { showTasksList && <TasksList /> }
+                    }
+                </div>
+                <div className="col-sm-12">
+                    { showTasksList && <TasksList /> }
                 </div>
             </PanelBody>
         </Panel>

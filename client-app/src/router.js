@@ -90,6 +90,7 @@ const Routes = () => {
                 /* Documents */
                 <Route path="documenten" component={DocumentsListApp} />
                 <Route path="document/nieuw/:type" component={DocumentNewApp} />
+                <Route path="document/nieuw/:type/contact/:contactId" component={DocumentNewApp} />
                 <Route path="document/:id" component={DocumentDetailsApp} />
                 /* Document templates */
                 <Route path="document-templates" component={DocumentTemplatesListApp} />

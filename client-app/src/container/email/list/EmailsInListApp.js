@@ -31,7 +31,7 @@ class EmailsInListApp extends Component {
             if (!isEmpty(nextProps.params.folder)) {
                 this.props.setEmailsPagination({page: 0, offset: 0});
                 this.props.clearEmails();
-                this.props.fetchEmailsData;
+                this.fetchEmailsData;
                 }
             }
         }
@@ -46,8 +46,10 @@ class EmailsInListApp extends Component {
 
     refreshData() {
         MailboxAPI.receiveMailFromMailboxesUser().then(payload => {
+            const pagination = { limit: 20, offset: 0 };
+
             this.props.clearEmails();
-            this.props.fetchEmails(this.props.params.folder);
+            this.props.fetchEmails(this.props.params.folder, pagination);
         });
     }
 

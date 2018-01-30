@@ -3,7 +3,7 @@ import {hashHistory} from 'react-router';
 import { connect } from 'react-redux';
 import moment from 'moment';
 
-import { fetchOpportunity, clearOpportunity } from '../../../actions/opportunity/OpportunityDetailsActions';
+import { fetchOpportunity, clearOpportunity } from '../../../../actions/opportunity/OpportunityDetailsActions';
 
 class RelatedOpportunitiesList extends Component {
     constructor(props) {

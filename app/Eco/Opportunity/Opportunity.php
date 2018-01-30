@@ -4,6 +4,7 @@ namespace App\Eco\Opportunity;
 
 use App\Eco\Campaign\Campaign;
 use App\Eco\Contact\Contact;
+use App\Eco\Document\Document;
 use App\Eco\Measure\Measure;
 use App\Eco\Registration\Registration;
 use App\Eco\Task\Task;
@@ -64,6 +65,11 @@ class Opportunity extends Model
     public function tasks()
     {
         return $this->hasMany(Task::class);
+    }
+
+    public function documents()
+    {
+        return $this->hasMany(Document::class);
     }
 
     //custom methods

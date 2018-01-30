@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 
 import OpportunityDetailsToolbar from './OpportunityDetailsToolbar';
 import OpportunityDetailsForm from './OpportunityDetailsForm';
-import OpportunityDetailsHarmonica from './../harmonica/OpportunityDetailsHarmonica';
+import OpportunityDetailsHarmonica from './OpportunityDetailsHarmonica';
 import Panel from "../../../components/panel/Panel";
 import PanelBody from '../../../components/panel/PanelBody';
 

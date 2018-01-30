@@ -9,10 +9,10 @@ const DocumentHarmonica = ({toggleShowList, showDocumentsList, newDocument, docu
     return (
         <Panel className={"harmonica-button"}>
             <PanelBody>
-                <div className="col-sm-11" onClick={toggleShowList} role="button">
+                <div className="col-sm-10" onClick={toggleShowList} role="button">
                     <span>DOCUMENTEN <span className="badge">{ documentCount }</span></span>
                 </div>
-                <div className={"col-sm-1"}>
+                <div className={"col-sm-2"}>
                     { permissions.createDocument &&
                     <div  className="pull-right">
                         <span className="glyphicon glyphicon-plus glyphicon-white" data-toggle="dropdown" role="button"/>

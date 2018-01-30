@@ -9,10 +9,10 @@ const TaskHarmonica = ({toggleShowList, showRegistrationsList, newRegistration, 
     return (
         <Panel className={"harmonica-button"}>
             <PanelBody>
-                <div className="col-sm-11" onClick={toggleShowList} role="button">
+                <div className="col-sm-10" onClick={toggleShowList} role="button">
                     <span className="">AANMELDINGEN <span className="badge">{ registrationCount }</span></span>
                 </div>
-                <div className="col-sm-1">
+                <div className="col-sm-2">
                     {permissions.manageRegistration &&
                     <a role="button" className="pull-right" onClick={newRegistration}><span
                         className="glyphicon glyphicon-plus glyphicon-white"/></a>

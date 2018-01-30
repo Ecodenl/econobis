@@ -9,11 +9,11 @@ const OpportunityHarmonica = ({toggleShowList, showOpportunitiesList, newOpportu
     return (
         <Panel className={"harmonica-button"}>
             <PanelBody>
-                <div className="col-sm-11" onClick={toggleShowList} role="button">
+                <div className="col-sm-10" onClick={toggleShowList} role="button">
                                 <span className="">KANSEN <span
                                     className="badge">{opportunityCount}</span></span>
                 </div>
-                <div className={"col-sm-1"}>
+                <div className={"col-sm-2"}>
                     {
                         permissions.manageOpportunity &&
                         <a role="button" className="pull-right" onClick={newOpportunity}><span

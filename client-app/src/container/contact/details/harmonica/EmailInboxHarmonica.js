@@ -8,10 +8,10 @@ const EmailInboxHarmonica = ({toggleShowList, showEmailsInboxList, newEmail, ema
     return (
         <Panel className={"harmonica-button"}>
             <PanelBody>
-                <div className="col-sm-11" onClick={toggleShowList} role="button">
+                <div className="col-sm-10" onClick={toggleShowList} role="button">
                     <span onClick={toggleShowList} role="button" className="">E-MAIL INBOX <span className="badge">{ emailInboxCount }</span></span>
                 </div>
-                <div className={"col-sm-1"}>
+                <div className={"col-sm-2"}>
                     <a role="button" className="pull-right" onClick={newEmail}><span
                         className="glyphicon glyphicon-plus glyphicon-white"/></a>
                 </div>

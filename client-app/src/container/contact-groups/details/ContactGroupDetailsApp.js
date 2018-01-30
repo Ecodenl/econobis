@@ -6,7 +6,7 @@ import ContactGroupDetailsToolbar from './ContactGroupDetailsToolbar';
 import ContactGroupDetailsForm from './ContactGroupDetailsForm';
 import Panel from "../../../components/panel/Panel";
 import PanelBody from "../../../components/panel/PanelBody";
-import ContactGroupsDetailsHarmonica from "./harmonica/ContactGroupsDetailsHarmonica";
+import ContactGroupsDetailsHarmonica from "./ContactGroupsDetailsHarmonica";
 
 class ContactGroupDetailsApp extends Component {
     constructor(props){

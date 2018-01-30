@@ -3,6 +3,7 @@
 namespace App\Eco\ContactGroup;
 
 use App\Eco\Contact\Contact;
+use App\Eco\Document\Document;
 use App\Eco\Task\Task;
 use App\Eco\User\User;
 use Illuminate\Database\Eloquent\Model;
@@ -44,5 +45,10 @@ class ContactGroup extends Model
     public function tasks()
     {
         return $this->hasMany(Task::class);
+    }
+
+    public function documents()
+    {
+        return $this->hasMany(Document::class);
     }
 }

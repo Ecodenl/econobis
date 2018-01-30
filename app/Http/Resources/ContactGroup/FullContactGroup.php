@@ -34,6 +34,8 @@ class FullContactGroup extends Resource
             'contacts' => FullContact::collection($this->whenLoaded('contacts')),
             'taskCount' => $this->tasks()->count(),
             'relatedTasks' => $this->tasks()->get(),
+            'documentCount' => $this->documents()->count(),
+            'relatedDocuments' => $this->documents()->get(),
         ];
     }
 }

@@ -2,9 +2,8 @@ import React, {Component} from 'react';
 import { hashHistory } from 'react-router';
 import { connect } from 'react-redux';
 
-import Panel from "../../../components/panel/Panel";
-import PanelBody from '../../../components/panel/PanelBody';
 import TaskHarmonica from './harmonica/TaskHarmonica';
+import DocumentHarmonica from './harmonica/DocumentHarmonica';
 
 class RegistrationDetailsHarmonica extends Component {
     constructor(props){
@@ -15,7 +14,9 @@ class RegistrationDetailsHarmonica extends Component {
                 tasks: false,
                 documents: false,
             },
-        }
+        };
+
+        this.toggleShowList = this.toggleShowList.bind(this);
     };
 
     toggleShowList(name) {
@@ -33,7 +34,7 @@ class RegistrationDetailsHarmonica extends Component {
     };
 
     newDocument = (type) => {
-        hashHistory.push(`/document/nieuw/${type}/contact/${this.props.contactDetails.id}`);
+        hashHistory.push(`/document/nieuw/${type}/contact-groep/${this.props.id}`);
     };
 
     render(){
@@ -51,7 +52,7 @@ class RegistrationDetailsHarmonica extends Component {
                     toggleShowList={() => this.toggleShowList('documents')}
                     showDocumentsList={this.state.toggleShowList.documents}
                     newDocument={this.newDocument}
-                    documentCount={this.props.contactDetails.documentCount}
+                    documentCount={this.props.contactGroupDetails.documentCount}
                 />
 
             </div>

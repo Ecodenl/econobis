@@ -2,37 +2,47 @@ import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import { hashHistory } from 'react-router';
 
-import RegistrationList from './harmonica/RegistrationList';
-import Panel from "../../../components/panel/Panel";
-import PanelBody from '../../../components/panel/PanelBody';
-import OpportunityList from './harmonica/OpportunityList';
-import TaskList from './harmonica/TaskList';
-import ContactGroupList from './harmonica/ContactGroupList';
 import AddContactToGroup from './harmonica/AddContactToGroup';
 import ErrorModal from '../../../components/modal/ErrorModal';
+import RegistrationHarmonica from './harmonica/RegistrationHarmonica';
+import OpportunityHarmonica from './harmonica/OpportunityHarmonica';
+import TaskHarmonica from "./harmonica/TaskHarmonica";
+import ContactGroupHarmonica from "./harmonica/ContactGroupHarmonica";
+import EmailInboxHarmonica from './harmonica/EmailInboxHarmonica';
+import EmailSentHarmonica from "./harmonica/EmailSentHarmonica";
 
 class ContactDetailsHarmonica extends Component {
     constructor(props){
         super(props);
 
         this.state = {
-            toggleShowRegistrations: false,
-            toggleShowOpportunities: false,
-            toggleShowTasks: false,
-            toggleShowGroups: false,
+            toggleShowList: {
+                registrations: false,
+                opportunities: false,
+                tasks: false,
+                opportunities: false,
+                contactGroups: false,
+                emailInbox: false,
+                emailSent: false,
+            },
             showModalAddGroup: false,
-        }
+        };
+
+        this.toggleShowList = this.toggleShowList.bind(this);
     };
 
     componentWillReceiveProps(nextProps) {
         if(this.props.id !== nextProps.id) {
             this.setState({
-                toggleShowSignUps: false,
-                toggleShowOpportunities: false,
-                toggleShowTasks: false,
-                toggleShowGroups: false,
-                showModalAddGroup: false,
-                showModalError: false,
+                toggleShowList: {
+                    registrations: false,
+                    opportunities: false,
+                    tasks: false,
+                    opportunities: false,
+                    contactGroups: false,
+                    emailInbox: false,
+                    emailSent: false,
+                },
             })
         }
     };
@@ -65,9 +75,14 @@ class ContactDetailsHarmonica extends Component {
             showModalError: !this.state.showModalError
         });
     };
-    toggleRegistration = () => {
+
+    toggleShowList(name) {
         this.setState({
-           toggleShowRegistrations: !this.state.toggleShowRegistrations
+            ...this.state,
+            toggleShowList: {
+                ...this.state.toggleShowList,
+                [name]: !this.state.toggleShowList[name],
+            }
         });
     };
 
@@ -75,20 +90,8 @@ class ContactDetailsHarmonica extends Component {
         hashHistory.push(`/kans/nieuw/contact/${this.props.id}`);
     };
 
-    toggleOpportunity = () => {
-        this.setState({
-            toggleShowOpportunities: !this.state.toggleShowOpportunities
-        });
-    };
-
     newTask = () => {
         hashHistory.push(`/taak/nieuw/contact/${this.props.contactDetails.id}`);
-    };
-
-    toggleTask = () => {
-        this.setState({
-            toggleShowTasks: !this.state.toggleShowTasks
-        });
     };
 
     toggleAddGroup = () => {
@@ -97,66 +100,51 @@ class ContactDetailsHarmonica extends Component {
         });
     };
 
-    toggleGroup = () => {
-        this.setState({
-            toggleShowGroups: !this.state.toggleShowGroups
-        });
-    };
-
     render(){
-        const { permissions = {} } = this.props;
         return (
-            <div className="col-md-12 margin-10-top">
-                <div className="panel panel-default harmonica-button">
-                    <div className="panel-body">
-                        <div className="col-sm-9" onClick={this.toggleRegistration}>
-                            <span className="">AANMELDINGEN <span className="badge">{ this.props.contactDetails.registrationCount }</span></span>
-                        </div>
-                        <div className="col-sm-3">
-                            {permissions.manageRegistration &&
-                            <a role="button" className="pull-right" onClick={this.newRegistration}><span
-                                className="glyphicon glyphicon-plus glyphicon-white"/></a>
-                            }
-                        </div>
-                        { this.state.toggleShowRegistrations && <RegistrationList /> }
-                    </div>
-                </div>
-                <Panel className={"harmonica-button"}>
-                    <PanelBody>
-                        <div className="col-sm-12" onClick={this.toggleOpportunity}>
-                                <span className="">KANSEN <span
-                                    className="badge">{this.props.contactDetails.opportunityCount}</span></span>
-                            {
-                                permissions.manageOpportunity &&
-                                <a role="button" className="pull-right" onClick={this.newOpportunity}><span
-                                    className="glyphicon glyphicon-plus glyphicon-white"/></a>
-                            }
-                            { this.state.toggleShowOpportunities && <OpportunityList /> }
-                        </div>
-                    </PanelBody>
-                </Panel>
-                <Panel className={"harmonica-button"}>
-                    <PanelBody>
-                        <div className="col-sm-12" onClick={this.toggleTask}>
-                            <span className="">TAKEN <span className="badge">{ this.props.contactDetails.taskCount }</span></span>
-                            {permissions.manageTask &&
-                            <a role="button" className="pull-right" onClick={this.newTask}><span
-                                className="glyphicon glyphicon-plus glyphicon-white"/></a>
-                            } { this.state.toggleShowTasks && <TaskList /> }
-                        </div>
-                    </PanelBody>
-                </Panel>
+            <div className="margin-10-top">
+                <RegistrationHarmonica
+                    toggleShowList={() => this.toggleShowList('registrations')}
+                    showRegistrationsList={this.state.toggleShowList.registrations}
+                    registrationCount={this.props.contactDetails.registrationCount}
+                    newRegistration={this.newRegistration}
+                />
 
-                <div className="panel panel-default harmonica-button">
-                    <PanelBody>
-                        <div className="col-sm-12">
-                            <span onClick={this.toggleGroup} className="">GROEPEN <span className="badge">{ this.props.contactDetails.groupCount }</span></span>
-                                <a role="button" className="pull-right" onClick={this.toggleAddGroup}><span
-                                    className="glyphicon glyphicon-plus glyphicon-white"/></a>
-                            { this.state.toggleShowGroups && <ContactGroupList /> }
-                        </div>
-                    </PanelBody>
-                </div>
+                <OpportunityHarmonica
+                    toggleShowList={() => this.toggleShowList('opportunties')}
+                    showOpportunitiesList={this.state.toggleShowList.opportunities}
+                    opportunityCount={this.props.contactDetails.opportunityCount}
+                    newOpportunity={this.newOpportunity}
+                />
+
+                <TaskHarmonica
+                    toggleShowList={() => this.toggleShowList('tasks')}
+                    showTasksList={this.state.toggleShowList.tasks}
+                    taskCount={this.props.contactDetails.taskCount}
+                    newTask={this.newTask}
+                />
+
+                <ContactGroupHarmonica
+                    toggleShowList={() => this.toggleShowList('contactGroups')}
+                    showContactGroupsList={this.state.toggleShowList.contactGroups}
+                    toggleAddGroup={this.toggleAddGroup}
+                    groupCount={this.props.contactDetails.groupCount}
+                />
+
+                <EmailInboxHarmonica
+                    toggleShowList={() => this.toggleShowList('emailInbox')}
+                    showEmailsInboxList={this.state.toggleShowList.emailInbox}
+                    toggleAddEmail={this.toggleAddGroup}
+                    emailInboxCount={this.props.contactDetails.emailInboxCount}
+                />
+
+                <EmailSentHarmonica
+                    toggleShowList={() => this.toggleShowList('emailSent')}
+                    showEmailsSentList={this.state.toggleShowList.emailSent}
+                    toggleAddEmail={this.toggleAddGroup}
+                    emailSentCount={this.props.contactDetails.emailSentCount}
+                />
+
 
                 { this.state.showModalError &&
                 <ErrorModal
@@ -168,7 +156,7 @@ class ContactDetailsHarmonica extends Component {
                 { this.state.showModalAddGroup &&
                 <AddContactToGroup
                     toggleAddGroup={this.toggleAddGroup}
-                    toggleGroup={this.toggleGroup}
+                    toggleGroup={() => this.toggleShowList('contactGroups')}
                 />
                 }
             </div>

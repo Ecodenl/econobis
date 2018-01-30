@@ -58,6 +58,10 @@ class FullContact extends Resource
             'groupCount' => $this->groups()->count(),
             'taskCount' => $this->tasks()->count(),
             'relatedTasks' => FullTask::collection($this->whenLoaded('tasks')),
+            'emailInboxCount' => $this->relatedEmailInbox ? $this->relatedEmailInbox->count() : 0,
+            'relatedEmailInbox' => $this->relatedEmailInbox,
+            'emailSentCount' => $this->relatedEmailSent ? $this->relatedEmailSent->count() : 0,
+            'relatedEmailSent' => $this->relatedEmailSent,
         ];
     }
 }

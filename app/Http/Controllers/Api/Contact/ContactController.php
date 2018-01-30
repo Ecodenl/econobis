@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\Contact;
 
 use App\Eco\Contact\Contact;
+use App\Eco\Email\Email;
 use App\Eco\User\User;
 use App\Http\Resources\Contact\ContactPeek;
 use App\Http\Resources\Contact\FullContact;
@@ -10,6 +11,7 @@ use App\Http\Resources\Task\SidebarTask;
 use App\Eco\Contact\Jobs\DeleteContact;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use Spatie\Permission\Models\Role;
 
 class ContactController extends Controller
@@ -27,9 +29,13 @@ class ContactController extends Controller
         $contact->load('createdBy');
         $contact->load('updatedBy');
         $contact->load('owner');
+        $contact->load('tasks');
 
         if($contact->isOrganisation()) $contact->load(['organisation.type', 'organisation.industry', 'organisation.people.occupation', 'organisation.quotations.opportunity.measure', 'organisation.quotations.opportunity.status', 'organisation.campaigns']);
         if($contact->isPerson()) $contact->load(['person.lastNamePrefix', 'person.title', 'person.organisation', 'person.type', 'person.occupation']);
+
+        $contact->relatedEmailInbox = $this->getRelatedEmails($contact->id, 'inbox');
+        $contact->relatedEmailSent = $this->getRelatedEmails($contact->id, 'sent');
 
         return new FullContact($contact);
     }
@@ -82,4 +88,12 @@ class ContactController extends Controller
         $contact->save();
     }
 
+    public function getRelatedEmails($id, $folder)
+    {
+        $user = Auth::user();
+
+        $mailboxIds = $user->mailboxes()->pluck('mailbox_id');
+
+        return Email::whereIn('mailbox_id', $mailboxIds)->where('contact_id', $id)->where('folder', $folder)->get();
+    }
 }

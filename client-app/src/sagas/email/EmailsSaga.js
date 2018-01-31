@@ -2,10 +2,10 @@ import { put, call, all } from 'redux-saga/effects';
 import EmailAPI from '../../api/email/EmailAPI';
 import {authSaga} from "../general/AuthSaga";
 
-export function* fetchEmailsSaga({ folder, pagination }) {
+export function* fetchEmailsSaga({ folder, filters, sorts, pagination }) {
     try {
         yield call(authSaga);
-        const emails = yield call(EmailAPI.fetchEmails, {folder, pagination});
+        const emails = yield call(EmailAPI.fetchEmails, {folder, filters, sorts, pagination});
         yield all([
             put({ type: 'FETCH_EMAILS_LOADING_SUCCESS'}),
             put({ type: 'FETCH_EMAILS_SUCCESS', emails }),

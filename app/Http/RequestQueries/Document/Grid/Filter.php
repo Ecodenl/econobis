@@ -13,12 +13,32 @@ use App\Helpers\RequestQuery\RequestFilter;
 
 class Filter extends RequestFilter
 {
-    protected $fields = [];
+    protected $fields = [
+        'number',
+        'date',
+        'filename',
+        'contact',
+        'documentType',
+        'documentGroup',
+    ];
 
-    protected $mapping = [];
+    protected $mapping = [
+        'name' => 'documents.number',
+        'date' => 'documents.created_at',
+        'filename' => 'documents.filename',
+        'contact' => 'contacts.full_name',
+        'documentType'  => 'documents.document_type',
+        'documentGroup'  => 'documents.document_group',
+    ];
 
-    protected $joins = [];
+    protected $joins = [
+        'contact' => 'contacts',
+    ];
 
-    protected $defaultTypes = [];
+    protected $defaultTypes = [
+        '*' => 'ct',
+        'typeId' => 'eq',
+        'groupId' => 'eq',
+    ];
 
 }

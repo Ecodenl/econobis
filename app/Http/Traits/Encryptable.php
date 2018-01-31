@@ -45,19 +45,4 @@ trait Encryptable
         }
         return parent::setAttribute($key, $value);
     }
-
-    public function attributesToArray()
-    {
-        $attributes = parent::attributesToArray(); // call the parent method
-
-        foreach (static::$encryptable as $key) {
-
-            if (isset($attributes[$key])){
-
-                $attributes[$key] = Crypt::decrypt($attributes[$key]);
-
-            }
-        }
-        return $attributes;
-    }
 }

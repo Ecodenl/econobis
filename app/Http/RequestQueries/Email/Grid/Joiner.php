@@ -13,5 +13,8 @@ use App\Helpers\RequestQuery\RequestJoiner;
 
 class Joiner extends RequestJoiner
 {
-
+    protected function applyMailboxesJoin($query)
+    {
+        $query->join('mailboxes', 'emails.mailbox_id', '=', 'mailboxes.id');
+    }
 }

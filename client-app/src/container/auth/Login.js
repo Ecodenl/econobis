@@ -56,7 +56,7 @@ class Login extends Component {
     renderAlert() {
         if (this.state.errorMessage) {
             return (
-                <div className="alert alert-danger login-alert">
+                <div className="col-sm-10 col-md-offset-1 alert alert-danger login-alert">
                     {this.state.errorMessage}
                 </div>
             )
@@ -74,21 +74,23 @@ class Login extends Component {
                             <Logo height="150px" />
                         </div>
                         <form onSubmit={this.handleSubmit}>
-
-                            <div className="col-sm-10 col-md-offset-1">
-                                <div className="form-group">
-                                    <label htmlFor="username" className="control-label">E-mail:</label>
-                                    <input type="text" name="username" value={username} className="form-control"
-                                           placeholder="E-mail..." onChange={this.handleInputChange}/>
-                                </div>
-                                <div className="form-group">
-                                    <label htmlFor="password" className="control-label">Wachtwoord:</label>
-                                    <input type="password" name="password" value={password} className="form-control"
-                                           placeholder="Wachtwoord ..." onChange={this.handleInputChange}/>
-                                </div>
-                            </div>
-                            {this.renderAlert()}
                             <div className="row margin-10-top">
+                                <div className="col-sm-10 col-md-offset-1">
+                                    <div className="form-group">
+                                        <label htmlFor="username" className="control-label">E-mail:</label>
+                                        <input type="text" name="username" value={username} className="form-control"
+                                               placeholder="E-mail..." onChange={this.handleInputChange}/>
+                                    </div>
+                                    <div className="form-group">
+                                        <label htmlFor="password" className="control-label">Wachtwoord:</label>
+                                        <input type="password" name="password" value={password} className="form-control"
+                                               placeholder="Wachtwoord ..." onChange={this.handleInputChange}/>
+                                    </div>
+                                </div>
+                                {this.renderAlert()}
+                            </div>
+
+                            <div className="row">
                                 <div className="col-sm-10 col-md-offset-1">
                                     <Link to='wachtwoord-vergeten' className="link-underline">Wachtwoord vergeten?</Link>
                                     <div className="btn-group pull-right">

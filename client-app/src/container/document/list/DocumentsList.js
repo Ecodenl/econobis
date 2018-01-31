@@ -4,11 +4,12 @@ import { connect } from 'react-redux';
 import DataTable from '../../../components/dataTable/DataTable';
 import DataTableHead from '../../../components/dataTable/DataTableHead';
 import DataTableBody from '../../../components/dataTable/DataTableBody';
-import DataTableHeadTitle from '../../../components/dataTable/DataTableHeadTitle';
 
 import DocumentsListItem from './DocumentsListItem';
 import DocumentsDeleteItem from './DocumentsDeleteItem';
 import DataTablePagination from "../../../components/dataTable/DataTablePagination";
+import DocumentsListHead from "./DocumentsListHead";
+import DocumentsListFilter from "./DocumentsListFilter";
 
 class DocumentsList extends Component {
     constructor(props){
@@ -23,6 +24,13 @@ class DocumentsList extends Component {
         };
 
     }
+
+    // On key Enter filter form will submit
+    handleKeyUp = (e) => {
+        if (e.keyCode === 13) {
+            this.props.onSubmitFilter();
+        }
+    };
 
     showDeleteItemModal = (id, filename) => {
         this.setState({
@@ -53,17 +61,15 @@ class DocumentsList extends Component {
 
         return (
         <div>
+            <form onKeyUp={this.handleKeyUp}>
             <DataTable>
                 <DataTableHead>
-                    <tr className="thead-title">
-                        <DataTableHeadTitle title={'Document'} width={'10%'}/>
-                        <DataTableHeadTitle title={'Datum'} width={'10%'}/>
-                        <DataTableHeadTitle title={'Bestandsnaam'} width={'10%'}/>
-                        <DataTableHeadTitle title={'Contact'} width={'20%'}/>
-                        <DataTableHeadTitle title={'Type'} width={'20%'}/>
-                        <DataTableHeadTitle title={'Document groep'} width={'10%'}/>
-                        <DataTableHeadTitle title={''} width={'6%'}/>
-                    </tr>
+                    <DocumentsListHead
+                        fetchDocumentsData={() => this.props.fetchDocumentsData()}
+                    />
+                    <DocumentsListFilter
+                        onSubmitFilter={this.props.onSubmitFilter}
+                    />
                 </DataTableHead>
                 <DataTableBody>
                     {
@@ -93,6 +99,7 @@ class DocumentsList extends Component {
             <div className="col-md-3">
                 <div className="pull-right">Resultaten: { meta.total || 0 }</div>
             </div>
+            </form>
             {
                 this.state.showDeleteItem &&
                 <DocumentsDeleteItem
@@ -100,6 +107,7 @@ class DocumentsList extends Component {
                     {...this.state.deleteItem}
                 />
             }
+
         </div>
         )
     }

@@ -23,15 +23,15 @@ class Sort extends RequestSort
     ];
 
     protected $mapping = [
-        'date' => 'emails.created_at',
+        'date' => 'emails.date_sent',
         'mailbox' => 'mailboxes.name',
-        'sentBy' => 'mailboxes.from',
+        'sentBy' => 'emails.from',
         'subject' => 'emails.subject',
         'statusId'  => 'emails.status',
     ];
 
     protected $joins = [
         'mailbox' => 'mailboxes',
-        'sentBy' => 'mailboxes',
     ];
+
 }

@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import DayPickerInput from 'react-day-picker/DayPickerInput';
+import MomentLocaleUtils from 'react-day-picker/moment';
 import moment from 'moment';
 moment.locale('nl');
 
@@ -23,6 +24,8 @@ const InputDate = props => {
                     dayPickerProps={{
                         showWeekNumbers: true,
                         locale: "nl",
+                        firstDayOfWeek: 1,
+                        localeUtils: MomentLocaleUtils,
                     }}
                     required={ required }
                     readOnly={ readOnly }

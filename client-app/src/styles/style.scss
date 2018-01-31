@@ -6,6 +6,7 @@
 
 // Bootstrap
 @import "node_modules/bootstrap-sass/assets/stylesheets/bootstrap";
+@import "node_modules/react-day-picker/lib/style";
 
 @import "./partials/button";
 @import "./partials/calendar";
@@ -30,6 +31,7 @@
 /* TEMPORARY */
 body {
     padding-top: 60px;
+    overflow-wrap: break-word;
 }
 
 .text-bold {

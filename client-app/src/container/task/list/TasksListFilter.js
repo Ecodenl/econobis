@@ -2,8 +2,6 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import moment from 'moment';
-import DayPickerInput from 'react-day-picker/DayPickerInput';
-import 'react-day-picker/lib/style.css';
 
 import {
     setFilterTaskCreatedAt,
@@ -14,6 +12,7 @@ import {
     setFilterTaskStatusId,
     setFilterTaskResponsibleUserName
 } from '../../../actions/task/TasksFiltersActions';
+import DataTableFilterDate from "../../../components/dataTable/DataTableFilterDate";
 
 const TasksListFilter = props => {
     const onCreatedAtChange = (selectedDay) => {
@@ -62,17 +61,11 @@ const TasksListFilter = props => {
 
     return (
         <tr className="thead-filter">
-            <th className="DayPicker-overflow hidden-xs hidden-sm">
-                <DayPickerInput value={ props.filters.createdAt.data && moment(props.filters.createdAt.data).format('DD-MM-Y') } onDayChange={onCreatedAtChange} />
-            </th>
+            <DataTableFilterDate value={ props.filters.createdAt.data && props.filters.createdAt.data } onChangeAction={onCreatedAtChange} />
             <th><input type="text" className="form-control input-sm" value={ props.filters.name.data} onChange={onNameChange} /></th>
             <th><input type="text" className="form-control input-sm" value={ props.filters.contactFullName.data} onChange={onContactFullNameChange} /></th>
-            <th className="DayPicker-overflow hidden-xs hidden-sm">
-                <DayPickerInput value={ props.filters.datePlanned.data && moment(props.filters.datePlanned.data).format('DD-MM-Y') } onDayChange={onDatePlannedChange} />
-            </th>
-            <th className="DayPicker-overflow hidden-xs hidden-sm">
-                <DayPickerInput value={ props.filters.dateStarted.data && moment(props.filters.dateStarted.data).format('DD-MM-Y') } onDayChange={onDateStartedChange} />
-            </th>
+            <DataTableFilterDate value={ props.filters.datePlanned.data && props.filters.datePlanned.data } onChangeAction={onDatePlannedChange} />
+            <DataTableFilterDate value={ props.filters.dateStarted.data && props.filters.dateStarted.data } onChangeAction={onDateStartedChange} />
             <th>
                 <select className="form-control input-sm" value={ props.filters.statusId.data } onChange={onStatusChange}>
                     <option/>

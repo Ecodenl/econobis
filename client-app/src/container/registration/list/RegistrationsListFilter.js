@@ -2,8 +2,6 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import moment from 'moment';
-import DayPickerInput from 'react-day-picker/DayPickerInput';
-import 'react-day-picker/lib/style.css';
 
 import {
     setFilterFullName,
@@ -12,6 +10,7 @@ import {
     setFilterRegistrationStatus,
     setFilterMeasureRequested,
 } from '../../../actions/registration/RegistrationsFiltersActions';
+import DataTableFilterDate from "../../../components/dataTable/DataTableFilterDate";
 
 const RegistrationsListFilter = props => {
     const onFullNameChange = (e) => {
@@ -53,9 +52,7 @@ const RegistrationsListFilter = props => {
     return (
         <tr className="thead-filter">
             <th><input type="text" className="form-control input-sm" value={ props.filters.fullName.data} onChange={onFullNameChange} /></th>
-            <th className="DayPicker-overflow hidden-xs hidden-sm">
-                <DayPickerInput value={ props.filters.createdAt.data && moment(props.filters.createdAt.data).format('DD-MM-Y') } onDayChange={onRegistrationChange} />
-            </th>
+            <DataTableFilterDate value={ props.filters.createdAt.data && props.filters.createdAt.data } onChangeAction={onRegistrationChange} />
             <th>
                 <select className="form-control input-sm" value={ props.filters.sourceId.data } onChange={onSourceChange}>
                     <option/>

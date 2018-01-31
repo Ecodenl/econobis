@@ -16,8 +16,8 @@ const RegistrationsListHead = (props) => {
     return (
         <tr className="thead-title">
             <DataTableHeadTitleAndSort sortColumn={'fullName'} title={'Naam'} width={'20%'} setSorts={setSorts} />
-            <DataTableHeadTitleAndSort sortColumn={'createdAt'} title={'Aanmelddatum'} width={'15%'} setSorts={setSorts} />
-            <DataTableHeadTitleAndSort sortColumn={'sourceId'} title={'Aanmeldingsbron'} width={'15%'} setSorts={setSorts} />
+            <DataTableHeadTitleAndSort sortColumn={'createdAt'} title={'Aanmelddatum'} width={'10%'} setSorts={setSorts} />
+            <DataTableHeadTitleAndSort sortColumn={'sourceId'} title={'Aanmeldingsbron'} width={'20%'} setSorts={setSorts} />
             <DataTableHeadTitleAndSort sortColumn={'statusId'} title={'Status'} width={'15%'} setSorts={setSorts} />
             <DataTableHeadTitleAndSort sortColumn={'measureRequestedId'} title={'Maatregelen'} width={'30%'} setSorts={setSorts} />
             <th width="5%" />

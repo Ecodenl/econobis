@@ -20,13 +20,7 @@
 }
 
 .content {
-  //position: absolute;
-  //top: 60px;
-  //left: 42px;
-  //right: 0;
-  //height: 100vh;
   width: 100vw;
-  //transition: left .2s ease-in-out;
   padding: 20px;
   min-height: 100vh;
   transition: all 0.3s;
@@ -44,6 +38,8 @@
 
 .sidebar-menu {
   padding-top: 10px;
+  overflow: auto;
+  height: 100vh;
 }
 
 .sidebar-menu-small {

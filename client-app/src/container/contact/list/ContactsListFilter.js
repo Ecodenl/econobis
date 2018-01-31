@@ -2,10 +2,6 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import moment from 'moment';
-import DayPickerInput from 'react-day-picker/DayPickerInput';
-import 'react-day-picker/lib/style.css';
-
-import { setCheckedContactAll } from '../../../actions/contact/ContactsActions';
 
 import {
     setNumberFilter,
@@ -19,6 +15,7 @@ import {
     setStatusFilter,
     setCreatedAtFilter
 } from '../../../actions/contact/ContactsFiltersActions';
+import DataTableFilterDate from "../../../components/dataTable/DataTableFilterDate";
 
 const ContactsListFilter = props => {
     const onNumberChange = (e) => {
@@ -99,9 +96,7 @@ const ContactsListFilter = props => {
                     }) }
                 </select>
             </th>
-            <th className="DayPicker-overflow hidden-xs hidden-sm">
-                <DayPickerInput className={"form-control input-sm"} value={ props.filters.createdAt.data && moment(props.filters.createdAt.data).format('DD-MM-Y') } onDayChange={onCreatedAtChange} />
-            </th>
+            <DataTableFilterDate value={ props.filters.createdAt.data && props.filters.createdAt.data } onChangeAction={onCreatedAtChange} />
             <th/>
         </tr>
     );

@@ -55,7 +55,7 @@ class UserController extends Controller
 
         $user->save();
 
-        $user->assignRole(Role::findByName('superuser'));
+        $user->assignRole(Role::findByName('Medewerker'));
 
         //Send link to set password
         $forgotPassWordController = new ForgotPasswordController();

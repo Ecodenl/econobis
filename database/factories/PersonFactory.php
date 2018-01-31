@@ -15,10 +15,6 @@ $factory->define(\App\Eco\Person\Person::class, function (Faker\Generator $faker
         'contact_id' => function () {
             return factory('App\Eco\Contact\Contact')->create()->id;
         },
-        'organisation_id' => function () {
-            if (random_int(0, 10) < 5) return null;
-            return \App\Eco\organisation\Organisation::inRandomOrder()->first()->id;
-        },
         'type_id' => function () {
             if (random_int(0, 10) < 5) return null;
             return \App\Eco\PersonType\PersonType::inRandomOrder()->first()->id;
@@ -32,10 +28,6 @@ $factory->define(\App\Eco\Person\Person::class, function (Faker\Generator $faker
         'date_of_birth_partner' => function () use ($faker) {
             if (random_int(0, 10) < 5) return null;
             return $faker->date();
-        },
-        'occupation_id' => function () {
-            if (random_int(0, 10) < 5) return null;
-            return \App\Eco\Occupation\Occupation::inRandomOrder()->first()->id;
         },
     ];
 });

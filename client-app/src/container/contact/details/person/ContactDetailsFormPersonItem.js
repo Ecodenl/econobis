@@ -1,9 +1,6 @@
 import React, {Component} from 'react';
-import { connect } from 'react-redux';
 import { hashHistory } from 'react-router';
-
-import { makePrimary } from '../../../../actions/contact/ContactDetailsActions';
-import PersonAPI from '../../../../api/contact/PersonAPI';
+import moment from "moment/moment";
 
 class ContactDetailFormPersonItem extends Component {
     constructor(props) {
@@ -30,38 +27,26 @@ class ContactDetailFormPersonItem extends Component {
         });
     };
 
-    makePrimary = () => {
-        const person = {
-            id: this.props.person.id,
-            primary: true,
-        };
-
-        PersonAPI.updatePerson(person).then((payload) => {
-            this.props.makePrimary(person.id);
-        });
-    };
-
     openPerson = () => {
-        hashHistory.push(`/contact/${this.props.person.contactId}`);
+        hashHistory.push(`/contact/${this.props.person.person.contactId}`);
     };
 
     render() {
-        const {occupation, fullName, primary} = this.props.person;
+        const {occupation, person, startDate, endDate} = this.props.person;
 
         return (
             <div className={`row border ${this.state.highlightLine}`} onMouseEnter={() => this.onLineEnter()} onMouseLeave={() => this.onLineLeave()}>
-                <div className="col-sm-2">
+                <div className="col-sm-4">
                     { occupation ? occupation.name : '' }
                 </div>
-                <div className="col-sm-8">
-                    { fullName }
+                <div className="col-sm-3">
+                    { person ? person.fullName : '' }
                 </div>
-                <div className="col-sm-1" onMouseEnter={() => this.onLineEnter()} onMouseLeave={() => this.onLineLeave()}>
-                    { primary ?
-                        <span className="h6">Primair</span>
-                        :
-                        (this.state.showActionButtons ? <a role="button" onClick={this.makePrimary}><span className="h6"><span className="glyphicon glyphicon-pencil mybtn-success" /></span></a> : '')
-                    }
+                <div className="col-sm-2">
+                    { startDate ? moment(startDate.date).format('DD-MM-Y') : '' }
+                </div>
+                <div className="col-sm-2">
+                    { endDate ? moment(endDate.date).format('DD-MM-Y') : '' }
                 </div>
                 <div className="col-sm-1">
                     {(this.state.showActionButtons ? <a role="button" onClick={this.openPerson}><span className="glyphicon glyphicon-search mybtn-success" /> </a> : '')}
@@ -71,10 +56,5 @@ class ContactDetailFormPersonItem extends Component {
     }
 };
 
-const mapDispatchToProps = dispatch => ({
-    makePrimary: (id) => {
-        dispatch(makePrimary(id));
-    },
-});
 
-export default connect(null, mapDispatchToProps)(ContactDetailFormPersonItem);
+export default ContactDetailFormPersonItem;

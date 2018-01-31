@@ -1,12 +1,12 @@
 import React, { Component} from 'react';
 
-import ContactDetailsFormPersonList from './ContactDetailsFormPersonList';
-import ContactDetailsFormPersonNew from './ContactDetailsFormPersonNew';
+import ContactDetailsFormOccupationsList from './ContactDetailsFormOccupationsList';
+import ContactDetailsFormOccupationsNew from './ContactDetailsFormOccupationsNew';
 import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
 import PanelHeader from '../../../../components/panel/PanelHeader';
 
-class ContactDetailsFormPerson extends Component {
+class ContactDetailsFormOccupations extends Component {
     constructor(props) {
         super(props);
 
@@ -30,10 +30,10 @@ class ContactDetailsFormPerson extends Component {
                 </PanelHeader>
                 <PanelBody>
                     <div className="col-md-12">
-                        <ContactDetailsFormPersonList />
+                        <ContactDetailsFormOccupationsList />
                     </div>
                     <div className="col-md-12 margin-10-top">
-                        { this.state.showNew && <ContactDetailsFormPersonNew toggleShowNew={this.toggleShowNew} /> }
+                        { this.state.showNew && <ContactDetailsFormOccupationsNew toggleShowNew={this.toggleShowNew} /> }
                     </div>
                 </PanelBody>
             </Panel>
@@ -41,4 +41,4 @@ class ContactDetailsFormPerson extends Component {
     }
 };
 
-export default ContactDetailsFormPerson;
+export default ContactDetailsFormOccupations;

@@ -24,7 +24,7 @@ class CampaignDetailsResponseNew extends Component {
         };
     };
 
-    componentWillMount() {
+    componentDidMount() {
         OrganisationAPI.getOrganisationPeek().then(payload => {
             this.setState({
                 organisations: payload

@@ -38,10 +38,8 @@ class ContactDetailsFormPersonalEdit extends Component {
                 memberSince: memberSince ? moment(memberSince.date).format('Y-MM-DD') : '',
                 memberUntil: memberUntil ? moment(memberUntil.date).format('Y-MM-DD') : '',
                 typeId: person.type ? person.type.id : '',
-                organisationId: person.organisation ? person.organisation.id : '',
                 dateOfBirth: person.dateOfBirth ? moment(person.dateOfBirth.date).format('Y-MM-DD') : '',
                 newsletter: newsletter,
-                occupationId: person.occupation ? person.occupation.id : '',
             },
             errors: {
                 name: false,
@@ -139,7 +137,7 @@ class ContactDetailsFormPersonalEdit extends Component {
     };
 
     render() {
-        const {number, createdAt, titleId, statusId, typeId, firstName, lastNamePrefixId, lastName, memberSince, memberUntil, organisationId, dateOfBirth, newsletter, occupationId} = this.state.person;
+        const {number, createdAt, titleId, statusId, typeId, firstName, lastNamePrefixId, lastName, memberSince, memberUntil, dateOfBirth, newsletter} = this.state.person;
 
         return (
             <form className="form-horizontal col-md-12" onSubmit={this.handleSubmit}>
@@ -246,28 +244,6 @@ class ContactDetailsFormPersonalEdit extends Component {
                         value={ dateOfBirth }
                         onChangeAction={this.handleChangeDateOfBirth}
                     />
-                    <InputSelect
-                        label={"Organisatie"}
-                        size={"col-sm-6"}
-                        name={"organisationId"}
-                        options={this.state.organisationPeek}
-                        value={organisationId}
-                        onChangeAction={this.handleInputChange}
-                    />
-                </div>
-                <div className="row">
-                    { organisationId !== '' ?
-                        <InputSelect
-                            label={"Functie"}
-                            size={"col-sm-6"}
-                            name={"occupationId"}
-                            options={this.props.occupations}
-                            value={occupationId}
-                            onChangeAction={this.handleInputChange}
-                        />
-                        :
-                        <div className="form-group col-sm-6"/>
-                    }
                     <InputCheckbox
                         label={"Nieuwsbrief"}
                         name={"newsletter"}
@@ -293,7 +269,6 @@ const mapStateToProps = (state) => {
         lastNamePrefixes: state.systemData.lastNamePrefixes,
         personTypes: state.systemData.personTypes,
         contactStatuses: state.systemData.contactStatuses,
-        occupations: state.systemData.occupations,
         titles: state.systemData.titles,
     };
 };

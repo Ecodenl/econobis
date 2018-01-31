@@ -39,7 +39,6 @@ class UserController extends Controller
             ->string('lastName')->whenMissing('')->alias('last_name')->next()
             ->string('phoneNumber')->whenMissing('')->alias('phone_number')->next()
             ->string('mobile')->whenMissing('')->next()
-            ->string('occupation')->whenMissing('')->next()
             ->boolean('active')->whenMissing(true)->next()
             ->get();
 
@@ -77,7 +76,6 @@ class UserController extends Controller
             ->string('lastName')->alias('last_name')->next()
             ->string('phoneNumber')->alias('phone_number')->next()
             ->string('mobile')->next()
-            ->string('occupation')->next()
             ->boolean('active')->next()
             ->get();
 

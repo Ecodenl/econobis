@@ -21,5 +21,26 @@ export default {
                     return {error: 'Geen juiste login gegevens ingevuld'};
                 }
             );
+    },
+
+    refreshToken: () => {
+        const request = {
+                grant_type: 'refresh_token',
+                refresh_token: localStorage.getItem('refresh_token'),
+                client_id: process.env.CLIENT_ID,
+                client_secret: process.env.CLIENT_SECRET,
+        };
+
+        const requestUrl = `${URL_API}/oauth/token`;
+        delete axios.defaults.headers.common['Authorization'];
+
+        return axios.post(requestUrl, request)
+            .then(function (response) {
+                return response.data;
+            })
+            .catch(function (error) {
+                return false;
+                }
+            );
     }
 };

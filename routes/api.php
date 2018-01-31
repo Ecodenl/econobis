@@ -22,7 +22,7 @@ Route::get('password/reset/{token}', [
 ]);
 
 Route::namespace('Api')
-    ->middleware('auth:api', 'refreshAuthToken')
+    ->middleware('auth:api')
     ->group(function () {
 
         Route::get('/me', 'User\UserController@me');
@@ -72,6 +72,10 @@ Route::namespace('Api')
         Route::post('/address/{address}', 'Address\AddressController@update');
         Route::post('/address/{address}/delete', 'Address\AddressController@destroy');
 
+        Route::post('/occupation', 'Occupation\OccupationController@store');
+        Route::post('/occupation/update', 'Occupation\OccupationController@update');
+        Route::post('/occupation/delete', 'Occupation\OccupationController@destroy');
+
         Route::post('/email-address', 'EmailAddress\EmailAddressController@store');
         Route::post('/email-address/{emailAddress}', 'EmailAddress\EmailAddressController@update');
         Route::post('/email-address/{emailAddress}/delete', 'EmailAddress\EmailAddressController@destroy');
@@ -82,7 +86,7 @@ Route::namespace('Api')
 
         Route::post('/person', 'Person\PersonController@store');
         Route::post('/person/{person}', 'Person\PersonController@update');
-        Route::get('/person/peek/no-organisation', 'Person\PersonController@peekNoOrganisation');
+        Route::get('/person/peek', 'Person\PersonController@peek');
 
         Route::post('/organisation', 'Organisation\OrganisationController@store');
         Route::post('/organisation/{organisation}', 'Organisation\OrganisationController@update');

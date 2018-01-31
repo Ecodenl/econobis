@@ -10,6 +10,7 @@ namespace App\Http\Resources\User;
 
 
 use App\Http\Resources\LastNamePrefix\FullLastNamePrefix;
+use App\Http\Resources\Occupation\FullOccupation;
 use App\Http\Resources\Title\FullTitle;
 use Illuminate\Http\Resources\Json\Resource;
 use Spatie\Permission\Models\Permission;
@@ -31,7 +32,7 @@ class FullUser extends Resource
             'email' => $this->email,
             'phoneNumber' => $this->phone_number,
             'mobile' => $this->mobile,
-            'occupation' => $this->occupation,
+            'occupations' => FullOccupation::collection($this->whenLoaded('occupations')),
             'lastVisit' => $this->last_visit,
             'visitCount' => $this->visit_count,
             'active' => $this->active,

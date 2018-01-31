@@ -4,6 +4,7 @@ namespace App\Eco\Organisation;
 
 use App\Eco\Campaign\Campaign;
 use App\Eco\Measure\Measure;
+use App\Eco\Occupation\OccupationPerson;
 use App\Eco\Opportunity\OpportunityQuotation;
 use App\Eco\OrganisationType\OrganisationType;
 use App\Eco\Contact\Contact;
@@ -31,7 +32,7 @@ class Organisation extends Model
 
     public function people()
     {
-        return $this->hasMany(Person::class)->orderBy('last_name');
+        return $this->hasMany(OccupationPerson::class);
     }
 
     public function contactPerson()

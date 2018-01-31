@@ -27,9 +27,11 @@ class MailboxDetailsUsers extends Component {
             <Panel>
                 <PanelHeader>
                     <span className="h5 text-bold">Gekoppelde gebruikers</span>
+                    {this.props.permissions.createMailbox &&
                     <a role="button" className="pull-right" onClick={this.toggleShowNew}><span
                         className="glyphicon glyphicon-plus"/>
                     </a>
+                    }
                 </PanelHeader>
                 <PanelBody>
                     <div className="col-md-12">

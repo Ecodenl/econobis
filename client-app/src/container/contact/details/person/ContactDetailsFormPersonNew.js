@@ -5,14 +5,29 @@ import { Link, hashHistory } from 'react-router';
 import { fetchContactDetails } from '../../../../actions/contact/ContactDetailsActions';
 import PersonAPI from '../../../../api/contact/PersonAPI';
 import Modal from '../../../../components/modal/Modal';
+import InputSelect from "../../../../components/form/InputSelect";
+import validator from "validator";
+import OccupationAPI from "../../../../api/contact/OccupationAPI";
+import moment from "moment/moment";
+import InputDate from "../../../../components/form/InputDate";
 
-class ContactDetailsEmailDelete extends Component {
+class ContactDetailsFormPersonNew extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            peopleNoOrganisation: [],
-            personId: '',
+            people: [],
+            occupation: {
+                personId: '',
+                occupationId: '',
+                organisationId: props.id,
+                startDate: '',
+                endDate: '',
+            },
+            errors: {
+                personId: false,
+                occupationId: false,
+            },
         };
     };
 
@@ -20,7 +35,7 @@ class ContactDetailsEmailDelete extends Component {
         PersonAPI.getPersonPeek().then(payload => {
             this.setState({
                 ...this.state,
-                peopleNoOrganisation: payload,
+                people: payload,
             })
         })
     };
@@ -32,28 +47,69 @@ class ContactDetailsEmailDelete extends Component {
 
         this.setState({
             ...this.state,
-            [name]: value
+            occupation: {
+                ...this.state.occupation,
+                [name]: value
+            }
+        });
+    };
+
+    handleStartDate = (date) => {
+        const formattedDate = (date ? moment(date).format('Y-MM-DD') : '');
+
+        this.setState({
+            ...this.state,
+            occupation: {
+                ...this.state.occupation,
+                startDate: formattedDate
+            },
+        });
+    };
+
+    handleEndDate = (date) => {
+        const formattedDate = (date ? moment(date).format('Y-MM-DD') : '');
+
+        this.setState({
+            ...this.state,
+            occupation: {
+                ...this.state.occupation,
+                endDate: formattedDate
+            },
         });
     };
 
     confirmAction = () => {
-        //props.deleteEmailAddress(props.id);
         this.props.toggleShowNew();
     };
 
     handleSubmit = event => {
         event.preventDefault();
 
-        const person  = {
-            id: this.state.personId,
-            organisationId: this.props.id,
-        };
+        const {occupation} = this.state;
 
-        PersonAPI.updatePerson(person).then((payload) => {
+        let errors = {};
+        let hasErrors = false;
+
+        if (validator.isEmpty(occupation.personId)) {
+            errors.personId = true;
+            hasErrors = true;
+        }
+
+        if (validator.isEmpty(occupation.occupationId)) {
+            errors.occupationId = true;
+            hasErrors = true;
+        }
+
+        this.setState({...this.state, errors: errors});
+
+        // If no errors send form
+        !hasErrors &&
+        OccupationAPI.newOccupation(occupation).then((payload) => {
             this.props.fetchContactDetails(this.props.id);
             this.props.toggleShowNew();
         });
     };
+
 
     render() {
         return (
@@ -65,18 +121,51 @@ class ContactDetailsEmailDelete extends Component {
             >
                 <form className="form-horizontal" onSubmit={this.handleSubmit}>
                     <div className="row">
-                        <div className="col-sm-6">Voeg bestaand contactpersoon toe:</div>
-                        <div className="col-sm-6">
-                            <select className="form-control input-sm" name="personId" value={this.state.personId} onChange={this.handleInputChange}>
-                                <option value=''></option>
-                                {this.state.peopleNoOrganisation.map((option) => {
-                                    return <option key={option.id} value={option.id}>{option.fullName}</option>
-                                })}
-                            </select>
-                        </div>
+                        <InputSelect
+                            label={"Voeg bestaand contactpersoon toe:"}
+                            size={"col-sm-12"}
+                            name={"personId"}
+                            options={this.state.people}
+                            optionName={'fullName'}
+                            value={this.state.occupation.personId}
+                            onChangeAction={this.handleInputChange}
+                            required={"required"}
+                            error={this.state.errors.personId}
+
+                        />
                     </div>
                     <div className="row">
-                        <div className="col-sm-12">Of maak een <Link to={`/contact/nieuw/persoon/organisatie/${this.props.id}`} className="link-underline">Nieuw</Link> contactpersoon aan.</div>
+                        <InputSelect
+                            label={"Rol:"}
+                            size={"col-sm-12"}
+                            name={"occupationId"}
+                            options={this.props.occupations}
+                            value={this.state.occupation.occupationId}
+                            onChangeAction={this.handleInputChange}
+                            required={"required"}
+                            error={this.state.errors.occupationId}
+                        />
+                    </div>
+
+                    <div className="row">
+                        <InputDate
+                            label={"Begin datum:"}
+                            size={"col-sm-12"}
+                            name={"startDate"}
+                            value={this.state.occupation.startDate}
+                            onChangeAction={this.handleStartDate}
+                        />
+                        <InputDate
+                            label={"Eind datum:"}
+                            size={"col-sm-12"}
+                            name={"endDate"}
+                            value={this.state.occupation.endDate}
+                            onChangeAction={this.handleEndDate}
+                        />
+                    </div>
+
+                    <div className="row">
+                        <div className="col-sm-12">Of maak een <Link to={`/contact/nieuw/persoon/`} className="link-underline">Nieuw</Link> contactpersoon aan.</div>
                     </div>
                 </form>
             </Modal>
@@ -87,6 +176,7 @@ class ContactDetailsEmailDelete extends Component {
 const mapStateToProps = (state) => {
     return {
         id: state.contactDetails.id,
+        occupations: state.systemData.occupations,
     };
 };
 
@@ -96,4 +186,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(ContactDetailsEmailDelete);
+export default connect(mapStateToProps, mapDispatchToProps)(ContactDetailsFormPersonNew);

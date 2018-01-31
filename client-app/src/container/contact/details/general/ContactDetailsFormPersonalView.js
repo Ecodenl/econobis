@@ -50,7 +50,7 @@ const ContactDetailsFormPersonalView = props => {
                     value={ person.lastNamePrefix && person.lastNamePrefix.name }
                 />
                 <ViewText
-                    label={"Opzegdatum"}s
+                    label={"Opzegdatum"}
                     value={ memberUntil && moment(memberUntil.date).format('DD-MM-Y') }
                 />
             </div>
@@ -72,26 +72,11 @@ const ContactDetailsFormPersonalView = props => {
                         label={"Geboortedatum"}
                         value={ person.dateOfBirth && moment(person.dateOfBirth.date).format('DD-MM-Y') }
                     />
-                </div>
-                <ViewText
-                    label="Organisatie"
-                    value={ person.organisation && person.organisation.name }
-                    link={ person.organisation ? `/contact/${person.organisation.id}` : '' }
-                />
-            </div>
-            <div className="row" onClick={props.switchToEdit}>
-                { person.organisation ?
                     <ViewText
-                        label="Functie"
-                        value={ person.occupation && person.occupation.name }
+                        label="Nieuwsbrief"
+                        value={ (newsletter ? 'Ja' : 'Nee') }
                     />
-                    :
-                    <div className="col-sm-6"/>
-                }
-                <ViewText
-                    label="Nieuwsbrief"
-                    value={ (newsletter ? 'Ja' : 'Nee') }
-                />
+                </div>
             </div>
         </div>
     );

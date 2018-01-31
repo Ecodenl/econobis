@@ -148,9 +148,9 @@ class PersonController extends ApiController
         return (new ContactController())->show($contact->fresh(), $request);
     }
 
-    public function peekNoOrganisation()
+    public function peek()
     {
-        $people = Person::whereNull('organisation_id')->get();
+        $people = Person::all();
 
         return PersonPeek::collection($people);
     }

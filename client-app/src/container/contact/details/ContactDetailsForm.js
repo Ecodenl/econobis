@@ -14,6 +14,7 @@ import ContactDetailsFormNote from './note/ContactDetailsFormNote';
 import ContactDetailsFormConclusion from './conclusion/ContactDetailsFormConclusion';
 import ContactDetailsQuotations from "./quotations/ContactDetailsQuotations";
 import ContactDetailsCampaigns from "./campaigns/ContactDetailsCampaigns";
+import ContactDetailsFormOccupations from "./occupations/ContactDetailsFormOccupations";
 
 class ContactDetailsForm extends Component {
     constructor(props){
@@ -53,7 +54,10 @@ class ContactDetailsForm extends Component {
                     }
                     {/* <ContactDetailsFormEnergy /> */}
                     { typeId == 'person' &&
-                        <ContactDetailsFormOther />
+                    <ContactDetailsFormOccupations/>
+                    }
+                    { typeId == 'person' &&
+                    <ContactDetailsFormOther />
                     }
                     <ContactDetailsFormNote />
                     <ContactDetailsFormConclusion />

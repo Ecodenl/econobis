@@ -31,10 +31,8 @@ class ContactNewFormPersonal extends Component {
                 memberSince: '',
                 memberUntil: '',
                 typeId: '',
-                organisationId: props.organisationId || '',
                 dateOfBirth: '',
                 newsletter: false,
-                occupationId: '',
                 ownerId: props.userId,
             },
             errors: {
@@ -120,7 +118,7 @@ class ContactNewFormPersonal extends Component {
     };
 
     render() {
-        const { typeId, statusId, titleId, firstName, lastNamePrefixId, lastName, memberSince, organisationId, dateOfBirth, newsletter, occupationId, ownerId } = this.state.person;
+        const { typeId, statusId, titleId, firstName, lastNamePrefixId, lastName, memberSince, dateOfBirth, newsletter, ownerId } = this.state.person;
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -222,16 +220,6 @@ class ContactNewFormPersonal extends Component {
                         onChangeAction={this.handleChangeDateOfBirth}
                     />
                     <InputSelect
-                        label={"Organisatie"}
-                        name={"organisationId"}
-                        options={this.state.organisationPeek}
-                        value={organisationId}
-                        onChangeAction={this.handleInputChange}
-                    />
-                </div>
-
-                <div className="row">
-                    <InputSelect
                         label={"Eigenaar"}
                         size={"col-sm-6"}
                         name={"ownerId"}
@@ -240,18 +228,6 @@ class ContactNewFormPersonal extends Component {
                         optionName={"fullName"}
                         onChangeAction={this.handleInputChange}
                     />
-                    { organisationId !== '' ?
-                        <InputSelect
-                            label={"Functie"}
-                            size={"col-sm-6"}
-                            name={"occupationId"}
-                            options={this.props.occupations}
-                            value={occupationId}
-                            onChangeAction={this.handleInputChange}
-                        />
-                        :
-                        <div className="form-group col-sm-6"/>
-                    }
                 </div>
 
                 <div className="row">

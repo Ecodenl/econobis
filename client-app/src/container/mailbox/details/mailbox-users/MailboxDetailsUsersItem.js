@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 
 import MailboxDetailsUsersView from './MailboxDetailsUsersView';
 import MailboxDetailsUsersItemDelete from "./MailboxDetailsUsersDelete";
+import {connect} from "react-redux";
 
 class MailboxDetailsUsersItem extends Component {
     constructor(props) {
@@ -46,7 +47,7 @@ class MailboxDetailsUsersItem extends Component {
                     user={this.state.user}
                 />
                 {
-                    this.state.showDelete &&
+                    this.state.showDelete && this.props.permissions.createMailbox &&
                     <MailboxDetailsUsersItemDelete
                         toggleDelete={this.toggleDelete}
                         userId={this.state.user.id}
@@ -57,4 +58,10 @@ class MailboxDetailsUsersItem extends Component {
     }
 };
 
-export default MailboxDetailsUsersItem;
+const mapStateToProps = (state) => {
+    return {
+        permissions: state.meDetails.permissions
+    }
+};
+
+export default connect(mapStateToProps)(MailboxDetailsUsersItem);

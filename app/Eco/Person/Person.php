@@ -2,6 +2,7 @@
 
 namespace App\Eco\Person;
 
+use App\Eco\Occupation\OccupationPerson;
 use App\Eco\Organisation\Organisation;
 use App\Eco\Contact\Contact;
 use App\Eco\LastNamePrefix\LastNamePrefix;
@@ -53,9 +54,9 @@ class Person extends Model
         return $this->belongsTo(Organisation::class);
     }
 
-    public function occupation()
+    public function occupations()
     {
-        return $this->belongsTo(Occupation::class);
+        return $this->hasMany(OccupationPerson::class);
     }
 
 }

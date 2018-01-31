@@ -17,6 +17,7 @@ use App\Eco\Mailbox\MailValidator;
 use App\Eco\Mailbox\SmtpEncryptionType;
 use App\Eco\User\User;
 use App\Helpers\RequestInput\RequestInput;
+use App\Http\Controllers\Controller;
 use App\Http\Resources\Email\GridEmailTemplate;
 use App\Http\Resources\GenericResource;
 use App\Http\Resources\Mailbox\FullMailbox;
@@ -26,11 +27,13 @@ use App\Rules\EnumExists;
 use Doctrine\Common\Annotations\Annotation\Enum;
 use Illuminate\Support\Facades\Auth;
 
-class MailboxController
+class MailboxController extends Controller
 {
 
     public function grid()
     {
+        $this->authorize('view', Mailbox::class);
+
         $mailboxes = Mailbox::get();
 
         return GenericResource::collection($mailboxes);
@@ -38,6 +41,8 @@ class MailboxController
 
     public function store(RequestInput $input)
     {
+        $this->authorize('create', Mailbox::class);
+
         $data = $input->string('name')->whenMissing('')->onEmpty('')->next()
             ->string('email')->whenMissing('')->onEmpty('')->alias('email')->next()
             ->string('smtpHost')->whenMissing('')->onEmpty('')->alias('smtp_host')->next()
@@ -62,12 +67,16 @@ class MailboxController
 
     public function show(Mailbox $mailbox)
     {
+        $this->authorize('view', Mailbox::class);
+
         $mailbox->load('users');
         return FullMailbox::make($mailbox);
     }
 
     public function update(Mailbox $mailbox, RequestInput $input)
     {
+        $this->authorize('create', Mailbox::class);
+
         $data = $input->string('name')->next()
             ->string('email')->alias('email')->next()
             ->string('smtpHost')->alias('smtp_host')->next()
@@ -92,6 +101,8 @@ class MailboxController
 
     public function addUser(Mailbox $mailbox, User $user)
     {
+        $this->authorize('create', Mailbox::class);
+
         $mailbox->users()->attach($user);
 
         return UserPeek::make($user);
@@ -99,11 +110,15 @@ class MailboxController
 
     public function removeUser(Mailbox $mailbox, User $user)
     {
+        $this->authorize('create', Mailbox::class);
+
         $mailbox->users()->detach($user);
     }
 
     public function receive(Mailbox $mailbox)
     {
+        $this->authorize('view', Mailbox::class);
+
         $mailFetcher = new MailFetcher($mailbox);
 
         if($mailbox->valid) {
@@ -116,6 +131,8 @@ class MailboxController
 
     public function receiveMailFromMailboxesUser()
     {
+        $this->authorize('view', Mailbox::class);
+
         $user = Auth::user();
 
         $mailboxes = $user->mailboxes()->get();
@@ -134,6 +151,7 @@ class MailboxController
         return LoggedInEmailPeek::collection($mailboxes);
     }
 
+    //called by cronjob
     static public function receiveAllEmail()
     {
         $mailboxes = Mailbox::all();

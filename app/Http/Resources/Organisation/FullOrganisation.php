@@ -4,6 +4,7 @@ namespace App\Http\Resources\Organisation;
 
 use App\Http\Resources\Campaign\FullCampaign;
 use App\Http\Resources\Contact\FullContact;
+use App\Http\Resources\Occupation\FullOccupationPerson;
 use App\Http\Resources\Opportunity\FullOpportunityQuotation;
 use App\Http\Resources\OrganisationType\FullOrganisationType;
 use App\Http\Resources\Industry\FullIndustry;
@@ -33,7 +34,7 @@ class FullOrganisation extends Resource
             'chamberOfCommerceNumber' => $this->chamber_of_commerce_number,
             'vatNumber' => $this->vat_number,
             'squareMeters' => $this->square_meters,
-            'people' => FullPerson::collection($this->whenLoaded('people')),
+            'people' => FullOccupationPerson::collection($this->whenLoaded('people')),
             'contactPerson' => FullPerson::make($this->whenLoaded('contactPerson')),
             'amountOfQuotations' => $this->quotations->count(),
             'amountOfWonQuotations' => $this->amountOfWonQuotations(),

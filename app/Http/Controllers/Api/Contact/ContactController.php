@@ -32,8 +32,8 @@ class ContactController extends Controller
         $contact->load('tasks');
         $contact->load('documents');
 
-        if($contact->isOrganisation()) $contact->load(['organisation.type', 'organisation.industry', 'organisation.people.occupation', 'organisation.quotations.opportunity.measure', 'organisation.quotations.opportunity.status', 'organisation.campaigns']);
-        if($contact->isPerson()) $contact->load(['person.lastNamePrefix', 'person.title', 'person.organisation', 'person.type', 'person.occupation']);
+        if($contact->isOrganisation()) $contact->load(['organisation.type', 'organisation.industry', 'organisation.people.person', 'organisation.people.organisation', 'organisation.people.occupation', 'organisation.quotations.opportunity.measure', 'organisation.quotations.opportunity.status', 'organisation.campaigns']);
+        if($contact->isPerson()) $contact->load(['person.lastNamePrefix', 'person.title', 'person.organisation', 'person.type', 'person.occupations.person', 'person.occupations.organisation', 'person.occupations.occupation']);
 
         $contact->relatedEmailsInbox = $this->getRelatedEmails($contact->id, 'inbox');
         $contact->relatedEmailsSent = $this->getRelatedEmails($contact->id, 'sent');

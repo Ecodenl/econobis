@@ -2,9 +2,9 @@
 
 namespace App\Http\Resources\Person;
 
+use App\Http\Resources\Occupation\FullOccupationPerson;
 use App\Http\Resources\Organisation\FullOrganisation;
 use App\Http\Resources\LastNamePrefix\FullLastNamePrefix;
-use App\Http\Resources\Occupation\FullOccupation;
 use App\Http\Resources\PersonType\FullPersonType;
 use App\Http\Resources\Title\FullTitle;
 use Illuminate\Http\Resources\Json\Resource;
@@ -31,8 +31,7 @@ class FullPerson extends Resource
             'fullName' => $this->present()->fullName(),
             'organisationId' => $this->organisation_id,
             'organisation' => FullOrganisation::make($this->whenLoaded('organisation')),
-            'occupationId' => $this->occupation_id,
-            'occupation' => FullOccupation::make($this->whenLoaded('occupation')),
+            'occupations' => FullOccupationPerson::collection($this->whenLoaded('occupations')),
             'typeId' => $this->type_id,
             'type' => FullPersonType::make($this->whenLoaded('type')),
             'dateOfBirth' => $this->date_of_birth,

@@ -47,7 +47,7 @@ class MailboxDetailsFormGeneral extends Component {
         return (
             <div className={this.state.activeDiv} onMouseEnter={() => this.onDivEnter()} onMouseLeave={() => this.onDivLeave()}>
                 {
-                    this.state.showEdit ?
+                    this.state.showEdit && this.props.permissions.createMailbox ?
                         <MailboxDetailsFormGeneralEdit switchToView={this.switchToView} />
                         :
                         <MailboxDetailsFormGeneralView switchToEdit={this.switchToEdit}/>
@@ -61,6 +61,7 @@ const mapStateToProps = (state) => {
     return {
         mailboxDetails: state.mailboxDetails,
         meDetails: state.meDetails,
+        permissions: state.meDetails.permissions
     };
 };
 

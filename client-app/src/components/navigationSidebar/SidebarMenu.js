@@ -116,9 +116,11 @@ class SidebarMenu extends Component {
                         <Nav id="users">
                             <NavText><Link className="sidebar-link" to="gebruikers">Gebruikers</Link></NavText>
                         </Nav>
+                        {this.props.permissions.viewMailbox &&
                         <Nav id="mailboxes">
                             <NavText><Link className="sidebar-link" to="mailboxen">Mailboxen</Link></NavText>
                         </Nav>
+                        }
                         {this.props.permissions.viewAuditTrail &&
                         <Nav id="audit-trail">
                             <NavText><Link className="sidebar-link" to="audit-trail">Audit trail</Link></NavText>

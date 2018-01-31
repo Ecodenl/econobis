@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import validator from 'validator';
 
 import AddressAPI from '../../../../api/contact/AddressAPI';
-import { updateAddress } from '../../../../actions/contact/ContactDetailsActions';
+import {unsetPrimaryAddresses, updateAddress} from '../../../../actions/contact/ContactDetailsActions';
 import ContactDetailsFormAddressView from './ContactDetailsFormAddressView';
 import ContactDetailsFormAddressEdit from './ContactDetailsFormAddressEdit';
 import ContactDetailsFormAddressDelete from './ContactDetailsFormAddressDelete';
@@ -108,6 +108,9 @@ class ContactDetailFormAddressItem extends Component {
         // If no errors send form
         !hasErrors &&
             AddressAPI.updateAddress(address).then((payload) => {
+                if(address.primary){
+                    this.props.unsetPrimaryAddresses();
+                }
                 this.props.updateAddress(payload);
                 this.closeEdit();
             });
@@ -152,6 +155,9 @@ class ContactDetailFormAddressItem extends Component {
 const mapDispatchToProps = dispatch => ({
     updateAddress: (id) => {
         dispatch(updateAddress(id));
+    },
+    unsetPrimaryAddresses: () => {
+        dispatch(unsetPrimaryAddresses());
     },
 });
 

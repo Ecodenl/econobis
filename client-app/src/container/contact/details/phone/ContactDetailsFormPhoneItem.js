@@ -3,7 +3,10 @@ import { connect } from 'react-redux';
 import validator from 'validator';
 
 import PhoneNumberApi from '../../../../api/contact/PhoneNumberAPI';
-import { updatePhoneNumber } from '../../../../actions/contact/ContactDetailsActions';
+import {
+    unsetPrimaryAddresses, unsetPrimaryPhoneNumbers,
+    updatePhoneNumber
+} from '../../../../actions/contact/ContactDetailsActions';
 import ContactDetailsFormPhoneView from './ContactDetailsFormPhoneView';
 import ContactDetailsFormPhoneEdit from './ContactDetailsFormPhoneEdit';
 import ContactDetailsFormPhoneDelete from './ContactDetailsFormPhoneDelete';
@@ -102,6 +105,9 @@ class ContactDetailFormPhoneItem extends Component {
         // If no errors send form
         !hasErrors &&
             PhoneNumberApi.updatePhoneNumber(phoneNumber).then((payload) => {
+                if(phoneNumber.primary){
+                    this.props.unsetPrimaryPhoneNumbers();
+                }
                 this.props.updatePhoneNumber(payload);
                 this.closeEdit();
             });
@@ -145,6 +151,9 @@ class ContactDetailFormPhoneItem extends Component {
 const mapDispatchToProps = dispatch => ({
     updatePhoneNumber: (id) => {
         dispatch(updatePhoneNumber(id));
+    },
+    unsetPrimaryPhoneNumbers: () => {
+        dispatch(unsetPrimaryPhoneNumbers());
     },
 });
 

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import AddressAPI from '../../../../api/contact/AddressAPI';
-import { newAddress } from '../../../../actions/contact/ContactDetailsActions';
+import {newAddress, unsetPrimaryAddresses} from '../../../../actions/contact/ContactDetailsActions';
 import InputText from '../../../../components/form/InputText';
 import ButtonText from '../../../../components/button/ButtonText';
 import InputSelect from "../../../../components/form/InputSelect";
@@ -79,6 +79,9 @@ class ContactDetailsFormAddressNew extends Component {
         // If no errors send form
         !hasErrors &&
             AddressAPI.newAddress(address).then((payload) => {
+                if(address.primary){
+                    this.props.unsetPrimaryAddresses();
+                }
                 this.props.newAddress(payload);
                 this.props.toggleShowNew();
             });
@@ -174,6 +177,9 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = dispatch => ({
     newAddress: (id) => {
         dispatch(newAddress(id));
+    },
+    unsetPrimaryAddresses: () => {
+        dispatch(unsetPrimaryAddresses());
     },
 });
 

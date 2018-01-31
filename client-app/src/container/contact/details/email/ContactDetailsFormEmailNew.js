@@ -80,7 +80,7 @@ class ContactDetailsFormEmailNew extends Component {
                     <PanelBody>
                         <div className="row">
                             <InputText
-                                label={"Email"}
+                                label={"E-mail"}
                                 id={"email"}
                                 size={"col-sm-6"}
                                 name={"email"}

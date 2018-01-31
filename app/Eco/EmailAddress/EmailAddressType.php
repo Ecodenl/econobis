@@ -23,7 +23,7 @@ class EmailAddressType extends EnumWithIdAndName
     {
         return [
             new static(static::WORK, 'Werk'),
-            new static(static::HOME, 'Prive'),
+            new static(static::HOME, 'Privé'),
             new static(static::GENERAL, 'Algemeen'),
             new static(static::ADMINISTRATION, 'Administratie'),
         ];

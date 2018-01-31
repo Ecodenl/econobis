@@ -11,6 +11,7 @@ export function* systemDataSaga() {
                 put({ type: 'FETCH_SYSTEM_DATA_SUCCESS', systemData }),
                 put({ type: 'FETCH_SYSTEM_DATA_LOADED' }),
             ]);
+            return;
         } catch (error) {
             if (i < 2) {
                 yield call(delay, 2000);

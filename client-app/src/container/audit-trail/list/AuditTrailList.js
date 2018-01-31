@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import ReactPaginate from 'react-paginate';
 
 import DataTable from '../../../components/dataTable/DataTable';
 import DataTableHead from '../../../components/dataTable/DataTableHead';
@@ -7,6 +6,7 @@ import DataTableBody from '../../../components/dataTable/DataTableBody';
 import AuditTrailListHead from './AuditTrailListHead';
 import AuditTrailListFilter from './AuditTrailListFilter';
 import AuditTrailListItem from './AuditTrailListItem';
+import DataTablePagination from "../../../components/dataTable/DataTablePagination";
 
 class AuditTrailList extends Component {
     constructor(props){
@@ -52,19 +52,10 @@ class AuditTrailList extends Component {
                         </DataTableBody>
                     </DataTable>
                     <div className="col-md-6 col-md-offset-3">
-                        <ReactPaginate
-                            onPageChange={this.props.handlePageClick}
-                            pageCount={ Math.ceil(meta.total / 20) || 1 }
-                            pageRangeDisplayed={5}
-                            marginPagesDisplayed={2}
-                            breakLabel={<a>...</a>}
-                            breakClassName={"break-me"}
-                            containerClassName={"pagination"}
-                            activeClassName={"active"}
-                            previousLabel={<span aria-hidden="true">&laquo;</span>}
-                            nextLabel={<span aria-hidden='true'>&raquo;</span>}
-                            initialPage={this.props.auditTrailPagination.page || 0}
-                            forcePage={this.props.auditTrailPagination.page}
+                        <DataTablePagination
+                            onPageChangeAction={this.props.handlePageClick}
+                            totalRecords={meta.total}
+                            initialPage={this.props.contactsPagination.page}
                         />
                     </div>
                 </form>

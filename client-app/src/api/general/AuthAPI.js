@@ -1,4 +1,5 @@
 import axios from 'axios';
+import {hashHistory} from "react-router";
 
 const URL_API = process.env.URL_API;
 const AUTH_KEY = {
@@ -32,15 +33,18 @@ export default {
         };
 
         const requestUrl = `${URL_API}/oauth/token`;
-        delete axios.defaults.headers.common['Authorization'];
 
-        return axios.post(requestUrl, request)
-            .then(function (response) {
-                return response.data;
+        return axios.post(requestUrl, request);
+            /*.then(function (response) {
+                localStorage.setItem('access_token', response.data.access_token);
+                localStorage.setItem('refresh_token', response.data.refresh_token);
             })
             .catch(function (error) {
-                return false;
+                localStorage.removeItem('access_token');
+                localStorage.removeItem('refresh_token');
+
+                hashHistory.push('/loguit');
                 }
-            );
+            );*/
     }
 };

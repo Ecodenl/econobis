@@ -1,8 +1,10 @@
 import { put, call } from 'redux-saga/effects';
 import OpportunitiesAPI from '../../api/opportunity/OpportunitiesAPI';
+import {authSaga} from "../general/AuthSaga";
 
 export function* fetchOpportunitiesSaga({pagination}) {
     try {
+        yield call(authSaga);
         yield put({ type: 'FETCH_OPPORTUNITIES_LOADING' });
         const opportunities = yield call(OpportunitiesAPI.fetchOpportunities, {pagination});
         yield put({ type: 'FETCH_OPPORTUNITIES_SUCCESS', opportunities });

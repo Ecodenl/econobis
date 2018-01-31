@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import ReactPaginate from 'react-paginate';
 
 import DataTable from '../../../components/dataTable/DataTable';
 import DataTableHead from '../../../components/dataTable/DataTableHead';
@@ -9,6 +8,7 @@ import DataTableHeadTitle from '../../../components/dataTable/DataTableHeadTitle
 
 import DocumentsListItem from './DocumentsListItem';
 import DocumentsDeleteItem from './DocumentsDeleteItem';
+import DataTablePagination from "../../../components/dataTable/DataTablePagination";
 
 class DocumentsList extends Component {
     constructor(props){
@@ -84,19 +84,10 @@ class DocumentsList extends Component {
                 </DataTableBody>
             </DataTable>
             <div className="col-md-6 col-md-offset-3">
-                <ReactPaginate
-                    onPageChange={this.props.handlePageClick}
-                    pageCount={ Math.ceil(meta.total / 20) || 1 }
-                    pageRangeDisplayed={5}
-                    marginPagesDisplayed={2}
-                    breakLabel={<a>...</a>}
-                    breakClassName={"break-me"}
-                    containerClassName={"pagination"}
-                    activeClassName={"active"}
-                    previousLabel={<span aria-hidden="true">&laquo;</span>}
-                    nextLabel={<span aria-hidden='true'>&raquo;</span>}
-                    initialPage={this.props.documentsPagination.page || 0}
-                    forcePage={this.props.documentsPagination.page}
+                <DataTablePagination
+                    onPageChangeAction={this.props.handlePageClick}
+                    totalRecords={meta.total}
+                    initialPage={this.props.documentsPagination.page}
                 />
             </div>
             <div className="col-md-3">

@@ -1,8 +1,10 @@
 import { put, call } from 'redux-saga/effects';
 import ContactGroupAPI from '../../api/contact-group/ContactGroupAPI';
+import {authSaga} from "../general/AuthSaga";
 
 export function* fetchContactGroupsSaga() {
     try {
+        yield call(authSaga);
         const contactGroups = yield call(ContactGroupAPI.fetchContactGroups);
         yield put({ type: 'FETCH_CONTACT_GROUPS_SUCCESS', contactGroups });
     } catch (error) {

@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import ReactPaginate from 'react-paginate';
 
 import DataTable from '../../../components/dataTable/DataTable';
 import DataTableHead from '../../../components/dataTable/DataTableHead';
@@ -7,6 +6,7 @@ import DataTableBody from '../../../components/dataTable/DataTableBody';
 import RegistrationsListHead from './RegistrationsListHead';
 import RegistrationsListFilter from './RegistrationsListFilter';
 import RegistrationsListItem from './RegistrationsListItem';
+import DataTablePagination from "../../../components/dataTable/DataTablePagination";
 
 class RegistrationsList extends Component {
     constructor(props){
@@ -50,19 +50,10 @@ class RegistrationsList extends Component {
                     </DataTableBody>
                 </DataTable>
                 <div className="col-md-4 col-md-offset-4">
-                    <ReactPaginate
-                        onPageChange={this.props.handlePageClick}
-                        pageCount={ Math.ceil(meta.total / 20) || 1 }
-                        pageRangeDisplayed={5}
-                        marginPagesDisplayed={2}
-                        breakLabel={<a>...</a>}
-                        breakClassName={"break-me"}
-                        containerClassName={"pagination"}
-                        activeClassName={"active"}
-                        previousLabel={<span aria-hidden="true">&laquo;</span>}
-                        nextLabel={<span aria-hidden='true'>&raquo;</span>}
-                        initialPage={this.props.registrationsPagination.page || 0}
-                        forcePage={this.props.registrationsPagination.page}
+                    <DataTablePagination
+                        onPageChangeAction={this.props.handlePageClick}
+                        totalRecords={meta.total}
+                        initialPage={this.props.registrationsPagination.page}
                     />
                 </div>
             </form>

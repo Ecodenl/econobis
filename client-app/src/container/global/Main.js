@@ -34,29 +34,12 @@ class Main extends Component {
         this.toggleChangePassword = this.toggleChangePassword.bind(this);
     }
 
-    refreshToken() {
-        let refreshToken = setInterval(function() {
-           AuthAPI.refreshToken().then(payload => {
-             if(payload){
-                 localStorage.setItem('access_token', payload.access_token);
-                 localStorage.setItem('refresh_token', payload.refresh_token);
-             }
-             else{
-                 clearInterval(refreshToken);
-                 hashHistory.push('/loguit');
-             }
-           });
-        }, (9*60*1000));
-    }
-
     componentDidMount() {
         const token = localStorage.getItem('access_token');
 
         if (this.props.authenticated && token) {
             this.props.fetchSystemData();
         }
-
-        this.refreshToken();
     }
 
     onMenuEnter() {

@@ -2,7 +2,6 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import moment from 'moment';
-import DayPickerInput from 'react-day-picker/DayPickerInput';
 import 'react-day-picker/lib/style.css';
 
 import {
@@ -13,6 +12,7 @@ import {
     setFilterAuditTrailChangedById,
     setFilterAuditTrailUpdatedAt
 } from '../../../actions/audit-trail/AuditTrailFiltersActions';
+import DataTableFilterDate from "../../../components/dataTable/DataTableFilterDate";
 
 const AuditTrailListFilter = props => {
 
@@ -81,9 +81,8 @@ const AuditTrailListFilter = props => {
                 </select>
             </th>
 
-            <th className="DayPicker-overflow hidden-xs hidden-sm">
-                <DayPickerInput value={ props.filters.updatedAt.data && moment(props.filters.updatedAt.data).format('DD-MM-Y') } onDayChange={onUpdatedAtChange} />
-            </th>
+            <DataTableFilterDate value={ props.filters.updatedAt.data && props.filters.updatedAt.data } onChangeAction={onUpdatedAtChange} />
+
             <th/>
         </tr>
     );

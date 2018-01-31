@@ -9,6 +9,9 @@ import Panel from "../../../components/panel/Panel";
 import PanelBody from "../../../components/panel/PanelBody";
 import { isEmpty } from 'lodash';
 import MailboxAPI from '../../../api/mailbox/MailboxAPI';
+import filterHelper from "../../../helpers/FilterHelper";
+import {bindActionCreators} from "redux";
+import {clearFilterEmail} from "../../../actions/email/EmailFiltersActions";
 
 class EmailsInListApp extends Component {
     constructor(props) {
@@ -36,11 +39,27 @@ class EmailsInListApp extends Component {
             }
         }
 
+    resetEmailsFilters() {
+        this.props.clearFilterEmail();
+
+        this.fetchEmailsData();
+    };
+
+    onSubmitFilter() {
+        this.props.clearEmails();
+
+        this.props.setEmailsPagination({page: 0, offset: 0});
+
+        this.fetchEmailsData();
+    };
+
     fetchEmailsData() {
         setTimeout(() => {
+            const filters = filterHelper(this.props.emailsFilters);
+            const sorts = this.props.emailsSorts.reverse();
             const pagination = { limit: 20, offset: this.props.emailsPagination.offset };
 
-            this.props.fetchEmails(this.props.params.folder, pagination);
+            this.props.fetchEmails(this.props.params.folder, filters, sorts, pagination);
         },100 );
     };
 
@@ -49,6 +68,7 @@ class EmailsInListApp extends Component {
             const pagination = { limit: 20, offset: 0 };
 
             this.props.clearEmails();
+            this.resetEmailsFilters();
             this.props.fetchEmails(this.props.params.folder, pagination);
         });
     }
@@ -74,7 +94,12 @@ class EmailsInListApp extends Component {
                         </div>
 
                         <div className="col-md-12 margin-10-top">
-                            <EmailsInList handlePageClick={this.handlePageClick}/>
+                            <EmailsInList
+                                handlePageClick={this.handlePageClick}
+                                emails={this.props.emails}
+                                emailsPagination={this.props.emailsPagination}
+                                onSubmitFilter={() => this.onSubmitFilter()}
+                                fetchEmailsData={() => this.fetchEmailsData()}/>
                         </div>
                     </PanelBody>
                 </Panel>
@@ -84,20 +109,15 @@ class EmailsInListApp extends Component {
 
 const mapStateToProps = (state) => {
     return {
+        emails: state.emails.list,
         emailsPagination: state.emails.pagination,
+        emailsFilters: state.emails.filters,
+        emailsSorts: state.emails.sorts,
     };
 };
 
-const mapDispatchToProps = dispatch => ({
-    fetchEmails: (folder, pagination) => {
-        dispatch(fetchEmails(folder, pagination));
-    },
-    clearEmails: () => {
-        dispatch(clearEmails());
-    },
-    setEmailsPagination: (pagination) => {
-        dispatch(setEmailsPagination(pagination));
-    },
-});
+const mapDispatchToProps = (dispatch) => {
+    return bindActionCreators({ fetchEmails, clearEmails, clearFilterEmail, setEmailsPagination }, dispatch);
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(EmailsInListApp);

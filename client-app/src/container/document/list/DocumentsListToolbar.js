@@ -17,6 +17,7 @@ const DocumentsListToolbar = (props) => {
             <div className="col-md-4">
                 <div className="btn-group" role="group">
                     <ButtonIcon iconName={"glyphicon-arrow-left"} onClickAction={browserHistory.goBack}/>
+                    <ButtonIcon iconName={"glyphicon-refresh"} onClickAction={props.resetDocumentsFilters} />
                     {permissions.createDocument &&
                     <div className="nav navbar-nav btn-group" role="group">
                         <button className="btn btn-success btn-sm" data-toggle="dropdown">

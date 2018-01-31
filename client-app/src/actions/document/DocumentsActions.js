@@ -1,6 +1,8 @@
-export const fetchDocuments = (pagination) => {
+export const fetchDocuments = (filters, sorts, pagination) => {
     return {
         type: 'FETCH_DOCUMENTS',
+        filters,
+        sorts,
         pagination,
     };
 };

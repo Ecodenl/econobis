@@ -13,5 +13,8 @@ use App\Helpers\RequestQuery\RequestJoiner;
 
 class Joiner extends RequestJoiner
 {
-
+    protected function applyContactsJoin($query)
+    {
+        $query->join('contacts', 'documents.contact_id', '=', 'contacts.id');
+    }
 }

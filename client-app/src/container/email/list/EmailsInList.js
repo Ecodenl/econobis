@@ -5,25 +5,33 @@ import ReactPaginate from 'react-paginate';
 import DataTable from '../../../components/dataTable/DataTable';
 import DataTableHead from '../../../components/dataTable/DataTableHead';
 import DataTableBody from '../../../components/dataTable/DataTableBody';
-import DataTableHeadTitle from '../../../components/dataTable/DataTableHeadTitle';
 import EmailsInListItem from './EmailsInListItem';
+import EmailsInListHead from "./EmailsInListHead";
+import EmailsInListFilter from "./EmailsInListFilter";
 
 const EmailsInList = props => {
     const { data = [], meta = {}, isLoading } = props.emails;
 
+    // On key Enter filter form will submit
+    const handleKeyUp = (e) => {
+        if (e.keyCode === 13) {
+            props.onSubmitFilter();
+        }
+    };
+
     return (
         <div>
+            <form onKeyUp={handleKeyUp}>
             <DataTable>
                 <DataTableHead>
-                    <tr className="thead-title">
-                        <DataTableHeadTitle title={'Datum'} width={"10%"}/>
-                        <DataTableHeadTitle title={'Mailbox'} width={"20%"} />
-                        <DataTableHeadTitle title={'Afzender'} width={"20%"} />
-                        <DataTableHeadTitle title={'Onderwerp'} width={"25%"} />
-                        <DataTableHeadTitle title={'Status'} width={"10%"} />
-                        <DataTableHeadTitle title={''} width={"5%"} />
-                    </tr>
+                    <EmailsInListHead
+                        fetchEmailsData={() => props.fetchEmailsData()}
+                    />
+                    <EmailsInListFilter
+                        onSubmitFilter={props.onSubmitFilter}
+                    />
                 </DataTableHead>
+
                 <DataTableBody>
                     {
                         data.length === 0 ? (
@@ -55,6 +63,7 @@ const EmailsInList = props => {
                     forcePage={props.emailsPagination.page}
                 />
             </div>
+            </form>
         </div>
     );
 };

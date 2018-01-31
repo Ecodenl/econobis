@@ -40,22 +40,20 @@ class EmailController
         $mailboxIds = $user->mailboxes()->pluck('mailbox_id');
 
         $queryBuilderPagination = $requestQuery->getQuery();
-
         $queryBuilderNoPagination = $requestQuery->getQueryNoPagination();
+
+        $queryBuilderPagination->whereIn('mailbox_id', $mailboxIds);
+        $queryBuilderNoPagination->whereIn('mailbox_id', $mailboxIds);
 
         if ($folder == 'concept') {
             $queryBuilderPagination->where('folder', $folder)
-                ->whereIn('mailbox_id', $mailboxIds)
                 ->orderBy('created_at', 'desc');
             $queryBuilderNoPagination->where('folder', $folder)
-                ->whereIn('mailbox_id', $mailboxIds)
                 ->orderBy('created_at', 'desc');
         } else {
             $queryBuilderPagination->where('folder', $folder)
-                ->whereIn('mailbox_id', $mailboxIds)
                 ->orderBy('date_sent', 'desc');
             $queryBuilderNoPagination->where('folder', $folder)
-                ->whereIn('mailbox_id', $mailboxIds)
                 ->orderBy('date_sent', 'desc');
         }
 

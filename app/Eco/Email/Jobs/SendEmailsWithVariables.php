@@ -79,8 +79,9 @@ class SendEmailsWithVariables
 
             ($email->cc != []) ? $mail->cc($email->cc) : null;
             ($email->bcc != []) ? $mail->bcc($email->bcc) : null;
-            $htmlBodyWithoutVariables = TemplateVariableHelper::stripRemainingVariableTags($email->html_body);
-            $mail->send(new GenericMail($email, $htmlBodyWithoutVariables));
+            $htmlBodyWithVariables = TemplateVariableHelper::replaceTemplateVariables($email->html_body, 'ik', Auth::user());
+            $htmlBodyWithVariables = TemplateVariableHelper::stripRemainingVariableTags($htmlBodyWithVariables);
+            $mail->send(new GenericMail($email, $htmlBodyWithVariables));
             $ccBccSent = true;
         }
 

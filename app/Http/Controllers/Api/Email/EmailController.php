@@ -187,13 +187,7 @@ class EmailController
             $this->storeEmailAttachments($attachments, $mailbox->id,
                 $email->id);
 
-        //if there are contact variables to replace
-        if ((strpos($sanitizedData['html_body'], '{contact_') !== false) || (strpos($request['htmlBody'], '{user_') !== false)
-        ) {
             (new SendEmailsWithVariables($email, json_decode($request['to'])))->handle();
-        } else {
-            (new SendEmail($email))->handle();
-        }
     }
 
     public function storeConcept(Mailbox $mailbox, Request $request)
@@ -279,7 +273,7 @@ class EmailController
 
     public function sendConcept(Email $email, Request $request){
         $email = $this->updateConcept($email, $request);
-        (new SendEmail($email))->handle();
+        (new SendEmailsWithVariables($email, json_decode($request['to'])))->handle();
         return FullEmail::make($email);
     }
 

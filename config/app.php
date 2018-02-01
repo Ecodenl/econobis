@@ -243,6 +243,6 @@ return [
         'last_name' => env('ADMIN_USER_LAST_NAME'),
         'email' => env('ADMIN_USER_EMAIL'),
         'password' => env('ADMIN_USER_PASSWORD'),
-
+        'alfresco_password' => env('ADMIN_USER_PASSWORD_ALFRESCO'),
     ],
 ];

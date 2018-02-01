@@ -4,7 +4,7 @@ import validator from 'validator';
 
 import validateNumber from '../../../../helpers/ValidateNumber';
 import PhoneNumberApi from '../../../../api/contact/PhoneNumberAPI';
-import { newPhoneNumber } from '../../../../actions/contact/ContactDetailsActions';
+import {newPhoneNumber, unsetPrimaryPhoneNumbers} from '../../../../actions/contact/ContactDetailsActions';
 import InputText from '../../../../components/form/InputText';
 import ButtonText from '../../../../components/button/ButtonText';
 import InputSelect from "../../../../components/form/InputSelect";
@@ -67,6 +67,9 @@ class ContactDetailsFormPhoneNew extends Component {
         // If no errors send form
         !hasErrors &&
             PhoneNumberApi.newPhoneNumber(phoneNumber).then((payload) => {
+                if(phoneNumber.primary){
+                    this.props.unsetPrimaryPhoneNumbers();
+                }
                 this.props.newPhoneNumber(payload);
                 this.props.toggleShowNew();
             });
@@ -133,6 +136,9 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = dispatch => ({
     newPhoneNumber: (id) => {
         dispatch(newPhoneNumber(id));
+    },
+    unsetPrimaryPhoneNumbers: () => {
+        dispatch(unsetPrimaryPhoneNumbers());
     },
 });
 

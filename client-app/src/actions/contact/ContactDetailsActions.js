@@ -137,3 +137,21 @@ export const deleteOccupation = (occupations) => {
         occupations,
     };
 };
+
+export const unsetPrimaryAddresses = () => {
+    return {
+        type: 'UNSET_PRIMARY_ADDRESSES',
+    };
+};
+
+export const unsetPrimaryPhoneNumbers = () => {
+    return {
+        type: 'UNSET_PRIMARY_PHONE_NUMBERS',
+    };
+};
+
+export const unsetPrimaryEmailAddresses = () => {
+    return {
+        type: 'UNSET_PRIMARY_EMAILS_ADDRESSES',
+    };
+};

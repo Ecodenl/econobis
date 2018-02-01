@@ -1,5 +1,6 @@
 <?php
 
+use App\Eco\User\User;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
@@ -16,6 +17,10 @@ class AlterUserAddAlfresco extends Migration
         Schema::table('users', function (Blueprint $table) {
             $table->text('alfresco_password');
         });
+
+        $admin = User::find(1);
+        $admin->alfresco_password = config('app.admin_user.password_alfresco');
+        $admin->save();
     }
 
     /**

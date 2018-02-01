@@ -106,8 +106,11 @@ class TemplateVariableHelper
 
     public static function getUserVar($model, $varname){
         switch ($varname) {
-            case 'naam':
-                return $model->present()->fullName();
+            case 'voornaam':
+                return $model->first_name;
+                break;
+            case 'achternaam':
+                return $model->present()->fullLastName();
                 break;
             default:
                 return '';
@@ -117,6 +120,9 @@ class TemplateVariableHelper
 
     public static function getContactGroupVar($model, $varname){
         switch ($varname) {
+            case 'naam':
+                return $model->name;
+                break;
             default:
                 return '';
                 break;

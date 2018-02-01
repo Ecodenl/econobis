@@ -154,7 +154,7 @@ export default function (state = {}, action) {
                     }
                 })
             };
-        case 'UNSET_PRIMARY_EMAILS_ADDRESSES':
+        case 'UNSET_PRIMARY_EMAIL_ADDRESSES':
             return {
                 ...state,
                 emailAddresses: state.emailAddresses.map((emailAddress) => {

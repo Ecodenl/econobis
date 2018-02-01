@@ -66,7 +66,7 @@ class ContactDetailsFormEmailNew extends Component {
         // If no errors send form
         !hasErrors &&
             EmailAddressAPI.newEmailAddress(emailAddress).then((payload) => {
-                if(emailAddress.primary){
+                if(emailAddress.primary) {
                     this.props.unsetPrimaryEmailAddresses();
                 }
                 this.props.newEmailAddress(payload);

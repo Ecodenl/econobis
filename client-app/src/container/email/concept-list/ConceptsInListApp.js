@@ -7,6 +7,7 @@ import ConceptsInList from './ConceptsInList';
 import ConceptsInListToolbar from './ConceptsInListToolbar';
 import Panel from "../../../components/panel/Panel";
 import PanelBody from "../../../components/panel/PanelBody";
+import filterHelper from "../../../helpers/FilterHelper";
 
 class ConceptsInListApp extends Component {
     constructor(props) {
@@ -27,8 +28,9 @@ class ConceptsInListApp extends Component {
     fetchEmailsData() {
         setTimeout(() => {
             const pagination = { limit: 20, offset: this.props.emailsPagination.offset };
-
-            this.props.fetchEmails('concept', pagination);
+            const filters = {};
+            const sorts = {};
+            this.props.fetchEmails('concept', filters, sorts, pagination);
         },100 );
     };
 
@@ -73,8 +75,8 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = dispatch => ({
-    fetchEmails: (folder, pagination) => {
-        dispatch(fetchEmails(folder, pagination));
+    fetchEmails: (folder, filters, sorts, pagination) => {
+        dispatch(fetchEmails(folder, filters, sorts, pagination));
     },
     clearEmails: () => {
         dispatch(clearEmails());

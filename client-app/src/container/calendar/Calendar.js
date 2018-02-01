@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {hashHistory} from "react-router";
 import BigCalendar from 'react-big-calendar';
-BigCalendar.setLocalizer(BigCalendar.momentLocalizer(moment));
+BigCalendar.momentLocalizer(moment);
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import moment from 'moment';
 moment.locale('nl');

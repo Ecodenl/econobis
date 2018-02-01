@@ -4,7 +4,10 @@ const path = require('path');
 const VENDOR_LIBS = [
     'react',  'redux', 'react-redux', 'react-dom',
     'jquery', 'bootstrap-sass', 'lodash',
-    'faker', 'react-chartjs-2', 'redux-saga', 'moment',
+    'axios', 'react-chartjs-2', 'redux-saga', 'moment',
+    'react-dropzone', 'js-file-download', 'validator', 'ibantools',
+    'react-paginate', 'react-day-picker', 'react-big-calendar',
+    '@tinymce/tinymce-react', 'tinymce'
 ];
 
 module.exports = {

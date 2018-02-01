@@ -5,7 +5,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const common = require('./webpack.common.js');
 const path = require('path');
 
-require('dotenv').config({ path: '.env.production' });
+require('dotenv').config({ path: '.env.production.local' });
 
 module.exports = merge(common, {
     output: {

@@ -6,6 +6,7 @@
   "scripts": {
     "serve": "webpack-dev-server --open --config webpack.dev.js",
     "build": "webpack --config webpack.prod.js -p",
+    "build:local": "webpack --config webpack.prod.local.js",
     "test": "jest --config=jest.config.json"
   },
   "repository": "",
@@ -17,7 +18,6 @@
     "babel-polyfill": "^6.26.0",
     "chart.js": "^2.6.0",
     "dotenv": "^4.0.0",
-    "faker": "^3.1.0",
     "ibantools": "^1.5.1",
     "jquery": "^3.2.1",
     "js-file-download": "^0.4.1",

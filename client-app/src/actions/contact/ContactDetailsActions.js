@@ -152,6 +152,6 @@ export const unsetPrimaryPhoneNumbers = () => {
 
 export const unsetPrimaryEmailAddresses = () => {
     return {
-        type: 'UNSET_PRIMARY_EMAILS_ADDRESSES',
+        type: 'UNSET_PRIMARY_EMAIL_ADDRESSES',
     };
 };

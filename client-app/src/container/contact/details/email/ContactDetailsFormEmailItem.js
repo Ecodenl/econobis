@@ -3,10 +3,14 @@ import { connect } from 'react-redux';
 import validator from 'validator';
 
 import EmailAddressAPI from '../../../../api/contact/EmailAddressAPI';
-import { updateEmailAddress } from '../../../../actions/contact/ContactDetailsActions';
+import {
+    unsetPrimaryAddresses, unsetPrimaryEmailAddresses,
+    updateEmailAddress
+} from '../../../../actions/contact/ContactDetailsActions';
 import ContactDetailsFormEmailView from './ContactDetailsFormEmailView';
 import ContactDetailsFormEmailEdit from './ContactDetailsFormEmailEdit';
 import ContactDetailsFormEmailDelete from './ContactDetailsFormEmailDelete';
+import {isEqual} from "lodash";
 
 class ContactDetailFormEmailItem extends Component {
     constructor(props) {
@@ -27,6 +31,17 @@ class ContactDetailFormEmailItem extends Component {
                 email: false,
             },
         };
+    };
+
+    componentWillReceiveProps(nextProps) {
+        if(!isEqual(this.state.emailAddress, nextProps.emailAddress)){
+            this.setState({
+                ...this.state,
+                emailAddress: {
+                    ...nextProps.emailAddress,
+                },
+            });
+        }
     };
 
     onLineEnter = () => {
@@ -101,6 +116,9 @@ class ContactDetailFormEmailItem extends Component {
         // If no errors send form
         !hasErrors &&
             EmailAddressAPI.updateEmailAddress(emailAddress).then((payload) => {
+                if(emailAddress.primary){
+                    this.props.unsetPrimaryEmailAddresses();
+                }
                 this.props.updateEmailAddress(payload);
                 this.closeEdit();
             });
@@ -144,6 +162,9 @@ class ContactDetailFormEmailItem extends Component {
 const mapDispatchToProps = dispatch => ({
     updateEmailAddress: (id) => {
         dispatch(updateEmailAddress(id));
+    },
+    unsetPrimaryEmailAddresses: () => {
+        dispatch(unsetPrimaryEmailAddresses());
     },
 });
 

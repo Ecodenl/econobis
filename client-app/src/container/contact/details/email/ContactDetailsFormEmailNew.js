@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import validator from 'validator';
 
 import EmailAddressAPI from '../../../../api/contact/EmailAddressAPI';
-import { newEmailAddress } from '../../../../actions/contact/ContactDetailsActions';
+import {newEmailAddress, unsetPrimaryEmailAddresses} from '../../../../actions/contact/ContactDetailsActions';
 import InputText from '../../../../components/form/InputText';
 import ButtonText from '../../../../components/button/ButtonText';
 import InputSelect from "../../../../components/form/InputSelect";
@@ -66,6 +66,9 @@ class ContactDetailsFormEmailNew extends Component {
         // If no errors send form
         !hasErrors &&
             EmailAddressAPI.newEmailAddress(emailAddress).then((payload) => {
+                if(emailAddress.primary){
+                    this.props.unsetPrimaryEmailAddresses();
+                }
                 this.props.newEmailAddress(payload);
                 this.props.toggleShowNew();
             });
@@ -133,6 +136,9 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = dispatch => ({
     newEmailAddress: (id) => {
         dispatch(newEmailAddress(id));
+    },
+    unsetPrimaryEmailAddresses: () => {
+        dispatch(unsetPrimaryEmailAddresses());
     },
 });
 

@@ -125,25 +125,6 @@ export default function (state = {}, action) {
                 ...state,
                 notes: state.notes.filter(note => note.id !== action.id),
             };
-        case 'MAKE_PRIMARY':
-            return {
-                ...state,
-                organisation: {
-                    ...state.organisation,
-                    people: state.organisation.people.map((person) =>
-                        person.id === action.id ?
-                            {
-                                ...person,
-                                primary: true,
-                            }
-                            :
-                            {
-                                ...person,
-                                primary: false,
-                            }
-                    )
-                }
-            };
         case 'NEW_OCCUPATION':
             return {
                 ...state,
@@ -152,21 +133,36 @@ export default function (state = {}, action) {
                     occupations: action.occupations
                 }
             };
-        case 'UPDATE_OCCUPATION':
+        case 'UNSET_PRIMARY_ADDRESSES':
             return {
                 ...state,
-                person: {
-                    ...state.person,
-                    occupations: action.occupations
-                }
+                    addresses: state.addresses.map((address) => {
+                        return {
+                            ...address,
+                            primary: false
+                        }
+                    })
+
             };
-        case 'DELETE_OCCUPATION':
+        case 'UNSET_PRIMARY_PHONE_NUMBERS':
             return {
                 ...state,
-                person: {
-                    ...state.person,
-                    occupations: action.occupations
-                }
+                phoneNumbers: state.phoneNumbers.map((phoneNumber) => {
+                    return {
+                        ...phoneNumber,
+                        primary: false,
+                    }
+                })
+            };
+        case 'UNSET_PRIMARY_EMAILS_ADDRESSES':
+            return {
+                ...state,
+                emailAddresses: state.emailAddresses.map((emailAddress) => {
+                    return {
+                        ...emailAddress,
+                        primary: false
+                    }
+                })
             };
         default:
             return state;

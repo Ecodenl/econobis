@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import validator from 'validator';
+import { isEqual } from 'lodash';
 
 import PhoneNumberApi from '../../../../api/contact/PhoneNumberAPI';
 import {
@@ -31,6 +32,17 @@ class ContactDetailFormPhoneItem extends Component {
                 number: false,
             },
         };
+    };
+
+    componentWillReceiveProps(nextProps) {
+        if(!isEqual(this.state.phoneNumber, nextProps.phoneNumber)){
+            this.setState({
+                ...this.state,
+                phoneNumber: {
+                    ...nextProps.phoneNumber,
+                },
+            });
+        }
     };
 
     onLineEnter = () => {

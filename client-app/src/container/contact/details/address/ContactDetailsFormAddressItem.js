@@ -7,6 +7,7 @@ import {unsetPrimaryAddresses, updateAddress} from '../../../../actions/contact/
 import ContactDetailsFormAddressView from './ContactDetailsFormAddressView';
 import ContactDetailsFormAddressEdit from './ContactDetailsFormAddressEdit';
 import ContactDetailsFormAddressDelete from './ContactDetailsFormAddressDelete';
+import {isEqual} from "lodash";
 
 class ContactDetailFormAddressItem extends Component {
     constructor(props) {
@@ -26,6 +27,17 @@ class ContactDetailFormAddressItem extends Component {
                 number: false,
             },
         };
+    };
+
+    componentWillReceiveProps(nextProps) {
+        if(!isEqual(this.state.address, nextProps.address)){
+            this.setState({
+                ...this.state,
+                address: {
+                    ...nextProps.address,
+                },
+            });
+        }
     };
 
     onLineEnter = () => {

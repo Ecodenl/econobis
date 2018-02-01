@@ -10,6 +10,7 @@ import {
 import ContactDetailsFormEmailView from './ContactDetailsFormEmailView';
 import ContactDetailsFormEmailEdit from './ContactDetailsFormEmailEdit';
 import ContactDetailsFormEmailDelete from './ContactDetailsFormEmailDelete';
+import {isEqual} from "lodash";
 
 class ContactDetailFormEmailItem extends Component {
     constructor(props) {
@@ -32,7 +33,16 @@ class ContactDetailFormEmailItem extends Component {
         };
     };
 
-
+    componentWillReceiveProps(nextProps) {
+        if(!isEqual(this.state.emailAddress, nextProps.emailAddress)){
+            this.setState({
+                ...this.state,
+                emailAddress: {
+                    ...nextProps.emailAddress,
+                },
+            });
+        }
+    };
 
     onLineEnter = () => {
         this.setState({

@@ -157,7 +157,7 @@ export default function (state = {}, action) {
         case 'UNSET_PRIMARY_EMAILS_ADDRESSES':
             return {
                 ...state,
-                emailAddresses: state.addresses.map((emailAddress) => {
+                emailAddresses: state.emailAddresses.map((emailAddress) => {
                     return {
                         ...emailAddress,
                         primary: false

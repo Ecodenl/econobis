@@ -16,8 +16,8 @@ class CreateEmailTemplate extends Migration
         Schema::create('email_templates', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
-            $table->string('subject');
-            $table->text('html_body');
+            $table->string('subject')->nullable();
+            $table->text('html_body')->nullable();
 
             $table->unsignedInteger('created_by_id');
             $table->foreign('created_by_id')

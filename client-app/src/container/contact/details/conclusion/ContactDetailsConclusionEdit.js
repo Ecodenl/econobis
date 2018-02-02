@@ -76,7 +76,7 @@ class ContactDetailsConclusionEdit extends Component {
             <form className="form-horizontal col-md-12" onSubmit={this.handleSubmit}>
                 <div className="row">
                     <InputSelect
-                        label={"Verantwoordelijke"}
+                        label={"Eigenaar"}
                         size={"col-sm-6"}
                         name={"ownedById"}
                         options={this.props.users}
@@ -94,7 +94,7 @@ class ContactDetailsConclusionEdit extends Component {
                         readOnly={true}
                     />
                     <InputText
-                        label={"Upgedate door door"}
+                        label={"Laatste update door"}
                         name={"updatedBy"}
                         value={updatedBy}
                         readOnly={true}
@@ -105,14 +105,14 @@ class ContactDetailsConclusionEdit extends Component {
                         label={"Gemaakt op"}
                         size={"col-sm-6"}
                         name={"createdAt"}
-                        value={createdAt ? moment(createdAt).format('LL') : 'Onbekend'}
+                        value={createdAt ? moment(createdAt.date).format('LL') : 'Onbekend'}
                         readOnly={true}
                     />
                     <InputDate
-                        label={"Laatst upgedate op"}
+                        label={"Laatste update op"}
                         size={"col-sm-6"}
                         name={"updatedAt"}
-                        value={updatedAt ? moment(updatedAt).format('LL') : 'Onbekend'}
+                        value={updatedAt ? moment(updatedAt.date).format('LL') : 'Onbekend'}
                         readOnly={true}
                     />
                 </div>

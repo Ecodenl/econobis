@@ -9,12 +9,22 @@ class DashboardChartMembers extends Component {
 
         this.state= {
             chartData: [],
+            amountOfDataPoints: [],
         }
     };
 
     componentDidMount() {
         OpportunitesAPI.getChartData().then(payload => {
-           this.setState({chartData: payload.data});
+            let amountOfDataPoints = 0;
+
+            for(let i=0; i < payload.data.length; i++){
+
+                amountOfDataPoints += parseInt(payload.data[i].count);
+
+            }
+
+           this.setState({chartData: payload.data, amountOfDataPoints: amountOfDataPoints});
+
         });
     }
 
@@ -65,17 +75,24 @@ class DashboardChartMembers extends Component {
 
     render() {
         const {data, options} = this.renderChartsData();
+        const{ amountOfDataPoints } = this.state;
 
         return (
             <div>
                 <h4>Kansen</h4>
                 <div>
-                    <Pie
-                        data={data}
-                        options={options}
-                        width={250}
-                        height={250}
-                    />
+                    {
+                        amountOfDataPoints === 0 ? (
+                                <span>Er zijn nog geen kansen gemaakt.</span>
+                        ) : (
+                            <Pie
+                                data={data}
+                                options={options}
+                                width={250}
+                                height={250}
+                            />
+                            )
+                    }
                 </div>
             </div>
         );

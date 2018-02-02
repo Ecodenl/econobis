@@ -10,6 +10,7 @@ import InputCheckbox from '../../../../components/form/InputCheckbox';
 import InputDate from '../../../../components/form/InputDate';
 import ButtonText from '../../../../components/button/ButtonText';
 import PanelFooter from "../../../../components/panel/PanelFooter";
+import validator from "validator";
 
 class ContactDetailsFormOtherEdit extends Component {
     constructor(props) {
@@ -67,11 +68,12 @@ class ContactDetailsFormOtherEdit extends Component {
         // Validation
         let errors = {};
         let hasErrors = false;
-
-        if(!ibantools.isValidIBAN(other.iban)){
-            errors.iban = true;
-            hasErrors = true;
-        };
+        if(!validator.isEmpty(other.iban)){
+            if (!ibantools.isValidIBAN(other.iban)) {
+                errors.iban = true;
+                hasErrors = true;
+            }
+        }
 
         this.setState({ ...this.state, errors: errors });
 

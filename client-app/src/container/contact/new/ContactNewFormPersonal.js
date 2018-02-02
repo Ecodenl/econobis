@@ -208,7 +208,6 @@ class ContactNewFormPersonal extends Component {
                         options={this.props.personTypes}
                         value={typeId}
                         onChangeAction={this.handleInputChange}
-                        readOnly={true}
                     />
                 </div>
 

@@ -198,7 +198,6 @@ class ContactNewFormOrganisation extends Component {
                         options={this.props.organisationTypes}
                         value={typeId}
                         onChangeAction={this.handleInputChange}
-                        readOnly={true}
                     />
                 </div>
 

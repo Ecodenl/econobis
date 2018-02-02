@@ -32,7 +32,7 @@ class FullUser extends Resource
             'email' => $this->email,
             'phoneNumber' => $this->phone_number,
             'mobile' => $this->mobile,
-            'occupations' => FullOccupation::collection($this->whenLoaded('occupations')),
+            'occupation' =>  $this->occupation,
             'lastVisit' => $this->last_visit,
             'visitCount' => $this->visit_count,
             'active' => $this->active,

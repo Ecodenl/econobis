@@ -55,6 +55,7 @@ class ContactDetailFormNoteItem extends Component {
                 id: this.props.note.id,
                 note: this.props.note.note,
                 createdAt: this.props.note.createdAt ? moment(this.props.note.createdAt.date).format('DD-MM-Y') : '',
+                createdBy: this.props.note.createdBy
             },
         });
 

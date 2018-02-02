@@ -189,7 +189,6 @@ class ContactNewFormOrganisation extends Component {
                         options={this.props.industries}
                         value={industryId}
                         onChangeAction={this.handleInputChange}
-                        readOnly={true}
                     />
                     <InputSelect
                         label={"Soort contact"}

@@ -76,7 +76,7 @@ class ContactGroupController extends Controller
         $contactGroup->fill($data);
         $contactGroup->save();
 
-        return FullContactGroup::make($contactGroup->fresh());
+        return FullContactGroup::make($contactGroup->load('responsibleUser'));
     }
 
     public function destroy(ContactGroup $contactGroup)

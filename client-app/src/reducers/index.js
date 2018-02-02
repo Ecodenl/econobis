@@ -15,12 +15,12 @@ import documentTemplateDetailsReducer from './document-template/DocumentTemplate
 import documentsReducer from './document/DocumentsReducer';
 import documentDetailsReducer from './document/DocumentDetailsReducer';
 import emailsReducer from './email/EmailsReducer';
-import emailDetailsReducer from './email/emailDetailsReducer';
-import emailTemplatesReducer from './email-template/emailTemplatesReducer';
-import emailTemplateDetailsReducer from './email-template/emailTemplateDetailsReducer';
+import emailDetailsReducer from './email/EmailDetailsReducer';
+import emailTemplatesReducer from './email-template/EmailTemplatesReducer';
+import emailTemplateDetailsReducer from './email-template/EmailTemplateDetailsReducer';
 import errorReducer from './general/ErrorReducer';
-import mailboxDetailsReducer from './mailbox/mailboxDetailsReducer';
-import mailboxesReducer from './mailbox/mailboxesReducer';
+import mailboxDetailsReducer from './mailbox/MailboxDetailsReducer';
+import mailboxesReducer from './mailbox/MailboxesReducer';
 import measuresReducer from './measure/MeasureReducer';
 import meDetailsReducer from './general/MeDetailsReducer';
 import opportunitiesReducer from './opportunity/OpportunitiesReducer';

@@ -204,7 +204,6 @@ class ContactDetailsFormOrganisationEdit extends Component {
                         options={this.props.industries}
                         value={industryId}
                         onChangeAction={this.handleInputChange}
-                        readOnly={true}
                     />
                     <InputSelect
                         label={"Soort contact"}
@@ -213,7 +212,6 @@ class ContactDetailsFormOrganisationEdit extends Component {
                         options={this.props.organisationTypes}
                         value={typeId}
                         onChangeAction={this.handleInputChange}
-                        readOnly={true}
                     />
                 </div>
 

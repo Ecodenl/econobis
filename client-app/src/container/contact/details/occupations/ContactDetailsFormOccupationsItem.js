@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import validator from 'validator';
+import { isEqual } from 'lodash';
 
 import OccupationAPI from '../../../../api/contact/OccupationAPI';
 import {deleteOccupation, updateOccupation} from '../../../../actions/contact/ContactDetailsActions';
@@ -36,6 +37,24 @@ class ContactDetailsFormOccupationsItem extends Component {
                 occupationIdError: false,
             },
         };
+    };
+
+    componentWillReceiveProps(nextProps) {
+        if(!isEqual(this.state.occupation, nextProps.occupation)){
+            this.setState({
+                ...this.state,
+                occupation: {
+                    ...nextProps.occupation,
+                    personId: nextProps.occupation.person.id,
+                    startDate: nextProps.occupation.startDate ? nextProps.occupation.startDate.date : '',
+                    endDate: nextProps.occupation.endDate ? nextProps.occupation.endDate.date : '',
+                    organisationId: nextProps.occupation.organisation.id,
+                    occupationId: nextProps.occupation.occupation.id,
+                    oldOrganisationId: nextProps.occupation.organisation.id,
+                    oldOccupationId: nextProps.occupation.occupation.id,
+                },
+            });
+        }
     };
 
     componentDidMount() {
@@ -150,18 +169,6 @@ class ContactDetailsFormOccupationsItem extends Component {
         !hasErrors &&
         OccupationAPI.updateOccupation(occupation).then((payload) => {
             this.props.updateOccupation(payload);
-
-            this.setState({
-                ...this.state,
-                occupation: {
-                    ...this.props.occupation,
-                    personId: this.props.occupation.person.id,
-                    startDate: this.props.occupation.startDate ? this.props.occupation.startDate.date : '',
-                    endDate: this.props.occupation.endDate ? this.props.occupation.endDate.date : '',
-                    organisationId: this.props.occupation.organisation ? this.props.occupation.organisation.id : '',
-                    occupationId: this.props.occupation.occupation ? this.props.occupation.occupation.id : '',
-                },
-            });
 
             this.closeEdit();
         });

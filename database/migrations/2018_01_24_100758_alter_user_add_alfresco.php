@@ -19,7 +19,7 @@ class AlterUserAddAlfresco extends Migration
         });
 
         $admin = User::find(1);
-        $admin->alfresco_password = config('app.admin_user.password_alfresco');
+        $admin->alfresco_password = config('app.admin_user.alfresco_password');
         $admin->save();
     }
 

@@ -32,7 +32,7 @@ class ContactNoteController extends ApiController
 
         $contactNote->save();
 
-        return new FullContactNote($contactNote->fresh());
+        return new FullContactNote($contactNote->fresh()->load('createdBy', 'updatedBy'));
     }
 
     public function update(Request $request, ContactNote $contactNote)
@@ -47,7 +47,7 @@ class ContactNoteController extends ApiController
         $contactNote->fill($this->arrayKeysToSnakeCase($data));
         $contactNote->save();
 
-        return new FullContactNote($contactNote->fresh());
+        return new FullContactNote($contactNote->fresh()->load('createdBy', 'updatedBy'));
     }
 
     public function destroy(ContactNote $contactNote)

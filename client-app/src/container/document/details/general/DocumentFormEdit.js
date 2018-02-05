@@ -123,7 +123,7 @@ class DocumentDetailsAPIFormEdit extends Component {
                         <InputText
                             label="Type"
                             name={"documentType"}
-                            value={documentType && documentType.name}
+                            value={this.props.documentDetails.documentType && this.props.documentDetails.documentType.name}
                             readOnly={true}
                         />
                     </div>
@@ -220,8 +220,6 @@ const mapDispatchToProps = dispatch => ({
 const mapStateToProps = (state) => {
     return {
         documentDetails: state.documentDetails,
-        documentTypes: state.systemData.documentTypes,
-        documentGroupes: state.systemData.documentGroupes,
     }
 };
 

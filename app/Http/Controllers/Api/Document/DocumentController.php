@@ -45,7 +45,7 @@ class DocumentController extends Controller
     {
         $this->authorize('view', Document::class);
 
-        $document->load('contact', 'registration', 'contactGroup', 'opportunity', 'sentBy', 'createdBy', 'template');
+        $document->load('contact', 'registration', 'contactGroup', 'sentBy', 'createdBy', 'template', 'opportunity.measure', 'opportunity.status');
 
         return FullDocument::make($document);
     }

@@ -176,9 +176,10 @@ class AlfrescoHelper
         curl_close($curl);
 
         //catch curl errors
-        if ($err) {
-            $err = json_decode($err);
-            abort($err['error']['statusCode']);
+        if (false) {
+
+            //$err = json_decode($err);
+            // abort($err['error']['statusCode']);
         }
         else {
             if($is_file) {
@@ -186,7 +187,6 @@ class AlfrescoHelper
             }
             else{
                 $decoded_response = json_decode($response, true);
-
                 //catch alfresco errors
                 if(array_key_exists('error', $decoded_response)){
                     abort($decoded_response['error']['statusCode']);

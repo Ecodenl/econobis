@@ -11,6 +11,7 @@ const DocumentsListToolbar = (props) => {
     };
 
     const { permissions = {} } = props;
+    const { meta = {} } = props.documents;
 
     return (
         <div className="row">
@@ -33,7 +34,9 @@ const DocumentsListToolbar = (props) => {
 
             </div>
             <div className="col-md-4"><h3 className="text-center table-title">Documenten</h3></div>
-            <div className="col-md-4"/>
+            <div className="col-md-4">
+                <div className="pull-right">Resultaten: { meta.total || 0 }</div>
+            </div>
         </div>
     );
 };
@@ -41,6 +44,7 @@ const DocumentsListToolbar = (props) => {
 const mapStateToProps = (state) => {
     return {
         permissions: state.meDetails.permissions,
+        documents: state.documents.list,
     }
 };
 

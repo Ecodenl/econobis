@@ -127,8 +127,8 @@ class EmailNewApp extends Component {
                 ...this.state,
                 email: {
                     ...this.state.email,
-                    subject: payload.subject ? payload.subject : this.state.subject,
-                    htmlBody: payload.htmlBody ? payload.htmlBody : this.state.htmlBody,
+                    subject: payload.subject ? payload.subject : this.state.email.subject,
+                    htmlBody: payload.htmlBody ? payload.htmlBody : this.state.email.htmlBody,
                 },
             });
         });

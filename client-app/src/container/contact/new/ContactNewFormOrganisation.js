@@ -11,6 +11,7 @@ import InputCheckbox from '../../../components/form/InputCheckbox';
 import InputDate from '../../../components/form/InputDate';
 import ButtonText from '../../../components/button/ButtonText';
 import PanelFooter from "../../../components/panel/PanelFooter";
+import * as ibantools from "ibantools";
 
 class ContactNewFormOrganisation extends Component {
     constructor(props) {
@@ -38,6 +39,7 @@ class ContactNewFormOrganisation extends Component {
             errors: {
                 name: false,
                 statusId: false,
+                iban: false,
             },
         }
     };
@@ -85,6 +87,13 @@ class ContactNewFormOrganisation extends Component {
             errors.statusId = true;
             hasErrors = true;
         };
+
+        if(!validator.isEmpty(organisation.iban)){
+            if (!ibantools.isValidIBAN(organisation.iban)) {
+                errors.iban = true;
+                hasErrors = true;
+            }
+        }
 
         this.setState({ ...this.state, errors: errors })
 
@@ -172,6 +181,7 @@ class ContactNewFormOrganisation extends Component {
                         name="iban"
                         value={iban}
                         onChangeAction={this.handleInputChange}
+                        error={this.state.errors.iban}
                     />
                     <InputText
                         label={"Website"}

@@ -162,11 +162,11 @@ class OpportunityFormEdit extends Component {
                         label={"Contact"}
                         name={"contactId"}
                         value={contactId}
-                        options={this.props.contacts}
+                        options={this.state.contacts}
                         onChangeAction={this.handleReactSelectChange}
                         optionName={'fullName'}
                         required={"required"}
-                        error={this.props.errors.contact}
+                        error={this.state.errors.contact}
                         multi={false}
                     />
                     <InputSelect

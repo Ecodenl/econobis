@@ -25,24 +25,22 @@ import {connect} from "react-redux";
         render() {
             return (
                 <Panel>
-                    <Panel>
-                        <PanelHeader>
-                            <span className="h5 text-bold">Offertes</span>
-                            {this.props.permissions.manageOpportunity &&
-                            <a role="button" className="pull-right" onClick={this.toggleShowNew}><span
-                                className="glyphicon glyphicon-plus"/></a>
-                            }
-                        </PanelHeader>
-                        <PanelBody>
-                            <div className="col-md-12">
-                                <OpportunityDetailsQuotationsList/>
-                            </div>
-                            <div className="col-md-12 margin-10-top">
-                                {this.state.showNew &&
-                                <OpportunityDetailsQuotationNew toggleShowNew={this.toggleShowNew}/>}
-                            </div>
-                        </PanelBody>
-                    </Panel>
+                    <PanelHeader>
+                        <span className="h5 text-bold">Offertes</span>
+                        {this.props.permissions.manageOpportunity &&
+                        <a role="button" className="pull-right" onClick={this.toggleShowNew}><span
+                            className="glyphicon glyphicon-plus"/></a>
+                        }
+                    </PanelHeader>
+                    <PanelBody>
+                        <div className="col-md-12">
+                            <OpportunityDetailsQuotationsList/>
+                        </div>
+                        <div className="col-md-12 margin-10-top">
+                            {this.state.showNew &&
+                            <OpportunityDetailsQuotationNew toggleShowNew={this.toggleShowNew}/>}
+                        </div>
+                    </PanelBody>
                 </Panel>
             );
         }

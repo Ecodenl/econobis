@@ -2,29 +2,22 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import ViewText from '../../../../components/form/ViewText';
+import moment from "moment/moment";
+moment.locale('nl');
 
 const RegistrationDetailsFormConclusionView = props => {
-    //const { createdBy = {}, updatedBy = {},  owner = {} } = props.registrationDetails;
+    const { createdAt, updatedAt } = props.registrationDetails;
 
     return (
         <div>
             <div className="row">
                 <ViewText
-                    label={"Ingevoerd door"}
-                    value={'Admin'}
-                    link={''}
+                    label={"Gemaakt op"}
+                    value={createdAt ? moment(createdAt.date).format('L') : 'Onbekend'}
                 />
                 <ViewText
-                    label={"Laatst bewerkt door"}
-                    value={''}
-                    link={''}
-                />
-            </div>
-
-            <div className="row">
-                <ViewText
-                    label="Eigenaar"
-                    value={''}
+                    label={"Laatste update door"}
+                    value={updatedAt ? moment(updatedAt.date).format('L') : 'Onbekend'}
                 />
             </div>
         </div>

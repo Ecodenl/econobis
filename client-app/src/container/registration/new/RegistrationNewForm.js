@@ -13,27 +13,6 @@ const RegistrationNewForm = props => {
                         <RegistrationNewFormGeneral contactId={props.contactId} addressId={props.addressId}/>
                     </PanelBody>
                 </Panel>
-
-                <Panel>
-                    <PanelHeader>
-                        <span className="h5 text-bold">Reeds genomen maatregelen</span>
-                    </PanelHeader>
-                </Panel>
-                <Panel>
-                    <PanelHeader>
-                        <span className="h5 text-bold">Gewenste maatregelen</span>
-                    </PanelHeader>
-                </Panel>
-                <Panel>
-                    <PanelHeader>
-                        <span className="h5 text-bold">Opmerkingen</span>
-                    </PanelHeader>
-                </Panel>
-                <Panel>
-                    <PanelHeader>
-                        <span className="h5 text-bold">Afsluiting</span>
-                    </PanelHeader>
-                </Panel>
             </div>
         );
 };

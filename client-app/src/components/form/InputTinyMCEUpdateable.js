@@ -14,7 +14,6 @@ import 'tinymce/plugins/textcolor';
 import 'tinymce/plugins/contextmenu';
 
 import { Editor } from '@tinymce/tinymce-react';
-import InputText from "./InputText";
 import {isEqual} from "lodash";
 
 class InputTinyMCEUpdateable extends Component {
@@ -23,11 +22,15 @@ class InputTinyMCEUpdateable extends Component {
     };
 
     componentWillReceiveProps(nextProps) {
-        const editor = tinymce.EditorManager.get('tinyMCEUpdateable');
-        if (nextProps.value && !isEqual(editor.getContent({format: 'raw'}), nextProps.value)) {
-            editor.setContent(nextProps.value);
-            editor.selection.select(editor.getBody(), true);
-            editor.selection.collapse(false);
+        if(this.props.value !== nextProps.value) {
+            setTimeout(() => { console.log(window.tinymce)}, 500);
+
+            const editor = window.tinymce.EditorManager.get('tinyMCEUpdateable');
+            if (nextProps.value && !isEqual(editor.getContent({format: 'raw'}), nextProps.value)) {
+                editor.setContent(nextProps.value);
+                editor.selection.select(editor.getBody(), true);
+                editor.selection.collapse(false);
+            }
         }
     };
 

@@ -42,7 +42,8 @@ class ContactDetailsFormNoteNew extends Component {
                     <PanelBody>
                         <div className="row">
                             <div className="col-sm-12">
-                            <textarea name={note} value={note} onChange={this.handleInputChange} className="form-control input-sm" />
+                                <textarea name={note} value={note} onChange={this.handleInputChange}
+                                          className="form-control input-sm"/>
                             </div>
                         </div>
 

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { hashHistory } from 'react-router';
 import { connect } from 'react-redux';
 import moment from 'moment';
-
+moment.locale('nl');
 class CampaignsListItem extends Component {
     constructor(props) {
         super(props);
@@ -36,8 +36,8 @@ class CampaignsListItem extends Component {
         return (
           <tr className={this.state.highlightRow} onDoubleClick={() => this.openItem(id)} onMouseEnter={() => this.onRowEnter()} onMouseLeave={() => this.onRowLeave()}>
               <td>{ number }</td>
-              <td>{ startDate ? moment(startDate.date).format('DD-MM-Y') : 'Onbekend'}</td>
-              <td>{ endDate ? moment(endDate.date).format('DD-MM-Y') : 'Onbekend'}</td>
+              <td>{ startDate ? moment(startDate).format('L') : 'Onbekend'}</td>
+              <td>{ endDate ? moment(endDate).format('L') : 'Onbekend'}</td>
               <td>{ name }</td>
               <td>{ type }</td>
               <td>{ status }</td>

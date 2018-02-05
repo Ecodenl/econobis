@@ -5,7 +5,7 @@ import { authSaga} from '../general/AuthSaga';
 
 export function* fetchContactsSaga({filters, sorts, pagination}) {
     try {
-        yield call(authSaga);
+        //yield call(authSaga);
         const contacts = yield call(ContactsAPI.fetchContacts, {filters, sorts, pagination});
         yield put({ type: 'FETCH_CONTACTS_SUCCESS', contacts })
     } catch (error) {

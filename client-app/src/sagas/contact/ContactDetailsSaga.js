@@ -8,7 +8,7 @@ import {authSaga} from "../general/AuthSaga";
 
 export function* fetchContactDetailsSaga({ payload }) {
     try {
-        yield call(authSaga);
+        //yield call(authSaga);
         const contactDetails = yield call(ContactDetailsAPI.getContactDetails, payload);
         yield put({ type: 'FETCH_CONTACT_DETAILS_SUCCESS', contactDetails });
     } catch (error) {

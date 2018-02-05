@@ -4,7 +4,7 @@ import {authSaga} from "../general/AuthSaga";
 
 export function* fetchContactGroupsSaga() {
     try {
-        yield call(authSaga);
+        //yield call(authSaga);
         const contactGroups = yield call(ContactGroupAPI.fetchContactGroups);
         yield put({ type: 'FETCH_CONTACT_GROUPS_SUCCESS', contactGroups });
     } catch (error) {

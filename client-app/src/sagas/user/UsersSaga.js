@@ -4,7 +4,7 @@ import {authSaga} from "../general/AuthSaga";
 
 export function* fetchUserSaga({filters, sorts}) {
     try {
-        yield call(authSaga);
+        //yield call(authSaga);
         const users = yield call(UsersAPI.fetchUsers, {filters, sorts});
         yield put({ type: 'FETCH_USERS_SUCCESS', users });
     } catch (error) {

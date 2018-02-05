@@ -7,7 +7,7 @@ import {authSaga} from "./AuthSaga";
 export function* meDetailsSaga() {
     for (let i = 0; i < 3; i++) {
         try {
-            yield call(authSaga);
+            //yield call(authSaga);
             const meDetails = yield call(MeAPI.fetchMeDetails, null);
             yield all([
                 put({ type: 'FETCH_ME_DETAILS_SUCCESS', meDetails }),

@@ -4,6 +4,7 @@ namespace App\Eco\Registration;
 
 use App\Eco\Address\Address;
 use App\Eco\Campaign\Campaign;
+use App\Eco\Document\Document;
 use App\Eco\Opportunity\Opportunity;
 use App\Eco\Task\Task;
 use Illuminate\Database\Eloquent\Model;
@@ -63,4 +64,10 @@ class Registration extends Model
     {
         return $this->hasMany(Task::class);
     }
+
+    public function documents()
+    {
+        return $this->hasMany(Document::class);
+    }
+
 }

@@ -181,6 +181,7 @@ class RegistrationController extends ApiController
             'notes',
             'campaign',
             'reasons',
+            'documents',
         ]);
 
         return FullRegistration::make($registration);

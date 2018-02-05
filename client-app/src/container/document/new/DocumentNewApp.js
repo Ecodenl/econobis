@@ -31,7 +31,7 @@ class DocumentNewApp extends Component {
             document: {
                 contactId: this.props.params.contactId || '',
                 contactGroupId: this.props.params.contactGroupId || '',
-                registrationId: '',
+                registrationId: this.props.params.registrationId || '',
                 opportunityId: this.props.params.opportunityId || '',
                 documentType: this.props.params.type,
                 description: '',

@@ -41,7 +41,9 @@ class ContactDetailsFormNoteNew extends Component {
                 <Panel className={'panel-grey'}>
                     <PanelBody>
                         <div className="row">
-                            <textarea name={note} value={note} onChange={this.handleInputChange} className="col-sm-12" />
+                            <div className="col-sm-12">
+                            <textarea name={note} value={note} onChange={this.handleInputChange} className="form-control input-sm" />
+                            </div>
                         </div>
 
                         <div className="pull-right btn-group margin-10-top" role="group">

@@ -1,7 +1,7 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import moment from 'moment';
-import { Link } from 'react-router';
+moment.locale('nl');
 
 import ViewText from '../../../../components/form/ViewText';
 

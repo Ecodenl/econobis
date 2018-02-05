@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import moment from 'moment';
+moment.locale('nl');
 import validator from 'validator';
 
 import InputText from '../../../../components/form/InputText';
@@ -26,8 +27,8 @@ class CampaignFormEdit extends Component {
                 name,
                 number,
                 description: description ? description : '',
-                startDate: startDate ? startDate : '',
-                endDate: endDate ? endDate : '',
+                startDate,
+                endDate,
                 goal,
                 statusId: status ? status.id : '',
                 typeId: type && type.id,
@@ -157,14 +158,14 @@ class CampaignFormEdit extends Component {
                         label={"Begindatum"}
                         size={"col-sm-6"}
                         name={"startDate"}
-                        value={ startDate ? moment(startDate).format('LL') : startDate}
+                        value={ startDate ? startDate : ''}
                         onChangeAction={this.handleStartDate}
                     />
                     <InputDate
                     label={"Einddatum"}
                     size={"col-sm-6"}
                     name={"endDate"}
-                    value={endDate ? moment(endDate).format('LL') : ''}
+                    value={ endDate ? endDate : ''}
                     onChangeAction={this.handleEndDate}
                     />
                 </div>
@@ -174,7 +175,7 @@ class CampaignFormEdit extends Component {
                         label={"Doel"}
                         size={"col-sm-6"}
                         name={"goal"}
-                        value={goal}
+                        value={goal ? goal : ''}
                         onChangeAction={this.handleInputChange}
                     />
                     <InputSelect

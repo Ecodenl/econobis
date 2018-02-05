@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 
 import MeasureDetailsToolbar from './MeasureDetailsToolbar';
 import MeasureDetailsForm from './MeasureDetailsForm';
-import MeasureDetailsHarmonica from './../harmonica/MeasureDetailsHarmonica';
+import MeasureDetailsHarmonica from './MeasureDetailsHarmonica';
 import Panel from "../../../components/panel/Panel";
 import PanelBody from '../../../components/panel/PanelBody';
 

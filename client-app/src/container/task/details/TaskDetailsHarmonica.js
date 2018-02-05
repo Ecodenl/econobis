@@ -59,7 +59,7 @@ class TaskDetailsHarmonica extends Component {
                     showUploadsList={this.state.toggleShowList.uploads}
                     toggleUploadfile={this.toggleUploadfile}
                     showModalUploadfile={this.state.showModalUploadfile}
-                    uploadCount={this.props.taskDetails.uploadCount}
+                    attachmentCount={this.props.taskDetails.attachmentCount}
                     id={this.props.taskDetails.id}
                 />
             </div>

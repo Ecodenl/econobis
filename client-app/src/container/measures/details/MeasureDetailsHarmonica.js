@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 
 import Panel from "../../../components/panel/Panel";
 import PanelBody from '../../../components/panel/PanelBody';
-import CampaignList from "./CampaignList";
+import CampaignList from "./harmonica/CampaignList";
 
 class MeasureDetailsHarmonica extends Component {
     constructor(props){
@@ -25,23 +25,10 @@ class MeasureDetailsHarmonica extends Component {
         });
     };
 
-    newDocument = () => {
-        hashHistory.push(`/document/nieuw/`);
-    };
-
     render(){
         const { permissions = {} } = this.props;
         return (
             <div className="col-md-12 margin-10-top">
-                <Panel className={"harmonica-button"}>
-                    <PanelBody>
-                        <div className="col-sm-12">
-                            <span className="">DOCUMENTEN <span className="badge">3</span></span>
-                                <a role="button" className="pull-right" onClick={this.newDocument}><span
-                                    className="glyphicon glyphicon-plus glyphicon-white"/></a>
-                        </div>
-                    </PanelBody>
-                </Panel>
                 <Panel className={"harmonica-button"}>
                     <PanelBody>
                         <div className="col-sm-12" onClick={this.toggleShowCampaigns}>

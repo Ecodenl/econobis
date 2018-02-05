@@ -133,7 +133,15 @@ export default function (state = {}, action) {
                     occupations: action.occupations
                 }
             };
-            case 'UPDATE_OCCUPATION':
+        case 'UPDATE_OCCUPATION':
+            return {
+                ...state,
+                person: {
+                    ...state.person,
+                    occupations: action.occupations
+                }
+            };
+        case 'DELETE_OCCUPATION':
             return {
                 ...state,
                 person: {

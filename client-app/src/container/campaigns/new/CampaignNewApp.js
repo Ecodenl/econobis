@@ -8,6 +8,8 @@ import CampaignNewToolbar from './CampaignNewToolbar';
 import CampaignNew from './CampaignNew';
 
 import CampaignDetailsAPI from '../../../api/campaign/CampaignDetailsAPI';
+import Panel from "../../../components/panel/Panel";
+import PanelBody from "../../../components/panel/PanelBody";
 
 class CampaignNewApp extends Component {
     constructor(props) {
@@ -107,25 +109,31 @@ class CampaignNewApp extends Component {
 
     render() {
         return (
-            <div>
-                <div className="panel panel-default">
-                    <div className="panel-body">
-                        <div className="col-md-12 margin-10-top">
-                            <CampaignNewToolbar/>
-                        </div>
-                        <div className="col-md-12 margin-10-top-above">
-                            <CampaignNew
-                                campaign={this.state.campaign}
-                                errors={this.state.errors}
-                                handleInputChange={this.handleInputChange}
-                                handleStartDate={this.handleStartDate}
-                                handleEndDate={this.handleEndDate}
-                                handleMeasureIds={this.handleMeasureIds}
-                                handleSubmit={this.handleSubmit}
-                            />
-                        </div>
+            <div className="row">
+                <div className="col-md-9">
+                    <div className="col-md-12">
+                        <CampaignNewToolbar />
+                    </div>
+
+                    <div className="col-md-12">
+                        <Panel>
+                            <PanelBody>
+                                <div className="col-md-12">
+                                    <CampaignNew
+                                        campaign={this.state.campaign}
+                                        errors={this.state.errors}
+                                        handleInputChange={this.handleInputChange}
+                                        handleStartDate={this.handleStartDate}
+                                        handleEndDate={this.handleEndDate}
+                                        handleMeasureIds={this.handleMeasureIds}
+                                        handleSubmit={this.handleSubmit}
+                                    />
+                                </div>
+                            </PanelBody>
+                        </Panel>
                     </div>
                 </div>
+                <div className="col-md-3"/>
             </div>
         )
     }

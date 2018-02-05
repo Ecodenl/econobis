@@ -49,7 +49,7 @@ class CampaignsListApp extends Component {
                         </div>
                         <div className="col-md-12 margin-10-top">
                             <CampaignsList
-                                handlePageClick={this.handlePageClick}
+                                handlePageClick={this.handlePageClick} fetchCampaignsData={this.fetchCampaignsData}
                             />
                         </div>
                     </div>

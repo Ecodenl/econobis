@@ -95,6 +95,7 @@ class CampaignsList extends Component {
                 this.state.showDeleteItem &&
                 <CampaignsDeleteItem
                     closeDeleteItemModal={this.closeDeleteItemModal}
+                    fetchCampaignsData={this.props.fetchCampaignsData}
                     {...this.state.deleteItem}
                 />
             }

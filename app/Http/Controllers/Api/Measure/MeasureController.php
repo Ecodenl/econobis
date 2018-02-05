@@ -79,6 +79,7 @@ class MeasureController extends ApiController
         return FullMeasure::make($measure->fresh());
     }
 
+    //TODO NOT WORKING!!
     public function destroy(Measure $measure)
     {
         $this->authorize('manage', Measure::class);

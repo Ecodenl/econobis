@@ -18,6 +18,7 @@ class DocumentTemplatePeek extends Resource
             'id' => $this->id,
             'name' => $this->name,
             'group' => $this->document_group,
+            'type' => $this->template_type
         ];
     }
 }

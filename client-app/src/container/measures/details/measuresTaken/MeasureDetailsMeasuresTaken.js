@@ -25,20 +25,18 @@ import {connect} from "react-redux";
         render() {
             return (
                 <Panel>
-                    <Panel>
-                        <PanelHeader>
-                            <span className="h5 text-bold">Aanmelding maatregel genomen</span>
-                            {this.props.permissions.manageRegistration &&
-                            <a role="button" className="pull-right" onClick={() => hashHistory.push(`/contacten`)}><span
-                                className="glyphicon glyphicon-plus"/></a>
-                            }
-                        </PanelHeader>
-                        <PanelBody>
-                            <div className="col-md-12">
-                                <MeasureDetailsMeasuresTakenList/>
-                            </div>
-                        </PanelBody>
-                    </Panel>
+                    <PanelHeader>
+                        <span className="h5 text-bold">Aanmelding maatregel genomen</span>
+                        {this.props.permissions.manageRegistration &&
+                        <a role="button" className="pull-right" onClick={() => hashHistory.push(`/contacten`)}><span
+                            className="glyphicon glyphicon-plus"/></a>
+                        }
+                    </PanelHeader>
+                    <PanelBody>
+                        <div className="col-md-12">
+                            <MeasureDetailsMeasuresTakenList/>
+                        </div>
+                    </PanelBody>
                 </Panel>
             );
         }

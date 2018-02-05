@@ -40,7 +40,7 @@ const EmailTemplateFormView = props => {
                 <div className="row">
                     <ViewText
                         label={"Kans"}
-                        value={ opportunity && opportunity.name }
+                        value={ opportunity && (opportunity.measure.name + ' ' + opportunity.status.name) }
                     />
                     <ViewText
                         label={"Template"}

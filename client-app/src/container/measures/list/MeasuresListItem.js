@@ -39,7 +39,7 @@ class MeasuresListItem extends Component {
               <td>{ name }</td>
               <td>
                   {(this.state.showActionButtons ? <a role="button" onClick={() => this.openItem(id)}><span className="glyphicon glyphicon-pencil mybtn-success" /> </a> : '')}
-                  {(this.state.showActionButtons && this.props.permissions.manageMeasure ? <a role="button" onClick={this.props.showDeleteItemModal.bind(this, id, name)}><span className="glyphicon glyphicon-trash mybtn-danger"  /> </a> : '')}
+                  /*{(this.state.showActionButtons && this.props.permissions.manageMeasure ? <a role="button" onClick={this.props.showDeleteItemModal.bind(this, id, name)}><span className="glyphicon glyphicon-trash mybtn-danger"  /> </a> : '')}*/
               </td>
             </tr>
         )

@@ -29,7 +29,7 @@ class DocumentTemplateDetailsApp extends Component {
                     <div className="col-md-12 margin-10-top">
                         <Panel>
                             <PanelBody className={"panel-small"}>
-                                < DocumentTemplateDetailsToolbar />
+                                <DocumentTemplateDetailsToolbar />
                             </PanelBody>
                         </Panel>
                     </div>

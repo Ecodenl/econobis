@@ -3,35 +3,34 @@ import {hashHistory} from 'react-router';
 import { connect } from 'react-redux';
 import moment from 'moment';
 
-class TaskList extends Component {
+class DocumentsList extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            relatedTasks: '',
+            relatedDocuments: '',
         };
     }
 
     openItem = (id) => {
-        hashHistory.push(`/taak/${id}`);
+        hashHistory.push(`/document/${id}`);
     };
 
     render() {
-        const {relatedTasks} = this.props;
+        const {relatedDocuments} = this.props;
         return (
             <div>
-                {relatedTasks == '' &&
+                {relatedDocuments == '' &&
                 <div>Geen taken gevonden</div>
                 }
 
-                {relatedTasks != '' &&
+                {relatedDocuments != '' &&
                 <table className="table harmonica-table">
                     <tbody>
-                    {relatedTasks.map((relatedTask, i) => {
+                    {relatedDocuments.map((item, i) => {
                         return (
-                            <tr onClick={() => this.openItem(relatedTask.id)} key={i}>
-                                <td className='col-xs-5 clickable'>{moment(relatedTask.createdAt.date).format('L')}</td>
-                                <td className='col-xs-1 clickable'>-</td>
-                                <td className='col-xs-6 clickable'>{relatedTask.name}</td>
+                            <tr onClick={() => this.openItem(item.id)} key={i}>
+                                <td className='col-xs-5 clickable'>{moment(item.created_at).format('L')}</td>
+                                <td className='col-xs-6 clickable'>{item.filename}</td>
                             </tr>
                         )
                     })
@@ -46,8 +45,8 @@ class TaskList extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        relatedTasks: state.contactDetails.relatedTasks,
+        relatedDocuments: state.contactDetails.relatedDocuments,
     };
 };
 
-export default connect(mapStateToProps)(TaskList);
+export default connect(mapStateToProps)(DocumentsList);

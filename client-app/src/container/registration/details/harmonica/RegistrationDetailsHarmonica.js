@@ -6,6 +6,7 @@ import Panel from "../../../../components/panel/Panel";
 import PanelBody from '../../../../components/panel/PanelBody';
 import OpportunityList from './OpportunityList';
 import TaskList from './TaskList';
+import DocumentHarmonica from "./DocumentHarmonica";
 
 class RegistrationDetailsHarmonica extends Component {
     constructor(props){
@@ -14,7 +15,12 @@ class RegistrationDetailsHarmonica extends Component {
         this.state = {
             toggleShowOpportunities: false,
             toggleShowTasks: false,
-        }
+            toggleShowList: {
+                documents: false,
+            },
+        };
+
+        this.toggleShowList = this.toggleShowList.bind(this);
     };
 
     newOpportunity = () => {
@@ -29,6 +35,20 @@ class RegistrationDetailsHarmonica extends Component {
 
     newTask = () => {
         hashHistory.push(`/taak/nieuw/aanmelding/${this.props.id}`);
+    };
+
+    newDocument = (type) => {
+        hashHistory.push(`/document/nieuw/${type}/aanmelding/${this.props.id}`);
+    };
+
+    toggleShowList(name) {
+        this.setState({
+            ...this.state,
+            toggleShowList: {
+                ...this.state.toggleShowList,
+                [name]: !this.state.toggleShowList[name],
+            }
+        });
     };
 
     toggleTask = () => {
@@ -64,6 +84,12 @@ class RegistrationDetailsHarmonica extends Component {
                         </div>
                     </PanelBody>
                 </Panel>
+                <DocumentHarmonica
+                    toggleShowList={() => this.toggleShowList('documents')}
+                    showDocumentsList={this.state.toggleShowList.documents}
+                    newDocument={this.newDocument}
+                    documentCount={this.props.registrationDetails.documentCount}
+                />
             </div>
         )
     }

@@ -3,6 +3,7 @@
 namespace App\Http\Resources\Registration;
 
 use App\Http\Resources\Address\FullAddress;
+use App\Http\Resources\Document\FullDocument;
 use App\Http\Resources\GenericResource;
 use Illuminate\Http\Resources\Json\Resource;
 use App\Eco\Contact\Contact;
@@ -36,6 +37,8 @@ class FullRegistration extends Resource
                 'relatedOpportunities' => ($this->opportunities()->with('measure', 'status')->get()),
                 'taskCount' => $this->tasks()->count(),
                 'relatedTasks' => $this->tasks()->get(),
+                'documentCount' => $this->documents()->count(),
+                'relatedDocuments' => FullDocument::collection($this->whenLoaded('documents')),
             ];
     }
 }

@@ -45,15 +45,6 @@ class CampaignDetailsHarmonica extends Component {
                         </div>
                     </PanelBody>
                 </Panel>
-                <Panel className={"harmonica-button"}>
-                    <PanelBody>
-                        <div className="col-sm-12">
-                            <span className="">DOCUMENTEN <span className="badge">3</span></span>
-                                <a role="button" className="pull-right" onClick={this.newDocument}><span
-                                    className="glyphicon glyphicon-plus glyphicon-white"/></a>
-                        </div>
-                    </PanelBody>
-                </Panel>
             </div>
         )
     }

@@ -10,7 +10,7 @@ import TaskHarmonica from "./harmonica/TaskHarmonica";
 import ContactGroupHarmonica from "./harmonica/ContactGroupHarmonica";
 import EmailInboxHarmonica from './harmonica/EmailInboxHarmonica';
 import EmailSentHarmonica from "./harmonica/EmailSentHarmonica";
-import DocumentHarmonica from '../../contact-groups/details/harmonica/DocumentHarmonica';
+import DocumentHarmonica from './harmonica/DocumentHarmonica';
 
 class ContactDetailsHarmonica extends Component {
     constructor(props){

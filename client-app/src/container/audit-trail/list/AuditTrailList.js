@@ -55,7 +55,7 @@ class AuditTrailList extends Component {
                         <DataTablePagination
                             onPageChangeAction={this.props.handlePageClick}
                             totalRecords={meta.total}
-                            initialPage={this.props.contactsPagination.page}
+                            initialPage={this.props.auditTrailPagination.page}
                         />
                     </div>
                 </form>

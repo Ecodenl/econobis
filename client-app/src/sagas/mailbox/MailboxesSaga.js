@@ -4,7 +4,7 @@ import {authSaga} from "../general/AuthSaga";
 
 export function* fetchMailboxesSaga() {
     try {
-        yield call(authSaga);
+        //yield call(authSaga);
         const mailboxes = yield call(MailboxAPI.fetchMailboxes);
 
         yield all([

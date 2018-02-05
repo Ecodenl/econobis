@@ -5,7 +5,7 @@ import {authSaga} from "../general/AuthSaga";
 
 export function* fetchTasksSaga({filters, sorts, pagination}) {
     try {
-        yield call(authSaga);
+        //yield call(authSaga);
         yield put({ type: 'FETCH_TASKS_LOADING' });
         const tasks = yield call(TasksAPI.fetchTasks, {filters, sorts, pagination});
         yield all([

@@ -4,7 +4,7 @@ import {authSaga} from "../general/AuthSaga";
 
 export function* fetchEmailTemplatesSaga() {
     try {
-        yield call(authSaga);
+        //yield call(authSaga);
         const emailTemplates = yield call(EmailTemplateAPI.fetchEmailTemplates);
         yield all([
             put({ type: 'FETCH_EMAIL_TEMPLATES_LOADING_SUCCESS'}),

@@ -4,7 +4,7 @@ import {authSaga} from "../general/AuthSaga";
 
 export function* fetchAuditTrailSaga({filters, sorts, pagination}) {
     try {
-        yield call(authSaga);
+        //yield call(authSaga);
         yield put({ type: 'FETCH_AUDIT_TRAIL_LOADING' });
         const auditTrail = yield call(AuditTrailAPI.fetchAuditTrail, {filters, sorts, pagination});
         yield all([

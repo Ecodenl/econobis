@@ -4,7 +4,7 @@ import {authSaga} from "../general/AuthSaga";
 
 export function* fetchDocumentsSaga({filters, sorts, pagination}) {
     try {
-        yield call(authSaga);
+        //yield call(authSaga);
         yield put({ type: 'FETCH_DOCUMENTS_LOADING' });
         yield put({ type: 'FETCH_DOCUMENTS_SUCCESS', documents });
         const documents = yield call(DocumentsAPI.fetchDocuments, {filters, sorts, pagination});

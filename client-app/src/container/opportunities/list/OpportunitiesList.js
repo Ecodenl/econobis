@@ -99,6 +99,7 @@ class OpportunitiesList extends Component {
                 this.state.showDeleteItem &&
                 <OpportunityDeleteItem
                     closeDeleteItemModal={this.closeDeleteItemModal}
+                    fetchOpportunitiesData={this.props.fetchOpportunitiesData}
                     {...this.state.deleteItem}
                 />
             }

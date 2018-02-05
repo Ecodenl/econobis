@@ -52,7 +52,7 @@ class OpportunitiesListApp extends Component {
                             <OpportunitiesListToolbar/>
                         </div>
                         <div className="col-md-12 margin-10-top">
-                            <OpportunitiesList handlePageClick={this.handlePageClick} />
+                            <OpportunitiesList handlePageClick={this.handlePageClick} fetchOpportunitiesData={this.fetchOpportunitiesData} />
                         </div>
                     </div>
                 </div>

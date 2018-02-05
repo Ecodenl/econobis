@@ -1,7 +1,5 @@
 import React from 'react';
-import { connect } from 'react-redux';
 
-import { fetchOpportunities } from '../../../actions/opportunity/OpportunitiesActions';
 import Modal from '../../../components/modal/Modal';
 import OpportunityAPI from '../../../api/opportunity/OpportunityDetailsAPI';
 
@@ -10,7 +8,7 @@ const OpportunityDeleteItem = (props) => {
 
     const confirmAction = () => {
         OpportunityAPI.deleteOpportunity(props.id).then(() => {
-            props.fetchOpportunities();
+            props.fetchOpportunitiesData();
         });
         props.closeDeleteItemModal();
     };
@@ -28,10 +26,4 @@ const OpportunityDeleteItem = (props) => {
     );
 };
 
-const mapDispatchToProps = dispatch => ({
-    fetchOpportunities: () => {
-        dispatch(fetchOpportunities());
-    },
-});
-
-export default connect(null, mapDispatchToProps)(OpportunityDeleteItem);
+export default OpportunityDeleteItem;

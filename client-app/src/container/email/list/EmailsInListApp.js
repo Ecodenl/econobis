@@ -84,7 +84,7 @@ class EmailsInListApp extends Component {
 
     render() {
         return (
-                <Panel className="col-md-9">
+                <Panel className="col-lg-12">
                     <PanelBody>
                         <div className="col-md-12 margin-10-top">
                             <EmailsInListToolbar

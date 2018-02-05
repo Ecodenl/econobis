@@ -27,7 +27,7 @@ class ContactGroupsListApp extends Component {
 
     render() {
         return (
-            <Panel className="col-md-9">
+            <Panel className="col-md-12">
                 <PanelBody>
                     <div className="col-md-12 margin-10-top">
                         <ContactGroupsListToolbar

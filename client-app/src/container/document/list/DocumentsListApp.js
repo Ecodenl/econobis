@@ -63,7 +63,7 @@ class DocumentsListApp extends Component {
     render() {
         return (
             <div>
-                <div className="panel panel-default col-md-10">
+                <div className="panel panel-default col-md-12">
                     <div className="panel-body">
                         <div className="col-md-12 margin-10-top">
                             <DocumentsListToolbar

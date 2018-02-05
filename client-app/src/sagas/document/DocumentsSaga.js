@@ -6,11 +6,8 @@ export function* fetchDocumentsSaga({filters, sorts, pagination}) {
     try {
         //yield call(authSaga);
         yield put({ type: 'FETCH_DOCUMENTS_LOADING' });
-        yield put({ type: 'FETCH_DOCUMENTS_SUCCESS', documents });
         const documents = yield call(DocumentsAPI.fetchDocuments, {filters, sorts, pagination});
-        yield [
-            put({ type: 'FETCH_DOCUMENTS_SUCCESS', documents }),
-        ];
+        yield put({ type: 'FETCH_DOCUMENTS_SUCCESS', documents });
     } catch (error) {
         yield put({ type: 'FETCH_DOCUMENTS_ERROR', error });
     }

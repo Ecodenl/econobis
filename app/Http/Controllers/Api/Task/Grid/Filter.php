@@ -29,12 +29,12 @@ class Filter extends RequestFilter
         'datePlanned' => 'tasks.date_planned',
         'dateStarted' => 'tasks.date_started',
         'statusId' => 'tasks.status_id',
-        'responsibleUserName' => 'responsible_user.name',
+        'responsibleUserName' => 'users.last_name',
     ];
 
     protected $joins = [
         'contactFullName' => 'contact',
-        'responsibleUserName' => 'responsibleUser',
+        'responsibleUserName' => 'users',
     ];
 
     protected $defaultTypes = [

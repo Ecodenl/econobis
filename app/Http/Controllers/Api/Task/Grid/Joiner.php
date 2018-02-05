@@ -19,7 +19,7 @@ class Joiner extends RequestJoiner
         $query->join('contacts', 'tasks.contact_id', '=', 'contacts.id');
     }
 
-    protected function applyResponsibleUserJoin($query)
+    protected function applyUsersJoin($query)
     {
         $query->join('users', 'tasks.responsible_user_id', '=', 'users.id');
     }

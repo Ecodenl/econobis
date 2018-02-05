@@ -104,7 +104,7 @@ class SidebarMenu extends Component {
                         <NavIcon><SvgIcon size={20} icon={cog}/></NavIcon>
                         <NavText> Instellingen </NavText>
                         {this.props.permissions.viewDocumentTemplate &&
-                        <Nav id="mailboxes">
+                        <Nav id="documents">
                             <NavText><Link className="sidebar-link" to="document-templates">Document
                                 templates</Link></NavText>
                         </Nav>

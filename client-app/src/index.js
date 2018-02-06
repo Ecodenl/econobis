@@ -4,6 +4,7 @@ import { Provider } from 'react-redux';
 import Routes from './router';
 import './styles/style.scss';
 import 'babel-polyfill';
+import 'moment/locale/nl';
 
 import * as authActions from './actions/general/AuthActions';
 

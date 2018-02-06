@@ -9,7 +9,7 @@
 
 </head>
 <body>
-<script type="text/javascript" src="./polyfill.js"></script>
+<script type="text/javascript" src="./js/polyfill.js"></script>
 <div id="root"></div>
 </body>
 </html>

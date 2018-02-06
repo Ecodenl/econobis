@@ -9,6 +9,7 @@
 
 </head>
 <body>
+<script type="text/javascript" src="./polyfill.js"></script>
 <div id="root"></div>
 </body>
 </html>

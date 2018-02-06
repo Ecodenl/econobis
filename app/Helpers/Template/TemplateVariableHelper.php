@@ -10,6 +10,7 @@ namespace App\Helpers\Template;
 
 
 use App\Eco\Document\Document;
+use Illuminate\Support\Facades\Auth;
 
 class TemplateVariableHelper
 {
@@ -183,6 +184,7 @@ class TemplateVariableHelper
         $html = TemplateVariableHelper::replaceTemplateVariables($html, 'kans', $document->opportunity);
         $html = TemplateVariableHelper::replaceTemplateVariables($html, 'aanmelding', $document->registration);
         $html = TemplateVariableHelper::replaceTemplateVariables($html, 'afzender', $document->sentBy);
+        $html = TemplateVariableHelper::replaceTemplateVariables($html, 'ik', Auth::user());
 
         //Als laatste verwijder alle niet bestaande tags
         $html = TemplateVariableHelper::stripRemainingVariableTags($html);

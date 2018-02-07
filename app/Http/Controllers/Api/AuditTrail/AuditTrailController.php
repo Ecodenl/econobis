@@ -34,7 +34,7 @@ class AuditTrailController extends ApiController
 
     public function peekModels()
     {
-       $auditModels = AuditTrail::all()->unique('revisionable_type')->pluck('revisionable_type')->toArray();
+       $auditModels = AuditTrail::groupBy('revisionable_type')->pluck('revisionable_type')->toArray();
 
        $dropdownModels = [];
 

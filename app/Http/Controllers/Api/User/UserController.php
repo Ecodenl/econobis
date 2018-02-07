@@ -40,7 +40,7 @@ class UserController extends Controller
             ->string('phoneNumber')->whenMissing('')->alias('phone_number')->next()
             ->string('mobile')->whenMissing('')->next()
             ->boolean('active')->whenMissing(true)->next()
-            ->string('occupation')->onEmpty(null)->default(null)->next()
+            ->string('occupation')->next()
             ->get();
 
         //create random password
@@ -78,7 +78,7 @@ class UserController extends Controller
             ->string('phoneNumber')->alias('phone_number')->next()
             ->string('mobile')->next()
             ->boolean('active')->next()
-            ->string('occupation')->onEmpty(null)->default(null)->next()
+            ->string('occupation')->next()
             ->get();
 
 

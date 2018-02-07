@@ -80,7 +80,6 @@ class OrganisationController extends ApiController
             'iban' => '',
             'liable' => 'boolean',
             'liabilityAmount' => 'numeric',
-            'ownerId' => 'exists:users,id',
         ]);
 
         $organisationData = $request->validate([
@@ -103,10 +102,10 @@ class OrganisationController extends ApiController
         ]);
 
         $contact = $organisation->contact;
-        $contact->fill($this->arrayKeysToSnakeCase($contactData));
 
-        if($contact->isDirty('iban')) $this->authorize('update_iban', $contact);
-        if($contact->isDirty('owner_id')) $this->authorize('update_owner', $contact);
+        if($contact->iban != $contactData['iban']) $this->authorize('updateIban', $contact);
+
+        $contact->fill($this->arrayKeysToSnakeCase($contactData));
 
         $contact->save();
 

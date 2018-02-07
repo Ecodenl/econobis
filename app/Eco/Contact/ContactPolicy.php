@@ -63,7 +63,7 @@ class ContactPolicy
      * Determine whether the user can delete the address.
      *
      * @param  \App\Eco\User\User  $user
-     * @param  \App\Eco\Contact\Contact  $address
+     * @param  \App\Eco\Contact\Contact  $contact
      * @return mixed
      */
     public function updateIban(User $user, Contact $contact)
@@ -75,7 +75,7 @@ class ContactPolicy
      * Determine whether the user can delete the address.
      *
      * @param  \App\Eco\User\User  $user
-     * @param  \App\Eco\Contact\Contact  $address
+     * @param  \App\Eco\Contact\Contact  $contact
      * @return mixed
      */
     public function updateOwner(User $user, Contact $contact)

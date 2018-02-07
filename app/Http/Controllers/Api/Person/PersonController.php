@@ -127,6 +127,9 @@ class PersonController extends ApiController
             'newsletter' => 'boolean',
             'liable' => 'boolean',
         ]);
+
+        if($contact->iban != $contactData['iban']) $this->authorize('updateIban', $contact);
+        
         $contact->fill($this->arrayKeysToSnakeCase($contactData));
         $contact->save();
 

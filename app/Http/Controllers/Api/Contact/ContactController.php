@@ -85,6 +85,8 @@ class ContactController extends Controller
 
     public function associateOwner(Contact $contact, User $user)
     {
+        $this->authorize('updateOwner', $contact);
+
         $contact->owner()->associate($user);
         $contact->save();
     }

@@ -35,7 +35,6 @@ class FullOrganisation extends Resource
             'vatNumber' => $this->vat_number,
             'squareMeters' => $this->square_meters,
             'people' => FullOccupationPerson::collection($this->whenLoaded('people')),
-            'contactPerson' => FullPerson::make($this->whenLoaded('contactPerson')),
             'amountOfQuotations' => $this->quotations->count(),
             'amountOfWonQuotations' => $this->amountOfWonQuotations(),
             'quotations' => FullOpportunityQuotation::collection($this->whenLoaded('quotations')),

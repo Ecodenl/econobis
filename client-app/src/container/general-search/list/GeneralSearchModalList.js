@@ -11,7 +11,7 @@ class GeneralSearchModalList extends Component {
         super(props);
 
         this.state = {
-            gridVisible: false,
+            gridVisible: true,
         };
 
     }

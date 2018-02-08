@@ -16,7 +16,7 @@ const DocumentNewFormCreateDocument = ({document, templates, errors, handleInput
                     options={documentGroups}
                     onChangeAction={handleDocumentGroupChange}
                     required={"required"}
-                    errors={errors.documentGroup}
+                    error={errors.documentGroup}
                 />
                 <InputSelect
                     label="Template"
@@ -25,6 +25,7 @@ const DocumentNewFormCreateDocument = ({document, templates, errors, handleInput
                     options={templates}
                     onChangeAction={handleInputChange}
                     required={"required"}
+                    error={errors.templateId}
                 />
             </div>
             <div className="row">

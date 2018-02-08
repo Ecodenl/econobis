@@ -96,9 +96,6 @@ class DocumentsList extends Component {
                     initialPage={this.props.documentsPagination.page}
                 />
             </div>
-            <div className="col-md-3">
-                <div className="pull-right">Resultaten: { meta.total || 0 }</div>
-            </div>
             </form>
             {
                 this.state.showDeleteItem &&

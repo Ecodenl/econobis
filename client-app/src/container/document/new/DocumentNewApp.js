@@ -47,6 +47,7 @@ class DocumentNewApp extends Component {
                 docLinkedAtAny: false,
                 documentGroup: false,
                 uploadFailed: false,
+                templateId: false
             },
         };
 
@@ -173,6 +174,11 @@ class DocumentNewApp extends Component {
 
         if(validator.isEmpty(documentGroup)){
             errors.documentGroup = true;
+            hasErrors = true;
+        };
+
+        if(validator.isEmpty(templateId)){
+            errors.templateId = true;
             hasErrors = true;
         };
 

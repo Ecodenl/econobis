@@ -22,6 +22,7 @@ class Joiner extends RequestJoiner
     protected function applyUsersJoin($query)
     {
         $query->join('users', 'tasks.responsible_user_id', '=', 'users.id');
+        $query->leftJoin('last_name_prefixes', 'users.last_name_prefix_id', '=', 'last_name_prefixes.id');
     }
 
 

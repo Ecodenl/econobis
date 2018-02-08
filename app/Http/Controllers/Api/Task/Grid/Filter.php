@@ -41,4 +41,21 @@ class Filter extends RequestFilter
         '*' => 'ct',
         'statusId' => 'eq',
     ];
+
+    protected function applyResponsibleUserNameFilter($query, $type, $data)
+    {
+        // Elke term moet in een van de naam velden voor komen.
+        // Opbreken in array zodat 2 losse woorden ook worden gevonden als deze in 2 verschillende velden staan
+        $terms = explode(' ', $data);
+
+        foreach ($terms as $term){
+            $query->where(function($query) use ($term) {
+                $query->where('users.last_name', 'LIKE', '%' . $term . '%');
+                $query->orWhere('users.first_name', 'LIKE', '%' . $term . '%');
+                $query->orWhere('last_name_prefixes.name', 'LIKE', '%' . $term . '%');
+            });
+        }
+
+        return false;
+    }
 }

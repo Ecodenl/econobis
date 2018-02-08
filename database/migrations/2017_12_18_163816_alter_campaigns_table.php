@@ -54,7 +54,6 @@ class AlterCampaignsTable extends Migration
         });
 
         $campaignType = [
-            'Verplicht',
             'Huis aan huis',
             'Email',
             'Internet',

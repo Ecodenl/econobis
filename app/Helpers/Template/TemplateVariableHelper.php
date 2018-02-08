@@ -87,6 +87,24 @@ class TemplateVariableHelper
                     return $model->full_name;
                 }
                 break;
+            case 'voornaam':
+                if($model->type_id == 'person'){
+                    return $model->person->first_name;
+                }
+                elseif($model->type_id == 'organisation'){
+                    return '';
+                }
+                break;
+            case 'achternaam':
+                if($model->type_id == 'person'){
+                    $prefix = optional($model->person->lastNamePrefix)->name;
+                    return $prefix ? $prefix . ' ' . $model->person->last_name : $model->person->last_name;
+                }
+                elseif($model->type_id == 'organisation'){
+                    return $model->full_name;
+                }
+                break;
+                break;
             case 'adres':
                 return optional($model->primaryAddress)->street . ' ' . optional($model->primaryAddress)->number;
                 break;
@@ -112,6 +130,12 @@ class TemplateVariableHelper
                 break;
             case 'achternaam':
                 return $model->present()->fullLastName();
+                break;
+            case 'telefoon':
+                return $model->phone_number;
+                break;
+            case 'email':
+                return $model->email;
                 break;
             default:
                 return '';

@@ -6,15 +6,25 @@ import DocumentDetailsToolbar from './DocumentDetailsToolbar';
 import DocumentDetailsForm from './DocumentDetailsForm';
 import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
+import DocumentDetailsAPI from "../../../api/document/DocumentDetailsAPI";
+import fileDownload from "js-file-download";
 
 class DocumentDetailsApp extends Component {
     constructor(props){
         super(props);
+
+        this.download = this.download.bind(this);
     };
 
     componentDidMount() {
         this.props.fetchDocumentDetails(this.props.params.id);
     };
+
+    download() {
+        DocumentDetailsAPI.download(this.props.documentDetails.id).then((payload) => {
+            fileDownload(payload.data, this.props.documentDetails.filename);
+        });
+    }
 
     render() {
         return (
@@ -23,7 +33,8 @@ class DocumentDetailsApp extends Component {
                     <div className="col-md-12 margin-10-top">
                         <Panel>
                             <PanelBody className={"panel-small"}>
-                                <DocumentDetailsToolbar />
+                                <DocumentDetailsToolbar
+                                download={this.download}/>
                             </PanelBody>
                         </Panel>
                     </div>
@@ -40,7 +51,7 @@ class DocumentDetailsApp extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        emailTemplateDetails: state.emailTemplateDetails,
+        documentDetails: state.documentDetails,
     };
 };
 

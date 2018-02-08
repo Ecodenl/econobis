@@ -18,7 +18,7 @@ export function* meDetailsSaga() {
             if (i < 2) {
                 yield call(delay, 2000);
             } else {
-                yield put({ type: 'FETCH_ME_DETAILS_ERROR', error });
+                yield put({ type: 'UNAUTH_USER' });
             }
         }
     }

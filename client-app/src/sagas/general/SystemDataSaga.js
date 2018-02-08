@@ -16,7 +16,7 @@ export function* systemDataSaga() {
             if (i < 2) {
                 yield call(delay, 2000);
             } else {
-                yield put({ type: 'FETCH_SYSTEM_DATA_ERROR', error });
+                yield put({ type: 'UNAUTH_USER' });
             }
         }
     }

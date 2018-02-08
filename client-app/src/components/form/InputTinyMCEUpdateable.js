@@ -23,7 +23,6 @@ class InputTinyMCEUpdateable extends Component {
 
     componentWillReceiveProps(nextProps) {
         if(this.props.value !== nextProps.value) {
-            setTimeout(() => { console.log(window.tinymce)}, 500);
 
             const editor = window.tinymce.EditorManager.get('tinyMCEUpdateable');
             if (nextProps.value && !isEqual(editor.getContent({format: 'raw'}), nextProps.value)) {

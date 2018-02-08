@@ -30,7 +30,7 @@ const MailboxDetailsFormGeneralView = props => {
                         />
                         <ViewText
                             label={"Wachtwoord"}
-                            value={password}
+                            value='••••••••••'
                         />
                     </div>
                 </PanelBody>

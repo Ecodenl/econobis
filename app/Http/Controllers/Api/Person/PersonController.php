@@ -129,6 +129,8 @@ class PersonController extends ApiController
         ]);
 
         if($contact->iban != $contactData['iban']) $this->authorize('updateIban', $contact);
+
+        $contactData['liabilityAmount'] != '' ?: $contactData['liabilityAmount'] = 0;
         
         $contact->fill($this->arrayKeysToSnakeCase($contactData));
         $contact->save();
@@ -143,6 +145,7 @@ class PersonController extends ApiController
             'primary' => 'boolean',
             'occupationId' => 'nullable',
         ]);
+
         $person->fill($this->arrayKeysToSnakeCase($personData));
         $person->save();
 

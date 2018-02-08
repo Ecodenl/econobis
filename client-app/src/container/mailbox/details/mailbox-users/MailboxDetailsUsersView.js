@@ -10,7 +10,7 @@ const MailboxDetailsUsersView = props => {
         <div className={`row border ${props.highlightLine}`} onMouseEnter={() => props.onLineEnter()} onMouseLeave={() => props.onLineLeave()}>
             <div className="col-sm-11" >{fullName}</div>
             <div className="col-sm-1">
-                {(props.showActionButtons && this.props.permissions.createMailbox ? <a role="button" onClick={props.toggleDelete}><span className="glyphicon glyphicon-trash mybtn-danger"  /> </a> : '')}
+                {(props.showActionButtons && props.permissions.createMailbox ? <a role="button" onClick={props.toggleDelete}><span className="glyphicon glyphicon-trash mybtn-danger"  /> </a> : '')}
             </div>
         </div>
     );

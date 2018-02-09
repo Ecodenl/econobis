@@ -244,4 +244,8 @@ class IntakeController extends ApiController
     {
         return IntakePeek::collection(Intake::orderBy('id')->get());
     }
+
+    public function getAmountOfActiveIntakes(){
+        return Intake::count();
+    }
 }

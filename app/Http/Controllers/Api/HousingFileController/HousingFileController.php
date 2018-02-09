@@ -232,4 +232,8 @@ class HousingFileController extends ApiController
     {
         return HousingFilePeek::collection(HousingFile::orderBy('id')->get());
     }
+
+    public function getAmountOfActiveHousingFiles(){
+        return HousingFile::count();
+    }
 }

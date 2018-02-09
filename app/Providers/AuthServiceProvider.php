@@ -10,6 +10,8 @@ use App\Eco\Document\Document;
 use App\Eco\Document\DocumentPolicy;
 use App\Eco\DocumentTemplate\DocumentTemplate;
 use App\Eco\DocumentTemplate\DocumentTemplatePolicy;
+use App\Eco\HousingFile\HousingFile;
+use App\Eco\Intake\HousingFilePolicy;
 use App\Eco\Mailbox\Mailbox;
 use App\Eco\Mailbox\MailboxPolicy;
 use App\Eco\Measure\Measure;
@@ -62,6 +64,7 @@ class AuthServiceProvider extends ServiceProvider
         Opportunity::class => OpportunityPolicy::class,
         Task::class => TaskPolicy::class,
         Intake::class => IntakePolicy::class,
+        HousingFile::class => HousingFilePolicy::class,
         Campaign::class => CampaignPolicy::class,
         Measure::class => MeasurePolicy::class,
         Document::class => DocumentPolicy::class,

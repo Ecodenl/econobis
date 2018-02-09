@@ -17,11 +17,11 @@ class GridIntake extends Resource
     {
            return [
                 'id' => $this->id,
-                'fullName' => $this->address->contact->full_name,
-                'sourceNames' => $this->sources->pluck('name'),
-                'status' => optional($this->status)->name,
                 'createdAt' => $this->created_at,
-                'measuresRequestedNames' => $this->address->measures_requested->measures()->pluck('name'),
+                'contact' => $this->contact()->pluck('full_name'),
+                'fullAddress' => optional($this->address)->present()->streetAndNumber(),
+                'measuresRequestedNames' => $this->measuresRequested()->pluck('name'),
+                'status' => optional($this->status)->name,
             ];
     }
 }

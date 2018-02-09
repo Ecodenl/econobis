@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Resources\Intake;
+namespace App\Http\Resources\HousingFile;
 
 use App\Http\Resources\Address\FullAddress;
 use App\Http\Resources\Campaign\FullCampaign;
@@ -15,7 +15,7 @@ use App\Eco\Contact\Contact;
 use App\Eco\Address\Address;
 use App\Eco\Measure\Measure;
 
-class FullIntake extends Resource
+class FullHousingFile extends Resource
 {
     /**
      * Transform the resource into an array.
@@ -32,25 +32,22 @@ class FullIntake extends Resource
                 'contact' => FullContact::make($this->whenLoaded('contact')),
                 'address' => FullAddress::make($this->whenLoaded('address')),
                 'fullAddress' => $this->address->present()->streetAndNumber(),
-                'campaign' => FullCampaign::make($this->whenLoaded('campaign')),
-                'status' => GenericResource::make($this->whenLoaded('status')),
-                'sources' => GenericResource::collection($this->whenLoaded('sources')),
-                'reasons' => GenericResource::collection($this->whenLoaded('reasons')),
-                'note' => $this->note,
-                'measuresRequested' => FullMeasure::collection($this->whenLoaded('measuresRequested')),
-                'opportunities' => FullOpportunity::collection($this->whenLoaded('opportunities')),
+                'buildingType' => GenericResource::make($this->whenLoaded('buildingType')),
+                'buildYear' => $this->build_year,
+                'surface' => $this->surface,
+                'roofType' => GenericResource::make($this->whenLoaded('roofType')),
+                'energyLabel' => GenericResource::make($this->whenLoaded('energyLabel')),
+                'floors' => $this->floors,
+                'energyLabelStatus' => GenericResource::make($this->whenLoaded('energyLabelStatus')),
+                'monument' => $this->monument,
                 'createdBy' => FullUser::make($this->whenLoaded('createdBy')),
                 'updatedBy' => FullUser::make($this->whenLoaded('updatedBy')),
                 'createdAt' => $this->created_at,
                 'updatedAt' => $this->updated_at,
-                'taskCount' => $this->tasks()->count(),
-                'relatedTasks' => $this->tasks()->get(),
                 'noteCount' => $this->notes()->count(),
                 'relatedNotes' => $this->notes()->get(),
                 'documentCount' => $this->documents()->count(),
                 'relatedDocuments' => FullDocument::collection($this->whenLoaded('documents')),
-                'emailCount' => $this->emails()->count(),
-                'relatedEmails' => $this->emails()->get(),
             ];
     }
 }

@@ -56,8 +56,8 @@ Route::namespace('Api')
 
         Route::get('/housing-file/grid', 'HousingFile\HousingFileController@grid');
         Route::get('/housing-file/peek', 'HousingFile\HousingFileController@peek');
-        Route::get('/contact/{contact}/housingFile', 'HousingFile\HousingFileController@getStore');
-        Route::post('/contact/housingFile', 'HousingFile\HousingFileController@store');
+        Route::get('/contact/{contact}/housing-file', 'HousingFile\HousingFileController@getStore');
+        Route::post('/contact/housing-file', 'HousingFile\HousingFileController@store');
         Route::get('/housing-file/{housingFile}', 'HousingFile\HousingFileController@show');
         Route::post('/housing-file/{housingFile}/update', 'HousingFile\HousingFileController@update');
         Route::post('/housing-file/{housingFile}/delete', 'HousingFile\HousingFileController@destroy');

@@ -1,11 +1,11 @@
 import axios from 'axios';
 
 const URL_API = process.env.URL_API;
-const URL_INTAKE = `${URL_API}/api/intake`;
+const URL_HOUSING_FILE = `${URL_API}/api/housing-file`;
 
 export default {
-    fetchIntakeDetails: function (id) {
-        const requestUrl = `${URL_INTAKE}/${id}`;
+    fetchHousingFilesDetails: function (id) {
+        const requestUrl = `${URL_HOUSING_FILE}/${id}`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
@@ -19,8 +19,8 @@ export default {
             );
     },
 
-    newIntake: (intake) => {
-        const requestUrl = `${URL_API}/api/contact/intake`;
+    newHousingFile: (intake) => {
+        const requestUrl = `${URL_API}/api/contact/housing-file`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
@@ -33,8 +33,8 @@ export default {
             });
     },
 
-    updateIntake: (intake) => {
-        const requestUrl = `${URL_INTAKE}/${intake.id}/update`;
+    updateHousingFile: (housingFile) => {
+        const requestUrl = `${URL_HOUSING_FILE}/${housingFile.id}/update`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
@@ -47,8 +47,8 @@ export default {
             });
     },
 
-    deleteIntake: (id) => {
-        const requestUrl = `${URL_INTAKE}/${id}/delete`;
+    deleteHousingFile: (id) => {
+        const requestUrl = `${URL_HOUSING_FILE}/${id}/delete`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
@@ -61,8 +61,8 @@ export default {
             });
     },
 
-    attachMeasureRequested: (intakeId, measureId) => {
-        const requestUrl = `${URL_INTAKE}/${intakeId}/${measureId}/attach`;
+    attachMeasureTaken: (housingFileId, measureId) => {
+        const requestUrl = `${URL_HOUSING_FILE}/${housingFileId}/${measureId}/attach`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
@@ -75,8 +75,8 @@ export default {
             });
     },
 
-    detachMeasureRequested: (intakeId, measureId) => {
-        const requestUrl = `${URL_INTAKE}/${intakeId}/${measureId}/detach`;
+    detachMeasureTaken: (housingFileId, measureId) => {
+        const requestUrl = `${URL_HOUSING_FILE}/${housingFileId}/${measureId}/detach`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 

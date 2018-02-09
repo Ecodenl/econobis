@@ -10,6 +10,10 @@ use App\Eco\DocumentTemplate\DocumentTemplateObserver;
 use App\Eco\DocumentTemplate\DocumentTemplate;
 use App\Eco\EmailTemplate\EmailTemplate;
 use App\Eco\EmailTemplate\EmailTemplateObserver;
+use App\Eco\HousingFile\HousingFile;
+use App\Eco\HousingFile\HousingFileObserver;
+use App\Eco\Intake\Intake;
+use App\Eco\Intake\IntakeObserver;
 use App\Eco\Measure\Measure;
 use App\Eco\Measure\MeasureObserver;
 use App\Eco\Opportunity\Opportunity;
@@ -58,6 +62,8 @@ class ObserverServiceProvider extends ServiceProvider
         EmailTemplate::observe(EmailTemplateObserver::class);
         Document::observe(DocumentObserver::class);
         DocumentTemplate::observe(DocumentTemplateObserver::class);
+        Intake::observe(IntakeObserver::class);
+        HousingFile::observe(HousingFileObserver::class);
     }
 
     /**

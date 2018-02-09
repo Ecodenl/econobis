@@ -45,9 +45,9 @@ import OpportunitiesListApp from './container/opportunities/list/OpportunitiesLi
 import OpportunityDetailsApp from './container/opportunities/details/OpportunityDetailsApp';
 import OpportunityNewApp from './container/opportunities/new/OpportunityNewApp';
 import PermissionHelper from './helpers/PermissionHelper';
-import RegistrationDetailsApp from './container/registration/details/RegistrationDetailsApp';
-import RegistrationNewApp from './container/registration/new/RegistrationNewApp';
-import RegistrationsListApp from './container/registration/list/RegistrationsListApp';
+import IntakeDetailsApp from './container/intake/details/IntakeDetailsApp';
+import IntakeNewApp from './container/intake/new/IntakeNewApp';
+import IntakesListApp from './container/intake/list/IntakesListApp';
 import RequireAuth from './helpers/RequireAuth';
 import TaskDetailsApp from './container/task/details/TaskDetailsApp';
 import TaskNewApp from './container/task/new/TaskNewApp';
@@ -93,7 +93,7 @@ const Routes = () => {
                 <Route path="document/nieuw/:type/contact/:contactId" component={DocumentNewApp} />
                 <Route path="document/nieuw/:type/contact-groep/:contactGroupId" component={DocumentNewApp} />
                 <Route path="document/nieuw/:type/kans/:opportunityId" component={DocumentNewApp} />
-                <Route path="document/nieuw/:type/aanmelding/:registrationId" component={DocumentNewApp} />
+                <Route path="document/nieuw/:type/intake/:intakeId" component={DocumentNewApp} />
                 <Route path="document/:id" component={DocumentDetailsApp} />
                 /* Document templates */
                 <Route path="document-templates" component={DocumentTemplatesListApp} />
@@ -123,10 +123,10 @@ const Routes = () => {
                 <Route path="mailbox/nieuw" component={MailboxNewApp} />
                 <Route path="mailbox/:id" component={MailboxDetailsApp} />
                 <Route path="mailboxen" component={MailboxesListApp} />
-                /* Registration */
-                <Route path="aanmelding/nieuw/contact/:contactId/adres/:addressId" component={RegistrationNewApp} />im
-                <Route path="aanmelding/:id" component={RegistrationDetailsApp} />
-                <Route path="aanmeldingen" component={ RegistrationsListApp } />
+                /* Intake */
+                <Route path="intake/nieuw/contact/:contactId/adres/:addressId" component={IntakeNewApp} />im
+                <Route path="intake/:id" component={IntakeDetailsApp} />
+                <Route path="intakes" component={ IntakesListApp } />
                 /*  User */
                 <Route path="gebruiker/nieuw" component={UserNewApp} />
                 <Route path="gebruiker/:id" component={UserDetailsApp} />

@@ -25,8 +25,8 @@ import measuresReducer from './measure/MeasureReducer';
 import meDetailsReducer from './general/MeDetailsReducer';
 import opportunitiesReducer from './opportunity/OpportunitiesReducer';
 import opportunityDetailsReducer from './opportunity/OpportunityDetailsReducer';
-import registrationDetailsReducer from './registration/RegistrationDetailsReducer';
-import registrationsReducer from './registration/RegistrationsReducer';
+import intakeDetailsReducer from './intake/IntakeDetailsReducer';
+import intakesReducer from './intake/IntakesReducer';
 import sidebarReducer from './general/SidebarReducer';
 import systemDataReducer from './general/SystemDataReducer';
 import tasksReducer from './task/TasksReducer';
@@ -75,9 +75,9 @@ const rootReducer = combineReducers({
     // Opportunity
     opportunities: opportunitiesReducer,
     opportunityDetails: opportunityDetailsReducer,
-    // Registration
-    registrations: registrationsReducer,
-    registrationDetails: registrationDetailsReducer,
+    // Intake
+    intakes: intakesReducer,
+    intakeDetails: intakeDetailsReducer,
     // Mailbox
     mailboxes: mailboxesReducer,
     mailboxDetails: mailboxDetailsReducer,

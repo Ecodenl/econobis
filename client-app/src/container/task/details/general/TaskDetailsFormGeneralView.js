@@ -11,8 +11,8 @@ const TaskDetailsFormGeneralView = props => {
         type,
         contact,
         status,
-        registrationId,
-        registrationName,
+        intakeId,
+        intakeName,
         contactGroup,
         campaign,
         datePlanned,
@@ -73,9 +73,9 @@ const TaskDetailsFormGeneralView = props => {
 
             <div className="row">
                 <ViewText
-                    label={"Aanmelding"}
-                    value={registrationName}
-                    link={registrationId ? 'aanmelding/' + registrationId : ''}
+                    label={"Intake"}
+                    value={intakeName}
+                    link={intakeId ? 'intake/' + intakeId : ''}
                 />
                 <ViewText
                     label={"Kans"}

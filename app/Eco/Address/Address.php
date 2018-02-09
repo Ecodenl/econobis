@@ -7,7 +7,7 @@ use App\Eco\Measure\Measure;
 use App\Eco\BuildingType\BuildingType;
 use App\Eco\Measure\MeasureRequested;
 use App\Eco\Measure\MeasureTaken;
-use App\Eco\Registration\Registration;
+use App\Eco\Intake\Intake;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Laracasts\Presenter\PresentableTrait;
@@ -29,9 +29,9 @@ class Address extends Model
         return $this->belongsTo(Contact::class);
     }
 
-    public function registration()
+    public function intake()
     {
-        return $this->hasOne(Registration::class);
+        return $this->hasOne(Intake::class);
     }
 
     public function measures_taken()

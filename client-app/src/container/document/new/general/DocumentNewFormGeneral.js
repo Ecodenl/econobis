@@ -4,10 +4,10 @@ import { connect } from 'react-redux';
 import InputSelect from "../../../../components/form/InputSelect";
 import InputText from "../../../../components/form/InputText";
 
-const DocumentNewFormGeneral = ({document, errors, contacts = [], contactGroups = [], registrations = [], opportunities = [], handleInputChange, documentTypes}) => {
-    const { contactId, contactGroupId, registrationId, opportunityId, documentType, description } = document;
+const DocumentNewFormGeneral = ({document, errors, contacts = [], contactGroups = [], intakes = [], opportunities = [], handleInputChange, documentTypes}) => {
+    const { contactId, contactGroupId, intakeId, opportunityId, documentType, description } = document;
     const documentTypeName = documentTypes.find((item) => {return item.id == documentType}).name;
-    const oneOfFieldRequired = contactId === '' && contactGroupId === '' && registrationId === '' && opportunityId === '';
+    const oneOfFieldRequired = contactId === '' && contactGroupId === '' && intakeId === '' && opportunityId === '';
 
     return (
         <div className={'margin-30-bottom'}>
@@ -40,10 +40,10 @@ const DocumentNewFormGeneral = ({document, errors, contacts = [], contactGroups 
                     error={errors.docLinkedAtAny}
                 />
                 <InputSelect
-                    label="Aanmelding"
-                    name={"registrationId"}
-                    value={registrationId}
-                    options={registrations}
+                    label="Intake"
+                    name={"intakeId"}
+                    value={intakeId}
+                    options={intakes}
                     onChangeAction={handleInputChange}
                     required={oneOfFieldRequired && "required"}
                     error={errors.docLinkedAtAny}

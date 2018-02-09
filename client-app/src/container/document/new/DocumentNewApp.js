@@ -10,13 +10,13 @@ import PanelBody from '../../../components/panel/PanelBody';
 import DocumentDetailsAPI from '../../../api/document/DocumentDetailsAPI';
 import {isEqual} from "lodash";
 import ContactGroupAPI from "../../../api/contact-group/ContactGroupAPI";
-import RegistrationsAPI from "../../../api/registration/RegistrationsAPI";
+import IntakesAPI from "../../../api/intake/IntakesAPI";
 import OpportunitiesAPI from "../../../api/opportunity/OpportunitiesAPI";
 import ContactsAPI from "../../../api/contact/ContactsAPI";
 import DocumentTemplateAPI from "../../../api/document-template/DocumentTemplateAPI";
 import {setError} from "../../../actions/general/ErrorActions";
 import {connect} from "react-redux";
-import {fetchRegistrationDetails} from "../../../actions/registration/RegistrationDetailsActions";
+import {fetchIntakeDetails} from "../../../actions/intake/IntakeDetailsActions";
 
 class DocumentNewApp extends Component {
     constructor(props) {
@@ -25,13 +25,13 @@ class DocumentNewApp extends Component {
         this.state = {
             contacts: [],
             contactsGroups: [],
-            registrations: [],
+            intakes: [],
             opportunities: [],
             templates: [],
             document: {
                 contactId: this.props.params.contactId || '',
                 contactGroupId: this.props.params.contactGroupId || '',
-                registrationId: this.props.params.registrationId || '',
+                intakeId: this.props.params.intakeId || '',
                 opportunityId: this.props.params.opportunityId || '',
                 documentType: this.props.params.type,
                 description: '',
@@ -63,8 +63,8 @@ class DocumentNewApp extends Component {
             this.setState({ contacts: payload });
         });
 
-        RegistrationsAPI.peekRegistrations().then((payload) => {
-            this.setState({ registrations: payload });
+        IntakesAPI.peekIntakes().then((payload) => {
+            this.setState({ intakes: payload });
         });
 
         ContactGroupAPI.peekContactGroups().then((payload) => {
@@ -150,7 +150,7 @@ class DocumentNewApp extends Component {
         const {
             contactId,
             contactGroupId,
-            registrationId,
+            intakeId,
             opportunityId,
             documentType,
             description,
@@ -167,7 +167,7 @@ class DocumentNewApp extends Component {
         let errors = {};
         let hasErrors = false;
 
-        if(validator.isEmpty(contactId) && validator.isEmpty(contactGroupId) && validator.isEmpty(registrationId) && validator.isEmpty(opportunityId)){
+        if(validator.isEmpty(contactId) && validator.isEmpty(contactGroupId) && validator.isEmpty(intakeId) && validator.isEmpty(opportunityId)){
             errors.docLinkedAtAny = true;
             hasErrors = true;
         };
@@ -190,7 +190,7 @@ class DocumentNewApp extends Component {
 
             data.append('contactId', contactId);
             data.append('contactGroupId', contactGroupId);
-            data.append('registrationId', registrationId);
+            data.append('intakeId', intakeId);
             data.append('opportunityId', opportunityId);
             data.append('documentType', documentType);
             data.append('description', description);
@@ -227,7 +227,7 @@ class DocumentNewApp extends Component {
                             document={this.state.document}
                             contacts={this.state.contacts}
                             contactGroups={this.state.contactGroups}
-                            registrations={this.state.registrations}
+                            intakes={this.state.intakes}
                             opportunities={this.state.opportunities}
                             templates={this.state.templates}
                             errors={this.state.errors}

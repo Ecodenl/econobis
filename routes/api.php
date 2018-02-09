@@ -33,32 +33,32 @@ Route::namespace('Api')
         Route::get('/contact/peek', 'Contact\ContactController@peek');
         Route::post('contact/{contact}/owner/{user}/associate', 'Contact\ContactController@associateOwner');
         Route::get('/contact/{contact}', 'Contact\ContactController@show');
-        Route::get('/contact/{contact}/registrations', 'Contact\ContactController@registrations');
+        Route::get('/contact/{contact}/intakes', 'Contact\ContactController@intakes');
         Route::get('/contact/{contact}/groups', 'Contact\ContactController@groups');
         Route::post('/contact/{contact}/delete', 'Contact\ContactController@destroy');
         Route::get('/contact/{contact}/tasks', 'Contact\ContactController@tasks');
 
-        Route::get('/registration/grid', 'Registration\RegistrationController@grid');
-        Route::get('/registration/peek', 'Registration\RegistrationController@peek');
-        Route::get('/registration/amount-active', 'Registration\RegistrationController@getAmountOfActiveRegistrations');
-        Route::get('/contact/{contact}/registration', 'Registration\RegistrationController@getStore');
-        Route::post('/contact/registration', 'Registration\RegistrationController@store');
-        Route::get('/registration/{registration}', 'Registration\RegistrationController@show');
-        Route::post('/registration/{registration}/update', 'Registration\RegistrationController@update');
-        Route::post('/registration/{registration}/delete', 'Registration\RegistrationController@destroy');
+        Route::get('/intake/grid', 'Intake\IntakeController@grid');
+        Route::get('/intake/peek', 'Intake\IntakeController@peek');
+        Route::get('/intake/amount-active', 'Intake\IntakeController@getAmountOfActiveIntakes');
+        Route::get('/contact/{contact}/intake', 'Intake\IntakeController@getStore');
+        Route::post('/contact/intake', 'Intake\IntakeController@store');
+        Route::get('/intake/{intake}', 'Intake\IntakeController@show');
+        Route::post('/intake/{intake}/update', 'Intake\IntakeController@update');
+        Route::post('/intake/{intake}/delete', 'Intake\IntakeController@destroy');
 
-        Route::post('/registration/{registration}/measure-taken', 'Registration\RegistrationController@storeMeasureTaken');
-        Route::post('/registration/{measureTaken}/measure-taken/update', 'Registration\RegistrationController@updateMeasureTaken');
-        Route::post('/registration/{measureTaken}/measure-taken/delete', 'Registration\RegistrationController@deleteMeasureTaken');
+        Route::post('/intake/{intake}/measure-taken', 'Intake\IntakeController@storeMeasureTaken');
+        Route::post('/intake/{measureTaken}/measure-taken/update', 'Intake\IntakeController@updateMeasureTaken');
+        Route::post('/intake/{measureTaken}/measure-taken/delete', 'Intake\IntakeController@deleteMeasureTaken');
 
-        Route::post('/registration/{registration}/measure-requested', 'Registration\RegistrationController@storeMeasureRequested');
-        Route::post('/registration/{measureRequested}/measure-requested/update', 'Registration\RegistrationController@updateMeasureRequested');
-        Route::post('/registration/{measureRequested}/measure-requested/delete', 'Registration\RegistrationController@deleteMeasureRequested');
+        Route::post('/intake/{intake}/measure-requested', 'Intake\IntakeController@storeMeasureRequested');
+        Route::post('/intake/{measureRequested}/measure-requested/update', 'Intake\IntakeController@updateMeasureRequested');
+        Route::post('/intake/{measureRequested}/measure-requested/delete', 'Intake\IntakeController@deleteMeasureRequested');
 
-        Route::post('/registration/{registration}/note', 'Registration\RegistrationController@storeNote');
-        Route::post('/registration/note/{note}/update', 'Registration\RegistrationController@updateNote');
-        Route::post('/registration/note/{note}/delete', 'Registration\RegistrationController@deleteNote');
-        Route::get('/registration/{registration}/tasks', 'Registration\RegistrationController@tasks');
+        Route::post('/intake/{intake}/note', 'Intake\IntakeController@storeNote');
+        Route::post('/intake/note/{note}/update', 'Intake\IntakeController@updateNote');
+        Route::post('/intake/note/{note}/delete', 'Intake\IntakeController@deleteNote');
+        Route::get('/intake/{intake}/tasks', 'Intake\IntakeController@tasks');
 
         Route::get('/user/grid', 'User\GridController@index');
         Route::post('/user', 'User\UserController@store');

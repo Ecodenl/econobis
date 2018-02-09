@@ -11,7 +11,7 @@ import InputText from '../../../../components/form/InputText';
 import InputSelect from '../../../../components/form/InputSelect';
 import InputDate from '../../../../components/form/InputDate';
 import validator from "validator";
-import RegistrationsAPI from "../../../../api/registration/RegistrationsAPI";
+import IntakesAPI from "../../../../api/intake/IntakesAPI";
 import ContactGroupAPI from "../../../../api/contact-group/ContactGroupAPI";
 import OpportunitiesAPI from "../../../../api/opportunity/OpportunitiesAPI";
 import CampaignsAPI from "../../../../api/campaign/CampaignsAPI";
@@ -23,11 +23,11 @@ class TaskDetailsFormGeneralEdit extends Component {
     constructor(props) {
         super(props);
 
-        const { id, name, description, typeId, opportunityId, contactId, statusId, registrationId, contactGroupId, campaignId, datePlanned, startTimePlanned, endTimePlanned, dateFinished, responsibleUserId, finishedById, createdAt, createdBy} = props.taskDetails;
+        const { id, name, description, typeId, opportunityId, contactId, statusId, intakeId, contactGroupId, campaignId, datePlanned, startTimePlanned, endTimePlanned, dateFinished, responsibleUserId, finishedById, createdAt, createdBy} = props.taskDetails;
 
         this.state = {
             contacts: [],
-            registrations: [],
+            intakes: [],
             contactGroups: [],
             opportunities: [],
             campaigns: [],
@@ -39,7 +39,7 @@ class TaskDetailsFormGeneralEdit extends Component {
                 opportunityId: opportunityId ? opportunityId : '',
                 contactId: contactId ? contactId : '',
                 statusId,
-                registrationId: registrationId ? registrationId : '',
+                intakeId: intakeId ? intakeId : '',
                 contactGroupId: contactGroupId ? contactGroupId: '',
                 campaignId: campaignId ? campaignId: '',
                 datePlanned: datePlanned ? datePlanned.date : '',
@@ -73,8 +73,8 @@ class TaskDetailsFormGeneralEdit extends Component {
             this.setState({ contacts: payload });
         });
 
-        RegistrationsAPI.peekRegistrations().then((payload) => {
-            this.setState({ registrations: payload });
+        IntakesAPI.peekIntakes().then((payload) => {
+            this.setState({ intakes: payload });
         });
 
         ContactGroupAPI.peekContactGroups().then((payload) => {
@@ -206,7 +206,7 @@ class TaskDetailsFormGeneralEdit extends Component {
             typeId,
             contactId,
             statusId,
-            registrationId,
+            intakeId,
             contactGroupId,
             campaignId,
             datePlanned,
@@ -296,11 +296,11 @@ class TaskDetailsFormGeneralEdit extends Component {
 
                 <div className="row">
                     <InputReactSelect
-                        label={"Aanmelding"}
+                        label={"Intake"}
                         size={"col-sm-6"}
-                        name={"registrationId"}
-                        options={this.state.registrations}
-                        value={registrationId}
+                        name={"intakeId"}
+                        options={this.state.intakes}
+                        value={intakeId}
                         onChangeAction={this.handleInputChange}
                         onChangeAction={this.handleReactSelectChange}
                         multi={false}

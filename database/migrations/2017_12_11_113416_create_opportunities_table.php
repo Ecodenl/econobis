@@ -86,9 +86,9 @@ class CreateOpportunitiesTable extends Migration
             $table->foreign('status_id')
                 ->references('id')->on('opportunity_status')
                 ->onDelete('restrict');
-            $table->unsignedInteger('registration_id')->nullable();
-            $table->foreign('registration_id')
-                ->references('id')->on('registrations')
+            $table->unsignedInteger('intake_id')->nullable();
+            $table->foreign('intake_id')
+                ->references('id')->on('intakes')
                 ->onDelete('restrict');
             $table->unsignedInteger('campaign_id')->nullable();
             $table->foreign('campaign_id')

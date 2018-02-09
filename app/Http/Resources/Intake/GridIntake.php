@@ -1,0 +1,27 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: Beheerder
+ * Date: 01-12-2017
+ * Time: 12:09
+ */
+
+namespace App\Http\Resources\Intake;
+
+
+use Illuminate\Http\Resources\Json\Resource;
+
+class GridIntake extends Resource
+{
+    public function toArray($request)
+    {
+           return [
+                'id' => $this->id,
+                'fullName' => $this->address->contact->full_name,
+                'sourceNames' => $this->sources->pluck('name'),
+                'status' => optional($this->status)->name,
+                'createdAt' => $this->created_at,
+                'measuresRequestedNames' => $this->address->measures_requested->measures()->pluck('name'),
+            ];
+    }
+}

@@ -14,7 +14,7 @@ use App\Http\Resources\Contact\FullContact;
 use App\Http\Resources\ContactGroup\FullContactGroup;
 use App\Http\Resources\GenericResource;
 use App\Http\Resources\Opportunity\FullOpportunity;
-use App\Http\Resources\Registration\FullRegistration;
+use App\Http\Resources\Intake\FullIntake;
 use App\Http\Resources\User\FullUser;
 use Illuminate\Http\Resources\Json\Resource;
 
@@ -40,8 +40,8 @@ class FullTask extends Resource
                 'contact' => FullContact::make($this->whenLoaded('contact')),
                 'statusId' => $this->status_id,
                 'status' => GenericResource::make($this->getStatus()),
-                'registrationId' => $this->registration_id,
-                'registrationName' => $this->registration ? $this->registration->address->present()->streetAndNumber() : '',
+                'intakeId' => $this->intake_id,
+                'intakeName' => $this->intake ? $this->intake->address->present()->streetAndNumber() : '',
                 'contactGroupId' => $this->contact_group_id,
                 'contactGroup' => FullContactGroup::make($this->whenLoaded('contactGroup')),
                 'campaignId' => $this->campaign_id,

@@ -4,7 +4,7 @@ import { hashHistory } from 'react-router';
 
 import AddContactToGroup from './harmonica/AddContactToGroup';
 import ErrorModal from '../../../components/modal/ErrorModal';
-import RegistrationHarmonica from './harmonica/RegistrationHarmonica';
+import IntakeHarmonica from './harmonica/IntakeHarmonica';
 import OpportunityHarmonica from './harmonica/OpportunityHarmonica';
 import TaskHarmonica from "./harmonica/TaskHarmonica";
 import ContactGroupHarmonica from "./harmonica/ContactGroupHarmonica";
@@ -18,7 +18,7 @@ class ContactDetailsHarmonica extends Component {
 
         this.state = {
             toggleShowList: {
-                registrations: false,
+                intakes: false,
                 opportunities: false,
                 tasks: false,
                 contactGroups: false,
@@ -36,7 +36,7 @@ class ContactDetailsHarmonica extends Component {
         if(this.props.id !== nextProps.id) {
             this.setState({
                 toggleShowList: {
-                    registrations: false,
+                    intakes: false,
                     opportunities: false,
                     tasks: false,
                     contactGroups: false,
@@ -48,7 +48,7 @@ class ContactDetailsHarmonica extends Component {
         }
     };
 
-    newRegistration = () => {
+    newIntake = () => {
         let address = this.props.contactDetails.addresses.find((address) => {
             return address.primary
         });
@@ -63,11 +63,11 @@ class ContactDetailsHarmonica extends Component {
             }
             else
                 {
-                    hashHistory.push(`/aanmelding/nieuw/contact/${this.props.contactDetails.id}/adres/${address.id}`);
+                    hashHistory.push(`/intake/nieuw/contact/${this.props.contactDetails.id}/adres/${address.id}`);
                 }
             }
         else {
-            hashHistory.push(`/aanmelding/nieuw/contact/${this.props.contactDetails.id}/adres/${address.id}`);
+            hashHistory.push(`/intake/nieuw/contact/${this.props.contactDetails.id}/adres/${address.id}`);
         }
     };
 
@@ -112,11 +112,11 @@ class ContactDetailsHarmonica extends Component {
     render(){
         return (
             <div className="margin-10-top">
-                <RegistrationHarmonica
-                    toggleShowList={() => this.toggleShowList('registrations')}
-                    showRegistrationsList={this.state.toggleShowList.registrations}
-                    registrationCount={this.props.contactDetails.registrationCount}
-                    newRegistration={this.newRegistration}
+                <IntakeHarmonica
+                    toggleShowList={() => this.toggleShowList('intakes')}
+                    showIntakesList={this.state.toggleShowList.intakes}
+                    intakeCount={this.props.contactDetails.intakeCount}
+                    newIntake={this.newIntake}
                 />
 
                 <OpportunityHarmonica

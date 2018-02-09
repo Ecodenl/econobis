@@ -12,7 +12,7 @@ use App\Eco\ContactGroup\ContactGroup;
 use App\Eco\ContactNote\ContactNote;
 use App\Eco\Organisation\OrganisationType;
 use App\Eco\EmailAddress\EmailAddress;
-use App\Eco\Registration\Registration;
+use App\Eco\Intake\Intake;
 use App\Eco\Person\Person;
 use App\Eco\PhoneNumber\PhoneNumber;
 use App\Eco\Task\Task;
@@ -141,9 +141,9 @@ class Contact extends Model
         return ContactType::get($this->type_id);
     }
 
-    public function registrations()
+    public function intakes()
     {
-        return $this->hasManyThrough(Registration::class, Address::class);
+        return $this->hasManyThrough(Intake::class, Address::class);
     }
 
     public function tasks()

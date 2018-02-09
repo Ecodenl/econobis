@@ -6,7 +6,7 @@ use App\Eco\Contact\Contact;
 use App\Eco\Measure\Measure;
 use App\Eco\Opportunity\Opportunity;
 use App\Eco\Organisation\Organisation;
-use App\Eco\Registration\Registration;
+use App\Eco\Intake\Intake;
 use App\Eco\Task\Task;
 use App\Eco\User\User;
 use Illuminate\Database\Eloquent\Model;
@@ -26,9 +26,9 @@ class Campaign extends Model
 
     ];
 
-    public function registrations()
+    public function intakes()
     {
-        return $this->hasMany(Registration::class);
+        return $this->hasMany(Intake::class);
     }
 
     public function opportunities()

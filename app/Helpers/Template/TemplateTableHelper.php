@@ -12,7 +12,7 @@ use App\Eco\Contact\Contact;
 use App\Eco\ContactGroup\ContactGroup;
 use App\Eco\Document\Document;
 use App\Eco\Opportunity\Opportunity;
-use App\Eco\Registration\Registration;
+use App\Eco\Intake\Intake;
 use App\Eco\User\User;
 use Illuminate\Support\Facades\View;
 
@@ -49,8 +49,8 @@ class TemplateTableHelper
             case 'Opportunity':
                 return TemplateTableHelper::getOpportunityTable($model, $table_name);
                 break;
-            case 'Registration':
-                return TemplateTableHelper::getRegistrationTable($model, $table_name);
+            case 'Intake':
+                return TemplateTableHelper::getIntakeTable($model, $table_name);
                 break;
             default:
                 return '';
@@ -106,7 +106,7 @@ class TemplateTableHelper
         }
     }
 
-    public static function getRegistrationTable(Registration $registration, $table_name){
+    public static function getIntakeTable(Intake $intake, $table_name){
         switch ($table_name) {
             default:
                 return '';

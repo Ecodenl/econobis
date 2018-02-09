@@ -6,7 +6,7 @@ use App\Eco\Contact\Contact;
 use App\Eco\ContactGroup\ContactGroup;
 use App\Eco\DocumentTemplate\DocumentTemplate;
 use App\Eco\Opportunity\Opportunity;
-use App\Eco\Registration\Registration;
+use App\Eco\Intake\Intake;
 use App\Eco\User\User;
 use Illuminate\Database\Eloquent\Model;
 use Venturecraft\Revisionable\RevisionableTrait;
@@ -22,9 +22,9 @@ class Document extends Model
         return $this->belongsTo(Contact::class);
     }
 
-    public function registration()
+    public function intake()
     {
-        return $this->belongsTo(Registration::class);
+        return $this->belongsTo(Intake::class);
     }
 
     public function contactGroup()

@@ -5,7 +5,7 @@ namespace App\Http\Resources\Opportunity;
 use App\Http\Resources\Campaign\FullCampaign;
 use App\Http\Resources\Contact\FullContact;
 use App\Http\Resources\GenericResource;
-use App\Http\Resources\Registration\FullRegistration;
+use App\Http\Resources\Intake\FullIntake;
 use App\Http\Resources\User\FullUser;
 use Illuminate\Http\Resources\Json\Resource;
 
@@ -26,7 +26,7 @@ class FullOpportunity extends Resource
             'number' => $this->number,
             'reaction' => GenericResource::make($this->whenLoaded('reaction')),
             'status' => GenericResource::make($this->whenLoaded('status')),
-            'registration' => FullRegistration::make($this->whenLoaded('registration')),
+            'intake' => FullIntake::make($this->whenLoaded('intake')),
             'campaign' => GenericResource::make($this->whenLoaded('campaign')),
             'quotationText' => $this->quotation_text,
             'quotations' => FullOpportunityQuotation::collection($this->whenLoaded('quotations')),

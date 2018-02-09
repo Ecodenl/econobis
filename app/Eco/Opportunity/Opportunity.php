@@ -6,7 +6,7 @@ use App\Eco\Campaign\Campaign;
 use App\Eco\Contact\Contact;
 use App\Eco\Document\Document;
 use App\Eco\Measure\Measure;
-use App\Eco\Registration\Registration;
+use App\Eco\Intake\Intake;
 use App\Eco\Task\Task;
 use App\Eco\User\User;
 use Illuminate\Database\Eloquent\Model;
@@ -30,9 +30,9 @@ class Opportunity extends Model
         return $this->belongsTo(Contact::class);
     }
 
-    public function registration()
+    public function intake()
     {
-        return $this->belongsTo(Registration::class);
+        return $this->belongsTo(Intake::class);
     }
 
     public function campaign()

@@ -131,9 +131,9 @@ class CampaignController extends ApiController
             $opportunity->save();
         }
 
-        foreach ($campaign->registrations as $registration) {
-            $registration->campaign()->dissociate();
-            $registration->save();
+        foreach ($campaign->intakes as $intake) {
+            $intake->campaign()->dissociate();
+            $intake->save();
         }
 
         foreach ($campaign->tasks as $task) {

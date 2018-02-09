@@ -48,16 +48,16 @@ class ContactController extends Controller
         DeleteContact::single($contact);
     }
 
-    public function registrations(Contact $contact)
+    public function intakes(Contact $contact)
     {
-        $registrations = $contact->registrations;
+        $intakes = $contact->intakes;
 
         $result = [];
-        foreach ($registrations as $registration){
+        foreach ($intakes as $intake){
             $result[] = [
-                'id' => $registration->id,
-                'addressName' =>  $registration->address->present()->streetAndNumber(),
-                'createdAt' => $registration->created_at,
+                'id' => $intake->id,
+                'addressName' =>  $intake->address->present()->streetAndNumber(),
+                'createdAt' => $intake->created_at,
             ];
         }
 

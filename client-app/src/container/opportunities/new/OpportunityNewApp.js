@@ -8,7 +8,7 @@ import OpportunityNewToolbar from './OpportunityNewToolbar';
 import OpportunityNew from './OpportunityNew';
 
 import ContactsAPI from '../../../api/contact/ContactsAPI';
-import RegistrationsAPI from '../../../api/registration/RegistrationsAPI';
+import IntakesAPI from '../../../api/intake/IntakesAPI';
 import OpportunityDetailsAPI from '../../../api/opportunity/OpportunityDetailsAPI';
 import {connect} from "react-redux";
 
@@ -27,10 +27,10 @@ class OppportunitiesNewApp extends Component {
                 reactionId: '',
                 statusId: '',
                 ownedById: '',
-                registrationId: '',
+                intakeId: '',
             },
             contacts: [],
-            registrations: [],
+            intakes: [],
             errors: {
                 measure: false,
                 contact: false,
@@ -53,9 +53,9 @@ class OppportunitiesNewApp extends Component {
             });
         });
 
-        RegistrationsAPI.peekRegistrations().then(payload => {
+        IntakesAPI.peekIntakes().then(payload => {
             this.setState({
-                registrations: payload
+                intakes: payload
             });
         });
     }
@@ -78,12 +78,12 @@ class OppportunitiesNewApp extends Component {
                         }
                     });
                     break;
-                case 'aanmelding':
+                case 'intake':
                     this.setState({
                         ...this.state,
                         opportunity: {
                             ...this.state.opportunity,
-                            registrationId: params.id,
+                            intakeId: params.id,
                         }
                     });
                     break;
@@ -184,7 +184,7 @@ class OppportunitiesNewApp extends Component {
                                     opportunity={this.state.opportunity}
                                     contacts={this.state.contacts}
                                     users={this.props.users}
-                                    registrations={this.state.registrations}
+                                    intakes={this.state.intakes}
                                     errors={this.state.errors}
                                     handleInputChange={this.handleInputChange}
                                     handleChangeDesiredDate={this.handleChangeDesiredDate}

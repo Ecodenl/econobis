@@ -30,9 +30,9 @@ class CreateTasksTable extends Migration
 
             $table->unsignedInteger('status_id');
 
-            $table->unsignedInteger('registration_id')->nullable()->default(null);
-            $table->foreign('registration_id')
-                ->references('id')->on('registrations')
+            $table->unsignedInteger('intake_id')->nullable()->default(null);
+            $table->foreign('intake_id')
+                ->references('id')->on('intakes')
                 ->onDelete('restrict');
 
             $table->unsignedInteger('contact_group_id')->nullable()->default(null);

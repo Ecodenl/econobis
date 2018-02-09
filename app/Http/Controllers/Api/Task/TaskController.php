@@ -8,7 +8,7 @@ use App\Eco\Task\TaskAttachment;
 use App\Eco\Task\TaskStatus;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Api\Task\Grid\RequestQuery;
-use App\Http\Resources\Registration\GridTask;
+use App\Http\Resources\Intake\GridTask;
 use App\Http\Resources\Task\CalendarTask;
 use App\Http\Resources\Task\FullTask;
 use App\Http\Resources\Task\FullTaskAttachment;
@@ -45,7 +45,7 @@ class TaskController extends Controller
         $task->load([
             'type',
             'contact',
-            'registration',
+            'intake',
             'contactGroup',
             'campaign',
             'responsibleUser',
@@ -69,7 +69,7 @@ class TaskController extends Controller
             ->integer('typeId')->validate(['required', 'exists:task_types,id'])->alias('type_id')->next()
             ->integer('contactId')->validate('exists:contacts,id')->whenMissing(null)->onEmpty(null)->alias('contact_id')->next()
             ->integer('statusId')->validate(['required', Rule::in(TaskStatus::ids())])->alias('status_id')->next()
-            ->integer('registrationId')->validate('exists:registrations,id')->whenMissing(null)->onEmpty(null)->alias('registration_id')->next()
+            ->integer('intakeId')->validate('exists:intakes,id')->whenMissing(null)->onEmpty(null)->alias('intake_id')->next()
             ->integer('contactGroupId')->validate('exists:contact_groups,id')->whenMissing(null)->onEmpty(null)->alias('contact_group_id')->next()
             ->integer('campaignId')->validate('exists:campaigns,id')->whenMissing(null)->onEmpty(null)->alias('campaign_id')->next()
             ->date('datePlanned')->validate('date')->whenMissing(null)->onEmpty(null)->alias('date_planned')->next()
@@ -101,7 +101,7 @@ class TaskController extends Controller
             ->integer('typeId')->validate('exists:task_types,id')->alias('type_id')->next()
             ->integer('contactId')->validate('exists:contacts,id')->onEmpty(null)->alias('contact_id')->next()
             ->integer('statusId')->validate(Rule::in(TaskStatus::ids()))->alias('status_id')->next()
-            ->integer('registrationId')->validate('exists:registrations,id')->onEmpty(null)->alias('registration_id')->next()
+            ->integer('intakeId')->validate('exists:intakes,id')->onEmpty(null)->alias('intake_id')->next()
             ->integer('contactGroupId')->validate('exists:contact_groups,id')->onEmpty(null)->alias('contact_group_id')->next()
             ->integer('campaignId')->validate('exists:campaigns,id')->onEmpty(null)->alias('campaign_id')->next()
             ->date('datePlanned')->validate('date')->onEmpty(null)->alias('date_planned')->next()

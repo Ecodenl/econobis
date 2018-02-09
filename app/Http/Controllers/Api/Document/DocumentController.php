@@ -45,7 +45,7 @@ class DocumentController extends Controller
     {
         $this->authorize('view', Document::class);
 
-        $document->load('contact', 'registration', 'contactGroup', 'sentBy', 'createdBy', 'template', 'opportunity.measure', 'opportunity.status');
+        $document->load('contact', 'intake', 'contactGroup', 'sentBy', 'createdBy', 'template', 'opportunity.measure', 'opportunity.status');
 
         return FullDocument::make($document);
     }
@@ -62,7 +62,7 @@ class DocumentController extends Controller
             ->string('freeText1')->alias('free_text_1')->next()
             ->string('freeText2')->alias('free_text_2')->next()
             ->integer('contactId')->validate('exists:contacts,id')->onEmpty(null)->alias('contact_id')->next()
-            ->integer('registrationId')->validate('exists:registrations,id')->onEmpty(null)->alias('registration_id')->next()
+            ->integer('intakeId')->validate('exists:intakes,id')->onEmpty(null)->alias('intake_id')->next()
             ->integer('contactGroupId')->validate('exists:contact_groups,id')->onEmpty(null)->alias('contact_group_id')->next()
             ->integer('opportunityId')->validate('exists:opportunities,id')->onEmpty(null)->alias('opportunity_id')->next()
             ->integer('sentById')->validate('exists:users,id')->onEmpty(null)->alias('sent_by_id')->next()
@@ -86,7 +86,7 @@ class DocumentController extends Controller
 
             $name = '';
             $document->contact && $name .=  '-' . str_replace(' ', '', $document->contact->full_name);
-            $document->registration && $name .= '-aanmelding-' . $document->registration->id;
+            $document->intake && $name .= '-intake-' . $document->intake->id;
             $document->contactGroup && $name .= '-' . str_replace(' ', '', $document->contactGroup->name);
             $document->opportunity && $name .= '-' . $document->opportunity->number;
 
@@ -137,7 +137,7 @@ class DocumentController extends Controller
             ->string('freeText1')->alias('free_text_1')->next()
             ->string('freeText2')->alias('free_text_2')->next()
             ->integer('contactId')->validate('exists:contacts,id')->onEmpty(null)->alias('contact_id')->next()
-            ->integer('registrationId')->validate('exists:registrations,id')->onEmpty(null)->alias('registration_id')->next()
+            ->integer('intakeId')->validate('exists:intakes,id')->onEmpty(null)->alias('intake_id')->next()
             ->integer('contactGroupId')->validate('exists:contact_groups,id')->onEmpty(null)->alias('contact_group_id')->next()
             ->integer('opportunityId')->validate('exists:opportunities,id')->onEmpty(null)->alias('opportunity_id')->next()
             ->integer('sentById')->validate('exists:users,id')->onEmpty(null)->alias('sent_by_id')->next()
@@ -147,7 +147,7 @@ class DocumentController extends Controller
         $document->fill($data);
         $document->save();
 
-        $document->load('contact', 'contactGroup', 'opportunity', 'registration.address');
+        $document->load('contact', 'contactGroup', 'opportunity', 'intake.address');
 
         return FullDocument::make($document);
     }

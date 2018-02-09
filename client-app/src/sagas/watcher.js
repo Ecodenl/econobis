@@ -19,13 +19,13 @@ import { fetchMeasuresSaga, fetchMeasureSaga } from './measure/MeasuresSaga';
 import { fetchOpportunitiesSaga } from './opportunity/OpportunitiesSaga';
 import { fetchOpportunitySaga } from './opportunity/OpportunityDetailsSaga';
 import {
-    fetchRegistrationDetailsSaga,
-    deleteRegistrationNoteSaga,
-    deleteRegistrationMeasureTakenSaga,
-    deleteRegistrationMeasureRequestedSaga,
-    deleteRegistrationSaga,
-} from './registration/RegistrationDetailsSaga';
-import { fetchRegistrationsSaga } from './registration/RegistrationsSaga';
+    fetchIntakeDetailsSaga,
+    deleteIntakeNoteSaga,
+    deleteIntakeMeasureTakenSaga,
+    deleteIntakeMeasureRequestedSaga,
+    deleteIntakeSaga,
+} from './intake/IntakeDetailsSaga';
+import { fetchIntakesSaga } from './intake/IntakesSaga';
 import { fetchTaskDetailsSaga, deleteTaskSaga } from './task/TaskDetailsSaga';
 import { fetchTasksSaga, setTaskCompletedSaga } from './task/TasksSaga';
 import { fetchUserDetailsSaga } from './user/UserDetailsSaga';
@@ -83,13 +83,13 @@ export default function* watchSagas() {
     // Opportunity
     yield takeLatest('FETCH_OPPORTUNITIES', fetchOpportunitiesSaga);
     yield takeLatest('FETCH_OPPORTUNITY', fetchOpportunitySaga);
-    // Registration
-    yield takeLatest('FETCH_REGISTRATIONS', fetchRegistrationsSaga);
-    yield takeLatest('FETCH_REGISTRATION_DETAILS', fetchRegistrationDetailsSaga);
-    yield takeLatest('DELETE_REGISTRATION', deleteRegistrationSaga);
-    yield takeLatest('DELETE_REGISTRATION_NOTE', deleteRegistrationNoteSaga);
-    yield takeLatest('DELETE_REGISTRATION_MEASURE_TAKEN', deleteRegistrationMeasureTakenSaga);
-    yield takeLatest('DELETE_REGISTRATION_MEASURE_REQUESTED', deleteRegistrationMeasureRequestedSaga);
+    // Intake
+    yield takeLatest('FETCH_INTAKES', fetchIntakesSaga);
+    yield takeLatest('FETCH_INTAKE_DETAILS', fetchIntakeDetailsSaga);
+    yield takeLatest('DELETE_INTAKE', deleteIntakeSaga);
+    yield takeLatest('DELETE_INTAKE_NOTE', deleteIntakeNoteSaga);
+    yield takeLatest('DELETE_INTAKE_MEASURE_TAKEN', deleteIntakeMeasureTakenSaga);
+    yield takeLatest('DELETE_INTAKE_MEASURE_REQUESTED', deleteIntakeMeasureRequestedSaga);
     // Task
     yield takeLatest('FETCH_TASKS', fetchTasksSaga);
     yield takeLatest('SET_TASK_COMPLETED', setTaskCompletedSaga);

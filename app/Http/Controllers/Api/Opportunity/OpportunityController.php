@@ -35,7 +35,7 @@ class OpportunityController extends ApiController
 
     public function show(Opportunity $opportunity)
     {
-        $opportunity->load(['contact', 'measure', 'quotations.organisation', 'quotations.createdBy', 'campaign', 'status', 'createdBy', 'ownedBy', 'reaction', 'registration']);
+        $opportunity->load(['contact', 'measure', 'quotations.organisation', 'quotations.createdBy', 'campaign', 'status', 'createdBy', 'ownedBy', 'reaction', 'intake']);
 
         return FullOpportunity::make($opportunity);
     }
@@ -49,7 +49,7 @@ class OpportunityController extends ApiController
             ->integer('contactId')->validate('required|exists:contacts,id')->alias('contact_id')->next()
             ->integer('reactionId')->validate('exists:opportunity_reactions,id')->onEmpty(null)->alias('reaction_id')->next()
             ->integer('statusId')->validate('required|exists:opportunity_status,id')->alias('status_id')->next()
-            ->integer('registrationId')->validate('exists:registrations,id')->onEmpty(null)->alias('registration_id')->next()
+            ->integer('intakeId')->validate('exists:intakes,id')->onEmpty(null)->alias('intake_id')->next()
             ->integer('campaignId')->validate('exists:campaigns,id')->onEmpty(null)->alias('campaign_id')->next()
             ->string('quotationText')->alias('quotation_text')->next()
             ->date('desiredDate')->validate('date')->onEmpty(null)->alias('desired_date')->next()
@@ -72,7 +72,7 @@ class OpportunityController extends ApiController
             ->integer('contactId')->validate('required|exists:contacts,id')->alias('contact_id')->next()
             ->integer('reactionId')->validate('exists:opportunity_reactions,id')->onEmpty(null)->alias('reaction_id')->next()
             ->integer('statusId')->validate('required|exists:opportunity_status,id')->alias('status_id')->next()
-            ->integer('registrationId')->validate('exists:registrations,id')->onEmpty(null)->alias('registration_id')->next()
+            ->integer('intakeId')->validate('exists:intakes,id')->onEmpty(null)->alias('intake_id')->next()
             ->integer('campaignId')->validate('exists:campaigns,id')->onEmpty(null)->alias('campaign_id')->next()
             ->string('quotationText')->alias('quotation_text')->next()
             ->string('desiredDate')->validate('date')->onEmpty(null)->alias('desired_date')->next()

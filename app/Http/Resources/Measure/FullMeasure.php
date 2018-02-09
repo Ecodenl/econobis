@@ -7,7 +7,7 @@ use App\Http\Resources\Contact\FullContact;
 use App\Http\Resources\GenericResource;
 use App\Http\Resources\Opportunity\FullOpportunity;
 use App\Http\Resources\Organisation\FullOrganisation;
-use App\Http\Resources\Registration\FullRegistration;
+use App\Http\Resources\Intake\FullIntake;
 use App\Http\Resources\User\FullUser;
 use Illuminate\Http\Resources\Json\Resource;
 

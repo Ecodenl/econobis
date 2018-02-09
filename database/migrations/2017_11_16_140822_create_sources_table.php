@@ -19,12 +19,12 @@ class CreateSourcesTable extends Migration
             $table->timestamps();
         });
 
-        Schema::create('registration_source', function (Blueprint $table) {
+        Schema::create('intake_source', function (Blueprint $table) {
             $table->integer('source_id')->unsigned();
-            $table->foreign('source_id')->references('id')->on('sources')->onDelete('cascade');
-            $table->integer('registration_id')->unsigned();
-            $table->foreign('registration_id')->references('id')->on('registrations')->onDelete('cascade');
-            $table->unique(['source_id','registration_id']);
+            $table->foreign('source_id')->references('id')->on('sources');
+            $table->integer('intake_id')->unsigned();
+            $table->foreign('intake_id')->references('id')->on('intakes');
+            $table->unique(['source_id','intake_id']);
             $table->timestamps();
         });
 
@@ -37,7 +37,7 @@ class CreateSourcesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('registration_source');
+        Schema::dropIfExists('intake_source');
         Schema::dropIfExists('sources');
     }
 }

@@ -64,8 +64,8 @@ class TemplateVariableHelper
             case 'Opportunity':
                 return TemplateVariableHelper::getOpportunityVar($model, $varname);
                 break;
-            case 'Registration':
-                return TemplateVariableHelper::getRegistrationVar($model, $varname);
+            case 'Intake':
+                return TemplateVariableHelper::getIntakeVar($model, $varname);
                 break;
             default:
                 return '';
@@ -162,7 +162,7 @@ class TemplateVariableHelper
         }
     }
 
-    public static function getRegistrationVar($model, $varname){
+    public static function getIntakeVar($model, $varname){
         switch ($varname) {
             default:
                 return '';
@@ -197,7 +197,7 @@ class TemplateVariableHelper
 
     public static function replaceDocumentTemplateVariables(Document $document, $html){
         //load relations
-        $document->load('contact', 'contactGroup', 'opportunity', 'registration', 'sentBy');
+        $document->load('contact', 'contactGroup', 'opportunity', 'intake', 'sentBy');
 
         //Eerst alle {tabel_} vervangen
         $html = TemplateTableHelper::replaceTemplateTables($html, $document);
@@ -206,7 +206,7 @@ class TemplateVariableHelper
         $html = TemplateVariableHelper::replaceTemplateVariables($html, 'contact', $document->contact);
         $html = TemplateVariableHelper::replaceTemplateVariables($html, 'groep', $document->contactGroup);
         $html = TemplateVariableHelper::replaceTemplateVariables($html, 'kans', $document->opportunity);
-        $html = TemplateVariableHelper::replaceTemplateVariables($html, 'aanmelding', $document->registration);
+        $html = TemplateVariableHelper::replaceTemplateVariables($html, 'intake', $document->intake);
         $html = TemplateVariableHelper::replaceTemplateVariables($html, 'afzender', $document->sentBy);
         $html = TemplateVariableHelper::replaceTemplateVariables($html, 'ik', Auth::user());
 

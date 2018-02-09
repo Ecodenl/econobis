@@ -6,7 +6,7 @@ use App\Eco\Campaign\Campaign;
 use App\Eco\Contact\Contact;
 use App\Eco\ContactGroup\ContactGroup;
 use App\Eco\Opportunity\Opportunity;
-use App\Eco\Registration\Registration;
+use App\Eco\Intake\Intake;
 use App\Eco\User\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -53,9 +53,9 @@ class Task extends Model
     /**
      * optional
      */
-    public function registration()
+    public function intake()
     {
-        return $this->belongsTo(Registration::class);
+        return $this->belongsTo(Intake::class);
     }
 
     /**

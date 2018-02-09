@@ -7,7 +7,7 @@ import ViewText from '../../../../components/form/ViewText';
 import ViewHtmlAsText from '../../../../components/form/ViewHtmlAsText';
 
 const OpportunityFormView = props => {
-    const {campaign, contact, desiredDate, measure, number, quotationText, reaction, status, ownedBy, registration} = props.opportunity;
+    const {campaign, contact, desiredDate, measure, number, quotationText, reaction, status, ownedBy, intake} = props.opportunity;
 
     return (
         <div>
@@ -34,9 +34,9 @@ const OpportunityFormView = props => {
             </div>
             <div className="row" onClick={props.switchToEdit}>
                 <ViewText
-                    label={"Aanmelding"}
-                    value={registration ? "Aanmelding: " + registration.id : ''}
-                    link={registration ? 'aanmelding/' + registration.id : ''}
+                    label={"Intake"}
+                    value={intake ? "Intake: " + intake.id : ''}
+                    link={intake ? 'intake/' + intake.id : ''}
                 />
                 <ViewText
                     label={"Status"}

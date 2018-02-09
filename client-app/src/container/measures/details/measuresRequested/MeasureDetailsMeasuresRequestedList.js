@@ -7,7 +7,7 @@ const MeasureDetailsMeasuresRequestedList = props => {
     return (
         <div>
             <div className="row border header">
-                <div className="col-sm-3">Aanmelding</div>
+                <div className="col-sm-3">Intake</div>
                 <div className="col-sm-3">Gewenste datum</div>
                 <div className="col-sm-5">Contact</div>
                 <div className="col-sm-1"></div>
@@ -21,7 +21,7 @@ const MeasureDetailsMeasuresRequestedList = props => {
                         />;
                     })
                     :
-                    <div>Geen aanmeldingen bekend waar deze maatregel gewenst is</div>
+                    <div>Geen intakes bekend waar deze maatregel gewenst is</div>
             }
         </div>
     );

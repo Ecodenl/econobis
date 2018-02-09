@@ -9,7 +9,7 @@ import PanelFooter from '../../../components/panel/PanelFooter';
 import InputReactSelect from "../../../components/form/InputReactSelect";
 
 const OpportunityFormEdit = props => {
-    const { contactId, desiredDate, measureId, quotationText, reactionId, statusId, ownedById, registrationId, campaignId } = props.opportunity;
+    const { contactId, desiredDate, measureId, quotationText, reactionId, statusId, ownedById, intakeId, campaignId } = props.opportunity;
 
     return (
         <form className="form-horizontal col-md-12" onSubmit={props.handleSubmit}>
@@ -51,10 +51,10 @@ const OpportunityFormEdit = props => {
 
             <div className="row">
                 <InputReactSelect
-                    label={"Aanmelding"}
-                    name={"registrationId"}
-                    value={registrationId}
-                    options={props.registrations}
+                    label={"Intake"}
+                    name={"intakeId"}
+                    value={intakeId}
+                    options={props.intakes}
                     onChangeAction={props.handleReactSelectChange}
                     multi={false}
                 />

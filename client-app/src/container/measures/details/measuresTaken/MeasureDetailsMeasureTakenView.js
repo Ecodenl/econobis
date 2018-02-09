@@ -9,8 +9,8 @@ const MeasureDetailsMeasureTakenView = props => {
     return (
 
         <div className={`row border ${props.highlightLine}`} onMouseEnter={() => props.onLineEnter()} onMouseLeave={() => props.onLineLeave()}>
-        <div onClick={() => hashHistory.push(`/aanmelding/${address.registration.id}`)}>
-            <div className="col-sm-3" >{address ? (address.registration ? address.registration.id : '') : ''}</div>
+        <div onClick={() => hashHistory.push(`/intake/${address.intake.id}`)}>
+            <div className="col-sm-3" >{address ? (address.intake ? address.intake.id : '') : ''}</div>
                 <div className="col-sm-3">{measureDate && moment(measureDate.date).format('L')}</div>
                 <div className="col-sm-5">{ address ? address.contact.fullName : '' }</div>
             <div className="col-sm-1">

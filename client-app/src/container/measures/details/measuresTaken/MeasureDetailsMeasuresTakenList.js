@@ -7,7 +7,7 @@ const MeasureDetailsOpportunityList = props => {
     return (
         <div>
             <div className="row border header">
-                <div className="col-sm-3">Aanmelding</div>
+                <div className="col-sm-3">Intake</div>
                 <div className="col-sm-3">Gerealiseerd datum</div>
                 <div className="col-sm-5">Contact</div>
                 <div className="col-sm-1"></div>
@@ -21,7 +21,7 @@ const MeasureDetailsOpportunityList = props => {
                         />;
                     })
                     :
-                    <div>Geen aanmeldingen bekend die deze maatregel hebben genomen</div>
+                    <div>Geen intakes bekend die deze maatregel hebben genomen</div>
             }
         </div>
     );

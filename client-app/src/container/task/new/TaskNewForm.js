@@ -17,7 +17,7 @@ const TaskNewForm = props => {
         typeId,
         contactId,
         statusId,
-        registrationId,
+        intakeId,
         contactGroupId,
         datePlanned,
         startTimePlanned,
@@ -103,11 +103,11 @@ const TaskNewForm = props => {
 
             <div className="row">
                 <InputReactSelect
-                    label={"Aanmelding"}
+                    label={"Intake"}
                     size={"col-sm-6"}
-                    name={"registrationId"}
-                    options={props.registrations}
-                    value={registrationId}
+                    name={"intakeId"}
+                    options={props.intakes}
+                    value={intakeId}
                     onChangeAction={props.handleReactSelectChange}
                     multi={false}
                 />

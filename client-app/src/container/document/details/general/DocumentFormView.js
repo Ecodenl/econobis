@@ -8,7 +8,7 @@ const createMarkup = (value) => {
 };
 
 const EmailTemplateFormView = props => {
-    const {id, contact, contactGroup, registration, opportunity, documentType, description, documentGroup, filename, template} = props.documentDetails;
+    const {id, contact, contactGroup, intake, opportunity, documentType, description, documentGroup, filename, template} = props.documentDetails;
 
     return (
         <div>
@@ -31,8 +31,8 @@ const EmailTemplateFormView = props => {
                         value={ contactGroup && contactGroup.name }
                     />
                     <ViewText
-                        label={"Aanmelding"}
-                        value={ registration && registration.fullAddress }
+                        label={"Intake"}
+                        value={ intake && intake.fullAddress }
                     />
                 </div>
             </div>

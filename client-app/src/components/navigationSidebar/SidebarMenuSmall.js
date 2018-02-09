@@ -25,7 +25,7 @@ class SidebarMenuSmall extends Component {
                 <div className="sidebar-menu-small-item"><SvgIcon size={20} icon={ic_dashboard}/></div>
                 {/* Contacten */}
                 <div className="sidebar-menu-small-item"><SvgIcon size={20} icon={ic_contacts}/></div>
-                {/* Aanmeldingen */}
+                {/* Intakes */}
                 <div className="sidebar-menu-small-item"><SvgIcon size={20} icon={pencil2}/></div>
                 {/* Groepen beheer */}
                 <div className="sidebar-menu-small-item"><SvgIcon size={20} icon={ic_aspect_ratio}/></div>

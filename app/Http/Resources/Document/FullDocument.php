@@ -14,7 +14,7 @@ use App\Http\Resources\ContactGroup\FullContactGroup;
 use App\Http\Resources\DocumentTemplate\FullDocumentTemplate;
 use App\Http\Resources\EnumWithIdAndName\FullEnumWithIdAndName;
 use App\Http\Resources\Opportunity\FullOpportunity;
-use App\Http\Resources\Registration\FullRegistration;
+use App\Http\Resources\Intake\FullIntake;
 use App\Http\Resources\User\FullUser;
 use Illuminate\Http\Resources\Json\Resource;
 
@@ -34,8 +34,8 @@ class FullDocument extends Resource
             'filename' => $this->filename,
             'contactId' => $this->contact_id,
             'contact' => FullContact::make($this->whenLoaded('contact')),
-            'registrationId' => $this->registration_id,
-            'registration' => FullRegistration::make($this->whenLoaded('registration')),
+            'intakeId' => $this->intake_id,
+            'intake' => FullIntake::make($this->whenLoaded('intake')),
             'contactGroupId' => $this->contact_group_id,
             'contactGroup' => FullContactGroup::make($this->whenLoaded('contactGroup')),
             'opportunityId' => $this->opportunity_id,

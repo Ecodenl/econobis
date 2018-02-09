@@ -11,7 +11,7 @@ import ButtonText from '../../../../components/button/ButtonText';
 import PanelFooter from "../../../../components/panel/PanelFooter";
 
 import ContactsAPI from '../../../../api/contact/ContactsAPI';
-import RegistrationsAPI from '../../../../api/registration/RegistrationsAPI';
+import IntakesAPI from '../../../../api/intake/IntakesAPI';
 import OpportunityDetailsAPI from '../../../../api/opportunity/OpportunityDetailsAPI';
 
 import { fetchOpportunity } from '../../../../actions/opportunity/OpportunityDetailsActions';
@@ -21,7 +21,7 @@ class OpportunityFormEdit extends Component {
     constructor(props) {
         super(props);
 
-        const {id, campaign, contact, desiredDate, measure, number, quotationText, reaction, status, ownedBy, registration} = props.opportunity;
+        const {id, campaign, contact, desiredDate, measure, number, quotationText, reaction, status, ownedBy, intake} = props.opportunity;
 
         this.state = {
             opportunity: {
@@ -36,10 +36,10 @@ class OpportunityFormEdit extends Component {
                 reactionId: reaction ? reaction.id : '',
                 statusId: status ? status.id : '',
                 ownedById: ownedBy ? ownedBy.id : '',
-                registrationId: registration ? registration.id : '',
+                intakeId: intake ? intake.id : '',
             },
             contacts: [],
-            registrations: [],
+            intakes: [],
             errors: {
                 contact: false,
                 status: false,
@@ -56,9 +56,9 @@ class OpportunityFormEdit extends Component {
             });
         });
 
-        RegistrationsAPI.peekRegistrations().then(payload => {
+        IntakesAPI.peekIntakes().then(payload => {
             this.setState({
-                registrations: payload
+                intakes: payload
             });
         });
     }
@@ -137,7 +137,7 @@ class OpportunityFormEdit extends Component {
     };
 
     render() {
-        const {campaignId, contactId, desiredDate, measureName, number, quotationText, reactionId, statusId, ownedById, registrationId} = this.state.opportunity;
+        const {campaignId, contactId, desiredDate, measureName, number, quotationText, reactionId, statusId, ownedById, intakeId} = this.state.opportunity;
 
         return (
             <form className="form-horizontal col-md-12" onSubmit={this.handleSubmit}>
@@ -181,10 +181,10 @@ class OpportunityFormEdit extends Component {
 
                 <div className="row">
                     <InputReactSelect
-                        label={"Aanmelding"}
-                        name={"registrationId"}
-                        value={registrationId}
-                        options={this.props.registrations}
+                        label={"Intake"}
+                        name={"intakeId"}
+                        value={intakeId}
+                        options={this.props.intakes}
                         onChangeAction={this.props.handleReactSelectChange}
                         multi={false}
                     />

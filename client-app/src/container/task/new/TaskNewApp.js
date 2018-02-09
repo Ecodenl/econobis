@@ -11,7 +11,7 @@ import TaskNewForm from './TaskNewForm';
 import TaskNewToolbar from './TaskNewToolbar';
 import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
-import RegistrationsAPI from "../../../api/registration/RegistrationsAPI";
+import IntakesAPI from "../../../api/intake/IntakesAPI";
 import ContactGroupAPI from "../../../api/contact-group/ContactGroupAPI";
 import OpportunitiesAPI from "../../../api/opportunity/OpportunitiesAPI";
 
@@ -21,7 +21,7 @@ class TaskNewApp extends Component {
 
         this.state = {
             contacts: [],
-            registrations: [],
+            intakes: [],
             contactGroups: [],
             opportunities: [],
             campaigns: [],
@@ -33,7 +33,7 @@ class TaskNewApp extends Component {
                 contactId: '',
                 campaignId: '',
                 statusId: '',
-                registrationId: '',
+                intakeId: '',
                 contactGroupId: '',
                 datePlanned: '',
                 startTimePlanned: '',
@@ -70,8 +70,8 @@ class TaskNewApp extends Component {
             this.setState({ contacts: payload });
         });
 
-        RegistrationsAPI.peekRegistrations().then((payload) => {
-            this.setState({ registrations: payload });
+        IntakesAPI.peekIntakes().then((payload) => {
+            this.setState({ intakes: payload });
         });
 
         ContactGroupAPI.peekContactGroups().then((payload) => {
@@ -103,20 +103,20 @@ class TaskNewApp extends Component {
                             ...this.state.task,
                             campaignId: '',
                             contactId: params.id,
-                            registrationId: '',
+                            intakeId: '',
                             contactGroupId: '',
                             opportunityId: '',
                         }
                     });
                     break;
-                case 'aanmelding':
+                case 'intake':
                     this.setState({
                         ...this.state,
                         task: {
                             ...this.state.task,
                             campaignId: '',
                             contactId: '',
-                            registrationId: params.id,
+                            intakeId: params.id,
                             contactGroupId: '',
                             opportunityId: '',
                         }
@@ -129,7 +129,7 @@ class TaskNewApp extends Component {
                             ...this.state.task,
                             campaignId: '',
                             contactId: '',
-                            registrationId: '',
+                            intakeId: '',
                             contactGroupId: params.id,
                             opportunityId: '',
                         }
@@ -142,7 +142,7 @@ class TaskNewApp extends Component {
                             ...this.state.task,
                             campaignId: '',
                             contactId: '',
-                            registrationId: '',
+                            intakeId: '',
                             contactGroupId: '',
                             opportunityId: params.id,
                         }
@@ -155,7 +155,7 @@ class TaskNewApp extends Component {
                             ...this.state.task,
                             campaignId: params.id,
                             contactId: '',
-                            registrationId: '',
+                            intakeId: '',
                             contactGroupId: '',
                             opportunityId: '',
                         }
@@ -293,7 +293,7 @@ class TaskNewApp extends Component {
                                     <TaskNewForm
                                         task={this.state.task}
                                         contacts={this.state.contacts}
-                                        registrations={this.state.registrations}
+                                        intakes={this.state.intakes}
                                         contactGroups={this.state.contactGroups}
                                         opportunities={this.state.opportunities}
                                         campaigns={this.state.campaigns}

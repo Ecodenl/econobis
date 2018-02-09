@@ -53,9 +53,9 @@ class SidebarMenu extends Component {
                                            to="contacten/status/closed">Afgehandeld</Link></NavText>
                         </Nav>
                     </Nav>
-                    <Nav id="aanmeldingen">
+                    <Nav id="intakes">
                         <NavIcon><SvgIcon size={20} icon={pencil2}/></NavIcon>
-                        <NavText><Link className="sidebar-link" to="aanmeldingen">Aanmeldingen</Link></NavText>
+                        <NavText><Link className="sidebar-link" to="intakes">Intakes</Link></NavText>
                     </Nav>
                     <Nav id="contact-groepen">
                         <NavIcon><SvgIcon size={20} icon={ic_aspect_ratio}/></NavIcon>

@@ -9,7 +9,7 @@ import InputText from '../../../../components/form/InputText';
 import { updateDocument } from '../../../../actions/document/DocumentDetailsActions';
 import DocumentDetailsAPI from "../../../../api/document/DocumentDetailsAPI";
 import ContactGroupAPI from "../../../../api/contact-group/ContactGroupAPI";
-import RegistrationsAPI from "../../../../api/registration/RegistrationsAPI";
+import IntakesAPI from "../../../../api/intake/IntakesAPI";
 import OpportunitiesAPI from "../../../../api/opportunity/OpportunitiesAPI";
 import ContactsAPI from "../../../../api/contact/ContactsAPI";
 import ViewText from "../../../../components/form/ViewText";
@@ -18,18 +18,18 @@ class DocumentDetailsAPIFormEdit extends Component {
     constructor(props) {
         super(props);
 
-        const {id, contactId, contactGroupId, registrationId, opportunityId, documentType, description, documentGroup, filename} = props.documentDetails;
+        const {id, contactId, contactGroupId, intakeId, opportunityId, documentType, description, documentGroup, filename} = props.documentDetails;
 
         this.state = {
             contacts: [],
             contactGroups: [],
-            registrations: [],
+            intakes: [],
             opportunities: [],
             document: {
                 id: id,
                 contactId: contactId,
                 contactGroupId: contactGroupId || '',
-                registrationId: registrationId || '',
+                intakeId: intakeId || '',
                 opportunityId: opportunityId || '',
                 documentType: documentType && documentType.id,
                 description: description,
@@ -50,8 +50,8 @@ class DocumentDetailsAPIFormEdit extends Component {
             this.setState({ contacts: payload });
         });
 
-        RegistrationsAPI.peekRegistrations().then((payload) => {
-            this.setState({ registrations: payload });
+        IntakesAPI.peekIntakes().then((payload) => {
+            this.setState({ intakes: payload });
         });
 
         ContactGroupAPI.peekContactGroups().then((payload) => {
@@ -86,7 +86,7 @@ class DocumentDetailsAPIFormEdit extends Component {
         let errors = {};
         let hasErrors = false;
 
-        if(validator.isEmpty(document.contactId.toString()) && validator.isEmpty(document.contactGroupId.toString()) && validator.isEmpty(document.registrationId.toString()) && validator.isEmpty(document.opportunityId.toString())){
+        if(validator.isEmpty(document.contactId.toString()) && validator.isEmpty(document.contactGroupId.toString()) && validator.isEmpty(document.intakeId.toString()) && validator.isEmpty(document.opportunityId.toString())){
             errors.docLinkedAtAny = true;
             hasErrors = true;
         };
@@ -102,9 +102,9 @@ class DocumentDetailsAPIFormEdit extends Component {
     };
 
     render() {
-        const { document, errors, contacts, contactGroups, registrations, opportunities } = this.state;
-        const { contactId, contactGroupId, registrationId, opportunityId, documentType, description } = document;
-        const oneOfFieldRequired = contactId === '' && contactGroupId === '' && registrationId === '' && opportunityId === '';
+        const { document, errors, contacts, contactGroups, intakes, opportunities } = this.state;
+        const { contactId, contactGroupId, intakeId, opportunityId, documentType, description } = document;
+        const oneOfFieldRequired = contactId === '' && contactGroupId === '' && intakeId === '' && opportunityId === '';
 
         return (
             <div>
@@ -138,10 +138,10 @@ class DocumentDetailsAPIFormEdit extends Component {
                             error={errors.docLinkedAtAny}
                         />
                         <InputSelect
-                            label="Aanmelding"
-                            name={"registrationId"}
-                            value={registrationId}
-                            options={registrations}
+                            label="Intake"
+                            name={"intakeId"}
+                            value={intakeId}
+                            options={intakes}
                             onChangeAction={this.handleInputChange}
                             required={oneOfFieldRequired && "required"}
                             error={errors.docLinkedAtAny}

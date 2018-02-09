@@ -62,7 +62,7 @@ class Intake extends Model
 
     public function opportunities()
     {
-        return $this->hasMany(Opportunity::class);
+        return $this->belongsToMany(Opportunity::class);
     }
 
     public function tasks()

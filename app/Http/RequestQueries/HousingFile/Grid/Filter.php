@@ -6,7 +6,7 @@
  * Time: 11:48
  */
 
-namespace App\Http\RequestQueries\Intake\Grid;
+namespace App\Http\RequestQueries\HousingFile\Grid;
 
 
 use App\Helpers\RequestQuery\RequestFilter;
@@ -15,30 +15,28 @@ class Filter extends RequestFilter
 {
     protected $fields = [
         'createdAt',
-        'fullName',
         'address',
-        'measureRequestedId',
-        'statusId',
+        'contact',
+        'buildingTypeId',
+        'energyLabelId'
     ];
 
     protected $mapping = [
-        'createdAt' => 'intakes.created_at',
-        'fullName' => 'contacts.full_name',
-        'statusId' => 'intakes.intake_status_id',
-        'measureRequestedId' => 'measure_requested_address.measure_id',
+        'createdAt' => 'housing_files.created_at',
+        'contact' => 'contact.full_name',
+        'buildingTypeId' => 'housing_files.building_type_id',
+        'energyLabelId' => 'housing_files.energy_label_id',
     ];
 
     protected $joins = [
-        'fullName' => 'contact',
         'address' => 'address',
-        'sourceId' => 'source',
-        'measureRequestedId' => 'measureRequested',
+        'contact' => 'contact',
     ];
 
     protected $defaultTypes = [
         '*' => 'ct',
-        'measureRequestedId' => 'eq',
-        'statusId' => 'eq',
+        'buildingType' => 'eq',
+        'energyLabel' => 'eq',
     ];
 
     protected function applyAddressFilter($query, $type, $data)

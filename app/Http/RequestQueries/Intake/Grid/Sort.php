@@ -15,18 +15,17 @@ class Sort extends RequestSort
 {
 
     protected $fields = [
-        'fullName',
         'createdAt',
-        'sourceId',
+        'fullName',
+        'address',
+        'measureRequestedId',
         'statusId',
-        'measureRequestedId'
     ];
 
     protected $mapping = [
-        'fullName' => 'contacts.full_name',
         'createdAt' => 'intakes.created_at',
-        'sourceId' => 'intake_source.source_id',
-        'statusId' => 'intakes.intake_status.id',
+        'fullName' => 'contacts.full_name',
+        'statusId' => 'intakes.intake_status_id',
         'measureRequestedId' => 'measure_requested_address.measure_id',
     ];
 

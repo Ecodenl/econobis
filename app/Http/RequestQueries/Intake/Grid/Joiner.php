@@ -13,11 +13,15 @@ use App\Helpers\RequestQuery\RequestJoiner;
 
 class Joiner extends RequestJoiner
 {
-
     protected function applyContactJoin($query)
     {
         $query->join('addresses', 'intakes.address_id', '=', 'addresses.id');
-        $query->join('contacts', 'addresses.contact_id', '=', 'contacts.id');
+        $query->join('contacts', 'intakes.contact_id', '=', 'contacts.id');
+    }
+
+    protected function applyAddressJoin($query)
+    {
+        $query->join('addresses', 'intakes.address_id', '=', 'addresses.id');
     }
 
     protected function applySourceJoin($query)
@@ -27,8 +31,7 @@ class Joiner extends RequestJoiner
 
     protected function applyMeasureRequestedJoin($query)
     {
-        $query->join('addresses', 'intakes.address_id', '=', 'addresses.id');
-        $query->join('measure_requested_address', 'addresses.id', '=', 'measure_requested_address.address_id');
+        $query->join('intake_measure_requested', 'intake.id', '=', 'intake_measure_requested.intake');
     }
 
 

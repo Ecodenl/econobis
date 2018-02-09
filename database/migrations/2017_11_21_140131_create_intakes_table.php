@@ -52,7 +52,7 @@ class CreateIntakesTable extends Migration
             $table->foreign('intake_id')->references('id')->on('intakes');
             $table->integer('measure_id')->unsigned();
             $table->foreign('measure_id')->references('id')->on('measures');
-            $table->unique(['address_id','measure_id']);
+            $table->unique(['intake_id','measure_id']);
             $table->timestamps();
         });
     }

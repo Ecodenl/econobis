@@ -51,7 +51,6 @@ class CreateHousingFilesTable extends Migration
             $table->integer('energy_label_id')->unsigned()->nullable();
             $table->foreign('energy_label_id')->references('id')->on('energy_labels');
 
-            $table->integer('surface')->nullable();
             $table->integer('floors')->nullable();
 
             $table->integer('energy_label_status_id')->unsigned()->nullable();

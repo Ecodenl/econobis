@@ -3,6 +3,7 @@
 namespace App\Eco\Address;
 
 use App\Eco\Contact\Contact;
+use App\Eco\HousingFile\HousingFile;
 use App\Eco\Measure\Measure;
 use App\Eco\BuildingType\BuildingType;
 use App\Eco\Measure\MeasureRequested;
@@ -29,6 +30,11 @@ class Address extends Model
         return $this->belongsTo(Contact::class);
     }
 
+    public function housingFile()
+    {
+        return $this->hasOne(HousingFile::class);
+    }
+
     public function intake()
     {
         return $this->hasOne(Intake::class);
@@ -42,11 +48,6 @@ class Address extends Model
     public function measures_requested()
     {
         return $this->hasMany(MeasureRequested::class);
-    }
-
-    public function building_type()
-    {
-        return $this->belongsTo(BuildingType::class);
     }
 
     public function getType()

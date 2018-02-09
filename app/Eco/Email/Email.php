@@ -3,6 +3,7 @@
 namespace App\Eco\Email;
 
 use App\Eco\Contact\Contact;
+use App\Eco\Intake\Intake;
 use App\Eco\Mailbox\Mailbox;
 use App\Eco\User\User;
 use Illuminate\Database\Eloquent\Model;
@@ -43,5 +44,10 @@ class Email extends Model
         if(!$this->status) return null;
 
         return EmailStatus::get($this->status);
+    }
+
+    public function intake()
+    {
+        return $this->belongsTo(Intake::class);
     }
 }

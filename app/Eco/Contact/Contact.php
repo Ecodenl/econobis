@@ -5,6 +5,7 @@ namespace App\Eco\Contact;
 use App\Eco\Campaign\Campaign;
 use App\Eco\Document\Document;
 use App\Eco\Email\Email;
+use App\Eco\HousingFile\HousingFile;
 use App\Eco\Opportunity\Opportunity;
 use App\Eco\Organisation\Organisation;
 use App\Eco\Address\Address;
@@ -143,7 +144,7 @@ class Contact extends Model
 
     public function intakes()
     {
-        return $this->hasManyThrough(Intake::class, Address::class);
+        return $this->hasMany(Intake::class);
     }
 
     public function tasks()

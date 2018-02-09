@@ -1,8 +1,7 @@
 <?php
 
-namespace App\Eco\EnergyLabel;
+namespace App\Eco\HousingFile;
 
-use App\Eco\Measure\Measure;
 use Illuminate\Database\Eloquent\Model;
 
 class EnergyLabel extends Model
@@ -18,8 +17,8 @@ class EnergyLabel extends Model
         'id', 'name'
     ];
 
-    public function measures()
+    public function housingFiles()
     {
-        return $this->hasMany(Measure::class);
+        return $this->hasMany(HousingFile::class);
     }
 }

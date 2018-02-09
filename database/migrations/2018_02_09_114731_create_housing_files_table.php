@@ -67,7 +67,7 @@ class CreateHousingFilesTable extends Migration
             $table->timestamps();
         });
 
-        Schema::create('measure_taken_address', function (Blueprint $table) {
+        Schema::create('housing_file_measure_taken', function (Blueprint $table) {
             $table->increments('id')->unique();
             $table->integer('address_id')->unsigned();
             $table->foreign('address_id')->references('id')->on('addresses');

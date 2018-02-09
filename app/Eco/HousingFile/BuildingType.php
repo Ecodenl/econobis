@@ -1,8 +1,9 @@
 <?php
 
-namespace App\Eco\BuildingType;
+namespace App\Eco\HousingFile;
 
 use App\Eco\Address\Address;
+use App\Eco\HousingFile\HousingFile;
 use Illuminate\Database\Eloquent\Model;
 
 class BuildingType extends Model
@@ -17,9 +18,9 @@ class BuildingType extends Model
         'id', 'name'
     ];
 
-    public function addresses()
+    public function housingFiles()
     {
-        return $this->belongsToMany(Address::class);
+        return $this->belongsToMany(HousingFile::class);
     }
 
 }

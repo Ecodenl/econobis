@@ -5,6 +5,7 @@ namespace App\Eco\Document;
 use App\Eco\Contact\Contact;
 use App\Eco\ContactGroup\ContactGroup;
 use App\Eco\DocumentTemplate\DocumentTemplate;
+use App\Eco\HousingFile\HousingFile;
 use App\Eco\Opportunity\Opportunity;
 use App\Eco\Intake\Intake;
 use App\Eco\User\User;
@@ -64,5 +65,11 @@ class Document extends Model
     public function template(){
         return $this->belongsTo(DocumentTemplate::class);
     }
+
+    public function housingFile(){
+        return $this->belongsTo(HousingFile::class);
+    }
+
+
 
 }

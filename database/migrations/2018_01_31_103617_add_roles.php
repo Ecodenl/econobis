@@ -19,6 +19,14 @@ class AddRoles extends Migration
         $superuserRole->save();
         $superuserRole->syncPermissions(Permission::all());
 
+        \Spatie\Permission\Models\Permission::create([
+            'name' => 'manage_housing_file',
+            'guard_name' => 'api',
+        ]);
+
+        $superuserRole = Role::findByName('Key user');
+        $superuserRole->syncPermissions(Permission::all());
+
         //make roles
         $roles = ['Medewerker' => ['create_person', 'view_person', 'update_person', 'delete_person', 'create_organisation', 'view_organisation', 'update_organisation', 'manage_task', 'create_document', 'view_document', 'view_audit_trail', 'view_mailbox'],
             'Medewerker 2'  => ['create_person', 'view_person', 'update_person', 'delete_person', 'create_organisation', 'view_organisation', 'update_organisation', 'update_contact_iban', 'update_contact_owner', 'manage_group', 'manage_task', 'create_document', 'view_document', 'view_audit_trail', 'view_mailbox'],
@@ -26,7 +34,7 @@ class AddRoles extends Migration
             'Financieel medewerker' => ['create_person', 'view_person', 'update_person', 'delete_person', 'create_organisation', 'view_organisation', 'update_organisation', 'delete_organisation', 'update_contact_iban', 'manage_group', 'manage_task', 'create_document', 'view_document', 'create_document_template', 'view_document_template', 'view_audit_trail', 'view_mailbox', 'create_mailbox'],
             'Financieel controller' => ['create_person', 'view_person', 'update_person', 'delete_person', 'create_organisation', 'view_organisation', 'update_organisation', 'delete_organisation', 'update_contact_iban', 'manage_group', 'manage_task', 'create_document', 'view_document', 'create_document_template', 'view_document_template', 'view_audit_trail', 'view_mailbox', 'create_mailbox'],
             'Participatie medewerker' => ['create_person', 'view_person', 'update_person', 'delete_person', 'create_organisation', 'view_organisation', 'update_organisation', 'update_contact_iban', 'manage_group', 'manage_task', 'create_document', 'view_document', 'create_document_template', 'view_document_template', 'view_audit_trail', 'view_mailbox', 'create_mailbox'],
-            'Energie adviseur' => ['create_person', 'view_person', 'update_person', 'delete_person', 'create_organisation', 'view_organisation', 'update_organisation', 'manage_group', 'manage_opportunity', 'manage_task', 'manage_intake', 'manage_measure', 'create_document', 'view_document', 'view_audit_trail', 'create_mailbox'],
+            'Energie adviseur' => ['create_person', 'view_person', 'update_person', 'delete_person', 'create_organisation', 'view_organisation', 'update_organisation', 'manage_group', 'manage_opportunity', 'manage_task', 'manage_intake','manage_housing_file', 'manage_measure', 'create_document', 'view_document', 'view_audit_trail', 'create_mailbox'],
             'Marketing medewerker' => ['create_person', 'view_person', 'update_person', 'delete_person', 'create_organisation', 'view_organisation', 'update_organisation', 'manage_group', 'manage_task', 'manage_marketing', 'create_document', 'view_document', 'create_document_template', 'view_document_template', 'view_audit_trail', 'view_mailbox', 'create_mailbox']
         ];
 

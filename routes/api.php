@@ -40,25 +40,33 @@ Route::namespace('Api')
 
         Route::get('/intake/grid', 'Intake\IntakeController@grid');
         Route::get('/intake/peek', 'Intake\IntakeController@peek');
-        Route::get('/intake/amount-active', 'Intake\IntakeController@getAmountOfActiveIntakes');
         Route::get('/contact/{contact}/intake', 'Intake\IntakeController@getStore');
         Route::post('/contact/intake', 'Intake\IntakeController@store');
         Route::get('/intake/{intake}', 'Intake\IntakeController@show');
         Route::post('/intake/{intake}/update', 'Intake\IntakeController@update');
         Route::post('/intake/{intake}/delete', 'Intake\IntakeController@destroy');
 
-        Route::post('/intake/{intake}/measure-taken', 'Intake\IntakeController@storeMeasureTaken');
-        Route::post('/intake/{measureTaken}/measure-taken/update', 'Intake\IntakeController@updateMeasureTaken');
-        Route::post('/intake/{measureTaken}/measure-taken/delete', 'Intake\IntakeController@deleteMeasureTaken');
+        Route::post('/intake/{intake}/{measure}/attach', 'Intake\IntakeController@attachMeasureRequested');
+        Route::post('/intake/{intake}/{measure}/detach', 'Intake\IntakeController@detachMeasureRequested');
 
-        Route::post('/intake/{intake}/measure-requested', 'Intake\IntakeController@storeMeasureRequested');
-        Route::post('/intake/{measureRequested}/measure-requested/update', 'Intake\IntakeController@updateMeasureRequested');
-        Route::post('/intake/{measureRequested}/measure-requested/delete', 'Intake\IntakeController@deleteMeasureRequested');
-
-        Route::post('/intake/{intake}/note', 'Intake\IntakeController@storeNote');
-        Route::post('/intake/note/{note}/update', 'Intake\IntakeController@updateNote');
-        Route::post('/intake/note/{note}/delete', 'Intake\IntakeController@deleteNote');
         Route::get('/intake/{intake}/tasks', 'Intake\IntakeController@tasks');
+        Route::get('/intake/{intake}/notes', 'Intake\IntakeController@notes');
+        Route::get('/intake/{intake}/documents', 'Intake\IntakeController@documents');
+        Route::get('/intake/{intake}/emails', 'Intake\IntakeController@emails');
+
+        Route::get('/housing-file/grid', 'HousingFile\HousingFileController@grid');
+        Route::get('/housing-file/peek', 'HousingFile\HousingFileController@peek');
+        Route::get('/contact/{contact}/housingFile', 'HousingFile\HousingFileController@getStore');
+        Route::post('/contact/housingFile', 'HousingFile\HousingFileController@store');
+        Route::get('/housing-file/{housingFile}', 'HousingFile\HousingFileController@show');
+        Route::post('/housing-file/{housingFile}/update', 'HousingFile\HousingFileController@update');
+        Route::post('/housing-file/{housingFile}/delete', 'HousingFile\HousingFileController@destroy');
+
+        Route::post('/housing-file/{housingFile}/{measure}/attach', 'HousingFile\HousingFileController@attachMeasureTaken');
+        Route::post('/housing-file/{housingFile}/{measure}/detach', 'HousingFile\HousingFileController@detachMeasureTaken');
+        
+        Route::get('/housing-file/{housingFile}/notes', 'HousingFile\HousingFileController@notes');
+        Route::get('/housing-file/{housingFile}/documents', 'HousingFile\HousingFileController@documents');
 
         Route::get('/user/grid', 'User\GridController@index');
         Route::post('/user', 'User\UserController@store');

@@ -46,9 +46,8 @@ class IntakeController extends ApiController
     /**
      * Geef de data die React nodig heeft om het scherm op te bouwen voor een nieuwe intake
      */
-    public function getStore(Request $request)
+    public function getStore(Contact $contact)
     {
-        $contact = Contact::find($request->contact);
         $info[] = $contact->getPrettyAddresses();
 
         return $info;

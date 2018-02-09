@@ -42,43 +42,6 @@ class SeedIntakes extends Migration
             );
         }
 
-        $buildingTypes = [
-            'Vrijstaand',
-            'Hoekwoning',
-            'Tussenwoning',
-            'Appartement',
-            'Appartement VVE',
-            'Gehele tussenwoning',
-            'Beneden woning meerdere verdiepingen',
-        ];
-
-        foreach ($buildingTypes as $types) {
-            DB::table('building_types')->insert([
-                    ['name' => $types],
-                ]
-            );
-        }
-
-        $energyLabels = [
-            'A+++',
-            'A++',
-            'A+',
-            'A',
-            'B',
-            'C',
-            'D',
-            'E',
-            'F',
-        ];
-
-        foreach ($energyLabels as $energyLabel) {
-            DB::table('energy_labels')->insert([
-                    ['name' => $energyLabel],
-                ]
-            );
-        }
-        
-
         $statussen = [
             'Open',
             'Afgesloten met kans',

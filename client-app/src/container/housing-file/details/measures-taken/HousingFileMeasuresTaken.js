@@ -1,13 +1,13 @@
 import React, { Component} from 'react';
 
-import IntakeMeasuresTakenList from './IntakeMeasuresTakenList';
-import IntakeMeasuresTakenNew from './IntakeMeasuresTakenNew';
+import HousingFileMeasuresTakenList from './HousingFileMeasuresTakenList';
+import HousingFileMeasuresTakenNew from './HousingFileMeasuresTakenNew';
 import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
 import PanelHeader from '../../../../components/panel/PanelHeader';
 import {connect} from "react-redux";
 
-class IntakeMeasuresTaken extends Component {
+class HousingFileMeasuresTaken extends Component {
     constructor(props) {
         super(props);
 
@@ -26,18 +26,18 @@ class IntakeMeasuresTaken extends Component {
         return (
             <Panel>
               <PanelHeader>
-                <span className="h5 text-bold">Reeds genomen maatregelen</span>
-                  {this.props.permissions.manageIntake &&
+                <span className="h5 text-bold">Aanwezige maatregelen</span>
+                  {this.props.permissions.manageHousingFile &&
                   <a role="button" className="pull-right" onClick={this.toggleShowNew}><span
                       className="glyphicon glyphicon-plus"/></a>
                   }
-                  </PanelHeader>
+              </PanelHeader>
               <PanelBody>
                 <div className="col-md-12">
-                  <IntakeMeasuresTakenList />
+                  <HousingFileMeasuresTakenList />
                 </div>
                 <div className="col-md-12 margin-10-top">
-                    { this.state.showNew && <IntakeMeasuresTakenNew toggleShowNew={this.toggleShowNew} /> }
+                    { this.state.showNew && <HousingFileMeasuresTakenNew toggleShowNew={this.toggleShowNew} /> }
                 </div>
               </PanelBody>
             </Panel>
@@ -52,4 +52,4 @@ const mapStateToProps = (state) => {
     };
 };
 
-export default connect(mapStateToProps)(IntakeMeasuresTaken);
+export default connect(mapStateToProps)(HousingFileMeasuresTaken);

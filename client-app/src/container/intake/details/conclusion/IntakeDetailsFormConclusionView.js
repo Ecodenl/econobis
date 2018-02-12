@@ -6,18 +6,28 @@ import moment from "moment/moment";
 moment.locale('nl');
 
 const IntakeDetailsFormConclusionView = props => {
-    const { createdAt, updatedAt } = props.intakeDetails;
+    const { createdAt, createdBy, updatedAt, updateBy } = props.intakeDetails;
 
     return (
         <div>
+            <div className="row">
+                <ViewText
+                    label={"Laatste gewijzigd op"}
+                    value={updatedAt ? moment(updatedAt.date).format('L') : 'Onbekend'}
+                />
+                <ViewText
+                    label={"Laatste gewijzigd door"}
+                    value={updateBy ? updateBy.fullName : 'Onbekend'}
+                />
+            </div>
             <div className="row">
                 <ViewText
                     label={"Gemaakt op"}
                     value={createdAt ? moment(createdAt.date).format('L') : 'Onbekend'}
                 />
                 <ViewText
-                    label={"Laatste update door"}
-                    value={updatedAt ? moment(updatedAt.date).format('L') : 'Onbekend'}
+                    label={"Gemaakt door"}
+                    value={createdBy ? createdBy.fullName : 'Onbekend'}
                 />
             </div>
         </div>

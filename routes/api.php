@@ -39,6 +39,7 @@ Route::namespace('Api')
         Route::get('/contact/{contact}/tasks', 'Contact\ContactController@tasks');
 
         Route::get('/intake/grid', 'Intake\IntakeController@grid');
+        Route::get('/intake/amount-active', 'Intake\IntakeController@getAmountOfActiveIntakes');
         Route::get('/intake/peek', 'Intake\IntakeController@peek');
         Route::get('/contact/{contact}/intake', 'Intake\IntakeController@getStore');
         Route::post('/contact/intake', 'Intake\IntakeController@store');

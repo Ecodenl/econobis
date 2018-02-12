@@ -30,6 +30,9 @@ import EmailTemplateDetailsApp from './container/email-templates/details/EmailTe
 import EmailTemplateNewApp from './container/email-templates/new/EmailTemplateNewApp';
 import EmailAnswerApp from './container/email/answer/EmailAnswerApp';
 import Forgot from './container/auth/Forgot';
+import HousingFileDetailsApp from './container/housing-file/details/HousingFileDetailsApp';
+import HousingFileNewApp from './container/housing-file/new/HousingFileNewApp';
+import HousingFilesListApp from './container/housing-file/list/HousingFilesListApp';
 import Reset from './container/auth/Reset';
 import Login from './container/auth/Login';
 import Logout from './container/auth/Logout';
@@ -123,11 +126,15 @@ const Routes = () => {
                 <Route path="mailbox/nieuw" component={MailboxNewApp} />
                 <Route path="mailbox/:id" component={MailboxDetailsApp} />
                 <Route path="mailboxen" component={MailboxesListApp} />
+                /* Housing File */
+                <Route path="woningdossier/nieuw/contact/:contactId/adres/:addressId" component={HousingFileNewApp} />
+                <Route path="woningdossier/:id" component={HousingFileDetailsApp} />
+                <Route path="woningdossiers" component={ HousingFilesListApp } />
                 /* Intake */
-                <Route path="intake/nieuw/contact/:contactId/adres/:addressId" component={IntakeNewApp} />im
+                <Route path="intake/nieuw/contact/:contactId/adres/:addressId" component={IntakeNewApp} />
                 <Route path="intake/:id" component={IntakeDetailsApp} />
                 <Route path="intakes" component={ IntakesListApp } />
-                /*  User */
+                /* User */
                 <Route path="gebruiker/nieuw" component={UserNewApp} />
                 <Route path="gebruiker/:id" component={UserDetailsApp} />
                 <Route path="gebruikers" component={UsersListApp} />

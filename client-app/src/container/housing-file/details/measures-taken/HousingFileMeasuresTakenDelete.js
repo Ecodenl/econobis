@@ -2,11 +2,11 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import Modal from '../../../../components/modal/Modal';
-import { deleteIntakeMeasureTaken } from '../../../../actions/intake/IntakeDetailsActions';
+import { deleteHousingFileMeasureTaken } from '../../../../actions/housing-file/HousingFileDetailsActions';
 
-const IntakeMeasuresTakenDelete = (props) => {
+const HousingFileMeasuresTakenDelete = (props) => {
     const confirmAction = () => {
-        props.deleteIntakeMeasureTaken(props.id);
+        props.deleteHousingFileMeasureTaken(props.housingFileId, props.id);
         props.closeDeleteItemModal();
     };
 
@@ -24,10 +24,16 @@ const IntakeMeasuresTakenDelete = (props) => {
     );
 };
 
+const mapStateToProps = (state) => {
+    return {
+        housingFileId: state.housingFileDetails.id,
+    };
+};
+
 const mapDispatchToProps = dispatch => ({
-    deleteIntakeMeasureTaken: (id) => {
-        dispatch(deleteIntakeMeasureTaken(id));
+    deleteHousingFileMeasureTaken: (housingFileId, measureId) => {
+        dispatch(deleteHousingFileMeasureTaken(housingFileId, measureId));
     },
 });
 
-export default connect(null, mapDispatchToProps)(IntakeMeasuresTakenDelete);
+export default connect(mapStateToProps, mapDispatchToProps)(HousingFileMeasuresTakenDelete);

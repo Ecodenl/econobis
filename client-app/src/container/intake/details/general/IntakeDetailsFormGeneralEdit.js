@@ -21,14 +21,11 @@ class IntakeDetailsFormGeneralEdit extends Component {
         this.state = {
             intake: {
                 id,
-                address,
-                buildYear: address.buildYear,
-                buildingTypeId: address.buildingTypeId,
-                createdAt: createdAt ? createdAt.date : '',
-                owner: false,
-                statusId: status && status.id,
-                sourceIds: sources && sources.map((source) => source.id).join(','),
+                contact: contact.id,
+                address: address ? address.id : '',
                 campaignId: campaign && campaign.id,
+                statusId: status ? status.id : '',
+                sourceIds: sources && sources.map((source) => source.id).join(','),
                 intakeReasonIds: reasons && reasons.map((reason) => reason.id).join(','),
             },
         }

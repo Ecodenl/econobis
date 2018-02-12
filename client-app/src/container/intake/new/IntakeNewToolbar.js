@@ -11,7 +11,7 @@ const IntakeNewToolbar = props => {
                     <ButtonIcon iconName={"glyphicon-arrow-left"} onClickAction={browserHistory.goBack} />
                 </div>
             </div>
-            <div className="col-md-4"><h4 className="text-center">Intake nieuw</h4></div>
+            <div className="col-md-4"><h4 className="text-center">Nieuwe intake</h4></div>
             <div className="col-md-4" />
         </div>
     );

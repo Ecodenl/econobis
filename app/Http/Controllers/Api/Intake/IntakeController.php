@@ -9,14 +9,9 @@
 namespace App\Http\Controllers\Api\Intake;
 
 
-use App\Eco\Address\Address;
 use App\Eco\Measure\Measure;
-use App\Eco\Measure\MeasureRequested;
-use App\Eco\Measure\MeasureTaken;
 use App\Eco\Intake\Intake;
 use App\Eco\Contact\Contact;
-use App\Eco\Intake\IntakeNote;
-use App\Eco\Task\Jobs\DeleteTask;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\RequestQueries\Intake\Grid\RequestQuery;
 use App\Http\Resources\GenericResource;
@@ -25,7 +20,6 @@ use App\Http\Resources\Intake\GridIntake;
 use App\Http\Resources\Intake\IntakePeek;
 use App\Http\Resources\Task\SidebarTask;
 use Illuminate\Http\Request;
-use App\Helpers\RequestInput\RequestInput;
 
 class IntakeController extends ApiController
 {
@@ -65,7 +59,7 @@ class IntakeController extends ApiController
             'measuresRequested',
             'opportunities',
             'tasks',
-            'notes',
+//            'notes',
             'documents',
             'emails',
         ]);
@@ -104,6 +98,11 @@ class IntakeController extends ApiController
         if ($data['statusId']) {
             $intake->intake_status_id
                 = $data['statusId'];
+        }
+
+        if ($data['note']) {
+            $intake->note
+                = $data['note'];
         }
 
         $intake->save();
@@ -152,6 +151,11 @@ class IntakeController extends ApiController
         if ($data['statusId']) {
             $intake->intake_status_id
                 = $data['statusId'];
+        }
+
+        if ($data['note']) {
+            $intake->note
+                = $data['note'];
         }
 
         $intake->save();

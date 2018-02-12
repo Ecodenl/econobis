@@ -2,11 +2,10 @@
 
 namespace App\Http\Resources\Address;
 
+use App\Eco\Measure\Measure;
 use App\Http\Resources\Contact\FullContact;
 use App\Http\Resources\EnumWithIdAndName\FullEnumWithIdAndName;
 use App\Http\Resources\GenericResource;
-use App\Http\Resources\Measure\MeasureRequested;
-use App\Http\Resources\Measure\MeasureTaken;
 use App\Http\Resources\Intake\FullIntake;
 use Illuminate\Http\Resources\Json\Resource;
 
@@ -36,8 +35,6 @@ class FullAddress extends Resource
             'buildingTypeId' => $this->building_type_id,
             'owner' => $this->owner,
             'buildingType' => GenericResource::make($this->whenLoaded('building_type')),
-            'measuresTaken' => MeasureTaken::collection($this->whenLoaded('measures_taken')),
-            'measuresRequested' => MeasureRequested::collection($this->whenLoaded('measures_requested')),
             'intake' => FullIntake::make($this->whenLoaded('intake')),
             'contact' => FullContact::make($this->whenLoaded('contact')),
         ];

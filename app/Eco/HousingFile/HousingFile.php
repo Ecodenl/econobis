@@ -46,7 +46,7 @@ class HousingFile extends Model
     }
 
     public function measuresTaken(){
-        return $this->belongsToMany(Measure::class);
+        return $this->belongsToMany(Measure::class, 'measure_taken_address');
     }
 
     public function notes(){

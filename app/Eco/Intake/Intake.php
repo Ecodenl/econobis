@@ -33,7 +33,7 @@ class Intake extends Model
 
     public function address()
     {
-        return $this->hasOne(Address::class);
+        return $this->belongsTo(Address::class);
     }
 
     public function campaign()
@@ -43,26 +43,26 @@ class Intake extends Model
 
     public function status()
     {
-        return $this->belongsTo(IntakeStatus::class);
+        return $this->belongsTo(IntakeStatus::class,'intake_status_id');
     }
 
     public function sources()
     {
-        return $this->belongsToMany(IntakeSource::class);
+        return $this->belongsToMany(IntakeSource::class, 'intake_source', 'intake_id', 'source_id');
     }
 
     public function reasons()
     {
-        return $this->belongsToMany(IntakeReason::class);
+        return $this->belongsToMany(IntakeReason::class, 'intake_reason', 'intake_id', 'reason_id');
     }
 
     public function measuresRequested(){
-        return $this->belongsToMany(Measure::class);
+        return $this->belongsToMany(Measure::class, 'intake_measure_requested');
     }
 
     public function opportunities()
     {
-        return $this->belongsToMany(Opportunity::class);
+        return $this->hasMany(Opportunity::class);
     }
 
     public function tasks()

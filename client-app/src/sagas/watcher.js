@@ -20,12 +20,16 @@ import { fetchOpportunitiesSaga } from './opportunity/OpportunitiesSaga';
 import { fetchOpportunitySaga } from './opportunity/OpportunityDetailsSaga';
 import {
     fetchIntakeDetailsSaga,
-    deleteIntakeNoteSaga,
-    deleteIntakeMeasureTakenSaga,
     deleteIntakeMeasureRequestedSaga,
     deleteIntakeSaga,
 } from './intake/IntakeDetailsSaga';
 import { fetchIntakesSaga } from './intake/IntakesSaga';
+import {
+    fetchHousingFileDetailsSaga,
+    deleteHousingFileMeasureTakenSaga,
+    deleteHousingFileSaga,
+} from './housing-file/HousingFileDetailsSaga';
+import { fetchHousingFilesSaga } from './housing-file/HousingFilesSaga';
 import { fetchTaskDetailsSaga, deleteTaskSaga } from './task/TaskDetailsSaga';
 import { fetchTasksSaga, setTaskCompletedSaga } from './task/TasksSaga';
 import { fetchUserDetailsSaga } from './user/UserDetailsSaga';
@@ -72,6 +76,11 @@ export default function* watchSagas() {
     // Email templates
     yield takeLatest('FETCH_EMAIL_TEMPLATES', fetchEmailTemplatesSaga);
     yield takeLatest('FETCH_EMAIL_TEMPLATE', fetchEmailTemplateSaga);
+    // Housing Files
+    yield takeLatest('FETCH_HOUSING_FILES', fetchHousingFilesSaga);
+    yield takeLatest('FETCH_HOUSING_FILE_DETAILS', fetchHousingFileDetailsSaga);
+    yield takeLatest('DELETE_HOUSING_FILE', deleteHousingFileSaga);
+    yield takeLatest('DELETE_HOUSING_FILE_MEASURE_TAKEN', deleteHousingFileMeasureTakenSaga);
     // Mailbox
     yield takeLatest('FETCH_MAILBOXES', fetchMailboxesSaga);
     yield takeLatest('FETCH_MAILBOX_DETAILS', fetchMailboxDetailsSaga);
@@ -87,8 +96,6 @@ export default function* watchSagas() {
     yield takeLatest('FETCH_INTAKES', fetchIntakesSaga);
     yield takeLatest('FETCH_INTAKE_DETAILS', fetchIntakeDetailsSaga);
     yield takeLatest('DELETE_INTAKE', deleteIntakeSaga);
-    yield takeLatest('DELETE_INTAKE_NOTE', deleteIntakeNoteSaga);
-    yield takeLatest('DELETE_INTAKE_MEASURE_TAKEN', deleteIntakeMeasureTakenSaga);
     yield takeLatest('DELETE_INTAKE_MEASURE_REQUESTED', deleteIntakeMeasureRequestedSaga);
     // Task
     yield takeLatest('FETCH_TASKS', fetchTasksSaga);

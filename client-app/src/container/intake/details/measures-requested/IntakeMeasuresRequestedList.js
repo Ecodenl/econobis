@@ -7,9 +7,7 @@ const IntakeMeasuresRequestedList = props => {
     return (
         <div>
           <div className="row border header">
-            <div className="col-sm-4">Maatregel</div>
-            <div className="col-sm-3">Gewenste datum</div>
-            <div className="col-sm-4">Mate van interesse</div>
+            <div className="col-sm-11">Maatregel</div>
             <div className="col-sm-1"></div>
           </div>
             {
@@ -21,7 +19,7 @@ const IntakeMeasuresRequestedList = props => {
                         />;
                     })
                     :
-                    <div>Geen gewenste maatregelen bekend</div>
+                    <div>Geen gewenste maatregelen bekend.</div>
             }
         </div>
     );
@@ -29,7 +27,7 @@ const IntakeMeasuresRequestedList = props => {
 
 const mapStateToProps = (state) => {
     return {
-        measuresRequested: state.intakeDetails.address.measuresRequested,
+        measuresRequested: state.intakeDetails.measuresRequested,
     };
 };
 

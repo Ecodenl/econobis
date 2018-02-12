@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
 import { fetchIntakes, clearIntakes } from '../../../actions/intake/IntakesActions';
-import { clearFilterIntake } from '../../../actions/intake/IntakesFiltersActions';
+import { clearFilterIntakes } from '../../../actions/intake/IntakesFiltersActions';
 import { setIntakesPagination } from '../../../actions/intake/IntakesPaginationActions';
 import IntakesList from './IntakesList';
 import IntakesListToolbar from './IntakesListToolbar';
@@ -37,7 +37,7 @@ class IntakesListApp extends Component {
     };
 
     resetIntakeFilters = () => {
-        this.props.clearFilterIntake();
+        this.props.clearFilterIntakes();
 
         this.fetchIntakesData();
     };
@@ -99,7 +99,7 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = (dispatch) => {
-    return bindActionCreators({ fetchIntakes, clearIntakes, setIntakesPagination, clearFilterIntake }, dispatch);
+    return bindActionCreators({ fetchIntakes, clearIntakes, setIntakesPagination, clearFilterIntakes }, dispatch);
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(IntakesListApp);

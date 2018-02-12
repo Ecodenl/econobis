@@ -1,21 +1,16 @@
-export const setFilterFullName = (fullName) => ({
-    type: 'SET_FILTER_INTAKE_FULL_NAME',
-    fullName,
-});
-
 export const setIntakeDateFilter = (createdAt) => ({
     type: 'SET_FILTER_INTAKE_DATE',
     createdAt,
 });
 
-export const setFilterIntakeSource = (sourceId) => ({
-    type: 'SET_FILTER_INTAKE_SOURCE',
-    sourceId,
+export const setFilterFullName = (fullName) => ({
+    type: 'SET_FILTER_INTAKE_FULL_NAME',
+    fullName,
 });
 
-export const setFilterIntakeStatus = (statusId) => ({
-    type: 'SET_FILTER_INTAKE_STATUS',
-    statusId,
+export const setFilterIntakeAddress = (address) => ({
+    type: 'SET_FILTER_INTAKE_ADDRESS',
+    address,
 });
 
 export const setFilterMeasureRequested = (measureRequested) => ({
@@ -23,6 +18,11 @@ export const setFilterMeasureRequested = (measureRequested) => ({
     measureRequested,
 });
 
-export const clearFilterIntake = () => ({
+export const setFilterIntakeStatus = (statusId) => ({
+    type: 'SET_FILTER_INTAKE_STATUS',
+    statusId,
+});
+
+export const clearFilterIntakes = () => ({
     type: 'CLEAR_FILTER_INTAKES',
 });

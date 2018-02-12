@@ -4,21 +4,15 @@ import moment from 'moment';
 moment.locale('nl');
 
 const IntakeMeasuresRequestedView = props => {
-    const {name, desiredDate, degreeInterest} = props.measureRequested;
+    const {name} = props.measureRequested;
 
     return (
         <div className={`row border ${props.highlightLine}`} onMouseEnter={() => props.onLineEnter()}
              onMouseLeave={() => props.onLineLeave()}>
             <div onClick={props.openEdit}>
                 <div>
-                    <div className="col-sm-4">
+                    <div className="col-sm-11">
                         {name}
-                    </div>
-                    <div className="col-sm-3">
-                        {desiredDate && moment(desiredDate.date).format('L')}
-                    </div>
-                    <div className="col-sm-4">
-                        {degreeInterest}
                     </div>
                 </div>
             </div>

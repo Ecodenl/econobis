@@ -4,23 +4,25 @@ import moment from 'moment';
 import validator from 'validator';
 
 import IntakeDetailsAPI from '../../../../api/intake/IntakeDetailsAPI';
-import { newIntakeMeasureTaken } from '../../../../actions/intake/IntakeDetailsActions';
+import { newIntakeMeasureRequested } from '../../../../actions/intake/IntakeDetailsActions';
 import InputDate from '../../../../components/form/InputDate';
+import InputText from '../../../../components/form/InputText';
 import ButtonText from '../../../../components/button/ButtonText';
 import InputSelect from "../../../../components/form/InputSelect";
 import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
 
-class IntakeMeasuresTakenNew extends Component {
+class HousingFileMeasuresTakenNew extends Component {
     constructor(props) {
         super(props);
 
+
+
         this.state = {
-            measureTaken: {
-                addressId: this.props.addressId,
+            measureRequested: {
+                intakeId: this.props.intakeId,
                 measureId: '',
-                measureDate: '',
-                energyLabelId: '',
+
             },
             errors: {
                 measureId: false,
@@ -35,34 +37,23 @@ class IntakeMeasuresTakenNew extends Component {
 
         this.setState({
             ...this.state,
-            measureTaken: {
-                ...this.state.measureTaken,
+            measureRequested: {
+                ...this.state.measureRequested,
                 [name]: value
             },
         });
     };
 
-    handleChangeMeasureDate = (date) => {
-        const formattedDate = (date ? moment(date).format('Y-MM-DD') : '');
-
-        this.setState({
-            ...this.state,
-            measureTaken: {
-                ...this.state.measureTaken,
-                measureDate: formattedDate
-            },
-        });
-    };
 
     handleSubmit = event => {
         event.preventDefault();
 
-        const { measureTaken } = this.state;
+        const {measureRequested} = this.state;
 
         let errors = {};
         let hasErrors = false;
 
-        if(validator.isEmpty(measureTaken.measureId)){
+        if (validator.isEmpty(measureRequested.measureId)) {
             errors.measureId = true;
             hasErrors = true;
         };
@@ -70,8 +61,8 @@ class IntakeMeasuresTakenNew extends Component {
         this.setState({ ...this.state, errors: errors })
 
         !hasErrors &&
-            IntakeDetailsAPI.newIntakeMeasureTaken(measureTaken).then((payload) => {
-                this.props.newIntakeMeasureTaken(payload.data.data);
+            IntakeDetailsAPI.newIntakeMeasureRequested(measureRequested.intakeId, measureRequested.measureId).then((payload) => {
+                this.props.newIntakeMeasureRequested(payload.data.data);
                 this.props.toggleShowNew();
             }).catch(function (error) {
                 alert(error.response.data.message);
@@ -79,7 +70,7 @@ class IntakeMeasuresTakenNew extends Component {
     };
 
     render() {
-        const { measureId, measureDate, energyLabelId } = this.state.measureTaken;
+        const { measureId} = this.state.measureRequested;
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -97,24 +88,6 @@ class IntakeMeasuresTakenNew extends Component {
                                 error={this.state.errors.measureId}
                             />
 
-                            <InputDate
-                                label={"Gerealiseerd datum"}
-                                size={"col-sm-6"}
-                                name={"measureDate"}
-                                value={measureDate}
-                                onChangeAction={this.handleChangeMeasureDate}
-                            />
-                        </div>
-
-                        <div className="row">
-                            <InputSelect
-                                label={"Energie label"}
-                                size={"col-sm-6"}
-                                name={"energyLabelId"}
-                                options={this.props.energyLabels}
-                                value={energyLabelId}
-                                onChangeAction={this.handleInputChange}
-                            />
                         </div>
 
                         <div className="pull-right btn-group" role="group">
@@ -131,15 +104,15 @@ class IntakeMeasuresTakenNew extends Component {
 const mapStateToProps = (state) => {
     return {
         measures: state.systemData.measures,
-        energyLabels: state.systemData.energyLabels,
+        intakeId: state.intakeDetails.id,
         addressId: state.intakeDetails.address.id,
     };
 };
 
 const mapDispatchToProps = dispatch => ({
-    newIntakeMeasureTaken: (id) => {
-        dispatch(newIntakeMeasureTaken(id));
+    newIntakeMeasureRequested: (intakeId, measureId) => {
+        dispatch(newIntakeMeasureRequested(intakeId, measureId));
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(IntakeMeasuresTakenNew);
+export default connect(mapStateToProps, mapDispatchToProps)(HousingFileMeasuresTakenNew);

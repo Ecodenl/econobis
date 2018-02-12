@@ -19,12 +19,12 @@ export default {
             );
     },
 
-    newHousingFile: (intake) => {
+    newHousingFile: (housingFile) => {
         const requestUrl = `${URL_API}/api/contact/housing-file`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios.post(requestUrl, intake)
+        return axios.post(requestUrl, housingFile)
             .then(function (response) {
                 return response.data;
             })
@@ -38,7 +38,7 @@ export default {
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios.post(requestUrl, intake)
+        return axios.post(requestUrl, housingFile)
             .then(function (response) {
                 return response.data.data;
             })

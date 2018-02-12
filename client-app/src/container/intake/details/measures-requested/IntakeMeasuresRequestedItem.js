@@ -16,33 +16,10 @@ class IntakeMeasuresRequestedItem extends Component {
             showActionButtons: false,
             highlightLine: '',
             showDelete: false,
-            showEdit: false,
             measureRequested: {
                 ...props.measureRequested,
             },
-            desiredDateNew: this.props.desiredDate ? this.props.desiredDate.date : ''
         };
-    };
-
-    openEdit = () => {
-        if(this.props.permissions.manageIntake) {
-            this.setState({showEdit: true});
-        }
-    };
-
-    closeEdit = () => {
-        this.setState({showEdit: false});
-    };
-
-    cancelEdit = () => {
-        this.setState({
-            ...this.state,
-            measureRequested: {
-                ...this.props.measureRequested,
-            }
-        });
-
-        this.closeEdit();
     };
 
     onLineEnter = () => {
@@ -61,33 +38,6 @@ class IntakeMeasuresRequestedItem extends Component {
 
     toggleDelete = () => {
         this.setState({showDelete: !this.state.showDelete});
-    };
-
-    handleDegreeInterest = (value) => {
-
-        this.setState({
-            ...this.state,
-            measureRequested: {
-                ...this.state.measureRequested,
-                degreeInterest: value
-            },
-        });
-    };
-
-    handleDesiredDate = (date) => {
-        const formattedDate = (date ? moment(date).format('Y-MM-DD') : '');
-
-        this.setState({
-            ...this.state,
-            measureRequested: {
-                ...this.state.measureRequested,
-                desiredDate: {
-                    ...this.state.desiredDate,
-                    date: formattedDate
-                },
-                desiredDateNew: formattedDate
-            },
-        });
     };
 
     handleSubmit = event => {
@@ -112,18 +62,7 @@ class IntakeMeasuresRequestedItem extends Component {
                   onLineLeave={this.onLineLeave}
                   toggleDelete={this.toggleDelete}
                   measureRequested={this.state.measureRequested}
-                  openEdit={this.openEdit}
               />
-                {
-                    this.state.showEdit &&
-                    <IntakeMeasuresRequestedEdit
-                        measureRequested={this.state.measureRequested}
-                        handleDesiredDate={this.handleDesiredDate}
-                        handleDegreeInterest={this.handleDegreeInterest}
-                        handleSubmit={this.handleSubmit}
-                        cancelEdit={this.cancelEdit}
-                    />
-                }
                 {
                     this.state.showDelete &&
                     <IntakeMeasuresRequestedDelete

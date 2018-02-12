@@ -32,7 +32,7 @@ class Opportunity extends Model
 
     public function intake()
     {
-        return $this->belongsToMany(Intake::class);
+        return $this->belongsTo(Intake::class);
     }
 
     public function campaign()

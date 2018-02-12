@@ -6,7 +6,7 @@ import { deleteIntakeMeasureRequested } from '../../../../actions/intake/IntakeD
 
 const IntakeMeasuresRequestedDelete = (props) => {
     const confirmAction = () => {
-        props.deleteIntakeMeasureRequested(props.id);
+        props.deleteIntakeMeasureRequested(props.intakeId, props.id);
         props.closeDeleteItemModal();
     };
 
@@ -24,10 +24,16 @@ const IntakeMeasuresRequestedDelete = (props) => {
     );
 };
 
+const mapStateToProps = (state) => {
+    return {
+        intakeId: state.intakeDetails.id,
+    };
+};
+
 const mapDispatchToProps = dispatch => ({
-    deleteIntakeMeasureRequested: (id) => {
-        dispatch(deleteIntakeMeasureRequested(id));
+    deleteIntakeMeasureRequested: (intakeId, measureId) => {
+        dispatch(deleteIntakeMeasureRequested(intakeId, measureId));
     },
 });
 
-export default connect(null, mapDispatchToProps)(IntakeMeasuresRequestedDelete);
+export default connect(mapStateToProps, mapDispatchToProps)(IntakeMeasuresRequestedDelete);

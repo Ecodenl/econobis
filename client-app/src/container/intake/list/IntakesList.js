@@ -37,7 +37,7 @@ class IntakesList extends Component {
                     <DataTableBody>
                         {
                             data.length === 0 ? (
-                                <tr><td colSpan={7}>Geen intakes gevonden!</td></tr>
+                                <tr><td colSpan={6}>Geen intakes gevonden!</td></tr>
                             ) : (
                                 data.map((intake) => {
                                     return <IntakesListItem

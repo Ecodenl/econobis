@@ -13,7 +13,7 @@ const IntakesListToolbar = props => {
                     <ButtonIcon iconName={"glyphicon-refresh"} onClickAction={props.resetIntakeFilters} />
                 </div>
             </div>
-            <div className="col-md-4"><h3 className="text-center table-title">Intakeen</h3></div>
+            <div className="col-md-4"><h3 className="text-center table-title">Intakes</h3></div>
             <div className="col-md-4">
                 <div className="pull-right">Resultaten: { meta.total || 0 }</div>
             </div>

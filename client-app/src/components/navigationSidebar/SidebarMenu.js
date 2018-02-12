@@ -53,11 +53,28 @@ class SidebarMenu extends Component {
                                            to="contacten/status/closed">Afgehandeld</Link></NavText>
                         </Nav>
                     </Nav>
-                    <Nav id="intakes">
+                    <Nav id="energy-saving">
                         <NavIcon><SvgIcon size={20} icon={pencil2}/></NavIcon>
-                        <NavText><Link className="sidebar-link" to="intakes">Intakes</Link></NavText>
+                        <NavText> Energiebesparing </NavText>
+                        <Nav id="home-files">
+                            <NavText><Link className="sidebar-link" to="woningdossiers">Woningdossiers</Link></NavText>
+                        </Nav>
+                        <Nav id="intakes">
+                            <NavText><Link className="sidebar-link" to="intakes">Intakes</Link></NavText>
+                        </Nav>
+                        <Nav id="opportunities">
+                            <NavText><Link className="sidebar-link" to="kansen">Kansen</Link></NavText>
+                        </Nav>
+                        <Nav id="quotation-requests">
+                            <NavText><Link className="sidebar-link" to="offerte-verzoeken">Offerte
+                                verzoeken</Link></NavText>
+                        </Nav>
+                        <Nav id="measures">
+                            <NavText><Link className="sidebar-link" to="maatregelen">Maatregelen</Link></NavText>
+                        </Nav>
                     </Nav>
-                    <Nav id="contact-groepen">
+
+                    <Nav id="contact-groups">
                         <NavIcon><SvgIcon size={20} icon={ic_aspect_ratio}/></NavIcon>
                         <NavText><Link className="sidebar-link" to="contact-groepen">Groepen beheer</Link></NavText>
                     </Nav>
@@ -86,20 +103,12 @@ class SidebarMenu extends Component {
                         <NavIcon><SvgIcon size={20} icon={calendar} /></NavIcon>
                         <NavText><Link className="sidebar-link" to="agenda">Agenda</Link></NavText>
                     </Nav>
-                    <Nav id="kansen">
-                        <NavIcon><SvgIcon size={20} icon={starEmpty}/></NavIcon>
-                        <NavText><Link className="sidebar-link" to="kansen">Kansen</Link></NavText>
-                    </Nav>
                     {this.props.permissions.viewDocument &&
                     <Nav id="documenten">
                         <NavIcon><SvgIcon size={20} icon={documents}/></NavIcon>
                         <NavText><Link className="sidebar-link" to="documenten">Documenten</Link></NavText>
                     </Nav>
                     }
-                    <Nav id="variabelen">
-                        <NavIcon><SvgIcon size={20} icon={ic_business}/></NavIcon>
-                        <NavText><Link className="sidebar-link" to="maatregelen">Variabelen</Link></NavText>
-                    </Nav>
                     <Nav id="instellingen">
                         <NavIcon><SvgIcon size={20} icon={cog}/></NavIcon>
                         <NavText> Instellingen </NavText>

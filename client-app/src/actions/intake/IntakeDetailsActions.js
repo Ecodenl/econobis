@@ -19,52 +19,16 @@ export const deleteIntake = (id) => {
     }
 };
 
-export const newIntakeMeasureTaken = (measureTaken) => {
-    return {
-        type: 'NEW_INTAKE_MEASURE_TAKEN',
-        measureTaken,
-    };
-};
-
-export const deleteIntakeMeasureTaken = (id) => {
-    return {
-        type: 'DELETE_INTAKE_MEASURE_TAKEN',
-        id,
-    };
-};
-
-export const newIntakeMeasureRequested = (measureRequested) => {
+export const newIntakeMeasureRequested = (intakeId, measureId) => {
     return {
         type: 'NEW_INTAKE_MEASURE_REQUESTED',
-        measureRequested,
+        intakeId, measureId,
     };
 };
 
-export const deleteIntakeMeasureRequested = (id) => {
+export const deleteIntakeMeasureRequested = (intakeId, measureId) => {
     return {
         type: 'DELETE_INTAKE_MEASURE_REQUESTED',
-        id,
+        intakeId, measureId,
     };
 };
-
-export const newIntakeNote = (note) => {
-    return {
-        type: 'NEW_INTAKE_NOTE',
-        note,
-    };
-};
-
-export const updateIntakeNote = (note) => {
-    return {
-        type: 'UPDATE_INTAKE_NOTE',
-        note,
-    };
-};
-
-export const deleteIntakeNote = (id) => {
-    return {
-        type: 'DELETE_INTAKE_NOTE',
-        id,
-    };
-};
-

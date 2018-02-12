@@ -1,15 +1,15 @@
 import React, {Component} from 'react';
-import { connect } from 'react-redux';
-import { hashHistory } from 'react-router';
+import {connect} from 'react-redux';
+import {hashHistory} from 'react-router';
 import moment from 'moment';
 moment.locale('nl');
 
 import IntakeDetailsAPI from '../../../api/intake/IntakeDetailsAPI';
-import InputText from '../../../components/form/InputText';
+
 import InputSelect from '../../../components/form/InputSelect';
 import InputMultiSelect from '../../../components/form/InputMultiSelect';
-import InputCheckbox from '../../../components/form/InputCheckbox';
 import ButtonText from '../../../components/button/ButtonText';
+import InputText from "../../../components/form/InputText";
 
 class IntakeNewFormGeneral extends Component {
     constructor(props) {
@@ -17,15 +17,13 @@ class IntakeNewFormGeneral extends Component {
 
         this.state = {
             intake: {
-                id: '',
+                contactId: props.contactId,
                 addressId: props.addressId,
-                buildYear: '',
-                buildingTypeId: '',
-                owner: false,
+                campaignId: '',
                 statusId: '',
                 sourceIds: '',
-                campaignId: '',
                 intakeReasonIds: '',
+                note: ''
             },
         }
     };
@@ -67,72 +65,56 @@ class IntakeNewFormGeneral extends Component {
     handleSubmit = event => {
         event.preventDefault();
 
-        const { intake }  = this.state;
+        const {intake} = this.state;
 
-        if(intake.intakeReasonIds.length > 0){
+        if (intake.intakeReasonIds.length > 0) {
             intake.intakeReasonIds = intake.intakeReasonIds.split(',');
         }
 
-        if(intake.sourceIds.length > 0){
+        if (intake.sourceIds.length > 0) {
             intake.sourceIds = intake.sourceIds.split(',');
         }
 
         IntakeDetailsAPI.newIntake(intake).then((payload) => {
-            hashHistory.push(`/intake/${payload.id}`);
+            hashHistory.push(`/intake/${payload.data.id}`);
         });
 
     };
 
     render() {
-        const { addressId, buildYear, buildingTypeId, owner, statusId, sourceIds, campaignId, intakeReasonIds } = this.state.intake;
-        const { addresses = [] } = this.props.contactDetails;
+        const {addressId, statusId, sourceIds, campaignId, intakeReasonIds, note} = this.state.intake;
+        const {addresses = [], fullName} = this.props.contactDetails;
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
                 <div className="row">
+                    <InputText
+                        name={'contact'}
+                        label={'Contact'}
+                        value={fullName}
+                        readOnly={true}
+                    />
                     <div className="form-group col-sm-6">
                         <label htmlFor="addressId" className="col-sm-6">Adres</label>
                         <div className='col-sm-6'>
-                            <select className="form-control input-sm" id="addressId" name="addressId" value={addressId} onChange={this.handleInputChange}>
-                                { addresses.map((address, i) => {
-                                    return <option key={i} value={ address.id }>{ address.street + ' ' + address.number }</option>
-                                }) }
+                            <select className="form-control input-sm" id="addressId" name="addressId" value={addressId}
+                                    onChange={this.handleInputChange}>
+                                {addresses.map((address, i) => {
+                                    return <option key={i}
+                                                   value={address.id}>{address.street + ' ' + address.number}</option>
+                                })}
                             </select>
                         </div>
                     </div>
-                    <InputText
-                        type={"number"}
-                        label={"Bouwjaar"}
-                        name={"buildYear"}
-                        value={buildYear}
-                        onChangeAction={this.handleInputChange}
-                    />
                 </div>
 
                 <div className="row">
                     <InputSelect
-                        label={"Woningtype"}
-                        name={"buildingTypeId"}
-                        value={buildingTypeId}
-                        options={this.props.buildingTypes}
+                        label="Campagne"
+                        name="campaignId"
+                        value={campaignId}
+                        options={this.props.campaigns}
                         onChangeAction={this.handleInputChange}
-                    />
-                    <InputCheckbox
-                        label={"Eigendom"}
-                        name="owner"
-                        checked={owner}
-                        onChangeAction={this.handleInputChange}
-                        id={"owner"}
-                        labelCheckbox={'Ja'}
-                    />
-                </div>
-
-                <div className="row">
-                    <InputText
-                        label="Intake datum"
-                        name="intake"
-                        value={ moment().format('LL') }
-                        readOnly={true}
                     />
                     <InputSelect
                         label={"Status"}
@@ -146,22 +128,12 @@ class IntakeNewFormGeneral extends Component {
 
                 <div className="row">
                     <InputMultiSelect
-                        label="Intakesbron"
+                        label="Aanmeldingsbron"
                         name="sourceIds"
                         value={sourceIds}
                         options={this.props.intakeSources}
                         onChangeAction={this.handleSourceIds}
                     />
-                    <InputSelect
-                        label="Campagne"
-                        name="campaignId"
-                        value={campaignId}
-                        options={this.props.campaigns}
-                        onChangeAction={this.handleInputChange}
-                    />
-                </div>
-
-                <div className="row">
                     <InputMultiSelect
                         label="Wat is belangrijk"
                         name="intakeReasonIds"
@@ -169,6 +141,20 @@ class IntakeNewFormGeneral extends Component {
                         options={this.props.intakeReasons}
                         onChangeAction={this.handleIntakeReasonsIds}
                     />
+                </div>
+
+                <div className="row">
+                    <div className="form-group col-sm-12">
+                        <div className="row">
+                            <div className="col-sm-3">
+                                <label htmlFor="note" className="col-sm-12">Opmerking van bewoner</label>
+                            </div>
+                            <div className="col-sm-8">
+                                <textarea name='note' value={note} onChange={this.handleInputChange}
+                                          className="form-control input-sm"/>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <div className="panel-footer">

@@ -20,7 +20,7 @@ class BuildingType extends Model
 
     public function housingFiles()
     {
-        return $this->belongsToMany(HousingFile::class);
+        return $this->hasMany(HousingFile::class);
     }
 
 }

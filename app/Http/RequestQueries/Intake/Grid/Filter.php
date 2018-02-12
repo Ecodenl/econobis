@@ -50,7 +50,7 @@ class Filter extends RequestFilter
         foreach ($terms as $term){
             $query->where(function($query) use ($term) {
                 $query->where('addresses.street', 'LIKE', '%' . $term . '%');
-                $query->orWhere('aadresses.number', 'LIKE', '%' . $term . '%');
+                $query->orWhere('adresses.number', 'LIKE', '%' . $term . '%');
             });
         }
 

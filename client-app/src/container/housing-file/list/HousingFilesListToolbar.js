@@ -4,7 +4,7 @@ import {connect} from "react-redux";
 import ButtonIcon from '../../../components/button/ButtonIcon';
 
 const HousingFilesListToolbar = props => {
-    const { meta = {} } = props.intakes;
+    const { meta = {} } = props.housingFiles;
 
     return (
         <div className="row">

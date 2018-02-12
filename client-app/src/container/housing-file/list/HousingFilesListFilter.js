@@ -60,7 +60,7 @@ const HousingFilesListFilter = props => {
             <th><input type="text" className="form-control input-sm" value={ props.filters.fullName.data} onChange={onFullNameChange} /></th>
 
             <th>
-                <select className="form-control input-sm" value={ props.filters.buildingType.data } onChange={onBuildingTypeChange}>
+                <select className="form-control input-sm" value={ props.filters.buildingTypeId.data } onChange={onBuildingTypeChange}>
                     <option/>
                     {
                         props.buildingTypes.map((buildingType) => {
@@ -71,7 +71,7 @@ const HousingFilesListFilter = props => {
             </th>
 
             <th>
-                <select className="form-control input-sm" value={ props.filters.energyLabel.data } onChange={onEnergyLabelChange}>
+                <select className="form-control input-sm" value={ props.filters.energyLabelId.data } onChange={onEnergyLabelChange}>
                     <option/>
                     {
                         props.energyLabels.map((energyLabel) => {

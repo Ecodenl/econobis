@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class RoofType extends Model
 {
-    protected $table = 'building_types';
+    protected $table = 'roof_types';
      /**
      * The attributes that are not mass assignable.
      *
@@ -20,7 +20,7 @@ class RoofType extends Model
 
     public function housingFiles()
     {
-        return $this->belongsToMany(HousingFile::class);
+        return $this->hasMany(HousingFile::class);
     }
 
 }

@@ -16,21 +16,21 @@ class Filter extends RequestFilter
     protected $fields = [
         'createdAt',
         'address',
-        'contact',
+        'fullName',
         'buildingTypeId',
         'energyLabelId'
     ];
 
     protected $mapping = [
         'createdAt' => 'housing_files.created_at',
-        'contact' => 'contact.full_name',
+        'fullName' => 'contacts.full_name',
         'buildingTypeId' => 'housing_files.building_type_id',
         'energyLabelId' => 'housing_files.energy_label_id',
     ];
 
     protected $joins = [
         'address' => 'address',
-        'contact' => 'contact',
+        'fullName' => 'contact',
     ];
 
     protected $defaultTypes = [
@@ -48,7 +48,7 @@ class Filter extends RequestFilter
         foreach ($terms as $term){
             $query->where(function($query) use ($term) {
                 $query->where('addresses.street', 'LIKE', '%' . $term . '%');
-                $query->orWhere('aadresses.number', 'LIKE', '%' . $term . '%');
+                $query->orWhere('addresses.number', 'LIKE', '%' . $term . '%');
             });
         }
 

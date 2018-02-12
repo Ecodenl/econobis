@@ -16,12 +16,12 @@ class Joiner extends RequestJoiner
 
     protected function applyAddressJoin($query)
     {
-        $query->join('addresses', 'housing_file.address_id', '=', 'addresses.id');
+        $query->join('addresses', 'housing_files.address_id', '=', 'addresses.id');
     }
 
     protected function applyContactJoin($query)
     {
-        $query->join('addresses', 'housing_file.address_id', '=', 'addresses.id');
+        $query->join('addresses', 'housing_files.address_id', '=', 'addresses.id');
         $query->join('contacts', 'addresses.contact_id', '=', 'contacts.id');
     }
 }

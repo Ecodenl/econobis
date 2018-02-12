@@ -17,22 +17,22 @@ class Sort extends RequestSort
     protected $fields = [
         'createdAt',
         'address',
-        'contact',
+        'fullName',
         'buildingType',
         'energyLabel'
     ];
 
     protected $mapping = [
         'createdAt' => 'housing_files.created_at',
-        'address' => 'address.?',
-        'contact' => 'contact.full_name',
+        'address' => 'address.street',
+        'fullName' => 'contact.full_name',
         'buildingType' => 'building_type.name',
         'energyLabel' => 'energy_label.name',
     ];
 
     protected $joins = [
         'address' => 'address',
-        'contact' => 'contact',
+        'fullName' => 'contact',
         'buildingType' => 'building_type',
         'energyLabel' => 'energy_label',
     ];

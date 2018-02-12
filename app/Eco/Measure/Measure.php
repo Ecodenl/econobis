@@ -5,6 +5,8 @@ namespace App\Eco\Measure;
 use App\Eco\Address\Address;
 use App\Eco\Campaign\Campaign;
 use App\Eco\EnergyLabel\EnergyLabel;
+use App\Eco\HousingFile\HousingFile;
+use App\Eco\Intake\Intake;
 use App\Eco\Opportunity\Opportunity;
 use App\Eco\Organisation\Organisation;
 use App\Eco\User\User;
@@ -26,23 +28,14 @@ class Measure extends Model
         'id'
     ];
 
-    public function measuresTaken()
+    public function housingFiles()
     {
-        return $this->hasMany(MeasureTaken::class);
+        return $this->belongsToMany(HousingFile::class);
     }
 
-    public function measuresRequested()
+    public function intakes()
     {
-        return $this->hasMany(MeasureRequested::class);
-    }
-    public function energy_label()
-    {
-        return $this->belongsTo(EnergyLabel::class);
-    }
-
-    public function addresses()
-    {
-        return $this->belongsToMany(Address::class);
+        return $this->belongsToMany(Intake::class);
     }
 
     public function opportunities()

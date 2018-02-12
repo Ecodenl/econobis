@@ -11,19 +11,19 @@ const filtersReducerDefaultState = {
         field: 'address',
         data: '',
     },
-    measureRequested: {
-        field: 'measureRequestedId',
+    buildingTypeId: {
+        field: 'buildingTypeId',
         data: '',
     },
-    statusId: {
-        field: 'statusId',
+    energyLabelId: {
+        field: 'energyLabelId',
         data: '',
-    },
+    }
 };
 
 export default (state = filtersReducerDefaultState, action) => {
     switch(action.type) {
-        case 'SET_FILTER_INTAKE_DATE':
+        case 'SET_FILTER_HOUSING_FILE_DATE':
             return {
                 ...state,
                 createdAt: {
@@ -31,7 +31,7 @@ export default (state = filtersReducerDefaultState, action) => {
                     data: action.createdAt,
                 }
             };
-        case 'SET_FILTER_INTAKE_FULL_NAME':
+        case 'SET_FILTER_HOUSING_FILE_FULL_NAME':
             return {
                 ...state,
                 fullName: {
@@ -39,7 +39,7 @@ export default (state = filtersReducerDefaultState, action) => {
                     data: action.fullName,
                 }
             };
-        case 'SET_FILTER_INTAKE_ADDRESS':
+        case 'SET_FILTER_HOUSING_FILE_ADDRESS':
             return {
                 ...state,
                 address: {
@@ -47,23 +47,23 @@ export default (state = filtersReducerDefaultState, action) => {
                     data: action.address,
                 }
             };
-        case 'SET_FILTER_INTAKE_MEASURE_REQUESTED':
+        case 'SET_FILTER_HOUSING_FILE_BUILDING_TYPE':
             return {
                 ...state,
-                measureRequested: {
-                    ...state.measureRequested,
-                    data: action.measureRequested,
+                buildingTypeId: {
+                    ...state.buildingTypeId,
+                    data: action.buildingTypeId,
                 }
             };
-        case 'SET_FILTER_INTAKE_STATUS':
+        case 'SET_FILTER_HOUSING_FILE_ENERGY_LABEL':
             return {
                 ...state,
-                statusId: {
-                    ...state.statusId,
-                    data: action.statusId,
+                energyLabelId: {
+                    ...state.energyLabelId,
+                    data: action.energyLabelId,
                 }
             };
-        case 'CLEAR_FILTER_INTAKES':
+        case 'CLEAR_FILTER_HOUSING_FILES':
             return {
                 ...state,
                 ...filtersReducerDefaultState,

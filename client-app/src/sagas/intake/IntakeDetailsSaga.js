@@ -19,9 +19,9 @@ export function* deleteIntakeSaga({ id }) {
     }
 }
 
-export function* deleteIntakeMeasureRequestedSaga({ id }) {
+export function* deleteIntakeMeasureRequestedSaga({ intakeId, measureId }) {
     try {
-        yield call(IntakeDetailsAPI.detachMeasureRequested, id);
+        yield call(IntakeDetailsAPI.detachMeasureRequested, intakeId, measureId);
         yield put({ type: 'DELETE_INTAKE_MEASURE_REQUESTED_SUCCESS', id });
     } catch (error) {
         yield put({ type: 'DELETE_INTAKE_MEASURE_REQUESTED_ERROR', error });

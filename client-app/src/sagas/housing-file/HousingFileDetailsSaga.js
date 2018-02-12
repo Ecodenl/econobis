@@ -19,9 +19,9 @@ export function* deleteHousingFileSaga({ id }) {
     }
 }
 
-export function* deleteHousingFileMeasureTakenSaga({ id }) {
+export function* deleteHousingFileMeasureTakenSaga({ intakeId, measureId }) {
     try {
-        yield call(HousingFileDetailsAPI.detachMeasureTaken, id);
+        yield call(HousingFileDetailsAPI.detachMeasureTaken, intakeId, measureId);
         yield put({ type: 'DELETE_HOUSING_FILE_MEASURE_TAKEN_SUCCESS', id });
     } catch (error) {
         yield put({ type: 'DELETE_HOUSING_FILE_MEASURE_TAKEN_ERROR', error });

@@ -13,35 +13,17 @@ export function* fetchIntakeDetailsSaga({ payload }) {
 export function* deleteIntakeSaga({ id }) {
     try {
         yield call(IntakesAPI.deleteIntake, id);
-        yield put({ type: 'DELETE_CONTACT_SUCCESS', id });
+        yield put({ type: 'DELETE_INTAKE_SUCCESS', id });
     } catch (error) {
-        yield put({ type: 'DELETE_CONTACT_ERROR', error });
-    }
-}
-
-export function* deleteIntakeMeasureTakenSaga({ id }) {
-    try {
-        yield call(IntakeDetailsAPI.deleteIntakeMeasureTaken, id);
-        yield put({ type: 'DELETE_INTAKE_MEASURE_TAKEN_SUCCESS', id });
-    } catch (error) {
-        yield put({ type: 'DELETE_INTAKE_MEASURE_TAKEN_ERROR', error });
+        yield put({ type: 'DELETE_INTAKE_ERROR', error });
     }
 }
 
 export function* deleteIntakeMeasureRequestedSaga({ id }) {
     try {
-        yield call(IntakeDetailsAPI.deleteIntakeMeasureRequested, id);
+        yield call(IntakeDetailsAPI.detachMeasureRequested, id);
         yield put({ type: 'DELETE_INTAKE_MEASURE_REQUESTED_SUCCESS', id });
     } catch (error) {
         yield put({ type: 'DELETE_INTAKE_MEASURE_REQUESTED_ERROR', error });
-    }
-}
-
-export function* deleteIntakeNoteSaga({ id }) {
-    try {
-        yield call(IntakeDetailsAPI.deleteIntakeNote, id);
-        yield put({ type: 'DELETE_INTAKE_NOTE_SUCCESS', id });
-    } catch (error) {
-        yield put({ type: 'DELETE_INTAKE_NOTE_ERROR', error });
     }
 }

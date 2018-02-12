@@ -30,12 +30,12 @@ class Measure extends Model
 
     public function housingFiles()
     {
-        return $this->belongsToMany(HousingFile::class);
+        return $this->belongsToMany(HousingFile::class, 'measure_taken_address');
     }
 
     public function intakes()
     {
-        return $this->belongsToMany(Intake::class);
+        return $this->belongsToMany(Intake::class, 'intake_measure_requested');
     }
 
     public function opportunities()

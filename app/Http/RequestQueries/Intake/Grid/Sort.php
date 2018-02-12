@@ -25,12 +25,14 @@ class Sort extends RequestSort
     protected $mapping = [
         'createdAt' => 'intakes.created_at',
         'fullName' => 'contacts.full_name',
+        'address' => 'addresses.street',
         'statusId' => 'intakes.intake_status_id',
-        'measureRequestedId' => 'measure_requested_address.measure_id',
+        'measureRequestedId' => 'intake_measure_requested.measure_id',
     ];
 
     protected $joins = [
         'fullName' => 'contact',
+        'address' => 'address',
         'sourceId' => 'source',
         'measureRequestedId' => 'measureRequested',
     ];

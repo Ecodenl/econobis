@@ -62,6 +62,8 @@ class IntakeController extends ApiController
 //            'notes',
             'documents',
             'emails',
+            'createdBy',
+            'updatedBy',
         ]);
 
         return FullIntake::make($intake);
@@ -128,21 +130,12 @@ class IntakeController extends ApiController
         $this->authorize('manage', Intake::class);
 
         $data = $request->validate([
-            'contactId' => 'required|exists:contacts,id',
-            'addressId' => 'exists:addresses,id',
             'campaignId' => 'exists:campaigns,id',
             'statusId' => 'exists:intake_status,id',
             'sourceIds' => '',
             'intakeReasonIds' => '',
             'note' => ''
         ]);
-
-        $intake->contact_id = $data['contactId'];
-
-        if ($data['addressId']) {
-            $intake->address_id
-                = $data['addressId'];
-        }
 
         if ($data['campaignId']) {
             $intake->campaign_id = $data['campaignId'];

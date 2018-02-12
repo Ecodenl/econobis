@@ -10,6 +10,7 @@ use App\Eco\Email\Email;
 use App\Eco\Measure\Measure;
 use App\Eco\Opportunity\Opportunity;
 use App\Eco\Task\Task;
+use App\Eco\User\User;
 use Illuminate\Database\Eloquent\Model;
 
 class Intake extends Model
@@ -85,4 +86,13 @@ class Intake extends Model
         return $this->hasMany(Email::class);
     }
 
+    public function createdBy()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function updatedBy()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

@@ -31,7 +31,7 @@ class Joiner extends RequestJoiner
 
     protected function applyMeasureRequestedJoin($query)
     {
-        $query->join('intake_measure_requested', 'intake.id', '=', 'intake_measure_requested.intake');
+        $query->join('intake_measure_requested', 'intakes.id', '=', 'intake_measure_requested.intake_id');
     }
 
 

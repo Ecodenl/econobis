@@ -3,6 +3,7 @@
 namespace App\Eco\Campaign;
 
 use App\Eco\Contact\Contact;
+use App\Eco\Document\Document;
 use App\Eco\Measure\Measure;
 use App\Eco\Opportunity\Opportunity;
 use App\Eco\Organisation\Organisation;
@@ -70,5 +71,9 @@ class Campaign extends Model
     public function tasks()
     {
         return $this->hasMany(Task::class);
+    }
+
+    public function documents(){
+        return $this->hasMany(Document::class);
     }
 }

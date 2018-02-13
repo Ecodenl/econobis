@@ -4,6 +4,7 @@ namespace App\Eco\Measure;
 
 use App\Eco\Address\Address;
 use App\Eco\Campaign\Campaign;
+use App\Eco\Document\Document;
 use App\Eco\EnergyLabel\EnergyLabel;
 use App\Eco\HousingFile\HousingFile;
 use App\Eco\Intake\Intake;
@@ -61,5 +62,9 @@ class Measure extends Model
     public function createdBy()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function documents(){
+        return $this->hasMany(Document::class);
     }
 }

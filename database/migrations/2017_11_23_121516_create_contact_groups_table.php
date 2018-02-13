@@ -40,12 +40,12 @@ class CreateContactGroupsTable extends Migration
             $table->unsignedInteger('contact_id');
             $table->foreign('contact_id')
                 ->references('id')->on('contacts')
-                ->onDelete('cascade');
+                ->onDelete('restrict');
 
             $table->unsignedInteger('contact_group_id');
             $table->foreign('contact_group_id')
                 ->references('id')->on('contact_groups')
-                ->onDelete('cascade');
+                ->onDelete('restrict');
 
             $table->unique(['contact_id', 'contact_group_id']);
         });

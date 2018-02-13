@@ -5,6 +5,7 @@ import { isEmpty } from 'lodash';
 import IntakeDetailsFormGeneral from './general/IntakeDetailsFormGeneral';
 import IntakeMeasuresRequested from "./measures-requested/IntakeMeasuresRequested";
 import IntakeDetailsFormConclusion from "./conclusion/IntakeDetailsFormConclusion";
+import IntakeDetailsOpportunities from "./opportunities/IntakeDetailsOpportunities";
 
 class IntakeDetailsForm extends Component {
     constructor(props){
@@ -19,6 +20,7 @@ class IntakeDetailsForm extends Component {
                 <div>
                     <IntakeDetailsFormGeneral />
                     <IntakeMeasuresRequested />
+                    <IntakeDetailsOpportunities />
                     <IntakeDetailsFormConclusion />
                 </div>
         );

@@ -21,7 +21,7 @@ const IntakeDetailsFormGeneralView = props => {
                     <div className="col-sm-6" id={ 'address' }>
                         { address.housingFile ?
                             <Link onClick={() => hashHistory.push(`/woningdossier/${address.housingFile.id}`)} className='"link-underline"'> {address && address.street + ' ' + address.number}</Link>
-                            : <div>{address && address.street + ' ' + address.number})</div>
+                            : <div>{address && address.street + ' ' + address.number}</div>
                         }
                     </div>
                 </div>

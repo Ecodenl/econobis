@@ -161,6 +161,11 @@ class Contact extends Model
         return $this->hasMany(Document::class);
     }
 
+    public function housingFiles()
+    {
+        return $this->hasManyThrough(HousingFile::class, Address::class);
+    }
+
     //Returns addresses array as Type - Streetname - Number
     //Primary address always comes first
     public function getPrettyAddresses(){

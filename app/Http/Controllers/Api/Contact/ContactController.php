@@ -64,6 +64,22 @@ class ContactController extends Controller
         return $result;
     }
 
+    public function housingFiles(Contact $contact)
+    {
+        $housingFiles = $contact->housingFiles;
+
+        $result = [];
+        foreach ($housingFiles as $housingFile){
+            $result[] = [
+                'id' => $housingFile->id,
+                'addressName' =>  $housingFile->address->present()->streetAndNumber(),
+                'createdAt' => $housingFile->created_at,
+            ];
+        }
+
+        return $result;
+    }
+
     public function peek()
     {
         $contact = Contact::select('id', 'full_name')->orderBy('full_name')->get();

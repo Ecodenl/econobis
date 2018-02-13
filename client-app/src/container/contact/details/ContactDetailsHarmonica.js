@@ -5,6 +5,7 @@ import { hashHistory } from 'react-router';
 import AddContactToGroup from './harmonica/AddContactToGroup';
 import ErrorModal from '../../../components/modal/ErrorModal';
 import IntakeHarmonica from './harmonica/IntakeHarmonica';
+import HousingFileHarmonica from './harmonica/HousingFileHarmonica';
 import OpportunityHarmonica from './harmonica/OpportunityHarmonica';
 import TaskHarmonica from "./harmonica/TaskHarmonica";
 import ContactGroupHarmonica from "./harmonica/ContactGroupHarmonica";
@@ -19,6 +20,7 @@ class ContactDetailsHarmonica extends Component {
         this.state = {
             toggleShowList: {
                 intakes: false,
+                housingFiles: false,
                 opportunities: false,
                 tasks: false,
                 contactGroups: false,
@@ -37,6 +39,7 @@ class ContactDetailsHarmonica extends Component {
             this.setState({
                 toggleShowList: {
                     intakes: false,
+                    housingFiles: false,
                     opportunities: false,
                     tasks: false,
                     contactGroups: false,
@@ -68,6 +71,29 @@ class ContactDetailsHarmonica extends Component {
             }
         else {
             hashHistory.push(`/intake/nieuw/contact/${this.props.contactDetails.id}/adres/${address.id}`);
+        }
+    };
+
+    newHousingFile = () => {
+        let address = this.props.contactDetails.addresses.find((address) => {
+            return address.primary
+        });
+        if (typeof address === 'undefined') {
+            address = this.props.contactDetails.addresses[0];
+            if (typeof address === 'undefined') {
+                this.setState({
+                    showModalError: !this.state.showModalError,
+                    modalErrorTitle: 'Waaschuwing',
+                    modalErrorMessage: 'Dit contact heeft nog geen adres.',
+                });
+            }
+            else
+            {
+                hashHistory.push(`/woningdossier/nieuw/contact/${this.props.contactDetails.id}/adres/${address.id}`);
+            }
+        }
+        else {
+            hashHistory.push(`/woningdossier/nieuw/contact/${this.props.contactDetails.id}/adres/${address.id}`);
         }
     };
 
@@ -117,6 +143,13 @@ class ContactDetailsHarmonica extends Component {
                     showIntakesList={this.state.toggleShowList.intakes}
                     intakeCount={this.props.contactDetails.intakeCount}
                     newIntake={this.newIntake}
+                />
+
+                <HousingFileHarmonica
+                    toggleShowList={() => this.toggleShowList('housingFiles')}
+                    showHousingFilesList={this.state.toggleShowList.housingFiles}
+                    housingFileCount={this.props.contactDetails.housingFileCount}
+                    newHousingFile={this.newHousingFile}
                 />
 
                 <OpportunityHarmonica

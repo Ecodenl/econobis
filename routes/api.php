@@ -34,6 +34,7 @@ Route::namespace('Api')
         Route::post('contact/{contact}/owner/{user}/associate', 'Contact\ContactController@associateOwner');
         Route::get('/contact/{contact}', 'Contact\ContactController@show');
         Route::get('/contact/{contact}/intakes', 'Contact\ContactController@intakes');
+        Route::get('/contact/{contact}/housing-files', 'Contact\ContactController@housingFiles');
         Route::get('/contact/{contact}/groups', 'Contact\ContactController@groups');
         Route::post('/contact/{contact}/delete', 'Contact\ContactController@destroy');
         Route::get('/contact/{contact}/tasks', 'Contact\ContactController@tasks');

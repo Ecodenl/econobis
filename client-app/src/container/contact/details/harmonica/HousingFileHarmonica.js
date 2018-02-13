@@ -3,23 +3,23 @@ import {connect} from 'react-redux';
 
 import Panel from "../../../../components/panel/Panel";
 import PanelBody from "../../../../components/panel/PanelBody";
-import IntakesList from './IntakesList';
+import HousingFilesList from "./HousingFilesList";
 
-const IntakeHarmonica = ({toggleShowList, showIntakesList, newIntake, intakeCount, permissions}) => {
+const HousingFileHarmonica = ({toggleShowList, showHousingFilesList, newHousingFile, housingFileCount, permissions}) => {
     return (
         <Panel className={"harmonica-button"}>
             <PanelBody>
                 <div className="col-sm-10" onClick={toggleShowList} role="button">
-                    <span className="">INTAKES <span className="badge">{ intakeCount }</span></span>
+                    <span className="">WONINGDOSSIERS <span className="badge">{ housingFileCount }</span></span>
                 </div>
                 <div className="col-sm-2">
-                    {permissions.manageIntake &&
-                    <a role="button" className="pull-right" onClick={newIntake}><span
+                    {permissions.manageHousingFile &&
+                    <a role="button" className="pull-right" onClick={newHousingFile}><span
                         className="glyphicon glyphicon-plus glyphicon-white"/></a>
                     }
                 </div>
                 <div className="col-sm-12">
-                    { showIntakesList && <IntakesList /> }
+                    { showHousingFilesList && <HousingFilesList /> }
                 </div>
             </PanelBody>
         </Panel>
@@ -32,4 +32,4 @@ const mapStateToProps = (state) => {
     };
 };
 
-export default connect(mapStateToProps, null)(IntakeHarmonica);
+export default connect(mapStateToProps, null)(HousingFileHarmonica);

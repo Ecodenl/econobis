@@ -16,17 +16,18 @@ class IntakeDetailsFormGeneralEdit extends Component {
     constructor(props) {
         super(props);
 
-        const { id, address = {}, reasons, createdAt, campaign, sources, status} = props.intakeDetails;
+        const { id, contact, address = {}, reasons, campaign, sources, status, note} = props.intakeDetails;
 
         this.state = {
             intake: {
                 id,
-                contact: contact.id,
-                address: address ? address.id : '',
+                contact: contact.fullName,
+                address: address ? address : '',
                 campaignId: campaign && campaign.id,
                 statusId: status ? status.id : '',
                 sourceIds: sources && sources.map((source) => source.id).join(','),
                 intakeReasonIds: reasons && reasons.map((reason) => reason.id).join(','),
+                note: note && note,
             },
         }
     };
@@ -85,51 +86,32 @@ class IntakeDetailsFormGeneralEdit extends Component {
     };
 
     render() {
-        const { address, buildYear, buildingTypeId, createdAt, owner, statusId, sourceIds, campaignId, intakeReasonIds } = this.state.intake;
+        const { contact, address, statusId, sourceIds, campaignId, intakeReasonIds, note } = this.state.intake;
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
                 <div className="row">
                     <InputText
-                        label={"Adres"}
-                        name={'address'}
-                        value={address && address.street + ' ' + address.number}
-                        onChangeAction={()=>{}}
+                        label={"Contact"}
+                        name={'contact'}
+                        value={contact}
                         readOnly
                     />
                     <InputText
-                        type={"number"}
-                        label={"Bouwjaar"}
-                        name={"buildYear"}
-                        value={buildYear}
-                        onChangeAction={this.handleInputChange}
+                        label={"Adres"}
+                        name={'address'}
+                        value={address && address.street + ' ' + address.number}
+                        readOnly
                     />
                 </div>
 
                 <div className="row">
                     <InputSelect
-                        label={"Woningtype"}
-                        name={"buildingTypeId"}
-                        value={buildingTypeId}
-                        options={this.props.buildingTypes}
+                        label="Campagne"
+                        name="campaignId"
+                        value={campaignId}
+                        options={this.props.campaigns}
                         onChangeAction={this.handleInputChange}
-                    />
-                    <InputCheckbox
-                        label={"Eigendom"}
-                        name="owner"
-                        checked={owner}
-                        onChangeAction={this.handleInputChange}
-                        id={"owner"}
-                        labelCheckbox={'Ja'}
-                    />
-                </div>
-
-                <div className="row">
-                    <InputText
-                        label="Intake datum"
-                        name="intake"
-                        value={ moment(createdAt.date).format('DD-MM-Y') }
-                        readOnly
                     />
                     <InputSelect
                         label={"Status"}
@@ -143,22 +125,12 @@ class IntakeDetailsFormGeneralEdit extends Component {
 
                 <div className="row">
                     <InputMultiSelect
-                        label="Intakesbron"
+                        label="Aanmeldingsbron"
                         name="sourceIds"
                         value={sourceIds}
                         options={this.props.intakeSources}
                         onChangeAction={this.handleSourceIds}
                     />
-                    <InputSelect
-                        label="Campagne"
-                        name="campaignId"
-                        value={campaignId}
-                        options={this.props.campaigns}
-                        onChangeAction={this.handleInputChange}
-                    />
-                </div>
-
-                <div className="row">
                     <InputMultiSelect
                         label="Wat is belangrijk"
                         name="intakeReasonIds"
@@ -166,6 +138,20 @@ class IntakeDetailsFormGeneralEdit extends Component {
                         options={this.props.intakeReasons}
                         onChangeAction={this.handleIntakeReasonsIds}
                     />
+                </div>
+
+                <div className="row">
+                    <div className="form-group col-sm-12">
+                        <div className="row">
+                            <div className="col-sm-3">
+                                <label htmlFor="note" className="col-sm-12">Opmerkingen bewoner</label>
+                            </div>
+                            <div className="col-sm-8">
+                                <textarea name='note' value={note} onChange={this.handleInputChange}
+                                          className="form-control input-sm"/>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <div className="panel-footer">

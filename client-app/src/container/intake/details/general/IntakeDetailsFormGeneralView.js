@@ -43,13 +43,6 @@ const IntakeDetailsFormGeneralView = props => {
                 />
             </div>
 
-            <div className="row">
-                <ViewText
-                    label={"Wat is belangrijk"}
-                    value={ reasons && reasons.map((reason) => reason.name).join(', ') }
-                />
-            </div>
-
             <div className="row" onClick={props.switchToEdit}>
                 <div className="col-sm-3">
                     <label htmlFor="note" className="col-sm-12">Opmerkingen van bewoner</label>

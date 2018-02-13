@@ -19,10 +19,10 @@ export const deleteIntake = (id) => {
     }
 };
 
-export const newIntakeMeasureRequested = (intakeId, measureId) => {
+export const newIntakeMeasureRequested = (measure) => {
     return {
         type: 'NEW_INTAKE_MEASURE_REQUESTED',
-        intakeId, measureId,
+        measure,
     };
 };
 

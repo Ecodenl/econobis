@@ -6,14 +6,14 @@ moment.locale('nl');
 import ViewText from '../../../../components/form/ViewText';
 
 const HousingFileDetailsFormGeneralView = props => {
-    const { contact, fullAddress, buildingType, buildYear, surface, roofType, energyLabel, floors, energyLabelStatus, monument } = props.housingFileDetails;
+    const { address, fullAddress, buildingType, buildYear, surface, roofType, energyLabel, floors, energyLabelStatus, isMonument } = props.housingFileDetails;
 
     return (
         <div onClick={props.switchToEdit}>
             <div className="row">
                 <ViewText
                     label={"Contact"}
-                    value={contact && contact.fullName}
+                    value={address && address.contact.fullName}
                 />
                 <ViewText
                     label={"Adres"}
@@ -62,7 +62,7 @@ const HousingFileDetailsFormGeneralView = props => {
                 />
                 <ViewText
                     label="Monument"
-                    value={monument ? 'Ja' : 'Nee'}
+                    value={isMonument ? 'Ja' : 'Nee'}
                 />
             </div>
 

@@ -25,7 +25,7 @@ class Filter extends RequestFilter
         'createdAt' => 'intakes.created_at',
         'fullName' => 'contacts.full_name',
         'statusId' => 'intakes.intake_status_id',
-        'measureRequestedId' => 'measure_requested_address.measure_id',
+        'measureRequestedId' => 'intake_measure_requested.measure_id',
     ];
 
     protected $joins = [
@@ -50,7 +50,7 @@ class Filter extends RequestFilter
         foreach ($terms as $term){
             $query->where(function($query) use ($term) {
                 $query->where('addresses.street', 'LIKE', '%' . $term . '%');
-                $query->orWhere('adresses.number', 'LIKE', '%' . $term . '%');
+                $query->orWhere('addresses.number', 'LIKE', '%' . $term . '%');
             });
         }
 

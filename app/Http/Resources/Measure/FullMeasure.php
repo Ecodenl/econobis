@@ -2,9 +2,7 @@
 
 namespace App\Http\Resources\Measure;
 
-use App\Http\Resources\Campaign\FullCampaign;
-use App\Http\Resources\Contact\FullContact;
-use App\Http\Resources\GenericResource;
+use App\Http\Resources\HousingFile\FullHousingFile;
 use App\Http\Resources\Opportunity\FullOpportunity;
 use App\Http\Resources\Organisation\FullOrganisation;
 use App\Http\Resources\Intake\FullIntake;
@@ -31,8 +29,8 @@ class FullMeasure extends Resource
             'faqs' => $this->faqs()->get(),
             'suppliers' => FullOrganisation::collection($this->whenLoaded('deliveredByOrganisations')),
             'opportunities' => FullOpportunity::collection($this->whenLoaded('opportunities')),
-            'measuresTaken' => MeasureTaken::collection($this->whenLoaded('measuresTaken')),
-            'measuresRequested' => MeasureRequested::collection($this->whenLoaded('measuresRequested')),
+            'measuresTaken' => FullHousingFile::collection($this->whenLoaded('housingFiles')),
+            'measuresRequested' => FullIntake::collection($this->whenLoaded('intakes')),
             'campaignCount' => $this->campaigns()->count(),
             'relatedCampaigns' => $this->campaigns()->get(),
         ];

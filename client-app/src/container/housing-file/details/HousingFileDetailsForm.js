@@ -18,7 +18,7 @@ class HousingFileDetailsForm extends Component {
                 :
                 <div>
                     <HousingFileDetailsFormGeneral />
-                    <HousingFileMeasuresTaken />
+                    {/* <HousingFileMeasuresTaken /> */}
                     <HousingFileDetailsFormConclusion />
                 </div>
         );

@@ -18,7 +18,7 @@ class GridIntake extends Resource
            return [
                 'id' => $this->id,
                 'createdAt' => $this->created_at,
-                'contact' => $this->contact()->pluck('full_name'),
+                'fullName' => $this->contact()->value('full_name'),
                 'fullAddress' => optional($this->address)->present()->streetAndNumber(),
                 'measuresRequestedNames' => $this->measuresRequested()->pluck('name'),
                 'status' => optional($this->status)->name,

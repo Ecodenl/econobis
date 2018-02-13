@@ -36,10 +36,8 @@ class MeasureController extends ApiController
             'deliveredByOrganisations.contact.primaryAddress',
             'opportunities.campaign',
             'opportunities.contact',
-            'measuresTaken.address.contact',
-            'measuresTaken.address.intake',
-            'measuresRequested.address.contact',
-            'measuresRequested.address.intake',
+            'intakes',
+            'housingFiles',
             'createdBy',
         ]);
 

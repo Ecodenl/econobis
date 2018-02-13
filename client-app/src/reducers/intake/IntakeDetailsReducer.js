@@ -16,7 +16,7 @@ export default function (state= {}, action) {
                     measuresRequested: [
                         ...state.measuresRequested,
                         {
-                            ...action.measureRequested,
+                            ...action.measure,
                         }
                     ]
             };

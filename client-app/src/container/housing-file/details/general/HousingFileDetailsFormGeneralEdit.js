@@ -59,7 +59,7 @@ class HousingFileDetailsFormGeneralEdit extends Component {
     };
 
     render() {
-        const {addressId, buildingTypeId, buildYear, surface, roofTypeId, energyLabelId, floors, energyLabelStatusId, monument} = this.state.housingFile;
+        const {addressId, buildingTypeId, buildYear, surface, roofTypeId, energyLabelId, floors, energyLabelStatusId, isMonument} = this.state.housingFile;
         const {addresses = [], fullName} = this.props.contactDetails;
 
         return (
@@ -149,8 +149,8 @@ class HousingFileDetailsFormGeneralEdit extends Component {
                     />
                     <InputCheckbox
                         label={'Monument'}
-                        name={'monument'}
-                        checked={monument}
+                        name={'isMonument'}
+                        checked={isMonument}
                         onChangeAction={this.handleInputChange}
                     />
                 </div>

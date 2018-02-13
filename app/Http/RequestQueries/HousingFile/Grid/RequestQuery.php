@@ -26,6 +26,6 @@ class RequestQuery extends \App\Helpers\RequestQuery\RequestQuery
     protected function baseQuery()
     {
         return HousingFile::query()
-            ->select('housing_file.*');
+            ->select('housing_files.*');
     }
 }

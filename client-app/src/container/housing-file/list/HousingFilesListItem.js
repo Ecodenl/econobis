@@ -38,8 +38,8 @@ class HousingFilesListItem extends Component {
                 <td>{ moment(createdAt.date).format('DD-MM-Y') }</td>
                 <td>{ fullAddress }</td>
                 <td>{ fullName }</td>
-                <td>{ buildingType ? buildingType.name : 'Onbekend'}</td>
-                <td>{ energyLabel ? energyLabel.name : 'Onbekend' }</td>
+                <td>{ buildingType ? buildingType : 'Onbekend'}</td>
+                <td>{ energyLabel ? energyLabel : 'Onbekend' }</td>
                 <td>
                     {(this.state.showActionButtons ? <a role="button" onClick={() => this.openItem(id)}><span className="glyphicon glyphicon-pencil mybtn-success" /> </a> : '')}
                 </td>

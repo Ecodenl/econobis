@@ -72,8 +72,8 @@ class HousingFileController extends ApiController
             'roofTypeId' => 'exists:roof_types,id',
             'energyLabelId' => 'exists:energy_labels,id',
             'floors' => 'integer',
-            'energyLabelStatusId' => 'exists:energy_labels_status,id',
-            'monument' => 'boolean',
+            'energyLabelStatusId' => 'exists:energy_label_status,id',
+            'isMonument' => 'boolean',
         ]);
 
         //basic HousingFile
@@ -109,8 +109,8 @@ class HousingFileController extends ApiController
             $housingFile->energy_label_status_id = $data['energyLabelStatusId'];
         }
 
-        if ($data['monument']) {
-            $housingFile->monument = $data['monument'];
+        if ($data['isMonument']) {
+            $housingFile->is_monument = $data['isMonument'];
         }
 
         $housingFile->save();
@@ -131,8 +131,8 @@ class HousingFileController extends ApiController
             'roofTypeId' => 'exists:roof_types,id',
             'energyLabelId' => 'exists:energy_labels,id',
             'floors' => 'integer',
-            'energyLabelStatusId' => 'exists:energy_labels_status,id',
-            'monument' => 'boolean',
+            'energyLabelStatusId' => 'exists:energy_label_status,id',
+            'isMonument' => 'boolean',
         ]);
 
         $housingFile->address_id = $data['addressId'];
@@ -165,8 +165,8 @@ class HousingFileController extends ApiController
             $housingFile->energy_label_status_id = $data['energyLabelStatusId'];
         }
 
-        if ($data['monument']) {
-            $housingFile->monument = $data['monument'];
+        if ($data['isMonument']) {
+            $housingFile->is_monument = $data['isMonument'];
         }
 
         $housingFile->save();

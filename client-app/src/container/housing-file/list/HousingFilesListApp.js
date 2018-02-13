@@ -46,7 +46,7 @@ class HousingFilesListApp extends Component {
         const filters = filterHelper(this.props.housingFilesFilters);
         const sorts = this.props.housingFilesSorts.reverse();
 
-        this.props.sethousingFilesPagination({page: 0, offset: 0});
+        this.props.setHousingFilesPagination({page: 0, offset: 0});
 
         setTimeout(() => {
             this.fetchHousingFilesData();

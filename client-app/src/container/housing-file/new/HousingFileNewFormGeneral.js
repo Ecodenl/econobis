@@ -28,7 +28,7 @@ class HousingFileNewFormGeneral extends Component {
                 energyLabelId: '',
                 floors: 0,
                 energyLabelStatusId: '',
-                monument: false,
+                isMonument: false,
             },
         }
     };
@@ -59,25 +59,30 @@ class HousingFileNewFormGeneral extends Component {
     };
 
     render() {
-        const {addressId, buildingTypeId, buildYear, surface, roofTypeId, energyLabelId, floors, energyLabelStatusId, monument} = this.state.housingFile;
+        const {addressId, buildingTypeId, buildYear, surface, roofTypeId, energyLabelId, floors, energyLabelStatusId, isMonument} = this.state.housingFile;
         const {addresses = [], fullName} = this.props.contactDetails;
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
                 <div className="row">
-                    <ViewText
+                    <InputText
                         label={'Contact'}
+                        name={"fullName"}
                         value={fullName}
+                        onChange={ () => {} }
+                        readOnly={true}
                     />
                     <div className="form-group col-sm-6">
                         <label htmlFor="addressId" className="col-sm-6">Adres</label>
                         <div className='col-sm-6'>
-                            <select className="form-control input-sm" id="addressId" name="addressId" value={addressId}
-                                    onChange={this.handleInputChange}>
-                                {addresses.map((address, i) => {
-                                    return <option key={i}
-                                                   value={address.id}>{address.street + ' ' + address.number}</option>
-                                })}
+                            <select className="form-control input-sm" id="addressId" name="addressId" value={addressId} onChange={this.handleInputChange}>
+                                    {
+                                        addresses.map((address, i) => {
+                                            return <option key={i}
+                                               value={address.id}>{ `${address.street} ${address.number}` }
+                                               </option>
+                                        })
+                                    }
                             </select>
                         </div>
                     </div>
@@ -93,21 +98,23 @@ class HousingFileNewFormGeneral extends Component {
                         onChangeAction={this.handleInputChange}
                     />
                     <InputText
+                        type={"number"}
                         label={'Bouwjaar'}
                         name={'buildYear'}
                         value={buildYear}
-                        min={1500}
-                        max={3000}
+                        min={'1500'}
+                        max={'3000'}
                         onChangeAction={this.handleInputChange}
                         />
                 </div>
 
                 <div className="row">
                     <InputText
+                        type={"number"}
                         label={"Gebruiksoppervlakte"}
                         name="surface"
                         value={surface}
-                        min={0}
+                        min={'0'}
                         onChangeAction={this.handleInputChange}
                     />
                     <InputSelect
@@ -130,10 +137,11 @@ class HousingFileNewFormGeneral extends Component {
                         onChangeAction={this.handleInputChange}
                     />
                     <InputText
+                        type={"number"}
                         label={'Aantal bouwlagen'}
                         name={'floors'}
                         value={floors}
-                        min={0}
+                        min={'0'}
                         onChangeAction={this.handleInputChange}
                     />
                 </div>
@@ -149,8 +157,8 @@ class HousingFileNewFormGeneral extends Component {
                     />
                     <InputCheckbox
                         label={'Monument'}
-                        name={'monument'}
-                        checked={monument}
+                        name={'isMonument'}
+                        checked={isMonument}
                         onChangeAction={this.handleInputChange}
                     />
                 </div>

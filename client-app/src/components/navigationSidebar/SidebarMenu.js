@@ -15,6 +15,7 @@ import { pencil2 } from 'react-icons-kit/icomoon/pencil2';
 import { speech_bubbles } from 'react-icons-kit/ikons/speech_bubbles';
 import { documents } from 'react-icons-kit/ikons/documents';
 import { calendar } from 'react-icons-kit/icomoon/calendar';
+import { home } from 'react-icons-kit/icomoon/home';
 
 class SidebarMenu extends Component {
     constructor(props) {
@@ -54,7 +55,7 @@ class SidebarMenu extends Component {
                         </Nav>
                     </Nav>
                     <Nav id="energy-saving">
-                        <NavIcon><SvgIcon size={20} icon={pencil2}/></NavIcon>
+                        <NavIcon><SvgIcon size={20} icon={home}/></NavIcon>
                         <NavText> Energiebesparing </NavText>
                         <Nav id="home-files">
                             <NavText><Link className="sidebar-link" to="woningdossiers">Woningdossiers</Link></NavText>

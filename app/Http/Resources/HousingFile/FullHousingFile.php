@@ -29,7 +29,6 @@ class FullHousingFile extends Resource
         return
             [
                 'id' => $this->id,
-                'contact' => FullContact::make($this->whenLoaded('contact')),
                 'address' => FullAddress::make($this->whenLoaded('address')),
                 'fullAddress' => $this->address->present()->streetAndNumber(),
                 'buildingType' => GenericResource::make($this->whenLoaded('buildingType')),
@@ -39,15 +38,15 @@ class FullHousingFile extends Resource
                 'energyLabel' => GenericResource::make($this->whenLoaded('energyLabel')),
                 'floors' => $this->floors,
                 'energyLabelStatus' => GenericResource::make($this->whenLoaded('energyLabelStatus')),
-                'monument' => $this->monument,
+                'isMonument' => $this->is_monument,
                 'createdBy' => FullUser::make($this->whenLoaded('createdBy')),
                 'updatedBy' => FullUser::make($this->whenLoaded('updatedBy')),
                 'createdAt' => $this->created_at,
                 'updatedAt' => $this->updated_at,
-                'noteCount' => $this->notes()->count(),
-                'relatedNotes' => $this->notes()->get(),
-                'documentCount' => $this->documents()->count(),
-                'relatedDocuments' => FullDocument::collection($this->whenLoaded('documents')),
+                //'noteCount' => $this->notes()->count(),
+                //'relatedNotes' => $this->notes()->get(),
+                //'documentCount' => $this->documents()->count(),
+                //'relatedDocuments' => FullDocument::collection($this->whenLoaded('documents')),
             ];
     }
 }

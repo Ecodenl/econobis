@@ -19,7 +19,7 @@ class GridHousingFile extends Resource
                 'id' => $this->id,
                 'createdAt' => $this->created_at,
                 'fullAddress' => $this->address->present()->streetAndNumber(),
-                'contact' => $this->address->contact()->pluck('full_name'),
+                'fullName' => $this->address->contact()->value('full_name'),
                 'buildingType' => optional($this->buildingType)->name,
                 'energyLabel' => optional($this->energyLabel)->name,
             ];

@@ -24,25 +24,25 @@ class HousingFile extends Model
 
     public function address()
     {
-        return $this->hasOne(Address::class);
+        return $this->belongsTo(Address::class);
     }
 
     public function buildingType()
     {
-        return $this->hasOne(BuildingType::class);
+        return $this->belongsTo(BuildingType::class);
     }
 
     public function roofType()
     {
-        return $this->hasOne(RoofType::class);
+        return $this->belongsTo(RoofType::class);
     }
 
     public function energyLabel(){
-        return $this->hasOne(EnergyLabel::class);
+        return $this->belongsTo(EnergyLabel::class);
     }
 
     public function energyLabelStatus(){
-        return $this->hasOne(EnergyLabelStatus::class);
+        return $this->belongsTo(EnergyLabelStatus::class);
     }
 
     public function measuresTaken(){

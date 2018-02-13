@@ -5,6 +5,7 @@ namespace App\Eco\User;
 use App\Cooperation;
 use App\Eco\LastNamePrefix\LastNamePrefix;
 use App\Eco\Mailbox\Mailbox;
+use App\Eco\Team\Team;
 use App\Eco\Title\Title;
 use App\Http\Traits\Encryptable;
 use App\Notifications\MailResetPasswordToken;
@@ -66,6 +67,11 @@ class User extends Authenticatable
     public function mailboxes()
     {
         return $this->belongsToMany(Mailbox::class);
+    }
+
+    public function teams()
+    {
+        return $this->belongsToMany(Team::class);
     }
 
     /**

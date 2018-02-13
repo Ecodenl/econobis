@@ -235,5 +235,14 @@ Route::namespace('Api')
         Route::get('audit-trail/peek-models', 'AuditTrail\AuditTrailController@peekModels');
 
         Route::post('general-search', 'GeneralSearch\GeneralSearchController@search');
+
+        Route::get('team/grid', 'Team\TeamController@grid');
+        Route::get('team/peek', 'Team\TeamController@peek');
+        Route::get('team/{team}', 'Team\TeamController@show');
+        Route::post('team', 'Team\TeamController@store');
+        Route::post('team/{team}', 'Team\TeamController@update');
+        Route::post('team/{team}/delete', 'Team\TeamController@destroy');
+        Route::post('team/{team}/{user}/attach', 'Team\TeamController@attachUser');
+        Route::post('team/{team}/{user}/detach', 'Team\TeamController@detachUser');
     }
 );

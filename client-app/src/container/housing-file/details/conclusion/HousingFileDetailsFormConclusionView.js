@@ -6,7 +6,7 @@ import moment from "moment/moment";
 moment.locale('nl');
 
 const HousingFileDetailsFormConclusionView = props => {
-    const { createdAt, updatedAt, updateBy, createdBy } = props.housingFileDetails;
+    const { createdAt, updatedAt, updatedBy, createdBy } = props.housingFileDetails;
 
     return (
         <div>
@@ -17,7 +17,7 @@ const HousingFileDetailsFormConclusionView = props => {
                 />
                 <ViewText
                     label={"Laatste gewijzigd door"}
-                    value={updateBy ? updateBy.fullName : 'Onbekend'}
+                    value={updatedBy ? updatedBy.fullName : 'Onbekend'}
                 />
             </div>
             <div className="row">

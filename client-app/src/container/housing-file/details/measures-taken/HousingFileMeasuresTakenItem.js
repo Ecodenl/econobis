@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import HousingFileMeasuresTakenView from './HousingFileMeasuresTakenView';
 import HousingFileMeasuresTakenDelete from './HousingFileMeasuresTakenDelete';
 import HousingFileDetailsAPI from "../../../../api/housing-file/HousingFileDetailsAPI";
+import {isEqual} from "lodash";
 
 
 class HousingFileMeasuresTakenItem extends Component {
@@ -20,6 +21,16 @@ class HousingFileMeasuresTakenItem extends Component {
         };
     };
 
+    componentWillReceiveProps(nextProps) {
+        if(!isEqual(this.state.measureTaken, nextProps.measureTaken)){
+            this.setState({
+                ...this.state,
+                measureTaken: {
+                    ...nextProps.measureTaken,
+                },
+            });
+        }
+    };
     onLineEnter = () => {
         this.setState({
             showActionButtons: true,

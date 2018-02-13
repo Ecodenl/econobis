@@ -2,6 +2,9 @@
 
 namespace App\Http\Resources\Measure;
 
+use App\Eco\Address\Address;
+use App\Http\Resources\Address\FullAddress;
+use App\Http\Resources\GenericResource;
 use App\Http\Resources\HousingFile\FullHousingFile;
 use App\Http\Resources\Opportunity\FullOpportunity;
 use App\Http\Resources\Organisation\FullOrganisation;
@@ -29,7 +32,9 @@ class FullMeasure extends Resource
             'faqs' => $this->faqs()->get(),
             'suppliers' => FullOrganisation::collection($this->whenLoaded('deliveredByOrganisations')),
             'opportunities' => FullOpportunity::collection($this->whenLoaded('opportunities')),
-            'measuresTaken' => FullHousingFile::collection($this->whenLoaded('addresses')),
+            'measuresTaken' => FullAddress::collection($this->whenLoaded('addresses')),
+            'measureTakenDate' => $this->whenPivotLoaded('measure_taken_address', function () {
+                return $this->pivot->measure_date;}),
             'measuresRequested' => FullIntake::collection($this->whenLoaded('intakes')),
             'campaignCount' => $this->campaigns()->count(),
             'relatedCampaigns' => $this->campaigns()->get(),

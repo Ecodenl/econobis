@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Eco\Intake;
+namespace App\Eco\HousingFile;
 
 use App\Eco\User\User;
 use Illuminate\Auth\Access\HandlesAuthorization;

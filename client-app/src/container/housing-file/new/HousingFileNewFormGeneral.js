@@ -102,7 +102,7 @@ class HousingFileNewFormGeneral extends Component {
                         label={'Bouwjaar'}
                         name={'buildYear'}
                         value={buildYear}
-                        min={'1500'}
+                        min={'1901'}
                         max={'3000'}
                         onChangeAction={this.handleInputChange}
                         />
@@ -129,7 +129,7 @@ class HousingFileNewFormGeneral extends Component {
 
                 <div className="row">
                     <InputSelect
-                        label={"EnergieLabel"}
+                        label={"Energielabel"}
                         size={"col-sm-6"}
                         name="energyLabelId"
                         value={energyLabelId}

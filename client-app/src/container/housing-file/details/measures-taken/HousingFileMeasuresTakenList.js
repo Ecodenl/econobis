@@ -7,7 +7,8 @@ const HousingFileMeasuresTakenList = props => {
     return (
         <div>
           <div className="row border header">
-            <div className="col-sm-11">Maatregel</div>
+            <div className="col-sm-6">Maatregel</div>
+            <div className="col-sm-5">Datum realisatie</div>
             <div className="col-sm-1"></div>
           </div>
             {
@@ -27,7 +28,7 @@ const HousingFileMeasuresTakenList = props => {
 
 const mapStateToProps = (state) => {
     return {
-        measuresTaken: state.housingFileDetails.measuresTaken,
+        measuresTaken: state.housingFileDetails.address.measuresTaken,
     };
 };
 

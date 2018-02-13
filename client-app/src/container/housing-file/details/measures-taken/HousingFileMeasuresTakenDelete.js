@@ -2,11 +2,11 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import Modal from '../../../../components/modal/Modal';
-import { deleteHousingFileMeasureTaken } from '../../../../actions/housing-file/HousingFileDetailsActions';
+import { deleteHousingFileMeasureTaken, fetchHousingFileDetails } from '../../../../actions/housing-file/HousingFileDetailsActions';
 
 const HousingFileMeasuresTakenDelete = (props) => {
     const confirmAction = () => {
-        props.deleteHousingFileMeasureTaken(props.housingFileId, props.id);
+        props.deleteHousingFileMeasureTaken(props.addressId, props.id);
         props.closeDeleteItemModal();
     };
 
@@ -26,13 +26,14 @@ const HousingFileMeasuresTakenDelete = (props) => {
 
 const mapStateToProps = (state) => {
     return {
+        addressId: state.housingFileDetails.address.id,
         housingFileId: state.housingFileDetails.id,
     };
 };
 
 const mapDispatchToProps = dispatch => ({
-    deleteHousingFileMeasureTaken: (housingFileId, measureId) => {
-        dispatch(deleteHousingFileMeasureTaken(housingFileId, measureId));
+    deleteHousingFileMeasureTaken: (addressId, measureId) => {
+        dispatch(deleteHousingFileMeasureTaken(addressId, measureId));
     },
 });
 

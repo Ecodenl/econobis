@@ -2,11 +2,10 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import validator from 'validator';
-
-import IntakeDetailsAPI from '../../../../api/intake/IntakeDetailsAPI';
-import { newIntakeMeasureRequested } from '../../../../actions/intake/IntakeDetailsActions';
+moment.locale('nl');
+import HousingFileDetailsAPI from '../../../../api/housing-file/HousingFileDetailsAPI';
+import { newHousingFileMeasureTaken } from '../../../../actions/housing-file/HousingFileDetailsActions';
 import InputDate from '../../../../components/form/InputDate';
-import InputText from '../../../../components/form/InputText';
 import ButtonText from '../../../../components/button/ButtonText';
 import InputSelect from "../../../../components/form/InputSelect";
 import Panel from '../../../../components/panel/Panel';
@@ -16,12 +15,11 @@ class HousingFileMeasuresTakenNew extends Component {
     constructor(props) {
         super(props);
 
-
-
         this.state = {
-            measureRequested: {
-                intakeId: this.props.intakeId,
+            measureTaken: {
+                addressId: this.props.addressId,
                 measureId: '',
+                measureDate: '',
 
             },
             errors: {
@@ -37,23 +35,34 @@ class HousingFileMeasuresTakenNew extends Component {
 
         this.setState({
             ...this.state,
-            measureRequested: {
-                ...this.state.measureRequested,
+            measureTaken: {
+                ...this.state.measureTaken,
                 [name]: value
             },
         });
     };
 
+    handleMeasureDate = (date) => {
+        const formattedDate = (date ? moment(date).format('Y-MM-DD') : '');
+
+        this.setState({
+            ...this.state,
+            measureTaken: {
+                ...this.state.measureTaken,
+                measureDate: formattedDate
+            },
+        });
+    };
 
     handleSubmit = event => {
         event.preventDefault();
 
-        const {measureRequested} = this.state;
+        const {measureTaken} = this.state;
 
         let errors = {};
         let hasErrors = false;
 
-        if (validator.isEmpty(measureRequested.measureId)) {
+        if (validator.isEmpty(measureTaken.measureId)) {
             errors.measureId = true;
             hasErrors = true;
         };
@@ -61,16 +70,16 @@ class HousingFileMeasuresTakenNew extends Component {
         this.setState({ ...this.state, errors: errors })
 
         !hasErrors &&
-            IntakeDetailsAPI.newIntakeMeasureRequested(measureRequested.intakeId, measureRequested.measureId).then((payload) => {
-                this.props.newIntakeMeasureRequested(payload.data.data);
+        HousingFileDetailsAPI.attachMeasureTaken(measureTaken).then((payload) => {
+                this.props.newHousingFileMeasureTaken(payload.data.data);
                 this.props.toggleShowNew();
             }).catch(function (error) {
-                alert(error.response.data.message);
+                alert(error);
             });
     };
 
     render() {
-        const { measureId} = this.state.measureRequested;
+        const { measureId, measureDate} = this.state.measureTaken;
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -87,7 +96,12 @@ class HousingFileMeasuresTakenNew extends Component {
                                 required={"required"}
                                 error={this.state.errors.measureId}
                             />
-
+                            <InputDate
+                                label={"Datum realisatie"}
+                                name="measureDate"
+                                value={measureDate}
+                                onChangeAction={this.handleMeasureDate}
+                            />
                         </div>
 
                         <div className="pull-right btn-group" role="group">
@@ -104,14 +118,13 @@ class HousingFileMeasuresTakenNew extends Component {
 const mapStateToProps = (state) => {
     return {
         measures: state.systemData.measures,
-        intakeId: state.intakeDetails.id,
-        addressId: state.intakeDetails.address.id,
+        addressId: state.housingFileDetails.address.id,
     };
 };
 
 const mapDispatchToProps = dispatch => ({
-    newIntakeMeasureRequested: (intakeId, measureId) => {
-        dispatch(newIntakeMeasureRequested(intakeId, measureId));
+    newHousingFileMeasureTaken: (address) => {
+        dispatch(newHousingFileMeasureTaken(address));
     },
 });
 

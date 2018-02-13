@@ -7,6 +7,7 @@ use App\Http\Resources\Contact\FullContact;
 use App\Http\Resources\EnumWithIdAndName\FullEnumWithIdAndName;
 use App\Http\Resources\GenericResource;
 use App\Http\Resources\Intake\FullIntake;
+use App\Http\Resources\Measure\FullMeasure;
 use Illuminate\Http\Resources\Json\Resource;
 
 class FullAddress extends Resource
@@ -34,6 +35,7 @@ class FullAddress extends Resource
             'buildYear' => $this->build_year,
             'buildingTypeId' => $this->building_type_id,
             'owner' => $this->owner,
+            'measuresTaken' => FullMeasure::collection($this->whenLoaded('measuresTaken')),
             'buildingType' => GenericResource::make($this->whenLoaded('building_type')),
             'intake' => FullIntake::make($this->whenLoaded('intake')),
             'contact' => FullContact::make($this->whenLoaded('contact')),

@@ -40,14 +40,9 @@ class Address extends Model
         return $this->hasOne(Intake::class);
     }
 
-    public function measures_taken()
+    public function measuresTaken()
     {
-        return $this->hasMany(MeasureTaken::class);
-    }
-
-    public function measures_requested()
-    {
-        return $this->hasMany(MeasureRequested::class);
+        return $this->belongsToMany(Measure::class, 'measure_taken_address')->withPivot('measure_date');
     }
 
     public function getType()

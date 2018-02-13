@@ -9,15 +9,19 @@
 namespace App\Http\Controllers\Api\HousingFile;
 
 
+use App\Eco\Address\Address;
 use App\Eco\HousingFile\HousingFile;
 use App\Eco\Contact\Contact;
 use App\Eco\Measure\Measure;
+use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\RequestQueries\HousingFile\Grid\RequestQuery;
+use App\Http\Resources\Address\FullAddress;
 use App\Http\Resources\GenericResource;
 use App\Http\Resources\HousingFile\FullHousingFile;
 use App\Http\Resources\HousingFile\GridHousingFile;
 use App\Http\Resources\HousingFile\IntakePeek;
+use App\Http\Resources\Measure\FullMeasure;
 use App\Http\Resources\Task\SidebarTask;
 use Illuminate\Http\Request;
 
@@ -51,10 +55,13 @@ class HousingFileController extends ApiController
     {
         $housingFile->load([
             'address.contact',
+            'address.measuresTaken',
             'buildingType',
             'roofType',
             'energyLabel',
             'energyLabelStatus',
+            'createdBy',
+            'updatedBy'
         ]);
 
         return FullHousingFile::make($housingFile);
@@ -67,7 +74,7 @@ class HousingFileController extends ApiController
         $data = $request->validate([
             'addressId' => 'required|exists:addresses,id',
             'buildingTypeId' => 'exists:building_types,id',
-            'buildYear' => 'integer|between:1500,3000',
+            'buildYear' => 'integer|between:1900,3000',
             'surface' => 'integer',
             'roofTypeId' => 'exists:roof_types,id',
             'energyLabelId' => 'exists:energy_labels,id',
@@ -126,7 +133,7 @@ class HousingFileController extends ApiController
         $data = $request->validate([
             'addressId' => 'required|exists:addresses,id',
             'buildingTypeId' => 'exists:building_types,id',
-            'buildYear' => 'integer|between:1500,3000',
+            'buildYear' => 'integer|between:1900,3000',
             'surface' => 'integer',
             'roofTypeId' => 'exists:roof_types,id',
             'energyLabelId' => 'exists:energy_labels,id',
@@ -175,20 +182,29 @@ class HousingFileController extends ApiController
     }
 
 
-    public function attachMeasureTaken(HousingFile $housingFile, Measure $measure)
+    public function attachMeasureTaken(RequestInput $requestInput)
     {
         $this->authorize('manage', HousingFile::class);
 
-        $housingFile->measuresTaken()->attach($measure->id);
+        $data = $requestInput
+            ->integer('addressId')->validate('required|exists:addresses,id')->alias('address_id')->next()
+            ->integer('measureId')->validate('required|exists:measures,id')->alias('measure_id')->next()
+            ->string('measureDate')->whenMissing(null)->onEmpty(null)->alias('measure_date')->next()
+            ->get();
 
-        return GenericResource::make($measure);
+        $address = Address::find($data['address_id']);
+        $address->measuresTaken()->attach($data['measure_id'], ['measure_date' => $data['measure_date']]);
+
+        $address->load('measuresTaken', 'contact');
+
+        return FullAddress::make($address);
     }
 
-    public function detachMeasureTaken(HousingFile $housingFile, Measure $measure)
+    public function detachMeasureTaken(Address $address, Measure $measure)
     {
-        $this->authorize('manage', Intake::class);
+        $this->authorize('manage', HousingFile::class);
 
-        $housingFile->measuresTaken()->detach($measure->id);
+        $address->measuresTaken()->detach($measure->id);
 
         return GenericResource::make($measure);
     }
@@ -198,7 +214,7 @@ class HousingFileController extends ApiController
         $this->authorize('manage', HousingFile::class);
 
         //delete many to many relations
-        $housingFile->measuresTaken()->detach();
+        $housingFile->address()->measuresTaken()->detach();
 
         //delete one to many relations
         //notes

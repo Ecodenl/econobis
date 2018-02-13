@@ -11,7 +11,7 @@ use App\Eco\Document\DocumentPolicy;
 use App\Eco\DocumentTemplate\DocumentTemplate;
 use App\Eco\DocumentTemplate\DocumentTemplatePolicy;
 use App\Eco\HousingFile\HousingFile;
-use App\Eco\Intake\HousingFilePolicy;
+use App\Eco\HousingFile\HousingFilePolicy;
 use App\Eco\Mailbox\Mailbox;
 use App\Eco\Mailbox\MailboxPolicy;
 use App\Eco\Measure\Measure;

@@ -45,10 +45,6 @@ class HousingFile extends Model
         return $this->belongsTo(EnergyLabelStatus::class);
     }
 
-    public function measuresTaken(){
-        return $this->belongsToMany(Measure::class, 'measure_taken_address');
-    }
-
     public function notes(){
         //todo
     }

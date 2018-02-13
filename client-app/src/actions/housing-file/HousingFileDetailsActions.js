@@ -19,16 +19,16 @@ export const deleteHousingFile = (id) => {
     }
 };
 
-export const newHousingFileMeasureTaken = (housingFileId, measureId) => {
+export const newHousingFileMeasureTaken = (address) => {
     return {
-        type: 'NEW_HOUSING_FILE_MEASURE_REQUESTED',
-        housingFileId, measureId,
+        type: 'NEW_HOUSING_FILE_MEASURE_TAKEN',
+        address,
     };
 };
 
-export const deleteHousingFileMeasureTaken = (housingFileId, measureId) => {
+export const deleteHousingFileMeasureTaken = (addressId, measureId) => {
     return {
-        type: 'DELETE_HOUSING_FILE_MEASURE_REQUESTED',
-        housingFileId, measureId,
+        type: 'DELETE_HOUSING_FILE_MEASURE_TAKEN',
+        addressId, measureId,
     };
 };

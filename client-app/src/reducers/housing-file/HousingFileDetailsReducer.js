@@ -13,17 +13,17 @@ export default function (state= {}, action) {
         case 'NEW_HOUSING_FILE_MEASURE_TAKEN':
             return {
                 ...state,
-                    measuresTaken: [
-                        ...state.measuresTaken,
-                        {
-                            ...action.measureTaken,
-                        }
-                    ]
+                    address: {
+                        ...action.address,
+                    }
             };
         case 'DELETE_HOUSING_FILE_MEASURE_TAKEN_SUCCESS':
             return {
                 ...state,
-                    measuresTaken: state.measuresTaken.filter(measureTaken => measureTaken.id !== action.id),
+                address: {
+                    ...state.address,
+                    measuresTaken: state.address.measuresTaken.filter(measureTaken => measureTaken.id !== action.measureId)
+                }
             };
         default:
             return state;

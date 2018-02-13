@@ -61,22 +61,16 @@ export default {
             });
     },
 
-    attachMeasureTaken: (housingFileId, measureId) => {
-        const requestUrl = `${URL_HOUSING_FILE}/${housingFileId}/${measureId}/attach`;
+    attachMeasureTaken: (measureTaken) => {
+        const requestUrl = `${URL_HOUSING_FILE}/measure-taken`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios.post(requestUrl)
-            .then(function (response) {
-                return response.data.data;
-            })
-            .catch(function (error) {
-                return error;
-            });
+        return axios.post(requestUrl, measureTaken);
     },
 
-    detachMeasureTaken: (housingFileId, measureId) => {
-        const requestUrl = `${URL_HOUSING_FILE}/${housingFileId}/${measureId}/detach`;
+    detachMeasureTaken: (addressId, measureId) => {
+        const requestUrl = `${URL_HOUSING_FILE}/${addressId}/${measureId}/detach`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 

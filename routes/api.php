@@ -63,8 +63,8 @@ Route::namespace('Api')
         Route::post('/housing-file/{housingFile}/update', 'HousingFile\HousingFileController@update');
         Route::post('/housing-file/{housingFile}/delete', 'HousingFile\HousingFileController@destroy');
 
-        Route::post('/housing-file/{housingFile}/{measure}/attach', 'HousingFile\HousingFileController@attachMeasureTaken');
-        Route::post('/housing-file/{housingFile}/{measure}/detach', 'HousingFile\HousingFileController@detachMeasureTaken');
+        Route::post('/housing-file/measure-taken', 'HousingFile\HousingFileController@attachMeasureTaken');
+        Route::post('/housing-file/{address}/{measure}/detach', 'HousingFile\HousingFileController@detachMeasureTaken');
         
         Route::get('/housing-file/{housingFile}/notes', 'HousingFile\HousingFileController@notes');
         Route::get('/housing-file/{housingFile}/documents', 'HousingFile\HousingFileController@documents');

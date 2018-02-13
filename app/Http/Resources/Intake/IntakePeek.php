@@ -17,7 +17,7 @@ class IntakePeek extends Resource
     {
         return [
             'id' => $this->id,
-            'name' => $this->address ? $this->address->present()->streetAndNumber(): 'Intake: ' . $this->id,
+            'name' => 'Intake: ' . $this->id . ' voor ' . $this->contact->full_name,
         ];
     }
 }

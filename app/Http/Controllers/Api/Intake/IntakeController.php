@@ -51,7 +51,7 @@ class IntakeController extends ApiController
     {
         $intake->load([
             'contact',
-            'address',
+            'address.housingFile',
             'campaign',
             'status',
             'sources',
@@ -239,7 +239,7 @@ class IntakeController extends ApiController
 
     public function peek()
     {
-        return IntakePeek::collection(Intake::orderBy('id')->get());
+        return IntakePeek::collection(Intake::orderBy('id')->with('contact')->get());
     }
 
     public function getAmountOfActiveIntakes(){

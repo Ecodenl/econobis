@@ -1,6 +1,7 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import moment from 'moment';
+import {hashHistory, Link} from "react-router";
 moment.locale('nl');
 
 const IntakeMeasuresRequestedView = props => {
@@ -9,17 +10,17 @@ const IntakeMeasuresRequestedView = props => {
     return (
         <div className={`row border ${props.highlightLine}`} onMouseEnter={() => props.onLineEnter()}
              onMouseLeave={() => props.onLineLeave()}>
-            <div onClick={props.openEdit}>
                 <div>
-                    <div className="col-sm-11">
+                    <div className="col-sm-6">
                         {name}
                     </div>
+                    <div className="col-sm-5">
+                        {(props.permissions.manageOpportunity ?
+                        <Link onClick={() => hashHistory.push(`/kans/nieuw/intake/${props.intakeId}`)} className='"link-underline"'> {'Maak kans'}</Link>
+                            : '')}
+                    </div>
                 </div>
-            </div>
             <div className="col-sm-1">
-                {(props.permissions.manageIntake && props.showActionButtons ?
-                    <a role="button" onClick={props.openEdit}><span
-                        className="glyphicon glyphicon-pencil mybtn-success"/> </a> : '')}
                 {(props.permissions.manageIntake && props.showActionButtons ?
                     <a role="button" onClick={props.toggleDelete}><span
                         className="glyphicon glyphicon-trash mybtn-danger"/> </a> : '')}
@@ -31,7 +32,8 @@ const IntakeMeasuresRequestedView = props => {
 const mapStateToProps = (state) => {
     return {
         energyLabels: state.systemData.energyLabels,
-        permissions: state.meDetails.permissions
+        permissions: state.meDetails.permissions,
+        intakeId: state.intakeDetails.id
     };
 };
 

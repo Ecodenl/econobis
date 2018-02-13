@@ -7,7 +7,8 @@ const IntakeMeasuresRequestedList = props => {
     return (
         <div>
           <div className="row border header">
-            <div className="col-sm-11">Maatregel</div>
+            <div className="col-sm-6">Maatregel</div>
+            <div className="col-sm-5"></div>
             <div className="col-sm-1"></div>
           </div>
             {

@@ -28,9 +28,9 @@ class Measure extends Model
         'id'
     ];
 
-    public function housingFiles()
+    public function addresses()
     {
-        return $this->belongsToMany(HousingFile::class, 'measure_taken_address');
+        return $this->belongsToMany(Address::class, 'measure_taken_address');
     }
 
     public function intakes()

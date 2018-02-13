@@ -1,24 +1,22 @@
 import React from 'react';
-import { hashHistory } from 'react-router';
+import {hashHistory, Link} from 'react-router';
 import moment from "moment";
 moment.locale('nl');
 
 const MeasureDetailsMeasureRequestedView = props => {
-    const {desiredDate, address} = props.measureRequested;
+    const {id, contact, fullAddress} = props.measureRequested;
 
     return (
 
         <div className={`row border ${props.highlightLine}`} onMouseEnter={() => props.onLineEnter()} onMouseLeave={() => props.onLineLeave()}>
-        <div onClick={() => hashHistory.push(`/intake/${address.intake.id}`)}>
-            <div className="col-sm-3" >{address ? (address.intake ? address.intake.id : '') : ''}</div>
-                <div className="col-sm-3">{desiredDate && moment(desiredDate.date).format('L')}</div>
-                <div className="col-sm-5">{ address ? address.contact.fullName : '' }</div>
+            <div className="col-sm-3"  onClick={() => hashHistory.push(`/intake/${id}`)} ><Link className="link-underline">{id}</Link></div>
+            <div className="col-sm-4" >{fullAddress ? fullAddress : ''}</div>
+            <div className="col-sm-4"  onClick={() => hashHistory.push(`/contact/${contact.id}`)}><Link className="link-underline">{contact ? contact.fullName : ''}</Link></div>
             <div className="col-sm-1">
                 <div className="col-sm-1">
-                    {(props.showActionButtons && <a role="button" ><span className="glyphicon glyphicon-pencil"  /> </a> : '')}
+                    {(props.showActionButtons && <a role="button" onClick={() => hashHistory.push(`/intake/${id}`)} ><span className="glyphicon glyphicon-pencil"  /> </a> : '')}
                 </div>
             </div>
-        </div>
         </div>
     );
 };

@@ -3,7 +3,7 @@ import {connect} from 'react-redux';
 
 import MeasureDetailsMeasureTakenItem from "./MeasureDetailsMeasureTakenItem";
 
-const MeasureDetailsOpportunityList = props => {
+const MeasureDetailsMeasureTakenList = props => {
     return (
         <div>
             <div className="row border header">
@@ -32,5 +32,5 @@ const mapStateToProps = (state) => {
         measuresTaken: state.measure.measuresTaken,
     };
 };
-export default connect(mapStateToProps)(MeasureDetailsOpportunityList);
+export default connect(mapStateToProps)(MeasureDetailsMeasureTakenList);
 

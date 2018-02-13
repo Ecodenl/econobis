@@ -37,7 +37,8 @@ class MeasureController extends ApiController
             'opportunities.campaign',
             'opportunities.contact',
             'intakes.contact',
-            'addresses',
+            'addresses.housingFile',
+            'addresses.contact',
             'createdBy',
             'addresses'
         ]);

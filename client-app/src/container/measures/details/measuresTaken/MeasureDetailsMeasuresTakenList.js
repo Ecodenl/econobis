@@ -7,9 +7,9 @@ const MeasureDetailsMeasureTakenList = props => {
     return (
         <div>
             <div className="row border header">
-                <div className="col-sm-3">Intake</div>
-                <div className="col-sm-3">Gerealiseerd datum</div>
-                <div className="col-sm-5">Contact</div>
+                <div className="col-sm-3">Woningdossier</div>
+                <div className="col-sm-4">Adres</div>
+                <div className="col-sm-4">Contact</div>
                 <div className="col-sm-1"></div>
             </div>
             {

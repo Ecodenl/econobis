@@ -6,6 +6,7 @@ use App\Eco\Measure\Measure;
 use App\Http\Resources\Contact\FullContact;
 use App\Http\Resources\EnumWithIdAndName\FullEnumWithIdAndName;
 use App\Http\Resources\GenericResource;
+use App\Http\Resources\HousingFile\FullHousingFile;
 use App\Http\Resources\Intake\FullIntake;
 use App\Http\Resources\Measure\FullMeasure;
 use Illuminate\Http\Resources\Json\Resource;
@@ -32,10 +33,8 @@ class FullAddress extends Resource
             'primary' => $this->primary,
             'createdAt' => $this->created_at,
             'updatedAt' => $this->updated_at,
-            'buildYear' => $this->build_year,
-            'buildingTypeId' => $this->building_type_id,
-            'owner' => $this->owner,
             'measuresTaken' => FullMeasure::collection($this->whenLoaded('measuresTaken')),
+            'housingFile' => FullHousingFile::make($this->whenLoaded('housingFile')),
             'buildingType' => GenericResource::make($this->whenLoaded('building_type')),
             'intake' => FullIntake::make($this->whenLoaded('intake')),
             'contact' => FullContact::make($this->whenLoaded('contact')),

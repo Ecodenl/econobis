@@ -15,12 +15,14 @@ class HousingFileDetailsFormGeneralEdit extends Component {
     constructor(props) {
         super(props);
 
-        const { id, address, buildingType, buildYear, surface, roofType, energyLabel, floors, energyLabelStatus, monument} = props.housingFileDetails;
-
+        const { id, address, fullAddress, buildingType, buildYear, surface, roofType, energyLabel, floors, energyLabelStatus, isMonument} = props.housingFileDetails;
+        console.log(props.housingFileDetails);
         this.state = {
             housingFile: {
                 id,
-                address: address ? address.id : '',
+                fullName: address.contact.fullName,
+                addressId: address.id,
+                fullAddress,
                 buildingTypeId: buildingType ? buildingType.id : '',
                 buildYear: buildYear ? buildYear : '',
                 surface: surface ? surface : '',
@@ -28,7 +30,7 @@ class HousingFileDetailsFormGeneralEdit extends Component {
                 energyLabelId: energyLabel ? energyLabel.id : '',
                 floors: floors ? floors : '',
                 energyLabelStatusId: energyLabelStatus ? energyLabelStatus.id : '',
-                monument: monument ? monument : false,
+                isMonument: isMonument ? isMonument : false,
             },
         }
     };
@@ -59,28 +61,27 @@ class HousingFileDetailsFormGeneralEdit extends Component {
     };
 
     render() {
-        const {addressId, buildingTypeId, buildYear, surface, roofTypeId, energyLabelId, floors, energyLabelStatusId, isMonument} = this.state.housingFile;
-        const {addresses = [], fullName} = this.props.contactDetails;
-
+        const {fullAddress, fullName, buildingTypeId, buildYear, surface, roofTypeId, energyLabelId, floors, energyLabelStatusId, isMonument} = this.state.housingFile;
+        const {addresses = []} = this.props.contactDetails;
+        console.log(this.state.housingFile)
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
                 <div className="row">
-                    <ViewText
+                    <InputText
                         label={'Contact'}
+                        name={'fullName'}
                         value={fullName}
+                        onChangeAction={() => {}}
+                        readOnly={true}
                     />
-                    <div className="form-group col-sm-6">
-                        <label htmlFor="addressId" className="col-sm-6">Adres</label>
-                        <div className='col-sm-6'>
-                            <select className="form-control input-sm" id="addressId" name="addressId" value={addressId}
-                                    onChange={this.handleInputChange}>
-                                {addresses.map((address, i) => {
-                                    return <option key={i}
-                                                   value={address.id}>{address.street + ' ' + address.number}</option>
-                                })}
-                            </select>
-                        </div>
-                    </div>
+
+                    <InputText
+                        label={'Contact'}
+                        name={'fullAddress'}
+                        value={fullAddress}
+                        onChangeAction={() => {}}
+                        readOnly={true}
+                    />
                 </div>
 
                 <div className="row">

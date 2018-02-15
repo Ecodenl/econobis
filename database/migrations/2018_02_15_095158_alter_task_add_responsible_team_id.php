@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddSoftdeletesToTasks extends Migration
+class AlterTaskAddResponsibleTeamId extends Migration
 {
     /**
      * Run the migrations.
@@ -14,12 +14,12 @@ class AddSoftdeletesToTasks extends Migration
     public function up()
     {
         Schema::table('tasks', function (Blueprint $table) {
-            $table->softDeletes();
+            $table->unsignedInteger('responsible_team_id')->after('responsible_user_id')->nullable();
+            $table->foreign('responsible_team_id')
+                ->references('id')->on('teams')
+                ->onDelete('restrict');
         });
 
-        Schema::table('task_property_values', function (Blueprint $table) {
-            $table->softDeletes();
-        });
     }
 
     /**
@@ -30,7 +30,8 @@ class AddSoftdeletesToTasks extends Migration
     public function down()
     {
         Schema::table('tasks', function (Blueprint $table) {
-            //
+            $table->dropForeign(['responsible_team_id']);
+            $table->dropColumn('responsible_team_id');
         });
     }
 }

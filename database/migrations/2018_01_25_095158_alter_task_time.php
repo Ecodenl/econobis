@@ -14,9 +14,8 @@ class AlterTaskTime extends Migration
     public function up()
     {
         Schema::table('tasks', function (Blueprint $table) {
-            $table->time('start_time_planned')->nullable()->after('date_planned');
-            $table->time('end_time_planned')->nullable()->after('date_planned');
-            $table->dropColumn('date_started');
+            $table->time('start_time_planned')->nullable()->after('date_planned_finish');
+            $table->time('end_time_planned')->nullable()->after('start_time_planned');
         });
     }
 

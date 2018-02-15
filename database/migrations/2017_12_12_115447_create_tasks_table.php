@@ -15,8 +15,7 @@ class CreateTasksTable extends Migration
     {
         Schema::create('tasks', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('name')->default('');
-            $table->text('description');
+            $table->text('note');
 
             $table->unsignedInteger('type_id');
             $table->foreign('type_id')
@@ -27,8 +26,6 @@ class CreateTasksTable extends Migration
             $table->foreign('contact_id')
                 ->references('id')->on('contacts')
                 ->onDelete('restrict');
-
-            $table->unsignedInteger('status_id');
 
             $table->unsignedInteger('intake_id')->nullable()->default(null);
             $table->foreign('intake_id')
@@ -45,22 +42,28 @@ class CreateTasksTable extends Migration
                 ->references('id')->on('opportunities')
                 ->onDelete('restrict');
 
-            $table->date('date_planned')->nullable();
-            $table->date('date_started')->nullable();
+            $table->boolean('finished')->default(false);
             $table->date('date_finished')->nullable();
-
-            $table->unsignedInteger('responsible_user_id');
-            $table->foreign('responsible_user_id')
-                ->references('id')->on('users')
-                ->onDelete('restrict');
-
             $table->unsignedInteger('finished_by_id')->nullable()->default(null);
             $table->foreign('finished_by_id')
                 ->references('id')->on('users')
                 ->onDelete('restrict');
 
+            $table->date('date_planned_start')->nullable();
+            $table->date('date_planned_finish')->nullable();
+
+            $table->unsignedInteger('responsible_user_id')->nullable();
+            $table->foreign('responsible_user_id')
+                ->references('id')->on('users')
+                ->onDelete('restrict');
+
             $table->unsignedInteger('created_by_id');
             $table->foreign('created_by_id')
+                ->references('id')->on('users')
+                ->onDelete('restrict');
+
+            $table->unsignedInteger('updated_by_id');
+            $table->foreign('updated_by_id')
                 ->references('id')->on('users')
                 ->onDelete('restrict');
 

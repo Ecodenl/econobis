@@ -36,6 +36,8 @@ use App\Eco\Person\Person;
 use App\Eco\Person\PersonObserver;
 use App\Eco\PhoneNumber\PhoneNumber;
 use App\Eco\PhoneNumber\PhoneNumberObserver;
+use App\Eco\Task\Task;
+use App\Eco\Task\TaskObserver;
 use Illuminate\Support\ServiceProvider;
 
 class ObserverServiceProvider extends ServiceProvider
@@ -64,6 +66,7 @@ class ObserverServiceProvider extends ServiceProvider
         DocumentTemplate::observe(DocumentTemplateObserver::class);
         Intake::observe(IntakeObserver::class);
         HousingFile::observe(HousingFileObserver::class);
+        Task::observe(TaskObserver::class);
     }
 
     /**

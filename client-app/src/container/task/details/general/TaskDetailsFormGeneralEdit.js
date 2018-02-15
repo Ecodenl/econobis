@@ -7,7 +7,6 @@ import ContactsAPI from "../../../../api/contact/ContactsAPI";
 import TaskDetailsAPI from '../../../../api/task/TaskDetailsAPI';
 import { updateTask } from '../../../../actions/task/TaskDetailsActions';
 import ButtonText from '../../../../components/button/ButtonText';
-import InputText from '../../../../components/form/InputText';
 import InputSelect from '../../../../components/form/InputSelect';
 import InputDate from '../../../../components/form/InputDate';
 import validator from "validator";
@@ -17,13 +16,36 @@ import OpportunitiesAPI from "../../../../api/opportunity/OpportunitiesAPI";
 import CampaignsAPI from "../../../../api/campaign/CampaignsAPI";
 import InputReactSelect from "../../../../components/form/InputReactSelect";
 import InputTime from "../../../../components/form/InputTime";
+import TaskDetailsFormGeneralEditExtraConnections from "./extra-connections/TaskDetailsFormGeneralEditExtraConnections";
+import InputTextArea from "../../../../components/form/InputTextarea";
+import InputToggle from "../../../../components/form/InputToggle";
+import PanelHeader from "../../../../components/panel/PanelHeader";
 
 
 class TaskDetailsFormGeneralEdit extends Component {
     constructor(props) {
         super(props);
 
-        const { id, name, description, typeId, opportunityId, contactId, statusId, intakeId, contactGroupId, campaignId, datePlanned, startTimePlanned, endTimePlanned, dateFinished, responsibleUserId, finishedById, createdAt, createdBy} = props.taskDetails;
+        const {
+            id,
+            note,
+            typeId,
+            contactId,
+            finished,
+            intakeId,
+            campaignId,
+            contactGroupId,
+            datePlannedStart,
+            datePlannedFinish,
+            startTimePlanned,
+            endTimePlanned,
+            dateFinished,
+            responsibleUserId,
+            responsibleTeamId,
+            finishedById,
+            opportunityId,
+        } = props.taskDetails;
+
 
         this.state = {
             contacts: [],
@@ -33,36 +55,32 @@ class TaskDetailsFormGeneralEdit extends Component {
             campaigns: [],
             task: {
                 id,
-                name,
-                description,
+                note,
                 typeId,
-                opportunityId: opportunityId ? opportunityId : '',
                 contactId: contactId ? contactId : '',
-                statusId,
-                intakeId: intakeId ? intakeId : '',
-                contactGroupId: contactGroupId ? contactGroupId: '',
                 campaignId: campaignId ? campaignId: '',
-                datePlanned: datePlanned ? datePlanned.date : '',
+                intakeId: intakeId ? intakeId : '',
+                opportunityId: opportunityId ? opportunityId : '',
+                contactGroupId: contactGroupId ? contactGroupId: '',
+                datePlannedStart: datePlannedStart ? datePlannedStart.date : '',
+                datePlannedFinish: datePlannedFinish ? datePlannedFinish.date : '',
                 startTimePlanned: startTimePlanned ? startTimePlanned : '',
                 endTimePlanned: endTimePlanned ? endTimePlanned : '',
+                finished: finished ? true : false,
                 dateFinished: dateFinished ? dateFinished.date : '',
-                responsibleUserId,
                 finishedById: finishedById ? finishedById : '',
-                createdAt: createdAt ? createdAt.date : '',
-                createdBy,
+                responsibleUserId,
+                responsibleTeamId,
             },
             errors: {
-                name: false,
+                note: false,
                 typeId: false,
-                statusId: false,
                 responsibleUserId: false,
             },
         };
 
         this.handleInputChange = this.handleInputChange.bind(this);
-        this.handleChangeDatePlanned = this.handleChangeDatePlanned.bind(this);
-        this.handleChangeStartedDate = this.handleChangeStartedDate.bind(this);
-        this.handleChangeFinishedDate = this.handleChangeFinishedDate.bind(this);
+        this.handleInputChangeDate = this.handleInputChangeDate.bind(this);
         this.handleInputChangeTime = this.handleInputChangeTime.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleReactSelectChange = this.handleReactSelectChange.bind(this);
@@ -124,38 +142,12 @@ class TaskDetailsFormGeneralEdit extends Component {
         });
     };
 
-    handleChangeDatePlanned(date) {
-        const formattedDate = (date ? moment(date).format('Y-MM-DD') : '');
-
+    handleInputChangeDate(value, name) {
         this.setState({
             ...this.state,
             task: {
                 ...this.state.task,
-                datePlanned: formattedDate
-            },
-        });
-    };
-
-    handleChangeStartedDate(date) {
-        const formattedDate = (date ? moment(date).format('Y-MM-DD') : '');
-
-        this.setState({
-            ...this.state,
-            task: {
-                ...this.state.task,
-                dateStarted: formattedDate
-            },
-        });
-    };
-
-    handleChangeFinishedDate(date)  {
-        const formattedDate = (date ? moment(date).format('Y-MM-DD') : '');
-
-        this.setState({
-            ...this.state,
-            task: {
-                ...this.state.task,
-                dateFinished: formattedDate
+                [name]: value
             },
         });
     };
@@ -169,18 +161,13 @@ class TaskDetailsFormGeneralEdit extends Component {
         let errors = {};
         let hasErrors = false;
 
-        if(validator.isEmpty(task.name)){
-            errors.name = true;
+        if(validator.isEmpty(task.note)){
+            errors.note = true;
             hasErrors = true;
         };
 
         if(validator.isEmpty(task.typeId.toString())){
             errors.typeId = true;
-            hasErrors = true;
-        };
-
-        if(validator.isEmpty(task.statusId.toString())){
-            errors.statusId = true;
             hasErrors = true;
         };
 
@@ -201,56 +188,24 @@ class TaskDetailsFormGeneralEdit extends Component {
 
     render() {
         const {
-            name,
-            description,
+            note,
             typeId,
             contactId,
-            statusId,
-            intakeId,
-            contactGroupId,
-            campaignId,
-            datePlanned,
+            finished,
+            dateFinished,
+            finishedById,
+            datePlannedStart,
+            datePlannedFinish,
             startTimePlanned,
             endTimePlanned,
-            dateFinished,
             responsibleUserId,
-            finishedById,
-            createdAt,
-            createdBy,
-            opportunityId
         } = this.state.task;
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
                 <div className="row">
-                    <InputText
-                        label="Naam"
-                        name={"name"}
-                        value={name}
-                        onChangeAction={this.handleInputChange}
-                        required={"required"}
-                        error={this.state.errors.name}
-                        maxLength={"50"}
-                    />
-                </div>
-
-                <div className="row">
-                    <div className="form-group col-sm-12">
-                        <div className="row">
-                            <div className="col-sm-3">
-                                <label htmlFor="description" className="col-sm-12">Omschrijving</label>
-                            </div>
-                            <div className="col-sm-9">
-                            <textarea name='description' value={description} onChange={this.handleInputChange}
-                                      className="form-control input-sm"/>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div className="row margin-10-top">
                     <InputSelect
-                        label={"Type"}
+                        label={"Type taak"}
                         size={"col-sm-6"}
                         name={"typeId"}
                         options={this.props.taskTypes}
@@ -259,103 +214,43 @@ class TaskDetailsFormGeneralEdit extends Component {
                         required={"required"}
                         error={this.state.errors.typeId}
                     />
-                    <InputSelect
-                        label={"Status"}
-                        size={"col-sm-6"}
-                        name={"statusId"}
-                        options={this.props.taskStatuses}
-                        value={statusId}
+                </div>
+
+                <div className="row">
+                    <InputTextArea
+                        label={"Taak / notitie"}
+                        name={"note"}
+                        value={note}
                         onChangeAction={this.handleInputChange}
                         required={"required"}
-                        error={this.state.errors.statusId}
+                        error={this.state.errors.note}
                     />
                 </div>
 
-                <div className="row">
-                    <InputReactSelect
-                        label={"Contact"}
-                        size={"col-sm-6"}
-                        name={"contactId"}
-                        options={this.state.contacts}
-                        value={contactId}
-                        onChangeAction={this.handleReactSelectChange}
-                        optionName={'fullName'}
-                        multi={false}
-                    />
-                    <InputReactSelect
-                        label={"Campagne"}
-                        size={"col-sm-6"}
-                        name={"campaignId"}
-                        options={this.state.campaigns}
-                        value={campaignId}
-                        onChangeAction={this.handleInputChange}
-                        onChangeAction={this.handleReactSelectChange}
-                        multi={false}
-                    />
-                </div>
-
-                <div className="row">
-                    <InputReactSelect
-                        label={"Intake"}
-                        size={"col-sm-6"}
-                        name={"intakeId"}
-                        options={this.state.intakes}
-                        value={intakeId}
-                        onChangeAction={this.handleInputChange}
-                        onChangeAction={this.handleReactSelectChange}
-                        multi={false}
-                    />
-
-                    <InputReactSelect
-                        label={"Kans"}
-                        size={"col-sm-6"}
-                        name={"opportunityId"}
-                        options={this.state.opportunities}
-                        value={opportunityId}
-                        onChangeAction={this.handleInputChange}
-                        onChangeAction={this.handleReactSelectChange}
-                        multi={false}
-                    />
-                </div>
-
-                <div className="row">
-                    <InputReactSelect
-                        label={"Groep"}
-                        size={"col-sm-6"}
-                        name={"contactGroupId"}
-                        options={this.state.contactGroups}
-                        value={contactGroupId}
-                        onChangeAction={this.handleInputChange}
-                        onChangeAction={this.handleReactSelectChange}
-                        multi={false}
-                    />
-                </div>
-
-                <div className="row margin-10-top">
+                <div className="row margin-20-top">
                     <InputDate
-                        label="Plan datum"
+                        label="Datum afhandelen"
                         size={"col-sm-6"}
-                        name="datePlanned"
-                        value={datePlanned}
-                        onChangeAction={this.handleChangeDatePlanned}
+                        name="datePlannedStart"
+                        value={datePlannedStart}
+                        onChangeAction={this.handleInputChangeDate}
 
                     />
-                    <InputDate
-                        label="Datum gereed"
-                        size={"col-sm-6"}
-                        name="dateFinished"
-                        value={dateFinished}
-                        onChangeAction={this.handleChangeFinishedDate}
-
-                    />
-                </div>
-
-                <div className="row">
                     <InputTime
                         label={"Begin tijd"}
                         name={"startTimePlanned"}
                         value={startTimePlanned}
                         onChangeAction={this.handleInputChangeTime}
+                    />
+                </div>
+
+                <div className="row">
+                    <InputDate
+                        label="Eind datum"
+                        size={"col-sm-6"}
+                        name="datePlannedFinish"
+                        value={datePlannedFinish}
+                        onChangeAction={this.handleInputChangeDate}
                     />
                     <InputTime
                         label={"Eind tijd"}
@@ -366,6 +261,12 @@ class TaskDetailsFormGeneralEdit extends Component {
                 </div>
 
                 <div className="row">
+                    <InputToggle
+                        label={"Afgehandeld?"}
+                        name={"finished"}
+                        value={finished}
+                        onChangeAction={this.handleInputChange}
+                    />
                     <InputSelect
                         label={"Verantwoordelijke"}
                         size={"col-sm-6"}
@@ -377,9 +278,17 @@ class TaskDetailsFormGeneralEdit extends Component {
                         required={"required"}
                         error={this.state.errors.responsibleUserId}
                     />
+                </div>
+
+                <div className="row">
+                    <InputDate
+                        label="Datum gereed"
+                        name="dateFinished"
+                        value={dateFinished}
+                        onChangeAction={this.handleInputChangeDate}
+                    />
                     <InputSelect
                         label={"Afgerond door"}
-                        size={"col-sm-6"}
                         name={"finishedById"}
                         options={this.props.users}
                         value={finishedById}
@@ -388,19 +297,41 @@ class TaskDetailsFormGeneralEdit extends Component {
                     />
                 </div>
 
-                <div className="row margin-10-top">
-                    <InputText
-                        label={"Gemaakt op"}
-                        name={"createdAt"}
-                        value={ moment(createdAt).format('DD-MM-Y') }
-                        readOnly={true}
+                <div className="row margin-20-top">
+                    <InputReactSelect
+                        label={"Contact"}
+                        name={"contactId"}
+                        options={this.state.contacts}
+                        value={contactId}
+                        onChangeAction={this.handleReactSelectChange}
+                        optionName={'fullName'}
+                        multi={false}
                     />
-                    <InputText
-                        label={"Gemaakt door"}
-                        name={"createdBy"}
-                        value={ createdBy.fullName}
-                        readOnly={true}
-                    />
+                </div>
+
+                <div className="margin-10-top">
+                    <PanelHeader>
+                        <div className="row" onClick={this.props.toggleExtraConnections}>
+                            {
+                                this.props.showExtraConnections ?
+                                    <span className="glyphicon glyphicon-menu-down"/>
+                                    :
+                                    <span className="glyphicon glyphicon-menu-right" />
+                            }
+                            <span className="h5">Overige koppelingen</span>
+                        </div>
+                    </PanelHeader>
+                    {
+                        this.props.showExtraConnections &&
+                        <TaskDetailsFormGeneralEditExtraConnections
+                            task={this.state.task}
+                            intakes={this.state.intakes}
+                            contactGroups={this.state.contactGroups}
+                            opportunities={this.state.opportunities}
+                            campaigns={this.state.campaigns}
+                            handleReactSelectChange={this.handleReactSelectChange}
+                        />
+                    }
                 </div>
 
                 <div className="panel-footer">
@@ -419,7 +350,6 @@ const mapStateToProps = (state) => {
         taskDetails: state.taskDetails,
         meDetails: state.meDetails,
         permissions: state.systemData.permissions,
-        taskStatuses: state.systemData.taskStatuses,
         taskTypes: state.systemData.taskTypes,
         users: state.systemData.users,
     };

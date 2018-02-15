@@ -13,16 +13,21 @@ class TaskDetailsFormGeneral extends Component {
         this.state = {
             showEdit: false,
             activeDiv: '',
+            showExtraConnections: false,
         };
+
+        this.switchToEdit = this.switchToEdit.bind(this);
+        this.switchToView = this.switchToView.bind(this);
+        this.toggleExtraConnections = this.toggleExtraConnections.bind(this);
     };
 
-    switchToEdit = () => {
+    switchToEdit() {
         this.setState({
             showEdit: true,
         })
     };
 
-    switchToView = () => {
+    switchToView() {
         this.setState({
             showEdit: false,
             activeDiv: '',
@@ -41,6 +46,10 @@ class TaskDetailsFormGeneral extends Component {
         });
     };
 
+    toggleExtraConnections() {
+        this.setState({showExtraConnections: !this.state.showExtraConnections});
+    };
+
     render() {
         return (
             <Panel className={this.state.activeDiv} onMouseEnter={() => this.onDivEnter()} onMouseLeave={() => this.onDivLeave()}>
@@ -48,9 +57,15 @@ class TaskDetailsFormGeneral extends Component {
                     <div className="col-md-12">
                         {
                             this.state.showEdit && this.props.permissions.manageTask ?
-                                <TaskDetailsFormGeneralEdit switchToView={this.switchToView} />
+                                <TaskDetailsFormGeneralEdit
+                                    switchToView={this.switchToView}
+                                    toggleExtraConnections={this.toggleExtraConnections}
+                                    showExtraConnections={this.state.showExtraConnections} />
                                 :
-                                <TaskDetailsFormGeneralView switchToEdit={this.switchToEdit}/>
+                                <TaskDetailsFormGeneralView
+                                    switchToEdit={this.switchToEdit}
+                                    toggleExtraConnections={this.toggleExtraConnections}
+                                    showExtraConnections={this.state.showExtraConnections} />
                         }
                     </div>
                 </PanelBody>

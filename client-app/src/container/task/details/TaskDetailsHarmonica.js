@@ -1,36 +1,25 @@
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
 
-import UploadHarmonica from './harmonica/UploadHarmonica';
-
 class TaskDetailsHarmonica extends Component {
     constructor(props){
         super(props);
 
         this.state = {
             toggleShowList: {
-                uploads: false,
-                emailsInbox: false,
-                emailsSent: false,
                 documents: false,
             },
-            showModalUploadfile: false,
         };
 
         this.toggleShowList = this.toggleShowList.bind(this);
-        this.toggleUploadfile = this.toggleUploadfile.bind(this);
     };
 
     componentWillReceiveProps(nextProps) {
         if(this.props.id !== nextProps.id) {
             this.setState({
                 toggleShowList: {
-                    uploads: false,
-                    emailsInbox: false,
-                    emailsSent: false,
                     documents: false,
                 },
-                showModalUploadfile: false,
             })
         }
     };
@@ -45,23 +34,10 @@ class TaskDetailsHarmonica extends Component {
         });
     };
 
-    toggleUploadfile() {
-        this.setState({
-            showModalUploadfile: !this.state.showModalUploadfile
-        });
-    };
-
     render() {
         return (
             <div className="margin-10-top">
-                <UploadHarmonica
-                    toggleShowList={() => this.toggleShowList('uploads')}
-                    showUploadsList={this.state.toggleShowList.uploads}
-                    toggleUploadfile={this.toggleUploadfile}
-                    showModalUploadfile={this.state.showModalUploadfile}
-                    attachmentCount={this.props.taskDetails.attachmentCount}
-                    id={this.props.taskDetails.id}
-                />
+
             </div>
         )
     };

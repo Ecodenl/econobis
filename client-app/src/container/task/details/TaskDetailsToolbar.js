@@ -21,12 +21,14 @@ class TaskDetailsToolbar extends Component {
     };
 
     render() {
+        const { finished } = this.props.taskDetails;
+
         return (
             <div className="row">
                 <div className="col-sm-12">
                     <Panel>
                         <PanelBody className={"panel-small"}>
-                            <div className="col-md-2">
+                            <div className="col-md-4">
                                 <div className="btn-group" role="group">
                                     <ButtonIcon iconName={"glyphicon-arrow-left"} onClickAction={browserHistory.goBack} />
                                     {this.props.permissions.manageTask &&
@@ -34,9 +36,8 @@ class TaskDetailsToolbar extends Component {
                                     }
                                 </div>
                             </div>
-                            <div className="col-md-2"><h4><strong>Taak</strong></h4></div>
-                            <div className="col-md-6"><h4>{ this.props.taskDetailsName }</h4></div>
-                            <div className="col-md-2" />
+                            <div className="col-md-4"><h3 className="text-center table-title margin-small">{ finished ? 'Notitie' : 'Taak' } </h3></div>
+                            <div className="col-md-4" />
                         </PanelBody>
                     </Panel>
                 </div>
@@ -55,7 +56,7 @@ class TaskDetailsToolbar extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        taskDetailsName: state.taskDetails.name,
+        taskDetails: state.taskDetails,
         id: state.taskDetails.id,
         permissions: state.meDetails.permissions
     };

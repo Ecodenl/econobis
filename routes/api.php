@@ -136,7 +136,8 @@ Route::namespace('Api')
 
         Route::get('contact-group/{contactGroup}/tasks', 'ContactGroup\ContactGroupController@tasks');
 
-        Route::get('task/grid', 'Task\TaskController@grid');
+        Route::get('task/grid/tasks', 'Task\TaskController@gridTask');
+        Route::get('task/grid/notes', 'Task\TaskController@gridNote');
         Route::get('task/peek', 'Task\TaskController@peek');
         Route::get('task/calendar', 'Task\TaskController@calendar');
         Route::get('task/amount-active', 'Task\TaskController@getAmountOfActiveTasks');

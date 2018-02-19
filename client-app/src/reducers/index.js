@@ -34,6 +34,7 @@ import quotationRequestDetailsReducer from './quotation-request/QuotationRequest
 import sidebarReducer from './general/SidebarReducer';
 import systemDataReducer from './general/SystemDataReducer';
 import tasksReducer from './task/TasksReducer';
+import notesReducer from './task/NotesReducer';
 import taskDetailsReducer from './task/TaskDetailsReducer';
 import teamsReducer from './team/TeamsReducer';
 import teamDetailsReducer from './team/TeamDetailsReducer';
@@ -94,9 +95,10 @@ const rootReducer = combineReducers({
     //Quotation request
     quotationRequests: quotationRequestsReducer,
     quotationRequestDetails: quotationRequestDetailsReducer,
-    //Task
+    //Task / note
     taskDetails: taskDetailsReducer,
     tasks: tasksReducer,
+    notes: notesReducer,
     //Team
     teams: teamsReducer,
     teamDetails: teamDetailsReducer,

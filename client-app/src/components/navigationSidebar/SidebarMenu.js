@@ -99,6 +99,9 @@ class SidebarMenu extends Component {
                     <Nav id="taken">
                         <NavIcon><SvgIcon size={20} icon={ic_business}/></NavIcon>
                         <NavText><Link className="sidebar-link" to="taken">Taken</Link></NavText>
+                        <Nav id="notities">
+                            <NavText><Link className="sidebar-link" to="notities">Notities</Link></NavText>
+                        </Nav>
                     </Nav>
                     <Nav id="agenda">
                         <NavIcon><SvgIcon size={20} icon={calendar} /></NavIcon>

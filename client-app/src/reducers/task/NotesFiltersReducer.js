@@ -27,7 +27,7 @@ const filtersReducerDefaultState = {
 
 export default (state = filtersReducerDefaultState, action) => {
     switch(action.type) {
-        case 'SET_FILTER_TASK_CREATED_AT':
+        case 'SET_FILTER_NOTE_CREATED_AT':
             return {
                 ...state,
                 createdAt: {
@@ -35,7 +35,7 @@ export default (state = filtersReducerDefaultState, action) => {
                     data: action.createdAt,
                 }
             };
-        case 'SET_FILTER_TASK_TYPE_ID':
+        case 'SET_FILTER_NOTE_TYPE_ID':
             return {
                 ...state,
                 typeId: {
@@ -43,7 +43,7 @@ export default (state = filtersReducerDefaultState, action) => {
                     data: action.typeId,
                 }
             };
-        case 'SET_FILTER_TASK_NOTE':
+        case 'SET_FILTER_NOTE_NOTE':
             return {
                 ...state,
                 note: {
@@ -51,7 +51,7 @@ export default (state = filtersReducerDefaultState, action) => {
                     data: action.note,
                 }
             };
-        case 'SET_FILTER_TASK_CONTACT_FULL_NAME':
+        case 'SET_FILTER_NOTE_CONTACT_FULL_NAME':
             return {
                 ...state,
                 contactFullName: {
@@ -59,7 +59,7 @@ export default (state = filtersReducerDefaultState, action) => {
                     data: action.contactFullName,
                 }
             };
-        case 'SET_FILTER_TASK_DATE_PLANNED_START':
+        case 'SET_FILTER_NOTE_DATE_PLANNED_START':
             return {
                 ...state,
                 datePlannedStart: {
@@ -67,7 +67,7 @@ export default (state = filtersReducerDefaultState, action) => {
                     data: action.datePlannedStart,
                 }
             };
-        case 'SET_FILTER_TASK_RESPONSIBLE_USER_NAME':
+        case 'SET_FILTER_NOTE_RESPONSIBLE_USER_NAME':
             return {
                 ...state,
                 responsibleUserName: {
@@ -75,7 +75,7 @@ export default (state = filtersReducerDefaultState, action) => {
                     data: action.responsibleUserName,
                 }
             };
-        case 'CLEAR_FILTER_TASKS':
+        case 'CLEAR_FILTER_NOTES':
             return {
                 ...state,
                 ...filtersReducerDefaultState,

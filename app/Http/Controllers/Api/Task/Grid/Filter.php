@@ -14,21 +14,19 @@ class Filter extends RequestFilter
 {
     protected $fields = [
         'createdAt',
-        'name',
+        'typeId',
+        'note',
         'contactFullName',
-        'datePlanned',
-        'dateStarted',
-        'statusId',
+        'datePlannedStarted',
         'responsibleUserName',
     ];
 
     protected $mapping = [
         'createdAt' => 'tasks.created_at',
-        'name' => 'tasks.name',
+        'typeId' => 'tasks.type_id',
+        'note' => 'tasks.note',
         'contactFullName' => 'contacts.full_name',
-        'datePlanned' => 'tasks.date_planned',
-        'dateStarted' => 'tasks.date_started',
-        'statusId' => 'tasks.status_id',
+        'datePlannedStarted' => 'tasks.date_planned_start',
         'responsibleUserName' => 'users.last_name',
     ];
 

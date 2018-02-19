@@ -17,11 +17,12 @@ export function* fetchTasksSaga({filters, sorts, pagination}) {
     }
 }
 
-export function* setTaskCompletedSaga({ task }) {
+export function* setTaskFinishedSaga({ task }) {
     try {
         task = yield call(TaskDetailsAPI.updateTask, task);
-        yield put({ type: 'SET_TASK_COMPLETED_SUCCESS', task });
+        const id = task.data.data.id;
+        yield put({ type: 'SET_TASK_FINISHED_SUCCESS', id });
     } catch (error) {
-        yield put({ type: 'SET_TASK_COMPLETED_ERROR', error });
+        yield put({ type: 'SET_TASK_FINISHED_ERROR', error });
     }
 }

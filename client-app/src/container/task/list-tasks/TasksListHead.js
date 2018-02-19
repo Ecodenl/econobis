@@ -16,12 +16,11 @@ const TasksListHead = (props) => {
     return (
         <tr className="thead-title">
             <DataTableHeadTitleAndSort sortColumn={'createdAt'} title={'Datum'} width={'8%'} setSorts={setSorts} />
-            <DataTableHeadTitleAndSort sortColumn={'name'} title={'Naam'} width={'30%'} setSorts={setSorts} />
+            <DataTableHeadTitleAndSort sortColumn={'typeName'} title={'Type taak'} width={'10%'} setSorts={setSorts} />
+            <DataTableHeadTitleAndSort sortColumn={'note'} title={'Taak / notitie'} width={'20%'} setSorts={setSorts} />
             <DataTableHeadTitleAndSort sortColumn={'contactName'} title={'Contact'} width={'17%'} setSorts={setSorts} />
-            <DataTableHeadTitleAndSort sortColumn={'datePlanned'} title={'Plandatum'} width={'8%'} setSorts={setSorts} />
-            <DataTableHeadTitleAndSort sortColumn={'dateStarted'} title={'Gestart op'} width={'8%'} setSorts={setSorts} />
-            <DataTableHeadTitleAndSort sortColumn={'statusId'} title={'Status'} width={'8%'} setSorts={setSorts} />
-            <DataTableHeadTitleAndSort sortColumn={'responsibleUserName'} title={'Uitvoerder'} width={'15%'} setSorts={setSorts} />
+            <DataTableHeadTitleAndSort sortColumn={'datePlannedStart'} title={'Datum afhandelen'} width={'8%'} setSorts={setSorts} />
+            <DataTableHeadTitleAndSort sortColumn={'responsibleUserName'} title={'Verantwoordelijke'} width={'15%'} setSorts={setSorts} />
             <th width="5%" />
         </tr>
     );

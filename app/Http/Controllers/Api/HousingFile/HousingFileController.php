@@ -20,6 +20,7 @@ use App\Http\Resources\Address\FullAddress;
 use App\Http\Resources\GenericResource;
 use App\Http\Resources\HousingFile\FullHousingFile;
 use App\Http\Resources\HousingFile\GridHousingFile;
+use App\Http\Resources\HousingFile\HousingFilePeek;
 use App\Http\Resources\HousingFile\IntakePeek;
 use App\Http\Resources\Measure\FullMeasure;
 use App\Http\Resources\Task\SidebarTask;

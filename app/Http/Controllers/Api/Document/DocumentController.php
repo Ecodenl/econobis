@@ -67,6 +67,11 @@ class DocumentController extends Controller
             ->integer('opportunityId')->validate('exists:opportunities,id')->onEmpty(null)->alias('opportunity_id')->next()
             ->integer('sentById')->validate('exists:users,id')->onEmpty(null)->alias('sent_by_id')->next()
             ->integer('templateId')->validate('exists:document_templates,id')->onEmpty(null)->alias('template_id')->next()
+            ->integer('campaignId')->validate('exists:campaigns,id')->onEmpty(null)->alias('campaign_id')->next()
+            ->integer('housingFileId')->validate('exists:housing_files,id')->onEmpty(null)->alias('housing_file_id')->next()
+            ->integer('quotationRequestId')->validate('exists:quotation_requests,id')->onEmpty(null)->alias('quotation_request_id')->next()
+            ->integer('measureId')->validate('exists:measures,id')->onEmpty(null)->alias('measure_id')->next()
+            ->integer('taskId')->validate('exists:tasks,id')->onEmpty(null)->alias('task_id')->next()
             ->get();
 
         $document = new Document();
@@ -85,7 +90,7 @@ class DocumentController extends Controller
             $time = Carbon::now();
 
             $name = '';
-            $document->contact && $name .=  '-' . str_replace(' ', '', $document->contact->full_name);
+             $document->contact && $name .=  '-' . str_replace(' ', '', $document->contact->full_name);
             $document->intake && $name .= '-intake-' . $document->intake->id;
             $document->contactGroup && $name .= '-' . str_replace(' ', '', $document->contactGroup->name);
             $document->opportunity && $name .= '-' . $document->opportunity->number;
@@ -142,6 +147,11 @@ class DocumentController extends Controller
             ->integer('opportunityId')->validate('exists:opportunities,id')->onEmpty(null)->alias('opportunity_id')->next()
             ->integer('sentById')->validate('exists:users,id')->onEmpty(null)->alias('sent_by_id')->next()
             ->integer('templateId')->validate('exists:document_templates,id')->onEmpty(null)->alias('template_id')->next()
+            ->integer('campaignId')->validate('exists:campaigns,id')->onEmpty(null)->alias('campaign_id')->next()
+            ->integer('housingFileId')->validate('exists:housing_files,id')->onEmpty(null)->alias('housing_file_id')->next()
+            ->integer('quotationRequestId')->validate('exists:quotation_requests,id')->onEmpty(null)->alias('quotation_request_id')->next()
+            ->integer('measureId')->validate('exists:measures,id')->onEmpty(null)->alias('measure_id')->next()
+            ->integer('taskId')->validate('exists:tasks,id')->onEmpty(null)->alias('task_id')->next()
             ->get();
 
         $document->fill($data);

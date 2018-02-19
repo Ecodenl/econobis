@@ -9,10 +9,13 @@
 namespace App\Http\Resources\Document;
 
 
+use App\Http\Resources\Campaign\FullCampaign;
 use App\Http\Resources\Contact\FullContact;
 use App\Http\Resources\ContactGroup\FullContactGroup;
 use App\Http\Resources\DocumentTemplate\FullDocumentTemplate;
 use App\Http\Resources\EnumWithIdAndName\FullEnumWithIdAndName;
+use App\Http\Resources\HousingFile\FullHousingFile;
+use App\Http\Resources\Measure\FullMeasure;
 use App\Http\Resources\Opportunity\FullOpportunity;
 use App\Http\Resources\Intake\FullIntake;
 use App\Http\Resources\User\FullUser;
@@ -40,6 +43,16 @@ class FullDocument extends Resource
             'contactGroup' => FullContactGroup::make($this->whenLoaded('contactGroup')),
             'opportunityId' => $this->opportunity_id,
             'opportunity' => FullOpportunity::make($this->whenLoaded('opportunity')),
+            'campaignId' => $this->campaign_id,
+            'campaign' => FullCampaign::make($this->whenLoaded('campaign')),
+            'housingFileId' => $this->housing_file_id,
+            'housingFile' => FullHousingFile::make($this->whenLoaded('housingFile')),
+            'quotationRequestId' => $this->quotation_request_id,
+            'quotationRequest' => FullQuotationRequest::make($this->whenLoaded('quotationRequest')),
+            'measureId' => $this->measure_id,
+            'measure' => FullMeasure::make($this->whenLoaded('measure')),
+            'taskId' => $this->task_id,
+            'task' => FullOpportunity::make($this->whenLoaded('task')),
             'sentBy' => FullUser::make($this->whenLoaded('sentBy')),
             'createdBy' => FullUser::make($this->whenLoaded('createdBy')),
             'template' => FullDocumentTemplate::make($this->whenLoaded('template')),

@@ -12,6 +12,7 @@ use App\Http\Resources\Intake\GridTask;
 use App\Http\Resources\Task\CalendarTask;
 use App\Http\Resources\Task\FullTask;
 use App\Http\Resources\Task\FullTaskAttachment;
+use App\Http\Resources\Task\TaskPeek;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -154,4 +155,8 @@ class TaskController extends Controller
     }
 
 
+    public function peek()
+    {
+        return TaskPeek::collection(Task::orderBy('id')->get());
+    }
 }

@@ -21,6 +21,7 @@ import {connect} from "react-redux";
 import {fetchIntakeDetails} from "../../../actions/intake/IntakeDetailsActions";
 import CampaignAPI from "../../../api/campaign/CampaignsAPI";
 import HousingFileAPI from "../../../api/housing-file/HousingFilesAPI";
+import QuotationRequestsAPI from "../../../api/quotation-request/QuotationRequestsAPI";
 
 class DocumentNewApp extends Component {
     constructor(props) {
@@ -101,9 +102,9 @@ class DocumentNewApp extends Component {
             this.setState({ housingFiles: payload });
         });
 
-        // quotationRequestAPI.fetchDocumentTemplatesPeekGeneral().then((payload) => {
-        //     this.setState({ templates: payload });
-        // });
+        QuotationRequestsAPI.peekQuotationRequests().then((payload) => {
+            this.setState({ quotationRequests: payload });
+        });
 
         TasksAPI.peekTasks().then((payload) => {
             this.setState({ tasks: payload });

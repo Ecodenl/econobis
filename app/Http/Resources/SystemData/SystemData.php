@@ -29,6 +29,7 @@ use App\Eco\LastNamePrefix\LastNamePrefix;
 use App\Eco\Occupation\Occupation;
 use App\Eco\PersonType\PersonType;
 use App\Eco\PhoneNumber\PhoneNumberType;
+use App\Eco\QuotationRequest\QuotationRequestStatus;
 use App\Eco\Task\TaskProperty;
 use App\Eco\Task\TaskStatus;
 use App\Eco\Task\TaskType;
@@ -91,6 +92,7 @@ class SystemData extends Resource
             'documentTemplateTypes' => FullEnumWithIdAndName::collection(DocumentTemplateType::collection()),
             'roofTypes' => FullEnumWithIdAndName::collection(RoofType::all()),
             'energyLabelStatus' => FullEnumWithIdAndName::collection(EnergyLabelStatus::all()),
+            'quotationRequestStatus' => FullEnumWithIdAndName::collection(QuotationRequestStatus::all()),
         ];
     }
 }

@@ -67,7 +67,7 @@ class SidebarMenu extends Component {
                             <NavText><Link className="sidebar-link" to="kansen">Kansen</Link></NavText>
                         </Nav>
                         <Nav id="quotation-requests">
-                            <NavText><Link className="sidebar-link" to="offerte-verzoeken">Offerte
+                            <NavText><Link className="sidebar-link" to="offerteverzoeken">Offerte
                                 verzoeken</Link></NavText>
                         </Nav>
                         <Nav id="measures">

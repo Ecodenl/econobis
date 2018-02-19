@@ -19,7 +19,7 @@ class CampaignFormEdit extends Component {
     constructor(props) {
         super(props);
 
-        const {id, name, number, description, startDate, endDate, goal, status, measures, type} = props.campaign;
+        const {id, name, number, description, startDate, endDate, status, measures, type} = props.campaign;
 
         this.state = {
             campaign: {
@@ -29,7 +29,6 @@ class CampaignFormEdit extends Component {
                 description: description ? description : '',
                 startDate,
                 endDate,
-                goal,
                 statusId: status ? status.id : '',
                 typeId: type && type.id,
                 measureIds: measures && measures.map((measure) => measure.id).join(','),
@@ -117,7 +116,7 @@ class CampaignFormEdit extends Component {
     };
 
     render() {
-        const {id, name, number, description, startDate, endDate, goal, statusId, measureIds, typeId}  = this.state.campaign;
+        const {id, name, number, description, startDate, endDate, statusId, measureIds, typeId}  = this.state.campaign;
 
         return (
             <form className="form-horizontal col-md-12" onSubmit={this.handleSubmit}>
@@ -171,13 +170,6 @@ class CampaignFormEdit extends Component {
                 </div>
 
                 <div className="row">
-                    <InputText
-                        label={"Doel"}
-                        size={"col-sm-6"}
-                        name={"goal"}
-                        value={goal ? goal : ''}
-                        onChangeAction={this.handleInputChange}
-                    />
                     <InputSelect
                         label={"Status"}
                         size={"col-sm-6"}
@@ -186,10 +178,6 @@ class CampaignFormEdit extends Component {
                         value={statusId}
                         onChangeAction={this.handleInputChange}
                     />
-                </div>
-
-
-                <div className="row">
                     <InputMultiSelect
                         label="Aangeboden maatregelen"
                         name="measureIds"
@@ -197,6 +185,10 @@ class CampaignFormEdit extends Component {
                         options={this.props.measures}
                         onChangeAction={this.handleMeasureIds}
                     />
+                </div>
+
+
+                <div className="row">
                     <InputSelect
                         label={"Type"}
                         size={"col-sm-6"}

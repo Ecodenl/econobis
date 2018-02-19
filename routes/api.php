@@ -243,5 +243,13 @@ Route::namespace('Api')
         Route::post('team/{team}/delete', 'Team\TeamController@destroy');
         Route::post('team/{team}/{user}/attach', 'Team\TeamController@attachUser');
         Route::post('team/{team}/{user}/detach', 'Team\TeamController@detachUser');
+
+        Route::get('/quotation-request/grid', 'QuotationRequest\QuotationRequestController@grid');
+        Route::get('/quotation-request/peek', 'QuotationRequest\QuotationRequestController@peek');
+        Route::get('/opportunity/{opportunity}/quotation-request', 'QuotationRequest\QuotationRequestController@getStore');
+        Route::post('/quotation-request', 'QuotationRequest\QuotationRequestController@store');
+        Route::get('/quotation-request/{quotationRequest}', 'QuotationRequest\QuotationRequestController@show');
+        Route::post('/quotation-request/{quotationRequest}/update', 'QuotationRequest\QuotationRequestController@update');
+        Route::post('/quotation-request/{quotationRequest}/delete', 'QuotationRequest\QuotationRequestController@destroy');
     }
 );

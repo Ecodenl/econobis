@@ -30,6 +30,11 @@ import {
     deleteHousingFileSaga,
 } from './housing-file/HousingFileDetailsSaga';
 import { fetchHousingFilesSaga } from './housing-file/HousingFilesSaga';
+import {
+    fetchQuotationRequestDetailsSaga,
+    deleteQuotationRequestSaga,
+} from './quotation-request/QuotationRequestDetailsSaga';
+import { fetchQuotationRequestsSaga } from './quotation-request/QuotationRequestsSaga';
 import { fetchTaskDetailsSaga, deleteTaskSaga } from './task/TaskDetailsSaga';
 import { fetchTasksSaga, setTaskFinishedSaga } from './task/TasksSaga';
 import { fetchNotesSaga } from './task/NotesSaga';
@@ -84,6 +89,10 @@ export default function* watchSagas() {
     yield takeLatest('FETCH_HOUSING_FILE_DETAILS', fetchHousingFileDetailsSaga);
     yield takeLatest('DELETE_HOUSING_FILE', deleteHousingFileSaga);
     yield takeLatest('DELETE_HOUSING_FILE_MEASURE_TAKEN', deleteHousingFileMeasureTakenSaga);
+    // Quotation Requests
+    yield takeLatest('FETCH_QUOTATION_REQUESTS', fetchQuotationRequestsSaga);
+    yield takeLatest('FETCH_QUOTATION_REQUEST_DETAILS', fetchQuotationRequestDetailsSaga);
+    yield takeLatest('DELETE_QUOTATION_REQUEST', deleteQuotationRequestSaga);
     // Mailbox
     yield takeLatest('FETCH_MAILBOXES', fetchMailboxesSaga);
     yield takeLatest('FETCH_MAILBOX_DETAILS', fetchMailboxDetailsSaga);

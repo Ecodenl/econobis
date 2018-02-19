@@ -16,7 +16,7 @@ class HousingFileDetailsFormGeneralEdit extends Component {
         super(props);
 
         const { id, address, fullAddress, buildingType, buildYear, surface, roofType, energyLabel, floors, energyLabelStatus, isMonument} = props.housingFileDetails;
-        console.log(props.housingFileDetails);
+
         this.state = {
             housingFile: {
                 id,

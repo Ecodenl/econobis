@@ -34,6 +34,8 @@ use App\Eco\PhoneNumber\PhoneNumber;
 use App\Eco\PhoneNumber\PhoneNumberPolicy;
 use App\Eco\Intake\Intake;
 use App\Eco\Intake\IntakePolicy;
+use App\Eco\QuotationRequest\QuotationRequest;
+use App\Eco\QuotationRequest\QuotationRequestPolicy;
 use App\Eco\Task\Task;
 use App\Eco\Task\TaskPolicy;
 use App\Eco\User\User;
@@ -71,6 +73,7 @@ class AuthServiceProvider extends ServiceProvider
         DocumentTemplate::class => DocumentTemplatePolicy::class,
         AuditTrail::class => AuditTrailPolicy::class,
         Mailbox::class => MailboxPolicy::class,
+        QuotationRequest::class => QuotationRequestPolicy::class,
     ];
 
     /**

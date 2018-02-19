@@ -29,6 +29,8 @@ import opportunitiesReducer from './opportunity/OpportunitiesReducer';
 import opportunityDetailsReducer from './opportunity/OpportunityDetailsReducer';
 import intakeDetailsReducer from './intake/IntakeDetailsReducer';
 import intakesReducer from './intake/IntakesReducer';
+import quotationRequestsReducer from './quotation-request/QuotationRequestsReducer';
+import quotationRequestDetailsReducer from './quotation-request/QuotationRequestDetailsReducer';
 import sidebarReducer from './general/SidebarReducer';
 import systemDataReducer from './general/SystemDataReducer';
 import tasksReducer from './task/TasksReducer';
@@ -90,6 +92,9 @@ const rootReducer = combineReducers({
     // Measures
     measures: measuresReducer,
     measure: measuresReducer,
+    //Quotation request
+    quotationRequests: quotationRequestsReducer,
+    quotationRequestDetails: quotationRequestDetailsReducer,
     //Task / note
     taskDetails: taskDetailsReducer,
     tasks: tasksReducer,

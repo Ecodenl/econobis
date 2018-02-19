@@ -33,6 +33,9 @@ import Forgot from './container/auth/Forgot';
 import HousingFileDetailsApp from './container/housing-file/details/HousingFileDetailsApp';
 import HousingFileNewApp from './container/housing-file/new/HousingFileNewApp';
 import HousingFilesListApp from './container/housing-file/list/HousingFilesListApp';
+import QuotationRequestDetailsApp from './container/quotation-request/details/QuotationRequestDetailsApp';
+import QuotationRequestNewApp from './container/quotation-request/new/QuotationRequestNewApp';
+import QuotationRequestsListApp from './container/quotation-request/list/QuotationRequestsListApp';
 import Reset from './container/auth/Reset';
 import Login from './container/auth/Login';
 import Logout from './container/auth/Logout';
@@ -134,6 +137,10 @@ const Routes = () => {
                 <Route path="woningdossier/nieuw/contact/:contactId/adres/:addressId" component={HousingFileNewApp} />
                 <Route path="woningdossier/:id" component={HousingFileDetailsApp} />
                 <Route path="woningdossiers" component={ HousingFilesListApp } />
+                /* Quotation Request */
+                <Route path="offerteverzoek/nieuw/kans/:opportunityId" component={QuotationRequestNewApp} />
+                <Route path="offerteverzoek/:id" component={QuotationRequestDetailsApp} />
+                <Route path="offerteverzoeken" component={QuotationRequestsListApp} />
                 /* Intake */
                 <Route path="intake/nieuw/contact/:contactId/adres/:addressId" component={IntakeNewApp} />
                 <Route path="intake/:id" component={IntakeDetailsApp} />

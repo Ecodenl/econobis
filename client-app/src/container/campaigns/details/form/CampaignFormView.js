@@ -6,7 +6,7 @@ moment.locale('nl');
 import ViewText from '../../../../components/form/ViewText';
 
 const CampaignFormView = props => {
-    const {name, number, description, startDate, endDate, goal, status, measures, type} = props.campaign;
+    const {name, number, description, startDate, endDate, status, measures, type} = props.campaign;
 
     return (
         <div>
@@ -43,20 +43,16 @@ const CampaignFormView = props => {
 
             <div className="row" onClick={props.switchToEdit}>
                 <ViewText
-                    label={"Doel"}
-                    value={goal}
-                />
-                <ViewText
                     label={"Status"}
                     value={status ? status.name : ''}
                 />
-            </div>
-
-            <div className="row" onClick={props.switchToEdit}>
                 <ViewText
                     label={"Aangeboden maatregelen"}
                     value={ measures && measures.map((measure) => measure.name).join(', ') }
                 />
+            </div>
+
+            <div className="row" onClick={props.switchToEdit}>
                 <ViewText
                     label={"Type"}
                     value={type ? type.name : ''}

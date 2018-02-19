@@ -10,7 +10,7 @@ import InputMultiSelect from "../../../components/form/InputMultiSelect";
 import InputText from "../../../components/form/InputText";
 
 const CampaignNew = props => {
-    const {name, description, startDate, endDate, goal, statusId, measureIds, typeId} = props.campaign;
+    const {name, description, startDate, endDate, statusId, measureIds, typeId} = props.campaign;
     return (
         <form className="form-horizontal col-md-12" onSubmit={props.handleSubmit}>
             <div className="row">
@@ -57,13 +57,6 @@ const CampaignNew = props => {
             </div>
 
             <div className="row">
-                <InputText
-                    label={"Doel"}
-                    size={"col-sm-6"}
-                    name={"goal"}
-                    value={goal}
-                    onChangeAction={props.handleInputChange}
-                />
                 <InputSelect
                     label={"Status"}
                     size={"col-sm-6"}
@@ -72,10 +65,6 @@ const CampaignNew = props => {
                     value={statusId}
                     onChangeAction={props.handleInputChange}
                 />
-            </div>
-
-
-            <div className="row">
                 <InputMultiSelect
                     label="Aangeboden maatregelen"
                     name="measureIds"
@@ -83,6 +72,10 @@ const CampaignNew = props => {
                     options={props.measures}
                     onChangeAction={props.handleMeasureIds}
                 />
+            </div>
+
+
+            <div className="row">
                 <InputSelect
                     label={"Type"}
                     size={"col-sm-6"}

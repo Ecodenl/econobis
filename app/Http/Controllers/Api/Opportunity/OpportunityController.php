@@ -35,7 +35,7 @@ class OpportunityController extends ApiController
 
     public function show(Opportunity $opportunity)
     {
-        $opportunity->load(['contact', 'measure', 'quotations.organisation', 'quotations.createdBy', 'campaign', 'status', 'createdBy', 'ownedBy', 'reaction', 'intake']);
+        $opportunity->load(['contact', 'measure', 'quotations.organisation', 'quotations.createdBy', 'campaign', 'status', 'createdBy', 'ownedBy', 'reaction', 'intake', 'tasks']);
 
         return FullOpportunity::make($opportunity);
     }

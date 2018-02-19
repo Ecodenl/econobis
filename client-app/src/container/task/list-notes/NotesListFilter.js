@@ -9,7 +9,7 @@ import {
     setFilterNoteNote,
     setFilterNoteContactFullName,
     setFilterNoteDatePlannedStart,
-    setFilterNoteResponsibleUserName
+    setFilterNoteResponsibleName
 } from '../../../actions/task/NotesFiltersActions';
 import DataTableFilterDate from "../../../components/dataTable/DataTableFilterDate";
 
@@ -46,8 +46,8 @@ const NotesListFilter = props => {
         }
     };
 
-    const onResponsibleUserNameChange = (e) => {
-        props.setFilterNoteResponsibleUserName(e.target.value);
+    const onResponsibleNameChange = (e) => {
+        props.setFilterNoteResponsibleName(e.target.value);
     };
 
     return (
@@ -66,7 +66,7 @@ const NotesListFilter = props => {
             <th><input type="text" className="form-control input-sm" value={ props.filters.note.data} onChange={onNoteChange} /></th>
             <th><input type="text" className="form-control input-sm" value={ props.filters.contactFullName.data} onChange={onContactFullNameChange} /></th>
             <DataTableFilterDate value={ props.filters.datePlannedStart.data && props.filters.datePlannedStart.data } onChangeAction={onDatePlannedChange} />
-            <th><input type="text" className="form-control input-sm" value={ props.filters.responsibleUserName.data} onChange={onResponsibleUserNameChange} /></th>
+            <th><input type="text" className="form-control input-sm" value={ props.filters.responsibleName.data} onChange={onResponsibleNameChange} /></th>
             <th/>
         </tr>
     );
@@ -84,7 +84,7 @@ const mapDispatchToProps = (dispatch) => {
         setFilterNoteNote,
         setFilterNoteContactFullName,
         setFilterNoteDatePlannedStart,
-        setFilterNoteResponsibleUserName
+        setFilterNoteResponsibleName
     }, dispatch);
 };
 

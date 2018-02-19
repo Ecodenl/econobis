@@ -23,7 +23,7 @@ class GridTask extends Resource
                 'typeName' => $this->type->name,
                 'noteSummary' => $this->present()->noteSummary(),
                 'createdAt' => $this->created_at,
-                'responsibleUserName' => $this->responsibleUser->present()->fullName(),
+                'responsibleName' => $this->responsibleUser ? $this->responsibleUser->present()->fullName() : $this->responsibleTeam->name,
             ];
     }
 }

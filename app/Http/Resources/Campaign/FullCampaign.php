@@ -6,6 +6,7 @@ use App\Http\Resources\Contact\FullContact;
 use App\Http\Resources\GenericResource;
 use App\Http\Resources\Opportunity\FullOpportunity;
 use App\Http\Resources\Organisation\FullOrganisation;
+use App\Http\Resources\Task\GridTask;
 use App\Http\Resources\User\FullUser;
 use Illuminate\Http\Resources\Json\Resource;
 
@@ -37,7 +38,7 @@ class FullCampaign extends Resource
             'createdBy' => FullUser::make($this->whenLoaded('createdBy')),
             'ownedBy' => FullUser::make($this->whenLoaded('ownedBy')),
             'taskCount' => $this->tasks()->count(),
-            'relatedTasks' => $this->tasks()->get(),
+            'relatedTasks' => GridTask::collection($this->whenLoaded('tasks')),
         ];
     }
 }

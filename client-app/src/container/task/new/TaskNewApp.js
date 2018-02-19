@@ -41,13 +41,12 @@ class TaskNewApp extends Component {
                 finished: false,
                 dateFinished: '',
                 finishedById: '',
-                responsibleUserId: '',
-                responsibleTeamId: '',
+                responsible: '',
             },
             errors: {
                 note: false,
                 typeId: false,
-                responsibleUserId: false,
+                responsible: false,
             },
             showExtraConnections: false,
         };
@@ -230,9 +229,19 @@ class TaskNewApp extends Component {
             hasErrors = true;
         };
 
-        if(validator.isEmpty(task.responsibleUserId)){
-            errors.responsibleUserId = true;
+        if(validator.isEmpty(task.responsible)){
+            errors.responsible = true;
             hasErrors = true;
+        };
+
+        if(task.responsible.search('user') >= 0 ) {
+            task.responsibleUserId = task.responsible.replace('user', '');
+            task.responsibleTeamId = '';
+        };
+
+        if(task.responsible.search("team") >= 0) {
+            task.responsibleUserId = '';
+            task.responsibleTeamId = task.responsible.replace('team', '');
         };
 
         this.setState({ ...this.state, errors: errors })

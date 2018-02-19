@@ -35,7 +35,7 @@ class NotesListItem extends Component {
     };
 
     render() {
-        const { id, createdAt, typeName, noteSummary, contactFullName, datePlannedStart, responsibleUserName } = this.props;
+        const { id, createdAt, typeName, noteSummary, contactFullName, datePlannedStart, responsibleName } = this.props;
 
         return (
             <tr className={this.state.highlightRow} onDoubleClick={() => this.openItem(id)} onMouseEnter={() => this.onRowEnter()} onMouseLeave={() => this.onRowLeave()}>
@@ -44,7 +44,7 @@ class NotesListItem extends Component {
                 <td>{ noteSummary }</td>
                 <td>{ contactFullName }</td>
                 <td>{ datePlannedStart && moment(datePlannedStart.date).format('L') }</td>
-                <td>{ responsibleUserName }</td>
+                <td>{ responsibleName }</td>
                 <td>
                     {(this.state.showActionButtons ? <a role="button" onClick={this.openItem}><span className="glyphicon glyphicon-pencil mybtn-success" /> </a> : '')}
                     {(this.state.showActionButtons && this.props.permissions.manageNote ? <a role="button" onClick={this.props.showDeleteItemModal.bind(this, id, name)}><span className="glyphicon glyphicon-trash mybtn-danger"  /> </a> : '')}

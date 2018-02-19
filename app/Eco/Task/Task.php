@@ -8,6 +8,7 @@ use App\Eco\ContactGroup\ContactGroup;
 use App\Eco\Document\Document;
 use App\Eco\Opportunity\Opportunity;
 use App\Eco\Intake\Intake;
+use App\Eco\Team\Team;
 use App\Eco\User\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -85,6 +86,14 @@ class Task extends Model
     public function responsibleUser()
     {
         return $this->belongsTo(User::class);
+    }
+
+    /**
+     * required
+     */
+    public function responsibleTeam()
+    {
+        return $this->belongsTo(Team::class);
     }
 
     /**

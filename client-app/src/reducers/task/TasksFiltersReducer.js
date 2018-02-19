@@ -19,8 +19,8 @@ const filtersReducerDefaultState = {
         field: 'datePlannedStart',
         data: '',
     },
-    responsibleUserName: {
-        field: 'responsibleUserName',
+    responsibleName: {
+        field: 'responsibleName',
         data: '',
     },
 };
@@ -67,12 +67,12 @@ export default (state = filtersReducerDefaultState, action) => {
                     data: action.datePlannedStart,
                 }
             };
-        case 'SET_FILTER_TASK_RESPONSIBLE_USER_NAME':
+        case 'SET_FILTER_TASK_RESPONSIBLE_NAME':
             return {
                 ...state,
-                responsibleUserName: {
-                    ...state.responsibleUserName,
-                    data: action.responsibleUserName,
+                responsibleName: {
+                    ...state.responsibleName,
+                    data: action.responsibleName,
                 }
             };
         case 'CLEAR_FILTER_TASKS':

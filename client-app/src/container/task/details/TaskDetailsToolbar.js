@@ -6,6 +6,7 @@ import ButtonIcon from '../../../components/button/ButtonIcon';
 import TaskDetailsDelete from './TaskDetailsDelete';
 import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
+import TaskDetailsDuplicate from "./TaskDetailsDuplicate";
 
 class TaskDetailsToolbar extends Component {
     constructor(props){
@@ -13,11 +14,16 @@ class TaskDetailsToolbar extends Component {
 
         this.state = {
             showDelete: false,
+            showDuplicate: false,
         }
     };
 
     toggleDelete = () => {
         this.setState({showDelete: !this.state.showDelete});
+    };
+
+    toggleDuplicate = () => {
+        this.setState({showDuplicate: !this.state.showDuplicate});
     };
 
     render() {
@@ -32,6 +38,9 @@ class TaskDetailsToolbar extends Component {
                                 <div className="btn-group" role="group">
                                     <ButtonIcon iconName={"glyphicon-arrow-left"} onClickAction={browserHistory.goBack} />
                                     {this.props.permissions.manageTask &&
+                                    <ButtonIcon iconName={"glyphicon-duplicate"} onClickAction={this.toggleDuplicate}/>
+                                    }
+                                    {this.props.permissions.manageTask &&
                                     <ButtonIcon iconName={"glyphicon-trash"} onClickAction={this.toggleDelete}/>
                                     }
                                 </div>
@@ -45,7 +54,15 @@ class TaskDetailsToolbar extends Component {
                     this.state.showDelete &&
                     <TaskDetailsDelete
                         closeDeleteItemModal={this.toggleDelete}
-                        name={this.props.taskDetailsName}
+                        noteSummary={this.props.taskDetails.noteSummary}
+                        id={this.props.id}
+                    />
+                }
+                {
+                    this.state.showDuplicate &&
+                    <TaskDetailsDuplicate
+                        closeModal={this.toggleDuplicate}
+                        noteSummary={this.props.taskDetails.noteSummary}
                         id={this.props.id}
                     />
                 }

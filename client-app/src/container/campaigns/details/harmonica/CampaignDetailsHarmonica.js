@@ -2,8 +2,8 @@ import React, {Component} from 'react';
 import { hashHistory } from 'react-router';
 import { connect } from 'react-redux';
 
-import Panel from "../../../components/panel/Panel";
-import PanelBody from '../../../components/panel/PanelBody';
+import Panel from "../../../../components/panel/Panel";
+import PanelBody from '../../../../components/panel/PanelBody';
 import TaskList from "./TaskList";
 
 class CampaignDetailsHarmonica extends Component {
@@ -36,7 +36,7 @@ class CampaignDetailsHarmonica extends Component {
                 <Panel className={"harmonica-button"}>
                     <PanelBody>
                         <div className="col-sm-12" onClick={this.toggleTask}>
-                            <span className="">TAKEN <span className="badge">{ this.props.campaign.taskCount }</span></span>
+                            <span className="">OPEN TAKEN <span className="badge">{ this.props.campaign.taskCount }</span></span>
                             {permissions.manageTask &&
                             <a role="button" className="pull-right" onClick={this.newTask}><span
                                 className="glyphicon glyphicon-plus glyphicon-white"/></a>

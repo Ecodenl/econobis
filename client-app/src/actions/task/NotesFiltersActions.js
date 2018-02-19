@@ -23,9 +23,9 @@ export const setFilterNoteDatePlannedStart = (datePlannedStart) => ({
     datePlannedStart,
 });
 
-export const setFilterNoteResponsibleUserName = (responsibleUserName) => ({
-    type: 'SET_FILTER_NOTE_RESPONSIBLE_USER_NAME',
-    responsibleUserName,
+export const setFilterNoteResponsibleName = (responsibleName) => ({
+    type: 'SET_FILTER_NOTE_RESPONSIBLE_NAME',
+    responsibleName,
 });
 
 export const clearFilterNotes = () => ({

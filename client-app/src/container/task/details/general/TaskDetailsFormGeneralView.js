@@ -21,6 +21,7 @@ const TaskDetailsFormGeneralView = props => {
         endTimePlanned,
         dateFinished,
         responsibleUser,
+        responsibleTeam,
         finishedBy,
         opportunityId,
         opportunityName
@@ -75,9 +76,9 @@ const TaskDetailsFormGeneralView = props => {
                         value={finished ? 'Ja' : 'Nee'}
                     />
                     <ViewText
-                        label={"Verantwoordelijk"}
-                        value={responsibleUser && responsibleUser.fullName}
-                        link={responsibleUser ? 'gebruiker/' + responsibleUser.id : ''}
+                        label={"Verantwoordelijke"}
+                        value={responsibleUser ? responsibleUser.fullName : responsibleTeam.name}
+                        link={responsibleUser ? 'gebruiker/' + responsibleUser.id : 'team/' + responsibleTeam.id}
                     />
                 </div>
 

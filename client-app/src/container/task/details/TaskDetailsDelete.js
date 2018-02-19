@@ -19,7 +19,7 @@ const TaskDetailsDelete = (props) => {
           confirmAction={() => confirmAction()}
           title="Verwijderen"
       >
-          <p>Verwijder taak: <strong> {`${props.name}` } </strong></p>
+          <p>Verwijder taak: <strong> {`${props.noteSummary}` } </strong></p>
         </Modal>
     );
 };

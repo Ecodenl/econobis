@@ -3,6 +3,7 @@
 namespace App\Http\Resources\ContactGroup;
 
 use App\Http\Resources\Contact\FullContact;
+use App\Http\Resources\Task\GridTask;
 use App\Http\Resources\User\FullUser;
 use Illuminate\Http\Resources\Json\Resource;
 
@@ -33,7 +34,7 @@ class FullContactGroup extends Resource
             'updatedAt' => $this->updated_at,
             'contacts' => FullContact::collection($this->whenLoaded('contacts')),
             'taskCount' => $this->tasks()->count(),
-            'relatedTasks' => $this->tasks()->get(),
+            'relatedTasks' => GridTask::collection($this->whenLoaded('tasks')),
             'documentCount' => $this->documents()->count(),
             'relatedDocuments' => $this->documents()->get(),
         ];

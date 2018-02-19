@@ -10,6 +10,7 @@ import InputTextArea from "../../../components/form/InputTextarea";
 import InputToggle from "../../../components/form/InputToggle";
 import PanelHeader from "../../../components/panel/PanelHeader";
 import TaskNewFormExtraConnections from './extra-connections/TaskNewFormExtraConnections';
+import InputSelectGroup from "../../../components/form/InputSelectGroup";
 
 const TaskNewForm = props => {
     const {
@@ -23,7 +24,7 @@ const TaskNewForm = props => {
         datePlannedFinish,
         startTimePlanned,
         endTimePlanned,
-        responsibleUserId,
+        responsible,
     } = props.task;
 
     return (
@@ -92,16 +93,15 @@ const TaskNewForm = props => {
                     value={finished}
                     onChangeAction={props.handleInputChange}
                 />
-                <InputSelect
+                <InputSelectGroup
                     label={"Verantwoordelijke"}
                     size={"col-sm-6"}
-                    name={"responsibleUserId"}
-                    options={props.users}
-                    value={responsibleUserId}
+                    name={"responsible"}
+                    optionsInGroups={[{name: 'user', label: 'Gebruikers', options: props.users, optionName: 'fullName'}, {name: 'team', label: 'Teams', options: props.teams}]}
+                    value={responsible}
                     onChangeAction={props.handleInputChange}
-                    optionName={'fullName'}
                     required={"required"}
-                    error={props.errors.responsibleUserId}
+                    error={props.errors.responsible}
                 />
             </div>
 
@@ -174,6 +174,7 @@ const mapStateToProps = (state) => {
         permissions: state.systemData.permissions,
         taskStatuses: state.systemData.taskStatuses,
         taskTypes: state.systemData.taskTypes,
+        teams: state.systemData.teams,
         users: state.systemData.users,
     };
 };

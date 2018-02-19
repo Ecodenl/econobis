@@ -66,9 +66,10 @@ class Intake extends Model
         return $this->hasMany(Opportunity::class);
     }
 
+    // Only unfinished task is a task. A finished task is a note
     public function tasks()
     {
-        return $this->hasMany(Task::class);
+        return $this->hasMany(Task::class)->where('finished', false);
     }
 
     public function notes()

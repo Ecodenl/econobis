@@ -10,11 +10,11 @@ use App\Http\Controllers\Api\Task\Grid\NoteRequestQuery;
 use App\Http\Resources\Task\GridTask;
 use App\Http\Resources\Task\CalendarTask;
 use App\Http\Resources\Task\FullTask;
+use App\Http\Resources\Task\TaskPeek;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Validation\Rule;
 
 class TaskController extends Controller
 {
@@ -155,5 +155,10 @@ class TaskController extends Controller
 
     public function getAmountOfActiveTasks(){
         return Task::where('finished', false)->count();
+    }
+
+    public function peek()
+    {
+        return TaskPeek::collection(Task::orderBy('id')->get());
     }
 }

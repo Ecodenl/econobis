@@ -14,9 +14,13 @@ import IntakesAPI from "../../../api/intake/IntakesAPI";
 import OpportunitiesAPI from "../../../api/opportunity/OpportunitiesAPI";
 import ContactsAPI from "../../../api/contact/ContactsAPI";
 import DocumentTemplateAPI from "../../../api/document-template/DocumentTemplateAPI";
+import MeasureAPI from "../../../api/measure/MeasureAPI";
+import TasksAPI from "../../../api/task/TasksAPI";
 import {setError} from "../../../actions/general/ErrorActions";
 import {connect} from "react-redux";
 import {fetchIntakeDetails} from "../../../actions/intake/IntakeDetailsActions";
+import CampaignAPI from "../../../api/campaign/CampaignsAPI";
+import HousingFileAPI from "../../../api/housing-file/HousingFilesAPI";
 
 class DocumentNewApp extends Component {
     constructor(props) {
@@ -28,11 +32,21 @@ class DocumentNewApp extends Component {
             intakes: [],
             opportunities: [],
             templates: [],
+            campaigns: [],
+            housingFiles: [],
+            quotationRequests: [],
+            measures: [],
+            tasks: [],
             document: {
                 contactId: this.props.params.contactId || '',
                 contactGroupId: this.props.params.contactGroupId || '',
                 intakeId: this.props.params.intakeId || '',
                 opportunityId: this.props.params.opportunityId || '',
+                campaignId: this.props.params.campaignId || '',
+                housingFileId: this.props.params.housingFileId || '',
+                quotationRequestId: this.props.params.quotationRequestId || '',
+                measureId: this.props.params.measureId || '',
+                taskId: this.props.params.taskId || '',
                 documentType: this.props.params.type,
                 description: '',
                 documentGroup: '',
@@ -79,6 +93,25 @@ class DocumentNewApp extends Component {
             this.setState({ templates: payload });
         });
 
+        CampaignAPI.peekCampaigns().then((payload) => {
+            this.setState({ campaigns: payload });
+        });
+
+        HousingFileAPI.peekHousingFiles().then((payload) => {
+            this.setState({ housingFiles: payload });
+        });
+
+        // quotationRequestAPI.fetchDocumentTemplatesPeekGeneral().then((payload) => {
+        //     this.setState({ templates: payload });
+        // });
+
+        TasksAPI.peekTasks().then((payload) => {
+            this.setState({ tasks: payload });
+        });
+
+        MeasureAPI.peekMeasures().then((payload) => {
+            this.setState({ measures: payload });
+        });
     };
 
     handleInputChange(event) {
@@ -160,6 +193,11 @@ class DocumentNewApp extends Component {
             freeText2,
             filename,
             sentById,
+            campaignId,
+            housingFileId,
+            quotationRequestId,
+            measureId,
+            taskId,
             attachment
         } = this.state.document;
 
@@ -200,6 +238,11 @@ class DocumentNewApp extends Component {
             data.append('freeText2', freeText2);
             data.append('filename', filename);
             data.append('sentById', sentById);
+            data.append('campaignId', campaignId);
+            data.append('housingFileId', housingFileId);
+            data.append('quotationRequestId', quotationRequestId);
+            data.append('measureId', measureId);
+            data.append('taskId', taskId);
             data.append('attachment', attachment);
 
             DocumentDetailsAPI.newDocument(data).then((payload) => {
@@ -221,7 +264,6 @@ class DocumentNewApp extends Component {
                             </PanelBody>
                         </Panel>
                     </div>
-
                     <div className="col-md-12">
                         <DocumentNewForm
                             document={this.state.document}
@@ -230,6 +272,11 @@ class DocumentNewApp extends Component {
                             intakes={this.state.intakes}
                             opportunities={this.state.opportunities}
                             templates={this.state.templates}
+                            tasks={this.state.tasks}
+                            measures={this.state.measures}
+                            quotationRequests={this.state.quotationRequests}
+                            housingFiles={this.state.housingFiles}
+                            campaigns={this.state.campaigns}
                             errors={this.state.errors}
                             handleSubmit={this.handleSubmit}
                             handleDocumentGroupChange={this.handleDocumentGroupChange}

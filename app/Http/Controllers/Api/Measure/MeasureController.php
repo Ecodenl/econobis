@@ -17,6 +17,7 @@ use App\Http\Controllers\Api\ApiController;
 use App\Http\RequestQueries\Measure\Grid\RequestQuery;
 use App\Http\Resources\Measure\FullMeasure;
 use App\Http\Resources\Measure\GridMeasure;
+use App\Http\Resources\Measure\MeasurePeek;
 use App\Http\Resources\Opportunity\FullOpportunity;
 
 class MeasureController extends ApiController
@@ -154,5 +155,10 @@ class MeasureController extends ApiController
         $opportunity->save();
 
         return FullMeasure::make($measure->fresh());
+    }
+
+    public function peek()
+    {
+        return MeasurePeek::collection(Measure::orderBy('id')->get());
     }
 }

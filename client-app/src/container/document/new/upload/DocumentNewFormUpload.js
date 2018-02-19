@@ -20,11 +20,27 @@ class DocumentNewFormUpload extends Component {
     };
 
     render() {
-        const {document, errors, handleInputChange, documentGroups, onDropAccepted, onDropRejected} = this.props;
-        const {documentGroup, attachment} = document;
+        const {document, errors, handleInputChange, documentGroups, measures, campaigns, onDropAccepted, onDropRejected} = this.props;
+        const {documentGroup, measureId, campaignId, attachment} = document;
 
         return (
             <div>
+                <div className="row">
+                    <InputSelect
+                        label="Maatregel"
+                        name={"measureId"}
+                        value={measureId}
+                        options={measures}
+                        onChangeAction={handleInputChange}
+                    />
+                    <InputSelect
+                        label="Campagne"
+                        name={"campaignId"}
+                        value={campaignId}
+                        options={campaigns}
+                        onChangeAction={handleInputChange}
+                    />
+                </div>
                 <div className="row">
                     <InputSelect
                         label="Document groep"

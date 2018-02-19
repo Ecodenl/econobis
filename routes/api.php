@@ -135,9 +135,10 @@ Route::namespace('Api')
         Route::post('opportunity/quotation/{opportunityQuotation}/delete', 'Opportunity\OpportunityQuotationController@destroy');
 
         Route::get('contact-group/{contactGroup}/tasks', 'ContactGroup\ContactGroupController@tasks');
-
+        
         Route::get('task/grid/tasks', 'Task\TaskController@gridTask');
         Route::get('task/grid/notes', 'Task\TaskController@gridNote');
+        Route::get('task/peek', 'Task\TaskController@peek');
         Route::get('task/calendar', 'Task\TaskController@calendar');
         Route::get('task/amount-active', 'Task\TaskController@getAmountOfActiveTasks');
         Route::get('task/{task}', 'Task\TaskController@show');
@@ -165,6 +166,7 @@ Route::namespace('Api')
         Route::post('campaign/{campaign}/organisation/{organisation}/detach', 'Campaign\CampaignController@detachOrganisation');
 
         Route::get('measure/grid', 'Measure\MeasureController@grid');
+        Route::get('measure/peek', 'Measure\MeasureController@peek');
         Route::get('measure/{measure}', 'Measure\MeasureController@show');
         Route::post('measure/', 'Measure\MeasureController@store');
         Route::post('measure/faq/{measureFaq}/delete', 'Measure\MeasureController@destroyFaq');

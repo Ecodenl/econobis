@@ -1,65 +1,36 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import moment from 'moment';
 
-import InputText from '../../../components/form/InputText';
 import InputSelect from '../../../components/form/InputSelect';
 import InputDate from '../../../components/form/InputDate';
 import ButtonText from '../../../components/button/ButtonText';
-import InputMultiSelect from "../../../components/form/InputMultiSelect";
 import InputReactSelect from "../../../components/form/InputReactSelect";
 import InputTime from "../../../components/form/InputTime";
+import InputTextArea from "../../../components/form/InputTextarea";
+import InputToggle from "../../../components/form/InputToggle";
+import PanelHeader from "../../../components/panel/PanelHeader";
+import TaskNewFormExtraConnections from './extra-connections/TaskNewFormExtraConnections';
 
 const TaskNewForm = props => {
     const {
-        name,
-        description,
+        note,
         typeId,
         contactId,
-        statusId,
-        intakeId,
-        contactGroupId,
-        datePlanned,
+        finished,
+        dateFinished,
+        finishedById,
+        datePlannedStart,
+        datePlannedFinish,
         startTimePlanned,
         endTimePlanned,
-        dateFinished,
         responsibleUserId,
-        finishedById,
-        opportunityId,
-        campaignId,
     } = props.task;
 
     return (
         <form className="form-horizontal" onSubmit={props.handleSubmit}>
             <div className="row">
-                <InputText
-                    label="Naam"
-                    name={"name"}
-                    value={name}
-                    onChangeAction={props.handleInputChange}
-                    required={"required"}
-                    error={props.errors.name}
-                    maxLength={"50"}
-                />
-            </div>
-
-            <div className="row">
-                <div className="form-group col-sm-12">
-                    <div className="row">
-                        <div className="col-sm-3">
-                            <label htmlFor="description" className="col-sm-12">Omschrijving</label>
-                        </div>
-                        <div className="col-sm-9">
-                            <textarea name='description' value={description} onChange={props.handleInputChange}
-                                      className="form-control input-sm"/>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div className="row margin-10-top">
                 <InputSelect
-                    label={"Type"}
+                    label={"Type taak"}
                     size={"col-sm-6"}
                     name={"typeId"}
                     options={props.taskTypes}
@@ -68,96 +39,43 @@ const TaskNewForm = props => {
                     required={"required"}
                     error={props.errors.typeId}
                 />
-                <InputSelect
-                    label={"Status"}
-                    size={"col-sm-6"}
-                    name={"statusId"}
-                    options={props.taskStatuses}
-                    value={statusId}
+            </div>
+
+            <div className="row">
+                <InputTextArea
+                    label={"Taak / notitie"}
+                    name={"note"}
+                    value={note}
                     onChangeAction={props.handleInputChange}
                     required={"required"}
-                    error={props.errors.statusId}
+                    error={props.errors.note}
                 />
             </div>
 
-            <div className="row">
-                <InputReactSelect
-                    label={"Contact"}
-                    name={"contactId"}
-                    options={props.contacts}
-                    value={contactId}
-                    onChangeAction={props.handleReactSelectChange}
-                    optionName={'fullName'}
-                    multi={false}
-                />
-                <InputReactSelect
-                    label={"Campagne"}
-                    name={"campaignId"}
-                    options={props.campaigns}
-                    value={campaignId}
-                    onChangeAction={props.handleReactSelectChange}
-                    multi={false}
-                />
-
-            </div>
-
-            <div className="row">
-                <InputReactSelect
-                    label={"Intake"}
-                    size={"col-sm-6"}
-                    name={"intakeId"}
-                    options={props.intakes}
-                    value={intakeId}
-                    onChangeAction={props.handleReactSelectChange}
-                    multi={false}
-                />
-                <InputReactSelect
-                    label={"Kans"}
-                    size={"col-sm-6"}
-                    name={"opportunityId"}
-                    options={props.opportunities}
-                    value={opportunityId}
-                    onChangeAction={props.handleReactSelectChange}
-                    multi={false}
-                />
-            </div>
-
-            <div className="row">
-                <InputReactSelect
-                    label={"Groep"}
-                    size={"col-sm-6"}
-                    name={"contactGroupId"}
-                    options={props.contactGroups}
-                    value={contactGroupId}
-                    onChangeAction={props.handleReactSelectChange}
-                    multi={false}
-                />
-            </div>
-
-            <div className="row margin-10-top">
+            <div className="row margin-20-top">
                 <InputDate
-                    label="Plan datum"
+                    label="Datum afhandelen"
                     size={"col-sm-6"}
-                    name="datePlanned"
-                    value={datePlanned}
-                    onChangeAction={props.handleChangeDatePlanned}
+                    name="datePlannedStart"
+                    value={datePlannedStart}
+                    onChangeAction={props.handleInputChangeDate}
 
                 />
-                <InputDate
-                    label="Datum gereed"
-                    size={"col-sm-6"}
-                    name="dateFinished"
-                    value={dateFinished}
-                    onChangeAction={props.handleChangeFinishedDate}
-                />
-            </div>
-
-            <div className="row">
                 <InputTime
                     label={"Begin tijd"}
                     name={"startTimePlanned"}
                     value={startTimePlanned}
                     onChangeAction={props.handleInputChangeTime}
+                />
+            </div>
+
+            <div className="row">
+                <InputDate
+                    label="Eind datum"
+                    size={"col-sm-6"}
+                    name="datePlannedFinish"
+                    value={datePlannedFinish}
+                    onChangeAction={props.handleInputChangeDate}
                 />
                 <InputTime
                     label={"Eind tijd"}
@@ -168,6 +86,12 @@ const TaskNewForm = props => {
             </div>
 
             <div className="row">
+                <InputToggle
+                    label={"Afgehandeld?"}
+                    name={"finished"}
+                    value={finished}
+                    onChangeAction={props.handleInputChange}
+                />
                 <InputSelect
                     label={"Verantwoordelijke"}
                     size={"col-sm-6"}
@@ -179,9 +103,17 @@ const TaskNewForm = props => {
                     required={"required"}
                     error={props.errors.responsibleUserId}
                 />
+            </div>
+
+            <div className="row">
+                <InputDate
+                    label="Datum gereed"
+                    name="dateFinished"
+                    value={dateFinished}
+                    onChangeAction={props.handleInputChangeDate}
+                />
                 <InputSelect
                     label={"Afgerond door"}
-                    size={"col-sm-6"}
                     name={"finishedById"}
                     options={props.users}
                     value={finishedById}
@@ -190,19 +122,41 @@ const TaskNewForm = props => {
                 />
             </div>
 
-            <div className="row margin-10-top">
-                <InputText
-                    label={"Gemaakt op"}
-                    name={"createdAt"}
-                    value={ moment().format('DD-MM-Y') }
-                    readOnly={true}
+            <div className="row margin-20-top">
+                <InputReactSelect
+                    label={"Contact"}
+                    name={"contactId"}
+                    options={props.contacts}
+                    value={contactId}
+                    onChangeAction={props.handleReactSelectChange}
+                    optionName={'fullName'}
+                    multi={false}
                 />
-                <InputText
-                    label={"Gemaakt door"}
-                    name={"createdBy"}
-                    value={ props.meDetails.fullName}
-                    readOnly={true}
-                />
+            </div>
+
+            <div className="margin-10-top">
+                <PanelHeader>
+                    <div className="row" onClick={props.toggleExtraConnections}>
+                        {
+                            props.showExtraConnections ?
+                                <span className="glyphicon glyphicon-menu-down"/>
+                                :
+                                <span className="glyphicon glyphicon-menu-right" />
+                        }
+                        <span className="h5">Overige koppelingen</span>
+                    </div>
+                </PanelHeader>
+                {
+                    props.showExtraConnections &&
+                        <TaskNewFormExtraConnections
+                            task={props.task}
+                            intakes={props.intakes}
+                            contactGroups={props.contactGroups}
+                            opportunities={props.opportunities}
+                            campaigns={props.campaigns}
+                            handleReactSelectChange={props.handleReactSelectChange}
+                        />
+                }
             </div>
 
             <div className="panel-footer">

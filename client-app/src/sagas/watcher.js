@@ -13,7 +13,7 @@ import { fetchDocumentDetailsSaga, deleteDocumentSaga } from './document/Documen
 import { fetchDocumentTemplatesSaga, fetchDocumentTemplateSaga } from './document-template/DocumentTemplatesSaga';
 import { fetchEmailsSaga, fetchEmailSaga } from './email/EmailsSaga';
 import { fetchEmailTemplatesSaga, fetchEmailTemplateSaga } from './email-template/EmailTemplatesSaga';
-import { fetchMailboxDetailsSaga, deleteMailboxSaga, newMailboxUserSaga, deleteMailboxUserSaga } from './mailbox/MailboxDetailsSaga';
+import { fetchMailboxDetailsSaga, deleteMailboxSaga, deleteMailboxUserSaga } from './mailbox/MailboxDetailsSaga';
 import { fetchMailboxesSaga } from './mailbox/MailboxesSaga';
 import { fetchMeasuresSaga, fetchMeasureSaga } from './measure/MeasuresSaga';
 import { fetchOpportunitiesSaga } from './opportunity/OpportunitiesSaga';
@@ -32,6 +32,8 @@ import {
 import { fetchHousingFilesSaga } from './housing-file/HousingFilesSaga';
 import { fetchTaskDetailsSaga, deleteTaskSaga } from './task/TaskDetailsSaga';
 import { fetchTasksSaga, setTaskCompletedSaga } from './task/TasksSaga';
+import { fetchTeamsSaga, deleteTeamSaga } from './team/TeamsSaga';
+import { fetchTeamDetailsSaga, deleteTeamUserSaga } from './team/TeamDetailsSaga';
 import { fetchUserDetailsSaga } from './user/UserDetailsSaga';
 import { fetchUserSaga } from './user/UsersSaga';
 import { meDetailsSaga } from './general/MeDetailsSaga';
@@ -102,4 +104,9 @@ export default function* watchSagas() {
     yield takeLatest('SET_TASK_COMPLETED', setTaskCompletedSaga);
     yield takeLatest('FETCH_TASK_DETAILS', fetchTaskDetailsSaga);
     yield takeLatest('DELETE_TASK', deleteTaskSaga);
+    // Team
+    yield takeLatest('FETCH_TEAMS', fetchTeamsSaga);
+    yield takeLatest('FETCH_TEAM_DETAILS', fetchTeamDetailsSaga);
+    yield takeLatest('DELETE_TEAM', deleteTeamSaga);
+    yield takeLatest('DELETE_TEAM_USER', deleteTeamUserSaga);
 }

@@ -6,11 +6,18 @@ import moment from 'moment';
 moment.locale('nl');
 
 const InputDate = props => {
-    const { label, className, size, id, value, onChangeAction, required, readOnly } = props;
+    const { label, name, className, size, id, value, onChangeAction, required, readOnly } = props;
 
     const formattedDate = value
         ? moment(value).format('L')
         : '';
+
+    const onDateChange = (date) => {
+        // Convert date in correct value for database
+        const formattedDate = (date ? moment(date).format('Y-MM-DD') : '');
+
+        onChangeAction(formattedDate, name)
+    };
 
     return (
         <div className="form-group col-sm-6">
@@ -20,7 +27,7 @@ const InputDate = props => {
                     className={`form-control input-sm ${className}`}
                     id={ id }
                     value={ formattedDate }
-                    onDayChange={onChangeAction}
+                    onDayChange={onDateChange}
                     dayPickerProps={{
                         showWeekNumbers: true,
                         locale: "nl",
@@ -49,7 +56,7 @@ InputDate.propTypes = {
     className: PropTypes.string,
     size: PropTypes.string,
     id: PropTypes.string,
-    placeholder: PropTypes.string,
+    name: PropTypes.string,
     value: PropTypes.oneOfType([
         PropTypes.string,
         PropTypes.object

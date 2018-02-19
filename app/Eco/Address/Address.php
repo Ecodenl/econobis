@@ -42,7 +42,7 @@ class Address extends Model
 
     public function measuresTaken()
     {
-        return $this->belongsToMany(Measure::class, 'measure_taken_address')->withPivot('measure_date');
+        return $this->belongsToMany(Measure::class, 'housing_file_measure_taken')->withPivot('measure_date');
     }
 
     public function getType()

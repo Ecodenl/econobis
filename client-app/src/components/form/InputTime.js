@@ -25,6 +25,7 @@ const InputTime = props => {
                     end={end}
                     step={step}
                     format={24}
+                    className={'input-sm'}
                 />
             </div>
         </div>

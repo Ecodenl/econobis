@@ -21,7 +21,8 @@ class Task extends Model
     protected $guarded = ['id'];
 
     protected $dates = [
-        'date_planned',
+        'date_planned_start',
+        'date_planned_finish',
         'date_finished',
         'created_at',
         'updated_at',
@@ -41,14 +42,6 @@ class Task extends Model
     public function contact()
     {
         return $this->belongsTo(Contact::class);
-    }
-
-    /**
-     * required
-     */
-    public function getStatus()
-    {
-        return TaskStatus::getById($this->status_id);
     }
 
     /**
@@ -100,19 +93,19 @@ class Task extends Model
     }
 
     /**
-     * optional
+     * required
      */
-    public function finishedBy()
+    public function updatedBy()
     {
         return $this->belongsTo(User::class);
     }
 
     /**
-     *
+     * optional
      */
-    public function attachments()
+    public function finishedBy()
     {
-        return $this->hasMany(TaskAttachment::class);
+        return $this->belongsTo(User::class);
     }
 
     /**
@@ -132,7 +125,7 @@ class Task extends Model
      */
     public function datePlannedWithStartTime()
     {
-        $datePlanned = new Carbon($this->date_planned);
+        $datePlanned = new Carbon($this->date_planned_start);
 
         if($this->start_time_planned) {
             $startTimePlanned = new Carbon($this->start_time_planned);
@@ -148,7 +141,7 @@ class Task extends Model
      */
     public function datePlannedWithEndTime()
     {
-        $datePlanned = new Carbon($this->date_planned);
+        $datePlanned = new Carbon($this->date_planned_finish);
 
         if($this->end_time_planned) {
             $endTimePlanned = new Carbon($this->end_time_planned);

@@ -33,6 +33,8 @@ import sidebarReducer from './general/SidebarReducer';
 import systemDataReducer from './general/SystemDataReducer';
 import tasksReducer from './task/TasksReducer';
 import taskDetailsReducer from './task/TaskDetailsReducer';
+import teamsReducer from './team/TeamsReducer';
+import teamDetailsReducer from './team/TeamDetailsReducer';
 import userDetailsReducer from './user/UserDetailsReducer';
 import usersReducer from './user/UsersReducer';
 
@@ -90,6 +92,9 @@ const rootReducer = combineReducers({
     //Task
     taskDetails: taskDetailsReducer,
     tasks: tasksReducer,
+    //Team
+    teams: teamsReducer,
+    teamDetails: teamDetailsReducer,
     // User
     users: usersReducer,
     userDetails: userDetailsReducer,

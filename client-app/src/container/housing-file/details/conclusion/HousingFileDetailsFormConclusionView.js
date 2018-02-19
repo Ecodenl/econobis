@@ -12,8 +12,8 @@ const HousingFileDetailsFormConclusionView = props => {
         <div>
             <div className="row">
                 <ViewText
-                    label={"Laatste gewijzigd op"}
-                    value={updatedAt ? moment(updatedAt.date).format('L') : 'Onbekend'}
+                    label={"Gemaakt door"}
+                    value={createdBy ? createdBy.fullName : 'Onbekend'}
                 />
                 <ViewText
                     label={"Laatste gewijzigd door"}
@@ -26,8 +26,8 @@ const HousingFileDetailsFormConclusionView = props => {
                     value={createdAt ? moment(createdAt.date).format('L') : 'Onbekend'}
                 />
                 <ViewText
-                    label={"Gemaakt door"}
-                    value={createdBy ? createdBy.fullName : 'Onbekend'}
+                    label={"Laatste gewijzigd op"}
+                    value={updatedAt ? moment(updatedAt.date).format('L') : 'Onbekend'}
                 />
             </div>
         </div>

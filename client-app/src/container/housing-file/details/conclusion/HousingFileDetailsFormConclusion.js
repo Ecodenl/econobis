@@ -5,7 +5,7 @@ import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
 import PanelHeader from '../../../../components/panel/PanelHeader';
 
-const HousingFile = props => {
+const HousingFileDetailsFormConclusion = props => {
     return (
         <Panel>
             <PanelHeader>
@@ -20,4 +20,4 @@ const HousingFile = props => {
     );
 };
 
-export default HousingFile;
+export default HousingFileDetailsFormConclusion;

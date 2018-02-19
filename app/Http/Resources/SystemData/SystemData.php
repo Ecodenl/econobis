@@ -81,7 +81,6 @@ class SystemData extends Resource
             'opportunityStatus' => FullEnumWithIdAndName::collection(OpportunityStatus::all()),
             'opportunityReactions' => FullEnumWithIdAndName::collection(OpportunityReaction::all()),
             'taskTypes' => GenericResource::collection(TaskType::all()),
-            'taskStatuses' => TaskStatus::collection()->toArray(),
             'taskProperties' => GenericResource::collection(TaskProperty::all()),
             'users' => FullUser::collection(User::all()),
             'campaignStatuses' => FullEnumWithIdAndName::collection(CampaignStatus::all()),

@@ -33,7 +33,7 @@ class FullMeasure extends Resource
             'suppliers' => FullOrganisation::collection($this->whenLoaded('deliveredByOrganisations')),
             'opportunities' => FullOpportunity::collection($this->whenLoaded('opportunities')),
             'measuresTaken' => FullAddress::collection($this->whenLoaded('addresses')),
-            'measureTakenDate' => $this->whenPivotLoaded('measure_taken_address', function () {
+            'measureTakenDate' => $this->whenPivotLoaded('housing_file_measure_taken', function () {
                 return $this->pivot->measure_date;}),
             'measuresRequested' => FullIntake::collection($this->whenLoaded('intakes')),
             'campaignCount' => $this->campaigns()->count(),

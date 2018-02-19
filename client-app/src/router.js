@@ -55,6 +55,9 @@ import RequireAuth from './helpers/RequireAuth';
 import TaskDetailsApp from './container/task/details/TaskDetailsApp';
 import TaskNewApp from './container/task/new/TaskNewApp';
 import TasksListApp from './container/task/list/TasksListApp';
+import TeamsListApp from './container/team/list/TeamsListApp';
+import TeamNewApp from './container/team/new/TeamNewApp';
+import TeamDetailsApp from './container/team/details/TeamDetailsApp';
 import UserDetailsApp from './container/users/details/UserDetailsApp';
 import UserNewApp from './container/users/new/UserNewApp';
 import UsersListApp from './container/users/list/UsersListApp';
@@ -149,6 +152,10 @@ const Routes = () => {
                 <Route path="taak/nieuw/:type/:id" component={TaskNewApp} />
                 <Route path="taak/:id" component={TaskDetailsApp} />
                 <Route path="taken" component={TasksListApp} />
+                /* Teams */
+                <Route path="teams" component={TeamsListApp} />
+                <Route path="team/nieuw" component={TeamNewApp} />
+                <Route path="team/:id" component={TeamDetailsApp} />
                 /* 404 route */
                 <Route path="*" component={ NotFoundedPage } />
             </Route>

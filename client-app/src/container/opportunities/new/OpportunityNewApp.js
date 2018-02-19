@@ -11,6 +11,8 @@ import ContactsAPI from '../../../api/contact/ContactsAPI';
 import IntakesAPI from '../../../api/intake/IntakesAPI';
 import OpportunityDetailsAPI from '../../../api/opportunity/OpportunityDetailsAPI';
 import {connect} from "react-redux";
+import PanelBody from "../../../components/panel/PanelBody";
+import Panel from "../../../components/panel/Panel";
 
 
 class OppportunitiesNewApp extends Component {
@@ -174,12 +176,16 @@ class OppportunitiesNewApp extends Component {
         return (
             <div className="row">
                 <div className="col-md-9">
-                    <div className="panel panel-default">
-                        <div className="panel-body">
-                            <div className="col-md-12 margin-10-top">
+                    <div className="col-md-12">
+                        <Panel>
+                            <PanelBody className={"panel-small"}>
                                 <OpportunityNewToolbar/>
-                            </div>
-                            <div className="col-md-12 margin-10-top">
+                            </PanelBody>
+                        </Panel>
+                    </div>
+                    <div className="col-md-12">
+                        <Panel>
+                            <PanelBody>
                                 <OpportunityNew
                                     opportunity={this.state.opportunity}
                                     contacts={this.state.contacts}
@@ -192,10 +198,11 @@ class OppportunitiesNewApp extends Component {
                                     handleReactSelectChange={this.handleReactSelectChange}
                                     handleEditorChange={this.handleEditorChange}
                                 />
-                            </div>
-                        </div>
+                            </PanelBody>
+                        </Panel>
                     </div>
                 </div>
+                <div className="col-md-3"/>
             </div>
         )
     }

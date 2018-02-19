@@ -126,6 +126,9 @@ class SidebarMenu extends Component {
                         <Nav id="users">
                             <NavText><Link className="sidebar-link" to="gebruikers">Gebruikers</Link></NavText>
                         </Nav>
+                        <Nav id="team">
+                            <NavText><Link className="sidebar-link" to="teams">Teams</Link></NavText>
+                        </Nav>
                         {this.props.permissions.viewMailbox &&
                         <Nav id="mailboxes">
                             <NavText><Link className="sidebar-link" to="mailboxen">Mailboxen</Link></NavText>

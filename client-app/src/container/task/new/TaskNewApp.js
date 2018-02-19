@@ -27,38 +27,38 @@ class TaskNewApp extends Component {
             campaigns: [],
             task: {
                 id: '',
-                name: '',
-                description: '',
+                note: '',
                 typeId: '',
                 contactId: '',
                 campaignId: '',
-                statusId: '',
                 intakeId: '',
+                opportunityId: '',
                 contactGroupId: '',
-                datePlanned: '',
+                datePlannedStart: '',
+                datePlannedFinish: '',
                 startTimePlanned: '',
                 endTimePlanned: '',
+                finished: false,
                 dateFinished: '',
-                responsibleUserId: '',
                 finishedById: '',
-                opportunityId: '',
+                responsibleUserId: '',
+                responsibleTeamId: '',
             },
             errors: {
-                name: false,
+                note: false,
                 typeId: false,
-                statusId: false,
                 responsibleUserId: false,
             },
+            showExtraConnections: false,
         };
 
         this.updateStateByChangeParams = this.updateStateByChangeParams.bind(this);
         this.handleInputChange = this.handleInputChange.bind(this);
-        this.handleChangeDatePlanned = this.handleChangeDatePlanned.bind(this);
-        this.handleChangeStartedDate = this.handleChangeStartedDate.bind(this);
-        this.handleChangeFinishedDate = this.handleChangeFinishedDate.bind(this);
+        this.handleInputChangeDate = this.handleInputChangeDate.bind(this);
         this.handleInputChangeTime = this.handleInputChangeTime.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleReactSelectChange = this.handleReactSelectChange.bind(this);
+        this.toggleExtraConnections = this.toggleExtraConnections.bind(this);
     };
 
     componentDidMount() {
@@ -201,38 +201,12 @@ class TaskNewApp extends Component {
         });
     };
 
-    handleChangeDatePlanned(date) {
-        const formattedDate = (date ? moment(date).format('Y-MM-DD') : '');
-
+    handleInputChangeDate(value, name) {
         this.setState({
             ...this.state,
             task: {
                 ...this.state.task,
-                datePlanned: formattedDate
-            },
-        });
-    };
-
-    handleChangeStartedDate(date) {
-        const formattedDate = (date ? moment(date).format('Y-MM-DD') : '');
-
-        this.setState({
-            ...this.state,
-            task: {
-                ...this.state.task,
-                dateStarted: formattedDate
-            },
-        });
-    };
-
-    handleChangeFinishedDate(date)  {
-        const formattedDate = (date ? moment(date).format('Y-MM-DD') : '');
-
-        this.setState({
-            ...this.state,
-            task: {
-                ...this.state.task,
-                dateFinished: formattedDate
+                [name]: value
             },
         });
     };
@@ -246,18 +220,13 @@ class TaskNewApp extends Component {
         let errors = {};
         let hasErrors = false;
 
-        if(validator.isEmpty(task.name)){
-            errors.name = true;
+        if(validator.isEmpty(task.note)){
+            errors.note = true;
             hasErrors = true;
         };
 
         if(validator.isEmpty(task.typeId)){
             errors.typeId = true;
-            hasErrors = true;
-        };
-
-        if(validator.isEmpty(task.statusId)){
-            errors.statusId = true;
             hasErrors = true;
         };
 
@@ -276,6 +245,10 @@ class TaskNewApp extends Component {
         }).catch(function (error) {
             console.log(error);
         });
+    };
+
+    toggleExtraConnections() {
+        this.setState({showExtraConnections: !this.state.showExtraConnections});
     };
 
     render() {
@@ -300,12 +273,12 @@ class TaskNewApp extends Component {
                                         errors={this.state.errors}
                                         meDetails={this.props.meDetails}
                                         handleInputChange={this.handleInputChange}
-                                        handleChangeDatePlanned={this.handleChangeDatePlanned}
-                                        handleChangeStartedDate={this.handleChangeStartedDate}
-                                        handleChangeFinishedDate={this.handleChangeFinishedDate}
+                                        handleInputChangeDate={this.handleInputChangeDate}
                                         handleInputChangeTime={this.handleInputChangeTime}
                                         handleSubmit={this.handleSubmit}
                                         handleReactSelectChange={this.handleReactSelectChange}
+                                        toggleExtraConnections={this.toggleExtraConnections}
+                                        showExtraConnections={this.state.showExtraConnections}
                                     />
                                 </div>
                             </PanelBody>

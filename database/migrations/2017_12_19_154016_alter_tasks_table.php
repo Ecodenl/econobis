@@ -14,7 +14,7 @@ class AlterTasksTable extends Migration
     public function up()
     {
         Schema::table('tasks', function (Blueprint $table) {
-            $table->unsignedInteger('campaign_id')->nullable();
+            $table->unsignedInteger('campaign_id')->nullable()->after('opportunity_id');
             $table->foreign('campaign_id')
                 ->references('id')->on('campaigns')
                 ->onDelete('restrict');

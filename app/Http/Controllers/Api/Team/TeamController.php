@@ -15,6 +15,7 @@ use App\Http\RequestQueries\Team\Grid\RequestQuery;
 
 use App\Http\Resources\Team\FullTeam;
 use App\Http\Resources\Team\PeekTeam;
+use App\Http\Resources\User\UserPeek;
 use Illuminate\Http\Request;
 
 class TeamController extends ApiController
@@ -22,9 +23,13 @@ class TeamController extends ApiController
 
     public function grid(RequestQuery $requestQuery)
     {
-        $intakes = $requestQuery->get();
+        $teams = $requestQuery->get();
 
-        return FullTeam::collection($intakes)
+        $teams->load([
+            'users'
+        ]);
+
+        return FullTeam::collection($teams)
             ->additional(['meta' => [
             'total' => $requestQuery->total(),
             ]
@@ -75,14 +80,12 @@ class TeamController extends ApiController
     {
         $team->users()->attach($user->id);
 
-        return FullTeam::make($team);
+        return UserPeek::make($user);
     }
 
     public function detachUser(Team $team, User $user)
     {
         $team->users()->detach($user->id);
-
-        return FullTeam::make($team);
     }
 
     public function destroy(Team $team)
@@ -92,8 +95,6 @@ class TeamController extends ApiController
 
         //delete model itself
         $team->delete();
-
-        return true;
     }
 
     public function peek(){

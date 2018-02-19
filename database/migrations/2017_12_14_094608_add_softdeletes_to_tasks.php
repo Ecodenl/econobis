@@ -20,10 +20,6 @@ class AddSoftdeletesToTasks extends Migration
         Schema::table('task_property_values', function (Blueprint $table) {
             $table->softDeletes();
         });
-
-        Schema::table('task_attachments', function (Blueprint $table) {
-            $table->softDeletes();
-        });
     }
 
     /**

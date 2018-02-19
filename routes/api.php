@@ -145,12 +145,7 @@ Route::namespace('Api')
         Route::post('task/{task}', 'Task\TaskController@update');
         Route::post('task/{task}/delete', 'Task\TaskController@destroy');
         Route::post('task/{task}/finish', 'Task\TaskController@finish');
-        Route::get('task/{task}/attachments', 'Task\TaskController@attachments');
-        Route::post('task/{task}/attachments', 'Task\TaskAttachmentController@store');
         Route::post('task/{task}/properties', 'Task\TaskPropertyValueController@store');
-
-        Route::get('task-attachment/{taskAttachment}/download', 'Task\TaskAttachmentController@download');
-        Route::post('task-attachment/{taskAttachment}/delete', 'Task\TaskAttachmentController@destroy');
 
         Route::post('task-property-value/{taskPropertyValue}', 'Task\TaskPropertyValueController@update');
         Route::post('task-property-value/{taskPropertyValue}/delete', 'Task\TaskPropertyValueController@destroy');

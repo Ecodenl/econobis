@@ -31,7 +31,8 @@ import {
 } from './housing-file/HousingFileDetailsSaga';
 import { fetchHousingFilesSaga } from './housing-file/HousingFilesSaga';
 import { fetchTaskDetailsSaga, deleteTaskSaga } from './task/TaskDetailsSaga';
-import { fetchTasksSaga, setTaskCompletedSaga } from './task/TasksSaga';
+import { fetchTasksSaga, setTaskFinishedSaga } from './task/TasksSaga';
+import { fetchNotesSaga } from './task/NotesSaga';
 import { fetchTeamsSaga, deleteTeamSaga } from './team/TeamsSaga';
 import { fetchTeamDetailsSaga, deleteTeamUserSaga } from './team/TeamDetailsSaga';
 import { fetchUserDetailsSaga } from './user/UserDetailsSaga';
@@ -99,9 +100,10 @@ export default function* watchSagas() {
     yield takeLatest('FETCH_INTAKE_DETAILS', fetchIntakeDetailsSaga);
     yield takeLatest('DELETE_INTAKE', deleteIntakeSaga);
     yield takeLatest('DELETE_INTAKE_MEASURE_REQUESTED', deleteIntakeMeasureRequestedSaga);
-    // Task
+    // Task / notes
     yield takeLatest('FETCH_TASKS', fetchTasksSaga);
-    yield takeLatest('SET_TASK_COMPLETED', setTaskCompletedSaga);
+    yield takeLatest('FETCH_NOTES', fetchNotesSaga);
+    yield takeLatest('SET_TASK_FINISHED', setTaskFinishedSaga);
     yield takeLatest('FETCH_TASK_DETAILS', fetchTaskDetailsSaga);
     yield takeLatest('DELETE_TASK', deleteTaskSaga);
     // Team

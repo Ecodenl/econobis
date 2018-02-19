@@ -15,21 +15,19 @@ class Sort extends RequestSort
 
     protected $fields = [
         'createdAt',
-        'name',
-        'contactName',
-        'datePlanned',
-        'dateStarted',
-        'statusId',
+        'typeName',
+        'note',
+        'contactFullName',
+        'datePlannedStart',
         'responsibleUserName',
     ];
 
     protected $mapping = [
         'createdAt' => 'tasks.created_at',
-        'name' => 'tasks.name',
-        'contactName' => 'contacts.full_name',
-        'datePlanned' => 'tasks.date_planned',
-        'dateStarted' => 'tasks.date_started',
-        'statusId' => 'tasks.status_id',
+        'typeName' => 'tasks.type_id',
+        'note' => 'tasks.note',
+        'contactFullName' => 'contacts.full_name',
+        'datePlannedStart' => 'tasks.date_planned_start',
         'responsibleUserName' => 'users.last_name',
     ];
 

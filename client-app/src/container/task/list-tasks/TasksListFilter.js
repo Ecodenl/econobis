@@ -5,11 +5,10 @@ import moment from 'moment';
 
 import {
     setFilterTaskCreatedAt,
-    setFilterTaskName,
+    setFilterTaskTypeId,
+    setFilterTaskNote,
     setFilterTaskContactFullName,
-    setFilterTaskDatePlanned,
-    setFilterTaskDateStarted,
-    setFilterTaskStatusId,
+    setFilterTaskDatePlannedStart,
     setFilterTaskResponsibleUserName
 } from '../../../actions/task/TasksFiltersActions';
 import DataTableFilterDate from "../../../components/dataTable/DataTableFilterDate";
@@ -23,7 +22,15 @@ const TasksListFilter = props => {
         }
     };
 
-    const onNameChange = (e) => {
+    const onTypeChange = (e) => {
+        props.setFilterTaskTypeId(e.target.value);
+
+        setTimeout(() => {
+            props.onSubmitFilter();
+        }, 100);
+    };
+
+    const onNoteChange = (e) => {
         props.setFilterTaskName(e.target.value);
     };
 
@@ -39,22 +46,6 @@ const TasksListFilter = props => {
         }
     };
 
-    const onDateStartedChange = (selectedDay) => {
-        if(selectedDay === undefined){
-            props.setFilterTaskDateStarted('');
-        }else{
-            props.setFilterTaskDateStarted(moment(selectedDay).format('Y-MM-DD'));
-        }
-    };
-
-    const onStatusChange = (e) => {
-        props.setFilterTaskStatusId(e.target.value);
-
-        setTimeout(() => {
-            props.onSubmitFilter();
-        }, 100);
-    };
-
     const onResponsibleUserNameChange = (e) => {
         props.setFilterTaskResponsibleUserName(e.target.value);
     };
@@ -62,20 +53,19 @@ const TasksListFilter = props => {
     return (
         <tr className="thead-filter">
             <DataTableFilterDate value={ props.filters.createdAt.data && props.filters.createdAt.data } onChangeAction={onCreatedAtChange} />
-            <th><input type="text" className="form-control input-sm" value={ props.filters.name.data} onChange={onNameChange} /></th>
-            <th><input type="text" className="form-control input-sm" value={ props.filters.contactFullName.data} onChange={onContactFullNameChange} /></th>
-            <DataTableFilterDate value={ props.filters.datePlanned.data && props.filters.datePlanned.data } onChangeAction={onDatePlannedChange} />
-            <DataTableFilterDate value={ props.filters.dateStarted.data && props.filters.dateStarted.data } onChangeAction={onDateStartedChange} />
             <th>
-                <select className="form-control input-sm" value={ props.filters.statusId.data } onChange={onStatusChange}>
+                <select className="form-control input-sm" value={ props.filters.typeId.data } onChange={onTypeChange}>
                     <option/>
                     {
-                        props.taskStatuses.map((taskStatus) => {
-                            return <option key={taskStatus.id } value={ taskStatus.id }>{ taskStatus.name }</option>
+                        props.taskTypes.map((item) => {
+                            return <option key={item.id } value={ item.id }>{ item.name }</option>
                         })
                     }
                 </select>
             </th>
+            <th><input type="text" className="form-control input-sm" value={ props.filters.note.data} onChange={onNoteChange} /></th>
+            <th><input type="text" className="form-control input-sm" value={ props.filters.contactFullName.data} onChange={onContactFullNameChange} /></th>
+            <DataTableFilterDate value={ props.filters.datePlannedStart.data && props.filters.datePlannedStart.data } onChangeAction={onDatePlannedChange} />
             <th><input type="text" className="form-control input-sm" value={ props.filters.responsibleUserName.data} onChange={onResponsibleUserNameChange} /></th>
             <th/>
         </tr>
@@ -84,17 +74,16 @@ const TasksListFilter = props => {
 
 const mapStateToProps = (state) => ({
     filters: state.tasks.filters,
-    taskStatuses: state.systemData.taskStatuses,
+    taskTypes: state.systemData.taskTypes,
 });
 
 const mapDispatchToProps = (dispatch) => {
     return bindActionCreators({
         setFilterTaskCreatedAt,
-        setFilterTaskName,
+        setFilterTaskTypeId,
+        setFilterTaskNote,
         setFilterTaskContactFullName,
-        setFilterTaskDatePlanned,
-        setFilterTaskDateStarted,
-        setFilterTaskStatusId,
+        setFilterTaskDatePlannedStart,
         setFilterTaskResponsibleUserName
     }, dispatch);
 };

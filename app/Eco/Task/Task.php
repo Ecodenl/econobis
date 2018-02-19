@@ -11,12 +11,15 @@ use App\Eco\Intake\Intake;
 use App\Eco\User\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Laracasts\Presenter\PresentableTrait;
 use Venturecraft\Revisionable\RevisionableTrait;
 use Carbon\Carbon;
 
 class Task extends Model
 {
-    use RevisionableTrait, SoftDeletes;
+    use RevisionableTrait, SoftDeletes, PresentableTrait;
+
+    protected $presenter = TaskPresenter::class;
 
     protected $guarded = ['id'];
 

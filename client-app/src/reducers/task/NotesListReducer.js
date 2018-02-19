@@ -1,34 +1,29 @@
 export default function (state= { isLoading: false }, action) {
     switch (action.type) {
-    case 'FETCH_TASKS_LOADING':
+    case 'FETCH_NOTES_LOADING':
         return {
             ...state,
             isLoading: true,
         };
-    case 'FETCH_TASKS_SUCCESS':
+    case 'FETCH_NOTES_SUCCESS':
         return {
-            data: action.tasks.data.data,
+            data: action.notes.data.data,
             meta: {
-                total: action.tasks.data.meta.total,
+                total: action.notes.data.meta.total,
             },
             isLoading: false,
         };
-    case 'CLEAR_TASKS':
+    case 'CLEAR_NOTES':
         return {
             ...state,
             data: [],
             meta: {},
             isLoading: false,
         };
-        case 'SET_TASK_FINISHED_SUCCESS':
+    case 'DELETE_NOTE_SUCCESS':
         return {
             ...state,
-            data: state.data.filter((task) => task.id !== action.id),
-        };
-    case 'DELETE_TASK_SUCCESS':
-        return {
-            ...state,
-            data: state.data.filter((task) => task.id !== action.id),
+            data: state.data.filter((note) => note.id !== action.id),
         };
     default:
         return state;

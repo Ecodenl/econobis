@@ -11,7 +11,7 @@ namespace App\Http\Controllers\Api\Task\Grid;
 use App\Eco\Task\Task;
 use Illuminate\Http\Request;
 
-class RequestQuery extends \App\Helpers\RequestQuery\RequestQuery
+class TaskRequestQuery extends \App\Helpers\RequestQuery\RequestQuery
 {
 
     public function __construct(Request $request,
@@ -25,6 +25,7 @@ class RequestQuery extends \App\Helpers\RequestQuery\RequestQuery
     protected function baseQuery()
     {
         return Task::query()
+            ->where('finished', false)
             ->select('tasks.*');
     }
 }

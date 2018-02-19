@@ -54,7 +54,8 @@ import IntakesListApp from './container/intake/list/IntakesListApp';
 import RequireAuth from './helpers/RequireAuth';
 import TaskDetailsApp from './container/task/details/TaskDetailsApp';
 import TaskNewApp from './container/task/new/TaskNewApp';
-import TasksListApp from './container/task/list/TasksListApp';
+import TasksListApp from './container/task/list-tasks/TasksListApp';
+import NotesListApp from './container/task/list-notes/NotesListApp';
 import TeamsListApp from './container/team/list/TeamsListApp';
 import TeamNewApp from './container/team/new/TeamNewApp';
 import TeamDetailsApp from './container/team/details/TeamDetailsApp';
@@ -146,12 +147,13 @@ const Routes = () => {
                 <Route path="kans/nieuw/:type/:id" component={OpportunityNewApp} />
                 <Route path="kans/:id" component={OpportunityDetailsApp} />
                 <Route path="kansen" component={OpportunitiesListApp} />
-                /* Task */
+                /* Task / notes */
                 <Route path="taak/nieuw" component={TaskNewApp} />
                 <Route path="taak/:id" component={TaskDetailsApp} />
                 <Route path="taak/nieuw/:type/:id" component={TaskNewApp} />
                 <Route path="taak/:id" component={TaskDetailsApp} />
                 <Route path="taken" component={TasksListApp} />
+                <Route path="notities" component={NotesListApp} />
                 /* Teams */
                 <Route path="teams" component={TeamsListApp} />
                 <Route path="team/nieuw" component={TeamNewApp} />

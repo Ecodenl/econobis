@@ -43,7 +43,8 @@ class TaskController extends Controller
 
     public function calendar(Request $request)
     {
-        $tasks = Task::whereBetween('date_planned_start', [$request->startDate, $request->endDate])->get();
+        // Show only tasks which are not finished
+        $tasks = Task::whereBetween('date_planned_start', [$request->startDate, $request->endDate])->where('finished', false)->get();
 
         return CalendarTask::collection($tasks);
     }

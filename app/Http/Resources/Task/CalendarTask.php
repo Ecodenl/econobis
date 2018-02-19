@@ -18,7 +18,7 @@ class CalendarTask extends Resource
         return
             [
                 'id' => $this->id,
-                'name' => $this->name,
+                'noteSummary' => $this->present()->noteSummary(),
                 'start' => $this->datePlannedWithStartTime(),
                 'end' => $this->datePlannedWithEndTime(),
             ];

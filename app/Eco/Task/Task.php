@@ -144,12 +144,28 @@ class Task extends Model
      */
     public function datePlannedWithEndTime()
     {
-        $datePlanned = new Carbon($this->date_planned_finish);
+        // With no date planned finish, date planned is equal to date planned start
+        if($this->date_planned_finish) {
+            $datePlanned = new Carbon($this->date_planned_finish);
+        } else {
+            $datePlanned = new Carbon($this->date_planned_start);
+        }
 
+        // With end time planned, end time is equal to end time
         if($this->end_time_planned) {
             $endTimePlanned = new Carbon($this->end_time_planned);
 
             $datePlanned->setTime($endTimePlanned->hour, $endTimePlanned->minute);
+        } else {
+            // With no end time planned, end time is equal to start time
+            if($this->start_time_planned) {
+                $endTimePlanned = new Carbon($this->start_time_planned);
+
+                $datePlanned->setTime($endTimePlanned->hour, $endTimePlanned->minute);
+            // With no end time planned and date planned start is not equal date planned finish add 1 hour
+            } else if ($this->date_planned_start != $this->date_planned_finish && $this->date_planned_finish != null) {
+                    $datePlanned->setTime(01, 00);
+            }
         }
 
         return $datePlanned;

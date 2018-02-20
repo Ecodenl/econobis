@@ -3,7 +3,7 @@ import { hashHistory } from 'react-router';
 import { connect } from 'react-redux';
 
 import CampaignHarmonica from "./harmonica/CampaignHarmonica";
-import UploadHarmonica from "./harmonica/UploadHarmonica";
+import DocumentHarmonica from "./harmonica/DocumentHarmonica";
 
 class MeasureDetailsHarmonica extends Component {
     constructor(props){
@@ -12,12 +12,12 @@ class MeasureDetailsHarmonica extends Component {
         this.state = {
             toggleShowList: {
                 campaigns: false,
-                uploads: false,
+                documents: false,
             },
         };
 
         this.toggleShowList = this.toggleShowList.bind(this);
-        this.toggleUploadfile = this.toggleUploadfile.bind(this);
+        this.newDocument = this.newDocument.bind(this);
     };
 
     newCampaign = () => {
@@ -34,22 +34,18 @@ class MeasureDetailsHarmonica extends Component {
         });
     };
 
-    toggleUploadfile() {
-        this.setState({
-            showModalUploadfile: !this.state.showModalUploadfile
-        });
+    newDocument(type) {
+        hashHistory.push(`/document/nieuw/${type}/maatregel/${this.props.measureDetails.id}`);
     };
 
     render(){
         return (
             <div className="col-md-12 margin-10-top">
-                <UploadHarmonica
-                    toggleShowList={() => this.toggleShowList('uploads')}
-                    showUploadsList={this.state.toggleShowList.uploads}
-                    toggleUploadfile={this.toggleUploadfile}
-                    showModalUploadfile={this.state.showModalUploadfile}
-                    attachmentCount={this.props.measureDetails.attachmentCount}
-                    id={this.props.measureDetails.id}
+                <DocumentHarmonica
+                    toggleShowList={() => this.toggleShowList('documents')}
+                    showDocumentsList={this.state.toggleShowList.documents}
+                    newDocument={this.newDocument}
+                    documentCount={this.props.measureDetails.documentCount}
                 />
                 <CampaignHarmonica
                     toggleShowList={() => this.toggleShowList('campaigns')}

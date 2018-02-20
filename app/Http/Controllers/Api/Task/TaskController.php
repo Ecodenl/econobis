@@ -119,9 +119,9 @@ class TaskController extends Controller
             ->string('startTimePlanned')->onEmpty(null)->alias('start_time_planned')->next()
             ->string('endTimePlanned')->onEmpty(null)->alias('end_time_planned')->next()
             ->date('dateFinished')->validate('date')->alias('date_finished')->next()
-            ->integer('responsibleUserId')->onEmpty(null)->validate('exists:users,id', 'required_unless, responsible_team_id')->alias('responsible_user_id')->next()
-            ->integer('responsibleTeamId')->onEmpty(null)->validate('exists:teams,id', 'required_unless, responsible_user_id')->alias('responsible_team_id')->next()
-            ->integer('finishedById')->validate('exists:users,id')->alias('finished_by_id')->next()
+            ->integer('responsibleUserId')->validate('exists:users,id', 'required_unless, responsible_team_id')->onEmpty(null)->alias('responsible_user_id')->next()
+            ->integer('responsibleTeamId')->validate('exists:teams,id', 'required_unless, responsible_user_id')->onEmpty(null)->alias('responsible_team_id')->next()
+            ->integer('finishedById')->validate('exists:users,id')->onEmpty(null)->alias('finished_by_id')->next()
             ->integer('opportunityId')->validate('exists:opportunities,id')->onEmpty(null)->alias('opportunity_id')->next()
             ->get();
 

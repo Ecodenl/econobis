@@ -8,6 +8,7 @@ import IntakeHarmonica from './harmonica/IntakeHarmonica';
 import HousingFileHarmonica from './harmonica/HousingFileHarmonica';
 import OpportunityHarmonica from './harmonica/OpportunityHarmonica';
 import TaskHarmonica from "./harmonica/TaskHarmonica";
+import NoteHarmonica from "./harmonica/NoteHarmonica";
 import ContactGroupHarmonica from "./harmonica/ContactGroupHarmonica";
 import EmailInboxHarmonica from './harmonica/EmailInboxHarmonica';
 import EmailSentHarmonica from "./harmonica/EmailSentHarmonica";
@@ -23,6 +24,7 @@ class ContactDetailsHarmonica extends Component {
                 housingFiles: false,
                 opportunities: false,
                 tasks: false,
+                notes: false,
                 contactGroups: false,
                 emailsInbox: false,
                 emailsSent: false,
@@ -42,6 +44,7 @@ class ContactDetailsHarmonica extends Component {
                     housingFiles: false,
                     opportunities: false,
                     tasks: false,
+                    notes: false,
                     contactGroups: false,
                     emailsInbox: false,
                     emailsSent: false,
@@ -163,6 +166,13 @@ class ContactDetailsHarmonica extends Component {
                     toggleShowList={() => this.toggleShowList('tasks')}
                     showTasksList={this.state.toggleShowList.tasks}
                     taskCount={this.props.contactDetails.taskCount}
+                    newTask={this.newTask}
+                />
+
+                <NoteHarmonica
+                    toggleShowList={() => this.toggleShowList('notes')}
+                    showNotesList={this.state.toggleShowList.notes}
+                    noteCount={this.props.contactDetails.noteCount}
                     newTask={this.newTask}
                 />
 

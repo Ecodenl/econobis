@@ -3,32 +3,27 @@ import {connect} from 'react-redux';
 
 import Panel from "../../../../components/panel/Panel";
 import PanelBody from "../../../../components/panel/PanelBody";
-import UploadsList from './UploadsList';
-import UploadFileModal from './UploadFileModal';
+import CampaignsList from './CampaignsList';
 
-const UploadHarmonica = ({toggleShowList, showUploadsList, toggleUploadfile, showModalUploadfile, attachmentCount, id, permissions}) => {
+const CampaignHarmonica = ({toggleShowList, showCampaignsList, campaignCount, newCampaign, permissions}) => {
     return (
         <div>
             <Panel className="harmonica-button">
                 <PanelBody>
                     <div className="col-sm-10" onClick={toggleShowList} role="button">
-                        <span>UPLOADS <span className="badge">{ attachmentCount }</span></span>
+                        <span>CAMPAGNES <span className="badge">{ campaignCount }</span></span>
                     </div>
                     <div className={"col-sm-2"}>
-                        {permissions.manageMeasure &&
-                        <a role="button" className="pull-right" onClick={toggleUploadfile}><span
+                        {permissions.manageMarketing &&
+                        <a role="button" className="pull-right" onClick={newCampaign}><span
                             className="glyphicon glyphicon-plus glyphicon-white"/></a>
                         }
                     </div>
                     <div className="col-sm-12">
-                        { showUploadsList && <UploadsList /> }
+                        { showCampaignsList && <CampaignsList /> }
                     </div>
                 </PanelBody>
             </Panel>
-
-            { showModalUploadfile &&
-            <UploadFileModal toggleUploadfile={toggleUploadfile} id={id} />
-            }
         </div>
     );
 };
@@ -39,4 +34,4 @@ const mapStateToProps = (state) => {
     };
 };
 
-export default connect(mapStateToProps, null)(UploadHarmonica);
+export default connect(mapStateToProps, null)(CampaignHarmonica);

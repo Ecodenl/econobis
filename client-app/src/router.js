@@ -93,6 +93,7 @@ const Routes = () => {
                 <Route path="contacten-in-groep/:contactGroup" component={ ContactsInGroupListApp } />
                 /* Campaign */
                 <Route path="campagne/nieuw" component={CampaignNewApp} />
+                <Route path="campagne/nieuw/maatregel/:measureId" component={CampaignNewApp} />
                 <Route path="campagne/:id" component={CampaignDetailsApp} />
                 <Route path="campagnes" component={CampaignsListApp} />
                 <Route path="contacten/:filter/:value" component={ ContactsListApp } />
@@ -103,6 +104,7 @@ const Routes = () => {
                 <Route path="document/nieuw/:type/contact-groep/:contactGroupId" component={DocumentNewApp} />
                 <Route path="document/nieuw/:type/kans/:opportunityId" component={DocumentNewApp} />
                 <Route path="document/nieuw/:type/intake/:intakeId" component={DocumentNewApp} />
+                <Route path="document/nieuw/:type/maatregel/:measureId" component={DocumentNewApp} />
                 <Route path="document/:id" component={DocumentDetailsApp} />
                 /* Document templates */
                 <Route path="document-templates" component={DocumentTemplatesListApp} />

@@ -80,7 +80,7 @@ class Contact extends Model
         return $this->hasOne(PhoneNumber::class)->where('primary', true);
     }
 
-    public function notes()
+    public function contactNotes()
     {
         return $this->hasMany(ContactNote::class);
     }
@@ -142,10 +142,16 @@ class Contact extends Model
         return $this->hasMany(Intake::class);
     }
 
-    // Only unfinished task is a task. A finished task is a note
+    // Only unfinished task is a task
     public function tasks()
     {
         return $this->hasMany(Task::class)->where('finished', false);
+    }
+
+    // A finished task is a note
+    public function notes()
+    {
+        return $this->hasMany(Task::class)->where('finished', true);
     }
 
     public function campaigns(){

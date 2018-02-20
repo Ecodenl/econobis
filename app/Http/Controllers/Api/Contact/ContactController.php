@@ -23,13 +23,14 @@ class ContactController extends Controller
         $contact->load('addresses');
         $contact->load('emailAddresses');
         $contact->load('phoneNumbers');
-        $contact->load('notes');
-        $contact->notes->load('createdBy');
-        $contact->notes->load('updatedBy');
+        $contact->load('contactNotes');
+        $contact->contactNotes->load('createdBy');
+        $contact->contactNotes->load('updatedBy');
         $contact->load('createdBy');
         $contact->load('updatedBy');
         $contact->load('owner');
         $contact->load('tasks');
+        $contact->load('notes');
         $contact->load('documents');
 
         if($contact->isOrganisation()) $contact->load(['organisation.type', 'organisation.industry', 'organisation.people.person', 'organisation.people.organisation', 'organisation.people.occupation', 'organisation.quotationRequests.opportunity.measure', 'organisation.quotationRequests.opportunity.status', 'organisation.campaigns']);

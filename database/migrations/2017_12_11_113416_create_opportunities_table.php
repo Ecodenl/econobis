@@ -36,10 +36,10 @@ class CreateOpportunitiesTable extends Migration
 
         $opportunityStatus = [
             'Actief',
-            'Gewonnen',
             'In afwachting',
-            'Verloren',
-            'Gewonnen, doe het zelf',
+            'Realisatie',
+            'Realisatie, doe het zelf',
+            'Geen realisatie',
         ];
 
         foreach ($opportunityStatus as $status) {

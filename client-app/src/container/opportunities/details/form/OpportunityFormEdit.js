@@ -263,10 +263,6 @@ const mapStateToProps = (state) => {
     return {
         opportunity: state.opportunityDetails,
         status: state.systemData.opportunityStatus,
-        reactions: state.systemData.opportunityReactions,
-        measures: state.systemData.measures,
-        campaigns: state.systemData.campaigns,
-        users: state.systemData.users,
     }
 };
 

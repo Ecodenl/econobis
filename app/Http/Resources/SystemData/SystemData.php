@@ -10,7 +10,6 @@ use App\Eco\DocumentTemplate\DocumentTemplateType;
 use App\Eco\Email\EmailStatus;
 use App\Eco\HousingFile\EnergyLabelStatus;
 use App\Eco\HousingFile\RoofType;
-use App\Eco\Opportunity\OpportunityReaction;
 use App\Eco\Opportunity\OpportunityStatus;
 use App\Eco\OrganisationType\OrganisationType;
 use App\Eco\Address\AddressType;
@@ -83,7 +82,6 @@ class SystemData extends Resource
             'permissions' => FullEnumWithIdAndName::collection(Permission::all()),
             'roles' => Role::select(['id', 'name'])->get()->toArray(),
             'opportunityStatus' => FullEnumWithIdAndName::collection(OpportunityStatus::all()),
-            'opportunityReactions' => FullEnumWithIdAndName::collection(OpportunityReaction::all()),
             'taskTypes' => GenericResource::collection(TaskType::all()),
             'taskProperties' => GenericResource::collection(TaskProperty::all()),
             'users' => FullUser::collection(User::all()),

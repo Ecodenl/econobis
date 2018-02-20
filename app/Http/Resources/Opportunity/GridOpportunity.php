@@ -22,7 +22,7 @@ class GridOpportunity extends Resource
             'measureName' => $this->measure->name,
             'campaignName' => optional($this->whenLoaded('campaign'))->name,
             'statusName' => optional($this->whenLoaded('status'))->name,
-            'amountQuotations' => count($this->quotations),
+            'amountQuotations' => count($this->quotationRequests),
             'amountRelatedOpportunities' => count($this->relatedOpportunities()),
         ];
     }

@@ -4,7 +4,7 @@ import { isEmpty } from 'lodash';
 
 import OpportunityFormGeneral from './form/OpportunityFormGeneral';
 import OpportunityDetailsConclusionForm from './conclusion/OpportunityDetailsConclusionForm';
-import OpportunityDetailsQuotations from './quotations/OpportunityDetailsQuotations';
+import OpportunityDetailsQuotationRequests from './quotation-request/OpportunityDetailsQuotationRequests';
 
 class OpportunityDetailsForm extends Component {
     constructor(props){
@@ -20,7 +20,7 @@ class OpportunityDetailsForm extends Component {
                 :
                 <div>
                     <OpportunityFormGeneral />
-                    <OpportunityDetailsQuotations />
+                    <OpportunityDetailsQuotationRequests />
                     <OpportunityDetailsConclusionForm />
                 </div>
         );

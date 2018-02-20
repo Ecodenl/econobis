@@ -22,9 +22,10 @@ class QuotationRequestDetailsFormGeneralEdit extends Component {
         const { id, organisation, dateRecorded, status, dateReleased, dateValid, quotationText, opportunity} = props.quotationRequestDetails;
         this.state = {
             opportunity: {
-                fullName: opportunity.contact ? opportunity.contact.fullName : '',
+                fullName: opportunity.intake ? opportunity.intake.contact.fullName : '',
                 fullAddress: opportunity.intake ? opportunity.intake.fullAddress : '',
                 measureName: opportunity.measure ? opportunity.measure.name : '',
+                measureCategoryName: opportunity.measure ? opportunity.measure.measureCategory.name : '',
             },
             organisations: [],
             quotationRequest: {
@@ -108,7 +109,7 @@ class QuotationRequestDetailsFormGeneralEdit extends Component {
 
     render() {
         const {organisationId, dateRecorded, statusId, dateReleased, dateValid, quotationText} = this.state.quotationRequest;
-        const {fullName, fullAddress, measureName} = this.state.opportunity;
+        const {fullName, fullAddress, measureName, measureCategoryName} = this.state.opportunity;
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -143,20 +144,13 @@ class QuotationRequestDetailsFormGeneralEdit extends Component {
                     <InputText
                         label={'Maatregel - categorie'}
                         name={"measureCategory"}
-                        value={'Todo'}
+                        value={measureCategoryName}
                         onChange={ () => {} }
                         readOnly={true}
                     />
                 </div>
 
                 <div className="row">
-                    <InputText
-                        label={'Datum offerteverzoek'}
-                        name={"dateRequested"}
-                        value={'Todo'}
-                        onChange={ () => {} }
-                        readOnly={true}
-                    />
                     <InputText
                         label={'Maatregel - specifiek'}
                         name={"measure"}
@@ -164,9 +158,6 @@ class QuotationRequestDetailsFormGeneralEdit extends Component {
                         onChange={ () => {} }
                         readOnly={true}
                     />
-                </div>
-
-                <div className="row">
                     <InputDate
                         label="Datum opname"
                         size={"col-sm-6"}
@@ -175,6 +166,9 @@ class QuotationRequestDetailsFormGeneralEdit extends Component {
                         onChangeAction={this.handleInputChangeDate}
 
                     />
+                </div>
+
+                <div className="row">
                     <InputSelect
                         label={"Offerte status"}
                         size={"col-sm-6"}
@@ -185,9 +179,6 @@ class QuotationRequestDetailsFormGeneralEdit extends Component {
                         required={"required"}
                         error={this.state.errors.status}
                     />
-                </div>
-
-                <div className="row">
                     <InputDate
                         label="Offerte uitgebracht"
                         size={"col-sm-6"}
@@ -195,6 +186,9 @@ class QuotationRequestDetailsFormGeneralEdit extends Component {
                         value={dateReleased}
                         onChangeAction={this.handleInputChangeDate}
                     />
+                </div>
+
+                <div className="row">
                     <InputDate
                         label="Offerte geldig tot"
                         size={"col-sm-6"}

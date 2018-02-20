@@ -22,11 +22,18 @@ class OpportunityObserver
 
         $userId = Auth::id();
         $opportunity->created_by_id = $userId;
+        $opportunity->updated_by_id = $userId;
     }
 
     public function created(Opportunity $opportunity)
     {
         $opportunity->number = 'K' . Carbon::now()->year . '-' . $opportunity->id;
         $opportunity->save();
+    }
+
+    public function updating(Opportunity $opportunity)
+    {
+        $userId = Auth::id();
+        $opportunity->updated_by_id = $userId;
     }
 }

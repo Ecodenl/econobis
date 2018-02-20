@@ -31,12 +31,7 @@ class Campaign extends Model
     {
         return $this->hasMany(Intake::class);
     }
-
-    public function opportunities()
-    {
-        return $this->hasMany(Opportunity::class);
-    }
-
+    
     public function measures()
     {
         return $this->belongsToMany(Measure::class);

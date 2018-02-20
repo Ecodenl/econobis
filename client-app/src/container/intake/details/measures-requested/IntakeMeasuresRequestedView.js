@@ -5,7 +5,7 @@ import {hashHistory, Link} from "react-router";
 moment.locale('nl');
 
 const IntakeMeasuresRequestedView = props => {
-    const {name} = props.measureRequested;
+    const {id, name} = props.measureRequested;
 
     return (
         <div className={`row border ${props.highlightLine}`} onMouseEnter={() => props.onLineEnter()}
@@ -16,7 +16,7 @@ const IntakeMeasuresRequestedView = props => {
                     </div>
                     <div className="col-sm-5">
                         {(props.permissions.manageOpportunity ?
-                        <Link onClick={() => hashHistory.push(`/kans/nieuw/intake/${props.intakeId}`)} className='"link-underline"'> {'Maak kans'}</Link>
+                        <Link onClick={() => hashHistory.push(`/kans/nieuw/intake/${props.intakeId}/maatregel/${id}`)} className='"link-underline"'> {'Maak kans'}</Link>
                             : '')}
                     </div>
                 </div>

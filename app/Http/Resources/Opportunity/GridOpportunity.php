@@ -18,12 +18,11 @@ class GridOpportunity extends Resource
             'id' => $this->id,
             'number' => $this->number,
             'createdAt' => $this->created_at,
-            'contactName' => $this->contact->full_name,
+            'contactName' => $this->intake->contact->full_name,
             'measureName' => $this->measure->name,
-            'campaignName' => optional($this->whenLoaded('campaign'))->name,
+            'campaignName' => optional($this->intake->campaign)->name,
             'statusName' => optional($this->whenLoaded('status'))->name,
             'amountQuotations' => count($this->quotationRequests),
-            'amountRelatedOpportunities' => count($this->relatedOpportunities()),
         ];
     }
 }

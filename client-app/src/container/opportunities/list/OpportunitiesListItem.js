@@ -42,7 +42,6 @@ class OpportunitiesListItem extends Component {
               <td>{ campaignName }</td>
               <td>{ statusName }</td>
               <td>{ amountQuotations }</td>
-              <td>{ amountRelatedOpportunities }</td>
               <td>
                   {(this.state.showActionButtons ? <a role="button" onClick={() => this.openItem(id)}><span className="glyphicon glyphicon-pencil mybtn-success" /> </a> : '')}
                   {(this.state.showActionButtons && this.props.permissions.manageOpportunity ? <a role="button" onClick={this.props.showDeleteItemModal.bind(this, id, contactName, measureName)}><span className="glyphicon glyphicon-trash mybtn-danger"  /> </a> : '')}

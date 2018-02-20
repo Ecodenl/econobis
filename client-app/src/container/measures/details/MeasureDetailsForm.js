@@ -5,9 +5,6 @@ import { isEmpty } from 'lodash';
 import MeasureFormGeneral from './general/MeasureFormGeneral';
 import MeasureDetailsFaqs from './FAQs/MeasureDetailsFaqs';
 import MeasureDetailsSuppliers from './suppliers/MeasureDetailsSuppliers';
-import MeasureDetailsOpportunity from './opportunities/MeasureDetailsOpportunity';
-import MeasureDetailsMeasuresTaken from './measuresTaken/MeasureDetailsMeasuresTaken';
-import MeasureDetailsMeasuresRequested from "./measuresRequested/MeasureDetailsMeasuresRequested";
 import MeasureDetailsConclusionForm from "./conclusion/MeasureDetailsConclusionForm";
 
 
@@ -27,9 +24,6 @@ class MeasureDetailsForm extends Component {
                     <MeasureFormGeneral />
                     <MeasureDetailsFaqs />
                     <MeasureDetailsSuppliers />
-                    <MeasureDetailsOpportunity />
-                    <MeasureDetailsMeasuresTaken />
-                    <MeasureDetailsMeasuresRequested />
                     <MeasureDetailsConclusionForm />
                 </div>
         );

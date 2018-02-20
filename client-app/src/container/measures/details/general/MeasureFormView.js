@@ -1,23 +1,28 @@
 import React from 'react';
 import {connect} from 'react-redux';
 
-import { Link } from 'react-router';
-
 import ViewText from '../../../../components/form/ViewText';
 
 const MeasureFormView = props => {
-    const {name, number, description} = props.measure;
+    const { name, number, description, measureCategory = {} } = props.measure;
 
     return (
         <div>
             <div className="row" onClick={props.switchToEdit}>
                 <ViewText
-                    label={"Maatregel"}
-                    value={name}
+                    label={"Maatregel categorie"}
+                    value={measureCategory.name}
                 />
                 <ViewText
                     label={"Nummer"}
                     value={number}
+                />
+            </div>
+
+            <div className="row" onClick={props.switchToEdit}>
+                <ViewText
+                    label={"Maatregel specifiek"}
+                    value={name}
                 />
             </div>
 

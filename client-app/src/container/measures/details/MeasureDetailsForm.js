@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import { isEmpty } from 'lodash';
 
-import MeasureFormGeneral from './form/MeasureFormGeneral';
+import MeasureFormGeneral from './general/MeasureFormGeneral';
 import MeasureDetailsFaqs from './FAQs/MeasureDetailsFaqs';
 import MeasureDetailsSuppliers from './suppliers/MeasureDetailsSuppliers';
 import MeasureDetailsOpportunity from './opportunities/MeasureDetailsOpportunity';

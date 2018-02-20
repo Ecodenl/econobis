@@ -48,30 +48,12 @@ class MeasureController extends ApiController
         return FullMeasure::make($measure);
     }
 
-    public function store(RequestInput $requestInput)
-    {
-        $this->authorize('manage', Measure::class);
-
-        $data = $requestInput
-            ->string('name')->validate('required')->next()
-            ->string('description')->onEmpty(null)->next()
-            ->get();
-
-        $measure = new Measure();
-        $measure->fill($data);
-        $measure->save();
-
-        return FullMeasure::make($measure->fresh());
-    }
-
     public function update(RequestInput $requestInput, Measure $measure)
     {
 
         $this->authorize('manage', Measure::class);
 
         $data = $requestInput
-            ->string('name')->validate('required')->next()
-            ->string('number')->validate('required')->next()
             ->string('description')->onEmpty(null)->next()
             ->get();
 
@@ -79,26 +61,6 @@ class MeasureController extends ApiController
         $measure->save();
 
         return FullMeasure::make($measure->fresh());
-    }
-
-    //TODO NOT WORKING!!
-    public function destroy(Measure $measure)
-    {
-        $this->authorize('manage', Measure::class);
-
-        //First delete relations
-        $measure->addresses()->detach();
-
-        foreach ($measure->opportunities as $opportunity) {
-            $opportunity->measure()->dissociate();
-            $opportunity->save();
-        }
-
-        $measure->faqs()->delete();
-        $measure->measuresTaken()->delete();
-        $measure->measuresRequested()->delete();
-
-        $measure->delete();
     }
 
     public function storeFaq(RequestInput $requestInput, Measure $measure)

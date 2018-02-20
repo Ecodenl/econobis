@@ -169,7 +169,6 @@ Route::namespace('Api')
         Route::get('measure/grid', 'Measure\MeasureController@grid');
         Route::get('measure/peek', 'Measure\MeasureController@peek');
         Route::get('measure/{measure}', 'Measure\MeasureController@show');
-        Route::post('measure/', 'Measure\MeasureController@store');
         Route::post('measure/faq/{measureFaq}/delete', 'Measure\MeasureController@destroyFaq');
         Route::post('measure/faq/{measureFaq}/update', 'Measure\MeasureController@updateFaq');
         Route::post('measure/{measure}/opportunity/{opportunity}/associate', 'Measure\MeasureController@associateOpportunity');

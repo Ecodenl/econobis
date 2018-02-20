@@ -43,32 +43,6 @@ export default {
             );
     },
 
-    storeMeasure: (data) => {
-        const requestUrl = `${URL_MEASURE}`;
-        const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
-        axios.defaults.headers.common.Authorization = AUTH_TOKEN;
-
-        return axios.post(requestUrl, data)
-            .then(response => response.data.data)
-            .catch((error) => {
-                    console.log(error);
-                },
-            );
-    },
-
-    deleteMeasure: (id) => {
-        const requestUrl = `${URL_MEASURE}/${id}/delete`;
-        const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
-        axios.defaults.headers.common.Authorization = AUTH_TOKEN;
-
-        return axios.post(requestUrl)
-            .then(response => response.data.data)
-            .catch((error) => {
-                    console.log(error);
-                },
-            );
-    },
-
     storeFaq: (measureId, data) => {
         const requestUrl = `${URL_MEASURE}/${measureId}/faq`;
         const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;

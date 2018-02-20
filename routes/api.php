@@ -204,7 +204,6 @@ Route::namespace('Api')
         Route::post('email/concept/{mailbox}/store', 'Email\EmailController@storeConcept');
         Route::post('email/concept/{email}/update', 'Email\EmailController@updateConcept');
         Route::post('email/concept/{email}/send', 'Email\EmailController@sendConcept');
-        Route::post('email/{email}/{contact}', 'Email\EmailController@associateContact');
         Route::post('email/{email}/status/{emailStatusId}', 'Email\EmailController@setEmailStatus');
 
         Route::get('email-template/grid', 'EmailTemplate\EmailTemplateController@grid');

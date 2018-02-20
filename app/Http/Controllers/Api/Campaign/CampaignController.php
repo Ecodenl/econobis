@@ -55,6 +55,8 @@ class CampaignController extends ApiController
             'createdBy',
             'ownedBy',
             'tasks',
+            'intakes.contact',
+            'intakes.address'
         ]);
 
         return FullCampaign::make($campaign);

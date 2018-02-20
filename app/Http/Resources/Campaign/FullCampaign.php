@@ -4,6 +4,7 @@ namespace App\Http\Resources\Campaign;
 
 use App\Http\Resources\Contact\FullContact;
 use App\Http\Resources\GenericResource;
+use App\Http\Resources\Intake\FullIntake;
 use App\Http\Resources\Measure\FullMeasure;
 use App\Http\Resources\Opportunity\FullOpportunity;
 use App\Http\Resources\Organisation\FullOrganisation;
@@ -33,6 +34,7 @@ class FullCampaign extends Resource
             'type' => GenericResource::make($this->whenLoaded('type')),
             'measures' => FullMeasure::collection($this->whenLoaded('measures')),
             'opportunities' => FullOpportunity::collection($this->whenLoaded('opportunities')),
+            'intakes' => FullIntake::collection($this->whenLoaded('intakes')),
             'responses' => FullCampaignResponse::collection($this->whenLoaded('responses')),
             'organisations' => FullOrganisation::collection($this->whenLoaded('organisations')),
             'createdBy' => FullUser::make($this->whenLoaded('createdBy')),

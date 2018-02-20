@@ -7,6 +7,7 @@ import CampaignDetailsConclusionForm from './conclusion/CampaignDetailsConclusio
 import CampaignDetailsOpportunities from './opportunities/CampaignDetailsOpportunities';
 import CampaignDetailsResponses from "./responses/CampaignDetailsResponses";
 import CampaignDetailsOrganisations from "./organisations/CampaignDetailsOrganisations";
+import CampaignDetailsIntakes from "./intakes/CampaignDetailsIntakes";
 
 class CampaignDetailsForm extends Component {
     constructor(props){
@@ -22,6 +23,7 @@ class CampaignDetailsForm extends Component {
                 <div>
                     <CampaignFormGeneral />
                     <CampaignDetailsOrganisations />
+                    <CampaignDetailsIntakes />
                     <CampaignDetailsOpportunities />
                     <CampaignDetailsResponses />
                     <CampaignDetailsConclusionForm />

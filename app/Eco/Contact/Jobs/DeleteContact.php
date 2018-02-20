@@ -22,7 +22,7 @@ class DeleteContact extends GenericDeleteModelJob
         $this->deleteOnQuery($contact->addresses());
         $this->deleteOnQuery($contact->emailAddresses());
         $this->deleteOnQuery($contact->phoneNumbers());
-        $this->deleteOnQuery($contact->notes());
+        $this->deleteOnQuery($contact->contactNotes());
         DeleteTask::collection($contact->tasks, $this->force);
 
         if($contact->isPerson()) GenericDeleteModelJob::single($contact->person);

@@ -21,9 +21,9 @@ class CampaignDetailsForm extends Component {
                 :
                 <div>
                     <CampaignFormGeneral />
+                    <CampaignDetailsOrganisations />
                     <CampaignDetailsOpportunities />
                     <CampaignDetailsResponses />
-                    <CampaignDetailsOrganisations />
                     <CampaignDetailsConclusionForm />
                 </div>
         );

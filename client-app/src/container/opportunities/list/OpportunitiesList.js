@@ -62,11 +62,10 @@ class OpportunitiesList extends Component {
                         <DataTableHeadTitle title={'Nummer'} width={'10%'}/>
                         <DataTableHeadTitle title={'Datum'} width={'20%'}/>
                         <DataTableHeadTitle title={'Naam'} width={'20%'}/>
-                        <DataTableHeadTitle title={'Maatregel'} width={'10%'}/>
+                        <DataTableHeadTitle title={'Maatregel'} width={'17%'}/>
                         <DataTableHeadTitle title={'Campagne'} width={'10%'}/>
                         <DataTableHeadTitle title={'Status'} width={'10%'}/>
                         <DataTableHeadTitle title={'Aantal offertes'} width={'7%'}/>
-                        <DataTableHeadTitle title={'Gerelateerde kansen'} width={'7%'}/>
                         <DataTableHeadTitle title={''} width={'6%'}/>
                     </tr>
                 </DataTableHead>

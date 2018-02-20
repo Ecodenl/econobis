@@ -82,7 +82,7 @@ class Task extends Model
     }
 
     /**
-     * required
+     * optional
      */
     public function responsibleUser()
     {
@@ -90,7 +90,7 @@ class Task extends Model
     }
 
     /**
-     * required
+     * optional
      */
     public function responsibleTeam()
     {
@@ -139,6 +139,18 @@ class Task extends Model
 
     public function emailsOut(){
         return $this->hasMany(Email::class)->where('folder', '=', 'sent');
+    }
+
+    // Tasks can relate to another task. Only an unfinished task is a task
+    public function tasks()
+    {
+        return $this->hasMany(Task::class)->where('finished', false);
+    }
+
+    // A finished task is a note
+    public function notes()
+    {
+        return $this->hasMany(Task::class)->where('finished', true);
     }
 
     /**

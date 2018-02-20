@@ -12,6 +12,7 @@ namespace App\Http\Resources\Task;
 use App\Http\Resources\Campaign\FullCampaign;
 use App\Http\Resources\Contact\FullContact;
 use App\Http\Resources\ContactGroup\FullContactGroup;
+use App\Http\Resources\Document\FullDocument;
 use App\Http\Resources\GenericResource;
 use App\Http\Resources\Opportunity\FullOpportunity;
 use App\Http\Resources\Intake\FullIntake;
@@ -67,6 +68,16 @@ class FullTask extends Resource
                 'opportunityName' => $this->opportunity ? $this->opportunity->measure->name . ' ' . $this->opportunity->status->name : '',
                 'createdAt' => $this->created_at,
                 'updatedAt' => $this->updated_at,
+                'taskCount' => $this->tasks()->count(),
+                'relatedTasks' => GridTask::collection($this->whenLoaded('tasks')),
+                'noteCount' => $this->notes()->count(),
+                'relatedNotes' => GridTask::collection($this->whenLoaded('notes')),
+                'emailInboxCount' => $this->relatedEmailsInbox ? $this->relatedEmailsInbox->count() : 0,
+                'relatedEmailsInbox' => $this->relatedEmailsInbox,
+                'emailSentCount' => $this->relatedEmailsSent ? $this->relatedEmailsSent->count() : 0,
+                'relatedEmailsSent' => $this->relatedEmailsSent,
+                'documentCount' => $this->documents()->count(),
+                'relatedDocuments' => FullDocument::collection($this->whenLoaded('documents')),
             ];
     }
 }

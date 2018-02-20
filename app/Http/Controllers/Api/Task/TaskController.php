@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\Task;
 
+use App\Eco\Email\Email;
 use App\Eco\Task\Jobs\DeleteTask;
 use App\Eco\Task\Task;
 use App\Helpers\RequestInput\RequestInput;
@@ -65,7 +66,13 @@ class TaskController extends Controller
             'opportunity.status',
             'opportunity.measure',
             'properties.property',
+            'tasks',
+            'notes',
+            'documents',
         ]);
+
+        $task->relatedEmailsInbox = $this->getRelatedEmails($task->id, 'inbox');
+        $task->relatedEmailsSent = $this->getRelatedEmails($task->id, 'sent');
 
         return FullTask::make($task);
     }
@@ -141,6 +148,7 @@ class TaskController extends Controller
         $task->load('properties');
 
         $newTask = $task->replicate();
+        $newTask->task_id = $task->id;
         $newTask->responsible_user_id = Auth::id();
         $newTask->responsible_team_id = null;
         $newTask->date_planned_start = null;
@@ -191,5 +199,14 @@ class TaskController extends Controller
     public function peek()
     {
         return TaskPeek::collection(Task::orderBy('id')->get());
+    }
+
+    public function getRelatedEmails($id, $folder)
+    {
+        $user = Auth::user();
+
+        $mailboxIds = $user->mailboxes()->pluck('mailbox_id');
+
+        return Email::whereIn('mailbox_id', $mailboxIds)->where('task_id', $id)->where('folder', $folder)->get();
     }
 }

@@ -6,7 +6,7 @@ import moment from "moment/moment";
 moment.locale('nl');
 
 const IntakeDetailsFormConclusionView = props => {
-    const { createdAt, createdBy, updatedAt, updateBy } = props.intakeDetails;
+    const { createdAt, createdBy, updatedAt, updatedBy } = props.intakeDetails;
 
     return (
         <div>
@@ -17,7 +17,7 @@ const IntakeDetailsFormConclusionView = props => {
                 />
                 <ViewText
                     label={"Laatste gewijzigd door"}
-                    value={updateBy ? updateBy.fullName : 'Onbekend'}
+                    value={updatedBy ? updatedBy.fullName : 'Onbekend'}
                 />
             </div>
             <div className="row">

@@ -57,6 +57,7 @@ class IntakeController extends ApiController
             'sources',
             'reasons',
             'measuresRequested',
+            'opportunities.measure',
             'opportunities.quotationRequests',
             'opportunities.status',
             'tasks',

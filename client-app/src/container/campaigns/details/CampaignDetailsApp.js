@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 
 import CampaignDetailsToolbar from './CampaignDetailsToolbar';
 import CampaignDetailsForm from './CampaignDetailsForm';
-import CampaignDetailsHarmonica from './harmonica/CampaignDetailsHarmonica';
+import CampaignDetailsHarmonica from './CampaignDetailsHarmonica';
 import Panel from "../../../components/panel/Panel";
 import PanelBody from '../../../components/panel/PanelBody';
 

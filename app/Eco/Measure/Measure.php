@@ -67,4 +67,9 @@ class Measure extends Model
     public function documents(){
         return $this->hasMany(Document::class);
     }
+
+    public function measureCategory()
+    {
+        return $this->belongsTo(MeasureCategory::class);
+    }
 }

@@ -41,7 +41,8 @@ class MeasureController extends ApiController
             'addresses.housingFile',
             'addresses.contact',
             'createdBy',
-            'addresses'
+            'addresses',
+            'measureCategory'
         ]);
 
         return FullMeasure::make($measure);

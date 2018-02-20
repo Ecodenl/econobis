@@ -9,6 +9,7 @@
 namespace App\Http\Controllers\Api\Opportunity;
 
 use App\Eco\Opportunity\Opportunity;
+use App\Eco\Opportunity\OpportunityEvaluation;
 use App\Eco\Opportunity\OpportunityStatus;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Api\ApiController;
@@ -35,7 +36,7 @@ class OpportunityController extends ApiController
 
     public function show(Opportunity $opportunity)
     {
-        $opportunity->load(['measure.measureCategory', 'quotationRequests.organisation', 'quotationRequests.createdBy', 'quotationRequests.status', 'status', 'createdBy', 'updatedBy', 'intake.contact', 'tasks']);
+        $opportunity->load(['measure.measureCategory', 'quotationRequests.organisation', 'quotationRequests.createdBy', 'quotationRequests.status', 'status', 'createdBy', 'updatedBy', 'intake.contact', 'tasks', 'opportunityEvaluation']);
 
         return FullOpportunity::make($opportunity);
     }
@@ -113,5 +114,40 @@ class OpportunityController extends ApiController
         };
 
         return $chartData;
+    }
+
+    public function storeEvaluation(RequestInput $requestInput){
+        $this->authorize('manage', Opportunity::class);
+
+        $data = $requestInput
+            ->integer('opportunityId')->validate('required|exists:opportunities,id')->alias('opportunity_id')->next()
+            ->boolean('isRealised')->alias('is_realised')->next()
+            ->boolean('isStatisfied')->alias('is_statisfied')->next()
+            ->boolean('wouldRecommendOrganisation')->alias('would_recommend_organisation')->next()
+            ->string('note')->next()
+            ->get();
+
+        $opportunityEvaluation = new OpportunityEvaluation();
+        $opportunityEvaluation->fill($data);
+        $opportunityEvaluation->save();
+
+        return $this->show($opportunityEvaluation->opportunity);
+    }
+
+    public function updateEvaluation(RequestInput $requestInput, OpportunityEvaluation $opportunityEvaluation){
+        $this->authorize('manage', Opportunity::class);
+
+        $data = $requestInput
+            ->integer('opportunityId')->validate('required|exists:opportunities,id')->alias('opportunity_id')->next()
+            ->boolean('isRealised')->alias('is_realised')->next()
+            ->boolean('isStatisfied')->alias('is_statisfied')->next()
+            ->boolean('wouldRecommendOrganisation')->alias('would_recommend_organisation')->next()
+            ->string('note')->next()
+            ->get();
+
+        $opportunityEvaluation->fill($data);
+        $opportunityEvaluation->save();
+
+        return $this->show($opportunityEvaluation->opportunity);
     }
 }

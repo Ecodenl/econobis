@@ -55,6 +55,8 @@ class CampaignController extends ApiController
             'createdBy',
             'ownedBy',
             'tasks',
+            'notes',
+            'documents',
             'intakes.contact',
             'intakes.address'
         ]);

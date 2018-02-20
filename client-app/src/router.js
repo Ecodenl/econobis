@@ -105,6 +105,7 @@ const Routes = () => {
                 <Route path="document/nieuw/:type/kans/:opportunityId" component={DocumentNewApp} />
                 <Route path="document/nieuw/:type/intake/:intakeId" component={DocumentNewApp} />
                 <Route path="document/nieuw/:type/maatregel/:measureId" component={DocumentNewApp} />
+                <Route path="document/nieuw/:type/campagne/:campaignId" component={DocumentNewApp} />
                 <Route path="document/nieuw/:type/taak/:taskId" component={DocumentNewApp} />
                 <Route path="document/nieuw/:type/woningdossier/:housingFileId" component={DocumentNewApp} />
                 <Route path="document/:id" component={DocumentDetailsApp} />

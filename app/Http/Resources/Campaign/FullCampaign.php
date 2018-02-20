@@ -3,6 +3,7 @@
 namespace App\Http\Resources\Campaign;
 
 use App\Http\Resources\Contact\FullContact;
+use App\Http\Resources\Document\FullDocument;
 use App\Http\Resources\GenericResource;
 use App\Http\Resources\Intake\FullIntake;
 use App\Http\Resources\Measure\FullMeasure;
@@ -41,6 +42,10 @@ class FullCampaign extends Resource
             'ownedBy' => FullUser::make($this->whenLoaded('ownedBy')),
             'taskCount' => $this->tasks()->count(),
             'relatedTasks' => GridTask::collection($this->whenLoaded('tasks')),
+            'noteCount' => $this->notes()->count(),
+            'relatedNotes' => GridTask::collection($this->whenLoaded('notes')),
+            'documentCount' => $this->documents()->count(),
+            'relatedDocuments' => FullDocument::collection($this->whenLoaded('documents')),
         ];
     }
 }

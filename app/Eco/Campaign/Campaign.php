@@ -68,10 +68,16 @@ class Campaign extends Model
         return $this->belongsTo(User::class);
     }
 
-    // Only unfinished task is a task. A finished task is a note
+    // Only unfinished tasks are a task
     public function tasks()
     {
         return $this->hasMany(Task::class)->where('finished', false);
+    }
+
+    // A finished task is a note
+    public function notes()
+    {
+        return $this->hasMany(Task::class)->where('finished', true);
     }
 
     public function documents(){

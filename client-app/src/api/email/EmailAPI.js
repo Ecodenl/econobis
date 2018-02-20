@@ -59,19 +59,6 @@ export default {
             );
     },
 
-    associateContact: (emailId, contactId) => {
-        const requestUrl = `${URL_EMAIL}/${emailId}/${contactId}`;
-        const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
-        axios.defaults.headers.common.Authorization = AUTH_TOKEN;
-
-        return axios.post(requestUrl)
-            .then(response => response.data.data)
-            .catch((error) => {
-                    console.log(error);
-                },
-            );
-    },
-
     setStatus: (emailId, status) => {
         const requestUrl = `${URL_EMAIL}/${emailId}/status/${status}`;
         const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
@@ -152,6 +139,14 @@ export default {
                     console.log(error);
                 },
             );
+    },
+
+    updateEmail: (email) => {
+        const requestUrl = `${URL_EMAIL}/${email.id}`;
+        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
+        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
+
+        return axios.post(requestUrl, email);
     },
 };
 

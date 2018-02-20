@@ -72,7 +72,7 @@ class EmailController
     }
 
     public function show(Email $email){
-        $email->load('contact', 'attachments', 'closedBy');
+        $email->load('contact', 'attachments', 'closedBy', 'intake', 'task', 'quotationRequest', 'measure');
 
         return FullEmail::make($email);
     }
@@ -147,7 +147,12 @@ class EmailController
 
     public function update(Email $email, RequestInput $input)
     {
-        $data = $input->string('contactId')->validate('exists:contacts,id')->alias('contact_id')->next()
+        $data = $input
+            ->integer('contactId')->validate('exists:contacts,id')->onEmpty(null)->alias('contact_id')->next()
+            ->integer('intakeId')->validate('exists:intakes,id')->onEmpty(null)->alias('intake_id')->next()
+            ->integer('quotationRequestId')->validate('exists:quotation_requests,id')->onEmpty(null)->alias('quotation_request_id')->next()
+            ->integer('measureId')->validate('exists:measures,id')->onEmpty(null)->alias('measure_id')->next()
+            ->integer('taskId')->validate('exists:tasks,id')->onEmpty(null)->alias('task_id')->next()
             ->get();
 
         $email->fill($data);
@@ -155,12 +160,6 @@ class EmailController
         $email->save();
 
         return FullEmail::make($email);
-    }
-
-    public function associateContact(Email $email, Contact $contact)
-    {
-        $email->contact()->associate($contact);
-        $email->save();
     }
 
     public function send(Mailbox $mailbox, Request $request)

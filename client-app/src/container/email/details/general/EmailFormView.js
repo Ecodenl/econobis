@@ -11,7 +11,7 @@ const createMarkup = (value) => {
 };
 
 const EmailFormView = props => {
-    const {from, to, cc, bcc, contact, subject, htmlBody, createdAt, dateSent, folder, status, closedBy, dateClosed} = props.email;
+    const {from, to, cc, bcc, contact, intake, task, quotationRequest, measure, subject, htmlBody, createdAt, dateSent, folder, status, closedBy, dateClosed} = props.email;
 
     return (
         <div>
@@ -44,6 +44,32 @@ const EmailFormView = props => {
                     label={"Contact"}
                     value={contact ? contact.fullName : ''}
                     link={contact ? 'contact/' + contact.id : ''}
+                />
+            </div>
+
+            <div className="row" onClick={props.switchToEdit}>
+                <ViewText
+                    label={"Intake"}
+                    value={intake ? intake.id : ''}
+                    link={intake ? 'intake/' + intake.id : ''}
+                />
+                <ViewText
+                    label={"Taak"}
+                    value={task ? task.id : ''}
+                    link={task ? 'taak/' + task.id : ''}
+                />
+            </div>
+
+            <div className="row" onClick={props.switchToEdit}>
+                <ViewText
+                    label={"Offerteverzoek"}
+                    value={quotationRequest ? quotationRequest.id : ''}
+                    link={quotationRequest ? 'offerteverzoek/' + quotationRequest.id : ''}
+                />
+                <ViewText
+                    label={"Maatregel"}
+                    value={measure ? measure.name : ''}
+                    link={measure ? 'maatregel/' + measure.id : ''}
                 />
             </div>
 

@@ -36,7 +36,7 @@ const NotesList = ({relatedNotes}) => {
 
 const mapStateToProps = (state) => {
     return {
-        relatedNotes: state.intakeDetails.relatedNotes,
+        relatedNotes: state.housingFileDetails.relatedNotes,
     };
 };
 

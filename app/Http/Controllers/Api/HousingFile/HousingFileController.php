@@ -62,7 +62,9 @@ class HousingFileController extends ApiController
             'energyLabel',
             'energyLabelStatus',
             'createdBy',
-            'updatedBy'
+            'updatedBy',
+            'notes',
+            'documents'
         ]);
 
         return FullHousingFile::make($housingFile);

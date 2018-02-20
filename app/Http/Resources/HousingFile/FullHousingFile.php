@@ -9,6 +9,7 @@ use App\Http\Resources\Document\FullDocument;
 use App\Http\Resources\GenericResource;
 use App\Http\Resources\Measure\FullMeasure;
 use App\Http\Resources\Opportunity\FullOpportunity;
+use App\Http\Resources\Task\FullTask;
 use App\Http\Resources\User\FullUser;
 use Illuminate\Http\Resources\Json\Resource;
 use App\Eco\Contact\Contact;
@@ -43,10 +44,10 @@ class FullHousingFile extends Resource
                 'updatedBy' => FullUser::make($this->whenLoaded('updatedBy')),
                 'createdAt' => $this->created_at,
                 'updatedAt' => $this->updated_at,
-                //'noteCount' => $this->notes()->count(),
-                //'relatedNotes' => $this->notes()->get(),
-                //'documentCount' => $this->documents()->count(),
-                //'relatedDocuments' => FullDocument::collection($this->whenLoaded('documents')),
+                'noteCount' => $this->notes()->count(),
+                'relatedNotes' => FullTask::collection($this->whenLoaded('notes')),
+                'documentCount' => $this->documents()->count(),
+                'relatedDocuments' => FullDocument::collection($this->whenLoaded('documents')),
             ];
     }
 }

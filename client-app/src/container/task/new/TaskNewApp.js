@@ -14,6 +14,7 @@ import PanelBody from '../../../components/panel/PanelBody';
 import IntakesAPI from "../../../api/intake/IntakesAPI";
 import ContactGroupAPI from "../../../api/contact-group/ContactGroupAPI";
 import OpportunitiesAPI from "../../../api/opportunity/OpportunitiesAPI";
+import HousingFilesAPI from "../../../api/housing-file/HousingFilesAPI";
 
 class TaskNewApp extends Component {
     constructor(props) {
@@ -25,6 +26,7 @@ class TaskNewApp extends Component {
             contactGroups: [],
             opportunities: [],
             campaigns: [],
+            housingFiles: [],
             task: {
                 id: '',
                 note: '',
@@ -34,6 +36,7 @@ class TaskNewApp extends Component {
                 intakeId: '',
                 opportunityId: '',
                 contactGroupId: '',
+                housingFileId: '',
                 datePlannedStart: '',
                 datePlannedFinish: '',
                 startTimePlanned: '',
@@ -83,6 +86,10 @@ class TaskNewApp extends Component {
 
         CampaignsAPI.peekCampaigns().then((payload) => {
             this.setState({ campaigns: payload });
+        });
+
+        HousingFilesAPI.peekHousingFiles().then((payload) => {
+            this.setState({ housingFiles: payload });
         });
     };
 

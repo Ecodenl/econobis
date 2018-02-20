@@ -97,6 +97,7 @@ class TaskController extends Controller
             ->integer('responsibleTeamId')->validate('exists:teams,id', 'required_unless, responsible_user_id')->whenMissing(null)->onEmpty(null)->alias('responsible_team_id')->next()
             ->integer('finishedById')->validate('exists:users,id')->whenMissing(null)->onEmpty(null)->alias('finished_by_id')->next()
             ->integer('opportunityId')->validate('exists:opportunities,id')->onEmpty(null)->alias('opportunity_id')->next()
+            ->integer('housingFileId')->validate('exists:housing_files,id')->onEmpty(null)->alias('housing_file_id')->next()
             ->get();
 
         $task = new Task($data);
@@ -130,6 +131,7 @@ class TaskController extends Controller
             ->integer('responsibleTeamId')->validate('exists:teams,id', 'required_unless, responsible_user_id')->onEmpty(null)->alias('responsible_team_id')->next()
             ->integer('finishedById')->validate('exists:users,id')->onEmpty(null)->alias('finished_by_id')->next()
             ->integer('opportunityId')->validate('exists:opportunities,id')->onEmpty(null)->alias('opportunity_id')->next()
+            ->integer('housingFileId')->validate('exists:housing_files,id')->onEmpty(null)->alias('housing_file_id')->next()
             ->get();
 
         $task->fill($data);

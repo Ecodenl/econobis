@@ -5,6 +5,7 @@ namespace App\Eco\HousingFile;
 use App\Eco\Address\Address;
 use App\Eco\Document\Document;
 use App\Eco\Measure\Measure;
+use App\Eco\Task\Task;
 use App\Eco\User\User;
 use Illuminate\Database\Eloquent\Model;
 
@@ -45,8 +46,9 @@ class HousingFile extends Model
         return $this->belongsTo(EnergyLabelStatus::class);
     }
 
-    public function notes(){
-        //todo
+    public function notes()
+    {
+        return $this->hasMany(Task::class)->where('finished', true);
     }
 
     public function documents(){

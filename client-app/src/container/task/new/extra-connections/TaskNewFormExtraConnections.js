@@ -2,12 +2,13 @@ import React from 'react';
 
 import InputReactSelect from "../../../../components/form/InputReactSelect";
 
-const TaskNewFormExtraConnections = ({task, campaigns, intakes, contactGroups, opportunities, handleReactSelectChange}) => {
+const TaskNewFormExtraConnections = ({task, campaigns, intakes, contactGroups, opportunities, housingFiles, handleReactSelectChange}) => {
     const {
         intakeId,
         contactGroupId,
         opportunityId,
         campaignId,
+        housingFileId,
     } = task;
 
     return (
@@ -48,6 +49,17 @@ const TaskNewFormExtraConnections = ({task, campaigns, intakes, contactGroups, o
                     name={"opportunityId"}
                     options={opportunities}
                     value={opportunityId}
+                    onChangeAction={handleReactSelectChange}
+                    multi={false}
+                />
+            </div>
+            <div className="row">
+                <InputReactSelect
+                    label={"Woningdossier"}
+                    size={"col-sm-6"}
+                    name={"housingFileId"}
+                    options={housingFiles}
+                    value={housingFileId}
                     onChangeAction={handleReactSelectChange}
                     multi={false}
                 />

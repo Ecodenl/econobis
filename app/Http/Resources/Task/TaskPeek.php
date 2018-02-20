@@ -17,7 +17,7 @@ class TaskPeek extends Resource
     {
         return [
             'id' => $this->id,
-            'name' => $this->name,
+            'name' => $this->present()->noteSummary(),
         ];
     }
 }

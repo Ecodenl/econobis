@@ -3,7 +3,7 @@ import {hashHistory} from 'react-router';
 import { connect } from 'react-redux';
 import moment from 'moment';
 
-class CampaignList extends Component {
+class CampaignsList extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -50,4 +50,4 @@ const mapStateToProps = (state) => {
     };
 };
 
-export default connect(mapStateToProps)(CampaignList);
+export default connect(mapStateToProps)(CampaignsList);

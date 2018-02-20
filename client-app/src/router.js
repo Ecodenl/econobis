@@ -93,6 +93,7 @@ const Routes = () => {
                 <Route path="contacten-in-groep/:contactGroup" component={ ContactsInGroupListApp } />
                 /* Campaign */
                 <Route path="campagne/nieuw" component={CampaignNewApp} />
+                <Route path="campagne/nieuw/maatregel/:measureId" component={CampaignNewApp} />
                 <Route path="campagne/:id" component={CampaignDetailsApp} />
                 <Route path="campagnes" component={CampaignsListApp} />
                 <Route path="contacten/:filter/:value" component={ ContactsListApp } />

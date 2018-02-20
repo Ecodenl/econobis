@@ -28,7 +28,7 @@ const MeasureDetailsSuppliersList = props => {
 
 const mapStateToProps = (state) => {
     return {
-        suppliers: state.measure.suppliers,
+        suppliers: state.measureDetails.suppliers,
     };
 };
 export default connect(mapStateToProps)(MeasureDetailsSuppliersList);

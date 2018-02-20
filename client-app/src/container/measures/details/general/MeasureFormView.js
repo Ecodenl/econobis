@@ -4,7 +4,7 @@ import {connect} from 'react-redux';
 import ViewText from '../../../../components/form/ViewText';
 
 const MeasureFormView = props => {
-    const { name, number, description, measureCategory = {} } = props.measure;
+    const { name, number, description, measureCategory = {} } = props.measureDetails;
 
     return (
         <div>
@@ -40,7 +40,7 @@ const MeasureFormView = props => {
 
 const mapStateToProps = (state) => {
     return {
-        measure: state.measure,
+        measureDetails: state.measureDetails,
     }
 };
 

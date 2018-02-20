@@ -5,7 +5,7 @@ import moment from 'moment';
 import ViewText from '../../../../components/form/ViewText';
 
 const MeasureDetailsConclusionView = props => {
-    const { createdBy = {}, createdAt = {}} = props.measure;
+    const { createdBy = {}, createdAt = {}} = props.measureDetails;
 
     return (
         <div>
@@ -26,7 +26,7 @@ const MeasureDetailsConclusionView = props => {
 
 const mapStateToProps = (state) => {
     return {
-        measure: state.measure,
+        measureDetails: state.measureDetails,
     };
 };
 

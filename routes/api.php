@@ -177,6 +177,11 @@ Route::namespace('Api')
         Route::post('measure/{measure}/faq', 'Measure\MeasureController@storeFaq');
         Route::post('measure/{measure}', 'Measure\MeasureController@update');
         Route::post('measure/{measure}/delete', 'Measure\MeasureController@destroy');
+        Route::get('measure/{measure}/attachments', 'Measure\MeasureController@attachments');
+        Route::post('measure/{measure}/attachments', 'Measure\MeasureAttachmentController@store');
+
+        Route::get('measure-attachment/{measureAttachment}/download', 'Measure\MeasureAttachmentController@download');
+        Route::post('measure-attachment/{measureAttachment}/delete', 'Measure\MeasureAttachmentController@destroy');
 
         Route::get('mailbox/grid', 'Mailbox\MailboxController@grid');
         Route::get('mailbox/logged-in/email-peek', 'Mailbox\MailboxController@loggedInEmailPeek');

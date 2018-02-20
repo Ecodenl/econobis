@@ -9,7 +9,7 @@ import ButtonText from '../../../../components/button/ButtonText';
 import InputSelect from "../../../../components/form/InputSelect";
 import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
-import { fetchMeasure } from '../../../../actions/measure/MeasureActions';
+import { fetchMeasure } from '../../../../actions/measure/MeasureDetailsActions';
 
 class MeasureDetailsOpportunityNew extends Component {
     constructor(props) {
@@ -117,8 +117,8 @@ class MeasureDetailsOpportunityNew extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        measureId: state.measure.id,
-        measureName: state.measure.name,
+        measureId: state.measureDetails.id,
+        measureName: state.measureDetails.name,
     };
 };
 

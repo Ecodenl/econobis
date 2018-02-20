@@ -9,14 +9,14 @@ import PanelFooter from "../../../../components/panel/PanelFooter";
 
 import MeasureAPI from '../../../../api/measure/MeasureAPI';
 
-import { fetchMeasure } from '../../../../actions/measure/MeasureActions';
+import { fetchMeasure } from '../../../../actions/measure/MeasureDetailsActions';
 import InputTextArea from "../../../../components/form/InputTextarea";
 
 class MeasureFormEdit extends Component {
     constructor(props) {
         super(props);
 
-        const {id, description} = props.measure;
+        const {id, description} = props.measureDetails;
 
         this.state = {
             measure: {
@@ -54,7 +54,7 @@ class MeasureFormEdit extends Component {
 
     render() {
         const { description}  = this.state.measure;
-        const { name, number, measureCategory = {} } = this.props.measure;
+        const { name, number, measureCategory = {} } = this.props.measureDetails;
 
         return (
             <form className="form-horizontal col-md-12" onSubmit={this.handleSubmit}>
@@ -114,7 +114,7 @@ const mapDispatchToProps = dispatch => ({
 
 const mapStateToProps = (state) => {
     return {
-        measure: state.measure,
+        measureDetails: state.measureDetails,
     }
 };
 

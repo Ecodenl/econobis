@@ -21,7 +21,7 @@ const MeasureDetailsMeasureTakenList = props => {
                         />;
                     })
                     :
-                    <div>Geen intakes bekend die deze maatregel hebben genomen</div>
+                    <div>Geen woningdossiers bekend die deze maatregel hebben genomen</div>
             }
         </div>
     );
@@ -29,7 +29,7 @@ const MeasureDetailsMeasureTakenList = props => {
 
 const mapStateToProps = (state) => {
     return {
-        measuresTaken: state.measure.measuresTaken,
+        measuresTaken: state.measureDetails.measuresTaken,
     };
 };
 export default connect(mapStateToProps)(MeasureDetailsMeasureTakenList);

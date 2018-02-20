@@ -28,7 +28,7 @@ const MeasureDetailsFaqsList = props => {
 
 const mapStateToProps = (state) => {
     return {
-        faqs: state.measure.faqs,
+        faqs: state.measureDetails.faqs,
     };
 };
 export default connect(mapStateToProps)(MeasureDetailsFaqsList);

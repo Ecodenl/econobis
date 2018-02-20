@@ -7,7 +7,7 @@ import MeasureDetailsHarmonica from './MeasureDetailsHarmonica';
 import Panel from "../../../components/panel/Panel";
 import PanelBody from '../../../components/panel/PanelBody';
 
-import { fetchMeasure, clearMeasure } from '../../../actions/measure/MeasureActions';
+import { fetchMeasure, clearMeasure } from '../../../actions/measure/MeasureDetailsActions';
 
 class MeasureDetailsApp extends Component {
     constructor(props) {

@@ -23,7 +23,8 @@ import housingFileDetailsReducer from './housing-file/HousingFileDetailsReducer'
 import housingFilesReducer from './housing-file/HousingFilesReducer';
 import mailboxDetailsReducer from './mailbox/MailboxDetailsReducer';
 import mailboxesReducer from './mailbox/MailboxesReducer';
-import measuresReducer from './measure/MeasureReducer';
+import measuresReducer from './measure/MeasuresReducer';
+import measureDetailsReducer from './measure/MeasureDetailsReducer';
 import meDetailsReducer from './general/MeDetailsReducer';
 import opportunitiesReducer from './opportunity/OpportunitiesReducer';
 import opportunityDetailsReducer from './opportunity/OpportunityDetailsReducer';
@@ -91,7 +92,7 @@ const rootReducer = combineReducers({
     mailboxDetails: mailboxDetailsReducer,
     // Measures
     measures: measuresReducer,
-    measure: measuresReducer,
+    measureDetails: measureDetailsReducer,
     //Quotation request
     quotationRequests: quotationRequestsReducer,
     quotationRequestDetails: quotationRequestDetailsReducer,

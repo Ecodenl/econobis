@@ -19,6 +19,7 @@ use App\Http\Resources\Measure\FullMeasure;
 use App\Http\Resources\Measure\GridMeasure;
 use App\Http\Resources\Measure\MeasurePeek;
 use App\Http\Resources\Opportunity\FullOpportunity;
+use App\Http\Resources\Measure\FullMeasureAttachment;
 
 class MeasureController extends ApiController
 {
@@ -42,7 +43,8 @@ class MeasureController extends ApiController
             'addresses.contact',
             'createdBy',
             'addresses',
-            'measureCategory'
+            'measureCategory',
+            'attachments',
         ]);
 
         return FullMeasure::make($measure);
@@ -123,5 +125,10 @@ class MeasureController extends ApiController
     public function peek()
     {
         return MeasurePeek::collection(Measure::orderBy('id')->get());
+    }
+
+    public function attachments(Measure $measure)
+    {
+        return FullMeasureAttachment::collection($measure->attachments);
     }
 }

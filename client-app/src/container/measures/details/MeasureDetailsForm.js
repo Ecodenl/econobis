@@ -20,7 +20,7 @@ class MeasureDetailsForm extends Component {
     render() {
 
         return (
-            isEmpty(this.props.measure) ?
+            isEmpty(this.props.measureDetails) ?
                 <div>Geen gegevens gevonden!</div>
                 :
                 <div>
@@ -38,7 +38,7 @@ class MeasureDetailsForm extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        measure: state.measure,
+        measureDetails: state.measureDetails,
     }
 };
 

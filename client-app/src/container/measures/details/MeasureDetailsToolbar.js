@@ -6,8 +6,8 @@ import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
 import ButtonIcon from '../../../components/button/ButtonIcon';
 
-const MeasureDetailsToolbar = ({ measure }) => {
-    const { measureCategory = {} } = measure;
+const MeasureDetailsToolbar = ({ measureDetails }) => {
+    const { measureCategory = {} } = measureDetails;
 
     return (
         <div className="row">
@@ -30,7 +30,7 @@ const MeasureDetailsToolbar = ({ measure }) => {
 
 const mapStateToProps = (state) => {
     return {
-        measure: state.measure,
+        measureDetails: state.measureDetails,
     }
 };
 

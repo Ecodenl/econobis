@@ -42,6 +42,8 @@ class MeasureController extends ApiController
             'addresses',
             'measureCategory',
             'documents',
+            'opportunities.intake.campaign',
+            'opportunities.intake.contact',
         ]);
 
         return FullMeasure::make($measure);

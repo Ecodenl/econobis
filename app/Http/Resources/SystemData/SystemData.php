@@ -33,6 +33,7 @@ use App\Eco\QuotationRequest\QuotationRequestStatus;
 use App\Eco\Task\TaskProperty;
 use App\Eco\Task\TaskStatus;
 use App\Eco\Task\TaskType;
+use App\Eco\Team\Team;
 use App\Eco\User\User;
 use App\Http\Resources\GenericResource;
 use App\Http\Resources\OrganisationType\FullOrganisationType;
@@ -42,6 +43,8 @@ use App\Http\Resources\Industry\FullIndustry;
 use App\Http\Resources\LastNamePrefix\FullLastNamePrefix;
 use App\Http\Resources\Occupation\FullOccupation;
 use App\Http\Resources\PersonType\FullPersonType;
+use App\Http\Resources\Task\FullTaskPropertyValue;
+use App\Http\Resources\Team\FullTeam;
 use App\Http\Resources\Title\FullTitle;
 use App\Http\Resources\User\FullUser;
 use Illuminate\Http\Resources\Json\Resource;
@@ -84,6 +87,7 @@ class SystemData extends Resource
             'taskTypes' => GenericResource::collection(TaskType::all()),
             'taskProperties' => GenericResource::collection(TaskProperty::all()),
             'users' => FullUser::collection(User::all()),
+            'teams' => FullTeam::collection(Team::all()),
             'campaignStatuses' => FullEnumWithIdAndName::collection(CampaignStatus::all()),
             'campaignTypes' => FullEnumWithIdAndName::collection(CampaignType::all()),
             'emailStatuses' => FullEnumWithIdAndName::collection(EmailStatus::collection()),

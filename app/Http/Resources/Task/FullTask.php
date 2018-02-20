@@ -15,6 +15,7 @@ use App\Http\Resources\ContactGroup\FullContactGroup;
 use App\Http\Resources\GenericResource;
 use App\Http\Resources\Opportunity\FullOpportunity;
 use App\Http\Resources\Intake\FullIntake;
+use App\Http\Resources\Team\FullTeam;
 use App\Http\Resources\User\FullUser;
 use Illuminate\Http\Resources\Json\Resource;
 
@@ -33,6 +34,7 @@ class FullTask extends Resource
             [
                 'id' => $this->id,
                 'note' => $this->note,
+                'noteSummary' => $this->present()->noteSummary(),
                 'typeId' => $this->type_id,
                 'type' => GenericResource::make($this->whenLoaded('type')),
                 'contactId' => $this->contact_id,
@@ -51,6 +53,8 @@ class FullTask extends Resource
                 'dateFinished' => $this->date_finished,
                 'responsibleUserId' => $this->responsible_user_id,
                 'responsibleUser' => FullUser::make($this->whenLoaded('responsibleUser')),
+                'responsibleTeamId' => $this->responsible_team_id,
+                'responsibleTeam' => FullTeam::make($this->whenLoaded('responsibleTeam')),
                 'finishedById' => $this->finished_by_id,
                 'finishedBy' => FullUser::make($this->whenLoaded('finishedBy')),
                 'createdById' => $this->created_by_id,

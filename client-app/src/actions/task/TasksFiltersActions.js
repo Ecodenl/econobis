@@ -23,9 +23,9 @@ export const setFilterTaskDatePlannedStart = (datePlannedStart) => ({
     datePlannedStart,
 });
 
-export const setFilterTaskResponsibleUserName = (responsibleUserName) => ({
-    type: 'SET_FILTER_TASK_RESPONSIBLE_USER_NAME',
-    responsibleUserName,
+export const setFilterTaskResponsibleName = (responsibleName) => ({
+    type: 'SET_FILTER_TASK_RESPONSIBLE_NAME',
+    responsibleName,
 });
 
 export const clearFilterTask = () => ({

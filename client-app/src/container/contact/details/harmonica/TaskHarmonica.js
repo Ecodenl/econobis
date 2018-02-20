@@ -10,7 +10,7 @@ const TaskHarmonica = ({toggleShowList, showTasksList, newTask, taskCount, permi
         <Panel className={"harmonica-button"}>
             <PanelBody>
                 <div className="col-sm-10" onClick={toggleShowList} role="button">
-                    <span className="">TAKEN <span className="badge">{ taskCount }</span></span>
+                    <span className="">OPEN TAKEN <span className="badge">{ taskCount }</span></span>
                 </div>
                 <div className={"col-sm-2"}>
                     {permissions.manageTask &&

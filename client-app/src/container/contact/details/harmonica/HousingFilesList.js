@@ -46,11 +46,8 @@ class HousingFileList extends Component {
                     {housingFiles.map((housingFile, i) => {
                         return (
                             <tr key={i} onClick={() => this.openItem(housingFile.id)}>
-                                <td className='col-xs-4 clickable'>
-                                    { housingFile.createdAt ? moment(housingFile.createdAt.date).format('DD-MM-Y') : '' }
-                                </td>
-                                <td className='col-xs-8 clickable'>
-                                    {housingFile.addressName}
+                                <td className='col-xs-12 clickable'>
+                                    { housingFile.createdAt ? moment(housingFile.createdAt.date).format('DD-MM-Y') : '' } - {housingFile.addressName}
                                 </td>
                             </tr>
                         )

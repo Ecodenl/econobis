@@ -70,7 +70,7 @@ class DashboardButtons extends Component {
                 <div className="col-md-3" onClick={() => hashHistory.push(`/taken`)}>
                     <div className="panel panel-default" id="dashboardbutton-4">
                         <div className="panel-body">
-                            <h4 className="text-center text-bold">TAKEN</h4>
+                            <h4 className="text-center text-bold">OPEN TAKEN</h4>
                             <h4 className="text-center text-bold">{this.state.amountActiveTasks}</h4>
                         </div>
                     </div>

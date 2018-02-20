@@ -6,6 +6,7 @@ use App\Http\Resources\Campaign\FullCampaign;
 use App\Http\Resources\Contact\FullContact;
 use App\Http\Resources\GenericResource;
 use App\Http\Resources\Intake\FullIntake;
+use App\Http\Resources\Task\GridTask;
 use App\Http\Resources\User\FullUser;
 use Illuminate\Http\Resources\Json\Resource;
 
@@ -38,7 +39,7 @@ class FullOpportunity extends Resource
             'relatedOpportunities' => $this->relatedOpportunities(),
             'amountRelatedOpportunities' => count($this->relatedOpportunities()),
             'taskCount' => $this->tasks()->count(),
-            'relatedTasks' => $this->tasks()->get(),
+            'relatedTasks' => GridTask::collection($this->whenLoaded('tasks')),
             'documentCount' => $this->documents()->count(),
             'relatedDocuments' => $this->documents()->get(),
         ];

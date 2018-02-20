@@ -58,6 +58,7 @@ class TaskController extends Controller
             'contactGroup',
             'campaign',
             'responsibleUser',
+            'responsibleTeam',
             'createdBy',
             'updatedBy',
             'finishedBy',
@@ -85,7 +86,7 @@ class TaskController extends Controller
             ->string('startTimePlanned')->whenMissing(null)->onEmpty(null)->alias('start_time_planned')->next()
             ->string('endTimePlanned')->whenMissing(null)->onEmpty(null)->alias('end_time_planned')->next()
             ->date('dateFinished')->validate('date')->whenMissing(null)->onEmpty(null)->alias('date_finished')->next()
-            ->integer('responsibleUserId')->validate(['required', 'exists:users,id'])->alias('responsible_user_id')->next()
+            ->integer('responsibleUserId')->validate('exists:users,id')->whenMissing(null)->onEmpty(null)->alias('responsible_user_id')->next()
             ->integer('responsibleTeamId')->validate('exists:teams,id')->whenMissing(null)->onEmpty(null)->alias('responsible_team_id')->next()
             ->integer('finishedById')->validate('exists:users,id')->whenMissing(null)->onEmpty(null)->alias('finished_by_id')->next()
             ->integer('opportunityId')->validate('exists:opportunities,id')->onEmpty(null)->alias('opportunity_id')->next()
@@ -108,20 +109,20 @@ class TaskController extends Controller
 
         $data = $input->string('note')->next()
             ->integer('typeId')->validate('exists:task_types,id')->alias('type_id')->next()
-            ->integer('contactId')->validate('exists:contacts,id')->whenMissing(null)->onEmpty(null)->alias('contact_id')->next()
-            ->integer('intakeId')->validate('exists:intakes,id')->whenMissing(null)->onEmpty(null)->alias('intake_id')->next()
-            ->integer('contactGroupId')->validate('exists:contact_groups,id')->whenMissing(null)->onEmpty(null)->alias('contact_group_id')->next()
-            ->integer('campaignId')->validate('exists:campaigns,id')->whenMissing(null)->onEmpty(null)->alias('campaign_id')->next()
+            ->integer('contactId')->validate('exists:contacts,id')->alias('contact_id')->next()
+            ->integer('intakeId')->validate('exists:intakes,id')->alias('intake_id')->next()
+            ->integer('contactGroupId')->validate('exists:contact_groups,id')->alias('contact_group_id')->next()
+            ->integer('campaignId')->validate('exists:campaigns,id')->alias('campaign_id')->next()
             ->boolean('finished')->next()
-            ->date('datePlannedStart')->validate('date')->whenMissing(null)->onEmpty(null)->alias('date_planned_start')->next()
-            ->date('datePlannedFinish')->validate('date')->whenMissing(null)->onEmpty(null)->alias('date_planned_finish')->next()
-            ->string('startTimePlanned')->whenMissing(null)->onEmpty(null)->alias('start_time_planned')->next()
-            ->string('endTimePlanned')->whenMissing(null)->onEmpty(null)->alias('end_time_planned')->next()
-            ->date('dateFinished')->validate('date')->whenMissing(null)->onEmpty(null)->alias('date_finished')->next()
-            ->integer('responsibleUserId')->validate('exists:users,id')->alias('responsible_user_id')->next()
-            ->integer('responsibleTeamId')->validate('exists:teams,id')->whenMissing(null)->onEmpty(null)->alias('responsible_team_id')->next()
-            ->integer('finishedById')->validate('exists:users,id')->whenMissing(null)->onEmpty(null)->alias('finished_by_id')->next()
-            ->integer('opportunityId')->validate('exists:opportunities,id')->onEmpty(null)->alias('opportunity_id')->next()
+            ->date('datePlannedStart')->validate('date')->alias('date_planned_start')->next()
+            ->date('datePlannedFinish')->validate('date')->alias('date_planned_finish')->next()
+            ->string('startTimePlanned')->onEmpty(null)->alias('start_time_planned')->next()
+            ->string('endTimePlanned')->onEmpty(null)->alias('end_time_planned')->next()
+            ->date('dateFinished')->validate('date')->alias('date_finished')->next()
+            ->integer('responsibleUserId')->onEmpty(null)->validate('exists:users,id')->alias('responsible_user_id')->next()
+            ->integer('responsibleTeamId')->onEmpty(null)->validate('exists:teams,id')->alias('responsible_team_id')->next()
+            ->integer('finishedById')->validate('exists:users,id')->alias('finished_by_id')->next()
+            ->integer('opportunityId')->validate('exists:opportunities,id')->alias('opportunity_id')->next()
             ->get();
 
         $task->fill($data);
@@ -133,6 +134,35 @@ class TaskController extends Controller
         $task->save();
 
         return $this->show($task);
+    }
+
+    public function duplicate(Task $task)
+    {
+        $task->load('properties');
+
+        $newTask = $task->replicate();
+        $newTask->responsible_user_id = Auth::id();
+        $newTask->responsible_team_id = null;
+        $newTask->date_planned_start = null;
+        $newTask->date_planned_finish = null;
+        $newTask->start_time_planned = null;
+        $newTask->end_time_planned = null;
+
+        if($newTask->finished){
+            $newTask->date_finished = Carbon::today();
+            $newTask->finished_by_id = Auth::id();
+        }
+
+        $newTask->push();
+
+        foreach($task->getRelations() as $relation => $items){
+            foreach($items as $item){
+                unset($item->id);
+                $newTask->{$relation}()->create($item->toArray());
+            }
+        }
+
+        return $this->show($newTask);
     }
 
     public function destroy(Task $task)

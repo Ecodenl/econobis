@@ -29,9 +29,7 @@ class TaskList extends Component {
                     {relatedTasks.map((relatedTask, i) => {
                         return (
                             <tr onClick={() => this.openItem(relatedTask.id)} key={i}>
-                                <td className='col-xs-5 clickable'>{moment(relatedTask.createdAt.date).format('L')}</td>
-                                <td className='col-xs-1 clickable'>-</td>
-                                <td className='col-xs-6 clickable'>{relatedTask.name}</td>
+                                <td className='col-xs-12 clickable'>{moment(relatedTask.createdAt.date).format('L')} - {relatedTask.noteSummary}</td>
                             </tr>
                         )
                     })

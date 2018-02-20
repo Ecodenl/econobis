@@ -16,7 +16,6 @@ class DeleteTask extends GenericDeleteModelJob
     public function handle()
     {
         GenericDeleteModelJob::collection($this->model->properties, $this->force);
-        DeleteTaskAttachment::collection($this->model->attachments, $this->force);
         $this->deleteModel();
     }
 }

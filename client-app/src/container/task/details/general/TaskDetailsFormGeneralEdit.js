@@ -20,6 +20,7 @@ import TaskDetailsFormGeneralEditExtraConnections from "./extra-connections/Task
 import InputTextArea from "../../../../components/form/InputTextarea";
 import InputToggle from "../../../../components/form/InputToggle";
 import PanelHeader from "../../../../components/panel/PanelHeader";
+import InputSelectGroup from "../../../../components/form/InputSelectGroup";
 
 
 class TaskDetailsFormGeneralEdit extends Component {
@@ -71,11 +72,12 @@ class TaskDetailsFormGeneralEdit extends Component {
                 finishedById: finishedById ? finishedById : '',
                 responsibleUserId,
                 responsibleTeamId,
+                responsible: responsibleUserId ? 'user' + responsibleUserId : 'team' + responsibleTeamId,
             },
             errors: {
                 note: false,
                 typeId: false,
-                responsibleUserId: false,
+                responsible: false,
             },
         };
 
@@ -171,9 +173,19 @@ class TaskDetailsFormGeneralEdit extends Component {
             hasErrors = true;
         };
 
-        if(validator.isEmpty(task.responsibleUserId.toString())){
-            errors.responsibleUserId = true;
+        if(validator.isEmpty(task.responsible.toString())){
+            errors.responsible = true;
             hasErrors = true;
+        };
+
+        if(task.responsible.search('user') >= 0 ) {
+            task.responsibleUserId = task.responsible.replace('user', '');
+            task.responsibleTeamId = '';
+        };
+
+        if(task.responsible.search("team") >= 0) {
+            task.responsibleUserId = '';
+            task.responsibleTeamId = task.responsible.replace('team', '');
         };
 
         this.setState({ ...this.state, errors: errors })
@@ -198,7 +210,7 @@ class TaskDetailsFormGeneralEdit extends Component {
             datePlannedFinish,
             startTimePlanned,
             endTimePlanned,
-            responsibleUserId,
+            responsible,
         } = this.state.task;
 
         return (
@@ -267,16 +279,18 @@ class TaskDetailsFormGeneralEdit extends Component {
                         value={finished}
                         onChangeAction={this.handleInputChange}
                     />
-                    <InputSelect
+                    <InputSelectGroup
                         label={"Verantwoordelijke"}
                         size={"col-sm-6"}
-                        name={"responsibleUserId"}
-                        options={this.props.users}
-                        value={responsibleUserId}
+                        name={"responsible"}
+                        optionsInGroups={[
+                            {name: 'user', label: 'Gebruikers', options: this.props.users, optionName: 'fullName'},
+                            {name: 'team', label: 'Teams', options: this.props.teams}
+                            ]}
+                        value={responsible}
                         onChangeAction={this.handleInputChange}
-                        optionName={'fullName'}
                         required={"required"}
-                        error={this.state.errors.responsibleUserId}
+                        error={this.state.errors.responsible}
                     />
                 </div>
 
@@ -351,6 +365,7 @@ const mapStateToProps = (state) => {
         meDetails: state.meDetails,
         permissions: state.systemData.permissions,
         taskTypes: state.systemData.taskTypes,
+        teams: state.systemData.teams,
         users: state.systemData.users,
     };
 };

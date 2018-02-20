@@ -11,7 +11,7 @@ use App\Http\Resources\EmailAddress\FullEmailAddress;
 use App\Http\Resources\EnumWithIdAndName\FullEnumWithIdAndName;
 use App\Http\Resources\Person\FullPerson;
 use App\Http\Resources\PhoneNumber\FullPhoneNumber;
-use App\Http\Resources\Task\FullTask;
+use App\Http\Resources\Task\GridTask;
 use App\Http\Resources\User\FullUser;
 use Illuminate\Http\Resources\Json\Resource;
 
@@ -59,7 +59,7 @@ class FullContact extends Resource
             'relatedOpportunities' => ($this->opportunities()->with('measure', 'status')->get()),
             'groupCount' => $this->groups()->count(),
             'taskCount' => $this->tasks()->count(),
-            'relatedTasks' => FullTask::collection($this->whenLoaded('tasks')),
+            'relatedTasks' => GridTask::collection($this->whenLoaded('tasks')),
             'emailInboxCount' => $this->relatedEmailsInbox ? $this->relatedEmailsInbox->count() : 0,
             'relatedEmailsInbox' => $this->relatedEmailsInbox,
             'emailSentCount' => $this->relatedEmailsSent ? $this->relatedEmailsSent->count() : 0,

@@ -75,7 +75,7 @@ class IntakeDetailsHarmonica extends Component {
                 <Panel className={"harmonica-button"}>
                     <PanelBody>
                         <div className="col-sm-12" onClick={this.toggleTask}>
-                            <span className="">TAKEN <span className="badge">{ this.props.intakeDetails.taskCount }</span></span>
+                            <span className="">OPEN TAKEN <span className="badge">{ this.props.intakeDetails.taskCount }</span></span>
                             {permissions.manageTask &&
                                 <a role="button" className="pull-right" onClick={this.newTask}><span
                                     className="glyphicon glyphicon-plus glyphicon-white"/></a>

@@ -18,6 +18,12 @@ class TaskDetailsApp extends Component {
         this.props.fetchTaskDetails(this.props.params.id);
     }
 
+    componentWillReceiveProps(nextProps) {
+        if(this.props.params.id !== nextProps.params.id) {
+            this.props.fetchTaskDetails(nextProps.params.id);
+        }
+    };
+
     render() {
         return (
             <div className="row">

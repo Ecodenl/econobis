@@ -58,4 +58,9 @@ class Opportunity extends Model
     {
         return $this->hasMany(Document::class);
     }
+
+    public function opportunityEvaluation()
+    {
+        return $this->hasOne(OpportunityEvaluation::class);
+    }
 }

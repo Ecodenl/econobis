@@ -27,6 +27,7 @@ class FullOpportunity extends Resource
             'measure' => FullMeasure::make($this->whenLoaded('measure')),
             'number' => $this->number,
             'status' => GenericResource::make($this->whenLoaded('status')),
+            'opportunityEvaluation' => GenericResource::make($this->whenLoaded('opportunityEvaluation')),
             'intake' => FullIntake::make($this->whenLoaded('intake')),
             'quotationText' => $this->quotation_text,
             'quotationRequests' => FullQuotationRequest::collection($this->whenLoaded('quotationRequests')),

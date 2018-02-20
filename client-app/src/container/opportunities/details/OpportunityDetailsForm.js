@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { isEmpty } from 'lodash';
 
 import OpportunityFormGeneral from './form/OpportunityFormGeneral';
+import OpportunityEvaluationFormGeneral from './evaluation/OpportunityEvaluationFormGeneral';
 import OpportunityDetailsConclusionForm from './conclusion/OpportunityDetailsConclusionForm';
 import OpportunityDetailsQuotationRequests from './quotation-request/OpportunityDetailsQuotationRequests';
 
@@ -21,6 +22,7 @@ class OpportunityDetailsForm extends Component {
                 <div>
                     <OpportunityFormGeneral />
                     <OpportunityDetailsQuotationRequests />
+                    <OpportunityEvaluationFormGeneral />
                     <OpportunityDetailsConclusionForm />
                 </div>
         );

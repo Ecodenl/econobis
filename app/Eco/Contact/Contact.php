@@ -142,7 +142,7 @@ class Contact extends Model
         return $this->hasMany(Intake::class);
     }
 
-    // Only unfinished task is a task
+    // Only an unfinished task is a task
     public function tasks()
     {
         return $this->hasMany(Task::class)->where('finished', false);

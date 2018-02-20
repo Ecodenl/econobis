@@ -36,7 +36,7 @@ class QuotationRequestsListItem extends Component {
         return (
             <tr className={this.state.highlightRow} onDoubleClick={() => this.openItem(id)} onMouseEnter={() => this.onRowEnter()} onMouseLeave={() => this.onRowLeave()}>
                 <td>{ organisation && organisation.name }</td>
-                <td>{ opportunity && opportunity.contact.fullName }</td>
+                <td>{ opportunity && opportunity.intake.contact.fullName }</td>
                 <td>{ opportunity && opportunity.intake.fullAddress }</td>
                 <td>{ opportunity && opportunity.measure.name }</td>
                 <td>{ moment(createdAt.date).format('DD-MM-Y') }</td>

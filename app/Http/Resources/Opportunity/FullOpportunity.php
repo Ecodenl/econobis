@@ -6,6 +6,8 @@ use App\Http\Resources\Campaign\FullCampaign;
 use App\Http\Resources\Contact\FullContact;
 use App\Http\Resources\GenericResource;
 use App\Http\Resources\Intake\FullIntake;
+use App\Http\Resources\Measure\FullMeasure;
+use App\Http\Resources\QuotationRequest\FullQuotationRequest;
 use App\Http\Resources\Task\GridTask;
 use App\Http\Resources\User\FullUser;
 use Illuminate\Http\Resources\Json\Resource;
@@ -22,22 +24,18 @@ class FullOpportunity extends Resource
     {
         return [
             'id' => $this->id,
-            'measure' => GenericResource::make($this->whenLoaded('measure')),
-            'contact' => FullContact::make($this->whenLoaded('contact')),
+            'measure' => FullMeasure::make($this->whenLoaded('measure')),
             'number' => $this->number,
-            'reaction' => GenericResource::make($this->whenLoaded('reaction')),
             'status' => GenericResource::make($this->whenLoaded('status')),
             'intake' => FullIntake::make($this->whenLoaded('intake')),
-            'campaign' => GenericResource::make($this->whenLoaded('campaign')),
             'quotationText' => $this->quotation_text,
-            'quotations' => FullOpportunityQuotation::collection($this->whenLoaded('quotations')),
+            'quotationRequests' => FullQuotationRequest::collection($this->whenLoaded('quotationRequests')),
             'desiredDate' => $this->desired_date,
+            'evaluationAgreedDate' => $this->evaluation_agreed_date,
             'createdBy' => FullUser::make($this->whenLoaded('createdBy')),
-            'ownedBy' => FullUser::make($this->whenLoaded('ownedBy')),
+            'updatedBy' => FullUser::make($this->whenLoaded('updatedBy')),
             'createdAt' => $this->created_at,
             'updatedAt' => $this->updated_at,
-            'relatedOpportunities' => $this->relatedOpportunities(),
-            'amountRelatedOpportunities' => count($this->relatedOpportunities()),
             'taskCount' => $this->tasks()->count(),
             'relatedTasks' => GridTask::collection($this->whenLoaded('tasks')),
             'documentCount' => $this->documents()->count(),

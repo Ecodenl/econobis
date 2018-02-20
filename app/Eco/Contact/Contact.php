@@ -85,11 +85,6 @@ class Contact extends Model
         return $this->hasMany(ContactNote::class);
     }
 
-    public function opportunities()
-    {
-        return $this->hasMany(Opportunity::class);
-    }
-
     public function organisation()
     {
         return $this->hasOne(Organisation::class);

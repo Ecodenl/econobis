@@ -24,7 +24,7 @@ class OpportunityController extends ApiController
     {
         $opportunities = $requestQuery->get();
 
-        $opportunities->load(['contact', 'measure', 'campaign', 'status', 'quotations']);
+        $opportunities->load(['intake.contact', 'measure', 'intake.campaign', 'status', 'quotationRequests']);
 
         return GridOpportunity::collection($opportunities)
             ->additional(['meta' => [
@@ -35,7 +35,7 @@ class OpportunityController extends ApiController
 
     public function show(Opportunity $opportunity)
     {
-        $opportunity->load(['contact', 'measure', 'quotations.organisation', 'quotations.createdBy', 'campaign', 'status', 'createdBy', 'ownedBy', 'reaction', 'intake', 'tasks']);
+        $opportunity->load(['measure.measureCategory', 'quotationRequests.organisation', 'quotationRequests.createdBy', 'quotationRequests.status', 'status', 'createdBy', 'updatedBy', 'intake.contact', 'tasks']);
 
         return FullOpportunity::make($opportunity);
     }
@@ -46,14 +46,11 @@ class OpportunityController extends ApiController
 
         $data = $requestInput
             ->integer('measureId')->validate('required|exists:measures,id')->alias('measure_id')->next()
-            ->integer('contactId')->validate('required|exists:contacts,id')->alias('contact_id')->next()
-            ->integer('reactionId')->validate('exists:opportunity_reactions,id')->onEmpty(null)->alias('reaction_id')->next()
             ->integer('statusId')->validate('required|exists:opportunity_status,id')->alias('status_id')->next()
-            ->integer('intakeId')->validate('exists:intakes,id')->onEmpty(null)->alias('intake_id')->next()
-            ->integer('campaignId')->validate('exists:campaigns,id')->onEmpty(null)->alias('campaign_id')->next()
+            ->integer('intakeId')->validate('required|exists:intakes,id')->onEmpty(null)->alias('intake_id')->next()
             ->string('quotationText')->alias('quotation_text')->next()
-            ->date('desiredDate')->validate('date')->onEmpty(null)->alias('desired_date')->next()
-            ->integer('ownedById')->validate('exists:users,id')->onEmpty(null)->alias('owned_by_id')->next()
+            ->string('desiredDate')->validate('date')->onEmpty(null)->alias('desired_date')->next()
+            ->string('evaluationAgreedDate')->validate('date')->onEmpty(null)->alias('evaluation_agreed_date')->next()
             ->get();
 
         $opportunity = new Opportunity();
@@ -69,14 +66,11 @@ class OpportunityController extends ApiController
 
         $data = $requestInput
             ->integer('measureId')->validate('required|exists:measures,id')->alias('measure_id')->next()
-            ->integer('contactId')->validate('required|exists:contacts,id')->alias('contact_id')->next()
-            ->integer('reactionId')->validate('exists:opportunity_reactions,id')->onEmpty(null)->alias('reaction_id')->next()
             ->integer('statusId')->validate('required|exists:opportunity_status,id')->alias('status_id')->next()
-            ->integer('intakeId')->validate('exists:intakes,id')->onEmpty(null)->alias('intake_id')->next()
-            ->integer('campaignId')->validate('exists:campaigns,id')->onEmpty(null)->alias('campaign_id')->next()
+            ->integer('intakeId')->validate('required|exists:intakes,id')->onEmpty(null)->alias('intake_id')->next()
             ->string('quotationText')->alias('quotation_text')->next()
             ->string('desiredDate')->validate('date')->onEmpty(null)->alias('desired_date')->next()
-            ->integer('ownedById')->validate('exists:users,id')->onEmpty(null)->alias('owned_by_id')->next()
+            ->string('evaluationAgreedDate')->validate('date')->onEmpty(null)->alias('evaluation_agreed_date')->next()
             ->get();
 
         $opportunity->fill($data);
@@ -88,11 +82,6 @@ class OpportunityController extends ApiController
     public function destroy(Opportunity $opportunity)
     {
         $this->authorize('manage', Opportunity::class);
-
-        //First delete foreign key constrained OpportunityQuotations
-        foreach($opportunity->quotations as $quotation){
-            $quotation->delete();
-        }
 
         foreach($opportunity->tasks as $task){
             $task->delete();

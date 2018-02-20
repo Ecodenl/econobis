@@ -20,7 +20,6 @@ use App\Http\RequestQueries\Campaign\Grid\RequestQuery;
 use App\Http\Resources\Campaign\CampaignPeek;
 use App\Http\Resources\Campaign\FullCampaign;
 use App\Http\Resources\Campaign\GridCampaign;
-use App\Http\Resources\Campaign\GridMeasure;
 use App\Http\Resources\Opportunity\FullOpportunity;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -43,10 +42,11 @@ class CampaignController extends ApiController
 
     public function show(Campaign $campaign)
     {
-        $campaign->load(['opportunities.contact',
+        $campaign->load([
             'opportunities.measure',
+            'opportunities.intake.contact',
             'opportunities.status',
-            'opportunities.quotations',
+            'opportunities.quotationRequests',
             'measures',
             'status',
             'type',
@@ -55,6 +55,8 @@ class CampaignController extends ApiController
             'createdBy',
             'ownedBy',
             'tasks',
+            'intakes.contact',
+            'intakes.address'
         ]);
 
         return FullCampaign::make($campaign);

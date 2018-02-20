@@ -17,7 +17,7 @@ const QuotationRequestDetailsFormGeneralView = props => {
                 />
                 <ViewText
                     label={"Verzoek voor"}
-                    value={opportunity.contact && opportunity.contact.fullName}
+                    value={opportunity.intake && opportunity.intake.contact.fullName}
                 />
             </div>
 
@@ -28,37 +28,33 @@ const QuotationRequestDetailsFormGeneralView = props => {
                 />
                 <ViewText
                     label={"Maatregel categorie"}
-                    value={'Todo'}
+                    value={opportunity.measure && opportunity.measure.measureCategory.name}
                 />
             </div>
 
             <div className="row">
-                <ViewText
-                    label={"Datum offerteverzoek"}
-                    value={'Todo'}
-                />
                 <ViewText
                     label={"Maatregel specifiek"}
                     value={opportunity.measure && opportunity.measure.name}
                 />
-            </div>
-
-            <div className="row">
                 <ViewText
                     label={"Datum opname"}
                     value={dateRecorded ? moment(dateRecorded).format('L') : 'Onbekend'}
                 />
-                <ViewText
-                    label={"Offerte status"}
-                    value={status && status.name}
-                />
             </div>
 
             <div className="row">
                 <ViewText
+                    label={"Offerte status"}
+                    value={status && status.name}
+                />
+                <ViewText
                     label={"Offerte uitgebracht"}
                     value={dateReleased ? moment(dateReleased).format('L') : 'Onbekend'}
                 />
+            </div>
+
+            <div className="row">
                 <ViewText
                     label={"Offerte geldig tot"}
                     value={dateValid ? moment(dateValid).format('L') : 'Onbekend'}

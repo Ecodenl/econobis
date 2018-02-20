@@ -6,7 +6,7 @@ import ButtonText from "../../../../components/button/ButtonText";
 moment.locale('nl');
 
 const IntakeMeasuresRequestedView = props => {
-    const {name} = props.measureRequested;
+    const {id, name} = props.measureRequested;
 
     return (
         <div className={`row border ${props.highlightLine}`} onMouseEnter={() => props.onLineEnter()}
@@ -18,7 +18,7 @@ const IntakeMeasuresRequestedView = props => {
                     <div className="col-sm-5">
                         {
                             props.permissions.manageOpportunity &&
-                            <ButtonText buttonText={"Maak kans"} onClickAction={() => hashHistory.push(`/kans/nieuw/intake/${props.intakeId}`)} buttonClassName={'btn-success btn-padding-small'}/>
+                            <ButtonText buttonText={"Maak kans"} onClickAction={() => hashHistory.push(`/kans/nieuw/intake/${props.intakeId}/maatregel/${id}`)} buttonClassName={'btn-success btn-padding-small'}/>
                         }
                     </div>
                 </div>

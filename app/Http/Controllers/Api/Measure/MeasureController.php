@@ -35,8 +35,6 @@ class MeasureController extends ApiController
         $measure->load(['campaigns',
             'faqs',
             'deliveredByOrganisations.contact.primaryAddress',
-            'opportunities.campaign',
-            'opportunities.contact',
             'intakes.contact',
             'addresses.housingFile',
             'addresses.contact',

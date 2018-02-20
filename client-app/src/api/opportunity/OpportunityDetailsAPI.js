@@ -55,30 +55,4 @@ export default {
                 },
             );
     },
-
-    updateOpportunityQuotation: (data) => {
-        const requestUrl = `${URL_OPPORTUNITY}/quotation/${data.id}`;
-        const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
-        axios.defaults.headers.common.Authorization = AUTH_TOKEN;
-
-        return axios.post(requestUrl, data)
-            .then(response => response.data.data)
-            .catch((error) => {
-                    console.log(error);
-                },
-            );
-    },
-
-    storeOpportunityQuotation: (opportunityId, data) => {
-        const requestUrl = `${URL_OPPORTUNITY}/${opportunityId}/quotation`;
-        const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
-        axios.defaults.headers.common.Authorization = AUTH_TOKEN;
-
-        return axios.post(requestUrl, data)
-            .then(response => response.data.data)
-            .catch((error) => {
-                    console.log(error);
-                },
-            );
-    },
 };

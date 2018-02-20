@@ -151,7 +151,7 @@ const Routes = () => {
                 <Route path="gebruikers" component={UsersListApp} />
                 /* Opportunity */
                 <Route path="kans/nieuw" component={OpportunityNewApp} />
-                <Route path="kans/nieuw/:type/:id" component={OpportunityNewApp} />
+                <Route path="kans/nieuw/intake/:intakeId/maatregel/:measureId" component={OpportunityNewApp} />
                 <Route path="kans/:id" component={OpportunityDetailsApp} />
                 <Route path="kansen" component={OpportunitiesListApp} />
                 /* Task / notes */

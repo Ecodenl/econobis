@@ -34,9 +34,9 @@ class Campaign extends Model
 
     public function opportunities()
     {
-        return $this->hasMany(Opportunity::class);
+        return $this->hasManyThrough(Opportunity::class, Intake::class);
     }
-
+    
     public function measures()
     {
         return $this->belongsToMany(Measure::class);

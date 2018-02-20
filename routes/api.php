@@ -130,10 +130,6 @@ Route::namespace('Api')
         Route::post('opportunity/{opportunity}', 'Opportunity\OpportunityController@update');
         Route::post('opportunity/{opportunity}/delete', 'Opportunity\OpportunityController@destroy');
 
-        Route::post('opportunity/{opportunity}/quotation', 'Opportunity\OpportunityQuotationController@store');
-        Route::post('opportunity/quotation/{opportunityQuotation}', 'Opportunity\OpportunityQuotationController@update');
-        Route::post('opportunity/quotation/{opportunityQuotation}/delete', 'Opportunity\OpportunityQuotationController@destroy');
-
         Route::get('contact-group/{contactGroup}/tasks', 'ContactGroup\ContactGroupController@tasks');
 
         Route::get('task/grid/tasks', 'Task\TaskController@gridTask');

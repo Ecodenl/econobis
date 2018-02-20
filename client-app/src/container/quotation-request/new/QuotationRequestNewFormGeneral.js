@@ -47,9 +47,10 @@ class QuotationRequestNewFormGeneral extends Component {
         QuotationRequestDetailsAPI.fetchNewQuotationRequest(this.props.opportunityId).then((payload) => {
             this.setState({
                 opportunity: {
-                    fullName: payload.contact.fullName,
+                    fullName: payload.intake.contact.fullName,
                     fullAddress: payload.intake.fullAddress,
                     measureName: payload.measure.name,
+                    measureCategoryName: payload.measure.measureCategory.name,
                 },
                 quotationRequest: {
                     opportunityId: payload.id,
@@ -58,7 +59,7 @@ class QuotationRequestNewFormGeneral extends Component {
                     statusId: '',
                     dateReleased: '',
                     dateValid: '',
-                    quotationText: payload.measure.description,
+                    quotationText: payload.quotationText ? payload.quotationText : '',
                 }
             });
         });
@@ -123,7 +124,7 @@ class QuotationRequestNewFormGeneral extends Component {
 
     render() {
         const {organisationId, dateRecorded, statusId, dateReleased, dateValid, quotationText} = this.state.quotationRequest;
-        const {fullName, fullAddress, measureName} = this.state.opportunity;
+        const {fullName, fullAddress, measureName, measureCategoryName} = this.state.opportunity;
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -158,20 +159,13 @@ class QuotationRequestNewFormGeneral extends Component {
                     <InputText
                         label={'Maatregel - categorie'}
                         name={"measureCategory"}
-                        value={'Todo'}
+                        value={measureCategoryName}
                         onChange={ () => {} }
                         readOnly={true}
                     />
                 </div>
 
                 <div className="row">
-                    <InputText
-                        label={'Datum offerteverzoek'}
-                        name={"dateRequested"}
-                        value={'Todo'}
-                        onChange={ () => {} }
-                        readOnly={true}
-                    />
                     <InputText
                         label={'Maatregel - specifiek'}
                         name={"measure"}
@@ -179,9 +173,6 @@ class QuotationRequestNewFormGeneral extends Component {
                         onChange={ () => {} }
                         readOnly={true}
                     />
-                </div>
-
-                <div className="row">
                     <InputDate
                         label="Datum opname"
                         size={"col-sm-6"}
@@ -190,6 +181,9 @@ class QuotationRequestNewFormGeneral extends Component {
                         onChangeAction={this.handleInputChangeDate}
 
                     />
+                </div>
+
+                <div className="row">
                     <InputSelect
                         label={"Offerte status"}
                         size={"col-sm-6"}
@@ -200,9 +194,6 @@ class QuotationRequestNewFormGeneral extends Component {
                         required={"required"}
                         error={this.state.errors.status}
                     />
-                </div>
-
-                <div className="row">
                     <InputDate
                         label="Offerte uitgebracht"
                         size={"col-sm-6"}
@@ -210,6 +201,9 @@ class QuotationRequestNewFormGeneral extends Component {
                         value={dateReleased}
                         onChangeAction={this.handleInputChangeDate}
                     />
+                </div>
+
+                <div className="row">
                     <InputDate
                         label="Offerte geldig tot"
                         size={"col-sm-6"}

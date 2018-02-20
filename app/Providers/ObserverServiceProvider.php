@@ -18,8 +18,6 @@ use App\Eco\Measure\Measure;
 use App\Eco\Measure\MeasureObserver;
 use App\Eco\Opportunity\Opportunity;
 use App\Eco\Opportunity\OpportunityObserver;
-use App\Eco\Opportunity\OpportunityQuotation;
-use App\Eco\Opportunity\OpportunityQuotationObserver;
 use App\Eco\Organisation\Organisation;
 use App\Eco\Organisation\OrganisationObserver;
 use App\Eco\Address\Address;
@@ -60,7 +58,6 @@ class ObserverServiceProvider extends ServiceProvider
         ContactNote::observe(ContactNoteObserver::class);
         ContactGroup::observe(ContactGroupObserver::class);
         Opportunity::observe(OpportunityObserver::class);
-        OpportunityQuotation::observe(OpportunityQuotationObserver::class);
         Campaign::observe(CampaignObserver::class);
         Measure::observe(MeasureObserver::class);
         EmailTemplate::observe(EmailTemplateObserver::class);

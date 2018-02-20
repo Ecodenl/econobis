@@ -55,8 +55,6 @@ class FullContact extends Resource
             'updatedBy' => FullUser::make($this->whenLoaded('updatedBy')),
             'intakeCount' => $this->intakes()->count(),
             'housingFileCount' => $this->housingFiles()->count(),
-            'opportunityCount' => $this->opportunities()->count(),
-            'relatedOpportunities' => ($this->opportunities()->with('measure', 'status')->get()),
             'groupCount' => $this->groups()->count(),
             'taskCount' => $this->tasks()->count(),
             'relatedTasks' => GridTask::collection($this->whenLoaded('tasks')),

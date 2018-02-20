@@ -7,72 +7,58 @@ import ViewText from '../../../../components/form/ViewText';
 import ViewHtmlAsText from '../../../../components/form/ViewHtmlAsText';
 
 const OpportunityFormView = props => {
-    const {campaign, contact, desiredDate, measure, number, quotationText, reaction, status, ownedBy, intake} = props.opportunity;
+    const { status, quotationText, evaluationAgreedDate, desiredDate, intake, measure } = props.opportunity;
 
     return (
         <div>
             <div className="row" onClick={props.switchToEdit}>
                 <ViewText
-                    label={"Type kans"}
-                    value={measure.name}
-                />
-                <ViewText
-                    label={"Kans nummer"}
-                    value={number}
-                />
-            </div>
-            <div className="row" onClick={props.switchToEdit}>
-                <ViewText
                     label={"Contact"}
-                    value={contact.fullName}
-                    link={'contact/' + contact.id}
+                    value={intake && intake.contact.fullName}
                 />
                 <ViewText
-                    label={"Reactie"}
-                    value={reaction ? reaction.name : ''}
+                    label={"Adres"}
+                    value={intake && intake.fullAddress}
                 />
             </div>
             <div className="row" onClick={props.switchToEdit}>
                 <ViewText
-                    label={"Intake"}
-                    value={intake ? "Intake: " + intake.id : ''}
-                    link={intake ? 'intake/' + intake.id : ''}
+                    label={"Maatregel - categorie"}
+                    value={measure && measure.measureCategory.name}
+                />
+                <ViewText
+                    label={"Campagne"}
+                    value={intake.campaign ? intake.campaign.name : ''}
+                />
+            </div>
+            <div className="row" onClick={props.switchToEdit}>
+                <ViewText
+                    label={"Maatregel - specifiek"}
+                    value={measure && measure.name}
                 />
                 <ViewText
                     label={"Status"}
-                    value={status.name}
+                    value={status && status.name}
                 />
             </div>
 
             <div className="row" onClick={props.switchToEdit}>
-                <div className='col-sm-12'>
-                    <div className="row">
-                        <div className="col-sm-3">
-                            <label className="col-sm-12">Campagne</label>
-                        </div>
-                        <div className="col-sm-8">
-                            <Link to={campaign ? 'campagne/' + campaign.id : ''}
-                                  className="link-underline">{campaign ? campaign.name : ''}</Link>
-                        </div>
-                    </div>
+                <div className="col-sm-3">
+                    <label htmlFor="quotationText" className="col-sm-12">Toelichting op maatregel</label>
+                </div>
+                <div className="col-sm-9" id="quotationText">
+                    {quotationText}
                 </div>
             </div>
 
             <div className="row" onClick={props.switchToEdit}>
-                <ViewHtmlAsText
-                    label={"Offerte tekst"}
-                    value={quotationText}
-                />
-            </div>
-            <div className="row" onClick={props.switchToEdit}>
                 <ViewText
-                    label={"Gewenste realisatie"}
+                    label={"Datum realisatie gepland"}
                     value={desiredDate ? moment(desiredDate).format('L') : ''}
                 />
                 <ViewText
-                    label={"Verantwoordelijke"}
-                    value={ownedBy ? ownedBy.fullName : ''}
-                    link={ownedBy ? 'gebruiker/' + ownedBy.id : ''}
+                    label={"Datum evaluatie akkoord"}
+                    value={evaluationAgreedDate ? moment(evaluationAgreedDate).format('L') : ''}
                 />
             </div>
         </div>

@@ -9,24 +9,20 @@ import PanelFooter from "../../../../components/panel/PanelFooter";
 
 import MeasureAPI from '../../../../api/measure/MeasureAPI';
 
-import { fetchMeasure } from '../../../../actions/measure/MeasureActions';
+import { fetchMeasure } from '../../../../actions/measure/MeasureDetailsActions';
+import InputTextArea from "../../../../components/form/InputTextarea";
 
 class MeasureFormEdit extends Component {
     constructor(props) {
         super(props);
 
-        const {id, name, number, description} = props.measure;
+        const {id, description} = props.measureDetails;
 
         this.state = {
             measure: {
                 id,
-                name,
-                number,
                 description: description ? description : '',
-            },
-            errors: {
-                name: false,
-            },
+            }
         }
     };
 
@@ -50,17 +46,6 @@ class MeasureFormEdit extends Component {
 
         const {measure} = this.state;
 
-        let errors = {};
-        let hasErrors = false;
-
-        if(validator.isEmpty(measure.name)){
-            errors.name = true;
-            hasErrors = true;
-        };
-
-        this.setState({ ...this.state, errors: errors });
-
-        !hasErrors &&
         MeasureAPI.updateMeasure(measure.id, measure).then(payload => {
             this.props.fetchMeasure(measure.id);
             this.props.switchToView();
@@ -68,19 +53,18 @@ class MeasureFormEdit extends Component {
     };
 
     render() {
-        const {id, name, number, description}  = this.state.measure;
+        const { description}  = this.state.measure;
+        const { name, number, measureCategory = {} } = this.props.measureDetails;
 
         return (
             <form className="form-horizontal col-md-12" onSubmit={this.handleSubmit}>
                 <div className="row">
                     <InputText
-                        label={"Maatregel"}
-                        size={"col-sm-6"}
-                        name={"name"}
-                        value={name}
-                        onChangeAction={this.handleInputChange}
-                        required={"required"}
-                        error={this.state.errors.name}
+                        label={"Maatregel categorie"}
+                        name={"measureCategory"}
+                        value={measureCategory.name}
+                        onChangeAction={() => {}}
+                        readOnly={true}
                     />
                     <InputText
                         label={"Nummer"}
@@ -91,17 +75,22 @@ class MeasureFormEdit extends Component {
                 </div>
 
                 <div className="row">
-                    <div className="form-group col-sm-12">
-                        <div className="row">
-                            <div className="col-sm-3">
-                                <label htmlFor="description" className="col-sm-12">Beschrijving</label>
-                            </div>
-                            <div className="col-sm-8">
-                                <textarea name='description' value={description} onChange={this.handleInputChange}
-                                          className="form-control input-sm"/>
-                            </div>
-                        </div>
-                    </div>
+                    <InputText
+                        label={"Maatregel specifiek"}
+                        name={"name"}
+                        value={name}
+                        onChangeAction={() => {}}
+                        readOnly={true}
+                    />
+                </div>
+
+                <div className="row">
+                    <InputTextArea
+                        label={"Beschrijving"}
+                        name={"description"}
+                        value={description}
+                        onChangeAction={this.handleInputChange}
+                    />
                 </div>
 
                 <PanelFooter>
@@ -125,7 +114,7 @@ const mapDispatchToProps = dispatch => ({
 
 const mapStateToProps = (state) => {
     return {
-        measure: state.measure,
+        measureDetails: state.measureDetails,
     }
 };
 

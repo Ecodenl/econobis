@@ -77,10 +77,6 @@ class Document extends Model
         return $this->belongsTo(Campaign::class);
     }
 
-    public function measure(){
-        return $this->belongsTo(Measure::class);
-    }
-
     public function task(){
         return $this->belongsTo(Task::class);
     }

@@ -29,7 +29,7 @@ const MeasureDetailsMeasuresRequestedList = props => {
 
 const mapStateToProps = (state) => {
     return {
-        measuresRequested: state.measure.measuresRequested,
+        measuresRequested: state.measureDetails.measuresRequested,
     };
 };
 export default connect(mapStateToProps)(MeasureDetailsMeasuresRequestedList);

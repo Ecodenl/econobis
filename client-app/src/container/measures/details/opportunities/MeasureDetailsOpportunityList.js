@@ -30,7 +30,7 @@ const MeasureDetailsOpportunityList = props => {
 
 const mapStateToProps = (state) => {
     return {
-        opportunities: state.measure.opportunities,
+        opportunities: state.measureDetails.opportunities,
     };
 };
 export default connect(mapStateToProps)(MeasureDetailsOpportunityList);

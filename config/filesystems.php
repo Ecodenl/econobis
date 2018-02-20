@@ -48,9 +48,9 @@ return [
             'root' => storage_path('app'),
         ],
 
-        'task_attachments' => [
+        'measure_attachments' => [
             'driver' => 'local',
-            'root' => storage_path('app' . DIRECTORY_SEPARATOR . 'tasks'),
+            'root' => storage_path('app' . DIRECTORY_SEPARATOR . 'measures'),
         ],
 
         'documents' => [

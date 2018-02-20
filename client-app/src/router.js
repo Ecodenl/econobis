@@ -44,7 +44,6 @@ import MailboxNewApp from './container/mailbox/new/MailboxNewApp';
 import MailboxesListApp from './container/mailbox/list/MailboxesListApp';
 import Main from './container/global/Main';
 import MeasuresListApp from './container/measures/list/MeasuresListApp';
-import MeasureNewApp from './container/measures/new/MeasureNewApp';
 import MeasureDetailsApp from './container/measures/details/MeasureDetailsApp';
 import NotFoundedPage from './container/global/NotFoundedPage';
 import OpportunitiesListApp from './container/opportunities/list/OpportunitiesListApp';
@@ -127,7 +126,6 @@ const Routes = () => {
                 <Route path="campagnes" component={CampaignsListApp} />
                 /* Measures */
                 <Route path="maatregelen" component={MeasuresListApp} />
-                <Route path="maatregel/nieuw" component={MeasureNewApp} />
                 <Route path="maatregel/:id" component={MeasureDetailsApp} />
                 /* Mailboxes */
                 <Route path="mailbox/nieuw" component={MailboxNewApp} />

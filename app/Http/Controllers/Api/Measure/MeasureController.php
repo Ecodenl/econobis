@@ -19,6 +19,7 @@ use App\Http\Resources\Measure\FullMeasure;
 use App\Http\Resources\Measure\GridMeasure;
 use App\Http\Resources\Measure\MeasurePeek;
 use App\Http\Resources\Opportunity\FullOpportunity;
+use App\Http\Resources\Measure\FullMeasureAttachment;
 
 class MeasureController extends ApiController
 {
@@ -40,26 +41,11 @@ class MeasureController extends ApiController
             'addresses.contact',
             'createdBy',
             'addresses',
-            'measureCategory'
+            'measureCategory',
+            'attachments',
         ]);
 
         return FullMeasure::make($measure);
-    }
-
-    public function store(RequestInput $requestInput)
-    {
-        $this->authorize('manage', Measure::class);
-
-        $data = $requestInput
-            ->string('name')->validate('required')->next()
-            ->string('description')->onEmpty(null)->next()
-            ->get();
-
-        $measure = new Measure();
-        $measure->fill($data);
-        $measure->save();
-
-        return FullMeasure::make($measure->fresh());
     }
 
     public function update(RequestInput $requestInput, Measure $measure)
@@ -68,8 +54,6 @@ class MeasureController extends ApiController
         $this->authorize('manage', Measure::class);
 
         $data = $requestInput
-            ->string('name')->validate('required')->next()
-            ->string('number')->validate('required')->next()
             ->string('description')->onEmpty(null)->next()
             ->get();
 
@@ -77,26 +61,6 @@ class MeasureController extends ApiController
         $measure->save();
 
         return FullMeasure::make($measure->fresh());
-    }
-
-    //TODO NOT WORKING!!
-    public function destroy(Measure $measure)
-    {
-        $this->authorize('manage', Measure::class);
-
-        //First delete relations
-        $measure->addresses()->detach();
-
-        foreach ($measure->opportunities as $opportunity) {
-            $opportunity->measure()->dissociate();
-            $opportunity->save();
-        }
-
-        $measure->faqs()->delete();
-        $measure->measuresTaken()->delete();
-        $measure->measuresRequested()->delete();
-
-        $measure->delete();
     }
 
     public function storeFaq(RequestInput $requestInput, Measure $measure)
@@ -159,5 +123,10 @@ class MeasureController extends ApiController
     public function peek()
     {
         return MeasurePeek::collection(Measure::orderBy('id')->get());
+    }
+
+    public function attachments(Measure $measure)
+    {
+        return FullMeasureAttachment::collection($measure->attachments);
     }
 }

@@ -46,7 +46,7 @@ class CampaignList extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        relatedCampaigns: state.measure.relatedCampaigns,
+        relatedCampaigns: state.measureDetails.relatedCampaigns,
     };
 };
 

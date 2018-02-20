@@ -2,6 +2,7 @@ import React from 'react';
 import {connect} from 'react-redux';
 import moment from 'moment';
 import {hashHistory, Link} from "react-router";
+import ButtonText from "../../../../components/button/ButtonText";
 moment.locale('nl');
 
 const IntakeMeasuresRequestedView = props => {
@@ -15,9 +16,10 @@ const IntakeMeasuresRequestedView = props => {
                         {name}
                     </div>
                     <div className="col-sm-5">
-                        {(props.permissions.manageOpportunity ?
-                        <Link onClick={() => hashHistory.push(`/kans/nieuw/intake/${props.intakeId}/maatregel/${id}`)} className='"link-underline"'> {'Maak kans'}</Link>
-                            : '')}
+                        {
+                            props.permissions.manageOpportunity &&
+                            <ButtonText buttonText={"Maak kans"} onClickAction={() => hashHistory.push(`/kans/nieuw/intake/${props.intakeId}/maatregel/${id}`)} buttonClassName={'btn-success btn-padding-small'}/>
+                        }
                     </div>
                 </div>
             <div className="col-sm-1">

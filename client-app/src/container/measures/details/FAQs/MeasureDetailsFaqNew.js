@@ -8,7 +8,7 @@ import InputText from '../../../../components/form/InputText';
 import ButtonText from '../../../../components/button/ButtonText';
 import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
-import { fetchMeasure } from '../../../../actions/measure/MeasureActions';
+import { fetchMeasure } from '../../../../actions/measure/MeasureDetailsActions';
 
 class MeasureDetailsFaqNew extends Component {
     constructor(props) {
@@ -137,7 +137,7 @@ class MeasureDetailsFaqNew extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        measureId: state.measure.id,
+        measureId: state.measureDetails.id,
     };
 };
 

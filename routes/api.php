@@ -165,7 +165,6 @@ Route::namespace('Api')
         Route::get('measure/grid', 'Measure\MeasureController@grid');
         Route::get('measure/peek', 'Measure\MeasureController@peek');
         Route::get('measure/{measure}', 'Measure\MeasureController@show');
-        Route::post('measure/', 'Measure\MeasureController@store');
         Route::post('measure/faq/{measureFaq}/delete', 'Measure\MeasureController@destroyFaq');
         Route::post('measure/faq/{measureFaq}/update', 'Measure\MeasureController@updateFaq');
         Route::post('measure/{measure}/opportunity/{opportunity}/associate', 'Measure\MeasureController@associateOpportunity');
@@ -174,6 +173,11 @@ Route::namespace('Api')
         Route::post('measure/{measure}/faq', 'Measure\MeasureController@storeFaq');
         Route::post('measure/{measure}', 'Measure\MeasureController@update');
         Route::post('measure/{measure}/delete', 'Measure\MeasureController@destroy');
+        Route::get('measure/{measure}/attachments', 'Measure\MeasureController@attachments');
+        Route::post('measure/{measure}/attachments', 'Measure\MeasureAttachmentController@store');
+
+        Route::get('measure-attachment/{measureAttachment}/download', 'Measure\MeasureAttachmentController@download');
+        Route::post('measure-attachment/{measureAttachment}/delete', 'Measure\MeasureAttachmentController@destroy');
 
         Route::get('mailbox/grid', 'Mailbox\MailboxController@grid');
         Route::get('mailbox/logged-in/email-peek', 'Mailbox\MailboxController@loggedInEmailPeek');

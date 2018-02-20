@@ -9,6 +9,7 @@ use App\Http\Resources\HousingFile\FullHousingFile;
 use App\Http\Resources\Opportunity\FullOpportunity;
 use App\Http\Resources\Organisation\FullOrganisation;
 use App\Http\Resources\Intake\FullIntake;
+use App\Http\Resources\Measure\FullMeasureAttachment;
 use App\Http\Resources\User\FullUser;
 use Illuminate\Http\Resources\Json\Resource;
 
@@ -39,6 +40,8 @@ class FullMeasure extends Resource
             'measuresRequested' => FullIntake::collection($this->whenLoaded('intakes')),
             'campaignCount' => $this->campaigns()->count(),
             'relatedCampaigns' => $this->campaigns()->get(),
+            'attachments' => FullMeasureAttachment::collection($this->whenLoaded('attachments')),
+            'attachmentCount' => $this->attachments()->count(),
         ];
     }
 }

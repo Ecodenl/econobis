@@ -15,7 +15,8 @@ import { fetchEmailsSaga, fetchEmailSaga } from './email/EmailsSaga';
 import { fetchEmailTemplatesSaga, fetchEmailTemplateSaga } from './email-template/EmailTemplatesSaga';
 import { fetchMailboxDetailsSaga, deleteMailboxSaga, deleteMailboxUserSaga } from './mailbox/MailboxDetailsSaga';
 import { fetchMailboxesSaga } from './mailbox/MailboxesSaga';
-import { fetchMeasuresSaga, fetchMeasureSaga } from './measure/MeasuresSaga';
+import { fetchMeasuresSaga } from './measure/MeasuresSaga';
+import { fetchMeasureSaga } from './measure/MeasureDetailsSaga';
 import { fetchOpportunitiesSaga } from './opportunity/OpportunitiesSaga';
 import { fetchOpportunitySaga } from './opportunity/OpportunityDetailsSaga';
 import {

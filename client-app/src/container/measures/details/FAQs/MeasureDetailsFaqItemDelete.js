@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import Modal from '../../../../components/modal/Modal';
-import { fetchMeasure } from '../../../../actions/measure/MeasureActions';
+import { fetchMeasure } from '../../../../actions/measure/MeasureDetailsActions';
 import MeasureAPI from "../../../../api/measure/MeasureAPI";
 
 const MeasureDetailsFaqItemDelete = (props) => {
@@ -31,7 +31,7 @@ const MeasureDetailsFaqItemDelete = (props) => {
 
 const mapStateToProps = (state) => {
     return {
-        measureId: state.measure.id,
+        measureId: state.measureDetails.id,
     };
 };
 

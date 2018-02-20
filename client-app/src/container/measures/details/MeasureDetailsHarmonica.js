@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import Panel from "../../../components/panel/Panel";
 import PanelBody from '../../../components/panel/PanelBody';
 import CampaignList from "./harmonica/CampaignList";
+import UploadHarmonica from "./harmonica/UploadHarmonica";
 
 class MeasureDetailsHarmonica extends Component {
     constructor(props){
@@ -12,7 +13,13 @@ class MeasureDetailsHarmonica extends Component {
 
         this.state = {
             toggleShowCampaigns: false,
+            toggleShowList: {
+                uploads: false,
+            },
         }
+
+        this.toggleShowList = this.toggleShowList.bind(this);
+        this.toggleUploadfile = this.toggleUploadfile.bind(this);
     };
 
     newCampaign = () => {
@@ -25,6 +32,22 @@ class MeasureDetailsHarmonica extends Component {
         });
     };
 
+    toggleShowList(name) {
+        this.setState({
+            ...this.state,
+            toggleShowList: {
+                ...this.state.toggleShowList,
+                [name]: !this.state.toggleShowList[name],
+            }
+        });
+    };
+
+    toggleUploadfile() {
+        this.setState({
+            showModalUploadfile: !this.state.showModalUploadfile
+        });
+    };
+
     render(){
         const { permissions = {} } = this.props;
         return (
@@ -32,7 +55,7 @@ class MeasureDetailsHarmonica extends Component {
                 <Panel className={"harmonica-button"}>
                     <PanelBody>
                         <div className="col-sm-12" onClick={this.toggleShowCampaigns}>
-                            <span className="">CAMPAGNES <span className="badge">{ this.props.measure.campaignCount }</span></span>
+                            <span className="">CAMPAGNES <span className="badge">{ this.props.measureDetails.campaignCount }</span></span>
                             {permissions.manageMarketing &&
                             <a role="button" className="pull-right" onClick={this.newCampaign}><span
                                 className="glyphicon glyphicon-plus glyphicon-white"/></a>
@@ -41,6 +64,14 @@ class MeasureDetailsHarmonica extends Component {
                         </div>
                     </PanelBody>
                 </Panel>
+                <UploadHarmonica
+                    toggleShowList={() => this.toggleShowList('uploads')}
+                    showUploadsList={this.state.toggleShowList.uploads}
+                    toggleUploadfile={this.toggleUploadfile}
+                    showModalUploadfile={this.state.showModalUploadfile}
+                    attachmentCount={this.props.measureDetails.attachmentCount}
+                    id={this.props.measureDetails.id}
+                />
             </div>
         )
     }
@@ -48,7 +79,7 @@ class MeasureDetailsHarmonica extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        measure: state.measure,
+        measureDetails: state.measureDetails,
         permissions: state.meDetails.permissions
     };
 };

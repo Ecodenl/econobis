@@ -26,7 +26,7 @@ class IntakeMeasuresRequested extends Component {
         return (
             <Panel>
               <PanelHeader>
-                <span className="h5 text-bold">Gewenste maatregelen</span>
+                <span className="h5 text-bold">Interesses</span>
                   {this.props.permissions.manageIntake &&
                   <a role="button" className="pull-right" onClick={this.toggleShowNew}><span
                       className="glyphicon glyphicon-plus"/></a>

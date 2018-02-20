@@ -2,10 +2,8 @@ import React, {Component} from 'react';
 import { hashHistory } from 'react-router';
 import { connect } from 'react-redux';
 
-import Panel from "../../../../components/panel/Panel";
-import PanelBody from '../../../../components/panel/PanelBody';
-import OpportunityList from './OpportunityList';
-import TaskList from './TaskList';
+import TaskHarmonica from "./TaskHarmonica";
+import NoteHarmonica from "./NoteHarmonica";
 import DocumentHarmonica from "./DocumentHarmonica";
 
 class IntakeDetailsHarmonica extends Component {
@@ -14,30 +12,23 @@ class IntakeDetailsHarmonica extends Component {
 
         this.state = {
             toggleShowOpportunities: false,
-            toggleShowTasks: false,
             toggleShowList: {
                 documents: false,
+                tasks: false,
+                notes: false,
             },
         };
 
+        this.newTask = this.newTask.bind(this);
+        this.newDocument = this.newDocument.bind(this);
         this.toggleShowList = this.toggleShowList.bind(this);
     };
 
-    newOpportunity = () => {
-        hashHistory.push(`/kans/nieuw/intake/${this.props.id}`);
-    };
-
-    toggleOpportunity = () => {
-        this.setState({
-            toggleShowOpportunities: !this.state.toggleShowOpportunities
-        });
-    };
-
-    newTask = () => {
+    newTask() {
         hashHistory.push(`/taak/nieuw/intake/${this.props.id}`);
     };
 
-    newDocument = (type) => {
+    newDocument(type) {
         hashHistory.push(`/document/nieuw/${type}/intake/${this.props.id}`);
     };
 
@@ -51,39 +42,21 @@ class IntakeDetailsHarmonica extends Component {
         });
     };
 
-    toggleTask = () => {
-        this.setState({
-            toggleShowTasks: !this.state.toggleShowTasks
-        });
-    };
-    render(){
-        const { permissions = {} } = this.props;
+    render() {
         return (
             <div className="col-md-12 margin-10-top">
-                <Panel className={"harmonica-button"}>
-                    <PanelBody>
-                        <div className="col-sm-12" onClick={this.toggleOpportunity}>
-                            <span className="">KANSEN <span className="badge">{ this.props.intakeDetails.opportunityCount }</span></span>
-                            {permissions.manageOpportunity &&
-                                <a role="button" className="pull-right" onClick={this.newOpportunity}><span
-                                    className="glyphicon glyphicon-plus glyphicon-white"/></a>
-                            }
-                            { this.state.toggleShowOpportunities && <OpportunityList /> }
-                        </div>
-                    </PanelBody>
-                </Panel>
-                <Panel className={"harmonica-button"}>
-                    <PanelBody>
-                        <div className="col-sm-12" onClick={this.toggleTask}>
-                            <span className="">OPEN TAKEN <span className="badge">{ this.props.intakeDetails.taskCount }</span></span>
-                            {permissions.manageTask &&
-                                <a role="button" className="pull-right" onClick={this.newTask}><span
-                                    className="glyphicon glyphicon-plus glyphicon-white"/></a>
-                            }
-                            { this.state.toggleShowTasks && <TaskList /> }
-                        </div>
-                    </PanelBody>
-                </Panel>
+                <TaskHarmonica
+                    toggleShowList={() => this.toggleShowList('tasks')}
+                    showTasksList={this.state.toggleShowList.tasks}
+                    newTask={this.newTask}
+                    taskCount={this.props.intakeDetails.taskCount}
+                />
+                <NoteHarmonica
+                    toggleShowList={() => this.toggleShowList('notes')}
+                    showNotesList={this.state.toggleShowList.notes}
+                    newTask={this.newTask}
+                    noteCount={this.props.intakeDetails.noteCount}
+                />
                 <DocumentHarmonica
                     toggleShowList={() => this.toggleShowList('documents')}
                     showDocumentsList={this.state.toggleShowList.documents}
@@ -98,7 +71,6 @@ class IntakeDetailsHarmonica extends Component {
 const mapStateToProps = (state) => {
     return {
         intakeDetails: state.intakeDetails,
-        permissions: state.meDetails.permissions
     };
 };
 

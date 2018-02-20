@@ -60,7 +60,7 @@ class IntakeController extends ApiController
             'opportunities.quotations',
             'opportunities.status',
             'tasks',
-//            'notes',
+            'notes',
             'documents',
             'emails',
             'createdBy',

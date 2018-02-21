@@ -20,7 +20,7 @@ class DocumentsList extends Component {
         return (
             <div>
                 {relatedDocuments == '' &&
-                <div>Geen taken gevonden</div>
+                <div>Geen documenten gevonden</div>
                 }
 
                 {relatedDocuments != '' &&
@@ -45,7 +45,7 @@ class DocumentsList extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        relatedDocuments: state.intakeDetails.relatedDocuments,
+        relatedDocuments: state.quotationRequestDetails.relatedDocuments,
     };
 };
 

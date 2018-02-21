@@ -9,6 +9,7 @@
 namespace App\Http\Controllers\Api\QuotationRequest;
 
 
+use App\Eco\Email\Email;
 use App\Eco\Opportunity\Opportunity;
 use App\Eco\QuotationRequest\QuotationRequest;
 use App\Http\Controllers\Api\ApiController;
@@ -19,7 +20,7 @@ use App\Http\Resources\QuotationRequest\FullQuotationRequest;
 use App\Http\Resources\QuotationRequest\GridQuotationRequest;
 use App\Http\Resources\QuotationRequest\QuotationRequestPeek;
 use Illuminate\Http\Request;
-use phpDocumentor\Reflection\DocBlock\Tags\Generic;
+use Illuminate\Support\Facades\Auth;
 
 class QuotationRequestController extends ApiController
 {
@@ -49,10 +50,13 @@ class QuotationRequestController extends ApiController
             'organisation',
             'opportunity.intake.contact',
             'opportunity.measure.measureCategory',
+            'documents',
             'status',
             'createdBy',
             'updatedBy'
         ]);
+
+        $quotationRequest->relatedEmailsSent = $this->getRelatedEmails($quotationRequest->id, 'sent');
 
         return FullQuotationRequest::make($quotationRequest);
     }
@@ -173,13 +177,18 @@ class QuotationRequestController extends ApiController
         return true;
     }
 
-    public function documents(QuotationRequest $quotationRequest)
-    {
-        return SidebarDocument::collection($quotationRequest->documents);
-    }
-
     public function peek()
     {
         return QuotationRequestPeek::collection(QuotationRequest::orderBy('id')->get());
     }
+
+    public function getRelatedEmails($id, $folder)
+    {
+        $user = Auth::user();
+
+        $mailboxIds = $user->mailboxes()->pluck('mailbox_id');
+
+        return Email::whereIn('mailbox_id', $mailboxIds)->where('quotation_request_id', $id)->where('folder', $folder)->get();
+    }
+
 }

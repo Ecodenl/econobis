@@ -7,6 +7,7 @@ import QuotationRequestDetailsForm from './QuotationRequestDetailsForm';
 
 import PanelBody from "../../../components/panel/PanelBody";
 import Panel from "../../../components/panel/Panel";
+import QuotationRequestDetailsHarmonica from "./harmonica/QuotationRequestDetailsHarmonica";
 
 class QuotationRequestDetailsApp extends Component {
     constructor(props) {
@@ -31,7 +32,7 @@ class QuotationRequestDetailsApp extends Component {
                 </div>
               <Panel className="col-md-3" >
                   <PanelBody>
-                    {/*<HousingFileDetailsHarmonica id={this.props.params.id}/>*/}
+                    <QuotationRequestDetailsHarmonica id={this.props.params.id}/>
                   </PanelBody>
               </Panel>
             </div>

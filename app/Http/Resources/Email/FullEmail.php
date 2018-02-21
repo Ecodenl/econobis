@@ -15,6 +15,7 @@ use App\Http\Resources\GenericResource;
 use App\Http\Resources\Intake\FullIntake;
 use App\Http\Resources\Mailbox\FullMailbox;
 use App\Http\Resources\Measure\FullMeasure;
+use App\Http\Resources\QuotationRequest\FullQuotationRequest;
 use App\Http\Resources\Task\FullTask;
 use App\Http\Resources\User\FullUser;
 use Illuminate\Http\Resources\Json\Resource;
@@ -43,7 +44,7 @@ class FullEmail extends Resource
             'contact' => FullContact::make($this->whenLoaded('contact')),
             'intake' => FullIntake::make($this->whenLoaded('intake')),
             'task' => FullTask::make($this->whenLoaded('task')),
-            'quotationRequest' => FullContact::make($this->whenLoaded('quotationRequest')),
+            'quotationRequest' => FullQuotationRequest::make($this->whenLoaded('quotationRequest')),
             'measure' => FullMeasure::make($this->whenLoaded('measure')),
             'attachments' => GenericResource::collection($this->whenLoaded('attachments')),
             'status' => FullEnumWithIdAndName::make($this->getStatus()),

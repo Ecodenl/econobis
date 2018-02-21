@@ -17,6 +17,7 @@ import OpportunityDetailsAPI from '../../../../api/opportunity/OpportunityDetail
 import { fetchOpportunity } from '../../../../actions/opportunity/OpportunityDetailsActions';
 import InputReactSelect from "../../../../components/form/InputReactSelect";
 import InputToggle from "../../../../components/form/InputToggle";
+import InputTextArea from "../../../../components/form/InputTextarea";
 
 class OpportunityEvaluationFormEdit extends Component {
     constructor(props) {
@@ -100,17 +101,7 @@ class OpportunityEvaluationFormEdit extends Component {
                 </div>
 
                 <div className="row">
-                    <div className="form-group col-sm-12">
-                        <div className="row">
-                            <div className="col-sm-3">
-                                <label htmlFor="note" className="col-sm-12">Heeft u verder opmerkingen of aanbevelingen?</label>
-                            </div>
-                            <div className="col-sm-8">
-                                <textarea name='note' value={note} onChange={this.handleInputChange}
-                                          className="form-control input-sm"/>
-                            </div>
-                        </div>
-                    </div>
+                    <InputTextArea label={"Heeft u verder opmerkingen of aanbevelingen?"} name={"note"} value={note} onChangeAction={this.handleInputChange} />
                 </div>
 
                 <PanelFooter>

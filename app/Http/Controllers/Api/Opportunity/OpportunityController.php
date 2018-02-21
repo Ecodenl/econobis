@@ -66,9 +66,7 @@ class OpportunityController extends ApiController
         $this->authorize('manage', Opportunity::class);
 
         $data = $requestInput
-            ->integer('measureId')->validate('required|exists:measures,id')->alias('measure_id')->next()
             ->integer('statusId')->validate('required|exists:opportunity_status,id')->alias('status_id')->next()
-            ->integer('intakeId')->validate('required|exists:intakes,id')->onEmpty(null)->alias('intake_id')->next()
             ->string('quotationText')->alias('quotation_text')->next()
             ->string('desiredDate')->validate('date')->onEmpty(null)->alias('desired_date')->next()
             ->string('evaluationAgreedDate')->validate('date')->onEmpty(null)->alias('evaluation_agreed_date')->next()

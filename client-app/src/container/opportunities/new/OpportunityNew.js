@@ -6,6 +6,7 @@ import InputDate from '../../../components/form/InputDate';
 import ButtonText from '../../../components/button/ButtonText';
 import PanelFooter from '../../../components/panel/PanelFooter';
 import InputText from "../../../components/form/InputText";
+import InputTextArea from "../../../components/form/InputTextarea";
 
 const OpportunityNew = props => {
     const { statusId, quotationText, evaluationAgreedDate, desiredDate } = props.opportunity;
@@ -64,17 +65,7 @@ const OpportunityNew = props => {
             </div>
 
             <div className="row">
-                <div className="form-group col-sm-12">
-                    <div className="row">
-                        <div className="col-sm-3">
-                            <label htmlFor="quotationText" className="col-sm-12">Toelichting op maatregel</label>
-                        </div>
-                        <div className="col-sm-8">
-                                <textarea name='quotationText' value={quotationText} onChange={props.handleInputChange}
-                                          className="form-control input-sm"/>
-                        </div>
-                    </div>
-                </div>
+                <InputTextArea label={"Toelichting op maatregel"} name={"quotationText"} value={quotationText} onChangeAction={props.handleInputChange} />
             </div>
 
             <div className="row">

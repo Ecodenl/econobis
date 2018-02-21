@@ -82,7 +82,7 @@ class TaskController extends Controller
         $this->authorize('manage', Task::class);
 
         $data = $input->string('note')->whenMissing('')->onEmpty('')->next()
-            ->integer('typeId')->validate(['required', 'exists:task_types,id'])->alias('type_id')->next()
+            ->integer('typeId')->validate('exists:task_types,id')->onEmpty(null)->alias('type_id')->next()
             ->integer('contactId')->validate('exists:contacts,id')->whenMissing(null)->onEmpty(null)->alias('contact_id')->next()
             ->integer('intakeId')->validate('exists:intakes,id')->whenMissing(null)->onEmpty(null)->alias('intake_id')->next()
             ->integer('contactGroupId')->validate('exists:contact_groups,id')->whenMissing(null)->onEmpty(null)->alias('contact_group_id')->next()
@@ -116,7 +116,7 @@ class TaskController extends Controller
         $this->authorize('manage', Task::class);
 
         $data = $input->string('note')->next()
-            ->integer('typeId')->validate('exists:task_types,id')->alias('type_id')->next()
+            ->integer('typeId')->validate('exists:task_types,id')->onEmpty(null)->alias('type_id')->next()
             ->integer('contactId')->validate('exists:contacts,id')->onEmpty(null)->alias('contact_id')->next()
             ->integer('intakeId')->validate('exists:intakes,id')->onEmpty(null)->alias('intake_id')->next()
             ->integer('contactGroupId')->validate('exists:contact_groups,id')->onEmpty(null)->alias('contact_group_id')->next()

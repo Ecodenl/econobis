@@ -23,7 +23,7 @@ export default function (state= {}, action) {
         case 'DELETE_INTAKE_MEASURE_REQUESTED_SUCCESS':
             return {
                 ...state,
-                    measuresRequested: state.measuresRequested.filter(measureRequested => measureRequested.id !== action.id),
+                    measuresRequested: state.measuresRequested.filter(measureRequested => measureRequested.id !== action.measureId),
             };
         default:
             return state;

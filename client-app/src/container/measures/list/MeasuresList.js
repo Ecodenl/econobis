@@ -13,8 +13,9 @@ const MeasuresList = (props) => (
         <DataTable>
             <DataTableHead>
                 <tr className="thead-title-quaternary">
-                    <DataTableHeadTitle title={'Nummer'} width={'44%'}/>
-                    <DataTableHeadTitle title={'Maatregel'} width={'44%'}/>
+                    <DataTableHeadTitle title={'Nummer'} width={'20%'}/>
+                    <DataTableHeadTitle title={'Maatregel categorie'} width={'37%'}/>
+                    <DataTableHeadTitle title={'Maatregel'} width={'37%'}/>
                     <DataTableHeadTitle title={''} width={'6%'}/>
                 </tr>
             </DataTableHead>
@@ -22,7 +23,7 @@ const MeasuresList = (props) => (
                 {
                     props.measures.length === 0 ? (
                         <tr>
-                            <td colSpan={3}>Geen maatregelen gevonden!</td>
+                            <td colSpan={4}>Geen maatregelen gevonden!</td>
                         </tr>
                     ) : (
                         props.measures.map(measure => (

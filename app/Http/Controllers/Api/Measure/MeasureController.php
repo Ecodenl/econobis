@@ -27,6 +27,10 @@ class MeasureController extends ApiController
     {
         $measures = $requestQuery->get();
 
+        $measures->load([
+            'measureCategory',
+        ]);
+
         return GridMeasure::collection($measures);
     }
 

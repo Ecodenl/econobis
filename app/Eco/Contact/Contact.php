@@ -142,6 +142,11 @@ class Contact extends Model
         return $this->hasMany(Intake::class);
     }
 
+    public function opportunities()
+    {
+        return $this->hasManyThrough(Opportunity::class, Intake::class);
+    }
+
     // Only an unfinished task is a task
     public function tasks()
     {

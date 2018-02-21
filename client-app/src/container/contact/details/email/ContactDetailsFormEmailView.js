@@ -12,11 +12,11 @@ const ContactDetailFormEmailView = props => {
                 <div className="col-sm-2">
                     <GetNameByIdHelper id={typeId} items={props.emailAddressTypes} />
                 </div>
-                <div className="col-sm-8">
+                <div className="col-sm-7">
                     {email}
                 </div>
-                <div className="col-sm-1">
-                    { primary ? <span className="h6">Primair</span> : '' }
+                <div className="col-sm-2">
+                    { primary ? <span className="h6 pull-right">Primair</span> : '' }
                 </div>
             </div>
             <div className="col-sm-1">

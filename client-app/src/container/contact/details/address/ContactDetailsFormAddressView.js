@@ -18,11 +18,11 @@ const ContactDetailFormAddressView = props => {
                 <div className="col-sm-2">
                     { postalCode }
                 </div>
-                <div className="col-sm-3">
+                <div className="col-sm-2">
                     { city }
                 </div>
-                <div className="col-sm-1">
-                    { primary ? <span className="h6">Primair</span> : '' }
+                <div className="col-sm-2">
+                    { primary ? <span className="h6 pull-right">Primair</span> : '' }
                 </div>
             </div>
             <div className="col-sm-1">

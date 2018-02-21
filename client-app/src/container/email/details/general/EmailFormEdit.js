@@ -15,13 +15,13 @@ import QuotationRequestsAPI from "../../../../api/quotation-request/QuotationReq
 import TasksAPI from "../../../../api/task/TasksAPI";
 import MeasureAPI from "../../../../api/measure/MeasureAPI";
 import IntakesAPI from "../../../../api/intake/IntakesAPI";
-
+import OpportunitiesAPI from "../../../../api/opportunity/OpportunitiesAPI";
 
 class EmailFormEdit extends Component {
     constructor(props) {
         super(props);
 
-        const {id, contact, intake, task, quotationRequest, measure, status} = props.email;
+        const {id, contact, intake, task, quotationRequest, measure, opportunity, status} = props.email;
 
         this.state = {
             email: {
@@ -32,12 +32,14 @@ class EmailFormEdit extends Component {
                 quotationRequestId: quotationRequest ? quotationRequest.id : '',
                 measureId: measure ? measure.id : '',
                 statusId: status ? status.id : '',
+                opportunity: opportunity ? opportunity.id : '',
             },
             contacts: [],
             quotationRequests: [],
             tasks: [],
             measures: [],
             intakes: [],
+            opportunities: [],
         }
     };
 
@@ -58,8 +60,13 @@ class EmailFormEdit extends Component {
         MeasureAPI.peekMeasures().then((payload) => {
             this.setState({ measures: payload });
         });
+
         IntakesAPI.peekIntakes().then((payload) => {
             this.setState({ intakes: payload });
+        });
+
+        OpportunitiesAPI.peekOpportunities().then((payload) => {
+            this.setState({ opportunities: payload });
         });
     }
 
@@ -96,7 +103,7 @@ class EmailFormEdit extends Component {
     };
 
     render() {
-        const {contactId, statusId, intakeId, taskId, quotationRequestId, measureId} = this.state.email;
+        const {contactId, statusId, intakeId, taskId, quotationRequestId, measureId, opportunityId} = this.state.email;
         const {from, to, cc, bcc, subject, htmlBody, createdAt, dateSent, folder, status} = this.props.email;
         return (
             <div>
@@ -171,6 +178,17 @@ class EmailFormEdit extends Component {
                         name={"measureId"}
                         options={this.state.measures}
                         value={measureId}
+                        onChangeAction={this.handleInputChange}
+                    />
+                </div>
+
+                <div className="row">
+                    <InputSelect
+                        label={"Kans"}
+                        size={"col-sm-6"}
+                        name={"opportunityId"}
+                        options={this.state.opportunities}
+                        value={opportunityId}
                         onChangeAction={this.handleInputChange}
                     />
                 </div>

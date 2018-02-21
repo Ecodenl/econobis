@@ -8,8 +8,8 @@ const ContactDetailsFormEmailList = props => {
         <div>
             <div className="row border header">
                 <div className="col-sm-2">Type</div>
-                <div className="col-sm-8">E-mail</div>
-                <div className="col-sm-1">Primair</div>
+                <div className="col-sm-7">E-mail</div>
+                <div className="col-sm-2"><span className="pull-right">Primair</span></div>
                 <div className="col-sm-1"></div>
             </div>
             {

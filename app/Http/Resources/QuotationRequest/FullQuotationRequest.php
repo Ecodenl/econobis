@@ -30,6 +30,7 @@ class FullQuotationRequest extends Resource
         return
             [
                 'id' => $this->id,
+                'name' => 'Offerteverzoek ' . $this->id,
                 'dateRecorded' => $this->date_recorded,
                 'dateReleased' => $this->date_released,
                 'dateValid' => $this->date_valid,

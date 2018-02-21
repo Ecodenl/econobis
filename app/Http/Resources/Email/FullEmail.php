@@ -15,6 +15,7 @@ use App\Http\Resources\GenericResource;
 use App\Http\Resources\Intake\FullIntake;
 use App\Http\Resources\Mailbox\FullMailbox;
 use App\Http\Resources\Measure\FullMeasure;
+use App\Http\Resources\Opportunity\FullOpportunity;
 use App\Http\Resources\QuotationRequest\FullQuotationRequest;
 use App\Http\Resources\Task\FullTask;
 use App\Http\Resources\User\FullUser;
@@ -46,6 +47,7 @@ class FullEmail extends Resource
             'task' => FullTask::make($this->whenLoaded('task')),
             'quotationRequest' => FullQuotationRequest::make($this->whenLoaded('quotationRequest')),
             'measure' => FullMeasure::make($this->whenLoaded('measure')),
+            'opportunity' => FullOpportunity::make($this->whenLoaded('opportunity')),
             'attachments' => GenericResource::collection($this->whenLoaded('attachments')),
             'status' => FullEnumWithIdAndName::make($this->getStatus()),
             'dateClosed' => $this->date_closed,

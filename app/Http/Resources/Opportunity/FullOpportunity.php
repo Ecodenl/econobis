@@ -24,6 +24,7 @@ class FullOpportunity extends Resource
     {
         return [
             'id' => $this->id,
+            'name' => $this->measure->name . ' - ' . $this->status->name,
             'measure' => FullMeasure::make($this->whenLoaded('measure')),
             'number' => $this->number,
             'status' => GenericResource::make($this->whenLoaded('status')),

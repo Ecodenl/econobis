@@ -17,7 +17,7 @@ class OpportunityPeek extends Resource
     {
         return [
             'id' => $this->id,
-            'name' => $this->measure->name . ' ' . $this->status->name,
+            'name' => $this->measure->name . ' - ' . $this->status->name,
         ];
     }
 }

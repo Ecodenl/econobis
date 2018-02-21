@@ -11,7 +11,7 @@ const createMarkup = (value) => {
 };
 
 const EmailFormView = props => {
-    const {from, to, cc, bcc, contact, intake, task, quotationRequest, measure, subject, htmlBody, createdAt, dateSent, folder, status, closedBy, dateClosed} = props.email;
+    const {from, to, cc, bcc, contact, intake, task, quotationRequest, measure, opportunity, subject, htmlBody, createdAt, dateSent, folder, status, closedBy, dateClosed} = props.email;
 
     return (
         <div>
@@ -50,12 +50,12 @@ const EmailFormView = props => {
             <div className="row" onClick={props.switchToEdit}>
                 <ViewText
                     label={"Intake"}
-                    value={intake ? intake.id : ''}
+                    value={intake ? intake.name : ''}
                     link={intake ? 'intake/' + intake.id : ''}
                 />
                 <ViewText
                     label={"Taak"}
-                    value={task ? task.id : ''}
+                    value={task ? task.noteSummary : ''}
                     link={task ? 'taak/' + task.id : ''}
                 />
             </div>
@@ -63,13 +63,21 @@ const EmailFormView = props => {
             <div className="row" onClick={props.switchToEdit}>
                 <ViewText
                     label={"Offerteverzoek"}
-                    value={quotationRequest ? quotationRequest.id : ''}
+                    value={quotationRequest ? quotationRequest.name : ''}
                     link={quotationRequest ? 'offerteverzoek/' + quotationRequest.id : ''}
                 />
                 <ViewText
                     label={"Maatregel"}
                     value={measure ? measure.name : ''}
                     link={measure ? 'maatregel/' + measure.id : ''}
+                />
+            </div>
+
+            <div className="row" onClick={props.switchToEdit}>
+                <ViewText
+                    label={"Kans"}
+                    value={opportunity ? opportunity.name : ''}
+                    link={opportunity ? 'kans/' + opportunity.id : ''}
                 />
             </div>
 

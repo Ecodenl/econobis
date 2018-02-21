@@ -32,6 +32,7 @@ class FullIntake extends Resource
                 'id' => $this->id,
                 'contact' => FullContact::make($this->whenLoaded('contact')),
                 'address' => FullAddress::make($this->whenLoaded('address')),
+                'name' => 'Intake: ' . $this->id . ' voor ' . $this->contact->full_name,
                 'fullAddress' => $this->address->present()->streetAndNumber(),
                 'campaign' => FullCampaign::make($this->whenLoaded('campaign')),
                 'status' => GenericResource::make($this->whenLoaded('status')),

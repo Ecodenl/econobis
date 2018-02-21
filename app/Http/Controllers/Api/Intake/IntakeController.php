@@ -58,7 +58,7 @@ class IntakeController extends ApiController
             'status',
             'sources',
             'reasons',
-            'measuresRequested',
+            'measuresRequested.opportunities',
             'opportunities.measure',
             'opportunities.quotationRequests',
             'opportunities.status',
@@ -69,6 +69,16 @@ class IntakeController extends ApiController
             'createdBy',
             'updatedBy',
         ]);
+
+        $measureRequestedWithOpportunityIds = [];
+
+        foreach ($intake->measuresRequested as $measureRequested){
+            if (count($measureRequested->opportunities))
+            {
+                array_push($measureRequestedWithOpportunityIds, $measureRequested->id);
+            }
+        }
+        $intake->measureRequestedWithOpportunityIds = $measureRequestedWithOpportunityIds;
 
         $intake->relatedEmailsSent = $this->getRelatedEmails($intake->id, 'sent');
 

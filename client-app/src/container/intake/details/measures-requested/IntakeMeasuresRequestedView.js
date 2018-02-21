@@ -17,8 +17,10 @@ const IntakeMeasuresRequestedView = props => {
                     </div>
                     <div className="col-sm-5">
                         {
-                            props.permissions.manageOpportunity &&
-                            <ButtonText buttonText={"Maak kans"} onClickAction={() => hashHistory.push(`/kans/nieuw/intake/${props.intakeId}/maatregel/${id}`)} buttonClassName={'btn-success btn-padding-small'}/>
+                            props.permissions.manageOpportunity && (props.measureRequestedWithOpportunityIds.includes(id)) ?
+                                <ButtonText buttonText={"Kans al gemaakt"} buttonClassName={'btn-success btn-padding-small'}/>
+                                :
+                                <ButtonText buttonText={"Maak kans"} onClickAction={() => hashHistory.push(`/kans/nieuw/intake/${props.intakeId}/maatregel/${id}`)} buttonClassName={'btn-success btn-padding-small'}/>
                         }
                     </div>
                 </div>
@@ -35,7 +37,8 @@ const mapStateToProps = (state) => {
     return {
         energyLabels: state.systemData.energyLabels,
         permissions: state.meDetails.permissions,
-        intakeId: state.intakeDetails.id
+        intakeId: state.intakeDetails.id,
+        measureRequestedWithOpportunityIds: state.intakeDetails.measureRequestedWithOpportunityIds
     };
 };
 

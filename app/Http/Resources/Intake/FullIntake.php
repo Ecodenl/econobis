@@ -53,6 +53,7 @@ class FullIntake extends Resource
                 'relatedDocuments' => FullDocument::collection($this->whenLoaded('documents')),
                 'emailSentCount' => $this->relatedEmailsSent ? $this->relatedEmailsSent->count() : 0,
                 'relatedEmailsSent' => $this->relatedEmailsSent,
+                'measureRequestedWithOpportunityIds' => $this->measureRequestedWithOpportunityIds,
             ];
     }
 }

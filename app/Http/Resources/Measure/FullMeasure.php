@@ -30,6 +30,8 @@ class FullMeasure extends Resource
             'description' => $this->description,
             'createdAt' => $this->created_at,
             'createdBy' => FullUser::make($this->whenLoaded('createdBy')),
+            'updatedAt' => $this->updated_at,
+            'updatedBy' => FullUser::make($this->whenLoaded('updatedBy')),
             'measureCategory' => GenericResource::make($this->whenLoaded('measureCategory')),
             'faqs' => $this->faqs()->get(),
             'suppliers' => FullOrganisation::collection($this->whenLoaded('deliveredByOrganisations')),

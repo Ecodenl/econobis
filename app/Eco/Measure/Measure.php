@@ -64,6 +64,11 @@ class Measure extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function updatedBy()
+    {
+        return $this->belongsTo(User::class);
+    }
+
     public function measureCategory()
     {
         return $this->belongsTo(MeasureCategory::class);

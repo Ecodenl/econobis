@@ -128,9 +128,12 @@ class PersonController extends ApiController
             'liable' => 'boolean',
         ]);
 
-        if($contact->iban != $contactData['iban']) $this->authorize('updateIban', $contact);
+        if(array_key_exists('iban', $contactData) && $contact->iban != $contactData['iban']) $this->authorize('updateIban', $contact);
 
-        $contactData['liabilityAmount'] != '' ?: $contactData['liabilityAmount'] = 0;
+        if(array_key_exists('liabilityAmount', $contactData)){
+        $contactData['liabilityAmount'] != ''
+            ?: $contactData['liabilityAmount'] = 0;
+        }
         
         $contact->fill($this->arrayKeysToSnakeCase($contactData));
         $contact->save();

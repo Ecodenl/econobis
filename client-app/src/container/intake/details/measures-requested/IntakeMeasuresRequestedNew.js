@@ -65,16 +65,17 @@ class IntakeMeasuresRequestedNew extends Component {
                 <Panel className={'panel-grey'}>
                     <PanelBody>
                         <div className="row">
-                            <InputSelect
-                                label={"Maatregel"}
-                                size={"col-sm-6"}
-                                name={"measureId"}
-                                options={this.props.measures}
-                                value={measureId}
-                                onChangeAction={this.handleInputChange}
-                                required={"required"}
-                                error={this.state.errors.measureId}
-                            />
+                            <div className={`form-group col-sm-8`}>
+                                <label className={`col-sm-4`}>{"Maatregel:"}</label>
+                                <div className={"col-sm-8"}>
+                                    <select className={`form-control input-sm`} name={"measureId"} value={measureId} onChange={this.handleInputChange}>
+                                        <option value=''></option>
+                                        { this.props.measures.map((option) => {
+                                            return <option key={ option.id } value={ option.id }>{ option['name'] }</option>
+                                        }) }
+                                    </select>
+                                </div>
+                            </div>
                         </div>
 
                         <div className="pull-right btn-group" role="group">

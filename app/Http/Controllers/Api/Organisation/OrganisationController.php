@@ -103,7 +103,7 @@ class OrganisationController extends ApiController
 
         $contact = $organisation->contact;
 
-        if($contact->iban != $contactData['iban']) $this->authorize('updateIban', $contact);
+        if(array_key_exists('iban', $contactData['iban']) && $contact->iban != $contactData['iban']) $this->authorize('updateIban', $contact);
 
         $contact->fill($this->arrayKeysToSnakeCase($contactData));
 

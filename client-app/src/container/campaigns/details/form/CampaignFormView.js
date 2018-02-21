@@ -6,7 +6,7 @@ moment.locale('nl');
 import ViewText from '../../../../components/form/ViewText';
 
 const CampaignFormView = props => {
-    const {name, number, description, startDate, endDate, status, measures, type} = props.campaign;
+    const {name, number, description, startDate, endDate, status, measureCategories, type} = props.campaign;
 
     return (
         <div>
@@ -48,7 +48,7 @@ const CampaignFormView = props => {
                 />
                 <ViewText
                     label={"Aangeboden maatregelen"}
-                    value={ measures && measures.map((measure) => measure.name).join(', ') }
+                    value={ measureCategories && measureCategories.map((measureCategory) => measureCategory.name).join(', ') }
                 />
             </div>
 

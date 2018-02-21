@@ -10,7 +10,7 @@ import InputMultiSelect from "../../../components/form/InputMultiSelect";
 import InputText from "../../../components/form/InputText";
 
 const CampaignNew = props => {
-    const {name, description, startDate, endDate, statusId, measureIds, typeId} = props.campaign;
+    const {name, description, startDate, endDate, statusId, measureCategoryIds, typeId} = props.campaign;
     return (
         <form className="form-horizontal col-md-12" onSubmit={props.handleSubmit}>
             <div className="row">
@@ -67,9 +67,9 @@ const CampaignNew = props => {
                 />
                 <InputMultiSelect
                     label="Aangeboden maatregelen"
-                    name="measureIds"
-                    value={measureIds}
-                    options={props.measures}
+                    name="measureCategoryIds"
+                    value={measureCategoryIds}
+                    options={props.measureCategories}
                     onChangeAction={props.handleMeasureIds}
                 />
             </div>
@@ -103,7 +103,7 @@ const mapStateToProps = (state) => {
     return {
         status: state.systemData.campaignStatuses,
         types: state.systemData.campaignTypes,
-        measures: state.systemData.measures,
+        measureCategories: state.systemData.measureCategories,
     }
 };
 

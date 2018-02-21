@@ -10,6 +10,7 @@ use App\Eco\DocumentTemplate\DocumentTemplateType;
 use App\Eco\Email\EmailStatus;
 use App\Eco\HousingFile\EnergyLabelStatus;
 use App\Eco\HousingFile\RoofType;
+use App\Eco\Measure\MeasureCategory;
 use App\Eco\Opportunity\OpportunityStatus;
 use App\Eco\OrganisationType\OrganisationType;
 use App\Eco\Address\AddressType;
@@ -74,6 +75,7 @@ class SystemData extends Resource
             'titles' => FullTitle::collection(Title::all()),
             'buildingTypes' => BuildingType::select(['id', 'name'])->get(),
             'measures' => Measure::select(['id', 'name'])->get(),
+            'measureCategories' => MeasureCategory::select(['id', 'name'])->get(),
             'intakeSources' => IntakeSource::select(['id', 'name'])->get(),
             'campaigns' => Campaign::select(['id', 'name'])->get(),
             'intakeStatuses' => IntakeStatus::select(['id', 'name'])->get(),

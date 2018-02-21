@@ -3,6 +3,7 @@
 namespace App\Eco\Measure;
 
 use App\Eco\Address\Address;
+use App\Eco\Campaign\Campaign;
 use App\Eco\HousingFile\HousingFile;
 use App\Eco\Intake\Intake;
 use Illuminate\Database\Eloquent\Model;
@@ -27,5 +28,10 @@ class MeasureCategory extends Model
     public function intakes()
     {
         return $this->belongsToMany(Intake::class, 'intake_measure_requested');
+    }
+
+    public function campaigns()
+    {
+        return $this->belongsToMany(Campaign::class);
     }
 }

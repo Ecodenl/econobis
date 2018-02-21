@@ -47,7 +47,7 @@ class CampaignController extends ApiController
             'opportunities.intake.contact',
             'opportunities.status',
             'opportunities.quotationRequests',
-            'measures',
+            'measureCategories',
             'status',
             'type',
             'responses.contact.primaryAddress',
@@ -81,13 +81,13 @@ class CampaignController extends ApiController
         $campaign->fill($data);
         $campaign->save();
 
-        $measureIds = explode(',', $request->measureIds);
+        $measureCategoryIds = explode(',', $request->measureCategoryIds);
 
-        if ($measureIds[0] == '') {
-            $measureIds = [];
+        if ($measureCategoryIds[0] == '') {
+            $measureCategoryIds = [];
         }
 
-        $campaign->measures()->sync($measureIds);
+        $campaign->measureCategories()->sync($measureCategoryIds);
 
         return FullCampaign::make($campaign->fresh());
     }
@@ -107,13 +107,13 @@ class CampaignController extends ApiController
             ->integer('typeId')->validate('required|exists:campaign_types,id')->alias('type_id')->next()
             ->get();
 
-        $measureIds = explode(',', $request->measureIds);
+        $measureCategoryIds = explode(',', $request->measureCategoryIds);
 
-        if ($measureIds[0] == '') {
-            $measureIds = [];
+        if ($measureCategoryIds[0] == '') {
+            $measureCategoryIds = [];
         }
 
-        $campaign->measures()->sync($measureIds);
+        $campaign->measureCategories()->sync($measureCategoryIds);
 
         $campaign->fill($data);
         $campaign->save();

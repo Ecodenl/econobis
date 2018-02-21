@@ -123,17 +123,21 @@ class DocumentTemplateController extends Controller
 
     public function peekGeneral()
     {
-        $userRole = Auth::user()->roles()->value('name');
+        $userRoles = Auth::user()->roles()->pluck('name')->toArray();
 
         $documentTemplates = DocumentTemplate::where('template_type', 'general')->where('active', true)->with('roles')->get();
 
+        $validDocumentTemplates = collect();
+
+        //check if user has atleast one of the roles given by the template
         foreach($documentTemplates as $key => $documentTemplate){
-            if(!in_array($userRole, $documentTemplate->roles()->pluck('name')->toArray())){
-              $documentTemplates->forget($key);
-            }
+          $intersect = array_intersect($userRoles, $documentTemplate->roles()->pluck('name')->toArray());
+               if(sizeof($intersect) > 0){
+                   $validDocumentTemplates->push($documentTemplate);
+               }
         }
 
-        return DocumentTemplatePeek::collection($documentTemplates);
+        return DocumentTemplatePeek::collection($validDocumentTemplates);
     }
 
     public function peekNotGeneral()

@@ -10,6 +10,8 @@ use App\Eco\Document\Document;
 use App\Eco\Document\DocumentPolicy;
 use App\Eco\DocumentTemplate\DocumentTemplate;
 use App\Eco\DocumentTemplate\DocumentTemplatePolicy;
+use App\Eco\HousingFile\HousingFile;
+use App\Eco\HousingFile\HousingFilePolicy;
 use App\Eco\Mailbox\Mailbox;
 use App\Eco\Mailbox\MailboxPolicy;
 use App\Eco\Measure\Measure;
@@ -30,8 +32,10 @@ use App\Eco\Person\Person;
 use App\Eco\Person\PersonPolicy;
 use App\Eco\PhoneNumber\PhoneNumber;
 use App\Eco\PhoneNumber\PhoneNumberPolicy;
-use App\Eco\Registration\Registration;
-use App\Eco\Registration\RegistrationPolicy;
+use App\Eco\Intake\Intake;
+use App\Eco\Intake\IntakePolicy;
+use App\Eco\QuotationRequest\QuotationRequest;
+use App\Eco\QuotationRequest\QuotationRequestPolicy;
 use App\Eco\Task\Task;
 use App\Eco\Task\TaskPolicy;
 use App\Eco\User\User;
@@ -61,13 +65,15 @@ class AuthServiceProvider extends ServiceProvider
         ContactGroup::class => ContactGroupPolicy::class,
         Opportunity::class => OpportunityPolicy::class,
         Task::class => TaskPolicy::class,
-        Registration::class => RegistrationPolicy::class,
+        Intake::class => IntakePolicy::class,
+        HousingFile::class => HousingFilePolicy::class,
         Campaign::class => CampaignPolicy::class,
         Measure::class => MeasurePolicy::class,
         Document::class => DocumentPolicy::class,
         DocumentTemplate::class => DocumentTemplatePolicy::class,
         AuditTrail::class => AuditTrailPolicy::class,
         Mailbox::class => MailboxPolicy::class,
+        QuotationRequest::class => QuotationRequestPolicy::class,
     ];
 
     /**

@@ -8,17 +8,18 @@ use App\Eco\Document\DocumentGroup;
 use App\Eco\Document\DocumentType;
 use App\Eco\DocumentTemplate\DocumentTemplateType;
 use App\Eco\Email\EmailStatus;
-use App\Eco\Opportunity\OpportunityReaction;
+use App\Eco\HousingFile\EnergyLabelStatus;
+use App\Eco\HousingFile\RoofType;
 use App\Eco\Opportunity\OpportunityStatus;
 use App\Eco\OrganisationType\OrganisationType;
 use App\Eco\Address\AddressType;
-use App\Eco\BuildingType\BuildingType;
-use App\Eco\EnergyLabel\EnergyLabel;
+use App\Eco\HousingFile\BuildingType;
+use App\Eco\HousingFile\EnergyLabel;
 use App\Eco\Measure\Measure;
-use App\Eco\Registration\RegistrationReason;
-use App\Eco\Registration\RegistrationSource;
+use App\Eco\Intake\IntakeReason;
+use App\Eco\Intake\IntakeSource;
 use App\Eco\Campaign\Campaign;
-use App\Eco\Registration\RegistrationStatus;
+use App\Eco\Intake\IntakeStatus;
 use App\Eco\Contact\ContactStatus;
 use App\Eco\Contact\ContactType;
 use App\Eco\EmailAddress\EmailAddressType;
@@ -27,9 +28,11 @@ use App\Eco\LastNamePrefix\LastNamePrefix;
 use App\Eco\Occupation\Occupation;
 use App\Eco\PersonType\PersonType;
 use App\Eco\PhoneNumber\PhoneNumberType;
+use App\Eco\QuotationRequest\QuotationRequestStatus;
 use App\Eco\Task\TaskProperty;
 use App\Eco\Task\TaskStatus;
 use App\Eco\Task\TaskType;
+use App\Eco\Team\Team;
 use App\Eco\User\User;
 use App\Http\Resources\GenericResource;
 use App\Http\Resources\OrganisationType\FullOrganisationType;
@@ -39,6 +42,8 @@ use App\Http\Resources\Industry\FullIndustry;
 use App\Http\Resources\LastNamePrefix\FullLastNamePrefix;
 use App\Http\Resources\Occupation\FullOccupation;
 use App\Http\Resources\PersonType\FullPersonType;
+use App\Http\Resources\Task\FullTaskPropertyValue;
+use App\Http\Resources\Team\FullTeam;
 use App\Http\Resources\Title\FullTitle;
 use App\Http\Resources\User\FullUser;
 use Illuminate\Http\Resources\Json\Resource;
@@ -69,25 +74,27 @@ class SystemData extends Resource
             'titles' => FullTitle::collection(Title::all()),
             'buildingTypes' => BuildingType::select(['id', 'name'])->get(),
             'measures' => Measure::select(['id', 'name'])->get(),
-            'registrationSources' => RegistrationSource::select(['id', 'name'])->get(),
+            'intakeSources' => IntakeSource::select(['id', 'name'])->get(),
             'campaigns' => Campaign::select(['id', 'name'])->get(),
-            'registrationStatuses' => RegistrationStatus::select(['id', 'name'])->get(),
-            'registrationReasons' => RegistrationReason::select(['id', 'name'])->get(),
+            'intakeStatuses' => IntakeStatus::select(['id', 'name'])->get(),
+            'intakeReasons' => IntakeReason::select(['id', 'name'])->get(),
             'energyLabels' => EnergyLabel::select(['id', 'name'])->get(),
             'permissions' => FullEnumWithIdAndName::collection(Permission::all()),
             'roles' => Role::select(['id', 'name'])->get()->toArray(),
             'opportunityStatus' => FullEnumWithIdAndName::collection(OpportunityStatus::all()),
-            'opportunityReactions' => FullEnumWithIdAndName::collection(OpportunityReaction::all()),
             'taskTypes' => GenericResource::collection(TaskType::all()),
-            'taskStatuses' => TaskStatus::collection()->toArray(),
             'taskProperties' => GenericResource::collection(TaskProperty::all()),
             'users' => FullUser::collection(User::all()),
+            'teams' => FullTeam::collection(Team::all()),
             'campaignStatuses' => FullEnumWithIdAndName::collection(CampaignStatus::all()),
             'campaignTypes' => FullEnumWithIdAndName::collection(CampaignType::all()),
             'emailStatuses' => FullEnumWithIdAndName::collection(EmailStatus::collection()),
             'documentGroups' => FullEnumWithIdAndName::collection(DocumentGroup::collection()),
             'documentTypes' => FullEnumWithIdAndName::collection(DocumentType::collection()),
             'documentTemplateTypes' => FullEnumWithIdAndName::collection(DocumentTemplateType::collection()),
+            'roofTypes' => FullEnumWithIdAndName::collection(RoofType::all()),
+            'energyLabelStatus' => FullEnumWithIdAndName::collection(EnergyLabelStatus::all()),
+            'quotationRequestStatus' => FullEnumWithIdAndName::collection(QuotationRequestStatus::all()),
         ];
     }
 }

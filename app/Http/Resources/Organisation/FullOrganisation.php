@@ -5,10 +5,10 @@ namespace App\Http\Resources\Organisation;
 use App\Http\Resources\Campaign\FullCampaign;
 use App\Http\Resources\Contact\FullContact;
 use App\Http\Resources\Occupation\FullOccupationPerson;
-use App\Http\Resources\Opportunity\FullOpportunityQuotation;
 use App\Http\Resources\OrganisationType\FullOrganisationType;
 use App\Http\Resources\Industry\FullIndustry;
 use App\Http\Resources\Person\FullPerson;
+use App\Http\Resources\QuotationRequest\FullQuotationRequest;
 use Illuminate\Http\Resources\Json\Resource;
 
 class FullOrganisation extends Resource
@@ -35,10 +35,8 @@ class FullOrganisation extends Resource
             'vatNumber' => $this->vat_number,
             'squareMeters' => $this->square_meters,
             'people' => FullOccupationPerson::collection($this->whenLoaded('people')),
-            'amountOfQuotations' => $this->quotations->count(),
-            'amountOfWonQuotations' => $this->amountOfWonQuotations(),
-            'quotations' => FullOpportunityQuotation::collection($this->whenLoaded('quotations')),
             'campaigns' => FullCampaign::collection($this->whenLoaded('campaigns')),
+            'quotationRequests' => FullQuotationRequest::collection($this->whenLoaded('quotationRequests')),
             'createdAt' => $this->created_at,
             'updatedAt' => $this->updated_at,
         ];

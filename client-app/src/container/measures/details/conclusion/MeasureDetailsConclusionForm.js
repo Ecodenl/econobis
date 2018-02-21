@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 
 import MeasureDetailsConclusionView from './MeasureDetailsConclusionView';
 import Panel from '../../../../components/panel/Panel';
@@ -31,7 +31,7 @@ class MeasureDetailsConclusionForm extends Component {
             <Panel className={this.state.activeDiv} onMouseEnter={() => this.onDivEnter()}
                    onMouseLeave={() => this.onDivLeave()}>
                 <PanelBody>
-                            <MeasureDetailsConclusionView/>
+                    <MeasureDetailsConclusionView/>
                 </PanelBody>
             </Panel>
         );

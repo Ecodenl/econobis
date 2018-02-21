@@ -15,26 +15,24 @@ class Sort extends RequestSort
 
     protected $fields = [
         'createdAt',
-        'name',
-        'contactName',
-        'datePlanned',
-        'dateStarted',
-        'statusId',
-        'responsibleUserName',
+        'typeName',
+        'note',
+        'contactFullName',
+        'datePlannedStart',
+        'responsibleName',
     ];
 
     protected $mapping = [
         'createdAt' => 'tasks.created_at',
-        'name' => 'tasks.name',
-        'contactName' => 'contacts.full_name',
-        'datePlanned' => 'tasks.date_planned',
-        'dateStarted' => 'tasks.date_started',
-        'statusId' => 'tasks.status_id',
-        'responsibleUserName' => 'users.last_name',
+        'typeName' => 'tasks.type_id',
+        'note' => 'tasks.note',
+        'contactFullName' => 'contacts.full_name',
+        'datePlannedStart' => 'tasks.date_planned_start',
+        'responsibleName' => 'users.last_name',
     ];
 
     protected $joins = [
         'contactName' => 'contact',
-        'responsibleUserName' => 'responsibleUser',
+        'responsibleName' => 'responsibleUser',
     ];
 }

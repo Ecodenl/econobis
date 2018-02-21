@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { hashHistory } from 'react-router';
 import { connect } from 'react-redux';
-import moment from 'moment';
 
 class MeasuresListItem extends Component {
     constructor(props) {
@@ -32,14 +31,14 @@ class MeasuresListItem extends Component {
     }
 
     render() {
-        const { id, number, name} = this.props;
+        const { id, number, measureCategory, name} = this.props;
         return (
           <tr className={this.state.highlightRow} onDoubleClick={() => this.openItem(id)} onMouseEnter={() => this.onRowEnter()} onMouseLeave={() => this.onRowLeave()}>
               <td>{ number }</td>
+              <td>{ measureCategory && measureCategory.name }</td>
               <td>{ name }</td>
               <td>
                   {(this.state.showActionButtons ? <a role="button" onClick={() => this.openItem(id)}><span className="glyphicon glyphicon-pencil mybtn-success" /> </a> : '')}
-                  {/*{(this.state.showActionButtons && this.props.permissions.manageMeasure ? <a role="button" onClick={this.props.showDeleteItemModal.bind(this, id, name)}><span className="glyphicon glyphicon-trash mybtn-danger"  /> </a> : '')}*/}
               </td>
             </tr>
         )

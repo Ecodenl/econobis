@@ -3,11 +3,12 @@
 namespace App\Eco\Address;
 
 use App\Eco\Contact\Contact;
+use App\Eco\HousingFile\HousingFile;
 use App\Eco\Measure\Measure;
 use App\Eco\BuildingType\BuildingType;
 use App\Eco\Measure\MeasureRequested;
 use App\Eco\Measure\MeasureTaken;
-use App\Eco\Registration\Registration;
+use App\Eco\Intake\Intake;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Laracasts\Presenter\PresentableTrait;
@@ -29,24 +30,19 @@ class Address extends Model
         return $this->belongsTo(Contact::class);
     }
 
-    public function registration()
+    public function housingFile()
     {
-        return $this->hasOne(Registration::class);
+        return $this->hasOne(HousingFile::class);
     }
 
-    public function measures_taken()
+    public function intake()
     {
-        return $this->hasMany(MeasureTaken::class);
+        return $this->hasOne(Intake::class);
     }
 
-    public function measures_requested()
+    public function measuresTaken()
     {
-        return $this->hasMany(MeasureRequested::class);
-    }
-
-    public function building_type()
-    {
-        return $this->belongsTo(BuildingType::class);
+        return $this->belongsToMany(Measure::class, 'housing_file_measure_taken')->withPivot('measure_date');
     }
 
     public function getType()

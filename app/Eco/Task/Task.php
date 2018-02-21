@@ -5,22 +5,29 @@ namespace App\Eco\Task;
 use App\Eco\Campaign\Campaign;
 use App\Eco\Contact\Contact;
 use App\Eco\ContactGroup\ContactGroup;
+use App\Eco\Document\Document;
+use App\Eco\Email\Email;
 use App\Eco\Opportunity\Opportunity;
-use App\Eco\Registration\Registration;
+use App\Eco\Intake\Intake;
+use App\Eco\Team\Team;
 use App\Eco\User\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Laracasts\Presenter\PresentableTrait;
 use Venturecraft\Revisionable\RevisionableTrait;
 use Carbon\Carbon;
 
 class Task extends Model
 {
-    use RevisionableTrait, SoftDeletes;
+    use RevisionableTrait, SoftDeletes, PresentableTrait;
+
+    protected $presenter = TaskPresenter::class;
 
     protected $guarded = ['id'];
 
     protected $dates = [
-        'date_planned',
+        'date_planned_start',
+        'date_planned_finish',
         'date_finished',
         'created_at',
         'updated_at',
@@ -43,19 +50,11 @@ class Task extends Model
     }
 
     /**
-     * required
-     */
-    public function getStatus()
-    {
-        return TaskStatus::getById($this->status_id);
-    }
-
-    /**
      * optional
      */
-    public function registration()
+    public function intake()
     {
-        return $this->belongsTo(Registration::class);
+        return $this->belongsTo(Intake::class);
     }
 
     /**
@@ -83,7 +82,7 @@ class Task extends Model
     }
 
     /**
-     * required
+     * optional
      */
     public function responsibleUser()
     {
@@ -91,9 +90,25 @@ class Task extends Model
     }
 
     /**
+     * optional
+     */
+    public function responsibleTeam()
+    {
+        return $this->belongsTo(Team::class);
+    }
+
+    /**
      * required
      */
     public function createdBy()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    /**
+     * required
+     */
+    public function updatedBy()
     {
         return $this->belongsTo(User::class);
     }
@@ -109,17 +124,25 @@ class Task extends Model
     /**
      *
      */
-    public function attachments()
-    {
-        return $this->hasMany(TaskAttachment::class);
-    }
-
-    /**
-     *
-     */
     public function properties()
     {
         return $this->hasMany(TaskPropertyValue::class);
+    }
+
+    public function documents(){
+        return $this->hasMany(Document::class);
+    }
+
+    // Tasks can relate to another task. Only an unfinished task is a task
+    public function tasks()
+    {
+        return $this->hasMany(Task::class)->where('finished', false);
+    }
+
+    // A finished task is a note
+    public function notes()
+    {
+        return $this->hasMany(Task::class)->where('finished', true);
     }
 
     /**
@@ -127,7 +150,7 @@ class Task extends Model
      */
     public function datePlannedWithStartTime()
     {
-        $datePlanned = new Carbon($this->date_planned);
+        $datePlanned = new Carbon($this->date_planned_start);
 
         if($this->start_time_planned) {
             $startTimePlanned = new Carbon($this->start_time_planned);
@@ -143,12 +166,28 @@ class Task extends Model
      */
     public function datePlannedWithEndTime()
     {
-        $datePlanned = new Carbon($this->date_planned);
+        // With no date planned finish, date planned is equal to date planned start
+        if($this->date_planned_finish) {
+            $datePlanned = new Carbon($this->date_planned_finish);
+        } else {
+            $datePlanned = new Carbon($this->date_planned_start);
+        }
 
+        // With end time planned, end time is equal to end time
         if($this->end_time_planned) {
             $endTimePlanned = new Carbon($this->end_time_planned);
 
             $datePlanned->setTime($endTimePlanned->hour, $endTimePlanned->minute);
+        } else {
+            // With no end time planned, end time is equal to start time
+            if($this->start_time_planned) {
+                $endTimePlanned = new Carbon($this->start_time_planned);
+
+                $datePlanned->setTime($endTimePlanned->hour, $endTimePlanned->minute);
+            // With no end time planned and date planned start is not equal date planned finish add 1 hour
+            } else if ($this->date_planned_start != $this->date_planned_finish && $this->date_planned_finish != null) {
+                    $datePlanned->setTime(01, 00);
+            }
         }
 
         return $datePlanned;

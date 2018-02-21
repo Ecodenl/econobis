@@ -30,7 +30,7 @@ class ContactGroupController extends Controller
 
     public function show(ContactGroup $contactGroup)
     {
-        $contactGroup->load(['responsibleUser', 'createdBy']);
+        $contactGroup->load(['responsibleUser', 'createdBy', 'tasks']);
         return FullContactGroup::make($contactGroup);
     }
 

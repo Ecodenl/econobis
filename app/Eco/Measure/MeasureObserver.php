@@ -22,11 +22,18 @@ class MeasureObserver
 
         $userId = Auth::id();
         $measure->created_by_id = $userId;
+        $measure->updated_by_id = $userId;
     }
 
     public function created(Measure $measure)
     {
         $measure->number = 'M' . Carbon::now()->year . '-' .$measure->id;
         $measure->save();
+    }
+
+    public function updating(Measure $measure)
+    {
+        $userId = Auth::id();
+        $measure->updated_by_id = $userId;
     }
 }

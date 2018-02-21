@@ -15,6 +15,7 @@ import { pencil2 } from 'react-icons-kit/icomoon/pencil2';
 import { speech_bubbles } from 'react-icons-kit/ikons/speech_bubbles';
 import { documents } from 'react-icons-kit/ikons/documents';
 import { calendar } from 'react-icons-kit/icomoon/calendar';
+import { home } from 'react-icons-kit/icomoon/home';
 
 class SidebarMenu extends Component {
     constructor(props) {
@@ -53,11 +54,28 @@ class SidebarMenu extends Component {
                                            to="contacten/status/closed">Afgehandeld</Link></NavText>
                         </Nav>
                     </Nav>
-                    <Nav id="aanmeldingen">
-                        <NavIcon><SvgIcon size={20} icon={pencil2}/></NavIcon>
-                        <NavText><Link className="sidebar-link" to="aanmeldingen">Aanmeldingen</Link></NavText>
+                    <Nav id="energy-saving">
+                        <NavIcon><SvgIcon size={20} icon={home}/></NavIcon>
+                        <NavText> Energiebesparing </NavText>
+                        <Nav id="home-files">
+                            <NavText><Link className="sidebar-link" to="woningdossiers">Woningdossiers</Link></NavText>
+                        </Nav>
+                        <Nav id="intakes">
+                            <NavText><Link className="sidebar-link" to="intakes">Intakes</Link></NavText>
+                        </Nav>
+                        <Nav id="opportunities">
+                            <NavText><Link className="sidebar-link" to="kansen">Kansen</Link></NavText>
+                        </Nav>
+                        <Nav id="quotation-requests">
+                            <NavText><Link className="sidebar-link" to="offerteverzoeken">Offerte
+                                verzoeken</Link></NavText>
+                        </Nav>
+                        <Nav id="measures">
+                            <NavText><Link className="sidebar-link" to="maatregelen">Maatregelen</Link></NavText>
+                        </Nav>
                     </Nav>
-                    <Nav id="contact-groepen">
+
+                    <Nav id="contact-groups">
                         <NavIcon><SvgIcon size={20} icon={ic_aspect_ratio}/></NavIcon>
                         <NavText><Link className="sidebar-link" to="contact-groepen">Groepen beheer</Link></NavText>
                     </Nav>
@@ -81,14 +99,13 @@ class SidebarMenu extends Component {
                     <Nav id="taken">
                         <NavIcon><SvgIcon size={20} icon={ic_business}/></NavIcon>
                         <NavText><Link className="sidebar-link" to="taken">Taken</Link></NavText>
+                        <Nav id="notities">
+                            <NavText><Link className="sidebar-link" to="notities">Notities</Link></NavText>
+                        </Nav>
                     </Nav>
                     <Nav id="agenda">
                         <NavIcon><SvgIcon size={20} icon={calendar} /></NavIcon>
                         <NavText><Link className="sidebar-link" to="agenda">Agenda</Link></NavText>
-                    </Nav>
-                    <Nav id="kansen">
-                        <NavIcon><SvgIcon size={20} icon={starEmpty}/></NavIcon>
-                        <NavText><Link className="sidebar-link" to="kansen">Kansen</Link></NavText>
                     </Nav>
                     {this.props.permissions.viewDocument &&
                     <Nav id="documenten">
@@ -96,10 +113,6 @@ class SidebarMenu extends Component {
                         <NavText><Link className="sidebar-link" to="documenten">Documenten</Link></NavText>
                     </Nav>
                     }
-                    <Nav id="variabelen">
-                        <NavIcon><SvgIcon size={20} icon={ic_business}/></NavIcon>
-                        <NavText><Link className="sidebar-link" to="maatregelen">Variabelen</Link></NavText>
-                    </Nav>
                     <Nav id="instellingen">
                         <NavIcon><SvgIcon size={20} icon={cog}/></NavIcon>
                         <NavText> Instellingen </NavText>
@@ -115,6 +128,9 @@ class SidebarMenu extends Component {
                         </Nav>
                         <Nav id="users">
                             <NavText><Link className="sidebar-link" to="gebruikers">Gebruikers</Link></NavText>
+                        </Nav>
+                        <Nav id="team">
+                            <NavText><Link className="sidebar-link" to="teams">Teams</Link></NavText>
                         </Nav>
                         {this.props.permissions.viewMailbox &&
                         <Nav id="mailboxes">

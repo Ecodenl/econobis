@@ -5,10 +5,21 @@ import moment from 'moment';
 import ViewText from '../../../../components/form/ViewText';
 
 const ContactDetailsFormConclusionView = props => {
-    const { createdBy = {}, createdAt = {} } = props.opportunity;
+    const { createdBy = {}, createdAt = {}, updatedBy = {}, updatedAt = {} } = props.opportunity;
 
     return (
         <div>
+            <div className="row">
+                <ViewText
+                    label={"Laatst gewijzigd op"}
+                    value={updatedAt ? moment(updatedAt.date).format('L') : 'Onbekend'}
+                />
+                <ViewText
+                    label={"Laatst gewijzigd door"}
+                    value={updatedBy ? updatedBy.fullName: 'Onbekend'}
+                    link={updatedBy ? 'gebruiker/' + updatedBy.id : ''}
+                />
+            </div>
             <div className="row">
                 <ViewText
                     label={"Gemaakt op"}

@@ -5,6 +5,7 @@ namespace App\Eco\Contact;
 use App\Eco\Campaign\Campaign;
 use App\Eco\Document\Document;
 use App\Eco\Email\Email;
+use App\Eco\HousingFile\HousingFile;
 use App\Eco\Opportunity\Opportunity;
 use App\Eco\Organisation\Organisation;
 use App\Eco\Address\Address;
@@ -12,7 +13,7 @@ use App\Eco\ContactGroup\ContactGroup;
 use App\Eco\ContactNote\ContactNote;
 use App\Eco\Organisation\OrganisationType;
 use App\Eco\EmailAddress\EmailAddress;
-use App\Eco\Registration\Registration;
+use App\Eco\Intake\Intake;
 use App\Eco\Person\Person;
 use App\Eco\PhoneNumber\PhoneNumber;
 use App\Eco\Task\Task;
@@ -79,14 +80,9 @@ class Contact extends Model
         return $this->hasOne(PhoneNumber::class)->where('primary', true);
     }
 
-    public function notes()
+    public function contactNotes()
     {
         return $this->hasMany(ContactNote::class);
-    }
-
-    public function opportunities()
-    {
-        return $this->hasMany(Opportunity::class);
     }
 
     public function organisation()
@@ -141,14 +137,26 @@ class Contact extends Model
         return ContactType::get($this->type_id);
     }
 
-    public function registrations()
+    public function intakes()
     {
-        return $this->hasManyThrough(Registration::class, Address::class);
+        return $this->hasMany(Intake::class);
     }
 
+    public function opportunities()
+    {
+        return $this->hasManyThrough(Opportunity::class, Intake::class);
+    }
+
+    // Only an unfinished task is a task
     public function tasks()
     {
-        return $this->hasMany(Task::class);
+        return $this->hasMany(Task::class)->where('finished', false);
+    }
+
+    // A finished task is a note
+    public function notes()
+    {
+        return $this->hasMany(Task::class)->where('finished', true);
     }
 
     public function campaigns(){
@@ -158,6 +166,11 @@ class Contact extends Model
     public function documents()
     {
         return $this->hasMany(Document::class);
+    }
+
+    public function housingFiles()
+    {
+        return $this->hasManyThrough(HousingFile::class, Address::class);
     }
 
     //Returns addresses array as Type - Streetname - Number

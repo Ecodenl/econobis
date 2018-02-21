@@ -11,29 +11,62 @@ import ContactsAPI from '../../../../api/contact/ContactsAPI';
 import EmailAPI from '../../../../api/email/EmailAPI';
 
 import { fetchEmail } from '../../../../actions/email/EmailDetailsActions';
-
+import QuotationRequestsAPI from "../../../../api/quotation-request/QuotationRequestsAPI";
+import TasksAPI from "../../../../api/task/TasksAPI";
+import MeasureAPI from "../../../../api/measure/MeasureAPI";
+import IntakesAPI from "../../../../api/intake/IntakesAPI";
+import OpportunitiesAPI from "../../../../api/opportunity/OpportunitiesAPI";
 
 class EmailFormEdit extends Component {
     constructor(props) {
         super(props);
 
-        const {id, contactId, status} = props.email;
+        const {id, contact, intake, task, quotationRequest, measure, opportunity, status} = props.email;
 
         this.state = {
             email: {
                 id,
-                contactId: contactId,
+                contactId: contact ? contact.id : '',
+                intakeId: intake ? intake.id : '',
+                taskId: task ? task.id : '',
+                quotationRequestId: quotationRequest ? quotationRequest.id : '',
+                measureId: measure ? measure.id : '',
                 statusId: status ? status.id : '',
+                opportunity: opportunity ? opportunity.id : '',
             },
             contacts: [],
+            quotationRequests: [],
+            tasks: [],
+            measures: [],
+            intakes: [],
+            opportunities: [],
         }
     };
 
     componentWillMount() {
         ContactsAPI.getContactsPeek().then(payload => {
             this.setState({
-                contacts: payload
-            });
+                contacts: payload });
+        });
+
+        QuotationRequestsAPI.peekQuotationRequests().then((payload) => {
+            this.setState({ quotationRequests: payload });
+        });
+
+        TasksAPI.peekTasks().then((payload) => {
+            this.setState({ tasks: payload });
+        });
+
+        MeasureAPI.peekMeasures().then((payload) => {
+            this.setState({ measures: payload });
+        });
+
+        IntakesAPI.peekIntakes().then((payload) => {
+            this.setState({ intakes: payload });
+        });
+
+        OpportunitiesAPI.peekOpportunities().then((payload) => {
+            this.setState({ opportunities: payload });
         });
     }
 
@@ -56,22 +89,21 @@ class EmailFormEdit extends Component {
 
         const {email} = this.state;
 
-        if(email.contactId) {
-            EmailAPI.associateContact(email.id, email.contactId).then(payload => {
-                this.props.fetchEmail(email.id);
-            });
-        }
         if(email.statusId){
             EmailAPI.setStatus(email.id, email.statusId).then(payload => {
                 this.props.fetchEmail(email.id);
             });
         }
 
+        EmailAPI.updateEmail(email).then(payload => {
+            this.props.fetchEmail(email.id);
+        });
+
         this.props.switchToView();
     };
 
     render() {
-        const {contactId, statusId} = this.state.email;
+        const {contactId, statusId, intakeId, taskId, quotationRequestId, measureId, opportunityId} = this.state.email;
         const {from, to, cc, bcc, subject, htmlBody, createdAt, dateSent, folder, status} = this.props.email;
         return (
             <div>
@@ -109,6 +141,55 @@ class EmailFormEdit extends Component {
                         value={contactId}
                         onChangeAction={this.handleInputChange}
                         optionName={'fullName'}
+                    />
+                </div>
+
+                <div className="row">
+                    <InputSelect
+                        label={"Intake"}
+                        size={"col-sm-6"}
+                        name={"intakeId"}
+                        options={this.state.intakes}
+                        value={intakeId}
+                        onChangeAction={this.handleInputChange}
+                    />
+                    <InputSelect
+                        label={"Taak"}
+                        size={"col-sm-6"}
+                        name={"taskId"}
+                        options={this.state.tasks}
+                        value={taskId}
+                        onChangeAction={this.handleInputChange}
+                    />
+                </div>
+
+                <div className="row">
+                    <InputSelect
+                        label={"Offerteverzoek"}
+                        size={"col-sm-6"}
+                        name={"quotationRequestId"}
+                        options={this.state.quotationRequests}
+                        value={quotationRequestId}
+                        onChangeAction={this.handleInputChange}
+                    />
+                    <InputSelect
+                        label={"Maatregel"}
+                        size={"col-sm-6"}
+                        name={"measureId"}
+                        options={this.state.measures}
+                        value={measureId}
+                        onChangeAction={this.handleInputChange}
+                    />
+                </div>
+
+                <div className="row">
+                    <InputSelect
+                        label={"Kans"}
+                        size={"col-sm-6"}
+                        name={"opportunityId"}
+                        options={this.state.opportunities}
+                        value={opportunityId}
+                        onChangeAction={this.handleInputChange}
                     />
                 </div>
 

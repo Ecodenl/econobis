@@ -13,9 +13,9 @@ export const clearTasks = () => {
     };
 };
 
-export const setTaskCompleted = (task) => {
+export const setTaskFinished = (task) => {
     return  {
-        type: 'SET_TASK_COMPLETED',
+        type: 'SET_TASK_FINISHED',
         task,
     };
 };

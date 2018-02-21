@@ -2,45 +2,57 @@ import React, {Component} from 'react';
 import { hashHistory } from 'react-router';
 import { connect } from 'react-redux';
 
-import Panel from "../../../components/panel/Panel";
-import PanelBody from '../../../components/panel/PanelBody';
-import CampaignList from "./harmonica/CampaignList";
+import CampaignHarmonica from "./harmonica/CampaignHarmonica";
+import DocumentHarmonica from "./harmonica/DocumentHarmonica";
 
 class MeasureDetailsHarmonica extends Component {
     constructor(props){
         super(props);
 
         this.state = {
-            toggleShowCampaigns: false,
-        }
+            toggleShowList: {
+                campaigns: false,
+                documents: false,
+            },
+        };
+
+        this.toggleShowList = this.toggleShowList.bind(this);
+        this.newDocument = this.newDocument.bind(this);
     };
 
     newCampaign = () => {
-        hashHistory.push(`/campagne/nieuw/`);
+        hashHistory.push(`/campagne/nieuw/maatregel/${this.props.measureDetails.id}`);
     };
 
-    toggleShowCampaigns = () => {
+    toggleShowList(name) {
         this.setState({
-            toggleShowCampaigns: !this.state.toggleShowCampaigns
+            ...this.state,
+            toggleShowList: {
+                ...this.state.toggleShowList,
+                [name]: !this.state.toggleShowList[name],
+            }
         });
     };
 
+    newDocument(type) {
+        hashHistory.push(`/document/nieuw/${type}/maatregel/${this.props.measureDetails.id}`);
+    };
+
     render(){
-        const { permissions = {} } = this.props;
         return (
             <div className="col-md-12 margin-10-top">
-                <Panel className={"harmonica-button"}>
-                    <PanelBody>
-                        <div className="col-sm-12" onClick={this.toggleShowCampaigns}>
-                            <span className="">CAMPAGNES <span className="badge">{ this.props.measure.campaignCount }</span></span>
-                            {permissions.manageMarketing &&
-                            <a role="button" className="pull-right" onClick={this.newCampaign}><span
-                                className="glyphicon glyphicon-plus glyphicon-white"/></a>
-                            }
-                            { this.state.toggleShowCampaigns && <CampaignList /> }
-                        </div>
-                    </PanelBody>
-                </Panel>
+                <DocumentHarmonica
+                    toggleShowList={() => this.toggleShowList('documents')}
+                    showDocumentsList={this.state.toggleShowList.documents}
+                    newDocument={this.newDocument}
+                    documentCount={this.props.measureDetails.documentCount}
+                />
+                <CampaignHarmonica
+                    toggleShowList={() => this.toggleShowList('campaigns')}
+                    showCampaignsList={this.state.toggleShowList.campaigns}
+                    campaignCount={this.props.measureDetails.campaignCount}
+                    newCampaign={this.newCampaign}
+                />
             </div>
         )
     }
@@ -48,8 +60,7 @@ class MeasureDetailsHarmonica extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        measure: state.measure,
-        permissions: state.meDetails.permissions
+        measureDetails: state.measureDetails,
     };
 };
 

@@ -2,11 +2,15 @@
 
 namespace App\Eco\Document;
 
+use App\Eco\Campaign\Campaign;
 use App\Eco\Contact\Contact;
 use App\Eco\ContactGroup\ContactGroup;
 use App\Eco\DocumentTemplate\DocumentTemplate;
+use App\Eco\HousingFile\HousingFile;
+use App\Eco\Measure\Measure;
 use App\Eco\Opportunity\Opportunity;
-use App\Eco\Registration\Registration;
+use App\Eco\Intake\Intake;
+use App\Eco\Task\Task;
 use App\Eco\User\User;
 use Illuminate\Database\Eloquent\Model;
 use Venturecraft\Revisionable\RevisionableTrait;
@@ -22,9 +26,9 @@ class Document extends Model
         return $this->belongsTo(Contact::class);
     }
 
-    public function registration()
+    public function intake()
     {
-        return $this->belongsTo(Registration::class);
+        return $this->belongsTo(Intake::class);
     }
 
     public function contactGroup()
@@ -65,4 +69,19 @@ class Document extends Model
         return $this->belongsTo(DocumentTemplate::class);
     }
 
+    public function housingFile(){
+        return $this->belongsTo(HousingFile::class);
+    }
+
+    public function campaign(){
+        return $this->belongsTo(Campaign::class);
+    }
+
+    public function measure(){
+        return $this->belongsTo(Measure::class);
+    }
+
+    public function task(){
+        return $this->belongsTo(Task::class);
+    }
 }

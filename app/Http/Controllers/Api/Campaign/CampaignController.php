@@ -20,7 +20,6 @@ use App\Http\RequestQueries\Campaign\Grid\RequestQuery;
 use App\Http\Resources\Campaign\CampaignPeek;
 use App\Http\Resources\Campaign\FullCampaign;
 use App\Http\Resources\Campaign\GridCampaign;
-use App\Http\Resources\Campaign\GridMeasure;
 use App\Http\Resources\Opportunity\FullOpportunity;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -43,10 +42,11 @@ class CampaignController extends ApiController
 
     public function show(Campaign $campaign)
     {
-        $campaign->load(['opportunities.contact',
+        $campaign->load([
             'opportunities.measure',
+            'opportunities.intake.contact',
             'opportunities.status',
-            'opportunities.quotations',
+            'opportunities.quotationRequests',
             'measures',
             'status',
             'type',
@@ -55,6 +55,10 @@ class CampaignController extends ApiController
             'createdBy',
             'ownedBy',
             'tasks',
+            'notes',
+            'documents',
+            'intakes.contact',
+            'intakes.address'
         ]);
 
         return FullCampaign::make($campaign);
@@ -69,7 +73,6 @@ class CampaignController extends ApiController
             ->string('description')->onEmpty(null)->next()
             ->string('startDate')->validate('date')->onEmpty(null)->alias('start_date')->next()
             ->string('endDate')->validate('date')->onEmpty(null)->alias('end_date')->next()
-            ->string('goal')->onEmpty(null)->next()
             ->integer('statusId')->validate('exists:campaign_status,id')->onEmpty(null)->alias('status_id')->next()
             ->integer('typeId')->validate('required|exists:campaign_types,id')->alias('type_id')->next()
             ->get();
@@ -98,7 +101,6 @@ class CampaignController extends ApiController
             ->string('name')->validate('required')->next()
             ->string('number')->validate('required')->next()
             ->string('description')->onEmpty(null)->next()
-            ->string('goal')->onEmpty(null)->next()
             ->string('startDate')->validate('date')->onEmpty(null)->alias('start_date')->next()
             ->string('endDate')->validate('date')->onEmpty(null)->alias('end_date')->next()
             ->integer('statusId')->validate('exists:campaign_status,id')->onEmpty(null)->alias('status_id')->next()
@@ -131,9 +133,9 @@ class CampaignController extends ApiController
             $opportunity->save();
         }
 
-        foreach ($campaign->registrations as $registration) {
-            $registration->campaign()->dissociate();
-            $registration->save();
+        foreach ($campaign->intakes as $intake) {
+            $intake->campaign()->dissociate();
+            $intake->save();
         }
 
         foreach ($campaign->tasks as $task) {

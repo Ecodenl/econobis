@@ -3,7 +3,12 @@
 namespace App\Eco\Email;
 
 use App\Eco\Contact\Contact;
+use App\Eco\Intake\Intake;
 use App\Eco\Mailbox\Mailbox;
+use App\Eco\Measure\Measure;
+use App\Eco\Opportunity\Opportunity;
+use App\Eco\QuotationRequest\QuotationRequest;
+use App\Eco\Task\Task;
 use App\Eco\User\User;
 use Illuminate\Database\Eloquent\Model;
 
@@ -43,5 +48,30 @@ class Email extends Model
         if(!$this->status) return null;
 
         return EmailStatus::get($this->status);
+    }
+
+    public function intake()
+    {
+        return $this->belongsTo(Intake::class);
+    }
+
+    public function task()
+    {
+        return $this->belongsTo(Task::class);
+    }
+
+    public function quotationRequest()
+    {
+        return $this->belongsTo(QuotationRequest::class);
+    }
+
+    public function measure()
+    {
+        return $this->belongsTo(Measure::class);
+    }
+
+    public function opportunity()
+    {
+        return $this->belongsTo(Opportunity::class);
     }
 }

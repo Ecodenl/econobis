@@ -19,18 +19,26 @@ import emailDetailsReducer from './email/EmailDetailsReducer';
 import emailTemplatesReducer from './email-template/EmailTemplatesReducer';
 import emailTemplateDetailsReducer from './email-template/EmailTemplateDetailsReducer';
 import errorReducer from './general/ErrorReducer';
+import housingFileDetailsReducer from './housing-file/HousingFileDetailsReducer';
+import housingFilesReducer from './housing-file/HousingFilesReducer';
 import mailboxDetailsReducer from './mailbox/MailboxDetailsReducer';
 import mailboxesReducer from './mailbox/MailboxesReducer';
-import measuresReducer from './measure/MeasureReducer';
+import measuresReducer from './measure/MeasuresReducer';
+import measureDetailsReducer from './measure/MeasureDetailsReducer';
 import meDetailsReducer from './general/MeDetailsReducer';
 import opportunitiesReducer from './opportunity/OpportunitiesReducer';
 import opportunityDetailsReducer from './opportunity/OpportunityDetailsReducer';
-import registrationDetailsReducer from './registration/RegistrationDetailsReducer';
-import registrationsReducer from './registration/RegistrationsReducer';
+import intakeDetailsReducer from './intake/IntakeDetailsReducer';
+import intakesReducer from './intake/IntakesReducer';
+import quotationRequestsReducer from './quotation-request/QuotationRequestsReducer';
+import quotationRequestDetailsReducer from './quotation-request/QuotationRequestDetailsReducer';
 import sidebarReducer from './general/SidebarReducer';
 import systemDataReducer from './general/SystemDataReducer';
 import tasksReducer from './task/TasksReducer';
+import notesReducer from './task/NotesReducer';
 import taskDetailsReducer from './task/TaskDetailsReducer';
+import teamsReducer from './team/TeamsReducer';
+import teamDetailsReducer from './team/TeamDetailsReducer';
 import userDetailsReducer from './user/UserDetailsReducer';
 import usersReducer from './user/UsersReducer';
 
@@ -67,26 +75,34 @@ const rootReducer = combineReducers({
     // Emails
     emails: emailsReducer,
     email: emailDetailsReducer,
-
     // Email templates
     emailTemplates: emailTemplatesReducer,
     emailTemplate: emailTemplateDetailsReducer,
-
+    // Housing file
+    housingFiles: housingFilesReducer,
+    housingFileDetails: housingFileDetailsReducer,
     // Opportunity
     opportunities: opportunitiesReducer,
     opportunityDetails: opportunityDetailsReducer,
-    // Registration
-    registrations: registrationsReducer,
-    registrationDetails: registrationDetailsReducer,
+    // Intake
+    intakes: intakesReducer,
+    intakeDetails: intakeDetailsReducer,
     // Mailbox
     mailboxes: mailboxesReducer,
     mailboxDetails: mailboxDetailsReducer,
     // Measures
     measures: measuresReducer,
-    measure: measuresReducer,
-    //Task
+    measureDetails: measureDetailsReducer,
+    //Quotation request
+    quotationRequests: quotationRequestsReducer,
+    quotationRequestDetails: quotationRequestDetailsReducer,
+    //Task / note
     taskDetails: taskDetailsReducer,
     tasks: tasksReducer,
+    notes: notesReducer,
+    //Team
+    teams: teamsReducer,
+    teamDetails: teamDetailsReducer,
     // User
     users: usersReducer,
     userDetails: userDetailsReducer,

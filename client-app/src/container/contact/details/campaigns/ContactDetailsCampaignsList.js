@@ -8,10 +8,9 @@ const ContactDetailsCampaignsList = props => {
         <div>
             <div className="row border header">
                 <div className="col-sm-2">Nummer</div>
-                <div className="col-sm-2">Naam</div>
-                <div className="col-sm-2">Start datum</div>
-                <div className="col-sm-2">Eind datum</div>
-                <div className="col-sm-3">Doel</div>
+                <div className="col-sm-3">Naam</div>
+                <div className="col-sm-3">Start datum</div>
+                <div className="col-sm-3">Eind datum</div>
                 <div className="col-sm-1">Taken</div>
             </div>
             {

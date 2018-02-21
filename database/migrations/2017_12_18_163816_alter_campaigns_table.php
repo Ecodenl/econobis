@@ -81,8 +81,6 @@ class AlterCampaignsTable extends Migration
             $table->date('start_date')->nullable();
             $table->date('end_date')->nullable();
 
-            $table->string('goal')->nullable();
-
             $table->unsignedInteger('type_id');
             $table->foreign('type_id')
                 ->references('id')->on('campaign_types')

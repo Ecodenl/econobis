@@ -56,8 +56,8 @@ export default {
             );
     },
 
-    updateOpportunityQuotation: (data) => {
-        const requestUrl = `${URL_OPPORTUNITY}/quotation/${data.id}`;
+    storeOpportunityEvaluation: (data) => {
+        const requestUrl = `${URL_OPPORTUNITY}/evaluation`;
         const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
         axios.defaults.headers.common.Authorization = AUTH_TOKEN;
 
@@ -69,8 +69,8 @@ export default {
             );
     },
 
-    storeOpportunityQuotation: (opportunityId, data) => {
-        const requestUrl = `${URL_OPPORTUNITY}/${opportunityId}/quotation`;
+    updateOpportunityEvaluation: (data) => {
+        const requestUrl = `${URL_OPPORTUNITY}/evaluation/${data.id}`;
         const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
         axios.defaults.headers.common.Authorization = AUTH_TOKEN;
 

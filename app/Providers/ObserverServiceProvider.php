@@ -10,12 +10,14 @@ use App\Eco\DocumentTemplate\DocumentTemplateObserver;
 use App\Eco\DocumentTemplate\DocumentTemplate;
 use App\Eco\EmailTemplate\EmailTemplate;
 use App\Eco\EmailTemplate\EmailTemplateObserver;
+use App\Eco\HousingFile\HousingFile;
+use App\Eco\HousingFile\HousingFileObserver;
+use App\Eco\Intake\Intake;
+use App\Eco\Intake\IntakeObserver;
 use App\Eco\Measure\Measure;
 use App\Eco\Measure\MeasureObserver;
 use App\Eco\Opportunity\Opportunity;
 use App\Eco\Opportunity\OpportunityObserver;
-use App\Eco\Opportunity\OpportunityQuotation;
-use App\Eco\Opportunity\OpportunityQuotationObserver;
 use App\Eco\Organisation\Organisation;
 use App\Eco\Organisation\OrganisationObserver;
 use App\Eco\Address\Address;
@@ -32,6 +34,10 @@ use App\Eco\Person\Person;
 use App\Eco\Person\PersonObserver;
 use App\Eco\PhoneNumber\PhoneNumber;
 use App\Eco\PhoneNumber\PhoneNumberObserver;
+use App\Eco\QuotationRequest\QuotationRequest;
+use App\Eco\QuotationRequest\QuotationRequestObserver;
+use App\Eco\Task\Task;
+use App\Eco\Task\TaskObserver;
 use Illuminate\Support\ServiceProvider;
 
 class ObserverServiceProvider extends ServiceProvider
@@ -52,12 +58,15 @@ class ObserverServiceProvider extends ServiceProvider
         ContactNote::observe(ContactNoteObserver::class);
         ContactGroup::observe(ContactGroupObserver::class);
         Opportunity::observe(OpportunityObserver::class);
-        OpportunityQuotation::observe(OpportunityQuotationObserver::class);
         Campaign::observe(CampaignObserver::class);
         Measure::observe(MeasureObserver::class);
         EmailTemplate::observe(EmailTemplateObserver::class);
         Document::observe(DocumentObserver::class);
         DocumentTemplate::observe(DocumentTemplateObserver::class);
+        Intake::observe(IntakeObserver::class);
+        HousingFile::observe(HousingFileObserver::class);
+        Task::observe(TaskObserver::class);
+        QuotationRequest::observe(QuotationRequestObserver::class);
     }
 
     /**

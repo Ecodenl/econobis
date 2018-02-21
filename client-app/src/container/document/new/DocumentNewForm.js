@@ -8,7 +8,7 @@ import ButtonText from '../../../components/button/ButtonText';
 import DocumentNewFormCreateDocument from "./create-document/DocumentNewFormCreateDocument";
 import DocumentNewFormUpload from "./upload/DocumentNewFormUpload";
 
-const DocumentNewForm = ({document, contacts, contactGroups, templates, registrations, opportunities, errors, handleSubmit, handleInputChange, handleDocumentGroupChange, onDropAccepted, onDropRejected}) => {
+const DocumentNewForm = ({document, contacts, contactGroups, templates, intakes, opportunities, campaigns, housingFiles, quotationRequests, measures, tasks, errors, handleSubmit, handleInputChange, handleDocumentGroupChange, onDropAccepted, onDropRejected}) => {
     const submitText = document.documentType === 'internal' ? 'Maak document' : 'Upload document';
 
     return (
@@ -16,10 +16,13 @@ const DocumentNewForm = ({document, contacts, contactGroups, templates, registra
             <Panel>
                 <PanelBody>
                     <DocumentNewFormGeneral
+                        tasks={tasks}
+                        quotationRequests={quotationRequests}
+                        housingFiles={housingFiles}
                         document={document}
                         contacts={contacts}
                         contactGroups={contactGroups}
-                        registrations={registrations}
+                        intakes={intakes}
                         opportunities={opportunities}
                         errors={errors}
                         handleInputChange={handleInputChange}
@@ -35,6 +38,8 @@ const DocumentNewForm = ({document, contacts, contactGroups, templates, registra
                             />
                             :
                             <DocumentNewFormUpload
+                                measures={measures}
+                                campaigns={campaigns}
                                 document={document}
                                 errors={errors}
                                 handleInputChange={handleInputChange}

@@ -13,6 +13,7 @@ import { speech_bubbles } from 'react-icons-kit/ikons/speech_bubbles';
 import {starEmpty} from "react-icons-kit/icomoon/starEmpty";
 import { documents } from 'react-icons-kit/ikons/documents';
 import { calendar } from 'react-icons-kit/icomoon/calendar';
+import { home } from 'react-icons-kit/icomoon/home';
 
 class SidebarMenuSmall extends Component {
     constructor(props) {
@@ -25,8 +26,8 @@ class SidebarMenuSmall extends Component {
                 <div className="sidebar-menu-small-item"><SvgIcon size={20} icon={ic_dashboard}/></div>
                 {/* Contacten */}
                 <div className="sidebar-menu-small-item"><SvgIcon size={20} icon={ic_contacts}/></div>
-                {/* Aanmeldingen */}
-                <div className="sidebar-menu-small-item"><SvgIcon size={20} icon={pencil2}/></div>
+                {/* Intakes */}
+                <div className="sidebar-menu-small-item"><SvgIcon size={20} icon={home}/></div>
                 {/* Groepen beheer */}
                 <div className="sidebar-menu-small-item"><SvgIcon size={20} icon={ic_aspect_ratio}/></div>
                 {/* Email */}
@@ -35,16 +36,12 @@ class SidebarMenuSmall extends Component {
                 <div className="sidebar-menu-small-item"><SvgIcon size={20} icon={speech_bubbles}/></div>
                 {/* Taken */}
                 <div className="sidebar-menu-small-item"><SvgIcon size={20} icon={ic_business}/></div>
-                {/* Kansen */}
-                <div className="sidebar-menu-small-item"><SvgIcon size={20} icon={calendar}/></div>
                 {/* Agenda */}
-                <div className="sidebar-menu-small-item"><SvgIcon size={20} icon={starEmpty}/></div>
+                <div className="sidebar-menu-small-item"><SvgIcon size={20} icon={calendar}/></div>
                 {/* Documenten */}
                 {this.props.permissions.viewDocumentTemplate &&
                 <div className="sidebar-menu-small-item"><SvgIcon size={20} icon={documents}/></div>
                 }
-                {/* Variabelen */}
-                <div className="sidebar-menu-small-item"><SvgIcon size={20} icon={ic_business}/></div>
                 {/* Instellingen */}
                 <div className="sidebar-menu-small-item"><SvgIcon size={20} icon={cog}/></div>
             </div>

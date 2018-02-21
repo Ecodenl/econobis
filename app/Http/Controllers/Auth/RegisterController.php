@@ -14,7 +14,7 @@ class RegisterController extends Controller
     | Register Controller
     |--------------------------------------------------------------------------
     |
-    | This controller handles the registration of new users as well as their
+    | This controller handles the intake of new users as well as their
     | validation and creation. By default this controller uses a trait to
     | provide this functionality without requiring any additional code.
     |
@@ -23,7 +23,7 @@ class RegisterController extends Controller
     use RegistersUsers;
 
     /**
-     * Where to redirect users after registration.
+     * Where to redirect users after intake.
      *
      * @var string
      */
@@ -40,7 +40,7 @@ class RegisterController extends Controller
     }
 
     /**
-     * Get a validator for an incoming registration request.
+     * Get a validator for an incoming intake request.
      *
      * @param  array  $data
      * @return \Illuminate\Contracts\Validation\Validator
@@ -55,7 +55,7 @@ class RegisterController extends Controller
     }
 
     /**
-     * Create a new user instance after a valid registration.
+     * Create a new user instance after a valid intake.
      *
      * @param  array  $data
      * @return \App\Eco\User\User

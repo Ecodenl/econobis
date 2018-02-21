@@ -3,10 +3,11 @@
 namespace App\Eco\Campaign;
 
 use App\Eco\Contact\Contact;
+use App\Eco\Document\Document;
 use App\Eco\Measure\Measure;
 use App\Eco\Opportunity\Opportunity;
 use App\Eco\Organisation\Organisation;
-use App\Eco\Registration\Registration;
+use App\Eco\Intake\Intake;
 use App\Eco\Task\Task;
 use App\Eco\User\User;
 use Illuminate\Database\Eloquent\Model;
@@ -26,16 +27,16 @@ class Campaign extends Model
 
     ];
 
-    public function registrations()
+    public function intakes()
     {
-        return $this->hasMany(Registration::class);
+        return $this->hasMany(Intake::class);
     }
 
     public function opportunities()
     {
-        return $this->hasMany(Opportunity::class);
+        return $this->hasManyThrough(Opportunity::class, Intake::class);
     }
-
+    
     public function measures()
     {
         return $this->belongsToMany(Measure::class);
@@ -67,8 +68,19 @@ class Campaign extends Model
         return $this->belongsTo(User::class);
     }
 
+    // Only unfinished tasks are a task
     public function tasks()
     {
-        return $this->hasMany(Task::class);
+        return $this->hasMany(Task::class)->where('finished', false);
+    }
+
+    // A finished task is a note
+    public function notes()
+    {
+        return $this->hasMany(Task::class)->where('finished', true);
+    }
+
+    public function documents(){
+        return $this->hasMany(Document::class);
     }
 }

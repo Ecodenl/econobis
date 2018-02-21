@@ -33,32 +33,42 @@ Route::namespace('Api')
         Route::get('/contact/peek', 'Contact\ContactController@peek');
         Route::post('contact/{contact}/owner/{user}/associate', 'Contact\ContactController@associateOwner');
         Route::get('/contact/{contact}', 'Contact\ContactController@show');
-        Route::get('/contact/{contact}/registrations', 'Contact\ContactController@registrations');
+        Route::get('/contact/{contact}/intakes', 'Contact\ContactController@intakes');
+        Route::get('/contact/{contact}/housing-files', 'Contact\ContactController@housingFiles');
         Route::get('/contact/{contact}/groups', 'Contact\ContactController@groups');
         Route::post('/contact/{contact}/delete', 'Contact\ContactController@destroy');
         Route::get('/contact/{contact}/tasks', 'Contact\ContactController@tasks');
 
-        Route::get('/registration/grid', 'Registration\RegistrationController@grid');
-        Route::get('/registration/peek', 'Registration\RegistrationController@peek');
-        Route::get('/registration/amount-active', 'Registration\RegistrationController@getAmountOfActiveRegistrations');
-        Route::get('/contact/{contact}/registration', 'Registration\RegistrationController@getStore');
-        Route::post('/contact/registration', 'Registration\RegistrationController@store');
-        Route::get('/registration/{registration}', 'Registration\RegistrationController@show');
-        Route::post('/registration/{registration}/update', 'Registration\RegistrationController@update');
-        Route::post('/registration/{registration}/delete', 'Registration\RegistrationController@destroy');
+        Route::get('/intake/grid', 'Intake\IntakeController@grid');
+        Route::get('/intake/amount-active', 'Intake\IntakeController@getAmountOfActiveIntakes');
+        Route::get('/intake/peek', 'Intake\IntakeController@peek');
+        Route::get('/contact/{contact}/intake', 'Intake\IntakeController@getStore');
+        Route::post('/contact/intake', 'Intake\IntakeController@store');
+        Route::get('/intake/{intake}', 'Intake\IntakeController@show');
+        Route::post('/intake/{intake}/update', 'Intake\IntakeController@update');
+        Route::post('/intake/{intake}/delete', 'Intake\IntakeController@destroy');
 
-        Route::post('/registration/{registration}/measure-taken', 'Registration\RegistrationController@storeMeasureTaken');
-        Route::post('/registration/{measureTaken}/measure-taken/update', 'Registration\RegistrationController@updateMeasureTaken');
-        Route::post('/registration/{measureTaken}/measure-taken/delete', 'Registration\RegistrationController@deleteMeasureTaken');
+        Route::post('/intake/{intake}/{measure}/attach', 'Intake\IntakeController@attachMeasureRequested');
+        Route::post('/intake/{intake}/{measure}/detach', 'Intake\IntakeController@detachMeasureRequested');
 
-        Route::post('/registration/{registration}/measure-requested', 'Registration\RegistrationController@storeMeasureRequested');
-        Route::post('/registration/{measureRequested}/measure-requested/update', 'Registration\RegistrationController@updateMeasureRequested');
-        Route::post('/registration/{measureRequested}/measure-requested/delete', 'Registration\RegistrationController@deleteMeasureRequested');
+        Route::get('/intake/{intake}/tasks', 'Intake\IntakeController@tasks');
+        Route::get('/intake/{intake}/notes', 'Intake\IntakeController@notes');
+        Route::get('/intake/{intake}/documents', 'Intake\IntakeController@documents');
+        Route::get('/intake/{intake}/emails', 'Intake\IntakeController@emails');
 
-        Route::post('/registration/{registration}/note', 'Registration\RegistrationController@storeNote');
-        Route::post('/registration/note/{note}/update', 'Registration\RegistrationController@updateNote');
-        Route::post('/registration/note/{note}/delete', 'Registration\RegistrationController@deleteNote');
-        Route::get('/registration/{registration}/tasks', 'Registration\RegistrationController@tasks');
+        Route::get('/housing-file/grid', 'HousingFile\HousingFileController@grid');
+        Route::get('/housing-file/peek', 'HousingFile\HousingFileController@peek');
+        Route::get('/contact/{contact}/housing-file', 'HousingFile\HousingFileController@getStore');
+        Route::post('/contact/housing-file', 'HousingFile\HousingFileController@store');
+        Route::get('/housing-file/{housingFile}', 'HousingFile\HousingFileController@show');
+        Route::post('/housing-file/{housingFile}/update', 'HousingFile\HousingFileController@update');
+        Route::post('/housing-file/{housingFile}/delete', 'HousingFile\HousingFileController@destroy');
+
+        Route::post('/housing-file/measure-taken', 'HousingFile\HousingFileController@attachMeasureTaken');
+        Route::post('/housing-file/{address}/{measure}/detach', 'HousingFile\HousingFileController@detachMeasureTaken');
+        
+        Route::get('/housing-file/{housingFile}/notes', 'HousingFile\HousingFileController@notes');
+        Route::get('/housing-file/{housingFile}/documents', 'HousingFile\HousingFileController@documents');
 
         Route::get('/user/grid', 'User\GridController@index');
         Route::post('/user', 'User\UserController@store');
@@ -117,29 +127,25 @@ Route::namespace('Api')
         Route::get('opportunity/chart-data', 'Opportunity\OpportunityController@chartData');
         Route::get('opportunity/{opportunity}', 'Opportunity\OpportunityController@show');
         Route::post('opportunity/', 'Opportunity\OpportunityController@store');
+        Route::post('opportunity/evaluation', 'Opportunity\OpportunityController@storeEvaluation');
+        Route::post('opportunity/evaluation/{opportunityEvaluation}', 'Opportunity\OpportunityController@updateEvaluation');
         Route::post('opportunity/{opportunity}', 'Opportunity\OpportunityController@update');
         Route::post('opportunity/{opportunity}/delete', 'Opportunity\OpportunityController@destroy');
 
-        Route::post('opportunity/{opportunity}/quotation', 'Opportunity\OpportunityQuotationController@store');
-        Route::post('opportunity/quotation/{opportunityQuotation}', 'Opportunity\OpportunityQuotationController@update');
-        Route::post('opportunity/quotation/{opportunityQuotation}/delete', 'Opportunity\OpportunityQuotationController@destroy');
-
         Route::get('contact-group/{contactGroup}/tasks', 'ContactGroup\ContactGroupController@tasks');
 
-        Route::get('task/grid', 'Task\TaskController@grid');
+        Route::get('task/grid/tasks', 'Task\TaskController@gridTask');
+        Route::get('task/grid/notes', 'Task\TaskController@gridNote');
+        Route::get('task/peek', 'Task\TaskController@peek');
         Route::get('task/calendar', 'Task\TaskController@calendar');
         Route::get('task/amount-active', 'Task\TaskController@getAmountOfActiveTasks');
         Route::get('task/{task}', 'Task\TaskController@show');
         Route::post('task', 'Task\TaskController@store');
         Route::post('task/{task}', 'Task\TaskController@update');
+        Route::post('task/{task}/duplicate', 'Task\TaskController@duplicate');
         Route::post('task/{task}/delete', 'Task\TaskController@destroy');
         Route::post('task/{task}/finish', 'Task\TaskController@finish');
-        Route::get('task/{task}/attachments', 'Task\TaskController@attachments');
-        Route::post('task/{task}/attachments', 'Task\TaskAttachmentController@store');
         Route::post('task/{task}/properties', 'Task\TaskPropertyValueController@store');
-
-        Route::get('task-attachment/{taskAttachment}/download', 'Task\TaskAttachmentController@download');
-        Route::post('task-attachment/{taskAttachment}/delete', 'Task\TaskAttachmentController@destroy');
 
         Route::post('task-property-value/{taskPropertyValue}', 'Task\TaskPropertyValueController@update');
         Route::post('task-property-value/{taskPropertyValue}/delete', 'Task\TaskPropertyValueController@destroy');
@@ -159,8 +165,8 @@ Route::namespace('Api')
         Route::post('campaign/{campaign}/organisation/{organisation}/detach', 'Campaign\CampaignController@detachOrganisation');
 
         Route::get('measure/grid', 'Measure\MeasureController@grid');
+        Route::get('measure/peek', 'Measure\MeasureController@peek');
         Route::get('measure/{measure}', 'Measure\MeasureController@show');
-        Route::post('measure/', 'Measure\MeasureController@store');
         Route::post('measure/faq/{measureFaq}/delete', 'Measure\MeasureController@destroyFaq');
         Route::post('measure/faq/{measureFaq}/update', 'Measure\MeasureController@updateFaq');
         Route::post('measure/{measure}/opportunity/{opportunity}/associate', 'Measure\MeasureController@associateOpportunity');
@@ -169,6 +175,7 @@ Route::namespace('Api')
         Route::post('measure/{measure}/faq', 'Measure\MeasureController@storeFaq');
         Route::post('measure/{measure}', 'Measure\MeasureController@update');
         Route::post('measure/{measure}/delete', 'Measure\MeasureController@destroy');
+        Route::get('measure/{measure}/attachments', 'Measure\MeasureController@attachments');
 
         Route::get('mailbox/grid', 'Mailbox\MailboxController@grid');
         Route::get('mailbox/logged-in/email-peek', 'Mailbox\MailboxController@loggedInEmailPeek');
@@ -196,7 +203,6 @@ Route::namespace('Api')
         Route::post('email/concept/{mailbox}/store', 'Email\EmailController@storeConcept');
         Route::post('email/concept/{email}/update', 'Email\EmailController@updateConcept');
         Route::post('email/concept/{email}/send', 'Email\EmailController@sendConcept');
-        Route::post('email/{email}/{contact}', 'Email\EmailController@associateContact');
         Route::post('email/{email}/status/{emailStatusId}', 'Email\EmailController@setEmailStatus');
 
         Route::get('email-template/grid', 'EmailTemplate\EmailTemplateController@grid');
@@ -225,5 +231,22 @@ Route::namespace('Api')
         Route::get('audit-trail/peek-models', 'AuditTrail\AuditTrailController@peekModels');
 
         Route::post('general-search', 'GeneralSearch\GeneralSearchController@search');
+
+        Route::get('team/grid', 'Team\TeamController@grid');
+        Route::get('team/peek', 'Team\TeamController@peek');
+        Route::get('team/{team}', 'Team\TeamController@show');
+        Route::post('team', 'Team\TeamController@store');
+        Route::post('team/{team}', 'Team\TeamController@update');
+        Route::post('team/{team}/delete', 'Team\TeamController@destroy');
+        Route::post('team/{team}/{user}/attach', 'Team\TeamController@attachUser');
+        Route::post('team/{team}/{user}/detach', 'Team\TeamController@detachUser');
+
+        Route::get('/quotation-request/grid', 'QuotationRequest\QuotationRequestController@grid');
+        Route::get('/quotation-request/peek', 'QuotationRequest\QuotationRequestController@peek');
+        Route::get('/opportunity/{opportunity}/quotation-request', 'QuotationRequest\QuotationRequestController@getStore');
+        Route::post('/quotation-request', 'QuotationRequest\QuotationRequestController@store');
+        Route::get('/quotation-request/{quotationRequest}', 'QuotationRequest\QuotationRequestController@show');
+        Route::post('/quotation-request/{quotationRequest}/update', 'QuotationRequest\QuotationRequestController@update');
+        Route::post('/quotation-request/{quotationRequest}/delete', 'QuotationRequest\QuotationRequestController@destroy');
     }
 );

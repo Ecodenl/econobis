@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import TaskHarmonica from './harmonica/TaskHarmonica';
 import DocumentHarmonica from './harmonica/DocumentHarmonica';
 
-class RegistrationDetailsHarmonica extends Component {
+class IntakeDetailsHarmonica extends Component {
     constructor(props){
         super(props);
 
@@ -67,4 +67,4 @@ const mapStateToProps = (state) => {
     };
 };
 
-export default connect(mapStateToProps)(RegistrationDetailsHarmonica);
+export default connect(mapStateToProps)(IntakeDetailsHarmonica);

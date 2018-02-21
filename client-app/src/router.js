@@ -30,6 +30,12 @@ import EmailTemplateDetailsApp from './container/email-templates/details/EmailTe
 import EmailTemplateNewApp from './container/email-templates/new/EmailTemplateNewApp';
 import EmailAnswerApp from './container/email/answer/EmailAnswerApp';
 import Forgot from './container/auth/Forgot';
+import HousingFileDetailsApp from './container/housing-file/details/HousingFileDetailsApp';
+import HousingFileNewApp from './container/housing-file/new/HousingFileNewApp';
+import HousingFilesListApp from './container/housing-file/list/HousingFilesListApp';
+import QuotationRequestDetailsApp from './container/quotation-request/details/QuotationRequestDetailsApp';
+import QuotationRequestNewApp from './container/quotation-request/new/QuotationRequestNewApp';
+import QuotationRequestsListApp from './container/quotation-request/list/QuotationRequestsListApp';
 import Reset from './container/auth/Reset';
 import Login from './container/auth/Login';
 import Logout from './container/auth/Logout';
@@ -38,20 +44,23 @@ import MailboxNewApp from './container/mailbox/new/MailboxNewApp';
 import MailboxesListApp from './container/mailbox/list/MailboxesListApp';
 import Main from './container/global/Main';
 import MeasuresListApp from './container/measures/list/MeasuresListApp';
-import MeasureNewApp from './container/measures/new/MeasureNewApp';
 import MeasureDetailsApp from './container/measures/details/MeasureDetailsApp';
 import NotFoundedPage from './container/global/NotFoundedPage';
 import OpportunitiesListApp from './container/opportunities/list/OpportunitiesListApp';
 import OpportunityDetailsApp from './container/opportunities/details/OpportunityDetailsApp';
 import OpportunityNewApp from './container/opportunities/new/OpportunityNewApp';
 import PermissionHelper from './helpers/PermissionHelper';
-import RegistrationDetailsApp from './container/registration/details/RegistrationDetailsApp';
-import RegistrationNewApp from './container/registration/new/RegistrationNewApp';
-import RegistrationsListApp from './container/registration/list/RegistrationsListApp';
+import IntakeDetailsApp from './container/intake/details/IntakeDetailsApp';
+import IntakeNewApp from './container/intake/new/IntakeNewApp';
+import IntakesListApp from './container/intake/list/IntakesListApp';
 import RequireAuth from './helpers/RequireAuth';
 import TaskDetailsApp from './container/task/details/TaskDetailsApp';
 import TaskNewApp from './container/task/new/TaskNewApp';
-import TasksListApp from './container/task/list/TasksListApp';
+import TasksListApp from './container/task/list-tasks/TasksListApp';
+import NotesListApp from './container/task/list-notes/NotesListApp';
+import TeamsListApp from './container/team/list/TeamsListApp';
+import TeamNewApp from './container/team/new/TeamNewApp';
+import TeamDetailsApp from './container/team/details/TeamDetailsApp';
 import UserDetailsApp from './container/users/details/UserDetailsApp';
 import UserNewApp from './container/users/new/UserNewApp';
 import UsersListApp from './container/users/list/UsersListApp';
@@ -84,6 +93,7 @@ const Routes = () => {
                 <Route path="contacten-in-groep/:contactGroup" component={ ContactsInGroupListApp } />
                 /* Campaign */
                 <Route path="campagne/nieuw" component={CampaignNewApp} />
+                <Route path="campagne/nieuw/maatregel/:measureId" component={CampaignNewApp} />
                 <Route path="campagne/:id" component={CampaignDetailsApp} />
                 <Route path="campagnes" component={CampaignsListApp} />
                 <Route path="contacten/:filter/:value" component={ ContactsListApp } />
@@ -93,7 +103,12 @@ const Routes = () => {
                 <Route path="document/nieuw/:type/contact/:contactId" component={DocumentNewApp} />
                 <Route path="document/nieuw/:type/contact-groep/:contactGroupId" component={DocumentNewApp} />
                 <Route path="document/nieuw/:type/kans/:opportunityId" component={DocumentNewApp} />
-                <Route path="document/nieuw/:type/aanmelding/:registrationId" component={DocumentNewApp} />
+                <Route path="document/nieuw/:type/intake/:intakeId" component={DocumentNewApp} />
+                <Route path="document/nieuw/:type/maatregel/:measureId" component={DocumentNewApp} />
+                <Route path="document/nieuw/:type/campagne/:campaignId" component={DocumentNewApp} />
+                <Route path="document/nieuw/:type/taak/:taskId" component={DocumentNewApp} />
+                <Route path="document/nieuw/:type/woningdossier/:housingFileId" component={DocumentNewApp} />
+                <Route path="document/nieuw/:type/offerteverzoek/:quotationRequestId" component={DocumentNewApp} />
                 <Route path="document/:id" component={DocumentDetailsApp} />
                 /* Document templates */
                 <Route path="document-templates" component={DocumentTemplatesListApp} />
@@ -117,31 +132,43 @@ const Routes = () => {
                 <Route path="campagnes" component={CampaignsListApp} />
                 /* Measures */
                 <Route path="maatregelen" component={MeasuresListApp} />
-                <Route path="maatregel/nieuw" component={MeasureNewApp} />
                 <Route path="maatregel/:id" component={MeasureDetailsApp} />
                 /* Mailboxes */
                 <Route path="mailbox/nieuw" component={MailboxNewApp} />
                 <Route path="mailbox/:id" component={MailboxDetailsApp} />
                 <Route path="mailboxen" component={MailboxesListApp} />
-                /* Registration */
-                <Route path="aanmelding/nieuw/contact/:contactId/adres/:addressId" component={RegistrationNewApp} />im
-                <Route path="aanmelding/:id" component={RegistrationDetailsApp} />
-                <Route path="aanmeldingen" component={ RegistrationsListApp } />
-                /*  User */
+                /* Housing File */
+                <Route path="woningdossier/nieuw/contact/:contactId/adres/:addressId" component={HousingFileNewApp} />
+                <Route path="woningdossier/:id" component={HousingFileDetailsApp} />
+                <Route path="woningdossiers" component={ HousingFilesListApp } />
+                /* Quotation Request */
+                <Route path="offerteverzoek/nieuw/kans/:opportunityId" component={QuotationRequestNewApp} />
+                <Route path="offerteverzoek/:id" component={QuotationRequestDetailsApp} />
+                <Route path="offerteverzoeken" component={QuotationRequestsListApp} />
+                /* Intake */
+                <Route path="intake/nieuw/contact/:contactId/adres/:addressId" component={IntakeNewApp} />
+                <Route path="intake/:id" component={IntakeDetailsApp} />
+                <Route path="intakes" component={ IntakesListApp } />
+                /* User */
                 <Route path="gebruiker/nieuw" component={UserNewApp} />
                 <Route path="gebruiker/:id" component={UserDetailsApp} />
                 <Route path="gebruikers" component={UsersListApp} />
                 /* Opportunity */
                 <Route path="kans/nieuw" component={OpportunityNewApp} />
-                <Route path="kans/nieuw/:type/:id" component={OpportunityNewApp} />
+                <Route path="kans/nieuw/intake/:intakeId/maatregel/:measureId" component={OpportunityNewApp} />
                 <Route path="kans/:id" component={OpportunityDetailsApp} />
                 <Route path="kansen" component={OpportunitiesListApp} />
-                /* Task */
+                /* Task / notes */
                 <Route path="taak/nieuw" component={TaskNewApp} />
                 <Route path="taak/:id" component={TaskDetailsApp} />
                 <Route path="taak/nieuw/:type/:id" component={TaskNewApp} />
                 <Route path="taak/:id" component={TaskDetailsApp} />
                 <Route path="taken" component={TasksListApp} />
+                <Route path="notities" component={NotesListApp} />
+                /* Teams */
+                <Route path="teams" component={TeamsListApp} />
+                <Route path="team/nieuw" component={TeamNewApp} />
+                <Route path="team/:id" component={TeamDetailsApp} />
                 /* 404 route */
                 <Route path="*" component={ NotFoundedPage } />
             </Route>

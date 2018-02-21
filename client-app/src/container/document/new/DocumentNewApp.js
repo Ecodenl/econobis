@@ -10,13 +10,18 @@ import PanelBody from '../../../components/panel/PanelBody';
 import DocumentDetailsAPI from '../../../api/document/DocumentDetailsAPI';
 import {isEqual} from "lodash";
 import ContactGroupAPI from "../../../api/contact-group/ContactGroupAPI";
-import RegistrationsAPI from "../../../api/registration/RegistrationsAPI";
+import IntakesAPI from "../../../api/intake/IntakesAPI";
 import OpportunitiesAPI from "../../../api/opportunity/OpportunitiesAPI";
 import ContactsAPI from "../../../api/contact/ContactsAPI";
 import DocumentTemplateAPI from "../../../api/document-template/DocumentTemplateAPI";
+import MeasureAPI from "../../../api/measure/MeasureAPI";
+import TasksAPI from "../../../api/task/TasksAPI";
 import {setError} from "../../../actions/general/ErrorActions";
 import {connect} from "react-redux";
-import {fetchRegistrationDetails} from "../../../actions/registration/RegistrationDetailsActions";
+import {fetchIntakeDetails} from "../../../actions/intake/IntakeDetailsActions";
+import CampaignAPI from "../../../api/campaign/CampaignsAPI";
+import HousingFileAPI from "../../../api/housing-file/HousingFilesAPI";
+import QuotationRequestsAPI from "../../../api/quotation-request/QuotationRequestsAPI";
 
 class DocumentNewApp extends Component {
     constructor(props) {
@@ -25,14 +30,24 @@ class DocumentNewApp extends Component {
         this.state = {
             contacts: [],
             contactsGroups: [],
-            registrations: [],
+            intakes: [],
             opportunities: [],
             templates: [],
+            campaigns: [],
+            housingFiles: [],
+            quotationRequests: [],
+            measures: [],
+            tasks: [],
             document: {
                 contactId: this.props.params.contactId || '',
                 contactGroupId: this.props.params.contactGroupId || '',
-                registrationId: this.props.params.registrationId || '',
+                intakeId: this.props.params.intakeId || '',
                 opportunityId: this.props.params.opportunityId || '',
+                campaignId: this.props.params.campaignId || '',
+                housingFileId: this.props.params.housingFileId || '',
+                quotationRequestId: this.props.params.quotationRequestId || '',
+                measureId: this.props.params.measureId || '',
+                taskId: this.props.params.taskId || '',
                 documentType: this.props.params.type,
                 description: '',
                 documentGroup: '',
@@ -63,8 +78,8 @@ class DocumentNewApp extends Component {
             this.setState({ contacts: payload });
         });
 
-        RegistrationsAPI.peekRegistrations().then((payload) => {
-            this.setState({ registrations: payload });
+        IntakesAPI.peekIntakes().then((payload) => {
+            this.setState({ intakes: payload });
         });
 
         ContactGroupAPI.peekContactGroups().then((payload) => {
@@ -79,6 +94,25 @@ class DocumentNewApp extends Component {
             this.setState({ templates: payload });
         });
 
+        CampaignAPI.peekCampaigns().then((payload) => {
+            this.setState({ campaigns: payload });
+        });
+
+        HousingFileAPI.peekHousingFiles().then((payload) => {
+            this.setState({ housingFiles: payload });
+        });
+
+        QuotationRequestsAPI.peekQuotationRequests().then((payload) => {
+            this.setState({ quotationRequests: payload });
+        });
+
+        TasksAPI.peekTasks().then((payload) => {
+            this.setState({ tasks: payload });
+        });
+
+        MeasureAPI.peekMeasures().then((payload) => {
+            this.setState({ measures: payload });
+        });
     };
 
     handleInputChange(event) {
@@ -150,7 +184,7 @@ class DocumentNewApp extends Component {
         const {
             contactId,
             contactGroupId,
-            registrationId,
+            intakeId,
             opportunityId,
             documentType,
             description,
@@ -160,6 +194,11 @@ class DocumentNewApp extends Component {
             freeText2,
             filename,
             sentById,
+            campaignId,
+            housingFileId,
+            quotationRequestId,
+            measureId,
+            taskId,
             attachment
         } = this.state.document;
 
@@ -167,7 +206,7 @@ class DocumentNewApp extends Component {
         let errors = {};
         let hasErrors = false;
 
-        if(validator.isEmpty(contactId) && validator.isEmpty(contactGroupId) && validator.isEmpty(registrationId) && validator.isEmpty(opportunityId)){
+        if(validator.isEmpty(contactId) && validator.isEmpty(contactGroupId) && validator.isEmpty(intakeId) && validator.isEmpty(opportunityId)){
             errors.docLinkedAtAny = true;
             hasErrors = true;
         };
@@ -190,7 +229,7 @@ class DocumentNewApp extends Component {
 
             data.append('contactId', contactId);
             data.append('contactGroupId', contactGroupId);
-            data.append('registrationId', registrationId);
+            data.append('intakeId', intakeId);
             data.append('opportunityId', opportunityId);
             data.append('documentType', documentType);
             data.append('description', description);
@@ -200,6 +239,11 @@ class DocumentNewApp extends Component {
             data.append('freeText2', freeText2);
             data.append('filename', filename);
             data.append('sentById', sentById);
+            data.append('campaignId', campaignId);
+            data.append('housingFileId', housingFileId);
+            data.append('quotationRequestId', quotationRequestId);
+            data.append('measureId', measureId);
+            data.append('taskId', taskId);
             data.append('attachment', attachment);
 
             DocumentDetailsAPI.newDocument(data).then((payload) => {
@@ -221,15 +265,19 @@ class DocumentNewApp extends Component {
                             </PanelBody>
                         </Panel>
                     </div>
-
                     <div className="col-md-12">
                         <DocumentNewForm
                             document={this.state.document}
                             contacts={this.state.contacts}
                             contactGroups={this.state.contactGroups}
-                            registrations={this.state.registrations}
+                            intakes={this.state.intakes}
                             opportunities={this.state.opportunities}
                             templates={this.state.templates}
+                            tasks={this.state.tasks}
+                            measures={this.state.measures}
+                            quotationRequests={this.state.quotationRequests}
+                            housingFiles={this.state.housingFiles}
+                            campaigns={this.state.campaigns}
                             errors={this.state.errors}
                             handleSubmit={this.handleSubmit}
                             handleDocumentGroupChange={this.handleDocumentGroupChange}

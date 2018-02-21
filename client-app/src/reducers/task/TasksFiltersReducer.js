@@ -3,28 +3,24 @@ const filtersReducerDefaultState = {
         field: 'createdAt',
         data: '',
     },
-    name: {
-        field: 'name',
+    typeId: {
+        field: 'typeId',
+        data: '',
+    },
+    note: {
+        field: 'note',
         data: '',
     },
     contactFullName: {
         field: 'contactFullName',
         data: '',
     },
-    datePlanned: {
-        field: 'datePlanned',
+    datePlannedStart: {
+        field: 'datePlannedStart',
         data: '',
     },
-    dateStarted: {
-        field: 'dateStarted',
-        data: '',
-    },
-    statusId: {
-        field: 'statusId',
-        data: '',
-    },
-    responsibleUserName: {
-        field: 'responsibleUserName',
+    responsibleName: {
+        field: 'responsibleName',
         data: '',
     },
 };
@@ -39,12 +35,20 @@ export default (state = filtersReducerDefaultState, action) => {
                     data: action.createdAt,
                 }
             };
-        case 'SET_FILTER_TASK_NAME':
+        case 'SET_FILTER_TASK_TYPE_ID':
             return {
                 ...state,
-                name: {
-                    ...state.name,
-                    data: action.name,
+                typeId: {
+                    ...state.typeId,
+                    data: action.typeId,
+                }
+            };
+        case 'SET_FILTER_TASK_NOTE':
+            return {
+                ...state,
+                note: {
+                    ...state.note,
+                    data: action.note,
                 }
             };
         case 'SET_FILTER_TASK_CONTACT_FULL_NAME':
@@ -55,36 +59,20 @@ export default (state = filtersReducerDefaultState, action) => {
                     data: action.contactFullName,
                 }
             };
-        case 'SET_FILTER_TASK_DATE_PLANNED':
+        case 'SET_FILTER_TASK_DATE_PLANNED_START':
             return {
                 ...state,
-                datePlanned: {
-                    ...state.datePlanned,
-                    data: action.datePlanned,
+                datePlannedStart: {
+                    ...state.datePlannedStart,
+                    data: action.datePlannedStart,
                 }
             };
-        case 'SET_FILTER_TASK_DATE_STARTED':
+        case 'SET_FILTER_TASK_RESPONSIBLE_NAME':
             return {
                 ...state,
-                dateStarted: {
-                    ...state.dateStarted,
-                    data: action.dateStarted,
-                }
-            };
-        case 'SET_FILTER_TASK_STATUS_ID':
-            return {
-                ...state,
-                statusId: {
-                    ...state.statusId,
-                    data: action.statusId,
-                }
-            };
-        case 'SET_FILTER_TASK_RESPONSIBLE_USER_NAME':
-            return {
-                ...state,
-                responsibleUserName: {
-                    ...state.responsibleUserName,
-                    data: action.responsibleUserName,
+                responsibleName: {
+                    ...state.responsibleName,
+                    data: action.responsibleName,
                 }
             };
         case 'CLEAR_FILTER_TASKS':

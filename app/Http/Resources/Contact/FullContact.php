@@ -4,6 +4,8 @@ namespace App\Http\Resources\Contact;
 
 use App\Eco\ContactGroup\ContactGroup;
 use App\Http\Resources\Document\FullDocument;
+use App\Http\Resources\Opportunity\FullOpportunity;
+use App\Http\Resources\Opportunity\GridOpportunity;
 use App\Http\Resources\Organisation\FullOrganisation;
 use App\Http\Resources\Address\FullAddress;
 use App\Http\Resources\ContactNote\FullContactNote;
@@ -11,7 +13,7 @@ use App\Http\Resources\EmailAddress\FullEmailAddress;
 use App\Http\Resources\EnumWithIdAndName\FullEnumWithIdAndName;
 use App\Http\Resources\Person\FullPerson;
 use App\Http\Resources\PhoneNumber\FullPhoneNumber;
-use App\Http\Resources\Task\FullTask;
+use App\Http\Resources\Task\GridTask;
 use App\Http\Resources\User\FullUser;
 use Illuminate\Http\Resources\Json\Resource;
 
@@ -41,7 +43,7 @@ class FullContact extends Resource
             'addresses' => FullAddress::collection($this->whenLoaded('addresses')),
             'emailAddresses' => FullEmailAddress::collection($this->whenLoaded('emailAddresses')),
             'phoneNumbers' => FullPhoneNumber::collection($this->whenLoaded('phoneNumbers')),
-            'notes' => FullContactNote::collection($this->whenLoaded('notes')),
+            'notes' => FullContactNote::collection($this->whenLoaded('contactNotes')),
             'createdAt' => $this->created_at,
             'updatedAt' => $this->updated_at,
             'iban' => $this->iban,
@@ -53,18 +55,21 @@ class FullContact extends Resource
             'createdBy' => FullUser::make($this->whenLoaded('createdBy')),
             'updatedById' => $this->updated_by_id,
             'updatedBy' => FullUser::make($this->whenLoaded('updatedBy')),
-            'registrationCount' => $this->registrations()->count(),
-            'opportunityCount' => $this->opportunities()->count(),
-            'relatedOpportunities' => ($this->opportunities()->with('measure', 'status')->get()),
+            'intakeCount' => $this->intakes()->count(),
+            'housingFileCount' => $this->housingFiles()->count(),
             'groupCount' => $this->groups()->count(),
             'taskCount' => $this->tasks()->count(),
-            'relatedTasks' => FullTask::collection($this->whenLoaded('tasks')),
+            'relatedTasks' => GridTask::collection($this->whenLoaded('tasks')),
+            'noteCount' => $this->notes()->count(),
+            'relatedNotes' => GridTask::collection($this->whenLoaded('notes')),
             'emailInboxCount' => $this->relatedEmailsInbox ? $this->relatedEmailsInbox->count() : 0,
             'relatedEmailsInbox' => $this->relatedEmailsInbox,
             'emailSentCount' => $this->relatedEmailsSent ? $this->relatedEmailsSent->count() : 0,
             'relatedEmailsSent' => $this->relatedEmailsSent,
             'documentCount' => $this->documents()->count(),
             'relatedDocuments' => FullDocument::collection($this->whenLoaded('documents')),
+            'opportunityCount' => $this->opportunities()->count(),
+            'relatedOpportunities' => $this->opportunities()->get(),
         ];
     }
 }

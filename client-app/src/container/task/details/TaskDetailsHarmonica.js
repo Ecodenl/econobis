@@ -1,7 +1,13 @@
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
 
-import UploadHarmonica from './harmonica/UploadHarmonica';
+import TaskHarmonica from "./harmonica/TaskHarmonica";
+import NoteHarmonica from "./harmonica/NoteHarmonica";
+import EmailInboxHarmonica from "./harmonica/EmailInboxHarmonica";
+import EmailSentHarmonica from "./harmonica/EmailSentHarmonica";
+import DocumentHarmonica from "./harmonica/DocumentHarmonica";
+import {hashHistory} from "react-router";
+
 
 class TaskDetailsHarmonica extends Component {
     constructor(props){
@@ -9,28 +15,27 @@ class TaskDetailsHarmonica extends Component {
 
         this.state = {
             toggleShowList: {
-                uploads: false,
+                tasks: false,
+                notes: false,
                 emailsInbox: false,
                 emailsSent: false,
                 documents: false,
             },
-            showModalUploadfile: false,
         };
 
         this.toggleShowList = this.toggleShowList.bind(this);
-        this.toggleUploadfile = this.toggleUploadfile.bind(this);
     };
 
     componentWillReceiveProps(nextProps) {
         if(this.props.id !== nextProps.id) {
             this.setState({
                 toggleShowList: {
-                    uploads: false,
+                    tasks: false,
+                    notes: false,
                     emailsInbox: false,
                     emailsSent: false,
                     documents: false,
                 },
-                showModalUploadfile: false,
             })
         }
     };
@@ -45,22 +50,48 @@ class TaskDetailsHarmonica extends Component {
         });
     };
 
-    toggleUploadfile() {
-        this.setState({
-            showModalUploadfile: !this.state.showModalUploadfile
-        });
+    newEmail = () => {
+        hashHistory.push(`/email/nieuw`);
+    };
+
+    newDocument = (type) => {
+        hashHistory.push(`/document/nieuw/${type}/taak/${this.props.taskDetails.id}`);
     };
 
     render() {
         return (
             <div className="margin-10-top">
-                <UploadHarmonica
-                    toggleShowList={() => this.toggleShowList('uploads')}
-                    showUploadsList={this.state.toggleShowList.uploads}
-                    toggleUploadfile={this.toggleUploadfile}
-                    showModalUploadfile={this.state.showModalUploadfile}
-                    attachmentCount={this.props.taskDetails.attachmentCount}
-                    id={this.props.taskDetails.id}
+                <TaskHarmonica
+                    toggleShowList={() => this.toggleShowList('tasks')}
+                    showTasksList={this.state.toggleShowList.tasks}
+                    taskCount={this.props.taskDetails.taskCount}
+                />
+
+                <NoteHarmonica
+                    toggleShowList={() => this.toggleShowList('notes')}
+                    showNotesList={this.state.toggleShowList.notes}
+                    noteCount={this.props.taskDetails.noteCount}
+                />
+
+                <EmailInboxHarmonica
+                    toggleShowList={() => this.toggleShowList('emailsInbox')}
+                    showEmailsInboxList={this.state.toggleShowList.emailsInbox}
+                    newEmail={this.newEmail}
+                    emailInboxCount={this.props.taskDetails.emailInboxCount}
+                />
+
+                <EmailSentHarmonica
+                    toggleShowList={() => this.toggleShowList('emailsSent')}
+                    showEmailsSentList={this.state.toggleShowList.emailsSent}
+                    newEmail={this.newEmail}
+                    emailSentCount={this.props.taskDetails.emailSentCount}
+                />
+
+                <DocumentHarmonica
+                    toggleShowList={() => this.toggleShowList('documents')}
+                    showDocumentsList={this.state.toggleShowList.documents}
+                    newDocument={this.newDocument}
+                    documentCount={this.props.taskDetails.documentCount}
                 />
             </div>
         )

@@ -1,65 +1,36 @@
-import React, {Component} from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import { browserHistory } from 'react-router';
 
 import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
 import ButtonIcon from '../../../components/button/ButtonIcon';
-import MeasureDetailsDelete from './MeasureDetailsDelete';
 
+const MeasureDetailsToolbar = ({ measureDetails }) => {
+    const { measureCategory = {} } = measureDetails;
 
-class MeasureDetailsToolbar extends Component {
-    constructor(props){
-        super(props);
-
-        this.state = {
-            showDelete: false,
-        }
-    }
-
-    toggleDelete = () => {
-        this.setState({showDelete: !this.state.showDelete});
-    };
-
-
-    render() {
-        const { measure }  = this.props;
-
-        return (
-            <div className="row">
-                <div className="col-sm-12">
-                    <Panel>
-                        <PanelBody className={"panel-small"}>
-                            <div className="col-md-2">
-                                <div className="btn-group margin-small" role="group">
-                                    <ButtonIcon iconName={"glyphicon-arrow-left"} onClickAction={browserHistory.goBack} />
-                                    {this.props.permissions.manageMeasure && false &&
-                                    <ButtonIcon iconName={"glyphicon-trash"} onClickAction={this.toggleDelete}/>
-                                    }
-                                </div>
+    return (
+        <div className="row">
+            <div className="col-sm-12">
+                <Panel>
+                    <PanelBody className={"panel-small"}>
+                        <div className="col-md-2">
+                            <div className="btn-group margin-small" role="group">
+                                <ButtonIcon iconName={"glyphicon-arrow-left"} onClickAction={browserHistory.goBack} />
                             </div>
-                            <div className="col-md-8"><h4 className="text-center text-success margin-small"><strong>{measure ? 'Maatregel: ' + measure.name : ''}</strong></h4></div>
-                            <div className="col-md-2" />
-                        </PanelBody>
-                    </Panel>
-                </div>
-
-                {
-                    this.state.showDelete &&
-                    <MeasureDetailsDelete
-                        closeDeleteItemModal={this.toggleDelete}
-                        id={measure.id}
-                    />
-                }
+                        </div>
+                        <div className="col-md-8"><h4 className="text-center text-success margin-small"><strong>{measureCategory ? 'Maatregel: ' + measureCategory.name : ''}</strong></h4></div>
+                        <div className="col-md-2" />
+                    </PanelBody>
+                </Panel>
             </div>
-        );
-    };
+        </div>
+    );
 };
 
 const mapStateToProps = (state) => {
     return {
-        measure: state.measure,
-        permissions: state.meDetails.permissions,
+        measureDetails: state.measureDetails,
     }
 };
 

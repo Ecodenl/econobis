@@ -1,67 +1,40 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import moment from 'moment';
 import validator from 'validator';
 
 import InputText from '../../../../components/form/InputText';
 import InputSelect from '../../../../components/form/InputSelect';
 import InputDate from '../../../../components/form/InputDate';
-import InputTinyMCE from '../../../../components/form/InputTinyMCE';
 import ButtonText from '../../../../components/button/ButtonText';
 import PanelFooter from "../../../../components/panel/PanelFooter";
 
-import ContactsAPI from '../../../../api/contact/ContactsAPI';
-import RegistrationsAPI from '../../../../api/registration/RegistrationsAPI';
 import OpportunityDetailsAPI from '../../../../api/opportunity/OpportunityDetailsAPI';
 
 import { fetchOpportunity } from '../../../../actions/opportunity/OpportunityDetailsActions';
-import InputReactSelect from "../../../../components/form/InputReactSelect";
+import InputTextArea from "../../../../components/form/InputTextarea";
 
 class OpportunityFormEdit extends Component {
     constructor(props) {
         super(props);
 
-        const {id, campaign, contact, desiredDate, measure, number, quotationText, reaction, status, ownedBy, registration} = props.opportunity;
+        const { id, desiredDate, evaluationAgreedDate, quotationText, status } = props.opportunity;
 
         this.state = {
             opportunity: {
                 id,
-                campaignId: campaign ? campaign.id : '',
-                measureName: measure ? measure.name : '',
-                contactId: contact ? contact.id : '',
-                desiredDate: desiredDate ? desiredDate : '',
-                measureId: measure ? measure.id : '',
-                number: number,
-                quotationText: quotationText,
-                reactionId: reaction ? reaction.id : '',
                 statusId: status ? status.id : '',
-                ownedById: ownedBy ? ownedBy.id : '',
-                registrationId: registration ? registration.id : '',
+                quotationText: quotationText,
+                evaluationAgreedDate: evaluationAgreedDate ? evaluationAgreedDate : '',
+                desiredDate: desiredDate ? desiredDate : '',
             },
-            contacts: [],
-            registrations: [],
             errors: {
-                contact: false,
-                status: false,
+                statusId: false,
             },
-        }
+        };
 
         this.handleReactSelectChange = this.handleReactSelectChange.bind(this);
+        this.handleInputChangeDate = this.handleInputChangeDate.bind(this);
     };
-
-    componentWillMount() {
-        ContactsAPI.getPerson().then(payload => {
-            this.setState({
-                contacts: payload
-            });
-        });
-
-        RegistrationsAPI.peekRegistrations().then(payload => {
-            this.setState({
-                registrations: payload
-            });
-        });
-    }
 
     handleInputChange = event => {
         const target = event.target;
@@ -87,24 +60,12 @@ class OpportunityFormEdit extends Component {
         });
     };
 
-    handleEditorChange = (e) => {
+    handleInputChangeDate(value, name) {
         this.setState({
             ...this.state,
             opportunity: {
                 ...this.state.opportunity,
-                quotationText: e.target.getContent()
-            },
-        });
-    };
-
-    handleChangeDesiredDate = (date) => {
-        const formattedDate = (date ? moment(date).format('Y-MM-DD') : '');
-
-        this.setState({
-            ...this.state,
-            opportunity: {
-                ...this.state.opportunity,
-                desiredDate: formattedDate
+                [name]: value
             },
         });
     };
@@ -117,13 +78,8 @@ class OpportunityFormEdit extends Component {
         let errors = {};
         let hasErrors = false;
 
-        if(validator.isEmpty('' + opportunity.contactId)){
-            errors.contact = true;
-            hasErrors = true;
-        };
-
         if(validator.isEmpty('' + opportunity.statusId)){
-            errors.status = true;
+            errors.statusId = true;
             hasErrors = true;
         };
 
@@ -137,56 +93,47 @@ class OpportunityFormEdit extends Component {
     };
 
     render() {
-        const {campaignId, contactId, desiredDate, measureName, number, quotationText, reactionId, statusId, ownedById, registrationId} = this.state.opportunity;
+        const { statusId, quotationText, desiredDate, evaluationAgreedDate } = this.state.opportunity;
+        const { intake, measure } = this.props.opportunity;
 
         return (
             <form className="form-horizontal col-md-12" onSubmit={this.handleSubmit}>
                 <div className="row">
                     <InputText
-                        label={"Type kans"}
-                        size={"col-sm-6"}
-                        name={"measureId"}
-                        value={measureName}
+                        label={"Contact"}
+                        name={""}
+                        value={intake && intake.contact.fullName}
                         readOnly={true}
                     />
                     <InputText
-                        label={"Kans nummer"}
-                        name={"number"}
-                        value={number}
+                        label={"Adres"}
+                        name={""}
+                        value={intake && intake.fullAddress}
                         readOnly={true}
                     />
                 </div>
 
                 <div className="row">
-                    <InputReactSelect
-                        label={"Contact"}
-                        name={"contactId"}
-                        value={contactId}
-                        options={this.state.contacts}
-                        onChangeAction={this.handleReactSelectChange}
-                        optionName={'fullName'}
-                        required={"required"}
-                        error={this.state.errors.contact}
-                        multi={false}
+                    <InputText
+                        label={"Maatregel - categorie"}
+                        name={"measureCategory"}
+                        value={measure.measureCategory ? measure.measureCategory.name : ''}
+                        readOnly={true}
                     />
-                    <InputSelect
-                        label={"Reactie"}
-                        size={"col-sm-6"}
-                        name={"reactionId"}
-                        options={this.props.reactions}
-                        value={reactionId}
-                        onChangeAction={this.handleInputChange}
+                    <InputText
+                        label={"Campagne"}
+                        name={"campaign"}
+                        value={intake.campaign ? intake.campaign.name : ''}
+                        readOnly={true}
                     />
                 </div>
 
                 <div className="row">
-                    <InputReactSelect
-                        label={"Aanmelding"}
-                        name={"registrationId"}
-                        value={registrationId}
-                        options={this.props.registrations}
-                        onChangeAction={this.props.handleReactSelectChange}
-                        multi={false}
+                    <InputText
+                        label={"Maatregel - specifiek"}
+                        name={"measure"}
+                        value={measure ? measure.name : ''}
+                        readOnly={true}
                     />
                     <InputSelect
                         label={"Status"}
@@ -196,47 +143,26 @@ class OpportunityFormEdit extends Component {
                         value={statusId}
                         onChangeAction={this.handleInputChange}
                         required={"required"}
-                        error={this.state.errors.status}
+                        error={this.state.errors.statusId}
                     />
                 </div>
 
                 <div className="row">
-                    <InputReactSelect
-                        label={"Campagne"}
-                        name={"campaignId"}
-                        value={campaignId}
-                        options={this.props.campaigns}
-                        onChangeAction={this.props.handleReactSelectChange}
-                        multi={false}
-                    />
+                    <InputTextArea label={"Toelichting op maatregel"} name={"quotationText"} value={quotationText} onChangeAction={this.handleInputChange} />
                 </div>
-                <div className="row">
-                    <div className="form-group col-sm-12">
-                        <div className="row">
-                            <InputTinyMCE
-                                label={"Offerte tekst"}
-                                value={quotationText}
-                                onChangeAction={this.handleEditorChange}
-                            />
-                        </div>
-                    </div>
-                </div>
+
                 <div className="row">
                     <InputDate
-                        label={"Gewenste realisatie"}
-                        size={"col-sm-6"}
-                        name={"desiredDate"}
+                        label="Datum realisatie gepland"
+                        name="desiredDate"
                         value={desiredDate}
-                        onChangeAction={this.handleChangeDesiredDate}
+                        onChangeAction={this.handleInputChangeDate}
                     />
-                    <InputSelect
-                        label={"Verantwoordelijke"}
-                        size={"col-sm-6"}
-                        name={"ownedById"}
-                        options={this.props.users}
-                        value={ownedById}
-                        onChangeAction={this.handleInputChange}
-                        optionName={'fullName'}
+                    <InputDate
+                        label="Datum evaluatie akkoord"
+                        name="evaluationAgreedDate"
+                        value={evaluationAgreedDate}
+                        onChangeAction={this.handleInputChangeDate}
                     />
                 </div>
 
@@ -263,10 +189,6 @@ const mapStateToProps = (state) => {
     return {
         opportunity: state.opportunityDetails,
         status: state.systemData.opportunityStatus,
-        reactions: state.systemData.opportunityReactions,
-        measures: state.systemData.measures,
-        campaigns: state.systemData.campaigns,
-        users: state.systemData.users,
     }
 };
 

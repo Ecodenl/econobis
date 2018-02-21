@@ -3,111 +3,83 @@ import {connect} from 'react-redux';
 
 import InputSelect from '../../../components/form/InputSelect';
 import InputDate from '../../../components/form/InputDate';
-import InputTinyMCE from '../../../components/form/InputTinyMCE';
 import ButtonText from '../../../components/button/ButtonText';
 import PanelFooter from '../../../components/panel/PanelFooter';
-import InputReactSelect from "../../../components/form/InputReactSelect";
+import InputText from "../../../components/form/InputText";
+import InputTextArea from "../../../components/form/InputTextarea";
 
-const OpportunityFormEdit = props => {
-    const { contactId, desiredDate, measureId, quotationText, reactionId, statusId, ownedById, registrationId, campaignId } = props.opportunity;
+const OpportunityNew = props => {
+    const { statusId, quotationText, evaluationAgreedDate, desiredDate } = props.opportunity;
 
     return (
         <form className="form-horizontal col-md-12" onSubmit={props.handleSubmit}>
 
             <div className="row">
-                <InputSelect
-                    label={"Type kans"}
-                    size={"col-sm-6"}
-                    name={"measureId"}
-                    value={measureId}
-                    options={props.measures}
-                    onChangeAction={props.handleInputChange}
-                    required={"required"}
-                    error={props.errors.measure}
-                />
-            </div>
-
-            <div className="row">
-                <InputReactSelect
+                <InputText
                     label={"Contact"}
-                    name={"contactId"}
-                    value={contactId}
-                    options={props.contacts}
-                    onChangeAction={props.handleReactSelectChange}
-                    optionName={'fullName'}
-                    required={"required"}
-                    error={props.errors.contact}
-                    multi={false}
+                    name={"contact"}
+                    value={props.intake.contact ? props.intake.contact.fullName : ''}
+                    readOnly={true}
                 />
-                <InputSelect
-                    label={"Reactie"}
-                    size={"col-sm-6"}
-                    name={"reactionId"}
-                    value={reactionId}
-                    options={props.reactions}
-                    onChangeAction={props.handleInputChange}
+                <InputText
+                    label={"Adres"}
+                    name={"address"}
+                    value={props.intake ? props.intake.fullAddress : ''}
+                    readOnly={true}
                 />
             </div>
 
             <div className="row">
-                <InputReactSelect
-                    label={"Aanmelding"}
-                    name={"registrationId"}
-                    value={registrationId}
-                    options={props.registrations}
-                    onChangeAction={props.handleReactSelectChange}
-                    multi={false}
+                <InputText
+                    label={"Maatregel - categorie"}
+                    name={"measureCategory"}
+                    value={props.measure.measureCategory ? props.measure.measureCategory.name : ''}
+                    readOnly={true}
+                />
+                <InputText
+                    label={"Campagne"}
+                    name={"campaign"}
+                    value={props.intake.campaign ? props.intake.campaign.name : ''}
+                    readOnly={true}
+                />
+            </div>
+
+            <div className="row">
+                <InputText
+                    label={"Maatregel - specifiek"}
+                    name={"measure"}
+                    value={props.measure ? props.measure.name : ''}
+                    readOnly={true}
                 />
                 <InputSelect
                     label={"Status"}
                     size={"col-sm-6"}
                     name={"statusId"}
-                    value={statusId}
                     options={props.status}
+                    value={statusId}
                     onChangeAction={props.handleInputChange}
                     required={"required"}
-                    error={props.errors.status}
+                    error={props.errors.statusId}
+
                 />
             </div>
 
             <div className="row">
-                <InputReactSelect
-                    label={"Campagne"}
-                    name={"campaignId"}
-                    value={campaignId}
-                    options={props.campaigns}
-                    onChangeAction={props.handleReactSelectChange}
-                    multi={false}
-                />
+                <InputTextArea label={"Toelichting op maatregel"} name={"quotationText"} value={quotationText} onChangeAction={props.handleInputChange} />
             </div>
 
-            <div className="row">
-                <div className="form-group col-sm-12">
-                    <div className="row">
-                        <InputTinyMCE
-                            label={"Offerte tekst"}
-                            value={quotationText}
-                            onChangeAction={props.handleEditorChange}
-                        />
-                    </div>
-                </div>
-            </div>
             <div className="row">
                 <InputDate
-                    label={"Gewenste realisatie"}
-                    size={"col-sm-6"}
-                    name={"desiredDate"}
+                    label="Datum realisatie gepland"
+                    name="desiredDate"
                     value={desiredDate}
-                    onChangeAction={props.handleChangeDesiredDate}
+                    onChangeAction={props.handleInputChangeDate}
                 />
-                <InputSelect
-                    label={"Verantwoordelijke"}
-                    size={"col-sm-6"}
-                    name={"ownedById"}
-                    value={ownedById}
-                    options={props.users}
-                    onChangeAction={props.handleInputChange}
-                    optionName={'fullName'}
+                <InputDate
+                    label="Datum evaluatie akkoord"
+                    name="evaluationAgreedDate"
+                    value={evaluationAgreedDate}
+                    onChangeAction={props.handleInputChangeDate}
                 />
             </div>
 
@@ -124,10 +96,7 @@ const OpportunityFormEdit = props => {
 const mapStateToProps = (state) => {
     return {
         status: state.systemData.opportunityStatus,
-        reactions: state.systemData.opportunityReactions,
-        measures: state.systemData.measures,
-        campaigns: state.systemData.campaigns,
     }
 };
 
-export default connect(mapStateToProps)(OpportunityFormEdit);
+export default connect(mapStateToProps)(OpportunityNew);

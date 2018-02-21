@@ -9,28 +9,43 @@ import InputText from '../../../../components/form/InputText';
 import { updateDocument } from '../../../../actions/document/DocumentDetailsActions';
 import DocumentDetailsAPI from "../../../../api/document/DocumentDetailsAPI";
 import ContactGroupAPI from "../../../../api/contact-group/ContactGroupAPI";
-import RegistrationsAPI from "../../../../api/registration/RegistrationsAPI";
+import IntakesAPI from "../../../../api/intake/IntakesAPI";
 import OpportunitiesAPI from "../../../../api/opportunity/OpportunitiesAPI";
 import ContactsAPI from "../../../../api/contact/ContactsAPI";
 import ViewText from "../../../../components/form/ViewText";
+import TasksAPI from "../../../../api/task/TasksAPI";
+import HousingFileAPI from "../../../../api/housing-file/HousingFilesAPI";
+import MeasureAPI from "../../../../api/measure/MeasureAPI";
+import CampaignAPI from "../../../../api/campaign/CampaignsAPI";
+import QuotationRequestsAPI from "../../../../api/quotation-request/QuotationRequestsAPI";
 
 class DocumentDetailsAPIFormEdit extends Component {
     constructor(props) {
         super(props);
 
-        const {id, contactId, contactGroupId, registrationId, opportunityId, documentType, description, documentGroup, filename} = props.documentDetails;
+        const {id, contactId, contactGroupId, intakeId, opportunityId, campaignId, housingFileId, quotationRequestId, measureId, taskId, documentType, description, documentGroup, filename} = props.documentDetails;
 
         this.state = {
             contacts: [],
             contactGroups: [],
-            registrations: [],
+            intakes: [],
             opportunities: [],
+            campaigns: [],
+            housingFiles: [],
+            quotationRequests: [],
+            measures: [],
+            tasks: [],
             document: {
                 id: id,
                 contactId: contactId,
                 contactGroupId: contactGroupId || '',
-                registrationId: registrationId || '',
+                intakeId: intakeId || '',
                 opportunityId: opportunityId || '',
+                campaignId: campaignId || '',
+                housingFileId: housingFileId || '',
+                quotationRequestId: quotationRequestId || '',
+                measureId: measureId || '',
+                taskId: taskId || '',
                 documentType: documentType && documentType.id,
                 description: description,
                 documentGroup: documentGroup && documentGroup.id
@@ -50,8 +65,8 @@ class DocumentDetailsAPIFormEdit extends Component {
             this.setState({ contacts: payload });
         });
 
-        RegistrationsAPI.peekRegistrations().then((payload) => {
-            this.setState({ registrations: payload });
+        IntakesAPI.peekIntakes().then((payload) => {
+            this.setState({ intakes: payload });
         });
 
         ContactGroupAPI.peekContactGroups().then((payload) => {
@@ -62,6 +77,25 @@ class DocumentDetailsAPIFormEdit extends Component {
             this.setState({ opportunities: payload });
         });
 
+        CampaignAPI.peekCampaigns().then((payload) => {
+            this.setState({ campaigns: payload });
+        });
+
+        HousingFileAPI.peekHousingFiles().then((payload) => {
+            this.setState({ housingFiles: payload });
+        });
+
+        QuotationRequestsAPI.peekQuotationRequests().then((payload) => {
+            this.setState({ quotationRequests: payload });
+        });
+
+        TasksAPI.peekTasks().then((payload) => {
+            this.setState({ tasks: payload });
+        });
+
+        MeasureAPI.peekMeasures().then((payload) => {
+            this.setState({ measures: payload });
+        });
     };
 
     handleInputChange(event) {
@@ -86,7 +120,7 @@ class DocumentDetailsAPIFormEdit extends Component {
         let errors = {};
         let hasErrors = false;
 
-        if(validator.isEmpty(document.contactId.toString()) && validator.isEmpty(document.contactGroupId.toString()) && validator.isEmpty(document.registrationId.toString()) && validator.isEmpty(document.opportunityId.toString())){
+        if(validator.isEmpty(document.contactId.toString()) && validator.isEmpty(document.contactGroupId.toString()) && validator.isEmpty(document.intakeId.toString()) && validator.isEmpty(document.opportunityId.toString())){
             errors.docLinkedAtAny = true;
             hasErrors = true;
         };
@@ -102,9 +136,9 @@ class DocumentDetailsAPIFormEdit extends Component {
     };
 
     render() {
-        const { document, errors, contacts, contactGroups, registrations, opportunities } = this.state;
-        const { contactId, contactGroupId, registrationId, opportunityId, documentType, description } = document;
-        const oneOfFieldRequired = contactId === '' && contactGroupId === '' && registrationId === '' && opportunityId === '';
+        const { document, errors, contacts, contactGroups, intakes, opportunities, campaigns, housingFiles, quotationRequests, measures, tasks } = this.state;
+        const { contactId, contactGroupId, intakeId, opportunityId, campaignId, housingFileId, quotationRequestId, measureId, taskId, documentType, description } = document;
+        const oneOfFieldRequired = contactId === '' && contactGroupId === '' && intakeId === '' && opportunityId === '' && taskId === '' && quotationRequestId === '' && housingFileId === '';
 
         return (
             <div>
@@ -138,10 +172,10 @@ class DocumentDetailsAPIFormEdit extends Component {
                             error={errors.docLinkedAtAny}
                         />
                         <InputSelect
-                            label="Aanmelding"
-                            name={"registrationId"}
-                            value={registrationId}
-                            options={registrations}
+                            label="Intake"
+                            name={"intakeId"}
+                            value={intakeId}
+                            options={intakes}
                             onChangeAction={this.handleInputChange}
                             required={oneOfFieldRequired && "required"}
                             error={errors.docLinkedAtAny}
@@ -157,9 +191,58 @@ class DocumentDetailsAPIFormEdit extends Component {
                             required={oneOfFieldRequired && "required"}
                             error={errors.docLinkedAtAny}
                         />
+                        <InputSelect
+                            label="Taak"
+                            name={"taskId"}
+                            value={taskId}
+                            options={tasks}
+                            onChangeAction={this.handleInputChange}
+                            required={oneOfFieldRequired && "required"}
+                            error={errors.docLinkedAtAny}
+                        />
+                    </div>
+                    <div className="row">
+                        <InputSelect
+                            label="Offerteverzoek"
+                            name={"quotationRequestId"}
+                            value={quotationRequestId}
+                            options={quotationRequests}
+                            onChangeAction={this.handleInputChange}
+                            required={oneOfFieldRequired && "required"}
+                            error={errors.docLinkedAtAny}
+                        />
+                        <InputSelect
+                            label="Woningdossier"
+                            name={"housingFileId"}
+                            value={housingFileId}
+                            options={housingFiles}
+                            onChangeAction={this.handleInputChange}
+                            required={oneOfFieldRequired && "required"}
+                            error={errors.docLinkedAtAny}
+                        />
+                    </div>
+                    {documentType === 'upload' &&
+                    <div className="row">
+                        <InputSelect
+                            label="Maatregel"
+                            name={"measureId"}
+                            value={measureId}
+                            options={measures}
+                            onChangeAction={this.handleInputChange}
+                        />
+                        <InputSelect
+                            label="Campagne"
+                            name={"campaignId"}
+                            value={campaignId}
+                            options={campaigns}
+                            onChangeAction={this.handleInputChange}
+                        />
+                    </div>
+                    }
+                    <div className="row">
                         <ViewText
                             label={"Template"}
-                            value={ this.props.documentDetails.template && this.props.documentDetails.template.name }
+                            value={ this.props.documentDetails.template ? this.props.documentDetails.template.name : 'Geen'}
                         />
                     </div>
                     <div className="row">

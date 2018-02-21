@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { hashHistory } from 'react-router';
 
 import EmailAPI from './../../api/email/EmailAPI';
-import RegistrationsAPI from './../../api/registration/RegistrationsAPI';
+import IntakesAPI from './../../api/intake/IntakesAPI';
 import OpportunitiesAPI from '../../api/opportunity/OpportunitiesAPI';
 import TaskAPI from './../../api/task/TasksAPI';
 
@@ -12,7 +12,7 @@ class DashboardButtons extends Component {
 
         this.state = {
             amountOpenEmails: '-',
-            amountActiveRegistrations: '-',
+            amountActiveIntakes: '-',
             amountActiveTasks: '-',
             amountActiveOpportunities: '-',
         }
@@ -23,9 +23,9 @@ class DashboardButtons extends Component {
                 amountOpenEmails: payload
             });
         });
-        RegistrationsAPI.getAmountActive().then(payload => {
+        IntakesAPI.getAmountActive().then(payload => {
             this.setState({
-                amountActiveRegistrations: payload
+                amountActiveIntakes: payload
             });
         });
         OpportunitiesAPI.getAmountActive().then(payload => {
@@ -51,11 +51,11 @@ class DashboardButtons extends Component {
                         </div>
                     </div>
                 </div>
-                <div className="col-md-3" onClick={() => hashHistory.push(`/aanmeldingen`)}>
+                <div className="col-md-3" onClick={() => hashHistory.push(`/intakes`)}>
                     <div className="panel panel-default" id="dashboardbutton-2">
                         <div className="panel-body">
-                            <h4 className="text-center text-bold">AANMELDINGEN</h4>
-                            <h4 className="text-center text-bold">{this.state.amountActiveRegistrations}</h4>
+                            <h4 className="text-center text-bold">INTAKES</h4>
+                            <h4 className="text-center text-bold">{this.state.amountActiveIntakes}</h4>
                         </div>
                     </div>
                 </div>
@@ -70,7 +70,7 @@ class DashboardButtons extends Component {
                 <div className="col-md-3" onClick={() => hashHistory.push(`/taken`)}>
                     <div className="panel panel-default" id="dashboardbutton-4">
                         <div className="panel-body">
-                            <h4 className="text-center text-bold">TAKEN</h4>
+                            <h4 className="text-center text-bold">OPEN TAKEN</h4>
                             <h4 className="text-center text-bold">{this.state.amountActiveTasks}</h4>
                         </div>
                     </div>

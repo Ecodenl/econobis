@@ -61,7 +61,7 @@ class Calendar extends Component {
 
                 calendar.push({
                     id: item.id,
-                    title: item.name,
+                    title: item.noteSummary,
                     start: new Date(momentStartDate.toDate()),
                     end: new Date(momentEndDate.toDate()),
                 })

@@ -3,9 +3,14 @@ export const setFilterTaskCreatedAt = (createdAt) => ({
     createdAt,
 });
 
-export const setFilterTaskName = (name) => ({
-    type: 'SET_FILTER_TASK_NAME',
-    name,
+export const setFilterTaskTypeId = (typeId) => ({
+    type: 'SET_FILTER_TASK_TYPE_ID',
+    typeId,
+});
+
+export const setFilterTaskNote = (note) => ({
+    type: 'SET_FILTER_TASK_NOTE',
+    note,
 });
 
 export const setFilterTaskContactFullName = (contactFullName) => ({
@@ -13,24 +18,14 @@ export const setFilterTaskContactFullName = (contactFullName) => ({
     contactFullName,
 });
 
-export const setFilterTaskDatePlanned = (datePlanned) => ({
-    type: 'SET_FILTER_TASK_DATE_PLANNED',
-    datePlanned,
+export const setFilterTaskDatePlannedStart = (datePlannedStart) => ({
+    type: 'SET_FILTER_TASK_DATE_PLANNED_START',
+    datePlannedStart,
 });
 
-export const setFilterTaskDateStarted = (dateStarted) => ({
-    type: 'SET_FILTER_TASK_DATE_STARTED',
-    dateStarted,
-});
-
-export const setFilterTaskStatusId = (statusId) => ({
-    type: 'SET_FILTER_TASK_STATUS_ID',
-    statusId,
-});
-
-export const setFilterTaskResponsibleUserName = (responsibleUserName) => ({
-    type: 'SET_FILTER_TASK_RESPONSIBLE_USER_NAME',
-    responsibleUserName,
+export const setFilterTaskResponsibleName = (responsibleName) => ({
+    type: 'SET_FILTER_TASK_RESPONSIBLE_NAME',
+    responsibleName,
 });
 
 export const clearFilterTask = () => ({

@@ -2,12 +2,9 @@ import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import { isEmpty } from 'lodash';
 
-import MeasureFormGeneral from './form/MeasureFormGeneral';
+import MeasureFormGeneral from './general/MeasureFormGeneral';
 import MeasureDetailsFaqs from './FAQs/MeasureDetailsFaqs';
 import MeasureDetailsSuppliers from './suppliers/MeasureDetailsSuppliers';
-import MeasureDetailsOpportunity from './opportunities/MeasureDetailsOpportunity';
-import MeasureDetailsMeasuresTaken from './measuresTaken/MeasureDetailsMeasuresTaken';
-import MeasureDetailsMeasuresRequested from "./measuresRequested/MeasureDetailsMeasuresRequested";
 import MeasureDetailsConclusionForm from "./conclusion/MeasureDetailsConclusionForm";
 
 
@@ -20,16 +17,13 @@ class MeasureDetailsForm extends Component {
     render() {
 
         return (
-            isEmpty(this.props.measure) ?
+            isEmpty(this.props.measureDetails) ?
                 <div>Geen gegevens gevonden!</div>
                 :
                 <div>
                     <MeasureFormGeneral />
                     <MeasureDetailsFaqs />
                     <MeasureDetailsSuppliers />
-                    <MeasureDetailsOpportunity />
-                    <MeasureDetailsMeasuresTaken />
-                    <MeasureDetailsMeasuresRequested />
                     <MeasureDetailsConclusionForm />
                 </div>
         );
@@ -38,7 +32,7 @@ class MeasureDetailsForm extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        measure: state.measure,
+        measureDetails: state.measureDetails,
     }
 };
 

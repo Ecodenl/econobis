@@ -1,16 +1,15 @@
 import React, { Component } from 'react';
-import moment from 'moment';
-import validator from 'validator';
 import { isEmpty } from 'lodash';
 import { hashHistory } from 'react-router';
 
 import OpportunityNewToolbar from './OpportunityNewToolbar';
 import OpportunityNew from './OpportunityNew';
-
-import ContactsAPI from '../../../api/contact/ContactsAPI';
-import RegistrationsAPI from '../../../api/registration/RegistrationsAPI';
 import OpportunityDetailsAPI from '../../../api/opportunity/OpportunityDetailsAPI';
-import {connect} from "react-redux";
+import IntakeDetailsAPI from '../../../api/intake/IntakeDetailsAPI';
+import MeasureAPI from '../../../api/measure/MeasureAPI';
+import PanelBody from "../../../components/panel/PanelBody";
+import Panel from "../../../components/panel/Panel";
+import validator from "validator";
 
 
 class OppportunitiesNewApp extends Component {
@@ -18,80 +17,57 @@ class OppportunitiesNewApp extends Component {
         super(props);
 
         this.state = {
+            measure: [],
+            intake: [],
             opportunity: {
-                campaignId:'',
-                contactId: '',
-                desiredDate: '',
+                intakeId: '',
                 measureId: '',
-                quotationText: '',
-                reactionId: '',
                 statusId: '',
-                ownedById: '',
-                registrationId: '',
+                quotationText: '',
+                evaluationAgreedDate: '',
+                desiredDate: '',
             },
-            contacts: [],
-            registrations: [],
             errors: {
-                measure: false,
-                contact: false,
-                status: false,
-            },
-        };
-
-        this.handleReactSelectChange = this.handleReactSelectChange.bind(this);
-    };
-
-
-    componentWillMount() {
-        if(!isEmpty(this.props.params)) {
-            this.updateStateByChangeParams(this.props.params);
-        };
-
-        ContactsAPI.getPerson().then(payload => {
-            this.setState({
-                contacts: payload
-            });
-        });
-
-        RegistrationsAPI.peekRegistrations().then(payload => {
-            this.setState({
-                registrations: payload
-            });
-        });
-    }
-
-    componentWillReceiveProps(nextProps) {
-        if ((this.props.params.id !== nextProps.params.id) || (this.props.params.type !== nextProps.params.type)) {
-            this.updateStateByChangeParams(nextProps.params);
-        }
-    };
-
-    updateStateByChangeParams(params) {
-        if (!isEmpty(params)) {
-            switch (params.type) {
-                case 'contact':
-                    this.setState({
-                        ...this.state,
-                        opportunity: {
-                            ...this.state.opportunity,
-                            contactId: params.id,
-                        }
-                    });
-                    break;
-                case 'aanmelding':
-                    this.setState({
-                        ...this.state,
-                        opportunity: {
-                            ...this.state.opportunity,
-                            registrationId: params.id,
-                        }
-                    });
-                    break;
-                default:
-                    break;
+                statusId: false,
             }
-        }
+        };
+
+        this.handleInputChangeDate = this.handleInputChangeDate.bind(this);
+    };
+
+    componentWillMount(){
+        IntakeDetailsAPI.fetchIntakeDetails(this.props.params.intakeId).then((payload) => {
+            this.setState({
+                ...this.state,
+                intake: payload,
+                opportunity: {
+                    ...this.state.opportunity,
+                    intakeId: payload.id,
+                },
+            });
+        });
+
+        MeasureAPI.fetchMeasure(this.props.params.measureId).then((payload) => {
+            this.setState({
+                ...this.state,
+                measure: payload,
+                opportunity: {
+                    ...this.state.opportunity,
+                    measureId: payload.id,
+                },
+            });
+        });
     }
+
+    handleInputChangeDate(value, name) {
+        this.setState({
+            ...this.state,
+            opportunity: {
+                ...this.state.opportunity,
+                [name]: value
+            },
+        });
+    };
 
     handleInputChange = event => {
         const target = event.target;
@@ -107,62 +83,21 @@ class OppportunitiesNewApp extends Component {
         });
     };
 
-    handleReactSelectChange(selectedOption, name) {
-        this.setState({
-            ...this.state,
-            opportunity: {
-                ...this.state.opportunity,
-                [name]: selectedOption
-            },
-        });
-    };
-
-    handleEditorChange = (e) => {
-        this.setState({
-            ...this.state,
-            opportunity: {
-                ...this.state.opportunity,
-                quotationText: e.target.getContent()
-            },
-        });
-    };
-
-    handleChangeDesiredDate = (date) => {
-        const formattedDate = (date ? moment(date).format('Y-MM-DD') : '');
-
-        this.setState({
-            ...this.state,
-            opportunity: {
-                ...this.state.opportunity,
-                desiredDate: formattedDate
-            },
-        });
-    };
-
     handleSubmit = event => {
         event.preventDefault();
 
         const {opportunity} = this.state;
 
+        // Validation
         let errors = {};
         let hasErrors = false;
 
-        if(validator.isEmpty('' + opportunity.contactId)){
-            errors.contact = true;
+        if(validator.isEmpty(opportunity.statusId)){
+            errors.statusId = true;
             hasErrors = true;
         };
 
-        if(validator.isEmpty('' + opportunity.statusId)){
-            errors.status = true;
-            hasErrors = true;
-        };
-
-        if(validator.isEmpty('' + opportunity.measureId)){
-            errors.measure = true;
-            hasErrors = true;
-        };
-
-        this.setState({ ...this.state, errors: errors });
+        this.setState({ ...this.state, errors: errors })
 
         !hasErrors &&
         OpportunityDetailsAPI.storeOpportunity(opportunity).then(payload => {
@@ -174,37 +109,34 @@ class OppportunitiesNewApp extends Component {
         return (
             <div className="row">
                 <div className="col-md-9">
-                    <div className="panel panel-default">
-                        <div className="panel-body">
-                            <div className="col-md-12 margin-10-top">
+                    <div className="col-md-12">
+                        <Panel>
+                            <PanelBody className={"panel-small"}>
                                 <OpportunityNewToolbar/>
-                            </div>
-                            <div className="col-md-12 margin-10-top">
+                            </PanelBody>
+                        </Panel>
+                    </div>
+                    <div className="col-md-12">
+                        <Panel>
+                            <PanelBody>
                                 <OpportunityNew
-                                    opportunity={this.state.opportunity}
-                                    contacts={this.state.contacts}
-                                    users={this.props.users}
-                                    registrations={this.state.registrations}
-                                    errors={this.state.errors}
                                     handleInputChange={this.handleInputChange}
-                                    handleChangeDesiredDate={this.handleChangeDesiredDate}
+                                    handleInputChangeDate={this.handleInputChangeDate}
+                                    intake={this.state.intake}
+                                    measure={this.state.measure}
+                                    opportunity={this.state.opportunity}
                                     handleSubmit={this.handleSubmit}
-                                    handleReactSelectChange={this.handleReactSelectChange}
-                                    handleEditorChange={this.handleEditorChange}
+                                    errors={this.state.errors}
                                 />
-                            </div>
-                        </div>
+                            </PanelBody>
+                        </Panel>
                     </div>
                 </div>
+                <div className="col-md-3"/>
             </div>
         )
     }
 };
 
-const mapStateToProps = (state) => {
-    return {
-        users: state.systemData.users,
-    }
-};
 
-export default connect(mapStateToProps)(OppportunitiesNewApp);
+export default OppportunitiesNewApp;

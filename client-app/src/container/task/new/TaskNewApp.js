@@ -11,9 +11,10 @@ import TaskNewForm from './TaskNewForm';
 import TaskNewToolbar from './TaskNewToolbar';
 import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
-import RegistrationsAPI from "../../../api/registration/RegistrationsAPI";
+import IntakesAPI from "../../../api/intake/IntakesAPI";
 import ContactGroupAPI from "../../../api/contact-group/ContactGroupAPI";
 import OpportunitiesAPI from "../../../api/opportunity/OpportunitiesAPI";
+import HousingFilesAPI from "../../../api/housing-file/HousingFilesAPI";
 
 class TaskNewApp extends Component {
     constructor(props) {
@@ -21,44 +22,45 @@ class TaskNewApp extends Component {
 
         this.state = {
             contacts: [],
-            registrations: [],
+            intakes: [],
             contactGroups: [],
             opportunities: [],
             campaigns: [],
+            housingFiles: [],
             task: {
                 id: '',
-                name: '',
-                description: '',
+                note: '',
                 typeId: '',
                 contactId: '',
                 campaignId: '',
-                statusId: '',
-                registrationId: '',
+                intakeId: '',
+                opportunityId: '',
                 contactGroupId: '',
-                datePlanned: '',
+                housingFileId: '',
+                datePlannedStart: '',
+                datePlannedFinish: '',
                 startTimePlanned: '',
                 endTimePlanned: '',
+                finished: false,
                 dateFinished: '',
-                responsibleUserId: '',
                 finishedById: '',
-                opportunityId: '',
+                responsible: '',
             },
             errors: {
-                name: false,
+                note: false,
                 typeId: false,
-                statusId: false,
-                responsibleUserId: false,
+                responsible: false,
             },
+            showExtraConnections: false,
         };
 
         this.updateStateByChangeParams = this.updateStateByChangeParams.bind(this);
         this.handleInputChange = this.handleInputChange.bind(this);
-        this.handleChangeDatePlanned = this.handleChangeDatePlanned.bind(this);
-        this.handleChangeStartedDate = this.handleChangeStartedDate.bind(this);
-        this.handleChangeFinishedDate = this.handleChangeFinishedDate.bind(this);
+        this.handleInputChangeDate = this.handleInputChangeDate.bind(this);
         this.handleInputChangeTime = this.handleInputChangeTime.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleReactSelectChange = this.handleReactSelectChange.bind(this);
+        this.toggleExtraConnections = this.toggleExtraConnections.bind(this);
     };
 
     componentDidMount() {
@@ -70,8 +72,8 @@ class TaskNewApp extends Component {
             this.setState({ contacts: payload });
         });
 
-        RegistrationsAPI.peekRegistrations().then((payload) => {
-            this.setState({ registrations: payload });
+        IntakesAPI.peekIntakes().then((payload) => {
+            this.setState({ intakes: payload });
         });
 
         ContactGroupAPI.peekContactGroups().then((payload) => {
@@ -84,6 +86,10 @@ class TaskNewApp extends Component {
 
         CampaignsAPI.peekCampaigns().then((payload) => {
             this.setState({ campaigns: payload });
+        });
+
+        HousingFilesAPI.peekHousingFiles().then((payload) => {
+            this.setState({ housingFiles: payload });
         });
     };
 
@@ -103,20 +109,20 @@ class TaskNewApp extends Component {
                             ...this.state.task,
                             campaignId: '',
                             contactId: params.id,
-                            registrationId: '',
+                            intakeId: '',
                             contactGroupId: '',
                             opportunityId: '',
                         }
                     });
                     break;
-                case 'aanmelding':
+                case 'intake':
                     this.setState({
                         ...this.state,
                         task: {
                             ...this.state.task,
                             campaignId: '',
                             contactId: '',
-                            registrationId: params.id,
+                            intakeId: params.id,
                             contactGroupId: '',
                             opportunityId: '',
                         }
@@ -129,7 +135,7 @@ class TaskNewApp extends Component {
                             ...this.state.task,
                             campaignId: '',
                             contactId: '',
-                            registrationId: '',
+                            intakeId: '',
                             contactGroupId: params.id,
                             opportunityId: '',
                         }
@@ -142,7 +148,7 @@ class TaskNewApp extends Component {
                             ...this.state.task,
                             campaignId: '',
                             contactId: '',
-                            registrationId: '',
+                            intakeId: '',
                             contactGroupId: '',
                             opportunityId: params.id,
                         }
@@ -155,7 +161,7 @@ class TaskNewApp extends Component {
                             ...this.state.task,
                             campaignId: params.id,
                             contactId: '',
-                            registrationId: '',
+                            intakeId: '',
                             contactGroupId: '',
                             opportunityId: '',
                         }
@@ -201,38 +207,12 @@ class TaskNewApp extends Component {
         });
     };
 
-    handleChangeDatePlanned(date) {
-        const formattedDate = (date ? moment(date).format('Y-MM-DD') : '');
-
+    handleInputChangeDate(value, name) {
         this.setState({
             ...this.state,
             task: {
                 ...this.state.task,
-                datePlanned: formattedDate
-            },
-        });
-    };
-
-    handleChangeStartedDate(date) {
-        const formattedDate = (date ? moment(date).format('Y-MM-DD') : '');
-
-        this.setState({
-            ...this.state,
-            task: {
-                ...this.state.task,
-                dateStarted: formattedDate
-            },
-        });
-    };
-
-    handleChangeFinishedDate(date)  {
-        const formattedDate = (date ? moment(date).format('Y-MM-DD') : '');
-
-        this.setState({
-            ...this.state,
-            task: {
-                ...this.state.task,
-                dateFinished: formattedDate
+                [name]: value
             },
         });
     };
@@ -246,8 +226,8 @@ class TaskNewApp extends Component {
         let errors = {};
         let hasErrors = false;
 
-        if(validator.isEmpty(task.name)){
-            errors.name = true;
+        if(validator.isEmpty(task.note)){
+            errors.note = true;
             hasErrors = true;
         };
 
@@ -256,14 +236,19 @@ class TaskNewApp extends Component {
             hasErrors = true;
         };
 
-        if(validator.isEmpty(task.statusId)){
-            errors.statusId = true;
+        if(validator.isEmpty(task.responsible)){
+            errors.responsible = true;
             hasErrors = true;
         };
 
-        if(validator.isEmpty(task.responsibleUserId)){
-            errors.responsibleUserId = true;
-            hasErrors = true;
+        if(task.responsible.search('user') >= 0 ) {
+            task.responsibleUserId = task.responsible.replace('user', '');
+            task.responsibleTeamId = '';
+        };
+
+        if(task.responsible.search("team") >= 0) {
+            task.responsibleUserId = '';
+            task.responsibleTeamId = task.responsible.replace('team', '');
         };
 
         this.setState({ ...this.state, errors: errors })
@@ -276,6 +261,10 @@ class TaskNewApp extends Component {
         }).catch(function (error) {
             console.log(error);
         });
+    };
+
+    toggleExtraConnections() {
+        this.setState({showExtraConnections: !this.state.showExtraConnections});
     };
 
     render() {
@@ -293,19 +282,19 @@ class TaskNewApp extends Component {
                                     <TaskNewForm
                                         task={this.state.task}
                                         contacts={this.state.contacts}
-                                        registrations={this.state.registrations}
+                                        intakes={this.state.intakes}
                                         contactGroups={this.state.contactGroups}
                                         opportunities={this.state.opportunities}
                                         campaigns={this.state.campaigns}
                                         errors={this.state.errors}
                                         meDetails={this.props.meDetails}
                                         handleInputChange={this.handleInputChange}
-                                        handleChangeDatePlanned={this.handleChangeDatePlanned}
-                                        handleChangeStartedDate={this.handleChangeStartedDate}
-                                        handleChangeFinishedDate={this.handleChangeFinishedDate}
+                                        handleInputChangeDate={this.handleInputChangeDate}
                                         handleInputChangeTime={this.handleInputChangeTime}
                                         handleSubmit={this.handleSubmit}
                                         handleReactSelectChange={this.handleReactSelectChange}
+                                        toggleExtraConnections={this.toggleExtraConnections}
+                                        showExtraConnections={this.state.showExtraConnections}
                                     />
                                 </div>
                             </PanelBody>

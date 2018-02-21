@@ -15,9 +15,6 @@ $factory->define(\App\Eco\Campaign\Campaign::class, function (Faker\Generator $f
         'end_date' => function() use($faker){
             if($faker->boolean()) return $faker->date();
         },
-        'goal' => function() use($faker){
-            if($faker->boolean()) return $faker->text(20);
-        },
         'type_id' => function() use($faker){
             return \App\Eco\Campaign\CampaignType::inRandomOrder()->first()->id;
         },

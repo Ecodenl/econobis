@@ -38,7 +38,7 @@ class CampaignDetailsToolbar extends Component {
                                     }
                                 </div>
                             </div>
-                            <div className="col-md-8"><h4 className="text-center text-success margin-small"><strong>{campaign ? 'Campagne: ' + campaign.name : ''}</strong></h4></div>
+                            <div className="col-md-8"><h4 className="text-center text-success margin-small"><strong>{campaign.name ? 'Campagne: ' + campaign.name : ''}</strong></h4></div>
                             <div className="col-md-2" />
                         </PanelBody>
                     </Panel>

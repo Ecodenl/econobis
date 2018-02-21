@@ -33,8 +33,8 @@ class DatabaseSeeder extends Seeder
 
         $this->call(CampaignsSeeder::class);
 
-        // Aanmeldingen (en aanverwante data) toevoegen
-        $this->call(RegistrationsSeeder::class);
+        // Intakes (en aanverwante data) toevoegen
+        $this->call(IntakesSeeder::class);
 
         // ContactGroups
         $this->call(ContactGroupsSeeder::class);

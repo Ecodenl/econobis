@@ -17,6 +17,7 @@ use App\Http\Controllers\Api\ApiController;
 use App\Http\RequestQueries\Measure\Grid\RequestQuery;
 use App\Http\Resources\Measure\FullMeasure;
 use App\Http\Resources\Measure\GridMeasure;
+use App\Http\Resources\Measure\MeasurePeek;
 use App\Http\Resources\Opportunity\FullOpportunity;
 
 class MeasureController extends ApiController
@@ -26,6 +27,10 @@ class MeasureController extends ApiController
     {
         $measures = $requestQuery->get();
 
+        $measures->load([
+            'measureCategory',
+        ]);
+
         return GridMeasure::collection($measures);
     }
 
@@ -34,32 +39,19 @@ class MeasureController extends ApiController
         $measure->load(['campaigns',
             'faqs',
             'deliveredByOrganisations.contact.primaryAddress',
-            'opportunities.campaign',
-            'opportunities.contact',
-            'measuresTaken.address.contact',
-            'measuresTaken.address.registration',
-            'measuresRequested.address.contact',
-            'measuresRequested.address.registration',
+            'intakes.contact',
+            'addresses.housingFile',
+            'addresses.contact',
             'createdBy',
+            'updatedBy',
+            'addresses',
+            'measureCategory',
+            'documents',
+            'opportunities.intake.campaign',
+            'opportunities.intake.contact',
         ]);
 
         return FullMeasure::make($measure);
-    }
-
-    public function store(RequestInput $requestInput)
-    {
-        $this->authorize('manage', Measure::class);
-
-        $data = $requestInput
-            ->string('name')->validate('required')->next()
-            ->string('description')->onEmpty(null)->next()
-            ->get();
-
-        $measure = new Measure();
-        $measure->fill($data);
-        $measure->save();
-
-        return FullMeasure::make($measure->fresh());
     }
 
     public function update(RequestInput $requestInput, Measure $measure)
@@ -68,8 +60,6 @@ class MeasureController extends ApiController
         $this->authorize('manage', Measure::class);
 
         $data = $requestInput
-            ->string('name')->validate('required')->next()
-            ->string('number')->validate('required')->next()
             ->string('description')->onEmpty(null)->next()
             ->get();
 
@@ -77,26 +67,6 @@ class MeasureController extends ApiController
         $measure->save();
 
         return FullMeasure::make($measure->fresh());
-    }
-
-    //TODO NOT WORKING!!
-    public function destroy(Measure $measure)
-    {
-        $this->authorize('manage', Measure::class);
-
-        //First delete relations
-        $measure->addresses()->detach();
-
-        foreach ($measure->opportunities as $opportunity) {
-            $opportunity->measure()->dissociate();
-            $opportunity->save();
-        }
-
-        $measure->faqs()->delete();
-        $measure->measuresTaken()->delete();
-        $measure->measuresRequested()->delete();
-
-        $measure->delete();
     }
 
     public function storeFaq(RequestInput $requestInput, Measure $measure)
@@ -154,5 +124,10 @@ class MeasureController extends ApiController
         $opportunity->save();
 
         return FullMeasure::make($measure->fresh());
+    }
+
+    public function peek()
+    {
+        return MeasurePeek::collection(Measure::orderBy('id')->get());
     }
 }

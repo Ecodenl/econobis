@@ -23,16 +23,18 @@ class ContactController extends Controller
         $contact->load('addresses');
         $contact->load('emailAddresses');
         $contact->load('phoneNumbers');
-        $contact->load('notes');
-        $contact->notes->load('createdBy');
-        $contact->notes->load('updatedBy');
+        $contact->load('contactNotes');
+        $contact->contactNotes->load('createdBy');
+        $contact->contactNotes->load('updatedBy');
         $contact->load('createdBy');
         $contact->load('updatedBy');
         $contact->load('owner');
         $contact->load('tasks');
+        $contact->load('notes');
         $contact->load('documents');
+        $contact->load('opportunities');
 
-        if($contact->isOrganisation()) $contact->load(['organisation.type', 'organisation.industry', 'organisation.people.person', 'organisation.people.organisation', 'organisation.people.occupation', 'organisation.quotations.opportunity.measure', 'organisation.quotations.opportunity.status', 'organisation.campaigns']);
+        if($contact->isOrganisation()) $contact->load(['organisation.type', 'organisation.industry', 'organisation.people.person', 'organisation.people.organisation', 'organisation.people.occupation', 'organisation.quotationRequests.opportunity.measure', 'organisation.quotationRequests.opportunity.status', 'organisation.campaigns']);
         if($contact->isPerson()) $contact->load(['person.lastNamePrefix', 'person.title', 'person.organisation', 'person.type', 'person.occupations.person', 'person.occupations.organisation', 'person.occupations.occupation']);
 
         $contact->relatedEmailsInbox = $this->getRelatedEmails($contact->id, 'inbox');
@@ -48,16 +50,32 @@ class ContactController extends Controller
         DeleteContact::single($contact);
     }
 
-    public function registrations(Contact $contact)
+    public function intakes(Contact $contact)
     {
-        $registrations = $contact->registrations;
+        $intakes = $contact->intakes;
 
         $result = [];
-        foreach ($registrations as $registration){
+        foreach ($intakes as $intake){
             $result[] = [
-                'id' => $registration->id,
-                'addressName' =>  $registration->address->present()->streetAndNumber(),
-                'createdAt' => $registration->created_at,
+                'id' => $intake->id,
+                'addressName' =>  $intake->address->present()->streetAndNumber(),
+                'createdAt' => $intake->created_at,
+            ];
+        }
+
+        return $result;
+    }
+
+    public function housingFiles(Contact $contact)
+    {
+        $housingFiles = $contact->housingFiles;
+
+        $result = [];
+        foreach ($housingFiles as $housingFile){
+            $result[] = [
+                'id' => $housingFile->id,
+                'addressName' =>  $housingFile->address->present()->streetAndNumber(),
+                'createdAt' => $housingFile->created_at,
             ];
         }
 

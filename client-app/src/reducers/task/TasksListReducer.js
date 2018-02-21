@@ -20,21 +20,10 @@ export default function (state= { isLoading: false }, action) {
             meta: {},
             isLoading: false,
         };
-        case 'SET_TASK_COMPLETED_SUCCESS':
+        case 'SET_TASK_FINISHED_SUCCESS':
         return {
             ...state,
-            data: state.data.map((task) => {
-                if (task.id === action.task.data.data.id) {
-                    return {
-                        ...task,
-                        statusId: action.task.data.data.statusId,
-                        statusCode: action.task.data.data.status.code,
-                        statusName: action.task.data.data.status.name,
-                    };
-                } else {
-                    return task;
-                }
-            })
+            data: state.data.filter((task) => task.id !== action.id),
         };
     case 'DELETE_TASK_SUCCESS':
         return {

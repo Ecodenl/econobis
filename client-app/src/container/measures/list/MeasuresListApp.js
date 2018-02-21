@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import { fetchMeasures, clearMeasures } from '../../../actions/measure/MeasureActions';
+import { fetchMeasures, clearMeasures } from '../../../actions/measure/MeasuresActions';
 import MeasuresListToolbar from './MeasuresListToolbar';
 import MeasuresList from './MeasuresList';
 

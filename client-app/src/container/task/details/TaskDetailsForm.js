@@ -4,6 +4,7 @@ import { isEmpty } from 'lodash';
 
 import TaskDetailsFormGeneral from './general/TaskDetailsFormGeneral';
 import TaskDetailsFormProperties from './properties/TaskDetailsFormProperties';
+import TaskDetailsFormConclusion from "./conclusion/TaskDetailsFormConclusion";
 
 class TaskDetailsForm extends Component {
     constructor(props){
@@ -18,6 +19,7 @@ class TaskDetailsForm extends Component {
                 <div>
                     <TaskDetailsFormGeneral />
                     <TaskDetailsFormProperties />
+                    <TaskDetailsFormConclusion />
                 </div>
         );
     }

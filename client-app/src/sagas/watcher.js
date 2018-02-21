@@ -13,21 +13,34 @@ import { fetchDocumentDetailsSaga, deleteDocumentSaga } from './document/Documen
 import { fetchDocumentTemplatesSaga, fetchDocumentTemplateSaga } from './document-template/DocumentTemplatesSaga';
 import { fetchEmailsSaga, fetchEmailSaga } from './email/EmailsSaga';
 import { fetchEmailTemplatesSaga, fetchEmailTemplateSaga } from './email-template/EmailTemplatesSaga';
-import { fetchMailboxDetailsSaga, deleteMailboxSaga, newMailboxUserSaga, deleteMailboxUserSaga } from './mailbox/MailboxDetailsSaga';
+import { fetchMailboxDetailsSaga, deleteMailboxSaga, deleteMailboxUserSaga } from './mailbox/MailboxDetailsSaga';
 import { fetchMailboxesSaga } from './mailbox/MailboxesSaga';
-import { fetchMeasuresSaga, fetchMeasureSaga } from './measure/MeasuresSaga';
+import { fetchMeasuresSaga } from './measure/MeasuresSaga';
+import { fetchMeasureSaga } from './measure/MeasureDetailsSaga';
 import { fetchOpportunitiesSaga } from './opportunity/OpportunitiesSaga';
 import { fetchOpportunitySaga } from './opportunity/OpportunityDetailsSaga';
 import {
-    fetchRegistrationDetailsSaga,
-    deleteRegistrationNoteSaga,
-    deleteRegistrationMeasureTakenSaga,
-    deleteRegistrationMeasureRequestedSaga,
-    deleteRegistrationSaga,
-} from './registration/RegistrationDetailsSaga';
-import { fetchRegistrationsSaga } from './registration/RegistrationsSaga';
+    fetchIntakeDetailsSaga,
+    deleteIntakeMeasureRequestedSaga,
+    deleteIntakeSaga,
+} from './intake/IntakeDetailsSaga';
+import { fetchIntakesSaga } from './intake/IntakesSaga';
+import {
+    fetchHousingFileDetailsSaga,
+    deleteHousingFileMeasureTakenSaga,
+    deleteHousingFileSaga,
+} from './housing-file/HousingFileDetailsSaga';
+import { fetchHousingFilesSaga } from './housing-file/HousingFilesSaga';
+import {
+    fetchQuotationRequestDetailsSaga,
+    deleteQuotationRequestSaga,
+} from './quotation-request/QuotationRequestDetailsSaga';
+import { fetchQuotationRequestsSaga } from './quotation-request/QuotationRequestsSaga';
 import { fetchTaskDetailsSaga, deleteTaskSaga } from './task/TaskDetailsSaga';
-import { fetchTasksSaga, setTaskCompletedSaga } from './task/TasksSaga';
+import { fetchTasksSaga, setTaskFinishedSaga } from './task/TasksSaga';
+import { fetchNotesSaga } from './task/NotesSaga';
+import { fetchTeamsSaga, deleteTeamSaga } from './team/TeamsSaga';
+import { fetchTeamDetailsSaga, deleteTeamUserSaga } from './team/TeamDetailsSaga';
 import { fetchUserDetailsSaga } from './user/UserDetailsSaga';
 import { fetchUserSaga } from './user/UsersSaga';
 import { meDetailsSaga } from './general/MeDetailsSaga';
@@ -72,6 +85,15 @@ export default function* watchSagas() {
     // Email templates
     yield takeLatest('FETCH_EMAIL_TEMPLATES', fetchEmailTemplatesSaga);
     yield takeLatest('FETCH_EMAIL_TEMPLATE', fetchEmailTemplateSaga);
+    // Housing Files
+    yield takeLatest('FETCH_HOUSING_FILES', fetchHousingFilesSaga);
+    yield takeLatest('FETCH_HOUSING_FILE_DETAILS', fetchHousingFileDetailsSaga);
+    yield takeLatest('DELETE_HOUSING_FILE', deleteHousingFileSaga);
+    yield takeLatest('DELETE_HOUSING_FILE_MEASURE_TAKEN', deleteHousingFileMeasureTakenSaga);
+    // Quotation Requests
+    yield takeLatest('FETCH_QUOTATION_REQUESTS', fetchQuotationRequestsSaga);
+    yield takeLatest('FETCH_QUOTATION_REQUEST_DETAILS', fetchQuotationRequestDetailsSaga);
+    yield takeLatest('DELETE_QUOTATION_REQUEST', deleteQuotationRequestSaga);
     // Mailbox
     yield takeLatest('FETCH_MAILBOXES', fetchMailboxesSaga);
     yield takeLatest('FETCH_MAILBOX_DETAILS', fetchMailboxDetailsSaga);
@@ -83,16 +105,20 @@ export default function* watchSagas() {
     // Opportunity
     yield takeLatest('FETCH_OPPORTUNITIES', fetchOpportunitiesSaga);
     yield takeLatest('FETCH_OPPORTUNITY', fetchOpportunitySaga);
-    // Registration
-    yield takeLatest('FETCH_REGISTRATIONS', fetchRegistrationsSaga);
-    yield takeLatest('FETCH_REGISTRATION_DETAILS', fetchRegistrationDetailsSaga);
-    yield takeLatest('DELETE_REGISTRATION', deleteRegistrationSaga);
-    yield takeLatest('DELETE_REGISTRATION_NOTE', deleteRegistrationNoteSaga);
-    yield takeLatest('DELETE_REGISTRATION_MEASURE_TAKEN', deleteRegistrationMeasureTakenSaga);
-    yield takeLatest('DELETE_REGISTRATION_MEASURE_REQUESTED', deleteRegistrationMeasureRequestedSaga);
-    // Task
+    // Intake
+    yield takeLatest('FETCH_INTAKES', fetchIntakesSaga);
+    yield takeLatest('FETCH_INTAKE_DETAILS', fetchIntakeDetailsSaga);
+    yield takeLatest('DELETE_INTAKE', deleteIntakeSaga);
+    yield takeLatest('DELETE_INTAKE_MEASURE_REQUESTED', deleteIntakeMeasureRequestedSaga);
+    // Task / notes
     yield takeLatest('FETCH_TASKS', fetchTasksSaga);
-    yield takeLatest('SET_TASK_COMPLETED', setTaskCompletedSaga);
+    yield takeLatest('FETCH_NOTES', fetchNotesSaga);
+    yield takeLatest('SET_TASK_FINISHED', setTaskFinishedSaga);
     yield takeLatest('FETCH_TASK_DETAILS', fetchTaskDetailsSaga);
     yield takeLatest('DELETE_TASK', deleteTaskSaga);
+    // Team
+    yield takeLatest('FETCH_TEAMS', fetchTeamsSaga);
+    yield takeLatest('FETCH_TEAM_DETAILS', fetchTeamDetailsSaga);
+    yield takeLatest('DELETE_TEAM', deleteTeamSaga);
+    yield takeLatest('DELETE_TEAM_USER', deleteTeamUserSaga);
 }

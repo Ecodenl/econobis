@@ -25,31 +25,6 @@ class CreateMeasuresTable extends Migration
             $table->timestamps();
         });
 
-        Schema::create('measure_taken_address', function (Blueprint $table) {
-            $table->increments('id');
-            $table->integer('address_id')->unsigned();
-            $table->foreign('address_id')->references('id')->on('addresses');
-            $table->integer('measure_id')->unsigned();
-            $table->foreign('measure_id')->references('id')->on('measures');
-            $table->integer('energy_label_id')->unsigned()->nullable();
-            $table->foreign('energy_label_id')->references('id')->on('energy_labels');
-            $table->date('measure_date')->nullable();
-            $table->unique(['address_id','measure_id']);
-            $table->timestamps();
-        });
-
-        Schema::create('measure_requested_address', function (Blueprint $table) {
-            $table->increments('id');
-            $table->integer('address_id')->unsigned();
-            $table->foreign('address_id')->references('id')->on('addresses');
-            $table->integer('measure_id')->unsigned();
-            $table->foreign('measure_id')->references('id')->on('measures');
-            $table->date('desired_date')->nullable();
-            $table->tinyInteger('degree_interest')->nullable();
-            $table->unique(['address_id','measure_id']);
-            $table->timestamps();
-        });
-
     }
 
     /**

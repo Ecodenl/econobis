@@ -4,9 +4,11 @@ import { hashHistory } from 'react-router';
 
 import AddContactToGroup from './harmonica/AddContactToGroup';
 import ErrorModal from '../../../components/modal/ErrorModal';
-import RegistrationHarmonica from './harmonica/RegistrationHarmonica';
+import IntakeHarmonica from './harmonica/IntakeHarmonica';
+import HousingFileHarmonica from './harmonica/HousingFileHarmonica';
 import OpportunityHarmonica from './harmonica/OpportunityHarmonica';
 import TaskHarmonica from "./harmonica/TaskHarmonica";
+import NoteHarmonica from "./harmonica/NoteHarmonica";
 import ContactGroupHarmonica from "./harmonica/ContactGroupHarmonica";
 import EmailInboxHarmonica from './harmonica/EmailInboxHarmonica';
 import EmailSentHarmonica from "./harmonica/EmailSentHarmonica";
@@ -18,9 +20,11 @@ class ContactDetailsHarmonica extends Component {
 
         this.state = {
             toggleShowList: {
-                registrations: false,
+                intakes: false,
+                housingFiles: false,
                 opportunities: false,
                 tasks: false,
+                notes: false,
                 contactGroups: false,
                 emailsInbox: false,
                 emailsSent: false,
@@ -36,9 +40,11 @@ class ContactDetailsHarmonica extends Component {
         if(this.props.id !== nextProps.id) {
             this.setState({
                 toggleShowList: {
-                    registrations: false,
+                    intakes: false,
+                    housingFiles: false,
                     opportunities: false,
                     tasks: false,
+                    notes: false,
                     contactGroups: false,
                     emailsInbox: false,
                     emailsSent: false,
@@ -48,7 +54,7 @@ class ContactDetailsHarmonica extends Component {
         }
     };
 
-    newRegistration = () => {
+    newIntake = () => {
         let address = this.props.contactDetails.addresses.find((address) => {
             return address.primary
         });
@@ -63,11 +69,34 @@ class ContactDetailsHarmonica extends Component {
             }
             else
                 {
-                    hashHistory.push(`/aanmelding/nieuw/contact/${this.props.contactDetails.id}/adres/${address.id}`);
+                    hashHistory.push(`/intake/nieuw/contact/${this.props.contactDetails.id}/adres/${address.id}`);
                 }
             }
         else {
-            hashHistory.push(`/aanmelding/nieuw/contact/${this.props.contactDetails.id}/adres/${address.id}`);
+            hashHistory.push(`/intake/nieuw/contact/${this.props.contactDetails.id}/adres/${address.id}`);
+        }
+    };
+
+    newHousingFile = () => {
+        let address = this.props.contactDetails.addresses.find((address) => {
+            return address.primary
+        });
+        if (typeof address === 'undefined') {
+            address = this.props.contactDetails.addresses[0];
+            if (typeof address === 'undefined') {
+                this.setState({
+                    showModalError: !this.state.showModalError,
+                    modalErrorTitle: 'Waaschuwing',
+                    modalErrorMessage: 'Dit contact heeft nog geen adres.',
+                });
+            }
+            else
+            {
+                hashHistory.push(`/woningdossier/nieuw/contact/${this.props.contactDetails.id}/adres/${address.id}`);
+            }
+        }
+        else {
+            hashHistory.push(`/woningdossier/nieuw/contact/${this.props.contactDetails.id}/adres/${address.id}`);
         }
     };
 
@@ -85,10 +114,6 @@ class ContactDetailsHarmonica extends Component {
                 [name]: !this.state.toggleShowList[name],
             }
         });
-    };
-
-    newOpportunity = () => {
-        hashHistory.push(`/kans/nieuw/contact/${this.props.id}`);
     };
 
     newTask = () => {
@@ -112,24 +137,37 @@ class ContactDetailsHarmonica extends Component {
     render(){
         return (
             <div className="margin-10-top">
-                <RegistrationHarmonica
-                    toggleShowList={() => this.toggleShowList('registrations')}
-                    showRegistrationsList={this.state.toggleShowList.registrations}
-                    registrationCount={this.props.contactDetails.registrationCount}
-                    newRegistration={this.newRegistration}
+                <IntakeHarmonica
+                    toggleShowList={() => this.toggleShowList('intakes')}
+                    showIntakesList={this.state.toggleShowList.intakes}
+                    intakeCount={this.props.contactDetails.intakeCount}
+                    newIntake={this.newIntake}
+                />
+
+                <HousingFileHarmonica
+                    toggleShowList={() => this.toggleShowList('housingFiles')}
+                    showHousingFilesList={this.state.toggleShowList.housingFiles}
+                    housingFileCount={this.props.contactDetails.housingFileCount}
+                    newHousingFile={this.newHousingFile}
                 />
 
                 <OpportunityHarmonica
                     toggleShowList={() => this.toggleShowList('opportunities')}
                     showOpportunitiesList={this.state.toggleShowList.opportunities}
                     opportunityCount={this.props.contactDetails.opportunityCount}
-                    newOpportunity={this.newOpportunity}
                 />
 
                 <TaskHarmonica
                     toggleShowList={() => this.toggleShowList('tasks')}
                     showTasksList={this.state.toggleShowList.tasks}
                     taskCount={this.props.contactDetails.taskCount}
+                    newTask={this.newTask}
+                />
+
+                <NoteHarmonica
+                    toggleShowList={() => this.toggleShowList('notes')}
+                    showNotesList={this.state.toggleShowList.notes}
+                    noteCount={this.props.contactDetails.noteCount}
                     newTask={this.newTask}
                 />
 

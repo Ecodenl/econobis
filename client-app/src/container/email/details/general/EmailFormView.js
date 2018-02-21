@@ -11,7 +11,7 @@ const createMarkup = (value) => {
 };
 
 const EmailFormView = props => {
-    const {from, to, cc, bcc, contact, subject, htmlBody, createdAt, dateSent, folder, status, closedBy, dateClosed} = props.email;
+    const {from, to, cc, bcc, contact, intake, task, quotationRequest, measure, opportunity, subject, htmlBody, createdAt, dateSent, folder, status, closedBy, dateClosed} = props.email;
 
     return (
         <div>
@@ -44,6 +44,40 @@ const EmailFormView = props => {
                     label={"Contact"}
                     value={contact ? contact.fullName : ''}
                     link={contact ? 'contact/' + contact.id : ''}
+                />
+            </div>
+
+            <div className="row" onClick={props.switchToEdit}>
+                <ViewText
+                    label={"Intake"}
+                    value={intake ? intake.name : ''}
+                    link={intake ? 'intake/' + intake.id : ''}
+                />
+                <ViewText
+                    label={"Taak"}
+                    value={task ? task.noteSummary : ''}
+                    link={task ? 'taak/' + task.id : ''}
+                />
+            </div>
+
+            <div className="row" onClick={props.switchToEdit}>
+                <ViewText
+                    label={"Offerteverzoek"}
+                    value={quotationRequest ? quotationRequest.name : ''}
+                    link={quotationRequest ? 'offerteverzoek/' + quotationRequest.id : ''}
+                />
+                <ViewText
+                    label={"Maatregel"}
+                    value={measure ? measure.name : ''}
+                    link={measure ? 'maatregel/' + measure.id : ''}
+                />
+            </div>
+
+            <div className="row" onClick={props.switchToEdit}>
+                <ViewText
+                    label={"Kans"}
+                    value={opportunity ? opportunity.name : ''}
+                    link={opportunity ? 'kans/' + opportunity.id : ''}
                 />
             </div>
 

@@ -4,7 +4,10 @@ namespace App\Eco\Measure;
 
 use App\Eco\Address\Address;
 use App\Eco\Campaign\Campaign;
+use App\Eco\Document\Document;
 use App\Eco\EnergyLabel\EnergyLabel;
+use App\Eco\HousingFile\HousingFile;
+use App\Eco\Intake\Intake;
 use App\Eco\Opportunity\Opportunity;
 use App\Eco\Organisation\Organisation;
 use App\Eco\User\User;
@@ -26,23 +29,14 @@ class Measure extends Model
         'id'
     ];
 
-    public function measuresTaken()
-    {
-        return $this->hasMany(MeasureTaken::class);
-    }
-
-    public function measuresRequested()
-    {
-        return $this->hasMany(MeasureRequested::class);
-    }
-    public function energy_label()
-    {
-        return $this->belongsTo(EnergyLabel::class);
-    }
-
     public function addresses()
     {
-        return $this->belongsToMany(Address::class);
+        return $this->belongsToMany(Address::class, 'housing_file_measure_taken')->withPivot('measure_date');;
+    }
+
+    public function intakes()
+    {
+        return $this->belongsToMany(Intake::class, 'intake_measure_requested');
     }
 
     public function opportunities()
@@ -68,5 +62,20 @@ class Measure extends Model
     public function createdBy()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function updatedBy()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function measureCategory()
+    {
+        return $this->belongsTo(MeasureCategory::class);
+    }
+
+    public function documents()
+    {
+        return $this->hasMany(Document::class);
     }
 }

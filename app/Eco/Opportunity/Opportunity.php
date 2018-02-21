@@ -6,7 +6,8 @@ use App\Eco\Campaign\Campaign;
 use App\Eco\Contact\Contact;
 use App\Eco\Document\Document;
 use App\Eco\Measure\Measure;
-use App\Eco\Registration\Registration;
+use App\Eco\Intake\Intake;
+use App\Eco\QuotationRequest\QuotationRequest;
 use App\Eco\Task\Task;
 use App\Eco\User\User;
 use Illuminate\Database\Eloquent\Model;
@@ -25,24 +26,9 @@ class Opportunity extends Model
         return $this->belongsTo(Measure::class);
     }
 
-    public function contact()
+    public function intake()
     {
-        return $this->belongsTo(Contact::class);
-    }
-
-    public function registration()
-    {
-        return $this->belongsTo(Registration::class);
-    }
-
-    public function campaign()
-    {
-        return $this->belongsTo(Campaign::class);
-    }
-
-    public function reaction()
-    {
-        return $this->belongsTo(OpportunityReaction::class);
+        return $this->belongsTo(Intake::class);
     }
 
     public function status()
@@ -50,21 +36,28 @@ class Opportunity extends Model
         return $this->belongsTo(OpportunityStatus::class);
     }
 
-    public function quotations(){
-        return $this->hasMany(OpportunityQuotation::class);
+    public function quotationRequests(){
+        return $this->hasMany(QuotationRequest::class);
     }
 
     public function createdBy(){
         return $this->belongsTo(User::class);
     }
 
-    public function ownedBy(){
+    public function updatedBy(){
         return $this->belongsTo(User::class);
     }
 
+    // Only an unfinished task is a task
     public function tasks()
     {
-        return $this->hasMany(Task::class);
+        return $this->hasMany(Task::class)->where('finished', false);
+    }
+
+    // A finished task is a note
+    public function notes()
+    {
+        return $this->hasMany(Task::class)->where('finished', true);
     }
 
     public function documents()
@@ -72,10 +65,8 @@ class Opportunity extends Model
         return $this->hasMany(Document::class);
     }
 
-    //custom methods
-    public function relatedOpportunities(){
-        $opportunities = $this->contact->opportunities()->with(['measure', 'status'])->where('id', '!=', $this->id)->get();
-
-        return $opportunities;
+    public function opportunityEvaluation()
+    {
+        return $this->hasOne(OpportunityEvaluation::class);
     }
 }

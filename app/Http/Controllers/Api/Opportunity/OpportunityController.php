@@ -8,7 +8,9 @@
 
 namespace App\Http\Controllers\Api\Opportunity;
 
+use App\Eco\Email\Email;
 use App\Eco\Opportunity\Opportunity;
+use App\Eco\Opportunity\OpportunityEvaluation;
 use App\Eco\Opportunity\OpportunityStatus;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Api\ApiController;
@@ -16,6 +18,7 @@ use App\Http\RequestQueries\Opportunity\Grid\RequestQuery;
 use App\Http\Resources\Opportunity\FullOpportunity;
 use App\Http\Resources\Opportunity\GridOpportunity;
 use App\Http\Resources\Opportunity\OpportunityPeek;
+use Illuminate\Support\Facades\Auth;
 
 class OpportunityController extends ApiController
 {
@@ -24,7 +27,7 @@ class OpportunityController extends ApiController
     {
         $opportunities = $requestQuery->get();
 
-        $opportunities->load(['contact', 'measure', 'campaign', 'status', 'quotations']);
+        $opportunities->load(['intake.contact', 'measure', 'intake.campaign', 'status', 'quotationRequests']);
 
         return GridOpportunity::collection($opportunities)
             ->additional(['meta' => [
@@ -35,7 +38,20 @@ class OpportunityController extends ApiController
 
     public function show(Opportunity $opportunity)
     {
-        $opportunity->load(['contact', 'measure', 'quotations.organisation', 'quotations.createdBy', 'campaign', 'status', 'createdBy', 'ownedBy', 'reaction', 'registration']);
+        $opportunity->load(['measure.measureCategory',
+            'quotationRequests.organisation',
+            'quotationRequests.createdBy',
+            'quotationRequests.status',
+            'status',
+            'createdBy',
+            'updatedBy',
+            'intake.contact',
+            'tasks',
+            'notes',
+            'documents',
+            'opportunityEvaluation']);
+
+        $opportunity->relatedEmailsSent = $this->getRelatedEmails($opportunity->id, 'sent');
 
         return FullOpportunity::make($opportunity);
     }
@@ -46,14 +62,11 @@ class OpportunityController extends ApiController
 
         $data = $requestInput
             ->integer('measureId')->validate('required|exists:measures,id')->alias('measure_id')->next()
-            ->integer('contactId')->validate('required|exists:contacts,id')->alias('contact_id')->next()
-            ->integer('reactionId')->validate('exists:opportunity_reactions,id')->onEmpty(null)->alias('reaction_id')->next()
             ->integer('statusId')->validate('required|exists:opportunity_status,id')->alias('status_id')->next()
-            ->integer('registrationId')->validate('exists:registrations,id')->onEmpty(null)->alias('registration_id')->next()
-            ->integer('campaignId')->validate('exists:campaigns,id')->onEmpty(null)->alias('campaign_id')->next()
+            ->integer('intakeId')->validate('required|exists:intakes,id')->onEmpty(null)->alias('intake_id')->next()
             ->string('quotationText')->alias('quotation_text')->next()
-            ->date('desiredDate')->validate('date')->onEmpty(null)->alias('desired_date')->next()
-            ->integer('ownedById')->validate('exists:users,id')->onEmpty(null)->alias('owned_by_id')->next()
+            ->string('desiredDate')->validate('date')->onEmpty(null)->alias('desired_date')->next()
+            ->string('evaluationAgreedDate')->validate('date')->onEmpty(null)->alias('evaluation_agreed_date')->next()
             ->get();
 
         $opportunity = new Opportunity();
@@ -68,15 +81,10 @@ class OpportunityController extends ApiController
         $this->authorize('manage', Opportunity::class);
 
         $data = $requestInput
-            ->integer('measureId')->validate('required|exists:measures,id')->alias('measure_id')->next()
-            ->integer('contactId')->validate('required|exists:contacts,id')->alias('contact_id')->next()
-            ->integer('reactionId')->validate('exists:opportunity_reactions,id')->onEmpty(null)->alias('reaction_id')->next()
             ->integer('statusId')->validate('required|exists:opportunity_status,id')->alias('status_id')->next()
-            ->integer('registrationId')->validate('exists:registrations,id')->onEmpty(null)->alias('registration_id')->next()
-            ->integer('campaignId')->validate('exists:campaigns,id')->onEmpty(null)->alias('campaign_id')->next()
             ->string('quotationText')->alias('quotation_text')->next()
             ->string('desiredDate')->validate('date')->onEmpty(null)->alias('desired_date')->next()
-            ->integer('ownedById')->validate('exists:users,id')->onEmpty(null)->alias('owned_by_id')->next()
+            ->string('evaluationAgreedDate')->validate('date')->onEmpty(null)->alias('evaluation_agreed_date')->next()
             ->get();
 
         $opportunity->fill($data);
@@ -88,11 +96,6 @@ class OpportunityController extends ApiController
     public function destroy(Opportunity $opportunity)
     {
         $this->authorize('manage', Opportunity::class);
-
-        //First delete foreign key constrained OpportunityQuotations
-        foreach($opportunity->quotations as $quotation){
-            $quotation->delete();
-        }
 
         foreach($opportunity->tasks as $task){
             $task->delete();
@@ -124,5 +127,49 @@ class OpportunityController extends ApiController
         };
 
         return $chartData;
+    }
+
+    public function storeEvaluation(RequestInput $requestInput){
+        $this->authorize('manage', Opportunity::class);
+
+        $data = $requestInput
+            ->integer('opportunityId')->validate('required|exists:opportunities,id')->alias('opportunity_id')->next()
+            ->boolean('isRealised')->alias('is_realised')->next()
+            ->boolean('isStatisfied')->alias('is_statisfied')->next()
+            ->boolean('wouldRecommendOrganisation')->alias('would_recommend_organisation')->next()
+            ->string('note')->next()
+            ->get();
+
+        $opportunityEvaluation = new OpportunityEvaluation();
+        $opportunityEvaluation->fill($data);
+        $opportunityEvaluation->save();
+
+        return $this->show($opportunityEvaluation->opportunity);
+    }
+
+    public function updateEvaluation(RequestInput $requestInput, OpportunityEvaluation $opportunityEvaluation){
+        $this->authorize('manage', Opportunity::class);
+
+        $data = $requestInput
+            ->integer('opportunityId')->validate('required|exists:opportunities,id')->alias('opportunity_id')->next()
+            ->boolean('isRealised')->alias('is_realised')->next()
+            ->boolean('isStatisfied')->alias('is_statisfied')->next()
+            ->boolean('wouldRecommendOrganisation')->alias('would_recommend_organisation')->next()
+            ->string('note')->next()
+            ->get();
+
+        $opportunityEvaluation->fill($data);
+        $opportunityEvaluation->save();
+
+        return $this->show($opportunityEvaluation->opportunity);
+    }
+
+    public function getRelatedEmails($id, $folder)
+    {
+        $user = Auth::user();
+
+        $mailboxIds = $user->mailboxes()->pluck('mailbox_id');
+
+        return Email::whereIn('mailbox_id', $mailboxIds)->where('opportunity_id', $id)->where('folder', $folder)->get();
     }
 }

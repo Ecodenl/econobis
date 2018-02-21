@@ -44,11 +44,6 @@ class Measure extends Model
         return $this->hasMany(Opportunity::class);
     }
 
-    public function campaigns()
-    {
-        return $this->belongsToMany(Campaign::class);
-    }
-
     public function deliveredByOrganisations()
     {
         return $this->belongsToMany(Organisation::class, 'organisation_delivers_measure');

@@ -19,7 +19,7 @@ class CampaignFormEdit extends Component {
     constructor(props) {
         super(props);
 
-        const {id, name, number, description, startDate, endDate, status, measures, type} = props.campaign;
+        const {id, name, number, description, startDate, endDate, status, measureCategories, type} = props.campaign;
 
         this.state = {
             campaign: {
@@ -31,7 +31,7 @@ class CampaignFormEdit extends Component {
                 endDate,
                 statusId: status ? status.id : '',
                 typeId: type && type.id,
-                measureIds: measures && measures.map((measure) => measure.id).join(','),
+                measureCategoryIds: measureCategories && measureCategories.map((measureCategory) => measureCategory.id).join(','),
             },
             errors: {
                 name: false,
@@ -180,9 +180,9 @@ class CampaignFormEdit extends Component {
                     />
                     <InputMultiSelect
                         label="Aangeboden maatregelen"
-                        name="measureIds"
-                        value={measureIds}
-                        options={this.props.measures}
+                        name="measureCategoryIds"
+                        value={measureCategoryIds}
+                        options={this.props.measureCategories}
                         onChangeAction={this.handleMeasureIds}
                     />
                 </div>
@@ -224,7 +224,7 @@ const mapStateToProps = (state) => {
         campaign: state.campaignDetails,
         status: state.systemData.campaignStatuses,
         types: state.systemData.campaignTypes,
-        measures: state.systemData.measures,
+        measureCategories: state.systemData.measureCategories,
     }
 };
 

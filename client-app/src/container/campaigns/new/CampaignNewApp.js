@@ -23,7 +23,7 @@ class CampaignNewApp extends Component {
                 endDate: '',
                 statusId: '',
                 typeId: '',
-                measureIds: props.params.measureId || '',
+                measureCategoryIds: '',
             },
             errors: {
                 name: false,

@@ -5,6 +5,7 @@ namespace App\Eco\Campaign;
 use App\Eco\Contact\Contact;
 use App\Eco\Document\Document;
 use App\Eco\Measure\Measure;
+use App\Eco\Measure\MeasureCategory;
 use App\Eco\Opportunity\Opportunity;
 use App\Eco\Organisation\Organisation;
 use App\Eco\Intake\Intake;
@@ -37,9 +38,9 @@ class Campaign extends Model
         return $this->hasManyThrough(Opportunity::class, Intake::class);
     }
     
-    public function measures()
+    public function measureCategories()
     {
-        return $this->belongsToMany(Measure::class);
+        return $this->belongsToMany(MeasureCategory::class);
     }
 
     public function status()

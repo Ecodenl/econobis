@@ -37,8 +37,6 @@ const TaskNewForm = props => {
                     options={props.taskTypes}
                     value={typeId}
                     onChangeAction={props.handleInputChange}
-                    required={"required"}
-                    error={props.errors.typeId}
                 />
             </div>
 

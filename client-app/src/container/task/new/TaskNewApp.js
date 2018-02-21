@@ -48,7 +48,6 @@ class TaskNewApp extends Component {
             },
             errors: {
                 note: false,
-                typeId: false,
                 responsible: false,
             },
             showExtraConnections: false,
@@ -228,11 +227,6 @@ class TaskNewApp extends Component {
 
         if(validator.isEmpty(task.note)){
             errors.note = true;
-            hasErrors = true;
-        };
-
-        if(validator.isEmpty(task.typeId)){
-            errors.typeId = true;
             hasErrors = true;
         };
 

@@ -57,7 +57,7 @@ class TaskDetailsFormGeneralEdit extends Component {
             task: {
                 id,
                 note,
-                typeId,
+                typeId: typeId ? typeId : '',
                 contactId: contactId ? contactId : '',
                 campaignId: campaignId ? campaignId: '',
                 intakeId: intakeId ? intakeId : '',
@@ -76,7 +76,6 @@ class TaskDetailsFormGeneralEdit extends Component {
             },
             errors: {
                 note: false,
-                typeId: false,
                 responsible: false,
             },
         };
@@ -168,11 +167,6 @@ class TaskDetailsFormGeneralEdit extends Component {
             hasErrors = true;
         };
 
-        if(validator.isEmpty(task.typeId.toString())){
-            errors.typeId = true;
-            hasErrors = true;
-        };
-
         if(validator.isEmpty(task.responsible.toString())){
             errors.responsible = true;
             hasErrors = true;
@@ -223,8 +217,6 @@ class TaskDetailsFormGeneralEdit extends Component {
                         options={this.props.taskTypes}
                         value={typeId}
                         onChangeAction={this.handleInputChange}
-                        required={"required"}
-                        error={this.state.errors.typeId}
                     />
                 </div>
 

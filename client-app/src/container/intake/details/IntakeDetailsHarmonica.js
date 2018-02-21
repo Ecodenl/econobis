@@ -2,10 +2,10 @@ import React, {Component} from 'react';
 import { hashHistory } from 'react-router';
 import { connect } from 'react-redux';
 
-import TaskHarmonica from "./TaskHarmonica";
-import NoteHarmonica from "./NoteHarmonica";
-import DocumentHarmonica from "./DocumentHarmonica";
-import EmailHarmonica from "./EmailHarmonica";
+import TaskHarmonica from "./harmonica/TaskHarmonica";
+import NoteHarmonica from "./harmonica/NoteHarmonica";
+import DocumentHarmonica from "./harmonica/DocumentHarmonica";
+import EmailHarmonica from "./harmonica/EmailHarmonica";
 
 class IntakeDetailsHarmonica extends Component {
     constructor(props){
@@ -74,7 +74,7 @@ class IntakeDetailsHarmonica extends Component {
                     toggleShowList={() => this.toggleShowList('emails')}
                     showEmailsList={this.state.toggleShowList.emails}
                     newEmail={this.newEmail}
-                    emailCount={this.props.intakeDetails.emailCount}
+                    emailCount={this.props.intakeDetails.emailSentCount}
                 />
             </div>
         )

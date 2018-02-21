@@ -16,7 +16,7 @@ class AddOpportunityIdToEmail extends Migration
         Schema::table('emails', function (Blueprint $table) {
             $table->unsignedInteger('opportunity_id')->nullable()->default(null);
             $table->foreign('opportunity_id')
-                ->references('id')->on('opportunity')
+                ->references('id')->on('opportunities')
                 ->onDelete('restrict');
         });
     }

@@ -8,6 +8,7 @@
 
 namespace App\Http\Controllers\Api\Opportunity;
 
+use App\Eco\Email\Email;
 use App\Eco\Opportunity\Opportunity;
 use App\Eco\Opportunity\OpportunityEvaluation;
 use App\Eco\Opportunity\OpportunityStatus;
@@ -17,6 +18,7 @@ use App\Http\RequestQueries\Opportunity\Grid\RequestQuery;
 use App\Http\Resources\Opportunity\FullOpportunity;
 use App\Http\Resources\Opportunity\GridOpportunity;
 use App\Http\Resources\Opportunity\OpportunityPeek;
+use Illuminate\Support\Facades\Auth;
 
 class OpportunityController extends ApiController
 {
@@ -36,7 +38,20 @@ class OpportunityController extends ApiController
 
     public function show(Opportunity $opportunity)
     {
-        $opportunity->load(['measure.measureCategory', 'quotationRequests.organisation', 'quotationRequests.createdBy', 'quotationRequests.status', 'status', 'createdBy', 'updatedBy', 'intake.contact', 'tasks', 'opportunityEvaluation']);
+        $opportunity->load(['measure.measureCategory',
+            'quotationRequests.organisation',
+            'quotationRequests.createdBy',
+            'quotationRequests.status',
+            'status',
+            'createdBy',
+            'updatedBy',
+            'intake.contact',
+            'tasks',
+            'notes',
+            'documents',
+            'opportunityEvaluation']);
+
+        $opportunity->relatedEmailsSent = $this->getRelatedEmails($opportunity->id, 'sent');
 
         return FullOpportunity::make($opportunity);
     }
@@ -147,5 +162,14 @@ class OpportunityController extends ApiController
         $opportunityEvaluation->save();
 
         return $this->show($opportunityEvaluation->opportunity);
+    }
+
+    public function getRelatedEmails($id, $folder)
+    {
+        $user = Auth::user();
+
+        $mailboxIds = $user->mailboxes()->pluck('mailbox_id');
+
+        return Email::whereIn('mailbox_id', $mailboxIds)->where('opportunity_id', $id)->where('folder', $folder)->get();
     }
 }

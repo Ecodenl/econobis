@@ -3,8 +3,9 @@ import { hashHistory } from 'react-router';
 import { connect } from 'react-redux';
 
 import TaskHarmonica from './harmonica/TaskHarmonica';
-import RelatedOpportunityHarmonica from './harmonica/RelatedOpportunityHarmonica';
+import NoteHarmonica from './harmonica/NoteHarmonica';
 import DocumentHarmonica from './harmonica/DocumentHarmonica';
+import EmailSentHarmonica from './harmonica/EmailSentHarmonica';
 
 class OpportunityDetailsHarmonica extends Component {
     constructor(props){
@@ -13,15 +14,16 @@ class OpportunityDetailsHarmonica extends Component {
         this.state = {
             toggleShowList: {
                 tasks: false,
-                relatedOpportunities: false,
+                notes: false,
                 documents: false,
+                emails: false,
             },
         };
 
         this.toggleShowList = this.toggleShowList.bind(this);
         this.newTask = this.newTask.bind(this);
-        this.newRelatedOpportunity = this.newRelatedOpportunity.bind(this);
         this.newDocument = this.newDocument.bind(this);
+        this.newEmail = this.newEmail.bind(this);
     };
 
     toggleShowList(name) {
@@ -38,12 +40,12 @@ class OpportunityDetailsHarmonica extends Component {
         hashHistory.push(`/taak/nieuw/kans/${this.props.id}`);
     };
 
-    newRelatedOpportunity() {
-        hashHistory.push(`/kans/nieuw/contact/${this.props.opportunityDetails.contact.id}`);
-    };
-
     newDocument(type) {
         hashHistory.push(`/document/nieuw/${type}/kans/${this.props.id}`);
+    };
+
+    newEmail() {
+        hashHistory.push(`/email/nieuw`);
     };
 
     render(){
@@ -56,11 +58,11 @@ class OpportunityDetailsHarmonica extends Component {
                     newTask={this.newTask}
                 />
 
-                <RelatedOpportunityHarmonica
-                    toggleShowList={() => this.toggleShowList('relatedOpportunities')}
-                    showOpportunitiesList={this.state.toggleShowList.relatedOpportunities}
-                    amountRelatedOpportunities={this.props.opportunityDetails.amountRelatedOpportunities}
-                    newRelatedOpportunity={this.newRelatedOpportunity}
+                <NoteHarmonica
+                    toggleShowList={() => this.toggleShowList('notes')}
+                    showNotesList={this.state.toggleShowList.notes}
+                    noteCount={this.props.opportunityDetails.noteCount}
+                    newTask={this.newTask}
                 />
 
                 <DocumentHarmonica
@@ -68,6 +70,13 @@ class OpportunityDetailsHarmonica extends Component {
                     showDocumentsList={this.state.toggleShowList.documents}
                     newDocument={this.newDocument}
                     documentCount={this.props.opportunityDetails.documentCount}
+                />
+
+                <EmailSentHarmonica
+                    toggleShowList={() => this.toggleShowList('emailsSent')}
+                    showEmailsSentList={this.state.toggleShowList.emailsSent}
+                    newEmail={this.newEmail}
+                    emailSentCount={this.props.opportunityDetails.emailSentCount}
                 />
 
             </div>

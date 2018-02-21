@@ -3,23 +3,23 @@ import {connect} from 'react-redux';
 
 import Panel from "../../../../components/panel/Panel";
 import PanelBody from "../../../../components/panel/PanelBody";
-import RelatedOpportunitiesList from './RelatedOpportunitiesList';
+import NotesList from './NotesList';
 
-const RelatedOpportunityHarmonica = ({toggleShowList, showOpportunitiesList, newRelatedOpportunity, amountRelatedOpportunities, permissions}) => {
+const NoteHarmonica = ({toggleShowList, showNotesList, newTask, noteCount, permissions}) => {
     return (
         <Panel className={"harmonica-button"}>
             <PanelBody>
                 <div className="col-sm-10" onClick={toggleShowList} role="button">
-                    <span className="">ANDERE KANSEN <span className="badge">{ amountRelatedOpportunities }</span></span>
+                    <span className="">NOTITIES <span className="badge">{ noteCount }</span></span>
                 </div>
                 <div className={"col-sm-2"}>
                     {permissions.manageTask &&
-                    <a role="button" className="pull-right" onClick={newRelatedOpportunity}><span
+                    <a role="button" className="pull-right" onClick={newTask}><span
                         className="glyphicon glyphicon-plus glyphicon-white"/></a>
                     }
                 </div>
                 <div className="col-sm-12">
-                    { showOpportunitiesList && <RelatedOpportunitiesList /> }
+                    { showNotesList && <NotesList /> }
                 </div>
             </PanelBody>
         </Panel>
@@ -32,4 +32,4 @@ const mapStateToProps = (state) => {
     };
 };
 
-export default connect(mapStateToProps, null)(RelatedOpportunityHarmonica);
+export default connect(mapStateToProps, null)(NoteHarmonica);

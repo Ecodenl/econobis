@@ -39,8 +39,12 @@ class FullOpportunity extends Resource
             'updatedAt' => $this->updated_at,
             'taskCount' => $this->tasks()->count(),
             'relatedTasks' => GridTask::collection($this->whenLoaded('tasks')),
+            'noteCount' => $this->notes()->count(),
+            'relatedNotes' => GridTask::collection($this->whenLoaded('notes')),
             'documentCount' => $this->documents()->count(),
             'relatedDocuments' => $this->documents()->get(),
+            'emailSentCount' => $this->relatedEmailsSent ? $this->relatedEmailsSent->count() : 0,
+            'relatedEmailsSent' => $this->relatedEmailsSent,
         ];
     }
 }

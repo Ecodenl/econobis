@@ -50,8 +50,8 @@ class FullIntake extends Resource
                 'relatedNotes' => GridTask::collection($this->whenLoaded('notes')),
                 'documentCount' => $this->documents()->count(),
                 'relatedDocuments' => FullDocument::collection($this->whenLoaded('documents')),
-                'emailCount' => $this->emails()->count(),
-                'relatedEmails' => $this->emails()->get(),
+                'emailSentCount' => $this->relatedEmailsSent ? $this->relatedEmailsSent->count() : 0,
+                'relatedEmailsSent' => $this->relatedEmailsSent,
             ];
     }
 }

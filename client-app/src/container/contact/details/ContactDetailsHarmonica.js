@@ -116,10 +116,6 @@ class ContactDetailsHarmonica extends Component {
         });
     };
 
-    newOpportunity = () => {
-        hashHistory.push(`/kans/nieuw/contact/${this.props.id}`);
-    };
-
     newTask = () => {
         hashHistory.push(`/taak/nieuw/contact/${this.props.contactDetails.id}`);
     };
@@ -159,7 +155,6 @@ class ContactDetailsHarmonica extends Component {
                     toggleShowList={() => this.toggleShowList('opportunities')}
                     showOpportunitiesList={this.state.toggleShowList.opportunities}
                     opportunityCount={this.props.contactDetails.opportunityCount}
-                    newOpportunity={this.newOpportunity}
                 />
 
                 <TaskHarmonica

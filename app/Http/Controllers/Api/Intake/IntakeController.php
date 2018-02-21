@@ -9,6 +9,7 @@
 namespace App\Http\Controllers\Api\Intake;
 
 
+use App\Eco\Email\Email;
 use App\Eco\Measure\Measure;
 use App\Eco\Intake\Intake;
 use App\Eco\Contact\Contact;
@@ -20,6 +21,7 @@ use App\Http\Resources\Intake\GridIntake;
 use App\Http\Resources\Intake\IntakePeek;
 use App\Http\Resources\Task\SidebarTask;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class IntakeController extends ApiController
 {
@@ -67,6 +69,8 @@ class IntakeController extends ApiController
             'createdBy',
             'updatedBy',
         ]);
+
+        $intake->relatedEmailsSent = $this->getRelatedEmails($intake->id, 'sent');
 
         return FullIntake::make($intake);
     }
@@ -234,11 +238,6 @@ class IntakeController extends ApiController
         return SidebarDocument::collection($intake->documents);
     }
 
-    public function emails(Intake $intake)
-    {
-        return SidebarEmail::collection($intake->emails);
-    }
-
     public function peek()
     {
         return IntakePeek::collection(Intake::orderBy('id')->with('contact')->get());
@@ -246,5 +245,14 @@ class IntakeController extends ApiController
 
     public function getAmountOfActiveIntakes(){
         return Intake::count();
+    }
+
+    public function getRelatedEmails($id, $folder)
+    {
+        $user = Auth::user();
+
+        $mailboxIds = $user->mailboxes()->pluck('mailbox_id');
+
+        return Email::whereIn('mailbox_id', $mailboxIds)->where('intake_id', $id)->where('folder', $folder)->get();
     }
 }

@@ -9,6 +9,7 @@ import IntakeDetailsAPI from '../../../api/intake/IntakeDetailsAPI';
 import MeasureAPI from '../../../api/measure/MeasureAPI';
 import PanelBody from "../../../components/panel/PanelBody";
 import Panel from "../../../components/panel/Panel";
+import validator from "validator";
 
 
 class OppportunitiesNewApp extends Component {
@@ -26,6 +27,9 @@ class OppportunitiesNewApp extends Component {
                 evaluationAgreedDate: '',
                 desiredDate: '',
             },
+            errors: {
+                statusId: false,
+            }
         };
 
         this.handleInputChangeDate = this.handleInputChangeDate.bind(this);
@@ -84,7 +88,18 @@ class OppportunitiesNewApp extends Component {
 
         const {opportunity} = this.state;
 
+        // Validation
+        let errors = {};
+        let hasErrors = false;
 
+        if(validator.isEmpty(opportunity.statusId)){
+            errors.statusId = true;
+            hasErrors = true;
+        };
+
+        this.setState({ ...this.state, errors: errors })
+
+        !hasErrors &&
         OpportunityDetailsAPI.storeOpportunity(opportunity).then(payload => {
             hashHistory.push('/kans/' + payload.id);
         });
@@ -111,6 +126,7 @@ class OppportunitiesNewApp extends Component {
                                     measure={this.state.measure}
                                     opportunity={this.state.opportunity}
                                     handleSubmit={this.handleSubmit}
+                                    errors={this.state.errors}
                                 />
                             </PanelBody>
                         </Panel>

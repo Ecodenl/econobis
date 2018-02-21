@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { fetchIntakeDetails } from '../../../actions/intake/IntakeDetailsActions';
 import IntakeDetailsToolbar from './IntakeDetailsToolbar';
 import IntakeDetailsForm from './IntakeDetailsForm';
-import IntakeDetailsHarmonica from './harmonica/IntakeDetailsHarmonica';
+import IntakeDetailsHarmonica from './IntakeDetailsHarmonica';
 
 import PanelBody from "../../../components/panel/PanelBody";
 import Panel from "../../../components/panel/Panel";

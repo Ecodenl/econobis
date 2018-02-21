@@ -4,6 +4,8 @@ namespace App\Http\Resources\Contact;
 
 use App\Eco\ContactGroup\ContactGroup;
 use App\Http\Resources\Document\FullDocument;
+use App\Http\Resources\Opportunity\FullOpportunity;
+use App\Http\Resources\Opportunity\GridOpportunity;
 use App\Http\Resources\Organisation\FullOrganisation;
 use App\Http\Resources\Address\FullAddress;
 use App\Http\Resources\ContactNote\FullContactNote;
@@ -66,6 +68,8 @@ class FullContact extends Resource
             'relatedEmailsSent' => $this->relatedEmailsSent,
             'documentCount' => $this->documents()->count(),
             'relatedDocuments' => FullDocument::collection($this->whenLoaded('documents')),
+            'opportunityCount' => $this->opportunities()->count(),
+            'relatedOpportunities' => $this->opportunities()->get(),
         ];
     }
 }

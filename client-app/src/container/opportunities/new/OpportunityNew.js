@@ -57,6 +57,9 @@ const OpportunityNew = props => {
                     options={props.status}
                     value={statusId}
                     onChangeAction={props.handleInputChange}
+                    required={"required"}
+                    error={props.errors.statusId}
+
                 />
             </div>
 

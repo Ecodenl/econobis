@@ -39,6 +39,7 @@ class MeasureController extends ApiController
             'addresses.housingFile',
             'addresses.contact',
             'createdBy',
+            'updatedBy',
             'addresses',
             'measureCategory',
             'documents',

@@ -21,16 +21,16 @@ class EmailFormEdit extends Component {
     constructor(props) {
         super(props);
 
-        const {id, contactId, intakeId, taskId, quotationRequestId, measureId, status} = props.email;
+        const {id, contact, intake, task, quotationRequest, measure, status} = props.email;
 
         this.state = {
             email: {
                 id,
-                contactId: contactId ? contactId : '',
-                intakeId: intakeId ? intakeId : '',
-                taskId: taskId ? taskId : '',
-                quotationRequestId: quotationRequestId ? quotationRequestId : '',
-                measureId: measureId ? measureId : '',
+                contactId: contact ? contact.id : '',
+                intakeId: intake ? intake.id : '',
+                taskId: task ? task.id : '',
+                quotationRequestId: quotationRequest ? quotationRequest.id : '',
+                measureId: measure ? measure.id : '',
                 statusId: status ? status.id : '',
             },
             contacts: [],

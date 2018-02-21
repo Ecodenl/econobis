@@ -44,10 +44,6 @@ class QuotationRequest extends Model
         return $this->hasMany(Document::class);
     }
 
-    public function emails(){
-        return $this->hasMany(Email::class);
-    }
-
     public function createdBy()
     {
         return $this->belongsTo(User::class);

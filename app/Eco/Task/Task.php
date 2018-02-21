@@ -133,14 +133,6 @@ class Task extends Model
         return $this->hasMany(Document::class);
     }
 
-    public function emailsIn(){
-        return $this->hasMany(Email::class)->where('folder', '=', 'inbox');
-    }
-
-    public function emailsOut(){
-        return $this->hasMany(Email::class)->where('folder', '=', 'sent');
-    }
-
     // Tasks can relate to another task. Only an unfinished task is a task
     public function tasks()
     {

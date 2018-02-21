@@ -41,6 +41,10 @@ class FullQuotationRequest extends Resource
                 'updatedBy' => FullUser::make($this->whenLoaded('updatedBy')),
                 'createdAt' => $this->created_at,
                 'updatedAt' => $this->updated_at,
+                'emailSentCount' => $this->relatedEmailsSent ? $this->relatedEmailsSent->count() : 0,
+                'relatedEmailsSent' => $this->relatedEmailsSent,
+                'documentCount' => $this->documents()->count(),
+                'relatedDocuments' => FullDocument::collection($this->whenLoaded('documents')),
             ];
     }
 }

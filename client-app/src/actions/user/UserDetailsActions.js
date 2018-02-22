@@ -1,14 +1,15 @@
 export const fetchUserDetails = (payload) => {
     return {
         type: 'FETCH_USER_DETAILS',
-        payload
+        payload,
     }
 };
 
-export const updateUser = (userDetails) => {
+export const updateUser = (user, switchToView) => {
     return {
         type: 'UPDATE_USER',
-        userDetails,
+        user,
+        switchToView,
     };
 };
 

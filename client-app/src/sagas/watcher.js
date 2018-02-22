@@ -40,8 +40,8 @@ import { fetchTaskDetailsSaga, deleteTaskSaga } from './task/TaskDetailsSaga';
 import { fetchTasksSaga, setTaskFinishedSaga } from './task/TasksSaga';
 import { fetchNotesSaga } from './task/NotesSaga';
 import { fetchTeamsSaga, deleteTeamSaga } from './team/TeamsSaga';
-import { fetchTeamDetailsSaga, deleteTeamUserSaga } from './team/TeamDetailsSaga';
-import { fetchUserDetailsSaga } from './user/UserDetailsSaga';
+import { fetchTeamDetailsSaga, deleteTeamUserSaga, updateTeamDetailsSaga } from './team/TeamDetailsSaga';
+import { fetchUserDetailsSaga, updateUserDetailsSaga } from './user/UserDetailsSaga';
 import { fetchUserSaga } from './user/UsersSaga';
 import { meDetailsSaga } from './general/MeDetailsSaga';
 import { systemDataSaga } from './general/SystemDataSaga';
@@ -52,6 +52,7 @@ export default function* watchSagas() {
     yield takeLatest('FETCH_ME_DETAILS', meDetailsSaga);
     yield takeLatest('FETCH_USERS', fetchUserSaga);
     yield takeLatest('FETCH_USER_DETAILS', fetchUserDetailsSaga);
+    yield takeLatest('UPDATE_USER', updateUserDetailsSaga);
     // Audit trail
     yield takeLatest('FETCH_AUDIT_TRAIL', fetchAuditTrailSaga);
     // Campaign
@@ -121,4 +122,5 @@ export default function* watchSagas() {
     yield takeLatest('FETCH_TEAM_DETAILS', fetchTeamDetailsSaga);
     yield takeLatest('DELETE_TEAM', deleteTeamSaga);
     yield takeLatest('DELETE_TEAM_USER', deleteTeamUserSaga);
+    yield takeLatest('UPDATE_TEAM', updateTeamDetailsSaga);
 }

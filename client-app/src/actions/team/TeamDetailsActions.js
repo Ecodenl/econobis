@@ -5,10 +5,11 @@ export const fetchTeamDetails = (id) => {
     }
 };
 
-export const updateTeam = (team) => {
+export const updateTeam = (team, switchToView) => {
     return {
-        type: 'UPDATE_TEAM_DETAILS',
+        type: 'UPDATE_TEAM',
         team,
+        switchToView,
     }
 };
 

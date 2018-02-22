@@ -21,7 +21,7 @@ const ContactDetailsFormOccupationsView = props => {
                     { endDate ? moment(endDate).format('DD-MM-Y') : '' }
                 </div>
                 <div className="col-sm-2">
-                    { primary ? 'Ja' : 'Nee' }
+                    { primary ? <span className="h6 pull-right">Primair</span> : '' }
                 </div>
             </div>
             <div className="col-sm-1">

@@ -49,7 +49,7 @@ class ContactDetailFormPersonItem extends Component {
                     { endDate ? moment(endDate.date).format('DD-MM-Y') : '' }
                 </div>
                 <div className="col-sm-2">
-                    { primary ? 'Ja' : 'Nee' }
+                    { primary ? <span className="h6 pull-right">Primair</span> : '' }
                 </div>
                 <div className="col-sm-1">
                     {(this.state.showActionButtons ? <a role="button" onClick={this.openPerson}><span className="glyphicon glyphicon-search mybtn-success" /> </a> : '')}

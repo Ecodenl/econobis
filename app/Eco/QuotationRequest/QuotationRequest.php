@@ -10,9 +10,11 @@ use App\Eco\Opportunity\Opportunity;
 use App\Eco\Organisation\Organisation;
 use App\Eco\User\User;
 use Illuminate\Database\Eloquent\Model;
+use Venturecraft\Revisionable\RevisionableTrait;
 
 class QuotationRequest extends Model
 {
+    use RevisionableTrait;
 
     protected $table = 'quotation_requests';
 

@@ -27,7 +27,7 @@ class Sort extends RequestSort
         'fullName' => 'contacts.full_name',
         'address' => 'addresses.street',
         'statusId' => 'intakes.intake_status_id',
-        'measureRequestedId' => 'intake_measure_requested.measure_id',
+        'measureRequestedId' => 'intake_measure_requested.measure_category_id',
     ];
 
     protected $joins = [

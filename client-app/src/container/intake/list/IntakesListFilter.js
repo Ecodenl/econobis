@@ -61,8 +61,8 @@ const IntakesListFilter = props => {
                 <select className="form-control input-sm" value={ props.filters.measureRequested.data } onChange={onMeasureRequestedChange}>
                     <option/>
                     {
-                        props.measures.map((measure) => {
-                            return <option key={measure.id } value={ measure.id }>{ measure.name }</option>
+                        props.measureCategories.map((measureCategory) => {
+                            return <option key={measureCategory.id } value={ measureCategory.id }>{ measureCategory.name }</option>
                         })
                     }
                 </select>
@@ -86,7 +86,7 @@ const IntakesListFilter = props => {
 const mapStateToProps = (state) => ({
     filters: state.intakes.filters,
     intakeStatuses: state.systemData.intakeStatuses,
-    measures: state.systemData.measures,
+    measureCategories: state.systemData.measureCategories,
 });
 
 const mapDispatchToProps = (dispatch) => {

@@ -70,7 +70,7 @@ class IntakeMeasuresRequestedNew extends Component {
                                 <div className={"col-sm-8"}>
                                     <select className={`form-control input-sm`} name={"measureId"} value={measureId} onChange={this.handleInputChange}>
                                         <option value=''></option>
-                                        { this.props.measures.map((option) => {
+                                        { this.props.measureCategories.map((option) => {
                                             return <option key={ option.id } value={ option.id }>{ option['name'] }</option>
                                         }) }
                                     </select>
@@ -91,7 +91,7 @@ class IntakeMeasuresRequestedNew extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        measures: state.systemData.measures,
+        measureCategories: state.systemData.measureCategories,
         energyLabels: state.systemData.energyLabels,
         intakeId: state.intakeDetails.id,
     };

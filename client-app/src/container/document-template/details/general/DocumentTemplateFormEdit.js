@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import {Link} from 'react-router';
 
 import ButtonText from '../../../../components/button/ButtonText';
 import PanelFooter from "../../../../components/panel/PanelFooter";
@@ -13,8 +12,8 @@ import moment from "moment/moment";
 import InputText from "../../../../components/form/InputText";
 import ViewText from "../../../../components/form/ViewText";
 import InputSelect from "../../../../components/form/InputSelect";
-import InputCheckbox from "../../../../components/form/InputCheckbox";
 import InputMultiSelect from "../../../../components/form/InputMultiSelect";
+import InputToggle from "../../../../components/form/InputToggle";
 
 class DocumentTemplateFormEdit extends Component {
     constructor(props) {
@@ -242,10 +241,10 @@ class DocumentTemplateFormEdit extends Component {
                 }
 
                 <div className="row">
-                    <InputCheckbox
+                    <InputToggle
                         label={"Actief"}
-                        name="active"
-                        checked={active}
+                        name={"active"}
+                        value={active}
                         onChangeAction={this.handleInputChange}
                         id={"active"}
                     />

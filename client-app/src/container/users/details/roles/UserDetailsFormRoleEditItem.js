@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import UserAPI from "../../../../api/user/UserAPI";
 
 import { updateRole } from '../../../../actions/user/UserDetailsActions';
+import InputToggle from "../../../../components/form/InputToggle";
 
 class UserDetailsFormRoleListItem extends Component {
     constructor(props) {
@@ -10,7 +11,7 @@ class UserDetailsFormRoleListItem extends Component {
 
         this.state = {
             ...props.role,
-        }
+        };
     }
 
     handleInputChange = event => {
@@ -43,18 +44,13 @@ class UserDetailsFormRoleListItem extends Component {
         const { id, name, hasRole } = this.state;
 
         return (
-            <div className="col-sm-6 border-bottom">
-                <label className="col-sm-6">{name}</label>
-                <div className="col-sm-6">
-                        <input
-                            name={name}
-                            type="checkbox"
-                            id={id}
-                            onChange={this.handleInputChange}
-                            checked={hasRole}
-                        />
-                </div>
-            </div>
+                <InputToggle
+                    label={name}
+                    id={id}
+                    name={"name"}
+                    value={hasRole}
+                    onChangeAction={this.handleInputChange}
+                />
         );
     }
 }

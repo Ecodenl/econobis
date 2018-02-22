@@ -6,11 +6,11 @@ var ibantools = require('ibantools');
 import * as ContactDetailsActions from '../../../../actions/contact/ContactDetailsActions';
 import PersonAPI from '../../../../api/contact/PersonAPI';
 import InputText from '../../../../components/form/InputText';
-import InputCheckbox from '../../../../components/form/InputCheckbox';
 import InputDate from '../../../../components/form/InputDate';
 import ButtonText from '../../../../components/button/ButtonText';
 import PanelFooter from "../../../../components/panel/PanelFooter";
 import validator from "validator";
+import InputToggle from "../../../../components/form/InputToggle";
 
 class ContactDetailsFormOtherEdit extends Component {
     constructor(props) {
@@ -24,7 +24,7 @@ class ContactDetailsFormOtherEdit extends Component {
                 firstNamePartner: person.firstNamePartner,
                 lastNamePartner: person.lastNamePartner,
                 dateOfBirthPartner: person.dateOfBirthPartner ? moment(person.dateOfBirthPartner).format('Y-MM-DD') : '',
-                iban: iban,
+                iban: iban ? iban : '',
                 liable: liable,
                 liabilityAmount: liabilityAmount,
             },
@@ -114,10 +114,10 @@ class ContactDetailsFormOtherEdit extends Component {
                         value={lastNamePartner}
                         onChangeAction={this.handleInputChange}
                     />
-                    <InputCheckbox
+                    <InputToggle
                         label={"Aansprakelijkheid"}
                         name={"liable"}
-                        checked={liable}
+                        value={liable}
                         onChangeAction={this.handleInputChange}
                     />
                 </div>

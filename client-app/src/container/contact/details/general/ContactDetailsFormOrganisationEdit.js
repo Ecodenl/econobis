@@ -7,11 +7,11 @@ import { updateOrganisation } from '../../../../actions/contact/ContactDetailsAc
 import OrganisationAPI from '../../../../api/contact/OrganisationAPI';
 import InputText from '../../../../components/form/InputText';
 import InputSelect from '../../../../components/form/InputSelect';
-import InputCheckbox from '../../../../components/form/InputCheckbox';
 import InputDate from '../../../../components/form/InputDate';
 import ButtonText from '../../../../components/button/ButtonText';
 import PanelFooter from "../../../../components/panel/PanelFooter";
 import * as ibantools from "ibantools";
+import InputToggle from "../../../../components/form/InputToggle";
 
 class ContactDetailsFormOrganisationEdit extends Component {
     constructor(props) {
@@ -226,10 +226,10 @@ class ContactDetailsFormOrganisationEdit extends Component {
                 </div>
 
                 <div className="row">
-                    <InputCheckbox
+                    <InputToggle
                         label={"Nieuwsbrief"}
                         name={"newsletter"}
-                        checked={newsletter}
+                        value={newsletter}
                         onChangeAction={this.handleInputChange}
                     />
                     <InputText

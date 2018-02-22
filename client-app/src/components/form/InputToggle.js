@@ -10,6 +10,7 @@ const InputToggle = props => {
             <div><label htmlFor={ id } className={`col-sm-6 ${required}`}>{ label }</label></div>
             <div className={`${size}`}>
                 <Toggle
+                    id={id}
                     defaultChecked={value}
                     name={name}
                     value={value.toString()}

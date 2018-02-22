@@ -120,6 +120,7 @@ const Routes = () => {
                 <Route path="emails/:folder" component={EmailsInListApp} />
                 <Route path="email/nieuw" component={EmailNewApp} />
                 <Route path="email/nieuw/groep/:groupId" component={EmailNewApp} />
+                <Route path="email/nieuw/contact/:contactId" component={EmailNewApp} />
                 <Route path="email/:id" component={EmailDetailsApp} />
                 <Route path="email/:id/:type" component={EmailAnswerApp} />
                 /* Email templates */

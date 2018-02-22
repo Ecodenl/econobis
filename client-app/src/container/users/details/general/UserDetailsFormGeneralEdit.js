@@ -1,14 +1,13 @@
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
-import { hashHistory } from 'react-router';
 import validator from 'validator';
 
 import { updateUser } from '../../../../actions/user/UserDetailsActions';
 import InputText from '../../../../components/form/InputText';
 import InputSelect from '../../../../components/form/InputSelect';
-import InputCheckbox from '../../../../components/form/InputCheckbox';
 import ButtonText from '../../../../components/button/ButtonText';
 import PanelFooter from "../../../../components/panel/PanelFooter";
+import InputToggle from "../../../../components/form/InputToggle";
 
 class UserDetailsFormGeneralEdit extends Component {
     constructor(props) {
@@ -152,10 +151,10 @@ class UserDetailsFormGeneralEdit extends Component {
                 </div>
 
                 <div className="row">
-                    <InputCheckbox
+                    <InputToggle
                         label={"Actief"}
                         name={"active"}
-                        checked={active}
+                        value={active}
                         onChangeAction={this.handleInputChange}
                     />
                 </div>

@@ -40,6 +40,7 @@ class PersonController extends ApiController
         ]);
 
         $personData = $request->validate([
+            'initials' => '',
             'firstName' => '',
             'lastName' => '',
             'lastNamePrefixId' => 'exists:last_name_prefixes,id',
@@ -103,6 +104,7 @@ class PersonController extends ApiController
         ]);
 
         $personData = $request->validate([
+            'initials' => '',
             'firstName' => '',
             'lastName' => '',
             'lastNamePrefixId' => 'exists:last_name_prefixes,id',

@@ -4,9 +4,9 @@ import ButtonText from '../../../components/button/ButtonText';
 import PanelFooter from "../../../components/panel/PanelFooter";
 import InputTinyMCE from "../../../components/form/InputTinyMCE";
 import InputSelect from "../../../components/form/InputSelect";
-import InputCheckbox from "../../../components/form/InputCheckbox";
 import InputMultiSelect from "../../../components/form/InputMultiSelect";
 import InputText from "../../../components/form/InputText";
+import InputToggle from "../../../components/form/InputToggle";
 
 const DocumentTemplateNew = props => {
     const {name, documentGroupId, documentTemplateTypeId, roleIds, characteristic, htmlBody, baseTemplateId, headerTemplateId, footerTemplateId, active} = props.documentTemplate;
@@ -112,11 +112,11 @@ const DocumentTemplateNew = props => {
             }
 
             <div className="row">
-                <InputCheckbox
+                <InputToggle
                     label={"Actief"}
-                    name="active"
-                    checked={active}
-                    onChangeAction={props.handleInputChange}
+                    name={"active"}
+                    value={active}
+                    onChangeAction={this.handleInputChange}
                     id={"active"}
                 />
             </div>

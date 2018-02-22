@@ -4,9 +4,9 @@ import { connect } from 'react-redux';
 import InputText from '../../../../components/form/InputText';
 import ButtonText from '../../../../components/button/ButtonText';
 import InputSelect from "../../../../components/form/InputSelect";
-import InputCheckbox from "../../../../components/form/InputCheckbox";
 import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
+import InputToggle from "../../../../components/form/InputToggle";
 
 const ContactDetailsFormPhoneEdit = props => {
     const { number, typeId, primary } = props.phoneNumber;
@@ -41,11 +41,11 @@ const ContactDetailsFormPhoneEdit = props => {
                     </div>
 
                     <div className="row">
-                        <InputCheckbox
+                        <InputToggle
                             label={"Primair telefoonnummer"}
                             name={"primary"}
-                            checked={primary}
-                            onChangeAction={props.handleInputChange}
+                            value={primary}
+                            onChangeAction={this.handleInputChange}
                         />
                     </div>
 

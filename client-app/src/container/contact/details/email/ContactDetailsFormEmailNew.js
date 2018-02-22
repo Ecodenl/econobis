@@ -7,9 +7,9 @@ import {newEmailAddress, unsetPrimaryEmailAddresses} from '../../../../actions/c
 import InputText from '../../../../components/form/InputText';
 import ButtonText from '../../../../components/button/ButtonText';
 import InputSelect from "../../../../components/form/InputSelect";
-import InputCheckbox from "../../../../components/form/InputCheckbox";
 import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
+import InputToggle from "../../../../components/form/InputToggle";
 
 class ContactDetailsFormEmailNew extends Component {
     constructor(props) {
@@ -107,10 +107,10 @@ class ContactDetailsFormEmailNew extends Component {
                         </div>
 
                         <div className="row">
-                            <InputCheckbox
+                            <InputToggle
                                 label={"Primair e-mailadres"}
                                 name={"primary"}
-                                checked={primary}
+                                value={primary}
                                 onChangeAction={this.handleInputChange}
                             />
                         </div>

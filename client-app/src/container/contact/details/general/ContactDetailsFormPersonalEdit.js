@@ -8,10 +8,10 @@ import PersonAPI from '../../../../api/contact/PersonAPI';
 import OrganisationAPI from '../../../../api/contact/OrganisationAPI';
 import InputText from '../../../../components/form/InputText';
 import InputSelect from '../../../../components/form/InputSelect';
-import InputCheckbox from "../../../../components/form/InputCheckbox";
 import InputDate from '../../../../components/form/InputDate';
 import ButtonText from '../../../../components/button/ButtonText';
 import PanelFooter from "../../../../components/panel/PanelFooter";
+import InputToggle from "../../../../components/form/InputToggle";
 
 class ContactDetailsFormPersonalEdit extends Component {
     constructor(props) {
@@ -244,10 +244,10 @@ class ContactDetailsFormPersonalEdit extends Component {
                         value={ dateOfBirth }
                         onChangeAction={this.handleChangeDateOfBirth}
                     />
-                    <InputCheckbox
+                    <InputToggle
                         label={"Nieuwsbrief"}
                         name={"newsletter"}
-                        checked={newsletter}
+                        value={newsletter}
                         onChangeAction={this.handleInputChange}
                     />
                 </div>

@@ -4,10 +4,10 @@ import { connect } from 'react-redux';
 import InputText from '../../../../components/form/InputText';
 import ButtonText from '../../../../components/button/ButtonText';
 import InputSelect from "../../../../components/form/InputSelect";
-import InputCheckbox from "../../../../components/form/InputCheckbox";
 import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
 import InputMask from "../../../../components/form/InputMask";
+import InputToggle from "../../../../components/form/InputToggle";
 
 const ContactDetailsFormAddressEdit = props => {
     const { street, number, postalCode, city, typeId, primary } = props.address;
@@ -70,11 +70,11 @@ const ContactDetailsFormAddressEdit = props => {
                                 required={"required"}
                                 error={props.typeIdError}
                             />
-                            <InputCheckbox
+                            <InputToggle
                                 label={"Primair adres"}
                                 name={"primary"}
-                                checked={primary}
-                                onChangeAction={props.handleInputChange}
+                                value={primary}
+                                onChangeAction={this.handleInputChange}
                             />
                         </div>
 

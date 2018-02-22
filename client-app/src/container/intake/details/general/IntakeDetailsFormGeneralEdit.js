@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
-import { hashHistory } from 'react-router';
 import moment from 'moment';
 moment.locale('nl');
 
@@ -9,7 +8,6 @@ import { fetchIntakeDetails } from '../../../../actions/intake/IntakeDetailsActi
 import InputText from '../../../../components/form/InputText';
 import InputSelect from '../../../../components/form/InputSelect';
 import InputMultiSelect from '../../../../components/form/InputMultiSelect';
-import InputCheckbox from '../../../../components/form/InputCheckbox';
 import ButtonText from '../../../../components/button/ButtonText';
 
 class IntakeDetailsFormGeneralEdit extends Component {

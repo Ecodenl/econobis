@@ -7,11 +7,9 @@ moment.locale('nl');
 
 import HousingFileDetailsAPI from '../../../api/housing-file/HousingFileDetailsAPI';
 import InputSelect from '../../../components/form/InputSelect';
-import InputMultiSelect from '../../../components/form/InputMultiSelect';
-import InputCheckbox from '../../../components/form/InputCheckbox';
 import ButtonText from '../../../components/button/ButtonText';
-import ViewText from "../../../components/form/ViewText";
 import InputText from "../../../components/form/InputText";
+import InputToggle from "../../../components/form/InputToggle";
 
 class HousingFileNewFormGeneral extends Component {
     constructor(props) {
@@ -155,10 +153,10 @@ class HousingFileNewFormGeneral extends Component {
                         options={this.props.energyLabelStatus}
                         onChangeAction={this.handleInputChange}
                     />
-                    <InputCheckbox
-                        label={'Monument'}
-                        name={'isMonument'}
-                        checked={isMonument}
+                    <InputToggle
+                        label={"Monument"}
+                        name={"isMonument"}
+                        value={isMonument}
                         onChangeAction={this.handleInputChange}
                     />
                 </div>

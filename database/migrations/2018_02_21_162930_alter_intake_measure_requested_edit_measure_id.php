@@ -15,7 +15,11 @@ class AlterIntakeMeasureRequestedEditMeasureId extends Migration
     public function up()
     {
         Schema::table('intake_measure_requested', function (Blueprint $table) {
+            $table->dropForeign('measure_id');
             $table->renameColumn('measure_id', 'measure_category_id');
+            $table->foreign('measure_category_id')
+                ->references('id')->on('measure_categories')
+                ->onDelete('restrict');
         });
 
     }
@@ -27,8 +31,5 @@ class AlterIntakeMeasureRequestedEditMeasureId extends Migration
      */
     public function down()
     {
-        Schema::table('intake_measure_requested', function (Blueprint $table) {
-            $table->renameColumn('measure_category_id', 'measure_id');
-        });
     }
 }

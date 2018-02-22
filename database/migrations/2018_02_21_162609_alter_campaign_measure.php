@@ -14,7 +14,11 @@ class AlterCampaignMeasure extends Migration
     public function up()
     {
         Schema::table('campaign_measure', function (Blueprint $table) {
+            $table->dropForeign('measure_id');
             $table->renameColumn('measure_id', 'measure_category_id');
+            $table->foreign('measure_category_id')
+                ->references('id')->on('measure_categories')
+                ->onDelete('restrict');
         });
 
         Schema::rename('campaign_measure', 'campaign_measure_category');

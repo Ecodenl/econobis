@@ -7,7 +7,6 @@ use App\Eco\Campaign\Campaign;
 use App\Eco\Document\Document;
 use App\Eco\EnergyLabel\EnergyLabel;
 use App\Eco\HousingFile\HousingFile;
-use App\Eco\Intake\Intake;
 use App\Eco\Opportunity\Opportunity;
 use App\Eco\Organisation\Organisation;
 use App\Eco\User\User;
@@ -32,11 +31,6 @@ class Measure extends Model
     public function addresses()
     {
         return $this->belongsToMany(Address::class, 'housing_file_measure_taken')->withPivot('measure_date');;
-    }
-
-    public function intakes()
-    {
-        return $this->belongsToMany(Intake::class, 'intake_measure_requested');
     }
 
     public function opportunities()

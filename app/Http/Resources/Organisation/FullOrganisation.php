@@ -28,6 +28,7 @@ class FullOrganisation extends Resource
             'name' => $this->name,
             'typeId' => $this->type_id,
             'type' => FullOrganisationType::make($this->whenLoaded('type')),
+            'contactPerson' => FullOccupationPerson::make($this->whenLoaded('contactPerson')),
             'industryId' => $this->industry_id,
             'industry' => FullIndustry::make($this->whenLoaded('industry')),
             'website' => $this->website,

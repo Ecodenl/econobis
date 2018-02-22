@@ -10,6 +10,7 @@ import validator from "validator";
 import OccupationAPI from "../../../../api/contact/OccupationAPI";
 import moment from "moment/moment";
 import InputDate from "../../../../components/form/InputDate";
+import InputToggle from "../../../../components/form/InputToggle";
 
 class ContactDetailsFormPersonNew extends Component {
     constructor(props) {
@@ -20,9 +21,10 @@ class ContactDetailsFormPersonNew extends Component {
             occupation: {
                 personId: '',
                 occupationId: '',
-                organisationId: props.id,
+                organisationId: props.organisationId,
                 startDate: '',
                 endDate: '',
+                primary: false,
             },
             errors: {
                 personId: false,
@@ -105,7 +107,7 @@ class ContactDetailsFormPersonNew extends Component {
         // If no errors send form
         !hasErrors &&
         OccupationAPI.newOccupation(occupation).then((payload) => {
-            this.props.fetchContactDetails(this.props.id);
+            this.props.fetchContactDetails(this.props.contactId);
             this.props.toggleShowNew();
         });
     };
@@ -165,6 +167,15 @@ class ContactDetailsFormPersonNew extends Component {
                     </div>
 
                     <div className="row">
+                        <InputToggle
+                            label={"Primair"}
+                            name={"primary"}
+                            value={this.state.occupation.primary}
+                            onChangeAction={this.handleInputChange}
+                        />
+                    </div>
+
+                    <div className="row">
                         <div className="col-sm-12">Of maak een <Link to={`/contact/nieuw/persoon/`} className="link-underline">Nieuw</Link> contactpersoon aan.</div>
                     </div>
                 </form>
@@ -175,7 +186,8 @@ class ContactDetailsFormPersonNew extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        id: state.contactDetails.id,
+        organisationId: state.contactDetails.organisation.id,
+        contactId: state.contactDetails.id,
         occupations: state.systemData.occupations,
     };
 };

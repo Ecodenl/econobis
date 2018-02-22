@@ -2,7 +2,6 @@ import React, {Component} from 'react';
 import { hashHistory } from 'react-router';
 import { connect } from 'react-redux';
 
-import CampaignHarmonica from "./harmonica/CampaignHarmonica";
 import DocumentHarmonica from "./harmonica/DocumentHarmonica";
 
 class MeasureDetailsHarmonica extends Component {
@@ -11,17 +10,12 @@ class MeasureDetailsHarmonica extends Component {
 
         this.state = {
             toggleShowList: {
-                campaigns: false,
                 documents: false,
             },
         };
 
         this.toggleShowList = this.toggleShowList.bind(this);
         this.newDocument = this.newDocument.bind(this);
-    };
-
-    newCampaign = () => {
-        hashHistory.push(`/campagne/nieuw/maatregel/${this.props.measureDetails.id}`);
     };
 
     toggleShowList(name) {
@@ -46,12 +40,6 @@ class MeasureDetailsHarmonica extends Component {
                     showDocumentsList={this.state.toggleShowList.documents}
                     newDocument={this.newDocument}
                     documentCount={this.props.measureDetails.documentCount}
-                />
-                <CampaignHarmonica
-                    toggleShowList={() => this.toggleShowList('campaigns')}
-                    showCampaignsList={this.state.toggleShowList.campaigns}
-                    campaignCount={this.props.measureDetails.campaignCount}
-                    newCampaign={this.newCampaign}
                 />
             </div>
         )

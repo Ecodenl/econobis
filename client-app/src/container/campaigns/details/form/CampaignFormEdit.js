@@ -78,12 +78,12 @@ class CampaignFormEdit extends Component {
         });
     };
 
-    handleMeasureIds = (selectedOption) => {
+    handleMeasureCategoryIds = (selectedOption) => {
         this.setState({
             ...this.state,
             campaign: {
                 ...this.state.campaign,
-                measureIds: selectedOption
+                measureCategoryIds: selectedOption
             },
         });
     };
@@ -116,7 +116,7 @@ class CampaignFormEdit extends Component {
     };
 
     render() {
-        const {id, name, number, description, startDate, endDate, statusId, measureIds, typeId}  = this.state.campaign;
+        const {id, name, number, description, startDate, endDate, statusId, measureCategoryIds, typeId}  = this.state.campaign;
 
         return (
             <form className="form-horizontal col-md-12" onSubmit={this.handleSubmit}>
@@ -183,7 +183,7 @@ class CampaignFormEdit extends Component {
                         name="measureCategoryIds"
                         value={measureCategoryIds}
                         options={this.props.measureCategories}
-                        onChangeAction={this.handleMeasureIds}
+                        onChangeAction={this.handleMeasureCategoryIds}
                     />
                 </div>
 

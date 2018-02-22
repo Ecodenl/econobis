@@ -70,7 +70,7 @@ const CampaignNew = props => {
                     name="measureCategoryIds"
                     value={measureCategoryIds}
                     options={props.measureCategories}
-                    onChangeAction={props.handleMeasureIds}
+                    onChangeAction={props.handleMeasureCategoryIds}
                 />
             </div>
 

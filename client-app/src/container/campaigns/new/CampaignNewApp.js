@@ -70,12 +70,12 @@ class CampaignNewApp extends Component {
         });
     };
 
-    handleMeasureIds = (selectedOption) => {
+    handleMeasureCategoryIds = (selectedOption) => {
         this.setState({
             ...this.state,
             campaign: {
                 ...this.state.campaign,
-                measureIds: selectedOption
+                measureCategoryIds: selectedOption
             },
         });
     };
@@ -124,7 +124,7 @@ class CampaignNewApp extends Component {
                                         handleInputChange={this.handleInputChange}
                                         handleStartDate={this.handleStartDate}
                                         handleEndDate={this.handleEndDate}
-                                        handleMeasureIds={this.handleMeasureIds}
+                                        handleMeasureCategoryIds={this.handleMeasureCategoryIds}
                                         handleSubmit={this.handleSubmit}
                                     />
                                 </div>

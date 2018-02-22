@@ -2,6 +2,7 @@ import {combineReducers} from 'redux';
 
 import auditTrailReducer from './audit-trail/AuditTrailReducer';
 import authReducer from './general/AuthReducer';
+import blockUIReducer from './general/BlockUIReducer';
 import calendarReducer from './calendar/CalendarReducer';
 import campaignsReducer from './campaign/CampaignsReducer';
 import campaignDetailsReducer from './campaign/CampaignDetailsReducer';
@@ -49,6 +50,7 @@ const rootReducer = combineReducers({
     meDetails: meDetailsReducer,
     systemData: systemDataReducer,
     toggleSidebar: sidebarReducer,
+    blockUI: blockUIReducer,
 
     //Audit trail
     auditTrail: auditTrailReducer,

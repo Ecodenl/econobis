@@ -30,6 +30,7 @@
     "prop-types": "^15.5.10",
     "react": "15.6.2",
     "react-big-calendar": "^0.17.0",
+    "react-block-ui": "^1.1.1",
     "react-bootstrap": "^0.31.3",
     "react-bootstrap-time-picker": "^1.0.3",
     "react-chartjs-2": "^2.4.1",

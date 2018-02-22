@@ -36,7 +36,7 @@ class MeasureController extends ApiController
 
     public function show(Measure $measure)
     {
-        $measure->load(['campaigns',
+        $measure->load([
             'faqs',
             'deliveredByOrganisations.contact.primaryAddress',
             'intakes.contact',

@@ -101,8 +101,8 @@ class CampaignController extends ApiController
             ->string('name')->validate('required')->next()
             ->string('number')->validate('required')->next()
             ->string('description')->onEmpty(null)->next()
-            ->string('startDate')->validate('date')->onEmpty(null)->alias('start_date')->next()
-            ->string('endDate')->validate('date')->onEmpty(null)->alias('end_date')->next()
+            ->string('startDate')->validate('nullable|date')->onEmpty(null)->alias('start_date')->next()
+            ->string('endDate')->validate('nullable|date')->onEmpty(null)->alias('end_date')->next()
             ->integer('statusId')->validate('exists:campaign_status,id')->onEmpty(null)->alias('status_id')->next()
             ->integer('typeId')->validate('required|exists:campaign_types,id')->alias('type_id')->next()
             ->get();

@@ -29,6 +29,7 @@ class OppportunitiesNewApp extends Component {
             },
             errors: {
                 statusId: false,
+                measureId: false,
             }
         };
 
@@ -47,16 +48,16 @@ class OppportunitiesNewApp extends Component {
             });
         });
 
-        MeasureAPI.fetchMeasure(this.props.params.measureId).then((payload) => {
-            this.setState({
-                ...this.state,
-                measure: payload,
-                opportunity: {
-                    ...this.state.opportunity,
-                    measureId: payload.id,
-                },
-            });
-        });
+        // MeasureAPI.fetchMeasure(this.props.params.measureId).then((payload) => {
+        //     this.setState({
+        //         ...this.state,
+        //         measure: payload,
+        //         opportunity: {
+        //             ...this.state.opportunity,
+        //             measureId: payload.id,
+        //         },
+        //     });
+        // });
     }
 
     handleInputChangeDate(value, name) {
@@ -97,6 +98,11 @@ class OppportunitiesNewApp extends Component {
             hasErrors = true;
         };
 
+        if(validator.isEmpty(opportunity.measureId)){
+            errors.measureId = true;
+            hasErrors = true;
+        };
+
         this.setState({ ...this.state, errors: errors })
 
         !hasErrors &&
@@ -124,6 +130,7 @@ class OppportunitiesNewApp extends Component {
                                     handleInputChangeDate={this.handleInputChangeDate}
                                     intake={this.state.intake}
                                     measure={this.state.measure}
+                                    measureCategoryId={this.props.params.measureCategoryId}
                                     opportunity={this.state.opportunity}
                                     handleSubmit={this.handleSubmit}
                                     errors={this.state.errors}
@@ -137,6 +144,5 @@ class OppportunitiesNewApp extends Component {
         )
     }
 };
-
 
 export default OppportunitiesNewApp;

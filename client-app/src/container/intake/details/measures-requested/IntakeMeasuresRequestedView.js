@@ -20,7 +20,7 @@ const IntakeMeasuresRequestedView = props => {
                             props.permissions.manageOpportunity && (props.measureRequestedWithOpportunityIds.includes(id)) ?
                                 <ButtonText buttonText={"Kans al gemaakt"} buttonClassName={'btn-success btn-padding-small'}/>
                                 :
-                                <ButtonText buttonText={"Maak kans"} onClickAction={() => hashHistory.push(`/kans/nieuw/intake/${props.intakeId}/maatregel/${id}`)} buttonClassName={'btn-success btn-padding-small'}/>
+                                <ButtonText buttonText={"Maak kans"} onClickAction={() => hashHistory.push(`/kans/nieuw/intake/${props.intakeId}/maatregel-categorie/${id}`)} buttonClassName={'btn-success btn-padding-small'}/>
                         }
                     </div>
                 </div>

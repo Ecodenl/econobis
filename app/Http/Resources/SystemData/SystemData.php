@@ -36,6 +36,7 @@ use App\Eco\Task\TaskType;
 use App\Eco\Team\Team;
 use App\Eco\User\User;
 use App\Http\Resources\GenericResource;
+use App\Http\Resources\Measure\MeasurePeek;
 use App\Http\Resources\OrganisationType\FullOrganisationType;
 use App\Eco\Title\Title;
 use App\Http\Resources\EnumWithIdAndName\FullEnumWithIdAndName;
@@ -74,7 +75,7 @@ class SystemData extends Resource
             'occupations' => FullOccupation::collection(Occupation::all()),
             'titles' => FullTitle::collection(Title::all()),
             'buildingTypes' => BuildingType::select(['id', 'name'])->get(),
-            'measures' => Measure::select(['id', 'name'])->get(),
+            'measures' => MeasurePeek::collection(Measure::all()),
             'measureCategories' => MeasureCategory::select(['id', 'name'])->get(),
             'intakeSources' => IntakeSource::select(['id', 'name'])->get(),
             'campaigns' => Campaign::select(['id', 'name'])->get(),

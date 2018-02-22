@@ -18,6 +18,7 @@ class MeasurePeek extends Resource
         return [
             'id' => $this->id,
             'name' => $this->name,
+            'measureCategoryId' => $this->measure_category_id,
         ];
     }
 }

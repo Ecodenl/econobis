@@ -7,9 +7,12 @@ import ButtonText from '../../../components/button/ButtonText';
 import PanelFooter from '../../../components/panel/PanelFooter';
 import InputText from "../../../components/form/InputText";
 import InputTextArea from "../../../components/form/InputTextarea";
+import MeasuresOfCategory from '../../../selectors/MeasuresOfCategory';
 
 const OpportunityNew = props => {
-    const { statusId, quotationText, evaluationAgreedDate, desiredDate } = props.opportunity;
+    const { statusId, quotationText, evaluationAgreedDate, desiredDate, measureId } = props.opportunity;
+
+    const measuresMatchToCategory = MeasuresOfCategory(props.measures, props.measureCategoryId);
 
     return (
         <form className="form-horizontal col-md-12" onSubmit={props.handleSubmit}>
@@ -45,12 +48,17 @@ const OpportunityNew = props => {
             </div>
 
             <div className="row">
-                <InputText
+                <InputSelect
                     label={"Maatregel - specifiek"}
-                    name={"measure"}
-                    value={props.measure ? props.measure.name : ''}
-                    readOnly={true}
+                    size={"col-sm-6"}
+                    name={"measureId"}
+                    options={measuresMatchToCategory}
+                    value={measureId}
+                    onChangeAction={props.handleInputChange}
+                    required={"required"}
+                    error={props.errors.measureId}
                 />
+
                 <InputSelect
                     label={"Status"}
                     size={"col-sm-6"}
@@ -60,7 +68,6 @@ const OpportunityNew = props => {
                     onChangeAction={props.handleInputChange}
                     required={"required"}
                     error={props.errors.statusId}
-
                 />
             </div>
 
@@ -96,6 +103,7 @@ const OpportunityNew = props => {
 const mapStateToProps = (state) => {
     return {
         status: state.systemData.opportunityStatus,
+        measures: state.systemData.measures,
     }
 };
 

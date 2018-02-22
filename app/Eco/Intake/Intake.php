@@ -12,9 +12,11 @@ use App\Eco\Opportunity\Opportunity;
 use App\Eco\Task\Task;
 use App\Eco\User\User;
 use Illuminate\Database\Eloquent\Model;
+use Venturecraft\Revisionable\RevisionableTrait;
 
 class Intake extends Model
 {
+    use RevisionableTrait;
 
     protected $table = 'intakes';
 

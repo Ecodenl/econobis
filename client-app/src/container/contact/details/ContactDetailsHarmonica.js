@@ -121,7 +121,19 @@ class ContactDetailsHarmonica extends Component {
     };
 
     newEmail = () => {
-        hashHistory.push(`/email/nieuw`);
+        let primaryEmail = this.props.contactDetails.emailAddresses.find((emailAddress) => {
+            return emailAddress.primary
+        });
+        if (typeof primaryEmail === 'undefined') {
+                this.setState({
+                    showModalError: !this.state.showModalError,
+                    modalErrorTitle: 'Waaschuwing',
+                    modalErrorMessage: 'Dit contact heeft nog primair email adres.',
+                });
+        }
+        else {
+            hashHistory.push(`/email/nieuw/contact/${this.props.contactDetails.id}`);
+        }
     };
 
     newDocument = (type) => {

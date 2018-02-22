@@ -22,7 +22,7 @@ class EmailNewApp extends Component {
             emailTemplates: [],
             email: {
                 from: '',
-                to: '',
+                to: props.params.contactId ? props.params.contactId : '',
                 cc: '',
                 bcc: '',
                 templateId: '',
@@ -238,14 +238,12 @@ class EmailNewApp extends Component {
                 EmailAPI.newConcept(data, email.from).then(() => {
                     hashHistory.push(`/emails/concept`);
                 }).catch(function (error) {
-                    console.log(error)
                 });
             }
             else{
                 EmailAPI.newEmail(data, email.from).then(() => {
                     hashHistory.push(`/emails/sent`);
                 }).catch(function (error) {
-                    console.log(error)
                 });
             }
         }

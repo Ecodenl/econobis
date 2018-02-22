@@ -1,10 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Select from 'react-select';
-import 'react-select/dist/react-select.css';
+import VirtualizedSelect from 'react-virtualized-select'
+
+import 'react-select/dist/react-select.css'
+import 'react-virtualized/styles.css'
+import 'react-virtualized-select/styles.css'
 
 const InputReactSelect = props => {
-    const { label, className, size, id, name, value, options, optionId, optionName, onChangeAction, required, multi, error} = props;
+    const { label, className, size, id, name, value, options, optionId, optionName, onChangeAction, required, multi, error, isLoading} = props;
 
     const onChange = (selectedOption) => {
         onChangeAction(selectedOption || '', name);
@@ -14,7 +17,7 @@ const InputReactSelect = props => {
         <div className="form-group col-sm-6">
             <label htmlFor={ id } className={`col-sm-6 ${required}`}>{label}</label>
             <div className={`${size}`}>
-                <Select
+                <VirtualizedSelect
                         id={ id }
                         name={name}
                         value={value}
@@ -28,6 +31,7 @@ const InputReactSelect = props => {
                         simpleValue
                         removeSelected
                         className={error ? ' has-error' : ''}
+                        isLoading={isLoading}
                         />
             </div>
         </div>
@@ -44,6 +48,7 @@ InputReactSelect.defaultProps = {
     error: false,
     value: '',
     multi: true,
+    isLoading: false,
 };
 
 InputReactSelect.propTypes = {
@@ -65,6 +70,8 @@ InputReactSelect.propTypes = {
     readOnly: PropTypes.bool,
     error: PropTypes.bool,
     multi: PropTypes.bool,
+    isLoading: PropTypes.bool,
+
 };
 
 export default InputReactSelect;

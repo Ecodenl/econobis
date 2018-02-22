@@ -51,6 +51,14 @@ class TaskNewApp extends Component {
                 responsible: false,
             },
             showExtraConnections: false,
+            peekLoading: {
+                contacts: true,
+                intakes: true,
+                contactGroups: true,
+                opportunities: true,
+                campaigns: true,
+                housingFiles: true,
+            },
         };
 
         this.updateStateByChangeParams = this.updateStateByChangeParams.bind(this);
@@ -68,27 +76,63 @@ class TaskNewApp extends Component {
         };
 
         ContactsAPI.getContactsPeek().then((payload) => {
-            this.setState({ contacts: payload });
+            this.setState({
+                contacts: payload,
+                peekLoading: {
+                    ...this.state.peekLoading,
+                    contacts: false,
+                },
+            });
         });
 
         IntakesAPI.peekIntakes().then((payload) => {
-            this.setState({ intakes: payload });
+            this.setState({
+                intakes: payload,
+                peekLoading: {
+                    ...this.state.peekLoading,
+                    intakes: false,
+                },
+            });
         });
 
         ContactGroupAPI.peekContactGroups().then((payload) => {
-            this.setState({ contactGroups: payload });
+            this.setState({
+                contactGroups: payload,
+                peekLoading: {
+                    ...this.state.peekLoading,
+                    contactGroups: false,
+                },
+            });
         });
 
         OpportunitiesAPI.peekOpportunities().then((payload) => {
-            this.setState({ opportunities: payload });
+            this.setState({
+                opportunities: payload,
+                peekLoading: {
+                    ...this.state.peekLoading,
+                    opportunities: false,
+                },
+            });
         });
 
         CampaignsAPI.peekCampaigns().then((payload) => {
-            this.setState({ campaigns: payload });
+            this.setState({
+                campaigns: payload,
+                peekLoading: {
+                    ...this.state.peekLoading,
+                    campaigns: false,
+                },
+            });
         });
 
         HousingFilesAPI.peekHousingFiles().then((payload) => {
-            this.setState({ housingFiles: payload });
+            this.setState({
+                housingFiles: payload,
+                peekLoading: {
+                    ...this.state.peekLoading,
+                    housingFiles: false,
+                },
+            });
         });
     };
 
@@ -289,6 +333,7 @@ class TaskNewApp extends Component {
                                         handleReactSelectChange={this.handleReactSelectChange}
                                         toggleExtraConnections={this.toggleExtraConnections}
                                         showExtraConnections={this.state.showExtraConnections}
+                                        peekLoading={this.state.peekLoading}
                                     />
                                 </div>
                             </PanelBody>

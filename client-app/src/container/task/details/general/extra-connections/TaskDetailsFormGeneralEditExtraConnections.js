@@ -2,7 +2,7 @@ import React from 'react';
 
 import InputReactSelect from "../../../../../components/form/InputReactSelect";
 
-const TaskDetailsFormGeneralEditExtraConnections = ({task, campaigns, intakes, contactGroups, opportunities, handleReactSelectChange}) => {
+const TaskDetailsFormGeneralEditExtraConnections = ({task, campaigns, intakes, contactGroups, opportunities, handleReactSelectChange, peekLoading}) => {
     const {
         intakeId,
         contactGroupId,
@@ -20,6 +20,7 @@ const TaskDetailsFormGeneralEditExtraConnections = ({task, campaigns, intakes, c
                     value={campaignId}
                     onChangeAction={handleReactSelectChange}
                     multi={false}
+                    isLoading={peekLoading.campaigns}
                 />
                 <InputReactSelect
                     label={"Intake"}
@@ -29,6 +30,7 @@ const TaskDetailsFormGeneralEditExtraConnections = ({task, campaigns, intakes, c
                     value={intakeId}
                     onChangeAction={handleReactSelectChange}
                     multi={false}
+                    isLoading={peekLoading.intakes}
                 />
             </div>
 
@@ -41,6 +43,7 @@ const TaskDetailsFormGeneralEditExtraConnections = ({task, campaigns, intakes, c
                     value={contactGroupId}
                     onChangeAction={handleReactSelectChange}
                     multi={false}
+                    isLoading={peekLoading.contactGroups}
                 />
                 <InputReactSelect
                     label={"Kans"}
@@ -50,6 +53,7 @@ const TaskDetailsFormGeneralEditExtraConnections = ({task, campaigns, intakes, c
                     value={opportunityId}
                     onChangeAction={handleReactSelectChange}
                     multi={false}
+                    isLoading={peekLoading.opportunities}
                 />
             </div>
         </div>

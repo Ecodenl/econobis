@@ -14,14 +14,32 @@ class AlterIntakeMeasureRequestedEditMeasureId extends Migration
      */
     public function up()
     {
+        DB::table('intake_measure_requested')->truncate();
+
         Schema::table('intake_measure_requested', function (Blueprint $table) {
-            $table->dropForeign('measure_id');
+            $table->dropForeign(['measure_id']);
+            $table->dropForeign(['intake_id']);
+
+        });
+
+        Schema::table('intake_measure_requested', function (Blueprint $table) {
+            $table->dropUnique(['intake_id','measure_id']);
+
+        });
+
+        Schema::table('intake_measure_requested', function (Blueprint $table) {
+            $table->foreign('intake_id')
+                ->references('id')->on('intakes');
+
             $table->renameColumn('measure_id', 'measure_category_id');
+
             $table->foreign('measure_category_id')
                 ->references('id')->on('measure_categories')
                 ->onDelete('restrict');
-        });
 
+            $table->unique(['intake_id','measure_category_id']);
+
+        });
     }
 
     /**
@@ -31,5 +49,30 @@ class AlterIntakeMeasureRequestedEditMeasureId extends Migration
      */
     public function down()
     {
+        DB::table('intake_measure_requested')->truncate();
+
+        Schema::table('intake_measure_requested', function (Blueprint $table) {
+            $table->dropForeign(['measure_category_id']);
+            $table->dropForeign(['intake_id']);
+
+        });
+
+        Schema::table('intake_measure_requested', function (Blueprint $table) {
+            $table->dropUnique(['intake_id','measure_category_id']);
+
+        });
+
+        Schema::table('intake_measure_requested', function (Blueprint $table) {
+            $table->foreign('intake_id')
+                ->references('id')->on('intakes');
+
+            $table->renameColumn('measure_category_id', 'measure_id');
+
+            $table->foreign('measure_id')
+                ->references('id')->on('measures')
+                ->onDelete('restrict');
+
+            $table->unique(['intake_id','measure_id']);
+        });
     }
 }

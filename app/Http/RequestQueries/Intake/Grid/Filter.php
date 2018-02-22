@@ -25,7 +25,7 @@ class Filter extends RequestFilter
         'createdAt' => 'intakes.created_at',
         'fullName' => 'contacts.full_name',
         'statusId' => 'intakes.intake_status_id',
-        'measureRequestedId' => 'intake_measure_requested.measure_id',
+        'measureRequestedId' => 'intake_measure_requested.measure_category_id',
     ];
 
     protected $joins = [

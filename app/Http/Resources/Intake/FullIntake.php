@@ -39,7 +39,7 @@ class FullIntake extends Resource
                 'sources' => GenericResource::collection($this->whenLoaded('sources')),
                 'reasons' => GenericResource::collection($this->whenLoaded('reasons')),
                 'note' => $this->note,
-                'measuresRequested' => FullMeasure::collection($this->whenLoaded('measuresRequested')),
+                'measuresRequested' => GenericResource::collection($this->whenLoaded('measuresRequested')),
                 'opportunities' => FullOpportunity::collection($this->whenLoaded('opportunities')),
                 'createdBy' => FullUser::make($this->whenLoaded('createdBy')),
                 'updatedBy' => FullUser::make($this->whenLoaded('updatedBy')),

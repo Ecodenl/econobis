@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import BlockUi from 'react-block-ui';
+import 'react-block-ui/style.css';
 
 import { toggleSidebarClose, toggleSidebarOpen } from '../../actions/general/SidebarActions';
 import { fetchMeDetails } from '../../actions/general/MeDetailsActions';
@@ -12,6 +14,7 @@ import ErrorPage from './ErrorPage';
 import Content from './Content';
 import AuthAPI from "../../api/general/AuthAPI";
 import {hashHistory} from "react-router";
+
 
 class Main extends Component {
     constructor(props) {
@@ -76,20 +79,22 @@ class Main extends Component {
                       <ErrorPage />
                         :
                         this.props.systemDataLoaded && this.props.meDetailsLoaded ?
-                            <div className="wrapper">
-                                <div>
-                                    <NavHeader toggleMenu={this.toggleMenu} toggleChangePassword={this.toggleChangePassword}/>
-                                    <Sidebar onMenuEnter={this.onMenuEnter} onMenuLeave={this.onMenuLeave} menuActive={this.state.menuActive} />
-                                </div>
+                            <BlockUi tag="div" blocking={this.props.blockUI} className={"full-screen-loading"} message={"Moment geduld, de gegevens worden opgehaald"}>
+                                <div className="wrapper">
+                                    <div>
+                                        <NavHeader toggleMenu={this.toggleMenu} toggleChangePassword={this.toggleChangePassword}/>
+                                        <Sidebar onMenuEnter={this.onMenuEnter} onMenuLeave={this.onMenuLeave} menuActive={this.state.menuActive} />
+                                    </div>
 
                                     <div className={ contentClass }>
                                         <div className="container-fluid">
                                             <div className="col-md-12">
                                                 <Content children={this.props.children} menuActive={this.state.menuActive} toggleChangePassword={this.toggleChangePassword} changePasswordActive={this.state.changePasswordActive}/>
                                             </div>
+                                        </div>
                                     </div>
                                 </div>
-                          </div>
+                            </BlockUi>
                             :
                           <LoadingPage />
                 }
@@ -106,6 +111,7 @@ function mapStateToProps(state) {
         systemDataHasError: state.systemData.hasError,
         meDetailsLoaded: state.meDetails.isLoaded,
         meDetailsHasError: state.meDetails.hasError,
+        blockUI: state.blockUI.blocked,
     };
 }
 

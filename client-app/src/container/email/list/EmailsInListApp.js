@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 
 import { fetchEmails, clearEmails } from '../../../actions/email/EmailsActions';
 import { setEmailsPagination } from '../../../actions/email/EmailsPaginationActions';
+import { blockUI, unblockUI } from '../../../actions/general/BlockUIActions';
 import EmailsInList from './EmailsInList';
 import EmailsInListToolbar from './EmailsInListToolbar';
 import Panel from "../../../components/panel/Panel";
@@ -64,12 +65,14 @@ class EmailsInListApp extends Component {
     };
 
     refreshData() {
+        this.props.blockUI();
         MailboxAPI.receiveMailFromMailboxesUser().then(payload => {
             const pagination = { limit: 20, offset: 0 };
 
             this.props.clearEmails();
             this.resetEmailsFilters();
             this.props.fetchEmails(this.props.params.folder, pagination);
+            this.props.unblockUI();
         });
     }
 
@@ -117,7 +120,7 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = (dispatch) => {
-    return bindActionCreators({ fetchEmails, clearEmails, clearFilterEmail, setEmailsPagination }, dispatch);
+    return bindActionCreators({ fetchEmails, clearEmails, clearFilterEmail, setEmailsPagination, blockUI, unblockUI }, dispatch);
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(EmailsInListApp);

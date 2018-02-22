@@ -116,7 +116,7 @@ const DocumentTemplateNew = props => {
                     label={"Actief"}
                     name={"active"}
                     value={active}
-                    onChangeAction={this.handleInputChange}
+                    onChangeAction={props.handleInputChange}
                     id={"active"}
                 />
             </div>

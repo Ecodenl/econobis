@@ -45,7 +45,7 @@ const ContactDetailsFormEmailEdit = props => {
                             label={"Primair e-mail adres"}
                             name={"primary"}
                             value={primary}
-                            onChangeAction={this.handleInputChange}
+                            onChangeAction={props.handleInputChange}
                         />
                     </div>
 

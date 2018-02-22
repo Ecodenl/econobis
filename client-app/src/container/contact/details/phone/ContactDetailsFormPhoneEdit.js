@@ -45,7 +45,7 @@ const ContactDetailsFormPhoneEdit = props => {
                             label={"Primair telefoonnummer"}
                             name={"primary"}
                             value={primary}
-                            onChangeAction={this.handleInputChange}
+                            onChangeAction={props.handleInputChange}
                         />
                     </div>
 

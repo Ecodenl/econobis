@@ -2,7 +2,6 @@ import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import validator from 'validator';
 
-import UserAPI from '../../../../api/user/UserAPI';
 import { updateUser } from '../../../../actions/user/UserDetailsActions';
 import InputText from '../../../../components/form/InputText';
 import InputSelect from '../../../../components/form/InputSelect';
@@ -71,10 +70,7 @@ class UserDetailsFormGeneralEdit extends Component {
 
         // If no errors send form
         !hasErrors &&
-            UserAPI.updateUser(user).then((payload) => {
-                this.props.updateUser(payload);
-                this.props.switchToView();
-            });
+            this.props.updateUser(user, this.props.switchToView);
     };
 
     render() {
@@ -183,8 +179,8 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = dispatch => ({
-    updateUser: (id) => {
-        dispatch(updateUser(id));
+    updateUser: (id, switchToView) => {
+        dispatch(updateUser(id, switchToView));
     },
 });
 

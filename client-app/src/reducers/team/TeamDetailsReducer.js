@@ -5,10 +5,10 @@ export default function (state= [], action) {
                 ...state,
                 ...action.teamDetails.data.data,
             };
-        case 'UPDATE_TEAM_DETAILS':
+        case 'UPDATE_TEAM_SUCCESS':
             return {
                 ...state,
-                ...action.team.data.data,
+                ...action.teamDetails,
             };
         case 'NEW_TEAM_USER':
             return {

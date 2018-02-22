@@ -18,3 +18,20 @@ export function* deleteTeamUserSaga({teamId, userId }) {
         yield put({ type: 'DELETE_TEAM_USER_ERROR', error });
     }
 }
+
+// Update team details and switch to view callback
+export function* updateTeamDetailsSaga({ team, switchToView }) {
+    try {
+        const payload = yield call(TeamDetailsAPI.updateTeam, team);
+        const teamDetails = payload.data.data;
+
+        yield put({ type: 'UPDATE_TEAM_SUCCESS', teamDetails });
+
+        // Reload system data after updating user
+        yield put({ type: 'FETCH_SYSTEM_DATA'});
+        // Switch back to view callback fn
+        yield switchToView();
+    } catch (error) {
+        yield put({ type: 'UPDATE_TEAM_DETAILS_ERROR', error });
+    }
+}

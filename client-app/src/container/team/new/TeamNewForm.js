@@ -1,14 +1,14 @@
 import React, {Component} from 'react';
+import { connect } from 'react-redux';
 import { hashHistory } from 'react-router';
 import validator from 'validator';
 
 import InputText from '../../../components/form/InputText';
-import InputSelect from '../../../components/form/InputSelect';
 import ButtonText from '../../../components/button/ButtonText';
 import PanelBody from "../../../components/panel/PanelBody";
-import PanelHeader from "../../../components/panel/PanelHeader";
 import Panel from "../../../components/panel/Panel";
 import TeamDetailsAPI from '../../../api/team/TeamDetailsAPI';
+import {fetchSystemData} from "../../../actions/general/SystemDataActions";
 
 class TeamNewForm extends Component {
     constructor(props) {
@@ -59,6 +59,7 @@ class TeamNewForm extends Component {
         // If no errors send form
         !hasErrors &&
             TeamDetailsAPI.newTeam(team).then((payload) => {
+                this.props.fetchSystemData();
                 hashHistory.push(`/team/${payload.data.data.id}`);
             }).catch(function (error) {
                 console.log(error)
@@ -95,4 +96,10 @@ class TeamNewForm extends Component {
     };
 };
 
-export default TeamNewForm;
+const mapDispatchToProps = dispatch => ({
+    fetchSystemData: () => {
+        dispatch(fetchSystemData());
+    },
+});
+
+export default connect(null, mapDispatchToProps)(TeamNewForm);

@@ -10,6 +10,7 @@ import InputSelect from '../../../components/form/InputSelect';
 import ButtonText from '../../../components/button/ButtonText';
 import PanelFooter from "../../../components/panel/PanelFooter";
 import {setError} from "../../../actions/general/ErrorActions";
+import {fetchSystemData} from "../../../actions/general/SystemDataActions";
 
 class UserNewForm extends Component {
     constructor(props) {
@@ -85,12 +86,13 @@ class UserNewForm extends Component {
         // If no errors send form
         !hasErrors &&
             UserAPI.newUser(user).then((payload) => {
+                this.props.fetchSystemData();
                 hashHistory.push(`/gebruiker/${payload.data.data.id}`);
             }).catch(function (error) {
                 if(error.response.data.errors && typeof error.response.data.errors.email !== 'undefined'){
                     errors.email = true;
                     this.setState({ ...this.state, errors: errors });
-                    this.setState({ ...this.state, backendEmailError: 'Dit email is al in gebruik.' });
+                    this.setState({ ...this.state, backendEmailError: 'Dit email adres is al in gebruik.' });
                 }
                 else{
                     this.props.setError(error.response.status);
@@ -209,6 +211,9 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = dispatch => ({
     setError: (http_code) => {
         dispatch(setError(http_code));
+    },
+    fetchSystemData: () => {
+        dispatch(fetchSystemData());
     },
 });
 

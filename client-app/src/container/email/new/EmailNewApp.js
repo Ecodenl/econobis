@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import { hashHistory } from 'react-router';
+import {browserHistory, hashHistory} from 'react-router';
 import validator from 'validator';
 
 import EmailNewForm from './EmailNewForm';
@@ -242,7 +242,7 @@ class EmailNewApp extends Component {
             }
             else{
                 EmailAPI.newEmail(data, email.from).then(() => {
-                    hashHistory.push(`/emails/sent`);
+                    browserHistory.goBack();
                 }).catch(function (error) {
                 });
             }

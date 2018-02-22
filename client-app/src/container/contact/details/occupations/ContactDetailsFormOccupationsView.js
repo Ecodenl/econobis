@@ -3,15 +3,15 @@ import moment from "moment/moment";
 moment.locale('nl');
 
 const ContactDetailsFormOccupationsView = props => {
-    const {organisation, occupation, startDate, endDate } = props.occupation;
+    const {organisation, occupation, startDate, endDate, primary } = props.occupation;
 
     return (
         <div className={`row border ${props.highlightLine}`} onMouseEnter={() => props.onLineEnter()} onMouseLeave={() => props.onLineLeave()}>
             <div onClick={props.openEdit}>
-                <div className="col-sm-4">
+                <div className="col-sm-3">
                     { organisation ? organisation.name : '' }
                 </div>
-                <div className="col-sm-3">
+                <div className="col-sm-2">
                     { occupation ? occupation.name : '' }
                 </div>
                 <div className="col-sm-2">
@@ -19,6 +19,9 @@ const ContactDetailsFormOccupationsView = props => {
                 </div>
                 <div className="col-sm-2">
                     { endDate ? moment(endDate).format('DD-MM-Y') : '' }
+                </div>
+                <div className="col-sm-2">
+                    { primary ? 'Ja' : 'Nee' }
                 </div>
             </div>
             <div className="col-sm-1">

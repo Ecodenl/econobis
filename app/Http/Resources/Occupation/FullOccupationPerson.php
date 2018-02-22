@@ -22,6 +22,7 @@ class FullOccupationPerson extends Resource
             'occupation' => FullOccupation::make($this->whenLoaded('occupation')),
             'startDate' => $this->start_date,
             'endDate' => $this->end_date,
+            'primary' => $this->primary,
         ];
     }
 }

@@ -22,8 +22,21 @@ class OccupationController extends ApiController
             ->string('organisationId')->validate('required|exists:organisations,id')->alias('organisation_id')->next()
             ->date('startDate')->onEmpty(null)->alias('start_date')->next()
             ->date('endDate')->onEmpty(null)->alias('end_date')->next()
+            ->boolean('primary')->next()
             ->get();
 
+        //an organisation can only have 1 contactperson.
+        if ($data['primary'] == true) {
+            $primaryOccupationPerson = OccupationPerson::where('primary', true)
+                ->where('organisation_id', $data['organisation_id'])->first();
+
+            if ($primaryOccupationPerson) {
+                $primaryOccupationPerson->primary = false;
+                $primaryOccupationPerson->save();
+            }
+        }
+
+        //save
         $occupationPerson = new OccupationPerson();
         $occupationPerson->fill($data);
         try {
@@ -31,6 +44,7 @@ class OccupationController extends ApiController
         } catch (\Exception $e) {
             Log::error('error adding occupation: ' . $e);
         }
+
         return FullOccupationPerson::collection(OccupationPerson::where('person_id', $occupationPerson->person_id)->orderBy('created_at')->with('occupation', 'organisation', 'person')->get());
     }
 
@@ -43,10 +57,21 @@ class OccupationController extends ApiController
             ->string('organisationId')->validate('required|exists:organisations,id')->alias('organisation_id')->next()
             ->date('startDate')->onEmpty(null)->alias('start_date')->next()
             ->date('endDate')->onEmpty(null)->alias('end_date')->next()
+            ->boolean('primary')->next()
             ->get();
 
         $oldOccupationPerson = OccupationPerson::where('occupation_id', $request['oldOccupationId'])->where('person_id', $data['person_id'])->where('organisation_id', $request['oldOrganisationId'])->first();
         $oldOccupationPerson->delete();
+
+        //an organisation can only have 1 contactperson.
+        if ($data['primary'] == true) {
+            $primaryOccupationPerson = OccupationPerson::where('primary', true)
+                ->where('organisation_id', $data['organisation_id'])->first();
+            if ($primaryOccupationPerson) {
+                $primaryOccupationPerson->primary = false;
+                $primaryOccupationPerson->save();
+            }
+        }
 
         $occupationPerson = new OccupationPerson();
         $occupationPerson->fill($data);

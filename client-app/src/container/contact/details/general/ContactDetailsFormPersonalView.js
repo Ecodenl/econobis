@@ -34,49 +34,53 @@ const ContactDetailsFormPersonalView = props => {
 
             <div className="row" onClick={props.switchToEdit}>
                 <ViewText
+                    label="Voorletters"
+                    value={ person.initials }
+                />
+                <ViewText
                     label="Voornaam"
                     value={ person.firstName }
                 />
+            </div>
 
+            <div className="row" onClick={props.switchToEdit}>
                 <ViewText
                     label={"Lid sinds"}
                     value={ memberSince && moment(memberSince.date).format('DD-MM-Y') }
                 />
-            </div>
-
-            <div className="row" onClick={props.switchToEdit}>
                 <ViewText
                     label="Tussenvoegsel"
                     value={ person.lastNamePrefix && person.lastNamePrefix.name }
                 />
+            </div>
+
+            <div className="row" onClick={props.switchToEdit}>
                 <ViewText
                     label={"Opzegdatum"}
                     value={ memberUntil && moment(memberUntil.date).format('DD-MM-Y') }
+                />
+                <ViewText
+                    label="Achternaam"
+                    value={ person.lastName }
                 />
             </div>
 
             <div className="row" onClick={props.switchToEdit}>
                 <ViewText
-                    label="Achternaam"
-                    value={ person.lastName }
+                    label="Soort contact"
+                    value={person.type && person.type.name}
                 />
                 <ViewText
-                    label="Soort contact"
-                    value={ person.type && person.type.name}
+                    label={"Geboortedatum"}
+                    value={person.dateOfBirth && moment(person.dateOfBirth.date).format('DD-MM-Y')}
                 />
             </div>
 
-            <div className="row">
-                <div onClick={props.switchToEdit}>
-                    <ViewText
-                        label={"Geboortedatum"}
-                        value={ person.dateOfBirth && moment(person.dateOfBirth.date).format('DD-MM-Y') }
-                    />
-                    <ViewText
-                        label="Nieuwsbrief"
-                        value={ (newsletter ? 'Ja' : 'Nee') }
-                    />
-                </div>
+            <div className="row" onClick={props.switchToEdit}>
+                <ViewText
+                    label="Nieuwsbrief"
+                    value={(newsletter ? 'Ja' : 'Nee')}
+                />
             </div>
         </div>
     );

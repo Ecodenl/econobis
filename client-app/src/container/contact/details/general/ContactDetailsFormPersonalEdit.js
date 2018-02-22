@@ -32,6 +32,7 @@ class ContactDetailsFormPersonalEdit extends Component {
                 createdAt: createdAt.date,
                 titleId: person.title ? person.title.id : '',
                 statusId: status.id,
+                initials: person.initials ? person.initials : '',
                 firstName: person.firstName,
                 lastNamePrefixId: person.lastNamePrefix ? person.lastNamePrefix.id : '',
                 lastName: person.lastName,
@@ -137,7 +138,7 @@ class ContactDetailsFormPersonalEdit extends Component {
     };
 
     render() {
-        const {number, createdAt, titleId, statusId, typeId, firstName, lastNamePrefixId, lastName, memberSince, memberUntil, dateOfBirth, newsletter} = this.state.person;
+        const {number, createdAt, titleId, statusId, typeId, initials, firstName, lastNamePrefixId, lastName, memberSince, memberUntil, dateOfBirth, newsletter} = this.state.person;
 
         return (
             <form className="form-horizontal col-md-12" onSubmit={this.handleSubmit}>
@@ -181,6 +182,13 @@ class ContactDetailsFormPersonalEdit extends Component {
 
                 <div className="row">
                     <InputText
+                        label="Voorletters"
+                        size={"col-sm-6"}
+                        name={"initials"}
+                        value={initials}
+                        onChangeAction={this.handleInputChange}
+                    />
+                    <InputText
                         label="Voornaam"
                         size={"col-sm-6"}
                         name={"firstName"}
@@ -189,6 +197,9 @@ class ContactDetailsFormPersonalEdit extends Component {
                         required={lastName === '' && "required"}
                         error={this.state.errors.name}
                     />
+                </div>
+
+                <div className="row">
                     <InputDate
                         label={"Lid sinds"}
                         size={"col-sm-6"}
@@ -196,9 +207,6 @@ class ContactDetailsFormPersonalEdit extends Component {
                         value={ memberSince }
                         onChangeAction={this.handleChangeMemberSince}
                     />
-                </div>
-
-                <div className="row">
                     <InputSelect
                         label={"Tussenvoegsel"}
                         size={"col-sm-6"}
@@ -207,6 +215,9 @@ class ContactDetailsFormPersonalEdit extends Component {
                         value={lastNamePrefixId}
                         onChangeAction={this.handleInputChange}
                     />
+                </div>
+
+                <div className="row">
                     <InputDate
                         label={"Opzegdatum"}
                         size={"col-sm-6"}
@@ -214,9 +225,6 @@ class ContactDetailsFormPersonalEdit extends Component {
                         value={ memberUntil }
                         onChangeAction={this.handleChangeMemberUntilDate}
                     />
-                </div>
-
-                <div className="row">
                     <InputText
                         label={"Achternaam"}
                         size={"col-sm-6"}
@@ -226,6 +234,9 @@ class ContactDetailsFormPersonalEdit extends Component {
                         required={firstName === '' && "required"}
                         error={this.state.errors.name}
                     />
+                </div>
+
+                <div className="row">
                     <InputSelect
                         label={"Soort contact"}
                         size={"col-sm-6"}
@@ -234,9 +245,6 @@ class ContactDetailsFormPersonalEdit extends Component {
                         value={typeId}
                         onChangeAction={this.handleInputChange}
                     />
-                </div>
-
-                <div className="row">
                     <InputDate
                         label={"Geboortedatum"}
                         size={"col-sm-6"}
@@ -244,6 +252,9 @@ class ContactDetailsFormPersonalEdit extends Component {
                         value={ dateOfBirth }
                         onChangeAction={this.handleChangeDateOfBirth}
                     />
+                </div>
+
+                <div className="row">
                     <InputToggle
                         label={"Nieuwsbrief"}
                         name={"newsletter"}

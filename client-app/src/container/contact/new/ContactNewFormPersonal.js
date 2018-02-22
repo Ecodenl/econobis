@@ -25,6 +25,7 @@ class ContactNewFormPersonal extends Component {
                 createdAt: '',
                 titleId: '',
                 statusId: '',
+                initials: '',
                 firstName: '',
                 lastNamePrefixId: '',
                 lastName: '',
@@ -118,7 +119,7 @@ class ContactNewFormPersonal extends Component {
     };
 
     render() {
-        const { typeId, statusId, titleId, firstName, lastNamePrefixId, lastName, memberSince, dateOfBirth, newsletter, ownerId } = this.state.person;
+        const { typeId, statusId, titleId, initials, firstName, lastNamePrefixId, lastName, memberSince, dateOfBirth, newsletter, ownerId } = this.state.person;
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -159,6 +160,13 @@ class ContactNewFormPersonal extends Component {
 
                 <div className="row">
                     <InputText
+                        label="Voorletters"
+                        size={"col-sm-6"}
+                        name="initials"
+                        value={initials}
+                        onChangeAction={this.handleInputChange}
+                    />
+                    <InputText
                         label="Voornaam"
                         size={"col-sm-6"}
                         name="firstName"
@@ -167,15 +175,15 @@ class ContactNewFormPersonal extends Component {
                         required={lastName === '' && "required"}
                         error={this.state.errors.name}
                     />
+                </div>
+
+                <div className="row">
                     <InputDate
                         label={"Lid sinds"}
                         name="memberSince"
                         value={ memberSince }
                         onChangeAction={this.handleChangeMemberSince}
                     />
-                </div>
-
-                <div className="row">
                     <InputSelect
                         label="Tussenvoegsel"
                         name="lastNamePrefixId"
@@ -183,15 +191,15 @@ class ContactNewFormPersonal extends Component {
                         value={lastNamePrefixId}
                         onChangeAction={this.handleInputChange}
                     />
+                </div>
+
+                <div className="row">
                     <InputText
                         label={"Opzegdatum"}
                         name={"memberUntil"}
                         value={ '' }
                         readOnly={true}
                     />
-                </div>
-
-                <div className="row">
                     <InputText
                         label={"Achternaam"}
                         size={"col-sm-6"}
@@ -201,6 +209,9 @@ class ContactNewFormPersonal extends Component {
                         required={firstName === '' && "required"}
                         error={this.state.errors.name}
                     />
+                </div>
+
+                <div className="row">
                     <InputSelect
                         label={"Soort contact"}
                         size={"col-sm-6"}
@@ -209,15 +220,15 @@ class ContactNewFormPersonal extends Component {
                         value={typeId}
                         onChangeAction={this.handleInputChange}
                     />
-                </div>
-
-                <div className="row">
                     <InputDate
                         label={"Geboortedatum"}
                         name={"dateOfBirth"}
                         value={ dateOfBirth }
                         onChangeAction={this.handleChangeDateOfBirth}
                     />
+                </div>
+
+                <div className="row">
                     <InputSelect
                         label={"Eigenaar"}
                         size={"col-sm-6"}
@@ -227,9 +238,6 @@ class ContactNewFormPersonal extends Component {
                         optionName={"fullName"}
                         onChangeAction={this.handleInputChange}
                     />
-                </div>
-
-                <div className="row">
                     <InputToggle
                         label={"Nieuwsbrief"}
                         name={"newsletter"}

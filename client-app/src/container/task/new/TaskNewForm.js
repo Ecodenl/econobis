@@ -26,7 +26,7 @@ const TaskNewForm = props => {
         endTimePlanned,
         responsible,
     } = props.task;
-    console.log(props.peekLoading)
+
     return (
         <form className="form-horizontal" onSubmit={props.handleSubmit}>
             <div className="row">

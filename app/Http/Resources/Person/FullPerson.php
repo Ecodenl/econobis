@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\Person;
 
+use App\Http\Resources\Contact\FullContact;
 use App\Http\Resources\Occupation\FullOccupationPerson;
 use App\Http\Resources\Organisation\FullOrganisation;
 use App\Http\Resources\LastNamePrefix\FullLastNamePrefix;

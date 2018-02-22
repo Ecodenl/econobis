@@ -47,7 +47,7 @@ class QuotationRequestController extends ApiController
     public function show(QuotationRequest $quotationRequest)
     {
         $quotationRequest->load([
-            'organisation',
+            'organisation.contactPerson.person',
             'opportunity.intake.contact',
             'opportunity.measure.measureCategory',
             'documents',

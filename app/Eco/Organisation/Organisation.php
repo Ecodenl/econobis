@@ -37,7 +37,7 @@ class Organisation extends Model
 
     public function contactPerson()
     {
-        return $this->belongsTo(OccupationPerson::class)->where('primary', true);
+        return $this->hasOne(OccupationPerson::class)->where('primary', true);
     }
 
     public function industry()

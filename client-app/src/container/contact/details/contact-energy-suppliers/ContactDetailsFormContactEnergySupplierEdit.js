@@ -11,7 +11,7 @@ import moment from "moment/moment";
 moment.locale('nl');
 
 const ContactDetailsFormContactEnergySupplierEdit = props => {
-    const {energySupplierId, type, memberSince, eanElectricity, eanGas, contactEnergySupplyStatusId, switchDate } = props.contactEnergySupplier;
+    const {energySupplierId, type, memberSince, eanElectricity, eanGas, contactEnergySupplyStatusId, switchDate, createdAt, createdBy } = props.contactEnergySupplier;
 
     return (
         <div>
@@ -76,6 +76,21 @@ const ContactDetailsFormContactEnergySupplierEdit = props => {
                                 name="switchDate"
                                 value={switchDate ? switchDate : ''}
                                 onChangeAction={props.handleInputChangeDate}
+                            />
+                        </div>
+
+                        <div className="row">
+                            <InputText
+                                label={"Gemaakt op"}
+                                name={"createdAt"}
+                                value={createdAt ? moment(createdAt.date).format('L') : ''}
+                                readOnly={true}
+                            />
+                            <InputText
+                                label={"Gemaakt door"}
+                                name={"createdBy"}
+                                value={createdBy ? createdBy.fullName : ''}
+                                readOnly={true}
                             />
                         </div>
 

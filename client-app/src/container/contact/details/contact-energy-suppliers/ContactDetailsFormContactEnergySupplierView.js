@@ -3,17 +3,17 @@ import moment from "moment/moment";
 moment.locale('nl');
 
 const ContactDetailsFormContactEnergySupplierView = props => {
-    const {energySupplier, type, memberSince, contactEnergySupplyStatus, switchDate } = props.contactEnergySupplier;
+    const {energySupplier, contactEnergySupplyType, memberSince, contactEnergySupplyStatus, switchDate, isCurrentSupplier } = props.contactEnergySupplier;
 
     return (
         <div className={`row border ${props.highlightLine}`} onMouseEnter={() => props.onLineEnter()} onMouseLeave={() => props.onLineLeave()}>
             <div onClick={props.openEdit}>
 
-                <div className="col-sm-3">
+                <div className="col-sm-2">
                     { energySupplier && energySupplier.name }
                 </div>
                 <div className="col-sm-2">
-                    { type ? type : '' }
+                    { contactEnergySupplyType ? contactEnergySupplyType.name : '' }
                 </div>
                 <div className="col-sm-2">
                     {memberSince ? moment(memberSince).format('L') : ''}
@@ -23,6 +23,9 @@ const ContactDetailsFormContactEnergySupplierView = props => {
                 </div>
                 <div className="col-sm-2">
                     {switchDate ? moment(switchDate).format('L') : ''}
+                </div>
+                <div className="col-sm-1">
+                    {isCurrentSupplier ? 'Ja' : ''}
                 </div>
             </div>
             <div className="col-sm-1">

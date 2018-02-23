@@ -8,10 +8,11 @@ import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
 import InputDate from "../../../../components/form/InputDate";
 import moment from "moment/moment";
+import InputToggle from "../../../../components/form/InputToggle";
 moment.locale('nl');
 
 const ContactDetailsFormContactEnergySupplierEdit = props => {
-    const {energySupplierId, type, memberSince, eanElectricity, eanGas, contactEnergySupplyStatusId, switchDate, createdAt, createdBy } = props.contactEnergySupplier;
+    const {energySupplierId, contactEnergySupplyTypeId, memberSince, eanElectricity, eanGas, contactEnergySupplyStatusId, switchDate, isCurrentSupplier, createdAt, createdBy } = props.contactEnergySupplier;
 
     return (
         <div>
@@ -27,12 +28,13 @@ const ContactDetailsFormContactEnergySupplierEdit = props => {
                                 value={energySupplierId}
                                 readOnly={true}
                             />
-                            <InputText
+                            <InputSelect
                                 label={"Type"}
-                                id={"type"}
-                                name={"type"}
-                                value={type}
-                                onChangeAction={props.handleInputChange}
+                                id="contactEnergySupplyTypeId"
+                                name={"contactEnergySupplyTypeId"}
+                                options={props.contactEnergySupplierTypes}
+                                value={contactEnergySupplyTypeId}
+                                readOnly={true}
                             />
                         </div>
 
@@ -93,6 +95,14 @@ const ContactDetailsFormContactEnergySupplierEdit = props => {
                                 readOnly={true}
                             />
                         </div>
+                        <div className="row">
+                            <InputToggle
+                                label={"Is huidige leverancier"}
+                                name={"isCurrentSupplier"}
+                                value={isCurrentSupplier}
+                                onChangeAction={props.handleInputChange}
+                            />
+                        </div>
 
                         <div className="pull-right btn-group" role="group">
                             <ButtonText buttonClassName={"btn-default"} buttonText={"Annuleren"} onClickAction={props.cancelEdit}/>
@@ -108,6 +118,7 @@ const ContactDetailsFormContactEnergySupplierEdit = props => {
 const mapStateToProps = (state) => {
     return {
         energySuppliers: state.systemData.energySuppliers,
+        contactEnergySupplierTypes: state.systemData.contactEnergySupplierTypes,
         contactEnergySupplierStatus: state.systemData.contactEnergySupplierStatus,
     };
 };

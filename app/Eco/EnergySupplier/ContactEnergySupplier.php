@@ -30,6 +30,11 @@ class ContactEnergySupplier extends Model
         return $this->belongsTo(ContactEnergySupplierStatus::class);
     }
 
+    public function contactEnergySupplyType()
+    {
+        return $this->belongsTo(ContactEnergySupplierType::class);
+    }
+
     public function createdBy(){
         return $this->belongsTo(User::class);
     }

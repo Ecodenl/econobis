@@ -20,15 +20,17 @@ class ContactDetailsFormContactEnergySupplierNew extends Component {
             contactEnergySupplier: {
                 contactId: this.props.id,
                 energySupplierId: '',
-                type: '',
+                contactEnergySupplyTypeId: '',
                 memberSince: '',
                 eanElectricity: '',
                 eanGas: '',
                 contactEnergySupplyStatusId: '',
-                switchDate: ''
+                switchDate: '',
+                isCurrentSupplier: false
             },
             errors: {
                 energySupplierId: false,
+                contactEnergySupplyTypeId: false,
             },
         };
 
@@ -69,7 +71,12 @@ class ContactDetailsFormContactEnergySupplierNew extends Component {
 
 
         if(validator.isEmpty(contactEnergySupplier.energySupplierId)){
-            errors.number = true;
+            errors.energySupplierId = true;
+            hasErrors = true;
+        };
+
+        if(validator.isEmpty(contactEnergySupplier.contactEnergySupplyTypeId)){
+            errors.contactEnergySupplyTypeId = true;
             hasErrors = true;
         };
 
@@ -84,7 +91,7 @@ class ContactDetailsFormContactEnergySupplierNew extends Component {
     };
 
     render() {
-        const {energySupplierId, type, memberSince, eanElectricity, eanGas, contactEnergySupplyStatusId, switchDate } = this.state.contactEnergySupplier;
+        const {energySupplierId, contactEnergySupplyTypeId, memberSince, eanElectricity, eanGas, contactEnergySupplyStatusId, switchDate, isCurrentSupplier } = this.state.contactEnergySupplier;
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -101,12 +108,15 @@ class ContactDetailsFormContactEnergySupplierNew extends Component {
                                 required={"required"}
                                 error={this.state.errors.energySupplierId}
                             />
-                            <InputText
+                            <InputSelect
                                 label={"Type"}
-                                id={"type"}
-                                name={"type"}
-                                value={type}
+                                id="contactEnergySupplyTypeId"
+                                name={"contactEnergySupplyTypeId"}
+                                options={this.props.contactEnergySupplierTypes}
+                                value={contactEnergySupplyTypeId}
                                 onChangeAction={this.handleInputChange}
+                                required={"required"}
+                                error={this.state.errors.contactEnergySupplyTypeId}
                             />
                         </div>
 
@@ -151,6 +161,12 @@ class ContactDetailsFormContactEnergySupplierNew extends Component {
                                 value={switchDate}
                                 onChangeAction={this.handleInputChangeDate}
                             />
+                            <InputToggle
+                                label={"Is huidige leverancier"}
+                                name={"isCurrentSupplier"}
+                                value={isCurrentSupplier}
+                                onChangeAction={this.handleInputChange}
+                            />
                         </div>
 
                         <div className="pull-right btn-group" role="group">
@@ -168,6 +184,7 @@ const mapStateToProps = (state) => {
     return {
         energySuppliers: state.systemData.energySuppliers,
         contactEnergySupplierStatus: state.systemData.contactEnergySupplierStatus,
+        contactEnergySupplierTypes: state.systemData.contactEnergySupplierTypes,
         id: state.contactDetails.id,
     };
 };

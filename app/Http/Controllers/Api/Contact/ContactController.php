@@ -36,6 +36,7 @@ class ContactController extends Controller
         $contact->load('contactEnergySuppliers');
         $contact->contactEnergySuppliers->load('energySupplier');
         $contact->contactEnergySuppliers->load('contactEnergySupplyStatus');
+        $contact->contactEnergySuppliers->load('contactEnergySupplyType');
         $contact->contactEnergySuppliers->load('createdBy');
         $contact->contactEnergySuppliers->load('contact');
 

@@ -10,6 +10,7 @@ use App\Eco\Document\DocumentType;
 use App\Eco\DocumentTemplate\DocumentTemplateType;
 use App\Eco\Email\EmailStatus;
 use App\Eco\EnergySupplier\ContactEnergySupplierStatus;
+use App\Eco\EnergySupplier\ContactEnergySupplierType;
 use App\Eco\EnergySupplier\EnergySupplier;
 use App\Eco\HousingFile\EnergyLabelStatus;
 use App\Eco\HousingFile\RoofType;
@@ -101,6 +102,7 @@ class SystemData extends Resource
             'countries' => GenericResource::collection(Country::all()),
             'energySuppliers' => GenericResource::collection(EnergySupplier::all()),
             'contactEnergySupplierStatus' => GenericResource::collection(ContactEnergySupplierStatus::all()),
+            'contactEnergySupplierTypes' => GenericResource::collection(ContactEnergySupplierType::all()),
         ];
     }
 }

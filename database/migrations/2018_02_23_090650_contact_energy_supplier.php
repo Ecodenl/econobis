@@ -34,10 +34,31 @@ class ContactEnergySupplier extends Migration
         ];
 
         foreach (
-            $contact_energy_supply_statusses as $contact_energy_supply_status
+            $contact_energy_supply_statusses as $contact_energy_supply_statuss
         ) {
             DB::table('contact_energy_supply_status')->insert([
-                    'name' => $contact_energy_supply_status
+                    'name' => $contact_energy_supply_statuss
+                ]
+            );
+        }
+
+        Schema::create('contact_energy_supply_type', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('name');
+            $table->timestamps();
+        });
+
+        $contact_energy_supply_types = [
+            'Gas',
+            'Electriciteit',
+            'Electriciteit en gas',
+        ];
+
+        foreach (
+            $contact_energy_supply_types as $contact_energy_supply_type
+        ) {
+            DB::table('contact_energy_supply_type')->insert([
+                    'name' => $contact_energy_supply_type
                 ]
             );
         }
@@ -52,8 +73,11 @@ class ContactEnergySupplier extends Migration
             $table->foreign('energy_supplier_id')
                 ->references('id')->on('energy_suppliers')
                 ->onDelete('restrict');
+            $table->unsignedInteger('contact_energy_supply_type_id');
+            $table->foreign('contact_energy_supply_type_id')
+                ->references('id')->on('contact_energy_supply_type')
+                ->onDelete('restrict');
 
-            $table->string('type')->nullable();
             $table->date('member_since')->nullable();
             $table->string('ean_electricity')->nullable();
             $table->string('ean_gas')->nullable();
@@ -69,6 +93,8 @@ class ContactEnergySupplier extends Migration
             $table->foreign('created_by_id')
                 ->references('id')->on('users')
                 ->onDelete('restrict');
+
+            $table->boolean('is_current_supplier')->default(false);
 
             $table->timestamps();
         });

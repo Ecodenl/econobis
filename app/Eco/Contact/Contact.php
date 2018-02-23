@@ -176,7 +176,12 @@ class Contact extends Model
 
     public function contactEnergySuppliers()
     {
-        return $this->hasMany(ContactEnergySupplier::class)->orderBy('member_since', 'desc');
+        return $this->hasMany(ContactEnergySupplier::class);
+    }
+
+    public function primarycontactEnergySupplier()
+    {
+        return $this->hasOne(ContactEnergySupplier::class)->where('is_current_supplier', true);
     }
 
     //Returns addresses array as Type - Streetname - Number

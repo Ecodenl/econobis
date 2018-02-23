@@ -108,8 +108,9 @@ class ContactEnergySupplier extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('energy_suppliers');
         Schema::dropIfExists('contact_energy_supplier');
+        Schema::dropIfExists('energy_suppliers');
         Schema::dropIfExists('contact_energy_supply_status');
+        Schema::dropIfExists('contact_energy_supply_type');
     }
 }

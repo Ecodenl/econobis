@@ -100,7 +100,7 @@ class ContactDetailFormAddressItem extends Component {
         let errors = {};
         let hasErrors = false;
 
-        if(!validator.isPostalCode(address.postalCode, 'NL')){
+        if(!validator.isPostalCode(address.postalCode, 'any')){
             errors.postalCode = true;
             hasErrors = true;
         };

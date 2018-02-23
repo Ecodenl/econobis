@@ -4,6 +4,7 @@ namespace App\Http\Resources\SystemData;
 
 use App\Eco\Campaign\CampaignStatus;
 use App\Eco\Campaign\CampaignType;
+use App\Eco\Country\Country;
 use App\Eco\Document\DocumentGroup;
 use App\Eco\Document\DocumentType;
 use App\Eco\DocumentTemplate\DocumentTemplateType;
@@ -95,6 +96,7 @@ class SystemData extends Resource
             'roofTypes' => FullEnumWithIdAndName::collection(RoofType::all()),
             'energyLabelStatus' => FullEnumWithIdAndName::collection(EnergyLabelStatus::all()),
             'quotationRequestStatus' => FullEnumWithIdAndName::collection(QuotationRequestStatus::all()),
+            'countries' => GenericResource::collection(Country::all()),
         ];
     }
 }

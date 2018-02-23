@@ -6,11 +6,10 @@ import ButtonText from '../../../../components/button/ButtonText';
 import InputSelect from "../../../../components/form/InputSelect";
 import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
-import InputMask from "../../../../components/form/InputMask";
 import InputToggle from "../../../../components/form/InputToggle";
 
 const ContactDetailsFormAddressEdit = props => {
-    const { street, number, postalCode, city, typeId, primary } = props.address;
+    const { street, number, postalCode, city, typeId, primary, countryId } = props.address;
 
     return (
         <div>
@@ -18,7 +17,7 @@ const ContactDetailsFormAddressEdit = props => {
                 <Panel className={'panel-grey'}>
                     <PanelBody>
                         <div className="row">
-                            <InputMask
+                            <InputText
                                 label={"Postcode"}
                                 size={"col-sm-4"}
                                 name={"postalCode"}
@@ -26,7 +25,6 @@ const ContactDetailsFormAddressEdit = props => {
                                 onChangeAction={ props.handleInputChange }
                                 required={"required"}
                                 error={props.postalCodeError}
-                                mask={'9999 aa'}
                             />
                             <InputText
                                 label={"Nummer"}
@@ -78,6 +76,18 @@ const ContactDetailsFormAddressEdit = props => {
                             />
                         </div>
 
+                        <div className="row">
+                            <InputSelect
+                                label={"Land"}
+                                id="countryId"
+                                size={"col-sm-6"}
+                                name={"countryId"}
+                                options={props.countries}
+                                value={countryId}
+                                onChangeAction={props.handleInputChange}
+                            />
+                        </div>
+
                         <div className="pull-right btn-group" role="group">
                             <ButtonText buttonClassName={"btn-default"} buttonText={"Annuleren"} onClickAction={props.cancelEdit}/>
                             <ButtonText buttonText={"Opslaan"} onClickAction={props.handleSubmit} type={"submit"} value={"Submit"}/>
@@ -91,7 +101,8 @@ const ContactDetailsFormAddressEdit = props => {
 
 const mapStateToProps = (state) => {
     return {
-        addressTypes: state.systemData.addressTypes
+        addressTypes: state.systemData.addressTypes,
+        countries: state.systemData.countries,
     };
 };
 

@@ -17,6 +17,7 @@ class AddressController extends ApiController
     {
         $data = $request->validate([
             'contactId' => ['required', 'exists:contacts,id'],
+            'countryId' => ['exists:countries,id'],
             'typeId' => new EnumExists(AddressType::class),
             'street' => '',
             'number' => '',
@@ -44,6 +45,7 @@ class AddressController extends ApiController
 
         $data = $request->validate([
             'contactId' => 'exists:contacts,id',
+            'countryId' => ['exists:countries,id'],
             'typeId' => new EnumExists(AddressType::class),
             'street' => '',
             'number' => '',

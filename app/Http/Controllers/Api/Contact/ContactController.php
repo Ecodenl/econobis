@@ -20,7 +20,7 @@ class ContactController extends Controller
     {
         $this->authorize('view', $contact);
 
-        $contact->load('addresses');
+        $contact->load('addresses.country');
         $contact->load('emailAddresses');
         $contact->load('phoneNumbers');
         $contact->load('contactNotes');

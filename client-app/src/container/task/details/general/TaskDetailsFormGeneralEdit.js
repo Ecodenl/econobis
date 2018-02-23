@@ -22,7 +22,6 @@ import InputToggle from "../../../../components/form/InputToggle";
 import PanelHeader from "../../../../components/panel/PanelHeader";
 import InputSelectGroup from "../../../../components/form/InputSelectGroup";
 
-
 class TaskDetailsFormGeneralEdit extends Component {
     constructor(props) {
         super(props);
@@ -32,6 +31,7 @@ class TaskDetailsFormGeneralEdit extends Component {
             note,
             typeId,
             contactId,
+            contact,
             finished,
             intakeId,
             campaignId,
@@ -49,7 +49,7 @@ class TaskDetailsFormGeneralEdit extends Component {
 
 
         this.state = {
-            contacts: [],
+            contacts: contactId ? [{id: contactId, fullName: contact.fullName}] : [],
             intakes: [],
             contactGroups: [],
             opportunities: [],
@@ -78,6 +78,13 @@ class TaskDetailsFormGeneralEdit extends Component {
                 note: false,
                 responsible: false,
             },
+            peekLoading: {
+                contacts: true,
+                intakes: true,
+                contactGroups: true,
+                opportunities: true,
+                campaigns: true,
+            },
         };
 
         this.handleInputChange = this.handleInputChange.bind(this);
@@ -89,23 +96,53 @@ class TaskDetailsFormGeneralEdit extends Component {
 
     componentDidMount() {
         ContactsAPI.getContactsPeek().then((payload) => {
-            this.setState({ contacts: payload });
+            this.setState({
+                contacts: payload,
+                peekLoading: {
+                    ...this.state.peekLoading,
+                    contacts: false,
+                },
+            });
         });
 
         IntakesAPI.peekIntakes().then((payload) => {
-            this.setState({ intakes: payload });
+            this.setState({
+                intakes: payload,
+                peekLoading: {
+                    ...this.state.peekLoading,
+                    intakes: false,
+                },
+            });
         });
 
         ContactGroupAPI.peekContactGroups().then((payload) => {
-            this.setState({ contactGroups: payload });
+            this.setState({
+                contactGroups: payload,
+                peekLoading: {
+                    ...this.state.peekLoading,
+                    contactGroups: false,
+                },
+            });
         });
 
         OpportunitiesAPI.peekOpportunities().then((payload) => {
-            this.setState({ opportunities: payload });
+            this.setState({
+                opportunities: payload,
+                peekLoading: {
+                    ...this.state.peekLoading,
+                    opportunities: false,
+                },
+            });
         });
 
         CampaignsAPI.peekCampaigns().then((payload) => {
-            this.setState({ campaigns: payload });
+            this.setState({
+                campaigns: payload,
+                peekLoading: {
+                    ...this.state.peekLoading,
+                    campaigns: false,
+                },
+            });
         });
     };
 
@@ -312,6 +349,7 @@ class TaskDetailsFormGeneralEdit extends Component {
                         onChangeAction={this.handleReactSelectChange}
                         optionName={'fullName'}
                         multi={false}
+                        isLoading={this.state.peekLoading.contacts}
                     />
                 </div>
 
@@ -336,6 +374,7 @@ class TaskDetailsFormGeneralEdit extends Component {
                             opportunities={this.state.opportunities}
                             campaigns={this.state.campaigns}
                             handleReactSelectChange={this.handleReactSelectChange}
+                            peekLoading={this.state.peekLoading}
                         />
                     }
                 </div>

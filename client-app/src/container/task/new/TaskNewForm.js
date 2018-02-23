@@ -129,6 +129,7 @@ const TaskNewForm = props => {
                     onChangeAction={props.handleReactSelectChange}
                     optionName={'fullName'}
                     multi={false}
+                    isLoading={props.peekLoading.contacts}
                 />
             </div>
 
@@ -153,6 +154,7 @@ const TaskNewForm = props => {
                             opportunities={props.opportunities}
                             campaigns={props.campaigns}
                             handleReactSelectChange={props.handleReactSelectChange}
+                            peekLoading={props.peekLoading}
                         />
                 }
             </div>

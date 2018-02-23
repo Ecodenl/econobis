@@ -2,7 +2,7 @@ import React from 'react';
 
 import InputReactSelect from "../../../../components/form/InputReactSelect";
 
-const TaskNewFormExtraConnections = ({task, campaigns, intakes, contactGroups, opportunities, housingFiles, handleReactSelectChange}) => {
+const TaskNewFormExtraConnections = ({task, campaigns, intakes, contactGroups, opportunities, housingFiles, handleReactSelectChange, peekLoading}) => {
     const {
         intakeId,
         contactGroupId,
@@ -21,6 +21,7 @@ const TaskNewFormExtraConnections = ({task, campaigns, intakes, contactGroups, o
                     value={campaignId}
                     onChangeAction={handleReactSelectChange}
                     multi={false}
+                    isLoading={peekLoading.campaigns}
                 />
                 <InputReactSelect
                     label={"Intake"}
@@ -30,6 +31,7 @@ const TaskNewFormExtraConnections = ({task, campaigns, intakes, contactGroups, o
                     value={intakeId}
                     onChangeAction={handleReactSelectChange}
                     multi={false}
+                    isLoading={peekLoading.intakes}
                 />
             </div>
 
@@ -42,6 +44,7 @@ const TaskNewFormExtraConnections = ({task, campaigns, intakes, contactGroups, o
                     value={contactGroupId}
                     onChangeAction={handleReactSelectChange}
                     multi={false}
+                    isLoading={peekLoading.contactGroups}
                 />
                 <InputReactSelect
                     label={"Kans"}
@@ -51,6 +54,7 @@ const TaskNewFormExtraConnections = ({task, campaigns, intakes, contactGroups, o
                     value={opportunityId}
                     onChangeAction={handleReactSelectChange}
                     multi={false}
+                    isLoading={peekLoading.opportunities}
                 />
             </div>
             <div className="row">
@@ -62,6 +66,7 @@ const TaskNewFormExtraConnections = ({task, campaigns, intakes, contactGroups, o
                     value={housingFileId}
                     onChangeAction={handleReactSelectChange}
                     multi={false}
+                    isLoading={peekLoading.housingFiles}
                 />
             </div>
         </div>

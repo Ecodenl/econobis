@@ -180,6 +180,33 @@ export default function (state = {}, action) {
                     }
                 })
             };
+        case 'NEW_CONTACT_ENERGY_SUPPLIER':
+            return {
+                ...state,
+                contactEnergySuppliers: [
+                    ...state.contactEnergySuppliers,
+                    {
+                        ...action.contactEnergySupplier,
+                    }
+                ]
+            };
+        case 'UPDATE_CONTACT_ENERGY_SUPPLIER':
+            return {
+                ...state,
+                contactEnergySuppliers: state.contactEnergySuppliers.map((contactEnergySupplier) =>
+                    contactEnergySupplier.id === action.contactEnergySupplier.id ?
+                        {
+                            ...action.contactEnergySupplier,
+                        }
+                        :
+                        contactEnergySupplier
+                )
+            };
+        case 'DELETE_CONTACT_ENERGY_SUPPLIER':
+            return {
+                ...state,
+                contactEnergySuppliers: state.contactEnergySuppliers.filter((contactEnergySupplier) => contactEnergySupplier.id !== action.id),
+            };
         default:
             return state;
     }

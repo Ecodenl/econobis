@@ -9,6 +9,8 @@ use App\Eco\Document\DocumentGroup;
 use App\Eco\Document\DocumentType;
 use App\Eco\DocumentTemplate\DocumentTemplateType;
 use App\Eco\Email\EmailStatus;
+use App\Eco\EnergySupplier\ContactEnergySupplierStatus;
+use App\Eco\EnergySupplier\EnergySupplier;
 use App\Eco\HousingFile\EnergyLabelStatus;
 use App\Eco\HousingFile\RoofType;
 use App\Eco\Opportunity\OpportunityStatus;
@@ -97,6 +99,8 @@ class SystemData extends Resource
             'energyLabelStatus' => FullEnumWithIdAndName::collection(EnergyLabelStatus::all()),
             'quotationRequestStatus' => FullEnumWithIdAndName::collection(QuotationRequestStatus::all()),
             'countries' => GenericResource::collection(Country::all()),
+            'energySuppliers' => GenericResource::collection(EnergySupplier::all()),
+            'contactEnergySupplierStatus' => GenericResource::collection(ContactEnergySupplierStatus::all()),
         ];
     }
 }

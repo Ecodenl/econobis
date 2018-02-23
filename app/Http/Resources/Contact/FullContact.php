@@ -3,6 +3,7 @@
 namespace App\Http\Resources\Contact;
 
 use App\Eco\ContactGroup\ContactGroup;
+use App\Http\Resources\ContactEnergySupplier\FullContactEnergySupplier;
 use App\Http\Resources\Document\FullDocument;
 use App\Http\Resources\Opportunity\FullOpportunity;
 use App\Http\Resources\Opportunity\GridOpportunity;
@@ -51,6 +52,7 @@ class FullContact extends Resource
             'liabilityAmount' => $this->liability_amount,
             'ownerId' => $this->owner_id,
             'owner' => FullUser::make($this->whenLoaded('owner')),
+            'contactEnergySuppliers' => FullContactEnergySupplier::collection($this->whenLoaded('contactEnergySuppliers')),
             'createdById' => $this->created_by_id,
             'createdBy' => FullUser::make($this->whenLoaded('createdBy')),
             'updatedById' => $this->updated_by_id,

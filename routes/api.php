@@ -100,12 +100,15 @@ Route::namespace('Api')
 
         Route::post('/organisation', 'Organisation\OrganisationController@store');
         Route::post('/organisation/{organisation}', 'Organisation\OrganisationController@update');
+        Route::get('/organisation/peek', 'Organisation\OrganisationController@peek');
 
         Route::post('/contact-note', 'ContactNote\ContactNoteController@store');
         Route::post('/contact-note/{contactNote}', 'ContactNote\ContactNoteController@update');
         Route::post('/contact-note/{contactNote}/delete', 'ContactNote\ContactNoteController@destroy');
 
-        Route::get('/organisation/peek', 'Organisation\OrganisationController@peek');
+        Route::post('/contact-energy-supplier', 'ContactEnergySupplier\ContactEnergySupplierController@store');
+        Route::post('/contact-energy-supplier/{contactEnergySupplier}', 'ContactEnergySupplier\ContactEnergySupplierController@update');
+        Route::post('/contact-energy-supplier/{contactNote}/delete', 'ContactEnergySupplier\ContactEnergySupplierController@destroy');
 
         Route::get('contact-group/grid', 'ContactGroup\ContactGroupController@grid');
         Route::get('contact-group/peek', 'ContactGroup\ContactGroupController@peek');

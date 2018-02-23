@@ -10,6 +10,8 @@ use App\Eco\DocumentTemplate\DocumentTemplateObserver;
 use App\Eco\DocumentTemplate\DocumentTemplate;
 use App\Eco\EmailTemplate\EmailTemplate;
 use App\Eco\EmailTemplate\EmailTemplateObserver;
+use App\Eco\EnergySupplier\ContactEnergySupplier;
+use App\Eco\EnergySupplier\ContactEnergySupplierObserver;
 use App\Eco\HousingFile\HousingFile;
 use App\Eco\HousingFile\HousingFileObserver;
 use App\Eco\Intake\Intake;
@@ -67,6 +69,7 @@ class ObserverServiceProvider extends ServiceProvider
         HousingFile::observe(HousingFileObserver::class);
         Task::observe(TaskObserver::class);
         QuotationRequest::observe(QuotationRequestObserver::class);
+        ContactEnergySupplier::observe(ContactEnergySupplierObserver::class);
     }
 
     /**

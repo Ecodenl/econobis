@@ -5,6 +5,7 @@ namespace App\Eco\Contact;
 use App\Eco\Campaign\Campaign;
 use App\Eco\Document\Document;
 use App\Eco\Email\Email;
+use App\Eco\EnergySupplier\ContactEnergySupplier;
 use App\Eco\HousingFile\HousingFile;
 use App\Eco\Opportunity\Opportunity;
 use App\Eco\Organisation\Organisation;
@@ -171,6 +172,11 @@ class Contact extends Model
     public function housingFiles()
     {
         return $this->hasManyThrough(HousingFile::class, Address::class);
+    }
+
+    public function contactEnergySuppliers()
+    {
+        return $this->hasMany(ContactEnergySupplier::class)->orderBy('member_since', 'desc');
     }
 
     //Returns addresses array as Type - Streetname - Number

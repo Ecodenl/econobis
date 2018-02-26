@@ -4,6 +4,7 @@ import { isEmpty } from 'lodash';
 
 import ProductionProjectFormGeneral from './form/ProductionProjectFormGeneral';
 import ProductionProjectDetailsFormConclusion from './conclusion/ProductionProjectDetailsFormConclusion';
+import ProductionProjectDetailsFormValueCourse from './value-course/ProductionProjectDetailsFormValueCourse';
 
 class ProductionProjectDetailsForm extends Component {
     constructor(props){
@@ -18,6 +19,7 @@ class ProductionProjectDetailsForm extends Component {
                 :
                 <div>
                     <ProductionProjectFormGeneral />
+                    <ProductionProjectDetailsFormValueCourse />
                     <ProductionProjectDetailsFormConclusion />
                 </div>
         );

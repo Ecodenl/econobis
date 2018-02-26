@@ -68,6 +68,10 @@ class ProductionProject extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function productionProjectValueCourses(){
+        return $this->hasMany(ProductionProjectValueCourse::class);
+    }
+
     //Appended fields
     public function getIssuedParticipationsAttribute()
     {

@@ -55,6 +55,7 @@ class FullProductionProject extends Resource
                 'createdAt' => $this->created_at,
                 'createdById' => $this->created_by_id,
                 'createdBy' => FullUser::make($this->whenLoaded('createdBy')),
+                'valueCourses' => FullProductionProjectValueCourse::collection($this->whenLoaded('productionProjectValueCourses')),
             ];
     }
 }

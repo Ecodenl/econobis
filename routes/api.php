@@ -252,6 +252,10 @@ Route::namespace('Api')
         Route::post('/quotation-request/{quotationRequest}/update', 'QuotationRequest\QuotationRequestController@update');
         Route::post('/quotation-request/{quotationRequest}/delete', 'QuotationRequest\QuotationRequestController@destroy');
 
+        Route::post('production-project/value-course', 'ProductionProject\ProductionProjectValueCourseController@store');
+        Route::post('production-project/value-course/{productionProjectValueCourse}', 'ProductionProject\ProductionProjectValueCourseController@update');
+        Route::post('production-project/value-course/{productionProjectValueCourse}/delete', 'ProductionProject\ProductionProjectValueCourseController@destroy');
+
         Route::get('production-project/grid', 'ProductionProject\ProductionProjectController@grid');
         Route::get('production-project/peek', 'ProductionProject\ProductionProjectController@peek');
         Route::get('production-project/{productionProject}', 'ProductionProject\ProductionProjectController@show');

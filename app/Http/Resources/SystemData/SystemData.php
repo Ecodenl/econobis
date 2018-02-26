@@ -32,6 +32,8 @@ use App\Eco\LastNamePrefix\LastNamePrefix;
 use App\Eco\Occupation\Occupation;
 use App\Eco\PersonType\PersonType;
 use App\Eco\PhoneNumber\PhoneNumberType;
+use App\Eco\ProductionProject\ProductionProjectStatus;
+use App\Eco\ProductionProject\ProductionProjectType;
 use App\Eco\QuotationRequest\QuotationRequestStatus;
 use App\Eco\Task\TaskProperty;
 use App\Eco\Task\TaskStatus;
@@ -103,6 +105,8 @@ class SystemData extends Resource
             'energySuppliers' => GenericResource::collection(EnergySupplier::all()),
             'contactEnergySupplierStatus' => GenericResource::collection(ContactEnergySupplierStatus::all()),
             'contactEnergySupplierTypes' => GenericResource::collection(ContactEnergySupplierType::all()),
+            'productionProjectStatus' => GenericResource::collection(ProductionProjectStatus::all()),
+            'productionProjectTypes' => GenericResource::collection(ProductionProjectType::all()),
         ];
     }
 }

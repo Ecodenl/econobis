@@ -5,7 +5,7 @@ import authReducer from './general/AuthReducer';
 import blockUIReducer from './general/BlockUIReducer';
 import calendarReducer from './calendar/CalendarReducer';
 import campaignsReducer from './campaign/CampaignsReducer';
-import campaignDetailsReducer from './campaign/CampaignDetailsReducer';
+import campaignDetailsReducer from './campaign/CampaignDetailsReducer'
 import contactDetailsReducer from './contact/ContactDetailsReducer';
 import contactGroupDetailsReducer from './contact-group/ContactGroupDetailsReducer';
 import contactGroupReducer from './contact-group/ContactGroupReducer';
@@ -29,6 +29,8 @@ import measureDetailsReducer from './measure/MeasureDetailsReducer';
 import meDetailsReducer from './general/MeDetailsReducer';
 import opportunitiesReducer from './opportunity/OpportunitiesReducer';
 import opportunityDetailsReducer from './opportunity/OpportunityDetailsReducer';
+import productionProjectsReducer from './production-project/ProductionProjectsReducer';
+import productionProjectDetailsReducer from './production-project/ProductionProjectDetailsReducer';
 import intakeDetailsReducer from './intake/IntakeDetailsReducer';
 import intakesReducer from './intake/IntakesReducer';
 import quotationRequestsReducer from './quotation-request/QuotationRequestsReducer';
@@ -86,6 +88,9 @@ const rootReducer = combineReducers({
     // Opportunity
     opportunities: opportunitiesReducer,
     opportunityDetails: opportunityDetailsReducer,
+    // Production project
+    productionProjects: productionProjectsReducer,
+    productionProjectDetails: productionProjectDetailsReducer,
     // Intake
     intakes: intakesReducer,
     intakeDetails: intakeDetailsReducer,

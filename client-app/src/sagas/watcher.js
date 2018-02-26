@@ -19,6 +19,8 @@ import { fetchMeasuresSaga } from './measure/MeasuresSaga';
 import { fetchMeasureSaga } from './measure/MeasureDetailsSaga';
 import { fetchOpportunitiesSaga } from './opportunity/OpportunitiesSaga';
 import { fetchOpportunitySaga } from './opportunity/OpportunityDetailsSaga';
+import { fetchProductionProjectsSaga } from './production-project/ProductionProjectsSaga';
+import { fetchProductionProjectSaga } from './production-project/ProductionProjectDetailsSaga';
 import {
     fetchIntakeDetailsSaga,
     deleteIntakeMeasureRequestedSaga,
@@ -106,6 +108,9 @@ export default function* watchSagas() {
     // Opportunity
     yield takeLatest('FETCH_OPPORTUNITIES', fetchOpportunitiesSaga);
     yield takeLatest('FETCH_OPPORTUNITY', fetchOpportunitySaga);
+    // Production project
+    yield takeLatest('FETCH_PRODUCTION_PROJECTS', fetchProductionProjectsSaga);
+    yield takeLatest('FETCH_PRODUCTION_PROJECT', fetchProductionProjectSaga);
     // Intake
     yield takeLatest('FETCH_INTAKES', fetchIntakesSaga);
     yield takeLatest('FETCH_INTAKE_DETAILS', fetchIntakeDetailsSaga);

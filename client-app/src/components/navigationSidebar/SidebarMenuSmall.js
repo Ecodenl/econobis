@@ -8,12 +8,11 @@ import { ic_business } from 'react-icons-kit/md/ic_business';
 import { ic_contacts } from 'react-icons-kit/md/ic_contacts';
 import { ic_email } from 'react-icons-kit/md/ic_email';
 import { cog } from 'react-icons-kit/icomoon/cog';
-import { pencil2 } from 'react-icons-kit/icomoon/pencil2';
 import { speech_bubbles } from 'react-icons-kit/ikons/speech_bubbles';
-import {starEmpty} from "react-icons-kit/icomoon/starEmpty";
 import { documents } from 'react-icons-kit/ikons/documents';
 import { calendar } from 'react-icons-kit/icomoon/calendar';
 import { home } from 'react-icons-kit/icomoon/home';
+import { drawer } from 'react-icons-kit/icomoon/drawer';
 
 class SidebarMenuSmall extends Component {
     constructor(props) {
@@ -26,6 +25,8 @@ class SidebarMenuSmall extends Component {
                 <div className="sidebar-menu-small-item"><SvgIcon size={20} icon={ic_dashboard}/></div>
                 {/* Contacten */}
                 <div className="sidebar-menu-small-item"><SvgIcon size={20} icon={ic_contacts}/></div>
+                {/* Projexts */}
+                <div className="sidebar-menu-small-item"><SvgIcon size={20} icon={drawer}/></div>
                 {/* Intakes */}
                 <div className="sidebar-menu-small-item"><SvgIcon size={20} icon={home}/></div>
                 {/* Groepen beheer */}

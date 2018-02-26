@@ -49,6 +49,9 @@ import NotFoundedPage from './container/global/NotFoundedPage';
 import OpportunitiesListApp from './container/opportunities/list/OpportunitiesListApp';
 import OpportunityDetailsApp from './container/opportunities/details/OpportunityDetailsApp';
 import OpportunityNewApp from './container/opportunities/new/OpportunityNewApp';
+import ProductionProjectsListApp from './container/production-project/list/ProductionProjectsListApp';
+import ProductionProjectDetailsApp from './container/production-project/details/ProductionProjectDetailsApp';
+import ProductionProjectNewApp from './container/production-project/new/ProductionProjectNewApp';
 import PermissionHelper from './helpers/PermissionHelper';
 import IntakeDetailsApp from './container/intake/details/IntakeDetailsApp';
 import IntakeNewApp from './container/intake/new/IntakeNewApp';
@@ -159,6 +162,10 @@ const Routes = () => {
                 <Route path="kans/nieuw/intake/:intakeId/maatregel/:measureId" component={OpportunityNewApp} />
                 <Route path="kans/:id" component={OpportunityDetailsApp} />
                 <Route path="kansen" component={OpportunitiesListApp} />
+                /* Production project */
+                <Route path="productie-project/nieuw" component={ProductionProjectNewApp} />
+                <Route path="productie-project/:id" component={ProductionProjectDetailsApp} />
+                <Route path="productie-projecten" component={ProductionProjectsListApp} />
                 /* Task / notes */
                 <Route path="taak/nieuw" component={TaskNewApp} />
                 <Route path="taak/:id" component={TaskDetailsApp} />

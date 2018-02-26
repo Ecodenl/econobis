@@ -36,6 +36,8 @@ use App\Eco\Person\Person;
 use App\Eco\Person\PersonObserver;
 use App\Eco\PhoneNumber\PhoneNumber;
 use App\Eco\PhoneNumber\PhoneNumberObserver;
+use App\Eco\ProductionProject\ProductionProject;
+use App\Eco\ProductionProject\ProductionProjectObserver;
 use App\Eco\QuotationRequest\QuotationRequest;
 use App\Eco\QuotationRequest\QuotationRequestObserver;
 use App\Eco\Task\Task;
@@ -70,6 +72,7 @@ class ObserverServiceProvider extends ServiceProvider
         Task::observe(TaskObserver::class);
         QuotationRequest::observe(QuotationRequestObserver::class);
         ContactEnergySupplier::observe(ContactEnergySupplierObserver::class);
+        ProductionProject::observe(ProductionProjectObserver::class);
     }
 
     /**

@@ -1,21 +1,20 @@
 import React, {Component} from 'react';
-import { Link, hashHistory } from 'react-router';
+import { Link } from 'react-router';
 import SideNav, { Nav, NavIcon, NavText } from 'react-sidenav';
 import SvgIcon from 'react-icons-kit';
 import {connect} from "react-redux";
 
 import { ic_aspect_ratio } from 'react-icons-kit/md/ic_aspect_ratio';
 import { ic_dashboard } from 'react-icons-kit/md/ic_dashboard';
-import { starEmpty } from 'react-icons-kit/icomoon/starEmpty';
 import { ic_business } from 'react-icons-kit/md/ic_business';
 import { ic_contacts } from 'react-icons-kit/md/ic_contacts';
 import { ic_email } from 'react-icons-kit/md/ic_email';
 import { cog } from 'react-icons-kit/icomoon/cog';
-import { pencil2 } from 'react-icons-kit/icomoon/pencil2';
 import { speech_bubbles } from 'react-icons-kit/ikons/speech_bubbles';
 import { documents } from 'react-icons-kit/ikons/documents';
 import { calendar } from 'react-icons-kit/icomoon/calendar';
 import { home } from 'react-icons-kit/icomoon/home';
+import { drawer } from 'react-icons-kit/icomoon/drawer';
 
 class SidebarMenu extends Component {
     constructor(props) {
@@ -52,6 +51,13 @@ class SidebarMenu extends Component {
                         <Nav id="closed">
                             <NavText><Link className="sidebar-link"
                                            to="contacten/status/closed">Afgehandeld</Link></NavText>
+                        </Nav>
+                    </Nav>
+                    <Nav id="projecten">
+                        <NavIcon><SvgIcon size={20} icon={drawer}/></NavIcon>
+                        <NavText><Link className="sidebar-link">Projecten</Link></NavText>
+                        <Nav id="productie-projecten">
+                            <NavText><Link className="sidebar-link" to="productie-projecten">Productie projecten</Link></NavText>
                         </Nav>
                     </Nav>
                     <Nav id="energy-saving">

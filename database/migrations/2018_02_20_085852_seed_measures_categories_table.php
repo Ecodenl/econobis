@@ -134,9 +134,6 @@ class SeedMeasuresCategoriesTable extends Migration
                     'Luchtverwarming',
                     'Radiatoren (laag regime 55-45)',
                 ];
-            } elseif ($category_id == 11) {
-
-
             } elseif ($category_id == 12) {
                 $measures_specific = [
                     'Vacuumbuiscollector',

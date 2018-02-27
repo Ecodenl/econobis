@@ -56,6 +56,8 @@ class FullProductionProject extends Resource
                 'createdById' => $this->created_by_id,
                 'createdBy' => FullUser::make($this->whenLoaded('createdBy')),
                 'valueCourses' => FullProductionProjectValueCourse::collection($this->whenLoaded('productionProjectValueCourses')),
+                'participationsWorthTotal' => $this->participations_worth_total,
+                'amountOfParticipants' => $this->participantsProductionProject->count(),
             ];
     }
 }

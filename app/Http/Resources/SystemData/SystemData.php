@@ -30,6 +30,8 @@ use App\Eco\EmailAddress\EmailAddressType;
 use App\Eco\Industry\Industry;
 use App\Eco\LastNamePrefix\LastNamePrefix;
 use App\Eco\Occupation\Occupation;
+use App\Eco\ParticipantProductionProject\ParticipantProductionProjectPayoutType;
+use App\Eco\ParticipantProductionProject\ParticipantProductionProjectStatus;
 use App\Eco\PersonType\PersonType;
 use App\Eco\PhoneNumber\PhoneNumberType;
 use App\Eco\ProductionProject\ProductionProjectStatus;
@@ -107,6 +109,8 @@ class SystemData extends Resource
             'contactEnergySupplierTypes' => GenericResource::collection(ContactEnergySupplierType::all()),
             'productionProjectStatus' => GenericResource::collection(ProductionProjectStatus::all()),
             'productionProjectTypes' => GenericResource::collection(ProductionProjectType::all()),
+            'participantProductionProjectStatus' => GenericResource::collection(ParticipantProductionProjectStatus::all()),
+            'participantProductionProjectPayoutTypes' => GenericResource::collection(ParticipantProductionProjectPayoutType::all()),
         ];
     }
 }

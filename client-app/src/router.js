@@ -49,8 +49,11 @@ import NotFoundedPage from './container/global/NotFoundedPage';
 import OpportunitiesListApp from './container/opportunities/list/OpportunitiesListApp';
 import OpportunityDetailsApp from './container/opportunities/details/OpportunityDetailsApp';
 import OpportunityNewApp from './container/opportunities/new/OpportunityNewApp';
+import ParticipantNewApp from './container/production-project/general/participant/new/ParticipantNewApp';
+import ParticipantDetailsApp from './container/production-project/general/participant/details/ParticipantDetailsApp';
 import ProductionProjectsListApp from './container/production-project/list/ProductionProjectsListApp';
 import ProductionProjectDetailsApp from './container/production-project/details/ProductionProjectDetailsApp';
+import ProductionProjectGeneralApp from './container/production-project/general/ProductionProjectGeneralApp';
 import ProductionProjectNewApp from './container/production-project/new/ProductionProjectNewApp';
 import PermissionHelper from './helpers/PermissionHelper';
 import IntakeDetailsApp from './container/intake/details/IntakeDetailsApp';
@@ -164,8 +167,13 @@ const Routes = () => {
                 <Route path="kansen" component={OpportunitiesListApp} />
                 /* Production project */
                 <Route path="productie-project/nieuw" component={ProductionProjectNewApp} />
-                <Route path="productie-project/:id" component={ProductionProjectDetailsApp} />
+                <Route path="productie-project/details/:id" component={ProductionProjectDetailsApp} />
+                <Route path="productie-project/:id" component={ProductionProjectGeneralApp} />
                 <Route path="productie-projecten" component={ProductionProjectsListApp} />
+
+                <Route path="productie-project/participant/nieuw/:productionProjectId" component={ParticipantNewApp} />
+                <Route path="productie-project/participant/nieuw/contact/:contactId" component={ParticipantNewApp} />
+                <Route path="productie-project/participant/:id" component={ParticipantDetailsApp} />
                 /* Task / notes */
                 <Route path="taak/nieuw" component={TaskNewApp} />
                 <Route path="taak/:id" component={TaskDetailsApp} />

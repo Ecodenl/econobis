@@ -179,7 +179,7 @@ class Contact extends Model
         return $this->hasMany(ContactEnergySupplier::class);
     }
 
-    public function primarycontactEnergySupplier()
+    public function primaryContactEnergySupplier()
     {
         return $this->hasOne(ContactEnergySupplier::class)->where('is_current_supplier', true);
     }

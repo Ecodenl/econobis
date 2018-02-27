@@ -6,6 +6,7 @@ use App\Eco\Address\Address;
 use App\Eco\Document\Document;
 use App\Eco\Email\Email;
 use App\Eco\Measure\Measure;
+use App\Eco\ParticipantProductionProject\ParticipantProductionProject;
 use App\Eco\Task\Task;
 use App\Eco\User\User;
 use Illuminate\Database\Eloquent\Model;
@@ -70,6 +71,10 @@ class ProductionProject extends Model
 
     public function productionProjectValueCourses(){
         return $this->hasMany(ProductionProjectValueCourse::class);
+    }
+
+    public function participantsProductionProject(){
+        return $this->hasMany(ParticipantProductionProject::class);
     }
 
     //Appended fields

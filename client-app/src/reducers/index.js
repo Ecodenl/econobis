@@ -29,6 +29,8 @@ import measureDetailsReducer from './measure/MeasureDetailsReducer';
 import meDetailsReducer from './general/MeDetailsReducer';
 import opportunitiesReducer from './opportunity/OpportunitiesReducer';
 import opportunityDetailsReducer from './opportunity/OpportunityDetailsReducer';
+import ParticipantProductionProjectDetailsReducer from './participant-production-project/ParticipantProductionProjectDetailsReducer';
+import ParticipantsProductionProjectReducer from './participant-production-project/ParticipantsProductionProjectReducer';
 import productionProjectsReducer from './production-project/ProductionProjectsReducer';
 import productionProjectDetailsReducer from './production-project/ProductionProjectDetailsReducer';
 import intakeDetailsReducer from './intake/IntakeDetailsReducer';
@@ -88,6 +90,9 @@ const rootReducer = combineReducers({
     // Opportunity
     opportunities: opportunitiesReducer,
     opportunityDetails: opportunityDetailsReducer,
+    // Participant production project
+    participantsProductionProject: ParticipantsProductionProjectReducer,
+    participantProductionProjectDetails: ParticipantProductionProjectDetailsReducer,
     // Production project
     productionProjects: productionProjectsReducer,
     productionProjectDetails: productionProjectDetailsReducer,

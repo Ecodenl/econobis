@@ -32,6 +32,8 @@ use App\Eco\ContactNote\ContactNote;
 use App\Eco\ContactNote\ContactNoteObserver;
 use App\Eco\EmailAddress\EmailAddress;
 use App\Eco\EmailAddress\EmailAddressObserver;
+use App\Eco\ParticipantProductionProject\ParticipantProductionProject;
+use App\Eco\ParticipantProductionProject\ParticipantProductionProjectObserver;
 use App\Eco\Person\Person;
 use App\Eco\Person\PersonObserver;
 use App\Eco\PhoneNumber\PhoneNumber;

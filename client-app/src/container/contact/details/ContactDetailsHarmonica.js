@@ -63,7 +63,7 @@ class ContactDetailsHarmonica extends Component {
             if (typeof address === 'undefined') {
                 this.setState({
                     showModalError: !this.state.showModalError,
-                    modalErrorTitle: 'Waaschuwing',
+                    modalErrorTitle: 'Waarschuwing',
                     modalErrorMessage: 'Dit contact heeft nog geen adres.',
                 });
             }
@@ -86,7 +86,7 @@ class ContactDetailsHarmonica extends Component {
             if (typeof address === 'undefined') {
                 this.setState({
                     showModalError: !this.state.showModalError,
-                    modalErrorTitle: 'Waaschuwing',
+                    modalErrorTitle: 'Waarschuwing',
                     modalErrorMessage: 'Dit contact heeft nog geen adres.',
                 });
             }
@@ -127,7 +127,7 @@ class ContactDetailsHarmonica extends Component {
         if (typeof primaryEmail === 'undefined') {
                 this.setState({
                     showModalError: !this.state.showModalError,
-                    modalErrorTitle: 'Waaschuwing',
+                    modalErrorTitle: 'Waarschuwing',
                     modalErrorMessage: 'Dit contact heeft nog primair email adres.',
                 });
         }

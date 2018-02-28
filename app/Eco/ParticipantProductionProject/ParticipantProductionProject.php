@@ -73,6 +73,11 @@ class ParticipantProductionProject extends Model
         return $this->hasMany(ParticipantTransaction::class, 'participation_id')->orderBy('date_transaction', 'desc');
     }
 
+    public function obligationNumbers()
+    {
+        return $this->hasMany(ObligationNumber::class, 'participation_id');
+    }
+
     //appends
     public function getParticipationsWorthTotalAttribute()
     {

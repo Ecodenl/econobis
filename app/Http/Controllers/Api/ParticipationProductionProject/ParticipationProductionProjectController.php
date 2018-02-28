@@ -46,6 +46,7 @@ class ParticipationProductionProjectController extends ApiController
             'legalRepContact',
             'transactions.type',
             'transactions.createdBy',
+            'obligationNumbers',
         ]);
 
         return FullParticipantProductionProject::make($participantProductionProject);

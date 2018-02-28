@@ -22,7 +22,7 @@ import { fetchOpportunitySaga } from './opportunity/OpportunityDetailsSaga';
 import { fetchProductionProjectsSaga } from './production-project/ProductionProjectsSaga';
 import { fetchProductionProjectSaga, deleteValueCourseSaga } from './production-project/ProductionProjectDetailsSaga';
 import { fetchParticipantsProductionProjectSaga } from './participant-production-project/ParticipantsProductionProjectSaga';
-import { fetchParticipantProductionProjectDetailsSaga, deleteParticipantProductionProjectSaga, deleteParticipationTransactionSaga } from './participant-production-project/ParticipantProductionProjectDetailsSaga';
+import { fetchParticipantProductionProjectDetailsSaga, deleteParticipantProductionProjectSaga, deleteParticipationTransactionSaga, deleteObligationNumberSaga } from './participant-production-project/ParticipantProductionProjectDetailsSaga';
 import {
     fetchIntakeDetailsSaga,
     deleteIntakeMeasureRequestedSaga,
@@ -116,6 +116,7 @@ export default function* watchSagas() {
     yield takeLatest('FETCH_PARTICIPANT_PRODUCTION_PROJECT_DETAILS', fetchParticipantProductionProjectDetailsSaga);
     yield takeLatest('DELETE_PARTICIPANT_PRODUCTION_PROJECT', deleteParticipantProductionProjectSaga);
     yield takeLatest('DELETE_PARTICIPATION_TRANSACTION', deleteParticipationTransactionSaga);
+    yield takeLatest('DELETE_OBLIGATION_NUMBER', deleteObligationNumberSaga);
     // Production project
     yield takeLatest('FETCH_PRODUCTION_PROJECTS', fetchProductionProjectsSaga);
     yield takeLatest('FETCH_PRODUCTION_PROJECT', fetchProductionProjectSaga);

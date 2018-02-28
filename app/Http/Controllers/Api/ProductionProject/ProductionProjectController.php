@@ -12,6 +12,7 @@ use App\Eco\ProductionProject\ProductionProject;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\RequestQueries\ProductionProject\Grid\RequestQuery;
+use App\Http\Resources\GenericResource;
 use App\Http\Resources\ProductionProject\FullProductionProject;
 use App\Http\Resources\ProductionProject\GridProductionProject;
 use App\Http\Resources\ProductionProject\ProductionProjectPeek;
@@ -131,5 +132,15 @@ class ProductionProjectController extends ApiController
     public function peek()
     {
         return ProductionProjectPeek::collection(ProductionProject::orderBy('id')->get());
+    }
+
+    public function getObligationNumbers(ProductionProject $productionProject){
+        $obligationNumbers = [];
+
+        foreach ($productionProject->participantsProductionProject as $participation){
+            $obligationNumbers = array_merge($obligationNumbers, $participation->obligationNumbers()->pluck('number')->toArray());
+        }
+
+        return $obligationNumbers;
     }
 }

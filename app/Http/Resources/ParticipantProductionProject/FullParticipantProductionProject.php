@@ -52,6 +52,7 @@ class FullParticipantProductionProject extends Resource
                 'type' => GenericResource::make($this->whenLoaded('participantProductionProjectPayoutType')),
                 'createdAt' => $this->created_at,
                 'participantTransactions' => FullParticipantTransaction::collection($this->whenLoaded('transactions')),
+                'obligationNumbers' => GenericResource::collection($this->whenLoaded('obligationNumbers')),
             ];
     }
 }

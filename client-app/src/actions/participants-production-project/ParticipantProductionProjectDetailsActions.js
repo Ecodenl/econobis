@@ -45,3 +45,24 @@ export const deleteParticipationTransaction = (id) => {
         id,
     };
 };
+
+export const newObligationNumber = (obligationNumber) => {
+    return {
+        type: 'NEW_OBLIGATION_NUMBER',
+        obligationNumber,
+    };
+};
+
+export const updateObligationNumber = (obligationNumber) => {
+    return {
+        type: 'UPDATE_OBLIGATION_NUMBER',
+        obligationNumber,
+    };
+};
+
+export const deleteObligationNumber = (id) => {
+    return {
+        type: 'DELETE_OBLIGATION_NUMBER',
+        id,
+    };
+};

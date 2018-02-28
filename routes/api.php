@@ -262,12 +262,16 @@ Route::namespace('Api')
         Route::post('production-project/participant/transaction', 'ParticipantTransaction\ParticipantTransactionController@store');
         Route::post('production-project/participant/transaction/{participantTransaction}', 'ParticipantTransaction\ParticipantTransactionController@update');
         Route::post('production-project/participant/transaction/{participantTransaction}/delete', 'ParticipantTransaction\ParticipantTransactionController@destroy');
+        Route::post('production-project/participant/obligation-number', 'ParticipationProductionProject\ObligationNumberController@store');
+        Route::post('production-project/participant/obligation-number/{obligationNumber}', 'ParticipationProductionProject\ObligationNumberController@update');
+        Route::post('production-project/participant/obligation-number/{obligationNumber}/delete', 'ParticipationProductionProject\ObligationNumberController@destroy');
         Route::post('production-project/participant/{participantProductionProject}', 'ParticipationProductionProject\ParticipationProductionProjectController@update');
         Route::post('production-project/participant/{participantProductionProject}/delete', 'ParticipationProductionProject\ParticipationProductionProjectController@destroy');
 
         Route::get('production-project/grid', 'ProductionProject\ProductionProjectController@grid');
         Route::get('production-project/peek', 'ProductionProject\ProductionProjectController@peek');
         Route::get('production-project/{productionProject}', 'ProductionProject\ProductionProjectController@show');
+        Route::get('production-project/{productionProject}/obligation-numbers', 'ProductionProject\ProductionProjectController@getObligationNumbers');
         Route::post('production-project', 'ProductionProject\ProductionProjectController@store');
         Route::post('production-project/{productionProject}', 'ProductionProject\ProductionProjectController@update');
         Route::post('production-project/{productionProject}/delete', 'ProductionProject\ProductionProjectController@destroy');

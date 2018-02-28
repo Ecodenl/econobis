@@ -27,6 +27,34 @@ export default function (state= {}, action) {
                 ...state,
                 participantTransactions: state.participantTransactions.filter((participantTransaction) => participantTransaction.id !== action.id),
             };
+        case 'NEW_OBLIGATION_NUMBER':
+            return {
+                ...state,
+                obligationNumbers: [
+                    ...state.obligationNumbers,
+                    {
+                        ...action.obligationNumber,
+                    }
+                ]
+            };
+        case 'UPDATE_OBLIGATION_NUMBER':
+            return {
+                ...state,
+                obligationNumbers: state.obligationNumbers.map((obligationNumber) =>
+                    obligationNumber.id === action.obligationNumber.id ?
+                        {
+                            ...obligationNumber,
+                            number: action.obligationNumber.number,
+                        }
+                        :
+                        obligationNumber,
+                )
+            };
+        case 'DELETE_OBLIGATION_NUMBER':
+            return {
+                ...state,
+                obligationNumbers: state.obligationNumbers.filter(obligationNumber => obligationNumber.id !== action.id),
+            };
         default:
             return state;
     }

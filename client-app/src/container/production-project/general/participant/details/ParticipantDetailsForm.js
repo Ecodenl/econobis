@@ -4,6 +4,7 @@ import { isEmpty } from 'lodash';
 
 import ParticipantFormGeneral from './form/ParticipantFormGeneral';
 import TransactionForm from './transaction/TransactionForm';
+import ObligationNumberForm from './obligation-number/ObligationNumberForm';
 
 class ParticipantDetailsForm extends Component {
     constructor(props){
@@ -19,6 +20,7 @@ class ParticipantDetailsForm extends Component {
                 <div>
                     <ParticipantFormGeneral />
                     <TransactionForm />
+                    <ObligationNumberForm />
                 </div>
         );
     }

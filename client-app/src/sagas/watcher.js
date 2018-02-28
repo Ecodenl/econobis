@@ -3,7 +3,7 @@ import { takeLatest, takeEvery } from 'redux-saga/effects';
 import { fetchAuditTrailSaga } from './audit-trail/AuditTrailSaga';
 import { fetchCampaignsSaga } from './campaign/CampaignsSaga';
 import { fetchCampaignSaga } from './campaign/CampaignDetailsSaga';
-import { fetchContactDetailsSaga, deleteAddressSaga, deletePhoneNumberSaga, deleteEmailAddressSaga, deleteContactNoteSaga } from './contact/ContactDetailsSaga';
+import { fetchContactDetailsSaga, deleteAddressSaga, deletePhoneNumberSaga, deleteEmailAddressSaga, deleteContactNoteSaga, deleteContactEnergySupplierSaga } from './contact/ContactDetailsSaga';
 import { fetchContactGroupDetailsSaga, updateContactGroupDetailsSaga } from './contact-group/ContactGroupDetailsSaga';
 import { fetchContactGroupsSaga, deleteContactGroupSaga, addContactToGroupSaga } from './contact-group/ContactGroupsSaga';
 import { fetchContactsInGroupSaga, deleteContactInGroupSaga } from './contact-group/ContactsInGroupSaga';
@@ -22,7 +22,7 @@ import { fetchOpportunitySaga } from './opportunity/OpportunityDetailsSaga';
 import { fetchProductionProjectsSaga } from './production-project/ProductionProjectsSaga';
 import { fetchProductionProjectSaga, deleteValueCourseSaga } from './production-project/ProductionProjectDetailsSaga';
 import { fetchParticipantsProductionProjectSaga } from './participant-production-project/ParticipantsProductionProjectSaga';
-import { fetchParticipantProductionProjectDetailsSaga } from './participant-production-project/ParticipantProductionProjectDetailsSaga';
+import { fetchParticipantProductionProjectDetailsSaga, deleteParticipantProductionProjectSaga, deleteParticipationTransactionSaga } from './participant-production-project/ParticipantProductionProjectDetailsSaga';
 import {
     fetchIntakeDetailsSaga,
     deleteIntakeMeasureRequestedSaga,
@@ -70,6 +70,7 @@ export default function* watchSagas() {
     yield takeLatest('DELETE_PHONE_NUMBER', deletePhoneNumberSaga);
     yield takeLatest('DELETE_EMAIL_ADDRESS', deleteEmailAddressSaga);
     yield takeLatest('DELETE_NOTE', deleteContactNoteSaga);
+    yield takeLatest('DELETE_CONTACT_ENERGY_SUPPLIER', deleteContactEnergySupplierSaga);
     // Contact group
     yield takeLatest('FETCH_CONTACT_GROUPS', fetchContactGroupsSaga);
     yield takeLatest('DELETE_CONTACT_GROUP', deleteContactGroupSaga);
@@ -113,6 +114,8 @@ export default function* watchSagas() {
     // Participant production project
     yield takeLatest('FETCH_PARTICIPANTS_PRODUCTION_PROJECT', fetchParticipantsProductionProjectSaga);
     yield takeLatest('FETCH_PARTICIPANT_PRODUCTION_PROJECT_DETAILS', fetchParticipantProductionProjectDetailsSaga);
+    yield takeLatest('DELETE_PARTICIPANT_PRODUCTION_PROJECT', deleteParticipantProductionProjectSaga);
+    yield takeLatest('DELETE_PARTICIPATION_TRANSACTION', deleteParticipationTransactionSaga);
     // Production project
     yield takeLatest('FETCH_PRODUCTION_PROJECTS', fetchProductionProjectsSaga);
     yield takeLatest('FETCH_PRODUCTION_PROJECT', fetchProductionProjectSaga);

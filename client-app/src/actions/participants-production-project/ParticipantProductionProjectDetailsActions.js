@@ -24,3 +24,24 @@ export const deleteParticipantProductionProject = (id) => {
         id
     }
 };
+
+export const newParticipationTransaction = (participationTransactions) => {
+    return {
+        type: 'NEW_PARTICIPATION_TRANSACTION',
+        participationTransactions,
+    };
+};
+
+export const updateParticipationTransaction = (participationTransactions) => {
+    return {
+        type: 'UPDATE_PARTICIPATION_TRANSACTION',
+        participationTransactions,
+    };
+};
+
+export const deleteParticipationTransaction = (id) => {
+    return {
+        type: 'DELETE_PARTICIPATION_TRANSACTION',
+        id,
+    };
+};

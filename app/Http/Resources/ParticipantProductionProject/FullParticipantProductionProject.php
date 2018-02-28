@@ -4,6 +4,7 @@ namespace App\Http\Resources\ParticipantProductionProject;
 
 use App\Http\Resources\Contact\FullContact;
 use App\Http\Resources\GenericResource;
+use App\Http\Resources\ParticipantTransaction\FullParticipantTransaction;
 use App\Http\Resources\ProductionProject\FullProductionProject;
 use Illuminate\Http\Resources\Json\Resource;
 
@@ -50,6 +51,7 @@ class FullParticipantProductionProject extends Resource
                 'typeId' => $this->type_id,
                 'type' => GenericResource::make($this->whenLoaded('participantProductionProjectPayoutType')),
                 'createdAt' => $this->created_at,
+                'participantTransactions' => FullParticipantTransaction::collection($this->whenLoaded('transactions')),
             ];
     }
 }

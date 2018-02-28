@@ -1,5 +1,6 @@
 import { put, call } from 'redux-saga/effects';
 import ParticipantProductionProjectDetailsAPI from '../../api/participant-production-project/ParticipantProductionProjectDetailsAPI';
+import ParticipantTransactionAPI from '../../api/participant-production-project/ParticipantTransactionAPI';
 
 export function* fetchParticipantProductionProjectDetailsSaga({ payload }) {
     try {
@@ -16,5 +17,14 @@ export function* deleteParticipantProductionProjectSaga({ id }) {
         yield put({ type: 'DELETE_PARTICIPANT_PRODUCTION_PROJECT_SUCCESS', id });
     } catch (error) {
         yield put({ type: 'DELETE_PARTICIPANT_PRODUCTION_PROJECT_ERROR', error });
+    }
+}
+
+export function* deleteParticipationTransactionSaga({ id }) {
+    try {
+        yield call(ParticipantTransactionAPI.deleteParticipantTransaction, id);
+        yield put({ type: 'DELETE_PARTICIPATION_TRANSACTION_SUCCESS', id });
+    } catch (error) {
+        yield put({ type: 'DELETE_PARTICIPATION_TRANSACTION_ERROR', error });
     }
 }

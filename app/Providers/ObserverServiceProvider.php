@@ -34,6 +34,8 @@ use App\Eco\EmailAddress\EmailAddress;
 use App\Eco\EmailAddress\EmailAddressObserver;
 use App\Eco\ParticipantProductionProject\ParticipantProductionProject;
 use App\Eco\ParticipantProductionProject\ParticipantProductionProjectObserver;
+use App\Eco\ParticipantTransaction\ParticipantTransaction;
+use App\Eco\ParticipantTransaction\ParticipantTransactionObserver;
 use App\Eco\Person\Person;
 use App\Eco\Person\PersonObserver;
 use App\Eco\PhoneNumber\PhoneNumber;
@@ -78,6 +80,7 @@ class ObserverServiceProvider extends ServiceProvider
         ContactEnergySupplier::observe(ContactEnergySupplierObserver::class);
         ProductionProject::observe(ProductionProjectObserver::class);
         ProductionProjectValueCourse::observe(ProductionProjectValueCourseObserver::class);
+        ParticipantTransaction::observe(ParticipantTransactionObserver::class);
     }
 
     /**

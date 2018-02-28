@@ -32,6 +32,7 @@ use App\Eco\LastNamePrefix\LastNamePrefix;
 use App\Eco\Occupation\Occupation;
 use App\Eco\ParticipantProductionProject\ParticipantProductionProjectPayoutType;
 use App\Eco\ParticipantProductionProject\ParticipantProductionProjectStatus;
+use App\Eco\ParticipantTransaction\ParticipantTransactionType;
 use App\Eco\PersonType\PersonType;
 use App\Eco\PhoneNumber\PhoneNumberType;
 use App\Eco\ProductionProject\ProductionProjectStatus;
@@ -111,6 +112,7 @@ class SystemData extends Resource
             'productionProjectTypes' => GenericResource::collection(ProductionProjectType::all()),
             'participantProductionProjectStatus' => GenericResource::collection(ParticipantProductionProjectStatus::all()),
             'participantProductionProjectPayoutTypes' => GenericResource::collection(ParticipantProductionProjectPayoutType::all()),
+            'participantTransactionTypes' => GenericResource::collection(ParticipantTransactionType::all()),
         ];
     }
 }

@@ -7,6 +7,7 @@ use App\Eco\Contact\Contact;
 use App\Eco\Document\Document;
 use App\Eco\Email\Email;
 use App\Eco\Measure\Measure;
+use App\Eco\ParticipantTransaction\ParticipantTransaction;
 use App\Eco\ProductionProject\ProductionProject;
 use App\Eco\Task\Task;
 use App\Eco\User\User;
@@ -65,6 +66,11 @@ class ParticipantProductionProject extends Model
     public function legalRepContact()
     {
         return $this->belongsTo(Contact::class);
+    }
+
+    public function transactions()
+    {
+        return $this->hasMany(ParticipantTransaction::class, 'participation_id')->orderBy('date_transaction', 'desc');
     }
 
     //appends

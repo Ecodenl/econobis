@@ -12,6 +12,21 @@ export default function (state= {}, action) {
                 ...state,
                 ...action.participantProductionProjectDetails,
             };
+        case 'NEW_PARTICIPATION_TRANSACTION':
+            return {
+                ...state,
+                participantTransactions: action.participationTransactions
+            };
+        case 'UPDATE_PARTICIPATION_TRANSACTION':
+            return {
+                ...state,
+                participantTransactions: action.participationTransactions
+            };
+        case 'DELETE_PARTICIPATION_TRANSACTION':
+            return {
+                ...state,
+                participantTransactions: state.participantTransactions.filter((participantTransaction) => participantTransaction.id !== action.id),
+            };
         default:
             return state;
     }

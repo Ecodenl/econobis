@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { isEmpty } from 'lodash';
 
 import ParticipantFormGeneral from './form/ParticipantFormGeneral';
+import TransactionForm from './transaction/TransactionForm';
 
 class ParticipantDetailsForm extends Component {
     constructor(props){
@@ -17,6 +18,7 @@ class ParticipantDetailsForm extends Component {
                 :
                 <div>
                     <ParticipantFormGeneral />
+                    <TransactionForm />
                 </div>
         );
     }

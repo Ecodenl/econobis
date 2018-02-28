@@ -44,6 +44,8 @@ class ParticipationProductionProjectController extends ApiController
             'participantProductionProjectPayoutType',
             'giftedByContact',
             'legalRepContact',
+            'transactions.type',
+            'transactions.createdBy',
         ]);
 
         return FullParticipantProductionProject::make($participantProductionProject);

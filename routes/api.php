@@ -108,7 +108,7 @@ Route::namespace('Api')
 
         Route::post('/contact-energy-supplier', 'ContactEnergySupplier\ContactEnergySupplierController@store');
         Route::post('/contact-energy-supplier/{contactEnergySupplier}', 'ContactEnergySupplier\ContactEnergySupplierController@update');
-        Route::post('/contact-energy-supplier/{contactNote}/delete', 'ContactEnergySupplier\ContactEnergySupplierController@destroy');
+        Route::post('/contact-energy-supplier/{contactEnergySupplier}/delete', 'ContactEnergySupplier\ContactEnergySupplierController@destroy');
 
         Route::get('contact-group/grid', 'ContactGroup\ContactGroupController@grid');
         Route::get('contact-group/peek', 'ContactGroup\ContactGroupController@peek');
@@ -259,6 +259,9 @@ Route::namespace('Api')
         Route::get('production-project/participant/grid', 'ParticipationProductionProject\ParticipationProductionProjectController@grid');
         Route::get('production-project/participant/{participantProductionProject}', 'ParticipationProductionProject\ParticipationProductionProjectController@show');
         Route::post('production-project/participant', 'ParticipationProductionProject\ParticipationProductionProjectController@store');
+        Route::post('production-project/participant/transaction', 'ParticipantTransaction\ParticipantTransactionController@store');
+        Route::post('production-project/participant/transaction/{participantTransaction}', 'ParticipantTransaction\ParticipantTransactionController@update');
+        Route::post('production-project/participant/transaction/{participantTransaction}/delete', 'ParticipantTransaction\ParticipantTransactionController@destroy');
         Route::post('production-project/participant/{participantProductionProject}', 'ParticipationProductionProject\ParticipationProductionProjectController@update');
         Route::post('production-project/participant/{participantProductionProject}/delete', 'ParticipationProductionProject\ParticipationProductionProjectController@destroy');
 

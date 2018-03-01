@@ -1,11 +1,12 @@
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
-import { browserHistory } from 'react-router';
+import {browserHistory, hashHistory} from 'react-router';
 
 import Panel from '../../../../../components/panel/Panel';
 import PanelBody from '../../../../../components/panel/PanelBody';
 import ButtonIcon from '../../../../../components/button/ButtonIcon';
 import ParticipantDetailsDelete from './ParticipantDetailsDelete';
+import ButtonText from "../../../../../components/button/ButtonText";
 
 
 class ParticipantDetailsToolbar extends Component {
@@ -30,22 +31,23 @@ class ParticipantDetailsToolbar extends Component {
                 <div className="col-sm-12">
                     <Panel>
                         <PanelBody className={"panel-small"}>
-                            <div className="col-md-2">
+                            <div className="col-md-3">
                                 <div className="btn-group margin-small" role="group">
                                     <ButtonIcon iconName={"glyphicon-arrow-left"} onClickAction={browserHistory.goBack} />
 
                                     <ButtonIcon iconName={"glyphicon-trash"} onClickAction={this.toggleDelete}/>
 
+                                    <ButtonText buttonText={`Participaties overdragen`}  onClickAction={() => hashHistory.push(`/productie-project/participant/${participantProductionProject.id}/overdragen`)} />
                                 </div>
                             </div>
-                            <div className="col-md-8"><h4 className="text-center text-success margin-small">
+                            <div className="col-md-6"><h4 className="text-center text-success margin-small">
                                 <strong>
                                     {participantProductionProject.contact ? participantProductionProject.contact.fullName : ''}
                                     /
                                     {participantProductionProject.productionProject ? participantProductionProject.productionProject.name : ''}
                                 </strong></h4>
                             </div>
-                            <div className="col-md-2" />
+                            <div className="col-md-3" />
                         </PanelBody>
                     </Panel>
                 </div>

@@ -15,6 +15,7 @@ import IntakesAPI from "../../../api/intake/IntakesAPI";
 import ContactGroupAPI from "../../../api/contact-group/ContactGroupAPI";
 import OpportunitiesAPI from "../../../api/opportunity/OpportunitiesAPI";
 import HousingFilesAPI from "../../../api/housing-file/HousingFilesAPI";
+import ProductionProjectsAPI from "../../../api/production-project/ProductionProjectsAPI";
 
 class TaskNewApp extends Component {
     constructor(props) {
@@ -27,6 +28,7 @@ class TaskNewApp extends Component {
             opportunities: [],
             campaigns: [],
             housingFiles: [],
+            productionProjects: [],
             task: {
                 id: '',
                 note: '',
@@ -58,6 +60,7 @@ class TaskNewApp extends Component {
                 opportunities: true,
                 campaigns: true,
                 housingFiles: true,
+                productionProjects: true,
             },
         };
 
@@ -134,6 +137,16 @@ class TaskNewApp extends Component {
                 },
             });
         });
+
+        ProductionProjectsAPI.peekProductionProjects().then((payload) => {
+            this.setState({
+                productionProjects: payload,
+                peekLoading: {
+                    ...this.state.peekLoading,
+                    productionProjects: false,
+                },
+            });
+        });
     };
 
     componentWillReceiveProps(nextProps) {
@@ -155,6 +168,7 @@ class TaskNewApp extends Component {
                             intakeId: '',
                             contactGroupId: '',
                             opportunityId: '',
+                            productionProjectId: '',
                         }
                     });
                     break;
@@ -168,6 +182,7 @@ class TaskNewApp extends Component {
                             intakeId: params.id,
                             contactGroupId: '',
                             opportunityId: '',
+                            productionProjectId: '',
                         }
                     });
                     break;
@@ -181,6 +196,7 @@ class TaskNewApp extends Component {
                             intakeId: '',
                             contactGroupId: params.id,
                             opportunityId: '',
+                            productionProjectId: '',
                         }
                     });
                     break;
@@ -194,6 +210,7 @@ class TaskNewApp extends Component {
                             intakeId: '',
                             contactGroupId: '',
                             opportunityId: params.id,
+                            productionProjectId: '',
                         }
                     });
                     break;
@@ -207,6 +224,21 @@ class TaskNewApp extends Component {
                             intakeId: '',
                             contactGroupId: '',
                             opportunityId: '',
+                            productionProjectId: '',
+                        }
+                    });
+                    break;
+                case 'productie-project':
+                    this.setState({
+                        ...this.state,
+                        task: {
+                            ...this.state.task,
+                            campaignId: '',
+                            contactId: '',
+                            intakeId: '',
+                            contactGroupId: '',
+                            opportunityId: '',
+                            productionProjectId: params.id,
                         }
                     });
                     break;
@@ -324,6 +356,7 @@ class TaskNewApp extends Component {
                                         contactGroups={this.state.contactGroups}
                                         opportunities={this.state.opportunities}
                                         campaigns={this.state.campaigns}
+                                        productionProjects={this.state.productionProjects}
                                         errors={this.state.errors}
                                         meDetails={this.props.meDetails}
                                         handleInputChange={this.handleInputChange}

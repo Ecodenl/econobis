@@ -7,8 +7,10 @@ use App\Eco\Contact\Contact;
 use App\Eco\ContactGroup\ContactGroup;
 use App\Eco\Document\Document;
 use App\Eco\Email\Email;
+use App\Eco\HousingFile\HousingFile;
 use App\Eco\Opportunity\Opportunity;
 use App\Eco\Intake\Intake;
+use App\Eco\ProductionProject\ProductionProject;
 use App\Eco\Team\Team;
 use App\Eco\User\User;
 use Illuminate\Database\Eloquent\Model;
@@ -64,6 +66,23 @@ class Task extends Model
     {
         return $this->belongsTo(Campaign::class);
     }
+
+    /**
+     * optional
+     */
+    public function housingFile()
+    {
+        return $this->belongsTo(HousingFile::class);
+    }
+
+    /**
+     * optional
+     */
+    public function productionProject()
+    {
+        return $this->belongsTo(ProductionProject::class);
+    }
+
 
     /**
      * optional

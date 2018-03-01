@@ -58,6 +58,8 @@ class TaskController extends Controller
             'intake',
             'contactGroup',
             'campaign',
+            'housingFile',
+            'productionProject',
             'responsibleUser',
             'responsibleTeam',
             'createdBy',
@@ -98,6 +100,7 @@ class TaskController extends Controller
             ->integer('finishedById')->validate('exists:users,id')->whenMissing(null)->onEmpty(null)->alias('finished_by_id')->next()
             ->integer('opportunityId')->validate('exists:opportunities,id')->onEmpty(null)->alias('opportunity_id')->next()
             ->integer('housingFileId')->validate('exists:housing_files,id')->onEmpty(null)->alias('housing_file_id')->next()
+            ->integer('productionProjectId')->validate('exists:production_projects,id')->onEmpty(null)->alias('production_project_id')->next()
             ->get();
 
         $task = new Task($data);
@@ -132,6 +135,7 @@ class TaskController extends Controller
             ->integer('finishedById')->validate('exists:users,id')->onEmpty(null)->alias('finished_by_id')->next()
             ->integer('opportunityId')->validate('exists:opportunities,id')->onEmpty(null)->alias('opportunity_id')->next()
             ->integer('housingFileId')->validate('exists:housing_files,id')->onEmpty(null)->alias('housing_file_id')->next()
+            ->integer('productionProjectId')->validate('exists:production_projects,id')->onEmpty(null)->alias('production_project_id')->next()
             ->get();
 
         $task->fill($data);

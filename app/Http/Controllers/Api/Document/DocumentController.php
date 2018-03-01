@@ -72,6 +72,7 @@ class DocumentController extends Controller
             ->integer('quotationRequestId')->validate('exists:quotation_requests,id')->onEmpty(null)->alias('quotation_request_id')->next()
             ->integer('measureId')->validate('exists:measures,id')->onEmpty(null)->alias('measure_id')->next()
             ->integer('taskId')->validate('exists:tasks,id')->onEmpty(null)->alias('task_id')->next()
+            ->integer('productionProjectId')->validate('exists:production_projects,id')->onEmpty(null)->alias('production_project_id')->next()
             ->get();
 
         $document = new Document();
@@ -152,6 +153,7 @@ class DocumentController extends Controller
             ->integer('quotationRequestId')->validate('exists:quotation_requests,id')->onEmpty(null)->alias('quotation_request_id')->next()
             ->integer('measureId')->validate('exists:measures,id')->onEmpty(null)->alias('measure_id')->next()
             ->integer('taskId')->validate('exists:tasks,id')->onEmpty(null)->alias('task_id')->next()
+            ->integer('productionProjectId')->validate('exists:production_projects,id')->onEmpty(null)->alias('production_project_id')->next()
             ->get();
 
         $document->fill($data);

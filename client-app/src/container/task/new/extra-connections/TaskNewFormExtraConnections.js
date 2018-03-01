@@ -2,13 +2,14 @@ import React from 'react';
 
 import InputReactSelect from "../../../../components/form/InputReactSelect";
 
-const TaskNewFormExtraConnections = ({task, campaigns, intakes, contactGroups, opportunities, housingFiles, handleReactSelectChange, peekLoading}) => {
+const TaskNewFormExtraConnections = ({task, campaigns, intakes, contactGroups, opportunities, housingFiles, productionProjects, handleReactSelectChange, peekLoading}) => {
     const {
         intakeId,
         contactGroupId,
         opportunityId,
         campaignId,
         housingFileId,
+        productionProjectId,
     } = task;
 
     return (
@@ -67,6 +68,16 @@ const TaskNewFormExtraConnections = ({task, campaigns, intakes, contactGroups, o
                     onChangeAction={handleReactSelectChange}
                     multi={false}
                     isLoading={peekLoading.housingFiles}
+                />
+                <InputReactSelect
+                    label={"Productie project"}
+                    size={"col-sm-6"}
+                    name={"productionProjectId"}
+                    options={productionProjects}
+                    value={productionProjectId}
+                    onChangeAction={handleReactSelectChange}
+                    multi={false}
+                    isLoading={peekLoading.productionProjects}
                 />
             </div>
         </div>

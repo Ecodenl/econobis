@@ -21,6 +21,8 @@ import InputTextArea from "../../../../components/form/InputTextarea";
 import InputToggle from "../../../../components/form/InputToggle";
 import PanelHeader from "../../../../components/panel/PanelHeader";
 import InputSelectGroup from "../../../../components/form/InputSelectGroup";
+import ProductionProjectsAPI from "../../../../api/production-project/ProductionProjectsAPI";
+import HousingFilesAPI from "../../../../api/housing-file/HousingFilesAPI";
 
 class TaskDetailsFormGeneralEdit extends Component {
     constructor(props) {
@@ -36,6 +38,8 @@ class TaskDetailsFormGeneralEdit extends Component {
             intakeId,
             campaignId,
             contactGroupId,
+            housingFileId,
+            productionProjectId,
             datePlannedStart,
             datePlannedFinish,
             startTimePlanned,
@@ -54,6 +58,8 @@ class TaskDetailsFormGeneralEdit extends Component {
             contactGroups: [],
             opportunities: [],
             campaigns: [],
+            housingFiles: [],
+            productionProjects: [],
             task: {
                 id,
                 note,
@@ -144,6 +150,27 @@ class TaskDetailsFormGeneralEdit extends Component {
                 },
             });
         });
+
+        HousingFilesAPI.peekHousingFiles().then((payload) => {
+            this.setState({
+                housingFiles: payload,
+                peekLoading: {
+                    ...this.state.peekLoading,
+                    housingFiles: false,
+                },
+            });
+        });
+
+        ProductionProjectsAPI.peekProductionProjects().then((payload) => {
+            this.setState({
+                productionProjects: payload,
+                peekLoading: {
+                    ...this.state.peekLoading,
+                    productionProjects: false,
+                },
+            });
+        });
+
     };
 
     handleInputChange(event) {
@@ -373,6 +400,8 @@ class TaskDetailsFormGeneralEdit extends Component {
                             contactGroups={this.state.contactGroups}
                             opportunities={this.state.opportunities}
                             campaigns={this.state.campaigns}
+                            housingFiles={this.state.housingFiles}
+                            productionProjects={this.state.productionProjects}
                             handleReactSelectChange={this.handleReactSelectChange}
                             peekLoading={this.state.peekLoading}
                         />

@@ -10,6 +10,7 @@ use App\Eco\HousingFile\HousingFile;
 use App\Eco\Measure\Measure;
 use App\Eco\Opportunity\Opportunity;
 use App\Eco\Intake\Intake;
+use App\Eco\QuotationRequest\QuotationRequest;
 use App\Eco\Task\Task;
 use App\Eco\User\User;
 use Illuminate\Database\Eloquent\Model;
@@ -83,5 +84,9 @@ class Document extends Model
 
     public function task(){
         return $this->belongsTo(Task::class);
+    }
+
+    public function quotationRequest(){
+        return $this->belongsTo(QuotationRequest::class);
     }
 }

@@ -21,6 +21,11 @@ export default function (state = [], action) {
                 ...state,
                 valueCourses: state.valueCourses.filter((valueCourse) => valueCourse.id !== action.id),
             };
+        case 'DELETE_REVENUE_SUCCESS':
+            return {
+                ...state,
+                revenues: state.revenues.filter((revenue) => revenue.id !== action.id),
+            };
         default:
             return state;
     }

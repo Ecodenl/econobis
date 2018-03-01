@@ -55,6 +55,7 @@ import ProductionProjectsListApp from './container/production-project/list/Produ
 import ProductionProjectDetailsApp from './container/production-project/details/ProductionProjectDetailsApp';
 import ProductionProjectGeneralApp from './container/production-project/general/ProductionProjectGeneralApp';
 import ProductionProjectNewApp from './container/production-project/new/ProductionProjectNewApp';
+import ProductionProjectRevenueNewApp from './container/production-project/details/revenue/new/RevenueNewApp';
 import PermissionHelper from './helpers/PermissionHelper';
 import IntakeDetailsApp from './container/intake/details/IntakeDetailsApp';
 import IntakeNewApp from './container/intake/new/IntakeNewApp';
@@ -70,6 +71,7 @@ import TeamDetailsApp from './container/team/details/TeamDetailsApp';
 import UserDetailsApp from './container/users/details/UserDetailsApp';
 import UserNewApp from './container/users/new/UserNewApp';
 import UsersListApp from './container/users/list/UsersListApp';
+import RevenueDetailsApp from './container/production-project/details/revenue/details/RevenueDetailsApp';
 
 const Routes = () => {
     return (
@@ -167,7 +169,9 @@ const Routes = () => {
                 <Route path="kansen" component={OpportunitiesListApp} />
                 /* Production project */
                 <Route path="productie-project/nieuw" component={ProductionProjectNewApp} />
+                <Route path="productie-project/opbrengst/nieuw/:productionProjectId" component={ProductionProjectRevenueNewApp} />
                 <Route path="productie-project/details/:id" component={ProductionProjectDetailsApp} />
+                <Route path="productie-project/opbrengst/:id" component={RevenueDetailsApp} />
                 <Route path="productie-project/:id" component={ProductionProjectGeneralApp} />
                 <Route path="productie-projecten" component={ProductionProjectsListApp} />
 

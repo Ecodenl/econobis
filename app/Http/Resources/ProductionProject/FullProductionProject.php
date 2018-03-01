@@ -3,6 +3,7 @@
 namespace App\Http\Resources\ProductionProject;
 
 use App\Http\Resources\GenericResource;
+use App\Http\Resources\ParticipantProductionProject\FullParticipantProductionProject;
 use App\Http\Resources\User\FullUser;
 use Illuminate\Http\Resources\Json\Resource;
 
@@ -56,6 +57,8 @@ class FullProductionProject extends Resource
                 'createdById' => $this->created_by_id,
                 'createdBy' => FullUser::make($this->whenLoaded('createdBy')),
                 'valueCourses' => FullProductionProjectValueCourse::collection($this->whenLoaded('productionProjectValueCourses')),
+                'revenues' => FullProductionProjectRevenue::collection($this->whenLoaded('productionProjectRevenues')),
+                'participants' => FullParticipantProductionProject::collection($this->whenLoaded('participantsProductionProject')),
                 'participationsWorthTotal' => $this->participations_worth_total,
                 'amountOfParticipants' => $this->participantsProductionProject->count(),
             ];

@@ -90,7 +90,7 @@ class DocumentController extends Controller
             $time = Carbon::now();
 
             $name = '';
-             $document->contact && $name .=  '-' . str_replace(' ', '', $document->contact->full_name);
+            $document->contact && $name .=  '-' . str_replace(' ', '', $document->contact->full_name);
             $document->intake && $name .= '-intake-' . $document->intake->id;
             $document->contactGroup && $name .= '-' . str_replace(' ', '', $document->contactGroup->name);
             $document->opportunity && $name .= '-' . $document->opportunity->number;

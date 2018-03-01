@@ -1,6 +1,7 @@
 import { put, call } from 'redux-saga/effects';
 import ProductionProjectDetailsAPI from '../../api/production-project/ProductionProjectDetailsAPI';
 import ProductionProjectValueCourseAPI from "../../api/production-project/ProductionProjectValueCourseAPI";
+import ProductionProjectRevenueAPI from "../../api/production-project/ProductionProjectRevenueAPI";
 
 export function* fetchProductionProjectSaga({ id }) {
     try {
@@ -18,5 +19,14 @@ export function* deleteValueCourseSaga({ id }) {
         yield put({ type: 'DELETE_VALUE_COURSE_SUCCESS', id });
     } catch (error) {
         yield put({ type: 'DELETE_VALUE_COURSE_ERROR', error });
+    }
+}
+
+export function* deleteRevenueSaga({ id }) {
+    try {
+        yield call(ProductionProjectRevenueAPI.deleteProductionProjectRevenue, id);
+        yield put({ type: 'DELETE_REVENUE_SUCCESS', id });
+    } catch (error) {
+        yield put({ type: 'DELETE_REVENUE_ERROR', error });
     }
 }

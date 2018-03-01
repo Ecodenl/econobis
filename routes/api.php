@@ -256,6 +256,11 @@ Route::namespace('Api')
         Route::post('production-project/value-course/{productionProjectValueCourse}', 'ProductionProject\ProductionProjectValueCourseController@update');
         Route::post('production-project/value-course/{productionProjectValueCourse}/delete', 'ProductionProject\ProductionProjectValueCourseController@destroy');
 
+        Route::get('production-project/revenue/{productionProjectRevenue}', 'ProductionProject\ProductionProjectRevenueController@show');
+        Route::post('production-project/revenue', 'ProductionProject\ProductionProjectRevenueController@store');
+        Route::post('production-project/revenue/{productionProjectRevenue}', 'ProductionProject\ProductionProjectRevenueController@update');
+        Route::post('production-project/revenue/{productionProjectRevenue}/delete', 'ProductionProject\ProductionProjectRevenueController@destroy');
+
         Route::get('production-project/participant/grid', 'ParticipationProductionProject\ParticipationProductionProjectController@grid');
         Route::get('production-project/participant/{participantProductionProject}', 'ParticipationProductionProject\ParticipationProductionProjectController@show');
         Route::post('production-project/participant', 'ParticipationProductionProject\ParticipationProductionProjectController@store');

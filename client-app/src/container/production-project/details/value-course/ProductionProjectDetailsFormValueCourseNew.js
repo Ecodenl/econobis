@@ -95,7 +95,7 @@ class ProductionProjectDetailsFormValueCourseNew extends Component {
                                 name={"date"}
                                 value={date}
                                 onChangeAction={this.handleInputChangeDate}
-                                required={true}
+                                required={'required'}
                             />
                         </div>
 

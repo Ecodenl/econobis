@@ -35,6 +35,8 @@ use App\Eco\ParticipantProductionProject\ParticipantProductionProjectStatus;
 use App\Eco\ParticipantTransaction\ParticipantTransactionType;
 use App\Eco\PersonType\PersonType;
 use App\Eco\PhoneNumber\PhoneNumberType;
+use App\Eco\ProductionProject\ProductionProjectRevenueCategory;
+use App\Eco\ProductionProject\ProductionProjectRevenueType;
 use App\Eco\ProductionProject\ProductionProjectStatus;
 use App\Eco\ProductionProject\ProductionProjectType;
 use App\Eco\QuotationRequest\QuotationRequestStatus;
@@ -113,6 +115,8 @@ class SystemData extends Resource
             'participantProductionProjectStatus' => GenericResource::collection(ParticipantProductionProjectStatus::all()),
             'participantProductionProjectPayoutTypes' => GenericResource::collection(ParticipantProductionProjectPayoutType::all()),
             'participantTransactionTypes' => GenericResource::collection(ParticipantTransactionType::all()),
+            'productionProjectRevenueTypes' => GenericResource::collection(ProductionProjectRevenueType::all()),
+            'productionProjectRevenueCategories' => GenericResource::collection(ProductionProjectRevenueCategory::all()),
         ];
     }
 }

@@ -31,3 +31,23 @@ export const deleteValueCourse = (id) => {
         id,
     };
 };
+
+export const fetchRevenue = (id) => {
+    return {
+        type: 'FETCH_PRODUCTION_PROJECT_REVENUE',
+        id,
+    };
+};
+
+export const clearRevenue = () => {
+    return {
+        type: 'FETCH_PRODUCTION_PROJECT_REVENUE'
+    };
+};
+
+export const deleteRevenue = (id) => {
+    return {
+        type: 'DELETE_REVENUE',
+        id,
+    };
+};

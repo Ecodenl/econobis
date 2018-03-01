@@ -73,6 +73,10 @@ class ProductionProject extends Model
         return $this->hasMany(ProductionProjectValueCourse::class);
     }
 
+    public function productionProjectRevenues(){
+        return $this->hasMany(ProductionProjectRevenue::class);
+    }
+
     public function participantsProductionProject(){
         return $this->hasMany(ParticipantProductionProject::class);
     }

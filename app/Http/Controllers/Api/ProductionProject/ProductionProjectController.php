@@ -40,6 +40,9 @@ class ProductionProjectController extends ApiController
             'createdBy',
             'productionProjectValueCourses.productionProject',
             'productionProjectValueCourses.createdBy',
+            'productionProjectRevenues.type',
+            'productionProjectRevenues.category',
+            'productionProjectRevenues.createdBy',
         ]);
 
         return FullProductionProject::make($productionProject);

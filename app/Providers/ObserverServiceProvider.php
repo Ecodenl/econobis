@@ -42,6 +42,8 @@ use App\Eco\PhoneNumber\PhoneNumber;
 use App\Eco\PhoneNumber\PhoneNumberObserver;
 use App\Eco\ProductionProject\ProductionProject;
 use App\Eco\ProductionProject\ProductionProjectObserver;
+use App\Eco\ProductionProject\ProductionProjectRevenue;
+use App\Eco\ProductionProject\ProductionProjectRevenueObserver;
 use App\Eco\ProductionProject\ProductionProjectValueCourse;
 use App\Eco\ProductionProject\ProductionProjectValueCourseObserver;
 use App\Eco\QuotationRequest\QuotationRequest;
@@ -80,6 +82,7 @@ class ObserverServiceProvider extends ServiceProvider
         ContactEnergySupplier::observe(ContactEnergySupplierObserver::class);
         ProductionProject::observe(ProductionProjectObserver::class);
         ProductionProjectValueCourse::observe(ProductionProjectValueCourseObserver::class);
+        ProductionProjectRevenue::observe(ProductionProjectRevenueObserver::class);
         ParticipantTransaction::observe(ParticipantTransactionObserver::class);
     }
 

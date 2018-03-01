@@ -6,7 +6,6 @@ import OpportunityNewToolbar from './OpportunityNewToolbar';
 import OpportunityNew from './OpportunityNew';
 import OpportunityDetailsAPI from '../../../api/opportunity/OpportunityDetailsAPI';
 import IntakeDetailsAPI from '../../../api/intake/IntakeDetailsAPI';
-import MeasureAPI from '../../../api/measure/MeasureAPI';
 import PanelBody from "../../../components/panel/PanelBody";
 import Panel from "../../../components/panel/Panel";
 import validator from "validator";
@@ -21,7 +20,8 @@ class OppportunitiesNewApp extends Component {
             intake: [],
             opportunity: {
                 intakeId: '',
-                measureId: '',
+                measureCategoryId: props.params.measureCategoryId,
+                measureIds: '',
                 statusId: '',
                 quotationText: '',
                 evaluationAgreedDate: '',
@@ -29,7 +29,6 @@ class OppportunitiesNewApp extends Component {
             },
             errors: {
                 statusId: false,
-                measureId: false,
             }
         };
 
@@ -47,17 +46,6 @@ class OppportunitiesNewApp extends Component {
                 },
             });
         });
-
-        // MeasureAPI.fetchMeasure(this.props.params.measureId).then((payload) => {
-        //     this.setState({
-        //         ...this.state,
-        //         measure: payload,
-        //         opportunity: {
-        //             ...this.state.opportunity,
-        //             measureId: payload.id,
-        //         },
-        //     });
-        // });
     }
 
     handleInputChangeDate(value, name) {
@@ -98,16 +86,21 @@ class OppportunitiesNewApp extends Component {
             hasErrors = true;
         };
 
-        if(validator.isEmpty(opportunity.measureId)){
-            errors.measureId = true;
-            hasErrors = true;
-        };
-
         this.setState({ ...this.state, errors: errors })
 
         !hasErrors &&
         OpportunityDetailsAPI.storeOpportunity(opportunity).then(payload => {
             hashHistory.push('/kans/' + payload.id);
+        });
+    };
+
+    handleMeasureIds = (selectedOption) => {
+        this.setState({
+            ...this.state,
+            opportunity: {
+                ...this.state.opportunity,
+                measureIds: selectedOption
+            },
         });
     };
 
@@ -128,9 +121,9 @@ class OppportunitiesNewApp extends Component {
                                 <OpportunityNew
                                     handleInputChange={this.handleInputChange}
                                     handleInputChangeDate={this.handleInputChangeDate}
+                                    handleMeasureIds={this.handleMeasureIds}
                                     intake={this.state.intake}
-                                    measure={this.state.measure}
-                                    measureCategoryId={this.props.params.measureCategoryId}
+                                    measureCategoryId={this.state.measureCategoryId}
                                     opportunity={this.state.opportunity}
                                     handleSubmit={this.handleSubmit}
                                     errors={this.state.errors}

@@ -13,6 +13,7 @@ use App\Eco\Email\Email;
 use App\Eco\Measure\Measure;
 use App\Eco\Intake\Intake;
 use App\Eco\Contact\Contact;
+use App\Eco\Measure\MeasureCategory;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\RequestQueries\Intake\Grid\RequestQuery;
 use App\Http\Resources\GenericResource;
@@ -59,7 +60,7 @@ class IntakeController extends ApiController
             'sources',
             'reasons',
             'measuresRequested',
-            'opportunities.measure',
+            'opportunities.measures',
             'opportunities.quotationRequests',
             'opportunities.status',
             'tasks',
@@ -182,22 +183,22 @@ class IntakeController extends ApiController
     }
 
 
-    public function attachMeasureRequested(Intake $intake, Measure $measure)
+    public function attachMeasureRequested(Intake $intake, MeasureCategory $measureCategory)
     {
         $this->authorize('manage', Intake::class);
 
-        $intake->measuresRequested()->attach($measure->id);
+        $intake->measuresRequested()->attach($measureCategory->id);
 
-        return GenericResource::make($measure);
+        return GenericResource::make($measureCategory);
     }
 
-    public function detachMeasureRequested(Intake $intake, Measure $measure)
+    public function detachMeasureRequested(Intake $intake, MeasureCategory $measureCategory)
     {
         $this->authorize('manage', Intake::class);
 
-        $intake->measuresRequested()->detach($measure->id);
+        $intake->measuresRequested()->detach($measureCategory->id);
 
-        return GenericResource::make($measure);
+        return GenericResource::make($measureCategory);
     }
 
 //    public function destroy(Intake $intake)

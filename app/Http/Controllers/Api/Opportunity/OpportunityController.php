@@ -19,6 +19,7 @@ use App\Http\Resources\Opportunity\FullOpportunity;
 use App\Http\Resources\Opportunity\GridOpportunity;
 use App\Http\Resources\Opportunity\OpportunityPeek;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
 
 class OpportunityController extends ApiController
 {
@@ -27,7 +28,7 @@ class OpportunityController extends ApiController
     {
         $opportunities = $requestQuery->get();
 
-        $opportunities->load(['intake.contact', 'measure', 'intake.campaign', 'status', 'quotationRequests']);
+        $opportunities->load(['intake.contact', 'measureCategory', 'intake.campaign', 'status', 'quotationRequests']);
 
         return GridOpportunity::collection($opportunities)
             ->additional(['meta' => [
@@ -38,7 +39,8 @@ class OpportunityController extends ApiController
 
     public function show(Opportunity $opportunity)
     {
-        $opportunity->load(['measure.measureCategory',
+        $opportunity->load([
+            'measureCategory',
             'quotationRequests.organisation',
             'quotationRequests.createdBy',
             'quotationRequests.status',
@@ -49,19 +51,21 @@ class OpportunityController extends ApiController
             'tasks',
             'notes',
             'documents',
-            'opportunityEvaluation']);
+            'opportunityEvaluation',
+            'measures'
+        ]);
 
         $opportunity->relatedEmailsSent = $this->getRelatedEmails($opportunity->id, 'sent');
 
         return FullOpportunity::make($opportunity);
     }
 
-    public function store(RequestInput $requestInput)
+    public function store(Request $request, RequestInput $requestInput)
     {
         $this->authorize('manage', Opportunity::class);
 
         $data = $requestInput
-            ->integer('measureId')->validate('required|exists:measures,id')->alias('measure_id')->next()
+            ->integer('measureCategoryId')->validate('required|exists:measure_categories,id')->alias('measure_category_id')->next()
             ->integer('statusId')->validate('required|exists:opportunity_status,id')->alias('status_id')->next()
             ->integer('intakeId')->validate('required|exists:intakes,id')->onEmpty(null)->alias('intake_id')->next()
             ->string('quotationText')->alias('quotation_text')->next()
@@ -73,10 +77,18 @@ class OpportunityController extends ApiController
         $opportunity->fill($data);
         $opportunity->save();
 
+        $measureIds = explode(',', $request->measureIds);
+
+        if ($measureIds[0] == '') {
+            $measureIds = [];
+        }
+
+        $opportunity->measures()->sync($measureIds);
+
         return FullOpportunity::make($opportunity->fresh());
     }
 
-    public function update(RequestInput $requestInput, Opportunity $opportunity) {
+    public function update(Request $request, RequestInput $requestInput, Opportunity $opportunity) {
 
         $this->authorize('manage', Opportunity::class);
 
@@ -89,6 +101,14 @@ class OpportunityController extends ApiController
 
         $opportunity->fill($data);
         $opportunity->save();
+
+        $measureIds = explode(',', $request->measureIds);
+
+        if ($measureIds[0] == '') {
+            $measureIds = [];
+        }
+
+        $opportunity->measures()->sync($measureIds);
 
         return FullOpportunity::make($opportunity->fresh());
     }

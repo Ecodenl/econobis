@@ -48,8 +48,8 @@ Route::namespace('Api')
         Route::post('/intake/{intake}/update', 'Intake\IntakeController@update');
         Route::post('/intake/{intake}/delete', 'Intake\IntakeController@destroy');
 
-        Route::post('/intake/{intake}/{measure}/attach', 'Intake\IntakeController@attachMeasureRequested');
-        Route::post('/intake/{intake}/{measure}/detach', 'Intake\IntakeController@detachMeasureRequested');
+        Route::post('/intake/{intake}/{measureCategory}/attach', 'Intake\IntakeController@attachMeasureRequested');
+        Route::post('/intake/{intake}/{measureCategory}/detach', 'Intake\IntakeController@detachMeasureRequested');
 
         Route::get('/intake/{intake}/tasks', 'Intake\IntakeController@tasks');
         Route::get('/intake/{intake}/notes', 'Intake\IntakeController@notes');
@@ -154,8 +154,6 @@ Route::namespace('Api')
         Route::get('campaign/peek', 'Campaign\CampaignController@peek');
         Route::get('campaign/{campaign}', 'Campaign\CampaignController@show');
         Route::post('campaign/', 'Campaign\CampaignController@store');
-        Route::post('campaign/{campaign}/opportunity/{opportunity}/associate', 'Campaign\CampaignController@associateOpportunity');
-        Route::post('campaign/opportunity/{opportunity}/dissociate', 'Campaign\CampaignController@dissociateOpportunity');
         Route::post('campaign/{campaign}', 'Campaign\CampaignController@update');
         Route::post('campaign/{campaign}/delete', 'Campaign\CampaignController@destroy');
         Route::post('campaign/{campaign}/owner/{user}/associate', 'Campaign\CampaignController@associateOwner');

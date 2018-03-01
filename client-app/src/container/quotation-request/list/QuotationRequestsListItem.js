@@ -38,7 +38,7 @@ class QuotationRequestsListItem extends Component {
                 <td>{ organisation && organisation.name }</td>
                 <td>{ opportunity && opportunity.intake.contact.fullName }</td>
                 <td>{ opportunity && opportunity.intake.fullAddress }</td>
-                <td>{ opportunity && opportunity.measure.name }</td>
+                <td>{ opportunity && opportunity.measureCategory.name }</td>
                 <td>{ moment(createdAt.date).format('DD-MM-Y') }</td>
                 <td>{ datedRecorded && moment(datedRecorded).format('DD-MM-Y') }</td>
                 <td>{ status ? status.name : 'Onbekend'}</td>

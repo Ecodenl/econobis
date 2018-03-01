@@ -8,11 +8,13 @@ import PanelFooter from '../../../components/panel/PanelFooter';
 import InputText from "../../../components/form/InputText";
 import InputTextArea from "../../../components/form/InputTextarea";
 import MeasuresOfCategory from '../../../selectors/MeasuresOfCategory';
+import InputMultiSelect from "../../../components/form/InputMultiSelect";
 
 const OpportunityNew = props => {
-    const { statusId, quotationText, evaluationAgreedDate, desiredDate, measureId } = props.opportunity;
+    const { statusId, quotationText, evaluationAgreedDate, desiredDate, measureCategoryId, measureIds } = props.opportunity;
 
-    const measuresMatchToCategory = MeasuresOfCategory(props.measures, props.measureCategoryId);
+    const measuresMatchToCategory = MeasuresOfCategory(props.measures, measureCategoryId);
+    const measureCategory = props.measureCategories.find(measureCategory => measureCategory.id == measureCategoryId);
 
     return (
         <form className="form-horizontal col-md-12" onSubmit={props.handleSubmit}>
@@ -36,7 +38,7 @@ const OpportunityNew = props => {
                 <InputText
                     label={"Maatregel - categorie"}
                     name={"measureCategory"}
-                    value={props.measure.measureCategory ? props.measure.measureCategory.name : ''}
+                    value={measureCategory ? measureCategory.name : ''}
                     readOnly={true}
                 />
                 <InputText
@@ -48,15 +50,12 @@ const OpportunityNew = props => {
             </div>
 
             <div className="row">
-                <InputSelect
+                <InputMultiSelect
                     label={"Maatregel - specifiek"}
-                    size={"col-sm-6"}
-                    name={"measureId"}
+                    name={"measureIds"}
                     options={measuresMatchToCategory}
-                    value={measureId}
-                    onChangeAction={props.handleInputChange}
-                    required={"required"}
-                    error={props.errors.measureId}
+                    value={measureIds}
+                    onChangeAction={props.handleMeasureIds}
                 />
 
                 <InputSelect
@@ -104,6 +103,7 @@ const mapStateToProps = (state) => {
     return {
         status: state.systemData.opportunityStatus,
         measures: state.systemData.measures,
+        measureCategories: state.systemData.measureCategories,
     }
 };
 

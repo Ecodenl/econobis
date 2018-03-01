@@ -10,6 +10,7 @@ import ButtonText from '../../../../components/button/ButtonText';
 import InputSelect from "../../../../components/form/InputSelect";
 import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
+import MeasuresOfCategory from "../../../../selectors/MeasuresOfCategory";
 
 class HousingFileMeasuresTakenNew extends Component {
     constructor(props) {
@@ -19,6 +20,7 @@ class HousingFileMeasuresTakenNew extends Component {
             measureTaken: {
                 addressId: this.props.addressId,
                 measureId: '',
+                measureCategoryId: '',
                 measureDate: '',
 
             },
@@ -79,23 +81,33 @@ class HousingFileMeasuresTakenNew extends Component {
     };
 
     render() {
-        const { measureId, measureDate} = this.state.measureTaken;
-
+        const { measureCategoryId, measureId, measureDate} = this.state.measureTaken;
+        const measuresMatchToCategory = MeasuresOfCategory(this.props.measures, measureCategoryId);
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
                 <Panel className={'panel-grey'}>
                     <PanelBody>
                         <div className="row">
                             <InputSelect
-                                label={"Maatregel"}
+                                label={"Maatregel - categorie"}
+                                name={"measureCategoryId"}
+                                options={this.props.measureCategories}
+                                value={measureCategoryId}
+                                onChangeAction={this.handleInputChange}
+                            />
+                            <InputSelect
+                                label={"Maatregel - specifiek"}
                                 size={"col-sm-6"}
                                 name={"measureId"}
-                                options={this.props.measures}
+                                options={measuresMatchToCategory}
                                 value={measureId}
                                 onChangeAction={this.handleInputChange}
                                 required={"required"}
                                 error={this.state.errors.measureId}
                             />
+                        </div>
+
+                        <div className="row">
                             <InputDate
                                 label={"Datum realisatie"}
                                 name="measureDate"
@@ -118,6 +130,7 @@ class HousingFileMeasuresTakenNew extends Component {
 const mapStateToProps = (state) => {
     return {
         measures: state.systemData.measures,
+        measureCategories: state.systemData.measureCategories,
         addressId: state.housingFileDetails.address.id,
     };
 };

@@ -11,7 +11,7 @@ const NotesList = ({relatedNotes}) => {
     return (
         <div>
             {relatedNotes == '' &&
-            <div>Geen taken gevonden</div>
+            <div>Geen notities gevonden</div>
             }
 
             {relatedNotes != '' &&

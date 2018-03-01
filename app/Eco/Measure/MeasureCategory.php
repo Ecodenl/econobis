@@ -6,6 +6,7 @@ use App\Eco\Address\Address;
 use App\Eco\Campaign\Campaign;
 use App\Eco\HousingFile\HousingFile;
 use App\Eco\Intake\Intake;
+use App\Eco\Opportunity\Opportunity;
 use Illuminate\Database\Eloquent\Model;
 
 class MeasureCategory extends Model
@@ -23,6 +24,11 @@ class MeasureCategory extends Model
     public function measure()
     {
         return $this->hasMany(Measure::class);
+    }
+
+    public function opportunities()
+    {
+        return $this->hasMany(Opportunity::class);
     }
 
     public function intakes()

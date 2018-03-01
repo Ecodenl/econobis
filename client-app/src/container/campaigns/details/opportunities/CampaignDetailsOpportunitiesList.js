@@ -10,7 +10,7 @@ const CampaignDetailsOpportunitiesList = props => {
                 <div className="col-sm-2">Nummer</div>
                 <div className="col-sm-2">Datum</div>
                 <div className="col-sm-3">Naam</div>
-                <div className="col-sm-2">Maatregel</div>
+                <div className="col-sm-3">Maatregel categorie</div>
                 <div className="col-sm-1">Status</div>
                 <div className="col-sm-1">Aantal offertes</div>
                 <div className="col-sm-1"></div>

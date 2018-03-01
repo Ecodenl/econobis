@@ -19,13 +19,13 @@ class OpportunitiesList extends Component {
             deleteItem: {
                 id: '',
                 contactName: '',
-                measureName: ''
+                measureCategoryName: ''
             }
         };
 
     }
 
-    showDeleteItemModal = (id, contactName, measureName) => {
+    showDeleteItemModal = (id, contactName, measureCategoryName) => {
         this.setState({
             ...this.state,
             showDeleteItem: true,
@@ -33,7 +33,7 @@ class OpportunitiesList extends Component {
                 ...this.state.deleteItem,
                 id: id,
                 contactName: contactName,
-                measureName: measureName
+                measureCategoryName: measureCategoryName
             }
         });
     };
@@ -46,7 +46,7 @@ class OpportunitiesList extends Component {
                 ...this.state.deleteItem,
                 id: '',
                 contactName: '',
-                measureName: ''
+                measureCategoryName: ''
             }
         });
     };
@@ -62,7 +62,7 @@ class OpportunitiesList extends Component {
                         <DataTableHeadTitle title={'Nummer'} width={'10%'}/>
                         <DataTableHeadTitle title={'Datum'} width={'20%'}/>
                         <DataTableHeadTitle title={'Naam'} width={'20%'}/>
-                        <DataTableHeadTitle title={'Maatregel'} width={'17%'}/>
+                        <DataTableHeadTitle title={'Maatregel categorie'} width={'17%'}/>
                         <DataTableHeadTitle title={'Campagne'} width={'10%'}/>
                         <DataTableHeadTitle title={'Status'} width={'10%'}/>
                         <DataTableHeadTitle title={'Aantal offertes'} width={'7%'}/>

@@ -12,16 +12,19 @@ import OpportunityDetailsAPI from '../../../../api/opportunity/OpportunityDetail
 
 import { fetchOpportunity } from '../../../../actions/opportunity/OpportunityDetailsActions';
 import InputTextArea from "../../../../components/form/InputTextarea";
+import InputMultiSelect from "../../../../components/form/InputMultiSelect";
+import MeasuresOfCategory from "../../../../selectors/MeasuresOfCategory";
 
 class OpportunityFormEdit extends Component {
     constructor(props) {
         super(props);
 
-        const { id, desiredDate, evaluationAgreedDate, quotationText, status } = props.opportunity;
+        const { id, measures, desiredDate, evaluationAgreedDate, quotationText, status } = props.opportunity;
 
         this.state = {
             opportunity: {
                 id,
+                measureIds: measures && measures.map((measure) => measure.id).join(','),
                 statusId: status ? status.id : '',
                 quotationText: quotationText,
                 evaluationAgreedDate: evaluationAgreedDate ? evaluationAgreedDate : '',
@@ -70,6 +73,16 @@ class OpportunityFormEdit extends Component {
         });
     };
 
+    handleMeasureIds = (selectedOption) => {
+        this.setState({
+            ...this.state,
+            opportunity: {
+                ...this.state.opportunity,
+                measureIds: selectedOption
+            },
+        });
+    };
+
     handleSubmit = event => {
         event.preventDefault();
 
@@ -93,8 +106,9 @@ class OpportunityFormEdit extends Component {
     };
 
     render() {
-        const { statusId, quotationText, desiredDate, evaluationAgreedDate } = this.state.opportunity;
-        const { intake, measure } = this.props.opportunity;
+        const { statusId, quotationText, desiredDate, evaluationAgreedDate, measureIds } = this.state.opportunity;
+        const { intake, measureCategory } = this.props.opportunity;
+        const measuresMatchToCategory = MeasuresOfCategory(this.props.measures, measureCategory.id);
 
         return (
             <form className="form-horizontal col-md-12" onSubmit={this.handleSubmit}>
@@ -117,7 +131,7 @@ class OpportunityFormEdit extends Component {
                     <InputText
                         label={"Maatregel - categorie"}
                         name={"measureCategory"}
-                        value={measure.measureCategory ? measure.measureCategory.name : ''}
+                        value={measureCategory ? measureCategory.name : ''}
                         readOnly={true}
                     />
                     <InputText
@@ -129,12 +143,14 @@ class OpportunityFormEdit extends Component {
                 </div>
 
                 <div className="row">
-                    <InputText
+                    <InputMultiSelect
                         label={"Maatregel - specifiek"}
-                        name={"measure"}
-                        value={measure ? measure.name : ''}
-                        readOnly={true}
+                        name="measureIds"
+                        value={measureIds}
+                        options={measuresMatchToCategory}
+                        onChangeAction={this.handleMeasureIds}
                     />
+
                     <InputSelect
                         label={"Status"}
                         size={"col-sm-6"}
@@ -189,6 +205,7 @@ const mapStateToProps = (state) => {
     return {
         opportunity: state.opportunityDetails,
         status: state.systemData.opportunityStatus,
+        measures: state.systemData.measures,
     }
 };
 

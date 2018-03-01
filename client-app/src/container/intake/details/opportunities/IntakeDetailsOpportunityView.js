@@ -4,7 +4,7 @@ import {connect} from "react-redux";
 import { hashHistory } from 'react-router';
 
 const IntakeDetailsOpportunityView = props => {
-    const {id, number, createdAt, measure, status, quotationRequests} = props.opportunity;
+    const {id, number, createdAt, measureCategory, status, quotationRequests} = props.opportunity;
 
     return (
 
@@ -12,7 +12,7 @@ const IntakeDetailsOpportunityView = props => {
         <div onClick={() => hashHistory.push(`/kans/${id}`)}>
             <div className="col-sm-2" >{number}</div>
                 <div className="col-sm-3">{createdAt ? moment(createdAt.date).format('L') : ''}</div>
-                <div className="col-sm-3">{measure ? measure.name : ''}</div>
+                <div className="col-sm-3">{measureCategory ? measureCategory.name : ''}</div>
                 <div className="col-sm-2">{status ? status.name : ''}</div>
                 <div className="col-sm-2">{quotationRequests.length }</div>
 

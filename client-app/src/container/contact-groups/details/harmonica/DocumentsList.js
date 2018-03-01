@@ -20,7 +20,7 @@ class DocumentsList extends Component {
         return (
             <div>
                 {relatedDocuments == '' &&
-                <div>Geen taken gevonden</div>
+                <div>Geen documenten gevonden</div>
                 }
 
                 {relatedDocuments != '' &&

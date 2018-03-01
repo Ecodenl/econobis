@@ -39,7 +39,6 @@ class MeasureController extends ApiController
         $measure->load([
             'faqs',
             'deliveredByOrganisations.contact.primaryAddress',
-            'intakes.contact',
             'addresses.housingFile',
             'addresses.contact',
             'createdBy',

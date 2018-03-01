@@ -21,7 +21,7 @@ const OpportunityDeleteItem = (props) => {
             confirmAction={() => confirmAction()}
             title="Verwijderen"
       >
-            Verwijder kans van contact <strong>{ props.contactName }</strong> met maatregel <strong>{ props.measureName }</strong>?
+            Verwijder kans van contact <strong>{ props.contactName }</strong> met maatregel <strong>{ props.measureCategoryName }</strong>?
       </Modal>
     );
 };

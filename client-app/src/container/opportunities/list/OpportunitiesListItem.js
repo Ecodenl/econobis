@@ -32,19 +32,19 @@ class OpportunitiesListItem extends Component {
     }
 
     render() {
-        const { id, number, createdAt, contactName, measureName, campaignName, statusName, amountQuotations, amountRelatedOpportunities} = this.props;
+        const { id, number, createdAt, contactName, measureCategoryName, campaignName, statusName, amountQuotations} = this.props;
         return (
           <tr className={this.state.highlightRow} onDoubleClick={() => this.openItem(id)} onMouseEnter={() => this.onRowEnter()} onMouseLeave={() => this.onRowLeave()}>
               <td>{ number }</td>
               <td>{ createdAt ? moment(createdAt.date).format('DD-MM-Y') : 'Onbekend'}</td>
               <td>{ contactName }</td>
-              <td>{ measureName }</td>
+              <td>{ measureCategoryName }</td>
               <td>{ campaignName }</td>
               <td>{ statusName }</td>
               <td>{ amountQuotations }</td>
               <td>
                   {(this.state.showActionButtons ? <a role="button" onClick={() => this.openItem(id)}><span className="glyphicon glyphicon-pencil mybtn-success" /> </a> : '')}
-                  {(this.state.showActionButtons && this.props.permissions.manageOpportunity ? <a role="button" onClick={this.props.showDeleteItemModal.bind(this, id, contactName, measureName)}><span className="glyphicon glyphicon-trash mybtn-danger"  /> </a> : '')}
+                  {(this.state.showActionButtons && this.props.permissions.manageOpportunity ? <a role="button" onClick={this.props.showDeleteItemModal.bind(this, id, contactName, measureCategoryName)}><span className="glyphicon glyphicon-trash mybtn-danger"  /> </a> : '')}
               </td>
             </tr>
         )

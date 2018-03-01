@@ -39,7 +39,6 @@ class FullMeasure extends Resource
             'measuresTaken' => FullAddress::collection($this->whenLoaded('addresses')),
             'measureTakenDate' => $this->whenPivotLoaded('housing_file_measure_taken', function () {
                 return $this->pivot->measure_date;}),
-            'measuresRequested' => FullIntake::collection($this->whenLoaded('intakes')),
             'relatedDocuments' => $this->documents()->get(),
             'documentCount' => $this->documents()->count(),
         ];

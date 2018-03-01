@@ -3,10 +3,7 @@
 namespace App\Eco\Measure;
 
 use App\Eco\Address\Address;
-use App\Eco\Campaign\Campaign;
 use App\Eco\Document\Document;
-use App\Eco\EnergyLabel\EnergyLabel;
-use App\Eco\HousingFile\HousingFile;
 use App\Eco\Opportunity\Opportunity;
 use App\Eco\Organisation\Organisation;
 use App\Eco\User\User;
@@ -31,11 +28,6 @@ class Measure extends Model
     public function addresses()
     {
         return $this->belongsToMany(Address::class, 'housing_file_measure_taken')->withPivot('measure_date');;
-    }
-
-    public function opportunities()
-    {
-        return $this->hasMany(Opportunity::class);
     }
 
     public function deliveredByOrganisations()
@@ -66,5 +58,10 @@ class Measure extends Model
     public function documents()
     {
         return $this->hasMany(Document::class);
+    }
+
+    public function opportunities()
+    {
+        return $this->belongsToMany(Opportunity::class);
     }
 }

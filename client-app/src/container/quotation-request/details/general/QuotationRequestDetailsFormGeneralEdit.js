@@ -24,8 +24,8 @@ class QuotationRequestDetailsFormGeneralEdit extends Component {
             opportunity: {
                 fullName: opportunity.intake ? opportunity.intake.contact.fullName : '',
                 fullAddress: opportunity.intake ? opportunity.intake.fullAddress : '',
-                measureName: opportunity.measure ? opportunity.measure.name : '',
-                measureCategoryName: opportunity.measure ? opportunity.measure.measureCategory.name : '',
+                measureNames: opportunity.measures && opportunity.measures.map((measure) => measure.name).join(', '),
+                measureCategoryName: opportunity.measureCategory.name,
             },
             organisations: [],
             quotationRequest: {
@@ -109,7 +109,7 @@ class QuotationRequestDetailsFormGeneralEdit extends Component {
 
     render() {
         const {organisationId, dateRecorded, statusId, dateReleased, dateValid, quotationText} = this.state.quotationRequest;
-        const {fullName, fullAddress, measureName, measureCategoryName} = this.state.opportunity;
+        const {fullName, fullAddress, measureNames, measureCategoryName} = this.state.opportunity;
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -154,7 +154,7 @@ class QuotationRequestDetailsFormGeneralEdit extends Component {
                     <InputText
                         label={'Maatregel - specifiek'}
                         name={"measure"}
-                        value={measureName}
+                        value={measureNames}
                         onChange={ () => {} }
                         readOnly={true}
                     />

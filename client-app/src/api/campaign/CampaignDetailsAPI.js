@@ -56,32 +56,6 @@ export default {
             );
     },
 
-    associateOpportunity: (campaignId, opportunityId) => {
-        const requestUrl = `${URL_CAMPAIGN}/${campaignId}/opportunity/${opportunityId}/associate`;
-        const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
-        axios.defaults.headers.common.Authorization = AUTH_TOKEN;
-
-        return axios.post(requestUrl)
-            .then(response => response.data.data)
-            .catch((error) => {
-                    console.log(error);
-                },
-            );
-    },
-
-    dissociateOpportunity: (opportunityId) => {
-        const requestUrl = `${URL_CAMPAIGN}/opportunity/${opportunityId}/dissociate`;
-        const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
-        axios.defaults.headers.common.Authorization = AUTH_TOKEN;
-
-        return axios.post(requestUrl)
-            .then(response => response.data.data)
-            .catch((error) => {
-                    console.log(error);
-                },
-            );
-    },
-
     attachResponse: (campaignId, contactId) => {
         const requestUrl = `${URL_CAMPAIGN}/${campaignId}/response/${contactId}/attach`;
         const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;

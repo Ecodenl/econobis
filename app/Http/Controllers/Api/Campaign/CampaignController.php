@@ -43,7 +43,7 @@ class CampaignController extends ApiController
     public function show(Campaign $campaign)
     {
         $campaign->load([
-            'opportunities.measure',
+            'opportunities.measureCategory',
             'opportunities.intake.contact',
             'opportunities.status',
             'opportunities.quotationRequests',
@@ -147,24 +147,6 @@ class CampaignController extends ApiController
         $campaign->responses()->delete();
 
         $campaign->delete();
-    }
-
-    public function associateOpportunity(Campaign $campaign, Opportunity $opportunity)
-    {
-        $this->authorize('manage', Campaign::class);
-        $opportunity->campaign()->associate($campaign);
-        $opportunity->save();
-
-        return FullOpportunity::make($opportunity->fresh());
-    }
-
-    public function dissociateOpportunity(Opportunity $opportunity)
-    {
-        $this->authorize('manage', Campaign::class);
-        $opportunity->campaign()->dissociate();
-        $opportunity->save();
-
-        return FullOpportunity::make($opportunity->fresh());
     }
 
     public function attachResponse(Campaign $campaign, Contact $contact)

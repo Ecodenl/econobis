@@ -7,6 +7,7 @@ use App\Eco\Contact\Contact;
 use App\Eco\Document\Document;
 use App\Eco\Measure\Measure;
 use App\Eco\Intake\Intake;
+use App\Eco\Measure\MeasureCategory;
 use App\Eco\QuotationRequest\QuotationRequest;
 use App\Eco\Task\Task;
 use App\Eco\User\User;
@@ -21,9 +22,14 @@ class Opportunity extends Model
 
     protected $guarded = ['id'];
     //Relations
-    public function measure()
+    public function measureCategory()
     {
-        return $this->belongsTo(Measure::class);
+        return $this->belongsTo(MeasureCategory::class);
+    }
+
+    public function measures()
+    {
+        return $this->belongsToMany(Measure::class);
     }
 
     public function intake()

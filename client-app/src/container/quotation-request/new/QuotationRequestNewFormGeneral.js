@@ -49,8 +49,8 @@ class QuotationRequestNewFormGeneral extends Component {
                 opportunity: {
                     fullName: payload.intake.contact.fullName,
                     fullAddress: payload.intake.fullAddress,
-                    measureName: payload.measure.name,
-                    measureCategoryName: payload.measure.measureCategory.name,
+                    measureNames: payload.measures && payload.measures.map((measure) => measure.name).join(', '),
+                    measureCategoryName: payload.measureCategory.name,
                 },
                 quotationRequest: {
                     opportunityId: payload.id,
@@ -124,7 +124,7 @@ class QuotationRequestNewFormGeneral extends Component {
 
     render() {
         const {organisationId, dateRecorded, statusId, dateReleased, dateValid, quotationText} = this.state.quotationRequest;
-        const {fullName, fullAddress, measureName, measureCategoryName} = this.state.opportunity;
+        const {fullName, fullAddress, measureNames, measureCategoryName} = this.state.opportunity;
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -169,7 +169,7 @@ class QuotationRequestNewFormGeneral extends Component {
                     <InputText
                         label={'Maatregel - specifiek'}
                         name={"measure"}
-                        value={measureName}
+                        value={measureNames}
                         onChange={ () => {} }
                         readOnly={true}
                     />

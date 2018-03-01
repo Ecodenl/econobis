@@ -28,14 +28,14 @@ const QuotationRequestDetailsFormGeneralView = props => {
                 />
                 <ViewText
                     label={"Maatregel categorie"}
-                    value={opportunity.measure && opportunity.measure.measureCategory.name}
+                    value={opportunity.measureCategory && opportunity.measureCategory.name}
                 />
             </div>
 
             <div className="row">
                 <ViewText
-                    label={"Maatregel specifiek"}
-                    value={opportunity.measure && opportunity.measure.name}
+                    label={"Maatregelen specifiek"}
+                    value={opportunity.measures && opportunity.measures.map((measure) => measure.name).join(', ')}
                 />
                 <ViewText
                     label={"Datum opname"}

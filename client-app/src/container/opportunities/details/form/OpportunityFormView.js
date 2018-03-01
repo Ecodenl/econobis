@@ -5,7 +5,7 @@ import moment from 'moment';
 import ViewText from '../../../../components/form/ViewText';
 
 const OpportunityFormView = props => {
-    const { status, quotationText, evaluationAgreedDate, desiredDate, intake, measure } = props.opportunity;
+    const { status, quotationText, evaluationAgreedDate, desiredDate, intake, measureCategory, measures } = props.opportunity;
 
     return (
         <div>
@@ -22,7 +22,7 @@ const OpportunityFormView = props => {
             <div className="row" onClick={props.switchToEdit}>
                 <ViewText
                     label={"Maatregel - categorie"}
-                    value={measure && measure.measureCategory.name}
+                    value={measureCategory && measureCategory.name}
                 />
                 <ViewText
                     label={"Campagne"}
@@ -32,7 +32,7 @@ const OpportunityFormView = props => {
             <div className="row" onClick={props.switchToEdit}>
                 <ViewText
                     label={"Maatregel - specifiek"}
-                    value={measure && measure.name}
+                    value={ measures && measures.map((measure) => measure.name).join(', ') }
                 />
                 <ViewText
                     label={"Status"}

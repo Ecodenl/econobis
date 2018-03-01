@@ -6,6 +6,7 @@ import IntakeMeasuresRequestedView from './IntakeMeasuresRequestedView';
 import IntakeMeasuresRequestedDelete from './IntakeMeasuresRequestedDelete';
 import IntakeMeasuresRequestedEdit from "./IntakeMeasuresRequestedEdit";
 import IntakeDetailsAPI from "../../../../api/intake/IntakeDetailsAPI";
+import {isEqual} from "lodash";
 
 
 class IntakeMeasuresRequestedItem extends Component {
@@ -20,6 +21,17 @@ class IntakeMeasuresRequestedItem extends Component {
                 ...props.measureRequested,
             },
         };
+    };
+
+    componentWillReceiveProps(nextProps) {
+        if(!isEqual(this.state.measureRequested, nextProps.measureRequested)){
+            this.setState({
+                ...this.state,
+                measureRequested: {
+                    ...nextProps.measureRequested,
+                },
+            });
+        }
     };
 
     onLineEnter = () => {

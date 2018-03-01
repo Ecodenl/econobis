@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 
 import CampaignDetailsOpportunityView from './CampaignDetailsOpportunityView';
-import CampaignDetailsOpportunityItemDelete from "./CampaignDetailsOpportunityItemDelete";
 
 class CampaignDetailsOpportunityItem extends Component {
     constructor(props) {
@@ -10,7 +9,6 @@ class CampaignDetailsOpportunityItem extends Component {
         this.state = {
             showActionButtons: false,
             highlightLine: '',
-            showDelete: false,
 
             opportunity: {
                 ...props.opportunity,
@@ -32,10 +30,6 @@ class CampaignDetailsOpportunityItem extends Component {
         });
     };
 
-    toggleDelete = () => {
-        this.setState({showDelete: !this.state.showDelete});
-    };
-
     render() {
         return (
             <div>
@@ -44,16 +38,8 @@ class CampaignDetailsOpportunityItem extends Component {
                     showActionButtons={this.state.showActionButtons}
                     onLineEnter={this.onLineEnter}
                     onLineLeave={this.onLineLeave}
-                    toggleDelete={this.toggleDelete}
                     opportunity={this.state.opportunity}
                 />
-                {
-                    this.state.showDelete &&
-                    <CampaignDetailsOpportunityItemDelete
-                        toggleDelete={this.toggleDelete}
-                        opportunityId={this.state.opportunity.id}
-                    />
-                }
             </div>
         );
     }

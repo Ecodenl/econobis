@@ -32,7 +32,8 @@ class QuotationRequestController extends ApiController
         $quotationRequests->load([
             'organisation',
             'opportunity.intake.address',
-            'opportunity.measure',
+            'opportunity.measureCategory',
+            'opportunity.measures',
             'opportunity.intake.contact',
             'status',
         ]);
@@ -49,7 +50,8 @@ class QuotationRequestController extends ApiController
         $quotationRequest->load([
             'organisation',
             'opportunity.intake.contact',
-            'opportunity.measure.measureCategory',
+            'opportunity.measureCategory',
+            'opportunity.measures',
             'documents',
             'status',
             'createdBy',
@@ -68,7 +70,8 @@ class QuotationRequestController extends ApiController
     {
         $opportunity->load([
             'intake.address',
-            'measure.measureCategory',
+            'measures',
+            'measureCategory',
             'intake.contact',
         ]);
 

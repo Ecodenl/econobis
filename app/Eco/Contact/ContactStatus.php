@@ -23,9 +23,11 @@ class ContactStatus extends EnumWithIdAndName
     protected static function seed()
     {
         return [
-            new static('open', 'Open'),
-            new static('interested', 'Geïnteresseerd'),
-            new static('closed', 'Afgehandeld'),
+            new static('interested', 'Belangstellend'),
+            new static('member', 'Lid'),
+            new static('memberAspirant', 'Aspirantlid'),
+            new static('memberYouth', 'Jeugdlid'),
+            new static('stopped', 'Afgehaakt'),
         ];
     }
 }

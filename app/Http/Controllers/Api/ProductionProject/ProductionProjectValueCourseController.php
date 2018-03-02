@@ -17,6 +17,8 @@ class ProductionProjectValueCourseController extends ApiController
 {
     public function store(RequestInput $requestInput)
     {
+        $this->authorize('manage', ProductionProjectValueCourse::class);
+
         $data = $requestInput
             ->integer('productionProjectId')->validate('required|exists:production_projects,id')->alias('production_project_id')->next()
             ->date('date')->validate('required|date')->next()
@@ -38,6 +40,8 @@ class ProductionProjectValueCourseController extends ApiController
 
     public function update(RequestInput $requestInput, ProductionProjectValueCourse $productionProjectValueCourse)
     {
+        $this->authorize('manage', ProductionProjectValueCourse::class);
+
         $data = $requestInput
             ->date('date')->validate('required|date')->next()
             ->integer('bookWorth')->validate('required')->alias('book_worth')->next()
@@ -53,6 +57,8 @@ class ProductionProjectValueCourseController extends ApiController
 
     public function destroy(ProductionProjectValueCourse $productionProjectValueCourse)
     {
+        $this->authorize('manage', ProductionProjectValueCourse::class);
+        
         $productionProjectValueCourse->forceDelete();
     }
 }

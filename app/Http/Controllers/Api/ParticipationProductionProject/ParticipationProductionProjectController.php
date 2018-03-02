@@ -57,6 +57,8 @@ class ParticipationProductionProjectController extends ApiController
 
     public function store(RequestInput $requestInput)
     {
+        $this->authorize('manage', ParticipantProductionProject::class);
+
         $data = $requestInput
             ->integer('contactId')->validate('required|exists:contacts,id')->alias('contact_id')->next()
             ->integer('statusId')->validate('required|exists:participant_production_project_status,id')->alias('status_id')->next()
@@ -92,6 +94,8 @@ class ParticipationProductionProjectController extends ApiController
 
     public function update(RequestInput $requestInput, ParticipantProductionProject $participantProductionProject)
     {
+        $this->authorize('manage', ParticipantProductionProject::class);
+
         $data = $requestInput
             ->integer('statusId')->validate('required|exists:participant_production_project_status,id')->alias('status_id')->next()
             ->date('dateRegister')->validate('nullable|date')->onEmpty(null)->alias('date_register')->next()
@@ -122,6 +126,8 @@ class ParticipationProductionProjectController extends ApiController
 
     public function transfer(RequestInput $requestInput)
     {
+        $this->authorize('manage', ParticipantProductionProject::class);
+
         $data = $requestInput
             ->integer('participationId')->validate('required|exists:participation_production_project,id')->alias('participation_id')->next()
             ->integer('transferToContactId')->validate('required')->alias('transfer_to_contact_id')->next()
@@ -182,6 +188,8 @@ class ParticipationProductionProjectController extends ApiController
 
     public function destroy(ParticipantProductionProject $participantProductionProject)
     {
+        $this->authorize('manage', ParticipantProductionProject::class);
+
         $participantProductionProject->forceDelete();
     }
 }

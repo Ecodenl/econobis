@@ -55,6 +55,9 @@ class ProductionProjectController extends ApiController
 
     public function store(RequestInput $requestInput)
     {
+
+        $this->authorize('manage', ProductionProject::class);
+
         $data = $requestInput
             ->string('name')->validate('required')->next()
             ->string('code')->validate('required')->next()
@@ -96,6 +99,8 @@ class ProductionProjectController extends ApiController
 
     public function update(RequestInput $requestInput, ProductionProject $productionProject)
     {
+        $this->authorize('manage', ProductionProject::class);
+
         $data = $requestInput
             ->string('name')->validate('required')->next()
             ->string('code')->validate('required')->next()
@@ -134,6 +139,8 @@ class ProductionProjectController extends ApiController
 
     public function destroy(ProductionProject $productionProject)
     {
+        $this->authorize('manage', ProductionProject::class);
+
         $productionProject->forceDelete();
     }
 

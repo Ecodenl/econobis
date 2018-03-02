@@ -17,6 +17,8 @@ class ParticipantTransactionController extends ApiController
 {
     public function store(RequestInput $requestInput)
     {
+        $this->authorize('manage', ParticipantTransaction::class);
+
         $data = $requestInput
             ->integer('participationId')->validate('required|exists:participation_production_project,id')->alias('participation_id')->next()
             ->integer('typeId')->validate('required|exists:participant_transaction_type,id')->alias('type_id')->next()
@@ -40,6 +42,8 @@ class ParticipantTransactionController extends ApiController
 
     public function update(RequestInput $requestInput, ParticipantTransaction $participantTransaction)
     {
+        $this->authorize('manage', ParticipantTransaction::class);
+
         $data = $requestInput
             ->integer('typeId')->validate('required|exists:participant_transaction_type,id')->alias('type_id')->next()
             ->date('dateTransaction')->validate('required|date')->alias('date_transaction')->next()
@@ -60,6 +64,8 @@ class ParticipantTransactionController extends ApiController
 
     public function destroy(ParticipantTransaction $participantTransaction)
     {
+        $this->authorize('manage', ParticipantTransaction::class);
+
         $participantTransaction->forceDelete();
     }
 }

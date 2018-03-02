@@ -17,6 +17,8 @@ class ObligationNumberController extends ApiController
 {
     public function store(RequestInput $requestInput)
     {
+        $this->authorize('manage', ObligationNumber::class);
+
         $data = $requestInput
             ->integer('participationId')->validate('required|exists:participation_production_project,id')->alias('participation_id')->next()
             ->string('number')->validate('required')->next()
@@ -34,6 +36,8 @@ class ObligationNumberController extends ApiController
 
     public function update(RequestInput $requestInput, ObligationNumber $obligationNumber)
     {
+        $this->authorize('manage', ObligationNumber::class);
+
         $data = $requestInput
             ->string('number')->validate('required')->next()
 
@@ -48,6 +52,8 @@ class ObligationNumberController extends ApiController
 
     public function destroy(ObligationNumber $obligationNumber)
     {
+        $this->authorize('manage', ObligationNumber::class);
+
         $obligationNumber->forceDelete();
     }
 }

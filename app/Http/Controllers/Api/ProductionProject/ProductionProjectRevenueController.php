@@ -30,6 +30,8 @@ class ProductionProjectRevenueController extends ApiController
 
     public function store(RequestInput $requestInput)
     {
+        $this->authorize('manage', ProductionProjectRevenue::class);
+
         $data = $requestInput
             ->integer('categoryId')->validate('required|exists:production_project_revenue_category,id')->alias('category_id')->next()
             ->integer('productionProjectId')->validate('required|exists:production_projects,id')->alias('production_project_id')->next()
@@ -64,6 +66,8 @@ class ProductionProjectRevenueController extends ApiController
 
     public function update(RequestInput $requestInput, ProductionProjectRevenue $productionProjectRevenue)
     {
+        $this->authorize('manage', ProductionProjectRevenue::class);
+
         $data = $requestInput
             ->integer('categoryId')->validate('required|exists:production_project_revenue_category,id')->alias('category_id')->next()
             ->boolean('confirmed')->next()
@@ -94,6 +98,8 @@ class ProductionProjectRevenueController extends ApiController
 
     public function destroy(ProductionProjectRevenue $productionProjectRevenue)
     {
+        $this->authorize('manage', ProductionProjectRevenue::class);
+
         $productionProjectRevenue->forceDelete();
     }
 }

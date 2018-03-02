@@ -23,6 +23,8 @@ class TeamController extends ApiController
 
     public function grid(RequestQuery $requestQuery)
     {
+        $this->authorize('view', Team::class);
+
         $teams = $requestQuery->get();
 
         $teams->load([
@@ -38,6 +40,8 @@ class TeamController extends ApiController
 
     public function show(Team $team)
     {
+        $this->authorize('view', Team::class);
+
         $team->load([
             'users'
         ]);
@@ -47,6 +51,8 @@ class TeamController extends ApiController
 
     public function store(Request $request)
     {
+        $this->authorize('create', Team::class);
+
         $data = $request->validate([
             'name' => 'required',
         ]);
@@ -64,6 +70,8 @@ class TeamController extends ApiController
 
     public function update(Request $request, Team $team)
     {
+        $this->authorize('create', Team::class);
+
         $data = $request->validate([
             'name' => 'required',
         ]);
@@ -78,6 +86,8 @@ class TeamController extends ApiController
 
     public function attachUser(Team $team, User $user)
     {
+        $this->authorize('create', Team::class);
+
         $team->users()->attach($user->id);
 
         return UserPeek::make($user);
@@ -85,11 +95,15 @@ class TeamController extends ApiController
 
     public function detachUser(Team $team, User $user)
     {
+        $this->authorize('create', Team::class);
+
         $team->users()->detach($user->id);
     }
 
     public function destroy(Team $team)
     {
+        $this->authorize('create', Team::class);
+
         //delete many to many relations
         $team->users()->detach();
 

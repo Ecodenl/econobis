@@ -51,6 +51,7 @@ import OpportunityDetailsApp from './container/opportunities/details/Opportunity
 import OpportunityNewApp from './container/opportunities/new/OpportunityNewApp';
 import ParticipantNewApp from './container/production-project/general/participant/new/ParticipantNewApp';
 import ParticipantDetailsApp from './container/production-project/general/participant/details/ParticipantDetailsApp';
+import ParticipationTransferApp from './container/production-project/general/participant/details/transfer/ParticipationTransferApp';
 import ProductionProjectsListApp from './container/production-project/list/ProductionProjectsListApp';
 import ProductionProjectDetailsApp from './container/production-project/details/ProductionProjectDetailsApp';
 import ProductionProjectGeneralApp from './container/production-project/general/ProductionProjectGeneralApp';
@@ -175,6 +176,7 @@ const Routes = () => {
                 <Route path="productie-project/:id" component={ProductionProjectGeneralApp} />
                 <Route path="productie-projecten" component={ProductionProjectsListApp} />
 
+                <Route path="productie-project/participant/:participationId/overdragen" component={ParticipationTransferApp} />
                 <Route path="productie-project/participant/nieuw/:productionProjectId" component={ParticipantNewApp} />
                 <Route path="productie-project/participant/nieuw/contact/:contactId" component={ParticipantNewApp} />
                 <Route path="productie-project/participant/:id" component={ParticipantDetailsApp} />

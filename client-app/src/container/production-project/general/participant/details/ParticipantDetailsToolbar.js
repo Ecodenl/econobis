@@ -24,7 +24,9 @@ class ParticipantDetailsToolbar extends Component {
 
 
     render() {
-        const { participantProductionProject }  = this.props;
+        const { participantProductionProject, productionProject = {} }  = this.props;
+
+        const isTranferable = (productionProject.isParticipationTransferable && (participantProductionProject.participationsCurrent !== 0) && (participantProductionProject.participationsCurrent));
 
         return (
             <div className="row">
@@ -33,18 +35,25 @@ class ParticipantDetailsToolbar extends Component {
                         <PanelBody className={"panel-small"}>
                             <div className="col-md-3">
                                 <div className="btn-group margin-small" role="group">
-                                    <ButtonIcon iconName={"glyphicon-arrow-left"} onClickAction={browserHistory.goBack} />
+                                    <ButtonIcon iconName={"glyphicon-arrow-left"}
+                                                onClickAction={browserHistory.goBack}/>
 
                                     <ButtonIcon iconName={"glyphicon-trash"} onClickAction={this.toggleDelete}/>
 
-                                    <ButtonText buttonText={`Participaties overdragen`}  onClickAction={() => hashHistory.push(`/productie-project/participant/${participantProductionProject.id}/overdragen`)} />
+                                    {isTranferable ?
+                                        <ButtonText buttonText={`Participaties overdragen`}
+                                                    onClickAction={() => hashHistory.push(`/productie-project/participant/${participantProductionProject.id}/overdragen`)}/>
+                                        :
+                                        <ButtonText buttonText={`Participaties niet overdraagbaar`}/>
+                                    }
+
                                 </div>
                             </div>
                             <div className="col-md-6"><h4 className="text-center text-success margin-small">
                                 <strong>
                                     {participantProductionProject.contact ? participantProductionProject.contact.fullName : ''}
                                     /
-                                    {participantProductionProject.productionProject ? participantProductionProject.productionProject.name : ''}
+                                    {productionProject ? productionProject.name : ''}
                                 </strong></h4>
                             </div>
                             <div className="col-md-3" />
@@ -68,6 +77,7 @@ class ParticipantDetailsToolbar extends Component {
 const mapStateToProps = (state) => {
     return {
         participantProductionProject: state.participantProductionProjectDetails,
+        productionProject: state.participantProductionProjectDetails.productionProject,
         permissions: state.meDetails.permissions,
     }
 };

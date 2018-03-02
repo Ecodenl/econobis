@@ -264,6 +264,7 @@ Route::namespace('Api')
         Route::get('production-project/participant/grid', 'ParticipationProductionProject\ParticipationProductionProjectController@grid');
         Route::get('production-project/participant/{participantProductionProject}', 'ParticipationProductionProject\ParticipationProductionProjectController@show');
         Route::post('production-project/participant', 'ParticipationProductionProject\ParticipationProductionProjectController@store');
+        Route::post('production-project/participant/transfer', 'ParticipationProductionProject\ParticipationProductionProjectController@transfer');
         Route::post('production-project/participant/transaction', 'ParticipantTransaction\ParticipantTransactionController@store');
         Route::post('production-project/participant/transaction/{participantTransaction}', 'ParticipantTransaction\ParticipantTransactionController@update');
         Route::post('production-project/participant/transaction/{participantTransaction}/delete', 'ParticipantTransaction\ParticipantTransactionController@destroy');

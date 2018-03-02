@@ -4,15 +4,13 @@ import validator from 'validator';
 import { isEmpty } from 'lodash';
 import { hashHistory } from 'react-router';
 
-import ParticipantNewToolbar from './ParticipantNewToolbar';
-import ParticipantNew from './ParticipantNew';
+import ParticipationTransferToolbar from './ParticipationTransferToolbar';
+import ParticipationTransfer from './ParticipationTransfer';
 
-import ParticipantProductionProjectDetailsAPI from '../../../../../api/participant-production-project/ParticipantProductionProjectDetailsAPI';
-import Panel from "../../../../../components/panel/Panel";
-import PanelBody from "../../../../../components/panel/PanelBody";
-import * as ibantools from "ibantools/build/ibantools";
-import ContactsAPI from "../../../../../api/contact/ContactsAPI";
-import ProductionProjectsAPI from "../../../../../api/production-project/ProductionProjectsAPI";
+import ParticipantProductionProjectDetailsAPI from '../../../../../../api/participant-production-project/ParticipantProductionProjectDetailsAPI';
+import Panel from "../../../../../../components/panel/Panel";
+import PanelBody from "../../../../../../components/panel/PanelBody";
+import ContactsAPI from "../../../../../../api/contact/ContactsAPI";
 
 class ParticipationTransferApp extends Component {
     constructor(props) {
@@ -20,81 +18,46 @@ class ParticipationTransferApp extends Component {
 
         this.state = {
             contacts: [],
-            productionProjects: [],
-            participationWorth: 0,
-            participation: {
-                contactId: props.params.contactId || '',
-                statusId: '',
-                productionProjectId: props.params.productionProjectId || '',
-                dateRegister: '',
-                participationsRequested: '',
-                participationsGranted: '',
-                participationsSold: '',
-                participationsRestSale: '',
-                dateContractSend: '',
-                dateContractRetour: '',
-                datePayed: '',
-                ibanPayed: '',
-                didAcceptAgreement: false,
-                ibanAttn: '',
-                giftedByContactId: '',
-                ibanPayout: '',
-                legalRepContactId: '',
-                ibanPayoutAttn: '',
-                dateEnd: '',
-                typeId: '',
+            participation: {},
+            participationTransfer: {
+                participationId: props.params.participationId,
+                transferToContactId: '',
+                productionProjectId: '',
+                participationsAmount: 0,
+                participationWorth: '',
+                didSign: false,
+                dateBook: '',
             },
             errors: {
-                contactId: false,
-                statusId: false,
-                productionProjectId: false,
-                typeId: false,
-                ibanPayed: false,
-                ibanPayout: false,
+                transferToContactId: false,
+                participationsAmount: false,
+                participationWorth: false,
+                didSign: false,
             },
         };
+
         this.handleInputChangeDate = this.handleInputChangeDate.bind(this);
     };
 
     componentWillMount() {
         ContactsAPI.getContactsPeek().then(payload => {
+            payload.unshift({id: 0, fullName: "Teruggave energieleverancier"});
             this.setState({
                 contacts: payload
             });
         });
 
-        ProductionProjectsAPI.peekProductionProjects().then(payload => {
+        ParticipantProductionProjectDetailsAPI.fetchParticipantProductionProject(this.state.participationTransfer.participationId).then(payload => {
             this.setState({
-                productionProjects: payload
+                participation: payload,
+                participationTransfer: {
+                    ...this.state.participationTransfer,
+                    productionProjectId: payload.productionProject.id,
+                    participationWorth: payload.productionProject.participationWorth
+                },
             });
-
-            if(this.props.params.productionProjectId){
-                const id = this.props.params.productionProjectId;
-
-                let productionProject = payload.find((productionProject) => productionProject.id == id);
-
-                this.setState({
-                    ...this.state,
-                    participationWorth: productionProject.participationWorth,
-                });
-            }
         });
     }
-
-    handleProductionProjectChange = event => {
-        const target = event.target;
-        const value = target.type === 'checkbox' ? target.checked : target.value;
-        const name = target.name;
-
-        this.setState({
-            ...this.state,
-            participationWorth: this.state.productionProjects[value].participationWorth,
-            participation: {
-                ...this.state.participation,
-                [name]: value
-            },
-        });
-    };
 
     handleInputChange = event => {
         const target = event.target;
@@ -103,8 +66,8 @@ class ParticipationTransferApp extends Component {
 
         this.setState({
             ...this.state,
-            participation: {
-                ...this.state.participation,
+            participationTransfer: {
+                ...this.state.participationTransfer,
                 [name]: value
             },
         });
@@ -113,8 +76,8 @@ class ParticipationTransferApp extends Component {
     handleInputChangeDate(value, name) {
         this.setState({
             ...this.state,
-            participation: {
-                ...this.state.participation,
+            participationTransfer: {
+                ...this.state.participationTransfer,
                 [name]: value
             },
         });
@@ -123,50 +86,51 @@ class ParticipationTransferApp extends Component {
     handleSubmit = event => {
         event.preventDefault();
 
-        const {participation} = this.state;
+        const {participationTransfer} = this.state;
 
         let errors = {};
         let hasErrors = false;
 
-        if(validator.isEmpty(participation.contactId + '')){
-            errors.contactId = true;
+        if(validator.isEmpty(participationTransfer.transferToContactId + '')){
+            errors.transferToContactId = true;
             hasErrors = true;
         };
 
-        if(validator.isEmpty(participation.statusId + '')){
-            errors.statusId = true;
+        if(validator.isEmpty(participationTransfer.participationsAmount + '')){
+            errors.participationsAmount = true;
             hasErrors = true;
         };
 
-        if(validator.isEmpty(participation.productionProjectId + '')){
-            errors.productionProjectId = true;
+        if(participationTransfer.participationsAmount > this.state.participation.participationsCurrent){
+            errors.participationsAmount = true;
             hasErrors = true;
-        };
-
-        if(validator.isEmpty(participation.typeId + '')){
-            errors.typeId = true;
-            hasErrors = true;
-        };
-
-        if(!validator.isEmpty(participation.ibanPayed)){
-            if (!ibantools.isValidIBAN(participation.ibanPayed)) {
-                errors.ibanPayed = true;
-                hasErrors = true;
-            }
         }
 
-        if(!validator.isEmpty(participation.ibanPayout)){
-            if (!ibantools.isValidIBAN(participation.ibanPayout)) {
-                errors.ibanPayed = true;
-                hasErrors = true;
-            }
+        if(participationTransfer.participationsAmount <= 0){
+            errors.participationsAmount = true;
+            hasErrors = true;
+        }
+
+        if(validator.isEmpty(participationTransfer.participationWorth + '')){
+            errors.participationWorth = true;
+            hasErrors = true;
+        };
+
+        if(participationTransfer.participationWorth < 0){
+            errors.participationWorth = true;
+            hasErrors = true;
+        };
+
+        if(participationTransfer.didSign === false){
+            errors.didSign = true;
+            hasErrors = true;
         }
         
         this.setState({ ...this.state, errors: errors });
 
         !hasErrors &&
-        ParticipantProductionProjectDetailsAPI.storeParticipantProductionProject(participation).then(payload => {
-            hashHistory.push(`/productie-project/participant/${payload.id}`);
+        ParticipantProductionProjectDetailsAPI.transferParticipation(participationTransfer).then(payload => {
+            hashHistory.push(`/productie-project/participant/${participationTransfer.participationId}`);
         });
     };
 
@@ -175,23 +139,21 @@ class ParticipationTransferApp extends Component {
             <div className="row">
                 <div className="col-md-9">
                     <div className="col-md-12">
-                        <ParticipantNewToolbar />
+                        <ParticipationTransferToolbar />
                     </div>
 
                     <div className="col-md-12">
                         <Panel>
                             <PanelBody>
                                 <div className="col-md-12">
-                                    <ParticipantNew
-                                        participation={this.state.participation}
+                                    <ParticipationTransfer
+                                        participationTransfer={this.state.participationTransfer}
                                         errors={this.state.errors}
                                         handleInputChange={this.handleInputChange}
                                         handleInputChangeDate={this.handleInputChangeDate}
                                         handleSubmit={this.handleSubmit}
                                         contacts={this.state.contacts}
-                                        productionProjects={this.state.productionProjects}
-                                        participationWorth={this.state.participationWorth}
-                                        handleProductionProjectChange={this.handleProductionProjectChange}
+                                        participation={this.state.participation}
                                     />
                                 </div>
                             </PanelBody>

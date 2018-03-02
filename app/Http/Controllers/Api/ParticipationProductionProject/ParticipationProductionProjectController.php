@@ -8,12 +8,15 @@
 
 namespace App\Http\Controllers\Api\ParticipationProductionProject;
 
+use App\Eco\Contact\Contact;
 use App\Eco\ParticipantProductionProject\ParticipantProductionProject;
+use App\Eco\ParticipantTransaction\ParticipantTransaction;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\RequestQueries\ParticipantProductionProject\Grid\RequestQuery;
 use App\Http\Resources\ParticipantProductionProject\FullParticipantProductionProject;
 use App\Http\Resources\ParticipantProductionProject\GridParticipantProductionProject;
+use Illuminate\Support\Carbon;
 
 class ParticipationProductionProjectController extends ApiController
 {
@@ -115,6 +118,66 @@ class ParticipationProductionProjectController extends ApiController
         $participantProductionProject->save();
 
         return $this->show($participantProductionProject);
+    }
+
+    public function transfer(RequestInput $requestInput)
+    {
+        $data = $requestInput
+            ->integer('participationId')->validate('required|exists:participation_production_project,id')->alias('participation_id')->next()
+            ->integer('transferToContactId')->validate('required')->alias('transfer_to_contact_id')->next()
+            ->integer('participationsAmount')->alias('participations_amount')->next()
+            ->integer('participationWorth')->alias('participation_worth')->next()
+            ->integer('didSign')->next()
+            ->date('dateBook')->validate('nullable|date')->onEmpty(null)->alias('date_book')->next()
+            ->get();
+
+        $participation = ParticipantProductionProject::find($data['participation_id'])->with(['productionProject'])->first();
+
+        $productionProjectId = $participation->productionProject->id;
+
+        $participation->participations_sold = $participation->participations_sold + $data['participations_amount'];
+        $participation->save();
+
+        //if 0 then participations are lost
+        if($data['transfer_to_contact_id'] != 0){
+            //add participations to other contact
+            if(ParticipantProductionProject::where('production_project_id', $productionProjectId)->where('contact_id', $data['transfer_to_contact_id'])->exists()){
+                $participationReceiving = ParticipantProductionProject::where('production_project_id', $productionProjectId)->where('contact_id', $data['transfer_to_contact_id'])->first();
+                $participationReceiving->participations_granted = $participationReceiving->participations_granted + $data['participations_amount'];
+                $participationReceiving->save();
+            }
+            //else create new one
+            else{
+                $participationReceiving = new ParticipantProductionProject();
+                $participationReceiving->contact_id = $data['transfer_to_contact_id'];
+                $participationReceiving->status_id = 2;//Definitief
+                $participationReceiving->production_project_id = $productionProjectId;
+                $participationReceiving->type_id = 1;//Rekening
+                $participationReceiving->participations_granted = $data['participations_amount'];
+                $participationReceiving->save();
+            }
+
+            //create new transaction for receiving
+            $transactionReceiving = new ParticipantTransaction();
+            $transactionReceiving->participation_id = $participationReceiving->id;
+            $transactionReceiving->type_id = 1;//Inleg
+            $transactionReceiving->date_transaction = new Carbon;
+            $transactionReceiving->amount = $data['participations_amount'] * $data['participation_worth'];
+            $transactionReceiving->date_booking = $data['date_book'] ;
+            $transactionReceiving->save();
+
+        }
+
+        //create transaction for sending
+        $transactionReceiving = new ParticipantTransaction();
+        $transactionReceiving->participation_id = $participation->id;
+        $transactionReceiving->type_id = 3;//Inleg
+        $transactionReceiving->date_transaction = new Carbon;
+        $transactionReceiving->amount = $data['participations_amount'] * $data['participation_worth'];
+        $transactionReceiving->date_booking = $data['date_book'] ;
+        $transactionReceiving->save();
+
+        return $this->show($participation);
     }
 
     public function destroy(ParticipantProductionProject $participantProductionProject)

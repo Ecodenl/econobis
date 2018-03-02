@@ -43,6 +43,19 @@ export default {
             );
     },
 
+    transferParticipation: (data) => {
+        const requestUrl = `${URL_PARTICIPANT_PRODUCTION_PROJECT}/transfer`;
+        const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
+        axios.defaults.headers.common.Authorization = AUTH_TOKEN;
+
+        return axios.post(requestUrl, data)
+            .then(response => response.data.data)
+            .catch((error) => {
+                    console.log(error);
+                },
+            );
+    },
+
     deleteParticipantProductionProject: (id) => {
         const requestUrl = `${URL_PARTICIPANT_PRODUCTION_PROJECT}/${id}/delete`;
         const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;

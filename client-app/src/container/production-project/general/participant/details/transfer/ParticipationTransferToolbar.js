@@ -1,9 +1,9 @@
 import React, {Component} from 'react';
 import { browserHistory } from 'react-router';
 
-import Panel from '../../../../../components/panel/Panel';
-import PanelBody from '../../../../../components/panel/PanelBody';
-import ButtonIcon from '../../../../../components/button/ButtonIcon';
+import Panel from '../../../../../../components/panel/Panel';
+import PanelBody from '../../../../../../components/panel/PanelBody';
+import ButtonIcon from '../../../../../../components/button/ButtonIcon';
 
 
 class ParticipationTransferToolbar extends Component {
@@ -23,7 +23,7 @@ class ParticipationTransferToolbar extends Component {
                                     <ButtonIcon iconName={"glyphicon-arrow-left"} onClickAction={browserHistory.goBack} />
                                 </div>
                             </div>
-                            <div className="col-md-4"><h3 className="text-center table-title">Nieuwe participant</h3></div>
+                            <div className="col-md-4"><h3 className="text-center table-title">Nieuwe overdracht</h3></div>
                             <div className="col-md-4" />
                         </PanelBody>
                     </Panel>

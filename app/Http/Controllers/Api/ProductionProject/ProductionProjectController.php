@@ -8,6 +8,7 @@
 
 namespace App\Http\Controllers\Api\ProductionProject;
 
+use App\Eco\Email\Email;
 use App\Eco\ProductionProject\ProductionProject;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Api\ApiController;
@@ -16,6 +17,7 @@ use App\Http\Resources\GenericResource;
 use App\Http\Resources\ProductionProject\FullProductionProject;
 use App\Http\Resources\ProductionProject\GridProductionProject;
 use App\Http\Resources\ProductionProject\ProductionProjectPeek;
+use Illuminate\Support\Facades\Auth;
 
 class ProductionProjectController extends ApiController
 {
@@ -44,6 +46,9 @@ class ProductionProjectController extends ApiController
             'productionProjectRevenues.category',
             'productionProjectRevenues.createdBy',
         ]);
+
+        $productionProject->relatedEmailsInbox = $this->getRelatedEmails($productionProject->id, 'inbox');
+        $productionProject->relatedEmailsSent = $this->getRelatedEmails($productionProject->id, 'sent');
 
         return FullProductionProject::make($productionProject);
     }
@@ -145,5 +150,14 @@ class ProductionProjectController extends ApiController
         }
 
         return $obligationNumbers;
+    }
+
+    public function getRelatedEmails($id, $folder)
+    {
+        $user = Auth::user();
+
+        $mailboxIds = $user->mailboxes()->pluck('mailbox_id');
+
+        return Email::whereIn('mailbox_id', $mailboxIds)->where('production_project_id', $id)->where('folder', $folder)->get();
     }
 }

@@ -118,6 +118,7 @@ const Routes = () => {
                 <Route path="document/nieuw/:type/taak/:taskId" component={DocumentNewApp} />
                 <Route path="document/nieuw/:type/woningdossier/:housingFileId" component={DocumentNewApp} />
                 <Route path="document/nieuw/:type/offerteverzoek/:quotationRequestId" component={DocumentNewApp} />
+                <Route path="document/nieuw/:type/productie-project/:productionProjectId" component={DocumentNewApp} />
                 <Route path="document/:id" component={DocumentDetailsApp} />
                 /* Document templates */
                 <Route path="document-templates" component={DocumentTemplatesListApp} />

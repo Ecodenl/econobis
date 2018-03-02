@@ -3,8 +3,9 @@ import { hashHistory } from 'react-router';
 import { connect } from 'react-redux';
 
 import TaskHarmonica from "./harmonica/TaskHarmonica";
-import NoteHarmonica from "./harmonica/NoteHarmonica";
 import DocumentHarmonica from "./harmonica/DocumentHarmonica";
+import EmailInboxHarmonica from "./harmonica/EmailInboxHarmonica";
+import EmailSentHarmonica from "./harmonica/EmailSentHarmonica";
 
 class ProductionProjectDetailsHarmonica extends Component {
     constructor(props){
@@ -13,10 +14,9 @@ class ProductionProjectDetailsHarmonica extends Component {
         this.state = {
             toggleShowList: {
                 tasks: false,
-                notes: false,
+                documents: false,
                 emailsInbox: false,
                 emailsSent: false,
-                documents: false,
             },
         };
 
@@ -34,11 +34,15 @@ class ProductionProjectDetailsHarmonica extends Component {
     };
 
     newTask = () => {
-        hashHistory.push(`/taak/nieuw/campagne/${this.props.campaign.id}`);
+        hashHistory.push(`/taak/nieuw/productie-project/${this.props.productionProject.id}`);
     };
 
-    newDocument = (type) => {
-        hashHistory.push(`/document/nieuw/${type}/campagne/${this.props.campaign.id}`);
+    newDocument = () => {
+        hashHistory.push(`/document/nieuw/internal/productie-project/${this.props.productionProject.id}`);
+    };
+
+    newEmail = () => {
+        hashHistory.push(`/email/nieuw`);
     };
 
     render(){
@@ -47,14 +51,7 @@ class ProductionProjectDetailsHarmonica extends Component {
                 <TaskHarmonica
                     toggleShowList={() => this.toggleShowList('tasks')}
                     showTasksList={this.state.toggleShowList.tasks}
-                    taskCount={this.props.campaign.taskCount}
-                    newTask={this.newTask}
-                />
-
-                <NoteHarmonica
-                    toggleShowList={() => this.toggleShowList('notes')}
-                    showNotesList={this.state.toggleShowList.notes}
-                    noteCount={this.props.campaign.noteCount}
+                    taskCount={this.props.productionProject.taskCount}
                     newTask={this.newTask}
                 />
 
@@ -62,7 +59,21 @@ class ProductionProjectDetailsHarmonica extends Component {
                     toggleShowList={() => this.toggleShowList('documents')}
                     showDocumentsList={this.state.toggleShowList.documents}
                     newDocument={this.newDocument}
-                    documentCount={this.props.campaign.documentCount}
+                    documentCount={this.props.productionProject.documentCount}
+                />
+
+                <EmailInboxHarmonica
+                    toggleShowList={() => this.toggleShowList('emailsInbox')}
+                    showEmailsInboxList={this.state.toggleShowList.emailsInbox}
+                    newEmail={this.newEmail}
+                    emailInboxCount={this.props.productionProject.emailInboxCount}
+                />
+
+                <EmailSentHarmonica
+                    toggleShowList={() => this.toggleShowList('emailsSent')}
+                    showEmailsSentList={this.state.toggleShowList.emailsSent}
+                    newEmail={this.newEmail}
+                    emailSentCount={this.props.productionProject.emailSentCount}
                 />
             </div>
         )
@@ -71,7 +82,7 @@ class ProductionProjectDetailsHarmonica extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        campaign: state.campaignDetails,
+        productionProject: state.productionProjectDetails,
     };
 };
 

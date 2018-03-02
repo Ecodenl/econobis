@@ -2,8 +2,10 @@
 
 namespace App\Http\Resources\ProductionProject;
 
+use App\Http\Resources\Document\FullDocument;
 use App\Http\Resources\GenericResource;
 use App\Http\Resources\ParticipantProductionProject\FullParticipantProductionProject;
+use App\Http\Resources\Task\GridTask;
 use App\Http\Resources\User\FullUser;
 use Illuminate\Http\Resources\Json\Resource;
 
@@ -61,6 +63,14 @@ class FullProductionProject extends Resource
                 'participants' => FullParticipantProductionProject::collection($this->whenLoaded('participantsProductionProject')),
                 'participationsWorthTotal' => $this->participations_worth_total,
                 'amountOfParticipants' => $this->participantsProductionProject->count(),
+                'taskCount' => $this->tasks()->count(),
+                'relatedTasks' => GridTask::collection($this->whenLoaded('tasks')),
+                'documentCount' => $this->documents()->count(),
+                'relatedDocuments' => FullDocument::collection($this->whenLoaded('documents')),
+                'emailInboxCount' => $this->relatedEmailsInbox ? $this->relatedEmailsInbox->count() : 0,
+                'relatedEmailsInbox' => $this->relatedEmailsInbox,
+                'emailSentCount' => $this->relatedEmailsSent ? $this->relatedEmailsSent->count() : 0,
+                'relatedEmailsSent' => $this->relatedEmailsSent,
             ];
     }
 }

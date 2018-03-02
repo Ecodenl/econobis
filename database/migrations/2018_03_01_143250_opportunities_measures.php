@@ -17,7 +17,7 @@ class OpportunitiesMeasures extends Migration
         $opportunities = Opportunity::all();
 
         foreach ($opportunities as $opportunity) {
-            $opportunity->measure_id = null;
+            $opportunity->measure_id = 1;
             $opportunity->save();
         }
 

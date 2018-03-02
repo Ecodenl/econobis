@@ -63,7 +63,6 @@ class SeedMeasuresCategoriesTable extends Migration
                 'HR ketel incl. afgifte systeem nieuw plaatsen',
                 'HR ketel nieuw plaatsen',
             ],
-
             'Warmtepomp' => [
                 'Hybride (bron lucht)',
                 'Volledig (bron lucht)',
@@ -73,7 +72,7 @@ class SeedMeasuresCategoriesTable extends Migration
             ],
             'Biomassa' => [
                 'Pelletkachel',
-                'houtkachel Hoogrendement)',
+                'Houtkachel hoogrendement',
             ],
             'Warmte afgifte' => [
                 'Hoog temperatuur convectoren',
@@ -97,7 +96,6 @@ class SeedMeasuresCategoriesTable extends Migration
                 'Zonneboiler voor warm tapwater',
                 'Zonneboiler voor warm tapwater en verwarming',
             ],
-
             'Opslag' => [
                 'Thermische opslag',
                 'Batterij (huis/buurt)',
@@ -112,7 +110,6 @@ class SeedMeasuresCategoriesTable extends Migration
                 'Witgoed',
                 'Zonwering',
             ],
-
             'Domotica' => [
                 'Energiemanagement',
                 'Internet aansturing apparatuur',
@@ -121,11 +118,9 @@ class SeedMeasuresCategoriesTable extends Migration
                 'Standby verbruik beperken',
                 'Weersafhankelijke regeling',
             ],
-
             'Leidingisolatie overig' => [
                 'Isolatie van leidingen anders dan in de kruipruimte',
             ],
-
             'Warm water toestel' => [
                 'Spaardouche',
                 'Douche wtw',
@@ -143,9 +138,10 @@ class SeedMeasuresCategoriesTable extends Migration
                 'Warmtescan',
             ],
         ];
-        $id = 0;
+
+        $id = 1;
         foreach ($categorizedMeasures as $category => $measures) {
-            // Get the category. If it doesn't exist: create it
+            // Create the category
             $catId = DB::table('measure_categories')->insertGetId(
                     [ 'name' => $category ]
                 );

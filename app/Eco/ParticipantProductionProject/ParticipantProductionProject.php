@@ -41,15 +41,6 @@ class ParticipantProductionProject extends Model
             'participations_current',
         ];
 
-    protected $dates
-        = [
-            'date_register',
-            'date_contract_send',
-            'date_contract_retour',
-            'date_payed',
-            'date_end',
-        ];
-
     //relations
     public function contact(){
         return $this->belongsTo(Contact::class);

@@ -10,6 +10,7 @@ namespace App\Helpers\Template;
 
 
 use App\Eco\Document\Document;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 
 class TemplateVariableHelper
@@ -201,16 +202,16 @@ class TemplateVariableHelper
                 return $model->description;
                 break;
             case 'start_project':
-                return $model->date_start->format('m/d/Y');
+                return Carbon::parse($model->date_start)->format('m/d/Y');
                 break;
             case 'start_productie':
-                return $model->date_production->format('m/d/Y');
+                return Carbon::parse($model->date_production)->format('m/d/Y');
                 break;
             case 'start_inschrijving':
-                return $model->date_start_registrations->format('m/d/Y');
+                return Carbon::parse($model->date_start_registrations)->format('m/d/Y');
                 break;
             case 'eind_inschrijving':
-                return $model->date_end_registrations->format('m/d/Y');
+                return Carbon::parse($model->date_end_registrations)->format('m/d/Y');
                 break;
             case 'postcode':
                 return $model->postal_code;
@@ -281,7 +282,7 @@ class TemplateVariableHelper
                 return $model->productionProject->name;
                 break;
             case 'inschrijf_datum':
-                return $model->date_register->format('m/d/Y');
+                return Carbon::parse($model->date_register)->format('m/d/Y');
                 break;
             case 'aangevraagd':
                 return $model->participations_requested;
@@ -302,13 +303,13 @@ class TemplateVariableHelper
                 return $model->participations_rest_sale;
                 break;
             case 'contract_verstuurd':
-                return $model->date_contract_send->format('m/d/Y');
+                return Carbon::parse($model->date_contract_send)->format('m/d/Y');
                 break;
             case 'contract_retour':
-                return $model->date_contract_retour->format('m/d/Y');
+                return Carbon::parse($model->date_contract_retour)->format('m/d/Y');
                 break;
             case 'betaald_op':
-                return $model->date_payed->format('m/d/Y');
+                return Carbon::parse($model->date_payed)->format('m/d/Y');
                 break;
             case 'iban_betaald':
                 return $model->iban_payed;
@@ -332,7 +333,7 @@ class TemplateVariableHelper
                 return $model->iban_payout_attn;
                 break;
             case 'einddatum':
-                return $model->date_end->format('m/d/Y');
+                return Carbon::parse($model->date_end)->format('m/d/Y');
                 break;
             case 'uitkeren_op':
                 return $model->participantProductionProjectPayoutType->name;

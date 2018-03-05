@@ -83,7 +83,7 @@ class DocumentController extends Controller
         //store the actual file in Alfresco
         $user = Auth::user();
 
-        $alfrescoHelper = new AlfrescoHelper($user->email, $user->alfresco_password);
+        $alfrescoHelper = new AlfrescoHelper($user->email, 'secret');
 
         if($data['document_type'] == 'internal'){
 
@@ -224,7 +224,7 @@ class DocumentController extends Controller
 
         $user = Auth::user();
 
-        $alfrescoHelper = new AlfrescoHelper($user->email, $user->alfresco_password);
+        $alfrescoHelper = new AlfrescoHelper($user->email, 'secret');
 
         return $alfrescoHelper->downloadFile($document->alfresco_node_id);
     }

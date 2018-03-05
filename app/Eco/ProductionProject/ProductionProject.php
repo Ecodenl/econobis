@@ -36,13 +36,6 @@ class ProductionProject extends Model
             'participations_worth_total',
         ];
 
-    protected $dates = [
-        'date_start',
-        'date_production',
-        'date_start_registrations',
-        'date_end_registrations'
-    ];
-
     //relations
     public function productionProjectStatus(){
         return $this->belongsTo(ProductionProjectStatus::class);

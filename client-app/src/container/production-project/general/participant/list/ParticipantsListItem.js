@@ -45,7 +45,7 @@ class ParticipantsListItem extends Component {
                 <td>{ contact.status ? contact.status.name : '' }</td>
                 <td>{ participationsCurrent ? participationsCurrent : '' }</td>
                 <td>{ status ? status.name : '' }</td>
-                <td>{ dateRegister ? moment(dateRegister.date).format('L') : '' }</td>
+                <td>{ dateRegister ? moment(dateRegister).format('L') : '' }</td>
                 <td>{ contact.primaryContactEnergySupplier ? contact.primaryContactEnergySupplier.energySupplier.name : '' }</td>
                 <td>
                     {(this.state.showActionButtons ? <a role="button" onClick={() => this.openItem(id)}><span className="glyphicon glyphicon-pencil mybtn-success" /> </a> : '')}

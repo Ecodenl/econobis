@@ -26,6 +26,11 @@ const ParticipantsListFilter = props => {
 
     const onContactTypeChange = (e) => {
         props.setFilterParticipantProductionProjectContactType(e.target.value);
+
+        setTimeout(() => {
+            props.onSubmitFilter();
+        }, 100);
+
     };
 
     const onNameChange = (e) => {
@@ -46,6 +51,11 @@ const ParticipantsListFilter = props => {
 
     const onStatusIdChange = (e) => {
         props.setFilterParticipantProductionProjectStatusId(e.target.value);
+
+        setTimeout(() => {
+            props.onSubmitFilter();
+        }, 100);
+
     };
 
     const onCurrentParticipationsChange = (e) => {
@@ -54,6 +64,11 @@ const ParticipantsListFilter = props => {
 
     const onParticipationStatusIdChange = (e) => {
         props.setFilterParticipantProductionProjectParticipationStatusId(e.target.value);
+
+        setTimeout(() => {
+            props.onSubmitFilter();
+        }, 100);
+
     };
 
     const onDateRegisterChange = (selectedDay) => {
@@ -66,6 +81,11 @@ const ParticipantsListFilter = props => {
 
     const onEnergySupplierIdChange = (e) => {
         props.setFilterParticipantProductionProjectEnergySupplierId(e.target.value);
+
+        setTimeout(() => {
+            props.onSubmitFilter();
+        }, 100);
+
     };
 
     return (

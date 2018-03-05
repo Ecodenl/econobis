@@ -63,7 +63,7 @@ export default (state = filtersReducerDefaultState, action) => {
                     data: action.contactType,
                 }
             };
-        case 'SET_FILTER_PARTICIPANT_PRODUCTION_PROJECT_CONTACT_NAME':
+        case 'SET_FILTER_PARTICIPANT_PRODUCTION_PROJECT_NAME':
             return {
                 ...state,
                 name: {
@@ -71,7 +71,7 @@ export default (state = filtersReducerDefaultState, action) => {
                     data: action.name,
                 }
             };
-        case 'SET_FILTER_PARTICIPANT_PRODUCTION_PROJECT_CONTACT_ADDRESS':
+        case 'SET_FILTER_PARTICIPANT_PRODUCTION_PROJECT_ADDRESS':
             return {
                 ...state,
                 address: {
@@ -79,7 +79,7 @@ export default (state = filtersReducerDefaultState, action) => {
                     data: action.address,
                 }
             };
-        case 'SET_FILTER_PARTICIPANT_PRODUCTION_PROJECT_CONTACT_POSTAL_CODE':
+        case 'SET_FILTER_PARTICIPANT_PRODUCTION_PROJECT_POSTAL_CODE':
             return {
                 ...state,
                 postalCode: {
@@ -87,7 +87,7 @@ export default (state = filtersReducerDefaultState, action) => {
                     data: action.postalCode,
                 }
             };
-        case 'SET_FILTER_PARTICIPANT_PRODUCTION_PROJECT_CONTACT_POSTAL_CITY':
+        case 'SET_FILTER_PARTICIPANT_PRODUCTION_PROJECT_CITY':
             return {
                 ...state,
                 city: {
@@ -95,7 +95,7 @@ export default (state = filtersReducerDefaultState, action) => {
                     data: action.city,
                 }
             };
-        case 'SET_FILTER_PARTICIPANT_PRODUCTION_PROJECT_CONTACT_STATUS_ID':
+        case 'SET_FILTER_PARTICIPANT_PRODUCTION_PROJECT_STATUS_ID':
             return {
                 ...state,
                 statusId: {
@@ -127,7 +127,7 @@ export default (state = filtersReducerDefaultState, action) => {
                     data: action.dateRegister,
                 }
             };
-        case 'SET_FILTER_PARTICIPANT_PRODUCTION_PROJECT_CONTACT_ENERGY_SUPPLIER_ID':
+        case 'SET_FILTER_PARTICIPANT_PRODUCTION_PROJECT_ENERGY_SUPPLIER_ID':
             return {
                 ...state,
                 energySupplierId: {

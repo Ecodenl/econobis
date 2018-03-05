@@ -70,7 +70,7 @@ class ParticipantsListApp extends Component {
                 <PanelBody>
                     <div className="col-md-12 margin-10-top">
                         <ParticipantsListToolbar
-                            resetParticipantProductionProjectFilters={() => this.resetParticipantProductionProjectFilters}
+                            resetParticipantProductionProjectFilters={() => this.resetParticipantProductionProjectFilters()}
                         />
                     </div>
 

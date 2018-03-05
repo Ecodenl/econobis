@@ -17,6 +17,7 @@ const DocumentHarmonica = ({toggleShowList, showDocumentsList, newDocument, docu
                     <div  className="pull-right">
                         <span className="glyphicon glyphicon-plus glyphicon-white" data-toggle="dropdown" role="button"/>
                         <ul className="dropdown-menu">
+                            <li><a className="btn" onClick={() => newDocument('internal')}>Maak document</a></li>
                             <li><a className="btn" onClick={() => newDocument('upload')}>Upload document</a></li>
                         </ul>
                     </div>

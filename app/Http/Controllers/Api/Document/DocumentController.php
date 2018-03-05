@@ -92,12 +92,22 @@ class DocumentController extends Controller
             $time = Carbon::now();
 
             $name = '';
-            $document->contact && $name .=  '-' . str_replace(' ', '', $document->contact->full_name);
-            $document->intake && $name .= '-intake-' . $document->intake->id;
-            $document->contactGroup && $name .= '-' . str_replace(' ', '', $document->contactGroup->name);
-            $document->opportunity && $name .= '-' . $document->opportunity->number;
+            $document->contact && $name .= str_replace(' ', '', $document->contact->full_name) . '_';
+            $document->intake && $name .= $document->intake->contact->full_name . '_';
+            $document->contactGroup && $name .= str_replace(' ', '', $document->contactGroup->name) . '_';
+            $document->opportunity && $name .= $document->opportunity->number . '_';
+            $document->housingFile && $name .= str_replace(' ', '', $document->housingFile->address->contact->full_name) . '_';
+            $document->campaign && $name .= str_replace(' ', '', $document->campaign->name) . '_';
+            $document->measure && $name .= str_replace(' ', '', $document->measure->name) . '_';
+            $document->task && $name .= $document->task->id . '_';
+            $document->quotationRequest && $name .= str_replace(' ', '', $document->quotationRequest->organisation->contact->full_name) . '_';
+            $document->productionProject && $name .= str_replace(' ', '', $document->productionProject->name) . '_';
+            $document->participant && $name .= str_replace(' ', '', $document->participant->contact->full_name) . '_';
 
-            $document->filename = $time->format('Ymd') . $name . '.pdf';
+            //max length name 25
+            $name = substr($name, 0, 25);
+
+            $document->filename = $name . substr($document->getDocumentGroup()->name, 0, 1) . Document::where('document_group', $document->document_group)->count() . '_' .  $time->format('Ymd') . '.pdf';
             $document->save();
 
             $filePath = (storage_path('app' . DIRECTORY_SEPARATOR . 'documents/' . $document->filename));

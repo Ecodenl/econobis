@@ -52,7 +52,7 @@ class FullProductionProject extends Resource
                 'minParticipations' => $this->min_participations,
                 'issuedParticipations' => $this->issued_participations,
                 'isMembershipRequired' => $this->is_membership_required,
-                'participationsInOption' => $this->participations_in_options,
+                'participationsInOption' => $this->participations_in_option,
                 'isParticipationTransferable' => $this->is_participation_transferable,
                 'issuableParticipations' => $this->issuable_participations,
                 'createdAt' => $this->created_at,

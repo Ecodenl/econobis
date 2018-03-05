@@ -36,6 +36,13 @@ class ProductionProject extends Model
             'participations_worth_total',
         ];
 
+    protected $dates = [
+        'date_start',
+        'date_production',
+        'date_start_registrations',
+        'date_end_registrations'
+    ];
+
     //relations
     public function productionProjectStatus(){
         return $this->belongsTo(ProductionProjectStatus::class);
@@ -84,12 +91,26 @@ class ProductionProject extends Model
     //Appended fields
     public function getIssuedParticipationsAttribute()
     {
-        return 0;
+        $amountOfParticipations = 0;
+
+        $participationsIssued =  $this->participantsProductionProject()->where('status_id', 2)->get();
+
+        foreach ($participationsIssued as $participationIssued){
+            $amountOfParticipations += ($participationIssued->participations_granted - $participationIssued->participations_sold);
+        }
+        return $amountOfParticipations;
     }
 
     public function getParticipationsInOptionAttribute()
     {
-        return 0;
+        $amountOfParticipations = 0;
+
+        $participationsInOption =  $this->participantsProductionProject()->where('status_id', 1)->get();
+
+        foreach ($participationsInOption as $participationInOption){
+            $amountOfParticipations += ($participationInOption->participations_granted - $participationInOption->participations_sold);
+        }
+        return $amountOfParticipations;
     }
 
     public function getIssuableParticipationsAttribute()

@@ -85,7 +85,7 @@ class ProductionProject extends Model
     }
 
     public function participantsProductionProject(){
-        return $this->hasMany(ParticipantProductionProject::class);
+        return $this->hasMany(ParticipantProductionProject::class)->where('production_project_id', $this->id);
     }
 
     //Appended fields

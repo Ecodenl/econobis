@@ -26,6 +26,6 @@ class RequestQuery extends \App\Helpers\RequestQuery\RequestQuery
     protected function baseQuery()
     {
         return ParticipantProductionProject::query()
-            ->select('participation_production_project.*');
+            ->select('participation_production_project.*')->where('production_project_id', $this->request->input('productionProjectId'));
     }
 }

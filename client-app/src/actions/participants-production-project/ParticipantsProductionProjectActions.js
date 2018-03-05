@@ -1,9 +1,10 @@
-export const fetchParticipantsProductionProject = (filters, sorts, pagination) => {
+export const fetchParticipantsProductionProject = (filters, sorts, pagination, productionProjectId) => {
     return {
         type: 'FETCH_PARTICIPANTS_PRODUCTION_PROJECT',
         filters,
         sorts,
         pagination,
+        productionProjectId,
     };
 };
 

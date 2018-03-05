@@ -32,7 +32,7 @@ class ParticipantsListApp extends Component {
             const sorts = this.props.participantsProductionProjectSorts.reverse();
             const pagination = { limit: 20, offset: this.props.participantsProductionProjectPagination.offset };
 
-            this.props.fetchParticipantsProductionProject(filters, sorts, pagination);
+            this.props.fetchParticipantsProductionProject(filters, sorts, pagination, this.props.productionProjectId);
         },100 );
     };
 
@@ -91,6 +91,7 @@ class ParticipantsListApp extends Component {
 
 const mapStateToProps = (state) => {
     return {
+        productionProjectId: state.productionProjectDetails.id,
         participantsProductionProject: state.participantsProductionProject.list,
         participantsProductionProjectFilters: state.participantsProductionProject.filters,
         participantsProductionProjectSorts: state.participantsProductionProject.sorts,

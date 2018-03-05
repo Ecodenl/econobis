@@ -120,7 +120,7 @@ class ContactDetailsFormContactEnergySupplierItem extends Component {
                     contactEnergySupplier={this.state.contactEnergySupplier}
                 />
                 {
-                    this.state.showEdit &&
+                    this.state.showEdit && (this.props.permissions.updatePerson || this.props.permissions.updateOrganisation) &&
                     <ContactDetailsFormContactEnergySupplierEdit
                         contactEnergySupplier={this.state.contactEnergySupplier}
                         handleInputChange={this.handleInputChange}
@@ -141,10 +141,16 @@ class ContactDetailsFormContactEnergySupplierItem extends Component {
     }
 };
 
+const mapStateToProps = (state) => {
+    return {
+        permissions: state.meDetails.permissions
+    }
+};
+
 const mapDispatchToProps = dispatch => ({
     updateContactEnergySupplier: (contactEnergySupplier) => {
         dispatch(updateContactEnergySupplier(contactEnergySupplier));
     },
 });
 
-export default connect(null, mapDispatchToProps)(ContactDetailsFormContactEnergySupplierItem);
+export default connect(mapStateToProps, mapDispatchToProps)(ContactDetailsFormContactEnergySupplierItem);

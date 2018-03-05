@@ -5,6 +5,7 @@ import ContactDetailsFormContactEnergySupplierNew from './ContactDetailsFormCont
 import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
 import PanelHeader from '../../../../components/panel/PanelHeader';
+import {connect} from "react-redux";
 
 class ContactDetailsFormContactEnergySupplier extends Component {
     constructor(props) {
@@ -26,7 +27,10 @@ class ContactDetailsFormContactEnergySupplier extends Component {
             <Panel>
                 <PanelHeader>
                     <span className="h5 text-bold">Energie leveranciers</span>
-                    <a role="button" className="pull-right" onClick={this.toggleShowNew}><span className="glyphicon glyphicon-plus"/></a>
+                    {(this.props.permissions.updatePerson || this.props.permissions.updateOrganisation) &&
+                    <a role="button" className="pull-right" onClick={this.toggleShowNew}><span
+                        className="glyphicon glyphicon-plus"/></a>
+                    }
                 </PanelHeader>
                 <PanelBody>
                     <div className="col-md-12">
@@ -41,4 +45,10 @@ class ContactDetailsFormContactEnergySupplier extends Component {
     }
 };
 
-export default ContactDetailsFormContactEnergySupplier;
+const mapStateToProps = (state) => {
+    return {
+        permissions: state.meDetails.permissions
+    }
+};
+
+export default connect(mapStateToProps)(ContactDetailsFormContactEnergySupplier);

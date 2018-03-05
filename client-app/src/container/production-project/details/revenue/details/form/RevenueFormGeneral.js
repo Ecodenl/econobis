@@ -48,7 +48,7 @@ class RevenueFormGeneral extends Component {
                    onMouseLeave={() => this.onDivLeave()}>
                 <PanelBody>
                     {
-                        this.state.showEdit ?
+                        this.state.showEdit && this.props.permissions.manageFinancial ?
                             <RevenueFormEdit switchToView={this.switchToView}/>
                             :
                             <RevenueFormView switchToEdit={this.switchToEdit}/>

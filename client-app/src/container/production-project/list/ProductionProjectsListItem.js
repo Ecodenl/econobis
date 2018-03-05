@@ -43,8 +43,7 @@ class ProductionProjectsListItem extends Component {
               <td>{ issuedParticipationsPercentage }</td>
               <td>
                   {(this.state.showActionButtons ? <a role="button" onClick={() => this.openItem(id)}><span className="glyphicon glyphicon-pencil mybtn-success" /> </a> : '')}
-                  {/*&& this.props.permissions.manageMarketing*/}
-                  {(this.state.showActionButtons ? <a role="button" onClick={this.props.showDeleteItemModal.bind(this, id, name)}><span className="glyphicon glyphicon-trash mybtn-danger"  /> </a> : '')}
+                  {(this.state.showActionButtons && this.props.permissions.manageProductionProject ? <a role="button" onClick={this.props.showDeleteItemModal.bind(this, id, name)}><span className="glyphicon glyphicon-trash mybtn-danger"  /> </a> : '')}
               </td>
             </tr>
         )

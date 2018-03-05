@@ -48,7 +48,7 @@ class ParticipantFormGeneral extends Component {
                    onMouseLeave={() => this.onDivLeave()}>
                 <PanelBody>
                     {
-                        this.state.showEdit ?
+                        this.state.showEdit && this.props.permissions.manageParticipation ?
                             <ParticipantFormEdit switchToView={this.switchToView}/>
                             :
                             <ParticipantFormView switchToEdit={this.switchToEdit}/>

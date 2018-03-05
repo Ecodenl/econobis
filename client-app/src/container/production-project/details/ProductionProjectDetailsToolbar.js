@@ -33,9 +33,9 @@ class ProductionProjectDetailsToolbar extends Component {
                             <div className="col-md-2">
                                 <div className="btn-group margin-small" role="group">
                                     <ButtonIcon iconName={"glyphicon-arrow-left"} onClickAction={browserHistory.goBack} />
-
-                                    <ButtonIcon iconName={"glyphicon-trash"} onClickAction={this.toggleDelete}/>
-
+                                    {this.props.permissions.manageProductionProject &&
+                                        <ButtonIcon iconName={"glyphicon-trash"} onClickAction={this.toggleDelete}/>
+                                    }
                                 </div>
                             </div>
                             <div className="col-md-8"><h4 className="text-center text-success margin-small"><strong>Productie project {productionProject ? productionProject.name : ''}</strong></h4></div>

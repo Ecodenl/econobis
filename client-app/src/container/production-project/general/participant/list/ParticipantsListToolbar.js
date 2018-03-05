@@ -12,7 +12,10 @@ const ParticipantsListToolbar = props => {
             <div className="col-md-2">
                 <div className="btn-group" role="group">
                     <ButtonIcon iconName={"glyphicon-refresh"} onClickAction={props.resetParticipantProductionProjectFilters} />
-                    <ButtonIcon iconName={"glyphicon-plus"} onClickAction={() => hashHistory.push(`/productie-project/participant/nieuw/${props.productionProject.id}`)} />
+                    {props.permissions.manageParticipation &&
+                    <ButtonIcon iconName={"glyphicon-plus"}
+                                onClickAction={() => hashHistory.push(`/productie-project/participant/nieuw/${props.productionProject.id}`)}/>
+                    }
                     <ButtonIcon iconName={"glyphicon-ok"} />
                 </div>
             </div>
@@ -28,6 +31,7 @@ const mapStateToProps = (state) => {
     return {
         participantsProductionProject: state.participantsProductionProject.list,
         productionProject: state.productionProjectDetails,
+        permissions: state.meDetails.permissions,
     };
 };
 

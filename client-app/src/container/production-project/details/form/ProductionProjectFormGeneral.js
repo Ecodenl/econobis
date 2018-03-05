@@ -48,7 +48,7 @@ class ProductionProjectFormGeneral extends Component {
                    onMouseLeave={() => this.onDivLeave()}>
                 <PanelBody>
                     {
-                        this.state.showEdit ?
+                        this.state.showEdit && this.props.permissions.manageProductionProject ?
                             <ProductionProjectFormEdit switchToView={this.switchToView}/>
                             :
                             <ProductionProjectFormView switchToEdit={this.switchToEdit}/>

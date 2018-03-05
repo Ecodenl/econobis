@@ -141,7 +141,7 @@ class ObligationNumberFormListItem extends Component {
                     obligationNumber={this.state.obligationNumber}
                 />
                 {
-                    this.state.showEdit &&
+                    this.state.showEdit && this.props.permissions.manageFinancial &&
                     <ObligationNumberFormEdit
                         obligationNumber={this.state.obligationNumber}
                         handleInputChange={this.handleInputChange}
@@ -151,7 +151,7 @@ class ObligationNumberFormListItem extends Component {
                     />
                 }
                 {
-                    this.state.showDelete &&
+                    this.state.showDelete && this.props.permissions.manageFinancial &&
                     <ObligationNumberFormDelete
                         closeDeleteItemModal={this.toggleDelete}
                         {...this.props.obligationNumber}
@@ -173,6 +173,7 @@ const mapStateToProps = (state) => {
     return {
         id: state.participantProductionProjectDetails.id,
         productionProjectId: state.participantProductionProjectDetails.productionProjectId,
+        permissions: state.meDetails.permissions,
     };
 };
 

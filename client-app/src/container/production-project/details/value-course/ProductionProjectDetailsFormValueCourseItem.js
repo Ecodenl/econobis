@@ -135,7 +135,7 @@ class ProductionProjectDetailsFormValueCourseItem extends Component {
                     valueCourse={this.state.valueCourse}
                 />
                 {
-                    this.state.showEdit &&
+                    this.state.showEdit && this.props.permissions.manageFinancial &&
                     <ProductionProjectDetailsFormValueCourseEdit
                         valueCourse={this.state.valueCourse}
                         handleInputChange={this.handleInputChange}
@@ -146,7 +146,7 @@ class ProductionProjectDetailsFormValueCourseItem extends Component {
                     />
                 }
                 {
-                    this.state.showDelete &&
+                    this.state.showDelete && this.props.permissions.manageFinancial &&
                     <ProductionProjectDetailsFormValueCourseDelete
                         closeDeleteItemModal={this.toggleDelete}
                         {...this.props.valueCourse}
@@ -157,10 +157,16 @@ class ProductionProjectDetailsFormValueCourseItem extends Component {
     }
 };
 
+const mapStateToProps = (state) => {
+    return {
+        permissions: state.meDetails.permissions,
+    }
+};
+
 const mapDispatchToProps = dispatch => ({
     updateValueCourse: (id) => {
         dispatch(updateValueCourse(id));
     },
 });
 
-export default connect(null, mapDispatchToProps)(ProductionProjectDetailsFormValueCourseItem);
+export default connect(mapStateToProps, mapDispatchToProps)(ProductionProjectDetailsFormValueCourseItem);

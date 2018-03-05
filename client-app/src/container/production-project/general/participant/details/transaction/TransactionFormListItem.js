@@ -150,7 +150,7 @@ class TransactionFormListItem extends Component {
                     participantTransaction={this.state.participantTransaction}
                 />
                 {
-                    this.state.showEdit &&
+                    this.state.showEdit && this.props.permissions.manageFinancial &&
                     <TransactionFormEdit
                         participantTransaction={this.state.participantTransaction}
                         handleInputChange={this.handleInputChange}
@@ -161,7 +161,7 @@ class TransactionFormListItem extends Component {
                     />
                 }
                 {
-                    this.state.showDelete &&
+                    this.state.showDelete && props.permissions.manageFinancial &&
                     <TransactionFormDelete
                         closeDeleteItemModal={this.toggleDelete}
                         {...this.props.participantTransaction}
@@ -172,10 +172,16 @@ class TransactionFormListItem extends Component {
     }
 };
 
+const mapStateToProps = (state) => {
+    return {
+        permissions: state.meDetails.permissions,
+    }
+};
+
 const mapDispatchToProps = dispatch => ({
     updateParticipationTransaction: (participationTransaction) => {
         dispatch(updateParticipationTransaction(participationTransaction));
     },
 });
 
-export default connect(null, mapDispatchToProps)(TransactionFormListItem);
+export default connect(mapStateToProps, mapDispatchToProps)(TransactionFormListItem);

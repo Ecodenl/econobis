@@ -26,7 +26,7 @@ class ParticipantDetailsToolbar extends Component {
     render() {
         const { participantProductionProject, productionProject = {} }  = this.props;
 
-        const isTranferable = (productionProject.isParticipationTransferable && (participantProductionProject.participationsCurrent !== 0) && (participantProductionProject.participationsCurrent));
+        const isTranferable = (productionProject.isParticipationTransferable && (participantProductionProject.participationsCurrent !== 0) && (participantProductionProject.participationsCurrent) && this.props.permissions.manageFinancial);
 
         return (
             <div className="row">
@@ -37,9 +37,9 @@ class ParticipantDetailsToolbar extends Component {
                                 <div className="btn-group margin-small" role="group">
                                     <ButtonIcon iconName={"glyphicon-arrow-left"}
                                                 onClickAction={browserHistory.goBack}/>
-
+                                    {this.props.permissions.manageParticipation &&
                                     <ButtonIcon iconName={"glyphicon-trash"} onClickAction={this.toggleDelete}/>
-
+                                    }
                                     {isTranferable ?
                                         <ButtonText buttonText={`Participaties overdragen`}
                                                     onClickAction={() => hashHistory.push(`/productie-project/participant/${participantProductionProject.id}/overdragen`)}/>

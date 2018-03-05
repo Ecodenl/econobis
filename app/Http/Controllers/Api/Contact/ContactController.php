@@ -34,6 +34,8 @@ class ContactController extends Controller
         $contact->load('documents');
         $contact->load('opportunities');
         $contact->load('contactEnergySuppliers');
+        $contact->load('participations');
+        $contact->participations->load('productionProject');
         $contact->contactEnergySuppliers->load('energySupplier');
         $contact->contactEnergySuppliers->load('contactEnergySupplyStatus');
         $contact->contactEnergySuppliers->load('contactEnergySupplyType');

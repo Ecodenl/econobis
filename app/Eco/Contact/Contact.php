@@ -15,6 +15,7 @@ use App\Eco\ContactNote\ContactNote;
 use App\Eco\Organisation\OrganisationType;
 use App\Eco\EmailAddress\EmailAddress;
 use App\Eco\Intake\Intake;
+use App\Eco\ParticipantProductionProject\ParticipantProductionProject;
 use App\Eco\Person\Person;
 use App\Eco\PhoneNumber\PhoneNumber;
 use App\Eco\Task\Task;
@@ -183,6 +184,12 @@ class Contact extends Model
     {
         return $this->hasOne(ContactEnergySupplier::class)->where('is_current_supplier', true);
     }
+
+    public function participations()
+    {
+        return $this->hasMany(ParticipantProductionProject::class);
+    }
+
 
     //Returns addresses array as Type - Streetname - Number
     //Primary address always comes first

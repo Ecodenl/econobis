@@ -3,34 +3,34 @@ import {hashHistory} from 'react-router';
 import { connect } from 'react-redux';
 import moment from 'moment';
 
-class DocumentsList extends Component {
+class Participationslist extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            relatedDocuments: '',
+            relatedParticipations: '',
         };
     }
 
     openItem = (id) => {
-        hashHistory.push(`/document/${id}`);
+        hashHistory.push(`/productie-project/participant/${id}`);
     };
 
     render() {
-        const {relatedDocuments} = this.props;
+        const {relatedParticipations} = this.props;
         return (
             <div>
-                {relatedDocuments == '' &&
-                <div>Geen documenten gevonden</div>
+                {relatedParticipations == '' &&
+                <div>Geen participaties gevonden</div>
                 }
 
-                {relatedDocuments != '' &&
+                {relatedParticipations != '' &&
                 <table className="table harmonica-table">
                     <tbody>
-                    {relatedDocuments.map((item, i) => {
+                    {relatedParticipations.map((item, i) => {
                         return (
                             <tr onClick={() => this.openItem(item.id)} key={i}>
-                                <td className='col-xs-5 clickable'>{moment(item.created_at).format('L')}</td>
-                                <td className='col-xs-6 clickable'>{item.filename}</td>
+                                <td className='col-xs-5 clickable'>{moment(item.createdAt.date).format('L')}</td>
+                                <td className='col-xs-6 clickable'>{item.productionProject.name}</td>
                             </tr>
                         )
                     })
@@ -45,8 +45,8 @@ class DocumentsList extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        relatedDocuments: state.contactGroupDetails.relatedDocuments,
+        relatedParticipations: state.contactDetails.relatedParticipations,
     };
 };
 
-export default connect(mapStateToProps)(DocumentsList);
+export default connect(mapStateToProps)(Participationslist);

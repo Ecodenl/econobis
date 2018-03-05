@@ -12,6 +12,7 @@ use App\Http\Resources\Address\FullAddress;
 use App\Http\Resources\ContactNote\FullContactNote;
 use App\Http\Resources\EmailAddress\FullEmailAddress;
 use App\Http\Resources\EnumWithIdAndName\FullEnumWithIdAndName;
+use App\Http\Resources\ParticipantProductionProject\FullParticipantProductionProject;
 use App\Http\Resources\Person\FullPerson;
 use App\Http\Resources\PhoneNumber\FullPhoneNumber;
 use App\Http\Resources\Task\GridTask;
@@ -74,6 +75,8 @@ class FullContact extends Resource
             'relatedDocuments' => FullDocument::collection($this->whenLoaded('documents')),
             'opportunityCount' => $this->opportunities()->count(),
             'relatedOpportunities' => $this->opportunities()->get(),
+            'participationCount' => $this->participations()->count(),
+            'relatedParticipations' => FullParticipantProductionProject::collection($this->whenLoaded('participations')),
         ];
     }
 }

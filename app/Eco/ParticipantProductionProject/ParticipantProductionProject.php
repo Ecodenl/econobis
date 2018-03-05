@@ -78,6 +78,10 @@ class ParticipantProductionProject extends Model
         return $this->hasMany(ObligationNumber::class, 'participation_id');
     }
 
+    public function documents(){
+        return $this->hasMany(Document::class, 'participation_production_project_id');
+    }
+
     //appends
     public function getParticipationsWorthTotalAttribute()
     {

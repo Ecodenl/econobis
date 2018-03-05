@@ -45,7 +45,7 @@ class DocumentController extends Controller
     {
         $this->authorize('view', Document::class);
 
-        $document->load('contact', 'intake', 'contactGroup', 'sentBy', 'createdBy', 'template', 'opportunity.measure', 'opportunity.status');
+        $document->load('contact', 'intake', 'contactGroup', 'sentBy', 'createdBy', 'template', 'opportunity.measure', 'opportunity.status', 'productionProject', 'participant.contact', 'participant.productionProject');
 
         return FullDocument::make($document);
     }
@@ -73,6 +73,7 @@ class DocumentController extends Controller
             ->integer('measureId')->validate('exists:measures,id')->onEmpty(null)->alias('measure_id')->next()
             ->integer('taskId')->validate('exists:tasks,id')->onEmpty(null)->alias('task_id')->next()
             ->integer('productionProjectId')->validate('exists:production_projects,id')->onEmpty(null)->alias('production_project_id')->next()
+            ->integer('participantId')->validate('exists:participation_production_project,id')->onEmpty(null)->alias('participation_production_project_id')->next()
             ->get();
 
         $document = new Document();
@@ -154,12 +155,13 @@ class DocumentController extends Controller
             ->integer('measureId')->validate('exists:measures,id')->onEmpty(null)->alias('measure_id')->next()
             ->integer('taskId')->validate('exists:tasks,id')->onEmpty(null)->alias('task_id')->next()
             ->integer('productionProjectId')->validate('exists:production_projects,id')->onEmpty(null)->alias('production_project_id')->next()
+            ->integer('participantId')->validate('exists:participation_production_project,id')->onEmpty(null)->alias('participation_production_project_id')->next()
             ->get();
 
         $document->fill($data);
         $document->save();
 
-        $document->load('contact', 'contactGroup', 'opportunity', 'intake.address');
+        $document->load('contact', 'intake', 'contactGroup', 'sentBy', 'createdBy', 'template', 'opportunity.measure', 'opportunity.status', 'productionProject', 'participant.contact', 'participant.productionProject');
 
         return FullDocument::make($document);
     }

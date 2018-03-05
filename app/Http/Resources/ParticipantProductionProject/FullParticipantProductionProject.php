@@ -3,6 +3,7 @@
 namespace App\Http\Resources\ParticipantProductionProject;
 
 use App\Http\Resources\Contact\FullContact;
+use App\Http\Resources\Document\FullDocument;
 use App\Http\Resources\GenericResource;
 use App\Http\Resources\ParticipantTransaction\FullParticipantTransaction;
 use App\Http\Resources\ProductionProject\FullProductionProject;
@@ -22,6 +23,7 @@ class FullParticipantProductionProject extends Resource
         return
             [
                 'id' => $this->id,
+                'name' => $this->contact->full_name . ' ' . $this->productionProject->name,
                 'contactId' => $this->contact_id,
                 'contact' => FullContact::make($this->whenLoaded('contact')),
                 'statusId' => $this->status_id,
@@ -53,6 +55,8 @@ class FullParticipantProductionProject extends Resource
                 'createdAt' => $this->created_at,
                 'participantTransactions' => FullParticipantTransaction::collection($this->whenLoaded('transactions')),
                 'obligationNumbers' => GenericResource::collection($this->whenLoaded('obligationNumbers')),
+                'documentCount' => $this->documents()->count(),
+                'relatedDocuments' => FullDocument::collection($this->whenLoaded('documents')),
             ];
     }
 }

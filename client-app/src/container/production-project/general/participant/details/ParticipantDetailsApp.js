@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 
 import ParticipantDetailsToolbar from './ParticipantDetailsToolbar';
 import ParticipantDetailsForm from './ParticipantDetailsForm';
-// import CampaignDetailsHarmonica from './CampaignDetailsHarmonica';
+import ParticipantDetailsHarmonica from './ParticipantDetailsHarmonica';
 import Panel from "../../../../../components/panel/Panel";
 import PanelBody from '../../../../../components/panel/PanelBody';
 
@@ -36,7 +36,7 @@ class ParticipantDetailsApp extends Component {
                 </div>
                 <Panel className="col-md-3">
                     <PanelBody>
-                        {/*<CampaignDetailsHarmonica id={this.props.params.id}/>*/}
+                        <ParticipantDetailsHarmonica/>
                     </PanelBody>
                 </Panel>
             </div>

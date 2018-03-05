@@ -2,8 +2,6 @@ import React, {Component} from 'react';
 import { hashHistory } from 'react-router';
 import { connect } from 'react-redux';
 
-import TaskHarmonica from "./harmonica/TaskHarmonica";
-import NoteHarmonica from "./harmonica/NoteHarmonica";
 import DocumentHarmonica from "./harmonica/DocumentHarmonica";
 
 class ParticipantDetailsHarmonica extends Component {
@@ -12,10 +10,6 @@ class ParticipantDetailsHarmonica extends Component {
 
         this.state = {
             toggleShowList: {
-                tasks: false,
-                notes: false,
-                emailsInbox: false,
-                emailsSent: false,
                 documents: false,
             },
         };
@@ -33,36 +27,19 @@ class ParticipantDetailsHarmonica extends Component {
         });
     };
 
-    newTask = () => {
-        hashHistory.push(`/taak/nieuw/campagne/${this.props.campaign.id}`);
-    };
 
     newDocument = (type) => {
-        hashHistory.push(`/document/nieuw/${type}/campagne/${this.props.campaign.id}`);
+        hashHistory.push(`/document/nieuw/${type}/participant/${this.props.participant.id}`);
     };
 
     render(){
         return (
             <div className="margin-10-top">
-                <TaskHarmonica
-                    toggleShowList={() => this.toggleShowList('tasks')}
-                    showTasksList={this.state.toggleShowList.tasks}
-                    taskCount={this.props.campaign.taskCount}
-                    newTask={this.newTask}
-                />
-
-                <NoteHarmonica
-                    toggleShowList={() => this.toggleShowList('notes')}
-                    showNotesList={this.state.toggleShowList.notes}
-                    noteCount={this.props.campaign.noteCount}
-                    newTask={this.newTask}
-                />
-
                 <DocumentHarmonica
                     toggleShowList={() => this.toggleShowList('documents')}
                     showDocumentsList={this.state.toggleShowList.documents}
                     newDocument={this.newDocument}
-                    documentCount={this.props.campaign.documentCount}
+                    documentCount={this.props.participant.documentCount}
                 />
             </div>
         )
@@ -71,7 +48,7 @@ class ParticipantDetailsHarmonica extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        campaign: state.campaignDetails,
+        participant: state.participantProductionProjectDetails,
     };
 };
 

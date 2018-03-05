@@ -3,9 +3,6 @@ import { connect } from 'react-redux';
 
 import RevenueDetailsToolbar from './RevenueDetailsToolbar';
 import RevenueDetailsForm from './RevenueDetailsForm';
-// import CampaignDetailsHarmonica from './CampaignDetailsHarmonica';
-import Panel from "../../../../../components/panel/Panel";
-import PanelBody from '../../../../../components/panel/PanelBody';
 
 import { fetchRevenue, clearRevenue } from '../../../../../actions/production-project/ProductionProjectDetailsActions';
 
@@ -34,11 +31,6 @@ class RevenueDetailsApp extends Component {
                         <RevenueDetailsForm/>
                     </div>
                 </div>
-                <Panel className="col-md-3">
-                    <PanelBody>
-                        {/*<CampaignDetailsHarmonica id={this.props.params.id}/>*/}
-                    </PanelBody>
-                </Panel>
             </div>
         )
     }

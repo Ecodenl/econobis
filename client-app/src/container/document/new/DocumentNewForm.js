@@ -8,7 +8,7 @@ import ButtonText from '../../../components/button/ButtonText';
 import DocumentNewFormCreateDocument from "./create-document/DocumentNewFormCreateDocument";
 import DocumentNewFormUpload from "./upload/DocumentNewFormUpload";
 
-const DocumentNewForm = ({document, contacts, contactGroups, templates, intakes, opportunities, campaigns, housingFiles, quotationRequests, measures, tasks, errors, handleSubmit, handleInputChange, handleDocumentGroupChange, onDropAccepted, onDropRejected}) => {
+const DocumentNewForm = ({document, productionProjects, participants, contacts, contactGroups, templates, intakes, opportunities, campaigns, housingFiles, quotationRequests, measures, tasks, errors, handleSubmit, handleInputChange, handleDocumentGroupChange, onDropAccepted, onDropRejected}) => {
     const submitText = document.documentType === 'internal' ? 'Maak document' : 'Upload document';
 
     return (
@@ -24,6 +24,8 @@ const DocumentNewForm = ({document, contacts, contactGroups, templates, intakes,
                         contactGroups={contactGroups}
                         intakes={intakes}
                         opportunities={opportunities}
+                        productionProjects={productionProjects}
+                        participants={participants}
                         errors={errors}
                         handleInputChange={handleInputChange}
                     />

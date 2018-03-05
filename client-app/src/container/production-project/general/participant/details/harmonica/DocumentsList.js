@@ -45,7 +45,7 @@ class DocumentsList extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        relatedDocuments: state.productionProjectDetails.relatedDocuments,
+        relatedDocuments: state.participantProductionProjectDetails.relatedDocuments,
     };
 };
 

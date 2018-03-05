@@ -45,6 +45,8 @@ class ProductionProjectController extends ApiController
             'productionProjectRevenues.type',
             'productionProjectRevenues.category',
             'productionProjectRevenues.createdBy',
+            'tasks',
+            'documents',
         ]);
 
         $productionProject->relatedEmailsInbox = $this->getRelatedEmails($productionProject->id, 'inbox');

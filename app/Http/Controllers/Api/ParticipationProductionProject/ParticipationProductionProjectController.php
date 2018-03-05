@@ -16,6 +16,7 @@ use App\Http\Controllers\Api\ApiController;
 use App\Http\RequestQueries\ParticipantProductionProject\Grid\RequestQuery;
 use App\Http\Resources\ParticipantProductionProject\FullParticipantProductionProject;
 use App\Http\Resources\ParticipantProductionProject\GridParticipantProductionProject;
+use App\Http\Resources\ParticipantProductionProject\ParticipantProductionProjectPeek;
 use Illuminate\Support\Carbon;
 
 class ParticipationProductionProjectController extends ApiController
@@ -50,6 +51,7 @@ class ParticipationProductionProjectController extends ApiController
             'transactions.type',
             'transactions.createdBy',
             'obligationNumbers',
+            'documents',
         ]);
 
         return FullParticipantProductionProject::make($participantProductionProject);
@@ -191,5 +193,10 @@ class ParticipationProductionProjectController extends ApiController
         $this->authorize('manage', ParticipantProductionProject::class);
 
         $participantProductionProject->forceDelete();
+    }
+
+    public function peek()
+    {
+        return ParticipantProductionProjectPeek::collection(ParticipantProductionProject::all()->load(['contact', 'productionProject']));
     }
 }

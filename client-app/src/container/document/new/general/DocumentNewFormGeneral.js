@@ -4,10 +4,10 @@ import { connect } from 'react-redux';
 import InputSelect from "../../../../components/form/InputSelect";
 import InputText from "../../../../components/form/InputText";
 
-const DocumentNewFormGeneral = ({document, errors, contacts = [], contactGroups = [], intakes = [], opportunities = [], tasks = [], quotationRequests = [], housingFiles = [], handleInputChange, documentTypes}) => {
-    const { contactId, contactGroupId, intakeId, opportunityId, documentType, description, taskId, quotationRequestId, housingFileId } = document;
+const DocumentNewFormGeneral = ({document, errors, contacts = [], contactGroups = [], intakes = [], opportunities = [], tasks = [], quotationRequests = [], housingFiles = [], productionProjects = [], participants = [], handleInputChange, documentTypes}) => {
+    const { contactId, contactGroupId, intakeId, opportunityId, documentType, description, taskId, quotationRequestId, housingFileId, productionProjectId,  participantId} = document;
     const documentTypeName = documentTypes.find((item) => {return item.id == documentType}).name;
-    const oneOfFieldRequired = contactId === '' && contactGroupId === '' && intakeId === '' && opportunityId === '' && taskId === '' && quotationRequestId === '' && housingFileId === '';
+    const oneOfFieldRequired = contactId === '' && contactGroupId === '' && intakeId === '' && opportunityId === '' && taskId === '' && quotationRequestId === '' && housingFileId === '' && productionProjectId === '' && participantId === '';
 
     return (
         <div className={'margin-30-bottom'}>
@@ -89,6 +89,28 @@ const DocumentNewFormGeneral = ({document, errors, contacts = [], contactGroups 
                     error={errors.docLinkedAtAny}
                 />
             </div>
+
+            <div className="row">
+                <InputSelect
+                    label="Productie project"
+                    name={"productionProjectId"}
+                    value={productionProjectId}
+                    options={productionProjects}
+                    onChangeAction={handleInputChange}
+                    required={oneOfFieldRequired && "required"}
+                    error={errors.docLinkedAtAny}
+                />
+                <InputSelect
+                    label="Participant productie project"
+                    name={"participantId"}
+                    value={participantId}
+                    options={participants}
+                    onChangeAction={handleInputChange}
+                    required={oneOfFieldRequired && "required"}
+                    error={errors.docLinkedAtAny}
+                />
+            </div>
+
             <div className="row">
                 <div className="form-group col-sm-12">
                     <div className="row">

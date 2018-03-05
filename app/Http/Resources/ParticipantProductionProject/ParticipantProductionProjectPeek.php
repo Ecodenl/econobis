@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Http\Resources\ProductionProject;
+namespace App\Http\Resources\ParticipantProductionProject;
 
 use Illuminate\Http\Resources\Json\Resource;
 
-class ProductionProjectPeek extends Resource
+
+class ParticipantProductionProjectPeek extends Resource
 {
     /**
      * Transform the resource into an array.
@@ -18,8 +19,7 @@ class ProductionProjectPeek extends Resource
         return
             [
                 'id' => $this->id,
-                'name' => $this->name,
-                'participationWorth' => $this->participation_worth,
+                'name' => $this->contact->full_name . ' ' . $this->productionProject->name,
             ];
     }
 }

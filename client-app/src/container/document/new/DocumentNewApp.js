@@ -22,6 +22,8 @@ import {fetchIntakeDetails} from "../../../actions/intake/IntakeDetailsActions";
 import CampaignAPI from "../../../api/campaign/CampaignsAPI";
 import HousingFileAPI from "../../../api/housing-file/HousingFilesAPI";
 import QuotationRequestsAPI from "../../../api/quotation-request/QuotationRequestsAPI";
+import ProductionProjectsAPI from "../../../api/production-project/ProductionProjectsAPI";
+import ParticipantsProductionProjectAPI from "../../../api/participant-production-project/ParticipantsProductionProjectAPI";
 
 class DocumentNewApp extends Component {
     constructor(props) {
@@ -38,6 +40,8 @@ class DocumentNewApp extends Component {
             quotationRequests: [],
             measures: [],
             tasks: [],
+            productionProjects: [],
+            participants: [],
             document: {
                 contactId: this.props.params.contactId || '',
                 contactGroupId: this.props.params.contactGroupId || '',
@@ -48,6 +52,8 @@ class DocumentNewApp extends Component {
                 quotationRequestId: this.props.params.quotationRequestId || '',
                 measureId: this.props.params.measureId || '',
                 taskId: this.props.params.taskId || '',
+                productionProjectId: this.props.params.productionProjectId || '',
+                participantId: this.props.params.participantId || '',
                 documentType: this.props.params.type,
                 description: '',
                 documentGroup: '',
@@ -112,6 +118,14 @@ class DocumentNewApp extends Component {
 
         MeasureAPI.peekMeasures().then((payload) => {
             this.setState({ measures: payload });
+        });
+
+        ProductionProjectsAPI.peekProductionProjects().then((payload) => {
+            this.setState({ productionProjects: payload });
+        });
+
+        ParticipantsProductionProjectAPI.peekParticipantsProductionProjects().then((payload) => {
+            this.setState({ participants: payload });
         });
     };
 
@@ -199,6 +213,8 @@ class DocumentNewApp extends Component {
             quotationRequestId,
             measureId,
             taskId,
+            productionProjectId,
+            participantId,
             attachment
         } = this.state.document;
 
@@ -206,7 +222,7 @@ class DocumentNewApp extends Component {
         let errors = {};
         let hasErrors = false;
 
-        if(validator.isEmpty(contactId) && validator.isEmpty(contactGroupId) && validator.isEmpty(intakeId) && validator.isEmpty(opportunityId)){
+        if(validator.isEmpty(contactId) && validator.isEmpty(contactGroupId) && validator.isEmpty(intakeId) && validator.isEmpty(opportunityId) && validator.isEmpty(housingFileId) && validator.isEmpty(quotationRequestId) && validator.isEmpty(productionProjectId)  && validator.isEmpty(participantId)){
             errors.docLinkedAtAny = true;
             hasErrors = true;
         };
@@ -244,6 +260,8 @@ class DocumentNewApp extends Component {
             data.append('quotationRequestId', quotationRequestId);
             data.append('measureId', measureId);
             data.append('taskId', taskId);
+            data.append('productionProjectId', productionProjectId);
+            data.append('participantId', participantId);
             data.append('attachment', attachment);
 
             DocumentDetailsAPI.newDocument(data).then((payload) => {
@@ -278,6 +296,8 @@ class DocumentNewApp extends Component {
                             quotationRequests={this.state.quotationRequests}
                             housingFiles={this.state.housingFiles}
                             campaigns={this.state.campaigns}
+                            productionProjects={this.state.productionProjects}
+                            participants={this.state.participants}
                             errors={this.state.errors}
                             handleSubmit={this.handleSubmit}
                             handleDocumentGroupChange={this.handleDocumentGroupChange}

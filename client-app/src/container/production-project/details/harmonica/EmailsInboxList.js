@@ -49,7 +49,7 @@ class EmailsInboxList extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        relatedEmailsInbox: state.taskDetails.relatedEmailsInbox,
+        relatedEmailsInbox: state.productionProjectDetails.relatedEmailsInbox,
     };
 };
 

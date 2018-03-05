@@ -18,12 +18,14 @@ import HousingFileAPI from "../../../../api/housing-file/HousingFilesAPI";
 import MeasureAPI from "../../../../api/measure/MeasureAPI";
 import CampaignAPI from "../../../../api/campaign/CampaignsAPI";
 import QuotationRequestsAPI from "../../../../api/quotation-request/QuotationRequestsAPI";
+import ParticipantsProductionProjectAPI from "../../../../api/participant-production-project/ParticipantsProductionProjectAPI";
+import ProductionProjectsAPI from "../../../../api/production-project/ProductionProjectsAPI";
 
 class DocumentDetailsAPIFormEdit extends Component {
     constructor(props) {
         super(props);
 
-        const {id, contactId, contactGroupId, intakeId, opportunityId, campaignId, housingFileId, quotationRequestId, measureId, taskId, documentType, description, documentGroup, filename} = props.documentDetails;
+        const {id, productionProjectId, participantId, contactId, contactGroupId, intakeId, opportunityId, campaignId, housingFileId, quotationRequestId, measureId, taskId, documentType, description, documentGroup, filename} = props.documentDetails;
 
         this.state = {
             contacts: [],
@@ -35,9 +37,11 @@ class DocumentDetailsAPIFormEdit extends Component {
             quotationRequests: [],
             measures: [],
             tasks: [],
+            participants: [],
+            productionProjects: [],
             document: {
                 id: id,
-                contactId: contactId,
+                contactId: contactId || '',
                 contactGroupId: contactGroupId || '',
                 intakeId: intakeId || '',
                 opportunityId: opportunityId || '',
@@ -46,6 +50,8 @@ class DocumentDetailsAPIFormEdit extends Component {
                 quotationRequestId: quotationRequestId || '',
                 measureId: measureId || '',
                 taskId: taskId || '',
+                productionProjectId: productionProjectId || '',
+                participantId: participantId || '',
                 documentType: documentType && documentType.id,
                 description: description,
                 documentGroup: documentGroup && documentGroup.id
@@ -96,6 +102,14 @@ class DocumentDetailsAPIFormEdit extends Component {
         MeasureAPI.peekMeasures().then((payload) => {
             this.setState({ measures: payload });
         });
+
+        ProductionProjectsAPI.peekProductionProjects().then((payload) => {
+            this.setState({ productionProjects: payload });
+        });
+
+        ParticipantsProductionProjectAPI.peekParticipantsProductionProjects().then((payload) => {
+            this.setState({ participants: payload });
+        });
     };
 
     handleInputChange(event) {
@@ -120,7 +134,7 @@ class DocumentDetailsAPIFormEdit extends Component {
         let errors = {};
         let hasErrors = false;
 
-        if(validator.isEmpty(document.contactId.toString()) && validator.isEmpty(document.contactGroupId.toString()) && validator.isEmpty(document.intakeId.toString()) && validator.isEmpty(document.opportunityId.toString())){
+        if(validator.isEmpty(document.contactId + '') && validator.isEmpty(document.contactGroupId + '') && validator.isEmpty(document.intakeId + '') && validator.isEmpty(document.opportunityId + '') && validator.isEmpty(document.participantId + '') && validator.isEmpty(document.productionProjectId + '')){
             errors.docLinkedAtAny = true;
             hasErrors = true;
         };
@@ -136,9 +150,9 @@ class DocumentDetailsAPIFormEdit extends Component {
     };
 
     render() {
-        const { document, errors, contacts, contactGroups, intakes, opportunities, campaigns, housingFiles, quotationRequests, measures, tasks } = this.state;
-        const { contactId, contactGroupId, intakeId, opportunityId, campaignId, housingFileId, quotationRequestId, measureId, taskId, documentType, description } = document;
-        const oneOfFieldRequired = contactId === '' && contactGroupId === '' && intakeId === '' && opportunityId === '' && taskId === '' && quotationRequestId === '' && housingFileId === '';
+        const { document, errors, contacts, contactGroups, intakes, opportunities, campaigns, housingFiles, quotationRequests, measures, tasks, productionProjects, participants } = this.state;
+        const { contactId, contactGroupId, intakeId, opportunityId, campaignId, housingFileId, quotationRequestId, measureId, taskId, documentType, description, participantId, productionProjectId } = document;
+        const oneOfFieldRequired = contactId === '' && contactGroupId === '' && intakeId === '' && opportunityId === '' && taskId === '' && quotationRequestId === '' && housingFileId === '' && participantId === '' && productionProjectId === '';
 
         return (
             <div>
@@ -216,6 +230,27 @@ class DocumentDetailsAPIFormEdit extends Component {
                             name={"housingFileId"}
                             value={housingFileId}
                             options={housingFiles}
+                            onChangeAction={this.handleInputChange}
+                            required={oneOfFieldRequired && "required"}
+                            error={errors.docLinkedAtAny}
+                        />
+                    </div>
+
+                    <div className="row">
+                        <InputSelect
+                            label="Productie project"
+                            name={"productionProjectId"}
+                            value={productionProjectId}
+                            options={productionProjects}
+                            onChangeAction={this.handleInputChange}
+                            required={oneOfFieldRequired && "required"}
+                            error={errors.docLinkedAtAny}
+                        />
+                        <InputSelect
+                            label="Participant productie project"
+                            name={"participantId"}
+                            value={participantId}
+                            options={participants}
                             onChangeAction={this.handleInputChange}
                             required={oneOfFieldRequired && "required"}
                             error={errors.docLinkedAtAny}

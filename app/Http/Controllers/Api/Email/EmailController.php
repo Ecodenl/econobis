@@ -379,6 +379,6 @@ class EmailController
 
         $mailboxIds = $user->mailboxes()->pluck('mailbox_id');
 
-        return Email::whereIn('mailbox_id', $mailboxIds)->whereNull('status')->where('folder', 'inbox')->count();
+        return Email::whereIn('mailbox_id', $mailboxIds)->where('status', '!=', 'closed')->where('folder', 'inbox')->count();
     }
 }

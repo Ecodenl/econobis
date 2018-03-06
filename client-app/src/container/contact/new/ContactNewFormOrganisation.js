@@ -26,7 +26,7 @@ class ContactNewFormOrganisation extends Component {
                 chamberOfCommerceNumber: '',
                 vatNumber: '',
                 industryId: '',
-                statusId: '',
+                statusId: 'interested',
                 memberSince: '',
                 memberUntil: '',
                 typeId: '',

@@ -24,7 +24,7 @@ class ContactNewFormPersonal extends Component {
                 number: '',
                 createdAt: '',
                 titleId: '',
-                statusId: '',
+                statusId: 'interested',
                 initials: '',
                 firstName: '',
                 lastNamePrefixId: '',

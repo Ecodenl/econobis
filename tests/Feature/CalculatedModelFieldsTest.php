@@ -16,7 +16,6 @@ class CalculatedModelFieldsTest extends TestCase
     public function setUp(){
 
         parent::setUp();
-        $this->artisan('migrate:fresh');
         $this->be(User::find(1));
         $this->insertData();
     }

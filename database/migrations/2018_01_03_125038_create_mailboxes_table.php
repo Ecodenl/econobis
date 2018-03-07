@@ -39,6 +39,5 @@ class CreateMailboxesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('mailboxes');
     }
 }

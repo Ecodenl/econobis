@@ -130,8 +130,5 @@ class AlterCampaignsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('campaign_status');
-        Schema::dropIfExists('campaign_types');
-        Schema::dropIfExists('campaigns');
     }
 }

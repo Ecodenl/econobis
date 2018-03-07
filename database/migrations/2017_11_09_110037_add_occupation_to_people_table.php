@@ -28,8 +28,5 @@ class AddOccupationToPeopleTable extends Migration
      */
     public function down()
     {
-        Schema::table('people', function (Blueprint $table) {
-            $table->dropColumn('occupation_id');
-        });
     }
 }

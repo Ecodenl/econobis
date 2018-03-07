@@ -84,7 +84,5 @@ class CreateOpportunitiesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('opportunity_status');
-        Schema::dropIfExists('opportunities');
     }
 }

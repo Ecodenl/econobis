@@ -23,7 +23,6 @@ class TaskController extends Controller
     public function gridTask(TaskRequestQuery $requestQuery)
     {
         $tasks = $requestQuery->get();
-
         return GridTask::collection($tasks)
             ->additional(['meta' => [
                 'total' => $requestQuery->total(),

@@ -68,10 +68,10 @@ class AddressCountries extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('countries');
         Schema::table('addresses', function (Blueprint $table) {
             $table->dropForeign(['country_id']);
             $table->dropColumn('country_id');
         });
+        Schema::dropIfExists('countries');
     }
 }

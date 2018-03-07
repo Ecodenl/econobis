@@ -29,7 +29,7 @@ class AddOpportunityIdToEmail extends Migration
     public function down()
     {
         Schema::table('emails', function (Blueprint $table) {
-            $table->dropForeign('opportunity_id');
+            $table->dropForeign(['opportunity_id']);
             $table->dropColumn('opportunity_id');
         });
     }

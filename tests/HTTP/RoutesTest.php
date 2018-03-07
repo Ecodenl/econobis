@@ -3,6 +3,8 @@
 namespace Tests\Feature;
 
 use App\Eco\User\User;
+use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
 use Tests\TestCase;
 use PHPUnit\Framework\Assert as PHPUnit;
 
@@ -10,71 +12,35 @@ class ExampleTest extends TestCase
 {
 
     /**
-     * Test for grid routes.
+     * The main test calling other tests.
      *
      * @return void
      */
-    public function testApiGridRoutes()
+    public function testRoutes()
     {
-        $this->artisan('migrate:fresh');
-
         $user = User::find(1);
 
+        $denied = [];
 
-        $ApiGridRoutes =
-            [
-              'contact/grid',
-              'intake/grid',
-              'housing-file/grid',
-              'user/grid',
-              'contact-group/grid',
-              'opportunity/grid',
-              'task/grid/tasks',
-              'task/grid/notes',
-              'campaign/grid',
-              'measure/grid',
-              'mailbox/grid',
-              'email/grid/in-folder/inbox',
-              'email/grid/in-folder/sent',
-              'email/grid/in-folder/concept',
-              'email-template/grid',
-              'document/grid',
-              'document-template/grid',
-              'audit-trail/grid',
-              'team/grid',
-              'quotation-request/grid',
-              'production-project/grid',
-            ];
-
-        foreach ($ApiGridRoutes as $apiGridRoute) {
-
-            fwrite(STDERR, print_r($apiGridRoute, TRUE));
-
-            $response = $this
-                ->actingAs($user)
-                ->get('/api/' . $apiGridRoute);
-
-            $actual = $response->getStatusCode();
-
-            PHPUnit::assertTrue(
-                $actual === 200,
-                "Expected status code '200' but received {$actual} for route {$apiGridRoute}."
-            );
+        foreach (Permission::all() as $permission)
+        {
+            $user->syncPermissions([$permission]);
+            $this->ApiGridRoutes($user, $permission->name, $denied);
+            $this->ApiDetailRoutes($user, $permission->name, $denied);
         }
+
+        dump($denied);
     }
 
     /**
      * Test for grid routes.
      *
+     * @param User $user
+     *
      * @return void
      */
-    public function testApiNewRoutes()
+    public function ApiGridRoutes(User $user, $permissionName, &$denied)
     {
-        $this->artisan('migrate:fresh');
-
-        $user = User::find(1);
-
-
         $ApiGridRoutes =
             [
                 'contact/grid',
@@ -102,18 +68,56 @@ class ExampleTest extends TestCase
 
         foreach ($ApiGridRoutes as $apiGridRoute) {
 
-            fwrite(STDERR, print_r($apiGridRoute, TRUE));
-
             $response = $this
                 ->actingAs($user)
                 ->get('/api/' . $apiGridRoute);
 
-            $actual = $response->getStatusCode();
+            if($response->getStatusCode() === 429){
+                array_push($denied, ['grid', $apiGridRoute, $permissionName]);
+            }
+        }
+    }
 
-            PHPUnit::assertTrue(
-                $actual === 200,
-                "Could not create  '200' but received {$actual} for route {$apiGridRoute}."
-            );
+    /**
+     * Test for detail routes.
+     *
+     * @param User $user
+     *
+     * @return void
+     */
+    public function ApiDetailRoutes(User $user, $permissionName, &$denied)
+    {
+        $ApiDetailRoutes =
+            [
+                'contact/1',
+                'intake/1',
+                'housing-file/1',
+                'user/1',
+                'contact-group/1',
+                'opportunity/1',
+                'task/1',
+                'campaign/1',
+                'measure/1',
+                'mailbox/1',
+                'email/1',
+                'email-template/1',
+                'document/1',
+                'document-template/1',
+                'audit-trail/1',
+                'team/1',
+                'quotation-request/1',
+                'production-project/1',
+            ];
+
+        foreach ($ApiDetailRoutes as $apiDetailRoute) {
+
+            $response = $this
+                ->actingAs($user)
+                ->get('/api/' . $apiDetailRoute);
+
+            if($response->getStatusCode() === 429){
+                array_push($denied, ['details', $apiDetailRoute, $permissionName]);
+            }
         }
     }
 }

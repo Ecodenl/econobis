@@ -1,7 +1,8 @@
-export const setError = (http_code) => {
+export const setError = (http_code, message) => {
     return {
         type: 'SET_ERROR',
         http_code,
+        message,
     };
 };
 

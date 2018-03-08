@@ -19,7 +19,7 @@ class Content extends Component {
                 <ChangePassword closeModal={this.props.toggleChangePassword}/>
                 }
                 {!isEmpty(this.props.error) &&
-                <ErrorModal httpCode={this.props.error.http_code} closeModal={this.props.clearError}/>
+                <ErrorModal error={this.props.error} closeModal={this.props.clearError}/>
                 }
             </div>
         )

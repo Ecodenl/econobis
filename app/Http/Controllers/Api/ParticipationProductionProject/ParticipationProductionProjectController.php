@@ -9,8 +9,11 @@
 namespace App\Http\Controllers\Api\ParticipationProductionProject;
 
 use App\Eco\Contact\Contact;
+use App\Eco\EnergySupplier\ContactEnergySupplierType;
 use App\Eco\ParticipantProductionProject\ParticipantProductionProject;
 use App\Eco\ParticipantTransaction\ParticipantTransaction;
+use App\Eco\PostalCodeLink\PostalCodeLink;
+use App\Eco\ProductionProject\ProductionProject;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\RequestQueries\ParticipantProductionProject\Grid\RequestQuery;
@@ -198,5 +201,45 @@ class ParticipationProductionProjectController extends ApiController
     public function peek()
     {
         return ParticipantProductionProjectPeek::collection(ParticipantProductionProject::all()->load(['contact', 'productionProject']));
+    }
+
+    public function checkPostalCode(ProductionProject $productionProject, Contact $contact){
+
+        //2 = PCR
+        if($productionProject->production_project_type_id != 2){
+            return 'Productie project is geen PCR project.';
+        }
+
+        $primaryAddress = $contact->primaryAddress;
+
+        if(!$primaryAddress){
+            abort(406, 'Contact heeft geen primair adres.');
+        }
+
+        if(!$productionProject->postal_code){
+            abort(406, 'Productie project heeft geen postcode.');
+        }
+
+        $postalCodeAreaContact = substr($primaryAddress->postal_code, 0 , 4);
+
+        if(!($postalCodeAreaContact > 999 && $postalCodeAreaContact < 9999)){
+            abort(406, 'Contact heeft geen geldige postcode op zijn primaire adres.');
+        }
+
+        $postalCodeAreaProductionProject = substr($productionProject->postal_code, 0 , 4);
+
+        if(!($postalCodeAreaProductionProject > 999 && $postalCodeAreaProductionProject < 9999)){
+            abort(406, 'Productie project heeft geen geldige postcode.');
+        }
+
+        $validPostalAreas = PostalCodeLink::where('postalcode_main', $postalCodeAreaProductionProject)->pluck('postalcode_link')->toArray();
+
+        if(!$validPostalAreas){
+            abort(406, 'Productie project postcode heeft geen postcoderoos.');
+        }
+
+        if(!in_array($postalCodeAreaContact, $validPostalAreas)){
+            abort(406, 'Postcode nummer ' . $postalCodeAreaContact . ' niet gevonden in toegestane postcodes: ' . implode(', ', $validPostalAreas) . '.');
+        }
     }
 }

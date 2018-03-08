@@ -6,6 +6,7 @@ import { hashHistory } from 'react-router';
 
 import ParticipantNewToolbar from './ParticipantNewToolbar';
 import ParticipantNew from './ParticipantNew';
+import {setError} from "../../../../../actions/general/ErrorActions";
 
 import ParticipantProductionProjectDetailsAPI from '../../../../../api/participant-production-project/ParticipantProductionProjectDetailsAPI';
 import Panel from "../../../../../components/panel/Panel";
@@ -13,6 +14,7 @@ import PanelBody from "../../../../../components/panel/PanelBody";
 import * as ibantools from "ibantools/build/ibantools";
 import ContactsAPI from "../../../../../api/contact/ContactsAPI";
 import ProductionProjectsAPI from "../../../../../api/production-project/ProductionProjectsAPI";
+import {connect} from "react-redux";
 
 class ParticipantNewApp extends Component {
     constructor(props) {
@@ -165,9 +167,14 @@ class ParticipantNewApp extends Component {
         this.setState({ ...this.state, errors: errors });
 
         !hasErrors &&
-        ParticipantProductionProjectDetailsAPI.storeParticipantProductionProject(participation).then(payload => {
-            hashHistory.push(`/productie-project/participant/${payload.id}`);
-        });
+        ParticipantProductionProjectDetailsAPI.checkPostalCodeAllowed(participation.productionProjectId, participation.contactId).then(() => {
+            ParticipantProductionProjectDetailsAPI.storeParticipantProductionProject(participation).then(payload => {
+                hashHistory.push(`/productie-project/participant/${payload.id}`);
+            });
+        }).catch((error) => {
+            this.props.setError(error.response.status, error.response.data.message)
+            }
+        );
     };
 
     render() {
@@ -204,4 +211,10 @@ class ParticipantNewApp extends Component {
     }
 };
 
-export default ParticipantNewApp;
+const mapDispatchToProps = dispatch => ({
+    setError: (http_code, message) => {
+        dispatch(setError(http_code, message));
+    },
+});
+
+export default connect(null, mapDispatchToProps)(ParticipantNewApp);

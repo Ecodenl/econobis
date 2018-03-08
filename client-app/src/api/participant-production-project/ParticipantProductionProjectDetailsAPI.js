@@ -68,4 +68,13 @@ export default {
                 },
             );
     },
+
+    checkPostalCodeAllowed: (productionProjectId, contactId) => {
+        const requestUrl = `${URL_PARTICIPANT_PRODUCTION_PROJECT}/check-postal-code/${productionProjectId}/${contactId}`;
+        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
+        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
+
+        return axios.get(requestUrl);
+
+    },
 };

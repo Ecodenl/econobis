@@ -282,5 +282,11 @@ Route::namespace('Api')
         Route::post('production-project', 'ProductionProject\ProductionProjectController@store');
         Route::post('production-project/{productionProject}', 'ProductionProject\ProductionProjectController@update');
         Route::post('production-project/{productionProject}/delete', 'ProductionProject\ProductionProjectController@destroy');
+
+        Route::get('postal-code-link/grid', 'PostalCodeLink\PostalCodeLinkController@grid');
+        Route::post('postal-code-link', 'PostalCodeLink\PostalCodeLinkController@store');
+        Route::post('postal-code-link/{postalCodeLink}', 'PostalCodeLink\PostalCodeLinkController@update');
+        Route::post('postal-code-link/{postalCodeLink}/delete', 'PostalCodeLink\PostalCodeLinkController@destroy');
+
     }
 );

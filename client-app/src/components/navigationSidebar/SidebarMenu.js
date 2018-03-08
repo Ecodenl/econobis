@@ -148,6 +148,9 @@ class SidebarMenu extends Component {
                             <NavText><Link className="sidebar-link" to="audit-trail">Audit trail</Link></NavText>
                         </Nav>
                         }
+                        <Nav id="postal-code-link">
+                            <NavText><Link className="sidebar-link" to="postcoderoos">Postcoderoos</Link></NavText>
+                        </Nav>
                     </Nav>
                 </SideNav>
             </div>

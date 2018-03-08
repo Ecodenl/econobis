@@ -57,7 +57,7 @@ class TeamController extends ApiController
             'name' => 'required',
         ]);
 
-        //basic intake
+        //basic team
         $team = new Team();
 
         $team->name = $data['name'];

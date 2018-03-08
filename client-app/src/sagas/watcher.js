@@ -19,6 +19,7 @@ import { fetchMeasuresSaga } from './measure/MeasuresSaga';
 import { fetchMeasureSaga } from './measure/MeasureDetailsSaga';
 import { fetchOpportunitiesSaga } from './opportunity/OpportunitiesSaga';
 import { fetchOpportunitySaga } from './opportunity/OpportunityDetailsSaga';
+import { fetchPostalCodeLinksSaga, deletePostalCodeLinkSaga } from './postal-code-link/PostalCodeLinkSaga';
 import { fetchProductionProjectsSaga } from './production-project/ProductionProjectsSaga';
 import { fetchProductionProjectSaga, deleteValueCourseSaga, deleteRevenueSaga } from './production-project/ProductionProjectDetailsSaga';
 import { fetchProductionProjectRevenueSaga } from './production-project/ProductionProjectRevenueDetailsSaga';
@@ -112,6 +113,9 @@ export default function* watchSagas() {
     // Opportunity
     yield takeLatest('FETCH_OPPORTUNITIES', fetchOpportunitiesSaga);
     yield takeLatest('FETCH_OPPORTUNITY', fetchOpportunitySaga);
+    // Postal code links
+    yield takeLatest('FETCH_POSTAL_CODE_LINKS', fetchPostalCodeLinksSaga);
+    yield takeLatest('DELETE_POSTAL_CODE_LINK', deletePostalCodeLinkSaga);
     // Participant production project
     yield takeLatest('FETCH_PARTICIPANTS_PRODUCTION_PROJECT', fetchParticipantsProductionProjectSaga);
     yield takeLatest('FETCH_PARTICIPANT_PRODUCTION_PROJECT_DETAILS', fetchParticipantProductionProjectDetailsSaga);

@@ -9,6 +9,7 @@ use App\Eco\Person\Person;
 use App\Eco\PhoneNumber\PhoneNumber;
 use App\Eco\ProductionProject\ProductionProject;
 use App\Eco\User\User;
+use App\Helpers\Template\TemplateVariableHelper;
 use Tests\TestCase;
 
 class TemplateMergeFieldsTest extends TestCase
@@ -16,6 +17,7 @@ class TemplateMergeFieldsTest extends TestCase
     public function setUp(){
 
         parent::setUp();
+        $this->artisan('migrate:fresh');
         $this->be(User::find(1));
         $this->insertData();
     }
@@ -35,23 +37,62 @@ class TemplateMergeFieldsTest extends TestCase
 
     public function assertContactMergeFields()
     {
-        //$html = TemplateVariableHelper::replaceTemplateVariables($html, 'contact', $document->contact);
-        $this->assertTrue(true);
+        $html ='{contact_titel}{contact_naam}{testjes}{contact_voornaam}{contact_achternaam}{onzin}{contact_adres}{contact_postcode}{contact_plaats}{contact_telefoonnummer}';
+
+        $html = TemplateVariableHelper::replaceTemplateVariables($html, 'contact', Contact::find(1));
+        $html = TemplateVariableHelper::stripRemainingVariableTags($html);
+
+        $expectedHtml = 'MevrKlaas de VaakKlaasde VaakDorpstraat 81693KWWervershoof0612345678';
+
+        $this->assertEquals($expectedHtml, $html);
     }
 
     public function assertUserMergeFields()
     {
-        $this->assertTrue(true);
+        $html ='{user_voornaam}{user_achternaam}{user_telefoon}{user_email}';
+
+        $html = TemplateVariableHelper::replaceTemplateVariables($html, 'user', User::find(2));
+
+        $expectedHtml = 'Pietde Rood0687654321piet.rood@email.com';
+
+        $this->assertEquals($expectedHtml, $html);
     }
 
     public function assertProductionProjectMergeFields()
     {
-        $this->assertTrue(true);
+        $html = '{pp_naam}{pp_omschrijving}{pp_start_project}{pp_start_productie}{pp_start_inschrijving}';
+        $html .= '{pp_eind_inschrijving}{pp_postcode}{pp_adres}{pp_plaats}{pp_ean}{pp_ean_netbeheer}';
+        $html .= '{pp_garantie_oorsprong}{pp_ean_levering}{pp_participatie_waarde}{pp_opgesteld_vermogen}{pp_max_participaties}';
+        $html .= '{pp_aanwijzing_belastingsdienst}{pp_max_participaties_jeugd}{pp_min_participaties}{pp_uitgegeven_participaties}';
+        $html .= '{pp_participaties_in_optie}{pp_uit_te_geven_participaties}{pp_aantal_participanten}';
+
+        $html = TemplateVariableHelper::replaceTemplateVariables($html, 'pp', ProductionProject::find(1));
+
+        $expectedHtml = 'Project 1Omschrijving03/03/201804/03/201805/03/2018';
+        $expectedHtml .= '06/03/20181693KWDorpstraat 10Andijk12341235';
+        $expectedHtml .= 'Garantie nummer 12312360101102';
+        $expectedHtml .= 'Belasting1103104';
+        $expectedHtml .= '10-11';
+
+        $this->assertEquals($expectedHtml, $html);
     }
 
     public function assertParticipantProductionProjectMergeFields()
     {
-        $this->assertTrue(true);
+        $html = '{ppp_contact_naam}{ppp_status}{ppp_productie_project}{ppp_inschrijf_datum}{ppp_aangevraagd}{ppp_toegekend}';
+        $html .= '{ppp_verkocht}{ppp_huidig}{ppp_waarde_totaal}{ppp_restverkoop}{ppp_contract_verstuurd}{ppp_contract_retour}';
+        $html .= '{ppp_betaald_op}{ppp_iban_betaald}{ppp_akkoord_regelement}{ppp_iban_tnv}{ppp_geschonken_door}';
+        $html .= '{ppp_wettelijke_vertegenwoordiger}{ppp_iban_uitkeren}{ppp_iban_uitkeren_tnv}{ppp_einddatum}{ppp_uitkeren_op}';
+
+
+        $html = TemplateVariableHelper::replaceTemplateVariables($html, 'ppp', ParticipantProductionProject::find(1));
+
+        $expectedHtml = 'Vaak, Klaas deDefinitiefProject 107/03/2018109';
+        $expectedHtml .= '810706/03/201805/03/2018';
+        $expectedHtml .= '04/03/2018iban123Neeiban1234Vaak, Klaas deVaak, Klaas de';
+        $expectedHtml .= 'iban12345Pietje03/03/2018Bijschrijven';
+
+        $this->assertEquals($expectedHtml, $html);
     }
 
     public function insertData(){
@@ -67,6 +108,7 @@ class TemplateMergeFieldsTest extends TestCase
         $contact->save();
 
         $person = new Person();
+        $person->contact_id = 1;
         $person->title_id = 2;
         $person->last_name_prefix_id = 2;
         $person->first_name = 'Klaas';
@@ -78,7 +120,7 @@ class TemplateMergeFieldsTest extends TestCase
         $address->primary = true;
         $address->street = 'Dorpstraat';
         $address->number = 8;
-        $address->postal_code = '1693kw';
+        $address->postal_code = '1693KW';
         $address->city = 'Wervershoof';
         $address->save();
 
@@ -97,6 +139,7 @@ class TemplateMergeFieldsTest extends TestCase
         $user->last_name = 'Rood';
         $user->phone_number = '0687654321';
         $user->email = 'piet.rood@email.com';
+        $user->password = 'NVT';
         $user->alfresco_password = 'NVT';
         $user->save();
     }

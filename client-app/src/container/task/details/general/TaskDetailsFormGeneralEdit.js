@@ -23,6 +23,7 @@ import PanelHeader from "../../../../components/panel/PanelHeader";
 import InputSelectGroup from "../../../../components/form/InputSelectGroup";
 import ProductionProjectsAPI from "../../../../api/production-project/ProductionProjectsAPI";
 import HousingFilesAPI from "../../../../api/housing-file/HousingFilesAPI";
+import ParticipantsProductionProjectAPI from "../../../../api/participant-production-project/ParticipantsProductionProjectAPI";
 
 class TaskDetailsFormGeneralEdit extends Component {
     constructor(props) {
@@ -40,6 +41,7 @@ class TaskDetailsFormGeneralEdit extends Component {
             contactGroupId,
             housingFileId,
             productionProjectId,
+            participantId,
             datePlannedStart,
             datePlannedFinish,
             startTimePlanned,
@@ -60,6 +62,7 @@ class TaskDetailsFormGeneralEdit extends Component {
             campaigns: [],
             housingFiles: [],
             productionProjects: [],
+            participants: [],
             task: {
                 id,
                 note,
@@ -69,6 +72,9 @@ class TaskDetailsFormGeneralEdit extends Component {
                 intakeId: intakeId ? intakeId : '',
                 opportunityId: opportunityId ? opportunityId : '',
                 contactGroupId: contactGroupId ? contactGroupId: '',
+                housingFileId: housingFileId ? housingFileId: '',
+                productionProjectId: productionProjectId ? productionProjectId: '',
+                participantId: participantId ? participantId: '',
                 datePlannedStart: datePlannedStart ? datePlannedStart.date : '',
                 datePlannedFinish: datePlannedFinish ? datePlannedFinish.date : '',
                 startTimePlanned: startTimePlanned ? startTimePlanned : '',
@@ -90,6 +96,9 @@ class TaskDetailsFormGeneralEdit extends Component {
                 contactGroups: true,
                 opportunities: true,
                 campaigns: true,
+                housingFiles: true,
+                productionProjects: true,
+                participants: true,
             },
         };
 
@@ -167,6 +176,16 @@ class TaskDetailsFormGeneralEdit extends Component {
                 peekLoading: {
                     ...this.state.peekLoading,
                     productionProjects: false,
+                },
+            });
+        });
+
+        ParticipantsProductionProjectAPI.peekParticipantsProductionProjects().then((payload) => {
+            this.setState({
+                participants: payload,
+                peekLoading: {
+                    ...this.state.peekLoading,
+                    participants: false,
                 },
             });
         });
@@ -402,6 +421,7 @@ class TaskDetailsFormGeneralEdit extends Component {
                             campaigns={this.state.campaigns}
                             housingFiles={this.state.housingFiles}
                             productionProjects={this.state.productionProjects}
+                            participants={this.state.participants}
                             handleReactSelectChange={this.handleReactSelectChange}
                             peekLoading={this.state.peekLoading}
                         />

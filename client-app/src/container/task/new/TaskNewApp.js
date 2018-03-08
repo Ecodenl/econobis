@@ -16,6 +16,7 @@ import ContactGroupAPI from "../../../api/contact-group/ContactGroupAPI";
 import OpportunitiesAPI from "../../../api/opportunity/OpportunitiesAPI";
 import HousingFilesAPI from "../../../api/housing-file/HousingFilesAPI";
 import ProductionProjectsAPI from "../../../api/production-project/ProductionProjectsAPI";
+import ParticipantsProductionProjectAPI from "../../../api/participant-production-project/ParticipantsProductionProjectAPI";
 
 class TaskNewApp extends Component {
     constructor(props) {
@@ -29,6 +30,7 @@ class TaskNewApp extends Component {
             campaigns: [],
             housingFiles: [],
             productionProjects: [],
+            participants: [],
             task: {
                 id: '',
                 note: '',
@@ -39,6 +41,8 @@ class TaskNewApp extends Component {
                 opportunityId: '',
                 contactGroupId: '',
                 housingFileId: '',
+                productionProjectId: '',
+                participantId: '',
                 datePlannedStart: '',
                 datePlannedFinish: '',
                 startTimePlanned: '',
@@ -61,6 +65,7 @@ class TaskNewApp extends Component {
                 campaigns: true,
                 housingFiles: true,
                 productionProjects: true,
+                participants: true,
             },
         };
 
@@ -147,6 +152,16 @@ class TaskNewApp extends Component {
                 },
             });
         });
+
+        ParticipantsProductionProjectAPI.peekParticipantsProductionProjects().then((payload) => {
+            this.setState({
+                participants: payload,
+                peekLoading: {
+                    ...this.state.peekLoading,
+                    participants: false,
+                },
+            });
+        });
     };
 
     componentWillReceiveProps(nextProps) {
@@ -157,93 +172,131 @@ class TaskNewApp extends Component {
 
     updateStateByChangeParams(params) {
         if (!isEmpty(params)) {
-            switch (params.type) {
-                case 'contact':
-                    this.setState({
-                        ...this.state,
-                        task: {
-                            ...this.state.task,
-                            campaignId: '',
-                            contactId: params.id,
-                            intakeId: '',
-                            contactGroupId: '',
-                            opportunityId: '',
-                            productionProjectId: '',
-                        }
-                    });
-                    break;
-                case 'intake':
-                    this.setState({
-                        ...this.state,
-                        task: {
-                            ...this.state.task,
-                            campaignId: '',
-                            contactId: '',
-                            intakeId: params.id,
-                            contactGroupId: '',
-                            opportunityId: '',
-                            productionProjectId: '',
-                        }
-                    });
-                    break;
-                case 'contact-groep':
-                    this.setState({
-                        ...this.state,
-                        task: {
-                            ...this.state.task,
-                            campaignId: '',
-                            contactId: '',
-                            intakeId: '',
-                            contactGroupId: params.id,
-                            opportunityId: '',
-                            productionProjectId: '',
-                        }
-                    });
-                    break;
-                case 'kans':
-                    this.setState({
-                        ...this.state,
-                        task: {
-                            ...this.state.task,
-                            campaignId: '',
-                            contactId: '',
-                            intakeId: '',
-                            contactGroupId: '',
-                            opportunityId: params.id,
-                            productionProjectId: '',
-                        }
-                    });
-                    break;
-                case 'campagne':
-                    this.setState({
-                        ...this.state,
-                        task: {
-                            ...this.state.task,
-                            campaignId: params.id,
-                            contactId: '',
-                            intakeId: '',
-                            contactGroupId: '',
-                            opportunityId: '',
-                            productionProjectId: '',
-                        }
-                    });
-                    break;
-                case 'productie-project':
-                    this.setState({
-                        ...this.state,
-                        task: {
-                            ...this.state.task,
-                            campaignId: '',
-                            contactId: '',
-                            intakeId: '',
-                            contactGroupId: '',
-                            opportunityId: '',
-                            productionProjectId: params.id,
-                        }
-                    });
-                    break;
-                default:
-                    break;
+            if(params.contactId && params.productionProjectId && params.participantId){
+                this.setState({
+                    ...this.state,
+                    task: {
+                        ...this.state.task,
+                        campaignId: '',
+                        contactId: params.contactId,
+                        intakeId: '',
+                        contactGroupId: '',
+                        opportunityId: '',
+                        productionProjectId: params.productionProjectId,
+                        participantId: params.participantId,
+                    }
+                });
+            }
+            else {
+                switch (params.type) {
+                    case 'contact':
+                        this.setState({
+                            ...this.state,
+                            task: {
+                                ...this.state.task,
+                                campaignId: '',
+                                contactId: params.id,
+                                intakeId: '',
+                                contactGroupId: '',
+                                opportunityId: '',
+                                productionProjectId: '',
+                                participantId: '',
+                            }
+                        });
+                        break;
+                    case 'intake':
+                        this.setState({
+                            ...this.state,
+                            task: {
+                                ...this.state.task,
+                                campaignId: '',
+                                contactId: '',
+                                intakeId: params.id,
+                                contactGroupId: '',
+                                opportunityId: '',
+                                productionProjectId: '',
+                                participantId: '',
+                            }
+                        });
+                        break;
+                    case 'contact-groep':
+                        this.setState({
+                            ...this.state,
+                            task: {
+                                ...this.state.task,
+                                campaignId: '',
+                                contactId: '',
+                                intakeId: '',
+                                contactGroupId: params.id,
+                                opportunityId: '',
+                                productionProjectId: '',
+                                participantId: '',
+                            }
+                        });
+                        break;
+                    case 'kans':
+                        this.setState({
+                            ...this.state,
+                            task: {
+                                ...this.state.task,
+                                campaignId: '',
+                                contactId: '',
+                                intakeId: '',
+                                contactGroupId: '',
+                                opportunityId: params.id,
+                                productionProjectId: '',
+                                participantId: '',
+                            }
+                        });
+                        break;
+                    case 'campagne':
+                        this.setState({
+                            ...this.state,
+                            task: {
+                                ...this.state.task,
+                                campaignId: params.id,
+                                contactId: '',
+                                intakeId: '',
+                                contactGroupId: '',
+                                opportunityId: '',
+                                productionProjectId: '',
+                                participantId: '',
+                            }
+                        });
+                        break;
+                    case 'productie-project':
+                        this.setState({
+                            ...this.state,
+                            task: {
+                                ...this.state.task,
+                                campaignId: '',
+                                contactId: '',
+                                intakeId: '',
+                                contactGroupId: '',
+                                opportunityId: '',
+                                productionProjectId: params.id,
+                                participantId: '',
+                            }
+                        });
+                        break;
+                    case 'participant':
+                        this.setState({
+                            ...this.state,
+                            task: {
+                                ...this.state.task,
+                                campaignId: '',
+                                contactId: '',
+                                intakeId: '',
+                                contactGroupId: '',
+                                opportunityId: '',
+                                productionProjectId: '',
+                                participantId: params.id,
+                            }
+                        });
+                        break;
+                    default:
+                        break;
+                }
             }
         }
     };
@@ -357,6 +410,7 @@ class TaskNewApp extends Component {
                                         opportunities={this.state.opportunities}
                                         campaigns={this.state.campaigns}
                                         productionProjects={this.state.productionProjects}
+                                        participants={this.state.participants}
                                         errors={this.state.errors}
                                         meDetails={this.props.meDetails}
                                         handleInputChange={this.handleInputChange}

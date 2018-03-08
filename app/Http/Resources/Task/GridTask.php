@@ -20,7 +20,7 @@ class GridTask extends Resource
                 'id' => $this->id,
                 'contactFullName' => optional($this->contact)->full_name,
                 'datePlannedStart' => $this->date_planned_start,
-                'typeName' => $this->type->name,
+                'typeName' => optional($this->type)->name,
                 'noteSummary' => $this->present()->noteSummary(),
                 'createdAt' => $this->created_at,
                 'responsibleName' => $this->responsibleUser ? $this->responsibleUser->present()->fullName() : $this->responsibleTeam->name,

@@ -10,6 +10,7 @@ use App\Eco\Email\Email;
 use App\Eco\HousingFile\HousingFile;
 use App\Eco\Opportunity\Opportunity;
 use App\Eco\Intake\Intake;
+use App\Eco\ParticipantProductionProject\ParticipantProductionProject;
 use App\Eco\ProductionProject\ProductionProject;
 use App\Eco\Team\Team;
 use App\Eco\User\User;
@@ -83,6 +84,13 @@ class Task extends Model
         return $this->belongsTo(ProductionProject::class);
     }
 
+    /**
+     * optional
+     */
+    public function participant()
+    {
+        return $this->belongsTo(ParticipantProductionProject::class, 'participation_production_project_id', 'id');
+    }
 
     /**
      * optional

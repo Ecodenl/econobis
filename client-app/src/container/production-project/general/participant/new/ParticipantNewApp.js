@@ -15,12 +15,18 @@ import * as ibantools from "ibantools/build/ibantools";
 import ContactsAPI from "../../../../../api/contact/ContactsAPI";
 import ProductionProjectsAPI from "../../../../../api/production-project/ProductionProjectsAPI";
 import {connect} from "react-redux";
+import Modal from "../../../../../components/modal/Modal";
 
 class ParticipantNewApp extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
+            showModal: false,
+            modalText: '',
+            modalRedirectTask: '',
+            modalRedirectParticipation: '',
+
             contacts: [],
             productionProjects: [],
             participationWorth: 0,
@@ -82,6 +88,14 @@ class ParticipantNewApp extends Component {
             }
         });
     }
+
+    redirectTask = () => {
+        hashHistory.push(this.state.modalRedirectTask);
+    };
+
+    redirectParticipation = () => {
+        hashHistory.push(this.state.modalRedirectParticipation);
+    };
 
     handleProductionProjectChange = event => {
         const target = event.target;
@@ -167,10 +181,24 @@ class ParticipantNewApp extends Component {
         this.setState({ ...this.state, errors: errors });
 
         !hasErrors &&
-        ParticipantProductionProjectDetailsAPI.checkPostalCodeAllowed(participation.productionProjectId, participation.contactId).then(() => {
-            ParticipantProductionProjectDetailsAPI.storeParticipantProductionProject(participation).then(payload => {
-                hashHistory.push(`/productie-project/participant/${payload.id}`);
-            });
+        ParticipantProductionProjectDetailsAPI.checkPostalCodeAllowed(participation.productionProjectId, participation.contactId).then(payload => {
+            if(payload.status === 206){
+                this.setState({
+                    showModal: true,
+                    modalText: payload.data.message,
+                });
+                ParticipantProductionProjectDetailsAPI.storeParticipantProductionProject(participation).then(payload => {
+                    this.setState({
+                        modalRedirectTask: `/taak/nieuw/contact/${participation.contactId}/productie-project/${participation.productionProjectId}/participant/${payload.id}`,
+                        modalRedirectParticipation: `/productie-project/participant/${payload.id}`,
+                    });
+                });
+            }
+            else{
+                ParticipantProductionProjectDetailsAPI.storeParticipantProductionProject(participation).then(payload => {
+                    hashHistory.push(`/productie-project/participant/${payload.id}`);
+                });
+            }
         }).catch((error) => {
             this.props.setError(error.response.status, error.response.data.message)
             }
@@ -206,6 +234,15 @@ class ParticipantNewApp extends Component {
                     </div>
                 </div>
                 <div className="col-md-3"/>
+                {this.state.showModal &&
+                <Modal
+                    closeModal={this.redirectParticipation}
+                    buttonCancelText={'Ga naar participatie'}
+                    children={this.state.modalText}
+                    confirmAction={this.redirectTask}
+                    buttonConfirmText={"Maak taak aan"}
+                />
+                }
             </div>
         )
     }

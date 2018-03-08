@@ -2,7 +2,7 @@ import React from 'react';
 
 import InputReactSelect from "../../../../components/form/InputReactSelect";
 
-const TaskNewFormExtraConnections = ({task, campaigns, intakes, contactGroups, opportunities, housingFiles, productionProjects, handleReactSelectChange, peekLoading}) => {
+const TaskNewFormExtraConnections = ({task, campaigns, intakes, contactGroups, opportunities, housingFiles, productionProjects, participants, handleReactSelectChange, peekLoading}) => {
     const {
         intakeId,
         contactGroupId,
@@ -10,6 +10,7 @@ const TaskNewFormExtraConnections = ({task, campaigns, intakes, contactGroups, o
         campaignId,
         housingFileId,
         productionProjectId,
+        participantId,
     } = task;
 
     return (
@@ -78,6 +79,18 @@ const TaskNewFormExtraConnections = ({task, campaigns, intakes, contactGroups, o
                     onChangeAction={handleReactSelectChange}
                     multi={false}
                     isLoading={peekLoading.productionProjects}
+                />
+            </div>
+            <div className="row">
+                <InputReactSelect
+                    label={"Participant productie project"}
+                    size={"col-sm-6"}
+                    name={"participantId"}
+                    options={participants}
+                    value={participantId}
+                    onChangeAction={handleReactSelectChange}
+                    multi={false}
+                    isLoading={peekLoading.participantId}
                 />
             </div>
         </div>

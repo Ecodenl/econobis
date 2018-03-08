@@ -239,7 +239,7 @@ class ParticipationProductionProjectController extends ApiController
         }
 
         if(!in_array($postalCodeAreaContact, $validPostalAreas)){
-            abort(406, 'Postcode nummer ' . $postalCodeAreaContact . ' niet gevonden in toegestane postcodes: ' . implode(', ', $validPostalAreas) . '.');
+            abort(206, 'Postcode nummer ' . $postalCodeAreaContact . ' niet gevonden in toegestane postcode(s): ' . implode(', ', $validPostalAreas) . '. Er moet hiervoor een taak worden aangemaakt. De participant is wel aangemaakt.');
         }
     }
 }

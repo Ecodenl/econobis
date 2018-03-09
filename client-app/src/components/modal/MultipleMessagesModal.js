@@ -13,8 +13,8 @@ const Modal = (props) => {
                     <div className="modal-body">
                         <ul>
                             {
-                                children.map(function (child) {
-                                    return <li>{child}</li>
+                                children.map(function (child, i) {
+                                    return <li key={i}>{child}</li>
                                 })
                             }
                         </ul>

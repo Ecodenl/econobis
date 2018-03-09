@@ -107,6 +107,7 @@ class ParticipationProductionProjectController extends ApiController
             case 2: //PCR
                 $this->validatePostalCode($message, $productionProject, $contact);
                 $this->validateUsage($message, $productionProject, $participantProductionProject);
+                $this->validateEnergySupplier($message, $contact);
                 break;
             case 3: //Investering
                 return ['id' => $participantProductionProject->id];
@@ -278,17 +279,17 @@ class ParticipationProductionProjectController extends ApiController
         }
 
         if(!$productionProject->total_participations){
-            array_push($message, $checkText . 'Productie project heeft nog totaal aantal participaties.');
+            array_push($message, $checkText . 'Productie project heeft nog geen totaal aantal participaties.');
             return false;
         }
 
         if(!$participant->power_kwh_consumption){
-            array_push($message, $checkText . 'Participant heeft nog heen jaarlijks verbruik.');
+            array_push($message, $checkText . 'Participant heeft nog geen jaarlijks verbruik.');
             return false;
         }
 
         if(!$participant->participations_requested){
-            array_push($message, $checkText . 'Participant heeft nog participaties aangevraagd.');
+            array_push($message, $checkText . 'Participant heeft nog geen participaties aangevraagd.');
             return false;
         }
 
@@ -296,6 +297,23 @@ class ParticipationProductionProjectController extends ApiController
 
         if($participantProduction > $participant->power_kwh_consumption){
             array_push($message, $checkText . 'Participant produceert ' . round($participantProduction, 2) . ' dit is meer dan hij consumeert: ' . round($participant->power_kwh_consumption, 2) . '.');
+            return false;
+        }
+    }
+
+    public function validateEnergySupplier(&$message, Contact $contact)
+    {
+        $checkText = 'Energieleverancier check: ';
+
+        $energySupplier = $contact->primaryContactEnergySupplier->energySupplier;
+
+        if(!$energySupplier){
+            array_push($message, $checkText . 'Contact heeft nog geen energieleverancier.');
+            return false;
+        }
+
+        if(!$energySupplier->does_postal_code_links){
+            array_push($message, $checkText . 'Energieleverancier van contact doet niet mee aan postcoderoos.');
             return false;
         }
     }

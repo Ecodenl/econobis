@@ -13,7 +13,8 @@ import InputToggle from "../../../../../components/form/InputToggle";
 const ParticipantNew = props => {
     const {
         contactId, statusId, productionProjectId, dateRegister, participationsRequested, participationsGranted, participationsSold, participationsRestSale,
-        dateContractSend, dateContractRetour, datePayed, ibanPayed, didAcceptAgreement, ibanAttn, giftedByContactId, ibanPayout, legalRepContactId, ibanPayoutAttn, dateEnd, typeId
+        dateContractSend, dateContractRetour, datePayed, ibanPayed, didAcceptAgreement, ibanAttn, giftedByContactId, ibanPayout, legalRepContactId, ibanPayoutAttn, dateEnd,
+        typeId, powerKwhConsumption
     } = props.participation;
 
     return (
@@ -204,6 +205,20 @@ const ParticipantNew = props => {
                     error={props.errors.typeId}
                 />
             </div>
+
+            {props.isPCR &&
+            <div className="row">
+                <InputText
+                    type={"number"}
+                    label={"Jaarlijks verbruik"}
+                    name={"powerKwhConsumption"}
+                    value={powerKwhConsumption}
+                    onChangeAction={props.handleInputChange}
+                    required={"required"}
+                    error={props.errors.powerKwhConsumption}
+                />
+            </div>
+            }
 
             <PanelFooter>
                 <div className="pull-right btn-group" role="group">

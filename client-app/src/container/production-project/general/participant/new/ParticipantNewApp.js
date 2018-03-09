@@ -15,7 +15,7 @@ import * as ibantools from "ibantools/build/ibantools";
 import ContactsAPI from "../../../../../api/contact/ContactsAPI";
 import ProductionProjectsAPI from "../../../../../api/production-project/ProductionProjectsAPI";
 import {connect} from "react-redux";
-import Modal from "../../../../../components/modal/Modal";
+import MultipleMessagesModal from "../../../../../components/modal/MultipleMessagesModal";
 
 class ParticipantNewApp extends Component {
     constructor(props) {
@@ -23,13 +23,14 @@ class ParticipantNewApp extends Component {
 
         this.state = {
             showModal: false,
-            modalText: '',
+            modalText: [],
             modalRedirectTask: '',
             modalRedirectParticipation: '',
 
             contacts: [],
             productionProjects: [],
             participationWorth: 0,
+            isPCR: false,
             participation: {
                 contactId: props.params.contactId || '',
                 statusId: '',
@@ -51,6 +52,7 @@ class ParticipantNewApp extends Component {
                 ibanPayoutAttn: '',
                 dateEnd: '',
                 typeId: '',
+                powerKwhConsumption: '',
             },
             errors: {
                 contactId: false,
@@ -59,6 +61,7 @@ class ParticipantNewApp extends Component {
                 typeId: false,
                 ibanPayed: false,
                 ibanPayout: false,
+                powerKwhConsumption: false,
             },
         };
         this.handleInputChangeDate = this.handleInputChangeDate.bind(this);
@@ -80,10 +83,16 @@ class ParticipantNewApp extends Component {
                 const id = this.props.params.productionProjectId;
 
                 let productionProject = payload.find((productionProject) => productionProject.id == id);
+                let isPCR = false;
+
+                if(productionProject.typeId == 2){
+                    isPCR = true;
+                }
 
                 this.setState({
                     ...this.state,
                     participationWorth: productionProject.participationWorth,
+                    isPCR: isPCR,
                 });
             }
         });
@@ -102,8 +111,15 @@ class ParticipantNewApp extends Component {
         const value = target.type === 'checkbox' ? target.checked : target.value;
         const name = target.name;
 
+        let isPCR = false;
+
+        if(this.state.productionProjects[value].typeId == 2){
+            isPCR = true;
+        }
+
         this.setState({
             ...this.state,
+            isPCR: isPCR,
             participationWorth: this.state.productionProjects[value].participationWorth,
             participation: {
                 ...this.state.participation,
@@ -144,66 +160,70 @@ class ParticipantNewApp extends Component {
         let errors = {};
         let hasErrors = false;
 
-        if(validator.isEmpty(participation.contactId + '')){
+        if (validator.isEmpty(participation.contactId + '')) {
             errors.contactId = true;
             hasErrors = true;
-        };
+        }
+        ;
 
-        if(validator.isEmpty(participation.statusId + '')){
+        if (validator.isEmpty(participation.statusId + '')) {
             errors.statusId = true;
             hasErrors = true;
-        };
+        }
+        ;
 
-        if(validator.isEmpty(participation.productionProjectId + '')){
+        if (validator.isEmpty(participation.productionProjectId + '')) {
             errors.productionProjectId = true;
             hasErrors = true;
-        };
+        }
+        ;
 
-        if(validator.isEmpty(participation.typeId + '')){
+        if (validator.isEmpty(participation.typeId + '')) {
             errors.typeId = true;
             hasErrors = true;
-        };
+        }
+        ;
 
-        if(!validator.isEmpty(participation.ibanPayed)){
+        if (validator.isEmpty(participation.powerKwhConsumption + '') && this.state.isPCR) {
+            errors.powerKwhConsumption = true;
+            hasErrors = true;
+        }
+        ;
+
+        if (!validator.isEmpty(participation.ibanPayed)) {
             if (!ibantools.isValidIBAN(participation.ibanPayed)) {
                 errors.ibanPayed = true;
                 hasErrors = true;
             }
         }
 
-        if(!validator.isEmpty(participation.ibanPayout)){
+        if (!validator.isEmpty(participation.ibanPayout)) {
             if (!ibantools.isValidIBAN(participation.ibanPayout)) {
                 errors.ibanPayed = true;
                 hasErrors = true;
             }
         }
-        
-        this.setState({ ...this.state, errors: errors });
+
+        this.setState({...this.state, errors: errors});
 
         !hasErrors &&
-        ParticipantProductionProjectDetailsAPI.checkPostalCodeAllowed(participation.productionProjectId, participation.contactId).then(payload => {
-            if(payload.status === 206){
+        ParticipantProductionProjectDetailsAPI.storeParticipantProductionProject(participation).then(payload => {
+            if (payload.data.message !== undefined && payload.data.message.length > 0) {
                 this.setState({
                     showModal: true,
                     modalText: payload.data.message,
                 });
-                ParticipantProductionProjectDetailsAPI.storeParticipantProductionProject(participation).then(payload => {
-                    this.setState({
-                        modalRedirectTask: `/taak/nieuw/contact/${participation.contactId}/productie-project/${participation.productionProjectId}/participant/${payload.id}`,
-                        modalRedirectParticipation: `/productie-project/participant/${payload.id}`,
-                    });
+                this.setState({
+                    modalRedirectTask: `/taak/nieuw/contact/${participation.contactId}/productie-project/${participation.productionProjectId}/participant/${payload.data.id}`,
+                    modalRedirectParticipation: `/productie-project/participant/${payload.data.id}`,
                 });
             }
-            else{
-                ParticipantProductionProjectDetailsAPI.storeParticipantProductionProject(participation).then(payload => {
-                    hashHistory.push(`/productie-project/participant/${payload.id}`);
-                });
+            else {
+                hashHistory.push(`/productie-project/participant/${payload.data.id}`);
             }
-        }).catch((error) => {
-            this.props.setError(error.response.status, error.response.data.message)
-            }
-        );
+        })
     };
+
 
     render() {
         return (
@@ -227,6 +247,7 @@ class ParticipantNewApp extends Component {
                                         productionProjects={this.state.productionProjects}
                                         participationWorth={this.state.participationWorth}
                                         handleProductionProjectChange={this.handleProductionProjectChange}
+                                        isPCR={this.state.isPCR}
                                     />
                                 </div>
                             </PanelBody>
@@ -235,7 +256,7 @@ class ParticipantNewApp extends Component {
                 </div>
                 <div className="col-md-3"/>
                 {this.state.showModal &&
-                <Modal
+                <MultipleMessagesModal
                     closeModal={this.redirectParticipation}
                     buttonCancelText={'Ga naar participatie'}
                     children={this.state.modalText}

@@ -20,6 +20,7 @@ class ProductionProjectPeek extends Resource
                 'id' => $this->id,
                 'name' => $this->name,
                 'participationWorth' => $this->participation_worth,
+                'typeId' => $this->production_project_type_id,
             ];
     }
 }

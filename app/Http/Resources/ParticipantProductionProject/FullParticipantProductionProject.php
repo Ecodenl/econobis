@@ -52,6 +52,7 @@ class FullParticipantProductionProject extends Resource
                 'dateEnd' => $this->date_end,
                 'typeId' => $this->type_id,
                 'type' => GenericResource::make($this->whenLoaded('participantProductionProjectPayoutType')),
+                'powerKwhConsumption' => $this->power_kwh_consumption,
                 'createdAt' => $this->created_at,
                 'participantTransactions' => FullParticipantTransaction::collection($this->whenLoaded('transactions')),
                 'obligationNumbers' => GenericResource::collection($this->whenLoaded('obligationNumbers')),

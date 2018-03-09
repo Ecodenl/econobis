@@ -9,7 +9,7 @@ const ParticipantFormView = props => {
     const {
         contact, status, productionProject, dateRegister, participationsRequested, participationsGranted, participationsSold, participationsCurrent,
         participationsWorthTotal, participationsRestSale, dateContractSend, dateContractRetour, datePayed, ibanPayed, didAcceptAgreement,
-        ibanAttn, giftedByContact, ibanPayout, legalRepContact, ibanPayoutAttn, dateEnd, type
+        ibanAttn, giftedByContact, ibanPayout, legalRepContact, ibanPayoutAttn, dateEnd, type, powerKwhConsumption
     } = props.participantProductionProject;
 
     return (
@@ -134,6 +134,14 @@ const ParticipantFormView = props => {
                     value={type ? type.name : ''}
                 />
             </div>
+            { props.participantProductionProject.productionProject.typeId == 2 &&
+            <div className="row" onClick={props.switchToEdit}>
+                <ViewText
+                    label={"Jaarlijks verbruik"}
+                    value={powerKwhConsumption && powerKwhConsumption}
+                />
+            </div>
+            }
 
 
 

@@ -24,7 +24,8 @@ class ParticipantFormEdit extends Component {
 
         const {
             id, contact, statusId, productionProject, dateRegister, participationsRequested, participationsGranted, participationsSold, participationsRestSale,
-            dateContractSend, dateContractRetour, datePayed, ibanPayed, didAcceptAgreement, ibanAttn, giftedByContactId, ibanPayout, legalRepContactId, ibanPayoutAttn, dateEnd, typeId
+            dateContractSend, dateContractRetour, datePayed, ibanPayed, didAcceptAgreement, ibanAttn, giftedByContactId, ibanPayout, legalRepContactId, ibanPayoutAttn, dateEnd,
+            typeId, powerKwhConsumption
         } = props.participation;
 
         this.state = {
@@ -52,6 +53,7 @@ class ParticipantFormEdit extends Component {
                 ibanPayoutAttn: ibanPayoutAttn ? ibanPayoutAttn : '',
                 dateEnd: dateEnd ? dateEnd : '',
                 typeId,
+                powerKwhConsumption: powerKwhConsumption ? powerKwhConsumption : '',
             },
             errors: {
                 contactId: false,
@@ -155,7 +157,8 @@ class ParticipantFormEdit extends Component {
     render() {
         const {
             contactName, statusId, productionProjectName, dateRegister, participationsRequested, participationsGranted, participationsSold, participationsRestSale,
-            dateContractSend, dateContractRetour, datePayed, ibanPayed, didAcceptAgreement, ibanAttn, giftedByContactId, ibanPayout, legalRepContactId, ibanPayoutAttn, dateEnd, typeId
+            dateContractSend, dateContractRetour, datePayed, ibanPayed, didAcceptAgreement, ibanAttn, giftedByContactId, ibanPayout, legalRepContactId, ibanPayoutAttn, dateEnd,
+            typeId, powerKwhConsumption
         }  = this.state.participation;
 
 
@@ -340,6 +343,17 @@ class ParticipantFormEdit extends Component {
                         error={this.state.errors.typeId}
                     />
                 </div>
+
+                { this.props.participation.productionProject.typeId == 2 &&
+                <div className="row">
+                    <InputText
+                        label={"Jaarlijks verbruik"}
+                        name={"powerKwhConsumption"}
+                        value={powerKwhConsumption}
+                        onChangeAction={this.handleInputChange}
+                    />
+                </div>
+                }
 
                 <PanelFooter>
                     <div className="pull-right btn-group" role="group">

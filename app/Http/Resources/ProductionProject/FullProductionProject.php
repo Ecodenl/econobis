@@ -62,6 +62,7 @@ class FullProductionProject extends Resource
                 'revenues' => FullProductionProjectRevenue::collection($this->whenLoaded('productionProjectRevenues')),
                 'participants' => FullParticipantProductionProject::collection($this->whenLoaded('participantsProductionProject')),
                 'participationsWorthTotal' => $this->participations_worth_total,
+                'typeId' => $this->production_project_type_id,
                 'amountOfParticipants' => $this->participantsProductionProject->count(),
                 'taskCount' => $this->tasks()->count(),
                 'relatedTasks' => GridTask::collection($this->whenLoaded('tasks')),

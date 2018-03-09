@@ -19,7 +19,7 @@ class RevenueDetailsForm extends Component {
                 :
                 <div>
                     <RevenueFormGeneral />
-                    {/*<RevenueDistributionForm />*/}
+                    <RevenueDistributionForm />
                     <RevenueConclusion />
                 </div>
         );

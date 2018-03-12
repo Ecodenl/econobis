@@ -83,7 +83,7 @@ class DocumentController extends Controller
         //store the actual file in Alfresco
         $user = Auth::user();
 
-        $alfrescoHelper = new AlfrescoHelper($user->email, 'secret');
+        $alfrescoHelper = new AlfrescoHelper($user->email, $user->alfresco_password);
 
         if($data['document_type'] == 'internal'){
 
@@ -107,7 +107,7 @@ class DocumentController extends Controller
             //max length name 25
             $name = substr($name, 0, 25);
 
-            $document->filename = $name . substr($document->getDocumentGroup()->name, 0, 1) . Document::where('document_group', $document->document_group)->count() . '_' .  $time->format('Ymd') . '.pdf';
+            $document->filename = $name . substr($document->getDocumentGroup()->name, 0, 1) . (Document::where('document_group', 'revenue')->count() + 1) . '_' .  $time->format('Ymd') . '.pdf';
             $document->save();
 
             $filePath = (storage_path('app' . DIRECTORY_SEPARATOR . 'documents/' . $document->filename));
@@ -117,6 +117,8 @@ class DocumentController extends Controller
 
             $document->alfresco_node_id = $alfrescoResponse['entry']['id'];
             $document->save();
+
+
 
             Storage::disk('documents')->delete($document->filename);
         }

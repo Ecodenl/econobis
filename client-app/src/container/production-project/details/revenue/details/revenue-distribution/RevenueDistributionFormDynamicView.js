@@ -7,7 +7,7 @@ const RevenueDistributionFormDynamicView = props => {
     const { datePayed, revenue, payPercentage } = props.productionProjectRevenue;
     const { currentParticipations } = props.productionProject;
 
-    let payout = ((revenue * (payPercentage / 100)) / currentParticipations) * participationsCurrent;
+    let payout = Math.round(((revenue * (payPercentage / 100)) / currentParticipations) * participationsCurrent * 100) / 100;
 
     return (
         <div className={`row border`}>

@@ -8,6 +8,7 @@ const RevenueDistributionFormList = props => {
     return (
         <div>
             <div className="row border header">
+
                 <div className="col-sm-1">Id</div>
                 <div className="col-sm-1">Type</div>
                 <div className="col-sm-1">Naam</div>
@@ -27,6 +28,8 @@ const RevenueDistributionFormList = props => {
                         return <RevenueDistributionFormStaticView
                             key={participation.id}
                             participation={participation}
+                            showCheckboxList={props.showCheckboxList}
+                            toggleParticipantCheck={props.toggleParticipantCheck}
                         />;
                     })
                     :

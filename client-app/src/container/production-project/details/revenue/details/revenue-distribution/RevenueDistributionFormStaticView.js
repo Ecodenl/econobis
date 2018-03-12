@@ -8,6 +8,7 @@ const RevenueDistributionFormStaticView = props => {
     return (
         <div className={`row border`}>
             <div className="col-sm-1">
+                { props.showCheckboxList && <input type="checkbox" name={id} onChange={props.toggleParticipantCheck}/> }
                 {id}
             </div>
             <div className="col-sm-1">

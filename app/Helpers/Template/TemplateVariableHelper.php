@@ -74,6 +74,12 @@ class TemplateVariableHelper
             case 'ParticipantProductionProject':
                 return TemplateVariableHelper::getParticipantProductionProjectVar($model, $varname);
                 break;
+            case 'ProductionProjectRevenue':
+                return TemplateVariableHelper::getProductionProjectRevenueVar($model, $varname);
+                break;
+            case 'ProductionProjectRevenueDistribution':
+                return TemplateVariableHelper::getProductionProjectRevenueDistributionVar($model, $varname);
+                break;
             case 'Campaign':
                 return '';
                 break;
@@ -139,6 +145,8 @@ class TemplateVariableHelper
             case 'telefoonnummer':
                 return optional($model->primaryphoneNumber)->number;
                 break;
+            case 'energieleverancier':
+                return optional($model->primaryContactEnergySupplier)->energySupplier->name;
             default:
                 return '';
                 break;
@@ -343,6 +351,59 @@ class TemplateVariableHelper
                 break;
         }
     }
+
+    public static function getProductionProjectRevenueVar($model, $varname){
+        switch ($varname) {
+            case 'kwh_start':
+                return $model->kwh_start;
+                break;
+            case 'kwh_eind':
+                return $model->kwh_end;
+                break;
+            case 'datum_uitgekeerd':
+                return $model->date_payed;
+                break;
+            default:
+                return '';
+                break;
+        }
+    }
+
+    public static function getProductionProjectRevenueDistributionVar($model, $varname){
+        switch ($varname) {
+            case 'adres':
+                return $model->address;
+                break;
+            case 'postcode':
+                return $model->postal_code;
+                break;
+            case 'woonplaats':
+                return $model->city;
+                break;
+            case 'status':
+                return $model->status;
+                break;
+            case 'participaties':
+                return $model->participations_amount;
+                break;
+            case 'bedrag':
+                return $model->payout;
+                break;
+            case 'uitkeren_op':
+                return $model->payout_type;
+                break;
+            case 'datum_uitkeren':
+                return  Carbon::parse($model->date_payout)->format('m/d/Y');
+                break;
+            case 'energieleverancier':
+                return $model->energy_supplier_name;
+                break;
+            default:
+                return '';
+                break;
+        }
+    }
+
 
     static public function replaceTemplateTagVariable($base_html, $template_html, $free_text_1, $free_text_2){
 

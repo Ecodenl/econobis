@@ -232,7 +232,7 @@ class DocumentNewApp extends Component {
             hasErrors = true;
         };
 
-        if(validator.isEmpty(templateId)){
+        if(validator.isEmpty(templateId) && documentType == 'internal'){
             errors.templateId = true;
             hasErrors = true;
         };

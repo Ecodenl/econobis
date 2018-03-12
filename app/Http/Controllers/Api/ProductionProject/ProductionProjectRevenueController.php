@@ -9,12 +9,20 @@
 namespace App\Http\Controllers\Api\ProductionProject;
 
 use App\Eco\Contact\Contact;
+use App\Eco\Document\Document;
+use App\Eco\DocumentTemplate\DocumentTemplate;
 use App\Eco\ProductionProject\ProductionProjectRevenue;
 use App\Eco\ProductionProject\ProductionProjectRevenueDistribution;
+use App\Helpers\Alfresco\AlfrescoHelper;
 use App\Helpers\RequestInput\RequestInput;
+use App\Helpers\Template\TemplateVariableHelper;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\Resources\ProductionProject\FullProductionProjectRevenue;
+use Barryvdh\DomPDF\Facade as PDF;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class ProductionProjectRevenueController extends ApiController
 {
@@ -145,10 +153,10 @@ class ProductionProjectRevenueController extends ApiController
             $distribution->participations_amount
                 = $participant->participations_current;
 
-            $distribution->payout = (($productionProjectRevenue->revenue
+            $distribution->payout = round((($productionProjectRevenue->revenue
                         * ($productionProjectRevenue->pay_percentage / 100))
                     / $totalParticipations)
-                * $participant->participations_current;
+                * $participant->participations_current, 2);
 
             $distribution->payout_type = $participant->participantProductionProjectPayoutType->name;
             $distribution->date_payout = $productionProjectRevenue->date_payed;
@@ -159,6 +167,78 @@ class ProductionProjectRevenueController extends ApiController
             }
 
             $distribution->save();
+        }
+    }
+
+    public function createParticipantRapport(Request $request, DocumentTemplate $documentTemplate){
+        $distributionIds = $request->input('distributionIds');
+
+        //get current logged in user
+        $user = Auth::user();
+
+        //load template parts
+        $documentTemplate->load('footer', 'baseTemplate', 'header');
+
+        $html = $documentTemplate->header ? $documentTemplate->header->html_body : '';
+
+        if ($documentTemplate->baseTemplate) {
+            $html .= TemplateVariableHelper::replaceTemplateTagVariable($documentTemplate->baseTemplate->html_body,
+                $documentTemplate->html_body, '','');
+        } else {
+            $html .= TemplateVariableHelper::replaceTemplateFreeTextVariables($documentTemplate->html_body,
+                '', '');
+        }
+
+        $html .= $documentTemplate->footer ? $documentTemplate->footer->html_body : '';
+
+        foreach ($distributionIds as $distributionId) {
+
+            $distribution = ProductionProjectRevenueDistribution::find($distributionId);
+
+            $contact = $distribution->contact;
+
+            $revenue = $distribution->revenue;
+            $productionProject = $revenue->productionProject;
+
+            $revenueHtml = TemplateVariableHelper::replaceTemplateVariables($html,'contact', $contact);
+            $revenueHtml = TemplateVariableHelper::replaceTemplateVariables($revenueHtml,'verdeling', $distribution);
+            $revenueHtml = TemplateVariableHelper::replaceTemplateVariables($revenueHtml,'opbrengst', $revenue);
+            $revenueHtml = TemplateVariableHelper::replaceTemplateVariables($revenueHtml,'productie_project', $productionProject);
+            $revenueHtml = TemplateVariableHelper::replaceTemplateVariables($revenueHtml,'ik', $user);
+
+            $revenueHtml = TemplateVariableHelper::stripRemainingVariableTags($revenueHtml);
+
+            $pdf = PDF::loadView('documents.generic', [
+                'html' => $revenueHtml,
+            ])->output();
+
+            $time = Carbon::now();
+
+            $document = new Document();
+            $document->document_type = 'internal';
+            $document->document_group = 'revenue';
+            $document->contact_id = $contact->id;
+
+            $filename = str_replace(' ', '', $productionProject->code) . '_' . str_replace(' ', '', $contact->full_name);
+
+            //max length name 25
+            $filename = substr($filename, 0, 25);
+
+            $document->filename = $filename  . substr($document->getDocumentGroup()->name, 0, 1) . (Document::where('document_group', 'revenue')->count() + 1) . '_' .  $time->format('Ymd') . '.pdf';
+
+            $document->save();
+
+            $filePath = (storage_path('app' . DIRECTORY_SEPARATOR . 'documents/' . $document->filename));
+            file_put_contents($filePath, $pdf);
+
+            $alfrescoHelper = new AlfrescoHelper($user->email, 'secret');
+
+            $alfrescoResponse = $alfrescoHelper->createFile($filePath, $document->filename, $document->getDocumentGroup()->name);
+
+            $document->alfresco_node_id = $alfrescoResponse['entry']['id'];
+            $document->save();
+
+            Storage::disk('documents')->delete($document->filename);
         }
     }
 

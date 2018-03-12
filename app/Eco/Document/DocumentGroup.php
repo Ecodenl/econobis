@@ -25,6 +25,7 @@ class DocumentGroup extends EnumWithIdAndName
         return [
             new static('general', 'Algemeen'),
             new static('quotation', 'Offerte'),
+            new static('revenue', 'Opbrengst'),
             new static('order', 'Order'),
             new static('contract', 'Contract'),
             new static('membership', 'Lidmaatschap'),

@@ -6,8 +6,10 @@ import Modal from './Modal';
 
 const UploadModal = ({title, errors, multiple, maxSize, toggleModal, onDropAccepted, onDropRejected}) => {
     const onDrop = (files) => {
-        onDropAccepted(files);
-        toggleModal();
+        setTimeout(() => {
+            onDropAccepted(files);
+            toggleModal();
+        }, 300);
     };
 
     return (

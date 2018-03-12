@@ -34,6 +34,7 @@ class ProductionProject extends Model
             'participations_in_option',
             'issuable_participations',
             'participations_worth_total',
+            'current_participations',
         ];
 
     //relations
@@ -122,5 +123,17 @@ class ProductionProject extends Model
             return 0;
         }
         return ($this->issued_participations / $this->total_participations) * 100;
+    }
+
+    public function getCurrentParticipationsAttribute(){
+        $participants = $this->participantsProductionProject;
+
+        $totalParticipations = 0;
+
+        foreach ($participants as $participant) {
+            $totalParticipations .= $participant->participations_current;
+        }
+
+        return $totalParticipations;
     }
 }

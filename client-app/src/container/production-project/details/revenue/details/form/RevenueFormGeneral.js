@@ -48,7 +48,7 @@ class RevenueFormGeneral extends Component {
                    onMouseLeave={() => this.onDivLeave()}>
                 <PanelBody>
                     {
-                        this.state.showEdit && this.props.permissions.manageFinancial ?
+                        this.state.showEdit && !this.props.revenue.confirmed && this.props.permissions.manageFinancial ?
                             <RevenueFormEdit switchToView={this.switchToView}/>
                             :
                             <RevenueFormView switchToEdit={this.switchToEdit}/>
@@ -61,7 +61,8 @@ class RevenueFormGeneral extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        permissions: state.meDetails.permissions
+        permissions: state.meDetails.permissions,
+        revenue: state.productionProjectRevenue,
     }
 };
 

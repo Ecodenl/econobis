@@ -44,6 +44,10 @@ class ProductionProjectRevenue extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function distribution(){
+        return $this->hasMany(ProductionProjectRevenueDistribution::class, 'revenue_id');
+    }
+
     //Appended fields
     public function getKwhResultAttribute()
     {

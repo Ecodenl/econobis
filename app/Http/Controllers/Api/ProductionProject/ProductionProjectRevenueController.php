@@ -8,11 +8,13 @@
 
 namespace App\Http\Controllers\Api\ProductionProject;
 
+use App\Eco\Contact\Contact;
 use App\Eco\ProductionProject\ProductionProjectRevenue;
-use App\Eco\ProductionProject\ProductionProjectValueCourse;
+use App\Eco\ProductionProject\ProductionProjectRevenueDistribution;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\Resources\ProductionProject\FullProductionProjectRevenue;
+use Carbon\Carbon;
 
 class ProductionProjectRevenueController extends ApiController
 {
@@ -22,7 +24,10 @@ class ProductionProjectRevenueController extends ApiController
             'type',
             'category',
             'createdBy',
-            'productionProject.participantsProductionProject.contact.primaryAddress'
+            'distribution.contact',
+            'productionProject.participantsProductionProject.contact.primaryAddress',
+            'productionProject.participantsProductionProject.contact.primaryContactEnergySupplier.energySupplier',
+            'productionProject.participantsProductionProject.participantProductionProjectPayoutType',
         ]);
 
         return FullProductionProjectRevenue::make($productionProjectRevenue);
@@ -47,7 +52,7 @@ class ProductionProjectRevenueController extends ApiController
             ->integer('kwhStartLow')->alias('kwh_start_low')->onEmpty(null)->next()
             ->integer('kwhEndLow')->alias('kwh_end_low')->onEmpty(null)->next()
             ->integer('revenue')->onEmpty(null)->next()
-            ->date('datePayed')->validate('nullable|date')->alias('date_payed')->next()
+            ->date('datePayed')->validate('nullable|date')->alias('date_payed')->onEmpty(null)->next()
             ->integer('payPercentage')->onEmpty(null)->alias('pay_percentage')->next()
             ->integer('typeId')->validate('nullable|exists:production_project_revenue_type,id')->onEmpty(null)->alias('type_id')->next()
             ->get();
@@ -57,6 +62,11 @@ class ProductionProjectRevenueController extends ApiController
         $productionProjectRevenue->fill($data);
 
         $productionProjectRevenue->save();
+
+        if($productionProjectRevenue->confirmed){
+            $this->saveDistribution($productionProjectRevenue);
+            $productionProjectRevenue->load('distribution');
+        }
 
         $productionProjectRevenue->load('createdBy', 'productionProject');
 
@@ -91,9 +101,65 @@ class ProductionProjectRevenueController extends ApiController
 
         $productionProjectRevenue->save();
 
-        $productionProjectRevenue->load('createdBy', 'productionProject');
+        $productionProjectRevenue->confirmed && $this->saveDistribution($productionProjectRevenue);
 
-        return FullProductionProjectRevenue::collection(ProductionProjectRevenue::where('production_project_id', $productionProjectRevenue->production_project_id)->with('createdBy', 'productionProject', 'type')->orderBy('date_begin')->get());
+        return FullProductionProjectRevenue::collection(ProductionProjectRevenue::where('production_project_id', $productionProjectRevenue->production_project_id)->with('createdBy', 'productionProject', 'type', 'distribution')->orderBy('date_begin')->get());
+    }
+
+    public function saveDistribution(
+        ProductionProjectRevenue $productionProjectRevenue
+    ) {
+
+        $productionProjectRevenue->date_payed = new Carbon();
+        $productionProjectRevenue->save();
+
+        $productionProject = $productionProjectRevenue->productionProject;
+        $participants = $productionProject->participantsProductionProject;
+
+        $totalParticipations = 0;
+
+        foreach ($participants as $participant) {
+            $totalParticipations .= $participant->participations_current;
+        }
+
+        foreach ($participants as $participant) {
+            $contact = Contact::find($participant->contact_id);
+            $primaryAddress = $contact->primaryAddress;
+            $primaryContactEnergySupplier
+                = $contact->primaryContactEnergySupplier;
+
+            $distribution = new ProductionProjectRevenueDistribution();
+
+            $distribution->revenue_id
+                = $productionProjectRevenue->id;
+            $distribution->contact_id = $contact->id;
+
+            if ($primaryAddress) {
+                $distribution->address = $primaryAddress->present()
+                    ->streetAndNumber();
+                $distribution->postal_code = $primaryAddress->postal_code;
+                $distribution->city = $primaryAddress->city;
+            }
+
+            $distribution->status = $contact->getStatus()->name;
+            $distribution->participations_amount
+                = $participant->participations_current;
+
+            $distribution->payout = (($productionProjectRevenue->revenue
+                        * ($productionProjectRevenue->pay_percentage / 100))
+                    / $totalParticipations)
+                * $participant->participations_current;
+
+            $distribution->payout_type = $participant->participantProductionProjectPayoutType->name;
+            $distribution->date_payout = $productionProjectRevenue->date_payed;
+
+            if ($primaryContactEnergySupplier) {
+                $distribution->energy_supplier_name
+                    = $primaryContactEnergySupplier->energySupplier->name;
+            }
+
+            $distribution->save();
+        }
     }
 
     public function destroy(ProductionProjectRevenue $productionProjectRevenue)

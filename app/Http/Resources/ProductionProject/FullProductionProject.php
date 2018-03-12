@@ -72,6 +72,7 @@ class FullProductionProject extends Resource
                 'relatedEmailsInbox' => $this->relatedEmailsInbox,
                 'emailSentCount' => $this->relatedEmailsSent ? $this->relatedEmailsSent->count() : 0,
                 'relatedEmailsSent' => $this->relatedEmailsSent,
+                'currentParticipations' => $this->current_participations,
             ];
     }
 }

@@ -14,6 +14,7 @@ import ProductionProjectRevenueAPI from '../../../../../../api/production-projec
 
 import { fetchRevenue } from '../../../../../../actions/production-project/ProductionProjectDetailsActions';
 import InputToggle from "../../../../../../components/form/InputToggle";
+import ViewText from "../../../../../../components/form/ViewText";
 
 class RevenueFormEdit extends Component {
     constructor(props) {

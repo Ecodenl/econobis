@@ -37,7 +37,7 @@ const RevenueFormView = props => {
 
             <div className="row" onClick={props.switchToEdit}>
                 <ViewText
-                    label={"Begin invoer"}
+                    label={"Datum invoer"}
                     value={dateEntry ? moment(dateEntry).format('L') : ''}
                 />
                 <ViewText

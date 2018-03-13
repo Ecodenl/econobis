@@ -3,7 +3,7 @@ import moment from "moment/moment";
 moment.locale('nl');
 
 const RevenueDistributionFormStaticView = props => {
-    const { id, contact, address, postalCode, city, status, participationsAmount, payout, payoutType, datePayout, energySupplierName } = props.participation;
+    const { id, contact, deliveredTotal, postalCode, city, status, participationsAmount, payout, payoutType, datePayout, energySupplierName } = props.participation;
 
     return (
         <div className={`row border`}>
@@ -17,9 +17,6 @@ const RevenueDistributionFormStaticView = props => {
             </div>
             <div className="col-sm-1">
                 {contact && contact.fullName}
-            </div>
-            <div className="col-sm-1">
-                {address && address}
             </div>
             <div className="col-sm-1">
                 {postalCode && postalCode}
@@ -44,6 +41,9 @@ const RevenueDistributionFormStaticView = props => {
             </div>
             <div className="col-sm-1">
                 {energySupplierName && energySupplierName}
+            </div>
+            <div className="col-sm-1">
+                {deliveredTotal && deliveredTotal}
             </div>
         </div>
     );

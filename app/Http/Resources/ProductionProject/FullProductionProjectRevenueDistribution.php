@@ -32,6 +32,7 @@ class FullProductionProjectRevenueDistribution extends Resource
                 'payoutType' => $this->payout_type,
                 'datePayout' => $this->date_payout,
                 'energySupplierName' => $this->energy_supplier_name,
+                'deliveredTotal' => $this->delivered_total,
             ];
     }
 }

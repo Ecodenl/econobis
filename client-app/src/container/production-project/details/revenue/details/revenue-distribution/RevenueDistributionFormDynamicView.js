@@ -4,10 +4,11 @@ moment.locale('nl');
 
 const RevenueDistributionFormDynamicView = props => {
     const { id, contact, participationsCurrent, type} = props.participation;
-    const { datePayed, revenue, payPercentage } = props.productionProjectRevenue;
+    const { datePayed, revenue, payPercentage, kwhStart, kwhEnd } = props.productionProjectRevenue;
     const { currentParticipations } = props.productionProject;
 
-    let payout = Math.round(((revenue * (payPercentage / 100)) / currentParticipations) * participationsCurrent * 100) / 100;
+    let payout = Math.round((((revenue * (payPercentage / 100)) / currentParticipations) * participationsCurrent) * 100) / 100;
+    let deliveredTotal = Math.round((((kwhEnd - kwhStart) / currentParticipations ) * participationsCurrent) * 100) / 100;
 
     return (
         <div className={`row border`}>
@@ -19,9 +20,6 @@ const RevenueDistributionFormDynamicView = props => {
             </div>
             <div className="col-sm-1">
                 {contact ? contact.fullName : ''}
-            </div>
-            <div className="col-sm-1">
-                {contact.primaryAddress ? contact.primaryAddress.street + ' ' + contact.primaryAddress.number : ''}
             </div>
             <div className="col-sm-1">
                 {contact.primaryAddress ? contact.primaryAddress.postalCode : ''}
@@ -46,6 +44,9 @@ const RevenueDistributionFormDynamicView = props => {
             </div>
             <div className="col-sm-1">
                 {contact.primaryContactEnergySupplier ? contact.primaryContactEnergySupplier.energySupplier.name : ''}
+            </div>
+            <div className="col-sm-1">
+                {deliveredTotal ? deliveredTotal : ''}
             </div>
         </div>
     );

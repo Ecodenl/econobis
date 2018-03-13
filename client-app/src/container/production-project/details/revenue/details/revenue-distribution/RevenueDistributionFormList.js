@@ -8,7 +8,7 @@ const RevenueDistributionFormList = props => {
     return (
         <div>
             <div className="row border header">
-                {props.productionProjectRevenue.confirmed
+                {props.productionProjectRevenue.confirmed && props.showCheckboxList
                     ?
                     <div className="col-sm-1">Selecteer</div>
                 :
@@ -17,7 +17,6 @@ const RevenueDistributionFormList = props => {
 
                 <div className="col-sm-1">Type</div>
                 <div className="col-sm-1">Naam</div>
-                <div className="col-sm-1">Adres</div>
                 <div className="col-sm-1">Postcode</div>
                 <div className="col-sm-1">Plaats</div>
                 <div className="col-sm-1">Lid status</div>
@@ -26,6 +25,7 @@ const RevenueDistributionFormList = props => {
                 <div className="col-sm-1">Uitkeren op</div>
                 <div className="col-sm-1">Datum uitkering</div>
                 <div className="col-sm-1">Energieleverancier</div>
+                <div className="col-sm-1">Geleverd totaal</div>
             </div>
             {props.productionProjectRevenue.confirmed ?
                 props.productionProjectRevenue.distribution.length > 0 ?

@@ -131,7 +131,7 @@ class ProductionProject extends Model
         $totalParticipations = 0;
 
         foreach ($participants as $participant) {
-            $totalParticipations .= $participant->participations_current;
+            $totalParticipations += $participant->participations_current;
         }
 
         return $totalParticipations;

@@ -132,7 +132,7 @@ class ProductionProjectRevenueController extends ApiController
         $totalParticipations = 0;
 
         foreach ($participants as $participant) {
-            $totalParticipations .= $participant->participations_current;
+            $totalParticipations += $participant->participations_current;
         }
 
         foreach ($participants as $participant) {
@@ -165,6 +165,9 @@ class ProductionProjectRevenueController extends ApiController
 
             $distribution->payout_type = $participant->participantProductionProjectPayoutType->name;
             $distribution->date_payout = $productionProjectRevenue->date_payed;
+
+            $distribution->delivered_total = round((($productionProjectRevenue->kwh_end - $productionProjectRevenue->kwh_start) / $totalParticipations)
+                * $participant->participations_current,2);
 
             if ($primaryContactEnergySupplier) {
                 $distribution->energy_supplier_name

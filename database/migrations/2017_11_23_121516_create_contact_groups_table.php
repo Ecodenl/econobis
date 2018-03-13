@@ -58,6 +58,7 @@ class CreateContactGroupsTable extends Migration
      */
     public function down()
     {
+        Schema::dropIfExists('contact_groups_pivot');
         Schema::dropIfExists('contact_groups');
     }
 }

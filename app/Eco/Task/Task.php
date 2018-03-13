@@ -211,7 +211,7 @@ class Task extends Model
                 $endTimePlanned = new Carbon($this->start_time_planned);
 
                 $datePlanned->setTime($endTimePlanned->hour, $endTimePlanned->minute);
-            // With no end time planned and date planned start is not equal date planned finish add 1 hour
+            // end_time_planned and start_time_planned empty, date_planned_start and date_planned_finished not empty and not equal
             } else if ($this->date_planned_start != $this->date_planned_finish && $this->date_planned_finish != null) {
                     $datePlanned->setTime(01, 00);
             }

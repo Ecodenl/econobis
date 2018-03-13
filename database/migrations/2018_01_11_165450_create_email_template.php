@@ -35,6 +35,6 @@ class CreateEmailTemplate extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('emails');
+        Schema::dropIfExists('email_templates');
     }
 }

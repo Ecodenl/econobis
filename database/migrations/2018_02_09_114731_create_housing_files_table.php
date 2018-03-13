@@ -122,7 +122,5 @@ class CreateHousingFilesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('intakes');
-        Schema::dropIfExists('intake_status');
     }
 }

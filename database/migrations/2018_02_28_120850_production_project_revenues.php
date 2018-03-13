@@ -110,7 +110,7 @@ class ProductionProjectRevenues extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('obligation_numbers');
+        Schema::dropIfExists('production_project_revenues');
         Schema::dropIfExists('production_project_revenue_type');
         Schema::dropIfExists('production_project_revenue_category');
     }

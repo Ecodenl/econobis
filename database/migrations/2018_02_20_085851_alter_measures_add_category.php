@@ -31,7 +31,7 @@ class AlterMeasuresAddCategory extends Migration
     public function down()
     {
         Schema::table('measures', function (Blueprint $table) {
-            $table->dropForeign('measure_category_id');
+            $table->dropForeign(['measure_category_id']);
             $table->dropColumn('measure_category_id');
         });
     }

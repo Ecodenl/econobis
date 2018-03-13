@@ -29,7 +29,7 @@ class AlterMeasuresAddUpdatedByTable extends Migration
     public function down()
     {
         Schema::table('measures', function (Blueprint $table) {
-            $table->foreign('updated_by_id');
+            $table->dropForeign(['updated_by_id']);
             $table->dropColumn('updated_by_id');
         });
     }

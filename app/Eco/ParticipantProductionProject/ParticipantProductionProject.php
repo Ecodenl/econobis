@@ -85,7 +85,7 @@ class ParticipantProductionProject extends Model
     //appends
     public function getParticipationsWorthTotalAttribute()
     {
-        return $this->participations_granted * $this->productionProject->participation_worth;
+        return $this->participations_current * $this->productionProject->participation_worth;
     }
 
     public function getParticipationsCurrentAttribute()

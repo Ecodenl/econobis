@@ -7,10 +7,11 @@ import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
 import InputDate from "../../../../components/form/InputDate";
 import moment from "moment/moment";
+import InputToggle from "../../../../components/form/InputToggle";
 moment.locale('nl');
 
 const ContactDetailsFormOccupationsEdit = props => {
-    const { organisationId, occupationId, startDate, endDate } = props.occupation;
+    const { organisationId, occupationId, startDate, endDate, primary } = props.occupation;
 
     return (
         <div>
@@ -54,6 +55,15 @@ const ContactDetailsFormOccupationsEdit = props => {
                                 name={"endDate"}
                                 value={endDate}
                                 onChangeAction={props.handleEndDate}
+                            />
+                        </div>
+
+                        <div className="row">
+                            <InputToggle
+                                label={"Primair"}
+                                name={"primary"}
+                                value={primary}
+                                onChangeAction={props.handleInputChange}
                             />
                         </div>
 

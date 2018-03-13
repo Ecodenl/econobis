@@ -155,3 +155,24 @@ export const unsetPrimaryEmailAddresses = () => {
         type: 'UNSET_PRIMARY_EMAIL_ADDRESSES',
     };
 };
+
+export const newContactEnergySupplier = (contactEnergySupplier) => {
+    return {
+        type: 'NEW_CONTACT_ENERGY_SUPPLIER',
+        contactEnergySupplier,
+    };
+};
+
+export const updateContactEnergySupplier = (contactEnergySupplier) => {
+    return {
+        type: 'UPDATE_CONTACT_ENERGY_SUPPLIER',
+        contactEnergySupplier,
+    };
+};
+
+export const deleteContactEnergySupplier = (id) => {
+    return {
+        type: 'DELETE_CONTACT_ENERGY_SUPPLIER',
+        id,
+    };
+};

@@ -16,45 +16,49 @@ const QuotationRequestDetailsFormGeneralView = props => {
                     value={organisation && organisation.name}
                 />
                 <ViewText
-                    label={"Verzoek voor"}
-                    value={opportunity.intake && opportunity.intake.contact.fullName}
+                    label={"Organisatie contactpersoon"}
+                    value={organisation.contactPerson ? organisation.contactPerson.person.fullName : 'Onbekend'}
                 />
             </div>
 
             <div className="row">
+                <ViewText
+                    label={"Verzoek voor"}
+                    value={opportunity.intake && opportunity.intake.contact.fullName}
+                />
                 <ViewText
                     label={"Adres voor"}
                     value={opportunity.intake && opportunity.intake.fullAddress}
                 />
+            </div>
+
+            <div className="row">
                 <ViewText
                     label={"Maatregel categorie"}
                     value={opportunity.measureCategory && opportunity.measureCategory.name}
                 />
-            </div>
-
-            <div className="row">
                 <ViewText
                     label={"Maatregelen specifiek"}
                     value={opportunity.measures && opportunity.measures.map((measure) => measure.name).join(', ')}
                 />
+            </div>
+
+            <div className="row">
                 <ViewText
                     label={"Datum opname"}
                     value={dateRecorded ? moment(dateRecorded).format('L') : 'Onbekend'}
                 />
-            </div>
-
-            <div className="row">
                 <ViewText
                     label={"Offerte status"}
                     value={status && status.name}
                 />
+            </div>
+
+            <div className="row">
                 <ViewText
                     label={"Offerte uitgebracht"}
                     value={dateReleased ? moment(dateReleased).format('L') : 'Onbekend'}
                 />
-            </div>
-
-            <div className="row">
                 <ViewText
                     label={"Offerte geldig tot"}
                     value={dateValid ? moment(dateValid).format('L') : 'Onbekend'}

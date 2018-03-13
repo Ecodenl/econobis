@@ -26,6 +26,8 @@ class FullAddress extends Resource
             'contactId' => $this->contact_id,
             'typeId' => $this->type_id,
             'type' => FullEnumWithIdAndName::make($this->getType()),
+            'countryId' => $this->country_id,
+            'country' => GenericResource::make($this->whenLoaded('country')),
             'street' => $this->street,
             'number' => $this->number,
             'city' => $this->city,

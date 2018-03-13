@@ -14,8 +14,11 @@ use App\Http\Resources\Contact\FullContact;
 use App\Http\Resources\ContactGroup\FullContactGroup;
 use App\Http\Resources\Document\FullDocument;
 use App\Http\Resources\GenericResource;
+use App\Http\Resources\HousingFile\FullHousingFile;
 use App\Http\Resources\Opportunity\FullOpportunity;
 use App\Http\Resources\Intake\FullIntake;
+use App\Http\Resources\ParticipantProductionProject\FullParticipantProductionProject;
+use App\Http\Resources\ProductionProject\FullProductionProject;
 use App\Http\Resources\Team\FullTeam;
 use App\Http\Resources\User\FullUser;
 use Illuminate\Http\Resources\Json\Resource;
@@ -47,6 +50,12 @@ class FullTask extends Resource
                 'contactGroup' => FullContactGroup::make($this->whenLoaded('contactGroup')),
                 'campaignId' => $this->campaign_id,
                 'campaign' => FullCampaign::make($this->whenLoaded('campaign')),
+                'housingFileId' => $this->housing_file_id,
+                'housingFile' => FullHousingFile::make($this->whenLoaded('housingFile')),
+                'productionProjectId' => $this->production_project_id,
+                'productionProject' => FullProductionProject::make($this->whenLoaded('productionProject')),
+                'participantId' => $this->participation_production_project_id,
+                'participant' => FullParticipantProductionProject::make($this->whenLoaded('participant')),
                 'datePlannedStart' => $this->date_planned_start,
                 'datePlannedFinish' => $this->date_planned_finish,
                 'startTimePlanned' => $this->start_time_planned,

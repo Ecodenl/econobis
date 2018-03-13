@@ -10,6 +10,8 @@ use App\Eco\DocumentTemplate\DocumentTemplateObserver;
 use App\Eco\DocumentTemplate\DocumentTemplate;
 use App\Eco\EmailTemplate\EmailTemplate;
 use App\Eco\EmailTemplate\EmailTemplateObserver;
+use App\Eco\EnergySupplier\ContactEnergySupplier;
+use App\Eco\EnergySupplier\ContactEnergySupplierObserver;
 use App\Eco\HousingFile\HousingFile;
 use App\Eco\HousingFile\HousingFileObserver;
 use App\Eco\Intake\Intake;
@@ -30,10 +32,20 @@ use App\Eco\ContactNote\ContactNote;
 use App\Eco\ContactNote\ContactNoteObserver;
 use App\Eco\EmailAddress\EmailAddress;
 use App\Eco\EmailAddress\EmailAddressObserver;
+use App\Eco\ParticipantProductionProject\ParticipantProductionProject;
+use App\Eco\ParticipantProductionProject\ParticipantProductionProjectObserver;
+use App\Eco\ParticipantTransaction\ParticipantTransaction;
+use App\Eco\ParticipantTransaction\ParticipantTransactionObserver;
 use App\Eco\Person\Person;
 use App\Eco\Person\PersonObserver;
 use App\Eco\PhoneNumber\PhoneNumber;
 use App\Eco\PhoneNumber\PhoneNumberObserver;
+use App\Eco\ProductionProject\ProductionProject;
+use App\Eco\ProductionProject\ProductionProjectObserver;
+use App\Eco\ProductionProject\ProductionProjectRevenue;
+use App\Eco\ProductionProject\ProductionProjectRevenueObserver;
+use App\Eco\ProductionProject\ProductionProjectValueCourse;
+use App\Eco\ProductionProject\ProductionProjectValueCourseObserver;
 use App\Eco\QuotationRequest\QuotationRequest;
 use App\Eco\QuotationRequest\QuotationRequestObserver;
 use App\Eco\Task\Task;
@@ -67,6 +79,11 @@ class ObserverServiceProvider extends ServiceProvider
         HousingFile::observe(HousingFileObserver::class);
         Task::observe(TaskObserver::class);
         QuotationRequest::observe(QuotationRequestObserver::class);
+        ContactEnergySupplier::observe(ContactEnergySupplierObserver::class);
+        ProductionProject::observe(ProductionProjectObserver::class);
+        ProductionProjectValueCourse::observe(ProductionProjectValueCourseObserver::class);
+        ProductionProjectRevenue::observe(ProductionProjectRevenueObserver::class);
+        ParticipantTransaction::observe(ParticipantTransactionObserver::class);
     }
 
     /**

@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import {hashHistory} from 'react-router';
 import validator from 'validator';
 import moment from 'moment';
 
@@ -8,10 +7,9 @@ import ContactGroupAPI from '../../../../api/contact-group/ContactGroupAPI';
 import UsersAPI from '../../../../api/user/UsersAPI';
 import {updateContactGroupDetails} from '../../../../actions/contact-group/ContactGroupDetailsActions';
 import InputText from '../../../../components/form/InputText';
-import InputSelect from '../../../../components/form/InputSelect';
-import InputCheckbox from '../../../../components/form/InputCheckbox';
 import InputDate from '../../../../components/form/InputDate';
 import ButtonText from '../../../../components/button/ButtonText';
+import InputToggle from "../../../../components/form/InputToggle";
 
 class ContactGroupDetailsFormGeneralEdit extends Component {
     constructor(props) {
@@ -147,11 +145,10 @@ class ContactGroupDetailsFormGeneralEdit extends Component {
                                 </select>
                             </div>
                         </div>
-                    <InputCheckbox
+                    <InputToggle
                         label={"Gesloten"}
-                        size={"col-sm-6"}
-                        name="closed"
-                        checked={closed}
+                        name={"closed"}
+                        value={closed}
                         onChangeAction={this.handleInputChange}
                     />
                 </div>

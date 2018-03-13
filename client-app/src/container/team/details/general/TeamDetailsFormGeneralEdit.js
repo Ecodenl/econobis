@@ -56,10 +56,7 @@ class TeamDetailsFormGeneralEdit extends Component {
 
         // If no errors send form
         !hasErrors &&
-            TeamDetailsAPI.updateTeam(team).then((payload) => {
-                this.props.updateTeam(payload);
-                this.props.switchToView();
-            });
+            this.props.updateTeam(team, this.props.switchToView);
     };
 
     render() {
@@ -100,8 +97,8 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = dispatch => ({
-    updateTeam: (id) => {
-        dispatch(updateTeam(id));
+    updateTeam: (id, switchToView) => {
+        dispatch(updateTeam(id, switchToView));
     },
 });
 

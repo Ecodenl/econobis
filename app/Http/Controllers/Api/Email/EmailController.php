@@ -154,6 +154,7 @@ class EmailController
             ->integer('measureId')->validate('exists:measures,id')->onEmpty(null)->alias('measure_id')->next()
             ->integer('taskId')->validate('exists:tasks,id')->onEmpty(null)->alias('task_id')->next()
             ->integer('opportunityId')->validate('exists:opportunities,id')->onEmpty(null)->alias('opportunity_id')->next()
+            ->integer('productionProjectId')->validate('exists:production_projects,id')->onEmpty(null)->alias('production_project_id')->next()
             ->get();
 
         $email->fill($data);
@@ -378,6 +379,6 @@ class EmailController
 
         $mailboxIds = $user->mailboxes()->pluck('mailbox_id');
 
-        return Email::whereIn('mailbox_id', $mailboxIds)->whereNull('status')->where('folder', 'inbox')->count();
+        return Email::whereIn('mailbox_id', $mailboxIds)->where('status', '!=', 'closed')->where('folder', 'inbox')->count();
     }
 }

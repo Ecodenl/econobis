@@ -11,6 +11,7 @@ import validator from "validator";
 import OccupationAPI from "../../../../api/contact/OccupationAPI";
 import OrganisationAPI from "../../../../api/contact/OrganisationAPI";
 import moment from "moment/moment";
+import InputToggle from "../../../../components/form/InputToggle";
 
 class ContactDetailsFormOccupationsNew extends Component {
     constructor(props) {
@@ -24,6 +25,7 @@ class ContactDetailsFormOccupationsNew extends Component {
                 occupationId: '',
                 startDate: '',
                 endDate: '',
+                primary: false,
             },
             errors: {
                 organisationId: false,
@@ -107,7 +109,7 @@ class ContactDetailsFormOccupationsNew extends Component {
     };
 
     render() {
-        const {organisationId, occupationId, startDate, endDate} = this.state.occupation;
+        const {organisationId, occupationId, startDate, endDate, primary} = this.state.occupation;
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -150,6 +152,15 @@ class ContactDetailsFormOccupationsNew extends Component {
                                 name={"endDate"}
                                 value={endDate}
                                 onChangeAction={this.handleEndDate}
+                            />
+                        </div>
+
+                        <div className="row">
+                            <InputToggle
+                                label={"Primair"}
+                                name={"primary"}
+                                value={primary}
+                                onChangeAction={this.handleInputChange}
                             />
                         </div>
 

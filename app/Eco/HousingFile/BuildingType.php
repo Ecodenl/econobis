@@ -2,8 +2,6 @@
 
 namespace App\Eco\HousingFile;
 
-use App\Eco\Address\Address;
-use App\Eco\HousingFile\HousingFile;
 use Illuminate\Database\Eloquent\Model;
 
 class BuildingType extends Model

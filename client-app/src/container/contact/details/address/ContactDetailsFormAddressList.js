@@ -7,10 +7,11 @@ const ContactDetailsFormAddressList = props => {
     return (
         <div>
             <div className="row border header">
-                <div className="col-sm-2">Type</div>
-                <div className="col-sm-3">Adres</div>
+                <div className="col-sm-1">Type</div>
+                <div className="col-sm-2">Adres</div>
                 <div className="col-sm-2">Postcode</div>
                 <div className="col-sm-2">Plaats</div>
+                <div className="col-sm-2">Land</div>
                 <div className="col-sm-2"><span className="pull-right">Primair</span></div>
                 <div className="col-sm-1"></div>
             </div>

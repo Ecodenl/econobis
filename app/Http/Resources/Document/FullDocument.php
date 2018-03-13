@@ -18,6 +18,8 @@ use App\Http\Resources\HousingFile\FullHousingFile;
 use App\Http\Resources\Measure\FullMeasure;
 use App\Http\Resources\Opportunity\FullOpportunity;
 use App\Http\Resources\Intake\FullIntake;
+use App\Http\Resources\ParticipantProductionProject\ParticipantProductionProjectPeek;
+use App\Http\Resources\ProductionProject\ProductionProjectPeek;
 use App\Http\Resources\QuotationRequest\FullQuotationRequest;
 use App\Http\Resources\User\FullUser;
 use Illuminate\Http\Resources\Json\Resource;
@@ -54,6 +56,10 @@ class FullDocument extends Resource
             'measure' => FullMeasure::make($this->whenLoaded('measure')),
             'taskId' => $this->task_id,
             'task' => FullOpportunity::make($this->whenLoaded('task')),
+            'productionProjectId' => $this->production_project_id,
+            'productionProject' => ProductionProjectPeek::make($this->whenLoaded('productionProject')),
+            'participantId' => $this->participation_production_project_id,
+            'participant' => ParticipantProductionProjectPeek::make($this->whenLoaded('participant')),
             'sentBy' => FullUser::make($this->whenLoaded('sentBy')),
             'createdBy' => FullUser::make($this->whenLoaded('createdBy')),
             'template' => FullDocumentTemplate::make($this->whenLoaded('template')),

@@ -4,15 +4,15 @@ import { connect } from 'react-redux';
 import GetNameByIdHelper from '../../../../helpers/GetNameByIdHelper';
 
 const ContactDetailFormAddressView = props => {
-    const {typeId, street, number, postalCode, city, primary } = props.address;
+    const {typeId, street, number, postalCode, city, primary, country } = props.address;
 
     return (
         <div className={`row border ${props.highlightLine}`} onMouseEnter={() => props.onLineEnter()} onMouseLeave={() => props.onLineLeave()}>
             <div onClick={props.openEdit}>
-                <div className="col-sm-2">
+                <div className="col-sm-1">
                     <GetNameByIdHelper id={typeId} items={props.addressTypes} />
                 </div>
-                <div className="col-sm-3">
+                <div className="col-sm-2">
                     { street + ' ' + number }
                 </div>
                 <div className="col-sm-2">
@@ -20,6 +20,9 @@ const ContactDetailFormAddressView = props => {
                 </div>
                 <div className="col-sm-2">
                     { city }
+                </div>
+                <div className="col-sm-2">
+                    { country ? country.name : 'Onbekend' }
                 </div>
                 <div className="col-sm-2">
                     { primary ? <span className="h6 pull-right">Primair</span> : '' }

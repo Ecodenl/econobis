@@ -2,13 +2,15 @@ import React from 'react';
 
 import InputReactSelect from "../../../../components/form/InputReactSelect";
 
-const TaskNewFormExtraConnections = ({task, campaigns, intakes, contactGroups, opportunities, housingFiles, handleReactSelectChange}) => {
+const TaskNewFormExtraConnections = ({task, campaigns, intakes, contactGroups, opportunities, housingFiles, productionProjects, participants, handleReactSelectChange, peekLoading}) => {
     const {
         intakeId,
         contactGroupId,
         opportunityId,
         campaignId,
         housingFileId,
+        productionProjectId,
+        participantId,
     } = task;
 
     return (
@@ -21,6 +23,7 @@ const TaskNewFormExtraConnections = ({task, campaigns, intakes, contactGroups, o
                     value={campaignId}
                     onChangeAction={handleReactSelectChange}
                     multi={false}
+                    isLoading={peekLoading.campaigns}
                 />
                 <InputReactSelect
                     label={"Intake"}
@@ -30,6 +33,7 @@ const TaskNewFormExtraConnections = ({task, campaigns, intakes, contactGroups, o
                     value={intakeId}
                     onChangeAction={handleReactSelectChange}
                     multi={false}
+                    isLoading={peekLoading.intakes}
                 />
             </div>
 
@@ -42,6 +46,7 @@ const TaskNewFormExtraConnections = ({task, campaigns, intakes, contactGroups, o
                     value={contactGroupId}
                     onChangeAction={handleReactSelectChange}
                     multi={false}
+                    isLoading={peekLoading.contactGroups}
                 />
                 <InputReactSelect
                     label={"Kans"}
@@ -51,6 +56,7 @@ const TaskNewFormExtraConnections = ({task, campaigns, intakes, contactGroups, o
                     value={opportunityId}
                     onChangeAction={handleReactSelectChange}
                     multi={false}
+                    isLoading={peekLoading.opportunities}
                 />
             </div>
             <div className="row">
@@ -62,6 +68,29 @@ const TaskNewFormExtraConnections = ({task, campaigns, intakes, contactGroups, o
                     value={housingFileId}
                     onChangeAction={handleReactSelectChange}
                     multi={false}
+                    isLoading={peekLoading.housingFiles}
+                />
+                <InputReactSelect
+                    label={"Productie project"}
+                    size={"col-sm-6"}
+                    name={"productionProjectId"}
+                    options={productionProjects}
+                    value={productionProjectId}
+                    onChangeAction={handleReactSelectChange}
+                    multi={false}
+                    isLoading={peekLoading.productionProjects}
+                />
+            </div>
+            <div className="row">
+                <InputReactSelect
+                    label={"Participant productie project"}
+                    size={"col-sm-6"}
+                    name={"participantId"}
+                    options={participants}
+                    value={participantId}
+                    onChangeAction={handleReactSelectChange}
+                    multi={false}
+                    isLoading={peekLoading.participantId}
                 />
             </div>
         </div>

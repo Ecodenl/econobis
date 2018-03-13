@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\Person;
 
+use App\Http\Resources\Contact\FullContact;
 use App\Http\Resources\Occupation\FullOccupationPerson;
 use App\Http\Resources\Organisation\FullOrganisation;
 use App\Http\Resources\LastNamePrefix\FullLastNamePrefix;
@@ -24,6 +25,7 @@ class FullPerson extends Resource
             'contactId' => $this->contact_id,
             'titleId' => $this->title_id,
             'title' => FullTitle::make($this->whenLoaded('title')),
+            'initials' => $this->initials,
             'firstName' => $this->first_name,
             'lastNamePrefixId' => $this->last_name_prefix_id,
             'lastNamePrefix' => FullLastNamePrefix::make($this->whenLoaded('lastNamePrefix')),

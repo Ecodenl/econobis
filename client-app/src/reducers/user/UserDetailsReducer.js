@@ -5,7 +5,7 @@ export default function (state = {}, action) {
                 ...state,
                 ...action.userDetails,
             };
-        case 'UPDATE_USER':
+        case 'UPDATE_USER_SUCCESS':
             return {
                 ...state,
                 ...action.userDetails,

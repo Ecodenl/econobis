@@ -21,7 +21,9 @@ import InputTextArea from "../../../../components/form/InputTextarea";
 import InputToggle from "../../../../components/form/InputToggle";
 import PanelHeader from "../../../../components/panel/PanelHeader";
 import InputSelectGroup from "../../../../components/form/InputSelectGroup";
-
+import ProductionProjectsAPI from "../../../../api/production-project/ProductionProjectsAPI";
+import HousingFilesAPI from "../../../../api/housing-file/HousingFilesAPI";
+import ParticipantsProductionProjectAPI from "../../../../api/participant-production-project/ParticipantsProductionProjectAPI";
 
 class TaskDetailsFormGeneralEdit extends Component {
     constructor(props) {
@@ -32,10 +34,14 @@ class TaskDetailsFormGeneralEdit extends Component {
             note,
             typeId,
             contactId,
+            contact,
             finished,
             intakeId,
             campaignId,
             contactGroupId,
+            housingFileId,
+            productionProjectId,
+            participantId,
             datePlannedStart,
             datePlannedFinish,
             startTimePlanned,
@@ -49,11 +55,14 @@ class TaskDetailsFormGeneralEdit extends Component {
 
 
         this.state = {
-            contacts: [],
+            contacts: contactId ? [{id: contactId, fullName: contact.fullName}] : [],
             intakes: [],
             contactGroups: [],
             opportunities: [],
             campaigns: [],
+            housingFiles: [],
+            productionProjects: [],
+            participants: [],
             task: {
                 id,
                 note,
@@ -63,6 +72,9 @@ class TaskDetailsFormGeneralEdit extends Component {
                 intakeId: intakeId ? intakeId : '',
                 opportunityId: opportunityId ? opportunityId : '',
                 contactGroupId: contactGroupId ? contactGroupId: '',
+                housingFileId: housingFileId ? housingFileId: '',
+                productionProjectId: productionProjectId ? productionProjectId: '',
+                participantId: participantId ? participantId: '',
                 datePlannedStart: datePlannedStart ? datePlannedStart.date : '',
                 datePlannedFinish: datePlannedFinish ? datePlannedFinish.date : '',
                 startTimePlanned: startTimePlanned ? startTimePlanned : '',
@@ -78,6 +90,16 @@ class TaskDetailsFormGeneralEdit extends Component {
                 note: false,
                 responsible: false,
             },
+            peekLoading: {
+                contacts: true,
+                intakes: true,
+                contactGroups: true,
+                opportunities: true,
+                campaigns: true,
+                housingFiles: true,
+                productionProjects: true,
+                participants: true,
+            },
         };
 
         this.handleInputChange = this.handleInputChange.bind(this);
@@ -89,24 +111,85 @@ class TaskDetailsFormGeneralEdit extends Component {
 
     componentDidMount() {
         ContactsAPI.getContactsPeek().then((payload) => {
-            this.setState({ contacts: payload });
+            this.setState({
+                contacts: payload,
+                peekLoading: {
+                    ...this.state.peekLoading,
+                    contacts: false,
+                },
+            });
         });
 
         IntakesAPI.peekIntakes().then((payload) => {
-            this.setState({ intakes: payload });
+            this.setState({
+                intakes: payload,
+                peekLoading: {
+                    ...this.state.peekLoading,
+                    intakes: false,
+                },
+            });
         });
 
         ContactGroupAPI.peekContactGroups().then((payload) => {
-            this.setState({ contactGroups: payload });
+            this.setState({
+                contactGroups: payload,
+                peekLoading: {
+                    ...this.state.peekLoading,
+                    contactGroups: false,
+                },
+            });
         });
 
         OpportunitiesAPI.peekOpportunities().then((payload) => {
-            this.setState({ opportunities: payload });
+            this.setState({
+                opportunities: payload,
+                peekLoading: {
+                    ...this.state.peekLoading,
+                    opportunities: false,
+                },
+            });
         });
 
         CampaignsAPI.peekCampaigns().then((payload) => {
-            this.setState({ campaigns: payload });
+            this.setState({
+                campaigns: payload,
+                peekLoading: {
+                    ...this.state.peekLoading,
+                    campaigns: false,
+                },
+            });
         });
+
+        HousingFilesAPI.peekHousingFiles().then((payload) => {
+            this.setState({
+                housingFiles: payload,
+                peekLoading: {
+                    ...this.state.peekLoading,
+                    housingFiles: false,
+                },
+            });
+        });
+
+        ProductionProjectsAPI.peekProductionProjects().then((payload) => {
+            this.setState({
+                productionProjects: payload,
+                peekLoading: {
+                    ...this.state.peekLoading,
+                    productionProjects: false,
+                },
+            });
+        });
+
+        ParticipantsProductionProjectAPI.peekParticipantsProductionProjects().then((payload) => {
+            this.setState({
+                participants: payload,
+                peekLoading: {
+                    ...this.state.peekLoading,
+                    participants: false,
+                },
+            });
+        });
+
     };
 
     handleInputChange(event) {
@@ -312,6 +395,7 @@ class TaskDetailsFormGeneralEdit extends Component {
                         onChangeAction={this.handleReactSelectChange}
                         optionName={'fullName'}
                         multi={false}
+                        isLoading={this.state.peekLoading.contacts}
                     />
                 </div>
 
@@ -335,7 +419,11 @@ class TaskDetailsFormGeneralEdit extends Component {
                             contactGroups={this.state.contactGroups}
                             opportunities={this.state.opportunities}
                             campaigns={this.state.campaigns}
+                            housingFiles={this.state.housingFiles}
+                            productionProjects={this.state.productionProjects}
+                            participants={this.state.participants}
                             handleReactSelectChange={this.handleReactSelectChange}
+                            peekLoading={this.state.peekLoading}
                         />
                     }
                 </div>

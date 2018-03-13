@@ -8,13 +8,13 @@ import ContactDetailsFormAddress from './address/ContactDetailsFormAddress';
 import ContactDetailsFormPhone from './phone/ContactDetailsFormPhone';
 import ContactDetailsFormEmail from './email/ContactDetailsFormEmail';
 import ContactDetailsFormPerson from './person/ContactDetailsFormPerson';
-import ContactDetailsFormEnergy from './energy/ContactDetailsFormEnergy';
 import ContactDetailsFormOther from './other/ContactDetailsFormOther';
 import ContactDetailsFormNote from './note/ContactDetailsFormNote';
 import ContactDetailsFormConclusion from './conclusion/ContactDetailsFormConclusion';
 import ContactDetailsQuotations from "./quotations/ContactDetailsQuotations";
 import ContactDetailsCampaigns from "./campaigns/ContactDetailsCampaigns";
 import ContactDetailsFormOccupations from "./occupations/ContactDetailsFormOccupations";
+import ContactDetailsFormContactEnergySupplier from "./contact-energy-suppliers/ContactDetailsFormContactEnergySupplier";
 
 class ContactDetailsForm extends Component {
     constructor(props){
@@ -43,6 +43,7 @@ class ContactDetailsForm extends Component {
                     <ContactDetailsFormAddress />
                     <ContactDetailsFormEmail />
                     <ContactDetailsFormPhone />
+                    <ContactDetailsFormContactEnergySupplier />
                     { typeId == 'organisation' &&
                     <ContactDetailsFormPerson />
                     }
@@ -52,7 +53,6 @@ class ContactDetailsForm extends Component {
                     { typeId == 'organisation' &&
                     <ContactDetailsCampaigns />
                     }
-                    {/* <ContactDetailsFormEnergy /> */}
                     { typeId == 'person' &&
                     <ContactDetailsFormOccupations/>
                     }

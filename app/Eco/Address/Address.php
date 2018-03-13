@@ -3,6 +3,7 @@
 namespace App\Eco\Address;
 
 use App\Eco\Contact\Contact;
+use App\Eco\Country\Country;
 use App\Eco\HousingFile\HousingFile;
 use App\Eco\Measure\Measure;
 use App\Eco\BuildingType\BuildingType;
@@ -43,6 +44,10 @@ class Address extends Model
     public function measuresTaken()
     {
         return $this->belongsToMany(Measure::class, 'housing_file_measure_taken')->withPivot('measure_date');
+    }
+
+    public function country(){
+        return $this->belongsTo(Country::class);
     }
 
     public function getType()

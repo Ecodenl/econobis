@@ -187,6 +187,7 @@ class AlfrescoHelper
             }
             else{
                 $decoded_response = json_decode($response, true);
+
                 //catch alfresco errors
                 if(array_key_exists('error', $decoded_response)){
                     abort($decoded_response['error']['statusCode']);

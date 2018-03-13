@@ -10,6 +10,8 @@ use App\Eco\HousingFile\HousingFile;
 use App\Eco\Measure\Measure;
 use App\Eco\Opportunity\Opportunity;
 use App\Eco\Intake\Intake;
+use App\Eco\ParticipantProductionProject\ParticipantProductionProject;
+use App\Eco\ProductionProject\ProductionProject;
 use App\Eco\QuotationRequest\QuotationRequest;
 use App\Eco\Task\Task;
 use App\Eco\User\User;
@@ -88,5 +90,13 @@ class Document extends Model
 
     public function quotationRequest(){
         return $this->belongsTo(QuotationRequest::class);
+    }
+
+    public function productionProject(){
+        return $this->belongsTo(ProductionProject::class);
+    }
+
+    public function participant(){
+        return $this->belongsTo(ParticipantProductionProject::class, 'participation_production_project_id', 'id');
     }
 }

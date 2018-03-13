@@ -180,6 +180,21 @@ export default function (state = {}, action) {
                     }
                 })
             };
+        case 'NEW_CONTACT_ENERGY_SUPPLIER':
+            return {
+                ...state,
+                contactEnergySuppliers: action.contactEnergySupplier
+            };
+        case 'UPDATE_CONTACT_ENERGY_SUPPLIER':
+            return {
+                ...state,
+                contactEnergySuppliers: action.contactEnergySupplier
+            };
+        case 'DELETE_CONTACT_ENERGY_SUPPLIER':
+            return {
+                ...state,
+                contactEnergySuppliers: state.contactEnergySuppliers.filter((contactEnergySupplier) => contactEnergySupplier.id !== action.id),
+            };
         default:
             return state;
     }

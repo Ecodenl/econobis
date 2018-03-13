@@ -35,6 +35,11 @@ class Organisation extends Model
         return $this->hasMany(OccupationPerson::class);
     }
 
+    public function contactPerson()
+    {
+        return $this->hasOne(OccupationPerson::class)->where('primary', true);
+    }
+
     public function industry()
     {
         return $this->belongsTo(Industry::class);

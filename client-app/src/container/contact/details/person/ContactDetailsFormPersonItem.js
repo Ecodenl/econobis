@@ -32,14 +32,14 @@ class ContactDetailFormPersonItem extends Component {
     };
 
     render() {
-        const {occupation, person, startDate, endDate} = this.props.person;
+        const {occupation, person, startDate, endDate, primary} = this.props.person;
 
         return (
             <div className={`row border ${this.state.highlightLine}`} onMouseEnter={() => this.onLineEnter()} onMouseLeave={() => this.onLineLeave()}>
-                <div className="col-sm-4">
+                <div className="col-sm-3">
                     { occupation ? occupation.name : '' }
                 </div>
-                <div className="col-sm-3">
+                <div className="col-sm-2">
                     { person ? person.fullName : '' }
                 </div>
                 <div className="col-sm-2">
@@ -47,6 +47,9 @@ class ContactDetailFormPersonItem extends Component {
                 </div>
                 <div className="col-sm-2">
                     { endDate ? moment(endDate.date).format('DD-MM-Y') : '' }
+                </div>
+                <div className="col-sm-2">
+                    { primary ? <span className="h6 pull-right">Primair</span> : '' }
                 </div>
                 <div className="col-sm-1">
                     {(this.state.showActionButtons ? <a role="button" onClick={this.openPerson}><span className="glyphicon glyphicon-search mybtn-success" /> </a> : '')}

@@ -4,10 +4,14 @@ namespace App\Http\Resources\SystemData;
 
 use App\Eco\Campaign\CampaignStatus;
 use App\Eco\Campaign\CampaignType;
+use App\Eco\Country\Country;
 use App\Eco\Document\DocumentGroup;
 use App\Eco\Document\DocumentType;
 use App\Eco\DocumentTemplate\DocumentTemplateType;
 use App\Eco\Email\EmailStatus;
+use App\Eco\EnergySupplier\ContactEnergySupplierStatus;
+use App\Eco\EnergySupplier\ContactEnergySupplierType;
+use App\Eco\EnergySupplier\EnergySupplier;
 use App\Eco\HousingFile\EnergyLabelStatus;
 use App\Eco\HousingFile\RoofType;
 use App\Eco\Measure\MeasureCategory;
@@ -27,8 +31,15 @@ use App\Eco\EmailAddress\EmailAddressType;
 use App\Eco\Industry\Industry;
 use App\Eco\LastNamePrefix\LastNamePrefix;
 use App\Eco\Occupation\Occupation;
+use App\Eco\ParticipantProductionProject\ParticipantProductionProjectPayoutType;
+use App\Eco\ParticipantProductionProject\ParticipantProductionProjectStatus;
+use App\Eco\ParticipantTransaction\ParticipantTransactionType;
 use App\Eco\PersonType\PersonType;
 use App\Eco\PhoneNumber\PhoneNumberType;
+use App\Eco\ProductionProject\ProductionProjectRevenueCategory;
+use App\Eco\ProductionProject\ProductionProjectRevenueType;
+use App\Eco\ProductionProject\ProductionProjectStatus;
+use App\Eco\ProductionProject\ProductionProjectType;
 use App\Eco\QuotationRequest\QuotationRequestStatus;
 use App\Eco\Task\TaskProperty;
 use App\Eco\Task\TaskStatus;
@@ -98,6 +109,17 @@ class SystemData extends Resource
             'roofTypes' => FullEnumWithIdAndName::collection(RoofType::all()),
             'energyLabelStatus' => FullEnumWithIdAndName::collection(EnergyLabelStatus::all()),
             'quotationRequestStatus' => FullEnumWithIdAndName::collection(QuotationRequestStatus::all()),
+            'countries' => GenericResource::collection(Country::all()),
+            'energySuppliers' => GenericResource::collection(EnergySupplier::all()),
+            'contactEnergySupplierStatus' => GenericResource::collection(ContactEnergySupplierStatus::all()),
+            'contactEnergySupplierTypes' => GenericResource::collection(ContactEnergySupplierType::all()),
+            'productionProjectStatus' => GenericResource::collection(ProductionProjectStatus::all()),
+            'productionProjectTypes' => GenericResource::collection(ProductionProjectType::all()),
+            'participantProductionProjectStatus' => GenericResource::collection(ParticipantProductionProjectStatus::all()),
+            'participantProductionProjectPayoutTypes' => GenericResource::collection(ParticipantProductionProjectPayoutType::all()),
+            'participantTransactionTypes' => GenericResource::collection(ParticipantTransactionType::all()),
+            'productionProjectRevenueTypes' => GenericResource::collection(ProductionProjectRevenueType::all()),
+            'productionProjectRevenueCategories' => GenericResource::collection(ProductionProjectRevenueCategory::all()),
         ];
     }
 }

@@ -45,7 +45,7 @@ class DocumentController extends Controller
     {
         $this->authorize('view', Document::class);
 
-        $document->load('contact', 'intake', 'contactGroup', 'sentBy', 'createdBy', 'template', 'opportunity.measure', 'opportunity.status');
+        $document->load('contact', 'intake', 'contactGroup', 'sentBy', 'createdBy', 'template', 'opportunity.measure', 'opportunity.status', 'productionProject', 'participant.contact', 'participant.productionProject');
 
         return FullDocument::make($document);
     }
@@ -72,6 +72,8 @@ class DocumentController extends Controller
             ->integer('quotationRequestId')->validate('exists:quotation_requests,id')->onEmpty(null)->alias('quotation_request_id')->next()
             ->integer('measureId')->validate('exists:measures,id')->onEmpty(null)->alias('measure_id')->next()
             ->integer('taskId')->validate('exists:tasks,id')->onEmpty(null)->alias('task_id')->next()
+            ->integer('productionProjectId')->validate('exists:production_projects,id')->onEmpty(null)->alias('production_project_id')->next()
+            ->integer('participantId')->validate('exists:participation_production_project,id')->onEmpty(null)->alias('participation_production_project_id')->next()
             ->get();
 
         $document = new Document();
@@ -90,12 +92,22 @@ class DocumentController extends Controller
             $time = Carbon::now();
 
             $name = '';
-             $document->contact && $name .=  '-' . str_replace(' ', '', $document->contact->full_name);
-            $document->intake && $name .= '-intake-' . $document->intake->id;
-            $document->contactGroup && $name .= '-' . str_replace(' ', '', $document->contactGroup->name);
-            $document->opportunity && $name .= '-' . $document->opportunity->number;
+            $document->contact && $name .= str_replace(' ', '', $document->contact->full_name) . '_';
+            $document->intake && $name .= $document->intake->contact->full_name . '_';
+            $document->contactGroup && $name .= str_replace(' ', '', $document->contactGroup->name) . '_';
+            $document->opportunity && $name .= $document->opportunity->number . '_';
+            $document->housingFile && $name .= str_replace(' ', '', $document->housingFile->address->contact->full_name) . '_';
+            $document->campaign && $name .= str_replace(' ', '', $document->campaign->name) . '_';
+            $document->measure && $name .= str_replace(' ', '', $document->measure->name) . '_';
+            $document->task && $name .= $document->task->id . '_';
+            $document->quotationRequest && $name .= str_replace(' ', '', $document->quotationRequest->organisation->contact->full_name) . '_';
+            $document->productionProject && $name .= str_replace(' ', '', $document->productionProject->name) . '_';
+            $document->participant && $name .= str_replace(' ', '', $document->participant->contact->full_name) . '_';
 
-            $document->filename = $time->format('Ymd') . $name . '.pdf';
+            //max length name 25
+            $name = substr($name, 0, 25);
+
+            $document->filename = $name . substr($document->getDocumentGroup()->name, 0, 1) . (Document::where('document_group', 'revenue')->count() + 1) . '_' .  $time->format('Ymd') . '.pdf';
             $document->save();
 
             $filePath = (storage_path('app' . DIRECTORY_SEPARATOR . 'documents/' . $document->filename));
@@ -105,6 +117,8 @@ class DocumentController extends Controller
 
             $document->alfresco_node_id = $alfrescoResponse['entry']['id'];
             $document->save();
+
+
 
             Storage::disk('documents')->delete($document->filename);
         }
@@ -152,12 +166,14 @@ class DocumentController extends Controller
             ->integer('quotationRequestId')->validate('exists:quotation_requests,id')->onEmpty(null)->alias('quotation_request_id')->next()
             ->integer('measureId')->validate('exists:measures,id')->onEmpty(null)->alias('measure_id')->next()
             ->integer('taskId')->validate('exists:tasks,id')->onEmpty(null)->alias('task_id')->next()
+            ->integer('productionProjectId')->validate('exists:production_projects,id')->onEmpty(null)->alias('production_project_id')->next()
+            ->integer('participantId')->validate('exists:participation_production_project,id')->onEmpty(null)->alias('participation_production_project_id')->next()
             ->get();
 
         $document->fill($data);
         $document->save();
 
-        $document->load('contact', 'contactGroup', 'opportunity', 'intake.address');
+        $document->load('contact', 'intake', 'contactGroup', 'sentBy', 'createdBy', 'template', 'opportunity.measure', 'opportunity.status', 'productionProject', 'participant.contact', 'participant.productionProject');
 
         return FullDocument::make($document);
     }

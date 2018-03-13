@@ -3,6 +3,7 @@
 namespace App\Http\Resources\Contact;
 
 use App\Eco\ContactGroup\ContactGroup;
+use App\Http\Resources\ContactEnergySupplier\FullContactEnergySupplier;
 use App\Http\Resources\Document\FullDocument;
 use App\Http\Resources\Opportunity\FullOpportunity;
 use App\Http\Resources\Opportunity\GridOpportunity;
@@ -11,6 +12,7 @@ use App\Http\Resources\Address\FullAddress;
 use App\Http\Resources\ContactNote\FullContactNote;
 use App\Http\Resources\EmailAddress\FullEmailAddress;
 use App\Http\Resources\EnumWithIdAndName\FullEnumWithIdAndName;
+use App\Http\Resources\ParticipantProductionProject\FullParticipantProductionProject;
 use App\Http\Resources\Person\FullPerson;
 use App\Http\Resources\PhoneNumber\FullPhoneNumber;
 use App\Http\Resources\Task\GridTask;
@@ -41,7 +43,9 @@ class FullContact extends Resource
             'memberUntil' => $this->member_until,
             'newsletter' => $this->newsletter,
             'addresses' => FullAddress::collection($this->whenLoaded('addresses')),
+            'primaryAddress' => FullAddress::make($this->whenLoaded('primaryAddress')),
             'emailAddresses' => FullEmailAddress::collection($this->whenLoaded('emailAddresses')),
+            'primaryEmailAddress' => FullEmailAddress::make($this->whenLoaded('primaryEmailAddress')),
             'phoneNumbers' => FullPhoneNumber::collection($this->whenLoaded('phoneNumbers')),
             'notes' => FullContactNote::collection($this->whenLoaded('contactNotes')),
             'createdAt' => $this->created_at,
@@ -51,6 +55,8 @@ class FullContact extends Resource
             'liabilityAmount' => $this->liability_amount,
             'ownerId' => $this->owner_id,
             'owner' => FullUser::make($this->whenLoaded('owner')),
+            'contactEnergySuppliers' => FullContactEnergySupplier::collection($this->whenLoaded('contactEnergySuppliers')),
+            'primaryContactEnergySupplier' => FullContactEnergySupplier::make($this->whenLoaded('primaryContactEnergySupplier')),
             'createdById' => $this->created_by_id,
             'createdBy' => FullUser::make($this->whenLoaded('createdBy')),
             'updatedById' => $this->updated_by_id,
@@ -70,6 +76,8 @@ class FullContact extends Resource
             'relatedDocuments' => FullDocument::collection($this->whenLoaded('documents')),
             'opportunityCount' => $this->opportunities()->count(),
             'relatedOpportunities' => $this->opportunities()->get(),
+            'participationCount' => $this->participations()->count(),
+            'relatedParticipations' => FullParticipantProductionProject::collection($this->whenLoaded('participations')),
         ];
     }
 }

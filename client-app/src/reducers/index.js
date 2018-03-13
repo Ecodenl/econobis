@@ -2,9 +2,10 @@ import {combineReducers} from 'redux';
 
 import auditTrailReducer from './audit-trail/AuditTrailReducer';
 import authReducer from './general/AuthReducer';
+import blockUIReducer from './general/BlockUIReducer';
 import calendarReducer from './calendar/CalendarReducer';
 import campaignsReducer from './campaign/CampaignsReducer';
-import campaignDetailsReducer from './campaign/CampaignDetailsReducer';
+import campaignDetailsReducer from './campaign/CampaignDetailsReducer'
 import contactDetailsReducer from './contact/ContactDetailsReducer';
 import contactGroupDetailsReducer from './contact-group/ContactGroupDetailsReducer';
 import contactGroupReducer from './contact-group/ContactGroupReducer';
@@ -28,6 +29,12 @@ import measureDetailsReducer from './measure/MeasureDetailsReducer';
 import meDetailsReducer from './general/MeDetailsReducer';
 import opportunitiesReducer from './opportunity/OpportunitiesReducer';
 import opportunityDetailsReducer from './opportunity/OpportunityDetailsReducer';
+import participantProductionProjectDetailsReducer from './participant-production-project/ParticipantProductionProjectDetailsReducer';
+import participantsProductionProjectReducer from './participant-production-project/ParticipantsProductionProjectReducer';
+import PostalCodeLinkReducer from './postal-code-link/PostalCodeLinkReducer';
+import productionProjectsReducer from './production-project/ProductionProjectsReducer';
+import productionProjectDetailsReducer from './production-project/ProductionProjectDetailsReducer';
+import productionProjectRevenueDetailsReducer from './production-project/ProductionProjectRevenueDetailsReducer';
 import intakeDetailsReducer from './intake/IntakeDetailsReducer';
 import intakesReducer from './intake/IntakesReducer';
 import quotationRequestsReducer from './quotation-request/QuotationRequestsReducer';
@@ -49,6 +56,7 @@ const rootReducer = combineReducers({
     meDetails: meDetailsReducer,
     systemData: systemDataReducer,
     toggleSidebar: sidebarReducer,
+    blockUI: blockUIReducer,
 
     //Audit trail
     auditTrail: auditTrailReducer,
@@ -84,6 +92,15 @@ const rootReducer = combineReducers({
     // Opportunity
     opportunities: opportunitiesReducer,
     opportunityDetails: opportunityDetailsReducer,
+    // Participant production project
+    participantsProductionProject: participantsProductionProjectReducer,
+    participantProductionProjectDetails: participantProductionProjectDetailsReducer,
+    // Postal code links
+    postalCodeLinks : PostalCodeLinkReducer,
+    // Production project
+    productionProjects: productionProjectsReducer,
+    productionProjectDetails: productionProjectDetailsReducer,
+    productionProjectRevenue: productionProjectRevenueDetailsReducer,
     // Intake
     intakes: intakesReducer,
     intakeDetails: intakeDetailsReducer,

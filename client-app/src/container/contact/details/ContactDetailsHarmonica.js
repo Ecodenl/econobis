@@ -13,6 +13,7 @@ import ContactGroupHarmonica from "./harmonica/ContactGroupHarmonica";
 import EmailInboxHarmonica from './harmonica/EmailInboxHarmonica';
 import EmailSentHarmonica from "./harmonica/EmailSentHarmonica";
 import DocumentHarmonica from './harmonica/DocumentHarmonica';
+import ParticipationHarmonica from "./harmonica/ParticipationHarmonica";
 
 class ContactDetailsHarmonica extends Component {
     constructor(props){
@@ -29,6 +30,7 @@ class ContactDetailsHarmonica extends Component {
                 emailsInbox: false,
                 emailsSent: false,
                 documents: false,
+                participations: false,
             },
             showModalAddGroup: false,
         };
@@ -49,6 +51,7 @@ class ContactDetailsHarmonica extends Component {
                     emailsInbox: false,
                     emailsSent: false,
                     documents: false,
+                    participations: false,
                 },
             })
         }
@@ -63,7 +66,7 @@ class ContactDetailsHarmonica extends Component {
             if (typeof address === 'undefined') {
                 this.setState({
                     showModalError: !this.state.showModalError,
-                    modalErrorTitle: 'Waaschuwing',
+                    modalErrorTitle: 'Waarschuwing',
                     modalErrorMessage: 'Dit contact heeft nog geen adres.',
                 });
             }
@@ -86,7 +89,7 @@ class ContactDetailsHarmonica extends Component {
             if (typeof address === 'undefined') {
                 this.setState({
                     showModalError: !this.state.showModalError,
-                    modalErrorTitle: 'Waaschuwing',
+                    modalErrorTitle: 'Waarschuwing',
                     modalErrorMessage: 'Dit contact heeft nog geen adres.',
                 });
             }
@@ -120,8 +123,24 @@ class ContactDetailsHarmonica extends Component {
         hashHistory.push(`/taak/nieuw/contact/${this.props.contactDetails.id}`);
     };
 
+    newParticipation = () => {
+        hashHistory.push(`/productie-project/participant/nieuw/contact/${this.props.contactDetails.id}`);
+    };
+
     newEmail = () => {
-        hashHistory.push(`/email/nieuw`);
+        let primaryEmail = this.props.contactDetails.emailAddresses.find((emailAddress) => {
+            return emailAddress.primary
+        });
+        if (typeof primaryEmail === 'undefined') {
+                this.setState({
+                    showModalError: !this.state.showModalError,
+                    modalErrorTitle: 'Waarschuwing',
+                    modalErrorMessage: 'Dit contact heeft nog primair email adres.',
+                });
+        }
+        else {
+            hashHistory.push(`/email/nieuw/contact/${this.props.contactDetails.id}`);
+        }
     };
 
     newDocument = (type) => {
@@ -199,6 +218,12 @@ class ContactDetailsHarmonica extends Component {
                     documentCount={this.props.contactDetails.documentCount}
                 />
 
+                <ParticipationHarmonica
+                    toggleShowList={() => this.toggleShowList('participations')}
+                    showParticipationsList={this.state.toggleShowList.participations}
+                    participationCount={this.props.contactDetails.participationCount}
+                    newParticipation={this.newParticipation}
+                />
 
                 { this.state.showModalError &&
                 <ErrorModal

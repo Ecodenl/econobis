@@ -2,11 +2,14 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 const ErrorModal = (props) => {
-    const {title, closeModal, buttonText, httpCode} = props;
+    const {title, closeModal, buttonText, error} = props;
     let { errorMessage } = props;
 
-    if(httpCode){
-        switch (httpCode) {
+    if(error.message){
+        errorMessage = error.message;
+    }
+    else if(error.httpCode){
+        switch (error.httpCode) {
             case 400:
                 errorMessage = 'Foute aanvraag';
                 break;

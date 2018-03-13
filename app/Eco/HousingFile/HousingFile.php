@@ -8,9 +8,12 @@ use App\Eco\Measure\Measure;
 use App\Eco\Task\Task;
 use App\Eco\User\User;
 use Illuminate\Database\Eloquent\Model;
+use Venturecraft\Revisionable\RevisionableTrait;
 
 class HousingFile extends Model
 {
+
+    use RevisionableTrait;
 
     protected $table = 'housing_files';
 

@@ -31,11 +31,11 @@ class HousingFileController extends ApiController
 
     public function grid(RequestQuery $requestQuery)
     {
-        $intakes = $requestQuery->get();
+        $housingFiles = $requestQuery->get();
 
-        $intakes->load(['address.contact', 'buildingType', 'energyLabel']);
+        $housingFiles->load(['address.contact', 'buildingType', 'energyLabel']);
 
-        return GridHousingFile::collection($intakes)
+        return GridHousingFile::collection($housingFiles)
             ->additional(['meta' => [
             'total' => $requestQuery->total(),
             ]

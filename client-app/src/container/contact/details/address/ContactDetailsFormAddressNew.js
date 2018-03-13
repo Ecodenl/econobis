@@ -6,11 +6,10 @@ import {newAddress, unsetPrimaryAddresses} from '../../../../actions/contact/Con
 import InputText from '../../../../components/form/InputText';
 import ButtonText from '../../../../components/button/ButtonText';
 import InputSelect from "../../../../components/form/InputSelect";
-import InputMask from '../../../../components/form/InputMask';
-import InputCheckbox from "../../../../components/form/InputCheckbox";
 import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
 import validator from "validator";
+import InputToggle from "../../../../components/form/InputToggle";
 
 class ContactDetailsFormAddressNew extends Component {
     constructor(props) {
@@ -25,6 +24,7 @@ class ContactDetailsFormAddressNew extends Component {
                 city: '',
                 typeId: 'visit',
                 primary: false,
+                countryId: 'NL',
             },
             errors: {
                 typeId: false,
@@ -59,7 +59,7 @@ class ContactDetailsFormAddressNew extends Component {
         let errors = {};
         let hasErrors = false;
 
-        if(!validator.isPostalCode(address.postalCode, 'NL')){
+        if(!validator.isPostalCode(address.postalCode, 'any')){
             errors.postalCode = true;
             hasErrors = true;
         };
@@ -88,14 +88,14 @@ class ContactDetailsFormAddressNew extends Component {
     };
 
     render() {
-        const {street, number, postalCode, city, typeId, primary } = this.state.address;
+        const {street, number, postalCode, city, typeId, primary, countryId } = this.state.address;
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
                 <Panel className={'panel-grey'}>
                     <PanelBody>
                         <div className="row">
-                            <InputMask
+                            <InputText
                                 label={"Postcode"}
                                 size={"col-sm-4"}
                                 name={"postalCode"}
@@ -103,7 +103,6 @@ class ContactDetailsFormAddressNew extends Component {
                                 onChangeAction={ this.handleInputChange }
                                 required={"required"}
                                 error={this.state.errors.postalCode}
-                                mask={'9999 aa'}
                             />
                             <InputText
                                 label={"Nummer"}
@@ -148,10 +147,22 @@ class ContactDetailsFormAddressNew extends Component {
                                 required={"required"}
                                 error={this.state.errors.typeId}
                             />
-                            <InputCheckbox
+                            <InputToggle
                                 label={"Primair adres"}
                                 name={"primary"}
-                                checked={primary}
+                                value={primary}
+                                onChangeAction={this.handleInputChange}
+                            />
+                        </div>
+
+                        <div className="row">
+                            <InputSelect
+                                label={"Land"}
+                                id="countryId"
+                                size={"col-sm-6"}
+                                name={"countryId"}
+                                options={this.props.countries}
+                                value={countryId}
                                 onChangeAction={this.handleInputChange}
                             />
                         </div>
@@ -170,6 +181,7 @@ class ContactDetailsFormAddressNew extends Component {
 const mapStateToProps = (state) => {
     return {
         addressTypes: state.systemData.addressTypes,
+        countries: state.systemData.countries,
         id: state.contactDetails.id,
     };
 };

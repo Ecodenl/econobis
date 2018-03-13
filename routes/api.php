@@ -100,12 +100,15 @@ Route::namespace('Api')
 
         Route::post('/organisation', 'Organisation\OrganisationController@store');
         Route::post('/organisation/{organisation}', 'Organisation\OrganisationController@update');
+        Route::get('/organisation/peek', 'Organisation\OrganisationController@peek');
 
         Route::post('/contact-note', 'ContactNote\ContactNoteController@store');
         Route::post('/contact-note/{contactNote}', 'ContactNote\ContactNoteController@update');
         Route::post('/contact-note/{contactNote}/delete', 'ContactNote\ContactNoteController@destroy');
 
-        Route::get('/organisation/peek', 'Organisation\OrganisationController@peek');
+        Route::post('/contact-energy-supplier', 'ContactEnergySupplier\ContactEnergySupplierController@store');
+        Route::post('/contact-energy-supplier/{contactEnergySupplier}', 'ContactEnergySupplier\ContactEnergySupplierController@update');
+        Route::post('/contact-energy-supplier/{contactEnergySupplier}/delete', 'ContactEnergySupplier\ContactEnergySupplierController@destroy');
 
         Route::get('contact-group/grid', 'ContactGroup\ContactGroupController@grid');
         Route::get('contact-group/peek', 'ContactGroup\ContactGroupController@peek');
@@ -246,5 +249,46 @@ Route::namespace('Api')
         Route::get('/quotation-request/{quotationRequest}', 'QuotationRequest\QuotationRequestController@show');
         Route::post('/quotation-request/{quotationRequest}/update', 'QuotationRequest\QuotationRequestController@update');
         Route::post('/quotation-request/{quotationRequest}/delete', 'QuotationRequest\QuotationRequestController@destroy');
+
+        Route::post('production-project/value-course', 'ProductionProject\ProductionProjectValueCourseController@store');
+        Route::post('production-project/value-course/{productionProjectValueCourse}', 'ProductionProject\ProductionProjectValueCourseController@update');
+        Route::post('production-project/value-course/{productionProjectValueCourse}/delete', 'ProductionProject\ProductionProjectValueCourseController@destroy');
+
+        Route::get('production-project/revenue/{productionProjectRevenue}', 'ProductionProject\ProductionProjectRevenueController@show');
+        Route::post('production-project/revenue/create-participant-revenue-report/{documentTemplate}/{emailTemplate}', 'ProductionProject\ProductionProjectRevenueController@createParticipantRevenueReport');
+        Route::post('production-project/revenue/create-energy-supplier-report/{productionProjectRevenue}/{documentTemplate}/{energySupplier}', 'ProductionProject\ProductionProjectRevenueController@createEnergySupplierReport');
+        Route::post('production-project/revenue/create-energy-supplier-csv/{productionProjectRevenue}/{energySupplier}', 'ProductionProject\ProductionProjectRevenueController@createEnergySupplierCsv');
+        Route::post('production-project/revenue', 'ProductionProject\ProductionProjectRevenueController@store');
+        Route::post('production-project/revenue/{productionProjectRevenue}', 'ProductionProject\ProductionProjectRevenueController@update');
+        Route::post('production-project/revenue/{productionProjectRevenue}/delete', 'ProductionProject\ProductionProjectRevenueController@destroy');
+
+        Route::get('production-project/participant/grid', 'ParticipationProductionProject\ParticipationProductionProjectController@grid');
+        Route::get('production-project/participant/peek', 'ParticipationProductionProject\ParticipationProductionProjectController@peek');
+        Route::get('production-project/participant/{participantProductionProject}', 'ParticipationProductionProject\ParticipationProductionProjectController@show');
+        Route::post('production-project/participant', 'ParticipationProductionProject\ParticipationProductionProjectController@store');
+        Route::post('production-project/participant/transfer', 'ParticipationProductionProject\ParticipationProductionProjectController@transfer');
+        Route::post('production-project/participant/create-participant-report/{documentTemplate}/{emailTemplate}', 'ParticipationProductionProject\ParticipationProductionProjectController@createParticipantReport');
+        Route::post('production-project/participant/transaction', 'ParticipantTransaction\ParticipantTransactionController@store');
+        Route::post('production-project/participant/transaction/{participantTransaction}', 'ParticipantTransaction\ParticipantTransactionController@update');
+        Route::post('production-project/participant/transaction/{participantTransaction}/delete', 'ParticipantTransaction\ParticipantTransactionController@destroy');
+        Route::post('production-project/participant/obligation-number', 'ParticipationProductionProject\ObligationNumberController@store');
+        Route::post('production-project/participant/obligation-number/{obligationNumber}', 'ParticipationProductionProject\ObligationNumberController@update');
+        Route::post('production-project/participant/obligation-number/{obligationNumber}/delete', 'ParticipationProductionProject\ObligationNumberController@destroy');
+        Route::post('production-project/participant/{participantProductionProject}', 'ParticipationProductionProject\ParticipationProductionProjectController@update');
+        Route::post('production-project/participant/{participantProductionProject}/delete', 'ParticipationProductionProject\ParticipationProductionProjectController@destroy');
+
+        Route::get('production-project/grid', 'ProductionProject\ProductionProjectController@grid');
+        Route::get('production-project/peek', 'ProductionProject\ProductionProjectController@peek');
+        Route::get('production-project/{productionProject}', 'ProductionProject\ProductionProjectController@show');
+        Route::get('production-project/{productionProject}/obligation-numbers', 'ProductionProject\ProductionProjectController@getObligationNumbers');
+        Route::post('production-project', 'ProductionProject\ProductionProjectController@store');
+        Route::post('production-project/{productionProject}', 'ProductionProject\ProductionProjectController@update');
+        Route::post('production-project/{productionProject}/delete', 'ProductionProject\ProductionProjectController@destroy');
+
+        Route::get('postal-code-link/grid', 'PostalCodeLink\PostalCodeLinkController@grid');
+        Route::post('postal-code-link', 'PostalCodeLink\PostalCodeLinkController@store');
+        Route::post('postal-code-link/{postalCodeLink}', 'PostalCodeLink\PostalCodeLinkController@update');
+        Route::post('postal-code-link/{postalCodeLink}/delete', 'PostalCodeLink\PostalCodeLinkController@destroy');
+
     }
 );

@@ -17,6 +17,7 @@ class AddressController extends ApiController
     {
         $data = $request->validate([
             'contactId' => ['required', 'exists:contacts,id'],
+            'countryId' => ['exists:countries,id'],
             'typeId' => new EnumExists(AddressType::class),
             'street' => '',
             'number' => '',
@@ -35,7 +36,7 @@ class AddressController extends ApiController
 
         $address->save();
 
-        return new FullAddress($address->fresh());
+        return new FullAddress($address->fresh()->load('country'));
     }
 
     public function update(Request $request, Address $address)
@@ -44,6 +45,7 @@ class AddressController extends ApiController
 
         $data = $request->validate([
             'contactId' => 'exists:contacts,id',
+            'countryId' => ['exists:countries,id'],
             'typeId' => new EnumExists(AddressType::class),
             'street' => '',
             'number' => '',
@@ -59,7 +61,7 @@ class AddressController extends ApiController
         $address->fill($this->arrayKeysToSnakeCase($data));
         $address->save();
 
-        return new FullAddress($address->fresh());
+        return new FullAddress($address->fresh()->load('country'));
     }
 
     public function destroy(Address $address)

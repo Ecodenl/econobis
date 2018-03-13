@@ -15,6 +15,9 @@ const TaskDetailsFormGeneralView = props => {
         intakeName,
         contactGroup,
         campaign,
+        housingFile,
+        productionProject,
+        participant,
         datePlannedStart,
         datePlannedFinish,
         startTimePlanned,
@@ -144,6 +147,28 @@ const TaskDetailsFormGeneralView = props => {
                                 link={opportunityId ? 'kans/' + opportunityId : ''}
                             />
                         </div>
+
+                        <div className="row">
+                            <ViewText
+                                label={"Woningdossier"}
+                                value={housingFile && housingFile.id}
+                                link={housingFile ? 'woningdossier/' + housingFile.id : ''}
+                            />
+                            <ViewText
+                                label={"Productie project"}
+                                value={productionProject && productionProject.name}
+                                link={productionProject ? 'productie-project/' + productionProject.id : ''}
+                            />
+                        </div>
+
+                        <div className="row">
+                            <ViewText
+                                label={"Participant productie project"}
+                                value={participant && participant.name}
+                                link={participant ? 'productie-project/participant/' + participant.id : ''}
+                            />
+                        </div>
+
                     </div>
                 }
             </div>

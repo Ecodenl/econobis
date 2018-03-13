@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 const Modal = (props) => {
-    const {buttonClassName, buttonConfirmText, children, closeModal, confirmAction, title} = props;
+    const {buttonClassName, buttonCancelText, buttonConfirmText, children, closeModal, confirmAction, title} = props;
 
     return (
         <div className="modal">
@@ -15,7 +15,7 @@ const Modal = (props) => {
                         {children}
                     </div>
                     <div className="modal-footer">
-                        <button type="button" className="btn btn-default" onClick={closeModal}>Annuleren</button>
+                        <button type="button" className="btn btn-default" onClick={closeModal}>{buttonCancelText}</button>
                         { props.showConfirmAction &&
                             <button type="button" className={`btn ${buttonClassName}`} onClick={confirmAction}>
                                 {buttonConfirmText}
@@ -31,11 +31,13 @@ const Modal = (props) => {
 Modal.defaultProps = {
     buttonClassName: 'btn-success',
     buttonConfirmText: 'Opslaan',
+    buttonCancelText: 'Annuleren',
     showConfirmAction: true,
     confirmAction: () => {},
 };
 
 Modal.propTypes = {
+    buttonCancelText: PropTypes.string,
     buttonConfirmText: PropTypes.string,
     children: PropTypes.oneOfType([
         PropTypes.element.isRequired,

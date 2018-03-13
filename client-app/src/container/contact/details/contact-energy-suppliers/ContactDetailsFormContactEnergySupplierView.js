@@ -4,12 +4,11 @@ import {connect} from "react-redux";
 moment.locale('nl');
 
 const ContactDetailsFormContactEnergySupplierView = props => {
-    const {energySupplier, contactEnergySupplyType, memberSince, contactEnergySupplyStatus, switchDate, isCurrentSupplier } = props.contactEnergySupplier;
+    const {energySupplier, contactEnergySupplyType, memberSince, contactEnergySupplyStatus, switchDate, esNumber, isCurrentSupplier } = props.contactEnergySupplier;
 
     return (
         <div className={`row border ${props.highlightLine}`} onMouseEnter={() => props.onLineEnter()} onMouseLeave={() => props.onLineLeave()}>
             <div onClick={props.openEdit}>
-
                 <div className="col-sm-2">
                     { energySupplier && energySupplier.name }
                 </div>
@@ -19,11 +18,17 @@ const ContactDetailsFormContactEnergySupplierView = props => {
                 <div className="col-sm-2">
                     {memberSince ? moment(memberSince).format('L') : ''}
                 </div>
-                <div className="col-sm-2">
+                <div className="col-sm-1">
                     { contactEnergySupplyStatus && contactEnergySupplyStatus.name }
                 </div>
                 <div className="col-sm-2">
                     {switchDate ? moment(switchDate).format('L') : ''}
+                </div>
+                <div className="col-sm-1">
+                    { contactEnergySupplyStatus && contactEnergySupplyStatus.name }
+                </div>
+                <div className="col-sm-1">
+                    {esNumber && esNumber}
                 </div>
                 <div className="col-sm-1">
                     {isCurrentSupplier ? 'Ja' : ''}

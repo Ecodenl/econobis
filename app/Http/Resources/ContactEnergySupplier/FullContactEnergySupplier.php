@@ -42,6 +42,7 @@ class FullContactEnergySupplier extends Resource
             'createdBy' => FullUser::make($this->whenLoaded('createdBy')),
             'createdAt' => $this->created_at,
             'updatedAt' => $this->updated_at,
+            'esNumber' => $this->es_number,
         ];
     }
 }

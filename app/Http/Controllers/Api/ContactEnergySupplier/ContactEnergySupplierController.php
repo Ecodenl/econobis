@@ -21,6 +21,7 @@ class ContactEnergySupplierController extends ApiController
             ->string('eanGas')->whenMissing(null)->onEmpty(null)->alias('ean_gas')->next()
             ->string('contactEnergySupplyStatusId')->validate('nullable|exists:contact_energy_supply_status,id')->whenMissing(null)->onEmpty(null)->alias('contact_energy_supply_status_id')->next()
             ->date('switchDate')->whenMissing(null)->onEmpty(null)->alias('switch_date')->next()
+            ->string('esNumber')->alias('es_number')->next()
             ->boolean('isCurrentSupplier')->alias('is_current_supplier')->next()
             ->get();
 
@@ -53,6 +54,7 @@ class ContactEnergySupplierController extends ApiController
             ->string('eanGas')->whenMissing(null)->onEmpty(null)->alias('ean_gas')->next()
             ->string('contactEnergySupplyStatusId')->validate('nullable|exists:contact_energy_supply_status,id')->whenMissing(null)->onEmpty(null)->alias('contact_energy_supply_status_id')->next()
             ->date('switchDate')->whenMissing(null)->onEmpty(null)->alias('switch_date')->next()
+            ->string('esNumber')->alias('es_number')->next()
             ->boolean('isCurrentSupplier')->alias('is_current_supplier')->next()
             ->get();
 

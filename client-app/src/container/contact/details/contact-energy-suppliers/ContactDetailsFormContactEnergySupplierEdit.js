@@ -12,7 +12,7 @@ import InputToggle from "../../../../components/form/InputToggle";
 moment.locale('nl');
 
 const ContactDetailsFormContactEnergySupplierEdit = props => {
-    const {energySupplierId, contactEnergySupplyTypeId, memberSince, eanElectricity, eanGas, contactEnergySupplyStatusId, switchDate, isCurrentSupplier, createdAt, createdBy } = props.contactEnergySupplier;
+    const {energySupplierId, contactEnergySupplyTypeId, memberSince, eanElectricity, eanGas, contactEnergySupplyStatusId, switchDate, esNumber, isCurrentSupplier, createdAt, createdBy } = props.contactEnergySupplier;
 
     return (
         <div>
@@ -78,6 +78,12 @@ const ContactDetailsFormContactEnergySupplierEdit = props => {
                                 name="switchDate"
                                 value={switchDate ? switchDate : ''}
                                 onChangeAction={props.handleInputChangeDate}
+                            />
+                            <InputText
+                                label={"Klantnummer"}
+                                name={"esNumber"}
+                                value={esNumber ? esNumber : ''}
+                                onChangeAction={props.handleInputChange}
                             />
                         </div>
 

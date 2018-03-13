@@ -26,6 +26,7 @@ class ContactDetailsFormContactEnergySupplierNew extends Component {
                 eanGas: '',
                 contactEnergySupplyStatusId: '',
                 switchDate: '',
+                esNumber: '',
                 isCurrentSupplier: false
             },
             errors: {
@@ -91,7 +92,7 @@ class ContactDetailsFormContactEnergySupplierNew extends Component {
     };
 
     render() {
-        const {energySupplierId, contactEnergySupplyTypeId, memberSince, eanElectricity, eanGas, contactEnergySupplyStatusId, switchDate, isCurrentSupplier } = this.state.contactEnergySupplier;
+        const {energySupplierId, contactEnergySupplyTypeId, memberSince, eanElectricity, eanGas, contactEnergySupplyStatusId, switchDate, esNumber, isCurrentSupplier } = this.state.contactEnergySupplier;
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -161,6 +162,16 @@ class ContactDetailsFormContactEnergySupplierNew extends Component {
                                 value={switchDate}
                                 onChangeAction={this.handleInputChangeDate}
                             />
+                            <InputText
+                                label={"Klantnummer"}
+                                id={"esNumber"}
+                                name={"esNumber"}
+                                value={esNumber}
+                                onChangeAction={this.handleInputChange}
+                            />
+                        </div>
+
+                        <div className="row">
                             <InputToggle
                                 label={"Is huidige leverancier"}
                                 name={"isCurrentSupplier"}

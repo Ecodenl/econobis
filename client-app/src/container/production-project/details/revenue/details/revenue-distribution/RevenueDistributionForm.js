@@ -159,7 +159,7 @@ class RevenueDistributionForm extends Component {
         }
     };
 
-    checkParticipantRevenueRapport = () => {
+    checkParticipantRevenueReport = () => {
         let error = false;
 
         if (validator.isEmpty(this.state.templateId)) {
@@ -203,14 +203,14 @@ class RevenueDistributionForm extends Component {
         }
     };
 
-    createParticipantRevenueRapport = () => {
+    createParticipantRevenueReport = () => {
         if (!this.state.readyForCreation) {
             this.setState({
                 showModal: false,
             });
         }
         else {
-            ProductionProjectRevenueAPI.createParticipantRevenueRapport(this.state.templateId, this.state.emailTemplateId, this.state.subject, this.state.distributionIds).then((payload) => {
+            ProductionProjectRevenueAPI.createParticipantRevenueReport(this.state.templateId, this.state.emailTemplateId, this.state.subject, this.state.distributionIds).then((payload) => {
                 hashHistory.push('/documenten');
             });
         }
@@ -276,7 +276,7 @@ class RevenueDistributionForm extends Component {
                             <div className="margin-10-top pull-right btn-group" role="group">
                                 <ButtonText buttonClassName={"btn-default"} buttonText={"Annuleren"}
                                             onClickAction={this.toggleShowCheckboxList}/>
-                                <ButtonText buttonText={"Maak rapport"} onClickAction={this.checkParticipantRevenueRapport}
+                                <ButtonText buttonText={"Maak rapport"} onClickAction={this.checkParticipantRevenueReport}
                                             type={"submit"}
                                             value={"Submit"}/>
                             </div>
@@ -290,7 +290,7 @@ class RevenueDistributionForm extends Component {
                     closeModal={this.toggleModal}
                     children={this.state.modalText}
                     buttonConfirmText={this.state.buttonConfirmText}
-                    confirmAction={this.createParticipantRevenueRapport}
+                    confirmAction={this.createParticipantRevenueReport}
                 />
                 }
             </Panel>

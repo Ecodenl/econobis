@@ -257,7 +257,7 @@ Route::namespace('Api')
         Route::post('production-project/value-course/{productionProjectValueCourse}/delete', 'ProductionProject\ProductionProjectValueCourseController@destroy');
 
         Route::get('production-project/revenue/{productionProjectRevenue}', 'ProductionProject\ProductionProjectRevenueController@show');
-        Route::post('production-project/revenue/create-participant-revenue-rapport/{documentTemplate}/{emailTemplate}', 'ProductionProject\ProductionProjectRevenueController@createParticipantRevenueRapport');
+        Route::post('production-project/revenue/create-participant-revenue-report/{documentTemplate}/{emailTemplate}', 'ProductionProject\ProductionProjectRevenueController@createParticipantRevenueReport');
         Route::post('production-project/revenue', 'ProductionProject\ProductionProjectRevenueController@store');
         Route::post('production-project/revenue/{productionProjectRevenue}', 'ProductionProject\ProductionProjectRevenueController@update');
         Route::post('production-project/revenue/{productionProjectRevenue}/delete', 'ProductionProject\ProductionProjectRevenueController@destroy');
@@ -267,7 +267,7 @@ Route::namespace('Api')
         Route::get('production-project/participant/{participantProductionProject}', 'ParticipationProductionProject\ParticipationProductionProjectController@show');
         Route::post('production-project/participant', 'ParticipationProductionProject\ParticipationProductionProjectController@store');
         Route::post('production-project/participant/transfer', 'ParticipationProductionProject\ParticipationProductionProjectController@transfer');
-        Route::post('production-project/participant/create-participant-rapport/{documentTemplate}/{emailTemplate}', 'ParticipationProductionProject\ParticipationProductionProjectController@createParticipantRapport');
+        Route::post('production-project/participant/create-participant-report/{documentTemplate}/{emailTemplate}', 'ParticipationProductionProject\ParticipationProductionProjectController@createParticipantReport');
         Route::post('production-project/participant/transaction', 'ParticipantTransaction\ParticipantTransactionController@store');
         Route::post('production-project/participant/transaction/{participantTransaction}', 'ParticipantTransaction\ParticipantTransactionController@update');
         Route::post('production-project/participant/transaction/{participantTransaction}/delete', 'ParticipantTransaction\ParticipantTransactionController@destroy');

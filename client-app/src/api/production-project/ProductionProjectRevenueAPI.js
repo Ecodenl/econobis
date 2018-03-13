@@ -56,8 +56,8 @@ export default {
             );
     },
 
-    createParticipantRevenueRapport: (templateId, emailTemplateId, subject, distributionIds) => {
-        const requestUrl = `${URL_REVENUE}/create-participant-revenue-rapport/${templateId}/${emailTemplateId}`;
+    createParticipantRevenueReport: (templateId, emailTemplateId, subject, distributionIds) => {
+        const requestUrl = `${URL_REVENUE}/create-participant-revenue-report/${templateId}/${emailTemplateId}`;
         const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
         axios.defaults.headers.common.Authorization = AUTH_TOKEN;
 

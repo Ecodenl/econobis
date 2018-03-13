@@ -6,6 +6,8 @@ import Panel from '../../../../../components/panel/Panel';
 import PanelBody from '../../../../../components/panel/PanelBody';
 import ButtonIcon from '../../../../../components/button/ButtonIcon';
 import RevenueDetailsDelete from './RevenueDetailsDelete';
+import ButtonText from "../../../../../components/button/ButtonText";
+import { hashHistory } from 'react-router';
 
 
 class RevenueDetailsToolbar extends Component {
@@ -21,6 +23,9 @@ class RevenueDetailsToolbar extends Component {
         this.setState({showDelete: !this.state.showDelete});
     };
 
+    newEnergySupplierReport = () => {
+       hashHistory.push(`productie-project/opbrengst/${this.props.revenue.id}/energyleverancier-rapport`);
+    };
 
     render() {
         const { revenue }  = this.props;
@@ -35,6 +40,9 @@ class RevenueDetailsToolbar extends Component {
                                     <ButtonIcon iconName={"glyphicon-arrow-left"} onClickAction={browserHistory.goBack} />
                                     {this.props.permissions.manageFinancial &&
                                     <ButtonIcon iconName={"glyphicon-trash"} onClickAction={this.toggleDelete}/>
+                                    }
+                                    {revenue.confirmed &&
+                                    <ButtonText buttonText={"Rapportage EM"} onClickAction={this.newEnergySupplierReport}/>
                                     }
                                 </div>
                             </div>

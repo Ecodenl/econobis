@@ -26,7 +26,7 @@ use App\Http\RequestQueries\ParticipantProductionProject\Grid\RequestQuery;
 use App\Http\Resources\ParticipantProductionProject\FullParticipantProductionProject;
 use App\Http\Resources\ParticipantProductionProject\GridParticipantProductionProject;
 use App\Http\Resources\ParticipantProductionProject\ParticipantProductionProjectPeek;
-use App\Http\Resources\ParticipantProductionProject\Templates\ParticipantRapportMail;
+use App\Http\Resources\ParticipantProductionProject\Templates\ParticipantReportMail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -329,7 +329,7 @@ class ParticipationProductionProjectController extends ApiController
         }
     }
 
-    public function createParticipantRapport(Request $request, DocumentTemplate $documentTemplate, EmailTemplate $emailTemplate){
+    public function createParticipantReport(Request $request, DocumentTemplate $documentTemplate, EmailTemplate $emailTemplate){
         $participantIds = $request->input('participantIds');
         $subject = $request->input('subject');
 
@@ -417,7 +417,7 @@ class ParticipationProductionProjectController extends ApiController
                 $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables, 'ik', $user);
                 $htmlBodyWithContactVariables = TemplateVariableHelper::stripRemainingVariableTags($htmlBodyWithContactVariables);
 
-                $email->send(new ParticipantRapportMail($email, $htmlBodyWithContactVariables, $document));
+                $email->send(new ParticipantReportMail($email, $htmlBodyWithContactVariables, $document));
 
             }
             //delete file on server, still saved on alfresco.

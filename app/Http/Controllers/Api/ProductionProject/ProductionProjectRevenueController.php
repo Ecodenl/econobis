@@ -19,7 +19,7 @@ use App\Helpers\RequestInput\RequestInput;
 use App\Helpers\Template\TemplateTableHelper;
 use App\Helpers\Template\TemplateVariableHelper;
 use App\Http\Controllers\Api\ApiController;
-use App\Http\Resources\ParticipantProductionProject\Templates\ParticipantRapportMail;
+use App\Http\Resources\ParticipantProductionProject\Templates\ParticipantReportMail;
 use App\Http\Resources\ProductionProject\FullProductionProjectRevenue;
 use Barryvdh\DomPDF\Facade as PDF;
 use Carbon\Carbon;
@@ -174,7 +174,7 @@ class ProductionProjectRevenueController extends ApiController
         }
     }
 
-    public function createParticipantRevenueRapport(Request $request, DocumentTemplate $documentTemplate, EmailTemplate $emailTemplate){
+    public function createParticipantRevenueReport(Request $request, DocumentTemplate $documentTemplate, EmailTemplate $emailTemplate){
         $distributionIds = $request->input('distributionIds');
         $subject = $request->input('subject');
 
@@ -264,7 +264,7 @@ class ProductionProjectRevenueController extends ApiController
                 $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables, 'ik', $user);
                 $htmlBodyWithContactVariables = TemplateVariableHelper::stripRemainingVariableTags($htmlBodyWithContactVariables);
 
-                $email->send(new ParticipantRapportMail($email, $htmlBodyWithContactVariables, $document));
+                $email->send(new ParticipantReportMail($email, $htmlBodyWithContactVariables, $document));
 
             }
             //delete file on server, still saved on alfresco.

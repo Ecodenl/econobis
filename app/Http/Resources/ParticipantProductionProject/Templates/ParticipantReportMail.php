@@ -10,7 +10,7 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\Storage;
 
-class ParticipantRapportMail extends Mailable
+class ParticipantReportMail extends Mailable
 {
     use Queueable, SerializesModels;
 

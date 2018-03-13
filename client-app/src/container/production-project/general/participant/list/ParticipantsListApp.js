@@ -208,7 +208,7 @@ class ParticipantsListApp extends Component {
         }
     };
 
-    checkParticipantRapport = () => {
+    checkParticipantReport = () => {
         let error = false;
 
         if (validator.isEmpty(this.state.templateId)) {
@@ -252,14 +252,14 @@ class ParticipantsListApp extends Component {
         }
     };
 
-    createParticipantRapport = () => {
+    createParticipantReport = () => {
         if (!this.state.readyForCreation) {
             this.setState({
                 showModal: false,
             });
         }
         else {
-            ParticipantsProductionProjectAPI.createParticipantRapport(this.state.templateId, this.state.emailTemplateId, this.state.subject, this.state.participantIds).then((payload) => {
+            ParticipantsProductionProjectAPI.createParticipantReport(this.state.templateId, this.state.emailTemplateId, this.state.subject, this.state.participantIds).then((payload) => {
                 hashHistory.push('/documenten');
             });
         }
@@ -329,7 +329,7 @@ class ParticipantsListApp extends Component {
                             <div className="margin-10-top pull-right btn-group" role="group">
                                 <ButtonText buttonClassName={"btn-default"} buttonText={"Annuleren"}
                                             onClickAction={this.toggleShowCheckboxList}/>
-                                <ButtonText buttonText={"Maak rapport"} onClickAction={this.checkParticipantRapport}
+                                <ButtonText buttonText={"Maak rapport"} onClickAction={this.checkParticipantReport}
                                             type={"submit"}
                                             value={"Submit"}/>
                             </div>
@@ -343,7 +343,7 @@ class ParticipantsListApp extends Component {
                     closeModal={this.toggleModal}
                     children={this.state.modalText}
                     buttonConfirmText={this.state.buttonConfirmText}
-                    confirmAction={this.createParticipantRapport}
+                    confirmAction={this.createParticipantReport}
                 />
                 }
             </Panel>

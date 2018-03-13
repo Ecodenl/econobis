@@ -24,7 +24,7 @@ class RevenueDetailsToolbar extends Component {
     };
 
     newEnergySupplierReport = () => {
-       hashHistory.push(`productie-project/opbrengst/${this.props.revenue.id}/energyleverancier-rapport`);
+       hashHistory.push(`productie-project/opbrengst/${this.props.revenue.id}/energieleverancier-rapport`);
     };
 
     render() {

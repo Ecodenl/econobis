@@ -12,6 +12,7 @@ use App\Eco\Contact\Contact;
 use App\Eco\Document\Document;
 use App\Eco\DocumentTemplate\DocumentTemplate;
 use App\Eco\EmailTemplate\EmailTemplate;
+use App\Eco\EnergySupplier\EnergySupplier;
 use App\Eco\ProductionProject\ProductionProjectRevenue;
 use App\Eco\ProductionProject\ProductionProjectRevenueDistribution;
 use App\Helpers\Alfresco\AlfrescoHelper;
@@ -270,6 +271,72 @@ class ProductionProjectRevenueController extends ApiController
             //delete file on server, still saved on alfresco.
             Storage::disk('documents')->delete($document->filename);
         }
+    }
+
+    public function createEnergySupplierReport(Request $request, ProductionProjectRevenue $productionProjectRevenue, DocumentTemplate $documentTemplate, EnergySupplier $energySupplier){
+        $documentName = $request->input('documentName');
+
+        //get current logged in user
+        $user = Auth::user();
+
+        //load template parts
+        $documentTemplate->load('footer', 'baseTemplate', 'header');
+
+        $html = $documentTemplate->header ? $documentTemplate->header->html_body
+            : '';
+
+        if ($documentTemplate->baseTemplate) {
+            $html .= TemplateVariableHelper::replaceTemplateTagVariable($documentTemplate->baseTemplate->html_body,
+                $documentTemplate->html_body, '', '');
+        } else {
+            $html .= TemplateVariableHelper::replaceTemplateFreeTextVariables($documentTemplate->html_body,
+                '', '');
+        }
+
+        $html .= $documentTemplate->footer
+            ? $documentTemplate->footer->html_body : '';
+
+        $productionProject = $productionProjectRevenue->productionProject;
+
+        $energySupplierHtml
+            = TemplateVariableHelper::replaceTemplateVariables($html,
+            'opbrengst', $productionProjectRevenue);
+        $energySupplierHtml
+            = TemplateVariableHelper::replaceTemplateVariables($energySupplierHtml,
+            'productie_project', $productionProject);
+        $energySupplierHtml
+            = TemplateVariableHelper::replaceTemplateVariables($energySupplierHtml,
+            'ik', $user);
+
+        $energySupplierHtml
+            = TemplateVariableHelper::stripRemainingVariableTags($energySupplierHtml);
+
+        $pdf = PDF::loadView('documents.generic', [
+            'html' => $energySupplierHtml,
+        ])->output();
+
+        $document = new Document();
+        $document->document_type = 'internal';
+        $document->document_group = 'revenue';
+
+        $document->filename = $documentName . '.pdf';
+
+        $document->save();
+
+        $filePath = (storage_path('app' . DIRECTORY_SEPARATOR . 'documents/'
+            . $document->filename));
+        file_put_contents($filePath, $pdf);
+
+        $alfrescoHelper = new AlfrescoHelper($user->email, $user->alfresco_password);
+
+        $alfrescoResponse = $alfrescoHelper->createFile($filePath,
+            $document->filename, $document->getDocumentGroup()->name);
+
+        $document->alfresco_node_id = $alfrescoResponse['entry']['id'];
+        $document->save();
+
+        //delete file on server, still saved on alfresco.
+        Storage::disk('documents')->delete($document->filename);
     }
 
     public function destroy(ProductionProjectRevenue $productionProjectRevenue)

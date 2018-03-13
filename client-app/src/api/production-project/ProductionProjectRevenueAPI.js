@@ -68,4 +68,17 @@ export default {
                 },
             );
     },
+
+    createEnergySupplierReport: (revenueId, templateId, energySupplierId, documentName) => {
+        const requestUrl = `${URL_REVENUE}/create-energy-supplier-report/${revenueId}/${templateId}/${energySupplierId}`;
+        const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
+        axios.defaults.headers.common.Authorization = AUTH_TOKEN;
+
+        return axios.post(requestUrl, {documentName: documentName})
+            .then(response => response.data.data)
+            .catch((error) => {
+                    console.log(error);
+                },
+            );
+    },
 };

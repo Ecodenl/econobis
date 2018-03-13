@@ -75,6 +75,7 @@ class CSVHelper
             'contact.primaryphoneNumber.number' => 'Telefoonnummer',
             'date_begin' => 'Startdatum',
             'date_end' => 'Einddatum',
+            'participations_amount' => 'Aantal kavels',
             'contact.primaryContactEnergySupplier.es_number' => 'Eneco klantnr',
             'delivered_total' => 'Opwek',
         ])->getCsv();

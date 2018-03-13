@@ -11,17 +11,22 @@ namespace App\Http\Controllers\Api\ProductionProject;
 use App\Eco\Contact\Contact;
 use App\Eco\Document\Document;
 use App\Eco\DocumentTemplate\DocumentTemplate;
+use App\Eco\Email\Jobs\SendEmailsWithVariables;
+use App\Eco\EmailTemplate\EmailTemplate;
 use App\Eco\ProductionProject\ProductionProjectRevenue;
 use App\Eco\ProductionProject\ProductionProjectRevenueDistribution;
 use App\Helpers\Alfresco\AlfrescoHelper;
 use App\Helpers\RequestInput\RequestInput;
+use App\Helpers\Template\TemplateTableHelper;
 use App\Helpers\Template\TemplateVariableHelper;
 use App\Http\Controllers\Api\ApiController;
+use App\Http\Resources\ParticipantProductionProject\Templates\ParticipantRapportMail;
 use App\Http\Resources\ProductionProject\FullProductionProjectRevenue;
 use Barryvdh\DomPDF\Facade as PDF;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 
 class ProductionProjectRevenueController extends ApiController
@@ -32,7 +37,7 @@ class ProductionProjectRevenueController extends ApiController
             'type',
             'category',
             'createdBy',
-            'distribution.contact',
+            'distribution.contact.primaryEmailAddress',
             'productionProject.participantsProductionProject.contact.primaryAddress',
             'productionProject.participantsProductionProject.contact.primaryContactEnergySupplier.energySupplier',
             'productionProject.participantsProductionProject.participantProductionProjectPayoutType',
@@ -170,8 +175,9 @@ class ProductionProjectRevenueController extends ApiController
         }
     }
 
-    public function createParticipantRapport(Request $request, DocumentTemplate $documentTemplate){
+    public function createParticipantRapport(Request $request, DocumentTemplate $documentTemplate, EmailTemplate $emailTemplate){
         $distributionIds = $request->input('distributionIds');
+        $subject = $request->input('subject');
 
         //get current logged in user
         $user = Auth::user();
@@ -196,6 +202,7 @@ class ProductionProjectRevenueController extends ApiController
             $distribution = ProductionProjectRevenueDistribution::find($distributionId);
 
             $contact = $distribution->contact;
+            $primaryEmailAddress = $contact->primaryEmailAddress;
 
             $revenue = $distribution->revenue;
             $productionProject = $revenue->productionProject;
@@ -231,13 +238,37 @@ class ProductionProjectRevenueController extends ApiController
             $filePath = (storage_path('app' . DIRECTORY_SEPARATOR . 'documents/' . $document->filename));
             file_put_contents($filePath, $pdf);
 
-            $alfrescoHelper = new AlfrescoHelper($user->email, 'secret');
+            $alfrescoHelper = new AlfrescoHelper($user->email, $user->alfresco_password);
 
             $alfrescoResponse = $alfrescoHelper->createFile($filePath, $document->filename, $document->getDocumentGroup()->name);
 
             $document->alfresco_node_id = $alfrescoResponse['entry']['id'];
             $document->save();
 
+            //send email
+
+            if($primaryEmailAddress){
+
+                $email = Mail::to($primaryEmailAddress);
+                if(!$subject){
+                $subject = 'Participant rapportage Econobis';
+                }
+
+                $email->subject = $subject;
+
+                $email->html_body ='<!DOCTYPE html><html><head><meta http-equiv="content-type" content="text/html;charset=UTF-8"/><title>'
+                    . $subject . '</title></head>'
+                    . $emailTemplate->html_body . '</html>';
+
+                $htmlBodyWithContactVariables = TemplateTableHelper::replaceTemplateTables($email->html_body, $contact);
+                $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables, 'contact' ,$contact);
+                $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables, 'ik', $user);
+                $htmlBodyWithContactVariables = TemplateVariableHelper::stripRemainingVariableTags($htmlBodyWithContactVariables);
+
+                $email->send(new ParticipantRapportMail($email, $htmlBodyWithContactVariables, $document));
+
+            }
+            //delete file on server, still saved on alfresco.
             Storage::disk('documents')->delete($document->filename);
         }
     }

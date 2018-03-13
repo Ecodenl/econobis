@@ -226,7 +226,7 @@ class DocumentController extends Controller
 
         $user = Auth::user();
 
-        $alfrescoHelper = new AlfrescoHelper($user->email, 'secret');
+        $alfrescoHelper = new AlfrescoHelper($user->email, $user->alfresco_password);
 
         return $alfrescoHelper->downloadFile($document->alfresco_node_id);
     }

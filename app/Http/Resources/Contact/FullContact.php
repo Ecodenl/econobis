@@ -45,6 +45,7 @@ class FullContact extends Resource
             'addresses' => FullAddress::collection($this->whenLoaded('addresses')),
             'primaryAddress' => FullAddress::make($this->whenLoaded('primaryAddress')),
             'emailAddresses' => FullEmailAddress::collection($this->whenLoaded('emailAddresses')),
+            'primaryEmailAddress' => FullEmailAddress::make($this->whenLoaded('primaryEmailAddress')),
             'phoneNumbers' => FullPhoneNumber::collection($this->whenLoaded('phoneNumbers')),
             'notes' => FullContactNote::collection($this->whenLoaded('contactNotes')),
             'createdAt' => $this->created_at,

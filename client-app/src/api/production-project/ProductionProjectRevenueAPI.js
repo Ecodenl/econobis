@@ -56,12 +56,12 @@ export default {
             );
     },
 
-    createParticipantRapport: (templateId, distributionIds) => {
-        const requestUrl = `${URL_REVENUE}/create-participant-rapport/${templateId}`;
+    createParticipantRapport: (templateId, emailTemplateId, subject, distributionIds) => {
+        const requestUrl = `${URL_REVENUE}/create-participant-rapport/${templateId}/${emailTemplateId}`;
         const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
         axios.defaults.headers.common.Authorization = AUTH_TOKEN;
 
-        return axios.post(requestUrl, {distributionIds: distributionIds})
+        return axios.post(requestUrl, {distributionIds: distributionIds, subject: subject})
             .then(response => response.data.data)
             .catch((error) => {
                     console.log(error);

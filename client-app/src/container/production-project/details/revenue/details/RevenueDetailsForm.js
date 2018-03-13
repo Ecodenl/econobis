@@ -20,7 +20,7 @@ class RevenueDetailsForm extends Component {
                 <div>Geen gegevens gevonden!</div>
                 :
                 <div>
-                    {this.props.productionProjectRevenue.confirmed &&
+                    {this.props.productionProjectRevenue.confirmed == 1 &&
                     <Panel>
                         <PanelHeader>
                             <span className="h5" style={{color: '#e64a4a'}}>Deze opbrengst is definitief. Hierdoor kan deze niet meer gewijzigd worden en staat de opbrengstverdeling vast.</span>

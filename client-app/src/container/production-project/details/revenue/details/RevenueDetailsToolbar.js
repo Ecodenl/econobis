@@ -38,7 +38,7 @@ class RevenueDetailsToolbar extends Component {
                                     {this.props.permissions.manageFinancial &&
                                     <ButtonIcon iconName={"glyphicon-trash"} onClickAction={this.toggleDelete}/>
                                     }
-                                    {revenue.confirmed &&
+                                    {revenue.confirmed == 1 &&
                                     <div className="nav navbar-nav btn-group" role="group">
                                         <button className="btn btn-success btn-sm" data-toggle="dropdown">
                                             <span className="glyphicon glyphicon-plus" />

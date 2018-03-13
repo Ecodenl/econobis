@@ -34,7 +34,7 @@ const RevenueDistributionFormDynamicView = props => {
                 {participationsCurrent ? participationsCurrent : 0}
             </div>
             <div className="col-sm-1">
-                {payout && payout}
+                {payout ? payout : ''}
             </div>
             <div className="col-sm-1">
                 {type ? type.name : ''}

@@ -136,6 +136,8 @@ class ProductionProjectRevenueController extends ApiController
             $totalParticipations += $participant->participations_current;
         }
 
+        $totalParticipations ?: $totalParticipations = 1;
+
         foreach ($participants as $participant) {
             $contact = Contact::find($participant->contact_id);
             $primaryAddress = $contact->primaryAddress;
@@ -369,7 +371,7 @@ class ProductionProjectRevenueController extends ApiController
             . $document->filename));
         file_put_contents($filePath, $csv);
 
-        $alfrescoHelper = new AlfrescoHelper($user->email, 'secret');
+        $alfrescoHelper = new AlfrescoHelper($user->email, $user->alfresco_password);
 
         $alfrescoResponse = $alfrescoHelper->createFile($filePath,
             $document->filename, $document->getDocumentGroup()->name);

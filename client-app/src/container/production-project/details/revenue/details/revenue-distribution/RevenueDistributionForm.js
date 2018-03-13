@@ -222,7 +222,7 @@ class RevenueDistributionForm extends Component {
             <Panel>
                 <PanelHeader>
                     <span className="h5 text-bold">Opbrengstverdeling participanten</span>
-                    {this.props.productionProjectRevenue.confirmed &&
+                    {this.props.productionProjectRevenue.confirmed == 1 &&
                     <div className="pull-right">
                         <ButtonText buttonText={'Rapportage'} onClickAction={this.toggleShowCheckboxList}/>
                     </div>

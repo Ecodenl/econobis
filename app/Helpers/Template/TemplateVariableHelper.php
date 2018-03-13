@@ -360,7 +360,7 @@ class TemplateVariableHelper
                 return $model->kwh_end;
                 break;
             case 'datum_uitgekeerd':
-                return $model->date_payed;
+                return $model->date_payed ? Carbon::parse($model->date_payed)->format('d/m/Y') : null;
                 break;
             default:
                 return '';
@@ -392,7 +392,7 @@ class TemplateVariableHelper
                 return $model->payout_type;
                 break;
             case 'datum_uitkeren':
-                return  Carbon::parse($model->date_payout)->format('d/m/Y');
+                return $model->date_payout ? Carbon::parse($model->date_payout)->format('d/m/Y') : null;
                 break;
             case 'energieleverancier':
                 return $model->energy_supplier_name;

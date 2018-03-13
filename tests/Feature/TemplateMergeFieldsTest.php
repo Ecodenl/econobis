@@ -4,10 +4,14 @@ namespace Tests\Feature;
 
 use App\Eco\Address\Address;
 use App\Eco\Contact\Contact;
+use App\Eco\EnergySupplier\ContactEnergySupplier;
+use App\Eco\EnergySupplier\EnergySupplier;
 use App\Eco\ParticipantProductionProject\ParticipantProductionProject;
 use App\Eco\Person\Person;
 use App\Eco\PhoneNumber\PhoneNumber;
 use App\Eco\ProductionProject\ProductionProject;
+use App\Eco\ProductionProject\ProductionProjectRevenue;
+use App\Eco\ProductionProject\ProductionProjectRevenueDistribution;
 use App\Eco\User\User;
 use App\Helpers\Template\TemplateVariableHelper;
 use Tests\TestCase;
@@ -33,16 +37,18 @@ class TemplateMergeFieldsTest extends TestCase
         $this->assertUserMergeFields();
         $this->assertProductionProjectMergeFields();
         $this->assertParticipantProductionProjectMergeFields();
+        $this->assertProductionProjectRevenueMergeFields();
+        $this->assertProductionProjectRevenueDistributionMergeFields();
     }
 
     public function assertContactMergeFields()
     {
-        $html ='{contact_titel}{contact_naam}{testjes}{contact_voornaam}{contact_achternaam}{onzin}{contact_adres}{contact_postcode}{contact_plaats}{contact_telefoonnummer}';
+        $html ='{contact_titel}{contact_naam}{testjes}{contact_voornaam}{contact_achternaam}{onzin}{contact_adres}{contact_postcode}{contact_plaats}{contact_telefoonnummer}{contact_energieleverancier}';
 
         $html = TemplateVariableHelper::replaceTemplateVariables($html, 'contact', Contact::find(1));
         $html = TemplateVariableHelper::stripRemainingVariableTags($html);
 
-        $expectedHtml = 'MevrKlaas de VaakKlaasde VaakDorpstraat 81693KWWervershoof0612345678';
+        $expectedHtml = 'MevrKlaas de VaakKlaasde VaakDorpstraat 81693KWWervershoof0612345678Nuon';
 
         $this->assertEquals($expectedHtml, $html);
     }
@@ -95,14 +101,47 @@ class TemplateMergeFieldsTest extends TestCase
         $this->assertEquals($expectedHtml, $html);
     }
 
+    public function assertProductionProjectRevenueMergeFields(){
+
+        $html = '{r_kwh_start}{r_kwh_eind}{r_datum_uitgekeerd}';
+
+        $html = TemplateVariableHelper::replaceTemplateVariables($html, 'r', ProductionProjectRevenue::find(1));
+
+        $expectedHtml = '1000200016/03/2018';
+
+        $this->assertEquals($expectedHtml, $html);
+
+    }
+
+    public function assertProductionProjectRevenueDistributionMergeFields(){
+
+        $html = '{d_adres}{d_postcode}{d_woonplaats}{d_status}{d_participaties}{d_bedrag}{d_uitkeren_op}';
+        $html .= '{d_datum_uitkeren}{d_energieleverancier}';
+
+        $html = TemplateVariableHelper::replaceTemplateVariables($html, 'd', ProductionProjectRevenueDistribution::find(1));
+
+        $expectedHtml = 'talud 91239 LMOnderdijkdbstatus151523Rekening';
+        $expectedHtml .= '17/03/2018Eneco';
+
+        $this->assertEquals($expectedHtml, $html);
+    }
+
     public function insertData(){
         $this->insertContact();
         $this->insertUser();
         $this->insertProductionProject();
         $this->insertParticipantProductionProject();
+        $this->insertProductionProjectRevenue();
+        $this->insertProductionProjectRevenueDistribution();
     }
 
     public function insertContact(){
+
+        $energySupplier = new EnergySupplier();
+        $energySupplier->name = 'Nuon';
+        $energySupplier->does_postal_code_links = true;
+        $energySupplier->save();
+
         $contact = new Contact();
         $contact->type_id = 'person';
         $contact->save();
@@ -129,6 +168,14 @@ class TemplateMergeFieldsTest extends TestCase
         $phoneNumber->primary = true;
         $phoneNumber->number = '0612345678';
         $phoneNumber->save();
+
+        $contactEnergySupplier = new ContactEnergySupplier();
+        $contactEnergySupplier->contact_id = 1;
+        $contactEnergySupplier->energy_supplier_id = 1;
+        $contactEnergySupplier->created_by_id = 1;
+        $contactEnergySupplier->is_current_supplier = true;
+        $contactEnergySupplier->contact_energy_supply_type_id = 1;
+        $contactEnergySupplier->save();
     }
 
     public function insertUser(){
@@ -194,5 +241,37 @@ class TemplateMergeFieldsTest extends TestCase
         $participant->date_end = '2018-03-03';
         $participant->type_id = 2;
         $participant->save();
+    }
+
+    public function insertProductionProjectRevenue(){
+        $revenue = new ProductionProjectRevenue();
+        $revenue->category_id = 1;
+        $revenue->production_project_id = 1;
+        $revenue->confirmed = true;
+        $revenue->date_begin = '2018-03-13';
+        $revenue->date_end = '2018-03-14';
+        $revenue->date_entry = '2018-03-15';
+        $revenue->kwh_start = 1000;
+        $revenue->kwh_end = 2000;
+        $revenue->date_payed = '2018-03-16';
+        $revenue->created_by_id = 1;
+        $revenue->save();
+    }
+
+    public function insertProductionProjectRevenueDistribution()
+    {
+        $distribution = new ProductionProjectRevenueDistribution();
+        $distribution->revenue_id = 1;
+        $distribution->contact_id = 1;
+        $distribution->address = 'talud 9';
+        $distribution->postal_code = '1239 LM';
+        $distribution->city = 'Onderdijk';
+        $distribution->status = 'dbstatus';
+        $distribution->participations_amount = 15;
+        $distribution->payout = 1523;
+        $distribution->payout_type = 'Rekening';
+        $distribution->date_payout = '2018-03-17';
+        $distribution->energy_supplier_name = 'Eneco';
+        $distribution->save();
     }
 }

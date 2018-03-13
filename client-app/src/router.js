@@ -30,6 +30,7 @@ import EmailTemplateDetailsApp from './container/email-templates/details/EmailTe
 import EmailTemplateNewApp from './container/email-templates/new/EmailTemplateNewApp';
 import EmailAnswerApp from './container/email/answer/EmailAnswerApp';
 import EnergySupplierReportNewApp from './container/production-project/details/revenue/energy-supplier-report/EnergySupplierReportNewApp';
+import EnergySupplierCSVNewApp from './container/production-project/details/revenue/energy-supplier-csv/EnergySupplierCSVNewApp';
 import Forgot from './container/auth/Forgot';
 import HousingFileDetailsApp from './container/housing-file/details/HousingFileDetailsApp';
 import HousingFileNewApp from './container/housing-file/new/HousingFileNewApp';
@@ -178,6 +179,7 @@ const Routes = () => {
                 <Route path="productie-project/nieuw" component={ProductionProjectNewApp} />
                 <Route path="productie-project/opbrengst/nieuw/:productionProjectId" component={ProductionProjectRevenueNewApp} />
                 <Route path="productie-project/opbrengst/:revenueId/energieleverancier-rapport" component={EnergySupplierReportNewApp} />
+                <Route path="productie-project/opbrengst/:revenueId/energieleverancier-csv" component={EnergySupplierCSVNewApp} />
                 <Route path="productie-project/details/:id" component={ProductionProjectDetailsApp} />
                 <Route path="productie-project/opbrengst/:id" component={RevenueDetailsApp} />
                 <Route path="productie-project/:id" component={ProductionProjectGeneralApp} />

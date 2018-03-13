@@ -15,6 +15,7 @@
         "laravel/tinker": "~1.0",
         "php-imap/php-imap": "^3.0",
         "spatie/laravel-permission": "^2.7",
+        "usmanhalalit/laracsv": "1.*@dev",
         "venturecraft/revisionable": "^1.28"
     },
     "require-dev": {

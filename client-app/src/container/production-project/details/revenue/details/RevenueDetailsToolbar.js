@@ -1,13 +1,12 @@
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import { browserHistory } from 'react-router';
+import { hashHistory, Link } from 'react-router';
 
 import Panel from '../../../../../components/panel/Panel';
 import PanelBody from '../../../../../components/panel/PanelBody';
 import ButtonIcon from '../../../../../components/button/ButtonIcon';
 import RevenueDetailsDelete from './RevenueDetailsDelete';
-import ButtonText from "../../../../../components/button/ButtonText";
-import { hashHistory } from 'react-router';
 
 
 class RevenueDetailsToolbar extends Component {
@@ -23,12 +22,10 @@ class RevenueDetailsToolbar extends Component {
         this.setState({showDelete: !this.state.showDelete});
     };
 
-    newEnergySupplierReport = () => {
-       hashHistory.push(`productie-project/opbrengst/${this.props.revenue.id}/energieleverancier-rapport`);
-    };
-
     render() {
         const { revenue }  = this.props;
+        const pdfLink = `productie-project/opbrengst/${this.props.revenue.id}/energieleverancier-rapport`;
+        const csvLink = `productie-project/opbrengst/${this.props.revenue.id}/energieleverancier-csv`;
 
         return (
             <div className="row">
@@ -42,7 +39,15 @@ class RevenueDetailsToolbar extends Component {
                                     <ButtonIcon iconName={"glyphicon-trash"} onClickAction={this.toggleDelete}/>
                                     }
                                     {revenue.confirmed &&
-                                    <ButtonText buttonText={"Rapportage EM"} onClickAction={this.newEnergySupplierReport}/>
+                                    <div className="nav navbar-nav btn-group" role="group">
+                                        <button className="btn btn-success btn-sm" data-toggle="dropdown">
+                                            <span className="glyphicon glyphicon-plus" />
+                                        </button>
+                                        <ul className="dropdown-menu">
+                                            <li><Link to={pdfLink}>PDF EM</Link></li>
+                                            <li><Link to={csvLink}>CSV EM</Link></li>
+                                        </ul>
+                                    </div>
                                     }
                                 </div>
                             </div>

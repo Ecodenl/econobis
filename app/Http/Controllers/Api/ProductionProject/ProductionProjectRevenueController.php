@@ -16,6 +16,7 @@ use App\Eco\EnergySupplier\EnergySupplier;
 use App\Eco\ProductionProject\ProductionProjectRevenue;
 use App\Eco\ProductionProject\ProductionProjectRevenueDistribution;
 use App\Helpers\Alfresco\AlfrescoHelper;
+use App\Helpers\CSV\CSVHelper;
 use App\Helpers\RequestInput\RequestInput;
 use App\Helpers\Template\TemplateTableHelper;
 use App\Helpers\Template\TemplateVariableHelper;
@@ -172,6 +173,8 @@ class ProductionProjectRevenueController extends ApiController
             if ($primaryContactEnergySupplier) {
                 $distribution->energy_supplier_name
                     = $primaryContactEnergySupplier->energySupplier->name;
+
+                $distribution->es_id = $primaryContactEnergySupplier->energySupplier->id;
             }
 
             $distribution->save();
@@ -341,6 +344,43 @@ class ProductionProjectRevenueController extends ApiController
         //delete file on server, still saved on alfresco.
         Storage::disk('documents')->delete($document->filename);
     }
+
+    public function createEnergySupplierCSV(Request $request, ProductionProjectRevenue $productionProjectRevenue, EnergySupplier $energySupplier){
+        $documentName = $request->input('documentName');
+        $templateId = $request->input('templateId');
+
+        //get current logged in user
+        $user = Auth::user();
+
+        if($templateId) {
+            $csvHelper = new CSVHelper($energySupplier, $productionProjectRevenue, $templateId);
+            $csv = $csvHelper->getCSV();
+        }
+
+        $document = new Document();
+        $document->document_type = 'internal';
+        $document->document_group = 'revenue';
+
+        $document->filename = $documentName . '.csv';
+
+        $document->save();
+
+        $filePath = (storage_path('app' . DIRECTORY_SEPARATOR . 'documents/'
+            . $document->filename));
+        file_put_contents($filePath, $csv);
+
+        $alfrescoHelper = new AlfrescoHelper($user->email, 'secret');
+
+        $alfrescoResponse = $alfrescoHelper->createFile($filePath,
+            $document->filename, $document->getDocumentGroup()->name);
+
+        $document->alfresco_node_id = $alfrescoResponse['entry']['id'];
+        $document->save();
+
+        //delete file on server, still saved on alfresco.
+        Storage::disk('documents')->delete($document->filename);
+    }
+
 
     public function destroy(ProductionProjectRevenue $productionProjectRevenue)
     {

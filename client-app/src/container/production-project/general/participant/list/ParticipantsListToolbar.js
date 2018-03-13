@@ -3,6 +3,7 @@ import {connect} from "react-redux";
 
 import ButtonIcon from '../../../../../components/button/ButtonIcon';
 import {hashHistory} from "react-router";
+import ButtonText from "../../../../../components/button/ButtonText";
 
 const ParticipantsListToolbar = props => {
     const { meta = {} } = props.participantsProductionProject;
@@ -16,7 +17,7 @@ const ParticipantsListToolbar = props => {
                     <ButtonIcon iconName={"glyphicon-plus"}
                                 onClickAction={() => hashHistory.push(`/productie-project/participant/nieuw/${props.productionProject.id}`)}/>
                     }
-                    <ButtonIcon iconName={"glyphicon-ok"} />
+                    <ButtonText buttonText={'Rapportage'} onClickAction={props.toggleShowCheckboxList}/>
                 </div>
             </div>
             <div className="col-md-8"><h3 className="text-center table-title">Participanten productieproject {props.productionProject ? props.productionProject.name : ''}</h3></div>

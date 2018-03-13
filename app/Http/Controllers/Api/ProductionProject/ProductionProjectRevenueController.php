@@ -11,7 +11,6 @@ namespace App\Http\Controllers\Api\ProductionProject;
 use App\Eco\Contact\Contact;
 use App\Eco\Document\Document;
 use App\Eco\DocumentTemplate\DocumentTemplate;
-use App\Eco\Email\Jobs\SendEmailsWithVariables;
 use App\Eco\EmailTemplate\EmailTemplate;
 use App\Eco\ProductionProject\ProductionProjectRevenue;
 use App\Eco\ProductionProject\ProductionProjectRevenueDistribution;
@@ -175,7 +174,7 @@ class ProductionProjectRevenueController extends ApiController
         }
     }
 
-    public function createParticipantRapport(Request $request, DocumentTemplate $documentTemplate, EmailTemplate $emailTemplate){
+    public function createParticipantRevenueRapport(Request $request, DocumentTemplate $documentTemplate, EmailTemplate $emailTemplate){
         $distributionIds = $request->input('distributionIds');
         $subject = $request->input('subject');
 

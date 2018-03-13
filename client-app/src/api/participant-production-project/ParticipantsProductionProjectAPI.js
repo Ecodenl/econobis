@@ -34,4 +34,17 @@ export default {
                 }
             );
     },
+
+    createParticipantRapport: (templateId, emailTemplateId, subject, participantIds) => {
+        const requestUrl = `${URL_PARTICIPANT_PRODUCTION_PROJECT}/create-participant-rapport/${templateId}/${emailTemplateId}`;
+        const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
+        axios.defaults.headers.common.Authorization = AUTH_TOKEN;
+
+        return axios.post(requestUrl, {participantIds: participantIds, subject: subject})
+            .then(response => response.data.data)
+            .catch((error) => {
+                    console.log(error);
+                },
+            );
+    },
 };

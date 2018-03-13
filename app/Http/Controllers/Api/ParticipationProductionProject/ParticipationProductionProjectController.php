@@ -9,19 +9,29 @@
 namespace App\Http\Controllers\Api\ParticipationProductionProject;
 
 use App\Eco\Contact\Contact;
-use App\Eco\EnergySupplier\ContactEnergySupplierType;
+use App\Eco\Document\Document;
+use App\Eco\DocumentTemplate\DocumentTemplate;
+use App\Eco\EmailTemplate\EmailTemplate;
+use App\Helpers\Alfresco\AlfrescoHelper;
+use App\Helpers\Template\TemplateTableHelper;
+use Barryvdh\DomPDF\Facade as PDF;
 use App\Eco\ParticipantProductionProject\ParticipantProductionProject;
 use App\Eco\ParticipantTransaction\ParticipantTransaction;
 use App\Eco\PostalCodeLink\PostalCodeLink;
 use App\Eco\ProductionProject\ProductionProject;
 use App\Helpers\RequestInput\RequestInput;
+use App\Helpers\Template\TemplateVariableHelper;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\RequestQueries\ParticipantProductionProject\Grid\RequestQuery;
 use App\Http\Resources\ParticipantProductionProject\FullParticipantProductionProject;
 use App\Http\Resources\ParticipantProductionProject\GridParticipantProductionProject;
 use App\Http\Resources\ParticipantProductionProject\ParticipantProductionProjectPeek;
+use App\Http\Resources\ParticipantProductionProject\Templates\ParticipantRapportMail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Storage;
 
 class ParticipationProductionProjectController extends ApiController
 {
@@ -32,6 +42,7 @@ class ParticipationProductionProjectController extends ApiController
         $participantProductionProject->load([
         'contact.primaryContactEnergySupplier.energySupplier',
         'contact.primaryAddress',
+        'contact.primaryEmailAddress',
         'participantProductionProjectStatus',
     ]);
 
@@ -315,6 +326,102 @@ class ParticipationProductionProjectController extends ApiController
         if(!$energySupplier->does_postal_code_links){
             array_push($message, $checkText . 'Energieleverancier van contact doet niet mee aan postcoderoos.');
             return false;
+        }
+    }
+
+    public function createParticipantRapport(Request $request, DocumentTemplate $documentTemplate, EmailTemplate $emailTemplate){
+        $participantIds = $request->input('participantIds');
+        $subject = $request->input('subject');
+
+        //get current logged in user
+        $user = Auth::user();
+
+        //load template parts
+        $documentTemplate->load('footer', 'baseTemplate', 'header');
+
+        $html = $documentTemplate->header ? $documentTemplate->header->html_body : '';
+
+        if ($documentTemplate->baseTemplate) {
+            $html .= TemplateVariableHelper::replaceTemplateTagVariable($documentTemplate->baseTemplate->html_body,
+                $documentTemplate->html_body, '','');
+        } else {
+            $html .= TemplateVariableHelper::replaceTemplateFreeTextVariables($documentTemplate->html_body,
+                '', '');
+        }
+
+        $html .= $documentTemplate->footer ? $documentTemplate->footer->html_body : '';
+
+        foreach ($participantIds as $participantId) {
+
+            $participant = ParticipantProductionProject::find($participantId);
+
+            $contact = $participant->contact;
+            $primaryEmailAddress = $contact->primaryEmailAddress;
+
+            $productionProject = $participant->productionProject;
+
+            $revenueHtml = TemplateVariableHelper::replaceTemplateVariables($html,'contact', $contact);
+            $revenueHtml = TemplateVariableHelper::replaceTemplateVariables($revenueHtml,'participant', $participant);
+            $revenueHtml = TemplateVariableHelper::replaceTemplateVariables($revenueHtml,'productie_project', $productionProject);
+            $revenueHtml = TemplateVariableHelper::replaceTemplateVariables($revenueHtml,'ik', $user);
+
+            $revenueHtml = TemplateVariableHelper::stripRemainingVariableTags($revenueHtml);
+
+            $pdf = PDF::loadView('documents.generic', [
+                'html' => $revenueHtml,
+            ])->output();
+
+            $time = Carbon::now();
+
+            $document = new Document();
+            $document->document_type = 'internal';
+            $document->document_group = 'revenue';
+            $document->contact_id = $contact->id;
+
+            $filename = str_replace(' ', '', $productionProject->code) . '_' . str_replace(' ', '', $contact->full_name);
+
+            //max length name 25
+            $filename = substr($filename, 0, 25);
+
+            $document->filename = $filename  . substr($document->getDocumentGroup()->name, 0, 1) . (Document::where('document_group', 'revenue')->count() + 1) . '_' .  $time->format('Ymd') . '.pdf';
+
+            $document->save();
+
+            $filePath = (storage_path('app' . DIRECTORY_SEPARATOR . 'documents/' . $document->filename));
+            file_put_contents($filePath, $pdf);
+
+            $alfrescoHelper = new AlfrescoHelper($user->email, $user->alfresco_password);
+
+            $alfrescoResponse = $alfrescoHelper->createFile($filePath, $document->filename, $document->getDocumentGroup()->name);
+
+            $document->alfresco_node_id = $alfrescoResponse['entry']['id'];
+            $document->save();
+
+            //send email
+
+            if($primaryEmailAddress){
+
+                $email = Mail::to($primaryEmailAddress);
+                if(!$subject){
+                    $subject = 'Participant rapportage Econobis';
+                }
+
+                $email->subject = $subject;
+
+                $email->html_body ='<!DOCTYPE html><html><head><meta http-equiv="content-type" content="text/html;charset=UTF-8"/><title>'
+                    . $subject . '</title></head>'
+                    . $emailTemplate->html_body . '</html>';
+
+                $htmlBodyWithContactVariables = TemplateTableHelper::replaceTemplateTables($email->html_body, $contact);
+                $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables, 'contact' ,$contact);
+                $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables, 'ik', $user);
+                $htmlBodyWithContactVariables = TemplateVariableHelper::stripRemainingVariableTags($htmlBodyWithContactVariables);
+
+                $email->send(new ParticipantRapportMail($email, $htmlBodyWithContactVariables, $document));
+
+            }
+            //delete file on server, still saved on alfresco.
+            Storage::disk('documents')->delete($document->filename);
         }
     }
 }

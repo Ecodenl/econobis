@@ -39,6 +39,8 @@ class RevenueDistributionForm extends Component {
         };
 
         this.handleInputChange = this.handleInputChange.bind(this);
+        this.toggleParticipantCheck = this.toggleParticipantCheck.bind(this);
+        this.toggleParticipantCheckNoEmail = this.toggleParticipantCheckNoEmail.bind(this);
         this.handleEmailTemplateChange = this.handleEmailTemplateChange.bind(this);
     }
 
@@ -157,7 +159,7 @@ class RevenueDistributionForm extends Component {
         }
     };
 
-    checkParticipantRapport = () => {
+    checkParticipantRevenueRapport = () => {
         let error = false;
 
         if (validator.isEmpty(this.state.templateId)) {
@@ -201,14 +203,14 @@ class RevenueDistributionForm extends Component {
         }
     };
 
-    createParticipantRapport = () => {
+    createParticipantRevenueRapport = () => {
         if (!this.state.readyForCreation) {
             this.setState({
                 showModal: false,
             });
         }
         else {
-            ProductionProjectRevenueAPI.createParticipantRapport(this.state.templateId, this.state.emailTemplateId, this.state.subject, this.state.distributionIds).then((payload) => {
+            ProductionProjectRevenueAPI.createParticipantRevenueRapport(this.state.templateId, this.state.emailTemplateId, this.state.subject, this.state.distributionIds).then((payload) => {
                 hashHistory.push('/documenten');
             });
         }
@@ -274,7 +276,7 @@ class RevenueDistributionForm extends Component {
                             <div className="margin-10-top pull-right btn-group" role="group">
                                 <ButtonText buttonClassName={"btn-default"} buttonText={"Annuleren"}
                                             onClickAction={this.toggleShowCheckboxList}/>
-                                <ButtonText buttonText={"Maak rapport"} onClickAction={this.checkParticipantRapport}
+                                <ButtonText buttonText={"Maak rapport"} onClickAction={this.checkParticipantRevenueRapport}
                                             type={"submit"}
                                             value={"Submit"}/>
                             </div>
@@ -288,7 +290,7 @@ class RevenueDistributionForm extends Component {
                     closeModal={this.toggleModal}
                     children={this.state.modalText}
                     buttonConfirmText={this.state.buttonConfirmText}
-                    confirmAction={this.createParticipantRapport}
+                    confirmAction={this.createParticipantRevenueRapport}
                 />
                 }
             </Panel>

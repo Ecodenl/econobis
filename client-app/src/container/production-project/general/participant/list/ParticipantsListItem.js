@@ -36,7 +36,11 @@ class ParticipantsListItem extends Component {
 
         return (
             <tr className={this.state.highlightRow} onDoubleClick={() => this.openItem(id)} onMouseEnter={() => this.onRowEnter()} onMouseLeave={() => this.onRowLeave()}>
-                <td>{ id }</td>
+                <td>
+                    { this.props.showCheckboxList && contact.primaryEmailAddress && <input type="checkbox" name={id} onChange={this.props.toggleParticipantCheck}/> }
+                    { this.props.showCheckboxList && !contact.primaryEmailAddress && <input type="checkbox" name={id} onChange={this.props.toggleParticipantCheckNoEmail}/> }
+                    { !this.props.showCheckboxList && <span>{id}</span> }
+                </td>
                 <td>{ contact.type ? contact.type.name : '' }</td>
                 <td>{ contact.fullName }</td>
                 <td>{ contact.primaryAddress ? contact.primaryAddress.street + ' ' + contact.primaryAddress.number : ''}</td>

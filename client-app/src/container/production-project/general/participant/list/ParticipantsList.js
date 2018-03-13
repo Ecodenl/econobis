@@ -42,6 +42,9 @@ class ParticipantsList extends Component {
                                 data.map((participantProductionProject) => {
                                     return <ParticipantsListItem
                                         key={participantProductionProject.id}
+                                        showCheckboxList={this.props.showCheckboxList}
+                                        toggleParticipantCheck={this.props.toggleParticipantCheck}
+                                        toggleParticipantCheckNoEmail={this.props.toggleParticipantCheckNoEmail}
                                         {...participantProductionProject}
                                     />
                                 })

@@ -74,7 +74,7 @@ class IntakeController extends ApiController
         $measureRequestedWithOpportunityIds = [];
 
         foreach ($intake->measuresRequested as $measureRequested){
-            if (count($measureRequested->opportunities))
+             if (count($measureRequested->opportunities()->where('intake_id', $intake->id)->get()))
             {
                 array_push($measureRequestedWithOpportunityIds, $measureRequested->id);
             }

@@ -94,8 +94,8 @@ class SendEmailsWithVariables
                     ($email->bcc != []) ? $mail->bcc($email->bcc) : null;
                     $ccBccSent = true;
                 } else {
-                    $email->cc = null;
-                    $email->bcc = null;
+                    $email->cc = [];
+                    $email->bcc = [];
                 }
                 $htmlBodyWithContactVariables = TemplateTableHelper::replaceTemplateTables($email->html_body, $emailToContact);
                 $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables, 'contact' ,$emailToContact);
@@ -114,8 +114,8 @@ class SendEmailsWithVariables
                     ($email->cc != []) ? $mail->cc($email->cc) : null;
                     ($email->bcc != []) ? $mail->bcc($email->bcc) : null;
                 } else {
-                    $email->cc = null;
-                    $email->bcc = null;
+                    $email->cc = [];
+                    $email->bcc = [];
                 }
 
                 $htmlBodyWithUserVariables = TemplateTableHelper::replaceTemplateTables($email->html_body, $emailToUser);

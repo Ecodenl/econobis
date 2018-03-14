@@ -120,6 +120,7 @@ class SystemData extends Resource
             'participantTransactionTypes' => GenericResource::collection(ParticipantTransactionType::all()),
             'productionProjectRevenueTypes' => GenericResource::collection(ProductionProjectRevenueType::all()),
             'productionProjectRevenueCategories' => GenericResource::collection(ProductionProjectRevenueCategory::all()),
+            'versionNumber' => 'Versie: ' . config('app.version_major') . '.' . config('app.version_minor') . '.' . config('app.version_fix'),
         ];
     }
 }

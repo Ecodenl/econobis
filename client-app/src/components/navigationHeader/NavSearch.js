@@ -50,7 +50,7 @@ class NavSearch extends Component {
             <form onSubmit={this.searchText}>
             <div className="input-group">
                 <span className="input-group-addon" id="basic-addon1"><span className="glyphicon glyphicon-search" aria-hidden="true"></span></span>
-                <input type='text' onChange={this.changeSearchText} value={this.state.searchText} placeholder="Zoeken ..." className="form-control" aria-describedby="basic-addon1" />
+                <input type='text' onChange={this.changeSearchText} value={this.state.searchText} placeholder="Zoeken..." className="form-control" aria-describedby="basic-addon1" />
 
                 {this.state.showSearchResults &&
                 <GeneralSearchModal closeModal={this.toggleSearchModal} records={this.state.data}/>

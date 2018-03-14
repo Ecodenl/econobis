@@ -10,7 +10,7 @@ const NavHeader = (props) => {
 
     return (
         <nav className="navbar navbar-default navbar-fixed-top">
-            <div className="fluid-container">
+            <div className="fluid-container row-eq-height">
                 <div className="col-xs-2 col-md-1 nav-item">
                     <a className="btn btn-sm" onClick={props.toggleMenu}>
                         <span className="glyphicon glyphicon-menu-hamburger" />
@@ -22,7 +22,7 @@ const NavHeader = (props) => {
                 <div className="col-md-2 hidden-xs hidden-sm nav-item">
                     <NavSearch />
                 </div>
-                <div className="col-xs-10 col-md-4 col-md-offset-1 nav-item">
+                <div className="col-xs-8 col-md-4 col-md-offset-1 nav-item">
                     <ul className="nav navbar-nav">
                         <li className="dropdown">
                             <a href="#" className="dropdown-toggle" data-toggle="dropdown" role="button">
@@ -31,6 +31,7 @@ const NavHeader = (props) => {
                             <ul className="dropdown-menu">
                                 <li><Link to="loguit">Uitloggen</Link></li>
                                 <li onClick={props.toggleChangePassword}><Link>Wachtwoord wijzigen</Link></li>
+                                <li><Link>{props.versionNumber}</Link></li>
                             </ul>
                         </li>
                     </ul>
@@ -43,6 +44,7 @@ const NavHeader = (props) => {
 function mapStateToProps(state) {
     return {
         meDetails: state.meDetails,
+        versionNumber: state.systemData.versionNumber,
     };
 }
 

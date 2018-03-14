@@ -17,6 +17,7 @@ use App\Eco\Email\EmailAttachment;
 use App\Eco\Email\Jobs\SendEmail;
 use App\Eco\Email\Jobs\SendEmailsWithVariables;
 use App\Eco\Email\Jobs\StoreConceptEmail;
+use App\Eco\EmailAddress\EmailAddress;
 use App\Eco\Mailbox\Mailbox;
 use App\Eco\User\User;
 use App\Helpers\RequestInput\RequestInput;
@@ -170,6 +171,18 @@ class EmailController
 
         if ($contactIds[0] == '') {
             $contactIds = [];
+        }
+        else{
+            //if we pair a email to a contact, we insert the email for the contact
+            $emailAddress = new EmailAddress();
+            $emailAddress->email = $email->from;
+            $emailAddress->type_id = 'general';
+
+            foreach ($contactIds as $contactId) {
+                $contactEmailAddress = $emailAddress->replicate();
+                $contactEmailAddress->contact_id = $contactId;
+                $contactEmailAddress->save();
+            }
         }
 
         $email->contacts()->sync($contactIds);

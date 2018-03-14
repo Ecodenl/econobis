@@ -11,6 +11,7 @@ namespace App\Eco\Mailbox;
 
 use App\Eco\Email\Email;
 use App\Eco\Email\EmailAttachment;
+use App\Eco\EmailAddress\EmailAddress;
 use Storage;
 
 class MailFetcher
@@ -134,6 +135,9 @@ class MailFetcher
         ]);
         $email->save();
 
+        //if from email exists in any of the email addresses make a pivot record.
+        $this->addRelationToContacts($email);
+
         foreach ($emailData->getAttachments() as $attachment){
             $filename = str_replace($this->getStorageRootDir(), '', $attachment->filePath);
             $emailAttachment = new EmailAttachment([
@@ -145,6 +149,17 @@ class MailFetcher
         }
 
         $this->fetchedEmails[] = $email;
+    }
+
+    public function addRelationToContacts(Email $email){
+
+        //Get emailaddresses with this email
+        $emailAddressesIds = EmailAddress::where('email', $email->from)->pluck('contact_id')->toArray();
+
+        //If contact has twice same emailaddress
+        $uniqueEmailAddressesIds = array_unique($emailAddressesIds);
+
+        $email->contacts()->attach($uniqueEmailAddressesIds);
     }
 
     public function getFetchedEmails()

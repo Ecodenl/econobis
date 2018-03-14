@@ -204,6 +204,9 @@ class EmailController
             $email = (new StoreConceptEmail($mailbox,
                 $sanitizedData))->handle();
 
+            //Create relations with contact if needed
+            $this->createEmailContactRelations($email, $request);
+
             //Email attachments
             $this->checkStorageDir($mailbox->id);
 
@@ -360,6 +363,43 @@ class EmailController
         ];
 
         return $sanitizedData;
+    }
+
+    public function createEmailContactRelations(Email $email, Request $request)
+    {
+        $contactIds = [];
+
+        //Get all possible contacts
+        $data = $request->validate([
+            'to' => 'required',
+            'cc' => '',
+            'bcc' => '',
+        ]);
+
+        $data['to'] = json_decode($data['to']);
+        $data['cc'] = json_decode($data['cc']);
+        $data['bcc'] = json_decode($data['bcc']);
+
+        //to, cc, bcc example data:
+        //1,2, fren.dehaan@xaris.nl, @user_1, @user_2, 3, rob.rollenberg@xaris.nl
+
+        $sendVariations = ['to'];
+        if ($data['cc'] != '') {
+            array_push($sendVariations, 'cc');
+        }
+        if ($data['bcc'] != '') {
+            array_push($sendVariations, 'bcc');
+        }
+
+        foreach ($sendVariations as $sendVariation) {
+            foreach ($data[$sendVariation] as $emailData) {
+                if (is_numeric($emailData)) {
+                    array_push($contactIds, $emailData);
+                }
+            }
+        }
+
+        $email->contacts()->sync(array_unique($contactIds));
     }
 
     public function storeEmailAttachments($attachments, $mailbox_id, $email_id){

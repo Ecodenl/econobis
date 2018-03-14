@@ -130,15 +130,6 @@ class SendEmailsWithVariables
         $email->date_sent = new Carbon();
         $email->folder = 'sent';
         $email->save();
-
-        //create email->contact relation
-        if(!empty($emailsToContact)) {
-            $contactIds = [];
-            foreach ($emailsToContact as $emailToContact){
-                array_push($contactIds, $emailToContact->id);
-            }
-            $email->contacts()->sync($contactIds);
-        }
     }
 
     private function validateRequest()

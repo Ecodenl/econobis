@@ -90,6 +90,9 @@ class EmailController
         $email->cc = [];
         $email->bcc = [];
 
+        //add extra data to html body
+        $email->html_body = '<p></p> <p>Oorspronkelijk bericht:</p> ' . $email->html_body;
+
         return FullEmail::make($email);
     }
 
@@ -114,6 +117,9 @@ class EmailController
         $email->from = $email->mailbox->email;
         $email->cc = $cc;
         $email->bcc = [];
+
+        //add extra data to html body
+        $email->html_body = '<p></p> <p>Oorspronkelijk bericht:</p> ' . $email->html_body;
 
         return FullEmail::make($email);
     }

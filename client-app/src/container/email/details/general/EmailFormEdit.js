@@ -16,17 +16,18 @@ import TasksAPI from "../../../../api/task/TasksAPI";
 import MeasureAPI from "../../../../api/measure/MeasureAPI";
 import IntakesAPI from "../../../../api/intake/IntakesAPI";
 import OpportunitiesAPI from "../../../../api/opportunity/OpportunitiesAPI";
+import InputReactSelect from "../../../../components/form/InputReactSelect";
 
 class EmailFormEdit extends Component {
     constructor(props) {
         super(props);
 
-        const {id, contact, intake, task, quotationRequest, measure, opportunity, status} = props.email;
+        const {id, contacts, intake, task, quotationRequest, measure, opportunity, status} = props.email;
 
         this.state = {
             email: {
                 id,
-                contactId: contact ? contact.id : '',
+                contactIds: contacts && contacts.map((contact) => contact.id).join(','),
                 intakeId: intake ? intake.id : '',
                 taskId: task ? task.id : '',
                 quotationRequestId: quotationRequest ? quotationRequest.id : '',
@@ -40,13 +41,21 @@ class EmailFormEdit extends Component {
             measures: [],
             intakes: [],
             opportunities: [],
+            peekLoading: {
+                contacts: true,
+            },
         }
     };
 
     componentWillMount() {
-        ContactsAPI.getContactsPeek().then(payload => {
+        ContactsAPI.getContactsPeek().then((payload) => {
             this.setState({
-                contacts: payload });
+                contacts: payload,
+                peekLoading: {
+                    ...this.state.peekLoading,
+                    contacts: false,
+                },
+            });
         });
 
         QuotationRequestsAPI.peekQuotationRequests().then((payload) => {
@@ -84,6 +93,16 @@ class EmailFormEdit extends Component {
         });
     };
 
+    handleContactIds = (selectedOption) => {
+        this.setState({
+            ...this.state,
+            email: {
+                ...this.state.email,
+                contactIds: selectedOption
+            },
+        });
+    };
+
     handleSubmit = event => {
         event.preventDefault();
 
@@ -103,7 +122,7 @@ class EmailFormEdit extends Component {
     };
 
     render() {
-        const {contactId, statusId, intakeId, taskId, quotationRequestId, measureId, opportunityId} = this.state.email;
+        const {contactIds, statusId, intakeId, taskId, quotationRequestId, measureId, opportunityId} = this.state.email;
         const {from, to, cc, bcc, subject, htmlBody, createdAt, dateSent, folder, status} = this.props.email;
         return (
             <div>
@@ -133,14 +152,14 @@ class EmailFormEdit extends Component {
                         label={"Cc"}
                         value={cc && cc.map((cc) => cc).join(', ')}
                     />
-                    <InputSelect
+                    <InputReactSelect
                         label={"Contact"}
-                        size={"col-sm-6"}
-                        name={"contactId"}
+                        name={"contactIds"}
                         options={this.state.contacts}
-                        value={contactId}
-                        onChangeAction={this.handleInputChange}
+                        value={contactIds}
+                        onChangeAction={this.handleContactIds}
                         optionName={'fullName'}
+                        isLoading={this.state.peekLoading.contacts}
                     />
                 </div>
 

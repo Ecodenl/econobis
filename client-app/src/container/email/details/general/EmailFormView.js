@@ -11,7 +11,7 @@ const createMarkup = (value) => {
 };
 
 const EmailFormView = props => {
-    const {from, to, cc, bcc, contact, intake, task, quotationRequest, measure, opportunity, subject, htmlBody, createdAt, dateSent, folder, status, closedBy, dateClosed} = props.email;
+    const {from, to, cc, bcc, contacts, intake, task, quotationRequest, measure, opportunity, subject, htmlBody, createdAt, dateSent, folder, status, closedBy, dateClosed} = props.email;
 
     return (
         <div>
@@ -41,9 +41,8 @@ const EmailFormView = props => {
                     value={cc && cc.map((cc) => cc).join(', ')}
                 />
                 <ViewText
-                    label={"Contact"}
-                    value={contact ? contact.fullName : ''}
-                    link={contact ? 'contact/' + contact.id : ''}
+                    label={"Contacten"}
+                    value={ contacts && contacts.map((contact) => contact.fullName).join(', ') }
                 />
             </div>
 

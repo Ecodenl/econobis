@@ -72,7 +72,7 @@ class EmailController
     }
 
     public function show(Email $email){
-        $email->load('contact', 'attachments', 'closedBy', 'intake', 'task', 'quotationRequest', 'measure', 'opportunity');
+        $email->load('contacts', 'attachments', 'closedBy', 'intake', 'task', 'quotationRequest', 'measure', 'opportunity');
 
         return FullEmail::make($email);
     }
@@ -151,10 +151,9 @@ class EmailController
         return $emailsString;
     }
 
-    public function update(Email $email, RequestInput $input)
+    public function update(Email $email, RequestInput $input, Request $request)
     {
         $data = $input
-            ->integer('contactId')->validate('exists:contacts,id')->onEmpty(null)->alias('contact_id')->next()
             ->integer('intakeId')->validate('exists:intakes,id')->onEmpty(null)->alias('intake_id')->next()
             ->integer('quotationRequestId')->validate('exists:quotation_requests,id')->onEmpty(null)->alias('quotation_request_id')->next()
             ->integer('measureId')->validate('exists:measures,id')->onEmpty(null)->alias('measure_id')->next()
@@ -166,6 +165,14 @@ class EmailController
         $email->fill($data);
 
         $email->save();
+
+        $contactIds = explode(',', $request->contactIds);
+
+        if ($contactIds[0] == '') {
+            $contactIds = [];
+        }
+
+        $email->contacts()->sync($contactIds);
 
         return FullEmail::make($email);
     }

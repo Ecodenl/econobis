@@ -45,8 +45,8 @@ class ContactController extends Controller
         if($contact->isOrganisation()) $contact->load(['organisation.type', 'organisation.industry', 'organisation.people.person', 'organisation.people.organisation', 'organisation.people.occupation', 'organisation.quotationRequests.opportunity.measureCategory', 'organisation.quotationRequests.opportunity.status', 'organisation.campaigns']);
         if($contact->isPerson()) $contact->load(['person.lastNamePrefix', 'person.title', 'person.organisation', 'person.type', 'person.occupations.person', 'person.occupations.organisation', 'person.occupations.occupation']);
 
-        $contact->relatedEmailsInbox = $this->getRelatedEmails($contact->id, 'inbox');
-        $contact->relatedEmailsSent = $this->getRelatedEmails($contact->id, 'sent');
+        $contact->relatedEmailsInbox = $this->getRelatedEmails($contact, $contact->id, 'inbox');
+        $contact->relatedEmailsSent = $this->getRelatedEmails($contact, $contact->id, 'sent');
 
         return new FullContact($contact);
     }
@@ -117,12 +117,12 @@ class ContactController extends Controller
         $contact->save();
     }
 
-    public function getRelatedEmails($id, $folder)
+    public function getRelatedEmails(Contact $contact, $id, $folder)
     {
         $user = Auth::user();
 
         $mailboxIds = $user->mailboxes()->pluck('mailbox_id');
 
-        return Email::whereIn('mailbox_id', $mailboxIds)->where('contact_id', $id)->where('folder', $folder)->get();
+        return $contact->emails()->whereIn('mailbox_id', $mailboxIds)->where('contact_id', $id)->where('folder', $folder)->get();
     }
 }

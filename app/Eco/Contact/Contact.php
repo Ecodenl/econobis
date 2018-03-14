@@ -69,7 +69,7 @@ class Contact extends Model
 
     public function emails()
     {
-        return $this->hasMany(Email::class);
+        return $this->belongsToMany(Email::class);
     }
 
     public function phoneNumbers()

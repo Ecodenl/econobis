@@ -33,9 +33,9 @@ class Email extends Model
         return $this->hasMany(EmailAttachment::class);
     }
 
-    public function contact()
+    public function contacts()
     {
-        return $this->belongsTo(Contact::class);
+        return $this->belongsToMany(Contact::class);
     }
 
     public function closedBy()

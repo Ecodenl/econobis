@@ -113,6 +113,7 @@ const ProductionProjectNew = props => {
                     name={"postalCode"}
                     value={postalCode}
                     onChangeAction={props.handleInputChange}
+                    error={props.errors.postalCode}
                 />
             </div>
 

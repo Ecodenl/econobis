@@ -48,6 +48,7 @@ class ProductionProjectNewApp extends Component {
                 name: false,
                 code: false,
                 ownedById: false,
+                postalCode: false,
             },
         }
         this.handleInputChangeDate = this.handleInputChangeDate.bind(this);
@@ -97,6 +98,11 @@ class ProductionProjectNewApp extends Component {
 
         if(validator.isEmpty('' + productionProject.ownedById)){
             errors.ownedById = true;
+            hasErrors = true;
+        };
+
+        if(!validator.isEmpty('' + productionProject.postalCode) && !validator.isPostalCode(productionProject.postalCode, 'any')){
+            errors.postalCode = true;
             hasErrors = true;
         };
         

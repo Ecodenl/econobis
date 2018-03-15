@@ -60,6 +60,7 @@ class ProductionProjectFormEdit extends Component {
                 name: false,
                 code: false,
                 ownedById: false,
+                postalCode: false,
             },
         }
         this.handleInputChangeDate = this.handleInputChangeDate.bind(this);
@@ -109,6 +110,11 @@ class ProductionProjectFormEdit extends Component {
 
         if(validator.isEmpty('' + productionProject.ownedById)){
             errors.ownedById = true;
+            hasErrors = true;
+        };
+
+        if(!validator.isEmpty('' + productionProject.postalCode) && !validator.isPostalCode(productionProject.postalCode, 'any')){
+            errors.postalCode = true;
             hasErrors = true;
         };
 
@@ -228,6 +234,7 @@ class ProductionProjectFormEdit extends Component {
                         name={"postalCode"}
                         value={postalCode}
                         onChangeAction={this.handleInputChange}
+                        error={this.state.errors.postalCode}
                     />
                 </div>
 

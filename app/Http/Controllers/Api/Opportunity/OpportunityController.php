@@ -12,6 +12,7 @@ use App\Eco\Email\Email;
 use App\Eco\Opportunity\Opportunity;
 use App\Eco\Opportunity\OpportunityEvaluation;
 use App\Eco\Opportunity\OpportunityStatus;
+use App\Helpers\Delete\DeleteHelper;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\RequestQueries\Opportunity\Grid\RequestQuery;
@@ -117,10 +118,7 @@ class OpportunityController extends ApiController
     {
         $this->authorize('manage', Opportunity::class);
 
-        foreach($opportunity->tasks as $task){
-            $task->delete();
-        }
-        $opportunity->delete();
+        DeleteHelper::delete($opportunity);
     }
 
     public function getAmountOfActiveOpportunities(){

@@ -13,6 +13,7 @@ use App\Eco\Document\Document;
 use App\Eco\DocumentTemplate\DocumentTemplate;
 use App\Eco\EmailTemplate\EmailTemplate;
 use App\Helpers\Alfresco\AlfrescoHelper;
+use App\Helpers\Delete\DeleteHelper;
 use App\Helpers\Template\TemplateTableHelper;
 use Barryvdh\DomPDF\Facade as PDF;
 use App\Eco\ParticipantProductionProject\ParticipantProductionProject;
@@ -230,7 +231,7 @@ class ParticipationProductionProjectController extends ApiController
     {
         $this->authorize('manage', ParticipantProductionProject::class);
 
-        $participantProductionProject->forceDelete();
+        DeleteHelper::delete($participantProductionProject);
     }
 
     public function peek()

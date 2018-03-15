@@ -14,6 +14,7 @@ use App\Eco\ParticipantProductionProject\ParticipantProductionProject;
 use App\Eco\ProductionProject\ProductionProject;
 use App\Eco\Team\Team;
 use App\Eco\User\User;
+use Illuminate\Database\Eloquent\EcoSoftDelete;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Laracasts\Presenter\PresentableTrait;
@@ -22,7 +23,7 @@ use Carbon\Carbon;
 
 class Task extends Model
 {
-    use RevisionableTrait, SoftDeletes, PresentableTrait;
+    use RevisionableTrait, PresentableTrait, EcoSoftDelete;
 
     protected $presenter = TaskPresenter::class;
 
@@ -158,6 +159,10 @@ class Task extends Model
 
     public function documents(){
         return $this->hasMany(Document::class);
+    }
+
+    public function emails(){
+        return $this->hasMany(Email::class);
     }
 
     // Tasks can relate to another task. Only an unfinished task is a task

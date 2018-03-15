@@ -14,6 +14,7 @@ use App\Eco\Contact\Contact;
 use App\Eco\Opportunity\Opportunity;
 use App\Eco\Organisation\Organisation;
 use App\Eco\User\User;
+use App\Helpers\Delete\DeleteHelper;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\RequestQueries\Campaign\Grid\RequestQuery;
@@ -125,28 +126,7 @@ class CampaignController extends ApiController
     {
         $this->authorize('manage', Campaign::class);
 
-        //First delete relations
-        $campaign->measures()->detach();
-
-        foreach ($campaign->opportunities as $opportunity) {
-            $opportunity->campaign()->dissociate();
-            $opportunity->save();
-        }
-
-        foreach ($campaign->intakes as $intake) {
-            $intake->campaign()->dissociate();
-            $intake->save();
-        }
-
-        foreach ($campaign->tasks as $task) {
-            $task->campaign()->dissociate();
-            $task->save();
-        }
-
-        $campaign->organisations()->detach();
-        $campaign->responses()->delete();
-
-        $campaign->delete();
+        DeleteHelper::delete($campaign,'delete_campaign');
     }
 
     public function attachResponse(Campaign $campaign, Contact $contact)

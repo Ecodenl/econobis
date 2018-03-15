@@ -21,6 +21,7 @@ use App\Eco\PhoneNumber\PhoneNumber;
 use App\Eco\Task\Task;
 use App\Eco\User\User;
 use App\Http\Traits\Encryptable;
+use Illuminate\Database\Eloquent\EcoSoftDelete;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Laracasts\Presenter\PresentableTrait;
@@ -28,7 +29,7 @@ use Venturecraft\Revisionable\RevisionableTrait;
 
 class Contact extends Model
 {
-    use PresentableTrait, RevisionableTrait, SoftDeletes, Encryptable;
+    use PresentableTrait, RevisionableTrait, Encryptable, EcoSoftDelete;
     protected $presenter = ContactPresenter::class;
 
     protected $guarded = ['id'];

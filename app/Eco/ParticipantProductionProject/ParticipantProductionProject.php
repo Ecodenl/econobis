@@ -12,12 +12,13 @@ use App\Eco\ProductionProject\ProductionProject;
 use App\Eco\Task\Task;
 use App\Eco\User\User;
 use App\Http\Traits\Encryptable;
+use Illuminate\Database\Eloquent\EcoSoftDelete;
 use Illuminate\Database\Eloquent\Model;
 use Venturecraft\Revisionable\RevisionableTrait;
 
 class ParticipantProductionProject extends Model
 {
-    use RevisionableTrait, Encryptable;
+    use RevisionableTrait, Encryptable, EcoSoftDelete;
 
     protected $table = 'participation_production_project';
 

@@ -12,6 +12,7 @@ namespace App\Http\Controllers\Api\QuotationRequest;
 use App\Eco\Email\Email;
 use App\Eco\Opportunity\Opportunity;
 use App\Eco\QuotationRequest\QuotationRequest;
+use App\Helpers\Delete\DeleteHelper;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\RequestQueries\QuotationRequest\Grid\RequestQuery;
 use App\Http\Resources\GenericResource;
@@ -168,14 +169,7 @@ class QuotationRequestController extends ApiController
     {
         $this->authorize('manage', QuotationRequest::class);
 
-        //delete many to many relations
-
-
-        //delete one to many relations
-
-
-        //delete model itself
-        $quotationRequest->delete();
+        DeleteHelper::delete($quotationRequest);
 
         return true;
     }

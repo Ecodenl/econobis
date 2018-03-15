@@ -135,7 +135,8 @@ const ErrorModal = (props) => {
 ErrorModal.defaultProps = {
     buttonText: 'Ok',
     title: 'Waarschuwing',
-    errorMessage: 'Er is een onbekende fout opgetreden'
+    errorMessage: 'Er is een onbekende fout opgetreden',
+    error: {}
 };
 
 ErrorModal.propTypes = {

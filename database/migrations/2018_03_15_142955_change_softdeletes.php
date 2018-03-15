@@ -46,7 +46,7 @@ class ChangeSoftdeletes extends Migration
 
         foreach ($newSoftDeletes as $newSoftDelete) {
             Schema::table($newSoftDelete, function (Blueprint $table) {
-                $table->boolean('is_deleted')->default(0);
+                $table->softdeletes();
             });
         }
     }

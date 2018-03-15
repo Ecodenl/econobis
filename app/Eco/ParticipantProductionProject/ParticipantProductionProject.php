@@ -12,13 +12,13 @@ use App\Eco\ProductionProject\ProductionProject;
 use App\Eco\Task\Task;
 use App\Eco\User\User;
 use App\Http\Traits\Encryptable;
-use Illuminate\Database\Eloquent\EcoSoftDelete;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Venturecraft\Revisionable\RevisionableTrait;
 
 class ParticipantProductionProject extends Model
 {
-    use RevisionableTrait, Encryptable, EcoSoftDelete;
+    use RevisionableTrait, Encryptable, SoftDeletes;
 
     protected $table = 'participation_production_project';
 
@@ -41,6 +41,12 @@ class ParticipantProductionProject extends Model
             'participations_worth_total',
             'participations_current',
         ];
+
+    //Dont boot softdelete scopes. We handle this ourselves
+    public static function bootSoftDeletes()
+    {
+        return false;
+    }
 
     //relations
     public function contact(){

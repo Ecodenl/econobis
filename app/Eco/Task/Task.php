@@ -14,7 +14,6 @@ use App\Eco\ParticipantProductionProject\ParticipantProductionProject;
 use App\Eco\ProductionProject\ProductionProject;
 use App\Eco\Team\Team;
 use App\Eco\User\User;
-use Illuminate\Database\Eloquent\EcoSoftDelete;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Laracasts\Presenter\PresentableTrait;
@@ -23,7 +22,7 @@ use Carbon\Carbon;
 
 class Task extends Model
 {
-    use RevisionableTrait, PresentableTrait, EcoSoftDelete;
+    use RevisionableTrait, PresentableTrait, SoftDeletes;
 
     protected $presenter = TaskPresenter::class;
 
@@ -36,6 +35,12 @@ class Task extends Model
         'created_at',
         'updated_at',
     ];
+
+    //Dont boot softdelete scopes. We handle this ourselves
+    public static function bootSoftDeletes()
+    {
+        return false;
+    }
 
     /**
      * required

@@ -25,33 +25,11 @@ class ChangeSoftdeletes extends Migration
 
         //Current softdeletes
         $email_addresses = EmailAddress::whereNotNull('deleted_at')->get();
-        $tasks = Task::whereNotNull('deleted_at')->get();
         $task_property_values = TaskPropertyValue::whereNotNull('deleted_at')->get();
-        $people = Person::whereNotNull('deleted_at')->get();
-        $organisations = Organisation::whereNotNull('deleted_at')->get();
         $contact_notes = ContactNote::whereNotNull('deleted_at')->get();
         $phone_numbers = PhoneNumber::whereNotNull('deleted_at')->get();
-        $contacts = Contact::whereNotNull('deleted_at')->get();
-        $addresses = Address::whereNotNull('deleted_at')->get();
 
-        $variationsToRefactor = ['tasks', 'people', 'organisations', 'contacts', 'addresses'];
         $variationsLost = ['email_addresses', 'task_property_values', 'contact_notes', 'phone_numbers'];
-
-        foreach ($variationsToRefactor as $variationToRefactor) {
-            Schema::table($variationToRefactor, function (Blueprint $table) {
-                $table->boolean('is_deleted')->default(0);
-            });
-
-            foreach($$variationToRefactor as $item){
-                $item->is_deleted = 1;
-                $item->save();
-            }
-
-            Schema::table($variationToRefactor, function (Blueprint $table) {
-                $table->dropColumn('deleted_at');
-            });
-        }
-
 
         foreach ($variationsLost as $variationLost) {
             foreach($$variationLost as $item){
@@ -65,7 +43,6 @@ class ChangeSoftdeletes extends Migration
 
         //New softdeletes
         $newSoftDeletes = ['participation_production_project', 'participant_transactions'];
-
 
         foreach ($newSoftDeletes as $newSoftDelete) {
             Schema::table($newSoftDelete, function (Blueprint $table) {

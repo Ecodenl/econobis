@@ -9,7 +9,6 @@ use App\Eco\LastNamePrefix\LastNamePrefix;
 use App\Eco\Occupation\Occupation;
 use App\Eco\PersonType\PersonType;
 use App\Eco\Title\Title;
-use Illuminate\Database\Eloquent\EcoSoftDelete;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Laracasts\Presenter\PresentableTrait;
@@ -17,7 +16,7 @@ use Venturecraft\Revisionable\RevisionableTrait;
 
 class Person extends Model
 {
-    use RevisionableTrait, PresentableTrait, EcoSoftDelete;
+    use RevisionableTrait, PresentableTrait, SoftDeletes;
     protected $presenter = PersonPresenter::class;
 
     protected $guarded = ['id'];
@@ -29,6 +28,12 @@ class Person extends Model
     protected $dates = [
         'date_of_birth',
     ];
+
+    //Dont boot softdelete scopes. We handle this ourselves
+    public static function bootSoftDeletes()
+    {
+        return false;
+    }
 
     public function contact()
     {

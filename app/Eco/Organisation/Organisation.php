@@ -10,16 +10,21 @@ use App\Eco\Contact\Contact;
 use App\Eco\Industry\Industry;
 use App\Eco\Person\Person;
 use App\Eco\QuotationRequest\QuotationRequest;
-use Illuminate\Database\Eloquent\EcoSoftDelete;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Venturecraft\Revisionable\RevisionableTrait;
 
 class Organisation extends Model
 {
-    use RevisionableTrait, EcoSoftDelete;
+    use RevisionableTrait, SoftDeletes;
 
     protected $guarded = ['id'];
+
+    //Dont boot softdelete scopes. We handle this ourselves
+    public static function bootSoftDeletes()
+    {
+        return false;
+    }
 
     public function contact()
     {

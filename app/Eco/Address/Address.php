@@ -10,7 +10,6 @@ use App\Eco\BuildingType\BuildingType;
 use App\Eco\Measure\MeasureRequested;
 use App\Eco\Measure\MeasureTaken;
 use App\Eco\Intake\Intake;
-use Illuminate\Database\Eloquent\EcoSoftDelete;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Laracasts\Presenter\PresentableTrait;
@@ -18,7 +17,7 @@ use Venturecraft\Revisionable\RevisionableTrait;
 
 class Address extends Model
 {
-    use PresentableTrait, RevisionableTrait, EcoSoftDelete;
+    use PresentableTrait, RevisionableTrait, SoftDeletes;
     protected $presenter = AddressPresenter::class;
 
     protected $guarded = ['id'];
@@ -26,6 +25,12 @@ class Address extends Model
     protected $casts = [
         'primary' => 'boolean',
     ];
+
+    //Dont boot softdelete scopes. We handle this ourselves
+    public static function bootSoftDeletes()
+    {
+        return false;
+    }
 
     public function contact()
     {

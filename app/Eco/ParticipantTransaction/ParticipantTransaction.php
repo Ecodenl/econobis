@@ -5,21 +5,27 @@ namespace App\Eco\ParticipantTransaction;
 use App\Eco\ParticipantProductionProject\ParticipantProductionProject;
 use App\Eco\User\User;
 use App\Http\Traits\Encryptable;
-use Illuminate\Database\Eloquent\EcoSoftDelete;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Venturecraft\Revisionable\RevisionableTrait;
 
 class ParticipantTransaction extends Model
 {
     protected $table = 'participant_transactions';
 
-    use RevisionableTrait, Encryptable, EcoSoftDelete;
+    use RevisionableTrait, Encryptable, SoftDeletes;
 
     protected $guarded = ['id'];
 
     protected $encryptable = [
         'iban',
     ];
+
+    //Dont boot softdelete scopes. We handle this ourselves
+    public static function bootSoftDeletes()
+    {
+        return false;
+    }
 
     public function participation()
     {

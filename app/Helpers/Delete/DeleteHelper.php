@@ -47,7 +47,7 @@ class DeleteHelper
         }
 
         try {
-            $deleteInfo['soft_delete'] ? $model->softDelete()
+            $deleteInfo['soft_delete'] ? $model->delete()
                 : $model->forceDelete();
         }
         catch (\Exception $e){

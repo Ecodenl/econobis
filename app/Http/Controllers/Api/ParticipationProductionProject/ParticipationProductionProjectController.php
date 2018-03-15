@@ -316,12 +316,14 @@ class ParticipationProductionProjectController extends ApiController
     {
         $checkText = 'Energieleverancier check: ';
 
-        $energySupplier = $contact->primaryContactEnergySupplier->energySupplier;
+        $primaryContactEnergySupplier = $contact->primaryContactEnergySupplier;
 
-        if(!$energySupplier){
+        if(!$primaryContactEnergySupplier){
             array_push($message, $checkText . 'Contact heeft nog geen energieleverancier.');
             return false;
         }
+
+        $energySupplier = $primaryContactEnergySupplier->energySupplier;
 
         if(!$energySupplier->does_postal_code_links){
             array_push($message, $checkText . 'Energieleverancier van contact doet niet mee aan postcoderoos.');

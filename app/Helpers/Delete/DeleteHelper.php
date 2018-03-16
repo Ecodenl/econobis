@@ -28,18 +28,18 @@ class DeleteHelper
 
         if (array_key_exists('relations', $deleteInfo)) {
             foreach ($deleteInfo['relations'] as $key => $relationInfo) {
-                switch ($key) {
+                switch (key($deleteInfo['relations'][$key])) {
                     case 'dissociate':
-                        DeleteHelper::dissociate($model, $relationInfo);
+                        DeleteHelper::dissociate($model, $relationInfo['dissociate']);
                         break;
                     case 'remove_pivots':
-                        DeleteHelper::removePivots($model, $relationInfo);
+                        DeleteHelper::removePivots($model, $relationInfo['remove_pivots']);
                         break;
                     case 'delete_recursive':
-                        DeleteHelper::deleteRecursive($model, $relationInfo);
+                        DeleteHelper::deleteRecursive($model, $relationInfo['delete_recursive']);
                         break;
                     case 'remove':
-                        DeleteHelper::remove($model, $relationInfo);
+                        DeleteHelper::remove($model, $relationInfo['remove']);
                         break;
                     default:
                         break;

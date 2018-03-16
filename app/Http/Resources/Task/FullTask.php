@@ -87,6 +87,7 @@ class FullTask extends Resource
                 'relatedEmailsSent' => $this->relatedEmailsSent,
                 'documentCount' => $this->documents()->count(),
                 'relatedDocuments' => FullDocument::collection($this->whenLoaded('documents')),
+                'deletedAt' => $this->deleted_at,
             ];
     }
 }

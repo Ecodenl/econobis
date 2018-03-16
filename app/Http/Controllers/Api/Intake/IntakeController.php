@@ -208,7 +208,6 @@ class IntakeController extends ApiController
 
         DeleteHelper::delete($intake);
 
-        return true;
     }
 
     public function tasks(Intake $intake)

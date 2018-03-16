@@ -26,6 +26,7 @@ class NoteRequestQuery extends \App\Helpers\RequestQuery\RequestQuery
     {
         return Task::query()
             ->where('finished', true)
+            ->whereNull('deleted_at')
             ->select('tasks.*');
     }
 }

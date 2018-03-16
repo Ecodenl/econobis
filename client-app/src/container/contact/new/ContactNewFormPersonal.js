@@ -166,6 +166,15 @@ class ContactNewFormPersonal extends Component {
                         value={initials}
                         onChangeAction={this.handleInputChange}
                     />
+                    <InputDate
+                        label={"Lid sinds"}
+                        name="memberSince"
+                        value={ memberSince }
+                        onChangeAction={this.handleChangeMemberSince}
+                    />
+                </div>
+
+                <div className="row">
                     <InputText
                         label="Voornaam"
                         size={"col-sm-6"}
@@ -175,15 +184,15 @@ class ContactNewFormPersonal extends Component {
                         required={lastName === '' && "required"}
                         error={this.state.errors.name}
                     />
+                    <InputText
+                        label={"Opzegdatum"}
+                        name={"memberUntil"}
+                        value={ '' }
+                        readOnly={true}
+                    />
                 </div>
 
                 <div className="row">
-                    <InputDate
-                        label={"Lid sinds"}
-                        name="memberSince"
-                        value={ memberSince }
-                        onChangeAction={this.handleChangeMemberSince}
-                    />
                     <InputSelect
                         label="Tussenvoegsel"
                         name="lastNamePrefixId"
@@ -191,15 +200,17 @@ class ContactNewFormPersonal extends Component {
                         value={lastNamePrefixId}
                         onChangeAction={this.handleInputChange}
                     />
+                    <InputSelect
+                        label={"Soort contact"}
+                        size={"col-sm-6"}
+                        name={"typeId"}
+                        options={this.props.personTypes}
+                        value={typeId}
+                        onChangeAction={this.handleInputChange}
+                    />
                 </div>
 
                 <div className="row">
-                    <InputText
-                        label={"Opzegdatum"}
-                        name={"memberUntil"}
-                        value={ '' }
-                        readOnly={true}
-                    />
                     <InputText
                         label={"Achternaam"}
                         size={"col-sm-6"}
@@ -208,17 +219,6 @@ class ContactNewFormPersonal extends Component {
                         onChangeAction={this.handleInputChange}
                         required={firstName === '' && "required"}
                         error={this.state.errors.name}
-                    />
-                </div>
-
-                <div className="row">
-                    <InputSelect
-                        label={"Soort contact"}
-                        size={"col-sm-6"}
-                        name={"typeId"}
-                        options={this.props.personTypes}
-                        value={typeId}
-                        onChangeAction={this.handleInputChange}
                     />
                     <InputDate
                         label={"Geboortedatum"}

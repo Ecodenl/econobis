@@ -188,6 +188,16 @@ class ContactDetailsFormPersonalEdit extends Component {
                         value={initials}
                         onChangeAction={this.handleInputChange}
                     />
+                    <InputDate
+                        label={"Lid sinds"}
+                        size={"col-sm-6"}
+                        name={"memberSince"}
+                        value={ memberSince }
+                        onChangeAction={this.handleChangeMemberSince}
+                    />
+                </div>
+
+                <div className="row">
                     <InputText
                         label="Voornaam"
                         size={"col-sm-6"}
@@ -197,16 +207,16 @@ class ContactDetailsFormPersonalEdit extends Component {
                         required={lastName === '' && "required"}
                         error={this.state.errors.name}
                     />
+                    <InputDate
+                        label={"Opzegdatum"}
+                        size={"col-sm-6"}
+                        name={"cancellationDate"}
+                        value={ memberUntil }
+                        onChangeAction={this.handleChangeMemberUntilDate}
+                    />
                 </div>
 
                 <div className="row">
-                    <InputDate
-                        label={"Lid sinds"}
-                        size={"col-sm-6"}
-                        name={"memberSince"}
-                        value={ memberSince }
-                        onChangeAction={this.handleChangeMemberSince}
-                    />
                     <InputSelect
                         label={"Tussenvoegsel"}
                         size={"col-sm-6"}
@@ -215,16 +225,17 @@ class ContactDetailsFormPersonalEdit extends Component {
                         value={lastNamePrefixId}
                         onChangeAction={this.handleInputChange}
                     />
+                    <InputSelect
+                        label={"Soort contact"}
+                        size={"col-sm-6"}
+                        name={"typeId"}
+                        options={this.props.personTypes}
+                        value={typeId}
+                        onChangeAction={this.handleInputChange}
+                    />
                 </div>
 
                 <div className="row">
-                    <InputDate
-                        label={"Opzegdatum"}
-                        size={"col-sm-6"}
-                        name={"cancellationDate"}
-                        value={ memberUntil }
-                        onChangeAction={this.handleChangeMemberUntilDate}
-                    />
                     <InputText
                         label={"Achternaam"}
                         size={"col-sm-6"}
@@ -233,17 +244,6 @@ class ContactDetailsFormPersonalEdit extends Component {
                         onChangeAction={this.handleInputChange}
                         required={firstName === '' && "required"}
                         error={this.state.errors.name}
-                    />
-                </div>
-
-                <div className="row">
-                    <InputSelect
-                        label={"Soort contact"}
-                        size={"col-sm-6"}
-                        name={"typeId"}
-                        options={this.props.personTypes}
-                        value={typeId}
-                        onChangeAction={this.handleInputChange}
                     />
                     <InputDate
                         label={"Geboortedatum"}

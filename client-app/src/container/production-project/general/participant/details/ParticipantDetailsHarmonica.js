@@ -29,7 +29,7 @@ class ParticipantDetailsHarmonica extends Component {
 
 
     newDocument = (type) => {
-        hashHistory.push(`/document/nieuw/${type}/participant/${this.props.participant.id}`);
+        hashHistory.push(`/document/nieuw/${type}/participant/${this.props.participant.id}/contact/${this.props.participant.contact.id}`);
     };
 
     render(){

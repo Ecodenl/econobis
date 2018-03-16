@@ -235,7 +235,11 @@ class ParticipationProductionProjectController extends ApiController
 
     public function peek()
     {
-        return ParticipantProductionProjectPeek::collection(ParticipantProductionProject::all()->load(['contact', 'productionProject']));
+
+        $participants = ParticipantProductionProject::all();
+        $participants->load(['contact', 'productionProject']);
+
+        return ParticipantProductionProjectPeek::collection($participants);
     }
 
     public function validatePostalCode(&$message, ProductionProject $productionProject, Contact $contact)

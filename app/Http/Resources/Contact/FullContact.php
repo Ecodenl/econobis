@@ -43,6 +43,7 @@ class FullContact extends Resource
             'memberUntil' => $this->member_until,
             'newsletter' => $this->newsletter,
             'addresses' => FullAddress::collection($this->whenLoaded('addresses')),
+            'addressesNotSoftDeleted' => FullAddress::collection($this->whenLoaded('addressesNotSoftDeleted')),
             'primaryAddress' => FullAddress::make($this->whenLoaded('primaryAddress')),
             'emailAddresses' => FullEmailAddress::collection($this->whenLoaded('emailAddresses')),
             'primaryEmailAddress' => FullEmailAddress::make($this->whenLoaded('primaryEmailAddress')),
@@ -78,6 +79,7 @@ class FullContact extends Resource
             'relatedOpportunities' => $this->opportunities()->get(),
             'participationCount' => $this->participations()->count(),
             'relatedParticipations' => FullParticipantProductionProject::collection($this->whenLoaded('participations')),
+            'deletedAt' => $this->deleted_at,
         ];
     }
 }

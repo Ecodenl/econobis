@@ -161,7 +161,7 @@ class TransactionFormListItem extends Component {
                     />
                 }
                 {
-                    this.state.showDelete && props.permissions.manageFinancial &&
+                    this.state.showDelete && this.props.permissions.manageFinancial &&
                     <TransactionFormDelete
                         closeDeleteItemModal={this.toggleDelete}
                         {...this.props.participantTransaction}

@@ -33,7 +33,7 @@ class ChangeSoftdeletes extends Migration
 
         foreach ($variationsLost as $variationLost) {
             foreach($$variationLost as $item){
-                $item->delete();
+                $item->forceDelete();
             }
 
             Schema::table($variationLost, function (Blueprint $table) {

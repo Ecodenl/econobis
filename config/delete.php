@@ -1,6 +1,10 @@
 <?php
 
 return [
+    'Address' => [
+        'soft_delete' => true,
+    ],
+
     'Campaign' => [
         'soft_delete' => false,
         'relations' =>
@@ -74,6 +78,10 @@ return [
     ],
 
     'Organisation' => [
+        'soft_delete' => true,
+    ],
+
+    'Person' => [
         'soft_delete' => true,
     ],
 

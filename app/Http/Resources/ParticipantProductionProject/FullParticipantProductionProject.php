@@ -58,6 +58,7 @@ class FullParticipantProductionProject extends Resource
                 'obligationNumbers' => GenericResource::collection($this->whenLoaded('obligationNumbers')),
                 'documentCount' => $this->documents()->count(),
                 'relatedDocuments' => FullDocument::collection($this->whenLoaded('documents')),
+                'deletedAt' => $this->deleted_at,
             ];
     }
 }

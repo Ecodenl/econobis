@@ -8,6 +8,7 @@
 
 namespace App\Helpers\Delete;
 
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Log;
 
@@ -70,8 +71,13 @@ class DeleteHelper
     }
 
     private static function deleteRecursive(Model $model, $relationInfo){
-        foreach ($model->$relationInfo as $model){
-            DeleteHelper::delete($model);
+        if($model->$relationInfo instanceof Collection){
+            foreach ($model->$relationInfo as $relatedModel){
+                DeleteHelper::delete($relatedModel);
+            }
+        }
+        else{
+            DeleteHelper::delete($model->$relationInfo);
         }
     }
 

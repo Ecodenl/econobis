@@ -22,6 +22,7 @@ class GridIntake extends Resource
                 'fullAddress' => optional($this->address)->present()->streetAndNumber(),
                 'measuresRequestedNames' => $this->measuresRequested()->pluck('name'),
                 'status' => optional($this->status)->name,
+                'contactId' => $this->contact->id,
             ];
     }
 }

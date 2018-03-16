@@ -51,7 +51,7 @@ const IntakesListFilter = props => {
 
     return (
         <tr className="thead-filter">
-
+            { props.showCheckbox && <td><input type="checkbox" value={ props.checkedAllCheckboxes } onChange={props.selectAllCheckboxes} /></td> }
             <DataTableFilterDate value={ props.filters.createdAt.data && props.filters.createdAt.data } onChangeAction={onIntakeDateChange} />
 
             <th><input type="text" className="form-control input-sm" value={ props.filters.fullName.data} onChange={onFullNameChange} /></th>

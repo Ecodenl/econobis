@@ -11,6 +11,8 @@ import EmailAddressAPI from '../../../api/contact/EmailAddressAPI';
 import MailboxAPI from '../../../api/mailbox/MailboxAPI';
 import EmailTemplateAPI from '../../../api/email-template/EmailTemplateAPI';
 import {isEqual} from "lodash";
+import {setBulkEmailToContactIds} from "../../../actions/email/BulkMailActions";
+import {connect} from "react-redux";
 
 class EmailNewApp extends Component {
     constructor(props) {
@@ -77,7 +79,17 @@ class EmailNewApp extends Component {
                 });
             });
         }
-    };
+
+        if (this.props.params.type === 'bulk' && this.props.toIds) {
+            this.setState({
+                ...this.state,
+                email: {
+                    ...this.state.email,
+                    to: this.props.toIds.join(',')
+                },
+            });
+        }
+    }
 
     handleInputChange(event) {
         const target = event.target;
@@ -289,4 +301,10 @@ class EmailNewApp extends Component {
     }
 };
 
-export default EmailNewApp;
+const mapStateToProps = (state) => {
+    return {
+        toIds: state.bulkMailTo.toIds,
+    };
+};
+
+export default connect(mapStateToProps)(EmailNewApp);

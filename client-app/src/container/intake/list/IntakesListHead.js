@@ -15,6 +15,7 @@ const IntakesListHead = (props) => {
 
     return (
         <tr className="thead-title">
+            { (props.showCheckbox ? <th width="3%" /> : null) }
             <DataTableHeadTitleAndSort sortColumn={'createdAt'} title={'Datum'} width={'20%'} setSorts={setSorts} />
             <DataTableHeadTitleAndSort sortColumn={'fullName'} title={'Contact'} width={'10%'} setSorts={setSorts} />
             <DataTableHeadTitleAndSort sortColumn={'address'} title={'Adres'} width={'20%'} setSorts={setSorts} />

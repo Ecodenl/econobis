@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import { fetchIntakes, clearIntakes } from '../../../actions/intake/IntakesActions';
+import { fetchIntakes, clearIntakes, setCheckedIntakeAll } from '../../../actions/intake/IntakesActions';
 import { clearFilterIntakes } from '../../../actions/intake/IntakesFiltersActions';
 import { setIntakesPagination } from '../../../actions/intake/IntakesPaginationActions';
 import IntakesList from './IntakesList';
@@ -14,6 +14,11 @@ import PanelBody from "../../../components/panel/PanelBody";
 class IntakesListApp extends Component {
     constructor(props) {
         super(props);
+
+        this.state = {
+            showCheckboxList: false,
+            checkedAllCheckboxes: false,
+        };
 
         this.handlePageClick = this.handlePageClick.bind(this);
     }
@@ -64,12 +69,27 @@ class IntakesListApp extends Component {
         },100 );
     };
 
+    toggleShowCheckboxList = () => {
+        this.setState({
+            showCheckboxList: !this.state.showCheckboxList
+        });
+    };
+
+    selectAllCheckboxes = () => {
+        this.setState({
+            checkedAllCheckboxes: !this.state.checkedAllCheckboxes
+        });
+
+        this.props.setCheckedIntakeAll(!this.state.checkedAllCheckboxes);
+    };
+
     render() {
         return (
             <Panel>
                 <PanelBody>
                     <div className="col-md-12 margin-10-top">
                         <IntakesListToolbar
+                            toggleShowCheckboxList={() => this.toggleShowCheckboxList()}
                             resetIntakeFilters={() => this.resetIntakeFilters()}
                         />
                     </div>
@@ -81,6 +101,9 @@ class IntakesListApp extends Component {
                             onSubmitFilter={() => this.onSubmitFilter()}
                             refreshIntakesData={() => this.fetchIntakesData()}
                             handlePageClick={this.handlePageClick}
+                            showCheckboxList={this.state.showCheckboxList}
+                            selectAllCheckboxes={() => this.selectAllCheckboxes()}
+                            checkedAllCheckboxes={this.state.checkedAllCheckboxes}
                         />
                     </div>
                 </PanelBody>
@@ -99,7 +122,7 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = (dispatch) => {
-    return bindActionCreators({ fetchIntakes, clearIntakes, setIntakesPagination, clearFilterIntakes }, dispatch);
+    return bindActionCreators({ fetchIntakes, clearIntakes, setIntakesPagination, clearFilterIntakes, setCheckedIntakeAll }, dispatch);
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(IntakesListApp);

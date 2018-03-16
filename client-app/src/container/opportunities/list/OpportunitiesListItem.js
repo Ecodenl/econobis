@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { hashHistory } from 'react-router';
 import { connect } from 'react-redux';
 import moment from 'moment';
+import {setCheckedOpportunity} from "../../../actions/opportunity/OpportunitiesActions";
 
 class OpportunitiesListItem extends Component {
     constructor(props) {
@@ -27,14 +28,19 @@ class OpportunitiesListItem extends Component {
         });
     }
 
+    setCheckedOpportunity(id) {
+        this.props.setCheckedOpportunity(id);
+    }
+
     openItem(id) {
         hashHistory.push(`kans/${id}`);
     }
 
     render() {
-        const { id, number, createdAt, contactName, measureCategoryName, campaignName, statusName, amountQuotations} = this.props;
+        const { checked, id, number, createdAt, contactName, measureCategoryName, campaignName, statusName, amountQuotations} = this.props;
         return (
           <tr className={this.state.highlightRow} onDoubleClick={() => this.openItem(id)} onMouseEnter={() => this.onRowEnter()} onMouseLeave={() => this.onRowLeave()}>
+              {this.props.showCheckbox && <td><input type="checkbox" checked={checked} onChange={() => this.setCheckedOpportunity(id)} /></td>}
               <td>{ number }</td>
               <td>{ createdAt ? moment(createdAt.date).format('DD-MM-Y') : 'Onbekend'}</td>
               <td>{ contactName }</td>
@@ -57,4 +63,11 @@ const mapStateToProps = (state) => {
     }
 };
 
-export default connect(mapStateToProps)(OpportunitiesListItem);
+const mapDispatchToProps = dispatch => ({
+    setCheckedOpportunity: (id) => {
+        dispatch(setCheckedOpportunity(id));
+    },
+});
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(OpportunitiesListItem);

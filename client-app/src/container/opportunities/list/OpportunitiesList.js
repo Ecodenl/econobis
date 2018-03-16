@@ -59,6 +59,7 @@ class OpportunitiesList extends Component {
             <DataTable>
                 <DataTableHead>
                     <tr className="thead-title-quaternary">
+                        { (this.props.showCheckboxList ? <th width="3%"><input type="checkbox" value={ this.props.checkedAllCheckboxes } onChange={this.props.selectAllCheckboxes} /></th> : null) }
                         <DataTableHeadTitle title={'Nummer'} width={'10%'}/>
                         <DataTableHeadTitle title={'Datum'} width={'20%'}/>
                         <DataTableHeadTitle title={'Naam'} width={'20%'}/>
@@ -81,6 +82,8 @@ class OpportunitiesList extends Component {
                                     key={opportunities.id}
                                     {...opportunities}
                                     showDeleteItemModal={this.showDeleteItemModal}
+                                    showCheckbox={this.props.showCheckboxList}
+                                    checkedAllCheckboxes={this.props.checkedAllCheckboxes}
                                 />
                             ))
                         )

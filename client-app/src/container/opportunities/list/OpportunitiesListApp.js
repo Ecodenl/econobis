@@ -1,17 +1,19 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import { fetchOpportunities, clearOpportunities } from '../../../actions/opportunity/OpportunitiesActions';
+import { fetchOpportunities, clearOpportunities, setCheckedOpportunityAll } from '../../../actions/opportunity/OpportunitiesActions';
 import { setOpportunitiesPagination } from '../../../actions/opportunity/OpportunitiesPaginationActions';
 import OpportunitiesListToolbar from './OpportunitiesListToolbar';
 import OpportunitiesList from './OpportunitiesList';
-import {setCampaignsPagination} from "../../../actions/campaign/CampaignsPaginationActions";
 
 class OpportunitiesListApp extends Component {
     constructor(props){
         super(props);
+
         this.state = {
             opportunities: [],
+            showCheckboxList: false,
+            checkedAllCheckboxes: false,
         };
 
         this.fetchOpportunitiesData = this.fetchOpportunitiesData.bind(this);
@@ -43,16 +45,37 @@ class OpportunitiesListApp extends Component {
         this.fetchOpportunitiesData();
     };
 
+    toggleShowCheckboxList = () => {
+        this.setState({
+            showCheckboxList: !this.state.showCheckboxList
+        });
+    };
+
+    selectAllCheckboxes = () => {
+        this.setState({
+            checkedAllCheckboxes: !this.state.checkedAllCheckboxes
+        });
+
+        this.props.setCheckedOpportunityAll(!this.state.checkedAllCheckboxes);
+    };
+
+
     render() {
         return (
             <div>
                 <div className="panel panel-default">
                     <div className="panel-body">
                         <div className="col-md-12 margin-10-top">
-                            <OpportunitiesListToolbar/>
+                            <OpportunitiesListToolbar toggleShowCheckboxList={() => this.toggleShowCheckboxList()}/>
                         </div>
                         <div className="col-md-12 margin-10-top">
-                            <OpportunitiesList handlePageClick={this.handlePageClick} fetchOpportunitiesData={this.fetchOpportunitiesData} />
+                            <OpportunitiesList
+                                handlePageClick={this.handlePageClick}
+                                fetchOpportunitiesData={this.fetchOpportunitiesData}
+                                showCheckboxList={this.state.showCheckboxList}
+                                selectAllCheckboxes={() => this.selectAllCheckboxes()}
+                                checkedAllCheckboxes={this.state.checkedAllCheckboxes}
+                            />
                         </div>
                     </div>
                 </div>
@@ -76,6 +99,9 @@ const mapDispatchToProps = dispatch => ({
     },
     setOpportunitiesPagination: (pagination) => {
         dispatch(setOpportunitiesPagination(pagination));
+    },
+    setCheckedOpportunityAll: (checkValue) => {
+        dispatch(setCheckedOpportunityAll(checkValue));
     },
 });
 export default connect(mapStateToProps, mapDispatchToProps)(OpportunitiesListApp);

@@ -15,6 +15,7 @@ import documentTemplateReducer from './document-template/DocumentTemplatesReduce
 import documentTemplateDetailsReducer from './document-template/DocumentTemplateDetailsReducer';
 import documentsReducer from './document/DocumentsReducer';
 import documentDetailsReducer from './document/DocumentDetailsReducer';
+import bulkMailToReducer from './email/BulkMailToReducer';
 import emailsReducer from './email/EmailsReducer';
 import emailDetailsReducer from './email/EmailDetailsReducer';
 import emailTemplatesReducer from './email-template/EmailTemplatesReducer';
@@ -81,6 +82,7 @@ const rootReducer = combineReducers({
     documentTemplates: documentTemplateReducer,
     documentTemplateDetails: documentTemplateDetailsReducer,
     // Emails
+    bulkMailTo: bulkMailToReducer,
     emails: emailsReducer,
     email: emailDetailsReducer,
     // Email templates

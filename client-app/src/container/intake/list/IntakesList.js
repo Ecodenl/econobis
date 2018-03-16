@@ -28,9 +28,12 @@ class IntakesList extends Component {
                 <DataTable>
                     <DataTableHead>
                         <IntakesListHead
+                            showCheckbox={this.props.showCheckboxList}
                             refreshIntakesData={() => this.props.refreshIntakesData()}
                         />
                         <IntakesListFilter
+                            showCheckbox={this.props.showCheckboxList}
+                            selectAllCheckboxes={() => this.props.selectAllCheckboxes()}
                             onSubmitFilter={this.props.onSubmitFilter}
                         />
                     </DataTableHead>
@@ -43,6 +46,8 @@ class IntakesList extends Component {
                                     return <IntakesListItem
                                         key={intake.id}
                                         {...intake}
+                                        showCheckbox={this.props.showCheckboxList}
+                                        checkedAllCheckboxes={this.props.checkedAllCheckboxes}
                                     />
                                 })
                             )

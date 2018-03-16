@@ -44,7 +44,7 @@ class DocumentTemplatesItem extends Component {
                 <td>{ active ? 'Ja' : 'Nee' }</td>
                 <td>
                     {(this.state.showActionButtons ? <a role="button" onClick={() => this.openItem(id)}><span className="glyphicon glyphicon-pencil mybtn-success" /> </a> : '')}
-                    {(this.state.showActionButtons && this.props.permissions.createDocumentTemplate ?<a role="button" onClick={this.props.showDeleteItemModal.bind(this, id, name)}><span className="glyphicon glyphicon-trash mybtn-danger"  /> </a> : '')}
+                    {(this.state.showActionButtons && this.props.permissions.createDocumentTemplate && false ? <a role="button" onClick={this.props.showDeleteItemModal.bind(this, id, name)}><span className="glyphicon glyphicon-trash mybtn-danger"  /> </a> : '')}
                     </td>
             </tr>
         );

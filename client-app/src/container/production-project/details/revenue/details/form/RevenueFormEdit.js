@@ -15,6 +15,7 @@ import ProductionProjectRevenueAPI from '../../../../../../api/production-projec
 import { fetchRevenue } from '../../../../../../actions/production-project/ProductionProjectDetailsActions';
 import InputToggle from "../../../../../../components/form/InputToggle";
 import ViewText from "../../../../../../components/form/ViewText";
+import Modal from "../../../../../../components/modal/Modal";
 
 class RevenueFormEdit extends Component {
     constructor(props) {
@@ -26,6 +27,7 @@ class RevenueFormEdit extends Component {
         } = props.revenue;
 
         this.state = {
+            showModal: false,
             revenue: {
                 id,
                 categoryId: categoryId,
@@ -55,6 +57,27 @@ class RevenueFormEdit extends Component {
         this.handleInputChangeDate = this.handleInputChangeDate.bind(this);
         this.handleInputChangeDateConfirmed = this.handleInputChangeDateConfirmed.bind(this);
     };
+
+    toggleShowModal = () => {
+        this.setState({
+            showModal: !this.state.showModal,
+        });
+    }
+
+    cancelSetDate = () => {
+        this.setState({
+            ...this.state,
+            revenue: {
+                ...this.state.revenue,
+                dateConfirmed: '',
+                confirmed: false
+            },
+        });
+
+        this.setState({
+            showModal: !this.state.showModal,
+        });
+    }
 
     handleInputChange = event => {
         const target = event.target;
@@ -90,6 +113,7 @@ class RevenueFormEdit extends Component {
                     confirmed: true
                 },
             });
+        this.toggleShowModal();
         }
         else{
             this.setState({
@@ -293,6 +317,18 @@ class RevenueFormEdit extends Component {
                                     value={"Submit"}/>
                     </div>
                 </PanelFooter>
+
+                {this.state.showModal &&
+                <Modal
+                    buttonConfirmText="Bevestigen"
+                    closeModal={this.cancelSetDate}
+                    confirmAction={this.toggleShowModal}
+                    title="Bevestigen"
+                >
+                    <p>Als u deze datum zet zal de opbrengst definitief worden gemaakt. U kunt deze hierna niet meer aanpasssen.</p>
+                </Modal>
+                    }
+
             </form>
         );
     };

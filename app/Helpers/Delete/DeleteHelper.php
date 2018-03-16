@@ -21,8 +21,12 @@ class DeleteHelper
      * @param Model    $model        The main model to delete
      *
      */
-    public static function delete(Model $model)
+    public static function delete($model)
     {
+        if(! $model instanceof Model){
+            return false;
+        }
+
         //Get info file from config
         $deleteInfo = config('delete.' . class_basename($model));
 

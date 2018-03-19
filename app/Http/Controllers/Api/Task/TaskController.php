@@ -67,7 +67,7 @@ class TaskController extends Controller
             'updatedBy',
             'finishedBy',
             'opportunity.status',
-            'opportunity.measure',
+            'opportunity.measures',
             'properties.property',
             'tasks',
             'notes',

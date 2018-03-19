@@ -74,7 +74,7 @@ class FullTask extends Resource
                 'properties' => FullTaskPropertyValue::collection($this->whenLoaded('properties')),
                 'opportunityId' => $this->opportunity_id,
                 'opportunity' => FullOpportunity::make($this->whenLoaded('opportunity')),
-                'opportunityName' => $this->opportunity ? $this->opportunity->measure->name . ' ' . $this->opportunity->status->name : '',
+                'opportunityName' => $this->opportunity ? optional($this->opportunity->measure)->name . ' ' . $this->opportunity->status->name : '',
                 'createdAt' => $this->created_at,
                 'updatedAt' => $this->updated_at,
                 'taskCount' => $this->tasks()->count(),

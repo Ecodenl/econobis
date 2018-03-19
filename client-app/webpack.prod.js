@@ -9,7 +9,7 @@ require('dotenv').config({ path: '.env.production' });
 
 module.exports = merge(common, {
     output: {
-        path: path.join(__dirname, '../../../../public_html/' + process.env.MAP_NAME + '/js'),
+        path: path.join(__dirname, '../../../../../public_html/' + process.env.MAP_NAME + '/js'),
         filename: '[name].[chunkhash].js',
         publicPath: './js/'
     },

@@ -178,7 +178,7 @@ class ParticipationProductionProjectController extends ApiController
             ->date('dateBook')->validate('nullable|date')->onEmpty(null)->alias('date_book')->next()
             ->get();
 
-        $participation = ParticipantProductionProject::find($data['participation_id'])->with(['productionProject'])->first();
+        $participation = ParticipantProductionProject::find($data['participation_id']);
 
         $productionProjectId = $participation->productionProject->id;
 
@@ -216,13 +216,13 @@ class ParticipationProductionProjectController extends ApiController
         }
 
         //create transaction for sending
-        $transactionReceiving = new ParticipantTransaction();
-        $transactionReceiving->participation_id = $participation->id;
-        $transactionReceiving->type_id = 3;//Inleg
-        $transactionReceiving->date_transaction = new Carbon;
-        $transactionReceiving->amount = $data['participations_amount'] * $data['participation_worth'];
-        $transactionReceiving->date_booking = $data['date_book'] ;
-        $transactionReceiving->save();
+        $transactionSending = new ParticipantTransaction();
+        $transactionSending->participation_id = $participation->id;
+        $transactionSending->type_id = 3;//Inleg
+        $transactionSending->date_transaction = new Carbon;
+        $transactionSending->amount = $data['participations_amount'] * $data['participation_worth'];
+        $transactionSending->date_booking = $data['date_book'] ;
+        $transactionSending->save();
 
         return $this->show($participation);
     }

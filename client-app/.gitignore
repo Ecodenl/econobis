@@ -3,4 +3,3 @@ node_modules/
 .env.production
 .env.production.local
 .env.development
-webpack.prod.js

@@ -137,7 +137,7 @@ class OpportunityFormEdit extends Component {
                     <InputText
                         label={"Campagne"}
                         name={"campaign"}
-                        value={intake.campaign ? intake.campaign.name : ''}
+                        value={(intake && intake.campaign) ? intake.campaign.name : ''}
                         readOnly={true}
                     />
                 </div>

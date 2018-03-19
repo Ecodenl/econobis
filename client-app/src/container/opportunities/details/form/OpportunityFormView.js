@@ -26,7 +26,7 @@ const OpportunityFormView = props => {
                 />
                 <ViewText
                     label={"Campagne"}
-                    value={intake.campaign ? intake.campaign.name : ''}
+                    value={(intake && intake.campaign)  ? intake.campaign.name : ''}
                 />
             </div>
             <div className="row" onClick={props.switchToEdit}>

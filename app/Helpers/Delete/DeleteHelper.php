@@ -24,6 +24,7 @@ class DeleteHelper
      */
     public static function delete($model)
     {
+        //Wrong call
         if(! $model instanceof Model){
             return false;
         }
@@ -31,6 +32,7 @@ class DeleteHelper
         //Get info file from config
         $deleteInfo = config('delete.' . class_basename($model));
 
+        //Check for generic relation deletes
         if (array_key_exists('relations', $deleteInfo)) {
             foreach ($deleteInfo['relations'] as $key => $relationInfo) {
                 switch (key($deleteInfo['relations'][$key])) {
@@ -52,12 +54,14 @@ class DeleteHelper
             }
         }
 
+        //Any custom delete function
         if(array_key_exists('custom_delete', $deleteInfo)){
 
             $methodName = $deleteInfo['custom_delete'];
             DeleteHelper::$methodName($model);
         }
 
+        //delete the actual model
         try {
             $deleteInfo['soft_delete'] ? $model->delete()
                 : $model->forceDelete();

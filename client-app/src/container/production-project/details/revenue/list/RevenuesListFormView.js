@@ -4,7 +4,7 @@ import {hashHistory} from "react-router";
 import {connect} from "react-redux";
 
 const RevenuesListFormView = props => {
-    const {id, category, dateBegin, dateEnd, datePayed, type, revenue, kwhResult} = props.revenue;
+    const {id, confirmed, category, dateBegin, dateEnd, datePayed, type, revenue, kwhResult} = props.revenue;
 
     return (
         <div className={`row border ${props.highlightLine}`} onMouseEnter={() => props.onLineEnter()} onMouseLeave={() => props.onLineLeave()}>
@@ -31,7 +31,7 @@ const RevenuesListFormView = props => {
             </div>
             <div className="col-sm-1">
                 {(props.showActionButtons ? <a role="button" onClick={() =>  hashHistory.push(`/productie-project/opbrengst/${id}`)}><span className="glyphicon glyphicon-pencil mybtn-success" /> </a> : '')}
-                {(props.showActionButtons && props.permissions.manageFinancial ? <a role="button" onClick={props.toggleDelete}><span className="glyphicon glyphicon-trash mybtn-danger"  /> </a> : '')}
+                {(props.showActionButtons && props.permissions.manageFinancial && !confirmed ? <a role="button" onClick={props.toggleDelete}><span className="glyphicon glyphicon-trash mybtn-danger"  /> </a> : '')}
             </div>
         </div>
     );

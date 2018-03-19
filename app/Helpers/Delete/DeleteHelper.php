@@ -8,6 +8,7 @@
 
 namespace App\Helpers\Delete;
 
+use App\Eco\ProductionProject\ProductionProject;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Log;
@@ -51,6 +52,12 @@ class DeleteHelper
             }
         }
 
+        if(array_key_exists('custom_delete', $deleteInfo)){
+
+            $methodName = $deleteInfo['custom_delete'];
+            DeleteHelper::$methodName($model);
+        }
+
         try {
             $deleteInfo['soft_delete'] ? $model->delete()
                 : $model->forceDelete();
@@ -87,5 +94,36 @@ class DeleteHelper
 
     private static function remove(Model $model, $relationInfo){
         $model->$relationInfo->forceDelete();
+    }
+
+    private static function deleteProductionProject(ProductionProject $productionProject){
+
+        foreach ($productionProject->productionProjectValueCourses as $ppvc){
+            $ppvc->forceDelete();
+        }
+
+        foreach ($productionProject->productionProjectRevenues as $ppr){
+            foreach($ppr->distribution as $distribution){
+                $distribution->forceDelete();
+            }
+            $ppr->forceDelete();
+        }
+
+        foreach ($productionProject->participantsProductionProject as $participant){
+            foreach($participant->documents as $document){
+                $document->participation_production_project_id = null;
+                $document->save();
+            }
+
+            foreach($participant->transactions as $transaction){
+                $transaction->forceDelete();
+            }
+
+            foreach($participant->obligationNumbers as $obligationNumber){
+                $obligationNumber->forceDelete();
+            }
+
+            $participant->forceDelete();
+        }
     }
 }

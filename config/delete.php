@@ -29,6 +29,11 @@ return [
             ['dissociate' => ['relation' => 'emails', 'foreign_key' => 'task_id']]],
     ],
 
+    'ProductionProject' => [
+        'soft_delete' => false,
+        'custom_delete' => 'deleteProductionProject'
+    ],
+
     'ParticipantProductionProject' => [
         'soft_delete' => true,
         'relations' =>

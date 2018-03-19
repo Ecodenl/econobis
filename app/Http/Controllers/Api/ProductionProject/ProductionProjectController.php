@@ -10,6 +10,7 @@ namespace App\Http\Controllers\Api\ProductionProject;
 
 use App\Eco\Email\Email;
 use App\Eco\ProductionProject\ProductionProject;
+use App\Helpers\Delete\DeleteHelper;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\RequestQueries\ProductionProject\Grid\RequestQuery;
@@ -143,7 +144,7 @@ class ProductionProjectController extends ApiController
     {
         $this->authorize('manage', ProductionProject::class);
 
-        $productionProject->forceDelete();
+        DeleteHelper::delete($productionProject);
     }
 
     public function peek()

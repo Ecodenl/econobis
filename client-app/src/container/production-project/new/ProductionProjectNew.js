@@ -234,7 +234,7 @@ const ProductionProjectNew = props => {
                 />
                 <InputText
                     type={"number"}
-                    label={"Min aantal participaties"}
+                    label={"Min. aantal part. p/p"}
                     name={"minParticipations"}
                     value={minParticipations}
                     onChangeAction={props.handleInputChange}

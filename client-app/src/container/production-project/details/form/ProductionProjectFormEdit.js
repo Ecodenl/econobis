@@ -336,7 +336,7 @@ class ProductionProjectFormEdit extends Component {
                 <div className="row">
                     <InputText
                         type={"number"}
-                        label={"Min aantal participaties"}
+                        label={"Min. aantal part. p/p"}
                         name={"minParticipations"}
                         value={minParticipations}
                         onChangeAction={this.handleInputChange}

@@ -147,7 +147,7 @@ const ProductionProjectFormView = props => {
 
             <div className="row" onClick={props.switchToEdit}>
                 <ViewText
-                    label={"Min. aantal participaties"}
+                    label={"Min. aantal part. p/p"}
                     value={minParticipations ? minParticipations : ''}
                 />
                 <ViewText

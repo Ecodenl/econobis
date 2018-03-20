@@ -33,7 +33,7 @@ class ParticipantNewApp extends Component {
             isPCR: false,
             participation: {
                 contactId: props.params.contactId || '',
-                statusId: '',
+                statusId: 1,
                 productionProjectId: props.params.productionProjectId || '',
                 dateRegister: '',
                 participationsRequested: '',

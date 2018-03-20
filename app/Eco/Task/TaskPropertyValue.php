@@ -8,7 +8,7 @@ use Venturecraft\Revisionable\RevisionableTrait;
 
 class TaskPropertyValue extends Model
 {
-    use SoftDeletes, RevisionableTrait;
+    use RevisionableTrait;
 
     protected $guarded = ['id'];
 

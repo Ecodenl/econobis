@@ -12,7 +12,7 @@ use Venturecraft\Revisionable\RevisionableTrait;
 class EmailAddress extends Model
 {
 
-    use RevisionableTrait, SoftDeletes;
+    use RevisionableTrait;
 
     protected $guarded = ['id'];
 

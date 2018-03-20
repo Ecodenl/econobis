@@ -26,6 +26,12 @@ class Address extends Model
         'primary' => 'boolean',
     ];
 
+    //Dont boot softdelete scopes. We handle this ourselves
+    public static function bootSoftDeletes()
+    {
+        return false;
+    }
+
     public function contact()
     {
         return $this->belongsTo(Contact::class);

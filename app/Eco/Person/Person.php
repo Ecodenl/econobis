@@ -16,7 +16,7 @@ use Venturecraft\Revisionable\RevisionableTrait;
 
 class Person extends Model
 {
-    use RevisionableTrait, SoftDeletes, PresentableTrait;
+    use RevisionableTrait, PresentableTrait, SoftDeletes;
     protected $presenter = PersonPresenter::class;
 
     protected $guarded = ['id'];
@@ -28,6 +28,12 @@ class Person extends Model
     protected $dates = [
         'date_of_birth',
     ];
+
+    //Dont boot softdelete scopes. We handle this ourselves
+    public static function bootSoftDeletes()
+    {
+        return false;
+    }
 
     public function contact()
     {

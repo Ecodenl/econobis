@@ -22,7 +22,7 @@ use Carbon\Carbon;
 
 class Task extends Model
 {
-    use RevisionableTrait, SoftDeletes, PresentableTrait;
+    use RevisionableTrait, PresentableTrait, SoftDeletes;
 
     protected $presenter = TaskPresenter::class;
 
@@ -35,6 +35,12 @@ class Task extends Model
         'created_at',
         'updated_at',
     ];
+
+    //Dont boot softdelete scopes. We handle this ourselves
+    public static function bootSoftDeletes()
+    {
+        return false;
+    }
 
     /**
      * required
@@ -158,6 +164,10 @@ class Task extends Model
 
     public function documents(){
         return $this->hasMany(Document::class);
+    }
+
+    public function emails(){
+        return $this->hasMany(Email::class);
     }
 
     // Tasks can relate to another task. Only an unfinished task is a task

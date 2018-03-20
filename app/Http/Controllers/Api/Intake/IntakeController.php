@@ -14,6 +14,7 @@ use App\Eco\Measure\Measure;
 use App\Eco\Intake\Intake;
 use App\Eco\Contact\Contact;
 use App\Eco\Measure\MeasureCategory;
+use App\Helpers\Delete\DeleteHelper;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\RequestQueries\Intake\Grid\RequestQuery;
 use App\Http\Resources\GenericResource;
@@ -201,38 +202,13 @@ class IntakeController extends ApiController
         return GenericResource::make($measureCategory);
     }
 
-//    public function destroy(Intake $intake)
-//    {
-//        $this->authorize('manage', Intake::class);
-//
-//        //delete many to many relations
-//        $intake->sources()->detach();
-//        $intake->reasons()->detach();
-//        $intake->measuresRequested()->detach();
-//        $intake->opportunities()->detach();
-//
-//        //delete one to many relations
-//        //tasks
-//        foreach($intake->tasks as $task){
-//            $task->notes()->dissociate();
-//            $task->save();
-//        }
-//        //notes
-//        foreach($intake->notes as $note){
-//            $note->notes()->dissociate();
-//            $note->save();
-//        }
-//        //documents
-//        foreach($intake->emails as $email){
-//            $email->intake()->dissociate();
-//            $email->save();
-//        }
-//
-//        //delete model itself
-//        $intake->delete();
-//
-//        return true;
-//    }
+    public function destroy(Intake $intake)
+    {
+        $this->authorize('manage', Intake::class);
+
+        DeleteHelper::delete($intake);
+
+    }
 
     public function tasks(Intake $intake)
     {

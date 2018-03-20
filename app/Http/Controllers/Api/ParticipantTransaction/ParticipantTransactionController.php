@@ -9,6 +9,7 @@
 namespace App\Http\Controllers\Api\ParticipantTransaction;
 
 use App\Eco\ParticipantTransaction\ParticipantTransaction;
+use App\Helpers\Delete\DeleteHelper;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\Resources\ParticipantTransaction\FullParticipantTransaction;
@@ -66,6 +67,6 @@ class ParticipantTransactionController extends ApiController
     {
         $this->authorize('manage', ParticipantTransaction::class);
 
-        $participantTransaction->forceDelete();
+        DeleteHelper::delete($participantTransaction);
     }
 }

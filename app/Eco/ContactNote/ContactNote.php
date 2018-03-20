@@ -10,7 +10,7 @@ use Venturecraft\Revisionable\RevisionableTrait;
 
 class ContactNote extends Model
 {
-    use RevisionableTrait, SoftDeletes;
+    use RevisionableTrait;
 
     protected $guarded = ['id'];
 

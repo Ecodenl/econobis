@@ -74,7 +74,7 @@ class FullTask extends Resource
                 'properties' => FullTaskPropertyValue::collection($this->whenLoaded('properties')),
                 'opportunityId' => $this->opportunity_id,
                 'opportunity' => FullOpportunity::make($this->whenLoaded('opportunity')),
-                'opportunityName' => $this->opportunity ? $this->opportunity->measure->name . ' ' . $this->opportunity->status->name : '',
+                'opportunityName' => $this->opportunity ? optional($this->opportunity->measure)->name . ' ' . $this->opportunity->status->name : '',
                 'createdAt' => $this->created_at,
                 'updatedAt' => $this->updated_at,
                 'taskCount' => $this->tasks()->count(),
@@ -87,6 +87,7 @@ class FullTask extends Resource
                 'relatedEmailsSent' => $this->relatedEmailsSent,
                 'documentCount' => $this->documents()->count(),
                 'relatedDocuments' => FullDocument::collection($this->whenLoaded('documents')),
+                'deletedAt' => $this->deleted_at,
             ];
     }
 }

@@ -4,14 +4,18 @@ import {connect} from "react-redux";
 moment.locale('nl');
 
 const TransactionFormView = props => {
-    const {type, dateTransaction, amount, iban, referral, entry, dateBooking } = props.participantTransaction;
+    const {type, dateTransaction, amount, iban, referral, entry, dateBooking, deletedAt } = props.participantTransaction;
 
     return (
         <div className={`row border ${props.highlightLine}`} onMouseEnter={() => props.onLineEnter()} onMouseLeave={() => props.onLineLeave()}>
             <div onClick={props.openEdit}>
 
                 <div className="col-sm-1">
-                    { type && type.name }
+                    {deletedAt ?
+                        <span className="h5" style={{color: '#e64a4a'}}><strong>Verwijderd</strong></span>
+                        :
+                        type.name
+                    }
                 </div>
                 <div className="col-sm-2">
                     {dateTransaction ? moment(dateTransaction).format('L') : ''}
@@ -32,10 +36,16 @@ const TransactionFormView = props => {
                     {dateBooking ? moment(dateBooking).format('L') : ''}
                 </div>
             </div>
+            {!deletedAt &&
             <div className="col-sm-1">
-                {(props.showActionButtons && props.permissions.manageFinancial ? <a role="button" onClick={props.openEdit}><span className="glyphicon glyphicon-pencil mybtn-success" /> </a> : '')}
-                {(props.showActionButtons && props.permissions.manageFinancial ? <a role="button" onClick={props.toggleDelete}><span className="glyphicon glyphicon-trash mybtn-danger"  /> </a> : '')}
+                {(props.showActionButtons && props.permissions.manageFinancial ?
+                    <a role="button" onClick={props.openEdit}><span
+                        className="glyphicon glyphicon-pencil mybtn-success"/> </a> : '')}
+                {(props.showActionButtons && props.permissions.manageFinancial ?
+                    <a role="button" onClick={props.toggleDelete}><span
+                        className="glyphicon glyphicon-trash mybtn-danger"/> </a> : '')}
             </div>
+            }
         </div>
     );
 };

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\Task;
 use App\Eco\Email\Email;
 use App\Eco\Task\Jobs\DeleteTask;
 use App\Eco\Task\Task;
+use App\Helpers\Delete\DeleteHelper;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Api\Task\Grid\TaskRequestQuery;
 use App\Http\Controllers\Api\Task\Grid\NoteRequestQuery;
@@ -66,7 +67,7 @@ class TaskController extends Controller
             'updatedBy',
             'finishedBy',
             'opportunity.status',
-            'opportunity.measure',
+            'opportunity.measures',
             'properties.property',
             'tasks',
             'notes',
@@ -185,7 +186,7 @@ class TaskController extends Controller
     {
         $this->authorize('manage', Task::class);
 
-        DeleteTask::single($task, true);
+        DeleteHelper::delete($task);
     }
 
     public function finish(Task $task)

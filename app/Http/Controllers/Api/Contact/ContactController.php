@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\Contact;
 use App\Eco\Contact\Contact;
 use App\Eco\Email\Email;
 use App\Eco\User\User;
+use App\Helpers\Delete\DeleteHelper;
 use App\Http\Resources\Contact\ContactPeek;
 use App\Http\Resources\Contact\FullContact;
 use App\Http\Resources\Task\SidebarTask;
@@ -55,7 +56,7 @@ class ContactController extends Controller
     {
         $this->authorize('delete', $contact);
 
-        DeleteContact::single($contact);
+        DeleteHelper::delete($contact);
     }
 
     public function intakes(Contact $contact)
@@ -92,7 +93,7 @@ class ContactController extends Controller
 
     public function peek()
     {
-        $contact = Contact::select('id', 'full_name')->orderBy('full_name')->get();
+        $contact = Contact::select('id', 'full_name')->orderBy('full_name')->whereNull('deleted_at')->get();
 
         return ContactPeek::collection($contact);
     }

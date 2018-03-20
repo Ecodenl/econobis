@@ -28,7 +28,7 @@ use Venturecraft\Revisionable\RevisionableTrait;
 
 class Contact extends Model
 {
-    use PresentableTrait, RevisionableTrait, SoftDeletes, Encryptable;
+    use PresentableTrait, RevisionableTrait, Encryptable, SoftDeletes;
     protected $presenter = ContactPresenter::class;
 
     protected $guarded = ['id'];
@@ -46,6 +46,12 @@ class Contact extends Model
     protected $encryptable = [
       'iban'
     ];
+
+    //Dont boot softdelete scopes. We handle this ourselves
+    public static function bootSoftDeletes()
+    {
+        return false;
+    }
 
     public function addresses()
     {

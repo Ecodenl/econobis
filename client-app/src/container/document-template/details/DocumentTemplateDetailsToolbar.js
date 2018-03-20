@@ -25,7 +25,9 @@ class DocumentTemplateDetailsToolbar extends Component {
                 <div className="col-md-4">
                     <div className="btn-group" role="group">
                         <ButtonIcon iconName={"glyphicon-arrow-left"} onClickAction={browserHistory.goBack}/>
-                        <ButtonIcon iconName={"glyphicon-trash"} onClickAction={this.toggleDelete}/>
+                        { false &&
+                            <ButtonIcon iconName={"glyphicon-trash"} onClickAction={this.toggleDelete}/>
+                        }
                     </div>
                 </div>
                 <div className="col-md-4"><h4 className="text-center">{'Document template: ' + this.props.templateName}</h4>

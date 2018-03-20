@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\Address;
 
 use App\Eco\Address\Address;
 use App\Eco\Address\AddressType;
+use App\Helpers\Delete\DeleteHelper;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\Resources\Address\FullAddress;
 use App\Rules\AddressTypeExists;
@@ -68,6 +69,6 @@ class AddressController extends ApiController
     {
         $this->authorize('delete', $address);
 
-        $address->forceDelete();
+        DeleteHelper::delete($address);
     }
 }

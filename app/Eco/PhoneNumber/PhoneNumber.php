@@ -12,7 +12,7 @@ use Venturecraft\Revisionable\RevisionableTrait;
 class PhoneNumber extends Model
 {
 
-    use RevisionableTrait, SoftDeletes;
+    use RevisionableTrait;
 
     protected $guarded = ['id'];
 

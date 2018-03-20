@@ -141,7 +141,7 @@ const ProductionProjectFormView = props => {
                 />
                 <ViewText
                     label={"Totaal aantal participaties"}
-                    value={totalParticipations ? totalParticipations : ''}
+                    value={totalParticipations && totalParticipations}
                 />
             </div>
 
@@ -152,7 +152,7 @@ const ProductionProjectFormView = props => {
                 />
                 <ViewText
                     label={"Uitgegeven participaties"}
-                    value={issuedParticipations ? issuedParticipations : ''}
+                    value={issuedParticipations && issuedParticipations}
                 />
             </div>
 
@@ -163,7 +163,7 @@ const ProductionProjectFormView = props => {
                 />
                 <ViewText
                     label={"Participaties in optie"}
-                    value={participationsInOption ? participationsInOption : ''}
+                    value={participationsInOption && participationsInOption}
                 />
             </div>
 
@@ -174,7 +174,7 @@ const ProductionProjectFormView = props => {
                 />
                 <ViewText
                     label={"Uit te geven participaties"}
-                    value={issuableParticipations ? issuableParticipations : ''}
+                    value={issuableParticipations && issuableParticipations}
                 />
             </div>
 

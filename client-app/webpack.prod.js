@@ -35,7 +35,7 @@ module.exports = merge(common, {
         }),
         new HtmlWebpackPlugin({
             template: './src/welcome.blade.php',
-            filename: '../../../../code/' + process.env.MAP_NAME + '/resources/views/welcome.blade.php',
+            filename: '../../../code/' + process.env.MAP_NAME + '/resources/views/welcome.blade.php',
         }),
         new webpack.DefinePlugin({
             'process.env.URL_API': JSON.stringify(process.env.URL_API),

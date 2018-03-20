@@ -343,7 +343,10 @@ class EmailController
         foreach ($sendVariations as $sendVariation){
             foreach ($data[$sendVariation] as $emailData) {
                 if (is_numeric($emailData)){
-                    $emails[$sendVariation][] =  Contact::find($emailData)->primaryEmailAddress()->value('email');
+                    $primaryEmail = Contact::find($emailData)->primaryEmailAddress()->value('email');
+                    if($primaryEmail){
+                        $emails[$sendVariation][] = $primaryEmail;
+                    }
                 }
                 else if(substr($emailData, 0, 6 ) === "@user_"){
                     $user_id = str_replace("@user_", "", $emailData);

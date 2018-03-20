@@ -63,7 +63,9 @@ class SendEmailsWithVariables
             if (is_numeric($to)) {
                 $contact = Contact::find($to);
                 $contact->load('primaryEmailAddress');
-                $emailsToContact[] = $contact;
+                if($contact->primaryEmailAddress) {
+                    $emailsToContact[] = $contact;
+                }
             } elseif (substr($to, 0, 6) === "@user_") {
                 $user_id = str_replace("@user_", "", $to);
                 $emailsToUser[] = User::find($user_id);

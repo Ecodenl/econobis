@@ -8,6 +8,7 @@ import ButtonText from '../../../components/button/ButtonText';
 import PanelFooter from "../../../components/panel/PanelFooter";
 import InputText from "../../../components/form/InputText";
 import InputToggle from "../../../components/form/InputToggle";
+import PanelHeader from "../../../components/panel/PanelHeader";
 
 const ProductionProjectNew = props => {
     const {name, code, description, ownedById, productionProjectStatusId, dateStart,
@@ -132,35 +133,62 @@ const ProductionProjectNew = props => {
                 />
             </div>
 
-            <div className="row">
-                <InputText
-                    label={"EAN"}
-                    name={"ean"}
-                    value={ean}
-                    onChangeAction={props.handleInputChange}
-                />
-                <InputText
-                    label={"EAN Netbeheer"}
-                    name={"eanManager"}
-                    value={eanManager}
-                    onChangeAction={props.handleInputChange}
-                />
-            </div>
+            <PanelHeader>
+                <div className="row" onClick={props.toggleShowPostalCodeLinkFields}>
+                    {
+                        props.showPostalCodeLinkFields ?
+                            <span className="glyphicon glyphicon-menu-down"/>
+                            :
+                            <span className="glyphicon glyphicon-menu-right" />
+                    }
+                    <span className="h5">Postcoderoos velden</span>
+                </div>
+            </PanelHeader>
+            {
+                props.showPostalCodeLinkFields &&
+               <div className="margin-20-bottom">
+                   <div className="row">
+                       <InputText
+                           label={"EAN"}
+                           name={"ean"}
+                           value={ean}
+                           onChangeAction={props.handleInputChange}
+                       />
+                       <InputText
+                           label={"EAN Netbeheer"}
+                           name={"eanManager"}
+                           value={eanManager}
+                           onChangeAction={props.handleInputChange}
+                       />
+                   </div>
 
-            <div className="row">
-                <InputText
-                    label={"Garantie van oorsprong"}
-                    name={"warrantyOrigin"}
-                    value={warrantyOrigin}
-                    onChangeAction={props.handleInputChange}
-                />
-                <InputText
-                    label={"EAN Levering"}
-                    name={"eanSupply"}
-                    value={eanSupply}
-                    onChangeAction={props.handleInputChange}
-                />
-            </div>
+                   <div className="row">
+                       <InputText
+                           label={"Garantie van oorsprong"}
+                           name={"warrantyOrigin"}
+                           value={warrantyOrigin}
+                           onChangeAction={props.handleInputChange}
+                       />
+                       <InputText
+                           label={"EAN Levering"}
+                           name={"eanSupply"}
+                           value={eanSupply}
+                           onChangeAction={props.handleInputChange}
+                       />
+                   </div>
+
+                   <div className="row">
+                   <InputText
+                       label={"Aanwijzing belastingdienst"}
+                       name={"taxReferral"}
+                       value={taxReferral}
+                       onChangeAction={props.handleInputChange}
+                   />
+                   </div>
+                </div>
+            }
+
+
 
             <div className="row">
                 <InputText
@@ -188,9 +216,10 @@ const ProductionProjectNew = props => {
                     onChangeAction={props.handleInputChange}
                 />
                 <InputText
-                    label={"Aanwijzing belastingdienst"}
-                    name={"taxReferral"}
-                    value={taxReferral}
+                    type={"number"}
+                    label={"Totaal aantal participaties"}
+                    name={"totalParticipations"}
+                    value={totalParticipations}
                     onChangeAction={props.handleInputChange}
                 />
             </div>
@@ -203,16 +232,6 @@ const ProductionProjectNew = props => {
                     value={maxParticipationsYouth}
                     onChangeAction={props.handleInputChange}
                 />
-                <InputText
-                    type={"number"}
-                    label={"Totaal aantal participaties"}
-                    name={"totalParticipations"}
-                    value={totalParticipations}
-                    onChangeAction={props.handleInputChange}
-                />
-            </div>
-
-            <div className="row">
                 <InputText
                     type={"number"}
                     label={"Min aantal participaties"}

@@ -80,7 +80,7 @@ const ParticipantNew = props => {
 
             <div className="row">
                 <InputText
-                    label={"Waarde participaties"}
+                    label={"Waarde over te dragen participaties"}
                     name={"participationsWorthTotal"}
                     value={participationsAmount * participationWorth}
                     readOnly={true}

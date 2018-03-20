@@ -169,7 +169,7 @@ const ProductionProjectFormView = props => {
 
             <div className="row" onClick={props.switchToEdit}>
                 <ViewText
-                    label={"Participatie overgedragen"}
+                    label={"Participaties overdraagbaar"}
                     value={isParticipationTransferable ? 'Ja' : 'Nee'}
                 />
                 <ViewText

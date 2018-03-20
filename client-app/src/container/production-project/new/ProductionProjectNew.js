@@ -249,7 +249,7 @@ const ProductionProjectNew = props => {
                     onChangeAction={props.handleInputChange}
                 />
                 <InputToggle
-                    label={"Participatie overgedragen"}
+                    label={"Participaties overdraagbaar"}
                     name={"isParticipationTransferable"}
                     value={isParticipationTransferable}
                     onChangeAction={props.handleInputChange}

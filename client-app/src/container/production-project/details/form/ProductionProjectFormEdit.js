@@ -366,7 +366,7 @@ class ProductionProjectFormEdit extends Component {
 
                 <div className="row">
                     <InputToggle
-                        label={"Participatie overgedragen"}
+                        label={"Participaties overdraagbaar"}
                         name={"isParticipationTransferable"}
                         value={isParticipationTransferable}
                         onChangeAction={this.handleInputChange}

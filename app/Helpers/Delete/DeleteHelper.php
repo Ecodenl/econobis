@@ -97,7 +97,9 @@ class DeleteHelper
     }
 
     private static function remove(Model $model, $relationInfo){
-        $model->$relationInfo->forceDelete();
+        if($model->$relationInfo) {
+            $model->$relationInfo->forceDelete();
+        }
     }
 
     private static function deleteProductionProject(ProductionProject $productionProject){

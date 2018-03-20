@@ -23,7 +23,7 @@ class GridOpportunity extends Resource
             'campaignName' => optional(optional($this->intake)->campaign)->name,
             'statusName' => optional($this->whenLoaded('status'))->name,
             'amountQuotations' => count($this->quotationRequests),
-            'contactId' => $this->intake->contact->id,
+            'contactId' => optional(optional($this->intake)->contact)->id,
         ];
     }
 }

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { browserHistory } from 'react-router';
+import {browserHistory, hashHistory} from 'react-router';
 
 import ButtonIcon from '../../../components/button/ButtonIcon';
 import QuotationRequestDetailsDelete from './QuotationRequestDetailsDelete';
@@ -19,6 +19,11 @@ class QuotationRequestDetailsToolbar extends Component {
     toggleDelete = () => {
         this.setState({showDelete: !this.state.showDelete});
     };
+
+    sendMail = () => {
+        hashHistory.push(`/email/nieuw/offerteverzoek/${this.props.quotationRequestDetails.id}/${this.props.quotationRequestDetails.organisation.contactId}`);
+    };
+
 
     render() {
         const { opportunity = {} } = this.props.quotationRequestDetails;
@@ -39,6 +44,7 @@ class QuotationRequestDetailsToolbar extends Component {
                                     {this.props.permissions.manageQuotationRequest &&
                                     < ButtonIcon iconName={"glyphicon-trash"} onClickAction={this.toggleDelete}/>
                                     }
+                                    <ButtonIcon iconName={"glyphicon-envelope"} onClickAction={this.sendMail} />
                                 </div>
                             </div>
                             <div className="col-md-8"><h4 className="text-center">{ `Offerteverzoek ${measureName} voor ${fullName} op ${fullAddress}` }</h4></div>

@@ -87,7 +87,7 @@ class TemplateVariableHelper
                 return '';
                 break;
             case 'QuotationRequest':
-                return '';
+                return TemplateVariableHelper::getQuotationRequestVar($model, $varname);
                 break;
             case 'Measure':
                 return '';
@@ -396,6 +396,56 @@ class TemplateVariableHelper
                 break;
             case 'energieleverancier':
                 return $model->energy_supplier_name;
+                break;
+            default:
+                return '';
+                break;
+        }
+    }
+
+    public static function getQuotationRequestVar($model, $varname){
+        switch ($varname) {
+            case 'organisatie_naam':
+                return $model->organisation->name;
+                break;
+            case 'organisatie_adres':
+                return optional($model->organisation->contact->primaryAddress)->street . ' ' . optional($model->organisation->contact->primaryAddress)->number;
+                break;
+            case 'organisatie_plaats':
+                return optional($model->organisation->contact->primaryAddress)->city;
+                break;
+            case 'organisatie_email':
+                return optional($model->organisation->contact->primaryEmailAddress)->email;
+                break;
+            case 'organisatie_telefoonnummer':
+                return optional($model->organisation->contact->primaryPhoneNumber)->number;
+                break;
+            case 'organisatie_primair_contact':
+                return optional(optional(optional($model->organisation->contactPerson)->person)->contact)->full_name;
+                break;
+            case 'contact_naam':
+                return optional(optional($model->opportunity)->intake)->contact->full_name;
+                break;
+            case 'contact_adres':
+                return optional(optional(optional($model->opportunity)->intake)->contact->primaryAddress)->street . ' ' . optional(optional(optional($model->opportunity)->intake)->contact->primaryAddress)->number;
+                break;
+            case 'contact_woonplaats':
+                return optional(optional(optional($model->opportunity)->intake)->contact->primaryAddress)->city;
+                break;
+            case 'contact_email':
+                return optional(optional(optional($model->opportunity)->intake)->contact->primaryEmailAddress)->email;
+                break;
+            case 'contact_telefoonnummer':
+                return optional(optional(optional($model->opportunity)->intake)->contact->primaryPhoneNumber)->number;
+                break;
+            case 'maatregel':
+                return optional(optional($model->opportunity)->measureCategory)->name;
+                break;
+            case 'gemaakt_op':
+                return $model->created_at ? Carbon::parse($model->created_at)->format('d/m/Y') : null;
+                break;
+            case 'gemaakt_door':
+                return optional($model->createdBy)->present()->fullName();
                 break;
             default:
                 return '';

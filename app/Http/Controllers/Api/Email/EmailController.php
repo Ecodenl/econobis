@@ -315,6 +315,7 @@ class EmailController
             'bcc' => '',
             'subject' => '',
             'htmlBody' => '',
+            'quotationRequestId' => '',
         ]);
 
         $data['to'] = json_decode($data['to']);
@@ -363,6 +364,7 @@ class EmailController
             'bcc' => $emails['bcc'],
             'subject' => $data['subject'] ?: 'Econobis',
             'html_body' => $data['htmlBody'],
+            'quotation_request_id' => $data['quotationRequestId'],
         ];
 
         return $sanitizedData;

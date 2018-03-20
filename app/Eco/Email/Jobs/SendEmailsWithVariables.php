@@ -102,6 +102,9 @@ class SendEmailsWithVariables
                 $htmlBodyWithContactVariables = TemplateTableHelper::replaceTemplateTables($email->html_body, $emailToContact);
                 $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables, 'contact' ,$emailToContact);
                 $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables, 'ik', Auth::user());
+                if($email->quotationRequest){
+                    $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables, 'offerteverzoek', $email->quotationRequest);
+                }
                 $htmlBodyWithContactVariables = TemplateVariableHelper::stripRemainingVariableTags($htmlBodyWithContactVariables);
                 $mail->send(new GenericMail($email, $htmlBodyWithContactVariables));
             }

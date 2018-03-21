@@ -53,6 +53,7 @@ class DocumentsListItem extends Component {
               <td>{ documentGroup }</td>
               <td>
                   {(this.state.showActionButtons ? <a role="button" onClick={() => this.openItem(id)}><span className="glyphicon glyphicon-pencil mybtn-success" /> </a> : '')}
+                  {(this.state.showActionButtons && filename.endsWith('.pdf') ? <a role="button" onClick={() => hashHistory.push(`/document/inzien/${id}`)}><span className="glyphicon glyphicon-eye-open mybtn-success" /> </a> : '')}
                   {(this.state.showActionButtons ? <a role="button" onClick={() => this.download(id)}><span className="glyphicon glyphicon-open-file mybtn-success" /> </a> : '')}
                   {(this.state.showActionButtons && this.props.permissions.createDocument ? <a role="button" onClick={this.props.showDeleteItemModal.bind(this, id, filename)}><span className="glyphicon glyphicon-trash mybtn-danger"  /> </a> : '')}
               </td>

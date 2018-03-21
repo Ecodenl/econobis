@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Router, Route, IndexRoute, hashHistory } from 'react-router';
 
@@ -18,6 +19,7 @@ import ContactsListApp from './container/contact/list/ContactsListApp';
 import DashboardApp from './container/dashboard/DashboardApp';
 import DocumentsListApp from './container/document/list/DocumentsListApp';
 import DocumentDetailsApp from './container/document/details/DocumentDetailsApp';
+import DocumentViewApp from './container/document/view/DocumentViewApp';
 import DocumentNewApp from './container/document/new/DocumentNewApp';
 import DocumentTemplatesListApp from './container/document-template/list/DocumentTemplatesListApp';
 import DocumentTemplateDetailsApp from './container/document-template/details/DocumentTemplateDetailsApp';
@@ -124,6 +126,7 @@ const Routes = () => {
                 <Route path="document/nieuw/:type/productie-project/:productionProjectId" component={DocumentNewApp} />
                 <Route path="document/nieuw/:type/participant/:participantId/contact/:contactId" component={DocumentNewApp} />
                 <Route path="document/:id" component={DocumentDetailsApp} />
+                <Route path="document/inzien/:id" component={DocumentViewApp} />
                 /* Document templates */
                 <Route path="document-templates" component={DocumentTemplatesListApp} />
                 <Route path="document-template/nieuw" component={DocumentTemplateNewApp} />

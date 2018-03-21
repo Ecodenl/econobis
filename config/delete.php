@@ -18,7 +18,7 @@ return [
         'relations' =>
             [['remove_pivots' => 'contacts'],
             ['dissociate' => ['relation' => 'documents', 'foreign_key' => 'contact_group_id']],
-            ['dissociate' => ['relation' => 'emails', 'foreign_key' => 'contact_group_id']]],
+            ['dissociate' => ['relation' => 'tasks', 'foreign_key' => 'contact_group_id']]],
     ],
 
     'Task' => [

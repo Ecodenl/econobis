@@ -358,6 +358,10 @@ class EmailController
             }}
         }
 
+        if($data['quotationRequestId'] == ''){
+            $data['quotationRequestId'] = null;
+        }
+
         $sanitizedData = [
             'to' => $emails['to'],
             'cc' => $emails['cc'],

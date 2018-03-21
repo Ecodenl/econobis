@@ -79,7 +79,7 @@ class EmailController
     }
 
     public function getReply(Email $email){
-        $email->load('contact', 'attachments');
+        $email->load('contacts', 'attachments');
 
         //Reply logic:
         //To -> from
@@ -98,7 +98,7 @@ class EmailController
     }
 
     public function getReplyAll(Email $email){
-        $email->load('contact', 'attachments');
+        $email->load('contacts', 'attachments');
 
         //Reply all logic:
         //To -> (To without own email) + (From)
@@ -126,7 +126,7 @@ class EmailController
     }
 
     public function getForward(Email $email){
-        $email->load('contact', 'attachments');
+        $email->load('contacts', 'attachments');
 
         //Forward logic:
         //To -> empty
@@ -356,6 +356,10 @@ class EmailController
             else{
                     $emails[$sendVariation][] = $emailData;
             }}
+        }
+
+        if(!array_key_exists('quotationRequestId', $data)){
+            $data['quotationRequestId'] = null;
         }
 
         if($data['quotationRequestId'] == ''){

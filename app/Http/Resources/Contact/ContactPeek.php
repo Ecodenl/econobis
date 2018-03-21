@@ -17,7 +17,7 @@ class ContactPeek extends Resource
     {
         return [
             'id' => $this->id,
-            'fullName' => $this->full_name,
+            'fullName' => $this->full_name . ' (' . $this->number . ')',
         ];
     }
 }

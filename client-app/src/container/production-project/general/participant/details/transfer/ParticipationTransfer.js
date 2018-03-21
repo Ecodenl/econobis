@@ -9,6 +9,7 @@ import ButtonText from '../../../../../../components/button/ButtonText';
 import PanelFooter from "../../../../../../components/panel/PanelFooter";
 import InputText from "../../../../../../components/form/InputText";
 import InputToggle from "../../../../../../components/form/InputToggle";
+import InputReactSelect from "../../../../../../components/form/InputReactSelect";
 
 const ParticipantNew = props => {
     const {
@@ -27,13 +28,15 @@ const ParticipantNew = props => {
                     value={participation.contact ? participation.contact.fullName : ''}
                     readOnly={true}
                 />
-                <InputSelect
+                <InputReactSelect
                     label={"Contact"}
                     name={"transferToContactId"}
                     options={props.contacts}
-                    optionName={'fullName'}
                     value={transferToContactId}
-                    onChangeAction={props.handleInputChange}
+                    onChangeAction={props.handleReactSelectChange}
+                    optionName={'fullName'}
+                    multi={false}
+                    isLoading={props.peekLoading.contacts}
                     required={"required"}
                     error={props.errors.transferToContactId}
                 />

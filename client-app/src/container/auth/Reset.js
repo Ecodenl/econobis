@@ -63,7 +63,7 @@ class Reset extends Component{
 		let error = this.state.err ;
 		let passwordError = this.state.passwordError ;
         let passwordMsg = (passwordError) ? 'Het wachtwoord moet minmaal 8 karakters lang zijn en moet minimaal 1 cijfer en 1 hoofdletter bevatten.' : null;
-        let msg = (!error) ? 'Wachtwoord successvol gewijzigd' : 'Oeps! , er is iets fout gegaan' ;
+        let msg = (!error) ? 'Wachtwoord successvol gewijzigd' : 'Email bestaat niet.' ;
         let name = (!error) ? 'alert alert-success' : 'alert alert-danger' ;
 		return(
 			<div>

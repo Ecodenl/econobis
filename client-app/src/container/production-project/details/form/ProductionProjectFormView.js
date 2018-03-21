@@ -141,18 +141,18 @@ const ProductionProjectFormView = props => {
                 />
                 <ViewText
                     label={"Totaal aantal participaties"}
-                    value={totalParticipations ? totalParticipations : ''}
+                    value={totalParticipations && totalParticipations}
                 />
             </div>
 
             <div className="row" onClick={props.switchToEdit}>
                 <ViewText
-                    label={"Min. aantal participaties"}
+                    label={"Min. aantal part. p/p"}
                     value={minParticipations ? minParticipations : ''}
                 />
                 <ViewText
                     label={"Uitgegeven participaties"}
-                    value={issuedParticipations ? issuedParticipations : ''}
+                    value={issuedParticipations && issuedParticipations}
                 />
             </div>
 
@@ -163,18 +163,18 @@ const ProductionProjectFormView = props => {
                 />
                 <ViewText
                     label={"Participaties in optie"}
-                    value={participationsInOption ? participationsInOption : ''}
+                    value={participationsInOption && participationsInOption}
                 />
             </div>
 
             <div className="row" onClick={props.switchToEdit}>
                 <ViewText
-                    label={"Participatie overgedragen"}
+                    label={"Participaties overdraagbaar"}
                     value={isParticipationTransferable ? 'Ja' : 'Nee'}
                 />
                 <ViewText
                     label={"Uit te geven participaties"}
-                    value={issuableParticipations ? issuableParticipations : ''}
+                    value={issuableParticipations && issuableParticipations}
                 />
             </div>
 

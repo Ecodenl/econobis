@@ -21,7 +21,7 @@ const ProductionProjectGeneralFormView = props => {
             <div className="row">
                 <ViewText
                     label={"Totaal aantal participaties"}
-                    value={totalParticipations ? totalParticipations : ''}
+                    value={totalParticipations && totalParticipations}
                 />
                 <ViewText
                     label={"Start datum"}
@@ -32,7 +32,7 @@ const ProductionProjectGeneralFormView = props => {
             <div className="row">
                 <ViewText
                     label={"Uitgegeven participaties"}
-                    value={issuedParticipations ? issuedParticipations : ''}
+                    value={issuedParticipations && issuedParticipations}
                 />
                 <ViewText
                     label={"Waarde per participatie"}
@@ -43,22 +43,22 @@ const ProductionProjectGeneralFormView = props => {
             <div className="row">
                 <ViewText
                     label={"Participaties in optie"}
-                    value={participationsInOption ? participationsInOption : ''}
+                    value={participationsInOption && participationsInOption}
                 />
                 <ViewText
                     label={"Waarde participaties totaal"}
-                    value={participationsWorthTotal ? participationsWorthTotal : ''}
+                    value={participationsWorthTotal ? '€ ' + participationsWorthTotal : ''}
                 />
             </div>
 
             <div className="row">
                 <ViewText
                     label={"Uit te geven participaties"}
-                    value={issuableParticipations ? issuableParticipations : ''}
+                    value={issuableParticipations && issuableParticipations}
                 />
                 <ViewText
                     label={"Aantal participanten"}
-                    value={amountOfParticipants}
+                    value={amountOfParticipants && amountOfParticipants}
                 />
             </div>
 

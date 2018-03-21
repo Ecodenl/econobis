@@ -16,6 +16,7 @@ class ProductionProjectNewApp extends Component {
         super(props);
 
         this.state = {
+            showPostalCodeLinkFields: false,
             productionProject: {
                 name: '',
                 code: '',
@@ -52,6 +53,7 @@ class ProductionProjectNewApp extends Component {
             },
         }
         this.handleInputChangeDate = this.handleInputChangeDate.bind(this);
+        this.toggleShowPostalCodeLinkFields = this.toggleShowPostalCodeLinkFields.bind(this);
     };
 
     handleInputChange = event => {
@@ -114,6 +116,10 @@ class ProductionProjectNewApp extends Component {
         });
     };
 
+    toggleShowPostalCodeLinkFields() {
+        this.setState({showPostalCodeLinkFields: !this.state.showPostalCodeLinkFields});
+    };
+
     render() {
         return (
             <div className="row">
@@ -132,6 +138,8 @@ class ProductionProjectNewApp extends Component {
                                         handleInputChange={this.handleInputChange}
                                         handleInputChangeDate={this.handleInputChangeDate}
                                         handleSubmit={this.handleSubmit}
+                                        toggleShowPostalCodeLinkFields={this.toggleShowPostalCodeLinkFields}
+                                        showPostalCodeLinkFields={this.state.showPostalCodeLinkFields}
                                     />
                                 </div>
                             </PanelBody>

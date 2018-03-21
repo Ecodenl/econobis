@@ -202,7 +202,16 @@ class TaskController extends Controller
     }
 
     public function getAmountOfActiveTasks(){
-        return Task::where('finished', false)->count();
+        $user = Auth::user();
+
+        $userTeamIds = $user->teams()->pluck('id')->toArray();
+
+        $userTasks = Task::where('finished', false)->where('responsible_user_id', $user->id)->get();
+        $teamTasks = Task::where('finished', false)->whereIn('responsible_team_id', $userTeamIds)->get();
+
+        $allTasks = $userTasks->merge($teamTasks);
+
+        return $allTasks->count();
     }
 
     public function peek()

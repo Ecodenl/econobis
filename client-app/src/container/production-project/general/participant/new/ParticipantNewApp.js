@@ -33,7 +33,7 @@ class ParticipantNewApp extends Component {
             isPCR: false,
             participation: {
                 contactId: props.params.contactId || '',
-                statusId: '',
+                statusId: 1,
                 productionProjectId: props.params.productionProjectId || '',
                 dateRegister: '',
                 participationsRequested: '',
@@ -85,8 +85,24 @@ class ParticipantNewApp extends Component {
                 let productionProject = payload.find((productionProject) => productionProject.id == id);
                 let isPCR = false;
 
-                if(productionProject.typeId == 2){
+                if(productionProject.typeId == 2){//pcr
                     isPCR = true;
+                    this.setState({
+                        ...this.state,
+                        participation: {
+                            ...this.state.participation,
+                            typeId: 3//energieleverancier
+                        },
+                    });
+                }
+                else{
+                    this.setState({
+                        ...this.state,
+                        participation: {
+                            ...this.state.participation,
+                            typeId: 1//op rekening
+                        },
+                    });
                 }
 
                 this.setState({

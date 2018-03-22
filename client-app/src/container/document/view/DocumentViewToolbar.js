@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { browserHistory } from 'react-router';
+import {browserHistory, hashHistory} from 'react-router';
 
 import ButtonIcon from '../../../components/button/ButtonIcon';
 
@@ -11,6 +11,7 @@ const DocumentViewToolbar = props => {
                 <div className="btn-group" role="group">
                     <ButtonIcon iconName={"glyphicon-arrow-left"} onClickAction={browserHistory.goBack} />
                     <ButtonIcon iconName={"glyphicon-download-alt"} onClickAction={props.download} />
+                    <ButtonIcon iconName={"glyphicon-envelope"} onClickAction={() => hashHistory.push(`/email/nieuw/document/${props.documentId}`)} />
                     <ButtonIcon iconName={"glyphicon-zoom-in"} onClickAction={props.zoomIn} />
                     <ButtonIcon iconName={"glyphicon-zoom-out"} onClickAction={props.zoomOut} />
                 </div>
@@ -24,6 +25,7 @@ const DocumentViewToolbar = props => {
 const mapStateToProps = (state) => {
     return {
         documentFilename: state.documentDetails.filename,
+        documentId: state.documentDetails.id,
     };
 };
 

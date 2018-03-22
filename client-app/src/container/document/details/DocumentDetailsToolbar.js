@@ -15,6 +15,7 @@ const DocumentDetailsToolbar = props => {
                     {documentFilename.endsWith('.pdf') &&
                     <ButtonIcon iconName={"glyphicon-eye-open"} onClickAction={() => hashHistory.push(`/document/inzien/${props.documentId}`)} />
                     }
+                    <ButtonIcon iconName={"glyphicon-envelope"} onClickAction={() => hashHistory.push(`/email/nieuw/document/${props.documentId}`)} />
                 </div>
             </div>
             <div className="col-md-4"><h4 className="text-center">{'Document: ' + documentFilename}</h4></div>

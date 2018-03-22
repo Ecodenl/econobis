@@ -139,6 +139,7 @@ const Routes = () => {
                 <Route path="email/nieuw/:type" component={EmailNewApp} />
                 <Route path="email/nieuw/groep/:groupId" component={EmailNewApp} />
                 <Route path="email/nieuw/contact/:contactId" component={EmailNewApp} />
+                <Route path="email/nieuw/document/:documentId" component={EmailNewApp} />
                 <Route path="email/nieuw/offerteverzoek/:quotationRequestId/:contactId" component={EmailNewApp} />
                 <Route path="email/:id" component={EmailDetailsApp} />
                 <Route path="email/:id/:type" component={EmailAnswerApp} />

@@ -13,6 +13,8 @@ import EmailTemplateAPI from '../../../api/email-template/EmailTemplateAPI';
 import {isEqual} from "lodash";
 import {setBulkEmailToContactIds} from "../../../actions/email/BulkMailActions";
 import {connect} from "react-redux";
+import DocumentDetailsAPI from "../../../api/document/DocumentDetailsAPI";
+import fileDownload from "js-file-download";
 
 class EmailNewApp extends Component {
     constructor(props) {
@@ -90,7 +92,27 @@ class EmailNewApp extends Component {
                 },
             });
         }
+        if (this.props.params.documentId) {
+
+            DocumentDetailsAPI.fetchDocumentDetails(this.props.params.documentId).then((payload) => {
+                if(payload.data.data.contact){
+                    this.setState({
+                        ...this.state,
+                        email: {
+                            ...this.state.email,
+                            to: payload.data.data.contact.id
+                        },
+                    });
+                }
+                let filename = payload.data.data.filename ? payload.data.data.filename : 'bijlage.pdf';
+
+                DocumentDetailsAPI.download(this.props.params.documentId).then((payload) => {
+                    this.addAttachment([new File([payload.data], filename)]);
+                });
+            });
+        }
     }
+
 
     handleInputChange(event) {
         const target = event.target;
@@ -180,7 +202,6 @@ class EmailNewApp extends Component {
     };
 
     addAttachment(files) {
-        console.log(files);
         this.setState({
             ...this.state,
             email: {
@@ -212,7 +233,7 @@ class EmailNewApp extends Component {
         let errors = {};
         let hasErrors = false;
 
-        if(validator.isEmpty(email.to)){
+        if(validator.isEmpty('' + email.to)){
             errors.to = true;
             hasErrors = true;
         };

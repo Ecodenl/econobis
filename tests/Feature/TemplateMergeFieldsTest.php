@@ -4,14 +4,21 @@ namespace Tests\Feature;
 
 use App\Eco\Address\Address;
 use App\Eco\Contact\Contact;
+use App\Eco\Email\Email;
+use App\Eco\EmailAddress\EmailAddress;
 use App\Eco\EnergySupplier\ContactEnergySupplier;
 use App\Eco\EnergySupplier\EnergySupplier;
+use App\Eco\Intake\Intake;
+use App\Eco\Occupation\OccupationPerson;
+use App\Eco\Opportunity\Opportunity;
+use App\Eco\Organisation\Organisation;
 use App\Eco\ParticipantProductionProject\ParticipantProductionProject;
 use App\Eco\Person\Person;
 use App\Eco\PhoneNumber\PhoneNumber;
 use App\Eco\ProductionProject\ProductionProject;
 use App\Eco\ProductionProject\ProductionProjectRevenue;
 use App\Eco\ProductionProject\ProductionProjectRevenueDistribution;
+use App\Eco\QuotationRequest\QuotationRequest;
 use App\Eco\User\User;
 use App\Helpers\Template\TemplateVariableHelper;
 use Tests\TestCase;
@@ -39,6 +46,7 @@ class TemplateMergeFieldsTest extends TestCase
         $this->assertParticipantProductionProjectMergeFields();
         $this->assertProductionProjectRevenueMergeFields();
         $this->assertProductionProjectRevenueDistributionMergeFields();
+        $this->assertQuotationRequestMergeFields();
     }
 
     public function assertContactMergeFields()
@@ -126,6 +134,24 @@ class TemplateMergeFieldsTest extends TestCase
         $this->assertEquals($expectedHtml, $html);
     }
 
+    public function assertQuotationRequestMergeFields()
+    {
+        $html ='{offerteverzoek_organisatie_naam} {offerteverzoek_organisatie_adres} {offerteverzoek_organisatie_plaats} {offerteverzoek_organisatie_email}';
+        $html .='{offerteverzoek_organisatie_telefoonnummer} {offerteverzoek_organisatie_primair_contact} {offerteverzoek_contact_naam}';
+        $html .='{offerteverzoek_contact_email} {offerteverzoek_contact_woonplaats} {offerteverzoek_contact_adres} {offerteverzoek_contact_postcode}';
+        $html .='{offerteverzoek_contact_telefoonnummer} {offerteverzoek_maatregel} {offerteverzoek_tekst} {offerteverzoek_gemaakt_op} {offerteverzoek_gemaakt_door}';
+
+        $html = TemplateVariableHelper::replaceTemplateVariables($html, 'offerteverzoek', QuotationRequest::find(1));
+        $html = TemplateVariableHelper::stripRemainingVariableTags($html);
+
+        $expectedHtml = 'OrgaNisatie Laantje 10 Wognum OrgaNisatie@xaris.nl';
+        $expectedHtml .= '0650233678 Vaak, Klaas de Vaak, Klaas de';
+        $expectedHtml .= 'klaasV@xaris.nl Wervershoof Dorpstraat 8 1693KW';
+        $expectedHtml .= '0612345678 Gevelisolatie OfferteText 22/03/2018 Xaris, Admin';
+
+        $this->assertEquals($expectedHtml, $html);
+    }
+
     public function insertData(){
         $this->insertContact();
         $this->insertUser();
@@ -133,14 +159,10 @@ class TemplateMergeFieldsTest extends TestCase
         $this->insertParticipantProductionProject();
         $this->insertProductionProjectRevenue();
         $this->insertProductionProjectRevenueDistribution();
+        $this->insertQuotationRequest();
     }
 
     public function insertContact(){
-
-        $energySupplier = new EnergySupplier();
-        $energySupplier->name = 'Nuon';
-        $energySupplier->does_postal_code_links = true;
-        $energySupplier->save();
 
         $contact = new Contact();
         $contact->type_id = 'person';
@@ -168,6 +190,12 @@ class TemplateMergeFieldsTest extends TestCase
         $phoneNumber->primary = true;
         $phoneNumber->number = '0612345678';
         $phoneNumber->save();
+
+        $email = new EmailAddress();
+        $email->contact_id = 1;
+        $email->primary = true;
+        $email->email = 'klaasV@xaris.nl';
+        $email->save();
 
         $contactEnergySupplier = new ContactEnergySupplier();
         $contactEnergySupplier->contact_id = 1;
@@ -273,5 +301,73 @@ class TemplateMergeFieldsTest extends TestCase
         $distribution->date_payout = '2018-03-17';
         $distribution->energy_supplier_name = 'Eneco';
         $distribution->save();
+    }
+
+    public function insertQuotationRequest(){
+
+        $contact = new Contact();
+        $contact->type_id = 'organisation';
+        $contact->save();
+
+        $organisation = new Organisation();
+        $organisation->contact_id = 2;
+        $organisation->name = 'OrgaNisatie';
+        $organisation->website = 'organisatie.nl';
+        $organisation->chamber_of_commerce_number = 312321;
+        $organisation->vat_number = 312423423321;
+        $organisation->square_meters = 312;
+        $organisation->save();
+
+        $address = new Address();
+        $address->contact_id = 2;
+        $address->primary = true;
+        $address->street = 'Laantje';
+        $address->number = 10;
+        $address->postal_code = '1643KW';
+        $address->city = 'Wognum';
+        $address->save();
+
+        $phoneNumber = new PhoneNumber();
+        $phoneNumber->contact_id = 2;
+        $phoneNumber->primary = true;
+        $phoneNumber->number = '0650233678';
+        $phoneNumber->save();
+
+        $email = new EmailAddress();
+        $email->contact_id = 2;
+        $email->primary = true;
+        $email->email = 'OrgaNisatie@xaris.nl';
+        $email->save();
+
+        $int = new Intake();
+        $int->contact_id = 1;
+        $int->note = 'Intake 1';
+        $int->created_by_id = 1;
+        $int->updated_by_id = 1;
+        $int->save();
+
+        $opp = new Opportunity();
+        $opp->measure_category_id = 2;
+        $opp->intake_id = 1;
+        $opp->number = 'O2018-1';
+        $opp->status_id = 1;
+        $opp->save();
+
+        $op = new OccupationPerson();
+        $op->occupation_id = 1;
+        $op->person_id = 1;
+        $op->organisation_id = 1;
+        $op->primary = 1;
+        $op->save();
+
+        $qr = new QuotationRequest();
+        $qr->organisation_id = 1;
+        $qr->opportunity_id = 1;
+        $qr->status_id = 1;
+        $qr->quotation_text = 'OfferteText';
+        $qr->created_by_id = 1;
+        $qr->updated_by_id = 1;
+        $qr->created_at = '2018-03-22';
+        $qr->save();
     }
 }

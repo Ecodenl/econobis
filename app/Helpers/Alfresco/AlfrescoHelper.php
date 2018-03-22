@@ -31,7 +31,7 @@ class AlfrescoHelper
         if($password === ''){
             abort(403);
         }
-        $url = env('ALFRESCO_URL') . '/authentication/versions/1/tickets';
+        $url = \Config::get('app.ALFRESCO_URL') . '/authentication/versions/1/tickets';
         $args['userId'] = $username;
         $args['password'] = $password;
 
@@ -51,7 +51,7 @@ class AlfrescoHelper
             $lastname = $user->last_name;
         }
 
-        $url = env('ALFRESCO_URL') . '/alfresco/versions/1/people';
+        $url = \Config::get('app.ALFRESCO_URL') . '/alfresco/versions/1/people';
 
         $args['id'] = $user->email;
         $args['firstName'] = $user->first_name;
@@ -70,7 +70,7 @@ class AlfrescoHelper
 
     public function assignUserToSite($alfresco_username){
 
-        $url = env('ALFRESCO_URL') . "/alfresco/versions/1/sites/". env('ALFRESCO_SITE_MAP'). "/members";
+        $url = \Config::get('app.ALFRESCO_URL') . "/alfresco/versions/1/sites/" . \Config::get('app.ALFRESCO_SITE_MAP') . "/members";
 
         $args['role'] = 'SiteContributor';
         $args['id'] = $alfresco_username;
@@ -82,7 +82,7 @@ class AlfrescoHelper
 
     public function createFile($file, $filename, $map){
 
-        $url = env('ALFRESCO_URL') . "/alfresco/versions/1/sites/" . env('ALFRESCO_SITE_MAP');
+        $url = \Config::get('app.ALFRESCO_URL') . "/alfresco/versions/1/sites/" . \Config::get('app.ALFRESCO_SITE_MAP');
 
         $response = $this->executeCurl($url);
 
@@ -92,7 +92,7 @@ class AlfrescoHelper
             return $response['message'];
         }
 
-        $url = env('ALFRESCO_URL') . "/alfresco/versions/1/nodes/". $siteNodeId . "/children";
+        $url = \Config::get('app.ALFRESCO_URL') . "/alfresco/versions/1/nodes/". $siteNodeId . "/children";
 
         $args['name'] = $filename;
         $args['autoRename'] = 'true';
@@ -108,7 +108,7 @@ class AlfrescoHelper
 
     public function downloadFile($file_node){
 
-        $url = env('ALFRESCO_URL') . "/alfresco/versions/1/nodes/". $file_node . "/content";
+        $url = \Config::get('app.ALFRESCO_URL') . "/alfresco/versions/1/nodes/". $file_node . "/content";
 
         $response = $this->executeCurl($url, null, 'application/json', true);
 
@@ -128,8 +128,8 @@ class AlfrescoHelper
         $curl = curl_init();
 
         curl_setopt_array($curl, array(
-            CURLOPT_SSL_VERIFYPEER => env('ALFRESCO_SSL_VERIFYPEER'),
-            CURLOPT_SSL_VERIFYHOST => env('ALFRESCO_SSL_VERIFYHOST'),
+            CURLOPT_SSL_VERIFYPEER => \Config::get('app.ALFRESCO_SSL_VERIFYPEER'),
+            CURLOPT_SSL_VERIFYHOST => \Config::get('app.ALFRESCO_SSL_VERIFYHOST'),
             CURLOPT_PORT => "8443",
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_ENCODING => "",

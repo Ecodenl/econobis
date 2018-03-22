@@ -265,7 +265,12 @@ class DocumentNewApp extends Component {
             data.append('attachment', attachment);
 
             DocumentDetailsAPI.newDocument(data).then((payload) => {
-                hashHistory.push(`/documenten`);
+                if(payload.data.data.filename.endsWith('.pdf')){
+                    hashHistory.push(`/document/inzien/${payload.data.data.id}`);
+                }else{
+                    hashHistory.push(`/document/${payload.data.data.id}`);
+                }
+
             }).catch(error => {
                 this.props.setError(error.response.status);
             });

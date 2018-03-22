@@ -48,7 +48,7 @@ class TemplateMergeFieldsTest extends TestCase
         $html = TemplateVariableHelper::replaceTemplateVariables($html, 'contact', Contact::find(1));
         $html = TemplateVariableHelper::stripRemainingVariableTags($html);
 
-        $expectedHtml = 'MevrKlaas de VaakKlaasde VaakDorpstraat 81693KWWervershoof0612345678Nuon';
+        $expectedHtml = 'MevrKlaas de VaakKlaasde VaakDorpstraat 81693KWWervershoof0612345678=om';
 
         $this->assertEquals($expectedHtml, $html);
     }

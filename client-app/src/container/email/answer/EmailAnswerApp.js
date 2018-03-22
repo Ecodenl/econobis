@@ -213,7 +213,7 @@ class EmailAnswerApp extends Component {
             });
 
             EmailAPI.newEmail(data, email.mailboxId).then(() => {
-                hashHistory.push(`/emails/sent`);
+                hashHistory.push(`/emails/inbox`);
             }).catch(function (error) {
                 console.log(error)
             });

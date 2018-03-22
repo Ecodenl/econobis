@@ -14,10 +14,22 @@ class DocumentViewForm extends Component {
     }
 
     componentDidMount() {
+       this.downloadFile();
+    };
+
+    downloadFile() {
+        let i = 0;
         DocumentDetailsAPI.download(this.props.documentId).then((payload) => {
             this.setState({
                 file: payload.data,
             });
+        }).catch(() => {
+            if (i < 2) {
+                setTimeout(() => {
+                    this.downloadFile();
+                }, 500);
+            }
+            i++;
         });
     };
 
@@ -29,6 +41,7 @@ class DocumentViewForm extends Component {
                 <div>
                     <PdfViewer
                         file={this.state.file}
+                        scale={this.props.scale}
                     />
                 </div>
 

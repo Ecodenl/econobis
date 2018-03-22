@@ -25,6 +25,7 @@
     "jquery": "^3.2.1",
     "js-file-download": "^0.4.1",
     "lodash": "^4.17.2",
+    "mgr-pdf-viewer-react": "^1.0.0",
     "moment": "^2.18.1",
     "password-validator": "^4.0.0",
     "prop-types": "^15.5.10",

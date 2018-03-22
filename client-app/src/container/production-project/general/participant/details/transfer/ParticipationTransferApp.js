@@ -34,16 +34,24 @@ class ParticipationTransferApp extends Component {
                 participationWorth: false,
                 didSign: false,
             },
+            peekLoading: {
+                contacts: true,
+            },
         };
 
         this.handleInputChangeDate = this.handleInputChangeDate.bind(this);
+        this.handleReactSelectChange = this.handleReactSelectChange.bind(this);
     };
 
     componentWillMount() {
-        ContactsAPI.getContactsPeek().then(payload => {
-            payload.unshift({id: 0, fullName: "Teruggave energieleverancier"});
+        ContactsAPI.getContactsPeek().then((payload) => {
+            payload.unshift({id: '0', fullName: "Teruggave energieleverancier"});
             this.setState({
-                contacts: payload
+                contacts: payload,
+                peekLoading: {
+                    ...this.state.peekLoading,
+                    contacts: false,
+                },
             });
         });
 
@@ -79,6 +87,16 @@ class ParticipationTransferApp extends Component {
             participationTransfer: {
                 ...this.state.participationTransfer,
                 [name]: value
+            },
+        });
+    };
+
+    handleReactSelectChange(selectedOption, name) {
+        this.setState({
+            ...this.state,
+            participationTransfer: {
+                ...this.state.participationTransfer,
+                [name]: selectedOption
             },
         });
     };
@@ -154,6 +172,8 @@ class ParticipationTransferApp extends Component {
                                         handleSubmit={this.handleSubmit}
                                         contacts={this.state.contacts}
                                         participation={this.state.participation}
+                                        peekLoading={this.state.peekLoading}
+                                        handleReactSelectChange={this.handleReactSelectChange}
                                     />
                                 </div>
                             </PanelBody>

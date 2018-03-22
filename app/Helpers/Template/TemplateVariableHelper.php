@@ -432,6 +432,9 @@ class TemplateVariableHelper
             case 'contact_woonplaats':
                 return optional(optional(optional($model->opportunity)->intake)->contact->primaryAddress)->city;
                 break;
+            case 'contact_postcode':
+                return optional(optional(optional($model->opportunity)->intake)->contact->primaryAddress)->postal_code;
+                break;
             case 'contact_email':
                 return optional(optional(optional($model->opportunity)->intake)->contact->primaryEmailAddress)->email;
                 break;
@@ -440,6 +443,9 @@ class TemplateVariableHelper
                 break;
             case 'maatregel':
                 return optional(optional($model->opportunity)->measureCategory)->name;
+                break;
+            case 'tekst':
+                return $model->quotation_text;
                 break;
             case 'gemaakt_op':
                 return $model->created_at ? Carbon::parse($model->created_at)->format('d/m/Y') : null;

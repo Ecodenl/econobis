@@ -15,6 +15,7 @@ class EmailAnswerApp extends Component {
         super(props);
 
         this.state = {
+            oldEmailId: null,
             emailAddresses: [],
             email: {
                 from: '',
@@ -72,6 +73,7 @@ class EmailAnswerApp extends Component {
 
             this.setState({
                 ...this.state,
+                oldEmailId: payload.id,
                 email: {
                     from: payload.from,
                     mailboxId: payload.mailboxId,
@@ -213,7 +215,15 @@ class EmailAnswerApp extends Component {
             });
 
             EmailAPI.newEmail(data, email.mailboxId).then(() => {
-                hashHistory.push(`/emails/sent`);
+                //close the email we reply/forward
+                if(this.state.oldEmailId) {
+                    EmailAPI.setStatus(this.state.oldEmailId, 'closed').then(() => {
+                        hashHistory.push(`/emails/inbox`);
+                    });
+                }
+                else{
+                    hashHistory.push(`/emails/inbox`);
+                }
             }).catch(function (error) {
                 console.log(error)
             });

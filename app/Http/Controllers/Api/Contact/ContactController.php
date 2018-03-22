@@ -93,7 +93,7 @@ class ContactController extends Controller
 
     public function peek()
     {
-        $contact = Contact::select('id', 'full_name')->orderBy('full_name')->whereNull('deleted_at')->get();
+        $contact = Contact::select('id', 'full_name', 'number')->orderBy('full_name')->whereNull('deleted_at')->get();
 
         return ContactPeek::collection($contact);
     }

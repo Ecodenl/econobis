@@ -7,6 +7,13 @@ return [
     'version_minor' => '3',
     'version_fix' => '1',
 
+    //Alfresco envs
+    'ALFRESCO_ADMIN_USERNAME' => env('ALFRESCO_ADMIN_USERNAME'),
+    'ALFRESCO_ADMIN_PASSWORD' => env('ALFRESCO_ADMIN_PASSWORD'),
+    'ALFRESCO_SITE_MAP' => env('ALFRESCO_SITE_MAP'),
+    'ALFRESCO_URL' => env('ALFRESCO_URL'),
+    'ALFRESCO_SSL_VERIFYPEER' => env('ALFRESCO_SSL_VERIFYPEER'),
+    'ALFRESCO_SSL_VERIFYHOST' => env('ALFRESCO_SSL_VERIFYHOST'),
     /*
     |--------------------------------------------------------------------------
     | Application Name

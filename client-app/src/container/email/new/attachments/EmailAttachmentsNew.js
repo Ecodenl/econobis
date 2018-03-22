@@ -15,7 +15,9 @@ class EmailAttachmentsNew extends Component {
 
     onDropAccepted(files) {
         this.props.addAttachment(files);
-        this.props.toggleShowNew();
+        setTimeout(() => {
+            this.props.toggleShowNew();
+        }, 500);
     };
 
     onDropRejected() {

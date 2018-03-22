@@ -127,16 +127,18 @@ class ParticipantNewApp extends Component {
         const value = target.type === 'checkbox' ? target.checked : target.value;
         const name = target.name;
 
+        let selectedProductionProject = this.state.productionProjects.find((productionProject) => productionProject.id == value);
+
         let isPCR = false;
 
-        if(this.state.productionProjects[value].typeId == 2){
+        if(selectedProductionProject.typeId == 2){
             isPCR = true;
         }
 
         this.setState({
             ...this.state,
             isPCR: isPCR,
-            participationWorth: this.state.productionProjects[value].participationWorth,
+            participationWorth: selectedProductionProject.participationWorth,
             participation: {
                 ...this.state.participation,
                 [name]: value

@@ -180,6 +180,7 @@ class EmailNewApp extends Component {
     };
 
     addAttachment(files) {
+        console.log(files);
         this.setState({
             ...this.state,
             email: {

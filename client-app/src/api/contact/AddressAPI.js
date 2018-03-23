@@ -45,4 +45,18 @@ export default {
                 return error.response;
             });
     },
+
+    getPicoAddress: (postalCode, number) => {
+        const requestUrl = `${URL_ADDRESS}/pico`;
+        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
+        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
+
+        return axios.post(requestUrl, {postalCode: postalCode, number:number})
+            .then(function (response) {
+                return response.data;
+            })
+            .catch(function (error) {
+                return error.response;
+            });
+    },
 };

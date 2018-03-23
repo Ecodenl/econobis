@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "0ddaa9ecb4c3e1bfbe8c5500ec98c2fa",
+    "content-hash": "130fa035aae5de34776833da797ca2b2",
     "packages": [
         {
             "name": "barryvdh/laravel-dompdf",
@@ -695,6 +695,54 @@
             "description": "DOMPDF is a CSS 2.1 compliant HTML to PDF converter",
             "homepage": "https://github.com/dompdf/dompdf",
             "time": "2017-11-26T14:49:08+00:00"
+        },
+        {
+            "name": "ecodenl/pico-wrapper",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Ecodenl/PicoWrapper.git",
+                "reference": "dd9325d7b94a55a6398fb2d5713bd4fed20571b0"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Ecodenl/PicoWrapper/zipball/dd9325d7b94a55a6398fb2d5713bd4fed20571b0",
+                "reference": "dd9325d7b94a55a6398fb2d5713bd4fed20571b0",
+                "shasum": ""
+            },
+            "require": {
+                "guzzlehttp/guzzle": "~6.0",
+                "php": ">=7.0.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Ecodenl\\PicoWrapper\\PicoServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Ecodenl\\PicoWrapper\\": "src"
+                }
+            },
+            "license": [
+                "GPLv3"
+            ],
+            "authors": [
+                {
+                    "name": "Patrick van Kouteren",
+                    "email": "p.vankouteren@wedesignit.nl",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Wrapper for the PICO web service",
+            "support": {
+                "source": "https://github.com/Ecodenl/PicoWrapper/tree/master",
+                "issues": "https://github.com/Ecodenl/PicoWrapper/issues"
+            },
+            "time": "2018-03-12T13:18:38+00:00"
         },
         {
             "name": "egulias/email-validator",
@@ -5781,7 +5829,8 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
-        "usmanhalalit/laracsv": 20
+        "usmanhalalit/laracsv": 20,
+        "ecodenl/pico-wrapper": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,

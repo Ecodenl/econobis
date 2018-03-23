@@ -78,6 +78,7 @@ Route::namespace('Api')
         Route::post('/user/{user}/roles/add/{role}', 'User\UserController@addRole');
         Route::post('/user/{user}/roles/remove/{role}', 'User\UserController@removeRole');
 
+        Route::post('/address/pico', 'Address\AddressController@getPicoAddress');
         Route::post('/address', 'Address\AddressController@store');
         Route::post('/address/{address}', 'Address\AddressController@update');
         Route::post('/address/{address}/delete', 'Address\AddressController@destroy');

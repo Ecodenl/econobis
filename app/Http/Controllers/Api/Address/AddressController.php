@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\ApiController;
 use App\Http\Resources\Address\FullAddress;
 use App\Rules\AddressTypeExists;
 use App\Rules\EnumExists;
+use Ecodenl\PicoWrapper\PicoClient;
 use Illuminate\Http\Request;
 
 class AddressController extends ApiController
@@ -70,5 +71,27 @@ class AddressController extends ApiController
         $this->authorize('delete', $address);
 
         DeleteHelper::delete($address);
+    }
+
+    public function getPicoAddress(Request $request){
+        $pico = app()->make('pico');
+        $address = $pico->bag_adres_pchnr(['query' => ['pc' => $request->input('postalCode'), 'hnr' => $request->input('number')]]);
+
+        //Be carefull when retrieving extra values. In the normal flow this method is called only once, with the first housenumber entered(e.g. 1 for house number 18).
+        $street = '';
+        $city = '';
+
+        if(!empty($address[0])) {
+            if (array_key_exists('straat', $address[0])) {
+                $street = $address[0]['straat'];
+            }
+
+            if (array_key_exists('woonplaats', $address[0])) {
+                $city = $address[0]['woonplaats'];
+            }
+        }
+
+        return ['street' => $street, 'city' => $city];
+
     }
 }

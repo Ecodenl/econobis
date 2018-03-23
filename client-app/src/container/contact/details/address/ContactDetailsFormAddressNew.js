@@ -34,6 +34,36 @@ class ContactDetailsFormAddressNew extends Component {
         }
     };
 
+    handleInputPicoChange = event => {
+        const target = event.target;
+        const value = target.type === 'checkbox' ? target.checked : target.value;
+        const name = target.name;
+
+        this.setState({
+            ...this.state,
+            address: {
+                ...this.state.address,
+                [name]: value
+            },
+        });
+        setTimeout(() => {
+            const {address} = this.state;
+            if (!validator.isEmpty(address.postalCode) && validator.isPostalCode(address.postalCode, 'NL') && !validator.isEmpty(address.number) && validator.isEmpty(address.city) && validator.isEmpty(address.street)) {
+                AddressAPI.getPicoAddress(address.postalCode, address.number).then((payload) => {
+                    this.setState({
+                        ...this.state,
+                        address: {
+                            ...this.state.address,
+                            street: payload.street,
+                            city: payload.city
+                        },
+                    });
+                });
+
+            }
+        }, 100);
+    };
+
     handleInputChange = event => {
         const target = event.target;
         const value = target.type === 'checkbox' ? target.checked : target.value;
@@ -100,7 +130,7 @@ class ContactDetailsFormAddressNew extends Component {
                                 size={"col-sm-4"}
                                 name={"postalCode"}
                                 value={postalCode}
-                                onChangeAction={ this.handleInputChange }
+                                onChangeAction={ this.handleInputPicoChange }
                                 required={"required"}
                                 error={this.state.errors.postalCode}
                             />
@@ -110,7 +140,7 @@ class ContactDetailsFormAddressNew extends Component {
                                 size={"col-sm-3"}
                                 name={"number"}
                                 value={number}
-                                onChangeAction={this.handleInputChange}
+                                onChangeAction={this.handleInputPicoChange}
                                 required={"required"}
                                 error={this.state.errors.number}
                             />

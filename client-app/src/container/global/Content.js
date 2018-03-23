@@ -4,6 +4,7 @@ import ErrorModal from "../../components/modal/ErrorModal";
 import {clearError} from "../../actions/general/ErrorActions";
 import {connect} from "react-redux";
 import {isEmpty} from "lodash";
+import AboutUs from "./AboutUs";
 
 class Content extends Component {
     constructor(props) {
@@ -17,6 +18,10 @@ class Content extends Component {
                 {this.props.children}
                 {this.props.changePasswordActive &&
                 <ChangePassword closeModal={this.props.toggleChangePassword}/>
+                }
+
+                {this.props.showAboutUs &&
+                <AboutUs closeModal={this.props.toggleAboutUs}/>
                 }
                 {!isEmpty(this.props.error) &&
                 <ErrorModal error={this.props.error} closeModal={this.props.clearError}/>

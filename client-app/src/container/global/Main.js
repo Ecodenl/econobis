@@ -23,6 +23,7 @@ class Main extends Component {
         this.state = {
             menuActive: false,
             changePasswordActive: false,
+            showAboutUs: false,
         };
 
         const token = localStorage.getItem('access_token');
@@ -35,6 +36,7 @@ class Main extends Component {
         this.onMenuLeave = this.onMenuLeave.bind(this);
         this.toggleMenu = this.toggleMenu.bind(this);
         this.toggleChangePassword = this.toggleChangePassword.bind(this);
+        this.toggleAboutUs = this.toggleAboutUs.bind(this);
     }
 
     componentDidMount() {
@@ -69,6 +71,12 @@ class Main extends Component {
         });
     }
 
+    toggleAboutUs() {
+        this.setState({
+            showAboutUs: !this.state.showAboutUs,
+        });
+    }
+
     render() {
         const contentClass = (this.state.menuActive ? 'content open' : 'content');
 
@@ -82,14 +90,21 @@ class Main extends Component {
                             <BlockUi tag="div" blocking={this.props.blockUI} className={"full-screen-loading"} message={"Moment geduld, de gegevens worden opgehaald"}>
                                 <div className="wrapper">
                                     <div>
-                                        <NavHeader toggleMenu={this.toggleMenu} toggleChangePassword={this.toggleChangePassword}/>
+                                        <NavHeader toggleMenu={this.toggleMenu} toggleChangePassword={this.toggleChangePassword}  toggleAboutUs={this.toggleAboutUs}/>
                                         <Sidebar onMenuEnter={this.onMenuEnter} onMenuLeave={this.onMenuLeave} menuActive={this.state.menuActive} />
                                     </div>
 
                                     <div className={ contentClass }>
                                         <div className="container-fluid">
                                             <div className="col-md-12">
-                                                <Content children={this.props.children} menuActive={this.state.menuActive} toggleChangePassword={this.toggleChangePassword} changePasswordActive={this.state.changePasswordActive}/>
+                                                <Content
+                                                    children={this.props.children}
+                                                    menuActive={this.state.menuActive}
+                                                    toggleChangePassword={this.toggleChangePassword}
+                                                    changePasswordActive={this.state.changePasswordActive}
+                                                    toggleAboutUs={this.toggleAboutUs}
+                                                    showAboutUs={this.state.showAboutUs}
+                                                />
                                             </div>
                                         </div>
                                     </div>

@@ -32,6 +32,7 @@ const NavHeader = (props) => {
                                 <li><Link to="loguit">Uitloggen</Link></li>
                                 <li onClick={props.toggleChangePassword}><Link>Wachtwoord wijzigen</Link></li>
                                 <li><Link>{props.versionNumber}</Link></li>
+                                <li onClick={props.toggleAboutUs}><Link>Over ons</Link></li>
                             </ul>
                         </li>
                     </ul>

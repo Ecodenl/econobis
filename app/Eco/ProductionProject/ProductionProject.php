@@ -126,7 +126,7 @@ class ProductionProject extends Model
     }
 
     public function getCurrentParticipationsAttribute(){
-        $participants = $this->participantsProductionProject;
+        $participants = $this->participantsProductionProject()->get();
 
         $totalParticipations = 0;
 

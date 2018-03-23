@@ -130,7 +130,8 @@ class AlfrescoHelper
         curl_setopt_array($curl, array(
             CURLOPT_SSL_VERIFYPEER => \Config::get('app.ALFRESCO_SSL_VERIFYPEER'),
             CURLOPT_SSL_VERIFYHOST => \Config::get('app.ALFRESCO_SSL_VERIFYHOST'),
-            CURLOPT_PORT => "8443",
+            CURLOPT_PORT => "443",
+
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_ENCODING => "",
             CURLOPT_MAXREDIRS => 10,

@@ -24,11 +24,12 @@ class AuditTrailListItem extends Component {
     };
 
     render() {
-        const { model, field, oldValue, newValue, changedBy, changedAt } = this.props;
+        const { model, revisionableId, field, oldValue, newValue, changedBy, changedAt } = this.props;
 
         return (
             <tr className={this.state.highlightRow} onMouseEnter={() => this.onRowEnter()} onMouseLeave={() => this.onRowLeave()}>
                 <td>{ model }</td>
+                <td>{ revisionableId }</td>
                 <td>{ field }</td>
                 <td>{ oldValue ? oldValue : 'Null' }</td>
                 <td>{ newValue ? newValue : 'Null' }</td>

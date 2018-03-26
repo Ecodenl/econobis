@@ -3,6 +3,11 @@ export const setFilterAuditTrailModel = (model) => ({
     model,
 });
 
+export const setFilterAuditTrailRevisionableId = (revisionableId) => ({
+    type: 'SET_FILTER_AUDIT_TRAIL_REVISIONABLE_ID',
+    revisionableId,
+});
+
 export const setFilterAuditTrailField = (field) => ({
     type: 'SET_FILTER_AUDIT_TRAIL_FIELD',
     field,

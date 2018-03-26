@@ -15,6 +15,7 @@ class Filter extends RequestFilter
 {
     protected $fields = [
         'model',
+        'revisionableId',
         'field',
         'oldValue',
         'newValue',
@@ -24,6 +25,7 @@ class Filter extends RequestFilter
 
     protected $mapping = [
         'model' => 'revisions.revisionable_type',
+        'revisionableId' => 'revisions.revisionable_id',
         'field' => 'revisions.key',
         'oldValue' => 'revisions.old_value',
         'newValue' => 'revisions.new_value',

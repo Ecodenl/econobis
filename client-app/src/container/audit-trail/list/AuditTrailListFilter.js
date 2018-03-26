@@ -10,7 +10,8 @@ import {
     setFilterAuditTrailOldValue,
     setFilterAuditTrailNewValue,
     setFilterAuditTrailChangedById,
-    setFilterAuditTrailUpdatedAt
+    setFilterAuditTrailUpdatedAt,
+    setFilterAuditTrailRevisionableId
 } from '../../../actions/audit-trail/AuditTrailFiltersActions';
 import DataTableFilterDate from "../../../components/dataTable/DataTableFilterDate";
 
@@ -23,6 +24,10 @@ const AuditTrailListFilter = props => {
             props.onSubmitFilter();
         }, 100);
 
+    };
+
+    const onRevisionableIdChange = (e) => {
+        props.setFilterAuditTrailRevisionableId(e.target.value);
     };
 
     const onFieldChange = (e) => {
@@ -66,6 +71,7 @@ const AuditTrailListFilter = props => {
                 </select>
             </th>
 
+            <th><input type="text" className="form-control input-sm" value={ props.filters.revisionableId.data} onChange={onRevisionableIdChange} /></th>
             <th><input type="text" className="form-control input-sm" value={ props.filters.field.data} onChange={onFieldChange} /></th>
             <th><input type="text" className="form-control input-sm" value={ props.filters.oldValue.data} onChange={onOldValueChange} /></th>
             <th><input type="text" className="form-control input-sm" value={ props.filters.newValue.data} onChange={onNewValueChange} /></th>
@@ -100,7 +106,8 @@ const mapDispatchToProps = (dispatch) => {
         setFilterAuditTrailOldValue,
         setFilterAuditTrailNewValue,
         setFilterAuditTrailChangedById,
-        setFilterAuditTrailUpdatedAt
+        setFilterAuditTrailUpdatedAt,
+        setFilterAuditTrailRevisionableId
     }, dispatch);
 };
 

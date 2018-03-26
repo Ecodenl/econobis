@@ -13,9 +13,8 @@ import filterHelper from '../../../helpers/FilterHelper';
 class ContactsListApp extends Component {
     constructor(props) {
         super(props);
-
-        if(!isEmpty(props.params)) {
-            switch(props.params.filter){
+        if (!isEmpty(props.params)) {
+            switch (props.params.filter) {
                 case 'type':
                     this.props.clearFilterContacts();
                     this.props.setTypeFilter(props.params.value);
@@ -27,7 +26,9 @@ class ContactsListApp extends Component {
                 default:
                     break;
             };
-        };
+        } else {
+            this.props.clearFilterContacts();
+        }
 
         this.state = {
             showCheckboxList: false,
@@ -56,7 +57,10 @@ class ContactsListApp extends Component {
                     default:
                         break;
                 };
-            };
+            }
+            else {
+                this.props.clearFilterContacts();
+            }
 
             setTimeout(() => {
                 this.fetchContactsData();

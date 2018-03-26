@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 
-import {newOccupation} from '../../../../actions/contact/ContactDetailsActions';
+import {fetchContactDetails} from '../../../../actions/contact/ContactDetailsActions';
 import InputSelect from '../../../../components/form/InputSelect';
 import InputDate from '../../../../components/form/InputDate';
 import ButtonText from '../../../../components/button/ButtonText';
@@ -9,35 +9,45 @@ import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
 import validator from "validator";
 import OccupationAPI from "../../../../api/contact/OccupationAPI";
-import OrganisationAPI from "../../../../api/contact/OrganisationAPI";
 import moment from "moment/moment";
 import InputToggle from "../../../../components/form/InputToggle";
+import ContactsAPI from "../../../../api/contact/ContactsAPI";
+import InputReactSelect from "../../../../components/form/InputReactSelect";
 
 class ContactDetailsFormOccupationsNew extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            organisations: [],
+            contacts: [],
             occupation: {
-                personId: this.props.id,
-                organisationId: '',
+                primaryContactId: this.props.id,
+                contactId: '',
                 occupationId: '',
                 startDate: '',
                 endDate: '',
                 primary: false,
             },
             errors: {
-                organisationId: false,
+                contactId: false,
                 occupationId: false,
             },
-        }
+            peekLoading: {
+                contacts: true
+            },
+        };
+
+        this.handleReactSelectChange = this.handleReactSelectChange.bind(this);
     };
 
     componentDidMount() {
-        OrganisationAPI.getOrganisationPeek().then(payload => {
+        ContactsAPI.getContactsPeek().then((payload) => {
             this.setState({
-                organisations: payload
+                contacts: payload,
+                peekLoading: {
+                    ...this.state.peekLoading,
+                    contacts: false,
+                },
             });
         });
     }
@@ -88,12 +98,12 @@ class ContactDetailsFormOccupationsNew extends Component {
         let errors = {};
         let hasErrors = false;
 
-        if (validator.isEmpty(occupation.organisationId)) {
-            errors.organisationId = true;
+        if (validator.isEmpty(occupation.contactId + '')) {
+            errors.contactId = true;
             hasErrors = true;
         }
 
-        if (validator.isEmpty(occupation.occupationId)) {
+        if (validator.isEmpty(occupation.occupationId + '')) {
             errors.occupationId = true;
             hasErrors = true;
         }
@@ -103,33 +113,45 @@ class ContactDetailsFormOccupationsNew extends Component {
         // If no errors send form
         !hasErrors &&
         OccupationAPI.newOccupation(occupation).then((payload) => {
-            this.props.newOccupation(payload);
+            this.props.fetchContactDetails(this.props.id);
             this.props.toggleShowNew();
         });
     };
 
+    handleReactSelectChange(selectedOption, name) {
+        this.setState({
+            ...this.state,
+            occupation: {
+                ...this.state.occupation,
+                [name]: selectedOption
+            },
+        });
+    };
+
     render() {
-        const {organisationId, occupationId, startDate, endDate, primary} = this.state.occupation;
+        const {contactId, occupationId, startDate, endDate, primary} = this.state.occupation;
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
                 <Panel className={'panel-grey'}>
                     <PanelBody>
                         <div className="row">
-                            <InputSelect
+                            <InputReactSelect
                                 label={"Verbonden met"}
-                                size={"col-sm-6"}
-                                name={"organisationId"}
-                                options={this.state.organisations}
-                                value={organisationId}
-                                onChangeAction={this.handleInputChange}
-                                required={"required"}
-                                error={this.state.errors.organisationId}
+                                name={"contactId"}
+                                options={this.state.contacts}
+                                value={contactId}
+                                onChangeAction={this.handleReactSelectChange}
+                                optionName={'fullName'}
+                                multi={false}
+                                isLoading={this.state.peekLoading.contacts}
+                                error={this.state.errors.contactId}
                             />
                             <InputSelect
                                 label={"Rol"}
                                 size={"col-sm-6"}
                                 name={"occupationId"}
+                                optionName={'primaryOccupation'}
                                 options={this.props.occupations}
                                 value={occupationId}
                                 onChangeAction={this.handleInputChange}
@@ -180,13 +202,13 @@ class ContactDetailsFormOccupationsNew extends Component {
 const mapStateToProps = (state) => {
     return {
         occupations: state.systemData.occupations,
-        id: state.contactDetails.person.id,
+        id: state.contactDetails.id,
     };
 };
 
 const mapDispatchToProps = dispatch => ({
-    newOccupation: (id) => {
-        dispatch(newOccupation(id));
+    fetchContactDetails: (id) => {
+        dispatch(fetchContactDetails(id));
     },
 });
 

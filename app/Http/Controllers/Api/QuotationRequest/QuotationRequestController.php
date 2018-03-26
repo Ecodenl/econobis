@@ -49,7 +49,7 @@ class QuotationRequestController extends ApiController
     public function show(QuotationRequest $quotationRequest)
     {
         $quotationRequest->load([
-            'organisation.contactPerson.person',
+            'organisation.contact.contactPerson.contact',
             'opportunity.intake.contact',
             'opportunity.measureCategory',
             'opportunity.measures',

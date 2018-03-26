@@ -15,15 +15,28 @@ const ContactDetailsFormOccupationsList = props => {
                 <div className="col-sm-1"></div>
             </div>
             {
-                props.occupations.length > 0 ?
-                    props.occupations.map((occupation, i) => {
+                props.primaryOccupations.length > 0 &&
+                    props.primaryOccupations.map((primaryOccupation) => {
                         return <ContactDetailsFormOccupationsItem
-                            key={i}
-                            occupation={occupation}
+                            key={primaryOccupation.id}
+                            occupation={primaryOccupation}
+                            primaryOccupation={true}
                         />;
                     })
-                    :
-                    <div>Geen verbindingen bekend</div>
+            }
+            {
+                props.occupations.length > 0 &&
+                props.occupations.map((occupation) => {
+                    return <ContactDetailsFormOccupationsItem
+                        key={occupation.id}
+                        occupation={occupation}
+                        primaryOccupation={false}
+                    />;
+                })
+            }
+            {
+                props.primaryOccupations.length === 0 && props.occupations.length === 0 &&
+                <div>Geen verbindingen bekend</div>
             }
         </div>
     );
@@ -31,7 +44,8 @@ const ContactDetailsFormOccupationsList = props => {
 
 const mapStateToProps = (state) => {
     return {
-        occupations: state.contactDetails.person.occupations,
+        primaryOccupations: state.contactDetails.primaryOccupations,
+        occupations: state.contactDetails.occupations,
     };
 };
 

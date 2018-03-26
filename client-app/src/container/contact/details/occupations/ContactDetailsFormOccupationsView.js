@@ -3,16 +3,16 @@ import moment from "moment/moment";
 moment.locale('nl');
 
 const ContactDetailsFormOccupationsView = props => {
-    const {organisation, occupation, startDate, endDate, primary } = props.occupation;
+    const {primaryContact, contact, occupation, startDate, endDate, primary } = props.occupation;
 
     return (
         <div className={`row border ${props.highlightLine}`} onMouseEnter={() => props.onLineEnter()} onMouseLeave={() => props.onLineLeave()}>
             <div onClick={props.openEdit}>
                 <div className="col-sm-3">
-                    { organisation ? organisation.name : '' }
+                    { props.primaryOccupation ? contact.fullName : primaryContact.fullName }
                 </div>
                 <div className="col-sm-2">
-                    { occupation ? occupation.name : '' }
+                    { props.primaryOccupation ? occupation.primaryOccupation : occupation.secondaryOccupation }
                 </div>
                 <div className="col-sm-2">
                     { startDate ? moment(startDate).format('DD-MM-Y') : '' }

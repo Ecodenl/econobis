@@ -9,7 +9,7 @@ use App\Eco\EmailAddress\EmailAddress;
 use App\Eco\EnergySupplier\ContactEnergySupplier;
 use App\Eco\EnergySupplier\EnergySupplier;
 use App\Eco\Intake\Intake;
-use App\Eco\Occupation\OccupationPerson;
+use App\Eco\Occupation\OccupationContact;
 use App\Eco\Opportunity\Opportunity;
 use App\Eco\Organisation\Organisation;
 use App\Eco\ParticipantProductionProject\ParticipantProductionProject;
@@ -353,10 +353,10 @@ class TemplateMergeFieldsTest extends TestCase
         $opp->status_id = 1;
         $opp->save();
 
-        $op = new OccupationPerson();
+        $op = new OccupationContact();
         $op->occupation_id = 1;
-        $op->person_id = 1;
-        $op->organisation_id = 1;
+        $op->primary_contact_id = 2;
+        $op->contact_id = 1;
         $op->primary = 1;
         $op->save();
 

@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers\Api\Occupation;
 
-use App\Eco\Occupation\OccupationPerson;
+use App\Eco\Contact\Contact;
+use App\Eco\Occupation\OccupationContact;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Api\ApiController;
-use App\Http\Resources\Occupation\FullOccupationPerson;
+use App\Http\Resources\Occupation\FullOccupationContact;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
@@ -18,8 +19,8 @@ class OccupationController extends ApiController
 
         $data = $requestInput
             ->string('occupationId')->validate('required|exists:occupations,id')->alias('occupation_id')->next()
-            ->string('personId')->validate('required|exists:people,id')->alias('person_id')->next()
-            ->string('organisationId')->validate('required|exists:organisations,id')->alias('organisation_id')->next()
+            ->string('primaryContactId')->validate('required|exists:contacts,id')->alias('primary_contact_id')->next()
+            ->string('contactId')->validate('required|exists:contacts,id')->alias('contact_id')->next()
             ->date('startDate')->onEmpty(null)->alias('start_date')->next()
             ->date('endDate')->onEmpty(null)->alias('end_date')->next()
             ->boolean('primary')->next()
@@ -27,76 +28,111 @@ class OccupationController extends ApiController
 
         //an organisation can only have 1 contactperson.
         if ($data['primary'] == true) {
-            $primaryOccupationPerson = OccupationPerson::where('primary', true)
-                ->where('organisation_id', $data['organisation_id'])->first();
+            $primaryContact = Contact::where('id', $data['primary_contact_id'])->first();
+            $secondaryContact = Contact::where('id', $data['contact_id'])->first();
 
-            if ($primaryOccupationPerson) {
-                $primaryOccupationPerson->primary = false;
-                $primaryOccupationPerson->save();
+            if ($primaryContact->type_id == 'organisation') {
+                $organisationOccupations
+                    = OccupationContact::where('primary_contact_id',
+                    $primaryContact->id)
+                    ->orWhere('contact_id', $primaryContact->id)->get();
+
+                foreach ($organisationOccupations as $organisationOccupation) {
+                    $organisationOccupation->primary = false;
+                    $organisationOccupation->save();
+                }
+            }
+
+            if ($secondaryContact->type_id == 'organisation') {
+                $organisationOccupations
+                    = OccupationContact::where('primary_contact_id',
+                    $secondaryContact->id)
+                    ->orWhere('contact_id', $secondaryContact->id)->get();
+
+                foreach ($organisationOccupations as $organisationOccupation) {
+                    $organisationOccupation->primary = false;
+                    $organisationOccupation->save();
+                }
             }
         }
 
         //save
-        $occupationPerson = new OccupationPerson();
-        $occupationPerson->fill($data);
+        $occupationContact = new OccupationContact();
+        $occupationContact->fill($data);
         try {
-            $occupationPerson->save();
+            $occupationContact->save();
         } catch (\Exception $e) {
             Log::error('error adding occupation: ' . $e);
         }
 
-        return FullOccupationPerson::collection(OccupationPerson::where('person_id', $occupationPerson->person_id)->orderBy('created_at')->with('occupation', 'organisation', 'person')->get());
+        return FullOccupationContact::collection(OccupationContact::where('primary_contact_id', $occupationContact->primary_contact_id)->orWhere('contact_id', $occupationContact->contact_id)->orderBy('created_at')->with('primaryContact', 'contact', 'occupation')->get());
     }
 
-    public function update(RequestInput $requestInput, Request $request)
+    public function update(RequestInput $requestInput, OccupationContact $occupationContact)
     {
 
         $data = $requestInput
             ->string('occupationId')->validate('required|exists:occupations,id')->alias('occupation_id')->next()
-            ->string('personId')->validate('required|exists:people,id')->alias('person_id')->next()
-            ->string('organisationId')->validate('required|exists:organisations,id')->alias('organisation_id')->next()
+            ->string('primaryContactId')->validate('required|exists:contacts,id')->alias('primary_contact_id')->next()
+            ->string('contactId')->validate('required|exists:contacts,id')->alias('contact_id')->next()
             ->date('startDate')->onEmpty(null)->alias('start_date')->next()
             ->date('endDate')->onEmpty(null)->alias('end_date')->next()
             ->boolean('primary')->next()
             ->get();
 
-        $oldOccupationPerson = OccupationPerson::where('occupation_id', $request['oldOccupationId'])->where('person_id', $data['person_id'])->where('organisation_id', $request['oldOrganisationId'])->first();
-        $oldOccupationPerson->delete();
-
         //an organisation can only have 1 contactperson.
         if ($data['primary'] == true) {
-            $primaryOccupationPerson = OccupationPerson::where('primary', true)
-                ->where('organisation_id', $data['organisation_id'])->first();
-            if ($primaryOccupationPerson) {
-                $primaryOccupationPerson->primary = false;
-                $primaryOccupationPerson->save();
+            $primaryContact = Contact::where('id', $data['primary_contact_id'])->first();
+            $secondaryContact = Contact::where('id', $data['contact_id'])->first();
+
+            if ($primaryContact->type_id == 'organisation') {
+                $organisationOccupations
+                    = OccupationContact::where('primary_contact_id',
+                    $primaryContact->id)
+                    ->orWhere('contact_id', $primaryContact->id)->get();
+
+                foreach ($organisationOccupations as $organisationOccupation) {
+                    $organisationOccupation->primary = false;
+                    $organisationOccupation->save();
+                }
+            }
+
+            if ($secondaryContact->type_id == 'organisation') {
+                $organisationOccupations
+                    = OccupationContact::where('primary_contact_id',
+                    $secondaryContact->id)
+                    ->orWhere('contact_id', $secondaryContact->id)->get();
+
+                foreach ($organisationOccupations as $organisationOccupation) {
+                    $organisationOccupation->primary = false;
+                    $organisationOccupation->save();
+                }
             }
         }
 
-        $occupationPerson = new OccupationPerson();
-        $occupationPerson->fill($data);
-        $occupationPerson->save();
+        $occupationContact->fill($data);
+        $occupationContact->save();
 
-        $occupationsPerson = OccupationPerson::where('person_id', $occupationPerson->person_id)->orderBy('created_at')->get();
-        $occupationsPerson->load('occupation', 'organisation', 'person');
+        $occupationContact = OccupationContact::where('primary_contact_id', $occupationContact->primary_contact_id)->orWhere('contact_id', $occupationContact->contact_id)->orderBy('created_at')->get();
+        $occupationContact->load('occupation', 'primaryContact', 'contact');
 
-        return FullOccupationPerson::collection($occupationsPerson);
+        return FullOccupationContact::collection($occupationContact);
     }
 
     public function destroy(RequestInput $requestInput)
     {
         $data = $requestInput
             ->string('occupationId')->validate('required|exists:occupations,id')->alias('occupation_id')->next()
-            ->string('personId')->validate('required|exists:people,id')->alias('person_id')->next()
-            ->string('organisationId')->validate('required|exists:organisations,id')->alias('organisation_id')->next()
+            ->string('primaryContactId')->validate('required|exists:contacts,id')->alias('primary_contact_id')->next()
+            ->string('contactId')->validate('required|exists:contacts,id')->alias('contact_id')->next()
             ->get();
 
-        $occupationPerson = OccupationPerson::where('occupation_id', $data['occupation_id'])->where('person_id', $data['person_id'])->where('organisation_id', $data['organisation_id'])->first();
-        $occupationPerson->delete();
+        $occupationContact = OccupationContact::where('occupation_id', $data['occupation_id'])->where('primary_contact_id', $data['primary_contact_id'])->where('contact_id', $data['contact_id'])->first();
+        $occupationContact->delete();
 
-        $occupationsPerson = OccupationPerson::where('person_id', $occupationPerson->person_id)->orderBy('created_at')->get();
-        $occupationsPerson->load('occupation', 'organisation', 'person');
+        $occupationContact = OccupationContact::where('primary_contact_id', $occupationContact->primary_contact_id)->orWhere('contact_id', $occupationContact->contact_id)->orderBy('created_at')->get();
+        $occupationContact->load('occupation', 'primaryContact', 'contact');
 
-        return FullOccupationPerson::collection($occupationsPerson);
+        return FullOccupationContact::collection($occupationContact);
     }
 }

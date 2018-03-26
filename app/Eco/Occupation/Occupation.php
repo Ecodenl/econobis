@@ -6,8 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Occupation extends Model
 {
-    public function persons()
+    public function occupationContacts()
     {
-        return $this->hasMany(OccupationPerson::class);
+        return $this->hasMany(OccupationContact::class);
     }
 }

@@ -125,30 +125,6 @@ export default function (state = {}, action) {
                 ...state,
                 notes: state.notes.filter(note => note.id !== action.id),
             };
-        case 'NEW_OCCUPATION':
-            return {
-                ...state,
-                person: {
-                    ...state.person,
-                    occupations: action.occupations
-                }
-            };
-        case 'UPDATE_OCCUPATION':
-            return {
-                ...state,
-                person: {
-                    ...state.person,
-                    occupations: action.occupations
-                }
-            };
-        case 'DELETE_OCCUPATION':
-            return {
-                ...state,
-                person: {
-                    ...state.person,
-                    occupations: action.occupations
-                }
-            };
         case 'UNSET_PRIMARY_ADDRESSES':
             return {
                 ...state,

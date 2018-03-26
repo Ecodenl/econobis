@@ -7,6 +7,7 @@ use App\Eco\Document\Document;
 use App\Eco\Email\Email;
 use App\Eco\EnergySupplier\ContactEnergySupplier;
 use App\Eco\HousingFile\HousingFile;
+use App\Eco\Occupation\OccupationContact;
 use App\Eco\Opportunity\Opportunity;
 use App\Eco\Organisation\Organisation;
 use App\Eco\Address\Address;
@@ -196,6 +197,20 @@ class Contact extends Model
         return $this->hasMany(ParticipantProductionProject::class);
     }
 
+    public function primaryOccupations()
+    {
+        return $this->hasMany(OccupationContact::class, 'primary_contact_id');
+    }
+
+    public function occupations()
+    {
+        return $this->hasMany(OccupationContact::class);
+    }
+
+    public function contactPerson()
+    {
+        return $this->hasOne(OccupationContact::class, 'primary_contact_id')->where('primary', true);
+    }
 
     //Returns addresses array as Type - Streetname - Number
     //Primary address always comes first

@@ -117,27 +117,6 @@ export const makePrimary = (id) => {
     };
 };
 
-export const newOccupation = (occupations) => {
-    return {
-        type: 'NEW_OCCUPATION',
-        occupations,
-    };
-};
-
-export const updateOccupation = (occupations) => {
-    return {
-        type: 'UPDATE_OCCUPATION',
-        occupations,
-    };
-};
-
-export const deleteOccupation = (occupations) => {
-    return {
-        type: 'DELETE_OCCUPATION',
-        occupations,
-    };
-};
-
 export const unsetPrimaryAddresses = () => {
     return {
         type: 'UNSET_PRIMARY_ADDRESSES',

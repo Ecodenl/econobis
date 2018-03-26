@@ -156,24 +156,18 @@ class ContactDetailsHarmonica extends Component {
     render(){
         return (
             <div className="margin-10-top">
-                <IntakeHarmonica
-                    toggleShowList={() => this.toggleShowList('intakes')}
-                    showIntakesList={this.state.toggleShowList.intakes}
-                    intakeCount={this.props.contactDetails.intakeCount}
-                    newIntake={this.newIntake}
+                <EmailInboxHarmonica
+                    toggleShowList={() => this.toggleShowList('emailsInbox')}
+                    showEmailsInboxList={this.state.toggleShowList.emailsInbox}
+                    newEmail={this.newEmail}
+                    emailInboxCount={this.props.contactDetails.emailInboxCount}
                 />
 
-                <HousingFileHarmonica
-                    toggleShowList={() => this.toggleShowList('housingFiles')}
-                    showHousingFilesList={this.state.toggleShowList.housingFiles}
-                    housingFileCount={this.props.contactDetails.housingFileCount}
-                    newHousingFile={this.newHousingFile}
-                />
-
-                <OpportunityHarmonica
-                    toggleShowList={() => this.toggleShowList('opportunities')}
-                    showOpportunitiesList={this.state.toggleShowList.opportunities}
-                    opportunityCount={this.props.contactDetails.opportunityCount}
+                <EmailSentHarmonica
+                    toggleShowList={() => this.toggleShowList('emailsSent')}
+                    showEmailsSentList={this.state.toggleShowList.emailsSent}
+                    newEmail={this.newEmail}
+                    emailSentCount={this.props.contactDetails.emailSentCount}
                 />
 
                 <TaskHarmonica
@@ -190,6 +184,33 @@ class ContactDetailsHarmonica extends Component {
                     newTask={this.newTask}
                 />
 
+                <ParticipationHarmonica
+                    toggleShowList={() => this.toggleShowList('participations')}
+                    showParticipationsList={this.state.toggleShowList.participations}
+                    participationCount={this.props.contactDetails.participationCount}
+                    newParticipation={this.newParticipation}
+                />
+
+                <IntakeHarmonica
+                    toggleShowList={() => this.toggleShowList('intakes')}
+                    showIntakesList={this.state.toggleShowList.intakes}
+                    intakeCount={this.props.contactDetails.intakeCount}
+                    newIntake={this.newIntake}
+                />
+
+                <OpportunityHarmonica
+                    toggleShowList={() => this.toggleShowList('opportunities')}
+                    showOpportunitiesList={this.state.toggleShowList.opportunities}
+                    opportunityCount={this.props.contactDetails.opportunityCount}
+                />
+
+                <HousingFileHarmonica
+                    toggleShowList={() => this.toggleShowList('housingFiles')}
+                    showHousingFilesList={this.state.toggleShowList.housingFiles}
+                    housingFileCount={this.props.contactDetails.housingFileCount}
+                    newHousingFile={this.newHousingFile}
+                />
+
                 <ContactGroupHarmonica
                     toggleShowList={() => this.toggleShowList('contactGroups')}
                     showContactGroupsList={this.state.toggleShowList.contactGroups}
@@ -197,32 +218,11 @@ class ContactDetailsHarmonica extends Component {
                     groupCount={this.props.contactDetails.groupCount}
                 />
 
-                <EmailInboxHarmonica
-                    toggleShowList={() => this.toggleShowList('emailsInbox')}
-                    showEmailsInboxList={this.state.toggleShowList.emailsInbox}
-                    newEmail={this.newEmail}
-                    emailInboxCount={this.props.contactDetails.emailInboxCount}
-                />
-
-                <EmailSentHarmonica
-                    toggleShowList={() => this.toggleShowList('emailsSent')}
-                    showEmailsSentList={this.state.toggleShowList.emailsSent}
-                    newEmail={this.newEmail}
-                    emailSentCount={this.props.contactDetails.emailSentCount}
-                />
-
                 <DocumentHarmonica
                     toggleShowList={() => this.toggleShowList('documents')}
                     showDocumentsList={this.state.toggleShowList.documents}
                     newDocument={this.newDocument}
                     documentCount={this.props.contactDetails.documentCount}
-                />
-
-                <ParticipationHarmonica
-                    toggleShowList={() => this.toggleShowList('participations')}
-                    showParticipationsList={this.state.toggleShowList.participations}
-                    participationCount={this.props.contactDetails.participationCount}
-                    newParticipation={this.newParticipation}
                 />
 
                 { this.state.showModalError &&

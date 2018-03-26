@@ -124,7 +124,7 @@ const Routes = () => {
                 <Route path="document/nieuw/:type/woningdossier/:housingFileId" component={DocumentNewApp} />
                 <Route path="document/nieuw/:type/offerteverzoek/:quotationRequestId" component={DocumentNewApp} />
                 <Route path="document/nieuw/:type/productie-project/:productionProjectId" component={DocumentNewApp} />
-                <Route path="document/nieuw/:type/participant/:participantId/contact/:contactId" component={DocumentNewApp} />
+                <Route path="document/nieuw/:type/productie-project/:productionProjectId/participant/:participantId/contact/:contactId" component={DocumentNewApp} />
                 <Route path="document/:id" component={DocumentDetailsApp} />
                 <Route path="document/inzien/:id" component={DocumentViewApp} />
                 /* Document templates */

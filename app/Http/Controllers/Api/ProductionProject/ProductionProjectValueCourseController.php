@@ -22,8 +22,8 @@ class ProductionProjectValueCourseController extends ApiController
         $data = $requestInput
             ->integer('productionProjectId')->validate('required|exists:production_projects,id')->alias('production_project_id')->next()
             ->date('date')->validate('required|date')->next()
-            ->integer('bookWorth')->validate('required')->alias('book_worth')->next()
-            ->integer('transferWorth')->alias('transfer_worth')->next()
+            ->double('bookWorth')->validate('required')->alias('book_worth')->next()
+            ->double('transferWorth')->onEmpty(null)->alias('transfer_worth')->next()
             ->get();
 
         $productionProjectValueCourse = new ProductionProjectValueCourse();
@@ -44,8 +44,8 @@ class ProductionProjectValueCourseController extends ApiController
 
         $data = $requestInput
             ->date('date')->validate('required|date')->next()
-            ->integer('bookWorth')->validate('required')->alias('book_worth')->next()
-            ->integer('transferWorth')->alias('transfer_worth')->next()
+            ->double('bookWorth')->validate('required')->alias('book_worth')->next()
+            ->double('transferWorth')->onEmpty(null)->alias('transfer_worth')->next()
             ->get();
 
         $productionProjectValueCourse->fill($data);

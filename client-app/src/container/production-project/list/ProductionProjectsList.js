@@ -57,7 +57,7 @@ class ProductionProjectsList extends Component {
                 <DataTableHead>
                     <tr className="thead-title-quaternary">
                         <DataTableHeadTitle title={'Project code'} width={'15%'}/>
-                        <DataTableHeadTitle title={'Omschrijving'} width={'20%'}/>
+                        <DataTableHeadTitle title={'Naam'} width={'20%'}/>
                         <DataTableHeadTitle title={'Aantal eenheden'} width={'10%'}/>
                         <DataTableHeadTitle title={'Capaciteit kWh'} width={'15%'}/>
                         <DataTableHeadTitle title={'Uitgegeven participaties'} width={'10%'}/>

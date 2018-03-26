@@ -26,6 +26,12 @@ class ProductionProjectValueCourseController extends ApiController
             ->double('transferWorth')->onEmpty(null)->alias('transfer_worth')->next()
             ->get();
 
+        $data['book_worth'] = round($data['book_worth'], 2);
+
+        if($data['transfer_worth']){
+            $data['transfer_worth'] = round($data['transfer_worth'], 2);
+        }
+
         $productionProjectValueCourse = new ProductionProjectValueCourse();
 
         $productionProjectValueCourse->fill($data);
@@ -47,6 +53,12 @@ class ProductionProjectValueCourseController extends ApiController
             ->double('bookWorth')->validate('required')->alias('book_worth')->next()
             ->double('transferWorth')->onEmpty(null)->alias('transfer_worth')->next()
             ->get();
+
+        $data['book_worth'] = round($data['book_worth'], 2);
+
+        if($data['transferWorth']){
+            $data['transfer_worth'] = round($data['transfer_worth'], 2);
+        }
 
         $productionProjectValueCourse->fill($data);
 

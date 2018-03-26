@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class SeedTaskTypesAddOverige extends Migration
+class SeedParticipationTypesAddInteresse extends Migration
 {
     /**
      * Run the migrations.
@@ -14,11 +14,11 @@ class SeedTaskTypesAddOverige extends Migration
     public function up()
     {
             $types = [
-                'Overige',
+                'Interesse',
             ];
 
             foreach ($types as $type) {
-                DB::table('task_types')->insert([
+                DB::table('participant_production_project_status')->insert([
                         ['name' => $type],
                     ]
                 );

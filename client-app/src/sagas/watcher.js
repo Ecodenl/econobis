@@ -4,7 +4,7 @@ import { fetchAuditTrailSaga } from './audit-trail/AuditTrailSaga';
 import { fetchCampaignsSaga } from './campaign/CampaignsSaga';
 import { fetchCampaignSaga } from './campaign/CampaignDetailsSaga';
 import { fetchContactDetailsSaga, deleteAddressSaga, deletePhoneNumberSaga, deleteEmailAddressSaga, deleteContactNoteSaga, deleteContactEnergySupplierSaga } from './contact/ContactDetailsSaga';
-import { fetchContactGroupDetailsSaga, updateContactGroupDetailsSaga } from './contact-group/ContactGroupDetailsSaga';
+import { fetchContactGroupDetailsSaga } from './contact-group/ContactGroupDetailsSaga';
 import { fetchContactGroupsSaga, deleteContactGroupSaga, addContactToGroupSaga } from './contact-group/ContactGroupsSaga';
 import { fetchContactsInGroupSaga, deleteContactInGroupSaga } from './contact-group/ContactsInGroupSaga';
 import { fetchContactsSaga, deleteContactSaga } from './contact/ContactsSaga';

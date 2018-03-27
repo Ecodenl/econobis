@@ -13,5 +13,8 @@ use App\Helpers\RequestQuery\RequestJoiner;
 
 class Joiner extends RequestJoiner
 {
-
+    protected function applyContactsInGroupJoin($query)
+    {
+        $query->join('contact_groups_pivot', 'contact_groups.id', '=', 'contact_groups_pivot.contact_group_id');
+    }
 }

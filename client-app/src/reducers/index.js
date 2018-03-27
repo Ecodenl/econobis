@@ -5,10 +5,10 @@ import authReducer from './general/AuthReducer';
 import blockUIReducer from './general/BlockUIReducer';
 import calendarReducer from './calendar/CalendarReducer';
 import campaignsReducer from './campaign/CampaignsReducer';
-import campaignDetailsReducer from './campaign/CampaignDetailsReducer'
+import campaignDetailsReducer from './campaign/CampaignDetailsReducer';
 import contactDetailsReducer from './contact/ContactDetailsReducer';
 import contactGroupDetailsReducer from './contact-group/ContactGroupDetailsReducer';
-import contactGroupReducer from './contact-group/ContactGroupReducer';
+import contactGroupsReducer from './contact-group/ContactGroupsReducer';
 import contactsInGroupReducer from './contact-group/ContactsInGroupReducer';
 import contactsReducer from './contact/ContactsReducer';
 import documentTemplateReducer from './document-template/DocumentTemplatesReducer';
@@ -72,7 +72,7 @@ const rootReducer = combineReducers({
     contacts: contactsReducer,
     contactDetails: contactDetailsReducer,
     // Contact group
-    contactGroups: contactGroupReducer,
+    contactGroups: contactGroupsReducer,
     contactGroupDetails: contactGroupDetailsReducer,
     contactsInGroup: contactsInGroupReducer,
     // Documents

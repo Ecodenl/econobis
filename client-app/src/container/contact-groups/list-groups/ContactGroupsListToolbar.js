@@ -15,7 +15,7 @@ const ContactGroupsListToolbar = (props) => {
       <div className="row">
           <div className="col-md-4">
           <div className="btn-group" role="group">
-                  <ButtonIcon iconName={'glyphicon-refresh'} onClickAction={props.refreshContactGroupsData} />
+                  <ButtonIcon iconName={'glyphicon-refresh'} onClickAction={props.resetContactGroupsFilters} />
               {
                   permissions.manageGroup &&
                   <ButtonIcon iconName={'glyphicon-plus'} onClickAction={newContactGroup} />

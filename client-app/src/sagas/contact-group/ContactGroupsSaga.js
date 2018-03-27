@@ -1,14 +1,17 @@
-import { put, call } from 'redux-saga/effects';
+import {put, call, all} from 'redux-saga/effects';
 import ContactGroupAPI from '../../api/contact-group/ContactGroupAPI';
-import {authSaga} from "../general/AuthSaga";
 
-export function* fetchContactGroupsSaga() {
+export function* fetchContactGroupsSaga({filters, sorts, pagination}) {
     try {
         //yield call(authSaga);
-        const contactGroups = yield call(ContactGroupAPI.fetchContactGroups);
-        yield put({ type: 'FETCH_CONTACT_GROUPS_SUCCESS', contactGroups });
+        yield put({ type: 'FETCH_CONTACT_GROUPS_LOADING' });
+        const contactGroups = yield call(ContactGroupAPI.fetchContactGroups, {filters, sorts, pagination});
+        yield all([
+            put({ type: 'FETCH_CONTACT_GROUPS_LOADING_SUCCESS'}),
+            put({ type: 'FETCH_CONTACT_GROUPS_SUCCESS', contactGroups }),
+        ]);
     } catch (error) {
-        yield put({ type: 'FETCH_CONTACTS_ERROR', error });
+        yield put({ type: 'FETCH_CONTACT_GROUPS_ERROR', error });
     }
 }
 

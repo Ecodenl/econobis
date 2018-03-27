@@ -3,9 +3,14 @@ export const addContactToGroup = contact => ({
     contact,
 });
 
-export const fetchContactGroups = () => ({
-    type: 'FETCH_CONTACT_GROUPS',
-});
+export const fetchContactGroups = (filters, sorts, pagination) => {
+    return {
+        type: 'FETCH_CONTACT_GROUPS',
+        filters,
+        sorts,
+        pagination,
+    };
+};
 
 export const clearContactGroups = () => ({
     type: 'CLEAR_CONTACT_GROUPS',

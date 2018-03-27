@@ -7,7 +7,7 @@ const getWindowLocation = ClientFunction(() => window.location);
 
 
 fixture `Getting Started`
-    .page `http://localhost:8888/econobis/public/#/login`;
+    .page `http://framework/econobis/public/#/login`;
 
 test('Login test', async t => {
     await t
@@ -23,7 +23,7 @@ test('Login test', async t => {
 
     const location = await t.eval(() => window.location);
 
-    await t.expect(location.pathname + location.hash).eql('/econobis/public/#/');
+    await t.expect(location.pathname + location.hash).eql('econobis/public/#/');
 });
 
 test('Login test met verkeerde loginnaam', async t => {

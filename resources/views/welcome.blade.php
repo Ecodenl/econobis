@@ -10,5 +10,5 @@
 </head>
 <body>
 <div id="root"></div>
-<script type="text/javascript" src="../../public/js/manifest.0cdd696d22d570b89bfd.js"></script><script type="text/javascript" src="../../public/js/vendor.c0cba677b165fbf58da9.js"></script><script type="text/javascript" src="../../public/js/bundle.1cb1ed0007d782025a15.js"></script></body>
+<script type="text/javascript" src="./js/manifest.7c3ffa199e947fc15901.js"></script><script type="text/javascript" src="./js/vendor.307b0a8c7f72cae9a9eb.js"></script><script type="text/javascript" src="./js/bundle.bd1137ff773ff3ecc4bf.js"></script></body>
 </html>

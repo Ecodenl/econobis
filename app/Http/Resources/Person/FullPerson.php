@@ -2,8 +2,6 @@
 
 namespace App\Http\Resources\Person;
 
-use App\Http\Resources\Contact\FullContact;
-use App\Http\Resources\Occupation\FullOccupationPerson;
 use App\Http\Resources\Organisation\FullOrganisation;
 use App\Http\Resources\LastNamePrefix\FullLastNamePrefix;
 use App\Http\Resources\PersonType\FullPersonType;
@@ -33,7 +31,6 @@ class FullPerson extends Resource
             'fullName' => $this->present()->fullName(),
             'organisationId' => $this->organisation_id,
             'organisation' => FullOrganisation::make($this->whenLoaded('organisation')),
-            'occupations' => FullOccupationPerson::collection($this->whenLoaded('occupations')),
             'typeId' => $this->type_id,
             'type' => FullPersonType::make($this->whenLoaded('type')),
             'dateOfBirth' => $this->date_of_birth,

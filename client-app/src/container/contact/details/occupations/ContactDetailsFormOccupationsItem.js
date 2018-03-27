@@ -4,13 +4,13 @@ import validator from 'validator';
 import { isEqual } from 'lodash';
 
 import OccupationAPI from '../../../../api/contact/OccupationAPI';
-import {deleteOccupation, updateOccupation} from '../../../../actions/contact/ContactDetailsActions';
+import {fetchContactDetails} from '../../../../actions/contact/ContactDetailsActions';
 import ContactDetailsFormOccupationsView from './ContactDetailsFormOccupationsView';
 import ContactDetailsFormOccupationsEdit from './ContactDetailsFormOccupationsEdit';
 import ContactDetailsFormOccupationsDelete from './ContactDetailsFormOccupationsDelete';
 import moment from "moment/moment";
 moment.locale('nl');
-import OrganisationAPI from "../../../../api/contact/OrganisationAPI";
+import ContactsAPI from "../../../../api/contact/ContactsAPI";
 
 class ContactDetailsFormOccupationsItem extends Component {
     constructor(props) {
@@ -21,22 +21,25 @@ class ContactDetailsFormOccupationsItem extends Component {
             highlightLine: '',
             showEdit: false,
             showDelete: false,
-            organisations: [],
+            contacts: [],
             occupation: {
                 ...props.occupation,
-                personId: props.occupation.person.id,
+                primaryContactId: props.occupation.primaryContact.id,
                 startDate: props.occupation.startDate ? props.occupation.startDate.date : '',
                 endDate: props.occupation.endDate ? props.occupation.endDate.date : '',
-                organisationId: props.occupation.organisation.id,
+                contactId: props.occupation.contact.id,
                 occupationId: props.occupation.occupation.id,
-                oldOrganisationId: props.occupation.organisation.id,
-                oldOccupationId: props.occupation.occupation.id,
             },
             errors: {
-                organisationIdError: false,
+                primaryContactIdError: false,
                 occupationIdError: false,
             },
+            peekLoading: {
+                contacts: true
+            },
         };
+
+        this.handleReactSelectChange = this.handleReactSelectChange.bind(this);
     };
 
     componentWillReceiveProps(nextProps) {
@@ -45,22 +48,24 @@ class ContactDetailsFormOccupationsItem extends Component {
                 ...this.state,
                 occupation: {
                     ...nextProps.occupation,
-                    personId: nextProps.occupation.person.id,
+                    primaryContactId: nextProps.occupation.primaryContact.id,
                     startDate: nextProps.occupation.startDate ? nextProps.occupation.startDate.date : '',
                     endDate: nextProps.occupation.endDate ? nextProps.occupation.endDate.date : '',
-                    organisationId: nextProps.occupation.organisation.id,
+                    contactId: nextProps.occupation.contact.id,
                     occupationId: nextProps.occupation.occupation.id,
-                    oldOrganisationId: nextProps.occupation.organisation.id,
-                    oldOccupationId: nextProps.occupation.occupation.id,
                 },
             });
         }
     };
 
     componentDidMount() {
-        OrganisationAPI.getOrganisationPeek().then(payload => {
+        ContactsAPI.getContactsPeek().then((payload) => {
             this.setState({
-                organisations: payload
+                contacts: payload,
+                peekLoading: {
+                    ...this.state.peekLoading,
+                    contacts: false,
+                },
             });
         });
     }
@@ -92,10 +97,10 @@ class ContactDetailsFormOccupationsItem extends Component {
             ...this.state,
             occupation: {
                 ...this.props.occupation,
-                personId: this.props.occupation.person.id,
+                primaryContactId: this.props.occupation.primaryContact.id,
                 startDate: this.props.occupation.startDate ? this.props.occupation.startDate.date : '',
                 endDate: this.props.occupation.endDate ? this.props.occupation.endDate.date : '',
-                organisationId: this.props.occupation.organisation ? this.props.occupation.organisation.id : '',
+                contactId: this.props.occupation.contact ? this.props.occupation.contact.id : '',
                 occupationId: this.props.occupation.occupation ? this.props.occupation.occupation.id : '',
             },
         });
@@ -153,8 +158,8 @@ class ContactDetailsFormOccupationsItem extends Component {
         let errors = {};
         let hasErrors = false;
 
-        if (validator.isEmpty(occupation.organisationId + '')) {
-            errors.organisationIdError = true;
+        if (validator.isEmpty(occupation.primaryContactId + '')) {
+            errors.primaryContactIdError = true;
             hasErrors = true;
         }
 
@@ -168,7 +173,7 @@ class ContactDetailsFormOccupationsItem extends Component {
         // If no errors send form
         !hasErrors &&
         OccupationAPI.updateOccupation(occupation).then((payload) => {
-            this.props.updateOccupation(payload);
+            this.props.fetchContactDetails(this.props.id);
 
             this.closeEdit();
         });
@@ -176,19 +181,17 @@ class ContactDetailsFormOccupationsItem extends Component {
 
     deleteOccupation = (occupation) => {
         OccupationAPI.deleteOccupation(occupation).then((payload) => {
-            this.props.deleteOccupation(payload);
+            this.props.fetchContactDetails(this.props.id);
+        });
+    };
 
-            this.setState({
-                ...this.state,
-                occupation: {
-                    ...this.props.occupation,
-                    personId: this.props.occupation.person.id,
-                    startDate: this.props.occupation.startDate ? this.props.occupation.startDate.date : '',
-                    endDate: this.props.occupation.endDate ? this.props.occupation.endDate.date : '',
-                    organisationId: this.props.occupation.organisation ? this.props.occupation.organisation.id : '',
-                    occupationId: this.props.occupation.occupation ? this.props.occupation.occupation.id : '',
-                },
-            });
+    handleReactSelectChange(selectedOption, name) {
+        this.setState({
+            ...this.state,
+            occupation: {
+                ...this.state.occupation,
+                [name]: selectedOption
+            },
         });
     };
 
@@ -203,6 +206,7 @@ class ContactDetailsFormOccupationsItem extends Component {
                     openEdit={this.openEdit}
                     toggleDelete={this.toggleDelete}
                     occupation={this.state.occupation}
+                    primaryOccupation={this.props.primaryOccupation}
                 />
                 {
                     this.state.showEdit &&
@@ -212,10 +216,13 @@ class ContactDetailsFormOccupationsItem extends Component {
                         handleStartDate={this.handleStartDate}
                         handleEndDate={this.handleEndDate}
                         handleSubmit={this.handleSubmit}
-                        organisationIdError={this.state.errors.organisationIdError}
+                        primaryContactIdError={this.state.errors.primaryContactIdError}
                         occupationIdError={this.state.errors.occupationIdError}
                         cancelEdit={this.cancelEdit}
-                        organisations={this.state.organisations}
+                        contacts={this.state.contacts}
+                        peekLoading={this.state.peekLoading}
+                        handleReactSelectChange={this.handleReactSelectChange}
+                        primaryOccupation={this.props.primaryOccupation}
                     />
                 }
                 {
@@ -224,6 +231,7 @@ class ContactDetailsFormOccupationsItem extends Component {
                         closeDeleteItemModal={this.toggleDelete}
                         deleteOccupation={this.deleteOccupation}
                         occupation={this.state.occupation}
+                        primaryOccupation={this.props.primaryOccupation}
                     />
                 }
             </div>
@@ -231,13 +239,16 @@ class ContactDetailsFormOccupationsItem extends Component {
     }
 };
 
+const mapStateToProps = (state) => {
+    return {
+        id: state.contactDetails.id,
+    };
+};
+
 const mapDispatchToProps = dispatch => ({
-    updateOccupation: (occupation) => {
-        dispatch(updateOccupation(occupation));
-    },
-    deleteOccupation: (occupation) => {
-        dispatch(deleteOccupation(occupation));
+    fetchContactDetails: (id) => {
+        dispatch(fetchContactDetails(id));
     },
 });
 
-export default connect(null, mapDispatchToProps)(ContactDetailsFormOccupationsItem);
+export default connect(mapStateToProps, mapDispatchToProps)(ContactDetailsFormOccupationsItem);

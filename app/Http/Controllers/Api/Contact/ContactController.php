@@ -36,15 +36,22 @@ class ContactController extends Controller
         $contact->load('opportunities');
         $contact->load('contactEnergySuppliers');
         $contact->load('participations');
-        $contact->participations->load('productionProject');
+        $contact->load('occupations');
+        $contact->load('primaryOccupations');
+        $contact->occupations->load('occupation');
+        $contact->occupations->load('primaryContact');
+        $contact->occupations->load('contact');
+        $contact->primaryOccupations->load('occupation');
+        $contact->primaryOccupations->load('primaryContact');
+        $contact->primaryOccupations->load('contact');
         $contact->contactEnergySuppliers->load('energySupplier');
         $contact->contactEnergySuppliers->load('contactEnergySupplyStatus');
         $contact->contactEnergySuppliers->load('contactEnergySupplyType');
         $contact->contactEnergySuppliers->load('createdBy');
         $contact->contactEnergySuppliers->load('contact');
 
-        if($contact->isOrganisation()) $contact->load(['organisation.type', 'organisation.industry', 'organisation.people.person', 'organisation.people.organisation', 'organisation.people.occupation', 'organisation.quotationRequests.opportunity.measureCategory', 'organisation.quotationRequests.opportunity.status', 'organisation.campaigns']);
-        if($contact->isPerson()) $contact->load(['person.lastNamePrefix', 'person.title', 'person.organisation', 'person.type', 'person.occupations.person', 'person.occupations.organisation', 'person.occupations.occupation']);
+        if($contact->isOrganisation()) $contact->load(['organisation.type', 'organisation.industry', 'organisation.quotationRequests.opportunity.measureCategory', 'organisation.quotationRequests.opportunity.status', 'organisation.campaigns', 'contactPerson.contact']);
+        if($contact->isPerson()) $contact->load(['person.lastNamePrefix', 'person.title', 'person.organisation', 'person.type']);
 
         $contact->relatedEmailsInbox = $this->getRelatedEmails($contact, $contact->id, 'inbox');
         $contact->relatedEmailsSent = $this->getRelatedEmails($contact, $contact->id, 'sent');

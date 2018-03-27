@@ -7,7 +7,6 @@ import ContactDetailsFormGeneral from './general/ContactDetailsFormGeneral';
 import ContactDetailsFormAddress from './address/ContactDetailsFormAddress';
 import ContactDetailsFormPhone from './phone/ContactDetailsFormPhone';
 import ContactDetailsFormEmail from './email/ContactDetailsFormEmail';
-import ContactDetailsFormPerson from './person/ContactDetailsFormPerson';
 import ContactDetailsFormOther from './other/ContactDetailsFormOther';
 import ContactDetailsFormNote from './note/ContactDetailsFormNote';
 import ContactDetailsFormConclusion from './conclusion/ContactDetailsFormConclusion';
@@ -52,17 +51,12 @@ class ContactDetailsForm extends Component {
                     <ContactDetailsFormPhone />
                     <ContactDetailsFormContactEnergySupplier />
                     { typeId == 'organisation' &&
-                    <ContactDetailsFormPerson />
-                    }
-                    { typeId == 'organisation' &&
                     <ContactDetailsQuotations />
                     }
                     { typeId == 'organisation' &&
                     <ContactDetailsCampaigns />
                     }
-                    { typeId == 'person' &&
                     <ContactDetailsFormOccupations/>
-                    }
                     { typeId == 'person' &&
                     <ContactDetailsFormOther />
                     }

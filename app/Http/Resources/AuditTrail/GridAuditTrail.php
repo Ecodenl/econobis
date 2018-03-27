@@ -20,6 +20,7 @@ class GridAuditTrail extends Resource
         return [
             'id' => $this->id,
             'model' => array_values(array_slice(explode('\\', $this->revisionable_type), -1))[0],
+            'revisionableId' => $this->revisionable_id,
             'field' => $this->key,
             'oldValue' => $this->old_value,
             'newValue' => $this->new_value,

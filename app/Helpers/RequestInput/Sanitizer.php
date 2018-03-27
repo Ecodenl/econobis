@@ -31,7 +31,7 @@ class Sanitizer
 
     /**
      * Add a new field to the instance.
-     * @param string $type The type of field to be added ('string', 'integer', 'date', 'password' or 'boolean').
+     * @param string $type The type of field to be added ('string', 'integer', 'double, 'date', 'password' or 'boolean').
      * @param string $field The name of the input parameter.
      * @return Field
      */
@@ -61,6 +61,16 @@ class Sanitizer
     public function integer($field)
     {
         return $this->input('integer', $field);
+    }
+
+    /**
+     * Add a new double field to the instance.
+     * @param $field
+     * @return Field
+     */
+    public function double($field)
+    {
+        return $this->input('double', $field);
     }
 
     /**

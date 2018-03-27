@@ -3,6 +3,10 @@ const filtersReducerDefaultState = {
         field: 'model',
         data: '',
     },
+    revisionableId: {
+        field: 'revisionableId',
+        data: '',
+    },
     field: {
         field: 'field',
         data: '',
@@ -33,6 +37,14 @@ export default (state = filtersReducerDefaultState, action) => {
                 model: {
                     ...state.model,
                     data: action.model,
+                }
+            };
+        case 'SET_FILTER_AUDIT_TRAIL_REVISIONABLE_ID':
+            return {
+                ...state,
+                revisionableId: {
+                    ...state.revisionableId,
+                    data: action.revisionableId,
                 }
             };
         case 'SET_FILTER_AUDIT_TRAIL_FIELD':

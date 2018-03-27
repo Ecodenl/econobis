@@ -30,19 +30,17 @@ class InputDate extends Component {
         }
     };
 
+    onDateChange = (date) => {
+        // Convert date in correct value for database
+        const formattedDate = (date ? moment(date).format('Y-MM-DD') : '');
+
+        this.props.onChangeAction(formattedDate, this.props.name);
+    };
+
     render() {
-        const {label, name, className, size, id, value, onChangeAction, required, readOnly} = this.props;
+        const {label, className, size, id, value, required, readOnly} = this.props;
 
-        const formattedDate = value
-            ? moment(value).format('L')
-            : '';
-
-        const onDateChange = (date) => {
-            // Convert date in correct value for database
-            const formattedDate = (date ? moment(date).format('Y-MM-DD') : '');
-
-            onChangeAction(formattedDate, name);
-        };
+        const formattedDate = value ? moment(value).format('L') : '';
 
         return (
             <div className="form-group col-sm-6">
@@ -52,7 +50,7 @@ class InputDate extends Component {
                         className={`form-control input-sm ${className}` + (this.state.errorDateFormat ? ' has-error' : '')}
                         id={id}
                         value={formattedDate}
-                        onDayChange={onDateChange}
+                        onDayChange={this.onDateChange}
                         dayPickerProps={{
                             showWeekNumbers: true,
                             locale: "nl",

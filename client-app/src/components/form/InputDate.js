@@ -1,46 +1,75 @@
-import React from 'react';
+import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import DayPickerInput from 'react-day-picker/DayPickerInput';
 import MomentLocaleUtils from 'react-day-picker/moment';
 import moment from 'moment';
+
 moment.locale('nl');
 
-const InputDate = props => {
-    const { label, name, className, size, id, value, onChangeAction, required, readOnly } = props;
+class InputDate extends Component {
 
-    const formattedDate = value
-        ? moment(value).format('L')
-        : '';
+    constructor(props) {
+        super(props);
 
-    const onDateChange = (date) => {
-        // Convert date in correct value for database
-        const formattedDate = (date ? moment(date).format('Y-MM-DD') : '');
+        this.state = {
+            errorDateFormat: false,
+        };
+    }
 
-        onChangeAction(formattedDate, name)
+    validateDate = (event) => {
+        const date = moment(event.target.value, 'DD-MM-YYYY', true);
+
+        if (!date.isValid()) {
+            this.setState({
+                errorDateFormat: true,
+            })
+        } else {
+            this.setState({
+                errorDateFormat: false,
+            })
+        }
     };
 
-    return (
-        <div className="form-group col-sm-6">
-            <div><label htmlFor={ id } className={`col-sm-6 ${required}`}>{ label }</label></div>
-            <div className={`${size}`}>
-                <DayPickerInput
-                    className={`form-control input-sm ${className}`}
-                    id={ id }
-                    value={ formattedDate }
-                    onDayChange={onDateChange}
-                    dayPickerProps={{
-                        showWeekNumbers: true,
-                        locale: "nl",
-                        firstDayOfWeek: 1,
-                        localeUtils: MomentLocaleUtils,
-                    }}
-                    required={ required }
-                    readOnly={ readOnly }
-                />
+    render() {
+        const {label, name, className, size, id, value, onChangeAction, required, readOnly} = this.props;
+
+        const formattedDate = value
+            ? moment(value).format('L')
+            : '';
+
+        const onDateChange = (date) => {
+            // Convert date in correct value for database
+            const formattedDate = (date ? moment(date).format('Y-MM-DD') : '');
+
+            onChangeAction(formattedDate, name);
+        };
+
+        return (
+            <div className="form-group col-sm-6">
+                <div><label htmlFor={id} className={`col-sm-6 ${required}`}>{label}</label></div>
+                <div className={`${size}`}>
+                    <DayPickerInput
+                        className={`form-control input-sm ${className}` + (this.state.errorDateFormat ? ' has-error' : '')}
+                        id={id}
+                        value={formattedDate}
+                        onDayChange={onDateChange}
+                        dayPickerProps={{
+                            showWeekNumbers: true,
+                            locale: "nl",
+                            firstDayOfWeek: 1,
+                            localeUtils: MomentLocaleUtils,
+                        }}
+                        onBlur={this.validateDate}
+                        required={required}
+                        readOnly={readOnly}
+
+                    />
+                </div>
             </div>
-        </div>
-    );
-};
+        );
+    }
+    ;
+}
 
 InputDate.defaultProps = {
     className: '',

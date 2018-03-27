@@ -18,7 +18,7 @@ const ContactGroupsListHead = (props) => {
         <tr className="thead-title">
             <DataTableHeadTitleAndSort sortColumn={'name'} title={'Name'} width={'40%'} setSorts={setSorts} />
             <DataTableHeadTitle title={'Aantal leden'} width={'20%'}/>
-            <DataTableHeadTitle title={'Status'} width={'35%'}/>
+            <DataTableHeadTitleAndSort sortColumn={'status'} title={'Status'} width={'35%'} setSorts={setSorts}/>
             <DataTableHeadTitle title={''} width={'5%'}/>
         </tr>
     );

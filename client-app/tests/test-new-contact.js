@@ -1,43 +1,46 @@
 import { Selector, Role } from 'testcafe';
 import superUser from './auth/UserRoles';
+import * as constants from './config/constants';
 
-fixture `Aanmaken nieuw persoon`
-    .page `http://framework/econobis/public/#/contact/nieuw/persoon`;
-
-const title = Selector('h4');
-const lastName ='input[name="lastName"]';
-const submitButton = Selector('button[type="submit"]');
+fixture `Create new person`
+    .page `${constants.app_url}#/contact/nieuw/persoon`;
 
 test('Check for title "Nieuw contact"', async (t) => {
     await t
         .useRole(superUser)
-        .navigateTo('http://framework/econobis//public/#/contact/nieuw/persoon')
-        .expect(title.innerText).eql('Nieuw contact')
-        .takeScreenshot('contact/newFormEmpty.png');
+        .navigateTo(constants.app_url + '#/contact/nieuw/persoon');
+
+    await t.expect(Selector('h4').innerText).eql('Nieuw contact', 'Check element text', { timeout: 500 });
 });
 
-test('Fill out form new contact without status', async (t) => {
+test('Fill out form new person', async (t) => {
     await t
         .useRole(superUser)
-        .navigateTo('http://framework/econobis//public/#/contact/nieuw/persoon')
+        .navigateTo( constants.app_url + '#/contact/nieuw/persoon')
         .typeText('input[name="firstName"]', 'Rob')
-        .typeText(lastName, 'Rollenberg')
-        .click(submitButton)
-        .takeScreenshot('contact/newFormFilledIncorrect.png');
+        .typeText('input[name="lastName"]', 'Rollenberg')
+        .click(Selector('button[type="submit"]'));
+
+    await t.expect(Selector('h4').innerText).eql('Rollenberg, Rob (Persoon)', 'Check element text', { timeout: 500 });
 });
 
-test('Fill out form new contact', async (t) => {
+fixture `Create new organisation`
+    .page `${constants.app_url}#/contact/nieuw/organisatie`;
+
+test('Check for title "Nieuw contact"', async (t) => {
     await t
         .useRole(superUser)
-        .navigateTo('http://framework/econobis//public/#/contact/nieuw/persoon')
-        .click('select[name="statusId"]')
-        .click(Selector('option').filter('[value="open"]'))
-        .typeText('input[name="firstName"]', 'Rob')
-        .typeText(lastName, 'Rollenberg')
-        .click(submitButton)
-        .takeScreenshot('contact/newFormFilledCorrect.png');
+        .navigateTo(constants.app_url + '#/contact/nieuw/organisatie');
 
+    await t.expect(Selector('h4').innerText).eql('Nieuw contact', 'Check element text', { timeout: 500 });
+});
+
+test('Fill out form new organisation', async (t) => {
     await t
-        .expect(title.innerText).eql('Rollenberg, Rob')
-        .takeScreenshot('contact/contactDetails.png');
+        .useRole(superUser)
+        .navigateTo( constants.app_url + '#/contact/nieuw/organisatie')
+        .typeText('input[name="name"]', 'Organisatie 1')
+        .click(Selector('button[type="submit"]'));
+
+    await t.expect(Selector('h4').innerText).eql('Organisatie 1 (Organisatie)', 'Check element text', { timeout: 500 });
 });

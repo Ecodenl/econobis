@@ -1,10 +1,11 @@
 import { Role } from 'testcafe';
+import * as constants from '../config/constants';
 
-const superUser = Role('http://localhost:8888/econobis/public/#/login', async t => {
+const superUser = Role(constants.app_url + '#/login', async t => {
     await t
-        .typeText('#email', 'info@xaris.nl')
-        .typeText('#password', 'secret')
-        .click('#submit-button');
+        .typeText('input[name="username"]', 'info@xaris.nl')
+        .typeText('input[name="password"]', 'secret')
+        .click('button[type="submit"]');
 }, { preserveUrl: true });
 
 export default superUser;

@@ -23,7 +23,7 @@ class QuotationRequestDetailsApp extends Component {
           <div className="row">
               <div className="col-md-9">
               <div className="col-md-12">
-                      <QuotationRequestDetailsToolbar />
+                      <QuotationRequestDetailsToolbar id={this.props.params.id}/>
                     </div>
 
               <div className="col-md-12">

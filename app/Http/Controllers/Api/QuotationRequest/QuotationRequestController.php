@@ -170,8 +170,6 @@ class QuotationRequestController extends ApiController
         $this->authorize('manage', QuotationRequest::class);
 
         DeleteHelper::delete($quotationRequest);
-
-        return true;
     }
 
     public function peek()

@@ -19,7 +19,7 @@ class InputDate extends Component {
     validateDate = (event) => {
         const date = moment(event.target.value, 'DD-MM-YYYY', true);
 
-        if (!date.isValid()) {
+        if (!date.isValid() && event.target.value !== '') {
             this.setState({
                 errorDateFormat: true,
             })

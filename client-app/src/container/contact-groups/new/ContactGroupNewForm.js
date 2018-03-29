@@ -73,7 +73,7 @@ class ContactGroupNewForm extends Component {
         // If no errors send form
         !hasErrors &&
             ContactGroupAPI.newContactGroup(contactGroup).then((payload) => {
-                hashHistory.push("/contact-groepen");
+                hashHistory.push("/contact-groep/" + payload.id);
             });
     };
 

@@ -14,7 +14,7 @@ test('Fill out form document template minimum', async (t) => {
         .navigateTo(constants.app_url + '#/document-template/nieuw')
         .wait(constants.wait);
 
-    await t.expect(Selector('h3').innerText).eql('Nieuw document template', 'Check element text', { timeout: 500 });
+    await t.expect(Selector('h3').innerText).eql('Nieuwe document template', 'Check element text', { timeout: 500 });
 
     await t
         .typeText('input[name="name"]', randomSentence)

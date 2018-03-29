@@ -1,6 +1,6 @@
 import { Selector, ClientFunction } from 'testcafe';
 
-import * as constants from './config/constants';
+import * as constants from '../../config/constants';
 
 const emailInput = Selector('input[name="username"]');
 const passwordInput = Selector('input[name="password"]');

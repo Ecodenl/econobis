@@ -23,7 +23,7 @@ class OpportunityDetailsToolbar extends Component {
 
 
     render() {
-        const { measure, contact, id }  = this.props.opportunity;
+        const { measureCategory, intake, id }  = this.props.opportunity;
 
         return (
             <div className="row">
@@ -38,7 +38,7 @@ class OpportunityDetailsToolbar extends Component {
                                     }
                                 </div>
                             </div>
-                            <div className="col-md-8"><h4 className="text-center text-success margin-small"><strong>{measure ? 'Kans: ' + measure.name : ''} {contact ? 'voor ' + contact.fullName : ''}</strong></h4></div>
+                            <div className="col-md-8"><h4 className="text-center text-success margin-small"><strong>{measureCategory ? 'Kans: ' + measureCategory.name : ''} {intake ? 'voor ' + intake.contact.fullName : ''}</strong></h4></div>
                             <div className="col-md-2" />
                         </PanelBody>
                     </Panel>

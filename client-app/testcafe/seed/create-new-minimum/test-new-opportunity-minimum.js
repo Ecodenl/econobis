@@ -5,7 +5,7 @@ const faker = require('faker');
 
 fixture `Create new housing file`;
 
-test('Fill out form person->address->intake', async (t) => {
+test('Fill out form person->intake->opportunity', async (t) => {
 
     const randomFirstName = faker.name.firstName();
     const randomLastName = faker.name.lastName();
@@ -46,4 +46,21 @@ test('Fill out form person->address->intake', async (t) => {
         .wait(200);
 
     await t.expect(Selector('h4').innerText).eql( 'Intake voor: ' + randomStreet + ' ' + randomNumber, 'Check element text', { timeout: 500 });
+
+    await t
+        .click(Selector('span').withText('Interesses').parent().child('a'))
+        .click('select[name="measureId"]')
+        .click(Selector('select[name="measureId"]').child().nth(3))
+        .click(Selector('button').withText('Opslaan'))
+        .wait(200);
+
+    await t
+        .click(Selector('button').withText('Maak kans'))
+        .click('select[name="statusId"]')
+        .click(Selector('select[name="statusId"]').child().nth(faker.random.number({min:1, max:4})))
+        .click(Selector('button').withText('Opslaan'))
+        .wait(200);
+
+    await t.expect(Selector('h4').innerText).eql( 'Kans: Dakisolatie voor ' + randomLastName + ', ' + randomFirstName, 'Check element text', { timeout: 500 });
+
 });

@@ -39,7 +39,7 @@ class InputDate extends Component {
     };
 
     render() {
-        const {label, className, size, id, value, required, readOnly} = this.props;
+        const {label, className, size, id, value, required, readOnly, name} = this.props;
 
         const formattedDate = value ? moment(value).format('L') : '';
 
@@ -50,6 +50,7 @@ class InputDate extends Component {
                     <DayPickerInput
                         className={`form-control input-sm ${className}` + (this.state.errorDateFormat ? ' has-error' : '')}
                         id={id}
+                        name={name}
                         value={formattedDate}
                         onDayChange={this.onDateChange}
                         dayPickerProps={{

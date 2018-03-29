@@ -1,0 +1,1 @@
+export const app_url = 'http://framework/econobis/public/';

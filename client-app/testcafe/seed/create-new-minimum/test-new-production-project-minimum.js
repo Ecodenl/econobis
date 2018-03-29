@@ -13,7 +13,7 @@ test('Fill out form new production project', async (t) => {
     await t
         .useRole(superUser)
         .navigateTo(constants.app_url + '#/productie-project/nieuw')
-        .wait(200);
+        .wait(constants.wait);
 
     await t.expect(Selector('h3').innerText).eql('Nieuw productieproject', 'Check element text', { timeout: 500 });
 
@@ -25,7 +25,7 @@ test('Fill out form new production project', async (t) => {
         .click(Selector('option').filter('[value="1"]'))
 
         .click(Selector('button').withText('Opslaan'))
-        .wait(200);
+        .wait(constants.wait);
 
     await t.expect(Selector('h4').innerText).eql('Productie project ' + randomName, 'Check element text', { timeout: 500 });
 });

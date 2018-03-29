@@ -24,7 +24,7 @@ test('Fill out form person->address->housingfile', async (t) => {
         .typeText('input[name="firstName"]', randomFirstName)
         .typeText('input[name="lastName"]', randomLastName)
         .click(Selector('button').withText('Opslaan'))
-        .wait(200);
+        .wait(constants.wait);
 
     await t.expect(Selector('h4').innerText).eql( randomLastName + ', ' + randomFirstName + ' (Persoon)', 'Check element text', { timeout: 500 });
 
@@ -35,15 +35,15 @@ test('Fill out form person->address->housingfile', async (t) => {
         .typeText('input[name="street"]', randomStreet)
         .typeText('input[name="city"]', randomCity)
         .click(Selector('button').withText('Opslaan'))
-        .wait(200);
+        .wait(constants.wait);
 
     await t
         .click(Selector('.harmonica-button').nth(7).child().nth(0).child().nth(1).child('a'))
-        .wait(200);
+        .wait(constants.wait);
 
     await t
         .click(Selector('button').withText('Opslaan'))
-        .wait(200);
+        .wait(constants.wait);
 
     await t.expect(Selector('h4').innerText).eql( 'Woningdossier voor: ' + randomStreet + ' ' + randomNumber, 'Check element text', { timeout: 500 });
 });

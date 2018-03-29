@@ -24,7 +24,7 @@ test('Fill out form person->intake->opportunity', async (t) => {
         .typeText('input[name="firstName"]', randomFirstName)
         .typeText('input[name="lastName"]', randomLastName)
         .click(Selector('button[type="submit"]'))
-        .wait(200);
+        .wait(constants.wait);
 
     await t.expect(Selector('h4').innerText).eql( randomLastName + ', ' + randomFirstName + ' (Persoon)', 'Check element text', { timeout: 500 });
 
@@ -35,15 +35,15 @@ test('Fill out form person->intake->opportunity', async (t) => {
         .typeText('input[name="street"]', randomStreet)
         .typeText('input[name="city"]', randomCity)
         .click(Selector('button').withText('Opslaan'))
-        .wait(200);
+        .wait(constants.wait);
 
     await t
         .click(Selector('.harmonica-button').nth(5).child().nth(0).child().nth(1).child('a'))
-        .wait(200);
+        .wait(constants.wait);
 
     await t
         .click(Selector('button').withText('Opslaan'))
-        .wait(200);
+        .wait(constants.wait);
 
     await t.expect(Selector('h4').innerText).eql( 'Intake voor: ' + randomStreet + ' ' + randomNumber, 'Check element text', { timeout: 500 });
 
@@ -52,14 +52,14 @@ test('Fill out form person->intake->opportunity', async (t) => {
         .click('select[name="measureId"]')
         .click(Selector('select[name="measureId"]').child().nth(3))
         .click(Selector('button').withText('Opslaan'))
-        .wait(200);
+        .wait(constants.wait);
 
     await t
         .click(Selector('button').withText('Maak kans'))
         .click('select[name="statusId"]')
         .click(Selector('select[name="statusId"]').child().nth(faker.random.number({min:1, max:4})))
         .click(Selector('button').withText('Opslaan'))
-        .wait(200);
+        .wait(constants.wait);
 
     await t.expect(Selector('h4').innerText).eql( 'Kans: Dakisolatie voor ' + randomLastName + ', ' + randomFirstName, 'Check element text', { timeout: 500 });
 

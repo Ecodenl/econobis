@@ -17,8 +17,8 @@ test('Fill out form new contact group', async (t) => {
 
     await t
         .typeText('input[name="name"]', randomName)
-        .click(Selector('button').withText('Opslaan'))
+        .click(Selector('button').withExactText('Opslaan'))
         .wait(constants.wait);
 
-    await t.expect(Selector('h4').withText(randomName).innerText).eql(randomName, 'Check element text', { timeout: 500 });
+    await t.expect(Selector('h4').withExactText(randomName).innerText).eql(randomName, 'Check element text', { timeout: 500 });
 });

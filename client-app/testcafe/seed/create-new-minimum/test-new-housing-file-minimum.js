@@ -23,18 +23,18 @@ test('Fill out form person->address->housingfile', async (t) => {
     await t
         .typeText('input[name="firstName"]', randomFirstName)
         .typeText('input[name="lastName"]', randomLastName)
-        .click(Selector('button').withText('Opslaan'))
+        .click(Selector('button').withExactText('Opslaan'))
         .wait(constants.wait);
 
     await t.expect(Selector('h4').innerText).eql( randomLastName + ', ' + randomFirstName + ' (Persoon)', 'Check element text', { timeout: 500 });
 
     await t
-        .click(Selector('span').withText('Adres gegevens').parent().child('a'))
+        .click(Selector('span').withExactText('Adres gegevens').parent().child('a'))
         .typeText('input[name="postalCode"]', randomPostalCode)
         .typeText('input[name="number"]', randomNumber.toString())
         .typeText('input[name="street"]', randomStreet)
         .typeText('input[name="city"]', randomCity)
-        .click(Selector('button').withText('Opslaan'))
+        .click(Selector('button').withExactText('Opslaan'))
         .wait(constants.wait);
 
     await t
@@ -42,7 +42,7 @@ test('Fill out form person->address->housingfile', async (t) => {
         .wait(constants.wait);
 
     await t
-        .click(Selector('button').withText('Opslaan'))
+        .click(Selector('button').withExactText('Opslaan'))
         .wait(constants.wait);
 
     await t.expect(Selector('h4').innerText).eql( 'Woningdossier voor: ' + randomStreet + ' ' + randomNumber, 'Check element text', { timeout: 500 });

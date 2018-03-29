@@ -3,7 +3,7 @@ import superUser from '../../auth/UserRoles';
 import * as constants from '../../config/constants';
 const faker = require('faker');
 
-fixture `Create new housing file`;
+fixture `Create new opportunity`;
 
 test('Fill out form person->intake->opportunity', async (t) => {
 
@@ -29,12 +29,12 @@ test('Fill out form person->intake->opportunity', async (t) => {
     await t.expect(Selector('h4').innerText).eql( randomLastName + ', ' + randomFirstName + ' (Persoon)', 'Check element text', { timeout: 500 });
 
     await t
-        .click(Selector('span').withText('Adres gegevens').parent().child('a'))
+        .click(Selector('span').withExactText('Adres gegevens').parent().child('a'))
         .typeText('input[name="postalCode"]', randomPostalCode)
         .typeText('input[name="number"]', randomNumber.toString())
         .typeText('input[name="street"]', randomStreet)
         .typeText('input[name="city"]', randomCity)
-        .click(Selector('button').withText('Opslaan'))
+        .click(Selector('button').withExactText('Opslaan'))
         .wait(constants.wait);
 
     await t
@@ -42,23 +42,23 @@ test('Fill out form person->intake->opportunity', async (t) => {
         .wait(constants.wait);
 
     await t
-        .click(Selector('button').withText('Opslaan'))
+        .click(Selector('button').withExactText('Opslaan'))
         .wait(constants.wait);
 
     await t.expect(Selector('h4').innerText).eql( 'Intake voor: ' + randomStreet + ' ' + randomNumber, 'Check element text', { timeout: 500 });
 
     await t
-        .click(Selector('span').withText('Interesses').parent().child('a'))
+        .click(Selector('span').withExactText('Interesses').parent().child('a'))
         .click('select[name="measureId"]')
         .click(Selector('select[name="measureId"]').child().nth(3))
-        .click(Selector('button').withText('Opslaan'))
+        .click(Selector('button').withExactText('Opslaan'))
         .wait(constants.wait);
 
     await t
-        .click(Selector('button').withText('Maak kans'))
+        .click(Selector('button').withExactText('Maak kans'))
         .click('select[name="statusId"]')
         .click(Selector('select[name="statusId"]').child().nth(faker.random.number({min:1, max:4})))
-        .click(Selector('button').withText('Opslaan'))
+        .click(Selector('button').withExactText('Opslaan'))
         .wait(constants.wait);
 
     await t.expect(Selector('h4').innerText).eql( 'Kans: Dakisolatie voor ' + randomLastName + ', ' + randomFirstName, 'Check element text', { timeout: 500 });

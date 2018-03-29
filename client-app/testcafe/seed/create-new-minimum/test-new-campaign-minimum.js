@@ -3,8 +3,7 @@ import superUser from '../../auth/UserRoles';
 import * as constants from '../../config/constants';
 const faker = require('faker');
 
-fixture `Create new task minimum`;
-
+fixture `Create new campaign minimum`;
 
 test('Fill out form campaign minimum', async (t) => {
 
@@ -21,7 +20,7 @@ test('Fill out form campaign minimum', async (t) => {
         .typeText('input[name="name"]', randomSentence)
         .click('select[name="typeId"]')
         .click(Selector('select[name="typeId"]').child().nth(faker.random.number({min:1, max:5})))
-        .click(Selector('button').withText('Opslaan'))
+        .click(Selector('button').withExactText('Opslaan'))
         .wait(constants.wait);
 
     await t.expect(Selector('h4').innerText).eql('Campagne: ' + randomSentence, 'Check element text', { timeout: 500 });

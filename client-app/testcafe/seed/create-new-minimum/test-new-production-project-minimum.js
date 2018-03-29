@@ -7,7 +7,7 @@ fixture `Create new production project`;
 
 test('Fill out form new production project', async (t) => {
 
-    const randomName = faker.name.findName();
+    const randomName = faker.company.catchPhrase();
     const randomWord = faker.lorem.word();
 
     await t
@@ -24,7 +24,7 @@ test('Fill out form new production project', async (t) => {
         .click('select[name="ownedById"]')
         .click(Selector('option').filter('[value="1"]'))
 
-        .click(Selector('button').withText('Opslaan'))
+        .click(Selector('button').withExactText('Opslaan'))
         .wait(constants.wait);
 
     await t.expect(Selector('h4').innerText).eql('Productie project ' + randomName, 'Check element text', { timeout: 500 });

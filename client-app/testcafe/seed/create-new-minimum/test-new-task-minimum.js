@@ -5,7 +5,6 @@ const faker = require('faker');
 
 fixture `Create new task minimum`;
 
-
 test('Fill out form task minimum', async (t) => {
 
     const randomSentence = faker.lorem.sentence();
@@ -21,7 +20,7 @@ test('Fill out form task minimum', async (t) => {
         .typeText('textarea[name="note"]', randomSentence)
         .click('select[name="responsible"]')
         .click(Selector('option').filter('[value="user1"]'))
-        .click(Selector('button').withText('Opslaan'))
+        .click(Selector('button').withExactText('Opslaan'))
         .wait(constants.wait);
 
     await t.expect(Selector('#description').innerText).eql(randomSentence, 'Check element text', { timeout: 500 });

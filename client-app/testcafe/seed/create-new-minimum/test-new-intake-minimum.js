@@ -3,7 +3,7 @@ import superUser from '../../auth/UserRoles';
 import * as constants from '../../config/constants';
 const faker = require('faker');
 
-fixture `Create new housing file`;
+fixture `Create new intake`;
 
 test('Fill out form person->address->intake', async (t) => {
 
@@ -29,12 +29,12 @@ test('Fill out form person->address->intake', async (t) => {
     await t.expect(Selector('h4').innerText).eql( randomLastName + ', ' + randomFirstName + ' (Persoon)', 'Check element text', { timeout: 500 });
 
     await t
-        .click(Selector('span').withText('Adres gegevens').parent().child('a'))
+        .click(Selector('span').withExactText('Adres gegevens').parent().child('a'))
         .typeText('input[name="postalCode"]', randomPostalCode)
         .typeText('input[name="number"]', randomNumber.toString())
         .typeText('input[name="street"]', randomStreet)
         .typeText('input[name="city"]', randomCity)
-        .click(Selector('button').withText('Opslaan'))
+        .click(Selector('button').withExactText('Opslaan'))
         .wait(constants.wait);
 
     await t
@@ -42,7 +42,7 @@ test('Fill out form person->address->intake', async (t) => {
         .wait(constants.wait);
 
     await t
-        .click(Selector('button').withText('Opslaan'))
+        .click(Selector('button').withExactText('Opslaan'))
         .wait(constants.wait);
 
     await t.expect(Selector('h4').innerText).eql( 'Intake voor: ' + randomStreet + ' ' + randomNumber, 'Check element text', { timeout: 500 });

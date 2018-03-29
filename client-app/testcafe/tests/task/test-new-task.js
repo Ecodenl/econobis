@@ -14,7 +14,7 @@ test('Create empty task', async (t) => {
     await t.expect(Selector('h3').innerText).eql('Nieuwe taak', 'Check element text', { timeout: 500 });
 
     await t
-        .click(Selector('button').withText('Opslaan'));
+        .click(Selector('button').withExactText('Opslaan'));
 
     await t.expect(Selector('h3').innerText).eql('Nieuwe taak', 'Check element text', { timeout: 500 });
 
@@ -54,7 +54,7 @@ test('Fill out form task all', async (t) => {
         .click('select[name="finishedById"]')
         .click(Selector('select[name="finishedById"]').child().nth(1))
 
-        .click(Selector('button').withText('Opslaan'));
+        .click(Selector('button').withExactText('Opslaan'));
 
     await t.expect(Selector('#description').innerText).eql(randomSentence, 'Check element text', { timeout: 500 });
 });

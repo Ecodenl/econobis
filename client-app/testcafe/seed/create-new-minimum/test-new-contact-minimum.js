@@ -31,7 +31,7 @@ fixture `Create new organisation`;
 
 test('Check for title "Nieuw contact"', async (t) => {
 
-    const randomName = faker.name.findName();
+    const randomName = faker.company.companyName();
 
     await t
         .useRole(superUser)
@@ -44,7 +44,7 @@ test('Check for title "Nieuw contact"', async (t) => {
         .navigateTo( constants.app_url + '#/contact/nieuw/organisatie')
         .typeText('input[name="name"]', randomName)
         .click(Selector('button').withText('Opslaan'))
-        .wait(1000);
+        .wait(200);
 
     await t.expect(Selector('h4').innerText).eql( randomName + ' (Organisatie)', 'Check element text', { timeout: 500 });
 });

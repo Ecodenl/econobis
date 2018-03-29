@@ -2,9 +2,9 @@ import { Selector, Role } from 'testcafe';
 import superUser from '../../auth/UserRoles';
 import * as constants from '../../config/constants';
 const faker = require('faker');
-import Task from '../../pages/task/task-model';
+import ModelNewTask from '../../pages/task/model-new-task';
 
-const task = new Task();
+const Task = new ModelNewTask();
 
 fixture `Create new task`;
 
@@ -34,9 +34,9 @@ test('Fill out form task only required', async (t) => {
     await t.expect(Selector('h3').innerText).eql('Nieuwe taak', 'Check element text', { timeout: 500 });
 
     await t
-        .typeText(task.note, randomSentence)
+        .typeText(Task.note, randomSentence)
 
-        .click('select[name="responsible"]')
+        .click(Task.responsible)
         .click(Selector('option').filter('[value="user1"]'))
 
         .click(Selector('button').withExactText('Opslaan'));
@@ -58,9 +58,9 @@ test('Fill out form task all, task will be a note', async (t) => {
         .click('select[name="typeId"]')
         .click(Selector('option').filter('[value="1"]'))
 
-        .typeText('textarea[name="note"]', randomSentence)
+        .typeText(Task.note, randomSentence)
 
-        .typeText('input[name="datePlannedStart"]', '10-03-2018')
+        .typeText(Task.datePlannedStart, '10-03-2018')
 
         .click('select[name="startTimePlanned"]')
         .click(Selector('select[name="startTimePlanned"]').child().nth(2))
@@ -72,7 +72,7 @@ test('Fill out form task all, task will be a note', async (t) => {
 
         .click(Selector('.react-toggle'))
 
-        .click('select[name="responsible"]')
+        .click(task.responsible)
         .click(Selector('option').filter('[value="user1"]'))
 
         .click('select[name="finishedById"]')

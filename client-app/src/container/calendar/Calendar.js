@@ -104,7 +104,7 @@ class Calendar extends Component {
                 defaultView={this.state.selectedView}
                 endAccessor='end'
                 events={this.state.events}
-                max={new Date('2018-01-01T20:00:00.000Z')}
+                max={new Date('2018-01-01T23:00:00.000Z')}
                 messages={localizedLabel}
                 min={new Date('2018-01-01T07:00:00.000Z')}
                 onNavigate={this.onNavigate}

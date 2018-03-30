@@ -71,7 +71,7 @@ export default function* watchSagas() {
     yield takeLatest('DELETE_ADDRESS', deleteAddressSaga);
     yield takeLatest('DELETE_PHONE_NUMBER', deletePhoneNumberSaga);
     yield takeLatest('DELETE_EMAIL_ADDRESS', deleteEmailAddressSaga);
-    yield takeLatest('DELETE_NOTE', deleteContactNoteSaga);
+    yield takeLatest('DELETE_CONTACT_NOTE', deleteContactNoteSaga);
     yield takeLatest('DELETE_CONTACT_ENERGY_SUPPLIER', deleteContactEnergySupplierSaga);
     // Contact group
     yield takeLatest('FETCH_CONTACT_GROUPS', fetchContactGroupsSaga);

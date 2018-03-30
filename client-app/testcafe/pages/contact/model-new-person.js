@@ -2,7 +2,7 @@ import { Selector } from 'testcafe';
 
 export default class ModelNewPerson {
     constructor () {
-        this.firstName = 'input[name="firstName"]';
-        this.lastName = 'input[name="lastName"]';
+        this.firstName = Selector('input[name="firstName"]');
+        this.lastName = Selector('input[name="lastName"]');
     }
 }

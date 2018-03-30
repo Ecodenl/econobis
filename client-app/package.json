@@ -6,11 +6,9 @@
   "scripts": {
     "serve": "webpack-dev-server --open --config webpack.dev.js",
     "build": "webpack --config webpack.prod.js -p",
-    "build:demo": "webpack --config webpack.prod.demo.js -p",
-    "build:bresbreda": "webpack --config webpack.prod.bresbreda.js -p",
-    "build:de-a": "webpack --config webpack.prod.de-a.js -p",
     "build:local": "webpack --config webpack.prod.local.js",
-    "test": "jest --config=jest.config.json"
+    "test": "jest --config=jest.config.json",
+    "test:global": "testcafe chrome testcafe/seed & testcafe chrome testcafe/tests"
   },
   "repository": "",
   "author": "Xaris",

@@ -97,7 +97,7 @@ export default function (state = {}, action) {
                 ...state,
                 emailAddresses: state.emailAddresses.filter(emailAddress => emailAddress.id !== action.id),
             };
-        case 'NEW_NOTE':
+        case 'NEW_CONTACT_NOTE':
             return {
                 ...state,
                 notes: [
@@ -107,7 +107,7 @@ export default function (state = {}, action) {
                     }
                 ]
             };
-        case 'UPDATE_NOTE':
+        case 'UPDATE_CONTACT_NOTE':
             return {
                 ...state,
                 notes: state.notes.map((note) =>
@@ -120,7 +120,7 @@ export default function (state = {}, action) {
                         note,
                 )
             };
-        case 'DELETE_NOTE_SUCCESS':
+        case 'DELETE_CONTACT_NOTE_SUCCESS':
             return {
                 ...state,
                 notes: state.notes.filter(note => note.id !== action.id),

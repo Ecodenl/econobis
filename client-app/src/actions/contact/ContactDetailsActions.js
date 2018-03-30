@@ -91,21 +91,21 @@ export const deleteEmailAddress = (id) => {
 
 export const newNote = (note) => {
     return {
-        type: 'NEW_NOTE',
+        type: 'NEW_CONTACT_NOTE',
         note,
     };
 };
 
 export const updateNote = (note) => {
     return {
-        type: 'UPDATE_NOTE',
+        type: 'UPDATE_CONTACT_NOTE',
         note,
     };
 };
 
 export const deleteNote = (id) => {
     return {
-        type: 'DELETE_NOTE',
+        type: 'DELETE_CONTACT_NOTE',
         id,
     };
 };

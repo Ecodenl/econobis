@@ -15,6 +15,7 @@ class ConceptApp extends Component {
         super(props);
 
         this.state = {
+            buttonLoading: false,
             emailAddresses: [],
             email: {
                 from: '',
@@ -167,6 +168,12 @@ class ConceptApp extends Component {
         });
     }
 
+    setButtonLoading = () => {
+        this.setState({
+            buttonLoading: true
+        });
+    };
+
     handleSubmit(event, concept = false) {
         event.preventDefault();
 
@@ -217,6 +224,8 @@ class ConceptApp extends Component {
                 });
             }
             else{
+                this.setButtonLoading();
+
                 EmailAPI.sendConcept(data, this.props.params.id).then(() => {
                     hashHistory.push(`/emails/sent`);
                 }).catch(function (error) {
@@ -233,7 +242,7 @@ class ConceptApp extends Component {
                     <div className="col-md-12 margin-10-top">
                         <Panel>
                             <PanelBody className="panel-small">
-                                <ConceptToolbar handleSubmit={this.handleSubmit}/>
+                                <ConceptToolbar loading={this.state.buttonLoading} handleSubmit={this.handleSubmit}/>
                             </PanelBody>
                         </Panel>
                     </div>

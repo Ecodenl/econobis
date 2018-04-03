@@ -8,8 +8,9 @@ const RevenueDistributionFormStaticView = props => {
     return (
         <div className={`row border`}>
             <div className="col-sm-1">
-                { props.showCheckboxList && contact.primaryEmailAddress && <input type="checkbox" name={id} onChange={props.toggleParticipantCheck}/> }
-                { props.showCheckboxList && !contact.primaryEmailAddress && <input type="checkbox" name={id} onChange={props.toggleParticipantCheckNoEmail}/> }
+                { props.showCheckboxList && props.checkedAll && <input type="checkbox" checked/> }
+                { props.showCheckboxList && !props.checkedAll && contact.primaryEmailAddress && <input type="checkbox" name={id} onChange={props.toggleParticipantCheck}/> }
+                { props.showCheckboxList && !props.checkedAll && !contact.primaryEmailAddress && <input type="checkbox" name={id} onChange={props.toggleParticipantCheckNoEmail}/> }
                 { !props.showCheckboxList && <span>{id}</span> }
             </div>
             <div className="col-sm-1">

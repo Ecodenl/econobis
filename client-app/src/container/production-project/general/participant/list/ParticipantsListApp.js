@@ -255,7 +255,7 @@ class ParticipantsListApp extends Component {
             });
         }
 
-        if ((this.state.participantIds.length > 0 && !error) || participantIds.length > 0&& !error) {
+        if ((this.state.participantIds.length > 0 && !error) || participantIds.length > 0 && !error) {
             this.setState({
                 showModal: true,
                 modalText: 'De rapporten worden per participant gemaakt met de gekozen template en per email verzonden.',

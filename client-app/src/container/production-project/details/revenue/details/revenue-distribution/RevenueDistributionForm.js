@@ -31,6 +31,7 @@ class RevenueDistributionForm extends Component {
             emailTemplates: [],
             subject: [],
             documentGroup: '',
+            checkedAll: false,
             showCheckboxList: false,
             showModal: false,
             modalText: '',
@@ -114,6 +115,13 @@ class RevenueDistributionForm extends Component {
         });
     };
 
+    toggleCheckedAll = () => {
+        this.setState({
+            distributionIds: [],
+            checkedAll: !this.state.checkedAll
+        });
+    };
+
     toggleParticipantCheck = event => {
         const target = event.target;
         const value = target.type === 'checkbox' ? target.checked : target.value;
@@ -186,7 +194,20 @@ class RevenueDistributionForm extends Component {
             });
         }
 
-        if (this.state.distributionIds.length > 0 && !error) {
+        let distributionIds = [];
+
+        if (this.state.checkedAll) {
+
+            this.props.productionProjectRevenue.distrbution.forEach(function (distribution) {
+                distributionIds.push(distribution.id);
+            });
+
+            this.setState({
+                participantIds: distributionIds,
+            });
+        }
+
+        if ((this.state.distributionIds.length > 0 && !error) || (distributionIds.length > 0 && !error)) {
             this.setState({
                 showModal: true,
                 modalText: 'De rapporten worden per participant gemaakt met de gekozen template en per email verzonden.',
@@ -232,6 +253,8 @@ class RevenueDistributionForm extends Component {
                     <div className="col-md-12">
                         <RevenueDistributionFormList
                             showCheckboxList={this.state.showCheckboxList}
+                            checkedAll={this.state.checkedAll}
+                            toggleCheckedAll={this.toggleCheckedAll}
                             toggleParticipantCheck={this.toggleParticipantCheck}
                             toggleParticipantCheckNoEmail={this.toggleParticipantCheckNoEmail}
                         />

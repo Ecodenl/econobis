@@ -13,7 +13,6 @@ import EmailTemplateAPI from '../../../api/email-template/EmailTemplateAPI';
 import {isEqual} from "lodash";
 import {connect} from "react-redux";
 import DocumentDetailsAPI from "../../../api/document/DocumentDetailsAPI";
-import Modal from "../../../components/modal/Modal";
 
 class EmailNewApp extends Component {
     constructor(props) {
@@ -328,15 +327,6 @@ class EmailNewApp extends Component {
                     </div>
                 </div>
                 <div className="col-md-3"/>
-                {this.state.showSendModal &&
-                <Modal
-                    title={'Verzenden'}
-                    closeModal={() => {}}
-                    showConfirmAction={false}
-                    showCancelAction={false}
-                >
-                    <p>Email wordt verzonden.</p>
-                </Modal>}
             </div>
         )
     }

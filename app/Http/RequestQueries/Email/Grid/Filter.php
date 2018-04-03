@@ -10,6 +10,7 @@ namespace App\Http\RequestQueries\Email\Grid;
 
 
 use App\Helpers\RequestQuery\RequestFilter;
+use Zend\Diactoros\Request;
 
 class Filter extends RequestFilter
 {
@@ -36,5 +37,16 @@ class Filter extends RequestFilter
     protected $defaultTypes = [
         '*' => 'ct',
     ];
+
+    protected function applyStatusIdFilter($query, $type, $data)
+    {
+      if($data === 'null'){
+          $query->whereNull('status');
+
+          return false;
+      }
+
+        return true;
+    }
 
 }

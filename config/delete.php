@@ -48,7 +48,8 @@ return [
     'Opportunity' => [
         'soft_delete' => false,
         'relations' =>
-            [['delete_recursive' => 'quotationRequests'],
+            [['remove_pivots' => 'measures'],
+            ['delete_recursive' => 'quotationRequests'],
             ['dissociate' => ['relation' => 'tasks', 'foreign_key' => 'opportunity_id']],
             ['dissociate' => ['relation' => 'notes', 'foreign_key' => 'opportunity_id']],
             ['dissociate' => ['relation' => 'documents', 'foreign_key' => 'opportunity_id']],

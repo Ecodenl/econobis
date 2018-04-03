@@ -37,6 +37,7 @@ class FullTask extends Resource
         return
             [
                 'id' => $this->id,
+                'name' => $this->present()->noteSummary(),
                 'note' => $this->note,
                 'noteSummary' => $this->present()->noteSummary(),
                 'typeId' => $this->type_id,

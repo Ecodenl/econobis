@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-import { connect } from 'react-redux';
 import { isEqual } from 'lodash';
 
 import RevenuesListFormView from './RevenuesListFormView';
@@ -60,10 +59,4 @@ class RevenuesListFormItem extends Component {
     }
 };
 
-const mapDispatchToProps = dispatch => ({
-    updateValueCourse: (id) => {
-        dispatch(updateValueCourse(id));
-    },
-});
-
-export default connect(null, mapDispatchToProps)(RevenuesListFormItem);
+export default RevenuesListFormItem;

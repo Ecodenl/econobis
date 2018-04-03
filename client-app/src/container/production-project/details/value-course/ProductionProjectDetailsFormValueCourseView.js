@@ -15,10 +15,10 @@ const ProductionProjectDetailsFormValueCourseView = props => {
                     {date ? moment(date).format('L') : ''}
                 </div>
                 <div className="col-sm-3">
-                    {bookWorth.toFixed(2)}
+                    {bookWorth}
                 </div>
                 <div className="col-sm-3">
-                    {transferWorth ? transferWorth.toFixed(2) : ''}
+                    {transferWorth ? transferWorth : ''}
                 </div>
             </div>
             <div className="col-sm-1">

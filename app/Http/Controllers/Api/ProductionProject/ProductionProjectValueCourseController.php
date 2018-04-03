@@ -56,7 +56,7 @@ class ProductionProjectValueCourseController extends ApiController
 
         $data['book_worth'] = round($data['book_worth'], 2);
 
-        if($data['transferWorth']){
+        if($data['transfer_worth']){
             $data['transfer_worth'] = round($data['transfer_worth'], 2);
         }
 

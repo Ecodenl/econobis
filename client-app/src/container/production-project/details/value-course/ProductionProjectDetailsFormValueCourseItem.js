@@ -20,6 +20,8 @@ class ProductionProjectDetailsFormValueCourseItem extends Component {
             showDelete: false,
             valueCourse: {
                 ...props.valueCourse,
+                bookWorth: props.valueCourse.bookWorth ? props.valueCourse.bookWorth.toLocaleString('nl',{ minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '',
+                transferWorth: props.valueCourse.transferWorth ? props.valueCourse.transferWorth.toLocaleString('nl', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '',
             },
             errors: {
                 bookWorth: false,
@@ -32,8 +34,11 @@ class ProductionProjectDetailsFormValueCourseItem extends Component {
         if(!isEqual(this.state.valueCourse, nextProps.valueCourse)){
             this.setState({
                 ...this.state,
-                phonevalueCourseNumber: {
+                valueCourse: {
                     ...nextProps.valueCourse,
+                    bookWorth: nextProps.valueCourse.bookWorth ? nextProps.valueCourse.bookWorth.toLocaleString('nl',{ minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '',
+                    transferWorth: nextProps.valueCourse.transferWorth ? nextProps.valueCourse.transferWorth.toLocaleString('nl', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '',
+
                 },
             });
         }
@@ -64,7 +69,11 @@ class ProductionProjectDetailsFormValueCourseItem extends Component {
     cancelEdit = () => {
         this.setState({
             ...this.state,
-            valueCourse: {...this.props.valueCourse}
+            valueCourse: {
+                ...this.props.valueCourse,
+                bookWorth: this.props.valueCourse.bookWorth ? this.props.valueCourse.bookWorth.toLocaleString('nl',{ minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '',
+                transferWorth: this.props.valueCourse.transferWorth ? this.props.valueCourse.transferWorth.toLocaleString('nl', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '',
+            }
         });
 
         this.closeEdit();
@@ -110,7 +119,13 @@ class ProductionProjectDetailsFormValueCourseItem extends Component {
         if(validator.isEmpty(valueCourse.bookWorth + '')){
             errors.bookWorth = true;
             hasErrors = true;
+        }else{
+            valueCourse.bookWorth = valueCourse.bookWorth.replace(/,/g, '.');
         };
+
+        if(!validator.isEmpty(valueCourse.transferWorth + '')){
+            valueCourse.transferWorth = valueCourse.transferWorth.replace(/,/g, '.');
+        }
 
         this.setState({ ...this.state, errors: errors });
 

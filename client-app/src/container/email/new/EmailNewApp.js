@@ -11,16 +11,16 @@ import EmailAddressAPI from '../../../api/contact/EmailAddressAPI';
 import MailboxAPI from '../../../api/mailbox/MailboxAPI';
 import EmailTemplateAPI from '../../../api/email-template/EmailTemplateAPI';
 import {isEqual} from "lodash";
-import {setBulkEmailToContactIds} from "../../../actions/email/BulkMailActions";
 import {connect} from "react-redux";
 import DocumentDetailsAPI from "../../../api/document/DocumentDetailsAPI";
-import fileDownload from "js-file-download";
+import Modal from "../../../components/modal/Modal";
 
 class EmailNewApp extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
+            buttonLoading: false,
             emailAddresses: [],
             mailboxAddresses: [],
             emailTemplates: [],
@@ -224,6 +224,12 @@ class EmailNewApp extends Component {
         });
     };
 
+    setButtonLoading = () => {
+        this.setState({
+            buttonLoading: true
+        });
+    };
+
     handleSubmit(event, concept = false) {
         event.preventDefault();
 
@@ -277,6 +283,8 @@ class EmailNewApp extends Component {
                 });
             }
             else{
+                this.setButtonLoading();
+
                 EmailAPI.newEmail(data, email.from).then(() => {
                     browserHistory.goBack();
                 }).catch(function (error) {
@@ -293,7 +301,7 @@ class EmailNewApp extends Component {
                     <div className="col-md-12">
                         <Panel>
                             <PanelBody className="panel-small">
-                                <EmailNewToolbar handleSubmit={this.handleSubmit}/>
+                                <EmailNewToolbar loading={this.state.buttonLoading} handleSubmit={this.handleSubmit}/>
                             </PanelBody>
                         </Panel>
                     </div>
@@ -320,6 +328,15 @@ class EmailNewApp extends Component {
                     </div>
                 </div>
                 <div className="col-md-3"/>
+                {this.state.showSendModal &&
+                <Modal
+                    title={'Verzenden'}
+                    closeModal={() => {}}
+                    showConfirmAction={false}
+                    showCancelAction={false}
+                >
+                    <p>Email wordt verzonden.</p>
+                </Modal>}
             </div>
         )
     }

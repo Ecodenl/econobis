@@ -15,7 +15,10 @@ const Modal = (props) => {
                         {children}
                     </div>
                     <div className="modal-footer">
-                        <button type="button" className="btn btn-default" onClick={closeModal}>{buttonCancelText}</button>
+                        {props.showCancelAction &&
+                        <button type="button" className="btn btn-default"
+                                onClick={closeModal}>{buttonCancelText}</button>
+                        }
                         { props.showConfirmAction &&
                             <button type="button" className={`btn ${buttonClassName}`} onClick={confirmAction}>
                                 {buttonConfirmText}
@@ -33,6 +36,7 @@ Modal.defaultProps = {
     buttonConfirmText: 'Opslaan',
     buttonCancelText: 'Annuleren',
     showConfirmAction: true,
+    showCancelAction: true,
     confirmAction: () => {},
 };
 
@@ -46,6 +50,7 @@ Modal.propTypes = {
     closeModal: PropTypes.func.isRequired,
     confirmAction: PropTypes.func,
     showConfirmAction: PropTypes.bool,
+    showCancelAction: PropTypes.bool,
     title: PropTypes.string,
 };
 

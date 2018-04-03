@@ -2,19 +2,30 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 const ButtonText = (props) => {
-    const {buttonClassName, buttonText, onClickAction, type, value} = props;
+    const {buttonClassName, buttonText, onClickAction, type, value, loading, loadText} = props;
 
-    return (
-        <button type={type} className={`btn btn-sm ${buttonClassName}`} onClick={onClickAction} value={value}>
-            {buttonText}
-        </button>
-    );
+    if(loading){
+        return (
+            <button type={type} className={`btn btn-sm ${buttonClassName}`} onClick={onClickAction} value={value}>
+                <span className="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span> {loadText}
+            </button>
+        );
+    }
+    else{
+        return (
+            <button type={type} className={`btn btn-sm ${buttonClassName}`} onClick={onClickAction} value={value}>
+                {buttonText}
+            </button>
+        );
+    }
 };
 
 ButtonText.defaultProps = {
     buttonClassName: 'btn-success',
     type: 'button',
-    value: ''
+    value: '',
+    loading: false,
+    loadText: 'Aan het laden'
 };
 
 ButtonText.propTypes = {
@@ -23,6 +34,8 @@ ButtonText.propTypes = {
     onClickAction: PropTypes.func,
     type: PropTypes.string,
     value: PropTypes.string,
+    loading: PropTypes.bool,
+    loadText: PropTypes.string,
 };
 
 export default ButtonText;

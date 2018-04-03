@@ -22,7 +22,7 @@ class OppportunitiesNewApp extends Component {
                 intakeId: '',
                 measureCategoryId: props.params.measureCategoryId,
                 measureIds: '',
-                statusId: '',
+                statusId: '1',
                 quotationText: '',
                 evaluationAgreedDate: '',
                 desiredDate: '',

@@ -20,7 +20,7 @@ class IntakeNewFormGeneral extends Component {
                 contactId: props.contactId,
                 addressId: props.addressId,
                 campaignId: '',
-                statusId: '',
+                statusId: '1',
                 sourceIds: '',
                 intakeReasonIds: '',
                 note: ''

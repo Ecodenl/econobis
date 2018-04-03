@@ -338,7 +338,6 @@ class ParticipationProductionProjectController extends ApiController
 
     public function createParticipantReport(Request $request, DocumentTemplate $documentTemplate, EmailTemplate $emailTemplate){
         $participantIds = $request->input('participantIds');
-        dd($participantIds);
         $subject = $request->input('subject');
 
         //get current logged in user

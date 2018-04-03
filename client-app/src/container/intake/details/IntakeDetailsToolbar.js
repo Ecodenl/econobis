@@ -22,7 +22,8 @@ class IntakeDetailsToolbar extends Component {
 
     render() {
         const { intakeAddress = {} } = this.props;
-        const fullStreet = `${intakeAddress.street || ''} ${intakeAddress.number || ''}`;
+        let fullStreet = '';
+        intakeAddress && (fullStreet = `${intakeAddress.street || ''} ${intakeAddress.number || ''}`);
 
         return (
             <div className="row">

@@ -421,7 +421,7 @@ class TemplateVariableHelper
                 return optional($model->organisation->contact->primaryPhoneNumber)->number;
                 break;
             case 'organisatie_primair_contact':
-                return optional(optional(optional($model->organisation->contactPerson)->person)->contact)->full_name;
+                return optional(optional($model->organisation->contact->contactPerson)->contact)->full_name;
                 break;
             case 'contact_naam':
                 return optional(optional($model->opportunity)->intake)->contact->full_name;

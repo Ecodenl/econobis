@@ -3,9 +3,11 @@ import React, { Component } from 'react';
 import DataTable from '../../../components/dataTable/DataTable';
 import DataTableHead from '../../../components/dataTable/DataTableHead';
 import DataTableBody from '../../../components/dataTable/DataTableBody';
-import DataTableHeadTitle from '../../../components/dataTable/DataTableHeadTitle';
 import ContactGroupsListItem from './ContactGroupsListItem';
 import ContactGroupsDeleteItem from './ContactGroupsDeleteItem';
+import ContactGroupsListHead from "./ContactGroupsListHead";
+import ContactGroupsListFilter from "./ContactGroupsListFilter";
+import DataTablePagination from "../../../components/dataTable/DataTablePagination";
 
 class ContactGroupsList extends Component {
     constructor(props){
@@ -19,6 +21,13 @@ class ContactGroupsList extends Component {
             }
         };
     }
+
+    // On key Enter filter form will submit
+    handleKeyUp = (e) => {
+        if (e.keyCode === 13) {
+            this.props.onSubmitFilter();
+        }
+    };
 
     showDeleteItemModal = (id, name) => {
         this.setState({
@@ -45,25 +54,28 @@ class ContactGroupsList extends Component {
     };
 
     render() {
+        const { data = [], meta = {}, isLoading } = this.props.contactGroups;
+
         return (
         <div>
+            <form onKeyUp={this.handleKeyUp}>
             <DataTable>
                 <DataTableHead>
-                    <tr className="thead-title-quaternary">
-                        <DataTableHeadTitle title={'Naam'} width={'40%'}/>
-                        <DataTableHeadTitle title={'Aantal leden'} width={'20%'}/>
-                        <DataTableHeadTitle title={'Status'} width={'35%'}/>
-                        <DataTableHeadTitle title={''} width={'5%'}/>
-                    </tr>
+                    <ContactGroupsListHead
+                        fetchContactGroupsData={() => this.props.fetchContactGroupsData()}
+                    />
+                    <ContactGroupsListFilter
+                        onSubmitFilter={this.props.onSubmitFilter}
+                    />
                 </DataTableHead>
                 <DataTableBody>
                     {
-                        this.props.contactGroups.length === 0 ? (
+                        data.length === 0 ? (
                             <tr>
                                 <td colSpan={11}>Geen groepen gevonden!</td>
                             </tr>
                         ) : (
-                            this.props.contactGroups.map(contactGroup => (
+                            data.map(contactGroup => (
                                 <ContactGroupsListItem
                                 key={contactGroup.id}
                                 {...contactGroup}
@@ -74,6 +86,13 @@ class ContactGroupsList extends Component {
                     }
                 </DataTableBody>
             </DataTable>
+                <div className="col-md-6 col-md-offset-3">
+                    <DataTablePagination
+                        onPageChangeAction={this.props.handlePageClick}
+                        totalRecords={meta.total}
+                        initialPage={this.props.contactGroupsPagination.page}
+                    />
+                </div>
             {
                 this.state.showDeleteItem &&
                 <ContactGroupsDeleteItem
@@ -81,6 +100,7 @@ class ContactGroupsList extends Component {
                     {...this.state.deleteItem}
                 />
             }
+            </form>
         </div>
         )
     }

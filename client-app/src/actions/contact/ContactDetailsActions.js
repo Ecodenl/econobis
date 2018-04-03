@@ -91,21 +91,21 @@ export const deleteEmailAddress = (id) => {
 
 export const newNote = (note) => {
     return {
-        type: 'NEW_NOTE',
+        type: 'NEW_CONTACT_NOTE',
         note,
     };
 };
 
 export const updateNote = (note) => {
     return {
-        type: 'UPDATE_NOTE',
+        type: 'UPDATE_CONTACT_NOTE',
         note,
     };
 };
 
 export const deleteNote = (id) => {
     return {
-        type: 'DELETE_NOTE',
+        type: 'DELETE_CONTACT_NOTE',
         id,
     };
 };
@@ -114,27 +114,6 @@ export const makePrimary = (id) => {
     return {
         type: 'MAKE_PRIMARY',
         id,
-    };
-};
-
-export const newOccupation = (occupations) => {
-    return {
-        type: 'NEW_OCCUPATION',
-        occupations,
-    };
-};
-
-export const updateOccupation = (occupations) => {
-    return {
-        type: 'UPDATE_OCCUPATION',
-        occupations,
-    };
-};
-
-export const deleteOccupation = (occupations) => {
-    return {
-        type: 'DELETE_OCCUPATION',
-        occupations,
     };
 };
 

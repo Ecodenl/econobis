@@ -16,8 +16,15 @@ const ContactDetailsFormOccupationsDelete = (props) => {
             confirmAction={() => confirmAction()}
             title="Verwijderen"
         >
-            <p>Verwijder verbinding: <strong> {`${props.occupation.organisation.name} met rol: ${props.occupation.occupation.name}` } </strong></p>
-
+            {props.primaryOccupation ?
+                <p>Verwijder
+                    verbinding: <strong> {`${props.occupation.contact.fullName} met rol: ${props.occupation.occupation.secondaryOccupation}`} </strong>
+                </p>
+                :
+                <p>Verwijder
+                    verbinding: <strong> {`${props.occupation.primaryContact.fullName} met rol: ${props.occupation.occupation.primaryOccupation}`} </strong>
+                </p>
+            }
         </Modal>
     );
 };

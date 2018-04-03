@@ -84,7 +84,7 @@ Route::namespace('Api')
         Route::post('/address/{address}/delete', 'Address\AddressController@destroy');
 
         Route::post('/occupation', 'Occupation\OccupationController@store');
-        Route::post('/occupation/update', 'Occupation\OccupationController@update');
+        Route::post('/occupation/{occupationContact}/update', 'Occupation\OccupationController@update');
         Route::post('/occupation/delete', 'Occupation\OccupationController@destroy');
 
         Route::post('/email-address', 'EmailAddress\EmailAddressController@store');

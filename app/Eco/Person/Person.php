@@ -2,11 +2,9 @@
 
 namespace App\Eco\Person;
 
-use App\Eco\Occupation\OccupationPerson;
 use App\Eco\Organisation\Organisation;
 use App\Eco\Contact\Contact;
 use App\Eco\LastNamePrefix\LastNamePrefix;
-use App\Eco\Occupation\Occupation;
 use App\Eco\PersonType\PersonType;
 use App\Eco\Title\Title;
 use Illuminate\Database\Eloquent\Model;
@@ -59,10 +57,4 @@ class Person extends Model
     {
         return $this->belongsTo(Organisation::class);
     }
-
-    public function occupations()
-    {
-        return $this->hasMany(OccupationPerson::class);
-    }
-
 }

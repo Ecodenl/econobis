@@ -2,11 +2,10 @@
 
 namespace App\Http\Resources\Occupation;
 
-use App\Http\Resources\Organisation\FullOrganisation;
-use App\Http\Resources\Person\FullPerson;
+use App\Http\Resources\Contact\FullContact;
 use Illuminate\Http\Resources\Json\Resource;
 
-class FullOccupationPerson extends Resource
+class FullOccupationContact extends Resource
 {
     /**
      * Transform the resource into an array.
@@ -17,8 +16,9 @@ class FullOccupationPerson extends Resource
     public function toArray($request)
     {
         return [
-            'person' => FullPerson::make($this->whenLoaded('person')),
-            'organisation' => FullOrganisation::make($this->whenLoaded('organisation')),
+            'id' => $this->id,
+            'primaryContact' => FullContact::make($this->whenLoaded('primaryContact')),
+            'contact' => FullContact::make($this->whenLoaded('contact')),
             'occupation' => FullOccupation::make($this->whenLoaded('occupation')),
             'startDate' => $this->start_date,
             'endDate' => $this->end_date,

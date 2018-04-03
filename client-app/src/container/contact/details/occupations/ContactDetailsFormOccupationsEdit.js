@@ -8,10 +8,11 @@ import PanelBody from '../../../../components/panel/PanelBody';
 import InputDate from "../../../../components/form/InputDate";
 import moment from "moment/moment";
 import InputToggle from "../../../../components/form/InputToggle";
+import InputReactSelect from "../../../../components/form/InputReactSelect";
 moment.locale('nl');
 
 const ContactDetailsFormOccupationsEdit = props => {
-    const { organisationId, occupationId, startDate, endDate, primary } = props.occupation;
+    const { primaryContactId, contactId, occupationId, startDate, endDate, primary } = props.occupation;
 
     return (
         <div>
@@ -19,20 +20,34 @@ const ContactDetailsFormOccupationsEdit = props => {
                 <Panel className={'panel-grey'}>
                     <PanelBody>
                         <div className="row">
-                            <InputSelect
-                                label={"Verbonden met"}
-                                size={"col-sm-6"}
-                                name={"organisationId"}
-                                options={props.organisations}
-                                value={organisationId}
-                                onChangeAction={props.handleInputChange}
-                                required={"required"}
-                                error={props.organisationIdError}
-                            />
+                            {props.primaryOccupation ?
+                                <InputReactSelect
+                                    label={"Verbonden met"}
+                                    name={"contactId"}
+                                    options={props.contacts}
+                                    value={contactId}
+                                    onChangeAction={props.handleReactSelectChange}
+                                    optionName={'fullName'}
+                                    multi={false}
+                                    isLoading={props.peekLoading.contacts}
+                                />
+                                :
+                                <InputReactSelect
+                                    label={"Verbonden met"}
+                                    name={"primaryContactId"}
+                                    options={props.contacts}
+                                    value={primaryContactId}
+                                    onChangeAction={props.handleReactSelectChange}
+                                    optionName={'fullName'}
+                                    multi={false}
+                                    isLoading={props.peekLoading.contacts}
+                                />
+                            }
                             <InputSelect
                                 label={"Rol"}
                                 size={"col-sm-6"}
                                 name={"occupationId"}
+                                optionName={'primaryOccupation'}
                                 options={props.occupations}
                                 value={occupationId}
                                 onChangeAction={props.handleInputChange}

@@ -4,11 +4,9 @@ namespace App\Eco\Organisation;
 
 use App\Eco\Campaign\Campaign;
 use App\Eco\Measure\Measure;
-use App\Eco\Occupation\OccupationPerson;
 use App\Eco\OrganisationType\OrganisationType;
 use App\Eco\Contact\Contact;
 use App\Eco\Industry\Industry;
-use App\Eco\Person\Person;
 use App\Eco\QuotationRequest\QuotationRequest;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -34,16 +32,6 @@ class Organisation extends Model
     public function type()
     {
         return $this->belongsTo(OrganisationType::class);
-    }
-
-    public function people()
-    {
-        return $this->hasMany(OccupationPerson::class);
-    }
-
-    public function contactPerson()
-    {
-        return $this->hasOne(OccupationPerson::class)->where('primary', true);
     }
 
     public function industry()

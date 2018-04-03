@@ -14,9 +14,15 @@ use App\Helpers\RequestQuery\RequestSort;
 class Sort extends RequestSort
 {
 
-    protected $fields = [];
+    protected $fields = [
+        'name',
+        'status',
+    ];
 
-    protected $mapping = [];
+    protected $mapping = [
+        'name' => 'contact_groups.name',
+        'status' => 'contact_groups.closed',
+    ];
 
     protected $joins = [];
 }

@@ -19,7 +19,7 @@ const IntakeDetailsFormGeneralView = props => {
                 <div className={'col-sm-6'}>
                     <label htmlFor={ 'address' } className="col-sm-6">{ 'Adres' }</label>
                     <div className="col-sm-6" id={ 'address' }>
-                        { address.housingFile ?
+                        { address && address.housingFile ?
                             <Link onClick={() => hashHistory.push(`/woningdossier/${address.housingFile.id}`)} className='"link-underline"'> {address && address.street + ' ' + address.number}</Link>
                             : <div>{address && address.street + ' ' + address.number}</div>
                         }

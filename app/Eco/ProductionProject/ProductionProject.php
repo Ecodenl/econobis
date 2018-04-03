@@ -71,7 +71,7 @@ class ProductionProject extends Model
     }
 
     public function productionProjectValueCourses(){
-        return $this->hasMany(ProductionProjectValueCourse::class);
+        return $this->hasMany(ProductionProjectValueCourse::class)->orderBy('date');
     }
 
     public function productionProjectRevenues(){

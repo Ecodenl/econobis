@@ -16,7 +16,8 @@ class FullOccupation extends Resource
     {
         return [
             'id' => $this->id,
-            'name' => $this->name,
+            'primaryOccupation' => $this->primary_occupation,
+            'secondaryOccupation' => $this->secondary_occupation,
         ];
     }
 }

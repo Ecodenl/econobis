@@ -17,7 +17,7 @@ const QuotationRequestDetailsFormGeneralView = props => {
                 />
                 <ViewText
                     label={"Organisatie contactpersoon"}
-                    value={organisation.contactPerson ? organisation.contactPerson.person.fullName : 'Onbekend'}
+                    value={organisation.contact.contactPerson ? organisation.contact.contactPerson.contact.fullName : 'Onbekend'}
                 />
             </div>
 

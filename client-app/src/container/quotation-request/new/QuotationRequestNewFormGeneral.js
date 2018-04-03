@@ -29,7 +29,7 @@ class QuotationRequestNewFormGeneral extends Component {
                 opportunityId: '',
                 organisationId: '',
                 dateRecorded: '',
-                statusId: '',
+                statusId: '1',
                 dateReleased: '',
                 dateValid: '',
                 quotationText: '',
@@ -38,7 +38,7 @@ class QuotationRequestNewFormGeneral extends Component {
                 organisation: false,
                 status: false
             }
-        }
+        };
         this.handleInputChangeDate = this.handleInputChangeDate.bind(this);
     };
 
@@ -56,7 +56,7 @@ class QuotationRequestNewFormGeneral extends Component {
                     opportunityId: payload.id,
                     organisationId: '',
                     dateRecorded: '',
-                    statusId: '',
+                    statusId: '1',
                     dateReleased: '',
                     dateValid: '',
                     quotationText: payload.quotationText ? payload.quotationText : '',

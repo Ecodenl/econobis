@@ -13,12 +13,25 @@ use App\Helpers\RequestQuery\RequestFilter;
 
 class Filter extends RequestFilter
 {
-    protected $fields = [];
+    protected $fields = [
+        'name',
+        'status',
+          ];
 
-    protected $mapping = [];
+    protected $mapping = [
+        'name' => 'contact_groups.name',
+        'status' => 'contact_groups.closed',
+    ];
 
     protected $joins = [];
 
-    protected $defaultTypes = [];
+    protected $defaultTypes = [
+        '*' => 'ct',
+    ];
+
+    protected function applyAmountOfMembersFilter($query, $type, $data)
+    {
+
+    }
 
 }

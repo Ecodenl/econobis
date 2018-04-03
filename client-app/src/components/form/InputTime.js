@@ -37,7 +37,7 @@ InputTime.defaultProps = {
     size: 'col-sm-6',
     value: '',
     start: '08:00',
-    end: '21:00',
+    end: '23:00',
     step: 15
 };
 

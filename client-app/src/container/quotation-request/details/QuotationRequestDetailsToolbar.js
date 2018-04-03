@@ -27,10 +27,10 @@ class QuotationRequestDetailsToolbar extends Component {
 
     render() {
         const { opportunity = {} } = this.props.quotationRequestDetails;
-        const { measure = {}, contact = {}, intake = {} } = opportunity;
+        const { measure = {}, intake = {} } = opportunity;
 
         let measureName = measure.name || '';
-        let fullName = contact.fullName || '';
+        let fullName = (intake && intake.contact) ? intake.contact.fullName : '';
         let fullAddress = intake.fullAddress || '';
 
         return (

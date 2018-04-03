@@ -51,22 +51,61 @@ class AlfrescoHelper
             $lastname = $user->last_name;
         }
 
-        $url = \Config::get('app.ALFRESCO_URL') . '/alfresco/versions/1/people';
+        $exists = $this->checkIfAccountExists($user);
 
-        $args['id'] = $user->email;
-        $args['firstName'] = $user->first_name;
-        $args['lastName'] = $lastname;
-        $args['email'] = $user->email;
-        $args['password'] = $user->alfresco_password;
+        if (!$exists) {
+            $url = \Config::get('app.ALFRESCO_URL')
+                . '/alfresco/versions/1/people';
 
-        $this->executeCurl($url, $args);
+            $args['id'] = $user->email;
+            $args['firstName'] = $user->first_name;
+            $args['lastName'] = $lastname;
+            $args['email'] = $user->email;
+            $args['password'] = $user->alfresco_password;
+
+            $this->executeCurl($url, $args);
+        } else {
+            $valid = $this->checkIfValidAccount($user);
+            if(!$valid){
+                abort(424, 'Gebruiker bestaat al in Alfresco, maar het wachtwoord is verkeerd ingevuld.');
+            }
+        }
 
         $response = $this->assignUserToSite($user->email);
 
         return $response;
+    }
+
+    public function checkIfAccountExists(User $user){
+        $url = \Config::get('app.ALFRESCO_URL') . '/alfresco/versions/1/people/' . $user->email;
+
+        $response = $this->executeCurl($url, null, 'application/json', false, false);
+
+        $exists = true;
+
+        if($response === null){
+            $exists = false;
+        }
+
+        return $exists;
 
     }
 
+    public function checkIfValidAccount(User $user){
+        $url = \Config::get('app.ALFRESCO_URL') . '/authentication/versions/1/tickets';
+        $args['userId'] = $user->email;
+        $args['password'] = $user->alfresco_password;
+
+        $response = $this->executeCurl($url, $args, 'application/json', false, false);
+
+        $valid = true;
+
+        if($response === null){
+            $valid = false;
+        }
+
+        return $valid;
+    }
 
     public function assignUserToSite($alfresco_username){
 
@@ -124,14 +163,13 @@ class AlfrescoHelper
      *
      * @return array
      */
-    public function executeCurl($CURLOPT_URL, $CURLOPT_POSTFIELDS = null, $CURLOPT_HTTPHEADER_CONTENT_TYPE = 'application/json', $is_file = false){
+    public function executeCurl($CURLOPT_URL, $CURLOPT_POSTFIELDS = null, $CURLOPT_HTTPHEADER_CONTENT_TYPE = 'application/json', $is_file = false, $abort_on_error = true){
         $curl = curl_init();
 
         curl_setopt_array($curl, array(
             CURLOPT_SSL_VERIFYPEER => \Config::get('app.ALFRESCO_SSL_VERIFYPEER'),
             CURLOPT_SSL_VERIFYHOST => \Config::get('app.ALFRESCO_SSL_VERIFYHOST'),
             CURLOPT_PORT => "443",
-
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_ENCODING => "",
             CURLOPT_MAXREDIRS => 10,
@@ -190,9 +228,12 @@ class AlfrescoHelper
                 $decoded_response = json_decode($response, true);
 
                 //catch alfresco errors
-                if(array_key_exists('error', $decoded_response)){
-                    abort($decoded_response['error']['statusCode']);
-                }
+                    if (array_key_exists('error', $decoded_response)) {
+                        if($abort_on_error) {
+                            abort($decoded_response['error']['statusCode']);
+                        }
+                    }
+
                 //else success
                 else {
                     return [

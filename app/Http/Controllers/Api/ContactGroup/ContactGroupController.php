@@ -21,7 +21,14 @@ class ContactGroupController extends Controller
 {
     public function grid(RequestQuery $query)
     {
-        return GridContactGroup::collection($query->get());
+        $contactGroups = $query->get();
+
+        return GridContactGroup::collection($contactGroups)
+            ->additional([
+                'meta' => [
+                    'total' => $query->total(),
+                ]
+            ]);
     }
 
     public function peek()

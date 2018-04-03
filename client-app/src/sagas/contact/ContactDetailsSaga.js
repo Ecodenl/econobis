@@ -47,9 +47,9 @@ export function* deleteEmailAddressSaga({ id }) {
 export function* deleteContactNoteSaga({ id }) {
     try {
         yield call(ContactNoteAPI.deleteNote, id);
-        yield put({ type: 'DELETE_NOTE_SUCCESS', id });
+        yield put({ type: 'DELETE_CONTACT_NOTE_SUCCESS', id });
     } catch (error) {
-        yield put({ type: 'DELETE_NOTE_ERROR', error });
+        yield put({ type: 'DELETE_CONTACT_NOTE_ERROR', error });
     }
 }
 

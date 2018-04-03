@@ -64,7 +64,13 @@ class ProductionProjectDetailsFormValueCourseNew extends Component {
         if(validator.isEmpty(valueCourse.bookWorth)){
             errors.bookWorth = true;
             hasErrors = true;
+        }else{
+            valueCourse.bookWorth = valueCourse.bookWorth.replace(/,/g, '.');
         };
+
+        if(!validator.isEmpty(valueCourse.transferWorth)){
+            valueCourse.transferWorth = valueCourse.transferWorth.replace(/,/g, '.');
+        }
 
         this.setState({ ...this.state, errors: errors });
 

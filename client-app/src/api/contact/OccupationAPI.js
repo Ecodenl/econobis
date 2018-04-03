@@ -19,7 +19,7 @@ export default {
     },
 
     updateOccupation: (occupation) => {
-        const requestUrl = `${URL_OCCUPATION}/update`;
+        const requestUrl = `${URL_OCCUPATION}/${occupation.id}/update`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 

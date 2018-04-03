@@ -4,7 +4,7 @@ import { fetchAuditTrailSaga } from './audit-trail/AuditTrailSaga';
 import { fetchCampaignsSaga } from './campaign/CampaignsSaga';
 import { fetchCampaignSaga } from './campaign/CampaignDetailsSaga';
 import { fetchContactDetailsSaga, deleteAddressSaga, deletePhoneNumberSaga, deleteEmailAddressSaga, deleteContactNoteSaga, deleteContactEnergySupplierSaga } from './contact/ContactDetailsSaga';
-import { fetchContactGroupDetailsSaga, updateContactGroupDetailsSaga } from './contact-group/ContactGroupDetailsSaga';
+import { fetchContactGroupDetailsSaga } from './contact-group/ContactGroupDetailsSaga';
 import { fetchContactGroupsSaga, deleteContactGroupSaga, addContactToGroupSaga } from './contact-group/ContactGroupsSaga';
 import { fetchContactsInGroupSaga, deleteContactInGroupSaga } from './contact-group/ContactsInGroupSaga';
 import { fetchContactsSaga, deleteContactSaga } from './contact/ContactsSaga';
@@ -71,7 +71,7 @@ export default function* watchSagas() {
     yield takeLatest('DELETE_ADDRESS', deleteAddressSaga);
     yield takeLatest('DELETE_PHONE_NUMBER', deletePhoneNumberSaga);
     yield takeLatest('DELETE_EMAIL_ADDRESS', deleteEmailAddressSaga);
-    yield takeLatest('DELETE_NOTE', deleteContactNoteSaga);
+    yield takeLatest('DELETE_CONTACT_NOTE', deleteContactNoteSaga);
     yield takeLatest('DELETE_CONTACT_ENERGY_SUPPLIER', deleteContactEnergySupplierSaga);
     // Contact group
     yield takeLatest('FETCH_CONTACT_GROUPS', fetchContactGroupsSaga);

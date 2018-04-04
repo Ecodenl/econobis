@@ -204,7 +204,7 @@ class ParticipantsListApp extends Component {
             this.setState({
                 participantIds,
                 showModal: true,
-                modalText: 'Waarschuwing: deze participant heeft nog geen primair email adres.',
+                modalText: 'Waarschuwing: deze participant heeft nog geen primair e-mailadres.',
                 buttonConfirmText: 'Ok'
             });
         }
@@ -258,7 +258,7 @@ class ParticipantsListApp extends Component {
         if ((this.state.participantIds.length > 0 && !error) || participantIds.length > 0 && !error) {
             this.setState({
                 showModal: true,
-                modalText: 'De rapporten worden per participant gemaakt met de gekozen template en per email verzonden.',
+                modalText: 'De rapporten worden per participant gemaakt met het gekozen documenttemplate en per e-mail verzonden.',
                 buttonConfirmText: 'Maken',
                 readyForCreation: true
             });
@@ -317,7 +317,7 @@ class ParticipantsListApp extends Component {
                     <div className="row">
                         <div className="col-md-12">
                             <ViewText
-                                label="Document groep"
+                                label="Documentgroep"
                                 value={'Opbrengst'}
                             />
                             <InputSelect

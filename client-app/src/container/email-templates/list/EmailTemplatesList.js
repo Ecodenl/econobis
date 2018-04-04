@@ -21,7 +21,7 @@ const EmailTemplatesList = props => {
                     <DataTableBody>
                         {
                             props.emailTemplates.length === 0 ? (
-                                <tr><td colSpan={4}>Geen email templates gevonden!</td></tr>
+                                <tr><td colSpan={4}>Geen e-mail templates gevonden!</td></tr>
                             ) : (
                                 props.emailTemplates.map((template) => {
                                     return <EmailTemplatesItem

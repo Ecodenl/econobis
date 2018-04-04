@@ -22,7 +22,7 @@ const DocumentsListHead = (props) => {
             <DataTableHeadTitleAndSort sortColumn={'filename'} title={'Bestandsnaam'} width={'10%'} setSorts={setSorts} />
             <DataTableHeadTitleAndSort sortColumn={'contact'} title={'Contact'} width={'20%'} setSorts={setSorts} />
             <DataTableHeadTitleAndSort sortColumn={'documentType'} title={'Type'} width={'20%'} setSorts={setSorts} />
-            <DataTableHeadTitleAndSort sortColumn={'documentGroup'} title={'Document groep'} width={'10%'} setSorts={setSorts} />
+            <DataTableHeadTitleAndSort sortColumn={'documentGroup'} title={'Documentgroep'} width={'10%'} setSorts={setSorts} />
             <DataTableHeadTitle title={''} width={'6%'}/>
         </tr>
     );

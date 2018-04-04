@@ -57,7 +57,7 @@ class SidebarMenu extends Component {
                         <NavIcon><SvgIcon size={20} icon={drawer}/></NavIcon>
                         <NavText><Link className="sidebar-link">Projecten</Link></NavText>
                         <Nav id="productie-projecten">
-                            <NavText><Link className="sidebar-link" to="productie-projecten">Productie projecten</Link></NavText>
+                            <NavText><Link className="sidebar-link" to="productie-projecten">Productieprojecten</Link></NavText>
                         </Nav>
                     </Nav>
                     <Nav id="energy-saving">
@@ -73,8 +73,7 @@ class SidebarMenu extends Component {
                             <NavText><Link className="sidebar-link" to="kansen">Kansen</Link></NavText>
                         </Nav>
                         <Nav id="quotation-requests">
-                            <NavText><Link className="sidebar-link" to="offerteverzoeken">Offerte
-                                verzoeken</Link></NavText>
+                            <NavText><Link className="sidebar-link" to="offerteverzoeken">Offerteverzoeken</Link></NavText>
                         </Nav>
                         <Nav id="measures">
                             <NavText><Link className="sidebar-link" to="maatregelen">Maatregelen</Link></NavText>
@@ -89,7 +88,7 @@ class SidebarMenu extends Component {
                         <NavIcon><SvgIcon size={20} icon={ic_email}/></NavIcon>
                         <NavText><Link className="sidebar-link" to="emails/inbox">E-mail</Link></NavText>
                         <Nav id="inbox">
-                            <NavText><Link className="sidebar-link" to="emails/inbox">Inbox</Link></NavText>
+                            <NavText><Link className="sidebar-link" to="emails/inbox">Ontvangen</Link></NavText>
                         </Nav>
                         <Nav id="sent">
                             <NavText><Link className="sidebar-link" to="emails/sent">Verzonden</Link></NavText>
@@ -132,7 +131,7 @@ class SidebarMenu extends Component {
                         </Nav>
                         }
                         <Nav id="email-templates">
-                            <NavText><Link className="sidebar-link" to="email-templates">Email
+                            <NavText><Link className="sidebar-link" to="email-templates">E-mail
                                 templates</Link></NavText>
                         </Nav>
                         <Nav id="users">

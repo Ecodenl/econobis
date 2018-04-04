@@ -63,7 +63,7 @@ const TaskDetailsFormGeneralView = props => {
 
                 <div className="row">
                     <ViewText
-                        label={"Eind datum"}
+                        label={"Einddatum"}
                         value={datePlannedFinish && moment(datePlannedFinish.date).format('L')}
                     />
 
@@ -155,7 +155,7 @@ const TaskDetailsFormGeneralView = props => {
                                 link={housingFile ? 'woningdossier/' + housingFile.id : ''}
                             />
                             <ViewText
-                                label={"Productie project"}
+                                label={"Productieproject"}
                                 value={productionProject && productionProject.name}
                                 link={productionProject ? 'productie-project/' + productionProject.id : ''}
                             />
@@ -163,7 +163,7 @@ const TaskDetailsFormGeneralView = props => {
 
                         <div className="row">
                             <ViewText
-                                label={"Participant productie project"}
+                                label={"Participant productieproject"}
                                 value={participant && participant.name}
                                 link={participant ? 'productie-project/participant/' + participant.id : ''}
                             />

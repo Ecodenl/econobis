@@ -120,6 +120,7 @@ class TaskDetailsFormPropertyEdit extends Component {
                                     name={"value"}
                                     value={value}
                                     onChangeAction={this.props.handleInputChange}
+                                    required={"required"}
                                     error={this.state.errors.value}
                                 />
                             </div>

@@ -48,10 +48,10 @@ class GeneralSearchController
                 'relation_name' => 'Contact ',
                 'relation_redirect' => '/contact/'
             ],
-            'Email Adressen' => [
+            'E-mailadressen' => [
                 'model' => 'App\Eco\EmailAddress\EmailAddress',
                 'search_method' => 'String',
-                'search_fields' => ['Email' => 'email'],
+                'search_fields' => ['E-mail' => 'email'],
                 'relation_id' => 'contact_id',
                 'relation_name' => 'Contact ',
                 'relation_redirect' => '/contact/'

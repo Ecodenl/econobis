@@ -16,7 +16,7 @@ class TeamDetailsForm extends Component {
     render() {
         return (
             isEmpty(this.props.teamDetails) ?
-                <div>Geen gegevens gevonden!</div>
+                <div>Geen gegevens gevonden.</div>
                 :
                 <div>
                     <TeamDetailsFormGeneral />

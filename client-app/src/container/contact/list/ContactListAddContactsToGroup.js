@@ -76,7 +76,7 @@ class AddContactToGroup extends Component {
                                 />
                             </div>
                             :
-                            <div>Geen contacten geselecteerd</div>
+                            <div>Geen contacten geselecteerd.</div>
                     )
                 }
             </Modal>

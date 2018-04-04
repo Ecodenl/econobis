@@ -14,7 +14,7 @@ class HousingFileDetailsForm extends Component {
     render() {
         return (
             isEmpty(this.props.housingFileDetails) ?
-                <div>Geen gegevens gevonden!</div>
+                <div>Geen gegevens gevonden.</div>
                 :
                 <div>
                     <HousingFileDetailsFormGeneral />

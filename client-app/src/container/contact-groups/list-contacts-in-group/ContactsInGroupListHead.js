@@ -11,7 +11,7 @@ const ContactsInGroupListHead = (props) => {
             <DataTableHeadTitle RowClassName={'hidden-xs'} title={'Adres'} width={'12%'} />
             <DataTableHeadTitle RowClassName={'hidden-xs'} title={'Postcode'} width={'7%'} />
             <DataTableHeadTitle RowClassName={'hidden-xs'} title={'Plaats'} width={'10%'} />
-            <DataTableHeadTitle RowClassName={'hidden-xs'} title={'Email'} width={'12%'} />
+            <DataTableHeadTitle RowClassName={'hidden-xs'} title={'E-mail'} width={'12%'} />
             <DataTableHeadTitle sortColumn={'phoneNumber'} title={'Telefoon'} width={'7%'} />
             <DataTableHeadTitle RowClassName={'hidden-xs hidden-sm'} title={'Status'} width={'9%'} />
             <DataTableHeadTitle RowClassName={'hidden-xs hidden-sm'} title={'Gemaakt op'} width={'10%'} />

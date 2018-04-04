@@ -15,7 +15,7 @@ class UserDetailsForm extends Component {
     render() {
         return (
             isEmpty(this.props.userDetails) ?
-                <div>Geen gegevens gevonden!</div>
+                <div>Geen gegevens gevonden.</div>
                 :
                 <div>
                     <UserDetailsFormGeneral />

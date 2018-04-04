@@ -21,7 +21,7 @@ const ProductionProjectFormView = props => {
                     value={name}
                 />
                 <ViewText
-                    label={"Project code"}
+                    label={"Projectcode"}
                     value={code}
                 />
             </div>
@@ -107,7 +107,7 @@ const ProductionProjectFormView = props => {
                     value={warrantyOrigin ? warrantyOrigin : ''}
                 />
                 <ViewText
-                    label={"Ean Levering"}
+                    label={"EAN Levering"}
                     value={eanSupply ? eanSupply : ''}
                 />
             </div>

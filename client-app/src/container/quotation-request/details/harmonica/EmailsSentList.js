@@ -20,7 +20,7 @@ class EmailsSentList extends Component {
         return (
             <div>
                 {relatedEmailsSent == '' &&
-                <div>Geen e-mails gevonden</div>
+                <div>Geen e-mails gevonden.</div>
                 }
 
                 {relatedEmailsSent != '' &&

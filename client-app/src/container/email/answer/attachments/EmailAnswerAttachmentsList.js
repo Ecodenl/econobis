@@ -21,7 +21,7 @@ const EmailAnswerAttachmentsList = props => {
                         />;
                     })
                     :
-                    <div>Geen bijlages bekend</div>
+                    <div>Geen bijlages bekend.</div>
             }
         </div>
     );

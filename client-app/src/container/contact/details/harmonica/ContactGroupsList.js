@@ -60,7 +60,7 @@ class ContactGroupsList extends Component {
                 }
 
                 {groups == '' && !loading &&
-                <div>Geen groepen gevonden</div>
+                <div>Geen groepen gevonden.</div>
                 }
 
                 {groups != '' && !loading &&

@@ -16,7 +16,7 @@ class ProductionProjectDetailsForm extends Component {
 
         return (
             isEmpty(this.props.productionProject) ?
-                <div>Geen gegevens gevonden!</div>
+                <div>Geen gegevens gevonden.</div>
                 :
                 <div>
                     <ProductionProjectFormGeneral />

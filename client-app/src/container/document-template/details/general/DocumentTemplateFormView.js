@@ -27,11 +27,11 @@ const DocumentTemplateFormView = props => {
 
             <div className="row" onClick={props.switchToEdit}>
                 <ViewText
-                    label={"Document groep"}
+                    label={"Documentgroep"}
                     value={documentGroup ? documentGroup.name : ''}
                 />
                 <ViewText
-                    label={"Document type"}
+                    label={"Documenttype"}
                     value={documentTemplateType ? documentTemplateType.name : ''}
                 />
             </div>

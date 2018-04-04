@@ -86,7 +86,7 @@ class EmailsInListApp extends Component {
     };
 
     render() {
-        let folder = 'inbox';
+        let folder = 'ontvangen';
 
         if(this.props.params.folder == 'removed'){
             folder = 'verwijderd';

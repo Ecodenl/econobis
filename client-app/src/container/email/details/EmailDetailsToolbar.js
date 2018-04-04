@@ -43,7 +43,7 @@ const EmailDetailsToolbar = ({email, id, removeEmail}) => {
                             </div>
 
                         </div>
-                        <div className="col-md-4"><h4 className="text-center text-success margin-small"><strong>{ from ? 'Email van: ' + from : '' }</strong></h4></div>
+                        <div className="col-md-4"><h4 className="text-center text-success margin-small"><strong>{ from ? 'E-mail van: ' + from : '' }</strong></h4></div>
                         <div className="col-md-4" />
                     </PanelBody>
                 </Panel>

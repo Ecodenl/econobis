@@ -17,7 +17,7 @@ class EmailDetailsForm extends Component {
 
         return (
             isEmpty(this.props.email) ?
-                <div>Geen gegevens gevonden!</div>
+                <div>Geen gegevens gevonden.</div>
                 :
                 <div>
                     { this.props.email.folder === 'removed' &&

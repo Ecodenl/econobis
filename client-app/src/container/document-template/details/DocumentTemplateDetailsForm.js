@@ -14,7 +14,7 @@ class DocumentTemplateDetailsForm extends Component {
     render() {
         return (
             isEmpty(this.props.documentTemplate) ?
-                <div>Geen gegevens gevonden!</div>
+                <div>Geen gegevens gevonden.</div>
                 :
                 <div>
                     <DocumentTemplateFormGeneral />

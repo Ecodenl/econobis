@@ -39,7 +39,7 @@ class Forgot extends Component{
     render(){
 
         let error = this.state.err ;
-        let msg = (!error) ? 'We hebben je ge-e-maild met een wachtwoord reset link!' : 'Email bestaat niet.' ;
+        let msg = (!error) ? 'We hebben je ge-e-maild met een wachtwoord reset link!' : 'E-mail bestaat niet.' ;
         let name = (!error) ? 'alert alert-success' : 'alert alert-danger' ;
         return(
             <div>
@@ -54,7 +54,7 @@ class Forgot extends Component{
                                     </div>
                                     <form className="form-horizontal" role="form" method="POST" onSubmit={this.onSubmit.bind(this)}>
                                         <div className="form-group">
-                                            <label htmlFor="email" className="col-md-4 control-label">E-Mail Adres</label>
+                                            <label htmlFor="email" className="col-md-4 control-label">E-mailadres</label>
 
                                             <div className="col-md-6">
                                                 <input id="email" type="email" ref= "email" className="form-control" name="email"  onChange={this.onChange.bind(this)} required />

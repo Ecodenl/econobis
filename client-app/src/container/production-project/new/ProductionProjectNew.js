@@ -28,7 +28,7 @@ const ProductionProjectNew = props => {
                     error={props.errors.name}
                 />
                 <InputText
-                    label={"Project code"}
+                    label={"Projectcode"}
                     name={"code"}
                     value={code}
                     onChangeAction={props.handleInputChange}

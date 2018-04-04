@@ -9,8 +9,8 @@ const ContactDetailsFormOccupationsList = props => {
             <div className="row border header">
                 <div className="col-sm-3">Verbonden met</div>
                 <div className="col-sm-2">Verbinding</div>
-                <div className="col-sm-2">Begin datum</div>
-                <div className="col-sm-2">Eind datum</div>
+                <div className="col-sm-2">Begindatum</div>
+                <div className="col-sm-2">Einddatum</div>
                 <div className="col-sm-2"><span className="pull-right">Primair</span></div>
                 <div className="col-sm-1"></div>
             </div>
@@ -36,7 +36,7 @@ const ContactDetailsFormOccupationsList = props => {
             }
             {
                 props.primaryOccupations.length === 0 && props.occupations.length === 0 &&
-                <div>Geen verbindingen bekend</div>
+                <div>Geen verbindingen bekend.</div>
             }
         </div>
     );

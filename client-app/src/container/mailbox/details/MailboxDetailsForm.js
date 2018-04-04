@@ -16,7 +16,7 @@ class MailboxDetailsForm extends Component {
     render() {
         return (
             isEmpty(this.props.mailboxDetails) ?
-                <div>Geen gegevens gevonden!</div>
+                <div>Geen gegevens gevonden.</div>
                 :
                 <div>
                     {!this.props.mailboxDetails.valid &&

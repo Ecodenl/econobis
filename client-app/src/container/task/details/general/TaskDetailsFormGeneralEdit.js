@@ -333,7 +333,7 @@ class TaskDetailsFormGeneralEdit extends Component {
 
                 <div className="row">
                     <InputDate
-                        label="Eind datum"
+                        label="Einddatum"
                         size={"col-sm-6"}
                         name="datePlannedFinish"
                         value={datePlannedFinish}

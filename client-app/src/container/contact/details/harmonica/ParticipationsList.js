@@ -20,7 +20,7 @@ class Participationslist extends Component {
         return (
             <div>
                 {relatedParticipations == '' &&
-                <div>Geen participaties gevonden</div>
+                <div>Geen participaties gevonden.</div>
                 }
 
                 {relatedParticipations != '' &&

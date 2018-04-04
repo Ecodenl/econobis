@@ -47,7 +47,7 @@ const TransactionFormEdit = props => {
                                 error={props.errors.amount}
                             />
                             <InputText
-                                label={"Iban"}
+                                label={"IBAN"}
                                 id={"iban"}
                                 name={"iban"}
                                 value={iban ? iban : ''}

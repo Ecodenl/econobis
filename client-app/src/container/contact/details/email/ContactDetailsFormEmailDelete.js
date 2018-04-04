@@ -18,9 +18,9 @@ const ContactDetailsEmailDelete = (props) => {
             confirmAction={() => confirmAction()}
             title="Verwijderen"
       >
-            <p>Verwijder e-mail adres: <strong> {`${props.email}` } </strong></p>
+            <p>Verwijder e-mailadres: <strong> {`${props.email}` } </strong></p>
 
-            { props.primary && <p className={'text-danger'}><strong>Let op!</strong> Dit is een primair e-mail adres</p> }
+            { props.primary && <p className={'text-danger'}><strong>Let op!</strong> Dit is een primair e-mailadres</p> }
       </Modal>
     );
 };

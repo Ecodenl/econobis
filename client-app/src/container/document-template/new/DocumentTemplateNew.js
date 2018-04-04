@@ -28,7 +28,7 @@ const DocumentTemplateNew = props => {
 
             <div className="row">
                 <InputSelect
-                    label="Document groep"
+                    label="Documentgroep"
                     name={"documentGroupId"}
                     value={documentGroupId}
                     options={props.documentGroups}
@@ -37,7 +37,7 @@ const DocumentTemplateNew = props => {
                     error={props.errors.group}
                 />
                 <InputSelect
-                    label="Document type"
+                    label="Documenttype"
                     name={"documentTemplateTypeId"}
                     value={documentTemplateTypeId}
                     options={props.documentTemplateTypes}

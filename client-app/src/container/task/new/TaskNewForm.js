@@ -70,7 +70,7 @@ const TaskNewForm = props => {
 
             <div className="row">
                 <InputDate
-                    label="Eind datum"
+                    label="Einddatum"
                     size={"col-sm-6"}
                     name="datePlannedFinish"
                     value={datePlannedFinish}

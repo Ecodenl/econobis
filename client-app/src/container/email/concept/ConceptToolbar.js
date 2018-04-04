@@ -13,7 +13,7 @@ const ConceptNewToolbar = ({handleSubmit, loading, removeEmail}) => {
                 </div>
                 <div className="btn-group margin-small" role="group">
                     <ButtonText buttonText={"Opslaan" } onClickAction={(e) => {handleSubmit(e, true)}}/>
-                    <ButtonText buttonText={"Verstuur email"} onClickAction={handleSubmit} loading={loading} loadText={'Email verzenden'}/>
+                    <ButtonText buttonText={"Verstuur e-mail"} onClickAction={handleSubmit} loading={loading} loadText={'E-mail verzenden'}/>
                 </div>
 
                 <div className="btn-group margin-small margin-10-left" role="group">

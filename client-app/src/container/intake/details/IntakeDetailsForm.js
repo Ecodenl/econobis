@@ -15,7 +15,7 @@ class IntakeDetailsForm extends Component {
     render() {
         return (
             isEmpty(this.props.intakeDetails) ?
-                <div>Geen gegevens gevonden!</div>
+                <div>Geen gegevens gevonden.</div>
                 :
                 <div>
                     <IntakeDetailsFormGeneral />

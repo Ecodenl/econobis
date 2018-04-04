@@ -12,10 +12,10 @@ const EmailAnswerToolbar = ({handleSubmit, loading}) => {
                     <ButtonIcon iconName={"glyphicon-arrow-left"} onClickAction={browserHistory.goBack} />
                 </div>
                 <div className="btn-group margin-small" role="group">
-                    <ButtonText buttonText={"Verstuur email"} onClickAction={handleSubmit} loading={loading} loadText={'Email verzenden'}/>
+                    <ButtonText buttonText={"Verstuur e-mail"} onClickAction={handleSubmit} loading={loading} loadText={'E-mail verzenden'}/>
                 </div>
             </div>
-            <div className="col-md-4"><h4 className="text-center margin-small">Email versturen</h4></div>
+            <div className="col-md-4"><h4 className="text-center margin-small">E-mail versturen</h4></div>
             <div className="col-md-4" />
         </div>
     );

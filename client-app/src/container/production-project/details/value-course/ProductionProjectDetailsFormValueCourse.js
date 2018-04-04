@@ -26,7 +26,7 @@ class ProductionProjectDetailsFormValueCourse extends Component {
         return (
             <Panel>
                 <PanelHeader>
-                    <span className="h5 text-bold">Waarde verloop participaties</span>
+                    <span className="h5 text-bold">Waardeverloop participaties</span>
                     {this.props.permissions.manageFinancial &&
                         <a role="button" className="pull-right" onClick={this.toggleShowNew}><span className="glyphicon glyphicon-plus"/></a>
                     }

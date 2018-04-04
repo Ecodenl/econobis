@@ -21,7 +21,7 @@ const ProductionProjectDetailsDelete = (props) => {
             confirmAction={() => confirmAction()}
             title="Verwijderen"
       >
-            <p>Weet u zeker dat u dit productie project wilt verwijderen?</p>
+            <p>Weet u zeker dat u dit productieproject wilt verwijderen?</p>
       </Modal>
     );
 };

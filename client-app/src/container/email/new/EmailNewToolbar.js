@@ -13,7 +13,7 @@ const EmailNewToolbar = ({handleSubmit, loading}) => {
                 </div>
                 <div className="btn-group margin-small" role="group">
                     <ButtonText buttonText={"Opslaan als concept"} onClickAction={(e) => {handleSubmit(e, true)}}/>
-                    <ButtonText buttonText={"Verstuur e-mail"} onClickAction={handleSubmit} loading={loading} loadText={'Email verzenden'}/>
+                    <ButtonText buttonText={"Verstuur e-mail"} onClickAction={handleSubmit} loading={loading} loadText={'E-mail verzenden'}/>
                 </div>
             </div>
             <div className="col-md-4"><h4 className="text-center margin-small">Nieuwe e-mail</h4></div>

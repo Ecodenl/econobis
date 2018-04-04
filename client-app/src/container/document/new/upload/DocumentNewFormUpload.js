@@ -43,7 +43,7 @@ class DocumentNewFormUpload extends Component {
                 </div>
                 <div className="row">
                     <InputSelect
-                        label="Document groep"
+                        label="Documentgroep"
                         name={"documentGroup"}
                         value={documentGroup}
                         options={documentGroups}

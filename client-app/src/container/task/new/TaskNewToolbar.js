@@ -5,7 +5,11 @@ import ButtonIcon from '../../../components/button/ButtonIcon';
 import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
 
-const TaskNewToolbar = () => {
+const TaskNewToolbar = props => {
+    const {
+        finished,
+    } = props;
+
     return (
         <div className="row">
             <div className="col-sm-12">
@@ -16,7 +20,7 @@ const TaskNewToolbar = () => {
                                 <ButtonIcon iconName={"glyphicon-arrow-left"} onClickAction={browserHistory.goBack} />
                             </div>
                         </div>
-                        <div className="col-md-4"><h3 className="text-center table-title margin-small">Nieuwe taak</h3></div>
+                        <div className="col-md-4"><h3 className="text-center table-title margin-small">{finished ? 'Nieuwe notitie' : 'Nieuwe taak'}</h3></div>
                         <div className="col-md-4" />
                     </PanelBody>
                 </Panel>

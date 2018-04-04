@@ -123,6 +123,10 @@ class ContactDetailsHarmonica extends Component {
         hashHistory.push(`/taak/nieuw/contact/${this.props.contactDetails.id}`);
     };
 
+    newNote = () => {
+        hashHistory.push(`/taak/nieuw/afgehandeld/contact/${this.props.contactDetails.id}`);
+    };
+
     newParticipation = () => {
         hashHistory.push(`/productie-project/participant/nieuw/contact/${this.props.contactDetails.id}`);
     };
@@ -181,7 +185,7 @@ class ContactDetailsHarmonica extends Component {
                     toggleShowList={() => this.toggleShowList('notes')}
                     showNotesList={this.state.toggleShowList.notes}
                     noteCount={this.props.contactDetails.noteCount}
-                    newTask={this.newTask}
+                    newNote={this.newNote}
                 />
 
                 <ParticipationHarmonica

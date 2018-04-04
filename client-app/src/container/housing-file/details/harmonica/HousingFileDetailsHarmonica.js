@@ -25,6 +25,10 @@ class HousingFileDetailsHarmonica extends Component {
         hashHistory.push(`/taak/nieuw/woningdossier/${this.props.id}`);
     };
 
+    newNote() {
+        hashHistory.push(`/taak/nieuw/afgehandeld/woningdossier/${this.props.id}`);
+    };
+
     newDocument(type) {
         hashHistory.push(`/document/nieuw/${type}/woningdossier/${this.props.id}`);
     };
@@ -45,7 +49,7 @@ class HousingFileDetailsHarmonica extends Component {
                 <NoteHarmonica
                     toggleShowList={() => this.toggleShowList('notes')}
                     showNotesList={this.state.toggleShowList.notes}
-                    newTask={this.newTask}
+                    newNote={this.newNote}
                     noteCount={this.props.housingFileDetails.noteCount}
                 />
                 <DocumentHarmonica

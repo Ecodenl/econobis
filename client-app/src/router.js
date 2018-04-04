@@ -195,7 +195,9 @@ const Routes = () => {
                 <Route path="productie-project/participant/nieuw/contact/:contactId" component={ParticipantNewApp} />
                 <Route path="productie-project/participant/:id" component={ParticipantDetailsApp} />
                 /* Task / notes */
-                <Route path="taak/nieuw" component={TaskNewApp} />
+                <Route path="taak/nieuw/" component={TaskNewApp} />
+                <Route path="taak/nieuw/:closed" component={TaskNewApp} />
+                <Route path="taak/nieuw/:closed/:type/:id" component={TaskNewApp} />
                 <Route path="taak/:id" component={TaskDetailsApp} />
                 <Route path="taak/nieuw/:type/:id" component={TaskNewApp} />
                 <Route path="taak/nieuw/contact/:contactId/productie-project/:productionProjectId/participant/:participantId" component={TaskNewApp} />

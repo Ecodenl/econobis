@@ -11,10 +11,9 @@ const InputToggle = props => {
             <div className={`${size}`}>
                 <Toggle
                     id={id}
-                    defaultChecked={value}
                     name={name}
-                    value={value.toString()}
                     onChange={onChangeAction}
+                    checked={value}
                 />
             </div>
         </div>

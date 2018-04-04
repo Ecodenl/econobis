@@ -97,6 +97,9 @@ class SidebarMenu extends Component {
                         <Nav id="concepts">
                             <NavText><Link className="sidebar-link" to="emails/concept">Concepten</Link></NavText>
                         </Nav>
+                        <Nav id="removed">
+                            <NavText><Link className="sidebar-link" to="emails/removed">Verwijderd</Link></NavText>
+                        </Nav>
                     </Nav>
                     <Nav id="marketing">
                         <NavIcon><SvgIcon size={20} icon={speech_bubbles}/></NavIcon>

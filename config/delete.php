@@ -21,6 +21,12 @@ return [
             ['dissociate' => ['relation' => 'tasks', 'foreign_key' => 'contact_group_id']]],
     ],
 
+    'Email' => [
+        'soft_delete' => false,
+        'relations' =>
+            [['remove_attachments' => ['disk' => 'mail_attachments']]],
+    ],
+
     'Task' => [
         'soft_delete' => true,
         'relations' =>

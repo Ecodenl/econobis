@@ -8,7 +8,7 @@ import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
 import EmailAPI from '../../../api/email/EmailAPI';
 import EmailAddressAPI from '../../../api/contact/EmailAddressAPI';
-import {hashHistory} from "react-router";
+import {browserHistory, hashHistory} from "react-router";
 
 class ConceptApp extends Component {
     constructor(props) {
@@ -41,6 +41,7 @@ class ConceptApp extends Component {
         this.addAttachment = this.addAttachment.bind(this);
         this.deleteAttachment = this.deleteAttachment.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.removeEmail = this.removeEmail.bind(this);
     };
 
     componentDidMount() {
@@ -235,6 +236,12 @@ class ConceptApp extends Component {
         }
     };
 
+    removeEmail(){
+        EmailAPI.deleteEmail(this.props.params.id).then(() => {
+            browserHistory.goBack();
+        });
+    }
+
     render() {
         return (
             <div className="row">
@@ -242,7 +249,11 @@ class ConceptApp extends Component {
                     <div className="col-md-12 margin-10-top">
                         <Panel>
                             <PanelBody className="panel-small">
-                                <ConceptToolbar loading={this.state.buttonLoading} handleSubmit={this.handleSubmit}/>
+                                <ConceptToolbar
+                                    loading={this.state.buttonLoading}
+                                    handleSubmit={this.handleSubmit}
+                                    removeEmail={this.removeEmail}
+                                />
                             </PanelBody>
                         </Panel>
                     </div>

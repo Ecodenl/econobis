@@ -10,7 +10,7 @@ return [
         'relations' =>
             [['remove_pivots' => 'measureCategories'],
             ['remove_pivots' => 'organisations'],
-            ['remove_pivots' => 'responses']],
+            ['remove' => 'responses']],
     ],
 
     'ContactGroup' => [

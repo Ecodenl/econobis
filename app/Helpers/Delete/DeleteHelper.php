@@ -101,8 +101,15 @@ class DeleteHelper
     }
 
     private static function remove(Model $model, $relationInfo){
-        if($model->$relationInfo) {
-            $model->$relationInfo->forceDelete();
+        if($model->$relationInfo instanceof Collection){
+            foreach ($model->$relationInfo as $relatedModel){
+                $relatedModel->forceDelete();
+            }
+        }
+        else{
+            if($model->$relationInfo) {
+                $model->$relationInfo->forceDelete();
+            }
         }
     }
 

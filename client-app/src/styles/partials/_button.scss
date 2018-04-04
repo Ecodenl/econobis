@@ -14,6 +14,9 @@
   padding: 1px 5px;
 }
 
+.btn-loading {
+  cursor: not-allowed;
+}
 .glyphicon-refresh-animate {
   animation: spin 1s infinite linear;
   -webkit-animation: spin2 1s infinite linear;

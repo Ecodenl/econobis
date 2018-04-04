@@ -18,6 +18,7 @@ class ContactNewFormOrganisation extends Component {
         super(props);
 
         this.state = {
+            buttonLoading: false,
             organisation: {
                 id: '',
                 number: '',
@@ -97,10 +98,18 @@ class ContactNewFormOrganisation extends Component {
 
         this.setState({ ...this.state, errors: errors })
 
-        !hasErrors &&
-        OrganisationAPI.newOrganisation(organisation).then((payload) => {
+        // If no errors send form
+        if (!hasErrors) {
+            if(this.state.buttonLoading){
+                return false;
+            }
+            this.setState({
+                buttonLoading: true
+            });
+            OrganisationAPI.newOrganisation(organisation).then((payload) => {
                 hashHistory.push(`/contact/${payload.id}`);
             });
+        }
     };
 
     render() {
@@ -238,7 +247,7 @@ class ContactNewFormOrganisation extends Component {
                 </div>
                 <PanelFooter>
                     <div className="pull-right btn-group" role="group">
-                        <ButtonText buttonText={"Opslaan"} onClickAction={this.handleSubmit}/>
+                        <ButtonText loading={this.state.buttonLoading} loadText={"Organisatie wordt aangemaakt."} buttonText={"Opslaan"} onClickAction={this.handleSubmit}/>
                     </div>
                 </PanelFooter>
             </form>

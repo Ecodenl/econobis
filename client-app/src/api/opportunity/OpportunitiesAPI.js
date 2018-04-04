@@ -4,13 +4,15 @@ const URL_API = process.env.URL_API;
 const URL_OPPORTUNITY = `${URL_API}/api/opportunity`;
 
 export default {
-    fetchOpportunities: ({pagination}) => {
+    fetchOpportunities: ({ filters, sorts, pagination }) => {
         const requestUrl = `${URL_OPPORTUNITY}/grid`;
         const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
         axios.defaults.headers.common.Authorization = AUTH_TOKEN;
 
         return axios.get(requestUrl, {
             params: {
+                filters: JSON.stringify(filters),
+                sorts: JSON.stringify(sorts),
                 limit: pagination.limit,
                 offset: pagination.offset,
             },

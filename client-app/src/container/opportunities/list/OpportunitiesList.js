@@ -1,14 +1,14 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
 
 import DataTable from '../../../components/dataTable/DataTable';
 import DataTableHead from '../../../components/dataTable/DataTableHead';
 import DataTableBody from '../../../components/dataTable/DataTableBody';
-import DataTableHeadTitle from '../../../components/dataTable/DataTableHeadTitle';
 
 import OpportunitiesListItem from './OpportunitiesListItem';
 import OpportunityDeleteItem from './OpportunityDeleteItem';
 import DataTablePagination from "../../../components/dataTable/DataTablePagination";
+import OpportunitiesListHead from "./OpportunitiesListHead";
+import OpportunitiesListFilter from "./OpportunitiesListFilter";
 
 class OpportunitiesList extends Component {
     constructor(props){
@@ -22,8 +22,14 @@ class OpportunitiesList extends Component {
                 measureCategoryName: ''
             }
         };
-
     }
+
+    // On key Enter filter form will submit
+    handleKeyUp = (e) => {
+        if (e.keyCode === 13) {
+            this.props.onSubmitFilter();
+        }
+    };
 
     showDeleteItemModal = (id, contactName, measureCategoryName) => {
         this.setState({
@@ -56,25 +62,26 @@ class OpportunitiesList extends Component {
 
         return (
         <div>
+            <form onKeyUp={this.handleKeyUp}>
             <DataTable>
                 <DataTableHead>
-                    <tr className="thead-title-quaternary">
-                        { (this.props.showCheckboxList ? <th width="3%"><input type="checkbox" value={ this.props.checkedAllCheckboxes } onChange={this.props.selectAllCheckboxes} /></th> : null) }
-                        <DataTableHeadTitle title={'Nummer'} width={'10%'}/>
-                        <DataTableHeadTitle title={'Datum'} width={'20%'}/>
-                        <DataTableHeadTitle title={'Naam'} width={'20%'}/>
-                        <DataTableHeadTitle title={'Maatregel categorie'} width={'17%'}/>
-                        <DataTableHeadTitle title={'Campagne'} width={'10%'}/>
-                        <DataTableHeadTitle title={'Status'} width={'10%'}/>
-                        <DataTableHeadTitle title={'Aantal offertes'} width={'7%'}/>
-                        <DataTableHeadTitle title={''} width={'6%'}/>
-                    </tr>
+                    <OpportunitiesListHead
+                        fetchOpportunitiesData={() => this.props.fetchOpportunitiesData()}
+                    />
+
+                    <OpportunitiesListFilter
+                        onSubmitFilter={this.props.onSubmitFilter}
+                        showCheckboxList={this.props.showCheckboxList}
+                        checkedAllCheckboxes={this.props.checkedAllCheckboxes}
+                        selectAllCheckboxes={this.props.selectAllCheckboxes}
+                    />
+
                 </DataTableHead>
                 <DataTableBody>
                     {
                         data.length === 0 ? (
                             <tr>
-                                <td colSpan={9}>Geen kansen gevonden!</td>
+                                <td colSpan={8}>Geen kansen gevonden!</td>
                             </tr>
                         ) : (
                             data.map(opportunities => (
@@ -105,17 +112,11 @@ class OpportunitiesList extends Component {
                     {...this.state.deleteItem}
                 />
             }
+            </form>
         </div>
         )
     }
 }
 
-const mapStateToProps = (state) => {
-    return {
-        opportunities: state.opportunities.list,
-        opportunitiesPagination: state.opportunities.pagination,
-    };
-};
-
-export default connect(mapStateToProps, null)(OpportunitiesList);
+export default OpportunitiesList;
 

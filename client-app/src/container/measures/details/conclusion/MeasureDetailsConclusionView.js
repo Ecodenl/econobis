@@ -14,10 +14,12 @@ const MeasureDetailsConclusionView = props => {
                 <ViewText
                     label={"Gemaakt door"}
                     value={createdBy ? createdBy.fullName : 'Onbekend'}
+                    link={createdBy ? 'gebruiker/' + createdBy.id : ''}
                 />
                 <ViewText
-                    label={"Laatste gewijzigd door"}
+                    label={"Laatste update door"}
                     value={updatedBy ? updatedBy.fullName : 'Onbekend'}
+                    link={updatedBy ? 'gebruiker/' + updatedBy.id : ''}
                 />
             </div>
             <div className="row">
@@ -26,7 +28,7 @@ const MeasureDetailsConclusionView = props => {
                     value={createdAt ? moment(createdAt.date).format('L') : 'Onbekend'}
                 />
                 <ViewText
-                    label={"Laatste gewijzigd op"}
+                    label={"Laatste update op"}
                     value={updatedAt ? moment(updatedAt.date).format('L') : 'Onbekend'}
                 />
             </div>

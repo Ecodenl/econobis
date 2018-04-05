@@ -13,12 +13,14 @@ import EmailTemplateAPI from '../../../api/email-template/EmailTemplateAPI';
 import {isEqual} from "lodash";
 import {connect} from "react-redux";
 import DocumentDetailsAPI from "../../../api/document/DocumentDetailsAPI";
+import Modal from "../../../components/modal/Modal";
 
 class EmailNewApp extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
+            showModal: false,
             buttonLoading: false,
             emailAddresses: [],
             mailboxAddresses: [],
@@ -229,6 +231,21 @@ class EmailNewApp extends Component {
         });
     };
 
+    goBack = () => {
+       if(this.state.email.htmlBody !== '' || this.state.email.subject !== ''){
+           this.toggleShowModal();
+       }
+       else {
+           browserHistory.goBack();
+       }
+    };
+
+    toggleShowModal = () => {
+        this.setState({
+            showModal: !this.state.showModal,
+        });
+    };
+
     handleSubmit(event, concept = false) {
         event.preventDefault();
 
@@ -300,7 +317,7 @@ class EmailNewApp extends Component {
                     <div className="col-md-12">
                         <Panel>
                             <PanelBody className="panel-small">
-                                <EmailNewToolbar loading={this.state.buttonLoading} handleSubmit={this.handleSubmit}/>
+                                <EmailNewToolbar loading={this.state.buttonLoading} handleSubmit={this.handleSubmit} goBack={this.goBack}/>
                             </PanelBody>
                         </Panel>
                     </div>
@@ -327,6 +344,18 @@ class EmailNewApp extends Component {
                     </div>
                 </div>
                 <div className="col-md-3"/>
+
+                {this.state.showModal &&
+                <Modal
+                    buttonConfirmText="Verlaten"
+                    closeModal={this.toggleShowModal}
+                    confirmAction={browserHistory.goBack}
+                    title="Bevestigen"
+                >
+                    <p>Weet u zeker dat u deze pagina wilt verlaten zonder deze e-mail op te slaan als concept?</p>
+                </Modal>
+                }
+
             </div>
         )
     }

@@ -16,7 +16,7 @@ const EmailTemplatesListToolbar = props => {
                     <ButtonIcon iconName={"glyphicon-plus"} onClickAction={newEmailTemplate} />
                 </div>
             </div>
-            <div className="col-md-4"><h3 className="text-center table-title">Email templates</h3></div>
+            <div className="col-md-4"><h3 className="text-center table-title">E-mail templates</h3></div>
             <div className="col-md-4" />
         </div>
     );

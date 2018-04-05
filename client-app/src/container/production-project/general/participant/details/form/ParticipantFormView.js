@@ -31,7 +31,7 @@ const ParticipantFormView = props => {
                     value={productionProject ? productionProject.name : ''}
                 />
                 <ViewText
-                    label={"Inschrijf datum"}
+                    label={"Inschrijfdatum"}
                     value={dateRegister ? moment(dateRegister).format('L') : ''}
                 />
             </div>
@@ -49,7 +49,7 @@ const ParticipantFormView = props => {
 
             <div className="row" onClick={props.switchToEdit}>
                 <ViewText
-                    label={"Participaties verkocht"}
+                    label={"Participaties overgedragen"}
                     value={participationsSold ? participationsSold : ''}
                 />
                 <ViewText
@@ -97,7 +97,7 @@ const ParticipantFormView = props => {
                     value={didAcceptAgreement ? 'Ja' : 'Nee'}
                 />
                 <ViewText
-                    label={"IBAN tnv"}
+                    label={"IBAN t.n.v."}
                     value={ibanAttn ? ibanAttn : ''}
                 />
             </div>
@@ -119,7 +119,7 @@ const ParticipantFormView = props => {
                     value={legalRepContact ? legalRepContact.fullName : ''}
                 />
                 <ViewText
-                    label={"IBAN uitkeren tnv"}
+                    label={"IBAN uitkeren t.n.v."}
                     value={ibanPayoutAttn ? ibanPayoutAttn : ''}
                 />
             </div>

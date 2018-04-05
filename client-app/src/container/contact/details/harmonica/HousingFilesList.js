@@ -36,7 +36,7 @@ class HousingFileList extends Component {
                 }
 
                 {housingFiles == '' && !loading &&
-                <div>Geen woningdossiers bekend</div>
+                <div>Geen woningdossiers bekend.</div>
                 }
 
                 {housingFiles != '' && !loading &&

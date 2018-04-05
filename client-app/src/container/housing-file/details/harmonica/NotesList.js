@@ -12,7 +12,7 @@ const NotesList = ({relatedNotes}) => {
         <div>
             {
                 relatedNotes == '' &&
-                <div>Geen notities gevonden</div>
+                <div>Geen notities gevonden.</div>
             }
 
             {

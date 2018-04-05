@@ -38,7 +38,7 @@ UploadModal.defaultProps = {
     errors: {},
     maxSize: 2000000,
     multiple: true,
-    title: 'Upload file'
+    title: 'Upload bestand'
 };
 
 UploadModal.propTypes = {

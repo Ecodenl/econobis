@@ -18,7 +18,7 @@ const ProductionProjectDetailsFormValueCourseDelete = (props) => {
             confirmAction={() => confirmAction()}
             title="Verwijderen"
       >
-            <p>Verwijder waarde verloop</p>
+            <p>Verwijder waardeverloop</p>
 
       </Modal>
     );

@@ -13,7 +13,7 @@ class DocumentDetailsForm extends Component {
     render() {
         return (
             isEmpty(this.props.documentDetails) ?
-                <div>Geen gegevens gevonden!</div>
+                <div>Geen gegevens gevonden.</div>
                 :
                 <div>
                     <DocumentFormGeneral />

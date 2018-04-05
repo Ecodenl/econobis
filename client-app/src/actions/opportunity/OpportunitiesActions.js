@@ -1,7 +1,9 @@
-export const fetchOpportunities = (pagination) => {
+export const fetchOpportunities = (filters, sorts, pagination) => {
     return {
         type: 'FETCH_OPPORTUNITIES',
-        pagination
+        filters,
+        sorts,
+        pagination,
     };
 };
 

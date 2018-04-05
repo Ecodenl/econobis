@@ -41,7 +41,7 @@ export const fetchRevenue = (id) => {
 
 export const clearRevenue = () => {
     return {
-        type: 'FETCH_PRODUCTION_PROJECT_REVENUE'
+        type: 'CLEAR_PRODUCTION_PROJECT_REVENUE'
     };
 };
 

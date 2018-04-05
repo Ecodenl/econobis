@@ -1,22 +1,25 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 
 import { fetchOpportunities, clearOpportunities, setCheckedOpportunityAll } from '../../../actions/opportunity/OpportunitiesActions';
 import { setOpportunitiesPagination } from '../../../actions/opportunity/OpportunitiesPaginationActions';
+import { clearFilterOpportunity } from '../../../actions/opportunity/OpportunitiesFiltersActions';
 import OpportunitiesListToolbar from './OpportunitiesListToolbar';
 import OpportunitiesList from './OpportunitiesList';
+import filterHelper from "../../../helpers/FilterHelper";
 
 class OpportunitiesListApp extends Component {
     constructor(props){
         super(props);
 
         this.state = {
-            opportunities: [],
             showCheckboxList: false,
             checkedAllCheckboxes: false,
         };
 
         this.fetchOpportunitiesData = this.fetchOpportunitiesData.bind(this);
+        this.resetOpportunitiesFilters = this.resetOpportunitiesFilters.bind(this);
         this.handlePageClick = this.handlePageClick.bind(this);
     }
 
@@ -30,10 +33,26 @@ class OpportunitiesListApp extends Component {
 
     fetchOpportunitiesData() {
         setTimeout(() => {
+            const filters = filterHelper(this.props.opportunitiesFilters);
+            const sorts = this.props.opportunitiesSorts.reverse();
             const pagination = { limit: 20, offset: this.props.opportunitiesPagination.offset };
 
-            this.props.fetchOpportunities(pagination);
+            this.props.fetchOpportunities(filters, sorts, pagination);
         },100 );
+    };
+
+    resetOpportunitiesFilters() {
+        this.props.clearFilterOpportunity();
+
+        this.fetchOpportunitiesData();
+    };
+
+    onSubmitFilter() {
+        this.props.clearOpportunities();
+
+        this.props.setOpportunitiesPagination({page: 0, offset: 0});
+
+        this.fetchOpportunitiesData();
     };
 
     handlePageClick(data) {
@@ -66,7 +85,10 @@ class OpportunitiesListApp extends Component {
                 <div className="panel panel-default">
                     <div className="panel-body">
                         <div className="col-md-12 margin-10-top">
-                            <OpportunitiesListToolbar toggleShowCheckboxList={() => this.toggleShowCheckboxList()}/>
+                            <OpportunitiesListToolbar
+                                toggleShowCheckboxList={() => this.toggleShowCheckboxList()}
+                                resetOpportunitiesFilters={() => this.resetOpportunitiesFilters()}
+                            />
                         </div>
                         <div className="col-md-12 margin-10-top">
                             <OpportunitiesList
@@ -75,6 +97,9 @@ class OpportunitiesListApp extends Component {
                                 showCheckboxList={this.state.showCheckboxList}
                                 selectAllCheckboxes={() => this.selectAllCheckboxes()}
                                 checkedAllCheckboxes={this.state.checkedAllCheckboxes}
+                                onSubmitFilter={() => this.onSubmitFilter()}
+                                opportunitiesPagination={this.props.opportunitiesPagination}
+                                opportunities={this.props.opportunities}
                             />
                         </div>
                     </div>
@@ -86,22 +111,15 @@ class OpportunitiesListApp extends Component {
 
 const mapStateToProps = (state) => {
     return {
+        opportunities: state.opportunities.list,
+        opportunitiesFilters: state.opportunities.filters,
+        opportunitiesSorts: state.opportunities.sorts,
         opportunitiesPagination: state.opportunities.pagination,
     };
 };
 
-const mapDispatchToProps = dispatch => ({
-    fetchOpportunities: (pagination) => {
-        dispatch(fetchOpportunities(pagination));
-    },
-    clearOpportunities: () => {
-        dispatch(clearOpportunities());
-    },
-    setOpportunitiesPagination: (pagination) => {
-        dispatch(setOpportunitiesPagination(pagination));
-    },
-    setCheckedOpportunityAll: (checkValue) => {
-        dispatch(setCheckedOpportunityAll(checkValue));
-    },
-});
+const mapDispatchToProps = (dispatch) => {
+    return bindActionCreators({ fetchOpportunities, clearOpportunities, setOpportunitiesPagination, setCheckedOpportunityAll, clearFilterOpportunity }, dispatch);
+};
+
 export default connect(mapStateToProps, mapDispatchToProps)(OpportunitiesListApp);

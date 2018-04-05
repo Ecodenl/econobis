@@ -162,7 +162,7 @@ class DocumentTemplateFormEdit extends Component {
 
                 <div className="row">
                     <InputSelect
-                        label="Document groep"
+                        label="Documentgroep"
                         name={"documentGroupId"}
                         value={documentGroupId}
                         options={this.props.documentGroups}
@@ -171,7 +171,7 @@ class DocumentTemplateFormEdit extends Component {
                         error={this.state.errors.group}
                     />
                     <ViewText
-                        label={"Document type"}
+                        label={"Documenttype"}
                         value={documentTemplateType ? documentTemplateType.name : ''}
                     />
                 </div>

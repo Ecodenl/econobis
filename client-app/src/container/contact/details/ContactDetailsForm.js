@@ -37,7 +37,7 @@ class ContactDetailsForm extends Component {
 
         return (
             isEmpty(this.props.contactDetails) ?
-                <div>Geen gegevens gevonden!</div>
+                <div>Geen gegevens gevonden.</div>
                 :
                 <div>
                     { deletedAt &&

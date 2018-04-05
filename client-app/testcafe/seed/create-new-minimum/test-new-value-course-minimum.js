@@ -29,27 +29,27 @@ test('Fill out form new production project', async (t) => {
         .click(Selector('button').withExactText('Opslaan'))
         .wait(constants.wait);
 
-    await t.expect(Selector('h4').innerText).eql('Productie project ' + randomName, 'Check element text', { timeout: 500 });
+    await t.expect(Selector('h4').innerText).eql('Productieproject ' + randomName, 'Check element text', { timeout: 500 });
 
     await t
         .click(Selector('button').withExactText('Open detailformulier'))
         .wait(constants.wait);
 
     await t
-        .click(Selector('span').withExactText('Waarde verloop participaties').parent().child('a'))
+        .click(Selector('span').withExactText('Waardeverloop participaties').parent().child('a'))
         .typeText(Selector('.DayPickerInput').nth(0).child('input'), '11-03-2018')
         .typeText('input[name="bookWorth"]', randomInt)
         .click(Selector('button').withExactText('Opslaan'))
         .wait(constants.wait);
 
     await t
-        .click(Selector('span').withExactText('Waarde verloop participaties').parent().child('a'))
+        .click(Selector('span').withExactText('Waardeverloop participaties').parent().child('a'))
         .typeText(Selector('.DayPickerInput').nth(0).child('input'), '11-03-2018')
         .typeText('input[name="bookWorth"]', randomInt2)
         .click(Selector('button').withExactText('Opslaan'))
         .wait(constants.wait);
 
-    const rows = Selector('span').withExactText('Waarde verloop participaties').parent().parent().child().nth(1).child().child().child();
+    const rows = Selector('span').withExactText('Waardeverloop participaties').parent().parent().child().nth(1).child().child().child();
 
     //Header + 2 rows
     await t.expect(rows.count).eql(3);

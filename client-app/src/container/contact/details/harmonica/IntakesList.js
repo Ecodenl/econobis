@@ -36,7 +36,7 @@ class IntakesList extends Component {
                 }
 
                 {intakes == '' && !loading &&
-                <div>Geen intakes bekend</div>
+                <div>Geen intakes bekend.</div>
                 }
 
                 {intakes != '' && !loading &&

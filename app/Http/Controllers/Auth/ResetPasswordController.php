@@ -71,7 +71,7 @@ class ResetPasswordController extends Controller
         $this->validate($request, $this->rules(), $this->validationErrorMessages());
 
         if(User::where('email', $request->input('email'))->count() === 0){
-            abort(404, 'Email niet gevonden.');
+            abort(404, 'E-mail niet gevonden.');
         }
 
         // Here we will attempt to reset the user's password. If it is successful we

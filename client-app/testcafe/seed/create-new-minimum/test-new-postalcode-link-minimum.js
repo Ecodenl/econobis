@@ -15,7 +15,7 @@ test('Fill out form postalcode link minimum', async (t) => {
         .navigateTo(constants.app_url + '#/postcoderoos')
         .wait(constants.wait);
 
-    await t.expect(Selector('h3').innerText).eql('Postcode roos', 'Check element text', { timeout: 500 });
+    await t.expect(Selector('h3').innerText).eql('Postcoderoos', 'Check element text', { timeout: 500 });
 
     await t
         .click(Selector('span.glyphicon-plus'))

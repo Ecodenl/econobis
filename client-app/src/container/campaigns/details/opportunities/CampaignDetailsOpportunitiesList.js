@@ -24,7 +24,7 @@ const CampaignDetailsOpportunitiesList = props => {
                         />;
                     })
                     :
-                    <div>Geen kansen bekend</div>
+                    <div>Geen kansen bekend.</div>
             }
         </div>
     );

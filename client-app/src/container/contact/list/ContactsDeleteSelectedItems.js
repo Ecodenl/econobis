@@ -31,7 +31,7 @@ const ContactsDeleteSelectedItems = (props) => {
                 (countCheckedContact() !== 0 ?
                     <div>Verwijder de geselecteerde <strong>{countCheckedContact()}</strong> contacten</div>
                     :
-                    <div>Geen contacten geselecteerd</div>
+                    <div>Geen contacten geselecteerd.</div>
                 )
             }
         </Modal>

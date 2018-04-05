@@ -197,6 +197,8 @@ Route::namespace('Api')
         Route::get('email/{email}/reply-all', 'Email\EmailController@getReplyAll');
         Route::get('email/{email}/forward', 'Email\EmailController@getForward');
         Route::get('email/group/{contactGroup}', 'Email\EmailController@getEmailGroup');
+        Route::post('email/{email}/move-to-folder', 'Email\EmailController@moveEmailToFolder');
+        Route::post('email/{email}/delete', 'Email\EmailController@destroy');
         Route::post('email/{email}', 'Email\EmailController@update');
         Route::get('email/email-attachment/{emailAttachment}/download', 'Email\EmailController@downloadEmailAttachment');
         Route::post('email/email-attachment/{email}/store', 'Email\EmailController@storeEmailAttachment');

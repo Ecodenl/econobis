@@ -12,7 +12,7 @@ const EmailTemplateDetailsToolbar = props => {
                     <ButtonIcon iconName={"glyphicon-arrow-left"} onClickAction={browserHistory.goBack} />
                 </div>
             </div>
-            <div className="col-md-4"><h4 className="text-center">{'Email template: ' + props.templateName}</h4></div>
+            <div className="col-md-4"><h4 className="text-center">{'E-mail template: ' + props.templateName}</h4></div>
             <div className="col-md-4" />
         </div>
     );

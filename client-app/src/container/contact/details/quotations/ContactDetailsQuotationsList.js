@@ -23,7 +23,7 @@ const ContactDetailsQuotationsList = props => {
                         />;
                     })
                     :
-                    <div>Geen offertes bekend</div>
+                    <div>Geen offertes bekend.</div>
             }
         </div>
     );

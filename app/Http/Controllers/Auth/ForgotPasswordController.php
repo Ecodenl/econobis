@@ -43,7 +43,7 @@ class ForgotPasswordController extends Controller
         $this->validate($request, ['email' => 'required|email']);
 
         if(User::where('email', $request->input('email'))->count() === 0){
-            abort(404, 'Email niet gevonden.');
+            abort(404, 'E-mail niet gevonden.');
         }
     }
 

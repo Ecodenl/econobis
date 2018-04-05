@@ -46,7 +46,7 @@ const ContactDetailsFormContactEnergySupplierEdit = props => {
                                 onChangeAction={props.handleInputChangeDate}
                             />
                             <InputText
-                                label={"Ean electriciteit"}
+                                label={"EAN electriciteit"}
                                 id={"eanElectricity"}
                                 name={"eanElectricity"}
                                 value={eanElectricity}
@@ -56,7 +56,7 @@ const ContactDetailsFormContactEnergySupplierEdit = props => {
 
                         <div className="row">
                             <InputText
-                                label={"Ean gas"}
+                                label={"EAN gas"}
                                 id={"eanGas"}
                                 name={"eanGas"}
                                 value={eanGas}

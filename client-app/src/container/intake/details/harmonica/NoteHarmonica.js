@@ -5,7 +5,7 @@ import Panel from "../../../../components/panel/Panel";
 import PanelBody from "../../../../components/panel/PanelBody";
 import NotesList from './NotesList';
 
-const NoteHarmonica = ({toggleShowList, showNotesList, newTask, noteCount, permissions}) => (
+const NoteHarmonica = ({toggleShowList, showNotesList, newNote, noteCount, permissions}) => (
         <Panel className={"harmonica-button"}>
             <PanelBody>
                 <div className="col-sm-10" onClick={toggleShowList} role="button">
@@ -13,7 +13,7 @@ const NoteHarmonica = ({toggleShowList, showNotesList, newTask, noteCount, permi
                 </div>
                 <div className={"col-sm-2"}>
                     {permissions.manageTask &&
-                    <a role="button" className="pull-right" onClick={newTask}><span
+                    <a role="button" className="pull-right" onClick={newNote}><span
                         className="glyphicon glyphicon-plus glyphicon-white"/></a>
                     }
                 </div>

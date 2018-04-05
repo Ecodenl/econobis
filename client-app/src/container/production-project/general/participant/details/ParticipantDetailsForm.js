@@ -17,7 +17,7 @@ class ParticipantDetailsForm extends Component {
 
         return (
             isEmpty(this.props.participantProductionProject) ?
-                <div>Geen gegevens gevonden!</div>
+                <div>Geen gegevens gevonden.</div>
                 :
                 <div>
                     { this.props.participantProductionProject.deletedAt &&

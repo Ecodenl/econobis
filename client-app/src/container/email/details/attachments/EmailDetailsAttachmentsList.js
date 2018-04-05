@@ -19,7 +19,7 @@ const EmailDetailsAttachmentsList = props => {
                         />;
                     })
                     :
-                    <div>Geen bijlagen bekend</div>
+                    <div>Geen bijlagen bekend.</div>
             }
         </div>
     );

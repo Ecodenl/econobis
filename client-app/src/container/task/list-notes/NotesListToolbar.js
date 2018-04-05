@@ -6,7 +6,7 @@ import ButtonIcon from '../../../components/button/ButtonIcon';
 
 const NotesListToolbar = props => {
     const newTask = () => {
-        hashHistory.push('taak/nieuw');
+        hashHistory.push('taak/nieuw/afgesloten');
     };
 
     const { permissions = {} } = props;

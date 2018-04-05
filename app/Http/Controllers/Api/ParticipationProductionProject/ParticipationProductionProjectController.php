@@ -254,7 +254,7 @@ class ParticipationProductionProjectController extends ApiController
         }
 
         if(!$productionProject->postal_code){
-            array_push($message, $checkText . 'Productie project heeft geen postcode.');
+            array_push($message, $checkText . 'Productieproject heeft geen postcode.');
             return false;
         }
 
@@ -268,14 +268,14 @@ class ParticipationProductionProjectController extends ApiController
         $postalCodeAreaProductionProject = substr($productionProject->postal_code, 0 , 4);
 
         if(!($postalCodeAreaProductionProject > 999 && $postalCodeAreaProductionProject < 9999)){
-            array_push($message, $checkText . 'Productie project heeft geen geldige postcode.');
+            array_push($message, $checkText . 'Productieproject heeft geen geldige postcode.');
             return false;
         }
 
         $validPostalAreas = PostalCodeLink::where('postalcode_main', $postalCodeAreaProductionProject)->pluck('postalcode_link')->toArray();
 
         if(!$validPostalAreas){
-            array_push($message, $checkText . 'Productie project postcode heeft geen postcoderoos.');
+            array_push($message, $checkText . 'Productieproject postcode heeft geen postcoderoos.');
             return false;
         }
 
@@ -290,12 +290,12 @@ class ParticipationProductionProjectController extends ApiController
         $checkText = 'Gebruik check: ';
 
         if(!$productionProject->power_kwh_available){
-            array_push($message, $checkText . 'Productie project heeft nog geen opgesteld vermogen.');
+            array_push($message, $checkText . 'Productieproject heeft nog geen opgesteld vermogen.');
             return false;
         }
 
         if(!$productionProject->total_participations){
-            array_push($message, $checkText . 'Productie project heeft nog geen totaal aantal participaties.');
+            array_push($message, $checkText . 'Productieproject heeft nog geen totaal aantal participaties.');
             return false;
         }
 

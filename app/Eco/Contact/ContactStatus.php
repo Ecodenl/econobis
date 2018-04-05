@@ -27,7 +27,7 @@ class ContactStatus extends EnumWithIdAndName
             new static('member', 'Lid'),
             new static('memberAspirant', 'Aspirantlid'),
             new static('memberYouth', 'Jeugdlid'),
-            new static('stopped', 'Afgehaakt'),
+            new static('stopped', 'Uitgeschreven'),
         ];
     }
 }

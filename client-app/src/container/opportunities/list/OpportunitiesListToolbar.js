@@ -35,6 +35,7 @@ class OpportunitiesListToolbar extends Component {
                 <div className="col-md-4">
                     <div className="btn-group" role="group">
                         <ButtonIcon iconName={"glyphicon-arrow-left"} onClickAction={browserHistory.goBack}/>
+                        <ButtonIcon iconName={"glyphicon-refresh"} onClickAction={this.props.resetOpportunitiesFilters} />
                         <div className="nav navbar-nav btn-group" role="group">
                             <button className="btn btn-success btn-sm" data-toggle="dropdown">
                                 <span className="glyphicon glyphicon-share-alt"/>

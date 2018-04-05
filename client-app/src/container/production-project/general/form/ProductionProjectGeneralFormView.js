@@ -24,7 +24,7 @@ const ProductionProjectGeneralFormView = props => {
                     value={totalParticipations && totalParticipations}
                 />
                 <ViewText
-                    label={"Start datum"}
+                    label={"Startdatum"}
                     value={dateStart ? moment(dateStart).format('L') : ''}
                 />
             </div>

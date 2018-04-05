@@ -17,7 +17,7 @@ class OpportunityDetailsForm extends Component {
 
         return (
             isEmpty(this.props.opportunity) ?
-                <div>Geen gegevens gevonden!</div>
+                <div>Geen gegevens gevonden.</div>
                 :
                 <div>
                     <OpportunityFormGeneral />

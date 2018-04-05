@@ -40,8 +40,6 @@ class RequestQuery extends \App\Helpers\RequestQuery\RequestQuery
         $this->applyFilter($query);
         $this->applySort($query);
 
-
-
         return $query;
     }
 

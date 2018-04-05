@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { hashHistory } from 'react-router';
 import moment from 'moment';
+import EmailAPI from "../../../api/email/EmailAPI";
 moment.locale('nl');
 
 class EmailsInListItem extends Component {
@@ -31,6 +32,12 @@ class EmailsInListItem extends Component {
         hashHistory.push(`/email/${id}`);
     };
 
+    removeEmail(id){
+        EmailAPI.moveToFolder(id, 'removed').then(() => {
+            this.props.refreshData();
+        });
+    }
+
     render() {
         const { id, date, mailboxName, from, subject, status, folder } = this.props;
 
@@ -40,13 +47,14 @@ class EmailsInListItem extends Component {
                 <td>{ mailboxName }</td>
                 <td>{ from }</td>
                 <td>{ subject }</td>
-                {folder == 'inbox' ?
+                {folder === 'inbox' ?
                     <td>{status ? status.name : ''}</td>
                     :
                     <td>{"Verzonden"}</td>
                 }
                 <td>
                     {(this.state.showActionButtons ? <a role="button" onClick={() => this.openItem(id)}><span className="glyphicon glyphicon-pencil mybtn-success" /> </a> : '')}
+                    {(this.state.showActionButtons && (folder === 'inbox' || folder === 'sent') ? <a role="button" onClick={() => this.removeEmail(id)}><span className="glyphicon glyphicon-trash mybtn-danger"/> </a> : '')}
                 </td>
             </tr>
         );

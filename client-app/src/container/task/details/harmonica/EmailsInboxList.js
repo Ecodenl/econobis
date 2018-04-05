@@ -20,7 +20,7 @@ class EmailsInboxList extends Component {
         return (
             <div>
                 {relatedEmailsInbox == '' &&
-                <div>Geen e-mails gevonden</div>
+                <div>Geen e-mails gevonden.</div>
                 }
 
                 {relatedEmailsInbox != '' &&

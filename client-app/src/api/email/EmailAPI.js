@@ -148,5 +148,21 @@ export default {
 
         return axios.post(requestUrl, email);
     },
+
+    moveToFolder: (emailId, folder) => {
+        const requestUrl = `${URL_EMAIL}/${emailId}/move-to-folder`;
+        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
+        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
+
+        return axios.post(requestUrl, {folder: folder});
+    },
+
+    deleteEmail: (emailId) => {
+        const requestUrl = `${URL_EMAIL}/${emailId}/delete`;
+        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
+        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
+
+        return axios.post(requestUrl);
+    },
 };
 

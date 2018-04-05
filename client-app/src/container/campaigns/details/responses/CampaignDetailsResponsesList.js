@@ -25,7 +25,7 @@ const CampaignDetailsResponseList = props => {
                         />;
                     })
                     :
-                    <div>Geen responses bekend</div>
+                    <div>Geen responses bekend.</div>
             }
         </div>
     );

@@ -11,7 +11,7 @@ const TasksList = ({relatedTasks}) => {
     return (
         <div>
             {relatedTasks == '' &&
-            <div>Geen taken gevonden</div>
+            <div>Geen taken gevonden.</div>
             }
 
             {relatedTasks != '' &&

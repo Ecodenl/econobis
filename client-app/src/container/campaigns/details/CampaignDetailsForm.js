@@ -18,7 +18,7 @@ class CampaignDetailsForm extends Component {
 
         return (
             isEmpty(this.props.campaign) ?
-                <div>Geen gegevens gevonden!</div>
+                <div>Geen gegevens gevonden.</div>
                 :
                 <div>
                     <CampaignFormGeneral />

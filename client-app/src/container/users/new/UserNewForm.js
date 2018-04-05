@@ -194,7 +194,7 @@ class UserNewForm extends Component {
                         onChangeAction={this.handleInputChange}
                         required={"required"}
                         error={this.state.errors.alfrescoPassword}
-                        errorMessage={'Het wachtwoord moet minmaal 8 karakters lang zijn en moet minimaal 1 cijfer en  1 hoofdletter bevatten.'}
+                        errorMessage={'Het wachtwoord moet minimaal 8 karakters lang zijn en moet minimaal 1 cijfer en  1 hoofdletter bevatten.'}
                     />
                 </div>
 

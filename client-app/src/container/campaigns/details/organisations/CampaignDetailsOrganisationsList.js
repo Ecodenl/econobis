@@ -10,7 +10,7 @@ const CampaignDetailsOrganisationsList = props => {
                 <div className="col-sm-1">Nummer</div>
                 <div className="col-sm-2">Organisatie</div>
                 <div className="col-sm-2">Plaats</div>
-                <div className="col-sm-2">Contact persoon</div>
+                <div className="col-sm-2">Contactpersoon</div>
                 <div className="col-sm-2">Aangevraagde offertes</div>
                 <div className="col-sm-2">Gewonnen offertes</div>
                 <div className="col-sm-1"></div>
@@ -24,7 +24,7 @@ const CampaignDetailsOrganisationsList = props => {
                         />;
                     })
                     :
-                    <div>Geen betrokken bedrijven bekend</div>
+                    <div>Geen betrokken bedrijven bekend.</div>
             }
         </div>
     );

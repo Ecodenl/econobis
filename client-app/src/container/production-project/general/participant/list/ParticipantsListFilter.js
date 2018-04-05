@@ -90,8 +90,12 @@ const ParticipantsListFilter = props => {
 
     return (
         <tr className="thead-filter">
+            <th>
+                {props.showCheckboxList && props.checkedAll && <input type="checkbox" onChange={props.toggleCheckedAll} checked/>}
+                {props.showCheckboxList && !props.checkedAll && <input type="checkbox" onChange={props.toggleCheckedAll}/>}
+                {!props.showCheckboxList && <input type="text" className="form-control input-sm" value={ props.filters.id.data} onChange={onIdChange} />}
 
-            <th><input type="text" className="form-control input-sm" value={ props.filters.id.data} onChange={onIdChange} /></th>
+            </th>
 
             <th>
                 <select className="form-control input-sm" value={ props.filters.contactType.data } onChange={onContactTypeChange}>

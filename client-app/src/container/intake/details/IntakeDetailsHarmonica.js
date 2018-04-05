@@ -22,6 +22,7 @@ class IntakeDetailsHarmonica extends Component {
         };
 
         this.newTask = this.newTask.bind(this);
+        this.newNote = this.newNote.bind(this);
         this.newDocument = this.newDocument.bind(this);
         this.newEmail = this.newEmail.bind(this);
         this.toggleShowList = this.toggleShowList.bind(this);
@@ -29,6 +30,10 @@ class IntakeDetailsHarmonica extends Component {
 
     newTask() {
         hashHistory.push(`/taak/nieuw/intake/${this.props.id}`);
+    };
+
+    newNote() {
+        hashHistory.push(`/taak/nieuw/afgehandeld/intake/${this.props.id}`);
     };
 
     newDocument(type) {
@@ -61,7 +66,7 @@ class IntakeDetailsHarmonica extends Component {
                 <NoteHarmonica
                     toggleShowList={() => this.toggleShowList('notes')}
                     showNotesList={this.state.toggleShowList.notes}
-                    newTask={this.newTask}
+                    newNote={this.newNote}
                     noteCount={this.props.intakeDetails.noteCount}
                 />
                 <DocumentHarmonica

@@ -20,7 +20,7 @@ const HousingFileMeasuresTakenList = props => {
                         />;
                     })
                     :
-                    <div>Geen interesses bekend</div>
+                    <div>Geen interesses bekend.</div>
             }
         </div>
     );

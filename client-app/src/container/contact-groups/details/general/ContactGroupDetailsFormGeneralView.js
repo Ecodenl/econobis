@@ -41,7 +41,7 @@ const ContactGroupDetailsFormGeneralView = props => {
 
             <div className="row">
                 <ViewText
-                    label={"Start datum"}
+                    label={"Startdatum"}
                     value={dateStarted && moment(dateStarted.date).format('DD-MM-Y')}
                 />
                 <div className="row">

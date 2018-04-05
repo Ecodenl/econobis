@@ -144,7 +144,7 @@ class TransactionFormNew extends Component {
                                 error={this.state.errors.amount}
                             />
                             <InputText
-                                label={"Iban"}
+                                label={"IBAN"}
                                 id={"iban"}
                                 name={"iban"}
                                 value={iban}

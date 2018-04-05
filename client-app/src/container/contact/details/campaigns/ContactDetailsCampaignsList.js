@@ -9,8 +9,8 @@ const ContactDetailsCampaignsList = props => {
             <div className="row border header">
                 <div className="col-sm-2">Nummer</div>
                 <div className="col-sm-3">Naam</div>
-                <div className="col-sm-3">Start datum</div>
-                <div className="col-sm-3">Eind datum</div>
+                <div className="col-sm-3">Startdatum</div>
+                <div className="col-sm-3">Einddatum</div>
                 <div className="col-sm-1">Taken</div>
             </div>
             {
@@ -22,7 +22,7 @@ const ContactDetailsCampaignsList = props => {
                         />;
                     })
                     :
-                    <div>Geen campagnes bekend</div>
+                    <div>Geen campagnes bekend.</div>
             }
         </div>
     );

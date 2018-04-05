@@ -37,6 +37,10 @@ class CampaignDetailsHarmonica extends Component {
         hashHistory.push(`/taak/nieuw/campagne/${this.props.campaign.id}`);
     };
 
+    newNote = () => {
+        hashHistory.push(`/taak/nieuw/afgehandeld/campagne/${this.props.campaign.id}`);
+    };
+
     newDocument = (type) => {
         hashHistory.push(`/document/nieuw/${type}/campagne/${this.props.campaign.id}`);
     };
@@ -55,7 +59,7 @@ class CampaignDetailsHarmonica extends Component {
                     toggleShowList={() => this.toggleShowList('notes')}
                     showNotesList={this.state.toggleShowList.notes}
                     noteCount={this.props.campaign.noteCount}
-                    newTask={this.newTask}
+                    newNote={this.newNote}
                 />
 
                 <DocumentHarmonica

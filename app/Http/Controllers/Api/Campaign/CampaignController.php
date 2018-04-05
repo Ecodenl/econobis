@@ -126,7 +126,7 @@ class CampaignController extends ApiController
     {
         $this->authorize('manage', Campaign::class);
 
-        DeleteHelper::delete($campaign,'delete_campaign');
+        DeleteHelper::delete($campaign);
     }
 
     public function attachResponse(Campaign $campaign, Contact $contact)

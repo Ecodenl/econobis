@@ -25,7 +25,7 @@ const ContactDetailsFormContactEnergySupplierList = props => {
                         />;
                     })
                     :
-                    <div>Geen energieleveranciers bekend</div>
+                    <div>Geen energieleveranciers bekend.</div>
             }
         </div>
     );

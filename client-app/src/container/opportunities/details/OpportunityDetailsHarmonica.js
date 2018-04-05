@@ -22,6 +22,7 @@ class OpportunityDetailsHarmonica extends Component {
 
         this.toggleShowList = this.toggleShowList.bind(this);
         this.newTask = this.newTask.bind(this);
+        this.newNote = this.newNote.bind(this);
         this.newDocument = this.newDocument.bind(this);
         this.newEmail = this.newEmail.bind(this);
     };
@@ -38,6 +39,10 @@ class OpportunityDetailsHarmonica extends Component {
 
     newTask() {
         hashHistory.push(`/taak/nieuw/kans/${this.props.id}`);
+    };
+
+    newNote() {
+        hashHistory.push(`/taak/nieuw/afgehandeld/kans/${this.props.id}`);
     };
 
     newDocument(type) {
@@ -62,7 +67,7 @@ class OpportunityDetailsHarmonica extends Component {
                     toggleShowList={() => this.toggleShowList('notes')}
                     showNotesList={this.state.toggleShowList.notes}
                     noteCount={this.props.opportunityDetails.noteCount}
-                    newTask={this.newTask}
+                    newNote={this.newNote}
                 />
 
                 <DocumentHarmonica

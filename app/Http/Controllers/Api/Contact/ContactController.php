@@ -74,7 +74,7 @@ class ContactController extends Controller
         foreach ($intakes as $intake){
             $result[] = [
                 'id' => $intake->id,
-                'addressName' =>  $intake->address->present()->streetAndNumber(),
+                'addressName' =>  $intake->address ? $intake->address->present()->streetAndNumber() : 'Onbekend',
                 'createdAt' => $intake->created_at,
             ];
         }

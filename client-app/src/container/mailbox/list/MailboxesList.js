@@ -14,7 +14,7 @@ const MailboxesList = props => {
                     <DataTableHead>
                         <tr className="thead-title">
                             <DataTableHeadTitle title={'Naam'} width={"19%"}/>
-                            <DataTableHeadTitle title={'Email'} width={"19%"} />
+                            <DataTableHeadTitle title={'E-mail'} width={"19%"} />
                             <DataTableHeadTitle title={'Gebruikersnaam'} width={"19%"} />
                             <DataTableHeadTitle title={'Ink.server'} width={"19%"} />
                             <DataTableHeadTitle title={'Uitg.server'} width={"19%"} />

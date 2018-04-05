@@ -86,13 +86,22 @@ class EmailsInListApp extends Component {
     };
 
     render() {
+        let folder = 'ontvangen';
+
+        if(this.props.params.folder == 'removed'){
+            folder = 'verwijderd';
+        }
+        else if(this.props.params.folder == 'sent'){
+            folder = 'verzonden';
+        }
+
         return (
                 <Panel className="col-lg-12">
                     <PanelBody>
                         <div className="col-md-12 margin-10-top">
                             <EmailsInListToolbar
                                 refreshData={this.refreshData}
-                                folder={this.props.params.folder == 'inbox' ? 'inbox' : 'verzonden'}
+                                folder={folder}
                             />
                         </div>
 
@@ -102,7 +111,8 @@ class EmailsInListApp extends Component {
                                 emails={this.props.emails}
                                 emailsPagination={this.props.emailsPagination}
                                 onSubmitFilter={() => this.onSubmitFilter()}
-                                fetchEmailsData={() => this.fetchEmailsData()}/>
+                                fetchEmailsData={() => this.fetchEmailsData()}
+                                refreshData={() => this.refreshData()}/>
                         </div>
                     </PanelBody>
                 </Panel>

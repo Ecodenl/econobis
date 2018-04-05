@@ -10,7 +10,7 @@ return [
         'relations' =>
             [['remove_pivots' => 'measureCategories'],
             ['remove_pivots' => 'organisations'],
-            ['remove_pivots' => 'responses']],
+            ['remove' => 'responses']],
     ],
 
     'ContactGroup' => [
@@ -19,6 +19,12 @@ return [
             [['remove_pivots' => 'contacts'],
             ['dissociate' => ['relation' => 'documents', 'foreign_key' => 'contact_group_id']],
             ['dissociate' => ['relation' => 'tasks', 'foreign_key' => 'contact_group_id']]],
+    ],
+
+    'Email' => [
+        'soft_delete' => false,
+        'relations' =>
+            [['remove_attachments' => ['disk' => 'mail_attachments']]],
     ],
 
     'Task' => [

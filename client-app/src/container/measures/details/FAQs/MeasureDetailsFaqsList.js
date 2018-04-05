@@ -20,7 +20,7 @@ const MeasureDetailsFaqsList = props => {
                         />;
                     })
                     :
-                    <div>Geen FAQs bekend</div>
+                    <div>Geen FAQs bekend.</div>
             }
         </div>
     );

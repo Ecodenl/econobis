@@ -13,7 +13,7 @@ const PostalCodeLinkListToolbar = props => {
                     <ButtonIcon iconName={"glyphicon-plus"} onClickAction={props.toggleShowNew}/>
                 </div>
             </div>
-            <div className="col-md-4"><h3 className="text-center table-title">Postcode roos</h3></div>
+            <div className="col-md-4"><h3 className="text-center table-title">Postcoderoos</h3></div>
             <div className="col-md-4" />
         </div>
     );

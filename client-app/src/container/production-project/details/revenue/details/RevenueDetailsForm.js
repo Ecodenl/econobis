@@ -17,7 +17,7 @@ class RevenueDetailsForm extends Component {
 
         return (
             isEmpty(this.props.productionProjectRevenue) ?
-                <div>Geen gegevens gevonden!</div>
+                <div>Geen gegevens gevonden.</div>
                 :
                 <div>
                     {this.props.productionProjectRevenue.confirmed == 1 &&

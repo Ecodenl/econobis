@@ -18,7 +18,7 @@ class MeasureDetailsForm extends Component {
 
         return (
             isEmpty(this.props.measureDetails) ?
-                <div>Geen gegevens gevonden!</div>
+                <div>Geen gegevens gevonden.</div>
                 :
                 <div>
                     <MeasureFormGeneral />

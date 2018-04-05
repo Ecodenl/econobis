@@ -11,7 +11,7 @@ const OpportunitiesList = ({relatedOpportunities}) => {
     return (
         <div>
             {relatedOpportunities == '' &&
-            <div>Geen kansen gevonden</div>
+            <div>Geen kansen gevonden.</div>
             }
 
             {relatedOpportunities != '' &&

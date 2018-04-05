@@ -92,7 +92,7 @@ const DocumentNewFormGeneral = ({document, errors, contacts = [], contactGroups 
 
             <div className="row">
                 <InputSelect
-                    label="Productie project"
+                    label="Productieproject"
                     name={"productionProjectId"}
                     value={productionProjectId}
                     options={productionProjects}
@@ -101,7 +101,7 @@ const DocumentNewFormGeneral = ({document, errors, contacts = [], contactGroups 
                     error={errors.docLinkedAtAny}
                 />
                 <InputSelect
-                    label="Participant productie project"
+                    label="Participant productieproject"
                     name={"participantId"}
                     value={participantId}
                     options={participants}

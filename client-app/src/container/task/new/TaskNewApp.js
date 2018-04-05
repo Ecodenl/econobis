@@ -172,11 +172,29 @@ class TaskNewApp extends Component {
 
     updateStateByChangeParams(params) {
         if (!isEmpty(params)) {
+
+           let finished = false;
+
+            if(params.closed === 'afgehandeld'){
+
+                finished = true;
+
+                this.setState({
+                    ...this.state,
+                    task: {
+                        ...this.state.task,
+                        finished: finished,
+                    }
+                });
+            }
+
+
             if(params.contactId && params.productionProjectId && params.participantId){
                 this.setState({
                     ...this.state,
                     task: {
                         ...this.state.task,
+                        finished: finished,
                         campaignId: '',
                         contactId: params.contactId,
                         intakeId: '',
@@ -194,6 +212,7 @@ class TaskNewApp extends Component {
                             ...this.state,
                             task: {
                                 ...this.state.task,
+                                finished: finished,
                                 campaignId: '',
                                 contactId: params.id,
                                 intakeId: '',
@@ -209,6 +228,7 @@ class TaskNewApp extends Component {
                             ...this.state,
                             task: {
                                 ...this.state.task,
+                                finished: finished,
                                 campaignId: '',
                                 contactId: '',
                                 intakeId: params.id,
@@ -224,6 +244,7 @@ class TaskNewApp extends Component {
                             ...this.state,
                             task: {
                                 ...this.state.task,
+                                finished: finished,
                                 campaignId: '',
                                 contactId: '',
                                 intakeId: '',
@@ -239,6 +260,7 @@ class TaskNewApp extends Component {
                             ...this.state,
                             task: {
                                 ...this.state.task,
+                                finished: finished,
                                 campaignId: '',
                                 contactId: '',
                                 intakeId: '',
@@ -254,6 +276,7 @@ class TaskNewApp extends Component {
                             ...this.state,
                             task: {
                                 ...this.state.task,
+                                finished: finished,
                                 campaignId: params.id,
                                 contactId: '',
                                 intakeId: '',
@@ -269,6 +292,7 @@ class TaskNewApp extends Component {
                             ...this.state,
                             task: {
                                 ...this.state.task,
+                                finished: finished,
                                 campaignId: '',
                                 contactId: '',
                                 intakeId: '',
@@ -284,6 +308,7 @@ class TaskNewApp extends Component {
                             ...this.state,
                             task: {
                                 ...this.state.task,
+                                finished: finished,
                                 campaignId: '',
                                 contactId: '',
                                 intakeId: '',
@@ -395,7 +420,7 @@ class TaskNewApp extends Component {
             <div className="row">
                 <div className="col-md-9">
                     <div className="col-md-12">
-                        <TaskNewToolbar task={this.state.task} />
+                        <TaskNewToolbar finished={this.state.task.finished} />
                     </div>
 
                     <div className="col-md-12">

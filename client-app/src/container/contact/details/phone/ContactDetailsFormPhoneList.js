@@ -21,7 +21,7 @@ const ContactDetailsFormPhoneList = props => {
                         />;
                     })
                     :
-                    <div>Geen telefoonnummers bekend</div>
+                    <div>Geen telefoonnummers bekend.</div>
             }
         </div>
     );

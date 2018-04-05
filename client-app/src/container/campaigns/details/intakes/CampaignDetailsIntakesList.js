@@ -12,7 +12,7 @@ const CampaignDetailsIntakesList = props => {
                 <div className="col-sm-2">Naam</div>
                 <div className="col-sm-2">Adres</div>
                 <div className="col-sm-2">Postcode</div>
-                <div className="col-sm-2">Woonplaats</div>
+                <div className="col-sm-2">Plaats</div>
                 <div className="col-sm-2">Gereageerd op</div>
             </div>
             {

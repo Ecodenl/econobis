@@ -64,11 +64,11 @@ const EmailTemplateFormView = props => {
             <div className="row" onClick={props.switchToEdit}>
                 <div className="row">
                     <ViewText
-                        label={"Productie project"}
+                        label={"Productieproject"}
                         value={ productionProject && productionProject.name }
                     />
                     <ViewText
-                        label={"Participant productie project"}
+                        label={"Participant productieproject"}
                         value={ participant && participant.name }
                     />
                 </div>
@@ -107,11 +107,11 @@ const EmailTemplateFormView = props => {
             <div className="row margin-30-top" onClick={props.switchToEdit}>
                 <div className="row">
                     <ViewText
-                        label={"Document groep"}
+                        label={"Documentgroep"}
                         value={ documentGroup && documentGroup.name }
                     />
                     <ViewText
-                        label={"Filenaam"}
+                        label={"Bestandsnaam"}
                         value={ filename }
                     />
                 </div>

@@ -4,12 +4,15 @@ import Panel from "./Panel";
 import PanelHeader from "./PanelHeader";
 
 const PanelDeletedItem = props => {
-    const {text} = props;
+    const {text, restoreAction, restoreText} = props;
 
     return (
         <Panel>
             <PanelHeader>
-                <span className="h5" style={{color: '#e64a4a'}}>{text}</span>
+                <span className="h5" style={{color: '#e64a4a'}}>{text}  {restoreAction &&
+                <a style={{color: '#e64a4a', cursor: 'pointer'}} onClick={restoreAction}><strong>{restoreText}</strong></a>
+                }</span>
+
             </PanelHeader>
         </Panel>
     );
@@ -17,10 +20,13 @@ const PanelDeletedItem = props => {
 
 PanelDeletedItem.defaultProps = {
     text: 'Dit item is verwijderd',
+    restoreText: 'Klik hier om dit item terug te zetten.',
 };
 
 PanelDeletedItem.propTypes = {
     text: PropTypes.string,
+    restoreAction: PropTypes.func,
+    restoreText: PropTypes.string,
 };
 
 export default PanelDeletedItem;

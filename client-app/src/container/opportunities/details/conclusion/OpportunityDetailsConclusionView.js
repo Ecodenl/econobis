@@ -11,24 +11,25 @@ const ContactDetailsFormConclusionView = props => {
         <div>
             <div className="row">
                 <ViewText
-                    label={"Laatst gewijzigd op"}
-                    value={updatedAt ? moment(updatedAt.date).format('L') : 'Onbekend'}
+                    label={"Gemaakt door"}
+                    value={createdBy ? createdBy.fullName: 'Onbekend'}
+                    link={createdBy ? 'gebruiker/' + createdBy.id : ''}
                 />
                 <ViewText
-                    label={"Laatst gewijzigd door"}
+                    label={"Laatste update door"}
                     value={updatedBy ? updatedBy.fullName: 'Onbekend'}
                     link={updatedBy ? 'gebruiker/' + updatedBy.id : ''}
                 />
             </div>
+
             <div className="row">
                 <ViewText
                     label={"Gemaakt op"}
                     value={createdAt ? moment(createdAt.date).format('L') : 'Onbekend'}
                 />
                 <ViewText
-                    label={"Gemaakt door"}
-                    value={createdBy ? createdBy.fullName: 'Onbekend'}
-                    link={createdBy ? 'gebruiker/' + createdBy.id : ''}
+                    label={"Laatste update op"}
+                    value={updatedAt ? moment(updatedAt.date).format('L') : 'Onbekend'}
                 />
             </div>
         </div>

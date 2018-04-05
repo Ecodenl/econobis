@@ -160,7 +160,7 @@ class ContactDetailsFormOrganisationEdit extends Component {
 
                 <div className="row">
                     <InputText
-                        label="Kvk"
+                        label="KvK"
                         size={"col-sm-6"}
                         name="chamberOfCommerceNumber"
                         value={chamberOfCommerceNumber}
@@ -192,7 +192,7 @@ class ContactDetailsFormOrganisationEdit extends Component {
 
                 <div className="row">
                     <InputText
-                        label="Iban"
+                        label="IBAN"
                         name="iban"
                         value={iban}
                         onChangeAction={this.handleInputChange}

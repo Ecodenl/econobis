@@ -27,7 +27,7 @@ class EmailTemplateNewToolbar extends Component {
                                     <ButtonIcon iconName={"glyphicon-arrow-left"} onClickAction={browserHistory.goBack} />
                                 </div>
                             </div>
-                            <div className="col-md-4"><h3 className="text-center table-title">Nieuwe email template</h3></div>
+                            <div className="col-md-4"><h3 className="text-center table-title">Nieuwe e-mail template</h3></div>
                             <div className="col-md-4" />
                         </PanelBody>
                     </Panel>

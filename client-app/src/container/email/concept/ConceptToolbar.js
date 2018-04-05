@@ -4,7 +4,7 @@ import { browserHistory } from 'react-router';
 import ButtonIcon from '../../../components/button/ButtonIcon';
 import ButtonText from "../../../components/button/ButtonText";
 
-const ConceptNewToolbar = ({handleSubmit}) => {
+const ConceptNewToolbar = ({handleSubmit, loading, removeEmail}) => {
     return (
         <div className="row">
             <div className="col-md-4">
@@ -13,7 +13,11 @@ const ConceptNewToolbar = ({handleSubmit}) => {
                 </div>
                 <div className="btn-group margin-small" role="group">
                     <ButtonText buttonText={"Opslaan" } onClickAction={(e) => {handleSubmit(e, true)}}/>
-                    <ButtonText buttonText={"Verstuur email"} onClickAction={handleSubmit}/>
+                    <ButtonText buttonText={"Verstuur e-mail"} onClickAction={handleSubmit} loading={loading} loadText={'E-mail verzenden'}/>
+                </div>
+
+                <div className="btn-group margin-small margin-10-left" role="group">
+                    <ButtonIcon iconName={"glyphicon-trash"} onClickAction={removeEmail}/>
                 </div>
             </div>
             <div className="col-md-4"><h4 className="text-center margin-small">Concept bewerken</h4></div>

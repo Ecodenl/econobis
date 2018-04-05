@@ -42,12 +42,12 @@ class ContactListAddPersonToGroup extends Component {
                 buttonConfirmText="Toevoegen"
                 closeModal={this.props.closeModalAddToGroup}
                 confirmAction={() => this.props.addPersonToGroup(this.state.personId)}
-                title={`Contactpersoon toevoegen aan groep: ${this.props.groupName}`}
+                title={`Contact toevoegen aan groep: ${this.props.groupName}`}
 
             >
                 <form className="form-horizontal" onSubmit={this.handleSubmit}>
                     <div className="row">
-                        <div className="col-sm-6">Voeg bestaand contactpersoon toe</div>
+                        <div className="col-sm-6">Voeg bestaand contact toe</div>
                         <div className="col-sm-6">
                             <select className="form-control input-sm" name="personId" value={this.state.personId} onChange={this.handleInputChange}>
                                 <option value=''></option>

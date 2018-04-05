@@ -36,7 +36,7 @@ class DocumentViewForm extends Component {
     render() {
         return (
             isEmpty(this.props.documentDetails) || !this.state.file ?
-                <div>Geen gegevens gevonden!</div>
+                <div>Geen gegevens gevonden.</div>
                 :
                 <div>
                     <PdfViewer

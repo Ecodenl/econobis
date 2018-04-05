@@ -19,7 +19,7 @@ const MailboxDetailsUsersList = props => {
                         />;
                     })
                     :
-                    <div>Geen gebruikers bekend</div>
+                    <div>Geen gebruikers bekend.</div>
             }
         </div>
     );

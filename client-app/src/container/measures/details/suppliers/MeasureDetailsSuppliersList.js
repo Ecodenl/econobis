@@ -20,7 +20,7 @@ const MeasureDetailsSuppliersList = props => {
                         />;
                     })
                     :
-                    <div>Geen leveranciers bekend</div>
+                    <div>Geen leveranciers bekend.</div>
             }
         </div>
     );

@@ -70,7 +70,7 @@ class ParticipantsListExtraFilters extends Component {
         let filters = [];
 
         for (let i = 0; i < this.state.amountOfFilters; i++) {
-            filters.push(<DataTableCustomFilter filterNumber={i} fields={fields} handleFilterChange={this.handleFilterChange}/>);
+            filters.push(<DataTableCustomFilter key={i} filterNumber={i} fields={fields} handleFilterChange={this.handleFilterChange}/>);
         }
 
         return (

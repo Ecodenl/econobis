@@ -57,9 +57,9 @@ class DataTableCustomFilter extends Component {
     render() {
         const {fields} = this.props;
 
-        const fieldList = Object.entries(fields).map(([key, value]) => {
+        const fieldList = Object.entries(fields).map(([key, value], i) => {
             return (
-                <option value={key}>{value.name}</option>
+                <option key={i} value={key}>{value.name}</option>
             );
         });
 

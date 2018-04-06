@@ -14,7 +14,21 @@ use App\Helpers\RequestQuery\RequestExtraFilter;
 class ExtraFilter extends RequestExtraFilter
 {
     protected $fields = [
+        'id',
+        'name',
+        'postalCode',
         'currentParticipations',
+    ];
+
+    protected $mapping = [
+        'id' => 'participation_production_project.id',
+        'name' => 'contacts.full_name',
+        'postalCode' => 'addresses.postal_code',
+    ];
+
+    protected $joins = [
+        'name' => 'contact',
+        'postalCode' => 'addresses',
     ];
 
     protected function applyCurrentParticipationsFilter($query, $type, $data)

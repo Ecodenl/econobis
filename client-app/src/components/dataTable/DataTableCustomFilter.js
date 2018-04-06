@@ -1,19 +1,41 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
+import DataTableCustomFilterSelectString from "./DataTableCustomFilterSelectString";
+import DataTableCustomFilterSelectNumber from "./DataTableCustomFilterSelectNumber";
 
 class DataTableCustomFilter extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-           filter: {
-               field: Object.keys(props.fields)[0],
-               type: 'eq',
-               data: '',
-           }
+            type: this.props.fields[Object.keys(props.fields)[0]].type,
+            filter: {
+                field: Object.keys(props.fields)[0],
+                type: 'eq',
+                data: '',
+            }
         };
     };
 
+    handleFieldChange = (event) => {
+        const target = event.target;
+        const value = target.value;
+        const name = target.name;
+
+        const type = this.props.fields[value].type;
+
+        this.setState({
+            type: type,
+            filter: {
+                ...this.state.filter,
+                [name]: value
+            },
+        });
+
+        setTimeout(() => {
+            this.props.handleFilterChange(this.state.filter.field, this.state.filter.type, this.state.filter.data, this.props.filterNumber);
+        }, 250);
+    };
 
     handleInputChange = (event) => {
         const target = event.target;
@@ -37,31 +59,27 @@ class DataTableCustomFilter extends Component {
 
         const fieldList = Object.entries(fields).map(([key, value]) => {
             return (
-                <option value={key}>{value}</option>
+                <option value={key}>{value.name}</option>
             );
         });
 
         return (
             <tr>
                 <td className="col-md-4">
-                    <select className="form-control input-sm" name={'field'} onChange={this.handleInputChange}>
+                    <select className="form-control input-sm" name={'field'} onChange={this.handleFieldChange}>
                         {fieldList}
                     </select></td>
                 <td className="col-md-4">
-                    <select className="form-control input-sm" name={'type'} onChange={this.handleInputChange}>
-                    <option value='eq'>gelijk aan</option>
-                    <option value='neq'>niet gelijk aan</option>
-                    <option value='ct'>bevat</option>
-                    <option value='lt'>kleiner dan</option>
-                    <option value='lte'>kleiner of gelijk aan</option>
-                    <option value='gt'>groter dan</option>
-                    <option value='bw'>begint met</option>
-                    <option value='nbw'>begint niet met</option>
-                    <option value='ew'>eindigd met</option>
-                    <option value='new'>eindigd niet met</option>
-                    <option value='nl'>is leeg</option>
-                    <option value='nnl'>is niet leeg</option>
-                </select>
+                    {this.state.type === 'string' &&
+                    <DataTableCustomFilterSelectString
+                        handleInputChange={this.handleInputChange}
+                    />
+                    }
+                    {this.state.type === 'number' &&
+                        <DataTableCustomFilterSelectNumber
+                            handleInputChange={this.handleInputChange}
+                        />
+                    }
                 </td>
                 <td className="col-md-4">
                     <input

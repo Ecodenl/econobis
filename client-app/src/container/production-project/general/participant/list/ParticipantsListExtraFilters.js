@@ -49,7 +49,22 @@ class ParticipantsListExtraFilters extends Component {
 
     render() {
         const fields = {
-            'currentParticipations': 'Aantal participaties',
+            'id': {
+             'name': 'Id',
+             'type': 'number'
+            },
+            'name': {
+                'name': 'Naam',
+                'type': 'string'
+            },
+            'postalCode': {
+                'name': 'Postcode',
+                'type': 'string'
+            },
+            'currentParticipations': {
+                'name': 'Aantal participaties',
+                'type': 'number'
+            },
         };
 
         let filters = [];

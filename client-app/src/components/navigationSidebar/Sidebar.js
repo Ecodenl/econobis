@@ -3,12 +3,12 @@ import React from 'react';
 import SidebarMenu from './SidebarMenu';
 import SidebarMenuSmall from './SidebarMenuSmall';
 
-const Sidebar = ({menuActive, onMenuEnter, onMenuLeave}) => {
-    const sidebarClass = (menuActive ? 'sidebar open' : 'sidebar');
+const Sidebar = ({menuActive, menuStuck, onMenuEnter, onMenuLeave}) => {
+    const sidebarClass = (menuActive || menuStuck ? 'sidebar open' : 'sidebar');
 
     return (
         <nav className={ sidebarClass } onMouseEnter={onMenuEnter} onMouseLeave={onMenuLeave} >
-            { menuActive ?
+            { menuActive || menuStuck ?
                 <SidebarMenu  />
                 :
                 <SidebarMenuSmall />

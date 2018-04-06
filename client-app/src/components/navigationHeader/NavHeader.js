@@ -12,8 +12,12 @@ const NavHeader = (props) => {
         <nav className="navbar navbar-default navbar-fixed-top">
             <div className="fluid-container row-eq-height">
                 <div className="col-xs-2 col-md-1 nav-item">
-                    <a className="btn btn-sm" onClick={props.toggleMenu}>
-                        <span className="glyphicon glyphicon-menu-hamburger" />
+                    <a className="btn btn-sm" onClick={props.toggleMenuStuck}>
+                        {props.menuStuck ?
+                            <span className="glyphicon glyphicon-option-vertical close-menu-option-vertical"/>
+                            :
+                            <span className="glyphicon glyphicon-menu-hamburger"/>
+                        }
                     </a>
                 </div>
                 <div className="col-md-2 hidden-xs hidden-sm">

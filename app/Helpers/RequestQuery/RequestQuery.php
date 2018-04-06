@@ -36,9 +36,9 @@ abstract class RequestQuery
 
     public function __construct(Request $request,
                                 RequestFilter $filter = null,
-                                RequestExtraFilter $extraFilter = null,
                                 RequestSort $sort = null,
-                                RequestJoiner $joiner = null)
+                                RequestJoiner $joiner = null,
+                                RequestExtraFilter $extraFilter = null)
     {
         $this->request = $request;
         $this->filter = $filter;

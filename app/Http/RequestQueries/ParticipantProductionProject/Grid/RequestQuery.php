@@ -17,11 +17,11 @@ class RequestQuery extends \App\Helpers\RequestQuery\RequestQuery
     public function __construct(
         Request $request,
         Filter $filter,
-        ExtraFilter $extraFilter,
         Sort $sort,
-        Joiner $joiner
+        Joiner $joiner,
+        ExtraFilter $extraFilter
     ) {
-        parent::__construct($request, $filter, $extraFilter, $sort, $joiner);
+        parent::__construct($request, $filter, $sort, $joiner, $extraFilter);
     }
 
     protected function baseQuery()

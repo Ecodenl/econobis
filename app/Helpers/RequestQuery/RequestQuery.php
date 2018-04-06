@@ -36,11 +36,13 @@ abstract class RequestQuery
 
     public function __construct(Request $request,
                                 RequestFilter $filter = null,
+                                RequestExtraFilter $extraFilter = null,
                                 RequestSort $sort = null,
                                 RequestJoiner $joiner = null)
     {
         $this->request = $request;
         $this->filter = $filter;
+        $this->extraFilter = $extraFilter;
         $this->sort = $sort;
         $this->joiner = $joiner;
 
@@ -50,6 +52,7 @@ abstract class RequestQuery
     public function apply($query)
     {
         $this->applyFilter($query);
+        $this->applyExtraFilter($query);
         $this->applySort($query);
         $this->applyPagination($query);
     }
@@ -57,6 +60,7 @@ abstract class RequestQuery
     protected function init()
     {
         if ($this->filter) $this->filter->setJoiner($this->joiner);
+        if ($this->extraFilter) $this->extraFilter->setJoiner($this->joiner);
         if ($this->sort) $this->sort->setJoiner($this->joiner);
     }
 
@@ -89,6 +93,14 @@ abstract class RequestQuery
     protected function applyFilter($query)
     {
         if ($this->filter) $this->filter->apply($query);
+    }
+
+    /**
+     * @param $query
+     */
+    protected function applyExtraFilter($query)
+    {
+        if ($this->extraFilter) $this->extraFilter->apply($query);
     }
 
     /**

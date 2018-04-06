@@ -32,13 +32,21 @@
   max-width: 240px;
 }
 
+.sidebar.open.sticky {
+  margin-top: -10px;
+  position: sticky;
+  position: -webkit-sticky;
+  margin-right: -3em;
+}
+
 .content.open {
   left: 240px;
 }
 
 .sidebar-menu {
   padding-top: 10px;
-  overflow: auto;
+  overflow-y: auto;
+  overflow-x: hidden;
   height: 100vh;
   padding-bottom: 60px;
 }

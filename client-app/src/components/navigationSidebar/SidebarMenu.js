@@ -24,12 +24,10 @@ class SidebarMenu extends Component {
         return (
             <div className="sidebar-menu" style={{background: '$brand-primary', color: '#FFF', width: '240px'}}>
                 <SideNav highlightColor="#FFF" highlightBgColor="#27AE60" defaultSelected="dashboard">
-                    <Link className="sidebar-link" to="/">
-                        <Nav id="dashboard">
-                            <NavIcon><SvgIcon size={20} icon={ic_dashboard}/></NavIcon>
-                            <NavText>Dashboard</NavText>
-                        </Nav>
-                    </Link>
+                    <Nav id="dashboard">
+                        <NavIcon><SvgIcon size={20} icon={ic_dashboard}/></NavIcon>
+                        <NavText><Link className="sidebar-link" to="/">Dashboard</Link></NavText>
+                    </Nav>
                     <Nav id="contacten">
                         <NavIcon><SvgIcon size={20} icon={ic_contacts}/></NavIcon>
                         <NavText><Link className="sidebar-link" to="contacten">Contacten</Link></NavText>

@@ -3,16 +3,12 @@ import superUser from '../auth/UserRoles';
 import * as constants from '../config/constants';
 import * as vars from '../config/random-models';
 import ModelGridContact from '../pages/contact/model-grid-contact';
-import ModelDetailsPerson from '../pages/contact/model-details-person';
-import ModelDetailsOrganisation from '../pages/contact/model-details-organisation';
 import ModelGeneral from '../pages/model-general';
 const faker = require('faker');
 
 fixture `Remove contact`;
 
 const contactGrid = new ModelGridContact();
-const personDetails = new ModelDetailsPerson();
-const organisationDetails = new ModelDetailsOrganisation();
 const general = new ModelGeneral();
 
 test('Remove person', async (t) => {

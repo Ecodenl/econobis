@@ -31,7 +31,7 @@ class QuotationRequestsListItem extends Component {
     };
 
     render() {
-        const { id, organisation, opportunity, createdAt, datedRecorded, status, dateReleased, dateValid } = this.props;
+        const { id, organisation, opportunity, createdAt, dateRecorded, status, dateReleased, dateValid } = this.props;
 
         return (
             <tr className={this.state.highlightRow} onDoubleClick={() => this.openItem(id)} onMouseEnter={() => this.onRowEnter()} onMouseLeave={() => this.onRowLeave()}>
@@ -40,7 +40,7 @@ class QuotationRequestsListItem extends Component {
                 <td>{ opportunity && opportunity.intake.fullAddress }</td>
                 <td>{ opportunity && opportunity.measureCategory.name }</td>
                 <td>{ moment(createdAt.date).format('DD-MM-Y') }</td>
-                <td>{ datedRecorded && moment(datedRecorded).format('DD-MM-Y') }</td>
+                <td>{ dateRecorded && moment(dateRecorded).format('DD-MM-Y') }</td>
                 <td>{ status ? status.name : 'Onbekend'}</td>
                 <td>{ dateReleased && moment(dateReleased).format('DD-MM-Y') }</td>
                 <td>{ dateValid && moment(dateValid).format('DD-MM-Y') }</td>

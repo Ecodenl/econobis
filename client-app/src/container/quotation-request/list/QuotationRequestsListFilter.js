@@ -20,26 +20,14 @@ import DataTableFilterDate from "../../../components/dataTable/DataTableFilterDa
 const QuotationRequestsListFilter = props => {
     const onStatusChange = (e) => {
         props.setFilterQuotationRequestStatus(e.target.value);
-
-        setTimeout(() => {
-            props.onSubmitFilter();
-        }, 100);
     };
 
     const onAddressChange = (e) => {
         props.setQuotationRequestAddressFilter(e.target.value);
-
-        setTimeout(() => {
-            props.onSubmitFilter();
-        }, 100);
     };
 
     const onContactChange = (e) => {
         props.setQuotationRequestContactFilter(e.target.value);
-
-        setTimeout(() => {
-            props.onSubmitFilter();
-        }, 100);
     };
 
     const onQuotationRequestCreatedAtChange = (selectedDay) => {
@@ -76,18 +64,10 @@ const QuotationRequestsListFilter = props => {
 
     const onMeasureChange = (e) => {
         props.setQuotationRequestMeasureFilter(e.target.value);
-
-        setTimeout(() => {
-            props.onSubmitFilter();
-        }, 100);
     };
 
     const onOrganisationChange = (e) => {
         props.setQuotationRequestOrganisationFilter(e.target.value);
-
-        setTimeout(() => {
-            props.onSubmitFilter();
-        }, 100);
     };
 
     return (

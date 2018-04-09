@@ -22,7 +22,8 @@ class Joiner extends RequestJoiner
     protected function applyContactJoin($query)
     {
         $query->join('opportunities', 'quotation_requests.opportunity_id', '=', 'opportunities.id');
-        $query->join('contacts', 'opportunities.contact_id', '=', 'contacts.id');
+        $query->join('intakes', 'opportunities.intake_id', '=', 'intakes.id');
+        $query->join('contacts', 'intakes.contact_id', '=', 'contacts.id');
     }
 
     protected function applyAddressJoin($query)

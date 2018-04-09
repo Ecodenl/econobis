@@ -434,6 +434,7 @@ class TaskNewApp extends Component {
                                         contactGroups={this.state.contactGroups}
                                         opportunities={this.state.opportunities}
                                         campaigns={this.state.campaigns}
+                                        housingFiles={this.state.housingFiles}
                                         productionProjects={this.state.productionProjects}
                                         participants={this.state.participants}
                                         errors={this.state.errors}

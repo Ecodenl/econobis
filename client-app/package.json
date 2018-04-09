@@ -8,7 +8,7 @@
     "build": "webpack --config webpack.prod.js -p",
     "build:local": "webpack --config webpack.prod.local.js",
     "test": "jest --config=jest.config.json",
-    "test:global": "testcafe chrome testcafe/seed & testcafe chrome testcafe/tests"
+    "test:global": "testcafe chrome testcafe/"
   },
   "repository": "",
   "author": "Xaris",

@@ -28,3 +28,6 @@ export const campaignName = faker.lorem.sentence();
 
 //contact group
 export const contactGroupName = faker.name.findName();
+
+//document template name
+export const documentTemplateName = faker.lorem.sentence();

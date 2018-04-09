@@ -1,7 +1,6 @@
 import { Selector, Role } from 'testcafe';
 import superUser from '../../auth/UserRoles';
 import * as constants from '../../config/constants';
-import * as vars from "../../config/random-models";
 import ModelGeneral from "../../pages/model-general";
 import ModelPostalcodeLink from "../../pages/postalcode-link/model-postalcode-link";
 const faker = require('faker');

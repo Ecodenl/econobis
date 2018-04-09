@@ -31,7 +31,7 @@ const TasksListFilter = props => {
     };
 
     const onNoteChange = (e) => {
-        props.setFilterTaskName(e.target.value);
+        props.setFilterTaskNote(e.target.value);
     };
 
     const onContactFullNameChange = (e) => {
@@ -40,9 +40,9 @@ const TasksListFilter = props => {
 
     const onDatePlannedChange = (selectedDay) => {
         if(selectedDay === undefined){
-            props.setFilterTaskDatePlanned('');
+            props.setFilterTaskDatePlannedStart('');
         }else{
-            props.setFilterTaskDatePlanned(moment(selectedDay).format('Y-MM-DD'));
+            props.setFilterTaskDatePlannedStart(moment(selectedDay).format('Y-MM-DD'));
         }
     };
 

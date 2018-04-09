@@ -15,7 +15,6 @@ class Joiner extends RequestJoiner
 {
     protected function applyContactJoin($query)
     {
-        $query->join('addresses', 'intakes.address_id', '=', 'addresses.id');
         $query->join('contacts', 'intakes.contact_id', '=', 'contacts.id');
     }
 

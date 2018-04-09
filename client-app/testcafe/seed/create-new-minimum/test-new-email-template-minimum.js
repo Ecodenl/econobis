@@ -11,7 +11,6 @@ fixture `Create new email template minimum`;
 const general = new ModelGeneral();
 const newEmailTemplate = new ModelNewEmailTemplate();
 
-
 test('Fill out form email template minimum', async (t) => {
 
     await t

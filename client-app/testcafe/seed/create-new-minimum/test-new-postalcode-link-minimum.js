@@ -1,9 +1,15 @@
 import { Selector, Role } from 'testcafe';
 import superUser from '../../auth/UserRoles';
 import * as constants from '../../config/constants';
+import * as vars from "../../config/random-models";
+import ModelGeneral from "../../pages/model-general";
+import ModelPostalcodeLink from "../../pages/postalcode-link/model-postalcode-link";
 const faker = require('faker');
 
 fixture `Create new postalcode link minimum`;
+
+const general = new ModelGeneral();
+const postalcodeLink = new ModelPostalcodeLink();
 
 test('Fill out form postalcode link minimum', async (t) => {
 
@@ -15,21 +21,21 @@ test('Fill out form postalcode link minimum', async (t) => {
         .navigateTo(constants.app_url + '#/postcoderoos')
         .wait(constants.wait);
 
-    await t.expect(Selector('h3').innerText).eql('Postcoderoos', 'Check element text', { timeout: 500 });
+    await t.expect(general.titleH3.innerText).eql('Postcoderoos', 'Check element text', { timeout: 500 });
 
     await t
-        .click(Selector('span.glyphicon-plus'))
+        .click(postalcodeLink.new)
         .wait(constants.wait);
 
-    await t.expect(Selector('label').nth(0).innerText).eql('Kern postcode', 'Check element text', { timeout: 500 });
-    await t.expect(Selector('label').nth(1).innerText).eql('Link postcode', 'Check element text', { timeout: 500 });
+    await t.expect(postalcodeLink.mainLabel.innerText).eql('Kern postcode', 'Check element text', { timeout: 500 });
+    await t.expect(postalcodeLink.linkLabel.innerText).eql('Link postcode', 'Check element text', { timeout: 500 });
 
     await t
-        .typeText('input[name="postalCodeMain"]', randomInt)
-        .typeText('input[name="postalCodeLink"]', randomInt2)
-        .click(Selector('button').withExactText('Opslaan'))
+        .typeText(postalcodeLink.mainInput, randomInt)
+        .typeText(postalcodeLink.linkInput, randomInt2)
+        .click(general.save)
         .wait(constants.wait);
 
-    await t.expect(Selector('td').nth(-3).innerText).eql(randomInt, 'Check element text', { timeout: 500 });
-    await t.expect(Selector('td').nth(-2).innerText).eql(randomInt2, 'Check element text', { timeout: 500 });
+    await t.expect(postalcodeLink.mainTD.innerText).eql(randomInt, 'Check element text', { timeout: 500 });
+    await t.expect(postalcodeLink.linkTD.innerText).eql(randomInt2, 'Check element text', { timeout: 500 });
 });

@@ -37,3 +37,6 @@ export const emailTemplateName = faker.lorem.word();
 
 //task
 export const taskNote = faker.lorem.sentence();
+
+//team
+export const teamName = faker.lorem.word();

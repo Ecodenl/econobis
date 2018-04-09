@@ -25,3 +25,6 @@ export const productionProjectCode = faker.lorem.word();
 
 //campaign
 export const campaignName = faker.lorem.sentence();
+
+//contact group
+export const contactGroupName = faker.name.findName();

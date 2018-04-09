@@ -31,3 +31,6 @@ export const contactGroupName = faker.name.findName();
 
 //document template name
 export const documentTemplateName = faker.lorem.sentence();
+
+//email template name
+export const emailTemplateName = faker.lorem.word();

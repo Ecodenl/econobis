@@ -22,3 +22,6 @@ export const organisationNumber = faker.random.number();
 //production project
 export const productionProjectName = faker.company.catchPhrase();
 export const productionProjectCode = faker.lorem.word();
+
+//campaign
+export const campaignName = faker.lorem.sentence();

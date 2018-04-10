@@ -16,7 +16,7 @@ const TaskNewToolbar = props => {
                 <Panel>
                     <PanelBody className={"panel-small"}>
                         <div className="col-md-4">
-                            <div className="btn-group" role="group">
+                            <div className="btn-group btn-group-flex" role="group">
                                 <ButtonIcon iconName={"glyphicon-arrow-left"} onClickAction={browserHistory.goBack} />
                             </div>
                         </div>

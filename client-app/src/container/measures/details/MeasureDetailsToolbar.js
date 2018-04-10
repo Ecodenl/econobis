@@ -15,7 +15,7 @@ const MeasureDetailsToolbar = ({ measureDetails }) => {
                 <Panel>
                     <PanelBody className={"panel-small"}>
                         <div className="col-md-2">
-                            <div className="btn-group margin-small" role="group">
+                            <div className="btn-group btn-group-flex margin-small" role="group">
                                 <ButtonIcon iconName={"glyphicon-arrow-left"} onClickAction={browserHistory.goBack} />
                             </div>
                         </div>

@@ -8,7 +8,7 @@ const DocumentNewToolbar = ({handleSubmit}) => {
     return (
         <div className="row">
             <div className="col-md-4">
-                <div className="btn-group margin-small margin-10-right" role="group">
+                <div className="btn-group btn-group-flex margin-small margin-10-right" role="group">
                     <ButtonIcon iconName={"glyphicon-arrow-left"} onClickAction={browserHistory.goBack} />
                 </div>
             </div>

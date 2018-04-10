@@ -136,6 +136,7 @@ const ParticipantNew = props => {
                     name={"ibanPayed"}
                     value={ibanPayed}
                     onChangeAction={props.handleInputChange}
+                    error={props.errors.ibanPayed}
                 />
             </div>
 
@@ -168,6 +169,7 @@ const ParticipantNew = props => {
                     name={"ibanPayout"}
                     value={ibanPayout}
                     onChangeAction={props.handleInputChange}
+                    error={props.errors.ibanPayout}
                 />
             </div>
 

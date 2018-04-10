@@ -217,7 +217,7 @@ class ParticipantNewApp extends Component {
 
         if (!validator.isEmpty(participation.ibanPayout)) {
             if (!ibantools.isValidIBAN(participation.ibanPayout)) {
-                errors.ibanPayed = true;
+                errors.ibanPayout = true;
                 hasErrors = true;
             }
         }

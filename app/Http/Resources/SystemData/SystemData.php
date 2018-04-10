@@ -108,7 +108,7 @@ class SystemData extends Resource
             'documentTemplateTypes' => FullEnumWithIdAndName::collection(DocumentTemplateType::collection()),
             'roofTypes' => FullEnumWithIdAndName::collection(RoofType::all()),
             'energyLabelStatus' => FullEnumWithIdAndName::collection(EnergyLabelStatus::all()),
-            'quotationRequestStatus' => FullEnumWithIdAndName::collection(QuotationRequestStatus::all()),
+            'quotationRequestStatus' => FullEnumWithIdAndName::collection(QuotationRequestStatus::orderBy('order')->get()),
             'countries' => GenericResource::collection(Country::all()),
             'energySuppliers' => GenericResource::collection(EnergySupplier::all()),
             'contactEnergySupplierStatus' => GenericResource::collection(ContactEnergySupplierStatus::all()),

@@ -30,7 +30,7 @@ class Participationslist extends Component {
                         return (
                             <tr onClick={() => this.openItem(item.id)} key={i}>
                                 <td className='col-xs-5 clickable'>{moment(item.createdAt.date).format('L')}</td>
-                                <td className='col-xs-6 clickable'>{item.productionProject.name}</td>
+                                <td className='col-xs-6 clickable'>{item.participationsCurrent} in {item.productionProject.name} </td>
                             </tr>
                         )
                     })

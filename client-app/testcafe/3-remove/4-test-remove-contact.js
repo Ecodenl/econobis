@@ -77,7 +77,7 @@ test('Remove organisation', async (t) => {
     await t.expect(general.titleH3.innerText).eql('Contacten', 'Check element text', { timeout: 500 });
 
     await t
-        .typeText(contactGrid.nameSearch, vars.personLastName + ', ' + vars.personFirstName)
+        .typeText(contactGrid.nameSearch, vars.organisationName)
         .pressKey('enter')
         .wait(constants.wait);
 

@@ -37,9 +37,11 @@ class ParticipantFormGeneral extends Component {
     };
 
     onDivLeave() {
-        this.setState({
-            activeDiv: '',
-        });
+        if(!this.state.showEdit) {
+            this.setState({
+                activeDiv: '',
+            });
+        }
     };
 
     render() {

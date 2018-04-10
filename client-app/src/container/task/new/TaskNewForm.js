@@ -152,6 +152,7 @@ const TaskNewForm = props => {
                             intakes={props.intakes}
                             contactGroups={props.contactGroups}
                             opportunities={props.opportunities}
+                            housingFiles={props.housingFiles}
                             campaigns={props.campaigns}
                             productionProjects={props.productionProjects}
                             participants={props.participants}

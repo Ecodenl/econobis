@@ -17,7 +17,7 @@ class Filter extends RequestFilter
         'typeId',
         'note',
         'contactFullName',
-        'datePlannedStarted',
+        'datePlannedStart',
         'responsibleName',
     ];
 
@@ -26,7 +26,7 @@ class Filter extends RequestFilter
         'typeId' => 'tasks.type_id',
         'note' => 'tasks.note',
         'contactFullName' => 'contacts.full_name',
-        'datePlannedStarted' => 'tasks.date_planned_start',
+        'datePlannedStart' => 'tasks.date_planned_start',
         'responsibleName' => 'users.last_name',
     ];
 

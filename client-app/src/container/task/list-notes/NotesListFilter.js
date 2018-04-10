@@ -40,9 +40,9 @@ const NotesListFilter = props => {
 
     const onDatePlannedChange = (selectedDay) => {
         if(selectedDay === undefined){
-            props.setFilterNoteDatePlanned('');
+            props.setFilterNoteDatePlannedStart('');
         }else{
-            props.setFilterNoteDatePlanned(moment(selectedDay).format('Y-MM-DD'));
+            props.setFilterNoteDatePlannedStart(moment(selectedDay).format('Y-MM-DD'));
         }
     };
 

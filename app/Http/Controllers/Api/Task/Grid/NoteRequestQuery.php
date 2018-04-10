@@ -25,8 +25,8 @@ class NoteRequestQuery extends \App\Helpers\RequestQuery\RequestQuery
     protected function baseQuery()
     {
         return Task::query()
-            ->where('finished', true)
-            ->whereNull('deleted_at')
+            ->where('tasks.finished', true)
+            ->whereNull('tasks.deleted_at')
             ->select('tasks.*');
     }
 }

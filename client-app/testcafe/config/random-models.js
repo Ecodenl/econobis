@@ -1,11 +1,12 @@
 const faker = require('faker');
 
 //person
-export const personFirstName = faker.name.firstName();
-export const personLastName = faker.name.lastName();
+export const personFirstName = 'Louis';
+export const personLastName = '';
 
 //organisation
-export const organisationName = faker.company.companyName();
+export const organisationName = 'Fren BV2';
+// export const organisationName = faker.company.companyName();
 
 //person address
 export const personPostalCode = faker.address.zipCode();

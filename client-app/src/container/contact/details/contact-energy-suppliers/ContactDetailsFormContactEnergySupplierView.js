@@ -25,9 +25,6 @@ const ContactDetailsFormContactEnergySupplierView = props => {
                     {switchDate ? moment(switchDate).format('L') : ''}
                 </div>
                 <div className="col-sm-1">
-                    { contactEnergySupplyStatus && contactEnergySupplyStatus.name }
-                </div>
-                <div className="col-sm-1">
                     {esNumber && esNumber}
                 </div>
                 <div className="col-sm-1">

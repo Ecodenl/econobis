@@ -47,6 +47,7 @@ class MailFetcher
             }
 
             // Als we hier komen is de mail blijkbaar nog niet eerder opgehaald, bij deze gaan doen
+            set_time_limit(180);
             $this->fetchEmail($mailId);
         }
     }
@@ -115,11 +116,19 @@ class MailFetcher
     {
         $emailData = $this->imap->getMail($mailId);
 
-        $textHtml = $emailData->textHtml ?: '';
+        $textHtml = $emailData->textHtml;
+
+        if($textHtml === null){
+            $textHtml = $emailData->textPlain;
+        }
+
+        $textHtml = $textHtml?: '';
+
         if(strlen($textHtml) > 50000){
             $textHtml = substr($emailData->textHtml, 0, 50000);
             $textHtml .= '<p>Deze mail is langer dan 50.000 karakters en hierdoor ingekort.</p>';
         }
+
         $email = new Email([
             'mailbox_id' => $this->mailbox->id,
             'from' => $emailData->fromAddress,

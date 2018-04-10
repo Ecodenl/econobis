@@ -222,7 +222,7 @@ class DocumentNewApp extends Component {
         let errors = {};
         let hasErrors = false;
 
-        if(validator.isEmpty(contactId) && validator.isEmpty(contactGroupId) && validator.isEmpty(intakeId) && validator.isEmpty(opportunityId) && validator.isEmpty(housingFileId) && validator.isEmpty(quotationRequestId) && validator.isEmpty(productionProjectId)  && validator.isEmpty(participantId)){
+        if(validator.isEmpty(contactId) && validator.isEmpty(contactGroupId) && validator.isEmpty(intakeId) && validator.isEmpty(opportunityId) && validator.isEmpty(housingFileId) && validator.isEmpty(quotationRequestId) && validator.isEmpty(productionProjectId) && validator.isEmpty(participantId) && validator.isEmpty(taskId)){
             errors.docLinkedAtAny = true;
             hasErrors = true;
         };

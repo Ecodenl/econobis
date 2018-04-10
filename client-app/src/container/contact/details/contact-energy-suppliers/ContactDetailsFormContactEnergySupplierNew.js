@@ -129,7 +129,7 @@ class ContactDetailsFormContactEnergySupplierNew extends Component {
                                 onChangeAction={this.handleInputChangeDate}
                             />
                             <InputText
-                                label={"Ean electriciteit"}
+                                label={"EAN electriciteit"}
                                 id={"eanElectricity"}
                                 name={"eanElectricity"}
                                 value={eanElectricity}
@@ -139,7 +139,7 @@ class ContactDetailsFormContactEnergySupplierNew extends Component {
 
                         <div className="row">
                             <InputText
-                                label={"Ean gas"}
+                                label={"EAN gas"}
                                 id={"eanGas"}
                                 name={"eanGas"}
                                 value={eanGas}

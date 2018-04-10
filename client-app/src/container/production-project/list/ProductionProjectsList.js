@@ -56,9 +56,9 @@ class ProductionProjectsList extends Component {
             <DataTable>
                 <DataTableHead>
                     <tr className="thead-title-quaternary">
-                        <DataTableHeadTitle title={'Project code'} width={'15%'}/>
+                        <DataTableHeadTitle title={'Projectcode'} width={'15%'}/>
                         <DataTableHeadTitle title={'Naam'} width={'20%'}/>
-                        <DataTableHeadTitle title={'Aantal eenheden'} width={'10%'}/>
+                        <DataTableHeadTitle title={'Aantal participaties'} width={'10%'}/>
                         <DataTableHeadTitle title={'Capaciteit kWh'} width={'15%'}/>
                         <DataTableHeadTitle title={'Uitgegeven participaties'} width={'10%'}/>
                         <DataTableHeadTitle title={'Participaties beschikbaar'} width={'10%'}/>
@@ -70,7 +70,7 @@ class ProductionProjectsList extends Component {
                     {
                         data.length === 0 ? (
                             <tr>
-                                <td colSpan={9}>Geen productie projecten gevonden!</td>
+                                <td colSpan={9}>Geen productieprojecten gevonden!</td>
                             </tr>
                         ) : (
                             data.map(productionProject => (

@@ -20,6 +20,7 @@ use App\Eco\Email\Jobs\StoreConceptEmail;
 use App\Eco\EmailAddress\EmailAddress;
 use App\Eco\Mailbox\Mailbox;
 use App\Eco\User\User;
+use App\Helpers\Delete\DeleteHelper;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\RequestQueries\Email\Grid\RequestQuery;
 use App\Http\Resources\Email\FullEmail;
@@ -51,6 +52,12 @@ class EmailController
                 ->orderBy('created_at', 'desc');
             $queryBuilderNoPagination->where('folder', $folder)
                 ->orderBy('created_at', 'desc');
+        }
+        else if($folder == 'removed') {
+            $queryBuilderPagination->where('folder', $folder)
+                ->orderBy('date_sent', 'desc');
+            $queryBuilderNoPagination->where('folder', $folder)
+                ->orderBy('date_sent', 'desc');
         } else {
             $queryBuilderPagination->where('folder', $folder)
                 ->orderBy('date_sent', 'desc');
@@ -451,6 +458,26 @@ class EmailController
         $email->save();
 
         return FullEmail::make($email);
+    }
+
+    public function moveEmailToFolder(Request $request, Email $email)
+    {
+        $folder = $request->input('folder');
+
+        if($folder != 'inbox' && $folder != 'sent' && $folder != 'removed'){
+            abort(406, 'Map niet toegestaan.');
+        }
+
+        $email->folder = $folder;
+
+        $email->save();
+
+        return FullEmail::make($email);
+    }
+
+    public function destroy(Email $email){
+
+        DeleteHelper::delete($email);
     }
 
     public function getAmountOfOpenEmails(){

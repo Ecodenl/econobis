@@ -137,7 +137,7 @@ class EmailTemplateFormEdit extends Component {
                     <div className='col-sm-12'>
                         <div className="row">
                             <div className="col-sm-3">
-                                <label className="col-sm-12">Door</label>
+                                <label className="col-sm-12">Gemaakt door</label>
                             </div>
                             <div className="col-sm-9">
                                 <Link to={createdBy ? 'gebruiker/' + createdBy.id : ''} className="link-underline">{createdBy ? createdBy.fullName: ''}</Link>

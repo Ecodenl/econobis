@@ -20,7 +20,7 @@ const ParticipantsListHead = (props) => {
             <DataTableHeadTitleAndSort sortColumn={'name'} title={'Naam'} width={'9%'} setSorts={setSorts} />
             <DataTableHeadTitleAndSort sortColumn={'address'} title={'Adres'} width={'10%'} setSorts={setSorts} />
             <DataTableHeadTitleAndSort sortColumn={'postalCode'} title={'Postcode'} width={'9%'} setSorts={setSorts} />
-            <DataTableHeadTitleAndSort sortColumn={'city'} title={'Woonplaats'} width={'10%'} setSorts={setSorts} />
+            <DataTableHeadTitleAndSort sortColumn={'city'} title={'Plaats'} width={'10%'} setSorts={setSorts} />
             <DataTableHeadTitleAndSort sortColumn={'statusId'} title={'Lid status'} width={'10%'} setSorts={setSorts} />
             <DataTableHeadTitleAndSort sortColumn={'currentParticipations'} title={'Huidig aantal participaties'} width={'10%'} setSorts={setSorts} />
             <DataTableHeadTitleAndSort sortColumn={'participationStatusId'} title={'Participatie status'} width={'9%'} setSorts={setSorts} />

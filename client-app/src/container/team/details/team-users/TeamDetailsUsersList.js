@@ -19,7 +19,7 @@ const TeamDetailsUsersList = props => {
                         />;
                     })
                     :
-                    <div>Geen gebruikers bekend</div>
+                    <div>Geen gebruikers bekend.</div>
             }
         </div>
     );

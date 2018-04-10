@@ -10,7 +10,7 @@ const ProductionProjectDetailsFormValueCourseList = props => {
                 <div className="col-sm-3">Project</div>
                 <div className="col-sm-2">Datum</div>
                 <div className="col-sm-3">Boekwaarde</div>
-                <div className="col-sm-3">Overdrachts waarde</div>
+                <div className="col-sm-3">Overdrachtswaarde</div>
                 <div className="col-sm-1"></div>
             </div>
             {
@@ -22,7 +22,7 @@ const ProductionProjectDetailsFormValueCourseList = props => {
                         />;
                     })
                     :
-                    <div>Geen waarde verloop bekend</div>
+                    <div>Geen waardeverloop bekend.</div>
             }
         </div>
     );

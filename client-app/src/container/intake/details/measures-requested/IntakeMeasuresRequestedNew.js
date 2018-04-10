@@ -66,7 +66,7 @@ class IntakeMeasuresRequestedNew extends Component {
                     <PanelBody>
                         <div className="row">
                             <div className={`form-group col-sm-8`}>
-                                <label className={`col-sm-4`}>{"Maatregel:"}</label>
+                                <label className={`col-sm-4`}>{"Maatregel"}</label>
                                 <div className={"col-sm-8"}>
                                     <select className={`form-control input-sm`} name={"measureId"} value={measureId} onChange={this.handleInputChange}>
                                         <option value=''></option>

@@ -20,7 +20,7 @@ const TaskDetailsFormPropertiesList = props => {
                         />;
                     })
                     :
-                    <div>Geen extra kenmerken bekend</div>
+                    <div>Geen extra kenmerken bekend.</div>
             }
         </div>
     );

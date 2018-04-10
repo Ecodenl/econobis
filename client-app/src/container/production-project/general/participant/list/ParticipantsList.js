@@ -32,6 +32,9 @@ class ParticipantsList extends Component {
                         />
                         <ParticipantsListFilter
                             onSubmitFilter={this.props.onSubmitFilter}
+                            toggleCheckedAll={this.props.toggleCheckedAll}
+                            showCheckboxList={this.props.showCheckboxList}
+                            checkedAll={this.props.checkedAll}
                         />
                     </DataTableHead>
                     <DataTableBody>
@@ -43,6 +46,7 @@ class ParticipantsList extends Component {
                                     return <ParticipantsListItem
                                         key={participantProductionProject.id}
                                         showCheckboxList={this.props.showCheckboxList}
+                                        checkedAll={this.props.checkedAll}
                                         toggleParticipantCheck={this.props.toggleParticipantCheck}
                                         toggleParticipantCheckNoEmail={this.props.toggleParticipantCheckNoEmail}
                                         {...participantProductionProject}

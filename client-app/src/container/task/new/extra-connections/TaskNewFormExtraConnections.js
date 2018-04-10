@@ -71,7 +71,7 @@ const TaskNewFormExtraConnections = ({task, campaigns, intakes, contactGroups, o
                     isLoading={peekLoading.housingFiles}
                 />
                 <InputReactSelect
-                    label={"Productie project"}
+                    label={"Productieproject"}
                     size={"col-sm-6"}
                     name={"productionProjectId"}
                     options={productionProjects}
@@ -83,7 +83,7 @@ const TaskNewFormExtraConnections = ({task, campaigns, intakes, contactGroups, o
             </div>
             <div className="row">
                 <InputReactSelect
-                    label={"Participant productie project"}
+                    label={"Participant productieproject"}
                     size={"col-sm-6"}
                     name={"participantId"}
                     options={participants}

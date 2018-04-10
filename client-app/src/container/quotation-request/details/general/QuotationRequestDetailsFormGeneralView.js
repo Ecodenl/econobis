@@ -67,7 +67,7 @@ const QuotationRequestDetailsFormGeneralView = props => {
 
             <div className="row">
                 <div className="col-sm-3">
-                    <label htmlFor="quotationText" className="col-sm-12">Offerte text</label>
+                    <label htmlFor="quotationText" className="col-sm-12">Offerte tekst</label>
                 </div>
                 <div className="col-sm-9" id="quotationText">
                     {quotationText}

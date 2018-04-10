@@ -10,8 +10,13 @@ import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
 import ButtonIcon from '../../../components/button/ButtonIcon';
 
-const EmailDetailsToolbar = ({email, id}) => {
+const EmailDetailsToolbar = ({email, id, removeEmail}) => {
     const { from } = email;
+    let removeButtonClass = 'btn-success btn-sm';
+
+    if(email.folder === 'removed'){
+        removeButtonClass = 'btn-danger btn-sm';
+    }
 
     return (
         <div className="row">
@@ -33,8 +38,12 @@ const EmailDetailsToolbar = ({email, id}) => {
                                     <Icon icon={mailForward} size={13} />
                                 </button>
                             </div>
+                            <div className="btn-group margin-small margin-10-left" role="group">
+                                <ButtonIcon iconName={"glyphicon-trash"} onClickAction={removeEmail} buttonClassName={removeButtonClass}/>
+                            </div>
+
                         </div>
-                        <div className="col-md-4"><h4 className="text-center text-success margin-small"><strong>{ from ? 'Email van: ' + from : '' }</strong></h4></div>
+                        <div className="col-md-4"><h4 className="text-center text-success margin-small"><strong>{ from ? 'E-mail van: ' + from : '' }</strong></h4></div>
                         <div className="col-md-4" />
                     </PanelBody>
                 </Panel>

@@ -15,6 +15,7 @@ class EmailAnswerApp extends Component {
         super(props);
 
         this.state = {
+            buttonLoading: false,
             oldEmailId: null,
             emailAddresses: [],
             email: {
@@ -169,6 +170,12 @@ class EmailAnswerApp extends Component {
         });
     };
 
+    setButtonLoading = () => {
+        this.setState({
+            buttonLoading: true
+        });
+    };
+
     handleSubmit(event) {
         event.preventDefault();
 
@@ -214,6 +221,8 @@ class EmailAnswerApp extends Component {
                 data.append('attachments[' +  key +  ']', file);
             });
 
+            this.setButtonLoading();
+
             EmailAPI.newEmail(data, email.mailboxId).then(() => {
                 //close the email we reply/forward
                 if(this.state.oldEmailId) {
@@ -237,7 +246,7 @@ class EmailAnswerApp extends Component {
                     <div className="col-md-12 margin-10-top">
                         <Panel>
                             <PanelBody className="panel-small">
-                                <EmailAnswerToolbar handleSubmit={this.handleSubmit} type={this.props.params.type} />
+                                <EmailAnswerToolbar loading={this.state.buttonLoading} handleSubmit={this.handleSubmit} type={this.props.params.type} />
                             </PanelBody>
                         </Panel>
                     </div>

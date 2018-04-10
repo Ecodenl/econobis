@@ -42,7 +42,7 @@ const ContactDetailsFormEmailEdit = props => {
 
                     <div className="row">
                         <InputToggle
-                            label={"Primair e-mail adres"}
+                            label={"Primair e-mailadres"}
                             name={"primary"}
                             value={primary}
                             onChangeAction={props.handleInputChange}

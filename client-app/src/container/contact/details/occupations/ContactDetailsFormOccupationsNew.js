@@ -162,14 +162,14 @@ class ContactDetailsFormOccupationsNew extends Component {
 
                         <div className="row">
                             <InputDate
-                                label={"Begin datum"}
+                                label={"Begindatum"}
                                 size={"col-sm-6"}
                                 name={"startDate"}
                                 value={startDate}
                                 onChangeAction={this.handleStartDate}
                             />
                             <InputDate
-                                label={"Eind datum"}
+                                label={"Einddatum"}
                                 size={"col-sm-6"}
                                 name={"endDate"}
                                 value={endDate}

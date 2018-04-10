@@ -20,7 +20,7 @@ class NoteList extends Component {
         return (
             <div>
                 {relatedNotes == '' &&
-                <div>Geen notities gevonden</div>
+                <div>Geen notities gevonden.</div>
                 }
 
                 {relatedNotes != '' &&

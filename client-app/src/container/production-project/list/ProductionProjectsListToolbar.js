@@ -24,7 +24,7 @@ const ProductionProjectsListToolbar = (props) => {
                 </div>
 
             </div>
-            <div className="col-md-4"><h3 className="text-center table-title">Productie projecten</h3></div>
+            <div className="col-md-4"><h3 className="text-center table-title">Productieprojecten</h3></div>
             <div className="col-md-4">
                 <div className="pull-right">Resultaten: { meta.total || 0 }</div>
             </div>

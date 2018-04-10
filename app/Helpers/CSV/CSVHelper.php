@@ -125,8 +125,8 @@ class CSVHelper
         $csv = $this->csvExporter->build($this->distributions, [
             'ean' => 'project ean',
             'ean_manager' => 'project ean net',
-            'date_begin' => 'start datum',
-            'date_end' => 'eind datum',
+            'date_begin' => 'startdatum',
+            'date_end' => 'einddatum',
             'contact.full_name' => 'participant',
             'tax_referral' => 'referentie',
             'postal_code' => 'Postcode',

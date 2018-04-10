@@ -35,6 +35,7 @@ class ParticipantsListApp extends Component {
             emailTemplates: [],
             subject: [],
             documentGroup: '',
+            checkedAll: false,
             showCheckboxList: false,
             showModal: false,
             modalText: '',
@@ -163,6 +164,13 @@ class ParticipantsListApp extends Component {
         });
     };
 
+    toggleCheckedAll = () => {
+        this.setState({
+            participantIds: [],
+            checkedAll: !this.state.checkedAll
+        });
+    };
+
     toggleParticipantCheck = event => {
         const target = event.target;
         const value = target.type === 'checkbox' ? target.checked : target.value;
@@ -196,7 +204,7 @@ class ParticipantsListApp extends Component {
             this.setState({
                 participantIds,
                 showModal: true,
-                modalText: 'Waarschuwing: deze participant heeft nog geen primair email adres.',
+                modalText: 'Waarschuwing: deze participant heeft nog geen primair e-mailadres.',
                 buttonConfirmText: 'Ok'
             });
         }
@@ -234,11 +242,23 @@ class ParticipantsListApp extends Component {
                 emailTemplateIdError: false,
             });
         }
+        let participantIds = [];
 
-        if (this.state.participantIds.length > 0 && !error) {
+        if (this.state.checkedAll) {
+
+            this.props.participantsProductionProject.data.forEach(function (participant) {
+                participantIds.push(participant.id);
+            });
+
+            this.setState({
+                participantIds: participantIds,
+            });
+        }
+
+        if ((this.state.participantIds.length > 0 && !error) || participantIds.length > 0 && !error) {
             this.setState({
                 showModal: true,
-                modalText: 'De rapporten worden per participant gemaakt met de gekozen template en per email verzonden.',
+                modalText: 'De rapporten worden per participant gemaakt met het gekozen documenttemplate en per e-mail verzonden.',
                 buttonConfirmText: 'Maken',
                 readyForCreation: true
             });
@@ -284,8 +304,10 @@ class ParticipantsListApp extends Component {
                             refreshParticipantsProductionProjectData={() => this.fetchParticipantsProductionProjectData()}
                             handlePageClick={this.handlePageClick}
                             showCheckboxList={this.state.showCheckboxList}
+                            checkedAll={this.state.checkedAll}
                             toggleParticipantCheck={this.toggleParticipantCheck}
                             toggleParticipantCheckNoEmail={this.toggleParticipantCheckNoEmail}
+                            toggleCheckedAll={this.toggleCheckedAll}
                         />
                     </div>
                 </PanelBody>
@@ -295,7 +317,7 @@ class ParticipantsListApp extends Component {
                     <div className="row">
                         <div className="col-md-12">
                             <ViewText
-                                label="Document groep"
+                                label="Documentgroep"
                                 value={'Opbrengst'}
                             />
                             <InputSelect

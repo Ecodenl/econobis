@@ -148,7 +148,7 @@ class ProductionProjectFormEdit extends Component {
                         error={this.state.errors.name}
                     />
                     <InputText
-                        label={"Project code"}
+                        label={"Projectcode"}
                         name={"code"}
                         value={code}
                         onChangeAction={this.handleInputChange}

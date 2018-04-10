@@ -12,7 +12,7 @@ class ContactGroupDetailsForm extends Component {
     render() {
         return (
             isEmpty(this.props.contactGroupDetails) ?
-                <div>Geen gegevens gevonden!</div>
+                <div>Geen gegevens gevonden.</div>
                 :
                 <div>
                     <ContactGroupDetailsFormGeneral />

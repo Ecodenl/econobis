@@ -52,7 +52,7 @@ const ParticipantNew = props => {
                     error={props.errors.productionProjectId}
                 />
                 <InputDate
-                    label={"Inschrijf datum"}
+                    label={"Inschrijfdatum"}
                     name={"dateRegister"}
                     value={dateRegister}
                     onChangeAction={props.handleInputChangeDate}
@@ -79,7 +79,7 @@ const ParticipantNew = props => {
             <div className="row">
                 <InputText
                     type={"number"}
-                    label={"Participaties verkocht"}
+                    label={"Participaties overgedragen"}
                     name={"participationsSold"}
                     value={participationsSold}
                     onChangeAction={props.handleInputChange}
@@ -147,7 +147,7 @@ const ParticipantNew = props => {
                     onChangeAction={props.handleInputChange}
                 />
                 <InputText
-                    label={"IBAN tnv"}
+                    label={"IBAN t.n.v."}
                     name={"ibanAttn"}
                     value={ibanAttn}
                     onChangeAction={props.handleInputChange}
@@ -181,7 +181,7 @@ const ParticipantNew = props => {
                     onChangeAction={props.handleInputChange}
                 />
                 <InputText
-                    label={"IBAN uitkeren tnv"}
+                    label={"IBAN uitkeren t.n.v."}
                     name={"ibanPayoutAttn"}
                     value={ibanPayoutAttn}
                     onChangeAction={props.handleInputChange}

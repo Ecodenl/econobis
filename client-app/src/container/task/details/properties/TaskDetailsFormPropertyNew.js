@@ -119,6 +119,7 @@ class TaskDetailsFormPropertyNew extends Component {
                                 name={"value"}
                                 value={value}
                                 onChangeAction={this.handleInputChange}
+                                required={"required"}
                                 error={this.state.errors.value}
                             />
                         </div>

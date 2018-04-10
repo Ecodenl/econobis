@@ -56,6 +56,7 @@ const EmailsInListFilter = props => {
             <th>
                 <select className="form-control input-sm" value={ props.filters.statusId.data } onChange={onStatusIdChange}>
                     <option/>
+                    <option value={'null'}>{'Geen status'}</option>
                     {
                         props.emailStatuses.map((emailStatus) => {
                             return <option key={emailStatus.id } value={ emailStatus.id }>{ emailStatus.name }</option>

@@ -10,6 +10,7 @@ class CampaignType extends Model
     use RevisionableTrait;
 
     protected $table = 'campaign_types';
+    public $timestamps = false;
 
     /**
      * The attributes that are mass assignable.

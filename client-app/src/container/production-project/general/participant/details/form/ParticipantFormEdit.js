@@ -190,7 +190,7 @@ class ParticipantFormEdit extends Component {
                         readOnly={true}
                     />
                     <InputDate
-                        label={"Inschrijf datum"}
+                        label={"Inschrijfdatum"}
                         name={"dateRegister"}
                         value={dateRegister}
                         onChangeAction={this.handleInputChangeDate}
@@ -217,7 +217,7 @@ class ParticipantFormEdit extends Component {
                 <div className="row">
                     <InputText
                         type={"number"}
-                        label={"Participaties verkocht"}
+                        label={"Participaties overgedragen"}
                         name={"participationsSold"}
                         value={participationsSold}
                         onChangeAction={this.handleInputChange}
@@ -285,7 +285,7 @@ class ParticipantFormEdit extends Component {
                         onChangeAction={this.handleInputChange}
                     />
                     <InputText
-                        label={"IBAN tnv"}
+                        label={"IBAN t.n.v."}
                         name={"ibanAttn"}
                         value={ibanAttn}
                         onChangeAction={this.handleInputChange}
@@ -319,7 +319,7 @@ class ParticipantFormEdit extends Component {
                         onChangeAction={this.handleInputChange}
                     />
                     <InputText
-                        label={"IBAN uitkeren tnv"}
+                        label={"IBAN uitkeren t.n.v."}
                         name={"ibanPayoutAttn"}
                         value={ibanPayoutAttn}
                         onChangeAction={this.handleInputChange}

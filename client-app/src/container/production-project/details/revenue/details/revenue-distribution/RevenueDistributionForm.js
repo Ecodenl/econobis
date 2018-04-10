@@ -31,6 +31,7 @@ class RevenueDistributionForm extends Component {
             emailTemplates: [],
             subject: [],
             documentGroup: '',
+            checkedAll: false,
             showCheckboxList: false,
             showModal: false,
             modalText: '',
@@ -114,6 +115,13 @@ class RevenueDistributionForm extends Component {
         });
     };
 
+    toggleCheckedAll = () => {
+        this.setState({
+            distributionIds: [],
+            checkedAll: !this.state.checkedAll
+        });
+    };
+
     toggleParticipantCheck = event => {
         const target = event.target;
         const value = target.type === 'checkbox' ? target.checked : target.value;
@@ -147,7 +155,7 @@ class RevenueDistributionForm extends Component {
             this.setState({
                 distributionIds,
                 showModal: true,
-                modalText: 'Waarschuwing: deze participant heeft nog geen primair email adres.',
+                modalText: 'Waarschuwing: deze participant heeft nog geen primair e-mailadres.',
                 buttonConfirmText: 'Ok'
             });
         }
@@ -186,10 +194,23 @@ class RevenueDistributionForm extends Component {
             });
         }
 
-        if (this.state.distributionIds.length > 0 && !error) {
+        let distributionIds = [];
+
+        if (this.state.checkedAll) {
+
+            this.props.productionProjectRevenue.distrbution.forEach(function (distribution) {
+                distributionIds.push(distribution.id);
+            });
+
+            this.setState({
+                participantIds: distributionIds,
+            });
+        }
+
+        if ((this.state.distributionIds.length > 0 && !error) || (distributionIds.length > 0 && !error)) {
             this.setState({
                 showModal: true,
-                modalText: 'De rapporten worden per participant gemaakt met de gekozen template en per email verzonden.',
+                modalText: 'De rapporten worden per participant gemaakt met het gekozen documenttemplate en per e-mail verzonden.',
                 buttonConfirmText: 'Maken',
                 readyForCreation: true
             });
@@ -232,6 +253,8 @@ class RevenueDistributionForm extends Component {
                     <div className="col-md-12">
                         <RevenueDistributionFormList
                             showCheckboxList={this.state.showCheckboxList}
+                            checkedAll={this.state.checkedAll}
+                            toggleCheckedAll={this.toggleCheckedAll}
                             toggleParticipantCheck={this.toggleParticipantCheck}
                             toggleParticipantCheckNoEmail={this.toggleParticipantCheckNoEmail}
                         />
@@ -242,7 +265,7 @@ class RevenueDistributionForm extends Component {
                     <div className="row">
                         <div className="col-md-12">
                             <ViewText
-                                label="Document groep"
+                                label="Documentgroep"
                                 value={'Opbrengst'}
                             />
                             <InputSelect
@@ -257,7 +280,7 @@ class RevenueDistributionForm extends Component {
                         </div>
                         <div className="col-md-12">
                             <InputSelect
-                                label="Email template"
+                                label="E-mail template"
                                 name={"emailTemplateId"}
                                 value={this.state.emailTemplateId}
                                 options={this.state.emailTemplates}
@@ -266,7 +289,7 @@ class RevenueDistributionForm extends Component {
                                 error={this.state.emailTemplateIdError}
                             />
                             <InputText
-                                label={"Email onderwerp"}
+                                label={"E-mail onderwerp"}
                                 name={"subject"}
                                 value={this.state.subject}
                                 onChangeAction={this.handleInputChange}

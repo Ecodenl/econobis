@@ -13,7 +13,7 @@ class GeneralSearchModal extends Component {
                 <div className="modal-dialog search-modal-dialog">
                     <div className="modal-content">
                         <div className="modal-header">
-                            <h4 className="modal-title">Zoek resultaten</h4>
+                            <h4 className="modal-title">Zoekresultaten</h4>
                         </div>
                         <div className="modal-body search-modal-body">
                             <div className="col-md-12 margin-30-top">

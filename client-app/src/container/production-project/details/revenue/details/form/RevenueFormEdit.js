@@ -62,7 +62,7 @@ class RevenueFormEdit extends Component {
         this.setState({
             showModal: !this.state.showModal,
         });
-    }
+    };
 
     cancelSetDate = () => {
         this.setState({
@@ -77,7 +77,7 @@ class RevenueFormEdit extends Component {
         this.setState({
             showModal: !this.state.showModal,
         });
-    }
+    };
 
     handleInputChange = event => {
         const target = event.target;

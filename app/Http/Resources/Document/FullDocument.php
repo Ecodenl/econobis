@@ -21,6 +21,7 @@ use App\Http\Resources\Intake\FullIntake;
 use App\Http\Resources\ParticipantProductionProject\ParticipantProductionProjectPeek;
 use App\Http\Resources\ProductionProject\ProductionProjectPeek;
 use App\Http\Resources\QuotationRequest\FullQuotationRequest;
+use App\Http\Resources\Task\FullTask;
 use App\Http\Resources\User\FullUser;
 use Illuminate\Http\Resources\Json\Resource;
 
@@ -55,7 +56,7 @@ class FullDocument extends Resource
             'measureId' => $this->measure_id,
             'measure' => FullMeasure::make($this->whenLoaded('measure')),
             'taskId' => $this->task_id,
-            'task' => FullOpportunity::make($this->whenLoaded('task')),
+            'task' => FullTask::make($this->whenLoaded('task')),
             'productionProjectId' => $this->production_project_id,
             'productionProject' => ProductionProjectPeek::make($this->whenLoaded('productionProject')),
             'participantId' => $this->participation_production_project_id,

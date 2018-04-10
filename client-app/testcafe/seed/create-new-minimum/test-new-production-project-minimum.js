@@ -27,5 +27,5 @@ test('Fill out form new production project', async (t) => {
         .click(Selector('button').withExactText('Opslaan'))
         .wait(constants.wait);
 
-    await t.expect(Selector('h4').innerText).eql('Productie project ' + randomName, 'Check element text', { timeout: 500 });
+    await t.expect(Selector('h4').innerText).eql('Productieproject ' + randomName, 'Check element text', { timeout: 500 });
 });

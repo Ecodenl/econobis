@@ -38,7 +38,7 @@ class ProductionProjectDetailsToolbar extends Component {
                                     }
                                 </div>
                             </div>
-                            <div className="col-md-8"><h4 className="text-center text-success margin-small"><strong>Productie project {productionProject ? productionProject.name : ''}</strong></h4></div>
+                            <div className="col-md-8"><h4 className="text-center text-success margin-small"><strong>Productieproject {productionProject ? productionProject.name : ''}</strong></h4></div>
                             <div className="col-md-2" />
                         </PanelBody>
                     </Panel>

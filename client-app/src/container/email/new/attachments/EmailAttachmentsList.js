@@ -19,7 +19,7 @@ const EmailAttachmentsList = ({attachments, deleteAttachment}) => {
                         />;
                     })
                     :
-                    <div>Geen bijlagen bekend</div>
+                    <div>Geen bijlagen bekend.</div>
             }
         </div>
     );

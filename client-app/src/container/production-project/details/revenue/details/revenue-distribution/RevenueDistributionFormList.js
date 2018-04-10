@@ -8,11 +8,14 @@ const RevenueDistributionFormList = props => {
     return (
         <div>
             <div className="row border header">
-                {props.productionProjectRevenue.confirmed && props.showCheckboxList
-                    ?
-                    <div className="col-sm-1">Selecteer</div>
-                :
-                    <div className="col-sm-1">Id</div>
+                {props.productionProjectRevenue.confirmed && props.showCheckboxList && props.checkedAll &&
+                    <div className="col-sm-1"><input type="checkbox" onChange={props.toggleCheckedAll} checked/></div>
+                }
+                {props.productionProjectRevenue.confirmed && props.showCheckboxList && !props.checkedAll &&
+                <div className="col-sm-1"><input type="checkbox" onChange={props.toggleCheckedAll}/></div>
+                }
+                {!props.showCheckboxList &&
+                      <div className="col-sm-1">Id</div>
                 }
 
                 <div className="col-sm-1">Type</div>
@@ -34,6 +37,7 @@ const RevenueDistributionFormList = props => {
                             key={participation.id}
                             participation={participation}
                             showCheckboxList={props.showCheckboxList}
+                            checkedAll={props.checkedAll}
                             toggleParticipantCheck={props.toggleParticipantCheck}
                             toggleParticipantCheckNoEmail={props.toggleParticipantCheckNoEmail}
                         />;

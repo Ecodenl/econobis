@@ -18,6 +18,7 @@ class ContactNewFormPersonal extends Component {
         super(props);
 
         this.state = {
+            buttonLoading: false,
             organisationPeek: [],
             person: {
                 id: '',
@@ -112,10 +113,17 @@ class ContactNewFormPersonal extends Component {
         this.setState({ ...this.state, errors: errors })
 
         // If no errors send form
-        !hasErrors &&
+        if (!hasErrors) {
+            if(this.state.buttonLoading){
+                return false;
+            }
+            this.setState({
+                buttonLoading: true
+            });
             PersonAPI.newPerson(person).then((payload) => {
                 hashHistory.push(`/contact/${payload.id}`);
             });
+        }
     };
 
     render() {
@@ -248,7 +256,7 @@ class ContactNewFormPersonal extends Component {
 
                 <PanelFooter>
                     <div className="pull-right btn-group" role="group">
-                        <ButtonText buttonText={"Opslaan"} onClickAction={this.handleSubmit} type={"submit"} value={"Submit"}/>
+                        <ButtonText loading={this.state.buttonLoading} loadText={"Persoon wordt aangemaakt."} buttonText={"Opslaan"} onClickAction={this.handleSubmit} type={"submit"} value={"Submit"}/>
                     </div>
                 </PanelFooter>
             </form>

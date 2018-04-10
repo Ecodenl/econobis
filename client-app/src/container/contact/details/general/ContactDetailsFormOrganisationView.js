@@ -33,7 +33,7 @@ const ContactDetailsFormOrganisationView = props => {
 
             <div className="row">
                 <ViewText
-                    label="Kvk"
+                    label="KvK"
                     value={ organisation.chamberOfCommerceNumber }
                 />
                 <ViewText
@@ -55,7 +55,7 @@ const ContactDetailsFormOrganisationView = props => {
 
             <div className="row">
                 <ViewText
-                    label="Iban"
+                    label="IBAN"
                     value={ iban }
                 />
                 <ViewText

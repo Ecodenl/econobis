@@ -155,7 +155,7 @@ class ContactGroupDetailsFormGeneralEdit extends Component {
 
                 <div className="row">
                     <InputDate
-                        label="Start datum"
+                        label="Startdatum"
                         size={"col-sm-6"}
                         name="dateStarted"
                         value={dateStarted}

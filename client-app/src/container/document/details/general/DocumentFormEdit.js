@@ -238,7 +238,7 @@ class DocumentDetailsAPIFormEdit extends Component {
 
                     <div className="row">
                         <InputSelect
-                            label="Productie project"
+                            label="Productieproject"
                             name={"productionProjectId"}
                             value={productionProjectId}
                             options={productionProjects}
@@ -247,7 +247,7 @@ class DocumentDetailsAPIFormEdit extends Component {
                             error={errors.docLinkedAtAny}
                         />
                         <InputSelect
-                            label="Participant productie project"
+                            label="Participant productieproject"
                             name={"participantId"}
                             value={participantId}
                             options={participants}
@@ -301,13 +301,13 @@ class DocumentDetailsAPIFormEdit extends Component {
 
                     <div className="row margin-30-top">
                         <InputText
-                            label="Document groep"
+                            label="Documentgroep"
                             name={"documentGroup"}
                             value={this.props.documentDetails.documentGroup && this.props.documentDetails.documentGroup.name}
                             readOnly={true}
                         />
                         <InputText
-                            label="Filenaam"
+                            label="Bestandsnaam"
                             name={"filename"}
                             value={this.props.documentDetails.filename}
                             readOnly={true}

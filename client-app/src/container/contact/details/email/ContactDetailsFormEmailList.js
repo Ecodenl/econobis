@@ -21,7 +21,7 @@ const ContactDetailsFormEmailList = props => {
                         />;
                     })
                     :
-                    <div>Geen e-mail adressen bekend</div>
+                    <div>Geen e-mailadressen bekend.</div>
             }
         </div>
     );

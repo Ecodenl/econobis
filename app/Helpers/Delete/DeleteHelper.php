@@ -12,6 +12,7 @@ use App\Eco\ProductionProject\ProductionProject;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 class DeleteHelper
 {
@@ -47,6 +48,9 @@ class DeleteHelper
                         break;
                     case 'remove':
                         DeleteHelper::remove($model, $relationInfo['remove']);
+                        break;
+                    case 'remove_attachments':
+                        DeleteHelper::removeAttachments($model, $relationInfo['remove_attachments']);
                         break;
                     default:
                         break;
@@ -97,8 +101,15 @@ class DeleteHelper
     }
 
     private static function remove(Model $model, $relationInfo){
-        if($model->$relationInfo) {
-            $model->$relationInfo->forceDelete();
+        if($model->$relationInfo instanceof Collection){
+            foreach ($model->$relationInfo as $relatedModel){
+                $relatedModel->forceDelete();
+            }
+        }
+        else{
+            if($model->$relationInfo) {
+                $model->$relationInfo->forceDelete();
+            }
         }
     }
 
@@ -130,6 +141,16 @@ class DeleteHelper
             }
 
             $participant->forceDelete();
+        }
+    }
+
+    private static function removeAttachments(Model $model, $relationInfo){
+
+        foreach ($model->attachments as $attachment){
+
+            Storage::disk($relationInfo['disk'])->delete($attachment->filename);
+
+            $attachment->delete();
         }
     }
 }

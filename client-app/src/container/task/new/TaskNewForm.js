@@ -31,7 +31,7 @@ const TaskNewForm = props => {
         <form className="form-horizontal" onSubmit={props.handleSubmit}>
             <div className="row">
                 <InputSelect
-                    label={"Type taak"}
+                    label={finished ? "Type notitie" : "Type taak"}
                     size={"col-sm-6"}
                     name={"typeId"}
                     options={props.taskTypes}
@@ -42,7 +42,7 @@ const TaskNewForm = props => {
 
             <div className="row">
                 <InputTextArea
-                    label={"Taak / notitie"}
+                    label={finished ? "Notitie" : "Taak"}
                     name={"note"}
                     value={note}
                     onChangeAction={props.handleInputChange}
@@ -70,7 +70,7 @@ const TaskNewForm = props => {
 
             <div className="row">
                 <InputDate
-                    label="Eind datum"
+                    label="Einddatum"
                     size={"col-sm-6"}
                     name="datePlannedFinish"
                     value={datePlannedFinish}

@@ -57,8 +57,8 @@ class CampaignsList extends Component {
                 <DataTableHead>
                     <tr className="thead-title-quaternary">
                         <DataTableHeadTitle title={'Nummer'} width={'10%'}/>
-                        <DataTableHeadTitle title={'Begin datum'} width={'10%'}/>
-                        <DataTableHeadTitle title={'Eind datum'} width={'10%'}/>
+                        <DataTableHeadTitle title={'Begindatum'} width={'10%'}/>
+                        <DataTableHeadTitle title={'Einddatum'} width={'10%'}/>
                         <DataTableHeadTitle title={'Naam'} width={'20%'}/>
                         <DataTableHeadTitle title={'Type'} width={'20%'}/>
                         <DataTableHeadTitle title={'Status'} width={'10%'}/>

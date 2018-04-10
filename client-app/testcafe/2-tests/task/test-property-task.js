@@ -14,7 +14,7 @@ const detailsTask = new ModelDetailsTask();
 const gridTask = new ModelGridTask();
 
 
-test('Fill out form intake->opportunity', async (t) => {
+test('Fill out form task->property', async (t) => {
 
     await t
         .useRole(superUser)

@@ -140,7 +140,7 @@ class ParticipantFormEdit extends Component {
 
         if (!validator.isEmpty(participation.ibanPayout)) {
             if (!ibantools.isValidIBAN(participation.ibanPayout)) {
-                errors.ibanPayed = true;
+                errors.ibanPayout = true;
                 hasErrors = true;
             }
         }
@@ -274,6 +274,7 @@ class ParticipantFormEdit extends Component {
                         name={"ibanPayed"}
                         value={ibanPayed}
                         onChangeAction={this.handleInputChange}
+                        error={this.state.errors.ibanPayed}
                     />
                 </div>
 
@@ -306,6 +307,7 @@ class ParticipantFormEdit extends Component {
                         name={"ibanPayout"}
                         value={ibanPayout}
                         onChangeAction={this.handleInputChange}
+                        error={this.state.errors.ibanPayout}
                     />
                 </div>
 

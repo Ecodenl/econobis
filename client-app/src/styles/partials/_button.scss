@@ -17,6 +17,11 @@
 .btn-loading {
   cursor: not-allowed;
 }
+
+.btn-group {
+  display: flex;
+}
+
 .glyphicon-refresh-animate {
   animation: spin 1s infinite linear;
   -webkit-animation: spin2 1s infinite linear;

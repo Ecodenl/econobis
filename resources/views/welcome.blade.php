@@ -9,6 +9,7 @@
 
 </head>
 <body>
+<script type="text/javascript" src="./js/polyfill.js"></script>
 <div id="root"></div>
-<script type="text/javascript" src="./js/manifest.d76140fd84e221be2c13.js"></script><script type="text/javascript" src="./js/vendor.b0d98bab55e5b75c8452.js"></script><script type="text/javascript" src="./js/bundle.cad8d8390a33af554835.js"></script></body>
+<script type="text/javascript" src="./js/vendors~bundle.f9df2859de41ed3ae0d5.js"></script><script type="text/javascript" src="./js/bundle.bde264045048d0473563.js"></script></body>
 </html>

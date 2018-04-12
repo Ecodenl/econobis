@@ -1,24 +1,14 @@
 const webpack = require('webpack');
 const path = require('path');
 
-const VENDOR_LIBS = [
-    'react',  'redux', 'react-redux', 'react-dom',
-    'jquery', 'bootstrap-sass', 'lodash',
-    'axios', 'react-chartjs-2', 'redux-saga', 'moment',
-    'react-dropzone', 'js-file-download', 'validator', 'ibantools',
-    'react-paginate', 'react-day-picker', 'react-big-calendar',
-    '@tinymce/tinymce-react', 'tinymce'
-];
-
 module.exports = {
     entry: {
         bundle: './src/index.js',
-        vendor: VENDOR_LIBS
     },
     resolve: {
         modules: [
-            path.join(__dirname, "src"),
-            "node_modules"
+            path.join(__dirname, 'src'),
+            'node_modules'
         ],
     },
     module: {
@@ -50,13 +40,18 @@ module.exports = {
         ]
     },
     plugins: [
-        new webpack.optimize.CommonsChunkPlugin({
-            names: ['vendor', 'manifest']
-        }),
         new webpack.ProvidePlugin({
             $: "jquery",
             jQuery: "jquery",
-            "window.jQuery": "jquery"
+            "window.jQuery": "jquery",
         })
-    ]
+    ],
+
+    optimization: {
+        splitChunks: {
+            chunks: "all"
+        },
+        noEmitOnErrors: true, // NoEmitOnErrorsPlugin
+        concatenateModules: true //ModuleConcatenationPlugin
+    }
 };

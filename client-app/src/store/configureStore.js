@@ -5,7 +5,7 @@ import rootSaga from '../sagas';
 import reducers from '../reducers';
 
 export const configure = (initialState = {}) => {
-    const sagaMiddleware = createSagaMiddleware();
+    const sagaMiddleware = typeof createSagaMiddleware === 'function' ? createSagaMiddleware() : createSagaMiddleware.default();
 
     const store = createStore(reducers, initialState, compose(
         applyMiddleware(sagaMiddleware),

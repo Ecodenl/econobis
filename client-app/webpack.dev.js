@@ -7,6 +7,7 @@ const path = require('path');
 require('dotenv').config({ path: '.env.development' });
 
 module.exports = merge(common, {
+    mode: 'development',
     output: {
         path: path.join(__dirname, 'dist'),
         filename: '[name].js'

@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import DayPickerInput from 'react-day-picker/DayPickerInput';
-import MomentLocaleUtils from 'react-day-picker/moment';
+import MomentLocaleUtils, { formatDate, parseDate } from 'react-day-picker/moment';
 import moment from 'moment';
 moment.locale('nl');
 
@@ -15,15 +15,20 @@ const DataTableFilterDate = props => {
     return (
         <th className={`DayPicker-overflow ${className}`}>
             <DayPickerInput
-                className={'form-control input-sm'}
                 value={ formattedDate }
                 onDayChange={onChangeAction}
+                formatDate={formatDate}
+                parseDate={parseDate}
                 dayPickerProps={{
                     showWeekNumbers: true,
                     locale: "nl",
                     firstDayOfWeek: 1,
                     localeUtils: MomentLocaleUtils,
                 }}
+                inputProps={{
+                    className: 'form-control input-sm',
+                }}
+                placeholder={""}
             />
         </th>
     );

@@ -8,31 +8,13 @@ const path = require('path');
 require('dotenv').config({ path: '.env.production' });
 
 module.exports = merge(common, {
+    mode: 'production',
     output: {
         path: path.join(__dirname, '../../../../../public_html/' + process.env.MAP_NAME + '/js'),
         filename: '[name].[chunkhash].js',
         publicPath: './js/'
     },
     plugins: [
-        new CleanWebpackPlugin(['../public/js']),
-        new webpack.optimize.ModuleConcatenationPlugin(),
-        new webpack.optimize.UglifyJsPlugin({
-            compress: {
-                warnings: false,
-                screw_ie8: true,
-                conditionals: true,
-                unused: true,
-                comparisons: true,
-                sequences: true,
-                dead_code: true,
-                evaluate: true,
-                if_return: true,
-                join_vars: true
-            },
-            output: {
-                comments: false
-            }
-        }),
         new HtmlWebpackPlugin({
             template: './src/welcome.blade.php',
             filename: '../../../code/' + process.env.MAP_NAME + '/shared/resources/views/welcome.blade.php',

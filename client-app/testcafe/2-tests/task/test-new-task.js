@@ -67,6 +67,8 @@ test('Fill out form task all, task will be a note', async (t) => {
 
         .typeText(newTask.datePlannedStart, '10-03-2018')
 
+        .expect(newTask.datePlannedStart.value).eql('10-03-2018', 'inputdate is equal to "10-03-2018"')
+
         .click(newTask.startTimePlanned)
         .click(newTask.startTimePlanned.child().nth(2))
 

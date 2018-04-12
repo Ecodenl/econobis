@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import DayPickerInput from 'react-day-picker/DayPickerInput';
-import MomentLocaleUtils from 'react-day-picker/moment';
+import MomentLocaleUtils, { formatDate, parseDate } from 'react-day-picker/moment';
 import moment from 'moment';
 
 moment.locale('nl');
@@ -47,10 +47,10 @@ class InputDate extends Component {
                 <div><label htmlFor={id} className={`col-sm-6 ${required}`}>{label}</label></div>
                 <div className={`${size}`}>
                     <DayPickerInput
-                        className={`form-control input-sm ${className}` + (this.state.errorDateFormat ? ' has-error' : '')}
                         id={id}
-                        name={name}
                         value={formattedDate}
+                        formatDate={formatDate}
+                        parseDate={parseDate}
                         onDayChange={this.onDateChange}
                         dayPickerProps={{
                             showWeekNumbers: true,
@@ -58,10 +58,14 @@ class InputDate extends Component {
                             firstDayOfWeek: 1,
                             localeUtils: MomentLocaleUtils,
                         }}
+                        inputProps={{
+                            className: `form-control input-sm ${className}` + (this.state.errorDateFormat ? ' has-error' : ''),
+                            name: name,
+                        }}
                         onBlur={this.validateDate}
                         required={required}
                         readOnly={readOnly}
-
+                        placeholder={""}
                     />
                 </div>
             </div>

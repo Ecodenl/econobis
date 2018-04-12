@@ -11,5 +11,5 @@
 <body>
 <script type="text/javascript" src="./js/polyfill.js"></script>
 <div id="root"></div>
-<script type="text/javascript" src="./js/vendors~bundle.f9df2859de41ed3ae0d5.js"></script><script type="text/javascript" src="./js/bundle.bde264045048d0473563.js"></script></body>
+<script type="text/javascript" src="./js/vendors~bundle.b6532bcd2df5035e8960.js"></script><script type="text/javascript" src="./js/bundle.89d6041f2bac85f72b91.js"></script></body>
 </html>

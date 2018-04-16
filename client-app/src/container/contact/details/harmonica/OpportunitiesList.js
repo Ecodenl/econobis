@@ -21,7 +21,7 @@ const OpportunitiesList = ({relatedOpportunities}) => {
                     return (
                         <tr key={i}>
                             <td className='col-xs-10 clickable'
-                                onClick={() => openItem(relatedOpportunity.id)}>{moment(relatedOpportunity.created_at).format('L')} - {relatedOpportunity.number} </td>
+                                onClick={() => openItem(relatedOpportunity.id)}>{moment(relatedOpportunity.created_at).format('L')} - {relatedOpportunity.number} - {relatedOpportunity.measure_category.name} </td>
                         </tr>
                     )
                 })

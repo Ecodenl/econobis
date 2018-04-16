@@ -80,7 +80,7 @@ class FullContact extends Resource
             'documentCount' => $this->documents()->count(),
             'relatedDocuments' => FullDocument::collection($this->whenLoaded('documents')),
             'opportunityCount' => $this->opportunities()->count(),
-            'relatedOpportunities' => $this->opportunities()->get(),
+            'relatedOpportunities' => $this->opportunities()->with('measureCategory')->get(),
             'participationCount' => $this->participations()->count(),
             'relatedParticipations' => FullParticipantProductionProject::collection($this->whenLoaded('participations')),
             'deletedAt' => $this->deleted_at,

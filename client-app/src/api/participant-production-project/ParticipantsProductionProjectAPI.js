@@ -4,7 +4,7 @@ const URL_API = process.env.URL_API;
 const URL_PARTICIPANT_PRODUCTION_PROJECT = `${URL_API}/api/production-project/participant`;
 
 export default {
-    fetchParticipantsProductionProject: ({ filters, sorts, pagination, productionProjectId }) => {
+    fetchParticipantsProductionProject: ({ filters, extraFilters, sorts, pagination, productionProjectId }) => {
         const requestUrl = `${URL_PARTICIPANT_PRODUCTION_PROJECT}/grid`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
@@ -13,6 +13,7 @@ export default {
             params: {
                 productionProjectId: JSON.stringify(productionProjectId),
                 filters: JSON.stringify(filters),
+                extraFilters: JSON.stringify(extraFilters),
                 sorts: JSON.stringify(sorts),
                 limit: pagination.limit,
                 offset: pagination.offset,

@@ -35,7 +35,8 @@ class ContactNewFormOrganisation extends Component {
                 iban: '',
                 squareMeters: '',
                 newsletter: false,
-                ownerId: props.userId
+                ownerId: props.userId,
+                didAgreeAvg: false
             },
             errors: {
                 name: false,
@@ -113,7 +114,7 @@ class ContactNewFormOrganisation extends Component {
     };
 
     render() {
-        const { typeId, statusId, name, chamberOfCommerceNumber, vatNumber, industryId, memberSince, newsletter, website, iban, squareMeters, ownerId } = this.state.organisation;
+        const { typeId, statusId, name, chamberOfCommerceNumber, vatNumber, industryId, memberSince, newsletter, website, iban, squareMeters, ownerId, didAgreeAvg } = this.state.organisation;
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -242,6 +243,12 @@ class ContactNewFormOrganisation extends Component {
                         label={"Nieuwsbrief"}
                         name={"newsletter"}
                         value={newsletter}
+                        onChangeAction={this.handleInputChange}
+                    />
+                    <InputToggle
+                        label={"Akkoord privacybeleid"}
+                        name={"didAgreeAvg"}
+                        value={didAgreeAvg}
                         onChangeAction={this.handleInputChange}
                     />
                 </div>

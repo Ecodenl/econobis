@@ -37,6 +37,7 @@ class PersonController extends ApiController
             'liable' => 'boolean',
             'liabilityAmount' => 'numeric',
             'ownerId' => 'exists:users,id',
+            'didAgreeAvg' => 'boolean',
         ]);
 
         $personData = $request->validate([
@@ -101,6 +102,7 @@ class PersonController extends ApiController
             'liable' => 'boolean',
             'liabilityAmount' => 'numeric',
             'ownerId' => 'exists:users,id',
+            'didAgreeAvg' => 'boolean',
         ]);
 
         $personData = $request->validate([

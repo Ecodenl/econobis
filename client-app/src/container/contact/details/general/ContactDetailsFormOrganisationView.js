@@ -5,7 +5,7 @@ import moment from 'moment';
 import ViewText from '../../../../components/form/ViewText';
 
 const ContactDetailsFormOrganisationView = props => {
-    const {number, organisation, status, iban, createdAt, memberSince, memberUntil, newsletter} = props.contactDetails;
+    const {number, organisation, status, iban, createdAt, memberSince, memberUntil, newsletter, didAgreeAvg} = props.contactDetails;
 
     return (
         <div onClick={props.switchToEdit}>
@@ -77,12 +77,19 @@ const ContactDetailsFormOrganisationView = props => {
 
             <div className="row">
                 <ViewText
+                    label="Oppervlakte dak"
+                    value={ organisation.squareMeters }
+                />
+            </div>
+
+            <div className="row">
+                <ViewText
                     label="Nieuwsbrief"
                     value={ (newsletter ? 'Ja' : 'Nee') }
                 />
                 <ViewText
-                    label="Oppervlakte dak"
-                    value={ organisation.squareMeters }
+                    label="Akkoord privacybeleid"
+                    value={(didAgreeAvg ? 'Ja' : 'Nee')}
                 />
             </div>
         </div>

@@ -17,7 +17,7 @@ class ContactDetailsFormOrganisationEdit extends Component {
     constructor(props) {
         super(props);
 
-        const { number, organisation, status, iban, createdAt, memberSince = {}, memberUntil = {}, newsletter } = props.contactDetails;
+        const { number, organisation, status, iban, createdAt, memberSince = {}, memberUntil = {}, newsletter, didAgreeAvg } = props.contactDetails;
 
         this.state = {
             organisation: {
@@ -36,6 +36,7 @@ class ContactDetailsFormOrganisationEdit extends Component {
                 iban: iban,
                 squareMeters: organisation.squareMeters,
                 newsletter: newsletter,
+                didAgreeAvg: didAgreeAvg,
             },
             errors: {
                 name: false,
@@ -118,7 +119,7 @@ class ContactDetailsFormOrganisationEdit extends Component {
     };
 
     render() {
-        const { number, typeId, statusId, name, chamberOfCommerceNumber, vatNumber, industryId, createdAt, memberSince, memberUntil, newsletter, website, iban, squareMeters } = this.state.organisation;
+        const { number, typeId, statusId, name, chamberOfCommerceNumber, vatNumber, industryId, createdAt, memberSince, memberUntil, newsletter, didAgreeAvg, website, iban, squareMeters } = this.state.organisation;
 
         return (
             <form className="form-horizontal col-md-12" onSubmit={this.handleSubmit}>
@@ -226,16 +227,25 @@ class ContactDetailsFormOrganisationEdit extends Component {
                 </div>
 
                 <div className="row">
+                    <InputText
+                        label="Oppervlakte"
+                        name="squareMeters"
+                        value={squareMeters}
+                        onChangeAction={this.handleInputChange}
+                    />
+                </div>
+
+                <div className="row">
                     <InputToggle
                         label={"Nieuwsbrief"}
                         name={"newsletter"}
                         value={newsletter}
                         onChangeAction={this.handleInputChange}
                     />
-                    <InputText
-                        label="Oppervlakte"
-                        name="squareMeters"
-                        value={squareMeters}
+                    <InputToggle
+                        label="Akoord privacybeleid"
+                        name="didAgreeAvg"
+                        value={didAgreeAvg}
                         onChangeAction={this.handleInputChange}
                     />
                 </div>

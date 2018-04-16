@@ -36,6 +36,7 @@ class ContactNewFormPersonal extends Component {
                 dateOfBirth: '',
                 newsletter: false,
                 ownerId: props.userId,
+                didAgreeAvg: false,
             },
             errors: {
                 name: false,
@@ -127,7 +128,7 @@ class ContactNewFormPersonal extends Component {
     };
 
     render() {
-        const { typeId, statusId, titleId, initials, firstName, lastNamePrefixId, lastName, memberSince, dateOfBirth, newsletter, ownerId } = this.state.person;
+        const { typeId, statusId, titleId, initials, firstName, lastNamePrefixId, lastName, memberSince, dateOfBirth, newsletter, ownerId, didAgreeAvg } = this.state.person;
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -246,10 +247,19 @@ class ContactNewFormPersonal extends Component {
                         optionName={"fullName"}
                         onChangeAction={this.handleInputChange}
                     />
+                </div>
+
+                <div className="row">
                     <InputToggle
                         label={"Nieuwsbrief"}
                         name={"newsletter"}
                         value={newsletter}
+                        onChangeAction={this.handleInputChange}
+                    />
+                    <InputToggle
+                        label={"Akkoord privacybeleid"}
+                        name={"didAgreeAvg"}
+                        value={didAgreeAvg}
                         onChangeAction={this.handleInputChange}
                     />
                 </div>

@@ -17,7 +17,7 @@ class ContactDetailsFormPersonalEdit extends Component {
     constructor(props) {
         super(props);
 
-        const { number, createdAt, person, status, memberSince = {}, memberUntil = {}, newsletter } = props.contactDetails;
+        const { number, createdAt, person, status, memberSince = {}, memberUntil = {}, newsletter, didAgreeAvg } = props.contactDetails;
 
         this.state = {
             organisationPeek: [
@@ -41,6 +41,7 @@ class ContactDetailsFormPersonalEdit extends Component {
                 typeId: person.type ? person.type.id : '',
                 dateOfBirth: person.dateOfBirth ? moment(person.dateOfBirth.date).format('Y-MM-DD') : '',
                 newsletter: newsletter,
+                didAgreeAvg: didAgreeAvg,
             },
             errors: {
                 name: false,
@@ -138,7 +139,7 @@ class ContactDetailsFormPersonalEdit extends Component {
     };
 
     render() {
-        const {number, createdAt, titleId, statusId, typeId, initials, firstName, lastNamePrefixId, lastName, memberSince, memberUntil, dateOfBirth, newsletter} = this.state.person;
+        const {number, createdAt, titleId, statusId, typeId, initials, firstName, lastNamePrefixId, lastName, memberSince, memberUntil, dateOfBirth, newsletter, didAgreeAvg} = this.state.person;
 
         return (
             <form className="form-horizontal col-md-12" onSubmit={this.handleSubmit}>
@@ -259,6 +260,12 @@ class ContactDetailsFormPersonalEdit extends Component {
                         label={"Nieuwsbrief"}
                         name={"newsletter"}
                         value={newsletter}
+                        onChangeAction={this.handleInputChange}
+                    />
+                    <InputToggle
+                        label="Akoord privacybeleid"
+                        name="didAgreeAvg"
+                        value={didAgreeAvg}
                         onChangeAction={this.handleInputChange}
                     />
                 </div>

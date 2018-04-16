@@ -28,6 +28,7 @@ class OrganisationController extends ApiController
             'liable' => 'boolean',
             'liabilityAmount' => 'numeric',
             'ownerId' => 'exists:users,id',
+            'didAgreeAvg' => 'boolean',
         ]);
 
         $organisationData = $request->validate([
@@ -80,6 +81,7 @@ class OrganisationController extends ApiController
             'iban' => '',
             'liable' => 'boolean',
             'liabilityAmount' => 'numeric',
+            'didAgreeAvg' => 'boolean',
         ]);
 
         $organisationData = $request->validate([

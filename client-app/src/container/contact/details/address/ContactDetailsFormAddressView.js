@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import GetNameByIdHelper from '../../../../helpers/GetNameByIdHelper';
 
 const ContactDetailFormAddressView = props => {
-    const {typeId, street, number, postalCode, city, primary, country, deletedAt } = props.address;
+    const {typeId, street, number, addition, postalCode, city, primary, country, deletedAt } = props.address;
 
     return (
         <div className={`row border ${props.highlightLine}`} onMouseEnter={() => props.onLineEnter()} onMouseLeave={() => props.onLineLeave()}>
@@ -17,7 +17,7 @@ const ContactDetailFormAddressView = props => {
                     }
                 </div>
                 <div className="col-sm-2">
-                    { street + ' ' + number }
+                    { street + ' ' + number + (addition ? addition : '')}
                 </div>
                 <div className="col-sm-2">
                     { postalCode }

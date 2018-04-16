@@ -105,12 +105,12 @@ class ContactDetailFormAddressItem extends Component {
             hasErrors = true;
         };
 
-        if(validator.isEmpty(address.number)){
+        if(validator.isEmpty(address.number + '')){
             errors.number = true;
             hasErrors = true;
         };
 
-        if(validator.isEmpty(address.typeId)){
+        if(validator.isEmpty(address.typeId + '')){
             errors.typeId = true;
             hasErrors = true;
         };

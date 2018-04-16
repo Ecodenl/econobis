@@ -30,6 +30,7 @@ class FullAddress extends Resource
             'country' => GenericResource::make($this->whenLoaded('country')),
             'street' => $this->street,
             'number' => $this->number,
+            'addition' => $this->addition,
             'city' => $this->city,
             'postalCode' => $this->postal_code,
             'primary' => $this->primary,

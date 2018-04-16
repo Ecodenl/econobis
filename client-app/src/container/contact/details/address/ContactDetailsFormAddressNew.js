@@ -20,6 +20,7 @@ class ContactDetailsFormAddressNew extends Component {
                 contactId: this.props.id,
                 street: '',
                 number: '',
+                addition: '',
                 postalCode: '',
                 city: '',
                 typeId: 'visit',
@@ -118,7 +119,7 @@ class ContactDetailsFormAddressNew extends Component {
     };
 
     render() {
-        const {street, number, postalCode, city, typeId, primary, countryId } = this.state.address;
+        const {street, number, addition, postalCode, city, typeId, primary, countryId } = this.state.address;
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -134,16 +135,31 @@ class ContactDetailsFormAddressNew extends Component {
                                 required={"required"}
                                 error={this.state.errors.postalCode}
                             />
-                            <InputText
-                                label={"Nummer"}
-                                id={"nummer"}
-                                size={"col-sm-3"}
-                                name={"number"}
-                                value={number}
-                                onChangeAction={this.handleInputPicoChange}
-                                required={"required"}
-                                error={this.state.errors.number}
-                            />
+                            <div className="form-group col-sm-6">
+                                <label htmlFor={ 'number' } className={`col-sm-6 required`}>{ "Nummer" }</label>
+                                <div className={`col-sm-4`}>
+                                    <input
+                                        type={ 'number' }
+                                        className={`form-control input-sm ` + (this.state.errors.number ? 'has-error' : '')}
+                                        id={ "number" }
+                                        placeholder={ '25' }
+                                        name= { "number" }
+                                        value={ number }
+                                        onChange={ this.handleInputPicoChange }
+                                    />
+                                </div>
+                                <div className={`col-sm-2`}>
+                                    <input
+                                        type={ 'text' }
+                                        className={`form-control input-sm`}
+                                        id={ "addition" }
+                                        placeholder={ 'A' }
+                                        name= { "addition" }
+                                        value={ addition }
+                                        onChange={ this.handleInputChange }
+                                    />
+                                </div>
+                            </div>
                         </div>
 
                         <div className="row">

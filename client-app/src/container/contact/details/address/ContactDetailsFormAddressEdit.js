@@ -9,7 +9,7 @@ import PanelBody from '../../../../components/panel/PanelBody';
 import InputToggle from "../../../../components/form/InputToggle";
 
 const ContactDetailsFormAddressEdit = props => {
-    const { street, number, postalCode, city, typeId, primary, countryId } = props.address;
+    const { street, number, addition, postalCode, city, typeId, primary, countryId } = props.address;
 
     return (
         <div>
@@ -26,15 +26,31 @@ const ContactDetailsFormAddressEdit = props => {
                                 required={"required"}
                                 error={props.postalCodeError}
                             />
-                            <InputText
-                                label={"Nummer"}
-                                id={"nummer"}
-                                size={"col-sm-3"}
-                                name={"number"}
-                                value={number}
-                                onChangeAction={props.handleInputChange}
-                                error={props.numberError}
-                            />
+                            <div className="form-group col-sm-6">
+                                <label htmlFor={ 'number' } className={`col-sm-6 required`}>{ "Nummer" }</label>
+                                <div className={`col-sm-4`}>
+                                    <input
+                                        type={ 'number' }
+                                        className={`form-control input-sm` + (props.numberError ? 'has-error' : '')}
+                                        id={ "number" }
+                                        placeholder={ '25' }
+                                        name= { "number" }
+                                        value={ number }
+                                        onChange={props.handleInputChange}
+                                    />
+                                </div>
+                                <div className={`col-sm-2`}>
+                                    <input
+                                        type={ 'text' }
+                                        className={`form-control input-sm`}
+                                        id={ "addition" }
+                                        placeholder={ 'A' }
+                                        name= { "addition" }
+                                        value={ addition }
+                                        onChange={props.handleInputChange}
+                                    />
+                                </div>
+                            </div>
                         </div>
 
                         <div className="row">

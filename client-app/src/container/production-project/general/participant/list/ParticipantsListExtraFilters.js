@@ -10,8 +10,12 @@ class ParticipantsListExtraFilters extends Component {
         super(props);
 
         this.state = {
-            amountOfFilters: 1,
-            filters: [],
+            amountOfFilters: props.amountOfFilters !== undefined ? props.amountOfFilters : 1,
+            filters: props.extraFilters !== undefined ? props.extraFilters : [{
+                field: 'Naam',
+                type: 'eq',
+                data: ''
+            }],
         };
     };
 
@@ -20,19 +24,14 @@ class ParticipantsListExtraFilters extends Component {
     };
 
     confirmAction = () => {
-        this.props.handleExtraFiltersChange(this.state.filters);
+        this.props.handleExtraFiltersChange(this.state.filters, this.state.amountOfFilters);
         this.props.toggleShowExtraFilters();
     };
 
-    handleFilterChange = (field, type, data, filterNumber) => {
+    handleFilterChange = (field, data, filterNumber) => {
         let filters = this.state.filters;
 
-        filters[filterNumber] =
-            {
-                field: field,
-                type: type,
-                data: data,
-            };
+        filters[filterNumber][field] = data;
 
         this.setState({
             ...this.state,
@@ -41,17 +40,32 @@ class ParticipantsListExtraFilters extends Component {
     };
 
     addFilterRow = () => {
+
+        let filters = this.state.filters;
+
+        filters[this.state.amountOfFilters] =
+            {
+                field: 'Naam',
+                type: 'eq',
+                data: ''
+            };
+
+        setTimeout(() => {
+            this.setState({
+                ...this.state,
+                filters: filters
+            });
+        }, 300);
+
+        setTimeout(() => {
         this.setState({
             amountOfFilters: this.state.amountOfFilters + 1,
         });
+        }, 300);
     };
 
     render() {
         const fields = {
-            'id': {
-             'name': 'Id',
-             'type': 'number'
-            },
             'name': {
                 'name': 'Naam',
                 'type': 'string'
@@ -69,7 +83,7 @@ class ParticipantsListExtraFilters extends Component {
         let filters = [];
 
         for (let i = 0; i < this.state.amountOfFilters; i++) {
-            filters.push(<DataTableCustomFilter key={i} filterNumber={i} fields={fields} handleFilterChange={this.handleFilterChange}/>);
+            filters.push(<DataTableCustomFilter key={i} filter={this.state.filters[i]} filterNumber={i} fields={fields} handleFilterChange={this.handleFilterChange}/>);
         }
 
         return (

@@ -9,11 +9,6 @@ class DataTableCustomFilter extends Component {
 
         this.state = {
             type: this.props.fields[Object.keys(props.fields)[0]].type,
-            filter: {
-                field: Object.keys(props.fields)[0],
-                type: 'eq',
-                data: '',
-            }
         };
     };
 
@@ -26,15 +21,9 @@ class DataTableCustomFilter extends Component {
 
         this.setState({
             type: type,
-            filter: {
-                ...this.state.filter,
-                [name]: value
-            },
         });
 
-        setTimeout(() => {
-            this.props.handleFilterChange(this.state.filter.field, this.state.filter.type, this.state.filter.data, this.props.filterNumber);
-        }, 250);
+        this.props.handleFilterChange(name, value, this.props.filterNumber);
     };
 
     handleInputChange = (event) => {
@@ -42,20 +31,13 @@ class DataTableCustomFilter extends Component {
         const value = target.value;
         const name = target.name;
 
-        this.setState({
-            filter: {
-                ...this.state.filter,
-                [name]: value
-            },
-        });
-
-        setTimeout(() => {
-            this.props.handleFilterChange(this.state.filter.field, this.state.filter.type, this.state.filter.data, this.props.filterNumber);
-        }, 250);
+        this.props.handleFilterChange(name, value, this.props.filterNumber);
     };
 
     render() {
         const {fields} = this.props;
+        const {field} = this.props.filter;
+        const {type} = this.props.filter;
 
         const fieldList = Object.entries(fields).map(([key, value], i) => {
             return (
@@ -66,18 +48,20 @@ class DataTableCustomFilter extends Component {
         return (
             <tr>
                 <td className="col-md-4">
-                    <select className="form-control input-sm" name={'field'} onChange={this.handleFieldChange}>
+                    <select className="form-control input-sm" name={'field'} value={field} onChange={this.handleFieldChange}>
                         {fieldList}
                     </select></td>
                 <td className="col-md-4">
                     {this.state.type === 'string' &&
                     <DataTableCustomFilterSelectString
                         handleInputChange={this.handleInputChange}
+                        type={type}
                     />
                     }
                     {this.state.type === 'number' &&
                         <DataTableCustomFilterSelectNumber
                             handleInputChange={this.handleInputChange}
+                            type={type}
                         />
                     }
                 </td>
@@ -87,7 +71,7 @@ class DataTableCustomFilter extends Component {
                         type='text'
                         id='data'
                         name='data'
-                        value={this.state.value}
+                        value={this.props.filter.data}
                         onChange={this.handleInputChange}
                     />
                 </td>
@@ -98,6 +82,7 @@ class DataTableCustomFilter extends Component {
 
 DataTableCustomFilter.propTypes = {
     fields: PropTypes.object.isRequired,
+    filter: PropTypes.object.isRequired,
 };
 
 export default DataTableCustomFilter;

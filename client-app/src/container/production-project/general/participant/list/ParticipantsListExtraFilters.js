@@ -11,7 +11,7 @@ class ParticipantsListExtraFilters extends Component {
 
         this.state = {
             amountOfFilters: 1,
-            filters: {},
+            filters: [],
         };
     };
 
@@ -20,24 +20,23 @@ class ParticipantsListExtraFilters extends Component {
     };
 
     confirmAction = () => {
-
         this.props.handleExtraFiltersChange(this.state.filters);
         this.props.toggleShowExtraFilters();
     };
 
     handleFilterChange = (field, type, data, filterNumber) => {
-        const fieldName = 'field[' + filterNumber + ']';
-        const typeName = 'type[' + filterNumber + ']';
-        const dataName = 'data[' + filterNumber + ']';
+        let filters = this.state.filters;
+
+        filters[filterNumber] =
+            {
+                field: field,
+                type: type,
+                data: data,
+            };
 
         this.setState({
             ...this.state,
-            filters: {
-                ...this.state.filters,
-                [fieldName]: field,
-                [typeName]: type,
-                [dataName]: data
-            },
+            filters: filters
         });
     };
 

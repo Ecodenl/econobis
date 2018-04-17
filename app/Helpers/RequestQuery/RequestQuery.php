@@ -84,6 +84,7 @@ abstract class RequestQuery
         $this->joiner->resetProcessedJoins();
         $query = $this->baseQuery();
         $this->applyFilter($query);
+        $this->applyExtraFilter($query);
         return $query->count();
     }
 

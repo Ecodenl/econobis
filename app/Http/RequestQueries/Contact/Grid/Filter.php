@@ -10,6 +10,7 @@ namespace App\Http\RequestQueries\Contact\Grid;
 
 
 use App\Helpers\RequestQuery\RequestFilter;
+use Illuminate\Support\Facades\DB;
 
 class Filter extends RequestFilter
 {
@@ -58,12 +59,9 @@ class Filter extends RequestFilter
 
     protected function applyStreetAndNumberFilter($query, $type, $data)
     {
-        $query->where(function($query) use ($type, $data) {
-            $this->applyFilter($query, 'addresses.street', $type, $data);
-            $query->orWhere(function($query) use ($data, $type) {
-                $this->applyFilter($query, 'addresses.number', $type, $data);
-            });
-        });
+        $data = str_replace(' ', '', $data);
+
+        $query->whereRaw('concat(IFNULL(addresses.street,\'\'), IFNULL(addresses.number,\'\'),  IFNULL(addresses.addition,\'\')) LIKE ' . DB::connection()->getPdo()->quote('%' . $data . '%'));
 
         return false;
     }

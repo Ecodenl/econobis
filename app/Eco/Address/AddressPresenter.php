@@ -13,6 +13,6 @@ class AddressPresenter extends \Laracasts\Presenter\Presenter
 {
     public function streetAndNumber()
     {
-        return $this->entity->street . ' ' . $this->entity->number;
+        return $this->entity->street . ' ' . $this->entity->number . $this->entity->addition;
     }
 }

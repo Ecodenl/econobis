@@ -3,6 +3,11 @@ import PropTypes from 'prop-types';
 import DataTableCustomFilterSelectString from "./DataTableCustomFilterSelectString";
 import DataTableCustomFilterSelectNumber from "./DataTableCustomFilterSelectNumber";
 import DataTableCustomFilterSelectDropdown from "./DataTableCustomFilterSelectDropdown";
+import DayPickerInput from 'react-day-picker/DayPickerInput';
+import MomentLocaleUtils, { formatDate, parseDate } from 'react-day-picker/moment';
+import moment from 'moment';
+
+moment.locale('nl');
 
 class DataTableCustomFilter extends Component {
     constructor(props) {
@@ -21,7 +26,7 @@ class DataTableCustomFilter extends Component {
 
         const type = this.props.fields[value].type;
         const dropDownOptions = this.props.fields[value].dropDownOptions ? this.props.fields[value].dropDownOptions : '';
-
+        console.log(type);
         this.setState({
             type: type,
             dropDownOptions: dropDownOptions
@@ -36,6 +41,11 @@ class DataTableCustomFilter extends Component {
         const name = target.name;
 
         this.props.handleFilterChange(name, value, this.props.filterNumber);
+    };
+
+    handleInputChangeDate = (date) => {
+        const formattedDate = (date ? moment(date).format('Y-MM-DD') : '');
+        this.props.handleFilterChange('data', formattedDate, this.props.filterNumber);
     };
 
     render() {
@@ -62,7 +72,7 @@ class DataTableCustomFilter extends Component {
                         type={type}
                     />
                     }
-                    {this.state.type === 'number' &&
+                    {(this.state.type === 'number' || this.state.type === 'date') &&
                         <DataTableCustomFilterSelectNumber
                             handleInputChange={this.handleInputChange}
                             type={type}
@@ -75,7 +85,7 @@ class DataTableCustomFilter extends Component {
                     />
                     }
                 </td>
-                {this.state.type === 'number' || this.state.type === 'string' &&
+                {(this.state.type === 'number' || this.state.type === 'string') &&
                 <td className="col-md-4">
                     <input
                         className={'form-control input-sm'}
@@ -99,6 +109,28 @@ class DataTableCustomFilter extends Component {
                             return <option key={ option.id } value={ option.id }>{ option['name'] }</option>
                         }) }
                     </select>
+                </td>
+                }
+                {this.state.type === 'date' &&
+                <td className="col-md-4">
+                    <DayPickerInput
+                        id='data'
+                        value={this.props.filter.data}
+                        onDayChange={this.handleInputChangeDate}
+                        formatDate={formatDate}
+                        parseDate={parseDate}
+                        dayPickerProps={{
+                            showWeekNumbers: true,
+                            locale: "nl",
+                            firstDayOfWeek: 1,
+                            localeUtils: MomentLocaleUtils,
+                        }}
+                        inputProps={{
+                            className: `form-control input-sm`,
+                            name: 'data',
+                        }}
+                        // placeholder={""}
+                    />
                 </td>
                 }
 

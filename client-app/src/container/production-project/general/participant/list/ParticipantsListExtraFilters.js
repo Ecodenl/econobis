@@ -83,11 +83,15 @@ class ParticipantsListExtraFilters extends Component {
                 'name': 'Aantal participaties',
                 'type': 'number'
             },
-            'contactStatus': {
-                'name': 'Contact status',
-                'type': 'dropdown',
-                'dropDownOptions': this.props.contactStatuses
+            'dateRegister': {
+                'name': 'Datum inschrijving participatie',
+                'type': 'date'
             },
+            // 'participationInOption': {
+            //     'name': 'Participaties status',
+            //     'type': 'dropdown',
+            //     'dropDownOptions': this.props.participantProductionProjectStatus
+            // },
         };
 
         let filters = [];
@@ -133,7 +137,7 @@ class ParticipantsListExtraFilters extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        contactStatuses: state.systemData.contactStatuses,
+        participantProductionProjectStatus: state.systemData.contactStatuses,
     };
 };
 

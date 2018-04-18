@@ -29,7 +29,7 @@ class QuotationRequestNewFormGeneral extends Component {
                 opportunityId: '',
                 organisationId: '',
                 dateRecorded: '',
-                statusId: '1',
+                statusId: '5', //offerte aangevraagd, also alter componentwillmount when changing default!
                 dateReleased: '',
                 dateValid: '',
                 quotationText: '',
@@ -56,7 +56,7 @@ class QuotationRequestNewFormGeneral extends Component {
                     opportunityId: payload.id,
                     organisationId: '',
                     dateRecorded: '',
-                    statusId: '1',
+                    statusId: '5',
                     dateReleased: '',
                     dateValid: '',
                     quotationText: payload.quotationText ? payload.quotationText : '',

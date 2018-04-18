@@ -3,6 +3,7 @@ import React, {Component} from 'react';
 import Modal from '../../../../../components/modal/Modal';
 import DataTableCustomFilter from "../../../../../components/dataTable/DataTableCustomFilter";
 import ButtonText from "../../../../../components/button/ButtonText";
+import {connect} from "react-redux";
 
 class ParticipantsListExtraFilters extends Component {
 
@@ -12,7 +13,7 @@ class ParticipantsListExtraFilters extends Component {
         this.state = {
             amountOfFilters: props.amountOfFilters !== undefined ? props.amountOfFilters : 1,
             filters: props.extraFilters !== undefined ? props.extraFilters : [{
-                field: 'Naam',
+                field: 'name',
                 type: 'eq',
                 data: ''
             }],
@@ -45,7 +46,7 @@ class ParticipantsListExtraFilters extends Component {
 
         filters[this.state.amountOfFilters] =
             {
-                field: 'Naam',
+                field: 'name',
                 type: 'eq',
                 data: ''
             };
@@ -74,16 +75,31 @@ class ParticipantsListExtraFilters extends Component {
                 'name': 'Postcode',
                 'type': 'string'
             },
+            'postalCodeNumber': {
+                'name': 'Postcode nummer',
+                'type': 'number'
+            },
             'currentParticipations': {
                 'name': 'Aantal participaties',
                 'type': 'number'
+            },
+            'contactStatus': {
+                'name': 'Contact status',
+                'type': 'dropdown',
+                'dropDownOptions': this.props.contactStatuses
             },
         };
 
         let filters = [];
 
         for (let i = 0; i < this.state.amountOfFilters; i++) {
-            filters.push(<DataTableCustomFilter key={i} filter={this.state.filters[i]} filterNumber={i} fields={fields} handleFilterChange={this.handleFilterChange}/>);
+            filters.push(<DataTableCustomFilter
+                key={i}
+                filter={this.state.filters[i]}
+                filterNumber={i}
+                fields={fields}
+                handleFilterChange={this.handleFilterChange}
+            />);
         }
 
         return (
@@ -115,5 +131,10 @@ class ParticipantsListExtraFilters extends Component {
     }
 };
 
+const mapStateToProps = (state) => {
+    return {
+        contactStatuses: state.systemData.contactStatuses,
+    };
+};
 
-export default ParticipantsListExtraFilters;
+export default connect(mapStateToProps)(ParticipantsListExtraFilters);

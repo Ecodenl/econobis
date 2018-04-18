@@ -2,13 +2,15 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import DataTableCustomFilterSelectString from "./DataTableCustomFilterSelectString";
 import DataTableCustomFilterSelectNumber from "./DataTableCustomFilterSelectNumber";
+import DataTableCustomFilterSelectDropdown from "./DataTableCustomFilterSelectDropdown";
 
 class DataTableCustomFilter extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            type: this.props.fields[Object.keys(props.fields)[0]].type,
+            type: this.props.fields[this.props.filter.field].type,
+            dropDownOptions: this.props.fields[this.props.filter.field].dropDownOptions ? this.props.fields[this.props.filter.field].dropDownOptions : '',
         };
     };
 
@@ -18,9 +20,11 @@ class DataTableCustomFilter extends Component {
         const name = target.name;
 
         const type = this.props.fields[value].type;
+        const dropDownOptions = this.props.fields[value].dropDownOptions ? this.props.fields[value].dropDownOptions : '';
 
         this.setState({
             type: type,
+            dropDownOptions: dropDownOptions
         });
 
         this.props.handleFilterChange(name, value, this.props.filterNumber);
@@ -64,7 +68,14 @@ class DataTableCustomFilter extends Component {
                             type={type}
                         />
                     }
+                    {this.state.type === 'dropdown' &&
+                    <DataTableCustomFilterSelectDropdown
+                        handleInputChange={this.handleInputChange}
+                        type={type}
+                    />
+                    }
                 </td>
+                {this.state.type === 'number' || this.state.type === 'string' &&
                 <td className="col-md-4">
                     <input
                         className={'form-control input-sm'}
@@ -75,6 +86,22 @@ class DataTableCustomFilter extends Component {
                         onChange={this.handleInputChange}
                     />
                 </td>
+                }
+                {this.state.type === 'dropdown' &&
+                <td className="col-md-4">
+                    <select
+                        className={`form-control input-sm`}
+                        id='data'
+                        name='data'
+                        value={this.props.filter.data}
+                        onChange={this.handleInputChange}>
+                        { this.state.dropDownOptions.map((option) => {
+                            return <option key={ option.id } value={ option.id }>{ option['name'] }</option>
+                        }) }
+                    </select>
+                </td>
+                }
+
             </tr>
         )
     }

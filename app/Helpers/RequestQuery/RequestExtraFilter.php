@@ -24,7 +24,7 @@ abstract class RequestExtraFilter extends RequestFilter
                 $query->whereRaw('(' . $raw . ') !=' . DB::connection()->getPdo()->quote($data));
                 break;
             case 'ct':
-                $query->whereRaw('(' . $raw . ') LIKE %' . DB::connection()->getPdo()->quote($data) . '%');
+                $query->whereRaw('(' . $raw . ') LIKE ' . DB::connection()->getPdo()->quote('%' . $data  . '%'));
                 break;
             case 'lt':
                 $query->whereRaw('(' . $raw . ') < ' . DB::connection()->getPdo()->quote($data));
@@ -39,16 +39,16 @@ abstract class RequestExtraFilter extends RequestFilter
                 $query->whereRaw('(' . $raw . ') >=' . DB::connection()->getPdo()->quote($data));
                 break;
             case 'bw':
-                $query->whereRaw('(' . $raw . ') LIKE' . DB::connection()->getPdo()->quote($data) . '%');
+                $query->whereRaw('(' . $raw . ') LIKE ' . DB::connection()->getPdo()->quote($data . '%'));
                 break;
             case 'nbw':
-                $query->whereRaw('(' . $raw . ') NOT LIKE' . DB::connection()->getPdo()->quote($data) . '%');
+                $query->whereRaw('(' . $raw . ') NOT LIKE ' . DB::connection()->getPdo()->quote($data . '%'));
                 break;
             case 'ew':
-                $query->whereRaw('(' . $raw . ') LIKE %' . DB::connection()->getPdo()->quote($data));
+                $query->whereRaw('(' . $raw . ') LIKE ' . DB::connection()->getPdo()->quote('%' . $data));
                 break;
             case 'new':
-                $query->whereRaw('(' . $raw . ') NOT LIKE %' . DB::connection()->getPdo()->quote($data));
+                $query->whereRaw('(' . $raw . ') NOT LIKE ' . DB::connection()->getPdo()->quote('%' . $data));
                 break;
         }
     }

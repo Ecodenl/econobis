@@ -142,7 +142,6 @@ class ContactDetailsFormAddressNew extends Component {
                                         type={ 'number' }
                                         className={`form-control input-sm ` + (this.state.errors.number ? 'has-error' : '')}
                                         id={ "number" }
-                                        placeholder={ '25' }
                                         name= { "number" }
                                         value={ number }
                                         onChange={ this.handleInputPicoChange }
@@ -153,7 +152,6 @@ class ContactDetailsFormAddressNew extends Component {
                                         type={ 'text' }
                                         className={`form-control input-sm`}
                                         id={ "addition" }
-                                        placeholder={ 'A' }
                                         name= { "addition" }
                                         value={ addition }
                                         onChange={ this.handleInputChange }

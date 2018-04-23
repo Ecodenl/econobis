@@ -93,12 +93,6 @@ class ContactDetailsFormOtherEdit extends Component {
             <form className="form-horizontal col-md-12" onSubmit={this.handleSubmit}>
                 <div className="row">
                     <InputText
-                        label="Voornaam partner"
-                        name={"firstNamePartner"}
-                        value={firstNamePartner}
-                        onChangeAction={this.handleInputChange}
-                    />
-                    <InputText
                         label={"IBAN"}
                         name={"iban"}
                         value={iban}
@@ -106,20 +100,36 @@ class ContactDetailsFormOtherEdit extends Component {
                         readOnly={!this.props.permissions.updateContactIban}
                         error={this.state.errors.iban}
                     />
+                    <InputText
+                        label="Voornaam partner"
+                        name={"firstNamePartner"}
+                        value={firstNamePartner}
+                        onChangeAction={this.handleInputChange}
+                    />
                 </div>
 
                 <div className="row">
+                    <InputText
+                        label={"IBAN t.n.v."}
+                        name={"ibanAttn"}
+                        value={ibanAttn}
+                        onChangeAction={this.handleInputChange}
+                    />
                     <InputText
                         label="Achternaam partner"
                         name={"lastNamePartner"}
                         value={lastNamePartner}
                         onChangeAction={this.handleInputChange}
                     />
-                    <InputText
-                        label={"IBAN t.n.v."}
-                        name={"ibanAttn"}
-                        value={ibanAttn}
-                        onChangeAction={this.handleInputChange}
+                </div>
+
+                <div className="row">
+                    <div className="form-group col-sm-6"/>
+                    <InputDate
+                        label="Geboortedatum partner"
+                        name={"dateOfBirthPartner"}
+                        value={ dateOfBirthPartner }
+                        onChangeAction={this.handleChangeDateOfBirthPartner}
                     />
                 </div>
 
@@ -130,15 +140,6 @@ class ContactDetailsFormOtherEdit extends Component {
                         value={liable}
                         onChangeAction={this.handleInputChange}
                     />
-                    <InputDate
-                        label="Geboortedatum partner"
-                        name={"dateOfBirthPartner"}
-                        value={ dateOfBirthPartner }
-                        onChangeAction={this.handleChangeDateOfBirthPartner}
-                    />
-                </div>
-
-                <div className="row">
                     <InputText
                         type={"number"}
                         label={"Aansprakelijkheidsbedrag"}

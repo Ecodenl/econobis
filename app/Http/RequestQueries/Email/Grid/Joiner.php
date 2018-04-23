@@ -17,4 +17,10 @@ class Joiner extends RequestJoiner
     {
         $query->join('mailboxes', 'emails.mailbox_id', '=', 'mailboxes.id');
     }
+
+    protected function applyContactJoin($query)
+    {
+        $query->join('contact_email', 'contact_email.email_id', '=', 'emails.id');
+        $query->join('contacts', 'contact_email.contact_id', '=', 'contacts.id');
+    }
 }

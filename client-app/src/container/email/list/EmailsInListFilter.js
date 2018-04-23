@@ -10,7 +10,8 @@ import {
     setFilterEmailSentBy,
     setFilterEmailStatusId,
     setFilterEmailSubject,
-    setFilterEmailTo
+    setFilterEmailTo,
+    setFilterEmailContact
 } from '../../../actions/email/EmailFiltersActions';
 
 import DataTableFilterDate from "../../../components/dataTable/DataTableFilterDate";
@@ -37,6 +38,10 @@ const EmailsInListFilter = props => {
         props.setFilterEmailTo(e.target.value);
     };
 
+    const onContactsChange = (e) => {
+        props.setFilterEmailContact(e.target.value);
+    };
+
     const onStatusIdChange = (e) => {
         props.setFilterEmailStatusId(e.target.value);
 
@@ -57,6 +62,7 @@ const EmailsInListFilter = props => {
             <th><input type="text" className="form-control input-sm" value={ props.filters.mailbox.data} onChange={onMailboxChange} /></th>
             <th><input type="text" className="form-control input-sm" value={ props.filters.sentBy.data} onChange={onSentByChange} /></th>
             <th><input type="text" className="form-control input-sm" value={ props.filters.to.data} onChange={onToChange} /></th>
+            <th><input type="text" className="form-control input-sm" value={ props.filters.contact.data} onChange={onContactsChange} /></th>
             <th><input type="text" className="form-control input-sm" value={ props.filters.subject.data} onChange={onSubjectChange} /></th>
 
             <th>
@@ -89,7 +95,8 @@ const mapDispatchToProps = (dispatch) => {
         setFilterEmailSentBy,
         setFilterEmailStatusId,
         setFilterEmailSubject,
-        setFilterEmailTo
+        setFilterEmailTo,
+        setFilterEmailContact
     }, dispatch);
 };
 

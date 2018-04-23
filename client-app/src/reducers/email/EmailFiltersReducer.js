@@ -15,6 +15,10 @@ const filtersReducerDefaultState = {
         field: 'to',
         data: '',
     },
+    contact: {
+        field: 'contact',
+        data: '',
+    },
     subject: {
         field: 'subject',
         data: '',
@@ -52,11 +56,19 @@ export default (state = filtersReducerDefaultState, action) => {
                 }
             };
         case 'SET_FILTER_EMAIL_TO':
+        return {
+            ...state,
+            to: {
+                ...state.to,
+                data: action.to,
+            }
+        };
+        case 'SET_FILTER_EMAIL_CONTACT':
             return {
                 ...state,
-                to: {
-                    ...state.to,
-                    data: action.to,
+                contact: {
+                    ...state.contact,
+                    data: action.contact,
                 }
             };
         case 'SET_FILTER_EMAIL_SUBJECT':

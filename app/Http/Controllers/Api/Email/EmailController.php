@@ -68,8 +68,7 @@ class EmailController
         $total = $queryBuilderNoPagination->count();
 
         $emails = $queryBuilderPagination->get();
-
-        $emails->load('mailbox');
+        $emails->load('mailbox', 'contacts');
 
         return GridEmail::collection($emails)
             ->additional([

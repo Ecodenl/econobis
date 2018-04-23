@@ -9,6 +9,7 @@
 namespace App\Http\Resources\Email;
 
 
+use App\Http\Resources\Contact\ContactPeek;
 use App\Http\Resources\EnumWithIdAndName\FullEnumWithIdAndName;
 use Illuminate\Http\Resources\Json\Resource;
 
@@ -26,6 +27,7 @@ class GridEmail extends Resource
             'subject' => $this->subject,
             'status' => FullEnumWithIdAndName::make($this->getStatus()),
             'folder' => $this->folder,
+            'contacts' => ContactPeek::collection($this->whenLoaded('contacts'))
         ];
     }
 }

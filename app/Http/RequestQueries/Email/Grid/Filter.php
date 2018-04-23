@@ -10,6 +10,7 @@ namespace App\Http\RequestQueries\Email\Grid;
 
 
 use App\Helpers\RequestQuery\RequestFilter;
+use Illuminate\Support\Facades\DB;
 use Zend\Diactoros\Request;
 
 class Filter extends RequestFilter
@@ -19,6 +20,7 @@ class Filter extends RequestFilter
         'mailbox',
         'sentBy',
         'to',
+        'contact',
         'subject',
         'statusId',
     ];
@@ -34,6 +36,7 @@ class Filter extends RequestFilter
 
     protected $joins = [
         'mailbox' => 'mailboxes',
+        'contact' => 'contact',
     ];
 
     protected $defaultTypes = [
@@ -49,6 +52,13 @@ class Filter extends RequestFilter
       }
 
         return true;
+    }
+
+    protected function applyContactFilter($query, $type, $data)
+    {
+        $query->whereRaw('concat(IFNULL(contacts.full_name,\'\'), IFNULL(contacts.number,\'\')) LIKE ' . DB::connection()->getPdo()->quote('%' . $data . '%'));
+
+        return false;
     }
 
 }

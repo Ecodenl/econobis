@@ -18,6 +18,11 @@ export const setFilterEmailTo = (to) => ({
     to,
 });
 
+export const setFilterEmailContact = (contact) => ({
+    type: 'SET_FILTER_EMAIL_CONTACT',
+    contact,
+});
+
 export const setFilterEmailSubject = (subject) => ({
     type: 'SET_FILTER_EMAIL_SUBJECT',
     subject,

@@ -33,6 +33,7 @@ class ContactNewFormOrganisation extends Component {
                 typeId: '',
                 website: '',
                 iban: '',
+                ibanAttn: '',
                 squareMeters: '',
                 newsletter: false,
                 ownerId: props.userId,
@@ -114,7 +115,7 @@ class ContactNewFormOrganisation extends Component {
     };
 
     render() {
-        const { typeId, statusId, name, chamberOfCommerceNumber, vatNumber, industryId, memberSince, newsletter, website, iban, squareMeters, ownerId, didAgreeAvg } = this.state.organisation;
+        const { typeId, statusId, name, chamberOfCommerceNumber, vatNumber, industryId, memberSince, newsletter, website, iban, ibanAttn, squareMeters, ownerId, didAgreeAvg } = this.state.organisation;
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -194,14 +195,20 @@ class ContactNewFormOrganisation extends Component {
                         error={this.state.errors.iban}
                     />
                     <InputText
-                        label={"Website"}
-                        name={"website"}
-                        value={website}
+                        label="IBAN t.n.v."
+                        name="ibanAttn"
+                        value={ibanAttn}
                         onChangeAction={this.handleInputChange}
                     />
                 </div>
 
                 <div className="row">
+                    <InputText
+                        label={"Website"}
+                        name={"website"}
+                        value={website}
+                        onChangeAction={this.handleInputChange}
+                    />
                     <InputSelect
                         label={"Industrie"}
                         size={"col-sm-6"}
@@ -210,6 +217,9 @@ class ContactNewFormOrganisation extends Component {
                         value={industryId}
                         onChangeAction={this.handleInputChange}
                     />
+                </div>
+
+                <div className="row">
                     <InputSelect
                         label={"Soort contact"}
                         size={"col-sm-6"}
@@ -218,9 +228,6 @@ class ContactNewFormOrganisation extends Component {
                         value={typeId}
                         onChangeAction={this.handleInputChange}
                     />
-                </div>
-
-                <div className="row">
                     <InputSelect
                         label={"Eigenaar"}
                         size={"col-sm-6"}
@@ -230,21 +237,23 @@ class ContactNewFormOrganisation extends Component {
                         optionName={"fullName"}
                         onChangeAction={this.handleInputChange}
                     />
-
+                </div>
+                <div className="row">
                     <InputText
                         label="Oppervlakte"
                         name="squareMeters"
                         value={squareMeters}
                         onChangeAction={this.handleInputChange}
                     />
-                </div>
-                <div className="row">
                     <InputToggle
                         label={"Nieuwsbrief"}
                         name={"newsletter"}
                         value={newsletter}
                         onChangeAction={this.handleInputChange}
                     />
+                </div>
+
+                <div className="row">
                     <InputToggle
                         label={"Akkoord privacybeleid"}
                         name={"didAgreeAvg"}
@@ -252,6 +261,7 @@ class ContactNewFormOrganisation extends Component {
                         onChangeAction={this.handleInputChange}
                     />
                 </div>
+
                 <PanelFooter>
                     <div className="pull-right btn-group" role="group">
                         <ButtonText loading={this.state.buttonLoading} loadText={"Organisatie wordt aangemaakt."} buttonText={"Opslaan"} onClickAction={this.handleSubmit}/>

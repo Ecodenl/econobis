@@ -54,6 +54,7 @@ class FullContact extends Resource
             'createdAt' => $this->created_at,
             'updatedAt' => $this->updated_at,
             'iban' => $this->iban,
+            'ibanAttn' => $this->iban_attn,
             'liable' => $this->liable,
             'liabilityAmount' => $this->liability_amount,
             'ownerId' => $this->owner_id,

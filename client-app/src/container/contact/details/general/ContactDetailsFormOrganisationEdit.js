@@ -17,7 +17,7 @@ class ContactDetailsFormOrganisationEdit extends Component {
     constructor(props) {
         super(props);
 
-        const { number, organisation, status, iban, createdAt, memberSince = {}, memberUntil = {}, newsletter, didAgreeAvg } = props.contactDetails;
+        const { number, organisation, status, iban, ibanAttn, createdAt, memberSince = {}, memberUntil = {}, newsletter, didAgreeAvg } = props.contactDetails;
 
         this.state = {
             organisation: {
@@ -34,6 +34,7 @@ class ContactDetailsFormOrganisationEdit extends Component {
                 typeId: organisation.type ? organisation.type.id : '',
                 website: organisation.website,
                 iban: iban,
+                ibanAttn: ibanAttn ? ibanAttn : '',
                 squareMeters: organisation.squareMeters,
                 newsletter: newsletter,
                 didAgreeAvg: didAgreeAvg,
@@ -119,7 +120,7 @@ class ContactDetailsFormOrganisationEdit extends Component {
     };
 
     render() {
-        const { number, typeId, statusId, name, chamberOfCommerceNumber, vatNumber, industryId, createdAt, memberSince, memberUntil, newsletter, didAgreeAvg, website, iban, squareMeters } = this.state.organisation;
+        const { number, typeId, statusId, name, chamberOfCommerceNumber, vatNumber, industryId, createdAt, memberSince, memberUntil, newsletter, didAgreeAvg, website, iban, ibanAttn, squareMeters } = this.state.organisation;
 
         return (
             <form className="form-horizontal col-md-12" onSubmit={this.handleSubmit}>
@@ -200,14 +201,20 @@ class ContactDetailsFormOrganisationEdit extends Component {
                         error={this.state.errors.iban}
                     />
                     <InputText
-                        label={"Website"}
-                        name={"website"}
-                        value={website}
+                        label="IBAN t.n.v."
+                        name="ibanAttn"
+                        value={ibanAttn}
                         onChangeAction={this.handleInputChange}
                     />
                 </div>
 
                 <div className="row">
+                    <InputText
+                        label={"Website"}
+                        name={"website"}
+                        value={website}
+                        onChangeAction={this.handleInputChange}
+                    />
                     <InputSelect
                         label={"Industrie"}
                         size={"col-sm-6"}
@@ -216,6 +223,9 @@ class ContactDetailsFormOrganisationEdit extends Component {
                         value={industryId}
                         onChangeAction={this.handleInputChange}
                     />
+                </div>
+
+                <div className="row">
                     <InputSelect
                         label={"Soort contact"}
                         size={"col-sm-6"}
@@ -224,9 +234,6 @@ class ContactDetailsFormOrganisationEdit extends Component {
                         value={typeId}
                         onChangeAction={this.handleInputChange}
                     />
-                </div>
-
-                <div className="row">
                     <InputText
                         label="Oppervlakte"
                         name="squareMeters"

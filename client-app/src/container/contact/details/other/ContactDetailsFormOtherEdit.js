@@ -16,7 +16,7 @@ class ContactDetailsFormOtherEdit extends Component {
     constructor(props) {
         super(props);
 
-        const {  person, iban, liable, liabilityAmount } = props.contactDetails;
+        const {  person, iban, ibanAttn, liable, liabilityAmount } = props.contactDetails;
 
         this.state = {
             other: {
@@ -25,6 +25,7 @@ class ContactDetailsFormOtherEdit extends Component {
                 lastNamePartner: person.lastNamePartner,
                 dateOfBirthPartner: person.dateOfBirthPartner ? moment(person.dateOfBirthPartner).format('Y-MM-DD') : '',
                 iban: iban ? iban : '',
+                ibanAttn: ibanAttn ? ibanAttn : '',
                 liable: liable,
                 liabilityAmount: liabilityAmount,
             },
@@ -86,7 +87,7 @@ class ContactDetailsFormOtherEdit extends Component {
     };
 
     render() {
-        const { firstNamePartner, lastNamePartner, dateOfBirthPartner, iban, liable, liabilityAmount  } = this.state.other;
+        const { firstNamePartner, lastNamePartner, dateOfBirthPartner, iban, ibanAttn, liable, liabilityAmount  } = this.state.other;
 
         return (
             <form className="form-horizontal col-md-12" onSubmit={this.handleSubmit}>
@@ -114,21 +115,30 @@ class ContactDetailsFormOtherEdit extends Component {
                         value={lastNamePartner}
                         onChangeAction={this.handleInputChange}
                     />
+                    <InputText
+                        label={"IBAN t.n.v."}
+                        name={"ibanAttn"}
+                        value={ibanAttn}
+                        onChangeAction={this.handleInputChange}
+                    />
+                </div>
+
+                <div className="row">
                     <InputToggle
                         label={"Aansprakelijkheid"}
                         name={"liable"}
                         value={liable}
                         onChangeAction={this.handleInputChange}
                     />
-                </div>
-
-                <div className="row">
                     <InputDate
                         label="Geboortedatum partner"
                         name={"dateOfBirthPartner"}
                         value={ dateOfBirthPartner }
                         onChangeAction={this.handleChangeDateOfBirthPartner}
                     />
+                </div>
+
+                <div className="row">
                     <InputText
                         type={"number"}
                         label={"Aansprakelijkheidsbedrag"}

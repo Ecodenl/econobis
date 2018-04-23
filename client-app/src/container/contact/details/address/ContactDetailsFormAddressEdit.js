@@ -33,7 +33,6 @@ const ContactDetailsFormAddressEdit = props => {
                                         type={ 'number' }
                                         className={`form-control input-sm` + (props.numberError ? 'has-error' : '')}
                                         id={ "number" }
-                                        placeholder={ '25' }
                                         name= { "number" }
                                         value={ number }
                                         onChange={props.handleInputChange}
@@ -44,7 +43,6 @@ const ContactDetailsFormAddressEdit = props => {
                                         type={ 'text' }
                                         className={`form-control input-sm`}
                                         id={ "addition" }
-                                        placeholder={ 'A' }
                                         name= { "addition" }
                                         value={ addition }
                                         onChange={props.handleInputChange}

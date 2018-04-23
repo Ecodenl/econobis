@@ -41,9 +41,11 @@ class ParticipantsListApp extends Component {
             modalText: '',
             buttonConfirmText: '',
             readyForCreation: false,
+            extraFilters: {}
         };
 
         this.handleInputChange = this.handleInputChange.bind(this);
+        this.handleExtraFiltersChange = this.handleExtraFiltersChange.bind(this);
         this.toggleParticipantCheck = this.toggleParticipantCheck.bind(this);
         this.toggleParticipantCheckNoEmail = this.toggleParticipantCheckNoEmail.bind(this);
         this.handleEmailTemplateChange = this.handleEmailTemplateChange.bind(this);
@@ -81,16 +83,21 @@ class ParticipantsListApp extends Component {
 
     fetchParticipantsProductionProjectData = () => {
         setTimeout(() => {
+            const extraFilters = this.state.extraFilters;
             const filters = filterHelper(this.props.participantsProductionProjectFilters);
             const sorts = this.props.participantsProductionProjectSorts.reverse();
             const pagination = { limit: 20, offset: this.props.participantsProductionProjectPagination.offset };
 
-            this.props.fetchParticipantsProductionProject(filters, sorts, pagination, this.props.productionProjectId);
+            this.props.fetchParticipantsProductionProject(filters, extraFilters, sorts, pagination, this.props.productionProjectId);
         },100 );
     };
 
     resetParticipantProductionProjectFilters = () => {
         this.props.clearFilterParticipantsProductionProject();
+
+        this.setState({
+            extraFilters: {}
+        });
 
         this.fetchParticipantsProductionProjectData();
     };
@@ -142,6 +149,18 @@ class ParticipantsListApp extends Component {
             });
         });
     };
+
+    handleExtraFiltersChange(extraFilters){
+        this.setState({
+            extraFilters: extraFilters
+        });
+
+        this.props.setParticipantsProductionProjectPagination({page: 0, offset: 0});
+
+        setTimeout(() => {
+            this.fetchParticipantsProductionProjectData();
+        },100 );
+    }
 
     toggleShowCheckboxList = () => {
         if (this.state.showCheckboxList) {
@@ -293,6 +312,7 @@ class ParticipantsListApp extends Component {
                         <ParticipantsListToolbar
                             resetParticipantProductionProjectFilters={() => this.resetParticipantProductionProjectFilters()}
                             toggleShowCheckboxList={this.toggleShowCheckboxList}
+                            handleExtraFiltersChange={this.handleExtraFiltersChange}
                         />
                     </div>
 

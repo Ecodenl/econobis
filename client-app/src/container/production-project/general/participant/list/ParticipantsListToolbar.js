@@ -1,32 +1,60 @@
-import React from 'react';
+import React, {Component} from 'react';
 import {connect} from "react-redux";
 
 import ButtonIcon from '../../../../../components/button/ButtonIcon';
 import {hashHistory} from "react-router";
 import ButtonText from "../../../../../components/button/ButtonText";
+import ParticipantsListExtraFilters from "./ParticipantsListExtraFilters";
 
-const ParticipantsListToolbar = props => {
-    const { meta = {} } = props.participantsProductionProject;
+class ParticipantsListToolbar extends Component {
+    constructor(props) {
+        super(props);
 
-    return (
-        <div className="row">
-            <div className="col-md-2">
-                <div className="btn-group btn-group-flex" role="group">
-                    <ButtonIcon iconName={"glyphicon-refresh"} onClickAction={props.resetParticipantProductionProjectFilters} />
-                    {props.permissions.manageParticipation &&
-                    <ButtonIcon iconName={"glyphicon-plus"}
-                                onClickAction={() => hashHistory.push(`/productie-project/participant/nieuw/${props.productionProject.id}`)}/>
-                    }
-                    <ButtonText buttonText={'Rapportage'} onClickAction={props.toggleShowCheckboxList}/>
+        this.state = {
+            showExtraFilters: false,
+        };
+    }
+
+    toggleShowExtraFilters = () => {
+        this.setState({
+            showExtraFilters: !this.state.showExtraFilters
+        });
+    };
+
+    render() {
+        const {meta = {}} = this.props.participantsProductionProject;
+
+        return (
+            <div className="row">
+                <div className="col-md-2">
+                    <div className="btn-group btn-flex" role="group">
+                        <ButtonIcon iconName={"glyphicon-refresh"}
+                                    onClickAction={this.props.resetParticipantProductionProjectFilters}/>
+                        {this.props.permissions.manageParticipation &&
+                        <ButtonIcon iconName={"glyphicon-plus"}
+                                    onClickAction={() => hashHistory.push(`/productie-project/participant/nieuw/${this.props.productionProject.id}`)}/>
+                        }
+                        <ButtonIcon iconName={"glyphicon-filter"} onClickAction={this.toggleShowExtraFilters} />
+                        <ButtonText buttonText={'Rapportage'} onClickAction={this.props.toggleShowCheckboxList}/>
+                    </div>
                 </div>
+                <div className="col-md-8"><h3 className="text-center table-title">Participanten
+                    productieproject {this.props.productionProject ? this.props.productionProject.name : ''}</h3></div>
+                <div className="col-md-2">
+                    <div className="pull-right">Resultaten: {meta.total || 0}</div>
+                </div>
+                {
+                    this.state.showExtraFilters &&
+                    <ParticipantsListExtraFilters
+                        toggleShowExtraFilters={this.toggleShowExtraFilters}
+                        handleExtraFiltersChange={this.props.handleExtraFiltersChange}
+                    />
+                }
             </div>
-            <div className="col-md-8"><h3 className="text-center table-title">Participanten productieproject {props.productionProject ? props.productionProject.name : ''}</h3></div>
-            <div className="col-md-2">
-                <div className="pull-right">Resultaten: { meta.total || 0 }</div>
-            </div>
-        </div>
-    );
-};
+        );
+    }
+    ;
+}
 
 const mapStateToProps = (state) => {
     return {

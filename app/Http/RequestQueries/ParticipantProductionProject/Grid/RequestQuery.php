@@ -18,9 +18,10 @@ class RequestQuery extends \App\Helpers\RequestQuery\RequestQuery
         Request $request,
         Filter $filter,
         Sort $sort,
-        Joiner $joiner
+        Joiner $joiner,
+        ExtraFilter $extraFilter
     ) {
-        parent::__construct($request, $filter, $sort, $joiner);
+        parent::__construct($request, $filter, $sort, $joiner, $extraFilter);
     }
 
     protected function baseQuery()

@@ -18,17 +18,26 @@ class ExtraFilter extends RequestExtraFilter
         'postalCode',
         'postalCodeNumber',
         'currentParticipations',
+        'dateRegister',
+        'datePayed',
+        'participationStatus',
+        'contactStatus',
     ];
 
     protected $mapping = [
         'name' => 'contacts.full_name',
         'postalCode' => 'addresses.postal_code',
+        'dateRegister' => 'participation_production_project.date_register',
+        'datePayed' => 'participation_production_project.date_payed',
+        'participationStatus' => 'participation_production_project.status_id',
+        'contactStatus' => 'contacts.status_id',
     ];
 
     protected $joins = [
         'name' => 'contact',
         'postalCode' => 'addresses',
         'postalCodeNumber' => 'addresses',
+        'contactStatus' => 'contact',
     ];
 
     protected function applyCurrentParticipationsFilter($query, $type, $data)

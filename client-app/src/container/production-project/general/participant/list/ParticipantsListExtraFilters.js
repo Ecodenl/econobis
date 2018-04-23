@@ -84,14 +84,25 @@ class ParticipantsListExtraFilters extends Component {
                 'type': 'number'
             },
             'dateRegister': {
-                'name': 'Datum inschrijving participatie',
+                'name': 'Datum inschrijving',
                 'type': 'date'
             },
-            // 'participationInOption': {
-            //     'name': 'Participaties status',
-            //     'type': 'dropdown',
-            //     'dropDownOptions': this.props.participantProductionProjectStatus
-            // },
+            'datePayed': {
+                'name': 'Datum betaald',
+                'type': 'date'
+            },
+
+            'participationStatus': {
+                'name': 'Participaties status',
+                'type': 'dropdown',
+                'dropDownOptions': this.props.participantProductionProjectStatus
+            },
+
+            'contactStatus': {
+                'name': 'Contact status',
+                'type': 'dropdown',
+                'dropDownOptions': this.props.contactStatuses
+            },
         };
 
         let filters = [];
@@ -137,7 +148,8 @@ class ParticipantsListExtraFilters extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        participantProductionProjectStatus: state.systemData.contactStatuses,
+        participantProductionProjectStatus: state.systemData.participantProductionProjectStatus,
+        contactStatuses: state.systemData.contactStatuses,
     };
 };
 

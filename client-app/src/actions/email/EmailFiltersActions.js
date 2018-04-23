@@ -13,6 +13,11 @@ export const setFilterEmailSentBy = (sentBy) => ({
     sentBy,
 });
 
+export const setFilterEmailTo = (to) => ({
+    type: 'SET_FILTER_EMAIL_TO',
+    to,
+});
+
 export const setFilterEmailSubject = (subject) => ({
     type: 'SET_FILTER_EMAIL_SUBJECT',
     subject,

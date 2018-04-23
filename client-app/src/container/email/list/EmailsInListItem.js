@@ -39,13 +39,14 @@ class EmailsInListItem extends Component {
     }
 
     render() {
-        const { id, date, mailboxName, from, subject, status, folder } = this.props;
+        const { id, date, mailboxName, from, to, subject, status, folder } = this.props;
 
         return (
             <tr className={this.state.highlightRow} onDoubleClick={() => this.openItem(id)} onMouseEnter={() => this.onRowEnter()} onMouseLeave={() => this.onRowLeave()}>
                 <td>{ date && moment(date.date).format('L')}</td>
                 <td>{ mailboxName }</td>
                 <td>{ from }</td>
+                <td>{ to && to.map((to) => to).join(', ')}</td>
                 <td>{ subject }</td>
                 {folder === 'inbox' ?
                     <td>{status ? status.name : ''}</td>

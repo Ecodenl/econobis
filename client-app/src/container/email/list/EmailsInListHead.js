@@ -17,9 +17,10 @@ const EmailsInListHead = (props) => {
     return (
         <tr className="thead-title">
             <DataTableHeadTitleAndSort sortColumn={'date'} title={'Datum'} width={'10%'} setSorts={setSorts} />
-            <DataTableHeadTitleAndSort sortColumn={'mailbox'} title={'Mailbox'} width={'20%'} setSorts={setSorts} />
-            <DataTableHeadTitleAndSort sortColumn={'sentBy'} title={'Afzender'} width={'20%'} setSorts={setSorts} />
-            <DataTableHeadTitleAndSort sortColumn={'subject'} title={'Onderwerp'} width={'25%'} setSorts={setSorts} />
+            <DataTableHeadTitleAndSort sortColumn={'mailbox'} title={'Mailbox'} width={'15%'} setSorts={setSorts} />
+            <DataTableHeadTitleAndSort sortColumn={'sentBy'} title={'Afzender'} width={'15%'} setSorts={setSorts} />
+            <DataTableHeadTitleAndSort sortColumn={'to'} title={'Aan'} width={'15%'} setSorts={setSorts} />
+            <DataTableHeadTitleAndSort sortColumn={'subject'} title={'Onderwerp'} width={'20%'} setSorts={setSorts} />
             <DataTableHeadTitleAndSort sortColumn={'statusId'} title={'Status'} width={'10%'} setSorts={setSorts} />
             <DataTableHeadTitle title={''} width={'5%'}/>
         </tr>

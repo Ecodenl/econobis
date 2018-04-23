@@ -35,7 +35,7 @@ const EmailsInList = props => {
                 <DataTableBody>
                     {
                         data.length === 0 ? (
-                            <tr><td colSpan={6}>Geen e-mails gevonden!</td></tr>
+                            <tr><td colSpan={7}>Geen e-mails gevonden!</td></tr>
                         ) : (
                             data.map((email) => {
                                 return <EmailsInListItem

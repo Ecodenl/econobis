@@ -22,6 +22,7 @@ class GridEmail extends Resource
             'date' => $this->date_sent,
             'mailboxName' => $this->mailbox->name,
             'from' => $this->from,
+            'to' => $this->to,
             'subject' => $this->subject,
             'status' => FullEnumWithIdAndName::make($this->getStatus()),
             'folder' => $this->folder,

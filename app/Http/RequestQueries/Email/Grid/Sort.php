@@ -18,6 +18,7 @@ class Sort extends RequestSort
         'date',
         'mailbox',
         'sentBy',
+        'to',
         'subject',
         'statusId',
     ];
@@ -26,6 +27,7 @@ class Sort extends RequestSort
         'date' => 'emails.date_sent',
         'mailbox' => 'mailboxes.name',
         'sentBy' => 'emails.from',
+        'to' => 'emails.to',
         'subject' => 'emails.subject',
         'statusId'  => 'emails.status',
     ];

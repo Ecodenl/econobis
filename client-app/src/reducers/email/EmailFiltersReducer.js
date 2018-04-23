@@ -11,6 +11,10 @@ const filtersReducerDefaultState = {
         field: 'sentBy',
         data: '',
     },
+    to: {
+        field: 'to',
+        data: '',
+    },
     subject: {
         field: 'subject',
         data: '',
@@ -45,6 +49,14 @@ export default (state = filtersReducerDefaultState, action) => {
                 sentBy: {
                     ...state.sentBy,
                     data: action.sentBy,
+                }
+            };
+        case 'SET_FILTER_EMAIL_TO':
+            return {
+                ...state,
+                to: {
+                    ...state.to,
+                    data: action.to,
                 }
             };
         case 'SET_FILTER_EMAIL_SUBJECT':

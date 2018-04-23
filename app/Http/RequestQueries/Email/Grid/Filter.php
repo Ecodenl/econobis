@@ -18,6 +18,7 @@ class Filter extends RequestFilter
         'date',
         'mailbox',
         'sentBy',
+        'to',
         'subject',
         'statusId',
     ];
@@ -26,6 +27,7 @@ class Filter extends RequestFilter
         'date' => 'emails.date_sent',
         'mailbox' => 'mailboxes.name',
         'sentBy' => 'emails.from',
+        'to' => 'emails.to',
         'subject' => 'emails.subject',
         'statusId'  => 'emails.status',
     ];

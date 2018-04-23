@@ -169,7 +169,7 @@ class OpportunityFormEdit extends Component {
 
                 <div className="row">
                     <InputDate
-                        label="Datum realisatie gepland"
+                        label="Datum uitvoering gepland"
                         name="desiredDate"
                         value={desiredDate}
                         onChangeAction={this.handleInputChangeDate}

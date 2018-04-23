@@ -8,6 +8,7 @@ class OpportunityStatus extends Model
 {
 
     protected $table = 'opportunity_status';
+    public $timestamps = false;
 
     /**
      * The attributes that are mass assignable.

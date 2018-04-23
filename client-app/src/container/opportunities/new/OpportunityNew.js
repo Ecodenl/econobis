@@ -76,7 +76,7 @@ const OpportunityNew = props => {
 
             <div className="row">
                 <InputDate
-                    label="Datum realisatie gepland"
+                    label="Datum uitvoering gepland"
                     name="desiredDate"
                     value={desiredDate}
                     onChangeAction={props.handleInputChangeDate}

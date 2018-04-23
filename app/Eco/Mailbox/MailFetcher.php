@@ -141,6 +141,7 @@ class MailFetcher
             'folder' => 'inbox',
             'imap_id' => $emailData->id,
             'message_id' => $emailData->messageId,
+            'status' => 'unread'
         ]);
         $email->save();
 

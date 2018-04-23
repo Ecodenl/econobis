@@ -23,9 +23,11 @@ class EmailStatus extends EnumWithIdAndName
     protected static function seed()
     {
         return [
-            new static('closed', 'Afgehandeld'),
+            new static('unread', 'Ongelezen'),
             new static('read', 'Gelezen'),
+            new static('in_progress', 'In behandeling'),
             new static('urgent', 'Urgent'),
+            new static('closed', 'Afgehandeld'),
         ];
     }
 }

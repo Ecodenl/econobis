@@ -107,6 +107,14 @@ class MailFetcher
     /**
      * @return string
      */
+    private function getAttachmentDBName()
+    {
+        return 'mailbox_' . $this->mailbox->id . DIRECTORY_SEPARATOR . 'inbox' . DIRECTORY_SEPARATOR;
+    }
+
+    /**
+     * @return string
+     */
     private function getStorageRootDir()
     {
         return Storage::disk('mail_attachments')->getDriver()->getAdapter()->getPathPrefix();
@@ -149,7 +157,10 @@ class MailFetcher
         $this->addRelationToContacts($email);
 
         foreach ($emailData->getAttachments() as $attachment){
-            $filename = str_replace($this->getStorageRootDir(), '', $attachment->filePath);
+            $name = substr($attachment->filePath, strrpos($attachment->filePath, '/') + 1);
+
+            $filename = $this->getAttachmentDBName() . $name;
+
             $emailAttachment = new EmailAttachment([
                 'filename' => $filename,
                 'name' => $attachment->name,

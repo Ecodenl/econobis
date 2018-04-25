@@ -18,6 +18,7 @@ const ParticipantFormView = props => {
                 <ViewText
                     label={"Contact"}
                     value={contact ? contact.fullName : ''}
+                    link={contact ? 'contact/' + contact.id : ''}
                 />
                 <ViewText
                     label={"Status"}
@@ -29,6 +30,7 @@ const ParticipantFormView = props => {
                 <ViewText
                     label={"Productieproject"}
                     value={productionProject ? productionProject.name : ''}
+                    link={productionProject ? 'productie-project/' + productionProject.id : ''}
                 />
                 <ViewText
                     label={"Inschrijfdatum"}

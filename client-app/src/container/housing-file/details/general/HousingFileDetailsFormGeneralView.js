@@ -14,6 +14,7 @@ const HousingFileDetailsFormGeneralView = props => {
                 <ViewText
                     label={"Contact"}
                     value={address && address.contact.fullName}
+                    link={address ? 'contact/' + address.contact.id : ''}
                 />
                 <ViewText
                     label={"Adres"}

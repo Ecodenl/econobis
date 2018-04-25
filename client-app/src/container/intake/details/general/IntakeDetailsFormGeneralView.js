@@ -15,6 +15,7 @@ const IntakeDetailsFormGeneralView = props => {
                 <ViewText
                     label={"Contact"}
                     value={contact.fullName}
+                    link={contact ? 'contact/' + contact.id : ''}
                 />
                 <div className={'col-sm-6'}>
                     <label htmlFor={ 'address' } className="col-sm-6">{ 'Adres' }</label>

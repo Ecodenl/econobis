@@ -64,7 +64,7 @@ export default function* watchSagas() {
     // Administration
     yield takeLatest('ADD_ADMINISTRATION_USER', addAdministrationUserSaga);
     yield takeLatest('DELETE_ADMINISTRATION_USER', deleteAdministrationUserSaga);
-    yield takeLatest('FETCH_ADMINISTRATION', fetchAdministrationDetailsSaga);
+    yield takeLatest('FETCH_ADMINISTRATION_DETAILS', fetchAdministrationDetailsSaga);
     yield takeLatest('UPDATE_ADMINISTRATION', updateAdministrationDetailsSaga);
     yield takeLatest('DELETE_ADMINISTRATION', deleteAdministrationSaga);
     yield takeLatest('FETCH_ADMINISTRATIONS', fetchAdministrationsSaga);

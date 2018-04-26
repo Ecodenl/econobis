@@ -293,5 +293,12 @@ Route::namespace('Api')
         Route::post('postal-code-link/{postalCodeLink}', 'PostalCodeLink\PostalCodeLinkController@update');
         Route::post('postal-code-link/{postalCodeLink}/delete', 'PostalCodeLink\PostalCodeLinkController@destroy');
 
+
+        Route::get('administration/grid', 'Administration\AdministrationController@grid');
+        Route::get('administration/peek', 'Administration\AdministrationController@peek');
+        Route::get('administration/{administration}', 'Administration\AdministrationController@show');
+        Route::post('administration', 'Administration\AdministrationController@store');
+        Route::post('administration/{administration}', 'Administration\AdministrationController@update');
+        Route::post('administration/{administration}/delete', 'Administration\AdministrationController@destroy');
     }
 );

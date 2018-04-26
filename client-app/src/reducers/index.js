@@ -1,5 +1,7 @@
 import {combineReducers} from 'redux';
 
+import administrationsReducer from './administration/AdministrationsReducer';
+import administrationDetailsReducer from './administration/AdministrationDetailsReducer';
 import auditTrailReducer from './audit-trail/AuditTrailReducer';
 import authReducer from './general/AuthReducer';
 import blockUIReducer from './general/BlockUIReducer';
@@ -61,6 +63,10 @@ const rootReducer = combineReducers({
 
     //Audit trail
     auditTrail: auditTrailReducer,
+
+    //Administrations
+    administrations: administrationsReducer,
+    administrationDetails: administrationDetailsReducer,
 
     // Calendar
     calendar: calendarReducer,

@@ -226,7 +226,7 @@ class ParticipantFormEdit extends Component {
                         type={"number"}
                         label={"Huidig aantal participaties"}
                         name={"participationsCurrent"}
-                        value={participationsGranted - participationsSold}
+                        value={statusId == 2 ? participationsGranted - participationsSold : 0}
                         readOnly={true}
                     />
                 </div>
@@ -235,7 +235,7 @@ class ParticipantFormEdit extends Component {
                     <InputText
                         label={"Waarde participaties"}
                         name={"totalWorthParticipations"}
-                        value={ ((participationsGranted - participationsSold) * this.state.participationWorth)}
+                        value={ statusId == 2 ? ((participationsGranted - participationsSold) * this.state.participationWorth) : 0}
                         readOnly={true}
                     />
                     <InputText

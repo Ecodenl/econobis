@@ -157,7 +157,7 @@ class ProductionProjectRevenueController extends ApiController
                 $distribution->city = $primaryAddress->city;
             }
 
-            $distribution->status = $contact->getStatus()->name;
+            $distribution->status = $contact->getStatus() ? $contact->getStatus()->name : '';
             $distribution->participations_amount
                 = $participant->participations_current;
 

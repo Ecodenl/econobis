@@ -88,7 +88,7 @@ const ParticipantNew = props => {
                     type={"number"}
                     label={"Huidig aantal participaties"}
                     name={"participationsCurrent"}
-                    value={participationsGranted - participationsSold}
+                    value={statusId == 2 ? participationsGranted - participationsSold: 0}
                     readOnly={true}
                 />
             </div>
@@ -97,7 +97,7 @@ const ParticipantNew = props => {
                 <InputText
                     label={"Waarde participaties"}
                     name={"totalWorthParticipations"}
-                    value={ ((participationsGranted - participationsSold) * props.participationWorth)}
+                    value={ statusId == 2 ? ((participationsGranted - participationsSold) * props.participationWorth) : 0}
                     readOnly={true}
                 />
                 <InputText

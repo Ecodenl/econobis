@@ -97,6 +97,11 @@ class ParticipantProductionProject extends Model
 
     public function getParticipationsCurrentAttribute()
     {
-        return $this->participations_granted - $this->participations_sold;
+        if($this->status_id === 2) {
+            return $this->participations_granted - $this->participations_sold;
+        }
+        else{
+            return 0;
+        }
     }
 }

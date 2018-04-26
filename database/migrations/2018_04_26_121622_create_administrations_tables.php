@@ -43,6 +43,8 @@ class CreateAdministrationsTables extends Migration
                 ->references('id')->on('users')
                 ->onDelete('restrict');
 
+            $table->softdeletes();
+
             $table->timestamps();
         });
 

@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Eco\Administration\Administration;
+use App\Eco\Administration\AdministrationPolicy;
 use App\Eco\AuditTrail\AuditTrail;
 use App\Eco\AuditTrail\AuditTrailPolicy;
 use App\Eco\Campaign\Campaign;
@@ -96,6 +98,7 @@ class AuthServiceProvider extends ServiceProvider
         ParticipantProductionProject::class => ParticipantProductionProjectPolicy::class,
         ObligationNumber::class => ObligationNumberPolicy::class,
         ParticipantTransaction::class => ParticipantTransactionPolicy::class,
+        Administration::class => AdministrationPolicy::class,
     ];
 
     /**

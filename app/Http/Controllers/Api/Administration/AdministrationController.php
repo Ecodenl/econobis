@@ -10,6 +10,7 @@ namespace App\Http\Controllers\Api\Administration;
 
 
 use App\Eco\Administration\Administration;
+use App\Eco\User\User;
 use App\Helpers\Delete\DeleteHelper;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Api\ApiController;
@@ -17,6 +18,7 @@ use App\Http\RequestQueries\Administration\Grid\RequestQuery;
 use App\Http\Resources\Administration\AdministrationPeek;
 use App\Http\Resources\Administration\FullAdministration;
 use App\Http\Resources\Administration\GridAdministration;
+use App\Http\Resources\User\UserPeek;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -150,6 +152,22 @@ class AdministrationController extends ApiController
         $administration->filename = $filename;
 
         $administration->save();
+    }
+
+    public function attachUser(Administration $administration, User $user)
+    {
+        $this->authorize('manage', Administration::class);
+
+        $administration->users()->attach($user->id);
+
+        return UserPeek::make($user);
+    }
+
+    public function detachUser(Administration $administration, User $user)
+    {
+        $this->authorize('manage', Administration::class);
+
+        $administration->users()->detach($user->id);
     }
 
     public function peek()

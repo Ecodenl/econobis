@@ -300,5 +300,7 @@ Route::namespace('Api')
         Route::post('administration', 'Administration\AdministrationController@store');
         Route::post('administration/{administration}', 'Administration\AdministrationController@update');
         Route::post('administration/{administration}/delete', 'Administration\AdministrationController@destroy');
+        Route::post('administration/{administration}/{user}/attach', 'Administration\AdministrationController@attachUser');
+        Route::post('administration/{administration}/{user}/detach', 'Administration\AdministrationController@detachUser');
     }
 );

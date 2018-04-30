@@ -10,9 +10,9 @@ export function* fetchAdministrationDetailsSaga({ id }) {
     }
 }
 
-export function* updateAdministrationDetailsSaga({ administration, switchToView }) {
+export function* updateAdministrationDetailsSaga({ administration, administrationId, switchToView }) {
     try {
-        const payload = yield call(AdministrationDetailsAPI.updateAdministration, administration);
+        const payload = yield call(AdministrationDetailsAPI.updateAdministration, {administration, administrationId});
         const administrationDetails = payload.data.data;
 
         yield put({ type: 'UPDATE_ADMINISTRATION_SUCCESS', administrationDetails });

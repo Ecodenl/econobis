@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import Dropzone from 'react-dropzone';
+const Dropzone = require('react-dropzone').default;
 
 import Modal from '../../../components/modal/Modal';
 
@@ -34,7 +34,7 @@ class AdministrationLogoNew extends Component {
                 title="Upload bestand"
             >
                 <div className="upload-file-content">
-                    <Dropzone multiple={false} className="dropzone" onDropAccepted={this.onDropAccepted.bind(this)} onDropRejected={this.onDropRejected.bind(this)} maxSize={2000000}>
+                    <Dropzone accept="image/jpeg, image/png, image/jpg" multiple={false} className="dropzone" onDropAccepted={this.onDropAccepted.bind(this)} onDropRejected={this.onDropRejected.bind(this)} maxSize={2000000}>
                         <p>Klik hier voor het uploaden van een bestand</p>
                         <p><strong>of</strong> sleep het bestand hierheen</p>
                     </Dropzone>

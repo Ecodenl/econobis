@@ -1,9 +1,10 @@
 export default function (state= [], action) {
+    console.log(action);
     switch (action.type) {
         case 'FETCH_ADMINISTRATION_DETAILS_SUCCESS':
             return {
                 ...state,
-                ...action.administrationDetails.data.data,
+                ...action.administrationDetails,
             };
         case 'UPDATE_ADMINISTRATION_SUCCESS':
             return {

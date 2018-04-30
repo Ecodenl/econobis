@@ -40,6 +40,7 @@ class AdministrationNewForm extends Component {
             errors: {
                 name: false,
                 postalCode: false,
+                kvkNumber: false,
                 btwNumber: false,
                 IBAN: false,
                 email: false,
@@ -54,15 +55,13 @@ class AdministrationNewForm extends Component {
         })
     };
 
-    addAttachment(file) {
+    addAttachment = (file) =>  {
         this.setState({
             ...this.state,
             administration: {
                 ...this.state.administration,
-                attachment: [
-                    ...this.state.administration.attachment,
-                    ...file,
-                ]
+                attachment: file[0],
+                filename: file[0].name,
             },
         });
     };
@@ -84,61 +83,90 @@ class AdministrationNewForm extends Component {
     handleSubmit = event => {
         event.preventDefault();
 
-        const { administration }  = this.state;
+        const {administration} = this.state;
 
         // Validation
         let errors = {};
         let hasErrors = false;
 
-        if(validator.isEmpty(administration.name)){
+        if (validator.isEmpty(administration.name)) {
             errors.name = true;
             hasErrors = true;
-        };
+        }
 
-        if(!validator.isEmpty(administration.postalCode) && !validator.isPostalCode(administration.postalCode, 'any')){
+
+        if (!validator.isEmpty(administration.postalCode) && !validator.isPostalCode(administration.postalCode, 'any')) {
             errors.postalCode = true;
             hasErrors = true;
-        };
+        }
 
-        if(validator.isEmpty(administration.btwNumber)){
-            errors.btwNumber = true;
-            hasErrors = true;
-        };
-
-        if(!validator.isEmpty(administration.IBAN)){
-            if (!ibantools.isValidIBAN(administration.IBAN)) {
-                errors.IBAN = true;
+        if (!validator.isEmpty(administration.kvkNumber)) {
+            if (!validator.isInt(administration.kvkNumber + '')) {
+                errors.kvkNumber = true;
                 hasErrors = true;
             }
         }
 
-        if(!validator.isEmpty(administration.email)){
+        if (validator.isEmpty(administration.btwNumber)) {
+            errors.btwNumber = true;
+            hasErrors = true;
+        }
+
+        if (!ibantools.isValidIBAN(administration.IBAN)) {
+            errors.IBAN = true;
+            hasErrors = true;
+        }
+
+        if (!validator.isEmpty(administration.email)) {
             if (!validator.isEmail(administration.email)) {
                 errors.email = true;
                 hasErrors = true;
             }
         }
 
-        if(!validator.isEmpty(administration.website)){
+        if (!validator.isEmpty(administration.website)) {
             if (!validator.isFQDN(administration.website)) {
                 errors.website = true;
                 hasErrors = true;
             }
         }
 
-        this.setState({ ...this.state, errors: errors });
+        this.setState({...this.state, errors: errors});
 
         // If no errors send form
-        !hasErrors &&
-        AdministrationDetailsAPI.newAdministration(administration).then((payload) => {
-                hashHistory.push(`/administratie/${payload.data.data.id}`);
-            }).catch(function (error) {
-                console.log(error)
-            });
+        if(!hasErrors) {
+            const data = new FormData();
+
+            data.append('name', administration.name);
+            data.append('administrationNumber', administration.administrationNumber);
+            data.append('address', administration.address);
+            data.append('postalCode', administration.postalCode);
+            data.append('city', administration.city);
+            data.append('countryId', administration.countryId);
+            data.append('kvkNumber', administration.kvkNumber);
+            data.append('btwNumber', administration.btwNumber);
+            data.append('IBAN', administration.IBAN);
+            data.append('email', administration.email);
+            data.append('website', administration.website);
+            data.append('bic', administration.bic);
+            data.append('sepaContractName', administration.sepaContractName);
+            data.append('sepaCreditorId', administration.sepaCreditorId);
+            data.append('rsinNumber', administration.rsinNumber);
+            data.append('defaultPaymentTerm', administration.defaultPaymentTerm);
+            data.append('attachment', administration.attachment);
+
+            console.log(data);
+
+        AdministrationDetailsAPI.newAdministration(data).then((payload) => {
+            hashHistory.push(`/administratie/${payload.data.id}`);
+        }).catch(function (error) {
+            console.log(error)
+        });
+    }
     };
 
     render() {
-        const { name, administrationNumber, address, postalCode, city, countryId, kvkNumber, btwNumber, IBAN, email, website, bic, sepaContractName, sepaCreditorId, rsinNumber, defaultPaymentTerm} = this.state.administration;
+        const { name, administrationNumber, address, postalCode, city, countryId, kvkNumber, btwNumber, IBAN, email, website, bic, sepaContractName, sepaCreditorId, rsinNumber, defaultPaymentTerm, attachment} = this.state.administration;
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -164,7 +192,7 @@ class AdministrationNewForm extends Component {
                         <div className="row">
                             <InputText
                                 label="Adres"
-                                name={"Address"}
+                                name={"address"}
                                 value={address}
                                 onChangeAction={this.handleInputChange}
                             />
@@ -197,22 +225,31 @@ class AdministrationNewForm extends Component {
 
                         <div className="row">
                             <InputText
+                                label="KvK"
+                                name={"kvkNumber"}
+                                value={kvkNumber}
+                                onChangeAction={this.handleInputChange}
+                                error={this.state.errors.kvkNumber}
+                            />
+                            <InputText
                                 label="BTW nummer"
                                 name={"btwNumber"}
                                 value={btwNumber}
+                                required={"required"}
                                 onChangeAction={this.handleInputChange}
                                 error={this.state.errors.btwNumber}
-                            />
-                            <InputText
-                                label="IBAN"
-                                name={"IBAN"}
-                                value={IBAN}
-                                onChangeAction={this.handleInputChange}
-                                error={this.state.errors.IBAN}
                             />
                         </div>
 
                         <div className="row">
+                            <InputText
+                                label="IBAN"
+                                name={"IBAN"}
+                                value={IBAN}
+                                required={"required"}
+                                onChangeAction={this.handleInputChange}
+                                error={this.state.errors.IBAN}
+                            />
                             <InputText
                                 label="E-mail"
                                 name={"email"}
@@ -220,6 +257,9 @@ class AdministrationNewForm extends Component {
                                 onChangeAction={this.handleInputChange}
                                 error={this.state.errors.email}
                             />
+                        </div>
+
+                        <div className="row">
                             <InputText
                                 label="Website"
                                 name={"website"}
@@ -227,61 +267,65 @@ class AdministrationNewForm extends Component {
                                 onChangeAction={this.handleInputChange}
                                 error={this.state.errors.website}
                             />
-                        </div>
-
-                        <div className="row">
                             <InputText
                                 label="Bic"
                                 name={"bic"}
                                 value={bic}
                                 onChangeAction={this.handleInputChange}
                             />
+                        </div>
+
+                        <div className="row">
                             <InputText
                                 label="Sepa contractnaam"
                                 name={"sepaContractName"}
                                 value={sepaContractName}
                                 onChangeAction={this.handleInputChange}
                             />
-                        </div>
-
-                        <div className="row">
                             <InputText
                                 label="Sepa crediteur id"
                                 name={"sepaCreditorId"}
                                 value={sepaCreditorId}
                                 onChangeAction={this.handleInputChange}
                             />
+                        </div>
+
+                        <div className="row">
                             <InputText
                                 label="RSIN nummer"
                                 name={"rsinNumber"}
                                 value={rsinNumber}
                                 onChangeAction={this.handleInputChange}
                             />
-                        </div>
-
-                        <div className="row">
                             <InputText
                                 label="Standaard betalingstermijn(dagen)"
                                 type={"number"}
-                                min={0}
-                                max={9999}
+                                min={'0'}
+                                max={'9999'}
                                 name={"defaultPaymentTerm"}
                                 value={defaultPaymentTerm}
                                 onChangeAction={this.handleInputChange}
                             />
-                            <div onClick={this.toggleNewLogo}>
-                                <InputText
-                                    label="Logo op factuur"
-                                    readOnly={true}
-                                    value={'test'}
-                                    name={'attachment'}
-                                />
+
+                        </div>
+
+                        <div className="row">
+                            <div className="form-group col-sm-6">
+                                <label className="col-sm-6">Kies logo</label>
+                                <div className="col-sm-6">
+                                    <input
+                                        type="text"
+                                        className="form-control input-sm col-sm-6"
+                                        value={attachment && attachment.name}
+                                        onClick={this.toggleNewLogo}
+                                    />
+                                </div>
                             </div>
                         </div>
 
                         {this.state.newLogo &&
                         <AdministrationLogoNew toggleShowNew={this.toggleNewLogo}
-                                               addAttachment={this.props.addAttachment}/>
+                                               addAttachment={this.addAttachment}/>
                         }
                     </PanelBody>
 

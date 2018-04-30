@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
 
-import { fetchTeamDetails } from '../../../actions/team/TeamDetailsActions';
+import { fetchAdministrationDetails } from '../../../actions/administration/AdministrationDetailsActions';
 import AdministrationDetailsToolbar from './AdministrationDetailsToolbar';
 import AdministrationDetailsForm from './AdministrationDetailsForm';
 import Panel from '../../../components/panel/Panel';
@@ -13,7 +13,7 @@ class AdministrationDetailsApp extends Component {
     };
 
     componentDidMount() {
-        this.props.fetchTeamDetails(this.props.params.id);
+        this.props.fetchAdministrationDetails(this.props.params.id);
     };
 
     render() {
@@ -40,13 +40,13 @@ class AdministrationDetailsApp extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        teamDetails: state.teamDetails,
+        administrationDetails: state.administrationDetails,
     };
 };
 
 const mapDispatchToProps = dispatch => ({
-    fetchTeamDetails: (id) => {
-        dispatch(fetchTeamDetails(id));
+    fetchAdministrationDetails: (id) => {
+        dispatch(fetchAdministrationDetails(id));
     },
 });
 

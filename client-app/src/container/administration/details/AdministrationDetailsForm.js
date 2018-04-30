@@ -5,8 +5,9 @@ import { isEmpty } from 'lodash';
 import { fetchTeamDetails } from '../../../actions/team/TeamDetailsActions';
 import AdministrationDetailsFormGeneral from './general/AdministrationDetailsFormGeneral';
 import AdministrationDetailsUsers from './administration-users/AdministrationDetailsUsers';
-import Panel from "../../../components/panel/Panel";
-import PanelHeader from "../../../components/panel/PanelHeader";
+import moment from "moment/moment";
+import PanelDeletedItem from "../../../components/panel/PanelDeletedItem";
+moment.locale('nl');
 
 class AdministrationDetailsForm extends Component {
     constructor(props){
@@ -14,13 +15,19 @@ class AdministrationDetailsForm extends Component {
     };
 
     render() {
+        const { deletedAt } = this.props.administrationDetails;
         return (
-            isEmpty(this.props.teamDetails) ?
+            isEmpty(this.props.administrationDetails) ?
                 <div>Geen gegevens gevonden.</div>
                 :
                 <div>
+                    { deletedAt &&
+                    <PanelDeletedItem
+                        text={`Deze administratie is verwijderd op ${moment(deletedAt).format('L')}.`}
+                    />
+                    }
                     <AdministrationDetailsFormGeneral />
-                    <AdministrationDetailsUsers />
+                    {/*<AdministrationDetailsUsers />*/}
                 </div>
         );
     }
@@ -28,7 +35,7 @@ class AdministrationDetailsForm extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        teamDetails: state.teamDetails,
+        administrationDetails: state.administrationDetails,
     };
 };
 

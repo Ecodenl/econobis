@@ -6,7 +6,9 @@ import Panel from "../../../../components/panel/Panel";
 import PanelBody from "../../../../components/panel/PanelBody";
 
 const AdministrationDetailsFormGeneralView = props => {
-    const { name } = props.teamDetails;
+
+    const { name, administrationNumber, address, postalCode, city, country, kvkNumber, btwNumber, IBAN,
+        email, website, bic, sepaContractName, sepaCreditorId, rsinNumber, defaultPaymentTerm, logoName} = props.administrationDetails;
 
     return (
         <div onClick={props.switchToEdit}>
@@ -17,6 +19,88 @@ const AdministrationDetailsFormGeneralView = props => {
                             label={"Naam"}
                             value={name}
                         />
+                        <ViewText
+                            label={"Administratie nummer"}
+                            value={administrationNumber}
+                        />
+                    </div>
+                    <div className="row">
+                        <ViewText
+                            label={"Adress"}
+                            value={address}
+                        />
+                        <ViewText
+                            label={"Postcode"}
+                            value={postalCode}
+                        />
+                    </div>
+                    <div className="row">
+                        <ViewText
+                            label={"Plaats"}
+                            value={city}
+                        />
+                        <ViewText
+                            label={"Land"}
+                            value={country ? country.name : ''}
+                        />
+                    </div>
+                    <div className="row">
+                        <ViewText
+                            label={"KvK"}
+                            value={kvkNumber}
+                        />
+                        <ViewText
+                            label={"BTW nummer"}
+                            value={btwNumber}
+                        />
+                    </div>
+                    <div className="row">
+                        <ViewText
+                            label={"IBAN"}
+                            value={IBAN}
+                        />
+                        <ViewText
+                            label={"E-mail"}
+                            value={email}
+                        />
+                    </div>
+                    <div className="row">
+                        <ViewText
+                            label={"Website"}
+                            value={website}
+                        />
+                        <ViewText
+                            label={"Bic"}
+                            value={bic}
+                        />
+                    </div>
+                    <div className="row">
+                        <ViewText
+                            label={"Sepa contractnaam"}
+                            value={sepaContractName}
+                        />
+                        <ViewText
+                            label={"Sepa crediteur id"}
+                            value={sepaCreditorId}
+                        />
+                    </div>
+
+                    <div className="row">
+                        <ViewText
+                            label={"RSIN nummer"}
+                            value={rsinNumber}
+                        />
+                        <ViewText
+                            label={"Standaard betalingstermijn(dagen)"}
+                            value={defaultPaymentTerm}
+                        />
+                    </div>
+
+                    <div className="row">
+                        <ViewText
+                            label={"Logo"}
+                            value={logoName}
+                        />
                     </div>
                 </PanelBody>
             </Panel>
@@ -26,7 +110,7 @@ const AdministrationDetailsFormGeneralView = props => {
 
 const mapStateToProps = (state) => {
     return {
-        teamDetails: state.teamDetails,
+        administrationDetails: state.administrationDetails,
     };
 };
 

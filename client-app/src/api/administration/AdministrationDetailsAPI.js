@@ -33,14 +33,14 @@ export default {
             });
     },
 
-    updateAdministration: (administration) => {
-        const requestUrl = `${URL_ADMINISTRATION}/${administration.id}/update`;
+    updateAdministration: ({administration, administrationId}) => {
+        const requestUrl = `${URL_ADMINISTRATION}/${administrationId}`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
         return axios.post(requestUrl, administration)
             .then(function (response) {
-                return response.data.data;
+                return response;
             })
             .catch(function (error) {
                 console.log(error);

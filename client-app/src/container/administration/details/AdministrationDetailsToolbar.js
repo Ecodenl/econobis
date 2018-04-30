@@ -12,7 +12,7 @@ const AdministrationToolbar = props => {
                     <ButtonIcon iconName={"glyphicon-arrow-left"} onClickAction={browserHistory.goBack} />
                 </div>
             </div>
-            <div className="col-md-4"><h4 className="text-center">Team: { props.name}</h4></div>
+            <div className="col-md-4"><h4 className="text-center">Administratie: { props.name}</h4></div>
             <div className="col-md-4" />
         </div>
     );
@@ -20,7 +20,7 @@ const AdministrationToolbar = props => {
 
 const mapStateToProps = (state) => {
     return {
-        name: state.teamDetails.name,
+        name: state.administrationDetails.name,
     };
 };
 

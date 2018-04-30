@@ -3,8 +3,6 @@ import {connect} from 'react-redux';
 
 import AdministrationDetailsFormGeneralEdit from './AdministrationDetailsFormGeneralEdit';
 import AdministrationDetailsFormGeneralView from './AdministrationDetailsFormGeneralView';
-import Panel from '../../../../components/panel/Panel';
-import PanelBody from '../../../../components/panel/PanelBody';
 
 class AdministrationDetailsFormGeneral extends Component {
     constructor(props) {
@@ -49,7 +47,7 @@ class AdministrationDetailsFormGeneral extends Component {
         return (
             <div className={this.state.activeDiv} onMouseEnter={() => this.onDivEnter()} onMouseLeave={() => this.onDivLeave()}>
                 {
-                    this.state.showEdit && permissions.createTeam ?
+                    this.state.showEdit && permissions.manageFinancial ?
                         <AdministrationDetailsFormGeneralEdit switchToView={this.switchToView} />
                         :
                         <AdministrationDetailsFormGeneralView switchToEdit={this.switchToEdit}/>
@@ -61,9 +59,8 @@ class AdministrationDetailsFormGeneral extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        teamDetails: state.teamDetails,
+        administrationDetails: state.administrationDetails,
         meDetails: state.meDetails,
-        permissions: state.meDetails.permissions
     };
 };
 

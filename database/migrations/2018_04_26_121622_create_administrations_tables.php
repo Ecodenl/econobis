@@ -37,6 +37,7 @@ class CreateAdministrationsTables extends Migration
             $table->string('rsin_number')->nullable();
             $table->integer('default_payment_term')->nullable();
             $table->string('logo_filename')->nullable();
+            $table->string('logo_name')->nullable();
 
             $table->unsignedInteger('created_by_id');
             $table->foreign('created_by_id')

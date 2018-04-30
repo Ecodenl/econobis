@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Eco\Administration\Administration;
+use App\Eco\Administration\AdministrationObserver;
 use App\Eco\Campaign\Campaign;
 use App\Eco\Campaign\CampaignObserver;
 use App\Eco\Document\Document;
@@ -84,6 +86,7 @@ class ObserverServiceProvider extends ServiceProvider
         ProductionProjectValueCourse::observe(ProductionProjectValueCourseObserver::class);
         ProductionProjectRevenue::observe(ProductionProjectRevenueObserver::class);
         ParticipantTransaction::observe(ParticipantTransactionObserver::class);
+        Administration::observe(AdministrationObserver::class);
     }
 
     /**

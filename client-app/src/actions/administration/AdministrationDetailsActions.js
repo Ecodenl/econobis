@@ -5,10 +5,11 @@ export const fetchAdministrationDetails = (id) => {
     }
 };
 
-export const updateAdministration = (administration, switchToView) => {
+export const updateAdministration = (administration, administrationId, switchToView) => {
     return {
         type: 'UPDATE_ADMINISTRATION',
-        team,
+        administration,
+        administrationId,
         switchToView,
     }
 };

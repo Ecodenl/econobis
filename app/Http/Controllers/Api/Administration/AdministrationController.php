@@ -63,6 +63,7 @@ class AdministrationController extends ApiController
             ->string('btwNumber')->validate('required')->alias('btw_number')->next()
             ->string('IBAN')->whenMissing('')->next()
             ->string('email')->whenMissing(null)->onEmpty(null)->next()
+            ->string('website')->whenMissing(null)->onEmpty(null)->next()
             ->string('bic')->whenMissing(null)->onEmpty(null)->next()
             ->string('sepaContractName')->whenMissing(null)->onEmpty(null)->alias('sepa_contract_name')->next()
             ->string('sepaCreditorId')->whenMissing(null)->onEmpty(null)->alias('sepa_creditor_id')->next()
@@ -78,9 +79,11 @@ class AdministrationController extends ApiController
 
         //get attachments
         $logo = $request->file('attachment')
-            ? $request->file('attachment') : [];
+            ? $request->file('attachment') : false;
 
-        $this->storeLogo($logo, $administration);
+        if($logo){
+            $this->storeLogo($logo, $administration);
+        }
 
         return $this->show($administration);
     }
@@ -109,13 +112,17 @@ class AdministrationController extends ApiController
 
         $administration->fill($data);
 
+        $administration->save();
+
         $this->checkStorageDir($administration->id);
 
         //get attachments
         $logo = $request->file('attachment')
-            ? $request->file('attachment') : [];
+            ? $request->file('attachment') : false;
 
-        $this->storeLogo($logo, $administration);
+        if($logo){
+            $this->storeLogo($logo, $administration);
+        }
 
         return $this->show($administration);
     }
@@ -146,10 +153,12 @@ class AdministrationController extends ApiController
         if (!$attachment->isValid()) {
             abort('422', 'Error uploading file');
         }
+
         $filename = $attachment->store('administration_' . $administration->id
             . DIRECTORY_SEPARATOR . 'logos', 'administrations');
 
-        $administration->filename = $filename;
+        $administration->logo_filename = $filename;
+        $administration->logo_name = $attachment->getClientOriginalName();
 
         $administration->save();
     }

@@ -40,6 +40,7 @@ class FullAdministration extends Resource
                 'rsinNumber' => $this->rsin_number,
                 'defaultPaymentTerm' => $this->default_payment_term,
                 'logoFilename' => $this->logo_filename,
+                'logoName' => $this->logo_name,
 
                 'createdById' => $this->created_by_id,
                 'createdBy' => FullUser::make($this->whenLoaded('createdBy')),

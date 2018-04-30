@@ -9,7 +9,7 @@
 namespace App\Http\RequestQueries\Administration\Grid;
 
 
-use App\Eco\Intake\Intake;
+use App\Eco\Administration\Administration;
 use Illuminate\Http\Request;
 
 class RequestQuery extends \App\Helpers\RequestQuery\RequestQuery
@@ -25,7 +25,7 @@ class RequestQuery extends \App\Helpers\RequestQuery\RequestQuery
 
     protected function baseQuery()
     {
-        return Intake::query()
+        return Administration::query()
             ->select('administrations.*')->whereNull('administrations.deleted_at');
     }
 }

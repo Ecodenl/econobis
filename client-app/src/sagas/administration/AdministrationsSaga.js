@@ -1,5 +1,6 @@
 import { put, call } from 'redux-saga/effects';
 import AdministrationsAPI from '../../api/administration/AdministrationsAPI';
+import AdministrationDetailsAPI from '../../api/administration/AdministrationDetailsAPI';
 
 export function* fetchAdministrationsSaga() {
     try {
@@ -12,7 +13,7 @@ export function* fetchAdministrationsSaga() {
 
 export function* deleteAdministrationSaga({ id }) {
     try {
-        yield call(AdministrationsAPI.deleteAdministration, id);
+        yield call(AdministrationDetailsAPI.deleteAdministration, id);
         yield put({ type: 'DELETE_ADMINISTRATION_SUCCESS', id });
     } catch (error) {
         yield put({ type: 'DELETE_ADMINISTRATION_ERROR', error });

@@ -1,5 +1,4 @@
 export default function (state= [], action) {
-    console.log(action);
     switch (action.type) {
         case 'FETCH_ADMINISTRATION_DETAILS_SUCCESS':
             return {

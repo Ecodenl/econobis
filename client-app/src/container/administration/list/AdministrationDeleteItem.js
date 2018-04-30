@@ -2,11 +2,11 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import Modal from '../../../components/modal/Modal';
-import {deleteTeam} from "../../../actions/team/TeamsActions";
+import {deleteAdministration} from "../../../actions/administration/AdministrationsActions";
 
 const AdministrationDeleteItem = (props) => {
     const confirmAction = () => {
-        props.deleteTeam(props.id);
+        props.deleteAdministration(props.id);
         props.closeDeleteItemModal();
     };
 
@@ -18,14 +18,14 @@ const AdministrationDeleteItem = (props) => {
             confirmAction={() => confirmAction()}
             title="Verwijderen"
         >
-            Verwijder team: <strong> { props.name } </strong>
+            Verwijder administratie: <strong> { props.name } </strong>
         </Modal>
     );
 };
 
 const mapDispatchToProps = dispatch => ({
-    deleteTeam: (id) => {
-        dispatch(deleteTeam(id));
+    deleteAdministration: (id) => {
+        dispatch(deleteAdministration(id));
     },
 });
 

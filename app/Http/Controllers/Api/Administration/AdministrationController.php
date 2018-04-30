@@ -132,7 +132,7 @@ class AdministrationController extends ApiController
         $this->authorize('manage', Administration::class);
 
         //remove file from disk, move to DeleteHelper?
-        Storage::disk('administration_logos')->delete($administration->logo_filename);
+        Storage::disk('administrations')->delete($administration->logo_filename);
 
         DeleteHelper::delete($administration);
     }

@@ -40,3 +40,6 @@ export const taskNote = faker.lorem.sentence();
 
 //team
 export const teamName = faker.lorem.word();
+
+//administration
+export const administrationName = faker.lorem.word();

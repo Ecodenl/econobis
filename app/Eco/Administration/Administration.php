@@ -42,4 +42,9 @@ class Administration extends Model
         return $this->belongsTo(Country::class);
     }
 
+    public function createdBy()
+    {
+        return $this->belongsTo(User::class);
+    }
+
 }

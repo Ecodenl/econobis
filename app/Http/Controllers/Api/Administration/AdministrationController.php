@@ -43,6 +43,7 @@ class AdministrationController extends ApiController
         $administration->load([
             'country',
             'users',
+            'createdBy',
         ]);
 
         return FullAdministration::make($administration);

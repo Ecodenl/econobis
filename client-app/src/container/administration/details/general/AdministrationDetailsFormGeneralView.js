@@ -26,7 +26,7 @@ const AdministrationDetailsFormGeneralView = props => {
                     </div>
                     <div className="row">
                         <ViewText
-                            label={"Adress"}
+                            label={"Adres"}
                             value={address}
                         />
                         <ViewText

@@ -119,6 +119,20 @@ class SidebarMenu extends Component {
                         <NavText><Link className="sidebar-link" to="documenten">Documenten</Link></NavText>
                     </Nav>
                     }
+                    {this.props.permissions.manageFinancial && this.props.administrations.length > 0 &&
+                    <Nav id="instellingen">
+                        <NavIcon><SvgIcon size={20} icon={cog}/></NavIcon>
+                        <NavText> Financieel </NavText>
+                        {
+                            this.props.administrations.map((administration) => {
+                                return <Nav id={`administration/${administration.id}`}>
+                                    <NavText><Link className="sidebar-link"
+                                                   to={`financieel/${administration.id}`}>{administration.name}</Link></NavText>
+                                </Nav>
+                            })
+                        }
+                    </Nav>
+                    }
                     <Nav id="instellingen">
                         <NavIcon><SvgIcon size={20} icon={cog}/></NavIcon>
                         <NavText> Instellingen </NavText>
@@ -166,6 +180,7 @@ class SidebarMenu extends Component {
 const mapStateToProps = (state) => {
     return {
         permissions: state.meDetails.permissions,
+        administrations: state.meDetails.administrations,
     }
 };
 

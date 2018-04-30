@@ -3,11 +3,12 @@ import { connect } from 'react-redux';
 
 import Modal from '../../../components/modal/Modal';
 import {deleteAdministration} from "../../../actions/administration/AdministrationsActions";
+import {hashHistory} from "react-router";
 
 const AdministrationDeleteItem = (props) => {
     const confirmAction = () => {
         props.deleteAdministration(props.id);
-        props.closeDeleteItemModal();
+        hashHistory.push(`/administraties`);
     };
 
     return (

@@ -1,6 +1,5 @@
 import { put, call } from 'redux-saga/effects';
-import AdministrationDetailsAPI from '../../api/administartion/AdministrationDetailsAPI';
-import TeamDetailsAPI from "../../api/team/TeamDetailsAPI";
+import AdministrationDetailsAPI from '../../api/administration/AdministrationDetailsAPI';
 
 export function* fetchAdministrationDetailsSaga({ id }) {
     try {
@@ -11,7 +10,6 @@ export function* fetchAdministrationDetailsSaga({ id }) {
     }
 }
 
-// Update team details and switch to view callback
 export function* updateAdministrationDetailsSaga({ administration, switchToView }) {
     try {
         const payload = yield call(AdministrationDetailsAPI.updateAdministration, administration);

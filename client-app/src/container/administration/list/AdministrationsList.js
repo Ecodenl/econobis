@@ -4,10 +4,10 @@ import DataTable from '../../../components/dataTable/DataTable';
 import DataTableHead from '../../../components/dataTable/DataTableHead';
 import DataTableBody from '../../../components/dataTable/DataTableBody';
 import DataTableHeadTitle from '../../../components/dataTable/DataTableHeadTitle';
-import TeamsListItem from './TeamsListItem';
-import TeamDeleteItem from "./TeamDeleteItem";
+import AdministrationsListItem from './AdministrationsListItem';
+import AdministrationDeleteItem from "./AdministrationDeleteItem";
 
-class TeamsList extends Component {
+class AdministrationsList extends Component {
     constructor(props) {
         super(props);
 
@@ -50,23 +50,25 @@ class TeamsList extends Component {
                 <DataTable>
                     <DataTableHead>
                         <tr className="thead-title">
-                            <DataTableHeadTitle title={'Team'} width={"30%"}/>
-                            <DataTableHeadTitle title={'Gebruikers'} width={"65%"}/>
+                            <DataTableHeadTitle title={'Naam'} width={"40%"}/>
+                            <DataTableHeadTitle title={'Adres'} width={"25%"}/>
+                            <DataTableHeadTitle title={'Postcode'} width={"15%"}/>
+                            <DataTableHeadTitle title={'Plaats'} width={"15%"}/>
                             <DataTableHeadTitle title={''} width={"5%"}/>
                         </tr>
                     </DataTableHead>
                     <DataTableBody>
                         {
-                            this.props.teams.length === 0 ? (
+                            this.props.administrations.length === 0 ? (
                                 <tr>
-                                    <td colSpan={3}>Geen teams gevonden!</td>
+                                    <td colSpan={5}>Geen administraties gevonden!</td>
                                 </tr>
                             ) : (
-                                this.props.teams.map((team) => {
-                                    return <TeamsListItem
-                                        key={team.id}
+                                this.props.administrations.map((administration) => {
+                                    return <AdministrationsListItem
+                                        key={administration.id}
                                         showDeleteItemModal={this.showDeleteItemModal}
-                                        {...team}
+                                        {...administration}
                                     />
                                 })
                             )
@@ -76,7 +78,7 @@ class TeamsList extends Component {
 
                 {
                     this.state.showDeleteItem &&
-                    <TeamDeleteItem
+                    <AdministrationDeleteItem
                         closeDeleteItemModal={this.closeDeleteItemModal}
                         {...this.state.deleteItem}
                     />
@@ -86,4 +88,4 @@ class TeamsList extends Component {
     }
 };
 
-export default TeamsList;
+export default AdministrationsList;

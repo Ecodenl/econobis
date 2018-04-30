@@ -122,6 +122,11 @@ class SidebarMenu extends Component {
                     <Nav id="instellingen">
                         <NavIcon><SvgIcon size={20} icon={cog}/></NavIcon>
                         <NavText> Instellingen </NavText>
+                        {this.props.permissions.manageFinancial &&
+                        <Nav id="administration">
+                            <NavText><Link className="sidebar-link" to="administraties">Administraties</Link></NavText>
+                        </Nav>
+                        }
                         {this.props.permissions.viewDocumentTemplate &&
                         <Nav id="documents">
                             <NavText><Link className="sidebar-link" to="document-templates">Document

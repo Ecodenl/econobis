@@ -1,5 +1,5 @@
 import { put, call } from 'redux-saga/effects';
-import AdministrationsAPI from '../../api/administartion/AdministrationsAPI';
+import AdministrationsAPI from '../../api/administration/AdministrationsAPI';
 
 export function* fetchAdministrationsSaga() {
     try {

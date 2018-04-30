@@ -61,21 +61,21 @@ export default {
             });
     },
 
-    attachUser: (administrationId, userId) => {
-        const requestUrl = `${URL_ADMINISTRATION}/${administrationId}/${userId}/attach`;
+    attachUser: (administrationUser) => {
+        const requestUrl = `${URL_ADMINISTRATION}/${administrationUser.administrationId}/${administrationUser.userId}/attach`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
         return axios.post(requestUrl)
             .then(function (response) {
-                return response.data.data;
+                return response;
             })
             .catch(function (error) {
                 return error;
             });
     },
 
-    detachUser: (administrationId, userId) => {
+    detachUser: ({administrationId, userId}) => {
         const requestUrl = `${URL_ADMINISTRATION}/${administrationId}/${userId}/detach`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;

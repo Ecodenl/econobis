@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import validator from "validator";
 
-import TeamDetailsAPI from '../../../../api/team/TeamDetailsAPI';
-import { newTeamUser } from '../../../../actions/team/TeamDetailsActions';
+import AdministrationDetailsAPI from '../../../../api/administration/AdministrationDetailsAPI';
+import { addAdministrationUser } from '../../../../actions/administration/AdministrationDetailsActions';
 import InputText from '../../../../components/form/InputText';
 import ButtonText from '../../../../components/button/ButtonText';
 import InputSelect from "../../../../components/form/InputSelect";
@@ -36,8 +36,8 @@ class AdministrationDetailsUsersNew extends Component {
     handleSubmit(event) {
         event.preventDefault();
 
-        const teamUser = {
-            teamId: this.props.teamId,
+        const administrationUser = {
+            administrationId: this.props.administrationId,
             userId: this.state.userId,
         };
 
@@ -45,7 +45,7 @@ class AdministrationDetailsUsersNew extends Component {
         let errors = {};
         let hasErrors = false;
 
-        if(validator.isEmpty(teamUser.userId)){
+        if(validator.isEmpty(administrationUser.userId)){
             errors.userId = true;
             hasErrors = true;
         };
@@ -53,13 +53,8 @@ class AdministrationDetailsUsersNew extends Component {
         this.setState({ ...this.state, errors: errors });
 
         if(!hasErrors){
-            TeamDetailsAPI.newTeamUser(teamUser).then((payload) => {
-               this.props.newTeamUser(payload.data.data);
+               this.props.addAdministrationUser(administrationUser);
                this.props.toggleShowNew();
-            })
-            .catch((error) => {
-                console.log(error.response);
-            });
         }
     };
 
@@ -70,9 +65,9 @@ class AdministrationDetailsUsersNew extends Component {
                     <PanelBody>
                         <div className="row">
                             <InputText
-                                label={"Team"}
-                                name={"team"}
-                                value={this.props.teamName}
+                                label={"Administratie"}
+                                name={"administration"}
+                                value={this.props.administrationName}
                                 readOnly={true}
                             />
                             <InputSelect
@@ -101,15 +96,15 @@ class AdministrationDetailsUsersNew extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        teamId: state.teamDetails.id,
-        teamName: state.teamDetails.name,
+        administrationId: state.administrationDetails.id,
+        administrationName: state.administrationDetails.name,
         users: state.systemData.users,
     };
 };
 
 const mapDispatchToProps = dispatch => ({
-    newTeamUser: (teamUser) => {
-        dispatch(newTeamUser(teamUser));
+    addAdministrationUser: (administrationUser) => {
+        dispatch(addAdministrationUser(administrationUser));
     },
 });
 

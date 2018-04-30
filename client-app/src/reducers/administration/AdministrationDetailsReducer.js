@@ -10,13 +10,13 @@ export default function (state= [], action) {
                 ...state,
                 ...action.administrationDetails,
             };
-        case 'NEW_ADMINISTRATION_USER':
+        case 'ADD_ADMINISTRATION_USER_SUCCESS':
             return {
                 ...state,
                 users: [
                     ...state.users,
                     {
-                        ...action.administrationUser,
+                        ...action.administrationUserPayload,
                     }
                 ]
             };

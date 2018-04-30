@@ -27,7 +27,7 @@ const AdministrationDetailsUsersList = props => {
 
 const mapStateToProps = (state) => {
     return {
-        users: state.teamDetails.users,
+        users: state.administrationDetails.users,
     };
 };
 export default connect(mapStateToProps)(AdministrationDetailsUsersList);

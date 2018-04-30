@@ -2,11 +2,11 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import Modal from '../../../../components/modal/Modal';
-import { deleteTeamUser } from '../../../../actions/team/TeamDetailsActions';
+import { deleteAdministrationUser } from '../../../../actions/administration/AdministrationDetailsActions';
 
 const AdministrationDetailsUsersDelete = (props) => {
     const confirmAction = () => {
-        props.deleteTeamUser(props.teamId, props.userId);
+        props.deleteAdministrationUser(props.administrationId, props.userId);
         props.toggleDelete();
     };
 
@@ -18,7 +18,7 @@ const AdministrationDetailsUsersDelete = (props) => {
             confirmAction={() => confirmAction()}
             title="Verwijderen"
         >
-            <p>Wil je deze gebruiker ontkoppelen van dit team?</p>
+            <p>Wil je deze gebruiker ontkoppelen van deze administratie?</p>
 
         </Modal>
     );
@@ -26,13 +26,13 @@ const AdministrationDetailsUsersDelete = (props) => {
 
 const mapStateToProps = (state) => {
     return {
-        teamId: state.teamDetails.id,
+        administrationId: state.administrationDetails.id,
     };
 };
 
 const mapDispatchToProps = dispatch => ({
-    deleteTeamUser: (teamId, userId) => {
-        dispatch(deleteTeamUser(teamId, userId));
+    deleteAdministrationUser: (administrationId, userId) => {
+        dispatch(deleteAdministrationUser(administrationId, userId));
     },
 });
 

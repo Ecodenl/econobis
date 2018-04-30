@@ -47,7 +47,7 @@ class AdministrationDetailsUsersItem extends Component {
                     user={this.state.user}
                 />
                 {
-                    this.state.showDelete && this.props.permissions.createTeam &&
+                    this.state.showDelete && this.props.permissions.manageFinancial &&
                     <AdministrationDetailsUsersDelete
                         toggleDelete={this.toggleDelete}
                         userId={this.state.user.id}

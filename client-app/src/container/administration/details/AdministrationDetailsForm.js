@@ -27,7 +27,7 @@ class AdministrationDetailsForm extends Component {
                     />
                     }
                     <AdministrationDetailsFormGeneral />
-                    {/*<AdministrationDetailsUsers />*/}
+                    <AdministrationDetailsUsers />
                 </div>
         );
     }

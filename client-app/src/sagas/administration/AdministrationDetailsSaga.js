@@ -23,10 +23,12 @@ export function* updateAdministrationDetailsSaga({ administration, administratio
     }
 }
 
-export function* addAdministrationUserSaga({administrationId, userId }) {
+export function* addAdministrationUserSaga({administrationUser}) {
     try {
-        yield call(AdministrationDetailsAPI.attachUser, {administrationId, userId });
-        yield put({ type: 'ADD_ADMINISTRATION_USER_SUCCESS', userId });
+        const payload = yield call(AdministrationDetailsAPI.attachUser, administrationUser);
+
+        const administrationUserPayload = payload.data.data;
+        yield put({ type: 'ADD_ADMINISTRATION_USER_SUCCESS', administrationUserPayload });
     } catch (error) {
         yield put({ type: 'ADD_ADMINISTRATION_USER_ERROR', error });
     }

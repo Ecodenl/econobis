@@ -14,11 +14,10 @@ export const updateAdministration = (administration, administrationId, switchToV
     }
 };
 
-export const addAdministrationUser = (administrationId, userId) => {
+export const addAdministrationUser = (administrationUser) => {
     return {
         type: 'ADD_ADMINISTRATION_USER',
-        administrationId,
-        userId,
+        administrationUser,
     };
 };
 

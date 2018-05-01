@@ -53,6 +53,8 @@ import { fetchUserDetailsSaga, updateUserDetailsSaga } from './user/UserDetailsS
 import { fetchUserSaga } from './user/UsersSaga';
 import { meDetailsSaga } from './general/MeDetailsSaga';
 import { systemDataSaga } from './general/SystemDataSaga';
+import { addProductPriceHistorySaga, fetchProductDetailsSaga, updateProductDetailsSaga } from './product/ProductDetailsSaga';
+import { deleteProductSaga, fetchProductsSaga } from './product/ProductsSaga';
 
 export default function* watchSagas() {
     // General
@@ -155,4 +157,11 @@ export default function* watchSagas() {
     yield takeLatest('DELETE_TEAM', deleteTeamSaga);
     yield takeLatest('DELETE_TEAM_USER', deleteTeamUserSaga);
     yield takeLatest('UPDATE_TEAM', updateTeamDetailsSaga);
+
+    // Products
+    yield takeLatest('ADD_PRODUCT_PRICE_HISTORY', addProductPriceHistorySaga);
+    yield takeLatest('FETCH_PRODUCT_DETAILS', fetchProductDetailsSaga);
+    yield takeLatest('UPDATE_PRODUCT', updateProductDetailsSaga);
+    yield takeLatest('DELETE_PRODUCT', deleteProductSaga);
+    yield takeLatest('FETCH_PRODUCTS', fetchProductsSaga);
 }

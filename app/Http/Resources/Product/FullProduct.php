@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\Product;
 
+use App\Http\Resources\Administration\FullAdministration;
 use App\Http\Resources\EnumWithIdAndName\FullEnumWithIdAndName;
 use App\Http\Resources\GenericResource;
 use App\Http\Resources\User\FullUser;
@@ -30,6 +31,13 @@ class FullProduct extends Resource
                 'duration' => FullEnumWithIdAndName::make($this->getDuration()),
                 'invoiceFrequency' => FullEnumWithIdAndName::make($this->getInvoiceFrequency()),
                 'paymentType' => FullEnumWithIdAndName::make($this->getPaymentType()),
+                'administration' => FullAdministration::make($this->whenLoaded('administration')),
+
+                'createdById' => $this->created_by_id,
+                'createdBy' => FullUser::make($this->whenLoaded('createdBy')),
+                'deletedAt' => $this->deleted_at,
+                'createdAt' => $this->created_at,
+                'updatedAt' => $this->updated_at,
             ];
     }
 }

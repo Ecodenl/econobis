@@ -1,10 +1,9 @@
 import React, {Component} from 'react';
 
-import ProductDetailsUsersView from './ProductDetailsUsersView';
-import ProductDetailsUsersDelete from "./ProductDetailsUsersDelete";
+import PriceHistoryView from './PriceHistoryView';
 import {connect} from "react-redux";
 
-class ProductDetailsUsersItem extends Component {
+class PriceHistoryItem extends Component {
     constructor(props) {
         super(props);
 
@@ -13,7 +12,7 @@ class ProductDetailsUsersItem extends Component {
             highlightLine: '',
             showDelete: false,
 
-            user: props.user,
+            price: props.price,
         };
     };
 
@@ -31,28 +30,18 @@ class ProductDetailsUsersItem extends Component {
         });
     };
 
-    toggleDelete = () => {
-        this.setState({showDelete: !this.state.showDelete});
-    };
 
     render() {
         return (
             <div>
-                <ProductDetailsUsersView
+                <PriceHistoryView
                     highlightLine={this.state.highlightLine}
                     showActionButtons={this.state.showActionButtons}
                     onLineEnter={this.onLineEnter}
                     onLineLeave={this.onLineLeave}
                     toggleDelete={this.toggleDelete}
-                    user={this.state.user}
+                    price={this.state.price}
                 />
-                {
-                    this.state.showDelete && this.props.permissions.manageFinancial &&
-                    <ProductDetailsUsersDelete
-                        toggleDelete={this.toggleDelete}
-                        userId={this.state.user.id}
-                    />
-                }
             </div>
         );
     }
@@ -64,4 +53,4 @@ const mapStateToProps = (state) => {
     }
 };
 
-export default connect(mapStateToProps)(ProductDetailsUsersItem);
+export default connect(mapStateToProps)(PriceHistoryItem);

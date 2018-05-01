@@ -2,13 +2,13 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import Modal from '../../../components/modal/Modal';
-import {deleteProduct} from "../../../actions/administration/ProductsActions";
+import {deleteProduct} from "../../../actions/product/ProductsActions";
 import {hashHistory} from "react-router";
 
 const ProductDeleteItem = (props) => {
     const confirmAction = () => {
         props.deleteProduct(props.id);
-        hashHistory.push(`/administraties`);
+        hashHistory.push(`/producten`);
     };
 
     return (
@@ -19,7 +19,7 @@ const ProductDeleteItem = (props) => {
             confirmAction={() => confirmAction()}
             title="Verwijderen"
         >
-            Verwijder administratie: <strong> { props.name } </strong>?
+            Verwijder product: <strong> { props.name } </strong>?
         </Modal>
     );
 };

@@ -25,11 +25,12 @@ export function* updateProductDetailsSaga({ product, switchToView }) {
 
 export function* addProductPriceHistorySaga({ priceHistory }) {
     try {
-        const payload = yield call(ProductDetailsAPI.newPriceHistory, priceHistory);
+        yield call(ProductDetailsAPI.newPriceHistory, priceHistory);
 
-        const priceHistoryPayload = payload.data.data;
+        //Because there are sorts and current price we reload whole product
+        const productDetails = yield call(ProductDetailsAPI.fetchProductDetails, priceHistory.productId);
+        yield put({ type: 'FETCH_PRODUCT_DETAILS_SUCCESS',productDetails });
 
-        yield put({ type: 'ADD_PRODUCT_PRICE_HISTORY_SUCCESS', priceHistoryPayload });
     } catch (error) {
         yield put({ type: 'ADD_PRODUCT_PRICE_HISTORY_ERROR', error });
     }

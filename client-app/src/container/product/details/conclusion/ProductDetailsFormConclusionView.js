@@ -6,7 +6,7 @@ import moment from "moment/moment";
 moment.locale('nl');
 
 const IntakeDetailsFormConclusionView = props => {
-    const { createdAt, createdBy } = props.administrationDetails;
+    const { createdAt, createdBy } = props.productDetails;
 
     return (
         <div>
@@ -27,7 +27,7 @@ const IntakeDetailsFormConclusionView = props => {
 
 const mapStateToProps = (state) => {
     return {
-        administrationDetails: state.administrationDetails,
+        productDetails: state.productDetails,
     };
 };
 

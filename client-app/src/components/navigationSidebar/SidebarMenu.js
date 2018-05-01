@@ -120,7 +120,7 @@ class SidebarMenu extends Component {
                     </Nav>
                     }
                     {this.props.permissions.manageFinancial && this.props.administrations.length > 0 &&
-                    <Nav id="instellingen">
+                    <Nav id="financial">
                         <NavIcon><SvgIcon size={20} icon={cog}/></NavIcon>
                         <NavText> Financieel </NavText>
                         {

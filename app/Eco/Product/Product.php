@@ -29,6 +29,11 @@ class Product extends Model
 
     public function priceHistory()
     {
+        return $this->hasMany(PriceHistory::class)->orderBy('date_start', 'asc')->orderBy('created_at', 'asc');
+    }
+
+    public function priceHistoryUnsorted()
+    {
         return $this->hasMany(PriceHistory::class);
     }
 
@@ -65,7 +70,7 @@ class Product extends Model
 
     public function getCurrentPriceAttribute()
     {
-       return $this->priceHistory()->where('date_start', '<', Carbon::now())->orderBy('date_start', 'desc')->orderBy('created_at', 'desc')->first();
+       return $this->priceHistoryUnsorted()->where('date_start', '<', Carbon::now())->orderBy('date_start', 'desc')->orderBy('created_at', 'desc')->first();
     }
 
     public function getPriceInclVatAttribute()
@@ -73,7 +78,7 @@ class Product extends Model
         if(!$this->currentPrice){
             return 0;
         }
-        
+
         $price_ex_vat = $this->currentPrice->price;
 
         if($price_ex_vat === null){

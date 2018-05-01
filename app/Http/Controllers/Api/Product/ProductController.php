@@ -41,6 +41,7 @@ class ProductController extends ApiController
         $product->load([
             'priceHistory',
             'createdBy',
+            'administration',
         ]);
 
         return FullProduct::make($product);
@@ -101,10 +102,10 @@ class ProductController extends ApiController
         $this->authorize('manage', Product::class);
 
         $data = $input
-            ->string('productId')->validate('required|exists:products,id')->next()
-            ->string('date_start')->validate('required|date')->next()
+            ->string('productId')->validate('required|exists:products,id')->alias('product_id')->next()
+            ->string('dateStart')->validate('required|date')->alias('date_start')->next()
             ->integer('price')->validate('required')->next()
-            ->integer('vat_percentage')->validate('required')->next()
+            ->integer('vatPercentage')->validate('required')->alias('vat_percentage')->next()
             ->get();
 
         $priceHistory = new PriceHistory($data);

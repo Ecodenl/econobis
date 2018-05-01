@@ -60,6 +60,9 @@ import ParticipantNewApp from './container/production-project/general/participan
 import ParticipantDetailsApp from './container/production-project/general/participant/details/ParticipantDetailsApp';
 import ParticipationTransferApp from './container/production-project/general/participant/details/transfer/ParticipationTransferApp';
 import PostalCodeLinkListApp from './container/postal-code-link/list/PostalCodeLinkListApp';
+import ProductsListApp from './container/product/list/ProductsListApp';
+import ProductNewApp from './container/product/new/ProductNewApp';
+import ProductDetailsApp from './container/product/details/ProductDetailsApp';
 import ProductionProjectsListApp from './container/production-project/list/ProductionProjectsListApp';
 import ProductionProjectDetailsApp from './container/production-project/details/ProductionProjectDetailsApp';
 import ProductionProjectGeneralApp from './container/production-project/general/ProductionProjectGeneralApp';
@@ -81,8 +84,6 @@ import UserDetailsApp from './container/users/details/UserDetailsApp';
 import UserNewApp from './container/users/new/UserNewApp';
 import UsersListApp from './container/users/list/UsersListApp';
 import RevenueDetailsApp from './container/production-project/details/revenue/details/RevenueDetailsApp';
-import ProductsListApp from './container/product/list/ProductsListApp';
-import ProductNewApp from './container/product/new/ProductNewApp';
 
 const Routes = () => {
     return (
@@ -194,7 +195,7 @@ const Routes = () => {
                 /* Product */
                 <Route path="producten" component={ProductsListApp} />
                 <Route path="product/nieuw" component={ProductNewApp} />
-                {/*<Route path="product/:id" component={AdministrationDetailsApp} />*/}
+                <Route path="product/:id" component={ProductDetailsApp} />
 
                 /* Production project */
                 <Route path="productie-project/nieuw" component={ProductionProjectNewApp} />

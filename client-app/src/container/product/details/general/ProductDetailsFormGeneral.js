@@ -59,7 +59,7 @@ class ProductDetailsFormGeneral extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        administrationDetails: state.administrationDetails,
+        productDetails: state.productDetails,
         meDetails: state.meDetails,
     };
 };

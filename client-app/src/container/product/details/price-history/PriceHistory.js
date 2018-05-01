@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 
-import ProductDetailsUsersList from './ProductDetailsUsersList';
-import ProductDetailsUsersNew from './ProductDetailsUsersNew';
+import PriceHistoryList from './PriceHistoryList';
+import PriceHistoryNew from './PriceHistoryNew';
 import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
 import PanelHeader from '../../../../components/panel/PanelHeader';
 import {connect} from "react-redux";
 
-class ProductDetailsUsers extends Component {
+class PriceHistory extends Component {
     constructor(props) {
         super(props);
 
@@ -26,7 +26,7 @@ class ProductDetailsUsers extends Component {
         return (
             <Panel>
                 <PanelHeader>
-                    <span className="h5 text-bold">Gekoppelde gebruikers</span>
+                    <span className="h5 text-bold">Prijshistorie</span>
                     {this.props.permissions.manageFinancial &&
                     <a role="button" className="pull-right" onClick={this.toggleShowNew}><span
                         className="glyphicon glyphicon-plus"/>
@@ -35,11 +35,11 @@ class ProductDetailsUsers extends Component {
                 </PanelHeader>
                 <PanelBody>
                     <div className="col-md-12">
-                        <ProductDetailsUsersList/>
+                        <PriceHistoryList/>
                     </div>
                     <div className="col-md-12 margin-10-top">
                         {this.state.showNew &&
-                        <ProductDetailsUsersNew toggleShowNew={this.toggleShowNew}/>}
+                        <PriceHistoryNew toggleShowNew={this.toggleShowNew}/>}
                     </div>
                 </PanelBody>
             </Panel>
@@ -53,4 +53,4 @@ const mapStateToProps = (state) => {
     }
 };
 
-export default connect(mapStateToProps)(ProductDetailsUsers);
+export default connect(mapStateToProps)(PriceHistory);

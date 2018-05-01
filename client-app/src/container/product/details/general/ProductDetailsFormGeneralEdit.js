@@ -1,31 +1,30 @@
 import React, {Component} from 'react';
-import { hashHistory } from 'react-router';
+import { connect } from 'react-redux';
 import validator from 'validator';
-import * as ibantools from "ibantools";
 
-import InputText from '../../../components/form/InputText';
-import ButtonText from '../../../components/button/ButtonText';
-import PanelBody from "../../../components/panel/PanelBody";
-import Panel from "../../../components/panel/Panel";
-import ProductDetailsAPI from '../../../api/product/ProductDetailsAPI';
-import {connect} from "react-redux";
-import InputSelect from "../../../components/form/InputSelect";
-import AdministrationsAPI from "../../../api/administration/AdministrationsAPI";
+import { updateProduct } from '../../../../actions/product/ProductDetailsActions';
+import InputText from '../../../../components/form/InputText';
+import ButtonText from '../../../../components/button/ButtonText';
+import Panel from "../../../../components/panel/Panel";
+import PanelBody from "../../../../components/panel/PanelBody";
+import InputSelect from "../../../../components/form/InputSelect";
 
-class ProductNewForm extends Component {
+class ProductDetailsFormGeneralEdit extends Component {
     constructor(props) {
         super(props);
+
+        const { code, name, invoiceText, durationId, invoiceFrequencyId, paymentTypeId, administrationId} = props.productDetails;
 
         this.state = {
             administrations: [],
             product: {
-                code: '',
-                name: '',
-                invoiceText: '',
-                durationId: '',
-                invoiceFrequencyId: '',
-                paymentTypeId: '',
-                administrationId: '',
+                code: code ? code : '',
+                name: name ? name : '',
+                invoiceText: invoiceText ? invoiceText : '',
+                durationId: durationId ? durationId : '',
+                invoiceFrequencyId: invoiceFrequencyId ? invoiceFrequencyId : '',
+                paymentTypeId: paymentTypeId ? paymentTypeId : '',
+                administrationId: administrationId ? administrationId : '',
             },
             errors: {
                 code: false,
@@ -33,15 +32,6 @@ class ProductNewForm extends Component {
                 administrationId: false,
             },
         };
-    };
-
-    componentDidMount() {
-        AdministrationsAPI.peekAdministrations().then(payload => {
-            this.setState({
-                ...this.state,
-                administrations: payload,
-            })
-        })
     };
 
     handleInputChange = event => {
@@ -84,18 +74,13 @@ class ProductNewForm extends Component {
 
         this.setState({...this.state, errors: errors});
 
-        // If no errors send form
-        if(!hasErrors) {
-        ProductDetailsAPI.newProduct(product).then((payload) => {
-            hashHistory.push(`/product/${payload.data.id}`);
-        }).catch(function (error) {
-            console.log(error)
-        });
-    }
+        if (!hasErrors) {
+            this.props.updateProduct(product, this.props.switchToView);
+        }
     };
 
     render() {
-        const { code, name, invoiceText, durationId, invoiceFrequencyId, paymentTypeId, administrationId } = this.state.product;
+        const { code, name, invoiceText, durationId, invoiceFrequencyId, paymentTypeId, administrationId} = this.state.product;
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -177,6 +162,7 @@ class ProductNewForm extends Component {
 
                     <PanelBody>
                         <div className="pull-right btn-group" role="group">
+                            <ButtonText buttonClassName={"btn-default"} buttonText={"Sluiten"} onClickAction={this.props.switchToView}/>
                             <ButtonText buttonText={"Opslaan"} onClickAction={this.handleSubmit} type={"submit"} value={"Submit"}/>
                         </div>
                     </PanelBody>
@@ -191,7 +177,14 @@ const mapStateToProps = (state) => {
         productDurations: state.systemData.productDurations,
         productInvoiceFrequencies: state.systemData.productInvoiceFrequencies,
         productPaymentTypes: state.systemData.productPaymentTypes,
+        productDetails: state.productDetails,
     };
 };
 
-export default connect(mapStateToProps)(ProductNewForm);
+const mapDispatchToProps = dispatch => ({
+    updateProduct: (product, switchToView) => {
+        dispatch(updateProduct(product, switchToView));
+    },
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(ProductDetailsFormGeneralEdit);

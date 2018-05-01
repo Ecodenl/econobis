@@ -27,7 +27,7 @@ class ProductToolbar  extends Component {
                         <ButtonIcon iconName={"glyphicon-trash"} onClickAction={this.toggleDelete}/>
                     </div>
                 </div>
-                <div className="col-md-4"><h4 className="text-center">Administratie: {this.props.name}</h4></div>
+                <div className="col-md-4"><h4 className="text-center">Product: {this.props.name}</h4></div>
                 <div className="col-md-4"/>
                 {
                     this.state.showDelete &&
@@ -44,8 +44,8 @@ class ProductToolbar  extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        name: state.administrationDetails.name,
-        id: state.administrationDetails.id,
+        name: state.productDetails.name,
+        id: state.productDetails.id,
     };
 };
 

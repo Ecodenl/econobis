@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
 
-import { fetchProductDetails } from '../../../actions/administration/ProductDetailsActions';
+import { fetchProductDetails } from '../../../actions/product/ProductDetailsActions';
 import ProductDetailsToolbar from './ProductDetailsToolbar';
 import ProductDetailsForm from './ProductDetailsForm';
 import Panel from '../../../components/panel/Panel';
@@ -40,7 +40,7 @@ class ProductDetailsApp extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        administrationDetails: state.administrationDetails,
+        productDetails: state.productDetails,
     };
 };
 

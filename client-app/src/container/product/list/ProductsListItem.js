@@ -27,7 +27,7 @@ class ProductsListItem extends Component {
     };
 
     openItem(id) {
-        hashHistory.push(`/administratie/${id}`);
+        hashHistory.push(`/product/${id}`);
     };
 
     render() {

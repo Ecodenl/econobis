@@ -13,7 +13,7 @@ export const updateProduct = (product, switchToView) => {
     }
 };
 
-export const addProductPriceHistoryUser = (priceHistory) => {
+export const addProductPriceHistory = (priceHistory) => {
     return {
         type: 'ADD_PRODUCT_PRICE_HISTORY',
         priceHistory,

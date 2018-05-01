@@ -43,3 +43,6 @@ export const teamName = faker.lorem.word();
 
 //administration
 export const administrationName = faker.lorem.word();
+
+//product
+export const productName = faker.lorem.word();

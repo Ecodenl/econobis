@@ -81,6 +81,8 @@ import UserDetailsApp from './container/users/details/UserDetailsApp';
 import UserNewApp from './container/users/new/UserNewApp';
 import UsersListApp from './container/users/list/UsersListApp';
 import RevenueDetailsApp from './container/production-project/details/revenue/details/RevenueDetailsApp';
+import ProductsListApp from './container/product/list/ProductsListApp';
+import ProductNewApp from './container/product/new/ProductNewApp';
 
 const Routes = () => {
     return (
@@ -188,6 +190,12 @@ const Routes = () => {
                 <Route path="kansen" component={OpportunitiesListApp} />
                 /* Postal code links */
                 <Route path="postcoderoos" component={PostalCodeLinkListApp} />
+
+                /* Product */
+                <Route path="producten" component={ProductsListApp} />
+                <Route path="product/nieuw" component={ProductNewApp} />
+                {/*<Route path="product/:id" component={AdministrationDetailsApp} />*/}
+
                 /* Production project */
                 <Route path="productie-project/nieuw" component={ProductionProjectNewApp} />
                 <Route path="productie-project/opbrengst/nieuw/:productionProjectId" component={ProductionProjectRevenueNewApp} />

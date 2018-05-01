@@ -11,6 +11,8 @@ class PriceHistory extends Model
 
     protected $guarded = ['id'];
 
+    protected $table = 'price_history_product';
+
     public function product()
     {
         return $this->belongsTo(Product::class);

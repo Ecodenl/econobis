@@ -1,40 +1,44 @@
 import React, {Component} from 'react';
-import { hashHistory } from 'react-router';
+import { connect } from 'react-redux';
 import validator from 'validator';
-import * as ibantools from "ibantools";
 
-import InputText from '../../../components/form/InputText';
-import ButtonText from '../../../components/button/ButtonText';
-import PanelBody from "../../../components/panel/PanelBody";
-import Panel from "../../../components/panel/Panel";
-import AdministrationDetailsAPI from '../../../api/administration/AdministrationDetailsAPI';
-import {connect} from "react-redux";
-import InputSelect from "../../../components/form/InputSelect";
-import AdministrationLogoNew from "./AdministrationLogoNew";
+import { updateProduct } from '../../../../actions/administration/ProductDetailsActions';
+import InputText from '../../../../components/form/InputText';
+import ButtonText from '../../../../components/button/ButtonText';
+import Panel from "../../../../components/panel/Panel";
+import PanelBody from "../../../../components/panel/PanelBody";
+import * as ibantools from "ibantools/build/ibantools";
+import ProductLogoNew from "../../new/ProductLogoNew";
+import InputSelect from "../../../../components/form/InputSelect";
 
-class AdministrationNewForm extends Component {
+class ProductDetailsFormGeneralEdit extends Component {
     constructor(props) {
         super(props);
+
+        const { id, name, administrationNumber, address, postalCode, city, countryId, kvkNumber, btwNumber, IBAN, email, website, bic, sepaContractName,
+            sepaCreditorId, rsinNumber, defaultPaymentTerm, logoName} = props.administrationDetails;
 
         this.state = {
             newLogo: false,
             administration: {
-                name: '',
-                administrationNumber: '',
-                address: '',
-                postalCode: '',
-                city: '',
-                countryId: 'NL',
-                kvkNumber: '',
-                btwNumber: '',
-                IBAN: '',
-                email: '',
-                website: '',
-                bic: '',
-                sepaContractName: '',
-                sepaCreditorId: '',
-                rsinNumber: '',
-                defaultPaymentTerm: '',
+                id,
+                name: name ? name : '',
+                administrationNumber: administrationNumber ? administrationNumber : '',
+                address: address ? address : '',
+                postalCode: postalCode ? postalCode : '',
+                city: city ? city : '',
+                countryId: countryId ? countryId : '',
+                kvkNumber: kvkNumber ? kvkNumber : '',
+                btwNumber: btwNumber ? btwNumber : '',
+                IBAN: IBAN ? IBAN : '',
+                email: email ? email : '',
+                website: website ? website : '',
+                bic: bic ? bic : '',
+                sepaContractName: sepaContractName ? sepaContractName : '',
+                sepaCreditorId: sepaCreditorId ? sepaCreditorId : '',
+                rsinNumber: rsinNumber ? rsinNumber : '',
+                defaultPaymentTerm: defaultPaymentTerm ? defaultPaymentTerm : '',
+                logoName: logoName ? logoName : '',
                 attachment: ''
             },
             errors: {
@@ -89,43 +93,43 @@ class AdministrationNewForm extends Component {
         let errors = {};
         let hasErrors = false;
 
-        if (validator.isEmpty(administration.name)) {
+        if (validator.isEmpty(administration.name + '')) {
             errors.name = true;
             hasErrors = true;
         }
 
 
-        if (!validator.isEmpty(administration.postalCode) && !validator.isPostalCode(administration.postalCode, 'any')) {
+        if (!validator.isEmpty(administration.postalCode + '') && !validator.isPostalCode(administration.postalCode + '', 'any')) {
             errors.postalCode = true;
             hasErrors = true;
         }
 
-        if (!validator.isEmpty(administration.kvkNumber)) {
+        if (!validator.isEmpty(administration.kvkNumber + '')) {
             if (!validator.isInt(administration.kvkNumber + '')) {
                 errors.kvkNumber = true;
                 hasErrors = true;
             }
         }
 
-        if (validator.isEmpty(administration.btwNumber)) {
+        if (validator.isEmpty(administration.btwNumber + '')) {
             errors.btwNumber = true;
             hasErrors = true;
         }
 
-        if (!ibantools.isValidIBAN(administration.IBAN)) {
+        if (!ibantools.isValidIBAN(administration.IBAN + '')) {
             errors.IBAN = true;
             hasErrors = true;
         }
 
-        if (!validator.isEmpty(administration.email)) {
-            if (!validator.isEmail(administration.email)) {
+        if (!validator.isEmpty(administration.email + '')) {
+            if (!validator.isEmail(administration.email + '')) {
                 errors.email = true;
                 hasErrors = true;
             }
         }
 
-        if (!validator.isEmpty(administration.website)) {
-            if (!validator.isFQDN(administration.website)) {
+        if (!validator.isEmpty(administration.website + '')) {
+            if (!validator.isFQDN(administration.website + '')) {
                 errors.website = true;
                 hasErrors = true;
             }
@@ -137,6 +141,7 @@ class AdministrationNewForm extends Component {
         if(!hasErrors) {
             const data = new FormData();
 
+            data.append('id', administration.id);
             data.append('name', administration.name);
             data.append('administrationNumber', administration.administrationNumber);
             data.append('address', administration.address);
@@ -155,16 +160,13 @@ class AdministrationNewForm extends Component {
             data.append('defaultPaymentTerm', administration.defaultPaymentTerm);
             data.append('attachment', administration.attachment);
 
-        AdministrationDetailsAPI.newAdministration(data).then((payload) => {
-            hashHistory.push(`/administratie/${payload.data.id}`);
-        }).catch(function (error) {
-            console.log(error)
-        });
-    }
+            this.props.updateProduct(data, administration.id, this.props.switchToView);
+        }
     };
 
     render() {
-        const { name, administrationNumber, address, postalCode, city, countryId, kvkNumber, btwNumber, IBAN, email, website, bic, sepaContractName, sepaCreditorId, rsinNumber, defaultPaymentTerm, attachment} = this.state.administration;
+        const { name, administrationNumber, address, postalCode, city, countryId, kvkNumber, btwNumber, IBAN, email, website, bic, sepaContractName,
+            sepaCreditorId, rsinNumber, defaultPaymentTerm, attachment, logoName} = this.state.administration;
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -314,7 +316,7 @@ class AdministrationNewForm extends Component {
                                     <input
                                         type="text"
                                         className="form-control input-sm col-sm-6"
-                                        value={attachment && attachment.name}
+                                        value={attachment ? attachment.name : logoName }
                                         onClick={this.toggleNewLogo}
                                     />
                                 </div>
@@ -322,13 +324,14 @@ class AdministrationNewForm extends Component {
                         </div>
 
                         {this.state.newLogo &&
-                        <AdministrationLogoNew toggleShowNew={this.toggleNewLogo}
+                        <ProductLogoNew toggleShowNew={this.toggleNewLogo}
                                                addAttachment={this.addAttachment}/>
                         }
                     </PanelBody>
 
                     <PanelBody>
                         <div className="pull-right btn-group" role="group">
+                            <ButtonText buttonClassName={"btn-default"} buttonText={"Sluiten"} onClickAction={this.props.switchToView}/>
                             <ButtonText buttonText={"Opslaan"} onClickAction={this.handleSubmit} type={"submit"} value={"Submit"}/>
                         </div>
                     </PanelBody>
@@ -341,7 +344,14 @@ class AdministrationNewForm extends Component {
 const mapStateToProps = (state) => {
     return {
         countries: state.systemData.countries,
+        administrationDetails: state.administrationDetails,
     };
 };
 
-export default connect(mapStateToProps)(AdministrationNewForm);
+const mapDispatchToProps = dispatch => ({
+    updateProduct: (administration, administrationId, switchToView) => {
+        dispatch(updateProduct(administration, administrationId, switchToView));
+    },
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(ProductDetailsFormGeneralEdit);

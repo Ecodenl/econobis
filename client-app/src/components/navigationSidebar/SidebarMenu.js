@@ -141,6 +141,11 @@ class SidebarMenu extends Component {
                             <NavText><Link className="sidebar-link" to="administraties">Administraties</Link></NavText>
                         </Nav>
                         }
+                        {this.props.permissions.manageFinancial &&
+                        <Nav id="products">
+                            <NavText><Link className="sidebar-link" to="producten">Producten</Link></NavText>
+                        </Nav>
+                        }
                         {this.props.permissions.viewDocumentTemplate &&
                         <Nav id="documents">
                             <NavText><Link className="sidebar-link" to="document-templates">Document

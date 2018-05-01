@@ -21,7 +21,7 @@ class GridProduct extends Resource
                 'code' => $this->code,
                 'name' => $this->name,
                 'priceInclVat' => $this->price_incl_vat,
-                'price' => GenericResource::make($this->whenLoaded('price')),
+                'currentPrice' => GenericResource::make($this->current_price),
             ];
     }
 }

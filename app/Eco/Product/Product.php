@@ -18,7 +18,9 @@ class Product extends Model
     protected $appends
         = [
             'price_incl_vat',
+            'current_price',
         ];
+
     //Dont boot softdelete scopes. We handle this ourselves
     public static function bootSoftDeletes()
     {
@@ -27,12 +29,7 @@ class Product extends Model
 
     public function priceHistory()
     {
-        return $this->belongsToMany(PriceHistory::class);
-    }
-
-    public function price()
-    {
-        return $this->hasOne(PriceHistory::class)->where('date_start' < Carbon::now())->orderBy('date_start', 'desc')->orderBy('created_at', 'desc')->first();
+        return $this->hasMany(PriceHistory::class);
     }
 
     public function administration()
@@ -66,15 +63,24 @@ class Product extends Model
         return ProductPaymentType::get($this->payment_type_id);
     }
 
+    public function getCurrentPriceAttribute()
+    {
+       return $this->priceHistory()->where('date_start', '<', Carbon::now())->orderBy('date_start', 'desc')->orderBy('created_at', 'desc')->first();
+    }
+
     public function getPriceInclVatAttribute()
     {
-        $price_ex_vat = $this->price()->price;
+        if(!$this->currentPrice){
+            return 0;
+        }
+        
+        $price_ex_vat = $this->currentPrice->price;
 
         if($price_ex_vat === null){
             $price_ex_vat = 0;
         }
 
-        $vat_percentage = $this->price()->vat_percentage;
+        $vat_percentage = $this->currentPrice->vat_percentage;
 
         if($vat_percentage === null || $vat_percentage === 0){
             return $price_ex_vat;
@@ -82,5 +88,4 @@ class Product extends Model
 
         return ($price_ex_vat + ($price_ex_vat*($vat_percentage / 100)));
     }
-
 }

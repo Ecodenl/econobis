@@ -22,8 +22,8 @@ class ProductDuration extends EnumWithIdAndName
     {
         return [
             new static('none', 'Geen'),
-            new static('month', '1 maand'),
-            new static('quarter', '1 kwartaal'),
+            new static('month', 'Maand'),
+            new static('quarter', 'Kwartaal'),
             new static('half_year', 'Half jaar'),
             new static('year', 'Jaar'),
             new static('until_cancellation', 'Tot opzegging'),

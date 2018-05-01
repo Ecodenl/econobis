@@ -26,7 +26,7 @@ class FullProduct extends Resource
                 'invoiceText' => $this->invoice_text,
                 'priceInclVat' => $this->price_incl_vat,
                 'priceHistory' => GenericResource::collection($this->whenLoaded('priceHistory')),
-                'price' => GenericResource::make($this->whenLoaded('price')),
+                'currentPrice' => GenericResource::make($this->current_price),
                 'duration' => FullEnumWithIdAndName::make($this->getDuration()),
                 'invoiceFrequency' => FullEnumWithIdAndName::make($this->getInvoiceFrequency()),
                 'paymentType' => FullEnumWithIdAndName::make($this->getPaymentType()),

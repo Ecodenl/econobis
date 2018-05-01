@@ -27,7 +27,7 @@ class ProductController extends ApiController
     {
         $products = $requestQuery->get();
 
-        $products->load(['price']);
+        $products->load(['priceHistory']);
 
         return GridProduct::collection($products)
             ->additional(['meta' => [
@@ -39,7 +39,6 @@ class ProductController extends ApiController
     public function show(Product $product)
     {
         $product->load([
-            'price',
             'priceHistory',
             'createdBy',
         ]);
@@ -58,6 +57,7 @@ class ProductController extends ApiController
             ->string('durationId')->whenMissing(null)->onEmpty(null)->alias('duration_id')->next()
             ->string('invoiceFrequencyId')->whenMissing(null)->onEmpty(null)->alias('invoice_frequency_id')->next()
             ->string('paymentTypeId')->whenMissing(null)->onEmpty(null)->alias('payment_type_id')->next()
+            ->string('administrationId')->validate('required|exists:administrations,id')->alias('administration_id')->next()
             ->get();
 
         $product = new Product($data);
@@ -79,6 +79,7 @@ class ProductController extends ApiController
             ->string('durationId')->whenMissing(null)->onEmpty(null)->alias('duration_id')->next()
             ->string('invoiceFrequencyId')->whenMissing(null)->onEmpty(null)->alias('invoice_frequency_id')->next()
             ->string('paymentTypeId')->whenMissing(null)->onEmpty(null)->alias('payment_type_id')->next()
+            ->string('administrationId')->validate('required|exists:administrations,id')->alias('administration_id')->next()
             ->get();
 
         $product = $product->fill($data);

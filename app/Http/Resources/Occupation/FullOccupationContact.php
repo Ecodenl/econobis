@@ -16,7 +16,7 @@ class FullOccupationContact extends Resource
     public function toArray($request)
     {
         return [
-            'id' => $this->id,
+            'id' => $this->ocid,
             'primaryContact' => FullContact::make($this->whenLoaded('primaryContact')),
             'contact' => FullContact::make($this->whenLoaded('contact')),
             'occupation' => FullOccupation::make($this->whenLoaded('occupation')),

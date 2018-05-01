@@ -199,12 +199,12 @@ class Contact extends Model
 
     public function primaryOccupations()
     {
-        return $this->hasMany(OccupationContact::class, 'primary_contact_id')->join('contacts', 'contact_id', '=', 'contacts.id')->orderBy('contacts.full_name');
+        return $this->hasMany(OccupationContact::class, 'primary_contact_id')->join('contacts', 'contact_id', '=', 'contacts.id')->select('contacts.*', 'occupation_contact.*', 'occupation_contact.id as ocid')->orderBy('contacts.full_name');
     }
 
     public function occupations()
     {
-        return $this->hasMany(OccupationContact::class)->join('contacts', 'primary_contact_id', '=', 'contacts.id')->orderBy('contacts.full_name');
+        return $this->hasMany(OccupationContact::class)->join('contacts', 'primary_contact_id', '=', 'contacts.id')->select('contacts.*', 'occupation_contact.*', 'occupation_contact.id as ocid')->orderBy('contacts.full_name');
     }
 
     public function contactPerson()

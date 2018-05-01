@@ -19,8 +19,6 @@ use App\Http\Resources\GenericResource;
 use App\Http\Resources\Product\ProductPeek;
 use App\Http\Resources\Product\FullProduct;
 use App\Http\Resources\Product\GridProduct;
-use App\Http\Resources\User\UserPeek;
-use phpDocumentor\Reflection\DocBlock\Tags\Generic;
 
 class ProductController extends ApiController
 {

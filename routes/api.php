@@ -302,5 +302,13 @@ Route::namespace('Api')
         Route::post('administration/{administration}/delete', 'Administration\AdministrationController@destroy');
         Route::post('administration/{administration}/{user}/attach', 'Administration\AdministrationController@attachUser');
         Route::post('administration/{administration}/{user}/detach', 'Administration\AdministrationController@detachUser');
+
+        Route::get('product/grid', 'Product\ProductController@grid');
+        Route::get('product/peek', 'Product\ProductController@peek');
+        Route::get('product/{product}', 'Product\ProductController@show');
+        Route::post('product', 'Product\ProductController@store');
+        Route::post('product/price-history', 'Product\ProductController@storePriceHistory');
+        Route::post('product/{product}', 'Product\ProductController@update');
+        Route::post('product/{product}/delete', 'Product\ProductController@destroy');
     }
 );

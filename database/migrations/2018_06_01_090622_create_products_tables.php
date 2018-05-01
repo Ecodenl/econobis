@@ -19,9 +19,9 @@ class CreateProductsTables extends Migration
             $table->string('name');
             $table->text('invoice_text')->nullable();
 
-            $table->string('duration_id');
-            $table->string('invoice_frequency_id');
-            $table->string('payment_type_id');
+            $table->string('duration_id')->nullable();
+            $table->string('invoice_frequency_id')->nullable();
+            $table->string('payment_type_id')->nullable();
 
             $table->unsignedInteger('administration_id');
             $table->foreign('administration_id')

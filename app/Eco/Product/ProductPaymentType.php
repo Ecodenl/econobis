@@ -10,7 +10,7 @@ namespace App\Eco\Product;
 
 use JosKolenberg\Enum\EnumWithIdAndName;
 
-class ProductInvoiceFrequency extends EnumWithIdAndName
+class ProductPaymentType extends EnumWithIdAndName
 {
 
     /**
@@ -21,10 +21,8 @@ class ProductInvoiceFrequency extends EnumWithIdAndName
     protected static function seed()
     {
         return [
-            new static('once', 'Eenmalig'),
-            new static('monthly', 'Maandelijks'),
-            new static('quarterly', 'Per kwartaal'),
-            new static('yearly', 'Jaarlijks'),
+            new static('collection', 'Incasso'),
+            new static('transfer', 'Overboeken'),
         ];
     }
 }

@@ -57,6 +57,10 @@ return [
         'soft_delete' => true,
     ],
 
+    'Product' => [
+        'soft_delete' => true,
+    ],
+
     'Opportunity' => [
         'soft_delete' => false,
         'relations' =>

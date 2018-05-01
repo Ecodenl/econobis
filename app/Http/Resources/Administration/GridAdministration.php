@@ -23,8 +23,7 @@ class GridAdministration extends Resource
                 'address' => $this->address,
                 'postalCode' => $this->postal_code,
                 'city' => $this->city,
-               'country' => GenericResource::make($this->whenLoaded('country')),
-
+                'country' => GenericResource::make($this->whenLoaded('country')),
             ];
     }
 }

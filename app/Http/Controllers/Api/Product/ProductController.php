@@ -9,179 +9,113 @@
 namespace App\Http\Controllers\Api\Product;
 
 
-use App\Eco\Administration\Administration;
-use App\Eco\User\User;
+use App\Eco\Product\PriceHistory;
+use App\Eco\Product\Product;
 use App\Helpers\Delete\DeleteHelper;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Api\ApiController;
-use App\Http\RequestQueries\Administration\Grid\RequestQuery;
-use App\Http\Resources\Administration\AdministrationPeek;
-use App\Http\Resources\Administration\FullAdministration;
-use App\Http\Resources\Administration\GridAdministration;
+use App\Http\RequestQueries\Product\Grid\RequestQuery;
+use App\Http\Resources\GenericResource;
+use App\Http\Resources\Product\ProductPeek;
+use App\Http\Resources\Product\FullProduct;
+use App\Http\Resources\Product\GridProduct;
 use App\Http\Resources\User\UserPeek;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
+use phpDocumentor\Reflection\DocBlock\Tags\Generic;
 
 class ProductController extends ApiController
 {
 
     public function grid(RequestQuery $requestQuery)
     {
-        $administrations = $requestQuery->get();
+        $products = $requestQuery->get();
 
-        $administrations->load(['country']);
+        $products->load(['price']);
 
-        return GridAdministration::collection($administrations)
+        return GridProduct::collection($products)
             ->additional(['meta' => [
             'total' => $requestQuery->total(),
             ]
         ]);
     }
 
-    public function show(Administration $administration)
+    public function show(Product $product)
     {
-        $administration->load([
-            'country',
-            'users',
+        $product->load([
+            'price',
             'createdBy',
         ]);
 
-        return FullAdministration::make($administration);
+        return FullProduct::make($product);
     }
 
-    public function store(RequestInput $input, Request $request)
+    public function store(RequestInput $input)
     {
-        $this->authorize('manage', Administration::class);
+        $this->authorize('manage', Product::class);
 
         $data = $input
+            ->string('code')->validate('required')->next()
             ->string('name')->validate('required')->next()
-            ->integer('administrationNumber')->whenMissing(null)->onEmpty(null)->alias('administration_number')->next()
-            ->string('address')->next()
-            ->string('postalCode')->alias('postal_code')->next()
-            ->string('city')->next()
-            ->string('countryId')->validate('nullable|exists:countries,id')->whenMissing(null)->onEmpty(null)->alias('country_id')->next()
-            ->integer('kvkNumber')->whenMissing(null)->onEmpty(null)->alias('kvk_number')->next()
-            ->string('btwNumber')->validate('required')->alias('btw_number')->next()
-            ->string('IBAN')->whenMissing('')->next()
-            ->string('email')->whenMissing(null)->onEmpty(null)->next()
-            ->string('website')->whenMissing(null)->onEmpty(null)->next()
-            ->string('bic')->whenMissing(null)->onEmpty(null)->next()
-            ->string('sepaContractName')->whenMissing(null)->onEmpty(null)->alias('sepa_contract_name')->next()
-            ->string('sepaCreditorId')->whenMissing(null)->onEmpty(null)->alias('sepa_creditor_id')->next()
-            ->string('rsinNumber')->whenMissing(null)->onEmpty(null)->alias('rsin_number')->next()
-            ->integer('defaultPaymentTerm')->whenMissing(null)->onEmpty(null)->alias('default_payment_term')->next()
+            ->string('invoiceText')->whenMissing('')->onEmpty('')->alias('invoice_text')->next()
+            ->string('durationId')->whenMissing(null)->onEmpty(null)->alias('duration_id')->next()
+            ->string('invoiceFrequencyId')->whenMissing(null)->onEmpty(null)->alias('invoice_frequency_id')->next()
+            ->string('paymentTypeId')->whenMissing(null)->onEmpty(null)->alias('payment_type_id')->next()
             ->get();
 
-        $administration = new Administration($data);
+        $product = new Product($data);
 
-        $administration->save();
+        $product->save();
 
-        $this->checkStorageDir($administration->id);
-
-        //get attachments
-        $logo = $request->file('attachment')
-            ? $request->file('attachment') : false;
-
-        if($logo){
-            $this->storeLogo($logo, $administration);
-        }
-
-        return $this->show($administration);
+        return $this->show($product);
     }
 
 
-    public function update(RequestInput $input, Request $request, Administration $administration)
+    public function update(RequestInput $input, Product $product)
     {
-        $this->authorize('manage', Administration::class);
+        $this->authorize('manage', Product::class);
+
         $data = $input
+            ->string('code')->validate('required')->next()
             ->string('name')->validate('required')->next()
-            ->integer('administrationNumber')->whenMissing(null)->onEmpty(null)->alias('administration_number')->next()
-            ->string('address')->next()
-            ->string('postalCode')->alias('postal_code')->next()
-            ->string('city')->next()
-            ->string('countryId')->validate('nullable|exists:countries,id')->whenMissing(null)->onEmpty(null)->alias('country_id')->next()
-            ->integer('kvkNumber')->whenMissing(null)->onEmpty(null)->alias('kvk_number')->next()
-            ->string('btwNumber')->validate('required')->alias('btw_number')->next()
-            ->string('IBAN')->whenMissing('')->next()
-            ->string('email')->whenMissing(null)->onEmpty(null)->next()
-            ->string('bic')->whenMissing(null)->onEmpty(null)->next()
-            ->string('sepaContractName')->whenMissing(null)->onEmpty(null)->alias('sepa_contract_name')->next()
-            ->string('sepaCreditorId')->whenMissing(null)->onEmpty(null)->alias('sepa_creditor_id')->next()
-            ->string('rsinNumber')->whenMissing(null)->onEmpty(null)->alias('rsin_number')->next()
-            ->integer('defaultPaymentTerm')->whenMissing(null)->onEmpty(null)->alias('default_payment_term')->next()
+            ->string('invoiceText')->whenMissing('')->onEmpty('')->alias('invoice_text')->next()
+            ->string('durationId')->whenMissing(null)->onEmpty(null)->alias('duration_id')->next()
+            ->string('invoiceFrequencyId')->whenMissing(null)->onEmpty(null)->alias('invoice_frequency_id')->next()
+            ->string('paymentTypeId')->whenMissing(null)->onEmpty(null)->alias('payment_type_id')->next()
             ->get();
 
-        $administration->fill($data);
+        $product = $product->fill($data);
 
-        $administration->save();
+        $product->save();
 
-        $this->checkStorageDir($administration->id);
-
-        //get attachments
-        $logo = $request->file('attachment')
-            ? $request->file('attachment') : false;
-
-        if($logo){
-            $this->storeLogo($logo, $administration);
-        }
-
-        return $this->show($administration);
+        return $this->show($product);
     }
 
-    public function destroy(Administration $administration)
+    public function destroy(Product $product)
     {
-        $this->authorize('manage', Administration::class);
+        $this->authorize('manage', Product::class);
 
-        //remove file from disk, move to DeleteHelper?
-        Storage::disk('administrations')->delete($administration->logo_filename);
-
-        DeleteHelper::delete($administration);
+        DeleteHelper::delete($product);
     }
 
-
-    public function checkStorageDir($administration_id){
-        //Check if storage map exists
-        $storageDir = Storage::disk('administrations')->getDriver()->getAdapter()->getPathPrefix() . DIRECTORY_SEPARATOR . 'administration_' . $administration_id . DIRECTORY_SEPARATOR . 'logos';
-
-        if (!is_dir($storageDir)) {
-            mkdir($storageDir, 0777, true);
-        }
-    }
-
-    public function storeLogo($attachment, $administration)
+    public function storePriceHistory(RequestInput $input)
     {
-        //store logo
-        if (!$attachment->isValid()) {
-            abort('422', 'Error uploading file');
-        }
+        $this->authorize('manage', Product::class);
 
-        $filename = $attachment->store('administration_' . $administration->id
-            . DIRECTORY_SEPARATOR . 'logos', 'administrations');
+        $data = $input
+            ->string('productId')->validate('required|exists:products,id')->next()
+            ->string('date_start')->validate('required|date')->next()
+            ->integer('price')->validate('required')->next()
+            ->integer('vat_percentage')->validate('required')->next()
+            ->get();
 
-        $administration->logo_filename = $filename;
-        $administration->logo_name = $attachment->getClientOriginalName();
+        $priceHistory = new PriceHistory($data);
 
-        $administration->save();
-    }
+        $priceHistory->save();
 
-    public function attachUser(Administration $administration, User $user)
-    {
-        $this->authorize('manage', Administration::class);
-
-        $administration->users()->attach($user->id);
-
-        return UserPeek::make($user);
-    }
-
-    public function detachUser(Administration $administration, User $user)
-    {
-        $this->authorize('manage', Administration::class);
-
-        $administration->users()->detach($user->id);
+        return GenericResource::make($priceHistory);
     }
 
     public function peek()
     {
-        return AdministrationPeek::collection(Administration::orderBy('id')->whereNull('deleted_at')->get());
+        return ProductPeek::collection(Product::orderBy('name')->whereNull('deleted_at')->get());
     }
 }

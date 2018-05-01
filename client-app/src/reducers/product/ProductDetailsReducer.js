@@ -16,7 +16,7 @@ export default function (state= [], action) {
                 priceHistory: [
                     ...state.priceHistory,
                     {
-                        ...action.priceHistory,
+                        ...action.priceHistoryPayload,
                     }
                 ]
             };

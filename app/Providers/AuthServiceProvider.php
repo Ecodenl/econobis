@@ -43,6 +43,8 @@ use App\Eco\PhoneNumber\PhoneNumber;
 use App\Eco\PhoneNumber\PhoneNumberPolicy;
 use App\Eco\Intake\Intake;
 use App\Eco\Intake\IntakePolicy;
+use App\Eco\Product\Product;
+use App\Eco\Product\ProductPolicy;
 use App\Eco\ProductionProject\ProductionProject;
 use App\Eco\ProductionProject\ProductionProjectPolicy;
 use App\Eco\ProductionProject\ProductionProjectRevenue;
@@ -99,6 +101,7 @@ class AuthServiceProvider extends ServiceProvider
         ObligationNumber::class => ObligationNumberPolicy::class,
         ParticipantTransaction::class => ParticipantTransactionPolicy::class,
         Administration::class => AdministrationPolicy::class,
+        Product::class => ProductPolicy::class,
     ];
 
     /**

@@ -42,6 +42,8 @@ use App\Eco\Person\Person;
 use App\Eco\Person\PersonObserver;
 use App\Eco\PhoneNumber\PhoneNumber;
 use App\Eco\PhoneNumber\PhoneNumberObserver;
+use App\Eco\Product\Product;
+use App\Eco\Product\ProductObserver;
 use App\Eco\ProductionProject\ProductionProject;
 use App\Eco\ProductionProject\ProductionProjectObserver;
 use App\Eco\ProductionProject\ProductionProjectRevenue;
@@ -87,6 +89,7 @@ class ObserverServiceProvider extends ServiceProvider
         ProductionProjectRevenue::observe(ProductionProjectRevenueObserver::class);
         ParticipantTransaction::observe(ParticipantTransactionObserver::class);
         Administration::observe(AdministrationObserver::class);
+        Product::observe(ProductObserver::class);
     }
 
     /**

@@ -2,24 +2,17 @@
 
 namespace App\Eco\Administration;
 
-use App\Eco\Contact\Contact;
 use App\Eco\Country\Country;
-use App\Eco\HousingFile\HousingFile;
-use App\Eco\Measure\Measure;
-use App\Eco\BuildingType\BuildingType;
-use App\Eco\Measure\MeasureRequested;
-use App\Eco\Measure\MeasureTaken;
-use App\Eco\Intake\Intake;
+use App\Eco\Product\Product;
 use App\Eco\User\User;
 use App\Http\Traits\Encryptable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Laracasts\Presenter\PresentableTrait;
 use Venturecraft\Revisionable\RevisionableTrait;
 
 class Administration extends Model
 {
-    use PresentableTrait, RevisionableTrait, SoftDeletes, Encryptable;
+    use RevisionableTrait, SoftDeletes, Encryptable;
 
     protected $guarded = ['id'];
 
@@ -36,6 +29,10 @@ class Administration extends Model
     public function users()
     {
         return $this->belongsToMany(User::class);
+    }
+
+    public function products(){
+        return $this->hasMany(Product::class);
     }
 
     public function country(){

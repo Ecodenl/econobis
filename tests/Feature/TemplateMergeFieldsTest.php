@@ -137,7 +137,7 @@ class TemplateMergeFieldsTest extends TestCase
     public function assertQuotationRequestMergeFields()
     {
         $html ='{offerteverzoek_organisatie_naam} {offerteverzoek_organisatie_adres} {offerteverzoek_organisatie_plaats} {offerteverzoek_organisatie_email}';
-        $html .='{offerteverzoek_organisatie_telefoonnummer} {offerteverzoek_organisatie_primair_contact} {offerteverzoek_contact_naam}';
+        $html .='{offerteverzoek_organisatie_telefoonnummer} {offerteverzoek_organisatie_primair_contact} {offerteverzoek_organisatie_primair_contact_voornaam} {offerteverzoek_organisatie_primair_contact_achternaam} {offerteverzoek_contact_naam}';
         $html .='{offerteverzoek_contact_email} {offerteverzoek_contact_woonplaats} {offerteverzoek_contact_adres} {offerteverzoek_contact_postcode}';
         $html .='{offerteverzoek_contact_telefoonnummer} {offerteverzoek_maatregel} {offerteverzoek_tekst} {offerteverzoek_gemaakt_op} {offerteverzoek_gemaakt_door}';
 
@@ -145,7 +145,7 @@ class TemplateMergeFieldsTest extends TestCase
         $html = TemplateVariableHelper::stripRemainingVariableTags($html);
 
         $expectedHtml = 'OrgaNisatie Laantje 10 Wognum OrgaNisatie@xaris.nl';
-        $expectedHtml .= '0650233678 Vaak, Klaas de Vaak, Klaas de';
+        $expectedHtml .= '0650233678 Vaak, Klaas de Klaas de Vaak Vaak, Klaas de';
         $expectedHtml .= 'klaasV@xaris.nl Wervershoof Dorpstraat 8 1693KW';
         $expectedHtml .= '0612345678 Gevelisolatie OfferteText 22/03/2018 Xaris, Admin';
 

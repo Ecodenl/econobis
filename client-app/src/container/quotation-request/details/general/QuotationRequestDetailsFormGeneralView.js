@@ -14,10 +14,12 @@ const QuotationRequestDetailsFormGeneralView = props => {
                 <ViewText
                     label={"Organisatie"}
                     value={organisation && organisation.name}
+                    link={organisation ? 'contact/' + organisation.contact.id : ''}
                 />
                 <ViewText
                     label={"Organisatie contactpersoon"}
                     value={organisation.contact.contactPerson ? organisation.contact.contactPerson.contact.fullName : 'Onbekend'}
+                    link={organisation.contact.contactPerson ? 'contact/' + organisation.contact.contactPerson.contact.id : ''}
                 />
             </div>
 

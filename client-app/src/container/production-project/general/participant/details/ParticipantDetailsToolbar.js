@@ -26,7 +26,8 @@ class ParticipantDetailsToolbar extends Component {
     render() {
         const { participantProductionProject, productionProject = {} }  = this.props;
 
-        const isTransferable = (productionProject.isParticipationTransferable && (participantProductionProject.participationsCurrent > 0) && (participantProductionProject.participationsCurrent) && this.props.permissions.manageFinancial);
+        let isTransferable = (productionProject.isParticipationTransferable && (participantProductionProject.participationsCurrent > 0) && (participantProductionProject.participationsCurrent) && this.props.permissions.manageFinancial);
+        isTransferable = (participantProductionProject.statusId == 2) ? isTransferable : false;
 
         return (
             <div className="row">

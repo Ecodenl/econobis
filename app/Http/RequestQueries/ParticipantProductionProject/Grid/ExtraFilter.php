@@ -70,6 +70,8 @@ class ExtraFilter extends RequestExtraFilter
                 break;
         }
 
+        $query->where('status_id', 2);
+
         return false;
     }
 }

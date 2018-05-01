@@ -110,7 +110,7 @@ const EmailFormView = props => {
                 </div>
                 <div className="row" onClick={props.switchToEdit}>
                     <ViewText
-                        label={"Door"}
+                        label={"Afgerond door"}
                         value={closedBy ? closedBy.fullName : ''}
                         link={closedBy ? 'gebruiker/' + closedBy.id : ''}
                     />

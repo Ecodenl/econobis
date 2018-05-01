@@ -27,7 +27,7 @@ class ParticipantsListToolbar extends Component {
         return (
             <div className="row">
                 <div className="col-md-2">
-                    <div className="btn-group btn-flex" role="group">
+                    <div className="btn-group btn-group-flex" role="group">
                         <ButtonIcon iconName={"glyphicon-refresh"}
                                     onClickAction={this.props.resetParticipantProductionProjectFilters}/>
                         {this.props.permissions.manageParticipation &&

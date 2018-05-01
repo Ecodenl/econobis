@@ -423,6 +423,23 @@ class TemplateVariableHelper
             case 'organisatie_primair_contact':
                 return optional(optional($model->organisation->contact->contactPerson)->contact)->full_name;
                 break;
+            case 'organisatie_primair_contact_voornaam':
+                if(optional(optional($model->organisation->contact->contactPerson)->contact)->type_id == 'person'){
+                    return optional(optional($model->organisation->contact->contactPerson)->contact)->person->first_name;
+                }
+                elseif(optional(optional($model->organisation->contact->contactPerson)->contact)->type_id == 'organisation'){
+                    return '';
+                }
+                break;
+            case 'organisatie_primair_contact_achternaam':
+                if(optional(optional($model->organisation->contact->contactPerson)->contact)->type_id == 'person'){
+                    $prefix = optional(optional(optional($model->organisation->contact->contactPerson)->contact)->person->lastNamePrefix)->name;
+                    return $prefix ? $prefix . ' ' . optional(optional($model->organisation->contact->contactPerson)->contact)->person->last_name : optional(optional($model->organisation->contact->contactPerson)->contact)->person->last_name;
+                }
+                elseif(optional(optional($model->organisation->contact->contactPerson)->contact)->type_id == 'organisation'){
+                    return optional(optional($model->organisation->contact->contactPerson)->contact)->full_name;
+                }
+                break;
             case 'contact_naam':
                 return optional(optional($model->opportunity)->intake)->contact->full_name;
                 break;

@@ -15,6 +15,9 @@ export function* updateAdministrationDetailsSaga({ administration, administratio
         const payload = yield call(AdministrationDetailsAPI.updateAdministration, {administration, administrationId});
         const administrationDetails = payload.data.data;
 
+        // Reload me details after updating administration
+        yield put({ type: 'FETCH_ME_DETAILS'});
+
         yield put({ type: 'UPDATE_ADMINISTRATION_SUCCESS', administrationDetails });
 
         yield switchToView();
@@ -28,6 +31,10 @@ export function* addAdministrationUserSaga({administrationUser}) {
         const payload = yield call(AdministrationDetailsAPI.attachUser, administrationUser);
 
         const administrationUserPayload = payload.data.data;
+
+        // Reload me details after updating administration
+        yield put({ type: 'FETCH_ME_DETAILS'});
+
         yield put({ type: 'ADD_ADMINISTRATION_USER_SUCCESS', administrationUserPayload });
     } catch (error) {
         yield put({ type: 'ADD_ADMINISTRATION_USER_ERROR', error });

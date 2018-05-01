@@ -3,6 +3,7 @@
 namespace App\Eco\User;
 
 use App\Cooperation;
+use App\Eco\Administration\Administration;
 use App\Eco\LastNamePrefix\LastNamePrefix;
 use App\Eco\Mailbox\Mailbox;
 use App\Eco\Team\Team;
@@ -72,6 +73,11 @@ class User extends Authenticatable
     public function teams()
     {
         return $this->belongsToMany(Team::class);
+    }
+
+    public function administrations()
+    {
+        return $this->belongsToMany(Administration::class);
     }
 
     /**

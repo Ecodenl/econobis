@@ -35,6 +35,8 @@ import opportunityDetailsReducer from './opportunity/OpportunityDetailsReducer';
 import participantProductionProjectDetailsReducer from './participant-production-project/ParticipantProductionProjectDetailsReducer';
 import participantsProductionProjectReducer from './participant-production-project/ParticipantsProductionProjectReducer';
 import PostalCodeLinkReducer from './postal-code-link/PostalCodeLinkReducer';
+import productDetailsReducer from './product/ProductDetailsReducer';
+import productsReducer from './product/ProductsReducer';
 import productionProjectsReducer from './production-project/ProductionProjectsReducer';
 import productionProjectDetailsReducer from './production-project/ProductionProjectDetailsReducer';
 import productionProjectRevenueDetailsReducer from './production-project/ProductionProjectRevenueDetailsReducer';
@@ -105,6 +107,9 @@ const rootReducer = combineReducers({
     participantProductionProjectDetails: participantProductionProjectDetailsReducer,
     // Postal code links
     postalCodeLinks : PostalCodeLinkReducer,
+    // Products
+    products: productsReducer,
+    productDetails: productDetailsReducer,
     // Production project
     productionProjects: productionProjectsReducer,
     productionProjectDetails: productionProjectDetailsReducer,

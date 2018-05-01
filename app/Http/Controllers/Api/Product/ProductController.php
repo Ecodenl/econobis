@@ -40,6 +40,7 @@ class ProductController extends ApiController
     {
         $product->load([
             'price',
+            'priceHistory',
             'createdBy',
         ]);
 

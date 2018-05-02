@@ -36,6 +36,7 @@ class ContactsListApp extends Component {
         };
 
         this.handlePageClick = this.handlePageClick.bind(this);
+        this.handleExtraFiltersChange = this.handleExtraFiltersChange.bind(this);
     }
 
     componentDidMount() {
@@ -74,16 +75,21 @@ class ContactsListApp extends Component {
 
     fetchContactsData = () => {
         setTimeout(() => {
+            const extraFilters = this.state.extraFilters;
             const filters = filterHelper(this.props.contactsFilters);
             const sorts = this.props.contactsSorts.reverse();
             const pagination = { limit: 20, offset: this.props.contactsPagination.offset };
 
-            this.props.fetchContacts(filters, sorts, pagination);
+            this.props.fetchContacts(filters, extraFilters, sorts, pagination);
         },100 );
     };
 
     resetContactFilters = () => {
         this.props.clearFilterContacts();
+
+        this.setState({
+            extraFilters: undefined
+        });
 
         this.fetchContactsData();
     };
@@ -119,6 +125,19 @@ class ContactsListApp extends Component {
         this.props.setCheckedContactAll(!this.state.checkedAllCheckboxes);
     };
 
+    handleExtraFiltersChange(extraFilters, amountOfFilters){
+        this.setState({
+            amountOfFilters: amountOfFilters,
+            extraFilters: extraFilters
+        });
+
+        this.props.setContactsPagination({page: 0, offset: 0});
+
+        setTimeout(() => {
+            this.fetchContactsData();
+        },100 );
+    }
+
     render() {
         return (
             <div>
@@ -130,7 +149,9 @@ class ContactsListApp extends Component {
                                 resetContactFilters={() => this.resetContactFilters()}
                                 selectAllCheckboxes={() => this.selectAllCheckboxes()}
                                 checkedAllCheckboxes={this.state.checkedAllCheckboxes}
-
+                                handleExtraFiltersChange={this.handleExtraFiltersChange}
+                                extraFilters={this.state.extraFilters}
+                                amountOfFilters={this.state.amountOfFilters}
                             />
                         </div>
 

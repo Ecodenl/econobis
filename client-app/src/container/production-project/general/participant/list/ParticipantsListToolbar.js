@@ -48,6 +48,8 @@ class ParticipantsListToolbar extends Component {
                     <ParticipantsListExtraFilters
                         toggleShowExtraFilters={this.toggleShowExtraFilters}
                         handleExtraFiltersChange={this.props.handleExtraFiltersChange}
+                        extraFilters={this.props.extraFilters}
+                        amountOfFilters={this.props.amountOfFilters}
                     />
                 }
             </div>

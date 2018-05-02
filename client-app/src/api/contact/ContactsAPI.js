@@ -3,7 +3,7 @@ import axios from 'axios';
 const URL_API = process.env.URL_API;
 
 export default {
-    fetchContacts: ({ filters, sorts, pagination }) => {
+    fetchContacts: ({ filters, extraFilters, sorts, pagination }) => {
         const requestUrl = `${URL_API}/api/contact/grid`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
@@ -11,6 +11,7 @@ export default {
         return axios.get(requestUrl, {
             params: {
                 filters: JSON.stringify(filters),
+                extraFilters: JSON.stringify(extraFilters),
                 sorts: JSON.stringify(sorts),
                 limit: pagination.limit,
                 offset: pagination.offset,

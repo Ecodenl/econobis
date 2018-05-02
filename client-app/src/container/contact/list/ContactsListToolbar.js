@@ -75,7 +75,7 @@ class ContactsListToolbar extends Component {
                         }
                         <ButtonIcon iconName={"glyphicon-trash"} onClickAction={this.toggleShowDeleteSelectedItems} />
                         <ButtonIcon iconName={"glyphicon-ok"} onClickAction={this.props.toggleShowCheckboxList} />
-                        {/*<ButtonIcon iconName={"glyphicon-filter"} onClickAction={this.toggleShowExtraFilters} />*/}
+                        <ButtonIcon iconName={"glyphicon-filter"} onClickAction={this.toggleShowExtraFilters} />
                     </div>
                 </div>
                 <div className="col-md-4"><h3 className="text-center table-title">Contacten</h3></div>
@@ -83,7 +83,13 @@ class ContactsListToolbar extends Component {
                     <div className="pull-right">Resultaten: { meta.total || 0 }</div>
                 </div>
                 {
-                    this.state.showExtraFilters && <ContactsListExtraFilters toggleShowExtraFilters={this.toggleShowExtraFilters} />
+                    this.state.showExtraFilters &&
+                    <ContactsListExtraFilters
+                        toggleShowExtraFilters={this.toggleShowExtraFilters}
+                        handleExtraFiltersChange={this.props.handleExtraFiltersChange}
+                        extraFilters={this.props.extraFilters}
+                        amountOfFilters={this.props.amountOfFilters}
+                    />
                 }
                 {
                     this.state.showDeleteSelectedItems && <ContactsDeleteSelectedItems toggleShowDeleteSelectedItems={this.toggleShowDeleteSelectedItems} />

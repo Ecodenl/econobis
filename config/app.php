@@ -5,7 +5,7 @@ return [
     //Version number displayed in the header, change this with every update
     'version_major' => '1',
     'version_minor' => '5',
-    'version_fix' => '9',
+    'version_fix' => '10',
 
     //Alfresco envs
     'ALFRESCO_ADMIN_USERNAME' => env('ALFRESCO_ADMIN_USERNAME'),
@@ -14,6 +14,10 @@ return [
     'ALFRESCO_URL' => env('ALFRESCO_URL'),
     'ALFRESCO_SSL_VERIFYPEER' => env('ALFRESCO_SSL_VERIFYPEER'),
     'ALFRESCO_SSL_VERIFYHOST' => env('ALFRESCO_SSL_VERIFYHOST'),
+
+    //Format for contact number
+    'APP_CONTACT_NUMBER_FORMAT' => env('APP_CONTACT_NUMBER_FORMAT', 'C{year}-{id}'),
+
     /*
     |--------------------------------------------------------------------------
     | Application Name

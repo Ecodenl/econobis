@@ -15,6 +15,8 @@ use App\Eco\EmailTemplate\EmailTemplate;
 use App\Helpers\Alfresco\AlfrescoHelper;
 use App\Helpers\Delete\DeleteHelper;
 use App\Helpers\Template\TemplateTableHelper;
+use App\Http\Resources\Contact\ContactPeek;
+use App\Http\Resources\EnumWithIdAndName\FullEnumWithIdAndName;
 use Barryvdh\DomPDF\Facade as PDF;
 use App\Eco\ParticipantProductionProject\ParticipantProductionProject;
 use App\Eco\ParticipantTransaction\ParticipantTransaction;
@@ -111,6 +113,13 @@ class ParticipationProductionProjectController extends ApiController
         $contact = Contact::find($participantProductionProject->contact_id);
 
         $message = [];
+
+        if($productionProject->is_membership_required){
+            if(!($contact->status_id == 'member' || $contact->status_id == 'memberYouth')){
+                $contactStatus = FullEnumWithIdAndName::make($contact->getStatus())->name;
+                array_push($message, 'Contact status moet lid of jeugdlid zijn om deel te nemen aan dit project. Contact heeft status ' . $contactStatus . '.');
+            }
+        }
 
         switch($productionProject->production_project_type_id) {
             case 1: //SDE
@@ -430,5 +439,16 @@ class ParticipationProductionProjectController extends ApiController
             //delete file on server, still saved on alfresco.
             Storage::disk('documents')->delete($document->filename);
         }
+    }
+
+    public function peekContactsMembershipRequired(ParticipantProductionProject $participantProductionProject)
+    {
+        if($participantProductionProject->productionProject->is_membership_required){
+            $contacts = Contact::select('id', 'full_name', 'number')->orderBy('full_name')->whereNull('deleted_at')->whereIn('status_id', ['member', 'memberYouth'])->get();
+        }
+        else{
+            $contacts = Contact::select('id', 'full_name', 'number')->orderBy('full_name')->whereNull('deleted_at')->get();
+        }
+        return ContactPeek::collection($contacts);
     }
 }

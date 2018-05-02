@@ -267,6 +267,7 @@ Route::namespace('Api')
 
         Route::get('production-project/participant/grid', 'ParticipationProductionProject\ParticipationProductionProjectController@grid');
         Route::get('production-project/participant/peek', 'ParticipationProductionProject\ParticipationProductionProjectController@peek');
+        Route::get('production-project/participant/{participantProductionProject}/peek-members', 'ParticipationProductionProject\ParticipationProductionProjectController@peekContactsMembershipRequired');
         Route::get('production-project/participant/{participantProductionProject}', 'ParticipationProductionProject\ParticipationProductionProjectController@show');
         Route::post('production-project/participant', 'ParticipationProductionProject\ParticipationProductionProjectController@store');
         Route::post('production-project/participant/transfer', 'ParticipationProductionProject\ParticipationProductionProjectController@transfer');

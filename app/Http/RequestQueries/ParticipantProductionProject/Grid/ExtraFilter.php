@@ -10,68 +10,49 @@ namespace App\Http\RequestQueries\ParticipantProductionProject\Grid;
 
 
 use App\Helpers\RequestQuery\RequestExtraFilter;
-use Illuminate\Support\Facades\DB;
 
 class ExtraFilter extends RequestExtraFilter
 {
     protected $fields = [
-        'id',
         'name',
         'postalCode',
+        'postalCodeNumber',
         'currentParticipations',
+        'dateRegister',
+        'datePayed',
+        'participationStatus',
+        'contactStatus',
     ];
 
     protected $mapping = [
-        'id' => 'participation_production_project.id',
         'name' => 'contacts.full_name',
         'postalCode' => 'addresses.postal_code',
+        'dateRegister' => 'participation_production_project.date_register',
+        'datePayed' => 'participation_production_project.date_payed',
+        'participationStatus' => 'participation_production_project.status_id',
+        'contactStatus' => 'contacts.status_id',
     ];
 
     protected $joins = [
         'name' => 'contact',
         'postalCode' => 'addresses',
+        'postalCodeNumber' => 'addresses',
+        'contactStatus' => 'contact',
     ];
 
     protected function applyCurrentParticipationsFilter($query, $type, $data)
     {
-        switch ($type) {
-            case 'eq':
-                $query->whereRaw('(participation_production_project.participations_granted - participation_production_project.participations_sold) =' . DB::connection()->getPdo()->quote($data));
-                break;
-            case 'neq':
-                $query->whereRaw('(participation_production_project.participations_granted - participation_production_project.participations_sold) !=' . DB::connection()->getPdo()->quote($data));
-                break;
-            case 'ct':
-                $query->whereRaw('(participation_production_project.participations_granted - participation_production_project.participations_sold) LIKE %' . DB::connection()->getPdo()->quote($data) . '%');
-                break;
-            case 'lt':
-                $query->whereRaw('(participation_production_project.participations_granted - participation_production_project.participations_sold) < ' . DB::connection()->getPdo()->quote($data));
-                break;
-            case 'lte':
-                $query->whereRaw('(participation_production_project.participations_granted - participation_production_project.participations_sold) <= ' . DB::connection()->getPdo()->quote($data));
-                break;
-            case 'gt':
-                $query->whereRaw('(participation_production_project.participations_granted - participation_production_project.participations_sold) > ' . DB::connection()->getPdo()->quote($data));
-                break;
-            case 'gte':
-                $query->whereRaw('(participation_production_project.participations_granted - participation_production_project.participations_sold) >=' . DB::connection()->getPdo()->quote($data));
-                break;
-            case 'bw':
-                $query->whereRaw('(participation_production_project.participations_granted - participation_production_project.participations_sold) LIKE' . DB::connection()->getPdo()->quote($data) . '%');
-                break;
-            case 'nbw':
-                $query->whereRaw('(participation_production_project.participations_granted - participation_production_project.participations_sold) NOT LIKE' . DB::connection()->getPdo()->quote($data) . '%');
-                break;
-            case 'ew':
-                $query->whereRaw('(participation_production_project.participations_granted - participation_production_project.participations_sold) LIKE %' . DB::connection()->getPdo()->quote($data));
-                break;
-            case 'new':
-                $query->whereRaw('(participation_production_project.participations_granted - participation_production_project.participations_sold) NOT LIKE %' . DB::connection()->getPdo()->quote($data));
-                break;
-        }
-
+        $raw = 'participation_production_project.participations_granted - participation_production_project.participations_sold';
+        RequestExtraFilter::applyWhereRaw($query, $raw, $type, $data);
         $query->where('status_id', 2);
+        return false;
+    }
 
+
+    protected function applyPostalCodeNumberFilter($query, $type, $data)
+    {
+        $raw = 'SUBSTRING(addresses.postal_code, 1, 4)';
+        RequestExtraFilter::applyWhereRaw($query, $raw, $type, $data);
         return false;
     }
 }

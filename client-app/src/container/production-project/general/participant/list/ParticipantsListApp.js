@@ -41,7 +41,6 @@ class ParticipantsListApp extends Component {
             modalText: '',
             buttonConfirmText: '',
             readyForCreation: false,
-            extraFilters: {}
         };
 
         this.handleInputChange = this.handleInputChange.bind(this);
@@ -96,7 +95,7 @@ class ParticipantsListApp extends Component {
         this.props.clearFilterParticipantsProductionProject();
 
         this.setState({
-            extraFilters: {}
+            extraFilters: undefined
         });
 
         this.fetchParticipantsProductionProjectData();
@@ -150,8 +149,9 @@ class ParticipantsListApp extends Component {
         });
     };
 
-    handleExtraFiltersChange(extraFilters){
+    handleExtraFiltersChange(extraFilters, amountOfFilters){
         this.setState({
+            amountOfFilters: amountOfFilters,
             extraFilters: extraFilters
         });
 
@@ -313,6 +313,8 @@ class ParticipantsListApp extends Component {
                             resetParticipantProductionProjectFilters={() => this.resetParticipantProductionProjectFilters()}
                             toggleShowCheckboxList={this.toggleShowCheckboxList}
                             handleExtraFiltersChange={this.handleExtraFiltersChange}
+                            extraFilters={this.state.extraFilters}
+                            amountOfFilters={this.state.amountOfFilters}
                         />
                     </div>
 

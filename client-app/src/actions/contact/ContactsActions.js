@@ -1,7 +1,8 @@
-export const fetchContacts = (filters, sorts, pagination) => {
+export const fetchContacts = (filters, extraFilters, sorts, pagination) => {
     return {
         type: 'FETCH_CONTACTS',
         filters,
+        extraFilters,
         sorts,
         pagination
     };

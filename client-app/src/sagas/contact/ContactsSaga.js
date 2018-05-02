@@ -3,10 +3,10 @@ import ContactsAPI from '../../api/contact/ContactsAPI';
 import AuthAPI from "../../api/general/AuthAPI";
 import { authSaga} from '../general/AuthSaga';
 
-export function* fetchContactsSaga({filters, sorts, pagination}) {
+export function* fetchContactsSaga({filters, extraFilters, sorts, pagination}) {
     try {
         //yield call(authSaga);
-        const contacts = yield call(ContactsAPI.fetchContacts, {filters, sorts, pagination});
+        const contacts = yield call(ContactsAPI.fetchContacts, {filters, extraFilters, sorts, pagination});
         yield put({ type: 'FETCH_CONTACTS_SUCCESS', contacts })
     } catch (error) {
         yield put({ type: 'FETCH_CONTACTS_ERROR', error });

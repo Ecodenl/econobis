@@ -39,7 +39,7 @@ class AuditTrailList extends Component {
                         <DataTableBody>
                             {
                                 data.length === 0 ? (
-                                    <tr><td colSpan={6}>Geen audit trail gevonden!</td></tr>
+                                    <tr><td colSpan={7}>Geen audit trail gevonden!</td></tr>
                                 ) : (
                                     data.map((auditTrail) => {
                                         return <AuditTrailListItem

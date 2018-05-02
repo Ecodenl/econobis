@@ -10,7 +10,6 @@ import ParticipationTransfer from './ParticipationTransfer';
 import ParticipantProductionProjectDetailsAPI from '../../../../../../api/participant-production-project/ParticipantProductionProjectDetailsAPI';
 import Panel from "../../../../../../components/panel/Panel";
 import PanelBody from "../../../../../../components/panel/PanelBody";
-import ContactsAPI from "../../../../../../api/contact/ContactsAPI";
 
 class ParticipationTransferApp extends Component {
     constructor(props) {
@@ -44,7 +43,7 @@ class ParticipationTransferApp extends Component {
     };
 
     componentWillMount() {
-        ContactsAPI.getContactsPeek().then((payload) => {
+        ParticipantProductionProjectDetailsAPI.getContactsMembershipPeek(this.state.participationTransfer.participationId).then((payload) => {
             payload.unshift({id: '0', fullName: "Teruggave energieleverancier"});
             this.setState({
                 contacts: payload,

@@ -84,6 +84,7 @@ import UserDetailsApp from './container/users/details/UserDetailsApp';
 import UserNewApp from './container/users/new/UserNewApp';
 import UsersListApp from './container/users/list/UsersListApp';
 import RevenueDetailsApp from './container/production-project/details/revenue/details/RevenueDetailsApp';
+import FinancialApp from './container/financial/FinancialApp';
 
 const Routes = () => {
     return (
@@ -158,6 +159,8 @@ const Routes = () => {
                 <Route path="email-templates" component={EmailTemplatesListApp} />
                 <Route path="email-template/nieuw" component={EmailTemplateNewApp} />
                 <Route path="email-template/:id" component={EmailTemplateDetailsApp} />
+                /* Financial */
+                <Route path="financieel/:id" component={FinancialApp} />
                 /* Campagnes */
                 <Route path="campagne/nieuw" component={CampaignNewApp} />
                 <Route path="campagne/:id" component={CampaignDetailsApp} />

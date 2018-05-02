@@ -209,7 +209,7 @@ class Contact extends Model
 
     public function contactPerson()
     {
-        return $this->hasOne(OccupationContact::class, 'primary_contact_id')->where('primary', true);
+        return $this->hasOne(OccupationContact::class, 'primary_contact_id')->where('primary', true)->orWhere('contact_id', $this->id)->where('primary', true);
     }
 
     //Returns addresses array as Type - Streetname - Number

@@ -14,6 +14,10 @@ return [
     'ALFRESCO_URL' => env('ALFRESCO_URL'),
     'ALFRESCO_SSL_VERIFYPEER' => env('ALFRESCO_SSL_VERIFYPEER'),
     'ALFRESCO_SSL_VERIFYHOST' => env('ALFRESCO_SSL_VERIFYHOST'),
+
+    //Format for contact number
+    'APP_CONTACT_NUMBER_FORMAT' => env('APP_CONTACT_NUMBER_FORMAT', 'C{year}-{id}'),
+
     /*
     |--------------------------------------------------------------------------
     | Application Name

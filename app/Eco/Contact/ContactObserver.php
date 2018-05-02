@@ -27,7 +27,20 @@ class ContactObserver
 
     public function created(Contact $contact)
     {
-        $contact->number = 'C' . Carbon::now()->year . '-' . $contact->id;
+        $year = Carbon::now()->year;
+
+        $number = \Config::get('app.APP_CONTACT_NUMBER_FORMAT');
+
+        $number = str_replace('{year}', $year, $number);
+        $number = str_replace('{id}', $contact->id, $number);
+
+
+        if(!$number) {
+            $contact->number = 'C' . Carbon::now()->year . '-' . $contact->id;
+        }
+        else{
+            $contact->number = $number;
+        }
         $contact->save();
     }
 

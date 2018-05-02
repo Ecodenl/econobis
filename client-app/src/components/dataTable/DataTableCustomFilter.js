@@ -2,18 +2,20 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import DataTableCustomFilterSelectString from "./DataTableCustomFilterSelectString";
 import DataTableCustomFilterSelectNumber from "./DataTableCustomFilterSelectNumber";
+import DataTableCustomFilterSelectDropdown from "./DataTableCustomFilterSelectDropdown";
+import DataTableCustomFilterSelectDate from "./DataTableCustomFilterSelectDate";
+
+import moment from 'moment';
+
+moment.locale('nl');
 
 class DataTableCustomFilter extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            type: this.props.fields[Object.keys(props.fields)[0]].type,
-            filter: {
-                field: Object.keys(props.fields)[0],
-                type: 'eq',
-                data: '',
-            }
+            type: this.props.fields[this.props.filter.field].type,
+            dropDownOptions: this.props.fields[this.props.filter.field].dropDownOptions ? this.props.fields[this.props.filter.field].dropDownOptions : '',
         };
     };
 
@@ -23,18 +25,14 @@ class DataTableCustomFilter extends Component {
         const name = target.name;
 
         const type = this.props.fields[value].type;
+        const dropDownOptions = this.props.fields[value].dropDownOptions ? this.props.fields[value].dropDownOptions : '';
 
         this.setState({
             type: type,
-            filter: {
-                ...this.state.filter,
-                [name]: value
-            },
+            dropDownOptions: dropDownOptions
         });
 
-        setTimeout(() => {
-            this.props.handleFilterChange(this.state.filter.field, this.state.filter.type, this.state.filter.data, this.props.filterNumber);
-        }, 250);
+        this.props.handleFilterChange(name, value, this.props.filterNumber);
     };
 
     handleInputChange = (event) => {
@@ -42,20 +40,18 @@ class DataTableCustomFilter extends Component {
         const value = target.value;
         const name = target.name;
 
-        this.setState({
-            filter: {
-                ...this.state.filter,
-                [name]: value
-            },
-        });
+        this.props.handleFilterChange(name, value, this.props.filterNumber);
+    };
 
-        setTimeout(() => {
-            this.props.handleFilterChange(this.state.filter.field, this.state.filter.type, this.state.filter.data, this.props.filterNumber);
-        }, 250);
+    handleInputChangeDate = (date) => {
+        const formattedDate = (date ? moment(date).format('Y-MM-DD') : '');
+        this.props.handleFilterChange('data', formattedDate, this.props.filterNumber);
     };
 
     render() {
         const {fields} = this.props;
+        const {field} = this.props.filter;
+        const {type} = this.props.filter;
 
         const fieldList = Object.entries(fields).map(([key, value], i) => {
             return (
@@ -66,31 +62,76 @@ class DataTableCustomFilter extends Component {
         return (
             <tr>
                 <td className="col-md-4">
-                    <select className="form-control input-sm" name={'field'} onChange={this.handleFieldChange}>
+                    <select className="form-control input-sm" name={'field'} value={field} onChange={this.handleFieldChange}>
                         {fieldList}
                     </select></td>
                 <td className="col-md-4">
                     {this.state.type === 'string' &&
                     <DataTableCustomFilterSelectString
                         handleInputChange={this.handleInputChange}
+                        type={type}
                     />
                     }
                     {this.state.type === 'number' &&
                         <DataTableCustomFilterSelectNumber
                             handleInputChange={this.handleInputChange}
+                            type={type}
                         />
                     }
+                    {this.state.type === 'dropdown' &&
+                    <DataTableCustomFilterSelectDropdown
+                        handleInputChange={this.handleInputChange}
+                        type={type}
+                    />
+                    }
+                    {this.state.type === 'date' &&
+                    <DataTableCustomFilterSelectDate
+                        handleInputChange={this.handleInputChange}
+                        type={type}
+                    />
+                    }
                 </td>
+                {(this.state.type === 'number' || this.state.type === 'string') &&
                 <td className="col-md-4">
                     <input
                         className={'form-control input-sm'}
                         type='text'
                         id='data'
                         name='data'
-                        value={this.state.value}
+                        value={this.props.filter.data}
                         onChange={this.handleInputChange}
                     />
                 </td>
+                }
+                {this.state.type === 'dropdown' &&
+                <td className="col-md-4">
+                    <select
+                        className={`form-control input-sm`}
+                        id='data'
+                        name='data'
+                        value={this.props.filter.data}
+                        onChange={this.handleInputChange}>
+                        <option></option>
+                        { this.state.dropDownOptions.map((option) => {
+                            return <option key={ option.id } value={ option.id }>{ option['name'] }</option>
+                        }) }
+                    </select>
+                </td>
+                }
+                {this.state.type === 'date' &&
+                <td className="col-md-4">
+                    {/*<input*/}
+                        {/*className={'form-control input-sm'}*/}
+                        {/*type='text'*/}
+                        {/*id='data'*/}
+                        {/*name='data'*/}
+                        {/*value={this.props.filter.data}*/}
+                        {/*onChange={this.handleInputChange}*/}
+                        {/*placeholder={'yyyy-mm-dd'}*/}
+                    {/*/>*/}
+                </td>
+                }
+
             </tr>
         )
     }
@@ -98,6 +139,7 @@ class DataTableCustomFilter extends Component {
 
 DataTableCustomFilter.propTypes = {
     fields: PropTypes.object.isRequired,
+    filter: PropTypes.object.isRequired,
 };
 
 export default DataTableCustomFilter;

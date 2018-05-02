@@ -250,7 +250,7 @@ class ContactDetailsFormOrganisationEdit extends Component {
                         onChangeAction={this.handleInputChange}
                     />
                     <InputToggle
-                        label="Akoord privacybeleid"
+                        label="Akkoord privacybeleid"
                         name="didAgreeAvg"
                         value={didAgreeAvg}
                         onChangeAction={this.handleInputChange}

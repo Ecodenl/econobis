@@ -1,53 +1,115 @@
-import React from 'react';
+import React, {Component} from 'react';
 
 import Modal from '../../../components/modal/Modal';
+import DataTableCustomFilter from "../../../components/dataTable/DataTableCustomFilter";
+import ButtonText from "../../../components/button/ButtonText";
 
-const ContactsListExtraFilters = (props) => {
-    const closeModal = () => {
-        props.toggleShowExtraFilters();
+class ParticipantsListExtraFilters extends Component {
+
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            amountOfFilters: props.amountOfFilters !== undefined ? props.amountOfFilters : 1,
+            filters: props.extraFilters !== undefined ? props.extraFilters : [{
+                field: 'name',
+                type: 'eq',
+                data: ''
+            }],
+        };
     };
 
-    const confirmAction = () => {
-        // Sent to database
-        props.toggleShowExtraFilters();
+    closeModal = () => {
+        this.props.toggleShowExtraFilters();
     };
 
-    return (
-        <Modal
-            title="Extra filters"
-            buttonConfirmText="Toepassen"
-            confirmAction={() => confirmAction()}
-            closeModal={() => closeModal()}
-        >
-            <table className="table">
-                <thead>
+    confirmAction = () => {
+        this.props.handleExtraFiltersChange(this.state.filters, this.state.amountOfFilters);
+        this.props.toggleShowExtraFilters();
+    };
+
+    handleFilterChange = (field, data, filterNumber) => {
+        let filters = this.state.filters;
+
+        filters[filterNumber][field] = data;
+
+        this.setState({
+            ...this.state,
+            filters: filters
+        });
+    };
+
+    addFilterRow = () => {
+
+        let filters = this.state.filters;
+
+        filters[this.state.amountOfFilters] =
+            {
+                field: 'name',
+                type: 'eq',
+                data: ''
+            };
+
+        setTimeout(() => {
+            this.setState({
+                ...this.state,
+                filters: filters
+            });
+        }, 300);
+
+        setTimeout(() => {
+        this.setState({
+            amountOfFilters: this.state.amountOfFilters + 1,
+        });
+        }, 300);
+    };
+
+    render() {
+        const fields = {
+            'name': {
+                'name': 'Naam',
+                'type': 'string'
+            },
+            'postalCodeNumber': {
+                'name': 'Postcode nummer',
+                'type': 'number'
+            },
+        };
+
+        let filters = [];
+
+        for (let i = 0; i < this.state.amountOfFilters; i++) {
+            filters.push(<DataTableCustomFilter key={i} filter={this.state.filters[i]} filterNumber={i} fields={fields} handleFilterChange={this.handleFilterChange}/>);
+        }
+
+        return (
+            <Modal
+                title="Extra filters"
+                buttonConfirmText="Toepassen"
+                confirmAction={this.confirmAction}
+                closeModal={this.closeModal}
+            >
+                <table className="table">
+                    <thead>
                     <tr>
                         <th className="col-md-4">Zoekveld</th>
                         <th className="col-md-4"/>
                         <th className="col-md-4">Waarde</th>
                     </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td className="col-md-4"><select className="form-control input-sm"><option>Nieuwsbrief</option><option>Test2</option></select></td>
-                        <td className="col-md-4"><select className="form-control input-sm"><option>gelijk aan</option><option>groter dan</option></select></td>
-                        <td className="col-md-4"><select className="form-control input-sm"><option>Ja</option><option>Nee</option></select></td>
-                    </tr>
-                    <tr>
-                        <td className="col-md-4"><select className="form-control input-sm"><option>Woonplaats</option></select></td>
-                        <td className="col-md-4"><select className="form-control input-sm"><option>niet gelijk aan</option><option>groter dan</option></select></td>
-                        <td className="col-md-4"><input type="text" className="form-control input-sm" value="Alkmaar"/></td>
-                    </tr>
-                    <tr>
-                        <td className="col-md-4"><select className="form-control input-sm"><option>Nog een optie</option><option>Test2</option><option>Test3</option></select></td>
-                        <td className="col-md-4"><select className="form-control input-sm"><option>groter dan</option><option>kleiner dan</option></select></td>
-                        <td className="col-md-4"><input type="text" className="form-control input-sm" value="10"/></td>
-                    </tr>
-                </tbody>
-            </table>
-        </Modal>
-    )
+                    </thead>
+                    <tbody>
+                     {filters}
+                    </tbody>
+                </table>
+                <div className='row'>
+                    <div className='col-xs-12 text-right'>
+                        <ButtonText buttonText={'Extra filter'} onClickAction={this.addFilterRow}/>
+                    </div>
+                </div>
+            </Modal>
+        )
+    }
 };
 
 
-export default ContactsListExtraFilters;
+export default ParticipantsListExtraFilters;

@@ -42,7 +42,7 @@ class CreateOrdersTables extends Migration
 
             $table->string('payment_type_id');
 
-            $table->text('iban')->nullable();
+            $table->text('IBAN')->nullable();
             $table->string('iban_attn')->nullable();
             $table->string('po_number')->nullable();
             $table->string('invoice_text')->nullable();

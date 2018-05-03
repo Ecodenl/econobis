@@ -6,7 +6,7 @@ import {connect} from "react-redux";
 
 import {ic_dashboard} from 'react-icons-kit/md/ic_dashboard';
 
-class SidebarMenu extends Component {
+class FinancialTree extends Component {
     constructor(props) {
         super(props);
     }
@@ -69,4 +69,4 @@ const mapStateToProps = (state) => {
     }
 };
 
-export default connect(mapStateToProps)(SidebarMenu);
+export default connect(mapStateToProps)(FinancialTree);

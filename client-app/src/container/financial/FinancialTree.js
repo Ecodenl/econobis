@@ -5,7 +5,6 @@ import SvgIcon from 'react-icons-kit';
 import {connect} from "react-redux";
 
 import {ic_dashboard} from 'react-icons-kit/md/ic_dashboard';
-import {ic_business} from "react-icons-kit/md/ic_business";
 
 class SidebarMenu extends Component {
     constructor(props) {
@@ -16,45 +15,45 @@ class SidebarMenu extends Component {
         return (
             <nav className={'financial-tree open sticky'}>
                 <div className="financial-tree-sidebar-menu" style={{color: '$brand-primary'}}>
-                    <SideNav highlightColor="$brand-primary" highlightBgColor='#F1EFF0'>
+                    <SideNav highlightColor="$brand-primary" highlightBgColor='#e5e5e5' hoverBgColor='#F1EFF0' defaultSelected="orders">
                         <Nav id="orders">
                             <NavIcon><SvgIcon size={20} icon={ic_dashboard} style={{color: '$brand-primary'}}/></NavIcon>
-                            <NavText><Link className="financial-tree-link">Alle orders(17)</Link></NavText>
-                            <Nav id="orders-open">
-                                <NavText><Link className="financial-tree-link" to="contacten/type/organisation">Concept orders(5)</Link></NavText>
+                            <NavText><Link className="financial-tree-link" to={`financieel/${this.props.id}/orders`}>Alle orders(17)</Link></NavText>
+                            <Nav id="orders-concepts">
+                                <NavText><Link className="financial-tree-link" to={`financieel/${this.props.id}/orders/concepten`}>Concept orders(5)</Link></NavText>
+                            </Nav>
+                            <Nav id="orders-invoices">
+                                <NavText><Link className="financial-tree-link" to={`financieel/${this.props.id}/orders/facturen`}>Te factureren orders(5)</Link></NavText>
+                            </Nav>
+                            <Nav id="orders-collection">
+                                <NavText><Link className="financial-tree-link" to={`financieel/${this.props.id}/orders/incassos`}>Incasso orders(4)</Link></NavText>
                             </Nav>
                             <Nav id="orders-closed">
-                                <NavText><Link className="financial-tree-link" to="contacten/type/organisation">Te factureren orders(5)</Link></NavText>
-                            </Nav>
-                            <Nav id="orders-closed1">
-                                <NavText><Link className="financial-tree-link" to="contacten/type/organisation">Incasso orders(4)</Link></NavText>
-                            </Nav>
-                            <Nav id="orders-closed2">
-                                <NavText><Link className="financial-tree-link" to="contacten/type/organisation">Beëindigde orders(3)</Link></NavText>
+                                <NavText><Link className="financial-tree-link" to={`financieel/${this.props.id}/orders/beeindigd`}>Beëindigde orders(3)</Link></NavText>
                             </Nav>
                         </Nav>
                         <Nav id="invoices">
                             <NavIcon><SvgIcon size={20} icon={ic_dashboard} style={{color: '$brand-primary'}}/></NavIcon>
-                            <NavText><Link className="financial-tree-link">Alle facturen(12)</Link></NavText>
-                            <Nav id="orders-closed3">
-                                <NavText><Link className="financial-tree-link" to="contacten/type/organisation">Verzonden(3)</Link></NavText>
+                            <NavText><Link className="financial-tree-link" to={`financieel/${this.props.id}/facturen`}>Alle facturen(12)</Link></NavText>
+                            <Nav id="invoices-send">
+                                <NavText><Link className="financial-tree-link" to={`financieel/${this.props.id}/facturen/verzonden`}>Verzonden(3)</Link></NavText>
                             </Nav>
-                            <Nav id="orders-closed4">
-                                <NavText><Link className="financial-tree-link" to="contacten/type/organisation">Herinneringen(4)</Link></NavText>
+                            <Nav id="invoices-reminder">
+                                <NavText><Link className="financial-tree-link" to={`financieel/${this.props.id}/facturen/herinnering`}>Herinneringen(4)</Link></NavText>
                             </Nav>
-                            <Nav id="orders-closed5">
-                                <NavText><Link className="financial-tree-link" to="contacten/type/organisation">Aanmaningen(2)</Link></NavText>
+                            <Nav id="invoices-exhortation">
+                                <NavText><Link className="financial-tree-link" to={`financieel/${this.props.id}/facturen/aanmaning`}>Aanmaningen(2)</Link></NavText>
                             </Nav>
-                            <Nav id="orders-closed6">
-                                <NavText><Link className="financial-tree-link" to="contacten/type/organisation">Betaald(3)</Link></NavText>
+                            <Nav id="invoices-payed">
+                                <NavText><Link className="financial-tree-link" to={`financieel/${this.props.id}/facturen/betaald`}>Betaald(3)</Link></NavText>
                             </Nav>
-                            <Nav id="orders-closed7">
-                                <NavText><Link className="financial-tree-link" to="contacten/type/organisation">Oninbaar(0)</Link></NavText>
+                            <Nav id="invoices-irrecovable">
+                                <NavText><Link className="financial-tree-link" to={`financieel/${this.props.id}/facturen/oninbaar`}>Oninbaar(0)</Link></NavText>
                             </Nav>
                         </Nav>
-                        <Nav id="settings">
+                        <Nav id="administration-settings">
                             <NavIcon><SvgIcon size={20} icon={ic_dashboard}  style={{color: '$brand-primary'}}/></NavIcon>
-                            <NavText><Link className="financial-tree-link" to="administratie/1">Instellingen</Link></NavText>
+                            <NavText><Link className="financial-tree-link" to={`administratie/${this.props.id}`}>Instellingen</Link></NavText>
                         </Nav>
                     </SideNav>
                 </div>
@@ -66,6 +65,7 @@ class SidebarMenu extends Component {
 const mapStateToProps = (state) => {
     return {
         permissions: state.meDetails.permissions,
+        id: state.administrationDetails.id,
     }
 };
 

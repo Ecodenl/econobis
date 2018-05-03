@@ -161,6 +161,8 @@ const Routes = () => {
                 <Route path="email-template/:id" component={EmailTemplateDetailsApp} />
                 /* Financial */
                 <Route path="financieel/:id" component={FinancialApp} />
+                <Route path="financieel/:id/:type" component={FinancialApp} />
+                <Route path="financieel/:id/:type/:filter" component={FinancialApp} />
                 /* Campagnes */
                 <Route path="campagne/nieuw" component={CampaignNewApp} />
                 <Route path="campagne/:id" component={CampaignDetailsApp} />

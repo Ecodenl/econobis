@@ -2,12 +2,12 @@
 
 namespace App\Eco\Order;
 
+use App\Eco\Administration\Administration;
+use App\Eco\Contact\Contact;
 use App\Eco\EmailTemplate\EmailTemplate;
-use App\Eco\Product\Product;
 use App\Eco\Product\ProductPaymentType;
 use App\Eco\User\User;
 use App\Http\Traits\Encryptable;
-use App\OrderProduct;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Venturecraft\Revisionable\RevisionableTrait;
@@ -33,9 +33,19 @@ class Order extends Model
         return false;
     }
 
-    public function products()
+    public function orderProducts()
     {
-        return $this->belongsToMany(Product::class)->using(OrderProduct::class);
+        return $this->hasMany(OrderProduct::class);
+    }
+
+    public function administration()
+    {
+        return $this->belongsTo(Administration::class);
+    }
+
+    public function contact()
+    {
+        return $this->belongsTo(Contact::class);
     }
 
     public function createdBy()
@@ -73,8 +83,22 @@ class Order extends Model
     {
         $total = 0;
 
-        foreach ($this->orderProduct as $orderProduct) {
-            $total += ($orderProduct->amount * $orderProduct->product->price_incl_vat);
+        foreach ($this->orderProducts as $orderProduct) {
+            $price = 0;
+            $price += ($orderProduct->amount * $orderProduct->product->price_incl_vat);
+
+            if($orderProduct->percentage_reduction){
+                if($orderProduct->percentage_reduction >= 100){
+                    return 0;
+                }
+                $price = ($price*(100 - $orderProduct->percentage_reduction / 100));
+            }
+
+            if($orderProduct->amount_reduction){
+                $price -= $orderProduct->amount_reduction;
+            }
+
+            $total += $price;
         }
 
         return $total;

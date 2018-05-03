@@ -21,14 +21,17 @@ const ProductsListToolbar = props => {
                 </div>
             </div>
             <div className="col-md-4"><h3 className="text-center table-title">Producten</h3></div>
-            <div className="col-md-4" />
+            <div className="col-md-4">
+                <div className="pull-right">Resultaten: { props.products ? props.products.length : 0 }</div>
+            </div>
         </div>
     );
 };
 
 const mapStateToProps = (state) => {
     return {
-        permissions: state.meDetails.permissions
+        permissions: state.meDetails.permissions,
+        products: state.products
     };
 };
 

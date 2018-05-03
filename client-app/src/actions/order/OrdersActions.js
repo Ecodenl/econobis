@@ -1,6 +1,10 @@
-export const fetchOrders = () => {
+export const fetchOrders = (filters, sorts, pagination, administrationId) => {
     return {
         type: 'FETCH_ORDERS',
+        filters,
+        sorts,
+        pagination,
+        administrationId,
     };
 };
 

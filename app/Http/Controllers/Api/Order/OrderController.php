@@ -26,7 +26,7 @@ class OrderController extends ApiController
     {
         $orders = $requestQuery->get();
 
-        $orders->load(['contact']);
+        $orders->load(['contact', 'orderProducts.product']);
 
         return GridOrder::collection($orders)
             ->additional(['meta' => [
@@ -38,6 +38,7 @@ class OrderController extends ApiController
     public function show(Order $order)
     {
         $order->load([
+            'orderProducts.product',
             'contact',
             'createdBy',
             'emailTemplate',

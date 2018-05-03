@@ -1,15 +1,15 @@
-export default function (state= [], action) {
-    switch (action.type) {
-        case 'FETCH_ORDERS_SUCCESS':
-            return [
-                ...state,
-                ...action.orders.data.data
-            ];
-        case 'CLEAR_ORDERS':
-            return state.orders = [];
-        case 'DELETE_ORDER_SUCCESS':
-            return state.filter((order) => order.id !== action.id);
-        default:
-            return state;
-    }
-}
+import { combineReducers } from 'redux';
+
+import ordersListReducer from "./OrdersListReducer";
+import ordersPaginationReducer from "./OrdersPaginationReducer";
+import ordersFiltersReducer from "./OrdersFiltersReducer";
+import ordersSortsReducer from "./OrdersSortsReducer";
+
+const ordersReducer = combineReducers({
+    list: ordersListReducer,
+    filters: ordersFiltersReducer,
+    sorts: ordersSortsReducer,
+    pagination: ordersPaginationReducer,
+});
+
+export default ordersReducer;

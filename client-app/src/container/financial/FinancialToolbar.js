@@ -17,7 +17,7 @@ class ProductToolbar  extends Component {
                         <ButtonIcon iconName={"glyphicon-arrow-left"} onClickAction={browserHistory.goBack}/>
                     </div>
                 </div>
-                <div className="col-md-4"><h4 className="text-center">Administratie: test</h4></div>
+                <div className="col-md-4"><h4 className="text-center">Administratie: {this.props.name}</h4></div>
                 <div className="col-md-4"/>
             </div>
         );
@@ -26,7 +26,7 @@ class ProductToolbar  extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        // name: state.productDetails.name,
+        name: state.administrationDetails.name,
     };
 };
 

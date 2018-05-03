@@ -21,14 +21,17 @@ const AdministrationsListToolbar = props => {
                 </div>
             </div>
             <div className="col-md-4"><h3 className="text-center table-title">Administraties</h3></div>
-            <div className="col-md-4" />
+            <div className="col-md-4">
+                <div className="pull-right">Resultaten: { props.administrations ? props.administrations.length : 0 }</div>
+            </div>
         </div>
     );
 };
 
 const mapStateToProps = (state) => {
     return {
-        permissions: state.meDetails.permissions
+        permissions: state.meDetails.permissions,
+        administrations: state.administrations
     };
 };
 

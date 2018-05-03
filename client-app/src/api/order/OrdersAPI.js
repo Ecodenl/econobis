@@ -4,12 +4,20 @@ const URL_API = process.env.URL_API;
 const URL_ORDER = `${URL_API}/api/order`;
 
 export default {
-    fetchOrders: () => {
+    fetchOrders: ({ filters, sorts, pagination, administrationId }) => {
         const requestUrl = `${URL_ORDER}/grid`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios.get(requestUrl);
+        return axios.get(requestUrl, {
+            params: {
+                administrationId: JSON.stringify(administrationId),
+                filters: JSON.stringify(filters),
+                sorts: JSON.stringify(sorts),
+                limit: pagination.limit,
+                offset: pagination.offset,
+            },
+        });
     },
 
     peekOrders: () => {

@@ -21,6 +21,8 @@ import { fetchMeasuresSaga } from './measure/MeasuresSaga';
 import { fetchMeasureSaga } from './measure/MeasureDetailsSaga';
 import { fetchOpportunitiesSaga } from './opportunity/OpportunitiesSaga';
 import { fetchOpportunitySaga } from './opportunity/OpportunityDetailsSaga';
+import { fetchOrdersSaga, deleteOrderSaga } from './order/OrdersSaga';
+import { fetchOrderDetailsSaga, updateOrderDetailsSaga } from './order/OrderDetailsSaga';
 import { fetchPostalCodeLinksSaga, deletePostalCodeLinkSaga } from './postal-code-link/PostalCodeLinkSaga';
 import { fetchProductionProjectsSaga } from './production-project/ProductionProjectsSaga';
 import { fetchProductionProjectSaga, deleteValueCourseSaga, deleteRevenueSaga } from './production-project/ProductionProjectDetailsSaga';
@@ -125,6 +127,11 @@ export default function* watchSagas() {
     // Opportunity
     yield takeLatest('FETCH_OPPORTUNITIES', fetchOpportunitiesSaga);
     yield takeLatest('FETCH_OPPORTUNITY', fetchOpportunitySaga);
+    // Order
+    yield takeLatest('FETCH_ORDER_DETAILS', fetchOrderDetailsSaga);
+    yield takeLatest('UPDATE_ORDER', updateOrderDetailsSaga);
+    yield takeLatest('DELETE_ORDER', deleteOrderSaga);
+    yield takeLatest('FETCH_ORDERS', fetchOrdersSaga);
     // Postal code links
     yield takeLatest('FETCH_POSTAL_CODE_LINKS', fetchPostalCodeLinksSaga);
     yield takeLatest('DELETE_POSTAL_CODE_LINK', deletePostalCodeLinkSaga);

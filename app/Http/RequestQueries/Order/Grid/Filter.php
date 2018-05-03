@@ -13,11 +13,31 @@ use App\Helpers\RequestQuery\RequestFilter;
 
 class Filter extends RequestFilter
 {
-    protected $fields = [];
+    protected $fields = [
+        'number',
+        'dateRequested',
+        'subject',
+        'contact',
+        'paymentTypeId',
+        'statusId',
+    ];
 
-    protected $mapping = [];
+    protected $mapping = [
+        'number' => 'orders.number',
+        'dateRequested' => 'orders.date_requested',
+        'subject' => 'orders.subject',
+        'contact' => 'contacts.full_name',
+        'paymentTypeId' => 'orders.payment_type_id',
+        'statusId' => 'orders.status_id',
+    ];
 
-    protected $joins = [];
+    protected $joins = [
+        'contact' => 'contact',
+    ];
 
-    protected $defaultTypes = [];
+    protected $defaultTypes = [
+        '*' => 'ct',
+        'paymentTypeId' => 'eq',
+        'statusId' => 'eq',
+    ];
 }

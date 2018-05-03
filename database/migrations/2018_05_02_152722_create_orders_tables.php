@@ -22,6 +22,11 @@ class CreateOrdersTables extends Migration
                 ->references('id')->on('contacts')
                 ->onDelete('restrict');
 
+            $table->unsignedInteger('administration_id');
+            $table->foreign('administration_id')
+                ->references('id')->on('administrations')
+                ->onDelete('restrict');
+
             $table->string('status_id');
             $table->string('subject');
 

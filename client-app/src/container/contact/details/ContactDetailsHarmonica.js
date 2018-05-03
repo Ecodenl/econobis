@@ -14,6 +14,7 @@ import EmailInboxHarmonica from './harmonica/EmailInboxHarmonica';
 import EmailSentHarmonica from "./harmonica/EmailSentHarmonica";
 import DocumentHarmonica from './harmonica/DocumentHarmonica';
 import ParticipationHarmonica from "./harmonica/ParticipationHarmonica";
+import OrderHarmonica from "./harmonica/OrderHarmonica";
 
 class ContactDetailsHarmonica extends Component {
     constructor(props){
@@ -21,6 +22,7 @@ class ContactDetailsHarmonica extends Component {
 
         this.state = {
             toggleShowList: {
+                orders: false,
                 intakes: false,
                 housingFiles: false,
                 opportunities: false,
@@ -42,6 +44,7 @@ class ContactDetailsHarmonica extends Component {
         if(this.props.id !== nextProps.id) {
             this.setState({
                 toggleShowList: {
+                    orders: false,
                     intakes: false,
                     housingFiles: false,
                     opportunities: false,
@@ -151,6 +154,10 @@ class ContactDetailsHarmonica extends Component {
         hashHistory.push(`/document/nieuw/${type}/contact/${this.props.contactDetails.id}`);
     };
 
+    newOrder = () => {
+        hashHistory.push(`/order/nieuw/contact/${this.props.contactDetails.id}`);
+    };
+
     toggleAddGroup = () => {
         this.setState({
             showModalAddGroup: !this.state.showModalAddGroup
@@ -160,6 +167,13 @@ class ContactDetailsHarmonica extends Component {
     render(){
         return (
             <div className="margin-10-top">
+                <OrderHarmonica
+                    toggleShowList={() => this.toggleShowList('orders')}
+                    showOrdersList={this.state.toggleShowList.orders}
+                    orderCount={this.props.contactDetails.orderCount}
+                    newOrder={this.newOrder}
+                />
+
                 <EmailInboxHarmonica
                     toggleShowList={() => this.toggleShowList('emailsInbox')}
                     showEmailsInboxList={this.state.toggleShowList.emailsInbox}

@@ -9,6 +9,7 @@ use App\Eco\EnergySupplier\ContactEnergySupplier;
 use App\Eco\HousingFile\HousingFile;
 use App\Eco\Occupation\OccupationContact;
 use App\Eco\Opportunity\Opportunity;
+use App\Eco\Order\Order;
 use App\Eco\Organisation\Organisation;
 use App\Eco\Address\Address;
 use App\Eco\ContactGroup\ContactGroup;
@@ -210,6 +211,11 @@ class Contact extends Model
     public function contactPerson()
     {
         return $this->hasOne(OccupationContact::class, 'primary_contact_id')->where('primary', true)->orWhere('contact_id', $this->id)->where('primary', true);
+    }
+
+    public function orders()
+    {
+        return $this->hasMany(Order::class);
     }
 
     //Returns addresses array as Type - Streetname - Number

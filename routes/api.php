@@ -315,7 +315,7 @@ Route::namespace('Api')
         Route::get('order/grid', 'Order\OrderController@grid');
         Route::get('order/peek', 'Order\OrderController@peek');
         Route::get('order/{order}', 'Order\OrderController@show');
-        Route::post('order', 'Product\OrderController@store');
+        Route::post('order', 'Order\OrderController@store');
         Route::post('order/order-product', 'Order\OrderController@storeOrderProduct');
         Route::post('order/order-product/update', 'Order\OrderController@updateOrderProduct');
         Route::post('order/{order}', 'Order\OrderController@update');

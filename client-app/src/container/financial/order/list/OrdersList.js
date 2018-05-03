@@ -94,7 +94,7 @@ class OrdersList extends Component {
                         break;
                     default:
                         break;
-                };
+                }
             }
             else {
                 this.props.clearFilterOrders();
@@ -194,7 +194,7 @@ class OrdersList extends Component {
                     <DataTable>
                         <DataTableHead>
                             <OrdersListHead
-                                fetchOrdersData={() => this.fetchOrdersData}
+                                fetchOrdersData={this.fetchOrdersData}
                             />
                             <OrdersListFilter
                                 onSubmitFilter={this.onSubmitFilter}

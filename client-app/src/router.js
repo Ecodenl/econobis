@@ -56,6 +56,7 @@ import NotFoundedPage from './container/global/NotFoundedPage';
 import OpportunitiesListApp from './container/opportunities/list/OpportunitiesListApp';
 import OpportunityDetailsApp from './container/opportunities/details/OpportunityDetailsApp';
 import OpportunityNewApp from './container/opportunities/new/OpportunityNewApp';
+import OrderNewApp from './container/financial/order/new/OrderNewApp';
 import ParticipantNewApp from './container/production-project/general/participant/new/ParticipantNewApp';
 import ParticipantDetailsApp from './container/production-project/general/participant/details/ParticipantDetailsApp';
 import ParticipationTransferApp from './container/production-project/general/participant/details/transfer/ParticipationTransferApp';
@@ -163,6 +164,8 @@ const Routes = () => {
                 <Route path="financieel/:id" component={FinancialApp} />
                 <Route path="financieel/:id/:type" component={FinancialApp} />
                 <Route path="financieel/:id/:type/:filter" component={FinancialApp} />
+                <Route path="order/nieuw/contact/:contactId" component={OrderNewApp} />
+
                 /* Campagnes */
                 <Route path="campagne/nieuw" component={CampaignNewApp} />
                 <Route path="campagne/:id" component={CampaignDetailsApp} />

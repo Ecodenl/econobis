@@ -46,6 +46,7 @@ class CreateOrdersTables extends Migration
                 ->onDelete('restrict');
 
             $table->string('payment_type_id');
+            $table->string('collection_frequency_id')->nullable();
 
             $table->text('IBAN')->nullable();
             $table->string('iban_attn')->nullable();

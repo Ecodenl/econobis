@@ -54,12 +54,15 @@ class OrderController extends ApiController
         $this->authorize('manage', Order::class);
 
         $data = $input
-            ->integer('contactId')->validate('required|exists:contacts.id')->alias('contact_id')->next()
+            ->integer('contactId')->validate('required|exists:contacts,id')->alias('contact_id')->next()
+            ->integer('administrationId')->validate('required|exists:administrations,id')->alias('administration_id')->next()
             ->string('statusId')->validate('required')->alias('status_id')->next()
             ->string('subject')->validate('required')->next()
-            ->integer('emailTemplateId')->validate('nullable|exists:email_templates,id')->alias('email_template_id')->next()
-            ->integer('emailTemplateId')->validate('nullable|exists:email_templates,id')->alias('email_template_id')->next()
-            ->integer('emailTemplateExhortationId')->validate('nullable|exists:email_templates,id')->alias('email_template_exhortation_id')->next()
+            ->integer('emailTemplateId')->validate('nullable|exists:email_templates,id')->onEmpty(null)->whenMissing(null)->alias('email_template_id')->next()
+            ->integer('emailTemplateReminderId')->validate('nullable|exists:email_templates,id')->onEmpty(null)->whenMissing(null)->alias('email_template_reminder_id')->next()
+            ->integer('emailTemplateExhortationId')->validate('nullable|exists:email_templates,id')->onEmpty(null)->whenMissing(null)->alias('email_template_exhortation_id')->next()
+            ->string('collectionFrequencyId')->onEmpty(null)->whenMissing(null)->alias('collection_frequency_id')->next()
+            ->string('collectionFrequencyId')->alias('collection_frequency_id')->next()
             ->string('paymentTypeId')->validate('required')->alias('payment_type_id')->next()
             ->string('IBAN')->onEmpty(null)->whenMissing(null)->next()
             ->string('ibanAttn')->onEmpty(null)->whenMissing(null)->alias('iban_attn')->next()
@@ -83,12 +86,14 @@ class OrderController extends ApiController
         $this->authorize('manage', Order::class);
 
         $data = $input
-            ->integer('contactId')->validate('required|exists:contacts.id')->alias('contact_id')->next()
+            ->integer('contactId')->validate('required|exists:contacts,id')->alias('contact_id')->next()
+            ->integer('administrationId')->validate('required|exists:administrations,id')->alias('administration_id')->next()
             ->string('statusId')->validate('required')->alias('status_id')->next()
             ->string('subject')->validate('required')->next()
-            ->integer('emailTemplateId')->validate('nullable|exists:email_templates,id')->alias('email_template_id')->next()
-            ->integer('emailTemplateId')->validate('nullable|exists:email_templates,id')->alias('email_template_id')->next()
-            ->integer('emailTemplateExhortationId')->validate('nullable|exists:email_templates,id')->alias('email_template_exhortation_id')->next()
+            ->integer('emailTemplateId')->validate('nullable|exists:email_templates,id')->onEmpty(null)->whenMissing(null)->alias('email_template_id')->next()
+            ->integer('emailTemplateReminderId')->validate('nullable|exists:email_templates,id')->onEmpty(null)->whenMissing(null)->alias('email_template_reminder_id')->next()
+            ->integer('emailTemplateExhortationId')->validate('nullable|exists:email_templates,id')->onEmpty(null)->whenMissing(null)->alias('email_template_exhortation_id')->next()
+            ->string('collectionFrequencyId')->onEmpty(null)->whenMissing(null)->alias('collection_frequency_id')->next()
             ->string('paymentTypeId')->validate('required')->alias('payment_type_id')->next()
             ->string('IBAN')->onEmpty(null)->whenMissing(null)->next()
             ->string('ibanAttn')->onEmpty(null)->whenMissing(null)->alias('iban_attn')->next()

@@ -44,6 +44,9 @@ class FullOrder extends Resource
                 'dateStart' => $this->date_start,
                 'dateEnd' => $this->date_end,
 
+
+                'collectionFrequencyId' => $this->collection_frequency_id,
+                'collectionFrequency' => FullEnumWithIdAndName::make($this->getCollectionFrequency()),
                 'paymentTypeId' => $this->payment_type_id,
                 'paymentType' => FullEnumWithIdAndName::make($this->getPaymentType()),
                 'statusId' => $this->status_id,

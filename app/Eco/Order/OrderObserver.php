@@ -25,7 +25,7 @@ class OrderObserver
 
     public function created(Order $order)
     {
-        $order->number = 'K' . Carbon::now()->year . '-' . $order->id;
+        $order->number = 'O' . Carbon::now()->year . '-' . $order->id;
         $order->save();
     }
 }

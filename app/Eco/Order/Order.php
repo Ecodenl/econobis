@@ -5,7 +5,6 @@ namespace App\Eco\Order;
 use App\Eco\Administration\Administration;
 use App\Eco\Contact\Contact;
 use App\Eco\EmailTemplate\EmailTemplate;
-use App\Eco\Product\ProductPaymentType;
 use App\Eco\User\User;
 use App\Http\Traits\Encryptable;
 use Illuminate\Database\Eloquent\Model;
@@ -65,11 +64,18 @@ class Order extends Model
         return $this->belongsTo(EmailTemplate::class);
     }
 
+    public function getCollectionFrequency()
+    {
+        if(!$this->collection_frequency_id) return null;
+
+        return OrderCollectionFrequency::get($this->collection_frequency_id);
+    }
+
     public function getPaymentType()
     {
         if(!$this->payment_type_id) return null;
 
-        return ProductPaymentType::get($this->payment_type_id);
+        return OrderPaymentType::get($this->payment_type_id);
     }
 
     public function getStatus()

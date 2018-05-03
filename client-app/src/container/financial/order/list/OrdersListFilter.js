@@ -60,8 +60,8 @@ const OrdersListFilter = props => {
                 <select className="form-control input-sm" value={ props.filters.paymentTypeId.data } onChange={onPaymentTypeChange}>
                     <option/>
                     {
-                        props.productPaymentTypes.map((productPaymentType) => {
-                            return <option key={productPaymentType.id } value={ productPaymentType.id }>{ productPaymentType.name }</option>
+                        props.orderPaymentTypes.map((orderPaymentType) => {
+                            return <option key={orderPaymentType.id } value={ orderPaymentType.id }>{ orderPaymentType.name }</option>
                         })
                     }
                 </select>
@@ -84,7 +84,7 @@ const OrdersListFilter = props => {
 const mapStateToProps = (state) => ({
     filters: state.orders.filters,
     orderStatuses: state.systemData.orderStatuses,
-    productPaymentTypes: state.systemData.productPaymentTypes,
+    orderPaymentTypes: state.systemData.orderPaymentTypes,
 });
 
 const mapDispatchToProps = (dispatch) => {

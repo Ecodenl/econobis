@@ -9,6 +9,7 @@ const DataTableBody = props => {
             <option value='lt'>kleiner dan</option>
             <option value='lte'>kleiner of gelijk aan</option>
             <option value='gt'>groter dan</option>
+            <option value='gte'>groter dan of gelijk aan</option>
             <option value='bw'>begint met</option>
             <option value='nbw'>begint niet met</option>
             <option value='ew'>eindigd met</option>

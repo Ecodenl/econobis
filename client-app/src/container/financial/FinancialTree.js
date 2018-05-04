@@ -18,18 +18,18 @@ class FinancialTree extends Component {
                     <SideNav highlightColor="$brand-primary" highlightBgColor='#e5e5e5' hoverBgColor='#F1EFF0' defaultSelected="orders">
                         <Nav id="orders">
                             <NavIcon><SvgIcon size={20} icon={ic_dashboard} style={{color: '$brand-primary'}}/></NavIcon>
-                            <NavText><Link className="financial-tree-link" to={`financieel/${this.props.id}/orders`}>Alle orders(17)</Link></NavText>
+                            <NavText><Link className="financial-tree-link" to={`financieel/${this.props.id}/orders`}>Alle orders({this.props.administrationDetails.totalOrders})</Link></NavText>
                             <Nav id="orders-concepts">
-                                <NavText><Link className="financial-tree-link" to={`financieel/${this.props.id}/orders/concepten`}>Concept orders(5)</Link></NavText>
+                                <NavText><Link className="financial-tree-link" to={`financieel/${this.props.id}/orders/concepten`}>Concept orders({this.props.administrationDetails.totalOrdersConcepts})</Link></NavText>
                             </Nav>
                             <Nav id="orders-invoices">
-                                <NavText><Link className="financial-tree-link" to={`financieel/${this.props.id}/orders/facturen`}>Te factureren orders(5)</Link></NavText>
+                                <NavText><Link className="financial-tree-link" to={`financieel/${this.props.id}/orders/facturen`}>Te factureren orders({this.props.administrationDetails.totalOrdersInvoices})</Link></NavText>
                             </Nav>
                             <Nav id="orders-collection">
-                                <NavText><Link className="financial-tree-link" to={`financieel/${this.props.id}/orders/incassos`}>Incasso orders(4)</Link></NavText>
+                                <NavText><Link className="financial-tree-link" to={`financieel/${this.props.id}/orders/incassos`}>Incasso orders({this.props.administrationDetails.totalOrdersCollections})</Link></NavText>
                             </Nav>
                             <Nav id="orders-closed">
-                                <NavText><Link className="financial-tree-link" to={`financieel/${this.props.id}/orders/beeindigd`}>Beëindigde orders(3)</Link></NavText>
+                                <NavText><Link className="financial-tree-link" to={`financieel/${this.props.id}/orders/beeindigd`}>Beëindigde orders({this.props.administrationDetails.totalOrdersClosed})</Link></NavText>
                             </Nav>
                         </Nav>
                         <Nav id="invoices">
@@ -66,6 +66,7 @@ const mapStateToProps = (state) => {
     return {
         permissions: state.meDetails.permissions,
         id: state.administrationDetails.id,
+        administrationDetails: state.administrationDetails,
     }
 };
 

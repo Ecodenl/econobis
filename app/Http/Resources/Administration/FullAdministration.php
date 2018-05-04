@@ -47,6 +47,12 @@ class FullAdministration extends Resource
 
                 'users' => FullUser::collection($this->whenLoaded('users')),
 
+                'totalOrders' => $this->total_orders,
+                'totalOrdersConcepts' => $this->total_orders_concepts,
+                'totalOrdersInvoices' => $this->total_orders_invoices,
+                'totalOrdersCollections' => $this->total_orders_collections,
+                'totalOrdersClosed' => $this->total_orders_closed,
+
                 'deletedAt' => $this->deleted_at,
                 'createdAt' => $this->created_at,
                 'updatedAt' => $this->updated_at,

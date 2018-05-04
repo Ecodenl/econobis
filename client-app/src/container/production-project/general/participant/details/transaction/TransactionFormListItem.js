@@ -7,7 +7,7 @@ import TransactionFormView from './TransactionFormView';
 import TransactionFormEdit from './TransactionFormEdit';
 import TransactionFormDelete from './TransactionFormDelete';
 import {isEqual} from "lodash";
-import * as ibantools from "ibantools/build/ibantools";
+import * as ibantools from "ibantools";
 import validator from "validator";
 
 class TransactionFormListItem extends Component {

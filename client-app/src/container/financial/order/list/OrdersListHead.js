@@ -20,7 +20,7 @@ const OrdersListHead = (props) => {
             <DataTableHeadTitleAndSort sortColumn={'dateRequested'} title={'Datum'} width={'10%'} setSorts={setSorts} />
             <DataTableHeadTitleAndSort sortColumn={'subject'} title={'Onderwerp'} width={'15%'} setSorts={setSorts} />
             <DataTableHeadTitleAndSort sortColumn={'contact'} title={'Contact'} width={'15%'} setSorts={setSorts} />
-            <DataTableHeadTitle title={'Bedrag'} width={'15%'}/>
+            <DataTableHeadTitle title={'Bedrag incl. BTW'} width={'15%'}/>
             <DataTableHeadTitleAndSort sortColumn={'paymentTypeId'} title={'Betaalwijze'} width={'12%'} setSorts={setSorts} />
             <DataTableHeadTitleAndSort sortColumn={'statusId'} title={'Status'} width={'12%'} setSorts={setSorts} />
             <th width="9%" />

@@ -1,58 +1,53 @@
 import React, {Component} from 'react';
-import { hashHistory } from 'react-router';
+import {connect} from 'react-redux';
 import validator from 'validator';
+
+import {updateOrder} from '../../../../../actions/order/OrderDetailsActions';
+import InputText from '../../../../../components/form/InputText';
+import ButtonText from '../../../../../components/button/ButtonText';
+import Panel from "../../../../../components/panel/Panel";
+import PanelBody from "../../../../../components/panel/PanelBody";
 import * as ibantools from "ibantools";
+import InputSelect from "../../../../../components/form/InputSelect";
+import EmailTemplateAPI from "../../../../../api/email-template/EmailTemplateAPI";
+import InputDate from "../../../../../components/form/InputDate";
+import InputReactSelect from "../../../../../components/form/InputReactSelect";
 
-import InputText from '../../../../components/form/InputText';
-import ButtonText from '../../../../components/button/ButtonText';
-import PanelBody from "../../../../components/panel/PanelBody";
-import Panel from "../../../../components/panel/Panel";
-import OrderDetailsAPI from '../../../../api/order/OrderDetailsAPI';
-import {connect} from "react-redux";
-import InputSelect from "../../../../components/form/InputSelect";
-import ContactsAPI from "../../../../api/contact/ContactsAPI";
-import EmailTemplateAPI from "../../../../api/email-template/EmailTemplateAPI";
-import InputReactSelect from "../../../../components/form/InputReactSelect";
-import InputDate from "../../../../components/form/InputDate";
-import moment from 'moment';
-
-moment.locale('nl');
-
-class OrderNewForm extends Component {
+class OrderDetailsFormGeneralEdit extends Component {
     constructor(props) {
         super(props);
 
+        const {
+            id, statusId, subject, emailTemplateId, emailTemplateReminderId, emailTemplateExhortationId, paymentTypeId, collectionFrequencyId, IBAN, ibanAttn,
+            poNumber, invoiceText, dateRequested, dateStart, dateEnd
+        } = props.orderDetails;
+
         this.state = {
-            contacts: [],
             emailTemplates: [],
             showExtraContactInfo: false,
             order: {
-                contactId: props.contactId || '',
-                administrationId: '',
-                statusId: 'concept',
-                subject: '',
-                emailTemplateId: '',
-                emailTemplateReminderId: '',
-                emailTemplateExhortationId: '',
-                paymentTypeId: 'collection',
-                collectionFrequencyId: '',
-                IBAN: '',
-                ibanAttn: '',
-                poNumber: '',
-                invoiceText: '',
-                dateRequested: moment(),
-                dateStart: '',
-                dateEnd: '',
+                id,
+                statusId: statusId ? statusId : '',
+                subject: subject ? subject : '',
+                emailTemplateId: emailTemplateId ? emailTemplateId : '',
+                emailTemplateReminderId: emailTemplateReminderId ? emailTemplateReminderId : '',
+                emailTemplateExhortationId: emailTemplateExhortationId ? emailTemplateExhortationId : '',
+                paymentTypeId: paymentTypeId ? paymentTypeId : '',
+                collectionFrequencyId: collectionFrequencyId ? collectionFrequencyId : '',
+                IBAN: IBAN ? IBAN : '',
+                ibanAttn: ibanAttn ? ibanAttn : '',
+                poNumber: poNumber ? poNumber : '',
+                invoiceText: invoiceText ? invoiceText : '',
+                dateRequested: dateRequested ? dateRequested : '',
+                dateStart: dateStart ? dateStart : '',
+                dateEnd: dateEnd ? dateEnd : '',
             },
             errors: {
-                contactId: false,
-                administrationId: false,
                 statusId: false,
                 subject: false,
                 IBAN: false,
             },
             peekLoading: {
-                contacts: true,
                 emailTemplates: true,
             },
         };
@@ -62,16 +57,6 @@ class OrderNewForm extends Component {
     };
 
     componentWillMount() {
-        ContactsAPI.getContactsPeek().then((payload) => {
-            this.setState({
-                contacts: payload,
-                peekLoading: {
-                    ...this.state.peekLoading,
-                    contacts: false,
-                },
-            });
-        });
-
         EmailTemplateAPI.fetchEmailTemplatesPeek().then((payload) => {
             this.setState({
                 emailTemplates: payload,
@@ -80,6 +65,16 @@ class OrderNewForm extends Component {
                     emailTemplates: false,
                 },
             });
+        });
+    };
+
+    handleReactSelectChange(selectedOption, name) {
+        this.setState({
+            ...this.state,
+            order: {
+                ...this.state.order,
+                [name]: selectedOption
+            },
         });
     };
 
@@ -107,17 +102,6 @@ class OrderNewForm extends Component {
         });
     };
 
-    handleReactSelectChange (selectedOption, name) {
-        this.setState({
-            ...this.state,
-            order: {
-                ...this.state.order,
-                [name]: selectedOption
-            },
-        });
-    };
-
-
     handleSubmit = event => {
         event.preventDefault();
 
@@ -127,22 +111,17 @@ class OrderNewForm extends Component {
         let errors = {};
         let hasErrors = false;
 
-        if (validator.isEmpty(order.contactId)) {
-            errors.contactId = true;
-            hasErrors = true;
-        }
-
-        if (validator.isEmpty(order.statusId)) {
+        if (validator.isEmpty(order.statusId + '')) {
             errors.statusId = true;
             hasErrors = true;
         }
 
-        if (validator.isEmpty(order.subject)) {
+        if (validator.isEmpty(order.subject + '')) {
             errors.subject = true;
             hasErrors = true;
         }
 
-        if (!validator.isEmpty(order.IBAN)) {
+        if (!validator.isEmpty(order.IBAN + '')) {
             if (!ibantools.isValidIBAN(order.IBAN)) {
                 errors.IBAN = true;
                 hasErrors = true;
@@ -153,43 +132,53 @@ class OrderNewForm extends Component {
 
         // If no errors send form
         if (!hasErrors) {
-            OrderDetailsAPI.newOrder(order).then((payload) => {
-                hashHistory.push(`/order/${payload.data.id}`);
-            }).catch(function (error) {
-                console.log(error)
-            });
+            this.props.updateOrder(order, this.props.switchToView);
         }
     };
 
     render() {
-        const { contactId, administrationId, statusId, subject, emailTemplateId, emailTemplateReminderId, emailTemplateExhortationId, paymentTypeId, collectionFrequencyId, IBAN, ibanAttn,
-            poNumber, invoiceText, dateRequested, dateStart, dateEnd } = this.state.order;
+        const {
+            statusId, subject, emailTemplateId, emailTemplateReminderId, emailTemplateExhortationId, paymentTypeId, collectionFrequencyId, IBAN, ibanAttn,
+            poNumber, invoiceText, dateRequested, dateStart, dateEnd
+        } = this.state.order;
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
                 <Panel>
                     <PanelBody>
                         <div className="row">
-                            <InputReactSelect
-                                label={"Order op naam van"}
-                                name={"contactId"}
-                                options={this.state.contacts}
-                                value={contactId}
-                                onChangeAction={this.handleReactSelectChange}
-                                optionName={'fullName'}
-                                isLoading={this.state.peekLoading.contacts}
-                                multi={false}
-                                error={this.state.errors.contactId}
+                            <InputText
+                                label="Order op naam van"
+                                value={this.props.orderDetails.contact ? this.props.orderDetails.contact.fullName : ''}
+                                name={'contact'}
+                                readOnly={true}
                             />
+                            <InputText
+                                label="Administratie"
+                                value={this.props.orderDetails.administration ? this.props.orderDetails.administration.name : ''}
+                                name={'administration'}
+                                readOnly={true}
+                            />
+                        </div>
+
+                        <div className="row">
                             <InputSelect
-                                label={"Administratie"}
-                                id="administrationId"
-                                name={"administrationId"}
-                                options={this.props.administrations}
-                                value={administrationId}
+                                label={"Status"}
+                                id="statusId"
+                                name={"statusId"}
+                                options={this.props.orderStatuses}
+                                value={statusId}
                                 onChangeAction={this.handleInputChange}
                                 required={'required'}
-                                error={this.state.errors.administrationId}
+                                error={this.state.errors.statusId}
+                            />
+                            <InputText
+                                label="Onderwerp"
+                                name={"subject"}
+                                value={subject}
+                                onChangeAction={this.handleInputChange}
+                                required={'required'}
+                                error={this.state.errors.subject}
                             />
                         </div>
 
@@ -204,17 +193,14 @@ class OrderNewForm extends Component {
                                 multi={false}
                             />
                             <InputSelect
-                                label={"Status"}
-                                id="statusId"
-                                name={"statusId"}
-                                options={this.props.orderStatuses}
-                                value={statusId}
+                                label={"Betaalwijze"}
+                                id="paymentTypeId"
+                                name={"paymentTypeId"}
+                                options={this.props.orderPaymentTypes}
+                                value={paymentTypeId}
                                 onChangeAction={this.handleInputChange}
-                                required={'required'}
-                                error={this.state.errors.statusId}
                             />
                         </div>
-
                         <div className="row">
                             <InputReactSelect
                                 label={"E-mail template herinnering"}
@@ -225,13 +211,13 @@ class OrderNewForm extends Component {
                                 isLoading={this.state.peekLoading.emailTemplates}
                                 multi={false}
                             />
-                            <InputText
-                                label="Onderwerp"
-                                name={"subject"}
-                                value={subject}
+                            <InputSelect
+                                label={"Incasso frequentie"}
+                                id="collectionFrequencyId"
+                                name={"collectionFrequencyId"}
+                                options={this.props.orderCollectionFrequencies}
+                                value={collectionFrequencyId}
                                 onChangeAction={this.handleInputChange}
-                                required={'required'}
-                                error={this.state.errors.subject}
                             />
                         </div>
 
@@ -245,41 +231,21 @@ class OrderNewForm extends Component {
                                 isLoading={this.state.peekLoading.emailTemplates}
                                 multi={false}
                             />
-                            <InputSelect
-                                label={"Betaalwijze"}
-                                id="paymentTypeId"
-                                name={"paymentTypeId"}
-                                options={this.props.orderPaymentTypes}
-                                value={paymentTypeId}
+                            <InputText
+                                label="PO nummer van de klant"
+                                name={"poNumber"}
+                                value={poNumber}
                                 onChangeAction={this.handleInputChange}
                             />
                         </div>
 
                         <div className="row">
-                            <InputSelect
-                                label={"Incasso frequentie"}
-                                id="collectionFrequencyId"
-                                name={"collectionFrequencyId"}
-                                options={this.props.orderCollectionFrequencies}
-                                value={collectionFrequencyId}
-                                onChangeAction={this.handleInputChange}
-                            />
                             <InputText
                                 label="IBAN"
                                 name={"IBAN"}
                                 value={IBAN}
                                 onChangeAction={this.handleInputChange}
                                 error={this.state.errors.IBAN}
-                            />
-
-                        </div>
-
-                        <div className="row">
-                            <InputText
-                                label="PO nummer van de klant"
-                                name={"poNumber"}
-                                value={poNumber}
-                                onChangeAction={this.handleInputChange}
                             />
                             <InputText
                                 label="IBAN t.n.v."
@@ -293,7 +259,8 @@ class OrderNewForm extends Component {
                             <div className="form-group col-sm-12">
                                 <div className="row">
                                     <div className="col-sm-3">
-                                        <label htmlFor="invoiceText" className="col-sm-12">Opmerking op de factuur</label>
+                                        <label htmlFor="invoiceText" className="col-sm-12">Opmerking op de
+                                            factuur</label>
                                     </div>
                                     <div className="col-sm-8">
                                 <textarea name='invoiceText' value={invoiceText} onChange={this.handleInputChange}
@@ -310,11 +277,28 @@ class OrderNewForm extends Component {
                                 value={dateRequested}
                                 onChangeAction={this.handleInputChangeDate}
                             />
+                            <InputText
+                                label="Volgende incasso datum"
+                                value={''}
+                                name={'nextCollectionDate'}
+                                readOnly={true}
+                            />
+                        </div>
+                        <div className="row">
                             <InputDate
                                 label="Begin datum"
                                 name="dateStart"
                                 value={dateStart}
                                 onChangeAction={this.handleInputChangeDate}
+                            />
+                            <InputText
+                                label="Totaal bedrag incl. BTW"
+                                value={"€" + this.props.orderDetails.totalPriceInclVat.toLocaleString('nl', {
+                                    minimumFractionDigits: 2,
+                                    maximumFractionDigits: 2
+                                })}
+                                name={'totalPriceInclVat'}
+                                readOnly={true}
                             />
                         </div>
                         <div className="row">
@@ -325,12 +309,14 @@ class OrderNewForm extends Component {
                                 onChangeAction={this.handleInputChangeDate}
                             />
                         </div>
-
                     </PanelBody>
 
                     <PanelBody>
                         <div className="pull-right btn-group" role="group">
-                            <ButtonText buttonText={"Opslaan"} onClickAction={this.handleSubmit} type={"submit"} value={"Submit"}/>
+                            <ButtonText buttonClassName={"btn-default"} buttonText={"Sluiten"}
+                                        onClickAction={this.props.switchToView}/>
+                            <ButtonText buttonText={"Opslaan"} onClickAction={this.handleSubmit} type={"submit"}
+                                        value={"Submit"}/>
                         </div>
                     </PanelBody>
                 </Panel>
@@ -344,8 +330,14 @@ const mapStateToProps = (state) => {
         orderStatuses: state.systemData.orderStatuses,
         orderPaymentTypes: state.systemData.orderPaymentTypes,
         orderCollectionFrequencies: state.systemData.orderCollectionFrequencies,
-        administrations: state.meDetails.administrations,
+        orderDetails: state.orderDetails,
     };
 };
 
-export default connect(mapStateToProps)(OrderNewForm);
+const mapDispatchToProps = dispatch => ({
+    updateOrder: (order, switchToView) => {
+        dispatch(updateOrder(order, switchToView));
+    },
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(OrderDetailsFormGeneralEdit);

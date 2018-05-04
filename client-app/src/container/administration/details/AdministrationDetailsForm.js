@@ -2,7 +2,6 @@ import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import { isEmpty } from 'lodash';
 
-import { fetchTeamDetails } from '../../../actions/team/TeamDetailsActions';
 import AdministrationDetailsFormGeneral from './general/AdministrationDetailsFormGeneral';
 import AdministrationDetailsUsers from './administration-users/AdministrationDetailsUsers';
 import moment from "moment/moment";
@@ -41,10 +40,4 @@ const mapStateToProps = (state) => {
     };
 };
 
-const mapDispatchToProps = dispatch => ({
-    fetchTeamDetails: (id) => {
-        dispatch(fetchTeamDetails(id));
-    },
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(AdministrationDetailsForm);
+export default connect(mapStateToProps)(AdministrationDetailsForm);

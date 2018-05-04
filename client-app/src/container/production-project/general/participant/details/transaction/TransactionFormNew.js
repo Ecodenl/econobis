@@ -11,7 +11,7 @@ import PanelBody from '../../../../../../components/panel/PanelBody';
 import validator from "validator";
 import InputToggle from "../../../../../../components/form/InputToggle";
 import InputDate from "../../../../../../components/form/InputDate";
-import * as ibantools from "ibantools/build/ibantools";
+import * as ibantools from "ibantools";
 
 class TransactionFormNew extends Component {
     constructor(props) {

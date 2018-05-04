@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Router, Route, IndexRoute, hashHistory } from 'react-router';
 
@@ -57,6 +56,7 @@ import OpportunitiesListApp from './container/opportunities/list/OpportunitiesLi
 import OpportunityDetailsApp from './container/opportunities/details/OpportunityDetailsApp';
 import OpportunityNewApp from './container/opportunities/new/OpportunityNewApp';
 import OrderNewApp from './container/financial/order/new/OrderNewApp';
+import OrderDetailsApp from './container/financial/order/details/OrderDetailsApp';
 import ParticipantNewApp from './container/production-project/general/participant/new/ParticipantNewApp';
 import ParticipantDetailsApp from './container/production-project/general/participant/details/ParticipantDetailsApp';
 import ParticipationTransferApp from './container/production-project/general/participant/details/transfer/ParticipationTransferApp';
@@ -165,6 +165,7 @@ const Routes = () => {
                 <Route path="financieel/:id/:type" component={FinancialApp} />
                 <Route path="financieel/:id/:type/:filter" component={FinancialApp} />
                 <Route path="order/nieuw/contact/:contactId" component={OrderNewApp} />
+                <Route path="order/:id" component={OrderDetailsApp} />
 
                 /* Campagnes */
                 <Route path="campagne/nieuw" component={CampaignNewApp} />

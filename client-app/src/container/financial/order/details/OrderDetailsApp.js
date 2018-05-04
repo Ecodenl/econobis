@@ -1,11 +1,11 @@
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
 
-import { fetchOrderDetails } from '../../../actions/order/OrderDetailsActions';
+import { fetchOrderDetails } from '../../../../actions/order/OrderDetailsActions';
 import OrderDetailsToolbar from './OrderDetailsToolbar';
 import OrderDetailsForm from './OrderDetailsForm';
-import Panel from '../../../components/panel/Panel';
-import PanelBody from '../../../components/panel/PanelBody';
+import Panel from '../../../../components/panel/Panel';
+import PanelBody from '../../../../components/panel/PanelBody';
 
 class OrderDetailsApp extends Component {
     constructor(props){

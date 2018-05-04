@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { browserHistory } from 'react-router';
 
-import ButtonIcon from '../../../components/button/ButtonIcon';
+import ButtonIcon from '../../../../components/button/ButtonIcon';
 import OrderDeleteItem from "./OrderDeleteItem";
 
 class OrderToolbar  extends Component {
@@ -27,14 +27,15 @@ class OrderToolbar  extends Component {
                         <ButtonIcon iconName={"glyphicon-trash"} onClickAction={this.toggleDelete}/>
                     </div>
                 </div>
-                <div className="col-md-4"><h4 className="text-center">Administratie: {this.props.name}</h4></div>
+                <div className="col-md-4"><h4 className="text-center">Order: {this.props.subject} / {this.props.number}</h4></div>
                 <div className="col-md-4"/>
                 {
                     this.state.showDelete &&
                     <OrderDeleteItem
                         closeDeleteItemModal={this.toggleDelete}
-                        name={this.props.name}
+                        subject={this.props.subject}
                         id={this.props.id}
+                        administrationId={this.props.administrationId}
                     />
                 }
             </div>
@@ -44,8 +45,10 @@ class OrderToolbar  extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        name: state.orderDetails.name,
+        subject: state.orderDetails.subject,
+        number: state.orderDetails.number,
         id: state.orderDetails.id,
+        administrationId: state.orderDetails.administrationId,
     };
 };
 

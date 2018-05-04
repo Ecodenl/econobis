@@ -11,7 +11,7 @@ import {setError} from "../../../../../actions/general/ErrorActions";
 import ParticipantProductionProjectDetailsAPI from '../../../../../api/participant-production-project/ParticipantProductionProjectDetailsAPI';
 import Panel from "../../../../../components/panel/Panel";
 import PanelBody from "../../../../../components/panel/PanelBody";
-import * as ibantools from "ibantools/build/ibantools";
+import * as ibantools from "ibantools";
 import ContactsAPI from "../../../../../api/contact/ContactsAPI";
 import ProductionProjectsAPI from "../../../../../api/production-project/ProductionProjectsAPI";
 import {connect} from "react-redux";

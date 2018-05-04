@@ -38,6 +38,7 @@ class OrderController extends ApiController
     public function show(Order $order)
     {
         $order->load([
+            'administration',
             'orderProducts.product',
             'contact',
             'createdBy',
@@ -68,9 +69,9 @@ class OrderController extends ApiController
             ->string('ibanAttn')->onEmpty(null)->whenMissing(null)->alias('iban_attn')->next()
             ->string('poNumber')->onEmpty(null)->whenMissing(null)->alias('po_number')->next()
             ->string('invoiceText')->onEmpty(null)->whenMissing(null)->alias('invoice_text')->next()
-            ->string('dateRequested')->validate('nullable|date')->onEmpty(null)->whenMissing(null)->alias('date_requested')->next()
-            ->string('dateStart')->validate('nullable|date')->onEmpty(null)->whenMissing(null)->alias('date_start')->next()
-            ->string('dateEnd')->validate('nullable|date')->onEmpty(null)->whenMissing(null)->alias('date_end')->next()
+            ->date('dateRequested')->validate('nullable|date')->onEmpty(null)->whenMissing(null)->alias('date_requested')->next()
+            ->date('dateStart')->validate('nullable|date')->onEmpty(null)->whenMissing(null)->alias('date_start')->next()
+            ->date('dateEnd')->validate('nullable|date')->onEmpty(null)->whenMissing(null)->alias('date_end')->next()
             ->get();
 
         $order = new Order($data);
@@ -86,8 +87,6 @@ class OrderController extends ApiController
         $this->authorize('manage', Order::class);
 
         $data = $input
-            ->integer('contactId')->validate('required|exists:contacts,id')->alias('contact_id')->next()
-            ->integer('administrationId')->validate('required|exists:administrations,id')->alias('administration_id')->next()
             ->string('statusId')->validate('required')->alias('status_id')->next()
             ->string('subject')->validate('required')->next()
             ->integer('emailTemplateId')->validate('nullable|exists:email_templates,id')->onEmpty(null)->whenMissing(null)->alias('email_template_id')->next()
@@ -99,16 +98,17 @@ class OrderController extends ApiController
             ->string('ibanAttn')->onEmpty(null)->whenMissing(null)->alias('iban_attn')->next()
             ->string('poNumber')->onEmpty(null)->whenMissing(null)->alias('po_number')->next()
             ->string('invoiceText')->onEmpty(null)->whenMissing(null)->alias('invoice_text')->next()
-            ->string('dateRequested')->validate('nullable|date')->onEmpty(null)->whenMissing(null)->alias('date_requested')->next()
-            ->string('dateStart')->validate('nullable|date')->onEmpty(null)->whenMissing(null)->alias('date_start')->next()
-            ->string('dateEnd')->validate('nullable|date')->onEmpty(null)->whenMissing(null)->alias('date_end')->next()
+            ->date('dateRequested')->validate('nullable|date')->onEmpty(null)->whenMissing(null)->alias('date_requested')->next()
+            ->date('dateStart')->validate('nullable|date')->onEmpty(null)->whenMissing(null)->alias('date_start')->next()
+            ->date('dateEnd')->validate('nullable|date')->onEmpty(null)->whenMissing(null)->alias('date_end')->next()
             ->get();
 
         $order = $order->fill($data);
 
         $order->save();
 
-        return $this->show($order);
+        //Validation sets string to date object. If we do ->fresh() we get the strings again(easier for front-end).
+        return $this->show($order->fresh());
     }
 
     public function destroy(Order $order)

@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\Order;
 
+use App\Http\Resources\Administration\FullAdministration;
 use App\Http\Resources\Contact\FullContact;
 use App\Http\Resources\EmailTemplate\FullEmailTemplate;
 use App\Http\Resources\EnumWithIdAndName\FullEnumWithIdAndName;
@@ -28,6 +29,9 @@ class FullOrder extends Resource
                 'contactId' => $this->contact_id,
                 'contact' => FullContact::make($this->whenLoaded('contact')),
 
+                'administrationId' => $this->administration_id,
+                'administration' => FullAdministration::make($this->whenLoaded('administration')),
+
                 'emailTemplateId' => $this->email_template_id,
                 'emailTemplate' => FullEmailTemplate::make($this->whenLoaded('emailTemplate')),
 
@@ -39,11 +43,12 @@ class FullOrder extends Resource
 
                 'totalPriceInclVat' => $this->total_price_incl_vat,
                 'poNumber' => $this->po_number,
+                'IBAN' => $this->IBAN,
+                'ibanAttn' => $this->iban_attn,
                 'invoiceText' => $this->invoice_text,
                 'dateRequested' => $this->date_requested,
                 'dateStart' => $this->date_start,
                 'dateEnd' => $this->date_end,
-
 
                 'collectionFrequencyId' => $this->collection_frequency_id,
                 'collectionFrequency' => FullEnumWithIdAndName::make($this->getCollectionFrequency()),

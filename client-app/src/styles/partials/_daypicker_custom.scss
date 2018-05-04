@@ -2,6 +2,10 @@
   z-index: 99;
 }
 
+.DataTableDateFilter>.DayPickerInput>span>.DayPickerInput-OverlayWrapper {
+  position: absolute;
+}
+
 .DayPicker-overflow {
   overflow: visible;
 }

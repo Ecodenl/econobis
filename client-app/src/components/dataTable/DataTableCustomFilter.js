@@ -6,6 +6,7 @@ import DataTableCustomFilterSelectDropdown from "./DataTableCustomFilterSelectDr
 import DataTableCustomFilterSelectDate from "./DataTableCustomFilterSelectDate";
 
 import moment from 'moment';
+import DataTableDateFilter from "./DataTableDateFilter";
 
 moment.locale('nl');
 
@@ -43,9 +44,8 @@ class DataTableCustomFilter extends Component {
         this.props.handleFilterChange(name, value, this.props.filterNumber);
     };
 
-    handleInputChangeDate = (date) => {
-        const formattedDate = (date ? moment(date).format('Y-MM-DD') : '');
-        this.props.handleFilterChange('data', formattedDate, this.props.filterNumber);
+    handleInputChangeDate = (value, name) => {
+        this.props.handleFilterChange('data', value, this.props.filterNumber);
     };
 
     render() {
@@ -120,15 +120,11 @@ class DataTableCustomFilter extends Component {
                 }
                 {this.state.type === 'date' &&
                 <td className="col-md-4">
-                    {/*<input*/}
-                        {/*className={'form-control input-sm'}*/}
-                        {/*type='text'*/}
-                        {/*id='data'*/}
-                        {/*name='data'*/}
-                        {/*value={this.props.filter.data}*/}
-                        {/*onChange={this.handleInputChange}*/}
-                        {/*placeholder={'yyyy-mm-dd'}*/}
-                    {/*/>*/}
+                    <DataTableDateFilter
+                        id='data'
+                        value={this.props.filter.data}
+                        onChangeAction={this.handleInputChangeDate}
+                    />
                 </td>
                 }
 

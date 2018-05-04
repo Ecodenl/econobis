@@ -10,15 +10,15 @@ namespace App\Http\Controllers\Api\Order;
 
 use App\Eco\Contact\Contact;
 use App\Eco\Order\Order;
+use App\Eco\Order\OrderProduct;
 use App\Helpers\Delete\DeleteHelper;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\RequestQueries\Order\Grid\RequestQuery;
-use App\Http\Resources\GenericResource;
-use App\Http\Resources\Order\OrderPeek;
 use App\Http\Resources\Order\FullOrder;
+use App\Http\Resources\Order\FullOrderProduct;
 use App\Http\Resources\Order\GridOrder;
-use App\OrderProduct;
+use App\Http\Resources\Order\OrderPeek;
 
 class OrderController extends ApiController
 {
@@ -27,7 +27,7 @@ class OrderController extends ApiController
     {
         $orders = $requestQuery->get();
 
-        $orders->load(['contact', 'orderProducts.product']);
+        $orders->load(['contact']);
 
         return GridOrder::collection($orders)
             ->additional(['meta' => [
@@ -39,7 +39,7 @@ class OrderController extends ApiController
     public function show(Order $order)
     {
         $order->load([
-            'administration',
+            'administration.products',
             'orderProducts.product',
             'contact',
             'createdBy',
@@ -126,18 +126,19 @@ class OrderController extends ApiController
         $data = $input
             ->string('productId')->validate('required|exists:products,id')->alias('product_id')->next()
             ->string('orderId')->validate('required|exists:orders,id')->alias('order_id')->next()
+            ->string('description')->onEmpty(null)->whenMissing(null)->next()
             ->integer('amount')->validate('required')->next()
-            ->integer('amountReduction')->onEmpty(null)->whenMissing(null)->alias('amount_reduction')->next()
-            ->integer('percentageReduction')->onEmpty(null)->whenMissing(null)->alias('percentage_reduction')->next()
-            ->date('dateStart')->alias('date_start')->next()
-            ->date('dateEnd')->alias('date_end')->next()
+            ->numeric('amountReduction')->onEmpty(null)->whenMissing(null)->alias('amount_reduction')->next()
+            ->numeric('percentageReduction')->onEmpty(null)->whenMissing(null)->alias('percentage_reduction')->next()
+            ->date('dateStart')->validate('required')->alias('date_start')->next()
+            ->date('dateEnd')->validate('required')->alias('date_end')->next()
             ->get();
 
         $orderProduct = new OrderProduct($data);
 
         $orderProduct->save();
 
-        return GenericResource::make($orderProduct);
+        return FullOrderProduct::make($orderProduct);
     }
 
     public function updateOrderProduct(RequestInput $input)
@@ -147,11 +148,12 @@ class OrderController extends ApiController
         $data = $input
             ->string('productId')->validate('required|exists:products,id')->alias('product_id')->next()
             ->string('orderId')->validate('required|exists:orders,id')->alias('order_id')->next()
+            ->string('description')->onEmpty(null)->whenMissing(null)->next()
             ->integer('amount')->validate('required')->next()
-            ->integer('amountReduction')->onEmpty(null)->whenMissing(null)->alias('amount_reduction')->next()
-            ->integer('percentageReduction')->onEmpty(null)->whenMissing(null)->alias('percentage_reduction')->next()
-            ->date('dateStart')->alias('date_start')->next()
-            ->date('dateEnd')->alias('date_end')->next()
+            ->numeric('amountReduction')->onEmpty(null)->whenMissing(null)->alias('amount_reduction')->next()
+            ->numeric('percentageReduction')->onEmpty(null)->whenMissing(null)->alias('percentage_reduction')->next()
+            ->date('dateStart')->validate('required')->alias('date_start')->next()
+            ->date('dateEnd')->validate('required')->alias('date_end')->next()
             ->get();
 
         $orderProduct = OrderProduct::where('product_id', $data['product_id'])->where('order_id', $data['order_id'])->get();
@@ -160,7 +162,7 @@ class OrderController extends ApiController
 
         $orderProduct->save();
 
-        return GenericResource::make($orderProduct);
+        return FullOrderProduct::make($orderProduct);
     }
 
     public function peek()

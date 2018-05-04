@@ -6,6 +6,7 @@ import OrderDetailsFormGeneral from './general/OrderDetailsFormGeneral';
 import moment from "moment/moment";
 import PanelDeletedItem from "../../../../components/panel/PanelDeletedItem";
 import OrderDetailsFormConclusion from "./conclusion/OrderDetailsFormConclusion";
+import OrderProductsForm from "./order-products/OrderProductsForm";
 moment.locale('nl');
 
 class OrderDetailsForm extends Component {
@@ -26,6 +27,7 @@ class OrderDetailsForm extends Component {
                     />
                     }
                     <OrderDetailsFormGeneral />
+                    <OrderProductsForm />
                     <OrderDetailsFormConclusion />
                 </div>
         );

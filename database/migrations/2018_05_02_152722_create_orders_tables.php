@@ -79,9 +79,10 @@ class CreateOrdersTables extends Migration
                 ->references('id')->on('orders')
                 ->onDelete('restrict');
 
+            $table->string('description');
             $table->integer('amount');
-            $table->integer('amount_reduction')->nullable();
-            $table->integer('percentage_reduction')->nullable();
+            $table->float('amount_reduction')->nullable();
+            $table->float('percentage_reduction')->nullable();
 
             $table->date('date_start');
             $table->date('date_end');

@@ -3,6 +3,7 @@
 namespace App\Http\Resources\Administration;
 
 use App\Http\Resources\GenericResource;
+use App\Http\Resources\Product\FullProduct;
 use App\Http\Resources\User\FullUser;
 use Illuminate\Http\Resources\Json\Resource;
 
@@ -46,6 +47,8 @@ class FullAdministration extends Resource
                 'createdBy' => FullUser::make($this->whenLoaded('createdBy')),
 
                 'users' => FullUser::collection($this->whenLoaded('users')),
+
+                'products' => FullProduct::collection($this->whenLoaded('products')),
 
                 'totalOrders' => $this->total_orders,
                 'totalOrdersConcepts' => $this->total_orders_concepts,

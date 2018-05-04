@@ -32,6 +32,8 @@ class FullOrder extends Resource
                 'administrationId' => $this->administration_id,
                 'administration' => FullAdministration::make($this->whenLoaded('administration')),
 
+                'orderProducts' => FullOrderProduct::collection($this->whenLoaded('orderProducts')),
+
                 'emailTemplateId' => $this->email_template_id,
                 'emailTemplate' => FullEmailTemplate::make($this->whenLoaded('emailTemplate')),
 

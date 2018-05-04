@@ -90,21 +90,7 @@ class Order extends Model
         $total = 0;
 
         foreach ($this->orderProducts as $orderProduct) {
-            $price = 0;
-            $price += ($orderProduct->amount * $orderProduct->product->price_incl_vat);
-
-            if($orderProduct->percentage_reduction){
-                if($orderProduct->percentage_reduction >= 100){
-                    return 0;
-                }
-                $price = ($price*(100 - $orderProduct->percentage_reduction / 100));
-            }
-
-            if($orderProduct->amount_reduction){
-                $price -= $orderProduct->amount_reduction;
-            }
-
-            $total += $price;
+            $total += $orderProduct->total_price_incl_vat_and_reduction;
         }
 
         return $total;

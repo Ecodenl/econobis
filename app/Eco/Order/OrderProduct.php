@@ -13,9 +13,15 @@ class OrderProduct extends Model
      *
      * @var array
      */
-    protected $guarded = [
-        'id'
-    ];
+    protected $guarded
+        = [
+            'id'
+        ];
+
+    protected $appends
+        = [
+            'total_price_incl_vat_and_reduction',
+        ];
 
     public function orders()
     {
@@ -27,4 +33,27 @@ class OrderProduct extends Model
         return $this->belongsTo(Product::class);
     }
 
+    public function getTotalPriceInclVatAndReductionAttribute()
+    {
+        $price = 0;
+
+
+        $price += ($this->amount
+            * $this->product->price_incl_vat);
+
+        if ($this->percentage_reduction) {
+            if ($this->percentage_reduction >= 100) {
+                return 0;
+            }
+            $price = ($price * ((100 - $this->percentage_reduction)
+                    / 100));
+        }
+
+        if ($this->amount_reduction) {
+            $price -= $this->amount_reduction;
+        }
+      
+        return $price;
+
+    }
 }

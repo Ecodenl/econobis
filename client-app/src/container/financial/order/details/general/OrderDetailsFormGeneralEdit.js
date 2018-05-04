@@ -12,13 +12,14 @@ import InputSelect from "../../../../../components/form/InputSelect";
 import EmailTemplateAPI from "../../../../../api/email-template/EmailTemplateAPI";
 import InputDate from "../../../../../components/form/InputDate";
 import InputReactSelect from "../../../../../components/form/InputReactSelect";
+import OrderDetailsAPI from "../../../../../api/order/OrderDetailsAPI";
 
 class OrderDetailsFormGeneralEdit extends Component {
     constructor(props) {
         super(props);
 
         const {
-            id, statusId, subject, emailTemplateId, emailTemplateReminderId, emailTemplateExhortationId, paymentTypeId, collectionFrequencyId, IBAN, ibanAttn,
+            id, contactId, statusId, subject, emailTemplateId, emailTemplateReminderId, emailTemplateExhortationId, paymentTypeId, collectionFrequencyId, IBAN, ibanAttn,
             poNumber, invoiceText, dateRequested, dateStart, dateEnd
         } = props.orderDetails;
 
@@ -53,7 +54,6 @@ class OrderDetailsFormGeneralEdit extends Component {
         };
 
         this.handleReactSelectChange = this.handleReactSelectChange.bind(this);
-
     };
 
     componentWillMount() {
@@ -157,6 +157,21 @@ class OrderDetailsFormGeneralEdit extends Component {
                                 label="Administratie"
                                 value={this.props.orderDetails.administration ? this.props.orderDetails.administration.name : ''}
                                 name={'administration'}
+                                readOnly={true}
+                            />
+                        </div>
+
+                        <div className="row">
+                            <InputText
+                                label="Contact persoon"
+                                value={this.props.contactPerson}
+                                name={'contactPerson'}
+                                readOnly={true}
+                            />
+                            <InputText
+                                label="Contact persoon email"
+                                value={this.props.contactEmail}
+                                name={'contactEmail'}
                                 readOnly={true}
                             />
                         </div>

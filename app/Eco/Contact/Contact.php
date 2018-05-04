@@ -234,4 +234,34 @@ class Contact extends Model
 
         return $addresses;
     }
+
+    //Return email based on priority
+    public function getOrderEmail()
+    {
+        $emailAddresses = $this->emailAddresses->reverse();
+
+        foreach($emailAddresses as $emailAddress) {
+            if ($emailAddress->type_id === 'administration' && $emailAddress->primary) {
+                return $emailAddress;
+            }
+        }
+
+        foreach($emailAddresses as $emailAddress) {
+            if ($emailAddress->type_id === 'administration') {
+                return $emailAddress;
+            }
+        }
+
+        foreach($emailAddresses as $emailAddress) {
+            if ($emailAddress->primary) {
+                return $emailAddress;
+            }
+        }
+
+        foreach($emailAddresses as $emailAddress) {
+            return $emailAddress;
+        }
+
+        return null;
+    }
 }

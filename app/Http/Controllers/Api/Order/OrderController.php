@@ -8,6 +8,7 @@
 
 namespace App\Http\Controllers\Api\Order;
 
+use App\Eco\Contact\Contact;
 use App\Eco\Order\Order;
 use App\Helpers\Delete\DeleteHelper;
 use App\Helpers\RequestInput\RequestInput;
@@ -166,4 +167,55 @@ class OrderController extends ApiController
     {
         return OrderPeek::collection(Order::whereNull('deleted_at')->get());
     }
+
+    public function getContactInfoForOrder(Contact $contact)
+    {
+        //Get email/name based on priority:
+        //1 - organisation - administration email
+        //2 - contact person administration + primary
+        //3 - contact person administration
+        //4 - contact person primary
+        //5 - contact person other
+        $contactInfo = [
+            'email' => 'Geen e-mail bekend',
+            'contactPerson' => $contact->full_name
+        ];
+
+        if($contact->isOrganisation()){
+            $email = $this->getOrganisationAdministrationEmailAddress($contact);
+
+            if (!$email && count($contact->contactPerson))
+            {
+                $contactInfo['email'] = $contact->contactPerson->contact->getOrderEmail() ? $contact->contactPerson->contact->getOrderEmail()->email : 'Geen e-mail bekend';
+                $contactInfo['contactPerson'] = $contact->contactPerson->contact->full_name;
+            }
+            else{
+                $contactInfo['email'] = $email->email;
+            }
+        }
+        else{
+            $contactInfo['email'] = $contact->getOrderEmail() ? $contact->getOrderEmail()->email : 'Geen e-mail bekend';
+        }
+
+        return $contactInfo;
+    }
+
+    protected function getOrganisationAdministrationEmailAddress(Contact $contact){
+        $emailAddresses = $contact->emailAddresses->reverse();
+
+        foreach($emailAddresses as $emailAddress) {
+            if ($emailAddress->type_id === 'administration' && $emailAddress->primary) {
+                return $emailAddress;
+            }
+        }
+
+        foreach($emailAddresses as $emailAddress) {
+            if ($emailAddress->type_id === 'administration') {
+                return $emailAddress;
+            }
+        }
+
+        return null;
+    }
+
 }

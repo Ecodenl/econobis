@@ -29,6 +29,16 @@ const OrderDetailsFormGeneralView = props => {
                     </div>
                     <div className="row">
                         <ViewText
+                            label="Contact persoon"
+                            value={props.contactPerson}
+                        />
+                        <ViewText
+                            label="Contact persoon email"
+                            value={props.contactEmail}
+                        />
+                    </div>
+                    <div className="row">
+                        <ViewText
                             label={"Status"}
                             value={status ? status.name : ''}
                         />

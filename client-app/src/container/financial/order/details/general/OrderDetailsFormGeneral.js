@@ -3,16 +3,31 @@ import {connect} from 'react-redux';
 
 import OrderDetailsFormGeneralEdit from './OrderDetailsFormGeneralEdit';
 import OrderDetailsFormGeneralView from './OrderDetailsFormGeneralView';
+import OrderDetailsAPI from "../../../../../api/order/OrderDetailsAPI";
+import EmailTemplateAPI from "../../../../../api/email-template/EmailTemplateAPI";
 
 class OrderDetailsFormGeneral extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
+            contactPerson: '',
+            contactEmail: '',
             showEdit: false,
             activeDiv: '',
         };
     }
+
+    componentWillMount() {
+        this.props.orderDetails.contactId &&
+        OrderDetailsAPI.fetchContactInfoForOrder(this.props.orderDetails.contactId).then((payload) => {
+            this.setState({
+                ...this.state,
+                contactPerson: payload.data.contactPerson,
+                contactEmail: payload.data.email,
+            });
+        });
+    };
 
     switchToEdit = () => {
         this.setState({
@@ -48,9 +63,17 @@ class OrderDetailsFormGeneral extends Component {
             <div className={this.state.activeDiv} onMouseEnter={() => this.onDivEnter()} onMouseLeave={() => this.onDivLeave()}>
                 {
                     this.state.showEdit && permissions.manageFinancial ?
-                        <OrderDetailsFormGeneralEdit switchToView={this.switchToView} />
+                        <OrderDetailsFormGeneralEdit
+                            switchToView={this.switchToView}
+                            contactPerson={this.state.contactPerson}
+                            contactEmail={this.state.contactEmail}
+                        />
                         :
-                        <OrderDetailsFormGeneralView switchToEdit={this.switchToEdit}/>
+                        <OrderDetailsFormGeneralView
+                            switchToEdit={this.switchToEdit}
+                            contactPerson={this.state.contactPerson}
+                            contactEmail={this.state.contactEmail}
+                        />
                 }
             </div>
         );

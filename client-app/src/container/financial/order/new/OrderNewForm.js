@@ -25,7 +25,8 @@ class OrderNewForm extends Component {
         this.state = {
             contacts: [],
             emailTemplates: [],
-            showExtraContactInfo: false,
+            contactPerson: '',
+            contactEmail: '',
             order: {
                 contactId: props.contactId || '',
                 administrationId: '',
@@ -58,7 +59,7 @@ class OrderNewForm extends Component {
         };
 
         this.handleReactSelectChange = this.handleReactSelectChange.bind(this);
-
+        this.handleReactSelectContactIdChange = this.handleReactSelectContactIdChange.bind(this);
     };
 
     componentWillMount() {
@@ -69,6 +70,15 @@ class OrderNewForm extends Component {
                     ...this.state.peekLoading,
                     contacts: false,
                 },
+            });
+        });
+
+        this.state.order.contactId &&
+        OrderDetailsAPI.fetchContactInfoForOrder(this.state.order.contactId).then((payload) => {
+            this.setState({
+                ...this.state,
+                contactPerson: payload.data.contactPerson,
+                contactEmail: payload.data.email,
             });
         });
 
@@ -103,6 +113,25 @@ class OrderNewForm extends Component {
             order: {
                 ...this.state.order,
                 [name]: value
+            },
+        });
+    };
+
+    handleReactSelectContactIdChange (selectedOption, name) {
+
+        OrderDetailsAPI.fetchContactInfoForOrder(selectedOption).then((payload) => {
+            this.setState({
+                ...this.state,
+                contactPerson: payload.data.contactPerson,
+                contactEmail: payload.data.email,
+            });
+        });
+
+        this.setState({
+            ...this.state,
+            order: {
+                ...this.state.order,
+                [name]: selectedOption
             },
         });
     };
@@ -175,7 +204,7 @@ class OrderNewForm extends Component {
                                 name={"contactId"}
                                 options={this.state.contacts}
                                 value={contactId}
-                                onChangeAction={this.handleReactSelectChange}
+                                onChangeAction={this.handleReactSelectContactIdChange}
                                 optionName={'fullName'}
                                 isLoading={this.state.peekLoading.contacts}
                                 multi={false}
@@ -190,6 +219,21 @@ class OrderNewForm extends Component {
                                 onChangeAction={this.handleInputChange}
                                 required={'required'}
                                 error={this.state.errors.administrationId}
+                            />
+                        </div>
+
+                        <div className="row">
+                            <InputText
+                                label="Contact persoon"
+                                value={this.state.contactPerson}
+                                name={'contactPerson'}
+                                readOnly={true}
+                            />
+                            <InputText
+                                label="Contact persoon email"
+                                value={this.state.contactEmail}
+                                name={'contactEmail'}
+                                readOnly={true}
                             />
                         </div>
 

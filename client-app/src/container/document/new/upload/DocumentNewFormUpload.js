@@ -53,19 +53,15 @@ class DocumentNewFormUpload extends Component {
                     />
                 </div>
                 <div className="row">
-                    <div className="form-group col-sm-12">
-                        <div className="row">
-                            <div className="col-sm-3">
-                                <label className="col-sm-12">Kies bestand</label>
-                            </div>
-                            <div className="col-sm-3">
-                                <input
-                                    type="text"
-                                    className="form-control input-sm col-sm-6"
-                                    value={attachment && attachment.name}
-                                    onClick={this.toggleUploadModal}
-                                />
-                            </div>
+                    <div className="form-group col-sm-6">
+                        <label className="col-sm-6">Kies bestand</label>
+                        <div className="col-sm-6">
+                            <input
+                                type="text"
+                                className="form-control input-sm col-sm-6"
+                                value={attachment && attachment.name}
+                                onClick={this.toggleUploadModal}
+                            />
                         </div>
                     </div>
                 </div>

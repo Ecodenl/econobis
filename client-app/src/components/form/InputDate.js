@@ -38,7 +38,7 @@ class InputDate extends Component {
     };
 
     render() {
-        const {label, className, size, id, value, required, readOnly, name} = this.props;
+        const {label, className, size, id, value, required, readOnly, name, error} = this.props;
 
         const formattedDate = value ? moment(value).format('L') : '';
 
@@ -59,7 +59,7 @@ class InputDate extends Component {
                             localeUtils: MomentLocaleUtils,
                         }}
                         inputProps={{
-                            className: `form-control input-sm ${className}` + (this.state.errorDateFormat ? ' has-error' : ''),
+                            className: `form-control input-sm ${className}` + (this.state.errorDateFormat || error ? ' has-error' : ''),
                             name: name,
                         }}
                         onBlur={this.validateDate}
@@ -80,6 +80,7 @@ InputDate.defaultProps = {
     required: '',
     readOnly: false,
     value: null,
+    error: false,
 };
 
 InputDate.propTypes = {
@@ -95,7 +96,8 @@ InputDate.propTypes = {
     ]),
     onChangeAction: PropTypes.func,
     required: PropTypes.string,
-    readOnly: PropTypes.bool
+    readOnly: PropTypes.bool,
+    error: PropTypes.bool
 };
 
 export default InputDate;

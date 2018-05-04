@@ -59,7 +59,7 @@ class TeamsList extends Component {
                         {
                             this.props.teams.length === 0 ? (
                                 <tr>
-                                    <td colSpan={11}>Geen teams gevonden!</td>
+                                    <td colSpan={3}>Geen teams gevonden!</td>
                                 </tr>
                             ) : (
                                 this.props.teams.map((team) => {

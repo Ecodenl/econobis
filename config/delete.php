@@ -5,6 +5,12 @@ return [
         'soft_delete' => true,
     ],
 
+    'Administration' => [
+        'soft_delete' => true,
+        'relations' =>
+            [['remove_pivots' => 'users']],
+    ],
+
     'Campaign' => [
         'soft_delete' => false,
         'relations' =>
@@ -48,6 +54,10 @@ return [
     ],
 
     'ParticipantTransaction' => [
+        'soft_delete' => true,
+    ],
+
+    'Product' => [
         'soft_delete' => true,
     ],
 

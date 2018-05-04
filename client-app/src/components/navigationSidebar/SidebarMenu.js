@@ -119,9 +119,33 @@ class SidebarMenu extends Component {
                         <NavText><Link className="sidebar-link" to="documenten">Documenten</Link></NavText>
                     </Nav>
                     }
+                    {this.props.permissions.manageFinancial && this.props.administrations.length > 0 &&
+                    <Nav id="financial">
+                        <NavIcon><SvgIcon size={20} icon={cog}/></NavIcon>
+                        <NavText> Financieel </NavText>
+                        {
+                            this.props.administrations.map((administration) => {
+                                return <Nav id={`administration/${administration.id}`}>
+                                    <NavText><Link className="sidebar-link"
+                                                   to={`financieel/${administration.id}`}>{administration.name}</Link></NavText>
+                                </Nav>
+                            })
+                        }
+                    </Nav>
+                    }
                     <Nav id="instellingen">
                         <NavIcon><SvgIcon size={20} icon={cog}/></NavIcon>
                         <NavText> Instellingen </NavText>
+                        {this.props.permissions.manageFinancial &&
+                        <Nav id="administration">
+                            <NavText><Link className="sidebar-link" to="administraties">Administraties</Link></NavText>
+                        </Nav>
+                        }
+                        {this.props.permissions.manageFinancial &&
+                        <Nav id="products">
+                            <NavText><Link className="sidebar-link" to="producten">Producten</Link></NavText>
+                        </Nav>
+                        }
                         {this.props.permissions.viewDocumentTemplate &&
                         <Nav id="documents">
                             <NavText><Link className="sidebar-link" to="document-templates">Document
@@ -161,6 +185,7 @@ class SidebarMenu extends Component {
 const mapStateToProps = (state) => {
     return {
         permissions: state.meDetails.permissions,
+        administrations: state.meDetails.administrations,
     }
 };
 

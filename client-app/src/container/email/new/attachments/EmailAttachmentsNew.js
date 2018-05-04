@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import Dropzone from 'react-dropzone';
+const Dropzone = require('react-dropzone').default;
 
 import Modal from '../../../../components/modal/Modal';
 

@@ -43,6 +43,10 @@ class SidebarMenuSmall extends Component {
                 {this.props.permissions.viewDocumentTemplate &&
                 <div className="sidebar-menu-small-item"><SvgIcon size={20} icon={documents}/></div>
                 }
+                {/* Administraties */}
+                {this.props.permissions.manageFinancial && this.props.administrations.length > 0 &&
+                <div className="sidebar-menu-small-item"><SvgIcon size={20} icon={cog}/></div>
+                }
                 {/* Instellingen */}
                 <div className="sidebar-menu-small-item"><SvgIcon size={20} icon={cog}/></div>
             </div>
@@ -54,6 +58,7 @@ class SidebarMenuSmall extends Component {
 const mapStateToProps = (state) => {
     return {
         permissions: state.meDetails.permissions,
+        administrations: state.meDetails.administrations,
     }
 };
 

@@ -36,6 +36,9 @@ use App\Eco\ParticipantProductionProject\ParticipantProductionProjectStatus;
 use App\Eco\ParticipantTransaction\ParticipantTransactionType;
 use App\Eco\PersonType\PersonType;
 use App\Eco\PhoneNumber\PhoneNumberType;
+use App\Eco\Product\ProductDuration;
+use App\Eco\Product\ProductInvoiceFrequency;
+use App\Eco\Product\ProductPaymentType;
 use App\Eco\ProductionProject\ProductionProjectRevenueCategory;
 use App\Eco\ProductionProject\ProductionProjectRevenueType;
 use App\Eco\ProductionProject\ProductionProjectStatus;
@@ -121,6 +124,9 @@ class SystemData extends Resource
             'productionProjectRevenueTypes' => GenericResource::collection(ProductionProjectRevenueType::all()),
             'productionProjectRevenueCategories' => GenericResource::collection(ProductionProjectRevenueCategory::all()),
             'versionNumber' => 'Versie: ' . config('app.version_major') . '.' . config('app.version_minor') . '.' . config('app.version_fix'),
+            'productDurations' => FullEnumWithIdAndName::collection(ProductDuration::collection()),
+            'productInvoiceFrequencies' => FullEnumWithIdAndName::collection(ProductInvoiceFrequency::collection()),
+            'productPaymentTypes' => FullEnumWithIdAndName::collection(ProductPaymentType::collection()),
         ];
     }
 }

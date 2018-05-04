@@ -79,6 +79,10 @@ class OrderNewForm extends Component {
                 ...this.state,
                 contactPerson: payload.data.contactPerson,
                 contactEmail: payload.data.email,
+                order: {
+                    ...this.state.order,
+                    IBAN: payload.data.iban
+                },
             });
         });
 
@@ -124,6 +128,10 @@ class OrderNewForm extends Component {
                 ...this.state,
                 contactPerson: payload.data.contactPerson,
                 contactEmail: payload.data.email,
+                order: {
+                    ...this.state.order,
+                    IBAN: payload.data.iban ? payload.data.iban : ''
+                },
             });
         });
 

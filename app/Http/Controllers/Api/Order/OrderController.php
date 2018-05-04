@@ -178,7 +178,8 @@ class OrderController extends ApiController
         //5 - contact person other
         $contactInfo = [
             'email' => 'Geen e-mail bekend',
-            'contactPerson' => $contact->full_name
+            'contactPerson' => $contact->full_name,
+            'iban' => $contact->iban
         ];
 
         if($contact->isOrganisation()){
@@ -188,6 +189,7 @@ class OrderController extends ApiController
             {
                 $contactInfo['email'] = $contact->contactPerson->contact->getOrderEmail() ? $contact->contactPerson->contact->getOrderEmail()->email : 'Geen e-mail bekend';
                 $contactInfo['contactPerson'] = $contact->contactPerson->contact->full_name;
+                $contactInfo['iban'] = $contact->contactPerson->contact->iban;
             }
             else{
                 $contactInfo['email'] = $email->email;

@@ -106,7 +106,7 @@ class TaskController extends Controller
             ->get();
 
         $task = new Task($data);
-        $task->created_by_id = Auth::id();
+
         if($task->finished){
             $task->date_finished = Carbon::today();
             $task->finished_by_id = Auth::id();

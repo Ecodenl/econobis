@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Dropzone from 'react-dropzone';
+const Dropzone = require('react-dropzone').default;
 
 import Modal from './Modal';
 

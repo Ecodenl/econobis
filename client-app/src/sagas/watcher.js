@@ -1,6 +1,8 @@
 import { takeLatest, takeEvery } from 'redux-saga/effects';
 
 import { fetchAuditTrailSaga } from './audit-trail/AuditTrailSaga';
+import { addAdministrationUserSaga, deleteAdministrationUserSaga, fetchAdministrationDetailsSaga, updateAdministrationDetailsSaga } from './administration/AdministrationDetailsSaga';
+import { deleteAdministrationSaga, fetchAdministrationsSaga } from './administration/AdministrationsSaga';
 import { fetchCampaignsSaga } from './campaign/CampaignsSaga';
 import { fetchCampaignSaga } from './campaign/CampaignDetailsSaga';
 import { fetchContactDetailsSaga, deleteAddressSaga, deletePhoneNumberSaga, deleteEmailAddressSaga, deleteContactNoteSaga, deleteContactEnergySupplierSaga } from './contact/ContactDetailsSaga';
@@ -51,6 +53,8 @@ import { fetchUserDetailsSaga, updateUserDetailsSaga } from './user/UserDetailsS
 import { fetchUserSaga } from './user/UsersSaga';
 import { meDetailsSaga } from './general/MeDetailsSaga';
 import { systemDataSaga } from './general/SystemDataSaga';
+import { addProductPriceHistorySaga, fetchProductDetailsSaga, updateProductDetailsSaga } from './product/ProductDetailsSaga';
+import { deleteProductSaga, fetchProductsSaga } from './product/ProductsSaga';
 
 export default function* watchSagas() {
     // General
@@ -59,6 +63,14 @@ export default function* watchSagas() {
     yield takeLatest('FETCH_USERS', fetchUserSaga);
     yield takeLatest('FETCH_USER_DETAILS', fetchUserDetailsSaga);
     yield takeLatest('UPDATE_USER', updateUserDetailsSaga);
+    // Administration
+    yield takeLatest('ADD_ADMINISTRATION_USER', addAdministrationUserSaga);
+    yield takeLatest('DELETE_ADMINISTRATION_USER', deleteAdministrationUserSaga);
+    yield takeLatest('FETCH_ADMINISTRATION_DETAILS', fetchAdministrationDetailsSaga);
+    yield takeLatest('UPDATE_ADMINISTRATION', updateAdministrationDetailsSaga);
+    yield takeLatest('DELETE_ADMINISTRATION', deleteAdministrationSaga);
+    yield takeLatest('FETCH_ADMINISTRATIONS', fetchAdministrationsSaga);
+
     // Audit trail
     yield takeLatest('FETCH_AUDIT_TRAIL', fetchAuditTrailSaga);
     // Campaign
@@ -145,4 +157,11 @@ export default function* watchSagas() {
     yield takeLatest('DELETE_TEAM', deleteTeamSaga);
     yield takeLatest('DELETE_TEAM_USER', deleteTeamUserSaga);
     yield takeLatest('UPDATE_TEAM', updateTeamDetailsSaga);
+
+    // Products
+    yield takeLatest('ADD_PRODUCT_PRICE_HISTORY', addProductPriceHistorySaga);
+    yield takeLatest('FETCH_PRODUCT_DETAILS', fetchProductDetailsSaga);
+    yield takeLatest('UPDATE_PRODUCT', updateProductDetailsSaga);
+    yield takeLatest('DELETE_PRODUCT', deleteProductSaga);
+    yield takeLatest('FETCH_PRODUCTS', fetchProductsSaga);
 }

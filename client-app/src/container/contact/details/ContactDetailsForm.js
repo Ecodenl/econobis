@@ -16,6 +16,7 @@ import ContactDetailsFormOccupations from "./occupations/ContactDetailsFormOccup
 import ContactDetailsFormContactEnergySupplier from "./contact-energy-suppliers/ContactDetailsFormContactEnergySupplier";
 import PanelDeletedItem from "../../../components/panel/PanelDeletedItem";
 import moment from "moment/moment";
+moment.locale('nl');
 
 class ContactDetailsForm extends Component {
     constructor(props){

@@ -3,6 +3,9 @@ import React from 'react';
 import { Router, Route, IndexRoute, hashHistory } from 'react-router';
 
 import AuditTrailListApp from './container/audit-trail/list/AuditTrailListApp';
+import AdministrationNewApp from './container/administration/new/AdministrationNewApp';
+import AdministrationDetailsApp from './container/administration/details/AdministrationDetailsApp';
+import AdministrationsListApp from './container/administration/list/AdministrationsListApp';
 import CalendarApp from './container/calendar/CalendarApp';
 import ConceptsInListApp from './container/email/concept-list/ConceptsInListApp';
 import ConceptApp from './container/email/concept/ConceptApp';
@@ -57,6 +60,9 @@ import ParticipantNewApp from './container/production-project/general/participan
 import ParticipantDetailsApp from './container/production-project/general/participant/details/ParticipantDetailsApp';
 import ParticipationTransferApp from './container/production-project/general/participant/details/transfer/ParticipationTransferApp';
 import PostalCodeLinkListApp from './container/postal-code-link/list/PostalCodeLinkListApp';
+import ProductsListApp from './container/product/list/ProductsListApp';
+import ProductNewApp from './container/product/new/ProductNewApp';
+import ProductDetailsApp from './container/product/details/ProductDetailsApp';
 import ProductionProjectsListApp from './container/production-project/list/ProductionProjectsListApp';
 import ProductionProjectDetailsApp from './container/production-project/details/ProductionProjectDetailsApp';
 import ProductionProjectGeneralApp from './container/production-project/general/ProductionProjectGeneralApp';
@@ -88,6 +94,11 @@ const Routes = () => {
             <Route path='wachtwoord-wijzig/:token' component={Reset}/>
             <Route path="/" component={ RequireAuth(Main) }>
                 <IndexRoute component={ DashboardApp } />
+
+                /* Administrations */
+                <Route path="administraties" component={AdministrationsListApp} />
+                <Route path="administratie/nieuw" component={AdministrationNewApp} />
+                <Route path="administratie/:id" component={AdministrationDetailsApp} />
 
                 /* Audit trail*/
                 <Route path="audit-trail" component={ AuditTrailListApp } />
@@ -180,6 +191,12 @@ const Routes = () => {
                 <Route path="kansen" component={OpportunitiesListApp} />
                 /* Postal code links */
                 <Route path="postcoderoos" component={PostalCodeLinkListApp} />
+
+                /* Product */
+                <Route path="producten" component={ProductsListApp} />
+                <Route path="product/nieuw" component={ProductNewApp} />
+                <Route path="product/:id" component={ProductDetailsApp} />
+
                 /* Production project */
                 <Route path="productie-project/nieuw" component={ProductionProjectNewApp} />
                 <Route path="productie-project/opbrengst/nieuw/:productionProjectId" component={ProductionProjectRevenueNewApp} />

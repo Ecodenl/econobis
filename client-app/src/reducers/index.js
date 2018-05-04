@@ -1,5 +1,7 @@
 import {combineReducers} from 'redux';
 
+import administrationsReducer from './administration/AdministrationsReducer';
+import administrationDetailsReducer from './administration/AdministrationDetailsReducer';
 import auditTrailReducer from './audit-trail/AuditTrailReducer';
 import authReducer from './general/AuthReducer';
 import blockUIReducer from './general/BlockUIReducer';
@@ -33,6 +35,8 @@ import opportunityDetailsReducer from './opportunity/OpportunityDetailsReducer';
 import participantProductionProjectDetailsReducer from './participant-production-project/ParticipantProductionProjectDetailsReducer';
 import participantsProductionProjectReducer from './participant-production-project/ParticipantsProductionProjectReducer';
 import PostalCodeLinkReducer from './postal-code-link/PostalCodeLinkReducer';
+import productDetailsReducer from './product/ProductDetailsReducer';
+import productsReducer from './product/ProductsReducer';
 import productionProjectsReducer from './production-project/ProductionProjectsReducer';
 import productionProjectDetailsReducer from './production-project/ProductionProjectDetailsReducer';
 import productionProjectRevenueDetailsReducer from './production-project/ProductionProjectRevenueDetailsReducer';
@@ -61,6 +65,10 @@ const rootReducer = combineReducers({
 
     //Audit trail
     auditTrail: auditTrailReducer,
+
+    //Administrations
+    administrations: administrationsReducer,
+    administrationDetails: administrationDetailsReducer,
 
     // Calendar
     calendar: calendarReducer,
@@ -99,6 +107,9 @@ const rootReducer = combineReducers({
     participantProductionProjectDetails: participantProductionProjectDetailsReducer,
     // Postal code links
     postalCodeLinks : PostalCodeLinkReducer,
+    // Products
+    products: productsReducer,
+    productDetails: productDetailsReducer,
     // Production project
     productionProjects: productionProjectsReducer,
     productionProjectDetails: productionProjectDetailsReducer,

@@ -294,5 +294,22 @@ Route::namespace('Api')
         Route::post('postal-code-link/{postalCodeLink}', 'PostalCodeLink\PostalCodeLinkController@update');
         Route::post('postal-code-link/{postalCodeLink}/delete', 'PostalCodeLink\PostalCodeLinkController@destroy');
 
+
+        Route::get('administration/grid', 'Administration\AdministrationController@grid');
+        Route::get('administration/peek', 'Administration\AdministrationController@peek');
+        Route::get('administration/{administration}', 'Administration\AdministrationController@show');
+        Route::post('administration', 'Administration\AdministrationController@store');
+        Route::post('administration/{administration}', 'Administration\AdministrationController@update');
+        Route::post('administration/{administration}/delete', 'Administration\AdministrationController@destroy');
+        Route::post('administration/{administration}/{user}/attach', 'Administration\AdministrationController@attachUser');
+        Route::post('administration/{administration}/{user}/detach', 'Administration\AdministrationController@detachUser');
+
+        Route::get('product/grid', 'Product\ProductController@grid');
+        Route::get('product/peek', 'Product\ProductController@peek');
+        Route::get('product/{product}', 'Product\ProductController@show');
+        Route::post('product', 'Product\ProductController@store');
+        Route::post('product/price-history', 'Product\ProductController@storePriceHistory');
+        Route::post('product/{product}', 'Product\ProductController@update');
+        Route::post('product/{product}/delete', 'Product\ProductController@destroy');
     }
 );

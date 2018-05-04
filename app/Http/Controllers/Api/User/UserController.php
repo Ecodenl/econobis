@@ -23,7 +23,7 @@ class UserController extends Controller
 
     public function show(User $user)
     {
-        $user->load(['lastNamePrefix', 'title']);
+        $user->load(['lastNamePrefix', 'title', 'administrations']);
         return FullUser::make($user);
     }
 

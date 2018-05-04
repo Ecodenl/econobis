@@ -9,6 +9,7 @@
 namespace App\Http\Resources\User;
 
 
+use App\Http\Resources\Administration\AdministrationPeek;
 use App\Http\Resources\LastNamePrefix\FullLastNamePrefix;
 use App\Http\Resources\Occupation\FullOccupation;
 use App\Http\Resources\Title\FullTitle;
@@ -36,6 +37,7 @@ class FullUser extends Resource
             'lastVisit' => $this->last_visit,
             'visitCount' => $this->visit_count,
             'active' => $this->active,
+            'administrations' => AdministrationPeek::collection($this->whenLoaded('administrations')),
             'createdAt' => $this->created_at,
             'updatedAt' => $this->updated_at,
             'permissions' => $this->getPermissions(),

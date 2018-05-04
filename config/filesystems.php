@@ -58,6 +58,11 @@ return [
             'root' => storage_path('app' . DIRECTORY_SEPARATOR . 'mails'),
         ],
 
+        'administrations' => [
+            'driver' => 'local',
+            'root' => storage_path('app' . DIRECTORY_SEPARATOR . 'administrations'),
+        ],
+
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),

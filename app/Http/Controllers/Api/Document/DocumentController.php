@@ -104,11 +104,12 @@ class DocumentController extends Controller
             $document->quotationRequest && $name .= str_replace(' ', '', $document->quotationRequest->organisation->contact->full_name) . '_';
             $document->productionProject && $name .= str_replace(' ', '', $document->productionProject->name) . '_';
             $document->participant && $name .= str_replace(' ', '', $document->participant->contact->full_name) . '_';
+            $document->order && $name .= str_replace(' ', '', $document->order->number) . '_';
 
             //max length name 25
             $name = substr($name, 0, 25);
 
-            $document->filename = $name . substr($document->getDocumentGroup()->name, 0, 1) . (Document::where('document_group', 'revenue')->count() + 1) . '_' .  $time->format('Ymd') . '.pdf';
+            $document->filename = $name . substr($document->getDocumentGroup()->name, 0, 1) . (Document::where('document_group', $document->getDocumentGroup())->count() + 1) . '_' .  $time->format('Ymd') . '.pdf';
             $document->save();
 
             $filePath = (storage_path('app' . DIRECTORY_SEPARATOR . 'documents/' . $document->filename));

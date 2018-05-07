@@ -87,10 +87,12 @@ class OrderProductsFormNew extends Component {
         const name = target.name;
 
         let price = 0;
+        let description = '';
 
         if (value) {
             let product = this.props.orderDetails.administration.products.filter((product) => product.id == value);
             price = product[0].priceInclVat;
+            description = product[0].invoiceText;
         }
 
         this.setState({
@@ -98,6 +100,7 @@ class OrderProductsFormNew extends Component {
             price: price,
             orderProduct: {
                 ...this.state.orderProduct,
+                description: description,
                 [name]: value
             },
             },

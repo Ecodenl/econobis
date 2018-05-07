@@ -95,6 +95,9 @@ class TemplateVariableHelper
             case 'Task':
                 return '';
                 break;
+            case 'Order':
+                return TemplateVariableHelper::getOrderVar($model, $varname);
+                break;
             default:
                 return '';
                 break;
@@ -476,6 +479,75 @@ class TemplateVariableHelper
         }
     }
 
+    public static function getOrderVar($model, $varname){
+        switch ($varname) {
+            case 'nummer':
+                return $model->number;
+                break;
+            case 'onderwerp':
+                return $model->subject;
+                break;
+            case 'iban':
+                return $model->iban;
+                break;
+            case 'prijs':
+                return $model->total_price_incl_vat;
+                break;
+            case 'prijs_per_jaar':
+                return $model->total_price_incl_vat_per_year;
+                break;
+            case 'datum_aangevraagd':
+                return $model->date_requested ? Carbon::parse($model->date_requested)->format('d/m/Y') : null;
+                break;
+            case 'datum_start':
+                return $model->date_start ? Carbon::parse($model->date_start)->format('d/m/Y') : null;
+                break;
+            case 'datum_eind':
+                return $model->date_end ? Carbon::parse($model->date_end)->format('d/m/Y') : null;
+                break;
+            case 'gemaakt_op':
+                return $model->created_at ? Carbon::parse($model->created_at)->format('d/m/Y') : null;
+                break;
+            case 'status':
+                return $model->getStatus()->name;
+                break;
+            case 'betaalwijze':
+                return $model->getPaymentType()->name;
+                break;
+            case 'incasso_frequentie':
+                return $model->getCollectionFrequency()->name;
+                break;
+            case 'contact_naam':
+                if($model->contact->type_id == 'person'){
+                    $prefix = optional($model->contact->person->lastNamePrefix)->name;
+                    return $prefix ? $model->contact->person->first_name . ' ' . $prefix . ' ' . $model->contact->person->last_name : $model->contact->person->first_name . ' ' . $model->contact->person->last_name;
+                }
+                elseif($model->type_id == 'organisation'){
+                    return $model->contact->full_name;
+                }
+                break;
+            case 'contact_voornaam':
+                if($model->contact->type_id == 'person'){
+                    return $model->contact->person->first_name;
+                }
+                elseif($model->contact->type_id == 'organisation'){
+                    return '';
+                }
+                break;
+            case 'contact_achternaam':
+                if($model->type_id == 'person'){
+                    $prefix = optional($model->contact->person->lastNamePrefix)->name;
+                    return $prefix ? $prefix . ' ' . $model->contact->person->last_name : $model->person->last_name;
+                }
+                elseif($model->contact->type_id == 'organisation'){
+                    return $model->contact->full_name;
+                }
+                break;
+            default:
+                return '';
+                break;
+        }
+    }
 
     static public function replaceTemplateTagVariable($base_html, $template_html, $free_text_1, $free_text_2){
 
@@ -504,7 +576,7 @@ class TemplateVariableHelper
 
     public static function replaceDocumentTemplateVariables(Document $document, $html){
         //load relations
-        $document->load('contact', 'contactGroup', 'opportunity', 'intake', 'sentBy', 'campaign', 'housingFile', 'quotationRequest', 'measure', 'task', 'productionProject', 'participant');
+        $document->load('contact', 'order', 'contactGroup', 'opportunity', 'intake', 'sentBy', 'campaign', 'housingFile', 'quotationRequest', 'measure', 'task', 'productionProject', 'participant');
 
         //Eerst alle {tabel_} vervangen
         $html = TemplateTableHelper::replaceTemplateTables($html, $document);
@@ -523,6 +595,7 @@ class TemplateVariableHelper
         $html = TemplateVariableHelper::replaceTemplateVariables($html, 'taak', $document->task);
         $html = TemplateVariableHelper::replaceTemplateVariables($html, 'productie_project', $document->productionProject);
         $html = TemplateVariableHelper::replaceTemplateVariables($html, 'participant', $document->participant);
+        $html = TemplateVariableHelper::replaceTemplateVariables($html, 'order', $document->order);
 
         //Als laatste verwijder alle niet bestaande tags
         $html = TemplateVariableHelper::stripRemainingVariableTags($html);

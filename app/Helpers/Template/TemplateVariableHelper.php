@@ -488,7 +488,7 @@ class TemplateVariableHelper
                 return $model->subject;
                 break;
             case 'iban':
-                return $model->iban;
+                return $model->IBAN;
                 break;
             case 'prijs':
                 return $model->total_price_incl_vat;
@@ -509,13 +509,13 @@ class TemplateVariableHelper
                 return $model->created_at ? Carbon::parse($model->created_at)->format('d/m/Y') : null;
                 break;
             case 'status':
-                return $model->getStatus()->name;
+                return $model->getStatus() ? $model->getStatus()->name : '';
                 break;
             case 'betaalwijze':
-                return $model->getPaymentType()->name;
+                return $model->getPaymentType() ? $model->getPaymentType()->name : '';
                 break;
             case 'incasso_frequentie':
-                return $model->getCollectionFrequency()->name;
+                return $model->getCollectionFrequency() ? $model->getCollectionFrequency()->name : '';
                 break;
             case 'contact_naam':
                 if($model->contact->type_id == 'person'){
@@ -535,9 +535,9 @@ class TemplateVariableHelper
                 }
                 break;
             case 'contact_achternaam':
-                if($model->type_id == 'person'){
+                if($model->contact->type_id == 'person'){
                     $prefix = optional($model->contact->person->lastNamePrefix)->name;
-                    return $prefix ? $prefix . ' ' . $model->contact->person->last_name : $model->person->last_name;
+                    return $prefix ? $prefix . ' ' . $model->contact->person->last_name : $model->contact->person->last_name;
                 }
                 elseif($model->contact->type_id == 'organisation'){
                     return $model->contact->full_name;

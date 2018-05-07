@@ -253,7 +253,6 @@ class OrderProductsFormNew extends Component {
                             />
                         </div>
 
-
                         <div className="pull-right btn-group" role="group">
                             <ButtonText buttonClassName={"btn-default"} buttonText={"Annuleren"}
                                         onClickAction={this.props.toggleShowNew}/>

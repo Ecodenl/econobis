@@ -1,18 +1,16 @@
 import React from 'react';
-import { connect } from 'react-redux';
 
 import InputText from '../../../../../components/form/InputText';
 import ButtonText from '../../../../../components/button/ButtonText';
-import InputSelect from "../../../../../components/form/InputSelect";
 import Panel from '../../../../../components/panel/Panel';
 import PanelBody from '../../../../../components/panel/PanelBody';
 import InputDate from "../../../../../components/form/InputDate";
 import moment from "moment/moment";
-import InputToggle from "../../../../../components/form/InputToggle";
+
 moment.locale('nl');
 
 const OrderProductsFormEdit = props => {
-    const {orderProductId, contactEnergySupplyTypeId, memberSince, eanElectricity, eanGas, contactEnergySupplyStatusId, switchDate, esNumber, isCurrentSupplier, createdAt, createdBy } = props.orderProduct;
+    const {product, description, amount, amountReduction, percentageReduction, dateStart, dateEnd} = props.orderProduct;
 
     return (
         <div>
@@ -20,93 +18,96 @@ const OrderProductsFormEdit = props => {
                 <Panel className={'panel-grey'}>
                     <PanelBody>
                         <div className="row">
-                            <InputSelect
-                                label={"Energieleverancier"}
-                                id="orderProductId"
-                                name={"orderProductId"}
-                                options={props.orderProducts}
-                                value={orderProductId}
+                            <InputText
+                                label={"Order nummer"}
+                                name={"order"}
+                                value={props.orderDetails ? props.orderDetails.number : ''}
                                 readOnly={true}
                             />
-                            <InputSelect
-                                label={"Type"}
-                                id="contactEnergySupplyTypeId"
-                                name={"contactEnergySupplyTypeId"}
-                                options={props.orderProductTypes}
-                                value={contactEnergySupplyTypeId}
+                            <InputText
+                                label={"Product"}
+                                name={"product"}
+                                value={product ? product.name : ''}
+                                readOnly={true}
+                            />
+                        </div>
+
+                        <div className="row">
+                            <InputText
+                                label={"Omschrijving"}
+                                id={"description"}
+                                name={"description"}
+                                value={description}
+                                onChangeAction={props.handleInputChange}
+                            />
+                            <InputText
+                                label={"Aantal"}
+                                type={'number'}
+                                id={"amount"}
+                                name={"amount"}
+                                value={amount}
+                                onChangeAction={props.handleInputChange}
+                                required={"required"}
+                                error={props.errors.amount}
+                            />
+                        </div>
+
+                        <div className="row">
+                            <InputText
+                                label={"Kortingspercentage"}
+                                type={'number'}
+                                id={"percentageReduction"}
+                                name={"percentageReduction"}
+                                value={percentageReduction}
+                                onChangeAction={props.handleInputChange}
+                            />
+                            <InputText
+                                label={"Bedrag"}
+                                name={"price"}
+                                value={'€' + props.orderProduct.product.priceInclVat.toLocaleString('nl', {
+                                    minimumFractionDigits: 2,
+                                    maximumFractionDigits: 2
+                                })}
+                                readOnly={true}
+                            />
+                        </div>
+
+                        <div className="row">
+                            <InputText
+                                label={"Kortingsbedrag"}
+                                type={'number'}
+                                id={"amountReduction"}
+                                name={"amountReduction"}
+                                value={amountReduction}
+                                onChangeAction={props.handleInputChange}
+                            />
+                            <InputText
+                                label={"Totaalbedrag"}
+                                name={"totalPrice"}
+                                value={'€' + props.totalPrice.toLocaleString('nl', {
+                                    minimumFractionDigits: 2,
+                                    maximumFractionDigits: 2
+                                })}
                                 readOnly={true}
                             />
                         </div>
 
                         <div className="row">
                             <InputDate
-                                label="Klant sinds"
-                                name="memberSince"
-                                value={memberSince ? memberSince : ''}
+                                label="Datum in"
+                                name="dateStart"
+                                value={dateStart}
                                 onChangeAction={props.handleInputChangeDate}
+                                required={"required"}
+                                error={props.errors.dateStart}
                             />
-                            <InputText
-                                label={"EAN electriciteit"}
-                                id={"eanElectricity"}
-                                name={"eanElectricity"}
-                                value={eanElectricity}
-                                onChangeAction={props.handleInputChange}
-                            />
-                        </div>
-
-                        <div className="row">
-                            <InputText
-                                label={"EAN gas"}
-                                id={"eanGas"}
-                                name={"eanGas"}
-                                value={eanGas}
-                                onChangeAction={props.handleInputChange}
-                            />
-                            <InputSelect
-                                label={"Overstap status"}
-                                id="contactEnergySupplyStatusId"
-                                name={"contactEnergySupplyStatusId"}
-                                options={props.orderProductStatus}
-                                value={contactEnergySupplyStatusId}
-                                onChangeAction={props.handleInputChange}
-                            />
-                        </div>
-
-                        <div className="row">
                             <InputDate
-                                label="Mogelijke overstap datum"
-                                name="switchDate"
-                                value={switchDate ? switchDate : ''}
+                                label="Datum uit"
+                                name="dateEnd"
+                                value={dateEnd}
                                 onChangeAction={props.handleInputChangeDate}
-                            />
-                            <InputText
-                                label={"Klantnummer"}
-                                name={"esNumber"}
-                                value={esNumber ? esNumber : ''}
-                                onChangeAction={props.handleInputChange}
-                            />
-                        </div>
-
-                        <div className="row">
-                            <InputText
-                                label={"Gemaakt op"}
-                                name={"createdAt"}
-                                value={createdAt ? moment(createdAt.date).format('L') : ''}
-                                readOnly={true}
-                            />
-                            <InputText
-                                label={"Gemaakt door"}
-                                name={"createdBy"}
-                                value={createdBy ? createdBy.fullName : ''}
-                                readOnly={true}
-                            />
-                        </div>
-                        <div className="row">
-                            <InputToggle
-                                label={"Is huidige leverancier"}
-                                name={"isCurrentSupplier"}
-                                value={isCurrentSupplier}
-                                onChangeAction={props.handleInputChange}
+                                required={"required"}
+                                error={props.errors.dateEnd}
                             />
                         </div>
 
@@ -121,12 +122,4 @@ const OrderProductsFormEdit = props => {
     );
 };
 
-const mapStateToProps = (state) => {
-    return {
-        orderProducts: state.systemData.orderProducts,
-        orderProductTypes: state.systemData.orderProductTypes,
-        orderProductStatus: state.systemData.orderProductStatus,
-    };
-};
-
-export default connect(mapStateToProps, null)(OrderProductsFormEdit);
+export default OrderProductsFormEdit;

@@ -32,7 +32,7 @@ class OrdersListItem extends Component {
     };
 
     render() {
-        const { id, number, dateRequested, subject, contact, totalPriceInclVat, paymentType, status } = this.props;
+        const { id, number, dateRequested, subject, contact, totalPriceInclVatPerYear, paymentType, status } = this.props;
 
         return (
             <tr className={this.state.highlightRow} onDoubleClick={() => this.openItem(id)} onMouseEnter={() => this.onRowEnter()} onMouseLeave={() => this.onRowLeave()}>
@@ -40,7 +40,7 @@ class OrdersListItem extends Component {
                 <td>{ dateRequested ? moment(dateRequested).format('DD-MM-Y') : ''}</td>
                 <td>{subject ? subject : ''}</td>
                 <td>{contact ? contact.fullName : ''}</td>
-                <td>{'€' + totalPriceInclVat.toLocaleString('nl',{ minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                <td>{'€' + totalPriceInclVatPerYear.toLocaleString('nl',{ minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
                 <td>{paymentType ? paymentType.name : ''}</td>
                 <td>{status ? status.name : ''}</td>
                 <td>

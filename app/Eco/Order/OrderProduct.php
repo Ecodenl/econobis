@@ -21,6 +21,7 @@ class OrderProduct extends Model
     protected $appends
         = [
             'total_price_incl_vat_and_reduction',
+            'total_price_incl_vat_and_reduction_per_year',
         ];
 
     public function orders()
@@ -37,7 +38,6 @@ class OrderProduct extends Model
     {
         $price = 0;
 
-
         $price += ($this->amount
             * $this->product->price_incl_vat);
 
@@ -52,8 +52,21 @@ class OrderProduct extends Model
         if ($this->amount_reduction) {
             $price -= $this->amount_reduction;
         }
-      
+
         return $price;
 
+    }
+
+    public function getTotalPriceInclVatAndReductionPerYearAttribute()
+    {
+        switch ($this->product->invoice_frequency_id){
+            case 'monthly':
+                return ($this->total_price_incl_vat_and_reduction * 12);
+            case 'quarterly':
+                return ($this->total_price_incl_vat_and_reduction * 4);
+            default:
+                return $this->total_price_incl_vat_and_reduction;
+
+        }
     }
 }

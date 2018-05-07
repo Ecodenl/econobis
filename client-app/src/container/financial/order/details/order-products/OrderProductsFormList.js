@@ -7,12 +7,14 @@ const OrderProductsFormList = props => {
     return (
         <div>
             <div className="row border header">
-                <div className="col-sm-2">Productcode</div>
-                <div className="col-sm-3">Omschrijving</div>
+                <div className="col-sm-1">Productcode</div>
+                <div className="col-sm-2">Omschrijving</div>
                 <div className="col-sm-1">Aantal</div>
                 <div className="col-sm-1">Prijs incl. BTW</div>
-                <div className="col-sm-2">Datum in</div>
-                <div className="col-sm-2">Datum uit</div>
+                <div className="col-sm-2">Factuur frequentie</div>
+                <div className="col-sm-2">Prijs incl. BTW/jaar</div>
+                <div className="col-sm-1">Datum in</div>
+                <div className="col-sm-1">Datum uit</div>
                 <div className="col-sm-1"></div>
             </div>
             {

@@ -6,6 +6,7 @@ import {fetchOrderDetails} from '../../../../../actions/order/OrderDetailsAction
 import OrderProductsFormView from './OrderProductsFormView';
 import OrderProductsFormEdit from './OrderProductsFormEdit';
 import {isEqual} from "lodash";
+import validator from "validator";
 
 class OrderProductsFormItem extends Component {
     constructor(props) {
@@ -15,8 +16,14 @@ class OrderProductsFormItem extends Component {
             showActionButtons: false,
             highlightLine: '',
             showEdit: false,
+            totalPrice: props.orderProduct.totalPriceInclVatAndReduction,
             orderProduct: {
                 ...props.orderProduct,
+            },
+            errors: {
+                amount: false,
+                dateStart: false,
+                dateEnd: false,
             },
         };
 
@@ -71,11 +78,29 @@ class OrderProductsFormItem extends Component {
         const name = target.name;
 
         this.setState({
-            ...this.state,
-            orderProduct: {
-                ...this.state.orderProduct,
-                [name]: value
+                ...this.state,
+                orderProduct: {
+                    ...this.state.orderProduct,
+                    [name]: value
+                },
+
             },
+            this.updatePrice
+        );
+
+    };
+
+    updatePrice = () => {
+        let price = validator.isFloat(this.props.orderProduct.product.priceInclVat + '') ? this.props.orderProduct.product.priceInclVat : 0;
+        let amount = validator.isFloat(this.state.orderProduct.amount + '') ? this.state.orderProduct.amount : 0;
+        let percentageReduction = validator.isFloat(this.state.orderProduct.percentageReduction + '') ? this.state.orderProduct.percentageReduction : 0;
+        let amountReduction = validator.isFloat(this.state.orderProduct.amountReduction + '') ? this.state.orderProduct.amountReduction : 0;
+
+        let totalPrice = ((price * amount) * ((100 - percentageReduction) / 100)) - amountReduction;
+
+        this.setState({
+            ...this.state,
+            totalPrice: totalPrice,
         });
     };
 
@@ -92,10 +117,35 @@ class OrderProductsFormItem extends Component {
     handleSubmit = event => {
         event.preventDefault();
 
+        let errors = {};
+        let hasErrors = false;
+
         const {orderProduct} = this.state;
 
+        if (validator.isEmpty(orderProduct.amount + '')) {
+            errors.amount = true;
+            hasErrors = true;
+        }
+        ;
+
+        if (validator.isEmpty(orderProduct.dateStart + '')) {
+            errors.dateStart = true;
+            hasErrors = true;
+        }
+        ;
+
+        if (validator.isEmpty(orderProduct.dateEnd + '')) {
+            errors.dateEnd = true;
+            hasErrors = true;
+        }
+        ;
+
+        this.setState({...this.state, errors: errors});
+
+        // If no errors send form
+        !hasErrors &&
         OrderDetailsAPI.updateOrderProduct(orderProduct).then((payload) => {
-            this.props.fetchOrderDetails(payload.orderId);
+            this.props.fetchOrderDetails(this.state.orderProduct.orderId);
             this.closeEdit();
         });
     };
@@ -115,6 +165,9 @@ class OrderProductsFormItem extends Component {
                 {
                     this.state.showEdit && this.props.permissions.manageFinancial &&
                     <OrderProductsFormEdit
+                        orderDetails={this.props.orderDetails}
+                        errors={this.state.errors}
+                        totalPrice={this.state.totalPrice}
                         orderProduct={this.state.orderProduct}
                         handleInputChange={this.handleInputChange}
                         handleInputChangeDate={this.handleInputChangeDate}
@@ -129,7 +182,8 @@ class OrderProductsFormItem extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        permissions: state.meDetails.permissions
+        permissions: state.meDetails.permissions,
+        orderDetails: state.orderDetails
     }
 };
 

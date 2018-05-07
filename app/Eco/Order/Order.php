@@ -9,6 +9,7 @@ use App\Eco\User\User;
 use App\Http\Traits\Encryptable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Carbon;
 use Venturecraft\Revisionable\RevisionableTrait;
 
 class Order extends Model
@@ -24,6 +25,7 @@ class Order extends Model
     protected $appends
         = [
             'total_price_incl_vat',
+            'total_price_incl_vat_per_year',
         ];
 
     //Dont boot softdelete scopes. We handle this ourselves
@@ -34,7 +36,7 @@ class Order extends Model
 
     public function orderProducts()
     {
-        return $this->hasMany(OrderProduct::class);
+        return $this->hasMany(OrderProduct::class)->orderBy('date_start');
     }
 
     public function administration()
@@ -90,7 +92,22 @@ class Order extends Model
         $total = 0;
 
         foreach ($this->orderProducts as $orderProduct) {
-            $total += $orderProduct->total_price_incl_vat_and_reduction;
+            if(Carbon::parse($orderProduct->date_start)->lt(Carbon::today()) && Carbon::parse($orderProduct->date_end)->gt(Carbon::today())) {
+                $total += $orderProduct->total_price_incl_vat_and_reduction;
+            }
+        }
+
+        return $total;
+    }
+
+    public function getTotalPriceInclVatPerYearAttribute()
+    {
+        $total = 0;
+
+        foreach ($this->orderProducts as $orderProduct) {
+            if(Carbon::parse($orderProduct->date_start)->lt(Carbon::today()) && Carbon::parse($orderProduct->date_end)->gt(Carbon::today())) {
+                $total += $orderProduct->total_price_incl_vat_and_reduction_per_year;
+            }
         }
 
         return $total;

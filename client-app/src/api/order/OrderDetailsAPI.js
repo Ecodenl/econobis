@@ -70,7 +70,7 @@ export default {
     },
 
     updateOrderProduct: (orderProduct) => {
-        const requestUrl = `${URL_ORDER}/order-product/update`;
+        const requestUrl = `${URL_ORDER}/order-product/${orderProduct.id}/update`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 

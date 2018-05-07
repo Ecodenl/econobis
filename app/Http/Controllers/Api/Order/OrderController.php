@@ -141,7 +141,7 @@ class OrderController extends ApiController
         return FullOrderProduct::make($orderProduct);
     }
 
-    public function updateOrderProduct(RequestInput $input)
+    public function updateOrderProduct(RequestInput $input, OrderProduct $orderProduct)
     {
         $this->authorize('manage', Order::class);
 
@@ -155,8 +155,6 @@ class OrderController extends ApiController
             ->date('dateStart')->validate('required')->alias('date_start')->next()
             ->date('dateEnd')->validate('required')->alias('date_end')->next()
             ->get();
-
-        $orderProduct = OrderProduct::where('product_id', $data['product_id'])->where('order_id', $data['order_id'])->get();
 
         $orderProduct->fill($data);
 
@@ -181,7 +179,8 @@ class OrderController extends ApiController
         $contactInfo = [
             'email' => 'Geen e-mail bekend',
             'contactPerson' => $contact->full_name,
-            'iban' => $contact->iban
+            'iban' => $contact->iban,
+            'ibanAttn' => $contact->iban_attn
         ];
 
         if($contact->isOrganisation()){
@@ -192,6 +191,7 @@ class OrderController extends ApiController
                 $contactInfo['email'] = $contact->contactPerson->contact->getOrderEmail() ? $contact->contactPerson->contact->getOrderEmail()->email : 'Geen e-mail bekend';
                 $contactInfo['contactPerson'] = $contact->contactPerson->contact->full_name;
                 $contactInfo['iban'] = $contact->contactPerson->contact->iban;
+                $contactInfo['ibanAttn'] = $contact->contactPerson->contact->iban_attn;
             }
             else{
                 $contactInfo['email'] = $email->email;

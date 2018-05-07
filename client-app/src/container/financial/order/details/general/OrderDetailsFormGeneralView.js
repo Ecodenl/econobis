@@ -9,7 +9,7 @@ import moment from "moment/moment";
 const OrderDetailsFormGeneralView = props => {
 
     const { contact, administration, status, subject, emailTemplate, emailTemplateReminder, emailTemplateExhortation, paymentType, collectionFrequency, IBAN, ibanAttn,
-        poNumber, invoiceText, dateRequested, dateStart, dateEnd, totalPriceInclVat } = props.orderDetails;
+        poNumber, invoiceText, dateRequested, dateStart, dateEnd, totalPriceInclVatPerYear } = props.orderDetails;
 
     return (
         <div onClick={props.switchToEdit}>
@@ -114,8 +114,8 @@ const OrderDetailsFormGeneralView = props => {
                             value={ dateStart ? moment(dateStart).format('DD-MM-Y') : ''}
                         />
                         <ViewText
-                            label={"Totaal bedrag incl. BTW"}
-                            value={"€" + totalPriceInclVat.toLocaleString('nl',{ minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                            label={"Totaal bedrag incl. BTW per jaar"}
+                            value={"€" + totalPriceInclVatPerYear.toLocaleString('nl',{ minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                         />
                     </div>
 

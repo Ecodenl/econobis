@@ -318,7 +318,7 @@ Route::namespace('Api')
         Route::get('order/{contact}/contact-info-for-order', 'Order\OrderController@getContactInfoForOrder');
         Route::post('order', 'Order\OrderController@store');
         Route::post('order/order-product', 'Order\OrderController@storeOrderProduct');
-        Route::post('order/order-product/update', 'Order\OrderController@updateOrderProduct');
+        Route::post('order/order-product/{orderProduct}/update', 'Order\OrderController@updateOrderProduct');
         Route::post('order/{order}', 'Order\OrderController@update');
         Route::post('order/{order}/delete', 'Order\OrderController@destroy');
     }

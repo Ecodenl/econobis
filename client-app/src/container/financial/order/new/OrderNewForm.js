@@ -81,7 +81,8 @@ class OrderNewForm extends Component {
                 contactEmail: payload.data.email,
                 order: {
                     ...this.state.order,
-                    IBAN: payload.data.iban
+                    IBAN: payload.data.iban,
+                    iban_attn: payload.data.ibanAttn ? payload.data.ibanAttn : ''
                 },
             });
         });
@@ -130,7 +131,8 @@ class OrderNewForm extends Component {
                 contactEmail: payload.data.email,
                 order: {
                     ...this.state.order,
-                    IBAN: payload.data.iban ? payload.data.iban : ''
+                    IBAN: payload.data.iban ? payload.data.iban : '',
+                    iban_attn: payload.data.ibanAttn ? payload.data.ibanAttn : ''
                 },
             });
         });

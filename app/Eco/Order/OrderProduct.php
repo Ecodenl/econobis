@@ -4,9 +4,12 @@ namespace App\Eco\Order;
 
 use App\Eco\Product\Product;
 use Illuminate\Database\Eloquent\Model;
+use Venturecraft\Revisionable\RevisionableTrait;
 
 class OrderProduct extends Model
 {
+    use RevisionableTrait;
+
     protected $table = 'order_product';
     /**
      * The attributes that are not mass assignable.

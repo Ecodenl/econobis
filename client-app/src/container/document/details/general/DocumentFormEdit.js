@@ -20,12 +20,13 @@ import CampaignAPI from "../../../../api/campaign/CampaignsAPI";
 import QuotationRequestsAPI from "../../../../api/quotation-request/QuotationRequestsAPI";
 import ParticipantsProductionProjectAPI from "../../../../api/participant-production-project/ParticipantsProductionProjectAPI";
 import ProductionProjectsAPI from "../../../../api/production-project/ProductionProjectsAPI";
+import OrdersAPI from "../../../../api/order/OrdersAPI";
 
-class DocumentDetailsAPIFormEdit extends Component {
+class DocumentFormEdit extends Component {
     constructor(props) {
         super(props);
 
-        const {id, productionProjectId, participantId, contactId, contactGroupId, intakeId, opportunityId, campaignId, housingFileId, quotationRequestId, measureId, taskId, documentType, description, documentGroup, filename} = props.documentDetails;
+        const {id, orderId, productionProjectId, participantId, contactId, contactGroupId, intakeId, opportunityId, campaignId, housingFileId, quotationRequestId, measureId, taskId, documentType, description, documentGroup, filename} = props.documentDetails;
 
         this.state = {
             contacts: [],
@@ -39,6 +40,7 @@ class DocumentDetailsAPIFormEdit extends Component {
             tasks: [],
             participants: [],
             productionProjects: [],
+            orders: [],
             document: {
                 id: id,
                 contactId: contactId || '',
@@ -52,6 +54,7 @@ class DocumentDetailsAPIFormEdit extends Component {
                 taskId: taskId || '',
                 productionProjectId: productionProjectId || '',
                 participantId: participantId || '',
+                orderId: orderId || '',
                 documentType: documentType && documentType.id,
                 description: description,
                 documentGroup: documentGroup && documentGroup.id
@@ -110,6 +113,10 @@ class DocumentDetailsAPIFormEdit extends Component {
         ParticipantsProductionProjectAPI.peekParticipantsProductionProjects().then((payload) => {
             this.setState({ participants: payload });
         });
+
+        OrdersAPI.peekOrders().then((payload) => {
+            this.setState({ orders: payload });
+        });
     };
 
     handleInputChange(event) {
@@ -134,7 +141,7 @@ class DocumentDetailsAPIFormEdit extends Component {
         let errors = {};
         let hasErrors = false;
 
-        if(validator.isEmpty(document.contactId + '') && validator.isEmpty(document.contactGroupId + '') && validator.isEmpty(document.intakeId + '') && validator.isEmpty(document.opportunityId + '') && validator.isEmpty(document.participantId + '') && validator.isEmpty(document.productionProjectId + '')){
+        if(validator.isEmpty(document.contactId + '') && validator.isEmpty(document.contactGroupId + '') && validator.isEmpty(document.intakeId + '') && validator.isEmpty(document.opportunityId + '') && validator.isEmpty(document.orderId + '') && validator.isEmpty(document.participantId + '') && validator.isEmpty(document.productionProjectId + '')){
             errors.docLinkedAtAny = true;
             hasErrors = true;
         };
@@ -150,9 +157,9 @@ class DocumentDetailsAPIFormEdit extends Component {
     };
 
     render() {
-        const { document, errors, contacts, contactGroups, intakes, opportunities, campaigns, housingFiles, quotationRequests, measures, tasks, productionProjects, participants } = this.state;
-        const { contactId, contactGroupId, intakeId, opportunityId, campaignId, housingFileId, quotationRequestId, measureId, taskId, documentType, description, participantId, productionProjectId } = document;
-        const oneOfFieldRequired = contactId === '' && contactGroupId === '' && intakeId === '' && opportunityId === '' && taskId === '' && quotationRequestId === '' && housingFileId === '' && participantId === '' && productionProjectId === '';
+        const { document, errors, orders, contacts, contactGroups, intakes, opportunities, campaigns, housingFiles, quotationRequests, measures, tasks, productionProjects, participants } = this.state;
+        const { orderId, contactId, contactGroupId, intakeId, opportunityId, campaignId, housingFileId, quotationRequestId, measureId, taskId, documentType, description, participantId, productionProjectId } = document;
+        const oneOfFieldRequired = contactId === '' && orderId === '' && contactGroupId === '' && intakeId === '' && opportunityId === '' && taskId === '' && quotationRequestId === '' && housingFileId === '' && participantId === '' && productionProjectId === '';
 
         return (
             <div>
@@ -256,6 +263,19 @@ class DocumentDetailsAPIFormEdit extends Component {
                             error={errors.docLinkedAtAny}
                         />
                     </div>
+
+                    <div className="row">
+                        <InputSelect
+                            label="Order"
+                            name={"orderId"}
+                            value={orderId}
+                            options={orders}
+                            onChangeAction={this.handleInputChange}
+                            required={oneOfFieldRequired && "required"}
+                            error={errors.docLinkedAtAny}
+                        />
+                    </div>
+
                     {documentType === 'upload' &&
                     <div className="row">
                         <InputSelect
@@ -341,4 +361,4 @@ const mapStateToProps = (state) => {
     }
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(DocumentDetailsAPIFormEdit);
+export default connect(mapStateToProps, mapDispatchToProps)(DocumentFormEdit);

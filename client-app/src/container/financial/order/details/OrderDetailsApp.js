@@ -6,6 +6,7 @@ import OrderDetailsToolbar from './OrderDetailsToolbar';
 import OrderDetailsForm from './OrderDetailsForm';
 import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
+import OrderDetailsHarmonica from "./OrderDetailsHarmonica";
 
 class OrderDetailsApp extends Component {
     constructor(props){
@@ -32,7 +33,11 @@ class OrderDetailsApp extends Component {
                         <OrderDetailsForm />
                     </div>
                 </div>
-                <div className="col-md-3" />
+                <Panel className="col-md-3">
+                    <PanelBody>
+                        <OrderDetailsHarmonica/>
+                    </PanelBody>
+                </Panel>
             </div>
         )
     }

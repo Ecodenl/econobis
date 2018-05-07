@@ -156,6 +156,7 @@ const TaskNewForm = props => {
                             campaigns={props.campaigns}
                             productionProjects={props.productionProjects}
                             participants={props.participants}
+                            orders={props.orders}
                             handleReactSelectChange={props.handleReactSelectChange}
                             peekLoading={props.peekLoading}
                         />

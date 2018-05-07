@@ -17,6 +17,7 @@ import OpportunitiesAPI from "../../../api/opportunity/OpportunitiesAPI";
 import HousingFilesAPI from "../../../api/housing-file/HousingFilesAPI";
 import ProductionProjectsAPI from "../../../api/production-project/ProductionProjectsAPI";
 import ParticipantsProductionProjectAPI from "../../../api/participant-production-project/ParticipantsProductionProjectAPI";
+import OrdersAPI from "../../../api/order/OrdersAPI";
 
 class TaskNewApp extends Component {
     constructor(props) {
@@ -31,6 +32,7 @@ class TaskNewApp extends Component {
             housingFiles: [],
             productionProjects: [],
             participants: [],
+            orders: [],
             task: {
                 id: '',
                 note: '',
@@ -43,6 +45,7 @@ class TaskNewApp extends Component {
                 housingFileId: '',
                 productionProjectId: '',
                 participantId: '',
+                orderId: '',
                 datePlannedStart: '',
                 datePlannedFinish: '',
                 startTimePlanned: '',
@@ -66,6 +69,7 @@ class TaskNewApp extends Component {
                 housingFiles: true,
                 productionProjects: true,
                 participants: true,
+                orders: true,
             },
         };
 
@@ -162,6 +166,16 @@ class TaskNewApp extends Component {
                 },
             });
         });
+
+        OrdersAPI.peekOrders().then((payload) => {
+            this.setState({
+                orders: payload,
+                peekLoading: {
+                    ...this.state.peekLoading,
+                    orders: false,
+                },
+            });
+        });
     };
 
     componentWillReceiveProps(nextProps) {
@@ -202,6 +216,7 @@ class TaskNewApp extends Component {
                         opportunityId: '',
                         productionProjectId: params.productionProjectId,
                         participantId: params.participantId,
+                        orderId: '',
                     }
                 });
             }
@@ -220,6 +235,7 @@ class TaskNewApp extends Component {
                                 opportunityId: '',
                                 productionProjectId: '',
                                 participantId: '',
+                                orderId: '',
                             }
                         });
                         break;
@@ -236,6 +252,7 @@ class TaskNewApp extends Component {
                                 opportunityId: '',
                                 productionProjectId: '',
                                 participantId: '',
+                                orderId: '',
                             }
                         });
                         break;
@@ -252,6 +269,7 @@ class TaskNewApp extends Component {
                                 opportunityId: '',
                                 productionProjectId: '',
                                 participantId: '',
+                                orderId: '',
                             }
                         });
                         break;
@@ -268,6 +286,7 @@ class TaskNewApp extends Component {
                                 opportunityId: params.id,
                                 productionProjectId: '',
                                 participantId: '',
+                                orderId: '',
                             }
                         });
                         break;
@@ -284,6 +303,7 @@ class TaskNewApp extends Component {
                                 opportunityId: '',
                                 productionProjectId: '',
                                 participantId: '',
+                                orderId: '',
                             }
                         });
                         break;
@@ -300,6 +320,7 @@ class TaskNewApp extends Component {
                                 opportunityId: '',
                                 productionProjectId: params.id,
                                 participantId: '',
+                                orderId: '',
                             }
                         });
                         break;
@@ -316,6 +337,24 @@ class TaskNewApp extends Component {
                                 opportunityId: '',
                                 productionProjectId: '',
                                 participantId: params.id,
+                                orderId: '',
+                            }
+                        });
+                        break;
+                    case 'order':
+                        this.setState({
+                            ...this.state,
+                            task: {
+                                ...this.state.task,
+                                finished: finished,
+                                campaignId: '',
+                                contactId: '',
+                                intakeId: '',
+                                contactGroupId: '',
+                                opportunityId: '',
+                                productionProjectId: '',
+                                participantId: '',
+                                orderId: params.id,
                             }
                         });
                         break;
@@ -437,6 +476,7 @@ class TaskNewApp extends Component {
                                         housingFiles={this.state.housingFiles}
                                         productionProjects={this.state.productionProjects}
                                         participants={this.state.participants}
+                                        orders={this.state.orders}
                                         errors={this.state.errors}
                                         meDetails={this.props.meDetails}
                                         handleInputChange={this.handleInputChange}

@@ -4,8 +4,11 @@ namespace App\Http\Resources\Order;
 
 use App\Http\Resources\Administration\FullAdministration;
 use App\Http\Resources\Contact\FullContact;
+use App\Http\Resources\Document\FullDocument;
+use App\Http\Resources\Email\FullEmail;
 use App\Http\Resources\EmailTemplate\FullEmailTemplate;
 use App\Http\Resources\EnumWithIdAndName\FullEnumWithIdAndName;
+use App\Http\Resources\Task\FullTask;
 use App\Http\Resources\User\FullUser;
 use Illuminate\Http\Resources\Json\Resource;
 
@@ -59,6 +62,15 @@ class FullOrder extends Resource
                 'paymentType' => FullEnumWithIdAndName::make($this->getPaymentType()),
                 'statusId' => $this->status_id,
                 'status' => FullEnumWithIdAndName::make($this->getStatus()),
+
+                'taskCount' => $this->tasks()->count(),
+                'relatedTasks' => FullTask::collection($this->whenLoaded('tasks')),
+
+                'documentCount' => $this->documents()->count(),
+                'relatedDocuments' => FullDocument::collection($this->whenLoaded('documents')),
+
+                'emailCount' => $this->emails()->count(),
+                'relatedEmails' => FullEmail::collection($this->whenLoaded('emails')),
 
                 'createdById' => $this->created_by_id,
                 'createdBy' => FullUser::make($this->whenLoaded('createdBy')),

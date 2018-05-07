@@ -24,6 +24,7 @@ import InputSelectGroup from "../../../../components/form/InputSelectGroup";
 import ProductionProjectsAPI from "../../../../api/production-project/ProductionProjectsAPI";
 import HousingFilesAPI from "../../../../api/housing-file/HousingFilesAPI";
 import ParticipantsProductionProjectAPI from "../../../../api/participant-production-project/ParticipantsProductionProjectAPI";
+import OrdersAPI from "../../../../api/order/OrdersAPI";
 
 class TaskDetailsFormGeneralEdit extends Component {
     constructor(props) {
@@ -51,6 +52,7 @@ class TaskDetailsFormGeneralEdit extends Component {
             responsibleTeamId,
             finishedById,
             opportunityId,
+            orderId,
         } = props.taskDetails;
 
 
@@ -63,6 +65,7 @@ class TaskDetailsFormGeneralEdit extends Component {
             housingFiles: [],
             productionProjects: [],
             participants: [],
+            orders: [],
             task: {
                 id,
                 note,
@@ -75,6 +78,7 @@ class TaskDetailsFormGeneralEdit extends Component {
                 housingFileId: housingFileId ? housingFileId: '',
                 productionProjectId: productionProjectId ? productionProjectId: '',
                 participantId: participantId ? participantId: '',
+                orderId: orderId ? orderId: '',
                 datePlannedStart: datePlannedStart ? datePlannedStart.date : '',
                 datePlannedFinish: datePlannedFinish ? datePlannedFinish.date : '',
                 startTimePlanned: startTimePlanned ? startTimePlanned : '',
@@ -99,6 +103,7 @@ class TaskDetailsFormGeneralEdit extends Component {
                 housingFiles: true,
                 productionProjects: true,
                 participants: true,
+                orders: true,
             },
         };
 
@@ -186,6 +191,16 @@ class TaskDetailsFormGeneralEdit extends Component {
                 peekLoading: {
                     ...this.state.peekLoading,
                     participants: false,
+                },
+            });
+        });
+
+        OrdersAPI.peekOrders().then((payload) => {
+            this.setState({
+                orders: payload,
+                peekLoading: {
+                    ...this.state.peekLoading,
+                    orders: false,
                 },
             });
         });
@@ -422,6 +437,7 @@ class TaskDetailsFormGeneralEdit extends Component {
                             housingFiles={this.state.housingFiles}
                             productionProjects={this.state.productionProjects}
                             participants={this.state.participants}
+                            orders={this.state.orders}
                             handleReactSelectChange={this.handleReactSelectChange}
                             peekLoading={this.state.peekLoading}
                         />

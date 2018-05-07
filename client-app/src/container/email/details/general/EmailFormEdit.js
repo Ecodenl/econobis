@@ -17,12 +17,13 @@ import MeasureAPI from "../../../../api/measure/MeasureAPI";
 import IntakesAPI from "../../../../api/intake/IntakesAPI";
 import OpportunitiesAPI from "../../../../api/opportunity/OpportunitiesAPI";
 import InputReactSelect from "../../../../components/form/InputReactSelect";
+import OrdersAPI from "../../../../api/order/OrdersAPI";
 
 class EmailFormEdit extends Component {
     constructor(props) {
         super(props);
 
-        const {id, contacts, intake, task, quotationRequest, measure, opportunity, status} = props.email;
+        const {id, contacts, intake, task, quotationRequest, measure, opportunity, order, status} = props.email;
 
         this.state = {
             email: {
@@ -33,8 +34,10 @@ class EmailFormEdit extends Component {
                 quotationRequestId: quotationRequest ? quotationRequest.id : '',
                 measureId: measure ? measure.id : '',
                 statusId: status ? status.id : '',
-                opportunity: opportunity ? opportunity.id : '',
+                opportunityId: opportunity ? opportunity.id : '',
+                orderId: order ? order.id : '',
             },
+            orders: [],
             contacts: [],
             quotationRequests: [],
             tasks: [],
@@ -76,6 +79,10 @@ class EmailFormEdit extends Component {
 
         OpportunitiesAPI.peekOpportunities().then((payload) => {
             this.setState({ opportunities: payload });
+        });
+
+        OrdersAPI.peekOrders().then((payload) => {
+            this.setState({ orders: payload });
         });
     }
 
@@ -122,7 +129,7 @@ class EmailFormEdit extends Component {
     };
 
     render() {
-        const {contactIds, statusId, intakeId, taskId, quotationRequestId, measureId, opportunityId} = this.state.email;
+        const {contactIds, statusId, intakeId, taskId, quotationRequestId, measureId, opportunityId, orderId} = this.state.email;
         const {from, to, cc, bcc, subject, htmlBody, createdAt, dateSent, folder, status} = this.props.email;
         return (
             <div>
@@ -208,6 +215,15 @@ class EmailFormEdit extends Component {
                         name={"opportunityId"}
                         options={this.state.opportunities}
                         value={opportunityId}
+                        onChangeAction={this.handleInputChange}
+                    />
+
+                    <InputSelect
+                        label={"Order"}
+                        size={"col-sm-6"}
+                        name={"orderId"}
+                        options={this.state.orders}
+                        value={orderId}
                         onChangeAction={this.handleInputChange}
                     />
                 </div>

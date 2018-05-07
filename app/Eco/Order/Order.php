@@ -4,7 +4,10 @@ namespace App\Eco\Order;
 
 use App\Eco\Administration\Administration;
 use App\Eco\Contact\Contact;
+use App\Eco\Document\Document;
+use App\Eco\Email\Email;
 use App\Eco\EmailTemplate\EmailTemplate;
+use App\Eco\Task\Task;
 use App\Eco\User\User;
 use App\Http\Traits\Encryptable;
 use Illuminate\Database\Eloquent\Model;
@@ -42,6 +45,21 @@ class Order extends Model
     public function administration()
     {
         return $this->belongsTo(Administration::class);
+    }
+
+    public function tasks()
+    {
+        return $this->hasMany(Task::class);
+    }
+
+    public function documents()
+    {
+        return $this->hasMany(Document::class);
+    }
+
+    public function emails()
+    {
+        return $this->hasMany(Email::class);
     }
 
     public function contact()

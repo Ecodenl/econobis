@@ -18,12 +18,12 @@ import MeasureAPI from "../../../api/measure/MeasureAPI";
 import TasksAPI from "../../../api/task/TasksAPI";
 import {setError} from "../../../actions/general/ErrorActions";
 import {connect} from "react-redux";
-import {fetchIntakeDetails} from "../../../actions/intake/IntakeDetailsActions";
 import CampaignAPI from "../../../api/campaign/CampaignsAPI";
 import HousingFileAPI from "../../../api/housing-file/HousingFilesAPI";
 import QuotationRequestsAPI from "../../../api/quotation-request/QuotationRequestsAPI";
 import ProductionProjectsAPI from "../../../api/production-project/ProductionProjectsAPI";
 import ParticipantsProductionProjectAPI from "../../../api/participant-production-project/ParticipantsProductionProjectAPI";
+import OrdersAPI from "../../../api/order/OrdersAPI";
 
 class DocumentNewApp extends Component {
     constructor(props) {
@@ -42,6 +42,7 @@ class DocumentNewApp extends Component {
             tasks: [],
             productionProjects: [],
             participants: [],
+            orders: [],
             document: {
                 contactId: this.props.params.contactId || '',
                 contactGroupId: this.props.params.contactGroupId || '',
@@ -54,6 +55,7 @@ class DocumentNewApp extends Component {
                 taskId: this.props.params.taskId || '',
                 productionProjectId: this.props.params.productionProjectId || '',
                 participantId: this.props.params.participantId || '',
+                orderId: this.props.params.orderId || '',
                 documentType: this.props.params.type,
                 description: '',
                 documentGroup: '',
@@ -126,6 +128,10 @@ class DocumentNewApp extends Component {
 
         ParticipantsProductionProjectAPI.peekParticipantsProductionProjects().then((payload) => {
             this.setState({ participants: payload });
+        });
+
+        OrdersAPI.peekOrders().then((payload) => {
+            this.setState({ orders: payload });
         });
     };
 
@@ -215,6 +221,7 @@ class DocumentNewApp extends Component {
             taskId,
             productionProjectId,
             participantId,
+            orderId,
             attachment
         } = this.state.document;
 
@@ -222,7 +229,7 @@ class DocumentNewApp extends Component {
         let errors = {};
         let hasErrors = false;
 
-        if(validator.isEmpty(contactId) && validator.isEmpty(contactGroupId) && validator.isEmpty(intakeId) && validator.isEmpty(opportunityId) && validator.isEmpty(housingFileId) && validator.isEmpty(quotationRequestId) && validator.isEmpty(productionProjectId) && validator.isEmpty(participantId) && validator.isEmpty(taskId)){
+        if(validator.isEmpty(contactId) && validator.isEmpty(contactGroupId) && validator.isEmpty(intakeId) && validator.isEmpty(opportunityId) && validator.isEmpty(housingFileId) && validator.isEmpty(quotationRequestId) && validator.isEmpty(productionProjectId) && validator.isEmpty(participantId) && validator.isEmpty(taskId) && validator.isEmpty(orderId)){
             errors.docLinkedAtAny = true;
             hasErrors = true;
         };
@@ -262,6 +269,7 @@ class DocumentNewApp extends Component {
             data.append('taskId', taskId);
             data.append('productionProjectId', productionProjectId);
             data.append('participantId', participantId);
+            data.append('orderId', orderId);
             data.append('attachment', attachment);
 
             DocumentDetailsAPI.newDocument(data).then((payload) => {
@@ -303,6 +311,7 @@ class DocumentNewApp extends Component {
                             campaigns={this.state.campaigns}
                             productionProjects={this.state.productionProjects}
                             participants={this.state.participants}
+                            orders={this.state.orders}
                             errors={this.state.errors}
                             handleSubmit={this.handleSubmit}
                             handleDocumentGroupChange={this.handleDocumentGroupChange}

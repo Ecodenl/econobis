@@ -166,22 +166,22 @@ class OrderNewForm extends Component {
         let errors = {};
         let hasErrors = false;
 
-        if (validator.isEmpty(order.contactId)) {
+        if (validator.isEmpty(order.contactId + '')) {
             errors.contactId = true;
             hasErrors = true;
         }
 
-        if (validator.isEmpty(order.statusId)) {
+        if (validator.isEmpty(order.statusId + '')) {
             errors.statusId = true;
             hasErrors = true;
         }
 
-        if (validator.isEmpty(order.subject)) {
+        if (validator.isEmpty(order.subject + '')) {
             errors.subject = true;
             hasErrors = true;
         }
 
-        if (!validator.isEmpty(order.IBAN)) {
+        if (order.IBAN !== null && !validator.isEmpty(order.IBAN + '')) {
             if (!ibantools.isValidIBAN(order.IBAN)) {
                 errors.IBAN = true;
                 hasErrors = true;

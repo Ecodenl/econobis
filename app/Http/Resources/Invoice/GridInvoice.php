@@ -24,8 +24,6 @@ class GridInvoice extends Resource
 
             'order' => FullOrder::make($this->whenLoaded('order')),
 
-            'totalPriceInclVatPerYear' => $this->total_price_incl_vat_per_year,
-
 //            'daysPassed' => $this->subject,
 //            'priceInclVat' => $this->price_incl_vat,
             'paymentTypeId' => $this->payment_type_id,

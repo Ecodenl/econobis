@@ -3,6 +3,7 @@
 namespace App\Eco\Administration;
 
 use App\Eco\Country\Country;
+use App\Eco\Invoice\Invoice;
 use App\Eco\Order\Order;
 use App\Eco\Product\Product;
 use App\Eco\User\User;
@@ -28,6 +29,15 @@ class Administration extends Model
             'total_orders_invoices',
             'total_orders_collections',
             'total_orders_closed',
+            'total_invoices',
+            'total_invoices_concepts',
+            'total_invoices_checked',
+            'total_invoices_sent',
+            'total_invoices_exported',
+            'total_invoices_reminder',
+            'total_invoices_exhortation',
+            'total_invoices_paid',
+            'total_invoices_irrecoverable',
         ];
 
     //Dont boot softdelete scopes. We handle this ourselves
@@ -47,6 +57,10 @@ class Administration extends Model
 
     public function orders(){
         return $this->hasMany(Order::class);
+    }
+
+    public function invoices(){
+        return $this->hasMany(Invoice::class);
     }
 
     public function country(){
@@ -81,6 +95,50 @@ class Administration extends Model
     public function getTotalOrdersClosedAttribute()
     {
         return $this->orders()->where('status_id', 'closed')->count();
+    }
+
+    public function getTotalInvoicesAttribute()
+    {
+        return $this->invoices()->count();
+    }
+
+    public function getTotalInvoicesConceptsAttribute()
+    {
+        return $this->invoices()->where('status_id', 'concept')->whereNull('date_reminder_1')->whereNull('date_reminder_2')->whereNull('date_reminder_3')->whereNull('date_exhortation')->count();
+    }
+
+    public function getTotalInvoicesCheckedAttribute()
+    {
+        return $this->invoices()->where('status_id', 'checked')->whereNull('date_reminder_1')->whereNull('date_reminder_2')->whereNull('date_reminder_3')->whereNull('date_exhortation')->count();
+    }
+
+    public function getTotalInvoicesSentAttribute()
+    {
+        return $this->invoices()->where('status_id', 'sent')->whereNull('date_reminder_1')->whereNull('date_reminder_2')->whereNull('date_reminder_3')->whereNull('date_exhortation')->count();
+    }
+
+    public function getTotalInvoicesExportedAttribute()
+    {
+        return $this->invoices()->where('status_id', 'exported')->whereNull('date_reminder_1')->whereNull('date_reminder_2')->whereNull('date_reminder_3')->whereNull('date_exhortation')->count();
+    }
+
+    public function getTotalInvoicesReminderAttribute()
+    {
+        return $this->invoices()->whereNotNull('date_reminder_1')->whereNull('date_exhortation')->whereNotIn('status_id', ['paid' ,'irrecoverable'])->count();
+    }
+    public function getTotalInvoicesExhortationAttribute()
+    {
+        return $this->invoices()->whereNotNull('date_exhortation')->whereNotIn('status_id', ['paid' ,'irrecoverable'])->count();
+    }
+
+    public function getTotalInvoicePaidAttribute()
+    {
+        return $this->invoices()->where('status_id', 'paid')->count();
+    }
+
+    public function getTotalInvoiceIrrecoverableAttribute()
+    {
+        return $this->invoices()->where('status_id', 'irrecoverable')->count();
     }
 
 }

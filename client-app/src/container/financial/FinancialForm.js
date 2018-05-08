@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {isEmpty} from 'lodash';
 import OrdersList from "./order/list/OrdersList";
+import InvoicesList from "./invoice/list/InvoicesList";
 import Panel from "../../components/panel/Panel";
 import PanelBody from "../../components/panel/PanelBody";
 
@@ -27,7 +28,14 @@ class ProductDetailsForm extends Component {
                     </Panel>
                     }
                     {this.props.type === 'facturen' &&
-                    <div>Facturen</div>
+                    <Panel>
+                        <PanelBody>
+                            <InvoicesList
+                                administrationId={this.props.administrationDetails.id}
+                                filter={this.props.filter}
+                            />
+                        </PanelBody>
+                    </Panel>
                     }
                     {this.props.type === undefined &&
                     <div>Selecteer orders of facturen.</div>

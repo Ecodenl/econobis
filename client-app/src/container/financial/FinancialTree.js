@@ -36,21 +36,30 @@ class FinancialTree extends Component {
                         </Nav>
                         <Nav id="invoices">
                             <NavIcon><SvgIcon size={20} icon={fileText} style={{color: '$brand-primary'}}/></NavIcon>
-                            <NavText><Link className="financial-tree-link" to={`financieel/${this.props.id}/facturen`}>Alle facturen(12)</Link></NavText>
-                            <Nav id="invoices-send">
-                                <NavText><Link className="financial-tree-link" to={`financieel/${this.props.id}/facturen/verzonden`}>Verzonden(3)</Link></NavText>
+                            <NavText><Link className="financial-tree-link" to={`financieel/${this.props.id}/facturen`}>Alle facturen({this.props.administrationDetails.totalInvoices})</Link></NavText>
+                            <Nav id="invoices-concepts">
+                                <NavText><Link className="financial-tree-link" to={`financieel/${this.props.id}/facturen/concepten`}>Concepten({this.props.administrationDetails.totalInvoicesConcepts})</Link></NavText>
+                            </Nav>
+                            <Nav id="invoices-checked">
+                                <NavText><Link className="financial-tree-link" to={`financieel/${this.props.id}/facturen/gecontroleerd`}>Gecontroleerd({this.props.administrationDetails.totalInvoicesChecked})</Link></NavText>
+                            </Nav>
+                            <Nav id="invoices-sent">
+                                <NavText><Link className="financial-tree-link" to={`financieel/${this.props.id}/facturen/verzonden`}>Verzonden({this.props.administrationDetails.totalInvoicesSent})</Link></NavText>
+                            </Nav>
+                            <Nav id="invoices-exported">
+                                <NavText><Link className="financial-tree-link" to={`financieel/${this.props.id}/facturen/geexporteerd`}>Geëxporteerd({this.props.administrationDetails.totalInvoicesExported})</Link></NavText>
                             </Nav>
                             <Nav id="invoices-reminder">
-                                <NavText><Link className="financial-tree-link" to={`financieel/${this.props.id}/facturen/herinnering`}>Herinneringen(4)</Link></NavText>
+                                <NavText><Link className="financial-tree-link" to={`financieel/${this.props.id}/facturen/herinnering`}>Herinnering({this.props.administrationDetails.totalInvoicesReminder})</Link></NavText>
                             </Nav>
                             <Nav id="invoices-exhortation">
-                                <NavText><Link className="financial-tree-link" to={`financieel/${this.props.id}/facturen/aanmaning`}>Aanmaningen(2)</Link></NavText>
+                                <NavText><Link className="financial-tree-link" to={`financieel/${this.props.id}/facturen/aanmaning`}>Aanmaning({this.props.administrationDetails.totalInvoicesExhortation})</Link></NavText>
                             </Nav>
-                            <Nav id="invoices-payed">
-                                <NavText><Link className="financial-tree-link" to={`financieel/${this.props.id}/facturen/betaald`}>Betaald(3)</Link></NavText>
+                            <Nav id="invoices-paid">
+                                <NavText><Link className="financial-tree-link" to={`financieel/${this.props.id}/facturen/betaald`}>Betaald({this.props.administrationDetails.totalInvoicesPaid})</Link></NavText>
                             </Nav>
-                            <Nav id="invoices-irrecovable">
-                                <NavText><Link className="financial-tree-link" to={`financieel/${this.props.id}/facturen/oninbaar`}>Oninbaar(0)</Link></NavText>
+                            <Nav id="invoices-irrecoverable">
+                                <NavText><Link className="financial-tree-link" to={`financieel/${this.props.id}/facturen/oninbaar`}>Oninbaar({this.props.administrationDetails.totalInvoicesIrrecoverable})</Link></NavText>
                             </Nav>
                         </Nav>
                         <Nav id="administration-settings">

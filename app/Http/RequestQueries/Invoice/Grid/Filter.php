@@ -24,6 +24,7 @@ class Filter extends RequestFilter
 
     protected $mapping = [
         'number' => 'invoices.number',
+        'statusId' => 'invoices.status_id',
         'dateRequested' => 'invoices.date_requested',
         'subject' => 'invoices.subject',
         'contact' => 'contacts.full_name',
@@ -41,30 +42,39 @@ class Filter extends RequestFilter
 
     protected function applyStatusFilter($query, $type, $data)
     {
-        $extra_statusses = ['reminder1', 'reminder2', 'reminder3', 'exhortation'];
+        $extra_statusses = ['reminder', 'reminder1', 'reminder2', 'reminder3', 'exhortation'];
+        $closed_statusses = ['paid' ,'irrecoverable'];
 
         if(in_array($data, $extra_statusses)){
             switch ($data){
+                case 'reminder':
+                    $query->whereNotNull('date_reminder_1')->whereNotIn('status_id', $closed_statusses);
+                    return false;
+                    break;
                 case 'reminder1':
-                    $query->whereNotNull('date_reminder_1');
+                    $query->whereNotNull('date_reminder_1')->whereNull('date_reminder_2')->whereNull('date_reminder_3')->whereNotIn('status_id', $closed_statusses);
+                    return false;
                     break;
                 case 'reminder2':
-                    $query->whereNotNull('date_reminder_2');
+                    $query->whereNotNull('date_reminder_2')->whereNull('date_reminder_3')->whereNotIn('status_id', $closed_statusses);
+                    return false;
                     break;
                 case 'reminder3':
-                    $query->whereNotNull('date_reminder_3');
+                    $query->whereNotNull('date_reminder_3')->whereNotIn('status_id', $closed_statusses);
+                    return false;
                     break;
                 case 'exhortation':
-                    $query->whereNotNull('date_exhortation');
+                    $query->whereNotNull('date_exhortation')->whereNotIn('status_id', $closed_statusses);
+                    return false;
                     break;
-                default:
-                    return true;
 
             }
-            return false;
 
         }
         else{
+            if(!in_array($data, $closed_statusses)){
+                $query->whereNull('date_reminder_1')->whereNull('date_reminder_2')->whereNull('date_reminder_3')->whereNull('date_exhortation');
+            }
             return true;
         }
     }

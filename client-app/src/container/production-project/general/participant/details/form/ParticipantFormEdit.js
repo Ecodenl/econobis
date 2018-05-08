@@ -16,7 +16,7 @@ import { fetchParticipantProductionProjectDetails } from '../../../../../../acti
 import InputToggle from "../../../../../../components/form/InputToggle";
 import ContactsAPI from "../../../../../../api/contact/ContactsAPI";
 import ProductionProjectsAPI from "../../../../../../api/production-project/ProductionProjectsAPI";
-import * as ibantools from "ibantools/build/ibantools";
+import * as ibantools from "ibantools";
 
 class ParticipantFormEdit extends Component {
     constructor(props) {

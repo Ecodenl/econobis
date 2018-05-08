@@ -8,16 +8,18 @@ import ButtonText from '../../../../components/button/ButtonText';
 import Panel from "../../../../components/panel/Panel";
 import PanelBody from "../../../../components/panel/PanelBody";
 import InputSelect from "../../../../components/form/InputSelect";
+import AdministrationsAPI from "../../../../api/administration/AdministrationsAPI";
 
 class ProductDetailsFormGeneralEdit extends Component {
     constructor(props) {
         super(props);
 
-        const { code, name, invoiceText, durationId, invoiceFrequencyId, paymentTypeId, administrationId} = props.productDetails;
+        const { id, code, name, invoiceText, durationId, invoiceFrequencyId, paymentTypeId, administrationId} = props.productDetails;
 
         this.state = {
             administrations: [],
             product: {
+                id,
                 code: code ? code : '',
                 name: name ? name : '',
                 invoiceText: invoiceText ? invoiceText : '',
@@ -32,6 +34,15 @@ class ProductDetailsFormGeneralEdit extends Component {
                 administrationId: false,
             },
         };
+    };
+
+    componentDidMount() {
+        AdministrationsAPI.peekAdministrations().then(payload => {
+            this.setState({
+                ...this.state,
+                administrations: payload,
+            })
+        })
     };
 
     handleInputChange = event => {

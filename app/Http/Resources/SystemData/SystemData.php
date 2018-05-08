@@ -16,6 +16,9 @@ use App\Eco\HousingFile\EnergyLabelStatus;
 use App\Eco\HousingFile\RoofType;
 use App\Eco\Measure\MeasureCategory;
 use App\Eco\Opportunity\OpportunityStatus;
+use App\Eco\Order\OrderCollectionFrequency;
+use App\Eco\Order\OrderPaymentType;
+use App\Eco\Order\OrderStatus;
 use App\Eco\OrganisationType\OrganisationType;
 use App\Eco\Address\AddressType;
 use App\Eco\HousingFile\BuildingType;
@@ -127,6 +130,9 @@ class SystemData extends Resource
             'productDurations' => FullEnumWithIdAndName::collection(ProductDuration::collection()),
             'productInvoiceFrequencies' => FullEnumWithIdAndName::collection(ProductInvoiceFrequency::collection()),
             'productPaymentTypes' => FullEnumWithIdAndName::collection(ProductPaymentType::collection()),
+            'orderStatuses' => FullEnumWithIdAndName::collection(OrderStatus::collection()),
+            'orderPaymentTypes' => FullEnumWithIdAndName::collection(OrderPaymentType::collection()),
+            'orderCollectionFrequencies' => FullEnumWithIdAndName::collection(OrderCollectionFrequency::collection()),
         ];
     }
 }

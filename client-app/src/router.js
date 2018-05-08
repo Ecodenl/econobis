@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Router, Route, IndexRoute, hashHistory } from 'react-router';
 
@@ -56,6 +55,8 @@ import NotFoundedPage from './container/global/NotFoundedPage';
 import OpportunitiesListApp from './container/opportunities/list/OpportunitiesListApp';
 import OpportunityDetailsApp from './container/opportunities/details/OpportunityDetailsApp';
 import OpportunityNewApp from './container/opportunities/new/OpportunityNewApp';
+import OrderNewApp from './container/financial/order/new/OrderNewApp';
+import OrderDetailsApp from './container/financial/order/details/OrderDetailsApp';
 import ParticipantNewApp from './container/production-project/general/participant/new/ParticipantNewApp';
 import ParticipantDetailsApp from './container/production-project/general/participant/details/ParticipantDetailsApp';
 import ParticipationTransferApp from './container/production-project/general/participant/details/transfer/ParticipationTransferApp';
@@ -84,6 +85,7 @@ import UserDetailsApp from './container/users/details/UserDetailsApp';
 import UserNewApp from './container/users/new/UserNewApp';
 import UsersListApp from './container/users/list/UsersListApp';
 import RevenueDetailsApp from './container/production-project/details/revenue/details/RevenueDetailsApp';
+import FinancialApp from './container/financial/FinancialApp';
 
 const Routes = () => {
     return (
@@ -132,6 +134,7 @@ const Routes = () => {
                 <Route path="document/nieuw/:type/maatregel/:measureId" component={DocumentNewApp} />
                 <Route path="document/nieuw/:type/campagne/:campaignId" component={DocumentNewApp} />
                 <Route path="document/nieuw/:type/taak/:taskId" component={DocumentNewApp} />
+                <Route path="document/nieuw/:type/order/:orderId" component={DocumentNewApp} />
                 <Route path="document/nieuw/:type/woningdossier/:housingFileId" component={DocumentNewApp} />
                 <Route path="document/nieuw/:type/offerteverzoek/:quotationRequestId" component={DocumentNewApp} />
                 <Route path="document/nieuw/:type/productie-project/:productionProjectId" component={DocumentNewApp} />
@@ -158,6 +161,13 @@ const Routes = () => {
                 <Route path="email-templates" component={EmailTemplatesListApp} />
                 <Route path="email-template/nieuw" component={EmailTemplateNewApp} />
                 <Route path="email-template/:id" component={EmailTemplateDetailsApp} />
+                /* Financial */
+                <Route path="financieel/:id" component={FinancialApp} />
+                <Route path="financieel/:id/:type" component={FinancialApp} />
+                <Route path="financieel/:id/:type/:filter" component={FinancialApp} />
+                <Route path="order/nieuw/contact/:contactId" component={OrderNewApp} />
+                <Route path="order/:id" component={OrderDetailsApp} />
+
                 /* Campagnes */
                 <Route path="campagne/nieuw" component={CampaignNewApp} />
                 <Route path="campagne/:id" component={CampaignDetailsApp} />

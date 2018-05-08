@@ -33,8 +33,8 @@ export default {
             });
     },
 
-    updateProduct: ({product, productId}) => {
-        const requestUrl = `${URL_PRODUCT}/${productId}`;
+    updateProduct: ({product}) => {
+        const requestUrl = `${URL_PRODUCT}/${product.id}`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 

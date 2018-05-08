@@ -73,6 +73,10 @@ return [
             ['remove' => 'opportunityEvaluation']],
     ],
 
+    'Order' => [
+        'soft_delete' => true,
+    ],
+
     'QuotationRequest' => [
         'soft_delete' => false,
         'relations' =>

@@ -8,6 +8,7 @@ use App\Http\Resources\Document\FullDocument;
 use App\Http\Resources\Occupation\FullOccupationContact;
 use App\Http\Resources\Opportunity\FullOpportunity;
 use App\Http\Resources\Opportunity\GridOpportunity;
+use App\Http\Resources\Order\FullOrder;
 use App\Http\Resources\Organisation\FullOrganisation;
 use App\Http\Resources\Address\FullAddress;
 use App\Http\Resources\ContactNote\FullContactNote;
@@ -69,6 +70,7 @@ class FullContact extends Resource
             'updatedById' => $this->updated_by_id,
             'updatedBy' => FullUser::make($this->whenLoaded('updatedBy')),
             'intakeCount' => $this->intakes()->count(),
+            'orderCount' => $this->orders()->count(),
             'housingFileCount' => $this->housingFiles()->count(),
             'groupCount' => $this->groups()->count(),
             'taskCount' => $this->tasks()->count(),
@@ -85,6 +87,7 @@ class FullContact extends Resource
             'relatedOpportunities' => $this->opportunities()->with('measureCategory')->get(),
             'participationCount' => $this->participations()->count(),
             'relatedParticipations' => FullParticipantProductionProject::collection($this->whenLoaded('participations')),
+            'relatedOrders' => FullOrder::collection($this->whenLoaded('orders')),
             'deletedAt' => $this->deleted_at,
         ];
     }

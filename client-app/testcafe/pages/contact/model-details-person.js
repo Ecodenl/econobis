@@ -42,27 +42,29 @@ export default class ModelDetailsPerson {
         this.textarea = Selector('textarea');
 
         //Harmonica's labels to open list
-        this.emailInHarmonicaList = Selector('.harmonica-button').nth(0).child().nth(0).child().nth(0);
-        this.emailOutHarmonicaList = Selector('.harmonica-button').nth(1).child().nth(0).child().nth(0);
-        this.taskHarmonicaList = Selector('.harmonica-button').nth(2).child().nth(0).child().nth(0);
-        this.noteHarmonicaList = Selector('.harmonica-button').nth(3).child().nth(0).child().nth(0);
-        this.participationHarmonicaList = Selector('.harmonica-button').nth(4).child().nth(0).child().nth(0);
-        this.intakeHarmonicaList = Selector('.harmonica-button').nth(5).child().nth(0).child().nth(0);
-        this.opportunityHarmonicaList = Selector('.harmonica-button').nth(6).child().nth(0).child().nth(0);
-        this.housingFileHarmonicaList = Selector('.harmonica-button').nth(7).child().nth(0).child().nth(0);
-        this.contactGroupHarmonicaList = Selector('.harmonica-button').nth(8).child().nth(0).child().nth(0);
-        this.documentHarmonicaList = Selector('.harmonica-button').nth(9).child().nth(0).child().nth(0);
+        this.orderHarmonicaList = Selector('.harmonica-button').nth(0).child().nth(0).child().nth(0);
+        this.emailInHarmonicaList = Selector('.harmonica-button').nth(1).child().nth(0).child().nth(0);
+        this.emailOutHarmonicaList = Selector('.harmonica-button').nth(2).child().nth(0).child().nth(0);
+        this.taskHarmonicaList = Selector('.harmonica-button').nth(3).child().nth(0).child().nth(0);
+        this.noteHarmonicaList = Selector('.harmonica-button').nth(4).child().nth(0).child().nth(0);
+        this.participationHarmonicaList = Selector('.harmonica-button').nth(5).child().nth(0).child().nth(0);
+        this.intakeHarmonicaList = Selector('.harmonica-button').nth(6).child().nth(0).child().nth(0);
+        this.opportunityHarmonicaList = Selector('.harmonica-button').nth(7).child().nth(0).child().nth(0);
+        this.housingFileHarmonicaList = Selector('.harmonica-button').nth(8).child().nth(0).child().nth(0);
+        this.contactGroupHarmonicaList = Selector('.harmonica-button').nth(9).child().nth(0).child().nth(0);
+        this.documentHarmonicaList = Selector('.harmonica-button').nth(10).child().nth(0).child().nth(0);
 
         //Harmonica's add buttons
-        this.emailInHarmonica = Selector('.harmonica-button').nth(0).child().nth(0).child().nth(1).child('a');
-        this.emailOutHarmonica = Selector('.harmonica-button').nth(1).child().nth(0).child().nth(1).child('a');
-        this.taskHarmonica = Selector('.harmonica-button').nth(2).child().nth(0).child().nth(1).child('a');
-        this.noteHarmonica = Selector('.harmonica-button').nth(3).child().nth(0).child().nth(1).child('a');
-        this.participationHarmonica = Selector('.harmonica-button').nth(4).child().nth(0).child().nth(1).child('a');
-        this.intakeHarmonica = Selector('.harmonica-button').nth(5).child().nth(0).child().nth(1).child('a');
+        this.orderHarmonica = Selector('.harmonica-button').nth(0).child().nth(0).child().nth(1).child('a');
+        this.emailInHarmonica = Selector('.harmonica-button').nth(1).child().nth(0).child().nth(1).child('a');
+        this.emailOutHarmonica = Selector('.harmonica-button').nth(2).child().nth(0).child().nth(1).child('a');
+        this.taskHarmonica = Selector('.harmonica-button').nth(3).child().nth(0).child().nth(1).child('a');
+        this.noteHarmonica = Selector('.harmonica-button').nth(4).child().nth(0).child().nth(1).child('a');
+        this.participationHarmonica = Selector('.harmonica-button').nth(5).child().nth(0).child().nth(1).child('a');
+        this.intakeHarmonica = Selector('.harmonica-button').nth(6).child().nth(0).child().nth(1).child('a');
         //opportunity not directly addable
-        this.housingFileHarmonica = Selector('.harmonica-button').nth(7).child().nth(0).child().nth(1).child('a');
-        this.contactGroupHarmonica = Selector('.harmonica-button').nth(8).child().nth(0).child().nth(1).child('a');
-        this.documentHarmonica = Selector('.harmonica-button').nth(9).child().nth(0).child().nth(1).child().nth(0);
+        this.housingFileHarmonica = Selector('.harmonica-button').nth(8).child().nth(0).child().nth(1).child('a');
+        this.contactGroupHarmonica = Selector('.harmonica-button').nth(9).child().nth(0).child().nth(1).child('a');
+        this.documentHarmonica = Selector('.harmonica-button').nth(10).child().nth(0).child().nth(1).child().nth(0);
     }
 }

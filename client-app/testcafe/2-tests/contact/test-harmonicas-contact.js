@@ -34,6 +34,7 @@ test('Open all harmonica\'s person', async (t) => {
     await t.expect(general.titleH4.innerText).eql(vars.personLastName + ', ' + vars.personFirstName + ' (Persoon)', 'Check element text', { timeout: 500 });
 
     await t
+        .click(detailsPerson.orderHarmonicaList)
         .click(detailsPerson.emailInHarmonicaList)
         .click(detailsPerson.emailOutHarmonicaList)
         .click(detailsPerson.taskHarmonicaList)
@@ -44,6 +45,13 @@ test('Open all harmonica\'s person', async (t) => {
         .click(detailsPerson.housingFileHarmonicaList)
         .click(detailsPerson.contactGroupHarmonicaList)
         .click(detailsPerson.documentHarmonicaList)
+        .wait(constants.wait);
+
+    await t
+        .click(detailsPerson.orderHarmonica)
+        .wait(constants.wait);
+    await t
+        .click(general.back)
         .wait(constants.wait);
 
     await t
@@ -140,6 +148,7 @@ test('Open all harmonica\'s organisation', async (t) => {
     await t.expect(general.titleH4.innerText).eql(vars.organisationName + ' (Organisatie)', 'Check element text', { timeout: 500 });
 
     await t
+        .click(detailsPerson.orderHarmonicaList)
         .click(detailsPerson.emailInHarmonicaList)
         .click(detailsPerson.emailOutHarmonicaList)
         .click(detailsPerson.taskHarmonicaList)
@@ -150,6 +159,14 @@ test('Open all harmonica\'s organisation', async (t) => {
         .click(detailsPerson.housingFileHarmonicaList)
         .click(detailsPerson.contactGroupHarmonicaList)
         .click(detailsPerson.documentHarmonicaList)
+        .wait(constants.wait);
+
+
+    await t
+        .click(detailsPerson.orderHarmonica)
+        .wait(constants.wait);
+    await t
+        .click(general.back)
         .wait(constants.wait);
 
     await t

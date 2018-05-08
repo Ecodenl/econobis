@@ -31,6 +31,7 @@ class FullProduct extends Resource
                 'duration' => FullEnumWithIdAndName::make($this->getDuration()),
                 'invoiceFrequency' => FullEnumWithIdAndName::make($this->getInvoiceFrequency()),
                 'paymentType' => FullEnumWithIdAndName::make($this->getPaymentType()),
+                'administrationId' => $this->administration_id,
                 'administration' => FullAdministration::make($this->whenLoaded('administration')),
 
                 'createdById' => $this->created_by_id,

@@ -38,6 +38,7 @@ class ContactController extends Controller
         $contact->load('participations');
         $contact->load('occupations');
         $contact->load('primaryOccupations');
+        $contact->load('orders');
         $contact->occupations->load('occupation');
         $contact->occupations->load('primaryContact');
         $contact->occupations->load('contact');

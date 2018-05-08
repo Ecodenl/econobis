@@ -7,7 +7,7 @@ import InputText from '../../../../components/form/InputText';
 import ButtonText from '../../../../components/button/ButtonText';
 import Panel from "../../../../components/panel/Panel";
 import PanelBody from "../../../../components/panel/PanelBody";
-import * as ibantools from "ibantools/build/ibantools";
+import * as ibantools from "ibantools";
 import AdministrationLogoNew from "../../new/AdministrationLogoNew";
 import InputSelect from "../../../../components/form/InputSelect";
 

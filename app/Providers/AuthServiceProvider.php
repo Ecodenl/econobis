@@ -21,6 +21,8 @@ use App\Eco\Measure\Measure;
 use App\Eco\Measure\MeasurePolicy;
 use App\Eco\Opportunity\OpportunityPolicy;
 use App\Eco\Opportunity\Opportunity;
+use App\Eco\Order\Order;
+use App\Eco\Order\OrderPolicy;
 use App\Eco\Organisation\Organisation;
 use App\Eco\Organisation\OrganisationPolicy;
 use App\Eco\Address\Address;
@@ -102,6 +104,7 @@ class AuthServiceProvider extends ServiceProvider
         ParticipantTransaction::class => ParticipantTransactionPolicy::class,
         Administration::class => AdministrationPolicy::class,
         Product::class => ProductPolicy::class,
+        Order::class => OrderPolicy::class,
     ];
 
     /**

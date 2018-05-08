@@ -14,6 +14,7 @@ const TaskDetailsFormGeneralView = props => {
         intakeId,
         intakeName,
         contactGroup,
+        order,
         campaign,
         housingFile,
         productionProject,
@@ -166,6 +167,11 @@ const TaskDetailsFormGeneralView = props => {
                                 label={"Participant productieproject"}
                                 value={participant && participant.name}
                                 link={participant ? 'productie-project/participant/' + participant.id : ''}
+                            />
+                            <ViewText
+                                label={"Order"}
+                                value={order && order.name}
+                                link={order ? 'order/' + order.id : ''}
                             />
                         </div>
 

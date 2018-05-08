@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import { hashHistory } from 'react-router';
 import validator from 'validator';
-import * as ibantools from "ibantools";
 
 import InputText from '../../../components/form/InputText';
 import ButtonText from '../../../components/button/ButtonText';

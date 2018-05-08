@@ -79,7 +79,7 @@ class EmailController
     }
 
     public function show(Email $email){
-        $email->load('contacts', 'attachments', 'closedBy', 'intake', 'task', 'quotationRequest', 'measure', 'opportunity');
+        $email->load('contacts', 'attachments', 'closedBy', 'intake', 'task', 'quotationRequest', 'measure', 'opportunity', 'order');
 
         return FullEmail::make($email);
     }
@@ -167,6 +167,7 @@ class EmailController
             ->integer('taskId')->validate('exists:tasks,id')->onEmpty(null)->alias('task_id')->next()
             ->integer('opportunityId')->validate('exists:opportunities,id')->onEmpty(null)->alias('opportunity_id')->next()
             ->integer('productionProjectId')->validate('exists:production_projects,id')->onEmpty(null)->alias('production_project_id')->next()
+            ->integer('orderId')->validate('exists:orders,id')->onEmpty(null)->alias('order_id')->next()
             ->get();
 
         $email->fill($data);

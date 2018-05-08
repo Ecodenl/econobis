@@ -4,6 +4,7 @@ import moment from 'moment';
 moment.locale('nl');
 
 import IntakeDetailsAPI from '../../../../api/intake/IntakeDetailsAPI';
+import CampaignsAPI from '../../../../api/campaign/CampaignsAPI';
 import { fetchIntakeDetails } from '../../../../actions/intake/IntakeDetailsActions';
 import InputText from '../../../../components/form/InputText';
 import InputSelect from '../../../../components/form/InputSelect';
@@ -17,6 +18,7 @@ class IntakeDetailsFormGeneralEdit extends Component {
         const { id, contact, address = {}, reasons, campaign, sources, status, note} = props.intakeDetails;
 
         this.state = {
+            campaigns: [],
             intake: {
                 id,
                 contact: contact.fullName,
@@ -28,6 +30,14 @@ class IntakeDetailsFormGeneralEdit extends Component {
                 note: note && note,
             },
         }
+    };
+
+    componentWillMount() {
+        CampaignsAPI.peekCampaigns().then((payload) => {
+            this.setState({
+                campaigns: payload,
+            });
+        });
     };
 
     handleInputChange = event => {

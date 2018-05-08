@@ -129,12 +129,12 @@ class OrderController extends ApiController
         $data = $input
             ->string('productId')->validate('required|exists:products,id')->alias('product_id')->next()
             ->string('orderId')->validate('required|exists:orders,id')->alias('order_id')->next()
-            ->string('description')->onEmpty(null)->whenMissing(null)->next()
+            ->string('description')->validate('required')->next()
             ->integer('amount')->validate('required')->next()
             ->numeric('amountReduction')->onEmpty(null)->whenMissing(null)->alias('amount_reduction')->next()
             ->numeric('percentageReduction')->onEmpty(null)->whenMissing(null)->alias('percentage_reduction')->next()
             ->date('dateStart')->validate('required')->alias('date_start')->next()
-            ->date('dateEnd')->validate('required')->alias('date_end')->next()
+            ->date('dateEnd')->validate('nullable|date')->alias('date_end')->next()
             ->get();
 
         $orderProduct = new OrderProduct($data);
@@ -151,12 +151,12 @@ class OrderController extends ApiController
         $data = $input
             ->string('productId')->validate('required|exists:products,id')->alias('product_id')->next()
             ->string('orderId')->validate('required|exists:orders,id')->alias('order_id')->next()
-            ->string('description')->onEmpty(null)->whenMissing(null)->next()
+            ->string('description')->validate('required')->next()
             ->integer('amount')->validate('required')->next()
             ->numeric('amountReduction')->onEmpty(null)->whenMissing(null)->alias('amount_reduction')->next()
             ->numeric('percentageReduction')->onEmpty(null)->whenMissing(null)->alias('percentage_reduction')->next()
             ->date('dateStart')->validate('required')->alias('date_start')->next()
-            ->date('dateEnd')->validate('required')->alias('date_end')->next()
+            ->date('dateEnd')->validate('nullable|date')->alias('date_end')->next()
             ->get();
 
         $orderProduct->fill($data);

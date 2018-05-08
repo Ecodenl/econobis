@@ -85,7 +85,7 @@ class CreateOrdersTables extends Migration
             $table->float('percentage_reduction')->nullable();
 
             $table->date('date_start');
-            $table->date('date_end');
+            $table->date('date_end')->nullable();
 
             $table->timestamps();
         });

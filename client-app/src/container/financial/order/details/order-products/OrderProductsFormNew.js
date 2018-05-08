@@ -32,7 +32,7 @@ class OrderProductsFormNew extends Component {
                 productId: false,
                 amount: false,
                 dateStart: false,
-                dateEnd: false,
+                description: false,
             },
         };
 
@@ -135,8 +135,8 @@ class OrderProductsFormNew extends Component {
         }
         ;
 
-        if (validator.isEmpty(orderProduct.dateEnd + '')) {
-            errors.dateEnd = true;
+        if (validator.isEmpty(orderProduct.description + '')) {
+            errors.description = true;
             hasErrors = true;
         }
         ;
@@ -184,6 +184,8 @@ class OrderProductsFormNew extends Component {
                                 name={"description"}
                                 value={description}
                                 onChangeAction={this.handleInputChange}
+                                required={"required"}
+                                error={this.state.errors.description}
                             />
                             <InputText
                                 label={"Aantal"}
@@ -251,8 +253,6 @@ class OrderProductsFormNew extends Component {
                                 name="dateEnd"
                                 value={dateEnd}
                                 onChangeAction={this.handleInputChangeDate}
-                                required={"required"}
-                                error={this.state.errors.dateEnd}
                             />
                         </div>
 

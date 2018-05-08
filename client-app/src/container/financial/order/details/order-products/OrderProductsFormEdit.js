@@ -39,6 +39,8 @@ const OrderProductsFormEdit = props => {
                                 name={"description"}
                                 value={description}
                                 onChangeAction={props.handleInputChange}
+                                required={"required"}
+                                error={props.errors.description}
                             />
                             <InputText
                                 label={"Aantal"}
@@ -106,8 +108,6 @@ const OrderProductsFormEdit = props => {
                                 name="dateEnd"
                                 value={dateEnd}
                                 onChangeAction={props.handleInputChangeDate}
-                                required={"required"}
-                                error={props.errors.dateEnd}
                             />
                         </div>
 

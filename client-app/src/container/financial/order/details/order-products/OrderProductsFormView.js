@@ -31,7 +31,7 @@ const OrderProductsFormView = props => {
                     { totalPriceInclVatAndReduction ? '€' + totalPriceInclVatAndReduction.toLocaleString('nl',{ minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '€0,00'}
                 </div>
                 <div className="col-sm-2">
-                    { product ? product.invoiceFrequency.name : ''}
+                    { product.invoiceFrequency ? product.invoiceFrequency.name : ''}
                 </div>
                 <div className="col-sm-2">
                     { totalPriceInclVatAndReductionPerYear ? '€' + totalPriceInclVatAndReductionPerYear.toLocaleString('nl',{ minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '€0,00'}

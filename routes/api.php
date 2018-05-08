@@ -321,5 +321,10 @@ Route::namespace('Api')
         Route::post('order/order-product/{orderProduct}/update', 'Order\OrderController@updateOrderProduct');
         Route::post('order/{order}', 'Order\OrderController@update');
         Route::post('order/{order}/delete', 'Order\OrderController@destroy');
+
+        Route::get('invoice/grid', 'Invoice\InvoiceController@grid');
+        Route::get('invoice/peek', 'Invoice\InvoiceController@peek');
+        Route::get('invoice/{invoice}', 'Invoice\InvoiceController@show');
+        Route::post('invoice', 'Invoice\InvoiceController@store');
     }
 );

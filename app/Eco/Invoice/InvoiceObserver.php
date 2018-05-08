@@ -8,6 +8,7 @@
 
 namespace App\Eco\Invoice;
 
+use App\Eco\Order\Order;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 
@@ -22,17 +23,14 @@ class InvoiceObserver
         $invoice->number = 'temp';
         $invoice->invoice_number = 0;
         $invoice->created_by_id = $userId;
+        $invoice->administration_id = Order::find($invoice->order_id)->pluck('administration_id');
 
 
     }
 
     public function created(Invoice $invoice)
     {
-        $query = Invoice::query();
-        $query->join('orders', 'invoices.order_id', '=', 'orders.id');
-        $query->where('orders.administration_id', $invoice->order->administration_id);
-
-        $invoice->invoice_number =  $query->count();;
+        $invoice->invoice_number =  Invoice::where('administration_id', $invoice->administration_id)->count();
         $invoice->number = 'F' . Carbon::now()->year . '-' . $invoice->invoice_number;
         $invoice->save();
     }

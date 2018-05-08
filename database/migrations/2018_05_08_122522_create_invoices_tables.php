@@ -23,6 +23,11 @@ class CreateInvoicesTables extends Migration
                 ->references('id')->on('orders')
                 ->onDelete('restrict');
 
+            $table->unsignedInteger('administration_id');
+            $table->foreign('administration_id')
+                ->references('id')->on('administrations')
+                ->onDelete('restrict');
+
             $table->string('payment_type_id');
             $table->string('status_id');
             $table->string('mollie_status_id')->default('not_used');

@@ -6,9 +6,9 @@
  * Time: 9:28
  */
 
-namespace App\Http\RequestQueries\Order\Grid;
+namespace App\Http\RequestQueries\Invoice\Grid;
 
-use App\Eco\Order\Order;
+use App\Eco\Invoice\Invoice;
 use Illuminate\Http\Request;
 
 class RequestQuery extends \App\Helpers\RequestQuery\RequestQuery
@@ -24,7 +24,7 @@ class RequestQuery extends \App\Helpers\RequestQuery\RequestQuery
 
     protected function baseQuery()
     {
-        return Order::query()
-            ->select('orders.*')->whereNull('orders.deleted_at')->where('orders.administration_id', $this->request->input('administrationId'));
+        return Invoice::query()
+            ->select('invoices.*')->where('invoices.administration_id', $this->request->input('administrationId'));
     }
 }

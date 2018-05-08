@@ -15,6 +15,8 @@ use App\Eco\DocumentTemplate\DocumentTemplatePolicy;
 use App\Eco\EnergySupplier\ContactEnergySupplier;
 use App\Eco\HousingFile\HousingFile;
 use App\Eco\HousingFile\HousingFilePolicy;
+use App\Eco\Invoice\Invoice;
+use App\Eco\Invoice\InvoicePolicy;
 use App\Eco\Mailbox\Mailbox;
 use App\Eco\Mailbox\MailboxPolicy;
 use App\Eco\Measure\Measure;
@@ -105,6 +107,7 @@ class AuthServiceProvider extends ServiceProvider
         Administration::class => AdministrationPolicy::class,
         Product::class => ProductPolicy::class,
         Order::class => OrderPolicy::class,
+        Invoice::class => InvoicePolicy::class,
     ];
 
     /**

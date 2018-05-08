@@ -18,6 +18,8 @@ use App\Eco\HousingFile\HousingFile;
 use App\Eco\HousingFile\HousingFileObserver;
 use App\Eco\Intake\Intake;
 use App\Eco\Intake\IntakeObserver;
+use App\Eco\Invoice\Invoice;
+use App\Eco\Invoice\InvoiceObserver;
 use App\Eco\Measure\Measure;
 use App\Eco\Measure\MeasureObserver;
 use App\Eco\Opportunity\Opportunity;
@@ -93,6 +95,7 @@ class ObserverServiceProvider extends ServiceProvider
         Administration::observe(AdministrationObserver::class);
         Product::observe(ProductObserver::class);
         Order::observe(OrderObserver::class);
+        Invoice::observe(InvoiceObserver::class);
     }
 
     /**

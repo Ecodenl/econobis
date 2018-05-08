@@ -15,6 +15,7 @@ import { documents } from 'react-icons-kit/ikons/documents';
 import { calendar } from 'react-icons-kit/icomoon/calendar';
 import { home } from 'react-icons-kit/icomoon/home';
 import { drawer } from 'react-icons-kit/icomoon/drawer';
+import { ic_business_center } from 'react-icons-kit/md/ic_business_center';
 
 class SidebarMenu extends Component {
     constructor(props) {
@@ -121,7 +122,7 @@ class SidebarMenu extends Component {
                     }
                     {this.props.permissions.manageFinancial && this.props.administrations.length > 0 &&
                     <Nav id="financial">
-                        <NavIcon><SvgIcon size={20} icon={cog}/></NavIcon>
+                        <NavIcon><SvgIcon size={20} icon={ic_business_center}/></NavIcon>
                         <NavText> Financieel </NavText>
                         {
                             this.props.administrations.map((administration) => {

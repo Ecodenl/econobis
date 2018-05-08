@@ -4,7 +4,9 @@ import SideNav, {Nav, NavIcon, NavText} from 'react-sidenav';
 import SvgIcon from 'react-icons-kit';
 import {connect} from "react-redux";
 
-import {ic_dashboard} from 'react-icons-kit/md/ic_dashboard';
+import { cog } from 'react-icons-kit/icomoon/cog';
+import { file } from 'react-icons-kit/fa/file';
+import { fileText } from 'react-icons-kit/fa/fileText';
 
 class FinancialTree extends Component {
     constructor(props) {
@@ -17,7 +19,7 @@ class FinancialTree extends Component {
                 <div className="financial-tree-sidebar-menu" style={{color: '$brand-primary'}}>
                     <SideNav highlightColor="$brand-primary" highlightBgColor='#e5e5e5' hoverBgColor='#F1EFF0' defaultSelected="orders">
                         <Nav id="orders">
-                            <NavIcon><SvgIcon size={20} icon={ic_dashboard} style={{color: '$brand-primary'}}/></NavIcon>
+                            <NavIcon><SvgIcon size={20} icon={file} style={{color: '$brand-primary'}}/></NavIcon>
                             <NavText><Link className="financial-tree-link" to={`financieel/${this.props.id}/orders`}>Alle orders({this.props.administrationDetails.totalOrders})</Link></NavText>
                             <Nav id="orders-concepts">
                                 <NavText><Link className="financial-tree-link" to={`financieel/${this.props.id}/orders/concepten`}>Concept orders({this.props.administrationDetails.totalOrdersConcepts})</Link></NavText>
@@ -33,7 +35,7 @@ class FinancialTree extends Component {
                             </Nav>
                         </Nav>
                         <Nav id="invoices">
-                            <NavIcon><SvgIcon size={20} icon={ic_dashboard} style={{color: '$brand-primary'}}/></NavIcon>
+                            <NavIcon><SvgIcon size={20} icon={fileText} style={{color: '$brand-primary'}}/></NavIcon>
                             <NavText><Link className="financial-tree-link" to={`financieel/${this.props.id}/facturen`}>Alle facturen(12)</Link></NavText>
                             <Nav id="invoices-send">
                                 <NavText><Link className="financial-tree-link" to={`financieel/${this.props.id}/facturen/verzonden`}>Verzonden(3)</Link></NavText>
@@ -52,7 +54,7 @@ class FinancialTree extends Component {
                             </Nav>
                         </Nav>
                         <Nav id="administration-settings">
-                            <NavIcon><SvgIcon size={20} icon={ic_dashboard}  style={{color: '$brand-primary'}}/></NavIcon>
+                            <NavIcon><SvgIcon size={20} icon={cog}  style={{color: '$brand-primary'}}/></NavIcon>
                             <NavText><Link className="financial-tree-link" to={`administratie/${this.props.id}`}>Instellingen</Link></NavText>
                         </Nav>
                     </SideNav>

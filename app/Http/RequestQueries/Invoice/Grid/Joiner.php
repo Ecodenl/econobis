@@ -13,4 +13,9 @@ use App\Helpers\RequestQuery\RequestJoiner;
 
 class Joiner extends RequestJoiner
 {
+    protected function applyContactJoin($query)
+    {
+        $query->join('orders', 'invoices.order_id', '=', 'orders.id');
+        $query->join('contacts', 'orders.contact_id', '=', 'contacts.id');
+    }
 }

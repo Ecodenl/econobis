@@ -10,6 +10,7 @@ import Panel from '../../../../../components/panel/Panel';
 import PanelBody from '../../../../../components/panel/PanelBody';
 import validator from "validator";
 import InputDate from "../../../../../components/form/InputDate";
+import moment from "moment/moment";
 
 class OrderProductsFormNew extends Component {
     constructor(props) {
@@ -32,6 +33,7 @@ class OrderProductsFormNew extends Component {
                 productId: false,
                 amount: false,
                 dateStart: false,
+                dateEnd: false,
                 description: false,
             },
         };
@@ -140,6 +142,16 @@ class OrderProductsFormNew extends Component {
             hasErrors = true;
         }
         ;
+
+        if (!validator.isEmpty(orderProduct.dateStart + '') && moment(orderProduct.dateEnd).isSameOrBefore(moment(orderProduct.dateStart))) {
+            errors.dateEnd = true;
+            hasErrors = true;
+        }
+
+        if (!validator.isEmpty(orderProduct.dateEnd + '') && moment(orderProduct.dateStart).isSameOrAfter(moment(orderProduct.dateEnd))) {
+            errors.dateStart = true;
+            hasErrors = true;
+        }
 
         this.setState({...this.state, errors: errors});
 
@@ -253,6 +265,7 @@ class OrderProductsFormNew extends Component {
                                 name="dateEnd"
                                 value={dateEnd}
                                 onChangeAction={this.handleInputChangeDate}
+                                error={this.state.errors.dateEnd}
                             />
                         </div>
 

@@ -7,6 +7,7 @@ import OrderProductsFormView from './OrderProductsFormView';
 import OrderProductsFormEdit from './OrderProductsFormEdit';
 import {isEqual} from "lodash";
 import validator from "validator";
+import moment from "moment/moment";
 
 class OrderProductsFormItem extends Component {
     constructor(props) {
@@ -23,6 +24,7 @@ class OrderProductsFormItem extends Component {
             errors: {
                 amount: false,
                 dateStart: false,
+                dateEnd: false,
                 description: false,
             },
         };
@@ -139,6 +141,16 @@ class OrderProductsFormItem extends Component {
             hasErrors = true;
         }
         ;
+
+        if (!validator.isEmpty(orderProduct.dateStart + '') && moment(orderProduct.dateEnd).isSameOrBefore(moment(orderProduct.dateStart))) {
+            errors.dateEnd = true;
+            hasErrors = true;
+        }
+
+        if (!validator.isEmpty(orderProduct.dateEnd + '') && moment(orderProduct.dateStart).isSameOrAfter(moment(orderProduct.dateEnd))) {
+            errors.dateStart = true;
+            hasErrors = true;
+        }
 
         this.setState({...this.state, errors: errors});
 

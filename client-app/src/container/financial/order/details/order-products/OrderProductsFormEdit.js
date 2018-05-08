@@ -108,6 +108,7 @@ const OrderProductsFormEdit = props => {
                                 name="dateEnd"
                                 value={dateEnd}
                                 onChangeAction={props.handleInputChangeDate}
+                                error={props.errors.dateEnd}
                             />
                         </div>
 

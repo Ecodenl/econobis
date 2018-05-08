@@ -13,6 +13,7 @@ import EmailTemplateAPI from "../../../../../api/email-template/EmailTemplateAPI
 import InputDate from "../../../../../components/form/InputDate";
 import InputReactSelect from "../../../../../components/form/InputReactSelect";
 import OrderDetailsAPI from "../../../../../api/order/OrderDetailsAPI";
+import moment from "moment/moment";
 
 class OrderDetailsFormGeneralEdit extends Component {
     constructor(props) {
@@ -47,6 +48,8 @@ class OrderDetailsFormGeneralEdit extends Component {
                 statusId: false,
                 subject: false,
                 IBAN: false,
+                dateStart: false,
+                dateEnd: false,
             },
             peekLoading: {
                 emailTemplates: true,
@@ -126,6 +129,16 @@ class OrderDetailsFormGeneralEdit extends Component {
                 errors.IBAN = true;
                 hasErrors = true;
             }
+        }
+
+        if (!validator.isEmpty(order.dateStart + '') && moment(order.dateEnd).isSameOrBefore(moment(order.dateStart))) {
+            errors.dateEnd = true;
+            hasErrors = true;
+        }
+
+        if (!validator.isEmpty(order.dateEnd + '') && moment(order.dateStart).isSameOrAfter(moment(order.dateEnd))) {
+            errors.dateStart = true;
+            hasErrors = true;
         }
 
         this.setState({...this.state, errors: errors});
@@ -305,6 +318,7 @@ class OrderDetailsFormGeneralEdit extends Component {
                                 name="dateStart"
                                 value={dateStart}
                                 onChangeAction={this.handleInputChangeDate}
+                                error={this.state.errors.dateStart}
                             />
                             <InputText
                                 label="Totaal bedrag incl. BTW"
@@ -322,6 +336,7 @@ class OrderDetailsFormGeneralEdit extends Component {
                                 name="dateEnd"
                                 value={dateEnd}
                                 onChangeAction={this.handleInputChangeDate}
+                                error={this.state.errors.dateEnd}
                             />
                         </div>
                     </PanelBody>

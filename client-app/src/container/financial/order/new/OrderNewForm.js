@@ -51,6 +51,8 @@ class OrderNewForm extends Component {
                 statusId: false,
                 subject: false,
                 IBAN: false,
+                dateEnd: false,
+                dateStart: false,
             },
             peekLoading: {
                 contacts: true,
@@ -178,6 +180,16 @@ class OrderNewForm extends Component {
 
         if (validator.isEmpty(order.subject + '')) {
             errors.subject = true;
+            hasErrors = true;
+        }
+
+        if (!validator.isEmpty(order.dateStart + '') && moment(order.dateEnd).isSameOrBefore(moment(order.dateStart))) {
+            errors.dateEnd = true;
+            hasErrors = true;
+        }
+
+        if (!validator.isEmpty(order.dateEnd + '') && moment(order.dateStart).isSameOrAfter(moment(order.dateEnd))) {
+            errors.dateStart = true;
             hasErrors = true;
         }
 
@@ -369,6 +381,7 @@ class OrderNewForm extends Component {
                                 name="dateStart"
                                 value={dateStart}
                                 onChangeAction={this.handleInputChangeDate}
+                                error={this.state.errors.dateStart}
                             />
                         </div>
                         <div className="row">
@@ -377,6 +390,7 @@ class OrderNewForm extends Component {
                                 name="dateEnd"
                                 value={dateEnd}
                                 onChangeAction={this.handleInputChangeDate}
+                                error={this.state.errors.dateEnd}
                             />
                         </div>
 

@@ -73,6 +73,7 @@ import PermissionHelper from './helpers/PermissionHelper';
 import IntakeDetailsApp from './container/intake/details/IntakeDetailsApp';
 import IntakeNewApp from './container/intake/new/IntakeNewApp';
 import IntakesListApp from './container/intake/list/IntakesListApp';
+import InvoiceDetailsApp from './container/financial/invoice/details/InvoiceDetailsApp';
 import RequireAuth from './helpers/RequireAuth';
 import TaskDetailsApp from './container/task/details/TaskDetailsApp';
 import TaskNewApp from './container/task/new/TaskNewApp';
@@ -167,6 +168,7 @@ const Routes = () => {
                 <Route path="financieel/:id/:type/:filter" component={FinancialApp} />
                 <Route path="order/nieuw/contact/:contactId" component={OrderNewApp} />
                 <Route path="order/:id" component={OrderDetailsApp} />
+                <Route path="factuur/:id" component={InvoiceDetailsApp} />
 
                 /* Campagnes */
                 <Route path="campagne/nieuw" component={CampaignNewApp} />

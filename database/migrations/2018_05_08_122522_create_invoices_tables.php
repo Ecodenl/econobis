@@ -64,6 +64,10 @@ class CreateInvoicesTables extends Migration
                 ->references('id')->on('invoices')
                 ->onDelete('restrict');
 
+            $table->string('product_code')->nullable();
+            $table->string('product_name')->nullable();
+            $table->string('description')->nullable();
+
             $table->integer('amount');
             $table->float('amount_reduction')->nullable();
             $table->float('percentage_reduction')->nullable();

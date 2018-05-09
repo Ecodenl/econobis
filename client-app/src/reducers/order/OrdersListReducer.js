@@ -1,12 +1,18 @@
 export default function (state= [], action) {
     switch (action.type) {
         case 'FETCH_ORDERS_SUCCESS':
-            return [
-                ...state,
-                ...action.orders.data.data
-            ];
+            return {
+                data: action.orders.data.data,
+                meta: {
+                    total: action.orders.data.meta.total,
+                },
+            };
         case 'CLEAR_ORDERS':
-            return state.orders = [];
+            return {
+                ...state,
+                data: [],
+                meta: {},
+            };
         case 'DELETE_ORDER_SUCCESS':
             return state.filter((order) => order.id !== action.id);
         default:

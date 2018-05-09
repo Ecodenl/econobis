@@ -33,14 +33,17 @@ class FullInvoice extends Resource
                 'orderId' => $this->order_id,
                 'order' => FullOrder::make($this->whenLoaded('order')),
 
+                'invoiceProducts' => FullInvoiceProduct::collection($this->whenLoaded('invoiceProducts')),
 
                 'paymentTypeId' => $this->payment_type_id,
-                'paymentType' => $this->getPaymentType(),
+                'paymentType' => FullEnumWithIdAndName::make($this->getPaymentType()),
                 'statusId' => $this->status_id,
-                'status' => $this->getStatus(),
+                'status' => FullEnumWithIdAndName::make($this->getStatus()),
                 'sendMethodId' => $this->send_method_id,
-                'sendMethod' => $this->getSendMethod(),
+                'sendMethod' => FullEnumWithIdAndName::make($this->getSendMethod()),
 
+                'datePaid' => $this->date_paid,
+                'datePaymentDue' => $this->date_payment_due,
                 'dateSent' => $this->date_sent,
                 'dateCollection' => $this->date_collection,
                 'dateReminder1' => $this->date_reminder_1,

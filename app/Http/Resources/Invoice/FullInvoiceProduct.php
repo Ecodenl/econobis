@@ -19,18 +19,17 @@ class FullInvoiceProduct extends Resource
         return
             [
                 'id' => $this->id,
-                'description' => $this->description,
                 'amount' => $this->amount,
                 'amountReduction' => $this->amount_reduction,
                 'percentageReduction' => $this->percentage_reduction,
-                'dateStart' => $this->date_start,
-                'dateEnd' => $this->date_end,
 
-                'totalPriceInclVatAndReduction' => $this->total_price_incl_vat_and_reduction,
-                'totalPriceInclVatAndReductionPerYear' => $this->total_price_incl_vat_and_reduction_per_year,
+                'priceInclVatAndReduction' => $this->price_incl_vat_and_reduction,
+                'productCode' => $this->product_code,
+                'productName' => $this->product_name,
+                'description' => $this->description,
 
-                'orderId' => $this->order_id,
-                'order' => FullOrder::make($this->whenLoaded('order')),
+                'invoiceId' => $this->invoice_id,
+                'invoice' => FullInvoice::make($this->whenLoaded('invoice')),
 
                 'productId' => $this->product_id,
                 'product' => FullProduct::make($this->whenLoaded('product')),

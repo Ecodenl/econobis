@@ -44,6 +44,8 @@ class InvoiceController extends ApiController
     {
         $invoice->load([
             'order.contact',
+            'invoiceProducts',
+            'payments',
             'createdBy',
         ]);
 

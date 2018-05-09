@@ -168,7 +168,7 @@ class InvoicesList extends Component {
     };
 
     render() {
-        const { meta = {} } = this.props.invoices;
+        const { data = [],meta = {} } = this.props.invoices;
 
         return (
             <div>
@@ -182,7 +182,7 @@ class InvoicesList extends Component {
                     <div className="col-md-4">
                         <div className="row">
                             <div className="col-sm-12">
-                                <div className="pull-right">Resultaten: {this.props.invoices.total || 0}</div>
+                                <div className="pull-right">Resultaten: {meta.total || 0}</div>
                             </div>
                             <div className="col-sm-12">
                                 <div className="pull-right">Totaal
@@ -207,10 +207,10 @@ class InvoicesList extends Component {
                         </DataTableHead>
                         <DataTableBody>
                             {
-                                this.props.invoices.length === 0 ? (
+                                data.length === 0 ? (
                                     <tr><td colSpan={9}>Geen facturen gevonden!</td></tr>
                                 ) : (
-                                    this.props.invoices.map((invoice) => {
+                                    data.map((invoice) => {
                                         return <InvoicesListItem
                                             key={invoice.id}
                                             {...invoice}

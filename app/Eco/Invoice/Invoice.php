@@ -20,6 +20,8 @@ class Invoice extends Model
         = [
             'days_expired',
             'total_price_incl_vat_and_reduction',
+            'date_paid',
+            'date_payment_due',
         ];
 
     public function invoiceProducts()
@@ -100,5 +102,25 @@ class Invoice extends Model
         }
 
         return $price <= 0 ? 0 : $price;
+    }
+
+    public function getDatePaidAttribute()
+    {
+        return null;
+    }
+
+    public function getDatePaymentDueAttribute()
+    {
+        if($this->payment_type_id === 'transfer'){
+            if(!$this->date_sent){
+                return 0;
+            }
+
+            $daysAllowed = $this->administration->default_payment_term ? $this->administration->default_payment_term : 30;
+
+            return Carbon::parse($this->date_sent)->addDays($daysAllowed);
+        }
+
+        return null;
     }
 }

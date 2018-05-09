@@ -41,14 +41,16 @@ class FullInvoice extends Resource
                 'sendMethodId' => $this->send_method_id,
                 'sendMethod' => $this->getSendMethod(),
 
+                'dateSent' => $this->date_sent,
                 'dateCollection' => $this->date_collection,
                 'dateReminder1' => $this->date_reminder_1,
                 'dateReminder2' => $this->date_reminder_2,
                 'dateReminder3' => $this->date_reminder_3,
                 'dateExhortation' => $this->date_exhortation,
                 'dateRequested' => $this->date_requested,
-                //            'daysPassed' => $this->subject,
-//            'priceInclVat' => $this->price_incl_vat,
+
+                'daysExpired' => $this->days_expired,
+                'totalPriceInclVatAndReduction' => $this->total_price_incl_vat_and_reduction,
 
                 'createdById' => $this->created_by_id,
                 'createdBy' => FullUser::make($this->whenLoaded('createdBy')),

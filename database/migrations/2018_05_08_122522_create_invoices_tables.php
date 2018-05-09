@@ -33,6 +33,7 @@ class CreateInvoicesTables extends Migration
             $table->string('mollie_status_id')->default('not_used');
             $table->string('send_method_id');
 
+            $table->date('date_sent')->nullable();
             $table->date('date_collection')->nullable();
             $table->date('date_reminder_1')->nullable();
             $table->date('date_reminder_2')->nullable();

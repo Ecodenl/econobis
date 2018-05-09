@@ -32,7 +32,7 @@ class InvoicesListItem extends Component {
     };
 
     render() {
-        const { id, number, dateRequested, order, subject, paymentType, status } = this.props;
+        const { id, number, dateRequested, order, subject, paymentType, status, daysExpired, totalPriceInclVatAndReduction } = this.props;
 
         return (
             <tr className={this.state.highlightRow} onDoubleClick={() => this.openItem(id)} onMouseEnter={() => this.onRowEnter()} onMouseLeave={() => this.onRowLeave()}>
@@ -40,9 +40,8 @@ class InvoicesListItem extends Component {
                 <td>{ dateRequested ? moment(dateRequested).format('DD-MM-Y') : ''}</td>
                 <td>{order ? order.contact.fullName : ''}</td>
                 <td>{subject ? subject : ''}</td>
-                <td>{'todo'}</td>
-                <td>{'todo'}</td>
-                {/*<td>{'€' + totalPriceInclVatPerYear.toLocaleString('nl',{ minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>*/}
+                <td>{daysExpired}</td>
+                <td>{'€' + totalPriceInclVatAndReduction.toLocaleString('nl',{ minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
                 <td>{paymentType ? paymentType.name : ''}</td>
                 <td>{status ? status.name : ''}</td>
                 <td>

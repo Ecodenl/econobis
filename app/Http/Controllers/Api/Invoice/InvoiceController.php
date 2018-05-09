@@ -9,6 +9,7 @@
 namespace App\Http\Controllers\Api\Invoice;
 
 use App\Eco\Invoice\Invoice;
+use App\Eco\Invoice\InvoicePayment;
 use App\Helpers\Invoice\InvoiceHelper;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Api\ApiController;
@@ -77,6 +78,47 @@ class InvoiceController extends ApiController
         $order->save();
 
         return $this->show($invoice->fresh());
+    }
+
+    public function newPayment(RequestInput $input, Invoice $invoice)
+    {
+        $this->authorize('manage', Invoice::class);
+
+        $data = $input
+            ->double('amount')->validate('required')->next()
+            ->date('datePaid')->validate('required|date')->alias('date_paid')->next()
+            ->get();
+
+        $data['invoice_id'] = $invoice->id;
+
+        $invoicePayment = new InvoicePayment($data);
+        $invoicePayment->save();
+
+        return $this->show($invoice->fresh());
+    }
+
+    public function updatePayment(RequestInput $input, InvoicePayment $invoicePayment)
+    {
+        $this->authorize('manage', Invoice::class);
+
+        $data = $input
+            ->double('amount')->validate('required')->next()
+            ->date('datePaid')->validate('required|date')->alias('date_paid')->next()
+            ->get();
+
+        $invoicePayment->fill($data);
+        $invoicePayment->save();
+
+        return $this->show($invoicePayment->invoice->fresh());
+    }
+
+    public function deletePayment(InvoicePayment $invoicePayment)
+    {
+        $this->authorize('manage', Invoice::class);
+
+        $invoicePayment->forceDelete();
+
+        return;
     }
 
     public function peek()

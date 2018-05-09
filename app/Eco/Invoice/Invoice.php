@@ -22,6 +22,7 @@ class Invoice extends Model
             'total_price_incl_vat_and_reduction',
             'date_paid',
             'date_payment_due',
+            'amount_open',
         ];
 
     public function invoiceProducts()
@@ -31,7 +32,7 @@ class Invoice extends Model
 
     public function payments()
     {
-        return $this->hasMany(InvoicePayment::class);
+        return $this->hasMany(InvoicePayment::class)->orderBy('date_paid');
     }
 
     public function documents()
@@ -122,5 +123,20 @@ class Invoice extends Model
         }
 
         return null;
+    }
+
+    public function getAmountOpenAttribute()
+    {
+        $amountOpen = $this->total_price_incl_vat_and_reduction;
+
+        if($amountOpen <= 0){
+            return 0;
+        }
+
+        foreach($this->payments as $payment){
+            $amountOpen -= $payment->amount;
+        }
+
+        return $amountOpen;
     }
 }

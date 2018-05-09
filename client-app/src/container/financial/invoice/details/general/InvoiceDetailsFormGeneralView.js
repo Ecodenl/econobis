@@ -8,7 +8,7 @@ import moment from "moment/moment";
 
 const InvoiceDetailsFormGeneralView = props => {
 
-    const { status, dateRequested, paymentType, paymentTypeId, sendMethod, order, totalPriceInclVatAndReduction, dateSent, datePaymentDue, datePaid, dateReminder1, dateReminder2, dateReminder3, dateExhortation, dateCollection } = props.invoiceDetails;
+    const { status, dateRequested, paymentType, paymentTypeId, sendMethod, order, totalPriceInclVatAndReduction, amountOpen, dateSent, datePaymentDue, datePaid, dateReminder1, dateReminder2, dateReminder3, dateExhortation, dateCollection } = props.invoiceDetails;
 
     return (
         <div onClick={props.switchToEdit}>
@@ -62,6 +62,10 @@ const InvoiceDetailsFormGeneralView = props => {
                         <ViewText
                             label={"Prijs incl. BTW"}
                             value={ totalPriceInclVatAndReduction ? '€' + totalPriceInclVatAndReduction.toLocaleString('nl',{ minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '€0,00'}
+                        />
+                        <ViewText
+                            label={"Openstaand bedrag"}
+                            value={ amountOpen ? '€' + amountOpen.toLocaleString('nl',{ minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '€0,00'}
                         />
                     </div>
 

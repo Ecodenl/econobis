@@ -8,6 +8,7 @@ use App\Http\Resources\Document\FullDocument;
 use App\Http\Resources\Email\FullEmail;
 use App\Http\Resources\EmailTemplate\FullEmailTemplate;
 use App\Http\Resources\EnumWithIdAndName\FullEnumWithIdAndName;
+use App\Http\Resources\GenericResource;
 use App\Http\Resources\Order\FullOrder;
 use App\Http\Resources\Task\FullTask;
 use App\Http\Resources\User\FullUser;
@@ -33,6 +34,8 @@ class FullInvoice extends Resource
                 'orderId' => $this->order_id,
                 'order' => FullOrder::make($this->whenLoaded('order')),
 
+                'payments' => GenericResource::make($this->whenLoaded('payments')),
+
                 'invoiceProducts' => FullInvoiceProduct::collection($this->whenLoaded('invoiceProducts')),
 
                 'paymentTypeId' => $this->payment_type_id,
@@ -42,6 +45,7 @@ class FullInvoice extends Resource
                 'sendMethodId' => $this->send_method_id,
                 'sendMethod' => FullEnumWithIdAndName::make($this->getSendMethod()),
 
+                'amountOpen' => $this->amount_open,
                 'datePaid' => $this->date_paid,
                 'datePaymentDue' => $this->date_payment_due,
                 'dateSent' => $this->date_sent,

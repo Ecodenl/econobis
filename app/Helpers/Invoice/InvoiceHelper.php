@@ -33,4 +33,14 @@ class InvoiceHelper
 
     }
 
+    public static function saveInvoiceStatus(Invoice $invoice){
+        if($invoice->amount_open <= 0){
+            $invoice->status_id = 'paid';
+        }
+        else{
+            $invoice->status_id = 'exported';
+        }
+
+        $invoice->save();
+    }
 }

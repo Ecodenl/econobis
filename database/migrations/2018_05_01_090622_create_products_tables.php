@@ -47,7 +47,7 @@ class CreateProductsTables extends Migration
                 ->onDelete('restrict');
 
             $table->date('date_start');
-            $table->integer('price');
+            $table->float('price');
             $table->integer('vat_percentage');
 
             $table->timestamps();

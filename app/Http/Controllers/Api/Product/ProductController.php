@@ -19,6 +19,7 @@ use App\Http\Resources\GenericResource;
 use App\Http\Resources\Product\ProductPeek;
 use App\Http\Resources\Product\FullProduct;
 use App\Http\Resources\Product\GridProduct;
+use Illuminate\Support\Facades\Auth;
 
 class ProductController extends ApiController
 {
@@ -104,7 +105,7 @@ class ProductController extends ApiController
         $data = $input
             ->string('productId')->validate('required|exists:products,id')->alias('product_id')->next()
             ->string('dateStart')->validate('required|date')->alias('date_start')->next()
-            ->integer('price')->validate('required')->next()
+            ->numeric('price')->validate('required')->next()
             ->integer('vatPercentage')->validate('required')->alias('vat_percentage')->next()
             ->get();
 

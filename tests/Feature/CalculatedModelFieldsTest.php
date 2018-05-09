@@ -2,8 +2,13 @@
 
 namespace Tests\Unit;
 
+use App\Eco\Administration\Administration;
 use App\Eco\Contact\Contact;
+use App\Eco\Order\Order;
+use App\Eco\Order\OrderProduct;
 use App\Eco\ParticipantProductionProject\ParticipantProductionProject;
+use App\Eco\Product\PriceHistory;
+use App\Eco\Product\Product;
 use App\Eco\ProductionProject\ProductionProject;
 use App\Eco\ProductionProject\ProductionProjectRevenue;
 use App\Eco\Task\Task;
@@ -27,6 +32,7 @@ class CalculatedModelFieldsTest extends TestCase
         $this->assertParticipantProductionProjectFields();
         $this->assertProductionProjectRevenueFields();
         $this->assertTasksFields();
+        $this->assertOrdersFields();
     }
 
     public function assertProductionProjectFields()
@@ -98,12 +104,36 @@ class CalculatedModelFieldsTest extends TestCase
         $this->assertEquals('2018-03-02 01:00:00', $task->datePlannedWithEndTime()->toDateTimeString());
     }
 
+    public function assertOrdersFields()
+    {
+        $order = Order::find(1);
+        $this->assertEquals(9910.72, $order->total_price_incl_vat);
+        $this->assertEquals(109042.88, $order->total_price_incl_vat_per_year);
+
+        $orderProduct = OrderProduct::find(1);
+        $this->assertEquals(1235.72, $orderProduct->total_price_incl_vat_and_reduction);
+        $this->assertEquals(4942.88, $orderProduct->total_price_incl_vat_and_reduction_per_year);
+
+        $orderProduct = OrderProduct::find(2);
+        $this->assertEquals(8675, $orderProduct->total_price_incl_vat_and_reduction);
+        $this->assertEquals(104100, $orderProduct->total_price_incl_vat_and_reduction_per_year);
+
+        $product = Product::find(1);
+        $this->assertEquals(100, $product->current_price->price);
+        $this->assertEquals(121, $product->price_incl_vat);
+
+        $product = Product::find(2);
+        $this->assertEquals(1000, $product->current_price->price);
+        $this->assertEquals(1060, $product->price_incl_vat);
+    }
+
     public function insertData(){
       $this->insertProductionProjects();
       $this->insertContacts();
       $this->insertParticipantProductionProjects();
       $this->insertProductionProjectRevenues();
       $this->insertTasks();
+      $this->insertOrder();
     }
 
     public function insertProductionProjects(){
@@ -321,6 +351,82 @@ class CalculatedModelFieldsTest extends TestCase
         $task->date_planned_start = '2018-02-28';
         $task->date_planned_finish = '2018-03-02';
         $task->save();
+    }
 
+    public function insertOrder(){
+
+        $ad = new Administration();
+        $ad->name = 'test administratie';
+        $ad->administration_number = 1445;
+        $ad->btw_number = '1233123123';
+        $ad->IBAN = 'CH3608387000001080173';
+        $ad->created_by_id = 1;
+        $ad->save();
+
+        $pr = new Product();
+        $pr->code = "TST";
+        $pr->name = "Testje productje";
+        $pr->administration_id = 1;
+        $pr->invoice_frequency_id = 'quarterly';
+        $pr->created_by_id = 1;
+        $pr->save();
+
+        $ph = new PriceHistory();
+        $ph->product_id = 1;
+        $ph->date_start = '2018-05-01';
+        $ph->price = 100;
+        $ph->vat_percentage = 21;
+        $ph->save();
+
+        $pr = new Product();
+        $pr->code = "TST";
+        $pr->name = "Testje productje";
+        $pr->administration_id = 1;
+        $pr->invoice_frequency_id = 'monthly';
+        $pr->created_by_id = 1;
+        $pr->save();
+
+        $ph = new PriceHistory();
+        $ph->product_id = 2;
+        $ph->date_start = '2018-05-01';
+        $ph->price = 1000;
+        $ph->vat_percentage = 6;
+        $ph->save();
+
+        $or = new Order();
+        $or->contact_id = 1;
+        $or->administration_id = 1;
+        $or->status_id = 'concept';
+        $or->subject = 'Leuke order super!';
+        $or->payment_type_id = 'collection';
+        $or->IBAN = 'IBN';
+        $or->date_requested = '2018-05-02';
+        $or->date_start = '2018-05-03';
+        $or->date_end = '2018-05-04';
+        $or->created_by_id = 1;
+        $or->collection_frequency_id = 'yearly';
+        $or->save();
+
+        $op = new OrderProduct();
+        $op->product_id = 1;
+        $op->order_id = 1;
+        $op->amount = 12;
+        $op->amount_reduction = 13;
+        $op->percentage_reduction = 14;
+        $op->date_start = '2018-01-01';
+        $op->date_end = '2020-01-01';
+        $op->description = 'Niet gratis';
+        $op->save();
+
+        $op = new OrderProduct();
+        $op->product_id = 2;
+        $op->order_id = 1;
+        $op->amount = 10;
+        $op->amount_reduction = 17;
+        $op->percentage_reduction = 18;
+        $op->date_start = '2018-01-01';
+        $op->date_end = '2020-01-01';
+        $op->description = 'Niet gratis';
+        $op->save();
     }
 }

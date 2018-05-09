@@ -22,6 +22,8 @@ use App\Eco\Measure\Measure;
 use App\Eco\Measure\MeasureObserver;
 use App\Eco\Opportunity\Opportunity;
 use App\Eco\Opportunity\OpportunityObserver;
+use App\Eco\Order\Order;
+use App\Eco\Order\OrderObserver;
 use App\Eco\Organisation\Organisation;
 use App\Eco\Organisation\OrganisationObserver;
 use App\Eco\Address\Address;
@@ -90,6 +92,7 @@ class ObserverServiceProvider extends ServiceProvider
         ParticipantTransaction::observe(ParticipantTransactionObserver::class);
         Administration::observe(AdministrationObserver::class);
         Product::observe(ProductObserver::class);
+        Order::observe(OrderObserver::class);
     }
 
     /**

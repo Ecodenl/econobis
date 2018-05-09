@@ -64,6 +64,16 @@ class Sanitizer
     }
 
     /**
+     * Add a new numeric field to the instance.
+     * @param $field
+     * @return Field
+     */
+    public function numeric($field)
+    {
+        return $this->input('numeric', $field);
+    }
+
+    /**
      * Add a new double field to the instance.
      * @param $field
      * @return Field

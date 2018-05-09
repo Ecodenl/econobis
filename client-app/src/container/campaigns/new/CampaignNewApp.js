@@ -46,26 +46,12 @@ class CampaignNewApp extends Component {
         });
     };
 
-    handleStartDate = (date) => {
-        const formattedDate = (date ? moment(date).format('Y-MM-DD') : '');
-
+    handleInputChangeDate = (value, name) => {
         this.setState({
             ...this.state,
             campaign: {
                 ...this.state.campaign,
-                startDate: formattedDate
-            },
-        });
-    };
-
-    handleEndDate = (date) => {
-        const formattedDate = (date ? moment(date).format('Y-MM-DD') : '');
-
-        this.setState({
-            ...this.state,
-            campaign: {
-                ...this.state.campaign,
-                endDate: formattedDate
+                [name]: value
             },
         });
     };
@@ -122,8 +108,7 @@ class CampaignNewApp extends Component {
                                         campaign={this.state.campaign}
                                         errors={this.state.errors}
                                         handleInputChange={this.handleInputChange}
-                                        handleStartDate={this.handleStartDate}
-                                        handleEndDate={this.handleEndDate}
+                                        handleInputChangeDate={this.handleInputChangeDate}
                                         handleMeasureCategoryIds={this.handleMeasureCategoryIds}
                                         handleSubmit={this.handleSubmit}
                                     />

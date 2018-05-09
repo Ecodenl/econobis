@@ -13,6 +13,7 @@ import { documents } from 'react-icons-kit/ikons/documents';
 import { calendar } from 'react-icons-kit/icomoon/calendar';
 import { home } from 'react-icons-kit/icomoon/home';
 import { drawer } from 'react-icons-kit/icomoon/drawer';
+import { ic_business_center } from 'react-icons-kit/md/ic_business_center';
 
 class SidebarMenuSmall extends Component {
     constructor(props) {
@@ -45,7 +46,7 @@ class SidebarMenuSmall extends Component {
                 }
                 {/* Administraties */}
                 {this.props.permissions.manageFinancial && this.props.administrations.length > 0 &&
-                <div className="sidebar-menu-small-item"><SvgIcon size={20} icon={cog}/></div>
+                <div className="sidebar-menu-small-item"><SvgIcon size={20} icon={ic_business_center}/></div>
                 }
                 {/* Instellingen */}
                 <div className="sidebar-menu-small-item"><SvgIcon size={20} icon={cog}/></div>

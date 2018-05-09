@@ -10,6 +10,7 @@ use App\Eco\HousingFile\HousingFile;
 use App\Eco\Measure\Measure;
 use App\Eco\Opportunity\Opportunity;
 use App\Eco\Intake\Intake;
+use App\Eco\Order\Order;
 use App\Eco\ParticipantProductionProject\ParticipantProductionProject;
 use App\Eco\ProductionProject\ProductionProject;
 use App\Eco\QuotationRequest\QuotationRequest;
@@ -32,6 +33,11 @@ class Document extends Model
     public function intake()
     {
         return $this->belongsTo(Intake::class);
+    }
+
+    public function order()
+    {
+        return $this->belongsTo(Order::class);
     }
 
     public function contactGroup()

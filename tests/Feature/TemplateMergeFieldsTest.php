@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Eco\Address\Address;
+use App\Eco\Administration\Administration;
 use App\Eco\Contact\Contact;
 use App\Eco\Email\Email;
 use App\Eco\EmailAddress\EmailAddress;
@@ -11,16 +12,21 @@ use App\Eco\EnergySupplier\EnergySupplier;
 use App\Eco\Intake\Intake;
 use App\Eco\Occupation\OccupationContact;
 use App\Eco\Opportunity\Opportunity;
+use App\Eco\Order\Order;
+use App\Eco\Order\OrderProduct;
 use App\Eco\Organisation\Organisation;
 use App\Eco\ParticipantProductionProject\ParticipantProductionProject;
 use App\Eco\Person\Person;
 use App\Eco\PhoneNumber\PhoneNumber;
+use App\Eco\Product\PriceHistory;
+use App\Eco\Product\Product;
 use App\Eco\ProductionProject\ProductionProject;
 use App\Eco\ProductionProject\ProductionProjectRevenue;
 use App\Eco\ProductionProject\ProductionProjectRevenueDistribution;
 use App\Eco\QuotationRequest\QuotationRequest;
 use App\Eco\User\User;
 use App\Helpers\Template\TemplateVariableHelper;
+use Illuminate\Support\Carbon;
 use Tests\TestCase;
 
 class TemplateMergeFieldsTest extends TestCase
@@ -47,6 +53,7 @@ class TemplateMergeFieldsTest extends TestCase
         $this->assertProductionProjectRevenueMergeFields();
         $this->assertProductionProjectRevenueDistributionMergeFields();
         $this->assertQuotationRequestMergeFields();
+        $this->assertOrderMergeFields();
     }
 
     public function assertContactMergeFields()
@@ -152,6 +159,20 @@ class TemplateMergeFieldsTest extends TestCase
         $this->assertEquals($expectedHtml, $html);
     }
 
+    public function assertOrderMergeFields()
+    {
+        $html ='{order_nummer}{order_onderwerp}{order_iban}{order_prijs}{order_prijs_per_jaar}{order_datum_aangevraagd}{order_datum_start}{order_datum_eind}';
+        $html .='{order_gemaakt_op}{order_status}{order_betaalwijze}{order_incasso_frequentie}{order_contact_naam}{order_contact_voornaam}{order_contact_achternaam}';
+
+        $html = TemplateVariableHelper::replaceTemplateVariables($html, 'order', Order::find(1));
+        $html = TemplateVariableHelper::stripRemainingVariableTags($html);
+
+        $expectedHtml = 'O2018-1Leuke order super!IBN1235.724942.8802/05/201803/05/201804/05/2018';
+        $expectedHtml .= Carbon::parse(Carbon::today())->format('d/m/Y') . 'ConceptIncassoJaarlijksKlaas de VaakKlaasde Vaak';
+
+        $this->assertEquals($expectedHtml, $html);
+    }
+
     public function insertData(){
         $this->insertContact();
         $this->insertUser();
@@ -160,6 +181,7 @@ class TemplateMergeFieldsTest extends TestCase
         $this->insertProductionProjectRevenue();
         $this->insertProductionProjectRevenueDistribution();
         $this->insertQuotationRequest();
+        $this->insertOrder();
     }
 
     public function insertContact(){
@@ -369,5 +391,56 @@ class TemplateMergeFieldsTest extends TestCase
         $qr->updated_by_id = 1;
         $qr->created_at = '2018-03-22';
         $qr->save();
+    }
+
+    public function insertOrder(){
+
+        $ad = new Administration();
+        $ad->name = 'test administratie';
+        $ad->administration_number = 1445;
+        $ad->btw_number = '1233123123';
+        $ad->IBAN = 'CH3608387000001080173';
+        $ad->created_by_id = 1;
+        $ad->save();
+
+        $pr = new Product();
+        $pr->code = "TST";
+        $pr->name = "Testje productje";
+        $pr->administration_id = $ad->id;
+        $pr->invoice_frequency_id = 'quarterly';
+        $pr->created_by_id = 1;
+        $pr->save();
+
+        $ph = new PriceHistory();
+        $ph->product_id = $pr->id;
+        $ph->date_start = '2018-05-01';
+        $ph->price = 100;
+        $ph->vat_percentage = 21;
+        $ph->save();
+
+        $or = new Order();
+        $or->contact_id = 1;
+        $or->administration_id = $ad->id;
+        $or->status_id = 'concept';
+        $or->subject = 'Leuke order super!';
+        $or->payment_type_id = 'collection';
+        $or->IBAN = 'IBN';
+        $or->date_requested = '2018-05-02';
+        $or->date_start = '2018-05-03';
+        $or->date_end = '2018-05-04';
+        $or->created_by_id = 1;
+        $or->collection_frequency_id = 'yearly';
+        $or->save();
+
+        $op = new OrderProduct();
+        $op->product_id = $pr->id;
+        $op->order_id = $or->id;
+        $op->amount = 12;
+        $op->amount_reduction = 13;
+        $op->percentage_reduction = 14;
+        $op->date_start = '2018-01-01';
+        $op->date_end = '2020-01-01';
+        $op->description = 'Niet gratis';
+        $op->save();
     }
 }

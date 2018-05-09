@@ -44,15 +44,15 @@ const CampaignNew = props => {
                     label={"Begindatum"}
                     size={"col-sm-6"}
                     name={"startDate"}
-                    value={ startDate ? moment(startDate).format('LL') : startDate}
-                    onChangeAction={props.handleStartDate}
+                    value={ startDate}
+                    onChangeAction={props.handleInputChangeDate}
                 />
                 <InputDate
                     label={"Einddatum"}
                     size={"col-sm-6"}
                     name={"endDate"}
-                    value={endDate ? moment(endDate).format('LL') : ''}
-                    onChangeAction={props.handleEndDate}
+                    value={endDate}
+                    onChangeAction={props.handleInputChangeDate}
                 />
             </div>
 

@@ -1,0 +1,34 @@
+.panel-finincial-tree {
+  padding: 0;
+}
+
+.financial-tree {
+  height: 100vh;
+  transition: left .3s ease-in-out;
+  color: $brand-primary;
+}
+
+.financial-tree-link {
+  color: $brand-primary;
+  padding-left: 4em;
+  padding-right: 8em;
+  margin-left: -4em;
+  margin-right: -8em;
+
+  &:hover {
+    color: $brand-primary;
+    text-decoration: none;
+  }
+
+  &:focus {
+    color: $brand-primary;
+    text-decoration: none;
+  }
+}
+
+.financial-tree-sidebar-menu {
+  overflow-y: auto;
+  overflow-x: hidden;
+  height: 100vh;
+  padding-bottom: 60px;
+}

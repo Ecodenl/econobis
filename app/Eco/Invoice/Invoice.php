@@ -6,14 +6,13 @@ use App\Eco\Administration\Administration;
 use App\Eco\Order\Order;
 use App\Eco\Order\OrderPaymentType;
 use App\Eco\User\User;
-use App\Http\Traits\Encryptable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
 use Venturecraft\Revisionable\RevisionableTrait;
 
 class Invoice extends Model
 {
-    use RevisionableTrait, Encryptable;
+    use RevisionableTrait;
 
     protected $guarded = ['id'];
 

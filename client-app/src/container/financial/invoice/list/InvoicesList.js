@@ -180,7 +180,18 @@ class InvoicesList extends Component {
                     </div>
                     <div className="col-md-4"><h3 className="text-center table-title">Facturen</h3></div>
                     <div className="col-md-4">
-                        <div className="pull-right">Resultaten: { this.props.invoices.total || 0 }</div>
+                        <div className="row">
+                            <div className="col-sm-12">
+                                <div className="pull-right">Resultaten: {this.props.invoices.total || 0}</div>
+                            </div>
+                            <div className="col-sm-12">
+                                <div className="pull-right">Totaal
+                                    prijs: {meta.totalPrice ? '€' + meta.totalPrice.toLocaleString('nl', {
+                                        minimumFractionDigits: 2,
+                                        maximumFractionDigits: 2
+                                    }): '€0,00'}</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 

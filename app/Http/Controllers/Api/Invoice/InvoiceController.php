@@ -26,10 +26,16 @@ class InvoiceController extends ApiController
 
         $invoices->load(['order.contact']);
 
+        $totalPrice = 0;
+        foreach($invoices as $invoice){
+            $totalPrice += $invoice->total_price_incl_vat_and_reduction;
+        }
+
         return GridInvoice::collection($invoices)
             ->additional([
                 'meta' => [
                     'total' => $requestQuery->total(),
+                    'totalPrice' => $totalPrice,
                 ]
             ]);
     }
@@ -55,19 +61,18 @@ class InvoiceController extends ApiController
             ->alias('send_method_id')->next()
             ->date('dateRequested')->validate('nullable|date')
             ->alias('date_requested')->next()
+            ->date('dateCollection')->validate('nullable|date')->whenMissing(null)->onEmpty(null)
+            ->alias('date_collection')->next()
             ->get();
 
-
-        $data['status_id'] = 'concept';
-
-
         $invoice = new Invoice($data);
-
-        $data['date_collection'] = InvoiceHelper::getCollectionDate($invoice);
+        $invoice->save();
 
         InvoiceHelper::saveInvoiceProducts($invoice, $invoice->order);
 
-        $invoice->save();
+        $order = $invoice->order;
+        $order->status_id = 'active';
+        $order->save();
 
         return $this->show($invoice->fresh());
     }

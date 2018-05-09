@@ -21,11 +21,14 @@ class InvoiceObserver
         // Daarom tijdelijke waarde erin zetten zodat query niet onderuit gaat.
         $userId = Auth::id();
         $invoice->number = 'temp';
+        $invoice->status_id = 'concept';
         $invoice->invoice_number = 0;
         $invoice->created_by_id = $userId;
-        $invoice->administration_id = Order::find($invoice->order_id)->pluck('administration_id');
 
+        $order = Order::find($invoice->order_id);
 
+        $invoice->administration_id = $order->administration_id;
+        $invoice->payment_type_id = $order->payment_type_id;
     }
 
     public function created(Invoice $invoice)

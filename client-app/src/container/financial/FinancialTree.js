@@ -25,7 +25,7 @@ class FinancialTree extends Component {
                                 <NavText><Link className="financial-tree-link" to={`financieel/${this.props.id}/orders/concepten`}>Concept orders({this.props.administrationDetails.totalOrdersConcepts})</Link></NavText>
                             </Nav>
                             <Nav id="orders-invoices">
-                                <NavText><Link className="financial-tree-link" to={`financieel/${this.props.id}/orders/facturen`}>Te factureren orders({this.props.administrationDetails.totalOrdersInvoices})</Link></NavText>
+                                <NavText><Link className="financial-tree-link" to={`financieel/${this.props.id}/orders/facturen`}>Factuur orders({this.props.administrationDetails.totalOrdersInvoices})</Link></NavText>
                             </Nav>
                             <Nav id="orders-collection">
                                 <NavText><Link className="financial-tree-link" to={`financieel/${this.props.id}/orders/incassos`}>Incasso orders({this.props.administrationDetails.totalOrdersCollections})</Link></NavText>

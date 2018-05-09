@@ -42,6 +42,11 @@ class Order extends Model
         return $this->hasMany(OrderProduct::class)->orderBy('date_start');
     }
 
+    public function activeOrderProducts()
+    {
+        return $this->hasMany(OrderProduct::class)->where('date_start', '<=', Carbon::today())->where('date_end', '>=', Carbon::today())->orderBy('date_start');
+    }
+
     public function administration()
     {
         return $this->belongsTo(Administration::class);
@@ -110,7 +115,7 @@ class Order extends Model
         $total = 0;
 
         foreach ($this->orderProducts as $orderProduct) {
-            if(Carbon::parse($orderProduct->date_start)->lt(Carbon::today()) && Carbon::parse($orderProduct->date_end)->gt(Carbon::today())) {
+            if(Carbon::parse($orderProduct->date_start)->lte(Carbon::today()) && Carbon::parse($orderProduct->date_end)->gte(Carbon::today())) {
                 $total += $orderProduct->total_price_incl_vat_and_reduction;
             }
         }
@@ -123,7 +128,7 @@ class Order extends Model
         $total = 0;
 
         foreach ($this->orderProducts as $orderProduct) {
-            if(Carbon::parse($orderProduct->date_start)->lt(Carbon::today()) && Carbon::parse($orderProduct->date_end)->gt(Carbon::today())) {
+            if(Carbon::parse($orderProduct->date_start)->lte(Carbon::today()) && Carbon::parse($orderProduct->date_end)->gte(Carbon::today())) {
                 $total += $orderProduct->total_price_incl_vat_and_reduction_per_year;
             }
         }

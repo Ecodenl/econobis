@@ -14,13 +14,9 @@ use App\Eco\Order\Order;
 
 class InvoiceHelper
 {
-    public static function getCollectionDate(Invoice $invoice){
-        return '2019-05-05';
-    }
-
     public static function saveInvoiceProducts(Invoice $invoice, Order $order){
 
-        foreach ($order->orderProducts as $orderProduct){
+        foreach ($order->activeOrderProducts as $orderProduct){
             $invoiceProduct = new InvoiceProduct();
             $invoiceProduct->product_id = $orderProduct->product_id;
             $invoiceProduct->invoice_id = $invoice->id;

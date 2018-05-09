@@ -7,6 +7,7 @@ use App\Eco\Contact\Contact;
 use App\Eco\Document\Document;
 use App\Eco\Email\Email;
 use App\Eco\EmailTemplate\EmailTemplate;
+use App\Eco\Invoice\Invoice;
 use App\Eco\Task\Task;
 use App\Eco\User\User;
 use App\Http\Traits\Encryptable;
@@ -29,6 +30,7 @@ class Order extends Model
         = [
             'total_price_incl_vat',
             'total_price_incl_vat_per_year',
+            'date_next_collection',
         ];
 
     //Dont boot softdelete scopes. We handle this ourselves
@@ -55,6 +57,11 @@ class Order extends Model
     public function tasks()
     {
         return $this->hasMany(Task::class);
+    }
+
+    public function invoices()
+    {
+        return $this->hasMany(Invoice::class);
     }
 
     public function documents()
@@ -134,5 +141,18 @@ class Order extends Model
         }
 
         return $total;
+    }
+
+    public function getDateNextCollectionAttribute()
+    {
+        $date = null;
+
+        foreach($this->invoices as $invoice){
+            if($invoice->date_collection && (Carbon::parse($invoice->date_collection)->lt(Carbon::parse($date)) || $date === null) && Carbon::parse($invoice->date_collection)->gte(Carbon::today())){
+                $date = $invoice->date_collection;
+                }
+        }
+
+        return $date;
     }
 }

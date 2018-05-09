@@ -9,7 +9,7 @@ import moment from "moment/moment";
 const OrderDetailsFormGeneralView = props => {
 
     const { contact, administration, status, subject, emailTemplate, emailTemplateReminder, emailTemplateExhortation, paymentType, collectionFrequency, IBAN, ibanAttn,
-        poNumber, invoiceText, dateRequested, dateStart, dateEnd, totalPriceInclVatPerYear } = props.orderDetails;
+        poNumber, invoiceText, dateRequested, dateStart, dateEnd, totalPriceInclVatPerYear, dateNextCollection } = props.orderDetails;
 
     return (
         <div onClick={props.switchToEdit}>
@@ -104,7 +104,7 @@ const OrderDetailsFormGeneralView = props => {
                         />
                         <ViewText
                             label={"Volgende incasso datum"}
-                            value={''}
+                            value={ dateNextCollection ? moment(dateNextCollection).format('DD-MM-Y') : ''}
                         />
                     </div>
 

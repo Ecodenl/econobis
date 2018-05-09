@@ -52,6 +52,7 @@ class FullOrder extends Resource
                 'IBAN' => $this->IBAN,
                 'ibanAttn' => $this->iban_attn,
                 'invoiceText' => $this->invoice_text,
+                'dateNextCollection' => $this->date_next_collection,
                 'dateRequested' => $this->date_requested,
                 'dateStart' => $this->date_start,
                 'dateEnd' => $this->date_end,

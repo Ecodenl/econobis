@@ -16,7 +16,7 @@ class OrderToolbar  extends Component {
             showDelete: false,
             showNewInvoiceCollection: false,
             showNewInvoiceTransfer: false,
-        }
+        };
     };
 
     toggleDelete = () => {

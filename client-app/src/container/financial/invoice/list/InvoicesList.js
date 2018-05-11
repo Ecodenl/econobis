@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import { isEmpty } from 'lodash';
+import React, {Component} from 'react';
+import {isEmpty} from 'lodash';
 
 import DataTable from '../../../../components/dataTable/DataTable';
 import DataTableHead from '../../../../components/dataTable/DataTableHead';
@@ -10,9 +10,9 @@ import InvoicesListItem from './InvoicesListItem';
 import DataTablePagination from "../../../../components/dataTable/DataTablePagination";
 import {bindActionCreators} from "redux";
 import {connect} from "react-redux";
-import { fetchInvoices, clearInvoices } from '../../../../actions/invoice/InvoicesActions';
-import { clearFilterInvoices } from '../../../../actions/invoice/InvoicesFiltersActions';
-import { setInvoicesPagination } from '../../../../actions/invoice/InvoicesPaginationActions';
+import {fetchInvoices, clearInvoices} from '../../../../actions/invoice/InvoicesActions';
+import {clearFilterInvoices} from '../../../../actions/invoice/InvoicesFiltersActions';
+import {setInvoicesPagination} from '../../../../actions/invoice/InvoicesPaginationActions';
 import filterHelper from '../../../../helpers/FilterHelper';
 import ButtonIcon from "../../../../components/button/ButtonIcon";
 
@@ -21,7 +21,7 @@ import {
 } from '../../../../actions/invoice/InvoicesFiltersActions';
 
 class InvoicesList extends Component {
-    constructor(props){
+    constructor(props) {
         super(props);
 
         if (!isEmpty(props.filter)) {
@@ -60,7 +60,8 @@ class InvoicesList extends Component {
                     break;
                 default:
                     break;
-            };
+            }
+            ;
         } else {
             this.props.clearFilterInvoices();
         }
@@ -75,9 +76,9 @@ class InvoicesList extends Component {
     };
 
     componentWillReceiveProps(nextProps) {
-        if(this.props.filter !== nextProps.filter){
-            if(!isEmpty(nextProps.filter)) {
-                switch(nextProps.filter){
+        if (this.props.filter !== nextProps.filter) {
+            if (!isEmpty(nextProps.filter)) {
+                switch (nextProps.filter) {
                     case 'concepten':
                         this.props.clearFilterInvoices();
                         this.props.setStatusIdFilterInvoices('concept');
@@ -130,11 +131,11 @@ class InvoicesList extends Component {
         setTimeout(() => {
             const filters = filterHelper(this.props.invoicesFilters);
             const sorts = this.props.invoicesSorts.reverse();
-            const pagination = { limit: 20, offset: this.props.invoicesPagination.offset };
+            const pagination = {limit: 20, offset: this.props.invoicesPagination.offset};
             const administrationId = this.props.administrationId;
 
             this.props.fetchInvoices(filters, sorts, pagination, administrationId);
-        },100 );
+        }, 100);
     };
 
     resetInvoiceFilters = () => {
@@ -168,14 +169,14 @@ class InvoicesList extends Component {
     };
 
     render() {
-        const { data = [],meta = {} } = this.props.invoices;
+        const {data = [], meta = {}} = this.props.invoices;
 
         return (
             <div>
                 <div className="row">
                     <div className="col-md-4">
                         <div className="btn-group" role="group">
-                            <ButtonIcon iconName={"glyphicon-refresh"} onClickAction={this.resetInvoiceFilters} />
+                            <ButtonIcon iconName={"glyphicon-refresh"} onClickAction={this.resetInvoiceFilters}/>
                         </div>
                     </div>
                     <div className="col-md-4"><h3 className="text-center table-title">Facturen</h3></div>
@@ -185,11 +186,11 @@ class InvoicesList extends Component {
                                 <div className="pull-right">Resultaten: {meta.total || 0}</div>
                             </div>
                             <div className="col-sm-12">
-                                <div className="pull-right">Totaal
-                                    prijs: {meta.totalPrice ? '€' + meta.totalPrice.toLocaleString('nl', {
-                                        minimumFractionDigits: 2,
-                                        maximumFractionDigits: 2
-                                    }): '€0,00'}</div>
+                                <div
+                                    className="pull-right">Totaal: {meta.totalPrice ? '€' + meta.totalPrice.toLocaleString('nl', {
+                                    minimumFractionDigits: 2,
+                                    maximumFractionDigits: 2
+                                }) : '€0,00'}</div>
                             </div>
                         </div>
                     </div>
@@ -208,7 +209,9 @@ class InvoicesList extends Component {
                         <DataTableBody>
                             {
                                 data.length === 0 ? (
-                                    <tr><td colSpan={9}>Geen facturen gevonden!</td></tr>
+                                    <tr>
+                                        <td colSpan={9}>Geen facturen gevonden!</td>
+                                    </tr>
                                 ) : (
                                     data.map((invoice) => {
                                         return <InvoicesListItem
@@ -244,7 +247,13 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = (dispatch) => {
-    return bindActionCreators({ fetchInvoices, clearInvoices, clearFilterInvoices, setInvoicesPagination, setStatusIdFilterInvoices }, dispatch);
+    return bindActionCreators({
+        fetchInvoices,
+        clearInvoices,
+        clearFilterInvoices,
+        setInvoicesPagination,
+        setStatusIdFilterInvoices
+    }, dispatch);
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(InvoicesList);

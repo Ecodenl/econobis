@@ -6,8 +6,8 @@ moment.locale('nl');
 const OrderProductsFormView = props => {
     const {product, description, amount, totalPriceInclVatAndReduction, dateStart, dateEnd, totalPriceInclVatAndReductionPerYear } = props.orderProduct;
 
-    const notActiveYet = moment(moment().format('YYYY-MM-DD')).isSameOrBefore(moment(dateStart).format('YYYY-MM-DD'));
-    const notActiveAnymore = moment(moment().format('YYYY-MM-DD')).isSameOrAfter(moment(dateEnd).format('YYYY-MM-DD'));
+    const notActiveYet = moment(moment().format('YYYY-MM-DD')).isBefore(moment(dateStart).format('YYYY-MM-DD'));
+    const notActiveAnymore = moment(moment().format('YYYY-MM-DD')).isAfter(moment(dateEnd).format('YYYY-MM-DD'));
 
     const classRowNotActiveYet = notActiveYet ? 'not-active-yet-row' : '';
     const classRowNotActiveAnymore = notActiveAnymore ? 'not-active-anymore-row' : '';

@@ -47,6 +47,34 @@ export default {
             });
     },
 
+    sendNotification: (invoiceId) => {
+        const requestUrl = `${URL_INVOICE}/${invoiceId}/send-notification`;
+        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
+        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
+
+        return axios.post(requestUrl)
+            .then(function (response) {
+                return response.data;
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+    },
+
+    setIrrecoverable: (invoiceId) => {
+        const requestUrl = `${URL_INVOICE}/${invoiceId}/irrecoverable`;
+        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
+        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
+
+        return axios.post(requestUrl)
+            .then(function (response) {
+                return response.data;
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+    },
+
     newPayment: (payment) => {
         const requestUrl = `${URL_INVOICE}/${payment.invoiceId}/payment/new`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');

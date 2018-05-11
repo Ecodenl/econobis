@@ -12,6 +12,7 @@ use App\Eco\Invoice\Invoice;
 use App\Eco\Invoice\InvoicePayment;
 use App\Eco\Invoice\InvoiceProduct;
 use App\Eco\Order\Order;
+use Carbon\Carbon;
 
 class InvoiceHelper
 {
@@ -61,4 +62,26 @@ class InvoiceHelper
 
         return $invoice;
     }
+
+    public static function sendNotification(Invoice $invoice){
+        //todo
+
+        if($invoice->date_reminder_3){
+            $invoice->date_exhortation = Carbon::today();
+        }
+        elseif($invoice->date_reminder_2){
+            $invoice->date_reminder_3 = Carbon::today();
+        }
+        elseif($invoice->date_reminder_1){
+            $invoice->date_reminder_2 = Carbon::today();
+        }
+        else{
+            $invoice->date_reminder_1 = Carbon::today();
+        }
+
+        $invoice->save();
+
+        return $invoice;
+    }
+
 }

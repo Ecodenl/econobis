@@ -7,7 +7,7 @@ export default (state = [], action) => {
             ...state,
             {
                 field: action.field,
-                invoice: action.invoice,
+                order: action.order,
             },
         ];
     default:

@@ -1,5 +1,5 @@
-export const setInvoicesSortsFilter = (field, invoice) => ({
+export const setInvoicesSortsFilter = (field, order) => ({
     type: 'SET_INVOICES_SORTS_FILTER',
     field,
-    invoice,
+    order,
 });

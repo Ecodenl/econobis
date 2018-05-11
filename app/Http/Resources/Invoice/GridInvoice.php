@@ -9,6 +9,7 @@
 namespace App\Http\Resources\Invoice;
 
 
+use App\Http\Resources\EnumWithIdAndName\FullEnumWithIdAndName;
 use App\Http\Resources\Order\FullOrder;
 use Illuminate\Http\Resources\Json\Resource;
 
@@ -26,11 +27,17 @@ class GridInvoice extends Resource
 
             'daysExpired' => $this->days_expired,
             'totalPriceInclVatAndReduction' => $this->total_price_incl_vat_and_reduction,
+            'amountOpen' => $this->amount_open,
+
+            'dateReminder1' => $this->date_reminder_1,
+            'dateReminder2' => $this->date_reminder_2,
+            'dateReminder3' => $this->date_reminder_3,
+            'dateExhortation' => $this->date_exhortation,
 
             'paymentTypeId' => $this->payment_type_id,
-            'paymentType' => $this->getPaymentType(),
+            'paymentType' =>  FullEnumWithIdAndName::make($this->getPaymentType()),
             'statusId' => $this->status_id,
-            'status' => $this->getStatus(),
+            'status' =>  FullEnumWithIdAndName::make($this->getStatus()),
         ];
     }
 }

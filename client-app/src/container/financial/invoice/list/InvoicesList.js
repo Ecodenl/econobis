@@ -218,6 +218,8 @@ class InvoicesList extends Component {
                                             key={invoice.id}
                                             {...invoice}
                                             showDeleteItemModal={this.showDeleteItemModal}
+                                            administrationId={this.props.administrationId}
+                                            fetchInvoicesData={this.fetchInvoicesData}
                                         />
                                     })
                                 )

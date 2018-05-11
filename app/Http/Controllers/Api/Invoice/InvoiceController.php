@@ -141,4 +141,17 @@ class InvoiceController extends ApiController
     {
         return InvoicePeek::collection(Invoice::all());
     }
+
+    public function sendNotification(Invoice $invoice)
+    {
+        return InvoiceHelper::sendNotification($invoice);
+    }
+
+    public function setIrrecoverable(Invoice $invoice)
+    {
+        $invoice->status_id = 'irrecoverable';
+        $invoice->save();
+        return $invoice;
+    }
+
 }

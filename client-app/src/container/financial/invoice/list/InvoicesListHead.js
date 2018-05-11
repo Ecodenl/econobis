@@ -6,8 +6,8 @@ import { setInvoicesSortsFilter } from '../../../../actions/invoice/InvoicesSort
 import DataTableHeadTitle from "../../../../components/dataTable/DataTableHeadTitle";
 
 const InvoicesListHead = (props) => {
-    const setSorts = (field, invoice) => {
-        props.setInvoicesSortsFilter(field, invoice);
+    const setSorts = (field, order) => {
+        props.setInvoicesSortsFilter(field, order);
 
         setTimeout(() => {
             props.fetchInvoicesData();
@@ -30,8 +30,8 @@ const InvoicesListHead = (props) => {
 };
 
 const mapDispatchToProps = dispatch => ({
-    setInvoicesSortsFilter: (field, invoice) => {
-        dispatch(setInvoicesSortsFilter(field, invoice));
+    setInvoicesSortsFilter: (field, order) => {
+        dispatch(setInvoicesSortsFilter(field, order));
     },
 });
 

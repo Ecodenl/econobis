@@ -73,6 +73,7 @@ class TaskController extends Controller
             'notes',
             'documents',
             'order',
+            'invoice',
         ]);
 
         $task->relatedEmailsInbox = $this->getRelatedEmails($task->id, 'inbox');
@@ -105,6 +106,7 @@ class TaskController extends Controller
             ->integer('productionProjectId')->validate('exists:production_projects,id')->onEmpty(null)->alias('production_project_id')->next()
             ->integer('participantId')->validate('exists:participation_production_project,id')->onEmpty(null)->alias('participation_production_project_id')->next()
             ->integer('orderId')->validate('exists:orders,id')->onEmpty(null)->alias('order_id')->next()
+            ->integer('invoiceId')->validate('exists:invoices,id')->onEmpty(null)->alias('invoice_id')->next()
             ->get();
 
         $task = new Task($data);
@@ -142,6 +144,7 @@ class TaskController extends Controller
             ->integer('productionProjectId')->validate('exists:production_projects,id')->onEmpty(null)->alias('production_project_id')->next()
             ->integer('participantId')->validate('exists:participation_production_project,id')->onEmpty(null)->alias('participation_production_project_id')->next()
             ->integer('orderId')->validate('exists:orders,id')->onEmpty(null)->alias('order_id')->next()
+            ->integer('invoiceId')->validate('exists:invoices,id')->onEmpty(null)->alias('invoice_id')->next()
             ->get();
 
         $task->fill($data);

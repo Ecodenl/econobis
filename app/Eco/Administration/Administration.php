@@ -131,12 +131,12 @@ class Administration extends Model
         return $this->invoices()->whereNotNull('date_exhortation')->whereNotIn('status_id', ['paid' ,'irrecoverable'])->count();
     }
 
-    public function getTotalInvoicePaidAttribute()
+    public function getTotalInvoicesPaidAttribute()
     {
         return $this->invoices()->where('status_id', 'paid')->count();
     }
 
-    public function getTotalInvoiceIrrecoverableAttribute()
+    public function getTotalInvoicesIrrecoverableAttribute()
     {
         return $this->invoices()->where('status_id', 'irrecoverable')->count();
     }

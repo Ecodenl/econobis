@@ -326,6 +326,7 @@ Route::namespace('Api')
         Route::get('invoice/peek', 'Invoice\InvoiceController@peek');
         Route::get('invoice/{invoice}', 'Invoice\InvoiceController@show');
         Route::post('invoice', 'Invoice\InvoiceController@store');
+        Route::post('invoice/{invoice}', 'Invoice\InvoiceController@update');
         Route::post('invoice/{invoice}/payment/new', 'Invoice\InvoiceController@newPayment');
         Route::post('invoice/{invoice}/payment/update', 'Invoice\InvoiceController@updatePayment');
         Route::post('invoice/payment/{invoicePayment}/delete', 'Invoice\InvoiceController@deletePayment');

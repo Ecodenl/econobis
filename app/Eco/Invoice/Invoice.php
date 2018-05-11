@@ -3,8 +3,10 @@
 namespace App\Eco\Invoice;
 
 use App\Eco\Administration\Administration;
+use App\Eco\Email\Email;
 use App\Eco\Order\Order;
 use App\Eco\Order\OrderPaymentType;
+use App\Eco\Task\Task;
 use App\Eco\User\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
@@ -48,6 +50,16 @@ class Invoice extends Model
     public function administration()
     {
         return $this->belongsTo(Administration::class);
+    }
+
+    public function tasks()
+    {
+        return $this->hasMany(Task::class);
+    }
+
+    public function emails()
+    {
+        return $this->hasMany(Email::class);
     }
 
     public function createdBy()

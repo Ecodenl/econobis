@@ -35,7 +35,7 @@ class InvoiceDetailsApp extends Component {
                 </div>
                 <Panel className="col-md-3">
                     <PanelBody>
-                        {/*<InvoiceDetailsHarmonica/>*/}
+                        <InvoiceDetailsHarmonica/>
                     </PanelBody>
                 </Panel>
             </div>

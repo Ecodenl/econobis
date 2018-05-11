@@ -25,6 +25,7 @@ import ProductionProjectsAPI from "../../../../api/production-project/Production
 import HousingFilesAPI from "../../../../api/housing-file/HousingFilesAPI";
 import ParticipantsProductionProjectAPI from "../../../../api/participant-production-project/ParticipantsProductionProjectAPI";
 import OrdersAPI from "../../../../api/order/OrdersAPI";
+import InvoicesAPI from "../../../../api/invoice/InvoicesAPI";
 
 class TaskDetailsFormGeneralEdit extends Component {
     constructor(props) {
@@ -53,6 +54,7 @@ class TaskDetailsFormGeneralEdit extends Component {
             finishedById,
             opportunityId,
             orderId,
+            invoiceId,
         } = props.taskDetails;
 
 
@@ -66,6 +68,7 @@ class TaskDetailsFormGeneralEdit extends Component {
             productionProjects: [],
             participants: [],
             orders: [],
+            invoices: [],
             task: {
                 id,
                 note,
@@ -79,6 +82,7 @@ class TaskDetailsFormGeneralEdit extends Component {
                 productionProjectId: productionProjectId ? productionProjectId: '',
                 participantId: participantId ? participantId: '',
                 orderId: orderId ? orderId: '',
+                invoiceId: invoiceId ? invoiceId: '',
                 datePlannedStart: datePlannedStart ? datePlannedStart.date : '',
                 datePlannedFinish: datePlannedFinish ? datePlannedFinish.date : '',
                 startTimePlanned: startTimePlanned ? startTimePlanned : '',
@@ -104,6 +108,7 @@ class TaskDetailsFormGeneralEdit extends Component {
                 productionProjects: true,
                 participants: true,
                 orders: true,
+                invoices: true,
             },
         };
 
@@ -201,6 +206,16 @@ class TaskDetailsFormGeneralEdit extends Component {
                 peekLoading: {
                     ...this.state.peekLoading,
                     orders: false,
+                },
+            });
+        });
+
+        InvoicesAPI.peekInvoices().then((payload) => {
+            this.setState({
+                invoices: payload,
+                peekLoading: {
+                    ...this.state.peekLoading,
+                    invoices: false,
                 },
             });
         });
@@ -438,6 +453,7 @@ class TaskDetailsFormGeneralEdit extends Component {
                             productionProjects={this.state.productionProjects}
                             participants={this.state.participants}
                             orders={this.state.orders}
+                            invoices={this.state.invoices}
                             handleReactSelectChange={this.handleReactSelectChange}
                             peekLoading={this.state.peekLoading}
                         />

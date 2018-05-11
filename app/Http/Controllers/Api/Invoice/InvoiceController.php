@@ -47,6 +47,8 @@ class InvoiceController extends ApiController
             'order.contact',
             'invoiceProducts',
             'payments',
+            'tasks',
+            'emails',
             'createdBy',
         ]);
 
@@ -76,6 +78,20 @@ class InvoiceController extends ApiController
         $order = $invoice->order;
         $order->status_id = 'active';
         $order->save();
+
+        return $this->show($invoice->fresh());
+    }
+
+    public function update(RequestInput $input, Invoice $invoice)
+    {
+        $this->authorize('manage', Invoice::class);
+
+        $datePaid = $input
+            ->date('datePaid')->validate('nullable|date')->whenMissing(null)->onEmpty(null)->alias('date_paid')->next()->get();
+
+        if($datePaid['date_paid']){
+            InvoiceHelper::saveInvoiceDatePaid($invoice, $datePaid['date_paid']);
+        }
 
         return $this->show($invoice->fresh());
     }

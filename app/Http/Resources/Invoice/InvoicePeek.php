@@ -17,8 +17,7 @@ class InvoicePeek extends Resource
     {
         return [
             'id' => $this->id,
-            'name' => $this->subject,
-            'number' => $this->number,
+            'name' => $this->number,
         ];
     }
 }

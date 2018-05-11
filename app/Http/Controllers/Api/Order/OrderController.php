@@ -134,7 +134,7 @@ class OrderController extends ApiController
             ->numeric('amountReduction')->onEmpty(null)->whenMissing(null)->alias('amount_reduction')->next()
             ->numeric('percentageReduction')->onEmpty(null)->whenMissing(null)->alias('percentage_reduction')->next()
             ->date('dateStart')->validate('required')->alias('date_start')->next()
-            ->date('dateEnd')->validate('nullable|date')->alias('date_end')->next()
+            ->date('dateEnd')->validate('nullable|date')->onEmpty(null)->whenMissing(null)->alias('date_end')->next()
             ->get();
 
         $orderProduct = new OrderProduct($data);
@@ -156,7 +156,7 @@ class OrderController extends ApiController
             ->numeric('amountReduction')->onEmpty(null)->whenMissing(null)->alias('amount_reduction')->next()
             ->numeric('percentageReduction')->onEmpty(null)->whenMissing(null)->alias('percentage_reduction')->next()
             ->date('dateStart')->validate('required')->alias('date_start')->next()
-            ->date('dateEnd')->validate('nullable|date')->alias('date_end')->next()
+            ->date('dateEnd')->validate('nullable|date')->onEmpty(null)->whenMissing(null)->alias('date_end')->next()
             ->get();
 
         $orderProduct->fill($data);

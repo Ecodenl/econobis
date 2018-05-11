@@ -9,6 +9,7 @@
 namespace App\Helpers\Invoice;
 
 use App\Eco\Invoice\Invoice;
+use App\Eco\Invoice\InvoicePayment;
 use App\Eco\Invoice\InvoiceProduct;
 use App\Eco\Order\Order;
 
@@ -42,5 +43,22 @@ class InvoiceHelper
         }
 
         $invoice->save();
+    }
+
+    public static function saveInvoiceDatePaid(Invoice $invoice, $datePaid){
+        if($invoice->amount_open <= 0){
+            return false;
+        }
+
+        $invoicePayment = new InvoicePayment();
+        $invoicePayment->date_paid = $datePaid;
+        $invoicePayment->amount = $invoice->amount_open;
+        $invoicePayment->invoice_id = $invoice->id;
+        $invoicePayment->save();
+
+        $invoice->status_id = 'paid';
+        $invoice->save();
+
+        return $invoice;
     }
 }

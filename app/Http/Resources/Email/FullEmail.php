@@ -13,6 +13,7 @@ use App\Http\Resources\Contact\FullContact;
 use App\Http\Resources\EnumWithIdAndName\FullEnumWithIdAndName;
 use App\Http\Resources\GenericResource;
 use App\Http\Resources\Intake\FullIntake;
+use App\Http\Resources\Invoice\InvoicePeek;
 use App\Http\Resources\Mailbox\FullMailbox;
 use App\Http\Resources\Measure\FullMeasure;
 use App\Http\Resources\Opportunity\FullOpportunity;
@@ -47,6 +48,7 @@ class FullEmail extends Resource
             'task' => FullTask::make($this->whenLoaded('task')),
             'quotationRequest' => FullQuotationRequest::make($this->whenLoaded('quotationRequest')),
             'order' => OrderPeek::make($this->whenLoaded('order')),
+            'invoice' => InvoicePeek::make($this->whenLoaded('invoice')),
             'measure' => FullMeasure::make($this->whenLoaded('measure')),
             'opportunity' => FullOpportunity::make($this->whenLoaded('opportunity')),
             'attachments' => GenericResource::collection($this->whenLoaded('attachments')),

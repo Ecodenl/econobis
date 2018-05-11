@@ -15,6 +15,7 @@ use App\Http\Resources\ContactGroup\FullContactGroup;
 use App\Http\Resources\Document\FullDocument;
 use App\Http\Resources\GenericResource;
 use App\Http\Resources\HousingFile\FullHousingFile;
+use App\Http\Resources\Invoice\InvoicePeek;
 use App\Http\Resources\Opportunity\FullOpportunity;
 use App\Http\Resources\Intake\FullIntake;
 use App\Http\Resources\Order\OrderPeek;
@@ -60,6 +61,8 @@ class FullTask extends Resource
                 'participant' => FullParticipantProductionProject::make($this->whenLoaded('participant')),
                 'orderId' => $this->order_id,
                 'order' => OrderPeek::make($this->whenLoaded('order')),
+                'invoiceId' => $this->invoice_id,
+                'invoice' => InvoicePeek::make($this->whenLoaded('invoice')),
                 'datePlannedStart' => $this->date_planned_start,
                 'datePlannedFinish' => $this->date_planned_finish,
                 'startTimePlanned' => $this->start_time_planned,

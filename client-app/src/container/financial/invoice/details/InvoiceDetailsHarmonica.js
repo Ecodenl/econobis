@@ -15,7 +15,6 @@ class InvoiceDetailsHarmonica extends Component {
             toggleShowList: {
                 tasks: false,
                 emails: false,
-                documents: false,
             },
         };
 
@@ -28,7 +27,6 @@ class InvoiceDetailsHarmonica extends Component {
                 toggleShowList: {
                     tasks: false,
                     emails: false,
-                    documents: false,
                 },
             })
         }
@@ -45,15 +43,11 @@ class InvoiceDetailsHarmonica extends Component {
     };
 
     newTask = (type) => {
-        hashHistory.push(`/taak/nieuw/${type}/invoice/${this.props.invoiceDetails.id}`);
+        hashHistory.push(`/taak/nieuw/${type}/factuur/${this.props.invoiceDetails.id}`);
     };
 
     newEmail = () => {
         hashHistory.push(`/email/nieuw`);
-    };
-
-    newDocument = (type) => {
-        hashHistory.push(`/document/nieuw/${type}/invoice/${this.props.invoiceDetails.id}`);
     };
 
     render() {
@@ -70,12 +64,6 @@ class InvoiceDetailsHarmonica extends Component {
                     showEmailsList={this.state.toggleShowList.emails}
                     newEmail={this.newEmail}
                     emailCount={this.props.invoiceDetails.emailCount}
-                />
-                <DocumentHarmonica
-                    toggleShowList={() => this.toggleShowList('documents')}
-                    showDocumentsList={this.state.toggleShowList.documents}
-                    newDocument={this.newDocument}
-                    documentCount={this.props.invoiceDetails.documentCount}
                 />
             </div>
         )

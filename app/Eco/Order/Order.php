@@ -46,7 +46,11 @@ class Order extends Model
 
     public function activeOrderProducts()
     {
-        return $this->hasMany(OrderProduct::class)->where('date_start', '<=', Carbon::today())->where('date_end', '>=', Carbon::today())->orderBy('date_start');
+        return $this->hasMany(OrderProduct::class)->where('date_start', '<=', Carbon::today())
+            ->where(function ($query) {
+                $query->where('date_end', '>=', Carbon::today())
+                    ->orWhereNull('date_end');
+            });
     }
 
     public function administration()
@@ -122,7 +126,7 @@ class Order extends Model
         $total = 0;
 
         foreach ($this->orderProducts as $orderProduct) {
-            if(Carbon::parse($orderProduct->date_start)->lte(Carbon::today()) && Carbon::parse($orderProduct->date_end)->gte(Carbon::today())) {
+            if(Carbon::parse($orderProduct->date_start)->lte(Carbon::today()) && (Carbon::parse($orderProduct->date_end)->gte(Carbon::today()) || $orderProduct->date_end === null)) {
                 $total += $orderProduct->total_price_incl_vat_and_reduction;
             }
         }
@@ -135,7 +139,7 @@ class Order extends Model
         $total = 0;
 
         foreach ($this->orderProducts as $orderProduct) {
-            if(Carbon::parse($orderProduct->date_start)->lte(Carbon::today()) && Carbon::parse($orderProduct->date_end)->gte(Carbon::today())) {
+            if(Carbon::parse($orderProduct->date_start)->lte(Carbon::today()) && (Carbon::parse($orderProduct->date_end)->gte(Carbon::today()) || $orderProduct->date_end === null)) {
                 $total += $orderProduct->total_price_incl_vat_and_reduction_per_year;
             }
         }

@@ -74,6 +74,7 @@ class InvoiceController extends ApiController
         $invoice->save();
 
         InvoiceHelper::saveInvoiceProducts($invoice, $invoice->order);
+        InvoiceHelper::createInvoiceDocument($invoice);
 
         $order = $invoice->order;
         $order->status_id = 'active';

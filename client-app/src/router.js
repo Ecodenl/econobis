@@ -169,6 +169,7 @@ const Routes = () => {
                 <Route path="order/nieuw/contact/:contactId" component={OrderNewApp} />
                 <Route path="order/:id" component={OrderDetailsApp} />
                 <Route path="factuur/:id" component={InvoiceDetailsApp} />
+                <Route path="factuur/inzien/:id" component={DocumentViewApp} />
 
                 /* Campagnes */
                 <Route path="campagne/nieuw" component={CampaignNewApp} />

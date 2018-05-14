@@ -17,6 +17,7 @@ use App\Http\RequestQueries\Invoice\Grid\RequestQuery;
 use App\Http\Resources\Invoice\FullInvoice;
 use App\Http\Resources\Invoice\GridInvoice;
 use App\Http\Resources\Invoice\InvoicePeek;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Storage;
 
 class InvoiceController extends ApiController
@@ -76,7 +77,6 @@ class InvoiceController extends ApiController
         $invoice->save();
 
         InvoiceHelper::saveInvoiceProducts($invoice, $invoice->order);
-        InvoiceHelper::createInvoiceDocument($invoice);
 
         $order = $invoice->order;
         $order->status_id = 'active';
@@ -173,7 +173,14 @@ class InvoiceController extends ApiController
 
         $this->authorize('manage', Invoice::class);
 
-        $filePath = Storage::disk('administrations')->getDriver()->getAdapter()->applyPathPrefix($invoice->document->filename);
+        if ($invoice->document) {
+            $filePath = Storage::disk('administrations')->getDriver()
+                ->getAdapter()->applyPathPrefix($invoice->document->filename);
+        } else {
+            $invoice->number = 'T' . Carbon::now()->year . '-' . $invoice->invoice_number;
+
+            return InvoiceHelper::createInvoiceDocument($invoice, true);
+        }
 
         return response()->download($filePath, $invoice->document->name);
     }

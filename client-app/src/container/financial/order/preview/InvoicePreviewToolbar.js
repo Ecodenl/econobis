@@ -4,22 +4,17 @@ import {browserHistory} from 'react-router';
 
 import ButtonIcon from '../../../../components/button/ButtonIcon';
 
-const InvoiceViewToolbar = props => {
-    const {document = {}} = props.invoiceDetails;
-
+const InvoicePreviewToolbar = props => {
     return (
         <div className="row">
             <div className="col-md-4">
                 <div className="btn-group" role="group">
                     <ButtonIcon iconName={"glyphicon-arrow-left"} onClickAction={browserHistory.goBack} />
-                    {document &&
-                    <ButtonIcon iconName={"glyphicon-download-alt"} onClickAction={props.download}/>
-                    }
-                    <ButtonIcon iconName={"glyphicon-zoom-in"} onClickAction={props.zoomIn}/>
+                    <ButtonIcon iconName={"glyphicon-zoom-in"} onClickAction={props.zoomIn} />
                     <ButtonIcon iconName={"glyphicon-zoom-out"} onClickAction={props.zoomOut} />
                 </div>
             </div>
-            <div className="col-md-4"><h4 className="text-center">{'Factuur: ' + (document ? document.name : 'Preview')}</h4></div>
+            <div className="col-md-4"><h4 className="text-center">{'Order: ' + (props.orderDetails.number ? props.orderDetails.number : '')}</h4></div>
             <div className="col-md-4" />
         </div>
     );
@@ -27,8 +22,8 @@ const InvoiceViewToolbar = props => {
 
 const mapStateToProps = (state) => {
     return {
-        invoiceDetails: state.invoiceDetails,
+        orderDetails: state.orderDetails,
     };
 };
 
-export default connect(mapStateToProps, null)(InvoiceViewToolbar);
+export default connect(mapStateToProps)(InvoicePreviewToolbar);

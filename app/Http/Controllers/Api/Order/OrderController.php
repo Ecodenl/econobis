@@ -9,9 +9,11 @@
 namespace App\Http\Controllers\Api\Order;
 
 use App\Eco\Contact\Contact;
+use App\Eco\Invoice\Invoice;
 use App\Eco\Order\Order;
 use App\Eco\Order\OrderProduct;
 use App\Helpers\Delete\DeleteHelper;
+use App\Helpers\Invoice\InvoiceHelper;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\RequestQueries\Order\Grid\RequestQuery;
@@ -19,6 +21,8 @@ use App\Http\Resources\Order\FullOrder;
 use App\Http\Resources\Order\FullOrderProduct;
 use App\Http\Resources\Order\GridOrder;
 use App\Http\Resources\Order\OrderPeek;
+use Barryvdh\DomPDF\Facade as PDF;
+use Illuminate\Support\Carbon;
 
 class OrderController extends ApiController
 {
@@ -226,6 +230,18 @@ class OrderController extends ApiController
         }
 
         return null;
+    }
+
+    public function downloadPreview(Order $order){
+        $invoice = new Invoice();
+        $invoice->order_id = $order->id;
+        $invoice->administration_id = $order->administration_id;
+        $invoice->invoice_number =  Invoice::where('administration_id', $invoice->administration_id)->count();
+        $invoice->number = 'O' . Carbon::now()->year . '-' . $invoice->invoice_number;
+
+        $invoice = InvoiceHelper::saveInvoiceProducts($invoice, $order, true);
+
+        return InvoiceHelper::createInvoiceDocument($invoice, true);
     }
 
 }

@@ -45,7 +45,7 @@
         </tr>
         <tr>
             <td>
-                {{ $invoice->order->contact->primaryAddress->street . ' ' . $invoice->order->contact->primaryAddress->number . $invoice->order->contact->primaryAddress->addition }}
+                {{ $invoice->order->contact->primaryAddress ? $invoice->order->contact->primaryAddress->street . ' ' . $invoice->order->contact->primaryAddress->number . $invoice->order->contact->primaryAddress->addition : '' }}
             </td>
             <td>
                 {{ $invoice->administration->address }}
@@ -53,7 +53,7 @@
         </tr>
         <tr>
             <td>
-                {{ $invoice->order->contact->primaryAddress->postal_code . ' ' . $invoice->order->contact->primaryAddress->city }}
+                {{ $invoice->order->contact->primaryAddress ? $invoice->order->contact->primaryAddress->postal_code . ' ' . $invoice->order->contact->primaryAddress->city : ''}}
             </td>
             <td>
                 {{ $invoice->administration->postal_code . ' ' . $invoice->administration->city }}
@@ -126,8 +126,8 @@
             <th width="20%">Betreft</th>
             <th width="10%">Prijs</th>
             <th width="10%">Aantal</th>
-            <?php echo $amount_reduction ? '<th width="10%">Korting</th>' : ''?>
-            <?php echo $percentage_reduction ? '<th width="10%">Kortingspercentage</th>' : ''?>
+            <?php echo ($amount_reduction ? '<th width="10%">Korting</th>' : '')?>
+            <?php echo ($percentage_reduction ? '<th width="10%">Kortingspercentage</th>' : '')?>
             <th width="10%">Bedrag</th>
         </tr>
 
@@ -139,12 +139,12 @@
                 @if($invoiceProduct->amount_reduction)
                     <td>€{{ number_format($invoiceProduct->amount_reduction, 2, ',', '.') }}</td>
                 @else
-                    <?php echo $amount_reduction ? '<td></td>' : ''?>
+                    <?php echo ($amount_reduction ? '<td></td>' : '')?>
                 @endif
                 @if($invoiceProduct->percentage_reduction)
                     <td>{{ $invoiceProduct->percentage_reduction }}%</td>
                 @else
-                    <?php echo $percentage_reduction ? '<td></td>' : '' ?>
+                    <?php echo ($percentage_reduction ? '<td></td>' : '') ?>
                 @endif
                 <td>€{{ number_format($invoiceProduct->price_incl_vat_and_reduction, 2, ',', '.') }}</td>
             </tr>

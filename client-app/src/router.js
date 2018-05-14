@@ -57,6 +57,7 @@ import OpportunityDetailsApp from './container/opportunities/details/Opportunity
 import OpportunityNewApp from './container/opportunities/new/OpportunityNewApp';
 import OrderNewApp from './container/financial/order/new/OrderNewApp';
 import OrderDetailsApp from './container/financial/order/details/OrderDetailsApp';
+import InvoicePreviewApp from './container/financial/order/preview/InvoicePreviewApp';
 import ParticipantNewApp from './container/production-project/general/participant/new/ParticipantNewApp';
 import ParticipantDetailsApp from './container/production-project/general/participant/details/ParticipantDetailsApp';
 import ParticipationTransferApp from './container/production-project/general/participant/details/transfer/ParticipationTransferApp';
@@ -169,6 +170,7 @@ const Routes = () => {
                 <Route path="financieel/:id/:type/:filter" component={FinancialApp} />
                 <Route path="order/nieuw/contact/:contactId" component={OrderNewApp} />
                 <Route path="order/:id" component={OrderDetailsApp} />
+                <Route path="order/inzien/:id" component={InvoicePreviewApp} />
                 <Route path="factuur/:id" component={InvoiceDetailsApp} />
                 <Route path="factuur/inzien/:id" component={InvoiceViewApp} />
 

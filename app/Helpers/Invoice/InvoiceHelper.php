@@ -15,9 +15,7 @@ use App\Eco\Invoice\InvoicePayment;
 use App\Eco\Invoice\InvoiceProduct;
 use App\Eco\Order\Order;
 use App\Http\Controllers\Api\Order\OrderController;
-use App\Http\Resources\Email\Templates\GenericMail;
 use App\Http\Resources\Invoice\Templates\InvoiceMail;
-use App\Http\Resources\ParticipantProductionProject\Templates\ParticipantReportMail;
 use Barryvdh\DomPDF\Facade as PDF;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Mail;
@@ -25,7 +23,7 @@ use Illuminate\Support\Facades\Storage;
 
 class InvoiceHelper
 {
-    public static function saveInvoiceProducts(Invoice $invoice, Order $order){
+    public static function saveInvoiceProducts(Invoice &$invoice, Order $order, $preview = false){
 
         foreach ($order->activeOrderProducts as $orderProduct){
             $invoiceProduct = new InvoiceProduct();
@@ -39,8 +37,15 @@ class InvoiceHelper
             $invoiceProduct->product_code = $orderProduct->product->code;
             $invoiceProduct->product_name = $orderProduct->product->name;
             $invoiceProduct->description = $orderProduct->description;
-            $invoiceProduct->save();
+            if(!$preview) {
+                $invoiceProduct->save();
+            }
+            else{
+                $invoice->invoiceProducts->add($invoiceProduct);
+            }
         }
+
+        return $invoice;
 
     }
 
@@ -73,6 +78,9 @@ class InvoiceHelper
     }
 
     public static function send(Invoice $invoice){
+
+        InvoiceHelper::createInvoiceDocument($invoice);
+
         if($invoice->send_method_id === 'mail') {
             $orderController = new OrderController();
             $contactInfo = $orderController->getContactInfoForOrder($invoice->order->contact);
@@ -177,7 +185,7 @@ class InvoiceHelper
         return true;
     }
 
-    public static function createInvoiceDocument(Invoice $invoice){
+    public static function createInvoiceDocument(Invoice $invoice, $preview = false){
 
         $path = storage_path('app' .  DIRECTORY_SEPARATOR . 'administrations' . DIRECTORY_SEPARATOR . $invoice->administration->logo_filename);
         $logo = file_get_contents($path);
@@ -193,12 +201,14 @@ class InvoiceHelper
             'logo' => $img,
         ]);
 
+        if($preview){
+            return $pdf->output();
+        }
+
         $name = $invoice->number . '.pdf';
 
         $filePath = (storage_path('app' .  DIRECTORY_SEPARATOR . 'administrations' . DIRECTORY_SEPARATOR . 'administration_' . $invoice->administration->id
             . DIRECTORY_SEPARATOR . 'invoices'));
-
-        $pdf->download();
 
         $filename = $pdf->save($filePath);
 
@@ -207,7 +217,6 @@ class InvoiceHelper
         $invoiceDocument->filename = $filename;
         $invoiceDocument->name = $name;
         $invoiceDocument->save();
-
     }
 
     public static function checkStorageDir($administration_id){

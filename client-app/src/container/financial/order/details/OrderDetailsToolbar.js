@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { browserHistory } from 'react-router';
+import {browserHistory, hashHistory} from 'react-router';
 
 import ButtonIcon from '../../../../components/button/ButtonIcon';
 import OrderDeleteItem from "./OrderDeleteItem";
@@ -23,6 +23,10 @@ class OrderToolbar  extends Component {
         this.setState({showDelete: !this.state.showDelete});
     };
 
+    preview = () => {
+        hashHistory.push(`/order/inzien/${this.props.orderDetails.id}`);
+    };
+
     toggleNewInvoice = () => {
         if(this.props.orderDetails.paymentTypeId === 'collection'){
             this.setState({showNewInvoiceCollection: !this.state.showNewInvoiceCollection});
@@ -38,6 +42,7 @@ class OrderToolbar  extends Component {
                 <div className="col-md-4">
                     <div className="btn-group btn-group-flex margin-small" role="group">
                         <ButtonIcon iconName={"glyphicon-arrow-left"} onClickAction={browserHistory.goBack}/>
+                        <ButtonIcon iconName={"glyphicon-eye-open"} onClickAction={this.preview}/>
                         <ButtonText buttonText={'Maak factuur'} onClickAction={this.toggleNewInvoice}/>
                         <ButtonIcon iconName={"glyphicon-trash"} onClickAction={this.toggleDelete}/>
                     </div>

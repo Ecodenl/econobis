@@ -74,6 +74,7 @@ import IntakeDetailsApp from './container/intake/details/IntakeDetailsApp';
 import IntakeNewApp from './container/intake/new/IntakeNewApp';
 import IntakesListApp from './container/intake/list/IntakesListApp';
 import InvoiceDetailsApp from './container/financial/invoice/details/InvoiceDetailsApp';
+import InvoiceViewApp from './container/financial/invoice/view/InvoiceViewApp';
 import RequireAuth from './helpers/RequireAuth';
 import TaskDetailsApp from './container/task/details/TaskDetailsApp';
 import TaskNewApp from './container/task/new/TaskNewApp';
@@ -169,7 +170,7 @@ const Routes = () => {
                 <Route path="order/nieuw/contact/:contactId" component={OrderNewApp} />
                 <Route path="order/:id" component={OrderDetailsApp} />
                 <Route path="factuur/:id" component={InvoiceDetailsApp} />
-                <Route path="factuur/inzien/:id" component={DocumentViewApp} />
+                <Route path="factuur/inzien/:id" component={InvoiceViewApp} />
 
                 /* Campagnes */
                 <Route path="campagne/nieuw" component={CampaignNewApp} />

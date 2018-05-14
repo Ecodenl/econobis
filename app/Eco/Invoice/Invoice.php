@@ -42,6 +42,11 @@ class Invoice extends Model
         return $this->hasMany(InvoiceDocument::class);
     }
 
+    public function document()
+    {
+        return $this->hasOne(InvoiceDocument::class)->latest();
+    }
+
     public function order()
     {
         return $this->belongsTo(Order::class);

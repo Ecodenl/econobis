@@ -116,4 +116,12 @@ export default {
                 console.log(error);
             });
     },
+
+    download: (id) => {
+        const requestUrl = `${URL_INVOICE}/${id}/download`;
+        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
+        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
+
+        return axios.get(requestUrl, {responseType: 'blob'});
+    }
 };

@@ -103,7 +103,7 @@ class InvoiceHelper
             'logo' => $img,
         ]);
 
-        $name = $invoice->number . '-' . Carbon::now()->format('Ymd');
+        $name = $invoice->number . '.pdf';
 
         $filePath = (storage_path('app' .  DIRECTORY_SEPARATOR . 'administrations' . DIRECTORY_SEPARATOR . 'administration_' . $invoice->administration->id
             . DIRECTORY_SEPARATOR . 'invoices'));

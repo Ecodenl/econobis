@@ -65,6 +65,8 @@ class InvoicesList extends Component {
         } else {
             this.props.clearFilterInvoices();
         }
+
+        this.handlePageClick = this.handlePageClick.bind(this);
     }
 
     componentDidMount() {

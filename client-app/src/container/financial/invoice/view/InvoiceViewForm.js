@@ -1,10 +1,10 @@
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import { isEmpty } from 'lodash';
-import PdfViewer from "../../../components/pdf/PdfViewer";
-import DocumentDetailsAPI from "../../../api/document/DocumentDetailsAPI";
+import PdfViewer from "../../../../components/pdf/PdfViewer";
+import InvoiceDetailsAPI from "../../../../api/invoice/InvoiceDetailsAPI";
 
-class DocumentViewForm extends Component {
+class InvoiceViewForm extends Component {
     constructor(props){
         super(props);
 
@@ -18,7 +18,7 @@ class DocumentViewForm extends Component {
     };
 
     downloadFile(i = 0) {
-        DocumentDetailsAPI.download(this.props.documentId).then((payload) => {
+        InvoiceDetailsAPI.download(this.props.invoiceId).then((payload) => {
             this.setState({
                 file: payload.data,
             });
@@ -34,7 +34,7 @@ class DocumentViewForm extends Component {
 
     render() {
         return (
-            isEmpty(this.props.documentDetails) || !this.state.file ?
+            isEmpty(this.props.invoiceDetails) || !this.state.file ?
                 <div>Geen gegevens gevonden.</div>
                 :
                 <div>
@@ -50,8 +50,8 @@ class DocumentViewForm extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        documentDetails: state.documentDetails,
+        invoiceDetails: state.invoiceDetails,
     };
 };
 
-export default connect(mapStateToProps, null)(DocumentViewForm);
+export default connect(mapStateToProps, null)(InvoiceViewForm);

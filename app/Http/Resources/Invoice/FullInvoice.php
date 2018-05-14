@@ -2,11 +2,7 @@
 
 namespace App\Http\Resources\Invoice;
 
-use App\Http\Resources\Administration\FullAdministration;
-use App\Http\Resources\Contact\FullContact;
-use App\Http\Resources\Document\FullDocument;
 use App\Http\Resources\Email\FullEmail;
-use App\Http\Resources\EmailTemplate\FullEmailTemplate;
 use App\Http\Resources\EnumWithIdAndName\FullEnumWithIdAndName;
 use App\Http\Resources\GenericResource;
 use App\Http\Resources\Order\FullOrder;
@@ -37,6 +33,8 @@ class FullInvoice extends Resource
                 'payments' => GenericResource::make($this->whenLoaded('payments')),
 
                 'invoiceProducts' => FullInvoiceProduct::collection($this->whenLoaded('invoiceProducts')),
+
+                'document' => GenericResource::make($this->whenLoaded('document')),
 
                 'paymentTypeId' => $this->payment_type_id,
                 'paymentType' => FullEnumWithIdAndName::make($this->getPaymentType()),

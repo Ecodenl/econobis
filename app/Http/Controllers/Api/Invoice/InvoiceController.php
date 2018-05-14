@@ -17,6 +17,7 @@ use App\Http\RequestQueries\Invoice\Grid\RequestQuery;
 use App\Http\Resources\Invoice\FullInvoice;
 use App\Http\Resources\Invoice\GridInvoice;
 use App\Http\Resources\Invoice\InvoicePeek;
+use Illuminate\Support\Facades\Storage;
 
 class InvoiceController extends ApiController
 {
@@ -49,6 +50,7 @@ class InvoiceController extends ApiController
             'payments',
             'tasks',
             'emails',
+            'document',
             'createdBy',
         ]);
 
@@ -153,6 +155,15 @@ class InvoiceController extends ApiController
         $invoice->status_id = 'irrecoverable';
         $invoice->save();
         return $invoice;
+    }
+
+    public function download(Invoice $invoice){
+
+        $this->authorize('manage', Invoice::class);
+
+        $filePath = Storage::disk('administrations')->getDriver()->getAdapter()->applyPathPrefix($invoice->document->filename);
+
+        return response()->download($filePath, $invoice->document->name);
     }
 
 }

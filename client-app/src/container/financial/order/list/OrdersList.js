@@ -60,6 +60,8 @@ class OrdersList extends Component {
                 subject: ''
             }
         };
+
+        this.handlePageClick = this.handlePageClick.bind(this);
     }
 
     componentDidMount() {

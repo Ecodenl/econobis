@@ -325,6 +325,7 @@ Route::namespace('Api')
         Route::get('invoice/grid', 'Invoice\InvoiceController@grid');
         Route::get('invoice/peek', 'Invoice\InvoiceController@peek');
         Route::get('invoice/{invoice}', 'Invoice\InvoiceController@show');
+        Route::get('invoice/{invoice}/download', 'Invoice\InvoiceController@download');
         Route::post('invoice', 'Invoice\InvoiceController@store');
         Route::post('invoice/{invoice}', 'Invoice\InvoiceController@update');
         Route::post('invoice/{invoice}/irrecoverable', 'Invoice\InvoiceController@setIrrecoverable');

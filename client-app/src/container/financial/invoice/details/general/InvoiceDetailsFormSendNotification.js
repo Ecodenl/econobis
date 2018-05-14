@@ -1,11 +1,11 @@
 import React, {Component} from 'react';
 
-import Modal from '../../../../components/modal/Modal';
-import InvoiceDetailsAPI from "../../../../api/invoice/InvoiceDetailsAPI";
-import {fetchAdministrationDetails} from "../../../../actions/administration/AdministrationDetailsActions";
+import Modal from '../../../../../components/modal/Modal';
+import InvoiceDetailsAPI from "../../../../../api/invoice/InvoiceDetailsAPI";
 import {connect} from "react-redux";
+import {fetchInvoiceDetails} from "../../../../../actions/invoice/InvoiceDetailsActions";
 
-class InvoiceListSendNotification extends Component {
+class InvoiceDetailsFormSendNotification extends Component {
 
     constructor(props) {
         super(props);
@@ -14,8 +14,7 @@ class InvoiceListSendNotification extends Component {
     confirmAction = event => {
         event.preventDefault();
         InvoiceDetailsAPI.sendNotification(this.props.invoiceId).then((payload) => {
-            this.props.fetchAdministrationDetails(this.props.administrationId);
-            this.props.fetchInvoicesData();
+            this.props.fetchInvoiceDetails(this.props.invoiceId);
             this.props.closeModal();
         });
     };
@@ -41,9 +40,9 @@ class InvoiceListSendNotification extends Component {
 }
 
 const mapDispatchToProps = dispatch => ({
-    fetchAdministrationDetails: (id) => {
-        dispatch(fetchAdministrationDetails(id));
+    fetchInvoiceDetails: (id) => {
+        dispatch(fetchInvoiceDetails(id));
     },
 });
 
-export default connect(null, mapDispatchToProps)(InvoiceListSendNotification);
+export default connect(null, mapDispatchToProps)(InvoiceDetailsFormSendNotification);

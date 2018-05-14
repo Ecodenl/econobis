@@ -40,7 +40,7 @@ class Filter extends RequestFilter
         'paymentTypeId' => 'eq',
     ];
 
-    protected function applyStatusFilter($query, $type, $data)
+    protected function applyStatusIdFilter($query, $type, $data)
     {
         $extra_statusses = ['reminder', 'reminder1', 'reminder2', 'reminder3', 'exhortation'];
         $closed_statusses = ['paid' ,'irrecoverable'];
@@ -48,7 +48,7 @@ class Filter extends RequestFilter
         if(in_array($data, $extra_statusses)){
             switch ($data){
                 case 'reminder':
-                    $query->whereNotNull('date_reminder_1')->whereNotIn('status_id', $closed_statusses);
+                    $query->whereNotNull('date_reminder_1')->whereNull('date_exhortation')->whereNotIn('status_id', $closed_statusses);
                     return false;
                     break;
                 case 'reminder1':

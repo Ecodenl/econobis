@@ -157,6 +157,18 @@ class InvoiceController extends ApiController
         return $invoice;
     }
 
+    public function setChecked(Invoice $invoice)
+    {
+        $invoice->status_id = 'checked';
+        $invoice->save();
+        return $invoice;
+    }
+
+    public function send(Invoice $invoice)
+    {
+        return InvoiceHelper::send($invoice);
+    }
+
     public function download(Invoice $invoice){
 
         $this->authorize('manage', Invoice::class);

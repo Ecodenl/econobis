@@ -66,6 +66,18 @@ class InvoiceHelper
         return $invoice;
     }
 
+    public static function send(Invoice $invoice){
+        if($invoice->send_method_id === 'mail') {
+            //todo
+        }
+
+        $invoice->status_id = 'sent';
+        $invoice->date_sent = Carbon::today();;
+        $invoice->save();
+
+        return $invoice;
+    }
+
     public static function sendNotification(Invoice $invoice){
         //todo
 

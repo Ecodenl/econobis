@@ -5,15 +5,18 @@ import moment from 'moment';
 import InvoiceListSetPaid from "./InvoiceListSetPaid";
 import InvoiceListSendNotification from "./InvoiceListSendNotification";
 import InvoiceListSetIrrecoverable from "./InvoiceListSetIrrecoverable";
+import InvoiceListSetChecked from "./InvoiceListSetChecked";
+import InvoiceListSend from "./InvoiceListSend";
 
 class InvoicesListItem extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            finalized: false,
             showActionButtons: false,
             highlightRow: '',
+            showSetChecked: false,
+            showSend: false,
             showSetPaid: false,
             showSendNotification: false,
             reminderText: '',
@@ -42,12 +45,6 @@ class InvoicesListItem extends Component {
                 reminderText: 'Wilt u de eerste herinnering sturen?',
             });
         }
-
-        if(this.props.statusId === 'paid' || this.props.statusId === 'irrecoverable'){
-            this.setState({
-                finalized: true,
-            });
-        }
     };
 
     onRowEnter() {
@@ -72,6 +69,14 @@ class InvoicesListItem extends Component {
         hashHistory.push(`/factuur/inzien/${id}`);
     };
 
+
+    showSetChecked = () => {
+        this.setState({showSetChecked: !this.state.showSetChecked});
+    };
+
+    showSend = () => {
+        this.setState({showSend: !this.state.showSend});
+    };
 
     showSetPaid = () => {
         this.setState({showSetPaid: !this.state.showSetPaid});
@@ -100,10 +105,31 @@ class InvoicesListItem extends Component {
                 <td>
                     {(this.state.showActionButtons ? <a role="button" onClick={() => this.openItem(id)}><span className="glyphicon glyphicon-pencil mybtn-success" /> </a> : '')}
                     {(this.state.showActionButtons ? <a role="button" onClick={() => this.viewItem(id)}><span className="glyphicon glyphicon-eye-open mybtn-success" /> </a> : '')}
-                    {(this.state.showActionButtons && !this.state.finalized ? <a role="button" onClick={() => this.showSetPaid()}><span className="glyphicon glyphicon-euro mybtn-success" /> </a> : '')}
-                    {(this.state.showActionButtons && !this.state.finalized && !this.props.dateExhortation ? <a role="button" onClick={() => this.showSendNotification()}><span className="glyphicon glyphicon-bullhorn mybtn-success" /> </a> : '')}
-                    {(this.state.showActionButtons && !this.state.finalized ? <a role="button" onClick={() => this.showSetIrrecoverable()}><span className="glyphicon glyphicon-remove mybtn-success" /> </a> : '')}
+                    {(this.state.showActionButtons && this.props.statusId === 'concept' ? <a role="button" onClick={() => this.showSetChecked()}><span className="glyphicon glyphicon-ok mybtn-success" /> </a> : '')}
+                    {(this.state.showActionButtons && this.props.statusId === 'checked' ? <a role="button" onClick={() => this.showSend()}><span className="glyphicon glyphicon-envelope mybtn-success" /> </a> : '')}
+                    {(this.state.showActionButtons && (this.props.statusId === 'sent' || this.props.statusId === 'exported') ? <a role="button" onClick={() => this.showSetPaid()}><span className="glyphicon glyphicon-euro mybtn-success" /> </a> : '')}
+                    {(this.state.showActionButtons && (this.props.statusId === 'sent' || this.props.statusId === 'exported') && !this.props.dateExhortation ? <a role="button" onClick={() => this.showSendNotification()}><span className="glyphicon glyphicon-bullhorn mybtn-success" /> </a> : '')}
+                    {(this.state.showActionButtons && (this.props.statusId !== 'paid' || this.props.statusId !== 'irrecoverable') ? <a role="button" onClick={() => this.showSetIrrecoverable()}><span className="glyphicon glyphicon-remove mybtn-success" /> </a> : '')}
                 </td>
+
+                {
+                    this.state.showSetChecked &&
+                    <InvoiceListSetChecked
+                        closeModal={this.showSetPaid}
+                        invoiceId={id}
+                        administrationId={this.props.administrationId}
+                    />
+                }
+
+                {
+                    this.state.showSend &&
+                    <InvoiceListSend
+                        closeModal={this.showSend}
+                        invoiceId={id}
+                        sendMethodId={this.props.sendMethodId}
+                        administrationId={this.props.administrationId}
+                    />
+                }
 
                 {
                     this.state.showSetPaid &&
@@ -122,6 +148,7 @@ class InvoicesListItem extends Component {
                         closeModal={this.showSendNotification}
                         invoiceId={id}
                         fetchInvoicesData={this.props.fetchInvoicesData}
+                        administrationId={this.props.administrationId}
                     />
                 }
 

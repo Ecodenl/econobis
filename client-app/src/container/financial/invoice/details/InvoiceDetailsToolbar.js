@@ -1,21 +1,75 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { browserHistory } from 'react-router';
+import React, {Component} from 'react';
+import {connect} from 'react-redux';
+import {browserHistory, hashHistory} from 'react-router';
 
 import ButtonIcon from '../../../../components/button/ButtonIcon';
+import InvoiceDetailsFormSetChecked from "./general/InvoiceDetailsFormSetChecked";
 import InvoiceDetailsFormSetPaid from "./general/InvoiceDetailsFormSetPaid";
+import InvoiceDetailsFormSendNotification from "./general/InvoiceDetailsFormSendNotification";
+import InvoiceDetailsFormSetIrrecoverable from "./general/InvoiceDetailsFormSetIrrecoverable";
+import InvoiceDetailsFormSend from "./general/InvoiceDetailsFormSend";
 
-class InvoiceToolbar  extends Component {
-    constructor(props){
+class InvoiceToolbar extends Component {
+    constructor(props) {
         super(props);
 
         this.state = {
+            showSetChecked: false,
+            showSend: false,
             showSetPaid: false,
+            showSendNotification: false,
+            reminderText: '',
+            showSetIrrecoverable: false,
         };
+    };
+
+    componentWillReceiveProps(nextProps) {
+        if (this.props !== nextProps) {
+            if (nextProps.invoiceDetails.dateReminder3) {
+                this.setState({
+                    reminderText: 'Wilt u de aanmaning sturen?',
+                });
+            }
+            else if (nextProps.invoiceDetails.dateReminder2) {
+                this.setState({
+                    reminderText: 'Wilt u de derde herinnering sturen?',
+                });
+            }
+            else if (nextProps.invoiceDetails.dateReminder1) {
+                this.setState({
+                    reminderText: 'Wilt u de tweede herinnering sturen?',
+                });
+            }
+            else {
+                this.setState({
+                    reminderText: 'Wilt u de eerste herinnering sturen?',
+                });
+            }
+        }
+    };
+
+    showSetChecked = () => {
+        this.setState({showSetChecked: !this.state.showSetChecked});
+    };
+
+    showSend = () => {
+        this.setState({showSend: !this.state.showSend});
     };
 
     showSetPaid = () => {
         this.setState({showSetPaid: !this.state.showSetPaid});
+    };
+
+    showSendNotification = () => {
+        this.setState({showSendNotification: !this.state.showSendNotification});
+    };
+
+    showSetIrrecoverable = () => {
+        this.setState({showSetIrrecoverable: !this.state.showSetIrrecoverable});
+    };
+
+    view = () => {
+        hashHistory.push(`/factuur/inzien/${this.props.invoiceDetails.id}`);
     };
 
     render() {
@@ -24,19 +78,67 @@ class InvoiceToolbar  extends Component {
                 <div className="col-md-4">
                     <div className="btn-group btn-group-flex margin-small" role="group">
                         <ButtonIcon iconName={"glyphicon-arrow-left"} onClickAction={browserHistory.goBack}/>
-                        {this.props.invoiceDetails.statusId !== 'paid' &&
-                            <ButtonIcon iconName={"glyphicon-euro"} onClickAction={this.showSetPaid}/>
+                        <ButtonIcon iconName={"glyphicon-eye-open"} onClickAction={this.view}/>
+                        {this.props.invoiceDetails.statusId === 'concept' &&
+                        <ButtonIcon iconName={"glyphicon-ok"} onClickAction={this.showSetChecked}/>
+                        }
+                        {this.props.invoiceDetails.statusId === 'checked' &&
+                        <ButtonIcon iconName={"glyphicon-envelope"} onClickAction={this.showSend}/>
+                        }
+                        {(this.props.invoiceDetails.statusId === 'sent' || this.props.invoiceDetails.statusId === 'exported') &&
+                        <ButtonIcon iconName={"glyphicon-euro"} onClickAction={this.showSetPaid}/>
+                        }
+                        {(this.props.invoiceDetails.statusId === 'sent' || this.props.invoiceDetails.statusId === 'exported') && !this.props.invoiceDetails.dateExhortation &&
+                        <ButtonIcon iconName={"glyphicon-bullhorn"} onClickAction={this.showSendNotification}/>
+                        }
+                        {(this.props.invoiceDetails.statusId !== 'paid' || this.props.invoiceDetails.statusId !== 'irrecoverable') &&
+                        <ButtonIcon iconName={"glyphicon-remove"} onClickAction={this.showSetIrrecoverable}/>
                         }
                     </div>
                 </div>
-                <div className="col-md-4"><h4 className="text-center">Factuur: {this.props.invoiceDetails.order ? this.props.invoiceDetails.order.contact.fullName : ''} / {this.props.invoiceDetails.number}</h4></div>
+                <div className="col-md-4"><h4
+                    className="text-center">Factuur: {this.props.invoiceDetails.order ? this.props.invoiceDetails.order.contact.fullName : ''} / {this.props.invoiceDetails.number}</h4>
+                </div>
                 <div className="col-md-4"/>
+                {
+                    this.state.showSetChecked &&
+                    <InvoiceDetailsFormSetChecked
+                        closeModal={this.showSetChecked}
+                        invoiceId={this.props.invoiceDetails.id}
+                    />
+                }
+
+                {
+                    this.state.showSend &&
+                    <InvoiceDetailsFormSend
+                        closeModal={this.showSend}
+                        invoiceId={this.props.invoiceDetails.id}
+                        sendMethodId={this.props.invoiceDetails.sendMethodId}
+                    />
+                }
+
                 {
                     this.state.showSetPaid &&
                     <InvoiceDetailsFormSetPaid
                         closeModal={this.showSetPaid}
                         invoiceId={this.props.invoiceDetails.id}
                         amountOpen={this.props.invoiceDetails.amountOpen}
+                    />
+                }
+                {
+                    this.state.showSendNotification &&
+                    <InvoiceDetailsFormSendNotification
+                        reminderText={this.state.reminderText}
+                        closeModal={this.showSendNotification}
+                        invoiceId={this.props.invoiceDetails.id}
+                    />
+                }
+
+                {
+                    this.state.showSetIrrecoverable &&
+                    <InvoiceDetailsFormSetIrrecoverable
+                        closeModal={this.showSetIrrecoverable}
+                        invoiceId={this.props.invoiceDetails.id}
                     />
                 }
             </div>

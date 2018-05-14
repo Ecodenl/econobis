@@ -5,8 +5,6 @@ import InvoiceDetailsAPI from "../../../../api/invoice/InvoiceDetailsAPI";
 import moment from "moment/moment";
 import validator from "validator";
 import InputDate from "../../../../components/form/InputDate";
-import {connect} from "react-redux";
-import {fetchAdministrationDetails} from "../../../../actions/administration/AdministrationDetailsActions";
 import {hashHistory} from "react-router";
 
 class InvoiceListSetPaid extends Component {
@@ -95,10 +93,4 @@ class InvoiceListSetPaid extends Component {
     };
 }
 
-const mapDispatchToProps = dispatch => ({
-    fetchAdministrationDetails: (id) => {
-        dispatch(fetchAdministrationDetails(id));
-    },
-});
-
-export default connect(null, mapDispatchToProps)(InvoiceListSetPaid);
+export default InvoiceListSetPaid;

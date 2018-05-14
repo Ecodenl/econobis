@@ -1,11 +1,11 @@
 import React, {Component} from 'react';
 
-import Modal from '../../../../components/modal/Modal';
-import InvoiceDetailsAPI from "../../../../api/invoice/InvoiceDetailsAPI";
+import Modal from '../../../../../components/modal/Modal';
+import InvoiceDetailsAPI from "../../../../../api/invoice/InvoiceDetailsAPI";
+import {fetchInvoiceDetails} from "../../../../../actions/invoice/InvoiceDetailsActions";
+import {connect} from "react-redux";
 
-import {hashHistory} from "react-router";
-
-class InvoiceListSetIrrecoverable extends Component {
+class InvoiceDetailsFormSetIrrecoverable extends Component {
 
     constructor(props) {
         super(props);
@@ -14,7 +14,8 @@ class InvoiceListSetIrrecoverable extends Component {
     confirmAction = event => {
         event.preventDefault();
         InvoiceDetailsAPI.setIrrecoverable(this.props.invoiceId).then((payload) => {
-            hashHistory.push(`/financieel/${this.props.administrationId}/facturen/oninbaar`);
+            this.props.fetchInvoiceDetails(this.props.invoiceId);
+            this.props.closeModal();
         });
     };
 
@@ -37,4 +38,10 @@ class InvoiceListSetIrrecoverable extends Component {
     };
 }
 
-export default InvoiceListSetIrrecoverable;
+const mapDispatchToProps = dispatch => ({
+    fetchInvoiceDetails: (id) => {
+        dispatch(fetchInvoiceDetails(id));
+    },
+});
+
+export default connect(null, mapDispatchToProps)(InvoiceDetailsFormSetIrrecoverable);

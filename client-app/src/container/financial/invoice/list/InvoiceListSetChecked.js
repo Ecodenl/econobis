@@ -2,10 +2,9 @@ import React, {Component} from 'react';
 
 import Modal from '../../../../components/modal/Modal';
 import InvoiceDetailsAPI from "../../../../api/invoice/InvoiceDetailsAPI";
-
 import {hashHistory} from "react-router";
 
-class InvoiceListSetIrrecoverable extends Component {
+class InvoiceListSetChecked extends Component {
 
     constructor(props) {
         super(props);
@@ -13,8 +12,8 @@ class InvoiceListSetIrrecoverable extends Component {
 
     confirmAction = event => {
         event.preventDefault();
-        InvoiceDetailsAPI.setIrrecoverable(this.props.invoiceId).then((payload) => {
-            hashHistory.push(`/financieel/${this.props.administrationId}/facturen/oninbaar`);
+        InvoiceDetailsAPI.setChecked(this.props.invoiceId).then((payload) => {
+            hashHistory.push(`/financieel/${this.props.administrationId}/facturen/gecontroleerd`);
         });
     };
 
@@ -23,12 +22,12 @@ class InvoiceListSetIrrecoverable extends Component {
             <Modal
                 closeModal={this.props.closeModal}
                 confirmAction={this.confirmAction}
-                title="Factuur oninbaar"
+                title="Factuur gecontroleerd"
             >
                 <div className="row">
                     <div className={'col-sm-12 margin-10-bottom'}>
                     <span>
-                        Wilt u deze factuur als oninbaar markeren?
+                        Wilt u deze factuur als gecontroleerd markeren?
                     </span>
                     </div>
                 </div>
@@ -37,4 +36,4 @@ class InvoiceListSetIrrecoverable extends Component {
     };
 }
 
-export default InvoiceListSetIrrecoverable;
+export default InvoiceListSetChecked;

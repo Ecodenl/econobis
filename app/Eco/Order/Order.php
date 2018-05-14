@@ -68,6 +68,16 @@ class Order extends Model
         return $this->hasMany(Invoice::class);
     }
 
+    public function invoicesPaidCollection()
+    {
+        return $this->hasMany(Invoice::class)->where('payment_type_id', 'collection')->where('status_id', 'paid');
+    }
+
+    public function invoicesPaidTransfer()
+    {
+        return $this->hasMany(Invoice::class)->where('payment_type_id', 'transfer')->where('status_id', 'paid');
+    }
+
     public function documents()
     {
         return $this->hasMany(Document::class);

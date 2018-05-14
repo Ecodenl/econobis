@@ -34,8 +34,8 @@ class InvoiceNewTransfer extends Component {
 
         this.setState({
             ...this.state,
-            order: {
-                ...this.state.order,
+            invoice: {
+                ...this.state.invoice,
                 [name]: value
             },
         });
@@ -44,8 +44,8 @@ class InvoiceNewTransfer extends Component {
     handleInputChangeDate = (value, name) => {
         this.setState({
             ...this.state,
-            order: {
-                ...this.state.order,
+            invoice: {
+                ...this.state.invoice,
                 [name]: value
             },
         });

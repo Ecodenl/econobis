@@ -8,6 +8,8 @@ use App\Http\Resources\Document\FullDocument;
 use App\Http\Resources\Email\FullEmail;
 use App\Http\Resources\EmailTemplate\FullEmailTemplate;
 use App\Http\Resources\EnumWithIdAndName\FullEnumWithIdAndName;
+use App\Http\Resources\Invoice\FullInvoice;
+use App\Http\Resources\Invoice\InvoicePeek;
 use App\Http\Resources\Task\FullTask;
 use App\Http\Resources\User\FullUser;
 use Illuminate\Http\Resources\Json\Resource;
@@ -63,6 +65,13 @@ class FullOrder extends Resource
                 'paymentType' => FullEnumWithIdAndName::make($this->getPaymentType()),
                 'statusId' => $this->status_id,
                 'status' => FullEnumWithIdAndName::make($this->getStatus()),
+
+                'invoiceCount' => $this->invoices()->count(),
+                'relatedInvoices' => FullInvoice::collection($this->whenLoaded('invoices')),
+                'invoicePaidCollectionCount' => $this->invoicesPaidCollection()->count(),
+                'relatedInvoicesPaidCollection' => FullInvoice::collection($this->whenLoaded('invoicesPaidCollection')),
+                'invoicePaidTransferCount' => $this->invoicesPaidTransfer()->count(),
+                'relatedInvoicesPaidTransfer' => FullInvoice::collection($this->whenLoaded('invoicesPaidTransfer')),
 
                 'taskCount' => $this->tasks()->count(),
                 'relatedTasks' => FullTask::collection($this->whenLoaded('tasks')),

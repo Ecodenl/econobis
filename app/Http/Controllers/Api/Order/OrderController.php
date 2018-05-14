@@ -45,6 +45,9 @@ class OrderController extends ApiController
             'tasks',
             'documents',
             'emails',
+            'invoices',
+            'invoicesPaidCollection',
+            'invoicesPaidTransfer',
             'createdBy',
             'emailTemplate',
             'emailTemplateReminder',
@@ -197,7 +200,7 @@ class OrderController extends ApiController
                 $contactInfo['ibanAttn'] = $contact->contactPerson->contact->iban_attn;
             }
             else{
-                $contactInfo['email'] = $email->email;
+                $contactInfo['email'] = $email ? $email->email : 'Geen e-mail bekend';
             }
         }
         else{

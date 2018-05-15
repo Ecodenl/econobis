@@ -4,6 +4,8 @@ namespace Tests\Unit;
 
 use App\Eco\Administration\Administration;
 use App\Eco\Contact\Contact;
+use App\Eco\Invoice\Invoice;
+use App\Eco\Invoice\InvoicePayment;
 use App\Eco\Order\Order;
 use App\Eco\Order\OrderProduct;
 use App\Eco\ParticipantProductionProject\ParticipantProductionProject;
@@ -13,6 +15,7 @@ use App\Eco\ProductionProject\ProductionProject;
 use App\Eco\ProductionProject\ProductionProjectRevenue;
 use App\Eco\Task\Task;
 use App\Eco\User\User;
+use App\Helpers\Invoice\InvoiceHelper;
 use Carbon\Carbon;
 use Tests\TestCase;
 
@@ -33,6 +36,7 @@ class CalculatedModelFieldsTest extends TestCase
         $this->assertProductionProjectRevenueFields();
         $this->assertTasksFields();
         $this->assertOrdersFields();
+        $this->assertInvoicesFields();
     }
 
     public function assertProductionProjectFields()
@@ -127,6 +131,15 @@ class CalculatedModelFieldsTest extends TestCase
         $this->assertEquals(1060, $product->price_incl_vat);
     }
 
+    public function assertInvoicesFields()
+    {
+        $invoice = Invoice::find(1);
+        $this->assertEquals(9910.72, $invoice->total_price_incl_vat_and_reduction);
+        $this->assertEquals(9890.72, $invoice->amount_open);
+        $this->assertEquals('2018-01-31', $invoice->date_payment_due->format('Y-m-d'));
+    }
+
+
     public function insertData(){
       $this->insertProductionProjects();
       $this->insertContacts();
@@ -134,6 +147,7 @@ class CalculatedModelFieldsTest extends TestCase
       $this->insertProductionProjectRevenues();
       $this->insertTasks();
       $this->insertOrder();
+      $this->insertInvoice();
     }
 
     public function insertProductionProjects(){
@@ -398,7 +412,7 @@ class CalculatedModelFieldsTest extends TestCase
         $or->administration_id = 1;
         $or->status_id = 'concept';
         $or->subject = 'Leuke order super!';
-        $or->payment_type_id = 'collection';
+        $or->payment_type_id = 'transfer';
         $or->IBAN = 'IBN';
         $or->date_requested = '2018-05-02';
         $or->date_start = '2018-05-03';
@@ -428,5 +442,23 @@ class CalculatedModelFieldsTest extends TestCase
         $op->date_end = '2020-01-01';
         $op->description = 'Niet gratis';
         $op->save();
+    }
+
+    public function insertInvoice(){
+
+        $invoice = new Invoice();
+        $invoice->order_id = 1;
+        $invoice->mollie_status_id = 'not_used';
+        $invoice->send_method_id = 'post';
+        $invoice->date_sent = '2018-01-01';
+
+        $invoice->save();
+        InvoiceHelper::saveInvoiceProducts($invoice, Order::find(1));
+
+        $invoicePayment = new InvoicePayment();
+        $invoicePayment->invoice_id = 1;
+        $invoicePayment->amount = 20;
+        $invoicePayment->date_paid = '2018-01-01';
+        $invoicePayment->save();
     }
 }

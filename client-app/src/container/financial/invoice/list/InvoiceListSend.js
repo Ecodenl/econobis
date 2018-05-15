@@ -13,7 +13,7 @@ class InvoiceListSend extends Component {
     confirmAction = event => {
         event.preventDefault();
         InvoiceDetailsAPI.send(this.props.invoiceId).then((payload) => {
-            hashHistory.push(`/financieel/${this.props.administrationId}/facturen/herinnering`);
+            hashHistory.push(`/financieel/${this.props.administrationId}/facturen/verzonden`);
         });
     };
 

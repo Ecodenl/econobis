@@ -103,7 +103,7 @@ class Invoice extends Model
 
             $daysAllowed = $this->administration->default_payment_term ? $this->administration->default_payment_term : 30;
 
-            $daysExpired =  ((Carbon::parse($this->date_sent))->addDays($daysAllowed))->diffInDays(Carbon::now());
+            $daysExpired = ((Carbon::parse($this->date_sent))->addDays($daysAllowed))->diffInDays(Carbon::now());
 
             return $daysExpired <= 0 ? 0 : $daysExpired;
         }
@@ -124,7 +124,10 @@ class Invoice extends Model
 
     public function getDatePaidAttribute()
     {
-        return null;
+
+        $latest_payment = InvoicePayment::where('invoice_id', $this->id)->where('amount','>', 0)->orderBy('date_paid', 'desc')->first();
+
+        return $latest_payment ? $latest_payment->date_paid : null;
     }
 
     public function getDatePaymentDueAttribute()

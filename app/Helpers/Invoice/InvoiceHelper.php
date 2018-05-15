@@ -107,14 +107,15 @@ class InvoiceHelper
             $htmlBody = '<!DOCTYPE html><html><head><meta http-equiv="content-type" content="text/html;charset=UTF-8"/><title>'
                 . $subject . '</title></head>'
                 . $htmlBody . '</html>';
+
+            $mail = Mail::to($contactInfo['email']);
+
+            $mail->subject = $subject;
+            $mail->html_body = $htmlBody;
+
+            $mail->send(new InvoiceMail($mail, $htmlBody, Storage::disk('administrations')->getDriver()->getAdapter()->applyPathPrefix($invoice->document->filename), $invoice->document->name));
+
         }
-
-        $mail = Mail::to($contactInfo['email']);
-
-        $mail->subject = $subject;
-        $mail->html_body = $htmlBody;
-
-        $mail->send(new InvoiceMail($mail, $htmlBody, Storage::disk('administrations')->getDriver()->getAdapter()->applyPathPrefix($invoice->document->filename), $invoice->document->name));
 
         $invoice->status_id = 'sent';
         $invoice->date_sent = Carbon::today();;
@@ -187,12 +188,17 @@ class InvoiceHelper
 
     public static function createInvoiceDocument(Invoice $invoice, $preview = false){
 
-        $path = storage_path('app' .  DIRECTORY_SEPARATOR . 'administrations' . DIRECTORY_SEPARATOR . $invoice->administration->logo_filename);
-        $logo = file_get_contents($path);
 
-        $src = 'data:' . mime_content_type($path) . ';charset=binary;base64,'.base64_encode($logo);
-        $src = str_replace(" ","",$src);
-        $img = '<img src="'.$src.'" width="200px" height="200px"/>';
+        $img = '';
+        if($invoice->administration->logo_filename) {
+            $path = storage_path('app' .  DIRECTORY_SEPARATOR . 'administrations' . DIRECTORY_SEPARATOR . $invoice->administration->logo_filename);
+            $logo = file_get_contents($path);
+
+            $src = 'data:' . mime_content_type($path)
+                . ';charset=binary;base64,' . base64_encode($logo);
+            $src = str_replace(" ", "", $src);
+            $img = '<img src="' . $src . '" width="200px" height="200px"/>';
+        }
 
         InvoiceHelper::checkStorageDir($invoice->administration->id);
 
@@ -207,14 +213,16 @@ class InvoiceHelper
 
         $name = $invoice->number . '.pdf';
 
-        $filePath = (storage_path('app' .  DIRECTORY_SEPARATOR . 'administrations' . DIRECTORY_SEPARATOR . 'administration_' . $invoice->administration->id
-            . DIRECTORY_SEPARATOR . 'invoices' . DIRECTORY_SEPARATOR . $name));
+        $path = 'administration_' . $invoice->administration->id
+            . DIRECTORY_SEPARATOR . 'invoices' . DIRECTORY_SEPARATOR . $name;
 
-        $filename = $pdf->save($filePath);
+        $filePath = (storage_path('app' . DIRECTORY_SEPARATOR . 'administrations' . DIRECTORY_SEPARATOR) . $path);
+
+        $pdf->save($filePath);
 
         $invoiceDocument = new InvoiceDocument();
         $invoiceDocument->invoice_id = $invoice->id;
-        $invoiceDocument->filename = $filename;
+        $invoiceDocument->filename = $path;
         $invoiceDocument->name = $name;
         $invoiceDocument->save();
     }

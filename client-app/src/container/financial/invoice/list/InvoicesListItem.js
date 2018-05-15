@@ -108,8 +108,8 @@ class InvoicesListItem extends Component {
                     {(this.state.showActionButtons && this.props.statusId === 'concept' ? <a role="button" onClick={() => this.showSetChecked()}><span className="glyphicon glyphicon-ok mybtn-success" /> </a> : '')}
                     {(this.state.showActionButtons && this.props.statusId === 'checked' ? <a role="button" onClick={() => this.showSend()}><span className="glyphicon glyphicon-envelope mybtn-success" /> </a> : '')}
                     {(this.state.showActionButtons && (this.props.statusId === 'sent' || this.props.statusId === 'exported') ? <a role="button" onClick={() => this.showSetPaid()}><span className="glyphicon glyphicon-euro mybtn-success" /> </a> : '')}
-                    {(this.state.showActionButtons && (this.props.statusId === 'sent' || this.props.statusId === 'exported') && !this.props.dateExhortation ? <a role="button" onClick={() => this.showSendNotification()}><span className="glyphicon glyphicon-bullhorn mybtn-success" /> </a> : '')}
-                    {(this.state.showActionButtons && (this.props.statusId !== 'paid' || this.props.statusId !== 'irrecoverable') ? <a role="button" onClick={() => this.showSetIrrecoverable()}><span className="glyphicon glyphicon-remove mybtn-success" /> </a> : '')}
+                    {(this.state.showActionButtons && (this.props.statusId === 'sent' || this.props.statusId === 'exported') && this.props.sendMethodId === 'mail' && !this.props.dateExhortation ? <a role="button" onClick={() => this.showSendNotification()}><span className="glyphicon glyphicon-bullhorn mybtn-success" /> </a> : '')}
+                    {(this.state.showActionButtons && (this.props.statusId !== 'paid' && this.props.statusId !== 'irrecoverable') ? <a role="button" onClick={() => this.showSetIrrecoverable()}><span className="glyphicon glyphicon-remove mybtn-success" /> </a> : '')}
                 </td>
 
                 {

@@ -208,7 +208,7 @@ class InvoiceHelper
         $name = $invoice->number . '.pdf';
 
         $filePath = (storage_path('app' .  DIRECTORY_SEPARATOR . 'administrations' . DIRECTORY_SEPARATOR . 'administration_' . $invoice->administration->id
-            . DIRECTORY_SEPARATOR . 'invoices'));
+            . DIRECTORY_SEPARATOR . 'invoices' . DIRECTORY_SEPARATOR . $name));
 
         $filename = $pdf->save($filePath);
 

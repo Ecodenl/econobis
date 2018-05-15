@@ -53,7 +53,7 @@ class AddressController extends ApiController
             'typeId' => new EnumExists(AddressType::class),
             'street' => '',
             'number' => 'integer',
-            'addition' => 'string',
+            'addition' => 'nullable|string',
             'city' => '',
             'postalCode' => '',
             'primary' => 'boolean',

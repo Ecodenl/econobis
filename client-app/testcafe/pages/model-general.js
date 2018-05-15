@@ -3,6 +3,7 @@ import { Selector } from 'testcafe';
 export default class ModelGeneral {
     constructor () {
         this.save = Selector('button').withExactText('Opslaan');
+        this.create = Selector('button').withExactText('Aanmaken');
         this.deleteConfirm = Selector('button').withExactText('Verwijder');
         this.cancel = Selector('button').withExactText('Annuleren');
 

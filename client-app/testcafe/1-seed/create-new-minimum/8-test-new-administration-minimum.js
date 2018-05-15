@@ -4,6 +4,7 @@ import * as constants from '../../config/constants';
 import * as vars from "../../config/random-models";
 import ModelGeneral from "../../pages/model-general";
 import ModelNewAdministration from "../../pages/administration/model-new-administration";
+import ModelDetailsAdministration from "../../pages/administration/model-details-administration";
 
 const faker = require('faker');
 
@@ -11,6 +12,7 @@ fixture `Create new administration minimum`;
 
 const general = new ModelGeneral();
 const newAdministration = new ModelNewAdministration();
+const detailsAdministration = new ModelDetailsAdministration();
 
 test('Fill out form administration minimum', async (t) => {
 
@@ -29,4 +31,14 @@ test('Fill out form administration minimum', async (t) => {
         .wait(constants.wait);
 
     await t.expect(general.titleH4.innerText).eql('Administratie: ' + vars.administrationName, 'Check element text', { timeout: 500 });
+
+    await t
+        .click(detailsAdministration.newUser)
+        .click(detailsAdministration.user)
+        .click(general.option.withExactText('Xaris, Admin'))
+        .click(general.save)
+        .wait(constants.wait);
+
+    //header+row
+    await t.expect(detailsAdministration.userRows.count).eql(2);
 });

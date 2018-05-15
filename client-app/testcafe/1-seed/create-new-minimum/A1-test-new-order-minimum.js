@@ -6,13 +6,13 @@ import ModelGeneral from "../../pages/model-general";
 import ModelNewOrder from "../../pages/order/model-new-order";
 import ModelGridContact from '../../pages/contact/model-grid-contact';
 import ModelDetailsPerson from '../../pages/contact/model-details-person';
-
-const faker = require('faker');
+import ModelDetailsOrder from "../../pages/order/model-details-order";
 
 fixture `Create new order minimum`;
 
 const general = new ModelGeneral();
 const newOrder = new ModelNewOrder();
+const detailsOrder = new ModelDetailsOrder();
 const contactGrid = new ModelGridContact();
 const detailsPerson = new ModelDetailsPerson();
 
@@ -43,8 +43,24 @@ test('Fill out form order minimum', async (t) => {
 
     await t
         .click(newOrder.administrationId)
-        .click(newOrder.administrationId.child().nth(1))
-        .typeText(newOrder.subject, 'Test Order')
+        .click(general.option.withExactText(vars.administrationName))
+        .typeText(newOrder.subject, vars.orderSubject)
         .click(general.save)
         .wait(constants.wait);
+
+    await t
+        .click(detailsOrder.newOrderProduct)
+        .click(detailsOrder.product)
+        .click(general.option.withExactText(vars.productName))
+        .typeText(detailsOrder.description, 'Ledlamp')
+        .typeText(detailsOrder.amount, '2')
+        .pressKey('home delete')
+        .typeText(detailsOrder.dateStart, '01-01-2018')
+        .pressKey('esc')
+        .click(general.save)
+        .wait(constants.wait);
+
+    //header+row
+    await t.expect(detailsOrder.orderProductRows.count).eql(2);
+
 });

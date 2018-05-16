@@ -95,7 +95,7 @@ const ParticipantFormView = props => {
 
             <div className="row" onClick={props.switchToEdit}>
                 <ViewText
-                    label={"Akkoord regelement"}
+                    label={"Akkoord reglement"}
                     value={didAcceptAgreement ? 'Ja' : 'Nee'}
                 />
                 <ViewText

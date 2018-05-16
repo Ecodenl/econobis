@@ -102,7 +102,7 @@ class TemplateMergeFieldsTest extends TestCase
     {
         $html = '{ppp_contact_naam}{ppp_status}{ppp_productie_project}{ppp_inschrijf_datum}{ppp_aangevraagd}{ppp_toegekend}';
         $html .= '{ppp_verkocht}{ppp_huidig}{ppp_waarde_totaal}{ppp_restverkoop}{ppp_contract_verstuurd}{ppp_contract_retour}';
-        $html .= '{ppp_betaald_op}{ppp_iban_betaald}{ppp_akkoord_regelement}{ppp_iban_tnv}{ppp_geschonken_door}';
+        $html .= '{ppp_betaald_op}{ppp_iban_betaald}{ppp_akkoord_reglement}{ppp_iban_tnv}{ppp_geschonken_door}';
         $html .= '{ppp_wettelijke_vertegenwoordiger}{ppp_iban_uitkeren}{ppp_iban_uitkeren_tnv}{ppp_einddatum}{ppp_uitkeren_op}';
 
 

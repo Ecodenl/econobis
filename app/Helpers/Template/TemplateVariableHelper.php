@@ -324,7 +324,7 @@ class TemplateVariableHelper
             case 'iban_betaald':
                 return $model->iban_payed;
                 break;
-            case 'akkoord_regelement':
+            case 'akkoord_reglement':
                 return $model->did_accept_agreement ? 'Ja' : 'Nee';
                 break;
             case 'iban_tnv':

@@ -364,7 +364,7 @@ class ParticipantsListApp extends Component {
                         </div>
                         <div className="col-md-12">
                             <InputSelect
-                                label="Email template"
+                                label="E-mail template"
                                 name={"emailTemplateId"}
                                 value={this.state.emailTemplateId}
                                 options={this.state.emailTemplates}
@@ -373,7 +373,7 @@ class ParticipantsListApp extends Component {
                                 error={this.state.emailTemplateIdError}
                             />
                             <InputText
-                                label={"Email onderwerp"}
+                                label={"E-mail onderwerp"}
                                 name={"subject"}
                                 value={this.state.subject}
                                 onChangeAction={this.handleSubjectChange}

@@ -40,7 +40,7 @@ class ProductionProjectsListItem extends Component {
               <td>{ powerKwhAvailable }</td>
               <td>{ issuedParticipations }</td>
               <td>{ issuableParticipations }</td>
-              <td>{ issuedParticipationsPercentage }</td>
+              <td>{ issuedParticipationsPercentage.toLocaleString('nl',{ maximumFractionDigits: 2 }) }</td>
               <td>
                   {(this.state.showActionButtons ? <a role="button" onClick={() => this.openItem(id)}><span className="glyphicon glyphicon-pencil mybtn-success" /> </a> : '')}
                   {(this.state.showActionButtons && this.props.permissions.manageProductionProject && false ? <a role="button" onClick={this.props.showDeleteItemModal.bind(this, id, name)}><span className="glyphicon glyphicon-trash mybtn-danger"  /> </a> : '')}

@@ -135,7 +135,7 @@ class AlfrescoHelper
 
         $args['name'] = $filename;
         $args['autoRename'] = 'true';
-        $args['relativePath'] = '/documentLibrary/' . $map;
+        $args['relativePath'] = '/documentLibrary/Econobis/' . $map;
         $args['filedata'] = new \CURLFile($file);
 
         $content_type = 'multipart/form-data';

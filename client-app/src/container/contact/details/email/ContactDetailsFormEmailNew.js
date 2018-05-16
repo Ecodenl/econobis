@@ -19,7 +19,7 @@ class ContactDetailsFormEmailNew extends Component {
             emailAddress: {
                 contactId: this.props.id,
                 email: '',
-                typeId: '',
+                typeId: 'home',
                 primary: false,
             },
             errors: {

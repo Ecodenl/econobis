@@ -10,7 +10,7 @@ class UserDetailsFormRoleViewItem extends Component {
 
         return (
             <div className="col-sm-6 border-bottom">
-                <label className="col-sm-6">{`Heeft rol ${name} : `}</label>
+                <label className="col-sm-6">{name}</label>
                 <span className="col-sm-6">{hasRole ? 'Ja' : 'Nee'}</span>
             </div>
         );

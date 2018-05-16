@@ -38,8 +38,8 @@ class ParticipantsListToolbar extends Component {
                         <ButtonText buttonText={'Rapportage'} onClickAction={this.props.toggleShowCheckboxList}/>
                     </div>
                 </div>
-                <div className="col-md-8"><h3 className="text-center table-title">Participanten
-                    productieproject {this.props.productionProject ? this.props.productionProject.name : ''}</h3></div>
+                <div className="col-md-8"><h4 className="text-center table-title">Participanten
+                    productieproject {this.props.productionProject ? this.props.productionProject.name : ''}</h4></div>
                 <div className="col-md-2">
                     <div className="pull-right">Resultaten: {meta.total || 0}</div>
                 </div>

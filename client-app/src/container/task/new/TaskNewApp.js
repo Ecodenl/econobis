@@ -235,6 +235,24 @@ class TaskNewApp extends Component {
                     }
                 });
             }
+            else if(params.contactId && params.opportunityId){
+                    this.setState({
+                        ...this.state,
+                        task: {
+                            ...this.state.task,
+                            finished: finished,
+                            campaignId: '',
+                            contactId: params.contactId,
+                            intakeId: '',
+                            contactGroupId: '',
+                            opportunityId: params.opportunityId,
+                            productionProjectId: '',
+                            participantId: '',
+                            orderId: '',
+                            invoiceId: '',
+                        }
+                    });
+                }
             else {
                 switch (params.type) {
                     case 'contact':

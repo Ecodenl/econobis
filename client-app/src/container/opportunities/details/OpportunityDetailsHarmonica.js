@@ -38,11 +38,21 @@ class OpportunityDetailsHarmonica extends Component {
     };
 
     newTask() {
-        hashHistory.push(`/taak/nieuw/kans/${this.props.id}`);
+        if(this.props.opportunityDetails.intake) {
+        hashHistory.push(`/taak/nieuw/kans/${this.props.id}/contact/${this.props.opportunityDetails.intake.contact.id}`);
+        }
+        else{
+            hashHistory.push(`/taak/nieuw/kans/${this.props.id}`);
+        }
     };
 
     newNote() {
-        hashHistory.push(`/taak/nieuw/afgehandeld/kans/${this.props.id}`);
+        if(this.props.opportunityDetails.intake) {
+            hashHistory.push(`/taak/nieuw/afgehandeld/kans/${this.props.id}/contact/${this.props.opportunityDetails.intake.contact.id}`);
+        }
+        else{
+            hashHistory.push(`/taak/nieuw/afgehandeld/kans/${this.props.id}`);
+        }
     };
 
     newDocument(type) {

@@ -231,8 +231,10 @@ const Routes = () => {
                 <Route path="taak/nieuw" component={TaskNewApp} />
                 <Route path="taak/nieuw/:closed" component={TaskNewApp} />
                 <Route path="taak/nieuw/:closed/:type/:id" component={TaskNewApp} />
+                <Route path="taak/nieuw/:closed/kans/:opportunityId/contact/:contactId" component={TaskNewApp} />
                 <Route path="taak/:id" component={TaskDetailsApp} />
                 <Route path="taak/nieuw/:type/:id" component={TaskNewApp} />
+                <Route path="taak/nieuw/kans/:opportunityId/contact/:contactId" component={TaskNewApp} />
                 <Route path="taak/nieuw/contact/:contactId/productie-project/:productionProjectId/participant/:participantId" component={TaskNewApp} />
                 <Route path="taken" component={TasksListApp} />
                 <Route path="notities" component={NotesListApp} />

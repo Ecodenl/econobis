@@ -18,7 +18,7 @@ const AdministrationDeleteItem = (props) => {
             confirmAction={() => confirmAction()}
             title="Verwijderen"
         >
-            Verwijder administratie: <strong> { props.name } </strong>?
+            Verwijder administratie: <strong>{props.name}</strong>?
         </Modal>
     );
 };

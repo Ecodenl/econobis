@@ -9,6 +9,7 @@
 namespace App\Http\Resources\Product;
 
 
+use App\Http\Resources\Administration\AdministrationPeek;
 use App\Http\Resources\GenericResource;
 use Illuminate\Http\Resources\Json\Resource;
 
@@ -22,6 +23,7 @@ class GridProduct extends Resource
                 'name' => $this->name,
                 'priceInclVat' => $this->price_incl_vat,
                 'currentPrice' => GenericResource::make($this->current_price),
+                'administration' => AdministrationPeek::make($this->whenLoaded('administration')),
             ];
     }
 }

@@ -80,7 +80,8 @@ class ContactsListApp extends Component {
         this.props.clearFilterContacts();
 
         this.setState({
-            extraFilters: undefined
+            extraFilters: undefined,
+            amountOfFilters: 0,
         });
 
         this.fetchContactsData();

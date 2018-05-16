@@ -96,7 +96,8 @@ class ParticipantsListApp extends Component {
         this.props.clearFilterParticipantsProductionProject();
 
         this.setState({
-            extraFilters: undefined
+            extraFilters: undefined,
+            amountOfFilters: 1,
         });
 
         this.fetchParticipantsProductionProjectData();

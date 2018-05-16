@@ -91,13 +91,11 @@ class ParticipantsListExtraFilters extends Component {
                 'name': 'Datum betaald',
                 'type': 'date'
             },
-
             'participationStatus': {
                 'name': 'Participaties status',
                 'type': 'dropdown',
                 'dropDownOptions': this.props.participantProductionProjectStatus
             },
-
             'contactStatus': {
                 'name': 'Contact status',
                 'type': 'dropdown',

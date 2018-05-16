@@ -44,7 +44,7 @@ class ExtraFilter extends RequestExtraFilter
     {
         $raw = 'participation_production_project.participations_granted - participation_production_project.participations_sold';
         RequestExtraFilter::applyWhereRaw($query, $raw, $type, $data);
-        $query->where('status_id', 2);
+        $query->where('participation_production_project.status_id', 2);
         return false;
     }
 

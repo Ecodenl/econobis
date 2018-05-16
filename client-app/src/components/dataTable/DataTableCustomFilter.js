@@ -15,6 +15,7 @@ class DataTableCustomFilter extends Component {
         super(props);
 
         this.state = {
+            comperator: 'eq',
             type: this.props.fields[this.props.filter.field].type,
             dropDownOptions: this.props.fields[this.props.filter.field].dropDownOptions ? this.props.fields[this.props.filter.field].dropDownOptions : '',
         };
@@ -40,6 +41,13 @@ class DataTableCustomFilter extends Component {
         const target = event.target;
         const value = target.value;
         const name = target.name;
+
+        //hides input field for is empty/ is not empty
+        if(name === 'type'){
+            this.setState({
+                comperator: value
+            });
+        }
 
         this.props.handleFilterChange(name, value, this.props.filterNumber);
     };
@@ -91,8 +99,9 @@ class DataTableCustomFilter extends Component {
                     />
                     }
                 </td>
-                {(this.state.type === 'number' || this.state.type === 'string') &&
+                {(this.state.comperator !== 'nl' && this.state.comperator !== 'nnl') &&
                 <td className="col-md-4">
+                {(this.state.type === 'number' || this.state.type === 'string') &&
                     <input
                         className={'form-control input-sm'}
                         type='text'
@@ -101,10 +110,8 @@ class DataTableCustomFilter extends Component {
                         value={this.props.filter.data}
                         onChange={this.handleInputChange}
                     />
-                </td>
                 }
                 {this.state.type === 'dropdown' &&
-                <td className="col-md-4">
                     <select
                         className={`form-control input-sm`}
                         id='data'
@@ -116,18 +123,16 @@ class DataTableCustomFilter extends Component {
                             return <option key={ option.id } value={ option.id }>{ option['name'] }</option>
                         }) }
                     </select>
-                </td>
                 }
                 {this.state.type === 'date' &&
-                <td className="col-md-4">
                     <DataTableDateFilter
                         id='data'
                         value={this.props.filter.data}
                         onChangeAction={this.handleInputChangeDate}
                     />
-                </td>
                 }
-
+                </td>
+                    }
             </tr>
         )
     }

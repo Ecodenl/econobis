@@ -52,4 +52,49 @@ abstract class RequestExtraFilter extends RequestFilter
                 break;
         }
     }
+
+    public static function applyHavingFilter($query, $mappedField, $type, $data)
+    {
+        switch ($type) {
+            case 'eq':
+                $query->having($mappedField, '=', $data);
+                break;
+            case 'neq':
+                $query->having($mappedField, '!=', $data);
+                break;
+            case 'ct':
+                $query->having($mappedField, 'LIKE', '%' . $data . '%');
+                break;
+            case 'lt':
+                $query->having($mappedField, '<', $data);
+                break;
+            case 'lte':
+                $query->having($mappedField, '<=', $data);
+                break;
+            case 'gt':
+                $query->having($mappedField, '>', $data);
+                break;
+            case 'gte':
+                $query->having($mappedField, '>=', $data);
+                break;
+            case 'bw':
+                $query->having($mappedField, 'LIKE', $data . '%');
+                break;
+            case 'nbw':
+                $query->having($mappedField, 'NOT LIKE', $data . '%');
+                break;
+            case 'ew':
+                $query->having($mappedField, 'LIKE', '%' . $data);
+                break;
+            case 'new':
+                $query->having($mappedField, 'NOT LIKE', '%' . $data);
+                break;
+            case 'nl':
+                $query->having($mappedField);
+                break;
+            case 'nnl':
+                $query->having($mappedField);
+                break;
+        }
+    }
 }

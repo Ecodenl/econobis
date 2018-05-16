@@ -3,8 +3,9 @@ import React, {Component} from 'react';
 import Modal from '../../../components/modal/Modal';
 import DataTableCustomFilter from "../../../components/dataTable/DataTableCustomFilter";
 import ButtonText from "../../../components/button/ButtonText";
+import {connect} from "react-redux";
 
-class ParticipantsListExtraFilters extends Component {
+class ContactsListExtraFilters extends Component {
 
     constructor(props) {
         super(props);
@@ -74,6 +75,19 @@ class ParticipantsListExtraFilters extends Component {
                 'name': 'Postcode nummer',
                 'type': 'number'
             },
+            'statusId': {
+                'name': 'Status',
+                'type': 'dropdown',
+                'dropDownOptions': this.props.contactStatuses
+            },
+            'createdAt': {
+                'name': 'Gemaakt op',
+                'type': 'date'
+            },
+            'currentParticipations': {
+                'name': 'Aantal participaties',
+                'type': 'number'
+            },
         };
 
         let filters = [];
@@ -111,5 +125,11 @@ class ParticipantsListExtraFilters extends Component {
     }
 };
 
+const mapStateToProps = (state) => {
+    return {
+        participantProductionProjectStatus: state.systemData.participantProductionProjectStatus,
+        contactStatuses: state.systemData.contactStatuses,
+    };
+};
 
-export default ParticipantsListExtraFilters;
+export default connect(mapStateToProps)(ContactsListExtraFilters);

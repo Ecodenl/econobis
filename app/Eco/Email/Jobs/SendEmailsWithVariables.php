@@ -75,6 +75,9 @@ class SendEmailsWithVariables
         }
         $ccBccSent = false;
 
+        $amounfOfEmailsSend = 0;
+        $mergedHtmlBody = $email->html_body;
+
         //First send emails to all emails
         if(!empty($emailsToEmailAddress)){
             $mail = Mail::to($emailsToEmailAddress);
@@ -84,6 +87,12 @@ class SendEmailsWithVariables
             $htmlBodyWithVariables = TemplateVariableHelper::replaceTemplateVariables($email->html_body, 'ik', Auth::user());
             $htmlBodyWithVariables = TemplateVariableHelper::stripRemainingVariableTags($htmlBodyWithVariables);
             $mail->send(new GenericMail($email, $htmlBodyWithVariables));
+            $amounfOfEmailsSend++;
+
+            if($amounfOfEmailsSend === 1){
+                $mergedHtmlBody = $htmlBodyWithVariables;
+            }
+
             $ccBccSent = true;
         }
 
@@ -107,6 +116,12 @@ class SendEmailsWithVariables
                 }
                 $htmlBodyWithContactVariables = TemplateVariableHelper::stripRemainingVariableTags($htmlBodyWithContactVariables);
                 $mail->send(new GenericMail($email, $htmlBodyWithContactVariables));
+                $amounfOfEmailsSend++;
+
+                if($amounfOfEmailsSend === 1){
+                    $mergedHtmlBody = $htmlBodyWithContactVariables;
+                }
+
             }
         }
 
@@ -129,7 +144,16 @@ class SendEmailsWithVariables
                 $htmlBodyWithUserVariables = TemplateVariableHelper::stripRemainingVariableTags($htmlBodyWithUserVariables);
 
                 $mail->send(new GenericMail($email, $htmlBodyWithUserVariables));
+                $amounfOfEmailsSend++;
+
+                if($amounfOfEmailsSend === 1){
+                    $mergedHtmlBody = $htmlBodyWithUserVariables;
+                }
             }
+        }
+
+        if($amounfOfEmailsSend === 1){
+            $email->html_body = $mergedHtmlBody;
         }
 
         $email->date_sent = new Carbon();

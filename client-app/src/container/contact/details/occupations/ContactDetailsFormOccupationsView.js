@@ -1,5 +1,6 @@
 import React from 'react';
 import moment from "moment/moment";
+import { Link } from 'react-router';
 moment.locale('nl');
 
 const ContactDetailsFormOccupationsView = props => {
@@ -9,7 +10,7 @@ const ContactDetailsFormOccupationsView = props => {
         <div className={`row border ${props.highlightLine}`} onMouseEnter={() => props.onLineEnter()} onMouseLeave={() => props.onLineLeave()}>
             <div onClick={props.openEdit}>
                 <div className="col-sm-3">
-                    { props.primaryOccupation ? contact.fullName : primaryContact.fullName }
+                    { props.primaryOccupation ? <Link to={`/contact/${contact.id}`} className="link-underline">{contact.fullName}</Link> : <Link to={`/contact/${primaryContact.id}`} className="link-underline">{primaryContact.fullName}</Link> }
                 </div>
                 <div className="col-sm-2">
                     { props.primaryOccupation ? occupation.primaryOccupation : occupation.secondaryOccupation }

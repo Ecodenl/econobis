@@ -31,13 +31,13 @@ class ProductionProjectsListItem extends Component {
     }
 
     render() {
-        const { id, code, name, totalParticipations, powerKwhAvailable, issuedParticipations, issuableParticipations, issuedParticipationsPercentage} = this.props;
+        const { id, code, name, totalParticipations, powerKwAvailable, issuedParticipations, issuableParticipations, issuedParticipationsPercentage} = this.props;
         return (
           <tr className={this.state.highlightRow} onDoubleClick={() => this.openItem(id)} onMouseEnter={() => this.onRowEnter()} onMouseLeave={() => this.onRowLeave()}>
               <td>{ code }</td>
               <td>{ name }</td>
               <td>{ totalParticipations }</td>
-              <td>{ powerKwhAvailable }</td>
+              <td>{ powerKwAvailable }</td>
               <td>{ issuedParticipations }</td>
               <td>{ issuableParticipations }</td>
               <td>{ issuedParticipationsPercentage.toLocaleString('nl',{ maximumFractionDigits: 2 }) }</td>

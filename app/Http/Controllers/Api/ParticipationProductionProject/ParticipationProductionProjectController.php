@@ -302,7 +302,7 @@ class ParticipationProductionProjectController extends ApiController
     {
         $checkText = 'Gebruik check: ';
 
-        if(!$productionProject->power_kwh_available){
+        if(!$productionProject->power_kw_available){
             array_push($message, $checkText . 'Productieproject heeft nog geen opgesteld vermogen.');
             return false;
         }
@@ -322,7 +322,7 @@ class ParticipationProductionProjectController extends ApiController
             return false;
         }
 
-        $participantProduction =  (($productionProject->power_kwh_available /  $productionProject->total_participations) * $participant->participations_requested) * 0.8;
+        $participantProduction =  (($productionProject->power_kw_available /  $productionProject->total_participations) * $participant->participations_requested) * 0.8;
 
         if($participantProduction > $participant->power_kwh_consumption){
             array_push($message, $checkText . 'Participant produceert ' . round($participantProduction, 2) . ' dit is meer dan hij consumeert: ' . round($participant->power_kwh_consumption, 2) . '.');

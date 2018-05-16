@@ -9,7 +9,7 @@ const ProductionProjectFormView = props => {
     const {name, code, description, ownedBy, productionProjectStatus, dateStart,
         dateProduction, dateStartRegistrations, dateEndRegistrations, productionProjectType, postalCode, address,
         city, ean, eanManager, warrantyOrigin, eanSupply,
-        participationWorth, powerKwhAvailable, maxParticipations, taxReferral, maxParticipationsYouth,
+        participationWorth, powerKwAvailable, maxParticipations, taxReferral, maxParticipationsYouth,
         totalParticipations, minParticipations, issuedParticipations, isMembershipRequired, participationsInOption,
         isParticipationTransferable, issuableParticipations} = props.productionProject;
 
@@ -118,8 +118,8 @@ const ProductionProjectFormView = props => {
                     value={participationWorth ? '€ ' + participationWorth : ''}
                 />
                 <ViewText
-                    label={"Opgesteld vermogen kWh"}
-                    value={powerKwhAvailable ? powerKwhAvailable : ''}
+                    label={"Opgesteld vermogen kW"}
+                    value={powerKwAvailable ? powerKwAvailable : ''}
                 />
             </div>
 

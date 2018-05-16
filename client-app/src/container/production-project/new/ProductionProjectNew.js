@@ -14,7 +14,7 @@ const ProductionProjectNew = props => {
     const {name, code, description, ownedById, productionProjectStatusId, dateStart,
         dateProduction, dateStartRegistrations, dateEndRegistrations, productionProjectTypeId, postalCode, address,
         city, ean, eanManager, warrantyOrigin, eanSupply,
-        participationWorth, powerKwhAvailable, maxParticipations, taxReferral, maxParticipationsYouth,
+        participationWorth, powerKwAvailable, maxParticipations, taxReferral, maxParticipationsYouth,
         totalParticipations, minParticipations, isMembershipRequired, isParticipationTransferable} = props.productionProject;
     return (
         <form className="form-horizontal col-md-12" onSubmit={props.handleSubmit}>
@@ -200,9 +200,9 @@ const ProductionProjectNew = props => {
                 />
                 <InputText
                     type={"number"}
-                    label={"Opgesteld vermogen kWh"}
-                    name={"powerKwhAvailable"}
-                    value={powerKwhAvailable}
+                    label={"Opgesteld vermogen kW"}
+                    name={"powerKwAvailable"}
+                    value={powerKwAvailable}
                     onChangeAction={props.handleInputChange}
                 />
             </div>

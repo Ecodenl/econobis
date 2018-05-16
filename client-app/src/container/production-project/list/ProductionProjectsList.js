@@ -59,7 +59,7 @@ class ProductionProjectsList extends Component {
                         <DataTableHeadTitle title={'Projectcode'} width={'15%'}/>
                         <DataTableHeadTitle title={'Naam'} width={'20%'}/>
                         <DataTableHeadTitle title={'Aantal participaties'} width={'10%'}/>
-                        <DataTableHeadTitle title={'Capaciteit kWh'} width={'15%'}/>
+                        <DataTableHeadTitle title={'Capaciteit kW'} width={'15%'}/>
                         <DataTableHeadTitle title={'Uitgegeven participaties'} width={'10%'}/>
                         <DataTableHeadTitle title={'Participaties beschikbaar'} width={'10%'}/>
                         <DataTableHeadTitle title={'Percentage uitgegeven'} width={'14%'}/>

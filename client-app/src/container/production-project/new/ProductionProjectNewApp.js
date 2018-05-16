@@ -36,7 +36,7 @@ class ProductionProjectNewApp extends Component {
                 warrantyOrigin: '',
                 eanSupply: '',
                 participationWorth: '',
-                powerKwhAvailable: '',
+                powerKwAvailable: '',
                 maxParticipations: '',
                 taxReferral: '',
                 maxParticipationsYouth: '',

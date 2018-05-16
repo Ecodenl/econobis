@@ -44,7 +44,7 @@ class FullProductionProject extends Resource
                 'warrantyOrigin' => $this->warranty_origin,
                 'eanSupply' => $this->ean_supply,
                 'participationWorth' => $this->participation_worth,
-                'powerKwhAvailable' => $this->power_kwh_available,
+                'powerKwAvailable' => $this->power_kw_available,
                 'maxParticipations' => $this->max_participations,
                 'taxReferral' => $this->tax_referral,
                 'maxParticipationsYouth' => $this->max_participations_youth,

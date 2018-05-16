@@ -33,7 +33,7 @@ class GridProductionProject extends Resource
                 'code' => $this->code,
                 'name' => $this->name,
                 'totalParticipations' => $this->total_participations,
-                'powerKwhAvailable' => $this->power_kwh_available,
+                'powerKwAvailable' => $this->power_kw_available,
                 'issuedParticipations' => $this->issued_participations,
                 'issuableParticipations' => $this->issuable_participations,
                 'issuedParticipationsPercentage' => $this->issued_participations_percentage,

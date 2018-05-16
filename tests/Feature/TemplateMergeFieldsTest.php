@@ -259,7 +259,7 @@ class TemplateMergeFieldsTest extends TestCase
         $productionProject->warranty_origin = 'Garantie nummer 123';
         $productionProject->ean_supply = '1236';
         $productionProject->participation_worth = '100';
-        $productionProject->power_kwh_available = '101';
+        $productionProject->power_kw_available = '101';
         $productionProject->max_participations = '102';
         $productionProject->tax_referral = 'Belasting1';
         $productionProject->max_participations_youth = '103';

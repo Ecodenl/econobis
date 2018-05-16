@@ -22,7 +22,7 @@ class ProductionProjectFormEdit extends Component {
         const {id, name, code, description, ownedById, productionProjectStatusId, dateStart,
             dateProduction, dateStartRegistrations, dateEndRegistrations, productionProjectTypeId, postalCode, address,
             city, ean, eanManager, warrantyOrigin, eanSupply,
-            participationWorth, powerKwhAvailable, maxParticipations, taxReferral, maxParticipationsYouth,
+            participationWorth, powerKwAvailable, maxParticipations, taxReferral, maxParticipationsYouth,
             totalParticipations, minParticipations, isMembershipRequired,
             isParticipationTransferable} = props.productionProject;
 
@@ -47,7 +47,7 @@ class ProductionProjectFormEdit extends Component {
                 warrantyOrigin: warrantyOrigin ? warrantyOrigin : '',
                 eanSupply: eanSupply ? eanSupply : '',
                 participationWorth: participationWorth ? participationWorth : '',
-                powerKwhAvailable: powerKwhAvailable ? powerKwhAvailable : '',
+                powerKwAvailable: powerKwAvailable ? powerKwAvailable : '',
                 maxParticipations: maxParticipations ? maxParticipations : '',
                 taxReferral: taxReferral ? taxReferral : '',
                 maxParticipationsYouth: maxParticipationsYouth ? maxParticipationsYouth : '',
@@ -131,7 +131,7 @@ class ProductionProjectFormEdit extends Component {
         const {name, code, description, ownedById, productionProjectStatusId, dateStart,
             dateProduction, dateStartRegistrations, dateEndRegistrations, productionProjectTypeId, postalCode, address,
             city, ean, eanManager, warrantyOrigin, eanSupply,
-            participationWorth, powerKwhAvailable, maxParticipations, taxReferral, maxParticipationsYouth,
+            participationWorth, powerKwAvailable, maxParticipations, taxReferral, maxParticipationsYouth,
             totalParticipations, minParticipations, isMembershipRequired,
             isParticipationTransferable} = this.state.productionProject;
         const {issuedParticipations, participationsInOption, issuableParticipations}  = this.props.productionProject;
@@ -293,9 +293,9 @@ class ProductionProjectFormEdit extends Component {
                     />
                     <InputText
                         type={"number"}
-                        label={"Opgesteld vermogen kWh"}
-                        name={"powerKwhAvailable"}
-                        value={powerKwhAvailable}
+                        label={"Opgesteld vermogen kW"}
+                        name={"powerKwAvailable"}
+                        value={powerKwAvailable}
                         onChangeAction={this.handleInputChange}
                     />
                 </div>

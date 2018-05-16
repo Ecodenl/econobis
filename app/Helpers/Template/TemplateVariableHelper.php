@@ -248,7 +248,7 @@ class TemplateVariableHelper
                 return $model->participation_worth;
                 break;
             case 'opgesteld_vermogen':
-                return $model->power_kwh_available;
+                return $model->power_kw_available;
                 break;
             case 'max_participaties':
                 return $model->max_participations;

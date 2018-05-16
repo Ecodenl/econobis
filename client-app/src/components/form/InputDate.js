@@ -38,12 +38,12 @@ class InputDate extends Component {
     };
 
     render() {
-        const {label, className, size, id, value, required, readOnly, name, error} = this.props;
+        const {label, className, size, divSize, id, value, required, readOnly, name, error} = this.props;
 
         const formattedDate = value ? moment(value).format('L') : '';
 
         return (
-            <div className="form-group col-sm-6">
+            <div className={`form-group ${divSize}`}>
                 <div><label htmlFor={id} className={`col-sm-6 ${required}`}>{label}</label></div>
                 <div className={`${size}`}>
                     <DayPickerInput
@@ -77,6 +77,7 @@ class InputDate extends Component {
 InputDate.defaultProps = {
     className: '',
     size: 'col-sm-6',
+    divSize: 'col-sm-6',
     required: '',
     readOnly: false,
     value: null,
@@ -88,6 +89,7 @@ InputDate.propTypes = {
     type: PropTypes.string,
     className: PropTypes.string,
     size: PropTypes.string,
+    divSize: PropTypes.string,
     id: PropTypes.string,
     name: PropTypes.string,
     value: PropTypes.oneOfType([

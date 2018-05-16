@@ -4,7 +4,6 @@ import {connect} from 'react-redux';
 import OrderDetailsFormGeneralEdit from './OrderDetailsFormGeneralEdit';
 import OrderDetailsFormGeneralView from './OrderDetailsFormGeneralView';
 import OrderDetailsAPI from "../../../../../api/order/OrderDetailsAPI";
-import EmailTemplateAPI from "../../../../../api/email-template/EmailTemplateAPI";
 
 class OrderDetailsFormGeneral extends Component {
     constructor(props) {

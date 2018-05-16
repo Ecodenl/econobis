@@ -17,8 +17,7 @@ class DocumentViewForm extends Component {
        this.downloadFile();
     };
 
-    downloadFile() {
-        let i = 0;
+    downloadFile(i = 0) {
         DocumentDetailsAPI.download(this.props.documentId).then((payload) => {
             this.setState({
                 file: payload.data,
@@ -26,7 +25,7 @@ class DocumentViewForm extends Component {
         }).catch(() => {
             if (i < 2) {
                 setTimeout(() => {
-                    this.downloadFile();
+                    this.downloadFile(i);
                 }, 500);
             }
             i++;

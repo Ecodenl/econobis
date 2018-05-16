@@ -57,6 +57,7 @@ import OpportunityDetailsApp from './container/opportunities/details/Opportunity
 import OpportunityNewApp from './container/opportunities/new/OpportunityNewApp';
 import OrderNewApp from './container/financial/order/new/OrderNewApp';
 import OrderDetailsApp from './container/financial/order/details/OrderDetailsApp';
+import InvoicePreviewApp from './container/financial/order/preview/InvoicePreviewApp';
 import ParticipantNewApp from './container/production-project/general/participant/new/ParticipantNewApp';
 import ParticipantDetailsApp from './container/production-project/general/participant/details/ParticipantDetailsApp';
 import ParticipationTransferApp from './container/production-project/general/participant/details/transfer/ParticipationTransferApp';
@@ -73,6 +74,8 @@ import PermissionHelper from './helpers/PermissionHelper';
 import IntakeDetailsApp from './container/intake/details/IntakeDetailsApp';
 import IntakeNewApp from './container/intake/new/IntakeNewApp';
 import IntakesListApp from './container/intake/list/IntakesListApp';
+import InvoiceDetailsApp from './container/financial/invoice/details/InvoiceDetailsApp';
+import InvoiceViewApp from './container/financial/invoice/view/InvoiceViewApp';
 import RequireAuth from './helpers/RequireAuth';
 import TaskDetailsApp from './container/task/details/TaskDetailsApp';
 import TaskNewApp from './container/task/new/TaskNewApp';
@@ -167,6 +170,9 @@ const Routes = () => {
                 <Route path="financieel/:id/:type/:filter" component={FinancialApp} />
                 <Route path="order/nieuw/contact/:contactId" component={OrderNewApp} />
                 <Route path="order/:id" component={OrderDetailsApp} />
+                <Route path="order/inzien/:id" component={InvoicePreviewApp} />
+                <Route path="factuur/:id" component={InvoiceDetailsApp} />
+                <Route path="factuur/inzien/:id" component={InvoiceViewApp} />
 
                 /* Campagnes */
                 <Route path="campagne/nieuw" component={CampaignNewApp} />

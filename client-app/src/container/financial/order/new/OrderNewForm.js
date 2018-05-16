@@ -173,6 +173,11 @@ class OrderNewForm extends Component {
             hasErrors = true;
         }
 
+        if (validator.isEmpty(order.administrationId + '')) {
+            errors.administrationId = true;
+            hasErrors = true;
+        }
+
         if (validator.isEmpty(order.statusId + '')) {
             errors.statusId = true;
             hasErrors = true;

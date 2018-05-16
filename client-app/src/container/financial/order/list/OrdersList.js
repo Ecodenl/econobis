@@ -60,6 +60,8 @@ class OrdersList extends Component {
                 subject: ''
             }
         };
+
+        this.handlePageClick = this.handlePageClick.bind(this);
     }
 
     componentDidMount() {
@@ -174,7 +176,7 @@ class OrdersList extends Component {
     };
 
     render() {
-        const { meta = {} } = this.props.orders;
+        const { data = [], meta = {} } = this.props.orders;
 
         return (
             <div>
@@ -186,7 +188,7 @@ class OrdersList extends Component {
                     </div>
                     <div className="col-md-4"><h3 className="text-center table-title">Orders</h3></div>
                     <div className="col-md-4">
-                        <div className="pull-right">Resultaten: { this.props.orders.total || 0 }</div>
+                        <div className="pull-right">Resultaten: { meta.total || 0 }</div>
                     </div>
                 </div>
 
@@ -202,10 +204,10 @@ class OrdersList extends Component {
                         </DataTableHead>
                         <DataTableBody>
                             {
-                                this.props.orders.length === 0 ? (
+                                data.length === 0 ? (
                                     <tr><td colSpan={8}>Geen orders gevonden!</td></tr>
                                 ) : (
-                                    this.props.orders.map((order) => {
+                                    data.map((order) => {
                                         return <OrdersListItem
                                             key={order.id}
                                             {...order}

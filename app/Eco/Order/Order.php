@@ -7,6 +7,7 @@ use App\Eco\Contact\Contact;
 use App\Eco\Document\Document;
 use App\Eco\Email\Email;
 use App\Eco\EmailTemplate\EmailTemplate;
+use App\Eco\Invoice\Invoice;
 use App\Eco\Task\Task;
 use App\Eco\User\User;
 use App\Http\Traits\Encryptable;
@@ -29,6 +30,7 @@ class Order extends Model
         = [
             'total_price_incl_vat',
             'total_price_incl_vat_per_year',
+            'date_next_collection',
         ];
 
     //Dont boot softdelete scopes. We handle this ourselves
@@ -42,6 +44,15 @@ class Order extends Model
         return $this->hasMany(OrderProduct::class)->orderBy('date_start');
     }
 
+    public function activeOrderProducts()
+    {
+        return $this->hasMany(OrderProduct::class)->where('date_start', '<=', Carbon::today())
+            ->where(function ($query) {
+                $query->where('date_end', '>=', Carbon::today())
+                    ->orWhereNull('date_end');
+            });
+    }
+
     public function administration()
     {
         return $this->belongsTo(Administration::class);
@@ -50,6 +61,21 @@ class Order extends Model
     public function tasks()
     {
         return $this->hasMany(Task::class);
+    }
+
+    public function invoices()
+    {
+        return $this->hasMany(Invoice::class);
+    }
+
+    public function invoicesPaidCollection()
+    {
+        return $this->hasMany(Invoice::class)->where('payment_type_id', 'collection')->where('status_id', 'paid');
+    }
+
+    public function invoicesPaidTransfer()
+    {
+        return $this->hasMany(Invoice::class)->where('payment_type_id', 'transfer')->where('status_id', 'paid');
     }
 
     public function documents()
@@ -110,7 +136,7 @@ class Order extends Model
         $total = 0;
 
         foreach ($this->orderProducts as $orderProduct) {
-            if(Carbon::parse($orderProduct->date_start)->lt(Carbon::today()) && Carbon::parse($orderProduct->date_end)->gt(Carbon::today())) {
+            if(Carbon::parse($orderProduct->date_start)->lte(Carbon::today()) && (Carbon::parse($orderProduct->date_end)->gte(Carbon::today()) || $orderProduct->date_end === null)) {
                 $total += $orderProduct->total_price_incl_vat_and_reduction;
             }
         }
@@ -123,11 +149,24 @@ class Order extends Model
         $total = 0;
 
         foreach ($this->orderProducts as $orderProduct) {
-            if(Carbon::parse($orderProduct->date_start)->lt(Carbon::today()) && Carbon::parse($orderProduct->date_end)->gt(Carbon::today())) {
+            if(Carbon::parse($orderProduct->date_start)->lte(Carbon::today()) && (Carbon::parse($orderProduct->date_end)->gte(Carbon::today()) || $orderProduct->date_end === null)) {
                 $total += $orderProduct->total_price_incl_vat_and_reduction_per_year;
             }
         }
 
         return $total;
+    }
+
+    public function getDateNextCollectionAttribute()
+    {
+        $date = null;
+
+        foreach($this->invoices as $invoice){
+            if($invoice->date_collection && (Carbon::parse($invoice->date_collection)->lt(Carbon::parse($date)) || $date === null) && Carbon::parse($invoice->date_collection)->gte(Carbon::today())){
+                $date = $invoice->date_collection;
+                }
+        }
+
+        return $date;
     }
 }

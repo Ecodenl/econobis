@@ -403,7 +403,8 @@ class ParticipationProductionProjectController extends ApiController
 
             $document->save();
 
-            $filePath = (storage_path('app' . DIRECTORY_SEPARATOR . 'documents/' . $document->filename));
+            $filePath = (storage_path('app' . DIRECTORY_SEPARATOR . 'documents' . DIRECTORY_SEPARATOR . $document->filename));
+
             file_put_contents($filePath, $pdf);
 
             $alfrescoHelper = new AlfrescoHelper($user->email, $user->alfresco_password);

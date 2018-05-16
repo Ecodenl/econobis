@@ -68,7 +68,7 @@ class CreateAdministrationsTables extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('administrations');
         Schema::dropIfExists('administration_user');
+        Schema::dropIfExists('administrations');
     }
 }

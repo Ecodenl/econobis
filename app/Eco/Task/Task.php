@@ -8,6 +8,7 @@ use App\Eco\ContactGroup\ContactGroup;
 use App\Eco\Document\Document;
 use App\Eco\Email\Email;
 use App\Eco\HousingFile\HousingFile;
+use App\Eco\Invoice\Invoice;
 use App\Eco\Opportunity\Opportunity;
 use App\Eco\Intake\Intake;
 use App\Eco\Order\Order;
@@ -105,6 +106,14 @@ class Task extends Model
     public function order()
     {
         return $this->belongsTo(Order::class);
+    }
+
+    /**
+     * optional
+     */
+    public function invoice()
+    {
+        return $this->belongsTo(Invoice::class);
     }
 
     /**

@@ -48,6 +48,7 @@ class ParticipantsListApp extends Component {
         this.toggleParticipantCheck = this.toggleParticipantCheck.bind(this);
         this.toggleParticipantCheckNoEmail = this.toggleParticipantCheckNoEmail.bind(this);
         this.handleEmailTemplateChange = this.handleEmailTemplateChange.bind(this);
+        this.handleSubjectChange = this.handleSubjectChange.bind(this);
         this.handlePageClick = this.handlePageClick.bind(this);
     }
 
@@ -129,6 +130,15 @@ class ParticipantsListApp extends Component {
 
         this.setState({
             templateId: value
+        });
+    };
+
+    handleSubjectChange(event) {
+        const target = event.target;
+        const value = target.type === 'checkbox' ? target.checked : target.value;
+
+        this.setState({
+            subject: value
         });
     };
 
@@ -366,7 +376,7 @@ class ParticipantsListApp extends Component {
                                 label={"Email onderwerp"}
                                 name={"subject"}
                                 value={this.state.subject}
-                                onChangeAction={this.handleInputChange}
+                                onChangeAction={this.handleSubjectChange}
                             />
                         </div>
                         <div className="col-md-12">

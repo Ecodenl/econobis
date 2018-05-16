@@ -5,6 +5,9 @@ import TaskHarmonica from "./harmonica/TaskHarmonica";
 import EmailHarmonica from "./harmonica/EmailHarmonica";
 import DocumentHarmonica from "./harmonica/DocumentHarmonica";
 import {hashHistory} from "react-router";
+import InvoiceHarmonica from "./harmonica/InvoiceHarmonica";
+import InvoicePaidCollectionHarmonica from "./harmonica/InvoicePaidCollectionHarmonica";
+import InvoicePaidTransferHarmonica from "./harmonica/InvoicePaidTransferHarmonica";
 
 
 class OrderDetailsHarmonica extends Component {
@@ -16,6 +19,9 @@ class OrderDetailsHarmonica extends Component {
                 tasks: false,
                 emails: false,
                 documents: false,
+                invoices: false,
+                invoicesPaidCollection: false,
+                invoicesPaidTransfer: false,
             },
         };
 
@@ -29,6 +35,9 @@ class OrderDetailsHarmonica extends Component {
                     tasks: false,
                     emails: false,
                     documents: false,
+                    invoices: false,
+                    invoicesPaidCollection: false,
+                    invoicesPaidTransfer: false,
                 },
             })
         }
@@ -77,6 +86,25 @@ class OrderDetailsHarmonica extends Component {
                     newDocument={this.newDocument}
                     documentCount={this.props.orderDetails.documentCount}
                 />
+                <InvoiceHarmonica
+                    toggleShowList={() => this.toggleShowList('invoices')}
+                    showInvoicesList={this.state.toggleShowList.invoices}
+                    invoiceCount={this.props.orderDetails.invoiceCount}
+                />
+                {this.props.orderDetails.paymentTypeId === 'collection'
+                ?
+                    <InvoicePaidCollectionHarmonica
+                        toggleShowList={() => this.toggleShowList('invoicesPaidCollection')}
+                        showInvoicesPaidCollectionList={this.state.toggleShowList.invoicesPaidCollection}
+                        invoicePaidCollectionCount={this.props.orderDetails.invoicePaidCollectionCount}
+                    />
+                :
+                    <InvoicePaidTransferHarmonica
+                        toggleShowList={() => this.toggleShowList('invoicesPaidTransfer')}
+                        showInvoicesPaidTransferList={this.state.toggleShowList.invoicesPaidTransfer}
+                        invoicePaidTransferCount={this.props.orderDetails.invoicePaidTransferCount}
+                    />
+                }
             </div>
         )
     };

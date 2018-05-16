@@ -315,11 +315,26 @@ Route::namespace('Api')
         Route::get('order/grid', 'Order\OrderController@grid');
         Route::get('order/peek', 'Order\OrderController@peek');
         Route::get('order/{order}', 'Order\OrderController@show');
+        Route::get('order/{order}/download-preview', 'Order\OrderController@downloadPreview');
         Route::get('order/{contact}/contact-info-for-order', 'Order\OrderController@getContactInfoForOrder');
         Route::post('order', 'Order\OrderController@store');
         Route::post('order/order-product', 'Order\OrderController@storeOrderProduct');
         Route::post('order/order-product/{orderProduct}/update', 'Order\OrderController@updateOrderProduct');
         Route::post('order/{order}', 'Order\OrderController@update');
         Route::post('order/{order}/delete', 'Order\OrderController@destroy');
+
+        Route::get('invoice/grid', 'Invoice\InvoiceController@grid');
+        Route::get('invoice/peek', 'Invoice\InvoiceController@peek');
+        Route::get('invoice/{invoice}', 'Invoice\InvoiceController@show');
+        Route::get('invoice/{invoice}/download', 'Invoice\InvoiceController@download');
+        Route::post('invoice', 'Invoice\InvoiceController@store');
+        Route::post('invoice/{invoice}', 'Invoice\InvoiceController@update');
+        Route::post('invoice/{invoice}/irrecoverable', 'Invoice\InvoiceController@setIrrecoverable');
+        Route::post('invoice/{invoice}/checked', 'Invoice\InvoiceController@setChecked');
+        Route::post('invoice/{invoice}/send', 'Invoice\InvoiceController@send');
+        Route::post('invoice/{invoice}/send-notification', 'Invoice\InvoiceController@sendNotification');
+        Route::post('invoice/{invoice}/payment/new', 'Invoice\InvoiceController@newPayment');
+        Route::post('invoice/{invoice}/payment/update', 'Invoice\InvoiceController@updatePayment');
+        Route::post('invoice/payment/{invoicePayment}/delete', 'Invoice\InvoiceController@deletePayment');
     }
 );

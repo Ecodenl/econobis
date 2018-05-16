@@ -91,4 +91,12 @@ export default {
                 }
             );
     },
+
+    downloadPreview: (id) => {
+        const requestUrl = `${URL_ORDER}/${id}/download-preview`;
+        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
+        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
+
+        return axios.get(requestUrl, {responseType: 'blob'});
+    }
 };

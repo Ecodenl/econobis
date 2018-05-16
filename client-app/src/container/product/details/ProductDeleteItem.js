@@ -19,7 +19,7 @@ const ProductDeleteItem = (props) => {
             confirmAction={() => confirmAction()}
             title="Verwijderen"
         >
-            Verwijder product: <strong> { props.name } </strong>?
+            Verwijder product: <strong>{props.name}</strong>?
         </Modal>
     );
 };

@@ -2,11 +2,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 const Modal = (props) => {
-    const {buttonClassName, buttonCancelText, buttonConfirmText, children, closeModal, confirmAction, title} = props;
+    const {modalClassName, buttonClassName, buttonCancelText, buttonConfirmText, children, closeModal, confirmAction, title} = props;
 
     return (
         <div className="modal">
-            <div className="modal-dialog">
+            <div className={`modal-dialog ${modalClassName}`}>
                 <div className="modal-content">
                     <div className="modal-header">
                         <h4 className="modal-title">{title}</h4>
@@ -30,6 +30,7 @@ const Modal = (props) => {
 
 Modal.defaultProps = {
     buttonClassName: 'btn-success',
+    modalClassName: '',
     buttonConfirmText: 'Opslaan',
     buttonCancelText: 'Annuleren',
     showConfirmAction: true,

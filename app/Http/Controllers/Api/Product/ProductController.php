@@ -28,7 +28,7 @@ class ProductController extends ApiController
     {
         $products = $requestQuery->get();
 
-        $products->load(['priceHistory']);
+        $products->load(['priceHistory', 'administration']);
 
         return GridProduct::collection($products)
             ->additional(['meta' => [

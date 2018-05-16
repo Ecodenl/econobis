@@ -31,7 +31,7 @@ class ProductsListItem extends Component {
     };
 
     render() {
-        const { id, code, name, currentPrice, priceInclVat } = this.props;
+        const { id, code, name, currentPrice, priceInclVat, administration } = this.props;
 
         return (
             <tr className={this.state.highlightRow} onDoubleClick={() => this.openItem(id)} onMouseEnter={() => this.onRowEnter()} onMouseLeave={() => this.onRowLeave()}>
@@ -40,6 +40,7 @@ class ProductsListItem extends Component {
                 <td>{ currentPrice ? '€' + currentPrice.price.toLocaleString('nl',{ minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '' }</td>
                 <td>{ currentPrice ? currentPrice.vatPercentage + '%' : '' }</td>
                 <td>{ priceInclVat ? '€' + currentPrice.priceInclVat.toLocaleString('nl',{ minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '' }</td>
+                <td>{ administration ? administration.name : ''}</td>
                 <td>
                     {(this.state.showActionButtons && this.props.permissions.manageFinancial ? <a role="button" onClick={() => this.openItem(id)}><span className="glyphicon glyphicon-pencil mybtn-success" /> </a> : '')}
                     {(this.state.showActionButtons && this.props.permissions.manageFinancial ? <a role="button" onClick={this.props.showDeleteItemModal.bind(this, id, name)}><span className="glyphicon glyphicon-trash mybtn-danger"  /> </a> : '')}

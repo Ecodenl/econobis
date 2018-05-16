@@ -36,7 +36,7 @@ test('Fill out form opportunity->quotationRequest', async (t) => {
     await t
         .click(detailsOpportunity.addQuotationRequests)
         .click(detailsOpportunity.selectOrganisation)
-        .click(detailsOpportunity.option.withExactText(vars.organisationName))
+        .click(general.option.withExactText(vars.organisationName))
         .click(detailsOpportunity.selectStatus)
         .click(detailsOpportunity.selectStatus.child().nth(2))
         .click(general.save)

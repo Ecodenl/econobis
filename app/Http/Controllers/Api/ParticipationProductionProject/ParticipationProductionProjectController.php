@@ -133,7 +133,11 @@ class ParticipationProductionProjectController extends ApiController
             case 3: //Investering
                 return ['id' => $participantProductionProject->id];
                 break;
+            case 4: //Rente+aflossing
+                return ['id' => $participantProductionProject->id];
+                break;
             default:
+                return ['id' => $participantProductionProject->id];
                 break;
         }
 

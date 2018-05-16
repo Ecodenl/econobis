@@ -4,7 +4,7 @@ import { bindActionCreators } from 'redux';
 import { isEmpty } from 'lodash';
 
 import { fetchContacts, clearContacts, setCheckedContactAll } from '../../../actions/contact/ContactsActions';
-import { setTypeFilter, setStatusFilter, clearFilterContacts } from '../../../actions/contact/ContactsFiltersActions';
+import { setTypeFilter, clearFilterContacts } from '../../../actions/contact/ContactsFiltersActions';
 import { setContactsPagination } from '../../../actions/contact/ContactsPaginationActions';
 import ContactsList from './ContactsList';
 import ContactsListToolbar from './ContactsListToolbar';
@@ -18,10 +18,6 @@ class ContactsListApp extends Component {
                 case 'type':
                     this.props.clearFilterContacts();
                     this.props.setTypeFilter(props.params.value);
-                    break;
-                case 'status':
-                    this.props.clearFilterContacts();
-                    this.props.setStatusFilter(props.params.value);
                     break;
                 default:
                     break;
@@ -50,10 +46,6 @@ class ContactsListApp extends Component {
                     case 'type':
                         this.props.clearFilterContacts();
                         this.props.setTypeFilter(nextProps.params.value);
-                        break;
-                    case 'status':
-                        this.props.clearFilterContacts();
-                        this.props.setStatusFilter(nextProps.params.value);
                         break;
                     default:
                         break;
@@ -184,7 +176,7 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = (dispatch) => {
-    return bindActionCreators({ fetchContacts, clearContacts, setCheckedContactAll, setTypeFilter, setStatusFilter, clearFilterContacts, setContactsPagination }, dispatch);
+    return bindActionCreators({ fetchContacts, clearContacts, setCheckedContactAll, setTypeFilter, clearFilterContacts, setContactsPagination }, dispatch);
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(ContactsListApp);

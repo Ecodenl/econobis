@@ -40,17 +40,6 @@ class SidebarMenu extends Component {
                             <NavText><Link className="sidebar-link" to="contacten/type/person">Alle
                                 personen</Link></NavText>
                         </Nav>
-                        <Nav id="open">
-                            <NavText><Link className="sidebar-link" to="contacten/status/open">Open</Link></NavText>
-                        </Nav>
-                        <Nav id="interested">
-                            <NavText><Link className="sidebar-link"
-                                           to="contacten/status/interested">Geïnteresseerd</Link></NavText>
-                        </Nav>
-                        <Nav id="closed">
-                            <NavText><Link className="sidebar-link"
-                                           to="contacten/status/closed">Afgehandeld</Link></NavText>
-                        </Nav>
                     </Nav>
                     <Nav id="projecten">
                         <NavIcon><SvgIcon size={20} icon={drawer}/></NavIcon>

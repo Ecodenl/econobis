@@ -101,6 +101,10 @@ class ParticipantsListExtraFilters extends Component {
                 'type': 'dropdown',
                 'dropDownOptions': this.props.contactStatuses
             },
+            'contactBirthday': {
+                'name': 'Contact geboortedatum',
+                'type': 'date'
+            },
         };
 
         let filters = [];

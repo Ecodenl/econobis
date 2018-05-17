@@ -42,8 +42,8 @@ class Filter extends RequestFilter
     ];
 
     protected $joins = [
-        'contactType' => 'contact',
-        'name' => 'contact',
+        'contactType' => 'contacts',
+        'name' => 'contacts',
         'address' => 'addresses',
         'postalCode' => 'addresses',
         'city' => 'addresses',

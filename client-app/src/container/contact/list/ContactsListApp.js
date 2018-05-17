@@ -81,7 +81,7 @@ class ContactsListApp extends Component {
 
         this.setState({
             extraFilters: undefined,
-            amountOfFilters: 0,
+            amountOfFilters: undefined,
         });
 
         this.fetchContactsData();

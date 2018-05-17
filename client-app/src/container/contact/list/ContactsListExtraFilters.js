@@ -88,6 +88,16 @@ class ContactsListExtraFilters extends Component {
                 'name': 'Aantal participaties',
                 'type': 'number'
             },
+            'occupation': {
+                'name': 'Verbinding',
+                'type': 'dropdownHas',
+                'dropDownOptions': this.props.occupations
+            },
+            'opportunity': {
+                'name': 'Kans',
+                'type': 'dropdownHas',
+                'dropDownOptions': this.props.measureCategories
+            },
         };
 
         let filters = [];
@@ -129,6 +139,8 @@ const mapStateToProps = (state) => {
     return {
         participantProductionProjectStatus: state.systemData.participantProductionProjectStatus,
         contactStatuses: state.systemData.contactStatuses,
+        occupations: state.systemData.occupations,
+        measureCategories: state.systemData.measureCategories,
     };
 };
 

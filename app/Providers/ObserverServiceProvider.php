@@ -99,6 +99,7 @@ class ObserverServiceProvider extends ServiceProvider
         Order::observe(OrderObserver::class);
         Invoice::observe(InvoiceObserver::class);
         InvoicePayment::observe(InvoicePaymentObserver::class);
+        ParticipantProductionProject::observe(ParticipantProductionProjectObserver::class);
     }
 
     /**

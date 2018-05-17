@@ -16,6 +16,7 @@ class FullOccupation extends Resource
     {
         return [
             'id' => $this->id,
+            'name' => $this->primary_occupation === $this->secondary_occupation ? $this->primary_occupation : $this->primary_occupation . ' of ' . $this->secondary_occupation ,
             'primaryOccupation' => $this->primary_occupation,
             'secondaryOccupation' => $this->secondary_occupation,
         ];

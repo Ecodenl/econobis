@@ -19,13 +19,21 @@ import OpportunitiesAPI from "../../../../api/opportunity/OpportunitiesAPI";
 import InputReactSelect from "../../../../components/form/InputReactSelect";
 import OrdersAPI from "../../../../api/order/OrdersAPI";
 import InvoicesAPI from "../../../../api/invoice/InvoicesAPI";
+import InputSelectGroup from "../../../../components/form/InputSelectGroup";
+import validator from "validator";
 
 class EmailFormEdit extends Component {
     constructor(props) {
         super(props);
 
-        const {id, contacts, intake, task, quotationRequest, measure, opportunity, order, invoice, status} = props.email;
-
+        const {id, responsibleUserId, responsibleTeamId, contacts, intake, task, quotationRequest, measure, opportunity, order, invoice, status} = props.email;
+        let responsible = '';
+        if(responsibleUserId){
+            responsible = 'user' + responsibleUserId;
+        }
+        if(responsibleTeamId){
+            responsible =  'team' + responsibleTeamId;
+        }
         this.state = {
             email: {
                 id,
@@ -38,6 +46,9 @@ class EmailFormEdit extends Component {
                 opportunityId: opportunity ? opportunity.id : '',
                 orderId: order ? order.id : '',
                 invoiceId: invoice ? invoice.id : '',
+                responsibleUserId,
+                responsibleTeamId,
+                responsible,
             },
             orders: [],
             invoices: [],
@@ -128,6 +139,21 @@ class EmailFormEdit extends Component {
             });
         }
 
+        if(validator.isEmpty(email.responsible.toString())){
+            email.responsibleUserId = '';
+            email.responsibleTeamId = '';
+        };
+
+        if(email.responsible.search('user') >= 0 ) {
+            email.responsibleUserId = email.responsible.replace('user', '');
+            email.responsibleTeamId = '';
+        };
+
+        if(email.responsible.search("team") >= 0) {
+            email.responsibleUserId = '';
+            email.responsibleTeamId = email.responsible.replace('team', '');
+        };
+
         EmailAPI.updateEmail(email).then(payload => {
             this.props.fetchEmail(email.id);
         });
@@ -136,8 +162,9 @@ class EmailFormEdit extends Component {
     };
 
     render() {
-        const {contactIds, statusId, intakeId, taskId, quotationRequestId, measureId, opportunityId, orderId, invoiceId} = this.state.email;
+        const {contactIds, statusId, intakeId, taskId, quotationRequestId, measureId, opportunityId, orderId, invoiceId, responsible} = this.state.email;
         const {from, to, cc, bcc, subject, htmlBody, createdAt, dateSent, folder, status} = this.props.email;
+
         return (
             <div>
                 <div className="row">
@@ -275,6 +302,22 @@ class EmailFormEdit extends Component {
                 </div>
                 }
 
+                {folder == 'inbox' &&
+                <div className="row">
+                    <InputSelectGroup
+                        label={"Verantwoordelijke"}
+                        size={"col-sm-6"}
+                        name={"responsible"}
+                        optionsInGroups={[
+                            {name: 'user', label: 'Gebruikers', options: this.props.users, optionName: 'fullName'},
+                            {name: 'team', label: 'Teams', options: this.props.teams}
+                        ]}
+                        value = {responsible}
+                        onChangeAction={this.handleInputChange}
+                    />
+                </div>
+                }
+
                 <PanelFooter>
                     <div className="pull-right btn-group" role="group">
                         <ButtonText buttonClassName={"btn-default"} buttonText={"Annuleren"}
@@ -298,7 +341,9 @@ const mapDispatchToProps = dispatch => ({
 const mapStateToProps = (state) => {
     return {
         email: state.email,
-        emailStatuses: state.systemData.emailStatuses
+        emailStatuses: state.systemData.emailStatuses,
+        teams: state.systemData.teams,
+        users: state.systemData.users,
     }
 };
 

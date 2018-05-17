@@ -20,6 +20,7 @@ use App\Http\Resources\Opportunity\FullOpportunity;
 use App\Http\Resources\Order\OrderPeek;
 use App\Http\Resources\QuotationRequest\FullQuotationRequest;
 use App\Http\Resources\Task\FullTask;
+use App\Http\Resources\Team\FullTeam;
 use App\Http\Resources\User\FullUser;
 use Illuminate\Http\Resources\Json\Resource;
 
@@ -54,6 +55,10 @@ class FullEmail extends Resource
             'attachments' => GenericResource::collection($this->whenLoaded('attachments')),
             'status' => FullEnumWithIdAndName::make($this->getStatus()),
             'dateClosed' => $this->date_closed,
+            'responsibleUserId' => $this->responsible_user_id,
+            'responsibleUser' => FullUser::make($this->whenLoaded('responsibleUser')),
+            'responsibleTeamId' => $this->responsible_team_id,
+            'responsibleTeam' => FullTeam::make($this->whenLoaded('responsibleTeam')),
             'closedById' => $this->closed_by_id,
             'closedBy' => FullUser::make($this->whenLoaded('closedBy')),
         ];

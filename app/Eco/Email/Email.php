@@ -11,6 +11,7 @@ use App\Eco\Opportunity\Opportunity;
 use App\Eco\Order\Order;
 use App\Eco\QuotationRequest\QuotationRequest;
 use App\Eco\Task\Task;
+use App\Eco\Team\Team;
 use App\Eco\User\User;
 use Illuminate\Database\Eloquent\Model;
 
@@ -85,5 +86,21 @@ class Email extends Model
     public function invoice()
     {
         return $this->belongsTo(Invoice::class);
+    }
+
+    /**
+     * optional
+     */
+    public function responsibleUser()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    /**
+     * optional
+     */
+    public function responsibleTeam()
+    {
+        return $this->belongsTo(Team::class);
     }
 }

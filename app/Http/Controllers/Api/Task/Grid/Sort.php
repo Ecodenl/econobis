@@ -19,7 +19,6 @@ class Sort extends RequestSort
         'note',
         'contactFullName',
         'datePlannedStart',
-        'responsibleName',
     ];
 
     protected $mapping = [
@@ -28,11 +27,9 @@ class Sort extends RequestSort
         'note' => 'tasks.note',
         'contactFullName' => 'contacts.full_name',
         'datePlannedStart' => 'tasks.date_planned_start',
-        'responsibleName' => 'users.last_name',
     ];
 
     protected $joins = [
         'contactName' => 'contact',
-        'responsibleName' => 'responsibleUser',
     ];
 }

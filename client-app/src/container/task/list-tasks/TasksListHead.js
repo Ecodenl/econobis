@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 
 import DataTableHeadTitleAndSort from '../../../components/dataTable/DataTableHeadTitleAndSort';
 import { setTasksSortsFilter } from '../../../actions/task/TasksSortsActions';
+import DataTableHeadTitle from "../../../components/dataTable/DataTableHeadTitle";
 
 const TasksListHead = (props) => {
     const setSorts = (field, order) => {
@@ -20,7 +21,7 @@ const TasksListHead = (props) => {
             <DataTableHeadTitleAndSort sortColumn={'note'} title={'Taak / notitie'} width={'20%'} setSorts={setSorts} />
             <DataTableHeadTitleAndSort sortColumn={'contactName'} title={'Contact'} width={'17%'} setSorts={setSorts} />
             <DataTableHeadTitleAndSort sortColumn={'datePlannedStart'} title={'Datum afhandelen'} width={'8%'} setSorts={setSorts} />
-            <DataTableHeadTitleAndSort sortColumn={'responsibleName'} title={'Verantwoordelijke'} width={'15%'} setSorts={setSorts} />
+            <DataTableHeadTitle title={'Verantwoordelijke'} width={'15%'} />
             <th width="5%" />
         </tr>
     );

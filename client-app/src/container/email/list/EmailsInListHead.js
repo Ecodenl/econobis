@@ -23,7 +23,7 @@ const EmailsInListHead = (props) => {
             <DataTableHeadTitle title={'Gekoppeld contact'} width={'10%'}/>
             <DataTableHeadTitleAndSort sortColumn={'subject'} title={'Onderwerp'} width={'15%'} setSorts={setSorts} />
             <DataTableHeadTitleAndSort sortColumn={'statusId'} title={'Status'} width={'10%'} setSorts={setSorts} />
-            <DataTableHeadTitleAndSort sortColumn={'responsibleName'} title={'Verantwoordelijke'} width={'10%'} setSorts={setSorts} />
+            <DataTableHeadTitle title={'Verantwoordelijke'} width={'10%'}/>
             <DataTableHeadTitle title={''} width={'5%'}/>
         </tr>
     );

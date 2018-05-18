@@ -13,10 +13,19 @@ import MailboxAPI from '../../../api/mailbox/MailboxAPI';
 import filterHelper from "../../../helpers/FilterHelper";
 import {bindActionCreators} from "redux";
 import {clearFilterEmail} from "../../../actions/email/EmailFiltersActions";
+import { setFilterMe } from '../../../actions/email/EmailFiltersActions';
 
 class EmailsInListApp extends Component {
     constructor(props) {
         super(props);
+
+        if (!isEmpty(props.params)) {
+            if(props.params.type === 'eigen'){
+                this.props.setFilterMe(true);
+            }
+        } else {
+            this.props.resetEmailsFilters();
+        }
 
         this.refreshData = this.refreshData.bind(this);
         this.handlePageClick = this.handlePageClick.bind(this);
@@ -38,6 +47,21 @@ class EmailsInListApp extends Component {
                 this.fetchEmailsData();
                 }
             }
+
+        if(this.props.params.type !== nextProps.params.type){
+            if(!isEmpty(nextProps.params)) {
+                if(nextProps.params.type === 'eigen'){
+                    this.props.setFilterMe(true);
+                };
+            }
+            else {
+                this.props.resetEmailsFilters();
+            }
+
+            setTimeout(() => {
+                this.fetchEmailsData();
+            }, 100);
+        }
         }
 
     resetEmailsFilters() {
@@ -95,6 +119,12 @@ class EmailsInListApp extends Component {
             folder = 'verzonden';
         }
 
+        let me = false;
+
+        if(this.props.params.type == 'eigen'){
+            me = true;
+        }
+
         return (
                 <Panel className="col-lg-12">
                     <PanelBody>
@@ -102,6 +132,7 @@ class EmailsInListApp extends Component {
                             <EmailsInListToolbar
                                 refreshData={this.refreshData}
                                 folder={folder}
+                                me={me}
                             />
                         </div>
 
@@ -130,7 +161,7 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = (dispatch) => {
-    return bindActionCreators({ fetchEmails, clearEmails, clearFilterEmail, setEmailsPagination, blockUI, unblockUI }, dispatch);
+    return bindActionCreators({ fetchEmails, clearEmails, clearFilterEmail, setEmailsPagination, blockUI, unblockUI, setFilterMe }, dispatch);
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(EmailsInListApp);

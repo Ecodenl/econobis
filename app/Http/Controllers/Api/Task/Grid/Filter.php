@@ -8,7 +8,9 @@
 
 namespace App\Http\Controllers\Api\Task\Grid;
 
+use App\Eco\User\User;
 use App\Helpers\RequestQuery\RequestFilter;
+use Illuminate\Support\Facades\Auth;
 
 class Filter extends RequestFilter
 {
@@ -19,6 +21,7 @@ class Filter extends RequestFilter
         'contactFullName',
         'datePlannedStart',
         'responsibleName',
+        'me',
     ];
 
     protected $mapping = [
@@ -56,6 +59,24 @@ class Filter extends RequestFilter
         //of in de team->naam
         $query->leftJoin('teams', 'tasks.responsible_team_id', '=', 'teams.id');
         $query->orWhere('teams.name', 'LIKE', '%' . $data . '%');
+        return false;
+    }
+
+    protected function applyMeFilter($query, $type, $data)
+    {
+        $userId = Auth::id();
+
+        $user = User::find($userId);
+
+        $teamIds = [];
+
+        foreach($user->teams as $team){
+            array_push($teamIds, $team->id);
+        }
+
+        $query->where('tasks.responsible_user_id', $userId);
+        $query->orWhereIn('tasks.responsible_team_id', $teamIds);
+
         return false;
     }
 }

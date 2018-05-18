@@ -9,7 +9,9 @@
 namespace App\Http\RequestQueries\Email\Grid;
 
 
+use App\Eco\User\User;
 use App\Helpers\RequestQuery\RequestFilter;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Zend\Diactoros\Request;
 
@@ -24,6 +26,7 @@ class Filter extends RequestFilter
         'subject',
         'statusId',
         'responsibleName',
+        'me',
     ];
 
     protected $mapping = [
@@ -80,6 +83,24 @@ class Filter extends RequestFilter
         //of in de team->naam
         $query->leftJoin('teams', 'emails.responsible_team_id', '=', 'teams.id');
         $query->orWhere('teams.name', 'LIKE', '%' . $data . '%');
+
+        return false;
+    }
+
+    protected function applyMeFilter($query, $type, $data)
+    {
+        $userId = Auth::id();
+
+        $user = User::find($userId);
+
+        $teamIds = [];
+
+        foreach($user->teams as $team){
+            array_push($teamIds, $team->id);
+        }
+
+        $query->where('emails.responsible_user_id', $userId);
+        $query->orWhereIn('emails.responsible_team_id', $teamIds);
 
         return false;
     }

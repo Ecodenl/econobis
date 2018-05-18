@@ -10,10 +10,20 @@ import TasksListToolbar from './TasksListToolbar';
 import filterHelper from '../../../helpers/FilterHelper';
 import Panel from '../../../components/panel/Panel';
 import PanelBody from "../../../components/panel/PanelBody";
+import { isEmpty } from 'lodash';
+import { setFilterTaskMe } from '../../../actions/task/TasksFiltersActions';
 
 class TasksListApp extends Component {
     constructor(props) {
         super(props);
+
+        if (!isEmpty(props.params)) {
+            if(props.params.type === 'eigen'){
+                this.props.setFilterTaskMe(true);
+            }
+        } else {
+            this.props.clearFilterTask();
+        }
 
         this.fetchTasksData = this.fetchTasksData.bind(this);
         this.resetTaskFilters = this.resetTaskFilters.bind(this);
@@ -27,6 +37,23 @@ class TasksListApp extends Component {
     componentWillUnmount() {
         this.props.clearTasks();
     };
+
+    componentWillReceiveProps(nextProps) {
+        if(this.props.params.type !== nextProps.params.type){
+            if(!isEmpty(nextProps.params)) {
+                if(nextProps.params.type === 'eigen'){
+                  this.props.setFilterTaskMe(true);
+                };
+            }
+            else {
+                this.props.clearFilterTask();
+            }
+
+            setTimeout(() => {
+                this.fetchTasksData();
+            }, 100);
+        }
+    }
 
     fetchTasksData() {
         setTimeout(() => {
@@ -63,12 +90,20 @@ class TasksListApp extends Component {
     };
 
     render() {
+
+        let me = false;
+
+        if(this.props.params.type == 'eigen'){
+            me = true;
+        }
+
         return (
             <Panel>
                 <PanelBody>
                     <div className="col-md-12 margin-10-top">
                         <TasksListToolbar
                             resetTaskFilters={() => this.resetTaskFilters()}
+                            me={me}
                         />
                     </div>
 
@@ -97,7 +132,7 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = (dispatch) => {
-    return bindActionCreators({ fetchTasks, clearTasks, clearFilterTask, setTasksPagination }, dispatch);
+    return bindActionCreators({ fetchTasks, clearTasks, clearFilterTask, setTasksPagination, setFilterTaskMe }, dispatch);
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(TasksListApp);

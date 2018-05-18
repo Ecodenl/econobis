@@ -19,7 +19,7 @@ const EmailsInListToolbar = props => {
                     <ButtonIcon iconName={"glyphicon-plus"} onClickAction={newMailbox} title={'Nieuwe e-mail'} />
                 </div>
             </div>
-            <div className="col-md-4"><h3 className="text-center table-title">E-mail {props.folder} </h3></div>
+            <div className="col-md-4"><h3 className="text-center table-title">{props.me ? 'Eigen e-mail' : 'E-mail'}  {props.folder} </h3></div>
             <div className="col-md-4">
                 <div className="pull-right">Resultaten: { meta.total || 0 }</div>
             </div>

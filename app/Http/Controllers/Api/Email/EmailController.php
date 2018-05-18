@@ -486,9 +486,24 @@ class EmailController
 
     public function getAmountOfOpenEmails(){
         $user = Auth::user();
+        $userId = Auth::id();
 
         $mailboxIds = $user->mailboxes()->pluck('mailbox_id');
 
-        return Email::whereIn('mailbox_id', $mailboxIds)->where('status', '!=', 'closed')->where('folder', 'inbox')->count();
+        $teamIds = [];
+
+        foreach($user->teams as $team){
+            array_push($teamIds, $team->id);
+        }
+
+        $query = Email::whereIn('mailbox_id', $mailboxIds)->where('status', '!=', 'closed')->where('folder', 'inbox');
+
+        $query->where(function($query) use ($userId, $teamIds) {
+            $query->where('emails.responsible_user_id', $userId);
+            $query->orWhereIn('emails.responsible_team_id', $teamIds);
+
+        });
+
+        return $query->count();
     }
 }

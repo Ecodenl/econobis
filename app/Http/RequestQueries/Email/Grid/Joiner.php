@@ -23,4 +23,11 @@ class Joiner extends RequestJoiner
         $query->join('contact_email', 'contact_email.email_id', '=', 'emails.id');
         $query->join('contacts', 'contact_email.contact_id', '=', 'contacts.id');
     }
+
+    protected function applyUsersJoin($query)
+    {
+        $query->leftJoin('users', 'emails.responsible_user_id', '=', 'users.id');
+        $query->leftJoin('last_name_prefixes', 'users.last_name_prefix_id', '=', 'last_name_prefixes.id');
+    }
+
 }

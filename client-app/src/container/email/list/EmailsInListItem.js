@@ -39,7 +39,7 @@ class EmailsInListItem extends Component {
     }
 
     render() {
-        const { id, date, mailboxName, from, to, contacts, subject, status, folder } = this.props;
+        const { id, date, mailboxName, from, to, contacts, subject, status, folder, responsibleName } = this.props;
 
         return (
             <tr className={this.state.highlightRow} onDoubleClick={() => this.openItem(id)} onMouseEnter={() => this.onRowEnter()} onMouseLeave={() => this.onRowLeave()}>
@@ -54,6 +54,7 @@ class EmailsInListItem extends Component {
                     :
                     <td>{"Verzonden"}</td>
                 }
+                <td>{ responsibleName }</td>
                 <td>
                     {(this.state.showActionButtons ? <a role="button" onClick={() => this.openItem(id)}><span className="glyphicon glyphicon-pencil mybtn-success" /> </a> : '')}
                     {(this.state.showActionButtons && (folder === 'inbox' || folder === 'sent') ? <a role="button" onClick={() => this.removeEmail(id)}><span className="glyphicon glyphicon-trash mybtn-danger"/> </a> : '')}

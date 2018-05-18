@@ -27,7 +27,6 @@ class Filter extends RequestFilter
         'note' => 'tasks.note',
         'contactFullName' => 'contacts.full_name',
         'datePlannedStart' => 'tasks.date_planned_start',
-        'responsibleName' => 'users.last_name',
     ];
 
     protected $joins = [
@@ -40,7 +39,7 @@ class Filter extends RequestFilter
         'statusId' => 'eq',
     ];
 
-    protected function applyResponsibleUserNameFilter($query, $type, $data)
+    protected function applyResponsibleNameFilter($query, $type, $data)
     {
         // Elke term moet in een van de naam velden voor komen.
         // Opbreken in array zodat 2 losse woorden ook worden gevonden als deze in 2 verschillende velden staan
@@ -54,6 +53,9 @@ class Filter extends RequestFilter
             });
         }
 
+        //of in de team->naam
+        $query->leftJoin('teams', 'tasks.responsible_team_id', '=', 'teams.id');
+        $query->orWhere('teams.name', 'LIKE', '%' . $data . '%');
         return false;
     }
 }

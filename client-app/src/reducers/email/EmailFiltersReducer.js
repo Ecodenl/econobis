@@ -27,6 +27,10 @@ const filtersReducerDefaultState = {
         field: 'statusId',
         data: '',
     },
+    responsibleName: {
+        field: 'responsibleName',
+        data: '',
+    },
 };
 
 export default (state = filtersReducerDefaultState, action) => {
@@ -85,6 +89,14 @@ export default (state = filtersReducerDefaultState, action) => {
                 statusId: {
                     ...state.statusId,
                     data: action.statusId,
+                }
+            };
+        case 'SET_FILTER_EMAIL_RESPONSIBLE_NAME':
+            return {
+                ...state,
+                responsibleName: {
+                    ...state.responsibleName,
+                    data: action.responsibleName,
                 }
             };
         case 'CLEAR_FILTER_EMAIL':

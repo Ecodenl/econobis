@@ -23,6 +23,7 @@ class Filter extends RequestFilter
         'contact',
         'subject',
         'statusId',
+        'responsibleName',
     ];
 
     protected $mapping = [
@@ -37,6 +38,7 @@ class Filter extends RequestFilter
     protected $joins = [
         'mailbox' => 'mailboxes',
         'contact' => 'contact',
+        'responsibleName' => 'users',
     ];
 
     protected $defaultTypes = [
@@ -57,6 +59,27 @@ class Filter extends RequestFilter
     protected function applyContactFilter($query, $type, $data)
     {
         $query->whereRaw('concat(IFNULL(contacts.full_name,\'\'), IFNULL(contacts.number,\'\')) LIKE ' . DB::connection()->getPdo()->quote('%' . $data . '%'));
+
+        return false;
+    }
+
+    protected function applyResponsibleNameFilter($query, $type, $data)
+    {
+        // Elke term moet in een van de naam velden voor komen.
+        // Opbreken in array zodat 2 losse woorden ook worden gevonden als deze in 2 verschillende velden staan
+        $terms = explode(' ', $data);
+
+        foreach ($terms as $term){
+            $query->where(function($query) use ($term) {
+                $query->where('users.last_name', 'LIKE', '%' . $term . '%');
+                $query->orWhere('users.first_name', 'LIKE', '%' . $term . '%');
+                $query->orWhere('last_name_prefixes.name', 'LIKE', '%' . $term . '%');
+            });
+        }
+
+        //of in de team->naam
+        $query->leftJoin('teams', 'emails.responsible_team_id', '=', 'teams.id');
+        $query->orWhere('teams.name', 'LIKE', '%' . $data . '%');
 
         return false;
     }

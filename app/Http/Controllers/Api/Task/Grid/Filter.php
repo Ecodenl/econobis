@@ -74,8 +74,10 @@ class Filter extends RequestFilter
             array_push($teamIds, $team->id);
         }
 
-        $query->where('tasks.responsible_user_id', $userId);
-        $query->orWhereIn('tasks.responsible_team_id', $teamIds);
+        $query->where(function($query) use ($userId, $teamIds) {
+            $query->where('tasks.responsible_user_id', $userId);
+            $query->orWhereIn('tasks.responsible_team_id', $teamIds);
+        });
 
         return false;
     }

@@ -99,8 +99,10 @@ class Filter extends RequestFilter
             array_push($teamIds, $team->id);
         }
 
-        $query->where('emails.responsible_user_id', $userId);
-        $query->orWhereIn('emails.responsible_team_id', $teamIds);
+        $query->where(function($query) use ($userId, $teamIds) {
+            $query->where('emails.responsible_user_id', $userId);
+            $query->orWhereIn('emails.responsible_team_id', $teamIds);
+        });
 
         return false;
     }

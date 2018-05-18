@@ -79,7 +79,8 @@ class EmailController
     }
 
     public function show(Email $email){
-        $email->load('contacts', 'attachments', 'closedBy', 'intake', 'task', 'quotationRequest', 'measure', 'opportunity', 'order', 'invoice');
+        $email->load('contacts', 'attachments', 'closedBy', 'intake', 'task', 'quotationRequest', 'measure', 'opportunity', 'order', 'invoice',   'responsibleUser',
+            'responsibleTeam');
 
         return FullEmail::make($email);
     }
@@ -169,6 +170,8 @@ class EmailController
             ->integer('productionProjectId')->validate('exists:production_projects,id')->onEmpty(null)->alias('production_project_id')->next()
             ->integer('orderId')->validate('exists:orders,id')->onEmpty(null)->alias('order_id')->next()
             ->integer('invoiceId')->validate('exists:invoices,id')->onEmpty(null)->alias('invoice_id')->next()
+            ->integer('responsibleUserId')->validate('nullable|exists:users,id')->whenMissing(null)->onEmpty(null)->alias('responsible_user_id')->next()
+            ->integer('responsibleTeamId')->validate('nullable|exists:teams,id')->whenMissing(null)->onEmpty(null)->alias('responsible_team_id')->next()
             ->get();
 
         $email->fill($data);
@@ -483,9 +486,24 @@ class EmailController
 
     public function getAmountOfOpenEmails(){
         $user = Auth::user();
+        $userId = Auth::id();
 
         $mailboxIds = $user->mailboxes()->pluck('mailbox_id');
 
-        return Email::whereIn('mailbox_id', $mailboxIds)->where('status', '!=', 'closed')->where('folder', 'inbox')->count();
+        $teamIds = [];
+
+        foreach($user->teams as $team){
+            array_push($teamIds, $team->id);
+        }
+
+        $query = Email::whereIn('mailbox_id', $mailboxIds)->where('status', '!=', 'closed')->where('folder', 'inbox');
+
+        $query->where(function($query) use ($userId, $teamIds) {
+            $query->where('emails.responsible_user_id', $userId);
+            $query->orWhereIn('emails.responsible_team_id', $teamIds);
+
+        });
+
+        return $query->count();
     }
 }

@@ -11,7 +11,8 @@ import {
     setFilterEmailStatusId,
     setFilterEmailSubject,
     setFilterEmailTo,
-    setFilterEmailContact
+    setFilterEmailContact,
+    setFilterResponsibleName
 } from '../../../actions/email/EmailFiltersActions';
 
 import DataTableFilterDate from "../../../components/dataTable/DataTableFilterDate";
@@ -54,6 +55,10 @@ const EmailsInListFilter = props => {
         props.setFilterEmailSubject(e.target.value);
     };
 
+    const onResponsibleNameChange = (e) => {
+        props.setFilterResponsibleName(e.target.value);
+    };
+
     return (
         <tr className="thead-filter">
 
@@ -77,6 +82,7 @@ const EmailsInListFilter = props => {
                 </select>
             </th>
 
+            <th><input type="text" className="form-control input-sm" value={ props.filters.responsibleName.data} onChange={onResponsibleNameChange} /></th>
 
             <th/>
         </tr>
@@ -96,7 +102,8 @@ const mapDispatchToProps = (dispatch) => {
         setFilterEmailStatusId,
         setFilterEmailSubject,
         setFilterEmailTo,
-        setFilterEmailContact
+        setFilterEmailContact,
+        setFilterResponsibleName
     }, dispatch);
 };
 

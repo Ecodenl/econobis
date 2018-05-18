@@ -21,10 +21,9 @@ class Sort extends RequestSort
         'postalCode',
         'city',
         'statusId',
-        'currentParticipations',
         'participationStatusId',
         'dateRegister',
-        'energySupplierId'
+        'energySupplier'
     ];
 
     protected $mapping = [
@@ -36,16 +35,17 @@ class Sort extends RequestSort
         'statusId' => 'contacts.status_id',
         'participationStatusId' => 'participation_production_project.status_id',
         'dateRegister' => 'participation_production_project.date_register',
-        'energySupplierId' => 'energy_suppliers.id',
+        'energySupplier' => 'energy_suppliers.name',
+        'address' => 'addresses.street',
     ];
 
     protected $joins = [
-        'contactType' => 'contact',
-        'name' => 'contact',
+        'contactType' => 'contacts',
+        'name' => 'contacts',
         'address' => 'addresses',
         'postalCode' => 'addresses',
         'city' => 'addresses',
         'statusId' => 'contacts',
-        'energySupplierId' => 'energy_suppliers',
+        'energySupplier' => 'energy_suppliers',
     ];
 }

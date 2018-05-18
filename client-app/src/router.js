@@ -59,6 +59,7 @@ import OrderNewApp from './container/financial/order/new/OrderNewApp';
 import OrderDetailsApp from './container/financial/order/details/OrderDetailsApp';
 import InvoicePreviewApp from './container/financial/order/preview/InvoicePreviewApp';
 import ParticipantNewApp from './container/production-project/general/participant/new/ParticipantNewApp';
+import ParticipantListApp from './container/participant/list/ParticipantsListApp';
 import ParticipantDetailsApp from './container/production-project/general/participant/details/ParticipantDetailsApp';
 import ParticipationTransferApp from './container/production-project/general/participant/details/transfer/ParticipationTransferApp';
 import PostalCodeLinkListApp from './container/postal-code-link/list/PostalCodeLinkListApp';
@@ -152,6 +153,7 @@ const Routes = () => {
                 <Route path="emails/concept" component={ConceptsInListApp} />
                 <Route path="email/concept/:id" component={ConceptApp} />
                 <Route path="emails/:folder" component={EmailsInListApp} />
+                <Route path="emails/:folder/:type" component={EmailsInListApp} />
                 <Route path="email/nieuw" component={EmailNewApp} />
                 <Route path="email/nieuw/:type" component={EmailNewApp} />
                 <Route path="email/nieuw/groep/:groupId" component={EmailNewApp} />
@@ -223,6 +225,7 @@ const Routes = () => {
                 <Route path="productie-project/:id" component={ProductionProjectGeneralApp} />
                 <Route path="productie-projecten" component={ProductionProjectsListApp} />
 
+                <Route path="participanten" component={ParticipantListApp} />
                 <Route path="productie-project/participant/:participationId/overdragen" component={ParticipationTransferApp} />
                 <Route path="productie-project/participant/nieuw/:productionProjectId" component={ParticipantNewApp} />
                 <Route path="productie-project/participant/nieuw/contact/:contactId" component={ParticipantNewApp} />
@@ -237,6 +240,8 @@ const Routes = () => {
                 <Route path="taak/nieuw/kans/:opportunityId/contact/:contactId" component={TaskNewApp} />
                 <Route path="taak/nieuw/contact/:contactId/productie-project/:productionProjectId/participant/:participantId" component={TaskNewApp} />
                 <Route path="taken" component={TasksListApp} />
+                <Route path="taken/:type" component={TasksListApp} />
+                <Route path="taken/:type" component={TasksListApp} />
                 <Route path="notities" component={NotesListApp} />
                 /* Teams */
                 <Route path="teams" component={TeamsListApp} />

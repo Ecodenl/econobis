@@ -26,8 +26,14 @@ class RequestQuery extends \App\Helpers\RequestQuery\RequestQuery
 
     protected function baseQuery()
     {
-        return ParticipantProductionProject::query()
+        $query = ParticipantProductionProject::query()
             ->whereNull('participation_production_project.deleted_at')
-            ->select('participation_production_project.*')->where('production_project_id', $this->request->input('productionProjectId'));
+            ->select('participation_production_project.*');
+
+        if($this->request->input('productionProjectId')){
+            $query->where('production_project_id', $this->request->input('productionProjectId'));
+        }
+
+        return $query;
     }
 }

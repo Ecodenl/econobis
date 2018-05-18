@@ -13,9 +13,15 @@ use App\Helpers\RequestQuery\RequestJoiner;
 
 class Joiner extends RequestJoiner
 {
-    protected function applyContactJoin($query)
+    protected function applyContactsJoin($query)
     {
         $query->join('contacts', 'participation_production_project.contact_id', '=', 'contacts.id');
+    }
+
+    protected function applyPeopleJoin($query)
+    {
+        $query->join('contacts', 'participation_production_project.contact_id', '=', 'contacts.id');
+        $query->join('people', 'people.contact_id', '=', 'contacts.id');
     }
 
     protected function applyAddressesJoin($query)

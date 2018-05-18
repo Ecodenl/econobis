@@ -8,7 +8,9 @@
 
 namespace App\Http\Controllers\Api\Task\Grid;
 
+use App\Eco\User\User;
 use App\Helpers\RequestQuery\RequestFilter;
+use Illuminate\Support\Facades\Auth;
 
 class Filter extends RequestFilter
 {
@@ -19,6 +21,7 @@ class Filter extends RequestFilter
         'contactFullName',
         'datePlannedStart',
         'responsibleName',
+        'me',
     ];
 
     protected $mapping = [
@@ -27,7 +30,6 @@ class Filter extends RequestFilter
         'note' => 'tasks.note',
         'contactFullName' => 'contacts.full_name',
         'datePlannedStart' => 'tasks.date_planned_start',
-        'responsibleName' => 'users.last_name',
     ];
 
     protected $joins = [
@@ -40,7 +42,7 @@ class Filter extends RequestFilter
         'statusId' => 'eq',
     ];
 
-    protected function applyResponsibleUserNameFilter($query, $type, $data)
+    protected function applyResponsibleNameFilter($query, $type, $data)
     {
         // Elke term moet in een van de naam velden voor komen.
         // Opbreken in array zodat 2 losse woorden ook worden gevonden als deze in 2 verschillende velden staan
@@ -53,6 +55,29 @@ class Filter extends RequestFilter
                 $query->orWhere('last_name_prefixes.name', 'LIKE', '%' . $term . '%');
             });
         }
+
+        //of in de team->naam
+        $query->leftJoin('teams', 'tasks.responsible_team_id', '=', 'teams.id');
+        $query->orWhere('teams.name', 'LIKE', '%' . $data . '%');
+        return false;
+    }
+
+    protected function applyMeFilter($query, $type, $data)
+    {
+        $userId = Auth::id();
+
+        $user = User::find($userId);
+
+        $teamIds = [];
+
+        foreach($user->teams as $team){
+            array_push($teamIds, $team->id);
+        }
+
+        $query->where(function($query) use ($userId, $teamIds) {
+            $query->where('tasks.responsible_user_id', $userId);
+            $query->orWhereIn('tasks.responsible_team_id', $teamIds);
+        });
 
         return false;
     }

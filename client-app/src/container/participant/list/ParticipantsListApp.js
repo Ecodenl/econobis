@@ -2,25 +2,25 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import { fetchParticipantsProductionProject, clearParticipantsProductionProject } from '../../../../../actions/participants-production-project/ParticipantsProductionProjectActions';
-import { clearFilterParticipantsProductionProject } from '../../../../../actions/participants-production-project/ParticipantsProductionProjectFiltersActions';
-import { setParticipantsProductionProjectPagination } from '../../../../../actions/participants-production-project/ParticipantsProductionProjectPaginationActions';
+import { fetchParticipantsProductionProject, clearParticipantsProductionProject } from '../../../actions/participants-production-project/ParticipantsProductionProjectActions';
+import { clearFilterParticipantsProductionProject } from '../../../actions/participants-production-project/ParticipantsProductionProjectFiltersActions';
+import { setParticipantsProductionProjectPagination } from '../../../actions/participants-production-project/ParticipantsProductionProjectPaginationActions';
 import ParticipantsList from './ParticipantsList';
 import ParticipantsListToolbar from './ParticipantsListToolbar';
-import filterHelper from '../../../../../helpers/FilterHelper';
-import Panel from '../../../../../components/panel/Panel';
-import PanelBody from "../../../../../components/panel/PanelBody";
-import EmailTemplateAPI from "../../../../../api/email-template/EmailTemplateAPI";
-import DocumentTemplateAPI from "../../../../../api/document-template/DocumentTemplateAPI";
-import ParticipantsProductionProjectAPI from "../../../../../api/participant-production-project/ParticipantsProductionProjectAPI";
+import filterHelper from '../../../helpers/FilterHelper';
+import Panel from '../../../components/panel/Panel';
+import PanelBody from "../../../components/panel/PanelBody";
+import EmailTemplateAPI from "../../../api/email-template/EmailTemplateAPI";
+import DocumentTemplateAPI from "../../../api/document-template/DocumentTemplateAPI";
+import ParticipantsProductionProjectAPI from "../../../api/participant-production-project/ParticipantsProductionProjectAPI";
 import {hashHistory} from "react-router";
 import validator from "validator";
-import Modal from "../../../../../components/modal/Modal";
-import ButtonText from "../../../../../components/button/ButtonText";
-import InputText from "../../../../../components/form/InputText";
-import InputSelect from "../../../../../components/form/InputSelect";
-import PanelFooter from "../../../../../components/panel/PanelFooter";
-import ViewText from "../../../../../components/form/ViewText";
+import Modal from "../../../components/modal/Modal";
+import ButtonText from "../../../components/button/ButtonText";
+import InputText from "../../../components/form/InputText";
+import InputSelect from "../../../components/form/InputSelect";
+import PanelFooter from "../../../components/panel/PanelFooter";
+import ViewText from "../../../components/form/ViewText";
 
 class ParticipantsListApp extends Component {
     constructor(props) {
@@ -88,7 +88,7 @@ class ParticipantsListApp extends Component {
             const sorts = this.props.participantsProductionProjectSorts.reverse();
             const pagination = { limit: 20, offset: this.props.participantsProductionProjectPagination.offset };
 
-            this.props.fetchParticipantsProductionProject(filters, extraFilters, sorts, pagination, this.props.productionProjectId);
+            this.props.fetchParticipantsProductionProject(filters, extraFilters, sorts, pagination);
         },100 );
     };
 
@@ -408,7 +408,6 @@ class ParticipantsListApp extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        productionProjectId: state.productionProjectDetails.id,
         participantsProductionProject: state.participantsProductionProject.list,
         participantsProductionProjectFilters: state.participantsProductionProject.filters,
         participantsProductionProjectSorts: state.participantsProductionProject.sorts,

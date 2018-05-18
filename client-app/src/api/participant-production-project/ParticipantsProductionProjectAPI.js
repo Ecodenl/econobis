@@ -11,7 +11,7 @@ export default {
 
         return axios.get(requestUrl, {
             params: {
-                productionProjectId: JSON.stringify(productionProjectId),
+                productionProjectId: productionProjectId ? JSON.stringify(productionProjectId) : null,
                 filters: JSON.stringify(filters),
                 extraFilters: JSON.stringify(extraFilters),
                 sorts: JSON.stringify(sorts),

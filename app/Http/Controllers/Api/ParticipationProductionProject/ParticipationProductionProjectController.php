@@ -43,10 +43,11 @@ class ParticipationProductionProjectController extends ApiController
         $participantProductionProject = $requestQuery->get();
 
         $participantProductionProject->load([
-        'contact.primaryContactEnergySupplier.energySupplier',
-        'contact.primaryAddress',
-        'contact.primaryEmailAddress',
-        'participantProductionProjectStatus',
+            'contact.primaryContactEnergySupplier.energySupplier',
+            'contact.primaryAddress',
+            'contact.primaryEmailAddress',
+            'participantProductionProjectStatus',
+            'productionProject',
     ]);
 
         return GridParticipantProductionProject::collection($participantProductionProject)

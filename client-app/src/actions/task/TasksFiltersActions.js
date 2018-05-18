@@ -28,6 +28,13 @@ export const setFilterTaskResponsibleName = (responsibleName) => ({
     responsibleName,
 });
 
+export const setFilterTaskMe = (me) => ({
+    type: 'SET_FILTER_TASK_ME',
+    me,
+});
+
+
+
 export const clearFilterTask = () => ({
     type: 'CLEAR_FILTER_TASKS',
 });

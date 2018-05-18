@@ -19,10 +19,11 @@ const EmailsInListHead = (props) => {
             <DataTableHeadTitleAndSort sortColumn={'date'} title={'Datum'} width={'10%'} setSorts={setSorts} />
             <DataTableHeadTitleAndSort sortColumn={'mailbox'} title={'Mailbox'} width={'10%'} setSorts={setSorts} />
             <DataTableHeadTitleAndSort sortColumn={'sentBy'} title={'Afzender'} width={'10%'} setSorts={setSorts} />
-            <DataTableHeadTitleAndSort sortColumn={'to'} title={'Aan'} width={'15%'} setSorts={setSorts} />
+            <DataTableHeadTitleAndSort sortColumn={'to'} title={'Aan'} width={'10%'} setSorts={setSorts} />
             <DataTableHeadTitle title={'Gekoppeld contact'} width={'10%'}/>
-            <DataTableHeadTitleAndSort sortColumn={'subject'} title={'Onderwerp'} width={'20%'} setSorts={setSorts} />
+            <DataTableHeadTitleAndSort sortColumn={'subject'} title={'Onderwerp'} width={'15%'} setSorts={setSorts} />
             <DataTableHeadTitleAndSort sortColumn={'statusId'} title={'Status'} width={'10%'} setSorts={setSorts} />
+            <DataTableHeadTitle title={'Verantwoordelijke'} width={'10%'}/>
             <DataTableHeadTitle title={''} width={'5%'}/>
         </tr>
     );

@@ -7,6 +7,7 @@ import DataTableCustomFilterSelectDate from "./DataTableCustomFilterSelectDate";
 
 import moment from 'moment';
 import DataTableDateFilter from "./DataTableDateFilter";
+import DataTableCustomFilterSelectDropdownHas from "./DataTableCustomFilterSelectDropdownHas";
 
 moment.locale('nl');
 
@@ -15,7 +16,7 @@ class DataTableCustomFilter extends Component {
         super(props);
 
         this.state = {
-            comperator: 'eq',
+            comperator: this.props.filter.type,
             type: this.props.fields[this.props.filter.field].type,
             dropDownOptions: this.props.fields[this.props.filter.field].dropDownOptions ? this.props.fields[this.props.filter.field].dropDownOptions : '',
         };
@@ -92,6 +93,12 @@ class DataTableCustomFilter extends Component {
                         type={type}
                     />
                     }
+                    {this.state.type === 'dropdownHas' &&
+                    <DataTableCustomFilterSelectDropdownHas
+                        handleInputChange={this.handleInputChange}
+                        type={type}
+                    />
+                    }
                     {this.state.type === 'date' &&
                     <DataTableCustomFilterSelectDate
                         handleInputChange={this.handleInputChange}
@@ -111,7 +118,7 @@ class DataTableCustomFilter extends Component {
                         onChange={this.handleInputChange}
                     />
                 }
-                {this.state.type === 'dropdown' &&
+                {this.state.type === 'dropdown' ||  this.state.type === 'dropdownHas' &&
                     <select
                         className={`form-control input-sm`}
                         id='data'

@@ -33,6 +33,16 @@ export const setFilterEmailStatusId = (statusId) => ({
     statusId,
 });
 
+export const setFilterResponsibleName = (responsibleName) => ({
+    type: 'SET_FILTER_EMAIL_RESPONSIBLE_NAME',
+    responsibleName,
+});
+
+export const setFilterMe = (me) => ({
+    type: 'SET_FILTER_EMAIL_ME',
+    me,
+});
+
 export const clearFilterEmail = () => ({
     type: 'CLEAR_FILTER_EMAIL',
 });

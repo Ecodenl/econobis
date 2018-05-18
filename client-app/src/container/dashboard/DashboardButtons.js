@@ -43,7 +43,7 @@ class DashboardButtons extends Component {
     render() {
         return (
             <div className="row">
-                <div className="col-md-3" onClick={() => hashHistory.push(`/emails/inbox`)}>
+                <div className="col-md-3" onClick={() => hashHistory.push(`/emails/inbox/eigen`)}>
                     <div className="panel panel-default" id="dashboardbutton-1">
                         <div className="panel-body">
                             <h4 className="text-center text-bold">E-MAIL</h4>
@@ -67,7 +67,7 @@ class DashboardButtons extends Component {
                         </div>
                     </div>
                 </div>
-                <div className="col-md-3" onClick={() => hashHistory.push(`/taken`)}>
+                <div className="col-md-3" onClick={() => hashHistory.push(`/taken/eigen`)}>
                     <div className="panel panel-default" id="dashboardbutton-4">
                         <div className="panel-body">
                             <h4 className="text-center text-bold">OPEN TAKEN</h4>

@@ -5,7 +5,7 @@ import DataTableCustomFilter from "../../../components/dataTable/DataTableCustom
 import ButtonText from "../../../components/button/ButtonText";
 import {connect} from "react-redux";
 
-class ContactsListExtraFilters extends Component {
+class ParticipantsListExtraFilters extends Component {
 
     constructor(props) {
         super(props);
@@ -71,39 +71,52 @@ class ContactsListExtraFilters extends Component {
                 'name': 'Naam',
                 'type': 'string'
             },
+            'postalCode': {
+                'name': 'Postcode',
+                'type': 'string'
+            },
             'postalCodeNumber': {
                 'name': 'Postcode nummer',
                 'type': 'number'
-            },
-            'statusId': {
-                'name': 'Status',
-                'type': 'dropdown',
-                'dropDownOptions': this.props.contactStatuses
-            },
-            'createdAt': {
-                'name': 'Gemaakt op',
-                'type': 'date'
             },
             'currentParticipations': {
                 'name': 'Aantal participaties',
                 'type': 'number'
             },
-            'occupation': {
-                'name': 'Verbinding',
-                'type': 'dropdownHas',
-                'dropDownOptions': this.props.occupations
+            'dateRegister': {
+                'name': 'Datum inschrijving',
+                'type': 'date'
             },
-            'opportunity': {
-                'name': 'Kans',
-                'type': 'dropdownHas',
-                'dropDownOptions': this.props.measureCategories
+            'datePayed': {
+                'name': 'Datum betaald',
+                'type': 'date'
+            },
+            'participationStatus': {
+                'name': 'Participaties status',
+                'type': 'dropdown',
+                'dropDownOptions': this.props.participantProductionProjectStatus
+            },
+            'contactStatus': {
+                'name': 'Contact status',
+                'type': 'dropdown',
+                'dropDownOptions': this.props.contactStatuses
+            },
+            'contactBirthday': {
+                'name': 'Contact geboortedatum',
+                'type': 'date'
             },
         };
 
         let filters = [];
 
         for (let i = 0; i < this.state.amountOfFilters; i++) {
-            filters.push(<DataTableCustomFilter key={i} filter={this.state.filters[i]} filterNumber={i} fields={fields} handleFilterChange={this.handleFilterChange}/>);
+            filters.push(<DataTableCustomFilter
+                key={i}
+                filter={this.state.filters[i]}
+                filterNumber={i}
+                fields={fields}
+                handleFilterChange={this.handleFilterChange}
+            />);
         }
 
         return (
@@ -139,9 +152,7 @@ const mapStateToProps = (state) => {
     return {
         participantProductionProjectStatus: state.systemData.participantProductionProjectStatus,
         contactStatuses: state.systemData.contactStatuses,
-        occupations: state.systemData.occupations,
-        measureCategories: state.systemData.measureCategories,
     };
 };
 
-export default connect(mapStateToProps)(ContactsListExtraFilters);
+export default connect(mapStateToProps)(ParticipantsListExtraFilters);

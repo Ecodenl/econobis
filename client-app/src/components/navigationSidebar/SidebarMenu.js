@@ -47,6 +47,9 @@ class SidebarMenu extends Component {
                         <Nav id="productie-projecten">
                             <NavText><Link className="sidebar-link" to="productie-projecten">Productieprojecten</Link></NavText>
                         </Nav>
+                        <Nav id="participanten">
+                            <NavText><Link className="sidebar-link" to="participanten">Participanten</Link></NavText>
+                        </Nav>
                     </Nav>
                     <Nav id="energy-saving">
                         <NavIcon><SvgIcon size={20} icon={home}/></NavIcon>

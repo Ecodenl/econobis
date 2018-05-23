@@ -5,7 +5,7 @@ return [
     //Version number displayed in the header, change this with every update
     'version_major' => '1',
     'version_minor' => '7',
-    'version_fix' => '2',
+    'version_fix' => '2a',
 
     //Alfresco envs
     'ALFRESCO_ADMIN_USERNAME' => env('ALFRESCO_ADMIN_USERNAME'),
@@ -17,6 +17,9 @@ return [
 
     //Format for contact number
     'APP_CONTACT_NUMBER_FORMAT' => env('APP_CONTACT_NUMBER_FORMAT', 'C{year}-{id}'),
+
+    //slack token for logging
+    'SLACK_TOKEN' => env('SLACK_TOKEN'),
 
     /*
     |--------------------------------------------------------------------------

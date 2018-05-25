@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 
 import contactAPI from '../../../api/contact/ContactsAPI';
 import Modal from '../../../components/modal/Modal';
+import VirtualizedSelect from 'react-virtualized-select';
 
 class ContactListAddPersonToGroup extends Component {
     constructor(props) {
@@ -11,7 +12,11 @@ class ContactListAddPersonToGroup extends Component {
         this.state = {
             people: [],
             personId: '',
+            peekLoading: {
+                people: true,
+            },
         };
+        this.handleReactSelectChange = this.handleReactSelectChange.bind(this);
     };
 
     componentDidMount() {
@@ -19,22 +24,20 @@ class ContactListAddPersonToGroup extends Component {
             this.setState({
                 ...this.state,
                 people: payload,
+                peekLoading: {
+                    ...this.state.peekLoading,
+                    people: false,
+                },
             })
         })
     };
 
-    handleInputChange = event => {
-
-        const target = event.target;
-        const value = target.type === 'checkbox' ? target.checked : target.value;
-        const name = target.name;
-
+    handleReactSelectChange(selectedOption) {
         this.setState({
             ...this.state,
-            [name]: value
+            personId: selectedOption
         });
     };
-
 
     render() {
         return (
@@ -49,12 +52,21 @@ class ContactListAddPersonToGroup extends Component {
                     <div className="row">
                         <div className="col-sm-6">Voeg bestaand contact toe</div>
                         <div className="col-sm-6">
-                            <select className="form-control input-sm" name="personId" value={this.state.personId} onChange={this.handleInputChange}>
-                                <option value=''></option>
-                                {this.state.people.map((option) => {
-                                    return <option key={option.id} value={option.id}>{option.fullName}</option>
-                                })}
-                            </select>
+                            <VirtualizedSelect
+                                id={"personId"}
+                                name={"personId"}
+                                value={this.state.personId}
+                                onChange={this.handleReactSelectChange}
+                                options={this.state.people}
+                                valueKey={'id'}
+                                labelKey={'fullName'}
+                                placeholder={""}
+                                noResultsText={"Geen resultaat gevonden"}
+                                multi={false}
+                                simpleValue
+                                removeSelected
+                                isLoading={this.state.peekLoading.people}
+                            />
                         </div>
                     </div>
                 </form>

@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import { hashHistory, Link } from 'react-router';
 import {connect} from 'react-redux';
 
-import AddContactToGroup from './ContactListAddPersonToGroup';
+import ContactListAddPersonToGroup from './ContactListAddPersonToGroup';
 import ContactGroupAPI  from '../../../api/contact-group/ContactGroupAPI';
 import ButtonIcon from '../../../components/button/ButtonIcon';
 
@@ -78,7 +78,7 @@ class ContactsInGroupListToolbar extends Component {
                 <div className="col-md-4" />
 
                 {this.state.showModalAddToGroup &&
-                <AddContactToGroup
+                <ContactListAddPersonToGroup
                     closeModalAddToGroup={this.closeModalAddToGroup}
                     addPersonToGroup={this.addPersonToGroup}
                     groupName = {this.state.groupName}

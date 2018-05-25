@@ -51,11 +51,11 @@ class HousingFile extends Model
 
     public function notes()
     {
-        return $this->hasMany(Task::class)->where('finished', true);
+        return $this->hasMany(Task::class)->where('finished', true)->orderBy('tasks.id', 'desc');
     }
 
     public function documents(){
-        return $this->hasMany(Document::class);
+        return $this->hasMany(Document::class)->orderBy('documents.id', 'desc');
     }
 
     public function createdBy()

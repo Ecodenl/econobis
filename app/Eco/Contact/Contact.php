@@ -77,7 +77,7 @@ class Contact extends Model
 
     public function emails()
     {
-        return $this->belongsToMany(Email::class);
+        return $this->belongsToMany(Email::class)->orderBy('emails.id', 'desc');
     }
 
     public function phoneNumbers()
@@ -127,7 +127,7 @@ class Contact extends Model
 
     public function groups()
     {
-        return $this->belongsToMany(ContactGroup::class, 'contact_groups_pivot');
+        return $this->belongsToMany(ContactGroup::class, 'contact_groups_pivot')->orderBy('contact_groups.id', 'desc');
     }
 
     public function isPerson()
@@ -149,24 +149,24 @@ class Contact extends Model
 
     public function intakes()
     {
-        return $this->hasMany(Intake::class);
+        return $this->hasMany(Intake::class)->orderBy('intakes.id', 'desc');
     }
 
     public function opportunities()
     {
-        return $this->hasManyThrough(Opportunity::class, Intake::class);
+        return $this->hasManyThrough(Opportunity::class, Intake::class)->orderBy('opportunities.id', 'desc');
     }
 
     // Only an unfinished task is a task
     public function tasks()
     {
-        return $this->hasMany(Task::class)->where('finished', false);
+        return $this->hasMany(Task::class)->where('finished', false)->orderBy('tasks.id', 'desc');
     }
 
     // A finished task is a note
     public function notes()
     {
-        return $this->hasMany(Task::class)->where('finished', true);
+        return $this->hasMany(Task::class)->where('finished', true)->orderBy('tasks.id', 'desc');
     }
 
     public function campaigns(){
@@ -175,12 +175,12 @@ class Contact extends Model
 
     public function documents()
     {
-        return $this->hasMany(Document::class);
+        return $this->hasMany(Document::class)->orderBy('documents.id', 'desc');
     }
 
     public function housingFiles()
     {
-        return $this->hasManyThrough(HousingFile::class, Address::class);
+        return $this->hasManyThrough(HousingFile::class, Address::class)->orderBy('housing_files.id', 'desc');
     }
 
     public function contactEnergySuppliers()
@@ -195,7 +195,7 @@ class Contact extends Model
 
     public function participations()
     {
-        return $this->hasMany(ParticipantProductionProject::class);
+        return $this->hasMany(ParticipantProductionProject::class)->orderBy('participation_production_project.id', 'desc');
     }
 
     public function primaryOccupations()
@@ -215,7 +215,7 @@ class Contact extends Model
 
     public function orders()
     {
-        return $this->hasMany(Order::class);
+        return $this->hasMany(Order::class)->orderBy('orders.id', 'desc');
     }
 
     //Returns addresses array as Type - Streetname - Number

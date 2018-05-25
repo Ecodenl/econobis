@@ -43,11 +43,11 @@ class QuotationRequest extends Model
     }
 
     public function documents(){
-        return $this->hasMany(Document::class);
+        return $this->hasMany(Document::class)->orderBy('documents.id', 'desc');
     }
 
     public function emails(){
-        return $this->hasMany(Email::class);
+        return $this->hasMany(Email::class)->orderBy('emails.id', 'desc');
     }
 
     public function createdBy()

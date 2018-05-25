@@ -72,23 +72,23 @@ class Intake extends Model
     // Only unfinished task is a task. A finished task is a note
     public function tasks()
     {
-        return $this->hasMany(Task::class)->where('finished', false);
+        return $this->hasMany(Task::class)->where('finished', false)->orderBy('tasks.id', 'desc');
     }
 
     // A finished task is a note. An unfinished task is a task.
     public function notes()
     {
-        return $this->hasMany(Task::class)->where('finished', true);
+        return $this->hasMany(Task::class)->where('finished', true)->orderBy('tasks.id', 'desc');
     }
 
     public function documents()
     {
-        return $this->hasMany(Document::class);
+        return $this->hasMany(Document::class)->orderBy('documents.id', 'desc');
     }
 
     public function emails()
     {
-        return $this->hasMany(Email::class);
+        return $this->hasMany(Email::class)->orderBy('emails.id', 'desc');
     }
 
     public function createdBy()

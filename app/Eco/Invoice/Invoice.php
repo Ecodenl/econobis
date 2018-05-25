@@ -59,12 +59,12 @@ class Invoice extends Model
 
     public function tasks()
     {
-        return $this->hasMany(Task::class);
+        return $this->hasMany(Task::class)->orderBy('tasks.id', 'desc');
     }
 
     public function emails()
     {
-        return $this->hasMany(Email::class);
+        return $this->hasMany(Email::class)->orderBy('emails.id', 'desc');
     }
 
     public function createdBy()

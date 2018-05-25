@@ -86,7 +86,7 @@ class ParticipantProductionProject extends Model
     }
 
     public function documents(){
-        return $this->hasMany(Document::class, 'participation_production_project_id');
+        return $this->hasMany(Document::class, 'participation_production_project_id')->orderBy('documents.id', 'desc');
     }
 
     //appends

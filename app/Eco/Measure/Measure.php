@@ -57,7 +57,7 @@ class Measure extends Model
 
     public function documents()
     {
-        return $this->hasMany(Document::class);
+        return $this->hasMany(Document::class)->orderBy('documents.id', 'desc');
     }
 
     public function opportunities()

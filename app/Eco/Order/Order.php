@@ -60,32 +60,32 @@ class Order extends Model
 
     public function tasks()
     {
-        return $this->hasMany(Task::class);
+        return $this->hasMany(Task::class)->orderBy('tasks.id', 'desc');
     }
 
     public function invoices()
     {
-        return $this->hasMany(Invoice::class);
+        return $this->hasMany(Invoice::class)->orderBy('invoices.id', 'desc');
     }
 
     public function invoicesPaidCollection()
     {
-        return $this->hasMany(Invoice::class)->where('payment_type_id', 'collection')->where('status_id', 'paid');
+        return $this->hasMany(Invoice::class)->where('payment_type_id', 'collection')->where('status_id', 'paid')->orderBy('invoices.id', 'desc');;
     }
 
     public function invoicesPaidTransfer()
     {
-        return $this->hasMany(Invoice::class)->where('payment_type_id', 'transfer')->where('status_id', 'paid');
+        return $this->hasMany(Invoice::class)->where('payment_type_id', 'transfer')->where('status_id', 'paid')->orderBy('invoices.id', 'desc');;
     }
 
     public function documents()
     {
-        return $this->hasMany(Document::class);
+        return $this->hasMany(Document::class)->orderBy('documents.id', 'desc');
     }
 
     public function emails()
     {
-        return $this->hasMany(Email::class);
+        return $this->hasMany(Email::class)->orderBy('emails.id', 'desc');
     }
 
     public function contact()

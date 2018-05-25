@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import {browserHistory, hashHistory} from 'react-router';
 
 import ButtonIcon from '../../../components/button/ButtonIcon';
+import { Link } from 'react-router';
 
 const DocumentDetailsToolbar = props => {
     const {documentFilename = ''} = props;
@@ -18,7 +19,11 @@ const DocumentDetailsToolbar = props => {
                     <ButtonIcon iconName={"glyphicon-envelope"} onClickAction={() => hashHistory.push(`/email/nieuw/document/${props.documentId}`)} />
                 </div>
             </div>
-            <div className="col-md-4"><h4 className="text-center">{'Document: ' + documentFilename}</h4></div>
+            {documentFilename.endsWith('.pdf') ?
+                <div className="col-md-4"><h4 className="text-center">{'Document: '}  <Link to={`/document/inzien/${props.documentId}`} className="link-underline">{documentFilename}</Link></h4></div>
+                :
+                <div className="col-md-4"><h4 className="text-center">{'Document: ' + documentFilename}</h4></div>
+            }
             <div className="col-md-4" />
         </div>
     );

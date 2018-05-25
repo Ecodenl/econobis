@@ -228,6 +228,7 @@ Route::namespace('Api')
         Route::get('document-template/peekNotGeneral', 'DocumentTemplate\DocumentTemplateController@peekNotGeneral');
         Route::get('document-template/{documentTemplate}', 'DocumentTemplate\DocumentTemplateController@show');
         Route::post('document-template', 'DocumentTemplate\DocumentTemplateController@store');
+        Route::post('document-template/{documentTemplate}/duplicate', 'DocumentTemplate\DocumentTemplateController@duplicate');
         Route::post('document-template/{documentTemplate}/delete', 'DocumentTemplate\DocumentTemplateController@destroy');
         Route::post('document-template/{documentTemplate}', 'DocumentTemplate\DocumentTemplateController@update');
 

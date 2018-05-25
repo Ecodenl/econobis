@@ -4,6 +4,8 @@ import {browserHistory} from 'react-router';
 
 import ButtonIcon from '../../../components/button/ButtonIcon';
 import DocumentTemplatesDeleteItem from "./DocumentTemplatesDeleteItem";
+import DocumentTemplateDetailsDuplicate from "./DocumentTemplateDetailsDuplicate";
+
 
 class DocumentTemplateDetailsToolbar extends Component {
     constructor(props) {
@@ -11,8 +13,13 @@ class DocumentTemplateDetailsToolbar extends Component {
 
         this.state = {
             showDelete: false,
+            showDuplicate: false,
         }
     }
+
+    toggleDuplicate = () => {
+        this.setState({showDuplicate: !this.state.showDuplicate});
+    };
 
     toggleDelete = () => {
         this.setState({showDelete: !this.state.showDelete});
@@ -20,11 +27,17 @@ class DocumentTemplateDetailsToolbar extends Component {
 
 
     render() {
+
+        const { permissions = {} } = this.props;
+
         return (
             <div className="row">
                 <div className="col-md-4">
                     <div className="btn-group" role="group">
                         <ButtonIcon iconName={"glyphicon-arrow-left"} onClickAction={browserHistory.goBack}/>
+                        {permissions.createDocumentTemplate &&
+                        <ButtonIcon iconName={"glyphicon-duplicate"} onClickAction={this.toggleDuplicate}/>
+                        }
                         { false &&
                             <ButtonIcon iconName={"glyphicon-trash"} onClickAction={this.toggleDelete}/>
                         }
@@ -41,6 +54,14 @@ class DocumentTemplateDetailsToolbar extends Component {
                         templateId={this.props.templateId}
                     />
                 }
+                {
+                    this.state.showDuplicate &&
+                    <DocumentTemplateDetailsDuplicate
+                        closeModal={this.toggleDuplicate}
+                        templateName={this.props.templateName}
+                        templateId={this.props.templateId}
+                    />
+                }
             </div>
         );
     };
@@ -50,6 +71,7 @@ const mapStateToProps = (state) => {
     return {
         templateName: state.documentTemplateDetails.name,
         templateId: state.documentTemplateDetails.id,
+        permissions: state.meDetails.permissions,
     };
 };
 

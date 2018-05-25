@@ -121,6 +121,18 @@ class DocumentTemplateController extends Controller
         $documentTemplate->forceDelete();
     }
 
+    public function duplicate(DocumentTemplate $documentTemplate)
+    {
+        $newTemplate = $documentTemplate->replicate();
+        $newTemplate->save();
+
+        foreach($documentTemplate->roles as $role){
+            $newTemplate->roles()->attach($role);
+        }
+
+        return $this->show($newTemplate);
+    }
+
     public function peekGeneral()
     {
         $userRoles = Auth::user()->roles()->pluck('name')->toArray();

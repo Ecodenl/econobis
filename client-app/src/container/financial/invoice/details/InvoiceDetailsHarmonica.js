@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 
 import TaskHarmonica from "./harmonica/TaskHarmonica";
 import EmailHarmonica from "./harmonica/EmailHarmonica";
-import DocumentHarmonica from "./harmonica/DocumentHarmonica";
 import {hashHistory} from "react-router";
 
 

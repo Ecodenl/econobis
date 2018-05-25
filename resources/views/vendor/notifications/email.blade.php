@@ -45,7 +45,7 @@
 @if (! empty($salutation))
 {{ $salutation }}
 @else
-Groetjes,<br>{{ config('app.name') }}
+Hartelijke groet,<br><br> Het Econobis team
 @endif
 
 {{-- Subcopy --}}

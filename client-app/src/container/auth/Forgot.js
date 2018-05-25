@@ -39,7 +39,7 @@ class Forgot extends Component{
     render(){
 
         let error = this.state.err ;
-        let msg = (!error) ? 'We hebben je ge-e-maild met een wachtwoord reset link!' : 'E-mail bestaat niet.' ;
+        let msg = (!error) ? 'We hebben je een e-mail gestuurd met een wachtwoord reset link!' : 'E-mail bestaat niet.' ;
         let name = (!error) ? 'alert alert-success' : 'alert alert-danger' ;
         return(
             <div>

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "130fa035aae5de34776833da797ca2b2",
+    "content-hash": "60f7507fba3f1b1ca885b38fde021fa4",
     "packages": [
         {
             "name": "barryvdh/laravel-dompdf",
@@ -61,6 +61,57 @@
                 "pdf"
             ],
             "time": "2017-07-29T19:01:17+00:00"
+        },
+        {
+            "name": "cmpayments/iban",
+            "version": "1.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/cmpayments/iban.git",
+                "reference": "f3666e58a00f166e43eafc46a9b502ad971ca954"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/cmpayments/iban/zipball/f3666e58a00f166e43eafc46a9b502ad971ca954",
+                "reference": "f3666e58a00f166e43eafc46a9b502ad971ca954",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.5"
+            },
+            "require-dev": {
+                "jakub-onderka/php-parallel-lint": "^0.9.0",
+                "phpunit/phpunit": "^4.7|>=5.0 <5.4",
+                "squizlabs/php_codesniffer": "^2.3"
+            },
+            "suggest": {
+                "ext-bcmath": "Because this library makes use of bcmod function, bcmath extension is recommended for performance.",
+                "phpunit/phpunit": "If PHP Unit is not globally installed on your system the tests will not run, install the PHP Unit package locally to run the tests"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "CMPayments\\": "src/lib/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Bas Peters",
+                    "email": "bp@cm.nl",
+                    "homepage": "https://github.com/baspeters"
+                }
+            ],
+            "description": "IBAN utility library",
+            "homepage": "http://github.com/cmpayments/iban",
+            "keywords": [
+                "IBAN",
+                "validation"
+            ],
+            "time": "2018-02-19T14:55:51+00:00"
         },
         {
             "name": "defuse/php-encryption",
@@ -2112,6 +2163,68 @@
                 "random"
             ],
             "time": "2017-09-27T21:40:39+00:00"
+        },
+        {
+            "name": "particle/validator",
+            "version": "v2.3.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/particle-php/Validator.git",
+                "reference": "5d81374f2d002e82b9037c7d332bb00a456e9048"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/particle-php/Validator/zipball/5d81374f2d002e82b9037c7d332bb00a456e9048",
+                "reference": "5d81374f2d002e82b9037c7d332bb00a456e9048",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.4"
+            },
+            "require-dev": {
+                "byrokrat/checkdigit": "^1.0",
+                "giggsey/libphonenumber-for-php": "^7.2",
+                "phpunit/phpunit": "~4.0",
+                "squizlabs/php_codesniffer": "2.*"
+            },
+            "suggest": {
+                "byrokrat/checkdigit": "If you want to use CreditCard validation rule, this library must be installed.",
+                "giggsey/libphonenumber-for-php": "If you want to use Phone validation rule, this library must be installed."
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.0-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Particle\\Validator\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Berry Langerak",
+                    "email": "berry@berryllium.nl",
+                    "role": "developer"
+                },
+                {
+                    "name": "Rick van der Staaij",
+                    "homepage": "http://rickvanderstaaij.nl",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Flexible and highly usable validation library with no dependencies.",
+            "homepage": "http://github.com/particle-php/validator",
+            "keywords": [
+                "validation",
+                "validator"
+            ],
+            "time": "2018-01-30T10:02:06+00:00"
         },
         {
             "name": "phenx/php-font-lib",
@@ -5829,8 +5942,8 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
-        "usmanhalalit/laracsv": 20,
-        "ecodenl/pico-wrapper": 20
+        "ecodenl/pico-wrapper": 20,
+        "usmanhalalit/laracsv": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,

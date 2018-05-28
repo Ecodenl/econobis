@@ -17,7 +17,9 @@ use App\Eco\LastNamePrefix\LastNamePrefix;
 use App\Eco\Person\Person;
 use App\Eco\PhoneNumber\PhoneNumber;
 use App\Eco\Title\Title;
+use CMPayments\IBAN;
 use Illuminate\Support\Facades\Crypt;
+use Particle\Validator\Validator;
 
 class ContactImportHelper
 {
@@ -145,6 +147,16 @@ class ContactImportHelper
         $message = [];
         $prio = 3;
 
+        //validators
+        $emailValidator = new Validator;
+        $emailValidator->required('email', 'email', true)->email();
+
+        $houseNumberValidator = new Validator;
+        $houseNumberValidator->optional('house_number', 'house_number', true)->integer();
+
+        $houseNumberAdditionValidator = new Validator;
+        $houseNumberAdditionValidator->optional('house_number_addition', 'house_number_addition', true)->alpha();
+
         //prio 1 errors
         //aanspreektitel_id
         if ($line[0] && !in_array($line[0], $titleIds)) {
@@ -170,11 +182,50 @@ class ContactImportHelper
             $prio = 1;
         };
 
+        if ($line[7] && !$houseNumberValidator->validate(['house_number' => $line[7]])->isValid()) {
+            array_push($field, self::HEADERS[7]);
+            array_push($value, $line[7]);
+            array_push($message, 'Huisnummer moet een getal zijn.');
+            $prio = 1;
+        };
+
+        if ($line[8] && !$houseNumberAdditionValidator->validate(['house_number_addition' => $line[8]])->isValid()) {
+            array_push($field, self::HEADERS[8]);
+            array_push($value, $line[8]);
+            array_push($message, 'Huisnummer toevoeging moet alfabetisch zijn.');
+            $prio = 1;
+        };
+
         if (($line[5] || $line[6] || $line[7] || $line[9]) && (!$line[5] || !$line[6] || !$line[7] || !$line[9]) ) {
             array_push($field, 'Adres');
             array_push($value, '');
             array_push($message, 'Als er een adres is ingevuld moeten zowel de straat, woonplaats, huisnummer en postcode worden ingevuld.');
             $prio = 1;
+        }
+
+        if (!$emailValidator->validate(['email' => $line[12]])->isValid()) {
+            array_push($field, self::HEADERS[12]);
+            array_push($value, $line[12]);
+            array_push($message, 'E-mail niet geldig.');
+            $prio = 1;
+        }
+
+        if (!$emailValidator->validate(['email' => $line[13]])->isValid()) {
+            array_push($field, self::HEADERS[13]);
+            array_push($value, $line[13]);
+            array_push($message, 'E-mail niet geldig.');
+            $prio = 1;
+        }
+
+        if ($line[14]) {
+            //iban
+            $iban = new IBAN($line[14]);
+            if (!$iban->validate()) {
+                array_push($field, self::HEADERS[14]);
+                array_push($value, $line[14]);
+                array_push($message, 'Iban is niet geldig.');
+                $prio = 1;
+            }
         }
 
         //prio 2 warnings
@@ -232,6 +283,7 @@ class ContactImportHelper
             } else {
                 $contact = new Contact();
                 $contact->type_id = 'person';
+                $contact->status_id = 'interested';
                 $contact->full_name = 'temp';
                 if ($line[14]) {
                     $contact->iban = Crypt::encrypt($line[14]);
@@ -256,6 +308,7 @@ class ContactImportHelper
                     $address->addition = $line[8];
                     $address->postal_code = $line[9] ? $line[9] : '';
                     $address->primary = 1;
+                    $address->type_id = 'visit';
                     $address->save();
                 }
 
@@ -264,6 +317,7 @@ class ContactImportHelper
                     $phonenumber->contact_id = $contact->id;
                     $phonenumber->number = $line[10];
                     $phonenumber->primary = 1;
+                    $phonenumber->type_id = 'home';
                     $phonenumber->save();
                 }
 
@@ -272,6 +326,7 @@ class ContactImportHelper
                     $phonenumber->contact_id = $contact->id;
                     $phonenumber->number = $line[11];
                     $phonenumber->primary = 0;
+                    $phonenumber->type_id = 'home';
                     $phonenumber->save();
                 }
 
@@ -280,6 +335,7 @@ class ContactImportHelper
                     $email->contact_id = $contact->id;
                     $email->email = $line[12];
                     $email->primary = 1;
+                    $email->type_id = 'general';
                     $email->save();
                 }
 
@@ -288,11 +344,10 @@ class ContactImportHelper
                     $email->contact_id = $contact->id;
                     $email->email = $line[13];
                     $email->primary = 0;
+                    $email->type_id = 'general';
                     $email->save();
                 }
-
             }
-
         }
     }
 }

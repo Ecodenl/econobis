@@ -24,6 +24,7 @@ class InvoiceProduct extends Model
     protected $appends
         = [
             'price_incl_vat_and_reduction',
+            'price_ex_vat_incl_reduction',
         ];
 
     public function invoice()
@@ -49,6 +50,33 @@ class InvoiceProduct extends Model
         if($vat_percentage) {
             $price = ($price + ($price
                     * ($vat_percentage / 100)));
+        }
+
+        $price = ($this->amount
+            * $price);
+
+        if ($this->percentage_reduction) {
+            if ($this->percentage_reduction >= 100) {
+                return 0;
+            }
+            $price = ($price * ((100 - $this->percentage_reduction)
+                    / 100));
+        }
+
+        if ($this->amount_reduction) {
+            $price -= $this->amount_reduction;
+        }
+
+        return $price;
+
+    }
+
+    public function getPriceExVatInclReductionAttribute()
+    {
+        $price = $this->price;
+
+        if ($price === null) {
+            $price = 0;
         }
 
         $price = ($this->amount

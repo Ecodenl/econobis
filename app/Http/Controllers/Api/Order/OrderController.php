@@ -12,6 +12,7 @@ use App\Eco\Contact\Contact;
 use App\Eco\Invoice\Invoice;
 use App\Eco\Order\Order;
 use App\Eco\Order\OrderProduct;
+use App\Helpers\CSV\OrderCSVHelper;
 use App\Helpers\Delete\DeleteHelper;
 use App\Helpers\Invoice\InvoiceHelper;
 use App\Helpers\RequestInput\RequestInput;
@@ -38,6 +39,17 @@ class OrderController extends ApiController
             'total' => $requestQuery->total(),
             ]
         ]);
+    }
+
+    public function csv(RequestQuery $requestQuery)
+    {
+        $orders = $requestQuery->getQueryNoPagination()->get();
+
+        $orderCSVHelper = new OrderCSVHelper($orders);
+
+        $csv = $orderCSVHelper->downloadCSV();
+
+        return $csv;
     }
 
     public function show(Order $order)

@@ -10,6 +10,7 @@ namespace App\Http\Controllers\Api\Invoice;
 
 use App\Eco\Invoice\Invoice;
 use App\Eco\Invoice\InvoicePayment;
+use App\Helpers\CSV\InvoiceCSVHelper;
 use App\Helpers\Invoice\InvoiceHelper;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Api\ApiController;
@@ -41,6 +42,17 @@ class InvoiceController extends ApiController
                     'totalPrice' => $totalPrice,
                 ]
             ]);
+    }
+
+    public function csv(RequestQuery $requestQuery)
+    {
+        $invoices = $requestQuery->getQueryNoPagination()->get();
+
+        $invoiceCSVHelper = new InvoiceCSVHelper($invoices);
+
+        $csv = $invoiceCSVHelper->downloadCSV();
+
+        return $csv;
     }
 
     public function show(Invoice $invoice)

@@ -23,6 +23,7 @@ import {
 } from '../../../../actions/order/OrdersFiltersActions';
 import OrdersAPI from "../../../../api/order/OrdersAPI";
 import fileDownload from "js-file-download";
+import moment from "moment/moment";
 
 class OrdersList extends Component {
     constructor(props){
@@ -130,7 +131,7 @@ class OrdersList extends Component {
             const administrationId = this.props.administrationId;
 
             OrdersAPI.getCSV({filters, sorts, administrationId}).then((payload) => {
-                fileDownload(payload.data, 'test.csv');
+                fileDownload(payload.data, 'Orders-' + moment().format("YYYY-MM-DD HH:mm:ss") +  '.csv');
             });
         },100 );
     };

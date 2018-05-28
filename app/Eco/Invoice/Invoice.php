@@ -22,6 +22,7 @@ class Invoice extends Model
         = [
             'days_expired',
             'total_price_incl_vat_and_reduction',
+            'total_price_ex_vat_incl_reduction',
             'date_paid',
             'date_payment_due',
             'amount_open',
@@ -117,6 +118,17 @@ class Invoice extends Model
 
         foreach($this->invoiceProducts as $invoiceProduct) {
             $price += $invoiceProduct->price_incl_vat_and_reduction;
+        }
+
+        return $price <= 0 ? 0 : $price;
+    }
+
+    public function getTotalPriceExVatInclReductionAttribute()
+    {
+        $price = 0;
+
+        foreach($this->invoiceProducts as $invoiceProduct) {
+            $price += $invoiceProduct->price_ex_vat_incl_reduction;
         }
 
         return $price <= 0 ? 0 : $price;

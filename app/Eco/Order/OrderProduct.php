@@ -24,6 +24,7 @@ class OrderProduct extends Model
     protected $appends
         = [
             'total_price_incl_vat_and_reduction',
+            'total_price_ex_vat_incl_reduction',
             'total_price_incl_vat_and_reduction_per_year',
         ];
 
@@ -43,6 +44,29 @@ class OrderProduct extends Model
 
         $price += ($this->amount
             * $this->product->price_incl_vat);
+
+        if ($this->percentage_reduction) {
+            if ($this->percentage_reduction >= 100) {
+                return 0;
+            }
+            $price = ($price * ((100 - $this->percentage_reduction)
+                    / 100));
+        }
+
+        if ($this->amount_reduction) {
+            $price -= $this->amount_reduction;
+        }
+
+        return $price;
+
+    }
+
+    public function getTotalPriceExVatInclReductionAttribute()
+    {
+        $price = 0;
+
+        $price += ($this->amount
+            * $this->product->current_price->price);
 
         if ($this->percentage_reduction) {
             if ($this->percentage_reduction >= 100) {

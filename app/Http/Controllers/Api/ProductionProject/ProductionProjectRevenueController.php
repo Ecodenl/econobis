@@ -16,7 +16,7 @@ use App\Eco\EnergySupplier\EnergySupplier;
 use App\Eco\ProductionProject\ProductionProjectRevenue;
 use App\Eco\ProductionProject\ProductionProjectRevenueDistribution;
 use App\Helpers\Alfresco\AlfrescoHelper;
-use App\Helpers\CSV\CSVHelper;
+use App\Helpers\CSV\EnergySupplierCSVHelper;
 use App\Helpers\RequestInput\RequestInput;
 use App\Helpers\Template\TemplateTableHelper;
 use App\Helpers\Template\TemplateVariableHelper;
@@ -355,7 +355,7 @@ class ProductionProjectRevenueController extends ApiController
         $user = Auth::user();
 
         if($templateId) {
-            $csvHelper = new CSVHelper($energySupplier, $productionProjectRevenue, $templateId);
+            $csvHelper = new EnergySupplierCSVHelper($energySupplier, $productionProjectRevenue, $templateId);
             $csv = $csvHelper->getCSV();
         }
 

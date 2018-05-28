@@ -134,4 +134,16 @@ abstract class RequestQuery
     {
         return (int) $this->request->input($this->offsetParameter, null);
     }
+
+    public function getQueryNoPagination()
+    {
+        $query = $this->baseQuery();
+
+        $this->joiner->resetProcessedJoins();
+
+        $this->applyFilter($query);
+        $this->applySort($query);
+
+        return $query;
+    }
 }

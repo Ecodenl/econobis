@@ -2,6 +2,9 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { isEmpty } from 'lodash';
+import moment from 'moment';
+
+moment.locale('nl');
 
 import { fetchContacts, clearContacts, setCheckedContactAll } from '../../../actions/contact/ContactsActions';
 import { setTypeFilter, clearFilterContacts } from '../../../actions/contact/ContactsFiltersActions';
@@ -86,7 +89,7 @@ class ContactsListApp extends Component {
             const sorts = this.props.contactsSorts.reverse();
 
                 ContactsAPI.getCSV({filters, extraFilters, sorts}).then((payload) => {
-                    fileDownload(payload.data, 'test.csv');
+                    fileDownload(payload.data, 'Contacten-' + moment().format("YYYY-MM-DD HH:mm:ss") +  '.csv');
                 });
         },100 );
     };

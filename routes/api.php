@@ -30,6 +30,7 @@ Route::namespace('Api')
         Route::get('/system-data', 'SystemData\SystemDataController@get');
 
         Route::get('/contact/grid', 'Contact\GridController@index');
+        Route::get('/contact/csv', 'Contact\GridController@csv');
         Route::get('/contact/peek', 'Contact\ContactController@peek');
         Route::post('contact/{contact}/owner/{user}/associate', 'Contact\ContactController@associateOwner');
         Route::get('/contact/{contact}', 'Contact\ContactController@show');
@@ -314,6 +315,7 @@ Route::namespace('Api')
         Route::post('product/{product}/delete', 'Product\ProductController@destroy');
 
         Route::get('order/grid', 'Order\OrderController@grid');
+        Route::get('order/csv', 'Order\OrderController@csv');
         Route::get('order/peek', 'Order\OrderController@peek');
         Route::get('order/{order}', 'Order\OrderController@show');
         Route::get('order/{order}/download-preview', 'Order\OrderController@downloadPreview');
@@ -325,6 +327,7 @@ Route::namespace('Api')
         Route::post('order/{order}/delete', 'Order\OrderController@destroy');
 
         Route::get('invoice/grid', 'Invoice\InvoiceController@grid');
+        Route::get('invoice/csv', 'Invoice\InvoiceController@csv');
         Route::get('invoice/peek', 'Invoice\InvoiceController@peek');
         Route::get('invoice/{invoice}', 'Invoice\InvoiceController@show');
         Route::get('invoice/{invoice}/download', 'Invoice\InvoiceController@download');

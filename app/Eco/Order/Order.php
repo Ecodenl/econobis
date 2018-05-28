@@ -29,6 +29,7 @@ class Order extends Model
     protected $appends
         = [
             'total_price_incl_vat',
+            'total_price_ex_vat',
             'total_price_incl_vat_per_year',
             'date_next_collection',
         ];
@@ -138,6 +139,19 @@ class Order extends Model
         foreach ($this->orderProducts as $orderProduct) {
             if(Carbon::parse($orderProduct->date_start)->lte(Carbon::today()) && (Carbon::parse($orderProduct->date_end)->gte(Carbon::today()) || $orderProduct->date_end === null)) {
                 $total += $orderProduct->total_price_incl_vat_and_reduction;
+            }
+        }
+
+        return $total;
+    }
+
+    public function getTotalPriceExVatAttribute()
+    {
+        $total = 0;
+
+        foreach ($this->orderProducts as $orderProduct) {
+            if(Carbon::parse($orderProduct->date_start)->lte(Carbon::today()) && (Carbon::parse($orderProduct->date_end)->gte(Carbon::today()) || $orderProduct->date_end === null)) {
+                $total += $orderProduct->total_price_ex_vat_incl_reduction;
             }
         }
 

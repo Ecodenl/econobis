@@ -30,17 +30,4 @@ class RequestQuery extends \App\Helpers\RequestQuery\RequestQuery
         return Email::query()
             ->select('emails.*');
     }
-
-    public function getQueryNoPagination()
-    {
-        $query = $this->baseQuery();
-
-        $this->joiner->resetProcessedJoins();
-
-        $this->applyFilter($query);
-        $this->applySort($query);
-
-        return $query;
-    }
-
 }

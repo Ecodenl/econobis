@@ -21,6 +21,7 @@ import {
 } from '../../../../actions/invoice/InvoicesFiltersActions';
 import InvoicesAPI from "../../../../api/invoice/InvoicesAPI";
 import fileDownload from "js-file-download";
+import moment from "moment/moment";
 
 class InvoicesList extends Component {
     constructor(props) {
@@ -149,7 +150,7 @@ class InvoicesList extends Component {
             const administrationId = this.props.administrationId;
 
             InvoicesAPI.getCSV({filters, sorts, administrationId}).then((payload) => {
-                fileDownload(payload.data, 'test.csv');
+                fileDownload(payload.data, 'Facturen-' + moment().format("YYYY-MM-DD HH:mm:ss") +  '.csv');
             });
         },100 );
     };

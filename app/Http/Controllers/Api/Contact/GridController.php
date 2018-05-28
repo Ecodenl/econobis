@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\Contact;
 
+use App\Helpers\CSV\ContactCSVHelper;
 use App\Http\Controllers\Controller;
 use App\Http\RequestQueries\Contact\Grid\RequestQuery;
 use App\Http\Resources\Contact\GridContactCollection;
@@ -22,6 +23,17 @@ class GridController extends Controller
                 'total' => $requestQuery->total(),
                 ]
             ]);
+    }
+
+    public function csv(RequestQuery $requestQuery)
+    {
+        $contacts = $requestQuery->getQueryNoPagination()->get();
+
+        $contactCSVHelper = new ContactCSVHelper($contacts);
+
+        $csv = $contactCSVHelper->downloadCSV();
+
+        return $csv;
     }
 
 }

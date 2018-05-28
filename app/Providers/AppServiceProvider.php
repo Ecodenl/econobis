@@ -16,7 +16,7 @@ class AppServiceProvider extends ServiceProvider
     {
         Schema::defaultStringLength(191);
 
-       // if ($this->app->environment() == 'production') {
+        if ($this->app->environment() == 'production') {
             $monolog = \Log::getMonolog();
             $slackHandler
                 = new \Monolog\Handler\SlackHandler(\Config::get('app.SLACK_TOKEN'),
@@ -26,7 +26,7 @@ class AppServiceProvider extends ServiceProvider
                 $record['extra']['Coöperatie'] = config('app.name');
                 return $record;
             });
-       // }
+        }
     }
 
     /**

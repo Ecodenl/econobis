@@ -104,4 +104,15 @@ class ContactPolicy
     {
         return $user->can('update', $contact);
     }
+
+    /**
+     * Determine if user can import contacts
+     *
+     * @param  \App\Eco\User\User  $user
+     * @return mixed
+     */
+    public function import(User $user)
+    {
+        return $user->hasPermissionTo('import', 'api');
+    }
 }

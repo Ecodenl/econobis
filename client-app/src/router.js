@@ -18,6 +18,7 @@ import ContactGroupsListApp from './container/contact-groups/list-groups/Contact
 import ContactNewApp from './container/contact/new/ContactNewApp';
 import ContactsInGroupListApp from './container/contact-groups/list-contacts-in-group/ContactsInGroupListApp';
 import ContactsListApp from './container/contact/list/ContactsListApp';
+import ContactImportApp from './container/contact/import/ContactImportApp';
 import DashboardApp from './container/dashboard/DashboardApp';
 import DocumentsListApp from './container/document/list/DocumentsListApp';
 import DocumentDetailsApp from './container/document/details/DocumentDetailsApp';
@@ -117,6 +118,7 @@ const Routes = () => {
                 <Route path="contact-groepen" component={ ContactGroupsListApp } />
                 <Route path="contact/nieuw/:type" component={ ContactNewApp } />
                 <Route path="contact/nieuw/:type/organisatie/:id" component={ ContactNewApp } />
+                <Route path="contact/import" component={ ContactImportApp } />
                 <Route path="contact/:id" component={ ContactDetailsApp } />
                 <Route path="contacten" component={ ContactsListApp } />
                 /* Contacts in group */

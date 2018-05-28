@@ -40,6 +40,10 @@ class ContactsListToolbar extends Component {
         hashHistory.push(`/contact/nieuw`);
     };
 
+    importContacts = () => {
+        hashHistory.push(`/contact/import`);
+    };
+
     render() {
         const { permissions = {} } = this.props.meDetails;
         const { meta = {} } = this.props.contacts;
@@ -77,6 +81,9 @@ class ContactsListToolbar extends Component {
                         <ButtonIcon iconName={"glyphicon-ok"} onClickAction={this.props.toggleShowCheckboxList} />
                         <ButtonIcon iconName={"glyphicon-filter"} onClickAction={this.toggleShowExtraFilters} />
                         <ButtonIcon iconName={"glyphicon-download-alt"} onClickAction={this.props.getCSV} />
+                        {permissions.import &&
+                        <ButtonIcon iconName={"glyphicon-import"} onClickAction={this.importContacts}/>
+                        }
                     </div>
                 </div>
                 <div className="col-md-4"><h3 className="text-center table-title">Contacten</h3></div>

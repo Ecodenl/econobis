@@ -6,6 +6,7 @@ use App\Eco\Contact\Contact;
 use App\Eco\Email\Email;
 use App\Eco\User\User;
 use App\Helpers\Delete\DeleteHelper;
+use App\Helpers\Import\ContactImportHelper;
 use App\Http\Resources\Contact\ContactPeek;
 use App\Http\Resources\Contact\FullContact;
 use App\Http\Resources\Task\SidebarTask;
@@ -58,6 +59,18 @@ class ContactController extends Controller
         $contact->relatedEmailsSent = $this->getRelatedEmails($contact, $contact->id, 'sent');
 
         return new FullContact($contact);
+    }
+
+    public function validateImport(Request $request){
+        $this->authorize('import', Contact::class);
+        $contactImportHelper = new ContactImportHelper();
+        return $contactImportHelper->validateImport($request->file('attachment'));
+    }
+
+    public function import(Request $request){
+        $this->authorize('import', Contact::class);
+        $contactImportHelper = new ContactImportHelper();
+        return $contactImportHelper->import($request->file('attachment'));
     }
 
     public function destroy(Contact $contact)

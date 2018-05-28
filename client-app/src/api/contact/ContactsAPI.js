@@ -74,4 +74,20 @@ export default {
             },
         });
     },
+
+    validateImport: (csv) => {
+        const requestUrl = `${URL_API}/api/contact/validate-import`;
+        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
+        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
+
+        return axios.post(requestUrl, csv);
+    },
+
+    import: (csv) => {
+        const requestUrl = `${URL_API}/api/contact/import`;
+        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
+        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
+
+        return axios.post(requestUrl, csv);
+    },
 };

@@ -32,6 +32,8 @@ Route::namespace('Api')
         Route::get('/contact/grid', 'Contact\GridController@index');
         Route::get('/contact/csv', 'Contact\GridController@csv');
         Route::get('/contact/peek', 'Contact\ContactController@peek');
+        Route::post('/contact/validate-import', 'Contact\ContactController@validateImport');
+        Route::post('/contact/import', 'Contact\ContactController@import');
         Route::post('contact/{contact}/owner/{user}/associate', 'Contact\ContactController@associateOwner');
         Route::get('/contact/{contact}', 'Contact\ContactController@show');
         Route::get('/contact/{contact}/intakes', 'Contact\ContactController@intakes');

@@ -18,7 +18,6 @@ use App\Eco\Person\Person;
 use App\Eco\PhoneNumber\PhoneNumber;
 use App\Eco\Title\Title;
 use CMPayments\IBAN;
-use Illuminate\Support\Facades\Crypt;
 use Particle\Validator\Validator;
 
 class ContactImportHelper
@@ -286,7 +285,7 @@ class ContactImportHelper
                 $contact->status_id = 'interested';
                 $contact->full_name = 'temp';
                 if ($line[14]) {
-                    $contact->iban = Crypt::encrypt($line[14]);
+                    $contact->iban = $line[14];
                 }
                 $contact->save();
 

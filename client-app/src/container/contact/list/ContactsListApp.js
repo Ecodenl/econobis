@@ -9,6 +9,8 @@ import { setContactsPagination } from '../../../actions/contact/ContactsPaginati
 import ContactsList from './ContactsList';
 import ContactsListToolbar from './ContactsListToolbar';
 import filterHelper from '../../../helpers/FilterHelper';
+import ContactsAPI from '../../../api/contact/ContactsAPI';
+import fileDownload from "js-file-download";
 
 class ContactsListApp extends Component {
     constructor(props) {
@@ -33,6 +35,7 @@ class ContactsListApp extends Component {
 
         this.handlePageClick = this.handlePageClick.bind(this);
         this.handleExtraFiltersChange = this.handleExtraFiltersChange.bind(this);
+        this.getCSV = this.getCSV.bind(this);
     }
 
     componentDidMount() {
@@ -73,6 +76,18 @@ class ContactsListApp extends Component {
             const pagination = { limit: 20, offset: this.props.contactsPagination.offset };
 
             this.props.fetchContacts(filters, extraFilters, sorts, pagination);
+        },100 );
+    };
+
+    getCSV = () => {
+        setTimeout(() => {
+            const extraFilters = this.state.extraFilters;
+            const filters = filterHelper(this.props.contactsFilters);
+            const sorts = this.props.contactsSorts.reverse();
+
+                ContactsAPI.getCSV({filters, extraFilters, sorts}).then((payload) => {
+                    fileDownload(payload.data, 'test.csv');
+                });
         },100 );
     };
 
@@ -145,6 +160,7 @@ class ContactsListApp extends Component {
                                 handleExtraFiltersChange={this.handleExtraFiltersChange}
                                 extraFilters={this.state.extraFilters}
                                 amountOfFilters={this.state.amountOfFilters}
+                                getCSV={this.getCSV}
                             />
                         </div>
 

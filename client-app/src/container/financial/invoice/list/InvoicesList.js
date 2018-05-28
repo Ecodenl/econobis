@@ -19,6 +19,8 @@ import ButtonIcon from "../../../../components/button/ButtonIcon";
 import {
     setStatusIdFilterInvoices,
 } from '../../../../actions/invoice/InvoicesFiltersActions';
+import InvoicesAPI from "../../../../api/invoice/InvoicesAPI";
+import fileDownload from "js-file-download";
 
 class InvoicesList extends Component {
     constructor(props) {
@@ -140,6 +142,18 @@ class InvoicesList extends Component {
         }, 100);
     };
 
+    getCSV = () => {
+        setTimeout(() => {
+            const filters = filterHelper(this.props.invoicesFilters);
+            const sorts = this.props.invoicesSorts.reverse();
+            const administrationId = this.props.administrationId;
+
+            InvoicesAPI.getCSV({filters, sorts, administrationId}).then((payload) => {
+                fileDownload(payload.data, 'test.csv');
+            });
+        },100 );
+    };
+
     resetInvoiceFilters = () => {
         this.props.clearFilterInvoices();
 
@@ -179,6 +193,7 @@ class InvoicesList extends Component {
                     <div className="col-md-4">
                         <div className="btn-group" role="group">
                             <ButtonIcon iconName={"glyphicon-refresh"} onClickAction={this.resetInvoiceFilters}/>
+                            <ButtonIcon iconName={"glyphicon-download-alt"} onClickAction={this.getCSV} />
                         </div>
                     </div>
                     <div className="col-md-4"><h3 className="text-center table-title">Facturen</h3></div>

@@ -76,6 +76,7 @@ class ContactsListToolbar extends Component {
                         <ButtonIcon iconName={"glyphicon-trash"} onClickAction={this.toggleShowDeleteSelectedItems} />
                         <ButtonIcon iconName={"glyphicon-ok"} onClickAction={this.props.toggleShowCheckboxList} />
                         <ButtonIcon iconName={"glyphicon-filter"} onClickAction={this.toggleShowExtraFilters} />
+                        <ButtonIcon iconName={"glyphicon-download-alt"} onClickAction={this.props.getCSV} />
                     </div>
                 </div>
                 <div className="col-md-4"><h3 className="text-center table-title">Contacten</h3></div>

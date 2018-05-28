@@ -34,4 +34,18 @@ export default {
                 }
             );
     },
+
+    getCSV: ({ filters, sorts, administrationId }) => {
+        const requestUrl = `${URL_INVOICE}/csv`;
+        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
+        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
+
+        return axios.get(requestUrl, {
+            params: {
+                administrationId: JSON.stringify(administrationId),
+                filters: JSON.stringify(filters),
+                sorts: JSON.stringify(sorts),
+            },
+        });
+    },
 };

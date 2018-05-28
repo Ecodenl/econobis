@@ -12,7 +12,7 @@ use App\Eco\EnergySupplier\EnergySupplier;
 use App\Eco\ProductionProject\ProductionProjectRevenue;
 use Carbon\Carbon;
 
-class CSVHelper
+class EnergySupplierCSVHelper
 {
     private $csvExporter;
     private $energySupplier;

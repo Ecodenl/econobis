@@ -60,4 +60,18 @@ export default {
                 console.log(error);
             });
     },
+
+    getCSV: ({ filters, extraFilters, sorts }) => {
+        const requestUrl = `${URL_API}/api/contact/csv`;
+        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
+        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
+
+        return axios.get(requestUrl, {
+            params: {
+                filters: JSON.stringify(filters),
+                extraFilters: JSON.stringify(extraFilters),
+                sorts: JSON.stringify(sorts),
+            },
+        });
+    },
 };

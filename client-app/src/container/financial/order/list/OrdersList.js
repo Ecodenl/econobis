@@ -21,6 +21,8 @@ import {
     setPaymentTypeIdFilterOrders,
     setStatusIdFilterOrders,
 } from '../../../../actions/order/OrdersFiltersActions';
+import OrdersAPI from "../../../../api/order/OrdersAPI";
+import fileDownload from "js-file-download";
 
 class OrdersList extends Component {
     constructor(props){
@@ -121,6 +123,18 @@ class OrdersList extends Component {
         },100 );
     };
 
+    getCSV = () => {
+        setTimeout(() => {
+            const filters = filterHelper(this.props.ordersFilters);
+            const sorts = this.props.ordersSorts.reverse();
+            const administrationId = this.props.administrationId;
+
+            OrdersAPI.getCSV({filters, sorts, administrationId}).then((payload) => {
+                fileDownload(payload.data, 'test.csv');
+            });
+        },100 );
+    };
+
     resetOrderFilters = () => {
         this.props.clearFilterOrders();
 
@@ -184,6 +198,7 @@ class OrdersList extends Component {
                     <div className="col-md-4">
                         <div className="btn-group" role="group">
                             <ButtonIcon iconName={"glyphicon-refresh"} onClickAction={this.resetOrderFilters} />
+                            <ButtonIcon iconName={"glyphicon-download-alt"} onClickAction={this.getCSV} />
                         </div>
                     </div>
                     <div className="col-md-4"><h3 className="text-center table-title">Orders</h3></div>

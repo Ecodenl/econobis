@@ -19,7 +19,10 @@ import ContactNewApp from './container/contact/new/ContactNewApp';
 import ContactsInGroupListApp from './container/contact-groups/list-contacts-in-group/ContactsInGroupListApp';
 import ContactsListApp from './container/contact/list/ContactsListApp';
 import ContactImportApp from './container/contact/import/ContactImportApp';
-import DashboardApp from './container/dashboard/DashboardApp';
+import DashboardDefaultApp from './container/dashboard/dashboards/default/DashboardDefaultApp';
+import DashboardEnergySavingApp from './container/dashboard/dashboards/energy-saving/DashboardEnergySavingApp';
+import DashboardFinancialApp from './container/dashboard/dashboards/financial/DashboardFinancialApp';
+import DashboardParticipationsApp from './container/dashboard/dashboards/participations/DashboardParticipationsApp';
 import DocumentsListApp from './container/document/list/DocumentsListApp';
 import DocumentDetailsApp from './container/document/details/DocumentDetailsApp';
 import DocumentViewApp from './container/document/view/DocumentViewApp';
@@ -100,7 +103,13 @@ const Routes = () => {
             <Route path='wachtwoord-vergeten' component={Forgot}/>
             <Route path='wachtwoord-wijzig/:token' component={Reset}/>
             <Route path="/" component={ RequireAuth(Main) }>
-                <IndexRoute component={ DashboardApp } />
+                <IndexRoute component={ DashboardDefaultApp } />
+
+                /* Dashboards */
+                <Route path="dashboard" component={DashboardDefaultApp} />
+                <Route path="dashboard/energie-besparing" component={PermissionHelper(DashboardEnergySavingApp, 'manageQuotationRequest')} />
+                <Route path="dashboard/financieel" component={PermissionHelper(DashboardFinancialApp, 'manageFinancial')} />
+                <Route path="dashboard/participaties" component={PermissionHelper(DashboardParticipationsApp, 'manageParticipation')} />
 
                 /* Administrations */
                 <Route path="administraties" component={AdministrationsListApp} />

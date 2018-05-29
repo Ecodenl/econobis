@@ -8,8 +8,12 @@
 
 namespace App\Http\Controllers\Api\ProductionProject;
 
+use App\Eco\Contact\ContactStatus;
 use App\Eco\Email\Email;
+use App\Eco\ParticipantProductionProject\ParticipantProductionProjectStatus;
+use App\Eco\Product\ProductInvoiceFrequency;
 use App\Eco\ProductionProject\ProductionProject;
+use App\Eco\ProductionProject\ProductionProjectStatus;
 use App\Helpers\Delete\DeleteHelper;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Api\ApiController;
@@ -169,5 +173,61 @@ class ProductionProjectController extends ApiController
         $mailboxIds = $user->mailboxes()->pluck('mailbox_id');
 
         return Email::whereIn('mailbox_id', $mailboxIds)->where('production_project_id', $id)->where('folder', $folder)->get();
+    }
+
+    public function getActive(){
+        return ProductionProject::whereIn('production_project_status_id', [1,2])->pluck('id');
+    }
+
+    public function getChartData(ProductionProject $productionProject){
+        $participantProductionProjectStatuses = ParticipantProductionProjectStatus::all();
+
+        $chartData = [];
+
+        foreach($participantProductionProjectStatuses as $participantProductionProjectStatus) {
+            $chartData[] = [
+                "name" => $participantProductionProjectStatus->name,
+                "count" => count($productionProject->participantsProductionProject) ? $productionProject->participantsProductionProject()->where('status_id', $participantProductionProjectStatus->id)->count() : 0,
+            ];
+        };
+
+        return ['code' => $productionProject->code, 'data' => $chartData];
+    }
+
+    public function getChartDataParticipations(ProductionProject $productionProject){
+        $participantProductionProjectStatuses = ParticipantProductionProjectStatus::all();
+
+        $chartData = [];
+
+        foreach($participantProductionProjectStatuses as $participantProductionProjectStatus) {
+            $total = 0;
+
+            foreach ($productionProject->participantsProductionProject as $participant){
+                if($participant->status_id == $participantProductionProjectStatus->id){
+                    $total += ($participant->participations_granted - $participant->participations_sold);
+                }
+            }
+            $chartData[] = [
+                "name" => $participantProductionProjectStatus->name,
+                "count" => $total,
+            ];
+        };
+
+        return ['code' => $productionProject->code, 'data' => $chartData];
+    }
+
+    public function getChartDataStatus(ProductionProject $productionProject){
+        $contactStatuses = ContactStatus::collection();
+
+        $chartData = [];
+
+        foreach($contactStatuses as $contactStatus) {
+            $chartData[] = [
+                "name" => $contactStatus->name,
+                "count" => count($productionProject->participantsProductionProject) ? $productionProject->participantsProductionProject()->leftJoin('contacts', 'participation_production_project.contact_id', '=', 'contacts.id')->where('contacts.status_id', $contactStatus->id)->count() : 0,
+            ];
+        };
+
+        return ['code' => $productionProject->code, 'data' => $chartData];
     }
 }

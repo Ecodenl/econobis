@@ -1,20 +1,21 @@
 import React, { Component } from 'react';
 import {Pie} from 'react-chartjs-2';
 
-import OpportunitesAPI from '../../api/opportunity/OpportunitiesAPI';
+import ProductionProjectsAPI from '../../../api/production-project/ProductionProjectsAPI';
 
-class DashboardChartMembers extends Component {
+class DashboardChartParticipationsPerProject extends Component {
     constructor(props) {
         super(props);
 
         this.state= {
             chartData: [],
             amountOfDataPoints: [],
+            code: '',
         }
     };
 
     componentDidMount() {
-        OpportunitesAPI.getChartData().then(payload => {
+        ProductionProjectsAPI.getChartParticipationsData(this.props.id).then(payload => {
             let amountOfDataPoints = 0;
 
             for(let i=0; i < payload.data.length; i++){
@@ -23,7 +24,11 @@ class DashboardChartMembers extends Component {
 
             }
 
-           this.setState({chartData: payload.data, amountOfDataPoints: amountOfDataPoints});
+            this.setState({
+                chartData: payload.data,
+                amountOfDataPoints: amountOfDataPoints,
+                code: payload.code
+            });
 
         });
     }
@@ -66,8 +71,22 @@ class DashboardChartMembers extends Component {
             maintainAspectRatio: false,
             responsive: true,
             tooltips: {
-                mode: 'label'
-            }
+                mode: 'label',
+                callbacks: {
+                    label: function(tooltipItem, data) {
+                        let dataset = data.datasets[tooltipItem.datasetIndex];
+                        let meta = dataset._meta[Object.keys(dataset._meta)[0]];
+                        let total = meta.total;
+                        let currentValue = dataset.data[tooltipItem.index];
+                        let percentage = parseFloat((currentValue/total*100).toFixed(1));
+                        return currentValue + ' (' + percentage + '%)';
+                    },
+                    title: function(tooltipItem, data) {
+                        return data.labels[tooltipItem[0].index];
+                    }
+                }
+            },
+            tooltipTemplate: "'<%=label%>: <%= numeral(value).format('($00[.]00)') %> - <%= numeral(circumference / 6.283).format('(0[.][00]%)') %>'"
         };
 
         return chart;
@@ -79,11 +98,11 @@ class DashboardChartMembers extends Component {
 
         return (
             <div>
-                <h4>Kansen</h4>
+                <h4>Participaties status in project {this.state.code}</h4>
                 <div>
                     {
                         amountOfDataPoints === 0 ? (
-                                <span>Er zijn nog geen kansen gemaakt.</span>
+                                <span>Geen participaties gevonden.</span>
                         ) : (
                             <Pie
                                 data={data}
@@ -99,4 +118,4 @@ class DashboardChartMembers extends Component {
     }
 };
 
-export default DashboardChartMembers;
+export default DashboardChartParticipationsPerProject;

@@ -3,18 +3,17 @@
 namespace App\Http\Controllers\Api\Contact;
 
 use App\Eco\Contact\Contact;
-use App\Eco\Email\Email;
+use App\Eco\Contact\ContactStatus;
+use App\Eco\Contact\Jobs\DeleteContact;
 use App\Eco\User\User;
 use App\Helpers\Delete\DeleteHelper;
 use App\Helpers\Import\ContactImportHelper;
+use App\Http\Controllers\Controller;
 use App\Http\Resources\Contact\ContactPeek;
 use App\Http\Resources\Contact\FullContact;
 use App\Http\Resources\Task\SidebarTask;
-use App\Eco\Contact\Jobs\DeleteContact;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
-use Spatie\Permission\Models\Role;
 
 class ContactController extends Controller
 {
@@ -148,5 +147,22 @@ class ContactController extends Controller
         $mailboxIds = $user->mailboxes()->pluck('mailbox_id');
 
         return $contact->emails()->whereIn('mailbox_id', $mailboxIds)->where('contact_id', $id)->where('folder', $folder)->get();
+    }
+
+    // Data for dashboard chart
+    public function chartData()
+    {
+        $contactStatuses = ContactStatus::collection();
+
+        $chartData = [];
+
+        foreach($contactStatuses as $contactStatus) {
+            $chartData[] = [
+                "name" => $contactStatus->name,
+                "count" => Contact::where('status_id', $contactStatus->id)->whereNull('deleted_at')->count(),
+            ];
+        };
+
+        return $chartData;
     }
 }

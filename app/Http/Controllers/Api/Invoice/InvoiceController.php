@@ -19,6 +19,7 @@ use App\Http\Resources\Invoice\FullInvoice;
 use App\Http\Resources\Invoice\GridInvoice;
 use App\Http\Resources\Invoice\InvoicePeek;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
 class InvoiceController extends ApiController
@@ -195,6 +196,21 @@ class InvoiceController extends ApiController
         }
 
         return response()->download($filePath, $invoice->document->name);
+    }
+
+    public function getAmountUnpaid(){
+
+        $this->authorize('manage', Invoice::class);
+
+        $user = Auth::user();
+
+        $total = 0;
+
+        foreach($user->administrations as $administration){
+            $total +=  $administration->invoices()->whereIn('status_id', ['sent','exported'])->count();
+        }
+
+        return $total;
     }
 
 }

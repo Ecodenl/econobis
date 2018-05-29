@@ -24,6 +24,7 @@ use App\Http\Resources\Order\GridOrder;
 use App\Http\Resources\Order\OrderPeek;
 use Barryvdh\DomPDF\Facade as PDF;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class OrderController extends ApiController
 {
@@ -254,6 +255,21 @@ class OrderController extends ApiController
         $invoice = InvoiceHelper::saveInvoiceProducts($invoice, $order, true);
 
         return InvoiceHelper::createInvoiceDocument($invoice, true);
+    }
+
+    public function getAmountCollection(){
+
+        $this->authorize('manage', Order::class);
+
+        $user = Auth::user();
+
+        $total = 0;
+
+        foreach($user->administrations as $administration){
+            $total +=  $administration->orders()->where('status_id', 'active')->where('payment_type_id', 'collection')->count();
+        }
+
+        return $total;
     }
 
 }

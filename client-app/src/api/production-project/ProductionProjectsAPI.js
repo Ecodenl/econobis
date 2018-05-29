@@ -31,4 +31,56 @@ export default {
                 }
             );
     },
+
+    getActive: () => {
+        const requestUrl = `${URL_PRODUCTION_PROJECT}/active`;
+        const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
+        axios.defaults.headers.common.Authorization = AUTH_TOKEN;
+
+        return axios.get(requestUrl)
+            .then(response => response.data)
+            .catch((error) => {
+                    console.log(error);
+                },
+            );
+    },
+
+    getChartData: (id) => {
+        const requestUrl = `${URL_PRODUCTION_PROJECT}/chart-status/${id}`;
+        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
+        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
+
+        return axios.get(requestUrl)
+            .then(response => response.data)
+            .catch((error) => {
+                    console.log(error);
+                },
+            );
+    },
+
+    getChartContactStatusData: (id) => {
+        const requestUrl = `${URL_PRODUCTION_PROJECT}/chart-contact-status/${id}`;
+        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
+        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
+
+        return axios.get(requestUrl)
+            .then(response => response.data)
+            .catch((error) => {
+                    console.log(error);
+                },
+            );
+    },
+
+    getChartParticipationsData: (id) => {
+        const requestUrl = `${URL_PRODUCTION_PROJECT}/chart-participations-status/${id}`;
+        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
+        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
+
+        return axios.get(requestUrl)
+            .then(response => response.data)
+            .catch((error) => {
+                    console.log(error);
+                },
+            );
+    },
 };

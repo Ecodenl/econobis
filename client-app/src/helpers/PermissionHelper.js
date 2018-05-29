@@ -5,13 +5,13 @@ import { hashHistory } from 'react-router';
 export default function(ComposedComponent, permission) {
     class PermissionHelper extends Component {
         componentWillMount() {
-            if (!permission) {
+            if (!this.props.permissions[permission]) {
                 hashHistory.push('/');
             }
         }
 
         componentWillUpdate(nextProps) {
-            if (!permission) {
+            if (!nextProps.permissions[permission]) {
                 hashHistory.push('/');
             }
         }
@@ -22,7 +22,7 @@ export default function(ComposedComponent, permission) {
     }
 
     function mapStateToProps(state) {
-        return { meDetails: state.meDetails };
+        return { permissions: state.meDetails.permissions };
     }
 
     return connect(mapStateToProps)(PermissionHelper);

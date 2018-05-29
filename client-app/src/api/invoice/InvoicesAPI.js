@@ -48,4 +48,17 @@ export default {
             },
         });
     },
+
+    getUnpaidInvoices: () => {
+        const requestUrl = `${URL_INVOICE}/amount-unpaid`;
+        const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
+        axios.defaults.headers.common.Authorization = AUTH_TOKEN;
+
+        return axios.get(requestUrl)
+            .then(response => response.data)
+            .catch((error) => {
+                    console.log(error);
+                },
+            );
+    },
 };

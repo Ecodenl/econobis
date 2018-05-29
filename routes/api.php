@@ -32,6 +32,7 @@ Route::namespace('Api')
         Route::get('/contact/grid', 'Contact\GridController@index');
         Route::get('/contact/csv', 'Contact\GridController@csv');
         Route::get('/contact/peek', 'Contact\ContactController@peek');
+        Route::get('/contact/chart-data', 'Contact\ContactController@chartData');
         Route::post('/contact/validate-import', 'Contact\ContactController@validateImport');
         Route::post('/contact/import', 'Contact\ContactController@import');
         Route::post('contact/{contact}/owner/{user}/associate', 'Contact\ContactController@associateOwner');
@@ -251,6 +252,7 @@ Route::namespace('Api')
 
         Route::get('/quotation-request/grid', 'QuotationRequest\QuotationRequestController@grid');
         Route::get('/quotation-request/peek', 'QuotationRequest\QuotationRequestController@peek');
+        Route::get('/quotation-request/amount-open', 'QuotationRequest\QuotationRequestController@getAmountOfOpenQuotationRequests');
         Route::get('/opportunity/{opportunity}/quotation-request', 'QuotationRequest\QuotationRequestController@getStore');
         Route::post('/quotation-request', 'QuotationRequest\QuotationRequestController@store');
         Route::get('/quotation-request/{quotationRequest}', 'QuotationRequest\QuotationRequestController@show');
@@ -287,6 +289,11 @@ Route::namespace('Api')
 
         Route::get('production-project/grid', 'ProductionProject\ProductionProjectController@grid');
         Route::get('production-project/peek', 'ProductionProject\ProductionProjectController@peek');
+        Route::get('production-project/active', 'ProductionProject\ProductionProjectController@getActive');
+        Route::get('production-project/chart-status/{productionProject}', 'ProductionProject\ProductionProjectController@getChartData');
+        Route::get('production-project/chart-participations-status/{productionProject}', 'ProductionProject\ProductionProjectController@getChartDataParticipations');
+        Route::get('production-project/chart-participations-status/{productionProject}', 'ProductionProject\ProductionProjectController@getChartDataParticipations');
+        Route::get('production-project/chart-contact-status/{productionProject}', 'ProductionProject\ProductionProjectController@getChartDataStatus');
         Route::get('production-project/{productionProject}', 'ProductionProject\ProductionProjectController@show');
         Route::get('production-project/{productionProject}/obligation-numbers', 'ProductionProject\ProductionProjectController@getObligationNumbers');
         Route::post('production-project', 'ProductionProject\ProductionProjectController@store');
@@ -319,6 +326,7 @@ Route::namespace('Api')
         Route::get('order/grid', 'Order\OrderController@grid');
         Route::get('order/csv', 'Order\OrderController@csv');
         Route::get('order/peek', 'Order\OrderController@peek');
+        Route::get('order/amount-collection', 'Order\OrderController@getAmountCollection');
         Route::get('order/{order}', 'Order\OrderController@show');
         Route::get('order/{order}/download-preview', 'Order\OrderController@downloadPreview');
         Route::get('order/{contact}/contact-info-for-order', 'Order\OrderController@getContactInfoForOrder');
@@ -331,6 +339,7 @@ Route::namespace('Api')
         Route::get('invoice/grid', 'Invoice\InvoiceController@grid');
         Route::get('invoice/csv', 'Invoice\InvoiceController@csv');
         Route::get('invoice/peek', 'Invoice\InvoiceController@peek');
+        Route::get('invoice/amount-unpaid', 'Invoice\InvoiceController@getAmountUnpaid');
         Route::get('invoice/{invoice}', 'Invoice\InvoiceController@show');
         Route::get('invoice/{invoice}/download', 'Invoice\InvoiceController@download');
         Route::post('invoice', 'Invoice\InvoiceController@store');

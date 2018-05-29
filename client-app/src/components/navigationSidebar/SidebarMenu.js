@@ -28,6 +28,21 @@ class SidebarMenu extends Component {
                     <Nav id="dashboard">
                         <NavIcon><SvgIcon size={20} icon={ic_dashboard}/></NavIcon>
                         <NavText><Link className="sidebar-link" to="/">Dashboard</Link></NavText>
+                        {this.props.permissions.manageQuotationRequest &&
+                        <Nav id="dashboard-energy-saving">
+                            <NavText><Link className="sidebar-link" to="dashboard/energie-besparing">Energiebesparing</Link></NavText>
+                        </Nav>
+                        }
+                        {this.props.permissions.manageParticipation &&
+                        <Nav id="dashboard-participations">
+                            <NavText><Link className="sidebar-link" to="dashboard/participaties">Participaties</Link></NavText>
+                        </Nav>
+                        }
+                        {this.props.permissions.manageFinancial &&
+                        <Nav id="dashboard-financial">
+                            <NavText><Link className="sidebar-link" to="dashboard/financieel">Financieel</Link></NavText>
+                        </Nav>
+                        }
                     </Nav>
                     <Nav id="contacten">
                         <NavIcon><SvgIcon size={20} icon={ic_contacts}/></NavIcon>

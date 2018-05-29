@@ -3,6 +3,7 @@
 namespace App\Eco\ProductionProject;
 
 use App\Eco\Address\Address;
+use App\Eco\Contact\Contact;
 use App\Eco\Document\Document;
 use App\Eco\Email\Email;
 use App\Eco\Measure\Measure;

@@ -186,4 +186,8 @@ class QuotationRequestController extends ApiController
         return Email::whereIn('mailbox_id', $mailboxIds)->where('quotation_request_id', $id)->where('folder', $folder)->get();
     }
 
+    public function getAmountOfOpenQuotationRequests(){
+        return QuotationRequest::where('status_id', 1)->count();
+    }
+
 }

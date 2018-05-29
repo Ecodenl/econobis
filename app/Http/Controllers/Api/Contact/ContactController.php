@@ -63,12 +63,14 @@ class ContactController extends Controller
 
     public function validateImport(Request $request){
         $this->authorize('import', Contact::class);
+        set_time_limit(180);
         $contactImportHelper = new ContactImportHelper();
         return $contactImportHelper->validateImport($request->file('attachment'));
     }
 
     public function import(Request $request){
         $this->authorize('import', Contact::class);
+        set_time_limit(180);
         $contactImportHelper = new ContactImportHelper();
         return $contactImportHelper->import($request->file('attachment'));
     }

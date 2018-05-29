@@ -21,6 +21,8 @@ class ContactImportFormGeneral extends Component {
             upload: false,
             attachment: false,
             hasError: true,
+            uploading: false,
+            importing: false,
         };
 
     }
@@ -32,6 +34,11 @@ class ContactImportFormGeneral extends Component {
     };
 
     handleSubmit = () => {
+        this.setState({
+            ...this.state,
+            uploading: true,
+        });
+
         const data = new FormData();
 
         data.append('attachment', this.state.attachment);
@@ -45,11 +52,16 @@ class ContactImportFormGeneral extends Component {
                 ...this.state,
                 validationData: payload.data,
                 hasError: !!hasError,
+                uploading: false,
             });
         });
     };
 
     import = () => {
+        this.setState({
+            ...this.state,
+            importing: true,
+        });
         // If no errors send form
         const data = new FormData();
 
@@ -106,9 +118,9 @@ class ContactImportFormGeneral extends Component {
                         <div className="row">
                             <div className="col-md-12">
                                 <div className="btn-group btn-group-flex margin-small" role="group">
-                                <ButtonText buttonText={"Upload CSV"} onClickAction={this.toggleUpload}/>
+                                <ButtonText loading={this.state.uploading} buttonText={"Upload CSV"} onClickAction={this.toggleUpload}/>
                                 {!this.state.hasError &&
-                                <ButtonText buttonText={"Importeren"} onClickAction={this.import}/>
+                                <ButtonText loading={this.state.importing} buttonText={"Importeren"} onClickAction={this.import}/>
                                 }
                                 </div>
                             </div>
@@ -128,7 +140,7 @@ class ContactImportFormGeneral extends Component {
                         </div>
                         <div className="row">
                             <div className="col-md-12">
-                                <ButtonText buttonText={"Upload CSV"} onClickAction={this.toggleUpload}/>
+                                <ButtonText loading={this.state.uploading} buttonText={"Upload CSV"} onClickAction={this.toggleUpload}/>
                             </div>
                         </div>
                     </PanelBody>

@@ -209,7 +209,7 @@ class OrderController extends ApiController
         if($contact->isOrganisation()){
             $email = $this->getOrganisationAdministrationEmailAddress($contact);
 
-            if (!$email && count($contact->contactPerson))
+            if (!$email && $contact->contactPerson()->exists())
             {
                 $contactInfo['email'] = $contact->contactPerson->contact->getOrderEmail() ? $contact->contactPerson->contact->getOrderEmail()->email : 'Geen e-mail bekend';
                 $contactInfo['contactPerson'] = $contact->contactPerson->contact->full_name;

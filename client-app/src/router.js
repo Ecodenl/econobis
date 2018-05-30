@@ -126,7 +126,6 @@ const Routes = () => {
                 <Route path="contact-groep/nieuw" component={ContactGroupNewApp} />
                 <Route path="contact-groepen" component={ ContactGroupsListApp } />
                 <Route path="contact/nieuw/:type" component={ ContactNewApp } />
-                <Route path="contact/nieuw/:type/organisatie/:id" component={ ContactNewApp } />
                 <Route path="contact/import" component={ ContactImportApp } />
                 <Route path="contact/:id" component={ ContactDetailsApp } />
                 <Route path="contacten" component={ ContactsListApp } />

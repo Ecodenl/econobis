@@ -10,7 +10,7 @@ const ContactNewFormGeneral = props => {
         <Panel className={"panel-grey"}>
             <PanelBody>
                 <div className="col-md-12">
-                    { props.type === 'persoon' && <ContactNewFormPersonal organisationId={props.organisationId}/> }
+                    { props.type === 'persoon' && <ContactNewFormPersonal/> }
                     { props.type === 'organisatie' && <ContactNewFormOrganisation /> }
                 </div>
             </PanelBody>

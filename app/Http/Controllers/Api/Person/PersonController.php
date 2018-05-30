@@ -9,17 +9,22 @@
 namespace App\Http\Controllers\Api\Person;
 
 
+use App\Eco\Address\Address;
+use App\Eco\Address\AddressType;
 use App\Eco\Contact\Contact;
 use App\Eco\Contact\ContactStatus;
+use App\Eco\EmailAddress\EmailAddress;
+use App\Eco\EmailAddress\EmailAddressType;
 use App\Eco\Person\Person;
-use App\Eco\User\User;
+use App\Eco\PhoneNumber\PhoneNumber;
+use App\Eco\PhoneNumber\PhoneNumberType;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\Controllers\Api\Contact\ContactController;
-use App\Http\Resources\Contact\FullContact;
 use App\Http\Resources\Person\PersonPeek;
 use App\Rules\EnumExists;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 
 class PersonController extends ApiController
 {
@@ -28,61 +33,173 @@ class PersonController extends ApiController
     {
         $this->authorize('create', Person::class);
 
-        $contactData = $request->validate([
-            'statusId' => new EnumExists(ContactStatus::class),
-            'memberSince' => 'date',
-            'memberUntil' => 'date',
-            'newsletter' => 'boolean',
-            'iban' => '',
-            'ibanAttn' => '',
-            'liable' => 'boolean',
-            'liabilityAmount' => 'numeric',
-            'ownerId' => 'exists:users,id',
-            'didAgreeAvg' => 'boolean',
-        ]);
+        Validator::make($request['person'],
+            [
+                'statusId' => new EnumExists(ContactStatus::class),
+                'memberSince' => 'date',
+                'memberUntil' => 'date',
+                'newsletter' => 'boolean',
+                'ownerId' => 'exists:users,id',
+                'didAgreeAvg' => 'boolean',
+                'initials' => '',
+                'firstName' => '',
+                'lastName' => '',
+                'lastNamePrefixId' => 'exists:last_name_prefixes,id',
+                'titleId' => 'exists:titles,id',
+                'typeId' => 'exists:person_types,id',
+                'dateOfBirth' => 'date',
+            ]);
 
-        $personData = $request->validate([
-            'initials' => '',
-            'firstName' => '',
-            'lastName' => '',
-            'lastNamePrefixId' => 'exists:last_name_prefixes,id',
-            'titleId' => 'exists:titles,id',
-            'organisationId' => 'exists:organisations,id',
-            'typeId' => 'exists:person_types,id',
-            'dateOfBirth' => 'date',
-            'firstNamePartner' => '',
-            'lastNamePartner' => '',
-            'dateOfBirthPartner' => 'date',
-            'primary' => 'boolean',
-            'occupationId' => 'exists:occupations,id',
-        ]);
-
-        $contactData = $this->sanitizeData($contactData, [
+        $contactData = $this->sanitizeData($request['person'], [
             'statusId' => 'nullable',
-            'ownerId' => 'nullable',
             'memberSince' => 'nullable',
             'memberUntil' => 'nullable',
             'newsletter' => 'boolean',
+            'ownerId' => 'nullable',
             'liable' => 'boolean',
-        ]);
-        $contact = new Contact($this->arrayKeysToSnakeCase($contactData));
-
-        $personData = $this->sanitizeData($personData, [
             'lastNamePrefixId' => 'nullable',
             'titleId' => 'nullable',
-            'organisationId' => 'nullable',
             'typeId' => 'nullable',
             'dateOfBirth' => 'nullable',
-            'dateOfBirthPartner' => 'nullable',
-            'primary' => 'boolean',
-            'occupationId' => 'nullable',
         ]);
-        $person = new Person($this->arrayKeysToSnakeCase($personData));
 
-        DB::transaction(function () use ($person, $contact) {
+        $contactData = $this->arrayKeysToSnakeCase($contactData);
+
+        $contactArray =
+            [
+                'status_id' => $contactData['status_id'],
+                'member_since' => $contactData['member_since'],
+                'member_until' => $contactData['member_until'],
+                'newsletter' => $contactData['newsletter'],
+                'owner_id' => $contactData['owner_id'],
+                'did_agree_avg' => $contactData['did_agree_avg'],
+            ];
+
+        $personArray =
+            [
+                'initials' => $contactData['initials'],
+                'first_name' => $contactData['first_name'],
+                'last_name' => $contactData['last_name'],
+                'last_name_prefix_id' => $contactData['last_name_prefix_id'],
+                'title_id' => $contactData['title_id'],
+                'type_id' => $contactData['type_id'],
+                'date_of_birth' => $contactData['date_of_birth'],
+            ];
+
+        $contact = new Contact($contactArray);
+        $person = new Person($personArray);
+        $emailAddress = null;
+        $address = null;
+        $phoneNumber = null;
+
+        if ($request['emailAddress']['email']) {
+            Validator::make($request['emailAddress'], [
+                'typeId' => new EnumExists(EmailAddressType::class),
+                'email' => '',
+                'primary' => 'boolean',
+            ]);
+
+            $data = $this->sanitizeData($request['emailAddress'], [
+                'typeId' => 'nullable',
+                'primary' => 'boolean',
+            ]);
+
+            $emailAddress
+                = new EmailAddress($this->arrayKeysToSnakeCase($data));
+        }
+
+        if ($request['address']['street']) {
+            Validator::make($request['address'], [
+                'countryId' => 'nullable|exists:countries,id',
+                'typeId' => new EnumExists(AddressType::class),
+                'street' => '',
+                'number' => 'integer',
+                'addition' => 'string',
+                'city' => '',
+                'postalCode' => '',
+                'primary' => 'boolean',
+            ]);
+
+            $data = $this->sanitizeData($request['address'], [
+                'typeId' => 'nullable',
+                'countryId' => 'nullable',
+                'primary' => 'boolean',
+            ]);
+            $address = new Address($this->arrayKeysToSnakeCase($data));
+
+        }
+
+        if ($request['phoneNumber']['number']) {
+            Validator::make($request['phoneNumber'], [
+                'typeId' => new EnumExists(PhoneNumberType::class),
+                'number' => '',
+                'primary' => 'boolean',
+            ]);
+
+            $data = $this->sanitizeData($request['phoneNumber'], [
+                'typeId' => 'nullable',
+                'primary' => 'boolean',
+            ]);
+            $phoneNumber = new PhoneNumber($this->arrayKeysToSnakeCase($data));
+
+        }
+
+        if($request->input('checkDuplicates')) {
+            //check for duplicates lastname + postal_code + house number
+            if ($address) {
+                $exists = DB::table('contacts')
+                    ->join('people', 'contacts.id', '=', 'people.contact_id')
+                    ->join('addresses', 'contacts.id', '=',
+                        'addresses.contact_id')
+                    ->where('people.last_name', $person->last_name)
+                    ->where('addresses.number', $address->number)
+                    ->where('addresses.postal_code', $address->postal_code)
+                    ->exists();
+                if ($exists) {
+                    abort(409, 'Contact met achternaam ' . $person->last_name
+                        . ' en postcode ' . $address->postal_code
+                        . ' en huisnummer ' . $address->number
+                        . ' bestaat al.');
+                }
+            }
+
+            //check for duplicates lastname + email
+            if ($emailAddress) {
+                $exists = DB::table('contacts')
+                    ->join('people', 'contacts.id', '=', 'people.contact_id')
+                    ->join('email_addresses', 'contacts.id', '=',
+                        'email_addresses.contact_id')
+                    ->where('people.last_name', $person->last_name)
+                    ->where('email_addresses.email', $emailAddress->email)
+                    ->exists();
+                if ($exists) {
+                    abort(409, 'Contact met achternaam ' . $person->last_name
+                        . ' en e-mail ' . $emailAddress->email
+                        . ' bestaat al.');
+                }
+            }
+        }
+
+
+        DB::transaction(function () use ($person, $contact, $emailAddress, $address, $phoneNumber) {
             $contact->save();
             $person->contact_id = $contact->id;
             $person->save();
+            if($emailAddress) {
+                $emailAddress->contact_id = $contact->id;
+                $this->authorize('create', $emailAddress);
+                $emailAddress->save();
+            }
+            if($address) {
+                $address->contact_id = $contact->id;
+                $this->authorize('create', $address);
+                $address->save();
+            }
+            if($phoneNumber) {
+                $phoneNumber->contact_id = $contact->id;
+                $this->authorize('create', $phoneNumber);
+                $phoneNumber->save();
+            }
         });
 
         // Contact exact zo teruggeven als bij het openen van een bestaand contact

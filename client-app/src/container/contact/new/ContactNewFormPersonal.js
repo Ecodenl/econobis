@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
-import { connect } from 'react-redux';
-import { hashHistory } from 'react-router';
+import {connect} from 'react-redux';
+import {hashHistory} from 'react-router';
 import moment from 'moment';
 import validator from 'validator';
 
@@ -12,6 +12,13 @@ import InputDate from '../../../components/form/InputDate';
 import ButtonText from '../../../components/button/ButtonText';
 import PanelFooter from "../../../components/panel/PanelFooter";
 import InputToggle from "../../../components/form/InputToggle";
+import PanelHeader from "../../../components/panel/PanelHeader";
+import ContactNewFormAddress from "./ContactNewFormAddress";
+import ContactNewFormEmail from "./ContactNewFormEmail";
+import ContactNewFormPhone from "./ContactNewFormPhone";
+import AddressAPI from "../../../api/contact/AddressAPI";
+import validateNumber from "../../../helpers/ValidateNumber";
+import ContactNewFormPersonalDuplicateModal from "./ContactNewFormPersonalDuplicateModal";
 
 class ContactNewFormPersonal extends Component {
     constructor(props) {
@@ -19,7 +26,11 @@ class ContactNewFormPersonal extends Component {
 
         this.state = {
             buttonLoading: false,
-            organisationPeek: [],
+            showAddress: false,
+            showEmail: false,
+            showPhone: false,
+            showConfirmDuplicate: false,
+            duplicateText:  '',
             person: {
                 id: '',
                 number: '',
@@ -38,20 +49,136 @@ class ContactNewFormPersonal extends Component {
                 ownerId: props.userId,
                 didAgreeAvg: false,
             },
+            address: {
+                street: '',
+                number: '',
+                addition: '',
+                postalCode: '',
+                city: '',
+                typeId: 'visit',
+                primary: true,
+                countryId: 'NL',
+            },
+            emailAddress: {
+                email: '',
+                typeId: 'home',
+                primary: true,
+            },
+            phoneNumber: {
+                number: '',
+                typeId: '',
+                primary: true,
+            },
             errors: {
                 name: false,
                 statusId: false,
             },
+            addressErrors: {
+                typeId: false,
+                postalCode: false,
+                number: false,
+            },
+            emailErrors: {
+                typeId: false,
+                email: false,
+            },
+            phoneErrors: {
+                typeId: false,
+                number: false,
+            },
         }
     };
 
-    componentDidMount() {
-        OrganisationAPI.getOrganisationPeek().then(payload => {
-            this.setState({
-                ...this.state,
-                organisationPeek: payload,
-            })
-        })
+    toggleAddress = () => {
+        this.setState({showAddress: !this.state.showAddress});
+    };
+
+    toggleEmail = () => {
+        this.setState({showEmail: !this.state.showEmail});
+    };
+
+    togglePhone = () => {
+        this.setState({showPhone: !this.state.showPhone});
+    };
+
+    toggleShowConfirmDuplicate = () => {
+        this.setState(
+            {
+                showConfirmDuplicate: !this.state.showConfirmDuplicate,
+                buttonLoading: false
+            });
+    };
+
+    addressHandleInputPicoChange = event => {
+        const target = event.target;
+        const value = target.type === 'checkbox' ? target.checked : target.value;
+        const name = target.name;
+
+        this.setState({
+            ...this.state,
+            address: {
+                ...this.state.address,
+                [name]: value
+            },
+        });
+        setTimeout(() => {
+            const {address} = this.state;
+            if (!validator.isEmpty(address.postalCode) && validator.isPostalCode(address.postalCode, 'NL') && !validator.isEmpty(address.number) && validator.isEmpty(address.city) && validator.isEmpty(address.street)) {
+                AddressAPI.getPicoAddress(address.postalCode, address.number).then((payload) => {
+                    this.setState({
+                        ...this.state,
+                        address: {
+                            ...this.state.address,
+                            street: payload.street,
+                            city: payload.city
+                        },
+                    });
+                });
+
+            }
+        }, 100);
+    };
+
+    addressHandleInputChange = event => {
+        const target = event.target;
+        const value = target.type === 'checkbox' ? target.checked : target.value;
+        const name = target.name;
+
+        this.setState({
+            ...this.state,
+            address: {
+                ...this.state.address,
+                [name]: value
+            },
+        });
+    };
+
+    emailAddressHandleInputChange = event => {
+        const target = event.target;
+        const value = target.type === 'checkbox' ? target.checked : target.value;
+        const name = target.name;
+
+        this.setState({
+            ...this.state,
+            emailAddress: {
+                ...this.state.emailAddress,
+                [name]: value
+            },
+        });
+    };
+
+    phoneHandleInputChange = event => {
+        const target = event.target;
+        const value = target.type === 'checkbox' ? target.checked : target.value;
+        const name = target.name;
+
+        this.setState({
+            ...this.state,
+            phoneNumber: {
+                ...this.state.phoneNumber,
+                [name]: value
+            },
+        });
     };
 
     handleInputChange = event => {
@@ -92,43 +219,124 @@ class ContactNewFormPersonal extends Component {
         });
     };
 
-    handleSubmit = event => {
-        event.preventDefault();
+    confirmDuplicate = () => {
+        this.handleSubmit('dontCheckDuplicates')
+    };
 
-        const { person }  = this.state;
+    handleSubmit = event => {
+        let checkDuplicates = true;
+        if(event === 'dontCheckDuplicates'){
+            checkDuplicates = false;
+        }
+        else if(event) {
+            event.preventDefault();
+        }
+
+        const {person} = this.state;
 
         // Validation
         let errors = {};
         let hasErrors = false;
 
-        if(validator.isEmpty(person.firstName) && validator.isEmpty(person.lastName)){
+        if (validator.isEmpty(person.firstName) && validator.isEmpty(person.lastName)) {
             errors.name = true;
             hasErrors = true;
         };
 
-        if(validator.isEmpty(person.statusId)){
+        if (validator.isEmpty(person.statusId)) {
             errors.statusId = true;
             hasErrors = true;
         };
 
-        this.setState({ ...this.state, errors: errors })
+        const {address} = this.state;
 
+        // Postalcode always to uppercase
+        address.postalCode = address.postalCode.toUpperCase();
+
+        let addressErrors = {};
+
+        if (!validator.isEmpty(address.postalCode)) {
+            if (!validator.isPostalCode(address.postalCode, 'any')) {
+                addressErrors.postalCode = true;
+                hasErrors = true;
+            } ;
+
+            if (validator.isEmpty(address.number)) {
+                addressErrors.number = true;
+                hasErrors = true;
+            };
+
+            if (validator.isEmpty(address.typeId)) {
+                addressErrors.typeId = true;
+                hasErrors = true;
+            };
+
+        }
+
+        const {phoneNumber} = this.state;
+        // Validation
+        let phoneErrors = {};
+
+        if (!validator.isEmpty(phoneNumber.number)) {
+            if (validateNumber(phoneNumber.number)) {
+                phoneErrors.number = true;
+                hasErrors = true;
+            };
+            if (validator.isEmpty(phoneNumber.typeId)) {
+                phoneErrors.typeId = true;
+                hasErrors = true;
+            };
+        }
+
+        const {emailAddress} = this.state;
+
+        let emailErrors = {};
+
+        if (!validator.isEmpty(emailAddress.email)) {
+            if (!validator.isEmail(emailAddress.email)) {
+                emailErrors.email = true;
+                hasErrors = true;
+            };
+
+            if (validator.isEmpty(emailAddress.typeId)) {
+                emailErrors.typeId = true;
+                hasErrors = true;
+            };
+        }
+
+        this.setState({...this.state,
+            errors: errors,
+            addressErrors: addressErrors,
+            phoneErrors: phoneErrors,
+            emailErrors: emailErrors,
+        });
         // If no errors send form
         if (!hasErrors) {
-            if(this.state.buttonLoading){
+            if (this.state.buttonLoading) {
                 return false;
             }
             this.setState({
                 buttonLoading: true
             });
-            PersonAPI.newPerson(person).then((payload) => {
-                hashHistory.push(`/contact/${payload.id}`);
-            });
-        }
+
+            PersonAPI.newPerson({person, address, emailAddress, phoneNumber, checkDuplicates}).then((response) => {
+                hashHistory.push(`/contact/${response.data.data.id}`);
+            })
+                .catch((error) => {
+                    //409 conflict
+                    if(error.response.status === 409){
+                        this.setState({
+                            ...this.state,
+                            duplicateText: error.response.data.message
+                        });
+                        this.toggleShowConfirmDuplicate();
+                    }
+                });
+            };
     };
 
     render() {
-        const { typeId, statusId, titleId, initials, firstName, lastNamePrefixId, lastName, memberSince, dateOfBirth, newsletter, ownerId, didAgreeAvg } = this.state.person;
+        const {typeId, statusId, titleId, initials, firstName, lastNamePrefixId, lastName, memberSince, dateOfBirth, newsletter, ownerId, didAgreeAvg} = this.state.person;
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -136,14 +344,14 @@ class ContactNewFormPersonal extends Component {
                     <InputText
                         label={"Klantnummer"}
                         name={"number"}
-                        readOnly={ true }
+                        readOnly={true}
                         value={''}
                     />
                     <InputText
                         label={"Gemaakt op"}
                         name={"createdAt"}
-                        value={ moment().format('DD-MM-Y') }
-                        readOnly={ true }
+                        value={moment().format('DD-MM-Y')}
+                        readOnly={true}
                     />
                 </div>
 
@@ -178,7 +386,7 @@ class ContactNewFormPersonal extends Component {
                     <InputDate
                         label={"Lid sinds"}
                         name="memberSince"
-                        value={ memberSince }
+                        value={memberSince}
                         onChangeAction={this.handleChangeMemberSince}
                     />
                 </div>
@@ -196,7 +404,7 @@ class ContactNewFormPersonal extends Component {
                     <InputText
                         label={"Opzegdatum"}
                         name={"memberUntil"}
-                        value={ '' }
+                        value={''}
                         readOnly={true}
                     />
                 </div>
@@ -232,7 +440,7 @@ class ContactNewFormPersonal extends Component {
                     <InputDate
                         label={"Geboortedatum"}
                         name={"dateOfBirth"}
-                        value={ dateOfBirth }
+                        value={dateOfBirth}
                         onChangeAction={this.handleChangeDateOfBirth}
                     />
                 </div>
@@ -264,11 +472,89 @@ class ContactNewFormPersonal extends Component {
                     />
                 </div>
 
+                <div className="margin-10-top">
+                    <PanelHeader>
+                        <div className="row" onClick={this.toggleAddress}>
+                            {
+                                this.state.showAddress ?
+                                    <span className="glyphicon glyphicon-menu-down"/>
+                                    :
+                                    <span className="glyphicon glyphicon-menu-right"/>
+                            }
+                            <span className="h5">Adres</span>
+                        </div>
+                    </PanelHeader>
+                    {
+                        this.state.showAddress &&
+                        <ContactNewFormAddress
+                            address={this.state.address}
+                            errors={this.state.addressErrors}
+                            handleInputPicoChange={this.addressHandleInputPicoChange}
+                            handleInputChange={this.addressHandleInputChange}
+
+                        />
+                    }
+                </div>
+
+                <div className="margin-10-top">
+                    <PanelHeader>
+                        <div className="row" onClick={this.toggleEmail}>
+                            {
+                                this.state.showEmail ?
+                                    <span className="glyphicon glyphicon-menu-down"/>
+                                    :
+                                    <span className="glyphicon glyphicon-menu-right"/>
+                            }
+                            <span className="h5">E-mail</span>
+                        </div>
+                    </PanelHeader>
+                    {
+                        this.state.showEmail &&
+                        <ContactNewFormEmail
+                            emailAddress={this.state.emailAddress}
+                            errors={this.state.emailErrors}
+                            handleInputChange={this.emailAddressHandleInputChange}
+                        />
+                    }
+                </div>
+
+                <div className="margin-10-top">
+                    <PanelHeader>
+                        <div className="row" onClick={this.togglePhone}>
+                            {
+                                this.state.showPhone ?
+                                    <span className="glyphicon glyphicon-menu-down"/>
+                                    :
+                                    <span className="glyphicon glyphicon-menu-right"/>
+                            }
+                            <span className="h5">Telefoonnummer</span>
+                        </div>
+                    </PanelHeader>
+                    {
+                        this.state.showPhone &&
+                        <ContactNewFormPhone
+                            phoneNumber={this.state.phoneNumber}
+                            errors={this.state.phoneErrors}
+                            handleInputChange={this.phoneHandleInputChange}
+                        />
+                    }
+                </div>
+
                 <PanelFooter>
                     <div className="pull-right btn-group" role="group">
-                        <ButtonText loading={this.state.buttonLoading} loadText={"Persoon wordt aangemaakt."} buttonText={"Opslaan"} onClickAction={this.handleSubmit} type={"submit"} value={"Submit"}/>
+                        <ButtonText loading={this.state.buttonLoading} loadText={"Persoon wordt aangemaakt."}
+                                    buttonText={"Opslaan"} onClickAction={this.handleSubmit} type={"submit"}
+                                    value={"Submit"}/>
                     </div>
                 </PanelFooter>
+
+                {this.state.showConfirmDuplicate &&
+                    <ContactNewFormPersonalDuplicateModal
+                    closeModal={this.toggleShowConfirmDuplicate}
+                    confirmAction={this.confirmDuplicate}
+                    duplicateText={this.state.duplicateText}
+                    />
+                }
             </form>
         );
     };

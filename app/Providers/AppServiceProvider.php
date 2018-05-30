@@ -2,8 +2,11 @@
 
 namespace App\Providers;
 
+use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Schema;
+use Monolog\Handler\SlackHandler;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -16,11 +19,21 @@ class AppServiceProvider extends ServiceProvider
     {
         Schema::defaultStringLength(191);
 
-        if ($this->app->environment() == 'production') {
-            $monolog = \Log::getMonolog();
+        if ($this->app->environment() == 'production') { // alleen errors naar slack versturen in productie
+            $monolog = Log::getMonolog(); // onderliggende monolog instatie ophalen
             $slackHandler
-                = new \Monolog\Handler\SlackHandler(\Config::get('app.SLACK_TOKEN'),
-                '#errors', 'econobis', true, null, \Monolog\Logger::ERROR, true, false, true);
+                = new SlackHandler( // nieuwe slackhandler
+                    Config::get('app.SLACK_TOKEN'), // slack token uit de config -> .env halen
+                    '#errors', // slack channel naam
+                    'econobis', // slack username
+                    true,
+                    null,
+                    \Monolog\Logger::ERROR, // vanaf welk level de errors naar slack worden verstuurd
+                    true,
+                    false,
+                    true); // extra data toevoegen
+
+            //nieuwe handler die de coöperatie toevoegd aan elke log
             $monolog->pushHandler($slackHandler);
             $monolog->pushProcessor(function ($record) {
                 $record['extra']['Coöperatie'] = config('app.name');

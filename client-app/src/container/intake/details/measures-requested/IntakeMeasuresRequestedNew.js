@@ -13,15 +13,30 @@ class IntakeMeasuresRequestedNew extends Component {
     constructor(props) {
         super(props);
 
-
-
         this.state = {
             measureId: '',
+            measuresNoDups: [],
             errors: {
                 measureId: false,
             },
-        }
+        };
     };
+
+    componentDidMount(){
+        let measuresNoDups = [];
+        let currentMeasureIds = [];
+
+        this.props.intakeMeasuresRequested.forEach(function (measure) {
+            currentMeasureIds.push(measure.id);
+        });
+
+        measuresNoDups = this.props.measureCategories;
+
+        measuresNoDups = measuresNoDups.filter((measure) => !currentMeasureIds.includes(measure.id));
+        this.setState({
+            measuresNoDups: measuresNoDups
+        });
+    }
 
     handleInputChange = event => {
         const target = event.target;
@@ -70,7 +85,7 @@ class IntakeMeasuresRequestedNew extends Component {
                                 <div className={"col-sm-8"}>
                                     <select className={`form-control input-sm`} name={"measureId"} value={measureId} onChange={this.handleInputChange}>
                                         <option value=''></option>
-                                        { this.props.measureCategories.map((option) => {
+                                        { this.state.measuresNoDups.map((option) => {
                                             return <option key={ option.id } value={ option.id }>{ option['name'] }</option>
                                         }) }
                                     </select>
@@ -94,6 +109,7 @@ const mapStateToProps = (state) => {
         measureCategories: state.systemData.measureCategories,
         energyLabels: state.systemData.energyLabels,
         intakeId: state.intakeDetails.id,
+        intakeMeasuresRequested: state.intakeDetails.measuresRequested,
     };
 };
 

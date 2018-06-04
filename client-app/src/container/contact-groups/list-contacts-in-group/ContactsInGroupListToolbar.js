@@ -5,12 +5,14 @@ import {connect} from 'react-redux';
 import ContactListAddPersonToGroup from './ContactListAddPersonToGroup';
 import ContactGroupAPI  from '../../../api/contact-group/ContactGroupAPI';
 import ButtonIcon from '../../../components/button/ButtonIcon';
+import ContactListEmail from "./ContactListEmail";
 
 class ContactsInGroupListToolbar extends Component {
     constructor(props){
         super(props);
         this.state = {
             showModalAddToGroup: false,
+            showModalEmail: false,
             groupName: '',
         };
     }
@@ -31,7 +33,7 @@ class ContactsInGroupListToolbar extends Component {
         const contact = {
             groupId: this.props.groupId,
             contactId,
-        }
+        };
 
         ContactGroupAPI.addContactToGroup(contact).then((payload) => {
             this.setState({
@@ -47,12 +49,14 @@ class ContactsInGroupListToolbar extends Component {
         });
     };
 
-    newContact = () => {
-        hashHistory.push(`/contact/nieuw`);
+    toggleModalEmail = () => {
+        this.setState({
+            showModalEmail: !this.state.showModalEmail,
+        });
     };
 
-    sendBulkMailToGroup = () => {
-        hashHistory.push(`/email/nieuw/groep/${this.props.groupId}`);
+    newContact = () => {
+        hashHistory.push(`/contact/nieuw`);
     };
 
 
@@ -71,7 +75,7 @@ class ContactsInGroupListToolbar extends Component {
                             </button>
                         </div>
                         }
-                        <ButtonIcon iconName={"glyphicon-envelope"} onClickAction={this.sendBulkMailToGroup} />
+                        <ButtonIcon iconName={"glyphicon-envelope"} onClickAction={this.toggleModalEmail} />
                     </div>
                 </div>
                 <div className="col-md-4"><h3 className="text-center table-title">Contacten in groep: {this.state.groupName}</h3></div>
@@ -82,6 +86,13 @@ class ContactsInGroupListToolbar extends Component {
                     closeModalAddToGroup={this.closeModalAddToGroup}
                     addPersonToGroup={this.addPersonToGroup}
                     groupName = {this.state.groupName}
+                />
+                }
+
+                {this.state.showModalEmail &&
+                <ContactListEmail
+                    closeModalEmail={this.toggleModalEmail}
+                    groupId = {this.props.groupId}
                 />
                 }
 

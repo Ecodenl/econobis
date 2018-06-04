@@ -72,13 +72,13 @@ class EmailNewApp extends Component {
             });
         });
 
-        if(this.props.params.groupId){
+        if(this.props.params.groupId && this.props.params.type){
             EmailAPI.fetchEmailGroup(this.props.params.groupId).then((payload) => {
                 this.setState({
                     ...this.state,
                     email: {
                         ...this.state.email,
-                        to: payload.join(',')
+                        [this.props.params.type]: payload.join(',')
                     },
                 });
             });

@@ -167,13 +167,6 @@ class ContactDetailsHarmonica extends Component {
     render(){
         return (
             <div className="margin-10-top">
-                <OrderHarmonica
-                    toggleShowList={() => this.toggleShowList('orders')}
-                    showOrdersList={this.state.toggleShowList.orders}
-                    orderCount={this.props.contactDetails.orderCount}
-                    newOrder={this.newOrder}
-                />
-
                 <EmailInboxHarmonica
                     toggleShowList={() => this.toggleShowList('emailsInbox')}
                     showEmailsInboxList={this.state.toggleShowList.emailsInbox}
@@ -234,6 +227,13 @@ class ContactDetailsHarmonica extends Component {
                     showContactGroupsList={this.state.toggleShowList.contactGroups}
                     toggleAddGroup={this.toggleAddGroup}
                     groupCount={this.props.contactDetails.groupCount}
+                />
+
+                <OrderHarmonica
+                    toggleShowList={() => this.toggleShowList('orders')}
+                    showOrdersList={this.state.toggleShowList.orders}
+                    orderCount={this.props.contactDetails.orderCount}
+                    newOrder={this.newOrder}
                 />
 
                 <DocumentHarmonica

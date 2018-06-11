@@ -10,6 +10,7 @@ namespace App\Helpers\Alfresco;
 
 
 use App\Eco\User\User;
+use Illuminate\Support\Facades\Log;
 
 class AlfrescoHelper
 {
@@ -215,10 +216,17 @@ class AlfrescoHelper
         curl_close($curl);
 
         //catch curl errors
-        if (false) {
-
-            //$err = json_decode($err);
-            // abort($err['error']['statusCode']);
+        if ($err) {
+            try {
+                $err = json_decode($err);
+                Log::error('Alfresco error' . $err);
+                if(array_key_exists('error', $err) && array_key_exists('statusCode', $err['error'])){
+                    abort($err['error']['statusCode']);
+                }
+            }
+            catch(\Exception $e){
+                Log::error('Alfresco error couldn\'t decode');
+            }
         }
         else {
             if($is_file) {
@@ -228,7 +236,7 @@ class AlfrescoHelper
                 $decoded_response = json_decode($response, true);
 
                 //catch alfresco errors
-                    if (array_key_exists('error', $decoded_response)) {
+                    if ($decoded_response && array_key_exists('error', $decoded_response)) {
                         if($abort_on_error) {
                             abort($decoded_response['error']['statusCode']);
                         }

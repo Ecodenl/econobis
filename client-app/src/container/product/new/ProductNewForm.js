@@ -123,7 +123,7 @@ class ProductNewForm extends Component {
                             <div className="form-group col-sm-12">
                                 <div className="row">
                                     <div className="col-sm-3">
-                                        <label htmlFor="invoiceText" className="col-sm-12">Factuurtekst</label>
+                                        <label htmlFor="invoiceText" className="col-sm-12">Omschrijving</label>
                                     </div>
                                     <div className="col-sm-8">
                                 <textarea name='invoiceText' value={invoiceText} onChange={this.handleInputChange}

@@ -84,7 +84,7 @@ class OrderNewForm extends Component {
                 order: {
                     ...this.state.order,
                     IBAN: payload.data.iban,
-                    iban_attn: payload.data.ibanAttn ? payload.data.ibanAttn : ''
+                    ibanAttn: payload.data.ibanAttn ? payload.data.ibanAttn : ''
                 },
             });
         });
@@ -110,6 +110,26 @@ class OrderNewForm extends Component {
             order: {
                 ...this.state.order,
                 [name]: value
+            },
+        });
+    };
+
+    handleInputChangeAdministration = event => {
+        const target = event.target;
+        const value = target.type === 'checkbox' ? target.checked : target.value;
+
+        let administration;
+
+        administration = this.props.administrations.filter((administration) => administration.id == value);
+        administration = administration[0];
+        this.setState({
+            ...this.state,
+            order: {
+                ...this.state.order,
+                administrationId: administration.id,
+                emailTemplateId: administration.emailTemplateId ? administration.emailTemplateId : '',
+                emailTemplateReminderId: administration.emailTemplateReminderId ? administration.emailTemplateReminderId : '',
+                emailTemplateExhortationId: administration.emailTemplateExhortationId ? administration.emailTemplateExhortationId : '',
             },
         });
     };
@@ -243,7 +263,7 @@ class OrderNewForm extends Component {
                                 name={"administrationId"}
                                 options={this.props.administrations}
                                 value={administrationId}
-                                onChangeAction={this.handleInputChange}
+                                onChangeAction={this.handleInputChangeAdministration}
                                 required={'required'}
                                 error={this.state.errors.administrationId}
                             />
@@ -297,7 +317,7 @@ class OrderNewForm extends Component {
                                 multi={false}
                             />
                             <InputText
-                                label="Onderwerp"
+                                label="Betreft"
                                 name={"subject"}
                                 value={subject}
                                 onChangeAction={this.handleInputChange}
@@ -328,7 +348,7 @@ class OrderNewForm extends Component {
 
                         <div className="row">
                             <InputSelect
-                                label={"Incasso frequentie"}
+                                label={"Factuur frequentie"}
                                 id="collectionFrequencyId"
                                 name={"collectionFrequencyId"}
                                 options={this.props.orderCollectionFrequencies}
@@ -364,7 +384,7 @@ class OrderNewForm extends Component {
                             <div className="form-group col-sm-12">
                                 <div className="row">
                                     <div className="col-sm-3">
-                                        <label htmlFor="invoiceText" className="col-sm-12">Opmerking op de factuur</label>
+                                        <label htmlFor="invoiceText" className="col-sm-12">Opmerking</label>
                                     </div>
                                     <div className="col-sm-8">
                                 <textarea name='invoiceText' value={invoiceText} onChange={this.handleInputChange}

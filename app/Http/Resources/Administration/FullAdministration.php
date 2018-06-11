@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\Administration;
 
+use App\Http\Resources\EmailTemplate\FullEmailTemplate;
 use App\Http\Resources\GenericResource;
 use App\Http\Resources\Product\FullProduct;
 use App\Http\Resources\User\FullUser;
@@ -29,6 +30,15 @@ class FullAdministration extends Resource
 
                 'countryId' => $this->country_id,
                 'country' => GenericResource::make($this->whenLoaded('country')),
+
+                'emailTemplateId' => $this->email_template_id,
+                'emailTemplate' => FullEmailTemplate::make($this->whenLoaded('emailTemplate')),
+
+                'emailTemplateReminderId' => $this->email_template_reminder_id,
+                'emailTemplateReminder' => FullEmailTemplate::make($this->whenLoaded('emailTemplateReminder')),
+
+                'emailTemplateExhortationId' => $this->email_template_exhortation_id,
+                'emailTemplateExhortation' => FullEmailTemplate::make($this->whenLoaded('emailTemplateExhortation')),
 
                 'kvkNumber' => $this->kvk_number,
                 'btwNumber' => $this->btw_number,

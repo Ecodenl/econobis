@@ -11,6 +11,10 @@ import AdministrationDetailsAPI from '../../../api/administration/Administration
 import {connect} from "react-redux";
 import InputSelect from "../../../components/form/InputSelect";
 import AdministrationLogoNew from "./AdministrationLogoNew";
+import ContactsAPI from "../../../api/contact/ContactsAPI";
+import OrderDetailsAPI from "../../../api/order/OrderDetailsAPI";
+import EmailTemplateAPI from "../../../api/email-template/EmailTemplateAPI";
+import InputReactSelect from "../../../components/form/InputReactSelect";
 
 class AdministrationNewForm extends Component {
     constructor(props) {
@@ -18,6 +22,7 @@ class AdministrationNewForm extends Component {
 
         this.state = {
             newLogo: false,
+            emailTemplates: [],
             administration: {
                 name: '',
                 administrationNumber: '',
@@ -35,6 +40,9 @@ class AdministrationNewForm extends Component {
                 sepaCreditorId: '',
                 rsinNumber: '',
                 defaultPaymentTerm: '',
+                emailTemplateId: '',
+                emailTemplateReminderId: '',
+                emailTemplateExhortationId: '',
                 attachment: ''
             },
             errors: {
@@ -46,7 +54,35 @@ class AdministrationNewForm extends Component {
                 email: false,
                 website: false,
             },
+            peekLoading: {
+                emailTemplates: true,
+            },
         };
+
+        this.handleReactSelectChange = this.handleReactSelectChange.bind(this);
+    };
+
+    componentWillMount() {
+        EmailTemplateAPI.fetchEmailTemplatesPeek().then((payload) => {
+            this.setState({
+                emailTemplates: payload,
+                peekLoading: {
+                    ...this.state.peekLoading,
+                    emailTemplates: false,
+                },
+            });
+        });
+    };
+
+
+    handleReactSelectChange (selectedOption, name) {
+        this.setState({
+            ...this.state,
+            administration: {
+                ...this.state.administration,
+                [name]: selectedOption
+            },
+        });
     };
 
     toggleNewLogo = () => {
@@ -153,8 +189,10 @@ class AdministrationNewForm extends Component {
             data.append('sepaCreditorId', administration.sepaCreditorId);
             data.append('rsinNumber', administration.rsinNumber);
             data.append('defaultPaymentTerm', administration.defaultPaymentTerm);
+            data.append('emailTemplateId', administration.emailTemplateId);
+            data.append('emailTemplateReminderId', administration.emailTemplateReminderId);
+            data.append('emailTemplateExhortationId', administration.emailTemplateExhortationId);
             data.append('attachment', administration.attachment);
-
         AdministrationDetailsAPI.newAdministration(data).then((payload) => {
             hashHistory.push(`/administratie/${payload.data.id}`);
         }).catch(function (error) {
@@ -164,7 +202,7 @@ class AdministrationNewForm extends Component {
     };
 
     render() {
-        const { name, administrationNumber, address, postalCode, city, countryId, kvkNumber, btwNumber, IBAN, email, website, bic, sepaContractName, sepaCreditorId, rsinNumber, defaultPaymentTerm, attachment} = this.state.administration;
+        const { name, administrationNumber, address, postalCode, city, countryId, kvkNumber, btwNumber, IBAN, email, website, bic, sepaContractName, sepaCreditorId, rsinNumber, defaultPaymentTerm, attachment, emailTemplateId, emailTemplateReminderId, emailTemplateExhortationId} = this.state.administration;
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -289,11 +327,32 @@ class AdministrationNewForm extends Component {
                         </div>
 
                         <div className="row">
+                            <InputReactSelect
+                                label={"E-mail template factuur"}
+                                name={"emailTemplateId"}
+                                options={this.state.emailTemplates}
+                                value={emailTemplateId}
+                                onChangeAction={this.handleReactSelectChange}
+                                isLoading={this.state.peekLoading.emailTemplates}
+                                multi={false}
+                            />
                             <InputText
                                 label="RSIN nummer"
                                 name={"rsinNumber"}
                                 value={rsinNumber}
                                 onChangeAction={this.handleInputChange}
+                            />
+                        </div>
+
+                        <div className="row">
+                            <InputReactSelect
+                                label={"E-mail template herinnering"}
+                                name={"emailTemplateReminderId"}
+                                options={this.state.emailTemplates}
+                                value={emailTemplateReminderId}
+                                onChangeAction={this.handleReactSelectChange}
+                                isLoading={this.state.peekLoading.emailTemplates}
+                                multi={false}
                             />
                             <InputText
                                 label="Standaard betalingstermijn(dagen)"
@@ -308,6 +367,15 @@ class AdministrationNewForm extends Component {
                         </div>
 
                         <div className="row">
+                            <InputReactSelect
+                                label={"E-mail template aanmaning"}
+                                name={"emailTemplateExhortationId"}
+                                options={this.state.emailTemplates}
+                                value={emailTemplateExhortationId}
+                                onChangeAction={this.handleReactSelectChange}
+                                isLoading={this.state.peekLoading.emailTemplates}
+                                multi={false}
+                            />
                             <div className="form-group col-sm-6">
                                 <label className="col-sm-6">Kies logo</label>
                                 <div className="col-sm-6">

@@ -43,7 +43,7 @@ const OrderDetailsFormGeneralView = props => {
                             value={status ? status.name : ''}
                         />
                         <ViewText
-                            label={"Onderwerp"}
+                            label={"Betreft"}
                             value={subject ? subject : ''}
                         />
                     </div>
@@ -63,7 +63,7 @@ const OrderDetailsFormGeneralView = props => {
                             value={emailTemplateReminder ? emailTemplateReminder.name : ''}
                         />
                         <ViewText
-                            label={"Incasso frequentie"}
+                            label={"Factuur frequentie"}
                             value={collectionFrequency ? collectionFrequency.name : ''}
                         />
                     </div>
@@ -90,7 +90,7 @@ const OrderDetailsFormGeneralView = props => {
 
                     <div className="row">
                         <div className="col-sm-3">
-                            <label htmlFor="invoiceText" className="col-sm-12">Factuurtekst</label>
+                            <label htmlFor="invoiceText" className="col-sm-12">Opmerking</label>
                         </div>
                         <div className="col-sm-9" id="invoiceText">
                             {invoiceText}

@@ -32,8 +32,8 @@ class InvoiceHelper
             $invoiceProduct->amount = $orderProduct->amount;
             $invoiceProduct->amount_reduction = $orderProduct->amount_reduction;
             $invoiceProduct->percentage_reduction = $orderProduct->percentage_reduction;
-            $invoiceProduct->price = $orderProduct->product->currentPrice->price;
-            $invoiceProduct->vat_percentage = $orderProduct->product->currentPrice->vat_percentage;
+            $invoiceProduct->price = $orderProduct->product->currentPrice ? $orderProduct->product->currentPrice->price : 0;
+            $invoiceProduct->vat_percentage = $orderProduct->product->currentPrice ? $orderProduct->product->currentPrice->vat_percentage : 0;
             $invoiceProduct->product_code = $orderProduct->product->code;
             $invoiceProduct->product_name = $orderProduct->product->name;
             $invoiceProduct->description = $orderProduct->description;

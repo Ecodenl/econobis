@@ -7,7 +7,7 @@ import PanelBody from "../../../../components/panel/PanelBody";
 
 const AdministrationDetailsFormGeneralView = props => {
 
-    const { name, administrationNumber, address, postalCode, city, country, kvkNumber, btwNumber, IBAN,
+    const { name, administrationNumber, address, postalCode, emailTemplate, emailTemplateReminder, emailTemplateExhortation, city, country, kvkNumber, btwNumber, IBAN,
         email, website, bic, sepaContractName, sepaCreditorId, rsinNumber, defaultPaymentTerm, logoName} = props.administrationDetails;
 
     return (
@@ -87,8 +87,19 @@ const AdministrationDetailsFormGeneralView = props => {
 
                     <div className="row">
                         <ViewText
+                            label={"E-mail template factuur"}
+                            value={emailTemplate ? emailTemplate.name : ''}
+                        />
+                        <ViewText
                             label={"RSIN nummer"}
                             value={rsinNumber}
+                        />
+                    </div>
+
+                    <div className="row">
+                        <ViewText
+                            label={"E-mail template herinnering"}
+                            value={emailTemplateReminder ? emailTemplateReminder.name : ''}
                         />
                         <ViewText
                             label={"Standaard betalingstermijn(dagen)"}
@@ -97,6 +108,10 @@ const AdministrationDetailsFormGeneralView = props => {
                     </div>
 
                     <div className="row">
+                        <ViewText
+                            label={"E-mail template aanmaning"}
+                            value={emailTemplateExhortation ? emailTemplateExhortation.name : ''}
+                        />
                         <ViewText
                             label={"Logo"}
                             value={logoName}

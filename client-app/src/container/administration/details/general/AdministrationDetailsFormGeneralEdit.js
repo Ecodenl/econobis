@@ -10,16 +10,19 @@ import PanelBody from "../../../../components/panel/PanelBody";
 import * as ibantools from "ibantools";
 import AdministrationLogoNew from "../../new/AdministrationLogoNew";
 import InputSelect from "../../../../components/form/InputSelect";
+import EmailTemplateAPI from "../../../../api/email-template/EmailTemplateAPI";
+import InputReactSelect from "../../../../components/form/InputReactSelect";
 
 class AdministrationDetailsFormGeneralEdit extends Component {
     constructor(props) {
         super(props);
 
-        const { id, name, administrationNumber, address, postalCode, city, countryId, kvkNumber, btwNumber, IBAN, email, website, bic, sepaContractName,
+        const { id, name, administrationNumber, address, emailTemplateId, emailTemplateReminderId, emailTemplateExhortationId, postalCode, city, countryId, kvkNumber, btwNumber, IBAN, email, website, bic, sepaContractName,
             sepaCreditorId, rsinNumber, defaultPaymentTerm, logoName} = props.administrationDetails;
 
         this.state = {
             newLogo: false,
+            emailTemplates: [],
             administration: {
                 id,
                 name: name ? name : '',
@@ -39,6 +42,9 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                 rsinNumber: rsinNumber ? rsinNumber : '',
                 defaultPaymentTerm: defaultPaymentTerm ? defaultPaymentTerm : '',
                 logoName: logoName ? logoName : '',
+                emailTemplateId: emailTemplateId ? emailTemplateId : '',
+                emailTemplateReminderId: emailTemplateReminderId ? emailTemplateReminderId : '',
+                emailTemplateExhortationId: emailTemplateExhortationId ? emailTemplateExhortationId : '',
                 attachment: ''
             },
             errors: {
@@ -50,7 +56,24 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                 email: false,
                 website: false,
             },
+            peekLoading: {
+                emailTemplates: true,
+            },
         };
+        this.handleReactSelectChange = this.handleReactSelectChange.bind(this);
+    };
+
+
+    componentWillMount() {
+        EmailTemplateAPI.fetchEmailTemplatesPeek().then((payload) => {
+            this.setState({
+                emailTemplates: payload,
+                peekLoading: {
+                    ...this.state.peekLoading,
+                    emailTemplates: false,
+                },
+            });
+        });
     };
 
     toggleNewLogo = () => {
@@ -66,6 +89,16 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                 ...this.state.administration,
                 attachment: file[0],
                 filename: file[0].name,
+            },
+        });
+    };
+
+    handleReactSelectChange(selectedOption, name) {
+        this.setState({
+            ...this.state,
+            administration: {
+                ...this.state.administration,
+                [name]: selectedOption
             },
         });
     };
@@ -158,6 +191,9 @@ class AdministrationDetailsFormGeneralEdit extends Component {
             data.append('sepaCreditorId', administration.sepaCreditorId);
             data.append('rsinNumber', administration.rsinNumber);
             data.append('defaultPaymentTerm', administration.defaultPaymentTerm);
+            data.append('emailTemplateId', administration.emailTemplateId);
+            data.append('emailTemplateReminderId', administration.emailTemplateReminderId);
+            data.append('emailTemplateExhortationId', administration.emailTemplateExhortationId);
             data.append('attachment', administration.attachment);
 
             this.props.updateAdministration(data, administration.id, this.props.switchToView);
@@ -165,7 +201,7 @@ class AdministrationDetailsFormGeneralEdit extends Component {
     };
 
     render() {
-        const { name, administrationNumber, address, postalCode, city, countryId, kvkNumber, btwNumber, IBAN, email, website, bic, sepaContractName,
+        const { name, administrationNumber, emailTemplateId, emailTemplateReminderId, emailTemplateExhortationId, address, postalCode, city, countryId, kvkNumber, btwNumber, IBAN, email, website, bic, sepaContractName,
             sepaCreditorId, rsinNumber, defaultPaymentTerm, attachment, logoName} = this.state.administration;
 
         return (
@@ -291,11 +327,32 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                         </div>
 
                         <div className="row">
+                            <InputReactSelect
+                                label={"E-mail template factuur"}
+                                name={"emailTemplateId"}
+                                options={this.state.emailTemplates}
+                                value={emailTemplateId}
+                                onChangeAction={this.handleReactSelectChange}
+                                isLoading={this.state.peekLoading.emailTemplates}
+                                multi={false}
+                            />
                             <InputText
                                 label="RSIN nummer"
                                 name={"rsinNumber"}
                                 value={rsinNumber}
                                 onChangeAction={this.handleInputChange}
+                            />
+                        </div>
+
+                        <div className="row">
+                            <InputReactSelect
+                                label={"E-mail template herinnering"}
+                                name={"emailTemplateReminderId"}
+                                options={this.state.emailTemplates}
+                                value={emailTemplateReminderId}
+                                onChangeAction={this.handleReactSelectChange}
+                                isLoading={this.state.peekLoading.emailTemplates}
+                                multi={false}
                             />
                             <InputText
                                 label="Standaard betalingstermijn(dagen)"
@@ -306,10 +363,18 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                                 value={defaultPaymentTerm}
                                 onChangeAction={this.handleInputChange}
                             />
-
                         </div>
 
                         <div className="row">
+                            <InputReactSelect
+                                label={"E-mail template aanmaning"}
+                                name={"emailTemplateExhortationId"}
+                                options={this.state.emailTemplates}
+                                value={emailTemplateExhortationId}
+                                onChangeAction={this.handleReactSelectChange}
+                                isLoading={this.state.peekLoading.emailTemplates}
+                                multi={false}
+                            />
                             <div className="form-group col-sm-6">
                                 <label className="col-sm-6">Kies logo</label>
                                 <div className="col-sm-6">

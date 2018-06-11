@@ -84,11 +84,8 @@
 
     <table>
         <tr>
-            <td>
-                Factuur: {{ $invoice->order->subject }}
-            </td>
-            <td>
-                IBAN: {{ $invoice->administration->IBAN }}
+            <td colspan="2">
+                Betreft: {{ $invoice->order->subject }}
             </td>
         </tr>
         <tr>
@@ -96,12 +93,20 @@
                 Factuurnummer: {{ $invoice->number }}
             </td>
             <td>
-                BIC: {{ $invoice->administration->bic }}
+                IBAN: {{ $invoice->administration->IBAN }}
             </td>
         </tr>
         <tr>
             <td>
                 Factuurdatum: {{ Carbon\Carbon::parse($invoice->created_at)->format('d/m/Y') }}
+            </td>
+            <td>
+                BIC: {{ $invoice->administration->bic }}
+            </td>
+        </tr>
+        <tr>
+            <td>
+                PO nummer: {{ $invoice->order->po_number }}
             </td>
             <td>
                 KvK: {{ $invoice->administration->kvk_number }}
@@ -123,7 +128,7 @@
     @endforeach
     <table>
         <tr>
-            <th width="20%">Betreft</th>
+            <th width="20%">Omschrijving</th>
             <th width="10%">Prijs</th>
             <th width="10%">Aantal</th>
             <?php echo ($amount_reduction ? '<th width="10%">Korting</th>' : '')?>
@@ -155,10 +160,22 @@
         </tr>
     </table>
 
+    @if($invoice->payment_type_id == 'collection')
+    <div class="conclusion-text">Dit is een automatische incasso met debiteurnummer {{ $invoice->order->contact->number }} en factuurnummer {{ $invoice->number }}. Het volledige bedrag zal
+        @if($invoice->date_collection){{ Carbon\Carbon::parse($invoice->date_collection)->format('d/m/Y') }} @else ??? @endif
+        worden afschreven
+        van bankrekening {{ $invoice->administration->IBAN }}.
+    </div>
+
+    @else
     <div class="conclusion-text">Betaling gaarne
         binnen {{ $invoice->administration->default_payment_term ? $invoice->administration->default_payment_term : 30 }}
         dagen na factuurdatum op bankrekening {{ $invoice->administration->IBAN }}
-        onder vermelding van het debiteurnummer {{ $invoice->order->contact->number }} en het factuurnummer {{ $invoice->number }}.
+        overmaken onder vermelding van het debiteurnummer {{ $invoice->order->contact->number }} en het factuurnummer {{ $invoice->number }}.
+    </div>
+    @endif
+
+    <div class="conclusion-text">{{ $invoice->order->invoice_text }}
     </div>
 
 </div>

@@ -18,6 +18,9 @@ class AdministrationPeek extends Resource
         return [
             'id' => $this->id,
             'name' => $this->name,
+            'emailTemplateId' => $this->email_template_id,
+            'emailTemplateReminderId' => $this->email_template_reminder_id,
+            'emailTemplateExhortationId' => $this->email_template_exhortation_id,
         ];
     }
 }

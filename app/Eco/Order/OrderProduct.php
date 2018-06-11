@@ -65,6 +65,8 @@ class OrderProduct extends Model
     {
         $price = 0;
 
+        if(!$this->product->current_price) return 0;
+
         $price += ($this->amount
             * $this->product->current_price->price);
 

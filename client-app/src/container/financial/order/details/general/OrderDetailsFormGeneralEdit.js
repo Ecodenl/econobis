@@ -201,7 +201,7 @@ class OrderDetailsFormGeneralEdit extends Component {
                                 error={this.state.errors.statusId}
                             />
                             <InputText
-                                label="Onderwerp"
+                                label="Betreft"
                                 name={"subject"}
                                 value={subject}
                                 onChangeAction={this.handleInputChange}
@@ -240,7 +240,7 @@ class OrderDetailsFormGeneralEdit extends Component {
                                 multi={false}
                             />
                             <InputSelect
-                                label={"Incasso frequentie"}
+                                label={"Factuur frequentie"}
                                 id="collectionFrequencyId"
                                 name={"collectionFrequencyId"}
                                 options={this.props.orderCollectionFrequencies}
@@ -287,8 +287,7 @@ class OrderDetailsFormGeneralEdit extends Component {
                             <div className="form-group col-sm-12">
                                 <div className="row">
                                     <div className="col-sm-3">
-                                        <label htmlFor="invoiceText" className="col-sm-12">Opmerking op de
-                                            factuur</label>
+                                        <label htmlFor="invoiceText" className="col-sm-12">Opmerking</label>
                                     </div>
                                     <div className="col-sm-8">
                                 <textarea name='invoiceText' value={invoiceText} onChange={this.handleInputChange}

@@ -26,7 +26,7 @@ const ProductDetailsFormGeneralView = props => {
 
                     <div className="row">
                         <div className="col-sm-3">
-                            <label htmlFor="invoiceText" className="col-sm-12">Factuurtekst</label>
+                            <label htmlFor="invoiceText" className="col-sm-12">Omschrijving</label>
                         </div>
                         <div className="col-sm-9" id="invoiceText">
                             {invoiceText}

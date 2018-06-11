@@ -3,6 +3,7 @@
 namespace App\Eco\Administration;
 
 use App\Eco\Country\Country;
+use App\Eco\EmailTemplate\EmailTemplate;
 use App\Eco\Invoice\Invoice;
 use App\Eco\Order\Order;
 use App\Eco\Product\Product;
@@ -67,11 +68,25 @@ class Administration extends Model
         return $this->belongsTo(Country::class);
     }
 
+    public function emailTemplate(){
+        return $this->belongsTo(EmailTemplate::class);
+    }
+
+    public function emailTemplateReminder(){
+        return $this->belongsTo(EmailTemplate::class);
+    }
+
+    public function emailTemplateExhortation(){
+        return $this->belongsTo(EmailTemplate::class);
+    }
+
     public function createdBy()
     {
         return $this->belongsTo(User::class);
     }
 
+
+    //appended fields
     public function getTotalOrdersAttribute()
     {
         return $this->orders()->count();

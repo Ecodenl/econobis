@@ -44,6 +44,9 @@ class AdministrationController extends ApiController
             'country',
             'users',
             'createdBy',
+            'emailTemplate',
+            'emailTemplateReminder',
+            'emailTemplateExhortation',
         ]);
 
         return FullAdministration::make($administration);
@@ -70,6 +73,9 @@ class AdministrationController extends ApiController
             ->string('sepaCreditorId')->whenMissing(null)->onEmpty(null)->alias('sepa_creditor_id')->next()
             ->string('rsinNumber')->whenMissing(null)->onEmpty(null)->alias('rsin_number')->next()
             ->integer('defaultPaymentTerm')->whenMissing(null)->onEmpty(null)->alias('default_payment_term')->next()
+            ->integer('emailTemplateId')->validate('nullable|exists:email_templates,id')->onEmpty(null)->whenMissing(null)->alias('email_template_id')->next()
+            ->integer('emailTemplateReminderId')->validate('nullable|exists:email_templates,id')->onEmpty(null)->whenMissing(null)->alias('email_template_reminder_id')->next()
+            ->integer('emailTemplateExhortationId')->validate('nullable|exists:email_templates,id')->onEmpty(null)->whenMissing(null)->alias('email_template_exhortation_id')->next()
             ->get();
 
         $administration = new Administration($data);
@@ -109,6 +115,9 @@ class AdministrationController extends ApiController
             ->string('sepaCreditorId')->whenMissing(null)->onEmpty(null)->alias('sepa_creditor_id')->next()
             ->string('rsinNumber')->whenMissing(null)->onEmpty(null)->alias('rsin_number')->next()
             ->integer('defaultPaymentTerm')->whenMissing(null)->onEmpty(null)->alias('default_payment_term')->next()
+            ->integer('emailTemplateId')->validate('nullable|exists:email_templates,id')->onEmpty(null)->whenMissing(null)->alias('email_template_id')->next()
+            ->integer('emailTemplateReminderId')->validate('nullable|exists:email_templates,id')->onEmpty(null)->whenMissing(null)->alias('email_template_reminder_id')->next()
+            ->integer('emailTemplateExhortationId')->validate('nullable|exists:email_templates,id')->onEmpty(null)->whenMissing(null)->alias('email_template_exhortation_id')->next()
             ->get();
 
         $administration->fill($data);

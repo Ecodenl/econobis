@@ -251,6 +251,7 @@ class OrderController extends ApiController
         $invoice->administration_id = $order->administration_id;
         $invoice->invoice_number =  Invoice::where('administration_id', $invoice->administration_id)->count();
         $invoice->number = 'O' . Carbon::now()->year . '-' . $invoice->invoice_number;
+        $invoice->payment_type_id = $order->payment_type_id;
 
         $invoice = InvoiceHelper::saveInvoiceProducts($invoice, $order, true);
 

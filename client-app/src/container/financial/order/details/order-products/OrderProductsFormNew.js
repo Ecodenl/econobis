@@ -23,7 +23,7 @@ class OrderProductsFormNew extends Component {
                 orderId: this.props.orderDetails.id,
                 productId: '',
                 description: '',
-                amount: 0,
+                amount: 1,
                 amountReduction: 0,
                 percentageReduction: 0,
                 dateStart: '',

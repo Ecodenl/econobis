@@ -26,7 +26,7 @@ class DeleteHelper
     public static function delete($model)
     {
         //Wrong call
-        if(! $model instanceof Model){
+        if(!$model instanceof Model){
             return false;
         }
 

@@ -30,7 +30,8 @@ return [
     'Email' => [
         'soft_delete' => false,
         'relations' =>
-            [['remove_attachments' => ['disk' => 'mail_attachments']]],
+            [['remove_attachments' => ['disk' => 'mail_attachments']],
+                ['remove_pivots' => 'contacts']]
     ],
 
     'Task' => [

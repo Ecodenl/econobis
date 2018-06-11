@@ -155,7 +155,7 @@ class IntakeController extends ApiController
             'note' => ''
         ]);
 
-        if ($data['campaignId'] && !$data['campaignId'] = '') {
+        if ($data['campaignId'] && !$data['campaignId'] == '') {
             $intake->campaign_id = $data['campaignId'];
         }
         else{

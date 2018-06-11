@@ -101,7 +101,7 @@ class EmailNewApp extends Component {
                         ...this.state,
                         email: {
                             ...this.state.email,
-                            to: payload.data.data.contact.id
+                            to: payload.data.data.contact.id + ''
                         },
                     });
                 }

@@ -29,13 +29,13 @@ class Joiner extends RequestJoiner
     protected function applyAddressJoin($query)
     {
         $query->join('opportunities AS opportunities1', 'quotation_requests.opportunity_id', '=', 'opportunities1.id');
-        $query->join('intakes',  'opportunities1.intake_id', '=', 'intakes.id');
-        $query->join('addresses',  'intakes.address_id', '=', 'addresses.id');
+        $query->join('intakes as intakes2',  'opportunities1.intake_id', '=', 'intakes2.id');
+        $query->join('addresses',  'intakes2.address_id', '=', 'addresses.id');
     }
 
     protected function applyMeasureJoin($query)
     {
         $query->join('opportunities AS opportunities2', 'quotation_requests.opportunity_id', '=', 'opportunities2.id');
-        $query->join('measures', 'opportunities2.measure_id', '=', 'measures.id');
+        $query->join('measure_categories', 'opportunities2.measure_category_id', '=', 'measure_categories.id');
     }
 }

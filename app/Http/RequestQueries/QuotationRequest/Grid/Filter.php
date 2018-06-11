@@ -28,7 +28,7 @@ class Filter extends RequestFilter
     protected $mapping = [
         'organisation' => 'organisations.name',
         'contact' => 'contacts.full_name',
-        'measure' => 'measures.name',
+        'measure' => 'measure_categories.name',
         'createdAt' => 'quotation_requests.created_at',
         'dateRecorded' => 'quotation_requests.date_recorded',
         'statusId' => 'quotation_requests.status_id',

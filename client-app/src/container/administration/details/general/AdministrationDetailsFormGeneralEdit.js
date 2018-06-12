@@ -49,6 +49,7 @@ class AdministrationDetailsFormGeneralEdit extends Component {
             },
             errors: {
                 name: false,
+                administrationNumber: false,
                 postalCode: false,
                 kvkNumber: false,
                 btwNumber: false,
@@ -137,6 +138,13 @@ class AdministrationDetailsFormGeneralEdit extends Component {
             hasErrors = true;
         }
 
+        if (!validator.isEmpty(administration.administrationNumber)) {
+            if (!validator.isInt(administration.administrationNumber + '')) {
+                errors.administrationNumber = true;
+                hasErrors = true;
+            }
+        }
+
         if (!validator.isEmpty(administration.kvkNumber + '')) {
             if (!validator.isInt(administration.kvkNumber + '')) {
                 errors.kvkNumber = true;
@@ -222,6 +230,7 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                                 name={"administrationNumber"}
                                 value={administrationNumber}
                                 onChangeAction={this.handleInputChange}
+                                error={this.state.errors.administrationNumber}
                             />
                         </div>
 

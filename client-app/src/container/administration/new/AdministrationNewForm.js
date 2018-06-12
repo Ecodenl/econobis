@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import { hashHistory } from 'react-router';
+import {hashHistory} from 'react-router';
 import validator from 'validator';
 import * as ibantools from "ibantools";
 
@@ -11,8 +11,6 @@ import AdministrationDetailsAPI from '../../../api/administration/Administration
 import {connect} from "react-redux";
 import InputSelect from "../../../components/form/InputSelect";
 import AdministrationLogoNew from "./AdministrationLogoNew";
-import ContactsAPI from "../../../api/contact/ContactsAPI";
-import OrderDetailsAPI from "../../../api/order/OrderDetailsAPI";
 import EmailTemplateAPI from "../../../api/email-template/EmailTemplateAPI";
 import InputReactSelect from "../../../components/form/InputReactSelect";
 
@@ -47,6 +45,7 @@ class AdministrationNewForm extends Component {
             },
             errors: {
                 name: false,
+                administrationNumber: false,
                 postalCode: false,
                 kvkNumber: false,
                 btwNumber: false,
@@ -130,6 +129,12 @@ class AdministrationNewForm extends Component {
             hasErrors = true;
         }
 
+        if (!validator.isEmpty(administration.administrationNumber)) {
+            if (!validator.isInt(administration.administrationNumber + '')) {
+                errors.administrationNumber = true;
+                hasErrors = true;
+            }
+        }
 
         if (!validator.isEmpty(administration.postalCode) && !validator.isPostalCode(administration.postalCode, 'any')) {
             errors.postalCode = true;
@@ -222,6 +227,7 @@ class AdministrationNewForm extends Component {
                                 name={"administrationNumber"}
                                 value={administrationNumber}
                                 onChangeAction={this.handleInputChange}
+                                error={this.state.errors.administrationNumber}
                             />
                         </div>
 

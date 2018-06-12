@@ -51,7 +51,7 @@ const InvoiceDetailsFormGeneralView = props => {
 
                     <div className="row margin-20-top margin-20-bottom">
                         <div className="col-sm-3">
-                            <label htmlFor="invoiceText" className="col-sm-12">Factuurtekst</label>
+                            <label htmlFor="invoiceText" className="col-sm-12">Opmerking</label>
                         </div>
                         <div className="col-sm-9" id="invoiceText">
                             {order ? order.invoiceText : ''}

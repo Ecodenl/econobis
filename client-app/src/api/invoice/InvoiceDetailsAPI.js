@@ -89,6 +89,20 @@ export default {
             });
     },
 
+    setCheckedAll: (invoiceId) => {
+        const requestUrl = `${URL_INVOICE}/${invoiceId}/checked-all`;
+        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
+        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
+
+        return axios.post(requestUrl)
+            .then(function (response) {
+                return response.data;
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+    },
+
     send: (invoiceId) => {
         const requestUrl = `${URL_INVOICE}/${invoiceId}/send`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');

@@ -23,10 +23,15 @@ import InvoicesAPI from "../../../../api/invoice/InvoicesAPI";
 import fileDownload from "js-file-download";
 import moment from "moment/moment";
 import {hashHistory} from "react-router";
+import InvoiceListSetCheckedAll from "./InvoiceListSetCheckedAll";
 
 class InvoicesList extends Component {
     constructor(props) {
         super(props);
+
+        this.state = {
+            showCheckAll: false,
+        };
 
         if (!isEmpty(props.filter)) {
             switch (props.filter) {
@@ -190,6 +195,10 @@ class InvoicesList extends Component {
         }
     };
 
+    showCheckAll = () => {
+        this.setState({showCheckAll: !this.state.showCheckAll});
+    };
+
     render() {
         const {data = [], meta = {}} = this.props.invoices;
 
@@ -200,7 +209,10 @@ class InvoicesList extends Component {
                         <div className="btn-group" role="group">
                             <ButtonIcon iconName={"glyphicon-refresh"} onClickAction={this.resetInvoiceFilters}/>
                             <ButtonIcon iconName={"glyphicon-download-alt"} onClickAction={this.getCSV} />
-                            {this.props.filter === 'gecontroleerd' &&
+                            {(this.props.filter === 'concepten' && meta.total > 0) &&
+                            <ButtonIcon iconName={"glyphicon-ok"} onClickAction={this.showCheckAll}/>
+                            }
+                            {(this.props.filter === 'gecontroleerd' && meta.total > 0) &&
                             <ButtonIcon iconName={"glyphicon-envelope"} onClickAction={this.previewSend}/>
                             }
                         </div>
@@ -260,6 +272,14 @@ class InvoicesList extends Component {
                         />
                     </div>
                 </form>
+                {
+                    this.state.showCheckAll &&
+                    <InvoiceListSetCheckedAll
+                        closeModal={this.showCheckAll}
+                        administrationId={this.props.administrationId}
+                        amountOfInvoices={meta.total || 0}
+                    />
+                }
             </div>
         );
     }

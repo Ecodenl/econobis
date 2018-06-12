@@ -348,6 +348,7 @@ Route::namespace('Api')
         Route::post('invoice/{invoice}', 'Invoice\InvoiceController@update');
         Route::post('invoice/{invoice}/irrecoverable', 'Invoice\InvoiceController@setIrrecoverable');
         Route::post('invoice/{invoice}/checked', 'Invoice\InvoiceController@setChecked');
+        Route::post('invoice/{administration}/checked-all', 'Invoice\InvoiceController@setCheckedAll');
         Route::post('invoice/{invoice}/send', 'Invoice\InvoiceController@send');
         Route::post('invoice/{administration}/send-all', 'Invoice\InvoiceController@sendAll');
         Route::post('invoice/{invoice}/send-notification', 'Invoice\InvoiceController@sendNotification');

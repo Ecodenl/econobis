@@ -179,6 +179,16 @@ class InvoiceController extends ApiController
         return $invoice;
     }
 
+    public function setCheckedAll(Administration $administration)
+    {
+        $response = [];
+        foreach ($administration->invoices()->where('status_id', 'concept')->get() as $invoice){
+            array_push($response, $this->setChecked($invoice));
+        }
+
+        return $response;
+    }
+
     public function send(Invoice $invoice)
     {
         return InvoiceHelper::send($invoice);

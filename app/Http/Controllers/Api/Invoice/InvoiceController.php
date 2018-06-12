@@ -87,6 +87,7 @@ class InvoiceController extends ApiController
             ->get();
 
         $invoice = new Invoice($data);
+        $invoice->status_id = 'checked';
         $invoice->save();
 
         InvoiceHelper::saveInvoiceProducts($invoice, $invoice->order);

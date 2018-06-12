@@ -21,7 +21,11 @@ class InvoiceObserver
         // Daarom tijdelijke waarde erin zetten zodat query niet onderuit gaat.
         $userId = Auth::id();
         $invoice->number = 'temp';
-        $invoice->status_id = 'concept';
+
+        if(!$invoice->status_id ){
+            $invoice->status_id = 'concept';
+        }
+
         $invoice->invoice_number = 0;
         $invoice->created_by_id = $userId;
 

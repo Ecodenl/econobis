@@ -15,6 +15,7 @@ import EmailSentHarmonica from "./harmonica/EmailSentHarmonica";
 import DocumentHarmonica from './harmonica/DocumentHarmonica';
 import ParticipationHarmonica from "./harmonica/ParticipationHarmonica";
 import OrderHarmonica from "./harmonica/OrderHarmonica";
+import InvoiceHarmonica from "./harmonica/InvoiceHarmonica";
 
 class ContactDetailsHarmonica extends Component {
     constructor(props){
@@ -22,6 +23,7 @@ class ContactDetailsHarmonica extends Component {
 
         this.state = {
             toggleShowList: {
+                invoices: false,
                 orders: false,
                 intakes: false,
                 housingFiles: false,
@@ -44,6 +46,7 @@ class ContactDetailsHarmonica extends Component {
         if(this.props.id !== nextProps.id) {
             this.setState({
                 toggleShowList: {
+                    invoices: false,
                     orders: false,
                     intakes: false,
                     housingFiles: false,
@@ -234,6 +237,12 @@ class ContactDetailsHarmonica extends Component {
                     showOrdersList={this.state.toggleShowList.orders}
                     orderCount={this.props.contactDetails.orderCount}
                     newOrder={this.newOrder}
+                />
+
+                <InvoiceHarmonica
+                    toggleShowList={() => this.toggleShowList('invoices')}
+                    showInvoicesList={this.state.toggleShowList.invoices}
+                    invoiceCount={this.props.contactDetails.invoiceCount}
                 />
 
                 <DocumentHarmonica

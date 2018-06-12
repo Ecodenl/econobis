@@ -7,6 +7,7 @@ use App\Eco\Document\Document;
 use App\Eco\Email\Email;
 use App\Eco\EnergySupplier\ContactEnergySupplier;
 use App\Eco\HousingFile\HousingFile;
+use App\Eco\Invoice\Invoice;
 use App\Eco\Occupation\OccupationContact;
 use App\Eco\Opportunity\Opportunity;
 use App\Eco\Order\Order;
@@ -216,6 +217,11 @@ class Contact extends Model
     public function orders()
     {
         return $this->hasMany(Order::class)->orderBy('orders.id', 'desc');
+    }
+
+    public function invoices()
+    {
+        return $this->hasManyThrough(Invoice::class, Order::class)->orderBy('invoices.id', 'desc');
     }
 
     //Returns addresses array as Type - Streetname - Number

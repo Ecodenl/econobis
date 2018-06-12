@@ -34,6 +34,7 @@ test('Open all harmonica\'s person', async (t) => {
     await t.expect(general.titleH4.innerText).eql(vars.personLastName + ', ' + vars.personFirstName + ' (Persoon)', 'Check element text', { timeout: 500 });
 
     await t
+        .click(detailsPerson.invoiceHarmonicaList)
         .click(detailsPerson.orderHarmonicaList)
         .click(detailsPerson.emailInHarmonicaList)
         .click(detailsPerson.emailOutHarmonicaList)
@@ -148,6 +149,7 @@ test('Open all harmonica\'s organisation', async (t) => {
     await t.expect(general.titleH4.innerText).eql(vars.organisationName + ' (Organisatie)', 'Check element text', { timeout: 500 });
 
     await t
+        .click(detailsPerson.invoiceHarmonicaList)
         .click(detailsPerson.orderHarmonicaList)
         .click(detailsPerson.emailInHarmonicaList)
         .click(detailsPerson.emailOutHarmonicaList)

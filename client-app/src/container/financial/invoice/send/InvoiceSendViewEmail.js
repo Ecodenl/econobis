@@ -60,9 +60,7 @@ class InvoiceSendViewPdf extends Component {
                     </div>
 
                     <div className="row">
-                        <div className="col-sm-12">
-                            <ViewHtmlAsText label={"Tekst"} value={this.state.email.htmlBody}/>
-                        </div>
+                        <ViewHtmlAsText label={"Tekst"} value={this.state.email.htmlBody}/>
                     </div>
                 </div>
 

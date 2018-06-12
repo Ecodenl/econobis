@@ -2,18 +2,16 @@
 
 namespace App\Http\Resources\Contact;
 
-use App\Eco\ContactGroup\ContactGroup;
-use App\Http\Resources\ContactEnergySupplier\FullContactEnergySupplier;
-use App\Http\Resources\Document\FullDocument;
-use App\Http\Resources\Occupation\FullOccupationContact;
-use App\Http\Resources\Opportunity\FullOpportunity;
-use App\Http\Resources\Opportunity\GridOpportunity;
-use App\Http\Resources\Order\FullOrder;
-use App\Http\Resources\Organisation\FullOrganisation;
 use App\Http\Resources\Address\FullAddress;
+use App\Http\Resources\ContactEnergySupplier\FullContactEnergySupplier;
 use App\Http\Resources\ContactNote\FullContactNote;
+use App\Http\Resources\Document\FullDocument;
 use App\Http\Resources\EmailAddress\FullEmailAddress;
 use App\Http\Resources\EnumWithIdAndName\FullEnumWithIdAndName;
+use App\Http\Resources\Invoice\FullInvoice;
+use App\Http\Resources\Occupation\FullOccupationContact;
+use App\Http\Resources\Order\FullOrder;
+use App\Http\Resources\Organisation\FullOrganisation;
 use App\Http\Resources\ParticipantProductionProject\FullParticipantProductionProject;
 use App\Http\Resources\Person\FullPerson;
 use App\Http\Resources\PhoneNumber\FullPhoneNumber;
@@ -71,6 +69,9 @@ class FullContact extends Resource
             'updatedBy' => FullUser::make($this->whenLoaded('updatedBy')),
             'intakeCount' => $this->intakes()->count(),
             'orderCount' => $this->orders()->count(),
+            'relatedOrders' => FullOrder::collection($this->whenLoaded('orders')),
+            'invoiceCount' => $this->invoices()->count(),
+            'relatedInvoices' => FullInvoice::collection($this->whenLoaded('invoices')),
             'housingFileCount' => $this->housingFiles()->count(),
             'groupCount' => $this->groups()->count(),
             'taskCount' => $this->tasks()->count(),
@@ -87,7 +88,6 @@ class FullContact extends Resource
             'relatedOpportunities' => $this->opportunities()->with('measureCategory')->get(),
             'participationCount' => $this->participations()->count(),
             'relatedParticipations' => FullParticipantProductionProject::collection($this->whenLoaded('participations')),
-            'relatedOrders' => FullOrder::collection($this->whenLoaded('orders')),
             'deletedAt' => $this->deleted_at,
         ];
     }

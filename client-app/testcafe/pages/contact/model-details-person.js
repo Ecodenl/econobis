@@ -52,7 +52,8 @@ export default class ModelDetailsPerson {
         this.housingFileHarmonicaList = Selector('.harmonica-button').nth(7).child().nth(0).child().nth(0);
         this.contactGroupHarmonicaList = Selector('.harmonica-button').nth(8).child().nth(0).child().nth(0);
         this.orderHarmonicaList = Selector('.harmonica-button').nth(9).child().nth(0).child().nth(0);
-        this.documentHarmonicaList = Selector('.harmonica-button').nth(10).child().nth(0).child().nth(0);
+        this.invoiceHarmonicaList = Selector('.harmonica-button').nth(10).child().nth(0).child().nth(0);
+        this.documentHarmonicaList = Selector('.harmonica-button').nth(11).child().nth(0).child().nth(0);
 
         //Harmonica's add buttons
         this.emailInHarmonica = Selector('.harmonica-button').nth(0).child().nth(0).child().nth(1).child('a');
@@ -65,6 +66,7 @@ export default class ModelDetailsPerson {
         this.housingFileHarmonica = Selector('.harmonica-button').nth(7).child().nth(0).child().nth(1).child('a');
         this.contactGroupHarmonica = Selector('.harmonica-button').nth(8).child().nth(0).child().nth(1).child('a');
         this.orderHarmonica = Selector('.harmonica-button').nth(9).child().nth(0).child().nth(1).child('a');
-        this.documentHarmonica = Selector('.harmonica-button').nth(10).child().nth(0).child().nth(1).child().nth(0);
+        //invoice not directly addable
+        this.documentHarmonica = Selector('.harmonica-button').nth(11).child().nth(0).child().nth(1).child().nth(0);
     }
 }

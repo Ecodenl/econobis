@@ -31,7 +31,7 @@ trait Encryptable
                     $value = Crypt::decrypt($value);
                 }
             } catch (DecryptException $e) {
-                Log::error('Value not decryptable');
+                Log::error('Value ' . $value . ' with key ' . $key . ' not decryptable for model: ' . class_basename($this));
                 return $value;
             }
         }

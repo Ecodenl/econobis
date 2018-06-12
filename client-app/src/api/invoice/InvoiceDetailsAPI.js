@@ -103,6 +103,20 @@ export default {
             });
     },
 
+    sendAll: (administrationId) => {
+        const requestUrl = `${URL_INVOICE}/${administrationId}/send-all`;
+        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
+        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
+
+        return axios.post(requestUrl)
+            .then(function (response) {
+                return response.data;
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+    },
+
     newPayment: (payment) => {
         const requestUrl = `${URL_INVOICE}/${payment.invoiceId}/payment/new`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
@@ -151,5 +165,20 @@ export default {
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
         return axios.get(requestUrl, {responseType: 'blob'});
+    },
+
+    getEmailPreview: (id) => {
+        const requestUrl = `${URL_INVOICE}/${id}/email-preview`;
+        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
+        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
+
+        return axios.get(requestUrl)
+            .then(function (response) {
+                return response.data;
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
     }
+
 };

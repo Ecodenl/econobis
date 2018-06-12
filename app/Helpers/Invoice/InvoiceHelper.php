@@ -77,7 +77,7 @@ class InvoiceHelper
         return $invoice;
     }
 
-    public static function send(Invoice $invoice){
+    public static function send(Invoice $invoice, $preview = false){
 
         InvoiceHelper::createInvoiceDocument($invoice);
 
@@ -86,6 +86,13 @@ class InvoiceHelper
             $contactInfo = $orderController->getContactInfoForOrder($invoice->order->contact);
 
             if($contactInfo['email'] === 'Geen e-mail bekend'){
+                if($preview){
+                    return [
+                        'to' => 'Geen e-mailadres bekend',
+                        'subject' => 'Geen e-mailadres bekend',
+                        'htmlBody' => 'Geen e-mailadres bekend',
+                    ];
+                }
                 return false;
             }
 
@@ -113,10 +120,28 @@ class InvoiceHelper
             $mail->subject = $subject;
             $mail->html_body = $htmlBody;
 
-            $mail->send(new InvoiceMail($mail, $htmlBody, Storage::disk('administrations')->getDriver()->getAdapter()->applyPathPrefix($invoice->document->filename), $invoice->document->name));
-
+            if($preview){
+                return [
+                    'to' => $contactInfo['email'],
+                    'subject' => $mail->subject,
+                    'htmlBody' => $mail->html_body,
+                ];
+            }
+            else {
+                $mail->send(new InvoiceMail($mail, $htmlBody,
+                    Storage::disk('administrations')->getDriver()->getAdapter()
+                        ->applyPathPrefix($invoice->document->filename),
+                    $invoice->document->name));
+            }
         }
 
+        if($preview){
+            return [
+                'to' => 'Factuur zal per post moeten worden verstuurd',
+                'subject' => 'Factuur zal per post moeten worden verstuurd',
+                'htmlBody' => 'Factuur zal per post moeten worden verstuurd',
+            ];
+        }
         $invoice->status_id = 'sent';
         $invoice->date_sent = Carbon::today();;
         $invoice->save();

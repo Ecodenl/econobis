@@ -132,8 +132,8 @@ class SidebarMenu extends Component {
                         <NavIcon><SvgIcon size={20} icon={ic_business_center}/></NavIcon>
                         <NavText> Financieel </NavText>
                         {
-                            this.props.administrations.map((administration) => {
-                                return <Nav id={`administration/${administration.id}`}>
+                            this.props.administrations.map((administration, i) => {
+                                return <Nav key={i} id={`administration/${administration.id}`}>
                                     <NavText><Link className="sidebar-link"
                                                    to={`financieel/${administration.id}`}>{administration.name}</Link></NavText>
                                 </Nav>

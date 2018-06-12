@@ -8,6 +8,7 @@
 
 namespace App\Http\Controllers\Api\Invoice;
 
+use App\Eco\Administration\Administration;
 use App\Eco\Invoice\Invoice;
 use App\Eco\Invoice\InvoicePayment;
 use App\Helpers\CSV\InvoiceCSVHelper;
@@ -183,6 +184,19 @@ class InvoiceController extends ApiController
         return InvoiceHelper::send($invoice);
     }
 
+    public function sendAll(Administration $administration)
+    {
+        $invoices = Invoice::where('administration_id', $administration->id)->where('status_id', 'checked')->with('order.contact')->get();
+
+        $response = [];
+
+        foreach ($invoices as $invoice){
+            array_push($response, $this->send($invoice));
+        }
+
+        return $response;
+    }
+
     public function download(Invoice $invoice){
 
         $this->authorize('manage', Invoice::class);
@@ -199,6 +213,13 @@ class InvoiceController extends ApiController
         return response()->download($filePath, $invoice->document->name);
     }
 
+    public function getEmailPreview(Invoice $invoice){
+
+        return InvoiceHelper::send($invoice, true);
+
+    }
+
+
     public function getAmountUnpaid(){
 
         $this->authorize('manage', Invoice::class);
@@ -212,6 +233,15 @@ class InvoiceController extends ApiController
         }
 
         return $total;
+    }
+
+    public function getInvoicesForSending(Administration $administration)
+    {
+        $this->authorize('manage', Invoice::class);
+
+        $invoices = Invoice::where('administration_id', $administration->id)->where('status_id', 'checked')->with('order.contact')->get();
+
+        return FullInvoice::collection($invoices);
     }
 
 }

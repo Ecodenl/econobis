@@ -25,6 +25,7 @@ class InvoiceDetailsFormSetChecked extends Component {
                 closeModal={this.props.closeModal}
                 confirmAction={this.confirmAction}
                 title="Factuur verzenden"
+                buttonConfirmText={"Verzenden"}
             >
                 <div className="row">
                     <div className={'col-sm-12 margin-10-bottom'}>

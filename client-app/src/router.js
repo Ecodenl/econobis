@@ -94,6 +94,7 @@ import UserNewApp from './container/users/new/UserNewApp';
 import UsersListApp from './container/users/list/UsersListApp';
 import RevenueDetailsApp from './container/production-project/details/revenue/details/RevenueDetailsApp';
 import FinancialApp from './container/financial/FinancialApp';
+import InvoiceSendApp from "./container/financial/invoice/send/InvoiceSendApp";
 
 const Routes = () => {
     return (
@@ -180,6 +181,7 @@ const Routes = () => {
                 <Route path="financieel/:id" component={FinancialApp} />
                 <Route path="financieel/:id/:type" component={FinancialApp} />
                 <Route path="financieel/:id/:type/:filter" component={FinancialApp} />
+                <Route path="financieel/:id/facturen/gecontroleerd/verzenden" component={InvoiceSendApp} />
                 <Route path="order/nieuw/contact/:contactId" component={OrderNewApp} />
                 <Route path="order/:id" component={OrderDetailsApp} />
                 <Route path="order/inzien/:id" component={InvoicePreviewApp} />

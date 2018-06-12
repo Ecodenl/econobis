@@ -115,7 +115,7 @@ class InvoicesListItem extends Component {
                 {
                     this.state.showSetChecked &&
                     <InvoiceListSetChecked
-                        closeModal={this.showSetPaid}
+                        closeModal={this.showSetChecked}
                         invoiceId={id}
                         administrationId={this.props.administrationId}
                     />

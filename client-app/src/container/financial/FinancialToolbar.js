@@ -4,7 +4,7 @@ import { browserHistory } from 'react-router';
 
 import ButtonIcon from '../../components/button/ButtonIcon';
 
-class ProductToolbar  extends Component {
+class FinancialToolbar extends Component {
     constructor(props){
         super(props);
     };
@@ -30,4 +30,4 @@ const mapStateToProps = (state) => {
     };
 };
 
-export default connect(mapStateToProps, null)(ProductToolbar);
+export default connect(mapStateToProps, null)(FinancialToolbar);

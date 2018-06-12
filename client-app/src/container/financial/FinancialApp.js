@@ -52,7 +52,7 @@ class FinancialApp extends Component {
                 <div className="col-md-2">
                     <div className="col-md-12 margin-10-top">
                         <Panel>
-                            <PanelBody className={'panel-finincial-tree'}>
+                            <PanelBody className={'panel-financial-tree'}>
                                 <FinancialTree/>
                             </PanelBody>
                         </Panel>

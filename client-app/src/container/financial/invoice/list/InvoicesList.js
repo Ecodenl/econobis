@@ -22,6 +22,7 @@ import {
 import InvoicesAPI from "../../../../api/invoice/InvoicesAPI";
 import fileDownload from "js-file-download";
 import moment from "moment/moment";
+import {hashHistory} from "react-router";
 
 class InvoicesList extends Component {
     constructor(props) {
@@ -155,6 +156,10 @@ class InvoicesList extends Component {
         },100 );
     };
 
+    previewSend = () => {
+        hashHistory.push(`/financieel/${this.props.administrationId}/facturen/gecontroleerd/verzenden`);
+    };
+
     resetInvoiceFilters = () => {
         this.props.clearFilterInvoices();
 
@@ -195,6 +200,9 @@ class InvoicesList extends Component {
                         <div className="btn-group" role="group">
                             <ButtonIcon iconName={"glyphicon-refresh"} onClickAction={this.resetInvoiceFilters}/>
                             <ButtonIcon iconName={"glyphicon-download-alt"} onClickAction={this.getCSV} />
+                            {this.props.filter === 'gecontroleerd' &&
+                            <ButtonIcon iconName={"glyphicon-envelope"} onClickAction={this.previewSend}/>
+                            }
                         </div>
                     </div>
                     <div className="col-md-4"><h3 className="text-center table-title">Facturen</h3></div>

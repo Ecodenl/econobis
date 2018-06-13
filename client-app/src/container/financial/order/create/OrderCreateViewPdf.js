@@ -28,7 +28,7 @@ class OrderCreateViewPdf extends Component {
         }).catch(() => {
             if (i < 2) {
                 setTimeout(() => {
-                    this.downloadFile(i);
+                    this.downloadFile(orderId, i);
                 }, 500);
             }
             i++;

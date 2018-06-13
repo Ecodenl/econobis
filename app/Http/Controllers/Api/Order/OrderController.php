@@ -320,15 +320,17 @@ class OrderController extends ApiController
         }
 
         foreach ($orders as $order){
-            $invoice = new Invoice();
-            $invoice->status_id = 'checked';
-            $invoice->send_method_id = $data['send_method_id'];
-            $invoice->date_requested = $data['date_requested'];
-            $invoice->date_collection = $data['date_collection'];
-            $invoice->order_id = $order->id;
-            $invoice->save();
+            if($order->total_price_incl_vat > 0) {
+                $invoice = new Invoice();
+                $invoice->status_id = 'checked';
+                $invoice->send_method_id = $data['send_method_id'];
+                $invoice->date_requested = $data['date_requested'];
+                $invoice->date_collection = $data['date_collection'];
+                $invoice->order_id = $order->id;
+                $invoice->save();
 
-            InvoiceHelper::saveInvoiceProducts($invoice, $order);
+                InvoiceHelper::saveInvoiceProducts($invoice, $order);
+            }
         }
 
         return $response;

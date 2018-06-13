@@ -15,6 +15,7 @@ use App\Helpers\CSV\InvoiceCSVHelper;
 use App\Helpers\Invoice\InvoiceHelper;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Api\ApiController;
+use App\Http\Controllers\Api\Order\OrderController;
 use App\Http\RequestQueries\Invoice\Grid\RequestQuery;
 use App\Http\Resources\Invoice\FullInvoice;
 use App\Http\Resources\Invoice\GridInvoice;
@@ -31,6 +32,11 @@ class InvoiceController extends ApiController
         $invoices = $requestQuery->get();
 
         $invoices->load(['order.contact']);
+
+        foreach ($invoices as $invoice){
+            $orderController = new OrderController;
+            $invoice->emailToAddress = $orderController->getContactInfoForOrder($invoice->order->contact)['email'];
+        }
 
         $totalPrice = 0;
         foreach($invoices as $invoice){
@@ -68,6 +74,9 @@ class InvoiceController extends ApiController
             'document',
             'createdBy',
         ]);
+
+        $orderController = new OrderController;
+        $invoice->emailToAddress = $orderController->getContactInfoForOrder($invoice->order->contact)['email'];
 
         return FullInvoice::make($invoice);
     }
@@ -191,7 +200,15 @@ class InvoiceController extends ApiController
 
     public function send(Invoice $invoice)
     {
-        return InvoiceHelper::send($invoice);
+        $orderController = new OrderController;
+        $emailTo = $orderController->getContactInfoForOrder($invoice->order->contact)['email'];
+
+        if($invoice->send_method_id === 'mail' && $emailTo === 'Geen e-mail bekend') {
+            return 'Geen e-mail bekend';
+        }
+        else{
+            return InvoiceHelper::send($invoice);
+        }
     }
 
     public function sendAll(Administration $administration)
@@ -250,6 +267,11 @@ class InvoiceController extends ApiController
         $this->authorize('manage', Invoice::class);
 
         $invoices = Invoice::where('administration_id', $administration->id)->where('status_id', 'checked')->with('order.contact')->get();
+
+        foreach ($invoices as $invoice){
+            $orderController = new OrderController;
+            $invoice->emailToAddress = $orderController->getContactInfoForOrder($invoice->order->contact)['email'];
+        }
 
         return FullInvoice::collection($invoices);
     }

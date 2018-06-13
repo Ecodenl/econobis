@@ -44,6 +44,24 @@
   }
 }
 
+.send-invoices-list-link-error, .send-orders-list-link-error {
+  color: red;
+  padding-left: 4em;
+  padding-right: 8em;
+  margin-left: -7em;
+  margin-right: -8em;
+
+  &:hover {
+    color: red;
+    text-decoration: none;
+  }
+
+  &:focus {
+    color: red;
+    text-decoration: none;
+  }
+}
+
 .financial-tree-sidebar-menu, .send-invoices-sidebar-menu, .send-orders-sidebar-menu {
   overflow-y: auto;
   overflow-x: hidden;

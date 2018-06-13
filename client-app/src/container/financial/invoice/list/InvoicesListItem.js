@@ -91,12 +91,12 @@ class InvoicesListItem extends Component {
     };
 
     render() {
-        const { id, number, dateRequested, order, subject, paymentType, status, daysExpired, totalPriceInclVatAndReduction, amountOpen } = this.props;
+        const { id, number, dateRequested, order, subject, paymentType, status, daysExpired, totalPriceInclVatAndReduction, amountOpen, emailToAddress, sendMethodId } = this.props;
         return (
             <tr className={this.state.highlightRow} onDoubleClick={() => this.openItem(id)} onMouseEnter={() => this.onRowEnter()} onMouseLeave={() => this.onRowLeave()}>
                 <td>{number}</td>
                 <td>{ dateRequested ? moment(dateRequested).format('DD-MM-Y') : ''}</td>
-                <td>{order ? order.contact.fullName : ''}</td>
+                <td className={(emailToAddress === 'Geen e-mail bekend' && sendMethodId === 'mail') ? 'warning-td' :''}>{order ? order.contact.fullName : ''}{(emailToAddress === 'Geen e-mail bekend' && sendMethodId === 'mail') && ' (Geen e-mail bekend)'}</td>
                 <td>{subject ? subject : ''}</td>
                 <td>{daysExpired}</td>
                 <td>{'€' + totalPriceInclVatAndReduction.toLocaleString('nl',{ minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>

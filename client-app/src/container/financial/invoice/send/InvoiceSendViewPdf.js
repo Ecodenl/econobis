@@ -28,7 +28,7 @@ class InvoiceSendViewPdf extends Component {
         }).catch(() => {
             if (i < 2) {
                 setTimeout(() => {
-                    this.downloadFile(i);
+                    this.downloadFile(invoiceId, i);
                 }, 500);
             }
             i++;

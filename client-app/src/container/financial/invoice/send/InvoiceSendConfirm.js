@@ -12,7 +12,7 @@ class InvoiceSendConfirm extends Component {
 
     confirmAction = event => {
         event.preventDefault();
-        InvoiceDetailsAPI.sendAll(this.props.administrationId, this.props.filter).then((payload) => {
+        InvoiceDetailsAPI.sendAll(this.props.administrationId).then((payload) => {
             hashHistory.push(`/financieel/${this.props.administrationId}/facturen/verzonden`);
         });
     };

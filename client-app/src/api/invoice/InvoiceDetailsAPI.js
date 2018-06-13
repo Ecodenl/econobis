@@ -117,8 +117,8 @@ export default {
             });
     },
 
-    sendAll: (administrationId, filter) => {
-        const requestUrl = `${URL_INVOICE}/${administrationId}/send-all/${filter}`;
+    sendAll: (administrationId) => {
+        const requestUrl = `${URL_INVOICE}/${administrationId}/send-all`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
@@ -129,6 +129,14 @@ export default {
             .catch(function (error) {
                 console.log(error);
             });
+    },
+
+    sendAllPost: (administrationId) => {
+        const requestUrl = `${URL_INVOICE}/${administrationId}/send-all-post`;
+        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
+        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
+
+        return axios.get(requestUrl, {responseType: 'blob'});
     },
 
     newPayment: (payment) => {

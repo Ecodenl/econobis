@@ -62,8 +62,8 @@ export default {
             );
     },
 
-    getInvoicesForSending: (administrationId, filter) => {
-        const requestUrl = `${URL_INVOICE}/${administrationId}/sending/${filter}`;
+    getInvoicesForSending: (administrationId) => {
+        const requestUrl = `${URL_INVOICE}/${administrationId}/sending`;
         const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
         axios.defaults.headers.common.Authorization = AUTH_TOKEN;
 

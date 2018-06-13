@@ -25,6 +25,7 @@ import moment from "moment/moment";
 import {hashHistory} from "react-router";
 import InvoiceListSetCheckedAll from "./InvoiceListSetCheckedAll";
 import ButtonText from "../../../../components/button/ButtonText";
+import InvoiceDetailsAPI from "../../../../api/invoice/InvoiceDetailsAPI";
 
 class InvoicesList extends Component {
     constructor(props) {
@@ -162,8 +163,14 @@ class InvoicesList extends Component {
         },100 );
     };
 
-    previewSend = (filter) => {
-        hashHistory.push(`/financieel/${this.props.administrationId}/facturen/gecontroleerd/verzenden/${filter}`);
+    previewSend = () => {
+        hashHistory.push(`/financieel/${this.props.administrationId}/facturen/gecontroleerd/verzenden`);
+    };
+
+    downloadPostInvoices = () => {
+        InvoiceDetailsAPI.sendAllPost(this.props.administrationId).then((payload) => {
+            fileDownload(payload.data, 'test.pdf');
+        });
     };
 
     resetInvoiceFilters = () => {
@@ -214,11 +221,11 @@ class InvoicesList extends Component {
                             <ButtonIcon iconName={"glyphicon-ok"} onClickAction={this.showCheckAll}/>
                             }
                             {(this.props.filter === 'gecontroleerd' && meta.total > 0) &&
-                            <ButtonText buttonText={"Incasso's versturen"}
-                                        onClickAction={() => this.previewSend('collection')}/>
+                            <ButtonText buttonText={"Facturen versturen"}
+                                        onClickAction={() => this.previewSend()}/>
                             }
                             {(this.props.filter === 'gecontroleerd' && meta.total > 0) &&
-                            <ButtonText buttonText={"Facturen versturen"} onClickAction={() => this.previewSend('transfer')}/>
+                            <ButtonText buttonText={"Post facturen versturen"} onClickAction={() => this.downloadPostInvoices()}/>
                             }
                         </div>
                     </div>

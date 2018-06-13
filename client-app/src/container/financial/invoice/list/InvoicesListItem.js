@@ -103,64 +103,63 @@ class InvoicesListItem extends Component {
                 <td>{paymentType ? paymentType.name : ''}</td>
                 <td>{status ? status.name : ''}</td>
                 <td>
-                    {(this.state.showActionButtons ? <a role="button" onClick={() => this.openItem(id)}><span className="glyphicon glyphicon-pencil mybtn-success" /> </a> : '')}
-                    {(this.state.showActionButtons ? <a role="button" onClick={() => this.viewItem(id)}><span className="glyphicon glyphicon-eye-open mybtn-success" /> </a> : '')}
-                    {(this.state.showActionButtons && this.props.statusId === 'concept' ? <a role="button" onClick={() => this.showSetChecked()}><span className="glyphicon glyphicon-ok mybtn-success" /> </a> : '')}
-                    {(this.state.showActionButtons && this.props.statusId === 'checked' ? <a role="button" onClick={() => this.showSend()}><span className="glyphicon glyphicon-envelope mybtn-success" /> </a> : '')}
-                    {(this.state.showActionButtons && (this.props.statusId === 'sent' || this.props.statusId === 'exported') ? <a role="button" onClick={() => this.showSetPaid()}><span className="glyphicon glyphicon-euro mybtn-success" /> </a> : '')}
-                    {(this.state.showActionButtons && (this.props.statusId === 'sent' || this.props.statusId === 'exported') && this.props.sendMethodId === 'mail' && !this.props.dateExhortation ? <a role="button" onClick={() => this.showSendNotification()}><span className="glyphicon glyphicon-bullhorn mybtn-success" /> </a> : '')}
-                    {(this.state.showActionButtons && (this.props.statusId !== 'paid' && this.props.statusId !== 'irrecoverable') ? <a role="button" onClick={() => this.showSetIrrecoverable()}><span className="glyphicon glyphicon-remove mybtn-success" /> </a> : '')}
+                    {(this.state.showActionButtons ? <a role="button" onClick={() => this.openItem(id)} title="Open factuur"><span className="glyphicon glyphicon-pencil mybtn-success" /> </a> : '')}
+                    {(this.state.showActionButtons ? <a role="button" onClick={() => this.viewItem(id)} title="Preview factuur"><span className="glyphicon glyphicon-eye-open mybtn-success" /> </a> : '')}
+                    {(this.state.showActionButtons && this.props.statusId === 'concept' ? <a role="button" onClick={() => this.showSetChecked()}  title="Zet op gecontroleerd"><span className="glyphicon glyphicon-ok mybtn-success" /> </a> : '')}
+                    {(this.state.showActionButtons && this.props.statusId === 'checked' ? <a role="button" onClick={() => this.showSend()} title="Verstuur factuur"><span className="glyphicon glyphicon-envelope mybtn-success" /> </a> : '')}
+                    {(this.state.showActionButtons && (this.props.statusId === 'sent' || this.props.statusId === 'exported') ? <a role="button" onClick={() => this.showSetPaid()} title="Zet op betaald"><span className="glyphicon glyphicon-euro mybtn-success" /> </a> : '')}
+                    {(this.state.showActionButtons && (this.props.statusId === 'sent' || this.props.statusId === 'exported') && this.props.sendMethodId === 'mail' && !this.props.dateExhortation ? <a role="button" onClick={() => this.showSendNotification()} title="Verstuur herinnering"><span className="glyphicon glyphicon-bullhorn mybtn-success" /> </a> : '')}
+                    {(this.state.showActionButtons && (this.props.statusId !== 'paid' && this.props.statusId !== 'irrecoverable') ? <a role="button" onClick={() => this.showSetIrrecoverable()} title="Zet op oninbaar"><span className="glyphicon glyphicon-remove mybtn-success" /> </a> : '')}
+
+                    {
+                        this.state.showSetChecked &&
+                        <InvoiceListSetChecked
+                            closeModal={this.showSetChecked}
+                            invoiceId={id}
+                            administrationId={this.props.administrationId}
+                        />
+                    }
+
+                    {
+                        this.state.showSend &&
+                        <InvoiceListSend
+                            closeModal={this.showSend}
+                            invoiceId={id}
+                            sendMethodId={this.props.sendMethodId}
+                            administrationId={this.props.administrationId}
+                        />
+                    }
+
+                    {
+                        this.state.showSetPaid &&
+                        <InvoiceListSetPaid
+                            closeModal={this.showSetPaid}
+                            invoiceId={id}
+                            amountOpen={amountOpen}
+                            administrationId={this.props.administrationId}
+                        />
+                    }
+
+                    {
+                        this.state.showSendNotification &&
+                        <InvoiceListSendNotification
+                            reminderText={this.state.reminderText}
+                            closeModal={this.showSendNotification}
+                            invoiceId={id}
+                            fetchInvoicesData={this.props.fetchInvoicesData}
+                            administrationId={this.props.administrationId}
+                        />
+                    }
+
+                    {
+                        this.state.showSetIrrecoverable &&
+                        <InvoiceListSetIrrecoverable
+                            closeModal={this.showSetIrrecoverable}
+                            invoiceId={id}
+                            administrationId={this.props.administrationId}
+                        />
+                    }
                 </td>
-
-                {
-                    this.state.showSetChecked &&
-                    <InvoiceListSetChecked
-                        closeModal={this.showSetChecked}
-                        invoiceId={id}
-                        administrationId={this.props.administrationId}
-                    />
-                }
-
-                {
-                    this.state.showSend &&
-                    <InvoiceListSend
-                        closeModal={this.showSend}
-                        invoiceId={id}
-                        sendMethodId={this.props.sendMethodId}
-                        administrationId={this.props.administrationId}
-                    />
-                }
-
-                {
-                    this.state.showSetPaid &&
-                    <InvoiceListSetPaid
-                        closeModal={this.showSetPaid}
-                        invoiceId={id}
-                        amountOpen={amountOpen}
-                        administrationId={this.props.administrationId}
-                    />
-                }
-
-                {
-                    this.state.showSendNotification &&
-                    <InvoiceListSendNotification
-                        reminderText={this.state.reminderText}
-                        closeModal={this.showSendNotification}
-                        invoiceId={id}
-                        fetchInvoicesData={this.props.fetchInvoicesData}
-                        administrationId={this.props.administrationId}
-                    />
-                }
-
-                {
-                    this.state.showSetIrrecoverable &&
-                    <InvoiceListSetIrrecoverable
-                        closeModal={this.showSetIrrecoverable}
-                        invoiceId={id}
-                        administrationId={this.props.administrationId}
-                    />
-                }
-
             </tr>
         );
     }

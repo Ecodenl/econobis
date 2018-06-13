@@ -12,7 +12,7 @@ class InvoiceSendConfirm extends Component {
 
     confirmAction = event => {
         event.preventDefault();
-        InvoiceDetailsAPI.sendAll(this.props.administrationId).then((payload) => {
+        InvoiceDetailsAPI.sendAll(this.props.administrationId, this.props.filter).then((payload) => {
             hashHistory.push(`/financieel/${this.props.administrationId}/facturen/verzonden`);
         });
     };
@@ -28,7 +28,7 @@ class InvoiceSendConfirm extends Component {
                 <div className="row">
                     <div className={'col-sm-12 margin-10-bottom'}>
                     <span>
-                        Wilt u alle facturen({this.props.amountOfInvoices}) verzenden?
+                        Wilt u alle facturen verzenden?
                     </span>
                     </div>
                 </div>

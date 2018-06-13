@@ -18,7 +18,7 @@ class InvoiceSendApp extends Component {
     };
 
     componentDidMount() {
-        InvoicesAPI.getInvoicesForSending(this.props.params.id).then((payload) => {
+        InvoicesAPI.getInvoicesForSending(this.props.params.id, this.props.params.filter).then((payload) => {
             this.setState({
                 invoices: payload.data,
             });
@@ -39,7 +39,7 @@ class InvoiceSendApp extends Component {
                         <div className="col-md-12 margin-10-top">
                             <Panel>
                                 <PanelBody className={"panel-small"}>
-                                    <InvoiceSendToolbar amountOfInvoices={this.state.invoices ? this.state.invoices.length : 0} administrationId={this.props.params.id}/>
+                                    <InvoiceSendToolbar filter={this.props.params.filter} amountOfInvoices={this.state.invoices ? this.state.invoices.length : 0} administrationId={this.props.params.id}/>
                                 </PanelBody>
                             </Panel>
                         </div>

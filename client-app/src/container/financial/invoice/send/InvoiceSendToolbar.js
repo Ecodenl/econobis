@@ -35,7 +35,7 @@ class InvoiceSendToolbar extends Component {
                     <InvoiceSendConfirm
                         closeModal={this.showSend}
                         administrationId={this.props.administrationId}
-                        amountOfInvoices={this.props.amountOfInvoices}
+                        filter={this.props.filter}
                     />
                 }
             </div>

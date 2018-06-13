@@ -211,9 +211,9 @@ class InvoiceController extends ApiController
         }
     }
 
-    public function sendAll(Administration $administration)
+    public function sendAll(Administration $administration, $filter)
     {
-        $invoices = Invoice::where('administration_id', $administration->id)->where('status_id', 'checked')->with('order.contact')->get();
+        $invoices = Invoice::where('administration_id', $administration->id)->where('status_id', 'checked')->where('payment_type_id', $filter)->with('order.contact')->get();
 
         $response = [];
 
@@ -262,11 +262,11 @@ class InvoiceController extends ApiController
         return $total;
     }
 
-    public function getInvoicesForSending(Administration $administration)
+    public function getInvoicesForSending(Administration $administration, $filter)
     {
         $this->authorize('manage', Invoice::class);
 
-        $invoices = Invoice::where('administration_id', $administration->id)->where('status_id', 'checked')->with('order.contact')->get();
+        $invoices = Invoice::where('administration_id', $administration->id)->where('status_id', 'checked')->where('payment_type_id', $filter)->with('order.contact')->get();
 
         foreach ($invoices as $invoice){
             $orderController = new OrderController;

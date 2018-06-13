@@ -117,8 +117,8 @@ export default {
             });
     },
 
-    sendAll: (administrationId) => {
-        const requestUrl = `${URL_INVOICE}/${administrationId}/send-all`;
+    sendAll: (administrationId, filter) => {
+        const requestUrl = `${URL_INVOICE}/${administrationId}/send-all/${filter}`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 

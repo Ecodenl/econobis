@@ -240,6 +240,8 @@ class InvoiceController extends ApiController
         foreach ($invoices as $k => $invoice){
             $invoice->status_id = 'sent';
             $invoice->save();
+            InvoiceHelper::createInvoiceDocument($invoice);
+
             $img = '';
             if($invoice->administration->logo_filename) {
                 $path = storage_path('app' .  DIRECTORY_SEPARATOR . 'administrations' . DIRECTORY_SEPARATOR . $invoice->administration->logo_filename);

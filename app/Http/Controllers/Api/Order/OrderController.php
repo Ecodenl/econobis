@@ -273,4 +273,81 @@ class OrderController extends ApiController
         return $total;
     }
 
+    public function getOrdersForCreating(RequestInput $requestInput)
+    {
+        $this->authorize('manage', Order::class);
+
+        $data = $requestInput
+            ->string('administrationId')->validate('required|exists:administrations,id')->alias('administration_id')->next()
+            ->string('filter')->validate('required')->next()
+            ->get();
+
+        $orders = [];
+
+        if($data['filter'] === 'incassos') {
+            $orders = Order::where('administration_id', $data['administration_id'])->where('status_id', 'active')->where('payment_type_id', 'collection')->with('contact')->get();
+        }
+        else if($data['filter'] === 'facturen'){
+            $orders = Order::where('administration_id', $data['administration_id'])->where('status_id', 'active')->where('payment_type_id', 'transfer')->with('contact')->get();
+        }
+
+        return FullOrder::collection($orders);
+    }
+
+    public function createAll(RequestInput $requestInput)
+    {
+        $this->authorize('manage', Order::class);
+
+        $data = $requestInput
+            ->string('administrationId')->validate('required|exists:administrations,id')->alias('administration_id')->next()
+            ->string('filter')->validate('required')->next()
+            ->string('sendMethodId')->validate('required')
+            ->alias('send_method_id')->next()
+            ->date('dateRequested')->validate('nullable|date')
+            ->alias('date_requested')->next()
+            ->date('dateCollection')->validate('nullable|date')->whenMissing(null)->onEmpty(null)
+            ->alias('date_collection')->next()
+            ->get();
+
+
+        $orders = $response = [];
+
+        if($data['filter'] === 'incassos') {
+            $orders = Order::where('administration_id', $data['administration_id'])->where('status_id', 'active')->where('payment_type_id', 'collection')->with('contact')->get();
+        }
+        else if($data['filter'] === 'facturen'){
+            $orders = Order::where('administration_id', $data['administration_id'])->where('status_id', 'active')->where('payment_type_id', 'transfer')->with('contact')->get();
+        }
+
+        foreach ($orders as $order){
+            $invoice = new Invoice();
+            $invoice->status_id = 'checked';
+            $invoice->send_method_id = $data['send_method_id'];
+            $invoice->date_requested = $data['date_requested'];
+            $invoice->date_collection = $data['date_collection'];
+            $invoice->order_id = $order->id;
+            $invoice->save();
+
+            InvoiceHelper::saveInvoiceProducts($invoice, $order);
+        }
+
+        return $response;
+    }
+
+    public function getEmailPreview(Order $order){
+
+        $invoice = new Invoice();
+        $invoice->order_id = $order->id;
+        $invoice->administration_id = $order->administration_id;
+        $invoice->invoice_number =  Invoice::where('administration_id', $invoice->administration_id)->count();
+        $invoice->number = 'O' . Carbon::now()->year . '-' . $invoice->invoice_number;
+        $invoice->payment_type_id = $order->payment_type_id;
+        $invoice->send_method_id = 'mail';
+
+        $invoice = InvoiceHelper::saveInvoiceProducts($invoice, $order, true);
+
+        return InvoiceHelper::send($invoice, true);
+
+    }
+
 }

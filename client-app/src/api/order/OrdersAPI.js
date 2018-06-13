@@ -61,4 +61,17 @@ export default {
                 },
             );
     },
+
+    getOrdersForCreating: (administrationId, filter) => {
+        const requestUrl = `${URL_ORDER}/creating`;
+        const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
+        axios.defaults.headers.common.Authorization = AUTH_TOKEN;
+
+        return axios.post(requestUrl, {administrationId: administrationId, filter: filter})
+            .then(response => response.data)
+            .catch((error) => {
+                    console.log(error);
+                },
+            );
+    },
 };

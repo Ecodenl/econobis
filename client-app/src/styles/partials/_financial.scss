@@ -1,8 +1,8 @@
-.panel-financial-tree, .panel-invoices-list {
+.panel-financial-tree, .panel-invoices-list, .panel-orders-list {
   padding: 0;
 }
 
-.financial-tree, .invoices-list {
+.financial-tree, .invoices-list, .orders-list {
   height: 100vh;
   transition: left .3s ease-in-out;
   color: $brand-primary;
@@ -26,7 +26,7 @@
   }
 }
 
-.send-invoices-list-link {
+.send-invoices-list-link, .send-orders-list-link {
   color: $brand-primary;
   padding-left: 4em;
   padding-right: 8em;
@@ -44,7 +44,7 @@
   }
 }
 
-.financial-tree-sidebar-menu, .send-invoices-sidebar-menu {
+.financial-tree-sidebar-menu, .send-invoices-sidebar-menu, .send-orders-sidebar-menu {
   overflow-y: auto;
   overflow-x: hidden;
   height: 100vh;

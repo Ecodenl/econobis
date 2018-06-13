@@ -24,6 +24,7 @@ import {
 import OrdersAPI from "../../../../api/order/OrdersAPI";
 import fileDownload from "js-file-download";
 import moment from "moment/moment";
+import {hashHistory} from "react-router";
 
 class OrdersList extends Component {
     constructor(props){
@@ -200,6 +201,12 @@ class OrdersList extends Component {
                         <div className="btn-group" role="group">
                             <ButtonIcon iconName={"glyphicon-refresh"} onClickAction={this.resetOrderFilters} />
                             <ButtonIcon iconName={"glyphicon-download-alt"} onClickAction={this.getCSV} />
+                            {this.props.filter === 'facturen' && meta.total > 0 &&
+                            <ButtonIcon iconName={"glyphicon-file"} onClickAction={() => hashHistory.push(`/financieel/${this.props.administrationId}/orders/facturen/aanmaken`)} />
+                            }
+                            {this.props.filter === 'incassos' && meta.total > 0 &&
+                            <ButtonIcon iconName={"glyphicon-file"} onClickAction={() => hashHistory.push(`/financieel/${this.props.administrationId}/orders/incassos/aanmaken`)} />
+                            }
                         </div>
                     </div>
                     <div className="col-md-4"><h3 className="text-center table-title">Orders</h3></div>

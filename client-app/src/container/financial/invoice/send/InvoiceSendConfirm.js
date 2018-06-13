@@ -4,7 +4,7 @@ import Modal from '../../../../components/modal/Modal';
 import InvoiceDetailsAPI from "../../../../api/invoice/InvoiceDetailsAPI";
 import {hashHistory} from "react-router";
 
-class InvoiceListSend extends Component {
+class InvoiceSendConfirm extends Component {
 
     constructor(props) {
         super(props);
@@ -37,4 +37,4 @@ class InvoiceListSend extends Component {
     };
 }
 
-export default InvoiceListSend;
+export default InvoiceSendConfirm;

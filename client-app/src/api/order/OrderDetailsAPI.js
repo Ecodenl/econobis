@@ -98,5 +98,33 @@ export default {
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
         return axios.get(requestUrl, {responseType: 'blob'});
+    },
+
+    createAll: (invoice) => {
+        const requestUrl = `${URL_ORDER}/create-all`;
+        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
+        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
+
+        return axios.post(requestUrl, invoice)
+            .then(function (response) {
+                return response.data;
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+    },
+
+    getEmailPreview: (id) => {
+        const requestUrl = `${URL_ORDER}/${id}/email-preview`;
+        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
+        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
+
+        return axios.get(requestUrl)
+            .then(function (response) {
+                return response.data;
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
     }
 };

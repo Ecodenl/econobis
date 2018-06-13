@@ -19,7 +19,7 @@ class FinancialTree extends Component {
                 <div className="financial-tree-sidebar-menu" style={{color: '$brand-primary'}}>
                     <SideNav highlightColor="$brand-primary" highlightBgColor='#e5e5e5' hoverBgColor='#F1EFF0' defaultSelected="orders">
                         <Nav id="orders">
-                            <NavIcon><SvgIcon size={20} icon={file} style={{color: '$brand-primary'}}/></NavIcon>
+                            <NavIcon><SvgIcon size={20} icon={fileText} style={{color: '$brand-primary'}}/></NavIcon>
                             <NavText><Link className="financial-tree-link" to={`financieel/${this.props.id}/orders`}>Alle orders({this.props.administrationDetails.totalOrders})</Link></NavText>
                             <Nav id="orders-concepts">
                                 <NavText><Link className="financial-tree-link" to={`financieel/${this.props.id}/orders/concepten`}>Concept orders({this.props.administrationDetails.totalOrdersConcepts})</Link></NavText>
@@ -35,7 +35,7 @@ class FinancialTree extends Component {
                             </Nav>
                         </Nav>
                         <Nav id="invoices">
-                            <NavIcon><SvgIcon size={20} icon={fileText} style={{color: '$brand-primary'}}/></NavIcon>
+                            <NavIcon><SvgIcon size={20} icon={file} style={{color: '$brand-primary'}}/></NavIcon>
                             <NavText><Link className="financial-tree-link" to={`financieel/${this.props.id}/facturen`}>Alle facturen({this.props.administrationDetails.totalInvoices})</Link></NavText>
                             <Nav id="invoices-concepts">
                                 <NavText><Link className="financial-tree-link" to={`financieel/${this.props.id}/facturen/concepten`}>Concepten({this.props.administrationDetails.totalInvoicesConcepts})</Link></NavText>

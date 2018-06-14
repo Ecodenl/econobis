@@ -60,8 +60,8 @@ const AdministrationDetailsFormGeneralView = props => {
                             value={IBAN}
                         />
                         <ViewText
-                            label={"E-mail"}
-                            value={email}
+                            label={"Bic"}
+                            value={bic}
                         />
                     </div>
                     <div className="row">
@@ -70,8 +70,8 @@ const AdministrationDetailsFormGeneralView = props => {
                             value={website}
                         />
                         <ViewText
-                            label={"Bic"}
-                            value={bic}
+                            label={"E-mail"}
+                            value={email}
                         />
                     </div>
                     <div className="row">

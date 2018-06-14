@@ -27,9 +27,7 @@ class ContactsListApp extends Component {
                 default:
                     break;
             };
-        } else {
-            this.props.clearFilterContacts();
-        }
+        } 
 
         this.state = {
             showCheckboxList: false,

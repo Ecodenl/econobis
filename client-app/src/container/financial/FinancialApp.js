@@ -53,7 +53,7 @@ class FinancialApp extends Component {
                     <div className="col-md-12 margin-10-top">
                         <Panel>
                             <PanelBody className={'panel-financial-tree'}>
-                                <FinancialTree/>
+                                <FinancialTree currentRouteParams={this.props.params} />
                             </PanelBody>
                         </Panel>
                     </div>

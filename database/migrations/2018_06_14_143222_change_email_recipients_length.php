@@ -14,9 +14,9 @@ class ChangeEmailRecipientsLength extends Migration
     public function up()
     {
         Schema::table('emails', function (Blueprint $table) {
-            $table->string('to', 25000)->change();
-            $table->string('cc', 25000)->change();
-            $table->string('bcc', 25000)->change();
+            $table->string('to', 5000)->change();
+            $table->string('cc', 5000)->change();
+            $table->string('bcc', 5000)->change();
         });
     }
 

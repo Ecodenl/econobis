@@ -14,6 +14,7 @@ use App\Eco\Invoice\InvoicePayment;
 use App\Helpers\CSV\InvoiceCSVHelper;
 use App\Helpers\Invoice\InvoiceHelper;
 use App\Helpers\RequestInput\RequestInput;
+use App\Helpers\Sepa\SepaHelper;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\Controllers\Api\Order\OrderController;
 use App\Http\RequestQueries\Invoice\Grid\RequestQuery;
@@ -317,6 +318,14 @@ class InvoiceController extends ApiController
         }
 
         return FullInvoice::collection($invoices);
+    }
+
+    public function generateSepaFile(Administration $administration){
+
+        $sepaHelper = new SepaHelper($administration);
+
+        return $sepaHelper->generateSepaFile();
+
     }
 
 }

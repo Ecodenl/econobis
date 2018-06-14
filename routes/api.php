@@ -344,6 +344,7 @@ Route::namespace('Api')
         Route::get('invoice/peek', 'Invoice\InvoiceController@peek');
         Route::get('invoice/{administration}/sending', 'Invoice\InvoiceController@getInvoicesForSending');
         Route::get('invoice/amount-unpaid', 'Invoice\InvoiceController@getAmountUnpaid');
+        Route::get('invoice/{administration}/generateSepaFile', 'Invoice\InvoiceController@generateSepaFile');
         Route::get('invoice/{invoice}', 'Invoice\InvoiceController@show');
         Route::get('invoice/{invoice}/download', 'Invoice\InvoiceController@download');
         Route::get('invoice/{invoice}/email-preview', 'Invoice\InvoiceController@getEmailPreview');

@@ -20,10 +20,10 @@ use App\Http\RequestQueries\Invoice\Grid\RequestQuery;
 use App\Http\Resources\Invoice\FullInvoice;
 use App\Http\Resources\Invoice\GridInvoice;
 use App\Http\Resources\Invoice\InvoicePeek;
+use Barryvdh\DomPDF\Facade as PDF;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
-use Barryvdh\DomPDF\Facade as PDF;
 
 class InvoiceController extends ApiController
 {

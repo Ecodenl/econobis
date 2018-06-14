@@ -230,10 +230,10 @@ abstract class RequestFilter
                 $query->having($mappedField, 'NOT LIKE', '%' . $data);
                 break;
             case 'nl':
-                $query->havingRaw($mappedField . 'is null')->orHaving($mappedField, '=', 0);;
+                $query->havingRaw($mappedField . 'is null')->orHaving($mappedField, '=', 0);
                 break;
             case 'nnl':
-                $query->havingRaw($mappedField . 'is not null')->orHaving($mappedField, '!=', 0);;
+                $query->havingRaw($mappedField . 'is not null')->orHaving($mappedField, '!=', 0);
                 break;
         }
     }

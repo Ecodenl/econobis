@@ -9,6 +9,7 @@ use App\Eco\Order\Order;
 use App\Eco\Product\Product;
 use App\Eco\User\User;
 use App\Http\Traits\Encryptable;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Venturecraft\Revisionable\RevisionableTrait;
@@ -129,18 +130,37 @@ class Administration extends Model
 
     public function getTotalInvoicesSentAttribute()
     {
-        return $this->invoices()->where('status_id', 'sent')->whereNull('date_reminder_1')->whereNull('date_reminder_2')->whereNull('date_reminder_3')->whereNull('date_exhortation')->count();
+        return $this->invoices()
+            ->where(function ($q) {
+                $q->where(function ($q) {
+                    $q->where('payment_type_id', 'transfer')
+                        ->where('date_requested', '>=',
+                            Carbon::today()->subMonth());
+                })->orWhere(function ($q) {
+                    $q->where('payment_type_id', '!=', 'transfer');
+                });})->where('status_id', 'sent')->whereNull('date_reminder_1')
+            ->whereNull('date_reminder_2')->whereNull('date_reminder_3')
+            ->whereNull('date_exhortation')->count();
     }
 
     public function getTotalInvoicesExportedAttribute()
     {
-        return $this->invoices()->where('status_id', 'exported')->whereNull('date_reminder_1')->whereNull('date_reminder_2')->whereNull('date_reminder_3')->whereNull('date_exhortation')->count();
+        return $this->invoices()->where('status_id', 'exported')->whereNull('date_reminder_1')->whereNull('date_reminder_2')->whereNull('date_reminder_3')->whereNull('date_exhortation')->where('date_requested', '>=', Carbon::today()->subMonth())->count();
     }
 
     public function getTotalInvoicesReminderAttribute()
     {
-        return $this->invoices()->whereNotNull('date_reminder_1')->whereNull('date_exhortation')->whereNotIn('status_id', ['paid' ,'irrecoverable'])->count();
+        return $this->invoices()
+            ->where(function ($q) {
+            $q->whereNotNull('date_reminder_1')->whereNull('date_exhortation')->whereNotIn('status_id', ['paid' ,'irrecoverable']);
+        })->orWhere(function ($q) {
+            $q->where('status_id', 'exported')->where('date_requested', '<', Carbon::today()->subMonth());
+        })->orWhere(function ($q) {
+            $q->where('status_id', 'sent')->where('payment_type_id', 'transfer')->where('date_requested', '<', Carbon::today()->subMonth());
+        })->count();
+
     }
+
     public function getTotalInvoicesExhortationAttribute()
     {
         return $this->invoices()->whereNotNull('date_exhortation')->whereNotIn('status_id', ['paid' ,'irrecoverable'])->count();

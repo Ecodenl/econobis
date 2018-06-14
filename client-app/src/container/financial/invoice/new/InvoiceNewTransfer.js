@@ -51,7 +51,7 @@ class InvoiceNewTransfer extends Component {
         });
     };
 
-    confirmAction = () => {
+    confirmAction = (event) => {
         event.preventDefault();
 
         const {invoice} = this.state;

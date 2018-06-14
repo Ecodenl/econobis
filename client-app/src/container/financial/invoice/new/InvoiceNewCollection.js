@@ -53,7 +53,7 @@ class InvoiceNewCollection extends Component {
         });
     };
 
-    confirmAction = () => {
+    confirmAction = (event) => {
         event.preventDefault();
 
         const {invoice} = this.state;

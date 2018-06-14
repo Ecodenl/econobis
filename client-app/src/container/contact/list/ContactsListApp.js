@@ -27,7 +27,7 @@ class ContactsListApp extends Component {
                 default:
                     break;
             };
-        } 
+        }
 
         this.state = {
             showCheckboxList: false,

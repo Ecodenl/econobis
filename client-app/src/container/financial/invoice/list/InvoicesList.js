@@ -24,6 +24,8 @@ import fileDownload from "js-file-download";
 import moment from "moment/moment";
 import {hashHistory} from "react-router";
 import InvoiceListSetCheckedAll from "./InvoiceListSetCheckedAll";
+import ButtonText from "../../../../components/button/ButtonText";
+import InvoiceDetailsAPI from "../../../../api/invoice/InvoiceDetailsAPI";
 
 class InvoicesList extends Component {
     constructor(props) {
@@ -165,6 +167,12 @@ class InvoicesList extends Component {
         hashHistory.push(`/financieel/${this.props.administrationId}/facturen/gecontroleerd/verzenden`);
     };
 
+    downloadPostInvoices = () => {
+        InvoiceDetailsAPI.sendAllPost(this.props.administrationId).then((payload) => {
+            fileDownload(payload.data, 'test.pdf');
+        });
+    };
+
     resetInvoiceFilters = () => {
         this.props.clearFilterInvoices();
 
@@ -206,14 +214,18 @@ class InvoicesList extends Component {
             <div>
                 <div className="row">
                     <div className="col-md-4">
-                        <div className="btn-group" role="group">
+                        <div className="btn-group btn-group-flex" role="group">
                             <ButtonIcon iconName={"glyphicon-refresh"} onClickAction={this.resetInvoiceFilters}/>
                             <ButtonIcon iconName={"glyphicon-download-alt"} onClickAction={this.getCSV} />
                             {(this.props.filter === 'concepten' && meta.total > 0) &&
                             <ButtonIcon iconName={"glyphicon-ok"} onClickAction={this.showCheckAll}/>
                             }
                             {(this.props.filter === 'gecontroleerd' && meta.total > 0) &&
-                            <ButtonIcon iconName={"glyphicon-envelope"} onClickAction={this.previewSend}/>
+                            <ButtonText buttonText={"Facturen versturen"}
+                                        onClickAction={() => this.previewSend()}/>
+                            }
+                            {(this.props.filter === 'gecontroleerd' && meta.total > 0) &&
+                            <ButtonText buttonText={"Post facturen versturen"} onClickAction={() => this.downloadPostInvoices()}/>
                             }
                         </div>
                     </div>

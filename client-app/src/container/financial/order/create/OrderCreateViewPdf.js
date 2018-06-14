@@ -1,9 +1,9 @@
 import React, {Component} from 'react';
 import {isEmpty} from 'lodash';
 import PdfViewer from "../../../../components/pdf/PdfViewer";
-import InvoiceDetailsAPI from "../../../../api/invoice/InvoiceDetailsAPI";
+import OrderDetailsAPI from "../../../../api/order/OrderDetailsAPI";
 
-class InvoiceSendViewPdf extends Component {
+class OrderCreateViewPdf extends Component {
     constructor(props){
         super(props);
 
@@ -13,22 +13,22 @@ class InvoiceSendViewPdf extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        if(this.props.invoiceId !== nextProps.invoiceId) {
-            if (nextProps.invoiceId) {
-                this.downloadFile(nextProps.invoiceId);
+        if(this.props.orderId !== nextProps.orderId) {
+            if (nextProps.orderId) {
+                this.downloadFile(nextProps.orderId);
             }
         }
     }
 
-    downloadFile(invoiceId, i = 0) {
-        InvoiceDetailsAPI.download(invoiceId).then((payload) => {
+    downloadFile(orderId, i = 0) {
+        OrderDetailsAPI.downloadPreview(orderId).then((payload) => {
             this.setState({
                 file: payload.data,
             });
         }).catch(() => {
             if (i < 2) {
                 setTimeout(() => {
-                    this.downloadFile(invoiceId, i);
+                    this.downloadFile(orderId, i);
                 }, 500);
             }
             i++;
@@ -50,4 +50,4 @@ class InvoiceSendViewPdf extends Component {
     }
 };
 
-export default InvoiceSendViewPdf;
+export default OrderCreateViewPdf;

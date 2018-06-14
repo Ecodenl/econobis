@@ -15,6 +15,7 @@ use App\Helpers\CSV\InvoiceCSVHelper;
 use App\Helpers\Invoice\InvoiceHelper;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Api\ApiController;
+use App\Http\Controllers\Api\Order\OrderController;
 use App\Http\RequestQueries\Invoice\Grid\RequestQuery;
 use App\Http\Resources\Invoice\FullInvoice;
 use App\Http\Resources\Invoice\GridInvoice;
@@ -22,6 +23,7 @@ use App\Http\Resources\Invoice\InvoicePeek;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Barryvdh\DomPDF\Facade as PDF;
 
 class InvoiceController extends ApiController
 {
@@ -31,6 +33,11 @@ class InvoiceController extends ApiController
         $invoices = $requestQuery->get();
 
         $invoices->load(['order.contact']);
+
+        foreach ($invoices as $invoice){
+            $orderController = new OrderController;
+            $invoice->emailToAddress = $orderController->getContactInfoForOrder($invoice->order->contact)['email'];
+        }
 
         $totalPrice = 0;
         foreach($invoices as $invoice){
@@ -68,6 +75,9 @@ class InvoiceController extends ApiController
             'document',
             'createdBy',
         ]);
+
+        $orderController = new OrderController;
+        $invoice->emailToAddress = $orderController->getContactInfoForOrder($invoice->order->contact)['email'];
 
         return FullInvoice::make($invoice);
     }
@@ -191,12 +201,20 @@ class InvoiceController extends ApiController
 
     public function send(Invoice $invoice)
     {
-        return InvoiceHelper::send($invoice);
+        $orderController = new OrderController;
+        $emailTo = $orderController->getContactInfoForOrder($invoice->order->contact)['email'];
+
+        if($invoice->send_method_id === 'mail' && $emailTo === 'Geen e-mail bekend') {
+            return 'Geen e-mail bekend';
+        }
+        else{
+            return InvoiceHelper::send($invoice);
+        }
     }
 
     public function sendAll(Administration $administration)
     {
-        $invoices = Invoice::where('administration_id', $administration->id)->where('status_id', 'checked')->with('order.contact')->get();
+        $invoices = Invoice::where('administration_id', $administration->id)->where('status_id', 'checked')->where('send_method_id', 'mail')->with('order.contact')->get();
 
         $response = [];
 
@@ -205,6 +223,48 @@ class InvoiceController extends ApiController
         }
 
         return $response;
+    }
+
+    public function sendAllPost(Administration $administration)
+    {
+        $invoices = Invoice::where('administration_id', $administration->id)->where('status_id', 'checked')->where('send_method_id', 'post')->with('order.contact')->get();
+
+
+        $html
+            = '<style>
+.page-break {
+    page-break-after: always;
+}
+</style>';
+
+        foreach ($invoices as $k => $invoice){
+            $invoice->status_id = 'sent';
+            $invoice->save();
+            InvoiceHelper::createInvoiceDocument($invoice);
+
+            $img = '';
+            if($invoice->administration->logo_filename) {
+                $path = storage_path('app' .  DIRECTORY_SEPARATOR . 'administrations' . DIRECTORY_SEPARATOR . $invoice->administration->logo_filename);
+                $logo = file_get_contents($path);
+
+                $src = 'data:' . mime_content_type($path)
+                    . ';charset=binary;base64,' . base64_encode($logo);
+                $src = str_replace(" ", "", $src);
+                $img = '<img src="' . $src . '" width="200px" height="200px"/>';
+            }
+
+            if($k !== 0){
+                $html .= '<div class="page-break"></div>';
+            }
+            $html .= view('invoices.generic')->with( 'invoice', $invoice)->with('logo', $img)->render();
+
+        }
+
+        libxml_use_internal_errors(true);
+        $pdfOutput = PDF::loadHTML($html)->output();
+        libxml_use_internal_errors(false);
+        return $pdfOutput;
+
     }
 
     public function download(Invoice $invoice){
@@ -249,7 +309,12 @@ class InvoiceController extends ApiController
     {
         $this->authorize('manage', Invoice::class);
 
-        $invoices = Invoice::where('administration_id', $administration->id)->where('status_id', 'checked')->with('order.contact')->get();
+        $invoices = Invoice::where('administration_id', $administration->id)->where('status_id', 'checked')->where('send_method_id', 'mail')->with('order.contact')->get();
+
+        foreach ($invoices as $invoice){
+            $orderController = new OrderController;
+            $invoice->emailToAddress = $orderController->getContactInfoForOrder($invoice->order->contact)['email'];
+        }
 
         return FullInvoice::collection($invoices);
     }

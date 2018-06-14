@@ -40,7 +40,7 @@ class OrdersListItem extends Component {
                 <td>{ dateRequested ? moment(dateRequested).format('DD-MM-Y') : ''}</td>
                 <td>{subject ? subject : ''}</td>
                 <td>{contact ? contact.fullName : ''}</td>
-                <td>{'€' + totalPriceInclVatPerYear.toLocaleString('nl',{ minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                <td className={`${totalPriceInclVatPerYear <= 0 ? 'warning-td' : ''}`}>{'€' + totalPriceInclVatPerYear.toLocaleString('nl',{ minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
                 <td>{paymentType ? paymentType.name : ''}</td>
                 <td>{status ? status.name : ''}</td>
                 <td>

@@ -79,7 +79,9 @@ class InvoiceHelper
 
     public static function send(Invoice $invoice, $preview = false){
 
-        InvoiceHelper::createInvoiceDocument($invoice);
+        if(!$preview) {
+            InvoiceHelper::createInvoiceDocument($invoice);
+        }
 
         if($invoice->send_method_id === 'mail') {
             $orderController = new OrderController();

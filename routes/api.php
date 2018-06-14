@@ -329,8 +329,11 @@ Route::namespace('Api')
         Route::get('order/amount-collection', 'Order\OrderController@getAmountCollection');
         Route::get('order/{order}', 'Order\OrderController@show');
         Route::get('order/{order}/download-preview', 'Order\OrderController@downloadPreview');
+        Route::get('order/{order}/email-preview', 'Order\OrderController@getEmailPreview');
         Route::get('order/{contact}/contact-info-for-order', 'Order\OrderController@getContactInfoForOrder');
         Route::post('order', 'Order\OrderController@store');
+        Route::post('order/creating', 'Order\OrderController@getOrdersForCreating');
+        Route::post('order/create-all', 'Order\OrderController@createAll');
         Route::post('order/order-product', 'Order\OrderController@storeOrderProduct');
         Route::post('order/order-product/{orderProduct}/update', 'Order\OrderController@updateOrderProduct');
         Route::post('order/{order}', 'Order\OrderController@update');
@@ -344,6 +347,7 @@ Route::namespace('Api')
         Route::get('invoice/{invoice}', 'Invoice\InvoiceController@show');
         Route::get('invoice/{invoice}/download', 'Invoice\InvoiceController@download');
         Route::get('invoice/{invoice}/email-preview', 'Invoice\InvoiceController@getEmailPreview');
+        Route::get('invoice/{administration}/send-all-post', 'Invoice\InvoiceController@sendAllPost');
         Route::post('invoice', 'Invoice\InvoiceController@store');
         Route::post('invoice/{invoice}', 'Invoice\InvoiceController@update');
         Route::post('invoice/{invoice}/irrecoverable', 'Invoice\InvoiceController@setIrrecoverable');

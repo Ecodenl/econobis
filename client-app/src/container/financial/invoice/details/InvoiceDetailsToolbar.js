@@ -82,7 +82,7 @@ class InvoiceToolbar extends Component {
                         {this.props.invoiceDetails.statusId === 'concept' &&
                         <ButtonIcon iconName={"glyphicon-ok"} onClickAction={this.showSetChecked}/>
                         }
-                        {this.props.invoiceDetails.statusId === 'checked' &&
+                        {this.props.invoiceDetails.statusId === 'checked' && (this.props.invoiceDetails.emailToAddress !== 'Geen e-mail bekend' && this.props.invoiceDetails.sendMethodId === 'mail') &&
                         <ButtonIcon iconName={"glyphicon-envelope"} onClickAction={this.showSend}/>
                         }
                         {(this.props.invoiceDetails.statusId === 'sent' || this.props.invoiceDetails.statusId === 'exported') &&

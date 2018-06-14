@@ -66,6 +66,8 @@ class FullInvoice extends Resource
                 'createdById' => $this->created_by_id,
                 'createdBy' => FullUser::make($this->whenLoaded('createdBy')),
 
+                'emailToAddress' => $this->emailToAddress ? $this->emailToAddress : 'Geen e-mail bekend',
+
                 'createdAt' => $this->created_at,
                 'updatedAt' => $this->updated_at,
             ];

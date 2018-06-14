@@ -39,6 +39,8 @@ class GridInvoice extends Resource
             'paymentType' =>  FullEnumWithIdAndName::make($this->getPaymentType()),
             'statusId' => $this->status_id,
             'status' =>  FullEnumWithIdAndName::make($this->getStatus()),
+
+            'emailToAddress' => $this->emailToAddress ? $this->emailToAddress : 'Geen e-mail bekend'
         ];
     }
 }

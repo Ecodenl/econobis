@@ -1,9 +1,9 @@
 import React, {Component} from 'react';
 import {isEmpty} from 'lodash';
-import InvoiceDetailsAPI from "../../../../api/invoice/InvoiceDetailsAPI";
+import OrderDetailsAPI from "../../../../api/order/OrderDetailsAPI";
 import ViewHtmlAsText from "../../../../components/form/ViewHtmlAsText";
 
-class InvoiceSendViewEmail extends Component {
+class OrderCreateViewEmail extends Component {
     constructor(props){
         super(props);
 
@@ -13,15 +13,15 @@ class InvoiceSendViewEmail extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        if(this.props.invoiceId !== nextProps.invoiceId) {
-            if (nextProps.invoiceId) {
-                this.downloadEmail(nextProps.invoiceId);
+        if(this.props.orderId !== nextProps.orderId) {
+            if (nextProps.orderId) {
+                this.downloadEmail(nextProps.orderId);
             }
         }
     }
 
-    downloadEmail(invoiceId) {
-        InvoiceDetailsAPI.getEmailPreview(invoiceId).then((payload) => {
+    downloadEmail(orderId) {
+        OrderDetailsAPI.getEmailPreview(orderId).then((payload) => {
             this.setState({
                 email: payload,
             });
@@ -68,4 +68,4 @@ class InvoiceSendViewEmail extends Component {
     }
 };
 
-export default InvoiceSendViewEmail;
+export default OrderCreateViewEmail;

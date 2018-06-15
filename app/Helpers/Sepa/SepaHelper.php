@@ -9,44 +9,67 @@
 namespace App\Helpers\Sepa;
 
 use App\Eco\Administration\Administration;
+use App\Eco\Administration\Sepa;
 use App\Eco\Invoice\Invoice;
+use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\Storage;
 
+/**
+ * Class SepaHelper
+ *
+ * @package App\Helpers\Sepa
+ */
 class SepaHelper
 {
+    /**
+     * @var Administration|string
+     */
     private $administration = '';
+    /**
+     * @var array
+     */
+    private $invoices = [];
 
-    public function __construct(Administration $administration)
+    /**
+     * SepaHelper constructor.
+     *
+     * @param Administration $administration
+     * @param                $invoices
+     */
+    public function __construct(Administration $administration, $invoices)
     {
         $this->administration = $administration;
+        $this->invoices = $invoices;
     }
 
+    /**
+     * @return Sepa
+     */
     public function generateSepaFile()
     {
-        // Get invoices with status 'sent' and 'incasso' from administration
-        $invoices = Invoice::where('administration_id', $this->administration->id)->where('status_id', 'sent')->where('payment_type_id','collection')->get();
-        $invoices->load(['order.contact']);
+        //Generate Sepa XML file
+       $xml = $this->createXml();
 
-        return $this->createXml($invoices);
-
-
-    }
-
-    private function processData($invoices)
-    {
-        foreach($invoices as $invoice) {
-            checkInvoice($invoice);
-        }
-    }
-
-    // Check invoices en create array for SEPA
-    private function checkInvoice($invoice)
-    {
-        return $invoice;
+       //Save file on server, also fill in fk sepa_id for invoices
+       return $this->saveSepaFile($xml);
     }
 
     // Make Xml file
-    private function createXml($invoices)
+
+    /**
+     *
+     * @return string - the XML
+     */
+    private function createXml()
     {
+
+        $batchNumber = Sepa::where('administration_id', $this->administration->id)->count();
+
+        $totalOpen = 0;
+        foreach($this->invoices as $invoice){
+            $totalOpen += $invoice->amount_open;
+        }
         $xml = '';
 
         $xml .= "<?xml version=\"1.0\" encoding=\"utf-8\"?>";
@@ -55,22 +78,22 @@ class SepaHelper
 
         // GroupHeader
         $xml .= "\n\t\t<GrpHdr>";
-        $xml .= "\n\t\t\t<MsgId>" . date("Ymd") . $batchnummer . "</MsgId>"; // Uniek nummer - Datum + Batchnummer
-        $xml .= "\n\t\t\t<CreDtTm>" . date("c") . "</CreDtTm>"; // Aanmaakdatum van bestand > 2012-12-01T13:00:00 (ISO Time)
-        $xml .= "\n\t\t\t<NbOfTxs>" . count($arrIncasso) . "</NbOfTxs>"; // Aantal opdrachten in dit bestand
-        $xml .= "\n\t\t\t<CtrlSum>" . $totaalOpenstaand . "</CtrlSum>"; // Totaalbedrag van alle opdrachten (punt als decimal teken)
+        $xml .= "\n\t\t\t<MsgId>" . Carbon::today()->format('Ymd') . $batchNumber . "</MsgId>"; // Uniek nummer - Datum + Batchnummer
+        $xml .= "\n\t\t\t<CreDtTm>" . Carbon::today()->format('c') . "</CreDtTm>"; // Aanmaakdatum van bestand > 2012-12-01T13:00:00 (ISO Time)
+        $xml .= "\n\t\t\t<NbOfTxs>" . $this->invoices->count() . "</NbOfTxs>"; // Aantal opdrachten in dit bestand
+        $xml .= "\n\t\t\t<CtrlSum>" . $totalOpen . "</CtrlSum>"; // Totaalbedrag van alle opdrachten (punt als decimal teken)
         $xml .= "\n\t\t\t<InitgPty>";
-        $xml .= "\n\t\t\t\t<Nm>Xaris</Nm>"; // Naam van opdrachtgever
+        $xml .= "\n\t\t\t\t<Nm>" . $this->administration->name . "</Nm>"; // Naam van opdrachtgever
         $xml .= "\n\t\t\t</InitgPty>";
         $xml .= "\n\t\t</GrpHdr>";
 
         // Payment Information
         $xml .= "\n\t\t<PmtInf>";
-        $xml .= "\n\t\t\t<PmtInfId>" . date("Ymd") . $batchnummer . "</PmtInfId>"; // Referentienummer
+        $xml .= "\n\t\t\t<PmtInfId>" . Carbon::today()->format('Ymd') . $batchNumber . "</PmtInfId>"; // Referentienummer
         $xml .= "\n\t\t\t<PmtMtd>DD</PmtMtd>"; // DD - Vaste waarde voor incasso
         $xml .= "\n\t\t\t<BtchBookg>false</BtchBookg>"; // true=dan worden de transacties binnen een batch als ��n betaling verwerkt, false = dan worden de transacties binnen een batch als individuele opdrachten in ��n bulkopdracht verwerkt
-        $xml .= "\n\t\t\t<NbOfTxs>" . count($arrIncasso) . "</NbOfTxs>"; // Aantal opdrachten in dit bestand
-        $xml .= "\n\t\t\t<CtrlSum>" . $totaalOpenstaand . "</CtrlSum>"; // Totaalbedrag van alle opdrachten (punt als decimal teken)
+        $xml .= "\n\t\t\t<NbOfTxs>" . $this->invoices->count() . "</NbOfTxs>"; // Aantal opdrachten in dit bestand
+        $xml .= "\n\t\t\t<CtrlSum>" . $totalOpen . "</CtrlSum>"; // Totaalbedrag van alle opdrachten (punt als decimal teken)
 
         /// Payment Type Information
         $xml .= "\n\t\t\t<PmtTpInf>";
@@ -83,23 +106,23 @@ class SepaHelper
         $xml .= "\n\t\t\t\t<SeqTp>RCUR</SeqTp>"; // First is nu ook RCUR (vervolgincasso)
         $xml .= "\n\t\t\t</PmtTpInf>";
 
-        $xml .= "\n\t\t\t<ReqdColltnDt>" . $datumVerwerken . "</ReqdColltnDt>"; // Gewenste uitvoerdatum
+        $xml .= "\n\t\t\t<ReqdColltnDt>" . new Carbon('first day of next month') . "</ReqdColltnDt>"; // Gewenste uitvoerdatum
 
         $xml .= "\n\t\t\t<Cdtr>"; // Crediteur
-        $xml .= "\n\t\t\t\t<Nm>Xaris</Nm>"; // Naam crediteur
+        $xml .= "\n\t\t\t\t<Nm>" . $this->administration->name . "</Nm>"; // Naam crediteur
         $xml .= "\n\t\t\t</Cdtr>";
 
         /// Creditor Account
         $xml .= "\n\t\t\t<CdtrAcct>";
         $xml .= "\n\t\t\t\t<Id>";
-        $xml .= "\n\t\t\t\t\t<IBAN>" . r(" ", "", $eigenaarInformatie['egn_sepa_iban']) . "</IBAN>"; // IBAN nummer opdrachtgever, spaties zijn in dit veld niet toegestaan
+        $xml .= "\n\t\t\t\t\t<IBAN>" . str_replace(" ", "", $this->administration->IBAN) . "</IBAN>"; // IBAN nummer opdrachtgever, spaties zijn in dit veld niet toegestaan
         $xml .= "\n\t\t\t\t</Id>";
         $xml .= "\n\t\t\t</CdtrAcct>";
 
         /// Creditor Agent
         $xml .= "\n\t\t\t<CdtrAgt>";
         $xml .= "\n\t\t\t\t<FinInstnId>";
-        $xml .= "\n\t\t\t\t\t<BIC>" .  r(" ", "", $eigenaarInformatie['egn_sepa_bic']) . "</BIC>"; // SWIFT/BIC code van bank opdrachtgever, spaties zijn in dit veld niet toegestaan
+        $xml .= "\n\t\t\t\t\t<BIC>" .  str_replace(" ", "", $this->administration->bic) . "</BIC>"; // SWIFT/BIC code van bank opdrachtgever, spaties zijn in dit veld niet toegestaan
         $xml .= "\n\t\t\t\t</FinInstnId>";
         $xml .= "\n\t\t\t</CdtrAgt>";
 
@@ -110,7 +133,7 @@ class SepaHelper
         $xml .= "\n\t\t\t\t<Id>";
         $xml .= "\n\t\t\t\t\t<PrvtId>";
         $xml .= "\n\t\t\t\t\t\t<Othr>";
-        $xml .= "\n\t\t\t\t\t\t\t<Id>" . $eigenaarInformatie['egn_sepa_creditor_identifier'] . "</Id>"; // Geen idee, zie bijlage B - dit is het Incassant ID volgens mij ton
+        $xml .= "\n\t\t\t\t\t\t\t<Id>" . $this->administration->sepa_creditor_id . "</Id>"; // Geen idee, zie bijlage B - dit is het Incassant ID volgens mij ton
         $xml .= "\n\t\t\t\t\t\t\t<SchmeNm>";
         $xml .= "\n\t\t\t\t\t\t\t\t<Prtry>SEPA</Prtry>"; // SEPA - Vaste waarde
         $xml .= "\n\t\t\t\t\t\t\t</SchmeNm>";
@@ -120,20 +143,20 @@ class SepaHelper
         $xml .= "\n\t\t\t</CdtrSchmeId>";
 
         // Transacties
-        foreach($arrIncasso AS $f){
+        foreach($this->invoices AS $invoice){
             $xml .= "\n\t\t\t<DrctDbtTxInf>";
             // Payment Identification
             $xml .= "\n\t\t\t\t<PmtId>";
-            $xml .= "\n\t\t\t\t\t<EndToEndId>" . $f['factuurnummer'] . "</EndToEndId>"; // Uniek nummer, wordt niet naar klant doorgegeven
+            $xml .= "\n\t\t\t\t\t<EndToEndId>" . $invoice->number . "</EndToEndId>"; // Uniek nummer, wordt niet naar klant doorgegeven
             $xml .= "\n\t\t\t\t</PmtId>";
 
-            $xml .= "\n\t\t\t\t<InstdAmt Ccy=\"EUR\">" . $f['bedrag'] . "</InstdAmt>"; // Bedrag incl BTW
+            $xml .= "\n\t\t\t\t<InstdAmt Ccy=\"EUR\">" . $invoice->amount_open . "</InstdAmt>"; // Bedrag incl BTW
 
             // Direct Debit Transaction
             $xml .= "\n\t\t\t\t<DrctDbtTx>";
             $xml .= "\n\t\t\t\t\t<MndtRltdInf>";
-            $xml .= "\n\t\t\t\t\t\t<MndtId>" . $f['debiteurnummer']  . "</MndtId>"; // Uniek nummer per klant, debiteurnummer
-            $xml .= "\n\t\t\t\t\t\t<DtOfSgntr>" .  $f['auto_incasso_datum_akkoord'] . "</DtOfSgntr>"; // Bestande klanten 1-1-20009, bij nieuwe klanten de datum van aanmaak klant of aanvinken van autoincasso
+            $xml .= "\n\t\t\t\t\t\t<MndtId>" . $invoice->order->contact->number  . "</MndtId>"; // Uniek nummer per klant, debiteurnummer
+            $xml .= "\n\t\t\t\t\t\t<DtOfSgntr>" .  $invoice->date_requested . "</DtOfSgntr>"; // Bestande klanten 1-1-20009, bij nieuwe klanten de datum van aanmaak klant of aanvinken van autoincasso
             $xml .= "\n\t\t\t\t\t</MndtRltdInf>";
             $xml .= "\n\t\t\t\t</DrctDbtTx>";
 
@@ -146,19 +169,19 @@ class SepaHelper
 
             // Debtor
             $xml .= "\n\t\t\t\t<Dbtr>";
-            $xml .= "\n\t\t\t\t\t<Nm>" . $f['bedrijf'] . "</Nm>"; // Naam van geincasseerde
+            $xml .= "\n\t\t\t\t\t<Nm>" .  $invoice->order->contact->fullName . "</Nm>"; // Naam van geincasseerde
             $xml .= "\n\t\t\t\t</Dbtr>";
 
             // Debtor Account
             $xml .= "\n\t\t\t\t<DbtrAcct>";
             $xml .= "\n\t\t\t\t\t<Id>";
-            $xml .= "\n\t\t\t\t\t\t<IBAN>" . r(" ", "", $f['rekeningnummer']) . "</IBAN>"; // IBAN nummer van geincasseerde
+            $xml .= "\n\t\t\t\t\t\t<IBAN>" . str_replace(' ', '', $invoice->order->contact->iban) . "</IBAN>"; // IBAN nummer van geincasseerde
             $xml .= "\n\t\t\t\t\t</Id>";
             $xml .= "\n\t\t\t\t</DbtrAcct>";
 
             // Remittance Information
             $xml .= "\n\t\t\t\t<RmtInf>";
-            $xml .= "\n\t\t\t\t\t<Ustrd>Factuurnummer " . $f['factuurnummer'] . "</Ustrd>"; // Unstructured (voorkeur in NL)
+            $xml .= "\n\t\t\t\t\t<Ustrd>Factuurnummer " . $invoice->number . "</Ustrd>"; // Unstructured (voorkeur in NL)
             $xml .= "\n\t\t\t\t</RmtInf>";
             $xml .= "\n\t\t\t</DrctDbtTxInf>";
         }
@@ -166,14 +189,62 @@ class SepaHelper
         $xml .= "\n\t\t</PmtInf>";
         $xml .= "\n\t</CstmrDrctDbtInitn>";
         $xml .= "\n</Document>";
-        dd($xml);
+
         return $xml;
     }
 
+    /** Saves file on server, also fills in invoice foreign key sepa_id
+     * @param $xml
+     *
+     * @return Sepa
+     */
+    private function saveSepaFile($xml){
 
+        $this->checkStorageDir();
 
-    // Save SEPA file
+        $name = 'sepa' . Carbon::today()->format('Ymd') . '.xml';
 
+        $path = 'administration_' . $this->administration->id
+            . DIRECTORY_SEPARATOR . 'sepas' . DIRECTORY_SEPARATOR . $name;
 
+        Storage::put('administrations/' . $path, $xml);
 
+        $sepa = new Sepa();
+        $sepa->administration_id = $this->administration->id;
+        $sepa->filename = $path;
+        $sepa->name = $name;
+        $sepa->save();
+
+        foreach ($this->invoices as $invoice){
+            $invoice->sepa_id = $sepa->id;
+            $invoice->save();
+        }
+
+        return $sepa;
+    }
+
+    /**
+     * @param Sepa $sepa
+     *
+     * @return \Symfony\Component\HttpFoundation\BinaryFileResponse
+     */
+    public function downloadSepa(Sepa $sepa){
+
+        $filePath = Storage::disk('administrations')->getDriver()
+            ->getAdapter()->applyPathPrefix($sepa->filename);
+
+        return response()->download($filePath, $sepa->name, ['Content-Type: application/xml']);
+    }
+
+    /**
+     *
+     */
+    public function checkStorageDir(){
+        //Check if storage map exists
+        $storageDir = Storage::disk('administrations')->getDriver()->getAdapter()->getPathPrefix() . DIRECTORY_SEPARATOR . 'administration_' . $this->administration->id . DIRECTORY_SEPARATOR . 'sepas';
+
+        if (!is_dir($storageDir)) {
+            mkdir($storageDir, 0777, true);
+        }
+    }
 }

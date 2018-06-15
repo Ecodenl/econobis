@@ -322,10 +322,14 @@ class InvoiceController extends ApiController
 
     public function generateSepaFile(Administration $administration){
 
-        $sepaHelper = new SepaHelper($administration);
+        // Get invoices with status 'sent' and type 'incasso' from administration
+        $invoices = Invoice::where('administration_id', $administration->id)->where('status_id', 'sent')->where('payment_type_id', 'collection')->get();
 
-        return $sepaHelper->generateSepaFile();
+        $sepaHelper = new SepaHelper($administration, $invoices);
 
+        $sepa =  $sepaHelper->generateSepaFile();
+
+        return $sepaHelper->downloadSepa($sepa);
     }
 
 }

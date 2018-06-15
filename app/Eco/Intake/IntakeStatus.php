@@ -19,7 +19,7 @@ class IntakeStatus extends Model
     ];
 
     public function intakes()
-    {;
+    {
         return $this->belongsToMany(Intake::class);
     }
 

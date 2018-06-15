@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\ProductionProject;
 
+use App\Http\Resources\Administration\FullAdministration;
 use App\Http\Resources\Document\FullDocument;
 use App\Http\Resources\GenericResource;
 use App\Http\Resources\ParticipantProductionProject\FullParticipantProductionProject;
@@ -73,6 +74,8 @@ class FullProductionProject extends Resource
                 'emailSentCount' => $this->relatedEmailsSent ? $this->relatedEmailsSent->count() : 0,
                 'relatedEmailsSent' => $this->relatedEmailsSent,
                 'currentParticipations' => $this->current_participations,
+                'administrationId' => $this->administration_id,
+                'administration' => FullAdministration::make($this->whenLoaded('administration')),
             ];
     }
 }

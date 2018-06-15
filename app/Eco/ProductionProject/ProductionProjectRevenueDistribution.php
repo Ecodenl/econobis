@@ -3,7 +3,7 @@
 namespace App\Eco\ProductionProject;
 
 use App\Eco\Contact\Contact;
-use App\Eco\User\User;
+use App\Eco\ParticipantProductionProject\ParticipantProductionProject;
 use Illuminate\Database\Eloquent\Model;
 use Venturecraft\Revisionable\RevisionableTrait;
 
@@ -21,6 +21,11 @@ class ProductionProjectRevenueDistribution extends Model
     protected $guarded = [
         'id'
     ];
+
+    public function participation()
+    {
+        return $this->belongsTo(ParticipantProductionProject::class, 'id', 'participation_id');
+    }
 
     public function revenue()
     {

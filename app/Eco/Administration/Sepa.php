@@ -18,4 +18,9 @@ class Sepa extends Model
         'id'
     ];
 
+    public function getType()
+    {
+        return SepaType::get($this->sepa_type_id);
+    }
+
 }

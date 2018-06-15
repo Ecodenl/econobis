@@ -264,6 +264,7 @@ Route::namespace('Api')
         Route::post('production-project/value-course/{productionProjectValueCourse}/delete', 'ProductionProject\ProductionProjectValueCourseController@destroy');
 
         Route::get('production-project/revenue/{productionProjectRevenue}', 'ProductionProject\ProductionProjectRevenueController@show');
+        Route::get('production-project/revenue/create-payment-invoices/{productionProjectRevenue}', 'ProductionProject\ProductionProjectRevenueController@createPaymentInvoices');
         Route::post('production-project/revenue/create-participant-revenue-report/{documentTemplate}/{emailTemplate}', 'ProductionProject\ProductionProjectRevenueController@createParticipantRevenueReport');
         Route::post('production-project/revenue/create-energy-supplier-report/{productionProjectRevenue}/{documentTemplate}/{energySupplier}', 'ProductionProject\ProductionProjectRevenueController@createEnergySupplierReport');
         Route::post('production-project/revenue/create-energy-supplier-csv/{productionProjectRevenue}/{energySupplier}', 'ProductionProject\ProductionProjectRevenueController@createEnergySupplierCsv');

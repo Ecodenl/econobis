@@ -52,6 +52,7 @@ class ProductionProjectController extends ApiController
             'productionProjectRevenues.createdBy',
             'tasks',
             'documents',
+            'administration',
         ]);
 
         $productionProject->relatedEmailsInbox = $this->getRelatedEmails($productionProject->id, 'inbox');
@@ -71,6 +72,7 @@ class ProductionProjectController extends ApiController
             ->string('description')->next()
             ->integer('ownedById')->validate('required|exists:users,id')->alias('owned_by_id')->next()
             ->integer('productionProjectStatusId')->validate('nullable|exists:production_project_status,id')->onEmpty(null)->alias('production_project_status_id')->next()
+            ->integer('administrationId')->validate('nullable|exists:administrations,id')->onEmpty(null)->alias('administration_id')->next()
             ->date('dateStart')->validate('nullable|date')->onEmpty(null)->alias('date_start')->next()
             ->date('dateProduction')->validate('nullable|date')->onEmpty(null)->alias('date_production')->next()
             ->date('dateStartRegistrations')->validate('nullable|date')->onEmpty(null)->alias('date_start_registrations')->next()

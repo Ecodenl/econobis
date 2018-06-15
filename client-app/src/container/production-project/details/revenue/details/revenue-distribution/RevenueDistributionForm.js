@@ -109,6 +109,12 @@ class RevenueDistributionForm extends Component {
 
     };
 
+    createPaymentInvoices = () => {
+        ProductionProjectRevenueAPI.createPaymentInvoices(this.props.productionProjectRevenue.id).then((payload) => {
+            hashHistory.push(`/financieel/${this.props.productionProjectRevenue.productionProject.administrationId}/facturen`);
+        });
+    };
+
     toggleModal = () => {
         this.setState({
             showModal: !this.state.showModal
@@ -239,15 +245,22 @@ class RevenueDistributionForm extends Component {
 
 
     render() {
+        let administrationIds = [];
+        this.props.administrations.forEach(function(administration) {
+            administrationIds.push(administration.id);
+        });
         return (
             <Panel>
                 <PanelHeader>
                     <span className="h5 text-bold">Opbrengstverdeling participanten</span>
+                    <div className="btn-group pull-right">
+                        {(this.props.productionProjectRevenue.confirmed == 1 && administrationIds.includes(this.props.productionProjectRevenue.productionProject.administrationId)) &&
+                        <ButtonText buttonText={'Facturen maken'} onClickAction={this.createPaymentInvoices}/>
+                        }
                     {this.props.productionProjectRevenue.confirmed == 1 &&
-                    <div className="pull-right">
                         <ButtonText buttonText={'Rapportage'} onClickAction={this.toggleShowCheckboxList}/>
-                    </div>
                     }
+                    </div>
                 </PanelHeader>
                 <PanelBody>
                     <div className="col-md-12">
@@ -325,6 +338,7 @@ const mapStateToProps = (state) => {
     return {
         productionProjectRevenue: state.productionProjectRevenue,
         documentGroups: state.systemData.documentGroups,
+        administrations: state.meDetails.administrations,
     };
 };
 

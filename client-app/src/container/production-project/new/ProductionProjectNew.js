@@ -15,7 +15,7 @@ const ProductionProjectNew = props => {
         dateProduction, dateStartRegistrations, dateEndRegistrations, productionProjectTypeId, postalCode, address,
         city, ean, eanManager, warrantyOrigin, eanSupply,
         participationWorth, powerKwAvailable, maxParticipations, taxReferral, maxParticipationsYouth,
-        totalParticipations, minParticipations, isMembershipRequired, isParticipationTransferable} = props.productionProject;
+        totalParticipations, minParticipations, isMembershipRequired, isParticipationTransferable, administrationId} = props.productionProject;
     return (
         <form className="form-horizontal col-md-12" onSubmit={props.handleSubmit}>
             <div className="row">
@@ -109,6 +109,16 @@ const ProductionProjectNew = props => {
                     value={productionProjectTypeId}
                     onChangeAction={props.handleInputChange}
                 />
+                <InputSelect
+                    label={"Administratie"}
+                    name={"administrationId"}
+                    options={props.administrations}
+                    value={administrationId}
+                    onChangeAction={props.handleInputChange}
+                />
+            </div>
+
+            <div className="row">
                 <InputText
                     label={"Postcode"}
                     name={"postalCode"}
@@ -116,15 +126,15 @@ const ProductionProjectNew = props => {
                     onChangeAction={props.handleInputChange}
                     error={props.errors.postalCode}
                 />
-            </div>
-
-            <div className="row">
                 <InputText
                     label={"Adres"}
                     name={"address"}
                     value={address}
                     onChangeAction={props.handleInputChange}
                 />
+            </div>
+
+            <div className="row">
                 <InputText
                     label={"Plaats"}
                     name={"city"}

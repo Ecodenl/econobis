@@ -20,7 +20,7 @@ use Illuminate\Support\Facades\Storage;
  *
  * @package App\Helpers\Sepa
  */
-class SepaHelper
+class SepaPaymentHelper
 {
     /**
      * @var Administration|string
@@ -155,7 +155,7 @@ class SepaHelper
             // Direct Debit Transaction
             $xml .= "\n\t\t\t\t<DrctDbtTx>";
             $xml .= "\n\t\t\t\t\t<MndtRltdInf>";
-            $xml .= "\n\t\t\t\t\t\t<MndtId>" . $invoice->order->contact->number  . "</MndtId>"; // Uniek nummer per klant, debiteurnummer
+            $xml .= "\n\t\t\t\t\t\t<MndtId>" . $invoice->revenue->contact->number  . "</MndtId>"; // Uniek nummer per klant, debiteurnummer
             $xml .= "\n\t\t\t\t\t\t<DtOfSgntr>" .  $invoice->date_requested . "</DtOfSgntr>"; // Bestande klanten 1-1-20009, bij nieuwe klanten de datum van aanmaak klant of aanvinken van autoincasso
             $xml .= "\n\t\t\t\t\t</MndtRltdInf>";
             $xml .= "\n\t\t\t\t</DrctDbtTx>";
@@ -169,13 +169,13 @@ class SepaHelper
 
             // Debtor
             $xml .= "\n\t\t\t\t<Dbtr>";
-            $xml .= "\n\t\t\t\t\t<Nm>" .  $invoice->order->contact->fullName . "</Nm>"; // Naam van geincasseerde
+            $xml .= "\n\t\t\t\t\t<Nm>" .  $invoice->revenue->contact->fullName . "</Nm>"; // Naam van geincasseerde
             $xml .= "\n\t\t\t\t</Dbtr>";
 
             // Debtor Account
             $xml .= "\n\t\t\t\t<DbtrAcct>";
             $xml .= "\n\t\t\t\t\t<Id>";
-            $xml .= "\n\t\t\t\t\t\t<IBAN>" . str_replace(' ', '', $invoice->order->contact->iban) . "</IBAN>"; // IBAN nummer van geincasseerde
+            $xml .= "\n\t\t\t\t\t\t<IBAN>" . str_replace(' ', '', $invoice->revenue->participation->IBAN) . "</IBAN>"; // IBAN nummer van geincasseerde
             $xml .= "\n\t\t\t\t\t</Id>";
             $xml .= "\n\t\t\t\t</DbtrAcct>";
 
@@ -202,7 +202,7 @@ class SepaHelper
 
         $this->checkStorageDir();
 
-        $name = 'd-sepa' . Carbon::today()->format('Ymd') . '.xml';
+        $name = 'c-sepa' . Carbon::today()->format('Ymd') . '.xml';
 
         $path = 'administration_' . $this->administration->id
             . DIRECTORY_SEPARATOR . 'sepas' . DIRECTORY_SEPARATOR . $name;
@@ -213,7 +213,7 @@ class SepaHelper
         $sepa->administration_id = $this->administration->id;
         $sepa->filename = $path;
         $sepa->name = $name;
-        $sepa->sepa_type_id = 'debit';
+        $sepa->sepa_type_id = 'payment';
         $sepa->save();
 
         foreach ($this->invoices as $invoice){

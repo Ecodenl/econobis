@@ -44,6 +44,8 @@ use App\Eco\ParticipantProductionProject\ParticipantProductionProject;
 use App\Eco\ParticipantProductionProject\ParticipantProductionProjectObserver;
 use App\Eco\ParticipantTransaction\ParticipantTransaction;
 use App\Eco\ParticipantTransaction\ParticipantTransactionObserver;
+use App\Eco\PaymentInvoice\PaymentInvoice;
+use App\Eco\PaymentInvoice\PaymentInvoiceObserver;
 use App\Eco\Person\Person;
 use App\Eco\Person\PersonObserver;
 use App\Eco\PhoneNumber\PhoneNumber;
@@ -100,6 +102,7 @@ class ObserverServiceProvider extends ServiceProvider
         Invoice::observe(InvoiceObserver::class);
         InvoicePayment::observe(InvoicePaymentObserver::class);
         ParticipantProductionProject::observe(ParticipantProductionProjectObserver::class);
+        PaymentInvoice::observe(PaymentInvoiceObserver::class);
     }
 
     /**

@@ -13,6 +13,7 @@ use App\Eco\Document\Document;
 use App\Eco\DocumentTemplate\DocumentTemplate;
 use App\Eco\EmailTemplate\EmailTemplate;
 use App\Eco\EnergySupplier\EnergySupplier;
+use App\Eco\PaymentInvoice\PaymentInvoice;
 use App\Eco\ProductionProject\ProductionProjectRevenue;
 use App\Eco\ProductionProject\ProductionProjectRevenueDistribution;
 use App\Helpers\Alfresco\AlfrescoHelper;
@@ -178,7 +179,7 @@ class ProductionProjectRevenueController extends ApiController
 
                 $distribution->es_id = $primaryContactEnergySupplier->energySupplier->id;
             }
-
+            $distribution->participation_id = $participant->id;
             $distribution->save();
         }
     }
@@ -389,5 +390,21 @@ class ProductionProjectRevenueController extends ApiController
         $this->authorize('manage', ProductionProjectRevenue::class);
 
         $productionProjectRevenue->forceDelete();
+    }
+
+    public function createPaymentInvoices(ProductionProjectRevenue $productionProjectRevenue){
+        if(!$productionProjectRevenue->productionProject->administration_id){
+            abort(400, 'Geen administratie gekoppeld aan dit productie project');
+        }
+
+        foreach ($productionProjectRevenue->distribution as $distribution){
+            if($distribution->payout_type === 'Rekening' && $distribution->payout > 0){
+                $paymentInvoice = new PaymentInvoice();
+                $paymentInvoice->revenue_distribution_id = $distribution->id;
+                $paymentInvoice->administration_id = $productionProjectRevenue->productionProject->administration_id;
+                $paymentInvoice->save();
+            }
+        }
+
     }
 }

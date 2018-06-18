@@ -55,8 +55,6 @@ class SepaHelper
        return $this->saveSepaFile($xml);
     }
 
-    // Make Xml file
-
     /**
      *
      * @return string - the XML
@@ -106,7 +104,7 @@ class SepaHelper
         $xml .= "\n\t\t\t\t<SeqTp>RCUR</SeqTp>"; // First is nu ook RCUR (vervolgincasso)
         $xml .= "\n\t\t\t</PmtTpInf>";
 
-        $xml .= "\n\t\t\t<ReqdColltnDt>" . Carbon::now()->addWeek() . "</ReqdColltnDt>"; // Gewenste uitvoerdatum
+        $xml .= "\n\t\t\t<ReqdColltnDt>" . Carbon::now()->addWeek()->format('Y-m-d') . "</ReqdColltnDt>"; // Gewenste uitvoerdatum
 
         $xml .= "\n\t\t\t<Cdtr>"; // Crediteur
         $xml .= "\n\t\t\t\t<Nm>" . $this->administration->name . "</Nm>"; // Naam crediteur
@@ -169,7 +167,7 @@ class SepaHelper
 
             // Debtor
             $xml .= "\n\t\t\t\t<Dbtr>";
-            $xml .= "\n\t\t\t\t\t<Nm>" .  $invoice->order->contact->fullName . "</Nm>"; // Naam van geincasseerde
+            $xml .= "\n\t\t\t\t\t<Nm>" .  $invoice->order->contact->full_name . "</Nm>"; // Naam van geincasseerde
             $xml .= "\n\t\t\t\t</Dbtr>";
 
             // Debtor Account
@@ -213,11 +211,12 @@ class SepaHelper
         $sepa->administration_id = $this->administration->id;
         $sepa->filename = $path;
         $sepa->name = $name;
-        $sepa->sepa_type_id = 'debit';
+        $sepa->sepa_type_id = 'credit';
         $sepa->save();
 
         foreach ($this->invoices as $invoice){
             $invoice->sepa_id = $sepa->id;
+            $invoice->status_id = 'exported';
             $invoice->save();
         }
 

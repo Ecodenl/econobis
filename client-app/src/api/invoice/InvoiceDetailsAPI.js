@@ -139,6 +139,14 @@ export default {
         return axios.get(requestUrl, {responseType: 'blob'});
     },
 
+    createSepa: (administrationId) => {
+        const requestUrl = `${URL_INVOICE}/${administrationId}/create-sepa`;
+        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
+        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
+
+        return axios.get(requestUrl, {responseType: 'blob'});
+    },
+
     newPayment: (payment) => {
         const requestUrl = `${URL_INVOICE}/${payment.invoiceId}/payment/new`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');

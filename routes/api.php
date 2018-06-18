@@ -351,6 +351,7 @@ Route::namespace('Api')
         Route::get('invoice/{invoice}/download', 'Invoice\InvoiceController@download');
         Route::get('invoice/{invoice}/email-preview', 'Invoice\InvoiceController@getEmailPreview');
         Route::get('invoice/{administration}/send-all-post', 'Invoice\InvoiceController@sendAllPost');
+        Route::get('invoice/{administration}/create-sepa', 'Invoice\InvoiceController@generateSepaFile');
         Route::post('invoice', 'Invoice\InvoiceController@store');
         Route::post('invoice/{invoice}', 'Invoice\InvoiceController@update');
         Route::post('invoice/{invoice}/irrecoverable', 'Invoice\InvoiceController@setIrrecoverable');

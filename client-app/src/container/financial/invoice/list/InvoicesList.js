@@ -169,7 +169,14 @@ class InvoicesList extends Component {
 
     downloadPostInvoices = () => {
         InvoiceDetailsAPI.sendAllPost(this.props.administrationId).then((payload) => {
-            fileDownload(payload.data, 'test.pdf');
+            fileDownload(payload.data, 'Post-facturen-' + moment().format("YYYY-MM-DD HH:mm:ss") +  '.csv');
+        });
+    };
+
+    createSepa = () => {
+        InvoiceDetailsAPI.createSepa(this.props.administrationId).then((payload) => {
+            fileDownload(payload.data, payload.headers['x-filename']);
+            hashHistory.push(`/financieel/${this.props.administrationId}/facturen/geexporteerd`);
         });
     };
 
@@ -226,6 +233,9 @@ class InvoicesList extends Component {
                             }
                             {(this.props.filter === 'gecontroleerd' && meta.total > 0) &&
                             <ButtonText buttonText={"Post facturen versturen"} onClickAction={() => this.downloadPostInvoices()}/>
+                            }
+                            {(this.props.filter === 'verzonden' && meta.total > 0) &&
+                            <ButtonText buttonText={"Sepa maken"} onClickAction={() => this.createSepa()}/>
                             }
                         </div>
                     </div>

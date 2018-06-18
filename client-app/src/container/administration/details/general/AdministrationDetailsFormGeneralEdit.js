@@ -150,7 +150,7 @@ class AdministrationDetailsFormGeneralEdit extends Component {
             hasErrors = true;
         }
 
-        if (!validator.isEmpty(administration.administrationNumber)) {
+        if (!validator.isEmpty(administration.administrationNumber + '')) {
             if (!validator.isInt(administration.administrationNumber + '')) {
                 errors.administrationNumber = true;
                 hasErrors = true;

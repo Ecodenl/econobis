@@ -38,7 +38,7 @@ const RevenueDistributionFormStaticView = props => {
                 {payoutType && payoutType}
             </div>
             <div className="col-sm-1">
-                {moment(datePayout).format('L')}
+                {datePayout ? moment(datePayout).format('L') : ''}
             </div>
             <div className="col-sm-1">
                 {energySupplierName && energySupplierName}

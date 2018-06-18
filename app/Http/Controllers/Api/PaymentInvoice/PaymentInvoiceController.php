@@ -14,6 +14,7 @@ use App\Helpers\Sepa\SepaPaymentHelper;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\RequestQueries\PaymentInvoice\Grid\RequestQuery;
 use App\Http\Resources\PaymentInvoice\GridPaymentInvoice;
+use Carbon\Carbon;
 
 class PaymentInvoiceController extends ApiController
 {
@@ -52,9 +53,20 @@ class PaymentInvoiceController extends ApiController
 
         $sepa =  $sepaPaymentHelper->generateSepaFile();
 
+        $setDatePayout = false;
         foreach ($validatedInvoices as $invoice){
             $invoice->status_id = 'sent';
             $invoice->save();
+
+            $invoice->revenueDistribution->date_payout = Carbon::today()->addWeek();
+            $invoice->revenueDistribution->save();
+
+            if(!$setDatePayout){
+                $invoice->revenueDistribution->revenue->date_payed = Carbon::today()->addWeek();
+                $invoice->revenueDistribution->revenue->save();
+                $setDatePayout = true;
+            }
+
         }
 
         return $sepaPaymentHelper->downloadSepa($sepa);

@@ -11,6 +11,7 @@ namespace App\Helpers\Sepa;
 use App\Eco\Administration\Administration;
 use App\Eco\Administration\Sepa;
 use App\Eco\Invoice\Invoice;
+use App\Eco\ParticipantTransaction\ParticipantTransaction;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Storage;
@@ -51,6 +52,7 @@ class SepaPaymentHelper
         //Generate Sepa XML file
        $xml = $this->createXml();
 
+       $this->createParticipantTransactions();
        //Save file on server, also fill in fk sepa_id for invoices
        return $this->saveSepaFile($xml);
     }
@@ -161,6 +163,20 @@ class SepaPaymentHelper
         $xml .= "\n</Document>";
 
         return $xml;
+    }
+
+    private function createParticipantTransactions(){
+        foreach ($this->invoices as $invoice){
+            $participantTransaction = new ParticipantTransaction();
+            $participantTransaction->participation_id = $invoice->revenueDistribution->participation_id;
+            $participantTransaction->type_id = 2;
+            $participantTransaction->date_transaction = Carbon::today();
+            $participantTransaction->amount = $invoice->revenueDistribution->payout;
+            $participantTransaction->iban = $invoice->revenueDistribution->participation->iban_payout;
+            $participantTransaction->referral = $invoice->number;
+            $participantTransaction->date_booking = Carbon::today()->addWeek();
+            $participantTransaction->save();
+        }
     }
 
     /** Saves file on server, also fills in invoice foreign key sepa_id

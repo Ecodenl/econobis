@@ -59,7 +59,7 @@ class ProductionProjectRevenueController extends ApiController
             ->date('dateBegin')->validate('required|date')->alias('date_begin')->next()
             ->date('dateEnd')->validate('required|date')->alias('date_end')->next()
             ->date('dateEntry')->validate('required|date')->alias('date_entry')->next()
-            ->date('dateConfirmed')->validate('nullable|date')->onEmpty(null)->alias('date_confirmed')->next()
+            ->string('dateConfirmed')->validate('nullable|date')->onEmpty(null)->alias('date_confirmed')->next()
             ->integer('kwhStart')->alias('kwh_start')->onEmpty(null)->next()
             ->integer('kwhEnd')->alias('kwh_end')->onEmpty(null)->next()
             ->integer('kwhStartHigh')->alias('kwh_start_high')->onEmpty(null)->next()
@@ -67,7 +67,7 @@ class ProductionProjectRevenueController extends ApiController
             ->integer('kwhStartLow')->alias('kwh_start_low')->onEmpty(null)->next()
             ->integer('kwhEndLow')->alias('kwh_end_low')->onEmpty(null)->next()
             ->integer('revenue')->onEmpty(null)->next()
-            ->date('datePayed')->validate('nullable|date')->alias('date_payed')->onEmpty(null)->next()
+            ->string('datePayed')->validate('nullable|date')->alias('date_payed')->whenMissing(null)->onEmpty(null)->next()
             ->integer('payPercentage')->onEmpty(null)->alias('pay_percentage')->next()
             ->integer('typeId')->validate('nullable|exists:production_project_revenue_type,id')->onEmpty(null)->alias('type_id')->next()
             ->get();
@@ -99,7 +99,7 @@ class ProductionProjectRevenueController extends ApiController
             ->date('dateBegin')->validate('required|date')->alias('date_begin')->next()
             ->date('dateEnd')->validate('required|date')->alias('date_end')->next()
             ->date('dateEntry')->validate('required|date')->alias('date_entry')->next()
-            ->date('dateConfirmed')->validate('nullable|date')->onEmpty(null)->alias('date_confirmed')->next()
+            ->string('dateConfirmed')->validate('nullable|date')->onEmpty(null)->alias('date_confirmed')->next()
             ->integer('kwhStart')->alias('kwh_start')->onEmpty(null)->next()
             ->integer('kwhEnd')->alias('kwh_end')->onEmpty(null)->next()
             ->integer('kwhStartHigh')->alias('kwh_start_high')->onEmpty(null)->next()
@@ -107,7 +107,7 @@ class ProductionProjectRevenueController extends ApiController
             ->integer('kwhStartLow')->alias('kwh_start_low')->onEmpty(null)->next()
             ->integer('kwhEndLow')->alias('kwh_end_low')->onEmpty(null)->next()
             ->integer('revenue')->onEmpty(null)->next()
-            ->date('datePayed')->validate('nullable|date')->alias('date_payed')->next()
+            ->string('datePayed')->validate('nullable|date')->onEmpty(null)->whenMissing(null)->alias('date_payed')->next()
             ->integer('payPercentage')->onEmpty(null)->alias('pay_percentage')->next()
             ->integer('typeId')->validate('nullable|exists:production_project_revenue_type,id')->onEmpty(null)->alias('type_id')->next()
             ->get();
@@ -125,7 +125,6 @@ class ProductionProjectRevenueController extends ApiController
         ProductionProjectRevenue $productionProjectRevenue
     ) {
 
-        $productionProjectRevenue->date_payed = new Carbon();
         $productionProjectRevenue->save();
 
         $productionProject = $productionProjectRevenue->productionProject;
@@ -168,7 +167,6 @@ class ProductionProjectRevenueController extends ApiController
                 * $participant->participations_current, 2);
 
             $distribution->payout_type = $participant->participantProductionProjectPayoutType->name;
-            $distribution->date_payout = $productionProjectRevenue->date_payed;
 
             $distribution->delivered_total = round((($productionProjectRevenue->kwh_end - $productionProjectRevenue->kwh_start) / $totalParticipations)
                 * $participant->participations_current,2);

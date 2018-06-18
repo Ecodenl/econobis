@@ -111,7 +111,7 @@ class RevenueDistributionForm extends Component {
 
     createPaymentInvoices = () => {
         ProductionProjectRevenueAPI.createPaymentInvoices(this.props.productionProjectRevenue.id).then((payload) => {
-            hashHistory.push(`/financieel/${this.props.productionProjectRevenue.productionProject.administrationId}/facturen`);
+            hashHistory.push(`/financieel/${this.props.productionProjectRevenue.productionProject.administrationId}/uitkering-facturen`);
         });
     };
 

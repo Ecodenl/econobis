@@ -186,7 +186,7 @@ class PaymentInvoicesList extends Component {
                             {
                                 data.length === 0 ? (
                                     <tr>
-                                        <td colSpan={5}>Geen uitkering facturen gevonden!</td>
+                                        <td colSpan={6}>Geen uitkering facturen gevonden!</td>
                                     </tr>
                                 ) : (
                                     data.map((invoice) => {

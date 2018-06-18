@@ -43,6 +43,7 @@ const PaymentInvoicesListFilter = props => {
                     }
                 </select>
             </th>
+            <th/>
         </tr>
     );
 };

@@ -364,5 +364,6 @@ Route::namespace('Api')
 
         Route::get('payment-invoice/grid', 'PaymentInvoice\PaymentInvoiceController@grid');
         Route::get('payment-invoice/{administration}/create-sepa', 'PaymentInvoice\PaymentInvoiceController@generateSepaFile');
+        Route::post('payment-invoice/{paymentInvoice}/not-paid', 'PaymentInvoice\PaymentInvoiceController@setNotPaid');
     }
 );

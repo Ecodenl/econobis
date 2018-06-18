@@ -182,7 +182,7 @@ class Administration extends Model
 
     public function getTotalPaymentInvoicesNotPaidAttribute()
     {
-        return $this->paymentInvoices()->where('status_id', 'not_paid')->count();
+        return $this->paymentInvoices()->where('status_id', 'not-paid')->count();
     }
 
 }

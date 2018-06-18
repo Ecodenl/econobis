@@ -44,11 +44,15 @@ class PaymentInvoiceController extends ApiController
         // Get invoices with status 'sent' and type 'incasso' from administration
         $invoices = PaymentInvoice::where('administration_id', $administration->id)->where('status_id', 'concept')->get();
 
-        $sepaPaymentHelper = new SepaPaymentHelper($administration, $invoices);
+        $validatedInvoices = $invoices->reject(function ($invoice) {
+            return (empty($invoice->revenueDistribution->address) || empty($invoice->revenueDistribution->postal_code) || empty($invoice->revenueDistribution->city));
+        });
+
+        $sepaPaymentHelper = new SepaPaymentHelper($administration, $validatedInvoices);
 
         $sepa =  $sepaPaymentHelper->generateSepaFile();
 
-        foreach ($invoices as $invoice){
+        foreach ($validatedInvoices as $invoice){
             $invoice->status_id = 'sent';
             $invoice->save();
         }
@@ -56,4 +60,9 @@ class PaymentInvoiceController extends ApiController
         return $sepaPaymentHelper->downloadSepa($sepa);
     }
 
+    public function setNotPaid(PaymentInvoice $paymentInvoice){
+        $paymentInvoice->date_paid = null;
+        $paymentInvoice->status_id = 'not-paid';
+        $paymentInvoice->save();
+    }
 }

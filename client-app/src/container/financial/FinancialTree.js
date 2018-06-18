@@ -103,7 +103,7 @@ class FinancialTree extends Component {
                                 <NavText><Link className="financial-tree-link" to={`financieel/${this.props.id}/uitkering-facturen/verzonden`}>Verzonden({this.props.administrationDetails.totalPaymentInvoicesSent})</Link></NavText>
                             </Nav>
                             <Nav id="not-paid">
-                                <NavText><Link className="financial-tree-link" to={`financieel/${this.props.id}/uitkering-facturen/niet-betaald`}>Niet betaald({this.props.administrationDetails.totalPaymentInvoicesnotPaid})</Link></NavText>
+                                <NavText><Link className="financial-tree-link" to={`financieel/${this.props.id}/uitkering-facturen/niet-betaald`}>Niet betaald({this.props.administrationDetails.totalPaymentInvoicesNotPaid})</Link></NavText>
                             </Nav>
                         </Nav>
                         <Nav id="administration-settings">

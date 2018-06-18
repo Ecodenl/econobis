@@ -20,6 +20,21 @@ export default {
         });
     },
 
+
+    setNotPaid: (invoiceId) => {
+        const requestUrl = `${URL_PAYMENT_INVOICE}/${invoiceId}/not-paid`;
+        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
+        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
+
+        return axios.post(requestUrl)
+            .then(function (response) {
+                return response.data;
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+    },
+
     createSepa: (administrationId) => {
         const requestUrl = `${URL_PAYMENT_INVOICE}/${administrationId}/create-sepa`;
         const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;

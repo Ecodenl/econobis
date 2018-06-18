@@ -17,8 +17,9 @@ const PaymentInvoicesListHead = (props) => {
         <tr className="thead-title">
             <DataTableHeadTitleAndSort sortColumn={'number'} title={'Nummer'} width={'25%'} setSorts={setSorts} />
             <DataTableHeadTitleAndSort sortColumn={'contact'} title={'Contact'} width={'25%'} setSorts={setSorts} />
-            <DataTableHeadTitleAndSort sortColumn={'payout'} title={'Bedrag'} width={'25%'} setSorts={setSorts} />
+            <DataTableHeadTitleAndSort sortColumn={'payout'} title={'Bedrag'} width={'20%'} setSorts={setSorts} />
             <DataTableHeadTitleAndSort sortColumn={'statusId'} title={'Status'} width={'25%'} setSorts={setSorts} />
+            <th width="5%" />
         </tr>
     );
 };

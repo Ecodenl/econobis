@@ -398,7 +398,7 @@ class ProductionProjectRevenueController extends ApiController
         }
 
         foreach ($productionProjectRevenue->distribution as $distribution){
-            if($distribution->payout_type === 'Rekening' && $distribution->payout > 0){
+            if($distribution->payout_type === 'Rekening' && $distribution->payout > 0 && !(empty($distribution->address) || empty($distribution->postal_code) || empty($distribution->city))){
                 $paymentInvoice = new PaymentInvoice();
                 $paymentInvoice->revenue_distribution_id = $distribution->id;
                 $paymentInvoice->administration_id = $productionProjectRevenue->productionProject->administration_id;

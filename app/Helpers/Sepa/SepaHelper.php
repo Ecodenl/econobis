@@ -173,7 +173,7 @@ class SepaHelper
             // Debtor Account
             $xml .= "\n\t\t\t\t<DbtrAcct>";
             $xml .= "\n\t\t\t\t\t<Id>";
-            $xml .= "\n\t\t\t\t\t\t<IBAN>" . str_replace(' ', '', $invoice->order->contact->iban) . "</IBAN>"; // IBAN nummer van geincasseerde
+            $xml .= "\n\t\t\t\t\t\t<IBAN>" . str_replace(' ', '', $invoice->order->IBAN) . "</IBAN>"; // IBAN nummer van geincasseerde
             $xml .= "\n\t\t\t\t\t</Id>";
             $xml .= "\n\t\t\t\t</DbtrAcct>";
 

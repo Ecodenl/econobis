@@ -59,7 +59,7 @@ class Administration extends Model
     }
 
     public function products(){
-        return $this->hasMany(Product::class);
+        return $this->hasMany(Product::class)->whereNull('deleted_at');
     }
 
     public function orders(){

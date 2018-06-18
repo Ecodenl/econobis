@@ -45,7 +45,7 @@ class PaymentInvoiceController extends ApiController
         $invoices = PaymentInvoice::where('administration_id', $administration->id)->where('status_id', 'concept')->get();
 
         $validatedInvoices = $invoices->reject(function ($invoice) {
-            return (empty($invoice->revenueDistribution->address) || empty($invoice->revenueDistribution->postal_code) || empty($invoice->revenueDistribution->city));
+            return (empty($invoice->revenueDistribution->address) || empty($invoice->revenueDistribution->postal_code) || empty($invoice->revenueDistribution->city) || empty($invoice->revenueDistribution->participation->iban_payout));
         });
 
         $sepaPaymentHelper = new SepaPaymentHelper($administration, $validatedInvoices);

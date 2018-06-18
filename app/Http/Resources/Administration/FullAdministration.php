@@ -60,6 +60,8 @@ class FullAdministration extends Resource
 
                 'products' => FullProduct::collection($this->whenLoaded('products')),
 
+                'sepas' => FullSepa::collection($this->whenLoaded('sepas')),
+
                 'totalOrders' => $this->total_orders,
                 'totalOrdersConcepts' => $this->total_orders_concepts,
                 'totalOrdersInvoices' => $this->total_orders_invoices,
@@ -75,6 +77,11 @@ class FullAdministration extends Resource
                 'totalInvoicesExhortation' => $this->total_invoices_exhortation,
                 'totalInvoicesPaid' => $this->total_invoices_paid,
                 'totalInvoicesIrrecoverable' => $this->total_invoices_irrecoverable,
+
+                'totalPaymentInvoices' => $this->total_payment_invoices,
+                'totalPaymentInvoicesConcepts' => $this->total_payment_invoices_concepts,
+                'totalPaymentInvoicesSent' => $this->total_payment_invoices_sent,
+                'totalPaymentInvoicesNotPaid' => $this->total_payment_invoices_not_paid,
 
                 'deletedAt' => $this->deleted_at,
                 'createdAt' => $this->created_at,

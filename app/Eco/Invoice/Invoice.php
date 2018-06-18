@@ -3,6 +3,7 @@
 namespace App\Eco\Invoice;
 
 use App\Eco\Administration\Administration;
+use App\Eco\Administration\Sepa;
 use App\Eco\Email\Email;
 use App\Eco\Order\Order;
 use App\Eco\Order\OrderPaymentType;
@@ -56,6 +57,11 @@ class Invoice extends Model
     public function administration()
     {
         return $this->belongsTo(Administration::class);
+    }
+
+    public function sepa()
+    {
+        return $this->belongsTo(Sepa::class);
     }
 
     public function tasks()

@@ -38,6 +38,7 @@ use App\Eco\Occupation\Occupation;
 use App\Eco\ParticipantProductionProject\ParticipantProductionProjectPayoutType;
 use App\Eco\ParticipantProductionProject\ParticipantProductionProjectStatus;
 use App\Eco\ParticipantTransaction\ParticipantTransactionType;
+use App\Eco\PaymentInvoice\PaymentInvoiceStatus;
 use App\Eco\PersonType\PersonType;
 use App\Eco\PhoneNumber\PhoneNumberType;
 use App\Eco\Product\ProductDuration;
@@ -135,6 +136,7 @@ class SystemData extends Resource
             'orderPaymentTypes' => FullEnumWithIdAndName::collection(OrderPaymentType::collection()),
             'orderCollectionFrequencies' => FullEnumWithIdAndName::collection(OrderCollectionFrequency::collection()),
             'invoiceSendMethods' => FullEnumWithIdAndName::collection(InvoiceSendMethod::collection()),
+            'paymentInvoiceStatuses' => FullEnumWithIdAndName::collection(PaymentInvoiceStatus::collection()),
         ];
     }
 }

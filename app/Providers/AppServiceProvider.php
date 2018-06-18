@@ -18,6 +18,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         Schema::defaultStringLength(191);
+        date_default_timezone_set('Europe/Amsterdam');
 
         if ($this->app->environment() == 'production') { // alleen errors naar slack versturen in productie
             $monolog = Log::getMonolog(); // onderliggende monolog instatie ophalen

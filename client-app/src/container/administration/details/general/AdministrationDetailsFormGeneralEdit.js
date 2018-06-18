@@ -50,10 +50,13 @@ class AdministrationDetailsFormGeneralEdit extends Component {
             errors: {
                 name: false,
                 administrationNumber: false,
+                address: false,
                 postalCode: false,
+                city: false,
                 kvkNumber: false,
                 btwNumber: false,
                 IBAN: false,
+                bic: false,
                 email: false,
                 website: false,
             },
@@ -132,9 +135,18 @@ class AdministrationDetailsFormGeneralEdit extends Component {
             hasErrors = true;
         }
 
+        if (validator.isEmpty(administration.address + '')) {
+            errors.address = true;
+            hasErrors = true;
+        }
 
-        if (!validator.isEmpty(administration.postalCode + '') && !validator.isPostalCode(administration.postalCode + '', 'any')) {
+        if (!validator.isPostalCode(administration.postalCode + '', 'any')) {
             errors.postalCode = true;
+            hasErrors = true;
+        }
+
+        if (validator.isEmpty(administration.city + '')) {
+            errors.city = true;
             hasErrors = true;
         }
 
@@ -159,6 +171,11 @@ class AdministrationDetailsFormGeneralEdit extends Component {
 
         if (!ibantools.isValidIBAN(administration.IBAN + '')) {
             errors.IBAN = true;
+            hasErrors = true;
+        }
+
+        if (validator.isEmpty(administration.bic + '')) {
+            errors.bic = true;
             hasErrors = true;
         }
 
@@ -240,12 +257,15 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                                 name={"address"}
                                 value={address}
                                 onChangeAction={this.handleInputChange}
+                                required={"required"}
+                                error={this.state.errors.address}
                             />
                             <InputText
                                 label="Postcode"
                                 name={"postalCode"}
                                 value={postalCode}
                                 onChangeAction={this.handleInputChange}
+                                required={"required"}
                                 error={this.state.errors.postalCode}
                             />
                         </div>
@@ -256,6 +276,8 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                                 name={"city"}
                                 value={city}
                                 onChangeAction={this.handleInputChange}
+                                required={"required"}
+                                error={this.state.errors.city}
                             />
                             <InputSelect
                                 label={"Land"}
@@ -296,11 +318,12 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                                 error={this.state.errors.IBAN}
                             />
                             <InputText
-                                label="E-mail"
-                                name={"email"}
-                                value={email}
+                                label="Bic"
+                                name={"bic"}
+                                value={bic}
                                 onChangeAction={this.handleInputChange}
-                                error={this.state.errors.email}
+                                required={"required"}
+                                error={this.state.errors.bic}
                             />
                         </div>
 
@@ -313,10 +336,11 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                                 error={this.state.errors.website}
                             />
                             <InputText
-                                label="Bic"
-                                name={"bic"}
-                                value={bic}
+                                label="E-mail"
+                                name={"email"}
+                                value={email}
                                 onChangeAction={this.handleInputChange}
+                                error={this.state.errors.email}
                             />
                         </div>
 
@@ -392,6 +416,7 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                                         className="form-control input-sm col-sm-6"
                                         value={attachment ? attachment.name : logoName }
                                         onClick={this.toggleNewLogo}
+                                        onChange={()=>{}}
                                     />
                                 </div>
                             </div>

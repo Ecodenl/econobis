@@ -11,7 +11,7 @@ const ProductionProjectFormView = props => {
         city, ean, eanManager, warrantyOrigin, eanSupply,
         participationWorth, powerKwAvailable, maxParticipations, taxReferral, maxParticipationsYouth,
         totalParticipations, minParticipations, issuedParticipations, isMembershipRequired, participationsInOption,
-        isParticipationTransferable, issuableParticipations} = props.productionProject;
+        isParticipationTransferable, issuableParticipations, administration} = props.productionProject;
 
     return (
         <div>
@@ -74,21 +74,29 @@ const ProductionProjectFormView = props => {
                     value={productionProjectType ? productionProjectType.name : ''}
                 />
                 <ViewText
-                    label={"Postcode"}
-                    value={postalCode ? postalCode : ''}
+                    label={"Administratie"}
+                    value={administration ? administration.name : ''}
                 />
             </div>
 
             <div className="row" onClick={props.switchToEdit}>
                 <ViewText
+                    label={"Postcode"}
+                    value={postalCode ? postalCode : ''}
+                />
+                <ViewText
                     label={"Adres"}
                     value={address ? address : ''}
                 />
+            </div>
+
+            <div className="row" onClick={props.switchToEdit}>
                 <ViewText
                     label={"Plaats"}
                     value={city ? city : ''}
                 />
             </div>
+
 
             <div className="row" onClick={props.switchToEdit}>
                 <ViewText

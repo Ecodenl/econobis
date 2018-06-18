@@ -59,6 +59,25 @@ export default (currentRouteParams) => {
                 break;
             }
             break;
+        case 'uitkering-facturen':
+            if(currentRouteParams.filter) {
+                activeParent = 'payment-invoices';
+                switch(currentRouteParams.filter) {
+                    case 'concepten':
+                        activeMenuItem = 'payment-invoices/concepts';
+                        break;
+                    case 'verzonden':
+                        activeMenuItem = 'payment-invoices/sent';
+                        break;
+                    case 'niet-betaald':
+                        activeMenuItem = 'payment-invoices/not-paid';
+                        break;
+                }
+            } else {
+                activeMenuItem = 'payment-invoices';
+                break;
+            }
+            break;
     }
 
     return {activeMenuItem, activeParent};

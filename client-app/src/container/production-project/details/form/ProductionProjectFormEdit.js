@@ -24,7 +24,7 @@ class ProductionProjectFormEdit extends Component {
             city, ean, eanManager, warrantyOrigin, eanSupply,
             participationWorth, powerKwAvailable, maxParticipations, taxReferral, maxParticipationsYouth,
             totalParticipations, minParticipations, isMembershipRequired,
-            isParticipationTransferable} = props.productionProject;
+            isParticipationTransferable, administration} = props.productionProject;
 
         this.state = {
             productionProject: {
@@ -134,7 +134,7 @@ class ProductionProjectFormEdit extends Component {
             participationWorth, powerKwAvailable, maxParticipations, taxReferral, maxParticipationsYouth,
             totalParticipations, minParticipations, isMembershipRequired,
             isParticipationTransferable} = this.state.productionProject;
-        const {issuedParticipations, participationsInOption, issuableParticipations}  = this.props.productionProject;
+        const {issuedParticipations, participationsInOption, issuableParticipations, administration}  = this.props.productionProject;
 
         return (
             <form className="form-horizontal col-md-12" onSubmit={this.handleSubmit}>
@@ -230,21 +230,30 @@ class ProductionProjectFormEdit extends Component {
                         onChangeAction={this.handleInputChange}
                     />
                     <InputText
+                        label={"Administratie"}
+                        name={"administration"}
+                        value={administration ? administration.name : ''}
+                        readOnly={'true'}
+                    />
+                </div>
+
+                <div className="row">
+                    <InputText
                         label={"Postcode"}
                         name={"postalCode"}
                         value={postalCode}
                         onChangeAction={this.handleInputChange}
                         error={this.state.errors.postalCode}
                     />
-                </div>
-
-                <div className="row">
                     <InputText
                         label={"Adres"}
                         name={"address"}
                         value={address}
                         onChangeAction={this.handleInputChange}
                     />
+                </div>
+
+                <div className="row">
                     <InputText
                         label={"Plaats"}
                         name={"city"}

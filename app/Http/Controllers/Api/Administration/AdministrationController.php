@@ -10,6 +10,7 @@ namespace App\Http\Controllers\Api\Administration;
 
 
 use App\Eco\Administration\Administration;
+use App\Eco\Administration\Sepa;
 use App\Eco\User\User;
 use App\Helpers\Delete\DeleteHelper;
 use App\Helpers\RequestInput\RequestInput;
@@ -47,6 +48,7 @@ class AdministrationController extends ApiController
             'emailTemplate',
             'emailTemplateReminder',
             'emailTemplateExhortation',
+            'sepas',
         ]);
 
         return FullAdministration::make($administration);
@@ -192,5 +194,13 @@ class AdministrationController extends ApiController
     public function peek()
     {
         return AdministrationPeek::collection(Administration::orderBy('id')->whereNull('deleted_at')->get());
+    }
+
+    public function downloadSepa(Sepa $sepa){
+        $filePath = Storage::disk('administrations')->getDriver()
+            ->getAdapter()->applyPathPrefix($sepa->filename);
+        header('X-Filename:' . $sepa->name);
+        header('Access-Control-Expose-Headers: X-Filename');
+        return response()->download($filePath, $sepa->name, ['Content-Type: application/xml']);
     }
 }

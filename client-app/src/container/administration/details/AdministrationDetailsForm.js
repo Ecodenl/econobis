@@ -7,6 +7,7 @@ import AdministrationDetailsUsers from './administration-users/AdministrationDet
 import moment from "moment/moment";
 import PanelDeletedItem from "../../../components/panel/PanelDeletedItem";
 import AdministrationDetailsFormConclusion from "./conclusion/AdministrationDetailsFormConclusion";
+import AdministrationDetailsSepas from "./sepas/AdministrationDetailsSepas";
 moment.locale('nl');
 
 class AdministrationDetailsForm extends Component {
@@ -28,6 +29,7 @@ class AdministrationDetailsForm extends Component {
                     }
                     <AdministrationDetailsFormGeneral />
                     <AdministrationDetailsUsers />
+                    <AdministrationDetailsSepas />
                     <AdministrationDetailsFormConclusion />
                 </div>
         );

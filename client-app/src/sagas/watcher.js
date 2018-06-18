@@ -59,6 +59,7 @@ import { addProductPriceHistorySaga, fetchProductDetailsSaga, updateProductDetai
 import { deleteProductSaga, fetchProductsSaga } from './product/ProductsSaga';
 import { fetchInvoicesSaga } from './invoice/InvoicesSaga';
 import { fetchInvoiceDetailsSaga} from './invoice/InvoiceDetailsSaga';
+import { fetchPaymentInvoicesSaga} from './payment-invoice/PaymentInvoicesSaga';
 
 export default function* watchSagas() {
     // General
@@ -157,6 +158,8 @@ export default function* watchSagas() {
     // Invoice
     yield takeLatest('FETCH_INVOICE_DETAILS', fetchInvoiceDetailsSaga);
     yield takeLatest('FETCH_INVOICES', fetchInvoicesSaga);
+    // Payment invoice
+    yield takeLatest('FETCH_PAYMENT_INVOICES', fetchPaymentInvoicesSaga);
     // Task / notes
     yield takeLatest('FETCH_TASKS', fetchTasksSaga);
     yield takeLatest('FETCH_NOTES', fetchNotesSaga);

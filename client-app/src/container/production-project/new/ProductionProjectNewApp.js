@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import moment from 'moment';
 import validator from 'validator';
 import { isEmpty } from 'lodash';
 import { hashHistory } from 'react-router';
@@ -7,6 +6,7 @@ import { hashHistory } from 'react-router';
 import ProductionProjectNewToolbar from './ProductionProjectNewToolbar';
 import ProductionProjectNew from './ProductionProjectNew';
 
+import AdministrationsAPI from '../../../api/administration/AdministrationsAPI';
 import ProductionProjectDetailsAPI from '../../../api/production-project/ProductionProjectDetailsAPI';
 import Panel from "../../../components/panel/Panel";
 import PanelBody from "../../../components/panel/PanelBody";
@@ -16,6 +16,7 @@ class ProductionProjectNewApp extends Component {
         super(props);
 
         this.state = {
+            administrations: [],
             showPostalCodeLinkFields: false,
             productionProject: {
                 name: '',
@@ -28,6 +29,7 @@ class ProductionProjectNewApp extends Component {
                 dateStartRegistrations: '',
                 dateEndRegistrations: '',
                 productionProjectTypeId: '',
+                administrationId: '',
                 postalCode: '',
                 address: '',
                 city: '',
@@ -55,6 +57,14 @@ class ProductionProjectNewApp extends Component {
         this.handleInputChangeDate = this.handleInputChangeDate.bind(this);
         this.toggleShowPostalCodeLinkFields = this.toggleShowPostalCodeLinkFields.bind(this);
     };
+
+    componentDidMount() {
+        AdministrationsAPI.peekAdministrations().then(payload => {
+            this.setState({
+                administrations: payload
+            });
+        });
+    }
 
     handleInputChange = event => {
         const target = event.target;
@@ -133,6 +143,7 @@ class ProductionProjectNewApp extends Component {
                             <PanelBody>
                                 <div className="col-md-12">
                                     <ProductionProjectNew
+                                        administrations={this.state.administrations}
                                         productionProject={this.state.productionProject}
                                         errors={this.state.errors}
                                         handleInputChange={this.handleInputChange}

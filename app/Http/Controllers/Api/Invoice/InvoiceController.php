@@ -14,6 +14,7 @@ use App\Eco\Invoice\InvoicePayment;
 use App\Helpers\CSV\InvoiceCSVHelper;
 use App\Helpers\Invoice\InvoiceHelper;
 use App\Helpers\RequestInput\RequestInput;
+use App\Helpers\Sepa\SepaHelper;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\Controllers\Api\Order\OrderController;
 use App\Http\RequestQueries\Invoice\Grid\RequestQuery;
@@ -317,6 +318,18 @@ class InvoiceController extends ApiController
         }
 
         return FullInvoice::collection($invoices);
+    }
+
+    public function generateSepaFile(Administration $administration){
+
+        // Get invoices with status 'sent' and type 'incasso' from administration
+        $invoices = Invoice::where('administration_id', $administration->id)->where('status_id', 'sent')->where('payment_type_id', 'collection')->get();
+
+        $sepaHelper = new SepaHelper($administration, $invoices);
+
+        $sepa =  $sepaHelper->generateSepaFile();
+
+        return $sepaHelper->downloadSepa($sepa);
     }
 
 }

@@ -6,6 +6,7 @@ use App\Eco\Country\Country;
 use App\Eco\EmailTemplate\EmailTemplate;
 use App\Eco\Invoice\Invoice;
 use App\Eco\Order\Order;
+use App\Eco\PaymentInvoice\PaymentInvoice;
 use App\Eco\Product\Product;
 use App\Eco\User\User;
 use App\Http\Traits\Encryptable;
@@ -40,6 +41,10 @@ class Administration extends Model
             'total_invoices_exhortation',
             'total_invoices_paid',
             'total_invoices_irrecoverable',
+            'total_payment_invoices',
+            'total_payment_invoices_concepts',
+            'total_payment_invoices_sent',
+            'total_payment_invoices_not_paid',
         ];
 
     //Dont boot softdelete scopes. We handle this ourselves
@@ -61,8 +66,16 @@ class Administration extends Model
         return $this->hasMany(Order::class);
     }
 
+    public function sepas(){
+        return $this->hasMany(Sepa::class);
+    }
+
     public function invoices(){
         return $this->hasMany(Invoice::class);
+    }
+
+    public function paymentInvoices(){
+        return $this->hasMany(PaymentInvoice::class);
     }
 
     public function country(){
@@ -174,6 +187,26 @@ class Administration extends Model
     public function getTotalInvoicesIrrecoverableAttribute()
     {
         return $this->invoices()->where('status_id', 'irrecoverable')->count();
+    }
+
+    public function getTotalPaymentInvoicesAttribute()
+    {
+        return $this->paymentInvoices()->count();
+    }
+
+    public function getTotalPaymentInvoicesConceptsAttribute()
+    {
+        return $this->paymentInvoices()->where('status_id', 'concept')->count();
+    }
+
+    public function getTotalPaymentInvoicesSentAttribute()
+    {
+        return $this->paymentInvoices()->where('status_id', 'sent')->count();
+    }
+
+    public function getTotalPaymentInvoicesNotPaidAttribute()
+    {
+        return $this->paymentInvoices()->where('status_id', 'not-paid')->count();
     }
 
 }

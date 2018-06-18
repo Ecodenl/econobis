@@ -65,6 +65,10 @@ class Administration extends Model
         return $this->hasMany(Order::class);
     }
 
+    public function sepas(){
+        return $this->hasMany(Sepa::class);
+    }
+
     public function invoices(){
         return $this->hasMany(Invoice::class);
     }

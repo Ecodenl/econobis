@@ -78,8 +78,8 @@ class SepaHelper
 
         // GroupHeader
         $xml .= "\n\t\t<GrpHdr>";
-        $xml .= "\n\t\t\t<MsgId>" . Carbon::today()->format('Ymd') . $batchNumber . "</MsgId>"; // Uniek nummer - Datum + Batchnummer
-        $xml .= "\n\t\t\t<CreDtTm>" . Carbon::today()->format('c') . "</CreDtTm>"; // Aanmaakdatum van bestand > 2012-12-01T13:00:00 (ISO Time)
+        $xml .= "\n\t\t\t<MsgId>" . Carbon::now()->format('Ymd') . $batchNumber . "</MsgId>"; // Uniek nummer - Datum + Batchnummer
+        $xml .= "\n\t\t\t<CreDtTm>" . Carbon::now()->format('c') . "</CreDtTm>"; // Aanmaakdatum van bestand > 2012-12-01T13:00:00 (ISO Time)
         $xml .= "\n\t\t\t<NbOfTxs>" . $this->invoices->count() . "</NbOfTxs>"; // Aantal opdrachten in dit bestand
         $xml .= "\n\t\t\t<CtrlSum>" . $totalOpen . "</CtrlSum>"; // Totaalbedrag van alle opdrachten (punt als decimal teken)
         $xml .= "\n\t\t\t<InitgPty>";
@@ -89,7 +89,7 @@ class SepaHelper
 
         // Payment Information
         $xml .= "\n\t\t<PmtInf>";
-        $xml .= "\n\t\t\t<PmtInfId>" . Carbon::today()->format('Ymd') . $batchNumber . "</PmtInfId>"; // Referentienummer
+        $xml .= "\n\t\t\t<PmtInfId>" . Carbon::now()->format('Ymd') . $batchNumber . "</PmtInfId>"; // Referentienummer
         $xml .= "\n\t\t\t<PmtMtd>DD</PmtMtd>"; // DD - Vaste waarde voor incasso
         $xml .= "\n\t\t\t<BtchBookg>false</BtchBookg>"; // true=dan worden de transacties binnen een batch als ��n betaling verwerkt, false = dan worden de transacties binnen een batch als individuele opdrachten in ��n bulkopdracht verwerkt
         $xml .= "\n\t\t\t<NbOfTxs>" . $this->invoices->count() . "</NbOfTxs>"; // Aantal opdrachten in dit bestand
@@ -106,7 +106,7 @@ class SepaHelper
         $xml .= "\n\t\t\t\t<SeqTp>RCUR</SeqTp>"; // First is nu ook RCUR (vervolgincasso)
         $xml .= "\n\t\t\t</PmtTpInf>";
 
-        $xml .= "\n\t\t\t<ReqdColltnDt>" . Carbon::today()->addWeek() . "</ReqdColltnDt>"; // Gewenste uitvoerdatum
+        $xml .= "\n\t\t\t<ReqdColltnDt>" . Carbon::now()->addWeek() . "</ReqdColltnDt>"; // Gewenste uitvoerdatum
 
         $xml .= "\n\t\t\t<Cdtr>"; // Crediteur
         $xml .= "\n\t\t\t\t<Nm>" . $this->administration->name . "</Nm>"; // Naam crediteur
@@ -202,7 +202,7 @@ class SepaHelper
 
         $this->checkStorageDir();
 
-        $name = 'f-sepa' . Carbon::today()->format('Ymd') . '.xml';
+        $name = 'f-sepa' . Carbon::now()->format('Ymdhi') . '.xml';
 
         $path = 'administration_' . $this->administration->id
             . DIRECTORY_SEPARATOR . 'sepas' . DIRECTORY_SEPARATOR . $name;
@@ -233,7 +233,8 @@ class SepaHelper
 
         $filePath = Storage::disk('administrations')->getDriver()
             ->getAdapter()->applyPathPrefix($sepa->filename);
-
+        header('X-Filename:' . $sepa->name);
+        header('Access-Control-Expose-Headers: X-Filename');
         return response()->download($filePath, $sepa->name, ['Content-Type: application/xml']);
     }
 

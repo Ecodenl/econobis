@@ -82,4 +82,12 @@ export default {
 
         return axios.post(requestUrl);
     },
+
+    downloadSepa: (sepaId) => {
+        const requestUrl = `${URL_ADMINISTRATION}/sepa/${sepaId}`;
+        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
+        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
+
+        return axios.get(requestUrl);
+    },
 };

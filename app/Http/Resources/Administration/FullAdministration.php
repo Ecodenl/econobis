@@ -60,6 +60,8 @@ class FullAdministration extends Resource
 
                 'products' => FullProduct::collection($this->whenLoaded('products')),
 
+                'sepas' => FullSepa::collection($this->whenLoaded('sepas')),
+
                 'totalOrders' => $this->total_orders,
                 'totalOrdersConcepts' => $this->total_orders_concepts,
                 'totalOrdersInvoices' => $this->total_orders_invoices,

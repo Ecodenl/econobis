@@ -78,8 +78,8 @@ class SepaPaymentHelper
 
         // GroupHeader
         $xml .= "\n\t\t<GrpHdr>";
-        $xml .= "\n\t\t\t<MsgId>" . Carbon::today()->format('Ymd') . $batchNumber . "</MsgId>"; // Uniek nummer - Datum + Batchnummer
-        $xml .= "\n\t\t\t<CreDtTm>" . Carbon::today()->format('c') . "</CreDtTm>"; // Aanmaakdatum van bestand > 2012-12-01T13:00:00 (ISO Time)
+        $xml .= "\n\t\t\t<MsgId>" . Carbon::now()->format('Ymd') . $batchNumber . "</MsgId>"; // Uniek nummer - Datum + Batchnummer
+        $xml .= "\n\t\t\t<CreDtTm>" . Carbon::now()->format('c') . "</CreDtTm>"; // Aanmaakdatum van bestand > 2012-12-01T13:00:00 (ISO Time)
         $xml .= "\n\t\t\t<NbOfTxs>" . $this->invoices->count() . "</NbOfTxs>"; // Aantal opdrachten in dit bestand
         $xml .= "\n\t\t\t<CtrlSum>" . $totalOpen . "</CtrlSum>"; // Totaalbedrag van alle opdrachten (punt als decimal teken)
         $xml .= "\n\t\t\t<InitgPty>";
@@ -89,7 +89,7 @@ class SepaPaymentHelper
 
         // Payment Information
         $xml .= "\n\t\t<PmtInf>";
-        $xml .= "\n\t\t\t<PmtInfId>" . Carbon::today()->format('Ymd') . $batchNumber . "</PmtInfId>"; // Referentienummer
+        $xml .= "\n\t\t\t<PmtInfId>" . Carbon::now()->format('Ymd') . $batchNumber . "</PmtInfId>"; // Referentienummer
         $xml .= "\n\t\t\t<PmtMtd>TRF</PmtMtd>"; // DD - Vaste waarde voor incasso
         $xml .= "\n\t\t\t<NbOfTxs>" . $this->invoices->count() . "</NbOfTxs>"; // Aantal opdrachten in dit bestand
         $xml .= "\n\t\t\t<CtrlSum>" . $totalOpen . "</CtrlSum>"; // Totaalbedrag van alle opdrachten (punt als decimal teken)
@@ -104,7 +104,7 @@ class SepaPaymentHelper
         $xml .= "\n\t\t\t\t</LclInstrm>";
         $xml .= "\n\t\t\t</PmtTpInf>";
 
-        $xml .= "\n\t\t\t<ReqdExctnDt>" . Carbon::today()->addWeek() . "</ReqdExctnDt>"; // Gewenste uitvoerdatum
+        $xml .= "\n\t\t\t<ReqdExctnDt>" . Carbon::now()->addWeek() . "</ReqdExctnDt>"; // Gewenste uitvoerdatum
 
         $xml .= "\n\t\t\t<Dbtr>"; // Debiteur
         $xml .= "\n\t\t\t\t<Nm>" . $this->administration->name . "</Nm>"; // Naam Debiteur
@@ -171,7 +171,7 @@ class SepaPaymentHelper
 
         $this->checkStorageDir();
 
-        $name = 'u-sepa' . Carbon::today()->format('Ymd') . '.xml';
+        $name = 'u-sepa' . Carbon::now()->format('Ymdhi') . '.xml';
 
         $path = 'administration_' . $this->administration->id
             . DIRECTORY_SEPARATOR . 'sepas' . DIRECTORY_SEPARATOR . $name;
@@ -187,7 +187,7 @@ class SepaPaymentHelper
 
         foreach ($this->invoices as $invoice){
             $invoice->sepa_id = $sepa->id;
-            $invoice->date_paid = Carbon::today()->addWeek();
+            $invoice->date_paid = Carbon::now()->addWeek();
             $invoice->save();
         }
 

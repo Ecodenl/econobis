@@ -63,7 +63,7 @@ class PaymentInvoices extends Migration
         });
 
         Schema::table('production_projects', function (Blueprint $table) {
-            $table->unsignedInteger('administration_id');
+            $table->unsignedInteger('administration_id')->nullable();
             $table->foreign('administration_id')
                 ->references('id')->on('administrations')
                 ->onDelete('restrict');

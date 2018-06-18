@@ -68,7 +68,7 @@ class SepaPaymentHelper
 
         $totalOpen = 0;
         foreach($this->invoices as $invoice){
-            $totalOpen += $invoice->amount_open;
+            $totalOpen += $invoice->revenueDistribution->payout;
         }
         $xml = '';
 
@@ -104,7 +104,7 @@ class SepaPaymentHelper
         $xml .= "\n\t\t\t\t</LclInstrm>";
         $xml .= "\n\t\t\t</PmtTpInf>";
 
-        $xml .= "\n\t\t\t<ReqdExctnDt>" . Carbon::now()->addWeek() . "</ReqdExctnDt>"; // Gewenste uitvoerdatum
+        $xml .= "\n\t\t\t<ReqdExctnDt>" . Carbon::now()->addWeek()->format('Y-m-d') . "</ReqdExctnDt>"; // Gewenste uitvoerdatum
 
         $xml .= "\n\t\t\t<Dbtr>"; // Debiteur
         $xml .= "\n\t\t\t\t<Nm>" . $this->administration->name . "</Nm>"; // Naam Debiteur
@@ -130,26 +130,27 @@ class SepaPaymentHelper
         foreach($this->invoices AS $invoice){
             $xml .= "\n\t\t\t<CdtTrfTxInf>";
             $xml .= "\n\t\t\t\t<PmtId>";
-            $xml .= "\n\t\t\t\t\t<EndToEndIf>" . $invoice->number . "</EndToEndIf>";
+            $xml .= "\n\t\t\t\t\t<EndToEndId>" . $invoice->number . "</EndToEndId>";
             $xml .= "\n\t\t\t\t</PmtId>";
 
             $xml .= "\n\t\t\t\t<Amt>";
-            $xml .= "\n\t\t\t\t\t<InstdAmt Ccy=\"EUR\">" . $invoice->amount_open . "</InstdAmt>"; // Bedrag incl BTW
+            $xml .= "\n\t\t\t\t\t<InstdAmt Ccy=\"EUR\">" . $invoice->revenueDistribution->payout . "</InstdAmt>"; // Bedrag incl BTW
             $xml .= "\n\t\t\t\t</Amt>";
 
             // Crediteur
             $xml .= "\n\t\t\t\t<Cdtr>";
-            $xml .= "\n\t\t\t\t\t<Nm>" .  $invoice->revenueDistribution->contact->fullName . "</Nm>"; // Naam
-            $xml .= "\n\t\t\t\t\t<PstlAdr>" .  $invoice->revenueDistribution->postal_code . "</PstlAdr>"; // Postcode
-            $xml .= "\n\t\t\t\t\t<Ctry>NL</Ctry>";
-            $xml .= "\n\t\t\t\t\t<AdrLine>" .  $invoice->revenueDistribution->address . "</AdrLine>"; // Postcode
-            $xml .= "\n\t\t\t\t\t<AdrLine>" .  $invoice->revenueDistribution->postal_code . " " . $invoice->revenueDistribution->city .  "</AdrLine>"; // Postcode
+            $xml .= "\n\t\t\t\t\t<Nm>" .  $invoice->revenueDistribution->contact->full_name . "</Nm>"; // Naam
+            $xml .= "\n\t\t\t\t\t<PstlAdr>";
+            $xml .= "\n\t\t\t\t\t\t<Ctry>NL</Ctry>";
+            $xml .= "\n\t\t\t\t\t\t<AdrLine>" .  $invoice->revenueDistribution->address . "</AdrLine>"; // Postcode
+            $xml .= "\n\t\t\t\t\t\t<AdrLine>" .  $invoice->revenueDistribution->postal_code . " " . $invoice->revenueDistribution->city .  "</AdrLine>"; // Postcode
+            $xml .= "\n\t\t\t\t\t</PstlAdr>";
             $xml .= "\n\t\t\t\t</Cdtr>";
 
             // Crediteur Account
             $xml .= "\n\t\t\t\t<CdtrAcct>";
             $xml .= "\n\t\t\t\t\t<Id>";
-            $xml .= "\n\t\t\t\t\t\t<IBAN>" . str_replace(' ', '', $invoice->revenueDistribution->participation->IBAN) . "</IBAN>"; // IBAN nummer van geincasseerde
+            $xml .= "\n\t\t\t\t\t\t<IBAN>" . str_replace(' ', '', $invoice->revenueDistribution->participation->iban_payout) . "</IBAN>"; // IBAN nummer van geincasseerde
             $xml .= "\n\t\t\t\t\t</Id>";
             $xml .= "\n\t\t\t\t</CdtrAcct>";
             $xml .= "\n\t\t\t</CdtTrfTxInf>";

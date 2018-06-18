@@ -202,7 +202,7 @@ class SepaHelper
 
         $this->checkStorageDir();
 
-        $name = 'd-sepa' . Carbon::today()->format('Ymd') . '.xml';
+        $name = 'f-sepa' . Carbon::today()->format('Ymd') . '.xml';
 
         $path = 'administration_' . $this->administration->id
             . DIRECTORY_SEPARATOR . 'sepas' . DIRECTORY_SEPARATOR . $name;

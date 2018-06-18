@@ -24,7 +24,7 @@ class ProductionProjectRevenueDistribution extends Model
 
     public function participation()
     {
-        return $this->belongsTo(ParticipantProductionProject::class, 'id', 'participation_id');
+        return $this->belongsTo(ParticipantProductionProject::class,'participation_id');
     }
 
     public function revenue()

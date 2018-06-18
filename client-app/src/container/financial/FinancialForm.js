@@ -5,6 +5,7 @@ import OrdersList from "./order/list/OrdersList";
 import InvoicesList from "./invoice/list/InvoicesList";
 import Panel from "../../components/panel/Panel";
 import PanelBody from "../../components/panel/PanelBody";
+import PaymentInvoicesList from "./payment-invoice/list/PaymentInvoicesList";
 
 class ProductDetailsForm extends Component {
     constructor(props) {
@@ -31,6 +32,16 @@ class ProductDetailsForm extends Component {
                     <Panel>
                         <PanelBody>
                             <InvoicesList
+                                administrationId={this.props.administrationDetails.id}
+                                filter={this.props.filter}
+                            />
+                        </PanelBody>
+                    </Panel>
+                    }
+                    {this.props.type === 'uitkering-facturen' &&
+                    <Panel>
+                        <PanelBody>
+                            <PaymentInvoicesList
                                 administrationId={this.props.administrationDetails.id}
                                 filter={this.props.filter}
                             />

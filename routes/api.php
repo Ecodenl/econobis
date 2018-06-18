@@ -361,5 +361,8 @@ Route::namespace('Api')
         Route::post('invoice/{invoice}/payment/new', 'Invoice\InvoiceController@newPayment');
         Route::post('invoice/{invoicePayment}/payment/update', 'Invoice\InvoiceController@updatePayment');
         Route::post('invoice/payment/{invoicePayment}/delete', 'Invoice\InvoiceController@deletePayment');
+
+        Route::get('payment-invoice/grid', 'PaymentInvoice\PaymentInvoiceController@grid');
+        Route::get('payment-invoice/{administration}/create-sepa', 'PaymentInvoice\PaymentInvoiceController@generateSepaFile');
     }
 );

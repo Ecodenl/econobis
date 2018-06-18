@@ -7,6 +7,7 @@ import {connect} from "react-redux";
 import { cog } from 'react-icons-kit/icomoon/cog';
 import { file } from 'react-icons-kit/fa/file';
 import { fileText } from 'react-icons-kit/fa/fileText';
+import { fileO } from 'react-icons-kit/fa/fileO';
 
 import FinancialSidebarHelper from '../../helpers/FinancialSidebarHelper';
 
@@ -90,6 +91,19 @@ class FinancialTree extends Component {
                             </Nav>
                             <Nav id="irrecoverable">
                                 <NavText><Link className="financial-tree-link" to={`financieel/${this.props.id}/facturen/oninbaar`}>Oninbaar({this.props.administrationDetails.totalInvoicesIrrecoverable})</Link></NavText>
+                            </Nav>
+                        </Nav>
+                        <Nav id="payment-invoices" expanded={this.state.activeParent === 'payment-invoices'}>
+                            <NavIcon><SvgIcon size={20} icon={fileO} style={{color: '$brand-primary'}}/></NavIcon>
+                            <NavText><Link className="financial-tree-link" to={`financieel/${this.props.id}/uitkering-facturen`}>Uitkering facturen({this.props.administrationDetails.totalPaymentInvoices})</Link></NavText>
+                            <Nav id="concepts">
+                                <NavText><Link className="financial-tree-link" to={`financieel/${this.props.id}/uitkering-facturen/concepten`}>Concepten({this.props.administrationDetails.totalPaymentInvoicesConcepts})</Link></NavText>
+                            </Nav>
+                            <Nav id="sent">
+                                <NavText><Link className="financial-tree-link" to={`financieel/${this.props.id}/uitkering-facturen/verzonden`}>Verzonden({this.props.administrationDetails.totalPaymentInvoicesSent})</Link></NavText>
+                            </Nav>
+                            <Nav id="not-paid">
+                                <NavText><Link className="financial-tree-link" to={`financieel/${this.props.id}/uitkering-facturen/niet-betaald`}>Niet betaald({this.props.administrationDetails.totalPaymentInvoicesnotPaid})</Link></NavText>
                             </Nav>
                         </Nav>
                         <Nav id="administration-settings">

@@ -57,6 +57,7 @@ import teamsReducer from './team/TeamsReducer';
 import teamDetailsReducer from './team/TeamDetailsReducer';
 import userDetailsReducer from './user/UserDetailsReducer';
 import usersReducer from './user/UsersReducer';
+import PaymentInvoicesReducer from './payment-invoice/PaymentInvoicesReducer';
 
 const rootReducer = combineReducers({
     // General
@@ -146,6 +147,9 @@ const rootReducer = combineReducers({
     // User
     users: usersReducer,
     userDetails: userDetailsReducer,
+
+    // Payment invoices
+    paymentInvoices: PaymentInvoicesReducer,
 });
 
 export default rootReducer;

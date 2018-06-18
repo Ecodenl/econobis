@@ -155,7 +155,7 @@ class SepaPaymentHelper
             // Direct Debit Transaction
             $xml .= "\n\t\t\t\t<DrctDbtTx>";
             $xml .= "\n\t\t\t\t\t<MndtRltdInf>";
-            $xml .= "\n\t\t\t\t\t\t<MndtId>" . $invoice->revenue->contact->number  . "</MndtId>"; // Uniek nummer per klant, debiteurnummer
+            $xml .= "\n\t\t\t\t\t\t<MndtId>" . $invoice->revenueDistribution->contact->number  . "</MndtId>"; // Uniek nummer per klant, debiteurnummer
             $xml .= "\n\t\t\t\t\t\t<DtOfSgntr>" .  $invoice->date_requested . "</DtOfSgntr>"; // Bestande klanten 1-1-20009, bij nieuwe klanten de datum van aanmaak klant of aanvinken van autoincasso
             $xml .= "\n\t\t\t\t\t</MndtRltdInf>";
             $xml .= "\n\t\t\t\t</DrctDbtTx>";
@@ -169,13 +169,13 @@ class SepaPaymentHelper
 
             // Debtor
             $xml .= "\n\t\t\t\t<Dbtr>";
-            $xml .= "\n\t\t\t\t\t<Nm>" .  $invoice->revenue->contact->fullName . "</Nm>"; // Naam van geincasseerde
+            $xml .= "\n\t\t\t\t\t<Nm>" .  $invoice->revenueDistribution->contact->fullName . "</Nm>"; // Naam van geincasseerde
             $xml .= "\n\t\t\t\t</Dbtr>";
 
             // Debtor Account
             $xml .= "\n\t\t\t\t<DbtrAcct>";
             $xml .= "\n\t\t\t\t\t<Id>";
-            $xml .= "\n\t\t\t\t\t\t<IBAN>" . str_replace(' ', '', $invoice->revenue->participation->IBAN) . "</IBAN>"; // IBAN nummer van geincasseerde
+            $xml .= "\n\t\t\t\t\t\t<IBAN>" . str_replace(' ', '', $invoice->revenueDistribution->participation->IBAN) . "</IBAN>"; // IBAN nummer van geincasseerde
             $xml .= "\n\t\t\t\t\t</Id>";
             $xml .= "\n\t\t\t\t</DbtrAcct>";
 
@@ -202,7 +202,7 @@ class SepaPaymentHelper
 
         $this->checkStorageDir();
 
-        $name = 'c-sepa' . Carbon::today()->format('Ymd') . '.xml';
+        $name = 'u-sepa' . Carbon::today()->format('Ymd') . '.xml';
 
         $path = 'administration_' . $this->administration->id
             . DIRECTORY_SEPARATOR . 'sepas' . DIRECTORY_SEPARATOR . $name;
@@ -233,7 +233,8 @@ class SepaPaymentHelper
 
         $filePath = Storage::disk('administrations')->getDriver()
             ->getAdapter()->applyPathPrefix($sepa->filename);
-
+        header('X-Filename:' . $sepa->name);
+        header('Access-Control-Expose-Headers: X-Filename');
         return response()->download($filePath, $sepa->name, ['Content-Type: application/xml']);
     }
 

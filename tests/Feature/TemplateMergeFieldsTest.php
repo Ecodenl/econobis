@@ -154,7 +154,7 @@ class TemplateMergeFieldsTest extends TestCase
         $expectedHtml = 'OrgaNisatie Laantje 10 Wognum OrgaNisatie@xaris.nl';
         $expectedHtml .= '0650233678 Vaak, Klaas de Klaas de Vaak Vaak, Klaas de';
         $expectedHtml .= 'klaasV@xaris.nl Wervershoof Dorpstraat 8 1693KW';
-        $expectedHtml .= '0612345678 Gevelisolatie OfferteText 22/03/2018 Xaris, Admin';
+        $expectedHtml .= '0612345678 Gevelisolatie OfferteText 22/03/2018 Tazelaar, Marco';
 
         $this->assertEquals($expectedHtml, $html);
     }

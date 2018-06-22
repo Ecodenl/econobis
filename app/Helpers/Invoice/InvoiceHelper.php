@@ -83,59 +83,60 @@ class InvoiceHelper
             InvoiceHelper::createInvoiceDocument($invoice);
         }
 
-        if($invoice->send_method_id === 'mail') {
-            $orderController = new OrderController();
-            $contactInfo = $orderController->getContactInfoForOrder($invoice->order->contact);
+        $orderController = new OrderController();
+        $contactInfo
+            = $orderController->getContactInfoForOrder($invoice->order->contact);
 
-            if($contactInfo['email'] === 'Geen e-mail bekend'){
-                if($preview){
-                    return [
-                        'to' => 'Geen e-mailadres bekend',
-                        'subject' => 'Geen e-mailadres bekend',
-                        'htmlBody' => 'Geen e-mailadres bekend',
-                    ];
-                }
-                return false;
-            }
-
-            $subject = 'Factuur';
-            $htmlBody = 'Beste ' . $contactInfo['contactPerson'] . ',';
-            $htmlBody .= '<p>&nbsp;</p>';
-            $htmlBody .= 'Hierbij uw factuur: ' . $invoice->number . '.';
-            $htmlBody .= '<p>&nbsp;</p>';
-            $htmlBody .= 'Met vriendelijke groet,';
-            $htmlBody .= '<p></p>';
-            $htmlBody .= $invoice->administration->name;
-
-            if($invoice->order->emailTemplate){
-                $subject = $invoice->order->emailTemplate->subject ? $invoice->order->emailTemplate->subject : $subject;
-                $htmlBody = $invoice->order->emailTemplate->html_body;
-
-            }
-
-            $htmlBody = '<!DOCTYPE html><html><head><meta http-equiv="content-type" content="text/html;charset=UTF-8"/><title>'
-                . $subject . '</title></head>'
-                . $htmlBody . '</html>';
-
-            $mail = Mail::to($contactInfo['email']);
-
-            $mail->subject = $subject;
-            $mail->html_body = $htmlBody;
-
-            if($preview){
+        if ($contactInfo['email'] === 'Geen e-mail bekend') {
+            if ($preview) {
                 return [
-                    'to' => $contactInfo['email'],
-                    'subject' => $mail->subject,
-                    'htmlBody' => $mail->html_body,
+                    'to' => 'Geen e-mailadres bekend',
+                    'subject' => 'Geen e-mailadres bekend',
+                    'htmlBody' => 'Geen e-mailadres bekend',
                 ];
             }
-            else {
-                $mail->send(new InvoiceMail($mail, $htmlBody,
-                    Storage::disk('administrations')->getDriver()->getAdapter()
-                        ->applyPathPrefix($invoice->document->filename),
-                    $invoice->document->name));
-            }
+            return false;
         }
+
+        $subject = 'Factuur';
+        $htmlBody = 'Beste ' . $contactInfo['contactPerson'] . ',';
+        $htmlBody .= '<p>&nbsp;</p>';
+        $htmlBody .= 'Hierbij uw factuur: ' . $invoice->number . '.';
+        $htmlBody .= '<p>&nbsp;</p>';
+        $htmlBody .= 'Met vriendelijke groet,';
+        $htmlBody .= '<p></p>';
+        $htmlBody .= $invoice->administration->name;
+
+        if ($invoice->order->emailTemplate) {
+            $subject = $invoice->order->emailTemplate->subject
+                ? $invoice->order->emailTemplate->subject : $subject;
+            $htmlBody = $invoice->order->emailTemplate->html_body;
+
+        }
+
+        $htmlBody
+            = '<!DOCTYPE html><html><head><meta http-equiv="content-type" content="text/html;charset=UTF-8"/><title>'
+            . $subject . '</title></head>'
+            . $htmlBody . '</html>';
+
+        $mail = Mail::to($contactInfo['email']);
+
+        $mail->subject = $subject;
+        $mail->html_body = $htmlBody;
+
+        if ($preview) {
+            return [
+                'to' => $contactInfo['email'],
+                'subject' => $mail->subject,
+                'htmlBody' => $mail->html_body,
+            ];
+        } else {
+            $mail->send(new InvoiceMail($mail, $htmlBody,
+                Storage::disk('administrations')->getDriver()->getAdapter()
+                    ->applyPathPrefix($invoice->document->filename),
+                $invoice->document->name));
+        }
+
 
         if($preview){
             return [

@@ -301,8 +301,6 @@ class OrderController extends ApiController
         $data = $requestInput
             ->string('administrationId')->validate('required|exists:administrations,id')->alias('administration_id')->next()
             ->string('filter')->validate('required')->next()
-            ->string('sendMethodId')->validate('required')
-            ->alias('send_method_id')->next()
             ->date('dateRequested')->validate('nullable|date')
             ->alias('date_requested')->next()
             ->date('dateCollection')->validate('nullable|date')->whenMissing(null)->onEmpty(null)
@@ -323,7 +321,6 @@ class OrderController extends ApiController
             if($order->total_price_incl_vat > 0) {
                 $invoice = new Invoice();
                 $invoice->status_id = 'checked';
-                $invoice->send_method_id = $data['send_method_id'];
                 $invoice->date_requested = $data['date_requested'];
                 $invoice->date_collection = $data['date_collection'];
                 $invoice->order_id = $order->id;
@@ -344,7 +341,6 @@ class OrderController extends ApiController
         $invoice->invoice_number =  Invoice::where('administration_id', $invoice->administration_id)->count();
         $invoice->number = 'O' . Carbon::now()->year . '-' . $invoice->invoice_number;
         $invoice->payment_type_id = $order->payment_type_id;
-        $invoice->send_method_id = 'mail';
 
         $invoice = InvoiceHelper::saveInvoiceProducts($invoice, $order, true);
 

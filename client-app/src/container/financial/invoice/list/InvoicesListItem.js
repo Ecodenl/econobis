@@ -91,12 +91,12 @@ class InvoicesListItem extends Component {
     };
 
     render() {
-        const { id, number, dateRequested, order, subject, paymentType, status, daysExpired, totalPriceInclVatAndReduction, amountOpen, emailToAddress, sendMethodId } = this.props;
+        const { id, number, dateRequested, order, subject, paymentType, status, daysExpired, totalPriceInclVatAndReduction, amountOpen, emailToAddress } = this.props;
         return (
             <tr className={this.state.highlightRow} onDoubleClick={() => this.openItem(id)} onMouseEnter={() => this.onRowEnter()} onMouseLeave={() => this.onRowLeave()}>
                 <td>{number}</td>
                 <td>{ dateRequested ? moment(dateRequested).format('DD-MM-Y') : ''}</td>
-                <td className={(emailToAddress === 'Geen e-mail bekend' && sendMethodId === 'mail') ? 'warning-td' :''}>{order ? order.contact.fullName : ''}{(emailToAddress === 'Geen e-mail bekend' && sendMethodId === 'mail') && ' (Geen e-mail bekend)'}</td>
+                <td className={(emailToAddress === 'Geen e-mail bekend') ? 'warning-td' :''}>{order ? order.contact.fullName : ''}{(emailToAddress === 'Geen e-mail bekend') && ' (Geen e-mail bekend)'}</td>
                 <td>{subject ? subject : ''}</td>
                 <td>{daysExpired}</td>
                 <td>{'€' + totalPriceInclVatAndReduction.toLocaleString('nl',{ minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
@@ -108,7 +108,7 @@ class InvoicesListItem extends Component {
                     {(this.state.showActionButtons && this.props.statusId === 'concept' ? <a role="button" onClick={() => this.showSetChecked()}  title="Zet op gecontroleerd"><span className="glyphicon glyphicon-ok mybtn-success" /> </a> : '')}
                     {(this.state.showActionButtons && this.props.statusId === 'checked' ? <a role="button" onClick={() => this.showSend()} title="Verstuur factuur"><span className="glyphicon glyphicon-envelope mybtn-success" /> </a> : '')}
                     {(this.state.showActionButtons && (this.props.statusId === 'sent' || this.props.statusId === 'exported') ? <a role="button" onClick={() => this.showSetPaid()} title="Zet op betaald"><span className="glyphicon glyphicon-euro mybtn-success" /> </a> : '')}
-                    {(this.state.showActionButtons && (this.props.statusId === 'sent' || this.props.statusId === 'exported') && this.props.sendMethodId === 'mail' && !this.props.dateExhortation ? <a role="button" onClick={() => this.showSendNotification()} title="Verstuur herinnering"><span className="glyphicon glyphicon-bullhorn mybtn-success" /> </a> : '')}
+                    {(this.state.showActionButtons && (this.props.statusId === 'sent' || this.props.statusId === 'exported') && !this.props.dateExhortation ? <a role="button" onClick={() => this.showSendNotification()} title="Verstuur herinnering"><span className="glyphicon glyphicon-bullhorn mybtn-success" /> </a> : '')}
                     {(this.state.showActionButtons && (this.props.statusId !== 'paid' && this.props.statusId !== 'irrecoverable') ? <a role="button" onClick={() => this.showSetIrrecoverable()} title="Zet op oninbaar"><span className="glyphicon glyphicon-remove mybtn-success" /> </a> : '')}
 
                     {
@@ -125,7 +125,6 @@ class InvoicesListItem extends Component {
                         <InvoiceListSend
                             closeModal={this.showSend}
                             invoiceId={id}
-                            sendMethodId={this.props.sendMethodId}
                             administrationId={this.props.administrationId}
                         />
                     }

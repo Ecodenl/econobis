@@ -8,7 +8,7 @@ import moment from "moment/moment";
 
 const InvoiceDetailsFormGeneralView = props => {
 
-    const { status, dateRequested, paymentType, paymentTypeId, sendMethod, order, totalPriceInclVatAndReduction, amountOpen, dateSent, datePaymentDue, datePaid, dateReminder1, dateReminder2, dateReminder3, dateExhortation, dateCollection } = props.invoiceDetails;
+    const { status, dateRequested, paymentType, paymentTypeId, order, totalPriceInclVatAndReduction, amountOpen, dateSent, datePaymentDue, datePaid, dateReminder1, dateReminder2, dateReminder3, dateExhortation, dateCollection } = props.invoiceDetails;
 
     return (
         <div onClick={props.switchToEdit}>
@@ -81,10 +81,6 @@ const InvoiceDetailsFormGeneralView = props => {
                     </div>
 
                     <div className="row">
-                        <ViewText
-                            label={"Verzonden per"}
-                            value={sendMethod ? sendMethod.name : ''}
-                        />
                         {paymentTypeId === 'transfer' ?
                         <ViewText
                             label={"Uiterste betaaldatum"}

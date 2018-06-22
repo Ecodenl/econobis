@@ -19,28 +19,10 @@ class OrderCreateConfirmTransfer extends Component {
             invoice: {
                 administrationId: props.administrationId,
                 orderId: props.orderId,
-                sendMethodId: 'mail',
                 dateRequested: moment(),
                 filter: props.filter,
             },
-            errors: {
-                sendMethodId: false,
-            }
         };
-    };
-
-    handleInputChange = event => {
-        const target = event.target;
-        const value = target.type === 'checkbox' ? target.checked : target.value;
-        const name = target.name;
-
-        this.setState({
-            ...this.state,
-            invoice: {
-                ...this.state.invoice,
-                [name]: value
-            },
-        });
     };
 
     handleInputChangeDate = (value, name) => {
@@ -62,11 +44,6 @@ class OrderCreateConfirmTransfer extends Component {
         let errors = {};
         let hasErrors = false;
 
-        if (validator.isEmpty(invoice.sendMethodId + '')) {
-            errors.invoice = true;
-            hasErrors = true;
-        }
-
         this.setState({...this.state, errors: errors});
 
         // If no errors send form
@@ -78,7 +55,7 @@ class OrderCreateConfirmTransfer extends Component {
     };
 
     render() {
-        const { sendMethodId, dateRequested } = this.state.invoice;
+        const { dateRequested } = this.state.invoice;
 
         return (
             <Modal
@@ -89,16 +66,6 @@ class OrderCreateConfirmTransfer extends Component {
                 buttonConfirmText={"Aanmaken"}
             >
                 <div className="row">
-                    <InputSelect
-                        label={"Verzend via"}
-                        id="sendMethodId"
-                        name={"sendMethodId"}
-                        options={this.props.invoiceSendMethods}
-                        value={sendMethodId}
-                        onChangeAction={this.handleInputChange}
-                        required={'required'}
-                        error={this.state.errors.sendMethodId}
-                    />
                     <InputDate
                         label="Aanvraag datum"
                         name="dateRequested"
@@ -119,10 +86,4 @@ class OrderCreateConfirmTransfer extends Component {
     };
 }
 
-const mapStateToProps = (state) => {
-    return {
-        invoiceSendMethods: state.systemData.invoiceSendMethods,
-    };
-};
-
-export default connect(mapStateToProps)(OrderCreateConfirmTransfer);
+export default OrderCreateConfirmTransfer;

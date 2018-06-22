@@ -94,13 +94,6 @@ class Invoice extends Model
         return InvoiceStatus::get($this->status_id);
     }
 
-    public function getSendMethod()
-    {
-        if(!$this->send_method_id) return null;
-
-        return InvoiceSendMethod::get($this->send_method_id);
-    }
-
     public function getDaysExpiredAttribute()
     {
         if($this->payment_type_id === 'transfer'){

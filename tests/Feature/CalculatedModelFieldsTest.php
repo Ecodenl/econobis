@@ -449,7 +449,6 @@ class CalculatedModelFieldsTest extends TestCase
         $invoice = new Invoice();
         $invoice->order_id = 1;
         $invoice->mollie_status_id = 'not_used';
-        $invoice->send_method_id = 'post';
         $invoice->date_sent = '2018-01-01';
 
         $invoice->save();

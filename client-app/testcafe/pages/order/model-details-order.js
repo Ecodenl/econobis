@@ -11,7 +11,6 @@ export default class ModelDetailsOrder {
         this.orderProductRows = Selector('span').withExactText('Orderregels').parent().parent().child().nth(1).child().child().child();
 
         this.newInvoice = Selector('button').withExactText('Maak factuur');
-        this.sendMethod = Selector('select[name="sendMethodId"]');
         this.dateCollection = Selector('input[name="dateCollection"]');
     }
 }

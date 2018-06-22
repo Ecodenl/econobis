@@ -14,7 +14,6 @@ use App\Eco\EnergySupplier\ContactEnergySupplierType;
 use App\Eco\EnergySupplier\EnergySupplier;
 use App\Eco\HousingFile\EnergyLabelStatus;
 use App\Eco\HousingFile\RoofType;
-use App\Eco\Invoice\InvoiceSendMethod;
 use App\Eco\Measure\MeasureCategory;
 use App\Eco\Opportunity\OpportunityStatus;
 use App\Eco\Order\OrderCollectionFrequency;
@@ -135,7 +134,6 @@ class SystemData extends Resource
             'orderStatuses' => FullEnumWithIdAndName::collection(OrderStatus::collection()),
             'orderPaymentTypes' => FullEnumWithIdAndName::collection(OrderPaymentType::collection()),
             'orderCollectionFrequencies' => FullEnumWithIdAndName::collection(OrderCollectionFrequency::collection()),
-            'invoiceSendMethods' => FullEnumWithIdAndName::collection(InvoiceSendMethod::collection()),
             'paymentInvoiceStatuses' => FullEnumWithIdAndName::collection(PaymentInvoiceStatus::collection()),
         ];
     }

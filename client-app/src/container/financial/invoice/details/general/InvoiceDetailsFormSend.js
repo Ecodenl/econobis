@@ -34,17 +34,6 @@ class InvoiceDetailsFormSetChecked extends Component {
                     </span>
                     </div>
                 </div>
-                {this.props.sendMethodId === 'post' &&
-                <div className="row">
-                    <div className={'col-sm-12 margin-10-bottom'}>
-                        <span>
-                            <strong>
-                        Let op, deze factuur moet per post worden verzonden. De status zal worden doorgezet naar verzonden, maar er zal geen e-mail worden verstuurd.
-                        </strong>
-                    </span>
-                    </div>
-                </div>
-                }
             </Modal>
         );
     };

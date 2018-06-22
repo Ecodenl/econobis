@@ -82,13 +82,13 @@ class InvoiceToolbar extends Component {
                         {this.props.invoiceDetails.statusId === 'concept' &&
                         <ButtonIcon iconName={"glyphicon-ok"} onClickAction={this.showSetChecked}/>
                         }
-                        {this.props.invoiceDetails.statusId === 'checked' && (this.props.invoiceDetails.emailToAddress !== 'Geen e-mail bekend' && this.props.invoiceDetails.sendMethodId === 'mail') &&
+                        {this.props.invoiceDetails.statusId === 'checked' && (this.props.invoiceDetails.emailToAddress !== 'Geen e-mail bekend') &&
                         <ButtonIcon iconName={"glyphicon-envelope"} onClickAction={this.showSend}/>
                         }
                         {(this.props.invoiceDetails.statusId === 'sent' || this.props.invoiceDetails.statusId === 'exported') &&
                         <ButtonIcon iconName={"glyphicon-euro"} onClickAction={this.showSetPaid}/>
                         }
-                        {(this.props.invoiceDetails.statusId === 'sent' || this.props.invoiceDetails.statusId === 'exported') && this.props.invoiceDetails.sendMethodId === 'mail' && !this.props.invoiceDetails.dateExhortation &&
+                        {(this.props.invoiceDetails.statusId === 'sent' || this.props.invoiceDetails.statusId === 'exported') && !this.props.invoiceDetails.dateExhortation &&
                         <ButtonIcon iconName={"glyphicon-bullhorn"} onClickAction={this.showSendNotification}/>
                         }
                         {(this.props.invoiceDetails.statusId !== 'paid' && this.props.invoiceDetails.statusId !== 'irrecoverable') &&
@@ -113,7 +113,6 @@ class InvoiceToolbar extends Component {
                     <InvoiceDetailsFormSend
                         closeModal={this.showSend}
                         invoiceId={this.props.invoiceDetails.id}
-                        sendMethodId={this.props.invoiceDetails.sendMethodId}
                     />
                 }
 

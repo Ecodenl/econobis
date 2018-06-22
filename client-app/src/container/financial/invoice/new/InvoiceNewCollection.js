@@ -18,12 +18,10 @@ class InvoiceNewCollection extends Component {
         this.state = {
             invoice: {
                 orderId: props.orderId,
-                sendMethodId: 'mail',
                 dateRequested: moment(),
                 dateCollection: '',
             },
             errors: {
-                sendMethodId: false,
                 dateCollection: false,
             }
         };
@@ -62,11 +60,6 @@ class InvoiceNewCollection extends Component {
         let errors = {};
         let hasErrors = false;
 
-        if (validator.isEmpty(invoice.sendMethodId + '')) {
-            errors.invoice = true;
-            hasErrors = true;
-        }
-
         if (validator.isEmpty(invoice.dateCollection + '')) {
             errors.dateCollection = true;
             hasErrors = true;
@@ -85,7 +78,7 @@ class InvoiceNewCollection extends Component {
     };
 
     render() {
-        const { sendMethodId, dateRequested, dateCollection } = this.state.invoice;
+        const { dateRequested, dateCollection } = this.state.invoice;
 
         return (
             <Modal
@@ -102,24 +95,14 @@ class InvoiceNewCollection extends Component {
                         name={'orderNumber'}
                         readOnly={true}
                     />
-                <InputSelect
-                    label={"Verzend via"}
-                    id="sendMethodId"
-                    name={"sendMethodId"}
-                    options={this.props.invoiceSendMethods}
-                    value={sendMethodId}
-                    onChangeAction={this.handleInputChange}
-                    required={'required'}
-                    error={this.state.errors.sendMethodId}
-                />
-            </div>
-                <div className="row">
                     <InputDate
                         label="Aanvraag datum"
                         name="dateRequested"
                         value={dateRequested}
                         onChangeAction={this.handleInputChangeDate}
                     />
+            </div>
+                <div className="row">
                     <InputDate
                         label="Incasso datum"
                         name="dateCollection"
@@ -134,10 +117,4 @@ class InvoiceNewCollection extends Component {
     };
 }
 
-const mapStateToProps = (state) => {
-    return {
-        invoiceSendMethods: state.systemData.invoiceSendMethods,
-    };
-};
-
-export default connect(mapStateToProps)(InvoiceNewCollection);
+export default InvoiceNewCollection;

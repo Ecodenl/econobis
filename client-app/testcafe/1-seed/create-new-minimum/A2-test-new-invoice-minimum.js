@@ -43,8 +43,6 @@ test('Fill out form invoice minimum, also send to test document creation', async
 
     await t
         .click(detailsOrder.newInvoice)
-        .click(detailsOrder.sendMethod)
-        .click(general.option.withExactText('Post'))
         .typeText(detailsOrder.dateCollection, '01-01-2018')
         .pressKey('esc')
         .click(general.create)

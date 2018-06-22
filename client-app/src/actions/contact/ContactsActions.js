@@ -35,8 +35,9 @@ export const deleteContact = (id) => {
     };
 };
 
-export const deleteSelectedContacts = () => {
+export const deleteSelectedContacts = (contactIds) => {
     return  {
         type: 'DELETE_SELECTED_CONTACTS',
+        contactIds,
     };
 };

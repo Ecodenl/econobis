@@ -1,19 +1,21 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
 
 import Modal from '../../../components/modal/Modal';
 import {deleteSelectedContacts} from '../../../actions/contact/ContactsActions';
 
 const ContactsDeleteSelectedItems = (props) => {
     const confirmAction = () => {
-        props.deleteSelectedContacts();
+        let contactIds = [];
+
+        props.contacts.map((contact) => (contact.checked === true && contactIds.push(contact.id)));
+
+        props.deleteSelectedContacts(contactIds);
         props.toggleShowDeleteSelectedItems();
     };
 
     const countCheckedContact = () => {
         let count = 0;
-        console.log(props)
         props.contacts.map((contact) => (contact.checked === true && count++));
 
         return count;
@@ -29,7 +31,7 @@ const ContactsDeleteSelectedItems = (props) => {
         >
             {
                 (countCheckedContact() !== 0 ?
-                    <div>Verwijder de geselecteerde <strong>{countCheckedContact()}</strong> contacten</div>
+                    <div>Verwijder de geselecteerde <strong>{countCheckedContact()}</strong> contacten?</div>
                     :
                     <div>Geen contacten geselecteerd.</div>
                 )
@@ -45,8 +47,8 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = dispatch => ({
-    deleteSelectedContacts: (id) => {
-        dispatch(deleteSelectedContacts(id));
+    deleteSelectedContacts: (contactIds) => {
+        dispatch(deleteSelectedContacts(contactIds));
     },
 });
 

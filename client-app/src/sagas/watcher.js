@@ -9,7 +9,7 @@ import { fetchContactDetailsSaga, deleteAddressSaga, deletePhoneNumberSaga, dele
 import { fetchContactGroupDetailsSaga } from './contact-group/ContactGroupDetailsSaga';
 import { fetchContactGroupsSaga, deleteContactGroupSaga, addContactToGroupSaga } from './contact-group/ContactGroupsSaga';
 import { fetchContactsInGroupSaga, deleteContactInGroupSaga } from './contact-group/ContactsInGroupSaga';
-import { fetchContactsSaga, deleteContactSaga } from './contact/ContactsSaga';
+import { fetchContactsSaga, deleteContactSaga, deleteSelectedContactsSaga } from './contact/ContactsSaga';
 import { fetchDocumentsSaga } from './document/DocumentsSaga';
 import { fetchDocumentDetailsSaga, deleteDocumentSaga } from './document/DocumentDetailsSaga';
 import { fetchDocumentTemplatesSaga, fetchDocumentTemplateSaga } from './document-template/DocumentTemplatesSaga';
@@ -84,6 +84,7 @@ export default function* watchSagas() {
     // Contact
     yield takeLatest('FETCH_CONTACTS', fetchContactsSaga);
     yield takeLatest('DELETE_CONTACT', deleteContactSaga);
+    yield takeLatest('DELETE_SELECTED_CONTACTS', deleteSelectedContactsSaga);
     yield takeLatest('FETCH_CONTACT_DETAILS', fetchContactDetailsSaga);
     yield takeLatest('DELETE_ADDRESS', deleteAddressSaga);
     yield takeLatest('DELETE_PHONE_NUMBER', deletePhoneNumberSaga);

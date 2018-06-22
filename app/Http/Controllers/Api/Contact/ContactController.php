@@ -82,6 +82,15 @@ class ContactController extends Controller
         DeleteHelper::delete($contact);
     }
 
+    public function destroyContacts(Request $request)
+    {
+        $ids = $request->input('ids');
+
+        foreach($ids as $id){
+            $this->destroy(Contact::find($id));
+        }
+    }
+
     public function intakes(Contact $contact)
     {
         $intakes = $contact->intakes;

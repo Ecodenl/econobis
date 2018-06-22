@@ -21,3 +21,12 @@ export function* deleteContactSaga({ id }) {
         yield put({ type: 'DELETE_CONTACT_ERROR', error });
     }
 }
+
+export function* deleteSelectedContactsSaga({ contactIds }) {
+    try {
+        yield call(ContactsAPI.deleteContacts, contactIds);
+        yield put({ type: 'DELETE_CONTACT_SUCCESS', contactIds });
+    } catch (error) {
+        yield put({ type: 'DELETE_CONTACT_ERROR', error });
+    }
+}

@@ -43,7 +43,7 @@ test('Fill out form new production project -> participant -> value course', asyn
     await t.expect(general.titleH4.innerText).eql('Productieproject ' + vars.productionProjectName, 'Check element text', { timeout: 500 });
 
     await t
-        .click(generalProductionProject.rapportageButton.prevSibling().nth(1))
+        .click(generalProductionProject.rapportageButton.prevSibling().prevSibling().nth(1))
         .wait(constants.wait);
 
     await t.expect(general.titleH3.innerText).eql('Nieuwe participant', 'Check element text', { timeout: 500 });

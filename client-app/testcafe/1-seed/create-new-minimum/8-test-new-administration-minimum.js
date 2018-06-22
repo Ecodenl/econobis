@@ -27,6 +27,10 @@ test('Fill out form administration minimum', async (t) => {
         .typeText(newAdministration.name, vars.administrationName)
         .typeText(newAdministration.btwNumber, faker.random.number(10000).toString())
         .typeText(newAdministration.IBAN, 'AD1200012030200359100100')
+        .typeText(newAdministration.address, faker.address.streetAddress())
+        .typeText(newAdministration.postalCode, faker.address.zipCode())
+        .typeText(newAdministration.city, faker.address.city())
+        .typeText(newAdministration.bic, 'NGBNL2A')
         .click(general.save)
         .wait(constants.wait);
 
@@ -35,7 +39,7 @@ test('Fill out form administration minimum', async (t) => {
     await t
         .click(detailsAdministration.newUser)
         .click(detailsAdministration.user)
-        .click(general.option.withExactText('Xaris, Admin'))
+        .click(general.option.withExactText('Tazelaar, Marco'))
         .click(general.save)
         .wait(constants.wait);
 

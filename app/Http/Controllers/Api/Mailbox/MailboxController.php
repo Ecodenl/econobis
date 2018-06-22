@@ -154,12 +154,10 @@ class MailboxController extends Controller
     //called by cronjob
     static public function receiveAllEmail()
     {
-        $mailboxes = Mailbox::all();
+        $mailboxes = Mailbox::where('valid', 1)->get();
         foreach ($mailboxes as $mailbox) {
             $mailFetcher = new MailFetcher($mailbox);
-            if($mailbox->valid) {
-                $mailFetcher->fetchNew();
-            }
+            $mailFetcher->fetchNew();
         }
     }
 

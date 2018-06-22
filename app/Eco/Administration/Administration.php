@@ -103,27 +103,27 @@ class Administration extends Model
     //appended fields
     public function getTotalOrdersAttribute()
     {
-        return $this->orders()->count();
+        return $this->orders()->count()->whereNull('deleted_at');
     }
 
     public function getTotalOrdersConceptsAttribute()
     {
-        return $this->orders()->where('status_id', 'concept')->count();
+        return $this->orders()->where('status_id', 'concept')->count()->whereNull('deleted_at');
     }
 
     public function getTotalOrdersInvoicesAttribute()
     {
-        return $this->orders()->where('status_id', 'active')->where('payment_type_id', 'transfer')->count();
+        return $this->orders()->where('status_id', 'active')->where('payment_type_id', 'transfer')->count()->whereNull('deleted_at');
     }
 
     public function getTotalOrdersCollectionsAttribute()
     {
-        return $this->orders()->where('status_id', 'active')->where('payment_type_id', 'collection')->count();
+        return $this->orders()->where('status_id', 'active')->where('payment_type_id', 'collection')->count()->whereNull('deleted_at');
     }
 
     public function getTotalOrdersClosedAttribute()
     {
-        return $this->orders()->where('status_id', 'closed')->count();
+        return $this->orders()->where('status_id', 'closed')->count()->whereNull('deleted_at');
     }
 
     public function getTotalInvoicesAttribute()

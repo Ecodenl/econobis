@@ -65,7 +65,7 @@ class PaymentInvoiceCreateApp extends Component {
                 <div className="col-md-2">
                     <div className="col-md-12 margin-10-top">
                         <Panel>
-                            <PanelBody className={'panel-orders-list'}>
+                            <PanelBody className={'panel-invoice-payments-list'}>
                                 <PaymentInvoiceCreateList distributions={this.state.distributions} changeDistribution={this.changeDistribution}/>
                             </PanelBody>
                         </Panel>

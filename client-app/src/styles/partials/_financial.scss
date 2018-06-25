@@ -1,8 +1,8 @@
-.panel-financial-tree, .panel-invoices-list, .panel-orders-list {
+.panel-financial-tree, .panel-invoices-list, .panel-orders-list, .panel-invoice-payments-list {
   padding: 0;
 }
 
-.financial-tree, .invoices-list, .orders-list {
+.financial-tree, .invoices-list, .orders-list, .payment-invoices-list {
   height: 100vh;
   transition: left .3s ease-in-out;
   color: $brand-primary;
@@ -26,7 +26,7 @@
   }
 }
 
-.send-invoices-list-link, .send-orders-list-link {
+.send-invoices-list-link, .send-orders-list-link, .send-payment-invoices-list-link {
   color: $brand-primary;
   padding-left: 4em;
   padding-right: 8em;
@@ -62,7 +62,7 @@
   }
 }
 
-.financial-tree-sidebar-menu, .send-invoices-sidebar-menu, .send-orders-sidebar-menu {
+.financial-tree-sidebar-menu, .send-invoices-sidebar-menu, .send-orders-sidebar-menu, .send-payment-invoices-sidebar-menu {
   overflow-y: auto;
   overflow-x: hidden;
   height: 100vh;

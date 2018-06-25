@@ -66,7 +66,7 @@ class Administration extends Model
     }
 
     public function sepas(){
-        return $this->hasMany(Sepa::class);
+        return $this->hasMany(Sepa::class)->orderBy('created_at','desc');
     }
 
     public function invoices(){

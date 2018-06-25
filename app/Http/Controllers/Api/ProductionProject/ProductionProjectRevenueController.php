@@ -562,18 +562,28 @@ class ProductionProjectRevenueController extends ApiController
 
     public function createPaymentInvoices(Request $request){
 
-        //send reports
-        $this->createParticipantRevenueReport($request->input('subject'),
-            $request->input('distributionIds'),
-            DocumentTemplate::find($request->input('documentTemplateId')),
-            EmailTemplate::find($request->input('emailTemplateId')));
-
         //create invoices
         $createdInvoices = $this->createInvoices(ProductionProjectRevenueDistribution::whereIn('id', $request->input('distributionIds'))->get());
 
-        $paymentInvoiceController = new PaymentInvoiceController();
+        if($createdInvoices) {
+            $reportDistributionIds = [];
+            //only send reports to the created ones
+            foreach ($createdInvoices as $createdInvoice){
+                array_push($reportDistributionIds, $createdInvoice->revenue_distribution_id);
+            }
 
-        return $paymentInvoiceController->generateSepaFile(collect($createdInvoices));
+            $this->createParticipantRevenueReport($request->input('subject'),
+                $reportDistributionIds,
+                DocumentTemplate::find($request->input('documentTemplateId')),
+                EmailTemplate::find($request->input('emailTemplateId')));
+
+            $paymentInvoiceController = new PaymentInvoiceController();
+
+            return $paymentInvoiceController->generateSepaFile(collect($createdInvoices));
+        }
+        else{
+            abort(400, 'Geen uitkering facturen aangemaakt.');
+        }
     }
 
 }

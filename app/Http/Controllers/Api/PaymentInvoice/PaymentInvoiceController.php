@@ -40,14 +40,12 @@ class PaymentInvoiceController extends ApiController
     }
 
 
-    public function generateSepaFile(Administration $administration){
-
-        // Get invoices with status 'sent' and type 'incasso' from administration
-        $invoices = PaymentInvoice::where('administration_id', $administration->id)->where('status_id', 'concept')->get();
-
+    public function generateSepaFile($invoices){
         $validatedInvoices = $invoices->reject(function ($invoice) {
             return (empty($invoice->revenueDistribution->address) || empty($invoice->revenueDistribution->postal_code) || empty($invoice->revenueDistribution->city) || empty($invoice->revenueDistribution->participation->iban_payout));
         });
+
+        $administration = $invoices->first()->revenueDistribution->revenue->productionProject->administration;
 
         $sepaPaymentHelper = new SepaPaymentHelper($administration, $validatedInvoices);
 
@@ -55,8 +53,6 @@ class PaymentInvoiceController extends ApiController
 
         $setDatePayout = false;
         foreach ($validatedInvoices as $invoice){
-            $invoice->status_id = 'sent';
-            $invoice->save();
 
             $invoice->revenueDistribution->date_payout = Carbon::today()->addWeek();
             $invoice->revenueDistribution->save();

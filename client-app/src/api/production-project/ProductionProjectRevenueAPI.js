@@ -56,13 +56,13 @@ export default {
             );
     },
 
-    createParticipantRevenueReport: (templateId, emailTemplateId, subject, distributionIds) => {
-        const requestUrl = `${URL_REVENUE}/create-participant-revenue-report/${templateId}/${emailTemplateId}`;
+    createPaymentInvoices: (templateId, emailTemplateId, subject, distributionIds) => {
+        const requestUrl = `${URL_API}/api/distribution/create-payment-invoices`;
         const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
         axios.defaults.headers.common.Authorization = AUTH_TOKEN;
 
-        return axios.post(requestUrl, {distributionIds: distributionIds, subject: subject})
-            .then(response => response.data.data)
+        return axios.post(requestUrl, {documentTemplateId: templateId, emailTemplateId: emailTemplateId, distributionIds: distributionIds, subject: subject})
+            .then(response => response)
             .catch((error) => {
                     console.log(error);
                 },
@@ -95,16 +95,19 @@ export default {
             );
     },
 
-    createPaymentInvoices: (revenueId) => {
-        const requestUrl = `${URL_REVENUE}/create-payment-invoices/${revenueId}`;
-        const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
-        axios.defaults.headers.common.Authorization = AUTH_TOKEN;
+    downloadPreview: (id, subject, documentTemplateId, emailTemplateId) => {
+        const requestUrl = `${URL_API}/api/distribution/${id}/download-preview`;
+        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
+        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios.get(requestUrl)
-            .then(response => response.data.data)
-            .catch((error) => {
-                    console.log(error);
-                },
-            );
+        return axios.post(requestUrl, {'subject': subject, 'documentTemplateId' : documentTemplateId,'emailTemplateId' :emailTemplateId}, {responseType: 'blob'});
+    },
+
+    previewEmail: (id, subject, documentTemplateId, emailTemplateId) => {
+        const requestUrl = `${URL_API}/api/distribution/${id}/preview-email`;
+        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
+        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
+
+        return axios.post(requestUrl, {'subject': subject, 'documentTemplateId' : documentTemplateId,'emailTemplateId' :emailTemplateId});
     },
 };

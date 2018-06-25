@@ -42,7 +42,6 @@ class Administration extends Model
             'total_invoices_paid',
             'total_invoices_irrecoverable',
             'total_payment_invoices',
-            'total_payment_invoices_concepts',
             'total_payment_invoices_sent',
             'total_payment_invoices_not_paid',
         ];
@@ -192,11 +191,6 @@ class Administration extends Model
     public function getTotalPaymentInvoicesAttribute()
     {
         return $this->paymentInvoices()->count();
-    }
-
-    public function getTotalPaymentInvoicesConceptsAttribute()
-    {
-        return $this->paymentInvoices()->where('status_id', 'concept')->count();
     }
 
     public function getTotalPaymentInvoicesSentAttribute()

@@ -18,10 +18,6 @@ import {
 import {setPaymentInvoicesPagination} from '../../../../actions/payment-invoice/PaymentInvoicesPaginationActions';
 import filterHelper from '../../../../helpers/FilterHelper';
 import ButtonIcon from "../../../../components/button/ButtonIcon";
-import ButtonText from "../../../../components/button/ButtonText";
-import PaymentInvoicesAPI from "../../../../api/payment-invoice/PaymentInvoicesAPI" ;
-import {hashHistory} from "react-router";
-import fileDownload from "js-file-download";
 
 class PaymentInvoicesList extends Component {
     constructor(props) {
@@ -29,10 +25,6 @@ class PaymentInvoicesList extends Component {
 
         if (!isEmpty(props.filter)) {
             switch (props.filter) {
-                case 'concepten':
-                    this.props.clearFilterPaymentInvoices();
-                    this.props.setStatusIdFilterPaymentInvoices('concept');
-                    break;
                 case 'verzonden':
                     this.props.clearFilterPaymentInvoices();
                     this.props.setStatusIdFilterPaymentInvoices('sent');
@@ -63,10 +55,6 @@ class PaymentInvoicesList extends Component {
         if (this.props.filter !== nextProps.filter) {
             if (!isEmpty(nextProps.filter)) {
                 switch (nextProps.filter) {
-                    case 'concepten':
-                        this.props.clearFilterPaymentInvoices();
-                        this.props.setStatusIdFilterPaymentInvoices('concept');
-                        break;
                     case 'verzonden':
                         this.props.clearFilterPaymentInvoices();
                         this.props.setStatusIdFilterPaymentInvoices('sent');
@@ -132,14 +120,6 @@ class PaymentInvoicesList extends Component {
         }
     };
 
-    createSepa = () => {
-        PaymentInvoicesAPI.createSepa(this.props.administrationId).then((payload) => {
-            fileDownload(payload.data, payload.headers['x-filename']);
-            hashHistory.push(`/financieel/${this.props.administrationId}/uitkering-facturen/verzonden`);
-        });
-
-    };
-
     render() {
         const {data = [], meta = {}} = this.props.paymentInvoices;
 
@@ -149,10 +129,6 @@ class PaymentInvoicesList extends Component {
                     <div className="col-md-4">
                         <div className="btn-group btn-group-flex" role="group">
                             <ButtonIcon iconName={"glyphicon-refresh"} onClickAction={this.resetPaymentInvoiceFilters}/>
-                            {(this.props.filter === 'concepten' && meta.total > 0) &&
-                            <ButtonText buttonText={"Sepa maken"}
-                                        onClickAction={this.createSepa}/>
-                            }
                         </div>
                     </div>
                     <div className="col-md-4"><h3 className="text-center table-title">Uitkering facturen</h3></div>

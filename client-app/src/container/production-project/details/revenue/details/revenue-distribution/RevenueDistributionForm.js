@@ -16,6 +16,7 @@ import {hashHistory} from "react-router";
 import ViewText from "../../../../../../components/form/ViewText";
 import EmailTemplateAPI from "../../../../../../api/email-template/EmailTemplateAPI";
 import InputText from "../../../../../../components/form/InputText";
+import {previewReport} from "../../../../../../actions/production-project/ProductionProjectDetailsActions";
 
 class RevenueDistributionForm extends Component {
     constructor(props) {
@@ -77,6 +78,15 @@ class RevenueDistributionForm extends Component {
         });
     };
 
+    handleSubjectChange = (event) => {
+        const target = event.target;
+        const value = target.type === 'checkbox' ? target.checked : target.value;
+
+        this.setState({
+            subject: value
+        });
+    };
+
     handleEmailTemplateChange(event) {
 
         const target = event.target;
@@ -107,12 +117,6 @@ class RevenueDistributionForm extends Component {
             });
         }
 
-    };
-
-    createPaymentInvoices = () => {
-        ProductionProjectRevenueAPI.createPaymentInvoices(this.props.productionProjectRevenue.id).then((payload) => {
-            hashHistory.push(`/financieel/${this.props.productionProjectRevenue.productionProject.administrationId}/uitkering-facturen/concepten`);
-        });
     };
 
     toggleModal = () => {
@@ -204,20 +208,20 @@ class RevenueDistributionForm extends Component {
 
         if (this.state.checkedAll) {
 
-            this.props.productionProjectRevenue.distrbution.forEach(function (distribution) {
+            this.props.productionProjectRevenue.distribution.forEach(function (distribution) {
                 distributionIds.push(distribution.id);
             });
 
             this.setState({
-                participantIds: distributionIds,
+                distributionIds: distributionIds,
             });
         }
 
         if ((this.state.distributionIds.length > 0 && !error) || (distributionIds.length > 0 && !error)) {
             this.setState({
                 showModal: true,
-                modalText: 'De rapporten worden per participant gemaakt met het gekozen documenttemplate en per e-mail verzonden.',
-                buttonConfirmText: 'Maken',
+                modalText: 'Er wordt eerst een preview getoond van de PDF\'s en e-mails.',
+                buttonConfirmText: 'Preview',
                 readyForCreation: true
             });
         }
@@ -237,9 +241,8 @@ class RevenueDistributionForm extends Component {
             });
         }
         else {
-            ProductionProjectRevenueAPI.createParticipantRevenueReport(this.state.templateId, this.state.emailTemplateId, this.state.subject, this.state.distributionIds).then((payload) => {
-                hashHistory.push('/documenten');
-            });
+            this.props.previewReport({'templateId': this.state.templateId,'emailTemplateId': this.state.emailTemplateId, 'subject': this.state.subject, 'distributionIds': this.state.distributionIds})
+            hashHistory.push(`/productie-project/opbrengst/${this.props.productionProjectRevenue.id}/facturen`);
         }
     };
 
@@ -255,11 +258,8 @@ class RevenueDistributionForm extends Component {
                     <span className="h5 text-bold">Opbrengstverdeling participanten</span>
                     <div className="btn-group pull-right">
                         {(this.props.productionProjectRevenue.confirmed == 1 && administrationIds.includes(this.props.productionProjectRevenue.productionProject.administrationId)) &&
-                        <ButtonText buttonText={'Facturen maken'} onClickAction={this.createPaymentInvoices}/>
+                        <ButtonText buttonText={'Facturen maken'} onClickAction={this.toggleShowCheckboxList}/>
                         }
-                    {this.props.productionProjectRevenue.confirmed == 1 &&
-                        <ButtonText buttonText={'Rapportage'} onClickAction={this.toggleShowCheckboxList}/>
-                    }
                     </div>
                 </PanelHeader>
                 <PanelBody>
@@ -305,7 +305,7 @@ class RevenueDistributionForm extends Component {
                                 label={"E-mail onderwerp"}
                                 name={"subject"}
                                 value={this.state.subject}
-                                onChangeAction={this.handleInputChange}
+                                onChangeAction={this.handleSubjectChange}
                             />
                         </div>
                         <div className="col-md-12">
@@ -342,4 +342,10 @@ const mapStateToProps = (state) => {
     };
 };
 
-export default connect(mapStateToProps)(RevenueDistributionForm);
+const mapDispatchToProps = dispatch => ({
+    previewReport: (id) => {
+        dispatch(previewReport(id));
+    },
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(RevenueDistributionForm);

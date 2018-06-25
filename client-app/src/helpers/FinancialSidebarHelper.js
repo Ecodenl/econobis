@@ -63,9 +63,6 @@ export default (currentRouteParams) => {
             if(currentRouteParams.filter) {
                 activeParent = 'payment-invoices';
                 switch(currentRouteParams.filter) {
-                    case 'concepten':
-                        activeMenuItem = 'payment-invoices/concepts';
-                        break;
                     case 'verzonden':
                         activeMenuItem = 'payment-invoices/sent';
                         break;

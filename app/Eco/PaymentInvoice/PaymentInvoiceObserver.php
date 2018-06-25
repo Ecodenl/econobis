@@ -22,7 +22,7 @@ class PaymentInvoiceObserver
         $paymentInvoice->number = 'temp';
 
         if(!$paymentInvoice->status_id ){
-            $paymentInvoice->status_id = 'concept';
+            $paymentInvoice->status_id = 'sent';
         }
 
         $paymentInvoice->invoice_number = 0;

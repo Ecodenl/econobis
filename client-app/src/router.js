@@ -96,6 +96,7 @@ import RevenueDetailsApp from './container/production-project/details/revenue/de
 import FinancialApp from './container/financial/FinancialApp';
 import InvoiceSendApp from "./container/financial/invoice/send/InvoiceSendApp";
 import OrderCreateApp from "./container/financial/order/create/OrderCreateApp";
+import PaymentInvoiceCreateApp from "./container/production-project/details/revenue/details/create/PaymentInvoiceCreateApp";
 
 const Routes = () => {
     return (
@@ -236,6 +237,7 @@ const Routes = () => {
                 <Route path="productie-project/opbrengst/:revenueId/energieleverancier-csv" component={EnergySupplierCSVNewApp} />
                 <Route path="productie-project/details/:id" component={ProductionProjectDetailsApp} />
                 <Route path="productie-project/opbrengst/:id" component={RevenueDetailsApp} />
+                <Route path="productie-project/opbrengst/:id/facturen" component={PaymentInvoiceCreateApp} />
                 <Route path="productie-project/:id" component={ProductionProjectGeneralApp} />
                 <Route path="productie-projecten" component={ProductionProjectsListApp} />
 

@@ -34,17 +34,4 @@ export default {
                 console.log(error);
             });
     },
-
-    createSepa: (administrationId) => {
-        const requestUrl = `${URL_PAYMENT_INVOICE}/${administrationId}/create-sepa`;
-        const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
-        axios.defaults.headers.common.Authorization = AUTH_TOKEN;
-
-        return axios.get(requestUrl)
-            .then(response => response)
-            .catch((error) => {
-                    console.log(error);
-                },
-            );
-    },
 };

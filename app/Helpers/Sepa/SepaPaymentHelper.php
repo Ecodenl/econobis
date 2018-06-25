@@ -221,7 +221,8 @@ class SepaPaymentHelper
         $filePath = Storage::disk('administrations')->getDriver()
             ->getAdapter()->applyPathPrefix($sepa->filename);
         header('X-Filename:' . $sepa->name);
-        header('Access-Control-Expose-Headers: X-Filename');
+        header('administrationId:' . $sepa->administration_id);
+        header('Access-Control-Expose-Headers: X-Filename, administrationId');
         return response()->download($filePath, $sepa->name, ['Content-Type: application/xml']);
     }
 

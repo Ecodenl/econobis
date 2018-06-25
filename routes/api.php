@@ -129,6 +129,11 @@ Route::namespace('Api')
         Route::get('contact-group/{contactGroup}/contacts/grid', 'ContactGroup\ContactGroupController@gridContacts');
         Route::post('contact-group/{contactGroup}/contacts/add-many', 'ContactGroup\ContactGroupController@addContacts');
 
+        Route::post('distribution/create-payment-invoices', 'ProductionProject\ProductionProjectRevenueController@createPaymentInvoices');
+        Route::post('distribution/peek-by-ids', 'ProductionProject\ProductionProjectRevenueController@peekDistributionByIds');
+        Route::post('distribution/{distribution}/download-preview', 'ProductionProject\ProductionProjectRevenueController@downloadPreview');
+        Route::post('distribution/{distribution}/preview-email', 'ProductionProject\ProductionProjectRevenueController@previewEmail');
+
 
         Route::get('opportunity/grid', 'Opportunity\OpportunityController@grid');
         Route::get('opportunity/peek', 'Opportunity\OpportunityController@peek');
@@ -265,8 +270,6 @@ Route::namespace('Api')
         Route::post('production-project/value-course/{productionProjectValueCourse}/delete', 'ProductionProject\ProductionProjectValueCourseController@destroy');
 
         Route::get('production-project/revenue/{productionProjectRevenue}', 'ProductionProject\ProductionProjectRevenueController@show');
-        Route::get('production-project/revenue/create-payment-invoices/{productionProjectRevenue}', 'ProductionProject\ProductionProjectRevenueController@createPaymentInvoices');
-        Route::post('production-project/revenue/create-participant-revenue-report/{documentTemplate}/{emailTemplate}', 'ProductionProject\ProductionProjectRevenueController@createParticipantRevenueReport');
         Route::post('production-project/revenue/create-energy-supplier-report/{productionProjectRevenue}/{documentTemplate}/{energySupplier}', 'ProductionProject\ProductionProjectRevenueController@createEnergySupplierReport');
         Route::post('production-project/revenue/create-energy-supplier-csv/{productionProjectRevenue}/{energySupplier}', 'ProductionProject\ProductionProjectRevenueController@createEnergySupplierCsv');
         Route::post('production-project/revenue', 'ProductionProject\ProductionProjectRevenueController@store');
@@ -366,7 +369,6 @@ Route::namespace('Api')
         Route::post('invoice/payment/{invoicePayment}/delete', 'Invoice\InvoiceController@deletePayment');
 
         Route::get('payment-invoice/grid', 'PaymentInvoice\PaymentInvoiceController@grid');
-        Route::get('payment-invoice/{administration}/create-sepa', 'PaymentInvoice\PaymentInvoiceController@generateSepaFile');
         Route::post('payment-invoice/{paymentInvoice}/not-paid', 'PaymentInvoice\PaymentInvoiceController@setNotPaid');
     }
 );

@@ -32,6 +32,21 @@ export default {
             );
     },
 
+    peekDistributionsById: (distributionIds) => {
+        const requestUrl = `${URL_API}/api/distribution/peek-by-ids`;
+        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
+        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
+
+        return axios.post(requestUrl, {'ids': distributionIds})
+            .then(function (response) {
+                return response.data;
+            })
+            .catch(function (error) {
+                    console.log(error);
+                }
+            );
+    },
+
     getActive: () => {
         const requestUrl = `${URL_PRODUCTION_PROJECT}/active`;
         const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;

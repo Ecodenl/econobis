@@ -39,6 +39,19 @@ export const fetchRevenue = (id) => {
     };
 };
 
+export const previewReport = (data) => {
+    return {
+        type: 'PRODUCTION_PROJECT_REVENUE_PREVIEW_REPORT',
+        data,
+    };
+};
+
+export const clearPreviewReport = () => {
+    return {
+        type: 'CLEAR_PRODUCTION_PROJECT_REVENUE_PREVIEW_REPORT',
+    };
+};
+
 export const clearRevenue = () => {
     return {
         type: 'CLEAR_PRODUCTION_PROJECT_REVENUE'

@@ -17,7 +17,7 @@ const PaymentInvoicesListFilter = props => {
     };
 
     const onPayoutChange = (e) => {
-        props.setAmountFilterPaymentInvoices(e.target.value);
+        props.setPayoutFilterPaymentInvoices(e.target.value);
     };
 
     const onStatusIdChange = (e) => {

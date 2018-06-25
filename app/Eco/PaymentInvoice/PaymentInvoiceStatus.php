@@ -20,9 +20,7 @@ class PaymentInvoiceStatus extends EnumWithIdAndName
      */
     protected static function seed()
     {
-        //Also edit InvoicesListFilter!
         return [
-            new static('concept', 'Concept'),
             new static('sent', 'Verzonden'),
             new static('not-paid', 'Niet betaald'),
         ];

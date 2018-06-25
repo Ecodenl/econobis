@@ -33,6 +33,7 @@ class FullProductionProjectRevenueDistribution extends Resource
                 'datePayout' => $this->date_payout,
                 'energySupplierName' => $this->energy_supplier_name,
                 'deliveredTotal' => $this->delivered_total,
+                'hasInvoice' => $this->paymentInvoices()->exists(),
             ];
     }
 }

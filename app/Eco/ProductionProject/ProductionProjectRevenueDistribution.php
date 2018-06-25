@@ -4,6 +4,7 @@ namespace App\Eco\ProductionProject;
 
 use App\Eco\Contact\Contact;
 use App\Eco\ParticipantProductionProject\ParticipantProductionProject;
+use App\Eco\PaymentInvoice\PaymentInvoice;
 use Illuminate\Database\Eloquent\Model;
 use Venturecraft\Revisionable\RevisionableTrait;
 
@@ -30,6 +31,10 @@ class ProductionProjectRevenueDistribution extends Model
     public function revenue()
     {
         return $this->belongsTo(ProductionProjectRevenue::class, 'revenue_id');
+    }
+
+    public function paymentInvoices(){
+        return $this->hasMany(PaymentInvoice::class, 'revenue_distribution_id');
     }
 
     public function contact()

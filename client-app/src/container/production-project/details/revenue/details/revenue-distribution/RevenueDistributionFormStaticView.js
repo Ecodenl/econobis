@@ -3,10 +3,10 @@ import moment from "moment/moment";
 moment.locale('nl');
 
 const RevenueDistributionFormStaticView = props => {
-    const { id, contact, deliveredTotal, postalCode, city, status, participationsAmount, payout, payoutType, datePayout, energySupplierName } = props.participation;
+    const { id, contact, deliveredTotal, postalCode, city, status, participationsAmount, payout, payoutType, datePayout, energySupplierName, hasInvoice } = props.participation;
 
     return (
-        <div className={`row border`}>
+        <div className={`row border ${hasInvoice && 'warning-row'}`}>
             <div className="col-sm-1">
                 { props.showCheckboxList && props.checkedAll && <input type="checkbox" checked/> }
                 { props.showCheckboxList && !props.checkedAll && contact.primaryEmailAddress && <input type="checkbox" name={id} onChange={props.toggleParticipantCheck}/> }

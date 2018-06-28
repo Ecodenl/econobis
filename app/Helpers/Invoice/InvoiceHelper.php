@@ -121,6 +121,9 @@ class InvoiceHelper
 
         $mail = Mail::to($contactInfo['email']);
 
+        $subject = str_replace('{contactpersoon}', $contactInfo['contactPerson'], $subject);
+        $htmlBody = str_replace('{contactpersoon}', $contactInfo['contactPerson'], $htmlBody);
+
         $mail->subject = $subject;
         $mail->html_body = $htmlBody;
 
@@ -205,6 +208,9 @@ class InvoiceHelper
         $htmlBody = '<!DOCTYPE html><html><head><meta http-equiv="content-type" content="text/html;charset=UTF-8"/><title>'
             . $subject . '</title></head>'
             . $htmlBody . '</html>';
+
+        $subject = str_replace('{contactpersoon}', $contactInfo['contactPerson'], $subject);
+        $htmlBody = str_replace('{contactpersoon}', $contactInfo['contactPerson'], $htmlBody);
 
         $mail->subject = $subject;
         $mail->html_body = $htmlBody;

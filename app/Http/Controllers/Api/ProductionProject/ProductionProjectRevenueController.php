@@ -24,12 +24,14 @@ use App\Helpers\RequestQuery\RequestExtraFilter;
 use App\Helpers\Template\TemplateTableHelper;
 use App\Helpers\Template\TemplateVariableHelper;
 use App\Http\Controllers\Api\ApiController;
+use App\Http\Controllers\Api\Order\OrderController;
 use App\Http\Controllers\Api\PaymentInvoice\PaymentInvoiceController;
 use App\Http\Resources\ParticipantProductionProject\Templates\ParticipantReportMail;
 use App\Http\Resources\ProductionProject\FullProductionProjectRevenue;
 use App\Http\Resources\ProductionProject\FullProductionProjectRevenueDistribution;
 use Barryvdh\DomPDF\Facade as PDF;
 use Carbon\Carbon;
+use function GuzzleHttp\Psr7\str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
@@ -443,11 +445,18 @@ class ProductionProjectRevenueController extends ApiController
                 = ProductionProjectRevenueDistribution::find($distributionId);
 
             $contact = $distribution->contact;
+            $orderController = new OrderController();
+
+            $contactInfo = $orderController->getContactInfoForOrder($contact);
+
             $primaryEmailAddress = $contact->primaryEmailAddress;
             if (!$previewEmail) {
                 $revenue = $distribution->revenue;
                 $productionProject = $revenue->productionProject;
                 $administration = $productionProject->administration;
+
+
+                $html = str_replace('{contactpersoon}', $contactInfo['contactPerson'], $html);
 
                 $revenueHtml
                     = TemplateVariableHelper::replaceTemplateVariables($html,
@@ -548,6 +557,9 @@ class ProductionProjectRevenueController extends ApiController
                 $htmlBodyWithContactVariables
                     = TemplateVariableHelper::stripRemainingVariableTags($htmlBodyWithContactVariables);
 
+                $subject = str_replace('{contactpersoon}', $contactInfo['contactPerson'], $subject);
+                $htmlBodyWithContactVariables = str_replace('{contactpersoon}', $contactInfo['contactPerson'], $htmlBodyWithContactVariables);
+                
                 if ($previewEmail) {
                     return [
                         'to' => $primaryEmailAddress->email,

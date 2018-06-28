@@ -28,6 +28,7 @@ class RequestQuery extends \App\Helpers\RequestQuery\RequestQuery
     {
         return Contact::query()
             ->whereNull('contacts.deleted_at')
-            ->select('contacts.*');
+            ->select('contacts.*')
+            ->orderBy('created_at', 'desc');
     }
 }

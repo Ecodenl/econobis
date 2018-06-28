@@ -30,7 +30,10 @@ class GeneralSearchController
             'Contacten' => [
                 'model' => 'App\Eco\Contact\Contact',
                 'search_method' => 'String',
-                'search_fields' => ['Naam' => 'full_name'],
+                'search_fields' => [
+                    'Naam' => 'full_name',
+                    'Nummer' => 'number'
+                ],
                 'relation_id' => 'id',
                 'relation_name' => 'Contact ',
                 'relation_redirect' => '/contact/'

@@ -2,6 +2,7 @@ import React from 'react';
 import {connect} from 'react-redux';
 import moment from 'moment';
 moment.locale('nl');
+import { Link } from 'react-router';
 
 import ViewText from '../../../../components/form/ViewText';
 import ViewHtmlAsText from '../../../../components/form/ViewHtmlAsText';
@@ -42,7 +43,7 @@ const EmailFormView = props => {
                 />
                 <ViewText
                     label={"Contacten"}
-                    value={ contacts && contacts.map((contact) => contact.fullName).join(', ') }
+                    value={ contacts && contacts.map((contact) => <span><Link to={`/contact/${contact.id}`} className="link-underline">{contact.fullName}</Link> </span>) }
                 />
             </div>
 

@@ -111,7 +111,7 @@ class TemplateVariableHelper
                 break;
             case 'naam':
                 if($model->type_id == 'person'){
-                    $prefix = optional($model->person->lastNamePrefix)->name;
+                    $prefix = $model->person->last_name_prefix;
                     return $prefix ? $model->person->first_name . ' ' . $prefix . ' ' . $model->person->last_name : $model->person->first_name . ' ' . $model->person->last_name;
                 }
                 elseif($model->type_id == 'organisation'){
@@ -128,7 +128,7 @@ class TemplateVariableHelper
                 break;
             case 'achternaam':
                 if($model->type_id == 'person'){
-                    $prefix = optional($model->person->lastNamePrefix)->name;
+                    $prefix = $model->person->last_name_prefix;
                     return $prefix ? $prefix . ' ' . $model->person->last_name : $model->person->last_name;
                 }
                 elseif($model->type_id == 'organisation'){
@@ -436,7 +436,7 @@ class TemplateVariableHelper
                 break;
             case 'organisatie_primair_contact_achternaam':
                 if(optional(optional($model->organisation->contact->contactPerson)->contact)->type_id == 'person'){
-                    $prefix = optional(optional(optional($model->organisation->contact->contactPerson)->contact)->person->lastNamePrefix)->name;
+                    $prefix = optional(optional($model->organisation->contact->contactPerson)->contact)->person->last_name_prefix;
                     return $prefix ? $prefix . ' ' . optional(optional($model->organisation->contact->contactPerson)->contact)->person->last_name : optional(optional($model->organisation->contact->contactPerson)->contact)->person->last_name;
                 }
                 elseif(optional(optional($model->organisation->contact->contactPerson)->contact)->type_id == 'organisation'){
@@ -519,7 +519,7 @@ class TemplateVariableHelper
                 break;
             case 'contact_naam':
                 if($model->contact->type_id == 'person'){
-                    $prefix = optional($model->contact->person->lastNamePrefix)->name;
+                    $prefix = $model->contact->person->last_name_prefix;
                     return $prefix ? $model->contact->person->first_name . ' ' . $prefix . ' ' . $model->contact->person->last_name : $model->contact->person->first_name . ' ' . $model->contact->person->last_name;
                 }
                 elseif($model->type_id == 'organisation'){
@@ -536,7 +536,7 @@ class TemplateVariableHelper
                 break;
             case 'contact_achternaam':
                 if($model->contact->type_id == 'person'){
-                    $prefix = optional($model->contact->person->lastNamePrefix)->name;
+                    $prefix = $model->contact->person->last_name_prefix;
                     return $prefix ? $prefix . ' ' . $model->contact->person->last_name : $model->contact->person->last_name;
                 }
                 elseif($model->contact->type_id == 'organisation'){

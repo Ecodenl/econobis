@@ -34,7 +34,8 @@ class ContactDetailsFormPersonalEdit extends Component {
                 statusId: status.id,
                 initials: person.initials ? person.initials : '',
                 firstName: person.firstName,
-                lastNamePrefixId: person.lastNamePrefix ? person.lastNamePrefix.id : '',
+                lastNamePrefixId: person.lastNamePrefixId ? person.lastNamePrefixId : '',
+                lastNamePrefix: person.lastNamePrefix ? person.lastNamePrefix : '',
                 lastName: person.lastName,
                 memberSince: memberSince ? moment(memberSince.date).format('Y-MM-DD') : '',
                 memberUntil: memberUntil ? moment(memberUntil.date).format('Y-MM-DD') : '',
@@ -139,7 +140,7 @@ class ContactDetailsFormPersonalEdit extends Component {
     };
 
     render() {
-        const {number, createdAt, titleId, statusId, typeId, initials, firstName, lastNamePrefixId, lastName, memberSince, memberUntil, dateOfBirth, newsletter, didAgreeAvg} = this.state.person;
+        const {number, createdAt, titleId, statusId, typeId, initials, firstName, lastNamePrefixId, lastName, memberSince, memberUntil, dateOfBirth, newsletter, didAgreeAvg, lastNamePrefix} = this.state.person;
 
         return (
             <form className="form-horizontal col-md-12" onSubmit={this.handleSubmit}>
@@ -225,6 +226,7 @@ class ContactDetailsFormPersonalEdit extends Component {
                         options={this.props.lastNamePrefixes}
                         value={lastNamePrefixId}
                         onChangeAction={this.handleInputChange}
+                        placeholder={lastNamePrefix ? lastNamePrefix : ''}
                     />
                     <InputSelect
                         label={"Soort contact"}

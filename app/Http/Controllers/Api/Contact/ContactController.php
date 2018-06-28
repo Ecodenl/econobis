@@ -53,7 +53,7 @@ class ContactController extends Controller
         $contact->contactEnergySuppliers->load('contact');
 
         if($contact->isOrganisation()) $contact->load(['organisation.type', 'organisation.industry', 'organisation.quotationRequests.opportunity.measureCategory', 'organisation.quotationRequests.opportunity.status', 'organisation.campaigns', 'contactPerson.contact']);
-        if($contact->isPerson()) $contact->load(['person.lastNamePrefix', 'person.title', 'person.organisation', 'person.type']);
+        if($contact->isPerson()) $contact->load(['person', 'person.title', 'person.organisation', 'person.type']);
 
         $contact->relatedEmailsInbox = $this->getRelatedEmails($contact, $contact->id, 'inbox');
         $contact->relatedEmailsSent = $this->getRelatedEmails($contact, $contact->id, 'sent');

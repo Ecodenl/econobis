@@ -20,7 +20,7 @@ class PersonPresenter extends Presenter
 
         if(empty($person->last_name)) return $person->first_name;
         if(empty($person->first_name)) return $person->last_name;
-        return $person->last_name . ', ' . $person->first_name . ($person->lastNamePrefix ? ' ' . $person->lastNamePrefix->name : '');
+        return $person->last_name . ', ' . $person->first_name . ($person->last_name_prefix ? ' ' . $person->last_name_prefix : '');
     }
 
 }

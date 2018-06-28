@@ -57,7 +57,7 @@ class EnergySupplierCSVHelper
     private function getEnecoCsv(){
         $this->distributions->load([
             'contact.person',
-            'contact.person.lastNamePrefix',
+            'contact.person',
             'contact.primaryEmailAddress',
             'contact.primaryphoneNumber',
             'revenue',
@@ -67,7 +67,7 @@ class EnergySupplierCSVHelper
         $csv = $this->csvExporter->build($this->distributions, [
             'contact.full_name' => 'Naam',
             'contact.person.initials' => 'Voorletters',
-            'contact.person.lastNamePrefix.name' => 'Tussenvoegsel',
+            'contact.person.last_name_prefix' => 'Tussenvoegsel',
             'address' => 'Adres',
             'postal_code' => 'Postcode',
             'city' => 'Woonplaats',

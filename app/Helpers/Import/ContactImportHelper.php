@@ -13,7 +13,6 @@ namespace App\Helpers\Import;
 use App\Eco\Address\Address;
 use App\Eco\Contact\Contact;
 use App\Eco\EmailAddress\EmailAddress;
-use App\Eco\LastNamePrefix\LastNamePrefix;
 use App\Eco\Person\Person;
 use App\Eco\PhoneNumber\PhoneNumber;
 use App\Eco\Title\Title;
@@ -28,7 +27,7 @@ class ContactImportHelper
             'aanspreektitel_id',
             'initialen',
             'voornaam',
-            'tussenvoegsel_id',
+            'tussenvoegsel',
             'achternaam',
             'straat',
             'woonplaats',
@@ -136,7 +135,6 @@ class ContactImportHelper
     {
         //IDS ophalen van database;
         $titleIds = Title::all()->pluck('id')->toArray();
-        $lastNamePrefixIds = LastNamePrefix::all()->pluck('id')->toArray();
         $emails = EmailAddress::all()->pluck('email')->toArray();
         $phoneNumbers = PhoneNumber::all()->pluck('number')->toArray();
 
@@ -170,14 +168,6 @@ class ContactImportHelper
             array_push($field, self::HEADERS[2]);
             array_push($value, $line[2]);
             array_push($message, 'Voornaam is een verplicht veld.');
-            $prio = 1;
-        };
-
-        //tussenvoegsel_id
-        if ($line[3] && !in_array($line[3], $lastNamePrefixIds)) {
-            array_push($field, self::HEADERS[3]);
-            array_push($value, $line[3]);
-            array_push($message, 'Geen geldig id.');
             $prio = 1;
         };
 
@@ -294,7 +284,7 @@ class ContactImportHelper
                 $person->title_id = $line[0];
                 $person->initials = $line[1];
                 $person->first_name = $line[2];
-                $person->last_name_prefix_id = $line[3];
+                $person->last_name_prefix = $line[3];
                 $person->last_name = $line[4];
                 $person->save();
 

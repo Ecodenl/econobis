@@ -248,7 +248,7 @@ class EmailController
 
     public function peek(){
         $contacts = Contact::select('id', 'full_name')->with('primaryEmailAddress')->get();
-        $users = User::select('id', 'email', 'first_name', 'last_name')->with('lastNamePrefix')->get();
+        $users = User::select('id', 'email', 'first_name', 'last_name')->get();
 
         foreach($contacts as $contact){
             if($contact->primaryEmailAddress) {

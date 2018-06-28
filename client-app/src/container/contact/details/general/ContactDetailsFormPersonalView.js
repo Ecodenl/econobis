@@ -57,7 +57,7 @@ const ContactDetailsFormPersonalView = props => {
             <div className="row" onClick={props.switchToEdit}>
                 <ViewText
                     label="Tussenvoegsel"
-                    value={ person.lastNamePrefix && person.lastNamePrefix.name }
+                    value={ person.lastNamePrefix }
                 />
                 <ViewText
                     label="Soort contact"

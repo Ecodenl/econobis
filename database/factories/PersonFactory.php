@@ -5,10 +5,7 @@ $factory->define(\App\Eco\Person\Person::class, function (Faker\Generator $faker
     return [
         'first_name' => $faker->firstName,
         'last_name' => $faker->lastName,
-        'last_name_prefix_id' => function () {
-            if (random_int(0, 10) < 8) return null;
-            return \App\Eco\LastNamePrefix\LastNamePrefix::inRandomOrder()->first()->id;
-        },
+        'last_name_prefix' => 'de',
         'title_id' => function () {
             return \App\Eco\Title\Title::inRandomOrder()->first()->id;
         },

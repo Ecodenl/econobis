@@ -2,8 +2,8 @@
 
 namespace App\Http\Resources\Person;
 
+use App\Eco\LastNamePrefix\LastNamePrefix;
 use App\Http\Resources\Organisation\FullOrganisation;
-use App\Http\Resources\LastNamePrefix\FullLastNamePrefix;
 use App\Http\Resources\PersonType\FullPersonType;
 use App\Http\Resources\Title\FullTitle;
 use Illuminate\Http\Resources\Json\Resource;
@@ -18,6 +18,15 @@ class FullPerson extends Resource
      */
     public function toArray($request)
     {
+
+        $lastNamePrefixId = null;
+
+        if($this->last_name_prefix){
+            if(LastNamePrefix::where('name', $this->last_name_prefix)->exists()){
+                $lastNamePrefixId = LastNamePrefix::where('name', $this->last_name_prefix)->get()[0]->id;
+            }
+        }
+
         return [
             'id' => $this->id,
             'contactId' => $this->contact_id,
@@ -25,8 +34,8 @@ class FullPerson extends Resource
             'title' => FullTitle::make($this->whenLoaded('title')),
             'initials' => $this->initials,
             'firstName' => $this->first_name,
-            'lastNamePrefixId' => $this->last_name_prefix_id,
-            'lastNamePrefix' => FullLastNamePrefix::make($this->whenLoaded('lastNamePrefix')),
+            'lastNamePrefixId' => $lastNamePrefixId,
+            'lastNamePrefix' => $this->last_name_prefix,
             'lastName' => $this->last_name,
             'fullName' => $this->present()->fullName(),
             'organisationId' => $this->organisation_id,

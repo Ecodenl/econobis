@@ -15,6 +15,7 @@ use App\Eco\Contact\Contact;
 use App\Eco\Contact\ContactStatus;
 use App\Eco\EmailAddress\EmailAddress;
 use App\Eco\EmailAddress\EmailAddressType;
+use App\Eco\LastNamePrefix\LastNamePrefix;
 use App\Eco\Person\Person;
 use App\Eco\PhoneNumber\PhoneNumber;
 use App\Eco\PhoneNumber\PhoneNumberType;
@@ -75,12 +76,17 @@ class PersonController extends ApiController
                 'did_agree_avg' => $contactData['did_agree_avg'],
             ];
 
+        $lnp = null;
+        if(isset($contactData['last_name_prefix_id']) && $contactData['last_name_prefix_id']){
+            $lnp = LastNamePrefix::where('id', $contactData['last_name_prefix_id'])->pluck('name')[0];
+        }
+
         $personArray =
             [
                 'initials' => $contactData['initials'],
                 'first_name' => $contactData['first_name'],
                 'last_name' => $contactData['last_name'],
-                'last_name_prefix_id' => $contactData['last_name_prefix_id'],
+                'last_name_prefix' => $lnp,
                 'title_id' => $contactData['title_id'],
                 'type_id' => $contactData['type_id'],
                 'date_of_birth' => $contactData['date_of_birth'],
@@ -271,6 +277,14 @@ class PersonController extends ApiController
             'primary' => 'boolean',
             'occupationId' => 'nullable',
         ]);
+
+        $lnp = $person->last_name_prefix;
+        if(isset($personData['lastNamePrefixId']) && $personData['lastNamePrefixId']){
+            $lnp = LastNamePrefix::where('id', $personData['lastNamePrefixId'])->pluck('name')[0];
+        }
+
+        $personData['lastNamePrefix'] = $lnp;
+        unset($personData['lastNamePrefixId']);
 
         $person->fill($this->arrayKeysToSnakeCase($personData));
         $person->save();

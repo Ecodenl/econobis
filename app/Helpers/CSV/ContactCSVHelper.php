@@ -28,7 +28,7 @@ class ContactCSVHelper
         $this->contacts->load([
             'person',
             'organisation',
-            'person.lastNamePrefix',
+            'person',
             'primaryEmailAddress',
             'primaryphoneNumber',
             'primaryAddress',
@@ -39,7 +39,7 @@ class ContactCSVHelper
             if($contact->type_id === 'person'){
                 $contact->initials = $contact->person->initials;
                 $contact->first_name = $contact->person->first_name;
-                $contact->last_name_prefix = $contact->person->lastNamePrefix ? $contact->person->lastNamePrefix->name : '';
+                $contact->last_name_prefix;
                 $contact->last_name = $contact->person->last_name;
             }
             else if($contact->type_id === 'organisation'){

@@ -2,14 +2,14 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 const InputSelect = props => {
-    const { label, className, size, id, name, value, options, onChangeAction, onBlurAction, required, error, optionName, readOnly} = props;
+    const { label, className, size, id, name, value, options, onChangeAction, onBlurAction, required, error, optionName, readOnly, placeholder} = props;
 
     return (
         <div className={`form-group ${size}`}>
             <label htmlFor={ id } className={`col-sm-6 ${required}`}>{label}</label>
             <div className={"col-sm-6"}>
                 <select className={`form-control input-sm ${className}` + (error && ' has-error')} id={ id } name={name} value={value} onChange={onChangeAction} onBlur={onBlurAction} readOnly={readOnly}>
-                    <option value=''></option>
+                    <option value=''>{placeholder}</option>
                     { options.map((option) => {
                         return <option key={ option.id } value={ option.id }>{ option[optionName] }</option>
                     }) }
@@ -27,6 +27,7 @@ InputSelect.defaultProps = {
     error: false,
     value: '',
     optionName: 'name',
+    placeholder: '',
 };
 
 InputSelect.propTypes = {
@@ -45,8 +46,8 @@ InputSelect.propTypes = {
     required: PropTypes.string,
     readOnly: PropTypes.bool,
     error: PropTypes.bool,
-    optionName: PropTypes.string
-
+    optionName: PropTypes.string,
+    placeholder: PropTypes.string
 };
 
 export default InputSelect;

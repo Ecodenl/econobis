@@ -2,7 +2,6 @@
 
 namespace App\Eco\User;
 
-use App\Cooperation;
 use App\Eco\Administration\Administration;
 use App\Eco\LastNamePrefix\LastNamePrefix;
 use App\Eco\Mailbox\Mailbox;

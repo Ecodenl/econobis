@@ -11,7 +11,7 @@ const ProductionProjectFormView = props => {
         city, ean, eanManager, warrantyOrigin, eanSupply,
         participationWorth, powerKwAvailable, maxParticipations, taxReferral, maxParticipationsYouth,
         totalParticipations, minParticipations, issuedParticipations, isMembershipRequired, participationsInOption,
-        isParticipationTransferable, issuableParticipations, administration} = props.productionProject;
+        isParticipationTransferable, issuableParticipations, administration, postalcodeLink} = props.productionProject;
 
     return (
         <div>
@@ -94,6 +94,10 @@ const ProductionProjectFormView = props => {
                 <ViewText
                     label={"Plaats"}
                     value={city ? city : ''}
+                />
+                <ViewText
+                    label={"Postcoderoos"}
+                    value={postalcodeLink ? postalcodeLink : ''}
                 />
             </div>
 

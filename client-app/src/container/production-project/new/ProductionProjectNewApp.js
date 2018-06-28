@@ -46,6 +46,7 @@ class ProductionProjectNewApp extends Component {
                 minParticipations: '',
                 isMembershipRequired: false,
                 isParticipationTransferable: false,
+                postalcodeLink: '',
             },
             errors: {
                 name: false,

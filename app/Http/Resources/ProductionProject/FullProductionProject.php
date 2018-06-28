@@ -74,6 +74,7 @@ class FullProductionProject extends Resource
                 'emailSentCount' => $this->relatedEmailsSent ? $this->relatedEmailsSent->count() : 0,
                 'relatedEmailsSent' => $this->relatedEmailsSent,
                 'currentParticipations' => $this->current_participations,
+                'postalcodeLink' => $this->postalcode_link,
                 'administrationId' => $this->administration_id,
                 'administration' => FullAdministration::make($this->whenLoaded('administration')),
             ];

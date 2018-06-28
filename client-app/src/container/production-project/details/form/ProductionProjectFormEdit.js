@@ -24,7 +24,7 @@ class ProductionProjectFormEdit extends Component {
             city, ean, eanManager, warrantyOrigin, eanSupply,
             participationWorth, powerKwAvailable, maxParticipations, taxReferral, maxParticipationsYouth,
             totalParticipations, minParticipations, isMembershipRequired,
-            isParticipationTransferable, administration} = props.productionProject;
+            isParticipationTransferable, administration, postalcodeLink} = props.productionProject;
 
         this.state = {
             productionProject: {
@@ -55,6 +55,7 @@ class ProductionProjectFormEdit extends Component {
                 minParticipations: minParticipations ? minParticipations : '',
                 isMembershipRequired: !!isMembershipRequired,
                 isParticipationTransferable: !!isParticipationTransferable,
+                postalcodeLink: postalcodeLink ? postalcodeLink: '',
             },
             errors: {
                 name: false,
@@ -133,7 +134,7 @@ class ProductionProjectFormEdit extends Component {
             city, ean, eanManager, warrantyOrigin, eanSupply,
             participationWorth, powerKwAvailable, maxParticipations, taxReferral, maxParticipationsYouth,
             totalParticipations, minParticipations, isMembershipRequired,
-            isParticipationTransferable} = this.state.productionProject;
+            isParticipationTransferable, postalcodeLink} = this.state.productionProject;
         const {issuedParticipations, participationsInOption, issuableParticipations, administration}  = this.props.productionProject;
 
         return (
@@ -260,6 +261,13 @@ class ProductionProjectFormEdit extends Component {
                         value={city}
                         onChangeAction={this.handleInputChange}
                     />
+                    <InputText
+                        label={"Postcoderoos"}
+                        name={"postalcodeLink"}
+                        value={postalcodeLink}
+                        onChangeAction={this.handleInputChange}
+                    />
+
                 </div>
 
                 <div className="row">

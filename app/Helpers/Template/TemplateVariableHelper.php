@@ -41,6 +41,14 @@ class TemplateVariableHelper
      */
     public static function stripRemainingVariableTags($html_body)
     {
+        $dateShort = Carbon::now()->format('d-m-Y');
+
+        $dateLong = Carbon::now()->formatLocalized('%d %B %Y');
+
+        $html_body = str_replace('{huidige_datum_kort}', $dateShort, $html_body);
+        $html_body = str_replace('{huidige_datum_lang}', $dateLong, $html_body);
+
+
         if (preg_match_all("/{(\S*?)}/", $html_body, $m)) {
             foreach ($m[1] as $i => $varname) {
                 $html_body = str_replace($m[0][$i], '', $html_body);
@@ -98,6 +106,9 @@ class TemplateVariableHelper
             case 'Order':
                 return TemplateVariableHelper::getOrderVar($model, $varname);
                 break;
+            case 'Administration':
+                return TemplateVariableHelper::getAdministrationVar($model, $varname);
+                break;
             default:
                 return '';
                 break;
@@ -106,6 +117,9 @@ class TemplateVariableHelper
 
     public static function getContactVar($model, $varname){
         switch ($varname) {
+            case 'nummer':
+                return $model->number;
+                break;
             case 'titel':
                 return optional(optional($model->person)->title)->name;
                 break;
@@ -149,6 +163,31 @@ class TemplateVariableHelper
                 break;
             case 'energieleverancier':
                 return optional($model->primaryContactEnergySupplier)->energySupplier->name;
+                break;
+            case 'energieleverancier_klantnummer':
+                return optional($model->primaryContactEnergySupplier)->es_number;
+                break;
+            case 'energieleverancier_ean_elektra':
+                return optional($model->primaryContactEnergySupplier)->ean_electricity;
+                break;
+            case 'kvk':
+                if($model->type_id == 'organisation'){
+                    $kvk = $model->organisation->chamber_of_commerce_number;
+                }
+                else{
+                    $kvk = '';
+                }
+                return $kvk;
+                break;
+            case 'btwnr':
+                if($model->type_id == 'organisation'){
+                    $btwnr = $model->organisation->vat_number;
+                }
+                else{
+                    $btwnr = '';
+                }
+                return $btwnr;
+                break;
             default:
                 return '';
                 break;
@@ -274,6 +313,9 @@ class TemplateVariableHelper
             case 'aantal_participanten':
                 return $model->participantsProductionProject->count();
                 break;
+            case 'postcoderoos':
+                return $model->postalcode_link;
+                break;
             default:
                 return '';
                 break;
@@ -362,8 +404,32 @@ class TemplateVariableHelper
             case 'kwh_eind':
                 return $model->kwh_end;
                 break;
+            case 'kwh_totaal':
+                $start = $model->kwh_start ? $model->kwh_start : 0;
+                $end = $model->kwh_end ? $model->kwh_end : 0;
+                return $end - $start;
+                break;
             case 'datum_uitgekeerd':
                 return $model->date_payed ? Carbon::parse($model->date_payed)->format('d/m/Y') : null;
+                break;
+            case 'beginperiode':
+                return $model->date_begin ? Carbon::parse($model->date_begin)->format('d/m/Y') : null;
+                break;
+            case 'eindperiode':
+                return $model->date_end ? Carbon::parse($model->date_end)->format('d/m/Y') : null;
+                break;
+            case 'invoerdatum':
+                return $model->date_entry ? Carbon::parse($model->date_entry)->format('d/m/Y') : null;
+                break;
+            case 'euro':
+                return $model->revenue;
+                break;
+            case 'teruggave':
+                $start = $model->kwh_start ? $model->kwh_start : 0;
+                $end = $model->kwh_end ? $model->kwh_end : 0;
+                $revenue = $model->revenue ? $model->revenue : 0;
+
+                return ($end - $start) * $revenue;
                 break;
             default:
                 return '';
@@ -390,6 +456,9 @@ class TemplateVariableHelper
                 break;
             case 'bedrag':
                 return $model->payout;
+                break;
+            case 'kwh':
+                return $model->delivered_total;
                 break;
             case 'uitkeren_op':
                 return $model->payout_type;
@@ -542,6 +611,38 @@ class TemplateVariableHelper
                 elseif($model->contact->type_id == 'organisation'){
                     return $model->contact->full_name;
                 }
+                break;
+            default:
+                return '';
+                break;
+        }
+    }
+
+    public static function getAdministrationVar($model, $varname){
+        switch ($varname) {
+            case 'naam':
+                return $model->name;
+                break;
+            case 'adres':
+                return $model->address;
+                break;
+            case 'postcode':
+                return $model->postal_code;
+                break;
+            case 'kvk':
+                return $model->kvk_number;
+                break;
+            case 'btwnr':
+                return $model->btw_number;
+                break;
+            case 'bic':
+                return $model->bic;
+                break;
+            case 'email':
+                return $model->email;
+                break;
+            case 'website':
+                return $model->website;
                 break;
             default:
                 return '';

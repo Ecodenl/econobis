@@ -13,6 +13,7 @@ use App\Eco\Document\Document;
 use App\Eco\DocumentTemplate\DocumentTemplate;
 use App\Eco\EmailTemplate\EmailTemplate;
 use App\Eco\EnergySupplier\EnergySupplier;
+use App\Eco\Occupation\OccupationContact;
 use App\Eco\PaymentInvoice\PaymentInvoice;
 use App\Eco\ProductionProject\ProductionProjectRevenue;
 use App\Eco\ProductionProject\ProductionProjectRevenueDistribution;
@@ -446,10 +447,22 @@ class ProductionProjectRevenueController extends ApiController
             if (!$previewEmail) {
                 $revenue = $distribution->revenue;
                 $productionProject = $revenue->productionProject;
+                $administration = $productionProject->administration;
 
                 $revenueHtml
                     = TemplateVariableHelper::replaceTemplateVariables($html,
                     'contact', $contact);
+
+                //wettelijk vertegenwoordiger
+                if(OccupationContact::where('contact_id', $contact->id)->where('occupation_id', 7)->exists()){
+                    $wettelijkVertegenwoordiger = OccupationContact::where('contact_id', $contact->id)->where('occupation_id', 7)->first()->get()[0]->primaryContact;
+                    $revenueHtml
+                        = TemplateVariableHelper::replaceTemplateVariables($revenueHtml,
+                        'wettelijk_vertegenwoordiger', $wettelijkVertegenwoordiger);
+                }
+                $revenueHtml
+                    = TemplateVariableHelper::replaceTemplateVariables($revenueHtml,
+                    'administratie', $administration);
                 $revenueHtml
                     = TemplateVariableHelper::replaceTemplateVariables($revenueHtml,
                     'verdeling', $distribution);

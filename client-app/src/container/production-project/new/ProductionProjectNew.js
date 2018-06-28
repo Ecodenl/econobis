@@ -15,7 +15,7 @@ const ProductionProjectNew = props => {
         dateProduction, dateStartRegistrations, dateEndRegistrations, productionProjectTypeId, postalCode, address,
         city, ean, eanManager, warrantyOrigin, eanSupply,
         participationWorth, powerKwAvailable, maxParticipations, taxReferral, maxParticipationsYouth,
-        totalParticipations, minParticipations, isMembershipRequired, isParticipationTransferable, administrationId} = props.productionProject;
+        totalParticipations, minParticipations, isMembershipRequired, isParticipationTransferable, administrationId, postalcodeLink} = props.productionProject;
     return (
         <form className="form-horizontal col-md-12" onSubmit={props.handleSubmit}>
             <div className="row">
@@ -188,12 +188,18 @@ const ProductionProjectNew = props => {
                    </div>
 
                    <div className="row">
-                   <InputText
-                       label={"Aanwijzing belastingdienst"}
-                       name={"taxReferral"}
-                       value={taxReferral}
-                       onChangeAction={props.handleInputChange}
-                   />
+                       <InputText
+                           label={"Aanwijzing belastingdienst"}
+                           name={"taxReferral"}
+                           value={taxReferral}
+                           onChangeAction={props.handleInputChange}
+                       />
+                       <InputText
+                           label={"Postcoderoos"}
+                           name={"postalcodeLink"}
+                           value={postalcodeLink}
+                           onChangeAction={props.handleInputChange}
+                       />
                    </div>
                 </div>
             }

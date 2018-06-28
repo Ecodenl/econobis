@@ -36,7 +36,7 @@
     <table>
         <tr>
             <td>
-                {{ $invoice->order->contact->full_name }}
+                Ten aanzien van: @if($invoice->contactPerson){{ $invoice->contactPerson }} @else {{ $invoice->order->contact->full_name }}@endif
             </td>
             <td>
                 {{ $invoice->administration->name }}
@@ -44,7 +44,7 @@
         </tr>
         <tr>
             <td>
-                {{ $invoice->order->contact->primaryAddress ? $invoice->order->contact->primaryAddress->street . ' ' . $invoice->order->contact->primaryAddress->number . $invoice->order->contact->primaryAddress->addition : '' }}
+                {{ $invoice->order->contact->full_name }}
             </td>
             <td>
                 {{ $invoice->administration->address }}
@@ -52,7 +52,7 @@
         </tr>
         <tr>
             <td>
-                {{ $invoice->order->contact->primaryAddress ? $invoice->order->contact->primaryAddress->postal_code . ' ' . $invoice->order->contact->primaryAddress->city : ''}}
+                {{ $invoice->order->contact->primaryAddress ? $invoice->order->contact->primaryAddress->street . ' ' . $invoice->order->contact->primaryAddress->number . $invoice->order->contact->primaryAddress->addition : '' }}
             </td>
             <td>
                 {{ $invoice->administration->postal_code . ' ' . $invoice->administration->city }}
@@ -60,6 +60,7 @@
         </tr>
         <tr>
             <td>
+                {{ $invoice->order->contact->primaryAddress ? $invoice->order->contact->primaryAddress->postal_code . ' ' . $invoice->order->contact->primaryAddress->city : ''}}
             </td>
             <td>
                 {{ $invoice->administration->country ? $invoice->administration->country->name : 'Nederland' }}

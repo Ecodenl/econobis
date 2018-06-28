@@ -239,6 +239,7 @@ class InvoiceController extends ApiController
 
         foreach ($invoices as $k => $invoice){
             $emailTo = $orderController->getContactInfoForOrder($invoice->order->contact)['email'];
+            $invoice->contactPerson = $orderController->getContactInfoForOrder($invoice->order->contact)['contactPerson'];
 
             if ($emailTo === 'Geen e-mail bekend') {
                 $invoice->status_id = 'sent';

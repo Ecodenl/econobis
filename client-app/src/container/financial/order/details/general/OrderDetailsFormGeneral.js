@@ -28,6 +28,20 @@ class OrderDetailsFormGeneral extends Component {
         });
     };
 
+    componentWillReceiveProps(nextProps) {
+
+        if (this.props.orderDetails.id !== nextProps.orderDetails.id) {
+            nextProps.orderDetails.contactId &&
+            OrderDetailsAPI.fetchContactInfoForOrder(nextProps.orderDetails.contactId).then((payload) => {
+                this.setState({
+                    ...this.state,
+                    contactPerson: payload.data.contactPerson,
+                    contactEmail: payload.data.email,
+                });
+            });
+        }
+    };
+
     switchToEdit = () => {
         this.setState({
             showEdit: true,

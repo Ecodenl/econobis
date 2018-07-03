@@ -162,7 +162,7 @@ class TemplateVariableHelper
                 return optional($model->primaryphoneNumber)->number;
                 break;
             case 'energieleverancier':
-                return optional($model->primaryContactEnergySupplier)->energySupplier->name;
+                return optional(optional($model->primaryContactEnergySupplier)->energySupplier)->name;
                 break;
             case 'energieleverancier_klantnummer':
                 return optional($model->primaryContactEnergySupplier)->es_number;

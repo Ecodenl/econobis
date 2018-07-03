@@ -36,7 +36,7 @@
     <table>
         <tr>
             <td>
-                Ten aanzien van: @if($invoice->contactPerson){{ $invoice->contactPerson }} @else {{ $invoice->order->contact->full_name }}@endif
+                Ten aanzien van: @if($contactPerson){{ $contactPerson }} @else {{ $invoice->order->contact->full_name }}@endif
             </td>
             <td>
                 {{ $invoice->administration->name }}

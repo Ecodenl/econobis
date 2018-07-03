@@ -239,7 +239,7 @@ class InvoiceController extends ApiController
 
         foreach ($invoices as $k => $invoice){
             $emailTo = $orderController->getContactInfoForOrder($invoice->order->contact)['email'];
-            $invoice->contactPerson = $orderController->getContactInfoForOrder($invoice->order->contact)['contactPerson'];
+            $contactPerson = $orderController->getContactInfoForOrder($invoice->order->contact)['contactPerson'];
 
             if ($emailTo === 'Geen e-mail bekend') {
                 $invoice->status_id = 'sent';
@@ -263,7 +263,7 @@ class InvoiceController extends ApiController
                 if ($k !== 0) {
                     $html .= '<div class="page-break"></div>';
                 }
-                $html .= view('invoices.generic')->with('invoice', $invoice)
+                $html .= view('invoices.generic')->with(['invoice' => $invoice, 'contactPerson' => $contactPerson])
                     ->with('logo', $img)->render();
             }
         }

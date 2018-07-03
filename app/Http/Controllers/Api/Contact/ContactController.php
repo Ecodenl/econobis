@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Api\Contact;
 
 use App\Eco\Contact\Contact;
 use App\Eco\Contact\ContactStatus;
-use App\Eco\Contact\Jobs\DeleteContact;
 use App\Eco\User\User;
 use App\Helpers\Delete\DeleteHelper;
 use App\Helpers\Import\ContactImportHelper;

@@ -237,10 +237,11 @@ class InvoiceHelper
         InvoiceHelper::checkStorageDir($invoice->administration->id);
 
         $orderController = new OrderController();
-        $invoice->contactPerson = $orderController->getContactInfoForOrder($invoice->order->contact)['contactPerson'];
+        $contactPerson = $orderController->getContactInfoForOrder($invoice->order->contact)['contactPerson'];
 
         $pdf = PDF::loadView('invoices.generic', [
             'invoice' => $invoice,
+            'contactPerson' => $contactPerson,
             'logo' => $img,
         ]);
 

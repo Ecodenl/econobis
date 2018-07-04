@@ -40,6 +40,10 @@ class AppServiceProvider extends ServiceProvider
                 $record['extra']['Coöperatie'] = config('app.name');
                 return $record;
             });
+            //locale linux/windows verschil
+            setlocale(LC_ALL, 'nl_NL.utf8');
+        }else{
+            setlocale(LC_ALL, 'nld_nld');
         }
     }
 

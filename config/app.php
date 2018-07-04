@@ -264,6 +264,4 @@ return [
         'password' => env('ADMIN_USER_PASSWORD'),
         'alfresco_password' => env('ADMIN_USER_PASSWORD_ALFRESCO'),
     ],
-
-    \Carbon\Carbon::setLocale('nl')
 ];

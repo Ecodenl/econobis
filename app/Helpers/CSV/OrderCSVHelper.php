@@ -28,7 +28,6 @@ class OrderCSVHelper
         $this->orders->load([
             'contact.person',
             'contact.organisation',
-            'contact.person.lastNamePrefix',
             'contact.primaryEmailAddress',
             'contact.primaryphoneNumber',
             'contact.primaryAddress',
@@ -39,7 +38,7 @@ class OrderCSVHelper
             if($order->contact->type_id === 'person'){
                 $order->initials = $order->contact->person->initials;
                 $order->first_name = $order->contact->person->first_name;
-                $order->last_name_prefix = $order->contact->person->lastNamePrefix ? $order->contact->person->lastNamePrefix->name : '';
+                $order->last_name_prefix = $order->contact->person->last_name_prefix ? $order->contact->person->last_name_prefix : '';
                 $order->last_name = $order->contact->person->last_name;
             }
             else if($order->contact->type_id === 'organisation'){

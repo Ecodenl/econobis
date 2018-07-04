@@ -54,17 +54,19 @@ class TemplateMergeFieldsTest extends TestCase
         $this->assertProductionProjectRevenueDistributionMergeFields();
         $this->assertQuotationRequestMergeFields();
         $this->assertOrderMergeFields();
+        $this->assertAdministrationMergeFields();
     }
 
     public function assertContactMergeFields()
     {
         $html ='{contact_titel}{contact_naam}{testjes}{contact_voornaam}{contact_achternaam}{onzin}{contact_adres}{contact_postcode}{contact_plaats}{contact_telefoonnummer}{contact_energieleverancier}';
+        $html .= '{contact_energieleverancier_klantnummer}{contact_energieleverancier_ean_elektra}{contact_kvk}{contact_btwnr}';
 
         $html = TemplateVariableHelper::replaceTemplateVariables($html, 'contact', Contact::find(1));
         $html = TemplateVariableHelper::stripRemainingVariableTags($html);
 
         $expectedHtml = 'MevrKlaas de VaakKlaasde VaakDorpstraat 81693KWWervershoof0612345678=om';
-
+        $expectedHtml .= '333444';
         $this->assertEquals($expectedHtml, $html);
     }
 
@@ -85,7 +87,7 @@ class TemplateMergeFieldsTest extends TestCase
         $html .= '{pp_eind_inschrijving}{pp_postcode}{pp_adres}{pp_plaats}{pp_ean}{pp_ean_netbeheer}';
         $html .= '{pp_garantie_oorsprong}{pp_ean_levering}{pp_participatie_waarde}{pp_opgesteld_vermogen}{pp_max_participaties}';
         $html .= '{pp_aanwijzing_belastingsdienst}{pp_max_participaties_jeugd}{pp_min_participaties}{pp_uitgegeven_participaties}';
-        $html .= '{pp_participaties_in_optie}{pp_uit_te_geven_participaties}{pp_aantal_participanten}';
+        $html .= '{pp_participaties_in_optie}{pp_uit_te_geven_participaties}{pp_aantal_participanten}{pp_postcoderoos}';
 
         $html = TemplateVariableHelper::replaceTemplateVariables($html, 'pp', ProductionProject::find(1));
 
@@ -93,7 +95,7 @@ class TemplateMergeFieldsTest extends TestCase
         $expectedHtml .= '06/03/20181693KWDorpstraat 10Andijk12341235';
         $expectedHtml .= 'Garantie nummer 12312360101102';
         $expectedHtml .= 'Belasting1103104';
-        $expectedHtml .= '10-11';
+        $expectedHtml .= '10-111693';
 
         $this->assertEquals($expectedHtml, $html);
     }
@@ -118,11 +120,11 @@ class TemplateMergeFieldsTest extends TestCase
 
     public function assertProductionProjectRevenueMergeFields(){
 
-        $html = '{r_kwh_start}{r_kwh_eind}{r_datum_uitgekeerd}';
+        $html = '{r_kwh_start}{r_kwh_eind}{r_datum_uitgekeerd}{r_kwh_totaal}{r_beginperiode}{r_eindperiode}{r_invoerdatum}{r_euro}{r_teruggave}';
 
         $html = TemplateVariableHelper::replaceTemplateVariables($html, 'r', ProductionProjectRevenue::find(1));
 
-        $expectedHtml = '1000200016/03/2018';
+        $expectedHtml = '1000200016/03/2018100013/03/201814/03/201815/03/201830003000000';
 
         $this->assertEquals($expectedHtml, $html);
 
@@ -131,12 +133,12 @@ class TemplateMergeFieldsTest extends TestCase
     public function assertProductionProjectRevenueDistributionMergeFields(){
 
         $html = '{d_adres}{d_postcode}{d_woonplaats}{d_status}{d_participaties}{d_bedrag}{d_uitkeren_op}';
-        $html .= '{d_datum_uitkeren}{d_energieleverancier}';
+        $html .= '{d_datum_uitkeren}{d_energieleverancier}{d_kwh}';
 
         $html = TemplateVariableHelper::replaceTemplateVariables($html, 'd', ProductionProjectRevenueDistribution::find(1));
 
         $expectedHtml = 'talud 91239 LMOnderdijkdbstatus151523Rekening';
-        $expectedHtml .= '17/03/2018Eneco';
+        $expectedHtml .= '17/03/2018Eneco123';
 
         $this->assertEquals($expectedHtml, $html);
     }
@@ -154,7 +156,7 @@ class TemplateMergeFieldsTest extends TestCase
         $expectedHtml = 'OrgaNisatie Laantje 10 Wognum OrgaNisatie@xaris.nl';
         $expectedHtml .= '0650233678 Vaak, Klaas de Klaas de Vaak Vaak, Klaas de';
         $expectedHtml .= 'klaasV@xaris.nl Wervershoof Dorpstraat 8 1693KW';
-        $expectedHtml .= '0612345678 Gevelisolatie OfferteText 22/03/2018 Tazelaar, Marco';
+        $expectedHtml .= '0612345678 Gevelisolatie OfferteText 22/03/2018 Xaris, Admin';
 
         $this->assertEquals($expectedHtml, $html);
     }
@@ -173,6 +175,18 @@ class TemplateMergeFieldsTest extends TestCase
         $this->assertEquals($expectedHtml, $html);
     }
 
+    public function assertAdministrationMergeFields()
+    {
+        $html ='{ad_naam}{ad_adres}{ad_postcode}{ad_kvk}{ad_btwnr}{ad_bic}{ad_email}{ad_website}';
+
+        $html = TemplateVariableHelper::replaceTemplateVariables($html, 'ad', Administration::find(2));
+        $html = TemplateVariableHelper::stripRemainingVariableTags($html);
+
+        $expectedHtml = 'Fren INC.Talud 81693KW111222333fren.dehaan@xaris.nlwww.freninc.nl';
+
+        $this->assertEquals($expectedHtml, $html);
+    }
+
     public function insertData(){
         $this->insertContact();
         $this->insertUser();
@@ -182,6 +196,7 @@ class TemplateMergeFieldsTest extends TestCase
         $this->insertProductionProjectRevenueDistribution();
         $this->insertQuotationRequest();
         $this->insertOrder();
+        $this->insertAdministration();
     }
 
     public function insertContact(){
@@ -193,7 +208,7 @@ class TemplateMergeFieldsTest extends TestCase
         $person = new Person();
         $person->contact_id = 1;
         $person->title_id = 2;
-        $person->last_name_prefix_id = 2;
+        $person->last_name_prefix = 'de';
         $person->first_name = 'Klaas';
         $person->last_name = 'Vaak';
         $person->save();
@@ -225,6 +240,8 @@ class TemplateMergeFieldsTest extends TestCase
         $contactEnergySupplier->created_by_id = 1;
         $contactEnergySupplier->is_current_supplier = true;
         $contactEnergySupplier->contact_energy_supply_type_id = 1;
+        $contactEnergySupplier->es_number = 333;
+        $contactEnergySupplier->ean_electricity = 444;
         $contactEnergySupplier->save();
     }
 
@@ -266,6 +283,7 @@ class TemplateMergeFieldsTest extends TestCase
         $productionProject->min_participations = '104';
         $productionProject->owned_by_id = 1;
         $productionProject->participation_worth = 0;
+        $productionProject->postalcode_link = 1693;
         $productionProject->save();
     }
 
@@ -303,6 +321,7 @@ class TemplateMergeFieldsTest extends TestCase
         $revenue->date_entry = '2018-03-15';
         $revenue->kwh_start = 1000;
         $revenue->kwh_end = 2000;
+        $revenue->revenue = 3000;
         $revenue->date_payed = '2018-03-16';
         $revenue->created_by_id = 1;
         $revenue->save();
@@ -322,6 +341,7 @@ class TemplateMergeFieldsTest extends TestCase
         $distribution->payout_type = 'Rekening';
         $distribution->date_payout = '2018-03-17';
         $distribution->energy_supplier_name = 'Eneco';
+        $distribution->delivered_total = 123;
         $distribution->save();
     }
 
@@ -442,5 +462,19 @@ class TemplateMergeFieldsTest extends TestCase
         $op->date_end = '2020-01-01';
         $op->description = 'Niet gratis';
         $op->save();
+    }
+
+    public function insertAdministration(){
+        $ad = new Administration();
+        $ad->name = 'Fren INC.';
+        $ad->address = 'Talud 8';
+        $ad->postal_code = '1693KW';
+        $ad->kvk_number = 111;
+        $ad->btw_number = 222;
+        $ad->bic = 333;
+        $ad->email = 'fren.dehaan@xaris.nl';
+        $ad->website = 'www.freninc.nl';
+        $ad->IBAN = 'NL59RABO32432424234234';
+        $ad->save();
     }
 }

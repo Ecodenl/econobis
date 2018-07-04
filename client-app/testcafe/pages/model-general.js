@@ -15,5 +15,6 @@ export default class ModelGeneral {
 
         this.back = Selector('span.glyphicon.glyphicon-arrow-left');
         this.delete = Selector('span.glyphicon.glyphicon-trash');
+        this.export = Selector('span.glyphicon.glyphicon-download-alt');
     }
 }

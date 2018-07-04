@@ -28,7 +28,6 @@ class InvoiceCSVHelper
         $this->invoices->load([
             'order.contact.person',
             'order.contact.organisation',
-            'order.contact.person.lastNamePrefix',
             'order.contact.primaryEmailAddress',
             'order.contact.primaryphoneNumber',
             'order.contact.primaryAddress',

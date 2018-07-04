@@ -39,7 +39,7 @@ class InvoiceCSVHelper
             if($invoice->order->contact->type_id === 'person'){
                 $invoice->initials = $invoice->order->contact->person->initials;
                 $invoice->first_name = $invoice->order->contact->person->first_name;
-                $invoice->last_name_prefix = $invoice->order->contact->person->lastNamePrefix ? $invoice->order->contact->person->lastNamePrefix->name : '';
+                $invoice->last_name_prefix = $invoice->order->contact->person->last_name_prefix ? $invoice->order->contact->person->last_name_prefix : '';
                 $invoice->last_name = $invoice->order->contact->person->last_name;
             }
             else if($invoice->order->contact->type_id === 'organisation'){

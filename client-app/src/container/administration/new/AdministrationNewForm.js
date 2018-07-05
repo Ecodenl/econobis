@@ -31,6 +31,7 @@ class AdministrationNewForm extends Component {
                 kvkNumber: '',
                 btwNumber: '',
                 IBAN: '',
+                ibanAttn: '',
                 email: '',
                 website: '',
                 bic: '',
@@ -205,6 +206,7 @@ class AdministrationNewForm extends Component {
             data.append('kvkNumber', administration.kvkNumber);
             data.append('btwNumber', administration.btwNumber);
             data.append('IBAN', administration.IBAN);
+            data.append('ibanAttn', administration.ibanAttn);
             data.append('email', administration.email);
             data.append('website', administration.website);
             data.append('bic', administration.bic);
@@ -225,7 +227,8 @@ class AdministrationNewForm extends Component {
     };
 
     render() {
-        const { name, administrationNumber, address, postalCode, city, countryId, kvkNumber, btwNumber, IBAN, email, website, bic, sepaContractName, sepaCreditorId, rsinNumber, defaultPaymentTerm, attachment, emailTemplateId, emailTemplateReminderId, emailTemplateExhortationId} = this.state.administration;
+        const { name, administrationNumber, address, postalCode, city, countryId, kvkNumber, btwNumber, IBAN, email, website, bic, sepaContractName, sepaCreditorId, rsinNumber, defaultPaymentTerm, attachment,
+            emailTemplateId, emailTemplateReminderId, emailTemplateExhortationId, ibanAttn} = this.state.administration;
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -316,12 +319,10 @@ class AdministrationNewForm extends Component {
                                 error={this.state.errors.IBAN}
                             />
                             <InputText
-                                label="Bic"
-                                name={"bic"}
-                                value={bic}
+                                label="IBAN t.n.v."
+                                name={"ibanAttn"}
+                                value={ibanAttn}
                                 onChangeAction={this.handleInputChange}
-                                required={"required"}
-                                error={this.state.errors.bic}
                             />
                         </div>
 
@@ -334,11 +335,12 @@ class AdministrationNewForm extends Component {
                                 error={this.state.errors.website}
                             />
                             <InputText
-                                label="E-mail"
-                                name={"email"}
-                                value={email}
+                                label="Bic"
+                                name={"bic"}
+                                value={bic}
                                 onChangeAction={this.handleInputChange}
-                                error={this.state.errors.email}
+                                required={"required"}
+                                error={this.state.errors.bic}
                             />
                         </div>
 
@@ -368,10 +370,11 @@ class AdministrationNewForm extends Component {
                                 multi={false}
                             />
                             <InputText
-                                label="RSIN nummer"
-                                name={"rsinNumber"}
-                                value={rsinNumber}
+                                label="E-mail"
+                                name={"email"}
+                                value={email}
                                 onChangeAction={this.handleInputChange}
+                                error={this.state.errors.email}
                             />
                         </div>
 
@@ -386,15 +389,11 @@ class AdministrationNewForm extends Component {
                                 multi={false}
                             />
                             <InputText
-                                label="Standaard betalingstermijn(dagen)"
-                                type={"number"}
-                                min={'0'}
-                                max={'9999'}
-                                name={"defaultPaymentTerm"}
-                                value={defaultPaymentTerm}
+                                label="RSIN nummer"
+                                name={"rsinNumber"}
+                                value={rsinNumber}
                                 onChangeAction={this.handleInputChange}
                             />
-
                         </div>
 
                         <div className="row">
@@ -407,6 +406,18 @@ class AdministrationNewForm extends Component {
                                 isLoading={this.state.peekLoading.emailTemplates}
                                 multi={false}
                             />
+                            <InputText
+                                label="Standaard betalingstermijn(dagen)"
+                                type={"number"}
+                                min={'0'}
+                                max={'9999'}
+                                name={"defaultPaymentTerm"}
+                                value={defaultPaymentTerm}
+                                onChangeAction={this.handleInputChange}
+                            />
+                        </div>
+
+                        <div className="row">
                             <div className="form-group col-sm-6">
                                 <label className="col-sm-6">Kies logo</label>
                                 <div className="col-sm-6">

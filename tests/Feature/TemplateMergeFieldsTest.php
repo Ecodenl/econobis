@@ -177,12 +177,12 @@ class TemplateMergeFieldsTest extends TestCase
 
     public function assertAdministrationMergeFields()
     {
-        $html ='{ad_naam}{ad_adres}{ad_postcode}{ad_kvk}{ad_btwnr}{ad_bic}{ad_email}{ad_website}';
+        $html ='{ad_naam}{ad_adres}{ad_postcode}{ad_kvk}{ad_btwnr}{ad_bic}{ad_email}{ad_website}{ad_plaats}{ad_tnv}';
 
         $html = TemplateVariableHelper::replaceTemplateVariables($html, 'ad', Administration::find(2));
         $html = TemplateVariableHelper::stripRemainingVariableTags($html);
 
-        $expectedHtml = 'Fren INC.Talud 81693KW111222333fren.dehaan@xaris.nlwww.freninc.nl';
+        $expectedHtml = 'Fren INC.Talud 81693KW111222333fren.dehaan@xaris.nlwww.freninc.nlWervershoofFren';
 
         $this->assertEquals($expectedHtml, $html);
     }
@@ -475,6 +475,8 @@ class TemplateMergeFieldsTest extends TestCase
         $ad->email = 'fren.dehaan@xaris.nl';
         $ad->website = 'www.freninc.nl';
         $ad->IBAN = 'NL59RABO32432424234234';
+        $ad->city = 'Wervershoof';
+        $ad->iban_attn = 'Fren';
         $ad->save();
     }
 }

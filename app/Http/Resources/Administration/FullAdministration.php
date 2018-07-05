@@ -43,6 +43,7 @@ class FullAdministration extends Resource
                 'kvkNumber' => $this->kvk_number,
                 'btwNumber' => $this->btw_number,
                 'IBAN' => $this->IBAN,
+                'ibanAttn' => $this->iban_attn,
                 'email' => $this->email,
                 'website' => $this->website,
                 'bic' => $this->bic,

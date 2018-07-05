@@ -124,6 +124,8 @@ class InvoiceHelper
         $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody,
             'contact', $invoice->order->contact);
 
+        $htmlBody = TemplateVariableHelper::stripRemainingVariableTags($htmlBody);
+
         $htmlBody
             = '<!DOCTYPE html><html><head><meta http-equiv="content-type" content="text/html;charset=UTF-8"/><title>'
             . $subject . '</title></head>'
@@ -223,7 +225,8 @@ class InvoiceHelper
         $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody,
             'contact', $invoice->order->contact);
 
-        
+        $htmlBody = TemplateVariableHelper::stripRemainingVariableTags($htmlBody);
+
         $htmlBody = '<!DOCTYPE html><html><head><meta http-equiv="content-type" content="text/html;charset=UTF-8"/><title>'
             . $subject . '</title></head>'
             . $htmlBody . '</html>';

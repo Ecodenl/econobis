@@ -650,6 +650,9 @@ class TemplateVariableHelper
             case 'plaats':
                 return $model->city;
                 break;
+            case 'iban_tnv':
+                return $model->iban_attn;
+                break;
             default:
                 return '';
                 break;

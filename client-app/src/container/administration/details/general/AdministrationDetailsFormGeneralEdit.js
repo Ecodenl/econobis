@@ -18,7 +18,7 @@ class AdministrationDetailsFormGeneralEdit extends Component {
         super(props);
 
         const { id, name, administrationNumber, address, emailTemplateId, emailTemplateReminderId, emailTemplateExhortationId, postalCode, city, countryId, kvkNumber, btwNumber, IBAN, email, website, bic, sepaContractName,
-            sepaCreditorId, rsinNumber, defaultPaymentTerm, logoName} = props.administrationDetails;
+            sepaCreditorId, rsinNumber, defaultPaymentTerm, logoName, ibanAttn} = props.administrationDetails;
 
         this.state = {
             newLogo: false,
@@ -34,6 +34,7 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                 kvkNumber: kvkNumber ? kvkNumber : '',
                 btwNumber: btwNumber ? btwNumber : '',
                 IBAN: IBAN ? IBAN : '',
+                ibanAttn: ibanAttn ? ibanAttn : '',
                 email: email ? email : '',
                 website: website ? website : '',
                 bic: bic ? bic : '',
@@ -209,6 +210,7 @@ class AdministrationDetailsFormGeneralEdit extends Component {
             data.append('kvkNumber', administration.kvkNumber);
             data.append('btwNumber', administration.btwNumber);
             data.append('IBAN', administration.IBAN);
+            data.append('ibanAttn', administration.ibanAttn);
             data.append('email', administration.email);
             data.append('website', administration.website);
             data.append('bic', administration.bic);
@@ -227,7 +229,7 @@ class AdministrationDetailsFormGeneralEdit extends Component {
 
     render() {
         const { name, administrationNumber, emailTemplateId, emailTemplateReminderId, emailTemplateExhortationId, address, postalCode, city, countryId, kvkNumber, btwNumber, IBAN, email, website, bic, sepaContractName,
-            sepaCreditorId, rsinNumber, defaultPaymentTerm, attachment, logoName} = this.state.administration;
+            sepaCreditorId, rsinNumber, defaultPaymentTerm, attachment, logoName, ibanAttn} = this.state.administration;
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -318,12 +320,10 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                                 error={this.state.errors.IBAN}
                             />
                             <InputText
-                                label="Bic"
-                                name={"bic"}
-                                value={bic}
+                                label="IBAN t.n.v."
+                                name={"ibanAttn"}
+                                value={ibanAttn}
                                 onChangeAction={this.handleInputChange}
-                                required={"required"}
-                                error={this.state.errors.bic}
                             />
                         </div>
 
@@ -336,11 +336,12 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                                 error={this.state.errors.website}
                             />
                             <InputText
-                                label="E-mail"
-                                name={"email"}
-                                value={email}
+                                label="Bic"
+                                name={"bic"}
+                                value={bic}
                                 onChangeAction={this.handleInputChange}
-                                error={this.state.errors.email}
+                                required={"required"}
+                                error={this.state.errors.bic}
                             />
                         </div>
 
@@ -370,10 +371,11 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                                 multi={false}
                             />
                             <InputText
-                                label="RSIN nummer"
-                                name={"rsinNumber"}
-                                value={rsinNumber}
+                                label="E-mail"
+                                name={"email"}
+                                value={email}
                                 onChangeAction={this.handleInputChange}
+                                error={this.state.errors.email}
                             />
                         </div>
 
@@ -383,6 +385,24 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                                 name={"emailTemplateReminderId"}
                                 options={this.state.emailTemplates}
                                 value={emailTemplateReminderId}
+                                onChangeAction={this.handleReactSelectChange}
+                                isLoading={this.state.peekLoading.emailTemplates}
+                                multi={false}
+                            />
+                            <InputText
+                                label="RSIN nummer"
+                                name={"rsinNumber"}
+                                value={rsinNumber}
+                                onChangeAction={this.handleInputChange}
+                            />
+                        </div>
+
+                        <div className="row">
+                            <InputReactSelect
+                                label={"E-mail template aanmaning"}
+                                name={"emailTemplateExhortationId"}
+                                options={this.state.emailTemplates}
+                                value={emailTemplateExhortationId}
                                 onChangeAction={this.handleReactSelectChange}
                                 isLoading={this.state.peekLoading.emailTemplates}
                                 multi={false}
@@ -399,15 +419,6 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                         </div>
 
                         <div className="row">
-                            <InputReactSelect
-                                label={"E-mail template aanmaning"}
-                                name={"emailTemplateExhortationId"}
-                                options={this.state.emailTemplates}
-                                value={emailTemplateExhortationId}
-                                onChangeAction={this.handleReactSelectChange}
-                                isLoading={this.state.peekLoading.emailTemplates}
-                                multi={false}
-                            />
                             <div className="form-group col-sm-6">
                                 <label className="col-sm-6">Kies logo</label>
                                 <div className="col-sm-6">

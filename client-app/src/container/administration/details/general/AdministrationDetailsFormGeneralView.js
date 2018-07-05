@@ -7,7 +7,7 @@ import PanelBody from "../../../../components/panel/PanelBody";
 
 const AdministrationDetailsFormGeneralView = props => {
 
-    const { name, administrationNumber, address, postalCode, emailTemplate, emailTemplateReminder, emailTemplateExhortation, city, country, kvkNumber, btwNumber, IBAN,
+    const { name, administrationNumber, address, postalCode, emailTemplate, emailTemplateReminder, emailTemplateExhortation, city, country, kvkNumber, btwNumber, IBAN, ibanAttn,
         email, website, bic, sepaContractName, sepaCreditorId, rsinNumber, defaultPaymentTerm, logoName} = props.administrationDetails;
 
     return (
@@ -60,8 +60,8 @@ const AdministrationDetailsFormGeneralView = props => {
                             value={IBAN}
                         />
                         <ViewText
-                            label={"Bic"}
-                            value={bic}
+                            label={"IBAN t.n.v."}
+                            value={ibanAttn}
                         />
                     </div>
                     <div className="row">
@@ -70,8 +70,8 @@ const AdministrationDetailsFormGeneralView = props => {
                             value={website}
                         />
                         <ViewText
-                            label={"E-mail"}
-                            value={email}
+                            label={"Bic"}
+                            value={bic}
                         />
                     </div>
                     <div className="row">
@@ -91,9 +91,10 @@ const AdministrationDetailsFormGeneralView = props => {
                             value={emailTemplate ? emailTemplate.name : ''}
                         />
                         <ViewText
-                            label={"RSIN nummer"}
-                            value={rsinNumber}
+                            label={"E-mail"}
+                            value={email}
                         />
+
                     </div>
 
                     <div className="row">
@@ -102,8 +103,8 @@ const AdministrationDetailsFormGeneralView = props => {
                             value={emailTemplateReminder ? emailTemplateReminder.name : ''}
                         />
                         <ViewText
-                            label={"Standaard betalingstermijn(dagen)"}
-                            value={defaultPaymentTerm}
+                            label={"RSIN nummer"}
+                            value={rsinNumber}
                         />
                     </div>
 
@@ -112,6 +113,13 @@ const AdministrationDetailsFormGeneralView = props => {
                             label={"E-mail template aanmaning"}
                             value={emailTemplateExhortation ? emailTemplateExhortation.name : ''}
                         />
+                        <ViewText
+                            label={"Standaard betalingstermijn(dagen)"}
+                            value={defaultPaymentTerm}
+                        />
+                    </div>
+
+                    <div className="row">
                         <ViewText
                             label={"Logo"}
                             value={logoName}

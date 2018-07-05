@@ -161,6 +161,9 @@ class TemplateVariableHelper
             case 'telefoonnummer':
                 return optional($model->primaryphoneNumber)->number;
                 break;
+            case 'email':
+                return optional($model->primaryEmailAddress)->email;
+                break;
             case 'energieleverancier':
                 return optional(optional($model->primaryContactEnergySupplier)->energySupplier)->name;
                 break;
@@ -643,6 +646,9 @@ class TemplateVariableHelper
                 break;
             case 'website':
                 return $model->website;
+                break;
+            case 'plaats':
+                return $model->city;
                 break;
             default:
                 return '';

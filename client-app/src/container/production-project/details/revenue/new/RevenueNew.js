@@ -156,8 +156,6 @@ const RevenueNew = props => {
 
             <PanelFooter>
                 <div className="pull-right btn-group" role="group">
-                    <ButtonText buttonClassName={"btn-default"} buttonText={"Annuleren"}
-                                onClickAction={props.switchToView}/>
                     <ButtonText buttonText={"Opslaan"} onClickAction={props.handleSubmit} type={"submit"}
                                 value={"Submit"}/>
                 </div>

@@ -484,6 +484,9 @@ class ProductionProjectRevenueController extends ApiController
                 $revenueHtml
                     = TemplateVariableHelper::replaceTemplateVariables($revenueHtml,
                     'ik', $user);
+                $revenueHtml
+                    = TemplateVariableHelper::replaceTemplateVariables($revenueHtml,
+                    'participant', $distribution->participation);
 
                 $revenueHtml
                     = TemplateVariableHelper::stripRemainingVariableTags($revenueHtml);

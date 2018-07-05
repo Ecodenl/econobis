@@ -104,7 +104,7 @@ class SepaHelper
         $xml .= "\n\t\t\t\t<SeqTp>RCUR</SeqTp>"; // First is nu ook RCUR (vervolgincasso)
         $xml .= "\n\t\t\t</PmtTpInf>";
 
-        $xml .= "\n\t\t\t<ReqdColltnDt>" . Carbon::now()->addWeek()->format('Y-m-d') . "</ReqdColltnDt>"; // Gewenste uitvoerdatum
+        $xml .= "\n\t\t\t<ReqdColltnDt>" . Carbon::now()->nextWeekday()->format('Y-m-d') . "</ReqdColltnDt>"; // Gewenste uitvoerdatum
 
         $xml .= "\n\t\t\t<Cdtr>"; // Crediteur
         $xml .= "\n\t\t\t\t<Nm>" . $this->administration->name . "</Nm>"; // Naam crediteur

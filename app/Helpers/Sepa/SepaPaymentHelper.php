@@ -106,7 +106,7 @@ class SepaPaymentHelper
         $xml .= "\n\t\t\t\t</LclInstrm>";
         $xml .= "\n\t\t\t</PmtTpInf>";
 
-        $xml .= "\n\t\t\t<ReqdExctnDt>" . Carbon::now()->addWeek()->format('Y-m-d') . "</ReqdExctnDt>"; // Gewenste uitvoerdatum
+        $xml .= "\n\t\t\t<ReqdExctnDt>" . Carbon::now()->nextWeekday()->format('Y-m-d') . "</ReqdExctnDt>"; // Gewenste uitvoerdatum
 
         $xml .= "\n\t\t\t<Dbtr>"; // Debiteur
         $xml .= "\n\t\t\t\t<Nm>" . $this->administration->name . "</Nm>"; // Naam Debiteur
@@ -174,7 +174,7 @@ class SepaPaymentHelper
             $participantTransaction->amount = $invoice->revenueDistribution->payout;
             $participantTransaction->iban = $invoice->revenueDistribution->participation->iban_payout;
             $participantTransaction->referral = $invoice->number;
-            $participantTransaction->date_booking = Carbon::today()->addWeek();
+            $participantTransaction->date_booking = Carbon::today()->nextWeekday();
             $participantTransaction->save();
         }
     }
@@ -204,7 +204,7 @@ class SepaPaymentHelper
 
         foreach ($this->invoices as $invoice){
             $invoice->sepa_id = $sepa->id;
-            $invoice->date_paid = Carbon::now()->addWeek();
+            $invoice->date_paid = Carbon::now()->nextWeekday();
             $invoice->save();
         }
 

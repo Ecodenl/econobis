@@ -54,11 +54,11 @@ class PaymentInvoiceController extends ApiController
         $setDatePayout = false;
         foreach ($validatedInvoices as $invoice){
 
-            $invoice->revenueDistribution->date_payout = Carbon::today()->addWeek();
+            $invoice->revenueDistribution->date_payout = Carbon::today()->nextWeekday();
             $invoice->revenueDistribution->save();
 
             if(!$setDatePayout){
-                $invoice->revenueDistribution->revenue->date_payed = Carbon::today()->addWeek();
+                $invoice->revenueDistribution->revenue->date_payed = Carbon::today()->nextWeekday();
                 $invoice->revenueDistribution->revenue->save();
                 $setDatePayout = true;
             }

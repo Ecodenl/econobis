@@ -14,10 +14,12 @@ use App\Eco\Invoice\InvoiceDocument;
 use App\Eco\Invoice\InvoicePayment;
 use App\Eco\Invoice\InvoiceProduct;
 use App\Eco\Order\Order;
+use App\Helpers\Template\TemplateVariableHelper;
 use App\Http\Controllers\Api\Order\OrderController;
 use App\Http\Resources\Invoice\Templates\InvoiceMail;
 use Barryvdh\DomPDF\Facade as PDF;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 
@@ -114,6 +116,14 @@ class InvoiceHelper
 
         }
 
+        $user = Auth::user();
+
+        $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody,
+            'ik', $user);
+
+        $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody,
+            'contact', $invoice->order->contact);
+
         $htmlBody
             = '<!DOCTYPE html><html><head><meta http-equiv="content-type" content="text/html;charset=UTF-8"/><title>'
             . $subject . '</title></head>'
@@ -205,6 +215,15 @@ class InvoiceHelper
             $htmlBody = $emailTemplate->html_body;
         }
 
+        $user = Auth::user();
+
+        $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody,
+            'ik', $user);
+
+        $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody,
+            'contact', $invoice->order->contact);
+
+        
         $htmlBody = '<!DOCTYPE html><html><head><meta http-equiv="content-type" content="text/html;charset=UTF-8"/><title>'
             . $subject . '</title></head>'
             . $htmlBody . '</html>';

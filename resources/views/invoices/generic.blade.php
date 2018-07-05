@@ -171,7 +171,8 @@
     <div class="conclusion-text">Betaling gaarne
         binnen {{ $invoice->administration->default_payment_term ? $invoice->administration->default_payment_term : 30 }}
         dagen na factuurdatum op bankrekening {{ $invoice->administration->IBAN }}
-        overmaken onder vermelding van het debiteurnummer {{ $invoice->order->contact->number }} en het factuurnummer {{ $invoice->number }}.
+        overmaken @if($invoice->administration->iban_attn)ten name
+        van {{ $invoice->administration->iban_attn }}@endif onder vermelding van het debiteurnummer {{ $invoice->order->contact->number }} en het factuurnummer {{ $invoice->number }}.
     </div>
     @endif
 

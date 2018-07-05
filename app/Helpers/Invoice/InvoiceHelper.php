@@ -261,9 +261,24 @@ class InvoiceHelper
         $orderController = new OrderController();
         $contactPerson = $orderController->getContactInfoForOrder($invoice->order->contact)['contactPerson'];
 
+        if($invoice->order->contact->full_name === $contactPerson){
+            $contactPerson = null;
+        }
+
+        $contactName = null;
+
+        if($invoice->order->contact->type_id == 'person'){
+            $prefix = $invoice->order->contact->person->last_name_prefix;
+            $contactName = $prefix ? $invoice->order->contact->person->first_name . ' ' . $prefix . ' ' . $invoice->order->contact->person->last_name : $invoice->order->contact->person->first_name . ' ' . $invoice->order->contact->person->last_name;
+        }
+        elseif($invoice->order->contact->type_id == 'organisation'){
+            $contactName = $invoice->order->contact->full_name;
+        }
+
         $pdf = PDF::loadView('invoices.generic', [
             'invoice' => $invoice,
             'contactPerson' => $contactPerson,
+            'contactName' => $contactName,
             'logo' => $img,
         ]);
 

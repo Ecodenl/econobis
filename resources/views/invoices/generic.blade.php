@@ -36,7 +36,8 @@
     <table>
         <tr>
             <td>
-                Ten aanzien van: @if($contactPerson){{ $contactPerson }} @else {{ $invoice->order->contact->full_name }}@endif
+                {{ $contactName }}
+
             </td>
             <td>
                 {{ $invoice->administration->name }}
@@ -44,7 +45,7 @@
         </tr>
         <tr>
             <td>
-                {{ $invoice->order->contact->full_name }}
+                @if($contactPerson) T.a.v. {{ $contactPerson }} @else {{ $invoice->order->contact->primaryAddress ? $invoice->order->contact->primaryAddress->street . ' ' . $invoice->order->contact->primaryAddress->number . $invoice->order->contact->primaryAddress->addition : '' }}@endif
             </td>
             <td>
                 {{ $invoice->administration->address }}
@@ -52,7 +53,8 @@
         </tr>
         <tr>
             <td>
-                {{ $invoice->order->contact->primaryAddress ? $invoice->order->contact->primaryAddress->street . ' ' . $invoice->order->contact->primaryAddress->number . $invoice->order->contact->primaryAddress->addition : '' }}
+                @if($contactPerson){{ $invoice->order->contact->primaryAddress ? $invoice->order->contact->primaryAddress->street . ' ' . $invoice->order->contact->primaryAddress->number . $invoice->order->contact->primaryAddress->addition : '' }} @else {{ $invoice->order->contact->primaryAddress ? $invoice->order->contact->primaryAddress->postal_code . ' ' . $invoice->order->contact->primaryAddress->city : ''}}@endif
+
             </td>
             <td>
                 {{ $invoice->administration->postal_code . ' ' . $invoice->administration->city }}
@@ -60,7 +62,7 @@
         </tr>
         <tr>
             <td>
-                {{ $invoice->order->contact->primaryAddress ? $invoice->order->contact->primaryAddress->postal_code . ' ' . $invoice->order->contact->primaryAddress->city : ''}}
+                @if($contactPerson){{ $invoice->order->contact->primaryAddress ? $invoice->order->contact->primaryAddress->postal_code . ' ' . $invoice->order->contact->primaryAddress->city : ''}}@endif
             </td>
             <td>
                 {{ $invoice->administration->country ? $invoice->administration->country->name : 'Nederland' }}

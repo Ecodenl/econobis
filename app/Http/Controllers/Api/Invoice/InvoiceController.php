@@ -241,6 +241,20 @@ class InvoiceController extends ApiController
             $emailTo = $orderController->getContactInfoForOrder($invoice->order->contact)['email'];
             $contactPerson = $orderController->getContactInfoForOrder($invoice->order->contact)['contactPerson'];
 
+            if($invoice->order->contact->full_name === $contactPerson){
+                $contactPerson = null;
+            }
+
+            $contactName = null;
+
+            if($invoice->order->contact->type_id == 'person'){
+                $prefix = $invoice->order->contact->person->last_name_prefix;
+                $contactName = $prefix ? $invoice->order->contact->person->first_name . ' ' . $prefix . ' ' . $invoice->order->contact->person->last_name : $invoice->order->contact->person->first_name . ' ' . $invoice->order->contact->person->last_name;
+            }
+            elseif($invoice->order->contact->type_id == 'organisation'){
+                $contactName = $invoice->order->contact->full_name;
+            }
+
             if ($emailTo === 'Geen e-mail bekend') {
                 $invoice->status_id = 'sent';
                 $invoice->save();
@@ -263,7 +277,7 @@ class InvoiceController extends ApiController
                 if ($k !== 0) {
                     $html .= '<div class="page-break"></div>';
                 }
-                $html .= view('invoices.generic')->with(['invoice' => $invoice, 'contactPerson' => $contactPerson])
+                $html .= view('invoices.generic')->with(['invoice' => $invoice, 'contactPerson' => $contactPerson, 'contactName' => $contactName])
                     ->with('logo', $img)->render();
             }
         }

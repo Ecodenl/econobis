@@ -28,9 +28,16 @@ class FullProduct extends Resource
                 'priceInclVat' => $this->price_incl_vat,
                 'priceHistory' => GenericResource::collection($this->whenLoaded('priceHistory')),
                 'currentPrice' => GenericResource::make($this->current_price),
+
+                'durationId' => $this->duration_id,
                 'duration' => FullEnumWithIdAndName::make($this->getDuration()),
+
+                'invoiceFrequencyId' => $this->invoice_frequency_id,
                 'invoiceFrequency' => FullEnumWithIdAndName::make($this->getInvoiceFrequency()),
+
+                'paymentTypeId' => $this->payment_type_id,
                 'paymentType' => FullEnumWithIdAndName::make($this->getPaymentType()),
+
                 'administrationId' => $this->administration_id,
                 'administration' => FullAdministration::make($this->whenLoaded('administration')),
 

@@ -40,6 +40,7 @@ use App\Eco\ParticipantTransaction\ParticipantTransactionType;
 use App\Eco\PaymentInvoice\PaymentInvoiceStatus;
 use App\Eco\PersonType\PersonType;
 use App\Eco\PhoneNumber\PhoneNumberType;
+use App\Eco\Product\Product;
 use App\Eco\Product\ProductDuration;
 use App\Eco\Product\ProductInvoiceFrequency;
 use App\Eco\Product\ProductPaymentType;
@@ -49,7 +50,6 @@ use App\Eco\ProductionProject\ProductionProjectStatus;
 use App\Eco\ProductionProject\ProductionProjectType;
 use App\Eco\QuotationRequest\QuotationRequestStatus;
 use App\Eco\Task\TaskProperty;
-use App\Eco\Task\TaskStatus;
 use App\Eco\Task\TaskType;
 use App\Eco\Team\Team;
 use App\Eco\User\User;
@@ -62,7 +62,7 @@ use App\Http\Resources\Industry\FullIndustry;
 use App\Http\Resources\LastNamePrefix\FullLastNamePrefix;
 use App\Http\Resources\Occupation\FullOccupation;
 use App\Http\Resources\PersonType\FullPersonType;
-use App\Http\Resources\Task\FullTaskPropertyValue;
+use App\Http\Resources\Product\FullProduct;
 use App\Http\Resources\Team\FullTeam;
 use App\Http\Resources\Title\FullTitle;
 use App\Http\Resources\User\FullUser;
@@ -135,6 +135,7 @@ class SystemData extends Resource
             'orderPaymentTypes' => FullEnumWithIdAndName::collection(OrderPaymentType::collection()),
             'orderCollectionFrequencies' => FullEnumWithIdAndName::collection(OrderCollectionFrequency::collection()),
             'paymentInvoiceStatuses' => FullEnumWithIdAndName::collection(PaymentInvoiceStatus::collection()),
+            'products' => FullProduct::collection(Product::whereNull('deleted_at')->get()),
         ];
     }
 }

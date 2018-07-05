@@ -92,7 +92,7 @@ class OrderProductsFormNew extends Component {
         let description = '';
 
         if (value) {
-            let product = this.props.orderDetails.administration.products.filter((product) => product.id == value);
+            let product = this.props.products.filter((product) => product.id == value);
             price = product[0].priceInclVat;
             description = product[0].invoiceText;
         }
@@ -182,7 +182,7 @@ class OrderProductsFormNew extends Component {
                                 label={"Product"}
                                 id="productId"
                                 name={"productId"}
-                                options={this.props.orderDetails.administration.products}
+                                options={this.props.products}
                                 value={productId}
                                 onChangeAction={this.handleChangeProduct}
                                 required={"required"}
@@ -285,6 +285,7 @@ class OrderProductsFormNew extends Component {
 const mapStateToProps = (state) => {
     return {
         orderDetails: state.orderDetails,
+        products: state.systemData.products,
     };
 };
 

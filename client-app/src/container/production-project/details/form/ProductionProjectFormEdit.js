@@ -14,6 +14,7 @@ import ProductionProjectDetailsAPI from '../../../../api/production-project/Prod
 
 import { fetchProductionProject } from '../../../../actions/production-project/ProductionProjectDetailsActions';
 import InputToggle from "../../../../components/form/InputToggle";
+import AdministrationsAPI from "../../../../api/administration/AdministrationsAPI";
 
 class ProductionProjectFormEdit extends Component {
     constructor(props) {
@@ -24,12 +25,14 @@ class ProductionProjectFormEdit extends Component {
             city, ean, eanManager, warrantyOrigin, eanSupply,
             participationWorth, powerKwAvailable, maxParticipations, taxReferral, maxParticipationsYouth,
             totalParticipations, minParticipations, isMembershipRequired,
-            isParticipationTransferable, administration, postalcodeLink} = props.productionProject;
+            isParticipationTransferable, administrationId, postalcodeLink} = props.productionProject;
 
         this.state = {
+            administrations: [],
             productionProject: {
                 id,
                 name: name,
+                administrationId: administrationId,
                 code: code,
                 description: description ? description : '',
                 ownedById: ownedById,
@@ -66,6 +69,14 @@ class ProductionProjectFormEdit extends Component {
         }
         this.handleInputChangeDate = this.handleInputChangeDate.bind(this);
     };
+
+    componentDidMount() {
+        AdministrationsAPI.peekAdministrations().then(payload => {
+            this.setState({
+                administrations: payload
+            });
+        });
+    }
 
     handleInputChange = event => {
         const target = event.target;
@@ -134,8 +145,8 @@ class ProductionProjectFormEdit extends Component {
             city, ean, eanManager, warrantyOrigin, eanSupply,
             participationWorth, powerKwAvailable, maxParticipations, taxReferral, maxParticipationsYouth,
             totalParticipations, minParticipations, isMembershipRequired,
-            isParticipationTransferable, postalcodeLink} = this.state.productionProject;
-        const {issuedParticipations, participationsInOption, issuableParticipations, administration}  = this.props.productionProject;
+            isParticipationTransferable, postalcodeLink, administrationId} = this.state.productionProject;
+        const {issuedParticipations, participationsInOption, issuableParticipations, administration, hasPaymentInvoices}  = this.props.productionProject;
 
         return (
             <form className="form-horizontal col-md-12" onSubmit={this.handleSubmit}>
@@ -230,12 +241,24 @@ class ProductionProjectFormEdit extends Component {
                         value={productionProjectTypeId}
                         onChangeAction={this.handleInputChange}
                     />
-                    <InputText
-                        label={"Administratie"}
-                        name={"administration"}
-                        value={administration ? administration.name : ''}
-                        readOnly={'true'}
-                    />
+
+                    {/*Als er al facturen zijn gemaakt mag de administratie niet meer gewijzigd worden*/}
+                    {hasPaymentInvoices ?
+                        <InputText
+                            label={"Administratie"}
+                            name={"administration"}
+                            value={administration ? administration.name : ''}
+                            readOnly={'true'}
+                        />
+                        :
+                        <InputSelect
+                            label={"Administratie"}
+                            name={"administrationId"}
+                            options={this.state.administrations}
+                            value={administrationId}
+                            onChangeAction={this.handleInputChange}
+                        />
+                    }
                 </div>
 
                 <div className="row">

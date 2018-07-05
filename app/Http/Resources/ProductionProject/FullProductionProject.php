@@ -77,6 +77,7 @@ class FullProductionProject extends Resource
                 'postalcodeLink' => $this->postalcode_link,
                 'administrationId' => $this->administration_id,
                 'administration' => FullAdministration::make($this->whenLoaded('administration')),
+                'hasPaymentInvoices' => $this->has_payment_invoices,
             ];
     }
 }

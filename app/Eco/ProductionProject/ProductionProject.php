@@ -37,6 +37,7 @@ class ProductionProject extends Model
             'issuable_participations',
             'participations_worth_total',
             'current_participations',
+            'has_payment_invoices',
         ];
 
     //relations
@@ -143,5 +144,18 @@ class ProductionProject extends Model
         }
 
         return $totalParticipations;
+    }
+
+    public function getHasPaymentInvoicesAttribute(){
+
+        foreach($this->productionProjectRevenues as $revenue){
+            foreach ($revenue->distribution as $distribution) {
+                if($distribution->paymentInvoices()->count() > 0){
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 }

@@ -38,10 +38,10 @@ class ExtraFilter extends RequestExtraFilter
     ];
 
     protected $joins = [
-        'name' => 'contact',
+        'name' => 'contacts',
         'postalCode' => 'addresses',
         'postalCodeNumber' => 'addresses',
-        'contactStatus' => 'contact',
+        'contactStatus' => 'contacts',
         'contactBirthday' => 'people',
     ];
 

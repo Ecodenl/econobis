@@ -71,6 +71,6 @@ class Filter extends RequestFilter
 
     protected function applyCurrentParticipationsFilter($query, $type, $data)
     {
-        $query->whereRaw('(participation_production_project.participations_granted - participation_production_project.participations_sold) =' . DB::connection()->getPdo()->quote($data))->where('status_id', 2);
+        $query->whereRaw('(participation_production_project.participations_granted - participation_production_project.participations_sold) =' . DB::connection()->getPdo()->quote($data))->where('participation_production_project.status_id', 2);
     }
 }

@@ -100,6 +100,9 @@ class Invoice extends Model
             if(!$this->date_sent){
                 return 0;
             }
+            if($this->status_id == 'paid' ||  $this->status_id == 'irrecoverable'){
+                return 0;
+            }
 
             $daysAllowed = $this->administration->default_payment_term ? $this->administration->default_payment_term : 30;
 

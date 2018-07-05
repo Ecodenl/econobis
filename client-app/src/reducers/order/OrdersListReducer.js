@@ -1,4 +1,6 @@
 export default function (state= [], action) {
+    console.log(state);
+    console.log(action);
     switch (action.type) {
         case 'FETCH_ORDERS_SUCCESS':
             return {
@@ -14,7 +16,10 @@ export default function (state= [], action) {
                 meta: {},
             };
         case 'DELETE_ORDER_SUCCESS':
-            return state.filter((order) => order.id !== action.id);
+            return {
+                ...state,
+                data: state.data.filter((order) => order.id !== action.id)
+            };
         default:
             return state;
     }

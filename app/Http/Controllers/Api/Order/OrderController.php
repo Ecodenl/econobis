@@ -111,6 +111,7 @@ class OrderController extends ApiController
         $this->authorize('manage', Order::class);
 
         $data = $input
+            ->integer('administrationId')->validate('required|exists:administrations,id')->alias('administration_id')->next()
             ->string('statusId')->validate('required')->alias('status_id')->next()
             ->string('subject')->validate('required')->next()
             ->integer('emailTemplateId')->validate('nullable|exists:email_templates,id')->onEmpty(null)->whenMissing(null)->alias('email_template_id')->next()

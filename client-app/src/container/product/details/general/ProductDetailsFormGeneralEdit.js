@@ -8,7 +8,6 @@ import ButtonText from '../../../../components/button/ButtonText';
 import Panel from "../../../../components/panel/Panel";
 import PanelBody from "../../../../components/panel/PanelBody";
 import InputSelect from "../../../../components/form/InputSelect";
-import AdministrationsAPI from "../../../../api/administration/AdministrationsAPI";
 
 class ProductDetailsFormGeneralEdit extends Component {
     constructor(props) {
@@ -17,7 +16,6 @@ class ProductDetailsFormGeneralEdit extends Component {
         const { id, code, name, invoiceText, durationId, invoiceFrequencyId, paymentTypeId, administrationId} = props.productDetails;
 
         this.state = {
-            administrations: [],
             product: {
                 id,
                 code: code ? code : '',
@@ -34,15 +32,6 @@ class ProductDetailsFormGeneralEdit extends Component {
                 administrationId: false,
             },
         };
-    };
-
-    componentDidMount() {
-        AdministrationsAPI.peekAdministrations().then(payload => {
-            this.setState({
-                ...this.state,
-                administrations: payload,
-            })
-        })
     };
 
     handleInputChange = event => {
@@ -162,7 +151,7 @@ class ProductDetailsFormGeneralEdit extends Component {
                                 label={"Administratie"}
                                 id="administrationId"
                                 name={"administrationId"}
-                                options={this.state.administrations}
+                                options={this.props.administrations}
                                 value={administrationId}
                                 onChangeAction={this.handleInputChange}
                                 required={"required"}
@@ -189,6 +178,7 @@ const mapStateToProps = (state) => {
         productInvoiceFrequencies: state.systemData.productInvoiceFrequencies,
         productPaymentTypes: state.systemData.productPaymentTypes,
         productDetails: state.productDetails,
+        administrations: state.meDetails.administrations,
     };
 };
 

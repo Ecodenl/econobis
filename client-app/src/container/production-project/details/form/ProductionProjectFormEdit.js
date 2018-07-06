@@ -14,7 +14,6 @@ import ProductionProjectDetailsAPI from '../../../../api/production-project/Prod
 
 import { fetchProductionProject } from '../../../../actions/production-project/ProductionProjectDetailsActions';
 import InputToggle from "../../../../components/form/InputToggle";
-import AdministrationsAPI from "../../../../api/administration/AdministrationsAPI";
 
 class ProductionProjectFormEdit extends Component {
     constructor(props) {
@@ -28,7 +27,6 @@ class ProductionProjectFormEdit extends Component {
             isParticipationTransferable, administrationId, postalcodeLink} = props.productionProject;
 
         this.state = {
-            administrations: [],
             productionProject: {
                 id,
                 name: name,
@@ -69,14 +67,6 @@ class ProductionProjectFormEdit extends Component {
         }
         this.handleInputChangeDate = this.handleInputChangeDate.bind(this);
     };
-
-    componentDidMount() {
-        AdministrationsAPI.peekAdministrations().then(payload => {
-            this.setState({
-                administrations: payload
-            });
-        });
-    }
 
     handleInputChange = event => {
         const target = event.target;
@@ -254,7 +244,7 @@ class ProductionProjectFormEdit extends Component {
                         <InputSelect
                             label={"Administratie"}
                             name={"administrationId"}
-                            options={this.state.administrations}
+                            options={this.props.administrations}
                             value={administrationId}
                             onChangeAction={this.handleInputChange}
                         />
@@ -444,6 +434,7 @@ const mapStateToProps = (state) => {
         users: state.systemData.users,
         productionProjectStatus: state.systemData.productionProjectStatus,
         productionProjectTypes: state.systemData.productionProjectTypes,
+        administrations: state.meDetails.administrations,
     }
 };
 

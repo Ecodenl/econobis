@@ -9,14 +9,12 @@ import Panel from "../../../components/panel/Panel";
 import ProductDetailsAPI from '../../../api/product/ProductDetailsAPI';
 import {connect} from "react-redux";
 import InputSelect from "../../../components/form/InputSelect";
-import AdministrationsAPI from "../../../api/administration/AdministrationsAPI";
 
 class ProductNewForm extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            administrations: [],
             product: {
                 code: '',
                 name: '',
@@ -32,15 +30,6 @@ class ProductNewForm extends Component {
                 administrationId: false,
             },
         };
-    };
-
-    componentDidMount() {
-        AdministrationsAPI.peekAdministrations().then(payload => {
-            this.setState({
-                ...this.state,
-                administrations: payload,
-            })
-        })
     };
 
     handleInputChange = event => {
@@ -165,7 +154,7 @@ class ProductNewForm extends Component {
                                 label={"Administratie"}
                                 id="administrationId"
                                 name={"administrationId"}
-                                options={this.state.administrations}
+                                options={this.props.administrations}
                                 value={administrationId}
                                 onChangeAction={this.handleInputChange}
                                 required={"required"}
@@ -190,6 +179,7 @@ const mapStateToProps = (state) => {
         productDurations: state.systemData.productDurations,
         productInvoiceFrequencies: state.systemData.productInvoiceFrequencies,
         productPaymentTypes: state.systemData.productPaymentTypes,
+        administrations: state.meDetails.administrations,
     };
 };
 

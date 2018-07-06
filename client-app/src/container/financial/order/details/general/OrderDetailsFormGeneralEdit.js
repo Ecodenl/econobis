@@ -12,7 +12,6 @@ import InputSelect from "../../../../../components/form/InputSelect";
 import EmailTemplateAPI from "../../../../../api/email-template/EmailTemplateAPI";
 import InputDate from "../../../../../components/form/InputDate";
 import InputReactSelect from "../../../../../components/form/InputReactSelect";
-import OrderDetailsAPI from "../../../../../api/order/OrderDetailsAPI";
 import moment from "moment/moment";
 
 class OrderDetailsFormGeneralEdit extends Component {
@@ -20,8 +19,8 @@ class OrderDetailsFormGeneralEdit extends Component {
         super(props);
 
         const {
-            id, contactId, statusId, subject, emailTemplateId, emailTemplateReminderId, emailTemplateExhortationId, paymentTypeId, collectionFrequencyId, IBAN, ibanAttn,
-            poNumber, invoiceText, dateRequested, dateStart, dateEnd
+            id, statusId, subject, emailTemplateId, emailTemplateReminderId, emailTemplateExhortationId, paymentTypeId, collectionFrequencyId, IBAN, ibanAttn,
+            poNumber, invoiceText, dateRequested, dateStart, dateEnd, administrationId
         } = props.orderDetails;
 
         this.state = {
@@ -30,6 +29,7 @@ class OrderDetailsFormGeneralEdit extends Component {
             order: {
                 id,
                 statusId: statusId ? statusId : '',
+                administrationId: administrationId ? administrationId : '',
                 subject: subject ? subject : '',
                 emailTemplateId: emailTemplateId ? emailTemplateId : '',
                 emailTemplateReminderId: emailTemplateReminderId ? emailTemplateReminderId : '',
@@ -152,8 +152,9 @@ class OrderDetailsFormGeneralEdit extends Component {
     render() {
         const {
             statusId, subject, emailTemplateId, emailTemplateReminderId, emailTemplateExhortationId, paymentTypeId, collectionFrequencyId, IBAN, ibanAttn,
-            poNumber, invoiceText, dateRequested, dateStart, dateEnd
+            poNumber, invoiceText, dateRequested, dateStart, dateEnd, administrationId
         } = this.state.order;
+        const { invoiceCount } = this.props.orderDetails;
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -166,12 +167,22 @@ class OrderDetailsFormGeneralEdit extends Component {
                                 name={'contact'}
                                 readOnly={true}
                             />
-                            <InputText
-                                label="Administratie"
-                                value={this.props.orderDetails.administration ? this.props.orderDetails.administration.name : ''}
-                                name={'administration'}
-                                readOnly={true}
-                            />
+                            {invoiceCount > 0 ?
+                                <InputText
+                                    label="Administratie"
+                                    value={this.props.orderDetails.administration ? this.props.orderDetails.administration.name : ''}
+                                    name={'administration'}
+                                    readOnly={true}
+                                />
+                                :
+                                <InputSelect
+                                    label={"Administratie"}
+                                    name={"administrationId"}
+                                    options={this.props.administrations}
+                                    value={administrationId}
+                                    onChangeAction={this.handleInputChange}
+                                />
+                            }
                         </div>
 
                         <div className="row">
@@ -360,6 +371,7 @@ const mapStateToProps = (state) => {
         orderPaymentTypes: state.systemData.orderPaymentTypes,
         orderCollectionFrequencies: state.systemData.orderCollectionFrequencies,
         orderDetails: state.orderDetails,
+        administrations: state.meDetails.administrations,
     };
 };
 

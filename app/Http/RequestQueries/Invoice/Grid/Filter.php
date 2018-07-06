@@ -27,13 +27,14 @@ class Filter extends RequestFilter
         'number' => 'invoices.number',
         'statusId' => 'invoices.status_id',
         'dateRequested' => 'invoices.date_requested',
-        'subject' => 'invoices.subject',
+        'subject' => 'orders.subject',
         'contact' => 'contacts.full_name',
         'paymentTypeId' => 'invoices.payment_type_id',
     ];
 
     protected $joins = [
         'contact' => 'contact',
+        'subject' => 'order',
     ];
 
     protected $defaultTypes = [
@@ -50,29 +51,29 @@ class Filter extends RequestFilter
             switch ($data){
                 case 'reminder':
                     $query->where(function ($q) use ($closed_statusses) {
-                        $q->whereNotNull('date_reminder_1')
-                            ->whereNull('date_exhortation');
+                        $q->whereNotNull('invoices.date_reminder_1')
+                            ->whereNull('invoices.date_exhortation');
                     })->orWhere(function ($q) {
-                        $q->where('status_id', 'exported')->where('date_requested', '<', Carbon::today()->subMonth());
+                        $q->where('invoices.status_id', 'exported')->where('invoices.date_requested', '<', Carbon::today()->subMonth());
                     })->orWhere(function ($q) {
-                        $q->where('status_id', 'sent')->where('payment_type_id', 'transfer')->where('date_requested', '<', Carbon::today()->subMonth());
-                    })->whereNotIn('status_id', $closed_statusses);
+                        $q->where('invoices.status_id', 'sent')->where('invoices.payment_type_id', 'transfer')->where('invoices.date_requested', '<', Carbon::today()->subMonth());
+                    })->whereNotIn('invoices.status_id', $closed_statusses);
                     return false;
                     break;
                 case 'reminder_1':
-                    $query->whereNotNull('date_reminder_1')->whereNull('date_reminder_2')->whereNull('date_reminder_3')->whereNull('date_exhortation')->whereNotIn('status_id', $closed_statusses);
+                    $query->whereNotNull('invoices.date_reminder_1')->whereNull('invoices.date_reminder_2')->whereNull('invoices.date_reminder_3')->whereNull('invoices.date_exhortation')->whereNotIn('invoices.status_id', $closed_statusses);
                     return false;
                     break;
                 case 'reminder_2':
-                    $query->whereNotNull('date_reminder_2')->whereNull('date_reminder_3')->whereNull('date_exhortation')->whereNotIn('status_id', $closed_statusses);
+                    $query->whereNotNull('invoices.date_reminder_2')->whereNull('invoices.date_reminder_3')->whereNull('invoices.date_exhortation')->whereNotIn('invoices.status_id', $closed_statusses);
                     return false;
                     break;
                 case 'reminder_3':
-                    $query->whereNotNull('date_reminder_3')->whereNull('date_exhortation')->whereNotIn('status_id', $closed_statusses);
+                    $query->whereNotNull('invoices.date_reminder_3')->whereNull('invoices.date_exhortation')->whereNotIn('invoices.status_id', $closed_statusses);
                     return false;
                     break;
                 case 'exhortation':
-                    $query->whereNotNull('date_exhortation')->whereNotIn('status_id', $closed_statusses);
+                    $query->whereNotNull('invoices.date_exhortation')->whereNotIn('invoices.status_id', $closed_statusses);
                     return false;
                     break;
 
@@ -84,17 +85,17 @@ class Filter extends RequestFilter
                 if($data === 'sent'){
                     $query->where(function ($q) {
                         $q->where(function ($q) {
-                            $q->where('payment_type_id', 'transfer')
-                                ->where('date_requested', '>=',
+                            $q->where('invoices.payment_type_id', 'transfer')
+                                ->where('invoices.date_requested', '>=',
                                     Carbon::today()->subMonth());
                         })->orWhere(function ($q) {
-                            $q->where('payment_type_id', '!=', 'transfer');
+                            $q->where('invoices.payment_type_id', '!=', 'transfer');
                         });});
                 }
                 if($data === 'exported'){
-                    $query->where('date_requested', '>=', Carbon::today()->subMonth());
+                    $query->where('invoices.date_requested', '>=', Carbon::today()->subMonth());
                 }
-                $query->whereNull('date_reminder_1')->whereNull('date_reminder_2')->whereNull('date_reminder_3')->whereNull('date_exhortation');
+                $query->whereNull('invoices.date_reminder_1')->whereNull('invoices.date_reminder_2')->whereNull('invoices.date_reminder_3')->whereNull('invoices.date_exhortation');
             }
             return true;
         }

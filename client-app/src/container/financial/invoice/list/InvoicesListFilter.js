@@ -12,6 +12,8 @@ import {
     setSubjectFilterInvoices
 } from '../../../../actions/invoice/InvoicesFiltersActions';
 import DataTableFilterDate from "../../../../components/dataTable/DataTableFilterDate";
+import ViewText from "../../../../components/form/ViewText";
+import * as browserHistory from "react-router";
 
 const InvoicesListFilter = props => {
     const onNumberChange = (e) => {
@@ -49,6 +51,7 @@ const InvoicesListFilter = props => {
             props.onSubmitFilter();
         }, 100);
     };
+    
     return (
         <tr className="thead-filter">
             <th><input type="text" className="form-control input-sm" value={ props.filters.number.data} onChange={onNumberChange} /></th>
@@ -68,19 +71,23 @@ const InvoicesListFilter = props => {
                 </select>
             </th>
             <th>
-                <select className="form-control input-sm" value={ props.filters.statusId.data } onChange={onStatusChange}>
+                <select className="form-control input-sm" value={props.filters.statusId.data} onChange={onStatusChange}>
                     <option/>
-                    <option key={'concept' } value={ 'concept' }>{ 'Concept' }</option>
-                    <option key={'checked' } value={ 'checked' }>{ 'Gecontroleerd' }</option>
-                    <option key={'sent' } value={ 'sent' }>{ 'Verzonden' }</option>
-                    <option key={'exported' } value={ 'exported' }>{ 'Geëxporteerd' }</option>
-                    <option key={'reminder' } value={ 'reminder' }>{ 'Herinnering' }</option>
-                    <option key={'reminder_1' } value={ 'reminder_1' }>{ 'Herinnering 1' }</option>
-                    <option key={'reminder_2' } value={ 'reminder_2' }>{ 'Herinnering 2' }</option>
-                    <option key={'reminder_3' } value={ 'reminder_3' }>{ 'Herinnering 3' }</option>
-                    <option key={'exhortation' } value={ 'exhortation' }>{ 'Aanmaning' }</option>
-                    <option key={'paid' } value={ 'paid' }>{ 'Betaald' }</option>
-                    <option key={'irrecoverable' } value={ 'irrecoverable' }>{ 'Oninbaar' }</option>
+                    <optgroup label={'Status'}>
+                        <option key={'concept'} value={'concept'}>{'Concept'}</option>
+                        <option key={'checked'} value={'checked'}>{'Gecontroleerd'}</option>
+                        <option key={'sent'} value={'sent'}>{'Verzonden'}</option>
+                        <option key={'exported'} value={'exported'}>{'Geëxporteerd'}</option>
+                        <option key={'paid'} value={'paid'}>{'Betaald'}</option>
+                        <option key={'irrecoverable'} value={'irrecoverable'}>{'Oninbaar'}</option>
+                    </optgroup>
+                    <optgroup label={'Substatus'}>
+                        <option key={'reminder'} value={'reminder'}>{'Herinnering'}</option>
+                        <option key={'reminder_1'} value={'reminder_1'}>{'Herinnering 1'}</option>
+                        <option key={'reminder_2'} value={'reminder_2'}>{'Herinnering 2'}</option>
+                        <option key={'reminder_3'} value={'reminder_3'}>{'Herinnering 3'}</option>
+                        <option key={'exhortation'} value={'exhortation'}>{'Aanmaning'}</option>
+                    </optgroup>
                 </select>
             </th>
             <th/>

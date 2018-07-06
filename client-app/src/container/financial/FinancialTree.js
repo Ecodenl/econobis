@@ -29,7 +29,7 @@ class FinancialTree extends Component {
         if(this.props.currentRouteParams.type !== nextProps.currentRouteParams.type || this.props.currentRouteParams.filter !== nextProps.currentRouteParams.filter) {
             const activeMenu = FinancialSidebarHelper(nextProps.currentRouteParams);
 
-            this.setState({activeParent: activeMenu.activeParent, activeMenuItem: activeMenu.activeMenuItem})
+            this.setState({activeParent: activeMenu.activeParent, activeMenuItem: activeMenu.activeMenuItem});
         }
     }
 

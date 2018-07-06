@@ -26,7 +26,7 @@ class Sort extends RequestSort
     protected $mapping = [
         'number' => 'invoices.number',
         'dateRequested' => 'invoices.date_requested',
-        'subject' => 'invoices.subject',
+        'subject' => 'orders.subject',
         'contact' => 'contacts.full_name',
         'paymentTypeId' => 'invoices.payment_type_id',
         'statusId' => 'invoices.status_id',
@@ -34,5 +34,6 @@ class Sort extends RequestSort
 
     protected $joins = [
         'contact' => 'contact',
+        'subject' => 'order',
     ];
 }

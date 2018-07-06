@@ -97,7 +97,7 @@ class InvoicesListItem extends Component {
                 <td>{number}</td>
                 <td>{ dateRequested ? moment(dateRequested).format('DD-MM-Y') : ''}</td>
                 <td className={(emailToAddress === 'Geen e-mail bekend') ? 'warning-td' :''}>{order ? order.contact.fullName : ''}{(emailToAddress === 'Geen e-mail bekend') && ' (Geen e-mail bekend)'}</td>
-                <td>{subject ? subject : ''}</td>
+                <td>{order.subject ? order.subject : ''}</td>
                 <td>{daysExpired}</td>
                 <td>{'€' + totalPriceInclVatAndReduction.toLocaleString('nl',{ minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
                 <td>{paymentType ? paymentType.name : ''}</td>

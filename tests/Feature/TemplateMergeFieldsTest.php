@@ -177,7 +177,7 @@ class TemplateMergeFieldsTest extends TestCase
 
     public function assertAdministrationMergeFields()
     {
-        $html ='{ad_naam}{ad_adres}{ad_postcode}{ad_kvk}{ad_btwnr}{ad_bic}{ad_email}{ad_website}{ad_plaats}{ad_tnv}';
+        $html ='{ad_naam}{ad_adres}{ad_postcode}{ad_kvk}{ad_btwnr}{ad_bic}{ad_email}{ad_website}{ad_plaats}{ad_iban_tnv}';
 
         $html = TemplateVariableHelper::replaceTemplateVariables($html, 'ad', Administration::find(2));
         $html = TemplateVariableHelper::stripRemainingVariableTags($html);

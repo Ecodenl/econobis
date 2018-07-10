@@ -351,7 +351,8 @@ Route::namespace('Api')
         Route::get('invoice/grid', 'Invoice\InvoiceController@grid');
         Route::get('invoice/csv', 'Invoice\InvoiceController@csv');
         Route::get('invoice/peek', 'Invoice\InvoiceController@peek');
-        Route::get('invoice/{administration}/sending', 'Invoice\InvoiceController@getInvoicesForSending');
+        Route::post('invoice/sending', 'Invoice\InvoiceController@getInvoicesForSending');
+        Route::post('invoice/send-all', 'Invoice\InvoiceController@sendAll');
         Route::get('invoice/amount-unpaid', 'Invoice\InvoiceController@getAmountUnpaid');
         Route::get('invoice/{administration}/generate-sepa-file', 'Invoice\InvoiceController@generateSepaFile');
         Route::get('invoice/{invoice}', 'Invoice\InvoiceController@show');
@@ -365,7 +366,6 @@ Route::namespace('Api')
         Route::post('invoice/{invoice}/checked', 'Invoice\InvoiceController@setChecked');
         Route::post('invoice/{administration}/checked-all', 'Invoice\InvoiceController@setCheckedAll');
         Route::post('invoice/{invoice}/send', 'Invoice\InvoiceController@send');
-        Route::post('invoice/{administration}/send-all', 'Invoice\InvoiceController@sendAll');
         Route::post('invoice/{invoice}/send-notification', 'Invoice\InvoiceController@sendNotification');
         Route::post('invoice/{invoice}/payment/new', 'Invoice\InvoiceController@newPayment');
         Route::post('invoice/{invoicePayment}/payment/update', 'Invoice\InvoiceController@updatePayment');

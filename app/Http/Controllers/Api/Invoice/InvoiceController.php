@@ -24,6 +24,7 @@ use App\Http\Resources\Invoice\InvoicePeek;
 use Barryvdh\DomPDF\Facade as PDF;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
 class InvoiceController extends ApiController
@@ -211,9 +212,9 @@ class InvoiceController extends ApiController
         }
     }
 
-    public function sendAll(Administration $administration)
+    public function sendAll(Request $request)
     {
-        $invoices = Invoice::where('administration_id', $administration->id)->where('status_id', 'checked')->with('order.contact')->get();
+        $invoices = Invoice::whereIn('id', $request->input('ids'))->with('order.contact')->get();
 
         $response = [];
 
@@ -327,11 +328,11 @@ class InvoiceController extends ApiController
         return $total;
     }
 
-    public function getInvoicesForSending(Administration $administration)
+    public function getInvoicesForSending(Request $request)
     {
         $this->authorize('manage', Invoice::class);
 
-        $invoices = Invoice::where('administration_id', $administration->id)->where('status_id', 'checked')->with('order.contact')->get();
+        $invoices = Invoice::whereIn('id', $request->input('ids'))->with('order.contact')->get();
 
         foreach ($invoices as $invoice){
             $orderController = new OrderController;

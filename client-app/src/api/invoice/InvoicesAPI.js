@@ -62,12 +62,12 @@ export default {
             );
     },
 
-    getInvoicesForSending: (administrationId) => {
-        const requestUrl = `${URL_INVOICE}/${administrationId}/sending`;
+    getInvoicesForSending: (ids) => {
+        const requestUrl = `${URL_INVOICE}/sending`;
         const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
         axios.defaults.headers.common.Authorization = AUTH_TOKEN;
 
-        return axios.get(requestUrl)
+        return axios.post(requestUrl, {'ids': ids})
             .then(response => response.data)
             .catch((error) => {
                     console.log(error);

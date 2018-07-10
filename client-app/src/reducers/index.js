@@ -48,6 +48,7 @@ import intakeDetailsReducer from './intake/IntakeDetailsReducer';
 import intakesReducer from './intake/IntakesReducer';
 import invoiceDetailsReducer from './invoice/InvoiceDetailsReducer';
 import invoicesReducer from './invoice/InvoicesReducer';
+import invoicePreviewSendReducer from './invoice/InvoicePreviewSendReducer';
 import quotationRequestsReducer from './quotation-request/QuotationRequestsReducer';
 import quotationRequestDetailsReducer from './quotation-request/QuotationRequestDetailsReducer';
 import sidebarReducer from './general/SidebarReducer';
@@ -132,6 +133,7 @@ const rootReducer = combineReducers({
     // invoices
     invoices: invoicesReducer,
     invoiceDetails: invoiceDetailsReducer,
+    invoicePreviewSend: invoicePreviewSendReducer,
     // Mailbox
     mailboxes: mailboxesReducer,
     mailboxDetails: mailboxDetailsReducer,

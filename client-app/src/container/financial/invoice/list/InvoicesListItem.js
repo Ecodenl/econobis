@@ -7,6 +7,8 @@ import InvoiceListSendNotification from "./InvoiceListSendNotification";
 import InvoiceListSetIrrecoverable from "./InvoiceListSetIrrecoverable";
 import InvoiceListSetChecked from "./InvoiceListSetChecked";
 import InvoiceListSend from "./InvoiceListSend";
+import {setCheckedInvoice} from '../../../../actions/invoice/InvoicesActions';
+import {connect} from "react-redux";
 
 class InvoicesListItem extends Component {
     constructor(props) {
@@ -90,10 +92,15 @@ class InvoicesListItem extends Component {
         this.setState({showSetIrrecoverable: !this.state.showSetIrrecoverable});
     };
 
+    setCheckedInvoice(id) {
+        this.props.setCheckedInvoice(id);
+    }
+
     render() {
-        const { id, number, dateRequested, order, subject, paymentType, status, daysExpired, totalPriceInclVatAndReduction, amountOpen, emailToAddress } = this.props;
+        const { id, number, dateRequested, order, subject, paymentType, status, daysExpired, totalPriceInclVatAndReduction, amountOpen, emailToAddress, checked } = this.props;
         return (
             <tr className={this.state.highlightRow} onDoubleClick={() => this.openItem(id)} onMouseEnter={() => this.onRowEnter()} onMouseLeave={() => this.onRowLeave()}>
+                {this.props.showSelectInvoicesToSend && <td><input type="checkbox" checked={checked} onChange={() => this.setCheckedInvoice(id)} /></td>}
                 <td>{number}</td>
                 <td>{ dateRequested ? moment(dateRequested).format('DD-MM-Y') : ''}</td>
                 <td className={(emailToAddress === 'Geen e-mail bekend') ? 'warning-td' :''}>{order ? order.contact.fullName : ''}{(emailToAddress === 'Geen e-mail bekend') && ' (Geen e-mail bekend)'}</td>
@@ -164,4 +171,10 @@ class InvoicesListItem extends Component {
     }
 }
 
-export default InvoicesListItem;
+const mapDispatchToProps = dispatch => ({
+    setCheckedInvoice: (id) => {
+        dispatch(setCheckedInvoice(id));
+    },
+});
+
+export default connect(null, mapDispatchToProps)(InvoicesListItem);

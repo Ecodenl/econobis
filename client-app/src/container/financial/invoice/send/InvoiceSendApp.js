@@ -7,6 +7,8 @@ import InvoicesAPI from "../../../../api/invoice/InvoicesAPI";
 import InvoiceSendViewPdf from "./InvoiceSendViewPdf";
 import InvoiceSendViewEmail from "./InvoiceSendViewEmail";
 import InvoiceSendToolbar from "./InvoiceSendToolbar";
+import {clearPreviewSend} from "../../../../actions/invoice/InvoicesActions";
+import {connect} from "react-redux";
 
 class InvoiceSendApp extends Component {
     constructor(props) {
@@ -17,8 +19,12 @@ class InvoiceSendApp extends Component {
         };
     };
 
+    componentWillUnmount(){
+        this.props.clearPreviewSend();
+    }
+
     componentDidMount() {
-        InvoicesAPI.getInvoicesForSending(this.props.params.id).then((payload) => {
+        InvoicesAPI.getInvoicesForSending(this.props.invoicePreviewSend).then((payload) => {
             this.setState({
                 invoices: payload.data,
             });
@@ -39,7 +45,7 @@ class InvoiceSendApp extends Component {
                         <div className="col-md-12 margin-10-top">
                             <Panel>
                                 <PanelBody className={"panel-small"}>
-                                    <InvoiceSendToolbar amountOfInvoices={this.state.invoices ? this.state.invoices.length : 0} administrationId={this.props.params.id}/>
+                                    <InvoiceSendToolbar invoiceIds={this.props.invoicePreviewSend} amountOfInvoices={this.state.invoices ? this.state.invoices.length : 0} administrationId={this.props.params.id}/>
                                 </PanelBody>
                             </Panel>
                         </div>
@@ -79,5 +85,16 @@ class InvoiceSendApp extends Component {
     }
 };
 
+const mapStateToProps = (state) => {
+    return {
+        invoicePreviewSend: state.invoicePreviewSend,
+    }
+};
 
-export default InvoiceSendApp;
+const mapDispatchToProps = dispatch => ({
+    clearPreviewSend: () => {
+        dispatch(clearPreviewSend());
+    },
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(InvoiceSendApp);

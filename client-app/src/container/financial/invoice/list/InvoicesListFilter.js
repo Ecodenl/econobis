@@ -51,9 +51,10 @@ const InvoicesListFilter = props => {
             props.onSubmitFilter();
         }, 100);
     };
-    
+
     return (
         <tr className="thead-filter">
+            { props.showSelectInvoicesToSend && <td><input type="checkbox"  onChange={props.selectAllCheckboxes} /></td> }
             <th><input type="text" className="form-control input-sm" value={ props.filters.number.data} onChange={onNumberChange} /></th>
             <DataTableFilterDate value={ props.filters.dateRequested.data && props.filters.dateRequested.data } onChangeAction={onDateRequestedChange} />
             <th><input type="text" className="form-control input-sm" value={ props.filters.contact.data} onChange={onContactChange} /></th>

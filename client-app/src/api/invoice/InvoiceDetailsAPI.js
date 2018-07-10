@@ -117,12 +117,12 @@ export default {
             });
     },
 
-    sendAll: (administrationId) => {
-        const requestUrl = `${URL_INVOICE}/${administrationId}/send-all`;
+    sendAll: (invoiceIds) => {
+        const requestUrl = `${URL_INVOICE}/send-all`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios.post(requestUrl)
+        return axios.post(requestUrl, {'ids': invoiceIds})
             .then(function (response) {
                 return response.data;
             })

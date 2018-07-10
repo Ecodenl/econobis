@@ -33,6 +33,7 @@ class InvoiceSendToolbar extends Component {
                 {
                     this.state.showSend &&
                     <InvoiceSendConfirm
+                        invoiceIds={this.props.invoiceIds}
                         closeModal={this.showSend}
                         administrationId={this.props.administrationId}
                     />

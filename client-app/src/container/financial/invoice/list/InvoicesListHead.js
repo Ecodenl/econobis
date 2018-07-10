@@ -16,6 +16,9 @@ const InvoicesListHead = (props) => {
 
     return (
         <tr className="thead-title">
+            {props.showSelectInvoicesToSend &&
+                <th width="5%"></th>
+            }
             <DataTableHeadTitleAndSort sortColumn={'number'} title={'Nummer'} width={'10%'} setSorts={setSorts} />
             <DataTableHeadTitleAndSort sortColumn={'dateRequested'} title={'Datum'} width={'10%'} setSorts={setSorts} />
             <DataTableHeadTitleAndSort sortColumn={'contact'} title={'Contact'} width={'15%'} setSorts={setSorts} />

@@ -10,7 +10,7 @@ import InvoicesListItem from './InvoicesListItem';
 import DataTablePagination from "../../../../components/dataTable/DataTablePagination";
 import {bindActionCreators} from "redux";
 import {connect} from "react-redux";
-import {fetchInvoices, clearInvoices} from '../../../../actions/invoice/InvoicesActions';
+import {fetchInvoices, clearInvoices, setCheckedInvoiceAll, previewSend} from '../../../../actions/invoice/InvoicesActions';
 import {clearFilterInvoices} from '../../../../actions/invoice/InvoicesFiltersActions';
 import {setInvoicesPagination} from '../../../../actions/invoice/InvoicesPaginationActions';
 import filterHelper from '../../../../helpers/FilterHelper';
@@ -33,6 +33,8 @@ class InvoicesList extends Component {
 
         this.state = {
             showCheckAll: false,
+            showSelectInvoicesToSend: false,
+            checkedAllCheckboxes: false,
         };
 
         if (!isEmpty(props.filter)) {
@@ -164,7 +166,17 @@ class InvoicesList extends Component {
     };
 
     previewSend = () => {
-        hashHistory.push(`/financieel/${this.props.administrationId}/facturen/gecontroleerd/verzenden`);
+        const sendInvoiceIds = [];
+
+        this.props.invoices.data.map((invoice) => (invoice.checked === true && sendInvoiceIds.push(invoice.id)));
+
+        if(sendInvoiceIds.length > 0){
+            this.props.previewSend(sendInvoiceIds);
+            hashHistory.push(`/financieel/${this.props.administrationId}/facturen/gecontroleerd/verzenden`);
+        }
+        else{
+            this.setState({showSelectInvoicesToSend: !this.state.showSelectInvoicesToSend});
+        }
     };
 
     downloadPostInvoices = () => {
@@ -215,6 +227,14 @@ class InvoicesList extends Component {
         this.setState({showCheckAll: !this.state.showCheckAll});
     };
 
+    selectAllCheckboxes = () => {
+        this.setState({
+            checkedAllCheckboxes: !this.state.checkedAllCheckboxes
+        });
+
+        this.props.setCheckedInvoiceAll(!this.state.checkedAllCheckboxes);
+    };
+
     render() {
         const {data = [], meta = {}} = this.props.invoices;
 
@@ -261,10 +281,13 @@ class InvoicesList extends Component {
                     <DataTable>
                         <DataTableHead>
                             <InvoicesListHead
+                                showSelectInvoicesToSend={this.state.showSelectInvoicesToSend}
                                 fetchInvoicesData={this.fetchInvoicesData}
                             />
                             <InvoicesListFilter
+                                showSelectInvoicesToSend={this.state.showSelectInvoicesToSend}
                                 onSubmitFilter={this.onSubmitFilter}
+                                selectAllCheckboxes={this.selectAllCheckboxes}
                             />
                         </DataTableHead>
                         <DataTableBody>
@@ -276,6 +299,7 @@ class InvoicesList extends Component {
                                 ) : (
                                     data.map((invoice) => {
                                         return <InvoicesListItem
+                                            showSelectInvoicesToSend={this.state.showSelectInvoicesToSend}
                                             key={invoice.id}
                                             {...invoice}
                                             showDeleteItemModal={this.showDeleteItemModal}
@@ -319,6 +343,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return bindActionCreators({
+        previewSend,
+        setCheckedInvoiceAll,
         fetchInvoices,
         clearInvoices,
         clearFilterInvoices,

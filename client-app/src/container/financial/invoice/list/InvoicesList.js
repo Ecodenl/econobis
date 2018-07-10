@@ -170,6 +170,7 @@ class InvoicesList extends Component {
     downloadPostInvoices = () => {
         InvoiceDetailsAPI.sendAllPost(this.props.administrationId).then((payload) => {
             fileDownload(payload.data, 'Post-facturen-' + moment().format("YYYY-MM-DD HH:mm:ss") +  '.pdf');
+            hashHistory.push(`/financieel/${this.props.administrationId}/facturen/verzonden`);
         });
     };
 

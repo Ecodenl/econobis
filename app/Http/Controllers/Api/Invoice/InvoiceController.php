@@ -204,7 +204,7 @@ class InvoiceController extends ApiController
         $emailTo = $orderController->getContactInfoForOrder($invoice->order->contact)['email'];
 
         if($emailTo === 'Geen e-mail bekend') {
-            return 'Geen e-mail bekend';
+            abort(404, 'Geen e-mail bekend');
         }
         else{
             return InvoiceHelper::send($invoice);

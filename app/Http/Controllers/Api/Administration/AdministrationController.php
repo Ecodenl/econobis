@@ -114,6 +114,7 @@ class AdministrationController extends ApiController
             ->string('IBAN')->whenMissing('')->next()
             ->string('ibanAttn')->whenMissing(null)->onEmpty(null)->alias('iban_attn')->next()
             ->string('email')->whenMissing(null)->onEmpty(null)->next()
+            ->string('website')->whenMissing(null)->onEmpty(null)->next()
             ->string('bic')->whenMissing(null)->onEmpty(null)->next()
             ->string('sepaContractName')->whenMissing(null)->onEmpty(null)->alias('sepa_contract_name')->next()
             ->string('sepaCreditorId')->whenMissing(null)->onEmpty(null)->alias('sepa_creditor_id')->next()

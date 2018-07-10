@@ -33,7 +33,7 @@ class FullContactGroup extends Resource
             'createdAt' => $this->created_at,
             'updatedAt' => $this->updated_at,
             'contacts' => FullContact::collection($this->whenLoaded('contacts')),
-            'taskCount' => $this->tasks()->count(),
+            'taskCount' => $this->tasks()->whereNull('deleted_at')->count(),
             'relatedTasks' => GridTask::collection($this->whenLoaded('tasks')),
             'documentCount' => $this->documents()->count(),
             'relatedDocuments' => $this->documents()->get(),

@@ -57,7 +57,7 @@ class ProductionProject extends Model
 
     public function tasks()
     {
-        return $this->hasMany(Task::class)->where('finished', false)->orderBy('tasks.id', 'desc');
+        return $this->hasMany(Task::class)->whereNull('deleted_at')->where('finished', false)->orderBy('tasks.id', 'desc');
     }
 
     public function documents(){

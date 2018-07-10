@@ -73,7 +73,7 @@ class FullOrder extends Resource
                 'invoicePaidTransferCount' => $this->invoicesPaidTransfer()->count(),
                 'relatedInvoicesPaidTransfer' => FullInvoice::collection($this->whenLoaded('invoicesPaidTransfer')),
 
-                'taskCount' => $this->tasks()->count(),
+                'taskCount' => $this->tasks()->whereNull('deleted_at')->count(),
                 'relatedTasks' => FullTask::collection($this->whenLoaded('tasks')),
 
                 'documentCount' => $this->documents()->count(),

@@ -47,6 +47,21 @@ export default {
             );
     },
 
+    peekParticipantsById: (participantIds) => {
+        const requestUrl = `${URL_API}/api/production-project/participant/peek-by-ids`;
+        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
+        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
+
+        return axios.post(requestUrl, {'ids': participantIds})
+            .then(function (response) {
+                return response.data;
+            })
+            .catch(function (error) {
+                    console.log(error);
+                }
+            );
+    },
+
     getActive: () => {
         const requestUrl = `${URL_PRODUCTION_PROJECT}/active`;
         const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;

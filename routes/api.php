@@ -283,12 +283,15 @@ Route::namespace('Api')
         Route::post('production-project/participant', 'ParticipationProductionProject\ParticipationProductionProjectController@store');
         Route::post('production-project/participant/transfer', 'ParticipationProductionProject\ParticipationProductionProjectController@transfer');
         Route::post('production-project/participant/create-participant-report/{documentTemplate}/{emailTemplate}', 'ParticipationProductionProject\ParticipationProductionProjectController@createParticipantReport');
+        Route::post('production-project/participant/preview-email/{documentTemplate}/{emailTemplate}', 'ParticipationProductionProject\ParticipationProductionProjectController@previewEmail');
+        Route::post('production-project/participant/preview-pdf/{documentTemplate}/{emailTemplate}', 'ParticipationProductionProject\ParticipationProductionProjectController@previewPDF');
         Route::post('production-project/participant/transaction', 'ParticipantTransaction\ParticipantTransactionController@store');
         Route::post('production-project/participant/transaction/{participantTransaction}', 'ParticipantTransaction\ParticipantTransactionController@update');
         Route::post('production-project/participant/transaction/{participantTransaction}/delete', 'ParticipantTransaction\ParticipantTransactionController@destroy');
         Route::post('production-project/participant/obligation-number', 'ParticipationProductionProject\ObligationNumberController@store');
         Route::post('production-project/participant/obligation-number/{obligationNumber}', 'ParticipationProductionProject\ObligationNumberController@update');
         Route::post('production-project/participant/obligation-number/{obligationNumber}/delete', 'ParticipationProductionProject\ObligationNumberController@destroy');
+        Route::post('production-project/participant/peek-by-ids', 'ParticipationProductionProject\ParticipationProductionProjectController@peekParticipantByIds');
         Route::post('production-project/participant/{participantProductionProject}', 'ParticipationProductionProject\ParticipationProductionProjectController@update');
         Route::post('production-project/participant/{participantProductionProject}/delete', 'ParticipationProductionProject\ParticipationProductionProjectController@destroy');
 

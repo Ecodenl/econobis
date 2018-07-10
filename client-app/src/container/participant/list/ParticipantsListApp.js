@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
+import { previewParticipantReport } from '../../../actions/production-project/ProductionProjectDetailsActions';
 import { fetchParticipantsProductionProject, clearParticipantsProductionProject } from '../../../actions/participants-production-project/ParticipantsProductionProjectActions';
 import { clearFilterParticipantsProductionProject } from '../../../actions/participants-production-project/ParticipantsProductionProjectFiltersActions';
 import { setParticipantsProductionProjectPagination } from '../../../actions/participants-production-project/ParticipantsProductionProjectPaginationActions';
@@ -12,7 +13,6 @@ import Panel from '../../../components/panel/Panel';
 import PanelBody from "../../../components/panel/PanelBody";
 import EmailTemplateAPI from "../../../api/email-template/EmailTemplateAPI";
 import DocumentTemplateAPI from "../../../api/document-template/DocumentTemplateAPI";
-import ParticipantsProductionProjectAPI from "../../../api/participant-production-project/ParticipantsProductionProjectAPI";
 import {hashHistory} from "react-router";
 import validator from "validator";
 import Modal from "../../../components/modal/Modal";
@@ -309,9 +309,8 @@ class ParticipantsListApp extends Component {
             });
         }
         else {
-            ParticipantsProductionProjectAPI.createParticipantReport(this.state.templateId, this.state.emailTemplateId, this.state.subject, this.state.participantIds).then((payload) => {
-                hashHistory.push('/documenten');
-            });
+            this.props.previewParticipantReport({'templateId': this.state.templateId,'emailTemplateId': this.state.emailTemplateId, 'subject': this.state.subject, 'participantIds': this.state.participantIds});
+            hashHistory.push(`/productie-project/preview-rapportage`);
         }
     };
 
@@ -416,7 +415,7 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = (dispatch) => {
-    return bindActionCreators({ fetchParticipantsProductionProject, clearParticipantsProductionProject, setParticipantsProductionProjectPagination, clearFilterParticipantsProductionProject }, dispatch);
+    return bindActionCreators({ previewParticipantReport, fetchParticipantsProductionProject, clearParticipantsProductionProject, setParticipantsProductionProjectPagination, clearFilterParticipantsProductionProject }, dispatch);
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(ParticipantsListApp);

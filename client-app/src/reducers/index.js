@@ -43,6 +43,7 @@ import productionProjectsReducer from './production-project/ProductionProjectsRe
 import productionProjectDetailsReducer from './production-project/ProductionProjectDetailsReducer';
 import productionProjectRevenueDetailsReducer from './production-project/ProductionProjectRevenueDetailsReducer';
 import productionProjectRevenueReportPreviewReducer from './production-project/ProductionProjectRevenueReportPreviewReducer';
+import productionProjectParticipantReportPreviewReducer from './production-project/ProductionProjectParticipantReportPreviewReducer';
 import intakeDetailsReducer from './intake/IntakeDetailsReducer';
 import intakesReducer from './intake/IntakesReducer';
 import invoiceDetailsReducer from './invoice/InvoiceDetailsReducer';
@@ -124,6 +125,7 @@ const rootReducer = combineReducers({
     productionProjectDetails: productionProjectDetailsReducer,
     productionProjectRevenue: productionProjectRevenueDetailsReducer,
     productionProjectRevenueReportPreview: productionProjectRevenueReportPreviewReducer,
+    productionProjectParticipantReportPreview: productionProjectParticipantReportPreviewReducer,
     // Intake
     intakes: intakesReducer,
     intakeDetails: intakeDetailsReducer,

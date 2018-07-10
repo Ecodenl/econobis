@@ -52,6 +52,19 @@ export const clearPreviewReport = () => {
     };
 };
 
+export const previewParticipantReport = (data) => {
+    return {
+        type: 'PRODUCTION_PROJECT_PARTICIPANT_PREVIEW_REPORT',
+        data,
+    };
+};
+
+export const clearPreviewParticipantReport = () => {
+    return {
+        type: 'CLEAR_PRODUCTION_PROJECT_PARTICIPANT_PREVIEW_REPORT',
+    };
+};
+
 export const clearRevenue = () => {
     return {
         type: 'CLEAR_PRODUCTION_PROJECT_REVENUE'

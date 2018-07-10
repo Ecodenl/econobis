@@ -350,7 +350,15 @@ class ParticipationProductionProjectController extends ApiController
         }
     }
 
-    public function createParticipantReport(Request $request, DocumentTemplate $documentTemplate, EmailTemplate $emailTemplate){
+    public function previewPDF(Request $request, DocumentTemplate $documentTemplate, EmailTemplate $emailTemplate) {
+       return $this->createParticipantReport($request, $documentTemplate, $emailTemplate, false, true);
+    }
+
+    public function previewEmail(Request $request, DocumentTemplate $documentTemplate, EmailTemplate $emailTemplate) {
+        return $this->createParticipantReport($request, $documentTemplate, $emailTemplate, true, false);
+    }
+
+    public function createParticipantReport(Request $request, DocumentTemplate $documentTemplate, EmailTemplate $emailTemplate, $previewEmail = false, $previewPDF = false){
         $participantIds = $request->input('participantIds');
         $subject = $request->input('subject');
 
@@ -381,6 +389,7 @@ class ParticipationProductionProjectController extends ApiController
 
             $productionProject = $participant->productionProject;
 
+            if(!$previewEmail){
             $revenueHtml = TemplateVariableHelper::replaceTemplateVariables($html,'contact', $contact);
             $revenueHtml = TemplateVariableHelper::replaceTemplateVariables($revenueHtml,'participant', $participant);
             $revenueHtml = TemplateVariableHelper::replaceTemplateVariables($revenueHtml,'productie_project', $productionProject);
@@ -388,9 +397,15 @@ class ParticipationProductionProjectController extends ApiController
 
             $revenueHtml = TemplateVariableHelper::stripRemainingVariableTags($revenueHtml);
 
+
+            //if preview there is 1 participantId so we return
             $pdf = PDF::loadView('documents.generic', [
                 'html' => $revenueHtml,
             ])->output();
+
+            if ($previewPDF) {
+                return $pdf;
+            }
 
             $time = Carbon::now();
 
@@ -418,12 +433,13 @@ class ParticipationProductionProjectController extends ApiController
 
             $document->alfresco_node_id = $alfrescoResponse['entry']['id'];
             $document->save();
+            }
 
             //send email
+            if($primaryEmailAddress && !$previewPDF){
 
-            if($primaryEmailAddress){
+                $email = Mail::to($primaryEmailAddress->email);
 
-                $email = Mail::to($primaryEmailAddress);
                 if(!$subject){
                     $subject = 'Participant rapportage Econobis';
                 }
@@ -439,11 +455,30 @@ class ParticipationProductionProjectController extends ApiController
                 $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables, 'ik', $user);
                 $htmlBodyWithContactVariables = TemplateVariableHelper::stripRemainingVariableTags($htmlBodyWithContactVariables);
 
-                $email->send(new ParticipantReportMail($email, $htmlBodyWithContactVariables, $document));
+                if ($previewEmail) {
+                    return [
+                        'to' => $primaryEmailAddress->email,
+                        'subject' => $subject,
+                        'htmlBody' => $htmlBodyWithContactVariables
+                    ];
+                }else {
+                    $email->send(new ParticipantReportMail($email,
+                        $htmlBodyWithContactVariables, $document));
+                }
 
             }
-            //delete file on server, still saved on alfresco.
-            Storage::disk('documents')->delete($document->filename);
+            else{
+                return [
+                    'to' => 'Geen e-mail bekend.',
+                    'subject' => 'Geen e-mail bekend.',
+                    'htmlBody' => 'Geen e-mail bekend.'
+                ];
+            }
+
+            if(!$previewEmail && !$previewPDF) {
+                //delete file on server, still saved on alfresco.
+                Storage::disk('documents')->delete($document->filename);
+            }
         }
     }
 
@@ -456,5 +491,13 @@ class ParticipationProductionProjectController extends ApiController
             $contacts = Contact::select('id', 'full_name', 'number')->orderBy('full_name')->whereNull('deleted_at')->get();
         }
         return ContactPeek::collection($contacts);
+    }
+
+    public function peekParticipantByIds(Request $request)
+    {
+        $participations = ParticipantProductionProject::whereIn('id',
+            $request->input('ids'))->with('contact')->get();
+
+        return FullParticipantProductionProject::collection($participations);
     }
 }

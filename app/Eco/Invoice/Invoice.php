@@ -106,9 +106,15 @@ class Invoice extends Model
 
             $daysAllowed = $this->administration->default_payment_term ? $this->administration->default_payment_term : 30;
 
-            $daysExpired = ((Carbon::parse($this->date_sent))->addDays($daysAllowed))->diffInDays(Carbon::now());
+            $dateMax = Carbon::parse($this->date_sent)->addDays($daysAllowed);
 
-            return $daysExpired <= 0 ? 0 : $daysExpired;
+            if($dateMax->gte(Carbon::now())){
+                return 0;
+            }
+
+            $daysExpired = $dateMax->diffInDays(Carbon::now());
+
+            return $daysExpired;
         }
 
         return 0;

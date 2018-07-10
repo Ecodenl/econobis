@@ -75,6 +75,8 @@ class ContactImportHelper
         while ($line = fgetcsv($csv, 1024, ";")) {
             $lineNumber++;
             if ($lineNumber === 1) {
+                //bom weg
+                $line[0] = $str = str_replace("\xEF\xBB\xBF",'',$line[0]);
                 $errorValidationHeader = $this->validateHeaders($line);
                 if ($errorValidationHeader) {
                     return [$errorValidationHeader];
@@ -265,8 +267,10 @@ class ContactImportHelper
         $csv = fopen($file, 'r');
 
         $header = true;
-
         while ($line = fgetcsv($csv, 1024, ";")) {
+            foreach($line as $k => $field){
+                $line[$k] = $this->convertToUTF8($field);
+            };
             if ($header) {
                 $header = false;
             } else {
@@ -338,6 +342,18 @@ class ContactImportHelper
                 }
             }
         }
+        return 'succes';
+    }
+
+    public function convertToUTF8($field){
+
+        $encoding = mb_detect_encoding($field);
+
+        if( $encoding !== "UTF-8" ) {
+            $field = iconv($encoding, "UTF-8//TRANSLIT", $field);
+        }
+
+        return $field;
     }
 }
 

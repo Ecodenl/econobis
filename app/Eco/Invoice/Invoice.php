@@ -24,6 +24,7 @@ class Invoice extends Model
             'days_expired',
             'total_price_incl_vat_and_reduction',
             'total_price_ex_vat_incl_reduction',
+            'total_vat',
             'date_paid',
             'date_payment_due',
             'amount_open',
@@ -140,6 +141,17 @@ class Invoice extends Model
         }
 
         return $price <= 0 ? 0 : $price;
+    }
+
+    public function getTotalVatAttribute()
+    {
+        $vat = 0;
+
+        foreach($this->invoiceProducts as $invoiceProduct) {
+            $vat += $invoiceProduct->amount_vat;
+        }
+
+        return $vat <= 0 ? 0 : $vat;
     }
 
     public function getDatePaidAttribute()

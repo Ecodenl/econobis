@@ -135,6 +135,7 @@
             <th width="10%">Aantal</th>
             <?php echo ($amount_reduction ? '<th width="10%">Korting</th>' : '')?>
             <?php echo ($percentage_reduction ? '<th width="10%">Kortingspercentage</th>' : '')?>
+            <th width="10%">BTW bedrag</th>
             <th width="10%">Bedrag</th>
         </tr>
 
@@ -153,9 +154,18 @@
                 @else
                     <?php echo ($percentage_reduction ? '<td></td>' : '') ?>
                 @endif
-                <td>€{{ number_format($invoiceProduct->price_incl_vat_and_reduction, 2, ',', '.') }}</td>
+                <td>€{{ number_format($invoiceProduct->amount_vat, 2, ',', '.') }}</td>
+                <td>{{ $invoiceProduct->amount }}</td>
             </tr>
         @endforeach
+        <tr>
+            <td><strong>Totaal exclusief BTW:</strong></td>
+            <td>€{{ number_format($invoice->total_price_ex_vat_incl_reduction, 2, ',', '.') }}</td>
+        </tr>
+        <tr>
+            <td><strong>Totaal BTW:</strong></td>
+            <td>€{{ number_format($invoice->total_vat, 2, ',', '.') }}</td>
+        </tr>
         <tr>
             <td><strong>Totaal te betalen:</strong></td>
             <td>€{{ number_format($invoice->total_price_incl_vat_and_reduction, 2, ',', '.') }}</td>

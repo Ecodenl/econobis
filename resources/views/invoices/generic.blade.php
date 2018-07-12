@@ -155,7 +155,7 @@
                     <?php echo ($percentage_reduction ? '<td></td>' : '') ?>
                 @endif
                 <td>€{{ number_format($invoiceProduct->amount_vat, 2, ',', '.') }}</td>
-                <td>{{ $invoiceProduct->amount }}</td>
+                <td>€{{ number_format($invoiceProduct->price_incl_vat_and_reduction, 2, ',', '.') }}</td>
             </tr>
         @endforeach
         <tr>

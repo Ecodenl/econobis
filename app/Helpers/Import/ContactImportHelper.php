@@ -17,6 +17,7 @@ use App\Eco\Person\Person;
 use App\Eco\PhoneNumber\PhoneNumber;
 use App\Eco\Title\Title;
 use CMPayments\IBAN;
+use InvalidArgumentException;
 use Particle\Validator\Validator;
 
 class ContactImportHelper
@@ -67,7 +68,6 @@ class ContactImportHelper
             ];
         }
         $csv = fopen($file, 'r');
-
         $lineNumber = 0;
 
         $validationLines = [];
@@ -91,11 +91,26 @@ class ContactImportHelper
         //order by prio
         array_multisort(array_column($validationLines, "prio"), SORT_ASC,
             $validationLines);
+
         return $validationLines;
     }
 
     public function validateHeaders($line)
     {
+        foreach ($line as $k => $lineField){
+            if(mb_detect_encoding($lineField) === false){
+                return [
+                    'field' => 'Bestand',
+                    'value' => 'Fout gecodeerd',
+                    'line' => 0,
+                    'message' => 'Het bestand is fout gecodeerd.',
+                    'prio' => 1
+                ];
+            }else {
+                $line[$k] = $this->convertToUTF8($lineField);
+            }
+        }
+
         if (sizeof($line) > sizeof(self::HEADERS)) {
             return [
                 'field' => 'Header',
@@ -135,16 +150,25 @@ class ContactImportHelper
 
     public function validateLine($line, $lineNumber)
     {
-        //IDS ophalen van database;
-        $titleIds = Title::all()->pluck('id')->toArray();
-        $emails = EmailAddress::all()->pluck('email')->toArray();
-        $phoneNumbers = PhoneNumber::all()->pluck('number')->toArray();
-
         $field = [];
         $value = [];
         $defaultMessage = 'Rij kan succesvol geïmporteerd worden.';
         $message = [];
         $prio = 3;
+
+        foreach ($line as $k => $lineField) {
+            if (mb_detect_encoding($lineField) === false) {
+                array_push($field, self::HEADERS[$k]);
+                array_push($value, 'Waarde kan niet gelezen worden.');
+                array_push($message, 'Veld is niet juist gecodeerd.');
+                $prio = 1;
+            }
+        }
+
+        //IDS ophalen van database;
+        $titleIds = Title::all()->pluck('id')->toArray();
+        $emails = EmailAddress::all()->pluck('email')->toArray();
+        $phoneNumbers = PhoneNumber::all()->pluck('number')->toArray();
 
         //validators
         $emailValidator = new Validator;

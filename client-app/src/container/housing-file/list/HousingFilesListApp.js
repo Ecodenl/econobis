@@ -29,7 +29,7 @@ class HousingFilesListApp extends Component {
     fetchHousingFilesData = () => {
         setTimeout(() => {
             const filters = filterHelper(this.props.housingFilesFilters);
-            const sorts = this.props.housingFilesSorts.reverse();
+            const sorts = this.props.housingFilesSorts;
             const pagination = { limit: 20, offset: this.props.housingFilesPagination.offset };
 
             this.props.fetchHousingFiles(filters, sorts, pagination);
@@ -44,7 +44,7 @@ class HousingFilesListApp extends Component {
 
     onSubmitFilter() {
         const filters = filterHelper(this.props.housingFilesFilters);
-        const sorts = this.props.housingFilesSorts.reverse();
+        const sorts = this.props.housingFilesSorts;
 
         this.props.setHousingFilesPagination({page: 0, offset: 0});
 

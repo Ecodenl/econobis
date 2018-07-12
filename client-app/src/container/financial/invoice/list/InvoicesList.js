@@ -145,7 +145,7 @@ class InvoicesList extends Component {
 
         setTimeout(() => {
             const filters = filterHelper(this.props.invoicesFilters);
-            const sorts = this.props.invoicesSorts.reverse();
+            const sorts = this.props.invoicesSorts;
             const pagination = {limit: 20, offset: this.props.invoicesPagination.offset};
             const administrationId = this.props.administrationId;
 
@@ -156,7 +156,7 @@ class InvoicesList extends Component {
     getCSV = () => {
         setTimeout(() => {
             const filters = filterHelper(this.props.invoicesFilters);
-            const sorts = this.props.invoicesSorts.reverse();
+            const sorts = this.props.invoicesSorts;
             const administrationId = this.props.administrationId;
 
             InvoicesAPI.getCSV({filters, sorts, administrationId}).then((payload) => {

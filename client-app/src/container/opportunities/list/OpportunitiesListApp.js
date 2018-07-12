@@ -34,7 +34,7 @@ class OpportunitiesListApp extends Component {
     fetchOpportunitiesData() {
         setTimeout(() => {
             const filters = filterHelper(this.props.opportunitiesFilters);
-            const sorts = this.props.opportunitiesSorts.reverse();
+            const sorts = this.props.opportunitiesSorts;
             const pagination = { limit: 20, offset: this.props.opportunitiesPagination.offset };
 
             this.props.fetchOpportunities(filters, sorts, pagination);

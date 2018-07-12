@@ -117,7 +117,7 @@ class OrdersList extends Component {
 
         setTimeout(() => {
             const filters = filterHelper(this.props.ordersFilters);
-            const sorts = this.props.ordersSorts.reverse();
+            const sorts = this.props.ordersSorts;
             const pagination = { limit: 20, offset: this.props.ordersPagination.offset };
             const administrationId = this.props.administrationId;
 
@@ -128,7 +128,7 @@ class OrdersList extends Component {
     getCSV = () => {
         setTimeout(() => {
             const filters = filterHelper(this.props.ordersFilters);
-            const sorts = this.props.ordersSorts.reverse();
+            const sorts = this.props.ordersSorts;
             const administrationId = this.props.administrationId;
 
             OrdersAPI.getCSV({filters, sorts, administrationId}).then((payload) => {

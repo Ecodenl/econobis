@@ -31,7 +31,7 @@ class NotesListApp extends Component {
     fetchNotesData() {
         setTimeout(() => {
             const filters = filterHelper(this.props.notesFilters);
-            const sorts = this.props.notesSorts.reverse();
+            const sorts = this.props.notesSorts;
             const pagination = { limit: 20, offset: this.props.notesPagination.offset };
 
             //this.props.clearContacts();

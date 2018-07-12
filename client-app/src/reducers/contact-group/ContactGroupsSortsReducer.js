@@ -1,14 +1,14 @@
 export default (state = [], action) => {
     switch(action.type) {
         case 'SET_CONTACT_GROUP_SORTS':
-            if(state.length === 3) state.shift();
+            if(state.length === 3) state.pop();
 
             return [
-                ...state,
                 {
                     field: action.field,
                     order: action.order,
                 },
+                ...state,
             ];
         default:
             return state;

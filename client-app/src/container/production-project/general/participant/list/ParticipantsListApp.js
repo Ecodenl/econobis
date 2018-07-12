@@ -88,7 +88,7 @@ class ParticipantsListApp extends Component {
         setTimeout(() => {
             const extraFilters = this.state.extraFilters;
             const filters = filterHelper(this.props.participantsProductionProjectFilters);
-            const sorts = this.props.participantsProductionProjectSorts.reverse();
+            const sorts = this.props.participantsProductionProjectSorts;
             const pagination = { limit: 20, offset: this.props.participantsProductionProjectPagination.offset };
 
             this.props.fetchParticipantsProductionProject(filters, extraFilters, sorts, pagination, this.props.productionProjectId);
@@ -108,7 +108,7 @@ class ParticipantsListApp extends Component {
 
     onSubmitFilter() {
         const filters = filterHelper(this.props.participantsProductionProjectFilters);
-        const sorts = this.props.participantsProductionProjectSorts.reverse();
+        const sorts = this.props.participantsProductionProjectSorts;
 
         this.props.setParticipantsProductionProjectPagination({page: 0, offset: 0});
 

@@ -58,7 +58,7 @@ class TasksListApp extends Component {
     fetchTasksData() {
         setTimeout(() => {
             const filters = filterHelper(this.props.tasksFilters);
-            const sorts = this.props.tasksSorts.reverse();
+            const sorts = this.props.tasksSorts;
             const pagination = { limit: 20, offset: this.props.tasksPagination.offset };
 
             //this.props.clearContacts();

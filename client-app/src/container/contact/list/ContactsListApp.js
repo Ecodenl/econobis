@@ -73,7 +73,7 @@ class ContactsListApp extends Component {
         setTimeout(() => {
             const extraFilters = this.state.extraFilters;
             const filters = filterHelper(this.props.contactsFilters);
-            const sorts = this.props.contactsSorts.reverse();
+            const sorts = this.props.contactsSorts;
             const pagination = { limit: 20, offset: this.props.contactsPagination.offset };
 
             this.props.fetchContacts(filters, extraFilters, sorts, pagination);
@@ -84,7 +84,7 @@ class ContactsListApp extends Component {
         setTimeout(() => {
             const extraFilters = this.state.extraFilters;
             const filters = filterHelper(this.props.contactsFilters);
-            const sorts = this.props.contactsSorts.reverse();
+            const sorts = this.props.contactsSorts;
 
                 ContactsAPI.getCSV({filters, extraFilters, sorts}).then((payload) => {
                     fileDownload(payload.data, 'Contacten-' + moment().format("YYYY-MM-DD HH:mm:ss") +  '.csv');

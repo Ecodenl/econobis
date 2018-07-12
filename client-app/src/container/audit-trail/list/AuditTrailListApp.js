@@ -40,7 +40,7 @@ class AuditTrailListApp extends Component {
     fetchAuditTrailData() {
         setTimeout(() => {
             const filters = filterHelper(this.props.auditTrailFilters);
-            const sorts = this.props.auditTrailSorts.reverse();
+            const sorts = this.props.auditTrailSorts;
             const pagination = { limit: 20, offset: this.props.auditTrailPagination.offset };
 
             this.props.fetchAuditTrail(filters, sorts, pagination);

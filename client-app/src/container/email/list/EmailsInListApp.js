@@ -81,7 +81,7 @@ class EmailsInListApp extends Component {
     fetchEmailsData() {
         setTimeout(() => {
             const filters = filterHelper(this.props.emailsFilters);
-            const sorts = this.props.emailsSorts.reverse();
+            const sorts = this.props.emailsSorts;
             const pagination = { limit: 20, offset: this.props.emailsPagination.offset };
 
             this.props.fetchEmails(this.props.params.folder, filters, sorts, pagination);

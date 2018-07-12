@@ -34,7 +34,7 @@ class IntakesListApp extends Component {
     fetchIntakesData = () => {
         setTimeout(() => {
             const filters = filterHelper(this.props.intakesFilters);
-            const sorts = this.props.intakesSorts.reverse();
+            const sorts = this.props.intakesSorts;
             const pagination = { limit: 20, offset: this.props.intakesPagination.offset };
 
             this.props.fetchIntakes(filters, sorts, pagination);
@@ -49,7 +49,7 @@ class IntakesListApp extends Component {
 
     onSubmitFilter() {
         const filters = filterHelper(this.props.intakesFilters);
-        const sorts = this.props.intakesSorts.reverse();
+        const sorts = this.props.intakesSorts;
 
         this.props.setIntakesPagination({page: 0, offset: 0});
 

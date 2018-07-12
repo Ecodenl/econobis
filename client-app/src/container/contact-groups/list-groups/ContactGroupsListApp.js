@@ -36,7 +36,7 @@ class ContactGroupsListApp extends Component {
     fetchContactGroupsData() {
         setTimeout(() => {
             const filters = filterHelper(this.props.contactGroupsFilters);
-            const sorts = this.props.contactGroupsSorts.reverse();
+            const sorts = this.props.contactGroupsSorts;
             const pagination = { limit: 20, offset: this.props.contactGroupsPagination.offset };
 
             this.props.fetchContactGroups(filters, sorts, pagination);

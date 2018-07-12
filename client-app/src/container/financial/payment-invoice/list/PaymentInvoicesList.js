@@ -82,7 +82,7 @@ class PaymentInvoicesList extends Component {
 
         setTimeout(() => {
             const filters = filterHelper(this.props.paymentInvoicesFilters);
-            const sorts = this.props.paymentInvoicesSorts.reverse();
+            const sorts = this.props.paymentInvoicesSorts;
             const pagination = {limit: 20, offset: this.props.paymentInvoicesPagination.offset};
             const administrationId = this.props.administrationId;
 

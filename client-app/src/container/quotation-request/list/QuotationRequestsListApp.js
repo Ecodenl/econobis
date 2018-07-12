@@ -29,7 +29,7 @@ class QuotationRequestsListApp extends Component {
     fetchQuotationRequestsData = () => {
         setTimeout(() => {
             const filters = filterHelper(this.props.quotationRequestsFilters);
-            const sorts = this.props.quotationRequestsSorts.reverse();
+            const sorts = this.props.quotationRequestsSorts;
             const pagination = { limit: 20, offset: this.props.quotationRequestsPagination.offset };
 
             this.props.fetchQuotationRequests(filters, sorts, pagination);
@@ -44,7 +44,7 @@ class QuotationRequestsListApp extends Component {
 
     onSubmitFilter() {
         const filters = filterHelper(this.props.quotationRequestsFilters);
-        const sorts = this.props.quotationRequestsSorts.reverse();
+        const sorts = this.props.quotationRequestsSorts;
 
         this.props.setQuotationRequestsPagination({page: 0, offset: 0});
 

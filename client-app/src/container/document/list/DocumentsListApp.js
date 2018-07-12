@@ -44,7 +44,7 @@ class DocumentsListApp extends Component {
     fetchDocumentsData() {
         setTimeout(() => {
             const filters = filterHelper(this.props.documentsFilters);
-            const sorts = this.props.documentsSorts.reverse();
+            const sorts = this.props.documentsSorts;
             const pagination = { limit: 20, offset: this.props.documentsPagination.offset };
 
             this.props.fetchDocuments(filters, sorts, pagination);

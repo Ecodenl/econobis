@@ -118,7 +118,7 @@ class DataTableCustomFilter extends Component {
                         onChange={this.handleInputChange}
                     />
                 }
-                {this.state.type === 'dropdown' ||  this.state.type === 'dropdownHas' &&
+                {(this.state.type === 'dropdown' ||  this.state.type === 'dropdownHas') &&
                     <select
                         className={`form-control input-sm`}
                         id='data'

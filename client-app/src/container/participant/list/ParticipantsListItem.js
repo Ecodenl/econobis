@@ -44,7 +44,7 @@ class ParticipantsListItem extends Component {
                 </td>
                 <td>{ contact.type ? contact.type.name : '' }</td>
                 <td>{ contact.fullName }</td>
-                <td>{ contact.primaryAddress ? contact.primaryAddress.street + ' ' + contact.primaryAddress.number : ''}</td>
+                <td>{ contact.primaryAddress ? contact.primaryAddress.street + ' ' + contact.primaryAddress.number + contact.primaryAddress.addition : ''}</td>
                 <td>{ contact.primaryAddress ? contact.primaryAddress.postalCode : '' }</td>
                 <td>{ contact.primaryAddress ? contact.primaryAddress.city : '' }</td>
                 <td>{ contact.status ? contact.status.name : '' }</td>

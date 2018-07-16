@@ -22,9 +22,9 @@ class EmailDetailsForm extends Component {
                 <div>
                     { this.props.email.folder === 'removed' &&
                     <PanelDeletedItem
-                        text={'Deze email is verwijderd.'}
+                        text={'Deze e-mail is verwijderd.'}
                         restoreAction={this.props.restoreEmail}
-                        restoreText={'Klik hier om deze email terug te zetten.'}
+                        restoreText={'Klik hier om verwijderen ongedaan te maken.'}
                     />
                     }
                     <EmailFormGeneral />

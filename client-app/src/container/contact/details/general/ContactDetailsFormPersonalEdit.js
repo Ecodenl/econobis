@@ -146,7 +146,7 @@ class ContactDetailsFormPersonalEdit extends Component {
             <form className="form-horizontal col-md-12" onSubmit={this.handleSubmit}>
                 <div className="row">
                     <InputText
-                        label={"Klantnummer"}
+                        label={"Contactnummer"}
                         size={"col-sm-6"}
                         name={"number"}
                         readOnly={ true }

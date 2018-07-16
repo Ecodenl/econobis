@@ -126,7 +126,7 @@ class ContactDetailsFormOrganisationEdit extends Component {
             <form className="form-horizontal col-md-12" onSubmit={this.handleSubmit}>
                 <div className="row">
                     <InputText
-                        label={"Klantnummer"}
+                        label={"Contactnummer"}
                         name={"number"}
                         value={number}
                         readOnly={ true }

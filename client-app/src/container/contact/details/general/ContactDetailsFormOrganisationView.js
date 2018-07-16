@@ -11,7 +11,7 @@ const ContactDetailsFormOrganisationView = props => {
         <div onClick={props.switchToEdit}>
             <div className="row">
                 <ViewText
-                    label={"Klantnummer"}
+                    label={"Contactnummer"}
                     value={ number }
                 />
                 <ViewText

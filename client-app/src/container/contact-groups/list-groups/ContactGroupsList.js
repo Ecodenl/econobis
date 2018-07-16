@@ -24,6 +24,7 @@ class ContactGroupsList extends Component {
 
     // On key Enter filter form will submit
     handleKeyUp = (e) => {
+        e.preventDefault();
         if (e.keyCode === 13) {
             this.props.onSubmitFilter();
         }
@@ -58,7 +59,7 @@ class ContactGroupsList extends Component {
 
         return (
         <div>
-            <form onKeyUp={this.handleKeyUp}>
+            <form onKeyUp={this.handleKeyUp} onSubmit={this.handleKeyUp}>
             <DataTable>
                 <DataTableHead>
                     <ContactGroupsListHead

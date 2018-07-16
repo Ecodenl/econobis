@@ -163,7 +163,7 @@ class EmailFormEdit extends Component {
 
     render() {
         const {contactIds, statusId, intakeId, taskId, quotationRequestId, measureId, opportunityId, orderId, invoiceId, responsible} = this.state.email;
-        const {from, to, cc, bcc, subject, htmlBody, createdAt, dateSent, folder, status} = this.props.email;
+        const {from, toWithGroup, cc, bcc, subject, htmlBody, createdAt, dateSent, folder, status} = this.props.email;
 
         return (
             <div>
@@ -181,7 +181,7 @@ class EmailFormEdit extends Component {
                 <div className="row">
                     <ViewText
                         label={"Aan"}
-                        value={to && to.map((to) => to).join(', ')}
+                        value={toWithGroup && toWithGroup.map((toWithGroup) => toWithGroup).join(', ')}
                     />
                     <ViewText
                         label={"Verzonden datum tijd"}

@@ -3,6 +3,8 @@
 namespace App\Eco\Email;
 
 use App\Eco\Contact\Contact;
+use App\Eco\ContactGroup\ContactGroup;
+use App\Eco\EmailAddress\EmailAddress;
 use App\Eco\Intake\Intake;
 use App\Eco\Invoice\Invoice;
 use App\Eco\Mailbox\Mailbox;
@@ -58,6 +60,11 @@ class Email extends Model
         return $this->belongsTo(Intake::class);
     }
 
+    public function contactGroup()
+    {
+        return $this->belongsTo(ContactGroup::class);
+    }
+
     public function task()
     {
         return $this->belongsTo(Task::class);
@@ -86,6 +93,10 @@ class Email extends Model
     public function invoice()
     {
         return $this->belongsTo(Invoice::class);
+    }
+
+    public function groupEmailAddresses(){
+        return $this->belongsToMany(EmailAddress::class, 'email_group_email_addresses');
     }
 
     /**

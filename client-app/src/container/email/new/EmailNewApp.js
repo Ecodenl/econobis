@@ -58,8 +58,27 @@ class EmailNewApp extends Component {
         EmailAddressAPI.fetchEmailAddressessPeek().then((payload) => {
             this.setState({
                 emailAddresses: payload,
+            }, () => {
+                if (this.props.params.groupId && this.props.params.type) {
+                    EmailAPI.fetchEmailGroup(this.props.params.groupId).then((payload) => {
+
+                        let emailAddresses = this.state.emailAddresses;
+
+                        emailAddresses.push({id: '@group_' + this.props.params.groupId, name: payload});
+
+                        this.setState({
+                            ...this.state,
+                            emailAddresses: emailAddresses,
+                            email: {
+                                ...this.state.email,
+                                [this.props.params.type]: '@group_' + this.props.params.groupId
+                            },
+                        });
+                    });
+                }
             });
         });
+
         MailboxAPI.fetchEmailsLoggedInUserPeek().then((payload) => {
             this.setState({
                 mailboxAddresses: payload,
@@ -71,18 +90,6 @@ class EmailNewApp extends Component {
                 emailTemplates: payload,
             });
         });
-
-        if(this.props.params.groupId && this.props.params.type){
-            EmailAPI.fetchEmailGroup(this.props.params.groupId).then((payload) => {
-                this.setState({
-                    ...this.state,
-                    email: {
-                        ...this.state.email,
-                        [this.props.params.type]: payload.join(',')
-                    },
-                });
-            });
-        }
 
         if (this.props.params.type === 'bulk' && this.props.toIds) {
             this.setState({

@@ -151,12 +151,9 @@ class EmailController
 
     public function getEmailGroup(ContactGroup $contactGroup){
         //Get the primary email from all contacts in this group
-        $emails = $contactGroup->contacts()->pluck('id')->toArray();
+        $contactsCount = $contactGroup->contacts()->pluck('id')->count();
 
-        //int array to string array for front-end
-        $emailsString  = array_map('strval',$emails);
-
-        return $emailsString;
+        return $contactGroup->name . '(' . $contactsCount . ')';
     }
 
     public function update(Email $email, RequestInput $input, Request $request)
@@ -227,6 +224,17 @@ class EmailController
 
             $this->storeEmailAttachments($attachments, $mailbox->id,
                 $email->id);
+
+            //if we send to group we save in a pivot because they can have alot of members
+            if ($sanitizedData['contact_group_id']) {
+                $contactGroup = ContactGroup::find($sanitizedData['contact_group_id']);
+
+                foreach ($contactGroup->contacts as $contact) {
+                    if ($contact->primaryEmailAddress) {
+                        $email->groupEmailAddresses()->attach($contact->primaryEmailAddress->id);
+                    }
+                }
+            }
 
             (new SendEmailsWithVariables($email, json_decode($request['to'])))->handle();
     }
@@ -318,7 +326,7 @@ class EmailController
         return FullEmail::make($email);
     }
 
-    public function getEmailData(Request $request){
+    public function getEmailData(Request $request, $withGroup = false){
         //Get all basic mail info
         $data = $request->validate([
             'to' => 'required',
@@ -337,8 +345,10 @@ class EmailController
         //1,2, fren.dehaan@xaris.nl, @user_1, @user_2, 3, rob.rollenberg@xaris.nl
 
         $emails = [];
-
+        $groupId = null;
         $sendVariations = ['to'];
+        $emails['to'] = [];
+
         if ($data['cc'] != '') {
             array_push($sendVariations, 'cc');
         }
@@ -364,7 +374,10 @@ class EmailController
                     $user_id = str_replace("@user_", "", $emailData);
                     $emails[$sendVariation][] =  User::find($user_id)->email;
                 }
-            else{
+                else if(substr($emailData, 0, 7 ) === "@group_"){
+                    $groupId = str_replace("@group_", "", $emailData);
+                }
+                else if(filter_var($emailData, FILTER_VALIDATE_EMAIL)){
                     $emails[$sendVariation][] = $emailData;
             }}
         }
@@ -384,6 +397,7 @@ class EmailController
             'subject' => $data['subject'] ?: 'Econobis',
             'html_body' => $data['htmlBody'],
             'quotation_request_id' => $data['quotationRequestId'],
+            'contact_group_id' => $groupId ? $groupId : null
         ];
 
         return $sanitizedData;

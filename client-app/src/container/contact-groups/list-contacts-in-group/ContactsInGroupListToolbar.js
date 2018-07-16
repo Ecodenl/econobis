@@ -1,11 +1,10 @@
 import React, {Component} from 'react';
-import { hashHistory, Link } from 'react-router';
+import { hashHistory } from 'react-router';
 import {connect} from 'react-redux';
 
 import ContactListAddPersonToGroup from './ContactListAddPersonToGroup';
 import ContactGroupAPI  from '../../../api/contact-group/ContactGroupAPI';
 import ButtonIcon from '../../../components/button/ButtonIcon';
-import ContactListEmail from "./ContactListEmail";
 
 class ContactsInGroupListToolbar extends Component {
     constructor(props){
@@ -49,10 +48,8 @@ class ContactsInGroupListToolbar extends Component {
         });
     };
 
-    toggleModalEmail = () => {
-        this.setState({
-            showModalEmail: !this.state.showModalEmail,
-        });
+    sendEmail = () => {
+        hashHistory.push(`/email/nieuw/groep/${this.props.groupId}/to`);
     };
 
     newContact = () => {
@@ -75,7 +72,7 @@ class ContactsInGroupListToolbar extends Component {
                             </button>
                         </div>
                         }
-                        <ButtonIcon iconName={"glyphicon-envelope"} onClickAction={this.toggleModalEmail} />
+                        <ButtonIcon iconName={"glyphicon-envelope"} onClickAction={this.sendEmail} />
                     </div>
                 </div>
                 <div className="col-md-4"><h3 className="text-center table-title">Contacten in groep: {this.state.groupName}</h3></div>
@@ -86,13 +83,6 @@ class ContactsInGroupListToolbar extends Component {
                     closeModalAddToGroup={this.closeModalAddToGroup}
                     addPersonToGroup={this.addPersonToGroup}
                     groupName = {this.state.groupName}
-                />
-                }
-
-                {this.state.showModalEmail &&
-                <ContactListEmail
-                    closeModalEmail={this.toggleModalEmail}
-                    groupId = {this.props.groupId}
                 />
                 }
 

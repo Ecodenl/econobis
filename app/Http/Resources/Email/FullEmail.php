@@ -28,12 +28,20 @@ class FullEmail extends Resource
 {
     public function toArray($request)
     {
+
+        $to = $this->to;
+
+        if($this->contactGroup){
+            array_unshift($to, $this->contactGroup->name);
+        }
+
         return [
             'id' => $this->id,
             'mailboxId' => $this->mailbox_id,
             'mailbox' => FullMailbox::make($this->whenLoaded('mailbox')),
             'from' => $this->from,
             'to' => $this->to,
+            'toWithGroup' => $to,
             'cc' => $this->cc,
             'bcc' => $this->bcc,
             'subject' => $this->subject,

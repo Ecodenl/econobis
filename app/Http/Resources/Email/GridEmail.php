@@ -28,13 +28,20 @@ class GridEmail extends Resource
             $responsible = $this->responsibleTeam->name;
         }
 
+        $to = $this->to;
+
+        if($this->contactGroup){
+            array_unshift($to, $this->contactGroup->name);
+        }
+
+
         return [
             'createdAt' => $this->created_at,
             'id' => $this->id,
             'date' => $this->date_sent,
             'mailboxName' => $this->mailbox->name,
             'from' => $this->from,
-            'to' => $this->to,
+            'to' => $to,
             'subject' => $this->subject,
             'status' => FullEnumWithIdAndName::make($this->getStatus()),
             'folder' => $this->folder,

@@ -180,7 +180,7 @@ class EmailController
         if ($contactIds[0] == '') {
             $contactIds = [];
         }
-        else{
+        else if(!Mailbox::where('email', $email->from)->exists()){
             //if we pair a email to a contact, we insert the email for the contact
             $emailAddress = new EmailAddress();
             $emailAddress->email = $email->from;

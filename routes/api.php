@@ -31,6 +31,7 @@ Route::namespace('Api')
 
         Route::get('/contact/grid', 'Contact\GridController@index');
         Route::get('/contact/csv', 'Contact\GridController@csv');
+        Route::get('/contact/save-as-group', 'Contact\GridController@saveAsGroup');
         Route::get('/contact/peek', 'Contact\ContactController@peek');
         Route::get('/contact/chart-data', 'Contact\ContactController@chartData');
         Route::post('/contacts/delete', 'Contact\ContactController@destroyContacts');

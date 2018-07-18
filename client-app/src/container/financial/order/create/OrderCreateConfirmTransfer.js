@@ -4,10 +4,6 @@ import Modal from '../../../../components/modal/Modal';
 import OrderDetailsAPI from "../../../../api/order/OrderDetailsAPI";
 import {hashHistory} from "react-router";
 import moment from "moment/moment";
-import validator from "validator";
-import InputText from "../../../../components/form/InputText";
-import InputSelect from "../../../../components/form/InputSelect";
-import {connect} from "react-redux";
 import InputDate from "../../../../components/form/InputDate";
 
 class OrderCreateConfirmTransfer extends Component {

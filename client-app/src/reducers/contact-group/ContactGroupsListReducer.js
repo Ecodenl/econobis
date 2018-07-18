@@ -1,4 +1,6 @@
 export default function (state= { isLoading: false }, action) {
+    console.log(state);
+    console.log(action);
     switch (action.type) {
     case 'FETCH_CONTACT_GROUPS_LOADING':
         return {
@@ -13,6 +15,11 @@ export default function (state= { isLoading: false }, action) {
             },
             isLoading: false,
         };
+        case 'DELETE_CONTACT_GROUP_SUCCESS':
+            return {
+                ...state,
+                data: state.data.filter((contactGroup) => contactGroup.id !== action.id),
+            };
     case 'CLEAR_CONTACT_GROUPS':
         return {
             ...state,

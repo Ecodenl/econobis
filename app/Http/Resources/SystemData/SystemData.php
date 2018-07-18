@@ -4,6 +4,7 @@ namespace App\Http\Resources\SystemData;
 
 use App\Eco\Campaign\CampaignStatus;
 use App\Eco\Campaign\CampaignType;
+use App\Eco\ContactGroup\ContactGroupType;
 use App\Eco\Country\Country;
 use App\Eco\Document\DocumentGroup;
 use App\Eco\Document\DocumentType;
@@ -136,6 +137,7 @@ class SystemData extends Resource
             'orderCollectionFrequencies' => FullEnumWithIdAndName::collection(OrderCollectionFrequency::collection()),
             'paymentInvoiceStatuses' => FullEnumWithIdAndName::collection(PaymentInvoiceStatus::collection()),
             'products' => FullProduct::collection(Product::whereNull('deleted_at')->get()),
+            'contactGroupTypes' => FullEnumWithIdAndName::collection(ContactGroupType::collection()),
         ];
     }
 }

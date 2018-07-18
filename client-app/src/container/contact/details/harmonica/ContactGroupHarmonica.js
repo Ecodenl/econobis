@@ -9,7 +9,7 @@ const ContactGroupHarmonica = ({toggleShowList, showContactGroupsList, toggleAdd
         <Panel className={"harmonica-button"}>
             <PanelBody>
                 <div className="col-sm-10" onClick={toggleShowList} role="button">
-                    <span onClick={toggleShowList} className="">GROEPEN <span className="badge">{ groupCount }</span></span>
+                    <span onClick={toggleShowList} className="">STATISCHE GROEPEN <span className="badge">{ groupCount }</span></span>
                 </div>
                 <div className={"col-sm-2"}>
                     <a role="button" className="pull-right" onClick={toggleAddGroup}><span

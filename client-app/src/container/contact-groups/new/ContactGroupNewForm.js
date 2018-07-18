@@ -25,6 +25,9 @@ class ContactGroupNewForm extends Component {
                 responsibleUserId: '',
                 dateStarted: '',
                 dateFinished: '',
+                showContactForm: false,
+                showPortal: false,
+                editPortal: false,
             },
             errors: {
                 name: false,
@@ -102,7 +105,7 @@ class ContactGroupNewForm extends Component {
     };
 
     render() {
-        const { name, description, responsibleUserId, closed, dateStarted, dateFinished } = this.state.contactGroup;
+        const { name, description, responsibleUserId, closed, dateStarted, dateFinished, showPortal, editPortal, showContactForm } = this.state.contactGroup;
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -166,6 +169,30 @@ class ContactGroupNewForm extends Component {
                         name="dateFinished"
                         value={dateFinished}
                         onChangeAction={this.handleChangeFinishedDate}
+                    />
+                </div>
+
+                <div className="row">
+                    <InputToggle
+                        label={"Zichtbaar op portaal"}
+                        name={"showPortal"}
+                        value={showPortal}
+                        onChangeAction={this.handleInputChange}
+                    />
+                    <InputToggle
+                        label={"Veranderen op portaal"}
+                        name={"editPortal"}
+                        value={editPortal}
+                        onChangeAction={this.handleInputChange}
+                    />
+                </div>
+
+                <div className="row">
+                    <InputToggle
+                        label={"Zichtbaar bij contact"}
+                        name={"showContactForm"}
+                        value={showContactForm}
+                        onChangeAction={this.handleInputChange}
                     />
                 </div>
 

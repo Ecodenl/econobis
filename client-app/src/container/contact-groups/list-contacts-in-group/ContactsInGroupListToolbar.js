@@ -67,9 +67,9 @@ class ContactsInGroupListToolbar extends Component {
                         {
                             this.props.permissions.updatePerson && this.props.permissions.updateOrganisation &&
                             <div className="nav navbar-nav btn-group">
-                            <button onClick={this.toggleModalAddToGroup} className="btn btn-success btn-sm">
-                                <span className="glyphicon glyphicon-plus"/>
-                            </button>
+                                    <button onClick={this.toggleModalAddToGroup} className="btn btn-success btn-sm">
+                                        <span className="glyphicon glyphicon-plus"/>
+                                    </button>
                         </div>
                         }
                         <ButtonIcon iconName={"glyphicon-envelope"} onClickAction={this.sendEmail} />

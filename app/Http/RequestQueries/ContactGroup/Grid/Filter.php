@@ -16,11 +16,13 @@ class Filter extends RequestFilter
     protected $fields = [
         'name',
         'status',
+        'typeId',
           ];
 
     protected $mapping = [
         'name' => 'contact_groups.name',
         'status' => 'contact_groups.closed',
+        'typeId' => 'contact_groups.type_id',
     ];
 
     protected $joins = [];

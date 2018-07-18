@@ -4,6 +4,8 @@ import { connect } from 'react-redux';
 import { fetchContactGroupDetails } from '../../../actions/contact-group/ContactGroupDetailsActions';
 import ContactGroupDetailsToolbar from './ContactGroupDetailsToolbar';
 import ContactGroupDetailsForm from './ContactGroupDetailsForm';
+import ContactGroupExtraFilters from './extra-filters/ContactGroupExtraFilters';
+import ContactGroupFilters from './filters/ContactGroupFilters';
 import Panel from "../../../components/panel/Panel";
 import PanelBody from "../../../components/panel/PanelBody";
 import ContactGroupsDetailsHarmonica from "./ContactGroupsDetailsHarmonica";
@@ -28,6 +30,18 @@ class ContactGroupDetailsApp extends Component {
                     <div className="col-md-12">
                         <ContactGroupDetailsForm />
                     </div>
+
+                    {this.props.contactGroupDetails.type && this.props.contactGroupDetails.type.id === 'dynamic' &&
+                    <div className="col-md-12">
+                        <ContactGroupFilters />
+                    </div>
+                    }
+
+                    {this.props.contactGroupDetails.type && this.props.contactGroupDetails.type.id === 'dynamic' &&
+                    <div className="col-md-12">
+                        <ContactGroupExtraFilters />
+                    </div>
+                    }
                 </div>
                 <Panel className="col-md-3">
                     <PanelBody>
@@ -42,6 +56,7 @@ class ContactGroupDetailsApp extends Component {
 const mapStateToProps = (state) => {
     return {
         userDetails: state.userDetails,
+        contactGroupDetails: state.contactGroupDetails,
     };
 };
 

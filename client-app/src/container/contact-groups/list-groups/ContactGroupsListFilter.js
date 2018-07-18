@@ -6,7 +6,8 @@ import 'react-day-picker/lib/style.css';
 
 import {
     setFilterContactGroupName,
-    setFilterContactGroupStatus
+    setFilterContactGroupStatus,
+    setFilterContactGroupTypeId
 } from '../../../actions/contact/ContactGroupsFiltersActions';
 
 const ContactGroupsListFilter = props => {
@@ -17,6 +18,14 @@ const ContactGroupsListFilter = props => {
 
     const onStatusChange = (e) => {
         props.setFilterContactGroupStatus(e.target.value);
+
+        setTimeout(() => {
+            props.onSubmitFilter();
+        }, 100);
+    };
+
+    const onTypeChange = (e) => {
+        props.setFilterContactGroupTypeId(e.target.value);
 
         setTimeout(() => {
             props.onSubmitFilter();
@@ -35,7 +44,14 @@ const ContactGroupsListFilter = props => {
                             <option key={2} value={1}>{ 'Gesloten' }</option>
                 </select>
             </th>
-
+            <th className="hidden-xs hidden-sm">
+                <select className="form-control input-sm" value={ props.filters.typeId.data } onChange={onTypeChange}>
+                    <option/>
+                    { props.contactGroupTypes.map((contactGroupType) => {
+                        return <option key={contactGroupType.id } value={ contactGroupType.id }>{ contactGroupType.name }</option>
+                    }) }
+                </select>
+            </th>
             <th/>
         </tr>
     );
@@ -43,12 +59,14 @@ const ContactGroupsListFilter = props => {
 
 const mapStateToProps = (state) => ({
     filters: state.contactGroups.filters,
+    contactGroupTypes: state.systemData.contactGroupTypes,
 });
 
 const mapDispatchToProps = (dispatch) => {
     return bindActionCreators({
         setFilterContactGroupName,
-        setFilterContactGroupStatus
+        setFilterContactGroupStatus,
+        setFilterContactGroupTypeId
     }, dispatch);
 };
 

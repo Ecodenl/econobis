@@ -1,6 +1,5 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
 
 import Modal from '../../../components/modal/Modal';
 import { deleteContact } from '../../../actions/contact/ContactsActions';

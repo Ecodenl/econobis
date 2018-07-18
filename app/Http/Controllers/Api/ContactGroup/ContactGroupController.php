@@ -33,7 +33,7 @@ class ContactGroupController extends Controller
 
     public function peek()
     {
-        return ContactGroupPeek::collection(ContactGroup::orderBy('name')->get());
+        return ContactGroupPeek::collection(ContactGroup::orderBy('name')->where('type_id', 'static')->get());
     }
 
     public function show(ContactGroup $contactGroup)
@@ -55,7 +55,13 @@ class ContactGroupController extends Controller
             ->alias('date_started')->next()
             ->date('dateFinished')->default(null)->validate('nullable|date')
             ->alias('date_finished')->next()
+            ->boolean('showPortal')->validate('boolean')->alias('show_portal')->whenMissing(false)->next()
+            ->boolean('editPortal')->validate('boolean')->alias('edit_portal')->whenMissing(false)->next()
+            ->boolean('showContactForm')->validate('boolean')->alias('show_contact_form')->whenMissing(false)->next()
             ->get();
+
+        //todo
+        $data['type_id'] = 'static';
 
         $contactGroup = new ContactGroup($data);
         $contactGroup->save();
@@ -79,6 +85,9 @@ class ContactGroupController extends Controller
             ->alias('date_started')->next()
             ->date('dateFinished')->onEmpty(null)->validate('nullable|date')
             ->alias('date_finished')->next()
+            ->boolean('showPortal')->validate('boolean')->alias('show_portal')->whenMissing(false)->next()
+            ->boolean('editPortal')->validate('boolean')->alias('edit_portal')->whenMissing(false)->next()
+            ->boolean('showContactForm')->validate('boolean')->alias('show_contact_form')->whenMissing(false)->next()
             ->get();
 
         $contactGroup->fill($data);
@@ -101,7 +110,12 @@ class ContactGroupController extends Controller
 
     public function gridContacts(ContactGroup $contactGroup)
     {
-        return GridContact::collection($contactGroup->contacts);
+        if($contactGroup->type_id === 'static') {
+            return GridContact::collection($contactGroup->contacts);
+        }
+        else if($contactGroup->type_id === 'dynamic'){
+            return GridContact::collection($contactGroup->dynamic_contacts->get());
+        }
     }
 
     public function addContact(ContactGroup $contactGroup, Contact $contact)

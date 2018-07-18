@@ -150,10 +150,14 @@ class EmailController
     }
 
     public function getEmailGroup(ContactGroup $contactGroup){
-        //Get the primary email from all contacts in this group
-        $contactsCount = $contactGroup->contacts()->pluck('id')->count();
+        if($contactGroup->type_id === 'static'){
+            $numberOfContacts = $contactGroup->contacts()->count();
+        }
+        else if($contactGroup->type_id === 'dynamic'){
+            $numberOfContacts = $contactGroup->dynamic_contacts->total();
+        }
 
-        return $contactGroup->name . '(' . $contactsCount . ')';
+        return $contactGroup->name . '(' . $numberOfContacts . ')';
     }
 
     public function update(Email $email, RequestInput $input, Request $request)
@@ -229,11 +233,22 @@ class EmailController
             if ($sanitizedData['contact_group_id']) {
                 $contactGroup = ContactGroup::find($sanitizedData['contact_group_id']);
 
-                foreach ($contactGroup->contacts as $contact) {
-                    if ($contact->primaryEmailAddress) {
-                        $email->groupEmailAddresses()->attach($contact->primaryEmailAddress->id);
+                if($this->type_id === 'static'){
+                    foreach ($contactGroup->contacts as $contact) {
+                        if ($contact->primaryEmailAddress) {
+                            $email->groupEmailAddresses()->attach($contact->primaryEmailAddress->id);
+                        }
                     }
                 }
+                else if($this->type_id === 'dynamic'){
+                    foreach ($contactGroup->dynamic_contacts->get() as $contact) {
+                        if ($contact->primaryEmailAddress) {
+                            $email->groupEmailAddresses()->attach($contact->primaryEmailAddress->id);
+                        }
+                    }
+                }
+
+
             }
 
             (new SendEmailsWithVariables($email, json_decode($request['to'])))->handle();

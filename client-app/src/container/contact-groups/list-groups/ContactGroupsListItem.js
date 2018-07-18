@@ -35,13 +35,14 @@ class ContactGroupsListItem extends Component {
     }
 
     render() {
-        const { id, name, numberOfContacts, closedStatus, permissions } = this.props;
+        const { id, name, numberOfContacts, closedStatus, permissions, type } = this.props;
 
         return (
           <tr className={this.state.highlightRow} onDoubleClick={() => this.openItem(id)} onMouseEnter={() => this.onRowEnter()} onMouseLeave={() => this.onRowLeave()}>
               <td>{ name }</td>
               <td className="link-underline" onClick={() => this.openContactsInGroup(id)}>{ numberOfContacts }</td>
               <td>{ closedStatus }</td>
+              <td>{ type ? type.name : '' }</td>
               <td>
                   {(this.state.showActionButtons && permissions.manageGroup ? <a role="button" onClick={() => this.openItem(id)}><span className="glyphicon glyphicon-pencil mybtn-success" /> </a> : '')}
                   {(this.state.showActionButtons && permissions.manageGroup ? <a role="button" onClick={this.props.showDeleteItemModal.bind(this, id, name)}><span className="glyphicon glyphicon-trash mybtn-danger"  /> </a> : '')}

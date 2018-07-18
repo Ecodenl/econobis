@@ -6,9 +6,6 @@ import {hashHistory} from "react-router";
 import moment from "moment/moment";
 import validator from "validator";
 import InputDate from "../../../../components/form/InputDate";
-import InputSelect from "../../../../components/form/InputSelect";
-import InputText from "../../../../components/form/InputText";
-import {connect} from "react-redux";
 
 class OrderCreateConfirmCollection extends Component {
 

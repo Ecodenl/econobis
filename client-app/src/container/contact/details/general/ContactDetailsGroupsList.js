@@ -1,28 +1,25 @@
 import React from 'react';
 import {connect} from 'react-redux';
 
-import ContactDetailsCampaignItem from "./ContactDetailsCampaignItem";
+import ContactDetailsGroupItem from "./ContactDetailsGroupItem";
 
 const ContactDetailsGroupsList = props => {
     return (
         <div>
             <div className="row border header">
-                <div className="col-sm-2">Nummer</div>
-                <div className="col-sm-3">Naam</div>
-                <div className="col-sm-3">Startdatum</div>
-                <div className="col-sm-3">Einddatum</div>
-                <div className="col-sm-1">Taken</div>
+                <div className="col-sm-8">Naam</div>
+                <div className="col-sm-4">Type</div>
             </div>
             {
-                props.campaigns.length > 0 ?
-                    props.campaigns.map(campaign => {
-                        return <ContactDetailsCampaignItem
-                            key={campaign.id}
-                            campaign={campaign}
+                props.visibleGroups.length > 0 ?
+                    props.visibleGroups.map(group => {
+                        return <ContactDetailsGroupItem
+                            key={group.id}
+                            group={group}
                         />;
                     })
                     :
-                    <div>Geen campagnes bekend.</div>
+                    <div>Geen groepen bekend.</div>
             }
         </div>
     );
@@ -30,7 +27,7 @@ const ContactDetailsGroupsList = props => {
 
 const mapStateToProps = (state) => {
     return {
-        campaigns: state.contactDetails.organisation.campaigns,
+        visibleGroups: state.contactDetails.visibleGroups,
     };
 };
 export default connect(mapStateToProps)(ContactDetailsGroupsList);

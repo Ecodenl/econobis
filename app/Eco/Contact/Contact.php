@@ -295,7 +295,7 @@ class Contact extends Model
 
         $allGroups = $staticGroups->merge($dynamicGroupsForContact);
 
-        return GridContactGroup::collection($allGroups);
+        return GridContactGroup::collection($allGroups->sortByDesc('name')->values());
 
     }
 }

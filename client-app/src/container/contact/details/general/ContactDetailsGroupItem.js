@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 
-import ContactDetailsCampaignView from './ContactDetailsCampaignView';
+import ContactDetailsGroupView from './ContactDetailsGroupView';
 
 class ContactDetailsGroupItem extends Component {
     constructor(props) {
@@ -8,24 +8,21 @@ class ContactDetailsGroupItem extends Component {
 
         this.state = {
             highlightLine: '',
-            showEdit: false,
 
-            campaign: {
-                ...props.campaign,
+            group: {
+                ...props.group,
             },
         };
     };
 
     onLineEnter = () => {
         this.setState({
-            showActionButtons: true,
             highlightLine: 'highlight-line',
         });
     };
 
     onLineLeave = () => {
         this.setState({
-            showActionButtons: false,
             highlightLine: '',
         });
     };
@@ -33,11 +30,11 @@ class ContactDetailsGroupItem extends Component {
     render() {
         return (
             <div>
-                <ContactDetailsCampaignView
+                <ContactDetailsGroupView
                     highlightLine={this.state.highlightLine}
                     onLineEnter={this.onLineEnter}
                     onLineLeave={this.onLineLeave}
-                    campaign={this.state.campaign}
+                    group={this.state.group}
                 />
             </div>
         );

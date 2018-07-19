@@ -7,6 +7,7 @@ import ContactDetailsFormPersonalEdit from './ContactDetailsFormPersonalEdit';
 import ContactDetailsFormPersonalView from './ContactDetailsFormPersonalView';
 import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
+import ContactDetailsGroups from "./ContactDetailsGroups";
 
 class ContactDetailsFormGeneral extends Component {
     constructor(props) {
@@ -70,6 +71,7 @@ class ContactDetailsFormGeneral extends Component {
                     }
                         </div>
                         <div className={'col-xs-6'}>
+                            <ContactDetailsGroups/>
                         </div>
                     </div>
                 </PanelBody>

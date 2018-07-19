@@ -10,6 +10,7 @@ namespace App\Http\RequestQueries\Contact\Grid;
 
 
 use App\Helpers\RequestQuery\RequestJoiner;
+use Carbon\Carbon;
 
 class Joiner extends RequestJoiner
 {
@@ -65,6 +66,26 @@ class Joiner extends RequestJoiner
         $query->leftJoin('opportunities', function ($join) {
             $join->on('opportunities.intake_id', '=',
                 'intakes.id');
+        });
+    }
+
+    protected function applyOrderProductJoin($query)
+    {
+        $query->leftJoin('orders', function ($join) {
+            $join->on('orders.contact_id', '=',
+                'contacts.id')->where('orders.status_id', 'active');
+        });
+        $query->leftJoin('order_product', function ($join) {
+            $join->on('order_product.order_id', '=',
+                'orders.id')
+                ->where('order_product.date_start', '<=', Carbon::today()->format('Y-m-d'))
+                ->where(function ($q) {
+                    $q->where(function ($q) {
+                        $q->where('order_product.date_end', '>=', Carbon::today()->format('Y-m-d'));
+                    })->orWhere(function ($q) {
+                        $q->whereNull('order_product.date_end');
+                    });});
+
         });
     }
 

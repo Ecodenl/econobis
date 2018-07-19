@@ -98,6 +98,11 @@ class ContactsListExtraFilters extends Component {
                 'type': 'dropdownHas',
                 'dropDownOptions': this.props.measureCategories
             },
+            'product': {
+                'name': 'Product',
+                'type': 'dropdownHas',
+                'dropDownOptions': this.props.products
+            },
         };
 
         let filters = [];
@@ -141,6 +146,7 @@ const mapStateToProps = (state) => {
         contactStatuses: state.systemData.contactStatuses,
         occupations: state.systemData.occupations,
         measureCategories: state.systemData.measureCategories,
+        products: state.systemData.products,
     };
 };
 

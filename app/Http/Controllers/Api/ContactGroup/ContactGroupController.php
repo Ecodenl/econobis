@@ -33,7 +33,7 @@ class ContactGroupController extends Controller
 
     public function peek()
     {
-        return ContactGroupPeek::collection(ContactGroup::orderBy('name')->where('type_id', 'static')->get());
+        return ContactGroupPeek::collection(ContactGroup::orderBy('name')->get());
     }
 
     public function show(ContactGroup $contactGroup)
@@ -42,7 +42,7 @@ class ContactGroupController extends Controller
         return FullContactGroup::make($contactGroup);
     }
 
-    public function store(RequestInput $requestInput)
+    public function store(Request $request, RequestInput $requestInput)
     {
         $this->authorize('create', ContactGroup::class);
 
@@ -60,11 +60,20 @@ class ContactGroupController extends Controller
             ->boolean('showContactForm')->validate('boolean')->alias('show_contact_form')->whenMissing(false)->next()
             ->get();
 
-        //todo
-        $data['type_id'] = 'static';
+        $contactGroupIds = explode(',', $request->contactGroupIds);
+
+        if ($contactGroupIds[0] == '') {
+            $contactGroupIds = [];
+            $data['type_id'] = 'static';
+        }
+        else{
+            $data['type_id'] = 'composed';
+        }
 
         $contactGroup = new ContactGroup($data);
         $contactGroup->save();
+
+        $contactGroup->contactGroups()->sync($contactGroupIds);
 
         return FullContactGroup::make($contactGroup->fresh());
     }
@@ -110,12 +119,7 @@ class ContactGroupController extends Controller
 
     public function gridContacts(ContactGroup $contactGroup)
     {
-        if($contactGroup->type_id === 'static') {
-            return GridContact::collection($contactGroup->contacts);
-        }
-        else if($contactGroup->type_id === 'dynamic'){
-            return GridContact::collection($contactGroup->dynamic_contacts->get());
-        }
+        return GridContact::collection($contactGroup->all_contacts);
     }
 
     public function addContact(ContactGroup $contactGroup, Contact $contact)

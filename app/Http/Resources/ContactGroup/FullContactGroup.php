@@ -18,19 +18,10 @@ class FullContactGroup extends Resource
      */
     public function toArray($request)
     {
-
-        if($this->type_id === 'static'){
-            $contacts = FullContact::collection($this->whenLoaded('contacts'));
-            $numberOfContacts = $this->contacts()->count();
-        }
-        else if($this->type_id === 'dynamic'){
-            $contacts = FullContact::collection($this->dynamic_contacts->get());
-            $numberOfContacts = $this->dynamic_contacts->total();
-        }
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'numberOfContacts' => $numberOfContacts,
+            'numberOfContacts' => $this->all_contacts->count(),
             'closed' => $this->closed,
             'closedStatus' => $this->present()->closedStatus(),
             'description' => $this->description,
@@ -42,7 +33,7 @@ class FullContactGroup extends Resource
             'responsibleUser' => FullUser::make($this->whenLoaded('responsibleUser')),
             'createdAt' => $this->created_at,
             'updatedAt' => $this->updated_at,
-            'contacts' => $contacts,
+            'contacts' => FullContact::collection($this->all_contacts),
             'taskCount' => $this->tasks()->whereNull('deleted_at')->count(),
             'relatedTasks' => GridTask::collection($this->whenLoaded('tasks')),
             'documentCount' => $this->documents()->count(),
@@ -53,6 +44,7 @@ class FullContactGroup extends Resource
             'showContactForm' => $this->show_contact_form,
             'filters' => $this->filters,
             'extraFilters' => $this->extraFilters,
+            'composedGroups' => $this->contactGroups()->get(),
         ];
     }
 }

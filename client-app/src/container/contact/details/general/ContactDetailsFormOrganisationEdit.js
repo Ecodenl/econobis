@@ -78,11 +78,6 @@ class ContactDetailsFormOrganisationEdit extends Component {
             hasErrors = true;
         };
 
-        if(validator.isEmpty(organisation.statusId)){
-            errors.statusId = true;
-            hasErrors = true;
-        };
-
         this.setState({ ...this.state, errors: errors });
 
         !hasErrors &&

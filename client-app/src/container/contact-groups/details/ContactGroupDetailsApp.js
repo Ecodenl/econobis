@@ -9,6 +9,7 @@ import ContactGroupFilters from './filters/ContactGroupFilters';
 import Panel from "../../../components/panel/Panel";
 import PanelBody from "../../../components/panel/PanelBody";
 import ContactGroupsDetailsHarmonica from "./ContactGroupsDetailsHarmonica";
+import ContactGroupComposedGroups from "./composed-groups/ContactGroupComposedGroups";
 
 class ContactGroupDetailsApp extends Component {
     constructor(props){
@@ -40,6 +41,11 @@ class ContactGroupDetailsApp extends Component {
                     {this.props.contactGroupDetails.type && this.props.contactGroupDetails.type.id === 'dynamic' &&
                     <div className="col-md-12">
                         <ContactGroupExtraFilters />
+                    </div>
+                    }
+                    {this.props.contactGroupDetails.type && this.props.contactGroupDetails.type.id === 'composed' &&
+                    <div className="col-md-12">
+                        <ContactGroupComposedGroups />
                     </div>
                     }
                 </div>

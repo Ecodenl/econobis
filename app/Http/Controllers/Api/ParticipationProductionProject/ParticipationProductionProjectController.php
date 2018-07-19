@@ -9,6 +9,7 @@
 namespace App\Http\Controllers\Api\ParticipationProductionProject;
 
 use App\Eco\Contact\Contact;
+use App\Eco\ContactGroup\ContactGroup;
 use App\Eco\Document\Document;
 use App\Eco\DocumentTemplate\DocumentTemplate;
 use App\Eco\EmailTemplate\EmailTemplate;
@@ -116,9 +117,23 @@ class ParticipationProductionProjectController extends ApiController
         $message = [];
 
         if($productionProject->is_membership_required){
-            if(!($contact->status_id == 'member' || $contact->status_id == 'memberYouth')){
-                $contactStatus = FullEnumWithIdAndName::make($contact->getStatus())->name;
-                array_push($message, 'Contact status moet lid of jeugdlid zijn om deel te nemen aan dit project. Contact heeft status ' . $contactStatus . '.');
+            $hasGroup = false;
+
+            foreach($productionProject->requiresContactGroups as $contactGroup) {
+                if ($hasGroup) {
+                    break;
+                }
+                foreach ($contactGroup->all_contacts as $contactGroupContact) {
+                    if ($contactGroupContact->id = $contact->id) {
+                        $hasGroup = true;
+                    }
+                    if ($hasGroup) {
+                        break;
+                    }
+                }
+            }
+            if(!$hasGroup){
+                array_push($message, 'Contact zit niet in de benodigde groep.');
             }
         }
 
@@ -485,7 +500,21 @@ class ParticipationProductionProjectController extends ApiController
     public function peekContactsMembershipRequired(ParticipantProductionProject $participantProductionProject)
     {
         if($participantProductionProject->productionProject->is_membership_required){
-            $contacts = Contact::select('id', 'full_name', 'number')->orderBy('full_name')->whereNull('deleted_at')->whereIn('status_id', ['member', 'memberYouth'])->get();
+            $contacts = Contact::select('id', 'full_name', 'number')->orderBy('full_name')->whereNull('deleted_at')->get();
+
+            $contacts = $contacts->filter(function ($contact) use ($participantProductionProject) {
+                foreach ($participantProductionProject->productionProject->requiresContactGroups as $contactGroup){
+                    foreach ($contactGroup->all_contacts as $contactGroupContact) {
+                        if ($contactGroupContact->id === $contact->id) {
+                            return true;
+                        }
+                    }
+                }
+                return false;
+            });
+
+            //reset keys, because we unshift later on
+            $contacts = $contacts->values();
         }
         else{
             $contacts = Contact::select('id', 'full_name', 'number')->orderBy('full_name')->whereNull('deleted_at')->get();

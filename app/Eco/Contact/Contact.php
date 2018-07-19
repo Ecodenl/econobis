@@ -295,6 +295,20 @@ class Contact extends Model
 
         $allGroups = $staticGroups->merge($dynamicGroupsForContact);
 
+        //samengestelde groepen
+        $composedGroups = ContactGroup::where('show_contact_form', true)->where('type_id', 'composed')->get();
+
+        $composedGroupsForContact = $composedGroups->filter(function ($composedGroup) {
+            foreach ($composedGroup->all_contacts as $composed_contact){
+                if($composed_contact->id === $this->id){
+                    return true;
+                }
+            }
+            return false;
+        });
+
+        $allGroups = $allGroups->merge($composedGroupsForContact);
+
         return GridContactGroup::collection($allGroups->sortByDesc('name')->values());
 
     }

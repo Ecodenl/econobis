@@ -140,6 +140,9 @@ class DeleteHelper
                 $obligationNumber->forceDelete();
             }
 
+            $productionProject->requiresContactGroups()->sync([]);
+
+
             $participant->forceDelete();
         }
     }

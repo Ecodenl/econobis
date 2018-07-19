@@ -11,7 +11,7 @@ const ProductionProjectFormView = props => {
         city, ean, eanManager, warrantyOrigin, eanSupply,
         participationWorth, powerKwAvailable, maxParticipations, taxReferral, maxParticipationsYouth,
         totalParticipations, minParticipations, issuedParticipations, isMembershipRequired, participationsInOption,
-        isParticipationTransferable, issuableParticipations, administration, postalcodeLink} = props.productionProject;
+        isParticipationTransferable, issuableParticipations, administration, postalcodeLink, requiresContactGroups} = props.productionProject;
 
     return (
         <div>
@@ -189,7 +189,14 @@ const ProductionProjectFormView = props => {
                     value={issuableParticipations && issuableParticipations}
                 />
             </div>
-
+            {isMembershipRequired == true &&
+            <div className="row" onClick={props.switchToEdit}>
+                <ViewText
+                    label={"Lidmaatschap groepen"}
+                    value={requiresContactGroups && requiresContactGroups.map((requiresContactGroup) => requiresContactGroup.name).join(', ')}
+                />
+            </div>
+            }
 
         </div>
     );

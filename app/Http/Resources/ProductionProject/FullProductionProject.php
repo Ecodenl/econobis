@@ -78,6 +78,7 @@ class FullProductionProject extends Resource
                 'administrationId' => $this->administration_id,
                 'administration' => FullAdministration::make($this->whenLoaded('administration')),
                 'hasPaymentInvoices' => $this->has_payment_invoices,
+                'requiresContactGroups' => GenericResource::make($this->whenLoaded('requiresContactGroups')),
             ];
     }
 }

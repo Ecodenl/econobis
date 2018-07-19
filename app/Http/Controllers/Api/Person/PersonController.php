@@ -36,9 +36,6 @@ class PersonController extends ApiController
 
         Validator::make($request['person'],
             [
-                'statusId' => new EnumExists(ContactStatus::class),
-                'memberSince' => 'date',
-                'memberUntil' => 'date',
                 'newsletter' => 'boolean',
                 'ownerId' => 'exists:users,id',
                 'didAgreeAvg' => 'boolean',
@@ -52,9 +49,6 @@ class PersonController extends ApiController
             ]);
 
         $contactData = $this->sanitizeData($request['person'], [
-            'statusId' => 'nullable',
-            'memberSince' => 'nullable',
-            'memberUntil' => 'nullable',
             'newsletter' => 'boolean',
             'ownerId' => 'nullable',
             'liable' => 'boolean',
@@ -68,9 +62,6 @@ class PersonController extends ApiController
 
         $contactArray =
             [
-                'status_id' => $contactData['status_id'],
-                'member_since' => $contactData['member_since'],
-                'member_until' => $contactData['member_until'],
                 'newsletter' => $contactData['newsletter'],
                 'owner_id' => $contactData['owner_id'],
                 'did_agree_avg' => $contactData['did_agree_avg'],

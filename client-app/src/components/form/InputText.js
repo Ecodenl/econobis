@@ -2,10 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 const InputText = props => {
-    const { label, type, className, size, id, placeholder, name, value, onChangeAction, required, readOnly, maxLength, error, min, max, errorMessage } = props;
+    const { label, type, className, size, id, placeholder, name, value, onChangeAction, required, readOnly, maxLength, error, min, max, errorMessage, divSize } = props;
 
     return (
-        <div className="form-group col-sm-6">
+        <div className={`form-group ${divSize}`}>
             <label htmlFor={ id } className={`col-sm-6 ${required}`}>{ label }</label>
             <div className={`${size}`}>
                 <input
@@ -34,6 +34,7 @@ const InputText = props => {
 InputText.defaultProps = {
     className: '',
     size: 'col-sm-6',
+    divSize: 'col-sm-6',
     type: 'text',
     value: '',
     required: '',
@@ -50,6 +51,7 @@ InputText.propTypes = {
     type: PropTypes.string,
     className: PropTypes.string,
     size: PropTypes.string,
+    divSize: PropTypes.string,
     id: PropTypes.string,
     placeholder: PropTypes.string,
     name: PropTypes.string.isRequired,

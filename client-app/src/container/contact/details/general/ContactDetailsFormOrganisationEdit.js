@@ -17,7 +17,7 @@ class ContactDetailsFormOrganisationEdit extends Component {
     constructor(props) {
         super(props);
 
-        const { number, organisation, status, iban, ibanAttn, createdAt, memberSince = {}, memberUntil = {}, newsletter, didAgreeAvg } = props.contactDetails;
+        const { number, organisation, iban, ibanAttn, createdAt, newsletter, didAgreeAvg } = props.contactDetails;
 
         this.state = {
             organisation: {
@@ -28,9 +28,6 @@ class ContactDetailsFormOrganisationEdit extends Component {
                 chamberOfCommerceNumber: organisation.chamberOfCommerceNumber,
                 vatNumber: organisation.vatNumber,
                 industryId: organisation.industryId ? organisation.industryId : '',
-                statusId: status.id,
-                memberSince: memberSince ? moment(memberSince.date).format('Y-MM-DD') : '',
-                memberUntil: memberUntil ? moment(memberUntil.date).format('Y-MM-DD') : '',
                 typeId: organisation.type ? organisation.type.id : '',
                 website: organisation.website,
                 iban: iban,
@@ -57,30 +54,6 @@ class ContactDetailsFormOrganisationEdit extends Component {
             organisation: {
                 ...this.state.organisation,
                 [name]: value
-            },
-        });
-    };
-
-    handleChangeMemberSince = (date) => {
-        const formattedDate = (date ? moment(date).format('Y-MM-DD') : '');
-
-        this.setState({
-            ...this.state,
-            organisation: {
-                ...this.state.organisation,
-                memberSince: formattedDate
-            },
-        });
-    };
-
-    handleChangeMemberUntilDate = (date) => {
-        const formattedDate = (date ? moment(date).format('Y-MM-DD') : '');
-
-        this.setState({
-            ...this.state,
-            organisation: {
-                ...this.state.organisation,
-                memberUntil: formattedDate
             },
         });
     };
@@ -120,19 +93,24 @@ class ContactDetailsFormOrganisationEdit extends Component {
     };
 
     render() {
-        const { number, typeId, statusId, name, chamberOfCommerceNumber, vatNumber, industryId, createdAt, memberSince, memberUntil, newsletter, didAgreeAvg, website, iban, ibanAttn, squareMeters } = this.state.organisation;
+        const { number, typeId, name, chamberOfCommerceNumber, vatNumber, industryId, createdAt, newsletter, didAgreeAvg, website, iban, ibanAttn, squareMeters } = this.state.organisation;
 
         return (
             <form className="form-horizontal col-md-12" onSubmit={this.handleSubmit}>
                 <div className="row">
                     <InputText
                         label={"Contactnummer"}
+                        divSize={'col-xs-12'}
                         name={"number"}
                         value={number}
                         readOnly={ true }
                     />
+                </div>
+
+                <div className="row">
                     <InputText
                         label={"Gemaakt op"}
+                        divSize={'col-xs-12'}
                         name={"createdAt"}
                         value={ moment(createdAt).format('DD-MM-Y')  }
                         readOnly={ true }
@@ -142,66 +120,61 @@ class ContactDetailsFormOrganisationEdit extends Component {
                 <div className="row">
                     <InputText
                         label="Naam"
+                        divSize={'col-xs-12'}
                         name={"name"}
                         value={name}
                         onChangeAction={this.handleInputChange}
                         required={"required"}
                         error={this.state.errors.name}
                     />
-                    <InputSelect
+                </div>
+
+                <div className="row">
+                    <InputText
                         label={"Status"}
-                        size={"col-sm-6"}
-                        name={"statusId"}
-                        options={this.props.contactStatuses}
-                        value={statusId}
-                        onChangeAction={this.handleInputChange}
-                        required={"required"}
-                        error={this.state.errors.statusId}
+                        divSize={'col-xs-12'}
+                        id={"status"}
+                        name={"status"}
+                        value={this.props.contactDetails.status ? this.props.contactDetails.status.name : ''}
+                        readOnly={true}
                     />
                 </div>
 
                 <div className="row">
                     <InputText
                         label="KvK"
-                        size={"col-sm-6"}
+                        divSize={'col-xs-12'}
                         name="chamberOfCommerceNumber"
                         value={chamberOfCommerceNumber}
                         onChangeAction={this.handleInputChange}
-                    />
-                    <InputDate
-                        label={"Lid sinds"}
-                        name="memberSince"
-                        value={ memberSince }
-                        onChangeAction={this.handleChangeMemberSince}
                     />
                 </div>
 
                 <div className="row">
                     <InputText
                         label="Btw nummer"
+                        divSize={'col-xs-12'}
                         name="vatNumber"
                         value={vatNumber}
                         onChangeAction={this.handleInputChange}
-                    />
-                    <InputDate
-                        label={"Opzegdatum"}
-                        size={"col-sm-6"}
-                        name={"memberUntil"}
-                        value={ memberUntil }
-                        onChangeAction={this.handleChangeMemberUntilDate}
                     />
                 </div>
 
                 <div className="row">
                     <InputText
                         label="IBAN"
+                        divSize={'col-xs-12'}
                         name="iban"
                         value={iban}
                         onChangeAction={this.handleInputChange}
                         error={this.state.errors.iban}
                     />
+                </div>
+
+                <div className="row">
                     <InputText
                         label="IBAN t.n.v."
+                        divSize={'col-xs-12'}
                         name="ibanAttn"
                         value={ibanAttn}
                         onChangeAction={this.handleInputChange}
@@ -211,13 +184,17 @@ class ContactDetailsFormOrganisationEdit extends Component {
                 <div className="row">
                     <InputText
                         label={"Website"}
+                        divSize={'col-xs-12'}
                         name={"website"}
                         value={website}
                         onChangeAction={this.handleInputChange}
                     />
+                </div>
+
+                <div className="row">
                     <InputSelect
                         label={"Industrie"}
-                        size={"col-sm-6"}
+                        size={"col-xs-12"}
                         name={"industryId"}
                         options={this.props.industries}
                         value={industryId}
@@ -228,14 +205,18 @@ class ContactDetailsFormOrganisationEdit extends Component {
                 <div className="row">
                     <InputSelect
                         label={"Soort contact"}
-                        size={"col-sm-6"}
+                        size={"col-xs-12"}
                         name={"typeId"}
                         options={this.props.organisationTypes}
                         value={typeId}
                         onChangeAction={this.handleInputChange}
                     />
+                </div>
+
+                <div className="row">
                     <InputText
                         label="Oppervlakte"
+                        divSize={'col-xs-12'}
                         name="squareMeters"
                         value={squareMeters}
                         onChangeAction={this.handleInputChange}
@@ -245,12 +226,17 @@ class ContactDetailsFormOrganisationEdit extends Component {
                 <div className="row">
                     <InputToggle
                         label={"Nieuwsbrief"}
+                        divSize={'col-xs-12'}
                         name={"newsletter"}
                         value={newsletter}
                         onChangeAction={this.handleInputChange}
                     />
+                </div>
+
+                <div className="row">
                     <InputToggle
                         label="Akkoord privacybeleid"
+                        divSize={'col-xs-12'}
                         name="didAgreeAvg"
                         value={didAgreeAvg}
                         onChangeAction={this.handleInputChange}

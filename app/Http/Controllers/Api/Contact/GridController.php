@@ -50,26 +50,29 @@ class GridController extends Controller
         $contactGroup->description = 'Dynamisch aangemaakte groep';
         $contactGroup->save();
 
-        foreach ($filters as $filter) {
-            $dynamicFilter = new DynamicContactGroupFilter();
-            $dynamicFilter->contact_group_id = $contactGroup->id;
-            $dynamicFilter->field = $filter->field;
-            $dynamicFilter->comperator = '';
-            $dynamicFilter->data = $filter->data;
-            $dynamicFilter->type = 'filter';
-            $dynamicFilter->save();
+        if($filters) {
+            foreach ($filters as $filter) {
+                $dynamicFilter = new DynamicContactGroupFilter();
+                $dynamicFilter->contact_group_id = $contactGroup->id;
+                $dynamicFilter->field = $filter->field;
+                $dynamicFilter->comperator = '';
+                $dynamicFilter->data = $filter->data;
+                $dynamicFilter->type = 'filter';
+                $dynamicFilter->save();
+            }
         }
 
-        foreach ($extraFilters as $extraFilter) {
-            $dynamicFilter = new DynamicContactGroupFilter();
-            $dynamicFilter->contact_group_id = $contactGroup->id;
-            $dynamicFilter->field = $extraFilter->field;
-            $dynamicFilter->comperator = $extraFilter->type;
-            $dynamicFilter->data = $extraFilter->data;
-            $dynamicFilter->type = 'extraFilter';
-            $dynamicFilter->save();
+        if($extraFilters) {
+            foreach ($extraFilters as $extraFilter) {
+                $dynamicFilter = new DynamicContactGroupFilter();
+                $dynamicFilter->contact_group_id = $contactGroup->id;
+                $dynamicFilter->field = $extraFilter->field;
+                $dynamicFilter->comperator = $extraFilter->type;
+                $dynamicFilter->data = $extraFilter->data;
+                $dynamicFilter->type = 'extraFilter';
+                $dynamicFilter->save();
+            }
         }
-
         return FullContactGroup::make($contactGroup);
     }
 

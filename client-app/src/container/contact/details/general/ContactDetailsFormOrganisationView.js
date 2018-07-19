@@ -5,16 +5,21 @@ import moment from 'moment';
 import ViewText from '../../../../components/form/ViewText';
 
 const ContactDetailsFormOrganisationView = props => {
-    const {number, organisation, status, iban, ibanAttn, createdAt, memberSince, memberUntil, newsletter, didAgreeAvg} = props.contactDetails;
+    const {number, organisation, status, iban, ibanAttn, createdAt, newsletter, didAgreeAvg} = props.contactDetails;
 
     return (
         <div onClick={props.switchToEdit}>
             <div className="row">
                 <ViewText
+                    className={'col-xs-12'}
                     label={"Contactnummer"}
                     value={ number }
                 />
+            </div>
+
+            <div className="row">
                 <ViewText
+                    className={'col-xs-12'}
                     label={"Gemaakt op"}
                     value={ createdAt && moment(createdAt.date).format('DD-MM-Y') }
                 />
@@ -22,10 +27,15 @@ const ContactDetailsFormOrganisationView = props => {
 
             <div className="row">
                 <ViewText
+                    className={'col-xs-12'}
                     label="Naam"
                     value={ organisation.name }
                 />
+            </div>
+
+            <div className="row">
                 <ViewText
+                    className={'col-xs-12'}
                     label="Status"
                     value={ status && status.name }
                 />
@@ -33,32 +43,31 @@ const ContactDetailsFormOrganisationView = props => {
 
             <div className="row">
                 <ViewText
+                    className={'col-xs-12'}
                     label="KvK"
                     value={ organisation.chamberOfCommerceNumber }
                 />
-                <ViewText
-                    label={"Lid sinds"}
-                    value={ memberSince && moment(memberSince.date).format('DD-MM-Y') }
-                />
             </div>
 
             <div className="row">
                 <ViewText
+                    className={'col-xs-12'}
                     label="Btw nummer"
                     value={ organisation.vatNumber }
                 />
+            </div>
+
+            <div className="row">
                 <ViewText
-                    label={"Opzegdatum"}
-                    value={ memberUntil && moment(memberUntil.date).format('DD-MM-Y') }
+                    className={'col-xs-12'}
+                    label="IBAN"
+                    value={ iban }
                 />
             </div>
 
             <div className="row">
                 <ViewText
-                    label="IBAN"
-                    value={ iban }
-                />
-                <ViewText
+                    className={'col-xs-12'}
                     label="IBAN t.n.v."
                     value={ ibanAttn }
                 />
@@ -66,10 +75,15 @@ const ContactDetailsFormOrganisationView = props => {
 
             <div className="row">
                 <ViewText
+                    className={'col-xs-12'}
                     label="Website"
                     value={ organisation.website}
                 />
+            </div>
+
+            <div className="row">
                 <ViewText
+                    className={'col-xs-12'}
                     label="Industrie"
                     value={ organisation.industry && organisation.industry.name }
                 />
@@ -77,10 +91,15 @@ const ContactDetailsFormOrganisationView = props => {
 
             <div className="row">
                 <ViewText
+                    className={'col-xs-12'}
                     label="Soort contact"
                     value={ organisation.type && organisation.type.name }
                 />
+            </div>
+
+            <div className="row">
                 <ViewText
+                    className={'col-xs-12'}
                     label="Oppervlakte dak"
                     value={ organisation.squareMeters }
                 />
@@ -88,10 +107,15 @@ const ContactDetailsFormOrganisationView = props => {
 
             <div className="row">
                 <ViewText
+                    className={'col-xs-12'}
                     label="Nieuwsbrief"
                     value={ (newsletter ? 'Ja' : 'Nee') }
                 />
+            </div>
+
+            <div className="row">
                 <ViewText
+                    className={'col-xs-12'}
                     label="Akkoord privacybeleid"
                     value={(didAgreeAvg ? 'Ja' : 'Nee')}
                 />

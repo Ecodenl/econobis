@@ -23,6 +23,7 @@ use App\Eco\Person\Person;
 use App\Eco\PhoneNumber\PhoneNumber;
 use App\Eco\Task\Task;
 use App\Eco\User\User;
+use App\Http\Resources\ContactGroup\GridContactGroup;
 use App\Http\Traits\Encryptable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -48,6 +49,10 @@ class Contact extends Model
 
     protected $encryptable = [
       'iban'
+    ];
+
+    protected $appends = [
+      'visible_groups'
     ];
 
     //Dont boot softdelete scopes. We handle this ourselves
@@ -269,5 +274,28 @@ class Contact extends Model
         }
 
         return null;
+    }
+
+    public function getVisibleGroupsAttribute(){
+
+        //statische groepen
+        $staticGroups = $this->groups()->where('show_contact_form', true)->get();
+
+        //dynamische groepen
+        $dynamicGroups = ContactGroup::where('show_contact_form', true)->where('type_id', 'dynamic')->get();
+
+        $dynamicGroupsForContact = $dynamicGroups->filter(function ($dynamicGroup) {
+            foreach ($dynamicGroup->dynamic_contacts->get() as $dynamic_contact){
+                if($dynamic_contact->id === $this->id){
+                    return true;
+                }
+            }
+            return false;
+        });
+
+        $allGroups = $staticGroups->merge($dynamicGroupsForContact);
+
+        return GridContactGroup::collection($allGroups);
+
     }
 }

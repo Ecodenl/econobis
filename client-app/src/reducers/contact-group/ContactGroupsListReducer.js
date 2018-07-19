@@ -1,6 +1,4 @@
 export default function (state= { isLoading: false }, action) {
-    console.log(state);
-    console.log(action);
     switch (action.type) {
     case 'FETCH_CONTACT_GROUPS_LOADING':
         return {

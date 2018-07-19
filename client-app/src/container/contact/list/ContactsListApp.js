@@ -87,7 +87,7 @@ class ContactsListApp extends Component {
         const extraFilters = this.state.extraFilters;
         const filters = filterHelper(this.props.contactsFilters);
         ContactsAPI.saveAsGroup({filters, extraFilters}).then((payload) => {
-            // hashHistory.push(`/contacten-in-groep/${payload.id}`);
+            hashHistory.push(`/contacten-in-groep/${payload.data.data.id}`);
         });
     };
 

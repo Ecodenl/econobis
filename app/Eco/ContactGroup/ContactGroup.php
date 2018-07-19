@@ -34,7 +34,9 @@ class ContactGroup extends Model
         'updated_at',
     ];
 
-    protected $appends = ['dynamic_contacts'];
+    protected $appends = [
+        'dynamic_contacts'
+    ];
 
     public function contacts()
     {

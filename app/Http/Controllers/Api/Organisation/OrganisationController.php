@@ -20,9 +20,6 @@ class OrganisationController extends ApiController
         $this->authorize('create', Organisation::class);
 
         $contactData = $request->validate([
-            'statusId' => new EnumExists(ContactStatus::class),
-            'memberSince' => 'date',
-            'memberUntil' => 'date',
             'newsletter' => 'boolean',
             'iban' => '',
             'ibanAttn' => '',
@@ -43,10 +40,7 @@ class OrganisationController extends ApiController
         ]);
 
         $contactData = $this->sanitizeData($contactData, [
-            'statusId' => 'nullable',
             'ownerId' => 'nullable',
-            'memberSince' => 'nullable',
-            'memberUntil' => 'nullable',
             'newsletter' => 'boolean',
             'liable' => 'boolean',
         ]);
@@ -75,9 +69,6 @@ class OrganisationController extends ApiController
         $this->authorize('update', $organisation);
 
         $contactData = $request->validate([
-            'statusId' => new EnumExists(ContactStatus::class),
-            'memberSince' => 'date',
-            'memberUntil' => 'date',
             'newsletter' => 'boolean',
             'iban' => '',
             'ibanAttn' => '',
@@ -97,10 +88,7 @@ class OrganisationController extends ApiController
         ]);
 
         $contactData = $this->sanitizeData($contactData, [
-            'statusId' => 'nullable',
             'ownerId' => 'nullable',
-            'memberSince' => 'nullable',
-            'memberUntil' => 'nullable',
             'newsletter' => 'boolean',
             'liable' => 'boolean',
         ]);

@@ -35,7 +35,7 @@ class ContactGroupsListItem extends Component {
     }
 
     render() {
-        const { id, name, numberOfContacts, closedStatus, permissions, type } = this.props;
+        const { id, name, numberOfContacts, closedStatus, permissions, type, isUsedInComposedGroup } = this.props;
 
         return (
           <tr className={this.state.highlightRow} onDoubleClick={() => this.openItem(id)} onMouseEnter={() => this.onRowEnter()} onMouseLeave={() => this.onRowLeave()}>
@@ -45,7 +45,7 @@ class ContactGroupsListItem extends Component {
               <td>{ type ? type.name : '' }</td>
               <td>
                   {(this.state.showActionButtons && permissions.manageGroup ? <a role="button" onClick={() => this.openItem(id)}><span className="glyphicon glyphicon-pencil mybtn-success" /> </a> : '')}
-                  {(this.state.showActionButtons && permissions.manageGroup ? <a role="button" onClick={this.props.showDeleteItemModal.bind(this, id, name)}><span className="glyphicon glyphicon-trash mybtn-danger"  /> </a> : '')}
+                  {(this.state.showActionButtons && permissions.manageGroup && !isUsedInComposedGroup ? <a role="button" onClick={this.props.showDeleteItemModal.bind(this, id, name)}><span className="glyphicon glyphicon-trash mybtn-danger"  /> </a> : '')}
               </td>
             </tr>
         );

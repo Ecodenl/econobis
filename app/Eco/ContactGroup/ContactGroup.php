@@ -40,8 +40,12 @@ class ContactGroup extends Model
         = [
             'dynamic_contacts',
             'composed_contacts',
-            'all_contacts'
+            'all_contacts',
+            'is_used_in_composed_group'
         ];
+
+    //gebruikt om infinite loop te checken bij samengestelde groepen
+    private $hasComposedIds = [];
 
     public function contacts()
     {
@@ -127,14 +131,21 @@ class ContactGroup extends Model
     public function getComposedContactsAttribute()
     {
         $contacts = null;
-        $first = true;
+
         foreach ($this->contactGroups as $contactGroup) {
-            if($first){
+
+            //als id al is geweest, sneller en tegen infinite loop
+            if(in_array($contactGroup->id, $this->hasComposedIds)){
+                continue;
+            }
+
+            if($contacts === null){
                 $contacts = $contactGroup->getAllContacts();
-                $first = false;
+                array_push($this->hasComposedIds, $contactGroup->id);
             }
             else{
                 $contacts = $contacts->merge($contactGroup->getAllContacts());
+                array_push($this->hasComposedIds, $contactGroup->id);
             }
         }
 
@@ -143,9 +154,14 @@ class ContactGroup extends Model
 
     public function getAllContactsAttribute()
     {
+        //gebruikt om infinite loop te checken bij samengestelde groepen
+        array_push($this->hasComposedIds, $this->id);
+
         $contacts = $this->getAllContacts();
 
-        return $contacts->unique('id')->values();
+        $this->hasComposedIds = [];
+
+        return $contacts ? $contacts->unique('id')->values() : false;
     }
 
     public function getAllContacts()
@@ -156,6 +172,20 @@ class ContactGroup extends Model
             return $this->dynamic_contacts->get();
         } elseif ($this->type_id === 'composed') {
             return $this->composed_contacts;
+        }
+
+        return false;
+    }
+
+    public function getIsUsedInComposedGroupAttribute(){
+        $composedGroups = ContactGroup::where('type_id', 'composed')->get();
+
+        foreach ($composedGroups as $composedGroup){
+            foreach ($composedGroup->contactGroups as $contactGroup){
+                if($this->id === $contactGroup->id){
+                    return true;
+                }
+            }
         }
 
         return false;

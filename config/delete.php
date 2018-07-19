@@ -23,6 +23,7 @@ return [
         'soft_delete' => false,
         'relations' =>
             [['remove_pivots' => 'contacts'],
+            ['remove_pivots' => 'contactGroups'],
             ['remove' => 'filters'],
             ['remove' => 'extraFilters'],
             ['dissociate' => ['relation' => 'documents', 'foreign_key' => 'contact_group_id']],

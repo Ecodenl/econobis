@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Api\ContactGroup;
 
 use App\Eco\Contact\Contact;
 use App\Eco\ContactGroup\ContactGroup;
-use App\Eco\Task\Jobs\DeleteTask;
 use App\Helpers\Delete\DeleteHelper;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\RequestQueries\ContactGroup\Grid\RequestQuery;

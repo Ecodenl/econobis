@@ -26,6 +26,7 @@ return [
             ['remove_pivots' => 'contactGroups'],
             ['remove' => 'filters'],
             ['remove' => 'extraFilters'],
+            ['delete_recursive' => 'emails'],
             ['dissociate' => ['relation' => 'documents', 'foreign_key' => 'contact_group_id']],
             ['dissociate' => ['relation' => 'tasks', 'foreign_key' => 'contact_group_id']]],
     ],
@@ -34,7 +35,9 @@ return [
         'soft_delete' => false,
         'relations' =>
             [['remove_attachments' => ['disk' => 'mail_attachments']],
-                ['remove_pivots' => 'contacts']]
+                ['remove_pivots' => 'contacts'],
+                ['remove_pivots' => 'groupEmailAddresses'],
+            ]
     ],
 
     'Task' => [

@@ -4,6 +4,7 @@ namespace App\Eco\ContactGroup;
 
 use App\Eco\Contact\Contact;
 use App\Eco\Document\Document;
+use App\Eco\Email\Email;
 use App\Eco\Task\Task;
 use App\Eco\User\User;
 use App\Http\RequestQueries\Contact\Grid\ExtraFilter;
@@ -99,6 +100,11 @@ class ContactGroup extends Model
         return $this->belongsToMany(ContactGroup::class, 'composed_contact_group', 'parent_group_id', 'group_id');
     }
 
+    public function emails()
+    {
+        return $this->hasMany(Email::class);
+    }
+
     public function getDynamicContactsAttribute()
     {
         $filters = $this->filters;
@@ -177,6 +183,7 @@ class ContactGroup extends Model
         return false;
     }
 
+    //prevents deleting in grid
     public function getIsUsedInComposedGroupAttribute(){
         $composedGroups = ContactGroup::where('type_id', 'composed')->get();
 

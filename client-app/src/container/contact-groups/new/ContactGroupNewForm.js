@@ -10,6 +10,7 @@ import InputText from '../../../components/form/InputText';
 import InputDate from '../../../components/form/InputDate';
 import ButtonText from '../../../components/button/ButtonText';
 import InputToggle from "../../../components/form/InputToggle";
+import InputMultiSelect from "../../../components/form/InputMultiSelect";
 
 class ContactGroupNewForm extends Component {
     constructor(props) {
@@ -17,6 +18,7 @@ class ContactGroupNewForm extends Component {
 
         this.state = {
             contactsWithPermission: [],
+            contactGroups: [],
             contactGroup: {
                 id: '',
                 name: '',
@@ -25,6 +27,10 @@ class ContactGroupNewForm extends Component {
                 responsibleUserId: '',
                 dateStarted: '',
                 dateFinished: '',
+                showContactForm: false,
+                showPortal: false,
+                editPortal: false,
+                contactGroupIds: ''
             },
             errors: {
                 name: false,
@@ -37,6 +43,10 @@ class ContactGroupNewForm extends Component {
 
         UsersAPI.fetchUsersWithPermission(permissions.find((permission) => permission.name === 'manage_group').id).then((payload) => {
             this.setState({ contactsWithPermission: payload });
+        });
+
+        ContactGroupAPI.peekContactGroups().then((payload) => {
+            this.setState({contactGroups: payload});
         });
     };
 
@@ -101,8 +111,18 @@ class ContactGroupNewForm extends Component {
         });
     };
 
+    handleContactGroupIds = (selectedOption) => {
+        this.setState({
+            ...this.state,
+            contactGroup: {
+                ...this.state.contactGroup,
+                contactGroupIds: selectedOption
+            },
+        });
+    };
+
     render() {
-        const { name, description, responsibleUserId, closed, dateStarted, dateFinished } = this.state.contactGroup;
+        const { name, description, responsibleUserId, closed, dateStarted, dateFinished, showPortal, editPortal, showContactForm, contactGroupIds } = this.state.contactGroup;
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -170,6 +190,30 @@ class ContactGroupNewForm extends Component {
                 </div>
 
                 <div className="row">
+                    <InputToggle
+                        label={"Zichtbaar op portaal"}
+                        name={"showPortal"}
+                        value={showPortal}
+                        onChangeAction={this.handleInputChange}
+                    />
+                    <InputToggle
+                        label={"Veranderen op portaal"}
+                        name={"editPortal"}
+                        value={editPortal}
+                        onChangeAction={this.handleInputChange}
+                    />
+                </div>
+
+                <div className="row">
+                    <InputToggle
+                        label={"Zichtbaar bij contact"}
+                        name={"showContactForm"}
+                        value={showContactForm}
+                        onChangeAction={this.handleInputChange}
+                    />
+                </div>
+
+                <div className="row">
                     <InputText
                         label={"Gemaakt op"}
                         name={"createdAt"}
@@ -181,6 +225,16 @@ class ContactGroupNewForm extends Component {
                         name={"createdBy"}
                         value={ this.props.meDetails.fullName}
                         readOnly={true}
+                    />
+                </div>
+
+                <div className={'row'}>
+                    <InputMultiSelect
+                        label={"Samengesteld uit"}
+                        name={"contactGroupsIds"}
+                        options={this.state.contactGroups}
+                        value={contactGroupIds}
+                        onChangeAction={this.handleContactGroupIds}
                     />
                 </div>
 

@@ -11,17 +11,15 @@ namespace App\Http\Controllers\Api\ProductionProject;
 use App\Eco\Contact\ContactStatus;
 use App\Eco\Email\Email;
 use App\Eco\ParticipantProductionProject\ParticipantProductionProjectStatus;
-use App\Eco\Product\ProductInvoiceFrequency;
 use App\Eco\ProductionProject\ProductionProject;
-use App\Eco\ProductionProject\ProductionProjectStatus;
 use App\Helpers\Delete\DeleteHelper;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\RequestQueries\ProductionProject\Grid\RequestQuery;
-use App\Http\Resources\GenericResource;
 use App\Http\Resources\ProductionProject\FullProductionProject;
 use App\Http\Resources\ProductionProject\GridProductionProject;
 use App\Http\Resources\ProductionProject\ProductionProjectPeek;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class ProductionProjectController extends ApiController
@@ -53,6 +51,7 @@ class ProductionProjectController extends ApiController
             'tasks',
             'documents',
             'administration',
+            'requiresContactGroups',
         ]);
 
         $productionProject->relatedEmailsInbox = $this->getRelatedEmails($productionProject->id, 'inbox');
@@ -61,7 +60,7 @@ class ProductionProjectController extends ApiController
         return FullProductionProject::make($productionProject);
     }
 
-    public function store(RequestInput $requestInput)
+    public function store(Request $request, RequestInput $requestInput)
     {
 
         $this->authorize('manage', ProductionProject::class);
@@ -103,11 +102,19 @@ class ProductionProjectController extends ApiController
 
         $productionProject->save();
 
+        $contactGroupIds = explode(',', $request->contactGroupIds);
+
+        if ($contactGroupIds[0] == '') {
+            $contactGroupIds = [];
+        }
+
+        $productionProject->requiresContactGroups()->sync($contactGroupIds);
+
         return $this->show($productionProject);
     }
 
 
-    public function update(RequestInput $requestInput, ProductionProject $productionProject)
+    public function update(Request $request, RequestInput $requestInput, ProductionProject $productionProject)
     {
         $this->authorize('manage', ProductionProject::class);
 
@@ -145,6 +152,14 @@ class ProductionProjectController extends ApiController
         $productionProject->fill($data);
 
         $productionProject->save();
+
+        $contactGroupIds = explode(',', $request->contactGroupIds);
+
+        if ($contactGroupIds[0] == '') {
+            $contactGroupIds = [];
+        }
+
+        $productionProject->requiresContactGroups()->sync($contactGroupIds);
 
         return $this->show($productionProject);
     }

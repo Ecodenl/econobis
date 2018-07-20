@@ -14,6 +14,8 @@ import ContactsListToolbar from './ContactsListToolbar';
 import filterHelper from '../../../helpers/FilterHelper';
 import ContactsAPI from '../../../api/contact/ContactsAPI';
 import fileDownload from "js-file-download";
+import {hashHistory} from "react-router";
+import ContactsListSaveAsGroup from "./ContactsListSaveAsGroup";
 
 class ContactsListApp extends Component {
     constructor(props) {
@@ -32,6 +34,7 @@ class ContactsListApp extends Component {
         this.state = {
             showCheckboxList: false,
             checkedAllCheckboxes: false,
+            showSaveAsGroup: false,
         };
 
         this.handlePageClick = this.handlePageClick.bind(this);
@@ -78,6 +81,20 @@ class ContactsListApp extends Component {
 
             this.props.fetchContacts(filters, extraFilters, sorts, pagination);
         },100 );
+    };
+
+    saveAsGroup = () => {
+        const extraFilters = this.state.extraFilters;
+        const filters = filterHelper(this.props.contactsFilters);
+        ContactsAPI.saveAsGroup({filters, extraFilters}).then((payload) => {
+            hashHistory.push(`/contacten-in-groep/${payload.data.data.id}`);
+        });
+    };
+
+    toggleSaveAsGroup = () => {
+        this.setState({
+            showSaveAsGroup: !this.state.showSaveAsGroup
+        });
     };
 
     getCSV = () => {
@@ -162,6 +179,7 @@ class ContactsListApp extends Component {
                                 extraFilters={this.state.extraFilters}
                                 amountOfFilters={this.state.amountOfFilters}
                                 getCSV={this.getCSV}
+                                toggleSaveAsGroup={this.toggleSaveAsGroup}
                             />
                         </div>
 
@@ -179,6 +197,12 @@ class ContactsListApp extends Component {
                         </div>
                     </div>
                 </div>
+                {this.state.showSaveAsGroup &&
+                <ContactsListSaveAsGroup
+                 saveAsGroup={this.saveAsGroup}
+                 closeDeleteItemModal={this.toggleSaveAsGroup}
+                />
+                }
             </div>
         )
     }

@@ -342,7 +342,7 @@ class ContactNewFormPersonal extends Component {
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
                 <div className="row">
                     <InputText
-                        label={"Klantnummer"}
+                        label={"Contactnummer"}
                         name={"number"}
                         readOnly={true}
                         value={''}

@@ -10,12 +10,14 @@ import ProductionProjectDetailsAPI from '../../../api/production-project/Product
 import Panel from "../../../components/panel/Panel";
 import PanelBody from "../../../components/panel/PanelBody";
 import {connect} from "react-redux";
+import ContactGroupAPI from "../../../api/contact-group/ContactGroupAPI";
 
 class ProductionProjectNewApp extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
+            contactGroups: [],
             showPostalCodeLinkFields: false,
             productionProject: {
                 name: '',
@@ -46,6 +48,7 @@ class ProductionProjectNewApp extends Component {
                 isMembershipRequired: false,
                 isParticipationTransferable: false,
                 postalcodeLink: '',
+                contactGroupIds: '',
             },
             errors: {
                 name: false,
@@ -56,6 +59,13 @@ class ProductionProjectNewApp extends Component {
         }
         this.handleInputChangeDate = this.handleInputChangeDate.bind(this);
         this.toggleShowPostalCodeLinkFields = this.toggleShowPostalCodeLinkFields.bind(this);
+        this.handleContactGroupIds = this.handleContactGroupIds.bind(this);
+    };
+
+    componentDidMount() {
+        ContactGroupAPI.peekContactGroups().then((payload) => {
+            this.setState({contactGroups: payload});
+        });
     };
 
     handleInputChange = event => {
@@ -122,6 +132,16 @@ class ProductionProjectNewApp extends Component {
         this.setState({showPostalCodeLinkFields: !this.state.showPostalCodeLinkFields});
     };
 
+    handleContactGroupIds = (selectedOption) => {
+        this.setState({
+            ...this.state,
+            productionProject: {
+                ...this.state.productionProject,
+                contactGroupIds: selectedOption
+            },
+        });
+    };
+
     render() {
         return (
             <div className="row">
@@ -136,10 +156,12 @@ class ProductionProjectNewApp extends Component {
                                 <div className="col-md-12">
                                     <ProductionProjectNew
                                         administrations={this.props.administrations}
+                                        contactGroups={this.state.contactGroups}
                                         productionProject={this.state.productionProject}
                                         errors={this.state.errors}
                                         handleInputChange={this.handleInputChange}
                                         handleInputChangeDate={this.handleInputChangeDate}
+                                        handleContactGroupIds={this.handleContactGroupIds}
                                         handleSubmit={this.handleSubmit}
                                         toggleShowPostalCodeLinkFields={this.toggleShowPostalCodeLinkFields}
                                         showPostalCodeLinkFields={this.state.showPostalCodeLinkFields}

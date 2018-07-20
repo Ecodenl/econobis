@@ -8,6 +8,13 @@ export const setFilterContactGroupStatus = (status) => ({
     status,
 });
 
+export const setFilterContactGroupTypeId = (typeId) => ({
+    type: 'SET_FILTER_CONTACT_GROUP_TYPE_ID',
+    typeId,
+});
+
+
+
 export const clearFilterContactGroups = () => ({
     type: 'CLEAR_FILTER_CONTACT_GROUPS',
 });

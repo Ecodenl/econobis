@@ -12,7 +12,7 @@ const createMarkup = (value) => {
 };
 
 const EmailFormView = props => {
-    const {from, responsibleUser, responsibleTeam, to, cc, bcc, contacts, order, invoice, intake, task, quotationRequest, measure, opportunity, subject, htmlBody, createdAt, dateSent, folder, status, closedBy, dateClosed} = props.email;
+    const {from, responsibleUser, responsibleTeam, toWithGroup, cc, bcc, contacts, order, invoice, intake, task, quotationRequest, measure, opportunity, subject, htmlBody, createdAt, dateSent, folder, status, closedBy, dateClosed} = props.email;
 
     return (
         <div>
@@ -29,7 +29,7 @@ const EmailFormView = props => {
             <div className="row" onClick={props.switchToEdit}>
                 <ViewText
                     label={"Aan"}
-                    value={to && to.map((to) => to).join(', ')}
+                    value={toWithGroup && toWithGroup.map((toWithGroup) => toWithGroup).join(', ')}
                 />
                 <ViewText
                     label={"Verzonden datum tijd"}

@@ -24,6 +24,7 @@ class ExtraFilter extends RequestExtraFilter
         'currentParticipations',
         'occupation',
         'opportunity',
+        'product'
     ];
 
     protected $mapping = [
@@ -37,6 +38,7 @@ class ExtraFilter extends RequestExtraFilter
         'postalCodeNumber' => 'address',
         'occupation' => 'occupation',
         'opportunity' => 'opportunity',
+        'product' => 'orderProduct',
     ];
 
     protected function applyPostalCodeNumberFilter($query, $type, $data)
@@ -54,5 +56,10 @@ class ExtraFilter extends RequestExtraFilter
     protected function applyOpportunityFilter($query, $type, $data)
     {
         RequestFilter::applyFilter($query, 'opportunities.measure_category_id', $type, $data);
+    }
+
+    protected function applyProductFilter($query, $type, $data)
+    {
+        RequestFilter::applyFilter($query, 'order_product.product_id', $type, $data);
     }
 }

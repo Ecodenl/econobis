@@ -13,6 +13,11 @@ export default function (state= { isLoading: false }, action) {
             },
             isLoading: false,
         };
+        case 'DELETE_CONTACT_GROUP_SUCCESS':
+            return {
+                ...state,
+                data: state.data.filter((contactGroup) => contactGroup.id !== action.id),
+            };
     case 'CLEAR_CONTACT_GROUPS':
         return {
             ...state,

@@ -14,6 +14,8 @@ import ProductionProjectDetailsAPI from '../../../../api/production-project/Prod
 
 import { fetchProductionProject } from '../../../../actions/production-project/ProductionProjectDetailsActions';
 import InputToggle from "../../../../components/form/InputToggle";
+import ContactGroupAPI from "../../../../api/contact-group/ContactGroupAPI";
+import InputMultiSelect from "../../../../components/form/InputMultiSelect";
 
 class ProductionProjectFormEdit extends Component {
     constructor(props) {
@@ -24,9 +26,10 @@ class ProductionProjectFormEdit extends Component {
             city, ean, eanManager, warrantyOrigin, eanSupply,
             participationWorth, powerKwAvailable, maxParticipations, taxReferral, maxParticipationsYouth,
             totalParticipations, minParticipations, isMembershipRequired,
-            isParticipationTransferable, administrationId, postalcodeLink} = props.productionProject;
+            isParticipationTransferable, administrationId, postalcodeLink, requiresContactGroups} = props.productionProject;
 
         this.state = {
+            contactGroups: [],
             productionProject: {
                 id,
                 name: name,
@@ -57,6 +60,7 @@ class ProductionProjectFormEdit extends Component {
                 isMembershipRequired: !!isMembershipRequired,
                 isParticipationTransferable: !!isParticipationTransferable,
                 postalcodeLink: postalcodeLink ? postalcodeLink: '',
+                contactGroupIds: requiresContactGroups && requiresContactGroups.map((requiresContactGroup) => requiresContactGroup.id).join(','),
             },
             errors: {
                 name: false,
@@ -66,6 +70,12 @@ class ProductionProjectFormEdit extends Component {
             },
         }
         this.handleInputChangeDate = this.handleInputChangeDate.bind(this);
+    };
+
+    componentDidMount() {
+        ContactGroupAPI.peekContactGroups().then((payload) => {
+            this.setState({contactGroups: payload});
+        });
     };
 
     handleInputChange = event => {
@@ -129,13 +139,23 @@ class ProductionProjectFormEdit extends Component {
         });
     };
 
+    handleContactGroupIds = (selectedOption) => {
+        this.setState({
+            ...this.state,
+            productionProject: {
+                ...this.state.productionProject,
+                contactGroupIds: selectedOption
+            },
+        });
+    };
+
     render() {
         const {name, code, description, ownedById, productionProjectStatusId, dateStart,
             dateProduction, dateStartRegistrations, dateEndRegistrations, productionProjectTypeId, postalCode, address,
             city, ean, eanManager, warrantyOrigin, eanSupply,
             participationWorth, powerKwAvailable, maxParticipations, taxReferral, maxParticipationsYouth,
             totalParticipations, minParticipations, isMembershipRequired,
-            isParticipationTransferable, postalcodeLink, administrationId} = this.state.productionProject;
+            isParticipationTransferable, postalcodeLink, administrationId, contactGroupIds} = this.state.productionProject;
         const {issuedParticipations, participationsInOption, issuableParticipations, administration, hasPaymentInvoices}  = this.props.productionProject;
 
         return (
@@ -408,6 +428,17 @@ class ProductionProjectFormEdit extends Component {
                         readOnly={true}
                     />
                 </div>
+                {isMembershipRequired == true &&
+                <div className={'row'}>
+                    <InputMultiSelect
+                        label={"Lidmaatschap groepen"}
+                        name={"contactGroupsIds"}
+                        options={this.state.contactGroups}
+                        value={contactGroupIds}
+                        onChangeAction={this.handleContactGroupIds}
+                    />
+                </div>
+                }
 
                 <PanelFooter>
                     <div className="pull-right btn-group" role="group">

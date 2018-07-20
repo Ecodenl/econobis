@@ -7,6 +7,10 @@ const filtersReducerDefaultState = {
         field: 'status',
         data: '',
     },
+    typeId: {
+        field: 'typeId',
+        data: '',
+    },
 };
 
 export default (state = filtersReducerDefaultState, action) => {
@@ -25,6 +29,14 @@ export default (state = filtersReducerDefaultState, action) => {
                 status: {
                     ...state.status,
                     data: action.status,
+                }
+            };
+        case 'SET_FILTER_CONTACT_GROUP_TYPE_ID':
+            return {
+                ...state,
+                typeId: {
+                    ...state.typeId,
+                    data: action.typeId,
                 }
             };
         case 'CLEAR_FILTER_CONTACT_GROUPS':

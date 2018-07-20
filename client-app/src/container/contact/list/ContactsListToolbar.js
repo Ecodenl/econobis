@@ -64,6 +64,9 @@ class ContactsListToolbar extends Component {
                                         {permissions.createOrganisation &&
                                             <li><Link to="contact/nieuw/organisatie">Organisatie</Link></li>
                                     }
+                                {permissions.manageGroup &&
+                                <li><Link onClick={this.props.toggleSaveAsGroup}>Groep</Link></li>
+                                }
                             </ul>
                         </div>
                         {

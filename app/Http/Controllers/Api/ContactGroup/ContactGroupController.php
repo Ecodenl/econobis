@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Api\ContactGroup;
 
 use App\Eco\Contact\Contact;
 use App\Eco\ContactGroup\ContactGroup;
-use App\Eco\Task\Jobs\DeleteTask;
 use App\Helpers\Delete\DeleteHelper;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\RequestQueries\ContactGroup\Grid\RequestQuery;
@@ -42,7 +41,7 @@ class ContactGroupController extends Controller
         return FullContactGroup::make($contactGroup);
     }
 
-    public function store(RequestInput $requestInput)
+    public function store(Request $request, RequestInput $requestInput)
     {
         $this->authorize('create', ContactGroup::class);
 
@@ -55,10 +54,25 @@ class ContactGroupController extends Controller
             ->alias('date_started')->next()
             ->date('dateFinished')->default(null)->validate('nullable|date')
             ->alias('date_finished')->next()
+            ->boolean('showPortal')->validate('boolean')->alias('show_portal')->whenMissing(false)->next()
+            ->boolean('editPortal')->validate('boolean')->alias('edit_portal')->whenMissing(false)->next()
+            ->boolean('showContactForm')->validate('boolean')->alias('show_contact_form')->whenMissing(false)->next()
             ->get();
+
+        $contactGroupIds = explode(',', $request->contactGroupIds);
+
+        if ($contactGroupIds[0] == '') {
+            $contactGroupIds = [];
+            $data['type_id'] = 'static';
+        }
+        else{
+            $data['type_id'] = 'composed';
+        }
 
         $contactGroup = new ContactGroup($data);
         $contactGroup->save();
+
+        $contactGroup->contactGroups()->sync($contactGroupIds);
 
         return FullContactGroup::make($contactGroup->fresh());
     }
@@ -79,6 +93,9 @@ class ContactGroupController extends Controller
             ->alias('date_started')->next()
             ->date('dateFinished')->onEmpty(null)->validate('nullable|date')
             ->alias('date_finished')->next()
+            ->boolean('showPortal')->validate('boolean')->alias('show_portal')->whenMissing(false)->next()
+            ->boolean('editPortal')->validate('boolean')->alias('edit_portal')->whenMissing(false)->next()
+            ->boolean('showContactForm')->validate('boolean')->alias('show_contact_form')->whenMissing(false)->next()
             ->get();
 
         $contactGroup->fill($data);
@@ -101,7 +118,7 @@ class ContactGroupController extends Controller
 
     public function gridContacts(ContactGroup $contactGroup)
     {
-        return GridContact::collection($contactGroup->contacts);
+        return GridContact::collection($contactGroup->all_contacts);
     }
 
     public function addContact(ContactGroup $contactGroup, Contact $contact)

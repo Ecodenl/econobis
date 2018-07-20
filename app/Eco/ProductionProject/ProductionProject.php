@@ -5,6 +5,7 @@ namespace App\Eco\ProductionProject;
 use App\Eco\Address\Address;
 use App\Eco\Administration\Administration;
 use App\Eco\Contact\Contact;
+use App\Eco\ContactGroup\ContactGroup;
 use App\Eco\Document\Document;
 use App\Eco\Email\Email;
 use App\Eco\Measure\Measure;
@@ -89,6 +90,10 @@ class ProductionProject extends Model
 
     public function participantsProductionProject(){
         return $this->hasMany(ParticipantProductionProject::class, 'production_project_id')->whereNull('deleted_at');
+    }
+
+    public function requiresContactGroups(){
+        return $this->belongsToMany(ContactGroup::class, 'contact_group_participation', 'production_project_id', 'group_id');
     }
 
     //Appended fields

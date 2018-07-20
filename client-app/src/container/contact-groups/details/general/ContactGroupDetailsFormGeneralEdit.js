@@ -18,6 +18,9 @@ class ContactGroupDetailsFormGeneralEdit extends Component {
         const { dateStarted } = props.contactGroupDetails;
         const { dateFinished } = props.contactGroupDetails;
         const { responsibleUserId } = props.contactGroupDetails;
+        const { showPortal } = props.contactGroupDetails;
+        const { editPortal } = props.contactGroupDetails;
+        const { showContactForm } = props.contactGroupDetails;
 
         this.state = {
             contactsWithPermission: [],
@@ -26,6 +29,9 @@ class ContactGroupDetailsFormGeneralEdit extends Component {
                 dateStarted: dateStarted ? moment(dateStarted.date).format('Y-MM-DD') : '',
                 dateFinished: dateFinished ? moment(dateFinished.date).format('Y-MM-DD') : '',
                 responsibleUserId: responsibleUserId ? responsibleUserId: '',
+                showPortal: showPortal ? showPortal: false,
+                editPortal: editPortal ? editPortal: false,
+                showContactForm: showContactForm ? showContactForm: false,
             },
             errors: {
                 name: false,
@@ -104,7 +110,7 @@ class ContactGroupDetailsFormGeneralEdit extends Component {
     };
 
     render() {
-        const {name, description, responsibleUserId, closed, dateStarted, dateFinished, createdAt} = this.state.contactGroup;
+        const {name, description, responsibleUserId, closed, dateStarted, dateFinished, createdAt, showPortal, editPortal, showContactForm} = this.state.contactGroup;
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -168,6 +174,36 @@ class ContactGroupDetailsFormGeneralEdit extends Component {
                         name="dateFinished"
                         value={dateFinished}
                         onChangeAction={this.handleChangeFinishedDate}
+                    />
+                </div>
+
+                <div className="row">
+                    <InputToggle
+                        label={"Zichtbaar op portaal"}
+                        name={"showPortal"}
+                        value={showPortal}
+                        onChangeAction={this.handleInputChange}
+                    />
+                    <InputToggle
+                        label={"Veranderen op portaal"}
+                        name={"editPortal"}
+                        value={editPortal}
+                        onChangeAction={this.handleInputChange}
+                    />
+                </div>
+
+                <div className="row">
+                    <InputToggle
+                        label={"Zichtbaar bij contact"}
+                        name={"showContactForm"}
+                        value={showContactForm}
+                        onChangeAction={this.handleInputChange}
+                    />
+                    <InputText
+                        label={"Type"}
+                        name={"type"}
+                        value={this.props.contactGroupDetails.type.name}
+                        readOnly={true}
                     />
                 </div>
 

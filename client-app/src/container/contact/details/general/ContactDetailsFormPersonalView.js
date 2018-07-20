@@ -5,18 +5,23 @@ import moment from 'moment';
 import ViewText from '../../../../components/form/ViewText';
 
 const ContactDetailsFormPersonalView = props => {
-    const { number, createdAt, person, status, memberSince, memberUntil, newsletter, didAgreeAvg } = props.contactDetails;
+    const { number, createdAt, person, status, newsletter, didAgreeAvg } = props.contactDetails;
 
     return (
         <div>
             <div className="row" onClick={props.switchToEdit}>
                 <ViewText
-                    label={"Klantnummer"}
+                    label={"Contactnummer"}
                     value={number}
+                    className={'col-xs-12'}
                 />
+            </div>
+
+            <div className="row" onClick={props.switchToEdit}>
                 <ViewText
                     label={"Gemaakt op"}
                     value={moment(createdAt.date).format('DD-MM-Y')}
+                    className={'col-xs-12'}
                 />
             </div>
 
@@ -24,11 +29,15 @@ const ContactDetailsFormPersonalView = props => {
                 <ViewText
                     label="Aanspreektitel"
                     value={ person.title && person.title.name}
+                    className={'col-xs-12'}
                 />
+            </div>
 
+            <div className="row" onClick={props.switchToEdit}>
                 <ViewText
                     label="Status"
                     value={ status && status.name}
+                    className={'col-xs-12'}
                 />
             </div>
 
@@ -36,10 +45,7 @@ const ContactDetailsFormPersonalView = props => {
                 <ViewText
                     label="Voorletters"
                     value={ person.initials }
-                />
-                <ViewText
-                    label={"Lid sinds"}
-                    value={ memberSince && moment(memberSince.date).format('DD-MM-Y') }
+                    className={'col-xs-12'}
                 />
             </div>
 
@@ -47,10 +53,7 @@ const ContactDetailsFormPersonalView = props => {
                 <ViewText
                     label="Voornaam"
                     value={ person.firstName }
-                />
-                <ViewText
-                    label={"Opzegdatum"}
-                    value={ memberUntil && moment(memberUntil.date).format('DD-MM-Y') }
+                    className={'col-xs-12'}
                 />
             </div>
 
@@ -58,22 +61,31 @@ const ContactDetailsFormPersonalView = props => {
                 <ViewText
                     label="Tussenvoegsel"
                     value={ person.lastNamePrefix }
+                    className={'col-xs-12'}
                 />
+            </div>
+
+            <div className="row" onClick={props.switchToEdit}>
                 <ViewText
                     label="Soort contact"
                     value={person.type && person.type.name}
+                    className={'col-xs-12'}
                 />
-
             </div>
 
             <div className="row" onClick={props.switchToEdit}>
                 <ViewText
                     label="Achternaam"
                     value={ person.lastName }
+                    className={'col-xs-12'}
                 />
+            </div>
+
+            <div className="row" onClick={props.switchToEdit}>
                 <ViewText
                     label={"Geboortedatum"}
                     value={person.dateOfBirth && moment(person.dateOfBirth.date).format('DD-MM-Y')}
+                    className={'col-xs-12'}
                 />
             </div>
 
@@ -81,12 +93,18 @@ const ContactDetailsFormPersonalView = props => {
                 <ViewText
                     label="Nieuwsbrief"
                     value={(newsletter ? 'Ja' : 'Nee')}
+                    className={'col-xs-12'}
                 />
+            </div>
+
+            <div className="row" onClick={props.switchToEdit}>
                 <ViewText
                     label="Akkoord privacybeleid"
                     value={(didAgreeAvg ? 'Ja' : 'Nee')}
+                    className={'col-xs-12'}
                 />
             </div>
+
         </div>
     );
 };

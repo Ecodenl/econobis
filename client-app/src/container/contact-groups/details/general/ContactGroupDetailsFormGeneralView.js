@@ -5,7 +5,7 @@ import moment from 'moment';
 import ViewText from '../../../../components/form/ViewText';
 
 const ContactGroupDetailsFormGeneralView = props => {
-    const { name, description, responsibleUser = {}, closedStatus, dateStarted, dateFinished, createdAt, createdBy } = props.contactGroupDetails;
+    const { name, description, responsibleUser = {}, closedStatus, dateStarted, dateFinished, createdAt, type, createdBy, showPortal, editPortal, showContactForm } = props.contactGroupDetails;
 
     return (
         <div onClick={props.switchToEdit}>
@@ -31,12 +31,10 @@ const ContactGroupDetailsFormGeneralView = props => {
                     value={responsibleUser && responsibleUser.fullName}
                     link={responsibleUser ? 'gebruiker/' + responsibleUser.id : ''}
                 />
-                <div className="row">
                     <ViewText
                         label="Status"
                         value={closedStatus}
                     />
-                </div>
             </div>
 
             <div className="row">
@@ -44,12 +42,32 @@ const ContactGroupDetailsFormGeneralView = props => {
                     label={"Startdatum"}
                     value={dateStarted && moment(dateStarted.date).format('DD-MM-Y')}
                 />
-                <div className="row">
                     <ViewText
                         label="Datum gereed"
                         value={dateFinished && moment(dateFinished.date).format('DD-MM-Y')}
                     />
-                </div>
+            </div>
+
+            <div className="row">
+                <ViewText
+                    label={"Zichtbaar op portaal"}
+                    value={showPortal ? 'Ja' : 'Nee'}
+                />
+                <ViewText
+                    label={"Veranderen op portaal"}
+                    value={editPortal ? 'Ja' : 'Nee'}
+                />
+            </div>
+
+            <div className="row">
+                <ViewText
+                    label={"Zichtbaar bij contact"}
+                    value={showContactForm ? 'Ja' : 'Nee'}
+                />
+                <ViewText
+                    label={"Type"}
+                    value={type ? type.name : ''}
+                />
             </div>
 
             <div className="row">
@@ -57,13 +75,12 @@ const ContactGroupDetailsFormGeneralView = props => {
                     label={"Gemaakt op"}
                     value={createdAt && moment(createdAt.date).format('DD-MM-Y')}
                 />
-                <div className="row">
                     <ViewText
                         label="Gemaakt door"
                         value={"Gebruiker"}
                     />
-                </div>
             </div>
+
         </div>
     );
 };

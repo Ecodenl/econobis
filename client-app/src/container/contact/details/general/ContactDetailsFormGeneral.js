@@ -7,6 +7,7 @@ import ContactDetailsFormPersonalEdit from './ContactDetailsFormPersonalEdit';
 import ContactDetailsFormPersonalView from './ContactDetailsFormPersonalView';
 import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
+import ContactDetailsGroups from "./ContactDetailsGroups";
 
 class ContactDetailsFormGeneral extends Component {
     constructor(props) {
@@ -54,6 +55,8 @@ class ContactDetailsFormGeneral extends Component {
         return (
             <Panel className={this.state.activeDiv} onMouseEnter={() => this.onDivEnter()} onMouseLeave={() => this.onDivLeave()}>
                 <PanelBody>
+                    <div className={'row'}>
+                        <div className={'col-xs-6'}>
                     {
                         this.state.showEdit ?
                             this.props.contactDetails.typeId === 'organisation' ?
@@ -66,6 +69,11 @@ class ContactDetailsFormGeneral extends Component {
                                 :
                                 <ContactDetailsFormPersonalView switchToEdit={this.switchToEdit}/>
                     }
+                        </div>
+                        <div className={'col-xs-6'}>
+                            <ContactDetailsGroups/>
+                        </div>
+                    </div>
                 </PanelBody>
             </Panel>
         );

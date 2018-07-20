@@ -9,13 +9,14 @@ import PanelFooter from "../../../components/panel/PanelFooter";
 import InputText from "../../../components/form/InputText";
 import InputToggle from "../../../components/form/InputToggle";
 import PanelHeader from "../../../components/panel/PanelHeader";
+import InputMultiSelect from "../../../components/form/InputMultiSelect";
 
 const ProductionProjectNew = props => {
     const {name, code, description, ownedById, productionProjectStatusId, dateStart,
         dateProduction, dateStartRegistrations, dateEndRegistrations, productionProjectTypeId, postalCode, address,
         city, ean, eanManager, warrantyOrigin, eanSupply,
         participationWorth, powerKwAvailable, maxParticipations, taxReferral, maxParticipationsYouth,
-        totalParticipations, minParticipations, isMembershipRequired, isParticipationTransferable, administrationId, postalcodeLink} = props.productionProject;
+        totalParticipations, minParticipations, isMembershipRequired, isParticipationTransferable, administrationId, postalcodeLink, contactGroupIds} = props.productionProject;
     return (
         <form className="form-horizontal col-md-12" onSubmit={props.handleSubmit}>
             <div className="row">
@@ -271,6 +272,17 @@ const ProductionProjectNew = props => {
                     onChangeAction={props.handleInputChange}
                 />
             </div>
+            {isMembershipRequired == true &&
+            <div className={'row'}>
+                <InputMultiSelect
+                    label={"Lidmaatschap groepen"}
+                    name={"contactGroupsIds"}
+                    options={props.contactGroups}
+                    value={contactGroupIds}
+                    onChangeAction={props.handleContactGroupIds}
+                />
+            </div>
+            }
 
             <PanelFooter>
                 <div className="pull-right btn-group" role="group">

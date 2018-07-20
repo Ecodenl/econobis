@@ -75,7 +75,7 @@ class SepaPaymentHelper
         $xml = '';
 
         $xml .= "<?xml version=\"1.0\" encoding=\"utf-8\"?>";
-        $xml .= "\n<Document xmlns=\"urn:iso:std:iso:20022:tech:xsd:pain.001.001.03\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">";
+        $xml .= "\n<Document xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns=\"urn:iso:std:iso:20022:tech:xsd:pain.001.001.03\">";
         $xml .= "\n\t<CstmrCdtTrfInitn>";
 
         // GroupHeader
@@ -101,9 +101,6 @@ class SepaPaymentHelper
         $xml .= "\n\t\t\t\t<SvcLvl>";
         $xml .= "\n\t\t\t\t\t<Cd>SEPA</Cd>"; // SEPA - Vaste code
         $xml .= "\n\t\t\t\t</SvcLvl>";
-        $xml .= "\n\t\t\t\t<LclInstrm>";
-        $xml .= "\n\t\t\t\t\t<Cd>ACCEPT</Cd>"; // ACCEPT - Vaste waarde
-        $xml .= "\n\t\t\t\t</LclInstrm>";
         $xml .= "\n\t\t\t</PmtTpInf>";
 
         $xml .= "\n\t\t\t<ReqdExctnDt>" . Carbon::now()->nextWeekday()->format('Y-m-d') . "</ReqdExctnDt>"; // Gewenste uitvoerdatum
@@ -156,6 +153,11 @@ class SepaPaymentHelper
             $xml .= "\n\t\t\t\t\t</Id>";
             $xml .= "\n\t\t\t\t</CdtrAcct>";
             $xml .= "\n\t\t\t</CdtTrfTxInf>";
+
+            //ref info
+            $xml .= "\n\t\t\t\t<RmtInf>";
+            $xml .= "\n\t\t\t\t\t<Ustrd>Ref. ". $invoice->number . "</Ustrd>";
+            $xml .= "\n\t\t\t\t</RmtInf>";
         }
 
         $xml .= "\n\t\t</PmtInf>";

@@ -376,10 +376,45 @@ class TemplateVariableHelper
                 return $model->iban_attn;
                 break;
             case 'geschonken_door':
-                return optional($model->giftedByContact)->full_name;
+                if($model->giftedByContact) {
+                    if ($model->giftedByContact->type_id == 'person') {
+                        $prefix = $model->giftedByContact->person->last_name_prefix;
+                        return $prefix ? $model->giftedByContact->person->first_name . ' ' . $prefix . ' ' . $model->giftedByContact->person->last_name
+                            : $model->giftedByContact->person->first_name . ' ' . $model->giftedByContact->person->last_name;
+                    } elseif ($model->giftedByContact->type_id == 'organisation') {
+                        return $model->giftedByContact->full_name;
+                    }
+                }
+                else{
+                    return '';
+                }
                 break;
-            case 'wettelijke_vertegenwoordiger':
-                return optional($model->legalRepContact)->full_name;
+            case 'geschonken_door_voornaam':
+                if($model->giftedByContact) {
+                    if($model->giftedByContact->type_id == 'person'){
+                        return $model->giftedByContact->person->first_name;
+                    }
+                    elseif($model->giftedByContact->type_id == 'organisation'){
+                        return '';
+                    }
+                }
+                else{
+                    return '';
+                }
+                break;
+            case 'geschonken_door_achternaam':
+                if($model->giftedByContact) {
+                    if($model->giftedByContact->type_id == 'person'){
+                        $prefix = $model->giftedByContact->person->last_name_prefix;
+                        return $prefix ? $prefix . ' ' . $model->giftedByContact->person->last_name : $model->giftedByContact->person->last_name;
+                    }
+                    elseif($model->giftedByContact->type_id == 'organisation'){
+                        return $model->giftedByContact->full_name;
+                    }
+                }
+                else{
+                    return '';
+                }
                 break;
             case 'iban_uitkeren':
                 return $model->iban_payout;

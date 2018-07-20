@@ -104,15 +104,15 @@ class TemplateMergeFieldsTest extends TestCase
     {
         $html = '{ppp_contact_naam}{ppp_status}{ppp_productie_project}{ppp_inschrijf_datum}{ppp_aangevraagd}{ppp_toegekend}';
         $html .= '{ppp_verkocht}{ppp_huidig}{ppp_waarde_totaal}{ppp_restverkoop}{ppp_contract_verstuurd}{ppp_contract_retour}';
-        $html .= '{ppp_betaald_op}{ppp_iban_betaald}{ppp_akkoord_reglement}{ppp_iban_tnv}{ppp_geschonken_door}';
-        $html .= '{ppp_wettelijke_vertegenwoordiger}{ppp_iban_uitkeren}{ppp_iban_uitkeren_tnv}{ppp_einddatum}{ppp_uitkeren_op}';
+        $html .= '{ppp_betaald_op}{ppp_iban_betaald}{ppp_akkoord_reglement}{ppp_iban_tnv}{ppp_geschonken_door}{ppp_geschonken_door_voornaam}{ppp_geschonken_door_achternaam}';
+        $html .= '{ppp_wettelijke_vertegenwoordiger}{ppp_wettelijke_vertegenwoordiger_voornaam}{ppp_wettelijke_vertegenwoordiger_achternaam}{ppp_iban_uitkeren}{ppp_iban_uitkeren_tnv}{ppp_einddatum}{ppp_uitkeren_op}';
 
 
         $html = TemplateVariableHelper::replaceTemplateVariables($html, 'ppp', ParticipantProductionProject::find(1));
 
         $expectedHtml = 'Vaak, Klaas deDefinitiefProject 107/03/2018109';
         $expectedHtml .= '810706/03/201805/03/2018';
-        $expectedHtml .= '04/03/2018iban123Neeiban1234Vaak, Klaas deVaak, Klaas de';
+        $expectedHtml .= '04/03/2018iban123Neeiban1234Klaas de VaakKlaasde Vaak';
         $expectedHtml .= 'iban12345Pietje03/03/2018Bijschrijven';
 
         $this->assertEquals($expectedHtml, $html);

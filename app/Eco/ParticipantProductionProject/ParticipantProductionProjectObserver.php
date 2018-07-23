@@ -13,7 +13,7 @@ use App\Eco\Contact\Contact;
 class ParticipantProductionProjectObserver
 {
 
-    public function saving(ParticipantProductionProject $participantProductionProject)
+    public function saved(ParticipantProductionProject $participantProductionProject)
     {
         $contact = Contact::find($participantProductionProject->contact_id);
 

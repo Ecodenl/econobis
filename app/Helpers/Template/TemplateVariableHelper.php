@@ -150,7 +150,7 @@ class TemplateVariableHelper
                 }
                 break;
             case 'adres':
-                return optional($model->primaryAddress)->street . ' ' . optional($model->primaryAddress)->number;
+                return optional($model->primaryAddress)->street . ' ' . optional($model->primaryAddress)->number . optional($model->organisation->contact->primaryAddress)->addition;
                 break;
             case 'postcode':
                 return optional($model->primaryAddress)->postal_code;
@@ -519,7 +519,7 @@ class TemplateVariableHelper
                 return $model->organisation->name;
                 break;
             case 'organisatie_adres':
-                return optional($model->organisation->contact->primaryAddress)->street . ' ' . optional($model->organisation->contact->primaryAddress)->number;
+                return optional($model->organisation->contact->primaryAddress)->street . ' ' . optional($model->organisation->contact->primaryAddress)->number . optional($model->organisation->contact->primaryAddress)->addition;
                 break;
             case 'organisatie_plaats':
                 return optional($model->organisation->contact->primaryAddress)->city;
@@ -554,7 +554,7 @@ class TemplateVariableHelper
                 return optional(optional($model->opportunity)->intake)->contact->full_name;
                 break;
             case 'contact_adres':
-                return optional(optional(optional($model->opportunity)->intake)->contact->primaryAddress)->street . ' ' . optional(optional(optional($model->opportunity)->intake)->contact->primaryAddress)->number;
+                return optional(optional(optional($model->opportunity)->intake)->contact->primaryAddress)->street . ' ' . optional(optional(optional($model->opportunity)->intake)->contact->primaryAddress)->number . optional($model->organisation->contact->primaryAddress)->addition;
                 break;
             case 'contact_woonplaats':
                 return optional(optional(optional($model->opportunity)->intake)->contact->primaryAddress)->city;
@@ -585,6 +585,7 @@ class TemplateVariableHelper
                 break;
         }
     }
+
 
     public static function getOrderVar($model, $varname){
         switch ($varname) {

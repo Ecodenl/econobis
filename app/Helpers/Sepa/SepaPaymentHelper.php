@@ -152,12 +152,11 @@ class SepaPaymentHelper
             $xml .= "\n\t\t\t\t\t\t<IBAN>" . str_replace(' ', '', $invoice->revenueDistribution->participation->iban_payout) . "</IBAN>"; // IBAN nummer van geincasseerde
             $xml .= "\n\t\t\t\t\t</Id>";
             $xml .= "\n\t\t\t\t</CdtrAcct>";
-            $xml .= "\n\t\t\t</CdtTrfTxInf>";
-
             //ref info
             $xml .= "\n\t\t\t\t<RmtInf>";
             $xml .= "\n\t\t\t\t\t<Ustrd>Ref. ". $invoice->number . "</Ustrd>";
             $xml .= "\n\t\t\t\t</RmtInf>";
+            $xml .= "\n\t\t\t</CdtTrfTxInf>";
         }
 
         $xml .= "\n\t\t</PmtInf>";

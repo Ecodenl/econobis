@@ -127,8 +127,8 @@ class ContactCSVHelper
                 $contact->last_name_prefix;
                 $contact->last_name = $contact->person->last_name;
                 // Date of birth date format
-                $dateOfBirth = new Carbon($contact->person->date_of_birth);
-                $contact->date_of_birth = $dateOfBirth->format('d-m-Y');
+                $dateOfBirth = $contact->person->date_of_birth ? new Carbon($contact->person->date_of_birth) : false;
+                $contact->date_of_birth = $dateOfBirth ? $dateOfBirth->format('d-m-Y') : '';
             }
 
             // Reformat energy supplier fields
@@ -136,8 +136,8 @@ class ContactCSVHelper
                 // Reformat when supplier starts with equal sign (example '=om')
                 $contact->energy_supplier_name = $contact->primaryContactEnergySupplier->energySupplier->name;
                 // Member since date format
-                $energyMemberSince = new Carbon($contact->primaryContactEnergySupplier->member_since);
-                $contact->energy_member_since = $energyMemberSince->format('d-m-Y');
+                $energyMemberSince = $contact->primaryContactEnergySupplier->member_since ? new Carbon($contact->primaryContactEnergySupplier->member_since) : false;
+                $contact->energy_member_since = $energyMemberSince ? $energyMemberSince->format('d-m-Y') : '';
             }
         });
 

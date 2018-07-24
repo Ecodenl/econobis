@@ -8,6 +8,7 @@ class EmailDetailsAttachmentsItem extends Component {
 
         this.state = {
             highlightLine: '',
+            showActionButtons: false,
 
             attachment: {
                 ...props.attachment,
@@ -25,6 +26,7 @@ class EmailDetailsAttachmentsItem extends Component {
     onLineLeave = () => {
         this.setState({
             highlightLine: '',
+            showActionButtons: false,
         });
     };
 
@@ -36,6 +38,7 @@ class EmailDetailsAttachmentsItem extends Component {
                     onLineEnter={this.onLineEnter}
                     onLineLeave={this.onLineLeave}
                     attachment={this.state.attachment}
+                    showActionButtons={this.state.showActionButtons}
                 />
             </div>
         );

@@ -31,7 +31,6 @@ class ContactCSVHelper
         $this->contacts->load([
             'person',
             'organisation',
-            'person',
             'addresses',
             'emailAddresses',
             'phoneNumbers',

@@ -14,6 +14,7 @@ use App\Eco\Document\Document;
 use App\Eco\DocumentTemplate\DocumentTemplate;
 use App\Eco\EmailTemplate\EmailTemplate;
 use App\Helpers\Alfresco\AlfrescoHelper;
+use App\Helpers\CSV\ParticipantCSVHelper;
 use App\Helpers\Delete\DeleteHelper;
 use App\Helpers\Template\TemplateTableHelper;
 use App\Http\Resources\Contact\ContactPeek;
@@ -58,6 +59,16 @@ class ParticipationProductionProjectController extends ApiController
             ]);
     }
 
+    public function csv(RequestQuery $requestQuery)
+    {
+        $participants = $requestQuery->getQueryNoPagination()->get();
+
+        $participantCSVHelper = new ParticipantCSVHelper($participants);
+
+        $csv = $participantCSVHelper->downloadCSV();
+
+        return $csv;
+    }
 
     public function show(ParticipantProductionProject $participantProductionProject)
     {

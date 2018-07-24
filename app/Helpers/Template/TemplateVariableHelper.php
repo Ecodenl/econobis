@@ -416,6 +416,47 @@ class TemplateVariableHelper
                     return '';
                 }
                 break;
+            case 'wettelijke_vertegenwoordiger':
+                if($model->legalRepContact) {
+                    if ($model->legalRepContact->type_id == 'person') {
+                        $prefix = $model->legalRepContact->person->last_name_prefix;
+                        return $prefix ? $model->legalRepContact->person->first_name . ' ' . $prefix . ' ' . $model->legalRepContact->person->last_name
+                            : $model->legalRepContact->person->first_name . ' ' . $model->legalRepContact->person->last_name;
+                    } elseif ($model->legalRepContact->type_id == 'organisation') {
+                        return $model->legalRepContact->full_name;
+                    }
+                }
+                else{
+                    return '';
+                }
+                break;
+            case 'wettelijke_vertegenwoordiger_voornaam':
+                if($model->legalRepContact) {
+                    if($model->legalRepContact->type_id == 'person'){
+                        return $model->legalRepContact->person->first_name;
+                    }
+                    elseif($model->legalRepContact->type_id == 'organisation'){
+                        return '';
+                    }
+                }
+                else{
+                    return '';
+                }
+                break;
+            case 'wettelijke_vertegenwoordiger_achternaam':
+                if($model->legalRepContact) {
+                    if($model->legalRepContact->type_id == 'person'){
+                        $prefix = $model->legalRepContact->person->last_name_prefix;
+                        return $prefix ? $prefix . ' ' . $model->legalRepContact->person->last_name : $model->legalRepContact->person->last_name;
+                    }
+                    elseif($model->legalRepContact->type_id == 'organisation'){
+                        return $model->legalRepContact->full_name;
+                    }
+                }
+                else{
+                    return '';
+                }
+                break;
             case 'iban_uitkeren':
                 return $model->iban_payout;
                 break;

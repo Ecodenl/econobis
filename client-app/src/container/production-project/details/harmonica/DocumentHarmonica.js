@@ -13,9 +13,14 @@ const DocumentHarmonica = ({toggleShowList, showDocumentsList, newDocument, docu
                     <span>DOCUMENTEN <span className="badge">{ documentCount }</span></span>
                 </div>
                 <div className={"col-sm-2"}>
-                    {permissions.createDocument &&
-                    <a role="button" className="pull-right" onClick={newDocument}><span
-                        className="glyphicon glyphicon-plus glyphicon-white"/></a>
+                    { permissions.createDocument &&
+                    <div  className="pull-right">
+                        <span className="glyphicon glyphicon-plus glyphicon-white" data-toggle="dropdown" role="button"/>
+                        <ul className="dropdown-menu">
+                            <li><a className="btn" onClick={() => newDocument('internal')}>Maak document</a></li>
+                            <li><a className="btn" onClick={() => newDocument('upload')}>Upload document</a></li>
+                        </ul>
+                    </div>
                     }
                 </div>
                 <div className="col-sm-12">

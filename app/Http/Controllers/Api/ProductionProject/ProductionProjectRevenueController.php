@@ -364,7 +364,7 @@ class ProductionProjectRevenueController extends ApiController
                 && !(empty($distribution->address)
                     || empty($distribution->postal_code)
                     || empty($distribution->city)
-                    || empty($distribution->participation->iban_payout))
+                    || (empty($distribution->participation->iban_payout) && empty($distribution->contact->iban)))
             ) {
                 $paymentInvoice = new PaymentInvoice();
                 $paymentInvoice->revenue_distribution_id = $distribution->id;

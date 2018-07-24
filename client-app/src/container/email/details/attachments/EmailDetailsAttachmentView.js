@@ -3,6 +3,7 @@ import fileDownload from "js-file-download";
 import EmailDetailsAPI from "../../../../api/email/EmailAPI";
 import Modal from "../../../../components/modal/Modal";
 import PdfViewer from "../../../../components/pdf/PdfViewer";
+import {hashHistory} from "react-router";
 
 class EmailDetailsAttachmentView extends Component {
     constructor(props) {
@@ -46,6 +47,9 @@ class EmailDetailsAttachmentView extends Component {
         });
     };
 
+    saveToAlfresco = (id) => {
+        hashHistory.push(`document/nieuw/upload/email-bijlage/${id}`);
+    };
 
     render() {
         const {id, name} = this.props.attachment;
@@ -62,7 +66,7 @@ class EmailDetailsAttachmentView extends Component {
                     {(this.props.showActionButtons ? <a role="button" onClick={() => this.downloadItem(id, name)}><span
                         className="glyphicon glyphicon-open-file mybtn-success"/> </a> : '')}
                     {(this.props.showActionButtons ?
-                        <a role="button"><span className="glyphicon glyphicon-share mybtn-success"/> </a> : '')}
+                        <a role="button" onClick={() => this.saveToAlfresco(id)}><span className="glyphicon glyphicon-share mybtn-success"/> </a> : '')}
                     {(this.props.showActionButtons && hasValidExtension ?
                         <a role="button" onClick={() => this.viewItem(id, name)}><span
                             className="glyphicon glyphicon-eye-open mybtn-success"/> </a> : '')}

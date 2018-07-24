@@ -280,7 +280,8 @@ class EmailController
     public function downloadEmailAttachment(EmailAttachment $emailAttachment)
     {
         $filePath = Storage::disk('mail_attachments')->getDriver()->getAdapter()->applyPathPrefix($emailAttachment->filename);
-
+        header('X-Filename:' . $emailAttachment->name);
+        header('Access-Control-Expose-Headers: X-Filename');
         return response()->download($filePath, $emailAttachment->name);
     }
 

@@ -15,6 +15,7 @@ class Sort extends RequestSort
 {
 
     protected $fields = [
+        'id',
         'number',
         'contact',
         'payout',
@@ -22,6 +23,7 @@ class Sort extends RequestSort
     ];
 
     protected $mapping = [
+        'id' => 'payment_invoices.id',
         'number' => 'payment_invoices.number',
         'contact' => 'contacts.full_name',
         'statusId' => 'payment_invoices.status_id',

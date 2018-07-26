@@ -32,6 +32,7 @@
   padding-right: 8em;
   margin-left: -7em;
   margin-right: -8em;
+  max-width: 18em;
 
   &:hover {
     color: $brand-primary;
@@ -67,4 +68,52 @@
   overflow-x: hidden;
   height: 100vh;
   padding-bottom: 60px;
+}
+
+@media (min-width: 1160px) {
+  .send-invoices-list-link, .send-orders-list-link, .send-payment-invoices-list-link {
+    max-width: 12em;
+  }
+}
+
+@media (min-width: 1260px) {
+  .send-invoices-list-link, .send-orders-list-link, .send-payment-invoices-list-link {
+    max-width: 14em;
+  }
+}
+
+@media (min-width: 1360px) {
+  .send-invoices-list-link, .send-orders-list-link, .send-payment-invoices-list-link {
+    max-width: 16em;
+  }
+}
+
+@media (min-width: 1460px) {
+  .send-invoices-list-link, .send-orders-list-link, .send-payment-invoices-list-link {
+    max-width: 18em;
+  }
+}
+
+@media (min-width: 1560px) {
+  .send-invoices-list-link, .send-orders-list-link, .send-payment-invoices-list-link {
+    max-width: 20em;
+  }
+}
+
+@media (min-width: 1660px) {
+  .send-invoices-list-link, .send-orders-list-link, .send-payment-invoices-list-link {
+    max-width: 22em;
+  }
+}
+
+@media (min-width: 1760px) {
+  .send-invoices-list-link, .send-orders-list-link, .send-payment-invoices-list-link {
+    max-width: 24em;
+  }
+}
+
+@media (min-width: 1860px) {
+  .send-invoices-list-link, .send-orders-list-link, .send-payment-invoices-list-link {
+    max-width: 26em;
+  }
 }

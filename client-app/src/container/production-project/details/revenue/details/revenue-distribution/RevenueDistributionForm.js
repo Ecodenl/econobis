@@ -258,7 +258,7 @@ class RevenueDistributionForm extends Component {
                     <span className="h5 text-bold">Opbrengstverdeling participanten</span>
                     <div className="btn-group pull-right">
                         {(this.props.productionProjectRevenue.confirmed == 1 && administrationIds.includes(this.props.productionProjectRevenue.productionProject.administrationId)) &&
-                        <ButtonText buttonText={'Facturen maken'} onClickAction={this.toggleShowCheckboxList}/>
+                        <ButtonText buttonText={'Rapportage maken'} onClickAction={this.toggleShowCheckboxList}/>
                         }
                     </div>
                 </PanelHeader>

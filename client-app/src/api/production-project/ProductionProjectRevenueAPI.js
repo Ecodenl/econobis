@@ -56,12 +56,12 @@ export default {
             );
     },
 
-    createPaymentInvoices: (templateId, emailTemplateId, subject, distributionIds) => {
+    createPaymentInvoices: (templateId, emailTemplateId, subject, distributionIds, createReport, createInvoice) => {
         const requestUrl = `${URL_API}/api/distribution/create-payment-invoices`;
         const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
         axios.defaults.headers.common.Authorization = AUTH_TOKEN;
 
-        return axios.post(requestUrl, {documentTemplateId: templateId, emailTemplateId: emailTemplateId, distributionIds: distributionIds, subject: subject})
+        return axios.post(requestUrl, {documentTemplateId: templateId, emailTemplateId: emailTemplateId, distributionIds: distributionIds, subject: subject, createReport: createReport, createInvoice: createInvoice})
             .then(response => response)
             .catch((error) => {
                     console.log(error);

@@ -384,7 +384,7 @@ class ProductionProjectRevenueController extends ApiController
         $this->authorize('manage', ProductionProjectRevenue::class);
 
         $distribution = ProductionProjectRevenueDistribution::whereIn('id',
-            $request->input('ids'))->with('contact')->get();
+            $request->input('ids'))->with(['contact', 'revenue'])->get();
 
         return FullProductionProjectRevenueDistribution::collection($distribution);
     }
@@ -587,28 +587,42 @@ class ProductionProjectRevenueController extends ApiController
     }
 
     public function createPaymentInvoices(Request $request){
+        $createReport = $request->input('createReport');
+        $createInvoice = $request->input('createInvoice');
 
-        //create invoices
-        $createdInvoices = $this->createInvoices(ProductionProjectRevenueDistribution::whereIn('id', $request->input('distributionIds'))->get());
 
-        if($createdInvoices) {
-            $reportDistributionIds = [];
-            //only send reports to the created ones
-            foreach ($createdInvoices as $createdInvoice){
-                array_push($reportDistributionIds, $createdInvoice->revenue_distribution_id);
+        if($createInvoice) {
+            //create invoices
+            $createdInvoices = $this->createInvoices(ProductionProjectRevenueDistribution::whereIn('id',
+                $request->input('distributionIds'))->get());
+
+            if ($createdInvoices) {
+                if($createReport) {
+                    $reportDistributionIds = [];
+                    //only send reports to the created ones
+                    foreach ($createdInvoices as $createdInvoice) {
+                        array_push($reportDistributionIds, $createdInvoice->revenue_distribution_id);
+                    }
+
+                    $this->createParticipantRevenueReport($request->input('subject'),
+                        $reportDistributionIds,
+                        DocumentTemplate::find($request->input('documentTemplateId')),
+                        EmailTemplate::find($request->input('emailTemplateId')));
+
+                }
+                $paymentInvoiceController = new PaymentInvoiceController();
+
+                return $paymentInvoiceController->generateSepaFile(collect($createdInvoices));
+            } else {
+                abort(400, 'Geen uitkering facturen aangemaakt.');
             }
+        }
 
+        elseif ($createReport){
             $this->createParticipantRevenueReport($request->input('subject'),
-                $reportDistributionIds,
+                $request->input('distributionIds'),
                 DocumentTemplate::find($request->input('documentTemplateId')),
                 EmailTemplate::find($request->input('emailTemplateId')));
-
-            $paymentInvoiceController = new PaymentInvoiceController();
-
-            return $paymentInvoiceController->generateSepaFile(collect($createdInvoices));
-        }
-        else{
-            abort(400, 'Geen uitkering facturen aangemaakt.');
         }
     }
 

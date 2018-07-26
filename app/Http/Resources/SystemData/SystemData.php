@@ -81,6 +81,14 @@ class SystemData extends Resource
      */
     public function toArray($request)
     {
+        //for testing
+        if ($this->app->environment() == 'production') {
+            $users = FullUser::collection(User::where('id', '!=', '1')->orderBy('last_name', 'asc')->get());
+        }
+        else {
+            $users = FullUser::collection(User::orderBy('last_name', 'asc')->get());
+        }
+
         return [
             'contactTypes' => FullEnumWithIdAndName::collection(ContactType::collection()),
             'addressTypes' => FullEnumWithIdAndName::collection(AddressType::collection()),
@@ -106,7 +114,7 @@ class SystemData extends Resource
             'opportunityStatus' => FullEnumWithIdAndName::collection(OpportunityStatus::all()),
             'taskTypes' => GenericResource::collection(TaskType::all()),
             'taskProperties' => GenericResource::collection(TaskProperty::all()),
-            'users' => FullUser::collection(User::where('id', '!=', '1')->orderBy('last_name', 'asc')->get()),
+            'users' => $users,
             'teams' => FullTeam::collection(Team::orderBy('name', 'asc')->get()),
             'campaignStatuses' => FullEnumWithIdAndName::collection(CampaignStatus::all()),
             'campaignTypes' => FullEnumWithIdAndName::collection(CampaignType::all()),

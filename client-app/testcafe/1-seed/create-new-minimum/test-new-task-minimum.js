@@ -26,7 +26,7 @@ test('Fill out form task minimum', async (t) => {
     await t
         .typeText(newTask.note, vars.taskNote)
         .click(newTask.responsible)
-        .click(general.option.nth(0))
+        .click(general.option.filter('[value="user1"]'))
         .click(general.save)
         .wait(constants.wait);
 

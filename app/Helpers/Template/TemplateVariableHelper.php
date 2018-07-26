@@ -150,7 +150,7 @@ class TemplateVariableHelper
                 }
                 break;
             case 'adres':
-                return optional($model->primaryAddress)->street . ' ' . optional($model->primaryAddress)->number . optional($model->organisation->contact->primaryAddress)->addition;
+                return optional($model->primaryAddress)->street . ' ' . optional($model->primaryAddress)->number . optional($model->primaryAddress)->addition;
                 break;
             case 'postcode':
                 return optional($model->primaryAddress)->postal_code;

@@ -24,6 +24,9 @@ import InputText from "../../../../../components/form/InputText";
 import InputSelect from "../../../../../components/form/InputSelect";
 import PanelFooter from "../../../../../components/panel/PanelFooter";
 import ViewText from "../../../../../components/form/ViewText";
+import ParticipantsProductionProjectAPI from "../../../../../api/participant-production-project/ParticipantsProductionProjectAPI";
+import fileDownload from "js-file-download";
+import moment from "moment/moment";
 
 class ParticipantsListApp extends Component {
     constructor(props) {
@@ -92,6 +95,18 @@ class ParticipantsListApp extends Component {
             const pagination = { limit: 20, offset: this.props.participantsProductionProjectPagination.offset };
 
             this.props.fetchParticipantsProductionProject(filters, extraFilters, sorts, pagination, this.props.productionProjectId);
+        },100 );
+    };
+
+    getCSV = () => {
+        setTimeout(() => {
+            const filters = filterHelper(this.props.participantsProductionProjectFilters);
+            const extraFilters = this.state.extraFilters;
+            const sorts = this.props.participantsProductionProjectSorts;
+
+            ParticipantsProductionProjectAPI.getCsv(filters, extraFilters, sorts, this.props.productionProjectId).then((payload) => {
+                fileDownload(payload.data, 'Participanten-' + moment().format("YYYY-MM-DD HH:mm:ss") +  '.csv');
+            });
         },100 );
     };
 
@@ -328,6 +343,7 @@ class ParticipantsListApp extends Component {
                             handleExtraFiltersChange={this.handleExtraFiltersChange}
                             extraFilters={this.state.extraFilters}
                             amountOfFilters={this.state.amountOfFilters}
+                            getCSV={this.getCSV}
                         />
                     </div>
 

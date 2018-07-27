@@ -149,7 +149,7 @@ class SepaPaymentHelper
             // Crediteur Account
             $xml .= "\n\t\t\t\t<CdtrAcct>";
             $xml .= "\n\t\t\t\t\t<Id>";
-            $xml .= "\n\t\t\t\t\t\t<IBAN>" . str_replace(' ', '', $invoice->revenueDistribution->participation->iban_payout) . "</IBAN>"; // IBAN nummer van geincasseerde
+            $xml .= "\n\t\t\t\t\t\t<IBAN>" . str_replace(' ', '', $invoice->revenueDistribution->participation->iban_payout ? $invoice->revenueDistribution->participation->iban_payout : $invoice->revenueDistribution->contact->iban) . "</IBAN>"; // IBAN nummer van geincasseerde
             $xml .= "\n\t\t\t\t\t</Id>";
             $xml .= "\n\t\t\t\t</CdtrAcct>";
             //ref info
@@ -173,7 +173,7 @@ class SepaPaymentHelper
             $participantTransaction->type_id = 2;
             $participantTransaction->date_transaction = Carbon::today();
             $participantTransaction->amount = $invoice->revenueDistribution->payout;
-            $participantTransaction->iban = $invoice->revenueDistribution->participation->iban_payout;
+            $participantTransaction->iban = $invoice->revenueDistribution->participation->iban_payout ? $invoice->revenueDistribution->participation->iban_payout : $invoice->revenueDistribution->contact->iban;
             $participantTransaction->referral = $invoice->number;
             $participantTransaction->date_booking = Carbon::today()->nextWeekday();
             $participantTransaction->save();

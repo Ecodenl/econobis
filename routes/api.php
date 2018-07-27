@@ -278,6 +278,7 @@ Route::namespace('Api')
         Route::post('production-project/revenue/{productionProjectRevenue}/delete', 'ProductionProject\ProductionProjectRevenueController@destroy');
 
         Route::get('production-project/participant/grid', 'ParticipationProductionProject\ParticipationProductionProjectController@grid');
+        Route::get('production-project/participant/csv', 'ParticipationProductionProject\ParticipationProductionProjectController@csv');
         Route::get('production-project/participant/peek', 'ParticipationProductionProject\ParticipationProductionProjectController@peek');
         Route::get('production-project/participant/{participantProductionProject}/peek-members', 'ParticipationProductionProject\ParticipationProductionProjectController@peekContactsMembershipRequired');
         Route::get('production-project/participant/{participantProductionProject}', 'ParticipationProductionProject\ParticipationProductionProjectController@show');

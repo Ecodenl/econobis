@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import { hashHistory } from 'react-router';
+import {browserHistory, hashHistory} from 'react-router';
 
 import Panel from '../../../../../../components/panel/Panel';
 import PanelBody from '../../../../../../components/panel/PanelBody';
@@ -24,8 +24,10 @@ class PaymentInvoiceCreateApp extends Component {
 
     componentDidMount() {
         ProductionProjectsAPI.peekDistributionsById(this.props.reportPreview.distributionIds).then((payload) => {
+            let distributionTypeId = payload.data[0].revenue.typeId;
             this.setState({
                 distributions: payload.data,
+                distributionTypeId: distributionTypeId,
             });
         });
     };
@@ -40,10 +42,15 @@ class PaymentInvoiceCreateApp extends Component {
         });
     };
 
-    createPaymentInvoices = () => {
-        ProductionProjectRevenueAPI.createPaymentInvoices(this.props.reportPreview.templateId, this.props.reportPreview.emailTemplateId, this.props.reportPreview.subject, this.props.reportPreview.distributionIds).then((payload) => {
-            fileDownload(payload.data, payload.headers['x-filename']);
-            hashHistory.push(`/financieel/${payload.headers.administrationid}/uitkering-facturen/verzonden`);
+    createPaymentInvoices = (createReport, createInvoice) => {
+        ProductionProjectRevenueAPI.createPaymentInvoices(this.props.reportPreview.templateId, this.props.reportPreview.emailTemplateId, this.props.reportPreview.subject, this.props.reportPreview.distributionIds, createReport, createInvoice).then((payload) => {
+            if(createInvoice) {
+                fileDownload(payload.data, payload.headers['x-filename']);
+                hashHistory.push(`/financieel/${payload.headers.administrationid}/uitkering-facturen/verzonden`);
+            }
+            else{
+                browserHistory.goBack();
+            }
         });
     };
 
@@ -55,7 +62,12 @@ class PaymentInvoiceCreateApp extends Component {
                         <div className="col-md-12 margin-10-top">
                             <Panel>
                                 <PanelBody className={"panel-small"}>
-                                    <PaymentInvoiceCreateToolbar createPaymentInvoices={this.createPaymentInvoices} amountOfDistributions={this.state.distributions ? this.state.distributions.length : 0} administrationId={this.props.params.id}/>
+                                    <PaymentInvoiceCreateToolbar
+                                        createPaymentInvoices={this.createPaymentInvoices}
+                                        amountOfDistributions={this.state.distributions ? this.state.distributions.length : 0}
+                                        administrationId={this.props.params.id}
+                                        distributionTypeId={this.state.distributionTypeId}
+                                    />
                                 </PanelBody>
                             </Panel>
                         </div>

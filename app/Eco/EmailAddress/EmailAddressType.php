@@ -18,6 +18,7 @@ class EmailAddressType extends EnumWithIdAndName
     const HOME = 'home';
     const GENERAL = 'general';
     const ADMINISTRATION = 'administration';
+    const INVOICE = 'invoice';
 
     protected static function seed()
     {
@@ -26,6 +27,7 @@ class EmailAddressType extends EnumWithIdAndName
             new static(static::HOME, 'Privé'),
             new static(static::GENERAL, 'Algemeen'),
             new static(static::ADMINISTRATION, 'Administratie'),
+            new static(static::INVOICE, 'Factuur'),
         ];
     }
 }

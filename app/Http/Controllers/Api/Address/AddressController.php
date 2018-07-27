@@ -34,6 +34,11 @@ class AddressController extends ApiController
             'countryId' => 'nullable',
             'primary' => 'boolean',
         ]);
+
+        if(preg_match('/^\d{4}\s[A-Za-z]{2}$/', $data['postalCode'])){
+            $data['postalCode'] = preg_replace('/\s+/', '', $data['postalCode']);
+        }
+
         $address = new Address($this->arrayKeysToSnakeCase($data));
 
         $this->authorize('create', $address);
@@ -64,6 +69,11 @@ class AddressController extends ApiController
             'countryId' => 'nullable',
             'primary' => 'boolean',
         ]);
+
+        if(preg_match('/^\d{4}\s[A-Za-z]{2}$/', $data['postalCode'])){
+            $data['postalCode'] = preg_replace('/\s+/', '', $data['postalCode']);
+        }
+
         $address->fill($this->arrayKeysToSnakeCase($data));
         $address->save();
 
@@ -79,7 +89,14 @@ class AddressController extends ApiController
 
     public function getPicoAddress(Request $request){
         $pico = app()->make('pico');
-        $address = $pico->bag_adres_pchnr(['query' => ['pc' => $request->input('postalCode'), 'hnr' => $request->input('number')]]);
+
+        $pc = $request->input('postalCode');
+
+        if(preg_match('/^\d{4}\s[A-Za-z]{2}$/', $pc)){
+            $pc = preg_replace('/\s+/', '', $pc);
+        }
+
+        $address = $pico->bag_adres_pchnr(['query' => ['pc' => $pc, 'hnr' => $request->input('number')]]);
 
         //Be carefull when retrieving extra values. In the normal flow this method is called only once, with the first housenumber entered(e.g. 1 for house number 18).
         $street = '';

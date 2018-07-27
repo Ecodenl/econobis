@@ -196,6 +196,8 @@ class OrderController extends ApiController
     {
         //Get email/name based on priority:
         //1 - organisation - administration email
+        //2 - contact person invoice + primary
+        //2 - contact person invoice
         //2 - contact person administration + primary
         //3 - contact person administration
         //4 - contact person primary

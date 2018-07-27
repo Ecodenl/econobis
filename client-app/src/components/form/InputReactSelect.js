@@ -1,10 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import VirtualizedSelect from 'react-virtualized-select'
+import VirtualizedSelect from 'react-virtualized-select';
 
-import 'react-select/dist/react-select.css'
-import 'react-virtualized/styles.css'
-import 'react-virtualized-select/styles.css'
+import 'react-select/dist/react-select.css';
+import 'react-virtualized/styles.css';
+import 'react-virtualized-select/styles.css';
 
 const InputReactSelect = props => {
     const { label, className, size, id, name, value, options, optionId, optionName, onChangeAction, required, multi, error, isLoading} = props;

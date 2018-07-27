@@ -21,6 +21,21 @@ export default {
         });
     },
 
+    getCsv: (filters, extraFilters, sorts, productionProjectId) => {
+        const requestUrl = `${URL_PARTICIPANT_PRODUCTION_PROJECT}/csv`;
+        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
+        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
+
+        return axios.get(requestUrl, {
+            params: {
+                productionProjectId: productionProjectId ? JSON.stringify(productionProjectId) : null,
+                filters: JSON.stringify(filters),
+                extraFilters: JSON.stringify(extraFilters),
+                sorts: JSON.stringify(sorts),
+            },
+        });
+    },
+
     peekParticipantsProductionProjects: () => {
         const requestUrl = `${URL_PARTICIPANT_PRODUCTION_PROJECT}/peek`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');

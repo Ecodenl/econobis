@@ -35,6 +35,7 @@ class ParticipantsListToolbar extends Component {
                                     onClickAction={() => hashHistory.push(`/productie-project/participant/nieuw/${this.props.productionProject.id}`)}/>
                         }
                         <ButtonIcon iconName={"glyphicon-filter"} onClickAction={this.toggleShowExtraFilters} />
+                        <ButtonIcon iconName={"glyphicon-download-alt"} onClickAction={this.props.getCSV} />
                         <ButtonText buttonText={'Rapportage'} onClickAction={this.props.toggleShowCheckboxList}/>
                     </div>
                 </div>

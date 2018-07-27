@@ -30,6 +30,7 @@ class ParticipantsListToolbar extends Component {
                         <ButtonIcon iconName={"glyphicon-refresh"}
                                     onClickAction={this.props.resetParticipantProductionProjectFilters}/>
                         <ButtonIcon iconName={"glyphicon-filter"} onClickAction={this.toggleShowExtraFilters} />
+                        <ButtonIcon iconName={"glyphicon-download-alt"} onClickAction={this.props.getCSV} />
                         <ButtonText buttonText={'Rapportage'} onClickAction={this.props.toggleShowCheckboxList}/>
                     </div>
                 </div>

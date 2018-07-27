@@ -68,6 +68,7 @@ use App\Http\Resources\Team\FullTeam;
 use App\Http\Resources\Title\FullTitle;
 use App\Http\Resources\User\FullUser;
 use Illuminate\Http\Resources\Json\Resource;
+use Illuminate\Support\Facades\App;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
@@ -81,8 +82,9 @@ class SystemData extends Resource
      */
     public function toArray($request)
     {
+        $environment = App::environment();
         //for testing
-        if ($this->app->environment() == 'production') {
+        if ($environment == 'production') {
             $users = FullUser::collection(User::where('id', '!=', '1')->orderBy('last_name', 'asc')->get());
         }
         else {

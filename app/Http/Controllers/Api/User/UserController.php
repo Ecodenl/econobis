@@ -89,7 +89,7 @@ class UserController extends Controller
     }
 
     public function withPermission(Permission $permission){
-        $users = User::permission($permission)->with(['lastNamePrefix', 'title'])->get();
+        $users = User::permission($permission)->with(['lastNamePrefix', 'title'])->where('id', '!=', '1')->get();
         return FullUser::collection($users);
     }
 

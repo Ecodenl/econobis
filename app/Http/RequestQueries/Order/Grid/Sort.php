@@ -15,6 +15,7 @@ class Sort extends RequestSort
 {
 
     protected $fields = [
+        'id',
         'number',
         'dateRequested',
         'subject',
@@ -24,6 +25,7 @@ class Sort extends RequestSort
     ];
 
     protected $mapping = [
+        'id' => 'orders.id',
         'number' => 'orders.number',
         'dateRequested' => 'orders.date_requested',
         'subject' => 'orders.subject',

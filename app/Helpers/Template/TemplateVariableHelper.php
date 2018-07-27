@@ -458,10 +458,10 @@ class TemplateVariableHelper
                 }
                 break;
             case 'iban_uitkeren':
-                return $model->iban_payout;
+                return $model->iban_payout ? $model->iban_payout : $model->contact->iban;
                 break;
             case 'iban_uitkeren_tnv':
-                return $model->iban_payout_attn;
+                return $model->iban_payout_attn ? $model->iban_payout_attn : $model->contact->iban_attn;
                 break;
             case 'einddatum':
                 return $model->date_end ? Carbon::parse($model->date_end)->format('d/m/Y') : null;

@@ -24,6 +24,7 @@ import QuotationRequestsAPI from "../../../api/quotation-request/QuotationReques
 import ProductionProjectsAPI from "../../../api/production-project/ProductionProjectsAPI";
 import ParticipantsProductionProjectAPI from "../../../api/participant-production-project/ParticipantsProductionProjectAPI";
 import OrdersAPI from "../../../api/order/OrdersAPI";
+import EmailDetailsAPI from "../../../api/email/EmailAPI";
 
 class DocumentNewApp extends Component {
     constructor(props) {
@@ -133,6 +134,21 @@ class DocumentNewApp extends Component {
         OrdersAPI.peekOrders().then((payload) => {
             this.setState({ orders: payload });
         });
+
+        if(this.props.params.emailAttachmentId){
+            EmailDetailsAPI.downloadAttachment(this.props.params.emailAttachmentId).then((payload) => {
+                const file = [new File([payload.data], payload.headers['x-filename'])];
+                file.name =  payload.headers['x-filename'];
+                this.setState({
+                    ...this.state,
+                    document: {
+                        ...this.state.document,
+                        attachment: file[0],
+                        filename: payload.headers['x-filename'],
+                    },
+                });
+            });
+        }
     };
 
     handleInputChange(event) {
@@ -178,6 +194,7 @@ class DocumentNewApp extends Component {
     };
 
     onDropAccepted(files) {
+        console.log(files[0]);
         this.setState({
             ...this.state,
             document: {

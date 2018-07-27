@@ -5,7 +5,6 @@ import moment from 'moment';
 
 import DocumentDetailsAPI from '../../../api/document/DocumentDetailsAPI';
 import fileDownload from "js-file-download";
-import EmailDetailsAPI from "../../../api/email/EmailAPI";
 
 class DocumentsListItem extends Component {
     constructor(props) {

@@ -44,13 +44,16 @@ class SendEmailsWithVariables
         $email = $this->email;
         $mailbox = $email->mailbox;
 
-        $config['driver'] = 'smtp';
-        $config['host'] = $mailbox->smtp_host;
-        $config['port'] = $mailbox->smtp_port;
+        if(env('MAIL_DRIVER') !== 'mailgun') {
+            $config['driver'] = 'smtp';
+            $config['host'] = $mailbox->smtp_host;
+            $config['port'] = $mailbox->smtp_port;
+            $config['encryption'] = $mailbox->smtp_encryption;
+            $config['username'] = $mailbox->username;
+            $config['password'] = $mailbox->password;
+        }
+
         $config['from'] = ['address' => $mailbox->email, 'name' => $mailbox->name];
-        $config['encryption'] = $mailbox->smtp_encryption;
-        $config['username'] = $mailbox->username;
-        $config['password'] = $mailbox->password;
 
         Config::set('mail', $config);
 

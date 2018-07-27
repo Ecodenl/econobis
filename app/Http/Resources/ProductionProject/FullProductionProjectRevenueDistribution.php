@@ -4,6 +4,7 @@ namespace App\Http\Resources\ProductionProject;
 
 use App\Http\Resources\Contact\FullContact;
 use App\Http\Resources\GenericResource;
+use App\Http\Resources\ParticipantProductionProject\FullParticipantProductionProject;
 use Illuminate\Http\Resources\Json\Resource;
 
 class FullProductionProjectRevenueDistribution extends Resource
@@ -21,6 +22,7 @@ class FullProductionProjectRevenueDistribution extends Resource
             [
                 'id' => $this->id,
                 'revenueId' => $this->revenue_id,
+                'revenue' => FullProductionProjectRevenue::make($this->whenLoaded('revenue')),
                 'contactId' => $this->contact_id,
                 'contact' => FullContact::make($this->whenLoaded('contact')),
                 'address' => $this->address,

@@ -144,6 +144,7 @@ const Routes = () => {
                 <Route path="contacten/:filter/:value" component={ ContactsListApp } />
                 /* Documents */
                 <Route path="documenten" component={DocumentsListApp} />
+                <Route path="document/nieuw/:type/email-bijlage/:emailAttachmentId" component={DocumentNewApp} />
                 <Route path="document/nieuw/:type" component={DocumentNewApp} />
                 <Route path="document/nieuw/:type/contact/:contactId" component={DocumentNewApp} />
                 <Route path="document/nieuw/:type/contact-groep/:contactGroupId" component={DocumentNewApp} />

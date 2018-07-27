@@ -62,4 +62,12 @@ class Address extends Model
 
         return AddressType::get($this->type_id);
     }
+
+    public function getPostalCodeAttribute($postalCode){
+        if(preg_match('/^\d{4}[A-Za-z]{2}$/', $postalCode)){
+            $postalCode = substr_replace($postalCode, ' ', 4, 0);
+        }
+
+        return $postalCode;
+    }
 }

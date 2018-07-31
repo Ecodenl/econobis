@@ -12,6 +12,7 @@ import {connect} from "react-redux";
 import {clearPreviewReport} from "../../../../../../actions/production-project/ProductionProjectDetailsActions";
 import ProductionProjectRevenueAPI from "../../../../../../api/production-project/ProductionProjectRevenueAPI";
 import fileDownload from "js-file-download";
+import Modal from "../../../../../../components/modal/Modal";
 
 class PaymentInvoiceCreateApp extends Component {
     constructor(props) {
@@ -19,6 +20,8 @@ class PaymentInvoiceCreateApp extends Component {
         this.state = {
             distributions: [],
             distributionId: '',
+            successMessage: '',
+            redirect: '',
         };
     };
 
@@ -44,16 +47,36 @@ class PaymentInvoiceCreateApp extends Component {
 
     createPaymentInvoices = (createReport, createInvoice) => {
         ProductionProjectRevenueAPI.createPaymentInvoices(this.props.reportPreview.templateId, this.props.reportPreview.emailTemplateId, this.props.reportPreview.subject, this.props.reportPreview.distributionIds, createReport, createInvoice).then((payload) => {
-            if(createInvoice) {
+            if (createInvoice) {
                 fileDownload(payload.data, payload.headers['x-filename']);
-                hashHistory.push(`/financieel/${payload.headers.administrationid}/uitkering-facturen/verzonden`);
+                if (createReport) {
+                    this.setState({
+                        successMessage: 'De rapporten zijn verzonden en de facturen gemaakt.',
+                        redirect: `/financieel/${payload.headers.administrationid}/uitkering-facturen/verzonden`,
+                    });
+                }
+                else {
+                    this.setState({
+                        successMessage: 'De facturen zijn gemaakt.',
+                        redirect: `/financieel/${payload.headers.administrationid}/uitkering-facturen/verzonden`,
+                    });
+                }
             }
-            else{
-                browserHistory.goBack();
+            else {
+                this.setState({
+                    successMessage: 'De rapporten zijn verzonden.',
+                });
             }
         });
     };
 
+    redirect = () => {
+      if(this.state.redirect){
+          hashHistory.push(this.state.redirect);
+      }else{
+          browserHistory.goBack();
+        }
+    };
     render() {
         return (
             <div>
@@ -102,6 +125,16 @@ class PaymentInvoiceCreateApp extends Component {
                     </div>
                 </div>
             </div>
+                {this.state.successMessage &&
+               <Modal
+               closeModal={this.redirect}
+               buttonCancelText={"Ok"}
+               showConfirmAction={false}
+               title={'Succes'}
+               >
+                   {this.state.successMessage}
+               </Modal>
+                }
             </div>
         )
     }

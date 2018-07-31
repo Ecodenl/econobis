@@ -148,6 +148,8 @@ class SystemData extends Resource
             'paymentInvoiceStatuses' => FullEnumWithIdAndName::collection(PaymentInvoiceStatus::collection()),
             'products' => FullProduct::collection(Product::whereNull('deleted_at')->get()),
             'contactGroupTypes' => FullEnumWithIdAndName::collection(ContactGroupType::collection()),
+            'usesMailgun' =>  config('mail.driver') === 'mailgun' ? true : false,
+            'mailgunDomain' => array((object)["id"=> config('mail.mailgun_domain'), "name" => config('mail.mailgun_domain')]),
         ];
     }
 }

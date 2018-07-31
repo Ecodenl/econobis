@@ -16,8 +16,12 @@ const MailboxesList = props => {
                             <DataTableHeadTitle title={'Naam'} width={"19%"}/>
                             <DataTableHeadTitle title={'E-mail'} width={"19%"} />
                             <DataTableHeadTitle title={'Gebruikersnaam'} width={"19%"} />
-                            <DataTableHeadTitle title={'Ink.server'} width={"19%"} />
-                            <DataTableHeadTitle title={'Uitg.server'} width={"19%"} />
+                            <DataTableHeadTitle title={'Ink.server'} width={"19%"}/>
+                            {props.usesMailgun ?
+                                <DataTableHeadTitle title={'Mailgun domein'} width={"19%"}/>
+                                :
+                                <DataTableHeadTitle title={'Uitg.server'} width={"19%"}/>
+                            }
                             <DataTableHeadTitle title={''} width={"5%"} />
                         </tr>
                     </DataTableHead>
@@ -43,6 +47,7 @@ const MailboxesList = props => {
 const mapStateToProps = (state) => {
     return {
         mailboxes: state.mailboxes,
+        usesMailgun: state.systemData.usesMailgun,
     };
 };
 

@@ -3,8 +3,6 @@ import {connect} from 'react-redux';
 
 import MailboxDetailsFormGeneralEdit from './MailboxDetailsFormGeneralEdit';
 import MailboxDetailsFormGeneralView from './MailboxDetailsFormGeneralView';
-import Panel from '../../../../components/panel/Panel';
-import PanelBody from '../../../../components/panel/PanelBody';
 
 class MailboxDetailsFormGeneral extends Component {
     constructor(props) {
@@ -63,7 +61,7 @@ const mapStateToProps = (state) => {
     return {
         mailboxDetails: state.mailboxDetails,
         meDetails: state.meDetails,
-        permissions: state.meDetails.permissions
+        permissions: state.meDetails.permissions,
     };
 };
 

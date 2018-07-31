@@ -44,7 +44,7 @@ class SendEmailsWithVariables
         $email = $this->email;
         $mailbox = $email->mailbox;
 
-        if(env('MAIL_DRIVER') !== 'mailgun') {
+        if(config('mail.driver') !== 'mailgun') {
             $config['driver'] = 'smtp';
             $config['host'] = $mailbox->smtp_host;
             $config['port'] = $mailbox->smtp_port;

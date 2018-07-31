@@ -280,8 +280,14 @@ class EmailController
     public function downloadEmailAttachment(EmailAttachment $emailAttachment)
     {
         $filePath = Storage::disk('mail_attachments')->getDriver()->getAdapter()->applyPathPrefix($emailAttachment->filename);
+
+        $contactId = '';
+        if($emailAttachment->email->contacts()->count() === 1) {
+            $contactId = $emailAttachment->email->contacts()->first()->id;
+        }
         header('X-Filename:' . $emailAttachment->name);
-        header('Access-Control-Expose-Headers: X-Filename');
+        header('X-ContactId:' . $contactId);
+        header('Access-Control-Expose-Headers: X-Filename, X-ContactId');
         return response()->download($filePath, $emailAttachment->name);
     }
 

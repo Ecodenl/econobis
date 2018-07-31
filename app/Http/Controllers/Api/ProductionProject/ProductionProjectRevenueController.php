@@ -383,8 +383,10 @@ class ProductionProjectRevenueController extends ApiController
     {
         $this->authorize('manage', ProductionProjectRevenue::class);
 
+        $ids = $request->input('ids') ? $request->input('ids') : [];
+
         $distribution = ProductionProjectRevenueDistribution::whereIn('id',
-            $request->input('ids'))->with(['contact', 'revenue'])->get();
+            $ids)->with(['contact', 'revenue'])->get();
 
         return FullProductionProjectRevenueDistribution::collection($distribution);
     }

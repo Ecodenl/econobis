@@ -164,15 +164,26 @@ class MailboxDetailsFormGeneralEdit extends Component {
                                 required={"required"}
                                 error={this.state.errors.imapHost}
                             />
+                            {this.props.usesMailgun ?
+                                <InputSelect
+                                    label="Mailgun domein"
+                                    name={"smtpHost"}
+                                    value={smtpHost}
+                                    options={this.props.mailgunDomain}
+                                    onChangeAction={this.handleInputChange}
+                                    error={this.state.errors.smtpHost}
+                                />
+                                :
+                                <InputText
+                                    label="Uitgaande server"
+                                    name={"smtpHost"}
+                                    value={smtpHost}
+                                    onChangeAction={this.handleInputChange}
+                                    required={"required"}
+                                    error={this.state.errors.smtpHost}
+                                />
+                            }
 
-                            <InputText
-                                label="Uitgaande server"
-                                name={"smtpHost"}
-                                value={smtpHost}
-                                onChangeAction={this.handleInputChange}
-                                required={"required"}
-                                error={this.state.errors.smtpHost}
-                            />
 
                         </div>
                     </PanelBody>
@@ -242,6 +253,8 @@ class MailboxDetailsFormGeneralEdit extends Component {
 const mapStateToProps = (state) => {
     return {
         mailboxDetails: state.mailboxDetails,
+        usesMailgun: state.systemData.usesMailgun,
+        mailgunDomain: state.systemData.mailgunDomain,
     };
 };
 

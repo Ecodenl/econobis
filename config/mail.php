@@ -17,6 +17,7 @@ return [
     */
 
     'driver' => env('MAIL_DRIVER', 'smtp'),
+    'mailgun_domain' => env('MAILGUN_DOMAIN', ''),
 
     /*
     |--------------------------------------------------------------------------

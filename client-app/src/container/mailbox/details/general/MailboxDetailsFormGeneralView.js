@@ -44,11 +44,17 @@ const MailboxDetailsFormGeneralView = props => {
                             label="Inkomende server"
                             value={imapHost}
                         />
-
-                        <ViewText
-                            label="Uitgaande server"
-                            value={smtpHost}
-                        />
+                        {props.usesMailgun ?
+                            <ViewText
+                                label="Mailgun domein"
+                                value={smtpHost}
+                            />
+                            :
+                            <ViewText
+                                label="Uitgaande server"
+                                value={smtpHost}
+                            />
+                        }
                     </div>
                 </PanelBody>
 
@@ -91,6 +97,8 @@ const MailboxDetailsFormGeneralView = props => {
 const mapStateToProps = (state) => {
     return {
         mailboxDetails: state.mailboxDetails,
+        usesMailgun: state.systemData.usesMailgun,
+        mailgunDomain: state.systemData.mailgunDomain,
     };
 };
 

@@ -9,6 +9,8 @@ import PanelBody from "../../../components/panel/PanelBody";
 import PanelHeader from "../../../components/panel/PanelHeader";
 import Panel from "../../../components/panel/Panel";
 import MailboxAPI from '../../../api/mailbox/MailboxAPI';
+import {previewReport} from "../../../actions/production-project/ProductionProjectDetailsActions";
+import {connect} from "react-redux";
 
 class MailboxNewForm extends Component {
     constructor(props) {
@@ -21,7 +23,7 @@ class MailboxNewForm extends Component {
                 email: '',
                 username: '',
                 password: '',
-                smtpHost: '',
+                smtpHost: this.props.mailgunDomain || '',
                 smtpPort: '',
                 smtpEncryption: '',
                 imapHost: '',
@@ -174,7 +176,16 @@ class MailboxNewForm extends Component {
                                 required={"required"}
                                 error={this.state.errors.imapHost}
                             />
-
+                            {this.props.usesMailgun ?
+                                <InputSelect
+                                    label="Mailgun domein"
+                                    name={"smtpHost"}
+                                    value={smtpHost}
+                                    options={this.props.mailgunDomain}
+                                    onChangeAction={this.handleInputChange}
+                                    error={this.state.errors.smtpHost}
+                                />
+                                :
                             <InputText
                                 label="Uitgaande server"
                                 name={"smtpHost"}
@@ -183,6 +194,7 @@ class MailboxNewForm extends Component {
                                 required={"required"}
                                 error={this.state.errors.smtpHost}
                             />
+                            }
 
                         </div>
                     </PanelBody>
@@ -248,4 +260,11 @@ class MailboxNewForm extends Component {
     };
 };
 
-export default MailboxNewForm;
+const mapStateToProps = (state) => {
+    return {
+        usesMailgun: state.systemData.usesMailgun,
+        mailgunDomain: state.systemData.mailgunDomain,
+    };
+};
+
+export default connect(mapStateToProps)(MailboxNewForm);

@@ -145,6 +145,7 @@ class DocumentNewApp extends Component {
                         ...this.state.document,
                         attachment: file[0],
                         filename: payload.headers['x-filename'],
+                        contactId: payload.headers['x-contactid'],
                     },
                 });
             });

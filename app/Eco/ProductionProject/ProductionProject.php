@@ -89,7 +89,7 @@ class ProductionProject extends Model
     }
 
     public function participantsProductionProject(){
-        return $this->hasMany(ParticipantProductionProject::class, 'production_project_id')->whereNull('deleted_at');
+        return $this->hasMany(ParticipantProductionProject::class, 'production_project_id')->whereNull('participation_production_project.deleted_at');
     }
 
     public function requiresContactGroups(){

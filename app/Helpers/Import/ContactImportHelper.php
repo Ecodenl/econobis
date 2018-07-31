@@ -309,7 +309,7 @@ class ContactImportHelper
 
                 $person = new Person();
                 $person->contact_id = $contact->id;
-                $person->title_id = $line[0];
+                $person->title_id = $line[0] ? $line[0] : null;
                 $person->initials = $line[1];
                 $person->first_name = $line[2];
                 $person->last_name_prefix = $line[3];

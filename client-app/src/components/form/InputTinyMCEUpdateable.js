@@ -25,11 +25,9 @@ class InputTinyMCEUpdateable extends Component {
         if(this.props.value !== nextProps.value) {
             const editor = window.tinymce.EditorManager.get('tinyMCEUpdateable');
             if (nextProps.value && !isEqual(editor.getContent({format: 'raw'}), nextProps.value)) {
-                const bookmark = editor.selection.getBookmark();//workaround voor enter -> naar einde pagina bug
-                editor.setContent(nextProps.value, {format: 'raw'});
+                editor.setContent(nextProps.value);
                 editor.selection.select(editor.getBody(), true);
                 editor.selection.collapse(false);
-                editor.selection.moveToBookmark(bookmark);
             }
         }
     };
@@ -54,7 +52,7 @@ class InputTinyMCEUpdateable extends Component {
                             toolbar: 'undo redo | formatselect | bold italic forecolor | alignleft aligncenter alignright | bullist numlist outdent indent | table | link image | code',
                             height: "300",
                         }}
-                        onChange={this.onChangeAction}
+                        onChange={onChangeAction}
                     />
                 </div>
             </div>

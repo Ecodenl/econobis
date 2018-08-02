@@ -134,7 +134,7 @@ class ConceptApp extends Component {
             ...this.state,
             email: {
                 ...this.state.email,
-                htmlBody: event.target.getContent()
+                htmlBody: event.target.getContent(({format: 'raw'}))
             },
         });
     };

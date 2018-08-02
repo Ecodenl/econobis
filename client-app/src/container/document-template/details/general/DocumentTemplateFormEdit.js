@@ -94,7 +94,7 @@ class DocumentTemplateFormEdit extends Component {
             ...this.state,
             documentTemplate: {
                 ...this.state.documentTemplate,
-                htmlBody: event.target.getContent()
+                htmlBody: event.target.getContent(({format: 'raw'}))
             },
         });
     };

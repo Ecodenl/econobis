@@ -71,7 +71,6 @@ class ContactNewFormPersonal extends Component {
             },
             errors: {
                 name: false,
-                statusId: false,
             },
             addressErrors: {
                 typeId: false,
@@ -243,11 +242,6 @@ class ContactNewFormPersonal extends Component {
             hasErrors = true;
         };
 
-        if (validator.isEmpty(person.statusId)) {
-            errors.statusId = true;
-            hasErrors = true;
-        };
-
         const {address} = this.state;
 
         // Postalcode always to uppercase
@@ -370,8 +364,6 @@ class ContactNewFormPersonal extends Component {
                         options={this.props.contactStatuses}
                         value={statusId}
                         onChangeAction={this.handleInputChange}
-                        required={"required"}
-                        error={this.state.errors.statusId}
                     />
                 </div>
 

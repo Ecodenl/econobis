@@ -9,7 +9,7 @@ const ContactDetailsFormPersonalView = props => {
 
     return (
         <div>
-            <div className="row" onClick={props.switchToEdit}>
+            <div className="row">
                 <ViewText
                     label={"Contactnummer"}
                     value={number}
@@ -17,7 +17,7 @@ const ContactDetailsFormPersonalView = props => {
                 />
             </div>
 
-            <div className="row" onClick={props.switchToEdit}>
+            <div className="row">
                 <ViewText
                     label={"Gemaakt op"}
                     value={moment(createdAt.date).format('DD-MM-Y')}
@@ -25,7 +25,7 @@ const ContactDetailsFormPersonalView = props => {
                 />
             </div>
 
-            <div className="row" onClick={props.switchToEdit}>
+            <div className="row">
                 <ViewText
                     label="Aanspreektitel"
                     value={ person.title && person.title.name}
@@ -33,7 +33,7 @@ const ContactDetailsFormPersonalView = props => {
                 />
             </div>
 
-            <div className="row" onClick={props.switchToEdit}>
+            <div className="row">
                 <ViewText
                     label="Status"
                     value={ status && status.name}
@@ -41,7 +41,7 @@ const ContactDetailsFormPersonalView = props => {
                 />
             </div>
 
-            <div className="row" onClick={props.switchToEdit}>
+            <div className="row">
                 <ViewText
                     label="Voorletters"
                     value={ person.initials }
@@ -49,7 +49,7 @@ const ContactDetailsFormPersonalView = props => {
                 />
             </div>
 
-            <div className="row" onClick={props.switchToEdit}>
+            <div className="row">
                 <ViewText
                     label="Voornaam"
                     value={ person.firstName }
@@ -57,7 +57,7 @@ const ContactDetailsFormPersonalView = props => {
                 />
             </div>
 
-            <div className="row" onClick={props.switchToEdit}>
+            <div className="row">
                 <ViewText
                     label="Tussenvoegsel"
                     value={ person.lastNamePrefix }
@@ -65,7 +65,7 @@ const ContactDetailsFormPersonalView = props => {
                 />
             </div>
 
-            <div className="row" onClick={props.switchToEdit}>
+            <div className="row">
                 <ViewText
                     label="Soort contact"
                     value={person.type && person.type.name}
@@ -73,7 +73,7 @@ const ContactDetailsFormPersonalView = props => {
                 />
             </div>
 
-            <div className="row" onClick={props.switchToEdit}>
+            <div className="row">
                 <ViewText
                     label="Achternaam"
                     value={ person.lastName }
@@ -81,7 +81,7 @@ const ContactDetailsFormPersonalView = props => {
                 />
             </div>
 
-            <div className="row" onClick={props.switchToEdit}>
+            <div className="row">
                 <ViewText
                     label={"Geboortedatum"}
                     value={person.dateOfBirth && moment(person.dateOfBirth.date).format('DD-MM-Y')}
@@ -89,7 +89,7 @@ const ContactDetailsFormPersonalView = props => {
                 />
             </div>
 
-            <div className="row" onClick={props.switchToEdit}>
+            <div className="row">
                 <ViewText
                     label="Nieuwsbrief"
                     value={(newsletter ? 'Ja' : 'Nee')}
@@ -97,7 +97,7 @@ const ContactDetailsFormPersonalView = props => {
                 />
             </div>
 
-            <div className="row" onClick={props.switchToEdit}>
+            <div className="row">
                 <ViewText
                     label="Akkoord privacybeleid"
                     value={(didAgreeAvg ? 'Ja' : 'Nee')}

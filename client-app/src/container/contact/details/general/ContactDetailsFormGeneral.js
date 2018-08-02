@@ -31,10 +31,13 @@ class ContactDetailsFormGeneral extends Component {
     };
 
     switchToView = () => {
-        this.setState({
-            showEdit: false,
-            activeDiv: '',
-        })
+        setTimeout(() => {
+            this.setState({
+                showEdit: false,
+                activeDiv: '',
+            })
+        }, 100);
+
     };
 
     onDivEnter() {
@@ -55,7 +58,7 @@ class ContactDetailsFormGeneral extends Component {
         return (
             <Panel className={this.state.activeDiv} onMouseEnter={() => this.onDivEnter()} onMouseLeave={() => this.onDivLeave()}>
                 <PanelBody>
-                    <div className={'row'}>
+                    <div className={'row'} onClick={this.switchToEdit}>
                         <div className={'col-xs-6'}>
                     {
                         this.state.showEdit ?
@@ -65,9 +68,9 @@ class ContactDetailsFormGeneral extends Component {
                                 <ContactDetailsFormPersonalEdit switchToView={this.switchToView} />
                             :
                             this.props.contactDetails.typeId === 'organisation' ?
-                                <ContactDetailsFormOrganisationView switchToEdit={this.switchToEdit}/>
+                                <ContactDetailsFormOrganisationView/>
                                 :
-                                <ContactDetailsFormPersonalView switchToEdit={this.switchToEdit}/>
+                                <ContactDetailsFormPersonalView/>
                     }
                         </div>
                         <div className={'col-xs-6'}>

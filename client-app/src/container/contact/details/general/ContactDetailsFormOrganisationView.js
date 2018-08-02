@@ -8,7 +8,7 @@ const ContactDetailsFormOrganisationView = props => {
     const {number, organisation, status, iban, ibanAttn, createdAt, newsletter, didAgreeAvg} = props.contactDetails;
 
     return (
-        <div onClick={props.switchToEdit}>
+        <div>
             <div className="row">
                 <ViewText
                     className={'col-xs-12'}

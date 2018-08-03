@@ -45,6 +45,7 @@ class InputTinyMCEUpdateable extends Component {
                         id={'tinyMCEUpdateable'}
                         initialValue={value}
                         init={{
+                            // images_upload_url : 'youruploadscript.php',
                             branding: false,
                             language: 'nl',
                             menubar: false,

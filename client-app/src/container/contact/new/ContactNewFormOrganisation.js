@@ -41,7 +41,6 @@ class ContactNewFormOrganisation extends Component {
             },
             errors: {
                 name: false,
-                statusId: false,
                 iban: false,
             },
         }
@@ -83,11 +82,6 @@ class ContactNewFormOrganisation extends Component {
 
         if(validator.isEmpty(organisation.name)){
             errors.name = true;
-            hasErrors = true;
-        };
-
-        if(validator.isEmpty(organisation.statusId)){
-            errors.statusId = true;
             hasErrors = true;
         };
 
@@ -150,8 +144,6 @@ class ContactNewFormOrganisation extends Component {
                         options={this.props.contactStatuses}
                         value={statusId}
                         onChangeAction={this.handleInputChange}
-                        required={"required"}
-                        error={this.state.errors.statusId}
                     />
                 </div>
 

@@ -57,12 +57,16 @@ class ProductDetailsFormGeneralEdit extends Component {
         let errors = {};
         let hasErrors = false;
 
-        if (validator.isEmpty(product.code + '')) {
+        let productCodeNotUnique = false;
+        this.props.products.map((existingProduct) => ((existingProduct.code == product.code && existingProduct.id != product.id) && (productCodeNotUnique = true)));
+        if (validator.isEmpty(product.code + '') || productCodeNotUnique) {
             errors.code = true;
             hasErrors = true;
         }
 
-        if (validator.isEmpty(product.name + '')) {
+        let productNameNotUnique = false;
+        this.props.products.map((existingProduct) => ((existingProduct.name == product.name && existingProduct.id != product.id) && (productNameNotUnique = true)));
+        if (validator.isEmpty(product.name + '') || productNameNotUnique) {
             errors.name = true;
             hasErrors = true;
         }
@@ -179,6 +183,7 @@ const mapStateToProps = (state) => {
         productPaymentTypes: state.systemData.productPaymentTypes,
         productDetails: state.productDetails,
         administrations: state.meDetails.administrations,
+        products: state.systemData.products,
     };
 };
 

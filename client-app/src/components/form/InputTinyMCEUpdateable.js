@@ -23,7 +23,6 @@ class InputTinyMCEUpdateable extends Component {
 
     componentWillReceiveProps(nextProps) {
         if(this.props.value !== nextProps.value) {
-
             const editor = window.tinymce.EditorManager.get('tinyMCEUpdateable');
             if (nextProps.value && !isEqual(editor.getContent({format: 'raw'}), nextProps.value)) {
                 editor.setContent(nextProps.value);
@@ -46,6 +45,7 @@ class InputTinyMCEUpdateable extends Component {
                         id={'tinyMCEUpdateable'}
                         initialValue={value}
                         init={{
+                            // images_upload_url : 'youruploadscript.php',
                             branding: false,
                             language: 'nl',
                             menubar: false,

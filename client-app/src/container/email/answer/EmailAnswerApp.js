@@ -9,6 +9,7 @@ import PanelBody from '../../../components/panel/PanelBody';
 import EmailAPI from '../../../api/email/EmailAPI';
 import EmailAddressAPI from '../../../api/contact/EmailAddressAPI';
 import {hashHistory} from "react-router";
+import EmailTemplateAPI from "../../../api/email-template/EmailTemplateAPI";
 
 class EmailAnswerApp extends Component {
     constructor(props) {
@@ -18,6 +19,8 @@ class EmailAnswerApp extends Component {
             buttonLoading: false,
             oldEmailId: null,
             emailAddresses: [],
+            originalHtmlBody: "",
+            emailTemplates: [],
             email: {
                 from: '',
                 mailboxId: '',
@@ -35,6 +38,7 @@ class EmailAnswerApp extends Component {
         };
 
         this.handleInputChange = this.handleInputChange.bind(this);
+        this.handleEmailTemplates = this.handleEmailTemplates.bind(this);
         this.handleToIds = this.handleToIds.bind(this);
         this.handleCcIds = this.handleCcIds.bind(this);
         this.handleBccIds = this.handleBccIds.bind(this);
@@ -69,12 +73,19 @@ class EmailAnswerApp extends Component {
                 type = 'reply';
         };
 
+        EmailTemplateAPI.fetchEmailTemplatesPeek().then((payload) => {
+            this.setState({
+                emailTemplates: payload,
+            });
+        });
+
         EmailAPI.fetchEmailByType(this.props.params.id, type).then((payload) => {
             const extraOptions = this.createExtraOptions(payload.to, payload.cc, payload.bcc);
 
             this.setState({
                 ...this.state,
                 oldEmailId: payload.id,
+                originalHtmlBody: payload.htmlBody ? payload.htmlBody : '',
                 email: {
                     from: payload.from,
                     mailboxId: payload.mailboxId,
@@ -89,6 +100,27 @@ class EmailAnswerApp extends Component {
                 hasLoaded: true,
             });
         });
+    };
+
+    handleEmailTemplates(selectedOption) {
+        this.setState({
+            ...this.state,
+            email: {
+                ...this.state.email,
+                emailTemplateId: selectedOption
+            },
+        });
+        EmailTemplateAPI.fetchEmailTemplateWithUser(selectedOption).then((payload) => {
+            this.setState({
+                ...this.state,
+                email: {
+                    ...this.state.email,
+                    htmlBody: payload.htmlBody ? (payload.htmlBody + this.state.originalHtmlBody) : this.state.email.htmlBody,
+                },
+            });
+        });
+
+
     };
 
     createExtraOptions(to, cc, bcc) {
@@ -152,7 +184,7 @@ class EmailAnswerApp extends Component {
             ...this.state,
             email: {
                 ...this.state.email,
-                htmlBody: event.target.getContent()
+                htmlBody: event.target.getContent(({format: 'raw'}))
             },
         });
     };
@@ -264,6 +296,8 @@ class EmailAnswerApp extends Component {
                             handleInputChange={this.handleInputChange}
                             handleTextChange={this.handleTextChange}
                             addAttachment={this.addAttachment}
+                            emailTemplates={this.state.emailTemplates}
+                            handleEmailTemplates={this.handleEmailTemplates}
                         />
 
                     </div>

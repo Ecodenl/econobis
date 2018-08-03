@@ -1,13 +1,13 @@
 import React from 'react';
 
 import PanelBody from "../../../../components/panel/PanelBody";
-import InputTinyMCE from "../../../../components/form/InputTinyMCE";
 import InputMultiSelectCreate from "../../../../components/form/InputMultiSelectCreate";
-import ViewText from "../../../../components/form/ViewText";
-import moment from "moment/moment";
+import InputMultiSelect from "../../../../components/form/InputMultiSelect";
+import InputTinyMCEUpdateable from "../../../../components/form/InputTinyMCEUpdateable";
 
-const EmailAnswerFormGeneral = ({email, emailAddresses, errors, hasLoaded, handleSubmit, handleToIds, handleCcIds, handleBccIds, handleInputChange, handleTextChange}) => {
-    const { from, to, cc, bcc, subject, htmlBody } = email;
+const EmailAnswerFormGeneral = ({email, emailAddresses, errors, hasLoaded, handleToIds, handleCcIds, handleBccIds, handleInputChange,
+                                    handleTextChange, emailTemplates, handleEmailTemplates}) => {
+    const { from, to, cc, bcc, subject, htmlBody, emailTemplateId } = email;
 
     return (
             <PanelBody>
@@ -42,7 +42,6 @@ const EmailAnswerFormGeneral = ({email, emailAddresses, errors, hasLoaded, handl
                         options={emailAddresses}
                         optionName={"name"}
                         onChangeAction={handleCcIds}
-                        required={"required"}
                         error={errors.to}
                     />
                 </div>
@@ -54,10 +53,21 @@ const EmailAnswerFormGeneral = ({email, emailAddresses, errors, hasLoaded, handl
                         options={emailAddresses}
                         optionName={"name"}
                         onChangeAction={handleBccIds}
-                        required={"required"}
                         error={errors.to}
                     />
                 </div>
+
+                <div className="row">
+                    <InputMultiSelect
+                        label="Template"
+                        name={"emailTemplateId"}
+                        value={emailTemplateId}
+                        options={emailTemplates}
+                        onChangeAction={handleEmailTemplates}
+                        multi={false}
+                    />
+                </div>
+
                 <div className="row">
                     <div className="form-group col-sm-12">
                         <div className="row">
@@ -81,7 +91,7 @@ const EmailAnswerFormGeneral = ({email, emailAddresses, errors, hasLoaded, handl
                         <div className="row">
                             {
                                 hasLoaded &&
-                                <InputTinyMCE
+                                <InputTinyMCEUpdateable
                                     label={"Tekst"}
                                     value={htmlBody}
                                     onChangeAction={handleTextChange}

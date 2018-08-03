@@ -17,7 +17,7 @@ class ContactDetailsFormOrganisationEdit extends Component {
     constructor(props) {
         super(props);
 
-        const { number, organisation, iban, ibanAttn, createdAt, newsletter, didAgreeAvg } = props.contactDetails;
+        const { number, organisation, status, iban, ibanAttn, createdAt, newsletter, didAgreeAvg } = props.contactDetails;
 
         this.state = {
             organisation: {
@@ -28,6 +28,7 @@ class ContactDetailsFormOrganisationEdit extends Component {
                 chamberOfCommerceNumber: organisation.chamberOfCommerceNumber,
                 vatNumber: organisation.vatNumber,
                 industryId: organisation.industryId ? organisation.industryId : '',
+                statusId: status ? status.id : '',
                 typeId: organisation.type ? organisation.type.id : '',
                 website: organisation.website,
                 iban: iban,
@@ -38,7 +39,6 @@ class ContactDetailsFormOrganisationEdit extends Component {
             },
             errors: {
                 name: false,
-                statusId: false,
                 iban: false,
             },
         }
@@ -88,7 +88,7 @@ class ContactDetailsFormOrganisationEdit extends Component {
     };
 
     render() {
-        const { number, typeId, name, chamberOfCommerceNumber, vatNumber, industryId, createdAt, newsletter, didAgreeAvg, website, iban, ibanAttn, squareMeters } = this.state.organisation;
+        const { number, typeId, statusId, name, chamberOfCommerceNumber, vatNumber, industryId, createdAt, newsletter, didAgreeAvg, website, iban, ibanAttn, squareMeters } = this.state.organisation;
 
         return (
             <form className="form-horizontal col-md-12" onSubmit={this.handleSubmit}>
@@ -125,13 +125,13 @@ class ContactDetailsFormOrganisationEdit extends Component {
                 </div>
 
                 <div className="row">
-                    <InputText
+                    <InputSelect
                         label={"Status"}
-                        divSize={'col-xs-12'}
-                        id={"status"}
-                        name={"status"}
-                        value={this.props.contactDetails.status ? this.props.contactDetails.status.name : ''}
-                        readOnly={true}
+                        size={"col-xs-12"}
+                        name={"statusId"}
+                        options={this.props.contactStatuses}
+                        value={statusId}
+                        onChangeAction={this.handleInputChange}
                     />
                 </div>
 

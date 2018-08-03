@@ -17,7 +17,7 @@ class ContactDetailsFormPersonalEdit extends Component {
     constructor(props) {
         super(props);
 
-        const { number, createdAt, person, newsletter, didAgreeAvg } = props.contactDetails;
+        const { status, number, createdAt, person, newsletter, didAgreeAvg } = props.contactDetails;
 
         this.state = {
             organisationPeek: [
@@ -36,6 +36,7 @@ class ContactDetailsFormPersonalEdit extends Component {
                 lastNamePrefixId: person.lastNamePrefixId ? person.lastNamePrefixId : '',
                 lastNamePrefix: person.lastNamePrefix ? person.lastNamePrefix : '',
                 lastName: person.lastName,
+                statusId: status? status.id : "",
                 typeId: person.type ? person.type.id : '',
                 dateOfBirth: person.dateOfBirth ? moment(person.dateOfBirth.date).format('Y-MM-DD') : '',
                 newsletter: newsletter,
@@ -107,7 +108,7 @@ class ContactDetailsFormPersonalEdit extends Component {
     };
 
     render() {
-        const {number, createdAt, titleId, typeId, initials, firstName, lastNamePrefixId, lastName, dateOfBirth, newsletter, didAgreeAvg, lastNamePrefix} = this.state.person;
+        const {statusId, number, createdAt, titleId, typeId, initials, firstName, lastNamePrefixId, lastName, dateOfBirth, newsletter, didAgreeAvg, lastNamePrefix} = this.state.person;
 
         return (
             <form className="form-horizontal col-md-12" onSubmit={this.handleSubmit}>
@@ -144,13 +145,13 @@ class ContactDetailsFormPersonalEdit extends Component {
                 </div>
 
                 <div className="row">
-                    <InputText
+                    <InputSelect
                         label={"Status"}
-                        divSize={'col-xs-12'}
-                        id={"status"}
-                        name={"status"}
-                        value={ this.props.contactDetails.status ? this.props.contactDetails.status.name : '' }
-                        readOnly={ true }
+                        size={"col-xs-12"}
+                        name={"statusId"}
+                        options={this.props.contactStatuses}
+                        value={statusId}
+                        onChangeAction={this.handleInputChange}
                     />
                 </div>
 

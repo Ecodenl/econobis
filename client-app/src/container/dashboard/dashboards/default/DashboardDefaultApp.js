@@ -12,7 +12,7 @@ class DashboardDefaultApp extends Component {
                     <ButtonEmails size={'col-xs-3'}/>
                     <ButtonTasks size={'col-xs-3'}/>
                 </div>
-                <DashboardMain/>
+                {/*<DashboardMain/>*/}
             </div>
         )
     }

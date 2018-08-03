@@ -52,7 +52,7 @@ class EmailTemplateFormEdit extends Component {
             ...this.state,
             emailTemplate: {
                 ...this.state.emailTemplate,
-                htmlBody: event.target.getContent()
+                htmlBody: event.target.getContent(({format: 'raw'}))
             },
         });
     };

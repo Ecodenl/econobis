@@ -16,6 +16,9 @@ class ProductDetailsFormGeneralEdit extends Component {
         const { id, code, name, invoiceText, durationId, invoiceFrequencyId, paymentTypeId, administrationId} = props.productDetails;
 
         this.state = {
+            errorMessage: false,
+            oldCode: code ? code : "",
+            oldName: name ? name : "",
             product: {
                 id,
                 code: code ? code : '',
@@ -55,18 +58,37 @@ class ProductDetailsFormGeneralEdit extends Component {
 
         // Validation
         let errors = {};
+        let errorMessage = false;
         let hasErrors = false;
 
         let productCodeNotUnique = false;
-        this.props.products.map((existingProduct) => ((existingProduct.code == product.code && existingProduct.id != product.id) && (productCodeNotUnique = true)));
-        if (validator.isEmpty(product.code + '') || productCodeNotUnique) {
+        this.props.products.map((existingProduct) => ((existingProduct.code == product.code) && (productCodeNotUnique = true)));
+
+        if (productCodeNotUnique && (product.code !== this.state.oldCode)) {
+            errorMessage = "Productcode moet uniek zijn.";
+            errors.code = true;
+            hasErrors = true;
+        }
+
+        if (validator.isEmpty(product.code + '')) {
             errors.code = true;
             hasErrors = true;
         }
 
         let productNameNotUnique = false;
-        this.props.products.map((existingProduct) => ((existingProduct.name == product.name && existingProduct.id != product.id) && (productNameNotUnique = true)));
-        if (validator.isEmpty(product.name + '') || productNameNotUnique) {
+        this.props.products.map((existingProduct) => ((existingProduct.name == product.name) && (productNameNotUnique = true)));
+
+        if (productNameNotUnique && (product.name !== this.state.oldName)) {
+            errorMessage = "Productnaam moet uniek zijn.";
+            errors.name = true;
+            hasErrors = true;
+        }
+
+        if(productCodeNotUnique && productNameNotUnique && (product.code !== this.state.oldCode) && (product.name !== this.state.oldName)){
+            errorMessage = "Productcode en productnaam moeten uniek zijn.";
+        }
+
+        if (validator.isEmpty(product.name + '')) {
             errors.name = true;
             hasErrors = true;
         }
@@ -76,7 +98,10 @@ class ProductDetailsFormGeneralEdit extends Component {
             hasErrors = true;
         }
 
-        this.setState({...this.state, errors: errors});
+        this.setState({...this.state,
+            errors: errors,
+            errorMessage: errorMessage,
+        });
 
         if (!hasErrors) {
             this.props.updateProduct(product, this.props.switchToView);
@@ -162,6 +187,11 @@ class ProductDetailsFormGeneralEdit extends Component {
                                 error={this.state.errors.administrationId}
                             />
                         </div>
+                        {this.state.errorMessage &&
+                        <div className="col-sm-10 col-md-offset-1 alert alert-danger">
+                            {this.state.errorMessage}
+                        </div>
+                        }
                     </PanelBody>
 
                     <PanelBody>

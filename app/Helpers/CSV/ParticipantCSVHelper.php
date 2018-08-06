@@ -93,9 +93,6 @@ class ParticipantCSVHelper
             $participant->date_contract_send = $participant->date_contract_send ? Carbon::parse($participant->date_contract_send)->format('d-m-Y') : '';
             $participant->date_contract_retour = $participant->date_contract_retour ? Carbon::parse($participant->date_contract_retour)->format('d-m-Y') : '';
             $participant->date_payed = $participant->date_payed ? Carbon::parse($participant->date_payed)->format('d-m-Y') : '';
-
-            $dateOfBirth = $participant->contact->person->date_of_birth ? new Carbon($participant->contact->person->date_of_birth) : false;
-            $participant->date_of_birth = $dateOfBirth ? $dateOfBirth->format('d-m-Y') : '';
         });
 
 

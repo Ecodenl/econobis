@@ -15,6 +15,7 @@ class ProductNewForm extends Component {
         super(props);
 
         this.state = {
+            errorMessage: false,
             product: {
                 code: '',
                 name: '',
@@ -53,18 +54,37 @@ class ProductNewForm extends Component {
 
         // Validation
         let errors = {};
+        let errorMessage = false;
         let hasErrors = false;
 
         let productCodeNotUnique = false;
         this.props.products.map((existingProduct) => ((existingProduct.code == product.code) && (productCodeNotUnique = true)));
-        if (validator.isEmpty(product.code + '') || productCodeNotUnique) {
+
+        if (productCodeNotUnique) {
+            errorMessage = "Productcode moet uniek zijn.";
+            errors.code = true;
+            hasErrors = true;
+        }
+
+        if (validator.isEmpty(product.code + '')) {
             errors.code = true;
             hasErrors = true;
         }
 
         let productNameNotUnique = false;
         this.props.products.map((existingProduct) => ((existingProduct.name == product.name) && (productNameNotUnique = true)));
-        if (validator.isEmpty(product.name + '') || productNameNotUnique) {
+
+        if (productNameNotUnique) {
+            errorMessage = "Productnaam moet uniek zijn.";
+            errors.name = true;
+            hasErrors = true;
+        }
+
+        if(productCodeNotUnique && productNameNotUnique){
+            errorMessage = "Productcode en productnaam moeten uniek zijn.";
+        }
+
+        if (validator.isEmpty(product.name + '')) {
             errors.name = true;
             hasErrors = true;
         }
@@ -74,7 +94,10 @@ class ProductNewForm extends Component {
             hasErrors = true;
         }
 
-        this.setState({...this.state, errors: errors});
+        this.setState({...this.state,
+               errors: errors,
+               errorMessage: errorMessage,
+        });
 
         // If no errors send form
         if(!hasErrors) {
@@ -165,6 +188,11 @@ class ProductNewForm extends Component {
                                 error={this.state.errors.administrationId}
                             />
                         </div>
+                        {this.state.errorMessage &&
+                        <div className="col-sm-10 col-md-offset-1 alert alert-danger">
+                            {this.state.errorMessage}
+                        </div>
+                        }
                     </PanelBody>
 
                     <PanelBody>
@@ -172,6 +200,7 @@ class ProductNewForm extends Component {
                             <ButtonText buttonText={"Opslaan"} onClickAction={this.handleSubmit} type={"submit"} value={"Submit"}/>
                         </div>
                     </PanelBody>
+
                 </Panel>
             </form>
         );

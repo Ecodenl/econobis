@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import validator from "validator";
 
-import ProductDetailsAPI from '../../../../api/product/ProductDetailsAPI';
 import { addProductPriceHistory } from '../../../../actions/product/ProductDetailsActions';
 import InputText from '../../../../components/form/InputText';
 import ButtonText from '../../../../components/button/ButtonText';
@@ -25,12 +24,11 @@ class PriceHistoryNew extends Component {
                 productId: props.productId,
                 dateStart: '',
                 price: '',
-                vatPercentage: '',
+                vatPercentage: null,
             },
             errors: {
                 dateStart: false,
                 price: false,
-                vatPercentage: false,
             },
         };
 
@@ -78,11 +76,6 @@ class PriceHistoryNew extends Component {
 
         if(validator.isEmpty(priceHistory.price)){
             errors.price = true;
-            hasErrors = true;
-        };
-
-        if(validator.isEmpty(priceHistory.vatPercentage)){
-            errors.vatPercentage = true;
             hasErrors = true;
         };
 
@@ -140,8 +133,7 @@ class PriceHistoryNew extends Component {
                                 options={this.state.vatPercentages}
                                 value={vatPercentage}
                                 onChangeAction={this.handleInputChange}
-                                required={"required"}
-                                error={this.state.errors.vatPercentage}
+                                placeholder={"Geen"}
                             />
                         </div>
 

@@ -106,7 +106,7 @@ class ProductController extends ApiController
             ->string('productId')->validate('required|exists:products,id')->alias('product_id')->next()
             ->string('dateStart')->validate('required|date')->alias('date_start')->next()
             ->numeric('price')->validate('required')->next()
-            ->integer('vatPercentage')->validate('required')->alias('vat_percentage')->next()
+            ->integer('vatPercentage')->alias('vat_percentage')->next()
             ->get();
 
         $priceHistory = new PriceHistory($data);

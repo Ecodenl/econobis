@@ -9,7 +9,6 @@ import PanelBody from "../../../components/panel/PanelBody";
 import PanelHeader from "../../../components/panel/PanelHeader";
 import Panel from "../../../components/panel/Panel";
 import MailboxAPI from '../../../api/mailbox/MailboxAPI';
-import {previewReport} from "../../../actions/production-project/ProductionProjectDetailsActions";
 import {connect} from "react-redux";
 
 class MailboxNewForm extends Component {
@@ -23,7 +22,7 @@ class MailboxNewForm extends Component {
                 email: '',
                 username: '',
                 password: '',
-                smtpHost: this.props.mailgunDomain || '',
+                smtpHost: '',
                 smtpPort: '',
                 smtpEncryption: '',
                 imapHost: '',

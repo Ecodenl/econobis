@@ -46,6 +46,20 @@ export const previewReport = (data) => {
     };
 };
 
+export const getParticipants = (data) => {
+    return {
+        type: 'PRODUCTION_PROJECT_REVENUE_GET_PARTICIPANTS',
+        data,
+    };
+};
+
+export const getDistribution = (data) => {
+    return {
+        type: 'PRODUCTION_PROJECT_REVENUE_GET_DISTRIBUTION',
+        data,
+    };
+};
+
 export const clearPreviewReport = () => {
     return {
         type: 'CLEAR_PRODUCTION_PROJECT_REVENUE_PREVIEW_REPORT',

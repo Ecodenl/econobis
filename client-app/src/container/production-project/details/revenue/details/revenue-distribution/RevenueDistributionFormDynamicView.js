@@ -3,7 +3,7 @@ import moment from "moment/moment";
 moment.locale('nl');
 
 const RevenueDistributionFormDynamicView = props => {
-    const { id, contact, participationsCurrent, type} = props.participation;
+    const { id, contactName, contactType, contactPrimaryAddress, contactStatus, contactPrimaryContactEnergySupplier, participationsCurrent, type} = props.participation;
     const { datePayed, revenue, payPercentage, kwhStart, kwhEnd } = props.productionProjectRevenue;
     const { currentParticipations } = props.productionProject;
 
@@ -16,19 +16,19 @@ const RevenueDistributionFormDynamicView = props => {
                 {id}
             </div>
             <div className="col-sm-1">
-                {contact.type ? contact.type.name : ''}
+                {contactType ? contactType.name : ''}
             </div>
             <div className="col-sm-1">
-                {contact ? contact.fullName : ''}
+                {contactName ? contactName : ''}
             </div>
             <div className="col-sm-1">
-                {contact.primaryAddress ? contact.primaryAddress.postalCode : ''}
+                {contactPrimaryAddress ? contactPrimaryAddress.postalCode : ''}
             </div>
             <div className="col-sm-1">
-                {contact.primaryAddress ? contact.primaryAddress.city : ''}
+                {contactPrimaryAddress ? contactPrimaryAddress.city : ''}
             </div>
             <div className="col-sm-1">
-                {contact.status ? contact.status.name : ''}
+                {contactStatus ? contactStatus.name : ''}
             </div>
             <div className="col-sm-1">
                 {participationsCurrent ? participationsCurrent : 0}
@@ -43,7 +43,7 @@ const RevenueDistributionFormDynamicView = props => {
                 {datePayed ? moment(datePayed).format('L') : ''}
             </div>
             <div className="col-sm-1">
-                {contact.primaryContactEnergySupplier ? contact.primaryContactEnergySupplier.energySupplier.name : ''}
+                {contactPrimaryContactEnergySupplier ? contactPrimaryContactEnergySupplier.name : ''}
             </div>
             <div className="col-sm-1">
                 {deliveredTotal ? deliveredTotal : ''}

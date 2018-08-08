@@ -3,6 +3,7 @@ import {connect} from 'react-redux';
 
 import RevenueDistributionFormDynamicView from "./RevenueDistributionFormDynamicView";
 import RevenueDistributionFormStaticView from "./RevenueDistributionFormStaticView";
+import DataTablePagination from "../../../../../../components/dataTable/DataTablePagination";
 
 const RevenueDistributionFormList = props => {
     return (
@@ -32,9 +33,9 @@ const RevenueDistributionFormList = props => {
                 <div className="col-sm-1">Energieleverancier</div>
                 <div className="col-sm-1">Geleverd totaal</div>
             </div>
-            {props.productionProjectRevenue.confirmed?
-                props.productionProjectRevenue.distribution.length > 0 ?
-                    props.productionProjectRevenue.distribution.map(participation => {
+            {props.productionProjectRevenue.confirmed ?
+                (props.productionProjectRevenue.distribution && props.productionProjectRevenue.distribution.data.length > 0) ?
+                    props.productionProjectRevenue.distribution.data.map(participation => {
                         return <RevenueDistributionFormStaticView
                             key={participation.id}
                             participation={participation}
@@ -49,8 +50,8 @@ const RevenueDistributionFormList = props => {
 
                 :
 
-                props.participations.length > 0 ?
-                    props.participations.map(participation => {
+                (props.participations && props.participations.data.length > 0) ?
+                    props.participations.data.map(participation => {
                         return <RevenueDistributionFormDynamicView
                             key={participation.id}
                             participation={participation}
@@ -62,13 +63,25 @@ const RevenueDistributionFormList = props => {
                     <div>Geen participanten bekend.</div>
 
             }
+            <DataTablePagination
+                initialPage={0}
+                onPageChangeAction={props.changePage}
+                recordsPerPage={100}
+                totalRecords={props.productionProjectRevenue.confirmed
+                    ?
+                    (props.productionProjectRevenue.distribution && props.productionProjectRevenue.distribution.meta.total)
+                    :
+                    (props.productionProjectRevenue.participants && props.productionProjectRevenue.participants.meta.total)
+                }
+            />
         </div>
     );
 };
 
 const mapStateToProps = (state) => {
     return {
-        participations: state.productionProjectRevenue.productionProject.participants,
+        participations: state.productionProjectRevenue.participants,
+        participationsTotal: state.productionProjectRevenue.participants,
         productionProject: state.productionProjectRevenue.productionProject,
         productionProjectRevenue: state.productionProjectRevenue,
     };

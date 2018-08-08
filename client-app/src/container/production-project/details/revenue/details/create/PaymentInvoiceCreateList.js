@@ -20,7 +20,7 @@ class PaymentInvoiceCreateList extends Component {
                                     this.props.distributions.map((distribution, i)=> {
                                         return <Nav onNavClick={() => this.props.changeDistribution(distribution.id)} key={i} id={`administration-${distribution.id}`}>
                                                 <NavText><Link className='send-payment-invoices-list-link'
-                                                >{distribution.id} - {distribution.contact.fullName}</Link></NavText>
+                                                >{distribution.id} - {distribution.contactName}</Link></NavText>
                                         </Nav>
                                     })
                                     :

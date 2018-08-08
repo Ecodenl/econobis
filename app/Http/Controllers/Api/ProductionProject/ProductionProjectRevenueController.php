@@ -25,6 +25,8 @@ use App\Helpers\Template\TemplateVariableHelper;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\Controllers\Api\Order\OrderController;
 use App\Http\Controllers\Api\PaymentInvoice\PaymentInvoiceController;
+use App\Http\Resources\ParticipantProductionProject\FullParticipantProductionProject;
+use App\Http\Resources\ParticipantProductionProject\FullRevenueParticipantProductionProject;
 use App\Http\Resources\ParticipantProductionProject\Templates\ParticipantReportMail;
 use App\Http\Resources\ProductionProject\FullProductionProjectRevenue;
 use App\Http\Resources\ProductionProject\FullProductionProjectRevenueDistribution;
@@ -42,14 +44,44 @@ class ProductionProjectRevenueController extends ApiController
         $productionProjectRevenue->load([
             'type',
             'category',
+            'productionProject',
             'createdBy',
-            'distribution.contact.primaryEmailAddress',
-            'productionProject.participantsProductionProject.contact.primaryAddress',
-            'productionProject.participantsProductionProject.contact.primaryContactEnergySupplier.energySupplier',
-            'productionProject.participantsProductionProject.participantProductionProjectPayoutType',
         ]);
 
         return FullProductionProjectRevenue::make($productionProjectRevenue);
+    }
+
+    public function getRevenueDistribution(ProductionProjectRevenue $productionProjectRevenue, Request $request){
+        $limit = 100;
+        $offset = $request->input('page') ? $request->input('page') * $limit : 0;
+
+        $distribution = $productionProjectRevenue->distribution()->limit($limit)->offset($offset)->get();
+        $total = $productionProjectRevenue->distribution()->count();
+
+        return FullProductionProjectRevenueDistribution::collection($distribution)
+            ->additional(['meta' => [
+                'total' => $total,
+            ]
+            ]);;
+
+    }
+
+    public function getRevenueParticipants(ProductionProjectRevenue $productionProjectRevenue, Request $request){
+        $limit = 100;
+        $offset = $request->input('page') ? $request->input('page') * $limit : 0;
+
+        $participants = $productionProjectRevenue->productionProject->participantsProductionProject()->limit($limit)->offset($offset)->get();
+        $total = $productionProjectRevenue->productionProject->participantsProductionProject()->count();
+
+        $participants->load([
+            'participantProductionProjectPayoutType',
+        ]);
+
+        return FullRevenueParticipantProductionProject::collection($participants)
+            ->additional(['meta' => [
+                'total' => $total,
+            ]
+            ]);
     }
 
     public function store(RequestInput $requestInput)
@@ -386,7 +418,7 @@ class ProductionProjectRevenueController extends ApiController
         $ids = $request->input('ids') ? $request->input('ids') : [];
 
         $distribution = ProductionProjectRevenueDistribution::whereIn('id',
-            $ids)->with(['contact', 'revenue'])->get();
+            $ids)->with(['revenue'])->get();
 
         return FullProductionProjectRevenueDistribution::collection($distribution);
     }
@@ -589,6 +621,7 @@ class ProductionProjectRevenueController extends ApiController
     }
 
     public function createPaymentInvoices(Request $request){
+        set_time_limit(0);
         $createReport = $request->input('createReport');
         $createInvoice = $request->input('createInvoice');
 

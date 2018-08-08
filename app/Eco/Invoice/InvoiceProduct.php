@@ -101,6 +101,9 @@ class InvoiceProduct extends Model
 
     public function getAmountVatAttribute()
     {
+        if($this->vat_percentage == 0 || $this->vat_percentage == null){
+            return 0;
+        }
         $price = $this->price;
 
         if ($price === null) {

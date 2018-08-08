@@ -10,13 +10,16 @@ import ButtonText from "../../../../../../components/button/ButtonText";
 import Modal from "../../../../../../components/modal/Modal";
 import InputSelect from "../../../../../../components/form/InputSelect";
 import DocumentTemplateAPI from "../../../../../../api/document-template/DocumentTemplateAPI";
-import ProductionProjectRevenueAPI from "../../../../../../api/production-project/ProductionProjectRevenueAPI";
 import validator from "validator";
 import {hashHistory} from "react-router";
 import ViewText from "../../../../../../components/form/ViewText";
 import EmailTemplateAPI from "../../../../../../api/email-template/EmailTemplateAPI";
 import InputText from "../../../../../../components/form/InputText";
-import {previewReport} from "../../../../../../actions/production-project/ProductionProjectDetailsActions";
+import {
+    getDistribution,
+    getParticipants,
+    previewReport
+} from "../../../../../../actions/production-project/ProductionProjectDetailsActions";
 
 class RevenueDistributionForm extends Component {
     constructor(props) {
@@ -66,8 +69,25 @@ class RevenueDistributionForm extends Component {
                 emailTemplates: payload,
             });
         });
+
+        if(this.props.productionProjectRevenue.confirmed == 1){
+            this.props.getDistribution(this.props.productionProjectRevenue.id, 0);
+        }
+        else{
+            this.props.getParticipants(this.props.productionProjectRevenue.id, 0);
+        }
     }
 
+    changePage = (event) =>{
+        const page = event.selected;
+
+        if(this.props.productionProjectRevenue.confirmed == 1){
+            this.props.getDistribution(this.props.productionProjectRevenue.id, page);
+        }
+        else{
+            this.props.getParticipants(this.props.productionProjectRevenue.id, page);
+        }
+    };
 
     handleInputChange(event) {
         const target = event.target;
@@ -208,7 +228,7 @@ class RevenueDistributionForm extends Component {
 
         if (this.state.checkedAll) {
 
-            this.props.productionProjectRevenue.distribution.forEach(function (distribution) {
+            this.props.productionProjectRevenue.distribution.data.forEach(function (distribution) {
                 distributionIds.push(distribution.id);
             });
 
@@ -265,6 +285,7 @@ class RevenueDistributionForm extends Component {
                 <PanelBody>
                     <div className="col-md-12">
                         <RevenueDistributionFormList
+                            changePage={this.changePage}
                             showCheckboxList={this.state.showCheckboxList}
                             checkedAll={this.state.checkedAll}
                             toggleCheckedAll={this.toggleCheckedAll}
@@ -345,6 +366,12 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = dispatch => ({
     previewReport: (id) => {
         dispatch(previewReport(id));
+    },
+    getParticipants: (id, page) => {
+        dispatch(getParticipants({id, page}));
+    },
+    getDistribution: (id, page) => {
+        dispatch(getDistribution({id, page}));
     },
 });
 

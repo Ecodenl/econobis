@@ -110,4 +110,20 @@ export default {
 
         return axios.post(requestUrl, {'subject': subject, 'documentTemplateId' : documentTemplateId,'emailTemplateId' :emailTemplateId});
     },
+
+    fetchProductionProjectRevenueDistribution: (id, page) => {
+        const requestUrl = `${URL_REVENUE}/${id}/distribution`;
+        const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
+        axios.defaults.headers.common.Authorization = AUTH_TOKEN;
+
+        return axios.post(requestUrl, {'page': page});
+    },
+
+    fetchProductionProjectRevenueParticipants: (id, page) => {
+        const requestUrl = `${URL_REVENUE}/${id}/participants`;
+        const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
+        axios.defaults.headers.common.Authorization = AUTH_TOKEN;
+
+        return axios.post(requestUrl, {'page': page});
+    },
 };

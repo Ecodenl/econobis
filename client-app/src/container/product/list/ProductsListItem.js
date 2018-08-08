@@ -32,13 +32,22 @@ class ProductsListItem extends Component {
 
     render() {
         const { id, code, name, currentPrice, priceInclVat, administration } = this.props;
+        let vatPercentage = '';
 
+        if(currentPrice){
+            if(currentPrice.vatPercentage !== null){
+                vatPercentage = currentPrice.vatPercentage + '%';
+            }
+            else{
+                vatPercentage = 'Geen';
+            }
+        }
         return (
             <tr className={this.state.highlightRow} onDoubleClick={() => this.openItem(id)} onMouseEnter={() => this.onRowEnter()} onMouseLeave={() => this.onRowLeave()}>
                 <td>{ code }</td>
                 <td>{ name }</td>
                 <td>{ currentPrice ? '€' + currentPrice.price.toLocaleString('nl',{ minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '' }</td>
-                <td>{ currentPrice ? currentPrice.vatPercentage + '%' : '' }</td>
+                <td>{ vatPercentage }</td>
                 <td>{ priceInclVat ? '€' + currentPrice.priceInclVat.toLocaleString('nl',{ minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '' }</td>
                 <td>{ administration ? administration.name : ''}</td>
                 <td>

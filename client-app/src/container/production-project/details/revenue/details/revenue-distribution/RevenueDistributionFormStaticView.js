@@ -3,21 +3,21 @@ import moment from "moment/moment";
 moment.locale('nl');
 
 const RevenueDistributionFormStaticView = props => {
-    const { id, contact, deliveredTotal, postalCode, city, status, participationsAmount, payout, payoutType, datePayout, energySupplierName, hasInvoice } = props.participation;
+    const { id, contactName, contactType, contactPrimaryEmailAddress, deliveredTotal, postalCode, city, status, participationsAmount, payout, payoutType, datePayout, energySupplierName, hasInvoice } = props.participation;
 
     return (
         <div className={`row border ${hasInvoice && 'warning-row'}`}>
             <div className="col-sm-1">
                 { props.showCheckboxList && props.checkedAll && <input type="checkbox" checked/> }
-                { props.showCheckboxList && !props.checkedAll && contact.primaryEmailAddress && <input type="checkbox" name={id} onChange={props.toggleParticipantCheck}/> }
-                { props.showCheckboxList && !props.checkedAll && !contact.primaryEmailAddress && <input type="checkbox" name={id} onChange={props.toggleParticipantCheckNoEmail}/> }
+                { props.showCheckboxList && !props.checkedAll && contactPrimaryEmailAddress && <input type="checkbox" name={id} onChange={props.toggleParticipantCheck}/> }
+                { props.showCheckboxList && !props.checkedAll && !contactPrimaryEmailAddress && <input type="checkbox" name={id} onChange={props.toggleParticipantCheckNoEmail}/> }
                 { !props.showCheckboxList && <span>{id}</span> }
             </div>
             <div className="col-sm-1">
-                {contact.type ? contact.type.name : ''}
+                {contactType ? contactType.name : ''}
             </div>
             <div className="col-sm-1">
-                {contact && contact.fullName}
+                {contactName}
             </div>
             <div className="col-sm-1">
                 {postalCode && postalCode}

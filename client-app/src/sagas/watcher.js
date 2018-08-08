@@ -26,7 +26,7 @@ import { fetchOrderDetailsSaga, updateOrderDetailsSaga } from './order/OrderDeta
 import { fetchPostalCodeLinksSaga, deletePostalCodeLinkSaga } from './postal-code-link/PostalCodeLinkSaga';
 import { fetchProductionProjectsSaga } from './production-project/ProductionProjectsSaga';
 import { fetchProductionProjectSaga, deleteValueCourseSaga, deleteRevenueSaga } from './production-project/ProductionProjectDetailsSaga';
-import { fetchProductionProjectRevenueSaga } from './production-project/ProductionProjectRevenueDetailsSaga';
+import { fetchProductionProjectRevenueSaga, fetchProductionProjectRevenueDistributionSaga, fetchProductionProjectRevenueParticipantsSaga } from './production-project/ProductionProjectRevenueDetailsSaga';
 import { fetchParticipantsProductionProjectSaga } from './participant-production-project/ParticipantsProductionProjectSaga';
 import { fetchParticipantProductionProjectDetailsSaga, deleteParticipantProductionProjectSaga, deleteParticipationTransactionSaga, deleteObligationNumberSaga } from './participant-production-project/ParticipantProductionProjectDetailsSaga';
 import {
@@ -149,6 +149,8 @@ export default function* watchSagas() {
     yield takeLatest('FETCH_PRODUCTION_PROJECTS', fetchProductionProjectsSaga);
     yield takeLatest('FETCH_PRODUCTION_PROJECT', fetchProductionProjectSaga);
     yield takeLatest('FETCH_PRODUCTION_PROJECT_REVENUE', fetchProductionProjectRevenueSaga);
+    yield takeLatest('PRODUCTION_PROJECT_REVENUE_GET_PARTICIPANTS', fetchProductionProjectRevenueParticipantsSaga);
+    yield takeLatest('PRODUCTION_PROJECT_REVENUE_GET_DISTRIBUTION', fetchProductionProjectRevenueDistributionSaga);
     yield takeLatest('DELETE_VALUE_COURSE', deleteValueCourseSaga);
     yield takeLatest('DELETE_REVENUE', deleteRevenueSaga);
     // Intake

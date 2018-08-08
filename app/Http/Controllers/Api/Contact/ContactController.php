@@ -10,6 +10,7 @@ use App\Helpers\Import\ContactImportHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Contact\ContactPeek;
 use App\Http\Resources\Contact\FullContact;
+use App\Http\Resources\Contact\FullContactWithGroups;
 use App\Http\Resources\Task\SidebarTask;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -57,7 +58,7 @@ class ContactController extends Controller
         $contact->relatedEmailsInbox = $this->getRelatedEmails($contact, $contact->id, 'inbox');
         $contact->relatedEmailsSent = $this->getRelatedEmails($contact, $contact->id, 'sent');
 
-        return new FullContact($contact);
+        return new FullContactWithGroups($contact);
     }
 
     public function validateImport(Request $request){

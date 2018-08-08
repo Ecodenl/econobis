@@ -19,7 +19,7 @@ use App\Http\Resources\Task\GridTask;
 use App\Http\Resources\User\FullUser;
 use Illuminate\Http\Resources\Json\Resource;
 
-class FullContact extends Resource
+class FullContactWithGroups extends Resource
 {
     /**
      * Transform the resource into an array.
@@ -88,6 +88,7 @@ class FullContact extends Resource
             'relatedOpportunities' => $this->opportunities()->with('measureCategory')->get(),
             'participationCount' => $this->participations()->whereNull('deleted_at')->count(),
             'relatedParticipations' => FullParticipantProductionProject::collection($this->whenLoaded('participations')),
+            'visibleGroups' => $this->visible_groups,
             'deletedAt' => $this->deleted_at,
         ];
     }

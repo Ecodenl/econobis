@@ -46,7 +46,9 @@ class PaymentInvoiceCreateApp extends Component {
     };
 
     createPaymentInvoices = (createReport, createInvoice) => {
+        document.body.style.cursor='wait';
         ProductionProjectRevenueAPI.createPaymentInvoices(this.props.reportPreview.templateId, this.props.reportPreview.emailTemplateId, this.props.reportPreview.subject, this.props.reportPreview.distributionIds, createReport, createInvoice).then((payload) => {
+            document.body.style.cursor='default';
             if (createInvoice) {
                 fileDownload(payload.data, payload.headers['x-filename']);
                 if (createReport) {

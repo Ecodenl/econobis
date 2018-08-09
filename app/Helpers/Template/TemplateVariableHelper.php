@@ -23,6 +23,21 @@ class TemplateVariableHelper
      * @return string - html with replaced tags
      */
     static public function replaceTemplateVariables($html_body, $var_prefix, $model){
+        //First we check @als{mergveld balblabal als@
+        $regex = "/@als{" . $var_prefix . "_(\S*)?}((.|\s)*?)als@/";
+        if (preg_match_all($regex, $html_body, $m)) {
+            foreach ($m[1] as $i => $var_name) {
+                $var = TemplateVariableHelper::getVar($model, $var_name);
+                if($var !== null && $var !== ''){
+                    $html_body = str_replace($m[0][$i], $m[2][$i], $html_body);
+                }
+                else{
+                    $html_body = str_replace($m[0][$i], "", $html_body);
+                }
+
+
+            }
+        }
 
         $regex = "/{" . $var_prefix . "_(\S*?)}/";
         if (preg_match_all($regex, $html_body, $m)) {
@@ -147,6 +162,14 @@ class TemplateVariableHelper
                 }
                 elseif($model->type_id == 'organisation'){
                     return $model->full_name;
+                }
+                break;
+            case 'voorletters':
+                if($model->type_id == 'person'){
+                    return $model->person->initials;
+                }
+                elseif($model->type_id == 'organisation'){
+                    return '';
                 }
                 break;
             case 'adres':

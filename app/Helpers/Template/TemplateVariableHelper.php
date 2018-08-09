@@ -28,14 +28,14 @@ class TemplateVariableHelper
         if (preg_match_all($regex, $html_body, $m)) {
             foreach ($m[1] as $i => $var_name) {
                 $var = TemplateVariableHelper::getVar($model, $var_name);
+                //als de variabele bestaat dan gooien we de @als als@ structuur weg
                 if($var !== null && $var !== ''){
                     $html_body = str_replace($m[0][$i], $m[2][$i], $html_body);
                 }
+                // anders gooien we de structuur + inhoud weg
                 else{
                     $html_body = str_replace($m[0][$i], "", $html_body);
                 }
-
-
             }
         }
 

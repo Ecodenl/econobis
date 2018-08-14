@@ -527,7 +527,7 @@ class ParticipationProductionProjectController extends ApiController
     public function peekContactsMembershipRequired(ParticipantProductionProject $participantProductionProject)
     {
         if($participantProductionProject->productionProject->is_membership_required){
-            $contacts = Contact::select('id', 'full_name', 'number')->orderBy('full_name')->whereNull('deleted_at')->get();
+            $contacts = Contact::select('id', 'full_name', 'number')->orderBy('full_name')->get();
 
             $contacts = $contacts->filter(function ($contact) use ($participantProductionProject) {
                 foreach ($participantProductionProject->productionProject->requiresContactGroups as $contactGroup){
@@ -544,7 +544,7 @@ class ParticipationProductionProjectController extends ApiController
             $contacts = $contacts->values();
         }
         else{
-            $contacts = Contact::select('id', 'full_name', 'number')->orderBy('full_name')->whereNull('deleted_at')->get();
+            $contacts = Contact::select('id', 'full_name', 'number')->orderBy('full_name')->get();
         }
         return ContactPeek::collection($contacts);
     }

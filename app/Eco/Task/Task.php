@@ -185,13 +185,13 @@ class Task extends Model
     // Tasks can relate to another task. Only an unfinished task is a task
     public function tasks()
     {
-        return $this->hasMany(Task::class)->whereNull('deleted_at')->where('finished', false)->orderBy('tasks.id', 'desc');
+        return $this->hasMany(Task::class)->where('finished', false)->orderBy('tasks.id', 'desc');
     }
 
     // A finished task is a note
     public function notes()
     {
-        return $this->hasMany(Task::class)->whereNull('deleted_at')->where('finished', true)->orderBy('tasks.id', 'desc');
+        return $this->hasMany(Task::class)->where('finished', true)->orderBy('tasks.id', 'desc');
     }
 
     /**

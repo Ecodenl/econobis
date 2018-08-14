@@ -140,7 +140,7 @@ class ContactController extends Controller
 
     public function peek()
     {
-        $contact = Contact::select('id', 'full_name', 'number')->orderBy('full_name')->whereNull('deleted_at')->get();
+        $contact = Contact::select('id', 'full_name', 'number')->orderBy('full_name')->get();
 
         return ContactPeek::collection($contact);
     }
@@ -184,7 +184,7 @@ class ContactController extends Controller
         foreach($contactStatuses as $contactStatus) {
             $chartData[] = [
                 "name" => $contactStatus->name,
-                "count" => Contact::where('status_id', $contactStatus->id)->whereNull('deleted_at')->count(),
+                "count" => Contact::where('status_id', $contactStatus->id)->count(),
             ];
         };
 

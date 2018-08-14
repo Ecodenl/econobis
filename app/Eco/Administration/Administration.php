@@ -52,7 +52,7 @@ class Administration extends Model
     }
 
     public function products(){
-        return $this->hasMany(Product::class)->whereNull('deleted_at');
+        return $this->hasMany(Product::class);
     }
 
     public function orders(){
@@ -96,27 +96,27 @@ class Administration extends Model
     //appended fields
     public function getTotalOrdersAttribute()
     {
-        return $this->orders()->whereNull('deleted_at')->count();
+        return $this->orders()->count();
     }
 
     public function getTotalOrdersConceptsAttribute()
     {
-        return $this->orders()->where('status_id', 'concept')->whereNull('deleted_at')->count();
+        return $this->orders()->where('status_id', 'concept')->count();
     }
 
     public function getTotalOrdersInvoicesAttribute()
     {
-        return $this->orders()->where('status_id', 'active')->where('payment_type_id', 'transfer')->whereNull('deleted_at')->count();
+        return $this->orders()->where('status_id', 'active')->where('payment_type_id', 'transfer'->count();
     }
 
     public function getTotalOrdersCollectionsAttribute()
     {
-        return $this->orders()->where('status_id', 'active')->where('payment_type_id', 'collection')->whereNull('deleted_at')->count();
+        return $this->orders()->where('status_id', 'active')->where('payment_type_id', 'collection')->count();
     }
 
     public function getTotalOrdersClosedAttribute()
     {
-        return $this->orders()->where('status_id', 'closed')->whereNull('deleted_at')->count();
+        return $this->orders()->where('status_id', 'closed')->count();
     }
 
     public function getTotalInvoicesAttribute()

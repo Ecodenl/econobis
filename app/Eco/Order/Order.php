@@ -55,7 +55,7 @@ class Order extends Model
 
     public function tasks()
     {
-        return $this->hasMany(Task::class)->whereNull('deleted_at')->orderBy('tasks.id', 'desc');
+        return $this->hasMany(Task::class)->orderBy('tasks.id', 'desc');
     }
 
     public function invoices()

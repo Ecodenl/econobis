@@ -68,7 +68,7 @@ class ContactGroup extends Model
     // Only unfinished task is a task. A finished task is a note
     public function tasks()
     {
-        return $this->hasMany(Task::class)->whereNull('deleted_at')->where('finished', false)
+        return $this->hasMany(Task::class)->where('finished', false)
             ->orderBy('tasks.id', 'desc');
     }
 

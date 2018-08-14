@@ -116,6 +116,6 @@ class ProductController extends ApiController
 
     public function peek()
     {
-        return ProductPeek::collection(Product::orderBy('name')->whereNull('deleted_at')->get());
+        return ProductPeek::collection(Product::orderBy('name')->get());
     }
 }

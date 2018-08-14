@@ -55,7 +55,7 @@ class FullInvoice extends Resource
                 'daysExpired' => $this->days_expired,
                 'totalPriceInclVatAndReduction' => $this->total_price_incl_vat_and_reduction,
 
-                'taskCount' => $this->tasks()->whereNull('deleted_at')->count(),
+                'taskCount' => $this->tasks()->count(),
                 'relatedTasks' => FullTask::collection($this->whenLoaded('tasks')),
 
                 'emailCount' => $this->emails()->count(),

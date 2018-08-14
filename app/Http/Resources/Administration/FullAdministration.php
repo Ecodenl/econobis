@@ -83,8 +83,7 @@ class FullAdministration extends Resource
                 'totalPaymentInvoicesConcepts' => $this->total_payment_invoices_concepts,
                 'totalPaymentInvoicesSent' => $this->total_payment_invoices_sent,
                 'totalPaymentInvoicesNotPaid' => $this->total_payment_invoices_not_paid,
-
-                'deletedAt' => $this->deleted_at,
+                
                 'createdAt' => $this->created_at,
                 'updatedAt' => $this->updated_at,
 

@@ -204,7 +204,7 @@ class OrderController extends ApiController
 
     public function peek()
     {
-        return OrderPeek::collection(Order::whereNull('deleted_at')->get());
+        return OrderPeek::collection(Order::all());
     }
 
     public function getContactInfoForOrder(Contact $contact)

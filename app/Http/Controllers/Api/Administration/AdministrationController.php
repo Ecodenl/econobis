@@ -194,7 +194,7 @@ class AdministrationController extends ApiController
 
     public function peek()
     {
-        return AdministrationPeek::collection(Administration::orderBy('id')->whereNull('deleted_at')->get());
+        return AdministrationPeek::collection(Administration::orderBy('id')->get());
     }
 
     public function downloadSepa(Sepa $sepa){

@@ -73,7 +73,7 @@ class FullOrder extends Resource
                 'invoicePaidTransferCount' => $this->invoicesPaidTransfer()->count(),
                 'relatedInvoicesPaidTransfer' => FullInvoice::collection($this->whenLoaded('invoicesPaidTransfer')),
 
-                'taskCount' => $this->tasks()->whereNull('deleted_at')->count(),
+                'taskCount' => $this->tasks()->count(),
                 'relatedTasks' => FullTask::collection($this->whenLoaded('tasks')),
 
                 'documentCount' => $this->documents()->count(),
@@ -84,8 +84,7 @@ class FullOrder extends Resource
 
                 'createdById' => $this->created_by_id,
                 'createdBy' => FullUser::make($this->whenLoaded('createdBy')),
-
-                'deletedAt' => $this->deleted_at,
+                
                 'createdAt' => $this->created_at,
                 'updatedAt' => $this->updated_at,
             ];

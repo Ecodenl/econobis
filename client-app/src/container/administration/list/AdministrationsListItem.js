@@ -41,7 +41,7 @@ class AdministrationsListItem extends Component {
                 <td>{ city ? city : '' }</td>
                 <td>
                     {(this.state.showActionButtons && this.props.permissions.manageFinancial ? <a role="button" onClick={() => this.openItem(id)}><span className="glyphicon glyphicon-pencil mybtn-success" /> </a> : '')}
-                    {(this.state.showActionButtons && this.props.permissions.manageFinancial ? <a role="button" onClick={this.props.showDeleteItemModal.bind(this, id, name)}><span className="glyphicon glyphicon-trash mybtn-danger"  /> </a> : '')}
+                    {/*{(this.state.showActionButtons && this.props.permissions.manageFinancial ? <a role="button" onClick={this.props.showDeleteItemModal.bind(this, id, name)}><span className="glyphicon glyphicon-trash mybtn-danger"  /> </a> : '')}*/}
                 </td>
             </tr>
         );

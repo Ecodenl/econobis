@@ -19,13 +19,13 @@ import { fetchMailboxDetailsSaga, deleteMailboxSaga, deleteMailboxUserSaga } fro
 import { fetchMailboxesSaga } from './mailbox/MailboxesSaga';
 import { fetchMeasuresSaga } from './measure/MeasuresSaga';
 import { fetchMeasureSaga } from './measure/MeasureDetailsSaga';
-import { fetchOpportunitiesSaga } from './opportunity/OpportunitiesSaga';
+import { fetchOpportunitiesSaga, deleteOpportunitySaga } from './opportunity/OpportunitiesSaga';
 import { fetchOpportunitySaga } from './opportunity/OpportunityDetailsSaga';
 import { fetchOrdersSaga, deleteOrderSaga } from './order/OrdersSaga';
 import { fetchOrderDetailsSaga, updateOrderDetailsSaga } from './order/OrderDetailsSaga';
 import { fetchPostalCodeLinksSaga, deletePostalCodeLinkSaga } from './postal-code-link/PostalCodeLinkSaga';
 import { fetchProductionProjectsSaga } from './production-project/ProductionProjectsSaga';
-import { fetchProductionProjectSaga, deleteValueCourseSaga, deleteRevenueSaga } from './production-project/ProductionProjectDetailsSaga';
+import { fetchProductionProjectSaga, deleteValueCourseSaga, deleteRevenueSaga, deleteProductionProjectSaga } from './production-project/ProductionProjectDetailsSaga';
 import { fetchProductionProjectRevenueSaga, fetchProductionProjectRevenueDistributionSaga, fetchProductionProjectRevenueParticipantsSaga } from './production-project/ProductionProjectRevenueDetailsSaga';
 import { fetchParticipantsProductionProjectSaga } from './participant-production-project/ParticipantsProductionProjectSaga';
 import { fetchParticipantProductionProjectDetailsSaga, deleteParticipantProductionProjectSaga, deleteParticipationTransactionSaga, deleteObligationNumberSaga } from './participant-production-project/ParticipantProductionProjectDetailsSaga';
@@ -129,6 +129,7 @@ export default function* watchSagas() {
     yield takeLatest('FETCH_MEASURES', fetchMeasuresSaga);
     yield takeLatest('FETCH_MEASURE', fetchMeasureSaga);
     // Opportunity
+    yield takeLatest('DELETE_OPPORTUNITY', deleteOpportunitySaga);
     yield takeLatest('FETCH_OPPORTUNITIES', fetchOpportunitiesSaga);
     yield takeLatest('FETCH_OPPORTUNITY', fetchOpportunitySaga);
     // Order
@@ -148,6 +149,7 @@ export default function* watchSagas() {
     // Production project
     yield takeLatest('FETCH_PRODUCTION_PROJECTS', fetchProductionProjectsSaga);
     yield takeLatest('FETCH_PRODUCTION_PROJECT', fetchProductionProjectSaga);
+    yield takeLatest('DELETE_PRODUCTION_PROJECT', deleteProductionProjectSaga);
     yield takeLatest('FETCH_PRODUCTION_PROJECT_REVENUE', fetchProductionProjectRevenueSaga);
     yield takeLatest('PRODUCTION_PROJECT_REVENUE_GET_PARTICIPANTS', fetchProductionProjectRevenueParticipantsSaga);
     yield takeLatest('PRODUCTION_PROJECT_REVENUE_GET_DISTRIBUTION', fetchProductionProjectRevenueDistributionSaga);

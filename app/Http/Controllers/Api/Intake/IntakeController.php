@@ -10,11 +10,10 @@ namespace App\Http\Controllers\Api\Intake;
 
 
 use App\Eco\Email\Email;
-use App\Eco\Measure\Measure;
 use App\Eco\Intake\Intake;
 use App\Eco\Contact\Contact;
 use App\Eco\Measure\MeasureCategory;
-use App\Helpers\Delete\DeleteHelper;
+use App\Helpers\Delete\Models\DeleteIntake;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\RequestQueries\Intake\Grid\RequestQuery;
 use App\Http\Resources\GenericResource;
@@ -24,6 +23,7 @@ use App\Http\Resources\Intake\IntakePeek;
 use App\Http\Resources\Task\SidebarTask;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class IntakeController extends ApiController
 {
@@ -209,8 +209,22 @@ class IntakeController extends ApiController
     {
         $this->authorize('manage', Intake::class);
 
-        DeleteHelper::delete($intake);
+        try {
+            DB::beginTransaction();
 
+            $deleteIntake = new DeleteIntake($intake);
+            $result = $deleteIntake->delete();
+
+            if(count($result) > 0){
+                DB::rollBack();
+                abort(412, implode(";", array_unique($result)));
+            }
+
+            DB::commit();
+        } catch (\PDOException $e) {
+            DB::rollBack();
+            abort(501, $e->getMessage());
+        }
     }
 
     public function tasks(Intake $intake)

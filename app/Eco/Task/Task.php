@@ -38,12 +38,6 @@ class Task extends Model
         'updated_at',
     ];
 
-    //Dont boot softdelete scopes. We handle this ourselves
-    public static function bootSoftDeletes()
-    {
-        return false;
-    }
-
     /**
      * required
      */

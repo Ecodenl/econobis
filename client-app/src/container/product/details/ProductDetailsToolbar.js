@@ -24,7 +24,7 @@ class ProductToolbar  extends Component {
                 <div className="col-md-4">
                     <div className="btn-group btn-group-flex margin-small" role="group">
                         <ButtonIcon iconName={"glyphicon-arrow-left"} onClickAction={browserHistory.goBack}/>
-                        <ButtonIcon iconName={"glyphicon-trash"} onClickAction={this.toggleDelete}/>
+                        {/*<ButtonIcon iconName={"glyphicon-trash"} onClickAction={this.toggleDelete}/>*/}
                     </div>
                 </div>
                 <div className="col-md-4"><h4 className="text-center">Product: {this.props.name}</h4></div>

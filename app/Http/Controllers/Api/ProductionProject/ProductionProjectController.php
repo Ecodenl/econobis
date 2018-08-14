@@ -12,7 +12,7 @@ use App\Eco\Contact\ContactStatus;
 use App\Eco\Email\Email;
 use App\Eco\ParticipantProductionProject\ParticipantProductionProjectStatus;
 use App\Eco\ProductionProject\ProductionProject;
-use App\Helpers\Delete\DeleteHelper;
+use App\Helpers\Delete\Models\DeleteProductionProject;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\RequestQueries\ProductionProject\Grid\RequestQuery;
@@ -21,6 +21,7 @@ use App\Http\Resources\ProductionProject\GridProductionProject;
 use App\Http\Resources\ProductionProject\ProductionProjectPeek;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class ProductionProjectController extends ApiController
 {
@@ -168,7 +169,22 @@ class ProductionProjectController extends ApiController
     {
         $this->authorize('manage', ProductionProject::class);
 
-        DeleteHelper::delete($productionProject);
+        try {
+            DB::beginTransaction();
+
+            $deleteProductionProject = new DeleteProductionProject($productionProject);
+            $result = $deleteProductionProject->delete();
+
+            if(count($result) > 0){
+                DB::rollBack();
+                abort(412, implode(";", array_unique($result)));
+            }
+
+            DB::commit();
+        } catch (\PDOException $e) {
+            DB::rollBack();
+            abort(501, $e->getMessage());
+        }
     }
 
     public function peek()

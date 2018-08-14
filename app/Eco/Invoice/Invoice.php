@@ -10,12 +10,13 @@ use App\Eco\Order\OrderPaymentType;
 use App\Eco\Task\Task;
 use App\Eco\User\User;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
 use Venturecraft\Revisionable\RevisionableTrait;
 
 class Invoice extends Model
 {
-    use RevisionableTrait;
+    use RevisionableTrait, SoftDeletes;
 
     protected $guarded = ['id'];
 

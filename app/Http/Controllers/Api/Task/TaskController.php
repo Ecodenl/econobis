@@ -3,9 +3,8 @@
 namespace App\Http\Controllers\Api\Task;
 
 use App\Eco\Email\Email;
-use App\Eco\Task\Jobs\DeleteTask;
 use App\Eco\Task\Task;
-use App\Helpers\Delete\DeleteHelper;
+use App\Helpers\Delete\Models\DeleteTask;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Api\Task\Grid\TaskRequestQuery;
 use App\Http\Controllers\Api\Task\Grid\NoteRequestQuery;
@@ -17,6 +16,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class TaskController extends Controller
 {
@@ -192,7 +192,22 @@ class TaskController extends Controller
     {
         $this->authorize('manage', Task::class);
 
-        DeleteHelper::delete($task);
+        try {
+            DB::beginTransaction();
+
+            $deleteTask = new DeleteTask($task);
+            $result = $deleteTask->delete();
+
+            if(count($result) > 0){
+                DB::rollBack();
+                abort(412, $result);
+            }
+
+            DB::commit();
+        } catch (\PDOException $e) {
+            DB::rollBack();
+            abort(501);
+        }
     }
 
     public function finish(Task $task)

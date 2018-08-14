@@ -46,12 +46,6 @@ class Administration extends Model
             'total_payment_invoices_not_paid',
         ];
 
-    //Dont boot softdelete scopes. We handle this ourselves
-    public static function bootSoftDeletes()
-    {
-        return false;
-    }
-
     public function users()
     {
         return $this->belongsToMany(User::class);

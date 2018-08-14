@@ -5,6 +5,13 @@ export const fetchProductionProject = (id) => {
     };
 };
 
+export const deleteProductionProject = (id) => {
+    return {
+        type: 'DELETE_PRODUCTION_PROJECT',
+        id,
+    };
+};
+
 export const clearProductionProject = () => {
     return {
         type: 'CLEAR_PRODUCTION_PROJECT'

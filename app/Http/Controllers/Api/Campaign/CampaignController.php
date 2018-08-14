@@ -11,17 +11,14 @@ namespace App\Http\Controllers\Api\Campaign;
 use App\Eco\Campaign\Campaign;
 use App\Eco\Campaign\CampaignResponse;
 use App\Eco\Contact\Contact;
-use App\Eco\Opportunity\Opportunity;
 use App\Eco\Organisation\Organisation;
 use App\Eco\User\User;
-use App\Helpers\Delete\DeleteHelper;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\RequestQueries\Campaign\Grid\RequestQuery;
 use App\Http\Resources\Campaign\CampaignPeek;
 use App\Http\Resources\Campaign\FullCampaign;
 use App\Http\Resources\Campaign\GridCampaign;
-use App\Http\Resources\Opportunity\FullOpportunity;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -126,7 +123,7 @@ class CampaignController extends ApiController
     {
         $this->authorize('manage', Campaign::class);
 
-        DeleteHelper::delete($campaign);
+        $campaign->delete();
     }
 
     public function attachResponse(Campaign $campaign, Contact $contact)

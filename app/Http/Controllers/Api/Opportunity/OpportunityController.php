@@ -12,7 +12,7 @@ use App\Eco\Email\Email;
 use App\Eco\Opportunity\Opportunity;
 use App\Eco\Opportunity\OpportunityEvaluation;
 use App\Eco\Opportunity\OpportunityStatus;
-use App\Helpers\Delete\DeleteHelper;
+use App\Helpers\Delete\Models\DeleteOpportunity;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\RequestQueries\Opportunity\Grid\RequestQuery;
@@ -21,6 +21,7 @@ use App\Http\Resources\Opportunity\GridOpportunity;
 use App\Http\Resources\Opportunity\OpportunityPeek;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class OpportunityController extends ApiController
 {
@@ -118,7 +119,22 @@ class OpportunityController extends ApiController
     {
         $this->authorize('manage', Opportunity::class);
 
-        DeleteHelper::delete($opportunity);
+        try {
+            DB::beginTransaction();
+
+            $deleteOpportunity = new DeleteOpportunity($opportunity);
+            $result = $deleteOpportunity->delete();
+
+            if(count($result) > 0){
+                DB::rollBack();
+                abort(412, implode(";", array_unique($result)));
+            }
+
+            DB::commit();
+        } catch (\PDOException $e) {
+            DB::rollBack();
+            abort(501, $e->getMessage());
+        }
     }
 
     public function getAmountOfActiveOpportunities(){

@@ -14,12 +14,13 @@ use App\Http\RequestQueries\Contact\Grid\RequestQuery;
 use App\Http\RequestQueries\Contact\Grid\Sort;
 use App\Http\Resources\Contact\FullContact;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Http\Request;
 use Laracasts\Presenter\PresentableTrait;
 
 class ContactGroup extends Model
 {
-    use PresentableTrait;
+    use PresentableTrait, SoftDeletes;
     protected $presenter = ContactGroupPresenter::class;
 
     protected $casts

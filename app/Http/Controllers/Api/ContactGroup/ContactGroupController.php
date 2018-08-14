@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Api\ContactGroup;
 
 use App\Eco\Contact\Contact;
 use App\Eco\ContactGroup\ContactGroup;
-use App\Helpers\Delete\DeleteHelper;
+use App\Helpers\Delete\Models\DeleteContactGroup;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\RequestQueries\ContactGroup\Grid\RequestQuery;
 use App\Http\Resources\Contact\FullContact;
@@ -15,6 +15,7 @@ use App\Http\Resources\ContactGroup\GridContactGroup;
 use App\Http\Resources\Task\SidebarTask;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\DB;
 
 class ContactGroupController extends Controller
 {
@@ -108,7 +109,22 @@ class ContactGroupController extends Controller
     {
         $this->authorize('delete', $contactGroup);
 
-        DeleteHelper::delete($contactGroup);
+        try {
+            DB::beginTransaction();
+
+            $deleteContactGroup = new DeleteContactGroup($contactGroup);
+            $result = $deleteContactGroup->delete();
+
+            if(count($result) > 0){
+                DB::rollBack();
+                abort(412, implode(";", array_unique($result)));
+            }
+
+            DB::commit();
+        } catch (\PDOException $e) {
+            DB::rollBack();
+            abort(501, $e->getMessage());
+        }
     }
 
     public function contacts(ContactGroup $contactGroup)

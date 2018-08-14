@@ -34,12 +34,6 @@ class Order extends Model
             'date_next_collection',
         ];
 
-    //Dont boot softdelete scopes. We handle this ourselves
-    public static function bootSoftDeletes()
-    {
-        return false;
-    }
-
     public function orderProducts()
     {
         return $this->hasMany(OrderProduct::class)->orderBy('date_start');

@@ -21,12 +21,6 @@ class ParticipantTransaction extends Model
         'iban',
     ];
 
-    //Dont boot softdelete scopes. We handle this ourselves
-    public static function bootSoftDeletes()
-    {
-        return false;
-    }
-
     public function participation()
     {
         return $this->belongsTo(ParticipantProductionProject::class, 'id', 'participation_id');

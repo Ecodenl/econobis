@@ -5,15 +5,15 @@ namespace App\Http\Controllers\Api\Contact;
 use App\Eco\Contact\Contact;
 use App\Eco\Contact\ContactStatus;
 use App\Eco\User\User;
-use App\Helpers\Delete\DeleteHelper;
+use App\Helpers\Delete\Models\DeleteContact;
 use App\Helpers\Import\ContactImportHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Contact\ContactPeek;
-use App\Http\Resources\Contact\FullContact;
 use App\Http\Resources\Contact\FullContactWithGroups;
 use App\Http\Resources\Task\SidebarTask;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class ContactController extends Controller
 {
@@ -79,7 +79,22 @@ class ContactController extends Controller
     {
         $this->authorize('delete', $contact);
 
-        DeleteHelper::delete($contact);
+        try {
+            DB::beginTransaction();
+
+            $deleteContact = new DeleteContact($contact);
+            $result = $deleteContact->delete();
+
+            if(count($result) > 0){
+                DB::rollBack();
+                abort(412, implode(";", array_unique($result)));
+            }
+
+            DB::commit();
+        } catch (\PDOException $e) {
+            DB::rollBack();
+            abort(501, $e->getMessage());
+        }
     }
 
     public function destroyContacts(Request $request)

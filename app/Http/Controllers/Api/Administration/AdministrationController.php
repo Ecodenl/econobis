@@ -12,7 +12,6 @@ namespace App\Http\Controllers\Api\Administration;
 use App\Eco\Administration\Administration;
 use App\Eco\Administration\Sepa;
 use App\Eco\User\User;
-use App\Helpers\Delete\DeleteHelper;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\RequestQueries\Administration\Grid\RequestQuery;
@@ -146,10 +145,9 @@ class AdministrationController extends ApiController
     {
         $this->authorize('manage', Administration::class);
 
-        //remove file from disk, move to DeleteHelper?
         Storage::disk('administrations')->delete($administration->logo_filename);
 
-        DeleteHelper::delete($administration);
+        $administration->delete();
     }
 
 

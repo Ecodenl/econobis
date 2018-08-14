@@ -12,16 +12,16 @@ namespace App\Http\Controllers\Api\QuotationRequest;
 use App\Eco\Email\Email;
 use App\Eco\Opportunity\Opportunity;
 use App\Eco\QuotationRequest\QuotationRequest;
-use App\Helpers\Delete\DeleteHelper;
+use App\Helpers\Delete\Models\DeleteQuotationRequest;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\RequestQueries\QuotationRequest\Grid\RequestQuery;
-use App\Http\Resources\GenericResource;
 use App\Http\Resources\Opportunity\FullOpportunity;
 use App\Http\Resources\QuotationRequest\FullQuotationRequest;
 use App\Http\Resources\QuotationRequest\GridQuotationRequest;
 use App\Http\Resources\QuotationRequest\QuotationRequestPeek;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class QuotationRequestController extends ApiController
 {
@@ -169,7 +169,22 @@ class QuotationRequestController extends ApiController
     {
         $this->authorize('manage', QuotationRequest::class);
 
-        DeleteHelper::delete($quotationRequest);
+        try {
+            DB::beginTransaction();
+
+            $deleteQuotationRequest = new DeleteQuotationRequest($quotationRequest);
+            $result = $deleteQuotationRequest->delete();
+
+            if(count($result) > 0){
+                DB::rollBack();
+                abort(412, implode(";", array_unique($result)));
+            }
+
+            DB::commit();
+        } catch (\PDOException $e) {
+            DB::rollBack();
+            abort(501, $e->getMessage());
+        }
     }
 
     public function peek()

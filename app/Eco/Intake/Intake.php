@@ -7,7 +7,6 @@ use App\Eco\Campaign\Campaign;
 use App\Eco\Contact\Contact;
 use App\Eco\Document\Document;
 use App\Eco\Email\Email;
-use App\Eco\Measure\Measure;
 use App\Eco\Measure\MeasureCategory;
 use App\Eco\Opportunity\Opportunity;
 use App\Eco\Task\Task;

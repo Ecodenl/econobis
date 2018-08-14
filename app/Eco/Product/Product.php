@@ -21,12 +21,6 @@ class Product extends Model
             'current_price',
         ];
 
-    //Dont boot softdelete scopes. We handle this ourselves
-    public static function bootSoftDeletes()
-    {
-        return false;
-    }
-
     public function priceHistory()
     {
         return $this->hasMany(PriceHistory::class)->orderBy('date_start', 'asc')->orderBy('created_at', 'asc');

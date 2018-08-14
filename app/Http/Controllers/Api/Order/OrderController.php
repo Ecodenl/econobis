@@ -13,7 +13,7 @@ use App\Eco\Invoice\Invoice;
 use App\Eco\Order\Order;
 use App\Eco\Order\OrderProduct;
 use App\Helpers\CSV\OrderCSVHelper;
-use App\Helpers\Delete\DeleteHelper;
+use App\Helpers\Delete\Models\DeleteOrder;
 use App\Helpers\Invoice\InvoiceHelper;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Api\ApiController;
@@ -22,9 +22,9 @@ use App\Http\Resources\Order\FullOrder;
 use App\Http\Resources\Order\FullOrderProduct;
 use App\Http\Resources\Order\GridOrder;
 use App\Http\Resources\Order\OrderPeek;
-use Barryvdh\DomPDF\Facade as PDF;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class OrderController extends ApiController
 {
@@ -140,7 +140,22 @@ class OrderController extends ApiController
     {
         $this->authorize('manage', Order::class);
 
-        DeleteHelper::delete($order);
+        try {
+            DB::beginTransaction();
+
+            $deleteOrder = new DeleteOrder($order);
+            $result = $deleteOrder->delete();
+
+            if(count($result) > 0){
+                DB::rollBack();
+                abort(412, implode(";", array_unique($result)));
+            }
+
+            DB::commit();
+        } catch (\PDOException $e) {
+            DB::rollBack();
+            abort(501, $e->getMessage());
+        }
     }
 
     public function storeOrderProduct(RequestInput $input)

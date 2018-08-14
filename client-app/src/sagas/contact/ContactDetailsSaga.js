@@ -22,6 +22,7 @@ export function* deleteAddressSaga({ id }) {
         yield call(AddressAPI.deleteAddress, id);
         yield put({ type: 'DELETE_ADDRESS_SUCCESS', id });
     } catch (error) {
+        yield put({ type: 'SET_ERROR', http_code: error.response.status, message: error.response.data.message });
         yield put({ type: 'DELETE_ADDRESS_ERROR', error });
     }
 }

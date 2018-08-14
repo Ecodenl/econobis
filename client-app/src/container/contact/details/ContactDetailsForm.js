@@ -14,7 +14,6 @@ import ContactDetailsQuotations from "./quotations/ContactDetailsQuotations";
 import ContactDetailsCampaigns from "./campaigns/ContactDetailsCampaigns";
 import ContactDetailsFormOccupations from "./occupations/ContactDetailsFormOccupations";
 import ContactDetailsFormContactEnergySupplier from "./contact-energy-suppliers/ContactDetailsFormContactEnergySupplier";
-import PanelDeletedItem from "../../../components/panel/PanelDeletedItem";
 import moment from "moment/moment";
 moment.locale('nl');
 
@@ -34,18 +33,13 @@ class ContactDetailsForm extends Component {
     }
 
     render() {
-        const { typeId, deletedAt } = this.props.contactDetails;
+        const { typeId } = this.props.contactDetails;
 
         return (
             isEmpty(this.props.contactDetails) ?
                 <div>Geen gegevens gevonden.</div>
                 :
                 <div>
-                    { deletedAt &&
-                    <PanelDeletedItem
-                    text={`Dit contact is verwijderd op ${moment(deletedAt).format('L')}.`}
-                    />
-                    }
                     <ContactDetailsFormGeneral />
                     <ContactDetailsFormAddress />
                     <ContactDetailsFormEmail />

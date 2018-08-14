@@ -2,25 +2,25 @@
 
 namespace App\Eco\Contact;
 
+use App\Eco\Address\Address;
 use App\Eco\Campaign\Campaign;
+use App\Eco\ContactGroup\ContactGroup;
+use App\Eco\ContactNote\ContactNote;
 use App\Eco\Document\Document;
 use App\Eco\Email\Email;
+use App\Eco\EmailAddress\EmailAddress;
 use App\Eco\EnergySupplier\ContactEnergySupplier;
 use App\Eco\HousingFile\HousingFile;
+use App\Eco\Intake\Intake;
 use App\Eco\Invoice\Invoice;
 use App\Eco\Occupation\OccupationContact;
 use App\Eco\Opportunity\Opportunity;
 use App\Eco\Order\Order;
 use App\Eco\Organisation\Organisation;
-use App\Eco\Address\Address;
-use App\Eco\ContactGroup\ContactGroup;
-use App\Eco\ContactNote\ContactNote;
-use App\Eco\Organisation\OrganisationType;
-use App\Eco\EmailAddress\EmailAddress;
-use App\Eco\Intake\Intake;
 use App\Eco\ParticipantProductionProject\ParticipantProductionProject;
 use App\Eco\Person\Person;
 use App\Eco\PhoneNumber\PhoneNumber;
+use App\Eco\ProductionProject\ProductionProjectRevenueDistribution;
 use App\Eco\Task\Task;
 use App\Eco\User\User;
 use App\Http\Resources\ContactGroup\GridContactGroup;
@@ -54,12 +54,6 @@ class Contact extends Model
     protected $appends = [
       'visible_groups'
     ];
-
-    //Dont boot softdelete scopes. We handle this ourselves
-    public static function bootSoftDeletes()
-    {
-        return false;
-    }
 
     public function addresses()
     {
@@ -184,6 +178,11 @@ class Contact extends Model
         return $this->hasMany(Document::class)->orderBy('documents.id', 'desc');
     }
 
+    public function productionProjectRevenueDistributions()
+    {
+        return $this->hasMany(ProductionProjectRevenueDistribution::class);
+    }
+
     public function housingFiles()
     {
         return $this->hasManyThrough(HousingFile::class, Address::class)->orderBy('housing_files.id', 'desc');
@@ -202,6 +201,16 @@ class Contact extends Model
     public function participations()
     {
         return $this->hasMany(ParticipantProductionProject::class)->whereNull('deleted_at')->orderBy('participation_production_project.id', 'desc');
+    }
+
+    public function participationsGifted()
+    {
+        return $this->hasMany(ParticipantProductionProject::class, 'participation_production_project.gifted_by_contact_id');
+    }
+
+    public function participationsLegalRep()
+    {
+        return $this->hasMany(ParticipantProductionProject::class, 'participation_production_project.legal_rep_contact_id');
     }
 
     public function primaryOccupations()

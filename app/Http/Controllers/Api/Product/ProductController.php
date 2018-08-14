@@ -11,7 +11,6 @@ namespace App\Http\Controllers\Api\Product;
 
 use App\Eco\Product\PriceHistory;
 use App\Eco\Product\Product;
-use App\Helpers\Delete\DeleteHelper;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\RequestQueries\Product\Grid\RequestQuery;
@@ -19,7 +18,6 @@ use App\Http\Resources\GenericResource;
 use App\Http\Resources\Product\ProductPeek;
 use App\Http\Resources\Product\FullProduct;
 use App\Http\Resources\Product\GridProduct;
-use Illuminate\Support\Facades\Auth;
 
 class ProductController extends ApiController
 {
@@ -95,7 +93,7 @@ class ProductController extends ApiController
     {
         $this->authorize('manage', Product::class);
 
-        DeleteHelper::delete($product);
+        //todo
     }
 
     public function storePriceHistory(RequestInput $input)

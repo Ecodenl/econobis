@@ -5,11 +5,8 @@ namespace App\Eco\Address;
 use App\Eco\Contact\Contact;
 use App\Eco\Country\Country;
 use App\Eco\HousingFile\HousingFile;
-use App\Eco\Measure\Measure;
-use App\Eco\BuildingType\BuildingType;
-use App\Eco\Measure\MeasureRequested;
-use App\Eco\Measure\MeasureTaken;
 use App\Eco\Intake\Intake;
+use App\Eco\Measure\Measure;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Laracasts\Presenter\PresentableTrait;
@@ -26,25 +23,19 @@ class Address extends Model
         'primary' => 'boolean',
     ];
 
-    //Dont boot softdelete scopes. We handle this ourselves
-    public static function bootSoftDeletes()
-    {
-        return false;
-    }
-
     public function contact()
     {
         return $this->belongsTo(Contact::class);
     }
 
-    public function housingFile()
+    public function housingFiles()
     {
-        return $this->hasOne(HousingFile::class);
+        return $this->hasMany(HousingFile::class);
     }
 
-    public function intake()
+    public function intakes()
     {
-        return $this->hasOne(Intake::class);
+        return $this->hasMany(Intake::class);
     }
 
     public function measuresTaken()

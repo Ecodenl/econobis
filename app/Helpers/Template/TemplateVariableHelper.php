@@ -197,6 +197,12 @@ class TemplateVariableHelper
             case 'plaats':
                 return optional($model->primaryAddress)->city;
                 break;
+            case 'land':
+                return optional(optional($model->primaryAddress)->country)->name;
+                break;
+            case 'landcode':
+                return optional($model->primaryAddress)->country_id;
+                break;
             case 'telefoonnummer':
                 return optional($model->primaryphoneNumber)->number;
                 break;

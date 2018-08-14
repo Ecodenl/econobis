@@ -378,8 +378,8 @@ class CalculatedModelFieldsTest extends TestCase
         $ad->save();
 
         $pr = new Product();
-        $pr->code = "TST";
-        $pr->name = "Testje productje";
+        $pr->code = "TST2";
+        $pr->name = "Testje productje2";
         $pr->administration_id = 1;
         $pr->invoice_frequency_id = 'quarterly';
         $pr->created_by_id = 1;
@@ -393,8 +393,8 @@ class CalculatedModelFieldsTest extends TestCase
         $ph->save();
 
         $pr = new Product();
-        $pr->code = "TST";
-        $pr->name = "Testje productje";
+        $pr->code = "TST3";
+        $pr->name = "Testje productje3";
         $pr->administration_id = 1;
         $pr->invoice_frequency_id = 'monthly';
         $pr->created_by_id = 1;

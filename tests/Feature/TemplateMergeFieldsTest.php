@@ -59,13 +59,13 @@ class TemplateMergeFieldsTest extends TestCase
 
     public function assertContactMergeFields()
     {
-        $html ='{contact_titel}{contact_naam}{testjes}{contact_voornaam}{contact_achternaam}{onzin}{contact_adres}{contact_postcode}{contact_plaats}{contact_telefoonnummer}{contact_energieleverancier}';
+        $html ='{contact_titel}{contact_naam}{testjes}{contact_voornaam}{contact_achternaam}{onzin}{contact_adres}{contact_postcode}{contact_plaats}{contact_land}{contact_landcode}{contact_telefoonnummer}{contact_energieleverancier}';
         $html .= '{contact_energieleverancier_klantnummer}{contact_energieleverancier_ean_elektra}{contact_kvk}{contact_btwnr}';
 
         $html = TemplateVariableHelper::replaceTemplateVariables($html, 'contact', Contact::find(1));
         $html = TemplateVariableHelper::stripRemainingVariableTags($html);
 
-        $expectedHtml = 'MevrKlaas de VaakKlaasde VaakDorpstraat 81693KWWervershoof0612345678=om';
+        $expectedHtml = 'MevrKlaas de VaakKlaasde VaakDorpstraat 81693 KWWervershoofNederlandNL0612345678=om';
         $expectedHtml .= '333444';
         $this->assertEquals($expectedHtml, $html);
     }
@@ -113,7 +113,7 @@ class TemplateMergeFieldsTest extends TestCase
         $expectedHtml = 'Vaak, Klaas deDefinitiefProject 107/03/2018109';
         $expectedHtml .= '810706/03/201805/03/2018';
         $expectedHtml .= '04/03/2018iban123Neeiban1234Klaas de VaakKlaasde Vaak';
-        $expectedHtml .= 'iban12345Pietje03/03/2018Bijschrijven';
+        $expectedHtml .= 'Klaas de VaakKlaasde Vaakiban12345Pietje03/03/2018Bijschrijven';
 
         $this->assertEquals($expectedHtml, $html);
     }
@@ -155,7 +155,7 @@ class TemplateMergeFieldsTest extends TestCase
 
         $expectedHtml = 'OrgaNisatie Laantje 10 Wognum OrgaNisatie@xaris.nl';
         $expectedHtml .= '0650233678 Vaak, Klaas de Klaas de Vaak Vaak, Klaas de';
-        $expectedHtml .= 'klaasV@xaris.nl Wervershoof Dorpstraat 8 1693KW';
+        $expectedHtml .= 'klaasV@xaris.nl Wervershoof Dorpstraat 8 1693 KW';
         $expectedHtml .= '0612345678 Gevelisolatie OfferteText 22/03/2018 Xaris, Admin';
 
         $this->assertEquals($expectedHtml, $html);
@@ -220,6 +220,7 @@ class TemplateMergeFieldsTest extends TestCase
         $address->number = 8;
         $address->postal_code = '1693KW';
         $address->city = 'Wervershoof';
+        $address->country_id = 'NL';
         $address->save();
 
         $phoneNumber = new PhoneNumber();

@@ -39,7 +39,7 @@ class TemplateVariableHelper
             }
         }
 
-        //First we check @als{mergveld balblabal als@
+        //Check @alsniet{mergveld balblabal alsniet@
         $regex = "/@alsniet{" . $var_prefix . "_(\S*)?}((.|\s)*?)alsniet@/";
         if (preg_match_all($regex, $html_body, $m)) {
             foreach ($m[1] as $i => $var_name) {

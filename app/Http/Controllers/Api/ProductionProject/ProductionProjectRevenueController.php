@@ -423,20 +423,14 @@ class ProductionProjectRevenueController extends ApiController
         return FullProductionProjectRevenueDistribution::collection($distribution);
     }
 
-    public function downloadPreview(
-        Request $request,
-        ProductionProjectRevenueDistribution $distribution
-    ) {
+    public function downloadPreview(Request $request, ProductionProjectRevenueDistribution $distribution) {
         return $this->createParticipantRevenueReport($request->input('subject'),
             [$distribution->id],
             DocumentTemplate::find($request->input('documentTemplateId')),
             EmailTemplate::find($request->input('emailTemplateId')), true);
     }
 
-    public function previewEmail(
-        Request $request,
-        ProductionProjectRevenueDistribution $distribution
-    ) {
+    public function previewEmail(Request $request, ProductionProjectRevenueDistribution $distribution) {
         return $this->createParticipantRevenueReport($request->input('subject'),
             [$distribution->id],
             DocumentTemplate::find($request->input('documentTemplateId')),
@@ -444,14 +438,7 @@ class ProductionProjectRevenueController extends ApiController
             true);
     }
 
-    public function createParticipantRevenueReport(
-        $subject,
-        $distributionIds,
-        DocumentTemplate $documentTemplate,
-        EmailTemplate $emailTemplate,
-        $previewPDF = false,
-        $previewEmail = false
-    ) {
+    public function createParticipantRevenueReport($subject, $distributionIds, DocumentTemplate $documentTemplate, EmailTemplate $emailTemplate, $previewPDF = false, $previewEmail = false) {
         //get current logged in user
         $user = Auth::user();
 
@@ -482,16 +469,19 @@ class ProductionProjectRevenueController extends ApiController
             $contactInfo = $orderController->getContactInfoForOrder($contact);
 
             $primaryEmailAddress = $contact->primaryEmailAddress;
-            if (!$previewEmail) {
-                $revenue = $distribution->revenue;
-                $productionProject = $revenue->productionProject;
-                $administration = $productionProject->administration;
 
+            $revenue = $distribution->revenue;
+            $productionProject = $revenue->productionProject;
+            $administration = $productionProject->administration;
+
+            if (!$previewEmail) {
 
                 $html = str_replace('{contactpersoon}', $contactInfo['contactPerson'], $html);
 
+                $revenueHtml = TemplateTableHelper::replaceTemplateTables($html, $contact);
+
                 $revenueHtml
-                    = TemplateVariableHelper::replaceTemplateVariables($html,
+                    = TemplateVariableHelper::replaceTemplateVariables($revenueHtml,
                     'contact', $contact);
 
                 //wettelijk vertegenwoordiger
@@ -580,18 +570,24 @@ class ProductionProjectRevenueController extends ApiController
                     . $subject . '</title></head>'
                     . $emailTemplate->html_body . '</html>';
 
-                $htmlBodyWithContactVariables
-                    = TemplateTableHelper::replaceTemplateTables($email->html_body,
-                    $contact);
-                $htmlBodyWithContactVariables
-                    = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables,
-                    'contact', $contact);
-                $htmlBodyWithContactVariables
-                    = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables,
-                    'ik', $user);
-                $htmlBodyWithContactVariables
-                    = TemplateVariableHelper::stripRemainingVariableTags($htmlBodyWithContactVariables);
+                $htmlBodyWithContactVariables = TemplateTableHelper::replaceTemplateTables($email->html_body, $contact);
+                $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables,'contact', $contact);
+                $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables,'ik', $user);
 
+                //wettelijk vertegenwoordiger
+                if(OccupationContact::where('contact_id', $contact->id)->where('occupation_id', 7)->exists()){
+                    $wettelijkVertegenwoordiger = OccupationContact::where('contact_id', $contact->id)->where('occupation_id', 7)->first()->get()[0]->primaryContact;
+                    $htmlBodyWithContactVariables
+                        = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables,
+                        'wettelijk_vertegenwoordiger', $wettelijkVertegenwoordiger);
+                }
+
+                $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables,'participant', $distribution->participation);
+                $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables,'administratie', $administration);
+                $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables,'verdeling', $distribution);
+                $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables,'opbrengst', $revenue);
+                $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables,'productie_project', $productionProject);
+                $htmlBodyWithContactVariables = TemplateVariableHelper::stripRemainingVariableTags($htmlBodyWithContactVariables);
                 $subject = str_replace('{contactpersoon}', $contactInfo['contactPerson'], $subject);
                 $htmlBodyWithContactVariables = str_replace('{contactpersoon}', $contactInfo['contactPerson'], $htmlBodyWithContactVariables);
                 

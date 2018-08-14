@@ -185,6 +185,12 @@ class DocumentController extends Controller
     {
         $this->authorize('create', Document::class);
 
+        //delete file in Alfresco(to trashbin)
+        $user = Auth::user();
+        $alfrescoHelper = new AlfrescoHelper($user->email, $user->alfresco_password);
+
+        $alfrescoHelper->deleteFile($document->alfresco_node_id);
+
         $document->forceDelete();
     }
 

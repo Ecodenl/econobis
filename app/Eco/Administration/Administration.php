@@ -106,7 +106,7 @@ class Administration extends Model
 
     public function getTotalOrdersInvoicesAttribute()
     {
-        return $this->orders()->where('status_id', 'active')->where('payment_type_id', 'transfer'->count();
+        return $this->orders()->where('status_id', 'active')->where('payment_type_id', 'transfer')->count();
     }
 
     public function getTotalOrdersCollectionsAttribute()

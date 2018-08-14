@@ -236,6 +236,43 @@ class TemplateVariableHelper
                 }
                 return $btwnr;
                 break;
+            case 'organisatie_primair_contact':
+                if($model->type_id == 'organisation') {
+                    return optional(optional($model->contactPerson)->contact)->full_name;
+                }
+                else{
+                    return '';
+                }
+                break;
+            case 'organisatie_primair_contact_voornaam':
+                if($model->type_id == 'organisation') {
+                    if(optional(optional($model->contactPerson)->contact)->type_id == 'person'){
+                        return optional(optional($model->contactPerson)->contact)->person->first_name;
+                    }
+                    elseif(optional(optional($model->contactPerson)->contact)->type_id == 'organisation'){
+                        return '';
+                    }
+                }
+                else{
+                    return '';
+                }
+
+                break;
+            case 'organisatie_primair_contact_achternaam':
+                if($model->type_id == 'organisation') {
+                    if(optional(optional($model->contactPerson)->contact)->type_id == 'person'){
+                        $prefix = optional(optional($model->contactPerson)->contact)->person->last_name_prefix;
+                        return $prefix ? $prefix . ' ' . optional(optional($model->organisation->contact->contactPerson)->contact)->person->last_name : optional(optional($model->organisation->contact->contactPerson)->contact)->person->last_name;
+                    }
+                    elseif(optional(optional($model->contactPerson)->contact)->type_id == 'organisation'){
+                        return optional(optional($model->contactPerson)->contact)->full_name;
+                    }
+                }
+                else{
+                    return '';
+                }
+
+                break;
             default:
                 return '';
                 break;

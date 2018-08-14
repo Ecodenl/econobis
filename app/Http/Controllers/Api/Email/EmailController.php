@@ -496,7 +496,7 @@ class EmailController
     }
 
     public function destroy(Email $email){
-      //Todo
+        $email->delete();
     }
 
     public function getAmountOfOpenEmails(){

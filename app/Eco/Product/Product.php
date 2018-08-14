@@ -3,6 +3,8 @@
 namespace App\Eco\Product;
 
 use App\Eco\Administration\Administration;
+use App\Eco\Invoice\InvoiceProduct;
+use App\Eco\Order\OrderProduct;
 use App\Eco\User\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -29,6 +31,16 @@ class Product extends Model
     public function priceHistoryUnsorted()
     {
         return $this->hasMany(PriceHistory::class);
+    }
+
+    public function invoiceProducts()
+    {
+        return $this->hasMany(InvoiceProduct::class);
+    }
+
+    public function orderProducts()
+    {
+        return $this->hasMany(OrderProduct::class);
     }
 
     public function administration()

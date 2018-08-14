@@ -27,7 +27,7 @@ class SidebarTask extends Resource
                 'id' => $this->id,
                 'name' => $this->name,
                 'statusName' => $this->getStatus()->name,
-                //todo check if dit klopt?
+                //todo check of dit klopt?
                 'createdAt' => $this->updated_at,
             ];
     }

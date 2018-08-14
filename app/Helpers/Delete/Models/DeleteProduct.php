@@ -13,7 +13,7 @@ use App\Helpers\Delete\DeleteInterface;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class DeleteOpportunity
+ * Class DeleteProduct
  *
  * Relation: 1-n Emails. Action: dissociate
  * Relation: 1-n Documents. Action: dissociate
@@ -22,19 +22,19 @@ use Illuminate\Database\Eloquent\Model;
  *
  * @package App\Helpers\Delete\Models
  */
-class DeleteOpportunity implements DeleteInterface
+class DeleteProduct implements DeleteInterface
 {
     private $errorMessage = [];
-    private $opportunity;
+    private $product;
 
     /** Sets the model to delete
      *
-     * @param Model $opportunity the model to delete
+     * @param Model $product the model to delete
      */
 
-    public function __construct(Model $opportunity)
+    public function __construct(Model $product)
     {
-        $this->opportunity = $opportunity;
+        $this->product = $product;
     }
 
     /** Main method for deleting this model and all it's relations
@@ -49,7 +49,7 @@ class DeleteOpportunity implements DeleteInterface
         $this->dissociateRelations();
         $this->deleteRelations();
         $this->customDeleteActions();
-        $this->opportunity->delete();
+        $this->product->delete();
 
         return $this->errorMessage;
     }
@@ -58,28 +58,21 @@ class DeleteOpportunity implements DeleteInterface
      */
     public function canDelete()
     {
-        if(!($this->opportunity->status_id == 3 || $this->opportunity->status_id == 4 || $this->opportunity->status_id == 5 )){
-            array_push($this->errorMessage, "Er is nog een openstaande kans.");
-        }
+
     }
 
     /** Deletes models recursive
      */
     public function deleteModels()
     {
-        foreach ($this->opportunity->tasks as $task) {
-            $deleteTask = new DeleteTask($task);
-            $this->errorMessage = array_merge($this->errorMessage, $deleteTask->delete());
+        foreach ($this->product->invoiceProducts as $invoiceProduct) {
+            $deleteInvoice = new DeleteInvoice($invoiceProduct->invoice);
+            $this->errorMessage = array_merge($this->errorMessage, $deleteInvoice->delete());
         }
 
-        foreach ($this->opportunity->notes as $note) {
-            $deleteTask = new DeleteTask($note);
-            $this->errorMessage = array_merge($this->errorMessage, $deleteTask->delete());
-        }
-
-        foreach ($this->opportunity->quotationRequests as $quotationRequest) {
-            $deleteQuotationRequest = new DeleteQuotationRequest($quotationRequest);
-            $this->errorMessage = array_merge($this->errorMessage, $deleteQuotationRequest->delete());
+        foreach ($this->product->orderProducts as $orderProduct) {
+            $deleteOrder = new DeleteOrder($orderProduct->order);
+            $this->errorMessage = array_merge($this->errorMessage, $deleteOrder->delete());
         }
     }
 
@@ -87,15 +80,7 @@ class DeleteOpportunity implements DeleteInterface
      */
     public function dissociateRelations()
     {
-        foreach ($this->opportunity->emails() as $email){
-            $email->opportunity()->dissociate();
-            $email->save();
-        }
 
-        foreach ($this->opportunity->documents() as $document){
-            $document->opportunity()->dissociate();
-            $document->save();
-        }
     }
 
     /**

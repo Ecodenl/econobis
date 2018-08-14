@@ -24,7 +24,7 @@ class AddSoftdeletes extends Migration
     {
 
         //New softdeletes
-        $newSoftDeletes = ['email_addresses', 'phone_numbers', 'production_project_revenue_distribution', 'housing_files', 'campaigns', 'contact_groups', 'emails'];
+        $newSoftDeletes = ['email_addresses', 'phone_numbers', 'production_project_revenue_distribution', 'housing_files', 'campaigns', 'contact_groups', 'emails', 'opportunities'];
 
         foreach ($newSoftDeletes as $newSoftDelete) {
             Schema::table($newSoftDelete, function (Blueprint $table) {
@@ -41,7 +41,7 @@ class AddSoftdeletes extends Migration
     public function down()
     {
         //New softdeletes
-        $newSoftDeletes = ['email_addresses', 'phone_numbers', 'production_project_revenue_distribution', 'housing_files', 'campaigns', 'contact_groups', 'emails'];
+        $newSoftDeletes = ['email_addresses', 'phone_numbers', 'production_project_revenue_distribution', 'housing_files', 'campaigns', 'contact_groups', 'emails', 'opportunities'];
 
         foreach ($newSoftDeletes as $newSoftDelete) {
             Schema::table($newSoftDelete, function (Blueprint $table) {

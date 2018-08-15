@@ -14,7 +14,7 @@ class OpportunitiesMeasures extends Migration
      */
     public function up()
     {
-        $opportunities = Opportunity::all();
+        $opportunities = Opportunity::withTrashed()->get();
 
         foreach ($opportunities as $opportunity) {
             $opportunity->measure_id = 1;

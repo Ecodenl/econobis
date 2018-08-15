@@ -17,7 +17,7 @@ class DynamicGroups extends Migration
             $table->string('type_id')->nullable();
         });
 
-        foreach (\App\Eco\ContactGroup\ContactGroup::all() as $cg){
+        foreach (\App\Eco\ContactGroup\ContactGroup::withTrashed()->get() as $cg){
             $cg->type_id = 'static';
             $cg->save();
         }

@@ -18,6 +18,7 @@ export function* deleteContactSaga({ id }) {
     try {
         yield call(ContactsAPI.deleteContact, id);
         yield put({ type: 'DELETE_CONTACT_SUCCESS', id });
+        hashHistory.push(`/contacten`);
     } catch (error) {
         yield put({ type: 'SET_ERROR', http_code: error.response.status, message: error.response.data.message });
         yield put({ type: 'DELETE_CONTACT_ERROR', error });
@@ -28,7 +29,6 @@ export function* deleteSelectedContactsSaga({ contactIds }) {
     try {
         yield call(ContactsAPI.deleteContacts, contactIds);
         yield put({ type: 'DELETE_CONTACT_SUCCESS', contactIds });
-        hashHistory.push(`/contacten`);
     } catch (error) {
         yield put({ type: 'SET_ERROR', http_code: error.response.status, message: error.response.data.message });
         yield put({ type: 'DELETE_CONTACT_ERROR', error });

@@ -486,7 +486,7 @@ class ProductionProjectRevenueController extends ApiController
 
                 //wettelijk vertegenwoordiger
                 if(OccupationContact::where('contact_id', $contact->id)->where('occupation_id', 7)->exists()){
-                    $wettelijkVertegenwoordiger = OccupationContact::where('contact_id', $contact->id)->where('occupation_id', 7)->first()->get()[0]->primaryContact;
+                    $wettelijkVertegenwoordiger = OccupationContact::where('contact_id', $contact->id)->where('occupation_id', 7)->first()->primaryContact;
                     $revenueHtml
                         = TemplateVariableHelper::replaceTemplateVariables($revenueHtml,
                         'wettelijk_vertegenwoordiger', $wettelijkVertegenwoordiger);
@@ -576,7 +576,7 @@ class ProductionProjectRevenueController extends ApiController
 
                 //wettelijk vertegenwoordiger
                 if(OccupationContact::where('contact_id', $contact->id)->where('occupation_id', 7)->exists()){
-                    $wettelijkVertegenwoordiger = OccupationContact::where('contact_id', $contact->id)->where('occupation_id', 7)->first()->get()[0]->primaryContact;
+                    $wettelijkVertegenwoordiger = OccupationContact::where('contact_id', $contact->id)->where('occupation_id', 7)->first()->primaryContact;
                     $htmlBodyWithContactVariables
                         = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables,
                         'wettelijk_vertegenwoordiger', $wettelijkVertegenwoordiger);

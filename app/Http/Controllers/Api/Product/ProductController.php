@@ -20,6 +20,7 @@ use App\Http\Resources\Product\ProductPeek;
 use App\Http\Resources\Product\FullProduct;
 use App\Http\Resources\Product\GridProduct;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class ProductController extends ApiController
 {

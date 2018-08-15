@@ -10,6 +10,7 @@ use App\Http\Resources\Address\FullAddress;
 use App\Rules\EnumExists;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class AddressController extends ApiController
 {

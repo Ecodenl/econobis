@@ -22,6 +22,7 @@ use App\Http\Resources\Opportunity\OpportunityPeek;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class OpportunityController extends ApiController
 {

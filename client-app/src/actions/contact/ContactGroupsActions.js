@@ -16,7 +16,8 @@ export const clearContactGroups = () => ({
     type: 'CLEAR_CONTACT_GROUPS',
 });
 
-export const deleteContactGroup = (id) => ({
+export const deleteContactGroup = (id, reloadData) => ({
     type: 'DELETE_CONTACT_GROUP',
     id,
+    reloadData,
 });

@@ -93,7 +93,8 @@ class ContactController extends Controller
             DB::commit();
         } catch (\PDOException $e) {
             DB::rollBack();
-            abort(501, $e->getMessage());
+            Log::error($e->getMessage());
+            abort(501, 'Er is helaas een fout opgetreden.');
         }
     }
 

@@ -205,7 +205,8 @@ class TaskController extends Controller
             DB::commit();
         } catch (\PDOException $e) {
             DB::rollBack();
-            abort(501);
+            Log::error($e->getMessage());
+            abort(501, 'Er is helaas een fout opgetreden.');
         }
     }
 

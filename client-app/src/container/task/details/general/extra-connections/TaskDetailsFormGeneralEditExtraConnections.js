@@ -109,7 +109,7 @@ const TaskDetailsFormGeneralEditExtraConnections = ({task, invoices, campaigns, 
 
             <div className="row">
                 <InputReactSelect
-                    label={"factuur"}
+                    label={"Factuur"}
                     size={"col-sm-6"}
                     name={"invoiceId"}
                     options={invoices}

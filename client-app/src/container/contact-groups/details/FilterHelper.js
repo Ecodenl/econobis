@@ -17,6 +17,7 @@ export default (type, field) => {
                 case 'currentParticipations': return 'Aantal participaties';
                 case 'occupation': return 'Verbinding';
                 case 'opportunity': return 'Kans';
+                case 'product': return 'Product';
             }
             break;
         case 'comperator':

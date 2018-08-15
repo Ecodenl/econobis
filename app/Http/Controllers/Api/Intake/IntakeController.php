@@ -55,7 +55,7 @@ class IntakeController extends ApiController
     {
         $intake->load([
             'contact',
-            'address.housingFile',
+            'address.housingFiles',
             'campaign',
             'status',
             'sources',

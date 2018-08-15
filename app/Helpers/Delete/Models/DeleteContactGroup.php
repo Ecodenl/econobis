@@ -14,6 +14,9 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * Class DeleteContactGroup
  *
+ * Relation 1-n: Documents. Action: dissociate
+ * Relation 1-n: Emails. Action: dissociate
+ * Relation 1-n: Tasks. Action: call DeleteTask
  *
  * @package App\Helpers\Delete
  */
@@ -62,14 +65,25 @@ class DeleteContactGroup implements DeleteInterface
      */
     public function deleteModels()
     {
-
+        foreach ($this->contactGroup->tasks as $task){
+            $deleteTask = new DeleteTask($task);
+            $this->errorMessage = array_merge($this->errorMessage, $deleteTask->delete());
+        }
     }
 
     /** The relations which should be dissociated
      */
     public function dissociateRelations()
     {
+        foreach ($this->contactGroup->documents() as $document){
+            $document->contactGroup()->dissociate();
+            $document->save();
+        }
 
+        foreach ($this->contactGroup->emails() as $email){
+            $email->contactGroup()->dissociate();
+            $email->save();
+        }
     }
 
     /**

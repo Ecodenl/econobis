@@ -12,7 +12,6 @@ use App\Http\RequestQueries\Contact\Grid\Filter;
 use App\Http\RequestQueries\Contact\Grid\Joiner;
 use App\Http\RequestQueries\Contact\Grid\RequestQuery;
 use App\Http\RequestQueries\Contact\Grid\Sort;
-use App\Http\Resources\Contact\FullContact;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Http\Request;

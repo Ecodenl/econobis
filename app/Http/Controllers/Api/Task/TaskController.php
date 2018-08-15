@@ -197,10 +197,9 @@ class TaskController extends Controller
 
             $deleteTask = new DeleteTask($task);
             $result = $deleteTask->delete();
-
             if(count($result) > 0){
                 DB::rollBack();
-                abort(412, $result);
+                abort(412, implode(";", array_unique($result)));
             }
 
             DB::commit();

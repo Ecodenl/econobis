@@ -20,7 +20,7 @@ export function* deleteContactGroupSaga({ id }) {
     try {
         yield call(ContactGroupAPI.deleteContactGroup, id);
         yield put({ type: 'DELETE_CONTACT_GROUP_SUCCESS', id });
-        hashHistory.push(`/groepen`);
+        hashHistory.push(`/contact-groepen`);
     } catch (error) {
         yield put({ type: 'SET_ERROR', http_code: error.response.status, message: error.response.data.message });
         yield put({ type: 'DELETE_CONTACT_GROUP_ERROR', error });

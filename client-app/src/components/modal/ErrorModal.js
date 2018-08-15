@@ -128,7 +128,9 @@ const ErrorModal = (props) => {
                         errorMessage
                         }
                         {typeof errorMessage === 'object' &&
-                        errorMessage.map((message) => <li>{message}</li>)
+                            <ul>
+                                { errorMessage.map((message) => <li>{message}</li>) }
+                            </ul>
                         }
                     </div>
                     <div className="modal-footer">

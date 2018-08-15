@@ -9,7 +9,6 @@
 namespace App\Http\Controllers\Api\ParticipationProductionProject;
 
 use App\Eco\Contact\Contact;
-use App\Eco\ContactGroup\ContactGroup;
 use App\Eco\Document\Document;
 use App\Eco\DocumentTemplate\DocumentTemplate;
 use App\Eco\EmailTemplate\EmailTemplate;
@@ -18,7 +17,6 @@ use App\Helpers\CSV\ParticipantCSVHelper;
 use App\Helpers\Delete\DeleteHelper;
 use App\Helpers\Template\TemplateTableHelper;
 use App\Http\Resources\Contact\ContactPeek;
-use App\Http\Resources\EnumWithIdAndName\FullEnumWithIdAndName;
 use Barryvdh\DomPDF\Facade as PDF;
 use App\Eco\ParticipantProductionProject\ParticipantProductionProject;
 use App\Eco\ParticipantTransaction\ParticipantTransaction;
@@ -32,6 +30,7 @@ use App\Http\Resources\ParticipantProductionProject\FullParticipantProductionPro
 use App\Http\Resources\ParticipantProductionProject\GridParticipantProductionProject;
 use App\Http\Resources\ParticipantProductionProject\ParticipantProductionProjectPeek;
 use App\Http\Resources\ParticipantProductionProject\Templates\ParticipantReportMail;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -513,21 +512,14 @@ class ParticipationProductionProjectController extends ApiController
     public function peekContactsMembershipRequired(ParticipantProductionProject $participantProductionProject)
     {
         if($participantProductionProject->productionProject->is_membership_required){
-            $contacts = Contact::select('id', 'full_name', 'number')->orderBy('full_name')->whereNull('deleted_at')->get();
 
-            $contacts = $contacts->filter(function ($contact) use ($participantProductionProject) {
-                foreach ($participantProductionProject->productionProject->requiresContactGroups as $contactGroup){
-                    foreach ($contactGroup->all_contacts as $contactGroupContact) {
-                        if ($contactGroupContact->id === $contact->id) {
-                            return true;
-                        }
-                    }
-                }
-                return false;
-            });
+            $contacts = new Collection();
 
-            //reset keys, because we unshift later on
-            $contacts = $contacts->values();
+            foreach ($participantProductionProject->productionProject->requiresContactGroups as $contactGroup){
+                $contacts = $contacts->merge($contactGroup->all_contacts);
+            }
+
+            $contacts = $contacts->sortBy('full_name', SORT_NATURAL|SORT_FLAG_CASE)->values();
         }
         else{
             $contacts = Contact::select('id', 'full_name', 'number')->orderBy('full_name')->whereNull('deleted_at')->get();

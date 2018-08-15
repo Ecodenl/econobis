@@ -66,7 +66,7 @@ class DeleteProductionProject implements DeleteInterface
      */
     public function deleteModels()
     {
-        foreach ($this->productionProject->participations as $participation){
+        foreach ($this->productionProject->participantsProductionProject as $participation){
             $deleteParticipation = new DeleteParticipation($participation);
             $this->errorMessage = array_merge($this->errorMessage, $deleteParticipation->delete());
         }

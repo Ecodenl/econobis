@@ -24,6 +24,7 @@ use App\Http\Resources\Task\SidebarTask;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class IntakeController extends ApiController
 {
@@ -223,7 +224,8 @@ class IntakeController extends ApiController
             DB::commit();
         } catch (\PDOException $e) {
             DB::rollBack();
-            abort(501, $e->getMessage());
+            Log::error($e->getMessage());
+            abort(501, 'Er is helaas een fout opgetreden.');
         }
     }
 

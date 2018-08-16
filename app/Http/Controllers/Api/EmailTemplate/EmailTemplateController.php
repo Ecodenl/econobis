@@ -9,12 +9,15 @@
 namespace App\Http\Controllers\Api\EmailTemplate;
 
 use App\Eco\EmailTemplate\EmailTemplate;
+use App\Helpers\Delete\Models\DeleteEmailTemplate;
 use App\Helpers\RequestInput\RequestInput;
 use App\Helpers\Template\TemplateVariableHelper;
 use App\Http\Resources\EmailTemplate\EmailTemplatePeek;
 use App\Http\Resources\EmailTemplate\FullEmailTemplate;
 use App\Http\Resources\EmailTemplate\GridEmailTemplate;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class EmailTemplateController
 {
@@ -71,6 +74,27 @@ class EmailTemplateController
         $emailTemplate->save();
 
         return FullEmailTemplate::make($emailTemplate->fresh());
+    }
+
+    public function destroy(EmailTemplate $emailTemplate)
+    {
+        try {
+            DB::beginTransaction();
+
+            $deleteEmailTemplate = new DeleteEmailTemplate($emailTemplate);
+            $result = $deleteEmailTemplate->delete();
+
+            if(count($result) > 0){
+                DB::rollBack();
+                abort(412, implode(";", array_unique($result)));
+            }
+
+            DB::commit();
+        } catch (\PDOException $e) {
+            DB::rollBack();
+            Log::error($e->getMessage());
+            abort(501, 'Er is helaas een fout opgetreden.');
+        }
     }
 
     public function peek()

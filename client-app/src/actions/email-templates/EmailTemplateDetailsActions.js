@@ -5,6 +5,13 @@ export const fetchEmailTemplate = (id) => {
     };
 };
 
+export const deleteEmailTemplate = (id) => {
+    return {
+        type: 'DELETE_EMAIL_TEMPLATE',
+        id,
+    };
+};
+
 export const clearEmailTemplate = () => {
     return {
         type: 'CLEAR_EMAIL_TEMPLATE'

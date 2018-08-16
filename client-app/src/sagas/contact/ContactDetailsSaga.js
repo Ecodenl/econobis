@@ -5,7 +5,6 @@ import PhoneNumberAPI from '../../api/contact/PhoneNumberAPI';
 import EmailAddressAPI from '../../api/contact/EmailAddressAPI';
 import ContactNoteAPI from '../../api/contact/ContactNoteAPI';
 import ContactEnergySupplierAPI from '../../api/contact/ContactEnergySupplierAPI';
-import {authSaga} from "../general/AuthSaga";
 
 export function* fetchContactDetailsSaga({ payload }) {
     try {

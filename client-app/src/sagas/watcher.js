@@ -12,9 +12,9 @@ import { fetchContactsInGroupSaga, deleteContactInGroupSaga } from './contact-gr
 import { fetchContactsSaga, deleteContactSaga, deleteSelectedContactsSaga } from './contact/ContactsSaga';
 import { fetchDocumentsSaga } from './document/DocumentsSaga';
 import { fetchDocumentDetailsSaga, deleteDocumentSaga } from './document/DocumentDetailsSaga';
-import { fetchDocumentTemplatesSaga, fetchDocumentTemplateSaga } from './document-template/DocumentTemplatesSaga';
+import { fetchDocumentTemplatesSaga, fetchDocumentTemplateSaga, deleteDocumentTemplateSaga } from './document-template/DocumentTemplatesSaga';
 import { fetchEmailsSaga, fetchEmailSaga } from './email/EmailsSaga';
-import { fetchEmailTemplatesSaga, fetchEmailTemplateSaga } from './email-template/EmailTemplatesSaga';
+import { fetchEmailTemplatesSaga, fetchEmailTemplateSaga, deleteEmailTemplateSaga } from './email-template/EmailTemplatesSaga';
 import { fetchMailboxDetailsSaga, deleteMailboxSaga, deleteMailboxUserSaga } from './mailbox/MailboxDetailsSaga';
 import { fetchMailboxesSaga } from './mailbox/MailboxesSaga';
 import { fetchMeasuresSaga } from './measure/MeasuresSaga';
@@ -106,12 +106,14 @@ export default function* watchSagas() {
     // Document templates
     yield takeLatest('FETCH_DOCUMENT_TEMPLATES', fetchDocumentTemplatesSaga);
     yield takeLatest('FETCH_DOCUMENT_TEMPLATE', fetchDocumentTemplateSaga);
+    yield takeLatest('DELETE_DOCUMENT_TEMPLATE', deleteDocumentTemplateSaga);
     // Emails
     yield takeLatest('FETCH_EMAILS', fetchEmailsSaga);
     yield takeLatest('FETCH_EMAIL', fetchEmailSaga);
     // Email templates
     yield takeLatest('FETCH_EMAIL_TEMPLATES', fetchEmailTemplatesSaga);
     yield takeLatest('FETCH_EMAIL_TEMPLATE', fetchEmailTemplateSaga);
+    yield takeLatest('DELETE_EMAIL_TEMPLATE', deleteEmailTemplateSaga);
     // Housing Files
     yield takeLatest('FETCH_HOUSING_FILES', fetchHousingFilesSaga);
     yield takeLatest('FETCH_HOUSING_FILE_DETAILS', fetchHousingFileDetailsSaga);

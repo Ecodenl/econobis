@@ -236,7 +236,6 @@ class HousingFileController extends ApiController
             Log::error($e->getMessage());
             abort(501, 'Er is helaas een fout opgetreden.');
         }
-
     }
 
     public function notes(HousingFile $housingFile)

@@ -191,7 +191,7 @@ class DocumentController extends Controller
 
         $alfrescoHelper->deleteFile($document->alfresco_node_id);
 
-        $document->forceDelete();
+        $document->delete();
     }
 
     public function create(Document $document){

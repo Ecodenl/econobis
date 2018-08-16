@@ -24,7 +24,7 @@ class AddSoftdeletes2 extends Migration
     {
 
         //New softdeletes
-        $newSoftDeletes = ['email_templates', 'document_templates'];
+        $newSoftDeletes = ['email_templates', 'document_templates', 'documents'];
 
         foreach ($newSoftDeletes as $newSoftDelete) {
             Schema::table($newSoftDelete, function (Blueprint $table) {
@@ -41,7 +41,7 @@ class AddSoftdeletes2 extends Migration
     public function down()
     {
         //New softdeletes
-        $newSoftDeletes = ['email_templates', 'document_templates'];
+        $newSoftDeletes = ['email_templates', 'document_templates', 'documents'];
 
         foreach ($newSoftDeletes as $newSoftDelete) {
             Schema::table($newSoftDelete, function (Blueprint $table) {

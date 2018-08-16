@@ -222,7 +222,7 @@ class IntakeController extends ApiController
             }
 
             DB::commit();
-        } catch (\Exception $e) {
+        } catch (\PDOException $e) {
             DB::rollBack();
             Log::error($e->getMessage());
             abort(501, 'Er is helaas een fout opgetreden.');

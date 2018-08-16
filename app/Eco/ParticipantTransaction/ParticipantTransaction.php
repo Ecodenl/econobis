@@ -13,7 +13,7 @@ class ParticipantTransaction extends Model
 {
     protected $table = 'participant_transactions';
 
-    use RevisionableTrait, Encryptable, SoftDeletes;
+    use RevisionableTrait, Encryptable;
 
     protected $guarded = ['id'];
 

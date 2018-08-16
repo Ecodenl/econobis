@@ -59,6 +59,9 @@ class DeleteAddress implements DeleteInterface
      */
     public function canDelete()
     {
+        if($this->address->housingFiles()->count() > 0){
+            array_push($this->errorMessage, "Er zijn nog woningdossiers.");
+        }
     }
 
     /** Deletes models recursive

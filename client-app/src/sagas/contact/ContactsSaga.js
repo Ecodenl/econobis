@@ -1,7 +1,5 @@
 import { put, call } from 'redux-saga/effects';
 import ContactsAPI from '../../api/contact/ContactsAPI';
-import AuthAPI from "../../api/general/AuthAPI";
-import { authSaga} from '../general/AuthSaga';
 import {hashHistory} from "react-router";
 
 export function* fetchContactsSaga({filters, extraFilters, sorts, pagination}) {

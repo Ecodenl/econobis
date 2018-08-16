@@ -1,45 +1,42 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: StagiarSoftware
- * Date: 10-8-2018
- * Time: 9:23
+ * User: Fren de Haan
+ * Date: 19-1-2018
+ * Time: 11:55
  */
 
 namespace App\Helpers\Delete\Models;
-
 
 use App\Helpers\Delete\DeleteInterface;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class DeleteAddress
+ * Class DeleteHousingFile
  *
- * Relation: 1-n Housing files. Action: call DeleteHousingFile
- * Relation: 1-n Intakes. Action: call DeleteIntake
-
+ * Relation: 1-n Documents. Action: dissociate
+ * Relation: 1-n Tasks & notes. Action: call DeleteTask
  *
- * @package App\Helpers\Delete\Models
+ * @package App\Helpers\Delete
  */
-class DeleteAddress implements DeleteInterface
+class DeleteHousingFile implements DeleteInterface
 {
-
     private $errorMessage = [];
-    private $address;
+    private $housingFile;
 
     /** Sets the model to delete
      *
-     * @param Model $address the model to delete
+     * @param Model $housingFile the model to delete
      */
 
-    public function __construct(Model $address)
+    public function __construct(Model $housingFile)
     {
-        $this->address = $address;
+        $this->housingFile = $housingFile;
     }
 
     /** Main method for deleting this model and all it's relations
      *
-     * @return array errorMessage array
+     * @return array
      * @throws
      */
     public function delete()
@@ -49,30 +46,31 @@ class DeleteAddress implements DeleteInterface
         $this->dissociateRelations();
         $this->deleteRelations();
         $this->customDeleteActions();
-        $this->address->delete();
+        $this->housingFile->delete();
 
         return $this->errorMessage;
     }
 
-    /** Checks if the model can be deleted and sets error messages
+    /** Checks if the model can be deleted
      *
      */
     public function canDelete()
     {
+
     }
 
     /** Deletes models recursive
+     *
      */
     public function deleteModels()
     {
-        foreach ($this->address->intakes as $intake){
-            $deleteIntake = new DeleteIntake($intake);
-            $this->errorMessage = array_merge($this->errorMessage, $deleteIntake->delete());
+        foreach ($this->housingFile->tasks as $task) {
+            $deleteTask = new DeleteTask($task);
+            $this->errorMessage = array_merge($this->errorMessage, $deleteTask->delete());
         }
-
-        foreach ($this->address->housingFiles as $housingFile){
-            $deleteHousingFile = new DeleteHousingFile($housingFile);
-            $this->errorMessage = array_merge($this->errorMessage, $deleteHousingFile->delete());
+        foreach ($this->housingFile->notes as $task) {
+            $deleteTask = new DeleteTask($task);
+            $this->errorMessage = array_merge($this->errorMessage, $deleteTask->delete());
         }
     }
 
@@ -80,8 +78,11 @@ class DeleteAddress implements DeleteInterface
      */
     public function dissociateRelations()
     {
+        foreach ($this->housingFile->documents() as $document){
+            $document->housingFile()->dissociate();
+            $document->save();
+        }
     }
-
 
     /**
      * Delete relations who dont need their own Delete class
@@ -91,10 +92,11 @@ class DeleteAddress implements DeleteInterface
 
     }
 
+
     /** Model specific delete actions e.g. delete files from server
+     *
      */
     public function customDeleteActions()
     {
     }
-
 }

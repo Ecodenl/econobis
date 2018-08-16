@@ -1,5 +1,6 @@
 import { put, call } from 'redux-saga/effects';
 import HousingFileDetailsAPI from '../../api/housing-file/HousingFileDetailsAPI';
+import {hashHistory} from "react-router";
 
 export function* fetchHousingFileDetailsSaga({ payload }) {
     try {
@@ -14,7 +15,9 @@ export function* deleteHousingFileSaga({ id }) {
     try {
         yield call(HousingFileDetailsAPI.deleteHousingFile, id);
         yield put({ type: 'DELETE_HOUSING_FILE_SUCCESS', id });
+        hashHistory.push(`/woningdossiers`);
     } catch (error) {
+        yield put({ type: 'SET_ERROR', http_code: error.response.status, message: error.response.data.message });
         yield put({ type: 'DELETE_HOUSING_FILE_ERROR', error });
     }
 }

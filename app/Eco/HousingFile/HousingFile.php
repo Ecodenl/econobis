@@ -50,6 +50,11 @@ class HousingFile extends Model
         return $this->belongsTo(EnergyLabelStatus::class);
     }
 
+    public function tasks()
+    {
+        return $this->hasMany(Task::class)->where('finished', false)->orderBy('tasks.id', 'desc');
+    }
+
     public function notes()
     {
         return $this->hasMany(Task::class)->where('finished', true)->orderBy('tasks.id', 'desc');

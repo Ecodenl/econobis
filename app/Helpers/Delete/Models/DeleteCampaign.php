@@ -16,7 +16,6 @@ use Illuminate\Database\Eloquent\Model;
  *
  * Relation: 1-n Documents. Action: dissociate
  * Relation: 1-n Tasks & notes. Action: call DeleteTask
- * Relation: 1-n Emails. Action: dissociate.
  *
  * @package App\Helpers\Delete
  */
@@ -65,7 +64,7 @@ class DeleteCampaign implements DeleteInterface
      */
     public function deleteModels()
     {
-        foreach ($this->campaign->notes as $task) {
+        foreach ($this->campaign->tasks as $task) {
             $deleteTask = new DeleteTask($task);
             $this->errorMessage = array_merge($this->errorMessage, $deleteTask->delete());
         }
@@ -79,11 +78,6 @@ class DeleteCampaign implements DeleteInterface
      */
     public function dissociateRelations()
     {
-        foreach ($this->campaign->emails() as $email){
-            $email->campaign()->dissociate();
-            $email->save();
-        }
-
         foreach ($this->campaign->documents() as $document){
             $document->campaign()->dissociate();
             $document->save();

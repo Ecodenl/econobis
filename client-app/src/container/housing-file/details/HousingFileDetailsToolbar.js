@@ -32,7 +32,7 @@ class HousingFileDetailsToolbar extends Component {
                             <div className="col-md-2">
                                 <div className="btn-group" role="group">
                                     <ButtonIcon iconName={"glyphicon-arrow-left"} onClickAction={browserHistory.goBack} />
-                                    {this.props.permissions.manageHousingFile && false &&
+                                    {this.props.permissions.manageHousingFile &&
                                     < ButtonIcon iconName={"glyphicon-trash"} onClickAction={this.toggleDelete}/>
                                     }
                                 </div>

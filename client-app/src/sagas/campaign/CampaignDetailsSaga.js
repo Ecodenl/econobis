@@ -1,5 +1,7 @@
 import { put, call } from 'redux-saga/effects';
 import CampaignDetailsAPI from '../../api/campaign/CampaignDetailsAPI';
+import HousingFileDetailsAPI from "../../api/housing-file/HousingFileDetailsAPI";
+import {hashHistory} from "react-router";
 
 export function* fetchCampaignSaga({ id }) {
     try {
@@ -10,5 +12,16 @@ export function* fetchCampaignSaga({ id }) {
         yield put({ type: 'FETCH_SYSTEM_DATA'});
     } catch (error) {
         yield put({ type: 'FETCH_CAMPAIGN_ERROR', error });
+    }
+}
+
+export function* deleteCampaignSaga({ id }) {
+    try {
+        yield call(CampaignDetailsAPI.deleteCampaign, id);
+        yield put({ type: 'DELETE_CAMPAIGN_SUCCESS', id });
+        hashHistory.push(`/campagnes`);
+    } catch (error) {
+        yield put({ type: 'SET_ERROR', http_code: error.response.status, message: error.response.data.message });
+        yield put({ type: 'DELETE_CAMPAIGN_ERROR', error });
     }
 }

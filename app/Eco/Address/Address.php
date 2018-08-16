@@ -28,6 +28,11 @@ class Address extends Model
         return $this->belongsTo(Contact::class);
     }
 
+    public function housingFile()
+    {
+        return $this->hasOne(HousingFile::class)->latest();
+    }
+
     public function housingFiles()
     {
         return $this->hasMany(HousingFile::class);

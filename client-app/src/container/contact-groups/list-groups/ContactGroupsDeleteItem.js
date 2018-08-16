@@ -6,7 +6,7 @@ import { deleteContactGroup } from '../../../actions/contact/ContactGroupsAction
 
 const ContactGroupsDeleteItem = (props) => {
     const confirmAction = () => {
-        props.deleteContactGroup(props.id);
+        props.deleteContactGroup(props.id, props.resetContactGroupsFilters);
         props.closeDeleteItemModal();
     };
 
@@ -24,8 +24,8 @@ const ContactGroupsDeleteItem = (props) => {
 };
 
 const mapDispatchToProps = dispatch => ({
-    deleteContactGroup: (id) => {
-        dispatch(deleteContactGroup(id));
+    deleteContactGroup: (id, reloadData) => {
+        dispatch(deleteContactGroup(id, reloadData));
     },
 });
 

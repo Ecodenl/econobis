@@ -16,11 +16,11 @@ export function* fetchContactGroupsSaga({filters, sorts, pagination}) {
     }
 }
 
-export function* deleteContactGroupSaga({ id }) {
+export function* deleteContactGroupSaga({ id, reloadData }) {
     try {
         yield call(ContactGroupAPI.deleteContactGroup, id);
         yield put({ type: 'DELETE_CONTACT_GROUP_SUCCESS', id });
-        hashHistory.push(`/contact-groepen`);
+        reloadData();
     } catch (error) {
         yield put({ type: 'SET_ERROR', http_code: error.response.status, message: error.response.data.message });
         yield put({ type: 'DELETE_CONTACT_GROUP_ERROR', error });

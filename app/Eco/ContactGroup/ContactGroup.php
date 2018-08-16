@@ -147,12 +147,15 @@ class ContactGroup extends Model
 
             if($contacts === null){
                 $contacts = $contactGroup->getAllContacts();
-                array_push($this->hasComposedIds, $contactGroup->id);
             }
             else{
-                $contacts = $contacts->merge($contactGroup->getAllContacts());
-                array_push($this->hasComposedIds, $contactGroup->id);
+                $tempContacts = $contactGroup->getAllContacts();
+
+                if($tempContacts){
+                    $contacts = $contacts->merge($tempContacts);
+                }
             }
+            array_push($this->hasComposedIds, $contactGroup->id);
         }
 
         return $contacts;

@@ -6,7 +6,7 @@ import {connect} from "react-redux";
 
 const EmailTemplateDeleteItem = (props) => {
     const confirmAction = () => {
-        props.deleteEmailTemplate(props.id);
+        props.deleteEmailTemplate(props.templateId);
         props.closeDeleteItemModal();
     };
 

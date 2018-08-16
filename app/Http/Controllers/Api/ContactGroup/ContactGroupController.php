@@ -122,7 +122,7 @@ class ContactGroupController extends Controller
             }
 
             DB::commit();
-        } catch (\PDOException $e) {
+        } catch (\Exception $e) {
             DB::rollBack();
             Log::error($e->getMessage());
             abort(501, 'Er is helaas een fout opgetreden.');

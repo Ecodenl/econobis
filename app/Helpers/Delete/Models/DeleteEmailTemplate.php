@@ -79,7 +79,7 @@ class DeleteEmailTemplate implements DeleteInterface
     public function dissociateRelations()
     {
         foreach (Administration::where('email_template_id', $this->emailTemplate->id)->get() as $administration) {
-            $administration->emailTemplateId()->dissociate();
+            $administration->emailTemplate()->dissociate();
             $administration->save();
         }
 
@@ -94,7 +94,7 @@ class DeleteEmailTemplate implements DeleteInterface
         }
 
         foreach (Order::where('email_template_id', $this->emailTemplate->id)->get() as $administration) {
-            $administration->emailTemplateId()->dissociate();
+            $administration->emailTemplate()->dissociate();
             $administration->save();
         }
 

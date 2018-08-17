@@ -43,7 +43,6 @@ class FullProduct extends Resource
 
                 'createdById' => $this->created_by_id,
                 'createdBy' => FullUser::make($this->whenLoaded('createdBy')),
-                'deletedAt' => $this->deleted_at,
                 'createdAt' => $this->created_at,
                 'updatedAt' => $this->updated_at,
             ];

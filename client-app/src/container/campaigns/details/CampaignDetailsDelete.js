@@ -1,16 +1,13 @@
 import React from 'react';
-import { hashHistory } from 'react-router';
 
 import Modal from '../../../components/modal/Modal';
-import CampaignDetailsAPI from '../../../api/campaign/CampaignDetailsAPI';
+import {deleteCampaign} from "../../../actions/campaign/CampaignDetailsActions";
+import {connect} from "react-redux";
 
 const CampaignDetailsDelete = (props) => {
     const confirmAction = () => {
-        CampaignDetailsAPI.deleteCampaign(props.id).then(() => {
-            hashHistory.push('/campagnes');
-        });
-
-
+        props.deleteCampaign(props.id);
+        props.closeDeleteItemModal();
     };
 
     return (
@@ -26,4 +23,10 @@ const CampaignDetailsDelete = (props) => {
     );
 };
 
-export default CampaignDetailsDelete;
+const mapDispatchToProps = dispatch => ({
+    deleteCampaign: (id) => {
+        dispatch(deleteCampaign(id));
+    },
+});
+
+export default connect(null, mapDispatchToProps)(CampaignDetailsDelete);

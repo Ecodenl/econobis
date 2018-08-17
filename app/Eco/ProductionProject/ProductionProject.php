@@ -13,11 +13,12 @@ use App\Eco\ParticipantProductionProject\ParticipantProductionProject;
 use App\Eco\Task\Task;
 use App\Eco\User\User;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Venturecraft\Revisionable\RevisionableTrait;
 
 class ProductionProject extends Model
 {
-    use RevisionableTrait;
+    use RevisionableTrait, SoftDeletes;
 
     protected $table = 'production_projects';
 
@@ -58,7 +59,7 @@ class ProductionProject extends Model
 
     public function tasks()
     {
-        return $this->hasMany(Task::class)->whereNull('deleted_at')->where('finished', false)->orderBy('tasks.id', 'desc');
+        return $this->hasMany(Task::class)->where('finished', false)->orderBy('tasks.id', 'desc');
     }
 
     public function documents(){
@@ -89,7 +90,7 @@ class ProductionProject extends Model
     }
 
     public function participantsProductionProject(){
-        return $this->hasMany(ParticipantProductionProject::class, 'production_project_id')->whereNull('participation_production_project.deleted_at');
+        return $this->hasMany(ParticipantProductionProject::class, 'production_project_id');
     }
 
     public function requiresContactGroups(){

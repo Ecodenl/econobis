@@ -5,7 +5,6 @@ import PhoneNumberAPI from '../../api/contact/PhoneNumberAPI';
 import EmailAddressAPI from '../../api/contact/EmailAddressAPI';
 import ContactNoteAPI from '../../api/contact/ContactNoteAPI';
 import ContactEnergySupplierAPI from '../../api/contact/ContactEnergySupplierAPI';
-import {authSaga} from "../general/AuthSaga";
 
 export function* fetchContactDetailsSaga({ payload }) {
     try {
@@ -22,6 +21,7 @@ export function* deleteAddressSaga({ id }) {
         yield call(AddressAPI.deleteAddress, id);
         yield put({ type: 'DELETE_ADDRESS_SUCCESS', id });
     } catch (error) {
+        yield put({ type: 'SET_ERROR', http_code: error.response.status, message: error.response.data.message });
         yield put({ type: 'DELETE_ADDRESS_ERROR', error });
     }
 }

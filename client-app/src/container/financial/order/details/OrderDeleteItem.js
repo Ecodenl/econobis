@@ -8,7 +8,7 @@ import {hashHistory} from "react-router";
 const OrderDeleteItem = (props) => {
     const confirmAction = () => {
         props.deleteOrder(props.id);
-        hashHistory.push(`/financieel/${props.administrationId}/orders`);
+        props.closeDeleteItemModal();
     };
 
     return (

@@ -10,12 +10,13 @@ use App\Eco\Order\OrderPaymentType;
 use App\Eco\Task\Task;
 use App\Eco\User\User;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
 use Venturecraft\Revisionable\RevisionableTrait;
 
 class Invoice extends Model
 {
-    use RevisionableTrait;
+    use RevisionableTrait, SoftDeletes;
 
     protected $guarded = ['id'];
 
@@ -67,7 +68,7 @@ class Invoice extends Model
 
     public function tasks()
     {
-        return $this->hasMany(Task::class)->whereNull('deleted_at')->orderBy('tasks.id', 'desc');
+        return $this->hasMany(Task::class)->orderBy('tasks.id', 'desc');
     }
 
     public function emails()

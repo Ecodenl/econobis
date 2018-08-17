@@ -6,7 +6,6 @@ import TaskDetailsFormGeneral from './general/TaskDetailsFormGeneral';
 import TaskDetailsFormProperties from './properties/TaskDetailsFormProperties';
 import TaskDetailsFormConclusion from "./conclusion/TaskDetailsFormConclusion";
 import moment from "moment/moment";
-import PanelDeletedItem from "../../../components/panel/PanelDeletedItem";
 
 class TaskDetailsForm extends Component {
     constructor(props){
@@ -19,11 +18,6 @@ class TaskDetailsForm extends Component {
                 <div>Geen gegevens gevonden.</div>
                 :
                 <div>
-                    { this.props.taskDetails.deletedAt &&
-                    <PanelDeletedItem
-                        text={`Deze taak/notitie is verwijderd op ${moment(this.props.taskDetails.deletedAt).format('L')}.`}
-                    />
-                    }
                     <TaskDetailsFormGeneral />
                     <TaskDetailsFormProperties />
                     <TaskDetailsFormConclusion />

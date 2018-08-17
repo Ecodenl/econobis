@@ -16,9 +16,12 @@ use App\Eco\Task\Task;
 use App\Eco\Team\Team;
 use App\Eco\User\User;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Email extends Model
 {
+    use SoftDeletes;
+
     protected $guarded = ['id'];
 
     protected $casts = [

@@ -253,4 +253,64 @@ class AlfrescoHelper
         }
     }
 
+    public function deleteFile($node_id)
+    {
+        $curl = curl_init();
+
+        curl_setopt_array($curl, array(
+            CURLOPT_SSL_VERIFYPEER => \Config::get('app.ALFRESCO_SSL_VERIFYPEER'),
+            CURLOPT_SSL_VERIFYHOST => \Config::get('app.ALFRESCO_SSL_VERIFYHOST'),
+            CURLOPT_PORT => "443",
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => "",
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 30,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+        ));
+
+        curl_setopt($curl, CURLOPT_URL,
+            $url = \Config::get('app.ALFRESCO_URL') . "/alfresco/versions/1/nodes/" . $node_id);
+
+
+        curl_setopt($curl, CURLOPT_CUSTOMREQUEST, 'DELETE');
+
+        $CURLOPT_HTTPHEADER = array(
+            "Accept: application/json",
+            "Authorization: Basic " . $this->ticket,
+            "Cache-Control: no-cache",
+            "Content-Type: application/json",
+        );
+        curl_setopt($curl, CURLOPT_HTTPHEADER, $CURLOPT_HTTPHEADER);
+
+
+        $response = curl_exec($curl);
+        $err = curl_error($curl);
+
+        curl_close($curl);
+
+        //catch curl errors
+        if ($err) {
+            try {
+                $err = json_decode($err);
+                Log::error('Alfresco deleting error' . $err);
+            } catch (\Exception $e) {
+                Log::error('Alfresco deleting error couldn\'t decode');
+            }
+        } else {
+
+            $decoded_response = json_decode($response, true);
+
+            //catch alfresco errors
+            if ($decoded_response && array_key_exists('error', $decoded_response)) {
+                Log::error('Alfresco error' . $decoded_response['error']);
+            } //else success
+            else {
+                return [
+                    'succes' => true,
+                    'message' => $decoded_response
+                ];
+            }
+        }
+    }
+
 }

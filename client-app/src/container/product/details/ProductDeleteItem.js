@@ -3,12 +3,11 @@ import { connect } from 'react-redux';
 
 import Modal from '../../../components/modal/Modal';
 import {deleteProduct} from "../../../actions/product/ProductsActions";
-import {hashHistory} from "react-router";
 
 const ProductDeleteItem = (props) => {
     const confirmAction = () => {
         props.deleteProduct(props.id);
-        hashHistory.push(`/producten`);
+        props.closeDeleteItemModal();
     };
 
     return (

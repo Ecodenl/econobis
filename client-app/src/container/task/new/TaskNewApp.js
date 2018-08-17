@@ -417,6 +417,25 @@ class TaskNewApp extends Component {
                             }
                         });
                         break;
+                    case 'woningdossier':
+                        this.setState({
+                            ...this.state,
+                            task: {
+                                ...this.state.task,
+                                finished: finished,
+                                campaignId: '',
+                                contactId: '',
+                                intakeId: '',
+                                contactGroupId: '',
+                                opportunityId: '',
+                                productionProjectId: '',
+                                participantId: '',
+                                orderId: '',
+                                invoiceId: '',
+                                housingFileId: params.id
+                            }
+                        });
+                        break;
                     default:
                         break;
                 }

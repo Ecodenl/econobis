@@ -13,7 +13,7 @@ class RemovePhoneNumberMobile extends Migration
      */
     public function up()
     {
-        $phoneNumbers = \App\Eco\PhoneNumber\PhoneNumber::where('type_id', 'mobile')->get();
+        $phoneNumbers = \App\Eco\PhoneNumber\PhoneNumber::where('type_id', 'mobile')->withTrashed()->get();
 
         foreach ($phoneNumbers as $number){
             $number->type_id = 'home';

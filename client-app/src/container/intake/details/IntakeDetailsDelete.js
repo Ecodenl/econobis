@@ -1,14 +1,14 @@
 import React from 'react';
-import { hashHistory } from 'react-router';
 
 import Modal from '../../../components/modal/Modal';
-import IntakeDetailsAPI from '../../../api/intake/IntakeDetailsAPI';
+import {deleteIntake} from "../../../actions/intake/IntakeDetailsActions";
+import {connect} from "react-redux";
 
 const IntakeDetailsDelete = (props) => {
     const confirmAction = () => {
-        IntakeDetailsAPI.deleteIntake(props.id).then((payload) => {
-            hashHistory.push('/intakes');
-        });
+        props.deleteIntake(props.id);
+
+        props.closeDeleteItemModal();
     };
 
     return (
@@ -24,4 +24,10 @@ const IntakeDetailsDelete = (props) => {
     );
 };
 
-export default IntakeDetailsDelete;
+const mapDispatchToProps = dispatch => ({
+    deleteIntake: (id) => {
+        dispatch(deleteIntake(id));
+    },
+});
+
+export default connect(null, mapDispatchToProps)(IntakeDetailsDelete);

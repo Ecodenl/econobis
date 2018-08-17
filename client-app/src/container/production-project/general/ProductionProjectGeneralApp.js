@@ -27,7 +27,7 @@ class ProductionProjectGeneralApp extends Component {
             <div className="row">
                 <div className="col-md-9">
                     <div className="col-md-12">
-                        <ProductionProjectGeneralToolbar/>
+                        <ProductionProjectGeneralToolbar id={this.props.params.id}/>
                     </div>
 
                     <div className="col-md-12">

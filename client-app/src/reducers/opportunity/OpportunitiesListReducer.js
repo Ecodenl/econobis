@@ -37,7 +37,14 @@ export default function (state= { isLoading: false }, action) {
                     };
                 }),
             };
-
+        case 'DELETE_OPPORTUNITY_SUCCESS':
+            return {
+                ...state,
+                data: state.data.filter((opportunity) => opportunity.id !== action.id),
+                meta: {
+                    total: state.meta.total - 1
+                },
+            };
         case 'CLEAR_OPPORTUNITIES':
             return {
                 ...state,

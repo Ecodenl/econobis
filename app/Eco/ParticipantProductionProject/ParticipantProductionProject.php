@@ -2,15 +2,12 @@
 
 namespace App\Eco\ParticipantProductionProject;
 
-use App\Eco\Address\Address;
 use App\Eco\Contact\Contact;
 use App\Eco\Document\Document;
-use App\Eco\Email\Email;
-use App\Eco\Measure\Measure;
 use App\Eco\ParticipantTransaction\ParticipantTransaction;
 use App\Eco\ProductionProject\ProductionProject;
+use App\Eco\ProductionProject\ProductionProjectRevenueDistribution;
 use App\Eco\Task\Task;
-use App\Eco\User\User;
 use App\Http\Traits\Encryptable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -42,12 +39,6 @@ class ParticipantProductionProject extends Model
             'participations_current',
         ];
 
-    //Dont boot softdelete scopes. We handle this ourselves
-    public static function bootSoftDeletes()
-    {
-        return false;
-    }
-
     //relations
     public function contact(){
         return $this->belongsTo(Contact::class);
@@ -75,6 +66,11 @@ class ParticipantProductionProject extends Model
         return $this->belongsTo(Contact::class);
     }
 
+    public function productionProjectRevenueDistributions()
+    {
+        return $this->hasMany(ProductionProjectRevenueDistribution::class, 'participation_id');
+    }
+
     public function transactions()
     {
         return $this->hasMany(ParticipantTransaction::class, 'participation_id')->orderBy('date_transaction', 'desc');
@@ -87,6 +83,10 @@ class ParticipantProductionProject extends Model
 
     public function documents(){
         return $this->hasMany(Document::class, 'participation_production_project_id')->orderBy('documents.id', 'desc');
+    }
+
+    public function tasks(){
+        return $this->hasMany(Task::class, 'participation_production_project_id');
     }
 
     //appends

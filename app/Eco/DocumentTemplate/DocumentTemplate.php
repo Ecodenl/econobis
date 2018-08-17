@@ -6,12 +6,13 @@ use App\Eco\Document\Document;
 use App\Eco\Document\DocumentGroup;
 use App\Eco\User\User;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Permission\Models\Role;
 use Venturecraft\Revisionable\RevisionableTrait;
 
 class DocumentTemplate extends Model
 {
-    use RevisionableTrait;
+    use RevisionableTrait, SoftDeletes;
 
     protected $guarded = ['id'];
 

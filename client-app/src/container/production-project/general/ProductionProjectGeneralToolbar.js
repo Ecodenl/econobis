@@ -23,7 +23,7 @@ class ProductionProjectGeneralToolbar extends Component {
                             <div className="col-md-2">
                                 <div className="btn-group btn-group-flex  margin-small" role="group">
                                     <ButtonIcon iconName={"glyphicon-arrow-left"} onClickAction={browserHistory.goBack} />
-                                    <ButtonText buttonText={`Open detailformulier`}  onClickAction={() => hashHistory.push(`/productie-project/details/${productionProject.id}`)} />
+                                    <ButtonText buttonText={`Open detailformulier`}  onClickAction={() => hashHistory.push(`/productie-project/details/${this.props.id}`)} />
                                 </div>
                             </div>
                             <div className="col-md-8"><h4 className="text-center text-success margin-small"><strong>Productieproject {productionProject ? productionProject.name : ''}</strong></h4></div>

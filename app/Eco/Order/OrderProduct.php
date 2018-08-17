@@ -28,7 +28,7 @@ class OrderProduct extends Model
             'total_price_incl_vat_and_reduction_per_year',
         ];
 
-    public function orders()
+    public function order()
     {
         return $this->belongsTo(Order::class);
     }

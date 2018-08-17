@@ -5,15 +5,16 @@ namespace App\Http\Controllers\Api\Contact;
 use App\Eco\Contact\Contact;
 use App\Eco\Contact\ContactStatus;
 use App\Eco\User\User;
-use App\Helpers\Delete\DeleteHelper;
+use App\Helpers\Delete\Models\DeleteContact;
 use App\Helpers\Import\ContactImportHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Contact\ContactPeek;
-use App\Http\Resources\Contact\FullContact;
 use App\Http\Resources\Contact\FullContactWithGroups;
 use App\Http\Resources\Task\SidebarTask;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class ContactController extends Controller
 {
@@ -79,7 +80,23 @@ class ContactController extends Controller
     {
         $this->authorize('delete', $contact);
 
-        DeleteHelper::delete($contact);
+        try {
+            DB::beginTransaction();
+
+            $deleteContact = new DeleteContact($contact);
+            $result = $deleteContact->delete();
+
+            if(count($result) > 0){
+                DB::rollBack();
+                abort(412, implode(";", array_unique($result)));
+            }
+
+            DB::commit();
+        } catch (\PDOException $e) {
+            DB::rollBack();
+            Log::error($e->getMessage());
+            abort(501, 'Er is helaas een fout opgetreden.');
+        }
     }
 
     public function destroyContacts(Request $request)
@@ -125,7 +142,7 @@ class ContactController extends Controller
 
     public function peek()
     {
-        $contact = Contact::select('id', 'full_name', 'number')->orderBy('full_name')->whereNull('deleted_at')->get();
+        $contact = Contact::select('id', 'full_name', 'number')->orderBy('full_name')->get();
 
         return ContactPeek::collection($contact);
     }
@@ -169,7 +186,7 @@ class ContactController extends Controller
         foreach($contactStatuses as $contactStatus) {
             $chartData[] = [
                 "name" => $contactStatus->name,
-                "count" => Contact::where('status_id', $contactStatus->id)->whereNull('deleted_at')->count(),
+                "count" => Contact::where('status_id', $contactStatus->id)->count(),
             ];
         };
 

@@ -4,7 +4,6 @@ import { isEmpty } from 'lodash';
 
 import EmailFormGeneral from './general/EmailFormGeneral';
 import EmailDetailsAttachments from './attachments/EmailDetailsAttachments';
-import moment from "moment/moment";
 import PanelDeletedItem from "../../../components/panel/PanelDeletedItem";
 
 class EmailDetailsForm extends Component {

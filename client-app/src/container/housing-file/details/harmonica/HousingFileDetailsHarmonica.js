@@ -17,6 +17,7 @@ class HousingFileDetailsHarmonica extends Component {
         };
 
         this.newTask = this.newTask.bind(this);
+        this.newNote = this.newNote.bind(this);
         this.newDocument = this.newDocument.bind(this);
         this.toggleShowList = this.toggleShowList.bind(this);
     };

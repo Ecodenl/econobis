@@ -9,6 +9,8 @@ import ButtonText from "../../../components/button/ButtonText";
 import { hashHistory } from 'react-router';
 
 const UserDetailsToolbar = props => {
+    const { id, name, numberOfContacts = 0 } = props.contactGroup;
+
     return (
         <div className="row">
             <div className="col-sm-12">
@@ -17,10 +19,10 @@ const UserDetailsToolbar = props => {
                         <div className="col-md-2">
                             <div className="btn-group" role="group">
                                 <ButtonIcon iconName={"glyphicon-arrow-left"} onClickAction={browserHistory.goBack} />
-                                <ButtonText buttonText={`Open lijst (${props.contactGroup.numberOfContacts})` }  onClickAction={() => hashHistory.push(`/contacten-in-groep/${props.contactGroup.id}`)} />
+                                <ButtonText buttonText={`Open lijst (${numberOfContacts})` }  onClickAction={() => hashHistory.push(`/contacten-in-groep/${id}`)} />
                             </div>
                         </div>
-                        <div className="col-md-8"><h4 className="text-center">{props.contactGroup.name}</h4></div>
+                        <div className="col-md-8"><h4 className="text-center">{name}</h4></div>
                         <div className="col-md-2" />
                     </PanelBody>
                 </Panel>

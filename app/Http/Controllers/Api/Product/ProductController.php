@@ -11,7 +11,7 @@ namespace App\Http\Controllers\Api\Product;
 
 use App\Eco\Product\PriceHistory;
 use App\Eco\Product\Product;
-use App\Helpers\Delete\DeleteHelper;
+use App\Helpers\Delete\Models\DeleteProduct;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\RequestQueries\Product\Grid\RequestQuery;
@@ -19,7 +19,8 @@ use App\Http\Resources\GenericResource;
 use App\Http\Resources\Product\ProductPeek;
 use App\Http\Resources\Product\FullProduct;
 use App\Http\Resources\Product\GridProduct;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class ProductController extends ApiController
 {
@@ -95,7 +96,23 @@ class ProductController extends ApiController
     {
         $this->authorize('manage', Product::class);
 
-        DeleteHelper::delete($product);
+        try {
+            DB::beginTransaction();
+
+            $deleteProduct = new DeleteProduct($product);
+            $result = $deleteProduct->delete();
+
+            if(count($result) > 0){
+                DB::rollBack();
+                abort(412, implode(";", array_unique($result)));
+            }
+
+            DB::commit();
+        } catch (\PDOException $e) {
+            DB::rollBack();
+            Log::error($e->getMessage());
+            abort(501, 'Er is helaas een fout opgetreden.');
+        }
     }
 
     public function storePriceHistory(RequestInput $input)
@@ -118,6 +135,6 @@ class ProductController extends ApiController
 
     public function peek()
     {
-        return ProductPeek::collection(Product::orderBy('name')->whereNull('deleted_at')->get());
+        return ProductPeek::collection(Product::orderBy('name')->get());
     }
 }

@@ -99,6 +99,7 @@ class ContactGroupsList extends Component {
                 <ContactGroupsDeleteItem
                     closeDeleteItemModal={this.closeDeleteItemModal}
                     {...this.state.deleteItem}
+                    resetContactGroupsFilters={() => this.props.resetContactGroupsFilters() }
                 />
             }
             </form>

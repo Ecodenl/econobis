@@ -60,6 +60,6 @@ class EmailAddressController extends ApiController
     {
         $this->authorize('delete', $emailAddress);
 
-        $emailAddress->forceDelete();
+        $emailAddress->delete();
     }
 }

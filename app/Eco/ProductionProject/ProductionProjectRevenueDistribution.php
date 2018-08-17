@@ -6,11 +6,12 @@ use App\Eco\Contact\Contact;
 use App\Eco\ParticipantProductionProject\ParticipantProductionProject;
 use App\Eco\PaymentInvoice\PaymentInvoice;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Venturecraft\Revisionable\RevisionableTrait;
 
 class ProductionProjectRevenueDistribution extends Model
 {
-    use RevisionableTrait;
+    use RevisionableTrait, SoftDeletes;
 
     protected $table = 'production_project_revenue_distribution';
 

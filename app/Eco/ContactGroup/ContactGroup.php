@@ -12,14 +12,14 @@ use App\Http\RequestQueries\Contact\Grid\Filter;
 use App\Http\RequestQueries\Contact\Grid\Joiner;
 use App\Http\RequestQueries\Contact\Grid\RequestQuery;
 use App\Http\RequestQueries\Contact\Grid\Sort;
-use App\Http\Resources\Contact\FullContact;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Http\Request;
 use Laracasts\Presenter\PresentableTrait;
 
 class ContactGroup extends Model
 {
-    use PresentableTrait;
+    use PresentableTrait, SoftDeletes;
     protected $presenter = ContactGroupPresenter::class;
 
     protected $casts
@@ -67,7 +67,7 @@ class ContactGroup extends Model
     // Only unfinished task is a task. A finished task is a note
     public function tasks()
     {
-        return $this->hasMany(Task::class)->whereNull('deleted_at')->where('finished', false)
+        return $this->hasMany(Task::class)->where('finished', false)
             ->orderBy('tasks.id', 'desc');
     }
 
@@ -147,12 +147,15 @@ class ContactGroup extends Model
 
             if($contacts === null){
                 $contacts = $contactGroup->getAllContacts();
-                array_push($this->hasComposedIds, $contactGroup->id);
             }
             else{
-                $contacts = $contacts->merge($contactGroup->getAllContacts());
-                array_push($this->hasComposedIds, $contactGroup->id);
+                $tempContacts = $contactGroup->getAllContacts();
+
+                if($tempContacts){
+                    $contacts = $contacts->merge($tempContacts);
+                }
             }
+            array_push($this->hasComposedIds, $contactGroup->id);
         }
 
         return $contacts;

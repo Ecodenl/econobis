@@ -2,22 +2,21 @@
 
 namespace App\Eco\Opportunity;
 
-use App\Eco\Campaign\Campaign;
-use App\Eco\Contact\Contact;
 use App\Eco\Document\Document;
 use App\Eco\Email\Email;
-use App\Eco\Measure\Measure;
 use App\Eco\Intake\Intake;
+use App\Eco\Measure\Measure;
 use App\Eco\Measure\MeasureCategory;
 use App\Eco\QuotationRequest\QuotationRequest;
 use App\Eco\Task\Task;
 use App\Eco\User\User;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Venturecraft\Revisionable\RevisionableTrait;
 
 class Opportunity extends Model
 {
-    use RevisionableTrait;
+    use RevisionableTrait, SoftDeletes;
 
     protected $table = 'opportunities';
 
@@ -58,13 +57,13 @@ class Opportunity extends Model
     // Only an unfinished task is a task
     public function tasks()
     {
-        return $this->hasMany(Task::class)->whereNull('deleted_at')->where('finished', false)->orderBy('tasks.id', 'desc');
+        return $this->hasMany(Task::class)->where('finished', false)->orderBy('tasks.id', 'desc');
     }
 
     // A finished task is a note
     public function notes()
     {
-        return $this->hasMany(Task::class)->whereNull('deleted_at')->where('finished', true)->orderBy('tasks.id', 'desc');
+        return $this->hasMany(Task::class)->where('finished', true)->orderBy('tasks.id', 'desc');
     }
 
     public function documents()

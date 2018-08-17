@@ -4,13 +4,13 @@ namespace App\Http\Controllers\Api\Address;
 
 use App\Eco\Address\Address;
 use App\Eco\Address\AddressType;
-use App\Helpers\Delete\DeleteHelper;
+use App\Helpers\Delete\Models\DeleteAddress;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\Resources\Address\FullAddress;
-use App\Rules\AddressTypeExists;
 use App\Rules\EnumExists;
-use Ecodenl\PicoWrapper\PicoClient;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class AddressController extends ApiController
 {
@@ -84,7 +84,23 @@ class AddressController extends ApiController
     {
         $this->authorize('delete', $address);
 
-        DeleteHelper::delete($address);
+        try {
+            DB::beginTransaction();
+
+            $deleteAddress = new DeleteAddress($address);
+            $result = $deleteAddress->delete();
+
+            if(count($result) > 0){
+                DB::rollBack();
+                abort(412, implode(";", array_unique($result)));
+            }
+
+            DB::commit();
+        } catch (\PDOException $e) {
+            DB::rollBack();
+            Log::error($e->getMessage());
+            abort(501, 'Er is helaas een fout opgetreden.');
+        }
     }
 
     public function getPicoAddress(Request $request){

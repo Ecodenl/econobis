@@ -35,8 +35,7 @@ class GenericMail extends Mailable
      */
     public function build()
     {
-
-        $mail = $this->subject($this->email->subject)->view('emails.generic');
+        $mail = $this->subject($this->email->subject)->view('emails.generic')->text('emails.genericText');
 
         $attachments = EmailAttachment::where('email_id', '=', $this->email->id)->get();
 

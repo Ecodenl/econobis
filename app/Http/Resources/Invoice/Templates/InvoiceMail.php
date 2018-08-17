@@ -40,7 +40,7 @@ class InvoiceMail extends Mailable
     public function build()
     {
 
-        $mail = $this->subject($this->email->subject)->view('emails.generic');
+        $mail = $this->subject($this->email->subject)->view('emails.generic')->text('emails.genericText');;
 
         $mail->attach($this->document_path, [
             'as' => $this->document_name

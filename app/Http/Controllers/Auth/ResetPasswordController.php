@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Auth;
 use App\Eco\User\User;
 use App\Helpers\Alfresco\AlfrescoHelper;
 use App\Http\Controllers\Controller;
-use App\Notifications\MailSuccessfulReset;
+use App\Notifications\MailNewAccount;
+use App\Notifications\MailNewAccountAlfresco;
+use App\Notifications\MailPasswordReset;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Foundation\Auth\ResetsPasswords;
 use Illuminate\Http\Request;
@@ -87,13 +89,13 @@ class ResetPasswordController extends Controller
 
         $user = User::where('email', $request->input('email'))->first();
 
-        $mailText = 'U heeft al een Econobis Alfresco account. U kunt hier mee inloggen op: https://alfresco.econobis.nl/share/page/';
+        $didCreateAlfrescoAccount = false;
 
         if(!$user->has_alfresco_account){
             $alfrescoHelper = new AlfrescoHelper(\Config::get('app.ALFRESCO_ADMIN_USERNAME'), \Config::get('app.ALFRESCO_ADMIN_PASSWORD'));
             if(!$alfrescoHelper->checkIfAccountExists($user)) {
                 $alfrescoHelper->createNewAccount($user, $request->input('password'));
-                $mailText = 'Er is ook een Alfresco Account voor u gemaakt. U kunt hier mee inloggen op: https://alfresco.econobis.nl/share/page/';
+                $didCreateAlfrescoAccount = true;
                 $user->has_alfresco_account = 1;
             }
             else{
@@ -106,13 +108,21 @@ class ResetPasswordController extends Controller
         // the application's home authenticated view. If there is an error we can
         // redirect them back to where they came from with their error message.
         return $response == Password::PASSWORD_RESET
-            ? $this->sendResetResponse($mailText, $user)
+            ? $this->sendResetResponse($didCreateAlfrescoAccount, $user)
             : $this->sendResetFailedResponse($request, $response);
     }
 
     //redirect is handled by react, we send succes e-mail
-    protected function sendResetResponse($mailText, User $user)
+    protected function sendResetResponse($didCreateAlfrescoAccount, User $user)
     {
-        $user->notify(new MailSuccessfulReset($mailText));
+        if($user->visit_count !== 0){
+            $user->notify(new MailPasswordReset());
+        }
+        else if($didCreateAlfrescoAccount) {
+            $user->notify(new MailNewAccountAlfresco($user->email));
+        }
+        else{
+            $user->notify(new MailNewAccount($user->email));
+        }
     }
 }

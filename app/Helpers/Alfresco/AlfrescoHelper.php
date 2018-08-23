@@ -22,8 +22,8 @@ class AlfrescoHelper
     }
 
     /**
-     * @param $username String username in Alfresco(User email)
-     * @param $password String password in Alfresco(User alfresco_password)
+     * @param $username String username in Alfresco
+     * @param $password String password in Alfresco
      *
      * @return mixed|string if success returns ticket, else return curl error message
      */
@@ -101,7 +101,7 @@ class AlfrescoHelper
 
     public function createFile($file, $filename, $map){
 
-        $url = \Config::get('app.ALFRESCO_URL') . "/alfresco/versions/1/sites/eco_" . \Config::get('app.ALFRESCO_SITE_MAP');
+        $url = \Config::get('app.ALFRESCO_URL') . "/alfresco/versions/1/sites/eco" . \Config::get('app.ALFRESCO_SITE_MAP');
 
         $response = $this->executeCurl($url);
 

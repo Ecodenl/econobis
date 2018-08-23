@@ -6,18 +6,16 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 use Illuminate\Notifications\Messages\MailMessage;
 
-class MailSuccessfulReset extends Notification
+class MailPasswordReset extends Notification
 {
-    public $mailText;
 
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct($mailText)
+    public function __construct()
     {
-        $this->mailText = $mailText;
     }
 
     /**
@@ -40,8 +38,10 @@ class MailSuccessfulReset extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)
-            ->subject("Welkom bij Econobis!")
-            ->line($this->mailText);
+            ->subject("Econobis wachtwoord gewijzigd")
+            ->greeting("Hallo! Je Econobis wachtwoord is gewijzigd.")
+            ->line("Je Econobis-wachtwoord voor de Econobis-omgeving van " . \Config::get('app.name') . " is gewijzigd.")
+            ->line("Ben jij niet degene die dit gedaan heeft? Neem dan z.s.m. contact op met de key user van " . \Config::get('app.name') . ". Als deze niet bereikbaar is stuur een mail naar support@econobis.nl");
     }
 
 }

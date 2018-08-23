@@ -79,7 +79,7 @@ class Reset extends Component{
                                     </div>  
 			                        <form className="form-horizontal" role="form"  onSubmit= {this.onSubmit.bind(this)}>
 			                            <div className="form-group">
-			                                <label htmlFor="email" className="col-md-4 control-label">E-Mail Adres</label>
+			                                <label htmlFor="email" className="col-md-4 control-label">E-mailadres</label>
 
 			                                <div className="col-md-6">
 			                                    <input id="email" type="email" className="form-control" ref="email" name="email" onChange={this.onChange.bind(this)} required autoFocus />

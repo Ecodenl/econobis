@@ -8,6 +8,7 @@ use App\Eco\Invoice\Invoice;
 use App\Eco\Order\Order;
 use App\Eco\PaymentInvoice\PaymentInvoice;
 use App\Eco\Product\Product;
+use App\Eco\ProductionProject\ProductionProject;
 use App\Eco\User\User;
 use App\Http\Traits\Encryptable;
 use Carbon\Carbon;
@@ -61,6 +62,10 @@ class Administration extends Model
 
     public function sepas(){
         return $this->hasMany(Sepa::class)->orderBy('created_at','desc');
+    }
+
+    public function productionProjects(){
+        return $this->hasMany(ProductionProject::class);
     }
 
     public function invoices(){

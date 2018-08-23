@@ -13,27 +13,29 @@ use App\Helpers\Delete\DeleteInterface;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class DeleteAddress
+ * Class DeleteAdministration
  *
- * Relation: 1-n Housing files. Action: call DeleteHousingFile
- * Relation: 1-n Intakes. Action: call DeleteIntake
+ * Relation 1-n Invoices. Action: call DeleteInvoice
+ * Relation 1-n Orders. Action: call DeleteOrder
+ * Relation 1-n ProductionProject. Action: call ProductionProject
+ * Relation 1-n products. Action: dissociate
  *
  * @package App\Helpers\Delete\Models
  */
-class DeleteAddress implements DeleteInterface
+class DeleteAdministration implements DeleteInterface
 {
 
     private $errorMessage = [];
-    private $address;
+    private $administration;
 
     /** Sets the model to delete
      *
-     * @param Model $address the model to delete
+     * @param Model $administration the model to delete
      */
 
-    public function __construct(Model $address)
+    public function __construct(Model $administration)
     {
-        $this->address = $address;
+        $this->administration = $administration;
     }
 
     /** Main method for deleting this model and all it's relations
@@ -48,7 +50,7 @@ class DeleteAddress implements DeleteInterface
         $this->dissociateRelations();
         $this->deleteRelations();
         $this->customDeleteActions();
-        $this->address->delete();
+        $this->administration->delete();
 
         return $this->errorMessage;
     }
@@ -58,8 +60,8 @@ class DeleteAddress implements DeleteInterface
      */
     public function canDelete()
     {
-        if($this->address->housingFiles()->count() > 0){
-            array_push($this->errorMessage, "Er zijn nog woningdossiers.");
+        if($this->administration->paymentInvoices()->count() > 0){
+            array_push($this->errorMessage, "Er zijn al uitkeringsfacturen.");
         }
     }
 
@@ -67,14 +69,14 @@ class DeleteAddress implements DeleteInterface
      */
     public function deleteModels()
     {
-        foreach ($this->address->intakes as $intake){
-            $deleteIntake = new DeleteIntake($intake);
-            $this->errorMessage = array_merge($this->errorMessage, $deleteIntake->delete());
+        foreach ($this->administration->invoices as $invoice) {
+            $deleteInvoice = new DeleteInvoice($invoice);
+            $this->errorMessage = array_merge($this->errorMessage, $deleteInvoice->delete());
         }
 
-        foreach ($this->address->housingFiles as $housingFile){
-            $deleteHousingFile = new DeleteHousingFile($housingFile);
-            $this->errorMessage = array_merge($this->errorMessage, $deleteHousingFile->delete());
+        foreach ($this->administration->orders as $order) {
+            $deleteOrder = new DeleteOrder($order);
+            $this->errorMessage = array_merge($this->errorMessage, $deleteOrder->delete());
         }
     }
 
@@ -82,6 +84,10 @@ class DeleteAddress implements DeleteInterface
      */
     public function dissociateRelations()
     {
+        foreach ($this->administration->products() as $product){
+            $product->administration()->dissociate();
+            $product->save();
+        }
     }
 
 
@@ -97,6 +103,7 @@ class DeleteAddress implements DeleteInterface
      */
     public function customDeleteActions()
     {
+
     }
 
 }

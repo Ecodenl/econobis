@@ -12,6 +12,7 @@ namespace App\Http\Controllers\Api\Administration;
 use App\Eco\Administration\Administration;
 use App\Eco\Administration\Sepa;
 use App\Eco\User\User;
+use App\Helpers\Delete\Models\DeleteAdministration;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\RequestQueries\Administration\Grid\RequestQuery;
@@ -20,6 +21,8 @@ use App\Http\Resources\Administration\FullAdministration;
 use App\Http\Resources\Administration\GridAdministration;
 use App\Http\Resources\User\UserPeek;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
 class AdministrationController extends ApiController
@@ -145,9 +148,23 @@ class AdministrationController extends ApiController
     {
         $this->authorize('manage', Administration::class);
 
-        Storage::disk('administrations')->delete($administration->logo_filename);
+        try {
+            DB::beginTransaction();
 
-        $administration->delete();
+            $deleteAdministration = new DeleteAdministration($administration);
+            $result = $deleteAdministration->delete();
+
+            if(count($result) > 0){
+                DB::rollBack();
+                abort(412, implode(";", array_unique($result)));
+            }
+
+            DB::commit();
+        } catch (\PDOException $e) {
+            DB::rollBack();
+            Log::error($e->getMessage());
+            abort(501, 'Er is helaas een fout opgetreden.');
+        }
     }
 
 

@@ -32,7 +32,6 @@ class UserController extends Controller
         $this->authorize('create', User::class);
 
         $data = $input->string('email')->validate(['required', 'email', 'unique:users,email'])->next()
-            ->string('alfrescoPassword')->validate('required')->alias('alfresco_password')->next()
             ->string('titleId')->validate('exists:titles,id')->default(null)->alias('title_id')->next()
             ->string('firstName')->whenMissing('')->alias('first_name')->next()
             ->string('lastNamePrefixId')->validate('exists:last_name_prefixes,id')->default(null)->alias('last_name_prefix_id')->next()
@@ -51,9 +50,11 @@ class UserController extends Controller
 
         $alfrescoHelper = new AlfrescoHelper( \Config::get('app.ALFRESCO_ADMIN_USERNAME'), \Config::get('app.ALFRESCO_ADMIN_PASSWORD'));
 
-        //creates new account in alfresco and assigns to site
-        $alfrescoHelper->createNewAccount($user);
+        //checks if account exists
+        $exists = $alfrescoHelper->checkIfAccountExists($user);
+        $exists ? $user->has_alfresco_account = 1 : $user->has_alfresco_account = 0;
 
+        $user->alfresco_password = 'nvt';
         $user->save();
 
         $user->assignRole(Role::findByName('Medewerker'));

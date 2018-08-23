@@ -42,7 +42,7 @@ class AlfrescoHelper
 
     }
 
-    public function createNewAccount(User $user){
+    public function createNewAccount(User $user, $password){
         $prefix = optional($user->lastNamePrefix)->name;
 
         if($prefix){
@@ -62,14 +62,9 @@ class AlfrescoHelper
             $args['firstName'] = $user->first_name;
             $args['lastName'] = $lastname;
             $args['email'] = $user->email;
-            $args['password'] = $user->alfresco_password;
+            $args['password'] = $password;
 
             $this->executeCurl($url, $args);
-        } else {
-            $valid = $this->checkIfValidAccount($user);
-            if(!$valid){
-                abort(424, 'Gebruiker bestaat al in Alfresco, maar het wachtwoord is verkeerd ingevuld.');
-            }
         }
 
         $response = $this->assignUserToSite($user->email);
@@ -92,27 +87,11 @@ class AlfrescoHelper
 
     }
 
-    public function checkIfValidAccount(User $user){
-        $url = \Config::get('app.ALFRESCO_URL') . '/authentication/versions/1/tickets';
-        $args['userId'] = $user->email;
-        $args['password'] = $user->alfresco_password;
-
-        $response = $this->executeCurl($url, $args, 'application/json', false, false);
-
-        $valid = true;
-
-        if($response === null){
-            $valid = false;
-        }
-
-        return $valid;
-    }
-
     public function assignUserToSite($alfresco_username){
 
-        $url = \Config::get('app.ALFRESCO_URL') . "/alfresco/versions/1/sites/" . \Config::get('app.ALFRESCO_SITE_MAP') . "/members";
+        $url = \Config::get('app.ALFRESCO_URL') . "/alfresco/versions/1/sites/econobis-community-portaal/members";
 
-        $args['role'] = 'SiteContributor';
+        $args['role'] = 'SiteConsumer';
         $args['id'] = $alfresco_username;
 
         $response = $this->executeCurl($url, $args);
@@ -122,7 +101,7 @@ class AlfrescoHelper
 
     public function createFile($file, $filename, $map){
 
-        $url = \Config::get('app.ALFRESCO_URL') . "/alfresco/versions/1/sites/" . \Config::get('app.ALFRESCO_SITE_MAP');
+        $url = \Config::get('app.ALFRESCO_URL') . "/alfresco/versions/1/sites/eco_" . \Config::get('app.ALFRESCO_SITE_MAP');
 
         $response = $this->executeCurl($url);
 
@@ -238,6 +217,23 @@ class AlfrescoHelper
                 //catch alfresco errors
                     if ($decoded_response && array_key_exists('error', $decoded_response)) {
                         if($abort_on_error) {
+                            if(isset($decoded_response['error'])) {
+                                if(isset($decoded_response['error']['errorKey'])) {
+                                    Log::error('Alfresco error: '
+                                        . $decoded_response['error']['errorKey']);
+                                }
+                                if(isset($decoded_response['error']['briefSummary'])) {
+                                    Log::error('Alfresco error: '
+                                        . $decoded_response['error']['briefSummary']);
+                                }
+                                if(isset($decoded_response['error']['statusCode'])) {
+                                    Log::error('Alfresco error: '
+                                        . $decoded_response['error']['statusCode']);
+                                }
+                            }
+                            else{
+                                Log::error('Alfresco error: unknown');
+                            }
                             abort($decoded_response['error']['statusCode']);
                         }
                     }

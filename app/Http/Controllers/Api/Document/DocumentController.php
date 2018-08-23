@@ -84,7 +84,7 @@ class DocumentController extends Controller
         //store the actual file in Alfresco
         $user = Auth::user();
 
-        $alfrescoHelper = new AlfrescoHelper($user->email, $user->alfresco_password);
+        $alfrescoHelper = new AlfrescoHelper(\Config::get('app.ALFRESCO_COOP_USERNAME'), \Config::get('app.ALFRESCO_COOP_PASSWORD'));
 
         if($data['document_type'] == 'internal'){
 
@@ -187,7 +187,7 @@ class DocumentController extends Controller
 
         //delete file in Alfresco(to trashbin)
         $user = Auth::user();
-        $alfrescoHelper = new AlfrescoHelper($user->email, $user->alfresco_password);
+        $alfrescoHelper = new AlfrescoHelper(\Config::get('app.ALFRESCO_COOP_USERNAME'), \Config::get('app.ALFRESCO_COOP_PASSWORD'));
 
         $alfrescoHelper->deleteFile($document->alfresco_node_id);
 
@@ -235,7 +235,7 @@ class DocumentController extends Controller
 
         $user = Auth::user();
 
-        $alfrescoHelper = new AlfrescoHelper($user->email, $user->alfresco_password);
+        $alfrescoHelper = new AlfrescoHelper(\Config::get('app.ALFRESCO_COOP_USERNAME'), \Config::get('app.ALFRESCO_COOP_PASSWORD'));
 
         return $alfrescoHelper->downloadFile($document->alfresco_node_id);
     }

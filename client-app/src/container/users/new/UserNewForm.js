@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import { hashHistory } from 'react-router';
 import validator from 'validator';
 
-import passwordValidator from '../../../helpers/PasswordValidator';
 import UserAPI from '../../../api/user/UserAPI';
 import InputText from '../../../components/form/InputText';
 import InputSelect from '../../../components/form/InputSelect';
@@ -20,7 +19,6 @@ class UserNewForm extends Component {
             user: {
                 id: '',
                 email: '',
-                alfrescoPassword: '',
                 titleId: '',
                 firstName: '',
                 lastNamePrefixId: '',
@@ -31,7 +29,6 @@ class UserNewForm extends Component {
             },
             errors: {
                 email: false,
-                alfrescoPassword: false,
                 firstName: false,
                 lastName: false,
             },
@@ -63,11 +60,6 @@ class UserNewForm extends Component {
 
         if(!validator.isEmail(user.email)){
             errors.email = true;
-            hasErrors = true;
-        };
-
-        if(!passwordValidator(user.alfrescoPassword)){
-            errors.alfrescoPassword = true;
             hasErrors = true;
         };
 
@@ -108,7 +100,7 @@ class UserNewForm extends Component {
     };
 
     render() {
-        const { email, alfrescoPassword, titleId, firstName, lastNamePrefixId, lastName, telephoneNumber, mobileNumber, occupation } = this.state.user;
+        const { email, titleId, firstName, lastNamePrefixId, lastName, telephoneNumber, mobileNumber, occupation } = this.state.user;
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -182,19 +174,6 @@ class UserNewForm extends Component {
                         name="occupation"
                         value={occupation}
                         onChangeAction={this.handleInputChange}
-                    />
-                </div>
-
-                <div className="row">
-                    <InputText
-                        type={"password"}
-                        label={"Alfresco wachtwoord"}
-                        name={"alfrescoPassword"}
-                        value={alfrescoPassword}
-                        onChangeAction={this.handleInputChange}
-                        required={"required"}
-                        error={this.state.errors.alfrescoPassword}
-                        errorMessage={'Het wachtwoord moet minimaal 8 karakters lang zijn en moet minimaal 1 cijfer en  1 hoofdletter bevatten.'}
                     />
                 </div>
 

@@ -471,7 +471,7 @@ class ParticipationProductionProjectController extends ApiController
 
             file_put_contents($filePath, $pdf);
 
-            $alfrescoHelper = new AlfrescoHelper($user->email, $user->alfresco_password);
+            $alfrescoHelper = new AlfrescoHelper(\Config::get('app.ALFRESCO_COOP_USERNAME'), \Config::get('app.ALFRESCO_COOP_PASSWORD'));
 
             $alfrescoResponse = $alfrescoHelper->createFile($filePath, $document->filename, $document->getDocumentGroup()->name);
 

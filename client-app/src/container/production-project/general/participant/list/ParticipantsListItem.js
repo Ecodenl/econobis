@@ -33,6 +33,16 @@ class ParticipantsListItem extends Component {
 
     render() {
         const { id, contact, participationsCurrent, status, dateRegister } = this.props;
+        const primaryAddress = contact.primaryAddress;
+        let street = '';
+        let number = '';
+        let addition = '';
+
+        if (primaryAddress) {
+            primaryAddress.street && (street = primaryAddress.street);
+            primaryAddress.number && (number = primaryAddress.number);
+            primaryAddress.addition && (addition = primaryAddress.addition);
+        }
 
         return (
             <tr className={this.state.highlightRow} onDoubleClick={() => this.openItem(id)} onMouseEnter={() => this.onRowEnter()} onMouseLeave={() => this.onRowLeave()}>
@@ -44,7 +54,7 @@ class ParticipantsListItem extends Component {
                 </td>
                 <td>{ contact.type ? contact.type.name : '' }</td>
                 <td>{ contact.fullName }</td>
-                <td>{ contact.primaryAddress ? contact.primaryAddress.street + ' ' + contact.primaryAddress.number + contact.primaryAddress.addition : ''}</td>
+                <td>{ primaryAddress ? street + ' ' + number + addition : ''}</td>
                 <td>{ contact.primaryAddress ? contact.primaryAddress.postalCode : '' }</td>
                 <td>{ contact.primaryAddress ? contact.primaryAddress.city : '' }</td>
                 <td>{ contact.status ? contact.status.name : '' }</td>

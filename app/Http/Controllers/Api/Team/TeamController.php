@@ -107,6 +107,16 @@ class TeamController extends ApiController
         //delete many to many relations
         $team->users()->detach();
 
+        foreach ($team->tasks as $task){
+            $task->responsibleTeam()->dissociate();
+            $task->save();
+        }
+
+        foreach ($team->emails as $email){
+            $email->responsibleTeam()->dissociate();
+            $email->save();
+        }
+
         //delete model itself
         $team->delete();
     }

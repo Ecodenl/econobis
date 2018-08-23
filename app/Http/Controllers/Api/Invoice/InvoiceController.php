@@ -57,6 +57,7 @@ class InvoiceController extends ApiController
 
     public function csv(RequestQuery $requestQuery)
     {
+        set_time_limit(0);
         $invoices = $requestQuery->getQueryNoPagination()->get();
 
         $invoiceCSVHelper = new InvoiceCSVHelper($invoices);

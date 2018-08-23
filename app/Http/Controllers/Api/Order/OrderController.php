@@ -45,6 +45,7 @@ class OrderController extends ApiController
 
     public function csv(RequestQuery $requestQuery)
     {
+        set_time_limit(0);
         $orders = $requestQuery->getQueryNoPagination()->get();
 
         $orderCSVHelper = new OrderCSVHelper($orders);

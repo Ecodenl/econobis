@@ -342,6 +342,7 @@ class ProductionProjectRevenueController extends ApiController
         $user = Auth::user();
 
         if ($templateId) {
+            set_time_limit(0);
             $csvHelper = new EnergySupplierCSVHelper($energySupplier,
                 $productionProjectRevenue, $templateId);
             $csv = $csvHelper->getCSV();

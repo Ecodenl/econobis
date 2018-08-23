@@ -5,6 +5,8 @@ import {connect} from 'react-redux';
 import ContactListAddPersonToGroup from './ContactListAddPersonToGroup';
 import ContactGroupAPI  from '../../../api/contact-group/ContactGroupAPI';
 import ButtonIcon from '../../../components/button/ButtonIcon';
+import fileDownload from "js-file-download";
+import moment from "moment/moment";
 
 class ContactsInGroupListToolbar extends Component {
     constructor(props){
@@ -56,6 +58,11 @@ class ContactsInGroupListToolbar extends Component {
         hashHistory.push(`/contact/nieuw`);
     };
 
+    getCSV = () => {
+        ContactGroupAPI.getCsv(this.props.groupId).then((payload) => {
+                fileDownload(payload.data, 'Groep-' + this.state.groupName.substring(0, 20) + '-' + moment().format("YYYY-MM-DD HH:mm:ss") +  '.csv');
+            });
+    };
 
     render() {
         const { permissions } = this.props;
@@ -72,6 +79,7 @@ class ContactsInGroupListToolbar extends Component {
                                     </button>
                         </div>
                         }
+                        <ButtonIcon iconName={"glyphicon-download-alt"} onClickAction={this.getCSV} />
                         <ButtonIcon iconName={"glyphicon-envelope"} onClickAction={this.sendEmail} />
                     </div>
                 </div>

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\ContactGroup;
 
 use App\Eco\Contact\Contact;
 use App\Eco\ContactGroup\ContactGroup;
+use App\Helpers\CSV\ContactCSVHelper;
 use App\Helpers\Delete\Models\DeleteContactGroup;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\RequestQueries\ContactGroup\Grid\RequestQuery;
@@ -162,5 +163,16 @@ class ContactGroupController extends Controller
     public function tasks(ContactGroup $contactGroup)
     {
         return SidebarTask::collection($contactGroup->tasks);
+    }
+
+    public function getCsv(ContactGroup $contactGroup)
+    {
+        set_time_limit(0);
+
+        $contactCSVHelper = new ContactCSVHelper($contactGroup->all_contacts);
+
+        $csv = $contactCSVHelper->downloadCSV();
+
+        return $csv;
     }
 }

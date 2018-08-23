@@ -148,4 +148,12 @@ export default {
                 }
             );
     },
+
+    getCsv: (groupId) => {
+        const requestUrl = `${URL_CONTACT_GROUP}/${groupId}/csv`;
+        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
+        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
+
+        return axios.get(requestUrl);
+    },
 };

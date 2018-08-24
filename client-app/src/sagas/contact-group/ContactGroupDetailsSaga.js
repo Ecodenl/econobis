@@ -13,8 +13,8 @@ export function* fetchContactGroupDetailsSaga({id}) {
 export function* updateContactGroupDetailsSaga({contactGroup}) {
     try {
         const contactGroupDetails = yield call(ContactGroupAPI.updateContactGroup, contactGroup);
-        yield put({ type: 'DELETE_CONTACT_GROUP_DETAILS_SUCCESS', contactGroupDetails });
+        yield put({ type: 'UPDATE_CONTACT_GROUP_DETAILS_SUCCESS', contactGroupDetails });
     } catch (error) {
-        yield put({ type: 'DELETE_CONTACT_GROUP_DETAILS_ERROR', error });
+        yield put({ type: 'UPDATE_CONTACT_GROUP_DETAILS_ERROR', error });
     }
 }

@@ -3,6 +3,8 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
 import { fetchContactsInGroup, clearContactsInGroup } from '../../../actions/contact-group/ContactsInGroupActions';
+import { fetchContactGroupDetails } from '../../../actions/contact-group/ContactGroupDetailsActions';
+
 import ContactsInGroupList from './ContactsInGroupList';
 import ContactsInGroupListToolbar from './ContactsInGroupListToolbar';
 
@@ -13,6 +15,7 @@ class ContactsInGroupListApp extends Component {
 
     componentDidMount() {
         this.props.fetchContactsInGroup(this.props.params.contactGroup);
+        this.props.fetchContactGroupDetails(this.props.params.contactGroup);
     };
 
     componentWillUnmount() {
@@ -57,7 +60,7 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = (dispatch) => {
-    return bindActionCreators({ fetchContactsInGroup, clearContactsInGroup }, dispatch);
+    return bindActionCreators({ fetchContactsInGroup, clearContactsInGroup, fetchContactGroupDetails }, dispatch);
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(ContactsInGroupListApp);

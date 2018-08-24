@@ -38,6 +38,11 @@ class ContactGroupController extends Controller
         return ContactGroupPeek::collection(ContactGroup::orderBy('name')->get());
     }
 
+    public function peekStatic()
+    {
+        return ContactGroupPeek::collection(ContactGroup::orderBy('name')->where('type_id', 'static')->get());
+    }
+
     public function show(ContactGroup $contactGroup)
     {
         $contactGroup->load(['responsibleUser', 'createdBy', 'tasks']);

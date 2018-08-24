@@ -149,6 +149,21 @@ export default {
             );
     },
 
+    peekStaticContactGroups: () => {
+        const requestUrl = `${URL_API}/api/contact-group/peek/static`;
+        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
+        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
+
+        return axios.get(requestUrl)
+            .then(function (response) {
+                return response.data.data;
+            })
+            .catch(function (error) {
+                    console.log(error);
+                }
+            );
+    },
+
     getCsv: (groupId) => {
         const requestUrl = `${URL_CONTACT_GROUP}/${groupId}/csv`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');

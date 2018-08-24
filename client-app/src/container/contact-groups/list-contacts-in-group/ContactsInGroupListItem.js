@@ -49,7 +49,7 @@ class ContactsInGroupListItem extends Component {
                 <td className="hidden-xs hidden-sm">{ moment(createdAt.date).format('DD-MM-Y') }</td>
                 <td>
                     {(this.state.showActionButtons ? <a role="button" onClick={() => this.openItem(id)}><span className="glyphicon glyphicon-pencil mybtn-success" /> </a> : '')}
-                    {(this.state.showActionButtons && permissions.updatePerson && permissions.updateOrganisation ? <a role="button" onClick={this.props.showDeleteItemModal.bind(this, id, fullName)}><span className="glyphicon glyphicon-trash mybtn-danger"  /> </a> : '')}
+                    {(this.state.showActionButtons && permissions.updatePerson && permissions.updateOrganisation && this.props.contactGroupType === 'static' ? <a role="button" onClick={this.props.showDeleteItemModal.bind(this, id, fullName)}><span className="glyphicon glyphicon-trash mybtn-danger"  /> </a> : '')}
                 </td>
             </tr>
         );
@@ -59,6 +59,7 @@ class ContactsInGroupListItem extends Component {
 const mapStateToProps = (state) => {
     return {
         permissions: state.meDetails.permissions,
+        contactGroupType: state.contactGroupDetails.type.id,
     }
 };
 

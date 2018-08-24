@@ -72,7 +72,7 @@ class ContactsInGroupListToolbar extends Component {
                     <div className="btn-group" role="group">
                         <ButtonIcon iconName={"glyphicon-refresh"} onClickAction={this.props.refreshContactsInGroupData} />
                         {
-                            this.props.permissions.updatePerson && this.props.permissions.updateOrganisation &&
+                            this.props.permissions.updatePerson && this.props.permissions.updateOrganisation && this.props.contactGroupType === 'static' &&
                             <div className="nav navbar-nav btn-group">
                                     <button onClick={this.toggleModalAddToGroup} className="btn btn-success btn-sm">
                                         <span className="glyphicon glyphicon-plus"/>
@@ -101,6 +101,7 @@ class ContactsInGroupListToolbar extends Component {
 const mapStateToProps = (state) => {
     return {
         permissions: state.meDetails.permissions,
+        contactGroupType: state.contactGroupDetails.type.id,
     }
 };
 

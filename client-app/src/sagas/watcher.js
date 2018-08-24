@@ -1,7 +1,10 @@
 import { takeLatest, takeEvery } from 'redux-saga/effects';
 
 import { fetchAuditTrailSaga } from './audit-trail/AuditTrailSaga';
-import { addAdministrationUserSaga, deleteAdministrationUserSaga, fetchAdministrationDetailsSaga, updateAdministrationDetailsSaga } from './administration/AdministrationDetailsSaga';
+import {
+    addAdministrationUserSaga, deleteAdministrationSepaSaga, deleteAdministrationUserSaga,
+    fetchAdministrationDetailsSaga, updateAdministrationDetailsSaga
+} from './administration/AdministrationDetailsSaga';
 import { deleteAdministrationSaga, fetchAdministrationsSaga } from './administration/AdministrationsSaga';
 import { fetchCampaignsSaga } from './campaign/CampaignsSaga';
 import { fetchCampaignSaga, deleteCampaignSaga } from './campaign/CampaignDetailsSaga';
@@ -71,6 +74,7 @@ export default function* watchSagas() {
     // Administration
     yield takeLatest('ADD_ADMINISTRATION_USER', addAdministrationUserSaga);
     yield takeLatest('DELETE_ADMINISTRATION_USER', deleteAdministrationUserSaga);
+    yield takeLatest('DELETE_ADMINISTRATION_SEPA', deleteAdministrationSepaSaga);
     yield takeLatest('FETCH_ADMINISTRATION_DETAILS', fetchAdministrationDetailsSaga);
     yield takeLatest('UPDATE_ADMINISTRATION', updateAdministrationDetailsSaga);
     yield takeLatest('DELETE_ADMINISTRATION', deleteAdministrationSaga);

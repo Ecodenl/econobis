@@ -28,3 +28,10 @@ export const deleteAdministrationUser = (administrationId, userId) => {
         userId,
     };
 };
+
+export const deleteAdministrationSepa = (sepaId) => {
+    return {
+        type: 'DELETE_ADMINISTRATION_SEPA',
+        sepaId,
+    };
+};

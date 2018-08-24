@@ -49,3 +49,12 @@ export function* deleteAdministrationUserSaga({administrationId, userId }) {
         yield put({ type: 'DELETE_ADMINISTRATION_USER_ERROR', error });
     }
 }
+
+export function* deleteAdministrationSepaSaga({sepaId}) {
+    try {
+        yield call(AdministrationDetailsAPI.deleteSepa, sepaId);
+        yield put({ type: 'DELETE_ADMINISTRATION_SEPA_SUCCESS', sepaId });
+    } catch (error) {
+        yield put({ type: 'DELETE_ADMINISTRATION_SEPA_ERROR', sepaId });
+    }
+}

@@ -84,4 +84,12 @@ export default {
 
         return axios.get(requestUrl);
     },
+
+    deleteSepa: (sepaId) => {
+        const requestUrl = `${URL_ADMINISTRATION}/sepa/${sepaId}/delete`;
+        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
+        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
+
+        return axios.post(requestUrl);
+    },
 };

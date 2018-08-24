@@ -221,4 +221,9 @@ class AdministrationController extends ApiController
         header('Access-Control-Expose-Headers: X-Filename');
         return response()->download($filePath, $sepa->name, ['Content-Type: application/xml']);
     }
+
+    public function deleteSepa(Sepa $sepa){
+        //soft delete
+        $sepa->delete();
+    }
 }

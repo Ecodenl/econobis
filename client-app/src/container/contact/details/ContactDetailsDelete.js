@@ -1,6 +1,5 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { hashHistory } from 'react-router';
 
 import Modal from '../../../components/modal/Modal';
 import { deleteContact } from '../../../actions/contact/ContactDetailsActions';
@@ -8,7 +7,6 @@ import { deleteContact } from '../../../actions/contact/ContactDetailsActions';
 const ContactDetailDelete = (props) => {
     const confirmAction = () => {
         props.deleteContact(props.id);
-
         props.closeDeleteItemModal();
     };
 

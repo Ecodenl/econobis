@@ -13,7 +13,7 @@ export function* fetchIntakeDetailsSaga({ payload }) {
 
 export function* deleteIntakeSaga({ id }) {
     try {
-        yield call(IntakesAPI.deleteIntake, id);
+        yield call(IntakeDetailsAPI.deleteIntake, id);
         yield put({ type: 'DELETE_INTAKE_SUCCESS', id });
         hashHistory.push(`/intakes`);
     } catch (error) {

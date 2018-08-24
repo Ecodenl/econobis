@@ -1,10 +1,9 @@
 import React from 'react';
 
 import EmailAnswerAttachmentsItem from "./EmailAnswerAttachmentsItem";
-import EmailAnswerFormGeneral from "../general/EmailAnswerFormGeneral";
 
 const EmailAnswerAttachmentsList = props => {
-    const { attachments } = props;
+    const { attachments, deleteAttachment } = props;
 
     return (
         <div>
@@ -18,6 +17,7 @@ const EmailAnswerAttachmentsList = props => {
                         return <EmailAnswerAttachmentsItem
                             key={attachment.name}
                             attachment={attachment}
+                            deleteAttachment={deleteAttachment}
                         />;
                     })
                     :

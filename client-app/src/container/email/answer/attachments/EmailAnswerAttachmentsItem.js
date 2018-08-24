@@ -1,13 +1,16 @@
 import React, {Component} from 'react';
 
 import EmailAnswerAttachmentsView from './EmailAnswerAttachmentsView';
+import EmailAnswerAttachmentsDelete from "./EmailAnswerAttachmentsDelete";
 
 class EmailAnswerAttachmentsItem extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
+            showActionButtons: false,
             highlightLine: '',
+            showDelete: false,
         };
     };
 
@@ -24,6 +27,11 @@ class EmailAnswerAttachmentsItem extends Component {
             highlightLine: '',
         });
     };
+    
+    toggleDelete = () => {
+        this.setState({showDelete: !this.state.showDelete});
+    };
+
     render() {
         return (
             <div>
@@ -35,6 +43,14 @@ class EmailAnswerAttachmentsItem extends Component {
                     toggleDelete={this.toggleDelete}
                     attachment={this.props.attachment}
                 />
+                {
+                    this.state.showDelete &&
+                    <EmailAnswerAttachmentsDelete
+                        toggleDelete={this.toggleDelete}
+                        attachment={this.props.attachment}
+                        deleteAttachment={this.props.deleteAttachment}
+                    />
+                }
             </div>
         );
     }

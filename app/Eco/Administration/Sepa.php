@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Sepa extends Model
 {
     use SoftDeletes;
-    
+
     protected $table = 'sepas';
 
      /**

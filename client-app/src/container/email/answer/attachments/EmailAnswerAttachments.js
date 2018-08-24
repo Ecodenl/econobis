@@ -32,7 +32,7 @@ class EmailAnswerAttachments extends Component {
                 </PanelHeader>
                 <PanelBody>
                     <div className="col-md-12">
-                        <EmailAnswerAttachmentsList attachments={this.props.attachments}/>
+                        <EmailAnswerAttachmentsList attachments={this.props.attachments} deleteAttachment={this.props.deleteAttachment}/>
                     </div>
                     <div className="col-md-12 margin-10-top">
                         {this.state.showNew &&

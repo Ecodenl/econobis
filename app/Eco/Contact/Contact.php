@@ -51,10 +51,6 @@ class Contact extends Model
       'iban'
     ];
 
-    protected $appends = [
-      'visible_groups'
-    ];
-
     public function addresses()
     {
         return $this->hasMany(Address::class);
@@ -297,7 +293,7 @@ class Contact extends Model
         return null;
     }
 
-    public function getVisibleGroupsAttribute(){
+    public function getVisibleGroups(){
 
         //statische groepen
         $staticGroups = $this->groups()->where('show_contact_form', true)->get();

@@ -31,17 +31,6 @@ class ProductionProject extends Model
         'id'
     ];
 
-    protected $appends
-        = [
-            'issued_participations',
-            'issued_participations_percentage',
-            'participations_in_option',
-            'issuable_participations',
-            'participations_worth_total',
-            'current_participations',
-            'has_payment_invoices',
-        ];
-
     //relations
 
     public function administration()
@@ -98,7 +87,7 @@ class ProductionProject extends Model
     }
 
     //Appended fields
-    public function getIssuedParticipationsAttribute()
+    public function getIssuedParticipations()
     {
         $amountOfParticipations = 0;
 
@@ -110,7 +99,7 @@ class ProductionProject extends Model
         return $amountOfParticipations;
     }
 
-    public function getParticipationsInOptionAttribute()
+    public function getParticipationsInOption()
     {
         $amountOfParticipations = 0;
 
@@ -122,25 +111,25 @@ class ProductionProject extends Model
         return $amountOfParticipations;
     }
 
-    public function getIssuableParticipationsAttribute()
+    public function getIssuableParticipations()
     {
-        return $this->total_participations - $this->issued_participations;
+        return $this->total_participations - $this->getIssuedParticipations();
     }
 
-    public function getParticipationsWorthTotalAttribute()
+    public function getParticipationsWorthTotal()
     {
-        return $this->issued_participations * $this->participation_worth;
+        return $this->getIssuedParticipations() * $this->participation_worth;
     }
 
-    public function getIssuedParticipationsPercentageAttribute()
+    public function getIssuedParticipationsPercentage()
     {
         if(!$this->total_participations || $this->total_participations == 0){
             return 0;
         }
-        return ($this->issued_participations / $this->total_participations) * 100;
+        return ($this->getIssuedParticipations() / $this->total_participations) * 100;
     }
 
-    public function getCurrentParticipationsAttribute(){
+    public function getCurrentParticipations(){
         $participants = $this->participantsProductionProject()->get();
 
         $totalParticipations = 0;
@@ -152,7 +141,7 @@ class ProductionProject extends Model
         return $totalParticipations;
     }
 
-    public function getHasPaymentInvoicesAttribute(){
+    public function getHasPaymentInvoices(){
 
         foreach($this->productionProjectRevenues as $revenue){
             foreach ($revenue->distribution as $distribution) {

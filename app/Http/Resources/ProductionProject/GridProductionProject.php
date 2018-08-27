@@ -34,9 +34,9 @@ class GridProductionProject extends Resource
                 'name' => $this->name,
                 'totalParticipations' => $this->total_participations,
                 'powerKwAvailable' => $this->power_kw_available,
-                'issuedParticipations' => $this->issued_participations,
-                'issuableParticipations' => $this->issuable_participations,
-                'issuedParticipationsPercentage' => $this->issued_participations_percentage,
+                'issuedParticipations' => $this->getIssuedParticipations(),
+                'issuableParticipations' => $this->getIssuableParticipations(),
+                'issuedParticipationsPercentage' => $this->getIssuedParticipationsPercentage(),
             ];
     }
 }

@@ -67,9 +67,7 @@ class ParticipationProductionProjectController extends ApiController
 
         $participantCSVHelper = new ParticipantCSVHelper($participants);
 
-        $csv = $participantCSVHelper->downloadCSV();
-
-        return $csv;
+        return $participantCSVHelper->downloadCSV();
     }
 
     public function show(ParticipantProductionProject $participantProductionProject)

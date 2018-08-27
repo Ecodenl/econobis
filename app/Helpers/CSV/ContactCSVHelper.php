@@ -32,88 +32,60 @@ class ContactCSVHelper
             'person',
             'organisation',
             'addresses',
+            'primaryEmailAddress',
             'emailAddresses',
+            'primaryphoneNumber',
             'phoneNumbers',
             'primaryAddress',
             'primaryContactEnergySupplier.energySupplier',
+            'contactNotes',
         ]);
 
         foreach ($this->contacts as $contact) {
             // Addresses
             if ($contact->addresses) {
                 foreach (AddressType::collection() as $type) {
-                    $addresses = $contact->addresses()->where('type_id', $type->id)->get();
-                    $first = true;
+                    $address = $contact->addresses()->where('type_id', $type->id)->first();
 
-                    foreach ($addresses as $address) {
-                        $addressArr['street'] = ($address ? $address->street : '');
-                        $addressArr['number'] = ($address ? $address->number : '');
-                        $addressArr['addition'] = ($address ? $address->addition : '');
-                        $addressArr['postal_code'] = ($address ? $address->postal_code : '');
-                        $addressArr['city'] = ($address ? $address->city : '');
+                    $addressArr = [];
 
-                        if($first) {
-                            $contact['address_' . $type->id] = $addressArr;
-                            $first = false;
-                        }
-                        else{
-                            $repContact = $contact->replicate();
-                            $repContact['address_' . $type->id] = $addressArr;
+                    $addressArr['street'] = ($address ? $address->street : '');
+                    $addressArr['number'] = ($address ? $address->number : '');
+                    $addressArr['addition'] = ($address ? $address->addition : '');
+                    $addressArr['postal_code'] = ($address ? $address->postal_code : '');
+                    $addressArr['city'] = ($address ? $address->city : '');
+                    $addressArr['country'] = ($address ? $address->country->name : '');
 
-                            $index = $this->contacts->search(function ($item, $key) use ($contact) {
-                                return $item->id == $contact->id;
-                            });
-                            $this->contacts->splice($index, 0, [$repContact]);
-                        }
-                    }
+                    $contact['address_' . $type->id] = $addressArr;
                 }
             }
 
-            // E-mail
+            // Other e-mail addresses
             if ($contact->emailAddresses) {
-                foreach (EmailAddressType::collection() as $type) {
-                    $emailAddresses = $contact->emailAddresses()->where('type_id', $type->id)->get();
-                    $first = true;
-                    foreach ($emailAddresses as $emailAddress){
-                        if($first) {
-                            $contact['email_' . $type->id] = ($emailAddress ? $emailAddress->email : '');
-                            $first = false;
-                        }
-                        else{
-                            $repContact = $contact->replicate();
-                            $repContact['email_' . $type->id] = ($emailAddress ? $emailAddress->email : '');
+                $emailAddresses = $contact->emailAddresses()->where('primary', false)->limit(5)->get();
 
-                            $index = $this->contacts->search(function ($item, $key) use ($contact) {
-                                return $item->id == $contact->id;
-                            });
-                            $this->contacts->splice($index, 0, [$repContact]);
-                        }
-                    }
-
-                }
+                $contact['emailAddress_2'] = (isset($emailAddresses[0]) ? $emailAddresses[0]->email : '');
+                $contact['emailAddress_3'] = (isset($emailAddresses[1]) ? $emailAddresses[1]->email : '');
+                $contact['emailAddress_4'] = (isset($emailAddresses[2]) ? $emailAddresses[2]->email : '');
+                $contact['emailAddress_5'] = (isset($emailAddresses[3]) ? $emailAddresses[3]->email : '');
             }
 
-            // Phonenumbers
+            // Other phonenumbers
             if ($contact->phoneNumbers) {
-                foreach (PhoneNumberType::collection() as $type) {
-                    $phoneNumbers = $contact->phoneNumbers()->where('type_id', $type->id)->get();
+                $phoneNumbers = $contact->phoneNumbers()->where('primary', false)->limit(2)->get();
 
-                    foreach ($phoneNumbers as $phoneNumber) {
-                        if($first) {
-                            $contact['phonenumber_' . $type->id] = ($phoneNumber ? $phoneNumber->number : '');
-                            $first = false;
-                        }
-                        else{
-                            $repContact = $contact->replicate();
-                            $repContact['phonenumber_' . $type->id] = ($phoneNumber ? $phoneNumber->number : '');
+                $contact['phonenumber_2'] = (isset($phoneNumbers[0]) ? $phoneNumbers[0]->number : '');
+                $contact['phonenumber_3'] = (isset($phoneNumbers[1]) ? $phoneNumbers[1]->number : '');
+            }
 
-                            $index = $this->contacts->search(function ($item, $key) use ($contact) {
-                                return $item->id == $contact->id;
-                            });
-                            $this->contacts->splice($index, 0, [$repContact]);
-                        }
-                    }
-                }
+            // Latest 2 contactNotes
+            if ($contact->contactNotes) {
+                $contactNotes = $contact->contactNotes()->limit(2)->orderBy('id', 'desc')->get();
+
+                $latestContactNotes = (isset($contactNotes[0]) ? $contactNotes[0]->note : '');
+                $latestContactNotes .= (isset($contactNotes[1]) ? ' | ' .$contactNotes[1]->note : '');
+
+                $contact['latest_contactNotes'] = $latestContactNotes;
             }
         }
 
@@ -125,9 +97,8 @@ class ContactCSVHelper
                 $contact->first_name = $contact->person->first_name;
                 $contact->last_name_prefix;
                 $contact->last_name = $contact->person->last_name;
-                // Date of birth date format
-                $dateOfBirth = $contact->person->date_of_birth ? new Carbon($contact->person->date_of_birth) : false;
-                $contact->date_of_birth = $dateOfBirth ? $dateOfBirth->format('d-m-Y') : '';
+                $contact->date_of_birth = $this->formatDate($contact->person->date_of_birth);
+                $contact->date_of_birth_partner = $this->formatDate($contact->person->date_of_birth_partner);
             }
 
             // Reformat energy supplier fields
@@ -135,9 +106,13 @@ class ContactCSVHelper
                 // Reformat when supplier starts with equal sign (example '=om')
                 $contact->energy_supplier_name = $contact->primaryContactEnergySupplier->energySupplier->name;
                 // Member since date format
-                $energyMemberSince = $contact->primaryContactEnergySupplier->member_since ? new Carbon($contact->primaryContactEnergySupplier->member_since) : false;
-                $contact->energy_member_since = $energyMemberSince ? $energyMemberSince->format('d-m-Y') : '';
+                $contact->energy_member_since = $this->formatDate($contact->primaryContactEnergySupplier->member_since);
             }
+
+            $contact->did_agree_avg = ($contact->did_agree_avg ? 'Ja' : 'Nee');
+
+            $contact->created_at_date = $this->formatDate($contact->created_at);
+            $contact->updated_at_date = $this->formatDate($contact->updated_at);
         });
 
 
@@ -154,39 +129,59 @@ class ContactCSVHelper
             'last_name_prefix' => 'Tussenvoegsel',
             'last_name' => 'Achternaam',
             'date_of_birth' => 'Geboortedatum',
+            'iban' => 'IBAN',
+            'iban_attn' => 'IBAN tnv',
+            'did_agree_avg' => 'Akkoord privacybeleid',
             'person.first_name_partner' => 'Voornaam partner',
             'person.last_name_partner' => 'Achternaam partner',
+            'date_of_birth_partner' => 'Geboortedatum partner',
             'address_deliver.street' => 'Bezorg adres',
             'address_deliver.number' => 'Bezorg huisnummer',
             'address_deliver.addition' => 'Bezorg toevoeging',
             'address_deliver.postal_code' => 'Bezorg postcode',
             'address_deliver.city' => 'Bezorg plaats',
+            'address_deliver.country' => 'Bezorg land',
             'address_visit.street' => 'Bezoek adres',
             'address_visit.number' => 'Bezoek huisnummer',
             'address_visit.addition' => 'Bezoek toevoeging',
             'address_visit.postal_code' => 'Bezoek postcode',
             'address_visit.city' => 'Bezoek plaats',
-            'address_post.street' => 'Post adres',
-            'address_post.number' => 'Post huisnummer',
-            'address_post.addition' => 'Post toevoeging',
-            'address_post.postal_code' => 'Post postcode',
-            'address_post.city' => 'Post plaats',
+            'address_visit.country' => 'Bezoek land',
+            'address_postal.street' => 'Post adres',
+            'address_postal.number' => 'Post huisnummer',
+            'address_postal.addition' => 'Post toevoeging',
+            'address_postal.postal_code' => 'Post postcode',
+            'address_postal.city' => 'Post plaats',
+            'address_postal.country' => 'Post land',
             'address_invoice.street' => 'Factuur adres',
             'address_invoice.number' => 'Factuur huisnummer',
             'address_invoice.addition' => 'Factuur toevoeging',
             'address_invoice.postal_code' => 'Factuur postcode',
             'address_invoice.city' => 'Factuur plaats',
-            'email_general' => 'Email algemeen',
-            'email_home' => 'Email prive',
-            'email_work' => 'Email werk',
-            'phonenumber_home' => 'Telefoonnummer prive',
-            'phonenumber_work' => 'Telefoonnummer werk',
+            'address_invoice.country' => 'Factuur land',
+            'primaryEmailAddress.email' => 'Email primair',
+            'emailAddress_2' => 'Email 2',
+            'emailAddress_3' => 'Email 3',
+            'emailAddress_4' => 'Email 4',
+            'emailAddress_5' => 'Email 5',
+            'primaryphoneNumber.number' => 'Telefoonnummer primair',
+            'phonenumber_2' => 'Telefoonnummer 2',
+            'phonenumber_3' => 'Telefoonnummer 3',
             'energy_supplier_name' => 'Energieleverancier',
             'primaryContactEnergySupplier.es_number' => 'Klantnummer',
             'energy_member_since' => 'Klant sinds',
             'primaryContactEnergySupplier.ean_electricity' => 'EAN electriciteit',
+            'latest_contactNotes' => 'Opmerkingen',
+            'created_at_date' => 'Datum gemaakt op',
+            'updated_at_date' => 'Datum laatste update',
         ])->getCsv();
 
         return $csv;
     }
+
+    private function formatDate($date) {
+        $formatDate = $date ? new Carbon($date) : false;
+        return $formatDate ? $formatDate->format('d-m-Y') : '';
+    }
+
 }

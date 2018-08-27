@@ -87,12 +87,12 @@ class ResetSoftdeletes extends Migration
         }
 
         $mailContent .= '</ul>';
-
-        Mail::send('emails.generic', ['html_body' => $mailContent], function ($message)
-        {
-            $message->subject('Softdelete teruggezet voor ' . config('app.name'));
-            $message->to(['fren.dehaan@xaris.nl', 'rene.van.vliet@outlook.com']);
-        });
+        if (\Config::get('app.env') == 'production') { // alleen mail versturen in productie
+            Mail::send('emails.generic', ['html_body' => $mailContent], function ($message) {
+                $message->subject('Softdelete teruggezet voor ' . config('app.name'));
+                $message->to(['fren.dehaan@xaris.nl', 'rene.van.vliet@outlook.com']);
+            });
+        }
 
 
 //        //Participant transacties zijn geen softdelete meer

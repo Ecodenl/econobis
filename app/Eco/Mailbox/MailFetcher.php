@@ -157,7 +157,7 @@ class MailFetcher
         $this->addRelationToContacts($email);
 
         foreach ($emailData->getAttachments() as $attachment){
-            $name = substr($attachment->filePath, strrpos($attachment->filePath, '/') + 1);
+            $name = substr($attachment->filePath, strrpos($attachment->filePath, DIRECTORY_SEPARATOR) + 1);
 
             $filename = $this->getAttachmentDBName() . $name;
 

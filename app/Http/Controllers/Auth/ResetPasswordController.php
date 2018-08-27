@@ -14,6 +14,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Mail;
 
 class ResetPasswordController extends Controller
 {
@@ -99,6 +100,7 @@ class ResetPasswordController extends Controller
                 $user->has_alfresco_account = 1;
             }
             else{
+                $alfrescoHelper->assignUserToPrivateSite($user->email);
                 $user->has_alfresco_account = 1;
             }
         }
@@ -120,9 +122,31 @@ class ResetPasswordController extends Controller
         }
         else if($didCreateAlfrescoAccount) {
             $user->notify(new MailNewAccountAlfresco($user->email));
+            $this->sendAdministrationEmail($user);
         }
         else{
             $user->notify(new MailNewAccount($user->email));
+            $this->sendAdministrationEmail($user);
         }
+    }
+
+    protected function sendAdministrationEmail(User $user){
+        $mailContent = '<h1>Er is een gebruiker aangemaakt voor coöperatie '  . config('app.name') . '</h1><br><br>';
+        $mailContent .= '<ul>';
+        $mailContent .= '<li>Id: ' . $user->id . '</li>';
+        $mailContent .= '<li>Aanspreektitel: ' . $user->title ? $user->title->name : '' . '</li>';
+        $mailContent .= '<li>Voornaam: ' . $user->first_name . '</li>';
+        $mailContent .= '<li>Tussenvoegsel: ' . $user->lastNamePrefix ? $user->lastNamePrefix->name : '' . '</li>';
+        $mailContent .= '<li>Achternaam: ' . $user->last_name . '</li>';
+        $mailContent .= '<li>E-mail: ' . $user->email . '</li>';
+        $mailContent .= '<li>Telefoonnummer: ' . $user->phone_number . '</li>';
+        $mailContent .= '<li>Mobiel: ' . $user->mobile . '</li>';
+        $mailContent .= '<li>Functie: ' . $user->occupation . '</li>';
+        $mailContent .= '</ul>';
+
+        Mail::send('emails.generic', ['html_body' => $mailContent], function ($message) {
+            $message->subject('Nieuwe gebruiker voor ' . config('app.name'));
+            $message->to(['gebruikers@econobis.nl']);
+        });
     }
 }

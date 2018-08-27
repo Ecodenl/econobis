@@ -67,7 +67,9 @@ class AlfrescoHelper
             $this->executeCurl($url, $args);
         }
 
-        $response = $this->assignUserToSite($user->email);
+        $response = $this->assignUserToCommunitySite($user->email);
+
+        $this->assignUserToPrivateSite($user->email);
 
         return $response;
     }
@@ -87,9 +89,20 @@ class AlfrescoHelper
 
     }
 
-    public function assignUserToSite($alfresco_username){
+    public function assignUserToCommunitySite($alfresco_username){
 
         $url = \Config::get('app.ALFRESCO_URL') . "/alfresco/versions/1/sites/econobis-community-portaal/members";
+
+        $args['role'] = 'SiteConsumer';
+        $args['id'] = $alfresco_username;
+
+        $response = $this->executeCurl($url, $args);
+
+        return $response['message'];
+    }
+
+    public function assignUserToPrivateSite($alfresco_username){
+        $url = \Config::get('app.ALFRESCO_URL') . "/alfresco/versions/1/sites/" . \Config::get('app.ALFRESCO_SITE_MAP') . "/members";
 
         $args['role'] = 'SiteConsumer';
         $args['id'] = $alfresco_username;

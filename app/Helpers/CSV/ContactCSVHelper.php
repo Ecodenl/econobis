@@ -15,6 +15,7 @@ use App\Eco\Occupation\Occupation;
 use App\Eco\PhoneNumber\PhoneNumberType;
 use App\Eco\ProductionProject\ProductionProjectRevenue;
 use Carbon\Carbon;
+use League\Csv\Reader;
 
 class ContactCSVHelper
 {
@@ -166,7 +167,7 @@ class ContactCSVHelper
                         $contact['occupationDateOfBirth'] = $primaryOccupation->primaryContact->person ? $this->formatDate($primaryOccupation->primaryContact->person->date_of_birth) : '';
                         $contact['occupationPrimaryEmailAddress'] = $primaryOccupation->primaryContact->primaryEmailAddress ? $primaryOccupation->primaryContact->primaryEmailAddress : '';
                         $contact['occupationPrimaryTelephoneNumber'] = $primaryOccupation->primaryContact->primaryphoneNumber ? $primaryOccupation->primaryContact->primaryphoneNumber : '';
-                        $contact['occupationRole'] = $primaryOccupation->occupation->primary_occupation;
+                        $contact['occupationRole'] = $primaryOccupation->occupation->secondary_occupation;
                         $first = false;
                     }
                     else{
@@ -184,7 +185,7 @@ class ContactCSVHelper
                         $repContact['occupationDateOfBirth'] = $primaryOccupation->primaryContact->person ? $this->formatDate($primaryOccupation->primaryContact->person->date_of_birth) : '';
                         $repContact['occupationPrimaryEmailAddress'] = $primaryOccupation->primaryContact->primaryEmailAddress ? $primaryOccupation->primaryContact->primaryEmailAddress : '';
                         $repContact['occupationPrimaryTelephoneNumber'] = $primaryOccupation->primaryContact->primaryphoneNumber ? $primaryOccupation->primaryContact->primaryphoneNumber : '';
-                        $repContact['occupationRole'] = $primaryOccupation->occupation->primary_occupation;
+                        $repContact['occupationRole'] = $primaryOccupation->occupation->secondary_occupation;
                         $index = $chunk->search(function ($item, $key) use ($contact) {
                             return $item->id == $contact->id;
                         });
@@ -296,7 +297,7 @@ class ContactCSVHelper
             ], $headers);
             $headers = false;
         }
-        return $csv->getCsv();
+        return Reader::BOM_UTF8 . $csv->getCsv();
     }
 
     private function formatDate($date) {

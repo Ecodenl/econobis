@@ -10,6 +10,7 @@ namespace App\Helpers\CSV;
 
 use App\Eco\Address\AddressType;
 use Carbon\Carbon;
+use League\Csv\Reader;
 
 class ParticipantCSVHelper
 {
@@ -253,6 +254,6 @@ class ParticipantCSVHelper
                 ], $headers);
                 $headers = false;
             }
-        return $csv->getCsv();
+        return Reader::BOM_UTF8 . $csv->getCsv();
         }
 }

@@ -11,6 +11,7 @@ namespace App\Helpers\CSV;
 use App\Eco\EnergySupplier\EnergySupplier;
 use App\Eco\ProductionProject\ProductionProjectRevenue;
 use Carbon\Carbon;
+use League\Csv\Reader;
 
 class EnergySupplierCSVHelper
 {
@@ -157,6 +158,6 @@ class EnergySupplierCSVHelper
             ], $headers);
             $headers = false;
         }
-        return $csv->getCsv();
+        return Reader::BOM_UTF8 . $csv->getCsv();
     }
 }

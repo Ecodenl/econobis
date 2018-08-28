@@ -6,6 +6,7 @@ import { previewParticipantReport } from '../../../actions/production-project/Pr
 import { fetchParticipantsProductionProject, clearParticipantsProductionProject } from '../../../actions/participants-production-project/ParticipantsProductionProjectActions';
 import { clearFilterParticipantsProductionProject } from '../../../actions/participants-production-project/ParticipantsProductionProjectFiltersActions';
 import { setParticipantsProductionProjectPagination } from '../../../actions/participants-production-project/ParticipantsProductionProjectPaginationActions';
+import { blockUI, unblockUI } from '../../../actions/general/BlockUIActions';
 import ParticipantsList from './ParticipantsList';
 import ParticipantsListToolbar from './ParticipantsListToolbar';
 import filterHelper from '../../../helpers/FilterHelper';
@@ -318,6 +319,7 @@ class ParticipantsListApp extends Component {
     };
 
     getCSV = () => {
+        this.props.blockUI();
         setTimeout(() => {
             const filters = filterHelper(this.props.participantsProductionProjectFilters);
             const extraFilters = this.state.extraFilters;
@@ -325,6 +327,9 @@ class ParticipantsListApp extends Component {
 
             ParticipantsProductionProjectAPI.getCsv(filters, extraFilters, sorts).then((payload) => {
                 fileDownload(payload.data, 'Participanten-' + moment().format("YYYY-MM-DD HH:mm:ss") +  '.csv');
+                this.props.unblockUI();
+            }).catch((error) => {
+                this.props.unblockUI();
             });
         },100 );
     };
@@ -431,7 +436,7 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = (dispatch) => {
-    return bindActionCreators({ previewParticipantReport, fetchParticipantsProductionProject, clearParticipantsProductionProject, setParticipantsProductionProjectPagination, clearFilterParticipantsProductionProject }, dispatch);
+    return bindActionCreators({ blockUI, unblockUI, previewParticipantReport, fetchParticipantsProductionProject, clearParticipantsProductionProject, setParticipantsProductionProjectPagination, clearFilterParticipantsProductionProject }, dispatch);
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(ParticipantsListApp);

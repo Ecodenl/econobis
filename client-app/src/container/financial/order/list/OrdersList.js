@@ -16,6 +16,7 @@ import { clearFilterOrders } from '../../../../actions/order/OrdersFiltersAction
 import { setOrdersPagination } from '../../../../actions/order/OrdersPaginationActions';
 import filterHelper from '../../../../helpers/FilterHelper';
 import ButtonIcon from "../../../../components/button/ButtonIcon";
+import { blockUI, unblockUI } from '../../../../actions/general/BlockUIActions';
 
 import {
     setPaymentTypeIdFilterOrders,
@@ -126,6 +127,7 @@ class OrdersList extends Component {
     };
 
     getCSV = () => {
+        this.props.blockUI();
         setTimeout(() => {
             const filters = filterHelper(this.props.ordersFilters);
             const sorts = this.props.ordersSorts;
@@ -133,6 +135,9 @@ class OrdersList extends Component {
 
             OrdersAPI.getCSV({filters, sorts, administrationId}).then((payload) => {
                 fileDownload(payload.data, 'Orders-' + moment().format("YYYY-MM-DD HH:mm:ss") +  '.csv');
+                this.props.unblockUI();
+            }).catch((error) => {
+                this.props.unblockUI();
             });
         },100 );
     };
@@ -271,7 +276,7 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = (dispatch) => {
-    return bindActionCreators({ fetchOrders, clearOrders, clearFilterOrders, setOrdersPagination, setPaymentTypeIdFilterOrders, setStatusIdFilterOrders }, dispatch);
+    return bindActionCreators({ blockUI, unblockUI, fetchOrders, clearOrders, clearFilterOrders, setOrdersPagination, setPaymentTypeIdFilterOrders, setStatusIdFilterOrders }, dispatch);
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(OrdersList);

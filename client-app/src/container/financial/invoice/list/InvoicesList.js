@@ -11,6 +11,7 @@ import DataTablePagination from "../../../../components/dataTable/DataTablePagin
 import {bindActionCreators} from "redux";
 import {connect} from "react-redux";
 import {fetchInvoices, clearInvoices, setCheckedInvoiceAll, previewSend} from '../../../../actions/invoice/InvoicesActions';
+import { blockUI, unblockUI } from '../../../../actions/general/BlockUIActions';
 import {clearFilterInvoices} from '../../../../actions/invoice/InvoicesFiltersActions';
 import {setInvoicesPagination} from '../../../../actions/invoice/InvoicesPaginationActions';
 import filterHelper from '../../../../helpers/FilterHelper';
@@ -154,6 +155,7 @@ class InvoicesList extends Component {
     };
 
     getCSV = () => {
+        this.props.blockUI();
         setTimeout(() => {
             const filters = filterHelper(this.props.invoicesFilters);
             const sorts = this.props.invoicesSorts;
@@ -161,6 +163,9 @@ class InvoicesList extends Component {
 
             InvoicesAPI.getCSV({filters, sorts, administrationId}).then((payload) => {
                 fileDownload(payload.data, 'Facturen-' + moment().format("YYYY-MM-DD HH:mm:ss") +  '.csv');
+                this.props.unblockUI();
+            }).catch((error) => {
+                this.props.unblockUI();
             });
         },100 );
     };
@@ -349,7 +354,9 @@ const mapDispatchToProps = (dispatch) => {
         clearInvoices,
         clearFilterInvoices,
         setInvoicesPagination,
-        setStatusIdFilterInvoices
+        setStatusIdFilterInvoices,
+        blockUI,
+        unblockUI
     }, dispatch);
 };
 

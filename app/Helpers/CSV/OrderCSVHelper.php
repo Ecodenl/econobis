@@ -19,13 +19,18 @@ class OrderCSVHelper
 
     public function __construct($orders)
     {
-        $this->csvExporter = new \Laracsv\Export();
+        $this->csvExporter = new Export();
         $this->csvExporter->getCsv()->setDelimiter(';');
         $this->orders = $orders;
     }
 
     public function downloadCSV(){
-        $this->orders->load([
+
+        $csv = '';
+        $headers = true;
+
+        foreach ($this->orders->chunk(500) as $chunk) {
+            $chunk->load([
             'contact.person',
             'contact.organisation',
             'contact.primaryEmailAddress',
@@ -52,7 +57,7 @@ class OrderCSVHelper
             $order->date_next_collection = Carbon::parse($order->date_next_collection)->format('d/m/Y');
         });
 
-        $csv = $this->csvExporter->build($this->orders, [
+        $csv = $this->csvExporter->build($chunk, [
             'initials' => 'Initialen',
             'first_name' => 'Voornaam',
             'last_name_prefix' => 'Tussenvoegsel',
@@ -69,8 +74,9 @@ class OrderCSVHelper
             'total_price_ex_vat' => 'Orderbedrag netto',
             'date_next_collection' => 'Incassodatum',
             'IBAN' => 'Ibannr',
-        ])->getCsv();
-
-        return $csv;
+        ], $headers);
+            $headers = false;
+        }
+        return $csv->getCsv();
     }
 }

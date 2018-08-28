@@ -35,9 +35,7 @@ class GridController extends Controller
 
         $contactCSVHelper = new ContactCSVHelper($contacts);
 
-        $csv = $contactCSVHelper->downloadCSV();
-
-        return $csv;
+        return $contactCSVHelper->downloadCSV();
     }
 
     public function saveAsGroup(Request $request)

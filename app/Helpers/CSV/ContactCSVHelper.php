@@ -62,7 +62,7 @@ class ContactCSVHelper
                         $addressArr['addition'] = ($address ? $address->addition : '');
                         $addressArr['postal_code'] = ($address ? $address->postal_code : '');
                         $addressArr['city'] = ($address ? $address->city : '');
-                        $addressArr['country'] = ($address ? $address->country->name : '');
+                        $addressArr['country'] = (($address && $address->country) ? $address->country->name : '');
 
                         $contact['address_' . $type->id] = $addressArr;
                     }

@@ -63,7 +63,7 @@ class ParticipationProductionProjectController extends ApiController
     public function csv(RequestQuery $requestQuery)
     {
         set_time_limit(0);
-        $participants = $requestQuery->getQueryNoPagination()->get();
+        $participants = $requestQuery->getQueryNoPagination()->limit(100)->get();
 
         $participantCSVHelper = new ParticipantCSVHelper($participants);
 

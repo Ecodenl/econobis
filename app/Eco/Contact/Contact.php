@@ -224,6 +224,11 @@ class Contact extends Model
         return $this->hasOne(OccupationContact::class, 'primary_contact_id')->where('primary', true)->orWhere('contact_id', $this->id)->where('primary', true);
     }
 
+    public function legalRepContact()
+    {
+        return $this->hasOne(OccupationContact::class)->where('occupation_id', 7)->orderBy('occupation_contact.id', 'desc')->limit(1);
+    }
+
     public function orders()
     {
         return $this->hasMany(Order::class)->orderBy('orders.id', 'desc');

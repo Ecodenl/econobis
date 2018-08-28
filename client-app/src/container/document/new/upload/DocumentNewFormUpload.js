@@ -58,7 +58,7 @@ class DocumentNewFormUpload extends Component {
                         <div className="col-sm-6">
                             <input
                                 type="text"
-                                className="form-control input-sm col-sm-6"
+                                className={`form-control input-sm col-sm-6 ${errors.noDocument ? 'has-error' : ''}`}
                                 value={attachment && attachment.name}
                                 onClick={this.toggleUploadModal}
                             />

@@ -71,7 +71,8 @@ class DocumentNewApp extends Component {
                 docLinkedAtAny: false,
                 documentGroup: false,
                 uploadFailed: false,
-                templateId: false
+                templateId: false,
+                noDocument: false
             },
         };
 
@@ -195,7 +196,6 @@ class DocumentNewApp extends Component {
     };
 
     onDropAccepted(files) {
-        console.log(files[0]);
         this.setState({
             ...this.state,
             document: {
@@ -261,6 +261,13 @@ class DocumentNewApp extends Component {
             errors.templateId = true;
             hasErrors = true;
         };
+
+        if(validator.isEmpty(attachment + '') && documentType == 'upload'){
+            errors.noDocument = true;
+            hasErrors = true;
+        };
+
+
 
         this.setState({ ...this.state, errors: errors });
 

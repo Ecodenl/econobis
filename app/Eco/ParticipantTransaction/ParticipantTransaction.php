@@ -13,19 +13,13 @@ class ParticipantTransaction extends Model
 {
     protected $table = 'participant_transactions';
 
-    use RevisionableTrait, Encryptable, SoftDeletes;
+    use RevisionableTrait, Encryptable;
 
     protected $guarded = ['id'];
 
     protected $encryptable = [
         'iban',
     ];
-
-    //Dont boot softdelete scopes. We handle this ourselves
-    public static function bootSoftDeletes()
-    {
-        return false;
-    }
 
     public function participation()
     {

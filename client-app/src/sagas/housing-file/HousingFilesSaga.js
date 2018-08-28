@@ -1,6 +1,5 @@
 import { put, call } from 'redux-saga/effects';
 import HousingFilesAPI from '../../api/housing-file/HousingFilesAPI';
-import {authSaga} from "../general/AuthSaga";
 
 export function* fetchHousingFilesSaga({filters, sorts, pagination}) {
     try {

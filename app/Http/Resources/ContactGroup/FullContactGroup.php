@@ -34,7 +34,7 @@ class FullContactGroup extends Resource
             'createdAt' => $this->created_at,
             'updatedAt' => $this->updated_at,
             'contacts' => FullContact::collection($this->all_contacts),
-            'taskCount' => $this->tasks()->whereNull('deleted_at')->count(),
+            'taskCount' => $this->tasks()->count(),
             'relatedTasks' => GridTask::collection($this->whenLoaded('tasks')),
             'documentCount' => $this->documents()->count(),
             'relatedDocuments' => $this->documents()->get(),
@@ -45,6 +45,7 @@ class FullContactGroup extends Resource
             'filters' => $this->filters,
             'extraFilters' => $this->extraFilters,
             'composedGroups' => $this->contactGroups()->get(),
+            'isUsedInComposedGroup' => $this->is_used_in_composed_group,
         ];
     }
 }

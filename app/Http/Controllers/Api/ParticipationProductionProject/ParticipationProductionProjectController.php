@@ -14,7 +14,6 @@ use App\Eco\DocumentTemplate\DocumentTemplate;
 use App\Eco\EmailTemplate\EmailTemplate;
 use App\Helpers\Alfresco\AlfrescoHelper;
 use App\Helpers\CSV\ParticipantCSVHelper;
-use App\Helpers\Delete\DeleteHelper;
 use App\Helpers\Template\TemplateTableHelper;
 use App\Http\Resources\Contact\ContactPeek;
 use Barryvdh\DomPDF\Facade as PDF;
@@ -22,6 +21,7 @@ use App\Eco\ParticipantProductionProject\ParticipantProductionProject;
 use App\Eco\ParticipantTransaction\ParticipantTransaction;
 use App\Eco\PostalCodeLink\PostalCodeLink;
 use App\Eco\ProductionProject\ProductionProject;
+use App\Helpers\Delete\Models\DeleteParticipation;
 use App\Helpers\RequestInput\RequestInput;
 use App\Helpers\Template\TemplateVariableHelper;
 use App\Http\Controllers\Api\ApiController;
@@ -34,6 +34,8 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 
@@ -60,13 +62,12 @@ class ParticipationProductionProjectController extends ApiController
 
     public function csv(RequestQuery $requestQuery)
     {
+        set_time_limit(0);
         $participants = $requestQuery->getQueryNoPagination()->get();
 
         $participantCSVHelper = new ParticipantCSVHelper($participants);
 
-        $csv = $participantCSVHelper->downloadCSV();
-
-        return $csv;
+        return $participantCSVHelper->downloadCSV();
     }
 
     public function show(ParticipantProductionProject $participantProductionProject)
@@ -270,7 +271,23 @@ class ParticipationProductionProjectController extends ApiController
     {
         $this->authorize('manage', ParticipantProductionProject::class);
 
-        DeleteHelper::delete($participantProductionProject);
+        try {
+            DB::beginTransaction();
+
+            $deleteParticipation = new DeleteParticipation($participantProductionProject);
+            $result = $deleteParticipation->delete();
+
+            if(count($result) > 0){
+                DB::rollBack();
+                abort(412, implode(";", array_unique($result)));
+            }
+
+            DB::commit();
+        } catch (\PDOException $e) {
+            DB::rollBack();
+            Log::error($e->getMessage());
+            abort(501, 'Er is helaas een fout opgetreden.');
+        }
     }
 
     public function peek()
@@ -452,7 +469,7 @@ class ParticipationProductionProjectController extends ApiController
 
             file_put_contents($filePath, $pdf);
 
-            $alfrescoHelper = new AlfrescoHelper($user->email, $user->alfresco_password);
+            $alfrescoHelper = new AlfrescoHelper(\Config::get('app.ALFRESCO_COOP_USERNAME'), \Config::get('app.ALFRESCO_COOP_PASSWORD'));
 
             $alfrescoResponse = $alfrescoHelper->createFile($filePath, $document->filename, $document->getDocumentGroup()->name);
 
@@ -512,7 +529,6 @@ class ParticipationProductionProjectController extends ApiController
     public function peekContactsMembershipRequired(ParticipantProductionProject $participantProductionProject)
     {
         if($participantProductionProject->productionProject->is_membership_required){
-
             $contacts = new Collection();
 
             foreach ($participantProductionProject->productionProject->requiresContactGroups as $contactGroup){
@@ -522,7 +538,7 @@ class ParticipationProductionProjectController extends ApiController
             $contacts = $contacts->sortBy('full_name', SORT_NATURAL|SORT_FLAG_CASE)->values();
         }
         else{
-            $contacts = Contact::select('id', 'full_name', 'number')->orderBy('full_name')->whereNull('deleted_at')->get();
+            $contacts = Contact::select('id', 'full_name', 'number')->orderBy('full_name')->get();
         }
         return ContactPeek::collection($contacts);
     }

@@ -1,6 +1,5 @@
 import { put, call } from 'redux-saga/effects';
 import IntakesAPI from '../../api/intake/IntakesAPI';
-import {authSaga} from "../general/AuthSaga";
 
 export function* fetchIntakesSaga({filters, sorts, pagination}) {
     try {

@@ -3,6 +3,8 @@
 namespace App\Eco\Product;
 
 use App\Eco\Administration\Administration;
+use App\Eco\Invoice\InvoiceProduct;
+use App\Eco\Order\OrderProduct;
 use App\Eco\User\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -21,12 +23,6 @@ class Product extends Model
             'current_price',
         ];
 
-    //Dont boot softdelete scopes. We handle this ourselves
-    public static function bootSoftDeletes()
-    {
-        return false;
-    }
-
     public function priceHistory()
     {
         return $this->hasMany(PriceHistory::class)->orderBy('date_start', 'asc')->orderBy('created_at', 'asc');
@@ -35,6 +31,16 @@ class Product extends Model
     public function priceHistoryUnsorted()
     {
         return $this->hasMany(PriceHistory::class);
+    }
+
+    public function invoiceProducts()
+    {
+        return $this->hasMany(InvoiceProduct::class);
+    }
+
+    public function orderProducts()
+    {
+        return $this->hasMany(OrderProduct::class);
     }
 
     public function administration()

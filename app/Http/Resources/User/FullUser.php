@@ -41,6 +41,7 @@ class FullUser extends Resource
             'createdAt' => $this->created_at,
             'updatedAt' => $this->updated_at,
             'permissions' => $this->getPermissions(),
+            'hasAlfrescoAccount' => $this->has_alfresco_account ? true : false,
             'roles' => $this->getRoles(),
         ];
     }

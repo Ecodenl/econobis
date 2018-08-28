@@ -9,6 +9,7 @@ moment.locale('nl');
 import { fetchContacts, clearContacts, setCheckedContactAll } from '../../../actions/contact/ContactsActions';
 import { setTypeFilter, clearFilterContacts } from '../../../actions/contact/ContactsFiltersActions';
 import { setContactsPagination } from '../../../actions/contact/ContactsPaginationActions';
+import { blockUI, unblockUI } from '../../../actions/general/BlockUIActions';
 import ContactsList from './ContactsList';
 import ContactsListToolbar from './ContactsListToolbar';
 import filterHelper from '../../../helpers/FilterHelper';
@@ -98,6 +99,7 @@ class ContactsListApp extends Component {
     };
 
     getCSV = () => {
+        this.props.blockUI();
         setTimeout(() => {
             const extraFilters = this.state.extraFilters;
             const filters = filterHelper(this.props.contactsFilters);
@@ -105,7 +107,10 @@ class ContactsListApp extends Component {
 
                 ContactsAPI.getCSV({filters, extraFilters, sorts}).then((payload) => {
                     fileDownload(payload.data, 'Contacten-' + moment().format("YYYY-MM-DD HH:mm:ss") +  '.csv');
-                });
+                    this.props.unblockUI();
+                }).catch((error) => {
+                    this.props.unblockUI();
+              });
         },100 );
     };
 
@@ -218,7 +223,7 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = (dispatch) => {
-    return bindActionCreators({ fetchContacts, clearContacts, setCheckedContactAll, setTypeFilter, clearFilterContacts, setContactsPagination }, dispatch);
+    return bindActionCreators({ fetchContacts, clearContacts, setCheckedContactAll, setTypeFilter, clearFilterContacts, setContactsPagination, blockUI, unblockUI }, dispatch);
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(ContactsListApp);

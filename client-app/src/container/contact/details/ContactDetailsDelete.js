@@ -1,15 +1,13 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { hashHistory } from 'react-router';
 
 import Modal from '../../../components/modal/Modal';
 import { deleteContact } from '../../../actions/contact/ContactDetailsActions';
 
-const ContactDetailsPhoneDelete = (props) => {
+const ContactDetailDelete = (props) => {
     const confirmAction = () => {
         props.deleteContact(props.id);
-
-        hashHistory.push('/contacten');
+        props.closeDeleteItemModal();
     };
 
     return (
@@ -31,4 +29,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(null, mapDispatchToProps)(ContactDetailsPhoneDelete);
+export default connect(null, mapDispatchToProps)(ContactDetailDelete);

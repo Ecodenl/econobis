@@ -1,10 +1,13 @@
 import { takeLatest, takeEvery } from 'redux-saga/effects';
 
 import { fetchAuditTrailSaga } from './audit-trail/AuditTrailSaga';
-import { addAdministrationUserSaga, deleteAdministrationUserSaga, fetchAdministrationDetailsSaga, updateAdministrationDetailsSaga } from './administration/AdministrationDetailsSaga';
+import {
+    addAdministrationUserSaga, deleteAdministrationSepaSaga, deleteAdministrationUserSaga,
+    fetchAdministrationDetailsSaga, updateAdministrationDetailsSaga
+} from './administration/AdministrationDetailsSaga';
 import { deleteAdministrationSaga, fetchAdministrationsSaga } from './administration/AdministrationsSaga';
 import { fetchCampaignsSaga } from './campaign/CampaignsSaga';
-import { fetchCampaignSaga } from './campaign/CampaignDetailsSaga';
+import { fetchCampaignSaga, deleteCampaignSaga } from './campaign/CampaignDetailsSaga';
 import { fetchContactDetailsSaga, deleteAddressSaga, deletePhoneNumberSaga, deleteEmailAddressSaga, deleteContactNoteSaga, deleteContactEnergySupplierSaga } from './contact/ContactDetailsSaga';
 import { fetchContactGroupDetailsSaga } from './contact-group/ContactGroupDetailsSaga';
 import { fetchContactGroupsSaga, deleteContactGroupSaga, addContactToGroupSaga } from './contact-group/ContactGroupsSaga';
@@ -12,20 +15,20 @@ import { fetchContactsInGroupSaga, deleteContactInGroupSaga } from './contact-gr
 import { fetchContactsSaga, deleteContactSaga, deleteSelectedContactsSaga } from './contact/ContactsSaga';
 import { fetchDocumentsSaga } from './document/DocumentsSaga';
 import { fetchDocumentDetailsSaga, deleteDocumentSaga } from './document/DocumentDetailsSaga';
-import { fetchDocumentTemplatesSaga, fetchDocumentTemplateSaga } from './document-template/DocumentTemplatesSaga';
+import { fetchDocumentTemplatesSaga, fetchDocumentTemplateSaga, deleteDocumentTemplateSaga } from './document-template/DocumentTemplatesSaga';
 import { fetchEmailsSaga, fetchEmailSaga } from './email/EmailsSaga';
-import { fetchEmailTemplatesSaga, fetchEmailTemplateSaga } from './email-template/EmailTemplatesSaga';
+import { fetchEmailTemplatesSaga, fetchEmailTemplateSaga, deleteEmailTemplateSaga } from './email-template/EmailTemplatesSaga';
 import { fetchMailboxDetailsSaga, deleteMailboxSaga, deleteMailboxUserSaga } from './mailbox/MailboxDetailsSaga';
 import { fetchMailboxesSaga } from './mailbox/MailboxesSaga';
 import { fetchMeasuresSaga } from './measure/MeasuresSaga';
 import { fetchMeasureSaga } from './measure/MeasureDetailsSaga';
-import { fetchOpportunitiesSaga } from './opportunity/OpportunitiesSaga';
+import { fetchOpportunitiesSaga, deleteOpportunitySaga } from './opportunity/OpportunitiesSaga';
 import { fetchOpportunitySaga } from './opportunity/OpportunityDetailsSaga';
 import { fetchOrdersSaga, deleteOrderSaga } from './order/OrdersSaga';
 import { fetchOrderDetailsSaga, updateOrderDetailsSaga } from './order/OrderDetailsSaga';
 import { fetchPostalCodeLinksSaga, deletePostalCodeLinkSaga } from './postal-code-link/PostalCodeLinkSaga';
 import { fetchProductionProjectsSaga } from './production-project/ProductionProjectsSaga';
-import { fetchProductionProjectSaga, deleteValueCourseSaga, deleteRevenueSaga } from './production-project/ProductionProjectDetailsSaga';
+import { fetchProductionProjectSaga, deleteValueCourseSaga, deleteRevenueSaga, deleteProductionProjectSaga } from './production-project/ProductionProjectDetailsSaga';
 import { fetchProductionProjectRevenueSaga, fetchProductionProjectRevenueDistributionSaga, fetchProductionProjectRevenueParticipantsSaga } from './production-project/ProductionProjectRevenueDetailsSaga';
 import { fetchParticipantsProductionProjectSaga } from './participant-production-project/ParticipantsProductionProjectSaga';
 import { fetchParticipantProductionProjectDetailsSaga, deleteParticipantProductionProjectSaga, deleteParticipationTransactionSaga, deleteObligationNumberSaga } from './participant-production-project/ParticipantProductionProjectDetailsSaga';
@@ -71,6 +74,7 @@ export default function* watchSagas() {
     // Administration
     yield takeLatest('ADD_ADMINISTRATION_USER', addAdministrationUserSaga);
     yield takeLatest('DELETE_ADMINISTRATION_USER', deleteAdministrationUserSaga);
+    yield takeLatest('DELETE_ADMINISTRATION_SEPA', deleteAdministrationSepaSaga);
     yield takeLatest('FETCH_ADMINISTRATION_DETAILS', fetchAdministrationDetailsSaga);
     yield takeLatest('UPDATE_ADMINISTRATION', updateAdministrationDetailsSaga);
     yield takeLatest('DELETE_ADMINISTRATION', deleteAdministrationSaga);
@@ -81,6 +85,7 @@ export default function* watchSagas() {
     // Campaign
     yield takeLatest('FETCH_CAMPAIGNS', fetchCampaignsSaga);
     yield takeLatest('FETCH_CAMPAIGN', fetchCampaignSaga);
+    yield takeLatest('DELETE_CAMPAIGN', deleteCampaignSaga);
     // Contact
     yield takeLatest('FETCH_CONTACTS', fetchContactsSaga);
     yield takeLatest('DELETE_CONTACT', deleteContactSaga);
@@ -105,12 +110,14 @@ export default function* watchSagas() {
     // Document templates
     yield takeLatest('FETCH_DOCUMENT_TEMPLATES', fetchDocumentTemplatesSaga);
     yield takeLatest('FETCH_DOCUMENT_TEMPLATE', fetchDocumentTemplateSaga);
+    yield takeLatest('DELETE_DOCUMENT_TEMPLATE', deleteDocumentTemplateSaga);
     // Emails
     yield takeLatest('FETCH_EMAILS', fetchEmailsSaga);
     yield takeLatest('FETCH_EMAIL', fetchEmailSaga);
     // Email templates
     yield takeLatest('FETCH_EMAIL_TEMPLATES', fetchEmailTemplatesSaga);
     yield takeLatest('FETCH_EMAIL_TEMPLATE', fetchEmailTemplateSaga);
+    yield takeLatest('DELETE_EMAIL_TEMPLATE', deleteEmailTemplateSaga);
     // Housing Files
     yield takeLatest('FETCH_HOUSING_FILES', fetchHousingFilesSaga);
     yield takeLatest('FETCH_HOUSING_FILE_DETAILS', fetchHousingFileDetailsSaga);
@@ -129,6 +136,7 @@ export default function* watchSagas() {
     yield takeLatest('FETCH_MEASURES', fetchMeasuresSaga);
     yield takeLatest('FETCH_MEASURE', fetchMeasureSaga);
     // Opportunity
+    yield takeLatest('DELETE_OPPORTUNITY', deleteOpportunitySaga);
     yield takeLatest('FETCH_OPPORTUNITIES', fetchOpportunitiesSaga);
     yield takeLatest('FETCH_OPPORTUNITY', fetchOpportunitySaga);
     // Order
@@ -148,6 +156,7 @@ export default function* watchSagas() {
     // Production project
     yield takeLatest('FETCH_PRODUCTION_PROJECTS', fetchProductionProjectsSaga);
     yield takeLatest('FETCH_PRODUCTION_PROJECT', fetchProductionProjectSaga);
+    yield takeLatest('DELETE_PRODUCTION_PROJECT', deleteProductionProjectSaga);
     yield takeLatest('FETCH_PRODUCTION_PROJECT_REVENUE', fetchProductionProjectRevenueSaga);
     yield takeLatest('PRODUCTION_PROJECT_REVENUE_GET_PARTICIPANTS', fetchProductionProjectRevenueParticipantsSaga);
     yield takeLatest('PRODUCTION_PROJECT_REVENUE_GET_DISTRIBUTION', fetchProductionProjectRevenueDistributionSaga);

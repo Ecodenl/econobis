@@ -11,19 +11,19 @@ namespace App\Http\Controllers\Api\Campaign;
 use App\Eco\Campaign\Campaign;
 use App\Eco\Campaign\CampaignResponse;
 use App\Eco\Contact\Contact;
-use App\Eco\Opportunity\Opportunity;
 use App\Eco\Organisation\Organisation;
 use App\Eco\User\User;
-use App\Helpers\Delete\DeleteHelper;
+use App\Helpers\Delete\Models\DeleteCampaign;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\RequestQueries\Campaign\Grid\RequestQuery;
 use App\Http\Resources\Campaign\CampaignPeek;
 use App\Http\Resources\Campaign\FullCampaign;
 use App\Http\Resources\Campaign\GridCampaign;
-use App\Http\Resources\Opportunity\FullOpportunity;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class CampaignController extends ApiController
 {
@@ -126,7 +126,23 @@ class CampaignController extends ApiController
     {
         $this->authorize('manage', Campaign::class);
 
-        DeleteHelper::delete($campaign);
+        try {
+            DB::beginTransaction();
+
+            $deleteCampaign = new DeleteCampaign($campaign);
+            $result = $deleteCampaign->delete();
+
+            if(count($result) > 0){
+                DB::rollBack();
+                abort(412, implode(";", array_unique($result)));
+            }
+
+            DB::commit();
+        } catch (\PDOException $e) {
+            DB::rollBack();
+            Log::error($e->getMessage());
+            abort(501, 'Er is helaas een fout opgetreden.');
+        }
     }
 
     public function attachResponse(Campaign $campaign, Contact $contact)

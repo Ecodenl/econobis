@@ -13,6 +13,7 @@ use App\Eco\Address\Address;
 use App\Eco\HousingFile\HousingFile;
 use App\Eco\Contact\Contact;
 use App\Eco\Measure\Measure;
+use App\Helpers\Delete\Models\DeleteHousingFile;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\RequestQueries\HousingFile\Grid\RequestQuery;
@@ -25,6 +26,8 @@ use App\Http\Resources\HousingFile\IntakePeek;
 use App\Http\Resources\Measure\FullMeasure;
 use App\Http\Resources\Task\SidebarTask;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class HousingFileController extends ApiController
 {
@@ -216,25 +219,23 @@ class HousingFileController extends ApiController
     {
         $this->authorize('manage', HousingFile::class);
 
-        //delete many to many relations
-        $housingFile->address()->measuresTaken()->detach();
+        try {
+            DB::beginTransaction();
 
-        //delete one to many relations
-        //notes
-        foreach($housingFile->notes as $note){
-            $note->notes()->dissociate();
-            $note->save();
+            $deleteHousingFile = new DeleteHousingFile($housingFile);
+            $result = $deleteHousingFile->delete();
+
+            if(count($result) > 0){
+                DB::rollBack();
+                abort(412, implode(";", array_unique($result)));
+            }
+
+            DB::commit();
+        } catch (\PDOException $e) {
+            DB::rollBack();
+            Log::error($e->getMessage());
+            abort(501, 'Er is helaas een fout opgetreden.');
         }
-        //documents
-        foreach($housingFile->emails as $email){
-            $email->intake()->dissociate();
-            $email->save();
-        }
-
-        //delete model itself
-        $housingFile->delete();
-
-        return true;
     }
 
     public function notes(HousingFile $housingFile)

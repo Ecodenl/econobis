@@ -10,7 +10,8 @@ const AdministrationDetailsSepasList = props => {
                 <div className="col-sm-3">Id</div>
                 <div className="col-sm-3">Naam</div>
                 <div className="col-sm-3">Datum</div>
-                <div className="col-sm-3">Type</div>
+                <div className="col-sm-2">Type</div>
+                <div className="col-sm-1"></div>
             </div>
             {
                 props.sepas.length > 0 ?

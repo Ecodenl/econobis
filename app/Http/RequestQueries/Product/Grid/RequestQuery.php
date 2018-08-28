@@ -25,6 +25,6 @@ class RequestQuery extends \App\Helpers\RequestQuery\RequestQuery
     protected function baseQuery()
     {
         return Product::query()
-            ->select('products.*')->whereNull('products.deleted_at')->orderBy('name');
+            ->select('products.*')->orderBy('name');
     }
 }

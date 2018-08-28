@@ -25,6 +25,11 @@ export default function (state= [], action) {
                 ...state,
                 users: state.users.filter((user) => user.id !== action.userId),
             };
+        case 'DELETE_ADMINISTRATION_SEPA_SUCCESS':
+            return {
+                ...state,
+                sepas: state.sepas.filter((sepa) => sepa.id !== action.sepaId),
+            };
         default:
             return state;
     }

@@ -3,13 +3,18 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Eco\User\User;
+use App\Helpers\Alfresco\AlfrescoHelper;
 use App\Http\Controllers\Controller;
+use App\Notifications\MailNewAccount;
+use App\Notifications\MailNewAccountAlfresco;
+use App\Notifications\MailPasswordReset;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Foundation\Auth\ResetsPasswords;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Mail;
 
 class ResetPasswordController extends Controller
 {
@@ -83,15 +88,65 @@ class ResetPasswordController extends Controller
         }
         );
 
+        $user = User::where('email', $request->input('email'))->first();
+
+        $didCreateAlfrescoAccount = false;
+
+        if(!$user->has_alfresco_account){
+            $alfrescoHelper = new AlfrescoHelper(\Config::get('app.ALFRESCO_ADMIN_USERNAME'), \Config::get('app.ALFRESCO_ADMIN_PASSWORD'));
+            if(!$alfrescoHelper->checkIfAccountExists($user)) {
+                $alfrescoHelper->createNewAccount($user, $request->input('password'));
+                $didCreateAlfrescoAccount = true;
+                $user->has_alfresco_account = 1;
+            }
+            else{
+                $alfrescoHelper->assignUserToPrivateSite($user->email);
+                $user->has_alfresco_account = 1;
+            }
+        }
+        $user->save();
+
         // If the password was successfully reset, we will redirect the user back to
         // the application's home authenticated view. If there is an error we can
         // redirect them back to where they came from with their error message.
         return $response == Password::PASSWORD_RESET
-            ? $this->sendResetResponse($response)
+            ? $this->sendResetResponse($didCreateAlfrescoAccount, $user)
             : $this->sendResetFailedResponse($request, $response);
     }
 
-    //redirect is handled by react
-    protected function sendResetResponse()
-    {}
+    //redirect is handled by react, we send succes e-mail
+    protected function sendResetResponse($didCreateAlfrescoAccount, User $user)
+    {
+        if($user->visit_count !== 0){
+            $user->notify(new MailPasswordReset());
+        }
+        else if($didCreateAlfrescoAccount) {
+            $user->notify(new MailNewAccountAlfresco($user->email));
+            $this->sendAdministrationEmail($user);
+        }
+        else{
+            $user->notify(new MailNewAccount($user->email));
+            $this->sendAdministrationEmail($user);
+        }
+    }
+
+    protected function sendAdministrationEmail(User $user){
+        $mailContent = '<h1>Er is een gebruiker aangemaakt voor coöperatie '  . config('app.name') . '</h1><br><br>';
+        $mailContent .= '<ul>';
+        $mailContent .= '<li>Id: ' . $user->id . '</li>';
+        $mailContent .= '<li>Aanspreektitel: ' . $user->title ? $user->title->name : '' . '</li>';
+        $mailContent .= '<li>Voornaam: ' . $user->first_name . '</li>';
+        $mailContent .= '<li>Tussenvoegsel: ' . $user->lastNamePrefix ? $user->lastNamePrefix->name : '' . '</li>';
+        $mailContent .= '<li>Achternaam: ' . $user->last_name . '</li>';
+        $mailContent .= '<li>E-mail: ' . $user->email . '</li>';
+        $mailContent .= '<li>Telefoonnummer: ' . $user->phone_number . '</li>';
+        $mailContent .= '<li>Mobiel: ' . $user->mobile . '</li>';
+        $mailContent .= '<li>Functie: ' . $user->occupation . '</li>';
+        $mailContent .= '</ul>';
+
+        Mail::send('emails.generic', ['html_body' => $mailContent], function ($message) {
+            $message->subject('Nieuwe gebruiker voor ' . config('app.name'));
+            $message->to(['gebruikers@econobis.nl']);
+        });
+    }
 }

@@ -6,7 +6,6 @@ import { fetchTeamDetails } from '../../../actions/team/TeamDetailsActions';
 import ProductDetailsFormGeneral from './general/ProductDetailsFormGeneral';
 import PriceHistory from './price-history/PriceHistory';
 import moment from "moment/moment";
-import PanelDeletedItem from "../../../components/panel/PanelDeletedItem";
 import ProductDetailsFormConclusion from "./conclusion/ProductDetailsFormConclusion";
 moment.locale('nl');
 
@@ -16,17 +15,11 @@ class ProductDetailsForm extends Component {
     };
 
     render() {
-        const { deletedAt } = this.props.productDetails;
         return (
             isEmpty(this.props.productDetails) ?
                 <div>Geen gegevens gevonden.</div>
                 :
                 <div>
-                    { deletedAt &&
-                    <PanelDeletedItem
-                        text={`Dit product is verwijderd op ${moment(deletedAt).format('L')}.`}
-                    />
-                    }
                     <ProductDetailsFormGeneral />
                     <PriceHistory />
                     <ProductDetailsFormConclusion />

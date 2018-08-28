@@ -18,7 +18,7 @@ const ContactDetailsNoteDelete = (props) => {
             confirmAction={() => confirmAction()}
             title="Verwijderen"
       >
-            Verwijder opmerking: <strong> {`${props.id}` } </strong>
+            Verwijder: <strong> {`${props.id}` } </strong>
       </Modal>
     );
 };

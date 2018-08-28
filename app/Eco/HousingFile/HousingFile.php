@@ -8,12 +8,13 @@ use App\Eco\Measure\Measure;
 use App\Eco\Task\Task;
 use App\Eco\User\User;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Venturecraft\Revisionable\RevisionableTrait;
 
 class HousingFile extends Model
 {
 
-    use RevisionableTrait;
+    use RevisionableTrait, SoftDeletes;
 
     protected $table = 'housing_files';
 
@@ -47,6 +48,11 @@ class HousingFile extends Model
 
     public function energyLabelStatus(){
         return $this->belongsTo(EnergyLabelStatus::class);
+    }
+
+    public function tasks()
+    {
+        return $this->hasMany(Task::class)->where('finished', false)->orderBy('tasks.id', 'desc');
     }
 
     public function notes()

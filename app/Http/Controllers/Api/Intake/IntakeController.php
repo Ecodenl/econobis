@@ -10,11 +10,10 @@ namespace App\Http\Controllers\Api\Intake;
 
 
 use App\Eco\Email\Email;
-use App\Eco\Measure\Measure;
 use App\Eco\Intake\Intake;
 use App\Eco\Contact\Contact;
 use App\Eco\Measure\MeasureCategory;
-use App\Helpers\Delete\DeleteHelper;
+use App\Helpers\Delete\Models\DeleteIntake;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\RequestQueries\Intake\Grid\RequestQuery;
 use App\Http\Resources\GenericResource;
@@ -24,6 +23,8 @@ use App\Http\Resources\Intake\IntakePeek;
 use App\Http\Resources\Task\SidebarTask;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class IntakeController extends ApiController
 {
@@ -94,7 +95,7 @@ class IntakeController extends ApiController
         $data = $request->validate([
             'contactId' => 'required|exists:contacts,id',
             'addressId' => 'exists:addresses,id',
-            'campaignId' => 'exists:campaigns,id',
+            'campaignId' => 'nullable|exists:campaigns,id',
             'statusId' => 'exists:intake_status,id',
             'sourceIds' => '',
             'intakeReasonIds' => '',
@@ -148,7 +149,7 @@ class IntakeController extends ApiController
         $this->authorize('manage', Intake::class);
 
         $data = $request->validate([
-            'campaignId' => 'exists:campaigns,id',
+            'campaignId' => 'nullable|exists:campaigns,id',
             'statusId' => 'exists:intake_status,id',
             'sourceIds' => '',
             'intakeReasonIds' => '',
@@ -209,8 +210,23 @@ class IntakeController extends ApiController
     {
         $this->authorize('manage', Intake::class);
 
-        DeleteHelper::delete($intake);
+        try {
+            DB::beginTransaction();
 
+            $deleteIntake = new DeleteIntake($intake);
+            $result = $deleteIntake->delete();
+
+            if(count($result) > 0){
+                DB::rollBack();
+                abort(412, implode(";", array_unique($result)));
+            }
+
+            DB::commit();
+        } catch (\PDOException $e) {
+            DB::rollBack();
+            Log::error($e->getMessage());
+            abort(501, 'Er is helaas een fout opgetreden.');
+        }
     }
 
     public function tasks(Intake $intake)

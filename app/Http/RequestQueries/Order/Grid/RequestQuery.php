@@ -25,6 +25,6 @@ class RequestQuery extends \App\Helpers\RequestQuery\RequestQuery
     protected function baseQuery()
     {
         return Order::query()
-            ->select('orders.*')->whereNull('orders.deleted_at')->where('orders.administration_id', $this->request->input('administrationId'));
+            ->select('orders.*')->where('orders.administration_id', $this->request->input('administrationId'));
     }
 }

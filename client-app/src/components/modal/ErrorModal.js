@@ -6,6 +6,9 @@ const ErrorModal = (props) => {
     let { errorMessage } = props;
 
     if(error.message){
+        if(error.message.includes(';')){
+            error.message = error.message.split(';');
+        }
         errorMessage = error.message;
     }
     else if(error.httpCode){
@@ -121,7 +124,14 @@ const ErrorModal = (props) => {
                         <h4 className="modal-title">{title}</h4>
                     </div>
                     <div className="modal-body">
-                        {errorMessage}
+                        {typeof errorMessage === 'string' &&
+                        errorMessage
+                        }
+                        {typeof errorMessage === 'object' &&
+                            <ul>
+                                { errorMessage.map((message) => <li>{message}</li>) }
+                            </ul>
+                        }
                     </div>
                     <div className="modal-footer">
                         <button type="button" className="btn btn-default" onClick={closeModal}>{buttonText}</button>

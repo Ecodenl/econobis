@@ -26,6 +26,6 @@ class RequestQuery extends \App\Helpers\RequestQuery\RequestQuery
     protected function baseQuery()
     {
         return Administration::query()
-            ->select('administrations.*')->whereNull('administrations.deleted_at');
+            ->select('administrations.*');
     }
 }

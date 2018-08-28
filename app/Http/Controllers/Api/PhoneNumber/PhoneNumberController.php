@@ -68,6 +68,6 @@ class PhoneNumberController extends ApiController
     {
         $this->authorize('delete', $phoneNumber);
 
-        $phoneNumber->forceDelete();
+        $phoneNumber->delete();
     }
 }

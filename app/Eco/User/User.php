@@ -9,6 +9,7 @@ use App\Eco\Team\Team;
 use App\Eco\Title\Title;
 use App\Http\Traits\Encryptable;
 use App\Notifications\MailResetPasswordToken;
+use App\Notifications\MailResetPasswordTokenFirstTime;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -97,7 +98,12 @@ class User extends Authenticatable
      */
     public function sendPasswordResetNotification($token)
     {
-        $this->notify(new MailResetPasswordToken($token));
+        if($this->visit_count === 0) {
+            $this->notify(new MailResetPasswordTokenFirstTime($token));
+        }
+        else{
+            $this->notify(new MailResetPasswordToken($token));
+        }
     }
 
 }

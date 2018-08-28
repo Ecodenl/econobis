@@ -8,6 +8,7 @@ use App\Eco\Invoice\Invoice;
 use App\Eco\Order\Order;
 use App\Eco\PaymentInvoice\PaymentInvoice;
 use App\Eco\Product\Product;
+use App\Eco\ProductionProject\ProductionProject;
 use App\Eco\User\User;
 use App\Http\Traits\Encryptable;
 use Carbon\Carbon;
@@ -46,19 +47,13 @@ class Administration extends Model
             'total_payment_invoices_not_paid',
         ];
 
-    //Dont boot softdelete scopes. We handle this ourselves
-    public static function bootSoftDeletes()
-    {
-        return false;
-    }
-
     public function users()
     {
         return $this->belongsToMany(User::class);
     }
 
     public function products(){
-        return $this->hasMany(Product::class)->whereNull('deleted_at');
+        return $this->hasMany(Product::class);
     }
 
     public function orders(){
@@ -67,6 +62,10 @@ class Administration extends Model
 
     public function sepas(){
         return $this->hasMany(Sepa::class)->orderBy('created_at','desc');
+    }
+
+    public function productionProjects(){
+        return $this->hasMany(ProductionProject::class);
     }
 
     public function invoices(){
@@ -102,27 +101,27 @@ class Administration extends Model
     //appended fields
     public function getTotalOrdersAttribute()
     {
-        return $this->orders()->whereNull('deleted_at')->count();
+        return $this->orders()->count();
     }
 
     public function getTotalOrdersConceptsAttribute()
     {
-        return $this->orders()->where('status_id', 'concept')->whereNull('deleted_at')->count();
+        return $this->orders()->where('status_id', 'concept')->count();
     }
 
     public function getTotalOrdersInvoicesAttribute()
     {
-        return $this->orders()->where('status_id', 'active')->where('payment_type_id', 'transfer')->whereNull('deleted_at')->count();
+        return $this->orders()->where('status_id', 'active')->where('payment_type_id', 'transfer')->count();
     }
 
     public function getTotalOrdersCollectionsAttribute()
     {
-        return $this->orders()->where('status_id', 'active')->where('payment_type_id', 'collection')->whereNull('deleted_at')->count();
+        return $this->orders()->where('status_id', 'active')->where('payment_type_id', 'collection')->count();
     }
 
     public function getTotalOrdersClosedAttribute()
     {
-        return $this->orders()->where('status_id', 'closed')->whereNull('deleted_at')->count();
+        return $this->orders()->where('status_id', 'closed')->count();
     }
 
     public function getTotalInvoicesAttribute()

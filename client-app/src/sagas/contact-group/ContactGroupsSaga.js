@@ -1,5 +1,6 @@
 import {put, call, all} from 'redux-saga/effects';
 import ContactGroupAPI from '../../api/contact-group/ContactGroupAPI';
+import {hashHistory} from "react-router";
 
 export function* fetchContactGroupsSaga({filters, sorts, pagination}) {
     try {
@@ -15,11 +16,13 @@ export function* fetchContactGroupsSaga({filters, sorts, pagination}) {
     }
 }
 
-export function* deleteContactGroupSaga({ id }) {
+export function* deleteContactGroupSaga({ id, successAction }) {
     try {
         yield call(ContactGroupAPI.deleteContactGroup, id);
         yield put({ type: 'DELETE_CONTACT_GROUP_SUCCESS', id });
+        successAction();
     } catch (error) {
+        yield put({ type: 'SET_ERROR', http_code: error.response.status, message: error.response.data.message });
         yield put({ type: 'DELETE_CONTACT_GROUP_ERROR', error });
     }
 }

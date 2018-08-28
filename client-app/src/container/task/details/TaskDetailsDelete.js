@@ -1,14 +1,13 @@
 import React from 'react';
-import { hashHistory } from 'react-router';
 
 import Modal from '../../../components/modal/Modal';
-import TaskDetailsAPI from '../../../api/task/TaskDetailsAPI';
+import {deleteTask} from "../../../actions/task/TaskDetailsActions";
+import {connect} from "react-redux";
 
 const TaskDetailsDelete = (props) => {
     const confirmAction = () => {
-        TaskDetailsAPI.deleteTask(props.id).then((payload) => {
-            hashHistory.push('/taken');
-        });
+        props.deleteTask(props.id);
+        props.closeDeleteItemModal();
     };
 
     return (
@@ -24,4 +23,10 @@ const TaskDetailsDelete = (props) => {
     );
 };
 
-export default TaskDetailsDelete;
+const mapDispatchToProps = dispatch => ({
+    deleteTask: (id) => {
+        dispatch(deleteTask(id));
+    },
+});
+
+export default connect(null, mapDispatchToProps)(TaskDetailsDelete);

@@ -15,7 +15,7 @@ class ChangeEmailContactRelation extends Migration
     public function up()
     {
         //reset all foreign keys
-        $emails = Email::all();
+        $emails = Email::withTrashed()->get();
 
         foreach ($emails as $email){
             $email->contact_id = null;

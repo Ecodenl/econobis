@@ -83,6 +83,7 @@ class ContactGroupsListApp extends Component {
                             onSubmitFilter={() => this.onSubmitFilter()}
                             fetchContactGroupsData={() => this.fetchContactGroupsData()}
                             handlePageClick={this.handlePageClick}
+                            resetContactGroupsFilters={() => this.resetContactGroupsFilters()}
                         />
                     </div>
                 </PanelBody>

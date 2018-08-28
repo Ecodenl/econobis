@@ -9,6 +9,7 @@
 namespace App\Http\Controllers\Api\DocumentTemplate;
 
 use App\Eco\DocumentTemplate\DocumentTemplate;
+use App\Helpers\Delete\Models\DeleteDocumentTemplate;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Controller;
 use App\Http\RequestQueries\DocumentTemplate\Grid\RequestQuery;
@@ -17,6 +18,8 @@ use App\Http\Resources\DocumentTemplate\FullDocumentTemplate;
 use App\Http\Resources\DocumentTemplate\GridDocumentTemplate;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 
 class DocumentTemplateController extends Controller
@@ -110,15 +113,23 @@ class DocumentTemplateController extends Controller
     {
         $this->authorize('create', DocumentTemplate::class);
 
-        //Kijk of er foreign keys zijn
-        $documentNames = DocumentTemplate::where('base_template_id', $documentTemplate->id)->orWhere('header_id', $documentTemplate->id)->orWhere('footer_id', $documentTemplate->id)->pluck('name')->toArray();
-        if($documentNames){
-            abort('409','Ontkoppel eerst de volgende templates: ' . implode(', ', $documentNames));
-        }
+        try {
+            DB::beginTransaction();
 
-        //anders verwijder de pivot rollen records en het record zelf
-        $documentTemplate->roles()->detach();
-        $documentTemplate->forceDelete();
+            $deleteDocumentTemplate = new DeleteDocumentTemplate($documentTemplate);
+            $result = $deleteDocumentTemplate->delete();
+
+            if(count($result) > 0){
+                DB::rollBack();
+                abort(412, implode(";", array_unique($result)));
+            }
+
+            DB::commit();
+        } catch (\PDOException $e) {
+            DB::rollBack();
+            Log::error($e->getMessage());
+            abort(501, 'Er is helaas een fout opgetreden.');
+        }
     }
 
     public function duplicate(DocumentTemplate $documentTemplate)

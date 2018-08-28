@@ -22,8 +22,8 @@ class AlfrescoHelper
     }
 
     /**
-     * @param $username String username in Alfresco(User email)
-     * @param $password String password in Alfresco(User alfresco_password)
+     * @param $username String username in Alfresco
+     * @param $password String password in Alfresco
      *
      * @return mixed|string if success returns ticket, else return curl error message
      */
@@ -42,7 +42,7 @@ class AlfrescoHelper
 
     }
 
-    public function createNewAccount(User $user){
+    public function createNewAccount(User $user, $password){
         $prefix = optional($user->lastNamePrefix)->name;
 
         if($prefix){
@@ -62,17 +62,14 @@ class AlfrescoHelper
             $args['firstName'] = $user->first_name;
             $args['lastName'] = $lastname;
             $args['email'] = $user->email;
-            $args['password'] = $user->alfresco_password;
+            $args['password'] = $password;
 
             $this->executeCurl($url, $args);
-        } else {
-            $valid = $this->checkIfValidAccount($user);
-            if(!$valid){
-                abort(424, 'Gebruiker bestaat al in Alfresco, maar het wachtwoord is verkeerd ingevuld.');
-            }
         }
 
-        $response = $this->assignUserToSite($user->email);
+        $response = $this->assignUserToCommunitySite($user->email);
+
+        $this->assignUserToPrivateSite($user->email);
 
         return $response;
     }
@@ -92,27 +89,22 @@ class AlfrescoHelper
 
     }
 
-    public function checkIfValidAccount(User $user){
-        $url = \Config::get('app.ALFRESCO_URL') . '/authentication/versions/1/tickets';
-        $args['userId'] = $user->email;
-        $args['password'] = $user->alfresco_password;
+    public function assignUserToCommunitySite($alfresco_username){
 
-        $response = $this->executeCurl($url, $args, 'application/json', false, false);
+        $url = \Config::get('app.ALFRESCO_URL') . "/alfresco/versions/1/sites/econobis-community-portaal/members";
 
-        $valid = true;
+        $args['role'] = 'SiteConsumer';
+        $args['id'] = $alfresco_username;
 
-        if($response === null){
-            $valid = false;
-        }
+        $response = $this->executeCurl($url, $args);
 
-        return $valid;
+        return $response['message'];
     }
 
-    public function assignUserToSite($alfresco_username){
-
+    public function assignUserToPrivateSite($alfresco_username){
         $url = \Config::get('app.ALFRESCO_URL') . "/alfresco/versions/1/sites/" . \Config::get('app.ALFRESCO_SITE_MAP') . "/members";
 
-        $args['role'] = 'SiteContributor';
+        $args['role'] = 'SiteConsumer';
         $args['id'] = $alfresco_username;
 
         $response = $this->executeCurl($url, $args);
@@ -122,7 +114,7 @@ class AlfrescoHelper
 
     public function createFile($file, $filename, $map){
 
-        $url = \Config::get('app.ALFRESCO_URL') . "/alfresco/versions/1/sites/" . \Config::get('app.ALFRESCO_SITE_MAP');
+        $url = \Config::get('app.ALFRESCO_URL') . "/alfresco/versions/1/sites/eco" . \Config::get('app.ALFRESCO_SITE_MAP');
 
         $response = $this->executeCurl($url);
 
@@ -238,6 +230,23 @@ class AlfrescoHelper
                 //catch alfresco errors
                     if ($decoded_response && array_key_exists('error', $decoded_response)) {
                         if($abort_on_error) {
+                            if(isset($decoded_response['error'])) {
+                                if(isset($decoded_response['error']['errorKey'])) {
+                                    Log::error('Alfresco error: '
+                                        . $decoded_response['error']['errorKey']);
+                                }
+                                if(isset($decoded_response['error']['briefSummary'])) {
+                                    Log::error('Alfresco error: '
+                                        . $decoded_response['error']['briefSummary']);
+                                }
+                                if(isset($decoded_response['error']['statusCode'])) {
+                                    Log::error('Alfresco error: '
+                                        . $decoded_response['error']['statusCode']);
+                                }
+                            }
+                            else{
+                                Log::error('Alfresco error: unknown');
+                            }
                             abort($decoded_response['error']['statusCode']);
                         }
                     }
@@ -249,6 +258,66 @@ class AlfrescoHelper
                         'message' => $decoded_response
                     ];
                 }
+            }
+        }
+    }
+
+    public function deleteFile($node_id)
+    {
+        $curl = curl_init();
+
+        curl_setopt_array($curl, array(
+            CURLOPT_SSL_VERIFYPEER => \Config::get('app.ALFRESCO_SSL_VERIFYPEER'),
+            CURLOPT_SSL_VERIFYHOST => \Config::get('app.ALFRESCO_SSL_VERIFYHOST'),
+            CURLOPT_PORT => "443",
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => "",
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 30,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+        ));
+
+        curl_setopt($curl, CURLOPT_URL,
+            $url = \Config::get('app.ALFRESCO_URL') . "/alfresco/versions/1/nodes/" . $node_id);
+
+
+        curl_setopt($curl, CURLOPT_CUSTOMREQUEST, 'DELETE');
+
+        $CURLOPT_HTTPHEADER = array(
+            "Accept: application/json",
+            "Authorization: Basic " . $this->ticket,
+            "Cache-Control: no-cache",
+            "Content-Type: application/json",
+        );
+        curl_setopt($curl, CURLOPT_HTTPHEADER, $CURLOPT_HTTPHEADER);
+
+
+        $response = curl_exec($curl);
+        $err = curl_error($curl);
+
+        curl_close($curl);
+
+        //catch curl errors
+        if ($err) {
+            try {
+                $err = json_decode($err);
+                Log::error('Alfresco deleting error' . $err);
+            } catch (\Exception $e) {
+                Log::error('Alfresco deleting error couldn\'t decode');
+            }
+        } else {
+
+            $decoded_response = json_decode($response, true);
+
+            //catch alfresco errors
+            if ($decoded_response && array_key_exists('error', $decoded_response)) {
+                Log::error('Alfresco error' . $decoded_response['error']);
+            } //else success
+            else {
+                return [
+                    'succes' => true,
+                    'message' => $decoded_response
+                ];
             }
         }
     }

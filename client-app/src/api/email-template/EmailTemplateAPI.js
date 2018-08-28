@@ -78,7 +78,13 @@ export default {
             });
     },
 
+    deleteEmailTemplate: (id) => {
+        const requestUrl = `${URL_EMAIL_TEMPLATE}/${id}/delete`;
+        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
+        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
+        return axios.post(requestUrl)
+    },
 
 };
 

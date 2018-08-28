@@ -44,6 +44,7 @@ class EmailAnswerApp extends Component {
         this.handleBccIds = this.handleBccIds.bind(this);
         this.handleTextChange = this.handleTextChange.bind(this);
         this.addAttachment = this.addAttachment.bind(this);
+        this.deleteAttachment = this.deleteAttachment.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
     };
 
@@ -202,6 +203,16 @@ class EmailAnswerApp extends Component {
         });
     };
 
+    deleteAttachment(attachmentName) {
+        this.setState({
+            ...this.state,
+            email: {
+                ...this.state.email,
+                attachments: this.state.email.attachments.filter((attachment) => attachment.name !== attachmentName),
+            },
+        });
+    };
+
     setButtonLoading = () => {
         this.setState({
             buttonLoading: true
@@ -298,6 +309,7 @@ class EmailAnswerApp extends Component {
                             addAttachment={this.addAttachment}
                             emailTemplates={this.state.emailTemplates}
                             handleEmailTemplates={this.handleEmailTemplates}
+                            deleteAttachment={this.deleteAttachment}
                         />
 
                     </div>

@@ -12,7 +12,7 @@ namespace App\Http\Controllers\Api\Administration;
 use App\Eco\Administration\Administration;
 use App\Eco\Administration\Sepa;
 use App\Eco\User\User;
-use App\Helpers\Delete\DeleteHelper;
+use App\Helpers\Delete\Models\DeleteAdministration;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\RequestQueries\Administration\Grid\RequestQuery;
@@ -21,6 +21,8 @@ use App\Http\Resources\Administration\FullAdministration;
 use App\Http\Resources\Administration\GridAdministration;
 use App\Http\Resources\User\UserPeek;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
 class AdministrationController extends ApiController
@@ -146,10 +148,23 @@ class AdministrationController extends ApiController
     {
         $this->authorize('manage', Administration::class);
 
-        //remove file from disk, move to DeleteHelper?
-        Storage::disk('administrations')->delete($administration->logo_filename);
+        try {
+            DB::beginTransaction();
 
-        DeleteHelper::delete($administration);
+            $deleteAdministration = new DeleteAdministration($administration);
+            $result = $deleteAdministration->delete();
+
+            if(count($result) > 0){
+                DB::rollBack();
+                abort(412, implode(";", array_unique($result)));
+            }
+
+            DB::commit();
+        } catch (\PDOException $e) {
+            DB::rollBack();
+            Log::error($e->getMessage());
+            abort(501, 'Er is helaas een fout opgetreden.');
+        }
     }
 
 
@@ -196,7 +211,7 @@ class AdministrationController extends ApiController
 
     public function peek()
     {
-        return AdministrationPeek::collection(Administration::orderBy('id')->whereNull('deleted_at')->get());
+        return AdministrationPeek::collection(Administration::orderBy('id')->get());
     }
 
     public function downloadSepa(Sepa $sepa){
@@ -205,5 +220,10 @@ class AdministrationController extends ApiController
         header('X-Filename:' . $sepa->name);
         header('Access-Control-Expose-Headers: X-Filename');
         return response()->download($filePath, $sepa->name, ['Content-Type: application/xml']);
+    }
+
+    public function deleteSepa(Sepa $sepa){
+        //soft delete
+        $sepa->delete();
     }
 }

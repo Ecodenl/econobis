@@ -1,10 +1,8 @@
 import React from 'react';
-import moment from 'moment';
 import {connect} from "react-redux";
-import { hashHistory } from 'react-router';
 
 const AdministrationDetailsUsersView = props => {
-    const {id, fullName} = props.user;
+    const {fullName} = props.user;
 
     return (
         <div className={`row border ${props.highlightLine}`} onMouseEnter={() => props.onLineEnter()} onMouseLeave={() => props.onLineLeave()}>

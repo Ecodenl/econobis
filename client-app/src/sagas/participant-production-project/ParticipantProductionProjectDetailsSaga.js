@@ -2,6 +2,7 @@ import { put, call } from 'redux-saga/effects';
 import ParticipantProductionProjectDetailsAPI from '../../api/participant-production-project/ParticipantProductionProjectDetailsAPI';
 import ParticipantTransactionAPI from '../../api/participant-production-project/ParticipantTransactionAPI';
 import ParticipantObligationNumberAPI from "../../api/participant-production-project/ParticipantObligationNumberAPI";
+import {browserHistory, hashHistory} from "react-router";
 
 export function* fetchParticipantProductionProjectDetailsSaga({ payload }) {
     try {
@@ -16,7 +17,9 @@ export function* deleteParticipantProductionProjectSaga({ id }) {
     try {
         yield call(ParticipantProductionProjectDetailsAPI.deleteParticipantProductionProject, id);
         yield put({ type: 'DELETE_PARTICIPANT_PRODUCTION_PROJECT_SUCCESS', id });
+        browserHistory.goBack();
     } catch (error) {
+        yield put({ type: 'SET_ERROR', http_code: error.response.status, message: error.response.data.message });
         yield put({ type: 'DELETE_PARTICIPANT_PRODUCTION_PROJECT_ERROR', error });
     }
 }

@@ -1,14 +1,13 @@
 import React from 'react';
-import { hashHistory } from 'react-router';
 
 import Modal from '../../../components/modal/Modal';
-import HousingFileDetailsAPI from '../../../api/housing-file/HousingFileDetailsAPI';
+import {connect} from "react-redux";
+import {deleteHousingFile} from "../../../actions/housing-file/HousingFileDetailsActions";
 
 const HousingFileDetailsDelete = (props) => {
     const confirmAction = () => {
-        HousingFileDetailsAPI.deleteHousingFile(props.id).then((payload) => {
-            hashHistory.push('/woningdossiers');
-        });
+      props.deleteHousingFile(props.id);
+      props.closeDeleteItemModal();
     };
 
     return (
@@ -24,4 +23,10 @@ const HousingFileDetailsDelete = (props) => {
     );
 };
 
-export default HousingFileDetailsDelete;
+const mapDispatchToProps = dispatch => ({
+    deleteHousingFile: (id) => {
+        dispatch(deleteHousingFile(id));
+    },
+});
+
+export default connect(null, mapDispatchToProps)(HousingFileDetailsDelete);

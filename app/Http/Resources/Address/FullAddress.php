@@ -41,7 +41,6 @@ class FullAddress extends Resource
             'buildingType' => GenericResource::make($this->whenLoaded('building_type')),
             'intake' => FullIntake::make($this->whenLoaded('intake')),
             'contact' => FullContact::make($this->whenLoaded('contact')),
-            'deletedAt' => $this->deleted_at,
         ];
     }
 }

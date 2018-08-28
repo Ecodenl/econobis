@@ -1,5 +1,6 @@
 import { put, call } from 'redux-saga/effects';
 import TaskDetailsAPI from '../../api/task/TaskDetailsAPI';
+import {hashHistory} from "react-router";
 
 export function* fetchTaskDetailsSaga({ id }) {
     try {
@@ -14,7 +15,9 @@ export function* deleteTaskSaga({ id }) {
     try {
         yield call(TaskDetailsAPI.deleteTask, id);
         yield put({ type: 'DELETE_TASK_SUCCESS', id });
+        hashHistory.push(`/taken`);
     } catch (error) {
+        yield put({ type: 'SET_ERROR', http_code: error.response.status, message: error.response.data.message });
         yield put({ type: 'DELETE_TASK_ERROR', error });
     }
 }

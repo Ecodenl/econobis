@@ -84,9 +84,9 @@ class FullTask extends Resource
                 'opportunityName' => $this->opportunity ? optional($this->opportunity->measureCategory)->name . ' ' . $this->opportunity->status->name : '',
                 'createdAt' => $this->created_at,
                 'updatedAt' => $this->updated_at,
-                'taskCount' => $this->tasks()->whereNull('deleted_at')->count(),
+                'taskCount' => $this->tasks()->count(),
                 'relatedTasks' => GridTask::collection($this->whenLoaded('tasks')),
-                'noteCount' => $this->notes()->whereNull('deleted_at')->count(),
+                'noteCount' => $this->notes()->count(),
                 'relatedNotes' => GridTask::collection($this->whenLoaded('notes')),
                 'emailInboxCount' => $this->relatedEmailsInbox ? $this->relatedEmailsInbox->count() : 0,
                 'relatedEmailsInbox' => $this->relatedEmailsInbox,
@@ -94,7 +94,6 @@ class FullTask extends Resource
                 'relatedEmailsSent' => $this->relatedEmailsSent,
                 'documentCount' => $this->documents()->count(),
                 'relatedDocuments' => FullDocument::collection($this->whenLoaded('documents')),
-                'deletedAt' => $this->deleted_at,
             ];
     }
 }

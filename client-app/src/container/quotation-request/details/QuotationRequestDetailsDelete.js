@@ -1,14 +1,13 @@
 import React from 'react';
-import { hashHistory } from 'react-router';
 
 import Modal from '../../../components/modal/Modal';
-import QuotationRequestDetailsAPI from '../../../api/quotation-request/QuotationRequestDetailsAPI';
+import {deleteQuotationRequest} from "../../../actions/quotation-request/QuotationRequestDetailsActions";
+import {connect} from "react-redux";
 
 const QuotationRequestDetailsDelete = (props) => {
     const confirmAction = () => {
-        QuotationRequestDetailsAPI.deleteQuotationRequest(props.id).then((payload) => {
-            hashHistory.push('/offerteverzoeken');
-        });
+        props.deleteQuotationRequest(props.id);
+        props.closeDeleteItemModal();
     };
 
     return (
@@ -24,4 +23,10 @@ const QuotationRequestDetailsDelete = (props) => {
     );
 };
 
-export default QuotationRequestDetailsDelete;
+const mapDispatchToProps = dispatch => ({
+    deleteQuotationRequest: (id) => {
+        dispatch(deleteQuotationRequest(id));
+    },
+});
+
+export default connect(null, mapDispatchToProps)(QuotationRequestDetailsDelete);

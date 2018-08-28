@@ -4,12 +4,15 @@ return [
 
     //Version number displayed in the header, change this with every update
     'version_major' => '1',
-    'version_minor' => '8',
-    'version_fix' => '14',
+    'version_minor' => '10',
+    'version_fix' => '0',
+
 
     //Alfresco envs
     'ALFRESCO_ADMIN_USERNAME' => env('ALFRESCO_ADMIN_USERNAME'),
     'ALFRESCO_ADMIN_PASSWORD' => env('ALFRESCO_ADMIN_PASSWORD'),
+    'ALFRESCO_COOP_USERNAME' => env('ALFRESCO_COOP_USERNAME'),
+    'ALFRESCO_COOP_PASSWORD' => env('ALFRESCO_COOP_PASSWORD'),
     'ALFRESCO_SITE_MAP' => env('ALFRESCO_SITE_MAP'),
     'ALFRESCO_URL' => env('ALFRESCO_URL'),
     'ALFRESCO_SSL_VERIFYPEER' => env('ALFRESCO_SSL_VERIFYPEER'),

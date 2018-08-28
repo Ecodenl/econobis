@@ -4,7 +4,7 @@ import Panel from "../../../components/panel/Panel";
 import EmailAnswerAttachments from "./attachments/EmailAnswerAttachments";
 import EmailAnswerFormGeneral from "./general/EmailAnswerFormGeneral";
 
-const EmailAnswerForm = ({emailTemplates, handleEmailTemplates, email, emailAddresses, errors, hasLoaded, handleSubmit, handleToIds, handleCcIds, handleBccIds, handleInputChange, handleTextChange, addAttachment}) => {
+const EmailAnswerForm = ({emailTemplates, handleEmailTemplates, email, emailAddresses, errors, hasLoaded, handleSubmit, handleToIds, handleCcIds, handleBccIds, handleInputChange, handleTextChange, addAttachment, deleteAttachment}) => {
 
     return (
         <form className="form-horizontal" onSubmit={handleSubmit}>
@@ -24,7 +24,7 @@ const EmailAnswerForm = ({emailTemplates, handleEmailTemplates, email, emailAddr
                     handleEmailTemplates={handleEmailTemplates}
                 />
 
-                <EmailAnswerAttachments attachments={email.attachments} addAttachment={addAttachment} />
+                <EmailAnswerAttachments attachments={email.attachments} addAttachment={addAttachment} deleteAttachment={deleteAttachment} />
 
             </Panel>
         </form>

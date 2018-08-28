@@ -11,6 +11,7 @@ namespace App\Helpers\CSV;
 use App\Eco\EnergySupplier\EnergySupplier;
 use App\Eco\ProductionProject\ProductionProjectRevenue;
 use Carbon\Carbon;
+use League\Csv\Reader;
 
 class EnergySupplierCSVHelper
 {
@@ -19,9 +20,12 @@ class EnergySupplierCSVHelper
     private $productionProjectRevenue;
     private $distributions;
 
-    public function __construct(EnergySupplier $energySupplier, ProductionProjectRevenue $productionProjectRevenue, $templateId)
-    {
-        $this->csvExporter = new \Laracsv\Export();
+    public function __construct(
+        EnergySupplier $energySupplier,
+        ProductionProjectRevenue $productionProjectRevenue,
+        $templateId
+    ) {
+        $this->csvExporter = new Export();
         $this->csvExporter->getCsv()->setDelimiter(';');
         $this->energySupplier = $energySupplier;
         $this->productionProjectRevenue = $productionProjectRevenue;
@@ -29,7 +33,8 @@ class EnergySupplierCSVHelper
         $this->distributions = $productionProjectRevenue->distribution()->where('es_id', $energySupplier->id)->get();
     }
 
-    public function getCSV(){
+    public function getCSV()
+    {
 
         $this->csvExporter->beforeEach(function ($distribution) {
             // Now notes field will have this value
@@ -37,7 +42,7 @@ class EnergySupplierCSVHelper
             $distribution->date_end = Carbon::parse($this->productionProjectRevenue->date_end)->format('d/m/Y');
         });
 
-        switch ($this->templateId){
+        switch ($this->templateId) {
             case '1':
                 $csv = $this->getEnecoCsv();
                 break;
@@ -54,87 +59,105 @@ class EnergySupplierCSVHelper
         return $csv;
     }
 
-    private function getEnecoCsv(){
-        $this->distributions->load([
-            'contact.person',
-            'contact.person',
-            'contact.primaryEmailAddress',
-            'contact.primaryphoneNumber',
-            'revenue',
-            'contact.primaryContactEnergySupplier',
+    private function getEnecoCsv()
+    {
+        $csv = '';
+        $headers = true;
+
+        foreach ($this->distributions->chunk(500) as $chunk) {
+            $chunk->load([
+                'contact.person',
+                'contact.person',
+                'contact.primaryEmailAddress',
+                'contact.primaryphoneNumber',
+                'revenue',
+                'contact.primaryContactEnergySupplier',
             ]);
 
-        $csv = $this->csvExporter->build($this->distributions, [
-            'contact.full_name' => 'Naam',
-            'contact.person.initials' => 'Voorletters',
-            'contact.person.last_name_prefix' => 'Tussenvoegsel',
-            'address' => 'Adres',
-            'postal_code' => 'Postcode',
-            'city' => 'Woonplaats',
-            'contact.primaryEmailAddress.email' => 'Emailadres',
-            'contact.primaryphoneNumber.number' => 'Telefoonnummer',
-            'date_begin' => 'Startdatum',
-            'date_end' => 'Einddatum',
-            'participations_amount' => 'Aantal kavels',
-            'contact.primaryContactEnergySupplier.es_number' => 'Eneco klantnr',
-            'delivered_total' => 'Opwek',
-        ])->getCsv();
-
-        return $csv;
+            $csv = $this->csvExporter->build($chunk, [
+                'contact.full_name' => 'Naam',
+                'contact.person.initials' => 'Voorletters',
+                'contact.person.last_name_prefix' => 'Tussenvoegsel',
+                'address' => 'Adres',
+                'postal_code' => 'Postcode',
+                'city' => 'Woonplaats',
+                'contact.primaryEmailAddress.email' => 'Emailadres',
+                'contact.primaryphoneNumber.number' => 'Telefoonnummer',
+                'date_begin' => 'Startdatum',
+                'date_end' => 'Einddatum',
+                'participations_amount' => 'Aantal kavels',
+                'contact.primaryContactEnergySupplier.es_number' => 'Eneco klantnr',
+                'delivered_total' => 'Opwek',
+            ], $headers);
+            $headers = false;
+        }
+        return $csv->getCsv();
     }
 
-    private function getGCCsv(){
-        $this->distributions->load([
-            'revenue',
-            'contact.primaryContactEnergySupplier',
-        ]);
+    private function getGCCsv()
+    {
+        $csv = '';
+        $headers = true;
 
-        $this->csvExporter->beforeEach(function ($distribution) {
-            // Now notes field will have this value
-            $distribution->ean = $this->productionProjectRevenue->productionProject->ean;
-        });
+        foreach ($this->distributions->chunk(500) as $chunk) {
+            $chunk->load([
+                'revenue',
+                'contact.primaryContactEnergySupplier',
+            ]);
 
-        $csv = $this->csvExporter->build($this->distributions, [
-            'ean' => 'EanCode',
-            'postal_code' => 'Postcode',
-            'date_begin' => 'BeginDatum',
-            'date_end' => 'EindDatum',
-            'delivered_total' => 'Productie',
-            'contact.primaryContactEnergySupplier.es_number' => 'KlantNummer',
-            'contact.full_name' => 'KlantNaam',
-        ])->getCsv();
+            $this->csvExporter->beforeEach(function ($distribution) {
+                // Now notes field will have this value
+                $distribution->ean = $this->productionProjectRevenue->productionProject->ean;
+            });
 
-        return $csv;
+            $csv = $this->csvExporter->build($chunk, [
+                'ean' => 'EanCode',
+                'postal_code' => 'Postcode',
+                'date_begin' => 'BeginDatum',
+                'date_end' => 'EindDatum',
+                'delivered_total' => 'Productie',
+                'contact.primaryContactEnergySupplier.es_number' => 'KlantNummer',
+                'contact.full_name' => 'KlantNaam',
+            ], $headers);
+            $headers = false;
+        }
+        return $csv->getCsv();
     }
 
-    private function getOxxioCsv(){
-        $this->distributions->load([
-            'revenue',
-            'contact.primaryContactEnergySupplier',
-        ]);
+    private function getOxxioCsv()
+    {
+        $csv = '';
+        $headers = true;
 
-        //1-n relations
+        foreach ($this->distributions->chunk(500) as $chunk) {
+            $chunk->load([
+                'revenue',
+                'contact.primaryContactEnergySupplier',
+            ]);
 
-        $this->csvExporter->beforeEach(function ($distribution) {
-            // Now notes field will have this value
-            $distribution->ean = $this->productionProjectRevenue->productionProject->ean;
-            $distribution->ean_manager = $this->productionProjectRevenue->productionProject->ean_manager;
-            $distribution->tax_referral = $this->productionProjectRevenue->productionProject->tax_referral;
-        });
+            //1-n relations
 
-        $csv = $this->csvExporter->build($this->distributions, [
-            'ean' => 'project ean',
-            'ean_manager' => 'project ean net',
-            'date_begin' => 'startdatum',
-            'date_end' => 'einddatum',
-            'contact.full_name' => 'participant',
-            'tax_referral' => 'referentie',
-            'postal_code' => 'Postcode',
-            'contact.primaryContactEnergySupplier.ean_electricity' => 'ean participant',
-            'contact.primaryContactEnergySupplier.es_number' => 'klantnr',
-            'delivered_total' => 'geleverd kwh',
-        ])->getCsv();
+            $this->csvExporter->beforeEach(function ($distribution) {
+                // Now notes field will have this value
+                $distribution->ean = $this->productionProjectRevenue->productionProject->ean;
+                $distribution->ean_manager = $this->productionProjectRevenue->productionProject->ean_manager;
+                $distribution->tax_referral = $this->productionProjectRevenue->productionProject->tax_referral;
+            });
 
-        return $csv;
+            $csv = $this->csvExporter->build($chunk, [
+                'ean' => 'project ean',
+                'ean_manager' => 'project ean net',
+                'date_begin' => 'startdatum',
+                'date_end' => 'einddatum',
+                'contact.full_name' => 'participant',
+                'tax_referral' => 'referentie',
+                'postal_code' => 'Postcode',
+                'contact.primaryContactEnergySupplier.ean_electricity' => 'ean participant',
+                'contact.primaryContactEnergySupplier.es_number' => 'klantnr',
+                'delivered_total' => 'geleverd kwh',
+            ], $headers);
+            $headers = false;
+        }
+        return Reader::BOM_UTF8 . $csv->getCsv();
     }
 }

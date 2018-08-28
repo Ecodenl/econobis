@@ -14,13 +14,11 @@ use App\Eco\ContactGroup\ContactGroup;
 use App\Eco\Email\Email;
 use App\Eco\Email\EmailAttachment;
 
-use App\Eco\Email\Jobs\SendEmail;
 use App\Eco\Email\Jobs\SendEmailsWithVariables;
 use App\Eco\Email\Jobs\StoreConceptEmail;
 use App\Eco\EmailAddress\EmailAddress;
 use App\Eco\Mailbox\Mailbox;
 use App\Eco\User\User;
-use App\Helpers\Delete\DeleteHelper;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\RequestQueries\Email\Grid\RequestQuery;
 use App\Http\Resources\Email\FullEmail;
@@ -498,8 +496,7 @@ class EmailController
     }
 
     public function destroy(Email $email){
-
-        DeleteHelper::delete($email);
+        $email->delete();
     }
 
     public function getAmountOfOpenEmails(){

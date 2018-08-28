@@ -5,7 +5,6 @@ import { isEmpty } from 'lodash';
 import AdministrationDetailsFormGeneral from './general/AdministrationDetailsFormGeneral';
 import AdministrationDetailsUsers from './administration-users/AdministrationDetailsUsers';
 import moment from "moment/moment";
-import PanelDeletedItem from "../../../components/panel/PanelDeletedItem";
 import AdministrationDetailsFormConclusion from "./conclusion/AdministrationDetailsFormConclusion";
 import AdministrationDetailsSepas from "./sepas/AdministrationDetailsSepas";
 moment.locale('nl');
@@ -16,17 +15,11 @@ class AdministrationDetailsForm extends Component {
     };
 
     render() {
-        const { deletedAt } = this.props.administrationDetails;
         return (
             isEmpty(this.props.administrationDetails) ?
                 <div>Geen gegevens gevonden.</div>
                 :
                 <div>
-                    { deletedAt &&
-                    <PanelDeletedItem
-                        text={`Deze administratie is verwijderd op ${moment(deletedAt).format('L')}.`}
-                    />
-                    }
                     <AdministrationDetailsFormGeneral />
                     <AdministrationDetailsUsers />
                     <AdministrationDetailsSepas />

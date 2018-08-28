@@ -1,6 +1,5 @@
 import { put, call } from 'redux-saga/effects';
 import ParticipantsProductionProjectAPI from '../../api/participant-production-project/ParticipantsProductionProjectAPI';
-import {authSaga} from "../general/AuthSaga";
 
 export function* fetchParticipantsProductionProjectSaga({filters, extraFilters,sorts, pagination, productionProjectId}) {
     try {

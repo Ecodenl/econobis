@@ -27,7 +27,6 @@ class RequestQuery extends \App\Helpers\RequestQuery\RequestQuery
     protected function baseQuery()
     {
         return Contact::query()
-            ->whereNull('contacts.deleted_at')
             ->select('contacts.*');
     }
 }

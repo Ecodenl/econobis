@@ -1,16 +1,13 @@
 import React from 'react';
-import { hashHistory } from 'react-router';
 
 import Modal from '../../../components/modal/Modal';
-import OpportunityAPI from '../../../api/opportunity/OpportunityDetailsAPI';
+import {deleteOpportunity} from "../../../actions/opportunity/OpportunityDetailsActions";
+import {connect} from "react-redux";
 
 const OpportunityDetailsDelete = (props) => {
     const confirmAction = () => {
-        OpportunityAPI.deleteOpportunity(props.id).then(() => {
-            hashHistory.push('/kansen');
-        });
-
-
+        props.deleteOpportunity(props.id);
+        props.closeDeleteItemModal();
     };
 
     return (
@@ -26,4 +23,10 @@ const OpportunityDetailsDelete = (props) => {
     );
 };
 
-export default OpportunityDetailsDelete;
+const mapDispatchToProps = dispatch => ({
+    deleteOpportunity: (id) => {
+        dispatch(deleteOpportunity(id));
+    },
+});
+
+export default connect(null, mapDispatchToProps)(OpportunityDetailsDelete);

@@ -15,6 +15,9 @@ class GridTask extends Resource
      */
     public function toArray($request)
     {
+        $responsible = '';
+        $this->responsibleUser && $responsible = $this->responsibleUser->present()->fullName();
+        $this->responsibleTeam && $responsible = $this->responsibleTeam->name;
         return
             [
                 'id' => $this->id,
@@ -23,7 +26,7 @@ class GridTask extends Resource
                 'typeName' => optional($this->type)->name,
                 'noteSummary' => $this->present()->noteSummary(),
                 'createdAt' => $this->created_at,
-                'responsibleName' => $this->responsibleUser ? $this->responsibleUser->present()->fullName() : $this->responsibleTeam->name,
+                'responsibleName' => $responsible,
             ];
     }
 }

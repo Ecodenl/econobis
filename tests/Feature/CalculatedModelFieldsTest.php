@@ -42,35 +42,35 @@ class CalculatedModelFieldsTest extends TestCase
     public function assertProductionProjectFields()
     {
         $productionProject = ProductionProject::find(1);
-        $this->assertEquals(0, $productionProject->issued_participations);
-        $this->assertEquals(0, $productionProject->issued_participations_percentage);
-        $this->assertEquals(0, $productionProject->participations_in_option);
-        $this->assertEquals(0, $productionProject->issuable_participations);
-        $this->assertEquals(0, $productionProject->participations_worth_total);
+        $this->assertEquals(0, $productionProject->getIssuedParticipations());
+        $this->assertEquals(0, $productionProject->getIssuedParticipationsPercentage());
+        $this->assertEquals(0, $productionProject->getParticipationsInOption());
+        $this->assertEquals(0, $productionProject->getIssuableParticipations());
+        $this->assertEquals(0, $productionProject->getParticipationsWorthTotal());
 
         $productionProject = ProductionProject::find(2);
-        $this->assertEquals(10, $productionProject->issued_participations);
-        $this->assertEquals(0, $productionProject->issued_participations_percentage);
-        $this->assertEquals(4, $productionProject->participations_in_option);
-        $this->assertEquals(-10, $productionProject->issuable_participations);
-        $this->assertEquals(100, $productionProject->participations_worth_total);
+        $this->assertEquals(10, $productionProject->getIssuedParticipations());
+        $this->assertEquals(0, $productionProject->getIssuedParticipationsPercentage());
+        $this->assertEquals(4, $productionProject->getParticipationsInOption());
+        $this->assertEquals(-10, $productionProject->getIssuableParticipations());
+        $this->assertEquals(100, $productionProject->getParticipationsWorthTotal());
 
         $productionProject = ProductionProject::find(3);
-        $this->assertEquals(10, $productionProject->issued_participations);
-        $this->assertEquals(10, $productionProject->issued_participations_percentage);
-        $this->assertEquals(15, $productionProject->participations_in_option);
-        $this->assertEquals(90, $productionProject->issuable_participations);
-        $this->assertEquals(5000, $productionProject->participations_worth_total);
+        $this->assertEquals(10, $productionProject->getIssuedParticipations());
+        $this->assertEquals(10, $productionProject->getIssuedParticipationsPercentage());
+        $this->assertEquals(15, $productionProject->getParticipationsInOption());
+        $this->assertEquals(90, $productionProject->getIssuableParticipations());
+        $this->assertEquals(5000, $productionProject->getParticipationsWorthTotal());
     }
 
     public function assertParticipantProductionProjectFields()
     {
         $participantProductionProject = ParticipantProductionProject::find(1);
-        $this->assertEquals(0, $participantProductionProject->participations_worth_total);
+        $this->assertEquals(0, $participantProductionProject->getParticipationsWorthTotal());
         $this->assertEquals(0, $participantProductionProject->participations_current);
 
         $participantProductionProject = ParticipantProductionProject::find(2);
-        $this->assertEquals(100, $participantProductionProject->participations_worth_total);
+        $this->assertEquals(100, $participantProductionProject->getParticipationsWorthTotal());
         $this->assertEquals(10, $participantProductionProject->participations_current);
     }
 

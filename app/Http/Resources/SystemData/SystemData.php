@@ -146,7 +146,7 @@ class SystemData extends Resource
             'orderPaymentTypes' => FullEnumWithIdAndName::collection(OrderPaymentType::collection()),
             'orderCollectionFrequencies' => FullEnumWithIdAndName::collection(OrderCollectionFrequency::collection()),
             'paymentInvoiceStatuses' => FullEnumWithIdAndName::collection(PaymentInvoiceStatus::collection()),
-            'products' => FullProduct::collection(Product::whereNull('deleted_at')->get()),
+            'products' => FullProduct::collection(Product::all()),
             'contactGroupTypes' => FullEnumWithIdAndName::collection(ContactGroupType::collection()),
             'usesMailgun' =>  config('mail.driver') === 'mailgun' ? true : false,
             'mailgunDomain' => array((object)["id"=> config('mail.mailgun_domain'), "name" => config('mail.mailgun_domain')]),

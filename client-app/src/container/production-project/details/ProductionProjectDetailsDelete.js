@@ -1,16 +1,13 @@
 import React from 'react';
-import { hashHistory } from 'react-router';
 
 import Modal from '../../../components/modal/Modal';
-import ProductionProjectDetailsAPI from '../../../api/production-project/ProductionProjectDetailsAPI';
+import {deleteProductionProject} from "../../../actions/production-project/ProductionProjectDetailsActions";
+import {connect} from "react-redux";
 
 const ProductionProjectDetailsDelete = (props) => {
     const confirmAction = () => {
-        ProductionProjectDetailsAPI.deleteProductionProject(props.id).then(() => {
-            hashHistory.push('/productie-projecten');
-        });
-
-
+        props.deleteProductionProject(props.id);
+        props.closeDeleteItemModal();
     };
 
     return (
@@ -26,4 +23,10 @@ const ProductionProjectDetailsDelete = (props) => {
     );
 };
 
-export default ProductionProjectDetailsDelete;
+const mapDispatchToProps = dispatch => ({
+    deleteProductionProject: (id) => {
+        dispatch(deleteProductionProject(id));
+    },
+});
+
+export default connect(null, mapDispatchToProps)(ProductionProjectDetailsDelete);

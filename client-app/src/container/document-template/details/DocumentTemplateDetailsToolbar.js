@@ -3,7 +3,7 @@ import {connect} from 'react-redux';
 import {browserHistory} from 'react-router';
 
 import ButtonIcon from '../../../components/button/ButtonIcon';
-import DocumentTemplatesDeleteItem from "./DocumentTemplatesDeleteItem";
+import DocumentTemplateDeleteItem from "./DocumentTemplateDeleteItem";
 import DocumentTemplateDetailsDuplicate from "./DocumentTemplateDetailsDuplicate";
 
 
@@ -38,7 +38,7 @@ class DocumentTemplateDetailsToolbar extends Component {
                         {permissions.createDocumentTemplate &&
                         <ButtonIcon iconName={"glyphicon-duplicate"} onClickAction={this.toggleDuplicate}/>
                         }
-                        { false &&
+                        {permissions.createDocumentTemplate &&
                             <ButtonIcon iconName={"glyphicon-trash"} onClickAction={this.toggleDelete}/>
                         }
                     </div>
@@ -48,7 +48,7 @@ class DocumentTemplateDetailsToolbar extends Component {
                 <div className="col-md-4"/>
                 {
                     this.state.showDelete &&
-                    <DocumentTemplatesDeleteItem
+                    <DocumentTemplateDeleteItem
                         closeDeleteItemModal={this.toggleDelete}
                         templateName={this.props.templateName}
                         templateId={this.props.templateId}

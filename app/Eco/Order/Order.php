@@ -34,12 +34,6 @@ class Order extends Model
             'date_next_collection',
         ];
 
-    //Dont boot softdelete scopes. We handle this ourselves
-    public static function bootSoftDeletes()
-    {
-        return false;
-    }
-
     public function orderProducts()
     {
         return $this->hasMany(OrderProduct::class)->orderBy('date_start');
@@ -61,7 +55,7 @@ class Order extends Model
 
     public function tasks()
     {
-        return $this->hasMany(Task::class)->whereNull('deleted_at')->orderBy('tasks.id', 'desc');
+        return $this->hasMany(Task::class)->orderBy('tasks.id', 'desc');
     }
 
     public function invoices()

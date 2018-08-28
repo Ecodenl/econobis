@@ -19,13 +19,18 @@ class InvoiceCSVHelper
 
     public function __construct($invoices)
     {
-        $this->csvExporter = new \Laracsv\Export();
+        $this->csvExporter = new Export();
         $this->csvExporter->getCsv()->setDelimiter(';');
         $this->invoices = $invoices;
     }
 
     public function downloadCSV(){
-        $this->invoices->load([
+
+        $csv = '';
+        $headers = true;
+
+        foreach ($this->invoices->chunk(500) as $chunk) {
+            $chunk->load([
             'order.contact.person',
             'order.contact.organisation',
             'order.contact.primaryEmailAddress',
@@ -52,7 +57,7 @@ class InvoiceCSVHelper
             $invoice->date_collection = Carbon::parse($invoice->date_collection)->format('d/m/Y');
         });
 
-        $csv = $this->csvExporter->build($this->invoices, [
+        $csv = $this->csvExporter->build($chunk, [
             'initials' => 'Initialen',
             'first_name' => 'Voornaam',
             'last_name_prefix' => 'Tussenvoegsel',
@@ -69,8 +74,9 @@ class InvoiceCSVHelper
             'total_price_ex_vat_incl_reduction' => 'Factuurbedrag netto',
             'date_next_collection' => 'Incassodatum',
             'order.IBAN' => 'Ibannr',
-        ])->getCsv();
-
-        return $csv;
+        ], $headers);
+            $headers = false;
+        }
+        return $csv->getCsv();
     }
 }

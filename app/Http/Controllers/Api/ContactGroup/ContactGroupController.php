@@ -176,8 +176,6 @@ class ContactGroupController extends Controller
 
         $contactCSVHelper = new ContactCSVHelper($contactGroup->all_contacts);
 
-        $csv = $contactCSVHelper->downloadCSV();
-
-        return $csv;
+        return $contactCSVHelper->downloadCSV();
     }
 }

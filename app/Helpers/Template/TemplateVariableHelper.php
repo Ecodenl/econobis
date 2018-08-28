@@ -387,13 +387,13 @@ class TemplateVariableHelper
                 return $model->min_participations;
                 break;
             case 'uitgegeven_participaties':
-                return $model->issued_participations;
+                return $model->getIssuedParticipations();
                 break;
             case 'participaties_in_optie':
-                return $model->participations_in_option;
+                return $model->getParticipationsInOption();
                 break;
             case 'uit_te_geven_participaties':
-                return $model->issuable_participations;
+                return $model->getIssuableParticipations();
                 break;
             case 'aantal_participanten':
                 return $model->participantsProductionProject->count();

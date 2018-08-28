@@ -51,10 +51,6 @@ class Contact extends Model
       'iban'
     ];
 
-    protected $appends = [
-      'visible_groups'
-    ];
-
     public function addresses()
     {
         return $this->hasMany(Address::class);
@@ -228,6 +224,11 @@ class Contact extends Model
         return $this->hasOne(OccupationContact::class, 'primary_contact_id')->where('primary', true)->orWhere('contact_id', $this->id)->where('primary', true);
     }
 
+    public function legalRepContact()
+    {
+        return $this->hasOne(OccupationContact::class)->where('occupation_id', 7)->orderBy('occupation_contact.id', 'desc')->limit(1);
+    }
+
     public function orders()
     {
         return $this->hasMany(Order::class)->orderBy('orders.id', 'desc');
@@ -297,7 +298,7 @@ class Contact extends Model
         return null;
     }
 
-    public function getVisibleGroupsAttribute(){
+    public function getVisibleGroups(){
 
         //statische groepen
         $staticGroups = $this->groups()->where('show_contact_form', true)->get();

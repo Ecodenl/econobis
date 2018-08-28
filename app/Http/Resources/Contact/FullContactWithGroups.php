@@ -88,7 +88,7 @@ class FullContactWithGroups extends Resource
             'relatedOpportunities' => $this->opportunities()->with('measureCategory')->get(),
             'participationCount' => $this->participations()->count(),
             'relatedParticipations' => FullParticipantProductionProject::collection($this->whenLoaded('participations')),
-            'visibleGroups' => $this->visible_groups,
+            'visibleGroups' => $this->getVisibleGroups(),
         ];
     }
 }

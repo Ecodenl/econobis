@@ -105,7 +105,7 @@ class ParticipantCSVHelper
                     if($participant->contact->type_id === 'person' && $participant->contact->legalRepContact){
                         $participant->lrcStartDate = $participant->contact->legalRepContact->startDate ? Carbon::parse($participant->contact->legalRepContact->startDate)->format('d-m-Y') : '';
                         $participant->lrcEndDate = $participant->contact->legalRepContact->endDate ? Carbon::parse($participant->contact->legalRepContact->endDate)->format('d-m-Y') : '';
-                        $participant->lrcOccupation = $participant->contact->legalRepContact->occupation->name;
+                        $participant->lrcOccupation = $participant->contact->legalRepContact->occupation->primary_occupation;
                         $participant->lrcFullName = $participant->contact->legalRepContact->contact->full_name;
                         $participant->lrcPrimaryEmailAddress = $participant->contact->legalRepContact->contact->primaryEmailAddress ? $participant->contact->legalRepContact->contact->primaryEmailAddress->email : '';
                         $participant->lrcPrimaryPhonenumber = $participant->contact->legalRepContact->contact->primaryPhonenumber ? $participant->contact->legalRepContact->contact->primaryPhonenumber->number : '';
@@ -122,7 +122,7 @@ class ParticipantCSVHelper
                     if ($participant->contact->type_id === 'organisation' && $participant->contact->contactPerson && $participant->contact->contactPerson->contact->type_id == 'person') {
                         $participant->cpStartDate = $participant->contact->contactPerson->startDate ? Carbon::parse($participant->contact->contactPerson->startDate)->format('d-m-Y') : '';
                         $participant->cpEndDate = $participant->contact->contactPerson->endDate ? Carbon::parse($participant->contact->contactPerson->endDate)->format('d-m-Y') : '';
-                        $participant->cpOccupation = $participant->contact->contactPerson->occupation->name;
+                        $participant->cpOccupation = $participant->contact->contactPerson->occupation->primary_occupation;
                         $participant->cpTitle = $participant->contact->contactPerson->contact->person->title ? $participant->contact->contactPerson->contact->person->title->name : '';
                         $participant->cpFullName = $participant->contact->contactPerson->contact->full_name;
                         $participant->cpInitials = $participant->contact->contactPerson->contact->person->initials;

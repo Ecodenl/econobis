@@ -160,7 +160,8 @@ class ParticipantCSVHelper
             }
                 $csv = $this->csvExporter->build($chunk, [
                     'id' => '#',
-                    'contact.id' => 'Contactnummer',
+                    'contact.id' => 'Contact id',
+                    'contact.number' => 'Contactnummer',
                     'productionProject.name' => 'Productie project naam',
                     'contact.full_name' => 'Naam',
                     'contact.organisation.name' => 'Organisatie',

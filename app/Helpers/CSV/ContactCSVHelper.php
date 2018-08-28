@@ -11,6 +11,7 @@ namespace App\Helpers\CSV;
 use App\Eco\Address\AddressType;
 use App\Eco\EmailAddress\EmailAddressType;
 use App\Eco\EnergySupplier\EnergySupplier;
+use App\Eco\Occupation\Occupation;
 use App\Eco\PhoneNumber\PhoneNumberType;
 use App\Eco\ProductionProject\ProductionProjectRevenue;
 use Carbon\Carbon;
@@ -39,6 +40,8 @@ class ContactCSVHelper
             'primaryAddress',
             'primaryContactEnergySupplier.energySupplier',
             'contactNotes',
+            'occupations',
+            'primaryOccupations',
         ]);
 
         foreach ($this->contacts as $contact) {
@@ -86,6 +89,54 @@ class ContactCSVHelper
                 $latestContactNotes .= (isset($contactNotes[1]) ? ' | ' .$contactNotes[1]->note : '');
 
                 $contact['latest_contactNotes'] = $latestContactNotes;
+            }
+
+            // Occupations
+            if ($contact->occupations) {
+                $first = true;
+
+                foreach ($contact->occupations as $occupation) {
+                    if($first) {
+                        $contact['occupation_full_name'] = $occupation->full_name;
+                        $contact['occupation_primary_or_secundary'] = 'onder';
+                        $contact['occupation_role'] = Occupation::find($occupation->occupation_id)->primary_occupation;
+                        $first = false;
+                    }
+                    else{
+                        $repContact = $contact->replicate();
+                        $repContact['occupation_full_name'] = $occupation->full_name;
+                        $repContact['occupation_primary_or_secundary'] = 'onder';
+                        $contact['occupation_role'] = Occupation::find($occupation->occupation_id)->primary_occupation;
+                        $index = $this->contacts->search(function ($item, $key) use ($contact) {
+                            return $item->id == $contact->id;
+                        });
+                        $this->contacts->splice($index, 0, [$repContact]);
+                    }
+                }
+            }
+
+            // Primary Occupations
+            if ($contact->primaryOccupations) {
+                $first = true;
+//                dd($contact->primaryOccupations);
+                foreach ($contact->primaryOccupations as $primaryOccupation) {
+                    if($first) {
+                        $contact['occupation_full_name'] = $primaryOccupation->full_name;
+                        $contact['occupation_primary_or_secundary'] = 'boven';
+                        $contact['occupation_role'] = Occupation::find($primaryOccupation->occupation_id)->secundary_occupation;
+                        $first = false;
+                    }
+                    else{
+                        $repContact = $contact->replicate();
+                        $repContact['occupation_full_name'] = $primaryOccupation->full_name;
+                        $repContact['occupation_primary_or_secundary'] = 'boven';
+                        $contact['occupation_role'] = Occupation::find($primaryOccupation->occupation_id)->secundary_occupation;
+                        $index = $this->contacts->search(function ($item, $key) use ($contact) {
+                            return $item->id == $contact->id;
+                        });
+                        $this->contacts->splice($index, 0, [$repContact]);
+                    }
+                }
             }
         }
 
@@ -174,6 +225,9 @@ class ContactCSVHelper
             'latest_contactNotes' => 'Opmerkingen',
             'created_at_date' => 'Datum gemaakt op',
             'updated_at_date' => 'Datum laatste update',
+            'occupation_full_name' => 'Volledige naam',
+            'occupation_primary_or_secundary' => 'Boven of onder',
+            'occupation_role' => 'Rol',
         ])->getCsv();
 
         return $csv;
@@ -182,6 +236,25 @@ class ContactCSVHelper
     private function formatDate($date) {
         $formatDate = $date ? new Carbon($date) : false;
         return $formatDate ? $formatDate->format('d-m-Y') : '';
+    }
+
+    private function occupationsContact($occupation, $first) {
+        if($first) {
+            $contact['occupation_full_name'] = $occupation->full_name;
+            $contact['occupation_upOrDown'] = 'onder';
+            $first = false;
+        }
+        else{
+            $repContact = $contact->replicate();
+            $repContact['occupation_full_name'] = $occupation->full_name;
+            $repContact['occupation_upOrDown'] = 'onder';
+            $index = $this->contacts->search(function ($item, $key) use ($contact) {
+                return $item->id == $contact->id;
+            });
+            $this->contacts->splice($index, 0, [$repContact]);
+        }
+
+        return $first;
     }
 
 }

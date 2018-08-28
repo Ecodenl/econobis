@@ -45,8 +45,14 @@ class ContactCSVHelper
                 'primaryAddress',
                 'primaryContactEnergySupplier.energySupplier',
                 'contactNotes',
-                'occupations',
-                'primaryOccupations',
+                'occupations.occupation',
+                'occupations.primaryContact.person.title',
+                'occupations.primaryContact.primaryEmailAddress',
+                'occupations.primaryContact.primaryphoneNumber',
+                'primaryOccupations.occupation',
+                'primaryOccupations.contact.person.title',
+                'primaryOccupations.contact.primaryEmailAddress',
+                'primaryOccupations.contact.primaryphoneNumber',
             ]);
 
             foreach ($chunk as $contact) {
@@ -97,49 +103,92 @@ class ContactCSVHelper
                 }
 
             // Occupations
+            $first = true;
             if ($contact->occupations) {
-                $first = true;
-
                 foreach ($contact->occupations as $occupation) {
+//                    dd($occupation);
                     if($first) {
-                        $contact['occupation_full_name'] = $occupation->full_name;
-                        $contact['occupation_primary_or_secundary'] = 'onder';
-                        $contact['occupation_role'] = Occupation::find($occupation->occupation_id)->primary_occupation;
+                        $contact['occupationPrimary'] = ($occupation->primary ? 'Ja' : 'Nee');
+                        $contact['occupationPrimaryOrSecundary'] = 'onder';
+                        $contact['occupationStartDate'] = $this->formatDate($occupation->start_date);
+                        $contact['occupationEndDate'] = $this->formatDate($occupation->end_date);
+                        $contact['occupationTitle'] = $occupation->primaryContact->person ? $occupation->primaryContact->person->title : '';
+                        $contact['occupationFullName'] = $occupation->full_name;
+                        $contact['occupationInitial'] = $occupation->primaryContact->person ? $occupation->primaryContact->person->initials : '';
+                        $contact['occupationFirstName'] = $occupation->primaryContact->person ? $occupation->primaryContact->person->first_name : '';
+                        $contact['occupationLastNamePrefix'] = $occupation->primaryContact->person ? $occupation->primaryContact->person->last_name_prefix : '';
+                        $contact['occupationLastName'] = $occupation->primaryContact->person ? $occupation->primaryContact->person->last_name : '';
+                        $contact['occupationDateOfBirth'] = $this->formatDate($occupation->primaryContact->person->date_of_birth);
+                        $contact['occupationPrimaryEmailAddress'] = $occupation->primaryContact->primaryEmailAddress ? $occupation->primaryContact->primaryEmailAddress : '';
+                        $contact['occupationPrimaryTelephoneNumber'] = $occupation->primaryContact->primaryphoneNumber ? $occupation->primaryContact->primaryphoneNumber : '';
+                        $contact['occupationRole'] = $occupation->occupation->primary_occupation;
                         $first = false;
                     }
                     else{
                         $repContact = $contact->replicate();
-                        $repContact['occupation_full_name'] = $occupation->full_name;
-                        $repContact['occupation_primary_or_secundary'] = 'onder';
-                        $contact['occupation_role'] = Occupation::find($occupation->occupation_id)->primary_occupation;
-                        $index = $this->contacts->search(function ($item, $key) use ($contact) {
+                        $repContact['occupationPrimary'] = ($occupation->primary ? 'Ja' : 'Nee');
+                        $repContact['occupationPrimaryOrSecundary'] = 'onder';
+                        $repContact['occupationStartDate'] = $this->formatDate($occupation->start_date);
+                        $repContact['occupationEndDate'] = $this->formatDate($occupation->end_date);
+                        $repContact['occupationTitle'] = $occupation->primaryContact->person ? $occupation->primaryContact->person->title : '';
+                        $repContact['occupationFullName'] = $occupation->full_name;
+                        $repContact['occupationInitial'] = $occupation->primaryContact->person ? $occupation->primaryContact->person->initials : '';
+                        $repContact['occupationFirstName'] = $occupation->primaryContact->person ? $occupation->primaryContact->person->first_name : '';
+                        $repContact['occupationLastNamePrefix'] = $occupation->primaryContact->person ? $occupation->primaryContact->person->last_name_prefix : '';
+                        $repContact['occupationLastName'] = $occupation->primaryContact->person ? $occupation->primaryContact->person->last_name : '';
+                        $repContact['occupationDateOfBirth'] = $this->formatDate($occupation->primaryContact->person->date_of_birth);
+                        $repContact['occupationPrimaryEmailAddress'] = $occupation->primaryContact->primaryEmailAddress ? $occupation->primaryContact->primaryEmailAddress : '';
+                        $repContact['occupationPrimaryTelephoneNumber'] = $occupation->primaryContact->primaryphoneNumber ? $occupation->primaryContact->primaryphoneNumber : '';
+                        $repContact['occupationRole'] = $occupation->occupation->primary_occupation;
+                        $index = $chunk->search(function ($item, $key) use ($contact) {
                             return $item->id == $contact->id;
                         });
-                        $this->contacts->splice($index, 0, [$repContact]);
+                        $chunk->splice($index, 0, [$repContact]);
                     }
                 }
             }
 
             // Primary Occupations
             if ($contact->primaryOccupations) {
-                $first = true;
 //                dd($contact->primaryOccupations);
                 foreach ($contact->primaryOccupations as $primaryOccupation) {
                     if($first) {
-                        $contact['occupation_full_name'] = $primaryOccupation->full_name;
-                        $contact['occupation_primary_or_secundary'] = 'boven';
-                        $contact['occupation_role'] = Occupation::find($primaryOccupation->occupation_id)->secundary_occupation;
+                        $contact['occupationPrimary'] = ($primaryOccupation->primary ? 'Ja' : 'Nee');
+                        $contact['occupationPrimaryOrSecundary'] = 'boven';
+                        $contact['occupationStartDate'] = $this->formatDate($primaryOccupation->start_date);
+                        $contact['occupationEndDate'] = $this->formatDate($primaryOccupation->end_date);
+                        $contact['occupationTitle'] = $primaryOccupation->primaryContact->person ? $primaryOccupation->primaryContact->person->title : '';
+                        $contact['occupationFullName'] = $primaryOccupation->full_name;
+                        $contact['occupationInitial'] = $primaryOccupation->primaryContact->person ? $primaryOccupation->primaryContact->person->initials : '';
+                        $contact['occupationFirstName'] = $primaryOccupation->primaryContact->person ? $primaryOccupation->primaryContact->person->first_name : '';
+                        $contact['occupationLastNamePrefix'] = $primaryOccupation->primaryContact->person ? $primaryOccupation->primaryContact->person->last_name_prefix : '';
+                        $contact['occupationLastName'] = $primaryOccupation->primaryContact->person ? $primaryOccupation->primaryContact->person->last_name : '';
+                        $contact['occupationDateOfBirth'] = $this->formatDate($primaryOccupation->primaryContact->person->date_of_birth);
+                        $contact['occupationPrimaryEmailAddress'] = $primaryOccupation->primaryContact->primaryEmailAddress ? $primaryOccupation->primaryContact->primaryEmailAddress : '';
+                        $contact['occupationPrimaryTelephoneNumber'] = $primaryOccupation->primaryContact->primaryphoneNumber ? $primaryOccupation->primaryContact->primaryphoneNumber : '';
+                        $contact['occupationRole'] = $primaryOccupation->occupation->primary_occupation;
                         $first = false;
                     }
                     else{
                         $repContact = $contact->replicate();
-                        $repContact['occupation_full_name'] = $primaryOccupation->full_name;
-                        $repContact['occupation_primary_or_secundary'] = 'boven';
-                        $contact['occupation_role'] = Occupation::find($primaryOccupation->occupation_id)->secundary_occupation;
-                        $index = $this->contacts->search(function ($item, $key) use ($contact) {
+                        $repContact['occupationPrimary'] = ($primaryOccupation->primary ? 'Ja' : 'Nee');
+                        $repContact['occupationPrimaryOrSecundary'] = 'boven';
+                        $repContact['occupationStartDate'] = $this->formatDate($primaryOccupation->start_date);
+                        $repContact['occupationEndDate'] = $this->formatDate($primaryOccupation->end_date);
+                        $repContact['occupationTitle'] = $primaryOccupation->primaryContact->person ? $primaryOccupation->primaryContact->person->title : '';
+                        $repContact['occupationFullName'] = $primaryOccupation->full_name;
+                        $repContact['occupationInitial'] = $primaryOccupation->primaryContact->person ? $primaryOccupation->primaryContact->person->initials : '';
+                        $repContact['occupationFirstName'] = $primaryOccupation->primaryContact->person ? $primaryOccupation->primaryContact->person->first_name : '';
+                        $repContact['occupationLastNamePrefix'] = $primaryOccupation->primaryContact->person ? $primaryOccupation->primaryContact->person->last_name_prefix : '';
+                        $repContact['occupationLastName'] = $primaryOccupation->primaryContact->person ? $primaryOccupation->primaryContact->person->last_name : '';
+                        $repContact['occupationDateOfBirth'] = $this->formatDate($primaryOccupation->primaryContact->person->date_of_birth);
+                        $repContact['occupationPrimaryEmailAddress'] = $primaryOccupation->primaryContact->primaryEmailAddress ? $primaryOccupation->primaryContact->primaryEmailAddress : '';
+                        $repContact['occupationPrimaryTelephoneNumber'] = $primaryOccupation->primaryContact->primaryphoneNumber ? $primaryOccupation->primaryContact->primaryphoneNumber : '';
+                        $repContact['occupationRole'] = $primaryOccupation->occupation->primary_occupation;
+                        $index = $chunk->search(function ($item, $key) use ($contact) {
                             return $item->id == $contact->id;
                         });
-                        $this->contacts->splice($index, 0, [$repContact]);
+                        $chunk->splice($index, 0, [$repContact]);
                     }
                 }
             }
@@ -166,11 +215,11 @@ class ContactCSVHelper
                         = $this->formatDate($contact->primaryContactEnergySupplier->member_since);
                 }
 
-            $contact->did_agree_avg = ($contact->did_agree_avg ? 'Ja' : 'Nee');
+                $contact->did_agree_avg = ($contact->did_agree_avg ? 'Ja' : 'Nee');
 
-            $contact->created_at_date = $this->formatDate($contact->created_at);
-            $contact->updated_at_date = $this->formatDate($contact->updated_at);
-        });
+                $contact->created_at_date = $this->formatDate($contact->created_at);
+                $contact->updated_at_date = $this->formatDate($contact->updated_at);
+            });
 
             $csv = $this->csvExporter->build($chunk, [
                 'number' => '#',
@@ -230,9 +279,20 @@ class ContactCSVHelper
                 'latest_contactNotes' => 'Opmerkingen',
                 'created_at_date' => 'Datum gemaakt op',
                 'updated_at_date' => 'Datum laatste update',
-                'occupation_full_name' => 'Volledige naam',
-                'occupation_primary_or_secundary' => 'Boven of onder',
-                'occupation_role' => 'Rol',
+                'occupationPrimary' => 'Primair',
+                'occupationPrimaryOrSecundary' => 'Boven of onder',
+                'occupationStartDate' => 'Begindatum',
+                'occupationEndDate' => 'Einddatum',
+                'occupationTitle.name' => 'Aanspreektitel',
+                'occupationFullName' => 'Volledige naam',
+                'occupationInitial' => 'Initialen',
+                'occupationFirstName' => 'Voornaam',
+                'occupationLastNamePrefix' => 'Tussenvoegsel',
+                'occupationLastName' => 'Achternaam',
+                'occupationDateOfBirth' => 'Geboortedatum',
+                'occupationPrimaryEmailAddress.email' => 'Primair e-mailadres',
+                'occupationPrimaryTelephoneNumber.number' => 'Primair telefoonnummer',
+                'occupationRole' => 'Rol',
             ], $headers);
             $headers = false;
         }
@@ -243,24 +303,4 @@ class ContactCSVHelper
         $formatDate = $date ? new Carbon($date) : false;
         return $formatDate ? $formatDate->format('d-m-Y') : '';
     }
-
-    private function occupationsContact($occupation, $first) {
-        if($first) {
-            $contact['occupation_full_name'] = $occupation->full_name;
-            $contact['occupation_upOrDown'] = 'onder';
-            $first = false;
-        }
-        else{
-            $repContact = $contact->replicate();
-            $repContact['occupation_full_name'] = $occupation->full_name;
-            $repContact['occupation_upOrDown'] = 'onder';
-            $index = $this->contacts->search(function ($item, $key) use ($contact) {
-                return $item->id == $contact->id;
-            });
-            $this->contacts->splice($index, 0, [$repContact]);
-        }
-
-        return $first;
-    }
-
 }

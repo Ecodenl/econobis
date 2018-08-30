@@ -96,7 +96,7 @@ class AlfrescoHelper
         $args['role'] = 'SiteConsumer';
         $args['id'] = $alfresco_username;
 
-        $response = $this->executeCurl($url, $args);
+        $response = $this->executeCurl($url, $args, 'application/json', false, false);
 
         return $response['message'];
     }
@@ -107,7 +107,7 @@ class AlfrescoHelper
         $args['role'] = 'SiteConsumer';
         $args['id'] = $alfresco_username;
 
-        $response = $this->executeCurl($url, $args);
+        $response = $this->executeCurl($url, $args, 'application/json', false, false);
 
         return $response['message'];
     }

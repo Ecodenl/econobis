@@ -47,7 +47,7 @@ class PaymentInvoices extends Migration
             $table->timestamps();
         });
 
-        $sepas = Sepa::all();
+        $sepas = Sepa::withTrashed()->get();
 
         Schema::table('sepas', function (Blueprint $table) {
             $table->string('sepa_type_id')->nullable();

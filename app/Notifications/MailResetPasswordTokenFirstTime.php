@@ -42,7 +42,7 @@ class MailResetPasswordTokenFirstTime extends Notification
         return (new MailMessage)
             ->subject("Welkom bij Econobis")
             ->greeting("Hallo! Welkom bij Econobis")
-            ->line("Er is een account voor je aangemaakt op de Econobis-omgving van jouw organisatie. Dit account bestaat uit:")
+            ->line("Er is een account voor je aangemaakt op de Econobis-omgeving van jouw organisatie. Dit account bestaat uit:")
             ->line("<ul>")
             ->line("<li><p>Gebruikersnaam: je e-mailadres</p></li>")
             ->line("<li><p>Wachtwoord: nog in te stellen</p></li>")

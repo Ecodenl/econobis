@@ -134,9 +134,9 @@ class ResetPasswordController extends Controller
         $mailContent = '<h1>Er is een gebruiker aangemaakt voor coöperatie '  . config('app.name') . '</h1><br><br>';
         $mailContent .= '<ul>';
         $mailContent .= '<li>Id: ' . $user->id . '</li>';
-        $mailContent .= '<li>Aanspreektitel: ' . $user->title ? $user->title->name : '' . '</li>';
+        $mailContent .= '<li>Aanspreektitel: ' . ($user->title ? $user->title->name : '') . '</li>';
         $mailContent .= '<li>Voornaam: ' . $user->first_name . '</li>';
-        $mailContent .= '<li>Tussenvoegsel: ' . $user->lastNamePrefix ? $user->lastNamePrefix->name : '' . '</li>';
+        $mailContent .= '<li>Tussenvoegsel: ' . ($user->lastNamePrefix ? $user->lastNamePrefix->name : '') . '</li>';
         $mailContent .= '<li>Achternaam: ' . $user->last_name . '</li>';
         $mailContent .= '<li>E-mail: ' . $user->email . '</li>';
         $mailContent .= '<li>Telefoonnummer: ' . $user->phone_number . '</li>';

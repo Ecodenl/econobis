@@ -171,4 +171,24 @@ export default {
 
         return axios.get(requestUrl);
     },
+
+    deleteComposedGroup: ({contactGroupId, contactGroupToDetachId}) => {
+        const requestUrl = `${URL_CONTACT_GROUP}/composed/${contactGroupId}/${contactGroupToDetachId}/detach`;
+        const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
+        axios.defaults.headers.common.Authorization = AUTH_TOKEN;
+
+        return axios.post(requestUrl)
+            .then(response => response.data.data)
+            .catch(error => error.response);
+    },
+
+    attachComposedGroup: ({contactGroupId, contactGroupToAttachId}) => {
+        const requestUrl = `${URL_CONTACT_GROUP}/composed/${contactGroupId}/${contactGroupToAttachId}/attach`;
+        const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
+        axios.defaults.headers.common.Authorization = AUTH_TOKEN;
+
+        return axios.post(requestUrl)
+            .then(response => response.data.data)
+            .catch(error => error.response);
+    },
 };

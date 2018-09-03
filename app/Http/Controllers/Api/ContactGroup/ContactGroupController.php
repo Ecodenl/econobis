@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\ContactGroup;
 
 use App\Eco\Contact\Contact;
+use App\Eco\ContactGroup\ComposedContactGroup;
 use App\Eco\ContactGroup\ContactGroup;
 use App\Helpers\CSV\ContactCSVHelper;
 use App\Helpers\Delete\Models\DeleteContactGroup;
@@ -179,5 +180,17 @@ class ContactGroupController extends Controller
         $contactCSVHelper = new ContactCSVHelper($contactGroup->all_contacts);
 
         return $contactCSVHelper->downloadCSV();
+    }
+
+    public function detachComposedContactGroup(ContactGroup $contactGroup, ContactGroup $contactGroupToDetach)
+    {
+        $contactGroup->contactGroups()->detach($contactGroupToDetach);
+    }
+
+    public function attachComposedContactGroup(ContactGroup $contactGroup, ContactGroup $contactGroupToAttach)
+    {
+        if(!($contactGroup->id === $contactGroupToAttach->id)) {
+            $contactGroup->contactGroups()->syncWithoutDetaching($contactGroupToAttach);
+        }
     }
 }

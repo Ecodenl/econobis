@@ -15,6 +15,7 @@ use App\Http\RequestQueries\Contact\Grid\Sort;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Laracasts\Presenter\PresentableTrait;
 
 class ContactGroup extends Model
@@ -173,7 +174,7 @@ class ContactGroup extends Model
 
         $this->hasComposedIds = [];
 
-        return $contacts ? $contacts->unique('id')->values() : false;
+        return $contacts ? $contacts->unique('id')->values() : new Collection();
     }
 
     public function getAllContacts()

@@ -7,8 +7,11 @@ const ContactGroupComposedGroupView = props => {
     return (
 
         <div className={`row border ${props.highlightLine}`} onMouseEnter={() => props.onLineEnter()} onMouseLeave={() => props.onLineLeave()}>
-            <div onClick={() => hashHistory.push(`/contact-groep/${id}`)}>
-                <div className="col-sm-12">{name}</div>
+            <div>
+                <div className="col-sm-11" onClick={() => hashHistory.push(`/contact-groep/${id}`)}>{name}</div>
+                <div className="col-sm-1">
+                     {(props.showActionButtons ? <a role="button" onClick={props.toggleDelete}><span className="glyphicon glyphicon-trash mybtn-danger"  /> </a> : '')}
+                </div>
             </div>
         </div>
     );

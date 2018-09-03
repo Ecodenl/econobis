@@ -15,6 +15,7 @@ const ContactGroupComposedGroupsList = props => {
                         return <ContactGroupComposedGroupItem
                             key={composedGroup.id}
                             composedGroup={composedGroup}
+                            contactGroupId={props.contactGroupId}
                         />;
                     })
                     :
@@ -27,6 +28,7 @@ const ContactGroupComposedGroupsList = props => {
 const mapStateToProps = (state) => {
     return {
         composedGroups: state.contactGroupDetails.composedGroups,
+        contactGroupId: state.contactGroupDetails.id,
     };
 };
 export default connect(mapStateToProps)(ContactGroupComposedGroupsList);

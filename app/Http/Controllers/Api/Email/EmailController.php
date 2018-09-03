@@ -111,13 +111,19 @@ class EmailController
         //Cc -> (Cc without own email)
         //Bcc -> empty
 
-
         $to = $email->to;
-        unset($to[array_search($email->mailbox->email, $email->to)]);
+
+        $index = array_search($email->mailbox->email, $email->to);
+        if($index !== false) {
+            unset($to[$index]);
+        }
         array_unshift($to, $email->from);
         $cc = $email->cc;
 
-        unset($cc[array_search($email->mailbox->email, $email->cc)]);
+        $index = array_search($email->mailbox->email, $email->cc);
+        if($index !== false) {
+            unset($cc[array_search($email->mailbox->email, $email->cc)]);
+        }
 
         $email->to = $to;
         $email->from = $email->mailbox->email;

@@ -4,14 +4,14 @@ export default (type, field) => {
             switch (field) {
                 case 'id': return 'Id';
                 case 'number': return 'Contact nummer';
-                case 'typeId': return 'Type id';
+                case 'typeId': return 'Type';
                 case 'fullName': return 'Naam';
                 case 'streetAndNumber': return 'Straat';
                 case 'postalCode': return 'Postcode';
                 case 'city': return 'Woonplaats';
                 case 'emailAddress': return 'E-mailadres';
                 case 'phoneNumber': return 'Telefoon nummer';
-                case 'statusId': return 'Status id';
+                case 'statusId': return 'Status';
                 case 'name': return 'Naam';
                 case 'postalCodeNumber': return 'Postcode nummer';
                 case 'currentParticipations': return 'Aantal participaties';

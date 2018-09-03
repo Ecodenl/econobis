@@ -57,6 +57,7 @@ class GridController extends Controller
                 $dynamicFilter->comperator = '';
                 $dynamicFilter->data = $filter->data;
                 $dynamicFilter->type = 'filter';
+                $dynamicFilter->model_name = $this->getModelByField($filter->field);
                 $dynamicFilter->save();
             }
         }
@@ -69,12 +70,30 @@ class GridController extends Controller
                 $dynamicFilter->comperator = $extraFilter->type;
                 $dynamicFilter->data = $extraFilter->data;
                 $dynamicFilter->type = 'extraFilter';
+                $dynamicFilter->model_name = $this->getModelByField($extraFilter->field);
                 $dynamicFilter->save();
             }
         }
         return FullContactGroup::make($contactGroup);
     }
 
-
-
+    private function getModelByField(String $field){
+        switch ($field){
+            case 'typeId':
+                return 'App\Eco\Contact\ContactType';
+                break;
+            case 'statusId':
+                return 'App\Eco\Contact\ContactStatus';
+                break;
+            case 'occupation':
+                return 'App\Eco\Occupation\Occupation';
+                break;
+            case 'opportunity':
+                return 'App\Eco\Measure\MeasureCategory';
+                break;
+            case 'product':
+                return 'App\Eco\Product\Product';
+                break;
+        }
+    }
 }

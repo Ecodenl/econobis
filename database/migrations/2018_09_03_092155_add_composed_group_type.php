@@ -22,7 +22,6 @@ class AddComposedGroupType extends Migration
      */
     public function up()
     {
-
         Schema::table('contact_groups', function (Blueprint $table) {
             $table->string('composed_group_type')->default('one');
         });

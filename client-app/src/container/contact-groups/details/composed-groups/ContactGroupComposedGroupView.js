@@ -7,7 +7,7 @@ const ContactGroupComposedGroupView = props => {
     return (
 
         <div className={`row border ${props.highlightLine}`} onMouseEnter={() => props.onLineEnter()} onMouseLeave={() => props.onLineLeave()}>
-            <div onClick={() => hashHistory.push(`/contacten-in-groep/${id}`)}>
+            <div onClick={() => hashHistory.push(`/contact-groep/${id}`)}>
                 <div className="col-sm-12">{name}</div>
             </div>
         </div>

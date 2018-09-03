@@ -46,7 +46,7 @@ class GridController extends Controller
         $contactGroup = new ContactGroup();
         $contactGroup->type_id = 'dynamic';
         $contactGroup->name = 'Dynamische groep ' . (ContactGroup::max('id') + 1);
-        $contactGroup->description = 'Dynamisch aangemaakte groep';
+        $contactGroup->description = '';
         $contactGroup->save();
 
         if($filters) {

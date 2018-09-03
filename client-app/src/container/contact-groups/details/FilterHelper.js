@@ -24,6 +24,7 @@ export default (type, field) => {
             switch (field) {
                 case 'eq': return 'gelijk aan';
                 case 'neq': return 'niet gelijk aan';
+                case 'ct': return 'bevat';
                 case 'lt': return 'kleiner dan';
                 case 'lte': return 'kleiner of gelijk aan';
                 case 'gt': return 'groter dan';

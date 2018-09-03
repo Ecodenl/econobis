@@ -127,7 +127,7 @@ class ContactGroup extends Model
         $requestExtraFilters = json_encode($requestExtraFilters);
 
         $request = new Request();
-        $request->replace(['filters' => $requestFilters, 'extraFilters' => $requestExtraFilters]);
+        $request->replace(['filters' => $requestFilters, 'extraFilters' => $requestExtraFilters, 'filterType' => $this->dynamic_filter_type]);
 
         $requestQuery = new RequestQuery($request, new Filter($request), new Sort($request), new Joiner(),
             new ExtraFilter($request));

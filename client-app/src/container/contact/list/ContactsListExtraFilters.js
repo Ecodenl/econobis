@@ -11,6 +11,7 @@ class ContactsListExtraFilters extends Component {
         super(props);
 
         this.state = {
+            filterType: props.filterType ? props.filterType : 'and',
             amountOfFilters: props.amountOfFilters !== undefined ? props.amountOfFilters : 1,
             filters: props.extraFilters !== undefined ? props.extraFilters : [{
                 field: 'name',
@@ -25,7 +26,7 @@ class ContactsListExtraFilters extends Component {
     };
 
     confirmAction = () => {
-        this.props.handleExtraFiltersChange(this.state.filters, this.state.amountOfFilters);
+        this.props.handleExtraFiltersChange(this.state.filters, this.state.amountOfFilters, this.state.filterType);
         this.props.toggleShowExtraFilters();
     };
 
@@ -37,6 +38,13 @@ class ContactsListExtraFilters extends Component {
         this.setState({
             ...this.state,
             filters: filters
+        });
+    };
+
+    handleFilterTypeChange = (type) => {
+        this.setState({
+            ...this.state,
+            filterType: type
         });
     };
 
@@ -59,9 +67,9 @@ class ContactsListExtraFilters extends Component {
         }, 300);
 
         setTimeout(() => {
-        this.setState({
-            amountOfFilters: this.state.amountOfFilters + 1,
-        });
+            this.setState({
+                amountOfFilters: this.state.amountOfFilters + 1,
+            });
         }, 300);
     };
 
@@ -108,7 +116,8 @@ class ContactsListExtraFilters extends Component {
         let filters = [];
 
         for (let i = 0; i < this.state.amountOfFilters; i++) {
-            filters.push(<DataTableCustomFilter key={i} filter={this.state.filters[i]} filterNumber={i} fields={fields} handleFilterChange={this.handleFilterChange}/>);
+            filters.push(<DataTableCustomFilter key={i} filter={this.state.filters[i]} filterNumber={i} fields={fields}
+                                                handleFilterChange={this.handleFilterChange}/>);
         }
 
         return (
@@ -118,6 +127,24 @@ class ContactsListExtraFilters extends Component {
                 confirmAction={this.confirmAction}
                 closeModal={this.closeModal}
             >
+                <div className={'row filter-row'}>
+                    <h5>
+                        <div className={'col-xs-4'}>
+                            <input
+                                onChange={() => this.handleFilterTypeChange('and')}
+                                type="radio" name='type' value="and"
+                                defaultChecked={this.state.filterType === 'and'}/>
+                            Alle filters zijn en
+                        </div>
+                        <div className={'col-xs-4'}>
+                            <input
+                                onChange={() => this.handleFilterTypeChange('or')}
+                                type="radio" name='type' value="or"
+                                defaultChecked={this.state.filterType === 'or'}/>
+                            Alle filters zijn of
+                        </div>
+                    </h5>
+                </div>
                 <table className="table">
                     <thead>
                     <tr>
@@ -127,7 +154,7 @@ class ContactsListExtraFilters extends Component {
                     </tr>
                     </thead>
                     <tbody>
-                     {filters}
+                    {filters}
                     </tbody>
                 </table>
                 <div className='row'>

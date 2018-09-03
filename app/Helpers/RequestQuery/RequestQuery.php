@@ -93,7 +93,17 @@ abstract class RequestQuery
      */
     protected function applyFilter($query)
     {
-        if ($this->filter) $this->filter->apply($query);
+        if ($this->filter) {
+            if($this->request && $this->request->input('filterType') === 'and') {
+                $this->filter->apply($query);
+            }
+            else if($this->request && $this->request->input('filterType') === 'or') {
+                $this->filter->applyOr($query);
+            }
+            else {
+                $this->filter->apply($query);
+            }
+        }
     }
 
     /**
@@ -101,7 +111,17 @@ abstract class RequestQuery
      */
     protected function applyExtraFilter($query)
     {
-        if ($this->extraFilter) $this->extraFilter->apply($query);
+        if ($this->extraFilter) {
+            if($this->request && $this->request->input('filterType') === 'and') {
+                $this->extraFilter->apply($query);
+            }
+            else if($this->request && $this->request->input('filterType') === 'or') {
+                $this->extraFilter->applyOr($query);
+            }
+            else {
+                $this->extraFilter->apply($query);
+            }
+        }
     }
 
     /**

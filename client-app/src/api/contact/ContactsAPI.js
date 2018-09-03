@@ -3,7 +3,7 @@ import axios from 'axios';
 const URL_API = process.env.URL_API;
 
 export default {
-    fetchContacts: ({ filters, extraFilters, sorts, pagination }) => {
+    fetchContacts: ({ filters, extraFilters, sorts, pagination, filterType}) => {
         const requestUrl = `${URL_API}/api/contact/grid`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
@@ -15,6 +15,7 @@ export default {
                 sorts: JSON.stringify(sorts),
                 limit: pagination.limit,
                 offset: pagination.offset,
+                filterType: filterType,
             },
         });
     },
@@ -83,7 +84,7 @@ export default {
         });
     },
 
-    saveAsGroup: ({ filters, extraFilters }) => {
+    saveAsGroup: ({ filters, extraFilters, filterType }) => {
         const requestUrl = `${URL_API}/api/contact/save-as-group`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
@@ -92,6 +93,7 @@ export default {
             params: {
                 filters: JSON.stringify(filters),
                 extraFilters: JSON.stringify(extraFilters),
+                filterType: filterType,
             },
         });
     },

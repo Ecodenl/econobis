@@ -5,7 +5,7 @@ import moment from 'moment';
 import ViewText from '../../../../components/form/ViewText';
 
 const ContactGroupDetailsFormGeneralView = props => {
-    const { name, contactGroupComposedType, description, responsibleUser = {}, closedStatus, dateStarted, dateFinished, createdAt, type, createdBy, showPortal, editPortal, showContactForm } = props.contactGroupDetails;
+    const { name, dynamicFilterType, contactGroupComposedType, description, responsibleUser = {}, closedStatus, dateStarted, dateFinished, createdAt, type, createdBy, showPortal, editPortal, showContactForm } = props.contactGroupDetails;
 
     return (
         <div onClick={props.switchToEdit}>
@@ -19,6 +19,12 @@ const ContactGroupDetailsFormGeneralView = props => {
                         label={"Voorwaarde"}
                         value={contactGroupComposedType === 'one' ? 'In één van de groepen' : 'In alle groepen'}
                     />
+                }
+                {type.id === 'dynamic' &&
+                <ViewText
+                    label={"Filter voorwaarde"}
+                    value={dynamicFilterType === 'or' ? 'Alle filters zijn of' : 'Alle filters zijn en'}
+                />
                 }
             </div>
 

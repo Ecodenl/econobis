@@ -24,6 +24,7 @@ class ContactGroupDetailsFormGeneralEdit extends Component {
         const { showContactForm } = props.contactGroupDetails;
         const { contactGroupComposedType } = props.contactGroupDetails;
         const { type } = props.contactGroupDetails;
+        const { dynamicFilterType } = props.contactGroupDetails;
 
         this.state = {
             contactsWithPermission: [],
@@ -35,8 +36,9 @@ class ContactGroupDetailsFormGeneralEdit extends Component {
                 showPortal: showPortal ? showPortal: false,
                 editPortal: editPortal ? editPortal: false,
                 showContactForm: showContactForm ? showContactForm: false,
-                contactGroupComposedType: contactGroupComposedType ? contactGroupComposedType: 'one',
+                contactGroupComposedType: contactGroupComposedType ? contactGroupComposedType : 'one',
                 type: type.id,
+                dynamicFilterType: dynamicFilterType ? dynamicFilterType : 'and',
             },
             errors: {
                 name: false,
@@ -124,6 +126,16 @@ class ContactGroupDetailsFormGeneralEdit extends Component {
         });
     };
 
+    handleChangeDynamicFilterType = (type) => {
+        this.setState({
+            ...this.state,
+            contactGroup: {
+                ...this.state.contactGroup,
+                dynamicFilterType: type
+            },
+        });
+    };
+
     render() {
         const {name, description, responsibleUserId, closed, dateStarted, dateFinished, createdAt, showPortal, editPortal, showContactForm, type} = this.state.contactGroup;
 
@@ -154,6 +166,26 @@ class ContactGroupDetailsFormGeneralEdit extends Component {
                                     type="radio" name='composedGroupType' value="all"
                                     defaultChecked={this.props.contactGroupDetails.contactGroupComposedType === 'all'}/>
                                 In alle groepen
+                            </div>
+                        </div>
+                    </div>
+                    }
+                    {this.props.contactGroupDetails.type.id === 'dynamic' &&
+                    <div className={'col-xs-6'}>
+                        <div className={'row'}>
+                            <div className={'col-xs-6'}>
+                                <input
+                                    onChange={() => this.handleChangeDynamicFilterType('and')}
+                                    type="radio" name='composedGroupType' value="and"
+                                    defaultChecked={this.props.contactGroupDetails.dynamicFilterType === 'and'}/>
+                                Alle filters zijn en
+                            </div>
+                            <div className={'col-xs-6'}>
+                                <input
+                                    onChange={() => this.handleChangeDynamicFilterType('or')}
+                                    type="radio" name='dynamicFilterType' value="or"
+                                    defaultChecked={this.props.contactGroupDetails.dynamicFilterType === 'or'}/>
+                                Alle filters zijn of
                             </div>
                         </div>
                     </div>

@@ -57,6 +57,15 @@ abstract class RequestFilter
         }
     }
 
+    public function applyOr($query)
+    {
+        $query->where(function ($query) {
+            foreach ($this->filters as $filter) {
+                $this->applySingle($query, $filter['field'], $filter['type'], $filter['data'], 'or');
+            }
+        });
+    }
+
     private function setRequestFilters(Request $request)
     {
         $filters = json_decode($request->input($this->parameterName), true);
@@ -94,7 +103,7 @@ abstract class RequestFilter
         ];
     }
 
-    private function applySingle($query, $field, $type, $data = null)
+    private function applySingle($query, $field, $type, $data = null, $filterType = 'and')
     {
         $this->applyJoin($query, $field);
 
@@ -107,7 +116,14 @@ abstract class RequestFilter
 
         $mappedField = $this->getMappedField($field);
 
-        $this->applyFilter($query, $mappedField, $type, $data);
+        if($filterType == 'or'){
+            $this->applyOrFilter($query, $mappedField, $type, $data);
+        }
+        else{
+            $this->applyFilter($query, $mappedField, $type, $data);
+        }
+
+
     }
 
     private function getMappedField($field)
@@ -234,6 +250,51 @@ abstract class RequestFilter
                 break;
             case 'nnl':
                 $query->havingRaw($mappedField . 'is not null')->orHaving($mappedField, '!=', 0);
+                break;
+        }
+    }
+
+    protected function applyOrFilter($query, $mappedField, $type, $data)
+    {
+        switch ($type) {
+            case 'eq':
+                $query->orWhere($mappedField, '=', $data);
+                break;
+            case 'neq':
+                $query->orWhere($mappedField, '!=', $data);
+                break;
+            case 'ct':
+                $query->orWhere($mappedField, 'LIKE', '%' . $data . '%');
+                break;
+            case 'lt':
+                $query->orWhere($mappedField, '<', $data);
+                break;
+            case 'lte':
+                $query->orWhere($mappedField, '<=', $data);
+                break;
+            case 'gt':
+                $query->orWhere($mappedField, '>', $data);
+                break;
+            case 'gte':
+                $query->orWhere($mappedField, '>=', $data);
+                break;
+            case 'bw':
+                $query->orWhere($mappedField, 'LIKE', $data . '%');
+                break;
+            case 'nbw':
+                $query->orWhere($mappedField, 'NOT LIKE', $data . '%');
+                break;
+            case 'ew':
+                $query->orWhere($mappedField, 'LIKE', '%' . $data);
+                break;
+            case 'new':
+                $query->orWhere($mappedField, 'NOT LIKE', '%' . $data);
+                break;
+            case 'nl':
+                $query->orWhereNull($mappedField)->orWhere($mappedField, '=', 0);
+                break;
+            case 'nnl':
+                $query->orWhereNotNull($mappedField);
                 break;
         }
     }

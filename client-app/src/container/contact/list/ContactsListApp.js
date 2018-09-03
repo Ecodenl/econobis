@@ -79,15 +79,17 @@ class ContactsListApp extends Component {
             const filters = filterHelper(this.props.contactsFilters);
             const sorts = this.props.contactsSorts;
             const pagination = { limit: 20, offset: this.props.contactsPagination.offset };
+            const filterType = this.state.filterType;
 
-            this.props.fetchContacts(filters, extraFilters, sorts, pagination);
+            this.props.fetchContacts(filters, extraFilters, sorts, pagination, filterType);
         },100 );
     };
 
     saveAsGroup = () => {
         const extraFilters = this.state.extraFilters;
         const filters = filterHelper(this.props.contactsFilters);
-        ContactsAPI.saveAsGroup({filters, extraFilters}).then((payload) => {
+        const filterType = this.state.filterType;
+        ContactsAPI.saveAsGroup({filters, extraFilters, filterType}).then((payload) => {
             hashHistory.push(`/contact-groep/${payload.data.data.id}/edit`);
         });
     };
@@ -118,6 +120,7 @@ class ContactsListApp extends Component {
         this.props.clearFilterContacts();
 
         this.setState({
+            filterType: 'and',
             extraFilters: undefined,
             amountOfFilters: undefined,
         });
@@ -156,8 +159,9 @@ class ContactsListApp extends Component {
         this.props.setCheckedContactAll(!this.state.checkedAllCheckboxes);
     };
 
-    handleExtraFiltersChange(extraFilters, amountOfFilters){
+    handleExtraFiltersChange(extraFilters, amountOfFilters, filterType){
         this.setState({
+            filterType: filterType,
             amountOfFilters: amountOfFilters,
             extraFilters: extraFilters
         });
@@ -182,6 +186,7 @@ class ContactsListApp extends Component {
                                 checkedAllCheckboxes={this.state.checkedAllCheckboxes}
                                 handleExtraFiltersChange={this.handleExtraFiltersChange}
                                 extraFilters={this.state.extraFilters}
+                                filterType={this.state.filterType}
                                 amountOfFilters={this.state.amountOfFilters}
                                 getCSV={this.getCSV}
                                 toggleSaveAsGroup={this.toggleSaveAsGroup}

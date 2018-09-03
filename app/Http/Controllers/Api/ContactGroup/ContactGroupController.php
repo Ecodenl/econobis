@@ -108,6 +108,7 @@ class ContactGroupController extends Controller
             ->boolean('showContactForm')->validate('boolean')->alias('show_contact_form')->whenMissing(false)->next()
             ->string('contactGroupComposedType')->validate('string')->alias('composed_group_type')->whenMissing('one')->onEmpty('one')->next()
             ->string('type')->validate('string|required')->alias('type_id')->next()
+            ->string('dynamicFilterType')->validate('string')->alias('dynamic_filter_type')->whenMissing('and')->onEmpty('and')->next()
             ->get();
 
         //Van dynamisch een statische groep maken

@@ -401,9 +401,9 @@ class ProductionProjectFormEdit extends Component {
 
                 <div className="row">
                     <InputToggle
-                        label={"Lidmaatschap verplicht"}
-                        name={"isMembershipRequired"}
-                        value={isMembershipRequired}
+                        label={"Participaties overdraagbaar"}
+                        name={"isParticipationTransferable"}
+                        value={isParticipationTransferable}
                         onChangeAction={this.handleInputChange}
                     />
                     <InputText
@@ -416,9 +416,9 @@ class ProductionProjectFormEdit extends Component {
 
                 <div className="row">
                     <InputToggle
-                        label={"Participaties overdraagbaar"}
-                        name={"isParticipationTransferable"}
-                        value={isParticipationTransferable}
+                        label={"Deelname aan groep verplicht"}
+                        name={"isMembershipRequired"}
+                        value={isMembershipRequired}
                         onChangeAction={this.handleInputChange}
                     />
                     <InputText
@@ -431,7 +431,7 @@ class ProductionProjectFormEdit extends Component {
                 {isMembershipRequired == true &&
                 <div className={'row'}>
                     <InputMultiSelect
-                        label={"Lidmaatschap groepen"}
+                        label={"Onderdeel van groep"}
                         name={"contactGroupsIds"}
                         options={this.state.contactGroups}
                         value={contactGroupIds}

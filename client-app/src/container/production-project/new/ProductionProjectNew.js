@@ -260,7 +260,7 @@ const ProductionProjectNew = props => {
 
             <div className="row">
                 <InputToggle
-                    label={"Lidmaatschap verplicht"}
+                    label={"Deelname aan groep verplicht"}
                     name={"isMembershipRequired"}
                     value={isMembershipRequired}
                     onChangeAction={props.handleInputChange}
@@ -272,10 +272,11 @@ const ProductionProjectNew = props => {
                     onChangeAction={props.handleInputChange}
                 />
             </div>
+
             {isMembershipRequired == true &&
             <div className={'row'}>
                 <InputMultiSelect
-                    label={"Lidmaatschap groepen"}
+                    label={"Onderdeel van groep"}
                     name={"contactGroupsIds"}
                     options={props.contactGroups}
                     value={contactGroupIds}

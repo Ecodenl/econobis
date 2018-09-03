@@ -170,8 +170,8 @@ const ProductionProjectFormView = props => {
 
             <div className="row" onClick={props.switchToEdit}>
                 <ViewText
-                    label={"Lidmaatschap verplicht"}
-                    value={isMembershipRequired ? 'Ja' : 'Nee'}
+                    label={"Participaties overdraagbaar"}
+                    value={isParticipationTransferable ? 'Ja' : 'Nee'}
                 />
                 <ViewText
                     label={"Participaties in optie"}
@@ -181,8 +181,8 @@ const ProductionProjectFormView = props => {
 
             <div className="row" onClick={props.switchToEdit}>
                 <ViewText
-                    label={"Participaties overdraagbaar"}
-                    value={isParticipationTransferable ? 'Ja' : 'Nee'}
+                    label={"Deelname aan groep verplicht"}
+                    value={isMembershipRequired ? 'Ja' : 'Nee'}
                 />
                 <ViewText
                     label={"Uit te geven participaties"}
@@ -192,7 +192,7 @@ const ProductionProjectFormView = props => {
             {isMembershipRequired == true &&
             <div className="row" onClick={props.switchToEdit}>
                 <ViewText
-                    label={"Lidmaatschap groepen"}
+                    label={"Onderdeel van groep"}
                     value={requiresContactGroups && requiresContactGroups.map((requiresContactGroup) => requiresContactGroup.name).join(', ')}
                 />
             </div>

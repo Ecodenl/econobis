@@ -151,8 +151,11 @@ class ContactGroup extends Model
             else{
                 $tempContacts = $contactGroup->getAllContacts();
 
-                if($tempContacts){
+                if($tempContacts && $this->composed_group_type === 'one'){
                     $contacts = $contacts->merge($tempContacts);
+                }
+                else if($tempContacts && $this->composed_group_type === 'all'){
+                    $contacts = $contacts->intersect($tempContacts);
                 }
             }
             array_push($this->hasComposedIds, $contactGroup->id);

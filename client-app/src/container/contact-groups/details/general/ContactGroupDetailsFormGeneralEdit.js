@@ -21,6 +21,7 @@ class ContactGroupDetailsFormGeneralEdit extends Component {
         const { showPortal } = props.contactGroupDetails;
         const { editPortal } = props.contactGroupDetails;
         const { showContactForm } = props.contactGroupDetails;
+        const { contactGroupComposedType } = props.contactGroupDetails;
 
         this.state = {
             contactsWithPermission: [],
@@ -32,6 +33,7 @@ class ContactGroupDetailsFormGeneralEdit extends Component {
                 showPortal: showPortal ? showPortal: false,
                 editPortal: editPortal ? editPortal: false,
                 showContactForm: showContactForm ? showContactForm: false,
+                contactGroupComposedType: contactGroupComposedType ? contactGroupComposedType: 'one',
             },
             errors: {
                 name: false,
@@ -109,6 +111,16 @@ class ContactGroupDetailsFormGeneralEdit extends Component {
         });
     };
 
+    handleChangeComposedGroupType = (type) => {
+        this.setState({
+            ...this.state,
+            contactGroup: {
+                ...this.state.contactGroup,
+                contactGroupComposedType: type
+            },
+        });
+    };
+
     render() {
         const {name, description, responsibleUserId, closed, dateStarted, dateFinished, createdAt, showPortal, editPortal, showContactForm} = this.state.contactGroup;
 
@@ -123,6 +135,26 @@ class ContactGroupDetailsFormGeneralEdit extends Component {
                         required={"required"}
                         error={this.state.errors.name}
                     />
+                    {this.props.contactGroupDetails.type.id === 'composed' &&
+                    <div className={'col-xs-6'}>
+                        <div className={'row'}>
+                            <div className={'col-xs-6'}>
+                                <input
+                                    onChange={() => this.handleChangeComposedGroupType('one')}
+                                    type="radio" name='composedGroupType' value="one"
+                                    defaultChecked={this.props.contactGroupDetails.contactGroupComposedType === 'one'}/>
+                                In één van de groepen
+                            </div>
+                            <div className={'col-xs-6'}>
+                                <input
+                                    onChange={() => this.handleChangeComposedGroupType('all')}
+                                    type="radio" name='composedGroupType' value="all"
+                                    defaultChecked={this.props.contactGroupDetails.contactGroupComposedType === 'all'}/>
+                                In alle groepen
+                            </div>
+                        </div>
+                    </div>
+                    }
                 </div>
 
                 <div className="row">

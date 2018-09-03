@@ -46,6 +46,7 @@ class FullContactGroup extends Resource
             'extraFilters' => $this->extraFilters,
             'composedGroups' => $this->contactGroups()->get(),
             'isUsedInComposedGroup' => $this->is_used_in_composed_group,
+            'contactGroupComposedType' => $this->composed_group_type,
         ];
     }
 }

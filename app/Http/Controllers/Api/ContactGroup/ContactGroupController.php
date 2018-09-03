@@ -65,6 +65,7 @@ class ContactGroupController extends Controller
             ->boolean('showPortal')->validate('boolean')->alias('show_portal')->whenMissing(false)->next()
             ->boolean('editPortal')->validate('boolean')->alias('edit_portal')->whenMissing(false)->next()
             ->boolean('showContactForm')->validate('boolean')->alias('show_contact_form')->whenMissing(false)->next()
+            ->string('contactGroupComposedType')->validate('string')->alias('composed_group_type')->whenMissing('one')->onEmpty('one')->next()
             ->get();
 
         $contactGroupIds = explode(',', $request->contactGroupIds);
@@ -104,6 +105,7 @@ class ContactGroupController extends Controller
             ->boolean('showPortal')->validate('boolean')->alias('show_portal')->whenMissing(false)->next()
             ->boolean('editPortal')->validate('boolean')->alias('edit_portal')->whenMissing(false)->next()
             ->boolean('showContactForm')->validate('boolean')->alias('show_contact_form')->whenMissing(false)->next()
+            ->string('contactGroupComposedType')->validate('string')->alias('composed_group_type')->whenMissing('one')->onEmpty('one')->next()
             ->get();
 
         $contactGroup->fill($data);

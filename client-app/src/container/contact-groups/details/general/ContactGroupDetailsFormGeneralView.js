@@ -5,7 +5,7 @@ import moment from 'moment';
 import ViewText from '../../../../components/form/ViewText';
 
 const ContactGroupDetailsFormGeneralView = props => {
-    const { name, description, responsibleUser = {}, closedStatus, dateStarted, dateFinished, createdAt, type, createdBy, showPortal, editPortal, showContactForm } = props.contactGroupDetails;
+    const { name, contactGroupComposedType, description, responsibleUser = {}, closedStatus, dateStarted, dateFinished, createdAt, type, createdBy, showPortal, editPortal, showContactForm } = props.contactGroupDetails;
 
     return (
         <div onClick={props.switchToEdit}>
@@ -14,6 +14,12 @@ const ContactGroupDetailsFormGeneralView = props => {
                     label={"Naam"}
                     value={name}
                 />
+                {type.id === 'composed' &&
+                    <ViewText
+                        label={"Voorwaarde"}
+                        value={contactGroupComposedType === 'one' ? 'In één van de groepen' : 'In alle groepen'}
+                    />
+                }
             </div>
 
             <div className="row">

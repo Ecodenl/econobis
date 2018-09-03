@@ -29,7 +29,8 @@ class ContactGroupDetailsApp extends Component {
                     </div>
 
                     <div className="col-md-12">
-                        <ContactGroupDetailsForm />
+                        <ContactGroupDetailsForm
+                        mode={this.props.params.mode}/>
                     </div>
 
                     {this.props.contactGroupDetails.type && this.props.contactGroupDetails.type.id === 'dynamic' &&

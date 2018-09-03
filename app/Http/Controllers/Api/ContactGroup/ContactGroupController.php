@@ -107,7 +107,13 @@ class ContactGroupController extends Controller
             ->boolean('editPortal')->validate('boolean')->alias('edit_portal')->whenMissing(false)->next()
             ->boolean('showContactForm')->validate('boolean')->alias('show_contact_form')->whenMissing(false)->next()
             ->string('contactGroupComposedType')->validate('string')->alias('composed_group_type')->whenMissing('one')->onEmpty('one')->next()
+            ->string('type')->validate('string|required')->alias('type_id')->next()
             ->get();
+
+        //Van dynamisch een statische groep maken
+        if($contactGroup->type_id === 'dynamic' && $data['type_id'] === 'static'){
+            $this->makeStatic($contactGroup);
+        }
 
         $contactGroup->fill($data);
         $contactGroup->save();
@@ -192,5 +198,19 @@ class ContactGroupController extends Controller
         if(!($contactGroup->id === $contactGroupToAttach->id)) {
             $contactGroup->contactGroups()->syncWithoutDetaching($contactGroupToAttach);
         }
+    }
+
+    private function makeStatic(ContactGroup $contactGroup){
+        $allContacts = $contactGroup->all_contacts;
+
+        foreach ($contactGroup->filters as $filter){
+            $filter->delete();
+        }
+
+        foreach ($contactGroup->extraFilters as $extraFilter){
+            $extraFilter->delete();
+        }
+
+        $contactGroup->contacts()->sync($allContacts);
     }
 }

@@ -11,6 +11,11 @@ class DynamicContactGroupFilter extends Model
     protected $guarded = ['id'];
     protected $appends = ['dataName'];
 
+    public function contactGroup()
+    {
+        return $this->belongsTo(ContactGroup::class);
+    }
+
     public function getDataNameAttribute(){
         if(!$this->model_name){
             return $this->data;

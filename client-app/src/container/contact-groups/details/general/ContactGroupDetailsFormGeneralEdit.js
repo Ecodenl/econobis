@@ -10,6 +10,7 @@ import InputText from '../../../../components/form/InputText';
 import InputDate from '../../../../components/form/InputDate';
 import ButtonText from '../../../../components/button/ButtonText';
 import InputToggle from "../../../../components/form/InputToggle";
+import InputSelect from "../../../../components/form/InputSelect";
 
 class ContactGroupDetailsFormGeneralEdit extends Component {
     constructor(props) {
@@ -22,6 +23,7 @@ class ContactGroupDetailsFormGeneralEdit extends Component {
         const { editPortal } = props.contactGroupDetails;
         const { showContactForm } = props.contactGroupDetails;
         const { contactGroupComposedType } = props.contactGroupDetails;
+        const { type } = props.contactGroupDetails;
 
         this.state = {
             contactsWithPermission: [],
@@ -34,6 +36,7 @@ class ContactGroupDetailsFormGeneralEdit extends Component {
                 editPortal: editPortal ? editPortal: false,
                 showContactForm: showContactForm ? showContactForm: false,
                 contactGroupComposedType: contactGroupComposedType ? contactGroupComposedType: 'one',
+                type: type.id,
             },
             errors: {
                 name: false,
@@ -122,7 +125,7 @@ class ContactGroupDetailsFormGeneralEdit extends Component {
     };
 
     render() {
-        const {name, description, responsibleUserId, closed, dateStarted, dateFinished, createdAt, showPortal, editPortal, showContactForm} = this.state.contactGroup;
+        const {name, description, responsibleUserId, closed, dateStarted, dateFinished, createdAt, showPortal, editPortal, showContactForm, type} = this.state.contactGroup;
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -231,12 +234,22 @@ class ContactGroupDetailsFormGeneralEdit extends Component {
                         value={showContactForm}
                         onChangeAction={this.handleInputChange}
                     />
-                    <InputText
-                        label={"Type"}
-                        name={"type"}
-                        value={this.props.contactGroupDetails.type.name}
-                        readOnly={true}
-                    />
+                    {this.props.contactGroupDetails.type.id === 'dynamic' ?
+                        <InputSelect
+                            label="Type"
+                            name={"type"}
+                            value={type}
+                            options={[{id: 'dynamic', name: 'Dynamisch'}, {id: 'static', name: 'Statisch'}]}
+                            onChangeAction={this.handleInputChange}
+                        />
+                        :
+                        <InputText
+                            label={"Type"}
+                            name={"type"}
+                            value={this.props.contactGroupDetails.type.name}
+                            readOnly={true}
+                        />
+                    }
                 </div>
 
                 <div className="row">

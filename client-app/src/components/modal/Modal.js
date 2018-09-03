@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 const Modal = (props) => {
-    const {modalClassName, modalMainClassName, buttonClassName, buttonCancelText, buttonConfirmText, children, closeModal, confirmAction, title} = props;
+    const {extraButtonLabel, extraButtonClass, extraButtonAction, modalClassName, modalMainClassName, buttonClassName, buttonCancelText, buttonConfirmText, children, closeModal, confirmAction, title} = props;
 
     return (
         <div className={`modal ${modalMainClassName}`}>
@@ -15,6 +15,11 @@ const Modal = (props) => {
                         {children}
                     </div>
                     <div className="modal-footer">
+                        { props.extraButtonLabel &&
+                        <button type="button" className={`btn ${extraButtonClass}`} onClick={extraButtonAction}>
+                            {extraButtonLabel}
+                        </button>
+                        }
                         <button type="button" className="btn btn-default" onClick={closeModal}>{buttonCancelText}</button>
                         { props.showConfirmAction &&
                             <button type="button" className={`btn ${buttonClassName}`} onClick={confirmAction}>
@@ -36,6 +41,7 @@ Modal.defaultProps = {
     buttonCancelText: 'Annuleren',
     showConfirmAction: true,
     confirmAction: () => {},
+
 };
 
 Modal.propTypes = {
@@ -49,6 +55,9 @@ Modal.propTypes = {
     confirmAction: PropTypes.func,
     showConfirmAction: PropTypes.bool,
     title: PropTypes.string,
+    extraButtonLabel: PropTypes.string,
+    extraButtonClass: PropTypes.string,
+    extraButtonAction: PropTypes.func,
 };
 
 export default Modal;

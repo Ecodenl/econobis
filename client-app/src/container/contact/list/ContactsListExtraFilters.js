@@ -126,6 +126,9 @@ class ContactsListExtraFilters extends Component {
                 buttonConfirmText="Toepassen"
                 confirmAction={this.confirmAction}
                 closeModal={this.closeModal}
+                extraButtonLabel={'Maak groep'}
+                extraButtonClass={'btn-success'}
+                extraButtonAction={this.props.saveAsGroup}
             >
                 <div className={'row filter-row'}>
                     <h5>

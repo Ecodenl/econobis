@@ -190,6 +190,7 @@ class ContactsListApp extends Component {
                                 amountOfFilters={this.state.amountOfFilters}
                                 getCSV={this.getCSV}
                                 toggleSaveAsGroup={this.toggleSaveAsGroup}
+                                saveAsGroup={this.saveAsGroup}
                             />
                         </div>
 

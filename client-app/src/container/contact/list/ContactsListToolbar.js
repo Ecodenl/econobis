@@ -96,6 +96,7 @@ class ContactsListToolbar extends Component {
                 {
                     this.state.showExtraFilters &&
                     <ContactsListExtraFilters
+                        saveAsGroup={this.props.saveAsGroup}
                         filterType={this.props.filterType}
                         toggleShowExtraFilters={this.toggleShowExtraFilters}
                         handleExtraFiltersChange={this.props.handleExtraFiltersChange}

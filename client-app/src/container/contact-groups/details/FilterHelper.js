@@ -18,6 +18,13 @@ export default (type, field) => {
                 case 'occupation': return 'Verbinding';
                 case 'opportunity': return 'Kans';
                 case 'product': return 'Product';
+                case 'contactType': return 'Contact type';
+                case 'address': return 'Adres';
+                case 'participationStatusId': return 'Participatie status';
+                case 'dateRegister': return 'Datum inschrijving';
+                case 'energySupplierId': return 'Energie leverancier';
+                case 'datePayed': return 'Datum betaald';
+                case 'contactBirthday': return 'Contact geboortedatum';
             }
             break;
         case 'comperator':

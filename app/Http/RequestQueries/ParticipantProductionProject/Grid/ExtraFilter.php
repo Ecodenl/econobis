@@ -22,8 +22,8 @@ class ExtraFilter extends RequestExtraFilter
         'currentParticipations',
         'dateRegister',
         'datePayed',
-        'participationStatus',
-        'contactStatus',
+        'participationStatusId',
+        'statusId',
         'contactBirthday',
     ];
 
@@ -32,8 +32,8 @@ class ExtraFilter extends RequestExtraFilter
         'postalCode' => 'addresses.postal_code',
         'dateRegister' => 'participation_production_project.date_register',
         'datePayed' => 'participation_production_project.date_payed',
-        'participationStatus' => 'participation_production_project.status_id',
-        'contactStatus' => 'contacts.status_id',
+        'participationStatusId' => 'participation_production_project.status_id',
+        'statusId' => 'contacts.status_id',
         'contactBirthday' => 'people.date_of_birth',
     ];
 

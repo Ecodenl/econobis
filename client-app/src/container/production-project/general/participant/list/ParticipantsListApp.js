@@ -94,8 +94,9 @@ class ParticipantsListApp extends Component {
             const filters = filterHelper(this.props.participantsProductionProjectFilters);
             const sorts = this.props.participantsProductionProjectSorts;
             const pagination = { limit: 20, offset: this.props.participantsProductionProjectPagination.offset };
+            const filterType = this.state.filterType;
 
-            this.props.fetchParticipantsProductionProject(filters, extraFilters, sorts, pagination, this.props.productionProjectId);
+            this.props.fetchParticipantsProductionProject(filters, extraFilters, sorts, pagination, this.props.productionProjectId, filterType);
         },100 );
     };
 
@@ -119,6 +120,7 @@ class ParticipantsListApp extends Component {
         this.props.clearFilterParticipantsProductionProject();
 
         this.setState({
+            filterType: 'and',
             extraFilters: undefined,
             amountOfFilters: undefined,
         });
@@ -183,8 +185,9 @@ class ParticipantsListApp extends Component {
         });
     };
 
-    handleExtraFiltersChange(extraFilters, amountOfFilters){
+    handleExtraFiltersChange(extraFilters, amountOfFilters, filterType){
         this.setState({
+            filterType: filterType,
             amountOfFilters: amountOfFilters,
             extraFilters: extraFilters
         });
@@ -337,6 +340,15 @@ class ParticipantsListApp extends Component {
         }
     };
 
+    saveAsGroup = () => {
+        const extraFilters = this.state.extraFilters;
+        const filters = filterHelper(this.props.participantsProductionProjectFilters);
+        const filterType = this.state.filterType;
+        ParticipantsProductionProjectAPI.saveAsGroup({filters, extraFilters, filterType}).then((payload) => {
+            hashHistory.push(`/contact-groep/${payload.data.data.id}/edit`);
+        });
+    };
+
     render() {
         return (
             <Panel>
@@ -349,6 +361,7 @@ class ParticipantsListApp extends Component {
                             extraFilters={this.state.extraFilters}
                             amountOfFilters={this.state.amountOfFilters}
                             getCSV={this.getCSV}
+                            saveAsGroup={this.saveAsGroup}
                         />
                     </div>
 

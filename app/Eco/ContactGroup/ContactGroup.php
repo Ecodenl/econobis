@@ -5,13 +5,9 @@ namespace App\Eco\ContactGroup;
 use App\Eco\Contact\Contact;
 use App\Eco\Document\Document;
 use App\Eco\Email\Email;
+use App\Eco\ParticipantProductionProject\ParticipantProductionProject;
 use App\Eco\Task\Task;
 use App\Eco\User\User;
-use App\Http\RequestQueries\Contact\Grid\ExtraFilter;
-use App\Http\RequestQueries\Contact\Grid\Filter;
-use App\Http\RequestQueries\Contact\Grid\Joiner;
-use App\Http\RequestQueries\Contact\Grid\RequestQuery;
-use App\Http\RequestQueries\Contact\Grid\Sort;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Http\Request;
@@ -52,6 +48,11 @@ class ContactGroup extends Model
     public function contacts()
     {
         return $this->belongsToMany(Contact::class, 'contact_groups_pivot');
+    }
+
+    public function participants()
+    {
+        return $this->belongsToMany(ParticipantProductionProject::class, 'group_participant_pivot', 'contact_group_id', 'participant_id');
     }
 
     public function responsibleUser()
@@ -129,10 +130,16 @@ class ContactGroup extends Model
         $request = new Request();
         $request->replace(['filters' => $requestFilters, 'extraFilters' => $requestExtraFilters, 'filterType' => $this->dynamic_filter_type]);
 
-        $requestQuery = new RequestQuery($request, new Filter($request), new Sort($request), new Joiner(),
-            new ExtraFilter($request));
+        if ($this->composed_of === 'contacts') {
+            $requestQuery = new \App\Http\RequestQueries\Contact\Grid\RequestQuery($request, new \App\Http\RequestQueries\Contact\Grid\Filter($request), new \App\Http\RequestQueries\Contact\Grid\Sort($request), new \App\Http\RequestQueries\Contact\Grid\Joiner(),
+                new \App\Http\RequestQueries\Contact\Grid\ExtraFilter($request));
+        }
+        else if ($this->composed_of === 'participants') {
+            $requestQuery = new \App\Http\RequestQueries\ParticipantProductionProject\Grid\RequestQuery($request, new \App\Http\RequestQueries\ParticipantProductionProject\Grid\Filter($request), new \App\Http\RequestQueries\ParticipantProductionProject\Grid\Sort($request), new \App\Http\RequestQueries\ParticipantProductionProject\Grid\Joiner(),
+                new \App\Http\RequestQueries\ParticipantProductionProject\Grid\ExtraFilter($request));
+        }
 
-        return ($requestQuery);
+        return $requestQuery;
     }
 
     public function getComposedContactsAttribute()
@@ -142,26 +149,53 @@ class ContactGroup extends Model
         foreach ($this->contactGroups as $contactGroup) {
 
             //als id al is geweest, sneller en tegen infinite loop
-            if(in_array($contactGroup->id, $this->hasComposedIds)){
+            if (in_array($contactGroup->id, $this->hasComposedIds)) {
                 continue;
             }
 
-            if($contacts === null){
+            if ($contacts === null) {
                 $contacts = $contactGroup->getAllContacts();
-            }
-            else{
+            } else {
                 $tempContacts = $contactGroup->getAllContacts();
 
-                if($tempContacts && $this->composed_group_type === 'one'){
-                    $contacts = $contacts->merge($tempContacts);
-                }
-                else if($tempContacts && $this->composed_group_type === 'all'){
-                    $contacts = $contacts->intersect($tempContacts);
-                }
-            }
-            array_push($this->hasComposedIds, $contactGroup->id);
-        }
+                //one - in een van de groepen
+                //all - in alle groepen
+                //
+                //contacts merge(ontdubbelen)
+                //participanten push(niet ontdubbelen)
+                if ($tempContacts && $this->composed_group_type === 'one') {
+                    if ($contactGroup->composed_of === 'contacts') {
+                        $contacts = $contacts->merge($tempContacts);
+                    } else {
+                        if ($contactGroup->composed_of === 'participants') {
+                            {
+                                foreach ($tempContacts as $tempContact){
+                                    $contacts->push($tempContact);
+                                }
+                            }
+                        } else {
+                            if ($tempContacts && $this->composed_group_type === 'all') {
+                                if ($contactGroup->composed_of === 'contacts') {
+                                    $contacts = $contacts->intersect($tempContacts);
+                                } else {
+                                    if ($contactGroup->composed_of === 'participants') {
+                                        {
+                                            $intersectedContacts = $contacts->intersect($tempContacts);
 
+                                            foreach ($intersectedContacts as $intersectedContact){
+                                                $contacts->push($intersectedContact);
+                                            }
+                                        }
+                                    }
+                                }
+
+                            }
+                        }
+                    }
+                }
+                array_push($this->hasComposedIds, $contactGroup->id);
+            }
+        }
         return $contacts;
     }
 
@@ -174,15 +208,55 @@ class ContactGroup extends Model
 
         $this->hasComposedIds = [];
 
-        return $contacts ? $contacts->unique('id')->values() : new Collection();
+        if($this->composed_of === 'contacts') {
+            return $contacts ? $contacts->unique('id')->values() : new Collection();
+        }
+        else if($this->composed_of === 'participants'){
+            return $contacts ? $contacts : new Collection();
+        }
+        else if($this->composed_of === 'both'){
+            return $contacts ? $contacts : new Collection();
+        }
     }
 
     public function getAllContacts()
     {
         if ($this->type_id === 'static') {
-            return $this->contacts()->get();
+            if ($this->composed_of === 'contacts') {
+                return $this->contacts()->get();
+            } else {
+                if ($this->composed_of === 'participants') {
+                    $participants = $this->participants()->get();
+
+                    $participants->load(['contact']);
+
+                    $contactCollections = new Collection();
+
+                    foreach ($participants as $participant) {
+                        $contactCollections->push($participant->contact);
+                    }
+
+                    return $contactCollections;
+                }
+            }
         } elseif ($this->type_id === 'dynamic') {
-            return $this->dynamic_contacts->get();
+            if ($this->composed_of === 'contacts') {
+                return $this->dynamic_contacts->get();
+            } else {
+                if ($this->composed_of === 'participants') {
+                    $participants = $this->dynamic_contacts->get();
+
+                    $participants->load(['contact']);
+
+                    $contactCollections = new Collection();
+
+                    foreach ($participants as $participant) {
+                        $contactCollections->push($participant->contact);
+                    }
+
+                    return $contactCollections;
+                }
+            }
         } elseif ($this->type_id === 'composed') {
             return $this->composed_contacts;
         }

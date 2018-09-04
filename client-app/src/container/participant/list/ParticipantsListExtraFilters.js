@@ -11,6 +11,7 @@ class ParticipantsListExtraFilters extends Component {
         super(props);
 
         this.state = {
+            filterType: props.filterType ? props.filterType : 'and',
             amountOfFilters: props.amountOfFilters !== undefined ? props.amountOfFilters : 1,
             filters: props.extraFilters !== undefined ? props.extraFilters : [{
                 field: 'name',
@@ -25,7 +26,7 @@ class ParticipantsListExtraFilters extends Component {
     };
 
     confirmAction = () => {
-        this.props.handleExtraFiltersChange(this.state.filters, this.state.amountOfFilters);
+        this.props.handleExtraFiltersChange(this.state.filters, this.state.amountOfFilters, this.state.filterType);
         this.props.toggleShowExtraFilters();
     };
 
@@ -37,6 +38,13 @@ class ParticipantsListExtraFilters extends Component {
         this.setState({
             ...this.state,
             filters: filters
+        });
+    };
+
+    handleFilterTypeChange = (type) => {
+        this.setState({
+            ...this.state,
+            filterType: type
         });
     };
 
@@ -91,12 +99,12 @@ class ParticipantsListExtraFilters extends Component {
                 'name': 'Datum betaald',
                 'type': 'date'
             },
-            'participationStatus': {
+            'participationStatusId': {
                 'name': 'Participaties status',
                 'type': 'dropdown',
                 'dropDownOptions': this.props.participantProductionProjectStatus
             },
-            'contactStatus': {
+            'statusId': {
                 'name': 'Contact status',
                 'type': 'dropdown',
                 'dropDownOptions': this.props.contactStatuses
@@ -125,7 +133,28 @@ class ParticipantsListExtraFilters extends Component {
                 buttonConfirmText="Toepassen"
                 confirmAction={this.confirmAction}
                 closeModal={this.closeModal}
+                extraButtonLabel={'Maak groep'}
+                extraButtonClass={'btn-success'}
+                extraButtonAction={this.props.saveAsGroup}
             >
+                <div className={'row filter-row'}>
+                <h5>
+                    <div className={'col-xs-4'}>
+                        <input
+                            onChange={() => this.handleFilterTypeChange('and')}
+                            type="radio" name='type' value="and"
+                            defaultChecked={this.state.filterType === 'and'}/>
+                        Alle filters zijn en
+                    </div>
+                    <div className={'col-xs-4'}>
+                        <input
+                            onChange={() => this.handleFilterTypeChange('or')}
+                            type="radio" name='type' value="or"
+                            defaultChecked={this.state.filterType === 'or'}/>
+                        Alle filters zijn of
+                    </div>
+                </h5>
+            </div>
                 <table className="table">
                     <thead>
                     <tr>

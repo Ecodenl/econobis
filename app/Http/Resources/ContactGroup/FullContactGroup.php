@@ -33,7 +33,6 @@ class FullContactGroup extends Resource
             'responsibleUser' => FullUser::make($this->whenLoaded('responsibleUser')),
             'createdAt' => $this->created_at,
             'updatedAt' => $this->updated_at,
-            'contacts' => FullContact::collection($this->all_contacts),
             'taskCount' => $this->tasks()->count(),
             'relatedTasks' => GridTask::collection($this->whenLoaded('tasks')),
             'documentCount' => $this->documents()->count(),
@@ -48,6 +47,7 @@ class FullContactGroup extends Resource
             'isUsedInComposedGroup' => $this->is_used_in_composed_group,
             'contactGroupComposedType' => $this->composed_group_type,
             'dynamicFilterType' => $this->dynamic_filter_type,
+            'composedOf' => $this->composed_of,
         ];
     }
 }

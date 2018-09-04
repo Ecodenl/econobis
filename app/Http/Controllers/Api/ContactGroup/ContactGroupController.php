@@ -74,9 +74,11 @@ class ContactGroupController extends Controller
         if ($contactGroupIds[0] == '') {
             $contactGroupIds = [];
             $data['type_id'] = 'static';
+            $data['composed_of'] = 'contacts';
         }
         else{
             $data['type_id'] = 'composed';
+            $data['composed_of'] = 'both';
         }
 
         $contactGroup = new ContactGroup($data);
@@ -202,7 +204,7 @@ class ContactGroupController extends Controller
     }
 
     private function makeStatic(ContactGroup $contactGroup){
-        $allContacts = $contactGroup->all_contacts;
+        $dynamicContacts = $contactGroup->dynamic_contacts;
 
         foreach ($contactGroup->filters as $filter){
             $filter->delete();
@@ -212,6 +214,12 @@ class ContactGroupController extends Controller
             $extraFilter->delete();
         }
 
-        $contactGroup->contacts()->sync($allContacts);
+        if($contactGroup->composed_of === 'contacts'){
+            $contactGroup->contacts()->sync($dynamicContacts->get());
+        }
+        else if($contactGroup->composed_of === 'participants'){
+            $contactGroup->participants()->sync($dynamicContacts->get());
+        }
+
     }
 }

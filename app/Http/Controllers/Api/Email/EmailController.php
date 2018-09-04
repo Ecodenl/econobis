@@ -13,7 +13,7 @@ use App\Eco\Contact\Contact;
 use App\Eco\ContactGroup\ContactGroup;
 use App\Eco\Email\Email;
 use App\Eco\Email\EmailAttachment;
-
+use App\Eco\Email\EmailGroupEmailAddress;
 use App\Eco\Email\Jobs\SendEmailsWithVariables;
 use App\Eco\Email\Jobs\StoreConceptEmail;
 use App\Eco\EmailAddress\EmailAddress;
@@ -230,9 +230,31 @@ class EmailController
             if ($sanitizedData['contact_group_id']) {
                 $contactGroup = ContactGroup::find($sanitizedData['contact_group_id']);
 
-                foreach ($contactGroup->allContacts as $contact) {
-                    if ($contact->primaryEmailAddress) {
-                        $email->groupEmailAddresses()->attach($contact->primaryEmailAddress->id);
+                //als de groep statisch of dynamisch is en het een participant groep is slaan we het participant_id op in de tussentabel, deze wordt later gebruikt voor de merge velden
+                if($contactGroup->composed_of === 'participants'){
+                    if($contactGroup->type_id === 'static'){
+                        $participants = $contactGroup->participants()->get();
+                    }
+                    if($contactGroup->type_id === 'dynamic'){
+                        $participants = $contactGroup->dynamic_contacts->get();
+                    }
+                    $participants->load(['contact.primaryEmailAddress']);
+
+                    foreach ($participants as $participant) {
+                        if ($participant->contact->primaryEmailAddress) {
+                            $emailGroupEmailAddress = new EmailGroupEmailAddress();
+                            $emailGroupEmailAddress->email_id = $email->id;
+                            $emailGroupEmailAddress->email_address_id = $participant->contact->primaryEmailAddress->id;
+                            $emailGroupEmailAddress->participant_id = $participant->id;
+                            $emailGroupEmailAddress->save();
+                        }
+                    }
+                }
+                else {
+                    foreach ($contactGroup->allContacts as $contact) {
+                        if ($contact->primaryEmailAddress) {
+                            $email->groupEmailAddresses()->attach($contact->primaryEmailAddress->id);
+                        }
                     }
                 }
             }

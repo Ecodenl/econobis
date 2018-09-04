@@ -25,6 +25,7 @@ class ExtraFilter extends RequestExtraFilter
         'participationStatusId',
         'statusId',
         'contactBirthday',
+        'productionProjectId',
     ];
 
     protected $mapping = [
@@ -35,6 +36,7 @@ class ExtraFilter extends RequestExtraFilter
         'participationStatusId' => 'participation_production_project.status_id',
         'statusId' => 'contacts.status_id',
         'contactBirthday' => 'people.date_of_birth',
+        'productionProjectId' => 'participation_production_project.production_project_id',
     ];
 
     protected $joins = [

@@ -113,6 +113,11 @@ class ParticipantsListExtraFilters extends Component {
                 'name': 'Contact geboortedatum',
                 'type': 'date'
             },
+            'productionProjectId': {
+                'name': 'Productieproject',
+                'type': 'dropdownHas',
+                'dropDownOptions': this.props.productionProjects
+            },
         };
 
         let filters = [];

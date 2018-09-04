@@ -96,7 +96,7 @@ class ParticipantsListApp extends Component {
             const pagination = { limit: 20, offset: this.props.participantsProductionProjectPagination.offset };
             const filterType = this.state.filterType;
 
-            this.props.fetchParticipantsProductionProject(filters, extraFilters, sorts, pagination, null, filterType);
+            this.props.fetchParticipantsProductionProject(filters, extraFilters, sorts, pagination, filterType);
         },100 );
     };
 

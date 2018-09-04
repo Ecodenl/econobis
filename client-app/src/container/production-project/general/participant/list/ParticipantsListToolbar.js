@@ -5,15 +5,25 @@ import ButtonIcon from '../../../../../components/button/ButtonIcon';
 import {hashHistory} from "react-router";
 import ButtonText from "../../../../../components/button/ButtonText";
 import ParticipantsListExtraFilters from "./ParticipantsListExtraFilters";
+import ProductionProjectsAPI from "../../../../../api/production-project/ProductionProjectsAPI";
 
 class ParticipantsListToolbar extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
+            productionProjects: [],
             showExtraFilters: false,
         };
     }
+
+    componentDidMount() {
+        ProductionProjectsAPI.peekProductionProjects().then((payload) => {
+            this.setState({
+                productionProjects: payload,
+            });
+        });
+    };
 
     toggleShowExtraFilters = () => {
         this.setState({
@@ -52,6 +62,7 @@ class ParticipantsListToolbar extends Component {
                         extraFilters={this.props.extraFilters}
                         amountOfFilters={this.props.amountOfFilters}
                         saveAsGroup={this.props.saveAsGroup}
+                        productionProjects={this.state.productionProjects}
                     />
                 }
             </div>

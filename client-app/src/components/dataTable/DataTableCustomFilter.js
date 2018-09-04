@@ -16,9 +16,10 @@ class DataTableCustomFilter extends Component {
         super(props);
 
         this.state = {
-            comperator: this.props.filter.type,
-            type: this.props.fields[this.props.filter.field].type,
-            dropDownOptions: this.props.fields[this.props.filter.field].dropDownOptions ? this.props.fields[this.props.filter.field].dropDownOptions : '',
+            comperator: props.filter.type,
+            readOnly: props.filter.readOnly ? props.filter.readOnly : false,
+            type: props.fields[props.filter.field].type,
+            dropDownOptions: props.fields[props.filter.field].dropDownOptions ? props.fields[props.filter.field].dropDownOptions : '',
         };
     };
 
@@ -71,7 +72,7 @@ class DataTableCustomFilter extends Component {
         return (
             <tr>
                 <td className="col-md-4">
-                    <select className="form-control input-sm" name={'field'} value={field} onChange={this.handleFieldChange}>
+                    <select disabled={this.state.readOnly} className="form-control input-sm" name={'field'} value={field} onChange={this.handleFieldChange}>
                         {fieldList}
                     </select></td>
                 <td className="col-md-4">
@@ -79,30 +80,35 @@ class DataTableCustomFilter extends Component {
                     <DataTableCustomFilterSelectString
                         handleInputChange={this.handleInputChange}
                         type={type}
+                        readOnly={this.state.readOnly}
                     />
                     }
                     {this.state.type === 'number' &&
                         <DataTableCustomFilterSelectNumber
                             handleInputChange={this.handleInputChange}
                             type={type}
+                            readOnly={this.state.readOnly}
                         />
                     }
                     {this.state.type === 'dropdown' &&
                     <DataTableCustomFilterSelectDropdown
                         handleInputChange={this.handleInputChange}
                         type={type}
+                        readOnly={this.state.readOnly}
                     />
                     }
                     {this.state.type === 'dropdownHas' &&
                     <DataTableCustomFilterSelectDropdownHas
                         handleInputChange={this.handleInputChange}
                         type={type}
+                        readOnly={this.state.readOnly}
                     />
                     }
                     {this.state.type === 'date' &&
                     <DataTableCustomFilterSelectDate
                         handleInputChange={this.handleInputChange}
                         type={type}
+                        readOnly={this.state.readOnly}
                     />
                     }
                 </td>
@@ -116,6 +122,7 @@ class DataTableCustomFilter extends Component {
                         name='data'
                         value={this.props.filter.data}
                         onChange={this.handleInputChange}
+                        readOnly={this.state.readOnly}
                     />
                 }
                 {(this.state.type === 'dropdown' ||  this.state.type === 'dropdownHas') &&
@@ -124,7 +131,9 @@ class DataTableCustomFilter extends Component {
                         id='data'
                         name='data'
                         value={this.props.filter.data}
-                        onChange={this.handleInputChange}>
+                        onChange={this.handleInputChange}
+                        disabled={this.state.readOnly}
+                        >
                         <option></option>
                         { this.state.dropDownOptions.map((option) => {
                             return <option key={ option.id } value={ option.id }>{ option['name'] }</option>
@@ -136,6 +145,7 @@ class DataTableCustomFilter extends Component {
                         id='data'
                         value={this.props.filter.data}
                         onChangeAction={this.handleInputChangeDate}
+                        readOnly={this.state.readOnly}
                     />
                 }
                 </td>

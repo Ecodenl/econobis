@@ -48,6 +48,8 @@ class ParticipantsListApp extends Component {
             modalText: '',
             buttonConfirmText: '',
             readyForCreation: false,
+            extraFilters:
+                [{field: "productionProjectId", type: "eq", data: props.productionProjectId + '', readOnly: true}]
         };
 
         this.handleInputChange = this.handleInputChange.bind(this);
@@ -96,7 +98,7 @@ class ParticipantsListApp extends Component {
             const pagination = { limit: 20, offset: this.props.participantsProductionProjectPagination.offset };
             const filterType = this.state.filterType;
 
-            this.props.fetchParticipantsProductionProject(filters, extraFilters, sorts, pagination, this.props.productionProjectId, filterType);
+            this.props.fetchParticipantsProductionProject(filters, extraFilters, sorts, pagination, filterType);
         },100 );
     };
 
@@ -121,8 +123,8 @@ class ParticipantsListApp extends Component {
 
         this.setState({
             filterType: 'and',
-            extraFilters: undefined,
-            amountOfFilters: undefined,
+            extraFilters: [{field: "productionProjectId", type: "eq", data: this.props.productionProjectId + '', readOnly: true}],
+            amountOfFilters: 1,
         });
 
         this.fetchParticipantsProductionProjectData();

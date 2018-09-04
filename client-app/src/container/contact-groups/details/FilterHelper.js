@@ -25,6 +25,7 @@ export default (type, field) => {
                 case 'energySupplierId': return 'Energie leverancier';
                 case 'datePayed': return 'Datum betaald';
                 case 'contactBirthday': return 'Contact geboortedatum';
+                case 'productionProjectId': return 'Productieproject';
             }
             break;
         case 'comperator':

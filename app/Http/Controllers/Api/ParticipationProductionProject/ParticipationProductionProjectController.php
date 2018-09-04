@@ -118,6 +118,9 @@ class ParticipationProductionProjectController extends ApiController
             case 'energySupplierId':
                 return 'App\Eco\EnergySupplier\EnergySupplier';
                 break;
+            case 'productionProjectId':
+                return 'App\Eco\ProductionProject\ProductionProject';
+                break;
         }
     }
 

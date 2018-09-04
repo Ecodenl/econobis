@@ -4,12 +4,14 @@ import {connect} from "react-redux";
 import ButtonIcon from '../../../components/button/ButtonIcon';
 import ButtonText from "../../../components/button/ButtonText";
 import ParticipantsListExtraFilters from "./ParticipantsListExtraFilters";
+import ProductionProjectsAPI from "../../../api/production-project/ProductionProjectsAPI";
 
 class ParticipantsListToolbar extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
+            productionProjects: [],
             showExtraFilters: false,
         };
     }
@@ -17,6 +19,14 @@ class ParticipantsListToolbar extends Component {
     toggleShowExtraFilters = () => {
         this.setState({
             showExtraFilters: !this.state.showExtraFilters
+        });
+    };
+
+    componentDidMount() {
+        ProductionProjectsAPI.peekProductionProjects().then((payload) => {
+            this.setState({
+                productionProjects: payload,
+            });
         });
     };
 
@@ -47,6 +57,7 @@ class ParticipantsListToolbar extends Component {
                         extraFilters={this.props.extraFilters}
                         amountOfFilters={this.props.amountOfFilters}
                         saveAsGroup={this.props.saveAsGroup}
+                        productionProjects={this.state.productionProjects}
                     />
                 }
             </div>

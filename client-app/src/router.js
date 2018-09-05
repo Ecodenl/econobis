@@ -98,6 +98,7 @@ import InvoiceSendApp from "./container/financial/invoice/send/InvoiceSendApp";
 import OrderCreateApp from "./container/financial/order/create/OrderCreateApp";
 import PaymentInvoiceCreateApp from "./container/production-project/details/revenue/details/create/PaymentInvoiceCreateApp";
 import ParticipantReportCreateApp from "./container/production-project/general/participant/create/ParticipantReportCreateApp";
+import WebformsListApp from './container/webform/list/WebformsListApp';
 
 const Routes = () => {
     return (
@@ -266,6 +267,8 @@ const Routes = () => {
                 <Route path="teams" component={TeamsListApp} />
                 <Route path="team/nieuw" component={TeamNewApp} />
                 <Route path="team/:id" component={TeamDetailsApp} />
+                /* Webforms */
+                <Route path="webformulieren" component={WebformsListApp} />
                 /* 404 route */
                 <Route path="*" component={ NotFoundedPage } />
             </Route>

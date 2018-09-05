@@ -149,10 +149,9 @@ class SidebarMenu extends Component {
                             <NavText><Link className="sidebar-link" to="administraties">Administraties</Link></NavText>
                         </Nav>
                         }
-                        // Todo; rechten aanpassen
-                        {this.props.permissions.manageFinancial &&
+                        {this.props.permissions.manageWebform &&
                         <Nav id="webforms">
-                            <NavText><Link className="sidebar-link" to="webforms">Webformulieren</Link></NavText>
+                            <NavText><Link className="sidebar-link" to="webformulieren">Webformulieren</Link></NavText>
                         </Nav>
                         }
                         {this.props.permissions.manageFinancial &&

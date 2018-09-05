@@ -55,8 +55,8 @@ class WebformNewForm extends Component {
     handleInputChangeDate(value, name) {
         this.setState({
             ...this.state,
-            task: {
-                ...this.state.task,
+            webform: {
+                ...this.state.webform,
                 [name]: value
             },
         });

@@ -118,6 +118,23 @@ class ParticipantsListExtraFilters extends Component {
                 'type': 'dropdownHas',
                 'dropDownOptions': this.props.productionProjects
             },
+            'dateContractSend': {
+                'name': 'Datum contract verzonden',
+                'type': 'date'
+            },
+            'dateContractRetour': {
+                'name': 'Datum contract retour',
+                'type': 'date'
+            },
+            'dateEnd': {
+                'name': 'Einddatum',
+                'type': 'date'
+            },
+            // 'giftedByContactId': {
+            //     'name': 'Geschonken door',
+            //     'type': 'dropdown',
+            //     'dropDownOptions': this.state.contacts // Todo; juiste waarde weergeven. Fullname?
+            // },
         };
 
         let filters = [];

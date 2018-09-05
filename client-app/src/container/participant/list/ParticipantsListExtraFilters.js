@@ -4,9 +4,9 @@ import Modal from '../../../components/modal/Modal';
 import DataTableCustomFilter from "../../../components/dataTable/DataTableCustomFilter";
 import ButtonText from "../../../components/button/ButtonText";
 import {connect} from "react-redux";
+import ContactsAPI from "../../../api/contact/ContactsAPI";
 
 class ParticipantsListExtraFilters extends Component {
-
     constructor(props) {
         super(props);
 
@@ -18,8 +18,21 @@ class ParticipantsListExtraFilters extends Component {
                 type: 'eq',
                 data: ''
             }],
+            contacts: [],
         };
     };
+
+    componentDidMount() {
+        ContactsAPI.getContactsPeek().then((payload) => {
+            this.setState({
+                contacts: payload,
+                peekLoading: {
+                    ...this.state.peekLoading,
+                    contacts: false,
+                },
+            });
+        });
+    }
 
     closeModal = () => {
         this.props.toggleShowExtraFilters();
@@ -117,6 +130,23 @@ class ParticipantsListExtraFilters extends Component {
                 'name': 'Productieproject',
                 'type': 'dropdownHas',
                 'dropDownOptions': this.props.productionProjects
+            },
+            'dateContractSend': {
+                'name': 'Datum contract verzonden',
+                'type': 'date'
+            },
+            'dateContractRetour': {
+                'name': 'Datum contract retour',
+                'type': 'date'
+            },
+            'dateEnd': {
+                'name': 'Einddatum',
+                'type': 'date'
+            },
+            'giftedByContactId': {
+                'name': 'Geschonken door',
+                'type': 'dropdown',
+                'dropDownOptions': this.state.contacts // Todo; juiste waarde weergeven. Fullname?
             },
         };
 

@@ -134,13 +134,13 @@ class WebformNewForm extends Component {
                         </div>
                         <div className="row">
                             <InputDate
-                                label="Datum start"
+                                label="Startdatum"
                                 name="dateStart"
                                 value={dateStart}
                                 onChangeAction={this.handleInputChangeDate}
                             />
                             <InputDate
-                                label="Datum einde"
+                                label="Einddatum"
                                 name="dateEnd"
                                 value={dateEnd}
                                 onChangeAction={this.handleInputChangeDate}

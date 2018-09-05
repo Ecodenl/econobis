@@ -100,6 +100,7 @@ import PaymentInvoiceCreateApp from "./container/production-project/details/reve
 import ParticipantReportCreateApp from "./container/production-project/general/participant/create/ParticipantReportCreateApp";
 import WebformsListApp from './container/webform/list/WebformsListApp';
 import WebformNewApp from './container/webform/new/WebformNewApp';
+import WebformDetailsApp from './container/webform/details/WebformDetailsApp';
 
 const Routes = () => {
     return (
@@ -271,6 +272,7 @@ const Routes = () => {
                 /* Webforms */
                 <Route path="webformulieren" component={WebformsListApp} />
                 <Route path="webformulier/nieuw" component={WebformNewApp} />
+                <Route path="webformulier/:id" component={WebformDetailsApp} />
                 /* 404 route */
                 <Route path="*" component={ NotFoundedPage } />
             </Route>

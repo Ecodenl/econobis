@@ -62,6 +62,7 @@ import userDetailsReducer from './user/UserDetailsReducer';
 import usersReducer from './user/UsersReducer';
 import PaymentInvoicesReducer from './payment-invoice/PaymentInvoicesReducer';
 import webformsReducer from './webform/WebformsReducer';
+import webformDetailsReducer from './webform/WebformDetailsReducer';
 
 const rootReducer = combineReducers({
     // General
@@ -158,6 +159,7 @@ const rootReducer = combineReducers({
     paymentInvoices: PaymentInvoicesReducer,
     //Webform
     webforms: webformsReducer,
+    webformDetails: webformDetailsReducer,
 });
 
 export default rootReducer;

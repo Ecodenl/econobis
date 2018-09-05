@@ -113,17 +113,6 @@ const ParticipantsListFilter = props => {
             <th><input type="text" className="form-control input-sm" value={ props.filters.postalCode.data} onChange={onPostalCodeChange} /></th>
             <th><input type="text" className="form-control input-sm" value={ props.filters.city.data} onChange={onCityChange} /></th>
 
-            <th>
-                <select className="form-control input-sm" value={ props.filters.statusId.data } onChange={onStatusIdChange}>
-                    <option/>
-                    {
-                        props.contactStatuses.map((contactStatus) => {
-                            return <option key={contactStatus.id } value={ contactStatus.id }>{ contactStatus.name }</option>
-                        })
-                    }
-                </select>
-            </th>
-
             <th><input type="text" className="form-control input-sm" value={ props.filters.currentParticipations.data} onChange={onCurrentParticipationsChange} /></th>
 
             <th>

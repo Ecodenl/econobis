@@ -39,6 +39,11 @@ class Joiner extends RequestJoiner
         });
     }
 
+    protected function applyPeopleJoin($query)
+    {
+        $query->leftJoin('people', 'people.contact_id', '=', 'contacts.id');
+    }
+
     protected function applyParticipationsJoin($query)
     {
         $query->leftJoin('participation_production_project', function ($join) {

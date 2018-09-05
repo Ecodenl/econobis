@@ -23,7 +23,6 @@ class ExtraFilter extends RequestExtraFilter
         'dateRegister',
         'datePayed',
         'participationStatusId',
-        'statusId',
         'contactBirthday',
         'productionProjectId',
         'dateContractSend',
@@ -40,7 +39,6 @@ class ExtraFilter extends RequestExtraFilter
         'dateRegister' => 'participation_production_project.date_register',
         'datePayed' => 'participation_production_project.date_payed',
         'participationStatusId' => 'participation_production_project.status_id',
-        'statusId' => 'contacts.status_id',
         'contactBirthday' => 'people.date_of_birth',
         'productionProjectId' => 'participation_production_project.production_project_id',
         'dateContractSend' => 'participation_production_project.date_contract_send',
@@ -55,7 +53,6 @@ class ExtraFilter extends RequestExtraFilter
         'name' => 'contacts',
         'postalCode' => 'addresses',
         'postalCodeNumber' => 'addresses',
-        'contactStatus' => 'contacts',
         'contactBirthday' => 'people',
     ];
 

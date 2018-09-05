@@ -40,7 +40,7 @@ class ParticipantsList extends Component {
                     <DataTableBody>
                         {
                             data.length === 0 ? (
-                                <tr><td colSpan={13}>Geen participanten gevonden!</td></tr>
+                                <tr><td colSpan={12}>Geen participanten gevonden!</td></tr>
                             ) : (
                                 data.map((participantProductionProject) => {
                                     return <ParticipantsListItem

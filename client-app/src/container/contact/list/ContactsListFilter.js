@@ -88,14 +88,6 @@ const ContactsListFilter = props => {
             <th className="hidden-xs"><input type="text" className="form-control input-sm" value={ props.filters.city.data } onChange={onCityChange} /></th>
             <th className="hidden-xs"><input type="text" className="form-control input-sm" value={ props.filters.emailAddress.data } onChange={onEmailAddressChange} /></th>
             <th><input type="text" className="form-control input-sm" value={ props.filters.phoneNumber.data } onChange={onPhoneNumberChange} /></th>
-            <th className="hidden-xs hidden-sm">
-                <select className="form-control input-sm" value={ props.filters.statusId.data } onChange={onStatusChange}>
-                    <option/>
-                    { props.contactStatuses.map((contactStatus) => {
-                        return <option key={contactStatus.id } value={ contactStatus.id }>{ contactStatus.name }</option>
-                    }) }
-                </select>
-            </th>
             <DataTableFilterDate value={ props.filters.createdAt.data && props.filters.createdAt.data } onChangeAction={onCreatedAtChange} />
             <th/>
         </tr>

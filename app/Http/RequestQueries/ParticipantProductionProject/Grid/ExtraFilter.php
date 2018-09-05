@@ -29,6 +29,9 @@ class ExtraFilter extends RequestExtraFilter
         'dateContractSend',
         'dateContractRetour',
         'dateEnd',
+        'participationsSold',
+        'didAcceptAgreement',
+        'participationsRequested',
     ];
 
     protected $mapping = [
@@ -43,6 +46,9 @@ class ExtraFilter extends RequestExtraFilter
         'dateContractSend' => 'participation_production_project.date_contract_send',
         'dateContractRetour' => 'participation_production_project.date_contract_retour',
         'dateEnd' => 'participation_production_project.date_end',
+        'participationsSold' => 'participation_production_project.participations_sold',
+        'didAcceptAgreement' => 'participation_production_project.did_accept_agreement',
+        'participationsRequested' => 'participation_production_project.participations_requested',
     ];
 
     protected $joins = [

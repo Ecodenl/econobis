@@ -19,6 +19,16 @@ class ParticipantsListExtraFilters extends Component {
                 data: ''
             }],
             contacts: [],
+            yesNoOptions: [
+                {
+                    'id': 1,
+                    'name': 'Ja'
+                },
+                {
+                    'id': 0,
+                    'name': 'Nee'
+                }
+            ],
         };
     };
 
@@ -101,7 +111,7 @@ class ParticipantsListExtraFilters extends Component {
                 'type': 'number'
             },
             'currentParticipations': {
-                'name': 'Aantal participaties',
+                'name': 'Huidig aantal participaties',
                 'type': 'number'
             },
             'dateRegister': {
@@ -147,6 +157,19 @@ class ParticipantsListExtraFilters extends Component {
                 'name': 'Geschonken door',
                 'type': 'dropdown',
                 'dropDownOptions': this.state.contacts // Todo; juiste waarde weergeven. Fullname?
+            },
+            'participationsSold': {
+                'name': 'Participaties overgedragen',
+                'type': 'number'
+            },
+            'didAcceptAgreement': {
+                'name': 'Akkoord reglement',
+                'type': 'dropdown',
+                'dropDownOptions': this.state.yesNoOptions
+            },
+            'participationsRequested': {
+                'name': 'Participaties aangevraagd',
+                'type': 'number'
             },
         };
 

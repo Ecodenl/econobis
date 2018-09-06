@@ -121,6 +121,9 @@ class ParticipationProductionProjectController extends ApiController
             case 'productionProjectId':
                 return 'App\Eco\ProductionProject\ProductionProject';
                 break;
+            case 'giftedByContactId':
+                return Contact::class;
+                break;
         }
     }
 

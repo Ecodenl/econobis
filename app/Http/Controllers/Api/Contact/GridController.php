@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\Contact;
 
 use App\Eco\ContactGroup\ContactGroup;
 use App\Eco\ContactGroup\DynamicContactGroupFilter;
+use App\Eco\EnergySupplier\EnergySupplier;
 use App\Helpers\CSV\ContactCSVHelper;
 use App\Http\Controllers\Controller;
 use App\Http\RequestQueries\Contact\Grid\RequestQuery;
@@ -95,6 +96,9 @@ class GridController extends Controller
                 break;
             case 'product':
                 return 'App\Eco\Product\Product';
+                break;
+            case 'energySupplier':
+                return EnergySupplier::class;
                 break;
         }
     }

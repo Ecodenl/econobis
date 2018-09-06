@@ -8,10 +8,6 @@ class ContactGroupExtraFilterItem extends Component {
 
         this.state = {
             highlightLine: '',
-
-            extraFilter: {
-                ...props.extraFilter,
-            },
         };
     };
 
@@ -34,7 +30,7 @@ class ContactGroupExtraFilterItem extends Component {
                     highlightLine={this.state.highlightLine}
                     onLineEnter={this.onLineEnter}
                     onLineLeave={this.onLineLeave}
-                    extraFilter={this.state.extraFilter}
+                    extraFilter={this.props.extraFilter}
                 />
             </div>
         );

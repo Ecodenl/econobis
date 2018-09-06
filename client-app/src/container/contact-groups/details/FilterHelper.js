@@ -26,6 +26,15 @@ export default (type, field) => {
                 case 'datePayed': return 'Datum betaald';
                 case 'contactBirthday': return 'Contact geboortedatum';
                 case 'productionProjectId': return 'Productieproject';
+                case 'dateOfBirth': return 'Geboortedatum';
+                case 'energySupplier': return 'Energie leverancier';
+                case 'dateContractSend': return 'Datum contract verzonden';
+                case 'dateContractRetour': return 'Datum contract retour';
+                case 'dateEnd': return 'Einddatum';
+                case 'giftedByContactId': return 'Geschonken door';
+                case 'participationsSold': return 'Participaties overgedragen';
+                case 'didAcceptAgreement': return 'Akkoord reglement';
+                case 'participationsRequested': return 'Participaties aangevraagd';
             }
             break;
         case 'comperator':

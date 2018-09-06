@@ -1,10 +1,12 @@
 import React, {Component} from 'react';
 import {connect} from "react-redux";
+import axios from 'axios';
 
 import ButtonIcon from '../../../components/button/ButtonIcon';
 import ButtonText from "../../../components/button/ButtonText";
 import ParticipantsListExtraFilters from "./ParticipantsListExtraFilters";
 import ProductionProjectsAPI from "../../../api/production-project/ProductionProjectsAPI";
+import ContactsAPI from "../../../api/contact/ContactsAPI";
 
 class ParticipantsListToolbar extends Component {
     constructor(props) {
@@ -12,6 +14,7 @@ class ParticipantsListToolbar extends Component {
 
         this.state = {
             productionProjects: [],
+            contacts: [],
             showExtraFilters: false,
         };
     }
@@ -23,11 +26,13 @@ class ParticipantsListToolbar extends Component {
     };
 
     componentDidMount() {
-        ProductionProjectsAPI.peekProductionProjects().then((payload) => {
-            this.setState({
-                productionProjects: payload,
-            });
-        });
+        axios.all([ProductionProjectsAPI.peekProductionProjects(), ContactsAPI.getContactsPeek()])
+            .then(axios.spread((productionProjects, contacts) => {
+                this.setState({
+                    productionProjects: productionProjects,
+                    contacts: contacts,
+                });
+            }));
     };
 
     render() {
@@ -58,6 +63,7 @@ class ParticipantsListToolbar extends Component {
                         amountOfFilters={this.props.amountOfFilters}
                         saveAsGroup={this.props.saveAsGroup}
                         productionProjects={this.state.productionProjects}
+                        contacts={this.state.contacts}
                     />
                 }
             </div>

@@ -6,6 +6,8 @@ import {hashHistory} from "react-router";
 import ButtonText from "../../../../../components/button/ButtonText";
 import ParticipantsListExtraFilters from "./ParticipantsListExtraFilters";
 import ProductionProjectsAPI from "../../../../../api/production-project/ProductionProjectsAPI";
+import axios from "axios";
+import ContactsAPI from "../../../../../api/contact/ContactsAPI";
 
 class ParticipantsListToolbar extends Component {
     constructor(props) {
@@ -13,16 +15,19 @@ class ParticipantsListToolbar extends Component {
 
         this.state = {
             productionProjects: [],
+            contacts: [],
             showExtraFilters: false,
         };
     }
 
     componentDidMount() {
-        ProductionProjectsAPI.peekProductionProjects().then((payload) => {
-            this.setState({
-                productionProjects: payload,
-            });
-        });
+        axios.all([ProductionProjectsAPI.peekProductionProjects(), ContactsAPI.getContactsPeek()])
+            .then(axios.spread((productionProjects, contacts) => {
+                this.setState({
+                    productionProjects: productionProjects,
+                    contacts: contacts,
+                });
+            }));
     };
 
     toggleShowExtraFilters = () => {
@@ -63,6 +68,7 @@ class ParticipantsListToolbar extends Component {
                         amountOfFilters={this.props.amountOfFilters}
                         saveAsGroup={this.props.saveAsGroup}
                         productionProjects={this.state.productionProjects}
+                        contacts={this.state.contacts}
                     />
                 }
             </div>

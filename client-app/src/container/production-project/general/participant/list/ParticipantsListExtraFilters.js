@@ -140,11 +140,12 @@ class ParticipantsListExtraFilters extends Component {
                 'name': 'Einddatum',
                 'type': 'date'
             },
-            // 'giftedByContactId': {
-            //     'name': 'Geschonken door',
-            //     'type': 'dropdown',
-            //     'dropDownOptions': this.state.contacts // Todo; juiste waarde weergeven. Fullname?
-            // },
+            'giftedByContactId': {
+                'name': 'Geschonken door',
+                'type': 'dropdown',
+                'dropDownOptions': this.props.contacts,
+                'optionName': 'fullName',
+            },
             'participationsSold': {
                 'name': 'Participaties overgedragen',
                 'type': 'number'

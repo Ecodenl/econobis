@@ -1,10 +1,9 @@
 import React, {Component} from 'react';
+import {connect} from "react-redux";
 
 import Modal from '../../../components/modal/Modal';
 import DataTableCustomFilter from "../../../components/dataTable/DataTableCustomFilter";
 import ButtonText from "../../../components/button/ButtonText";
-import {connect} from "react-redux";
-import ContactsAPI from "../../../api/contact/ContactsAPI";
 
 class ParticipantsListExtraFilters extends Component {
     constructor(props) {
@@ -31,18 +30,6 @@ class ParticipantsListExtraFilters extends Component {
             ],
         };
     };
-
-    componentDidMount() {
-        ContactsAPI.getContactsPeek().then((payload) => {
-            this.setState({
-                contacts: payload,
-                peekLoading: {
-                    ...this.state.peekLoading,
-                    contacts: false,
-                },
-            });
-        });
-    }
 
     closeModal = () => {
         this.props.toggleShowExtraFilters();
@@ -156,7 +143,8 @@ class ParticipantsListExtraFilters extends Component {
             'giftedByContactId': {
                 'name': 'Geschonken door',
                 'type': 'dropdown',
-                'dropDownOptions': this.state.contacts // Todo; juiste waarde weergeven. Fullname?
+                'dropDownOptions': this.props.contacts,
+                'optionName': 'fullName',
             },
             'participationsSold': {
                 'name': 'Participaties overgedragen',
@@ -165,7 +153,7 @@ class ParticipantsListExtraFilters extends Component {
             'didAcceptAgreement': {
                 'name': 'Akkoord reglement',
                 'type': 'dropdown',
-                'dropDownOptions': this.state.yesNoOptions
+                'dropDownOptions': this.state.yesNoOptions,
             },
             'participationsRequested': {
                 'name': 'Participaties aangevraagd',

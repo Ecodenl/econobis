@@ -20,6 +20,7 @@ class DataTableCustomFilter extends Component {
             readOnly: props.filter.readOnly ? props.filter.readOnly : false,
             type: props.fields[props.filter.field].type,
             dropDownOptions: props.fields[props.filter.field].dropDownOptions ? props.fields[props.filter.field].dropDownOptions : '',
+            optionName: props.fields[props.filter.field].optionName ? props.fields[props.filter.field].optionName : 'name',
         };
     };
 
@@ -30,10 +31,12 @@ class DataTableCustomFilter extends Component {
 
         const type = this.props.fields[value].type;
         const dropDownOptions = this.props.fields[value].dropDownOptions ? this.props.fields[value].dropDownOptions : '';
+        const optionName = this.props.fields[value].optionName ? this.props.fields[value].optionName : 'name';
 
         this.setState({
-            type: type,
-            dropDownOptions: dropDownOptions
+            type,
+            dropDownOptions,
+            optionName,
         });
 
         this.props.handleFilterChange(name, value, this.props.filterNumber);
@@ -136,7 +139,7 @@ class DataTableCustomFilter extends Component {
                         >
                         <option></option>
                         { this.state.dropDownOptions.map((option) => {
-                            return <option key={ option.id } value={ option.id }>{ option['name'] }</option>
+                            return <option key={ option.id } value={ option.id }>{ option[this.state.optionName] }</option>
                         }) }
                     </select>
                 }

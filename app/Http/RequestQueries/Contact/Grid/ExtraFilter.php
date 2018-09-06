@@ -19,19 +19,20 @@ class ExtraFilter extends RequestExtraFilter
     protected $fields = [
         'name',
         'postalCodeNumber',
-        'statusId',
         'createdAt',
         'currentParticipations',
         'occupation',
         'opportunity',
-        'product'
+        'product',
+        'dateOfBirth',
+        'energySupplier',
     ];
 
     protected $mapping = [
         'name' => 'contacts.full_name',
-        'statusId' => 'contacts.status_id',
         'createdAt' => 'contacts.created_at',
         'currentParticipations' => 'contacts.participations_current',
+        'dateOfBirth' => 'people.date_of_birth',
     ];
 
     protected $joins = [
@@ -39,6 +40,7 @@ class ExtraFilter extends RequestExtraFilter
         'occupation' => 'occupation',
         'opportunity' => 'opportunity',
         'product' => 'orderProduct',
+        'dateOfBirth' => 'people',
     ];
 
     protected function applyPostalCodeNumberFilter($query, $type, $data)
@@ -61,5 +63,12 @@ class ExtraFilter extends RequestExtraFilter
     protected function applyProductFilter($query, $type, $data)
     {
         RequestFilter::applyFilter($query, 'order_product.product_id', $type, $data);
+    }
+
+    protected function applyEnergySupplierFilter($query, $type, $data)
+    {
+        $query->whereHas('primaryContactEnergySupplier', function($query) use ($data) {
+            $query->where('energy_supplier_id', $data);
+        });
     }
 }

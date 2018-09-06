@@ -57,7 +57,6 @@ class ParticipantsListItem extends Component {
                 <td>{ primaryAddress ? street + ' ' + number + addition : ''}</td>
                 <td>{ contact.primaryAddress ? contact.primaryAddress.postalCode : '' }</td>
                 <td>{ contact.primaryAddress ? contact.primaryAddress.city : '' }</td>
-                <td>{ contact.status ? contact.status.name : '' }</td>
                 <td>{ participationsCurrent ? participationsCurrent : '' }</td>
                 <td>{ status ? status.name : '' }</td>
                 <td>{ dateRegister ? moment(dateRegister).format('L') : '' }</td>

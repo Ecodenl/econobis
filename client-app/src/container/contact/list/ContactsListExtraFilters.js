@@ -83,11 +83,6 @@ class ContactsListExtraFilters extends Component {
                 'name': 'Postcode nummer',
                 'type': 'number'
             },
-            'statusId': {
-                'name': 'Status',
-                'type': 'dropdown',
-                'dropDownOptions': this.props.contactStatuses
-            },
             'createdAt': {
                 'name': 'Gemaakt op',
                 'type': 'date'
@@ -110,6 +105,15 @@ class ContactsListExtraFilters extends Component {
                 'name': 'Product',
                 'type': 'dropdownHas',
                 'dropDownOptions': this.props.products
+            },
+            'dateOfBirth': {
+                'name': 'Geboortedatum',
+                'type': 'date'
+            },
+            'energySupplier': {
+                'name': 'Energie leverancier',
+                'type': 'dropdown',
+                'dropDownOptions': this.props.energySuppliers,
             },
         };
 
@@ -177,6 +181,7 @@ const mapStateToProps = (state) => {
         occupations: state.systemData.occupations,
         measureCategories: state.systemData.measureCategories,
         products: state.systemData.products,
+        energySuppliers: state.systemData.energySuppliers,
     };
 };
 

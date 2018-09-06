@@ -114,11 +114,6 @@ class ParticipantsListExtraFilters extends Component {
                 'type': 'dropdown',
                 'dropDownOptions': this.props.participantProductionProjectStatus
             },
-            'statusId': {
-                'name': 'Contact status',
-                'type': 'dropdown',
-                'dropDownOptions': this.props.contactStatuses
-            },
             'contactBirthday': {
                 'name': 'Contact geboortedatum',
                 'type': 'date'

@@ -183,16 +183,16 @@ class ParticipantsListExtraFilters extends Component {
                         <div className={'col-xs-4'}>
                             <input
                                 onChange={() => this.handleFilterTypeChange('and')}
-                                type="radio" name='type' value="and"
-                                defaultChecked={this.state.filterType === 'and'}/>
-                            Alle filters zijn en
+                                type="radio" name='type' value="and" id='and'
+                                checked={this.state.filterType === 'and'} />
+                            <label htmlFor='and'>Alle filters zijn en</label>
                         </div>
                         <div className={'col-xs-4'}>
                             <input
                                 onChange={() => this.handleFilterTypeChange('or')}
-                                type="radio" name='type' value="or"
-                                defaultChecked={this.state.filterType === 'or'}/>
-                            Alle filters zijn of
+                                type="radio" name='type' value="or" id='or'
+                                checked={this.state.filterType === 'or'} />
+                            <label htmlFor='or'>Alle filters zijn of</label>
                         </div>
                     </h5>
                 </div>

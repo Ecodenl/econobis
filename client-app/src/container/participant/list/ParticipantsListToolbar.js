@@ -61,6 +61,7 @@ class ParticipantsListToolbar extends Component {
                         handleExtraFiltersChange={this.props.handleExtraFiltersChange}
                         extraFilters={this.props.extraFilters}
                         amountOfFilters={this.props.amountOfFilters}
+                        filterType={this.props.filterType}
                         saveAsGroup={this.props.saveAsGroup}
                         productionProjects={this.state.productionProjects}
                         contacts={this.state.contacts}

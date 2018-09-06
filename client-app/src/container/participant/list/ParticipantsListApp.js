@@ -357,6 +357,7 @@ class ParticipantsListApp extends Component {
                             handleExtraFiltersChange={this.handleExtraFiltersChange}
                             extraFilters={this.state.extraFilters}
                             amountOfFilters={this.state.amountOfFilters}
+                            filterType={this.state.filterType}
                             getCSV={this.getCSV}
                             saveAsGroup={this.saveAsGroup}
                         />

@@ -16,7 +16,7 @@ class ContactsListExtraFilters extends Component {
             filters: props.extraFilters !== undefined ? props.extraFilters : [{
                 field: 'name',
                 type: 'eq',
-                data: ''
+                data: '',
             }],
         };
     };
@@ -32,13 +32,55 @@ class ContactsListExtraFilters extends Component {
 
     handleFilterChange = (field, data, filterNumber) => {
         let filters = this.state.filters;
+        let amountOfFilters = this.state.amountOfFilters;
 
-        filters[filterNumber][field] = data;
+        if(data === 'product') {
+            filters[filterNumber] = {
+                field: 'product',
+                type: 'eq',
+                data: '',
+                connectName: data + filterNumber,
+            };
+
+            filters.splice(filterNumber + 1, 0, {
+                field: 'dateStart',
+                type: 'eq',
+                data: '',
+                connectedTo: data + filterNumber,
+                }
+            );
+
+            filters.splice(filterNumber + 2, 0, {
+                    field: 'dateFinish',
+                    type: 'eq',
+                    data: '',
+                    connectedTo: data + filterNumber,
+                }
+            );
+
+            filters.splice(filterNumber + 3, 0, {
+                    field: 'orderStatus',
+                    type: 'eq',
+                    data: '',
+                    connectedTo: data + filterNumber,
+                }
+            );
+
+            amountOfFilters = amountOfFilters + 3;
+        } else {
+            filters[filterNumber][field] = data;
+        }
 
         this.setState({
             ...this.state,
             filters: filters
         });
+
+        setTimeout(() => {
+            this.setState({
+                amountOfFilters
+            });
+        }, 300);
     };
 
     handleFilterTypeChange = (type) => {
@@ -75,52 +117,69 @@ class ContactsListExtraFilters extends Component {
 
     render() {
         const fields = {
-            'name': {
-                'name': 'Naam',
-                'type': 'string'
+            name: {
+                name: 'Naam',
+                type: 'string',
             },
-            'postalCodeNumber': {
-                'name': 'Postcode nummer',
-                'type': 'number'
+            postalCodeNumber: {
+                name: 'Postcode nummer',
+                type: 'number',
             },
-            'createdAt': {
-                'name': 'Gemaakt op',
-                'type': 'date'
+            createdAt: {
+                name: 'Gemaakt op',
+                type: 'date',
             },
-            'currentParticipations': {
-                'name': 'Aantal participaties',
-                'type': 'number'
+            currentParticipations: {
+                name: 'Aantal participaties',
+                type: 'number',
             },
-            'occupation': {
-                'name': 'Verbinding',
-                'type': 'dropdownHas',
-                'dropDownOptions': this.props.occupations
+            occupation: {
+                name: 'Verbinding',
+                type: 'dropdownHas',
+                dropDownOptions: this.props.occupations,
             },
-            'opportunity': {
-                'name': 'Kans',
-                'type': 'dropdownHas',
-                'dropDownOptions': this.props.measureCategories
+            opportunity: {
+                name: 'Kans',
+                type: 'dropdownHas',
+                dropDownOptions: this.props.measureCategories,
             },
-            'product': {
-                'name': 'Product',
-                'type': 'dropdownHas',
-                'dropDownOptions': this.props.products
+            product: {
+                name: 'Product',
+                type: 'dropdownHas',
+                dropDownOptions: this.props.products,
             },
-            'dateOfBirth': {
-                'name': 'Geboortedatum',
-                'type': 'date'
+            dateOfBirth: {
+                name: 'Geboortedatum',
+                type: 'date',
             },
-            'energySupplier': {
-                'name': 'Energie leverancier',
-                'type': 'dropdown',
-                'dropDownOptions': this.props.energySuppliers,
+            energySupplier: {
+                name: 'Energie leverancier',
+                type: 'dropdown',
+                dropDownOptions: this.props.energySuppliers,
+            },
+        };
+
+        // Options only if product is set
+        const customProductFields = {
+            dateStart: {
+                name: 'Begin datum',
+                type: 'date'
+            },
+            dateFinish: {
+                name: 'Eind datum',
+                type: 'date'
+            },
+            orderStatus: {
+                name: 'Order status',
+                type: 'dropdownHas',
+                dropDownOptions: this.props.orderStatuses,
             },
         };
 
         let filters = [];
 
         for (let i = 0; i < this.state.amountOfFilters; i++) {
-            filters.push(<DataTableCustomFilter key={i} filter={this.state.filters[i]} filterNumber={i} fields={fields}
+            filters.push(<DataTableCustomFilter key={i} filter={this.state.filters[i]} filterNumber={i} fields={{...fields, ...customProductFields}}
                                                 handleFilterChange={this.handleFilterChange}/>);
         }
 
@@ -182,6 +241,7 @@ const mapStateToProps = (state) => {
         measureCategories: state.systemData.measureCategories,
         products: state.systemData.products,
         energySuppliers: state.systemData.energySuppliers,
+        orderStatuses: state.systemData.orderStatuses,
     };
 };
 

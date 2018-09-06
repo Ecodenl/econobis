@@ -67,6 +67,8 @@ class DataTableCustomFilter extends Component {
         const {type} = this.props.filter;
 
         const fieldList = Object.entries(fields).map(([key, value], i) => {
+            if(key === 'dateStart' || key === 'dateFinish' || key === 'orderStatus') return;
+
             return (
                 <option key={i} value={key}>{value.name}</option>
             );
@@ -75,9 +77,17 @@ class DataTableCustomFilter extends Component {
         return (
             <tr>
                 <td className="col-md-4">
-                    <select disabled={this.state.readOnly} className="form-control input-sm" name={'field'} value={field} onChange={this.handleFieldChange}>
-                        {fieldList}
-                    </select></td>
+                    {
+                        (field == 'dateStart' || field == 'dateFinish' || field == 'orderStatus') ?
+                            <select disabled={true} className="form-control input-sm" name={'field'} value={field}>
+                                <option key={0} value={field}>{fields[field].name}</option>
+                            </select>
+                            :
+                            <select disabled={this.state.readOnly} className="form-control input-sm" name={'field'} value={field} onChange={this.handleFieldChange}>
+                                {fieldList}
+                            </select>
+                    }
+                </td>
                 <td className="col-md-4">
                     {this.state.type === 'string' &&
                     <DataTableCustomFilterSelectString
@@ -152,7 +162,7 @@ class DataTableCustomFilter extends Component {
                     />
                 }
                 </td>
-                    }
+                }
             </tr>
         )
     }

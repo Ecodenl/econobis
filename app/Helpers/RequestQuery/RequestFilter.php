@@ -66,7 +66,7 @@ abstract class RequestFilter
         });
     }
 
-    private function setRequestFilters(Request $request)
+    protected function setRequestFilters(Request $request)
     {
         $filters = json_decode($request->input($this->parameterName), true);
 
@@ -77,7 +77,7 @@ abstract class RequestFilter
         }
     }
 
-    private function addRequestFilter($filter)
+    protected function addRequestFilter($filter)
     {
         if (!isset($filter['field'])) throw new RequestFilterException('Missing field argument.');
 
@@ -87,9 +87,9 @@ abstract class RequestFilter
         );
     }
 
-    private function addFilter($field, $type = null, $data = null)
+    protected function addFilter($field, $type = null, $data = null)
     {
-        if (!in_array($field, $this->fields)) throw new RequestFilterException('Invalid field argument');
+        if (!in_array($field, $this->fields)) throw new RequestFilterException('Invalid field argument: ' . $field);
         if (!is_null($type) && !in_array($type, $this->types)) throw new RequestFilterException('Invalid type argument');
 
         if (is_null($type)) $type = $this->getDefaultTypeForField($field);
@@ -103,7 +103,7 @@ abstract class RequestFilter
         ];
     }
 
-    private function applySingle($query, $field, $type, $data = null, $filterType = 'and')
+    protected function applySingle($query, $field, $type, $data = null, $filterType = 'and')
     {
         $this->applyJoin($query, $field);
 
@@ -133,14 +133,14 @@ abstract class RequestFilter
 
     }
 
-    private function getMappedField($field)
+    protected function getMappedField($field)
     {
         if (array_key_exists($field, $this->mapping)) return $this->mapping[$field];
 
         return $field;
     }
 
-    private function getDefaultTypeForField($field)
+    protected function getDefaultTypeForField($field)
     {
         if (isset($this->defaultTypes[$field])) {
             return $this->defaultTypes[$field];
@@ -151,12 +151,12 @@ abstract class RequestFilter
         }
     }
 
-    private function getCustomApplyMethodName($field)
+    protected function getCustomApplyMethodName($field)
     {
         return 'apply' . studly_case($field) . 'Filter';
     }
 
-    private function applyJoin($query, $field)
+    protected function applyJoin($query, $field)
     {
         if (!array_key_exists($field, $this->joins)) return;
 

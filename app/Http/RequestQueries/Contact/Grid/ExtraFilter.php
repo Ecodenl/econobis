@@ -108,7 +108,7 @@ class ExtraFilter extends RequestExtraFilter
         if($filter['connectedTo']) return;
 
         // Betreft geen uitzondering; standaar functie doorlopen:
-        $this->applySingle($query, $filter['field'], $filter['type'], $filter['data'], 'or');
+        $this->applySingle($query, $filter['field'], $filter['type'], $filter['data'], $filterType);
     }
 
     protected function applyOccupationFilter($query, $type, $data)

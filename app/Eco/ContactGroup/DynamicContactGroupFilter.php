@@ -3,6 +3,7 @@
 namespace App\Eco\ContactGroup;
 
 use App\Eco\Contact\Contact;
+use App\Eco\Order\OrderStatus;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
 use JosKolenberg\Enum\EnumNotFoundException;
@@ -27,6 +28,9 @@ class DynamicContactGroupFilter extends Model
             // Booleans omzetten
             $yesNoFields = ['didAcceptAgreement'];
             if (in_array($this->field, $yesNoFields)) return $this->data ? 'Ja' : 'Nee';
+
+            // orderStatus omzetten
+            if ($this->field == 'orderStatus') return OrderStatus::get($this->data)->name;
 
             return $this->data;
         }

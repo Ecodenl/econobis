@@ -121,7 +121,7 @@ class ContactGroup extends Model
 
         foreach ($extraFilters as $extraFilter) {
             array_push($requestExtraFilters,
-                ['field' => $extraFilter->field, 'type' => $extraFilter->comperator, 'data' => $extraFilter->data]);
+                ['field' => $extraFilter->field, 'type' => $extraFilter->comperator, 'data' => $extraFilter->data, 'connectName' => $extraFilter->connect_name, 'connectedTo' => $extraFilter->connected_to]);
         }
 
         $requestFilters = json_encode($requestFilters);

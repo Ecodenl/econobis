@@ -18,6 +18,9 @@ export default (type, field) => {
                 case 'occupation': return 'Verbinding';
                 case 'opportunity': return 'Kans';
                 case 'product': return 'Product';
+                case 'dateStart': return 'Product - Begin datum';
+                case 'dateFinish': return 'Product - Eind datum';
+                case 'orderStatus': return 'Product - Order status';
                 case 'contactType': return 'Contact type';
                 case 'address': return 'Adres';
                 case 'participationStatusId': return 'Participatie status';

@@ -74,6 +74,8 @@ class GridController extends Controller
                 $dynamicFilter->data = $extraFilter->data;
                 $dynamicFilter->type = 'extraFilter';
                 $dynamicFilter->model_name = $this->getModelByField($extraFilter->field);
+                $dynamicFilter->connect_name = $extraFilter->connectName ?? '';
+                $dynamicFilter->connected_to = $extraFilter->connectedTo ?? '';
                 $dynamicFilter->save();
             }
         }

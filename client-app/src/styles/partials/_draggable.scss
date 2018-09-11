@@ -1,0 +1,7 @@
+.draggable-header {
+  cursor: move;
+
+  &:active {
+    cursor: grabbing;
+  }
+}

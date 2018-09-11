@@ -37,7 +37,6 @@ class ParticipantsListExtraFilters extends Component {
 
     confirmAction = () => {
         this.props.handleExtraFiltersChange(this.state.filters, this.state.amountOfFilters, this.state.filterType);
-        this.props.toggleShowExtraFilters();
     };
 
     handleFilterChange = (field, data, filterNumber) => {
@@ -174,6 +173,7 @@ class ParticipantsListExtraFilters extends Component {
                 buttonConfirmText="Toepassen"
                 confirmAction={this.confirmAction}
                 closeModal={this.closeModal}
+                buttonCancelText={'Sluiten'}
                 extraButtonLabel={'Maak groep'}
                 extraButtonClass={'btn-success'}
                 extraButtonAction={this.props.saveAsGroup}

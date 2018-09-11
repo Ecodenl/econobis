@@ -19,6 +19,8 @@ class ContactsListExtraFilters extends Component {
                 data: '',
             }],
         };
+
+        this.deleteFilterRow = this.deleteFilterRow.bind(this);
     };
 
     closeModal = () => {
@@ -32,6 +34,12 @@ class ContactsListExtraFilters extends Component {
     handleFilterChange = (field, data, filterNumber) => {
         let filters = this.state.filters;
         let amountOfFilters = this.state.amountOfFilters;
+
+        if(filters[filterNumber].field === 'product') {
+            filters = filters.filter(filter => filter.connectedTo !== filters[filterNumber].connectName);
+            delete filters[filterNumber].connectName;
+            amountOfFilters = filters.length;
+        }
 
         if(data === 'product') {
             filters[filterNumber] = {
@@ -65,21 +73,16 @@ class ContactsListExtraFilters extends Component {
                 }
             );
 
-            amountOfFilters = amountOfFilters + 3;
+            amountOfFilters = filters.length;
         } else {
             filters[filterNumber][field] = data;
         }
-
+        console.log(filters);
         this.setState({
             ...this.state,
-            filters: filters
+            filters,
+            amountOfFilters,
         });
-
-        setTimeout(() => {
-            this.setState({
-                amountOfFilters
-            });
-        }, 300);
     };
 
     handleFilterTypeChange = (type) => {
@@ -112,6 +115,22 @@ class ContactsListExtraFilters extends Component {
                 amountOfFilters: this.state.amountOfFilters + 1,
             });
         }, 300);
+    };
+
+    deleteFilterRow(filterNumber) {
+        let newFilters = this.state.filters;
+
+        if(newFilters[filterNumber].field === 'product') {
+            newFilters = newFilters.filter(filter => filter.connectedTo !== newFilters[filterNumber].connectName);
+        }
+
+        newFilters.splice(filterNumber, 1);
+
+        this.setState({
+            ...this.state,
+            filters: newFilters,
+            amountOfFilters: newFilters.length,
+        });
     };
 
     render() {
@@ -179,7 +198,7 @@ class ContactsListExtraFilters extends Component {
 
         for (let i = 0; i < this.state.amountOfFilters; i++) {
             filters.push(<DataTableCustomFilter key={i} filter={this.state.filters[i]} filterNumber={i} fields={{...fields, ...customProductFields}}
-                                                handleFilterChange={this.handleFilterChange}/>);
+                                                handleFilterChange={this.handleFilterChange} deleteFilterRow={this.deleteFilterRow} />);
         }
 
         return (
@@ -215,8 +234,9 @@ class ContactsListExtraFilters extends Component {
                     <thead>
                     <tr>
                         <th className="col-md-4">Zoekveld</th>
-                        <th className="col-md-4"/>
+                        <th className="col-md-3" />
                         <th className="col-md-4">Waarde</th>
+                        <th className="col-md-1" />
                     </tr>
                     </thead>
                     <tbody>

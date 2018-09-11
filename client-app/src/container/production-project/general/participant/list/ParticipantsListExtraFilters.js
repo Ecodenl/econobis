@@ -29,6 +29,8 @@ class ParticipantsListExtraFilters extends Component {
                 }
             ],
         };
+
+        this.deleteFilterRow = this.deleteFilterRow.bind(this);
     };
 
     closeModal = () => {
@@ -80,6 +82,17 @@ class ParticipantsListExtraFilters extends Component {
             amountOfFilters: this.state.amountOfFilters + 1,
         });
         }, 300);
+    };
+
+    deleteFilterRow(filterNumber) {
+        let newFilters = this.state.filters;
+        newFilters.splice(filterNumber, 1);
+
+        this.setState({
+            ...this.state,
+            filters: newFilters,
+            amountOfFilters: newFilters.length,
+        });
     };
 
     render() {
@@ -164,6 +177,7 @@ class ParticipantsListExtraFilters extends Component {
                 filterNumber={i}
                 fields={fields}
                 handleFilterChange={this.handleFilterChange}
+                deleteFilterRow={this.deleteFilterRow}
             />);
         }
 
@@ -200,8 +214,9 @@ class ParticipantsListExtraFilters extends Component {
                     <thead>
                     <tr>
                         <th className="col-md-4">Zoekveld</th>
-                        <th className="col-md-4"/>
+                        <th className="col-md-3"/>
                         <th className="col-md-4">Waarde</th>
+                        <th className="col-md-1"/>
                     </tr>
                     </thead>
                     <tbody>

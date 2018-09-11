@@ -22,6 +22,8 @@ class DataTableCustomFilter extends Component {
             dropDownOptions: props.fields[props.filter.field].dropDownOptions ? props.fields[props.filter.field].dropDownOptions : '',
             optionName: props.fields[props.filter.field].optionName ? props.fields[props.filter.field].optionName : 'name',
         };
+
+        this.deleteRow = this.deleteRow.bind(this);
     };
 
     handleFieldChange = (event) => {
@@ -61,6 +63,10 @@ class DataTableCustomFilter extends Component {
         this.props.handleFilterChange('data', value, this.props.filterNumber);
     };
 
+    deleteRow() {
+        this.props.deleteFilterRow(this.props.filterNumber);
+    };
+
     render() {
         const {fields} = this.props;
         const {field} = this.props.filter;
@@ -74,11 +80,13 @@ class DataTableCustomFilter extends Component {
             );
         });
 
+        const isCustomProductField = (field == 'dateStart' || field == 'dateFinish' || field == 'orderStatus');
+
         return (
             <tr>
                 <td className="col-md-4">
                     {
-                        (field == 'dateStart' || field == 'dateFinish' || field == 'orderStatus') ?
+                        isCustomProductField ?
                             <select disabled={true} className="form-control input-sm" name={'field'} value={field}>
                                 <option key={0} value={field}>{fields[field].name}</option>
                             </select>
@@ -88,7 +96,7 @@ class DataTableCustomFilter extends Component {
                             </select>
                     }
                 </td>
-                <td className="col-md-4">
+                <td className="col-md-3">
                     {this.state.type === 'string' &&
                     <DataTableCustomFilterSelectString
                         handleInputChange={this.handleInputChange}
@@ -162,6 +170,11 @@ class DataTableCustomFilter extends Component {
                     />
                 }
                 </td>
+                }
+                { (this.props.filterNumber !== 0 && !isCustomProductField) ?
+                    <td className="col-md-1"><span className="glyphicon glyphicon-trash mybtn-danger" role="button" onClick={this.deleteRow} /></td>
+                    :
+                    <td />
                 }
             </tr>
         )

@@ -34,8 +34,8 @@ class ContactsListExtraFilters extends Component {
     handleFilterChange = (field, data, filterNumber) => {
         let filters = this.state.filters;
         let amountOfFilters = this.state.amountOfFilters;
-
-        if(filters[filterNumber].field === 'product') {
+        console.log(data);
+        if(filters[filterNumber].field === 'product' && filters[filterNumber].data === data) {
             filters = filters.filter(filter => filter.connectedTo !== filters[filterNumber].connectName);
             delete filters[filterNumber].connectName;
             amountOfFilters = filters.length;

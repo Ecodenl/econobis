@@ -84,7 +84,7 @@ Modal.propTypes = {
     extraButtonLabel: PropTypes.string,
     extraButtonClass: PropTypes.string,
     extraButtonAction: PropTypes.func,
-    draggableDisabled: PropTypes.string,
+    draggableDisabled: PropTypes.bool,
 };
 
 export default Modal;

@@ -77,7 +77,7 @@ class ContactsListExtraFilters extends Component {
         } else {
             filters[filterNumber][field] = data;
         }
-        console.log(filters);
+
         this.setState({
             ...this.state,
             filters,
@@ -219,14 +219,14 @@ class ContactsListExtraFilters extends Component {
                                 onChange={() => this.handleFilterTypeChange('and')}
                                 type="radio" name='type' value="and" id='and'
                                 checked={this.state.filterType === 'and'}/>
-                            <label htmlFor='and'>Alle filters zijn en</label>
+                            <label htmlFor='and'>Alle filters zijn "EN"</label>
                         </div>
                         <div className={'col-xs-4'}>
                             <input
                                 onChange={() => this.handleFilterTypeChange('or')}
                                 type="radio" name='type' value="or" id='or'
                                 checked={this.state.filterType === 'or'}/>
-                            <label htmlFor='or'>Alle filters zijn of</label>
+                            <label htmlFor='or'>Alle filters zijn "OF"</label>
                         </div>
                     </h5>
                 </div>

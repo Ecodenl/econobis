@@ -19,6 +19,11 @@ use Request;
 class WebformController extends Controller
 {
 
+    public function __construct()
+    {
+        $this->authorize('manage', Webform::class);
+    }
+
     public function grid()
     {
         $webforms = Webform::orderBy('created_at', 'desc')->get();

@@ -4,10 +4,12 @@ namespace App\Eco\Webform;
 
 use App\Eco\Team\Team;
 use App\Eco\User\User;
+use App\Http\Traits\Encryptable;
 use Illuminate\Database\Eloquent\Model;
 
 class Webform extends Model
 {
+    use Encryptable;
 
     protected $guarded = ['id'];
 
@@ -17,6 +19,10 @@ class Webform extends Model
         'api_key_date' => 'date',
         'created_at' => 'date',
         'updated_at' => 'date',
+    ];
+
+    protected $encryptable = [
+        'api_key'
     ];
 
     /**

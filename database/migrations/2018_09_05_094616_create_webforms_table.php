@@ -16,7 +16,7 @@ class CreateWebformsTable extends Migration
         Schema::create('webforms', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
-            $table->string('api_key');
+            $table->text('api_key');
             $table->integer('max_requests_per_minute');
             $table->date('date_start')->nullable();
             $table->date('date_end')->nullable();

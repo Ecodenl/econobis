@@ -47,7 +47,7 @@ class WebformDetailsFormGeneral extends Component {
         return (
             <div className={this.state.activeDiv} onMouseEnter={() => this.onDivEnter()} onMouseLeave={() => this.onDivLeave()}>
                 {
-                    this.state.showEdit && permissions.createWebform ?
+                    this.state.showEdit && permissions.manageWebform ?
                         <WebformDetailsFormGeneralEdit switchToView={this.switchToView} />
                         :
                         <WebformDetailsFormGeneralView switchToEdit={this.switchToEdit}/>

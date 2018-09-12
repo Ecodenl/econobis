@@ -381,5 +381,10 @@ Route::namespace('Api')
 
         Route::get('payment-invoice/grid', 'PaymentInvoice\PaymentInvoiceController@grid');
         Route::post('payment-invoice/{paymentInvoice}/not-paid', 'PaymentInvoice\PaymentInvoiceController@setNotPaid');
+
+        Route::get('webform/grid', 'Webform\WebformController@grid');
+        Route::post('webform', 'Webform\WebformController@store');
+        Route::get('webform/{webform}', 'Webform\WebformController@show');
+        Route::post('webform/{webform}', 'Webform\WebformController@update');
     }
 );

@@ -7,7 +7,7 @@ import PanelBody from "../../../../components/panel/PanelBody";
 import moment from "moment";
 
 const WebformDetailsFormGeneralView = props => {
-    const { name, apiKey, maxRequestsPerMinute, dateStart, dateEnd, responsibleUser, responsibleTeam } = this.state.webform;
+    const { name, apiKey, maxRequestsPerMinute, dateStart, dateEnd, responsibleUser, responsibleTeam } = props.webformDetails;
 
     return (
         <div onClick={props.switchToEdit}>

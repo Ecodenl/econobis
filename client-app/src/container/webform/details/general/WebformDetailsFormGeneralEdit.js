@@ -19,8 +19,8 @@ class WebformDetailsFormGeneralEdit extends Component {
             webform: {
                 ...props.webformDetails,
                 responsible: props.webformDetails.responsibleUserId ? 'user' + props.webformDetails.responsibleUserId : 'team' + props.webformDetails.responsibleWebformId,
-                dateStart: props.dateStart ? props.dateStart.date : '',
-                dateEnd: props.dateEnd ? props.dateEnd.date : '',
+                dateStart: props.webformDetails.dateStart ? props.webformDetails.dateStart.date : '',
+                dateEnd: props.webformDetails.dateEnd ? props.webformDetails.dateEnd.date : '',
             },
             errors: {
                 name: false,
@@ -49,7 +49,7 @@ class WebformDetailsFormGeneralEdit extends Component {
     handleInputChangeDate(value, name) {
         this.setState({
             ...this.state,
-            task: {
+            webform: {
                 ...this.state.webform,
                 [name]: value
             },
@@ -70,7 +70,7 @@ class WebformDetailsFormGeneralEdit extends Component {
             hasErrors = true;
         };
 
-        if(validator.isEmpty(webform.maxRequestsPerMinute)){
+        if(validator.isEmpty(webform.maxRequestsPerMinute.toString())){
             errors.maxRequestsPerMinute = true;
             hasErrors = true;
         };

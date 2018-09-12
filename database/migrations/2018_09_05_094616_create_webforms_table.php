@@ -15,11 +15,12 @@ class CreateWebformsTable extends Migration
     {
         Schema::create('webforms', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('naam');
+            $table->string('name');
             $table->string('api_key');
             $table->integer('max_requests_per_minute');
             $table->date('date_start')->nullable();
             $table->date('date_end')->nullable();
+            $table->date('api_key_date');
             $table->unsignedInteger('responsible_user_id')->nullable();
             $table->foreign('responsible_user_id')
                 ->references('id')->on('users')

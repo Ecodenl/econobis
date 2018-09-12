@@ -101,7 +101,7 @@ class WebformNewForm extends Component {
         // If no errors send form
         !hasErrors &&
             WebformDetailsAPI.newWebform(webform).then((payload) => {
-                hashHistory.push(`/webform/${payload.data.data.id}`);
+                hashHistory.push(`/webformulier/${payload.data.data.id}`);
             }).catch(function (error) {
                 console.log(error);
                 alert('Er is iets mis gegaan met opslaan!');

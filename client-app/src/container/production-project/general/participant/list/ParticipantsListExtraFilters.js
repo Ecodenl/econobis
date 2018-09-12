@@ -127,7 +127,7 @@ class ParticipantsListExtraFilters extends Component {
                 'type': 'number'
             },
             'currentParticipations': {
-                'name': 'Aantal participaties',
+                'name': 'Huidig aantal participaties',
                 'type': 'number'
             },
             'dateRegister': {
@@ -139,7 +139,7 @@ class ParticipantsListExtraFilters extends Component {
                 'type': 'date'
             },
             'participationStatusId': {
-                'name': 'Huidig aantal participaties',
+                'name': 'Participatie status',
                 'type': 'dropdown',
                 'dropDownOptions': this.props.participantProductionProjectStatus
             },

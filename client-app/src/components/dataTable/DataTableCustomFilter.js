@@ -41,7 +41,7 @@ class DataTableCustomFilter extends Component {
             optionName,
         });
 
-        this.props.handleFilterChange(name, value, this.props.filterNumber);
+        this.props.handleFilterFieldChange(name, value, this.props.filterNumber);
     };
 
     handleInputChange = (event) => {
@@ -56,11 +56,11 @@ class DataTableCustomFilter extends Component {
             });
         }
 
-        this.props.handleFilterChange(name, value, this.props.filterNumber);
+        this.props.handleFilterValueChange(name, value, this.props.filterNumber);
     };
 
     handleInputChangeDate = (value, name) => {
-        this.props.handleFilterChange('data', value, this.props.filterNumber);
+        this.props.handleFilterValueChange('data', value, this.props.filterNumber);
     };
 
     deleteRow() {
@@ -171,10 +171,10 @@ class DataTableCustomFilter extends Component {
                 }
                 </td>
                 }
-                { (this.props.filterNumber !== 0 && !isCustomProductField) ?
-                    <td className="col-md-1"><span className="glyphicon glyphicon-trash mybtn-danger" role="button" onClick={this.deleteRow} /></td>
-                    :
+                { (isCustomProductField || this.state.readOnly) ?
                     <td />
+                    :
+                    <td className="col-md-1"><span className="glyphicon glyphicon-trash mybtn-danger" role="button" onClick={this.deleteRow} /></td>
                 }
             </tr>
         )

@@ -30,50 +30,66 @@ class ParticipantsListExtraFilters extends Component {
             ],
         };
 
+        this.closeModal = this.closeModal.bind(this);
+        this.confirmAction = this.confirmAction.bind(this);
+        this.handleFilterFieldChange = this.handleFilterFieldChange.bind(this);
+        this.handleFilterTypeChange = this.handleFilterTypeChange.bind(this);
+        this.handleFilterValueChange = this.handleFilterValueChange.bind(this);
+        this.addFilterRow = this.addFilterRow.bind(this);
         this.deleteFilterRow = this.deleteFilterRow.bind(this);
     };
 
-    closeModal = () => {
+    closeModal() {
         this.props.toggleShowExtraFilters();
     };
 
-    confirmAction = () => {
+    confirmAction() {
         this.props.handleExtraFiltersChange(this.state.filters, this.state.amountOfFilters, this.state.filterType);
     };
 
-    handleFilterChange = (field, data, filterNumber) => {
+    handleFilterFieldChange(field, data, filterNumber) {
         let filters = this.state.filters;
 
         filters[filterNumber][field] = data;
 
         this.setState({
             ...this.state,
-            filters: filters
+            filters,
         });
     };
 
-    handleFilterTypeChange = (type) => {
+    handleFilterTypeChange(type) {
         this.setState({
             ...this.state,
-            filterType: type
+            filterType: type,
         });
     };
 
-    addFilterRow = () => {
+    handleFilterValueChange(field, data, filterNumber) {
+        let filters = this.state.filters;
 
+        filters[filterNumber][field] = data;
+
+        this.setState({
+            ...this.state,
+            filters,
+        });
+    };
+
+    addFilterRow() {
         let filters = this.state.filters;
 
         filters[this.state.amountOfFilters] =
             {
                 field: 'name',
                 type: 'eq',
-                data: ''
+                data: '',
             };
 
         setTimeout(() => {
             this.setState({
                 ...this.state,
-                filters: filters
+                filters,
             });
         }, 300);
 
@@ -168,19 +184,6 @@ class ParticipantsListExtraFilters extends Component {
             },
         };
 
-        let filters = [];
-
-        for (let i = 0; i < this.state.amountOfFilters; i++) {
-            filters.push(<DataTableCustomFilter
-                key={i}
-                filter={this.state.filters[i]}
-                filterNumber={i}
-                fields={fields}
-                handleFilterChange={this.handleFilterChange}
-                deleteFilterRow={this.deleteFilterRow}
-            />);
-        }
-
         return (
             <Modal
                 title="Extra filters"
@@ -220,7 +223,17 @@ class ParticipantsListExtraFilters extends Component {
                     </tr>
                     </thead>
                     <tbody>
-                     {filters}
+                    {
+                        this.state.filters.length === 0 ? (
+                            <tr><td colSpan={4}>Geen filters gezet.</td></tr>
+                        ) : (
+                            this.state.filters.map((filter, i) => {
+                                return <DataTableCustomFilter key={i} filter={filter} filterNumber={i} fields={fields}
+                                                              handleFilterFieldChange={this.handleFilterFieldChange} deleteFilterRow={this.deleteFilterRow}
+                                                              handleFilterValueChange={this.handleFilterValueChange} />
+                            })
+                        )
+                    }
                     </tbody>
                 </table>
                 <div className='row'>

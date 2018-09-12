@@ -37,7 +37,7 @@ class ContactsListExtraFilters extends Component {
         this.props.handleExtraFiltersChange(this.state.filters, this.state.amountOfFilters, this.state.filterType);
     };
 
-    handleFilterFieldChange(field, data, filterNumber) {
+    handleFilterFieldChange(data, filterNumber) {
         let filters = this.state.filters;
         let amountOfFilters = this.state.amountOfFilters;
 
@@ -81,7 +81,8 @@ class ContactsListExtraFilters extends Component {
 
             amountOfFilters = filters.length;
         } else {
-            filters[filterNumber][field] = data;
+            filters[filterNumber].field = data;
+            filters[filterNumber].data = '';
         }
 
         this.setState({

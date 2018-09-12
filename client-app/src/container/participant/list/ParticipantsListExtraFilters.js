@@ -47,10 +47,11 @@ class ParticipantsListExtraFilters extends Component {
         this.props.handleExtraFiltersChange(this.state.filters, this.state.amountOfFilters, this.state.filterType);
     };
 
-    handleFilterFieldChange(field, data, filterNumber) {
+    handleFilterFieldChange(data, filterNumber) {
         let filters = this.state.filters;
 
-        filters[filterNumber][field] = data;
+        filters[filterNumber].field = data;
+        filters[filterNumber].data = '';
 
         this.setState({
             ...this.state,

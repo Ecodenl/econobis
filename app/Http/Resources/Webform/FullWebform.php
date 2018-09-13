@@ -15,6 +15,7 @@ class FullWebform extends Resource
             'id' => $this->id,
             'name' => $this->name,
             'apiKey' => $this->api_key,
+            'apiKeyDate' => $this->api_key_date,
             'maxRequestsPerMinute' => $this->max_requests_per_minute,
             'dateStart' => $this->date_start,
             'dateEnd' => $this->date_end,

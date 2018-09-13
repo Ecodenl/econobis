@@ -43,8 +43,8 @@ class WebformToolbar extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        name: state.teamDetails.name,
-        id: state.teamDetails.id,
+        name: state.webformDetails.name,
+        id: state.webformDetails.id,
     };
 };
 

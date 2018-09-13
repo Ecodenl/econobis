@@ -67,6 +67,7 @@ class ProductionProjectFormEdit extends Component {
                 code: false,
                 ownedById: false,
                 postalCode: false,
+                contactGroupIds: false,
             },
         }
         this.handleInputChangeDate = this.handleInputChangeDate.bind(this);
@@ -129,6 +130,16 @@ class ProductionProjectFormEdit extends Component {
             errors.postalCode = true;
             hasErrors = true;
         };
+
+        if(productionProject.isMembershipRequired && validator.isEmpty(productionProject.contactGroupIds)) {
+            errors.contactGroupIds = true;
+            hasErrors = true;
+        };
+
+        // If isMemberShipRequired is false, set contactGroupIds to empty string
+        if(!productionProject.isMembershipRequired) {
+            productionProject.contactGroupIds = '';
+        }
 
         this.setState({ ...this.state, errors: errors });
 
@@ -436,6 +447,8 @@ class ProductionProjectFormEdit extends Component {
                         options={this.state.contactGroups}
                         value={contactGroupIds}
                         onChangeAction={this.handleContactGroupIds}
+                        error={this.state.errors.contactGroupIds}
+                        required={"required"}
                     />
                 </div>
                 }

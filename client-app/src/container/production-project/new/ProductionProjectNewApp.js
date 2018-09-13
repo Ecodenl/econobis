@@ -55,6 +55,7 @@ class ProductionProjectNewApp extends Component {
                 code: false,
                 ownedById: false,
                 postalCode: false,
+                contactGroupIds: false,
             },
         }
         this.handleInputChangeDate = this.handleInputChangeDate.bind(this);
@@ -119,6 +120,16 @@ class ProductionProjectNewApp extends Component {
             errors.postalCode = true;
             hasErrors = true;
         };
+
+        if(productionProject.isMembershipRequired && validator.isEmpty(productionProject.contactGroupIds)) {
+            errors.contactGroupIds = true;
+            hasErrors = true;
+        };
+
+        // If isMemberShipRequired is false, set contactGroupIds to empty string
+        if(!productionProject.isMembershipRequired) {
+            productionProject.contactGroupIds = '';
+        }
         
         this.setState({ ...this.state, errors: errors });
 

@@ -151,10 +151,13 @@ class ContactsListExtraFilters extends Component {
     };
 
     render() {
-        console.log(this.state.filters);
         const fields = {
             name: {
                 name: 'Naam',
+                type: 'string',
+            },
+            postalCode: {
+                name: 'Postcode',
                 type: 'string',
             },
             postalCodeNumber: {
@@ -166,7 +169,7 @@ class ContactsListExtraFilters extends Component {
                 type: 'date',
             },
             currentParticipations: {
-                name: 'Aantal participaties',
+                name: 'Huidig aantal participaties',
                 type: 'number',
             },
             occupation: {

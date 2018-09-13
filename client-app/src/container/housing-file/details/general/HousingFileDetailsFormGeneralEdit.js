@@ -62,7 +62,7 @@ class HousingFileDetailsFormGeneralEdit extends Component {
     render() {
         const {fullAddress, fullName, buildingTypeId, buildYear, surface, roofTypeId, energyLabelId, floors, energyLabelStatusId, isMonument} = this.state.housingFile;
         const {addresses = []} = this.props.contactDetails;
-        console.log(this.state.housingFile)
+
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
                 <div className="row">

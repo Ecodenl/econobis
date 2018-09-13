@@ -18,6 +18,7 @@ class ExtraFilter extends RequestExtraFilter
 {
     protected $fields = [
         'name',
+        'postalCode',
         'postalCodeNumber',
         'createdAt',
         'currentParticipations',
@@ -51,6 +52,14 @@ class ExtraFilter extends RequestExtraFilter
         $lastFilter['connectName'] = isset($filter['connectName']) ? $filter['connectName'] : null;
         $lastFilter['connectedTo'] = isset($filter['connectedTo']) ? $filter['connectedTo'] : null;
         $this->filters[] = $lastFilter;
+    }
+
+    protected function applyPostalCodeFilter($query, $type, $data)
+    {
+        $query->whereHas('primaryAddress', function ($query) use ($type, $data) {
+            $data = str_replace(' ', '', $data);
+            RequestFilter::applyFilter($query, 'postal_code', $type, $data);
+        });
     }
 
     protected function applyPostalCodeNumberFilter($query, $type, $data)

@@ -281,6 +281,8 @@ const ProductionProjectNew = props => {
                     options={props.contactGroups}
                     value={contactGroupIds}
                     onChangeAction={props.handleContactGroupIds}
+                    error={props.errors.contactGroupIds}
+                    required={"required"}
                 />
             </div>
             }

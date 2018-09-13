@@ -23,7 +23,7 @@ const ContactGroupDetailsFormGeneralView = props => {
                 {type.id === 'dynamic' &&
                 <ViewText
                     label={"Filter voorwaarde"}
-                    value={dynamicFilterType === 'or' ? 'Alle filters zijn of' : 'Alle filters zijn en'}
+                    value={dynamicFilterType === 'or' ? 'Alle filters zijn "OF"' : 'Alle filters zijn "EN"'}
                 />
                 }
             </div>

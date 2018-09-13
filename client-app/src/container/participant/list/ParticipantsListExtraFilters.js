@@ -29,50 +29,68 @@ class ParticipantsListExtraFilters extends Component {
                 }
             ],
         };
+
+        this.closeModal = this.closeModal.bind(this);
+        this.confirmAction = this.confirmAction.bind(this);
+        this.handleFilterFieldChange = this.handleFilterFieldChange.bind(this);
+        this.handleFilterTypeChange = this.handleFilterTypeChange.bind(this);
+        this.handleFilterValueChange = this.handleFilterValueChange.bind(this);
+        this.addFilterRow = this.addFilterRow.bind(this);
+        this.deleteFilterRow = this.deleteFilterRow.bind(this);
     };
 
-    closeModal = () => {
+    closeModal() {
         this.props.toggleShowExtraFilters();
     };
 
-    confirmAction = () => {
+    confirmAction() {
         this.props.handleExtraFiltersChange(this.state.filters, this.state.amountOfFilters, this.state.filterType);
-        this.props.toggleShowExtraFilters();
     };
 
-    handleFilterChange = (field, data, filterNumber) => {
+    handleFilterFieldChange(data, filterNumber) {
+        let filters = this.state.filters;
+
+        filters[filterNumber].field = data;
+        filters[filterNumber].data = '';
+
+        this.setState({
+            ...this.state,
+            filters,
+        });
+    };
+
+    handleFilterTypeChange(type) {
+        this.setState({
+            ...this.state,
+            filterType: type,
+        });
+    };
+
+    handleFilterValueChange(field, data, filterNumber) {
         let filters = this.state.filters;
 
         filters[filterNumber][field] = data;
 
         this.setState({
             ...this.state,
-            filters: filters
+            filters,
         });
     };
 
-    handleFilterTypeChange = (type) => {
-        this.setState({
-            ...this.state,
-            filterType: type
-        });
-    };
-
-    addFilterRow = () => {
-
+    addFilterRow() {
         let filters = this.state.filters;
 
         filters[this.state.amountOfFilters] =
             {
                 field: 'name',
                 type: 'eq',
-                data: ''
+                data: '',
             };
 
         setTimeout(() => {
             this.setState({
                 ...this.state,
-                filters: filters
+                filters,
             });
         }, 300);
 
@@ -81,6 +99,17 @@ class ParticipantsListExtraFilters extends Component {
             amountOfFilters: this.state.amountOfFilters + 1,
         });
         }, 300);
+    };
+
+    deleteFilterRow(filterNumber) {
+        let newFilters = this.state.filters;
+        newFilters.splice(filterNumber, 1);
+
+        this.setState({
+            ...this.state,
+            filters: newFilters,
+            amountOfFilters: newFilters.length,
+        });
     };
 
     render() {
@@ -156,24 +185,13 @@ class ParticipantsListExtraFilters extends Component {
             },
         };
 
-        let filters = [];
-
-        for (let i = 0; i < this.state.amountOfFilters; i++) {
-            filters.push(<DataTableCustomFilter
-                key={i}
-                filter={this.state.filters[i]}
-                filterNumber={i}
-                fields={fields}
-                handleFilterChange={this.handleFilterChange}
-            />);
-        }
-
         return (
             <Modal
                 title="Extra filters"
                 buttonConfirmText="Toepassen"
                 confirmAction={this.confirmAction}
                 closeModal={this.closeModal}
+                buttonCancelText={'Sluiten'}
                 extraButtonLabel={'Maak groep'}
                 extraButtonClass={'btn-success'}
                 extraButtonAction={this.props.saveAsGroup}
@@ -185,14 +203,14 @@ class ParticipantsListExtraFilters extends Component {
                             onChange={() => this.handleFilterTypeChange('and')}
                             type="radio" name='type' value="and" id='and'
                             checked={this.state.filterType === 'and'} />
-                        <label htmlFor='and'>Alle filters zijn en</label>
+                        <label htmlFor='and'>Alle filters zijn "EN"</label>
                     </div>
                     <div className={'col-xs-4'}>
                         <input
                             onChange={() => this.handleFilterTypeChange('or')}
                             type="radio" name='type' value="or" id='or'
                             checked={this.state.filterType === 'or'} />
-                        <label htmlFor='or'>Alle filters zijn of</label>
+                        <label htmlFor='or'>Alle filters zijn "OF"</label>
                     </div>
                 </h5>
             </div>
@@ -200,12 +218,23 @@ class ParticipantsListExtraFilters extends Component {
                     <thead>
                     <tr>
                         <th className="col-md-4">Zoekveld</th>
-                        <th className="col-md-4"/>
+                        <th className="col-md-3"/>
                         <th className="col-md-4">Waarde</th>
+                        <th className="col-md-1"/>
                     </tr>
                     </thead>
                     <tbody>
-                     {filters}
+                    {
+                        this.state.filters.length === 0 ? (
+                            <tr><td colSpan={4}>Geen filters gezet.</td></tr>
+                        ) : (
+                            this.state.filters.map((filter, i) => {
+                                return <DataTableCustomFilter key={i} filter={filter} filterNumber={i} fields={fields}
+                                                              handleFilterFieldChange={this.handleFilterFieldChange} deleteFilterRow={this.deleteFilterRow}
+                                                              handleFilterValueChange={this.handleFilterValueChange} />
+                            })
+                        )
+                    }
                     </tbody>
                 </table>
                 <div className='row'>

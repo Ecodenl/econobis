@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import validator from 'validator';
+import _ from 'lodash';
 
 import {
     fetchContactGroupDetails, attachComposedGroup
@@ -54,11 +55,19 @@ class ContactGroupComposedGroupAddGroup extends Component {
         if(!hasErrors) {
             this.props.attachComposedGroup(this.props.contactGroupId, this.state.contactGroupToAttachId);
             this.props.fetchContactGroupDetails(this.props.contactGroupId);
-            this.props.closeDeleteItemModal();
+            this.props.toggleAddGroup();
         }
     };
 
     render() {
+        let contactGroupOptions = this.state.contactGroups;
+
+        this.props.composedGroups.map(composedGroup => {
+            _.remove(contactGroupOptions, contactGroupOption => {
+                return contactGroupOption.id === composedGroup.id;
+            });
+        });
+
         return (
             <Modal
                 buttonConfirmText="Toevoegen"
@@ -71,7 +80,7 @@ class ContactGroupComposedGroupAddGroup extends Component {
                         size={"col-md-12"}
                         label={"Groep"}
                         name="contactGroupToAttachId"
-                        options={this.state.contactGroups}
+                        options={contactGroupOptions}
                         value={this.state.contactGroupToAttachId}
                         onChangeAction={this.handleInputChange}
                         required={"required"}
@@ -83,6 +92,12 @@ class ContactGroupComposedGroupAddGroup extends Component {
     }
 };
 
+const mapStateToProps = (state) => {
+    return {
+        composedGroups: state.contactGroupDetails.composedGroups,
+    };
+};
+
 const mapDispatchToProps = dispatch => ({
     attachComposedGroup: (contactGroupId, contactGroupToAttachId) => {
         dispatch(attachComposedGroup(contactGroupId, contactGroupToAttachId));
@@ -92,4 +107,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(null, mapDispatchToProps)(ContactGroupComposedGroupAddGroup);
+export default connect(mapStateToProps, mapDispatchToProps)(ContactGroupComposedGroupAddGroup);

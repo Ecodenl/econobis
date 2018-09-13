@@ -19,20 +19,33 @@ class ContactsListExtraFilters extends Component {
                 data: '',
             }],
         };
+
+        this.closeModal = this.closeModal.bind(this);
+        this.confirmAction = this.confirmAction.bind(this);
+        this.handleFilterFieldChange = this.handleFilterFieldChange.bind(this);
+        this.handleFilterTypeChange = this.handleFilterTypeChange.bind(this);
+        this.handleFilterValueChange = this.handleFilterValueChange.bind(this);
+        this.addFilterRow = this.addFilterRow.bind(this);
+        this.deleteFilterRow = this.deleteFilterRow.bind(this);
     };
 
-    closeModal = () => {
+    closeModal() {
         this.props.toggleShowExtraFilters();
     };
 
-    confirmAction = () => {
+    confirmAction() {
         this.props.handleExtraFiltersChange(this.state.filters, this.state.amountOfFilters, this.state.filterType);
-        this.props.toggleShowExtraFilters();
     };
 
-    handleFilterChange = (field, data, filterNumber) => {
+    handleFilterFieldChange(data, filterNumber) {
         let filters = this.state.filters;
         let amountOfFilters = this.state.amountOfFilters;
+
+        if(filters[filterNumber].field === 'product') {
+            filters = filters.filter(filter => filter.connectedTo !== filters[filterNumber].connectName);
+            delete filters[filterNumber].connectName;
+            amountOfFilters = filters.length;
+        }
 
         if(data === 'product') {
             filters[filterNumber] = {
@@ -66,32 +79,38 @@ class ContactsListExtraFilters extends Component {
                 }
             );
 
-            amountOfFilters = amountOfFilters + 3;
+            amountOfFilters = filters.length;
         } else {
-            filters[filterNumber][field] = data;
+            filters[filterNumber].field = data;
+            filters[filterNumber].data = '';
         }
 
         this.setState({
             ...this.state,
-            filters: filters
+            filters,
+            amountOfFilters,
         });
-
-        setTimeout(() => {
-            this.setState({
-                amountOfFilters
-            });
-        }, 300);
     };
 
-    handleFilterTypeChange = (type) => {
+    handleFilterTypeChange(type) {
         this.setState({
             ...this.state,
-            filterType: type
+            filterType: type,
         });
     };
 
-    addFilterRow = () => {
+    handleFilterValueChange(field, data, filterNumber) {
+        let filters = this.state.filters;
 
+        filters[filterNumber][field] = data;
+
+        this.setState({
+            ...this.state,
+            filters,
+        });
+    };
+
+    addFilterRow() {
         let filters = this.state.filters;
 
         filters[this.state.amountOfFilters] =
@@ -104,7 +123,7 @@ class ContactsListExtraFilters extends Component {
         setTimeout(() => {
             this.setState({
                 ...this.state,
-                filters: filters
+                filters,
             });
         }, 300);
 
@@ -115,10 +134,30 @@ class ContactsListExtraFilters extends Component {
         }, 300);
     };
 
+    deleteFilterRow(filterNumber) {
+        let newFilters = this.state.filters;
+
+        if(newFilters[filterNumber].field === 'product') {
+            newFilters = newFilters.filter(filter => filter.connectedTo !== newFilters[filterNumber].connectName);
+        }
+
+        newFilters.splice(filterNumber, 1);
+
+        this.setState({
+            ...this.state,
+            filters: newFilters,
+            amountOfFilters: newFilters.length,
+        });
+    };
+
     render() {
         const fields = {
             name: {
                 name: 'Naam',
+                type: 'string',
+            },
+            postalCode: {
+                name: 'Postcode',
                 type: 'string',
             },
             postalCodeNumber: {
@@ -130,7 +169,7 @@ class ContactsListExtraFilters extends Component {
                 type: 'date',
             },
             currentParticipations: {
-                name: 'Aantal participaties',
+                name: 'Huidig aantal participaties',
                 type: 'number',
             },
             occupation: {
@@ -176,19 +215,13 @@ class ContactsListExtraFilters extends Component {
             },
         };
 
-        let filters = [];
-
-        for (let i = 0; i < this.state.amountOfFilters; i++) {
-            filters.push(<DataTableCustomFilter key={i} filter={this.state.filters[i]} filterNumber={i} fields={{...fields, ...customProductFields}}
-                                                handleFilterChange={this.handleFilterChange}/>);
-        }
-
         return (
             <Modal
                 title="Extra filters"
                 buttonConfirmText="Toepassen"
                 confirmAction={this.confirmAction}
                 closeModal={this.closeModal}
+                buttonCancelText={'Sluiten'}
                 extraButtonLabel={'Maak groep'}
                 extraButtonClass={'btn-success'}
                 extraButtonAction={this.props.saveAsGroup}
@@ -200,14 +233,14 @@ class ContactsListExtraFilters extends Component {
                                 onChange={() => this.handleFilterTypeChange('and')}
                                 type="radio" name='type' value="and" id='and'
                                 checked={this.state.filterType === 'and'}/>
-                            <label htmlFor='and'>Alle filters zijn en</label>
+                            <label htmlFor='and'>Alle filters zijn "EN"</label>
                         </div>
                         <div className={'col-xs-4'}>
                             <input
                                 onChange={() => this.handleFilterTypeChange('or')}
                                 type="radio" name='type' value="or" id='or'
                                 checked={this.state.filterType === 'or'}/>
-                            <label htmlFor='or'>Alle filters zijn of</label>
+                            <label htmlFor='or'>Alle filters zijn "OF"</label>
                         </div>
                     </h5>
                 </div>
@@ -215,12 +248,23 @@ class ContactsListExtraFilters extends Component {
                     <thead>
                     <tr>
                         <th className="col-md-4">Zoekveld</th>
-                        <th className="col-md-4"/>
+                        <th className="col-md-3" />
                         <th className="col-md-4">Waarde</th>
+                        <th className="col-md-1" />
                     </tr>
                     </thead>
                     <tbody>
-                    {filters}
+                    {
+                        this.state.filters.length === 0 ? (
+                            <tr><td colSpan={4}>Geen filters gezet.</td></tr>
+                        ) : (
+                            this.state.filters.map((filter, i) => {
+                                return <DataTableCustomFilter key={i} filter={filter} filterNumber={i} fields={{...fields, ...customProductFields}}
+                                                       handleFilterFieldChange={this.handleFilterFieldChange} deleteFilterRow={this.deleteFilterRow}
+                                                       handleFilterValueChange={this.handleFilterValueChange} />
+                            })
+                        )
+                    }
                     </tbody>
                 </table>
                 <div className='row'>

@@ -75,6 +75,7 @@ class ExtraFilter extends RequestExtraFilter
     protected function applyPostalCodeFilter($query, $type, $data)
     {
         $query->whereHas('contact.primaryAddress', function ($query) use ($type, $data) {
+            $data = str_replace(' ', '', $data);
             RequestFilter::applyFilter($query, 'postal_code', $type, $data);
         });
     }

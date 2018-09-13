@@ -17,7 +17,7 @@ class ContactGroupComposedGroups extends Component {
 
     }
 
-    showAddGroup = () => {
+    toggleAddGroup = () => {
         this.setState({showAddGroup: !this.state.showAddGroup});
     };
 
@@ -26,7 +26,7 @@ class ContactGroupComposedGroups extends Component {
             <Panel>
                 <PanelHeader>
                     <span className="h5 text-bold">Samengesteld uit</span>
-                    <a role="button" className="pull-right" onClick={this.showAddGroup}><span className="glyphicon glyphicon-plus"/></a>
+                    <a role="button" className="pull-right" onClick={this.toggleAddGroup}><span className="glyphicon glyphicon-plus"/></a>
                 </PanelHeader>
                 <PanelBody>
                     <div className="col-md-12">
@@ -36,7 +36,7 @@ class ContactGroupComposedGroups extends Component {
                 {
                     this.state.showAddGroup &&
                     <ContactGroupComposedGroupAddGroup
-                        closeDeleteItemModal={this.showAddGroup}
+                        toggleAddGroup={this.toggleAddGroup}
                         contactGroupId={this.props.contactGroupId}
                     />
                 }

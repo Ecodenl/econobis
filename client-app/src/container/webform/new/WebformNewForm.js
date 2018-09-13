@@ -3,6 +3,8 @@ import { connect } from 'react-redux';
 import { hashHistory } from 'react-router';
 import validator from 'validator';
 import uuid from 'uuid';
+import moment from 'moment';
+moment.locale('nl');
 
 import InputText from '../../../components/form/InputText';
 import ButtonText from '../../../components/button/ButtonText';
@@ -133,6 +135,24 @@ class WebformNewForm extends Component {
                             />
                         </div>
                         <div className="row">
+                            <InputText
+                                label="Aanvragen per minuut"
+                                type={"number"}
+                                name={"maxRequestsPerMinute"}
+                                value={maxRequestsPerMinute}
+                                onChangeAction={this.handleInputChange}
+                                required={"required"}
+                                error={this.state.errors.maxRequestsPerMinute}
+                            />
+                            <InputText
+                                label="Datum sleutel"
+                                name="apiKeyDate"
+                                value={moment().format('L')}
+                                onChangeAction={() => {}}
+                                readOnly={true}
+                            />
+                        </div>
+                        <div className="row">
                             <InputDate
                                 label="Startdatum"
                                 name="dateStart"
@@ -147,15 +167,6 @@ class WebformNewForm extends Component {
                             />
                         </div>
                         <div className="row">
-                            <InputText
-                                label="Aanvragen per minuut"
-                                type={"number"}
-                                name={"maxRequestsPerMinute"}
-                                value={maxRequestsPerMinute}
-                                onChangeAction={this.handleInputChange}
-                                required={"required"}
-                                error={this.state.errors.maxRequestsPerMinute}
-                            />
                             <InputSelectGroup
                                 label={"Verantwoordelijke"}
                                 size={"col-sm-6"}

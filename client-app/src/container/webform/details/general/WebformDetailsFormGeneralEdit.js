@@ -1,8 +1,10 @@
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import validator from 'validator';
+import uuid from 'uuid';
+import moment from 'moment';
+moment.locale('nl');
 
-import WebformDetailsAPI from '../../../../api/webform/WebformDetailsAPI';
 import { updateWebform } from '../../../../actions/webform/WebformDetailsActions';
 import InputText from '../../../../components/form/InputText';
 import ButtonText from '../../../../components/button/ButtonText';
@@ -18,9 +20,10 @@ class WebformDetailsFormGeneralEdit extends Component {
         this.state = {
             webform: {
                 ...props.webformDetails,
-                responsible: props.webformDetails.responsibleUserId ? 'user' + props.webformDetails.responsibleUserId : 'team' + props.webformDetails.responsibleWebformId,
+                responsible: props.webformDetails.responsibleUserId ? 'user' + props.webformDetails.responsibleUserId : 'team' + props.webformDetails.responsibleTeamId,
                 dateStart: props.webformDetails.dateStart ? props.webformDetails.dateStart.date : '',
                 dateEnd: props.webformDetails.dateEnd ? props.webformDetails.dateEnd.date : '',
+                apiKeyDate: props.webformDetails.apiKeyDate ? props.webformDetails.apiKeyDate.date : '',
             },
             errors: {
                 name: false,
@@ -30,6 +33,7 @@ class WebformDetailsFormGeneralEdit extends Component {
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleInputChangeDate = this.handleInputChangeDate.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.refreshKey = this.refreshKey.bind(this);
     };
 
     handleInputChange(event) {
@@ -45,6 +49,17 @@ class WebformDetailsFormGeneralEdit extends Component {
             },
         });
     };
+
+    refreshKey() {
+        this.setState({
+            ...this.state,
+            webform: {
+                ...this.state.webform,
+                apiKey: uuid(),
+                apiKeyDate: moment(),
+            },
+        });
+    }
 
     handleInputChangeDate(value, name) {
         this.setState({
@@ -98,7 +113,7 @@ class WebformDetailsFormGeneralEdit extends Component {
     };
 
     render() {
-        const { name, apiKey, maxRequestsPerMinute, dateStart, dateEnd, responsible } = this.state.webform;
+        const { name, apiKey, apiKeyDate, maxRequestsPerMinute, dateStart, dateEnd, responsible } = this.state.webform;
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -120,6 +135,25 @@ class WebformDetailsFormGeneralEdit extends Component {
                                 onChangeAction={this.handleInputChange}
                                 readOnly={true}
                             />
+                            <span className="glyphicon glyphicon-refresh mybtn-success" style={{top: '5px'}} role="button" onClick={this.refreshKey} title={'Ververs sleutel'} />
+                        </div>
+                        <div className="row">
+                            <InputText
+                                label="Aanvragen per minuut"
+                                type={"number"}
+                                name={"maxRequestsPerMinute"}
+                                value={maxRequestsPerMinute}
+                                onChangeAction={this.handleInputChange}
+                                required={"required"}
+                                error={this.state.errors.maxRequestsPerMinute}
+                            />
+                            <InputText
+                                label="Datum sleutel"
+                                name="apiKeyDate"
+                                value={moment(apiKeyDate).format('L')}
+                                onChangeAction={() => {}}
+                                readOnly={true}
+                            />
                         </div>
                         <div className="row">
                             <InputDate
@@ -136,16 +170,7 @@ class WebformDetailsFormGeneralEdit extends Component {
                             />
                         </div>
                         <div className="row">
-                            <InputText
-                                label="Aanvragen per minuut"
-                                type={"number"}
-                                name={"maxRequestsPerMinute"}
-                                value={maxRequestsPerMinute}
-                                onChangeAction={this.handleInputChange}
-                                required={"required"}
-                                error={this.state.errors.maxRequestsPerMinute}
-                            />
-                            <InputSelectGroup
+                           <InputSelectGroup
                                 label={"Verantwoordelijke"}
                                 size={"col-sm-6"}
                                 name={"responsible"}

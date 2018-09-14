@@ -208,7 +208,9 @@ abstract class RequestFilter
                 $query->where($mappedField, 'NOT LIKE', '%' . $data);
                 break;
             case 'nl':
-                $query->whereNull($mappedField)->orWhere($mappedField, '=', 0);
+                $query->where(function ($query) use ($mappedField) {
+                    $query->whereNull($mappedField)->orWhere($mappedField, '=', 0);
+                });
                 break;
             case 'nnl':
                 $query->whereNotNull($mappedField);

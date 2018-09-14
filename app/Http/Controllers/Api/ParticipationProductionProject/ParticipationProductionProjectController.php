@@ -71,7 +71,7 @@ class ParticipationProductionProjectController extends ApiController
         $contactGroup = new ContactGroup();
         $contactGroup->type_id = 'dynamic';
         $contactGroup->composed_of = 'participants';
-        $contactGroup->name = 'Dynamische groep ' . (ContactGroup::max('id') + 1);
+        $contactGroup->name =  ContactGroup::getAutoIncrementedName('Dynamische groep');
         $contactGroup->description = '';
         $contactGroup->dynamic_filter_type = $request->input('filterType') ? $request->input('filterType') : 'and';
         $contactGroup->save();

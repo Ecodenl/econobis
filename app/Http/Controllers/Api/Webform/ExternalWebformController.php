@@ -13,6 +13,9 @@ use App\Eco\Address\Address;
 use App\Eco\Contact\Contact;
 use App\Eco\Country\Country;
 use App\Eco\EmailAddress\EmailAddress;
+use App\Eco\EnergySupplier\ContactEnergySupplier;
+use App\Eco\EnergySupplier\ContactEnergySupplierType;
+use App\Eco\EnergySupplier\EnergySupplier;
 use App\Eco\Occupation\Occupation;
 use App\Eco\Occupation\OccupationContact;
 use App\Eco\Organisation\Organisation;
@@ -71,6 +74,7 @@ class ExternalWebformController extends Controller
 
         $contact = $this->updateOrCreateContact($data['contact']);
 
+        $this->addEnergySupplierToContact($contact, $data['energy_supplier']);
     }
 
 
@@ -191,7 +195,7 @@ class ExternalWebformController extends Controller
         return $contact;
     }
 
-    protected function error(string $string, int $statusCode)
+    protected function error(string $string, int $statusCode = 422)
     {
         throw new WebformException($string, $statusCode);
     }
@@ -294,7 +298,7 @@ class ExternalWebformController extends Controller
                 // Validatie op countrycode
                 if ($data['address_country_id'] != '') {
                     $country = Country::find($data['address_country_id']);
-                    if (!$country) $this->error('Ongeldige waarde in adres_land_id', 422);
+                    if (!$country) $this->error('Ongeldige waarde in adres_land_id');
                     $countryCode = $country->id;
                 } else {
                     $countryCode = null;
@@ -323,7 +327,7 @@ class ExternalWebformController extends Controller
      * @param array $data
      * @param $contact
      */
-    protected function addPhoneNumberToContact(array $data, $contact): void
+    protected function addPhoneNumberToContact(array $data, $contact)
     {
         if ($data['phone_number']) {
             $this->log('Er is een telefoonnummer meegegeven; kijken of deze al bestaat.');
@@ -382,7 +386,7 @@ class ExternalWebformController extends Controller
         $titleValidator = function($titleId){
             if ($titleId != '') {
                 $title = Title::find($titleId);
-                if (!$title) $this->error('Ongeldige waarde in titel_id', 422);
+                if (!$title) $this->error('Ongeldige waarde in titel_id');
                 return $title->id;
             }
             return null;
@@ -469,6 +473,36 @@ class ExternalWebformController extends Controller
         $this->addPhoneNumberToContact($data, $contact);
 
         return $contact;
+    }
+
+    protected function addEnergySupplierToContact($contact, $data)
+    {
+        if($data['energy_supplier_id'] != ''){
+            $this->log('Er is een energie leverancier meegegeven');
+
+            $energySupplier = EnergySupplier::find($data['energy_supplier_id']);
+            if(!$energySupplier) $this->error('Ongeldige waarde voor energie leverancier meegegeven.');
+
+            $contactEnergySupplierType = ContactEnergySupplierType::find($data['contact_energy_supply_type_id']);
+            if(!$contactEnergySupplierType) $this->error('Ongeldige waarde voor energie leverancier type meegegeven.');
+
+            if(ContactEnergySupplier::where('contact_id', $contact->id)->where('energy_supplier_id', $energySupplier->id)->exists()){
+                $this->log('Koppeling met energieleverancier ' . $energySupplier->name . ' bestaat al; niet opnieuw aangemaakt.');
+                return;
+            }
+
+            ContactEnergySupplier::create([
+                'contact_id' => $contact->id,
+                'energy_supplier_id' => $energySupplier->id,
+                'es_number' => $data['es_number'],
+                'contact_energy_supply_type_id' => $contactEnergySupplierType->id,
+                'member_since' => $data['member_since'] ?: null,
+            ]);
+
+            $this->log('Koppeling met energieleverancier ' . $energySupplier->name . ' gemaakt.');
+        }else{
+            $this->log('Er is geen energie leverancier meegegeven, niet koppelen.');
+        }
     }
 
 }

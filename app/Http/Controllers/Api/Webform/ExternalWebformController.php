@@ -10,12 +10,16 @@ namespace App\Http\Controllers\Api\Webform;
 
 
 use App\Eco\Address\Address;
+use App\Eco\Campaign\Campaign;
+use App\Eco\Campaign\CampaignStatus;
 use App\Eco\Contact\Contact;
 use App\Eco\Country\Country;
 use App\Eco\EmailAddress\EmailAddress;
 use App\Eco\EnergySupplier\ContactEnergySupplier;
 use App\Eco\EnergySupplier\ContactEnergySupplierType;
 use App\Eco\EnergySupplier\EnergySupplier;
+use App\Eco\Intake\IntakeReason;
+use App\Eco\Measure\MeasureCategory;
 use App\Eco\Occupation\Occupation;
 use App\Eco\Occupation\OccupationContact;
 use App\Eco\Organisation\Organisation;
@@ -75,6 +79,7 @@ class ExternalWebformController extends Controller
         $contact = $this->updateOrCreateContact($data['contact']);
 
         $this->addEnergySupplierToContact($contact, $data['energy_supplier']);
+        $this->addIntakeToContact($contact, $data['intake']);
     }
 
 
@@ -502,6 +507,23 @@ class ExternalWebformController extends Controller
             $this->log('Koppeling met energieleverancier ' . $energySupplier->name . ' gemaakt.');
         }else{
             $this->log('Er is geen energie leverancier meegegeven, niet koppelen.');
+        }
+    }
+
+    protected function addIntakeToContact($contact, $data)
+    {
+        if($data['campaign_id']){
+            $this->log('Er is een campagne meegegeven, intake aanmaken.');
+            $campaign = Campaign::find($data['campaign_id']);
+            if(!$campaign) $this->error('Er is een ongeldige waarde voor campagne meegegeven');
+
+            $campaignStatus = CampaignStatus::find($data['campaign_status']);
+            if(!$campaign) $this->log('Er is geen bekende waarde voor campagne status meegegeven, default naar NULL');
+
+            $reasons = IntakeReason::whereIn('id', explode($data['reason_ids']));
+            $measureCategories = MeasureCategory::whereIn('id', explode($data['measure_categorie_ids']));
+
+
         }
     }
 

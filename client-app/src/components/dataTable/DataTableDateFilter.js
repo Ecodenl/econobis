@@ -59,8 +59,8 @@ class DataTableDateFilter extends Component {
                         inputProps={{
                             className: `form-control input-sm ${className}` + (this.state.errorDateFormat ? ' has-error' : ''),
                             name: name,
+                            onBlur: this.validateDate,
                         }}
-                        onBlur={this.validateDate}
                         readOnly={readOnly}
                         placeholder={""}
                     />

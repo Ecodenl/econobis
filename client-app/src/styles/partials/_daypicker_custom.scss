@@ -1,8 +1,14 @@
 .DayPickerInput-Overlay {
   z-index: 99;
+  position: absolute;
+  left: 0;
+  z-index: 1;
+
+  background: white;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
 }
 
-.DataTableDateFilter>.DayPickerInput>span>.DayPickerInput-OverlayWrapper {
+.DataTableDateFilter>.DayPickerInput>.DayPickerInput-OverlayWrapper {
   position: absolute;
 }
 
@@ -15,5 +21,10 @@
 }
 
 .DayPicker-Caption > div  {
-  font-size: 16px;
+  font-size: 1.6rem;
+}
+
+.DayPicker {
+  display: inline-block;
+  font-size: 1.3rem;
 }

@@ -25,12 +25,16 @@ use App\Eco\Intake\IntakeStatus;
 use App\Eco\Measure\MeasureCategory;
 use App\Eco\Occupation\Occupation;
 use App\Eco\Occupation\OccupationContact;
+use App\Eco\Order\Order;
+use App\Eco\Order\OrderProduct;
+use App\Eco\Order\OrderStatus;
 use App\Eco\Organisation\Organisation;
 use App\Eco\ParticipantProductionProject\ParticipantProductionProject;
 use App\Eco\ParticipantProductionProject\ParticipantProductionProjectPayoutType;
 use App\Eco\ParticipantProductionProject\ParticipantProductionProjectStatus;
 use App\Eco\Person\Person;
 use App\Eco\PhoneNumber\PhoneNumber;
+use App\Eco\Product\Product;
 use App\Eco\ProductionProject\ProductionProject;
 use App\Eco\Task\Task;
 use App\Eco\Task\TaskProperty;
@@ -90,6 +94,7 @@ class ExternalWebformController extends Controller
         } else {
             $this->log('Webform met id ' . $webform->id . ' gevonden bij code ' . $apiKey . '.');
         }
+        $this->checkMaxRequests($webform);
 
         $data = $this->getDataFromRequest($request);
 
@@ -102,6 +107,7 @@ class ExternalWebformController extends Controller
             $this->log("Er is geen adres gevonden en kon ook niet aangemaakt worden met huidige gegevens, intake kan niet worden aangemaakt.");
         }
         $participation = $this->addParticipationToContact($contact, $data['participation']);
+        $order = $this->addOrderToContact($contact, $data['order']);
         $this->addTaskToContact($contact, $data['task'], $webform, $intake, $participation);
     }
 
@@ -158,10 +164,10 @@ class ExternalWebformController extends Controller
             'order' => [
                 // Order / OrderProduct
                 'order_product_id' => 'product_id',
-                'order_iban' => 'IBAN',
+                'order_iban' => 'iban',
                 'order_iban_tnv' => 'iban_attn',
                 'order_betaalwijze_id' => 'payment_type_id',
-                'order_status_id' => 'status_id',
+                'order_status' => 'status',
                 'order_administratie_id' => 'administration_id',
                 'order_begindatum' => 'date_start',
                 'order_aanvraagdatum' => 'date_requested',
@@ -177,7 +183,7 @@ class ExternalWebformController extends Controller
         ];
 
         // Task properties toevoegen met prefix 'taak_'
-        foreach (TaskProperty::all() as $taskProperty){
+        foreach (TaskProperty::all() as $taskProperty) {
             $mapping['task']['taak_' . $taskProperty->code] = $taskProperty->code;
         }
 
@@ -222,7 +228,7 @@ class ExternalWebformController extends Controller
 
         if (!$contact) {
             $this->log('Geen enkel contact kunnen vinden op basis van meegegeven data, nieuw contact aanmaken.');
-            $this->addContact($data);
+            $contact = $this->addContact($data);
         }
 
 
@@ -485,7 +491,7 @@ class ExternalWebformController extends Controller
             return $contactOrganisation;
         }
 
-        // Als we hier komen is er geen bedrijfsnaam meegegeven, dan maken we alleen een contact aan
+        // Als we hier komen is er geen bedrijfsnaam meegegeven, dan maken we alleen een persoon aan
         $this->log('Er is geen organisatienaam meegegeven; persoon aanmaken.');
 
         $contact = Contact::create([
@@ -495,12 +501,19 @@ class ExternalWebformController extends Controller
             'did_agree_avg' => (bool)$data['did_agree_avg'],
         ]);
 
+        $lastName = $data['last_name'];
+        if(!$lastName){
+            $emailParts = explode('@', $data['email_address']);
+            $lastName = $emailParts[0];
+            if($lastName) $this->log('Geen achternaam meegegeven, achternaam ' . $lastName . ' uit emailadres gehaald.');
+            else $this->log('Geen achternaam meegegeven, ook geen achternaam uit emailadres kunnen halen.');
+        }
         $person = Person::create([
             'contact_id' => $contact->id,
             'title_id' => $titleValidator($data['title_id']),
             'initials' => $data['initials'],
             'first_name' => $data['first_name'],
-            'last_name' => $data['last_name'],
+            'last_name' => $lastName,
             'last_name_prefix' => $data['last_name_prefix'],
             'date_of_birth' => $data['date_of_birth'] ?: null,
         ]);
@@ -515,7 +528,7 @@ class ExternalWebformController extends Controller
         return $contact;
     }
 
-    protected function addEnergySupplierToContact($contact, $data)
+    protected function addEnergySupplierToContact(Contact $contact, $data)
     {
         if ($data['energy_supplier_id'] != '') {
             $this->log('Er is een energie leverancier meegegeven');
@@ -592,14 +605,22 @@ class ExternalWebformController extends Controller
 
             $status = ParticipantProductionProjectStatus::find($data['status_id']);
             if (!$status) {
-                $this->log('Geen ongeldige waarde voor participatiestatus meegegeven, default naar "optie".');
+                $this->log('Geen bekende waarde voor participatiestatus meegegeven, default naar optie.');
                 $status = ParticipantProductionProjectStatus::find(1);
             }
 
             $type = ParticipantProductionProjectPayoutType::find($data['type_id']);
             if (!$type) {
-                $this->log('Geen ongeldige waarde voor participatie uitkeringtype meegegeven, default naar "energieleverancier".');
-                $type = ParticipantProductionProjectPayoutType::find(3);
+                if($productionProject->production_project_type_id == 1){
+                    $type = ParticipantProductionProjectPayoutType::find(1);
+                    $this->log('Geen bekende waarde voor participatie uitkeringtype meegegeven, op basis van type project ' . $productionProject->productionProjectType->name . ' default naar ' . $type->name . '.');
+                }elseif($productionProject->production_project_type_id == 2){
+                    $type = ParticipantProductionProjectPayoutType::find(3);
+                    $this->log('Geen bekende waarde voor participatie uitkeringtype meegegeven, op basis van type project ' . $productionProject->productionProjectType->name . ' default naar ' . $type->name . '.');
+                }else{
+                    $type = ParticipantProductionProjectPayoutType::find(3);
+                    $this->log('Geen bekende waarde voor participatie uitkeringtype meegegeven, default naar ' . $type->name . '.');
+                }
             }
 
             $participation = ParticipantProductionProject::create([
@@ -679,6 +700,79 @@ class ExternalWebformController extends Controller
                 ]);
                 $this->log('Eigenschap ' . $taskProperty->name . ' met waarde ' . $data[$taskProperty->code] . ' aan taak toegevoegd.');
             }
+        }
+    }
+
+    protected function addOrderToContact(Contact $contact, array $data)
+    {
+        if ($data['product_id']) {
+            $this->log('Er is een product meegegeven, order aanmaken.');
+
+            $product = Product::find($data['product_id']);
+
+            if (!$product) {
+                $this->log('Product met is ' . $data['product_id'] . ' is niet gevonden, geen order aangemaakt.');
+                return;
+            }
+
+            $status = $data['status'];
+            if (!OrderStatus::exists($data['status'])) {
+                $this->log('Geen bekende waarde voor orderstatus meegegeven, default naar "concept".');
+                $status = 'concept';
+            }
+
+            $order = Order::create([
+                'contact_id' => $contact->id,
+                'administration_id' => $product->administration_id,
+                'status_id' => $status,
+                'subject' => '',
+                'payment_type_id' => $product->payment_type_id,
+                'IBAN' => $data['iban'],
+                'iban_attn' => $data['iban_attn'],
+                'date_requested' => Carbon::make($data['date_requested']),
+            ]);
+
+            $this->log('Order met id ' . $order->id . ' aangemaakt.');
+
+            $dateStart = Carbon::make($data['date_start']);
+            if(!$dateStart){
+                $this->log('Geen bekende startdatum meegegeven voor product, default naar datum van vandaag.');
+                $dateStart = new Carbon();
+            }
+            $orderProduct = OrderProduct::create([
+                'product_id' => $product->id,
+                'order_id' => $order->id,
+                'description' => '',
+                'amount' => 1,
+                'date_start' => $dateStart,
+            ]);
+
+            $this->log('Orderregel met id ' . $orderProduct->id . ' aangemaakt en gekoppeld aan order.');
+
+            return $order;
+        } else {
+            $this->log('Er is geen product meegegeven, geen order aanmaken.');
+        }
+    }
+
+    protected function checkMaxRequests($webform)
+    {
+        $lastRequests = $webform->last_requests;
+
+        // Eerst oude requests opschonen
+        // Timestamp van een minuut geleden. Timestamps ouder dan deze worden eruit gegooid.
+        $expireTimestamp = (new Carbon())->subMinute()->timestamp;
+        $lastRequests = array_filter($lastRequests, function($value) use ($expireTimestamp) {
+            return $value > $expireTimestamp;
+        });
+        // Huidige request toevoegen, en opslaan.
+        $lastRequests[] = (new Carbon())->timestamp;
+        $webform->last_requests = array_values($lastRequests);
+        $webform->save();
+
+        // Checken of het max aantal is overschreden.
+        if(count($lastRequests) > $webform->max_requests_per_minute){
+            $this->error('Maximum aantal aanroepen per minuut is bereikt.');
         }
     }
 

@@ -26,7 +26,7 @@ class TaskDetailsFormProperties extends Component {
         return (
             <Panel>
                 <PanelHeader>
-                    <span className="h5 text-bold">Extra kenmerken gegevens</span>
+                    <span className="h5 text-bold">Extra kenmerken</span>
                     {this.props.permissions.manageTask &&
                     <a role="button" className="pull-right" onClick={this.toggleShowNew}><span
                         className="glyphicon glyphicon-plus"/></a>

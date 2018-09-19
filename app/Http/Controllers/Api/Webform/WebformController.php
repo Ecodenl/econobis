@@ -43,6 +43,7 @@ class WebformController extends Controller
             ->get();
 
         $webform = new Webform($data);
+        $webform->last_requests = [];
         $webform->save();
 
         return $this->show($webform);

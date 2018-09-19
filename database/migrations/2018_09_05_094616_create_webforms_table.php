@@ -29,6 +29,7 @@ class CreateWebformsTable extends Migration
             $table->foreign('responsible_team_id')
                 ->references('id')->on('teams')
                 ->onDelete('restrict');
+            $table->text('last_requests');
             $table->timestamps();
         });
     }

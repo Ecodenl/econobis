@@ -13,19 +13,28 @@ use App\Eco\Address\Address;
 use App\Eco\Campaign\Campaign;
 use App\Eco\Campaign\CampaignStatus;
 use App\Eco\Contact\Contact;
+use App\Eco\ContactGroup\ContactGroup;
 use App\Eco\Country\Country;
 use App\Eco\EmailAddress\EmailAddress;
 use App\Eco\EnergySupplier\ContactEnergySupplier;
 use App\Eco\EnergySupplier\ContactEnergySupplierType;
 use App\Eco\EnergySupplier\EnergySupplier;
+use App\Eco\Intake\Intake;
 use App\Eco\Intake\IntakeReason;
+use App\Eco\Intake\IntakeStatus;
 use App\Eco\Measure\MeasureCategory;
 use App\Eco\Occupation\Occupation;
 use App\Eco\Occupation\OccupationContact;
 use App\Eco\Organisation\Organisation;
+use App\Eco\ParticipantProductionProject\ParticipantProductionProject;
+use App\Eco\ParticipantProductionProject\ParticipantProductionProjectPayoutType;
+use App\Eco\ParticipantProductionProject\ParticipantProductionProjectStatus;
 use App\Eco\Person\Person;
 use App\Eco\PhoneNumber\PhoneNumber;
+use App\Eco\ProductionProject\ProductionProject;
+use App\Eco\Task\Task;
 use App\Eco\Task\TaskProperty;
+use App\Eco\Task\TaskPropertyValue;
 use App\Eco\Title\Title;
 use App\Eco\Webform\Webform;
 use App\Http\Controllers\Controller;
@@ -40,6 +49,13 @@ class ExternalWebformController extends Controller
 
     protected $logs = [];
 
+    /**
+     * Het address record aangemaakt of gevonden obv postcode en huisnummer.
+     * Aan dit address worden eventuele andere gegevens gekoppeld die op adres niveau gekoppeld moeten worden.
+     * @var null
+     */
+    protected $address = null;
+
     public function post(string $apiKey, Request $request)
     {
         try {
@@ -48,6 +64,7 @@ class ExternalWebformController extends Controller
             });
         } catch (WebformException $e) {
             $this->log('Fout opgetreden: ' . $e->getMessage());
+            $this->log('Gehele API aanroep is ongedaan gemaakt!');
             Log::info(implode("\n", $this->logs));
             return Response::json($this->logs, $e->getStatusCode());
         } catch (\Exception $e) {
@@ -77,9 +94,15 @@ class ExternalWebformController extends Controller
         $data = $this->getDataFromRequest($request);
 
         $contact = $this->updateOrCreateContact($data['contact']);
-
         $this->addEnergySupplierToContact($contact, $data['energy_supplier']);
-        $this->addIntakeToContact($contact, $data['intake']);
+        if ($this->address) {
+            $intake = $this->addIntakeToAddress($this->address, $data['intake']);
+        } else {
+            $intake = null;
+            $this->log("Er is geen adres gevonden en kon ook niet aangemaakt worden met huidige gegevens, intake kan niet worden aangemaakt.");
+        }
+        $participation = $this->addParticipationToContact($contact, $data['participation']);
+        $this->addTaskToContact($contact, $data['task'], $webform, $intake, $participation);
     }
 
 
@@ -87,7 +110,7 @@ class ExternalWebformController extends Controller
     {
         $mapping = [
             'contact' => [
-                // Contact
+                // Contact // DONE
                 'titel_id' => 'title_id',
                 'voorletters' => 'initials',
                 'voornaam' => 'first_name',
@@ -111,17 +134,19 @@ class ExternalWebformController extends Controller
                 // Contact
                 'iban' => 'iban',
                 'akkoord_privacybeleid' => 'did_agree_avg',
+                // Groep
+                'contact_groep' => 'group_name',
             ],
-            'energy_supplier' => [
+            'energy_supplier' => [ // DONE
                 // ContactEnergySupplier
                 'energieleverancier_id' => 'energy_supplier_id',
                 'energieleverancier_klantnummer' => 'es_number',
                 'energieleverancier_type_id' => 'contact_energy_supply_type_id',
                 'energieleverancier_klant_sinds' => 'member_since',
             ],
-            'participation' => [
+            'participation' => [ // DONE
                 // ParticipantProductionProject
-                'participatie_productieproject' => 'production_project_id',
+                'participatie_productieproject_id' => 'production_project_id',
                 'participatie_aantal_participaties_aangevraagd' => 'participations_requested',
                 'participatie_iban_uitkering' => 'iban_payout',
                 'participatie_iban_uitkering_tnv' => 'iban_payout_attn',
@@ -142,7 +167,7 @@ class ExternalWebformController extends Controller
                 'order_aanvraagdatum' => 'date_requested',
             ],
             'intake' => [
-                // Intake
+                // Intake // DONE
                 'intake_campagne_id' => 'campaign_id',
                 'intake_motivatie_ids' => 'reason_ids',
                 'intake_interesse_ids' => 'measure_categorie_ids',
@@ -151,8 +176,10 @@ class ExternalWebformController extends Controller
             ],
         ];
 
-        // Task properties toevoegen
-        $mapping['task_properties'] = TaskProperty::pluck('code', 'code');
+        // Task properties toevoegen met prefix 'taak_'
+        foreach (TaskProperty::all() as $taskProperty){
+            $mapping['task']['taak_' . $taskProperty->code] = $taskProperty->code;
+        }
 
         $data = [];
         foreach ($mapping as $groupname => $fields) {
@@ -178,6 +205,7 @@ class ExternalWebformController extends Controller
             // Person of organisatie is gevonden obv naam en email, Eventueel adres en telefoonnummer toevoegen
             $this->addAddressToContact($data, $contact);
             $this->addPhoneNumberToContact($data, $contact);
+            $this->addContactToGroup($data, $contact);
         }
 
         if (!$contact) {
@@ -188,6 +216,7 @@ class ExternalWebformController extends Controller
                 // Person of organisatie is gevonden obv naam en adres, Eventueel email en telefoonnummer toevoegen
                 $this->addEmailToContact($data, $contact);
                 $this->addPhoneNumberToContact($data, $contact);
+                $this->addContactToGroup($data, $contact);
             }
         }
 
@@ -293,10 +322,13 @@ class ExternalWebformController extends Controller
         if ($data['address_number'] && $data['address_postal_code']) {
             $this->log('Er is een huisnummer en postcode meegegeven; kijken of deze al bestaat.');
             // Er is voldoende adres data meegegeven om een adres te kunnen maken
-            if (!$contact->addresses()
+
+            $address = $contact->addresses()
                 ->where('number', $data['address_number'])
                 ->where('postal_code', $data['address_postal_code'])
-                ->exists()) {
+                ->first();
+
+            if (!$address) {
                 // Adres met deze gegevens bestaat nog niet, adres toevoegen met type "postadres"
                 $this->log('Er bestaat nog geen adres met dit huisnummer en postcode; adres aanmaken');
 
@@ -323,6 +355,9 @@ class ExternalWebformController extends Controller
             } else {
                 $this->log('Er bestaat al een adres met dit huisnummer en postcode; adres niet aanmaken');
             }
+
+            // Address opslaan in controller, aan dit address worden eventuele andere gegevens gekoppeld die op address niveau moeten worden gekoppeld.
+            $this->address = $address;
         } else {
             $this->log('Er is geen huisnummer of postcode meegegeven; adres niet aanmaken');
         }
@@ -388,7 +423,7 @@ class ExternalWebformController extends Controller
     protected function addContact(array $data)
     {
         // Functie voor afvangen ongeldige waarden in title_id
-        $titleValidator = function($titleId){
+        $titleValidator = function ($titleId) {
             if ($titleId != '') {
                 $title = Title::find($titleId);
                 if (!$title) $this->error('Ongeldige waarde in titel_id');
@@ -482,16 +517,16 @@ class ExternalWebformController extends Controller
 
     protected function addEnergySupplierToContact($contact, $data)
     {
-        if($data['energy_supplier_id'] != ''){
+        if ($data['energy_supplier_id'] != '') {
             $this->log('Er is een energie leverancier meegegeven');
 
             $energySupplier = EnergySupplier::find($data['energy_supplier_id']);
-            if(!$energySupplier) $this->error('Ongeldige waarde voor energie leverancier meegegeven.');
+            if (!$energySupplier) $this->error('Ongeldige waarde voor energie leverancier meegegeven.');
 
             $contactEnergySupplierType = ContactEnergySupplierType::find($data['contact_energy_supply_type_id']);
-            if(!$contactEnergySupplierType) $this->error('Ongeldige waarde voor energie leverancier type meegegeven.');
+            if (!$contactEnergySupplierType) $this->error('Ongeldige waarde voor energie leverancier type meegegeven.');
 
-            if(ContactEnergySupplier::where('contact_id', $contact->id)->where('energy_supplier_id', $energySupplier->id)->exists()){
+            if (ContactEnergySupplier::where('contact_id', $contact->id)->where('energy_supplier_id', $energySupplier->id)->exists()) {
                 $this->log('Koppeling met energieleverancier ' . $energySupplier->name . ' bestaat al; niet opnieuw aangemaakt.');
                 return;
             }
@@ -505,25 +540,145 @@ class ExternalWebformController extends Controller
             ]);
 
             $this->log('Koppeling met energieleverancier ' . $energySupplier->name . ' gemaakt.');
-        }else{
+        } else {
             $this->log('Er is geen energie leverancier meegegeven, niet koppelen.');
         }
     }
 
-    protected function addIntakeToContact($contact, $data)
+    protected function addIntakeToAddress(Address $address, array $data)
     {
-        if($data['campaign_id']){
+        if ($data['campaign_id']) {
             $this->log('Er is een campagne meegegeven, intake aanmaken.');
             $campaign = Campaign::find($data['campaign_id']);
-            if(!$campaign) $this->error('Er is een ongeldige waarde voor campagne meegegeven');
+            if (!$campaign) $this->error('Er is een ongeldige waarde voor campagne meegegeven.');
 
-            $campaignStatus = CampaignStatus::find($data['campaign_status']);
-            if(!$campaign) $this->log('Er is geen bekende waarde voor campagne status meegegeven, default naar NULL');
+            $intakeStatus = IntakeStatus::find($data['status_id']);
+            if (!$intakeStatus) {
+                $this->log('Er is geen bekende waarde voor intake status meegegeven, default naar "open"');
+                $intakeStatus = IntakeStatus::find(1);
+            }
 
-            $reasons = IntakeReason::whereIn('id', explode($data['reason_ids']));
-            $measureCategories = MeasureCategory::whereIn('id', explode($data['measure_categorie_ids']));
+            $reasons = IntakeReason::whereIn('id', explode(',', $data['reason_ids']))->get();
+            $measureCategories = MeasureCategory::whereIn('id', explode(',', $data['measure_categorie_ids']))->get();
 
+            $intake = Intake::make([
+                'contact_id' => $address->contact->id,
+                'intake_status_id' => $intakeStatus->id,
+                'campaign_id' => $campaign->id,
+                'note' => $data['note'],
+            ]);
+            $intake->address_id = $address->id;
+            $intake->save();
+            $this->log("Intake met id " . $intake->id . " aangemaakt en gekoppeld aan adres id " . $address->id . ".");
 
+            $intake->reasons()->sync($reasons->pluck('id'));
+            $this->log("Intake gekoppeld aan motivaties: " . $reasons->implode('name', ', '));
+
+            $intake->measuresRequested()->sync($measureCategories->pluck('id'));
+            $this->log("Intake gekoppeld aan interesses: " . $measureCategories->implode('name', ', '));
+
+            return $intake;
+        } else {
+            $this->log('Er is geen campagne meegegeven, intake niet aanmaken.');
+        }
+    }
+
+    protected function addParticipationToContact(Contact $contact, array $data)
+    {
+        if ($data['production_project_id']) {
+            $this->log('Er is een productieproject meegegeven, participatie aanmaken.');
+            $productionProject = ProductionProject::find($data['production_project_id']);
+            if (!$productionProject) $this->error('Er is een ongeldige waarde voor productieproject meegegeven.');
+
+            $status = ParticipantProductionProjectStatus::find($data['status_id']);
+            if (!$status) {
+                $this->log('Geen ongeldige waarde voor participatiestatus meegegeven, default naar "optie".');
+                $status = ParticipantProductionProjectStatus::find(1);
+            }
+
+            $type = ParticipantProductionProjectPayoutType::find($data['type_id']);
+            if (!$type) {
+                $this->log('Geen ongeldige waarde voor participatie uitkeringtype meegegeven, default naar "energieleverancier".');
+                $type = ParticipantProductionProjectPayoutType::find(3);
+            }
+
+            $participation = ParticipantProductionProject::create([
+                'contact_id' => $contact->id,
+                'status_id' => $status->id,
+                'production_project_id' => $productionProject->id,
+                'date_register' => Carbon::make($data['date_register']),
+                'participations_requested' => $data['participations_requested'] == '' ? 0 : $data['participations_requested'],
+                'participations_granted' => 0,
+                'participations_sold' => 0,
+                'participations_rest_sale' => 0,
+                'iban_payout' => $data['iban_payout'],
+                'iban_payout_attn' => $data['iban_payout_attn'],
+                'iban_payed' => '',
+                'iban_attn' => '',
+                'did_accept_agreement' => 0,
+                'type_id' => $type->id,
+                'power_kwh_consumption' => $data['power_kwh_consumption'] == '' ? 0 : $data['power_kwh_consumption'],
+            ]);
+
+            $this->log('Participatie aangemaakt met id ' . $participation->id . '.');
+
+            return $participation;
+        } else {
+            $this->log('Er is geen productieproject meegegeven, geen participatie aanmaken.');
+        }
+    }
+
+    protected function addContactToGroup(array $data, Contact $contact)
+    {
+        if ($data['group_name']) {
+            $this->log('Er is een contact groep meegegeven, groep koppelen.');
+
+            $contactGroup = ContactGroup::where('name', $data['group_name'])->first();
+
+            if (!$contactGroup) {
+                $this->log('Groep met naam ' . $data['group_name'] . ' is niet gevonden, geen groep gekoppeld.');
+                return;
+            }
+
+            if ($contactGroup->type_id != 'static') {
+                $this->log('Een contact kan alleen aan een statische groep worden gekoppeld, geen groep gekoppeld.');
+                return;
+            }
+
+            $contactGroup->contacts()->syncWithoutDetaching($contact);
+            $this->log('Contact aan groep ' . $data['group_name'] . ' gekoppeld.');
+        } else {
+            $this->log('Er is geen contact groep meegegeven, geen groep koppelen.');
+        }
+    }
+
+    protected function addTaskToContact(Contact $contact, array $data, Webform $webform, Intake $intake = null, ParticipantProductionProject $participation = null)
+    {
+        $task = Task::create([
+            'note' => '',
+            'type_id' => 6,
+            'contact_id' => $contact->id,
+            'finished' => false,
+            'date_planned_start' => (new Carbon())->startOfDay(),
+            'responsible_user_id' => $webform->responsible_user_id,
+            'responsible_team_id' => $webform->responsible_team_id,
+            'intake_id' => $intake ? $intake->id : null,
+            'production_project_id' => $participation ? $participation->production_project_id : null,
+            'participation_production_project_id' => $participation ? $participation->id : null,
+            'order_id' => null, //TODO
+        ]);
+
+        $this->log('Taak met id ' . $task->id . ' aangemaakt.');
+
+        foreach (TaskProperty::all() as $taskProperty) {
+            if ($data[$taskProperty->code] != '') {
+                $taskPropertyValue = TaskPropertyValue::create([
+                    'property_id' => $taskProperty->id,
+                    'task_id' => $task->id,
+                    'value' => $data[$taskProperty->code],
+                ]);
+                $this->log('Eigenschap ' . $taskProperty->name . ' met waarde ' . $data[$taskProperty->code] . ' aan taak toegevoegd.');
+            }
         }
     }
 

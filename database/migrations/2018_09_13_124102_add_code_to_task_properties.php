@@ -25,10 +25,6 @@ class AddCodeToTaskProperties extends Migration
         foreach ([
                      'lid_worden' => 'Lid worden',
                      'overstappen' => 'Overstappen',
-                     'advies' => 'Advies',
-                     'conceptovereenkomst' => 'Conceptovereenkomst',
-                     'bedrijf' => 'Bedrijf',
-                     'naam_bedrijf' => 'Naam bedrijf',
                      'jeugdlid' => 'Jeugdlid',
                      'wettelijk_vertegenwoordiger_naam' => 'Naam wettelijk vertegenwoordiger',
                      'wettelijk_vertegenwoordiger_telefoonnummer' => 'Telefoonnummer wettelijke vertegenwoordiger',

@@ -136,7 +136,7 @@ class ContactGroup extends Model
 
     public function getComposedContactsAttribute()
     {
-        $contacts = null;
+        $contacts = (new Contact())->newCollection();
 
         foreach ($this->contactGroups as $contactGroup) {
 

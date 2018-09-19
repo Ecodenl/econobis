@@ -108,7 +108,7 @@ class ExternalWebformController extends Controller
         }
         $participation = $this->addParticipationToContact($contact, $data['participation']);
         $order = $this->addOrderToContact($contact, $data['order']);
-        $this->addTaskToContact($contact, $data['task'], $webform, $intake, $participation);
+        $this->addTaskToContact($contact, $data['task'], $webform, $intake, $participation, $order);
     }
 
 
@@ -673,7 +673,7 @@ class ExternalWebformController extends Controller
         }
     }
 
-    protected function addTaskToContact(Contact $contact, array $data, Webform $webform, Intake $intake = null, ParticipantProductionProject $participation = null)
+    protected function addTaskToContact(Contact $contact, array $data, Webform $webform, Intake $intake = null, ParticipantProductionProject $participation = null, Order $order = null)
     {
         $task = Task::create([
             'note' => '',
@@ -686,7 +686,7 @@ class ExternalWebformController extends Controller
             'intake_id' => $intake ? $intake->id : null,
             'production_project_id' => $participation ? $participation->production_project_id : null,
             'participation_production_project_id' => $participation ? $participation->id : null,
-            'order_id' => null, //TODO
+            'order_id' => $order ? $order->id : null,
         ]);
 
         $this->log('Taak met id ' . $task->id . ' aangemaakt.');

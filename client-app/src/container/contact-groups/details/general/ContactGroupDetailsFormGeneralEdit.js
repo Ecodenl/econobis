@@ -80,8 +80,7 @@ class ContactGroupDetailsFormGeneralEdit extends Component {
         if (validator.isEmpty(contactGroup.name)) {
             errors.name = true;
             hasErrors = true;
-        }
-        ;
+        };
 
         this.setState({...this.state, errors: errors})
 
@@ -321,8 +320,8 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = dispatch => ({
-    updateContactGroupDetails: (id) => {
-        dispatch(updateContactGroupDetails(id));
+    updateContactGroupDetails: (payload) => {
+        dispatch(updateContactGroupDetails(payload));
     },
 });
 

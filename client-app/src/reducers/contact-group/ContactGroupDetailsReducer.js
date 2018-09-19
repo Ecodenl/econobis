@@ -10,6 +10,8 @@ export default function (state= {}, action) {
                 ...state,
                 ...action.contactGroupDetails,
             };
+        case 'CLEAR_CONTACT_GROUP_DETAILS':
+            return {};
         default:
             return state;
     }

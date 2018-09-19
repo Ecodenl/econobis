@@ -89,7 +89,7 @@ const ContactGroupDetailsFormGeneralView = props => {
                 />
                     <ViewText
                         label="Gemaakt door"
-                        value={"Gebruiker"}
+                        value={createdBy && createdBy.fullName}
                     />
             </div>
 

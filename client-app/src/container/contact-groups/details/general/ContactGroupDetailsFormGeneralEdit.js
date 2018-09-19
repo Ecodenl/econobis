@@ -16,15 +16,16 @@ class ContactGroupDetailsFormGeneralEdit extends Component {
     constructor(props) {
         super(props);
 
-        const { dateStarted } = props.contactGroupDetails;
-        const { dateFinished } = props.contactGroupDetails;
-        const { responsibleUserId } = props.contactGroupDetails;
-        const { showPortal } = props.contactGroupDetails;
-        const { editPortal } = props.contactGroupDetails;
-        const { showContactForm } = props.contactGroupDetails;
-        const { contactGroupComposedType } = props.contactGroupDetails;
-        const { type } = props.contactGroupDetails;
-        const { dynamicFilterType } = props.contactGroupDetails;
+        const { dateStarted,
+            dateFinished,
+            responsibleUserId,
+            showPortal,
+            editPortal,
+            showContactForm,
+            contactGroupComposedType,
+            type,
+            dynamicFilterType,
+        } = props.contactGroupDetails;
 
         this.state = {
             contactsWithPermission: [],
@@ -43,7 +44,7 @@ class ContactGroupDetailsFormGeneralEdit extends Component {
             errors: {
                 name: false,
             },
-        }
+        };
     };
 
     componentDidMount() {

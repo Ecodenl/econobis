@@ -43,6 +43,7 @@ use App\Eco\Title\Title;
 use App\Eco\Webform\Webform;
 use App\Http\Controllers\Controller;
 use Carbon\Carbon;
+use CMPayments\IBAN;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Log;
@@ -59,6 +60,12 @@ class ExternalWebformController extends Controller
      * @var null
      */
     protected $address = null;
+
+    /**
+     * Als er ergens tijdens het verwerken fouten ontstaan moet dit uiteindelijk in de taak worden toegevoegd.
+     * @var array
+     */
+    protected $ibanErrors = [];
 
     public function post(string $apiKey, Request $request)
     {
@@ -441,10 +448,14 @@ class ExternalWebformController extends Controller
         if ($data['organisation_name']) {
             $this->log('Er is een organisatienaam meegegeven; organisatie aanmaken.');
 
+            $iban = $data['iban'];
+            if(!(new IBAN($iban))->validate()){
+                $this->ibanErrors[] = 'Ongeldige Iban ingelezen voor organisatie.';
+            }
             $contactOrganisation = Contact::create([
                 'type_id' => 'organisation',
                 'status_id' => 'none',
-                'iban' => $data['iban'],
+                'iban' => $iban,
                 'did_agree_avg' => (bool)$data['did_agree_avg'],
             ]);
 
@@ -494,6 +505,10 @@ class ExternalWebformController extends Controller
         // Als we hier komen is er geen bedrijfsnaam meegegeven, dan maken we alleen een persoon aan
         $this->log('Er is geen organisatienaam meegegeven; persoon aanmaken.');
 
+        $iban = $data['iban'];
+        if(!(new IBAN($iban))->validate()){
+            $this->ibanErrors[] = 'Ongeldige Iban ingelezen voor contactpersoon.';
+        }
         $contact = Contact::create([
             'type_id' => 'person',
             'status_id' => 'none',
@@ -623,6 +638,10 @@ class ExternalWebformController extends Controller
                 }
             }
 
+            $ibanPayout = $data['iban_payout'];
+            if(!(new IBAN($ibanPayout))->validate()){
+                $this->ibanErrors[] = 'Ongeldige Iban ingelezen voor participatie.';
+            }
             $participation = ParticipantProductionProject::create([
                 'contact_id' => $contact->id,
                 'status_id' => $status->id,
@@ -632,7 +651,7 @@ class ExternalWebformController extends Controller
                 'participations_granted' => 0,
                 'participations_sold' => 0,
                 'participations_rest_sale' => 0,
-                'iban_payout' => $data['iban_payout'],
+                'iban_payout' => $ibanPayout,
                 'iban_payout_attn' => $data['iban_payout_attn'],
                 'iban_payed' => '',
                 'iban_attn' => '',
@@ -675,8 +694,12 @@ class ExternalWebformController extends Controller
 
     protected function addTaskToContact(Contact $contact, array $data, Webform $webform, Intake $intake = null, ParticipantProductionProject $participation = null, Order $order = null)
     {
+
+        // Opmerkingen over eventuele ongeldige ibans toevoegen als notitie aan taak
+        $note = implode("\n", $this->ibanErrors);
+
         $task = Task::create([
-            'note' => '',
+            'note' => $note,
             'type_id' => 6,
             'contact_id' => $contact->id,
             'finished' => false,
@@ -721,13 +744,17 @@ class ExternalWebformController extends Controller
                 $status = 'concept';
             }
 
+            $iban = $data['iban'];
+            if(!(new IBAN($iban))->validate()){
+                $this->ibanErrors[] = 'Ongeldige Iban ingelezen voor order.';
+            }
             $order = Order::create([
                 'contact_id' => $contact->id,
                 'administration_id' => $product->administration_id,
                 'status_id' => $status,
                 'subject' => '',
                 'payment_type_id' => $product->payment_type_id,
-                'IBAN' => $data['iban'],
+                'IBAN' => $iban,
                 'iban_attn' => $data['iban_attn'],
                 'date_requested' => Carbon::make($data['date_requested']),
             ]);

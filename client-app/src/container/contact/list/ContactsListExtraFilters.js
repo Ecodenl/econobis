@@ -6,18 +6,13 @@ import ButtonText from "../../../components/button/ButtonText";
 import {connect} from "react-redux";
 
 class ContactsListExtraFilters extends Component {
-
     constructor(props) {
         super(props);
 
         this.state = {
-            filterType: props.filterType ? props.filterType : 'and',
-            amountOfFilters: props.amountOfFilters !== undefined ? props.amountOfFilters : 1,
-            filters: props.extraFilters !== undefined ? props.extraFilters : [{
-                field: 'name',
-                type: 'eq',
-                data: '',
-            }],
+            filterType: props.filterType,
+            amountOfFilters: props.amountOfFilters,
+            filters: props.extraFilters,
         };
 
         this.closeModal = this.closeModal.bind(this);

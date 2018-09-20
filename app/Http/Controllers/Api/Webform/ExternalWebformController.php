@@ -40,13 +40,17 @@ use App\Eco\Task\Task;
 use App\Eco\Task\TaskProperty;
 use App\Eco\Task\TaskPropertyValue;
 use App\Eco\Title\Title;
+use App\Eco\User\User;
 use App\Eco\Webform\Webform;
+use App\Exceptions\Handler;
 use App\Http\Controllers\Controller;
+use App\Notifications\WebformRequestProcessed;
 use Carbon\Carbon;
 use CMPayments\IBAN;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Response;
 
 class ExternalWebformController extends Controller
@@ -66,6 +70,7 @@ class ExternalWebformController extends Controller
      * @var array
      */
     protected $ibanErrors = [];
+    protected $webform = null;
 
     public function post(string $apiKey, Request $request)
     {
@@ -74,15 +79,45 @@ class ExternalWebformController extends Controller
                 $this->doPost($apiKey, $request);
             });
         } catch (WebformException $e) {
+            // Er is een bewuste fout vanuit het verwerken van de aanroep onstaan
+            // Deze kan worden weergegeven in het log.
+            // Doordat er een fout is ontstaan tijdens de transaction, worden alle DB wijzigingen teruggedraaid.
             $this->log('Fout opgetreden: ' . $e->getMessage());
             $this->log('Gehele API aanroep is ongedaan gemaakt!');
-            Log::info(implode("\n", $this->logs));
+
+            // Log wegschrijven naar laravel logbestand
+            $this->logInfo();
+
+            // Log emailen naar verantwoordelijke(n)
+            $this->mailLog($request->all(), false, $this->webform);
+
+            // Logregels weegeven ter info voor degene die de functie aanroept
             return Response::json($this->logs, $e->getStatusCode());
         } catch (\Exception $e) {
-            throw $e;
+            // Er is een onbekende fout opgetreden, dit is een systeemfout en willen we dus niet weergeven.
+            // Log dus aanvullen met 'Onbekende fout'
+            // Doordat er een fout is ontstaan tijdens de transaction, worden alle DB wijzigingen teruggedraaid.
+            $this->log('Onbekende fout opgetreden.');
+            $this->log('Gehele API aanroep is ongedaan gemaakt!');
+
+            // Log wegschrijven naar laravel logbestand
+            $this->logInfo();
+
+            // Exception onderwater raporteren zonder 'er uit te klappen'
+            // Zo is de error terug te vinden in de logs en evt Slack
+            report($e);
+            $this->log('Error is gerapporteerd.');
+
+            // Log emailen naar verantwoordelijke(n)
+            $this->mailLog($request->all(), false, $this->webform);
+
+            // Logregels weegeven ter info voor degene die de functie aanroept
+            return Response::json($this->logs, 500);
         }
 
-        Log::info(implode("\n", $this->logs));
+        // Geen fouten onstaan, log weergeven met succes melding.
+        $this->log('Aanroep succesvol afgerond.');
+        $this->logInfo();
         return Response::json($this->logs);
     }
 
@@ -99,6 +134,7 @@ class ExternalWebformController extends Controller
             $this->log('Webform met code ' . $apiKey . ' is niet gevonden.');
             $this->error('Webform not found', 404);
         } else {
+            $this->webform = $webform;
             $this->log('Webform met id ' . $webform->id . ' gevonden bij code ' . $apiKey . '.');
         }
         $this->checkMaxRequests($webform);
@@ -419,7 +455,7 @@ class ExternalWebformController extends Controller
                     'type_id' => 'home',
                     'email' => $data['email_address'],
                 ]);
-                $this->log('emailadres aangemaakt met id ' . $emailaddress->id);
+                $this->log('Emailadres aangemaakt met id ' . $emailaddress->id);
             } else {
                 $this->log('Er bestaat al een emailadres met dit adres; emailadres niet adres');
             }
@@ -448,10 +484,7 @@ class ExternalWebformController extends Controller
         if ($data['organisation_name']) {
             $this->log('Er is een organisatienaam meegegeven; organisatie aanmaken.');
 
-            $iban = $data['iban'];
-            if(!(new IBAN($iban))->validate()){
-                $this->ibanErrors[] = 'Ongeldige Iban ingelezen voor organisatie.';
-            }
+            $iban = $this->checkIban($data['iban'], 'organisatie.');
             $contactOrganisation = Contact::create([
                 'type_id' => 'organisation',
                 'status_id' => 'none',
@@ -505,22 +538,19 @@ class ExternalWebformController extends Controller
         // Als we hier komen is er geen bedrijfsnaam meegegeven, dan maken we alleen een persoon aan
         $this->log('Er is geen organisatienaam meegegeven; persoon aanmaken.');
 
-        $iban = $data['iban'];
-        if(!(new IBAN($iban))->validate()){
-            $this->ibanErrors[] = 'Ongeldige Iban ingelezen voor contactpersoon.';
-        }
+        $iban = $this->checkIban($data['iban'], 'contactpersoon.');
         $contact = Contact::create([
             'type_id' => 'person',
             'status_id' => 'none',
-            'iban' => $data['iban'],
+            'iban' => $iban,
             'did_agree_avg' => (bool)$data['did_agree_avg'],
         ]);
 
         $lastName = $data['last_name'];
-        if(!$lastName){
+        if (!$lastName) {
             $emailParts = explode('@', $data['email_address']);
             $lastName = $emailParts[0];
-            if($lastName) $this->log('Geen achternaam meegegeven, achternaam ' . $lastName . ' uit emailadres gehaald.');
+            if ($lastName) $this->log('Geen achternaam meegegeven, achternaam ' . $lastName . ' uit emailadres gehaald.');
             else $this->log('Geen achternaam meegegeven, ook geen achternaam uit emailadres kunnen halen.');
         }
         $person = Person::create([
@@ -626,22 +656,19 @@ class ExternalWebformController extends Controller
 
             $type = ParticipantProductionProjectPayoutType::find($data['type_id']);
             if (!$type) {
-                if($productionProject->production_project_type_id == 1){
+                if ($productionProject->production_project_type_id == 1) {
                     $type = ParticipantProductionProjectPayoutType::find(1);
                     $this->log('Geen bekende waarde voor participatie uitkeringtype meegegeven, op basis van type project ' . $productionProject->productionProjectType->name . ' default naar ' . $type->name . '.');
-                }elseif($productionProject->production_project_type_id == 2){
+                } elseif ($productionProject->production_project_type_id == 2) {
                     $type = ParticipantProductionProjectPayoutType::find(3);
                     $this->log('Geen bekende waarde voor participatie uitkeringtype meegegeven, op basis van type project ' . $productionProject->productionProjectType->name . ' default naar ' . $type->name . '.');
-                }else{
+                } else {
                     $type = ParticipantProductionProjectPayoutType::find(3);
                     $this->log('Geen bekende waarde voor participatie uitkeringtype meegegeven, default naar ' . $type->name . '.');
                 }
             }
 
-            $ibanPayout = $data['iban_payout'];
-            if(!(new IBAN($ibanPayout))->validate()){
-                $this->ibanErrors[] = 'Ongeldige Iban ingelezen voor participatie.';
-            }
+            $ibanPayout = $this->checkIban($data['iban_payout'], 'participatie.');
             $participation = ParticipantProductionProject::create([
                 'contact_id' => $contact->id,
                 'status_id' => $status->id,
@@ -744,10 +771,7 @@ class ExternalWebformController extends Controller
                 $status = 'concept';
             }
 
-            $iban = $data['iban'];
-            if(!(new IBAN($iban))->validate()){
-                $this->ibanErrors[] = 'Ongeldige Iban ingelezen voor order.';
-            }
+            $iban = $this->checkIban($data['iban'], 'order.');
             $order = Order::create([
                 'contact_id' => $contact->id,
                 'administration_id' => $product->administration_id,
@@ -762,7 +786,7 @@ class ExternalWebformController extends Controller
             $this->log('Order met id ' . $order->id . ' aangemaakt.');
 
             $dateStart = Carbon::make($data['date_start']);
-            if(!$dateStart){
+            if (!$dateStart) {
                 $this->log('Geen bekende startdatum meegegeven voor product, default naar datum van vandaag.');
                 $dateStart = new Carbon();
             }
@@ -789,7 +813,7 @@ class ExternalWebformController extends Controller
         // Eerst oude requests opschonen
         // Timestamp van een minuut geleden. Timestamps ouder dan deze worden eruit gegooid.
         $expireTimestamp = (new Carbon())->subMinute()->timestamp;
-        $lastRequests = array_filter($lastRequests, function($value) use ($expireTimestamp) {
+        $lastRequests = array_filter($lastRequests, function ($value) use ($expireTimestamp) {
             return $value > $expireTimestamp;
         });
         // Huidige request toevoegen, en opslaan.
@@ -798,9 +822,66 @@ class ExternalWebformController extends Controller
         $webform->save();
 
         // Checken of het max aantal is overschreden.
-        if(count($lastRequests) > $webform->max_requests_per_minute){
+        if (count($lastRequests) > $webform->max_requests_per_minute) {
             $this->error('Maximum aantal aanroepen per minuut is bereikt.');
         }
     }
 
+    /**
+     * Check een ibannummer en schrijf hier evt logregels voor weg.
+     *
+     * @param string $iban Ibannummer
+     * @param string $errorSubject Onderwerp waarvoor iban wordt gebruikt, voor in weergave foutmelding.
+     * @return string
+     */
+    protected function checkIban(string $iban, string $errorSubject)
+    {
+        if ($iban == '') {
+            $error = 'Geen iban meegegeven voor ' . $errorSubject;
+            $this->log($error);
+            $this->ibanErrors[] = $error;
+            return '';
+        }
+
+        if (!(new IBAN($iban))->validate()) {
+            $error = 'Ongeldige Iban ingelezen voor ' . $errorSubject;
+            $this->log($error);
+            $this->ibanErrors[] = $error;
+        }
+        return $iban;
+    }
+
+    protected function mailLog(array $data, bool $success, Webform $webform = null)
+    {
+        try {
+            if (!$webform) {
+                $this->log('Geen webform gevonden, verantwoordelijken kunnen daarom niet worden gemaild.');
+                return;
+            }
+
+            $users = (new User())->newCollection();
+            if ($webform->responsibleUser) {
+                $users->push($webform->responsibleUser);
+            } elseif ($webform->responsibleTeam->users()->exists()) {
+                $users = $webform->responsibleTeam->users;
+            }
+            Notification::send($users, new WebformRequestProcessed($this->logs, $data, $success, $webform));
+        } catch (\Exception $e) {
+            report($e);
+            $this->log('Fout bij mailen naar verantwoordelijken, fout is gerapporteerd.');
+            return;
+        }
+
+        $this->log('Log is gemaild naar ' . $users->count() . ' verantwoordelijke(n).');
+    }
+
+    protected function logInfo()
+    {
+        // Extra regels toevoegen voor leesbaarheid log
+        $logs = $this->logs;
+        array_unshift($logs, "=====================================================");
+        $logs[] = "\n";
+        Log::info(implode("\n", $logs));
+        $this->log('Log is gelogd naar het applicatielog.');
+    }
 }

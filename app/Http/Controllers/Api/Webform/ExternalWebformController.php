@@ -11,7 +11,6 @@ namespace App\Http\Controllers\Api\Webform;
 
 use App\Eco\Address\Address;
 use App\Eco\Campaign\Campaign;
-use App\Eco\Campaign\CampaignStatus;
 use App\Eco\Contact\Contact;
 use App\Eco\ContactGroup\ContactGroup;
 use App\Eco\Country\Country;
@@ -23,7 +22,6 @@ use App\Eco\Intake\Intake;
 use App\Eco\Intake\IntakeReason;
 use App\Eco\Intake\IntakeStatus;
 use App\Eco\Measure\MeasureCategory;
-use App\Eco\Occupation\Occupation;
 use App\Eco\Occupation\OccupationContact;
 use App\Eco\Order\Order;
 use App\Eco\Order\OrderProduct;
@@ -42,13 +40,11 @@ use App\Eco\Task\TaskPropertyValue;
 use App\Eco\Title\Title;
 use App\Eco\User\User;
 use App\Eco\Webform\Webform;
-use App\Exceptions\Handler;
 use App\Http\Controllers\Controller;
 use App\Notifications\WebformRequestProcessed;
 use Carbon\Carbon;
 use CMPayments\IBAN;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Response;
@@ -721,7 +717,6 @@ class ExternalWebformController extends Controller
 
     protected function addTaskToContact(Contact $contact, array $data, Webform $webform, Intake $intake = null, ParticipantProductionProject $participation = null, Order $order = null)
     {
-
         // Opmerkingen over eventuele ongeldige ibans toevoegen als notitie aan taak
         $note = implode("\n", $this->ibanErrors);
 
@@ -743,7 +738,7 @@ class ExternalWebformController extends Controller
 
         foreach (TaskProperty::all() as $taskProperty) {
             if ($data[$taskProperty->code] != '') {
-                $taskPropertyValue = TaskPropertyValue::create([
+                TaskPropertyValue::create([
                     'property_id' => $taskProperty->id,
                     'task_id' => $task->id,
                     'value' => $data[$taskProperty->code],

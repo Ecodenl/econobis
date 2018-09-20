@@ -8,6 +8,10 @@ export const updateContactGroupDetails = (contactGroupDetails) => ({
     contactGroupDetails
 });
 
+export const clearContactGroupDetails = () => ({
+    type: 'CLEAR_CONTACT_GROUP_DETAILS',
+});
+
 export const deleteComposedGroup = (contactGroupId, contactGroupToDetachId) => ({
     type: 'DELETE_COMPOSED_GROUP',
     contactGroupId,

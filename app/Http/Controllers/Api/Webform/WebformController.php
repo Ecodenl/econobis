@@ -71,4 +71,9 @@ class WebformController extends Controller
         $webform->load(['responsibleTeam', 'responsibleUser']);
         return FullWebform::make($webform);
     }
+
+    protected function delete(Webform $webform)
+    {
+        $webform->delete();
+    }
 }

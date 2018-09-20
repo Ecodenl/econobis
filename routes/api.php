@@ -389,6 +389,7 @@ Route::namespace('Api')
         Route::post('webform', 'Webform\WebformController@store');
         Route::get('webform/{webform}', 'Webform\WebformController@show');
         Route::post('webform/{webform}', 'Webform\WebformController@update');
+        Route::post('webform/{webform}/delete', 'Webform\WebformController@delete');
     });
 
 Route::namespace('Api')

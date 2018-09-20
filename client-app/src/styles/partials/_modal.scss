@@ -1,6 +1,7 @@
 .modal {
   display: inline;
-  top: 30%;
+  top: 20vh;
+  height: 100vh;
 }
 
 .modal-header {
@@ -30,4 +31,8 @@
 .email-attachment-modal {
   top: 10%;
   overflow-y: scroll;
+}
+
+.filter-row {
+  margin: 0 0 12px 0;
 }

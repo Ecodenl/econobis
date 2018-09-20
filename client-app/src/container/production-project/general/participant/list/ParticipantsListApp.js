@@ -28,6 +28,7 @@ import ViewText from "../../../../../components/form/ViewText";
 import ParticipantsProductionProjectAPI from "../../../../../api/participant-production-project/ParticipantsProductionProjectAPI";
 import fileDownload from "js-file-download";
 import moment from "moment/moment";
+import ParticipantsListExtraFilters from "./ParticipantsListExtraFilters";
 
 class ParticipantsListApp extends Component {
     constructor(props) {
@@ -48,6 +49,10 @@ class ParticipantsListApp extends Component {
             modalText: '',
             buttonConfirmText: '',
             readyForCreation: false,
+            showExtraFilters: false,
+            filterType: 'and',
+            amountOfFilters: 1,
+            extraFilters: [{field: "productionProjectId", type: "eq", data: props.productionProjectId + '', readOnly: true}]
         };
 
         this.handleInputChange = this.handleInputChange.bind(this);
@@ -57,6 +62,7 @@ class ParticipantsListApp extends Component {
         this.handleEmailTemplateChange = this.handleEmailTemplateChange.bind(this);
         this.handleSubjectChange = this.handleSubjectChange.bind(this);
         this.handlePageClick = this.handlePageClick.bind(this);
+        this.toggleShowExtraFilters = this.toggleShowExtraFilters.bind(this);
     }
 
     componentDidMount() {
@@ -94,8 +100,9 @@ class ParticipantsListApp extends Component {
             const filters = filterHelper(this.props.participantsProductionProjectFilters);
             const sorts = this.props.participantsProductionProjectSorts;
             const pagination = { limit: 20, offset: this.props.participantsProductionProjectPagination.offset };
+            const filterType = this.state.filterType;
 
-            this.props.fetchParticipantsProductionProject(filters, extraFilters, sorts, pagination, this.props.productionProjectId);
+            this.props.fetchParticipantsProductionProject(filters, extraFilters, sorts, pagination, filterType);
         },100 );
     };
 
@@ -119,8 +126,9 @@ class ParticipantsListApp extends Component {
         this.props.clearFilterParticipantsProductionProject();
 
         this.setState({
-            extraFilters: undefined,
-            amountOfFilters: undefined,
+            filterType: 'and',
+            amountOfFilters: 0,
+            extraFilters: [],
         });
 
         this.fetchParticipantsProductionProjectData();
@@ -183,8 +191,9 @@ class ParticipantsListApp extends Component {
         });
     };
 
-    handleExtraFiltersChange(extraFilters, amountOfFilters){
+    handleExtraFiltersChange(extraFilters, amountOfFilters, filterType){
         this.setState({
+            filterType: filterType,
             amountOfFilters: amountOfFilters,
             extraFilters: extraFilters
         });
@@ -337,6 +346,21 @@ class ParticipantsListApp extends Component {
         }
     };
 
+    saveAsGroup = () => {
+        const extraFilters = this.state.extraFilters;
+        const filters = filterHelper(this.props.participantsProductionProjectFilters);
+        const filterType = this.state.filterType;
+        ParticipantsProductionProjectAPI.saveAsGroup({filters, extraFilters, filterType}).then((payload) => {
+            hashHistory.push(`/contact-groep/${payload.data.data.id}/edit`);
+        });
+    };
+
+    toggleShowExtraFilters() {
+        this.setState({
+            showExtraFilters: !this.state.showExtraFilters
+        });
+    };
+
     render() {
         return (
             <Panel>
@@ -346,9 +370,12 @@ class ParticipantsListApp extends Component {
                             resetParticipantProductionProjectFilters={() => this.resetParticipantProductionProjectFilters()}
                             toggleShowCheckboxList={this.toggleShowCheckboxList}
                             handleExtraFiltersChange={this.handleExtraFiltersChange}
+                            toggleShowExtraFilters={this.toggleShowExtraFilters}
                             extraFilters={this.state.extraFilters}
                             amountOfFilters={this.state.amountOfFilters}
+                            filterType={this.state.filterType}
                             getCSV={this.getCSV}
+                            saveAsGroup={this.saveAsGroup}
                         />
                     </div>
 
@@ -423,6 +450,17 @@ class ParticipantsListApp extends Component {
                     buttonConfirmText={this.state.buttonConfirmText}
                     confirmAction={this.createParticipantReport}
                 />
+                }
+                {
+                    this.state.showExtraFilters &&
+                    <ParticipantsListExtraFilters
+                        toggleShowExtraFilters={this.toggleShowExtraFilters}
+                        handleExtraFiltersChange={this.handleExtraFiltersChange}
+                        extraFilters={this.state.extraFilters}
+                        amountOfFilters={this.state.amountOfFilters}
+                        filterType={this.state.filterType}
+                        saveAsGroup={this.saveAsGroup}
+                    />
                 }
             </Panel>
         )

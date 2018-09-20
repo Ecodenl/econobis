@@ -74,7 +74,7 @@ class ContactsList extends Component {
                         <DataTableBody>
                             {
                                 data.length === 0 ? (
-                                    <tr><td colSpan={11}>Geen contacten gevonden!</td></tr>
+                                    <tr><td colSpan={10}>Geen contacten gevonden!</td></tr>
                                 ) : (
                                     data.map((contact) => {
                                         return <ContactsListItem

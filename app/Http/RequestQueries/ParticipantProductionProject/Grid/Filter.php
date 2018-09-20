@@ -21,7 +21,6 @@ class Filter extends RequestFilter
         'address',
         'postalCode',
         'city',
-        'statusId',
         'currentParticipations',
         'participationStatusId',
         'dateRegister',
@@ -34,7 +33,6 @@ class Filter extends RequestFilter
         'name' => 'contacts.full_name',
         'postalCode' => 'addresses.postal_code',
         'city' => 'addresses.city',
-        'statusId' => 'contacts.status_id',
         'currentParticipations' => 'participation_production_project.current_participations',
         'participationStatusId' => 'participation_production_project.status_id',
         'dateRegister' => 'participation_production_project.date_register',
@@ -47,7 +45,6 @@ class Filter extends RequestFilter
         'address' => 'addresses',
         'postalCode' => 'addresses',
         'city' => 'addresses',
-        'statusId' => 'contacts',
         'energySupplierId' => 'energy_suppliers',
     ];
 

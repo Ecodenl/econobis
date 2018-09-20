@@ -15,7 +15,8 @@ class ContactGroupDetailsForm extends Component {
                 <div>Geen gegevens gevonden.</div>
                 :
                 <div>
-                    <ContactGroupDetailsFormGeneral />
+                    <ContactGroupDetailsFormGeneral
+                    mode={this.props.mode}/>
                 </div>
         );
     }

@@ -23,7 +23,17 @@ class UserDetailsToolbar extends Component {
     };
 
     render() {
-        const {id, name, numberOfContacts = 0} = this.props.contactGroup;
+        const {id, name, numberOfContacts = 0, composedOf} = this.props.contactGroup;
+        let composedOfType = '';
+        if(composedOf === 'contacts'){
+            composedOfType = '(Contacten)';
+        }
+        else if(composedOf === 'participants'){
+            composedOfType = '(Participanten)';
+        }
+        else if(composedOf === 'both'){
+            composedOfType = '(Samengesteld)';
+        }
 
         return (
             <div className="row">
@@ -41,7 +51,7 @@ class UserDetailsToolbar extends Component {
                                                 onClickAction={() => hashHistory.push(`/contacten-in-groep/${id}`)}/>
                                 </div>
                             </div>
-                            <div className="col-md-8"><h4 className="text-center">{name}</h4></div>
+                            <div className="col-md-8"><h4 className="text-center">{name}{composedOfType}</h4></div>
                             <div className="col-md-2"/>
                         </PanelBody>
                     </Panel>

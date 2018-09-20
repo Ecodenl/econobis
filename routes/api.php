@@ -123,6 +123,8 @@ Route::namespace('Api')
         Route::get('contact-group/{contactGroup}', 'ContactGroup\ContactGroupController@show');
         Route::get('contact-group/{contactGroup}/csv', 'ContactGroup\ContactGroupController@getCsv');
         Route::get('contact-group/{contactGroup}/name', 'ContactGroup\ContactGroupController@getName');
+        Route::post('contact-group/composed/{contactGroup}/{contactGroupToDetach}/detach', 'ContactGroup\ContactGroupController@detachComposedContactGroup');
+        Route::post('contact-group/composed/{contactGroup}/{contactGroupToAttach}/attach', 'ContactGroup\ContactGroupController@attachComposedContactGroup');
         Route::post('contact-group/', 'ContactGroup\ContactGroupController@store');
         Route::post('contact-group/{contactGroup}', 'ContactGroup\ContactGroupController@update');
         Route::post('contact-group/{contactGroup}/delete', 'ContactGroup\ContactGroupController@destroy');
@@ -285,6 +287,7 @@ Route::namespace('Api')
         Route::get('production-project/participant/grid', 'ParticipationProductionProject\ParticipationProductionProjectController@grid');
         Route::get('production-project/participant/csv', 'ParticipationProductionProject\ParticipationProductionProjectController@csv');
         Route::get('production-project/participant/peek', 'ParticipationProductionProject\ParticipationProductionProjectController@peek');
+        Route::get('production-project/participant/save-as-group', 'ParticipationProductionProject\ParticipationProductionProjectController@saveAsGroup');
         Route::get('production-project/participant/{participantProductionProject}/peek-members', 'ParticipationProductionProject\ParticipationProductionProjectController@peekContactsMembershipRequired');
         Route::get('production-project/participant/{participantProductionProject}', 'ParticipationProductionProject\ParticipationProductionProjectController@show');
         Route::post('production-project/participant', 'ParticipationProductionProject\ParticipationProductionProjectController@store');

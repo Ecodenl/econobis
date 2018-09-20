@@ -178,6 +178,7 @@ class Field
             case 'boolean':
                 return (bool) $value;
             case 'date':
+                if(!$value) return null;
                 return (new Carbon($value))->startOfDay();
             case 'password':
                 return bcrypt($value);

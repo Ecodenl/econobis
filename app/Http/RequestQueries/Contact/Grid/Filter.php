@@ -24,7 +24,6 @@ class Filter extends RequestFilter
         'city',
         'emailAddress',
         'phoneNumber',
-        'statusId',
         'createdAt',
     ];
 
@@ -37,7 +36,6 @@ class Filter extends RequestFilter
         'city' => 'addresses.city',
         'emailAddress' => 'email_addresses.email',
         'phoneNumber' => 'phone_numbers.number',
-        'statusId' => 'contacts.status_id',
         'createdAt' => 'contacts.created_at',
     ];
 

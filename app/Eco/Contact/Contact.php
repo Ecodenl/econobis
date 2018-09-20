@@ -16,6 +16,7 @@ use App\Eco\Invoice\Invoice;
 use App\Eco\Occupation\OccupationContact;
 use App\Eco\Opportunity\Opportunity;
 use App\Eco\Order\Order;
+use App\Eco\Order\OrderProduct;
 use App\Eco\Organisation\Organisation;
 use App\Eco\ParticipantProductionProject\ParticipantProductionProject;
 use App\Eco\Person\Person;
@@ -232,6 +233,11 @@ class Contact extends Model
     public function orders()
     {
         return $this->hasMany(Order::class)->orderBy('orders.id', 'desc');
+    }
+
+    public function orderProducts()
+    {
+        return $this->hasManyThrough(OrderProduct::class, Order::class);
     }
 
     public function invoices()

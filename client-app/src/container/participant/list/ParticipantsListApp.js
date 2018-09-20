@@ -1,12 +1,15 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
+import React, {Component} from 'react';
+import {connect} from 'react-redux';
+import {bindActionCreators} from 'redux';
 
-import { previewParticipantReport } from '../../../actions/production-project/ProductionProjectDetailsActions';
-import { fetchParticipantsProductionProject, clearParticipantsProductionProject } from '../../../actions/participants-production-project/ParticipantsProductionProjectActions';
-import { clearFilterParticipantsProductionProject } from '../../../actions/participants-production-project/ParticipantsProductionProjectFiltersActions';
-import { setParticipantsProductionProjectPagination } from '../../../actions/participants-production-project/ParticipantsProductionProjectPaginationActions';
-import { blockUI, unblockUI } from '../../../actions/general/BlockUIActions';
+import {previewParticipantReport} from '../../../actions/production-project/ProductionProjectDetailsActions';
+import {
+    clearParticipantsProductionProject,
+    fetchParticipantsProductionProject
+} from '../../../actions/participants-production-project/ParticipantsProductionProjectActions';
+import {clearFilterParticipantsProductionProject} from '../../../actions/participants-production-project/ParticipantsProductionProjectFiltersActions';
+import {setParticipantsProductionProjectPagination} from '../../../actions/participants-production-project/ParticipantsProductionProjectPaginationActions';
+import {blockUI, unblockUI} from '../../../actions/general/BlockUIActions';
 import ParticipantsList from './ParticipantsList';
 import ParticipantsListToolbar from './ParticipantsListToolbar';
 import filterHelper from '../../../helpers/FilterHelper';
@@ -25,6 +28,10 @@ import ViewText from "../../../components/form/ViewText";
 import ParticipantsProductionProjectAPI from "../../../api/participant-production-project/ParticipantsProductionProjectAPI";
 import fileDownload from "js-file-download";
 import moment from "moment/moment";
+import ParticipantsListExtraFilters from "./ParticipantsListExtraFilters";
+import axios from "axios";
+import ProductionProjectsAPI from "../../../api/production-project/ProductionProjectsAPI";
+import ContactsAPI from "../../../api/contact/ContactsAPI";
 
 class ParticipantsListApp extends Component {
     constructor(props) {
@@ -45,6 +52,10 @@ class ParticipantsListApp extends Component {
             modalText: '',
             buttonConfirmText: '',
             readyForCreation: false,
+            showExtraFilters: false,
+            filterType: 'and',
+            amountOfFilters: 0,
+            extraFilters: [],
         };
 
         this.handleInputChange = this.handleInputChange.bind(this);
@@ -54,6 +65,7 @@ class ParticipantsListApp extends Component {
         this.handleEmailTemplateChange = this.handleEmailTemplateChange.bind(this);
         this.handleSubjectChange = this.handleSubjectChange.bind(this);
         this.handlePageClick = this.handlePageClick.bind(this);
+        this.toggleShowExtraFilters = this.toggleShowExtraFilters.bind(this);
     }
 
     componentDidMount() {
@@ -79,6 +91,13 @@ class ParticipantsListApp extends Component {
             });
         });
 
+        axios.all([ProductionProjectsAPI.peekProductionProjects(), ContactsAPI.getContactsPeek()])
+            .then(axios.spread((productionProjects, contacts) => {
+                this.setState({
+                    productionProjects: productionProjects,
+                    contacts: contacts,
+                });
+            }));
     };
 
     componentWillUnmount() {
@@ -91,8 +110,9 @@ class ParticipantsListApp extends Component {
             const filters = filterHelper(this.props.participantsProductionProjectFilters);
             const sorts = this.props.participantsProductionProjectSorts;
             const pagination = { limit: 20, offset: this.props.participantsProductionProjectPagination.offset };
+            const filterType = this.state.filterType;
 
-            this.props.fetchParticipantsProductionProject(filters, extraFilters, sorts, pagination);
+            this.props.fetchParticipantsProductionProject(filters, extraFilters, sorts, pagination, filterType);
         },100 );
     };
 
@@ -100,17 +120,15 @@ class ParticipantsListApp extends Component {
         this.props.clearFilterParticipantsProductionProject();
 
         this.setState({
-            extraFilters: undefined,
-            amountOfFilters: undefined,
+            filterType: 'and',
+            amountOfFilters: 0,
+            extraFilters: [],
         });
 
         this.fetchParticipantsProductionProjectData();
     };
 
     onSubmitFilter() {
-        const filters = filterHelper(this.props.participantsProductionProjectFilters);
-        const sorts = this.props.participantsProductionProjectSorts;
-
         this.props.setParticipantsProductionProjectPagination({page: 0, offset: 0});
 
         setTimeout(() => {
@@ -164,8 +182,9 @@ class ParticipantsListApp extends Component {
         });
     };
 
-    handleExtraFiltersChange(extraFilters, amountOfFilters){
+    handleExtraFiltersChange(extraFilters, amountOfFilters, filterType){
         this.setState({
+            filterType: filterType,
             amountOfFilters: amountOfFilters,
             extraFilters: extraFilters
         });
@@ -334,6 +353,37 @@ class ParticipantsListApp extends Component {
         },100 );
     };
 
+    saveAsGroup = () => {
+        const extraFilters = this.state.extraFilters;
+        const filters = filterHelper(this.props.participantsProductionProjectFilters);
+        const filterType = this.state.filterType;
+        ParticipantsProductionProjectAPI.saveAsGroup({filters, extraFilters, filterType}).then((payload) => {
+            hashHistory.push(`/contact-groep/${payload.data.data.id}/edit`);
+        });
+    };
+
+    prefillExtraFilter() {
+        this.setState({
+            filterType: 'and',
+            amountOfFilters: 1,
+            extraFilters:  [{
+                field: 'name',
+                type: 'eq',
+                data: '',
+            }],
+        });
+    };
+
+    toggleShowExtraFilters() {
+        this.state.extraFilters.length === 0 &&
+        !this.state.showExtraFilters &&
+        this.prefillExtraFilter();
+
+        this.setState({
+            showExtraFilters: !this.state.showExtraFilters
+        });
+    };
+
     render() {
         return (
             <Panel>
@@ -343,9 +393,9 @@ class ParticipantsListApp extends Component {
                             resetParticipantProductionProjectFilters={() => this.resetParticipantProductionProjectFilters()}
                             toggleShowCheckboxList={this.toggleShowCheckboxList}
                             handleExtraFiltersChange={this.handleExtraFiltersChange}
-                            extraFilters={this.state.extraFilters}
-                            amountOfFilters={this.state.amountOfFilters}
                             getCSV={this.getCSV}
+                            saveAsGroup={this.saveAsGroup}
+                            toggleShowExtraFilters={this.toggleShowExtraFilters}
                         />
                     </div>
 
@@ -420,6 +470,17 @@ class ParticipantsListApp extends Component {
                     buttonConfirmText={this.state.buttonConfirmText}
                     confirmAction={this.createParticipantReport}
                 />
+                }
+                {
+                    this.state.showExtraFilters &&
+                    <ParticipantsListExtraFilters
+                        saveAsGroup={this.saveAsGroup}
+                        filterType={this.state.filterType}
+                        toggleShowExtraFilters={this.toggleShowExtraFilters}
+                        handleExtraFiltersChange={this.handleExtraFiltersChange}
+                        extraFilters={this.state.extraFilters}
+                        amountOfFilters={this.state.amountOfFilters}
+                    />
                 }
             </Panel>
         )

@@ -15,7 +15,7 @@ const ContactsListSaveAsGroup = (props) => {
             confirmAction={() => confirmAction()}
             title="Groep aanmaken"
       >
-            Wilt u een dynamische groep aanmaken op basis van de huidige filters?
+            Wilt u een groep aanmaken op basis van de huidige filters?
       </Modal>
     );
 };

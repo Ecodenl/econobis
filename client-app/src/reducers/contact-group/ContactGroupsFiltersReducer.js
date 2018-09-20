@@ -1,3 +1,5 @@
+const STATUS_OPEN = 0;
+
 const filtersReducerDefaultState = {
     name: {
         field: 'name',
@@ -5,7 +7,7 @@ const filtersReducerDefaultState = {
     },
     status: {
         field: 'status',
-        data: '',
+        data: STATUS_OPEN,
     },
     typeId: {
         field: 'typeId',

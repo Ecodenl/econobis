@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\Contact;
 
 use App\Eco\ContactGroup\ContactGroup;
 use App\Eco\ContactGroup\DynamicContactGroupFilter;
+use App\Eco\EnergySupplier\EnergySupplier;
 use App\Helpers\CSV\ContactCSVHelper;
 use App\Http\Controllers\Controller;
 use App\Http\RequestQueries\Contact\Grid\RequestQuery;
@@ -45,8 +46,10 @@ class GridController extends Controller
 
         $contactGroup = new ContactGroup();
         $contactGroup->type_id = 'dynamic';
-        $contactGroup->name = 'Dynamische groep ' . (ContactGroup::max('id') + 1);
-        $contactGroup->description = 'Dynamisch aangemaakte groep';
+        $contactGroup->composed_of = 'contacts';
+        $contactGroup->name = ContactGroup::getAutoIncrementedName('Dynamische groep');
+        $contactGroup->description = '';
+        $contactGroup->dynamic_filter_type = $request->input('filterType') ? $request->input('filterType') : 'and';
         $contactGroup->save();
 
         if($filters) {
@@ -57,6 +60,7 @@ class GridController extends Controller
                 $dynamicFilter->comperator = '';
                 $dynamicFilter->data = $filter->data;
                 $dynamicFilter->type = 'filter';
+                $dynamicFilter->model_name = $this->getModelByField($filter->field);
                 $dynamicFilter->save();
             }
         }
@@ -69,12 +73,35 @@ class GridController extends Controller
                 $dynamicFilter->comperator = $extraFilter->type;
                 $dynamicFilter->data = $extraFilter->data;
                 $dynamicFilter->type = 'extraFilter';
+                $dynamicFilter->model_name = $this->getModelByField($extraFilter->field);
+                $dynamicFilter->connect_name = $extraFilter->connectName ?? '';
+                $dynamicFilter->connected_to = $extraFilter->connectedTo ?? '';
                 $dynamicFilter->save();
             }
         }
         return FullContactGroup::make($contactGroup);
     }
 
-
-
+    private function getModelByField(String $field){
+        switch ($field){
+            case 'typeId':
+                return 'App\Eco\Contact\ContactType';
+                break;
+            case 'statusId':
+                return 'App\Eco\Contact\ContactStatus';
+                break;
+            case 'occupation':
+                return 'App\Eco\Occupation\Occupation';
+                break;
+            case 'opportunity':
+                return 'App\Eco\Measure\MeasureCategory';
+                break;
+            case 'product':
+                return 'App\Eco\Product\Product';
+                break;
+            case 'energySupplier':
+                return EnergySupplier::class;
+                break;
+        }
+    }
 }

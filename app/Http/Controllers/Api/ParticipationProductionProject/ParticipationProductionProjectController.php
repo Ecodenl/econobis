@@ -9,6 +9,8 @@
 namespace App\Http\Controllers\Api\ParticipationProductionProject;
 
 use App\Eco\Contact\Contact;
+use App\Eco\ContactGroup\ContactGroup;
+use App\Eco\ContactGroup\DynamicContactGroupFilter;
 use App\Eco\Document\Document;
 use App\Eco\DocumentTemplate\DocumentTemplate;
 use App\Eco\EmailTemplate\EmailTemplate;
@@ -16,6 +18,7 @@ use App\Helpers\Alfresco\AlfrescoHelper;
 use App\Helpers\CSV\ParticipantCSVHelper;
 use App\Helpers\Template\TemplateTableHelper;
 use App\Http\Resources\Contact\ContactPeek;
+use App\Http\Resources\ContactGroup\FullContactGroup;
 use Barryvdh\DomPDF\Facade as PDF;
 use App\Eco\ParticipantProductionProject\ParticipantProductionProject;
 use App\Eco\ParticipantTransaction\ParticipantTransaction;
@@ -58,6 +61,70 @@ class ParticipationProductionProjectController extends ApiController
                 'total' => $requestQuery->total(),
             ]
             ]);
+    }
+
+    public function saveAsGroup(Request $request)
+    {
+        $filters = json_decode($request->input('filters'));
+        $extraFilters = json_decode($request->input('extraFilters'));
+
+        $contactGroup = new ContactGroup();
+        $contactGroup->type_id = 'dynamic';
+        $contactGroup->composed_of = 'participants';
+        $contactGroup->name =  ContactGroup::getAutoIncrementedName('Dynamische groep');
+        $contactGroup->description = '';
+        $contactGroup->dynamic_filter_type = $request->input('filterType') ? $request->input('filterType') : 'and';
+        $contactGroup->save();
+
+        if($filters) {
+            foreach ($filters as $filter) {
+                $dynamicFilter = new DynamicContactGroupFilter();
+                $dynamicFilter->contact_group_id = $contactGroup->id;
+                $dynamicFilter->field = $filter->field;
+                $dynamicFilter->comperator = '';
+                $dynamicFilter->data = $filter->data;
+                $dynamicFilter->type = 'filter';
+                $dynamicFilter->model_name = $this->getModelByField($filter->field);
+                $dynamicFilter->save();
+            }
+        }
+
+        if($extraFilters) {
+            foreach ($extraFilters as $extraFilter) {
+                $dynamicFilter = new DynamicContactGroupFilter();
+                $dynamicFilter->contact_group_id = $contactGroup->id;
+                $dynamicFilter->field = $extraFilter->field;
+                $dynamicFilter->comperator = $extraFilter->type;
+                $dynamicFilter->data = $extraFilter->data;
+                $dynamicFilter->type = 'extraFilter';
+                $dynamicFilter->model_name = $this->getModelByField($extraFilter->field);
+                $dynamicFilter->save();
+            }
+        }
+        return FullContactGroup::make($contactGroup);
+    }
+
+    private function getModelByField(String $field){
+        switch ($field){
+            case 'contactType':
+                return 'App\Eco\Contact\ContactType';
+                break;
+            case 'statusId':
+                return 'App\Eco\Contact\ContactStatus';
+                break;
+            case 'participationStatusId':
+                return 'App\Eco\ParticipantProductionProject\ParticipantProductionProjectStatus';
+                break;
+            case 'energySupplierId':
+                return 'App\Eco\EnergySupplier\EnergySupplier';
+                break;
+            case 'productionProjectId':
+                return 'App\Eco\ProductionProject\ProductionProject';
+                break;
+            case 'giftedByContactId':
+                return Contact::class;
+                break;
+        }
     }
 
     public function csv(RequestQuery $requestQuery)

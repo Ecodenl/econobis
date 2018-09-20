@@ -22,28 +22,33 @@ class ExtraFilter extends RequestExtraFilter
         'currentParticipations',
         'dateRegister',
         'datePayed',
-        'participationStatus',
-        'contactStatus',
+        'participationStatusId',
         'contactBirthday',
+        'productionProjectId',
+        'dateContractSend',
+        'dateContractRetour',
+        'dateEnd',
+        'giftedByContactId',
+        'participationsSold',
+        'didAcceptAgreement',
+        'participationsRequested',
     ];
 
     protected $mapping = [
-        'name' => 'contacts.full_name',
-        'postalCode' => 'addresses.postal_code',
         'dateRegister' => 'participation_production_project.date_register',
         'datePayed' => 'participation_production_project.date_payed',
-        'participationStatus' => 'participation_production_project.status_id',
-        'contactStatus' => 'contacts.status_id',
-        'contactBirthday' => 'people.date_of_birth',
+        'participationStatusId' => 'participation_production_project.status_id',
+        'productionProjectId' => 'participation_production_project.production_project_id',
+        'dateContractSend' => 'participation_production_project.date_contract_send',
+        'dateContractRetour' => 'participation_production_project.date_contract_retour',
+        'dateEnd' => 'participation_production_project.date_end',
+        'giftedByContactId' => 'participation_production_project.gifted_by_contact_id',
+        'participationsSold' => 'participation_production_project.participations_sold',
+        'didAcceptAgreement' => 'participation_production_project.did_accept_agreement',
+        'participationsRequested' => 'participation_production_project.participations_requested',
     ];
 
-    protected $joins = [
-        'name' => 'contacts',
-        'postalCode' => 'addresses',
-        'postalCodeNumber' => 'addresses',
-        'contactStatus' => 'contacts',
-        'contactBirthday' => 'people',
-    ];
+    protected $joins = [];
 
     protected function applyCurrentParticipationsFilter($query, $type, $data)
     {
@@ -53,11 +58,33 @@ class ExtraFilter extends RequestExtraFilter
         return false;
     }
 
+    protected function applyNameFilter($query, $type, $data)
+    {
+        $query->whereHas('contact', function ($query) use ($type, $data) {
+            RequestFilter::applyFilter($query, 'full_name', $type, $data);
+        });
+    }
+
+    protected function applyContactBirthdayFilter($query, $type, $data)
+    {
+        $query->whereHas('contact.person', function ($query) use ($type, $data) {
+            RequestFilter::applyFilter($query, 'date_of_birth', $type, $data);
+        });
+    }
+
+    protected function applyPostalCodeFilter($query, $type, $data)
+    {
+        $query->whereHas('contact.primaryAddress', function ($query) use ($type, $data) {
+            $data = str_replace(' ', '', $data);
+            RequestFilter::applyFilter($query, 'postal_code', $type, $data);
+        });
+    }
 
     protected function applyPostalCodeNumberFilter($query, $type, $data)
     {
-        $raw = DB::raw('SUBSTRING(addresses.postal_code, 1, 4)');
-        RequestFilter::applyFilter($query, $raw, $type, $data);
-        return false;
+        $raw = DB::raw('SUBSTRING(postal_code, 1, 4)');
+        $query->whereHas('contact.primaryAddress', function ($query) use ($raw, $type, $data) {
+            RequestFilter::applyFilter($query, $raw, $type, $data);
+        });
     }
 }

@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
 
-import { fetchContactGroupDetails } from '../../../actions/contact-group/ContactGroupDetailsActions';
+import { fetchContactGroupDetails, clearContactGroupDetails } from '../../../actions/contact-group/ContactGroupDetailsActions';
 import ContactGroupDetailsToolbar from './ContactGroupDetailsToolbar';
 import ContactGroupDetailsForm from './ContactGroupDetailsForm';
 import ContactGroupExtraFilters from './extra-filters/ContactGroupExtraFilters';
@@ -20,16 +20,21 @@ class ContactGroupDetailsApp extends Component {
         this.props.fetchContactGroupDetails(this.props.params.id);
     };
 
+    componentWillUnmount() {
+        this.props.clearContactGroupDetails();
+    }
+
     render() {
         return (
             <div className="row">
                 <div className="col-md-9">
                     <div className="col-md-12">
-                        < ContactGroupDetailsToolbar />
+                        <ContactGroupDetailsToolbar />
                     </div>
 
                     <div className="col-md-12">
-                        <ContactGroupDetailsForm />
+                        <ContactGroupDetailsForm
+                        mode={this.props.params.mode}/>
                     </div>
 
                     {this.props.contactGroupDetails.type && this.props.contactGroupDetails.type.id === 'dynamic' &&
@@ -69,6 +74,9 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = dispatch => ({
     fetchContactGroupDetails: (id) => {
         dispatch(fetchContactGroupDetails(id));
+    },
+    clearContactGroupDetails: () => {
+        dispatch(clearContactGroupDetails());
     },
 });
 

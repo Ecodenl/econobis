@@ -11,7 +11,7 @@ class ContactGroupDetailsFormGeneral extends Component {
         super(props);
 
         this.state = {
-            showEdit: false,
+            showEdit: props.mode === 'edit',
             activeDiv: '',
         };
     }

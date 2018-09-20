@@ -22,7 +22,6 @@ const ParticipantsListHead = (props) => {
             <DataTableHeadTitleAndSort sortColumn={'address'} title={'Adres'} width={'10%'} setSorts={setSorts} />
             <DataTableHeadTitleAndSort sortColumn={'postalCode'} title={'Postcode'} width={'9%'} setSorts={setSorts} />
             <DataTableHeadTitleAndSort sortColumn={'city'} title={'Plaats'} width={'10%'} setSorts={setSorts} />
-            <DataTableHeadTitleAndSort sortColumn={'statusId'} title={'Lid status'} width={'10%'} setSorts={setSorts} />
             <DataTableHeadTitle title={'Huidig aantal participaties'} width={'10%'} />
             <DataTableHeadTitleAndSort sortColumn={'participationStatusId'} title={'Participatie status'} width={'9%'} setSorts={setSorts} />
             <DataTableHeadTitleAndSort sortColumn={'dateRegister'} title={'Datum inschrijving participatie'} width={'10%'} setSorts={setSorts} />

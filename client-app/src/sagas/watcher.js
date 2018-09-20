@@ -10,7 +10,7 @@ import { fetchCampaignsSaga } from './campaign/CampaignsSaga';
 import { fetchCampaignSaga, deleteCampaignSaga } from './campaign/CampaignDetailsSaga';
 import { fetchContactDetailsSaga, deleteAddressSaga, deletePhoneNumberSaga, deleteEmailAddressSaga, deleteContactNoteSaga, deleteContactEnergySupplierSaga } from './contact/ContactDetailsSaga';
 import { fetchContactGroupDetailsSaga } from './contact-group/ContactGroupDetailsSaga';
-import { fetchContactGroupsSaga, deleteContactGroupSaga, addContactToGroupSaga } from './contact-group/ContactGroupsSaga';
+import { fetchContactGroupsSaga, deleteContactGroupSaga, addContactToGroupSaga, deleteComposedGroupSaga, attachComposedGroupSaga } from './contact-group/ContactGroupsSaga';
 import { fetchContactsInGroupSaga, deleteContactInGroupSaga } from './contact-group/ContactsInGroupSaga';
 import { fetchContactsSaga, deleteContactSaga, deleteSelectedContactsSaga } from './contact/ContactsSaga';
 import { fetchDocumentsSaga } from './document/DocumentsSaga';
@@ -103,6 +103,8 @@ export default function* watchSagas() {
     yield takeLatest('FETCH_CONTACT_GROUP_DETAILS', fetchContactGroupDetailsSaga);
     yield takeLatest('FETCH_CONTACTS_IN_GROUP', fetchContactsInGroupSaga);
     yield takeLatest('DELETE_CONTACT_IN_GROUP', deleteContactInGroupSaga);
+    yield takeLatest('DELETE_COMPOSED_GROUP', deleteComposedGroupSaga);
+    yield takeLatest('ATTACH_COMPOSED_GROUP', attachComposedGroupSaga);
     // Documents
     yield takeLatest('FETCH_DOCUMENTS', fetchDocumentsSaga);
     yield takeLatest('DELETE_DOCUMENT', deleteDocumentSaga);

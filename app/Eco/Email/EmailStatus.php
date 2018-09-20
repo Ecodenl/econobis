@@ -9,7 +9,6 @@
 namespace App\Eco\Email;
 
 
-use JosKolenberg\Enum\Enum;
 use JosKolenberg\Enum\EnumWithIdAndName;
 
 class EmailStatus extends EnumWithIdAndName

@@ -19,7 +19,7 @@ class ParticipantProductionProject extends Model
 
     protected $table = 'participation_production_project';
 
-     /**
+    /**
      * The attributes that are not mass assignable.
      *
      * @var array
@@ -33,26 +33,29 @@ class ParticipantProductionProject extends Model
         'iban_payout'
     ];
 
-    protected $appends
-        = [
+    protected $appends = [
             'participations_worth_total',
             'participations_current',
         ];
 
     //relations
-    public function contact(){
+    public function contact()
+    {
         return $this->belongsTo(Contact::class);
     }
 
-    public function productionProject(){
+    public function productionProject()
+    {
         return $this->belongsTo(ProductionProject::class);
     }
 
-    public function participantProductionProjectStatus(){
+    public function participantProductionProjectStatus()
+    {
         return $this->belongsTo(ParticipantProductionProjectStatus::class, 'status_id');
     }
 
-    public function participantProductionProjectPayoutType(){
+    public function participantProductionProjectPayoutType()
+    {
         return $this->belongsTo(ParticipantProductionProjectPayoutType::class, 'type_id');
     }
 
@@ -81,11 +84,13 @@ class ParticipantProductionProject extends Model
         return $this->hasMany(ObligationNumber::class, 'participation_id');
     }
 
-    public function documents(){
+    public function documents()
+    {
         return $this->hasMany(Document::class, 'participation_production_project_id')->orderBy('documents.id', 'desc');
     }
 
-    public function tasks(){
+    public function tasks()
+    {
         return $this->hasMany(Task::class, 'participation_production_project_id');
     }
 
@@ -98,10 +103,9 @@ class ParticipantProductionProject extends Model
     public function getParticipationsCurrentAttribute()
     {
         //also change observer
-        if($this->status_id === 2) {
+        if ($this->status_id === 2) {
             return $this->participations_granted - $this->participations_sold;
-        }
-        else{
+        } else {
             return 0;
         }
     }

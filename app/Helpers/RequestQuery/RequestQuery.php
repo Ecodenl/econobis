@@ -93,7 +93,9 @@ abstract class RequestQuery
      */
     protected function applyFilter($query)
     {
-        if ($this->filter) $this->filter->apply($query);
+        if ($this->filter) {
+            $this->filter->apply($query);
+        }
     }
 
     /**
@@ -101,7 +103,19 @@ abstract class RequestQuery
      */
     protected function applyExtraFilter($query)
     {
-        if ($this->extraFilter) $this->extraFilter->apply($query);
+        if ($this->extraFilter) {
+            if ($this->request && $this->request->input('filterType') === 'and') {
+                $this->extraFilter->apply($query);
+            } else if ($this->request && $this->request->input('filterType') === 'or') {
+                // Als extra filters als 'OR' worden behandeld blijven de standaard filters wel als 'AND' werken,
+                // daarom alle extra filters in een 'AND' wrappen
+                $query->where(function($query){
+                    $this->extraFilter->applyOr($query);
+                });
+            } else {
+                $this->extraFilter->apply($query);
+            }
+        }
     }
 
     /**
@@ -119,20 +133,20 @@ abstract class RequestQuery
         $limit = $this->getLimit();
         $offset = $this->getOffset();
 
-        if($limit) $query->limit($this->getLimit());
-        if($offset && $limit) $query->offset($this->getOffset()); // Offset kan alleen gezet werden icm limit
+        if ($limit) $query->limit($this->getLimit());
+        if ($offset && $limit) $query->offset($this->getOffset()); // Offset kan alleen gezet werden icm limit
 
         return $query;
     }
 
     protected function getLimit()
     {
-        return (int) $this->request->input($this->limitParameter, null);
+        return (int)$this->request->input($this->limitParameter, null);
     }
 
     protected function getOffset()
     {
-        return (int) $this->request->input($this->offsetParameter, null);
+        return (int)$this->request->input($this->offsetParameter, null);
     }
 
     public function getQueryNoPagination()

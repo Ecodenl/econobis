@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\ContactGroup;
 
 use App\Eco\Contact\Contact;
+use App\Eco\ContactGroup\ComposedContactGroup;
 use App\Eco\ContactGroup\ContactGroup;
 use App\Helpers\CSV\ContactCSVHelper;
 use App\Helpers\Delete\Models\DeleteContactGroup;
@@ -65,6 +66,7 @@ class ContactGroupController extends Controller
             ->boolean('showPortal')->validate('boolean')->alias('show_portal')->whenMissing(false)->next()
             ->boolean('editPortal')->validate('boolean')->alias('edit_portal')->whenMissing(false)->next()
             ->boolean('showContactForm')->validate('boolean')->alias('show_contact_form')->whenMissing(false)->next()
+            ->string('contactGroupComposedType')->validate('string')->alias('composed_group_type')->whenMissing('one')->onEmpty('one')->next()
             ->get();
 
         $contactGroupIds = explode(',', $request->contactGroupIds);
@@ -72,9 +74,11 @@ class ContactGroupController extends Controller
         if ($contactGroupIds[0] == '') {
             $contactGroupIds = [];
             $data['type_id'] = 'static';
+            $data['composed_of'] = 'contacts';
         }
         else{
             $data['type_id'] = 'composed';
+            $data['composed_of'] = 'both';
         }
 
         $contactGroup = new ContactGroup($data);
@@ -104,7 +108,15 @@ class ContactGroupController extends Controller
             ->boolean('showPortal')->validate('boolean')->alias('show_portal')->whenMissing(false)->next()
             ->boolean('editPortal')->validate('boolean')->alias('edit_portal')->whenMissing(false)->next()
             ->boolean('showContactForm')->validate('boolean')->alias('show_contact_form')->whenMissing(false)->next()
+            ->string('contactGroupComposedType')->validate('string')->alias('composed_group_type')->whenMissing('one')->onEmpty('one')->next()
+            ->string('type')->validate('string|required')->alias('type_id')->next()
+            ->string('dynamicFilterType')->validate('string')->alias('dynamic_filter_type')->whenMissing('and')->onEmpty('and')->next()
             ->get();
+
+        //Van dynamisch een statische groep maken
+        if($contactGroup->type_id === 'dynamic' && $data['type_id'] === 'static'){
+            $this->makeStatic($contactGroup);
+        }
 
         $contactGroup->fill($data);
         $contactGroup->save();
@@ -177,5 +189,37 @@ class ContactGroupController extends Controller
         $contactCSVHelper = new ContactCSVHelper($contactGroup->all_contacts);
 
         return $contactCSVHelper->downloadCSV();
+    }
+
+    public function detachComposedContactGroup(ContactGroup $contactGroup, ContactGroup $contactGroupToDetach)
+    {
+        $contactGroup->contactGroups()->detach($contactGroupToDetach);
+    }
+
+    public function attachComposedContactGroup(ContactGroup $contactGroup, ContactGroup $contactGroupToAttach)
+    {
+        if(!($contactGroup->id === $contactGroupToAttach->id)) {
+            $contactGroup->contactGroups()->syncWithoutDetaching($contactGroupToAttach);
+        }
+    }
+
+    private function makeStatic(ContactGroup $contactGroup){
+        $dynamicContacts = $contactGroup->dynamic_contacts;
+
+        foreach ($contactGroup->filters as $filter){
+            $filter->delete();
+        }
+
+        foreach ($contactGroup->extraFilters as $extraFilter){
+            $extraFilter->delete();
+        }
+
+        if($contactGroup->composed_of === 'contacts'){
+            $contactGroup->contacts()->sync($dynamicContacts->get());
+        }
+        else if($contactGroup->composed_of === 'participants'){
+            $contactGroup->participants()->sync($dynamicContacts->get());
+        }
+
     }
 }

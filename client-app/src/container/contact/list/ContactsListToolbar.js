@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import { hashHistory, Link } from 'react-router';
 
 import ButtonIcon from '../../../components/button/ButtonIcon';
-import ContactsListExtraFilters from './ContactsListExtraFilters';
 import ContactsDeleteSelectedItems from './ContactsDeleteSelectedItems';
 import ContactListAddContactsToGroup from './ContactListAddContactsToGroup';
 
@@ -12,17 +11,10 @@ class ContactsListToolbar extends Component {
         super(props);
 
         this.state = {
-            showExtraFilters: false,
             showDeleteSelectedItems: false,
             showAddContactsToGroup: false,
         };
     }
-
-    toggleShowExtraFilters = () => {
-        this.setState({
-            showExtraFilters: !this.state.showExtraFilters
-        });
-    };
 
     toggleShowDeleteSelectedItems = () => {
         this.setState({
@@ -82,7 +74,7 @@ class ContactsListToolbar extends Component {
                         }
                         <ButtonIcon iconName={"glyphicon-trash"} onClickAction={this.toggleShowDeleteSelectedItems} />
                         <ButtonIcon iconName={"glyphicon-ok"} onClickAction={this.props.toggleShowCheckboxList} />
-                        <ButtonIcon iconName={"glyphicon-filter"} onClickAction={this.toggleShowExtraFilters} />
+                        <ButtonIcon iconName={"glyphicon-filter"} onClickAction={this.props.toggleShowExtraFilters} />
                         <ButtonIcon iconName={"glyphicon-download-alt"} onClickAction={this.props.getCSV} />
                         {permissions.import &&
                         <ButtonIcon iconName={"glyphicon-import"} onClickAction={this.importContacts}/>
@@ -93,15 +85,6 @@ class ContactsListToolbar extends Component {
                 <div className="col-md-4">
                     <div className="pull-right">Resultaten: { meta.total || 0 }</div>
                 </div>
-                {
-                    this.state.showExtraFilters &&
-                    <ContactsListExtraFilters
-                        toggleShowExtraFilters={this.toggleShowExtraFilters}
-                        handleExtraFiltersChange={this.props.handleExtraFiltersChange}
-                        extraFilters={this.props.extraFilters}
-                        amountOfFilters={this.props.amountOfFilters}
-                    />
-                }
                 {
                     this.state.showDeleteSelectedItems && <ContactsDeleteSelectedItems toggleShowDeleteSelectedItems={this.toggleShowDeleteSelectedItems} />
                 }

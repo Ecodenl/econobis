@@ -17,6 +17,7 @@ import ContactsAPI from '../../../api/contact/ContactsAPI';
 import fileDownload from "js-file-download";
 import {hashHistory} from "react-router";
 import ContactsListSaveAsGroup from "./ContactsListSaveAsGroup";
+import ContactsListExtraFilters from "./ContactsListExtraFilters";
 
 class ContactsListApp extends Component {
     constructor(props) {
@@ -36,11 +37,16 @@ class ContactsListApp extends Component {
             showCheckboxList: false,
             checkedAllCheckboxes: false,
             showSaveAsGroup: false,
+            showExtraFilters: false,
+            filterType: 'and',
+            amountOfFilters: 0,
+            extraFilters: [],
         };
 
         this.handlePageClick = this.handlePageClick.bind(this);
         this.handleExtraFiltersChange = this.handleExtraFiltersChange.bind(this);
         this.getCSV = this.getCSV.bind(this);
+        this.toggleShowExtraFilters = this.toggleShowExtraFilters.bind(this);
     }
 
     componentDidMount() {
@@ -79,16 +85,19 @@ class ContactsListApp extends Component {
             const filters = filterHelper(this.props.contactsFilters);
             const sorts = this.props.contactsSorts;
             const pagination = { limit: 20, offset: this.props.contactsPagination.offset };
+            const filterType = this.state.filterType;
 
-            this.props.fetchContacts(filters, extraFilters, sorts, pagination);
+            this.props.fetchContacts(filters, extraFilters, sorts, pagination, filterType);
         },100 );
     };
 
     saveAsGroup = () => {
         const extraFilters = this.state.extraFilters;
         const filters = filterHelper(this.props.contactsFilters);
-        ContactsAPI.saveAsGroup({filters, extraFilters}).then((payload) => {
-            hashHistory.push(`/contacten-in-groep/${payload.data.data.id}`);
+        const filterType = this.state.filterType;
+
+        ContactsAPI.saveAsGroup({filters, extraFilters, filterType}).then((payload) => {
+            hashHistory.push(`/contact-groep/${payload.data.data.id}/edit`);
         });
     };
 
@@ -118,8 +127,9 @@ class ContactsListApp extends Component {
         this.props.clearFilterContacts();
 
         this.setState({
-            extraFilters: undefined,
-            amountOfFilters: undefined,
+            filterType: 'and',
+            amountOfFilters: 0,
+            extraFilters: [],
         });
 
         this.fetchContactsData();
@@ -156,8 +166,9 @@ class ContactsListApp extends Component {
         this.props.setCheckedContactAll(!this.state.checkedAllCheckboxes);
     };
 
-    handleExtraFiltersChange(extraFilters, amountOfFilters){
+    handleExtraFiltersChange(extraFilters, amountOfFilters, filterType) {
         this.setState({
+            filterType: filterType,
             amountOfFilters: amountOfFilters,
             extraFilters: extraFilters
         });
@@ -168,6 +179,28 @@ class ContactsListApp extends Component {
             this.fetchContactsData();
         },100 );
     }
+
+    prefillExtraFilter() {
+        this.setState({
+            filterType: 'and',
+            amountOfFilters: 1,
+            extraFilters:  [{
+                field: 'name',
+                type: 'eq',
+                data: '',
+            }],
+        });
+    };
+
+    toggleShowExtraFilters() {
+        this.state.extraFilters.length === 0 &&
+        !this.state.showExtraFilters &&
+        this.prefillExtraFilter();
+
+        this.setState({
+            showExtraFilters: !this.state.showExtraFilters
+        });
+    };
 
     render() {
         return (
@@ -180,11 +213,10 @@ class ContactsListApp extends Component {
                                 resetContactFilters={() => this.resetContactFilters()}
                                 selectAllCheckboxes={() => this.selectAllCheckboxes()}
                                 checkedAllCheckboxes={this.state.checkedAllCheckboxes}
-                                handleExtraFiltersChange={this.handleExtraFiltersChange}
-                                extraFilters={this.state.extraFilters}
-                                amountOfFilters={this.state.amountOfFilters}
                                 getCSV={this.getCSV}
                                 toggleSaveAsGroup={this.toggleSaveAsGroup}
+                                saveAsGroup={this.saveAsGroup}
+                                toggleShowExtraFilters={this.toggleShowExtraFilters}
                             />
                         </div>
 
@@ -207,6 +239,17 @@ class ContactsListApp extends Component {
                  saveAsGroup={this.saveAsGroup}
                  closeDeleteItemModal={this.toggleSaveAsGroup}
                 />
+                }
+                {
+                    this.state.showExtraFilters &&
+                    <ContactsListExtraFilters
+                        saveAsGroup={this.saveAsGroup}
+                        filterType={this.state.filterType}
+                        toggleShowExtraFilters={this.toggleShowExtraFilters}
+                        handleExtraFiltersChange={this.handleExtraFiltersChange}
+                        extraFilters={this.state.extraFilters}
+                        amountOfFilters={this.state.amountOfFilters}
+                    />
                 }
             </div>
         )

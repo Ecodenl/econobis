@@ -10,17 +10,22 @@ import InputText from '../../../../components/form/InputText';
 import InputDate from '../../../../components/form/InputDate';
 import ButtonText from '../../../../components/button/ButtonText';
 import InputToggle from "../../../../components/form/InputToggle";
+import InputSelect from "../../../../components/form/InputSelect";
 
 class ContactGroupDetailsFormGeneralEdit extends Component {
     constructor(props) {
         super(props);
 
-        const { dateStarted } = props.contactGroupDetails;
-        const { dateFinished } = props.contactGroupDetails;
-        const { responsibleUserId } = props.contactGroupDetails;
-        const { showPortal } = props.contactGroupDetails;
-        const { editPortal } = props.contactGroupDetails;
-        const { showContactForm } = props.contactGroupDetails;
+        const { dateStarted,
+            dateFinished,
+            responsibleUserId,
+            showPortal,
+            editPortal,
+            showContactForm,
+            contactGroupComposedType,
+            type,
+            dynamicFilterType,
+        } = props.contactGroupDetails;
 
         this.state = {
             contactsWithPermission: [],
@@ -32,11 +37,14 @@ class ContactGroupDetailsFormGeneralEdit extends Component {
                 showPortal: showPortal ? showPortal: false,
                 editPortal: editPortal ? editPortal: false,
                 showContactForm: showContactForm ? showContactForm: false,
+                contactGroupComposedType: contactGroupComposedType ? contactGroupComposedType : 'one',
+                type: type.id,
+                dynamicFilterType: dynamicFilterType ? dynamicFilterType : 'and',
             },
             errors: {
                 name: false,
             },
-        }
+        };
     };
 
     componentDidMount() {
@@ -72,8 +80,7 @@ class ContactGroupDetailsFormGeneralEdit extends Component {
         if (validator.isEmpty(contactGroup.name)) {
             errors.name = true;
             hasErrors = true;
-        }
-        ;
+        };
 
         this.setState({...this.state, errors: errors})
 
@@ -109,8 +116,28 @@ class ContactGroupDetailsFormGeneralEdit extends Component {
         });
     };
 
+    handleChangeComposedGroupType = (type) => {
+        this.setState({
+            ...this.state,
+            contactGroup: {
+                ...this.state.contactGroup,
+                contactGroupComposedType: type
+            },
+        });
+    };
+
+    handleChangeDynamicFilterType = (type) => {
+        this.setState({
+            ...this.state,
+            contactGroup: {
+                ...this.state.contactGroup,
+                dynamicFilterType: type
+            },
+        });
+    };
+
     render() {
-        const {name, description, responsibleUserId, closed, dateStarted, dateFinished, createdAt, showPortal, editPortal, showContactForm} = this.state.contactGroup;
+        const {name, description, responsibleUserId, closed, dateStarted, dateFinished, createdAt, showPortal, editPortal, showContactForm, type} = this.state.contactGroup;
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -123,6 +150,46 @@ class ContactGroupDetailsFormGeneralEdit extends Component {
                         required={"required"}
                         error={this.state.errors.name}
                     />
+                    {this.props.contactGroupDetails.type.id === 'composed' &&
+                    <div className={'col-xs-6'}>
+                        <div className={'row'}>
+                            <div className={'col-xs-6'}>
+                                <input
+                                    onChange={() => this.handleChangeComposedGroupType('one')}
+                                    type="radio" name='composedGroupType' value="one" id="one"
+                                    defaultChecked={this.props.contactGroupDetails.contactGroupComposedType === 'one'}/>
+                                <label htmlFor='one'>In één van de groepen</label>
+                            </div>
+                            <div className={'col-xs-6'}>
+                                <input
+                                    onChange={() => this.handleChangeComposedGroupType('all')}
+                                    type="radio" name='composedGroupType' value="all" id="all"
+                                    defaultChecked={this.props.contactGroupDetails.contactGroupComposedType === 'all'}/>
+                                <label htmlFor='all'>In alle groepen</label>
+                            </div>
+                        </div>
+                    </div>
+                    }
+                    {this.props.contactGroupDetails.type.id === 'dynamic' &&
+                    <div className={'col-xs-6'}>
+                        <div className={'row'}>
+                            <div className={'col-xs-6'}>
+                                <input
+                                    onChange={() => this.handleChangeDynamicFilterType('and')}
+                                    type="radio" name='dynamicFilterType' value="and" id="and"
+                                    defaultChecked={this.props.contactGroupDetails.dynamicFilterType === 'and'}/>
+                                <label htmlFor='and'>Alle filters zijn "EN"</label>
+                            </div>
+                            <div className={'col-xs-6'}>
+                                <input
+                                    onChange={() => this.handleChangeDynamicFilterType('or')}
+                                    type="radio" name='dynamicFilterType' value="or" id="or"
+                                    defaultChecked={this.props.contactGroupDetails.dynamicFilterType === 'or'}/>
+                                <label htmlFor='or'>Alle filters zijn "OF"</label>
+                            </div>
+                        </div>
+                    </div>
+                    }
                 </div>
 
                 <div className="row">
@@ -199,12 +266,22 @@ class ContactGroupDetailsFormGeneralEdit extends Component {
                         value={showContactForm}
                         onChangeAction={this.handleInputChange}
                     />
-                    <InputText
-                        label={"Type"}
-                        name={"type"}
-                        value={this.props.contactGroupDetails.type.name}
-                        readOnly={true}
-                    />
+                    {this.props.contactGroupDetails.type.id === 'dynamic' ?
+                        <InputSelect
+                            label="Type"
+                            name={"type"}
+                            value={type}
+                            options={[{id: 'dynamic', name: 'Dynamisch'}, {id: 'static', name: 'Statisch'}]}
+                            onChangeAction={this.handleInputChange}
+                        />
+                        :
+                        <InputText
+                            label={"Type"}
+                            name={"type"}
+                            value={this.props.contactGroupDetails.type.name}
+                            readOnly={true}
+                        />
+                    }
                 </div>
 
                 <div className="row">
@@ -243,8 +320,8 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = dispatch => ({
-    updateContactGroupDetails: (id) => {
-        dispatch(updateContactGroupDetails(id));
+    updateContactGroupDetails: (payload) => {
+        dispatch(updateContactGroupDetails(payload));
     },
 });
 

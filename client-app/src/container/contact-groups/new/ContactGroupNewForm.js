@@ -30,7 +30,8 @@ class ContactGroupNewForm extends Component {
                 showContactForm: false,
                 showPortal: false,
                 editPortal: false,
-                contactGroupIds: ''
+                contactGroupIds: '',
+                contactGroupComposedType: ''
             },
             errors: {
                 name: false,
@@ -117,6 +118,16 @@ class ContactGroupNewForm extends Component {
             contactGroup: {
                 ...this.state.contactGroup,
                 contactGroupIds: selectedOption
+            },
+        });
+    };
+
+    handleChangeComposedGroupType = (type) => {
+        this.setState({
+            ...this.state,
+            contactGroup: {
+                ...this.state.contactGroup,
+                contactGroupComposedType: type
             },
         });
     };
@@ -236,6 +247,25 @@ class ContactGroupNewForm extends Component {
                         value={contactGroupIds}
                         onChangeAction={this.handleContactGroupIds}
                     />
+                    {contactGroupIds &&
+                    <div className={'col-xs-6'}>
+                        <div className={'row'}>
+                            <div className={'col-xs-6'}>
+                                <input
+                                    onChange={() => this.handleChangeComposedGroupType('one')}
+                                    type="radio" name='composedGroupType' value="one"
+                                    defaultChecked={true}/>
+                                In één van de groepen
+                            </div>
+                            <div className={'col-xs-6'}>
+                                <input
+                                    onChange={() => this.handleChangeComposedGroupType('all')}
+                                    type="radio" name='composedGroupType' value="all"/>
+                                In alle groepen
+                            </div>
+                        </div>
+                    </div>
+                    }
                 </div>
 
                 <div className="panel-footer">

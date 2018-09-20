@@ -22,36 +22,11 @@ class ContactController extends Controller
     {
         $this->authorize('view', $contact);
 
-        $contact->load('addresses.country');
-        $contact->load('emailAddresses');
-        $contact->load('phoneNumbers');
-        $contact->load('contactNotes');
-        $contact->contactNotes->load('createdBy');
-        $contact->contactNotes->load('updatedBy');
-        $contact->load('createdBy');
-        $contact->load('updatedBy');
-        $contact->load('owner');
-        $contact->load('tasks');
-        $contact->load('notes');
-        $contact->load('documents');
-        $contact->load('opportunities');
-        $contact->load('contactEnergySuppliers');
-        $contact->load('participations');
-        $contact->load('occupations');
-        $contact->load('primaryOccupations');
-        $contact->load('orders');
-        $contact->load('invoices');
-        $contact->occupations->load('occupation');
-        $contact->occupations->load('primaryContact');
-        $contact->occupations->load('contact');
-        $contact->primaryOccupations->load('occupation');
-        $contact->primaryOccupations->load('primaryContact');
-        $contact->primaryOccupations->load('contact');
-        $contact->contactEnergySuppliers->load('energySupplier');
-        $contact->contactEnergySuppliers->load('contactEnergySupplyStatus');
-        $contact->contactEnergySuppliers->load('contactEnergySupplyType');
-        $contact->contactEnergySuppliers->load('createdBy');
-        $contact->contactEnergySuppliers->load('contact');
+        $contact->load(['addresses.country', 'emailAddresses', 'phoneNumbers', 'createdBy', 'updatedBy', 'owner', 'tasks', 'notes', 'documents', 'opportunities', 'participations', 'orders', 'invoices']);
+        $contact->contactNotes->load(['createdBy', 'updatedBy']);
+        $contact->occupations->load(['occupation', 'primaryContact', 'contact']);
+        $contact->primaryOccupations->load(['occupation', 'primaryContact', 'contact']);
+        $contact->contactEnergySuppliers->load(['energySupplier', 'contactEnergySupplyStatus', 'contactEnergySupplyType', 'createdBy', 'contact']);
 
         if($contact->isOrganisation()) $contact->load(['organisation.type', 'organisation.industry', 'organisation.quotationRequests.opportunity.measureCategory', 'organisation.quotationRequests.opportunity.status', 'organisation.campaigns', 'contactPerson.contact']);
         if($contact->isPerson()) $contact->load(['person', 'person.title', 'person.organisation', 'person.type']);

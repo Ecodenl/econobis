@@ -134,6 +134,7 @@ const Routes = () => {
                 <Route path="contact/:id" component={ ContactDetailsApp } />
                 <Route path="contacten" component={ ContactsListApp } />
                 /* Contacts in group */
+                <Route path="contact-groep/:id/:mode" component={ContactGroupDetailsApp} />
                 <Route path="contact-groep/:id" component={ContactGroupDetailsApp} />
                 <Route path="contacten-in-groep/:contactGroup" component={ ContactsInGroupListApp } />
                 /* Campaign */

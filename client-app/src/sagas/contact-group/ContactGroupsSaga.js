@@ -35,3 +35,21 @@ export function* addContactToGroupSaga({ contact }) {
         yield put({ type: 'ADD_CONTACT_TO_GROUP_ERROR', error });
     }
 }
+
+export function* deleteComposedGroupSaga({ contactGroupId, contactGroupToDetachId }) {
+    try {
+        yield call(ContactGroupAPI.deleteComposedGroup, {contactGroupId, contactGroupToDetachId});
+        yield put({ type: 'DELETE_COMPOSED_GROUP_SUCCESS', contactGroupToDetachId });
+    } catch (error) {
+        yield put({ type: 'DELETE_COMPOSED_GROUP_ERROR', error });
+    }
+}
+
+export function* attachComposedGroupSaga({ contactGroupId, contactGroupToAttachId }) {
+    try {
+        yield call(ContactGroupAPI.attachComposedGroup, {contactGroupId, contactGroupToAttachId});
+        yield put({ type: 'ATTACH_COMPOSED_GROUP_SUCCESS', contactGroupId });
+    } catch (error) {
+        yield put({ type: 'ATTACH_COMPOSED_GROUP_ERROR', error });
+    }
+}

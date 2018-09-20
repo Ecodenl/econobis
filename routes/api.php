@@ -14,8 +14,8 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::post('password/email','Auth\ForgotPasswordController@sendResetLinkEmail');
-Route::post('password/reset','Auth\ResetPasswordController@reset');
+Route::post('password/email', 'Auth\ForgotPasswordController@sendResetLinkEmail');
+Route::post('password/reset', 'Auth\ResetPasswordController@reset');
 Route::get('password/reset/{token}', [
     'as' => 'password.reset',
     'uses' => 'Auth\ResetPasswordController@showResetForm'
@@ -72,7 +72,7 @@ Route::namespace('Api')
 
         Route::post('/housing-file/measure-taken', 'HousingFile\HousingFileController@attachMeasureTaken');
         Route::post('/housing-file/{address}/{measure}/detach', 'HousingFile\HousingFileController@detachMeasureTaken');
-        
+
         Route::get('/housing-file/{housingFile}/notes', 'HousingFile\HousingFileController@notes');
         Route::get('/housing-file/{housingFile}/documents', 'HousingFile\HousingFileController@documents');
 
@@ -384,5 +384,14 @@ Route::namespace('Api')
 
         Route::get('payment-invoice/grid', 'PaymentInvoice\PaymentInvoiceController@grid');
         Route::post('payment-invoice/{paymentInvoice}/not-paid', 'PaymentInvoice\PaymentInvoiceController@setNotPaid');
-    }
-);
+
+        Route::get('webform/grid', 'Webform\WebformController@grid');
+        Route::post('webform', 'Webform\WebformController@store');
+        Route::get('webform/{webform}', 'Webform\WebformController@show');
+        Route::post('webform/{webform}', 'Webform\WebformController@update');
+    });
+
+Route::namespace('Api')
+    ->group(function () {
+        Route::post('webform/external/{apiKey}', 'Webform\ExternalWebformController@post');
+    });

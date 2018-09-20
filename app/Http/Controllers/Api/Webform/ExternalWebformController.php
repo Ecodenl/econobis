@@ -167,6 +167,7 @@ class ExternalWebformController extends Controller
                 'kvk' => 'chamber_of_commerce_number',
                 'website' => 'website',
                 // Address
+                'adres_straat' => 'address_street',
                 'adres_huisnummer' => 'address_number',
                 'adres_toevoeging' => 'address_addition',
                 'adres_postcode' => 'address_postal_code',
@@ -206,8 +207,7 @@ class ExternalWebformController extends Controller
                 'order_iban' => 'iban',
                 'order_iban_tnv' => 'iban_attn',
                 'order_betaalwijze_id' => 'payment_type_id',
-                'order_status' => 'status',
-                'order_administratie_id' => 'administration_id',
+                'order_status_id' => 'status_id',
                 'order_begindatum' => 'date_start',
                 'order_aanvraagdatum' => 'date_requested',
             ],
@@ -389,7 +389,7 @@ class ExternalWebformController extends Controller
                 $address = Address::create([
                     'contact_id' => $contact->id,
                     'type_id' => 'postal',
-                    'street' => '',
+                    'street' => $data['address_street'],
                     'number' => $data['address_number'],
                     'city' => $data['address_city'],
                     'postal_code' => $data['address_postal_code'],
@@ -760,19 +760,25 @@ class ExternalWebformController extends Controller
                 return;
             }
 
-            $status = $data['status'];
-            if (!OrderStatus::exists($data['status'])) {
-                $this->log('Geen bekende waarde voor orderstatus meegegeven, default naar "concept".');
-                $status = 'concept';
+            $statusId = $data['status_id'];
+            if (!OrderStatus::exists($statusId)) {
+                $this->log('Geen bekende waarde voor orderstatus meegegeven, default naar concept.');
+                $statusId = 'concept';
+            }
+
+            $paymentTypeId = $data['payment_type_id'];
+            if (!OrderStatus::exists($paymentTypeId)) {
+                $this->log('Geen bekende waarde voor betaalwijze meegegeven, default naar betaalwijze van product.');
+                $paymentTypeId = $product->payment_type_id;
             }
 
             $iban = $this->checkIban($data['iban'], 'order.');
             $order = Order::create([
                 'contact_id' => $contact->id,
                 'administration_id' => $product->administration_id,
-                'status_id' => $status,
+                'status_id' => $statusId,
                 'subject' => '',
-                'payment_type_id' => $product->payment_type_id,
+                'payment_type_id' => $paymentTypeId,
                 'IBAN' => $iban,
                 'iban_attn' => $data['iban_attn'],
                 'date_requested' => Carbon::make($data['date_requested']),

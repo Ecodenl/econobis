@@ -24,6 +24,7 @@ use App\Eco\Intake\IntakeStatus;
 use App\Eco\Measure\MeasureCategory;
 use App\Eco\Occupation\OccupationContact;
 use App\Eco\Order\Order;
+use App\Eco\Order\OrderPaymentType;
 use App\Eco\Order\OrderProduct;
 use App\Eco\Order\OrderStatus;
 use App\Eco\Organisation\Organisation;
@@ -62,10 +63,23 @@ class ExternalWebformController extends Controller
     protected $address = null;
 
     /**
-     * Als er ergens tijdens het verwerken fouten ontstaan moet dit uiteindelijk in de taak worden toegevoegd.
+     * Array om meldingen in op te slaan die uiteindelijk in de taak omschrijving moeten worden toegevoegd.
      * @var array
      */
-    protected $ibanErrors = [];
+    protected $taskErrors = [];
+
+    /**
+     * Als er een group is gevonden en de contact aan een group gekoppeld kon worden moet deze groep ook aan de taak worden gekoppeld.
+     * Om heen en weer sturen van deze Group tussen functies te voorkomen deze maar in de class opgeslagen.
+     *
+     * @var ContactGroup|null
+     */
+    protected $contactGroup = null;
+
+    /**
+     * Het gevonden webform hebben we op nog een aantal plekken nodig, daarom in class opslaan
+     * @var Webform|null
+     */
     protected $webform = null;
 
     public function post(string $apiKey, Request $request)
@@ -204,6 +218,7 @@ class ExternalWebformController extends Controller
             'order' => [
                 // Order / OrderProduct
                 'order_product_id' => 'product_id',
+                'order_aantal' => 'amount',
                 'order_iban' => 'iban',
                 'order_iban_tnv' => 'iban_attn',
                 'order_betaalwijze_id' => 'payment_type_id',
@@ -709,7 +724,8 @@ class ExternalWebformController extends Controller
             }
 
             $contactGroup->contacts()->syncWithoutDetaching($contact);
-            $this->log('Contact aan groep ' . $data['group_name'] . ' gekoppeld.');
+            $this->contactGroup = $contactGroup;
+            $this->log('Contact ' . $contact->id . ' aan groep ' . $data['group_name'] . ' gekoppeld.');
         } else {
             $this->log('Er is geen contact groep meegegeven, geen groep koppelen.');
         }
@@ -718,12 +734,14 @@ class ExternalWebformController extends Controller
     protected function addTaskToContact(Contact $contact, array $data, Webform $webform, Intake $intake = null, ParticipantProductionProject $participation = null, Order $order = null)
     {
         // Opmerkingen over eventuele ongeldige ibans toevoegen als notitie aan taak
-        $note = implode("\n", $this->ibanErrors);
+        $note = "Webformulier " . $webform->name . ".\n";
+        $note .= implode("\n", $this->taskErrors);
 
         $task = Task::create([
             'note' => $note,
             'type_id' => 6,
             'contact_id' => $contact->id,
+            'contact_group_id' => $this->contactGroup->id,
             'finished' => false,
             'date_planned_start' => (new Carbon())->startOfDay(),
             'responsible_user_id' => $webform->responsible_user_id,
@@ -757,6 +775,7 @@ class ExternalWebformController extends Controller
 
             if (!$product) {
                 $this->log('Product met is ' . $data['product_id'] . ' is niet gevonden, geen order aangemaakt.');
+                $this->addTaskError('Ongeldige product code meegegeven bij verzenden webformulier.');
                 return;
             }
 
@@ -767,35 +786,46 @@ class ExternalWebformController extends Controller
             }
 
             $paymentTypeId = $data['payment_type_id'];
-            if (!OrderStatus::exists($paymentTypeId)) {
+            if (!OrderPaymentType::exists($paymentTypeId)) {
                 $this->log('Geen bekende waarde voor betaalwijze meegegeven, default naar betaalwijze van product.');
                 $paymentTypeId = $product->payment_type_id;
             }
 
             $iban = $this->checkIban($data['iban'], 'order.');
-            $order = Order::create([
-                'contact_id' => $contact->id,
-                'administration_id' => $product->administration_id,
-                'status_id' => $statusId,
-                'subject' => '',
-                'payment_type_id' => $paymentTypeId,
-                'IBAN' => $iban,
-                'iban_attn' => $data['iban_attn'],
-                'date_requested' => Carbon::make($data['date_requested']),
-            ]);
-
-            $this->log('Order met id ' . $order->id . ' aangemaakt.');
 
             $dateStart = Carbon::make($data['date_start']);
             if (!$dateStart) {
                 $this->log('Geen bekende startdatum meegegeven voor product, default naar datum van vandaag.');
                 $dateStart = new Carbon();
             }
+
+            $dateRequested = Carbon::make($data['date_requested']);
+            if (!$dateRequested) {
+                $this->log('Geen bekende aanvraagdatum meegegeven voor product, default naar datum van vandaag.');
+                $dateRequested = new Carbon();
+            }
+
+            $order = Order::create([
+                'contact_id' => $contact->id,
+                'administration_id' => $product->administration_id,
+                'status_id' => $statusId,
+                'subject' => $product->name,
+                'payment_type_id' => $paymentTypeId,
+                'IBAN' => $iban,
+                'iban_attn' => $data['iban_attn'],
+                'date_requested' => $dateRequested,
+                'date_start' => $dateStart,
+            ]);
+
+            $this->log('Order met id ' . $order->id . ' aangemaakt.');
+
+            $amount = (int) $data['amount'];
+            if($amount < 1) $amount = 1;
             $orderProduct = OrderProduct::create([
                 'product_id' => $product->id,
                 'order_id' => $order->id,
-                'description' => '',
-                'amount' => 1,
+                'description' => $product->name,
+                'amount' => $amount,
                 'date_start' => $dateStart,
             ]);
 
@@ -840,14 +870,14 @@ class ExternalWebformController extends Controller
         if ($iban == '') {
             $error = 'Geen iban meegegeven voor ' . $errorSubject;
             $this->log($error);
-            $this->ibanErrors[] = $error;
+            $this->addTaskError($error);
             return '';
         }
 
         if (!(new IBAN($iban))->validate()) {
             $error = 'Ongeldige Iban ingelezen voor ' . $errorSubject;
             $this->log($error);
-            $this->ibanErrors[] = $error;
+            $this->addTaskError($error);
         }
         return $iban;
     }
@@ -884,5 +914,10 @@ class ExternalWebformController extends Controller
         $logs[] = "\n";
         Log::info(implode("\n", $logs));
         $this->log('Log is gelogd naar het applicatielog.');
+    }
+
+    protected function addTaskError(string $error)
+    {
+        $this->taskErrors[] = $error;
     }
 }

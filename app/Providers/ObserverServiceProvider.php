@@ -62,6 +62,8 @@ use App\Eco\QuotationRequest\QuotationRequest;
 use App\Eco\QuotationRequest\QuotationRequestObserver;
 use App\Eco\Task\Task;
 use App\Eco\Task\TaskObserver;
+use App\Eco\Webform\Webform;
+use App\Eco\Webform\WebformObserver;
 use Illuminate\Support\ServiceProvider;
 
 class ObserverServiceProvider extends ServiceProvider
@@ -103,6 +105,7 @@ class ObserverServiceProvider extends ServiceProvider
         InvoicePayment::observe(InvoicePaymentObserver::class);
         ParticipantProductionProject::observe(ParticipantProductionProjectObserver::class);
         PaymentInvoice::observe(PaymentInvoiceObserver::class);
+        Webform::observe(WebformObserver::class);
     }
 
     /**

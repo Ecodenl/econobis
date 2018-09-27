@@ -172,7 +172,7 @@ class ContactGroup extends Model
                 continue;
             }
 
-            if ($contacts === null) {
+            if (count($contacts) == 0) {
                 $contacts = $contactGroup->getAllContacts();
             } else {
                 $tempContacts = $contactGroup->getAllContacts();

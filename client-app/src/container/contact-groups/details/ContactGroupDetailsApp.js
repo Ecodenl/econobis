@@ -24,6 +24,12 @@ class ContactGroupDetailsApp extends Component {
         this.props.clearContactGroupDetails();
     }
 
+    componentWillReceiveProps(nextProps) {
+        if(this.props.params.id !== nextProps.params.id) {
+            this.props.fetchContactGroupDetails(nextProps.params.id);
+        }
+    };
+
     render() {
         return (
             <div className="row">

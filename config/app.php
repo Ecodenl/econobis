@@ -4,7 +4,7 @@ return [
 
     //Version number displayed in the header, change this with every update
     'version_major' => '1',
-    'version_minor' => '10',
+    'version_minor' => '11',
     'version_fix' => '1',
 
 

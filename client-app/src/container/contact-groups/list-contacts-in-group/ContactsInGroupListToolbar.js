@@ -70,6 +70,11 @@ class ContactsInGroupListToolbar extends Component {
         });
     };
 
+    openGroupDetails() {
+        hashHistory.push(`/contact-groep/${this.props.groupId}`);
+    };
+
+
     render() {
         const { permissions } = this.props;
         return (
@@ -89,7 +94,7 @@ class ContactsInGroupListToolbar extends Component {
                         <ButtonIcon iconName={"glyphicon-envelope"} onClickAction={this.sendEmail} />
                     </div>
                 </div>
-                <div className="col-md-4"><h3 className="text-center table-title">Contacten in groep: {this.state.groupName}</h3></div>
+                <div className="col-md-4"><h3 className="text-center table-title" onClick={() => this.openGroupDetails()} role="button">Contacten in groep: {this.state.groupName}</h3></div>
                 <div className="col-md-4" />
 
                 {this.state.showModalAddToGroup &&

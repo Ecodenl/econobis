@@ -71,7 +71,7 @@ class ParticipationProductionProjectController extends ApiController
         $contactGroup = new ContactGroup();
         $contactGroup->type_id = 'dynamic';
         $contactGroup->composed_of = 'participants';
-        $contactGroup->name = 'Dynamische groep ' . (ContactGroup::max('id') + 1);
+        $contactGroup->name =  ContactGroup::getAutoIncrementedName('Dynamische groep');
         $contactGroup->description = '';
         $contactGroup->dynamic_filter_type = $request->input('filterType') ? $request->input('filterType') : 'and';
         $contactGroup->save();
@@ -90,15 +90,28 @@ class ParticipationProductionProjectController extends ApiController
         }
 
         if($extraFilters) {
-            foreach ($extraFilters as $extraFilter) {
-                $dynamicFilter = new DynamicContactGroupFilter();
-                $dynamicFilter->contact_group_id = $contactGroup->id;
-                $dynamicFilter->field = $extraFilter->field;
-                $dynamicFilter->comperator = $extraFilter->type;
-                $dynamicFilter->data = $extraFilter->data;
-                $dynamicFilter->type = 'extraFilter';
-                $dynamicFilter->model_name = $this->getModelByField($extraFilter->field);
-                $dynamicFilter->save();
+            foreach ($extraFilters as $k => $extraFilter) {
+                //From a production project the extra filter with the production project should be saved as a normal filter, to avoid errors in 'and' or 'or' filtering.
+                if(json_decode($request->input('saveFromProductionProject')) == true && $k === 0){
+                    $dynamicFilter = new DynamicContactGroupFilter();
+                    $dynamicFilter->contact_group_id = $contactGroup->id;
+                    $dynamicFilter->field = $extraFilter->field;
+                    $dynamicFilter->comperator = $extraFilter->type;
+                    $dynamicFilter->data = $extraFilter->data;
+                    $dynamicFilter->type = 'filter';
+                    $dynamicFilter->model_name = $this->getModelByField($extraFilter->field);
+                    $dynamicFilter->save();
+                }
+                else {
+                    $dynamicFilter = new DynamicContactGroupFilter();
+                    $dynamicFilter->contact_group_id = $contactGroup->id;
+                    $dynamicFilter->field = $extraFilter->field;
+                    $dynamicFilter->comperator = $extraFilter->type;
+                    $dynamicFilter->data = $extraFilter->data;
+                    $dynamicFilter->type = 'extraFilter';
+                    $dynamicFilter->model_name = $this->getModelByField($extraFilter->field);
+                    $dynamicFilter->save();
+                }
             }
         }
         return FullContactGroup::make($contactGroup);

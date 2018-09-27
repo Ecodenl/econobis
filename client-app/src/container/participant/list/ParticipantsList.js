@@ -35,6 +35,7 @@ class ParticipantsList extends Component {
                             toggleCheckedAll={this.props.toggleCheckedAll}
                             showCheckboxList={this.props.showCheckboxList}
                             checkedAll={this.props.checkedAll}
+                            productionProjects={this.props.productionProjects}
                         />
                     </DataTableHead>
                     <DataTableBody>

@@ -45,6 +45,25 @@ class ContactGroup extends Model
     //gebruikt om infinite loop te checken bij samengestelde groepen
     private $hasComposedIds = [];
 
+    public static function getAutoIncrementedName(string $prefix)
+    {
+        // Prefix altijd gevolgd door 1 spatie (ook als deze spatie al wordt meegegeven)
+        $prefix = trim($prefix) . ' ';
+
+        $last = static::where('name', 'like', $prefix . '%')
+            ->orderBy('name', 'desc')
+            ->first();
+
+        // Geen ander record met deze prefix; dan is het nummer 1
+        if(!$last) return $prefix . '1';
+
+        // Wel eerder record, dan nummer met 1 ophogen
+        $number = (int) str_replace($prefix, '', $last->name);
+        $number++;
+
+        return $prefix . $number;
+    }
+
     public function contacts()
     {
         return $this->belongsToMany(Contact::class, 'contact_groups_pivot');

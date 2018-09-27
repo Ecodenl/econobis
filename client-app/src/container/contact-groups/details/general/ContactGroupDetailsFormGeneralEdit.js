@@ -178,14 +178,14 @@ class ContactGroupDetailsFormGeneralEdit extends Component {
                                     onChange={() => this.handleChangeDynamicFilterType('and')}
                                     type="radio" name='dynamicFilterType' value="and" id="and"
                                     defaultChecked={this.props.contactGroupDetails.dynamicFilterType === 'and'}/>
-                                <label htmlFor='and'>Alle filters zijn "EN"</label>
+                                <label htmlFor='and'>Alle extra filters zijn "EN"</label>
                             </div>
                             <div className={'col-xs-6'}>
                                 <input
                                     onChange={() => this.handleChangeDynamicFilterType('or')}
                                     type="radio" name='dynamicFilterType' value="or" id="or"
                                     defaultChecked={this.props.contactGroupDetails.dynamicFilterType === 'or'}/>
-                                <label htmlFor='or'>Alle filters zijn "OF"</label>
+                                <label htmlFor='or'>Alle extra filters zijn "OF"</label>
                             </div>
                         </div>
                     </div>

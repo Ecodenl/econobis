@@ -24,7 +24,8 @@ class Filter extends RequestFilter
         'currentParticipations',
         'participationStatusId',
         'dateRegister',
-        'energySupplierId'
+        'energySupplierId',
+        'productionProjectId',
     ];
 
     protected $mapping = [
@@ -37,6 +38,7 @@ class Filter extends RequestFilter
         'participationStatusId' => 'participation_production_project.status_id',
         'dateRegister' => 'participation_production_project.date_register',
         'energySupplierId' => 'energy_suppliers.id',
+        'productionProjectId' => 'participation_production_project.production_project_id',
     ];
 
     protected $joins = [

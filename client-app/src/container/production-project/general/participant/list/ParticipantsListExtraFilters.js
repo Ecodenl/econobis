@@ -208,21 +208,21 @@ class ParticipantsListExtraFilters extends Component {
           >
             <div className="row filter-row">
                   <h5>
-                        <div className="col-xs-4">
+                        <div className="col-xs-6">
                             <input
                             onChange={() => this.handleFilterTypeChange('and')}
                             type="radio" name="type" value="and" id="and"
                                 checked={this.state.filterType === 'and'}
                             />
-                            <label htmlFor="and">Alle filters zijn "EN"</label>
+                            <label htmlFor="and">Alle extra filters zijn "EN"</label>
                     </div>
-                      <div className="col-xs-4">
+                      <div className="col-xs-6">
                             <input
                     onChange={() => this.handleFilterTypeChange('or')}
                     type="radio" name="type" value="or" id="or"
                                 checked={this.state.filterType === 'or'}
                           />
-                            <label htmlFor="or">Alle filters zijn "OF"</label>
+                            <label htmlFor="or">Alle extra filters zijn "OF"</label>
                         </div>
                     </h5>
                 </div>

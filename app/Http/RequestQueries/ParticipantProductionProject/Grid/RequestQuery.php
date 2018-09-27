@@ -34,12 +34,14 @@ class RequestQuery extends \App\Helpers\RequestQuery\RequestQuery
         if($this->request->input('fetchFromProductionProject') == true){
             $extraFilters = json_decode($this->request->input('extraFilters'));
 
-            $query->where('participation_production_project.production_project_id', $extraFilters[0]->data);
+            if(count($extraFilters) > 0) {
+                $query->where('participation_production_project.production_project_id', $extraFilters[0]->data);
 
-            unset($extraFilters[0]);
+                unset($extraFilters[0]);
 
-            $extraFilters = array_values($extraFilters);
-            Input::merge(['extraFilters' => json_encode($extraFilters)]);
+                $extraFilters = array_values($extraFilters);
+                Input::merge(['extraFilters' => json_encode($extraFilters)]);
+            }
         }
 
         return $query;

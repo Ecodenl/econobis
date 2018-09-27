@@ -741,7 +741,7 @@ class ExternalWebformController extends Controller
             'note' => $note,
             'type_id' => 6,
             'contact_id' => $contact->id,
-            'contact_group_id' => $this->contactGroup->id,
+            'contact_group_id' => $this->contactGroup ? $this->contactGroup->id : null,
             'finished' => false,
             'date_planned_start' => (new Carbon())->startOfDay(),
             'responsible_user_id' => $webform->responsible_user_id,

@@ -1,5 +1,5 @@
 export const setFilterParticipantProductionProjectId = (id) => ({
-    type: 'SET_FILTER_PARTICIPANT_PRODUCTION_PROJECT_ID',
+    type: 'SET_FILTER_PRODUCTION_PROJECT_PARTICIPANT_ID',
     id,
 });
 
@@ -51,6 +51,11 @@ export const setFilterParticipantProductionProjectDateRegister = (dateRegister) 
 export const setFilterParticipantProductionProjectEnergySupplierId = (energySupplierId) => ({
     type: 'SET_FILTER_PARTICIPANT_PRODUCTION_PROJECT_ENERGY_SUPPLIER_ID',
     energySupplierId,
+});
+
+export const setFilterProductionProjectId = (productionProjectId) => ({
+    type: 'SET_FILTER_PARTICIPANT_PRODUCTION_PROJECT_ID',
+    productionProjectId,
 });
 
 export const clearFilterParticipantsProductionProject = () => ({

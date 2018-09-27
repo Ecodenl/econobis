@@ -42,17 +42,29 @@ const filtersReducerDefaultState = {
     energySupplierId: {
         field: 'energySupplierId',
         data: '',
+    },
+    productionProjectId: {
+        field: 'productionProjectId',
+        data: '',
     }
 };
 
 export default (state = filtersReducerDefaultState, action) => {
     switch(action.type) {
-        case 'SET_FILTER_PARTICIPANT_PRODUCTION_PROJECT_ID':
+        case 'SET_FILTER_PRODUCTION_PROJECT_PARTICIPANT_ID':
             return {
                 ...state,
                 id: {
                     ...state.id,
                     data: action.id,
+                }
+            };
+        case 'SET_FILTER_PARTICIPANT_PRODUCTION_PROJECT_ID':
+            return {
+                ...state,
+                productionProjectId: {
+                    ...state.productionProjectId,
+                    data: action.productionProjectId,
                 }
             };
         case 'SET_FILTER_PARTICIPANT_PRODUCTION_PROJECT_CONTACT_TYPE':

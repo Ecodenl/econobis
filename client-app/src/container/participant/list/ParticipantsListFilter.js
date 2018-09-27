@@ -15,7 +15,8 @@ import {
     setFilterParticipantProductionProjectName,
     setFilterParticipantProductionProjectParticipationStatusId,
     setFilterParticipantProductionProjectPostalCode,
-    setFilterParticipantProductionProjectStatusId
+    setFilterParticipantProductionProjectStatusId,
+    setFilterProductionProjectId
 } from '../../../actions/participants-production-project/ParticipantsProductionProjectFiltersActions';
 import DataTableFilterDate from "../../../components/dataTable/DataTableFilterDate";
 
@@ -49,8 +50,8 @@ const ParticipantsListFilter = props => {
         props.setFilterParticipantProductionProjectCity(e.target.value);
     };
 
-    const onStatusIdChange = (e) => {
-        props.setFilterParticipantProductionProjectStatusId(e.target.value);
+    const onProductionProjectIdChange = (e) => {
+        props.setFilterProductionProjectId(e.target.value);
 
         setTimeout(() => {
             props.onSubmitFilter();
@@ -112,7 +113,18 @@ const ParticipantsListFilter = props => {
             <th><input type="text" className="form-control input-sm" value={ props.filters.address.data} onChange={onAddressChange} /></th>
             <th><input type="text" className="form-control input-sm" value={ props.filters.postalCode.data} onChange={onPostalCodeChange} /></th>
             <th><input type="text" className="form-control input-sm" value={ props.filters.city.data} onChange={onCityChange} /></th>
-            <th/>
+
+            <th>
+                <select className="form-control input-sm" value={ props.filters.productionProjectId.data } onChange={onProductionProjectIdChange}>
+                    <option/>
+                    {
+                        props.productionProjects.map((productionProject) => {
+                            return <option key={productionProject.id } value={ productionProject.id }>{ productionProject.name }</option>
+                        })
+                    }
+                </select>
+            </th>
+
             <th><input type="text" className="form-control input-sm" value={ props.filters.currentParticipations.data} onChange={onCurrentParticipationsChange} /></th>
 
             <th>
@@ -165,7 +177,8 @@ const mapDispatchToProps = (dispatch) => {
         setFilterParticipantProductionProjectName,
         setFilterParticipantProductionProjectParticipationStatusId,
         setFilterParticipantProductionProjectPostalCode,
-        setFilterParticipantProductionProjectStatusId
+        setFilterParticipantProductionProjectStatusId,
+        setFilterProductionProjectId
     }, dispatch);
 };
 

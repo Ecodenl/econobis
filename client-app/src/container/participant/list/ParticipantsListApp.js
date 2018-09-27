@@ -56,6 +56,7 @@ class ParticipantsListApp extends Component {
             filterType: 'and',
             amountOfFilters: 0,
             extraFilters: [],
+            productionProjects: [],
         };
 
         this.handleInputChange = this.handleInputChange.bind(this);
@@ -413,6 +414,7 @@ class ParticipantsListApp extends Component {
                             toggleParticipantCheck={this.toggleParticipantCheck}
                             toggleParticipantCheckNoEmail={this.toggleParticipantCheckNoEmail}
                             toggleCheckedAll={this.toggleCheckedAll}
+                            productionProjects={this.state.productionProjects}
                         />
                     </div>
                 </PanelBody>

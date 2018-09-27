@@ -383,7 +383,8 @@ class ParticipantsListApp extends Component {
         this.prefillExtraFilter();
 
         this.setState({
-            showExtraFilters: !this.state.showExtraFilters
+            showExtraFilters: !this.state.showExtraFilters,
+            amountOfFilters: this.state.extraFilters.length,
         });
     };
 

@@ -169,7 +169,7 @@ class ContactsListApp extends Component {
     handleExtraFiltersChange(extraFilters, amountOfFilters, filterType) {
         this.setState({
             filterType: filterType,
-            amountOfFilters: amountOfFilters,
+            amountOfFilters: extraFilters,
             extraFilters: extraFilters
         });
 
@@ -198,7 +198,8 @@ class ContactsListApp extends Component {
         this.prefillExtraFilter();
 
         this.setState({
-            showExtraFilters: !this.state.showExtraFilters
+            showExtraFilters: !this.state.showExtraFilters,
+            amountOfFilters: this.state.extraFilters.length,
         });
     };
 

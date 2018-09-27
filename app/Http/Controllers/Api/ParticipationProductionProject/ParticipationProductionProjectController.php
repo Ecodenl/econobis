@@ -92,7 +92,7 @@ class ParticipationProductionProjectController extends ApiController
         if($extraFilters) {
             foreach ($extraFilters as $k => $extraFilter) {
                 //From a production project the extra filter with the production project should be saved as a normal filter, to avoid errors in 'and' or 'or' filtering.
-                if($request->input('saveFromProductionProject') == true && $k === 0){
+                if(json_decode($request->input('saveFromProductionProject')) == true && $k === 0){
                     $dynamicFilter = new DynamicContactGroupFilter();
                     $dynamicFilter->contact_group_id = $contactGroup->id;
                     $dynamicFilter->field = $extraFilter->field;

@@ -43,6 +43,10 @@ class Filter extends RequestFilter
 
     protected $joins = [
         'contactType' => 'contacts',
+        'name' => 'contacts',
+        'address' => 'addresses',
+        'postalCode' => 'addresses',
+        'city' => 'addresses',
         'energySupplierId' => 'energy_suppliers',
     ];
 
@@ -55,38 +59,17 @@ class Filter extends RequestFilter
         'energySupplierId' => 'eq',
     ];
 
+    protected function applyAddressFilter($query, $type, $data)
+    {
+        $data = str_replace(' ', '', $data);
+
+        $query->whereRaw('concat(IFNULL(addresses.street,\'\'), IFNULL(addresses.number,\'\'),  IFNULL(addresses.addition,\'\')) LIKE ' . DB::connection()->getPdo()->quote('%' . $data . '%'));
+
+        return false;
+    }
+
     protected function applyCurrentParticipationsFilter($query, $type, $data)
     {
         $query->whereRaw('(participation_production_project.participations_granted - participation_production_project.participations_sold) =' . DB::connection()->getPdo()->quote($data))->where('participation_production_project.status_id', 2);
-    }
-
-    protected function applyNameFilter($query, $type, $data)
-    {
-        $query->whereHas('contact', function ($query) use ($type, $data) {
-            RequestFilter::applyFilter($query, 'full_name', $type, $data);
-        });
-    }
-
-    protected function applyPostalCodeFilter($query, $type, $data)
-    {
-        $query->whereHas('contact.primaryAddress', function ($query) use ($type, $data) {
-            $data = str_replace(' ', '', $data);
-            RequestFilter::applyFilter($query, 'postal_code', $type, $data);
-        });
-    }
-
-    protected function applyCityFilter($query, $type, $data)
-    {
-        $query->whereHas('contact.primaryAddress', function ($query) use ($type, $data) {
-            RequestFilter::applyFilter($query, 'city', $type, $data);
-        });
-    }
-
-    protected function applyAddressFilter($query, $type, $data)
-    {
-        $query->whereHas('contact.primaryAddress', function ($query) use ($type, $data) {
-            $data = str_replace(' ', '', $data);
-            $query->whereRaw('concat(IFNULL(addresses.street,\'\'), IFNULL(addresses.number,\'\'),  IFNULL(addresses.addition,\'\')) LIKE ' . DB::connection()->getPdo()->quote('%' . $data . '%'));
-        });
     }
 }

@@ -31,7 +31,7 @@ class RequestQuery extends \App\Helpers\RequestQuery\RequestQuery
             ->select('participation_production_project.*');
 
         //If the request is called from the production project we catch the productionProjectId filter. This will avoid errors with 'or' and 'and' filters.
-        if($this->request->input('fetchFromProductionProject') == true){
+        if(json_decode($this->request->input('fetchFromProductionProject')) == true){
             $extraFilters = json_decode($this->request->input('extraFilters'));
 
             if(count($extraFilters) > 0) {

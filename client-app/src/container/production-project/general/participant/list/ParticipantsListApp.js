@@ -128,8 +128,8 @@ class ParticipantsListApp extends Component {
 
         this.setState({
             filterType: 'and',
-            amountOfFilters: 0,
-            extraFilters: [],
+            amountOfFilters: 1,
+            extraFilters: [{field: "productionProjectId", type: "eq", data: this.props.productionProjectId + '', readOnly: true}]
         });
 
         this.fetchParticipantsProductionProjectData();

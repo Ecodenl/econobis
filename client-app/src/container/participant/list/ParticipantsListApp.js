@@ -111,8 +111,9 @@ class ParticipantsListApp extends Component {
             const sorts = this.props.participantsProductionProjectSorts;
             const pagination = { limit: 20, offset: this.props.participantsProductionProjectPagination.offset };
             const filterType = this.state.filterType;
+            const fetchFromProductionProject = false;
 
-            this.props.fetchParticipantsProductionProject(filters, extraFilters, sorts, pagination, filterType);
+            this.props.fetchParticipantsProductionProject(filters, extraFilters, sorts, pagination, filterType, fetchFromProductionProject);
         },100 );
     };
 
@@ -357,7 +358,8 @@ class ParticipantsListApp extends Component {
         const extraFilters = this.state.extraFilters;
         const filters = filterHelper(this.props.participantsProductionProjectFilters);
         const filterType = this.state.filterType;
-        ParticipantsProductionProjectAPI.saveAsGroup({filters, extraFilters, filterType}).then((payload) => {
+        const saveFromProductionProject = false;
+        ParticipantsProductionProjectAPI.saveAsGroup({filters, extraFilters, filterType, saveFromProductionProject}).then((payload) => {
             hashHistory.push(`/contact-groep/${payload.data.data.id}/edit`);
         });
     };

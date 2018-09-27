@@ -4,7 +4,7 @@ const URL_API = process.env.URL_API;
 const URL_PARTICIPANT_PRODUCTION_PROJECT = `${URL_API}/api/production-project/participant`;
 
 export default {
-    fetchParticipantsProductionProject: ({ filters, extraFilters, sorts, pagination, filterType }) => {
+    fetchParticipantsProductionProject: ({ filters, extraFilters, sorts, pagination, filterType, fetchFromProductionProject }) => {
         const requestUrl = `${URL_PARTICIPANT_PRODUCTION_PROJECT}/grid`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
@@ -16,7 +16,8 @@ export default {
                 sorts: JSON.stringify(sorts),
                 limit: pagination.limit,
                 offset: pagination.offset,
-                filterType: filterType
+                filterType: filterType,
+                fetchFromProductionProject: fetchFromProductionProject
             },
         });
     },
@@ -86,7 +87,7 @@ export default {
             );
     },
 
-    saveAsGroup: ({ filters, extraFilters, filterType }) => {
+    saveAsGroup: ({ filters, extraFilters, filterType, saveFromProductionProject }) => {
         const requestUrl = `${URL_API}/api/production-project/participant/save-as-group`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
@@ -96,6 +97,7 @@ export default {
                 filters: JSON.stringify(filters),
                 extraFilters: JSON.stringify(extraFilters),
                 filterType: filterType,
+                saveFromProductionProject: saveFromProductionProject,
             },
         });
     },

@@ -240,6 +240,7 @@ class ExternalWebformController extends Controller
         foreach (TaskProperty::all() as $taskProperty) {
             $mapping['task']['taak_' . $taskProperty->code] = $taskProperty->code;
         }
+        $mapping['task']['taak_opmerkingen'] = 'note';
 
         $data = [];
         foreach ($mapping as $groupname => $fields) {
@@ -734,7 +735,8 @@ class ExternalWebformController extends Controller
     protected function addTaskToContact(Contact $contact, array $data, Webform $webform, Intake $intake = null, ParticipantProductionProject $participation = null, Order $order = null)
     {
         // Opmerkingen over eventuele ongeldige ibans toevoegen als notitie aan taak
-        $note = "Webformulier " . $webform->name . ".\n";
+        $note = "Webformulier " . $webform->name . ".\n\n";
+        if($data['note']) $note .= $data['note'] . "\n\n";
         $note .= implode("\n", $this->taskErrors);
 
         $task = Task::create([
@@ -870,7 +872,6 @@ class ExternalWebformController extends Controller
         if ($iban == '') {
             $error = 'Geen iban meegegeven voor ' . $errorSubject;
             $this->log($error);
-            $this->addTaskError($error);
             return '';
         }
 

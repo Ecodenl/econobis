@@ -181,40 +181,17 @@ class ContactGroup extends Model
                 //all - in alle groepen
                 //
                 //contacts merge(ontdubbelen)
-                //participanten push(niet ontdubbelen)
                 if ($tempContacts && $this->composed_group_type === 'one') {
-                    if ($contactGroup->composed_of === 'contacts') {
-                        $contacts = $contacts->merge($tempContacts);
-                    } else {
-                        if ($contactGroup->composed_of === 'participants') {
-                            {
-                                foreach ($tempContacts as $tempContact){
-                                    $contacts->push($tempContact);
-                                }
-                            }
-                        } else {
-                            if ($tempContacts && $this->composed_group_type === 'all') {
-                                if ($contactGroup->composed_of === 'contacts') {
-                                    $contacts = $contacts->intersect($tempContacts);
-                                } else {
-                                    if ($contactGroup->composed_of === 'participants') {
-                                        {
-                                            $intersectedContacts = $contacts->intersect($tempContacts);
 
-                                            foreach ($intersectedContacts as $intersectedContact){
-                                                $contacts->push($intersectedContact);
-                                            }
-                                        }
-                                    }
-                                }
-
-                            }
-                        }
-                    }
+                    $contacts = $contacts->merge($tempContacts);
                 }
-                array_push($this->hasComposedIds, $contactGroup->id);
+                else if ($tempContacts && $this->composed_group_type === 'all') {
+                    $contacts = $contacts->intersect($tempContacts);
+                }
             }
+            array_push($this->hasComposedIds, $contactGroup->id);
         }
+
         return $contacts;
     }
 
@@ -231,10 +208,10 @@ class ContactGroup extends Model
             return $contacts ? $contacts->unique('id')->values() : new Collection();
         }
         else if($this->composed_of === 'participants'){
-            return $contacts ? $contacts : new Collection();
+            return $contacts ? $contacts->unique('id')->values() : new Collection();
         }
         else if($this->composed_of === 'both'){
-            return $contacts ? $contacts : new Collection();
+            return $contacts ? $contacts->unique('id')->values() : new Collection();
         }
     }
 

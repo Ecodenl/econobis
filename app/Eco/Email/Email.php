@@ -99,7 +99,7 @@ class Email extends Model
     }
 
     public function groupEmailAddresses(){
-        return $this->belongsToMany(EmailAddress::class, 'email_group_email_addresses')->withPivot('participant_id');
+        return $this->belongsToMany(EmailAddress::class, 'email_group_email_addresses');
     }
 
     /**

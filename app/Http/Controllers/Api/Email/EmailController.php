@@ -226,38 +226,15 @@ class EmailController
             $this->storeEmailAttachments($attachments, $mailbox->id,
                 $email->id);
 
-            //if we send to group we save in a pivot because they can have alot of members
-            if ($sanitizedData['contact_group_id']) {
-                $contactGroup = ContactGroup::find($sanitizedData['contact_group_id']);
-
-                //als de groep statisch of dynamisch is en het een participant groep is slaan we het participant_id op in de tussentabel, deze wordt later gebruikt voor de merge velden
-                if($contactGroup->composed_of === 'participants'){
-                    if($contactGroup->type_id === 'static'){
-                        $participants = $contactGroup->participants()->get();
-                    }
-                    if($contactGroup->type_id === 'dynamic'){
-                        $participants = $contactGroup->dynamic_contacts->get();
-                    }
-                    $participants->load(['contact.primaryEmailAddress']);
-
-                    foreach ($participants as $participant) {
-                        if ($participant->contact->primaryEmailAddress) {
-                            $emailGroupEmailAddress = new EmailGroupEmailAddress();
-                            $emailGroupEmailAddress->email_id = $email->id;
-                            $emailGroupEmailAddress->email_address_id = $participant->contact->primaryEmailAddress->id;
-                            $emailGroupEmailAddress->participant_id = $participant->id;
-                            $emailGroupEmailAddress->save();
-                        }
-                    }
-                }
-                else {
-                    foreach ($contactGroup->allContacts as $contact) {
-                        if ($contact->primaryEmailAddress) {
-                            $email->groupEmailAddresses()->attach($contact->primaryEmailAddress->id);
-                        }
-                    }
+        //if we send to group we save in a pivot because they can have alot of members
+        if ($sanitizedData['contact_group_id']) {
+            $contactGroup = ContactGroup::find($sanitizedData['contact_group_id']);
+            foreach ($contactGroup->all_contacts as $contact) {
+                if ($contact->primaryEmailAddress) {
+                    $email->groupEmailAddresses()->attach($contact->primaryEmailAddress->id);
                 }
             }
+        }
 
             (new SendEmailsWithVariables($email, json_decode($request['to'])))->handle();
     }

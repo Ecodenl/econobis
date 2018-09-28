@@ -384,7 +384,6 @@ class ParticipantsListApp extends Component {
 
         this.setState({
             showExtraFilters: !this.state.showExtraFilters,
-            amountOfFilters: this.state.extraFilters.length,
         });
     };
 

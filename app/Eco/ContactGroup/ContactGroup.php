@@ -128,6 +128,8 @@ class ContactGroup extends Model
 
     public function getDynamicContactsAttribute()
     {
+        $requestQuery = '';
+        
         $filters = $this->filters;
         $extraFilters = $this->extraFilters;
 

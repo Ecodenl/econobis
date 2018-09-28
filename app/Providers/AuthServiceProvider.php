@@ -65,6 +65,8 @@ use App\Eco\User\User;
 use App\Eco\User\UserPolicy;
 use App\Eco\ContactGroup\ContactGroup;
 use App\Eco\ContactGroup\ContactGroupPolicy;
+use App\Eco\Webform\Webform;
+use App\Eco\Webform\WebformPolicy;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Laravel\Passport\Passport;
@@ -108,6 +110,7 @@ class AuthServiceProvider extends ServiceProvider
         Product::class => ProductPolicy::class,
         Order::class => OrderPolicy::class,
         Invoice::class => InvoicePolicy::class,
+        Webform::class => WebformPolicy::class,
     ];
 
     /**

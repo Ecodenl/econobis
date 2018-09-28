@@ -63,6 +63,8 @@ import { deleteProductSaga, fetchProductsSaga } from './product/ProductsSaga';
 import { fetchInvoicesSaga } from './invoice/InvoicesSaga';
 import { fetchInvoiceDetailsSaga} from './invoice/InvoiceDetailsSaga';
 import { fetchPaymentInvoicesSaga} from './payment-invoice/PaymentInvoicesSaga';
+import { fetchWebformsSaga, deleteWebformSaga } from './webform/WebformsSaga';
+import { fetchWebformDetailsSaga, updateWebformDetailsSaga,  } from './webform/WebformDetailsSaga';
 
 export default function* watchSagas() {
     // General
@@ -193,4 +195,10 @@ export default function* watchSagas() {
     yield takeLatest('UPDATE_PRODUCT', updateProductDetailsSaga);
     yield takeLatest('DELETE_PRODUCT', deleteProductSaga);
     yield takeLatest('FETCH_PRODUCTS', fetchProductsSaga);
+
+    // Webform
+    yield takeLatest('FETCH_WEBFORMS', fetchWebformsSaga);
+    yield takeLatest('FETCH_WEBFORM_DETAILS', fetchWebformDetailsSaga);
+    yield takeLatest('DELETE_WEBFORM', deleteWebformSaga);
+    yield takeLatest('UPDATE_WEBFORM', updateWebformDetailsSaga);
 }

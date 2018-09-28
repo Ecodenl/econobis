@@ -51,7 +51,7 @@ class ContactGroup extends Model
         $prefix = trim($prefix) . ' ';
 
         $last = static::where('name', 'like', $prefix . '%')
-            ->orderBy('name', 'desc')
+            ->orderBy('created_at', 'desc')
             ->first();
 
         // Geen ander record met deze prefix; dan is het nummer 1
@@ -128,6 +128,8 @@ class ContactGroup extends Model
 
     public function getDynamicContactsAttribute()
     {
+        $requestQuery = '';
+
         $filters = $this->filters;
         $extraFilters = $this->extraFilters;
 
@@ -163,7 +165,7 @@ class ContactGroup extends Model
 
     public function getComposedContactsAttribute()
     {
-        $contacts = null;
+        $contacts = (new Contact())->newCollection();
 
         foreach ($this->contactGroups as $contactGroup) {
 
@@ -172,7 +174,7 @@ class ContactGroup extends Model
                 continue;
             }
 
-            if ($contacts === null) {
+            if (count($contacts) == 0) {
                 $contacts = $contactGroup->getAllContacts();
             } else {
                 $tempContacts = $contactGroup->getAllContacts();

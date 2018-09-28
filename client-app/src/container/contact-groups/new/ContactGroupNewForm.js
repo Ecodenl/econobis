@@ -35,6 +35,7 @@ class ContactGroupNewForm extends Component {
             },
             errors: {
                 name: false,
+                nameUnique: false,
             },
         }
     };
@@ -73,13 +74,26 @@ class ContactGroupNewForm extends Component {
         // Validation
         let errors = {};
         let hasErrors = false;
+        let errorMessage = false;
 
         if(validator.isEmpty(contactGroup.name)){
             errors.name = true;
             hasErrors = true;
         };
 
-        this.setState({ ...this.state, errors: errors })
+        let nameNotUnique = false;
+        this.state.contactGroups.map((existingContactGroup) => ((existingContactGroup.name == contactGroup.name) && (nameNotUnique = true)));
+
+        if (nameNotUnique) {
+            errorMessage = "Naam moet uniek zijn.";
+            errors.name = true;
+            hasErrors = true;
+        }
+
+        this.setState({ ...this.state,
+            errors,
+            errorMessage
+        });
 
         // If no errors send form
         !hasErrors &&
@@ -267,6 +281,14 @@ class ContactGroupNewForm extends Component {
                     </div>
                     }
                 </div>
+
+                {this.state.errorMessage &&
+                <div className={'row'}>
+                    <div className="col-sm-10 col-md-offset-1 alert alert-danger">
+                        {this.state.errorMessage}
+                    </div>
+                </div>
+                }
 
                 <div className="panel-footer">
                     <div className="pull-right btn-group" role="group">

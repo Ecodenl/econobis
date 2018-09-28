@@ -29,6 +29,8 @@ class ContactGroupDetailsFormGeneralEdit extends Component {
 
         this.state = {
             contactsWithPermission: [],
+            contactGroups: [],
+            oldName: props.contactGroupDetails.name ? props.contactGroupDetails.name : '',
             contactGroup: {
                 ...props.contactGroupDetails,
                 dateStarted: dateStarted ? moment(dateStarted.date).format('Y-MM-DD') : '',
@@ -51,6 +53,10 @@ class ContactGroupDetailsFormGeneralEdit extends Component {
         const { permissions } = this.props;
         UsersAPI.fetchUsersWithPermission(permissions.find((permission) => permission.name === 'manage_group').id).then((payload) => {
             this.setState({ contactsWithPermission: payload });
+        });
+
+        ContactGroupAPI.peekContactGroups().then((payload) => {
+            this.setState({contactGroups: payload});
         });
     };
 
@@ -76,13 +82,26 @@ class ContactGroupDetailsFormGeneralEdit extends Component {
         // Validation
         let errors = {};
         let hasErrors = false;
+        let errorMessage = false;
 
         if (validator.isEmpty(contactGroup.name)) {
             errors.name = true;
             hasErrors = true;
         };
 
-        this.setState({...this.state, errors: errors})
+        let nameNotUnique = false;
+        this.state.contactGroups.map((existingContactGroup) => ((existingContactGroup.name == contactGroup.name) && (nameNotUnique = true)));
+
+        if (nameNotUnique && (contactGroup.name !== this.state.oldName)) {
+            errorMessage = "Naam moet uniek zijn.";
+            errors.name = true;
+            hasErrors = true;
+        }
+
+        this.setState({ ...this.state,
+            errors,
+            errorMessage
+        });
 
         // If no errors send form
         !hasErrors &&
@@ -298,6 +317,14 @@ class ContactGroupDetailsFormGeneralEdit extends Component {
                         readOnly={true}
                     />
                 </div>
+
+                {this.state.errorMessage &&
+                <div className={'row'}>
+                    <div className="col-sm-10 col-md-offset-1 alert alert-danger">
+                        {this.state.errorMessage}
+                    </div>
+                </div>
+                }
 
                 <div className="panel-footer">
                     <div className="pull-right btn-group" role="group">

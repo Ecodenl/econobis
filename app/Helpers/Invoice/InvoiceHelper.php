@@ -253,7 +253,7 @@ class InvoiceHelper
             $src = 'data:' . mime_content_type($path)
                 . ';charset=binary;base64,' . base64_encode($logo);
             $src = str_replace(" ", "", $src);
-            $img = '<img src="' . $src . '" width="200px" height="200px"/>';
+            $img = '<img src="' . $src . '" width="300px" height="auto"/>';
         }
 
         InvoiceHelper::checkStorageDir($invoice->administration->id);

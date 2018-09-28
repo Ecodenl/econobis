@@ -273,7 +273,7 @@ class InvoiceController extends ApiController
                         . ';charset=binary;base64,' . base64_encode($logo);
                     $src = str_replace(" ", "", $src);
                     $img = '<img src="' . $src
-                        . '" width="200px" height="200px"/>';
+                        . '" width="300px" height="auto"/>';
                 }
 
                 if ($k !== 0) {

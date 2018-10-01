@@ -45,7 +45,7 @@ class DocumentController extends Controller
     {
         $this->authorize('view', Document::class);
 
-        $document->load('task', 'order', 'contact', 'intake', 'contactGroup', 'sentBy', 'createdBy', 'template', 'opportunity.measure', 'opportunity.status', 'productionProject', 'participant.contact', 'participant.productionProject');
+        $document->load('task', 'order', 'contact', 'intake', 'contactGroup', 'sentBy', 'createdBy', 'template', 'opportunity.measureCategory', 'opportunity.status', 'productionProject', 'participant.contact', 'participant.productionProject');
 
         return FullDocument::make($document);
     }
@@ -176,7 +176,7 @@ class DocumentController extends Controller
         $document->fill($data);
         $document->save();
 
-        $document->load('contact', 'intake', 'order', 'contactGroup', 'sentBy', 'createdBy', 'template', 'opportunity.measure', 'opportunity.status', 'productionProject', 'participant.contact', 'participant.productionProject');
+        $document->load('contact', 'intake', 'order', 'contactGroup', 'sentBy', 'createdBy', 'template', 'opportunity.measureCategory', 'opportunity.status', 'productionProject', 'participant.contact', 'participant.productionProject');
 
         return FullDocument::make($document);
     }

@@ -55,7 +55,6 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                 postalCode: false,
                 city: false,
                 kvkNumber: false,
-                btwNumber: false,
                 IBAN: false,
                 bic: false,
                 email: false,
@@ -163,11 +162,6 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                 errors.kvkNumber = true;
                 hasErrors = true;
             }
-        }
-
-        if (validator.isEmpty(administration.btwNumber + '')) {
-            errors.btwNumber = true;
-            hasErrors = true;
         }
 
         if (!ibantools.isValidIBAN(administration.IBAN + '')) {
@@ -304,9 +298,7 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                                 label="BTW nummer"
                                 name={"btwNumber"}
                                 value={btwNumber}
-                                required={"required"}
                                 onChangeAction={this.handleInputChange}
-                                error={this.state.errors.btwNumber}
                             />
                         </div>
 

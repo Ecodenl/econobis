@@ -2,9 +2,40 @@
 <head>
     <meta charset="utf-8">
     <style>
+        @font-face {
+            font-family: 'Calibri';
+            src: url({{ storage_path('fonts\calibri\Calibri.ttf') }}) format("truetype");
+        }
+        @font-face {
+            font-family: 'Calibri';
+            src: url({{ storage_path('fonts\calibri\CALIBRIB.ttf') }}) format("truetype");
+            font-weight: bold;
+        }
+        @font-face {
+            font-family: 'Calibri';
+            src: url({{ storage_path('fonts\calibri\CALIBRII.ttf') }}) format("truetype");
+            font-style: italic;
+        }
+        @font-face {
+            font-family: 'Calibri';
+            src: url({{ storage_path('fonts\calibri\CALIBRIZ.ttf') }}) format("truetype");
+            font-style: italic;
+            font-weight: bold;
+        }
+
+        * {
+            font-family: 'Calibri' !important;
+        }
+
+        /*Omdat custom font geen euroteken heeft*/
+        .euro-sign {
+            font-family: Arial !important;
+        }
+
         table {
             width: 100%;
-            margin: 36px;
+            margin-left: 36px;
+            margin-right: 36px;
         }
 
         table > tr > td {
@@ -16,15 +47,56 @@
         }
 
         .conclusion-text {
-            text-align: center;
+            text-align: left;
             margin-top: 36px;
+            margin-left: 48px;
         }
-    </style>
+
+        .subject-text {
+            margin-left: 48px;
+            margin-bottom: 6px;
+        }
+
+        .logo {
+            margin-bottom: 24px;
+        }
+
+        a:visited {
+            text-decoration: none;
+            border-bottom: 1px solid #551A8B;
+        }
+
+        a:link {
+            text-decoration: none;
+            border-bottom: 1px solid #0000EE;
+        }
+
+        .invoice-product-line {
+            height: 12px;
+        }
+
+        .contact-name {
+            vertical-align: top;
+        }
+
+        .contact-info-table {
+            display: inline-block;
+            float: left;
+            width: 45%
+        }
+
+        .administration-info-table {
+            display: inline-block;
+            float: right;
+            width: 55%
+        }
+   </style>
 </head>
 
 <body>
+
 <div>
-    <table>
+    <table class="logo">
         <tr>
             <td width="50%"></td>
             <td width="50%" align="right">
@@ -33,61 +105,98 @@
         </tr>
     </table>
 
-    <table>
+    <div class="contact-info-table">
+    <table cellpadding=0 cellspacing=0>
+        <tr>
+            <td class="contact-name">
+                {{ $contactName }}
+            </td>
+        </tr>
         <tr>
             <td>
-                {{ $contactName }}
-
+                @if($contactPerson)
+                    t.a.v. {{ $contactPerson }}
+                @else
+                    {{ $invoice->order->contact->addressLines['street'] }}
+                @endif
             </td>
+        </tr>
+        <tr>
+            <td>
+                {{--Eerst factuur adres, anders primair--}}
+                @if($contactPerson)
+                    {{ $invoice->order->contact->addressLines['street'] }}
+                @else
+                    {{ $invoice->order->contact->addressLines['city']}}
+                @endif
+            </td>
+        </tr>
+        <tr>
+            <td>
+                @if($contactPerson)
+                    {{ $invoice->order->contact->addressLines['city']}}
+                @else
+                    {{ $invoice->order->contact->addressLines['country']}}
+                @endif
+            </td>
+        </tr>
+        <tr>
+            <td>
+                @if($contactPerson)
+                    {{ $invoice->order->contact->addressLines['country']}}
+                @endif
+            </td>
+        </tr>
+        <tr>
+            <td>
+            </td>
+        </tr>
+    </table>
+    </div>
+    <div class="administration-info-table">
+    <table width="250px" cellpadding=0 cellspacing=0>
+        <tr>
             <td>
                 {{ $invoice->administration->name }}
             </td>
         </tr>
         <tr>
             <td>
-                @if($contactPerson) T.a.v. {{ $contactPerson }} @else {{ $invoice->order->contact->primaryAddress ? $invoice->order->contact->primaryAddress->street . ' ' . $invoice->order->contact->primaryAddress->number . $invoice->order->contact->primaryAddress->addition : '' }}@endif
-            </td>
-            <td>
                 {{ $invoice->administration->address }}
             </td>
         </tr>
         <tr>
-            <td>
-                @if($contactPerson){{ $invoice->order->contact->primaryAddress ? $invoice->order->contact->primaryAddress->street . ' ' . $invoice->order->contact->primaryAddress->number . $invoice->order->contact->primaryAddress->addition : '' }} @else {{ $invoice->order->contact->primaryAddress ? $invoice->order->contact->primaryAddress->postal_code . ' ' . $invoice->order->contact->primaryAddress->city : ''}}@endif
-
-            </td>
             <td>
                 {{ $invoice->administration->postal_code . ' ' . $invoice->administration->city }}
             </td>
         </tr>
         <tr>
             <td>
-                @if($contactPerson){{ $invoice->order->contact->primaryAddress ? $invoice->order->contact->primaryAddress->postal_code . ' ' . $invoice->order->contact->primaryAddress->city : ''}}@endif
-            </td>
-            <td>
-                {{ $invoice->administration->country ? $invoice->administration->country->name : 'Nederland' }}
+                {{ $invoice->administration->country ? $invoice->administration->country->name : '' }}
             </td>
         </tr>
         <tr>
             <td>
-            </td>
-            <td>
-                {{ $invoice->administration->email }}
+                <a href="{{ 'mailto: ' . $invoice->administration->email }}">{{ $invoice->administration->email }}</a>
             </td>
         </tr>
         <tr>
             <td>
-            </td>
-            <td>
-                {{ $invoice->administration->website }}
+                <a href>{{ $invoice->administration->website }}</a>
             </td>
         </tr>
     </table>
+    </div>
 
-    <table>
+    <div style="clear: both !important;"></div>
+
+    <table cellpadding=0 cellspacing=0>
         <tr>
-            <td colspan="2">
-                Betreft: {{ $invoice->order->subject }}
+            <td width="50%">
+                Factuurdatum: {{ Carbon\Carbon::parse($invoice->created_at)->formatLocalized('%d %B %Y') }}
+            </td>
+            <td width="50%">
+                KvK {{ $invoice->administration->kvk_number }}
             </td>
         </tr>
         <tr>
@@ -95,101 +204,131 @@
                 Factuurnummer: {{ $invoice->number }}
             </td>
             <td>
-                IBAN: {{ $invoice->administration->IBAN }}
+                @if($invoice->administration->btw_number)
+                    BTW-nummer {{ $invoice->administration->btw_number }}
+                @else
+                    IBAN {{ $invoice->administration->IBAN }}
+                @endif
             </td>
         </tr>
         <tr>
             <td>
-                Factuurdatum: {{ Carbon\Carbon::parse($invoice->created_at)->format('d/m/Y') }}
+                Klantnummer: {{ $invoice->order->contact->number }}
             </td>
             <td>
-                BIC: {{ $invoice->administration->bic }}
+                @if($invoice->administration->btw_number)
+                    IBAN {{ $invoice->administration->IBAN }}
+                @else
+                    BIC {{ $invoice->administration->bic }}
+                @endif
             </td>
         </tr>
         <tr>
             <td>
-                PO nummer: {{ $invoice->order->po_number }}
             </td>
             <td>
-                KvK: {{ $invoice->administration->kvk_number }}
+                @if($invoice->administration->btw_number)
+                    BIC {{ $invoice->administration->bic }}
+                @endif
             </td>
         </tr>
     </table>
 
-    @foreach($invoice->invoiceProducts as $invoiceProduct)
-        @if($invoiceProduct->amount_reduction)
-            <?php $amount_reduction = '<th>Korting</th>'; ?>
-        @else
-            <?php $amount_reduction = ''; ?>
-        @endif
-        @if($invoiceProduct->percentage_reduction)
-            <?php $percentage_reduction = '<th>Kortingspercentage</th>'; ?>
-        @else
-            <?php $percentage_reduction = ''; ?>
-        @endif
-    @endforeach
-    <table>
+
+    <h4 class="subject-text">Betreft: {{ $invoice->order->subject }}</h4>
+
+    <table cellpadding=0 cellspacing=0>
         <tr>
             <th width="20%">Omschrijving</th>
             <th width="10%">Prijs</th>
             <th width="10%">Aantal</th>
-            <?php echo ($amount_reduction ? '<th width="10%">Korting</th>' : '')?>
-            <?php echo ($percentage_reduction ? '<th width="10%">Kortingspercentage</th>' : '')?>
-            <th width="10%">BTW bedrag</th>
+
+            <th width="10%">@if($invoice->vatInfo)BTW @endif</th>
+
             <th width="10%">Bedrag</th>
         </tr>
 
         @foreach($invoice->invoiceProducts as $invoiceProduct)
             <tr>
                 <td>{{ $invoiceProduct->description }}</td>
-                <td>€{{ number_format($invoiceProduct->product->price_incl_vat, 2, ',', '.') }}</td>
+                <td><span class="euro-sign">€</span>{{ number_format($invoiceProduct->price, 2, ',', '.') }}</td>
                 <td>{{ $invoiceProduct->amount }}</td>
-                @if($invoiceProduct->amount_reduction)
-                    <td>€{{ number_format($invoiceProduct->amount_reduction, 2, ',', '.') }}</td>
-                @else
-                    <?php echo ($amount_reduction ? '<td></td>' : '')?>
-                @endif
-                @if($invoiceProduct->percentage_reduction)
-                    <td>{{ $invoiceProduct->percentage_reduction }}%</td>
-                @else
-                    <?php echo ($percentage_reduction ? '<td></td>' : '') ?>
-                @endif
-                <td>€{{ number_format($invoiceProduct->amount_vat, 2, ',', '.') }}</td>
-                <td>€{{ number_format($invoiceProduct->price_incl_vat_and_reduction, 2, ',', '.') }}</td>
+                <td>@if($invoice->vatInfo){{ $invoiceProduct->vat_percentage ? number_format($invoiceProduct->vat_percentage, 2, ',', '.') . '%' : 'Geen'}}@endif</td>
+                <td><span class="euro-sign">€</span>{{ number_format(($invoiceProduct->price * $invoiceProduct->amount), 2, ',', '.') }}</td>
+            </tr>
+            @if($invoiceProduct->amount_reduction)
+                <tr>
+                    <td colspan="4">Korting</td>
+                    <td><span class="euro-sign">- €</span>{{ number_format(($invoiceProduct->amount_reduction), 2, ',', '.') }}</td>
+                </tr>
+            @endif
+
+            @if($invoiceProduct->percentage_reduction)
+                <tr>
+                    <td colspan="4">Korting {{ $invoiceProduct->percentage_reduction }}%</td>
+                    <td><span class="euro-sign">- €</span>{{ number_format((($invoiceProduct->percentage_reduction/100) * ($invoiceProduct->price * $invoiceProduct->amount)), 2, ',', '.') }}</td>
+                </tr>
+            @endif
+            <tr>
+                <td  class="invoice-product-line" colspan="5"></td>
+            </tr>
+        @endforeach
+        @if($invoice->vatInfo)
+        <tr>
+            <td colspan="4"><strong>Totaal excl. BTW</strong></td>
+            <td><span class="euro-sign">€</span>{{ number_format($invoice->total_price_ex_vat_incl_reduction, 2, ',', '.') }}</td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>BTW</td>
+            <td>Over</td>
+            <td>Bedrag</td>
+            <td></td>
+        </tr>
+        @foreach($invoice->vatInfo as $percentage => $vatInfo)
+            <tr>
+                <td></td>
+                <td>{{ $percentage}}</td>
+                <td><span class="euro-sign">€</span>{{ number_format($vatInfo['total_over'], 2, ',', '.') }}</td>
+                <td><span class="euro-sign">€</span>{{ number_format($vatInfo['total_amount'], 2, ',', '.') }}</td>
+                <td></td>
             </tr>
         @endforeach
         <tr>
-            <td><strong>Totaal exclusief BTW:</strong></td>
-            <td>€{{ number_format($invoice->total_price_ex_vat_incl_reduction, 2, ',', '.') }}</td>
+            <td colspan="4"><strong>BTW Totaal</strong></td>
+            <td><span class="euro-sign">€</span>{{ number_format($invoice->total_vat, 2, ',', '.') }}</td>
         </tr>
+        @endif
         <tr>
-            <td><strong>Totaal BTW:</strong></td>
-            <td>€{{ number_format($invoice->total_vat, 2, ',', '.') }}</td>
-        </tr>
-        <tr>
-            <td><strong>Totaal te betalen:</strong></td>
-            <td>€{{ number_format($invoice->total_price_incl_vat_and_reduction, 2, ',', '.') }}</td>
+            <td colspan="4"><strong>Totaal te betalen:</strong></td>
+            <td><span class="euro-sign">€</span>{{ number_format($invoice->total_price_incl_vat_and_reduction, 2, ',', '.') }}</td>
         </tr>
     </table>
 
-    @if($invoice->payment_type_id == 'collection')
-    <div class="conclusion-text">Dit is een automatische incasso met debiteurnummer {{ $invoice->order->contact->number }} en factuurnummer {{ $invoice->number }}. Het volledige bedrag zal
-        @if($invoice->date_collection){{ Carbon\Carbon::parse($invoice->date_collection)->format('d/m/Y') }} @else ??? @endif
-        worden afschreven
-        van bankrekening {{ $invoice->administration->IBAN }}.
-    </div>
+    <div class="conclusion-text">{{ $invoice->order->invoice_text }}</div>
 
-    @else
-    <div class="conclusion-text">Betaling gaarne
-        binnen {{ $invoice->administration->default_payment_term ? $invoice->administration->default_payment_term : 30 }}
-        dagen na factuurdatum op bankrekening {{ $invoice->administration->IBAN }}
-        overmaken @if($invoice->administration->iban_attn)ten name
-        van {{ $invoice->administration->iban_attn }}@endif onder vermelding van het debiteurnummer {{ $invoice->order->contact->number }} en het factuurnummer {{ $invoice->number }}.
-    </div>
+    @if($invoice->order->po_number)
+        <div class="conclusion-text">
+            Opdrachtnummer: {{ $invoice->order->po_number }}
+        </div>
     @endif
 
-    <div class="conclusion-text">{{ $invoice->order->invoice_text }}
-    </div>
+    @if($invoice->payment_type_id == 'collection')
+        <div class="conclusion-text">Het bedrag wordt omstreeks @if($invoice->date_collection){{ Carbon\Carbon::parse($invoice->date_collection)->format('d-m-Y') }} @else
+                (datum nog niet bekend) @endif van uw rekening afgeschreven.<br/>
+            @if($invoice->order->IBAN) Uw bankgegevens IBAN: {{ $invoice->order->IBAN }}<br/>
+            @elseif($invoice->order->contact->iban) Uw bankgegevens IBAN: {{ $invoice->order->contact->iban }}<br/> @endif
+                Incasso Mandaat ID (SEPA): {{ $invoice->order->number }}<br/>
+        </div>
 
+    @else
+        <div class="conclusion-text">Betaling gaarne
+            binnen {{ $invoice->administration->default_payment_term ? $invoice->administration->default_payment_term : 30 }}
+            dagen na factuurdatum op bankrekening {{ $invoice->administration->IBAN }}
+            overmaken @if($invoice->administration->iban_attn)t.n.v.
+            {{ $invoice->administration->iban_attn }}@endif onder vermelding van het
+            klantnummer {{ $invoice->order->contact->number }} en het factuurnummer {{ $invoice->number }}.
+        </div>
+    @endif
 </div>
 </body>

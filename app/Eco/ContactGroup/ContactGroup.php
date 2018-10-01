@@ -52,6 +52,7 @@ class ContactGroup extends Model
 
         $last = static::where('name', 'like', $prefix . '%')
             ->orderBy('created_at', 'desc')
+            ->withTrashed()
             ->first();
 
         // Geen ander record met deze prefix; dan is het nummer 1

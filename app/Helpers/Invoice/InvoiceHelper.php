@@ -150,6 +150,9 @@ class InvoiceHelper
                 Storage::disk('administrations')->getDriver()->getAdapter()
                     ->applyPathPrefix($invoice->document->filename),
                 $invoice->document->name));
+
+            $invoice->emailed_to = $contactInfo['email'];
+            $invoice->save();
         }
 
 
@@ -168,22 +171,32 @@ class InvoiceHelper
     }
 
     public static function sendNotification(Invoice $invoice){
+        $orderController = new OrderController();
+        $contactInfo = $orderController->getContactInfoForOrder($invoice->order->contact);
+
+        if($contactInfo['email'] === 'Geen e-mail bekend'){
+            return false;
+        }
 
         if($invoice->date_reminder_3){
             InvoiceHelper::sendNotificationEmail($invoice->order->emailTemplateExhortation, $invoice);
             $invoice->date_exhortation = Carbon::today();
+            $invoice->email_exhortation = $contactInfo['email'];
         }
         elseif($invoice->date_reminder_2){
             InvoiceHelper::sendNotificationEmail($invoice->order->emailTemplateReminder, $invoice);
             $invoice->date_reminder_3 = Carbon::today();
+            $invoice->email_reminder_3 = $contactInfo['email'];
         }
         elseif($invoice->date_reminder_1){
             InvoiceHelper::sendNotificationEmail($invoice->order->emailTemplateReminder, $invoice);
             $invoice->date_reminder_2 = Carbon::today();
+            $invoice->email_reminder_2 = $contactInfo['email'];
         }
         else{
             InvoiceHelper::sendNotificationEmail($invoice->order->emailTemplateReminder, $invoice);
             $invoice->date_reminder_1 = Carbon::today();
+            $invoice->email_reminder_1 = $contactInfo['email'];
         }
 
         $invoice->save();

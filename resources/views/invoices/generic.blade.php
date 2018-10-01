@@ -48,7 +48,7 @@
 
         .conclusion-text {
             text-align: left;
-            margin-top: 36px;
+            margin-top: 24px;
             margin-left: 48px;
         }
 

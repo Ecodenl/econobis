@@ -8,7 +8,10 @@ import moment from "moment/moment";
 
 const InvoiceDetailsFormGeneralView = props => {
 
-    const { status, dateRequested, paymentType, paymentTypeId, order, totalPriceInclVatAndReduction, amountOpen, dateSent, datePaymentDue, datePaid, dateReminder1, dateReminder2, dateReminder3, dateExhortation, dateCollection } = props.invoiceDetails;
+    const { status, dateRequested, paymentType, paymentTypeId, order, totalPriceInclVatAndReduction,
+        amountOpen, dateSent, datePaymentDue, datePaid,
+        dateReminder1, dateReminder2, dateReminder3, dateExhortation,
+        emailReminder1, emailReminder2, emailReminder3, emailExhortation, dateCollection, emailedTo } = props.invoiceDetails;
 
     return (
         <div onClick={props.switchToEdit}>
@@ -75,8 +78,8 @@ const InvoiceDetailsFormGeneralView = props => {
                             value={dateSent ? moment(dateSent).format('DD-MM-Y') : ''}
                         />
                         <ViewText
-                            label={"Datum betaald"}
-                            value={datePaid ? moment(datePaid).format('DD-MM-Y') : ''}
+                            label={"Verstuurd naar"}
+                            value={emailedTo ? emailedTo : ''}
                         />
                     </div>
 
@@ -91,6 +94,10 @@ const InvoiceDetailsFormGeneralView = props => {
                             label={"Incasso datum"}
                             value={dateCollection ? moment(dateCollection).format('DD-MM-Y') : ''}
                         />}
+                        <ViewText
+                            label={"Datum betaald"}
+                            value={datePaid ? moment(datePaid).format('DD-MM-Y') : ''}
+                        />
                     </div>
 
 
@@ -100,8 +107,19 @@ const InvoiceDetailsFormGeneralView = props => {
                             value={dateReminder1 ? moment(dateReminder1).format('DD-MM-Y') : ''}
                         />
                         <ViewText
+                            label={"E-mail herinnering 1"}
+                            value={emailReminder1 ? emailReminder1 : ''}
+                        />
+                    </div>
+
+                    <div className="row">
+                        <ViewText
                             label={"Herinnering 2 verstuurd"}
                             value={dateReminder2 ? moment(dateReminder2).format('DD-MM-Y') : ''}
+                        />
+                        <ViewText
+                            label={"E-mail herinnering 2"}
+                            value={emailReminder2 ? emailReminder2 : ''}
                         />
                     </div>
 
@@ -111,8 +129,19 @@ const InvoiceDetailsFormGeneralView = props => {
                             value={dateReminder3 ? moment(dateReminder3).format('DD-MM-Y') : ''}
                         />
                         <ViewText
+                            label={"E-mail herinnering 3"}
+                            value={emailReminder3 ? emailReminder3 : ''}
+                        />
+                    </div>
+
+                    <div className="row">
+                        <ViewText
                             label={"Aanmaning verstuurd"}
                             value={dateExhortation ? moment(dateExhortation).format('DD-MM-Y') : ''}
+                        />
+                        <ViewText
+                            label={"E=mail aanmaning"}
+                            value={emailExhortation ? emailExhortation : ''}
                         />
                     </div>
 

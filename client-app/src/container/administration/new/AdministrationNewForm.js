@@ -29,7 +29,6 @@ class AdministrationNewForm extends Component {
                 city: '',
                 countryId: 'NL',
                 kvkNumber: '',
-                btwNumber: '',
                 IBAN: '',
                 ibanAttn: '',
                 email: '',
@@ -51,7 +50,6 @@ class AdministrationNewForm extends Component {
                 postalCode: false,
                 city: false,
                 kvkNumber: false,
-                btwNumber: false,
                 IBAN: false,
                 bic: false,
                 email: false,
@@ -160,11 +158,6 @@ class AdministrationNewForm extends Component {
                 errors.kvkNumber = true;
                 hasErrors = true;
             }
-        }
-
-        if (validator.isEmpty(administration.btwNumber)) {
-            errors.btwNumber = true;
-            hasErrors = true;
         }
 
         if (!ibantools.isValidIBAN(administration.IBAN)) {
@@ -303,9 +296,7 @@ class AdministrationNewForm extends Component {
                                 label="BTW nummer"
                                 name={"btwNumber"}
                                 value={btwNumber}
-                                required={"required"}
                                 onChangeAction={this.handleInputChange}
-                                error={this.state.errors.btwNumber}
                             />
                         </div>
 

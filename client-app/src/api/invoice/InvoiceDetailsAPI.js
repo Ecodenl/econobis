@@ -122,11 +122,14 @@ export default {
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
+        document.body.style.cursor='wait';
         return axios.post(requestUrl, {'ids': invoiceIds})
             .then(function (response) {
+                document.body.style.cursor='default';
                 return response.data;
             })
             .catch(function (error) {
+                document.body.style.cursor='default';
                 console.log(error);
             });
     },
@@ -136,7 +139,10 @@ export default {
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios.get(requestUrl, {responseType: 'blob'});
+        document.body.style.cursor='wait';
+        const response = axios.get(requestUrl, {responseType: 'blob'});
+        document.body.style.cursor='default';
+        return response;
     },
 
     createSepa: (administrationId) => {

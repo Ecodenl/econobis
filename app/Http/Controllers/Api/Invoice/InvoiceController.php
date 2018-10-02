@@ -215,6 +215,7 @@ class InvoiceController extends ApiController
 
     public function sendAll(Request $request)
     {
+        set_time_limit(0);
         $invoices = Invoice::whereIn('id', $request->input('ids'))->with('order.contact')->get();
 
         $response = [];
@@ -228,6 +229,7 @@ class InvoiceController extends ApiController
 
     public function sendAllPost(Administration $administration)
     {
+        set_time_limit(0);
         $invoices = Invoice::where('administration_id', $administration->id)->where('status_id', 'checked')->with('order.contact')->get();
 
         $orderController = new OrderController;
@@ -259,6 +261,7 @@ class InvoiceController extends ApiController
 
             if ($emailTo === 'Geen e-mail bekend') {
                 $invoice->status_id = 'sent';
+                $invoice->date_sent = Carbon::today();
                 $invoice->save();
                 InvoiceHelper::createInvoiceDocument($invoice);
 
@@ -273,7 +276,7 @@ class InvoiceController extends ApiController
                         . ';charset=binary;base64,' . base64_encode($logo);
                     $src = str_replace(" ", "", $src);
                     $img = '<img src="' . $src
-                        . '" width="200px" height="200px"/>';
+                        . '" width="300px" height="auto"/>';
                 }
 
                 if ($k !== 0) {

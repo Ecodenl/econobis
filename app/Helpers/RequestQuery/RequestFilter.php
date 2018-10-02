@@ -115,7 +115,7 @@ abstract class RequestFilter
                     $runDefault = $this->$customApplyMethod($query, $type, $data);
                 });
             }else{
-                $this->$customApplyMethod($query, $type, $data);
+                $runDefault = $this->$customApplyMethod($query, $type, $data);
             }
 
             if (!$runDefault) return;

@@ -340,4 +340,32 @@ class Contact extends Model
         return GridContactGroup::collection($allGroups->sortByDesc('name')->values());
 
     }
+
+    public function getAddressLinesAttribute(){
+        if(Address::where('contact_id', $this->id)->where('primary', true)->where('type_id', 'invoice')->exists()){
+            $address = Address::where('contact_id', $this->id)->where('primary', true)->where('type_id', 'invoice')->first();
+        }
+        elseif(Address::where('contact_id', $this->id)->where('type_id', 'invoice')->exists()){
+            $address = Address::where('contact_id', $this->id)->where('type_id', 'invoice')->first();
+        }
+        elseif(Address::where('contact_id', $this->id)->where('primary', true)->exists()){
+            $address = Address::where('contact_id', $this->id)->where('primary', true)->first();
+        }
+        elseif(Address::where('contact_id', $this->id)->exists()){
+            $address = Address::where('contact_id', $this->id)->first();
+        }
+        else{
+            $addressLines['street'] = '';
+            $addressLines['city'] = '';
+            $addressLines['country'] = '';
+
+            return $addressLines;
+        }
+
+        $addressLines['street'] = $address->street . ' ' . $address->number . $address->addition;
+        $addressLines['city'] = $address->postal_code . ' ' . $address->city;
+        $addressLines['country'] = $address->country ? $address->country->name : '';
+
+        return $addressLines;
+    }
 }

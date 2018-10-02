@@ -192,4 +192,31 @@ class Invoice extends Model
 
         return $amountOpen;
     }
+
+    public function getVatInfoAttribute(){
+        $vatInfo = false;
+
+        foreach($this->invoiceProducts as $invoiceProduct) {
+
+            if($invoiceProduct->vat_percentage === null){
+                continue;
+
+            }
+            else{
+                $vat = $invoiceProduct->vat_percentage . '%';
+            }
+
+
+            if(!isset($vatInfo[$vat])){
+                $vatInfo[$vat]['total_over'] = $invoiceProduct->price_ex_vat_incl_reduction;
+                $vatInfo[$vat]['total_amount'] = $invoiceProduct->amount_vat;
+            }
+            else{
+                $vatInfo[$vat]['total_over'] += $invoiceProduct->price_ex_vat_incl_reduction;
+                $vatInfo[$vat]['total_amount'] += $invoiceProduct->amount_vat;
+            }
+        }
+
+        return $vatInfo;
+    }
 }

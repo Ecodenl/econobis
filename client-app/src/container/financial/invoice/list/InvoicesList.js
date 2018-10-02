@@ -147,7 +147,7 @@ class InvoicesList extends Component {
         setTimeout(() => {
             const filters = filterHelper(this.props.invoicesFilters);
             const sorts = this.props.invoicesSorts;
-            const pagination = {limit: 20, offset: this.props.invoicesPagination.offset};
+            const pagination = {limit: 50, offset: this.props.invoicesPagination.offset};
             const administrationId = this.props.administrationId;
 
             this.props.fetchInvoices(filters, sorts, pagination, administrationId);
@@ -214,7 +214,7 @@ class InvoicesList extends Component {
 
     handlePageClick(data) {
         let page = data.selected;
-        let offset = Math.ceil(page * 20);
+        let offset = Math.ceil(page * 50);
 
         this.props.setInvoicesPagination({page, offset});
 
@@ -321,6 +321,7 @@ class InvoicesList extends Component {
                             onPageChangeAction={this.handlePageClick}
                             totalRecords={meta.total}
                             initialPage={this.props.invoicesPagination.page}
+                            recordsPerPage={50}
                         />
                     </div>
                 </form>

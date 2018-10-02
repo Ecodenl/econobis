@@ -23,7 +23,7 @@ class UserNewForm extends Component {
                 firstName: '',
                 lastNamePrefixId: '',
                 lastName: '',
-                telephoneNumber: '',
+                phoneNumber: '',
                 mobileNumber: '',
                 occupation: '',
             },
@@ -103,7 +103,7 @@ class UserNewForm extends Component {
     };
 
     render() {
-        const { email, titleId, firstName, lastNamePrefixId, lastName, telephoneNumber, mobileNumber, occupation } = this.state.user;
+        const { email, titleId, firstName, lastNamePrefixId, lastName, phoneNumber, mobileNumber, occupation } = this.state.user;
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -138,8 +138,8 @@ class UserNewForm extends Component {
                     <InputText
                         label={"Telefoonnummer"}
                         size={"col-sm-6"}
-                        name="telephoneNumber"
-                        value={telephoneNumber}
+                        name="phoneNumber"
+                        value={phoneNumber}
                         onChangeAction={this.handleInputChange}
                     />
                 </div>

@@ -8,17 +8,17 @@
         }
         @font-face {
             font-family: 'Calibri';
-            src: url({{ resource_path('fonts/calibri/CALIBRIB.ttf') }}) format("truetype");
+            src: url({{ resource_path('fonts/calibri/Calibrib.ttf') }}) format("truetype");
             font-weight: bold;
         }
         @font-face {
             font-family: 'Calibri';
-            src: url({{ resource_path('fonts/calibri/CALIBRII.ttf') }}) format("truetype");
+            src: url({{ resource_path('fonts/calibri/Calibrii.ttf') }}) format("truetype");
             font-style: italic;
         }
         @font-face {
             font-family: 'Calibri';
-            src: url({{ resource_path('fonts/calibri/CALIBRIZ.ttf') }}) format("truetype");
+            src: url({{ resource_path('fonts/calibri/Calibriz.ttf') }}) format("truetype");
             font-style: italic;
             font-weight: bold;
         }

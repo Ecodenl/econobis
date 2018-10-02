@@ -317,6 +317,7 @@ class OrderController extends ApiController
 
     public function createAll(RequestInput $requestInput)
     {
+        set_time_limit(30);
         $this->authorize('manage', Order::class);
 
         $data = $requestInput

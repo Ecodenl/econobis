@@ -46,6 +46,7 @@ class Filter extends RequestFilter
 
     protected $defaultTypes = [
         '*' => 'ct',
+        'statusId' => 'eq',
     ];
 
     protected function applyStatusIdFilter($query, $type, $data)

@@ -48,6 +48,7 @@ class FullParticipantContact extends Resource
             'primaryAddress' => FullAddress::make($this->whenLoaded('primaryAddress')),
             'emailAddresses' => FullEmailAddress::collection($this->whenLoaded('emailAddresses')),
             'primaryEmailAddress' => FullEmailAddress::make($this->whenLoaded('primaryEmailAddress')),
+            'primaryContactEnergySupplier' => FullContactEnergySupplier::make($this->whenLoaded('primaryContactEnergySupplier')),
         ];
     }
 }

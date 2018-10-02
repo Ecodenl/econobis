@@ -261,6 +261,7 @@ class InvoiceController extends ApiController
 
             if ($emailTo === 'Geen e-mail bekend') {
                 $invoice->status_id = 'sent';
+                $invoice->date_sent = Carbon::today();
                 $invoice->save();
                 InvoiceHelper::createInvoiceDocument($invoice);
 

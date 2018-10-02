@@ -164,7 +164,7 @@ class InvoiceHelper
             ];
         }
         $invoice->status_id = 'sent';
-        $invoice->date_sent = Carbon::today();;
+        $invoice->date_sent = Carbon::today();
         $invoice->save();
 
         return $invoice;

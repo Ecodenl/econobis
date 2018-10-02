@@ -59,7 +59,7 @@
 
         .subject-text {
             margin-left: 48px;
-            margin-bottom: 6px;
+            margin-bottom: 24px;
         }
 
         .logo {
@@ -112,7 +112,7 @@
     </table>
 
     <div class="contact-info-table">
-    <table cellpadding=0 cellspacing=0>
+    <table cellpadding=0 cellspacing=2>
         <tr>
             <td class="contact-name">
                 {{ $contactName }}
@@ -160,7 +160,7 @@
     </table>
     </div>
     <div class="administration-info-table">
-    <table width="250px" cellpadding=0 cellspacing=0>
+    <table width="250px" cellpadding=0 cellspacing=2>
         <tr>
             <td>
                 {{ $invoice->administration->name }}
@@ -196,10 +196,10 @@
 
     <div style="clear: both !important;"></div>
 
-    <table cellpadding=0 cellspacing=0>
+    <table cellpadding=0 cellspacing=2>
         <tr>
             <td width="50%">
-                Factuurdatum: {{ Carbon\Carbon::parse($invoice->created_at)->formatLocalized('%d %B %Y') }}
+                Factuurdatum: {{ Carbon\Carbon::parse($invoice->created_at)->formatLocalized('%e %B %Y') }}
             </td>
             <td width="50%">
                 KvK {{ $invoice->administration->kvk_number }}
@@ -219,7 +219,7 @@
         </tr>
         <tr>
             <td>
-                Klantnummer: {{ $invoice->order->contact->number }}
+                Contactnummer: {{ $invoice->order->contact->number }}
             </td>
             <td>
                 @if($invoice->administration->btw_number)
@@ -235,6 +235,17 @@
             <td>
                 @if($invoice->administration->btw_number)
                     BIC {{ $invoice->administration->bic }}
+                @elseif($invoice->administration->rsin_number)
+                    RSIN {{ $invoice->administration->rsin_number }}
+                @endif
+            </td>
+        </tr>
+        <tr>
+            <td>
+            </td>
+            <td>
+                @if($invoice->administration->btw_number && $invoice->administration->rsin_number)
+                    RSIN {{ $invoice->administration->rsin_number }}
                 @endif
             </td>
         </tr>
@@ -282,7 +293,7 @@
         @if($invoice->vatInfo)
         <tr>
             <td colspan="4"><strong>Totaal excl. BTW</strong></td>
-            <td class="amount-text"><span class="euro-sign">€</span>{{ number_format($invoice->total_price_ex_vat_incl_reduction, 2, ',', '.') }}</td>
+            <td class="amount-text"><strong><span class="euro-sign">€</span>{{ number_format($invoice->total_price_ex_vat_incl_reduction, 2, ',', '.') }}</strong></td>
         </tr>
         <tr>
             <td></td>
@@ -302,12 +313,12 @@
         @endforeach
         <tr>
             <td colspan="4"><strong>BTW Totaal</strong></td>
-            <td class="amount-text"><span class="euro-sign">€</span>{{ number_format($invoice->total_vat, 2, ',', '.') }}</td>
+            <td class="amount-text"><strong><span class="euro-sign">€</span>{{ number_format($invoice->total_vat, 2, ',', '.') }}</strong></td>
         </tr>
         @endif
         <tr>
-            <td colspan="4"><strong>Totaal te betalen:</strong></td>
-            <td class="amount-text"><span class="euro-sign">€</span>{{ number_format($invoice->total_price_incl_vat_and_reduction, 2, ',', '.') }}</td>
+            <td colspan="4"><strong>Totaal te betalen</strong></td>
+            <td class="amount-text"><strong><span class="euro-sign">€</span>{{ number_format($invoice->total_price_incl_vat_and_reduction, 2, ',', '.') }}</strong></td>
         </tr>
     </table>
 
@@ -320,6 +331,7 @@
     @endif
 
     @if($invoice->payment_type_id == 'collection')
+        <br/><br/>
         <div class="conclusion-text">Het bedrag wordt omstreeks @if($invoice->date_collection){{ Carbon\Carbon::parse($invoice->date_collection)->format('d-m-Y') }} @else
                 (datum nog niet bekend) @endif van uw rekening afgeschreven.<br/>
             @if($invoice->order->IBAN) Uw bankgegevens IBAN: {{ $invoice->order->IBAN }}<br/>
@@ -328,12 +340,13 @@
         </div>
 
     @else
-        <div class="conclusion-text">Betaling gaarne
+        <br/><br/>
+        <div class="conclusion-text">Betaling graag
             binnen {{ $invoice->administration->default_payment_term ? $invoice->administration->default_payment_term : 30 }}
             dagen na factuurdatum op bankrekening {{ $invoice->administration->IBAN }}
             overmaken @if($invoice->administration->iban_attn)t.n.v.
-            {{ $invoice->administration->iban_attn }}@endif onder vermelding van het
-            klantnummer {{ $invoice->order->contact->number }} en het factuurnummer {{ $invoice->number }}.
+            {{ $invoice->administration->iban_attn }}@endif onder vermelding van
+            contactnummer {{ $invoice->order->contact->number }} en factuurnummer {{ $invoice->number }}.
         </div>
     @endif
 </div>

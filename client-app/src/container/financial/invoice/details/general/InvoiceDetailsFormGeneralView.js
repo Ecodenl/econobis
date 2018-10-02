@@ -84,24 +84,6 @@ const InvoiceDetailsFormGeneralView = props => {
                     </div>
 
                     <div className="row">
-                        {paymentTypeId === 'transfer' ?
-                        <ViewText
-                            label={"Uiterste betaaldatum"}
-                            value={datePaymentDue ? moment(datePaymentDue.date).format('DD-MM-Y') : ''}
-                        />
-                            :
-                        <ViewText
-                            label={"Incasso datum"}
-                            value={dateCollection ? moment(dateCollection).format('DD-MM-Y') : ''}
-                        />}
-                        <ViewText
-                            label={"Datum betaald"}
-                            value={datePaid ? moment(datePaid).format('DD-MM-Y') : ''}
-                        />
-                    </div>
-
-
-                    <div className="row">
                         <ViewText
                             label={"Herinnering 1 verstuurd"}
                             value={dateReminder1 ? moment(dateReminder1).format('DD-MM-Y') : ''}
@@ -145,6 +127,22 @@ const InvoiceDetailsFormGeneralView = props => {
                         />
                     </div>
 
+                    <div className="row">
+                        {paymentTypeId === 'transfer' ?
+                            <ViewText
+                                label={"Uiterste betaaldatum"}
+                                value={datePaymentDue ? moment(datePaymentDue.date).format('DD-MM-Y') : ''}
+                            />
+                            :
+                            <ViewText
+                                label={"Incasso datum"}
+                                value={dateCollection ? moment(dateCollection).format('DD-MM-Y') : ''}
+                            />}
+                        <ViewText
+                            label={"Datum betaald"}
+                            value={datePaid ? moment(datePaid).format('DD-MM-Y') : ''}
+                        />
+                    </div>
 
                 </PanelBody>
             </Panel>

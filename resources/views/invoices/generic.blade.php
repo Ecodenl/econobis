@@ -48,7 +48,7 @@
 
         .amount-text {
             text-align: right;
-            /*padding-right: 8px;*/
+            padding-right: 8px;
         }
 
         .conclusion-text {

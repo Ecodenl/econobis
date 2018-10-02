@@ -114,7 +114,7 @@ class ParticipantsListApp extends Component {
             const extraFilters = this.state.extraFilters;
             const sorts = this.props.participantsProductionProjectSorts;
 
-            ParticipantsProductionProjectAPI.getCsv(filters, extraFilters, sorts, this.props.productionProjectId).then((payload) => {
+            ParticipantsProductionProjectAPI.getCsv(filters, extraFilters, sorts, true).then((payload) => {
                 fileDownload(payload.data, 'Participanten-' + moment().format("YYYY-MM-DD HH:mm:ss") +  '.csv');
                 this.props.unblockUI();
             }).catch((error) => {

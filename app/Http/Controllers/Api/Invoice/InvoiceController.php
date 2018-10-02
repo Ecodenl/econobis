@@ -215,6 +215,7 @@ class InvoiceController extends ApiController
 
     public function sendAll(Request $request)
     {
+        set_time_limit(0);
         $invoices = Invoice::whereIn('id', $request->input('ids'))->with('order.contact')->get();
 
         $response = [];
@@ -228,6 +229,7 @@ class InvoiceController extends ApiController
 
     public function sendAllPost(Administration $administration)
     {
+        set_time_limit(0);
         $invoices = Invoice::where('administration_id', $administration->id)->where('status_id', 'checked')->with('order.contact')->get();
 
         $orderController = new OrderController;

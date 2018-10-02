@@ -4,21 +4,21 @@
     <style>
         @font-face {
             font-family: 'Calibri';
-            src: url({{ storage_path('fonts\calibri\Calibri.ttf') }}) format("truetype");
+            src: url({{ resource_path('fonts\calibri\Calibri.ttf') }}) format("truetype");
         }
         @font-face {
             font-family: 'Calibri';
-            src: url({{ storage_path('fonts\calibri\CALIBRIB.ttf') }}) format("truetype");
+            src: url({{ resource_path('fonts\calibri\CALIBRIB.ttf') }}) format("truetype");
             font-weight: bold;
         }
         @font-face {
             font-family: 'Calibri';
-            src: url({{ storage_path('fonts\calibri\CALIBRII.ttf') }}) format("truetype");
+            src: url({{ resource_path('fonts\calibri\CALIBRII.ttf') }}) format("truetype");
             font-style: italic;
         }
         @font-face {
             font-family: 'Calibri';
-            src: url({{ storage_path('fonts\calibri\CALIBRIZ.ttf') }}) format("truetype");
+            src: url({{ resource_path('fonts\calibri\CALIBRIZ.ttf') }}) format("truetype");
             font-style: italic;
             font-weight: bold;
         }
@@ -46,6 +46,11 @@
             font-weight: bold;
         }
 
+        .amount-text {
+            text-align: right;
+            /*padding-right: 8px;*/
+        }
+
         .conclusion-text {
             text-align: left;
             margin-top: 24px;
@@ -59,6 +64,7 @@
 
         .logo {
             margin-bottom: 24px;
+            margin-top: -16px;
         }
 
         a:visited {
@@ -251,22 +257,22 @@
         @foreach($invoice->invoiceProducts as $invoiceProduct)
             <tr>
                 <td>{{ $invoiceProduct->description }}</td>
-                <td><span class="euro-sign">€</span>{{ number_format($invoiceProduct->price, 2, ',', '.') }}</td>
+                <td class="amount-text"><span class="euro-sign">€</span>{{ number_format($invoiceProduct->price, 2, ',', '.') }}</td>
                 <td>{{ $invoiceProduct->amount }}</td>
                 <td>@if($invoice->vatInfo){{ $invoiceProduct->vat_percentage ? number_format($invoiceProduct->vat_percentage, 2, ',', '.') . '%' : 'Geen'}}@endif</td>
-                <td><span class="euro-sign">€</span>{{ number_format(($invoiceProduct->price * $invoiceProduct->amount), 2, ',', '.') }}</td>
+                <td class="amount-text"><span class="euro-sign">€</span>{{ number_format(($invoiceProduct->price * $invoiceProduct->amount), 2, ',', '.') }}</td>
             </tr>
             @if($invoiceProduct->amount_reduction)
                 <tr>
                     <td colspan="4">Korting</td>
-                    <td><span class="euro-sign">- €</span>{{ number_format(($invoiceProduct->amount_reduction), 2, ',', '.') }}</td>
+                    <td class="amount-text"><span class="euro-sign">- €</span>{{ number_format(($invoiceProduct->amount_reduction), 2, ',', '.') }}</td>
                 </tr>
             @endif
 
             @if($invoiceProduct->percentage_reduction)
                 <tr>
                     <td colspan="4">Korting {{ $invoiceProduct->percentage_reduction }}%</td>
-                    <td><span class="euro-sign">- €</span>{{ number_format((($invoiceProduct->percentage_reduction/100) * ($invoiceProduct->price * $invoiceProduct->amount)), 2, ',', '.') }}</td>
+                    <td class="amount-text"><span class="euro-sign">- €</span>{{ number_format((($invoiceProduct->percentage_reduction/100) * ($invoiceProduct->price * $invoiceProduct->amount)), 2, ',', '.') }}</td>
                 </tr>
             @endif
             <tr>
@@ -276,7 +282,7 @@
         @if($invoice->vatInfo)
         <tr>
             <td colspan="4"><strong>Totaal excl. BTW</strong></td>
-            <td><span class="euro-sign">€</span>{{ number_format($invoice->total_price_ex_vat_incl_reduction, 2, ',', '.') }}</td>
+            <td class="amount-text"><span class="euro-sign">€</span>{{ number_format($invoice->total_price_ex_vat_incl_reduction, 2, ',', '.') }}</td>
         </tr>
         <tr>
             <td></td>
@@ -289,19 +295,19 @@
             <tr>
                 <td></td>
                 <td>{{ $percentage}}</td>
-                <td><span class="euro-sign">€</span>{{ number_format($vatInfo['total_over'], 2, ',', '.') }}</td>
-                <td><span class="euro-sign">€</span>{{ number_format($vatInfo['total_amount'], 2, ',', '.') }}</td>
+                <td class="amount-text"><span class="euro-sign">€</span>{{ number_format($vatInfo['total_over'], 2, ',', '.') }}</td>
+                <td class="amount-text"><span class="euro-sign">€</span>{{ number_format($vatInfo['total_amount'], 2, ',', '.') }}</td>
                 <td></td>
             </tr>
         @endforeach
         <tr>
             <td colspan="4"><strong>BTW Totaal</strong></td>
-            <td><span class="euro-sign">€</span>{{ number_format($invoice->total_vat, 2, ',', '.') }}</td>
+            <td class="amount-text"><span class="euro-sign">€</span>{{ number_format($invoice->total_vat, 2, ',', '.') }}</td>
         </tr>
         @endif
         <tr>
             <td colspan="4"><strong>Totaal te betalen:</strong></td>
-            <td><span class="euro-sign">€</span>{{ number_format($invoice->total_price_incl_vat_and_reduction, 2, ',', '.') }}</td>
+            <td class="amount-text"><span class="euro-sign">€</span>{{ number_format($invoice->total_price_incl_vat_and_reduction, 2, ',', '.') }}</td>
         </tr>
     </table>
 

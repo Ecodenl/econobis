@@ -46,9 +46,8 @@
             font-weight: bold;
         }
 
-        .amount-text {
+        .align-right {
             text-align: right;
-            padding-right: 8px;
         }
 
         .conclusion-text {
@@ -257,68 +256,68 @@
     <table cellpadding=0 cellspacing=0>
         <tr>
             <th width="20%">Omschrijving</th>
-            <th width="10%">Prijs</th>
-            <th width="10%">Aantal</th>
+            <th class="align-right" width="10%">Prijs</th>
+            <th class="align-right" width="10%">Aantal</th>
 
-            <th width="10%">@if($invoice->vatInfo)BTW @endif</th>
+            <th class="align-right" width="10%">@if($invoice->vatInfo)BTW @endif</th>
 
-            <th width="10%">Bedrag</th>
+            <th class="align-right" width="10%">Bedrag</th>
         </tr>
 
         @foreach($invoice->invoiceProducts as $invoiceProduct)
             <tr>
                 <td>{{ $invoiceProduct->description }}</td>
-                <td class="amount-text"><span class="euro-sign">€</span>{{ number_format($invoiceProduct->price, 2, ',', '.') }}</td>
-                <td>{{ $invoiceProduct->amount }}</td>
-                <td>@if($invoice->vatInfo){{ $invoiceProduct->vat_percentage ? number_format($invoiceProduct->vat_percentage, 2, ',', '.') . '%' : 'Geen'}}@endif</td>
-                <td class="amount-text"><span class="euro-sign">€</span>{{ number_format(($invoiceProduct->price * $invoiceProduct->amount), 2, ',', '.') }}</td>
+                <td class="align-right"><span class="euro-sign">€</span>{{ number_format($invoiceProduct->price, 2, ',', '.') }}</td>
+                <td class="align-right">{{ $invoiceProduct->amount }}</td>
+                <td class="align-right">@if($invoice->vatInfo){{ $invoiceProduct->vat_percentage ? number_format($invoiceProduct->vat_percentage, 2, ',', '.') . '%' : 'Geen'}}@endif</td>
+                <td class="align-right"><span class="euro-sign">€</span>{{ number_format(($invoiceProduct->price * $invoiceProduct->amount), 2, ',', '.') }}</td>
             </tr>
             @if($invoiceProduct->amount_reduction)
                 <tr>
                     <td colspan="4">Korting</td>
-                    <td class="amount-text"><span class="euro-sign">- €</span>{{ number_format(($invoiceProduct->amount_reduction), 2, ',', '.') }}</td>
+                    <td class="align-right" ><span class="euro-sign">- €</span>{{ number_format(($invoiceProduct->amount_reduction), 2, ',', '.') }}</td>
                 </tr>
             @endif
 
             @if($invoiceProduct->percentage_reduction)
                 <tr>
                     <td colspan="4">Korting {{ $invoiceProduct->percentage_reduction }}%</td>
-                    <td class="amount-text"><span class="euro-sign">- €</span>{{ number_format((($invoiceProduct->percentage_reduction/100) * ($invoiceProduct->price * $invoiceProduct->amount)), 2, ',', '.') }}</td>
+                    <td class="align-right"><span class="euro-sign">- €</span>{{ number_format((($invoiceProduct->percentage_reduction/100) * ($invoiceProduct->price * $invoiceProduct->amount)), 2, ',', '.') }}</td>
                 </tr>
             @endif
             <tr>
-                <td  class="invoice-product-line" colspan="5"></td>
+                <td class="invoice-product-line" colspan="5"></td>
             </tr>
         @endforeach
         @if($invoice->vatInfo)
         <tr>
             <td colspan="4"><strong>Totaal excl. BTW</strong></td>
-            <td class="amount-text"><strong><span class="euro-sign">€</span>{{ number_format($invoice->total_price_ex_vat_incl_reduction, 2, ',', '.') }}</strong></td>
+            <td class="align-right"><strong><span class="euro-sign">€</span>{{ number_format($invoice->total_price_ex_vat_incl_reduction, 2, ',', '.') }}</strong></td>
         </tr>
         <tr>
             <td></td>
-            <td>BTW</td>
-            <td>Over</td>
-            <td>Bedrag</td>
+            <td class="align-right">BTW</td>
+            <td class="align-right">Over</td>
+            <td class="align-right">Bedrag</td>
             <td></td>
         </tr>
         @foreach($invoice->vatInfo as $percentage => $vatInfo)
             <tr>
                 <td></td>
-                <td>{{ $percentage}}</td>
-                <td class="amount-text"><span class="euro-sign">€</span>{{ number_format($vatInfo['total_over'], 2, ',', '.') }}</td>
-                <td class="amount-text"><span class="euro-sign">€</span>{{ number_format($vatInfo['total_amount'], 2, ',', '.') }}</td>
+                <td class="align-right">{{ $percentage}}</td>
+                <td class="align-right"><span class="euro-sign">€</span>{{ number_format($vatInfo['total_over'], 2, ',', '.') }}</td>
+                <td class="align-right"><span class="euro-sign">€</span>{{ number_format($vatInfo['total_amount'], 2, ',', '.') }}</td>
                 <td></td>
             </tr>
         @endforeach
         <tr>
             <td colspan="4"><strong>BTW Totaal</strong></td>
-            <td class="amount-text"><strong><span class="euro-sign">€</span>{{ number_format($invoice->total_vat, 2, ',', '.') }}</strong></td>
+            <td class="align-right"><strong><span class="euro-sign">€</span>{{ number_format($invoice->total_vat, 2, ',', '.') }}</strong></td>
         </tr>
         @endif
         <tr>
             <td colspan="4"><strong>Totaal te betalen</strong></td>
-            <td class="amount-text"><strong><span class="euro-sign">€</span>{{ number_format($invoice->total_price_incl_vat_and_reduction, 2, ',', '.') }}</strong></td>
+            <td class="align-right"><strong><span class="euro-sign">€</span>{{ number_format($invoice->total_price_incl_vat_and_reduction, 2, ',', '.') }}</strong></td>
         </tr>
     </table>
 

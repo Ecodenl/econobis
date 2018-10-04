@@ -37,7 +37,7 @@ class UserController extends Controller
             ->string('lastNamePrefixId')->validate('exists:last_name_prefixes,id')->default(null)->alias('last_name_prefix_id')->next()
             ->string('lastName')->whenMissing('')->alias('last_name')->next()
             ->string('phoneNumber')->whenMissing('')->alias('phone_number')->next()
-            ->string('mobile')->whenMissing('')->next()
+            ->string('mobileNumber')->whenMissing('')->alias('mobile')->next()
             ->boolean('active')->whenMissing(true)->next()
             ->string('occupation')->next()
             ->get();

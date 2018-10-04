@@ -36,7 +36,7 @@ const UserDetailsFormGeneralView = props => {
                     label={"Tussenvoegsel"}
                     value={lastNamePrefix && lastNamePrefix.name}
                 />
-                <div className="row">
+                <div>
                     <ViewText
                         label="Mobiel nummer"
                         value={mobile}
@@ -49,7 +49,7 @@ const UserDetailsFormGeneralView = props => {
                     label={"Achternaam"}
                     value={lastName}
                 />
-                <div className="row">
+                <div>
                     <ViewText
                         label="Functie"
                         value={occupation}

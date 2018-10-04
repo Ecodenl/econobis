@@ -118,12 +118,18 @@ class EmailController
             unset($to[$index]);
         }
         array_unshift($to, $email->from);
+        $to = array_values($to);
+
         $cc = $email->cc;
 
+
         $index = array_search($email->mailbox->email, $email->cc);
+
         if($index !== false) {
             unset($cc[array_search($email->mailbox->email, $email->cc)]);
         }
+
+        $cc = array_values($cc);
 
         $email->to = $to;
         $email->from = $email->mailbox->email;

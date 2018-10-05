@@ -67,7 +67,7 @@ class InvoiceNewTransfer extends Component {
             >
                 <div className="row">
                     <InputText
-                        label="Order"
+                        label="Ordernummer"
                         value={this.props.orderNumber}
                         name={'orderNumber'}
                         readOnly={true}

@@ -28,7 +28,7 @@ const UploadModal = ({title, errors, multiple, maxSize, toggleModal, onDropAccep
                 errors.uploadFailed && <p className="has-error-message">Uploaden mislukt. Probeer nogmaals het bestand te uploaden.</p>
             }
             {
-                errors.uploadMaxSize && <p className="has-error-message">Uploaden mislukt. Het bestand mag maximaal 2MB groot zijn.</p>
+                errors.uploadMaxSize && <p className="has-error-message">Uploaden mislukt. Het bestand mag maximaal {maxSize/600000} groot zijn.</p>
             }
         </Modal>
     );
@@ -36,7 +36,7 @@ const UploadModal = ({title, errors, multiple, maxSize, toggleModal, onDropAccep
 
 UploadModal.defaultProps = {
     errors: {},
-    maxSize: 2000000,
+    maxSize: 6000000,
     multiple: true,
     title: 'Upload bestand'
 };

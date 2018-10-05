@@ -34,7 +34,7 @@ class ContactImportUploadCSV extends Component {
                 title="Upload bestand"
             >
                 <div className="upload-file-content">
-                    <Dropzone multiple={false} className="dropzone" onDropAccepted={this.onDropAccepted.bind(this)} onDropRejected={this.onDropRejected.bind(this)} maxSize={2000000}>
+                    <Dropzone multiple={false} className="dropzone" onDropAccepted={this.onDropAccepted.bind(this)} onDropRejected={this.onDropRejected.bind(this)} maxSize={6000000}>
                         <p>Klik hier voor het uploaden van een bestand</p>
                         <p><strong>of</strong> sleep het bestand hierheen</p>
                     </Dropzone>
@@ -43,7 +43,7 @@ class ContactImportUploadCSV extends Component {
                     this.state.error && <p className="has-error-message">Uploaden mislukt. Probeer nogmaals een bestand te uploaden.</p>
                 }
                 {
-                    this.state.errorMaxSize && <p className="has-error-message">Uploaden mislukt. Het bestand mag maximaal 2MB groot zijn.</p>
+                    this.state.errorMaxSize && <p className="has-error-message">Uploaden mislukt. Het bestand mag maximaal 6MB groot zijn.</p>
                 }
             </Modal>
         );

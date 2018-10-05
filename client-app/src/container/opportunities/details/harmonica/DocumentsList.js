@@ -29,7 +29,7 @@ class DocumentsList extends Component {
                     {relatedDocuments.map((item, i) => {
                         return (
                             <tr onClick={() => this.openItem(item.id)} key={i}>
-                                <td className='col-xs-12 clickable'>{moment(item.createdAt.date).format('L')} - {item.filename}</td>
+                                <td className='col-xs-12 clickable'>{moment(item.created_at).format('L')} - {item.filename}</td>
                             </tr>
                         )
                     })

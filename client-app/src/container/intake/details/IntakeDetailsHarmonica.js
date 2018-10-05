@@ -37,7 +37,7 @@ class IntakeDetailsHarmonica extends Component {
     };
 
     newDocument(type) {
-        hashHistory.push(`/document/nieuw/${type}/intake/${this.props.id}`);
+        hashHistory.push(`/document/nieuw/${type}/intake/${this.props.id}/contact/${this.props.intakeDetails.contact.id}`);
     };
 
     newEmail() {

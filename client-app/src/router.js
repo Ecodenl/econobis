@@ -153,7 +153,9 @@ const Routes = () => {
                 <Route path="document/nieuw/:type/contact/:contactId" component={DocumentNewApp} />
                 <Route path="document/nieuw/:type/contact-groep/:contactGroupId" component={DocumentNewApp} />
                 <Route path="document/nieuw/:type/kans/:opportunityId" component={DocumentNewApp} />
+                <Route path="document/nieuw/:type/kans/:opportunityId/intake/:intakeId/contact/:contactId" component={DocumentNewApp} />
                 <Route path="document/nieuw/:type/intake/:intakeId" component={DocumentNewApp} />
+                <Route path="document/nieuw/:type/intake/:intakeId/contact/:contactId" component={DocumentNewApp} />
                 <Route path="document/nieuw/:type/maatregel/:measureId" component={DocumentNewApp} />
                 <Route path="document/nieuw/:type/campagne/:campaignId" component={DocumentNewApp} />
                 <Route path="document/nieuw/:type/taak/:taskId" component={DocumentNewApp} />

@@ -39,9 +39,9 @@ class InvoiceViewApp extends Component {
 
     download() {
         InvoiceDetailsAPI.download(this.props.invoiceDetails.id).then((payload) => {
-            fileDownload(payload.data, this.props.invoiceDetails.document.name);
+            fileDownload(payload.data, payload.headers['x-filename']);
         });
-    }
+    };
 
     render() {
         return (

@@ -316,9 +316,12 @@ class InvoiceController extends ApiController
         if ($invoice->document) {
             $filePath = Storage::disk('administrations')->getDriver()
                 ->getAdapter()->applyPathPrefix($invoice->document->filename);
+            header('Access-Control-Expose-Headers: X-Filename');
+            header('X-Filename:' . $invoice->document->name);
         } else {
             $invoice->number = 'T' . Carbon::now()->year . '-' . $invoice->invoice_number;
-
+            header('X-Filename:' . 'T' . Carbon::now()->year . '-' . $invoice->invoice_number . '.pdf');
+            header('Access-Control-Expose-Headers: X-Filename');
             return InvoiceHelper::createInvoiceDocument($invoice, true);
         }
 

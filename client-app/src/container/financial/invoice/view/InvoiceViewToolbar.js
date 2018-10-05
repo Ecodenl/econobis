@@ -12,9 +12,7 @@ const InvoiceViewToolbar = props => {
             <div className="col-md-4">
                 <div className="btn-group" role="group">
                     <ButtonIcon iconName={"glyphicon-arrow-left"} onClickAction={browserHistory.goBack} />
-                    {document &&
                     <ButtonIcon iconName={"glyphicon-download-alt"} onClickAction={props.download}/>
-                    }
                     <ButtonIcon iconName={"glyphicon-zoom-in"} onClickAction={props.zoomIn}/>
                     <ButtonIcon iconName={"glyphicon-zoom-out"} onClickAction={props.zoomOut} />
                 </div>

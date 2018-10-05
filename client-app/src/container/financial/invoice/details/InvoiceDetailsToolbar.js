@@ -9,6 +9,8 @@ import InvoiceDetailsFormSendNotification from "./general/InvoiceDetailsFormSend
 import InvoiceDetailsFormSetIrrecoverable from "./general/InvoiceDetailsFormSetIrrecoverable";
 import InvoiceDetailsFormSend from "./general/InvoiceDetailsFormSend";
 import InvoiceDetailsFormSendPost from "./general/InvoiceDetailsFormSendPost";
+import fileDownload from "js-file-download";
+import InvoiceDetailsAPI from "../../../../api/invoice/InvoiceDetailsAPI";
 
 class InvoiceToolbar extends Component {
     constructor(props) {
@@ -48,6 +50,12 @@ class InvoiceToolbar extends Component {
                 });
             }
         }
+    };
+
+    download = () => {
+        InvoiceDetailsAPI.download(this.props.invoiceDetails.id).then((payload) => {
+            fileDownload(payload.data, payload.headers['x-filename']);
+        });
     };
 
     showSetChecked = () => {
@@ -103,6 +111,7 @@ class InvoiceToolbar extends Component {
                         {(this.props.invoiceDetails.statusId !== 'paid' && this.props.invoiceDetails.statusId !== 'irrecoverable') &&
                         <ButtonIcon iconName={"glyphicon-remove"} onClickAction={this.showSetIrrecoverable}/>
                         }
+                        <ButtonIcon iconName={"glyphicon-download-alt"} onClickAction={this.download}/>
                     </div>
                 </div>
                 <div className="col-md-4"><h4

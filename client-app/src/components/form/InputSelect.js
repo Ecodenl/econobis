@@ -2,10 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 const InputSelect = props => {
-    const { label, className, size, id, name, value, options, onChangeAction, onBlurAction, required, error, optionName, readOnly, placeholder} = props;
+    const { label, className, size, id, name, value, options, onChangeAction, onBlurAction, required, error, optionName, readOnly, placeholder, divClassName} = props;
 
     return (
-        <div className={`form-group ${size}`}>
+        <div className={`form-group ${size} ${divClassName}`}>
             <label htmlFor={ id } className={`col-sm-6 ${required}`}>{label}</label>
             <div className={"col-sm-6"}>
                 <select className={`form-control input-sm ${className}` + (error && ' has-error')} id={ id } name={name} value={value} onChange={onChangeAction} onBlur={onBlurAction} readOnly={readOnly}>
@@ -20,6 +20,7 @@ const InputSelect = props => {
 };
 
 InputSelect.defaultProps = {
+    divClassName: '',
     className: '',
     size: 'col-sm-6',
     readOnly: false,

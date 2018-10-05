@@ -141,6 +141,7 @@ class ContactNewFormOrganisation extends Component {
                         label={"Status"}
                         size={"col-sm-6"}
                         name={"statusId"}
+                        divClassName={'field-to-be-removed'}
                         options={this.props.contactStatuses}
                         value={statusId}
                         onChangeAction={this.handleInputChange}
@@ -205,6 +206,7 @@ class ContactNewFormOrganisation extends Component {
                         label={"Industrie"}
                         size={"col-sm-6"}
                         name={"industryId"}
+                        divClassName={'field-to-be-removed'}
                         options={this.props.industries}
                         value={industryId}
                         onChangeAction={this.handleInputChange}
@@ -216,6 +218,7 @@ class ContactNewFormOrganisation extends Component {
                         label={"Soort contact"}
                         size={"col-sm-6"}
                         name={"typeId"}
+                        divClassName={'field-to-be-removed'}
                         options={this.props.organisationTypes}
                         value={typeId}
                         onChangeAction={this.handleInputChange}
@@ -234,6 +237,7 @@ class ContactNewFormOrganisation extends Component {
                     <InputText
                         label="Oppervlakte"
                         name="squareMeters"
+                        divClassName={'field-to-be-removed'}
                         value={squareMeters}
                         onChangeAction={this.handleInputChange}
                     />
@@ -241,6 +245,7 @@ class ContactNewFormOrganisation extends Component {
                         label={"Nieuwsbrief"}
                         name={"newsletter"}
                         value={newsletter}
+                        className={'field-to-be-removed'}
                         onChangeAction={this.handleInputChange}
                     />
                 </div>

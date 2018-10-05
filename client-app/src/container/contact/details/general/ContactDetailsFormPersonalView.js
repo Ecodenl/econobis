@@ -37,7 +37,7 @@ const ContactDetailsFormPersonalView = props => {
                 <ViewText
                     label="Status"
                     value={ status && status.name}
-                    className={'col-xs-12'}
+                    className={'col-xs-12 field-to-be-removed'}
                 />
             </div>
 
@@ -69,7 +69,7 @@ const ContactDetailsFormPersonalView = props => {
                 <ViewText
                     label="Soort contact"
                     value={person.type && person.type.name}
-                    className={'col-xs-12'}
+                    className={'col-xs-12 field-to-be-removed'}
                 />
             </div>
 
@@ -93,7 +93,7 @@ const ContactDetailsFormPersonalView = props => {
                 <ViewText
                     label="Nieuwsbrief"
                     value={(newsletter ? 'Ja' : 'Nee')}
-                    className={'col-xs-12'}
+                    className={'col-xs-12 field-to-be-removed'}
                 />
             </div>
 

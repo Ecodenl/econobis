@@ -149,6 +149,7 @@ class ContactDetailsFormPersonalEdit extends Component {
                         label={"Status"}
                         size={"col-xs-12"}
                         name={"statusId"}
+                        divClassName={'field-to-be-removed'}
                         options={this.props.contactStatuses}
                         value={statusId}
                         onChangeAction={this.handleInputChange}
@@ -193,6 +194,7 @@ class ContactDetailsFormPersonalEdit extends Component {
                     <InputSelect
                         label={"Soort contact"}
                         size={'col-xs-12'}
+                        divClassName={'field-to-be-removed'}
                         name={"typeId"}
                         options={this.props.personTypes}
                         value={typeId}
@@ -226,6 +228,7 @@ class ContactDetailsFormPersonalEdit extends Component {
                     <InputToggle
                         label={"Nieuwsbrief"}
                         divSize={'col-xs-12'}
+                        className={'field-to-be-removed'}
                         name={"newsletter"}
                         value={newsletter}
                         onChangeAction={this.handleInputChange}

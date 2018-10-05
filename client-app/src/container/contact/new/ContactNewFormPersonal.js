@@ -361,6 +361,7 @@ class ContactNewFormPersonal extends Component {
                         label={"Status"}
                         size={"col-sm-6"}
                         name={"statusId"}
+                        divClassName={'field-to-be-removed'}
                         options={this.props.contactStatuses}
                         value={statusId}
                         onChangeAction={this.handleInputChange}
@@ -413,6 +414,7 @@ class ContactNewFormPersonal extends Component {
                         label={"Soort contact"}
                         size={"col-sm-6"}
                         name={"typeId"}
+                        divClassName={'field-to-be-removed'}
                         options={this.props.personTypes}
                         value={typeId}
                         onChangeAction={this.handleInputChange}
@@ -454,6 +456,7 @@ class ContactNewFormPersonal extends Component {
                         label={"Nieuwsbrief"}
                         name={"newsletter"}
                         value={newsletter}
+                        className={'field-to-be-removed'}
                         onChangeAction={this.handleInputChange}
                     />
                     <InputToggle

@@ -35,7 +35,7 @@ const ContactDetailsFormOrganisationView = props => {
 
             <div className="row">
                 <ViewText
-                    className={'col-xs-12'}
+                    className={'col-xs-12 field-to-be-removed'}
                     label="Status"
                     value={ status && status.name }
                 />
@@ -83,7 +83,7 @@ const ContactDetailsFormOrganisationView = props => {
 
             <div className="row">
                 <ViewText
-                    className={'col-xs-12'}
+                    className={'col-xs-12 field-to-be-removed'}
                     label="Industrie"
                     value={ organisation.industry && organisation.industry.name }
                 />
@@ -91,7 +91,7 @@ const ContactDetailsFormOrganisationView = props => {
 
             <div className="row">
                 <ViewText
-                    className={'col-xs-12'}
+                    className={'col-xs-12 field-to-be-removed'}
                     label="Soort contact"
                     value={ organisation.type && organisation.type.name }
                 />
@@ -99,7 +99,7 @@ const ContactDetailsFormOrganisationView = props => {
 
             <div className="row">
                 <ViewText
-                    className={'col-xs-12'}
+                    className={'col-xs-12 field-to-be-removed'}
                     label="Oppervlakte dak"
                     value={ organisation.squareMeters }
                 />
@@ -107,7 +107,7 @@ const ContactDetailsFormOrganisationView = props => {
 
             <div className="row">
                 <ViewText
-                    className={'col-xs-12'}
+                    className={'col-xs-12 field-to-be-removed'}
                     label="Nieuwsbrief"
                     value={ (newsletter ? 'Ja' : 'Nee') }
                 />

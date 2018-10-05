@@ -3,10 +3,10 @@ import PropTypes from 'prop-types';
 import Toggle from 'react-toggle'
 
 const InputToggle = props => {
-    const { label, size, id, name, value, onChangeAction, required, divSize } = props;
+    const { label, size, id, name, value, onChangeAction, required, divSize, className } = props;
 
     return (
-        <div className={`form-group ${divSize}`}>
+        <div className={`form-group ${divSize} ${className}`}>
             <div><label htmlFor={ id } className={`col-sm-6 ${required}`}>{ label }</label></div>
             <div className={`${size}`}>
                 <Toggle

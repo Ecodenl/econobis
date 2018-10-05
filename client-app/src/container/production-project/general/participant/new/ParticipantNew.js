@@ -132,6 +132,7 @@ const ParticipantNew = props => {
                     onChangeAction={props.handleInputChangeDate}
                 />
                 <InputText
+                    divClassName={'field-to-be-removed'}
                     label={"IBAN betaald"}
                     name={"ibanPayed"}
                     value={ibanPayed}
@@ -148,6 +149,7 @@ const ParticipantNew = props => {
                     onChangeAction={props.handleInputChange}
                 />
                 <InputText
+                    divClassName={'field-to-be-removed'}
                     label={"IBAN t.n.v."}
                     name={"ibanAttn"}
                     value={ibanAttn}
@@ -175,6 +177,7 @@ const ParticipantNew = props => {
 
             <div className="row">
                 <InputSelect
+                    divClassName={'field-to-be-removed'}
                     label={"Wettelijke vertegenwoordiger"}
                     name={"legalRepContactId"}
                     options={props.contacts}

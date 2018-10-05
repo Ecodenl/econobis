@@ -270,6 +270,7 @@ class ParticipantFormEdit extends Component {
                         onChangeAction={this.handleInputChangeDate}
                     />
                     <InputText
+                        divClassName={'field-to-be-removed'}
                         label={"IBAN betaald"}
                         name={"ibanPayed"}
                         value={ibanPayed}
@@ -286,6 +287,7 @@ class ParticipantFormEdit extends Component {
                         onChangeAction={this.handleInputChange}
                     />
                     <InputText
+                        divClassName={'field-to-be-removed'}
                         label={"IBAN t.n.v."}
                         name={"ibanAttn"}
                         value={ibanAttn}
@@ -314,6 +316,7 @@ class ParticipantFormEdit extends Component {
                 <div className="row">
                     <InputSelect
                         label={"Wettelijke vertegenwoordiger"}
+                        divClassName={'field-to-be-removed'}
                         name={"legalRepContactId"}
                         options={this.state.contacts}
                         optionName={'fullName'}

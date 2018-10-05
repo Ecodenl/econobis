@@ -129,6 +129,7 @@ class ContactDetailsFormOrganisationEdit extends Component {
                         label={"Status"}
                         size={"col-xs-12"}
                         name={"statusId"}
+                        divClassName={'field-to-be-removed'}
                         options={this.props.contactStatuses}
                         value={statusId}
                         onChangeAction={this.handleInputChange}
@@ -191,6 +192,7 @@ class ContactDetailsFormOrganisationEdit extends Component {
                         label={"Industrie"}
                         size={"col-xs-12"}
                         name={"industryId"}
+                        divClassName={'field-to-be-removed'}
                         options={this.props.industries}
                         value={industryId}
                         onChangeAction={this.handleInputChange}
@@ -202,6 +204,7 @@ class ContactDetailsFormOrganisationEdit extends Component {
                         label={"Soort contact"}
                         size={"col-xs-12"}
                         name={"typeId"}
+                        divClassName={'field-to-be-removed'}
                         options={this.props.organisationTypes}
                         value={typeId}
                         onChangeAction={this.handleInputChange}
@@ -214,12 +217,14 @@ class ContactDetailsFormOrganisationEdit extends Component {
                         divSize={'col-xs-12'}
                         name="squareMeters"
                         value={squareMeters}
+                        divClassName={'field-to-be-removed'}
                         onChangeAction={this.handleInputChange}
                     />
                 </div>
 
                 <div className="row">
                     <InputToggle
+                        className={'field-to-be-removed'}
                         label={"Nieuwsbrief"}
                         divSize={'col-xs-12'}
                         name={"newsletter"}

@@ -89,6 +89,7 @@ const ParticipantFormView = props => {
                 />
                 <ViewText
                     label={"IBAN betaald"}
+                    className={'col-xs-6 field-to-be-removed'}
                     value={ibanPayed ? ibanPayed : ''}
                 />
             </div>
@@ -100,6 +101,7 @@ const ParticipantFormView = props => {
                 />
                 <ViewText
                     label={"IBAN t.n.v."}
+                    className={'col-xs-6 field-to-be-removed'}
                     value={ibanAttn ? ibanAttn : ''}
                 />
             </div>
@@ -118,6 +120,7 @@ const ParticipantFormView = props => {
             <div className="row" onClick={props.switchToEdit}>
                 <ViewText
                     label={"Wettelijke vertegenwoordiger"}
+                    className={'col-xs-6 field-to-be-removed'}
                     value={legalRepContact ? legalRepContact.fullName : ''}
                 />
                 <ViewText

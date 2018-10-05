@@ -20,6 +20,10 @@ import DataTableFilterDate from "../../../components/dataTable/DataTableFilterDa
 const QuotationRequestsListFilter = props => {
     const onStatusChange = (e) => {
         props.setFilterQuotationRequestStatus(e.target.value);
+        
+        setTimeout(() => {
+            props.onSubmitFilter();
+        }, 100);
     };
 
     const onAddressChange = (e) => {

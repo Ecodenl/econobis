@@ -139,6 +139,7 @@ class SystemData extends Resource
             'productionProjectRevenueTypes' => GenericResource::collection(ProductionProjectRevenueType::all()),
             'productionProjectRevenueCategories' => GenericResource::collection(ProductionProjectRevenueCategory::all()),
             'versionNumber' => 'Versie: ' . config('app.version_major') . '.' . config('app.version_minor') . '.' . config('app.version_fix'),
+            'appName' => config('app.name'),
             'productDurations' => FullEnumWithIdAndName::collection(ProductDuration::collection()),
             'productInvoiceFrequencies' => FullEnumWithIdAndName::collection(ProductInvoiceFrequency::collection()),
             'productPaymentTypes' => FullEnumWithIdAndName::collection(ProductPaymentType::collection()),

@@ -12,8 +12,6 @@ import Sidebar from '../../components/navigationSidebar/Sidebar';
 import LoadingPage from './LoadingPage';
 import ErrorPage from './ErrorPage';
 import Content from './Content';
-import AuthAPI from "../../api/general/AuthAPI";
-import {hashHistory} from "react-router";
 
 
 class Main extends Component {
@@ -134,6 +132,7 @@ function mapStateToProps(state) {
         meDetailsLoaded: state.meDetails.isLoaded,
         meDetailsHasError: state.meDetails.hasError,
         blockUI: state.blockUI.blocked,
+        appName: state.systemData.appName,
     };
 }
 

@@ -83,8 +83,9 @@ class OrderNewForm extends Component {
                 contactEmail: payload.data.email,
                 order: {
                     ...this.state.order,
-                    IBAN: payload.data.iban,
-                    ibanAttn: payload.data.ibanAttn ? payload.data.ibanAttn : ''
+                    // Uitgezet 05-10-2018, is niet gewenst?
+                    // IBAN: payload.data.iban,
+                    // ibanAttn: payload.data.ibanAttn ? payload.data.ibanAttn : ''
                 },
             });
         });
@@ -153,8 +154,9 @@ class OrderNewForm extends Component {
                 contactEmail: payload.data.email,
                 order: {
                     ...this.state.order,
-                    IBAN: payload.data.iban ? payload.data.iban : '',
-                    iban_attn: payload.data.ibanAttn ? payload.data.ibanAttn : ''
+                    // Uitgezet 05-10-2018, is niet gewenst?
+                    //IBAN: payload.data.iban ? payload.data.iban : '',
+                    //ibanAttn: payload.data.ibanAttn ? payload.data.ibanAttn : ''
                 },
             });
         });

@@ -240,6 +240,8 @@ class EmailController
             foreach ($contactGroup->all_contacts as $contact) {
                 if ($contact->primaryEmailAddress) {
                     $email->groupEmailAddresses()->attach($contact->primaryEmailAddress->id);
+
+                    $email->contacts()->attach($contact->id);
                 }
             }
         }

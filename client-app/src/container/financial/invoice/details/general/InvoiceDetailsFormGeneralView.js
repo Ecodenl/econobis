@@ -31,7 +31,7 @@ const InvoiceDetailsFormGeneralView = props => {
 
                     <div className="row">
                         <ViewText
-                            label={"Aanvraagdatum"}
+                            label={"Geplande factuur datum"}
                             value={dateRequested ? moment(dateRequested).format('DD-MM-Y') : ''}
                         />
                         <ViewText
@@ -122,7 +122,7 @@ const InvoiceDetailsFormGeneralView = props => {
                             value={dateExhortation ? moment(dateExhortation).format('DD-MM-Y') : ''}
                         />
                         <ViewText
-                            label={"E=mail aanmaning"}
+                            label={"E-mail aanmaning"}
                             value={emailExhortation ? emailExhortation : ''}
                         />
                     </div>

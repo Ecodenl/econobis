@@ -803,7 +803,7 @@ class ExternalWebformController extends Controller
 
             $dateRequested = Carbon::make($data['date_requested']);
             if (!$dateRequested) {
-                $this->log('Geen bekende aanvraagdatum meegegeven voor product, default naar datum van vandaag.');
+                $this->log('Geen bekende aanvraag datum meegegeven voor product, default naar datum van vandaag.');
                 $dateRequested = new Carbon();
             }
 

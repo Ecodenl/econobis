@@ -63,7 +63,7 @@ class OrderCreateConfirmTransfer extends Component {
             >
                 <div className="row">
                     <InputDate
-                        label="Aanvraag datum"
+                        label="Geplande factuur datum"
                         name="dateRequested"
                         value={dateRequested}
                         onChangeAction={this.handleInputChangeDate}

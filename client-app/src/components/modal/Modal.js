@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import Draggable from 'react-draggable';
+import ReactDOM from 'react-dom'
 
 class Modal extends Component {
     constructor(props) {

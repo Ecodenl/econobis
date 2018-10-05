@@ -28,6 +28,11 @@
   overflow-y: scroll;
 }
 
+.close-modal {
+  cursor: pointer;
+  float: right;
+}
+
 .email-attachment-modal {
   top: 10%;
   overflow-y: scroll;

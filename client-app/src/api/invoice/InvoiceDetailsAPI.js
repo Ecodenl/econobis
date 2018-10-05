@@ -117,6 +117,14 @@ export default {
             });
     },
 
+    sendPost: (invoiceId) => {
+        const requestUrl = `${URL_INVOICE}/${invoiceId}/send-post`;
+        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
+        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
+
+        return axios.get(requestUrl, {responseType: 'blob'});
+    },
+
     sendAll: (invoiceIds) => {
         const requestUrl = `${URL_INVOICE}/send-all`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');

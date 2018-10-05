@@ -8,6 +8,7 @@ import InvoiceDetailsFormSetPaid from "./general/InvoiceDetailsFormSetPaid";
 import InvoiceDetailsFormSendNotification from "./general/InvoiceDetailsFormSendNotification";
 import InvoiceDetailsFormSetIrrecoverable from "./general/InvoiceDetailsFormSetIrrecoverable";
 import InvoiceDetailsFormSend from "./general/InvoiceDetailsFormSend";
+import InvoiceDetailsFormSendPost from "./general/InvoiceDetailsFormSendPost";
 
 class InvoiceToolbar extends Component {
     constructor(props) {
@@ -16,6 +17,7 @@ class InvoiceToolbar extends Component {
         this.state = {
             showSetChecked: false,
             showSend: false,
+            showSendPost: false,
             showSetPaid: false,
             showSendNotification: false,
             reminderText: '',
@@ -56,6 +58,10 @@ class InvoiceToolbar extends Component {
         this.setState({showSend: !this.state.showSend});
     };
 
+    showSendPost = () => {
+        this.setState({showSendPost: !this.state.showSendPost});
+    };
+
     showSetPaid = () => {
         this.setState({showSetPaid: !this.state.showSetPaid});
     };
@@ -85,6 +91,9 @@ class InvoiceToolbar extends Component {
                         {this.props.invoiceDetails.statusId === 'checked' && (this.props.invoiceDetails.emailToAddress !== 'Geen e-mail bekend') &&
                         <ButtonIcon iconName={"glyphicon-envelope"} onClickAction={this.showSend}/>
                         }
+                        {this.props.invoiceDetails.statusId === 'checked' && (this.props.invoiceDetails.emailToAddress === 'Geen e-mail bekend') &&
+                        <ButtonIcon iconName={"glyphicon-envelope"} onClickAction={this.showSendPost}/>
+                        }
                         {(this.props.invoiceDetails.statusId === 'sent' || this.props.invoiceDetails.statusId === 'exported') &&
                         <ButtonIcon iconName={"glyphicon-euro"} onClickAction={this.showSetPaid}/>
                         }
@@ -112,6 +121,14 @@ class InvoiceToolbar extends Component {
                     this.state.showSend &&
                     <InvoiceDetailsFormSend
                         closeModal={this.showSend}
+                        invoiceId={this.props.invoiceDetails.id}
+                    />
+                }
+
+                {
+                    this.state.showSendPost &&
+                    <InvoiceDetailsFormSendPost
+                        closeModal={this.showSendPost}
                         invoiceId={this.props.invoiceDetails.id}
                     />
                 }

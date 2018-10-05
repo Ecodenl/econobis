@@ -4,8 +4,10 @@ import Modal from '../../../../../components/modal/Modal';
 import InvoiceDetailsAPI from "../../../../../api/invoice/InvoiceDetailsAPI";
 import {connect} from "react-redux";
 import {fetchInvoiceDetails} from "../../../../../actions/invoice/InvoiceDetailsActions";
+import fileDownload from "js-file-download";
+import moment from "moment/moment";
 
-class InvoiceDetailsFormSend extends Component {
+class InvoiceDetailsFormSendPost extends Component {
 
     constructor(props) {
         super(props);
@@ -13,7 +15,8 @@ class InvoiceDetailsFormSend extends Component {
 
     confirmAction = event => {
         event.preventDefault();
-        InvoiceDetailsAPI.send(this.props.invoiceId).then((payload) => {
+        InvoiceDetailsAPI.sendPost(this.props.invoiceId).then((payload) => {
+            fileDownload(payload.data, payload.headers['x-filename']);
             this.props.fetchInvoiceDetails(this.props.invoiceId);
             this.props.closeModal();
         });
@@ -29,9 +32,8 @@ class InvoiceDetailsFormSend extends Component {
             >
                 <div className="row">
                     <div className={'col-sm-12 margin-10-bottom'}>
-                    <span>
-                        Wilt u deze factuur verzenden?
-                    </span>
+                        <p>Wilt u deze factuur verzenden?</p>
+                        <p className={'text-danger'}><strong>Let op!</strong> Er is geen e-mailadres bekend. Deze factuur zal per post moeten worden verstuurd.</p>
                     </div>
                 </div>
             </Modal>
@@ -45,4 +47,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(null, mapDispatchToProps)(InvoiceDetailsFormSend);
+export default connect(null, mapDispatchToProps)(InvoiceDetailsFormSendPost);

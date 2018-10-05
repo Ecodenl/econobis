@@ -213,6 +213,21 @@ class InvoiceController extends ApiController
         }
     }
 
+    public function sendPost(Invoice $invoice)
+    {
+        InvoiceHelper::createInvoiceDocument($invoice);
+        $invoice->status_id = 'sent';
+        $invoice->date_sent = Carbon::today();
+        $invoice->save();
+
+        $filePath = Storage::disk('administrations')->getDriver()
+            ->getAdapter()->applyPathPrefix($invoice->document->filename);
+
+        header('X-Filename:' . $invoice->document->name);
+        header('Access-Control-Expose-Headers: X-Filename');
+        return response()->download($filePath, $invoice->document->name);
+    }
+
     public function sendAll(Request $request)
     {
         set_time_limit(0);

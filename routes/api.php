@@ -377,6 +377,7 @@ Route::namespace('Api')
         Route::post('invoice/{invoice}/checked', 'Invoice\InvoiceController@setChecked');
         Route::post('invoice/{administration}/checked-all', 'Invoice\InvoiceController@setCheckedAll');
         Route::post('invoice/{invoice}/send', 'Invoice\InvoiceController@send');
+        Route::get('invoice/{invoice}/send-post', 'Invoice\InvoiceController@sendPost');
         Route::post('invoice/{invoice}/send-notification', 'Invoice\InvoiceController@sendNotification');
         Route::post('invoice/{invoice}/payment/new', 'Invoice\InvoiceController@newPayment');
         Route::post('invoice/{invoicePayment}/payment/update', 'Invoice\InvoiceController@updatePayment');

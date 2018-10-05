@@ -201,7 +201,7 @@ class ContactCSVHelper
                     $contact->title = $contact->person->title;
                     $contact->initials = $contact->person->initials;
                     $contact->first_name = $contact->person->first_name;
-                    $contact->last_name_prefix;
+                    $contact->last_name_prefix = $contact->person->last_name_prefix;
                     $contact->last_name = $contact->person->last_name;
                     $contact->date_of_birth = $this->formatDate($contact->person->date_of_birth);
                     $contact->date_of_birth_partner = $this->formatDate($contact->person->date_of_birth_partner);

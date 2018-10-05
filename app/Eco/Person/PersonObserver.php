@@ -37,7 +37,7 @@ class PersonObserver
             }
         }
 
-        if($person->isDirty(['first_name', 'last_name', 'last_name_prefix_id'])){
+        if($person->isDirty(['first_name', 'last_name', 'last_name_prefix'])){
             $contact = $person->contact;
             $contact->full_name = $this->contactFullNameFormat($person);
             $contact->save();

@@ -194,9 +194,11 @@ class EmailController
             $emailAddress->type_id = 'general';
 
             foreach ($contactIds as $contactId) {
-                $contactEmailAddress = $emailAddress->replicate();
-                $contactEmailAddress->contact_id = $contactId;
-                $contactEmailAddress->save();
+                if(!EmailAddress::where('contact_id', $contactId)->where('email', $email->from)->exists()) {
+                    $contactEmailAddress = $emailAddress->replicate();
+                    $contactEmailAddress->contact_id = $contactId;
+                    $contactEmailAddress->save();
+                }
             }
         }
 

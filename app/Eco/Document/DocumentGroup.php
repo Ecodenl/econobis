@@ -29,6 +29,7 @@ class DocumentGroup extends EnumWithIdAndName
             new static('order', 'Order'),
             new static('contract', 'Contract'),
             new static('membership', 'Lidmaatschap'),
+            new static('invoice', 'Factuur'),
         ];
     }
 }

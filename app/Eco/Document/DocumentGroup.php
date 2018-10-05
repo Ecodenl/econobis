@@ -27,9 +27,9 @@ class DocumentGroup extends EnumWithIdAndName
             new static('quotation', 'Offerte'),
             new static('revenue', 'Opbrengst'),
             new static('order', 'Order'),
+            new static('invoice', 'Factuur'),
             new static('contract', 'Contract'),
             new static('membership', 'Lidmaatschap'),
-            new static('invoice', 'Factuur'),
         ];
     }
 }

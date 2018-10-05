@@ -19,7 +19,7 @@ const OrderProductsFormEdit = props => {
                     <PanelBody>
                         <div className="row">
                             <InputText
-                                label={"Order nummer"}
+                                label={"Ordernummer"}
                                 name={"order"}
                                 value={props.orderDetails ? props.orderDetails.number : ''}
                                 readOnly={true}
@@ -96,7 +96,7 @@ const OrderProductsFormEdit = props => {
 
                         <div className="row">
                             <InputDate
-                                label="Datum in"
+                                label="Begin datum"
                                 name="dateStart"
                                 value={dateStart}
                                 onChangeAction={props.handleInputChangeDate}
@@ -104,7 +104,7 @@ const OrderProductsFormEdit = props => {
                                 error={props.errors.dateStart}
                             />
                             <InputDate
-                                label="Datum uit"
+                                label="Eind datum"
                                 name="dateEnd"
                                 value={dateEnd}
                                 onChangeAction={props.handleInputChangeDate}

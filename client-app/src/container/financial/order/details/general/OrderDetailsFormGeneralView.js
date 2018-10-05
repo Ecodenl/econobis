@@ -73,13 +73,13 @@ const OrderDetailsFormGeneralView = props => {
                             value={emailTemplateExhortation ? emailTemplateExhortation.name : ''}
                         />
                         <ViewText
-                            label={"PO nummer van de klant"}
+                            label={"Opdracht nummer klant"}
                             value={poNumber}
                         />
                     </div>
                     <div className="row">
                         <ViewText
-                            label={"IBAN"}
+                            label={"Iban"}
                             value={IBAN}
                         />
                         <ViewText
@@ -103,25 +103,25 @@ const OrderDetailsFormGeneralView = props => {
                             value={ dateRequested ? moment(dateRequested).format('DD-MM-Y') : ''}
                         />
                         <ViewText
-                            label={"Volgende incasso datum"}
+                            label={"Volgende factuur datum"}
                             value={ dateNextCollection ? moment(dateNextCollection).format('DD-MM-Y') : ''}
                         />
                     </div>
 
                     <div className="row">
                         <ViewText
-                            label={"Begin datum"}
+                            label={"Datum in"}
                             value={ dateStart ? moment(dateStart).format('DD-MM-Y') : ''}
                         />
                         <ViewText
-                            label={"Totaal bedrag incl. BTW per jaar"}
+                            label={"Totaal bedrag incl. BTW"}
                             value={"€" + totalPriceInclVatPerYear.toLocaleString('nl',{ minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                         />
                     </div>
 
                     <div className="row">
                         <ViewText
-                            label={"Eind datum"}
+                            label={"Datum uit"}
                             value={ dateEnd ? moment(dateEnd).format('DD-MM-Y') : ''}
                         />
                     </div>

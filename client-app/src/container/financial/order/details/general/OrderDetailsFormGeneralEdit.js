@@ -271,7 +271,7 @@ class OrderDetailsFormGeneralEdit extends Component {
                                 multi={false}
                             />
                             <InputText
-                                label="PO nummer van de klant"
+                                label="Opdracht nummer klant"
                                 name={"poNumber"}
                                 value={poNumber}
                                 onChangeAction={this.handleInputChange}
@@ -280,7 +280,7 @@ class OrderDetailsFormGeneralEdit extends Component {
 
                         <div className="row">
                             <InputText
-                                label="IBAN"
+                                label="Iban"
                                 name={"IBAN"}
                                 value={IBAN}
                                 onChangeAction={this.handleInputChange}
@@ -316,7 +316,7 @@ class OrderDetailsFormGeneralEdit extends Component {
                                 onChangeAction={this.handleInputChangeDate}
                             />
                             <InputText
-                                label="Volgende incasso datum"
+                                label="Volgende factuur datum"
                                 value={''}
                                 name={'nextCollectionDate'}
                                 readOnly={true}
@@ -324,7 +324,7 @@ class OrderDetailsFormGeneralEdit extends Component {
                         </div>
                         <div className="row">
                             <InputDate
-                                label="Begin datum"
+                                label="Datum in"
                                 name="dateStart"
                                 value={dateStart}
                                 onChangeAction={this.handleInputChangeDate}
@@ -342,7 +342,7 @@ class OrderDetailsFormGeneralEdit extends Component {
                         </div>
                         <div className="row">
                             <InputDate
-                                label="Eind datum"
+                                label="Datum uit"
                                 name="dateEnd"
                                 value={dateEnd}
                                 onChangeAction={this.handleInputChangeDate}

@@ -261,7 +261,12 @@ class EmailAnswerApp extends Component {
             data.append('subject', email.subject);
             data.append('htmlBody', email.htmlBody);
             email.attachments.map((file, key) => {
-                data.append('attachments[' +  key +  ']', file);
+                if(file.id){
+                    data.append('oldAttachments[' + key + ']', JSON.stringify(file));
+                }
+                else {
+                    data.append('attachments[' + key + ']', file);
+                }
             });
 
             this.setButtonLoading();

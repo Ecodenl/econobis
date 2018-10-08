@@ -234,6 +234,18 @@ class EmailController
             $this->storeEmailAttachments($attachments, $mailbox->id,
                 $email->id);
 
+            //old attachments(forward,reply etc.)
+            $oldAttachments = $request->input('oldAttachments');
+
+            //Gaat dit goed bij deleten attachment van oude mail?
+            foreach ($oldAttachments as $oldAttachment){
+                $oldAttachment = json_decode($oldAttachment);
+                $oldAttachment = EmailAttachment::find($oldAttachment->id);
+                $replicatedAttachment = $oldAttachment->replicate();
+                $replicatedAttachment->email_id = $email->id;
+                $replicatedAttachment->save();
+            }
+
         //if we send to group we save in a pivot because they can have alot of members
         if ($sanitizedData['contact_group_id']) {
             $contactGroup = ContactGroup::find($sanitizedData['contact_group_id']);

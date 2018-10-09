@@ -235,7 +235,7 @@ class EmailController
                 $email->id);
 
             //old attachments(forward,reply etc.)
-            $oldAttachments = $request->input('oldAttachments');
+            $oldAttachments = $request->input('oldAttachments') ? $request->input('oldAttachments') : [];
 
             //Gaat dit goed bij deleten attachment van oude mail?
             foreach ($oldAttachments as $oldAttachment){
@@ -423,7 +423,7 @@ class EmailController
             'to' => $emails['to'],
             'cc' => $emails['cc'],
             'bcc' => $emails['bcc'],
-            'subject' => $data['subject'] ?: 'Econobis',
+            'subject' => $data['subject'] ?: '',
             'html_body' => $data['htmlBody'],
             'quotation_request_id' => $data['quotationRequestId'],
             'contact_group_id' => $groupId ? $groupId : null

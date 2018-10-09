@@ -423,7 +423,7 @@ class EmailController
             'to' => $emails['to'],
             'cc' => $emails['cc'],
             'bcc' => $emails['bcc'],
-            'subject' => $data['subject'] ?: '',
+            'subject' => $data['subject'] ?: 'Econobis',
             'html_body' => $data['htmlBody'],
             'quotation_request_id' => $data['quotationRequestId'],
             'contact_group_id' => $groupId ? $groupId : null

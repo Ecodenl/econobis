@@ -39,6 +39,7 @@ class EmailNewApp extends Component {
             errors: {
                 from: false,
                 to: false,
+                subject: false,
             },
         };
 
@@ -269,6 +270,11 @@ class EmailNewApp extends Component {
 
         if(validator.isEmpty('' + email.from)){
             errors.from = true;
+            hasErrors = true;
+        };
+
+        if(validator.isEmpty('' + email.subject)){
+            errors.subject = true;
             hasErrors = true;
         };
 

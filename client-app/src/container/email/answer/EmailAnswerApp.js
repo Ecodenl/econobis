@@ -33,6 +33,7 @@ class EmailAnswerApp extends Component {
             },
             errors: {
                 to: false,
+                subject: false,
             },
             hasLoaded: false,
         };
@@ -238,6 +239,11 @@ class EmailAnswerApp extends Component {
             hasErrors = true;
         };
 
+        if(validator.isEmpty('' + email.subject)){
+            errors.subject = true;
+            hasErrors = true;
+        };
+
         this.setState({ ...this.state, errors: errors });
 
         // If no errors send form
@@ -253,6 +259,8 @@ class EmailAnswerApp extends Component {
             if (email.bcc.length > 0) {
                 email.bcc = email.bcc.split(',');
             }
+
+
             const data = new FormData();
 
             data.append('to', JSON.stringify(email.to));

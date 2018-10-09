@@ -42,7 +42,6 @@ const ConceptFormGeneral = ({email, emailAddresses, errors, hasLoaded, handleSub
                         options={emailAddresses}
                         optionName={"name"}
                         onChangeAction={handleCcIds}
-                        required={"required"}
                         error={errors.to}
                     />
                 </div>
@@ -54,7 +53,6 @@ const ConceptFormGeneral = ({email, emailAddresses, errors, hasLoaded, handleSub
                         options={emailAddresses}
                         optionName={"name"}
                         onChangeAction={handleBccIds}
-                        required={"required"}
                         error={errors.to}
                     />
                 </div>
@@ -62,16 +60,16 @@ const ConceptFormGeneral = ({email, emailAddresses, errors, hasLoaded, handleSub
                     <div className="form-group col-sm-12">
                         <div className="row">
                             <div className="col-sm-3">
-                                <label className="col-sm-12">Onderwerp</label>
+                                <label className="col-sm-12 required">Onderwerp</label>
                             </div>
                             <div className="col-sm-9">
-                                    <input
-                                        type="text"
-                                        className="form-control input-sm"
-                                        name="subject"
-                                        value={subject}
-                                        onChange={ handleInputChange }
-                                    />
+                                <input
+                                    type="text"
+                                    className={`form-control input-sm ${errors.subject ? 'has-error' : ''}`}
+                                    name="subject"
+                                    value={subject}
+                                    onChange={ handleInputChange }
+                                />
                             </div>
                         </div>
                     </div>

@@ -29,6 +29,7 @@ class ConceptApp extends Component {
             },
             errors: {
                 to: false,
+                subject: false,
             },
             hasLoaded: false,
         };
@@ -191,6 +192,11 @@ class ConceptApp extends Component {
 
         if(validator.isEmpty('' + email.from)){
             errors.from = true;
+            hasErrors = true;
+        };
+
+        if(validator.isEmpty('' + email.subject)){
+            errors.subject = true;
             hasErrors = true;
         };
 

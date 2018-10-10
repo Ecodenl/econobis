@@ -66,11 +66,11 @@ class CalculatedModelFieldsTest extends TestCase
     public function assertParticipantProductionProjectFields()
     {
         $participantProductionProject = ParticipantProductionProject::find(1);
-        $this->assertEquals(0, $participantProductionProject->getParticipationsWorthTotal());
+        $this->assertEquals(0, $participantProductionProject->participations_worth_total);
         $this->assertEquals(0, $participantProductionProject->participations_current);
 
         $participantProductionProject = ParticipantProductionProject::find(2);
-        $this->assertEquals(100, $participantProductionProject->getParticipationsWorthTotal());
+        $this->assertEquals(100, $participantProductionProject->participations_worth_total);
         $this->assertEquals(10, $participantProductionProject->participations_current);
     }
 

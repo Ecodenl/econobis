@@ -1,6 +1,7 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import moment from 'moment';
+
 moment.locale('nl');
 
 import ViewText from '../../../../../../components/form/ViewText';
@@ -8,11 +9,15 @@ import ViewText from '../../../../../../components/form/ViewText';
 const RevenueFormView = props => {
     const {
         type, confirmed, dateBegin, dateEnd, dateEntry, dateConfirmed, kwhStart, kwhEnd, kwhStartHigh, kwhEndHigh,
-        kwhStartLow, kwhEndLow, revenue, datePayed, payPercentage, category
+        kwhStartLow, kwhEndLow, revenue, datePayed, payPercentage, category, payoutKwh
     } = props.revenue;
 
     return (
         <div>
+
+            <div className={'panel-heading'}  onClick={props.switchToEdit}>
+                <span className={'h5 text-bold'}>Algemeen</span>
+            </div>
             <div className="row" onClick={props.switchToEdit}>
                 <ViewText
                     label={"Soort"}
@@ -48,13 +53,17 @@ const RevenueFormView = props => {
 
             <div className="row" onClick={props.switchToEdit}>
                 <ViewText
-                    label={"Beginstand kWh"}
-                    value={kwhStart && kwhStart}
+                    label={"Type opbrengst"}
+                    value={type ? type.name : ''}
                 />
                 <ViewText
-                    label={"Eindstand kWh"}
-                    value={kwhEnd && kwhEnd}
+                    label={"Datum uitgekeerd"}
+                    value={datePayed ? moment(datePayed).format('L') : ''}
                 />
+            </div>
+
+            <div className={'panel-part panel-heading'}  onClick={props.switchToEdit}>
+                <span className={'h5 text-bold'}>Opbrengst kWh</span>
             </div>
 
             <div className="row" onClick={props.switchToEdit}>
@@ -81,26 +90,35 @@ const RevenueFormView = props => {
 
             <div className="row" onClick={props.switchToEdit}>
                 <ViewText
-                    label={"Euro opbrengst"}
-                    value={revenue && '€ ' + revenue}
+                    label={"Beginstand kWh"}
+                    value={kwhStart && kwhStart}
                 />
                 <ViewText
-                    label={"Uitgekeerd op"}
-                    value={datePayed ? moment(datePayed).format('L') : ''}
+                    label={"Eindstand kWh"}
+                    value={kwhEnd && kwhEnd}
                 />
             </div>
 
             <div className="row" onClick={props.switchToEdit}>
                 <ViewText
-                    label={"Uitkering %"}
-                    value={payPercentage && payPercentage + '%'}
-                />
-                <ViewText
-                    label={"Type opbrengst"}
-                    value={type ? type.name : ''}
+                    label={"Opbrengst kWh €"}
+                    value={payoutKwh && '€ ' + payoutKwh.toLocaleString('nl',{ minimumFractionDigits: 3, maximumFractionDigits: 3 })}
                 />
             </div>
 
+            <div className={'panel-part panel-heading'} onClick={props.switchToEdit}>
+                <span className={'h5 text-bold'}>Opbrengst euro</span>
+            </div>
+            <div className="row" onClick={props.switchToEdit}>
+                <ViewText
+                    label={"Euro opbrengst"}
+                    value={revenue && '€ ' + revenue}
+                />
+                <ViewText
+                    label={"Uitkering %"}
+                    value={payPercentage && payPercentage + '%'}
+                />
+            </div>
         </div>
     );
 };

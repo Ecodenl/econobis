@@ -621,6 +621,9 @@ class TemplateVariableHelper
             case 'kwh':
                 return $model->delivered_total;
                 break;
+            case 'teruggave_energiebelasting':
+                return $model->kwh_return;
+                break;
             case 'uitkeren_op':
                 return $model->payout_type;
                 break;
@@ -629,6 +632,15 @@ class TemplateVariableHelper
                 break;
             case 'energieleverancier':
                 return $model->energy_supplier_name;
+                break;
+            case 'energieleverancier_ean_elektra':
+                return $model->energy_supplier_ean_electricity;
+                break;
+            case 'energieleverancier_nummer':
+                return $model->energy_supplier_number;
+                break;
+            case 'opbrengst_kwh_euro':
+                return $model->payout_kwh;
                 break;
             default:
                 return '';

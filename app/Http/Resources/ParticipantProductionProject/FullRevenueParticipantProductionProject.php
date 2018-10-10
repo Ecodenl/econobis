@@ -26,7 +26,7 @@ class FullRevenueParticipantProductionProject extends Resource
                 'id' => $this->id,
                 'name' => $this->contact->full_name . ' ' . $this->productionProject->name,
                 'contactId' => $this->contact_id,
-                'contactType' => $this->contact->type,
+                'contactType' => FullEnumWithIdAndName::make($this->contact->getType()),
                 'contactName' => $this->contact->full_name,
                 'contactStatus' => FullEnumWithIdAndName::make($this->contact->getStatus()),
                 'contactPrimaryAddress' => $this->contact->primaryAddress,

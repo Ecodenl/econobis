@@ -180,7 +180,7 @@ class RevenueFormEdit extends Component {
                         name={"categoryId"}
                         options={this.props.productionProjectRevenueCategories}
                         value={categoryId}
-                        onChangeAction={this.props.handleInputChange}
+                        onChangeAction={this.handleInputChange}
                         required={"required"}
                         error={this.state.errors.categoryId}
                     />

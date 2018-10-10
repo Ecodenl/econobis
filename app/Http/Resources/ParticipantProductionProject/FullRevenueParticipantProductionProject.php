@@ -3,10 +3,8 @@
 namespace App\Http\Resources\ParticipantProductionProject;
 
 use App\Http\Resources\Contact\FullContact;
-use App\Http\Resources\Document\FullDocument;
 use App\Http\Resources\EnumWithIdAndName\FullEnumWithIdAndName;
 use App\Http\Resources\GenericResource;
-use App\Http\Resources\ParticipantTransaction\FullParticipantTransaction;
 use App\Http\Resources\ProductionProject\FullProductionProject;
 use Illuminate\Http\Resources\Json\Resource;
 
@@ -21,6 +19,13 @@ class FullRevenueParticipantProductionProject extends Resource
      */
     public function toArray($request)
     {
+        $es = false;
+        
+        if($this->contact->primaryContactEnergySupplier)
+        {
+         $es = $this->contact->primaryContactEnergySupplier->energySupplier;
+        }
+
         return
             [
                 'id' => $this->id,
@@ -30,7 +35,7 @@ class FullRevenueParticipantProductionProject extends Resource
                 'contactName' => $this->contact->full_name,
                 'contactStatus' => FullEnumWithIdAndName::make($this->contact->getStatus()),
                 'contactPrimaryAddress' => $this->contact->primaryAddress,
-                'contactPrimaryContactEnergySupplier' => $this->contact->primaryContactEnergySupplier && $this->contact->primaryContactEnergySupplier->energySupplier,
+                'contactPrimaryContactEnergySupplier' => $es,
                 'statusId' => $this->status_id,
                 'status' => GenericResource::make($this->whenLoaded('participantProductionProjectStatus')),
                 'productionProjectId' => $this->production_project_id,

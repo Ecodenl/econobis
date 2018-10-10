@@ -30,7 +30,14 @@ class DynamicContactGroupFilter extends Model
             if (in_array($this->field, $yesNoFields)) return $this->data ? 'Ja' : 'Nee';
 
             // orderStatus omzetten
-            if ($this->field == 'orderStatus') return OrderStatus::get($this->data)->name;
+            if ($this->field == 'orderStatus'){
+                if($this->data){
+                    return OrderStatus::get($this->data)->name;
+                }
+                else{
+                    return '';
+                }
+            }
 
             return $this->data;
         }

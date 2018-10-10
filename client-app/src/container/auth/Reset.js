@@ -9,9 +9,10 @@ class Reset extends Component{
 
  	constructor(props){
         super(props);
+        console.log(props.params);
         this.state = {
         	token: props.params.token,
-            email : '',
+            email : props.params.email,
             password: '',
             password_confirmation: '',
         }
@@ -44,7 +45,6 @@ class Reset extends Component{
                 })
                 .catch(error => {
                     this.refs.password.value = "";
-                    this.refs.email.value = "";
                     this.refs.confirm.value = "";
                     this.setState({err: true,
                         passwordError: false});
@@ -82,7 +82,7 @@ class Reset extends Component{
 			                                <label htmlFor="email" className="col-md-4 control-label">E-mailadres</label>
 
 			                                <div className="col-md-6">
-			                                    <input id="email" type="email" className="form-control" ref="email" name="email" onChange={this.onChange.bind(this)} required autoFocus />
+			                                    <input id="email" type="email" className="form-control" ref="email" name="email" value={this.state.email} onChange={this.onChange.bind(this)} required readOnly/>
 			                                </div>
 			                            </div>
 

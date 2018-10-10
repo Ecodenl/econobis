@@ -15,9 +15,10 @@ class MailResetPasswordToken extends Notification
      *
      * @return void
      */
-    public function __construct($token)
+    public function __construct($token, $email)
     {
         $this->token = $token;
+        $this->email = $email;
     }
 
     /**
@@ -42,7 +43,7 @@ class MailResetPasswordToken extends Notification
         return (new MailMessage)
             ->subject("Wijzig je wachtwoord")
             ->line("Wil je je wachtwoord wijzigen? Klik dan op de knop Wijzig wachtwoord.")
-            ->action('Wijzig wachtwoord', url('/#/wachtwoord-wijzig', $this->token))
+            ->action('Wijzig wachtwoord', url('/#/wachtwoord-wijzig', [$this->token, $this->email]))
             ->line('Als je je wachtwoord niet wilt wijzigen, dan hoef je geen actie te ondernemen.');
     }
 

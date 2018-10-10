@@ -15,9 +15,10 @@ class MailResetPasswordTokenFirstTime extends Notification
      *
      * @return void
      */
-    public function __construct($token)
+    public function __construct($token, $email)
     {
         $this->token = $token;
+        $this->email = $email;
     }
 
     /**
@@ -50,7 +51,7 @@ class MailResetPasswordTokenFirstTime extends Notification
             ->line("Je gebruikersnaam is het e-mailadres waarop je dit bericht hebt ontvangen. Dit kan je niet aanpassen.")
             ->line("Voordat je met Econobis kunt gaan werken, moet je een wachtwoord aanmaken.")
             ->line("Klik op de knop om je wachtwoord in te stellen.")
-            ->action('Stel wachtwoord in', url('/#/wachtwoord-wijzig', $this->token))
+            ->action('Stel wachtwoord in', url('/#/wachtwoord-wijzig', [$this->token, $this->email]))
             ->line('Nadat je succesvol je wachtwoord hebt ingesteld, ontvang je van ons een e-mail ter bevestiging.');
     }
 

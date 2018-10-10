@@ -99,10 +99,10 @@ class User extends Authenticatable
     public function sendPasswordResetNotification($token)
     {
         if($this->visit_count === 0) {
-            $this->notify(new MailResetPasswordTokenFirstTime($token));
+            $this->notify(new MailResetPasswordTokenFirstTime($token, $this->email));
         }
         else{
-            $this->notify(new MailResetPasswordToken($token));
+            $this->notify(new MailResetPasswordToken($token, $this->email));
         }
     }
 

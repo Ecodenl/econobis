@@ -9,10 +9,34 @@ class Modal extends Component {
 
         this.state = {
             activeDrags: 0,
+            offsetTop: 0,
+            offsetBottom: 0,
+            offsetLeft: 0,
+            offsetRight: 0,
         };
 
+        this.divModalDialog = React.createRef();
+
+        this.updateWindowDimensions = this.updateWindowDimensions.bind(this);
         this.onStart = this.onStart.bind(this);
         this.onStop = this.onStop.bind(this);
+    };
+
+    componentDidMount() {
+        this.updateWindowDimensions();
+        window.addEventListener('resize', this.updateWindowDimensions);
+    };
+
+    updateWindowDimensions() {
+        const offsetTop = Number(`-${this.divModalDialog.current.offsetParent.offsetTop + this.divModalDialog.current.offsetTop}`);
+        const offsetBottom = this.divModalDialog.current.offsetParent.clientHeight - (this.divModalDialog.current.offsetHeight - offsetTop);
+
+        this.setState({
+            offsetTop,
+            offsetBottom,
+            offsetLeft: Number(`-${this.divModalDialog.current.offsetLeft}`),
+            offsetRight: this.divModalDialog.current.offsetLeft,
+        });
     };
 
     onStart() {
@@ -27,11 +51,12 @@ class Modal extends Component {
         const {extraButtonLabel, extraButtonClass, extraButtonAction, modalClassName, modalMainClassName,
             buttonClassName, buttonCancelText, buttonConfirmText, children, closeModal, confirmAction, title,
             draggableDisabled} = this.props;
+        const bounds = { left: this.state.offsetLeft, top: this.state.offsetTop,  right: this.state.offsetRight, bottom: this.state.offsetBottom };
 
         return (
-            <Draggable handle=".modal-header" onStart={this.onStart} onStop={this.onStop} disabled={draggableDisabled}>
+            <Draggable handle=".modal-header" onStart={this.onStart} onStop={this.onStop} disabled={draggableDisabled} bounds={bounds}>
                 <div className={`modal ${modalMainClassName}`}>
-                    <div className={`modal-dialog ${modalClassName}`}>
+                    <div className={`modal-dialog ${modalClassName}`} ref={this.divModalDialog}>
                         <div className="modal-content">
                             <div className={`modal-header` + (draggableDisabled ? '' : ' draggable-header')}>
                                 <h4 className="modal-title">{title}</h4>

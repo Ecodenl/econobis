@@ -22,9 +22,7 @@ const RevenueDistributionFormList = props => {
                 }
 
                 <div className="col-sm-1">Type</div>
-                <div className="col-sm-1">Naam</div>
-                <div className="col-sm-1">Postcode</div>
-                <div className="col-sm-1">Plaats</div>
+                <div className="col-sm-2">Naam</div>
                 <div className="col-sm-1">Lid status</div>
                 <div className="col-sm-1">Participaties</div>
                 <div className="col-sm-1">Uit te keren bedrag</div>
@@ -32,6 +30,7 @@ const RevenueDistributionFormList = props => {
                 <div className="col-sm-1">Datum uitkering</div>
                 <div className="col-sm-1">Energieleverancier</div>
                 <div className="col-sm-1">Geleverd totaal</div>
+                <div className="col-sm-1">Teruggave energiebelasting</div>
             </div>
             {props.productionProjectRevenue.confirmed ?
                 (props.productionProjectRevenue.distribution && props.productionProjectRevenue.distribution.data.length > 0) ?

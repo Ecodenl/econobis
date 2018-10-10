@@ -24,8 +24,8 @@ class RevenueNewApp extends Component {
                 dateEnd: '',
                 dateEntry: moment(),
                 dateConfirmed: '',
-                kwhStart: '',
-                kwhEnd: '',
+                kwhStart: 0,
+                kwhEnd: 0,
                 kwhStartHigh: '',
                 kwhEndHigh: '',
                 kwhStartLow: '',
@@ -34,6 +34,7 @@ class RevenueNewApp extends Component {
                 datePayed: '',
                 payPercentage: '',
                 typeId: '',
+                payoutKwh: '',
             },
             errors: {
                 categoryId: false,
@@ -48,16 +49,31 @@ class RevenueNewApp extends Component {
 
     handleInputChange = event => {
         const target = event.target;
-        const value = target.type === 'checkbox' ? target.checked : target.value;
+        let value = target.type === 'checkbox' ? target.checked : target.value;
         const name = target.name;
 
         this.setState({
             ...this.state,
             revenue: {
                 ...this.state.revenue,
-                [name]: value
+                [name]: value,
             },
         });
+
+        setTimeout(() => {
+            const kwhStart = (this.state.revenue.kwhStartLow ? parseFloat(this.state.revenue.kwhStartLow) : 0) + (this.state.revenue.kwhStartHigh ? parseFloat(this.state.revenue.kwhStartHigh) : 0);
+            const kwhEnd = (this.state.revenue.kwhEndLow ? parseFloat(this.state.revenue.kwhEndLow) : 0) + (this.state.revenue.kwhEndHigh ? parseFloat( this.state.revenue.kwhEndHigh) : 0);
+
+            this.setState({
+                ...this.state,
+                revenue: {
+                    ...this.state.revenue,
+                    kwhStart,
+                    kwhEnd,
+                },
+            });
+        }, 200);
+
     };
 
     handleInputChangeDate(value, name) {

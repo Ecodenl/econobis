@@ -24,6 +24,8 @@ class ProductionProjectRevenueDistribution extends Model
         'id'
     ];
 
+    protected $appends = ['kwh_return'];
+
     public function participation()
     {
         return $this->belongsTo(ParticipantProductionProject::class,'participation_id');
@@ -41,5 +43,11 @@ class ProductionProjectRevenueDistribution extends Model
     public function contact()
     {
         return $this->belongsTo(Contact::class);
+    }
+
+    public function getKwhReturnAttribute(){
+        $deliveredTotal = $this->delivered_total ? $this->delivered_total : 0;
+        $payoutKwh = $this->payout_kwh ? $this->payout_kwh : 0;
+        return $deliveredTotal * $payoutKwh;
     }
 }

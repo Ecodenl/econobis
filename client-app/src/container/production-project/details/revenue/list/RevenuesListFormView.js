@@ -30,7 +30,7 @@ const RevenuesListFormView = props => {
                 {kwhResult ? kwhResult : ''}
             </div>
             <div className="col-sm-1">
-                {(props.showActionButtons ? <a role="button" onClick={() =>  hashHistory.push(`/productie-project/opbrengst/${id}`)}><span className="glyphicon glyphicon-pencil mybtn-success" /> </a> : '')}
+                {(props.showActionButtons ? <a role="button" onClick={() =>  hashHistory.push(`/productie-project/opbrengst/${id}`)}><span className={`glyphicon ${confirmed ? 'glyphicon-eye-open' : 'glyphicon-pencil'} mybtn-success`}/> </a> : '')}
                 {(props.showActionButtons && props.permissions.manageFinancial && !confirmed ? <a role="button" onClick={props.toggleDelete}><span className="glyphicon glyphicon-trash mybtn-danger"  /> </a> : '')}
             </div>
         </div>

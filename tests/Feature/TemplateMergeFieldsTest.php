@@ -133,12 +133,12 @@ class TemplateMergeFieldsTest extends TestCase
     public function assertProductionProjectRevenueDistributionMergeFields(){
 
         $html = '{d_adres}{d_postcode}{d_woonplaats}{d_status}{d_participaties}{d_bedrag}{d_uitkeren_op}';
-        $html .= '{d_datum_uitkeren}{d_energieleverancier}{d_kwh}';
+        $html .= '{d_datum_uitkeren}{d_energieleverancier}{d_kwh}{d_teruggave_energiebelasting}{d_energieleverancier_ean_elektra}{d_energieleverancier_nummer}{d_opbrengst_kwh_euro}';
 
         $html = TemplateVariableHelper::replaceTemplateVariables($html, 'd', ProductionProjectRevenueDistribution::find(1));
 
         $expectedHtml = 'talud 91239 LMOnderdijkdbstatus151523Rekening';
-        $expectedHtml .= '17/03/2018Eneco123';
+        $expectedHtml .= '17/03/2018Eneco12324655555hoi1232';
 
         $this->assertEquals($expectedHtml, $html);
     }
@@ -325,6 +325,7 @@ class TemplateMergeFieldsTest extends TestCase
         $revenue->revenue = 3000;
         $revenue->date_payed = '2018-03-16';
         $revenue->created_by_id = 1;
+        $revenue->payout_kwh = 2;
         $revenue->save();
     }
 
@@ -342,7 +343,10 @@ class TemplateMergeFieldsTest extends TestCase
         $distribution->payout_type = 'Rekening';
         $distribution->date_payout = '2018-03-17';
         $distribution->energy_supplier_name = 'Eneco';
+        $distribution->energy_supplier_number = 'hoi123';
+        $distribution->energy_supplier_ean_electricity = '55555';
         $distribution->delivered_total = 123;
+        $distribution->payout_kwh = 2;
         $distribution->save();
     }
 

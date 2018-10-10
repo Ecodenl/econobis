@@ -45,6 +45,7 @@ class FullProductionProjectRevenue extends Resource
                 'createdBy' => FullUser::make($this->whenLoaded('createdBy')),
                 'productionProject' => FullProductionProject::make($this->whenLoaded('productionProject')),
                 'distribution' => FullProductionProjectRevenueDistribution::collection($this->whenLoaded('distribution')),
+                'payoutKwh' => $this->payout_kwh,
             ];
     }
 }

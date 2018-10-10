@@ -3,7 +3,7 @@ import moment from "moment/moment";
 moment.locale('nl');
 
 const RevenueDistributionFormStaticView = props => {
-    const { id, contactName, contactType, contactPrimaryEmailAddress, deliveredTotal, postalCode, city, status, participationsAmount, payout, payoutType, datePayout, energySupplierName, hasInvoice } = props.participation;
+    const { id, contactName, contactType, contactPrimaryEmailAddress, deliveredTotal, kwhReturn, status, participationsAmount, payout, payoutType, datePayout, energySupplierName, hasInvoice } = props.participation;
 
     return (
         <div className={`row border ${hasInvoice && 'warning-row'}`}>
@@ -16,14 +16,8 @@ const RevenueDistributionFormStaticView = props => {
             <div className="col-sm-1">
                 {contactType ? contactType.name : ''}
             </div>
-            <div className="col-sm-1">
+            <div className="col-sm-2">
                 {contactName}
-            </div>
-            <div className="col-sm-1">
-                {postalCode && postalCode}
-            </div>
-            <div className="col-sm-1">
-                {city && city}
             </div>
             <div className="col-sm-1">
                 {status && status}
@@ -45,6 +39,9 @@ const RevenueDistributionFormStaticView = props => {
             </div>
             <div className="col-sm-1">
                 {deliveredTotal && deliveredTotal}
+            </div>
+            <div className="col-sm-1">
+                {'€' + kwhReturn.toLocaleString('nl',{ minimumFractionDigits: 2, maximumFractionDigits: 2 })}
             </div>
         </div>
     );

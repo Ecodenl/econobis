@@ -3,6 +3,7 @@
 namespace App\Http\Resources\ProductionProject;
 
 use App\Http\Resources\Contact\FullContact;
+use App\Http\Resources\EnumWithIdAndName\FullEnumWithIdAndName;
 use App\Http\Resources\GenericResource;
 use App\Http\Resources\ParticipantProductionProject\FullParticipantProductionProject;
 use Illuminate\Http\Resources\Json\Resource;
@@ -25,7 +26,7 @@ class FullProductionProjectRevenueDistribution extends Resource
                 'revenue' => FullProductionProjectRevenue::make($this->whenLoaded('revenue')),
                 'contact' => FullContact::make($this->whenLoaded('contact')),
                 'contactId' => $this->contact_id,
-                'contactType' => $this->contact->type,
+                'contactType' => FullEnumWithIdAndName::make($this->contact->getType()),
                 'contactName' => $this->contact->full_name,
                 'contactPrimaryEmailAddress' => $this->contact->primaryEmailAddress,
                 'address' => $this->address,
@@ -37,7 +38,11 @@ class FullProductionProjectRevenueDistribution extends Resource
                 'payoutType' => $this->payout_type,
                 'datePayout' => $this->date_payout,
                 'energySupplierName' => $this->energy_supplier_name,
+                'energySupplierEanElectricity' => $this->energy_supplier_ean_electricity,
+                'energySupplierNumber' => $this->energy_supplier_number,
                 'deliveredTotal' => $this->delivered_total,
+                'payoutKwh' => $this->payout_kwh,
+                'kwhReturn' => $this->kwh_return,
                 'hasInvoice' => $this->paymentInvoices()->exists(),
             ];
     }

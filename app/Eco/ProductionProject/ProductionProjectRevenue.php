@@ -36,7 +36,7 @@ class ProductionProjectRevenue extends Model
     }
 
     public function category(){
-        return $this->belongsTo(ProductionProjectRevenueType::class, 'category_id');
+        return $this->belongsTo(ProductionProjectRevenueCategory::class, 'category_id');
     }
 
     public function createdBy()

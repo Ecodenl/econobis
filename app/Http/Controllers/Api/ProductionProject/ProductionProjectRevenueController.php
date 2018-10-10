@@ -121,6 +121,7 @@ class ProductionProjectRevenueController extends ApiController
             ->integer('typeId')
             ->validate('nullable|exists:production_project_revenue_type,id')
             ->onEmpty(null)->alias('type_id')->next()
+            ->double('payoutKwh')->alias('payout_kwh')->onEmpty(null)->whenMissing(null)->next()
             ->get();
 
         $productionProjectRevenue = new ProductionProjectRevenue();
@@ -176,6 +177,7 @@ class ProductionProjectRevenueController extends ApiController
             ->integer('typeId')
             ->validate('nullable|exists:production_project_revenue_type,id')
             ->onEmpty(null)->alias('type_id')->next()
+            ->double('payoutKwh')->alias('payout_kwh')->onEmpty(null)->whenMissing(null)->next()
             ->get();
 
         $productionProjectRevenue->fill($data);
@@ -252,7 +254,15 @@ class ProductionProjectRevenueController extends ApiController
 
                 $distribution->es_id
                     = $primaryContactEnergySupplier->energySupplier->id;
+
+                $distribution->energy_supplier_ean_electricity
+                    = $primaryContactEnergySupplier->ean_electricity;
+
+                $distribution->energy_supplier_number
+                    = $primaryContactEnergySupplier->es_number;
             }
+            $distribution->payout_kwh = $productionProjectRevenue->payout_kwh;
+
             $distribution->participation_id = $participant->id;
             $distribution->save();
         }

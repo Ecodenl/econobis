@@ -108,7 +108,7 @@ const Routes = () => {
             <Route path="login" component={ Login } />
             <Route path="loguit" component={ Logout } />
             <Route path='wachtwoord-vergeten' component={Forgot}/>
-            <Route path='wachtwoord-wijzig/:token' component={Reset}/>
+            <Route path='wachtwoord-wijzig/:token/:email' component={Reset}/>
             <Route path="/" component={ RequireAuth(Main) }>
                 <IndexRoute component={ DashboardDefaultApp } />
 

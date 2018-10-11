@@ -435,6 +435,7 @@ class EmailController
     public function createEmailContactRelations(Email $email, Request $request)
     {
         $contactIds = [];
+        $oldEmailContactIds = [];
 
         //Get all possible contacts
         $data = $request->validate([
@@ -466,7 +467,13 @@ class EmailController
             }
         }
 
-        $email->contacts()->sync(array_unique($contactIds));
+        //ook contacten van oude email
+        if($request->input('oldEmailId')){
+            $oldEmail = Email::find($request->input('oldEmailId'));
+            $oldEmailContactIds = $oldEmail->contacts()->pluck('contacts.id')->toArray();
+        }
+
+        $email->contacts()->sync(array_unique(array_merge($contactIds, $oldEmailContactIds)));
     }
 
     public function storeEmailAttachments($attachments, $mailbox_id, $email_id){

@@ -25,7 +25,7 @@ class AppServiceProvider extends ServiceProvider
             $slackHandler
                 = new SlackHandler( // nieuwe slackhandler
                     Config::get('app.SLACK_TOKEN'), // slack token uit de config -> .env halen
-                    '#errors', // slack channel naam
+                    '#eco', // slack channel naam
                     'econobis', // slack username
                     true,
                     null,

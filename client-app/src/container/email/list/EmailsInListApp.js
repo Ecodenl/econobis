@@ -49,21 +49,23 @@ class EmailsInListApp extends Component {
                 }
             }
 
-        if(this.props.params.type !== nextProps.params.type){
-            if(!isEmpty(nextProps.params)) {
-                if(nextProps.params.type === 'eigen'){
+        if (this.props.params.type !== nextProps.params.type) {
+            if (!isEmpty(nextProps.params)) {
+                if (nextProps.params.type === 'eigen') {
                     this.props.setFilterMe(true);
-                };
-            }
-            else {
-                this.props.clearFilterEmail();
+                }
+                else {
+                    this.props.clearFilterEmail();
+                }
             }
 
             setTimeout(() => {
+                this.props.setEmailsPagination({page: 0, offset: 0});
+                this.props.clearEmails();
                 this.fetchEmailsData();
             }, 100);
         }
-        }
+    }
 
     resetEmailsFilters() {
         this.props.clearFilterEmail();

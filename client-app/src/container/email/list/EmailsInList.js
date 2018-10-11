@@ -28,6 +28,7 @@ const EmailsInList = props => {
                         fetchEmailsData={() => props.fetchEmailsData()}
                     />
                     <EmailsInListFilter
+                        folder={props.folder}
                         onSubmitFilter={props.onSubmitFilter}
                     />
                 </DataTableHead>

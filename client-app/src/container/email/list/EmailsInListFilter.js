@@ -71,15 +71,18 @@ const EmailsInListFilter = props => {
             <th><input type="text" className="form-control input-sm" value={ props.filters.subject.data} onChange={onSubjectChange} /></th>
 
             <th>
-                <select className="form-control input-sm" value={ props.filters.statusId.data } onChange={onStatusIdChange}>
+                {props.folder === 'ontvangen' &&
+                <select className="form-control input-sm" value={props.filters.statusId.data}
+                        onChange={onStatusIdChange}>
                     <option/>
                     <option value={'null'}>{'Geen status'}</option>
                     {
                         props.emailStatuses.map((emailStatus) => {
-                            return <option key={emailStatus.id } value={ emailStatus.id }>{ emailStatus.name }</option>
+                            return <option key={emailStatus.id} value={emailStatus.id}>{emailStatus.name}</option>
                         })
                     }
                 </select>
+                }
             </th>
 
             <th><input type="text" className="form-control input-sm" value={ props.filters.responsibleName.data} onChange={onResponsibleNameChange} /></th>

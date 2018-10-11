@@ -49,10 +49,14 @@ class EmailsInListItem extends Component {
                 <td>{ to && to.map((to) => to).join(', ')}</td>
                 <td>{ contacts && contacts.map((contact) => contact.fullName).join(', ')}</td>
                 <td>{ subject }</td>
-                {folder === 'inbox' ?
+                {folder === 'inbox' &&
                     <td>{status ? status.name : ''}</td>
-                    :
+                }
+                {folder === 'sent' &&
                     <td>{"Verzonden"}</td>
+                }
+                {folder === 'removed' &&
+                    <td>{"Verwijderd"}</td>
                 }
                 <td>{ responsibleName }</td>
                 <td>

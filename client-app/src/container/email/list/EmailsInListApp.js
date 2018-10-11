@@ -42,6 +42,7 @@ class EmailsInListApp extends Component {
     componentWillReceiveProps(nextProps) {
         if(this.props.params.folder !== nextProps.params.folder) {
             if (!isEmpty(nextProps.params.folder)) {
+                this.props.clearFilterEmail();
                 this.props.setEmailsPagination({page: 0, offset: 0});
                 this.props.clearEmails();
                 this.fetchEmailsData();
@@ -55,7 +56,7 @@ class EmailsInListApp extends Component {
                 };
             }
             else {
-                this.props.resetEmailsFilters();
+                this.props.clearFilterEmail();
             }
 
             setTimeout(() => {
@@ -138,6 +139,7 @@ class EmailsInListApp extends Component {
 
                         <div className="col-md-12 margin-10-top">
                             <EmailsInList
+                                folder={folder}
                                 handlePageClick={this.handlePageClick}
                                 emails={this.props.emails}
                                 emailsPagination={this.props.emailsPagination}

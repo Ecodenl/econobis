@@ -79,7 +79,7 @@ const OrderDetailsFormGeneralView = props => {
                     </div>
                     <div className="row">
                         <ViewText
-                            label={"Iban"}
+                            label={"IBAN"}
                             value={IBAN}
                         />
                         <ViewText

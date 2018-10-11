@@ -280,7 +280,7 @@ class OrderDetailsFormGeneralEdit extends Component {
 
                         <div className="row">
                             <InputText
-                                label="Iban"
+                                label="IBAN"
                                 name={"IBAN"}
                                 value={IBAN}
                                 onChangeAction={this.handleInputChange}

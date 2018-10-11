@@ -38,7 +38,7 @@ export default class ModelDetailsPerson {
         this.newUpload = Selector('a').withExactText('Upload document');
 
         //contact note
-        this.newContactNote = Selector('span').withExactText('Opmerkingen').parent().child('a');
+        this.newContactNote = Selector('span').withExactText('Parkeerplaats').parent().child('a');
         this.textarea = Selector('textarea');
 
         //Harmonica's labels to open list

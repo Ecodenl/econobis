@@ -25,5 +25,5 @@ test('Fill out form new contact group', async (t) => {
         .click(general.save)
         .wait(constants.wait);
 
-    await t.expect(general.titleH4.withExactText(vars.contactGroupName).innerText).eql(vars.contactGroupName, 'Check element text', { timeout: 500 });
+    await t.expect(general.titleH4.withExactText(vars.contactGroupName + '(Contacten)').innerText).eql(vars.contactGroupName+ '(Contacten)', 'Check element text', { timeout: 500 });
 });

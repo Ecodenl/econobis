@@ -10,6 +10,8 @@ export default class ModelGeneral {
         this.titleH3 = Selector('h3');
         this.titleH4 = Selector('h4');
 
+        this.titleH4Modal = Selector('h4.modal-title');
+
         this.firstRow = Selector('tbody').nth(0).child('tr').nth(0);
         this.option = Selector('option');
 

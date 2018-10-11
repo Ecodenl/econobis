@@ -110,20 +110,20 @@ test('Open all harmonica\'s person', async (t) => {
         .wait(constants.wait);
 
     await t
-        .click(detailsPerson.documentHarmonica)
-        .click(detailsPerson.newDocument)
-        .wait(constants.wait);
-    await t
-        .click(general.back)
-        .wait(constants.wait);
-
-    await t
-        .click(detailsPerson.documentHarmonica)
-        .click(detailsPerson.newUpload)
-        .wait(constants.wait);
-    await t
-        .click(general.back)
-        .wait(constants.wait);
+        // .click(detailsPerson.documentHarmonica)
+        // .click(detailsPerson.newDocument)
+        // .wait(constants.wait);
+    // await t
+    //     .click(general.back)
+    //     .wait(constants.wait);
+    //
+    // await t
+    //     .click(detailsPerson.documentHarmonica)
+    //     .click(detailsPerson.newUpload)
+    //     .wait(constants.wait);
+    // await t
+    //     .click(general.back)
+    //     .wait(constants.wait);
 
     await t.expect(general.titleH4.innerText).eql(vars.personLastName + ', ' + vars.personFirstName + ' (Persoon)', 'Check element text', { timeout: 500 });
 });

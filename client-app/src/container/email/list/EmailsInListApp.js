@@ -145,7 +145,7 @@ class EmailsInListApp extends Component {
                                 emailsPagination={this.props.emailsPagination}
                                 onSubmitFilter={() => this.onSubmitFilter()}
                                 fetchEmailsData={() => this.fetchEmailsData()}
-                                refreshData={() => this.refreshData()}/>
+                               />
                         </div>
                     </PanelBody>
                 </Panel>

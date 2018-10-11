@@ -40,7 +40,7 @@ const EmailsInList = props => {
                         ) : (
                             data.map((email) => {
                                 return <EmailsInListItem
-                                    refreshData={props.refreshData}
+                                    fetchEmailsData={props.fetchEmailsData}
                                     key={email.id}
                                     {...email}
                                 />

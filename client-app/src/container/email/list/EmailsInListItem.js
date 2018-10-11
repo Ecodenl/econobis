@@ -34,7 +34,7 @@ class EmailsInListItem extends Component {
 
     removeEmail(id){
         EmailAPI.moveToFolder(id, 'removed').then(() => {
-            this.props.refreshData();
+            this.props.fetchEmailsData();
         });
     }
 

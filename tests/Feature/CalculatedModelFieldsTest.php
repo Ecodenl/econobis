@@ -450,6 +450,7 @@ class CalculatedModelFieldsTest extends TestCase
         $invoice->order_id = 1;
         $invoice->mollie_status_id = 'not_used';
         $invoice->date_sent = '2018-01-01';
+        $invoice->collection_frequency_id = Order::find(1)->collection_frequency_id;
 
         $invoice->save();
         InvoiceHelper::saveInvoiceProducts($invoice, Order::find(1));

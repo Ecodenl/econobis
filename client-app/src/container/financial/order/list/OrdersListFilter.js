@@ -67,13 +67,13 @@ const OrdersListFilter = props => {
                 </select>
             </th>
             <th>
-                <select className="form-control input-sm" value={ props.filters.statusId.data } onChange={onStatusChange}>
+                <select className="form-control input-sm" value={props.filters.statusId.data} onChange={onStatusChange}>
                     <option/>
-                    {
-                        props.orderStatuses.map((orderStatus) => {
-                            return <option key={orderStatus.id } value={ orderStatus.id }>{ orderStatus.name }</option>
-                        })
-                    }
+                    <option key={'concept'} value={'concept'}>{'Concept'}</option>
+                    <option key={'upcoming'} value={'upcoming'}>{'Aankomende'}</option>
+                    <option key={'to-create'} value={'create'}>{'Te factureren'}</option>
+                    <option key={'to-send'} value={'send'}>{'Te verzenden'}</option>
+                    <option key={'closed'} value={'closed'}>{'Beëindigd'}</option>
                 </select>
             </th>
             <th/>

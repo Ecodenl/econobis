@@ -26,6 +26,7 @@ import OrdersAPI from "../../../../api/order/OrdersAPI";
 import fileDownload from "js-file-download";
 import moment from "moment/moment";
 import {hashHistory} from "react-router";
+import ButtonText from "../../../../components/button/ButtonText";
 
 class OrdersList extends Component {
     constructor(props){
@@ -37,15 +38,17 @@ class OrdersList extends Component {
                     this.props.clearFilterOrders();
                     this.props.setStatusIdFilterOrders('concept');
                     break;
-                case 'facturen':
+                case 'aankomend':
                     this.props.clearFilterOrders();
-                    this.props.setPaymentTypeIdFilterOrders('transfer');
-                    this.props.setStatusIdFilterOrders('active');
+                    this.props.setStatusIdFilterOrders('upcoming');
                     break;
-                case 'incassos':
+                case 'te-factureren':
                     this.props.clearFilterOrders();
-                    this.props.setPaymentTypeIdFilterOrders('collection');
-                    this.props.setStatusIdFilterOrders('active');
+                    this.props.setStatusIdFilterOrders('create');
+                    break;
+                case 'te-verzenden':
+                    this.props.clearFilterOrders();
+                    this.props.setStatusIdFilterOrders('send');
                     break;
                 case 'beeindigd':
                     this.props.clearFilterOrders();
@@ -80,20 +83,22 @@ class OrdersList extends Component {
     componentWillReceiveProps(nextProps) {
         if(this.props.filter !== nextProps.filter){
             if(!isEmpty(nextProps.filter)) {
-                switch(nextProps.filter){
+                switch (nextProps.filter) {
                     case 'concepten':
                         this.props.clearFilterOrders();
                         this.props.setStatusIdFilterOrders('concept');
                         break;
-                    case 'facturen':
+                    case 'aankomend':
                         this.props.clearFilterOrders();
-                        this.props.setPaymentTypeIdFilterOrders('transfer');
-                        this.props.setStatusIdFilterOrders('active');
+                        this.props.setStatusIdFilterOrders('upcoming');
                         break;
-                    case 'incassos':
+                    case 'te-factureren':
                         this.props.clearFilterOrders();
-                        this.props.setPaymentTypeIdFilterOrders('collection');
-                        this.props.setStatusIdFilterOrders('active');
+                        this.props.setStatusIdFilterOrders('create');
+                        break;
+                    case 'te-verzenden':
+                        this.props.clearFilterOrders();
+                        this.props.setStatusIdFilterOrders('send');
                         break;
                     case 'beeindigd':
                         this.props.clearFilterOrders();
@@ -101,7 +106,7 @@ class OrdersList extends Component {
                         break;
                     default:
                         break;
-                }
+                };
             }
             else {
                 this.props.clearFilterOrders();
@@ -206,11 +211,8 @@ class OrdersList extends Component {
                         <div className="btn-group" role="group">
                             <ButtonIcon iconName={"glyphicon-refresh"} onClickAction={this.resetOrderFilters} />
                             <ButtonIcon iconName={"glyphicon-download-alt"} onClickAction={this.getCSV} />
-                            {this.props.filter === 'facturen' && meta.total > 0 &&
-                            <ButtonIcon iconName={"glyphicon-file"} onClickAction={() => hashHistory.push(`/financieel/${this.props.administrationId}/orders/facturen/aanmaken`)} />
-                            }
-                            {this.props.filter === 'incassos' && meta.total > 0 &&
-                            <ButtonIcon iconName={"glyphicon-file"} onClickAction={() => hashHistory.push(`/financieel/${this.props.administrationId}/orders/incassos/aanmaken`)} />
+                            {this.props.filter === 'te-factureren' && meta.total > 0 &&
+                            <ButtonText buttonText={'Maak facturen'} onClickAction={() => hashHistory.push(`/financieel/${this.props.administrationId}/orders/aanmaken`)} />
                             }
                         </div>
                     </div>

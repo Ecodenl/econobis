@@ -3,7 +3,6 @@ import {connect} from 'react-redux';
 import {browserHistory, hashHistory} from 'react-router';
 
 import ButtonIcon from '../../../../components/button/ButtonIcon';
-import InvoiceDetailsFormSetChecked from "./general/InvoiceDetailsFormSetChecked";
 import InvoiceDetailsFormSetPaid from "./general/InvoiceDetailsFormSetPaid";
 import InvoiceDetailsFormSendNotification from "./general/InvoiceDetailsFormSendNotification";
 import InvoiceDetailsFormSetIrrecoverable from "./general/InvoiceDetailsFormSetIrrecoverable";
@@ -58,10 +57,6 @@ class InvoiceToolbar extends Component {
         });
     };
 
-    showSetChecked = () => {
-        this.setState({showSetChecked: !this.state.showSetChecked});
-    };
-
     showSend = () => {
         this.setState({showSend: !this.state.showSend});
     };
@@ -93,9 +88,6 @@ class InvoiceToolbar extends Component {
                     <div className="btn-group btn-group-flex margin-small" role="group">
                         <ButtonIcon iconName={"glyphicon-arrow-left"} onClickAction={browserHistory.goBack}/>
                         <ButtonIcon iconName={"glyphicon-eye-open"} onClickAction={this.view}/>
-                        {this.props.invoiceDetails.statusId === 'concept' &&
-                        <ButtonIcon iconName={"glyphicon-ok"} onClickAction={this.showSetChecked}/>
-                        }
                         {this.props.invoiceDetails.statusId === 'checked' && (this.props.invoiceDetails.emailToAddress !== 'Geen e-mail bekend') &&
                         <ButtonIcon iconName={"glyphicon-envelope"} onClickAction={this.showSend}/>
                         }
@@ -118,13 +110,6 @@ class InvoiceToolbar extends Component {
                     className="text-center">Factuur: {this.props.invoiceDetails.order ? this.props.invoiceDetails.order.contact.fullName : ''} / {this.props.invoiceDetails.number}</h4>
                 </div>
                 <div className="col-md-4"/>
-                {
-                    this.state.showSetChecked &&
-                    <InvoiceDetailsFormSetChecked
-                        closeModal={this.showSetChecked}
-                        invoiceId={this.props.invoiceDetails.id}
-                    />
-                }
 
                 {
                     this.state.showSend &&

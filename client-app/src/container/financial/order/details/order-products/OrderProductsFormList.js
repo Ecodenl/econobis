@@ -11,7 +11,7 @@ const OrderProductsFormList = props => {
                 <div className="col-sm-2">Omschrijving</div>
                 <div className="col-sm-1">Aantal</div>
                 <div className="col-sm-1">Prijs incl. BTW</div>
-                <div className="col-sm-2">Factuur frequentie</div>
+                <div className="col-sm-2">Prijs per</div>
                 <div className="col-sm-2">Prijs incl. BTW/jaar</div>
                 <div className="col-sm-1">Begin datum</div>
                 <div className="col-sm-1">Eind datum</div>

@@ -12,6 +12,8 @@ use App\Eco\Contact\Contact;
 use App\Eco\Invoice\Invoice;
 use App\Eco\Order\Order;
 use App\Eco\Order\OrderProduct;
+use App\Eco\Product\PriceHistory;
+use App\Eco\Product\Product;
 use App\Helpers\CSV\OrderCSVHelper;
 use App\Helpers\Delete\Models\DeleteOrder;
 use App\Helpers\Invoice\InvoiceHelper;
@@ -22,6 +24,7 @@ use App\Http\Resources\Order\FullOrder;
 use App\Http\Resources\Order\FullOrderProduct;
 use App\Http\Resources\Order\GridOrder;
 use App\Http\Resources\Order\OrderPeek;
+use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -32,6 +35,7 @@ class OrderController extends ApiController
 
     public function grid(RequestQuery $requestQuery)
     {
+
         $orders = $requestQuery->get();
 
         $orders->load(['contact']);
@@ -96,8 +100,7 @@ class OrderController extends ApiController
             ->string('poNumber')->onEmpty(null)->whenMissing(null)->alias('po_number')->next()
             ->string('invoiceText')->onEmpty(null)->whenMissing(null)->alias('invoice_text')->next()
             ->date('dateRequested')->validate('nullable|date')->onEmpty(null)->whenMissing(null)->alias('date_requested')->next()
-            ->date('dateStart')->validate('nullable|date')->onEmpty(null)->whenMissing(null)->alias('date_start')->next()
-            ->date('dateEnd')->validate('nullable|date')->onEmpty(null)->whenMissing(null)->alias('date_end')->next()
+            ->date('dateNextInvoice')->validate('nullable|date')->onEmpty(null)->whenMissing(null)->alias('date_next_invoice')->next()
             ->get();
 
         $order = new Order($data);
@@ -126,8 +129,7 @@ class OrderController extends ApiController
             ->string('poNumber')->onEmpty(null)->whenMissing(null)->alias('po_number')->next()
             ->string('invoiceText')->onEmpty(null)->whenMissing(null)->alias('invoice_text')->next()
             ->date('dateRequested')->validate('nullable|date')->onEmpty(null)->whenMissing(null)->alias('date_requested')->next()
-            ->date('dateStart')->validate('nullable|date')->onEmpty(null)->whenMissing(null)->alias('date_start')->next()
-            ->date('dateEnd')->validate('nullable|date')->onEmpty(null)->whenMissing(null)->alias('date_end')->next()
+            ->date('dateNextInvoice')->validate('nullable|date')->onEmpty(null)->whenMissing(null)->alias('date_next_invoice')->next()
             ->get();
 
         $order = $order->fill($data);
@@ -183,6 +185,47 @@ class OrderController extends ApiController
         return FullOrderProduct::make($orderProduct);
     }
 
+    public function storeProductAndOrderProduct(Request $request)
+    {
+        $this->authorize('manage', Order::class);
+
+        $productData = $request->input('product');
+
+        $product = new Product();
+        $product->is_one_time = true;
+        $product->name = $productData['name'];
+        $product->code = $productData['code'];
+        $product->duration_id = $productData['durationId'];
+        $product->invoice_frequency_id = $productData['invoiceFrequencyId'];
+        $product->administration_id = $productData['administrationId'];
+
+        $priceHistory = new PriceHistory();
+        $priceHistory->date_start = Carbon::today();
+        $priceHistory->price = $productData['price'];
+        $priceHistory->vat_percentage = $productData['vatPercentage'] ? $productData['vatPercentage'] : null;
+
+        $orderProductData = $request->input('orderProduct');
+
+        $orderProduct = new OrderProduct();
+        $orderProduct->order_id = $orderProductData['orderId'];
+        $orderProduct->description = $orderProductData['description'];
+        $orderProduct->amount = $orderProductData['amount'];
+        $orderProduct->amount_reduction = $orderProductData['amountReduction'] ? $orderProductData['amountReduction'] : 0;
+        $orderProduct->percentage_reduction = $orderProductData['percentageReduction'] ? $orderProductData['percentageReduction'] : 0;
+        $orderProduct->date_start = $orderProductData['dateStart'];
+        $orderProduct->date_end = $orderProductData['dateEnd'] ? $orderProductData['dateEnd'] : null;
+
+        DB::transaction(function () use ($product, $priceHistory, $orderProduct) {
+            $product->save();
+
+            $priceHistory->product_id = $product->id;
+            $priceHistory->save();
+
+            $orderProduct->product_id = $product->id;
+            $orderProduct->save();
+        });
+    }
+
     public function updateOrderProduct(RequestInput $input, OrderProduct $orderProduct)
     {
         $this->authorize('manage', Order::class);
@@ -204,6 +247,14 @@ class OrderController extends ApiController
 
         return FullOrderProduct::make($orderProduct);
     }
+
+    public function destroyOrderProduct(OrderProduct $orderProduct)
+    {
+        $this->authorize('manage', Order::class);
+
+        $orderProduct->delete();
+    }
+
 
     public function peek()
     {
@@ -273,7 +324,7 @@ class OrderController extends ApiController
         $invoice->invoice_number =  Invoice::where('administration_id', $invoice->administration_id)->count();
         $invoice->number = 'O' . Carbon::now()->year . '-' . $invoice->invoice_number;
         $invoice->payment_type_id = $order->payment_type_id;
-
+        $invoice->collection_frequency_id = $order->collection_frequency_id;
         $invoice = InvoiceHelper::saveInvoiceProducts($invoice, $order, true);
 
         return InvoiceHelper::createInvoiceDocument($invoice, true);
@@ -300,17 +351,14 @@ class OrderController extends ApiController
 
         $data = $requestInput
             ->string('administrationId')->validate('required|exists:administrations,id')->alias('administration_id')->next()
-            ->string('filter')->validate('required')->next()
             ->get();
 
-        $orders = [];
-
-        if($data['filter'] === 'incassos') {
-            $orders = Order::where('administration_id', $data['administration_id'])->where('status_id', 'active')->where('payment_type_id', 'collection')->with('contact')->get();
-        }
-        else if($data['filter'] === 'facturen'){
-            $orders = Order::where('administration_id', $data['administration_id'])->where('status_id', 'active')->where('payment_type_id', 'transfer')->with('contact')->get();
-        }
+        $orders = Order::where('administration_id', $data['administration_id'])
+            ->where('orders.status_id', 'active')
+            ->where('orders.date_next_invoice', '<=', Carbon::today()->addDays(14))
+            ->whereDoesntHave('invoices', function ($q) {
+                $q->where('invoices.status_id', 'checked');
+            })->with(['contact'])->get();
 
         return FullOrder::collection($orders);
     }
@@ -330,29 +378,26 @@ class OrderController extends ApiController
             ->get();
 
 
-        $orders = $response = [];
-
-        if($data['filter'] === 'incassos') {
-            $orders = Order::where('administration_id', $data['administration_id'])->where('status_id', 'active')->where('payment_type_id', 'collection')->with('contact')->get();
-        }
-        else if($data['filter'] === 'facturen'){
-            $orders = Order::where('administration_id', $data['administration_id'])->where('status_id', 'active')->where('payment_type_id', 'transfer')->with('contact')->get();
-        }
+        $orders = Order::where('administration_id', $data['administration_id'])
+            ->where('orders.status_id', 'active')
+            ->where('orders.date_next_invoice', '<=', Carbon::today()->addDays(14))
+            ->whereDoesntHave('invoices', function ($q) {
+                $q->where('invoices.status_id', 'checked');
+            })->get();
 
         foreach ($orders as $order){
-            if($order->total_price_incl_vat > 0) {
+            if($order->total_price_incl_vat > 0 && $order->can_create_invoice) {
                 $invoice = new Invoice();
                 $invoice->status_id = 'checked';
                 $invoice->date_requested = $data['date_requested'];
                 $invoice->date_collection = $data['date_collection'];
                 $invoice->order_id = $order->id;
+                $invoice->collection_frequency_id = $order->collection_frequency_id;
                 $invoice->save();
 
                 InvoiceHelper::saveInvoiceProducts($invoice, $order);
             }
         }
-
-        return $response;
     }
 
     public function getEmailPreview(Order $order){
@@ -363,6 +408,7 @@ class OrderController extends ApiController
         $invoice->invoice_number =  Invoice::where('administration_id', $invoice->administration_id)->count();
         $invoice->number = 'O' . Carbon::now()->year . '-' . $invoice->invoice_number;
         $invoice->payment_type_id = $order->payment_type_id;
+        $invoice->collection_frequency_id = $order->collection_frequency_id;
 
         $invoice = InvoiceHelper::saveInvoiceProducts($invoice, $order, true);
 

@@ -54,10 +54,8 @@ class FullOrder extends Resource
                 'IBAN' => $this->IBAN,
                 'ibanAttn' => $this->iban_attn,
                 'invoiceText' => $this->invoice_text,
-                'dateNextCollection' => $this->date_next_collection,
+                'dateNextInvoice' => $this->date_next_invoice,
                 'dateRequested' => $this->date_requested,
-                'dateStart' => $this->date_start,
-                'dateEnd' => $this->date_end,
 
                 'collectionFrequencyId' => $this->collection_frequency_id,
                 'collectionFrequency' => FullEnumWithIdAndName::make($this->getCollectionFrequency()),
@@ -87,6 +85,8 @@ class FullOrder extends Resource
                 
                 'createdAt' => $this->created_at,
                 'updatedAt' => $this->updated_at,
+
+                'canCreateInvoice' => $this->can_create_invoice
             ];
     }
 }

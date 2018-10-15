@@ -23,7 +23,7 @@ class InvoiceObserver
         $invoice->number = 'temp';
 
         if(!$invoice->status_id ){
-            $invoice->status_id = 'concept';
+            $invoice->status_id = 'checked';
         }
 
         $invoice->invoice_number = 0;
@@ -40,5 +40,26 @@ class InvoiceObserver
         $invoice->invoice_number =  Invoice::where('administration_id', $invoice->administration_id)->count();
         $invoice->number = 'F' . Carbon::now()->year . '-' . $invoice->invoice_number;
         $invoice->save();
+    }
+
+    public function saving(Invoice $invoice){
+        $oldInvoiceStatusId = $invoice->getOriginal('status_id');
+
+        // Als de status van checked naar verzonden wordt gezet, updaten we van alle orderregels de laatste factuur datum.
+        // Deze wordt later gebruikt om eenmalige producten te checken of ze betaald zijn en om de periode weer te geven op de factuur.
+        if($invoice->status_id === 'sent' && $oldInvoiceStatusId === 'checked'){
+            foreach ($invoice->order->orderProducts as $orderProduct){
+                $order = $orderProduct->order;
+                if($orderProduct->date_last_invoice){
+                    $dateLastInvoice = $order->addDurationToDate(Carbon::parse($orderProduct->date_last_invoice));
+                }
+                else{
+                    $dateLastInvoice = $order->addDurationToDate(Carbon::parse($orderProduct->date_start));
+                }
+
+                $orderProduct->date_last_invoice = $dateLastInvoice;
+                $orderProduct->save();
+            }
+        }
     }
 }

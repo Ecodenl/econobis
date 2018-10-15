@@ -63,6 +63,28 @@ export default {
         return axios.post(requestUrl, orderProduct);
     },
 
+    newProductAndOrderProduct: (orderProduct, product) => {
+        const requestUrl = `${URL_ORDER}/product-and-order-product`;
+        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
+        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
+
+        return axios.post(requestUrl, {'orderProduct': orderProduct, 'product': product});
+    },
+
+    deleteOrderProduct: (orderProductId) => {
+        const requestUrl = `${URL_ORDER}/order-product/${orderProductId}/delete`;
+        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
+        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
+
+        return axios.post(requestUrl)
+            .then(function (response) {
+                return response.data;
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+    },
+
     updateOrderProduct: (orderProduct) => {
         const requestUrl = `${URL_ORDER}/order-product/${orderProduct.id}/update`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');

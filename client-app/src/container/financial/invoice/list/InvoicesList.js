@@ -24,7 +24,6 @@ import InvoicesAPI from "../../../../api/invoice/InvoicesAPI";
 import fileDownload from "js-file-download";
 import moment from "moment/moment";
 import {hashHistory} from "react-router";
-import InvoiceListSetCheckedAll from "./InvoiceListSetCheckedAll";
 import ButtonText from "../../../../components/button/ButtonText";
 import InvoiceDetailsAPI from "../../../../api/invoice/InvoiceDetailsAPI";
 
@@ -33,17 +32,12 @@ class InvoicesList extends Component {
         super(props);
 
         this.state = {
-            showCheckAll: false,
             showSelectInvoicesToSend: false,
             checkedAllCheckboxes: false,
         };
 
         if (!isEmpty(props.filter)) {
             switch (props.filter) {
-                case 'concepten':
-                    this.props.clearFilterInvoices();
-                    this.props.setStatusIdFilterInvoices('concept');
-                    break;
                 case 'gecontroleerd':
                     this.props.clearFilterInvoices();
                     this.props.setStatusIdFilterInvoices('checked');
@@ -95,10 +89,6 @@ class InvoicesList extends Component {
         if (this.props.filter !== nextProps.filter) {
             if (!isEmpty(nextProps.filter)) {
                 switch (nextProps.filter) {
-                    case 'concepten':
-                        this.props.clearFilterInvoices();
-                        this.props.setStatusIdFilterInvoices('concept');
-                        break;
                     case 'gecontroleerd':
                         this.props.clearFilterInvoices();
                         this.props.setStatusIdFilterInvoices('checked');
@@ -228,10 +218,6 @@ class InvoicesList extends Component {
         }
     };
 
-    showCheckAll = () => {
-        this.setState({showCheckAll: !this.state.showCheckAll});
-    };
-
     selectAllCheckboxes = () => {
         this.setState({
             checkedAllCheckboxes: !this.state.checkedAllCheckboxes
@@ -250,9 +236,6 @@ class InvoicesList extends Component {
                         <div className="btn-group btn-group-flex" role="group">
                             <ButtonIcon iconName={"glyphicon-refresh"} onClickAction={this.resetInvoiceFilters}/>
                             <ButtonIcon iconName={"glyphicon-download-alt"} onClickAction={this.getCSV} />
-                            {(this.props.filter === 'concepten' && meta.total > 0) &&
-                            <ButtonIcon iconName={"glyphicon-ok"} onClickAction={this.showCheckAll}/>
-                            }
                             {(this.props.filter === 'gecontroleerd' && meta.total > 0) &&
                             <ButtonText buttonText={"Facturen versturen"}
                                         onClickAction={() => this.previewSend()}/>
@@ -325,14 +308,6 @@ class InvoicesList extends Component {
                         />
                     </div>
                 </form>
-                {
-                    this.state.showCheckAll &&
-                    <InvoiceListSetCheckedAll
-                        closeModal={this.showCheckAll}
-                        administrationId={this.props.administrationId}
-                        amountOfInvoices={meta.total || 0}
-                    />
-                }
             </div>
         );
     }

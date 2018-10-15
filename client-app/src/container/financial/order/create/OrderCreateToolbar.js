@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import { browserHistory } from 'react-router';
+import {browserHistory, hashHistory} from 'react-router';
 
 import ButtonIcon from '../../../../components/button/ButtonIcon';
-import OrderCreateConfirmCollection from "./OrderCreateConfirmCollection";
-import OrderCreateConfirmTransfer from "./OrderCreateConfirmTransfer";
+import OrderCreateConfirm from "./OrderCreateConfirm";
+import ButtonText from "../../../../components/button/ButtonText";
 
 class OrderCreateToolbar extends Component {
     constructor(props){
@@ -24,7 +24,7 @@ class OrderCreateToolbar extends Component {
                     <div className="btn-group btn-group-flex margin-small" role="group">
                         <ButtonIcon iconName={"glyphicon-arrow-left"} onClickAction={browserHistory.goBack}/>
                         {this.props.amountOfOrders > 0 &&
-                        <ButtonIcon iconName={"glyphicon-file"} onClickAction={this.showCreate}/>
+                        <ButtonText buttonText={'Maak facturen'} onClickAction={this.showCreate}/>
                         }
                     </div>
                 </div>
@@ -32,21 +32,11 @@ class OrderCreateToolbar extends Component {
                     className="text-center">Facturen aanmaken({this.props.amountOfOrders})</h4></div>
                 <div className="col-md-4"/>
                 {
-                    this.state.showCreate && this.props.filter === 'incassos' &&
-                    <OrderCreateConfirmCollection
+                    this.state.showCreate &&
+                    <OrderCreateConfirm
                         closeModal={this.showCreate}
                         administrationId={this.props.administrationId}
                         amountOfOrders={this.props.amountOfOrders}
-                        filter={this.props.filter}
-                    />
-                }
-                {
-                    this.state.showCreate && this.props.filter === 'facturen' &&
-                    <OrderCreateConfirmTransfer
-                        closeModal={this.showCreate}
-                        administrationId={this.props.administrationId}
-                        amountOfOrders={this.props.amountOfOrders}
-                        filter={this.props.filter}
                     />
                 }
             </div>

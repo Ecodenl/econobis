@@ -20,7 +20,7 @@ class OrderDetailsFormGeneralEdit extends Component {
 
         const {
             id, statusId, subject, emailTemplateId, emailTemplateReminderId, emailTemplateExhortationId, paymentTypeId, collectionFrequencyId, IBAN, ibanAttn,
-            poNumber, invoiceText, dateRequested, dateStart, dateEnd, administrationId
+            poNumber, invoiceText, dateRequested, administrationId, dateNextInvoice
         } = props.orderDetails;
 
         this.state = {
@@ -41,15 +41,12 @@ class OrderDetailsFormGeneralEdit extends Component {
                 poNumber: poNumber ? poNumber : '',
                 invoiceText: invoiceText ? invoiceText : '',
                 dateRequested: dateRequested ? dateRequested : '',
-                dateStart: dateStart ? dateStart : '',
-                dateEnd: dateEnd ? dateEnd : '',
+                dateNextInvoice: dateNextInvoice ? dateNextInvoice : '',
             },
             errors: {
                 statusId: false,
                 subject: false,
                 IBAN: false,
-                dateStart: false,
-                dateEnd: false,
             },
             peekLoading: {
                 emailTemplates: true,
@@ -131,16 +128,6 @@ class OrderDetailsFormGeneralEdit extends Component {
             }
         }
 
-        if (!validator.isEmpty(order.dateStart + '') && moment(order.dateEnd).isSameOrBefore(moment(order.dateStart))) {
-            errors.dateEnd = true;
-            hasErrors = true;
-        }
-
-        if (!validator.isEmpty(order.dateEnd + '') && moment(order.dateStart).isSameOrAfter(moment(order.dateEnd))) {
-            errors.dateStart = true;
-            hasErrors = true;
-        }
-
         this.setState({...this.state, errors: errors});
 
         // If no errors send form
@@ -152,7 +139,7 @@ class OrderDetailsFormGeneralEdit extends Component {
     render() {
         const {
             statusId, subject, emailTemplateId, emailTemplateReminderId, emailTemplateExhortationId, paymentTypeId, collectionFrequencyId, IBAN, ibanAttn,
-            poNumber, invoiceText, dateRequested, dateStart, dateEnd, administrationId
+            poNumber, invoiceText, dateRequested, administrationId, dateNextInvoice
         } = this.state.order;
         const { invoiceCount } = this.props.orderDetails;
 
@@ -315,21 +302,14 @@ class OrderDetailsFormGeneralEdit extends Component {
                                 value={dateRequested}
                                 onChangeAction={this.handleInputChangeDate}
                             />
-                            <InputText
+                            <InputDate
                                 label="Volgende factuur datum"
-                                value={''}
-                                name={'nextCollectionDate'}
-                                readOnly={true}
+                                value={dateNextInvoice}
+                                name={'dateNextInvoice'}
+                                onChangeAction={this.handleInputChangeDate}
                             />
                         </div>
                         <div className="row">
-                            <InputDate
-                                label="Datum in"
-                                name="dateStart"
-                                value={dateStart}
-                                onChangeAction={this.handleInputChangeDate}
-                                error={this.state.errors.dateStart}
-                            />
                             <InputText
                                 label="Totaal bedrag incl. BTW"
                                 value={"€" + this.props.orderDetails.totalPriceInclVatPerYear.toLocaleString('nl', {
@@ -338,15 +318,6 @@ class OrderDetailsFormGeneralEdit extends Component {
                                 })}
                                 name={'totalPriceInclVat'}
                                 readOnly={true}
-                            />
-                        </div>
-                        <div className="row">
-                            <InputDate
-                                label="Datum uit"
-                                name="dateEnd"
-                                value={dateEnd}
-                                onChangeAction={this.handleInputChangeDate}
-                                error={this.state.errors.dateEnd}
                             />
                         </div>
                     </PanelBody>

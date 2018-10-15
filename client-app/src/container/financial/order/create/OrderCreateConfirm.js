@@ -4,9 +4,10 @@ import Modal from '../../../../components/modal/Modal';
 import OrderDetailsAPI from "../../../../api/order/OrderDetailsAPI";
 import {hashHistory} from "react-router";
 import moment from "moment/moment";
+import validator from "validator";
 import InputDate from "../../../../components/form/InputDate";
 
-class OrderCreateConfirmTransfer extends Component {
+class OrderCreateConfirm extends Component {
 
     constructor(props) {
         super(props);
@@ -14,11 +15,37 @@ class OrderCreateConfirmTransfer extends Component {
         this.state = {
             invoice: {
                 administrationId: props.administrationId,
-                orderId: props.orderId,
                 dateRequested: moment(),
-                filter: props.filter,
+                dateCollection: '',
             },
+            errors: {
+                dateCollection: false,
+            }
         };
+    };
+
+    confirmAction = event => {
+        event.preventDefault();
+
+        const {invoice} = this.state;
+
+        // Validation
+        let errors = {};
+        let hasErrors = false;
+
+        if (validator.isEmpty(invoice.dateCollection + '')) {
+            errors.dateCollection = true;
+            hasErrors = true;
+        }
+
+        this.setState({...this.state, errors: errors});
+
+        // If no errors send form
+        if (!hasErrors) {
+            OrderDetailsAPI.createAll(invoice).then((payload) => {
+                hashHistory.push(`/financieel/${this.props.administrationId}/facturen/gecontroleerd`);
+            });
+        }
     };
 
     handleInputChangeDate = (value, name) => {
@@ -31,27 +58,8 @@ class OrderCreateConfirmTransfer extends Component {
         });
     };
 
-    confirmAction = event => {
-        event.preventDefault();
-
-        const {invoice} = this.state;
-
-        // Validation
-        let errors = {};
-        let hasErrors = false;
-
-        this.setState({...this.state, errors: errors});
-
-        // If no errors send form
-        if (!hasErrors) {
-            OrderDetailsAPI.createAll(invoice).then((payload) => {
-                hashHistory.push(`/financieel/${this.props.administrationId}/facturen/gecontroleerd`);
-            });
-        }
-    };
-
     render() {
-        const { dateRequested } = this.state.invoice;
+        const { dateRequested, dateCollection } = this.state.invoice;
 
         return (
             <Modal
@@ -68,6 +76,14 @@ class OrderCreateConfirmTransfer extends Component {
                         value={dateRequested}
                         onChangeAction={this.handleInputChangeDate}
                     />
+                    <InputDate
+                        label="Incasso datum"
+                        name="dateCollection"
+                        value={dateCollection}
+                        onChangeAction={this.handleInputChangeDate}
+                        required={'required'}
+                        error={this.state.errors.dateCollection}
+                    />
                 </div>
 
                 <div className="row">
@@ -82,4 +98,4 @@ class OrderCreateConfirmTransfer extends Component {
     };
 }
 
-export default OrderCreateConfirmTransfer;
+export default OrderCreateConfirm;

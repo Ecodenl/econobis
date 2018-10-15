@@ -6,6 +6,8 @@ use App\Eco\Administration\Administration;
 use App\Eco\Invoice\InvoiceProduct;
 use App\Eco\Order\OrderProduct;
 use App\Eco\User\User;
+use App\Scopes\NotOneTimeProductScope;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
@@ -22,6 +24,15 @@ class Product extends Model
             'price_incl_vat',
             'current_price',
         ];
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::addGlobalScope('is_not_one_time', function (Builder $builder) {
+            $builder->where('is_one_time', true);
+        });
+    }
 
     public function priceHistory()
     {

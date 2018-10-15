@@ -4,6 +4,7 @@ namespace App\Http\Resources\Order;
 
 use App\Http\Resources\Product\FullProduct;
 use Illuminate\Http\Resources\Json\Resource;
+use Illuminate\Support\Carbon;
 
 class FullOrderProduct extends Resource
 {
@@ -16,6 +17,20 @@ class FullOrderProduct extends Resource
      */
     public function toArray($request)
     {
+        $period = false;
+
+        if($this->product->duration_id !== 'none') {
+            if($this->date_last_invoice){
+                $start = $this->date_last_invoice;
+                $end = $this->order->addDurationToDate(Carbon::parse($this->date_last_invoice));
+            }
+            else{
+                $start = $this->date_start;
+                $end = $this->order->addDurationToDate(Carbon::parse($this->date_start));
+            }
+            $period = Carbon::parse($start)->formatLocalized('%e %B %Y') . ' t/m ' . Carbon::parse($end)->subDay()->formatLocalized('%e %B %Y');
+        }
+
         return
             [
                 'id' => $this->id,
@@ -34,6 +49,9 @@ class FullOrderProduct extends Resource
 
                 'productId' => $this->product_id,
                 'product' => FullProduct::make($this->whenLoaded('product')),
+                'isOneTimeAndPaidProduct' => $this->is_one_time_and_paid_product,
+                'period' => $period,
+                'dateLastInvoice' => $this->date_last_invoice
             ];
     }
 }

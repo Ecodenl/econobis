@@ -159,7 +159,7 @@ class ProductNewForm extends Component {
                                 onChangeAction={this.handleInputChange}
                             />
                             <InputSelect
-                                label={"Factuur frequentie"}
+                                label={"Prijs per"}
                                 id="invoiceFrequencyId"
                                 name={"invoiceFrequencyId"}
                                 options={this.props.productInvoiceFrequencies}

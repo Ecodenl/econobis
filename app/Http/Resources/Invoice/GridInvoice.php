@@ -23,7 +23,8 @@ class GridInvoice extends Resource
             'dateRequested' => $this->date_requested,
             'subject' => $this->subject,
 
-            'order' => FullOrder::make($this->whenLoaded('order')),
+            'orderSubject' => $this->order->subject,
+            'orderContactFullName' => $this->order->contact->full_name,
 
             'daysExpired' => $this->days_expired,
             'totalPriceInclVatAndReduction' => $this->total_price_incl_vat_and_reduction,

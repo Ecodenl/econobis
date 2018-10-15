@@ -30,11 +30,11 @@ class Administration extends Model
         = [
             'total_orders',
             'total_orders_concepts',
-            'total_orders_invoices',
-            'total_orders_collections',
+            'total_orders_upcoming',
+            'total_orders_to_create_invoices',
+            'total_orders_to_send_invoices',
             'total_orders_closed',
             'total_invoices',
-            'total_invoices_concepts',
             'total_invoices_checked',
             'total_invoices_sent',
             'total_invoices_exported',
@@ -109,15 +109,38 @@ class Administration extends Model
         return $this->orders()->where('status_id', 'concept')->count();
     }
 
-    public function getTotalOrdersInvoicesAttribute()
+    public function getTotalOrdersUpcomingAttribute()
     {
-        return $this->orders()->where('status_id', 'active')->where('payment_type_id', 'transfer')->count();
+        return $this->orders()
+            ->where('orders.status_id', 'active')
+            ->where(function ($q) {
+                $q->whereNull('orders.date_next_invoice')
+                    ->orWhere('orders.date_next_invoice', '>', Carbon::today()->addDays(14));
+            })
+            ->whereDoesntHave('invoices', function ($q) {
+                $q->where('invoices.status_id', 'checked');
+            })->count();
     }
 
-    public function getTotalOrdersCollectionsAttribute()
+    public function getTotalOrdersToCreateInvoicesAttribute()
     {
-        return $this->orders()->where('status_id', 'active')->where('payment_type_id', 'collection')->count();
+        return $this->orders()
+            ->where('orders.status_id', 'active')
+            ->where('orders.date_next_invoice', '<=', Carbon::today()->addDays(14))
+            ->whereDoesntHave('invoices', function ($q) {
+                $q->where('invoices.status_id', 'checked');
+            })->count();
     }
+
+    public function getTotalOrdersToSendInvoicesAttribute()
+    {
+        return $this->orders()
+            ->where('orders.status_id', 'active')
+            ->whereHas('invoices', function ($q) {
+                $q->where('invoices.status_id', 'checked');
+            })->count();
+    }
+
 
     public function getTotalOrdersClosedAttribute()
     {
@@ -127,11 +150,6 @@ class Administration extends Model
     public function getTotalInvoicesAttribute()
     {
         return $this->invoices()->count();
-    }
-
-    public function getTotalInvoicesConceptsAttribute()
-    {
-        return $this->invoices()->where('status_id', 'concept')->whereNull('date_reminder_1')->whereNull('date_reminder_2')->whereNull('date_reminder_3')->whereNull('date_exhortation')->count();
     }
 
     public function getTotalInvoicesCheckedAttribute()

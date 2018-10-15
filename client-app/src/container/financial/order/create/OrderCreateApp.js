@@ -18,7 +18,7 @@ class OrderCreateApp extends Component {
     };
 
     componentDidMount() {
-        OrdersAPI.getOrdersForCreating(this.props.params.id, this.props.params.filter).then((payload) => {
+        OrdersAPI.getOrdersForCreating(this.props.params.id).then((payload) => {
             this.setState({
                 orders: payload.data,
             });
@@ -39,7 +39,7 @@ class OrderCreateApp extends Component {
                         <div className="col-md-12 margin-10-top">
                             <Panel>
                                 <PanelBody className={"panel-small"}>
-                                    <OrderCreateToolbar filter={this.props.params.filter} amountOfOrders={this.state.orders ? this.state.orders.length : 0} administrationId={this.props.params.id}/>
+                                    <OrderCreateToolbar amountOfOrders={this.state.orders ? this.state.orders.length : 0} administrationId={this.props.params.id}/>
                                 </PanelBody>
                             </Panel>
                         </div>

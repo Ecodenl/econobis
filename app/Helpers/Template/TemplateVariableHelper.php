@@ -742,12 +742,6 @@ class TemplateVariableHelper
             case 'datum_aangevraagd':
                 return $model->date_requested ? Carbon::parse($model->date_requested)->format('d/m/Y') : null;
                 break;
-            case 'datum_start':
-                return $model->date_start ? Carbon::parse($model->date_start)->format('d/m/Y') : null;
-                break;
-            case 'datum_eind':
-                return $model->date_end ? Carbon::parse($model->date_end)->format('d/m/Y') : null;
-                break;
             case 'gemaakt_op':
                 return $model->created_at ? Carbon::parse($model->created_at)->format('d/m/Y') : null;
                 break;

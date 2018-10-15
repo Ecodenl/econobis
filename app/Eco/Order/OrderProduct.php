@@ -26,6 +26,7 @@ class OrderProduct extends Model
             'total_price_incl_vat_and_reduction',
             'total_price_ex_vat_incl_reduction',
             'total_price_incl_vat_and_reduction_per_year',
+            'is_one_time_and_paid_product',
         ];
 
     public function order()
@@ -35,7 +36,7 @@ class OrderProduct extends Model
 
     public function product()
     {
-        return $this->belongsTo(Product::class);
+        return $this->belongsTo(Product::class)->withoutGlobalScope('is_not_one_time');
     }
 
     public function getTotalPriceInclVatAndReductionAttribute()
@@ -96,6 +97,15 @@ class OrderProduct extends Model
             default:
                 return $this->total_price_incl_vat_and_reduction;
 
+        }
+    }
+
+    public function getIsOneTimeAndPaidProductAttribute(){
+        if($this->product->duration_id === 'none' && $this->date_last_invoice){
+            return true;
+        }
+        else{
+            return false;
         }
     }
 }

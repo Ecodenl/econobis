@@ -219,4 +219,24 @@ class Invoice extends Model
 
         return $vatInfo;
     }
+
+    //Adds the collection frequency to a carbon date
+    public function addDurationToDate($date){
+        switch ($this->collection_frequency_id) {
+            case 'once':
+                return $date;
+                break;
+            case 'monthly':
+                return $date->addMonth();
+                break;
+            case 'quarterly':
+                return $date->addQuarter();
+                break;
+            case 'yearly':
+                return $date->addYear();
+                break;
+            default:
+                return $date;
+        }
+    }
 }

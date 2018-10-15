@@ -21,8 +21,8 @@ class InvoiceDetailsForm extends Component {
                 :
                 <div>
                     <InvoiceDetailsFormGeneral />
-                    <InvoicePaymentsForm />
                     <InvoiceProductsForm />
+                    <InvoicePaymentsForm />
                     <InvoiceDetailsFormConclusion />
                 </div>
         );

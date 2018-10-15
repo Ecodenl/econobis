@@ -29,9 +29,6 @@ export default (currentRouteParams) => {
             if(currentRouteParams.filter) {
                 activeParent = 'invoices';
                 switch(currentRouteParams.filter) {
-                    case 'concepten':
-                        activeMenuItem = 'invoices/concepts';
-                        break;
                     case 'gecontroleerd':
                         activeMenuItem = 'invoices/checked';
                         break;

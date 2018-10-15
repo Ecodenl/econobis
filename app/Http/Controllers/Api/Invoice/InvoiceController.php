@@ -11,6 +11,10 @@ namespace App\Http\Controllers\Api\Invoice;
 use App\Eco\Administration\Administration;
 use App\Eco\Invoice\Invoice;
 use App\Eco\Invoice\InvoicePayment;
+use App\Eco\Invoice\InvoiceProduct;
+use App\Eco\Order\Order;
+use App\Eco\Product\PriceHistory;
+use App\Eco\Product\Product;
 use App\Helpers\CSV\InvoiceCSVHelper;
 use App\Helpers\Invoice\InvoiceHelper;
 use App\Helpers\RequestInput\RequestInput;
@@ -19,12 +23,14 @@ use App\Http\Controllers\Api\ApiController;
 use App\Http\Controllers\Api\Order\OrderController;
 use App\Http\RequestQueries\Invoice\Grid\RequestQuery;
 use App\Http\Resources\Invoice\FullInvoice;
+use App\Http\Resources\Invoice\FullInvoiceProduct;
 use App\Http\Resources\Invoice\GridInvoice;
 use App\Http\Resources\Invoice\InvoicePeek;
 use Barryvdh\DomPDF\Facade as PDF;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 class InvoiceController extends ApiController
@@ -100,6 +106,7 @@ class InvoiceController extends ApiController
 
         $invoice = new Invoice($data);
         $invoice->status_id = 'checked';
+        $invoice->collection_frequency_id = $invoice->order->collection_frequency_id;
         $invoice->save();
 
         InvoiceHelper::saveInvoiceProducts($invoice, $invoice->order);
@@ -181,23 +188,6 @@ class InvoiceController extends ApiController
         $invoice->status_id = 'irrecoverable';
         $invoice->save();
         return $invoice;
-    }
-
-    public function setChecked(Invoice $invoice)
-    {
-        $invoice->status_id = 'checked';
-        $invoice->save();
-        return $invoice;
-    }
-
-    public function setCheckedAll(Administration $administration)
-    {
-        $response = [];
-        foreach ($administration->invoices()->where('status_id', 'concept')->get() as $invoice){
-            array_push($response, $this->setChecked($invoice));
-        }
-
-        return $response;
     }
 
     public function send(Invoice $invoice)
@@ -383,6 +373,105 @@ class InvoiceController extends ApiController
 
             return $sepaHelper->downloadSepa($sepa);
         }
+    }
+
+    public function storeInvoiceProduct(RequestInput $input)
+    {
+        $this->authorize('manage', Invoice::class);
+
+        $data = $input
+            ->string('productId')->validate('required|exists:products,id')->alias('product_id')->next()
+            ->string('invoiceId')->validate('required|exists:invoices,id')->alias('invoice_id')->next()
+            ->string('description')->validate('required')->next()
+            ->integer('amount')->validate('required')->next()
+            ->numeric('amountReduction')->onEmpty(null)->whenMissing(null)->alias('amount_reduction')->next()
+            ->numeric('percentageReduction')->onEmpty(null)->whenMissing(null)->alias('percentage_reduction')->next()
+            ->date('dateLastInvoice')->validate('required')->alias('date_last_invoice')->next()
+            ->get();
+
+        $invoiceProduct = new InvoiceProduct($data);
+
+        $product = Product::find($data['product_id']);
+        $invoiceProduct->price = $product->currentPrice ? $product->currentPrice->price : 0;
+        $invoiceProduct->vat_percentage = $product->currentPrice ? $product->currentPrice->vat_percentage : 0;
+        $invoiceProduct->product_code = $product->code;
+        $invoiceProduct->product_name = $product->name;
+
+        $invoiceProduct->save();
+
+        return FullInvoiceProduct::make($invoiceProduct);
+    }
+
+    public function storeProductAndInvoiceProduct(Request $request)
+    {
+        $this->authorize('manage', Invoice::class);
+
+        $productData = $request->input('product');
+
+        $product = new Product();
+        $product->is_one_time = true;
+        $product->name = $productData['name'];
+        $product->code = $productData['code'];
+        $product->duration_id = $productData['durationId'];
+        $product->invoice_frequency_id = $productData['invoiceFrequencyId'];
+        $product->administration_id = $productData['administrationId'];
+
+        $priceHistory = new PriceHistory();
+        $priceHistory->date_start = Carbon::today();
+        $priceHistory->price = $productData['price'];
+        $priceHistory->vat_percentage = $productData['vatPercentage'] ? $productData['vatPercentage'] : null;
+
+        $invoiceProductData = $request->input('invoiceProduct');
+
+        $invoiceProduct = new InvoiceProduct();
+        $invoiceProduct->invoice_id = $invoiceProductData['invoiceId'];
+        $invoiceProduct->description = $invoiceProductData['description'];
+        $invoiceProduct->amount = $invoiceProductData['amount'];
+        $invoiceProduct->amount_reduction = $invoiceProductData['amountReduction'] ? $invoiceProductData['amountReduction'] : 0;
+        $invoiceProduct->percentage_reduction = $invoiceProductData['percentageReduction'] ? $invoiceProductData['percentageReduction'] : 0;
+        $invoiceProduct->date_last_invoice = $invoiceProductData['dateLastInvoice'];
+
+        DB::transaction(function () use ($product, $priceHistory, $invoiceProduct) {
+            $product->save();
+
+            $priceHistory->product_id = $product->id;
+            $priceHistory->save();
+
+            $invoiceProduct->product_id = $product->id;
+            $invoiceProduct->price = $product->currentPrice ? $product->currentPrice->price : 0;
+            $invoiceProduct->vat_percentage = $product->currentPrice ? $product->currentPrice->vat_percentage : 0;
+            $invoiceProduct->product_code = $product->code;
+            $invoiceProduct->product_name = $product->name;
+            $invoiceProduct->save();
+        });
+    }
+
+    public function updateInvoiceProduct(RequestInput $input, InvoiceProduct $invoiceProduct)
+    {
+        $this->authorize('manage', Invoice::class);
+
+        $data = $input
+            ->string('productId')->validate('required|exists:products,id')->alias('product_id')->next()
+            ->string('invoiceId')->validate('required|exists:invoices,id')->alias('invoice_id')->next()
+            ->string('description')->validate('required')->next()
+            ->integer('amount')->validate('required')->next()
+            ->numeric('amountReduction')->onEmpty(null)->whenMissing(null)->alias('amount_reduction')->next()
+            ->numeric('percentageReduction')->onEmpty(null)->whenMissing(null)->alias('percentage_reduction')->next()
+            ->date('dateLastInvoice')->validate('required')->alias('date_last_invoice')->next()
+            ->get();
+
+        $invoiceProduct->fill($data);
+
+        $invoiceProduct->save();
+
+        return FullInvoiceProduct::make($invoiceProduct);
+    }
+
+    public function destroyInvoiceProduct(InvoiceProduct $invoiceProduct)
+    {
+        $this->authorize('manage', Invoice::class);
+
+        $invoiceProduct->delete();
     }
 
 }

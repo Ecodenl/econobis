@@ -55,10 +55,8 @@ class OrderCSVHelper
                 $order->last_name = '';
             }
 
-            $order->date_start = Carbon::parse($order->date_start)->format('d/m/Y');
-            $order->date_end = Carbon::parse($order->date_end)->format('d/m/Y');
             $order->date_requested = Carbon::parse($order->date_requested)->format('d/m/Y');
-            $order->date_next_collection = Carbon::parse($order->date_next_collection)->format('d/m/Y');
+            $order->date_next_invoice = Carbon::parse($order->date_next_invoice)->format('d/m/Y');
 
             $frequency = $order->getCollectionFrequency() ;
             $order->collectionFrequency = $frequency ? $frequency->name : '';
@@ -79,13 +77,11 @@ class OrderCSVHelper
             'contact.primaryphoneNumber.number' => 'Telefoonnummer primair',
             'contact.primaryEmailAddress.email' => 'E-mail primair',
             'date_requested' => 'Orderdatum',
-            'date_start' => 'Order startdatum',
-            'date_end' => 'Order einddatum',
             'number' => 'Ordernummer',
             'subject' => 'Order onderwerp',
             'total_price_incl_vat' => 'Orderbedrag bruto',
             'total_price_ex_vat' => 'Orderbedrag netto',
-            'date_next_collection' => 'Volgende factuurdatum',
+            'date_next_invoice' => 'Volgende factuur datum',
             'collectionFrequency' => 'Factuurfrequentie',
             'IBAN' => 'Ibannr',
         ], $headers);

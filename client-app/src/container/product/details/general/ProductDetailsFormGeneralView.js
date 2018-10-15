@@ -39,7 +39,7 @@ const ProductDetailsFormGeneralView = props => {
                             value={duration ? duration.name : ''}
                         />
                         <ViewText
-                            label={"Facturatie frequentie"}
+                            label={"Prijs per"}
                             value={invoiceFrequency ? invoiceFrequency.name : ''}
                         />
                     </div>

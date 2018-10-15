@@ -9,7 +9,7 @@ import moment from "moment/moment";
 const OrderDetailsFormGeneralView = props => {
 
     const { contact, administration, status, subject, emailTemplate, emailTemplateReminder, emailTemplateExhortation, paymentType, collectionFrequency, IBAN, ibanAttn,
-        poNumber, invoiceText, dateRequested, dateStart, dateEnd, totalPriceInclVatPerYear, dateNextCollection } = props.orderDetails;
+        poNumber, invoiceText, dateRequested, totalPriceInclVatPerYear, dateNextInvoice } = props.orderDetails;
 
     return (
         <div onClick={props.switchToEdit}>
@@ -83,7 +83,7 @@ const OrderDetailsFormGeneralView = props => {
                             value={IBAN}
                         />
                         <ViewText
-                            label={"IBAN t.n.v"}
+                            label={"IBAN t.n.v."}
                             value={ibanAttn}
                         />
                     </div>
@@ -104,28 +104,16 @@ const OrderDetailsFormGeneralView = props => {
                         />
                         <ViewText
                             label={"Volgende factuur datum"}
-                            value={ dateNextCollection ? moment(dateNextCollection).format('DD-MM-Y') : ''}
+                            value={ dateNextInvoice ? moment(dateNextInvoice).format('DD-MM-Y') : ''}
                         />
                     </div>
 
                     <div className="row">
-                        <ViewText
-                            label={"Datum in"}
-                            value={ dateStart ? moment(dateStart).format('DD-MM-Y') : ''}
-                        />
                         <ViewText
                             label={"Totaal bedrag incl. BTW"}
                             value={"€" + totalPriceInclVatPerYear.toLocaleString('nl',{ minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                         />
                     </div>
-
-                    <div className="row">
-                        <ViewText
-                            label={"Datum uit"}
-                            value={ dateEnd ? moment(dateEnd).format('DD-MM-Y') : ''}
-                        />
-                    </div>
-
 
                 </PanelBody>
             </Panel>

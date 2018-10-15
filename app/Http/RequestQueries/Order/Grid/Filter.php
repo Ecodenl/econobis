@@ -10,6 +10,7 @@ namespace App\Http\RequestQueries\Order\Grid;
 
 
 use App\Helpers\RequestQuery\RequestFilter;
+use Illuminate\Support\Carbon;
 
 class Filter extends RequestFilter
 {
@@ -40,4 +41,40 @@ class Filter extends RequestFilter
         'paymentTypeId' => 'eq',
         'statusId' => 'eq',
     ];
+
+    protected function applyStatusIdFilter($query, $type, $data)
+    {
+            switch ($data){
+                case 'upcoming':
+                    $query->where('orders.status_id', 'active')
+                        ->whereDoesntHave('invoices', function ($q) {
+                            $q->where('invoices.status_id', 'checked');
+                                })
+                        ->where(function ($q) {
+                            $q->whereNull('orders.date_next_invoice')
+                                ->orWhere('orders.date_next_invoice', '>', Carbon::today()->addDays(14));
+                        });
+                    return false;
+                    break;
+                case 'create':
+                    $query->where('orders.status_id', 'active')
+                    ->where('orders.date_next_invoice', '<=', Carbon::today()->addDays(14))
+                    ->whereDoesntHave('invoices', function ($q) {
+                        $q->where('invoices.status_id', 'checked');
+                    });
+                    return false;
+                    break;
+                case 'send':
+                    $query->where('orders.status_id', 'active')
+                        ->whereHas('invoices', function ($q) {
+                            $q->where('invoices.status_id', 'checked');
+                        });
+                    return false;
+                    break;
+                default:
+                    return true;
+                    break;
+            }
+
+    }
 }

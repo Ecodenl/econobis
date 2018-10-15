@@ -9,8 +9,8 @@ import moment from "moment/moment";
 
 moment.locale('nl');
 
-const OrderProductsFormEdit = props => {
-    const {product, description, amount, amountReduction, percentageReduction, dateStart, dateEnd, dateLastInvoice} = props.orderProduct;
+const InvoiceProductsFormEdit = props => {
+    const {product, description, amount, amountReduction, percentageReduction, dateStart, dateLastInvoice} = props.invoiceProduct;
 
     return (
         <div>
@@ -19,9 +19,9 @@ const OrderProductsFormEdit = props => {
                     <PanelBody>
                         <div className="row">
                             <InputText
-                                label={"Ordernummer"}
-                                name={"order"}
-                                value={props.orderDetails ? props.orderDetails.number : ''}
+                                label={"Factuurnummer"}
+                                name={"invoice"}
+                                value={props.invoiceDetails ? props.invoiceDetails.number : ''}
                                 readOnly={true}
                             />
                             <InputText
@@ -66,7 +66,7 @@ const OrderProductsFormEdit = props => {
                             <InputText
                                 label={"Bedrag"}
                                 name={"price"}
-                                value={'€' + props.orderProduct.product.priceInclVat.toLocaleString('nl', {
+                                value={'€' + props.invoiceProduct.product.priceInclVat.toLocaleString('nl', {
                                     minimumFractionDigits: 2,
                                     maximumFractionDigits: 2
                                 })}
@@ -97,20 +97,9 @@ const OrderProductsFormEdit = props => {
                         <div className="row">
                             <InputDate
                                 label="Begin datum"
-                                name="dateStart"
-                                value={dateStart}
-                                onChangeAction={props.handleInputChangeStartDate}
-                                readOnly={dateLastInvoice !== null}
-                                required={"required"}
-                                error={props.errors.dateStart}
-                            />
-                            <InputDate
-                                label="Eind datum"
-                                name="dateEnd"
-                                readOnly={product.durationId === 'none'}
-                                value={dateEnd}
+                                name="dateLastInvoice"
+                                value={dateLastInvoice}
                                 onChangeAction={props.handleInputChangeDate}
-                                error={props.errors.dateEnd}
                             />
                         </div>
 
@@ -125,4 +114,4 @@ const OrderProductsFormEdit = props => {
     );
 };
 
-export default OrderProductsFormEdit;
+export default InvoiceProductsFormEdit;

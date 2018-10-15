@@ -22,16 +22,17 @@ class Order extends Model
 
     protected $guarded = ['id'];
 
-    protected $encryptable = [
-        'IBAN'
-    ];
+    protected $encryptable
+        = [
+            'IBAN'
+        ];
 
     protected $appends
         = [
             'total_price_incl_vat',
             'total_price_ex_vat',
             'total_price_incl_vat_per_year',
-            'date_next_collection',
+            'can_create_invoice',
         ];
 
     public function orderProducts()
@@ -41,7 +42,7 @@ class Order extends Model
 
     public function activeOrderProducts()
     {
-        return $this->hasMany(OrderProduct::class)->where('date_start', '<=', Carbon::today())
+        return $this->hasMany(OrderProduct::class)
             ->where(function ($query) {
                 $query->where('date_end', '>=', Carbon::today())
                     ->orWhereNull('date_end');
@@ -65,12 +66,14 @@ class Order extends Model
 
     public function invoicesPaidCollection()
     {
-        return $this->hasMany(Invoice::class)->where('payment_type_id', 'collection')->where('status_id', 'paid')->orderBy('invoices.id', 'desc');;
+        return $this->hasMany(Invoice::class)->where('payment_type_id', 'collection')->where('status_id', 'paid')
+            ->orderBy('invoices.id', 'desc');;
     }
 
     public function invoicesPaidTransfer()
     {
-        return $this->hasMany(Invoice::class)->where('payment_type_id', 'transfer')->where('status_id', 'paid')->orderBy('invoices.id', 'desc');;
+        return $this->hasMany(Invoice::class)->where('payment_type_id', 'transfer')->where('status_id', 'paid')
+            ->orderBy('invoices.id', 'desc');;
     }
 
     public function documents()
@@ -93,35 +96,44 @@ class Order extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function emailTemplate(){
+    public function emailTemplate()
+    {
         return $this->belongsTo(EmailTemplate::class);
     }
 
-    public function emailTemplateReminder(){
+    public function emailTemplateReminder()
+    {
         return $this->belongsTo(EmailTemplate::class);
     }
 
-    public function emailTemplateExhortation(){
+    public function emailTemplateExhortation()
+    {
         return $this->belongsTo(EmailTemplate::class);
     }
 
     public function getCollectionFrequency()
     {
-        if(!$this->collection_frequency_id) return null;
+        if (!$this->collection_frequency_id) {
+            return null;
+        }
 
         return OrderCollectionFrequency::get($this->collection_frequency_id);
     }
 
     public function getPaymentType()
     {
-        if(!$this->payment_type_id) return null;
+        if (!$this->payment_type_id) {
+            return null;
+        }
 
         return OrderPaymentType::get($this->payment_type_id);
     }
 
     public function getStatus()
     {
-        if(!$this->status_id) return null;
+        if (!$this->status_id) {
+            return null;
+        }
 
         return OrderStatus::get($this->status_id);
     }
@@ -131,7 +143,9 @@ class Order extends Model
         $total = 0;
 
         foreach ($this->orderProducts as $orderProduct) {
-            if(Carbon::parse($orderProduct->date_start)->lte(Carbon::today()) && (Carbon::parse($orderProduct->date_end)->gte(Carbon::today()) || $orderProduct->date_end === null)) {
+            if (Carbon::parse($orderProduct->date_start)->lte(Carbon::today())
+                && (Carbon::parse($orderProduct->date_end)->gte(Carbon::today()) || $orderProduct->date_end === null)
+            ) {
                 $total += $orderProduct->total_price_incl_vat_and_reduction;
             }
         }
@@ -144,7 +158,9 @@ class Order extends Model
         $total = 0;
 
         foreach ($this->orderProducts as $orderProduct) {
-            if(Carbon::parse($orderProduct->date_start)->lte(Carbon::today()) && (Carbon::parse($orderProduct->date_end)->gte(Carbon::today()) || $orderProduct->date_end === null)) {
+            if (Carbon::parse($orderProduct->date_start)->lte(Carbon::today())
+                && (Carbon::parse($orderProduct->date_end)->gte(Carbon::today()) || $orderProduct->date_end === null)
+            ) {
                 $total += $orderProduct->total_price_ex_vat_incl_reduction;
             }
         }
@@ -157,7 +173,9 @@ class Order extends Model
         $total = 0;
 
         foreach ($this->orderProducts as $orderProduct) {
-            if(Carbon::parse($orderProduct->date_start)->lte(Carbon::today()) && (Carbon::parse($orderProduct->date_end)->gte(Carbon::today()) || $orderProduct->date_end === null)) {
+            if (Carbon::parse($orderProduct->date_start)->lte(Carbon::today())
+                && (Carbon::parse($orderProduct->date_end)->gte(Carbon::today()) || $orderProduct->date_end === null)
+            ) {
                 $total += $orderProduct->total_price_incl_vat_and_reduction_per_year;
             }
         }
@@ -165,16 +183,32 @@ class Order extends Model
         return $total;
     }
 
-    public function getDateNextCollectionAttribute()
+    public function getCanCreateInvoiceAttribute()
     {
-        $date = null;
-
-        foreach($this->invoices as $invoice){
-            if($invoice->date_collection && (Carbon::parse($invoice->date_collection)->lt(Carbon::parse($date)) || $date === null) && Carbon::parse($invoice->date_collection)->gte(Carbon::today())){
-                $date = $invoice->date_collection;
-                }
+        if ($this->invoices()->where('status_id', 'checked')->exists()) {
+            return false;
         }
-
-        return $date;
+        
+        return true;
+    }
+    
+    //Adds the collection frequency to a carbon date
+    public function addDurationToDate($date){
+        switch ($this->collection_frequency_id) {
+            case 'once':
+                return $date;
+                break;
+            case 'monthly':
+                return $date->addMonth();
+                break;
+            case 'quarterly':
+                return $date->addQuarter();
+                break;
+            case 'yearly':
+                return $date->addYear();
+                break;
+            default:
+                return $date;
+        }
     }
 }

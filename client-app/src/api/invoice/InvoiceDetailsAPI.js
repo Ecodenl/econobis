@@ -75,34 +75,6 @@ export default {
             });
     },
 
-    setChecked: (invoiceId) => {
-        const requestUrl = `${URL_INVOICE}/${invoiceId}/checked`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
-
-        return axios.post(requestUrl)
-            .then(function (response) {
-                return response.data;
-            })
-            .catch(function (error) {
-                console.log(error);
-            });
-    },
-
-    setCheckedAll: (invoiceId) => {
-        const requestUrl = `${URL_INVOICE}/${invoiceId}/checked-all`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
-
-        return axios.post(requestUrl)
-            .then(function (response) {
-                return response.data;
-            })
-            .catch(function (error) {
-                console.log(error);
-            });
-    },
-
     send: (invoiceId) => {
         const requestUrl = `${URL_INVOICE}/${invoiceId}/send`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
@@ -203,6 +175,20 @@ export default {
             });
     },
 
+    deleteInvoiceProduct: (invoiceProductId) => {
+        const requestUrl = `${URL_INVOICE}/invoice-product/${invoiceProductId}/delete`;
+        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
+        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
+
+        return axios.post(requestUrl)
+            .then(function (response) {
+                return response.data;
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+    },
+
     download: (id) => {
         const requestUrl = `${URL_INVOICE}/${id}/download`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
@@ -223,6 +209,30 @@ export default {
             .catch(function (error) {
                 console.log(error);
             });
-    }
+    },
+
+    newInvoiceProduct: (invoiceProduct) => {
+        const requestUrl = `${URL_INVOICE}/invoice-product`;
+        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
+        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
+
+        return axios.post(requestUrl, invoiceProduct);
+    },
+
+    newProductAndInvoiceProduct: (invoiceProduct, product) => {
+        const requestUrl = `${URL_INVOICE}/product-and-invoice-product`;
+        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
+        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
+
+        return axios.post(requestUrl, {'invoiceProduct': invoiceProduct, 'product': product});
+    },
+
+    updateInvoiceProduct: (invoiceProduct) => {
+        const requestUrl = `${URL_INVOICE}/invoice-product/${invoiceProduct.id}/update`;
+        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
+        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
+
+        return axios.post(requestUrl, invoiceProduct);
+    },
 
 };

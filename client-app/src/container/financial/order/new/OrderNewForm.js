@@ -44,6 +44,7 @@ class OrderNewForm extends Component {
                 dateRequested: moment(),
                 dateStart: '',
                 dateEnd: '',
+                dateNextInvoice: moment(),
             },
             errors: {
                 contactId: false,
@@ -51,8 +52,6 @@ class OrderNewForm extends Component {
                 statusId: false,
                 subject: false,
                 IBAN: false,
-                dateEnd: false,
-                dateStart: false,
             },
             peekLoading: {
                 contacts: true,
@@ -210,16 +209,6 @@ class OrderNewForm extends Component {
             hasErrors = true;
         }
 
-        if (!validator.isEmpty(order.dateStart + '') && moment(order.dateEnd).isSameOrBefore(moment(order.dateStart))) {
-            errors.dateEnd = true;
-            hasErrors = true;
-        }
-
-        if (!validator.isEmpty(order.dateEnd + '') && moment(order.dateStart).isSameOrAfter(moment(order.dateEnd))) {
-            errors.dateStart = true;
-            hasErrors = true;
-        }
-
         if (order.IBAN !== null && !validator.isEmpty(order.IBAN + '')) {
             if (!ibantools.isValidIBAN(order.IBAN)) {
                 errors.IBAN = true;
@@ -241,7 +230,7 @@ class OrderNewForm extends Component {
 
     render() {
         const { contactId, administrationId, statusId, subject, emailTemplateId, emailTemplateReminderId, emailTemplateExhortationId, paymentTypeId, collectionFrequencyId, IBAN, ibanAttn,
-            poNumber, invoiceText, dateRequested, dateStart, dateEnd } = this.state.order;
+            poNumber, invoiceText, dateRequested, dateNextInvoice } = this.state.order;
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -404,20 +393,10 @@ class OrderNewForm extends Component {
                                 onChangeAction={this.handleInputChangeDate}
                             />
                             <InputDate
-                                label="Begin datum"
-                                name="dateStart"
-                                value={dateStart}
+                                label="Volgende factuur datum"
+                                name="dateNextInvoice"
+                                value={dateNextInvoice}
                                 onChangeAction={this.handleInputChangeDate}
-                                error={this.state.errors.dateStart}
-                            />
-                        </div>
-                        <div className="row">
-                            <InputDate
-                                label="Eind datum"
-                                name="dateEnd"
-                                value={dateEnd}
-                                onChangeAction={this.handleInputChangeDate}
-                                error={this.state.errors.dateEnd}
                             />
                         </div>
 

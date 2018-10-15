@@ -355,7 +355,9 @@ Route::namespace('Api')
         Route::post('order/creating', 'Order\OrderController@getOrdersForCreating');
         Route::post('order/create-all', 'Order\OrderController@createAll');
         Route::post('order/order-product', 'Order\OrderController@storeOrderProduct');
+        Route::post('order/product-and-order-product', 'Order\OrderController@storeProductAndOrderProduct');
         Route::post('order/order-product/{orderProduct}/update', 'Order\OrderController@updateOrderProduct');
+        Route::post('order/order-product/{orderProduct}/delete', 'Order\OrderController@destroyOrderProduct');
         Route::post('order/{order}', 'Order\OrderController@update');
         Route::post('order/{order}/delete', 'Order\OrderController@destroy');
 
@@ -372,10 +374,12 @@ Route::namespace('Api')
         Route::get('invoice/{administration}/send-all-post', 'Invoice\InvoiceController@sendAllPost');
         Route::get('invoice/{administration}/create-sepa', 'Invoice\InvoiceController@generateSepaFile');
         Route::post('invoice', 'Invoice\InvoiceController@store');
+        Route::post('invoice/invoice-product', 'Invoice\InvoiceController@storeInvoiceProduct');
+        Route::post('invoice/product-and-invoice-product', 'Invoice\InvoiceController@storeProductAndInvoiceProduct');
+        Route::post('invoice/invoice-product/{invoiceProduct}/update', 'Invoice\InvoiceController@updateInvoiceProduct');
+        Route::post('invoice/invoice-product/{invoiceProduct}/delete', 'Invoice\InvoiceController@destroyInvoiceProduct');
         Route::post('invoice/{invoice}', 'Invoice\InvoiceController@update');
         Route::post('invoice/{invoice}/irrecoverable', 'Invoice\InvoiceController@setIrrecoverable');
-        Route::post('invoice/{invoice}/checked', 'Invoice\InvoiceController@setChecked');
-        Route::post('invoice/{administration}/checked-all', 'Invoice\InvoiceController@setCheckedAll');
         Route::post('invoice/{invoice}/send', 'Invoice\InvoiceController@send');
         Route::get('invoice/{invoice}/send-post', 'Invoice\InvoiceController@sendPost');
         Route::post('invoice/{invoice}/send-notification', 'Invoice\InvoiceController@sendNotification');

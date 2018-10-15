@@ -1,8 +1,7 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 
-import OrderDetailsAPI from '../../../../../api/order/OrderDetailsAPI';
-import {fetchOrderDetails} from '../../../../../actions/order/OrderDetailsActions';
+import InvoiceDetailsAPI from '../../../../../api/invoice/InvoiceDetailsAPI';
 import InputText from '../../../../../components/form/InputText';
 import ButtonText from '../../../../../components/button/ButtonText';
 import InputSelect from "../../../../../components/form/InputSelect";
@@ -11,35 +10,33 @@ import PanelBody from '../../../../../components/panel/PanelBody';
 import validator from "validator";
 import InputDate from "../../../../../components/form/InputDate";
 import moment from "moment/moment";
+import {fetchInvoiceDetails} from "../../../../../actions/invoice/InvoiceDetailsActions";
 
-class OrderProductsFormNew extends Component {
+class InvoiceProductsFormNew extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
             price: '0',
             totalPrice: '0',
-            orderProduct: {
-                orderId: this.props.orderDetails.id,
+            invoiceProduct: {
+                invoiceId: this.props.invoiceDetails.id,
                 productId: '',
                 description: '',
                 amount: 1,
                 amountReduction: 0,
                 percentageReduction: 0,
-                dateStart: moment().format('YYYY-MM-DD'),
-                dateEnd: '',
+                dateLastInvoice: moment().format('YYYY-MM-DD'),
             },
             errors: {
                 productId: false,
                 amount: false,
-                dateStart: false,
-                dateEnd: false,
+                dateLastInvoice: false,
                 description: false,
             },
         };
 
         this.handleInputChangeDate = this.handleInputChangeDate.bind(this);
-        this.handleInputChangeStartDate = this.handleInputChangeStartDate.bind(this);
     };
 
     handleInputChange = event => {
@@ -49,8 +46,8 @@ class OrderProductsFormNew extends Component {
 
         this.setState({
                 ...this.state,
-                orderProduct: {
-                    ...this.state.orderProduct,
+                invoiceProduct: {
+                    ...this.state.invoiceProduct,
                     [name]: value
                 },
 
@@ -62,9 +59,9 @@ class OrderProductsFormNew extends Component {
 
     updatePrice = () => {
         let price = validator.isFloat(this.state.price + '') ? this.state.price : 0;
-        let amount = validator.isFloat(this.state.orderProduct.amount + '') ? this.state.orderProduct.amount : 0;
-        let percentageReduction = validator.isFloat(this.state.orderProduct.percentageReduction + '') ? this.state.orderProduct.percentageReduction : 0;
-        let amountReduction = validator.isFloat(this.state.orderProduct.amountReduction + '') ? this.state.orderProduct.amountReduction : 0;
+        let amount = validator.isFloat(this.state.invoiceProduct.amount + '') ? this.state.invoiceProduct.amount : 0;
+        let percentageReduction = validator.isFloat(this.state.invoiceProduct.percentageReduction + '') ? this.state.invoiceProduct.percentageReduction : 0;
+        let amountReduction = validator.isFloat(this.state.invoiceProduct.amountReduction + '') ? this.state.invoiceProduct.amountReduction : 0;
 
         let totalPrice = ((price * amount) * ((100 - percentageReduction) / 100)) - amountReduction;
 
@@ -77,54 +74,9 @@ class OrderProductsFormNew extends Component {
     handleInputChangeDate(value, name) {
         this.setState({
             ...this.state,
-            orderProduct: {
-                ...this.state.orderProduct,
+            invoiceProduct: {
+                ...this.state.invoiceProduct,
                 [name]: value
-            },
-        });
-    };
-
-    handleInputChangeStartDate(value, name) {
-        let dateEnd = '';
-
-        if(this.state.orderProduct.dateStart && this.state.orderProduct.productId){
-            let durationId;
-
-            if (value) {
-                let product = this.props.products.filter((product) => product.id == this.state.orderProduct.productId);
-                durationId = product[0].durationId;
-            }
-
-            switch (durationId) {
-                case 'none':
-                    dateEnd = '';
-                    break;
-                case 'month':
-                    dateEnd = moment(value).add(1, 'M').format('YYYY-MM-DD');
-                    break;
-                case 'quarter':
-                    dateEnd = moment(value).add(1, 'Q').format('YYYY-MM-DD');
-                    break;
-                case 'half_year':
-                    dateEnd = moment(value).add(6, 'M').format('YYYY-MM-DD');
-                    break;
-                case 'year':
-                    dateEnd = moment(value).add(1, 'y').format('YYYY-MM-DD');
-                    break;
-                case 'until_cancellation':
-                    dateEnd = '';
-                    break;
-                default:
-                    dateEnd = ''
-            }
-        }
-
-        this.setState({
-            ...this.state,
-            orderProduct: {
-                ...this.state.orderProduct,
-                [name]: value,
-                dateEnd: dateEnd
             },
         });
     };
@@ -136,49 +88,19 @@ class OrderProductsFormNew extends Component {
 
         let price = 0;
         let description = '';
-        let durationId = false;
-        let dateEnd = '';
 
         if (value) {
             let product = this.props.products.filter((product) => product.id == value);
             price = product[0].priceInclVat;
             description = product[0].invoiceText;
-            durationId = product[0].durationId;
-        }
-
-        if(durationId && this.state.orderProduct.dateStart){
-
-            switch (durationId) {
-                case 'none':
-                    dateEnd = '';
-                    break;
-                case 'month':
-                    dateEnd = moment(this.state.orderProduct.dateStart).add(1, 'M').format('YYYY-MM-DD');
-                    break;
-                case 'quarter':
-                    dateEnd = moment(this.state.orderProduct.dateStart).add(1, 'Q').format('YYYY-MM-DD');
-                    break;
-                case 'half_year':
-                    dateEnd = moment(this.state.orderProduct.dateStart).add(6, 'M').format('YYYY-MM-DD');
-                    break;
-                case 'year':
-                    dateEnd = moment(this.state.orderProduct.dateStart).add(1, 'y').format('YYYY-MM-DD');
-                    break;
-                case 'until_cancellation':
-                    dateEnd = '';
-                    break;
-                default:
-                    dateEnd = ''
-            }
         }
 
         this.setState({
             ...this.state,
-            price: price,
-            orderProduct: {
-                ...this.state.orderProduct,
+                price: price,
+                invoiceProduct: {
+                ...this.state.invoiceProduct,
                 description: description,
-                dateEnd: dateEnd,
                 [name]: value
             },
             },
@@ -189,59 +111,49 @@ class OrderProductsFormNew extends Component {
     handleSubmit = event => {
         event.preventDefault();
 
-        const {orderProduct} = this.state;
+        const {invoiceProduct} = this.state;
 
         let errors = {};
         let hasErrors = false;
 
 
-        if (validator.isEmpty(orderProduct.productId + '')) {
+        if (validator.isEmpty(invoiceProduct.productId + '')) {
             errors.productId = true;
             hasErrors = true;
         }
         ;
 
-        if (validator.isEmpty(orderProduct.amount + '')) {
+        if (validator.isEmpty(invoiceProduct.amount + '')) {
             errors.amount = true;
             hasErrors = true;
         }
         ;
 
-        if (validator.isEmpty(orderProduct.dateStart + '')) {
-            errors.dateStart = true;
+        if (validator.isEmpty(invoiceProduct.dateLastInvoice + '')) {
+            errors.dateLastInvoice = true;
             hasErrors = true;
         }
         ;
 
-        if (validator.isEmpty(orderProduct.description + '')) {
+        if (validator.isEmpty(invoiceProduct.description + '')) {
             errors.description = true;
             hasErrors = true;
         }
         ;
 
-        if (!validator.isEmpty(orderProduct.dateStart + '') && moment(orderProduct.dateEnd).isSameOrBefore(moment(orderProduct.dateStart))) {
-            errors.dateEnd = true;
-            hasErrors = true;
-        }
-
-        if (!validator.isEmpty(orderProduct.dateEnd + '') && moment(orderProduct.dateStart).isSameOrAfter(moment(orderProduct.dateEnd))) {
-            errors.dateStart = true;
-            hasErrors = true;
-        }
-
         this.setState({...this.state, errors: errors});
 
         // If no errors send form
         !hasErrors &&
-        OrderDetailsAPI.newOrderProduct(orderProduct).then((payload) => {
-            this.props.fetchOrderDetails(orderProduct.orderId);
+        InvoiceDetailsAPI.newInvoiceProduct(invoiceProduct).then((payload) => {
+            this.props.fetchInvoiceDetails(invoiceProduct.invoiceId);
             this.props.toggleShowNew();
         });
     };
 
     render() {
 
-        const {productId, description, amount, amountReduction, percentageReduction, dateStart, dateEnd} = this.state.orderProduct;
+        const {productId, description, amount, amountReduction, percentageReduction, dateLastInvoice} = this.state.invoiceProduct;
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -251,7 +163,7 @@ class OrderProductsFormNew extends Component {
                             <InputText
                                 label={"Order nummer"}
                                 name={"orderId"}
-                                value={this.props.orderDetails.number}
+                                value={this.props.invoiceDetails.number}
                                 readOnly={true}
                             />
                             <InputSelect
@@ -329,19 +241,12 @@ class OrderProductsFormNew extends Component {
 
                         <div className="row">
                             <InputDate
-                                label="Datum in"
-                                name="dateStart"
-                                value={dateStart}
-                                onChangeAction={this.handleInputChangeStartDate}
-                                required={"required"}
-                                error={this.state.errors.dateStart}
-                            />
-                            <InputDate
-                                label="Datum uit"
-                                name="dateEnd"
-                                value={dateEnd}
+                                label="Begin datum"
+                                name="dateLastInvoice"
+                                value={dateLastInvoice}
                                 onChangeAction={this.handleInputChangeDate}
-                                error={this.state.errors.dateEnd}
+                                required={"required"}
+                                error={this.state.errors.dateLastInvoice}
                             />
                         </div>
 
@@ -360,15 +265,15 @@ class OrderProductsFormNew extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        orderDetails: state.orderDetails,
+        invoiceDetails: state.invoiceDetails,
         products: state.systemData.products,
     };
 };
 
 const mapDispatchToProps = dispatch => ({
-    fetchOrderDetails: (id) => {
-        dispatch(fetchOrderDetails(id));
+    fetchInvoiceDetails: (id) => {
+        dispatch(fetchInvoiceDetails(id));
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(OrderProductsFormNew);
+export default connect(mapStateToProps, mapDispatchToProps)(InvoiceProductsFormNew);

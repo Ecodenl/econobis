@@ -20,7 +20,7 @@ class PriceHistory extends Model
 
     public function product()
     {
-        return $this->belongsTo(Product::class);
+        return $this->belongsTo(Product::class)->withoutGlobalScope('is_not_one_time');
     }
 
     public function getPriceInclVatAttribute()

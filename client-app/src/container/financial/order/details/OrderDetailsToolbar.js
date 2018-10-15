@@ -45,7 +45,7 @@ class OrderToolbar  extends Component {
                         {this.props.orderDetails.totalPriceInclVat > 0 &&
                             <ButtonIcon iconName={"glyphicon-eye-open"} onClickAction={this.preview}/>
                         }
-                        {this.props.orderDetails.totalPriceInclVat > 0 &&
+                        {this.props.orderDetails.totalPriceInclVat > 0 && this.props.orderDetails.canCreateInvoice &&
                         <ButtonText buttonText={'Maak factuur'} onClickAction={this.toggleNewInvoice}/>
                         }
                         <ButtonIcon iconName={"glyphicon-trash"} onClickAction={this.toggleDelete}/>

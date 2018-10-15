@@ -97,14 +97,14 @@ class InvoicesListItem extends Component {
     }
 
     render() {
-        const { id, number, dateRequested, order, subject, paymentType, status, daysExpired, totalPriceInclVatAndReduction, amountOpen, emailToAddress, checked } = this.props;
+        const { id, number, dateRequested, orderSubject, orderContactFullName, paymentType, status, daysExpired, totalPriceInclVatAndReduction, amountOpen, emailToAddress, checked } = this.props;
         return (
             <tr className={this.state.highlightRow} onDoubleClick={() => this.openItem(id)} onMouseEnter={() => this.onRowEnter()} onMouseLeave={() => this.onRowLeave()}>
                 {this.props.showSelectInvoicesToSend && <td><input type="checkbox" checked={checked} onChange={() => this.setCheckedInvoice(id)} /></td>}
                 <td>{number}</td>
                 <td>{ dateRequested ? moment(dateRequested).format('DD-MM-Y') : ''}</td>
-                <td className={(emailToAddress === 'Geen e-mail bekend') ? 'warning-td' :''}>{order ? order.contact.fullName : ''}{(emailToAddress === 'Geen e-mail bekend') && ' (Geen e-mail bekend)'}</td>
-                <td>{order.subject ? order.subject : ''}</td>
+                <td className={(emailToAddress === 'Geen e-mail bekend') ? 'warning-td' :''}>{orderContactFullName ? orderContactFullName : ''}{(emailToAddress === 'Geen e-mail bekend') && ' (Geen e-mail bekend)'}</td>
+                <td>{orderSubject ? orderSubject : ''}</td>
                 <td>{daysExpired}</td>
                 <td>{'€' + totalPriceInclVatAndReduction.toLocaleString('nl',{ minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
                 <td>{paymentType ? paymentType.name : ''}</td>

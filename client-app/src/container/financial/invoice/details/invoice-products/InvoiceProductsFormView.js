@@ -4,12 +4,12 @@ import {connect} from "react-redux";
 moment.locale('nl');
 
 const InvoiceProductsFormView = props => {
-    const {productCode, productName, description, amount, priceInclVatAndReduction } = props.invoiceProduct;
+    const {period, productCode, productName, description, amount, priceInclVatAndReduction } = props.invoiceProduct;
 
     return (
         <div className={`row border ${props.highlightLine}`}  onMouseEnter={() => props.onLineEnter()} onMouseLeave={() => props.onLineLeave()}>
             <div>
-                <div className="col-sm-2">
+                <div className="col-sm-1">
                     { productCode ? productCode : '' }
                 </div>
                 <div className="col-sm-3">
@@ -24,6 +24,17 @@ const InvoiceProductsFormView = props => {
                 <div className="col-sm-2">
                     { priceInclVatAndReduction ? '€' + priceInclVatAndReduction.toLocaleString('nl',{ minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '€0,00'}
                 </div>
+                <div className="col-sm-1">
+                    {(props.showActionButtons && props.permissions.manageFinancial && (props.invoiceDetails.statusId === 'checked') ? <a role="button" onClick={props.openEdit}><span className="glyphicon glyphicon-pencil mybtn-success" /> </a> : '')}
+                    {(props.showActionButtons && props.permissions.manageFinancial && (props.invoiceDetails.statusId === 'checked') ? <a role="button" onClick={props.toggleDelete}><span className="glyphicon glyphicon-trash mybtn-danger"  /> </a> : '')}
+                </div>
+                {period &&
+                <div onClick={props.openEdit}>
+                    <div className="col-sm-12">
+                        <strong>Periode { period }</strong>
+                    </div>
+                </div>
+                }
             </div>
         </div>
     );

@@ -62,7 +62,9 @@ class InputDate extends Component {
                             className: `form-control input-sm ${className}` + (this.state.errorDateFormat || error ? ' has-error' : ''),
                             name: name,
                             onBlur: this.validateDate,
-                            autoComplete: 'off'
+                            autoComplete: 'off',
+                            readOnly: readOnly,
+                            disabled: readOnly
                         }}
                         required={required}
                         readOnly={readOnly}

@@ -39,6 +39,7 @@ class InvoiceHelper
             $invoiceProduct->product_code = $orderProduct->product->code;
             $invoiceProduct->product_name = $orderProduct->product->name;
             $invoiceProduct->description = $orderProduct->description;
+            $invoiceProduct->date_last_invoice = $orderProduct->date_last_invoice ? $orderProduct->date_last_invoice : $orderProduct->date_start;
             if(!$preview) {
                 $invoiceProduct->save();
             }

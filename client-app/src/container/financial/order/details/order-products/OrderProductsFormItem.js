@@ -8,6 +8,7 @@ import OrderProductsFormEdit from './OrderProductsFormEdit';
 import {isEqual} from "lodash";
 import validator from "validator";
 import moment from "moment/moment";
+import OrderProductsFormDelete from "./OrderProductsFormDelete";
 
 class OrderProductsFormItem extends Component {
     constructor(props) {
@@ -17,6 +18,7 @@ class OrderProductsFormItem extends Component {
             showActionButtons: false,
             highlightLine: '',
             showEdit: false,
+            showDelete: false,
             totalPrice: props.orderProduct.totalPriceInclVatAndReduction,
             orderProduct: {
                 ...props.orderProduct,
@@ -30,6 +32,7 @@ class OrderProductsFormItem extends Component {
         };
 
         this.handleInputChangeDate = this.handleInputChangeDate.bind(this);
+        this.handleInputChangeStartDate = this.handleInputChangeStartDate.bind(this);
     };
 
     componentWillReceiveProps(nextProps) {
@@ -41,6 +44,10 @@ class OrderProductsFormItem extends Component {
                 },
             });
         }
+    };
+
+    toggleDelete = () => {
+        this.setState({showDelete: !this.state.showDelete});
     };
 
     onLineEnter = () => {
@@ -116,6 +123,48 @@ class OrderProductsFormItem extends Component {
         });
     };
 
+    handleInputChangeStartDate(value, name) {
+        let dateEnd = '';
+
+        if(value){
+            let durationId;
+
+            durationId = this.state.orderProduct.product.durationId;
+
+            switch (durationId) {
+                case 'none':
+                    dateEnd = '';
+                    break;
+                case 'month':
+                    dateEnd = moment(value).add(1, 'M').format('YYYY-MM-DD');
+                    break;
+                case 'quarter':
+                    dateEnd = moment(value).add(1, 'Q').format('YYYY-MM-DD');
+                    break;
+                case 'half_year':
+                    dateEnd = moment(value).add(6, 'M').format('YYYY-MM-DD');
+                    break;
+                case 'year':
+                    dateEnd = moment(value).add(1, 'y').format('YYYY-MM-DD');
+                    break;
+                case 'until_cancellation':
+                    dateEnd = '';
+                    break;
+                default:
+                    dateEnd = ''
+            }
+        }
+
+        this.setState({
+            ...this.state,
+            orderProduct: {
+                ...this.state.orderProduct,
+                [name]: value,
+                dateEnd: dateEnd
+            },
+        });
+    };
+
     handleSubmit = event => {
         event.preventDefault();
 
@@ -183,8 +232,17 @@ class OrderProductsFormItem extends Component {
                         orderProduct={this.state.orderProduct}
                         handleInputChange={this.handleInputChange}
                         handleInputChangeDate={this.handleInputChangeDate}
+                        handleInputChangeStartDate={this.handleInputChangeStartDate}
                         handleSubmit={this.handleSubmit}
                         cancelEdit={this.cancelEdit}
+                    />
+                }
+                {
+                    this.state.showDelete && this.props.permissions.manageFinancial &&
+                    <OrderProductsFormDelete
+                        closeDeleteItemModal={this.toggleDelete}
+                        id={this.state.orderProduct.id}
+                        orderId={this.state.orderProduct.orderId}
                     />
                 }
             </div>

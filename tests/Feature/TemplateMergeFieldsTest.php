@@ -86,7 +86,7 @@ class TemplateMergeFieldsTest extends TestCase
         $html = '{pp_naam}{pp_omschrijving}{pp_start_project}{pp_start_productie}{pp_start_inschrijving}';
         $html .= '{pp_eind_inschrijving}{pp_postcode}{pp_adres}{pp_plaats}{pp_ean}{pp_ean_netbeheer}';
         $html .= '{pp_garantie_oorsprong}{pp_ean_levering}{pp_participatie_waarde}{pp_opgesteld_vermogen}{pp_max_participaties}';
-        $html .= '{pp_aanwijzing_belastingsdienst}{pp_max_participaties_jeugd}{pp_min_participaties}{pp_uitgegeven_participaties}';
+        $html .= '{pp_aanwijzing_belastingdienst}{pp_max_participaties_jeugd}{pp_min_participaties}{pp_uitgegeven_participaties}';
         $html .= '{pp_participaties_in_optie}{pp_uit_te_geven_participaties}{pp_aantal_participanten}{pp_postcoderoos}';
 
         $html = TemplateVariableHelper::replaceTemplateVariables($html, 'pp', ProductionProject::find(1));

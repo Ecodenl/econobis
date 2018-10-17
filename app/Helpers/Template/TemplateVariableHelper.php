@@ -377,7 +377,7 @@ class TemplateVariableHelper
             case 'max_participaties':
                 return $model->max_participations;
                 break;
-            case 'aanwijzing_belastingsdienst':
+            case 'aanwijzing_belastingdienst':
                 return $model->tax_referral;
                 break;
             case 'max_participaties_jeugd':

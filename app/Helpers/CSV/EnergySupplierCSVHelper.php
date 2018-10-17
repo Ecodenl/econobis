@@ -36,6 +36,9 @@ class EnergySupplierCSVHelper
     public function getCSV()
     {
 
+        if($this->distributions->count() === 0){
+            abort(403, 'Geen verdeling voor deze energiemaatschappij');
+        }
         $this->csvExporter->beforeEach(function ($distribution) {
             // Now notes field will have this value
             $distribution->date_begin = Carbon::parse($this->productionProjectRevenue->date_begin)->format('d/m/Y');

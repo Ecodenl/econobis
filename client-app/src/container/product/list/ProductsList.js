@@ -63,7 +63,7 @@ class ProductsList extends Component {
                         {
                             this.props.products.length === 0 ? (
                                 <tr>
-                                    <td colSpan={6}>Geen producten gevonden!</td>
+                                    <td colSpan={7}>Geen producten gevonden!</td>
                                 </tr>
                             ) : (
                                 this.props.products.map((product) => {

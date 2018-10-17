@@ -30,7 +30,7 @@ class Product extends Model
         parent::boot();
 
         static::addGlobalScope('is_not_one_time', function (Builder $builder) {
-            $builder->where('is_one_time', true);
+            $builder->where('is_one_time', false);
         });
     }
 

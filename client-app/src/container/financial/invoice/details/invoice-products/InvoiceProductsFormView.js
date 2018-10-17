@@ -31,7 +31,7 @@ const InvoiceProductsFormView = props => {
                 {period &&
                 <div onClick={props.openEdit}>
                     <div className="col-sm-12">
-                        <strong>Periode { period }</strong>
+                        Periode { period }
                     </div>
                 </div>
                 }

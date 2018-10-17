@@ -47,7 +47,7 @@ const OrderProductsFormView = props => {
                 </div>
             {period &&
             <div className="col-sm-12">
-                <strong>Periode {period}</strong>
+                Periode {period}
             </div>
             }
         </div>

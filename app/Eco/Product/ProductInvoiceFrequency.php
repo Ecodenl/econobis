@@ -22,9 +22,9 @@ class ProductInvoiceFrequency extends EnumWithIdAndName
     {
         return [
             new static('once', 'Eenmalig'),
-            new static('monthly', 'Maandelijks'),
-            new static('quarterly', 'Per kwartaal'),
-            new static('yearly', 'Jaarlijks'),
+            new static('monthly', 'Maand'),
+            new static('quarterly', 'Kwartaal'),
+            new static('yearly', 'Jaar'),
         ];
     }
 }

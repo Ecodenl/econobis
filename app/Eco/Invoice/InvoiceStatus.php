@@ -21,6 +21,7 @@ class InvoiceStatus extends EnumWithIdAndName
     protected static function seed()
     {
         //Also edit InvoicesListFilter!
+        //Also edit InvoiceObserver!
         return [
             new static('checked', 'Gecontroleerd'),
             new static('sent', 'Verzonden'),

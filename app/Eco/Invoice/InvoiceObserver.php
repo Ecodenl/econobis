@@ -37,8 +37,8 @@ class InvoiceObserver
 
     public function created(Invoice $invoice)
     {
-        $invoice->invoice_number =  Invoice::where('administration_id', $invoice->administration_id)->count();
-        $invoice->number = 'F' . Carbon::now()->year . '-' . $invoice->invoice_number;
+        $invoice->invoice_number = Invoice::where('administration_id', $invoice->administration_id)->count();
+        $invoice->number = 'T' . Carbon::now()->year . '-' . $invoice->invoice_number;
         $invoice->save();
     }
 
@@ -60,6 +60,11 @@ class InvoiceObserver
                 $orderProduct->date_last_invoice = $dateLastInvoice;
                 $orderProduct->save();
             }
+
+            // Ook krijgt een factuur dan pas een definitief factuurnummer
+            $invoice->invoice_number = Invoice::where('administration_id', $invoice->administration_id)->whereIn('status_id', ['sent', 'exported', 'paid', 'irrecoverable'])->count();
+            $invoice->number = 'F' . Carbon::now()->year . '-' . $invoice->invoice_number;
+            $invoice->save();
         }
     }
 }

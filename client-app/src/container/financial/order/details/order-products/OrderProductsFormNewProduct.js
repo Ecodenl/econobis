@@ -37,7 +37,7 @@ class OrderProductsFormNewProduct extends Component {
             product: {
                 code: '',
                 name: '',
-                durationId: '',
+                durationId: 'none',
                 administrationId: this.props.orderDetails.administrationId,
                 invoiceFrequencyId: this.props.orderDetails.collectionFrequencyId ? this.props.orderDetails.collectionFrequencyId : 'once',
                 vatPercentage: '',
@@ -421,6 +421,7 @@ class OrderProductsFormNewProduct extends Component {
                                 options={this.props.productDurations}
                                 value={durationId}
                                 onChangeAction={this.handleInputChangeProductDuration}
+                                emptyOption={false}
                             />
                         </div>
 
@@ -518,7 +519,7 @@ class OrderProductsFormNewProduct extends Component {
 
                         <div className="pull-right btn-group" role="group">
                             <ButtonText buttonClassName={"btn-default"} buttonText={"Annuleren"}
-                                        onClickAction={this.props.toggleShowNew}/>
+                                        onClickAction={this.props.toggleShowNewProduct}/>
                             <ButtonText buttonText={"Opslaan"} onClickAction={this.handleSubmit} type={"submit"}
                                         value={"Submit"}/>
                         </div>

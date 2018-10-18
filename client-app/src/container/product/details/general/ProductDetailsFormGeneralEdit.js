@@ -156,6 +156,7 @@ class ProductDetailsFormGeneralEdit extends Component {
                                 options={this.props.productDurations}
                                 value={durationId}
                                 onChangeAction={this.handleInputChange}
+                                emptyOption={false}
                             />
                             <InputSelect
                                 label={"Prijs per"}
@@ -164,6 +165,7 @@ class ProductDetailsFormGeneralEdit extends Component {
                                 options={this.props.productInvoiceFrequencies}
                                 value={invoiceFrequencyId}
                                 onChangeAction={this.handleInputChange}
+                                emptyOption={false}
                             />
                         </div>
 

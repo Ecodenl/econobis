@@ -36,7 +36,7 @@ class InvoiceProductsFormNewProduct extends Component {
             product: {
                 code: '',
                 name: '',
-                durationId: '',
+                durationId: 'none',
                 administrationId: this.props.invoiceDetails.order.administrationId,
                 invoiceFrequencyId: 'once',
                 vatPercentage: '',
@@ -261,7 +261,7 @@ class InvoiceProductsFormNewProduct extends Component {
     render() {
 
         const {description, amount, amountReduction, percentageReduction, dateLastInvoice} = this.state.invoiceProduct;
-        const { code, name, durationId, vatPercentage, price } = this.state.product;
+        const { code, name, vatPercentage, price } = this.state.product;
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -401,7 +401,7 @@ class InvoiceProductsFormNewProduct extends Component {
 
                         <div className="pull-right btn-group" role="group">
                             <ButtonText buttonClassName={"btn-default"} buttonText={"Annuleren"}
-                                        onClickAction={this.props.toggleShowNew}/>
+                                        onClickAction={this.props.toggleShowNewProduct}/>
                             <ButtonText buttonText={"Opslaan"} onClickAction={this.handleSubmit} type={"submit"}
                                         value={"Submit"}/>
                         </div>

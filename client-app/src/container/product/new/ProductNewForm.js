@@ -16,6 +16,10 @@ class ProductNewForm extends Component {
 
         this.state = {
             errorMessage: false,
+            //beter uit systemdata, maar sommige combinaties zijn niet mogelijk
+            invoiceFrequencies:[
+                {'id':  'once', name: 'Eenmalig'},
+            ],
             product: {
                 code: '',
                 name: '',
@@ -43,6 +47,73 @@ class ProductNewForm extends Component {
             product: {
                 ...this.state.product,
                 [name]: value
+            },
+        });
+    };
+
+    handleInputChangeDuration = event => {
+        const target = event.target;
+        const value = target.type === 'checkbox' ? target.checked : target.value;
+        const name = target.name;
+
+        let invoiceFrequencyId = this.state.product.invoiceFrequencyId;
+        let invoiceFrequencies = this.state.invoiceFrequencies;
+
+        switch (value) {
+            case 'none':
+                invoiceFrequencies = [
+                    {'id':  'once', name: 'Eenmalig'},
+                ];
+
+                invoiceFrequencyId = 'once';
+                break;
+            case 'month':
+                invoiceFrequencies = [
+                    {'id':  'once', name: 'Eenmalig'},
+                    {'id':  'monthly', name: 'Maand'},
+                ];
+
+                if(invoiceFrequencyId === 'quarterly' || invoiceFrequencyId === 'yearly'){
+                    invoiceFrequencyId = 'monthly';
+                }
+                break;
+            case 'quarter':
+                invoiceFrequencies = [
+                    {'id':  'once', name: 'Eenmalig'},
+                    {'id':  'monthly', name: 'Maand'},
+                    {'id':  'quarterly', name: 'Kwartaal'},
+                ];
+                if(invoiceFrequencyId === 'yearly'){
+                    invoiceFrequencyId = 'quarterly';
+                }
+                break;
+            case 'half_year':
+                invoiceFrequencies = [
+                    {'id':  'once', name: 'Eenmalig'},
+                    {'id':  'monthly', name: 'Maand'},
+                    {'id':  'quarterly', name: 'Kwartaal'},
+                ];
+                if(invoiceFrequencyId === 'yearly'){
+                    invoiceFrequencyId = 'quarterly';
+                }
+                break;
+            default:
+                invoiceFrequencies = [
+                    {'id':  'once', name: 'Eenmalig'},
+                    {'id':  'monthly', name: 'Maand'},
+                    {'id':  'quarterly', name: 'Kwartaal'},
+                    {'id':  'yearly', name: 'Jaar'},
+                ];
+                break;
+        }
+
+        this.setState({
+            ...this.state,
+            invoiceFrequencies,
+            product: {
+                ...this.state.product,
+                [name]: value,
+                invoiceFrequencyId
             },
         });
     };
@@ -156,15 +227,17 @@ class ProductNewForm extends Component {
                                 name={"durationId"}
                                 options={this.props.productDurations}
                                 value={durationId}
-                                onChangeAction={this.handleInputChange}
+                                onChangeAction={this.handleInputChangeDuration}
+                                emptyOption={false}
                             />
                             <InputSelect
                                 label={"Prijs per"}
                                 id="invoiceFrequencyId"
                                 name={"invoiceFrequencyId"}
-                                options={this.props.productInvoiceFrequencies}
+                                options={this.state.invoiceFrequencies}
                                 value={invoiceFrequencyId}
                                 onChangeAction={this.handleInputChange}
+                                emptyOption={false}
                             />
                         </div>
 
@@ -210,7 +283,6 @@ class ProductNewForm extends Component {
 const mapStateToProps = (state) => {
     return {
         productDurations: state.systemData.productDurations,
-        productInvoiceFrequencies: state.systemData.productInvoiceFrequencies,
         productPaymentTypes: state.systemData.productPaymentTypes,
         administrations: state.meDetails.administrations,
         products: state.systemData.products,

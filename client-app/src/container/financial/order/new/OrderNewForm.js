@@ -345,6 +345,7 @@ class OrderNewForm extends Component {
                                 options={this.props.orderCollectionFrequencies}
                                 value={collectionFrequencyId}
                                 onChangeAction={this.handleInputChange}
+                                emptyOption={false}
                             />
                             <InputText
                                 label="IBAN"

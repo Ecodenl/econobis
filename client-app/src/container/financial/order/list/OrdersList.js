@@ -212,7 +212,7 @@ class OrdersList extends Component {
                             <ButtonIcon iconName={"glyphicon-refresh"} onClickAction={this.resetOrderFilters} />
                             <ButtonIcon iconName={"glyphicon-download-alt"} onClickAction={this.getCSV} />
                             {this.props.filter === 'te-factureren' && meta.total > 0 &&
-                            <ButtonText buttonText={'Maak facturen'} onClickAction={() => hashHistory.push(`/financieel/${this.props.administrationId}/orders/aanmaken`)} />
+                            <ButtonText buttonText={'Preview facturen'} onClickAction={() => hashHistory.push(`/financieel/${this.props.administrationId}/orders/aanmaken`)} />
                             }
                         </div>
                     </div>

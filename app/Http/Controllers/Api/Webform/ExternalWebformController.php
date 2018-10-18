@@ -169,7 +169,7 @@ class ExternalWebformController extends Controller
     {
         $mapping = [
             'contact' => [
-                // Contact // DONE
+                // Contact
                 'titel_id' => 'title_id',
                 'voorletters' => 'initials',
                 'voornaam' => 'first_name',
@@ -197,14 +197,14 @@ class ExternalWebformController extends Controller
                 // Groep
                 'contact_groep' => 'group_name',
             ],
-            'energy_supplier' => [ // DONE
+            'energy_supplier' => [
                 // ContactEnergySupplier
                 'energieleverancier_id' => 'energy_supplier_id',
                 'energieleverancier_klantnummer' => 'es_number',
                 'energieleverancier_type_id' => 'contact_energy_supply_type_id',
                 'energieleverancier_klant_sinds' => 'member_since',
             ],
-            'participation' => [ // DONE
+            'participation' => [
                 // ParticipantProductionProject
                 'participatie_productieproject_id' => 'production_project_id',
                 'participatie_aantal_participaties_aangevraagd' => 'participations_requested',
@@ -227,7 +227,7 @@ class ExternalWebformController extends Controller
                 'order_aanvraagdatum' => 'date_requested',
             ],
             'intake' => [
-                // Intake // DONE
+                // Intake
                 'intake_campagne_id' => 'campaign_id',
                 'intake_motivatie_ids' => 'reason_ids',
                 'intake_interesse_ids' => 'measure_categorie_ids',
@@ -530,7 +530,7 @@ class ExternalWebformController extends Controller
                 'date_of_birth' => $data['date_of_birth'] ?: null,
             ]);
 
-            $occupationContact = OccupationContact::create([
+            OccupationContact::create([
                 'occupation_id' => 14, // Relatie type "medewerker"
                 'primary_contact_id' => $organisation->contact_id,
                 'contact_id' => $person->contact_id,
@@ -543,6 +543,7 @@ class ExternalWebformController extends Controller
             $this->addAddressToContact($data, $contactOrganisation);
             $this->addEmailToContact($data, $contactOrganisation);
             $this->addPhoneNumberToContact($data, $contactOrganisation);
+            $this->addContactToGroup($data, $contactOrganisation);
 
             return $contactOrganisation;
         }
@@ -581,6 +582,7 @@ class ExternalWebformController extends Controller
         $this->addAddressToContact($data, $contact);
         $this->addEmailToContact($data, $contact);
         $this->addPhoneNumberToContact($data, $contact);
+        $this->addContactToGroup($data, $contact);
 
         return $contact;
     }
@@ -894,7 +896,7 @@ class ExternalWebformController extends Controller
             $users = (new User())->newCollection();
             if ($webform->responsibleUser) {
                 $users->push($webform->responsibleUser);
-            } elseif ($webform->responsibleTeam->users()->exists()) {
+            } elseif ($webform->responsibleTeam && $webform->responsibleTeam->users()->exists()) {
                 $users = $webform->responsibleTeam->users;
             }
             Notification::send($users, new WebformRequestProcessed($this->logs, $data, $success, $webform));

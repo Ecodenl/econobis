@@ -357,7 +357,7 @@ class OrderController extends ApiController
             ->where('orders.status_id', 'active')
             ->where('orders.date_next_invoice', '<=', Carbon::today()->addDays(14))
             ->whereDoesntHave('invoices', function ($q) {
-                $q->where('invoices.status_id', 'checked');
+                $q->where('invoices.status_id', 'to-send');
             })->with(['contact'])->get();
 
         return FullOrder::collection($orders);
@@ -382,13 +382,13 @@ class OrderController extends ApiController
             ->where('orders.status_id', 'active')
             ->where('orders.date_next_invoice', '<=', Carbon::today()->addDays(14))
             ->whereDoesntHave('invoices', function ($q) {
-                $q->where('invoices.status_id', 'checked');
+                $q->where('invoices.status_id', 'to-send');
             })->get();
 
         foreach ($orders as $order){
             if($order->total_price_incl_vat > 0 && $order->can_create_invoice) {
                 $invoice = new Invoice();
-                $invoice->status_id = 'checked';
+                $invoice->status_id = 'to-send';
                 $invoice->date_requested = $data['date_requested'];
                 $invoice->date_collection = $data['date_collection'];
                 $invoice->order_id = $order->id;

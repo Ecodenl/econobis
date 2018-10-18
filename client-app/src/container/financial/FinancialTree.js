@@ -71,8 +71,11 @@ class FinancialTree extends Component {
                         <Nav id="invoices" expanded={this.state.activeParent === 'invoices'}>
                             <NavIcon><SvgIcon size={20} icon={fileText} style={{color: '$brand-primary'}}/></NavIcon>
                             <NavText><Link className="financial-tree-link" to={`financieel/${this.props.id}/facturen`}>Alle facturen({this.props.administrationDetails.totalInvoices})</Link></NavText>
-                            <Nav id="checked">
-                                <NavText><Link className="financial-tree-link" to={`financieel/${this.props.id}/facturen/gecontroleerd`}>Gecontroleerd({this.props.administrationDetails.totalInvoicesChecked})</Link></NavText>
+                            <Nav id="to-send-collection">
+                                <NavText><Link className="financial-tree-link" to={`financieel/${this.props.id}/facturen/te-verzenden-incasso`}>Te verzenden - incasso facturen({this.props.administrationDetails.totalInvoicesToSendCollection})</Link></NavText>
+                            </Nav>
+                            <Nav id="to-send-transfer">
+                                <NavText><Link className="financial-tree-link" to={`financieel/${this.props.id}/facturen/te-verzenden-overboeken`}>Te verzenden - overboek facturen({this.props.administrationDetails.totalInvoicesToSendTransfer})</Link></NavText>
                             </Nav>
                             <Nav id="sent">
                                 <NavText><Link className="financial-tree-link" to={`financieel/${this.props.id}/facturen/verzonden`}>Verzonden({this.props.administrationDetails.totalInvoicesSent})</Link></NavText>

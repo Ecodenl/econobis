@@ -192,7 +192,7 @@ const Routes = () => {
                 <Route path="financieel/:id/:type" component={FinancialApp} />
                 <Route path="financieel/:id/orders/aanmaken" component={OrderCreateApp} />
                 <Route path="financieel/:id/:type/:filter" component={FinancialApp} />
-                <Route path="financieel/:id/facturen/gecontroleerd/verzenden" component={InvoiceSendApp} />
+                <Route path="financieel/:id/facturen/te-verzenden/verzenden" component={InvoiceSendApp} />
                 <Route path="order/nieuw/contact/:contactId" component={OrderNewApp} />
                 <Route path="order/:id" component={OrderDetailsApp} />
                 <Route path="order/inzien/:id" component={InvoicePreviewApp} />

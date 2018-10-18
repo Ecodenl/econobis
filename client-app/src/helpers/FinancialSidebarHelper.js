@@ -10,11 +10,14 @@ export default (currentRouteParams) => {
                     case 'concepten':
                         activeMenuItem = 'orders/concepts';
                         break;
-                    case 'facturen':
-                        activeMenuItem = 'orders/invoices';
+                    case 'aankomend':
+                        activeMenuItem = 'orders/active';
                         break;
-                    case 'incassos':
-                        activeMenuItem = 'orders/collection';
+                    case 'te-factureren':
+                        activeMenuItem = 'orders/to-create';
+                        break;
+                    case 'te-verzenden':
+                        activeMenuItem = 'orders/to-send';
                         break;
                     case 'beeindigd':
                         activeMenuItem = 'orders/closed';
@@ -29,8 +32,11 @@ export default (currentRouteParams) => {
             if(currentRouteParams.filter) {
                 activeParent = 'invoices';
                 switch(currentRouteParams.filter) {
-                    case 'gecontroleerd':
-                        activeMenuItem = 'invoices/checked';
+                    case 'te-verzenden-incasso':
+                        activeMenuItem = 'invoices/to-send-collection';
+                        break;
+                    case 'te-verzenden-overboeken':
+                        activeMenuItem = 'invoices/to-send-transfer';
                         break;
                     case 'verzonden':
                         activeMenuItem = 'invoices/sent';

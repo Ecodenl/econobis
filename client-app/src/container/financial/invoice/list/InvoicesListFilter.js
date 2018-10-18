@@ -75,7 +75,7 @@ const InvoicesListFilter = props => {
                 <select className="form-control input-sm" value={props.filters.statusId.data} onChange={onStatusChange}>
                     <option/>
                     <optgroup label={'Status'}>
-                        <option key={'checked'} value={'checked'}>{'Gecontroleerd'}</option>
+                        <option key={'to-send'} value={'to-send'}>{'Te verzenden'}</option>
                         <option key={'sent'} value={'sent'}>{'Verzonden'}</option>
                         <option key={'exported'} value={'exported'}>{'Geëxporteerd'}</option>
                         <option key={'paid'} value={'paid'}>{'Betaald'}</option>

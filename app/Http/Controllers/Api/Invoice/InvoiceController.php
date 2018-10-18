@@ -105,7 +105,7 @@ class InvoiceController extends ApiController
             ->get();
 
         $invoice = new Invoice($data);
-        $invoice->status_id = 'checked';
+        $invoice->status_id = 'to-send';
         $invoice->collection_frequency_id = $invoice->order->collection_frequency_id;
         $invoice->save();
 
@@ -235,7 +235,7 @@ class InvoiceController extends ApiController
     public function sendAllPost(Administration $administration)
     {
         set_time_limit(0);
-        $invoices = Invoice::where('administration_id', $administration->id)->where('status_id', 'checked')->with('order.contact')->get();
+        $invoices = Invoice::where('administration_id', $administration->id)->where('status_id', 'to-send')->with('order.contact')->get();
 
         $orderController = new OrderController;
 

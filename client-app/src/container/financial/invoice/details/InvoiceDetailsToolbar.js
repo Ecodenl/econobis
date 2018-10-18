@@ -88,10 +88,10 @@ class InvoiceToolbar extends Component {
                     <div className="btn-group btn-group-flex margin-small" role="group">
                         <ButtonIcon iconName={"glyphicon-arrow-left"} onClickAction={browserHistory.goBack}/>
                         <ButtonIcon iconName={"glyphicon-eye-open"} onClickAction={this.view}/>
-                        {this.props.invoiceDetails.statusId === 'checked' && (this.props.invoiceDetails.emailToAddress !== 'Geen e-mail bekend') &&
+                        {this.props.invoiceDetails.statusId === 'to-send' && (this.props.invoiceDetails.emailToAddress !== 'Geen e-mail bekend') &&
                         <ButtonIcon iconName={"glyphicon-envelope"} onClickAction={this.showSend}/>
                         }
-                        {this.props.invoiceDetails.statusId === 'checked' && (this.props.invoiceDetails.emailToAddress === 'Geen e-mail bekend') &&
+                        {this.props.invoiceDetails.statusId === 'to-send' && (this.props.invoiceDetails.emailToAddress === 'Geen e-mail bekend') &&
                         <ButtonIcon iconName={"glyphicon-envelope"} onClickAction={this.showSendPost}/>
                         }
                         {(this.props.invoiceDetails.statusId === 'sent' || this.props.invoiceDetails.statusId === 'exported') &&

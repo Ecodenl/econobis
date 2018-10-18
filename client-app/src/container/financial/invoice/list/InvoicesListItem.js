@@ -5,7 +5,6 @@ import moment from 'moment';
 import InvoiceListSetPaid from "./InvoiceListSetPaid";
 import InvoiceListSendNotification from "./InvoiceListSendNotification";
 import InvoiceListSetIrrecoverable from "./InvoiceListSetIrrecoverable";
-import InvoiceListSetChecked from "./InvoiceListSetChecked";
 import InvoiceListSend from "./InvoiceListSend";
 import {setCheckedInvoice} from '../../../../actions/invoice/InvoicesActions';
 import {connect} from "react-redux";
@@ -112,20 +111,12 @@ class InvoicesListItem extends Component {
                 <td>
                     {(this.state.showActionButtons ? <a role="button" onClick={() => this.openItem(id)} title="Open factuur"><span className="glyphicon glyphicon-pencil mybtn-success" /> </a> : '')}
                     {(this.state.showActionButtons ? <a role="button" onClick={() => this.viewItem(id)} title="Preview factuur"><span className="glyphicon glyphicon-eye-open mybtn-success" /> </a> : '')}
-                    {(this.state.showActionButtons && this.props.statusId === 'concept' ? <a role="button" onClick={() => this.showSetChecked()}  title="Zet op gecontroleerd"><span className="glyphicon glyphicon-ok mybtn-success" /> </a> : '')}
-                    {(this.state.showActionButtons && this.props.statusId === 'checked' ? <a role="button" onClick={() => this.showSend()} title="Verstuur factuur"><span className="glyphicon glyphicon-envelope mybtn-success" /> </a> : '')}
+                    {(this.state.showActionButtons && this.props.statusId === 'to-send' ? <a role="button" onClick={() => this.showSend()} title="Verstuur factuur"><span className="glyphicon glyphicon-envelope mybtn-success" /> </a> : '')}
                     {(this.state.showActionButtons && (this.props.statusId === 'sent' || this.props.statusId === 'exported') ? <a role="button" onClick={() => this.showSetPaid()} title="Zet op betaald"><span className="glyphicon glyphicon-euro mybtn-success" /> </a> : '')}
                     {(this.state.showActionButtons && (this.props.statusId === 'sent' || this.props.statusId === 'exported') && !this.props.dateExhortation ? <a role="button" onClick={() => this.showSendNotification()} title="Verstuur herinnering"><span className="glyphicon glyphicon-bullhorn mybtn-success" /> </a> : '')}
                     {(this.state.showActionButtons && (this.props.statusId !== 'paid' && this.props.statusId !== 'irrecoverable') ? <a role="button" onClick={() => this.showSetIrrecoverable()} title="Zet op oninbaar"><span className="glyphicon glyphicon-remove mybtn-success" /> </a> : '')}
 
-                    {
-                        this.state.showSetChecked &&
-                        <InvoiceListSetChecked
-                            closeModal={this.showSetChecked}
-                            invoiceId={id}
-                            administrationId={this.props.administrationId}
-                        />
-                    }
+
 
                     {
                         this.state.showSend &&

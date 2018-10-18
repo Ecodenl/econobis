@@ -185,7 +185,7 @@ class Order extends Model
 
     public function getCanCreateInvoiceAttribute()
     {
-        if ($this->invoices()->where('status_id', 'checked')->exists()) {
+        if ($this->invoices()->where('status_id', 'to-send')->exists()) {
             return false;
         }
         

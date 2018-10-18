@@ -23,7 +23,7 @@ class InvoiceStatus extends EnumWithIdAndName
         //Also edit InvoicesListFilter!
         //Also edit InvoiceObserver!
         return [
-            new static('checked', 'Gecontroleerd'),
+            new static('to-send', 'Te verzenden'),
             new static('sent', 'Verzonden'),
             new static('exported', 'Geëxporteerd'),
             new static('paid', 'Betaald'),

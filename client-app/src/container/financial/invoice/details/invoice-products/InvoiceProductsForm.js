@@ -39,7 +39,7 @@ class InvoiceProductsForm extends Component {
                         <div className={"col-xs-10"}>
                             <span className="h5 text-bold">Factuurregels</span>
                         </div>
-                        {this.props.permissions.manageFinancial && (this.props.invoice.statusId == 'checked') &&
+                        {this.props.permissions.manageFinancial && (this.props.invoice.statusId == 'to-send') &&
                         <div className={"col-xs-2"}>
                             <div className="pull-right">
                                 <span className="glyphicon glyphicon-plus" data-toggle="dropdown" role="button"/>

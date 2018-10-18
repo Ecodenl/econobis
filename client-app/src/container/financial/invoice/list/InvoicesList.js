@@ -17,9 +17,7 @@ import {setInvoicesPagination} from '../../../../actions/invoice/InvoicesPaginat
 import filterHelper from '../../../../helpers/FilterHelper';
 import ButtonIcon from "../../../../components/button/ButtonIcon";
 
-import {
-    setStatusIdFilterInvoices,
-} from '../../../../actions/invoice/InvoicesFiltersActions';
+import {setStatusIdFilterInvoices, setPaymentTypeIdFilterInvoices}from '../../../../actions/invoice/InvoicesFiltersActions';
 import InvoicesAPI from "../../../../api/invoice/InvoicesAPI";
 import fileDownload from "js-file-download";
 import moment from "moment/moment";
@@ -38,9 +36,15 @@ class InvoicesList extends Component {
 
         if (!isEmpty(props.filter)) {
             switch (props.filter) {
-                case 'gecontroleerd':
+                case 'te-verzenden-incasso':
                     this.props.clearFilterInvoices();
-                    this.props.setStatusIdFilterInvoices('checked');
+                    this.props.setStatusIdFilterInvoices('to-send');
+                    this.props.setPaymentTypeIdFilterInvoices('collection');
+                    break;
+                case 'te-verzenden-overboeken':
+                    this.props.clearFilterInvoices();
+                    this.props.setStatusIdFilterInvoices('to-send');
+                    this.props.setPaymentTypeIdFilterInvoices('transfer');
                     break;
                 case 'verzonden':
                     this.props.clearFilterInvoices();
@@ -89,9 +93,15 @@ class InvoicesList extends Component {
         if (this.props.filter !== nextProps.filter) {
             if (!isEmpty(nextProps.filter)) {
                 switch (nextProps.filter) {
-                    case 'gecontroleerd':
+                    case 'te-verzenden-incasso':
                         this.props.clearFilterInvoices();
-                        this.props.setStatusIdFilterInvoices('checked');
+                        this.props.setStatusIdFilterInvoices('to-send');
+                        this.props.setPaymentTypeIdFilterInvoices('collection');
+                        break;
+                    case 'te-verzenden-overboeken':
+                        this.props.clearFilterInvoices();
+                        this.props.setStatusIdFilterInvoices('to-send');
+                        this.props.setPaymentTypeIdFilterInvoices('transfer');
                         break;
                     case 'verzonden':
                         this.props.clearFilterInvoices();
@@ -167,7 +177,7 @@ class InvoicesList extends Component {
 
         if(sendInvoiceIds.length > 0){
             this.props.previewSend(sendInvoiceIds);
-            hashHistory.push(`/financieel/${this.props.administrationId}/facturen/gecontroleerd/verzenden`);
+            hashHistory.push(`/financieel/${this.props.administrationId}/facturen/te-verzenden/verzenden`);
         }
         else{
             this.setState({showSelectInvoicesToSend: !this.state.showSelectInvoicesToSend});
@@ -236,11 +246,11 @@ class InvoicesList extends Component {
                         <div className="btn-group btn-group-flex" role="group">
                             <ButtonIcon iconName={"glyphicon-refresh"} onClickAction={this.resetInvoiceFilters}/>
                             <ButtonIcon iconName={"glyphicon-download-alt"} onClickAction={this.getCSV} />
-                            {(this.props.filter === 'gecontroleerd' && meta.total > 0) &&
+                            {(this.props.filter === 'te-verzenden' && meta.total > 0) &&
                             <ButtonText buttonText={"Facturen versturen"}
                                         onClickAction={() => this.previewSend()}/>
                             }
-                            {(this.props.filter === 'gecontroleerd' && meta.total > 0) &&
+                            {(this.props.filter === 'te-verzenden' && meta.total > 0) &&
                             <ButtonText buttonText={"Post facturen versturen"} onClickAction={() => this.downloadPostInvoices()}/>
                             }
                             {(this.props.filter === 'verzonden' && meta.total > 0) &&
@@ -331,6 +341,7 @@ const mapDispatchToProps = (dispatch) => {
         clearFilterInvoices,
         setInvoicesPagination,
         setStatusIdFilterInvoices,
+        setPaymentTypeIdFilterInvoices,
         blockUI,
         unblockUI
     }, dispatch);

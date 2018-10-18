@@ -25,8 +25,8 @@ const InvoiceProductsFormView = props => {
                     { priceInclVatAndReduction ? '€' + priceInclVatAndReduction.toLocaleString('nl',{ minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '€0,00'}
                 </div>
                 <div className="col-sm-1">
-                    {(props.showActionButtons && props.permissions.manageFinancial && (props.invoiceDetails.statusId === 'checked') ? <a role="button" onClick={props.openEdit}><span className="glyphicon glyphicon-pencil mybtn-success" /> </a> : '')}
-                    {(props.showActionButtons && props.permissions.manageFinancial && (props.invoiceDetails.statusId === 'checked') ? <a role="button" onClick={props.toggleDelete}><span className="glyphicon glyphicon-trash mybtn-danger"  /> </a> : '')}
+                    {(props.showActionButtons && props.permissions.manageFinancial && (props.invoiceDetails.statusId === 'to-send') ? <a role="button" onClick={props.openEdit}><span className="glyphicon glyphicon-pencil mybtn-success" /> </a> : '')}
+                    {(props.showActionButtons && props.permissions.manageFinancial && (props.invoiceDetails.statusId === 'to-send') ? <a role="button" onClick={props.toggleDelete}><span className="glyphicon glyphicon-trash mybtn-danger"  /> </a> : '')}
                 </div>
                 {period &&
                 <div onClick={props.openEdit}>

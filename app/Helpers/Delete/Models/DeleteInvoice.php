@@ -56,7 +56,7 @@ class DeleteInvoice implements DeleteInterface
      */
     public function canDelete()
     {
-        if(!($this->invoice->status_id == 'concept' || $this->invoice->status_id == 'checked' )){
+        if(!($this->invoice->status_id == 'to-send')){
             array_push($this->errorMessage, "Er is al een factuur aangemaakt.");
         }
     }

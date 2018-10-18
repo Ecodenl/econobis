@@ -48,7 +48,7 @@ class Filter extends RequestFilter
                 case 'upcoming':
                     $query->where('orders.status_id', 'active')
                         ->whereDoesntHave('invoices', function ($q) {
-                            $q->where('invoices.status_id', 'checked');
+                            $q->where('invoices.status_id', 'to-send');
                                 })
                         ->where(function ($q) {
                             $q->whereNull('orders.date_next_invoice')
@@ -60,14 +60,14 @@ class Filter extends RequestFilter
                     $query->where('orders.status_id', 'active')
                     ->where('orders.date_next_invoice', '<=', Carbon::today()->addDays(14))
                     ->whereDoesntHave('invoices', function ($q) {
-                        $q->where('invoices.status_id', 'checked');
+                        $q->where('invoices.status_id', 'to-send');
                     });
                     return false;
                     break;
                 case 'send':
                     $query->where('orders.status_id', 'active')
                         ->whereHas('invoices', function ($q) {
-                            $q->where('invoices.status_id', 'checked');
+                            $q->where('invoices.status_id', 'to-send');
                         });
                     return false;
                     break;

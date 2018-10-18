@@ -35,7 +35,8 @@ class Administration extends Model
             'total_orders_to_send_invoices',
             'total_orders_closed',
             'total_invoices',
-            'total_invoices_checked',
+            'total_invoices_to_send_collection',
+            'total_invoices_to_send_transfer',
             'total_invoices_sent',
             'total_invoices_exported',
             'total_invoices_reminder',
@@ -118,7 +119,7 @@ class Administration extends Model
                     ->orWhere('orders.date_next_invoice', '>', Carbon::today()->addDays(14));
             })
             ->whereDoesntHave('invoices', function ($q) {
-                $q->where('invoices.status_id', 'checked');
+                $q->where('invoices.status_id', 'to-send');
             })->count();
     }
 
@@ -128,7 +129,7 @@ class Administration extends Model
             ->where('orders.status_id', 'active')
             ->where('orders.date_next_invoice', '<=', Carbon::today()->addDays(14))
             ->whereDoesntHave('invoices', function ($q) {
-                $q->where('invoices.status_id', 'checked');
+                $q->where('invoices.status_id', 'to-send');
             })->count();
     }
 
@@ -137,7 +138,7 @@ class Administration extends Model
         return $this->orders()
             ->where('orders.status_id', 'active')
             ->whereHas('invoices', function ($q) {
-                $q->where('invoices.status_id', 'checked');
+                $q->where('invoices.status_id', 'to-send');
             })->count();
     }
 
@@ -152,9 +153,14 @@ class Administration extends Model
         return $this->invoices()->count();
     }
 
-    public function getTotalInvoicesCheckedAttribute()
+    public function getTotalInvoicesToSendCollectionAttribute()
     {
-        return $this->invoices()->where('status_id', 'checked')->whereNull('date_reminder_1')->whereNull('date_reminder_2')->whereNull('date_reminder_3')->whereNull('date_exhortation')->count();
+        return $this->invoices()->where('status_id', 'to-send')->whereNull('date_reminder_1')->whereNull('date_reminder_2')->whereNull('date_reminder_3')->whereNull('date_exhortation')->where('payment_type_id', 'collection')->count();
+    }
+
+    public function getTotalInvoicesToSendTransferAttribute()
+    {
+        return $this->invoices()->where('status_id', 'to-send')->whereNull('date_reminder_1')->whereNull('date_reminder_2')->whereNull('date_reminder_3')->whereNull('date_exhortation')->where('payment_type_id', 'transfer')->count();
     }
 
     public function getTotalInvoicesSentAttribute()

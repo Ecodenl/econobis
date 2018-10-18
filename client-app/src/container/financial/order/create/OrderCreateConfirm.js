@@ -43,7 +43,7 @@ class OrderCreateConfirm extends Component {
         // If no errors send form
         if (!hasErrors) {
             OrderDetailsAPI.createAll(invoice).then((payload) => {
-                hashHistory.push(`/financieel/${this.props.administrationId}/facturen/gecontroleerd`);
+                hashHistory.push(`/financieel/${this.props.administrationId}/facturen/te-verzenden-incasso`);
             });
         }
     };

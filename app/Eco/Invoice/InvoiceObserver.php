@@ -23,7 +23,7 @@ class InvoiceObserver
         $invoice->number = 'temp';
 
         if(!$invoice->status_id ){
-            $invoice->status_id = 'checked';
+            $invoice->status_id = 'to-send';
         }
 
         $invoice->invoice_number = 0;
@@ -45,9 +45,9 @@ class InvoiceObserver
     public function saving(Invoice $invoice){
         $oldInvoiceStatusId = $invoice->getOriginal('status_id');
 
-        // Als de status van checked naar verzonden wordt gezet, updaten we van alle orderregels de laatste factuur datum.
+        // Als de status van to-send naar verzonden wordt gezet, updaten we van alle orderregels de laatste factuur datum.
         // Deze wordt later gebruikt om eenmalige producten te checken of ze betaald zijn en om de periode weer te geven op de factuur.
-        if($invoice->status_id === 'sent' && $oldInvoiceStatusId === 'checked'){
+        if($invoice->status_id === 'sent' && $oldInvoiceStatusId === 'to-send'){
             foreach ($invoice->order->orderProducts as $orderProduct){
                 $order = $orderProduct->order;
                 if($orderProduct->date_last_invoice){

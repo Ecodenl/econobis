@@ -28,7 +28,7 @@ class InvoiceSendToolbar extends Component {
                     </div>
                 </div>
                 <div className="col-md-4"><h4
-                    className="text-center">Gecontroleerde facturen versturen({this.props.amountOfInvoices})</h4></div>
+                    className="text-center">Te verzenden facturen versturen({this.props.amountOfInvoices})</h4></div>
                 <div className="col-md-4"/>
                 {
                     this.state.showSend &&

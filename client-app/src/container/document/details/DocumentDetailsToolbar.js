@@ -28,7 +28,7 @@ class DocumentDetailsToolbar extends Component {
                     <div className="btn-group" role="group">
                         <ButtonIcon iconName={"glyphicon-arrow-left"} onClickAction={browserHistory.goBack}/>
                         <ButtonIcon iconName={"glyphicon-download-alt"} onClickAction={this.props.download}/>
-                        {documentFilename.endsWith('.pdf') &&
+                        {documentFilename.toLowerCase().endsWith('.pdf') &&
                         <ButtonIcon iconName={"glyphicon-eye-open"}
                                     onClickAction={() => hashHistory.push(`/document/inzien/${this.props.documentId}`)}/>
                         }
@@ -37,7 +37,7 @@ class DocumentDetailsToolbar extends Component {
                         <ButtonIcon iconName={"glyphicon-trash"} onClickAction={this.toggleDelete}/>
                     </div>
                 </div>
-                {documentFilename.endsWith('.pdf') ?
+                {documentFilename.toLowerCase().endsWith('.pdf') ?
                     <div className="col-md-4"><h4 className="text-center">{'Document: '} <Link
                         to={`/document/inzien/${this.props.documentId}`} className="link-underline">{documentFilename}</Link>
                     </h4></div>

@@ -297,7 +297,7 @@ class DocumentNewApp extends Component {
             data.append('attachment', attachment);
 
             DocumentDetailsAPI.newDocument(data).then((payload) => {
-                if(payload.data.data.filename.endsWith('.pdf')){
+                if(payload.data.data.filename.toLowerCase().endsWith('.pdf')){
                     hashHistory.push(`/document/inzien/${payload.data.data.id}`);
                 }else{
                     hashHistory.push(`/document/${payload.data.data.id}`);

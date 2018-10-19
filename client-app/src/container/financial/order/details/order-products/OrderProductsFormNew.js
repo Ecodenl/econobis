@@ -329,7 +329,7 @@ class OrderProductsFormNew extends Component {
 
                         <div className="row">
                             <InputDate
-                                label="Datum in"
+                                label="Begin datum"
                                 name="dateStart"
                                 value={dateStart}
                                 onChangeAction={this.handleInputChangeStartDate}
@@ -337,7 +337,7 @@ class OrderProductsFormNew extends Component {
                                 error={this.state.errors.dateStart}
                             />
                             <InputDate
-                                label="Datum uit"
+                                label="Eind datum"
                                 name="dateEnd"
                                 value={dateEnd}
                                 onChangeAction={this.handleInputChangeDate}

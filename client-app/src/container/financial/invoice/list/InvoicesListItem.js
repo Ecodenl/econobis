@@ -121,6 +121,7 @@ class InvoicesListItem extends Component {
                     {
                         this.state.showSend &&
                         <InvoiceListSend
+                            paymentType={this.props.paymentTypeId}
                             closeModal={this.showSend}
                             invoiceId={id}
                             administrationId={this.props.administrationId}

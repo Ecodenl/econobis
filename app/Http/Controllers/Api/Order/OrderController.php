@@ -373,8 +373,6 @@ class OrderController extends ApiController
             ->string('filter')->validate('required')->next()
             ->date('dateRequested')->validate('nullable|date')
             ->alias('date_requested')->next()
-            ->date('dateCollection')->validate('nullable|date')->whenMissing(null)->onEmpty(null)
-            ->alias('date_collection')->next()
             ->get();
 
 
@@ -390,7 +388,6 @@ class OrderController extends ApiController
                 $invoice = new Invoice();
                 $invoice->status_id = 'to-send';
                 $invoice->date_requested = $data['date_requested'];
-                $invoice->date_collection = $data['date_collection'];
                 $invoice->order_id = $order->id;
                 $invoice->collection_frequency_id = $order->collection_frequency_id;
                 $invoice->save();

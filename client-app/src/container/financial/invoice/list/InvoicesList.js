@@ -170,31 +170,34 @@ class InvoicesList extends Component {
         },100 );
     };
 
-    previewSend = () => {
+    previewSend = (paymentType) => {
         const sendInvoiceIds = [];
 
         this.props.invoices.data.map((invoice) => (invoice.checked === true && sendInvoiceIds.push(invoice.id)));
 
         if(sendInvoiceIds.length > 0){
             this.props.previewSend(sendInvoiceIds);
-            hashHistory.push(`/financieel/${this.props.administrationId}/facturen/te-verzenden/verzenden`);
+            hashHistory.push(`/financieel/${this.props.administrationId}/facturen/te-verzenden/verzenden/email/${paymentType}`);
         }
         else{
             this.setState({showSelectInvoicesToSend: !this.state.showSelectInvoicesToSend});
         }
     };
 
-    downloadPostInvoices = () => {
-        InvoiceDetailsAPI.sendAllPost(this.props.administrationId).then((payload) => {
-            fileDownload(payload.data, 'Post-facturen-' + moment().format("YYYY-MM-DD HH:mm:ss") +  '.pdf');
-            hashHistory.push(`/financieel/${this.props.administrationId}/facturen/verzonden`);
+    previewSendPost = (paymentType) => {
+        InvoiceDetailsAPI.getAllPost(this.props.administrationId).then((payload) => {
+            this.props.previewSend(payload);
+            hashHistory.push(`/financieel/${this.props.administrationId}/facturen/te-verzenden/verzenden/post/${paymentType}`);
         });
     };
 
     createSepa = () => {
         InvoiceDetailsAPI.createSepa(this.props.administrationId).then((payload) => {
             fileDownload(payload.data, payload.headers['x-filename']);
-            hashHistory.push(`/financieel/${this.props.administrationId}/facturen/geexporteerd`);
+
+            this.props.setInvoicesPagination({page: 0, offset: 0});
+
+            this.fetchInvoicesData();
         });
     };
 
@@ -246,12 +249,19 @@ class InvoicesList extends Component {
                         <div className="btn-group btn-group-flex" role="group">
                             <ButtonIcon iconName={"glyphicon-refresh"} onClickAction={this.resetInvoiceFilters}/>
                             <ButtonIcon iconName={"glyphicon-download-alt"} onClickAction={this.getCSV} />
-                            {(this.props.filter === 'te-verzenden' && meta.total > 0) &&
-                            <ButtonText buttonText={"Facturen versturen"}
-                                        onClickAction={() => this.previewSend()}/>
+                            {(this.props.filter === 'te-verzenden-incasso' || this.props.filter === 'te-verzenden-overboeken' && meta.total > 0) &&
+                            <ButtonText buttonText={"Facturen e-mailen"}
+                                        onClickAction={() => this.previewSend('incasso')}/>
                             }
-                            {(this.props.filter === 'te-verzenden' && meta.total > 0) &&
-                            <ButtonText buttonText={"Post facturen versturen"} onClickAction={() => this.downloadPostInvoices()}/>
+                            {(this.props.filter === 'te-verzenden-overboeken' && meta.total > 0) &&
+                            <ButtonText buttonText={"Facturen e-mailen"}
+                                        onClickAction={() => this.previewSend('overboeken')}/>
+                            }
+                            {(this.props.filter === 'te-verzenden-incasso' && meta.total > 0) &&
+                            <ButtonText buttonText={"Post facturen versturen"} onClickAction={() => this.previewSendPost('incasso')}/>
+                            }
+                            {( this.props.filter === 'te-verzenden-overboeken' && meta.total > 0) &&
+                            <ButtonText buttonText={"Post facturen versturen"} onClickAction={() => this.previewSendPost('overboeken')}/>
                             }
                             {(this.props.filter === 'verzonden' && meta.total > 0) &&
                             <ButtonText buttonText={"Sepa maken"} onClickAction={() => this.createSepa()}/>

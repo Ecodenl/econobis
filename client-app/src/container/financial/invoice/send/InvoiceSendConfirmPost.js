@@ -8,7 +8,7 @@ import InputDate from "../../../../components/form/InputDate";
 import validator from 'validator';
 import moment from "moment/moment";
 
-class InvoiceSendConfirm extends Component {
+class InvoiceSendConfirmPost extends Component {
 
     constructor(props) {
         super(props);
@@ -43,25 +43,49 @@ class InvoiceSendConfirm extends Component {
             // }
 
             this.setState({...this.state, errors: errors});
+
             if (!hasErrors) {
-                InvoiceDetailsAPI.sendAll(this.props.invoiceIds, dateCollection).then((payload) => {
+                InvoiceDetailsAPI.sendAllPost(this.props.invoiceIds, dateCollection).then((payload) => {
                     if (payload && payload.headers && payload.headers['x-filename']) {
                         fileDownload(payload.data, payload.headers['x-filename']);
+
+                        InvoiceDetailsAPI.createSepaForInvoiceIds(this.props.invoiceIds).then((payload) => {
+                            if (payload && payload.headers && payload.headers['x-filename']) {
+                                fileDownload(payload.data, payload.headers['x-filename']);
+                                hashHistory.push(`/financieel/${this.props.administrationId}/facturen/verzonden`);
+                            }
+                            else {
+                                hashHistory.push(`/financieel/${this.props.administrationId}/facturen/verzonden`);
+                            }
+                        });
+                    }
+                    else {
+                        hashHistory.push(`/financieel/${this.props.administrationId}/facturen/verzonden`);
                     }
                 });
-
-                hashHistory.push(`/financieel/${this.props.administrationId}/facturen/verzonden`);
             }
         }
 
+
         else{
-            InvoiceDetailsAPI.sendAll(this.props.invoiceIds, null).then((payload) => {
+            InvoiceDetailsAPI.sendAllPost(this.props.invoiceIds, null).then((payload) => {
                 if (payload && payload.headers && payload.headers['x-filename']) {
                     fileDownload(payload.data, payload.headers['x-filename']);
+
+                    InvoiceDetailsAPI.createSepaForInvoiceIds(this.props.invoiceIds).then((payload) => {
+                        if (payload && payload.headers && payload.headers['x-filename']) {
+                            fileDownload(payload.data, payload.headers['x-filename']);
+                            hashHistory.push(`/financieel/${this.props.administrationId}/facturen/verzonden`);
+                        }
+                        else {
+                            hashHistory.push(`/financieel/${this.props.administrationId}/facturen/verzonden`);
+                        }
+                    });
+                }
+                else {
+                    hashHistory.push(`/financieel/${this.props.administrationId}/facturen/verzonden`);
                 }
             });
-
-            hashHistory.push(`/financieel/${this.props.administrationId}/facturen/verzonden`);
         }
 
 
@@ -81,8 +105,8 @@ class InvoiceSendConfirm extends Component {
             <Modal
                 closeModal={this.props.closeModal}
                 confirmAction={this.confirmAction}
-                title="Factuur verzenden"
-                buttonConfirmText={"Verzenden"}
+                title="Factuur downloaden"
+                buttonConfirmText={"Downloaden"}
             >
                 {this.props.paymentType === 'collection' &&
                 <div className="row">
@@ -101,7 +125,7 @@ class InvoiceSendConfirm extends Component {
                 <div className="row">
                     <div className={'col-sm-12 margin-10-bottom'}>
                     <span>
-                        Wilt u alle facturen verzenden?
+                        Wilt u alle facturen downloaden en doorzetten naar status verzonden?
                     </span>
                     </div>
                 </div>
@@ -110,4 +134,4 @@ class InvoiceSendConfirm extends Component {
     };
 }
 
-export default InvoiceSendConfirm;
+export default InvoiceSendConfirmPost;

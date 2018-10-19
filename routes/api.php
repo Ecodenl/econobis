@@ -367,11 +367,12 @@ Route::namespace('Api')
         Route::post('invoice/sending', 'Invoice\InvoiceController@getInvoicesForSending');
         Route::post('invoice/send-all', 'Invoice\InvoiceController@sendAll');
         Route::get('invoice/amount-unpaid', 'Invoice\InvoiceController@getAmountUnpaid');
-        Route::get('invoice/{administration}/generate-sepa-file', 'Invoice\InvoiceController@generateSepaFile');
+        Route::post('invoice/send-all-post', 'Invoice\InvoiceController@sendAllPost');
+        Route::post('invoice/create-sepa-for-invoice-ids', 'Invoice\InvoiceController@createSepaForInvoiceIds');
         Route::get('invoice/{invoice}', 'Invoice\InvoiceController@show');
         Route::get('invoice/{invoice}/download', 'Invoice\InvoiceController@download');
         Route::get('invoice/{invoice}/email-preview', 'Invoice\InvoiceController@getEmailPreview');
-        Route::get('invoice/{administration}/send-all-post', 'Invoice\InvoiceController@sendAllPost');
+        Route::get('invoice/{administration}/get-all-post', 'Invoice\InvoiceController@getAllPost');
         Route::get('invoice/{administration}/create-sepa', 'Invoice\InvoiceController@generateSepaFile');
         Route::post('invoice', 'Invoice\InvoiceController@store');
         Route::post('invoice/invoice-product', 'Invoice\InvoiceController@storeInvoiceProduct');
@@ -381,7 +382,7 @@ Route::namespace('Api')
         Route::post('invoice/{invoice}', 'Invoice\InvoiceController@update');
         Route::post('invoice/{invoice}/irrecoverable', 'Invoice\InvoiceController@setIrrecoverable');
         Route::post('invoice/{invoice}/send', 'Invoice\InvoiceController@send');
-        Route::get('invoice/{invoice}/send-post', 'Invoice\InvoiceController@sendPost');
+        Route::post('invoice/{invoice}/send-post', 'Invoice\InvoiceController@sendPost');
         Route::post('invoice/{invoice}/send-notification', 'Invoice\InvoiceController@sendNotification');
         Route::post('invoice/{invoice}/payment/new', 'Invoice\InvoiceController@newPayment');
         Route::post('invoice/{invoicePayment}/payment/update', 'Invoice\InvoiceController@updatePayment');

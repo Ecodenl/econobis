@@ -81,7 +81,7 @@ class FinancialTree extends Component {
                                 <NavText><Link className="financial-tree-link" to={`financieel/${this.props.id}/facturen/verzonden`}>Verzonden({this.props.administrationDetails.totalInvoicesSent})</Link></NavText>
                             </Nav>
                             <Nav id="exported">
-                                <NavText><Link className="financial-tree-link" to={`financieel/${this.props.id}/facturen/geexporteerd`}>Geëxporteerd({this.props.administrationDetails.totalInvoicesExported})</Link></NavText>
+                                <NavText><Link className="financial-tree-link" to={`financieel/${this.props.id}/facturen/geexporteerd`}>Verzonden export({this.props.administrationDetails.totalInvoicesExported})</Link></NavText>
                             </Nav>
                             <Nav id="reminder">
                                 <NavText><Link className="financial-tree-link" to={`financieel/${this.props.id}/facturen/herinnering`}>Herinnering({this.props.administrationDetails.totalInvoicesReminder})</Link></NavText>

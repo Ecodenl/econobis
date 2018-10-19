@@ -114,6 +114,7 @@ class InvoiceToolbar extends Component {
                 {
                     this.state.showSend &&
                     <InvoiceDetailsFormSend
+                        paymentType={this.props.invoiceDetails.paymentTypeId}
                         closeModal={this.showSend}
                         invoiceId={this.props.invoiceDetails.id}
                     />
@@ -122,6 +123,7 @@ class InvoiceToolbar extends Component {
                 {
                     this.state.showSendPost &&
                     <InvoiceDetailsFormSendPost
+                        paymentType={this.props.invoiceDetails.paymentTypeId}
                         closeModal={this.showSendPost}
                         invoiceId={this.props.invoiceDetails.id}
                     />

@@ -75,12 +75,12 @@ export default {
             });
     },
 
-    send: (invoiceId) => {
+    send: (invoiceId, dateCollection) => {
         const requestUrl = `${URL_INVOICE}/${invoiceId}/send`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios.post(requestUrl)
+        return axios.post(requestUrl, {'dateCollection': dateCollection})
             .then(function (response) {
                 return response.data;
             })
@@ -89,21 +89,57 @@ export default {
             });
     },
 
-    sendPost: (invoiceId) => {
+    sendPost: (invoiceId, dateCollection) => {
         const requestUrl = `${URL_INVOICE}/${invoiceId}/send-post`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios.get(requestUrl, {responseType: 'blob'});
+        return axios.post(requestUrl, {'dateCollection': dateCollection}, {responseType: 'blob'});
     },
 
-    sendAll: (invoiceIds) => {
+    sendAll: (invoiceIds, dateCollection) => {
         const requestUrl = `${URL_INVOICE}/send-all`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
         document.body.style.cursor='wait';
-        return axios.post(requestUrl, {'ids': invoiceIds})
+
+        let response = axios.post(requestUrl, {'ids': invoiceIds, 'dateCollection': dateCollection} , {responseType: 'blob'});
+
+        document.body.style.cursor='default';
+
+        return response;
+    },
+
+    sendAllPost: (invoiceIds, dateCollection) => {
+        const requestUrl = `${URL_INVOICE}/send-all-post`;
+        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
+        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
+
+        document.body.style.cursor='wait';
+        let response = axios.post(requestUrl, {'ids': invoiceIds, 'dateCollection': dateCollection} , {responseType: 'blob'});
+        document.body.style.cursor='default';
+        return response;
+    },
+
+    createSepaForInvoiceIds: (invoiceIds) => {
+        const requestUrl = `${URL_INVOICE}/create-sepa-for-invoice-ids`;
+        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
+        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
+
+        document.body.style.cursor='wait';
+        let response = axios.post(requestUrl, {'ids': invoiceIds}, {responseType: 'blob'});
+        document.body.style.cursor='default';
+        return response;
+    },
+
+    getAllPost: (administrationId) => {
+        const requestUrl = `${URL_INVOICE}/${administrationId}/get-all-post`;
+        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
+        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
+
+        document.body.style.cursor='wait';
+        return axios.get(requestUrl)
             .then(function (response) {
                 document.body.style.cursor='default';
                 return response.data;
@@ -112,17 +148,6 @@ export default {
                 document.body.style.cursor='default';
                 console.log(error);
             });
-    },
-
-    sendAllPost: (administrationId) => {
-        const requestUrl = `${URL_INVOICE}/${administrationId}/send-all-post`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
-
-        document.body.style.cursor='wait';
-        const response = axios.get(requestUrl, {responseType: 'blob'});
-        document.body.style.cursor='default';
-        return response;
     },
 
     createSepa: (administrationId) => {

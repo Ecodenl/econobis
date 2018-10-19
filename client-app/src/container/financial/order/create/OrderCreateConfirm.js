@@ -4,7 +4,6 @@ import Modal from '../../../../components/modal/Modal';
 import OrderDetailsAPI from "../../../../api/order/OrderDetailsAPI";
 import {hashHistory} from "react-router";
 import moment from "moment/moment";
-import validator from "validator";
 import InputDate from "../../../../components/form/InputDate";
 
 class OrderCreateConfirm extends Component {
@@ -16,11 +15,7 @@ class OrderCreateConfirm extends Component {
             invoice: {
                 administrationId: props.administrationId,
                 dateRequested: moment(),
-                dateCollection: '',
             },
-            errors: {
-                dateCollection: false,
-            }
         };
     };
 
@@ -29,23 +24,9 @@ class OrderCreateConfirm extends Component {
 
         const {invoice} = this.state;
 
-        // Validation
-        let errors = {};
-        let hasErrors = false;
 
-        if (validator.isEmpty(invoice.dateCollection + '')) {
-            errors.dateCollection = true;
-            hasErrors = true;
-        }
-
-        this.setState({...this.state, errors: errors});
-
-        // If no errors send form
-        if (!hasErrors) {
-            OrderDetailsAPI.createAll(invoice).then((payload) => {
-                hashHistory.push(`/financieel/${this.props.administrationId}/facturen/te-verzenden-incasso`);
-            });
-        }
+        OrderDetailsAPI.createAll(invoice).then((payload) => {
+            hashHistory.push(`/financieel/${this.props.administrationId}/facturen/te-verzenden-incasso`);});
     };
 
     handleInputChangeDate = (value, name) => {
@@ -59,7 +40,7 @@ class OrderCreateConfirm extends Component {
     };
 
     render() {
-        const { dateRequested, dateCollection } = this.state.invoice;
+        const { dateRequested } = this.state.invoice;
 
         return (
             <Modal
@@ -75,14 +56,6 @@ class OrderCreateConfirm extends Component {
                         name="dateRequested"
                         value={dateRequested}
                         onChangeAction={this.handleInputChangeDate}
-                    />
-                    <InputDate
-                        label="Incasso datum"
-                        name="dateCollection"
-                        value={dateCollection}
-                        onChangeAction={this.handleInputChangeDate}
-                        required={'required'}
-                        error={this.state.errors.dateCollection}
                     />
                 </div>
 

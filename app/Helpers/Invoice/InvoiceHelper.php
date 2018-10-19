@@ -83,6 +83,9 @@ class InvoiceHelper
     public static function send(Invoice $invoice, $preview = false){
 
         if(!$preview) {
+            $invoice->status_id = 'sent';
+            $invoice->date_sent = Carbon::today();
+            $invoice->save();
             InvoiceHelper::createInvoiceDocument($invoice);
         }
 
@@ -164,9 +167,6 @@ class InvoiceHelper
                 'htmlBody' => 'Factuur zal per post moeten worden verstuurd',
             ];
         }
-        $invoice->status_id = 'sent';
-        $invoice->date_sent = Carbon::today();
-        $invoice->save();
 
         return $invoice;
     }

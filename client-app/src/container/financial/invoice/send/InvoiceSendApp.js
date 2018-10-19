@@ -45,7 +45,12 @@ class InvoiceSendApp extends Component {
                         <div className="col-md-12 margin-10-top">
                             <Panel>
                                 <PanelBody className={"panel-small"}>
-                                    <InvoiceSendToolbar invoiceIds={this.props.invoicePreviewSend} amountOfInvoices={this.state.invoices ? this.state.invoices.length : 0} administrationId={this.props.params.id}/>
+                                    <InvoiceSendToolbar
+                                        type={this.props.params.type}
+                                        paymentType={this.props.params.paymentType}
+                                        invoiceIds={this.props.invoicePreviewSend}
+                                        amountOfInvoices={this.state.invoices ? this.state.invoices.length : 0}
+                                        administrationId={this.props.params.id}/>
                                 </PanelBody>
                             </Panel>
                         </div>

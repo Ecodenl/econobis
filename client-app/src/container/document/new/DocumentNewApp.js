@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import { hashHistory } from 'react-router';
 import validator from 'validator';
-import moment from 'moment';
 
 import DocumentNewForm from './DocumentNewForm';
 import DocumentNewToolbar from './DocumentNewToolbar';

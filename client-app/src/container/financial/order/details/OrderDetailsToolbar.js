@@ -4,8 +4,7 @@ import {browserHistory, hashHistory} from 'react-router';
 
 import ButtonIcon from '../../../../components/button/ButtonIcon';
 import OrderDeleteItem from "./OrderDeleteItem";
-import InvoiceNewCollection from "../../invoice/new/InvoiceNewCollection";
-import InvoiceNewTransfer from "../../invoice/new/InvoiceNewTransfer";
+import InvoiceNew from "../../invoice/new/InvoiceNew";
 import ButtonText from "../../../../components/button/ButtonText";
 
 class OrderToolbar  extends Component {
@@ -14,8 +13,7 @@ class OrderToolbar  extends Component {
 
         this.state = {
             showDelete: false,
-            showNewInvoiceCollection: false,
-            showNewInvoiceTransfer: false,
+            showNewInvoice: false,
         };
     };
 
@@ -28,12 +26,7 @@ class OrderToolbar  extends Component {
     };
 
     toggleNewInvoice = () => {
-        if(this.props.orderDetails.paymentTypeId === 'collection'){
-            this.setState({showNewInvoiceCollection: !this.state.showNewInvoiceCollection});
-        }
-        else if(this.props.orderDetails.paymentTypeId === 'transfer'){
-            this.setState({showNewInvoiceTransfer: !this.state.showNewInvoiceTransfer});
-        }
+        this.setState({showNewInvoice: !this.state.showNewInvoice});
     };
 
     render() {
@@ -62,18 +55,10 @@ class OrderToolbar  extends Component {
                         administrationId={this.props.administrationId}
                     />
                 }
-                {
-                    this.state.showNewInvoiceCollection &&
-                    <InvoiceNewCollection
-                        closeModal={this.toggleNewInvoice}
-                        orderId={this.props.orderDetails.id}
-                        orderNumber={this.props.orderDetails.number}
-                    />
-                }
 
                 {
-                    this.state.showNewInvoiceTransfer &&
-                    <InvoiceNewTransfer
+                    this.state.showNewInvoice &&
+                    <InvoiceNew
                         closeModal={this.toggleNewInvoice}
                         orderId={this.props.orderDetails.id}
                         orderNumber={this.props.orderDetails.number}

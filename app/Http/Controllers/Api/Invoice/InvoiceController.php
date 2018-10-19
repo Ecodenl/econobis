@@ -27,6 +27,7 @@ use App\Http\Resources\Invoice\FullInvoiceProduct;
 use App\Http\Resources\Invoice\GridInvoice;
 use App\Http\Resources\Invoice\InvoicePeek;
 use Barryvdh\DomPDF\Facade as PDF;
+use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
@@ -190,8 +191,11 @@ class InvoiceController extends ApiController
         return $invoice;
     }
 
-    public function send(Invoice $invoice)
+    public function send(Invoice $invoice, Request $request)
     {
+        $invoice->date_collection = $request->input('dateCollection');
+        $invoice->save();
+
         $orderController = new OrderController;
         $emailTo = $orderController->getContactInfoForOrder($invoice->order->contact)['email'];
 
@@ -203,8 +207,10 @@ class InvoiceController extends ApiController
         }
     }
 
-    public function sendPost(Invoice $invoice)
+    public function sendPost(Invoice $invoice, Request $request)
     {
+        $invoice->date_collection = $request->input('dateCollection');
+        $invoice->save();
         InvoiceHelper::createInvoiceDocument($invoice);
         $invoice->status_id = 'sent';
         $invoice->date_sent = Carbon::today();
@@ -221,21 +227,65 @@ class InvoiceController extends ApiController
     public function sendAll(Request $request)
     {
         set_time_limit(0);
-        $invoices = Invoice::whereIn('id', $request->input('ids'))->with('order.contact')->get();
+        $invoices = Invoice::whereIn('id', $request->input('ids'))->with(['order.contact', 'administration'])->get();
 
         $response = [];
 
-        foreach ($invoices as $invoice){
-            array_push($response, $this->send($invoice));
+        $administration = $invoices->first()->administration;
+        $paymentTypeId = $invoices->first()->payment_type_id;
+
+        if(!$administration->sepa_creditor_id || !$administration->bic){
+            abort(400, 'Sepa crediteur ID en BIC zijn verplichte velden.');
+        }
+
+        $validatedInvoices = $invoices->reject(function ($invoice) {
+            return (empty($invoice->order->IBAN) && empty($invoice->order->contact->iban));
+        });
+
+        if($validatedInvoices->count() > 0) {
+            foreach ($validatedInvoices as $invoice){
+
+                $invoice->date_collection = $request->input('dateCollection');
+                $invoice->save();
+
+                array_push($response, $this->send($invoice));
+            }
+            if($paymentTypeId === 'collection') {
+                $sepaHelper = new SepaHelper($administration, $validatedInvoices);
+
+                $sepa = $sepaHelper->generateSepaFile();
+
+                return $sepaHelper->downloadSepa($sepa);
+            }
         }
 
         return $response;
     }
 
-    public function sendAllPost(Administration $administration)
+    public function getAllPost(Administration $administration){
+        set_time_limit(0);
+
+        $invoices = Invoice::where('administration_id', $administration->id)->where('status_id', 'to-send')->with('order.contact')->get();
+
+        $orderController = new OrderController;
+
+        $postInvoiceIds = [];
+
+        foreach ($invoices as $invoice) {
+            $emailTo = $orderController->getContactInfoForOrder($invoice->order->contact)['email'];
+            if ($emailTo === 'Geen e-mail bekend') {
+                array_push($postInvoiceIds, $invoice->id);
+            }
+        }
+
+        return $postInvoiceIds;
+
+    }
+
+    public function sendAllPost(Request $request)
     {
         set_time_limit(0);
-        $invoices = Invoice::where('administration_id', $administration->id)->where('status_id', 'to-send')->with('order.contact')->get();
+        $invoices = Invoice::whereIn('id', $request->input('ids'))->with(['order.contact', 'administration'])->get();
 
         $orderController = new OrderController;
 
@@ -247,6 +297,9 @@ class InvoiceController extends ApiController
 </style>';
 
         foreach ($invoices as $k => $invoice){
+            $invoice->date_collection = $request->input('dateCollection');
+            $invoice->save();
+
             $emailTo = $orderController->getContactInfoForOrder($invoice->order->contact)['email'];
             $contactPerson = $orderController->getContactInfoForOrder($invoice->order->contact)['contactPerson'];
 
@@ -292,11 +345,16 @@ class InvoiceController extends ApiController
             }
         }
 
-        libxml_use_internal_errors(true);
-        $pdfOutput = PDF::loadHTML($html)->output();
-        libxml_use_internal_errors(false);
-        return $pdfOutput;
+        $name = 'Post-facturen-' . Carbon::now()->format("Y-m-d-H-i-s") . '.pdf';
 
+        libxml_use_internal_errors(true);
+        $pdfOutput = PDF::loadHTML($html);
+        libxml_use_internal_errors(false);
+
+        header('X-Filename:' . $name);
+        header('Access-Control-Expose-Headers: X-Filename');
+
+        return $pdfOutput->output();
     }
 
     public function download(Invoice $invoice){
@@ -363,7 +421,7 @@ class InvoiceController extends ApiController
         $invoices = Invoice::where('administration_id', $administration->id)->where('status_id', 'sent')->where('payment_type_id', 'collection')->get();
 
         $validatedInvoices = $invoices->reject(function ($invoice) {
-            return empty($invoice->order->IBAN);
+            return (empty($invoice->order->IBAN) && empty($invoice->order->contact->iban));
         });
 
         if($validatedInvoices->count() > 0) {
@@ -374,6 +432,34 @@ class InvoiceController extends ApiController
             return $sepaHelper->downloadSepa($sepa);
         }
     }
+
+    public function createSepaForInvoiceIds(Request $request){
+
+        $invoices = Invoice::whereIn('id', $request->input('ids'))->with(['order.contact', 'administration'])->get();
+
+        $response = [];
+
+        $administration = $invoices->first()->administration;
+
+        if(!$administration->sepa_creditor_id || !$administration->bic){
+            abort(400, 'Sepa crediteur ID en BIC zijn verplichte velden.');
+        }
+
+        $validatedInvoices = $invoices->reject(function ($invoice) {
+            return (empty($invoice->order->IBAN) && empty($invoice->order->contact->iban));
+        });
+
+        if($validatedInvoices->count() > 0) {
+            $sepaHelper = new SepaHelper($administration, $validatedInvoices);
+
+            $sepa = $sepaHelper->generateSepaFile();
+
+            return $sepaHelper->downloadSepa($sepa);
+        }
+
+        return $response;
+    }
+
 
     public function storeInvoiceProduct(RequestInput $input)
     {

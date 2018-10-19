@@ -142,6 +142,13 @@ class SepaHelper
 
         // Transacties
         foreach($this->invoices AS $invoice){
+
+            $iban = $invoice->order->IBAN;
+
+            if(!$iban){
+                $iban = $invoice->order->cotnact->iban;
+            }
+
             $xml .= "\n\t\t\t<DrctDbtTxInf>";
             // Payment Identification
             $xml .= "\n\t\t\t\t<PmtId>";
@@ -173,7 +180,7 @@ class SepaHelper
             // Debtor Account
             $xml .= "\n\t\t\t\t<DbtrAcct>";
             $xml .= "\n\t\t\t\t\t<Id>";
-            $xml .= "\n\t\t\t\t\t\t<IBAN>" . str_replace(' ', '', $invoice->order->IBAN) . "</IBAN>"; // IBAN nummer van geincasseerde
+            $xml .= "\n\t\t\t\t\t\t<IBAN>" . str_replace(' ', '', $iban) . "</IBAN>"; // IBAN nummer van geincasseerde
             $xml .= "\n\t\t\t\t\t</Id>";
             $xml .= "\n\t\t\t\t</DbtrAcct>";
 
@@ -216,7 +223,6 @@ class SepaHelper
 
         foreach ($this->invoices as $invoice){
             $invoice->sepa_id = $sepa->id;
-            $invoice->status_id = 'exported';
             $invoice->save();
         }
 

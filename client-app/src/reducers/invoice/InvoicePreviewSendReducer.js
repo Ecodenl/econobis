@@ -5,7 +5,7 @@ export default function (state = [], action) {
                 ...action.data,
             };
         case 'CLEAR_INVOICE_PREVIEW_SEND':
-            return state.invoicePreviewSend = [];
+            return state = [];
 
         default:
             return state;

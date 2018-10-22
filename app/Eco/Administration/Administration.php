@@ -232,20 +232,25 @@ class Administration extends Model
     {
         $canCreateInvoices['can'] = true;
         $canCreateInvoices['message'] = '';
+        $canCreateInvoices['requiredFields'] = [];
 
         if(empty($this->IBAN)) {
-            $canCreateInvoices['message'] .= 'Administratie IBAN is verplicht bij het maken van een SEPA. ';
+            $canCreateInvoices['requiredFields'][] = 'IBAN';
             $canCreateInvoices['can'] = false;
         }
 
         if(empty($this->bic)) {
-            $canCreateInvoices['message'] .= 'Administratie bic is verplicht bij het maken van een SEPA. ';
+            $canCreateInvoices['requiredFields'][] = 'bic';
             $canCreateInvoices['can'] = false;
         }
 
         if(empty($this->sepa_creditor_id)) {
-            $canCreateInvoices['message'] .= 'Administratie SEPA crediteur id is verplicht bij het maken van een SEPA. ';
+            $canCreateInvoices['requiredFields'][] = 'SEPA crediteur id';
             $canCreateInvoices['can'] = false;
+        }
+
+        if(!$canCreateInvoices['can']){
+            $canCreateInvoices['message'] = 'Kan SEPA niet aanmaken. De velden ' . implode($canCreateInvoices['requiredFields'], ', ') . ' zijn verplicht';
         }
 
         return $canCreateInvoices;
@@ -255,15 +260,21 @@ class Administration extends Model
     {
         $canCreatePaymentInvoices['can'] = true;
         $canCreatePaymentInvoices['message'] = '';
+        $canCreatePaymentInvoices['requiredFields'] = [];
 
         if(empty($this->IBAN)) {
-            $canCreatePaymentInvoices['message'] .= 'Administratie IBAN is verplicht bij het maken van een SEPA. ';
-            $canCreateInvoices['can'] = false;
+            $canCreatePaymentInvoices['requiredFields'][] = 'IBAN';
+            $canCreatePaymentInvoices['can'] = false;
         }
 
+
         if(empty($this->bic)) {
-            $canCreatePaymentInvoices['message'] .= 'Administratie bic is verplicht bij het maken van een SEPA. ';
-            $canCreateInvoices['can'] = false;
+            $canCreatePaymentInvoices['requiredFields'][] = 'bic';
+            $canCreatePaymentInvoices['can'] = false;
+        }
+
+        if(!$canCreatePaymentInvoices['can']){
+            $canCreatePaymentInvoices['message'] = 'Kan SEPA niet aanmaken. De velden ' . explode($canCreatePaymentInvoices['requiredFields'], ', ') . ' zijn verplicht';
         }
 
         return $canCreatePaymentInvoices;

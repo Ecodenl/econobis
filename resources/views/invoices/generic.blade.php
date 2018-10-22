@@ -32,6 +32,10 @@
             font-family: Arial !important;
         }
 
+        body {
+            margin-left: -32px;
+        }
+
         table {
             width: 100%;
             margin-left: 36px;
@@ -62,8 +66,10 @@
         }
 
         .logo {
-            margin-bottom: 24px;
-            margin-top: -16px;
+            float: right;
+            margin-bottom: 12px;
+            margin-top: -12px;
+            margin-right: 32px;
         }
 
         a:visited {
@@ -95,20 +101,25 @@
             float: right;
             width: 55%
         }
+
+        .clearfix::after {
+            content: " ";
+            display: block;
+            height: 0;
+            clear: both;
+        }
+
    </style>
 </head>
 
 <body>
 
 <div>
-    <table class="logo">
-        <tr>
-            <td width="50%"></td>
-            <td width="50%" align="right">
-                {!! $logo !!}
-            </td>
-        </tr>
-    </table>
+    <div class="clearfix">
+        <div class="logo">
+            {!! $logo !!}
+        </div>
+    </div>
 
     <div class="contact-info-table">
     <table cellpadding=0 cellspacing=2>

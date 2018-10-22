@@ -239,7 +239,7 @@ class InvoicesList extends Component {
                         <div className="btn-group btn-group-flex" role="group">
                             <ButtonIcon iconName={"glyphicon-refresh"} onClickAction={this.resetInvoiceFilters}/>
                             <ButtonIcon iconName={"glyphicon-download-alt"} onClickAction={this.getCSV} />
-                            {(this.props.filter === 'te-verzenden-incasso' || this.props.filter === 'te-verzenden-overboeken' && meta.total > 0) &&
+                            {(this.props.filter === 'te-verzenden-incasso' && meta.total > 0) &&
                             <ButtonText buttonText={"Facturen e-mailen"}
                                         onClickAction={() => this.previewSend('incasso')}/>
                             }

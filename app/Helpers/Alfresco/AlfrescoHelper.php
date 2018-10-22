@@ -104,7 +104,14 @@ class AlfrescoHelper
     public function assignUserToPrivateSite($alfresco_username){
         $url = \Config::get('app.ALFRESCO_URL') . "/alfresco/versions/1/sites/" . \Config::get('app.ALFRESCO_SITE_MAP') . "/members";
 
-        $args['role'] = 'SiteConsumer';
+        //Als er 1 gebruiker is(Econobis Support) - dan wordt de eerst volgende manager op alfresco
+        if(User::count() === 2){
+            $args['role'] = 'SiteManager';
+        }
+        else{
+            $args['role'] = 'SiteConsumer';
+        }
+
         $args['id'] = $alfresco_username;
 
         $response = $this->executeCurl($url, $args, 'application/json', false, false);

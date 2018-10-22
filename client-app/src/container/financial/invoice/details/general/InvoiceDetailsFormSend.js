@@ -37,18 +37,19 @@ class InvoiceDetailsFormSend extends Component {
                 hasErrors = true;
             }
 
-            // if(moment(this.props.dateNextInvoice).isAfter(moment(dateCollection))){
-            //     errors.dateCollection = true;
-            //     hasErrors = true;
-            // }
+            if(moment().isAfter(moment(dateCollection))){
+                errors.dateCollection = true;
+                hasErrors = true;
+            }
 
             this.setState({...this.state, errors: errors});
-        }
-        if (!hasErrors) {
-            InvoiceDetailsAPI.send(this.props.invoiceId).then((payload) => {
-                this.props.fetchInvoiceDetails(this.props.invoiceId);
-                this.props.closeModal();
-            });
+
+            if (!hasErrors) {
+                InvoiceDetailsAPI.send(this.props.invoiceId, dateCollection).then((payload) => {
+                    this.props.fetchInvoiceDetails(this.props.invoiceId);
+                    this.props.closeModal();
+                });
+            }
         }
         else{
             InvoiceDetailsAPI.send(this.props.invoiceId, null).then((payload) => {

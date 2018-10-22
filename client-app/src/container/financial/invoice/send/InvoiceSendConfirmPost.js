@@ -37,10 +37,10 @@ class InvoiceSendConfirmPost extends Component {
                 hasErrors = true;
             }
 
-            // if(moment(this.props.dateNextInvoice).isAfter(moment(dateCollection))){
-            //     errors.dateCollection = true;
-            //     hasErrors = true;
-            // }
+            if(moment().isAfter(moment(dateCollection))){
+                errors.dateCollection = true;
+                hasErrors = true;
+            }
 
             this.setState({...this.state, errors: errors});
 

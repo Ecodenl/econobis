@@ -146,7 +146,7 @@ class SepaHelper
             $iban = $invoice->order->IBAN;
 
             if(!$iban){
-                $iban = $invoice->order->cotnact->iban;
+                $iban = $invoice->order->contact->iban;
             }
 
             $xml .= "\n\t\t\t<DrctDbtTxInf>";

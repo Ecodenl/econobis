@@ -191,16 +191,6 @@ class InvoicesList extends Component {
         });
     };
 
-    createSepa = () => {
-        InvoiceDetailsAPI.createSepa(this.props.administrationId).then((payload) => {
-            fileDownload(payload.data, payload.headers['x-filename']);
-
-            this.props.setInvoicesPagination({page: 0, offset: 0});
-
-            this.fetchInvoicesData();
-        });
-    };
-
     resetInvoiceFilters = () => {
         this.props.clearFilterInvoices();
 
@@ -262,9 +252,6 @@ class InvoicesList extends Component {
                             }
                             {( this.props.filter === 'te-verzenden-overboeken' && meta.total > 0) &&
                             <ButtonText buttonText={"Post facturen versturen"} onClickAction={() => this.previewSendPost('overboeken')}/>
-                            }
-                            {(this.props.filter === 'verzonden' && meta.total > 0) &&
-                            <ButtonText buttonText={"Sepa maken"} onClickAction={() => this.createSepa()}/>
                             }
                         </div>
                     </div>

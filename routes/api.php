@@ -373,7 +373,6 @@ Route::namespace('Api')
         Route::get('invoice/{invoice}/download', 'Invoice\InvoiceController@download');
         Route::get('invoice/{invoice}/email-preview', 'Invoice\InvoiceController@getEmailPreview');
         Route::get('invoice/{administration}/get-all-post', 'Invoice\InvoiceController@getAllPost');
-        Route::get('invoice/{administration}/create-sepa', 'Invoice\InvoiceController@generateSepaFile');
         Route::post('invoice', 'Invoice\InvoiceController@store');
         Route::post('invoice/invoice-product', 'Invoice\InvoiceController@storeInvoiceProduct');
         Route::post('invoice/product-and-invoice-product', 'Invoice\InvoiceController@storeProductAndInvoiceProduct');

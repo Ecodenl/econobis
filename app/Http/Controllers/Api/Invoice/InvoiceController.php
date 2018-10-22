@@ -412,27 +412,6 @@ class InvoiceController extends ApiController
         return FullInvoice::collection($invoices);
     }
 
-    public function generateSepaFile(Administration $administration){
-
-        if(!$administration->sepa_creditor_id || !$administration->bic){
-            abort(400, 'Sepa crediteur ID en BIC zijn verplichte velden.');
-        }
-        // Get invoices with status 'sent' and type 'incasso' from administration
-        $invoices = Invoice::where('administration_id', $administration->id)->where('status_id', 'sent')->where('payment_type_id', 'collection')->get();
-
-        $validatedInvoices = $invoices->reject(function ($invoice) {
-            return (empty($invoice->order->IBAN) && empty($invoice->order->contact->iban));
-        });
-
-        if($validatedInvoices->count() > 0) {
-            $sepaHelper = new SepaHelper($administration, $validatedInvoices);
-
-            $sepa = $sepaHelper->generateSepaFile();
-
-            return $sepaHelper->downloadSepa($sepa);
-        }
-    }
-
     public function createSepaForInvoiceIds(Request $request){
 
         $invoices = Invoice::whereIn('id', $request->input('ids'))->with(['order.contact', 'administration'])->get();

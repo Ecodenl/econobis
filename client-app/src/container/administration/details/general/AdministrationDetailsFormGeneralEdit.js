@@ -51,12 +51,9 @@ class AdministrationDetailsFormGeneralEdit extends Component {
             errors: {
                 name: false,
                 administrationNumber: false,
-                address: false,
                 postalCode: false,
-                city: false,
                 kvkNumber: false,
                 IBAN: false,
-                bic: false,
                 email: false,
                 website: false,
             },
@@ -135,19 +132,11 @@ class AdministrationDetailsFormGeneralEdit extends Component {
             hasErrors = true;
         }
 
-        if (validator.isEmpty(administration.address + '')) {
-            errors.address = true;
-            hasErrors = true;
-        }
-
-        if (!validator.isPostalCode(administration.postalCode + '', 'any')) {
-            errors.postalCode = true;
-            hasErrors = true;
-        }
-
-        if (validator.isEmpty(administration.city + '')) {
-            errors.city = true;
-            hasErrors = true;
+        if (!validator.isEmpty(administration.postalCode + '')) {
+            if (!validator.isPostalCode(administration.postalCode + '', 'any')) {
+                errors.postalCode = true;
+                hasErrors = true;
+            }
         }
 
         if (!validator.isEmpty(administration.administrationNumber + '')) {
@@ -164,14 +153,11 @@ class AdministrationDetailsFormGeneralEdit extends Component {
             }
         }
 
-        if (!ibantools.isValidIBAN(administration.IBAN + '')) {
-            errors.IBAN = true;
-            hasErrors = true;
-        }
-
-        if (validator.isEmpty(administration.bic + '')) {
-            errors.bic = true;
-            hasErrors = true;
+        if (!validator.isEmpty(administration.IBAN + '')) {
+            if (!ibantools.isValidIBAN(administration.IBAN + '')) {
+                errors.IBAN = true;
+                hasErrors = true;
+            }
         }
 
         if (!validator.isEmpty(administration.email + '')) {
@@ -253,15 +239,12 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                                 name={"address"}
                                 value={address}
                                 onChangeAction={this.handleInputChange}
-                                required={"required"}
-                                error={this.state.errors.address}
                             />
                             <InputText
                                 label="Postcode"
                                 name={"postalCode"}
                                 value={postalCode}
                                 onChangeAction={this.handleInputChange}
-                                required={"required"}
                                 error={this.state.errors.postalCode}
                             />
                         </div>
@@ -272,8 +255,6 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                                 name={"city"}
                                 value={city}
                                 onChangeAction={this.handleInputChange}
-                                required={"required"}
-                                error={this.state.errors.city}
                             />
                             <InputSelect
                                 label={"Land"}
@@ -307,7 +288,6 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                                 label="IBAN"
                                 name={"IBAN"}
                                 value={IBAN}
-                                required={"required"}
                                 onChangeAction={this.handleInputChange}
                                 error={this.state.errors.IBAN}
                             />
@@ -332,8 +312,6 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                                 name={"bic"}
                                 value={bic}
                                 onChangeAction={this.handleInputChange}
-                                required={"required"}
-                                error={this.state.errors.bic}
                             />
                         </div>
 

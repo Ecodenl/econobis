@@ -7,6 +7,7 @@ import {fetchInvoiceDetails} from "../../../../../actions/invoice/InvoiceDetails
 import InputDate from "../../../../../components/form/InputDate";
 import validator from 'validator';
 import moment from "moment/moment";
+import {setError} from "../../../../../actions/general/ErrorActions";
 
 class InvoiceDetailsFormSend extends Component {
 
@@ -23,6 +24,12 @@ class InvoiceDetailsFormSend extends Component {
 
     confirmAction = event => {
         event.preventDefault();
+
+        if(!this.props.canCreateInvoices['can']){
+            this.props.setError(412, this.props.canCreateInvoices['message']);
+            this.props.closeModal();
+            return;
+        }
 
         let hasErrors = false;
 
@@ -102,10 +109,19 @@ class InvoiceDetailsFormSend extends Component {
     };
 }
 
+const mapStateToProps = (state) => {
+    return {
+        canCreateInvoices: state.administrationDetails.canCreateInvoices,
+    };
+};
+
 const mapDispatchToProps = dispatch => ({
     fetchInvoiceDetails: (id) => {
         dispatch(fetchInvoiceDetails(id));
     },
+    setError: (http_code, message) => {
+        dispatch(setError(http_code, message));
+    },
 });
 
-export default connect(null, mapDispatchToProps)(InvoiceDetailsFormSend);
+export default connect(mapStateToProps, mapDispatchToProps)(InvoiceDetailsFormSend);

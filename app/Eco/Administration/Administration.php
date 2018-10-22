@@ -46,6 +46,8 @@ class Administration extends Model
             'total_payment_invoices',
             'total_payment_invoices_sent',
             'total_payment_invoices_not_paid',
+            'can_create_invoices',
+            'can_create_payment_invoices',
         ];
 
     public function users()
@@ -224,6 +226,47 @@ class Administration extends Model
     public function getTotalPaymentInvoicesNotPaidAttribute()
     {
         return $this->paymentInvoices()->where('status_id', 'not-paid')->count();
+    }
+
+    public function getCanCreateInvoicesAttribute()
+    {
+        $canCreateInvoices['can'] = true;
+        $canCreateInvoices['message'] = '';
+
+        if(empty($this->IBAN)) {
+            $canCreateInvoices['message'] .= 'Administratie IBAN is verplicht bij het maken van een SEPA. ';
+            $canCreateInvoices['can'] = false;
+        }
+
+        if(empty($this->bic)) {
+            $canCreateInvoices['message'] .= 'Administratie bic is verplicht bij het maken van een SEPA. ';
+            $canCreateInvoices['can'] = false;
+        }
+
+        if(empty($this->sepa_creditor_id)) {
+            $canCreateInvoices['message'] .= 'Administratie SEPA crediteur id is verplicht bij het maken van een SEPA. ';
+            $canCreateInvoices['can'] = false;
+        }
+
+        return $canCreateInvoices;
+    }
+
+    public function getCanCreatePaymentInvoicesAttribute()
+    {
+        $canCreatePaymentInvoices['can'] = true;
+        $canCreatePaymentInvoices['message'] = '';
+
+        if(empty($this->IBAN)) {
+            $canCreatePaymentInvoices['message'] .= 'Administratie IBAN is verplicht bij het maken van een SEPA. ';
+            $canCreateInvoices['can'] = false;
+        }
+
+        if(empty($this->bic)) {
+            $canCreatePaymentInvoices['message'] .= 'Administratie bic is verplicht bij het maken van een SEPA. ';
+            $canCreateInvoices['can'] = false;
+        }
+
+        return $canCreatePaymentInvoices;
     }
 
 }

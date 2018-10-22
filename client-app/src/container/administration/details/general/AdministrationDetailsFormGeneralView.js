@@ -21,23 +21,23 @@ const AdministrationDetailsFormGeneralView = props => {
                         />
                         <ViewText
                             label={"Administratie nummer"}
-                            value={administrationNumber}
+                            value={administrationNumber ? administrationNumber : ''}
                         />
                     </div>
                     <div className="row">
                         <ViewText
                             label={"Adres"}
-                            value={address}
+                            value={address ? address : ''}
                         />
                         <ViewText
                             label={"Postcode"}
-                            value={postalCode}
+                            value={postalCode ? postalCode : ''}
                         />
                     </div>
                     <div className="row">
                         <ViewText
                             label={"Plaats"}
-                            value={city}
+                            value={city ? city : ''}
                         />
                         <ViewText
                             label={"Land"}
@@ -47,41 +47,41 @@ const AdministrationDetailsFormGeneralView = props => {
                     <div className="row">
                         <ViewText
                             label={"KvK"}
-                            value={kvkNumber}
+                            value={kvkNumber ? kvkNumber : ''}
                         />
                         <ViewText
                             label={"BTW nummer"}
-                            value={btwNumber}
+                            value={btwNumber ? btwNumber : ''}
                         />
                     </div>
                     <div className="row">
                         <ViewText
                             label={"IBAN"}
-                            value={IBAN}
+                            value={IBAN ? IBAN : ''}
                         />
                         <ViewText
                             label={"IBAN t.n.v."}
-                            value={ibanAttn}
+                            value={ibanAttn ? ibanAttn : ''}
                         />
                     </div>
                     <div className="row">
                         <ViewText
                             label={"Website"}
-                            value={website}
+                            value={website ? website : ''}
                         />
                         <ViewText
                             label={"Bic"}
-                            value={bic}
+                            value={bic ? bic : ''}
                         />
                     </div>
                     <div className="row">
                         <ViewText
                             label={"Sepa contractnaam"}
-                            value={sepaContractName}
+                            value={sepaContractName ? sepaContractName : ''}
                         />
                         <ViewText
                             label={"Sepa crediteur id"}
-                            value={sepaCreditorId}
+                            value={sepaCreditorId ? sepaCreditorId : ''}
                         />
                     </div>
 
@@ -92,7 +92,7 @@ const AdministrationDetailsFormGeneralView = props => {
                         />
                         <ViewText
                             label={"E-mail"}
-                            value={email}
+                            value={email ? email : ''}
                         />
 
                     </div>
@@ -104,7 +104,7 @@ const AdministrationDetailsFormGeneralView = props => {
                         />
                         <ViewText
                             label={"RSIN nummer"}
-                            value={rsinNumber}
+                            value={rsinNumber ? rsinNumber : ''}
                         />
                     </div>
 
@@ -115,7 +115,7 @@ const AdministrationDetailsFormGeneralView = props => {
                         />
                         <ViewText
                             label={"Standaard betalingstermijn(dagen)"}
-                            value={defaultPaymentTerm}
+                            value={defaultPaymentTerm ? defaultPaymentTerm : ''}
                         />
                     </div>
 

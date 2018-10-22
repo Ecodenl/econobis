@@ -234,8 +234,8 @@ class InvoiceController extends ApiController
         $administration = $invoices->first()->administration;
         $paymentTypeId = $invoices->first()->payment_type_id;
 
-        if(!$administration->sepa_creditor_id || !$administration->bic){
-            abort(400, 'Sepa crediteur ID en BIC zijn verplichte velden.');
+        if(!$administration->sepa_creditor_id || !$administration->bic || !$administration->IBAN){
+            abort(412, 'Sepa crediteur ID, BIC en IBAN zijn verplichte velden.');
         }
 
         $validatedInvoices = $invoices->reject(function ($invoice) {
@@ -420,8 +420,8 @@ class InvoiceController extends ApiController
 
         $administration = $invoices->first()->administration;
 
-        if(!$administration->sepa_creditor_id || !$administration->bic){
-            abort(400, 'Sepa crediteur ID en BIC zijn verplichte velden.');
+        if(!$administration->sepa_creditor_id || !$administration->bic || !$administration->IBAN){
+            abort(412, 'Sepa crediteur ID, BIC en IBAN zijn verplichte velden.');
         }
 
         $validatedInvoices = $invoices->reject(function ($invoice) {

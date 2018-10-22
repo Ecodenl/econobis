@@ -90,7 +90,6 @@ class UserNewForm extends Component {
                     this.setState({ ...this.state, backendEmailError: 'Dit email adres is al in gebruik.' });
                 }
                 else{
-                    console.log(error.response);
                     if(typeof error.response.data.message !== 'undefined'){
                         this.props.setError(error.response.status, error.response.data.message);
                     }

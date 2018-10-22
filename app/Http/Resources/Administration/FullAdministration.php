@@ -86,7 +86,7 @@ class FullAdministration extends Resource
                 'totalPaymentInvoicesNotPaid' => $this->total_payment_invoices_not_paid,
 
                 'canCreateInvoices' => $this->can_create_invoices,
-                'canCreatePaymentInvoices' => $this->can_create_invoices,
+                'canCreatePaymentInvoices' => $this->can_create_payment_invoices,
 
                 'createdAt' => $this->created_at,
                 'updatedAt' => $this->updated_at,

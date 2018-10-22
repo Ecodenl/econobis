@@ -44,7 +44,7 @@ class ProductionProjectRevenueController extends ApiController
         $productionProjectRevenue->load([
             'type',
             'category',
-            'productionProject',
+            'productionProject.administration',
             'createdBy',
         ]);
 
@@ -62,7 +62,7 @@ class ProductionProjectRevenueController extends ApiController
             ->additional(['meta' => [
                 'total' => $total,
             ]
-            ]);;
+            ]);
 
     }
 

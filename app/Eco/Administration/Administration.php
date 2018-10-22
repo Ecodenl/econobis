@@ -250,7 +250,7 @@ class Administration extends Model
         }
 
         if(!$canCreateInvoices['can']){
-            $canCreateInvoices['message'] = 'Kan SEPA niet aanmaken. De velden ' . implode($canCreateInvoices['requiredFields'], ', ') . ' zijn verplicht';
+            $canCreateInvoices['message'] = 'Kan SEPA niet aanmaken. De velden ' . implode($canCreateInvoices['requiredFields'], ', ') . ' zijn verplicht.';
         }
 
         return $canCreateInvoices;
@@ -274,7 +274,7 @@ class Administration extends Model
         }
 
         if(!$canCreatePaymentInvoices['can']){
-            $canCreatePaymentInvoices['message'] = 'Kan SEPA niet aanmaken. De velden ' . explode($canCreatePaymentInvoices['requiredFields'], ', ') . ' zijn verplicht';
+            $canCreatePaymentInvoices['message'] = 'Kan SEPA niet aanmaken. De velden ' . implode($canCreatePaymentInvoices['requiredFields'], ', ') . ' zijn verplicht.';
         }
 
         return $canCreatePaymentInvoices;

@@ -20,6 +20,7 @@ import {
     getParticipants,
     previewReport
 } from "../../../../../../actions/production-project/ProductionProjectDetailsActions";
+import {setError} from "../../../../../../actions/general/ErrorActions";
 
 class RevenueDistributionForm extends Component {
     constructor(props) {
@@ -261,8 +262,22 @@ class RevenueDistributionForm extends Component {
             });
         }
         else {
-            this.props.previewReport({'templateId': this.state.templateId,'emailTemplateId': this.state.emailTemplateId, 'subject': this.state.subject, 'distributionIds': this.state.distributionIds})
-            hashHistory.push(`/productie-project/opbrengst/${this.props.productionProjectRevenue.id}/facturen`);
+            if(!this.props.productionProjectRevenue.productionProject.administration.canCreatePaymentInvoices['can']) {
+                this.props.setError(412, this.props.productionProjectRevenue.productionProject.administration.canCreatePaymentInvoices['message']);
+                this.setState({
+                    showModal: false,
+                });
+                return;
+            }
+            else{
+                this.props.previewReport({
+                    'templateId': this.state.templateId,
+                    'emailTemplateId': this.state.emailTemplateId,
+                    'subject': this.state.subject,
+                    'distributionIds': this.state.distributionIds
+                })
+                hashHistory.push(`/productie-project/opbrengst/${this.props.productionProjectRevenue.id}/facturen`);
+            }
         }
     };
 
@@ -372,6 +387,9 @@ const mapDispatchToProps = dispatch => ({
     },
     getDistribution: (id, page) => {
         dispatch(getDistribution({id, page}));
+    },
+    setError: (http_code, message) => {
+        dispatch(setError(http_code, message));
     },
 });
 

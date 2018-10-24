@@ -27,7 +27,7 @@ class SidebarMenu extends Component {
                 <SideNav highlightColor="#FFF" highlightBgColor="#27AE60" defaultSelected="dashboard">
                     <Nav id="dashboard">
                         <NavIcon><SvgIcon size={20} icon={ic_dashboard}/></NavIcon>
-                        <NavText><Link className="sidebar-link" to="/">Dashboard</Link></NavText>
+                        <NavText><Link className="sidebar-link-header" to="/">Dashboard</Link></NavText>
                         {this.props.permissions.manageQuotationRequest &&
                         <Nav id="dashboard-energy-saving">
                             <NavText><Link className="sidebar-link" to="dashboard/energie-besparing">Energiebesparing</Link></NavText>
@@ -46,7 +46,7 @@ class SidebarMenu extends Component {
                     </Nav>
                     <Nav id="contacten">
                         <NavIcon><SvgIcon size={20} icon={ic_contacts}/></NavIcon>
-                        <NavText><Link className="sidebar-link" to="contacten">Contacten</Link></NavText>
+                        <NavText><Link className="sidebar-link-header" to="contacten">Contacten</Link></NavText>
                         <Nav id="alle-organisaties">
                             <NavText><Link className="sidebar-link" to="contacten/type/organisation">Alle
                                 organisaties</Link></NavText>
@@ -58,7 +58,7 @@ class SidebarMenu extends Component {
                     </Nav>
                     <Nav id="projecten">
                         <NavIcon><SvgIcon size={20} icon={drawer}/></NavIcon>
-                        <NavText><Link className="sidebar-link">Projecten</Link></NavText>
+                        <NavText><Link className="sidebar-link-header">Projecten</Link></NavText>
                         <Nav id="productie-projecten">
                             <NavText><Link className="sidebar-link" to="productie-projecten">Productieprojecten</Link></NavText>
                         </Nav>
@@ -88,11 +88,11 @@ class SidebarMenu extends Component {
 
                     <Nav id="contact-groups">
                         <NavIcon><SvgIcon size={20} icon={ic_aspect_ratio}/></NavIcon>
-                        <NavText><Link className="sidebar-link" to="contact-groepen">Groepen beheer</Link></NavText>
+                        <NavText><Link className="sidebar-link-header" to="contact-groepen">Groepen beheer</Link></NavText>
                     </Nav>
                     <Nav id="email">
                         <NavIcon><SvgIcon size={20} icon={ic_email}/></NavIcon>
-                        <NavText><Link className="sidebar-link" to="emails/inbox">E-mail</Link></NavText>
+                        <NavText><Link className="sidebar-link-header" to="emails/inbox">E-mail</Link></NavText>
                         <Nav id="inbox">
                             <NavText><Link className="sidebar-link" to="emails/inbox">Ontvangen</Link></NavText>
                         </Nav>
@@ -108,23 +108,23 @@ class SidebarMenu extends Component {
                     </Nav>
                     <Nav id="marketing">
                         <NavIcon><SvgIcon size={20} icon={speech_bubbles}/></NavIcon>
-                        <NavText><Link className="sidebar-link" to="campagnes">Marketing</Link></NavText>
+                        <NavText><Link className="sidebar-link-header" to="campagnes">Marketing</Link></NavText>
                     </Nav>
                     <Nav id="taken">
                         <NavIcon><SvgIcon size={20} icon={ic_business}/></NavIcon>
-                        <NavText><Link className="sidebar-link" to="taken">Taken</Link></NavText>
+                        <NavText><Link className="sidebar-link-header" to="taken">Taken</Link></NavText>
                         <Nav id="notities">
                             <NavText><Link className="sidebar-link" to="notities">Notities</Link></NavText>
                         </Nav>
                     </Nav>
                     <Nav id="agenda">
                         <NavIcon><SvgIcon size={20} icon={calendar} /></NavIcon>
-                        <NavText><Link className="sidebar-link" to="agenda">Agenda</Link></NavText>
+                        <NavText><Link className="sidebar-link-header" to="agenda">Agenda</Link></NavText>
                     </Nav>
                     {this.props.permissions.viewDocument &&
                     <Nav id="documenten">
                         <NavIcon><SvgIcon size={20} icon={documents}/></NavIcon>
-                        <NavText><Link className="sidebar-link" to="documenten">Documenten</Link></NavText>
+                        <NavText><Link className="sidebar-link-header" to="documenten">Documenten</Link></NavText>
                     </Nav>
                     }
                     {this.props.permissions.manageFinancial && this.props.administrations.length > 0 &&

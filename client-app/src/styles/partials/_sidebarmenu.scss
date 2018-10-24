@@ -1,10 +1,22 @@
 .sidebar-link {
-  color: #fff;
+  text-overflow: ellipsis; /* will make [...] at the end */
+  width: 200px;
+  white-space: nowrap; /* paragraph to one line */
+  overflow:hidden; /* older browsers */
+  position: absolute;
+  left: 12px;
+  margin-top: -12px;
+}
+
+.sidebar-link-header {
   padding-left: 4em;
   padding-right: 8em;
   margin-left: -4em;
   margin-right: -8em;
+}
 
+.sidebar-link, .sidebar-link-header {
+  color: #fff;
   &:hover {
     color: #fff;
     text-decoration: none;

@@ -49,9 +49,9 @@ class FinancialApp extends Component {
     render() {
         return (
             <div className="row">
-                <div className="col-md-2">
+                <div className="col-md-3">
                     <div className="col-md-12 margin-10-top">
-                        <Panel>
+                        <Panel >
                             <PanelBody className={'panel-financial-tree'}>
                                 <FinancialTree currentRouteParams={this.props.params} />
                             </PanelBody>
@@ -74,7 +74,7 @@ class FinancialApp extends Component {
                         />
                     </div>
                 </div>
-                <div className="col-md-3"/>
+                <div className="col-md-2"/>
             </div>
         )
     }

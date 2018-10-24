@@ -51,7 +51,7 @@ class FinancialTree extends Component {
                         >
                         <Nav id="orders" expanded={this.state.activeParent === 'orders'}>
                             <NavIcon><SvgIcon size={20} icon={file} style={{color: '$brand-primary'}}/></NavIcon>
-                            <NavText><Link className="financial-tree-link" to={`financieel/${this.props.id}/orders`}>Alle orders({this.props.administrationDetails.totalOrders})</Link></NavText>
+                            <NavText><Link className="financial-tree-link-header" to={`financieel/${this.props.id}/orders`}>Alle orders({this.props.administrationDetails.totalOrders})</Link></NavText>
                             <Nav id="concepts">
                                 <NavText><Link className="financial-tree-link" to={`financieel/${this.props.id}/orders/concepten`}>Concept orders({this.props.administrationDetails.totalOrdersConcepts})</Link></NavText>
                             </Nav>
@@ -70,7 +70,7 @@ class FinancialTree extends Component {
                         </Nav>
                         <Nav id="invoices" expanded={this.state.activeParent === 'invoices'}>
                             <NavIcon><SvgIcon size={20} icon={fileText} style={{color: '$brand-primary'}}/></NavIcon>
-                            <NavText><Link className="financial-tree-link" to={`financieel/${this.props.id}/facturen`}>Alle facturen({this.props.administrationDetails.totalInvoices})</Link></NavText>
+                            <NavText><Link className="financial-tree-link-header" to={`financieel/${this.props.id}/facturen`}>Alle facturen({this.props.administrationDetails.totalInvoices})</Link></NavText>
                             <Nav id="to-send-collection">
                                 <NavText><Link className="financial-tree-link" to={`financieel/${this.props.id}/facturen/te-verzenden-incasso`}>Te verzenden - incasso facturen({this.props.administrationDetails.totalInvoicesToSendCollection})</Link></NavText>
                             </Nav>
@@ -98,7 +98,7 @@ class FinancialTree extends Component {
                         </Nav>
                         <Nav id="payment-invoices" expanded={this.state.activeParent === 'payment-invoices'}>
                             <NavIcon><SvgIcon size={20} icon={fileO} style={{color: '$brand-primary'}}/></NavIcon>
-                            <NavText><Link className="financial-tree-link" to={`financieel/${this.props.id}/uitkering-facturen`}>Uitkering facturen({this.props.administrationDetails.totalPaymentInvoices})</Link></NavText>
+                            <NavText><Link className="financial-tree-link-header" to={`financieel/${this.props.id}/uitkering-facturen`}>Uitkering facturen({this.props.administrationDetails.totalPaymentInvoices})</Link></NavText>
                             <Nav id="sent">
                                 <NavText><Link className="financial-tree-link" to={`financieel/${this.props.id}/uitkering-facturen/verzonden`}>Verzonden({this.props.administrationDetails.totalPaymentInvoicesSent})</Link></NavText>
                             </Nav>
@@ -108,7 +108,7 @@ class FinancialTree extends Component {
                         </Nav>
                         <Nav id="administration-settings">
                             <NavIcon><SvgIcon size={20} icon={cog}  style={{color: '$brand-primary'}}/></NavIcon>
-                            <NavText><Link className="financial-tree-link" to={`administratie/${this.props.id}`}>Instellingen</Link></NavText>
+                            <NavText><Link className="financial-tree-link-header" to={`administratie/${this.props.id}`}>Instellingen</Link></NavText>
                         </Nav>
                     </SideNav>
                 </div>

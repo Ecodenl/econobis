@@ -9,12 +9,25 @@
 }
 
 .financial-tree-link {
-  color: $brand-primary;
-  padding-left: 4em;
-  padding-right: 8em;
-  margin-left: -4em;
-  margin-right: -8em;
+  text-overflow: ellipsis; /* will make [...] at the end */
+  white-space: nowrap; /* paragraph to one line */
+  overflow: hidden; /* older browsers */
+  position: absolute;
+  left: 12px;
+  margin-top: -12px;
+}
 
+.financial-tree-link-header {
+  text-overflow: ellipsis; /* will make [...] at the end */
+  white-space: nowrap; /* paragraph to one line */
+  overflow: hidden; /* older browsers */
+  position: absolute;
+  left: 42px;
+  margin-top: -10px;
+}
+
+.financial-tree-link, .financial-tree-link-header{
+  color: $brand-primary;
   &:hover {
     color: $brand-primary;
     text-decoration: none;

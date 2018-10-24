@@ -41,10 +41,12 @@
 
 .send-invoices-list-link, .send-orders-list-link, .send-payment-invoices-list-link {
   color: $brand-primary;
-  padding-left: 4em;
-  padding-right: 8em;
-  margin-left: -7em;
-  margin-right: -8em;
+  text-overflow: ellipsis; /* will make [...] at the end */
+  white-space: nowrap; /* paragraph to one line */
+  overflow: hidden; /* older browsers */
+  position: absolute;
+  left: 12px;
+  margin-top: -12px;
 
   &:hover {
     color: $brand-primary;
@@ -59,10 +61,12 @@
 
 .send-invoices-list-link-error, .send-orders-list-link-error {
   color: red;
-  padding-left: 4em;
-  padding-right: 8em;
-  margin-left: -7em;
-  margin-right: -8em;
+  text-overflow: ellipsis; /* will make [...] at the end */
+  white-space: nowrap; /* paragraph to one line */
+  overflow: hidden; /* older browsers */
+  position: absolute;
+  left: 12px;
+  margin-top: -12px;
 
   &:hover {
     color: red;

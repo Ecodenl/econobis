@@ -21,7 +21,7 @@ class InvoiceSendList extends Component {
                                     this.props.invoices.map((invoice, i)=> {
                                         return <Nav onNavClick={() => this.props.changeInvoice(invoice.id)} key={i} id={`administration-${invoice.id}`}>
                                                 <NavText><Link className={`${(invoice.emailToAddress === 'Geen e-mail bekend') ? 'send-invoices-list-link-error' : 'send-invoices-list-link'}`}
-                                                >{invoice.number} - {invoice.order.contact.fullName}</Link></NavText>
+                                                >{invoice.number} - {invoice.contactName}</Link></NavText>
                                         </Nav>
                                     })
                                     :

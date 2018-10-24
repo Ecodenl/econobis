@@ -26,6 +26,7 @@ use App\Http\Resources\Invoice\FullInvoice;
 use App\Http\Resources\Invoice\FullInvoiceProduct;
 use App\Http\Resources\Invoice\GridInvoice;
 use App\Http\Resources\Invoice\InvoicePeek;
+use App\Http\Resources\Invoice\SendInvoice;
 use Barryvdh\DomPDF\Facade as PDF;
 use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
@@ -409,7 +410,7 @@ class InvoiceController extends ApiController
             $invoice->emailToAddress = $orderController->getContactInfoForOrder($invoice->order->contact)['email'];
         }
 
-        return FullInvoice::collection($invoices);
+        return SendInvoice::collection($invoices);
     }
 
     public function createSepaForInvoiceIds(Request $request){

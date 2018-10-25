@@ -1,4 +1,11 @@
-#Econobis
+<a href="https://github.com/DevExpress/testcafe">
+    <img alt="Tested with TestCafe" src="https://img.shields.io/badge/tested%20with-TestCafe-2fa4cf.svg">
+</a>
+<a href="https://php.net/">
+    <img alt="php 7.0.0" src="https://img.shields.io/badge/php-%3E%3D%207.0-8892BF.svg?style=flat-square">
+</a>
+
+# Econobis
 
 To contribute to this project you must assign copyright of your contribution to Econobis B.V. 
 To do this, include the following filled-in copyright assignment form in your patch: [Individual contributor assignment agreement](https://www.duurzameenergie.org/f/files/download/econobis/licensie/econobis-and-hoomdossier-individual-contributor-assignment-agreement.pdf)

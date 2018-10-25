@@ -3,7 +3,8 @@ import { Selector } from 'testcafe';
 export default class ModelDetailsOrder {
     constructor () {
         //order products
-        this.newOrderProduct = Selector('span').withExactText('Orderregels').parent().child('a');
+        this.newOrderProduct = Selector('span').withExactText('Orderregels').parent().parent().child().nth(1).child().nth(0).child('span');
+        this.newOrderProductExisting = Selector('a').withExactText('Bestaand product');
         this.product = Selector('select[name="productId"]');
         this.description = Selector('input[name="description"]');
         this.amount = Selector('input[name="amount"]');

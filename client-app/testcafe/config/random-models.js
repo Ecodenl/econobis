@@ -49,3 +49,6 @@ export const productName = faker.lorem.word();
 
 //order
 export const orderSubject = faker.lorem.word();
+
+//webform
+export const webformName = faker.lorem.word();

@@ -50,13 +50,15 @@ test('Fill out form order minimum', async (t) => {
 
     await t
         .click(detailsOrder.newOrderProduct)
+        .click(detailsOrder.newOrderProductExisting)
         .click(detailsOrder.product)
         .click(general.option.withExactText(vars.productName))
         .typeText(detailsOrder.description, 'Ledlamp')
         .typeText(detailsOrder.amount, '2')
         .pressKey('home delete')
-        .typeText(detailsOrder.dateStart, '01-01-2018')
-        .pressKey('esc')
+        //wordt nu automatisch ingevuld - 20181025
+        // .typeText(detailsOrder.dateStart, '01-01-2018')
+        // .pressKey('esc')
         .click(general.save)
         .wait(constants.wait);
 

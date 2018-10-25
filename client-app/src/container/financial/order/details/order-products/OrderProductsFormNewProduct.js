@@ -27,7 +27,6 @@ class OrderProductsFormNewProduct extends Component {
             totalPrice: '0',
             orderProduct: {
                 orderId: this.props.orderDetails.id,
-                description: '',
                 amount: 1,
                 amountReduction: 0,
                 percentageReduction: 0,
@@ -38,6 +37,7 @@ class OrderProductsFormNewProduct extends Component {
                 code: '',
                 name: '',
                 durationId: 'none',
+                description: '',
                 administrationId: this.props.orderDetails.administrationId,
                 invoiceFrequencyId: this.props.orderDetails.collectionFrequencyId ? this.props.orderDetails.collectionFrequencyId : 'once',
                 vatPercentage: '',
@@ -47,7 +47,6 @@ class OrderProductsFormNewProduct extends Component {
                 amount: false,
                 dateStart: false,
                 dateEnd: false,
-                description: false,
                 code: false,
                 name: false,
                 price: false,
@@ -284,12 +283,6 @@ class OrderProductsFormNewProduct extends Component {
         }
         ;
 
-        if (validator.isEmpty(orderProduct.description + '')) {
-            errors.description = true;
-            hasErrors = true;
-        }
-        ;
-
         if (!validator.isEmpty(orderProduct.dateStart + '') && moment(orderProduct.dateEnd).isSameOrBefore(moment(orderProduct.dateStart))) {
             errors.dateEnd = true;
             hasErrors = true;
@@ -359,8 +352,8 @@ class OrderProductsFormNewProduct extends Component {
 
     render() {
 
-        const {description, amount, amountReduction, percentageReduction, dateStart, dateEnd} = this.state.orderProduct;
-        const { code, name, durationId, vatPercentage, price } = this.state.product;
+        const {amount, amountReduction, percentageReduction, dateStart, dateEnd} = this.state.orderProduct;
+        const {description, code, name, durationId, vatPercentage, price } = this.state.product;
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -437,7 +430,7 @@ class OrderProductsFormNewProduct extends Component {
                                 id={"description"}
                                 name={"description"}
                                 value={description}
-                                onChangeAction={this.handleInputChange}
+                                onChangeAction={this.handleInputChangeProduct}
                                 required={"required"}
                                 error={this.state.errors.description}
                             />

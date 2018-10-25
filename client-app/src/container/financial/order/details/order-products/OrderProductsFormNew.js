@@ -34,7 +34,6 @@ class OrderProductsFormNew extends Component {
                 amount: false,
                 dateStart: false,
                 dateEnd: false,
-                description: false,
             },
         };
 
@@ -213,12 +212,6 @@ class OrderProductsFormNew extends Component {
         }
         ;
 
-        if (validator.isEmpty(orderProduct.description + '')) {
-            errors.description = true;
-            hasErrors = true;
-        }
-        ;
-
         if (!validator.isEmpty(orderProduct.dateStart + '') && moment(orderProduct.dateEnd).isSameOrBefore(moment(orderProduct.dateStart))) {
             errors.dateEnd = true;
             hasErrors = true;
@@ -271,9 +264,7 @@ class OrderProductsFormNew extends Component {
                                 id={"description"}
                                 name={"description"}
                                 value={description}
-                                onChangeAction={this.handleInputChange}
-                                required={"required"}
-                                error={this.state.errors.description}
+                                readOnly={true}
                             />
                             <InputText
                                 label={"Aantal"}

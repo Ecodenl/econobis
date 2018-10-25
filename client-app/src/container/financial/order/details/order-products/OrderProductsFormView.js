@@ -20,7 +20,7 @@ const OrderProductsFormView = props => {
                     { product && product.code }
                 </div>
                 <div className="col-sm-2">
-                    { description ? description : '' }
+                    { product ? product.invoiceText : '' }
                 </div>
                 <div className="col-sm-1">
                     {amount ? amount : ''}

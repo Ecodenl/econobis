@@ -159,8 +159,6 @@ class WebformTest extends TestCase
             'order_status_id' => 'active',
             'order_begindatum' => '2018-09-01',
             'order_aanvraagdatum' => '2018-08-01',
-
-
         ]);
         $response->assertStatus(200);
 
@@ -168,11 +166,12 @@ class WebformTest extends TestCase
         $this->assertEquals([
             'type_id' => 'organisation',
             'full_name' => 'Xaris',
-            'number' => 'C2018-1',
+            //kan worden ingesteld in .env
+            //'number' => 'C2018-1',
             'status_id' => 'none',
             'iban' => 'NL96 RABO 0317 3716 57',
             'did_agree_avg' => 1,
-        ], array_intersect_key($contactOrganisation->toArray(), array_flip(['type_id', 'full_name', 'number', 'status_id', 'iban', 'did_agree_avg'])));
+        ], array_intersect_key($contactOrganisation->toArray(), array_flip(['type_id', 'full_name', 'status_id', 'iban', 'did_agree_avg'])));
 
         $this->assertEquals([1], $contactOrganisation->groups()->pluck('id')->toArray());
 
@@ -188,9 +187,10 @@ class WebformTest extends TestCase
         $this->assertEquals([
             'type_id' => 'person',
             'full_name' => 'Xaris, Xa van',
-            'number' => 'C2018-2',
+            //kan worden ingesteld in .env
+            //'number' => 'C2018-2',
             'status_id' => 'none',
-        ], array_intersect_key($contactPerson->toArray(), array_flip(['type_id', 'full_name', 'number', 'status_id'])));
+        ], array_intersect_key($contactPerson->toArray(), array_flip(['type_id', 'full_name', 'status_id'])));
 
         $person = Person::find(1);
         $this->assertEquals([
@@ -285,8 +285,7 @@ class WebformTest extends TestCase
             'IBAN' => 'NL96 RABO 0317 3716 57',
             'iban_attn' => 'Xaris BV',
             'date_requested' => '2018-08-01',
-            'date_start' => '2018-09-01',
-        ], array_intersect_key($order->toArray(), array_flip(['number', 'contact_id', 'administration_id', 'status_id', 'subject', 'payment_type_id', 'IBAN', 'iban_attn', 'date_requested', 'date_start'])));
+        ], array_intersect_key($order->toArray(), array_flip(['number', 'contact_id', 'administration_id', 'status_id', 'subject', 'payment_type_id', 'IBAN', 'iban_attn', 'date_requested'])));
 
         $orderProduct = OrderProduct::find(1);
         $this->assertEquals([
@@ -390,6 +389,7 @@ class WebformTest extends TestCase
             'invoice_frequency_id' => 'quarterly',
             'administration_id' => 1,
             'created_by_id' => 1,
+            'duration_id' => 'none'
         ]);
     }
 }

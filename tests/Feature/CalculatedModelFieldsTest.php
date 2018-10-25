@@ -382,6 +382,7 @@ class CalculatedModelFieldsTest extends TestCase
         $pr->name = "Testje productje2";
         $pr->administration_id = 1;
         $pr->invoice_frequency_id = 'quarterly';
+        $pr->duration_id = 'none';
         $pr->created_by_id = 1;
         $pr->save();
 
@@ -398,6 +399,7 @@ class CalculatedModelFieldsTest extends TestCase
         $pr->administration_id = 1;
         $pr->invoice_frequency_id = 'monthly';
         $pr->created_by_id = 1;
+        $pr->duration_id = 'none';
         $pr->save();
 
         $ph = new PriceHistory();
@@ -415,8 +417,6 @@ class CalculatedModelFieldsTest extends TestCase
         $or->payment_type_id = 'transfer';
         $or->IBAN = 'IBN';
         $or->date_requested = '2018-05-02';
-        $or->date_start = '2018-05-03';
-        $or->date_end = '2018-05-04';
         $or->created_by_id = 1;
         $or->collection_frequency_id = 'yearly';
         $or->save();

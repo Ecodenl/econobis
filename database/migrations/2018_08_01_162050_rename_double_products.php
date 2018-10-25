@@ -32,11 +32,11 @@ class RenameDoubleProducts extends Migration
     }
 
     public function renameProducts(){
-        $products = \App\Eco\Product\Product::all();
+        $products = \App\Eco\Product\Product::withoutGlobalScopes()->get();
 
         foreach ($products as $product){
-            if(\App\Eco\Product\Product::where('name', $product->name)->count() > 1){
-                $productsFound = \App\Eco\Product\Product::where('name', $product->name)->get();
+            if(\App\Eco\Product\Product::withoutGlobalScopes()->where('name', $product->name)->count() > 1){
+                $productsFound = \App\Eco\Product\Product::withoutGlobalScopes()->where('name', $product->name)->get();
                 $i = 0;
                 foreach ($productsFound as $productFound){
                     if($i > 0){
@@ -47,8 +47,8 @@ class RenameDoubleProducts extends Migration
                 }
                 $this->renameProducts();
             }
-            if(\App\Eco\Product\Product::where('code', $product->code)->count() > 1){
-                $productsFound = \App\Eco\Product\Product::where('code', $product->code)->get();
+            if(\App\Eco\Product\Product::withoutGlobalScopes()->where('code', $product->code)->count() > 1){
+                $productsFound = \App\Eco\Product\Product::withoutGlobalScopes()->where('code', $product->code)->get();
                 $i = 0;
                 foreach ($productsFound as $productFound){
                     if($i > 0){

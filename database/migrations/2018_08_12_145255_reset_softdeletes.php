@@ -57,7 +57,7 @@ class ResetSoftdeletes extends Migration
             $mailContent .=('<li>Contact met id: '. $item->id . ', ' . $item->full_name .  ' Teruggezet!' . '</li>');
         }
 
-        foreach (Product::onlyTrashed()->get() as $item){
+        foreach (Product::withoutGlobalScopes()->onlyTrashed()->get() as $item){
             $didResetSomething = true;
             $item->deleted_at = null;
             $item->save();

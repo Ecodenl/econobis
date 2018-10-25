@@ -163,13 +163,13 @@ class TemplateMergeFieldsTest extends TestCase
 
     public function assertOrderMergeFields()
     {
-        $html ='{order_nummer}{order_onderwerp}{order_iban}{order_prijs}{order_prijs_per_jaar}{order_datum_aangevraagd}{order_datum_start}{order_datum_eind}';
+        $html ='{order_nummer}{order_onderwerp}{order_iban}{order_prijs}{order_prijs_per_jaar}{order_datum_aangevraagd}';
         $html .='{order_gemaakt_op}{order_status}{order_betaalwijze}{order_incasso_frequentie}{order_contact_naam}{order_contact_voornaam}{order_contact_achternaam}';
 
         $html = TemplateVariableHelper::replaceTemplateVariables($html, 'order', Order::find(1));
         $html = TemplateVariableHelper::stripRemainingVariableTags($html);
 
-        $expectedHtml = 'O2018-1Leuke order super!IBN1235.724942.8802/05/201803/05/201804/05/2018';
+        $expectedHtml = 'O2018-1Leuke order super!IBN1235.724942.8802/05/2018';
         $expectedHtml .= Carbon::parse(Carbon::today())->format('d/m/Y') . 'ConceptIncassoJaarlijksKlaas de VaakKlaasde Vaak';
 
         $this->assertEquals($expectedHtml, $html);
@@ -434,6 +434,8 @@ class TemplateMergeFieldsTest extends TestCase
         $pr->administration_id = $ad->id;
         $pr->invoice_frequency_id = 'quarterly';
         $pr->created_by_id = 1;
+        $pr->created_by_id = 1;
+        $pr->duration_id = 'none';
         $pr->save();
 
         $ph = new PriceHistory();
@@ -451,8 +453,6 @@ class TemplateMergeFieldsTest extends TestCase
         $or->payment_type_id = 'collection';
         $or->IBAN = 'IBN';
         $or->date_requested = '2018-05-02';
-        $or->date_start = '2018-05-03';
-        $or->date_end = '2018-05-04';
         $or->created_by_id = 1;
         $or->collection_frequency_id = 'yearly';
         $or->save();

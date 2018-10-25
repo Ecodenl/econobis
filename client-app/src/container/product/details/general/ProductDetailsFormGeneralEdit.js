@@ -16,6 +16,10 @@ class ProductDetailsFormGeneralEdit extends Component {
         const { id, code, name, invoiceText, durationId, invoiceFrequencyId, paymentTypeId, administrationId} = props.productDetails;
 
         this.state = {
+            //beter uit systemdata, maar sommige combinaties zijn niet mogelijk
+            invoiceFrequencies:[
+                {'id':  'once', name: 'Eenmalig'},
+            ],
             errorMessage: false,
             oldCode: code ? code : "",
             oldName: name ? name : "",
@@ -24,8 +28,8 @@ class ProductDetailsFormGeneralEdit extends Component {
                 code: code ? code : '',
                 name: name ? name : '',
                 invoiceText: invoiceText ? invoiceText : '',
-                durationId: durationId ? durationId : '',
-                invoiceFrequencyId: invoiceFrequencyId ? invoiceFrequencyId : '',
+                durationId: durationId ? durationId : 'none',
+                invoiceFrequencyId: invoiceFrequencyId ? invoiceFrequencyId : 'once',
                 paymentTypeId: paymentTypeId ? paymentTypeId : '',
                 administrationId: administrationId ? administrationId : '',
             },
@@ -35,6 +39,135 @@ class ProductDetailsFormGeneralEdit extends Component {
                 administrationId: false,
             },
         };
+    };
+
+    componentDidMount() {
+        let invoiceFrequencies = this.state.invoiceFrequencies;
+        let invoiceFrequencyId = this.state.product.invoiceFrequencyId;
+
+        switch (this.state.product.durationId) {
+            case 'none':
+                invoiceFrequencies = [
+                    {'id':  'once', name: 'Eenmalig'},
+                ];
+
+                invoiceFrequencyId = 'once';
+                break;
+            case 'month':
+                invoiceFrequencies = [
+                    {'id':  'once', name: 'Eenmalig'},
+                    {'id':  'monthly', name: 'Maand'},
+                ];
+
+                if(invoiceFrequencyId === 'quarterly' || invoiceFrequencyId === 'yearly'){
+                    invoiceFrequencyId = 'monthly';
+                }
+                break;
+            case 'quarter':
+                invoiceFrequencies = [
+                    {'id':  'once', name: 'Eenmalig'},
+                    {'id':  'monthly', name: 'Maand'},
+                    {'id':  'quarterly', name: 'Kwartaal'},
+                ];
+                if(invoiceFrequencyId === 'yearly'){
+                    invoiceFrequencyId = 'quarterly';
+                }
+                break;
+            case 'half_year':
+                invoiceFrequencies = [
+                    {'id':  'once', name: 'Eenmalig'},
+                    {'id':  'monthly', name: 'Maand'},
+                    {'id':  'quarterly', name: 'Kwartaal'},
+                ];
+                if(invoiceFrequencyId === 'yearly'){
+                    invoiceFrequencyId = 'quarterly';
+                }
+                break;
+            default:
+                invoiceFrequencies = [
+                    {'id':  'once', name: 'Eenmalig'},
+                    {'id':  'monthly', name: 'Maand'},
+                    {'id':  'quarterly', name: 'Kwartaal'},
+                    {'id':  'yearly', name: 'Jaar'},
+                ];
+                break;
+        }
+
+        this.setState({
+            ...this.state,
+            invoiceFrequencies,
+            product: {
+                ...this.state.product,
+                invoiceFrequencyId
+            },
+        });
+    };
+
+    handleInputChangeDuration = event => {
+        const target = event.target;
+        const value = target.type === 'checkbox' ? target.checked : target.value;
+        const name = target.name;
+
+        let invoiceFrequencyId = this.state.product.invoiceFrequencyId;
+        let invoiceFrequencies = this.state.invoiceFrequencies;
+
+        switch (value) {
+            case 'none':
+                invoiceFrequencies = [
+                    {'id':  'once', name: 'Eenmalig'},
+                ];
+
+                invoiceFrequencyId = 'once';
+                break;
+            case 'month':
+                invoiceFrequencies = [
+                    {'id':  'once', name: 'Eenmalig'},
+                    {'id':  'monthly', name: 'Maand'},
+                ];
+
+                if(invoiceFrequencyId === 'quarterly' || invoiceFrequencyId === 'yearly'){
+                    invoiceFrequencyId = 'monthly';
+                }
+                break;
+            case 'quarter':
+                invoiceFrequencies = [
+                    {'id':  'once', name: 'Eenmalig'},
+                    {'id':  'monthly', name: 'Maand'},
+                    {'id':  'quarterly', name: 'Kwartaal'},
+                ];
+                if(invoiceFrequencyId === 'yearly'){
+                    invoiceFrequencyId = 'quarterly';
+                }
+                break;
+            case 'half_year':
+                invoiceFrequencies = [
+                    {'id':  'once', name: 'Eenmalig'},
+                    {'id':  'monthly', name: 'Maand'},
+                    {'id':  'quarterly', name: 'Kwartaal'},
+                ];
+                if(invoiceFrequencyId === 'yearly'){
+                    invoiceFrequencyId = 'quarterly';
+                }
+                break;
+            default:
+                invoiceFrequencies = [
+                    {'id':  'once', name: 'Eenmalig'},
+                    {'id':  'monthly', name: 'Maand'},
+                    {'id':  'quarterly', name: 'Kwartaal'},
+                    {'id':  'yearly', name: 'Jaar'},
+                ];
+                break;
+        }
+
+        this.setState({
+            ...this.state,
+            invoiceFrequencies,
+            product: {
+                ...this.state.product,
+                [name]: value,
+                invoiceFrequencyId
+            },
+        });
     };
 
     handleInputChange = event => {
@@ -155,14 +288,14 @@ class ProductDetailsFormGeneralEdit extends Component {
                                 name={"durationId"}
                                 options={this.props.productDurations}
                                 value={durationId}
-                                onChangeAction={this.handleInputChange}
+                                onChangeAction={this.handleInputChangeDuration}
                                 emptyOption={false}
                             />
                             <InputSelect
                                 label={"Prijs per"}
                                 id="invoiceFrequencyId"
                                 name={"invoiceFrequencyId"}
-                                options={this.props.productInvoiceFrequencies}
+                                options={this.state.invoiceFrequencies}
                                 value={invoiceFrequencyId}
                                 onChangeAction={this.handleInputChange}
                                 emptyOption={false}

@@ -17,7 +17,7 @@ class InvoiceNumberTemporarily extends Migration
         $invoicesChecked = Invoice::where('status_id', 'checked')->get();
 
         foreach($invoicesChecked as $invoiceChecked){
-            $invoiceChecked->number = 'T' . $invoiceChecked->number;
+            $invoiceChecked->number = str_replace('F', 'T', $invoiceChecked->number);
             $invoiceChecked->save();
         }
     }

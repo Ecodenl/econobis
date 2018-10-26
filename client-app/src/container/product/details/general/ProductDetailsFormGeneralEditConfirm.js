@@ -26,7 +26,7 @@ class ProductDetailsFormGeneralEditConfirm extends Component {
                 <div className="row">
                     <div className={'col-sm-12 margin-10-bottom'}>
                     <span>
-                        Weet je zeker dat je dit product wilt aanpassen? Dit zal effect hebben op de orders en de te verzenden facturen waar dit product in gebruik is.
+                  Let op. Een wijziging in een product kan grote gevolgen hebben op je lopende facturering. Dus bedenk goed wat je wilt voordat je een wijziging doorvoert.
                     </span>
                     </div>
                 </div>

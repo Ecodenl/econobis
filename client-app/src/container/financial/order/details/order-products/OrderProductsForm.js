@@ -7,6 +7,7 @@ import PanelBody from '../../../../../components/panel/PanelBody';
 import PanelHeader from '../../../../../components/panel/PanelHeader';
 import {connect} from "react-redux";
 import OrderProductsFormNewProduct from "./OrderProductsFormNewProduct";
+import OrderProductsFormNewProductOneTime from "./OrderProductsFormNewProductOneTime";
 
 class OrderProductsForm extends Component {
     constructor(props) {
@@ -15,6 +16,7 @@ class OrderProductsForm extends Component {
         this.state = {
             showNew: false,
             showNewProduct: false,
+            showNewProductOneTime: false,
         };
     }
 
@@ -27,6 +29,12 @@ class OrderProductsForm extends Component {
     toggleShowNewProduct = () => {
         this.setState({
             showNewProduct: !this.state.showNewProduct,
+        })
+    };
+
+    toggleShowNewProductOneTime = () => {
+        this.setState({
+            showNewProductOneTime: !this.state.showNewProductOneTime,
         })
     };
 
@@ -45,6 +53,7 @@ class OrderProductsForm extends Component {
                                 <ul className="dropdown-menu">
                                     <li><a className="btn" onClick={this.toggleShowNew}>Bestaand product</a></li>
                                     <li><a className="btn" onClick={this.toggleShowNewProduct}>Nieuw product</a></li>
+                                    <li><a className="btn" onClick={this.toggleShowNewProductOneTime}>Nieuw eenmalig product</a></li>
                                 </ul>
                             </div>
                         </div>
@@ -58,6 +67,7 @@ class OrderProductsForm extends Component {
                     <div className="col-md-12 margin-10-top">
                         {this.state.showNew && <OrderProductsFormNew toggleShowNew={this.toggleShowNew}/>}
                         {this.state.showNewProduct && <OrderProductsFormNewProduct toggleShowNewProduct={this.toggleShowNewProduct}/>}
+                        {this.state.showNewProductOneTime && <OrderProductsFormNewProductOneTime toggleShowNewProductOneTime={this.toggleShowNewProductOneTime}/>}
                     </div>
                 </PanelBody>
             </Panel>

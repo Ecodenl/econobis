@@ -7,6 +7,7 @@ import PanelHeader from '../../../../../components/panel/PanelHeader';
 import {connect} from "react-redux";
 import InvoiceProductsFormNewProduct from "./InvoiceProductsFormNewProduct";
 import InvoiceProductsFormNew from "./InvoiceProductsFormNew";
+import InvoiceProductsFormNewProductOneTime from "./InvoiceProductsFormNewProductOneTime";
 
 class InvoiceProductsForm extends Component {
     constructor(props) {
@@ -15,6 +16,7 @@ class InvoiceProductsForm extends Component {
         this.state = {
             showNew: false,
             showNewProduct: false,
+            showNewProductOneTime: false,
         };
 
     }
@@ -28,6 +30,12 @@ class InvoiceProductsForm extends Component {
     toggleShowNewProduct = () => {
         this.setState({
             showNewProduct: !this.state.showNewProduct,
+        })
+    };
+
+    toggleShowNewProductOneTime = () => {
+        this.setState({
+            showNewProductOneTime: !this.state.showNewProductOneTime,
         })
     };
 
@@ -46,6 +54,7 @@ class InvoiceProductsForm extends Component {
                                 <ul className="dropdown-menu">
                                     <li><a className="btn" onClick={this.toggleShowNew}>Bestaand product</a></li>
                                     <li><a className="btn" onClick={this.toggleShowNewProduct}>Nieuw product</a></li>
+                                    <li><a className="btn" onClick={this.toggleShowNewProductOneTime}>Nieuw eenmalig product</a></li>
                                 </ul>
                             </div>
                         </div>
@@ -59,6 +68,7 @@ class InvoiceProductsForm extends Component {
                     <div className="col-md-12 margin-10-top">
                         {this.state.showNew && <InvoiceProductsFormNew toggleShowNew={this.toggleShowNew}/>}
                         {this.state.showNewProduct && <InvoiceProductsFormNewProduct toggleShowNewProduct={this.toggleShowNewProduct}/>}
+                        {this.state.showNewProductOneTime && <InvoiceProductsFormNewProductOneTime toggleShowNewProductOneTime={this.toggleShowNewProductOneTime}/>}
                     </div>
                 </PanelBody>
             </Panel>

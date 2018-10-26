@@ -192,7 +192,7 @@ class OrderController extends ApiController
         $productData = $request->input('product');
 
         $product = new Product();
-        $product->is_one_time = true;
+        $product->is_one_time = $productData['isOneTime'];
         $product->name = $productData['name'];
         $product->code = $productData['code'];
         $product->duration_id = $productData['durationId'];

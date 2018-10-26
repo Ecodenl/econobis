@@ -42,6 +42,7 @@ class OrderProductsFormNewProduct extends Component {
                 invoiceFrequencyId: this.props.orderDetails.collectionFrequencyId ? this.props.orderDetails.collectionFrequencyId : 'once',
                 vatPercentage: '',
                 price: '',
+                isOneTime: false
             },
             errors: {
                 amount: false,

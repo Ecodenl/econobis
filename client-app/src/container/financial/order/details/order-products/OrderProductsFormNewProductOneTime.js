@@ -1,7 +1,8 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 
-import InvoiceDetailsAPI from '../../../../../api/invoice/InvoiceDetailsAPI';
+import OrderDetailsAPI from '../../../../../api/order/OrderDetailsAPI';
+import {fetchOrderDetails} from '../../../../../actions/order/OrderDetailsActions';
 import InputText from '../../../../../components/form/InputText';
 import ButtonText from '../../../../../components/button/ButtonText';
 import InputSelect from "../../../../../components/form/InputSelect";
@@ -10,9 +11,8 @@ import PanelBody from '../../../../../components/panel/PanelBody';
 import validator from "validator";
 import InputDate from "../../../../../components/form/InputDate";
 import moment from "moment/moment";
-import {fetchInvoiceDetails} from "../../../../../actions/invoice/InvoiceDetailsActions";
 
-class InvoiceProductsFormNewProduct extends Component {
+class OrderProductsFormNewProductOneTime extends Component {
     constructor(props) {
         super(props);
 
@@ -25,35 +25,35 @@ class InvoiceProductsFormNewProduct extends Component {
             errorMessage: false,
             price: '0',
             totalPrice: '0',
-            invoiceProduct: {
-                invoiceId: this.props.invoiceDetails.id,
-                description: '',
+            orderProduct: {
+                orderId: this.props.orderDetails.id,
                 amount: 1,
                 amountReduction: 0,
                 percentageReduction: 0,
-                dateLastInvoice: moment().format('YYYY-MM-DD'),
+                dateStart: moment().format('YYYY-MM-DD'),
+                dateEnd: '',
             },
             product: {
-                code: '',
-                name: '',
+                code: 'EMP',
+                name: 'Eenmalig product',
                 durationId: 'none',
-                administrationId: this.props.invoiceDetails.order.administrationId,
-                invoiceFrequencyId: 'once',
+                description: '',
+                administrationId: this.props.orderDetails.administrationId,
+                invoiceFrequencyId: this.props.orderDetails.collectionFrequencyId ? this.props.orderDetails.collectionFrequencyId : 'once',
                 vatPercentage: '',
                 price: '',
-                isOneTime: false,
+                isOneTime: true
             },
             errors: {
                 amount: false,
-                dateLastInvoice: false,
-                description: false,
-                code: false,
-                name: false,
+                dateStart: false,
+                dateEnd: false,
                 price: false,
             },
         };
 
         this.handleInputChangeDate = this.handleInputChangeDate.bind(this);
+        this.handleInputChangeStartDate = this.handleInputChangeStartDate.bind(this);
     };
 
     handleInputChange = event => {
@@ -63,8 +63,8 @@ class InvoiceProductsFormNewProduct extends Component {
 
         this.setState({
                 ...this.state,
-                invoiceProduct: {
-                    ...this.state.invoiceProduct,
+                orderProduct: {
+                    ...this.state.orderProduct,
                     [name]: value
                 },
 
@@ -89,6 +89,52 @@ class InvoiceProductsFormNewProduct extends Component {
             },
         );
     };
+
+    handleInputChangeProductDuration = event => {
+        const target = event.target;
+        const value = target.type === 'checkbox' ? target.checked : target.value;
+        const name = target.name;
+        let dateEnd;
+
+        if(this.state.orderProduct.dateStart) {
+            switch (value) {
+                case 'none':
+                    dateEnd = '';
+                    break;
+                case 'month':
+                    dateEnd = moment(this.state.orderProduct.dateStart).add(1, 'M').format('YYYY-MM-DD');
+                    break;
+                case 'quarter':
+                    dateEnd = moment(this.state.orderProduct.dateStart).add(1, 'Q').format('YYYY-MM-DD');
+                    break;
+                case 'half_year':
+                    dateEnd = moment(this.state.orderProduct.dateStart).add(6, 'M').format('YYYY-MM-DD');
+                    break;
+                case 'year':
+                    dateEnd = moment(this.state.orderProduct.dateStart).add(1, 'y').format('YYYY-MM-DD');
+                    break;
+                case 'until_cancellation':
+                    dateEnd = '';
+                    break;
+                default:
+                    dateEnd = ''
+            }
+        }
+
+        this.setState({
+                ...this.state,
+                product: {
+                    ...this.state.product,
+                    [name]: value
+                },
+                orderProduct: {
+                    ...this.state.orderProduct,
+                    dateEnd: dateEnd
+                },
+            },
+        );
+    };
+
 
     handleInputChangeProductPrice = event => {
         const target = event.target;
@@ -152,9 +198,9 @@ class InvoiceProductsFormNewProduct extends Component {
 
     updatePrice = () => {
         let price = validator.isFloat(this.state.price + '') ? this.state.price : 0;
-        let amount = validator.isFloat(this.state.invoiceProduct.amount + '') ? this.state.invoiceProduct.amount : 0;
-        let percentageReduction = validator.isFloat(this.state.invoiceProduct.percentageReduction + '') ? this.state.invoiceProduct.percentageReduction : 0;
-        let amountReduction = validator.isFloat(this.state.invoiceProduct.amountReduction + '') ? this.state.invoiceProduct.amountReduction : 0;
+        let amount = validator.isFloat(this.state.orderProduct.amount + '') ? this.state.orderProduct.amount : 0;
+        let percentageReduction = validator.isFloat(this.state.orderProduct.percentageReduction + '') ? this.state.orderProduct.percentageReduction : 0;
+        let amountReduction = validator.isFloat(this.state.orderProduct.amountReduction + '') ? this.state.orderProduct.amountReduction : 0;
 
         let totalPrice = ((price * amount) * ((100 - percentageReduction) / 100)) - amountReduction;
 
@@ -168,9 +214,49 @@ class InvoiceProductsFormNewProduct extends Component {
     handleInputChangeDate(value, name) {
         this.setState({
             ...this.state,
-            invoiceProduct: {
-                ...this.state.invoiceProduct,
+            orderProduct: {
+                ...this.state.orderProduct,
                 [name]: value
+            },
+        });
+    };
+
+    handleInputChangeStartDate(value, name) {
+        let dateEnd = '';
+
+        if(this.state.orderProduct.dateStart){
+            let durationId = this.state.product.durationId;
+
+            switch (durationId) {
+                case 'none':
+                    dateEnd = '';
+                    break;
+                case 'month':
+                    dateEnd = moment(value).add(1, 'M').format('YYYY-MM-DD');
+                    break;
+                case 'quarter':
+                    dateEnd = moment(value).add(1, 'Q').format('YYYY-MM-DD');
+                    break;
+                case 'half_year':
+                    dateEnd = moment(value).add(6, 'M').format('YYYY-MM-DD');
+                    break;
+                case 'year':
+                    dateEnd = moment(value).add(1, 'y').format('YYYY-MM-DD');
+                    break;
+                case 'until_cancellation':
+                    dateEnd = '';
+                    break;
+                default:
+                    dateEnd = ''
+            }
+        }
+
+        this.setState({
+            ...this.state,
+            orderProduct: {
+                ...this.state.orderProduct,
+                [name]: value,
+                dateEnd: dateEnd
             },
         });
     };
@@ -178,63 +264,35 @@ class InvoiceProductsFormNewProduct extends Component {
     handleSubmit = event => {
         event.preventDefault();
 
-        const {invoiceProduct} = this.state;
+        const {orderProduct} = this.state;
 
         let errors = {};
         let hasErrors = false;
         let errorMessage = false;
 
-        if (validator.isEmpty(invoiceProduct.amount + '')) {
+        if (validator.isEmpty(orderProduct.amount + '')) {
             errors.amount = true;
             hasErrors = true;
         }
         ;
 
-        if (validator.isEmpty(invoiceProduct.dateLastInvoice + '')) {
-            errors.dateLastInvoice = true;
+        if (validator.isEmpty(orderProduct.dateStart + '')) {
+            errors.dateStart = true;
             hasErrors = true;
         }
         ;
 
-        if (validator.isEmpty(invoiceProduct.description + '')) {
-            errors.description = true;
+        if (!validator.isEmpty(orderProduct.dateStart + '') && moment(orderProduct.dateEnd).isSameOrBefore(moment(orderProduct.dateStart))) {
+            errors.dateEnd = true;
             hasErrors = true;
         }
-        ;
+
+        if (!validator.isEmpty(orderProduct.dateEnd + '') && moment(orderProduct.dateStart).isSameOrAfter(moment(orderProduct.dateEnd))) {
+            errors.dateStart = true;
+            hasErrors = true;
+        }
 
         const {product} = this.state;
-
-        let productCodeNotUnique = false;
-        this.props.products.map((existingProduct) => ((existingProduct.code == product.code) && (productCodeNotUnique = true)));
-
-        if (productCodeNotUnique) {
-            errorMessage = "Productcode moet uniek zijn.";
-            errors.code = true;
-            hasErrors = true;
-        }
-
-        if (validator.isEmpty(product.code + '')) {
-            errors.code = true;
-            hasErrors = true;
-        }
-
-        let productNameNotUnique = false;
-        this.props.products.map((existingProduct) => ((existingProduct.name == product.name) && (productNameNotUnique = true)));
-
-        if (productNameNotUnique) {
-            errorMessage = "Productnaam moet uniek zijn.";
-            errors.name = true;
-            hasErrors = true;
-        }
-
-        if(productCodeNotUnique && productNameNotUnique){
-            errorMessage = "Productcode en productnaam moeten uniek zijn.";
-        }
-
-        if (validator.isEmpty(product.name + '')) {
-            errors.name = true;
-            hasErrors = true;
-        }
 
         if (validator.isEmpty(product.administrationId + '')) {
             errors.administrationId = true;
@@ -253,16 +311,16 @@ class InvoiceProductsFormNewProduct extends Component {
 
         // If no errors send form
         !hasErrors &&
-        InvoiceDetailsAPI.newProductAndInvoiceProduct(invoiceProduct, product).then((payload) => {
-            this.props.fetchInvoiceDetails(invoiceProduct.invoiceId);
-            this.props.toggleShowNewProduct();
+        OrderDetailsAPI.newProductAndOrderProduct(orderProduct, product).then((payload) => {
+            this.props.fetchOrderDetails(orderProduct.orderId);
+            this.props.toggleShowNewProductOneTime();
         });
     };
 
     render() {
 
-        const {description, amount, amountReduction, percentageReduction, dateLastInvoice} = this.state.invoiceProduct;
-        const { code, name, vatPercentage, price } = this.state.product;
+        const {amount, amountReduction, percentageReduction, dateStart, dateEnd} = this.state.orderProduct;
+        const {description, durationId, vatPercentage, price } = this.state.product;
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -272,24 +330,6 @@ class InvoiceProductsFormNewProduct extends Component {
                             <div className={'panel-heading'}>
                                 <span className={'h5 text-bold'}>Product</span>
                             </div>
-                        </div>
-                        <div className="row">
-                            <InputText
-                                label="Productcode"
-                                name={"code"}
-                                value={code}
-                                onChangeAction={this.handleInputChangeProduct}
-                                required={"required"}
-                                error={this.state.errors.code}
-                            />
-                            <InputText
-                                label="Naam"
-                                name={"name"}
-                                value={name}
-                                onChangeAction={this.handleInputChangeProduct}
-                                required={"required"}
-                                error={this.state.errors.name}
-                            />
                         </div>
 
                         <div className="row">
@@ -316,8 +356,20 @@ class InvoiceProductsFormNewProduct extends Component {
                         </div>
 
                         <div className="row">
+                            <InputSelect
+                                label={"Looptijd"}
+                                id="durationId"
+                                name={"durationId"}
+                                options={this.props.productDurations}
+                                value={durationId}
+                                onChangeAction={this.handleInputChangeProductDuration}
+                                emptyOption={false}
+                            />
+                        </div>
+
+                        <div className="row">
                             <div className={'panel-part panel-heading'}>
-                                <span className={'h5 text-bold'}>Factuurregel</span>
+                                <span className={'h5 text-bold'}>Orderregel</span>
                             </div>
                         </div>
 
@@ -327,7 +379,7 @@ class InvoiceProductsFormNewProduct extends Component {
                                 id={"description"}
                                 name={"description"}
                                 value={description}
-                                onChangeAction={this.handleInputChange}
+                                onChangeAction={this.handleInputChangeProduct}
                                 required={"required"}
                                 error={this.state.errors.description}
                             />
@@ -386,11 +438,18 @@ class InvoiceProductsFormNewProduct extends Component {
                         <div className="row">
                             <InputDate
                                 label="Begin datum"
-                                name="dateLastInvoice"
-                                value={dateLastInvoice}
-                                onChangeAction={this.handleInputChangeDate}
+                                name="dateStart"
+                                value={dateStart}
+                                onChangeAction={this.handleInputChangeStartDate}
                                 required={"required"}
-                                error={this.state.errors.dateLastInvoice}
+                                error={this.state.errors.dateStart}
+                            />
+                            <InputDate
+                                label="Eind datum"
+                                name="dateEnd"
+                                value={dateEnd}
+                                onChangeAction={this.handleInputChangeDate}
+                                error={this.state.errors.dateEnd}
                             />
                         </div>
 
@@ -402,7 +461,7 @@ class InvoiceProductsFormNewProduct extends Component {
 
                         <div className="pull-right btn-group" role="group">
                             <ButtonText buttonClassName={"btn-default"} buttonText={"Annuleren"}
-                                        onClickAction={this.props.toggleShowNewProduct}/>
+                                        onClickAction={this.props.toggleShowNewProductOneTime}/>
                             <ButtonText buttonText={"Opslaan"} onClickAction={this.handleSubmit} type={"submit"}
                                         value={"Submit"}/>
                         </div>
@@ -415,7 +474,7 @@ class InvoiceProductsFormNewProduct extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        invoiceDetails: state.invoiceDetails,
+        orderDetails: state.orderDetails,
         administrationId: state.administrationDetails.id,
         productDurations: state.systemData.productDurations,
         productInvoiceFrequencies: state.systemData.productInvoiceFrequencies,
@@ -425,9 +484,9 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = dispatch => ({
-    fetchInvoiceDetails: (id) => {
-        dispatch(fetchInvoiceDetails(id));
+    fetchOrderDetails: (id) => {
+        dispatch(fetchOrderDetails(id));
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(InvoiceProductsFormNewProduct);
+export default connect(mapStateToProps, mapDispatchToProps)(OrderProductsFormNewProductOneTime);

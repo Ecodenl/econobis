@@ -54,8 +54,8 @@ class ProductController extends ApiController
         $this->authorize('manage', Product::class);
 
         $data = $input
-            ->string('code')->validate('required|unique:products,code')->next()
-            ->string('name')->validate('required|unique:products,name')->next()
+            ->string('code')->validate('required')->next()
+            ->string('name')->validate('required')->next()
             ->string('invoiceText')->whenMissing('')->onEmpty('')->alias('invoice_text')->next()
             ->string('durationId')->whenMissing(null)->onEmpty(null)->alias('duration_id')->next()
             ->string('invoiceFrequencyId')->whenMissing(null)->onEmpty(null)->alias('invoice_frequency_id')->next()
@@ -76,8 +76,8 @@ class ProductController extends ApiController
         $this->authorize('manage', Product::class);
 
         $data = $input
-            ->string('code')->validate('required|unique:products,code,' . $product->id)->next()
-            ->string('name')->validate('required|unique:products,name,' . $product->id)->next()
+            ->string('code')->validate('required')->next()
+            ->string('name')->validate('required')->next()
             ->string('invoiceText')->whenMissing('')->onEmpty('')->alias('invoice_text')->next()
             ->string('durationId')->whenMissing(null)->onEmpty(null)->alias('duration_id')->next()
             ->string('invoiceFrequencyId')->whenMissing(null)->onEmpty(null)->alias('invoice_frequency_id')->next()

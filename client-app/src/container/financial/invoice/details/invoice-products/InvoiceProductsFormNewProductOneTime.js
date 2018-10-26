@@ -12,7 +12,7 @@ import InputDate from "../../../../../components/form/InputDate";
 import moment from "moment/moment";
 import {fetchInvoiceDetails} from "../../../../../actions/invoice/InvoiceDetailsActions";
 
-class InvoiceProductsFormNewProduct extends Component {
+class InvoiceProductsFormNewProductOneTime extends Component {
     constructor(props) {
         super(props);
 
@@ -34,21 +34,19 @@ class InvoiceProductsFormNewProduct extends Component {
                 dateLastInvoice: moment().format('YYYY-MM-DD'),
             },
             product: {
-                code: '',
-                name: '',
+                code: 'EMP',
+                name: 'Eenmalig product',
                 durationId: 'none',
                 administrationId: this.props.invoiceDetails.order.administrationId,
                 invoiceFrequencyId: 'once',
                 vatPercentage: '',
                 price: '',
-                isOneTime: false,
+                isOneTime: true,
             },
             errors: {
                 amount: false,
                 dateLastInvoice: false,
                 description: false,
-                code: false,
-                name: false,
                 price: false,
             },
         };
@@ -204,38 +202,6 @@ class InvoiceProductsFormNewProduct extends Component {
 
         const {product} = this.state;
 
-        let productCodeNotUnique = false;
-        this.props.products.map((existingProduct) => ((existingProduct.code == product.code) && (productCodeNotUnique = true)));
-
-        if (productCodeNotUnique) {
-            errorMessage = "Productcode moet uniek zijn.";
-            errors.code = true;
-            hasErrors = true;
-        }
-
-        if (validator.isEmpty(product.code + '')) {
-            errors.code = true;
-            hasErrors = true;
-        }
-
-        let productNameNotUnique = false;
-        this.props.products.map((existingProduct) => ((existingProduct.name == product.name) && (productNameNotUnique = true)));
-
-        if (productNameNotUnique) {
-            errorMessage = "Productnaam moet uniek zijn.";
-            errors.name = true;
-            hasErrors = true;
-        }
-
-        if(productCodeNotUnique && productNameNotUnique){
-            errorMessage = "Productcode en productnaam moeten uniek zijn.";
-        }
-
-        if (validator.isEmpty(product.name + '')) {
-            errors.name = true;
-            hasErrors = true;
-        }
-
         if (validator.isEmpty(product.administrationId + '')) {
             errors.administrationId = true;
             hasErrors = true;
@@ -255,14 +221,14 @@ class InvoiceProductsFormNewProduct extends Component {
         !hasErrors &&
         InvoiceDetailsAPI.newProductAndInvoiceProduct(invoiceProduct, product).then((payload) => {
             this.props.fetchInvoiceDetails(invoiceProduct.invoiceId);
-            this.props.toggleShowNewProduct();
+            this.props.toggleShowNewProductOneTime();
         });
     };
 
     render() {
 
         const {description, amount, amountReduction, percentageReduction, dateLastInvoice} = this.state.invoiceProduct;
-        const { code, name, vatPercentage, price } = this.state.product;
+        const { vatPercentage, price } = this.state.product;
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -272,24 +238,6 @@ class InvoiceProductsFormNewProduct extends Component {
                             <div className={'panel-heading'}>
                                 <span className={'h5 text-bold'}>Product</span>
                             </div>
-                        </div>
-                        <div className="row">
-                            <InputText
-                                label="Productcode"
-                                name={"code"}
-                                value={code}
-                                onChangeAction={this.handleInputChangeProduct}
-                                required={"required"}
-                                error={this.state.errors.code}
-                            />
-                            <InputText
-                                label="Naam"
-                                name={"name"}
-                                value={name}
-                                onChangeAction={this.handleInputChangeProduct}
-                                required={"required"}
-                                error={this.state.errors.name}
-                            />
                         </div>
 
                         <div className="row">
@@ -402,7 +350,7 @@ class InvoiceProductsFormNewProduct extends Component {
 
                         <div className="pull-right btn-group" role="group">
                             <ButtonText buttonClassName={"btn-default"} buttonText={"Annuleren"}
-                                        onClickAction={this.props.toggleShowNewProduct}/>
+                                        onClickAction={this.props.toggleShowNewProductOneTime}/>
                             <ButtonText buttonText={"Opslaan"} onClickAction={this.handleSubmit} type={"submit"}
                                         value={"Submit"}/>
                         </div>
@@ -430,4 +378,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(InvoiceProductsFormNewProduct);
+export default connect(mapStateToProps, mapDispatchToProps)(InvoiceProductsFormNewProductOneTime);

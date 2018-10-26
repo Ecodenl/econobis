@@ -246,10 +246,7 @@ class InvoiceController extends ApiController
         if($validatedInvoices->count() > 0) {
             foreach ($validatedInvoices as $invoice){
 
-                $invoice->date_collection = $request->input('dateCollection');
-                $invoice->save();
-
-                array_push($response, $this->send($invoice));
+                array_push($response, $this->send($invoice, $request));
             }
             if($paymentTypeId === 'collection') {
                 $sepaHelper = new SepaHelper($administration, $validatedInvoices);

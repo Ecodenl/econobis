@@ -92,7 +92,7 @@ class InvoiceSendConfirm extends Component {
                 title="Factuur verzenden"
                 buttonConfirmText={"Verzenden"}
             >
-                {this.props.paymentType === 'collection' &&
+                {this.props.paymentType === 'incasso' &&
                 <div className="row">
                     <InputDate
                         divSize={'col-xs-12'}

@@ -6,10 +6,9 @@ import ButtonIcon from '../../../../components/button/ButtonIcon';
 import InvoiceDetailsFormSetPaid from "./general/InvoiceDetailsFormSetPaid";
 import InvoiceDetailsFormSendNotification from "./general/InvoiceDetailsFormSendNotification";
 import InvoiceDetailsFormSetIrrecoverable from "./general/InvoiceDetailsFormSetIrrecoverable";
-import InvoiceDetailsFormSend from "./general/InvoiceDetailsFormSend";
-import InvoiceDetailsFormSendPost from "./general/InvoiceDetailsFormSendPost";
 import fileDownload from "js-file-download";
 import InvoiceDetailsAPI from "../../../../api/invoice/InvoiceDetailsAPI";
+import {previewSend} from "../../../../actions/invoice/InvoicesActions";
 
 class InvoiceToolbar extends Component {
     constructor(props) {
@@ -17,8 +16,6 @@ class InvoiceToolbar extends Component {
 
         this.state = {
             showSetChecked: false,
-            showSend: false,
-            showSendPost: false,
             showSetPaid: false,
             showSendNotification: false,
             reminderText: '',
@@ -58,11 +55,16 @@ class InvoiceToolbar extends Component {
     };
 
     showSend = () => {
-        this.setState({showSend: !this.state.showSend});
+        let paymentType = this.props.invoiceDetails.paymentTypeId === 'collection' ? 'incasso' : 'overboeking';
+
+        this.props.previewSend([this.props.invoiceDetails.id]);
+        hashHistory.push(`/financieel/${this.props.invoiceDetails.order.administrationId}/facturen/te-verzenden/verzenden/email/${paymentType}`);
     };
 
     showSendPost = () => {
-        this.setState({showSendPost: !this.state.showSendPost});
+        let paymentType = this.props.invoiceDetails.paymentTypeId === 'collection' ? 'incasso' : 'overboeking';
+        this.props.previewSend([this.props.invoiceDetails.id]);
+        hashHistory.push(`/financieel/${this.props.invoiceDetails.order.administrationId}/facturen/te-verzenden/verzenden/post/${paymentType}`);
     };
 
     showSetPaid = () => {
@@ -112,24 +114,6 @@ class InvoiceToolbar extends Component {
                 <div className="col-md-4"/>
 
                 {
-                    this.state.showSend &&
-                    <InvoiceDetailsFormSend
-                        paymentType={this.props.invoiceDetails.paymentTypeId}
-                        closeModal={this.showSend}
-                        invoiceId={this.props.invoiceDetails.id}
-                    />
-                }
-
-                {
-                    this.state.showSendPost &&
-                    <InvoiceDetailsFormSendPost
-                        paymentType={this.props.invoiceDetails.paymentTypeId}
-                        closeModal={this.showSendPost}
-                        invoiceId={this.props.invoiceDetails.id}
-                    />
-                }
-
-                {
                     this.state.showSetPaid &&
                     <InvoiceDetailsFormSetPaid
                         closeModal={this.showSetPaid}
@@ -164,4 +148,11 @@ const mapStateToProps = (state) => {
     };
 };
 
-export default connect(mapStateToProps, null)(InvoiceToolbar);
+
+const mapDispatchToProps = dispatch => ({
+    previewSend: (ids) => {
+        dispatch(previewSend(ids));
+    },
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(InvoiceToolbar);

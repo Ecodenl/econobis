@@ -1,7 +1,6 @@
 import React from 'react';
 import {hashHistory} from 'react-router';
-import { connect } from 'react-redux';
-import moment from 'moment';
+import {connect} from 'react-redux';
 
 const OpportunitiesList = ({relatedOrders}) => {
     const openItem = (id) => {

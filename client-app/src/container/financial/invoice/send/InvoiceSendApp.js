@@ -9,6 +9,7 @@ import InvoiceSendViewEmail from "./InvoiceSendViewEmail";
 import InvoiceSendToolbar from "./InvoiceSendToolbar";
 import {clearPreviewSend} from "../../../../actions/invoice/InvoicesActions";
 import {connect} from "react-redux";
+import {fetchAdministrationDetails} from "../../../../actions/administration/AdministrationDetailsActions";
 
 class InvoiceSendApp extends Component {
     constructor(props) {
@@ -24,6 +25,7 @@ class InvoiceSendApp extends Component {
     }
 
     componentDidMount() {
+        this.props.fetchAdministrationDetails(this.props.params.id);
         InvoicesAPI.getInvoicesForSending(this.props.invoicePreviewSend).then((payload) => {
             this.setState({
                 invoices: payload.data,
@@ -99,6 +101,9 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = dispatch => ({
     clearPreviewSend: () => {
         dispatch(clearPreviewSend());
+    },
+    fetchAdministrationDetails: (id) => {
+        dispatch(fetchAdministrationDetails(id));
     },
 });
 

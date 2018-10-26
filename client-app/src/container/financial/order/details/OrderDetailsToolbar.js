@@ -1,11 +1,11 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
+import React, {Component} from 'react';
+import {connect} from 'react-redux';
 import {browserHistory, hashHistory} from 'react-router';
 
 import ButtonIcon from '../../../../components/button/ButtonIcon';
 import OrderDeleteItem from "./OrderDeleteItem";
-import InvoiceNew from "../../invoice/new/InvoiceNew";
 import ButtonText from "../../../../components/button/ButtonText";
+import {previewCreate} from "../../../../actions/order/OrdersActions";
 
 class OrderToolbar  extends Component {
     constructor(props){
@@ -25,8 +25,9 @@ class OrderToolbar  extends Component {
         hashHistory.push(`/order/inzien/${this.props.orderDetails.id}`);
     };
 
-    toggleNewInvoice = () => {
-        this.setState({showNewInvoice: !this.state.showNewInvoice});
+    newInvoice = () => {
+        this.props.previewCreate([this.props.orderDetails.id]);
+        hashHistory.push(`/financieel/${this.props.orderDetails.administrationId}/orders/aanmaken`);
     };
 
     render() {
@@ -39,7 +40,7 @@ class OrderToolbar  extends Component {
                             <ButtonIcon iconName={"glyphicon-eye-open"} onClickAction={this.preview}/>
                         }
                         {this.props.orderDetails.totalPriceInclVat > 0 && this.props.orderDetails.canCreateInvoice &&
-                        <ButtonText buttonText={'Maak factuur'} onClickAction={this.toggleNewInvoice}/>
+                        <ButtonText buttonText={'Maak factuur'} onClickAction={this.newInvoice}/>
                         }
                         <ButtonIcon iconName={"glyphicon-trash"} onClickAction={this.toggleDelete}/>
                     </div>
@@ -55,15 +56,6 @@ class OrderToolbar  extends Component {
                         administrationId={this.props.administrationId}
                     />
                 }
-
-                {
-                    this.state.showNewInvoice &&
-                    <InvoiceNew
-                        closeModal={this.toggleNewInvoice}
-                        orderId={this.props.orderDetails.id}
-                        orderNumber={this.props.orderDetails.number}
-                    />
-                }
             </div>
         );
     }
@@ -76,4 +68,11 @@ const mapStateToProps = (state) => {
     };
 };
 
-export default connect(mapStateToProps, null)(OrderToolbar);
+const mapDispatchToProps = dispatch => ({
+    previewCreate: (ids) => {
+        dispatch(previewCreate(ids));
+    },
+});
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(OrderToolbar);

@@ -23,7 +23,7 @@ const InvoicesListHead = (props) => {
             <DataTableHeadTitleAndSort sortColumn={'dateRequested'} title={'Datum'} width={'10%'} setSorts={setSorts} />
             <DataTableHeadTitleAndSort sortColumn={'contact'} title={'Contact'} width={'15%'} setSorts={setSorts} />
             <DataTableHeadTitleAndSort sortColumn={'subject'} title={'Onderwerp'} width={'15%'} setSorts={setSorts} />
-            <DataTableHeadTitle title={'Aantal dagen verlopen'} width={'10%'}/>
+            <DataTableHeadTitle title={'Verloopt over'} width={'10%'}/>
             <DataTableHeadTitle title={'Bedrag incl. BTW'} width={'10%'}/>
             <DataTableHeadTitleAndSort sortColumn={'paymentTypeId'} title={'Betaalwijze'} width={'10%'} setSorts={setSorts} />
             <DataTableHeadTitleAndSort sortColumn={'statusId'} title={'Status'} width={'10%'} setSorts={setSorts} />

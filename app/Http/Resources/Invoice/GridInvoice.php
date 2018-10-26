@@ -26,7 +26,7 @@ class GridInvoice extends Resource
             'orderSubject' => $this->order->subject,
             'orderContactFullName' => $this->order->contact->full_name,
 
-            'daysExpired' => $this->days_expired,
+            'daysToExpire' => $this->days_to_expire,
             'totalPriceInclVatAndReduction' => $this->total_price_incl_vat_and_reduction,
             'amountOpen' => $this->amount_open,
 

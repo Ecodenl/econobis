@@ -22,7 +22,7 @@ class Invoice extends Model
 
     protected $appends
         = [
-            'days_expired',
+            'days_to_expire',
             'total_price_incl_vat_and_reduction',
             'total_price_ex_vat_incl_reduction',
             'total_vat',
@@ -96,7 +96,7 @@ class Invoice extends Model
         return InvoiceStatus::get($this->status_id);
     }
 
-    public function getDaysExpiredAttribute()
+    public function getDaysToExpireAttribute()
     {
         if($this->payment_type_id === 'transfer'){
             if(!$this->date_sent){
@@ -110,13 +110,9 @@ class Invoice extends Model
 
             $dateMax = Carbon::parse($this->date_sent)->addDays($daysAllowed);
 
-            if($dateMax->gte(Carbon::now())){
-                return 0;
-            }
+            $daysToExpire = Carbon::now()->diffInDays($dateMax, false);
 
-            $daysExpired = $dateMax->diffInDays(Carbon::now());
-
-            return $daysExpired;
+            return $daysToExpire;
         }
 
         return 0;

@@ -57,7 +57,7 @@ class FullInvoice extends Resource
                 'emailExhortation' => $this->email_exhortation,
                 'dateRequested' => $this->date_requested,
 
-                'daysExpired' => $this->days_expired,
+                'daysToExpire' => $this->days_to_expire,
                 'totalPriceInclVatAndReduction' => $this->total_price_incl_vat_and_reduction,
 
                 'taskCount' => $this->tasks()->count(),

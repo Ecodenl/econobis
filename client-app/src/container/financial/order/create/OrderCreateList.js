@@ -21,7 +21,7 @@ class OrderCreateList extends Component {
                                     this.props.orders.map((order, i)=> {
                                         return <Nav onNavClick={() => this.props.changeOrder(order.id)} key={i} id={`administration-${order.id}`}>
                                                 <NavText><Link className={`${order.totalPriceInclVat <= 0 ? 'send-orders-list-link-error' : 'send-orders-list-link'}`}
-                                                >{order.number} - {order.contact.fullName}</Link></NavText>
+                                                >{order.number} - {order.contactName}</Link></NavText>
                                         </Nav>
                                     })
                                     :

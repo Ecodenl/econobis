@@ -11,7 +11,10 @@ import OrdersDeleteItem from './OrdersDeleteItem';
 import DataTablePagination from "../../../../components/dataTable/DataTablePagination";
 import {bindActionCreators} from "redux";
 import {connect} from "react-redux";
-import { fetchOrders, clearOrders } from '../../../../actions/order/OrdersActions';
+import {
+    fetchOrders, clearOrders,
+    setCheckedOrderAll, previewCreate
+} from '../../../../actions/order/OrdersActions';
 import { clearFilterOrders } from '../../../../actions/order/OrdersFiltersActions';
 import { setOrdersPagination } from '../../../../actions/order/OrdersPaginationActions';
 import filterHelper from '../../../../helpers/FilterHelper';
@@ -63,9 +66,12 @@ class OrdersList extends Component {
 
         this.state = {
             showDeleteItem: false,
+            showSelectOrdersToCreate: false,
+            checkedAllCheckboxes: false,
+            previewOrderText: 'Selecteer preview facturen',
             deleteItem: {
                 id: '',
-                subject: ''
+                subject: '',
             }
         };
 
@@ -106,6 +112,17 @@ class OrdersList extends Component {
                         break;
                     default:
                         break;
+                };
+
+                this.setState = {
+                    showDeleteItem: false,
+                    showSelectOrdersToCreate: false,
+                    checkedAllCheckboxes: false,
+                    previewOrderText: 'Selecteer preview facturen',
+                    deleteItem: {
+                        id: '',
+                        subject: '',
+                    }
                 };
             }
             else {
@@ -151,6 +168,17 @@ class OrdersList extends Component {
         this.props.clearFilterOrders();
 
         this.fetchOrdersData();
+
+        this.setState = {
+            showDeleteItem: false,
+            showSelectOrdersToCreate: false,
+            checkedAllCheckboxes: false,
+            previewOrderText: 'Selecteer preview facturen',
+            deleteItem: {
+                id: '',
+                subject: '',
+            }
+        };
     };
 
     onSubmitFilter = () => {
@@ -201,6 +229,36 @@ class OrdersList extends Component {
         });
     };
 
+    selectAllCheckboxes = () => {
+        this.setState({
+            checkedAllCheckboxes: !this.state.checkedAllCheckboxes
+        });
+
+        this.props.setCheckedOrderAll(!this.state.checkedAllCheckboxes);
+    };
+
+    previewOrders = () => {
+        let createOrderIds = [];
+
+        this.setState({
+            previewOrderText: 'Preview facturen',
+        });
+
+
+        this.props.orders.data.map((order) => (order.checked === true  && createOrderIds.push(order.id)));
+
+        if(createOrderIds.length > 0){
+            this.props.previewCreate(createOrderIds);
+            hashHistory.push(`/financieel/${this.props.administrationId}/orders/aanmaken`);
+        }
+        else{
+            console.log('test');
+            this.setState({showSelectOrdersToCreate: !this.state.showSelectOrdersToCreate});
+        }
+
+    };
+
+
     render() {
         const { data = [], meta = {} } = this.props.orders;
 
@@ -212,7 +270,7 @@ class OrdersList extends Component {
                             <ButtonIcon iconName={"glyphicon-refresh"} onClickAction={this.resetOrderFilters} />
                             <ButtonIcon iconName={"glyphicon-download-alt"} onClickAction={this.getCSV} />
                             {this.props.filter === 'te-factureren' && meta.total > 0 &&
-                            <ButtonText buttonText={'Preview facturen'} onClickAction={() => hashHistory.push(`/financieel/${this.props.administrationId}/orders/aanmaken`)} />
+                            <ButtonText buttonText={this.state.previewOrderText} onClickAction={() => this.previewOrders()}/>
                             }
                         </div>
                     </div>
@@ -226,10 +284,13 @@ class OrdersList extends Component {
                     <DataTable>
                         <DataTableHead>
                             <OrdersListHead
+                                showSelectOrdersToCreate={this.state.showSelectOrdersToCreate}
                                 fetchOrdersData={this.fetchOrdersData}
                             />
                             <OrdersListFilter
                                 onSubmitFilter={this.onSubmitFilter}
+                                showSelectOrdersToCreate={this.state.showSelectOrdersToCreate}
+                                selectAllCheckboxes={this.selectAllCheckboxes}
                             />
                         </DataTableHead>
                         <DataTableBody>
@@ -239,6 +300,7 @@ class OrdersList extends Component {
                                 ) : (
                                     data.map((order) => {
                                         return <OrdersListItem
+                                            showSelectOrdersToCreate={this.state.showSelectOrdersToCreate}
                                             key={order.id}
                                             {...order}
                                             showDeleteItemModal={this.showDeleteItemModal}
@@ -278,7 +340,7 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = (dispatch) => {
-    return bindActionCreators({ blockUI, unblockUI, fetchOrders, clearOrders, clearFilterOrders, setOrdersPagination, setPaymentTypeIdFilterOrders, setStatusIdFilterOrders }, dispatch);
+    return bindActionCreators({ previewCreate, setCheckedOrderAll, blockUI, unblockUI, fetchOrders, clearOrders, clearFilterOrders, setOrdersPagination, setPaymentTypeIdFilterOrders, setStatusIdFilterOrders }, dispatch);
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(OrdersList);

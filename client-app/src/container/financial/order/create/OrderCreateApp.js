@@ -7,6 +7,8 @@ import OrdersAPI from "../../../../api/order/OrdersAPI";
 import OrderCreateViewPdf from "./OrderCreateViewPdf";
 import OrderCreateViewEmail from "./OrderCreateViewEmail";
 import OrderCreateToolbar from "./OrderCreateToolbar";
+import {clearPreviewCreate} from "../../../../actions/order/OrdersActions";
+import {connect} from "react-redux";
 
 class OrderCreateApp extends Component {
     constructor(props) {
@@ -17,8 +19,13 @@ class OrderCreateApp extends Component {
         };
     };
 
+
+    componentWillUnmount(){
+        this.props.clearPreviewCreate();
+    }
+
     componentDidMount() {
-        OrdersAPI.getOrdersForCreating(this.props.params.id).then((payload) => {
+        OrdersAPI.getOrdersForCreating(this.props.orderPreviewCreate).then((payload) => {
             this.setState({
                 orders: payload.data,
             });
@@ -79,5 +86,16 @@ class OrderCreateApp extends Component {
     }
 };
 
+const mapStateToProps = (state) => {
+    return {
+        orderPreviewCreate: state.orderPreviewCreate,
+    }
+};
 
-export default OrderCreateApp;
+const mapDispatchToProps = dispatch => ({
+    clearPreviewCreate: () => {
+        dispatch(clearPreviewCreate());
+    },
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(OrderCreateApp);

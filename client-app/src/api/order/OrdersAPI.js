@@ -62,12 +62,12 @@ export default {
             );
     },
 
-    getOrdersForCreating: (administrationId, filter) => {
+    getOrdersForCreating: (ids) => {
         const requestUrl = `${URL_ORDER}/creating`;
         const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
         axios.defaults.headers.common.Authorization = AUTH_TOKEN;
 
-        return axios.post(requestUrl, {administrationId: administrationId, filter: filter})
+        return axios.post(requestUrl, {'ids': ids})
             .then(response => response.data)
             .catch((error) => {
                     console.log(error);

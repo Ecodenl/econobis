@@ -20,6 +20,7 @@ use App\Helpers\Invoice\InvoiceHelper;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\RequestQueries\Order\Grid\RequestQuery;
+use App\Http\Resources\Order\CreateInvoice;
 use App\Http\Resources\Order\FullOrder;
 use App\Http\Resources\Order\FullOrderProduct;
 use App\Http\Resources\Order\GridOrder;
@@ -343,22 +344,18 @@ class OrderController extends ApiController
         return $total;
     }
 
-    public function getOrdersForCreating(RequestInput $requestInput)
+    public function getOrdersForCreating(Request $request)
     {
         $this->authorize('manage', Order::class);
 
-        $data = $requestInput
-            ->string('administrationId')->validate('required|exists:administrations,id')->alias('administration_id')->next()
-            ->get();
+        $orders = Order::whereIn('id', $request->input('ids'))->with('contact')->get();
 
-        $orders = Order::where('administration_id', $data['administration_id'])
-            ->where('orders.status_id', 'active')
-            ->where('orders.date_next_invoice', '<=', Carbon::today()->addDays(14))
-            ->whereDoesntHave('invoices', function ($q) {
-                $q->where('invoices.status_id', 'to-send');
-            })->with(['contact'])->get();
+        foreach ($orders as $order){
+            $orderController = new OrderController;
+            $order->emailToAddress = $orderController->getContactInfoForOrder($order->contact)['email'];
+        }
 
-        return FullOrder::collection($orders);
+        return CreateInvoice::collection($orders);
     }
 
     public function createAll(RequestInput $requestInput)

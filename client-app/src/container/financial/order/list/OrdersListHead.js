@@ -16,6 +16,9 @@ const OrdersListHead = (props) => {
 
     return (
         <tr className="thead-title">
+            {props.showSelectOrdersToCreate &&
+            <th width="5%"></th>
+            }
             <DataTableHeadTitleAndSort sortColumn={'number'} title={'Nummer'} width={'10%'} setSorts={setSorts} />
             <DataTableHeadTitleAndSort sortColumn={'dateRequested'} title={'Datum'} width={'10%'} setSorts={setSorts} />
             <DataTableHeadTitleAndSort sortColumn={'subject'} title={'Onderwerp'} width={'15%'} setSorts={setSorts} />

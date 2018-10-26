@@ -368,7 +368,6 @@ class OrderController extends ApiController
 
         $data = $requestInput
             ->string('administrationId')->validate('required|exists:administrations,id')->alias('administration_id')->next()
-            ->string('filter')->validate('required')->next()
             ->date('dateRequested')->validate('nullable|date')
             ->alias('date_requested')->next()
             ->get();

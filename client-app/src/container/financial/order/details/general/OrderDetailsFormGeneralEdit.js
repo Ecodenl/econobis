@@ -35,7 +35,7 @@ class OrderDetailsFormGeneralEdit extends Component {
                 emailTemplateReminderId: emailTemplateReminderId ? emailTemplateReminderId : '',
                 emailTemplateExhortationId: emailTemplateExhortationId ? emailTemplateExhortationId : '',
                 paymentTypeId: paymentTypeId ? paymentTypeId : '',
-                collectionFrequencyId: collectionFrequencyId ? collectionFrequencyId : '',
+                collectionFrequencyId: collectionFrequencyId ? collectionFrequencyId : 'once',
                 IBAN: IBAN ? IBAN : '',
                 ibanAttn: ibanAttn ? ibanAttn : '',
                 poNumber: poNumber ? poNumber : '',

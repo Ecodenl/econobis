@@ -36,7 +36,7 @@ class OrderNewForm extends Component {
                 emailTemplateReminderId: '',
                 emailTemplateExhortationId: '',
                 paymentTypeId: 'collection',
-                collectionFrequencyId: '',
+                collectionFrequencyId: 'once',
                 IBAN: '',
                 ibanAttn: '',
                 poNumber: '',

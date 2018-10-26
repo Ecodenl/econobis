@@ -189,7 +189,7 @@ class SepaPaymentHelper
 
         $this->checkStorageDir();
 
-        $name = 'u-sepa' . Carbon::now()->format('Ymdhi') . '.xml';
+        $name = 'betaal-sepa' . Carbon::now()->format('Ymdhi') . '.xml';
 
         $path = 'administration_' . $this->administration->id
             . DIRECTORY_SEPARATOR . 'sepas' . DIRECTORY_SEPARATOR . $name;

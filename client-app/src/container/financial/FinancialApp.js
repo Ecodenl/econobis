@@ -58,7 +58,7 @@ class FinancialApp extends Component {
                         </Panel>
                     </div>
                 </div>
-                <div className="col-md-7">
+                <div className="col-md-9">
                     <div className="col-md-12 margin-10-top">
                         <Panel>
                             <PanelBody className={"panel-small"}>
@@ -74,7 +74,6 @@ class FinancialApp extends Component {
                         />
                     </div>
                 </div>
-                <div className="col-md-2"/>
             </div>
         )
     }

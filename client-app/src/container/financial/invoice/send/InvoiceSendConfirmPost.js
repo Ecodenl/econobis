@@ -26,7 +26,7 @@ class InvoiceSendConfirmPost extends Component {
 
         let hasErrors = false;
 
-        if(this.props.paymentType === 'collection') {
+        if(this.props.paymentType === 'incasso') {
             const {dateCollection} = this.state;
 
             // Validation

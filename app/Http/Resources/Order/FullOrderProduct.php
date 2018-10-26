@@ -34,7 +34,6 @@ class FullOrderProduct extends Resource
         return
             [
                 'id' => $this->id,
-                'description' => $this->description,
                 'amount' => $this->amount,
                 'amountReduction' => $this->amount_reduction,
                 'percentageReduction' => $this->percentage_reduction,

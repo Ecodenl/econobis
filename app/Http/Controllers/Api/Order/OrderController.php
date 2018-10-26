@@ -170,7 +170,6 @@ class OrderController extends ApiController
         $data = $input
             ->string('productId')->validate('required|exists:products,id')->alias('product_id')->next()
             ->string('orderId')->validate('required|exists:orders,id')->alias('order_id')->next()
-            ->string('description')->validate('required')->next()
             ->integer('amount')->validate('required')->next()
             ->numeric('amountReduction')->onEmpty(null)->whenMissing(null)->alias('amount_reduction')->next()
             ->numeric('percentageReduction')->onEmpty(null)->whenMissing(null)->alias('percentage_reduction')->next()
@@ -198,6 +197,7 @@ class OrderController extends ApiController
         $product->duration_id = $productData['durationId'];
         $product->invoice_frequency_id = $productData['invoiceFrequencyId'];
         $product->administration_id = $productData['administrationId'];
+        $product->invoice_text = $productData['description'];
 
         $priceHistory = new PriceHistory();
         $priceHistory->date_start = Carbon::today();
@@ -208,7 +208,6 @@ class OrderController extends ApiController
 
         $orderProduct = new OrderProduct();
         $orderProduct->order_id = $orderProductData['orderId'];
-        $orderProduct->description = $orderProductData['description'];
         $orderProduct->amount = $orderProductData['amount'];
         $orderProduct->amount_reduction = $orderProductData['amountReduction'] ? $orderProductData['amountReduction'] : 0;
         $orderProduct->percentage_reduction = $orderProductData['percentageReduction'] ? $orderProductData['percentageReduction'] : 0;
@@ -233,7 +232,6 @@ class OrderController extends ApiController
         $data = $input
             ->string('productId')->validate('required|exists:products,id')->alias('product_id')->next()
             ->string('orderId')->validate('required|exists:orders,id')->alias('order_id')->next()
-            ->string('description')->validate('required')->next()
             ->integer('amount')->validate('required')->next()
             ->numeric('amountReduction')->onEmpty(null)->whenMissing(null)->alias('amount_reduction')->next()
             ->numeric('percentageReduction')->onEmpty(null)->whenMissing(null)->alias('percentage_reduction')->next()

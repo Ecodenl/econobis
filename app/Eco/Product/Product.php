@@ -3,6 +3,7 @@
 namespace App\Eco\Product;
 
 use App\Eco\Administration\Administration;
+use App\Eco\Invoice\Invoice;
 use App\Eco\Invoice\InvoiceProduct;
 use App\Eco\Order\OrderProduct;
 use App\Eco\User\User;
@@ -47,6 +48,13 @@ class Product extends Model
     public function invoiceProducts()
     {
         return $this->hasMany(InvoiceProduct::class);
+    }
+
+    public function invoiceProductsToSend()
+    {
+        return $this->hasMany(InvoiceProduct::class)->whereHas('invoice', function ($q) {
+            $q->where('invoices.status_id', 'to-send');
+        });
     }
 
     public function orderProducts()

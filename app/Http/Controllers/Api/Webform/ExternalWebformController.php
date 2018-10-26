@@ -818,7 +818,7 @@ class ExternalWebformController extends Controller
                 'IBAN' => $iban,
                 'iban_attn' => $data['iban_attn'],
                 'date_requested' => $dateRequested,
-                'collection_frequency_id' => 'none',
+                'collection_frequency_id' => 'once',
             ]);
 
             $this->log('Order met id ' . $order->id . ' aangemaakt.');

@@ -50,6 +50,8 @@ use App\Eco\Person\Person;
 use App\Eco\Person\PersonObserver;
 use App\Eco\PhoneNumber\PhoneNumber;
 use App\Eco\PhoneNumber\PhoneNumberObserver;
+use App\Eco\Product\PriceHistory;
+use App\Eco\Product\PriceHistoryObserver;
 use App\Eco\Product\Product;
 use App\Eco\Product\ProductObserver;
 use App\Eco\ProductionProject\ProductionProject;
@@ -100,6 +102,7 @@ class ObserverServiceProvider extends ServiceProvider
         ParticipantTransaction::observe(ParticipantTransactionObserver::class);
         Administration::observe(AdministrationObserver::class);
         Product::observe(ProductObserver::class);
+        PriceHistory::observe(PriceHistoryObserver::class);
         Order::observe(OrderObserver::class);
         Invoice::observe(InvoiceObserver::class);
         InvoicePayment::observe(InvoicePaymentObserver::class);

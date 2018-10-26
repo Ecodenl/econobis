@@ -23,7 +23,6 @@ import fileDownload from "js-file-download";
 import moment from "moment/moment";
 import {hashHistory} from "react-router";
 import ButtonText from "../../../../components/button/ButtonText";
-import InvoiceDetailsAPI from "../../../../api/invoice/InvoiceDetailsAPI";
 
 class InvoicesList extends Component {
     constructor(props) {
@@ -32,6 +31,10 @@ class InvoicesList extends Component {
         this.state = {
             showSelectInvoicesToSend: false,
             checkedAllCheckboxes: false,
+            emailInvoicesText: 'Selecteer preview e-mail facturen',
+            onlyEmailInvoices: false,
+            onlyPostInvoices: false,
+            postInvoicesText: 'Selecteer preview post facturen',
         };
 
         if (!isEmpty(props.filter)) {
@@ -138,6 +141,17 @@ class InvoicesList extends Component {
             setTimeout(() => {
                 this.fetchInvoicesData();
             }, 100);
+
+            this.props.setCheckedInvoiceAll(false);
+
+            this.setState({
+                showSelectInvoicesToSend: false,
+                checkedAllCheckboxes: false,
+                emailInvoicesText: 'Selecteer preview e-mail facturen',
+                onlyEmailInvoices: false,
+                onlyPostInvoices: false,
+                postInvoicesText: 'Selecteer preview post facturen',
+            });
         }
     }
 
@@ -171,9 +185,14 @@ class InvoicesList extends Component {
     };
 
     previewSend = (paymentType) => {
-        const sendInvoiceIds = [];
+        let sendInvoiceIds = [];
 
-        this.props.invoices.data.map((invoice) => (invoice.checked === true && sendInvoiceIds.push(invoice.id)));
+        this.setState({
+            emailInvoicesText: 'Preview e-mail facturen',
+            onlyEmailInvoices: true,
+        });
+
+        this.props.invoices.data.map((invoice) => ((invoice.checked === true && invoice.emailToAddress !== 'Geen e-mail bekend') && sendInvoiceIds.push(invoice.id)));
 
         if(sendInvoiceIds.length > 0){
             this.props.previewSend(sendInvoiceIds);
@@ -185,16 +204,40 @@ class InvoicesList extends Component {
     };
 
     previewSendPost = (paymentType) => {
-        InvoiceDetailsAPI.getAllPost(this.props.administrationId).then((payload) => {
-            this.props.previewSend(payload);
-            hashHistory.push(`/financieel/${this.props.administrationId}/facturen/te-verzenden/verzenden/post/${paymentType}`);
+        let sendInvoiceIds = [];
+
+        this.setState({
+            postInvoicesText: 'Preview post facturen',
+            onlyPostInvoices: true,
         });
+
+
+        this.props.invoices.data.map((invoice) => ((invoice.checked === true && invoice.emailToAddress === 'Geen e-mail bekend') && sendInvoiceIds.push(invoice.id)));
+
+        if(sendInvoiceIds.length > 0){
+            this.props.previewSend(sendInvoiceIds);
+            hashHistory.push(`/financieel/${this.props.administrationId}/facturen/te-verzenden/verzenden/post/${paymentType}`);
+        }
+        else{
+            this.setState({showSelectInvoicesToSend: !this.state.showSelectInvoicesToSend});
+        }
     };
 
     resetInvoiceFilters = () => {
         this.props.clearFilterInvoices();
 
         this.fetchInvoicesData();
+
+        this.props.setCheckedInvoiceAll(false);
+
+        this.setState({
+            showSelectInvoicesToSend: false,
+            checkedAllCheckboxes: false,
+            emailInvoicesText: 'Selecteer preview e-mail facturen',
+            onlyEmailInvoices: false,
+            onlyPostInvoices: false,
+            postInvoicesText: 'Selecteer preview post facturen',
+        });
     };
 
     onSubmitFilter = () => {
@@ -239,19 +282,19 @@ class InvoicesList extends Component {
                         <div className="btn-group btn-group-flex" role="group">
                             <ButtonIcon iconName={"glyphicon-refresh"} onClickAction={this.resetInvoiceFilters}/>
                             <ButtonIcon iconName={"glyphicon-download-alt"} onClickAction={this.getCSV} />
-                            {(this.props.filter === 'te-verzenden-incasso' && meta.total > 0) &&
-                            <ButtonText buttonText={"Facturen e-mailen"}
+                            {(this.props.filter === 'te-verzenden-incasso' && !this.state.onlyPostInvoices && meta.total > 0) &&
+                            <ButtonText buttonText={this.state.emailInvoicesText}
                                         onClickAction={() => this.previewSend('incasso')}/>
                             }
-                            {(this.props.filter === 'te-verzenden-overboeken' && meta.total > 0) &&
-                            <ButtonText buttonText={"Facturen e-mailen"}
+                            {(this.props.filter === 'te-verzenden-overboeken' && !this.state.onlyPostInvoices && meta.total > 0) &&
+                            <ButtonText buttonText={this.state.emailInvoicesText}
                                         onClickAction={() => this.previewSend('overboeken')}/>
                             }
-                            {(this.props.filter === 'te-verzenden-incasso' && meta.total > 0) &&
-                            <ButtonText buttonText={"Post facturen versturen"} onClickAction={() => this.previewSendPost('incasso')}/>
+                            {(this.props.filter === 'te-verzenden-incasso' && !this.state.onlyEmailInvoices && meta.total > 0) &&
+                            <ButtonText buttonText={this.state.postInvoicesText} onClickAction={() => this.previewSendPost('incasso')}/>
                             }
-                            {( this.props.filter === 'te-verzenden-overboeken' && meta.total > 0) &&
-                            <ButtonText buttonText={"Post facturen versturen"} onClickAction={() => this.previewSendPost('overboeken')}/>
+                            {( this.props.filter === 'te-verzenden-overboeken' && !this.state.onlyEmailInvoices && meta.total > 0) &&
+                            <ButtonText buttonText={this.state.postInvoicesText} onClickAction={() => this.previewSendPost('overboeken')}/>
                             }
                         </div>
                     </div>
@@ -300,6 +343,8 @@ class InvoicesList extends Component {
                                             showDeleteItemModal={this.showDeleteItemModal}
                                             administrationId={this.props.administrationId}
                                             fetchInvoicesData={this.fetchInvoicesData}
+                                            onlyEmailInvoices={this.state.onlyEmailInvoices}
+                                            onlyPostInvoices={this.state.onlyPostInvoices}
                                         />
                                     })
                                 )

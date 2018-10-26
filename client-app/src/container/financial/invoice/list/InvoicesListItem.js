@@ -96,9 +96,19 @@ class InvoicesListItem extends Component {
     }
 
     render() {
+        let hideRowClass = '';
+
+        if(this.props.emailToAddress === 'Geen e-mail bekend' && this.props.onlyEmailInvoices){
+            hideRowClass = 'hide';
+        }
+
+        if(this.props.emailToAddress !== 'Geen e-mail bekend' && this.props.onlyPostInvoices){
+            hideRowClass = 'hide';
+        }
+
         const { id, number, dateRequested, orderSubject, orderContactFullName, paymentType, status, daysExpired, totalPriceInclVatAndReduction, amountOpen, emailToAddress, checked } = this.props;
         return (
-            <tr className={this.state.highlightRow} onDoubleClick={() => this.openItem(id)} onMouseEnter={() => this.onRowEnter()} onMouseLeave={() => this.onRowLeave()}>
+            <tr className={`${this.state.highlightRow} ${hideRowClass}`} onDoubleClick={() => this.openItem(id)} onMouseEnter={() => this.onRowEnter()} onMouseLeave={() => this.onRowLeave()}>
                 {this.props.showSelectInvoicesToSend && <td><input type="checkbox" checked={checked} onChange={() => this.setCheckedInvoice(id)} /></td>}
                 <td>{number}</td>
                 <td>{ dateRequested ? moment(dateRequested).format('DD-MM-Y') : ''}</td>

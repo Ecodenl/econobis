@@ -260,26 +260,6 @@ class InvoiceController extends ApiController
         return $response;
     }
 
-    public function getAllPost(Administration $administration){
-        set_time_limit(0);
-
-        $invoices = Invoice::where('administration_id', $administration->id)->where('status_id', 'to-send')->with('order.contact')->get();
-
-        $orderController = new OrderController;
-
-        $postInvoiceIds = [];
-
-        foreach ($invoices as $invoice) {
-            $emailTo = $orderController->getContactInfoForOrder($invoice->order->contact)['email'];
-            if ($emailTo === 'Geen e-mail bekend') {
-                array_push($postInvoiceIds, $invoice->id);
-            }
-        }
-
-        return $postInvoiceIds;
-
-    }
-
     public function sendAllPost(Request $request)
     {
         set_time_limit(0);

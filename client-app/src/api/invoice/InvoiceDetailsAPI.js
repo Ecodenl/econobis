@@ -133,23 +133,6 @@ export default {
         return response;
     },
 
-    getAllPost: (administrationId) => {
-        const requestUrl = `${URL_INVOICE}/${administrationId}/get-all-post`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
-
-        document.body.style.cursor='wait';
-        return axios.get(requestUrl)
-            .then(function (response) {
-                document.body.style.cursor='default';
-                return response.data;
-            })
-            .catch(function (error) {
-                document.body.style.cursor='default';
-                console.log(error);
-            });
-    },
-
     newPayment: (payment) => {
         const requestUrl = `${URL_INVOICE}/${payment.invoiceId}/payment/new`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');

@@ -12,8 +12,6 @@ import {
     setSubjectFilterInvoices
 } from '../../../../actions/invoice/InvoicesFiltersActions';
 import DataTableFilterDate from "../../../../components/dataTable/DataTableFilterDate";
-import ViewText from "../../../../components/form/ViewText";
-import * as browserHistory from "react-router";
 
 const InvoicesListFilter = props => {
     const onNumberChange = (e) => {

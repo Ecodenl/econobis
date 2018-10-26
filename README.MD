@@ -1,9 +1,20 @@
 <a href="https://github.com/DevExpress/testcafe">
     <img alt="Tested with TestCafe" src="https://img.shields.io/badge/tested%20with-TestCafe-2fa4cf.svg">
 </a>
-<a href="https://php.net/">
-    <img alt="php 7.0.0" src="https://img.shields.io/badge/php-%3E%3D%207.0-8892BF.svg?style=flat-square">
+
+<a href="https://phpunit.de/">
+    <img alt="Tested with PHPUnit" src="https://img.shields.io/badge/tested%20with-PHPUnit-green.svg">
 </a>
+
+<a href="https://php.net/">
+    <img alt="php 7.0.0" src="https://img.shields.io/badge/php-%3E%3D%207.0-8892BF.svg">
+</a>
+
+<a href="https://github.com/">
+    <img alt="Open source" src="https://badges.frapsoft.com/os/v1/open-source.svg?v=102">
+</a>
+
+
 
 # Econobis
 

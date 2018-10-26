@@ -100,10 +100,10 @@ class Invoice extends Model
     {
         if($this->payment_type_id === 'transfer'){
             if(!$this->date_sent){
-                return 0;
+                return '';
             }
-            if($this->status_id == 'paid' ||  $this->status_id == 'irrecoverable'){
-                return 0;
+            if($this->status_id == 'paid' ||  $this->status_id == 'irrecoverable' || $this->status_id == 'to-send'){
+                return '';
             }
 
             $daysAllowed = $this->administration->default_payment_term ? $this->administration->default_payment_term : 30;
@@ -115,7 +115,7 @@ class Invoice extends Model
             return $daysToExpire;
         }
 
-        return 0;
+        return '';
     }
 
     public function getTotalPriceInclVatAndReductionAttribute()

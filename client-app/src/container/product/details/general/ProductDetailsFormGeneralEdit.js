@@ -1,13 +1,12 @@
 import React, {Component} from 'react';
-import { connect } from 'react-redux';
+import {connect} from 'react-redux';
 import validator from 'validator';
-
-import { updateProduct } from '../../../../actions/product/ProductDetailsActions';
 import InputText from '../../../../components/form/InputText';
 import ButtonText from '../../../../components/button/ButtonText';
 import Panel from "../../../../components/panel/Panel";
 import PanelBody from "../../../../components/panel/PanelBody";
 import InputSelect from "../../../../components/form/InputSelect";
+import ProductDetailsFormGeneralEditConfirm from "./ProductDetailsFormGeneralEditConfirm";
 
 class ProductDetailsFormGeneralEdit extends Component {
     constructor(props) {
@@ -20,6 +19,7 @@ class ProductDetailsFormGeneralEdit extends Component {
             invoiceFrequencies:[
                 {'id':  'once', name: 'Eenmalig'},
             ],
+            showConfirm: false,
             errorMessage: false,
             oldCode: code ? code : "",
             oldName: name ? name : "",
@@ -237,8 +237,15 @@ class ProductDetailsFormGeneralEdit extends Component {
         });
 
         if (!hasErrors) {
-            this.props.updateProduct(product, this.props.switchToView);
+            this.toggleShowConfirm();
         }
+    };
+
+    toggleShowConfirm = () => {
+        this.setState(
+            {
+                showConfirm: !this.state.showConfirm,
+            });
     };
 
     render() {
@@ -336,6 +343,13 @@ class ProductDetailsFormGeneralEdit extends Component {
                         </div>
                     </PanelBody>
                 </Panel>
+                {this.state.showConfirm &&
+                    <ProductDetailsFormGeneralEditConfirm
+                        product={this.state.product}
+                        closeModal={this.toggleShowConfirm}
+                        switchToView={this.props.switchToView}
+                    />
+                }
             </form>
         );
     };
@@ -352,10 +366,4 @@ const mapStateToProps = (state) => {
     };
 };
 
-const mapDispatchToProps = dispatch => ({
-    updateProduct: (product, switchToView) => {
-        dispatch(updateProduct(product, switchToView));
-    },
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(ProductDetailsFormGeneralEdit);
+export default connect(mapStateToProps, null)(ProductDetailsFormGeneralEdit);

@@ -67,13 +67,13 @@ class Order extends Model
     public function invoicesPaidCollection()
     {
         return $this->hasMany(Invoice::class)->where('payment_type_id', 'collection')->where('status_id', 'paid')
-            ->orderBy('invoices.id', 'desc');;
+            ->orderBy('invoices.id', 'desc');
     }
 
     public function invoicesPaidTransfer()
     {
         return $this->hasMany(Invoice::class)->where('payment_type_id', 'transfer')->where('status_id', 'paid')
-            ->orderBy('invoices.id', 'desc');;
+            ->orderBy('invoices.id', 'desc');
     }
 
     public function documents()
@@ -143,6 +143,9 @@ class Order extends Model
         $total = 0;
 
         foreach ($this->orderProducts as $orderProduct) {
+            if($orderProduct->is_one_time_and_paid_product){
+                continue;
+            }
             if ((Carbon::parse($orderProduct->date_end)->gte(Carbon::today()) || $orderProduct->date_end === null)
             ) {
                 $total += $orderProduct->total_price_incl_vat_and_reduction;
@@ -157,6 +160,9 @@ class Order extends Model
         $total = 0;
 
         foreach ($this->orderProducts as $orderProduct) {
+            if($orderProduct->is_one_time_and_paid_product){
+                continue;
+            }
             if ((Carbon::parse($orderProduct->date_end)->gte(Carbon::today()) || $orderProduct->date_end === null)
             ) {
                 $total += $orderProduct->total_price_ex_vat_incl_reduction;
@@ -171,6 +177,9 @@ class Order extends Model
         $total = 0;
 
         foreach ($this->orderProducts as $orderProduct) {
+            if($orderProduct->is_one_time_and_paid_product){
+                continue;
+            }
             if ((Carbon::parse($orderProduct->date_end)->gte(Carbon::today()) || $orderProduct->date_end === null)
             ) {
                 $total += $orderProduct->total_price_incl_vat_and_reduction_per_year;

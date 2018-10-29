@@ -28,6 +28,9 @@ class InvoiceHelper
     public static function saveInvoiceProducts(Invoice &$invoice, Order $order, $preview = false){
 
         foreach ($order->activeOrderProducts as $orderProduct){
+            if($orderProduct->is_one_time_and_paid_product){
+                continue;
+            }
             $invoiceProduct = new InvoiceProduct();
             $invoiceProduct->product_id = $orderProduct->product_id;
             $invoiceProduct->invoice_id = $invoice->id;

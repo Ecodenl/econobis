@@ -88,9 +88,8 @@ class Filter extends RequestFilter
                             })->orWhere(function ($q) {
                                 $q->where('invoices.status_id', 'sent')->where('invoices.payment_type_id', 'transfer')
                                     ->where('invoices.date_sent', '<', Carbon::today()->subMonth());
-                            })
+                            });})
                     ->whereNotIn('invoices.status_id', $not_reminder_statusses);
-                    });
                     return false;
                     break;
                 case 'to-remind':

@@ -199,8 +199,8 @@ class Administration extends Model
                 })->orWhere(function ($q) {
                     $q->where('invoices.status_id', 'sent')->where('invoices.payment_type_id', 'transfer')
                         ->where('invoices.date_sent', '<', Carbon::today()->subMonth());
-                })
-                ->whereNotIn('invoices.status_id', ['to-send', 'paid', 'irrecoverable']);})->count();
+                });})
+                ->whereNotIn('invoices.status_id', ['to-send', 'paid', 'irrecoverable'])->count();
     }
 
     public function getTotalInvoicesExhortationAttribute()

@@ -65,9 +65,19 @@ class SepaHelper
         $batchNumber = Sepa::where('administration_id', $this->administration->id)->count();
 
         $totalOpen = 0;
+        $amountOfInvoices = $this->invoices->count();
+
         foreach($this->invoices as $invoice){
             $totalOpen += $invoice->amount_open;
+
+            if($invoice->amount_open <= 0){
+                $amountOfInvoices--;
+            }
         }
+
+
+
+
         $xml = '';
 
         $xml .= "<?xml version=\"1.0\" encoding=\"utf-8\"?>";
@@ -78,7 +88,7 @@ class SepaHelper
         $xml .= "\n\t\t<GrpHdr>";
         $xml .= "\n\t\t\t<MsgId>" . Carbon::now()->format('Ymd') . $batchNumber . "</MsgId>"; // Uniek nummer - Datum + Batchnummer
         $xml .= "\n\t\t\t<CreDtTm>" . Carbon::now()->format('c') . "</CreDtTm>"; // Aanmaakdatum van bestand > 2012-12-01T13:00:00 (ISO Time)
-        $xml .= "\n\t\t\t<NbOfTxs>" . $this->invoices->count() . "</NbOfTxs>"; // Aantal opdrachten in dit bestand
+        $xml .= "\n\t\t\t<NbOfTxs>" . $amountOfInvoices . "</NbOfTxs>"; // Aantal opdrachten in dit bestand
         $xml .= "\n\t\t\t<CtrlSum>" . $totalOpen . "</CtrlSum>"; // Totaalbedrag van alle opdrachten (punt als decimal teken)
         $xml .= "\n\t\t\t<InitgPty>";
         $xml .= "\n\t\t\t\t<Nm>" . $this->administration->name . "</Nm>"; // Naam van opdrachtgever
@@ -147,6 +157,10 @@ class SepaHelper
 
             if(!$iban){
                 $iban = $invoice->order->contact->iban;
+            }
+
+            if($invoice->amount_open <=0 ){
+                continue;
             }
 
             $xml .= "\n\t\t\t<DrctDbtTxInf>";

@@ -37,6 +37,7 @@ class OrderCreateToolbar extends Component {
                         closeModal={this.showCreate}
                         administrationId={this.props.administrationId}
                         amountOfOrders={this.props.amountOfOrders}
+                        orderIds={this.props.orderIds}
                     />
                 }
             </div>

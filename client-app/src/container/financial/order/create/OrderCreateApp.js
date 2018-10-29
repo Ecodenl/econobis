@@ -46,7 +46,11 @@ class OrderCreateApp extends Component {
                         <div className="col-md-12 margin-10-top">
                             <Panel>
                                 <PanelBody className={"panel-small"}>
-                                    <OrderCreateToolbar amountOfOrders={this.state.orders ? this.state.orders.length : 0} administrationId={this.props.params.id}/>
+                                    <OrderCreateToolbar
+                                        amountOfOrders={this.state.orders ? this.state.orders.length : 0}
+                                        administrationId={this.props.params.id}
+                                        orderIds={this.props.orderPreviewCreate}
+                                    />
                                 </PanelBody>
                             </Panel>
                         </div>

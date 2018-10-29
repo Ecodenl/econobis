@@ -49,9 +49,10 @@ class InvoiceObserver
 
         // Als de status van to-send naar verzonden wordt gezet, updaten we van alle orderregels de laatste factuur datum.
         // Deze wordt later gebruikt om eenmalige producten te checken of ze betaald zijn en om de periode weer te geven op de factuur.
+        // Ook passen we de volgende factuur geplande factuur datum aan van de order
         if($invoice->status_id === 'sent' && $oldInvoiceStatusId === 'to-send'){
+            $order = $invoice->order;
             foreach ($invoice->order->orderProducts as $orderProduct){
-                $order = $orderProduct->order;
                 if($orderProduct->date_last_invoice){
                     $dateLastInvoice = $order->addDurationToDate(Carbon::parse($orderProduct->date_last_invoice));
                 }
@@ -63,8 +64,11 @@ class InvoiceObserver
                 $orderProduct->save();
             }
 
+            $order->date_next_invoice = $order->addDurationToDate(Carbon::parse($order->date_next_invoice));
+            $order->save();
+
             // Ook krijgt een factuur dan pas een definitief factuurnummer
-            $invoice->invoice_number = Invoice::where('administration_id', $invoice->administration_id)->whereIn('status_id', ['sent', 'exported', 'paid', 'irrecoverable'])->count();
+            $invoice->invoice_number = Invoice::where('administration_id', $invoice->administration_id)->whereIn('status_id', ['sent', 'exported', 'paid', 'irrecoverable'])->count() + 1;
             $invoice->number = 'F' . Carbon::now()->year . '-' . $invoice->invoice_number;
         }
 

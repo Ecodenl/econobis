@@ -284,7 +284,7 @@
                 <td class="align-right"><span class="euro-sign">€</span>{{ number_format(($invoiceProduct->price * $invoiceProduct->amount), 2, ',', '.') }}</td>
             </tr>
             {{ Carbon\Carbon::parse($invoice->created_at)->formatLocalized('%e %B %Y') }}
-            @if($invoiceProduct->product->duration_id !== 'none')
+            @if($invoiceProduct->product->duration_id !== 'none' && $invoice->collection_frequency_id !== 'once')
                 <tr>
                     {{--min 1 dag omdat het t/m is--}}
                     <td colspan="5">Periode {{ (Carbon\Carbon::parse($invoiceProduct->date_last_invoice))->formatLocalized('%e %B %Y') }} t/m {{ $invoice->order->addDurationToDate(Carbon\Carbon::parse($invoiceProduct->date_last_invoice))->subDay()->formatLocalized('%e %B %Y') }}</td>

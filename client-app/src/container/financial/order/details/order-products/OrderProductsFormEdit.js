@@ -38,9 +38,7 @@ const OrderProductsFormEdit = props => {
                                 id={"description"}
                                 name={"description"}
                                 value={description}
-                                onChangeAction={props.handleInputChange}
-                                required={"required"}
-                                error={props.errors.description}
+                                readOnly={true}
                             />
                             <InputText
                                 label={"Aantal"}

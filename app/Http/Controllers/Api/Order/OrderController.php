@@ -358,30 +358,21 @@ class OrderController extends ApiController
         return CreateInvoice::collection($orders);
     }
 
-    public function createAll(RequestInput $requestInput)
+    public function createAll(Request $request)
     {
         set_time_limit(30);
         $this->authorize('manage', Order::class);
 
-        $data = $requestInput
-            ->string('administrationId')->validate('required|exists:administrations,id')->alias('administration_id')->next()
-            ->date('dateRequested')->validate('nullable|date')
-            ->alias('date_requested')->next()
-            ->get();
+        $orderIds = $request->input('orderIds');
 
 
-        $orders = Order::where('administration_id', $data['administration_id'])
-            ->where('orders.status_id', 'active')
-            ->where('orders.date_next_invoice', '<=', Carbon::today()->addDays(14))
-            ->whereDoesntHave('invoices', function ($q) {
-                $q->where('invoices.status_id', 'to-send');
-            })->get();
+        $orders = Order::whereIn('id', $orderIds)->get();
 
         foreach ($orders as $order){
-            if($order->total_price_incl_vat > 0 && $order->can_create_invoice) {
+            if($order->total_price_incl_vat >= 0 && $order->can_create_invoice) {
                 $invoice = new Invoice();
                 $invoice->status_id = 'to-send';
-                $invoice->date_requested = $data['date_requested'];
+                $invoice->date_requested = $order->date_next_invoice;
                 $invoice->order_id = $order->id;
                 $invoice->collection_frequency_id = $order->collection_frequency_id;
                 $invoice->save();

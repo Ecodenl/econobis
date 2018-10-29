@@ -245,7 +245,6 @@ class InvoiceController extends ApiController
 
         if($validatedInvoices->count() > 0) {
             foreach ($validatedInvoices as $invoice){
-
                 array_push($response, $this->send($invoice, $request));
             }
             if($paymentTypeId === 'collection') {

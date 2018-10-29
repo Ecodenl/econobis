@@ -3,45 +3,22 @@ import React, {Component} from 'react';
 import Modal from '../../../../components/modal/Modal';
 import OrderDetailsAPI from "../../../../api/order/OrderDetailsAPI";
 import {hashHistory} from "react-router";
-import moment from "moment/moment";
-import InputDate from "../../../../components/form/InputDate";
 
 class OrderCreateConfirm extends Component {
 
     constructor(props) {
         super(props);
-
-        this.state = {
-            invoice: {
-                administrationId: props.administrationId,
-                dateRequested: moment(),
-            },
-        };
     };
 
     confirmAction = event => {
         event.preventDefault();
 
-        const {invoice} = this.state;
-
-
-        OrderDetailsAPI.createAll(invoice).then((payload) => {
+        OrderDetailsAPI.createAll(this.props.orderIds).then((payload) => {
             hashHistory.push(`/financieel/${this.props.administrationId}/facturen/te-verzenden-incasso`);});
     };
 
-    handleInputChangeDate = (value, name) => {
-        this.setState({
-            ...this.state,
-            invoice: {
-                ...this.state.invoice,
-                [name]: value
-            },
-        });
-    };
 
     render() {
-        const { dateRequested } = this.state.invoice;
-
         return (
             <Modal
                 modalClassName={'modal-lg'}
@@ -51,18 +28,11 @@ class OrderCreateConfirm extends Component {
                 buttonConfirmText={"Aanmaken"}
             >
                 <div className="row">
-                    <InputDate
-                        label="Geplande factuur datum"
-                        name="dateRequested"
-                        value={dateRequested}
-                        onChangeAction={this.handleInputChangeDate}
-                    />
-                </div>
-
-                <div className="row">
                     <div className={'col-sm-12 margin-10-bottom'}>
                     <span>
-                        Wilt u alle facturen({this.props.amountOfOrders}) aanmaken?
+                        Wilt u alle facturen ({this.props.amountOfOrders}) aanmaken?
+De aangemaakte facturen komen in de map “Te verzenden - incasso facturen” of “Te verzenden – overboek facturen”. Vanuit deze mappen kun je de facturen echt verzenden.
+Deze orders komen in de order map “Actief – te verzenden orders”.
                     </span>
                     </div>
                 </div>

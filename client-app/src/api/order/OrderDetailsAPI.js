@@ -116,12 +116,12 @@ export default {
         return axios.get(requestUrl, {responseType: 'blob'});
     },
 
-    createAll: (invoice) => {
+    createAll: (orderIds) => {
         const requestUrl = `${URL_ORDER}/create-all`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios.post(requestUrl, invoice)
+        return axios.post(requestUrl, {orderIds: orderIds})
             .then(function (response) {
                 return response.data;
             })

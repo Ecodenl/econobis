@@ -19,7 +19,7 @@ class FullOrderProduct extends Resource
     {
         $period = false;
 
-        if($this->product->duration_id !== 'none') {
+        if($this->product->duration_id !== 'none' && $this->order->collection_frequency_id !== 'once') {
             if($this->date_last_invoice){
                 $start = $this->date_last_invoice;
                 $end = $this->order->addDurationToDate(Carbon::parse($this->date_last_invoice));

@@ -27,7 +27,6 @@ class OrderProductsFormItem extends Component {
                 amount: false,
                 dateStart: false,
                 dateEnd: false,
-                description: false,
             },
         };
 
@@ -181,12 +180,6 @@ class OrderProductsFormItem extends Component {
 
         if (validator.isEmpty(orderProduct.dateStart + '')) {
             errors.dateStart = true;
-            hasErrors = true;
-        }
-        ;
-
-        if (validator.isEmpty(orderProduct.description + '')) {
-            errors.description = true;
             hasErrors = true;
         }
         ;

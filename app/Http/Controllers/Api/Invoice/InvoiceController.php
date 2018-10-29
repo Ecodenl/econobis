@@ -37,8 +37,9 @@ class InvoiceController extends ApiController
 
     public function grid(RequestQuery $requestQuery)
     {
+//        DB::enableQueryLog();
         $invoices = $requestQuery->get();
-
+//        dd(DB::getQueryLog());
         $invoices->load(['order.contact']);
 
         foreach ($invoices as $invoice){

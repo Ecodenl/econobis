@@ -92,6 +92,7 @@ const InvoicesListFilter = props => {
                     </optgroup>
                     <optgroup label={'Substatus'}>
                         <option key={'reminder'} value={'reminder'}>{'Herinnering'}</option>
+                        <option key={'to-remind'} value={'to-remind'}>{'Te herinneren'}</option>
                         <option key={'reminder_1'} value={'reminder_1'}>{'Herinnering 1'}</option>
                         <option key={'reminder_2'} value={'reminder_2'}>{'Herinnering 2'}</option>
                         <option key={'reminder_3'} value={'reminder_3'}>{'Herinnering 3'}</option>

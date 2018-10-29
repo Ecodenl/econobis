@@ -189,7 +189,7 @@ class Administration extends Model
     {
         return $this->invoices()
             ->where(function ($q) {
-            $q->whereNotNull('date_reminder_1')->whereNull('date_exhortation')->whereNotIn('status_id', ['paid' ,'irrecoverable']);
+            $q->whereNotNull('date_reminder_1')->whereNull('date_exhortation')->whereNotIn('status_id', ['to-send', 'paid' ,'irrecoverable']);
         })->orWhere(function ($q) {
             $q->where('status_id', 'exported')->where('date_requested', '<', Carbon::today()->subMonth());
         })->orWhere(function ($q) {
@@ -200,7 +200,7 @@ class Administration extends Model
 
     public function getTotalInvoicesExhortationAttribute()
     {
-        return $this->invoices()->whereNotNull('date_exhortation')->whereNotIn('status_id', ['paid' ,'irrecoverable'])->count();
+        return $this->invoices()->whereNotNull('date_exhortation')->whereNotIn('status_id', ['to-send', 'paid' ,'irrecoverable'])->count();
     }
 
     public function getTotalInvoicesPaidAttribute()

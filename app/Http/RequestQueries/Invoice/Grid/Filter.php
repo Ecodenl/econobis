@@ -71,13 +71,13 @@ class Filter extends RequestFilter
 
     protected function applyStatusIdFilter($query, $type, $data)
     {
-        $extra_statusses = ['reminder', 'reminder_1', 'reminder_2', 'reminder_3', 'exhortation'];
-        $closed_statusses = ['paid', 'irrecoverable'];
+        $extra_statusses = ['reminder', 'to-remind', 'reminder_1', 'reminder_2', 'reminder_3', 'exhortation'];
+        $not_reminder_statusses = ['to-send', 'paid', 'irrecoverable'];
 
         if (in_array($data, $extra_statusses)) {
             switch ($data) {
                 case 'reminder':
-                    $query->where(function ($q) use ($closed_statusses) {
+                    $query->where(function ($q) use ($not_reminder_statusses) {
                         $q->whereNotNull('invoices.date_reminder_1')
                             ->whereNull('invoices.date_exhortation')
                             ->orWhere(function ($q) {
@@ -87,35 +87,48 @@ class Filter extends RequestFilter
                                 $q->where('invoices.status_id', 'sent')->where('invoices.payment_type_id', 'transfer')
                                     ->where('invoices.date_requested', '<', Carbon::today()->subMonth());
                             });
-                    })->whereNotIn('invoices.status_id', $closed_statusses);
+                    })->whereNotIn('invoices.status_id', $not_reminder_statusses);
+                    return false;
+                    break;
+                case 'to-remind':
+                    $query->where(function ($q) use ($not_reminder_statusses) {
+                        $q->where(function ($q) {
+                                $q->where('invoices.status_id', 'exported')
+                                    ->where('invoices.date_requested', '<', Carbon::today()->subMonth());
+                            })->orWhere(function ($q) {
+                                $q->where('invoices.status_id', 'sent')->where('invoices.payment_type_id', 'transfer')
+                                    ->where('invoices.date_requested', '<', Carbon::today()->subMonth());
+                            });
+                    })->whereNotIn('invoices.status_id', $not_reminder_statusses)
+                    ->whereNull('invoices.date_reminder_1');
                     return false;
                     break;
                 case 'reminder_1':
                     $query->whereNotNull('invoices.date_reminder_1')->whereNull('invoices.date_reminder_2')
                         ->whereNull('invoices.date_reminder_3')->whereNull('invoices.date_exhortation')
-                        ->whereNotIn('invoices.status_id', $closed_statusses);
+                        ->whereNotIn('invoices.status_id', $not_reminder_statusses);
                     return false;
                     break;
                 case 'reminder_2':
                     $query->whereNotNull('invoices.date_reminder_2')->whereNull('invoices.date_reminder_3')
-                        ->whereNull('invoices.date_exhortation')->whereNotIn('invoices.status_id', $closed_statusses);
+                        ->whereNull('invoices.date_exhortation')->whereNotIn('invoices.status_id', $not_reminder_statusses);
                     return false;
                     break;
                 case 'reminder_3':
                     $query->whereNotNull('invoices.date_reminder_3')->whereNull('invoices.date_exhortation')
-                        ->whereNotIn('invoices.status_id', $closed_statusses);
+                        ->whereNotIn('invoices.status_id', $not_reminder_statusses);
                     return false;
                     break;
                 case 'exhortation':
                     $query->whereNotNull('invoices.date_exhortation')
-                        ->whereNotIn('invoices.status_id', $closed_statusses);
+                        ->whereNotIn('invoices.status_id', $not_reminder_statusses);
                     return false;
                     break;
 
             }
 
         } else {
-            if (!in_array($data, $closed_statusses)) {
+            if (!in_array($data, $not_reminder_statusses)) {
                 if ($data === 'sent') {
                     $query->where(function ($q) {
                         $q->where(function ($q) {

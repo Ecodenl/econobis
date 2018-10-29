@@ -188,14 +188,19 @@ class Administration extends Model
     public function getTotalInvoicesReminderAttribute()
     {
         return $this->invoices()
-            ->where(function ($q) {
-            $q->whereNotNull('date_reminder_1')->whereNull('date_exhortation')->whereNotIn('status_id', ['to-send', 'paid' ,'irrecoverable']);
-        })->orWhere(function ($q) {
-            $q->where('status_id', 'exported')->where('date_sent', '<', Carbon::today()->subMonth());
-        })->orWhere(function ($q) {
-            $q->where('status_id', 'sent')->where('payment_type_id', 'transfer')->where('date_sent', '<', Carbon::today()->subMonth());
-        })->count();
-
+            ->where(function ($q)  {
+                $q->where(function ($q) {
+                $q->whereNotNull('invoices.date_reminder_1')
+                    ->whereNull('invoices.date_exhortation');
+            })
+                ->orWhere(function ($q) {
+                    $q->where('invoices.status_id', 'exported')
+                        ->where('invoices.date_sent', '<', Carbon::today()->subMonth());
+                })->orWhere(function ($q) {
+                    $q->where('invoices.status_id', 'sent')->where('invoices.payment_type_id', 'transfer')
+                        ->where('invoices.date_sent', '<', Carbon::today()->subMonth());
+                })
+                ->whereNotIn('invoices.status_id', ['to-send', 'paid', 'irrecoverable']);})->count();
     }
 
     public function getTotalInvoicesExhortationAttribute()

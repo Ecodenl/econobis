@@ -106,12 +106,12 @@ class InvoicesListItem extends Component {
             hideRowClass = 'hide';
         }
 
-        const { id, number, dateRequested, orderSubject, orderContactFullName, paymentType, status, daysToExpire, daysLastReminder, totalPriceInclVatAndReduction, amountOpen, emailToAddress, checked } = this.props;
+        const { id, number, date, orderSubject, orderContactFullName, paymentType, status, daysToExpire, daysLastReminder, totalPriceInclVatAndReduction, amountOpen, emailToAddress, checked } = this.props;
         return (
             <tr className={`${this.state.highlightRow} ${hideRowClass}`} onDoubleClick={() => this.openItem(id)} onMouseEnter={() => this.onRowEnter()} onMouseLeave={() => this.onRowLeave()}>
                 {this.props.showSelectInvoicesToSend && <td><input type="checkbox" checked={checked} onChange={() => this.setCheckedInvoice(id)} /></td>}
                 <td>{number}</td>
-                <td>{ dateRequested ? moment(dateRequested).format('DD-MM-Y') : ''}</td>
+                <td>{ date ? moment(date).format('DD-MM-Y') : ''}</td>
                 <td className={(emailToAddress === 'Geen e-mail bekend') ? 'warning-td' :''}>{orderContactFullName ? orderContactFullName : ''}{(emailToAddress === 'Geen e-mail bekend') && ' (Geen e-mail bekend)'}</td>
                 <td>{orderSubject ? orderSubject : ''}</td>
                 <td>{daysToExpire}</td>

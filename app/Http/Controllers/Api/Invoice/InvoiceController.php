@@ -8,11 +8,9 @@
 
 namespace App\Http\Controllers\Api\Invoice;
 
-use App\Eco\Administration\Administration;
 use App\Eco\Invoice\Invoice;
 use App\Eco\Invoice\InvoicePayment;
 use App\Eco\Invoice\InvoiceProduct;
-use App\Eco\Order\Order;
 use App\Eco\Product\PriceHistory;
 use App\Eco\Product\Product;
 use App\Helpers\CSV\InvoiceCSVHelper;
@@ -28,10 +26,9 @@ use App\Http\Resources\Invoice\GridInvoice;
 use App\Http\Resources\Invoice\InvoicePeek;
 use App\Http\Resources\Invoice\SendInvoice;
 use Barryvdh\DomPDF\Facade as PDF;
-use Illuminate\Http\Response;
+use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 

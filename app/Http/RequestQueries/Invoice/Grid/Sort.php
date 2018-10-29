@@ -42,4 +42,11 @@ class Sort extends RequestSort
         'contact' => 'contact',
         'subject' => 'order',
     ];
+
+    protected function applyDateRequestedSort($query, $data)
+    {
+        $query->orderByRaw('IFNULL(invoices.date_sent, invoices.date_requested) ' . $data);
+
+        return false;
+    }
 }

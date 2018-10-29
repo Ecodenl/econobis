@@ -17,10 +17,19 @@ class GridInvoice extends Resource
 {
     public function toArray($request)
     {
+        $date = null;
+
+        if($this->status_id === 'to-send'){
+            $date = $this->date_requested;
+        }
+        else{
+            $date = $this->date_sent;
+        }
+
         return [
             'id' => $this->id,
             'number' => $this->number,
-            'dateRequested' => $this->date_requested,
+            'date' => $date,
             'subject' => $this->subject,
 
             'orderSubject' => $this->order->subject,

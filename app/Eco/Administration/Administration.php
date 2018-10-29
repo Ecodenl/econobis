@@ -194,7 +194,7 @@ class Administration extends Model
                     ->whereNull('invoices.date_exhortation');
             })
                 ->orWhere(function ($q) {
-                    $q->where('invoices.status_id', 'exported')
+                    $q->where('invoices.status_id', 'exported')->where('invoices.payment_type_id', 'transfer')
                         ->where('invoices.date_sent', '<', Carbon::today()->subMonth());
                 })->orWhere(function ($q) {
                     $q->where('invoices.status_id', 'sent')->where('invoices.payment_type_id', 'transfer')

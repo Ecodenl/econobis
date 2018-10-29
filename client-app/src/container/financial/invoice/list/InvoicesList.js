@@ -332,7 +332,7 @@ class InvoicesList extends Component {
                             {
                                 data.length === 0 ? (
                                     <tr>
-                                        <td colSpan={9}>Geen facturen gevonden!</td>
+                                        <td colSpan={10}>Geen facturen gevonden!</td>
                                     </tr>
                                 ) : (
                                     data.map((invoice) => {

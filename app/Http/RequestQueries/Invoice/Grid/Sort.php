@@ -22,6 +22,8 @@ class Sort extends RequestSort
         'contact',
         'paymentTypeId',
         'statusId',
+        'daysLastReminder',
+        'daysToExpire',
     ];
 
     protected $mapping = [
@@ -32,6 +34,8 @@ class Sort extends RequestSort
         'contact' => 'contacts.full_name',
         'paymentTypeId' => 'invoices.payment_type_id',
         'statusId' => 'invoices.status_id',
+        'daysLastReminder' => 'invoices.days_last_reminder',
+        'daysToExpire' => 'invoices.days_to_expire',
     ];
 
     protected $joins = [

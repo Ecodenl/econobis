@@ -9,7 +9,9 @@ import {
     setDateRequestedFilterInvoices,
     setPaymentTypeIdFilterInvoices,
     setStatusIdFilterInvoices,
-    setSubjectFilterInvoices
+    setSubjectFilterInvoices,
+    setDaysToExpireFilterInvoices,
+    setDaysLastReminderFilterInvoices
 } from '../../../../actions/invoice/InvoicesFiltersActions';
 import DataTableFilterDate from "../../../../components/dataTable/DataTableFilterDate";
 
@@ -28,6 +30,14 @@ const InvoicesListFilter = props => {
 
     const onSubjectChange = (e) => {
         props.setSubjectFilterInvoices(e.target.value);
+    };
+
+    const onDaysToExpireChange = (e) => {
+        props.setDaysToExpireFilterInvoices(e.target.value);
+    };
+
+    const onDaysLastReminderChange = (e) => {
+        props.setDaysLastReminderFilterInvoices(e.target.value);
     };
 
     const onContactChange = (e) => {
@@ -54,10 +64,11 @@ const InvoicesListFilter = props => {
         <tr className="thead-filter">
             { props.showSelectInvoicesToSend && <td><input type="checkbox"  onChange={props.selectAllCheckboxes} /></td> }
             <th><input type="text" className="form-control input-sm" value={ props.filters.number.data} onChange={onNumberChange} /></th>
-            <DataTableFilterDate value={ props.filters.dateRequested.data && props.filters.dateRequested.data } onChangeAction={onDateRequestedChange} />
+            <DataTableFilterDate placeholder={'Kleiner'} value={ props.filters.dateRequested.data && props.filters.dateRequested.data } onChangeAction={onDateRequestedChange} />
             <th><input type="text" className="form-control input-sm" value={ props.filters.contact.data} onChange={onContactChange} /></th>
             <th><input type="text" className="form-control input-sm" value={ props.filters.subject.data} onChange={onSubjectChange} /></th>
-            <th/>
+            <th><input type="number" placeholder={'Kleiner'} className="form-control input-sm" value={ props.filters.daysToExpire.data} onChange={onDaysToExpireChange} /></th>
+            <th><input type="number" placeholder={'Groter'} className="form-control input-sm" value={ props.filters.daysLastReminder.data} onChange={onDaysLastReminderChange} /></th>
             <th/>
             <th>
                 <select className="form-control input-sm" value={ props.filters.paymentTypeId.data } onChange={onPaymentTypeChange}>
@@ -106,8 +117,9 @@ const mapDispatchToProps = (dispatch) => {
         setDateRequestedFilterInvoices,
         setPaymentTypeIdFilterInvoices,
         setStatusIdFilterInvoices,
-        setSubjectFilterInvoices
-
+        setSubjectFilterInvoices,
+        setDaysLastReminderFilterInvoices,
+        setDaysToExpireFilterInvoices
     }, dispatch);
 };
 

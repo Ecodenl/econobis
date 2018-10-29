@@ -39,6 +39,8 @@ class InvoiceObserver
     {
         $invoice->invoice_number = Invoice::where('administration_id', $invoice->administration_id)->count();
         $invoice->number = 'T' . Carbon::now()->year . '-' . $invoice->invoice_number;
+        $invoice->setDaysToExpire();
+        $invoice->setDaysLastReminder();
         $invoice->save();
     }
 
@@ -65,5 +67,8 @@ class InvoiceObserver
             $invoice->invoice_number = Invoice::where('administration_id', $invoice->administration_id)->whereIn('status_id', ['sent', 'exported', 'paid', 'irrecoverable'])->count();
             $invoice->number = 'F' . Carbon::now()->year . '-' . $invoice->invoice_number;
         }
+
+        $invoice->setDaysToExpire();
+        $invoice->setDaysLastReminder();
     }
 }

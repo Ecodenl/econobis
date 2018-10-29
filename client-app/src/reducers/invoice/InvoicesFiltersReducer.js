@@ -11,6 +11,14 @@ const filtersReducerDefaultState = {
         field: 'subject',
         data: '',
     },
+    daysToExpire: {
+        field: 'daysToExpire',
+        data: '',
+    },
+    daysLastReminder: {
+        field: 'daysLastReminder',
+        data: '',
+    },
     contact: {
         field: 'contact',
         data: '',
@@ -43,12 +51,20 @@ export default (state = filtersReducerDefaultState, action) => {
                     data: action.dateRequested,
                 }
             };
-        case 'SET_SUBJECT_FILTER_INVOICES':
+        case 'SET_DAYS_TO_EXPIRE_FILTER_INVOICES':
             return {
                 ...state,
-                subject: {
-                    ...state.subject,
-                    data: action.subject,
+                daysToExpire: {
+                    ...state.daysToExpire,
+                    data: action.daysToExpire,
+                }
+            };
+        case 'SET_DAYS_LAST_REMINDER_FILTER_INVOICES':
+            return {
+                ...state,
+                daysLastReminder: {
+                    ...state.daysLastReminder,
+                    data: action.daysLastReminder,
                 }
             };
         case 'SET_CONTACT_FILTER_INVOICES':

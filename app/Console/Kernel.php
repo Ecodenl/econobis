@@ -3,6 +3,8 @@
 namespace App\Console;
 
 use App\Console\Commands\getAllEmail;
+use App\Console\Commands\setDaysLastReminderInvoice;
+use App\Console\Commands\setDaysToExpireInvoice;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -15,6 +17,8 @@ class Kernel extends ConsoleKernel
      */
     protected $commands = [
         getAllEmail::class,
+        setDaysLastReminderInvoice::class,
+        setDaysToExpireInvoice::class,
     ];
 
     /**
@@ -26,6 +30,8 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         $schedule->command('email:getAllEmail')->everyFiveMinutes();
+        $schedule->command('invoice:setDaysLastReminderInvoice')->dailyAt('00:05');
+        $schedule->command('email:setDaysToExpireInvoice')->dailyAt('00:10');
     }
 
     /**

@@ -18,4 +18,12 @@ class AdministrationObserver
         $userId = Auth::id();
         $administration->created_by_id = $userId;
     }
+
+    public function saved(Administration $administration)
+    {
+        foreach ($administration->invoices()->where('payment_type_id', 'transfer')->whereNotNull('date_sent')->get() as $invoice) {
+            $invoice->setDaysToExpire();
+            $invoice->save();
+        }
+    }
 }

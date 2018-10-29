@@ -6,7 +6,7 @@ import moment from 'moment';
 moment.locale('nl');
 
 const DataTableFilterDate = props => {
-    const { className, value, onChangeAction } = props;
+    const { className, value, onChangeAction, placeholder } = props;
 
     const formattedDate = value
         ? moment(value).format('L')
@@ -27,6 +27,7 @@ const DataTableFilterDate = props => {
                 }}
                 inputProps={{
                     className: 'form-control input-sm',
+                    placeholder: placeholder,
                 }}
                 placeholder={""}
             />
@@ -37,6 +38,7 @@ const DataTableFilterDate = props => {
 DataTableFilterDate.defaultProps = {
     className: '',
     value: null,
+    placeholder: '',
 };
 
 DataTableFilterDate.propTypes = {
@@ -46,6 +48,7 @@ DataTableFilterDate.propTypes = {
         PropTypes.object
     ]),
     onChangeAction: PropTypes.func,
+    placeholder: PropTypes.string,
 };
 
 export default DataTableFilterDate;

@@ -21,6 +21,8 @@ class Filter extends RequestFilter
         'subject',
         'paymentTypeId',
         'statusId',
+        'daysLastReminder',
+        'daysToExpire',
     ];
 
     protected $mapping = [
@@ -30,6 +32,8 @@ class Filter extends RequestFilter
         'subject' => 'orders.subject',
         'contact' => 'contacts.full_name',
         'paymentTypeId' => 'invoices.payment_type_id',
+        'daysLastReminder' => 'invoices.days_last_reminder',
+        'daysToExpire' => 'invoices.days_to_expire',
     ];
 
     protected $joins = [
@@ -40,6 +44,9 @@ class Filter extends RequestFilter
     protected $defaultTypes = [
         '*' => 'ct',
         'paymentTypeId' => 'eq',
+        'dateRequested' => 'lte',
+        'daysLastReminder' => 'gte',
+        'daysToExpire' => 'lte',
     ];
 
     protected function applyStatusIdFilter($query, $type, $data)

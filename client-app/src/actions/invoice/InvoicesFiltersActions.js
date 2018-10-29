@@ -13,6 +13,16 @@ export const setSubjectFilterInvoices = (subject) => ({
     subject,
 });
 
+export const setDaysToExpireFilterInvoices = (daysToExpire) => ({
+    type: 'SET_DAYS_TO_EXPIRE_FILTER_INVOICES',
+    daysToExpire,
+});
+
+export const setDaysLastReminderFilterInvoices = (daysLastReminder) => ({
+    type: 'SET_DAYS_LAST_REMINDER_FILTER_INVOICES',
+    daysLastReminder,
+});
+
 export const setContactFilterInvoices = (contact) => ({
     type: 'SET_CONTACT_FILTER_INVOICES',
     contact,

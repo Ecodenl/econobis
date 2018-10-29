@@ -22,7 +22,6 @@ class Invoice extends Model
 
     protected $appends
         = [
-            'days_to_expire',
             'total_price_incl_vat_and_reduction',
             'total_price_ex_vat_incl_reduction',
             'total_vat',
@@ -94,28 +93,6 @@ class Invoice extends Model
         if(!$this->status_id) return null;
 
         return InvoiceStatus::get($this->status_id);
-    }
-
-    public function getDaysToExpireAttribute()
-    {
-        if($this->payment_type_id === 'transfer'){
-            if(!$this->date_sent){
-                return '';
-            }
-            if($this->status_id == 'paid' ||  $this->status_id == 'irrecoverable' || $this->status_id == 'to-send'){
-                return '';
-            }
-
-            $daysAllowed = $this->administration->default_payment_term ? $this->administration->default_payment_term : 30;
-
-            $dateMax = Carbon::parse($this->date_sent)->addDays($daysAllowed);
-
-            $daysToExpire = Carbon::now()->diffInDays($dateMax, false);
-
-            return $daysToExpire;
-        }
-
-        return '';
     }
 
     public function getTotalPriceInclVatAndReductionAttribute()
@@ -214,6 +191,46 @@ class Invoice extends Model
         }
 
         return $vatInfo;
+    }
+
+    public function setDaysLastReminder(){
+        $daysLastReminder = 0;
+        if($this->date_exhortation){
+            $daysLastReminder = Carbon::today()->diffInDays($this->date_exhortation);
+        }
+        else if($this->date_reminder_3){
+            $daysLastReminder = Carbon::today()->diffInDays($this->date_reminder_3);
+        }
+        else if($this->date_reminder_2){
+            $daysLastReminder = Carbon::today()->diffInDays($this->date_reminder_2);
+        }
+        else if($this->date_reminder_1){
+            $daysLastReminder = Carbon::today()->diffInDays($this->date_reminder_1);
+        }
+
+        $this->days_last_reminder = $daysLastReminder;
+    }
+
+    public function setDaysToExpire()
+    {
+        if ($this->payment_type_id !== 'transfer'
+            || !$this->date_sent
+            || $this->status_id == 'paid'
+            || $this->status_id == 'irrecoverable'
+            || $this->status_id == 'to-send'
+        ) {
+            $daysToExpire = 0;
+        } else {
+
+            $daysAllowed = $this->administration->default_payment_term ? $this->administration->default_payment_term
+                : 30;
+
+            $dateMax = Carbon::parse($this->date_sent)->addDays($daysAllowed);
+
+            $daysToExpire = Carbon::now()->diffInDays($dateMax, false);
+        }
+
+        $this->days_to_expire = $daysToExpire;
     }
 
     //Adds the collection frequency to a carbon date

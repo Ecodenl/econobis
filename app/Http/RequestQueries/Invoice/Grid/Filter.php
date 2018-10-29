@@ -79,8 +79,7 @@ class Filter extends RequestFilter
                 case 'reminder':
                     $query->where(function ($q) {
                         $q->where(function ($q) {
-                        $q->whereNotNull('invoices.date_reminder_1')
-                            ->whereNull('invoices.date_exhortation');
+                        $q->whereNotNull('invoices.date_reminder_1');
                             })
                             ->orWhere(function ($q) {
                                 $q->where('invoices.status_id', 'exported')->where('invoices.payment_type_id', 'transfer')
@@ -89,7 +88,7 @@ class Filter extends RequestFilter
                                 $q->where('invoices.status_id', 'sent')->where('invoices.payment_type_id', 'transfer')
                                     ->where('invoices.date_sent', '<', Carbon::today()->subMonth());
                             });})
-                    ->whereNotIn('invoices.status_id', ['to-send', 'paid', 'irrecoverable']);
+                    ->whereNotIn('invoices.status_id', ['to-send', 'paid', 'irrecoverable'])->whereNull('invoices.date_exhortation');
                     return false;
                     break;
                 case 'to-remind':

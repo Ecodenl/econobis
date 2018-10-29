@@ -82,10 +82,10 @@ class Filter extends RequestFilter
                             ->whereNull('invoices.date_exhortation')
                             ->orWhere(function ($q) {
                                 $q->where('invoices.status_id', 'exported')
-                                    ->where('invoices.date_requested', '<', Carbon::today()->subMonth());
+                                    ->where('invoices.date_sent', '<', Carbon::today()->subMonth());
                             })->orWhere(function ($q) {
                                 $q->where('invoices.status_id', 'sent')->where('invoices.payment_type_id', 'transfer')
-                                    ->where('invoices.date_requested', '<', Carbon::today()->subMonth());
+                                    ->where('invoices.date_sent', '<', Carbon::today()->subMonth());
                             });
                     })->whereNotIn('invoices.status_id', $not_reminder_statusses);
                     return false;
@@ -94,10 +94,10 @@ class Filter extends RequestFilter
                     $query->where(function ($q) use ($not_reminder_statusses) {
                         $q->where(function ($q) {
                                 $q->where('invoices.status_id', 'exported')
-                                    ->where('invoices.date_requested', '<', Carbon::today()->subMonth());
+                                    ->where('invoices.date_sent', '<', Carbon::today()->subMonth());
                             })->orWhere(function ($q) {
                                 $q->where('invoices.status_id', 'sent')->where('invoices.payment_type_id', 'transfer')
-                                    ->where('invoices.date_requested', '<', Carbon::today()->subMonth());
+                                    ->where('invoices.date_sent', '<', Carbon::today()->subMonth());
                             });
                     })->whereNotIn('invoices.status_id', $not_reminder_statusses)
                     ->whereNull('invoices.date_reminder_1');
@@ -133,7 +133,7 @@ class Filter extends RequestFilter
                     $query->where(function ($q) {
                         $q->where(function ($q) {
                             $q->where('invoices.payment_type_id', 'transfer')
-                                ->where('invoices.date_requested', '>=',
+                                ->where('invoices.date_sent', '>=',
                                     Carbon::today()->subMonth());
                         })->orWhere(function ($q) {
                             $q->where('invoices.payment_type_id', '!=', 'transfer');
@@ -141,7 +141,7 @@ class Filter extends RequestFilter
                     });
                 }
                 if ($data === 'exported') {
-                    $query->where('invoices.date_requested', '>=', Carbon::today()->subMonth());
+                    $query->where('invoices.date_sent', '>=', Carbon::today()->subMonth());
                 }
                 $query->whereNull('invoices.date_reminder_1')->whereNull('invoices.date_reminder_2')
                     ->whereNull('invoices.date_reminder_3')->whereNull('invoices.date_exhortation');

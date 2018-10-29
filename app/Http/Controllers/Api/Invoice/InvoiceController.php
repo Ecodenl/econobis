@@ -182,6 +182,15 @@ class InvoiceController extends ApiController
         return InvoiceHelper::sendNotification($invoice);
     }
 
+    public function sendNotifications(Request $request)
+    {
+        $invoices = Invoice::whereIn('id', $request->input('ids'))->get();
+
+        foreach ($invoices as $invoice) {
+            InvoiceHelper::sendNotification($invoice);
+        }
+    }
+
     public function setIrrecoverable(Invoice $invoice)
     {
         $invoice->status_id = 'irrecoverable';

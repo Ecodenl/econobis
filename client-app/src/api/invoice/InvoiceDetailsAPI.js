@@ -61,6 +61,20 @@ export default {
             });
     },
 
+    sendNotifications: (invoiceIds) => {
+        const requestUrl = `${URL_INVOICE}/send-notifications`;
+        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
+        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
+
+        return axios.post(requestUrl, {ids: invoiceIds})
+            .then(function (response) {
+                return response.data;
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+    },
+
     setIrrecoverable: (invoiceId) => {
         const requestUrl = `${URL_INVOICE}/${invoiceId}/irrecoverable`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');

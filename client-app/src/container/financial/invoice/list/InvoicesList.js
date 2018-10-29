@@ -23,6 +23,8 @@ import fileDownload from "js-file-download";
 import moment from "moment/moment";
 import {hashHistory} from "react-router";
 import ButtonText from "../../../../components/button/ButtonText";
+import InvoiceDetailsAPI from "../../../../api/invoice/InvoiceDetailsAPI";
+import {fetchAdministrationDetails} from "../../../../actions/administration/AdministrationDetailsActions";
 
 class InvoicesList extends Component {
     constructor(props) {
@@ -35,6 +37,7 @@ class InvoicesList extends Component {
             onlyEmailInvoices: false,
             onlyPostInvoices: false,
             postInvoicesText: 'Selecteer preview post facturen',
+            sendRemindersText: 'Selecteer herinneringen'
         };
 
         if (!isEmpty(props.filter)) {
@@ -151,6 +154,7 @@ class InvoicesList extends Component {
                 onlyEmailInvoices: false,
                 onlyPostInvoices: false,
                 postInvoicesText: 'Selecteer preview post facturen',
+                sendRemindersText: 'Selecteer herinneringen'
             });
         }
     }
@@ -221,6 +225,26 @@ class InvoicesList extends Component {
         else{
             this.setState({showSelectInvoicesToSend: !this.state.showSelectInvoicesToSend});
         }
+    };
+
+    sendReminders = () => {
+        let sendRemindersInvoiceIds = [];
+
+        this.setState({
+            sendRemindersText: 'Verstuur herinneringen'
+        });
+
+
+        this.props.invoices.data.map((invoice) => ((invoice.checked === true) && sendRemindersInvoiceIds.push(invoice.id)));
+
+        if(sendRemindersInvoiceIds.length > 0){
+            InvoiceDetailsAPI.sendNotifications(sendRemindersInvoiceIds).then((payload) => {
+                this.props.fetchAdministrationDetails(this.props.administrationId);
+                this.fetchInvoicesData();
+            });
+        }
+
+        this.setState({showSelectInvoicesToSend: !this.state.showSelectInvoicesToSend});
     };
 
     resetInvoiceFilters = () => {
@@ -295,6 +319,10 @@ class InvoicesList extends Component {
                             }
                             {( this.props.filter === 'te-verzenden-overboeken' && !this.state.onlyEmailInvoices && meta.total > 0) &&
                             <ButtonText buttonText={this.state.postInvoicesText} onClickAction={() => this.previewSendPost('overboeken')}/>
+                            }
+                            {(this.props.filter === 'herinnering' && meta.total > 0) &&
+                            <ButtonText buttonText={this.state.sendRemindersText}
+                                        onClickAction={() => this.sendReminders()}/>
                             }
                         </div>
                     </div>
@@ -385,7 +413,8 @@ const mapDispatchToProps = (dispatch) => {
         setStatusIdFilterInvoices,
         setPaymentTypeIdFilterInvoices,
         blockUI,
-        unblockUI
+        unblockUI,
+        fetchAdministrationDetails
     }, dispatch);
 };
 

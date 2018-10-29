@@ -143,8 +143,7 @@ class Order extends Model
         $total = 0;
 
         foreach ($this->orderProducts as $orderProduct) {
-            if (Carbon::parse($orderProduct->date_start)->lte(Carbon::today())
-                && (Carbon::parse($orderProduct->date_end)->gte(Carbon::today()) || $orderProduct->date_end === null)
+            if ((Carbon::parse($orderProduct->date_end)->gte(Carbon::today()) || $orderProduct->date_end === null)
             ) {
                 $total += $orderProduct->total_price_incl_vat_and_reduction;
             }
@@ -158,8 +157,7 @@ class Order extends Model
         $total = 0;
 
         foreach ($this->orderProducts as $orderProduct) {
-            if (Carbon::parse($orderProduct->date_start)->lte(Carbon::today())
-                && (Carbon::parse($orderProduct->date_end)->gte(Carbon::today()) || $orderProduct->date_end === null)
+            if ((Carbon::parse($orderProduct->date_end)->gte(Carbon::today()) || $orderProduct->date_end === null)
             ) {
                 $total += $orderProduct->total_price_ex_vat_incl_reduction;
             }
@@ -173,8 +171,7 @@ class Order extends Model
         $total = 0;
 
         foreach ($this->orderProducts as $orderProduct) {
-            if (Carbon::parse($orderProduct->date_start)->lte(Carbon::today())
-                && (Carbon::parse($orderProduct->date_end)->gte(Carbon::today()) || $orderProduct->date_end === null)
+            if ((Carbon::parse($orderProduct->date_end)->gte(Carbon::today()) || $orderProduct->date_end === null)
             ) {
                 $total += $orderProduct->total_price_incl_vat_and_reduction_per_year;
             }

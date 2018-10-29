@@ -17,6 +17,7 @@ class GridInvoice extends Resource
 {
     public function toArray($request)
     {
+        //datum is aanvraagdatum, maar als hij verzonden is, de verzenddatum
         $date = null;
 
         if($this->status_id === 'to-send'){
@@ -24,6 +25,13 @@ class GridInvoice extends Resource
         }
         else{
             $date = $this->date_sent;
+        }
+
+        //iban eerst uit order halen, anders uit contact.
+        $iban = $this->order->IBAN;
+
+        if(!$iban){
+            $iban = $this->order->contact->iban;
         }
 
         return [
@@ -39,6 +47,7 @@ class GridInvoice extends Resource
             'daysLastReminder' => $this->days_last_reminder,
             'totalPriceInclVatAndReduction' => $this->total_price_incl_vat_and_reduction,
             'amountOpen' => $this->amount_open,
+            'iban' => $iban,
 
             'dateReminder1' => $this->date_reminder_1,
             'dateReminder2' => $this->date_reminder_2,

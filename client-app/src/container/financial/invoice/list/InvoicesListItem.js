@@ -106,7 +106,7 @@ class InvoicesListItem extends Component {
             hideRowClass = 'hide';
         }
 
-        const { id, number, date, orderSubject, orderContactFullName, paymentType, status, daysToExpire, daysLastReminder, totalPriceInclVatAndReduction, amountOpen, emailToAddress, checked } = this.props;
+        const { id, number, date, orderSubject, orderContactFullName, paymentType, status, daysToExpire, daysLastReminder, totalPriceInclVatAndReduction, amountOpen, emailToAddress, checked, iban } = this.props;
         return (
             <tr className={`${this.state.highlightRow} ${hideRowClass}`} onDoubleClick={() => this.openItem(id)} onMouseEnter={() => this.onRowEnter()} onMouseLeave={() => this.onRowLeave()}>
                 {this.props.showSelectInvoicesToSend && <td><input type="checkbox" checked={checked} onChange={() => this.setCheckedInvoice(id)} /></td>}
@@ -119,6 +119,7 @@ class InvoicesListItem extends Component {
                 <td>{'€' + totalPriceInclVatAndReduction.toLocaleString('nl',{ minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
                 <td>{paymentType ? paymentType.name : ''}</td>
                 <td>{status ? status.name : ''}</td>
+                <td className={(iban) ? '' :'warning-td'}>{iban ? iban : 'Geen IBAN bekend'}</td>
                 <td>
                     {(this.state.showActionButtons ? <a role="button" onClick={() => this.openItem(id)} title="Open factuur"><span className="glyphicon glyphicon-pencil mybtn-success" /> </a> : '')}
                     {(this.state.showActionButtons ? <a role="button" onClick={() => this.viewItem(id)} title="Preview factuur"><span className="glyphicon glyphicon-eye-open mybtn-success" /> </a> : '')}

@@ -485,6 +485,11 @@ class InvoiceController extends ApiController
         $invoiceProduct->percentage_reduction = $invoiceProductData['percentageReduction'] ? $invoiceProductData['percentageReduction'] : 0;
         $invoiceProduct->date_last_invoice = $invoiceProductData['dateLastInvoice'];
 
+
+        $invoice = Invoice::find($invoiceProductData['invoiceId']);
+
+        $product->payment_type_id = $invoice->payment_type_id;
+
         DB::transaction(function () use ($product, $priceHistory, $invoiceProduct) {
             $product->save();
 

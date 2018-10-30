@@ -215,6 +215,10 @@ class OrderController extends ApiController
         $orderProduct->date_start = $orderProductData['dateStart'];
         $orderProduct->date_end = $orderProductData['dateEnd'] ? $orderProductData['dateEnd'] : null;
 
+        $order = Order::find($orderProductData['orderId']);
+
+        $product->payment_type_id = $order->payment_type_id;
+
         DB::transaction(function () use ($product, $priceHistory, $orderProduct) {
             $product->save();
 

@@ -269,7 +269,7 @@ class OrdersList extends Component {
                         <div className="btn-group" role="group">
                             <ButtonIcon iconName={"glyphicon-refresh"} onClickAction={this.resetOrderFilters} />
                             <ButtonIcon iconName={"glyphicon-download-alt"} onClickAction={this.getCSV} />
-                            {this.props.ordersFilters.statusId.data === 'to-create' && meta.total > 0 &&
+                            {this.props.ordersFilters.statusId.data == 'create' && meta.total > 0 &&
                             <ButtonText buttonText={this.state.previewOrderText} onClickAction={() => this.previewOrders()}/>
                             }
                         </div>

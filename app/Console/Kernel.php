@@ -30,8 +30,8 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         $schedule->command('email:getAllEmail')->everyFiveMinutes();
-        $schedule->command('invoice:setDaysLastReminderInvoice')->dailyAt('00:05');
-        $schedule->command('email:setDaysToExpireInvoice')->dailyAt('00:10');
+        $schedule->command('invoice:setDaysLastReminder')->dailyAt('00:05');
+        $schedule->command('invoice:setDaysToExpire')->dailyAt('00:10');
     }
 
     /**

@@ -197,6 +197,10 @@ class Order extends Model
         if ($this->invoices()->where('status_id', 'to-send')->exists()) {
             return false;
         }
+
+        if(!$this->date_next_invoice){
+            return false;
+        }
         
         return true;
     }

@@ -63,20 +63,27 @@ class SepaHelper
     {
 
         $batchNumber = Sepa::where('administration_id', $this->administration->id)->count();
-
+        $dateCollection = false;
         $totalOpen = 0;
         $amountOfInvoices = $this->invoices->count();
 
+
+
         foreach($this->invoices as $invoice){
             $totalOpen += $invoice->amount_open;
+
+            if(!$dateCollection){
+                $dateCollection = Carbon::parse($invoice->date_collection)->format('Y-m-d');
+            }
 
             if($invoice->amount_open <= 0){
                 $amountOfInvoices--;
             }
         }
 
-
-
+        if(!$dateCollection){
+            $dateCollection = Carbon::now()->nextWeekday()->format('Y-m-d');
+        }
 
         $xml = '';
 
@@ -114,7 +121,7 @@ class SepaHelper
         $xml .= "\n\t\t\t\t<SeqTp>RCUR</SeqTp>"; // First is nu ook RCUR (vervolgincasso)
         $xml .= "\n\t\t\t</PmtTpInf>";
 
-        $xml .= "\n\t\t\t<ReqdColltnDt>" . Carbon::now()->nextWeekday()->format('Y-m-d') . "</ReqdColltnDt>"; // Gewenste uitvoerdatum
+        $xml .= "\n\t\t\t<ReqdColltnDt>" . $dateCollection . "</ReqdColltnDt>"; // Gewenste uitvoerdatum
 
         $xml .= "\n\t\t\t<Cdtr>"; // Crediteur
         $xml .= "\n\t\t\t\t<Nm>" . $this->administration->name . "</Nm>"; // Naam crediteur
@@ -175,7 +182,7 @@ class SepaHelper
             $xml .= "\n\t\t\t\t<DrctDbtTx>";
             $xml .= "\n\t\t\t\t\t<MndtRltdInf>";
             $xml .= "\n\t\t\t\t\t\t<MndtId>" . $invoice->order->contact->number  . "</MndtId>"; // Uniek nummer per klant, debiteurnummer
-            $xml .= "\n\t\t\t\t\t\t<DtOfSgntr>" .  $invoice->date_requested . "</DtOfSgntr>"; // Bestande klanten 1-1-20009, bij nieuwe klanten de datum van aanmaak klant of aanvinken van autoincasso
+            $xml .= "\n\t\t\t\t\t\t<DtOfSgntr>" .  $invoice->date_requested . "</DtOfSgntr>"; // Mandaat ondertekening
             $xml .= "\n\t\t\t\t\t</MndtRltdInf>";
             $xml .= "\n\t\t\t\t</DrctDbtTx>";
 

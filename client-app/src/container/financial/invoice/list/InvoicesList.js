@@ -306,21 +306,21 @@ class InvoicesList extends Component {
                         <div className="btn-group btn-group-flex" role="group">
                             <ButtonIcon iconName={"glyphicon-refresh"} onClickAction={this.resetInvoiceFilters}/>
                             <ButtonIcon iconName={"glyphicon-download-alt"} onClickAction={this.getCSV} />
-                            {((this.props.invoicesFilters.statusId.data === 'to-send' && this.props.invoicesFilters.paymentTypeId.data === 'collection') && !this.state.onlyPostInvoices && meta.total > 0) &&
+                            {((this.props.invoicesFilters.statusId.data == 'to-send' && this.props.invoicesFilters.paymentTypeId.data == 'collection') && !this.state.onlyPostInvoices && meta.total > 0) &&
                             <ButtonText buttonText={this.state.emailInvoicesText}
                                         onClickAction={() => this.previewSend('incasso')}/>
                             }
-                            {((this.props.invoicesFilters.statusId.data === 'to-send' && this.props.invoicesFilters.paymentTypeId.data === 'transfer') && !this.state.onlyPostInvoices && meta.total > 0) &&
+                            {((this.props.invoicesFilters.statusId.data == 'to-send' && this.props.invoicesFilters.paymentTypeId.data == 'transfer') && !this.state.onlyPostInvoices && meta.total > 0) &&
                             <ButtonText buttonText={this.state.emailInvoicesText}
                                         onClickAction={() => this.previewSend('overboeken')}/>
                             }
-                            {((this.props.invoicesFilters.statusId.data === 'to-send' && this.props.invoicesFilters.paymentTypeId.data === 'collection') && !this.state.onlyEmailInvoices && meta.total > 0) &&
+                            {((this.props.invoicesFilters.statusId.data == 'to-send' && this.props.invoicesFilters.paymentTypeId.data == 'collection') && !this.state.onlyEmailInvoices && meta.total > 0) &&
                             <ButtonText buttonText={this.state.postInvoicesText} onClickAction={() => this.previewSendPost('incasso')}/>
                             }
-                            {((this.props.invoicesFilters.statusId.data === 'to-send' && this.props.invoicesFilters.paymentTypeId.data === 'transfer') && !this.state.onlyEmailInvoices && meta.total > 0) &&
+                            {((this.props.invoicesFilters.statusId.data == 'to-send' && this.props.invoicesFilters.paymentTypeId.data == 'transfer') && !this.state.onlyEmailInvoices && meta.total > 0) &&
                             <ButtonText buttonText={this.state.postInvoicesText} onClickAction={() => this.previewSendPost('overboeken')}/>
                             }
-                            {((this.props.invoicesFilters.statusId.data === 'reminder' || this.props.invoicesFilters.statusId.data === 'to-remind' || this.props.invoicesFilters.statusId.data === 'reminder_1' || this.props.invoicesFilters.statusId.data === 'remidner_2' || this.props.invoicesFilters.statusId.data === 'remidner_3') && meta.total > 0) &&
+                            {((this.props.invoicesFilters.statusId.data == 'reminder' || this.props.invoicesFilters.statusId.data == 'to-remind' || this.props.invoicesFilters.statusId.data === 'reminder_1' || this.props.invoicesFilters.statusId.data === 'remidner_2' || this.props.invoicesFilters.statusId.data === 'remidner_3') && meta.total > 0) &&
                             <ButtonText buttonText={this.state.sendRemindersText}
                                         onClickAction={() => this.sendReminders()}/>
                             }

@@ -22,7 +22,7 @@ class ContactController extends Controller
     {
         $this->authorize('view', $contact);
 
-        $contact->load(['addresses.country', 'emailAddresses', 'phoneNumbers', 'createdBy', 'updatedBy', 'owner', 'tasks', 'notes', 'documents', 'opportunities', 'participations', 'orders', 'invoices']);
+        $contact->load(['addresses.country', 'emailAddresses', 'phoneNumbers', 'createdBy', 'updatedBy', 'owner', 'tasks', 'notes', 'documents', 'opportunities', 'participations', 'orders', 'invoices.order']);
         $contact->contactNotes->load(['createdBy', 'updatedBy']);
         $contact->occupations->load(['occupation', 'primaryContact', 'contact']);
         $contact->primaryOccupations->load(['occupation', 'primaryContact', 'contact']);

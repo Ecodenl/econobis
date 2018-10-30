@@ -242,13 +242,18 @@ class InvoiceController extends ApiController
         $administration = $invoices->first()->administration;
         $paymentTypeId = $invoices->first()->payment_type_id;
 
-        if(!$administration->sepa_creditor_id || !$administration->bic || !$administration->IBAN){
+        if (!$administration->sepa_creditor_id || !$administration->bic || !$administration->IBAN) {
             abort(412, 'Sepa crediteur ID, BIC en IBAN zijn verplichte velden.');
         }
 
-        $validatedInvoices = $invoices->reject(function ($invoice) {
-            return (empty($invoice->order->IBAN) && empty($invoice->order->contact->iban));
-        });
+        if ($paymentTypeId === 'collection') {
+            $validatedInvoices = $invoices->reject(function ($invoice) {
+                return (empty($invoice->order->IBAN) && empty($invoice->order->contact->iban));
+            });
+        }
+        else{
+            $validatedInvoices = $invoices;
+        }
 
         if($validatedInvoices->count() > 0) {
             foreach ($validatedInvoices as $invoice){

@@ -64,7 +64,12 @@ class InvoiceObserver
                 $orderProduct->save();
             }
 
-            $order->date_next_invoice = $order->addDurationToDate(Carbon::parse($order->date_next_invoice));
+            if($order->collection_frequency_id === 'once'){
+                $order->date_next_invoice = null;
+            }
+            else {
+                $order->date_next_invoice = $order->addDurationToDate(Carbon::parse($order->date_next_invoice));
+            }
             $order->save();
 
             // Ook krijgt een factuur dan pas een definitief factuurnummer

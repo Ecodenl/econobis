@@ -89,6 +89,7 @@ class InvoicesList extends Component {
 
     componentDidMount() {
         this.fetchInvoicesData();
+        this.props.fetchAdministrationDetails(this.props.administrationId);
     };
 
     componentWillUnmount() {

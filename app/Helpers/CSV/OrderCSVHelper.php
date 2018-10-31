@@ -60,7 +60,12 @@ class OrderCSVHelper
 
             $frequency = $order->getCollectionFrequency() ;
             $order->collectionFrequency = $frequency ? $frequency->name : '';
+
+            if($order->IBAN == '' || !$order->IBAN){
+                $order->IBAN = $order->contact->iban;
+            }
         });
+
 
         $csv = $this->csvExporter->build($chunk, [
             'contact.id' => 'Contact id',

@@ -171,8 +171,7 @@ class Administration extends Model
             ->where(function ($q) {
                 $q->where(function ($q) {
                     $q->where('payment_type_id', 'transfer')
-                        ->where('date_sent', '>=',
-                            Carbon::today()->subMonth());
+                        ->where('days_to_expire', '>', '0');
                 })->orWhere(function ($q) {
                     $q->where('payment_type_id', '!=', 'transfer');
                 });})->where('status_id', 'sent')->whereNull('date_reminder_1')
@@ -182,7 +181,7 @@ class Administration extends Model
 
     public function getTotalInvoicesExportedAttribute()
     {
-        return $this->invoices()->where('status_id', 'exported')->whereNull('date_reminder_1')->whereNull('date_reminder_2')->whereNull('date_reminder_3')->whereNull('date_exhortation')->where('date_sent', '>=', Carbon::today()->subMonth())->count();
+        return $this->invoices()->where('status_id', 'exported')->whereNull('date_reminder_1')->whereNull('date_reminder_2')->whereNull('date_reminder_3')->whereNull('date_exhortation')->where('days_to_expire', '>', '0')->count();
     }
 
     public function getTotalInvoicesReminderAttribute()
@@ -191,9 +190,9 @@ class Administration extends Model
             ->where(function ($q) {
             $q->whereNotNull('date_reminder_1')->whereNull('date_exhortation')->whereNotIn('status_id', ['to-send', 'paid' ,'irrecoverable']);
         })->orWhere(function ($q) {
-            $q->where('status_id', 'exported')->where('date_sent', '<', Carbon::today()->subMonth());
+            $q->where('status_id', 'exported')->where('days_to_expire', '<=', '0');
         })->orWhere(function ($q) {
-            $q->where('status_id', 'sent')->where('payment_type_id', 'transfer')->where('date_sent', '<', Carbon::today()->subMonth());
+            $q->where('status_id', 'sent')->where('payment_type_id', 'transfer')->where('days_to_expire', '<=', '0');
         })->count();
 
     }

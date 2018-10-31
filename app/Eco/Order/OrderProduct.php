@@ -94,9 +94,11 @@ class OrderProduct extends Model
                 return ($this->total_price_incl_vat_and_reduction * 12);
             case 'quarterly':
                 return ($this->total_price_incl_vat_and_reduction * 4);
+            case 'half-year':
+                return ($this->total_price_incl_vat_and_reduction * 2);
+                break;
             default:
                 return $this->total_price_incl_vat_and_reduction;
-
         }
     }
 

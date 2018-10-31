@@ -217,6 +217,9 @@ class Order extends Model
             case 'quarterly':
                 return $date->addQuarter();
                 break;
+            case 'half-year':
+                return $date->addMonth(6);
+                break;
             case 'yearly':
                 return $date->addYear();
                 break;

@@ -136,6 +136,8 @@ class InvoicesList extends Component {
                     default:
                         break;
                 }
+
+                this.props.fetchAdministrationDetails(this.props.administrationId);
             }
             else {
                 this.props.clearFilterInvoices();

@@ -20,7 +20,7 @@ class GridOrder extends Resource
         return [
             'id' => $this->id,
             'number' => $this->number,
-            'dateRequested' => $this->date_requested,
+            'dateNextInvoice' => $this->date_next_invoice,
             'subject' => $this->subject,
 
             'contact' => FullContact::make($this->whenLoaded('contact')),

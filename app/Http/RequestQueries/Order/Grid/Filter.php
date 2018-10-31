@@ -16,7 +16,7 @@ class Filter extends RequestFilter
 {
     protected $fields = [
         'number',
-        'dateRequested',
+        'dateNextInvoice',
         'subject',
         'contact',
         'paymentTypeId',
@@ -25,7 +25,7 @@ class Filter extends RequestFilter
 
     protected $mapping = [
         'number' => 'orders.number',
-        'dateRequested' => 'orders.date_requested',
+        'dateNextInvoice' => 'orders.date_next_invoice',
         'subject' => 'orders.subject',
         'contact' => 'contacts.full_name',
         'paymentTypeId' => 'orders.payment_type_id',

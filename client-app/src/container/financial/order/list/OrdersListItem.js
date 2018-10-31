@@ -38,13 +38,13 @@ class OrdersListItem extends Component {
     }
 
     render() {
-        const { id, number, dateRequested, subject, contact, totalPriceInclVatPerYear, paymentType, status, checked } = this.props;
+        const { id, number, dateNextInvoice, subject, contact, totalPriceInclVatPerYear, paymentType, status, checked } = this.props;
 
         return (
             <tr className={this.state.highlightRow} onDoubleClick={() => this.openItem(id)} onMouseEnter={() => this.onRowEnter()} onMouseLeave={() => this.onRowLeave()}>
                 {this.props.showSelectOrdersToCreate && <td><input type="checkbox" checked={checked} onChange={() => this.setCheckedOrder(id)} /></td>}
                 <td>{number}</td>
-                <td>{ dateRequested ? moment(dateRequested).format('DD-MM-Y') : ''}</td>
+                <td>{ dateNextInvoice ? moment(dateNextInvoice).format('DD-MM-Y') : ''}</td>
                 <td>{subject ? subject : ''}</td>
                 <td>{contact ? contact.fullName : ''}</td>
                 <td className={`${totalPriceInclVatPerYear <= 0 ? 'warning-td' : ''}`}>{'€' + totalPriceInclVatPerYear.toLocaleString('nl',{ minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>

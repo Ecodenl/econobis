@@ -252,7 +252,6 @@ class OrdersList extends Component {
             hashHistory.push(`/financieel/${this.props.administrationId}/orders/aanmaken`);
         }
         else{
-            console.log('test');
             this.setState({showSelectOrdersToCreate: !this.state.showSelectOrdersToCreate});
         }
 
@@ -270,7 +269,7 @@ class OrdersList extends Component {
                             <ButtonIcon iconName={"glyphicon-refresh"} onClickAction={this.resetOrderFilters} />
                             <ButtonIcon iconName={"glyphicon-download-alt"} onClickAction={this.getCSV} />
                             {this.props.ordersFilters.statusId.data == 'create' && meta.total > 0 &&
-                            <ButtonText buttonText={this.state.previewOrderText} onClickAction={() => this.previewOrders()}/>
+                            <ButtonText buttonText={this.state.previewOrderText} onClickAction={this.previewOrders}/>
                             }
                         </div>
                     </div>

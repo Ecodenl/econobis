@@ -31,8 +31,11 @@ class OrderCreateConfirm extends Component {
                     <div className={'col-sm-12 margin-10-bottom'}>
                     <span>
                         Wilt u alle facturen ({this.props.amountOfOrders}) aanmaken?
+Let op. Nadat je op "maak facturen" hebt geklikt staan de facturen klaar om te verzenden. Je kunt geen wijzigingen aanmaken in de order. Dit kan pas weer, nadat de aangemaakte factuur werkelijk is verzonden. Zorg er daarom voor dat je order juist is.
+<br/><br/>
 De aangemaakte facturen komen in de map “Te verzenden - incasso facturen” of “Te verzenden – overboek facturen”. Vanuit deze mappen kun je de facturen echt verzenden.
-Deze orders komen in de order map “Actief – te verzenden orders”.
+<br/><br/>
+Deze orders gaan van de order map "Actief - te factureren orders" naar de order map “Actief – te verzenden orders”.
                     </span>
                     </div>
                 </div>

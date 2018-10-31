@@ -114,7 +114,7 @@ class OrdersList extends Component {
                         break;
                 };
 
-                this.setState = {
+                this.setState({
                     showDeleteItem: false,
                     showSelectOrdersToCreate: false,
                     checkedAllCheckboxes: false,
@@ -123,7 +123,7 @@ class OrdersList extends Component {
                         id: '',
                         subject: '',
                     }
-                };
+                });
             }
             else {
                 this.props.clearFilterOrders();
@@ -169,7 +169,7 @@ class OrdersList extends Component {
 
         this.fetchOrdersData();
 
-        this.setState = {
+        this.setState({
             showDeleteItem: false,
             showSelectOrdersToCreate: false,
             checkedAllCheckboxes: false,
@@ -178,7 +178,7 @@ class OrdersList extends Component {
                 id: '',
                 subject: '',
             }
-        };
+        });
     };
 
     onSubmitFilter = () => {

@@ -31,13 +31,49 @@ class InvoiceHelper
             if($orderProduct->is_one_time_and_paid_product){
                 continue;
             }
+
+            $price = 0;
+            if($orderProduct->product->currentPrice){
+                $price = $orderProduct->product->currentPrice->price;
+
+                switch ($orderProduct->product->invoice_frequency_id){
+                    case 'monthly':
+                        $price = $price * 12;
+                        break;
+                    case 'quarterly':
+                        $price = $price * 4;
+                        break;
+                    case 'half-year':
+                        $price = $price * 2;
+                        break;
+                    default:
+                        $price = $price;
+                        break;
+                }
+
+                switch ($orderProduct->order->collection_frequency_id) {
+                    case 'monthly':
+                        $price = $price / 12;
+                        break;
+                    case 'quarterly':
+                        $price = $price / 4;
+                        break;
+                    case 'half-year':
+                        $price = $price / 2;
+                        break;
+                    default:
+                        $price = $price;
+                        break;
+                }
+            }
+
             $invoiceProduct = new InvoiceProduct();
             $invoiceProduct->product_id = $orderProduct->product_id;
             $invoiceProduct->invoice_id = $invoice->id;
             $invoiceProduct->amount = $orderProduct->amount;
             $invoiceProduct->amount_reduction = $orderProduct->amount_reduction;
             $invoiceProduct->percentage_reduction = $orderProduct->percentage_reduction;
-            $invoiceProduct->price = $orderProduct->product->currentPrice ? $orderProduct->product->currentPrice->price : 0;
+            $invoiceProduct->price = $price;
             $invoiceProduct->vat_percentage = $orderProduct->product->currentPrice ? $orderProduct->product->currentPrice->vat_percentage : 0;
             $invoiceProduct->product_code = $orderProduct->product->code;
             $invoiceProduct->product_name = $orderProduct->product->name;

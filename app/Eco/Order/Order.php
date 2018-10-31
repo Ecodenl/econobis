@@ -64,6 +64,11 @@ class Order extends Model
         return $this->hasMany(Invoice::class)->orderBy('invoices.id', 'desc');
     }
 
+    public function invoicesToSend()
+    {
+        return $this->hasMany(Invoice::class)->where('invoices.status_id', 'to-send');
+    }
+
     public function invoicesPaidCollection()
     {
         return $this->hasMany(Invoice::class)->where('payment_type_id', 'collection')->where('status_id', 'paid')

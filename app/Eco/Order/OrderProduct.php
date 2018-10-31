@@ -26,6 +26,7 @@ class OrderProduct extends Model
             'total_price_incl_vat_and_reduction',
             'total_price_ex_vat_incl_reduction',
             'total_price_incl_vat_and_reduction_per_year',
+            'total_price_incl_vat_and_reduction_for_period',
             'is_one_time_and_paid_product',
         ];
 
@@ -96,9 +97,22 @@ class OrderProduct extends Model
                 return ($this->total_price_incl_vat_and_reduction * 4);
             case 'half-year':
                 return ($this->total_price_incl_vat_and_reduction * 2);
-                break;
             default:
                 return $this->total_price_incl_vat_and_reduction;
+        }
+    }
+
+    public function getTotalPriceInclVatAndReductionForPeriodAttribute()
+    {
+        switch ($this->order->collection_frequency_id) {
+            case 'monthly':
+                return ($this->total_price_incl_vat_and_reduction_per_year / 12);
+            case 'quarterly':
+                return ($this->total_price_incl_vat_and_reduction_per_year / 4);
+            case 'half-year':
+                return ($this->total_price_incl_vat_and_reduction_per_year / 2);
+            default:
+                return $this->total_price_incl_vat_and_reduction_per_year;
         }
     }
 

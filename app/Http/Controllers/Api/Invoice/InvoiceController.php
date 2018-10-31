@@ -446,7 +446,44 @@ class InvoiceController extends ApiController
         $invoiceProduct = new InvoiceProduct($data);
 
         $product = Product::find($data['product_id']);
-        $invoiceProduct->price = $product->currentPrice ? $product->currentPrice->price : 0;
+        $invoice = Invoice::find($data['invoiceId']);
+
+        $price = 0;
+        if($product->currentPrice){
+            $price = $product->currentPrice->price;
+
+            switch ($product->invoice_frequency_id){
+                case 'monthly':
+                    $price = $price * 12;
+                    break;
+                case 'quarterly':
+                    $price = $price * 4;
+                    break;
+                case 'half-year':
+                    $price = $price * 2;
+                    break;
+                default:
+                    $price = $price;
+                    break;
+            }
+
+            switch ($invoice->collection_frequency_id) {
+                case 'monthly':
+                    $price = $price / 12;
+                    break;
+                case 'quarterly':
+                    $price = $price / 4;
+                    break;
+                case 'half-year':
+                    $price = $price / 2;
+                    break;
+                default:
+                    $price = $price;
+                    break;
+            }
+        }
+
+        $invoiceProduct->price = $price;
         $invoiceProduct->vat_percentage = $product->currentPrice ? $product->currentPrice->vat_percentage : 0;
         $invoiceProduct->product_code = $product->code;
         $invoiceProduct->product_name = $product->name;
@@ -490,14 +527,50 @@ class InvoiceController extends ApiController
 
         $product->payment_type_id = $invoice->payment_type_id;
 
-        DB::transaction(function () use ($product, $priceHistory, $invoiceProduct) {
+
+        DB::transaction(function () use ($product, $priceHistory, $invoiceProduct, $invoice) {
             $product->save();
 
             $priceHistory->product_id = $product->id;
             $priceHistory->save();
 
+            $price = 0;
+            if($product->currentPrice){
+                $price = $product->currentPrice->price;
+
+                switch ($product->invoice_frequency_id){
+                    case 'monthly':
+                        $price = $price * 12;
+                        break;
+                    case 'quarterly':
+                        $price = $price * 4;
+                        break;
+                    case 'half-year':
+                        $price = $price * 2;
+                        break;
+                    default:
+                        $price = $price;
+                        break;
+                }
+
+                switch ($invoice->collection_frequency_id) {
+                    case 'monthly':
+                        $price = $price / 12;
+                        break;
+                    case 'quarterly':
+                        $price = $price / 4;
+                        break;
+                    case 'half-year':
+                        $price = $price / 2;
+                        break;
+                    default:
+                        $price = $price;
+                        break;
+                }
+            }
+
             $invoiceProduct->product_id = $product->id;
-            $invoiceProduct->price = $product->currentPrice ? $product->currentPrice->price : 0;
+            $invoiceProduct->price = $price;
             $invoiceProduct->vat_percentage = $product->currentPrice ? $product->currentPrice->vat_percentage : 0;
             $invoiceProduct->product_code = $product->code;
             $invoiceProduct->product_name = $product->name;

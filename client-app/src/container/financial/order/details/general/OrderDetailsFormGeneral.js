@@ -75,7 +75,7 @@ class OrderDetailsFormGeneral extends Component {
         return (
             <div className={this.state.activeDiv} onMouseEnter={() => this.onDivEnter()} onMouseLeave={() => this.onDivLeave()}>
                 {
-                    this.state.showEdit && permissions.manageFinancial ?
+                    this.state.showEdit && this.props.orderDetails.canEdit && permissions.manageFinancial ?
                         <OrderDetailsFormGeneralEdit
                             switchToView={this.switchToView}
                             contactPerson={this.state.contactPerson}

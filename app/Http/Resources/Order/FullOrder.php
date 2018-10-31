@@ -86,7 +86,8 @@ class FullOrder extends Resource
                 'createdAt' => $this->created_at,
                 'updatedAt' => $this->updated_at,
 
-                'canCreateInvoice' => $this->can_create_invoice
+                'canCreateInvoice' => $this->can_create_invoice,
+                'canEdit' => !$this->invoices()->where('invoices.status_id', 'to-send')->exists()
             ];
     }
 }

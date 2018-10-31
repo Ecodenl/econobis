@@ -31,20 +31,16 @@ const InvoiceDetailsFormGeneralView = props => {
 
                     <div className="row">
                         <ViewText
-                            label={"Geplande factuur datum"}
-                            value={dateRequested ? moment(dateRequested).format('DD-MM-Y') : ''}
-                        />
-                        <ViewText
                             label={"Betaalwijze"}
                             value={paymentType ? paymentType.name : ''}
                         />
-                    </div>
-
-                    <div className="row">
                         <ViewText
                             label={"Onderwerp"}
                             value={order ? order.subject : ''}
                         />
+                    </div>
+
+                    <div className="row">
                         <ViewText
                             label={"Order"}
                             value={order ? order.number : ''}
@@ -73,10 +69,18 @@ const InvoiceDetailsFormGeneralView = props => {
                     </div>
 
                     <div className="row">
-                        <ViewText
-                            label={"Factuur verstuurd"}
-                            value={dateSent ? moment(dateSent).format('DD-MM-Y') : ''}
-                        />
+                        {dateSent ?
+                            <ViewText
+                                label={"Factuur datum"}
+                                value={dateSent ? moment(dateSent).format('DD-MM-Y') : ''}
+                            />
+                            :
+                            <ViewText
+                                label={"Geplande factuur datum"}
+                                value={dateRequested ? moment(dateRequested).format('DD-MM-Y') : ''}
+                            />
+                        }
+
                         <ViewText
                             label={"Verstuurd naar"}
                             value={emailedTo ? emailedTo : ''}

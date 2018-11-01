@@ -22,6 +22,10 @@
   display: flex;
 }
 
+.btn-group-flex > button {
+  z-index: 99;
+}
+
 .glyphicon-refresh-animate {
   animation: spin 1s infinite linear;
   -webkit-animation: spin2 1s infinite linear;

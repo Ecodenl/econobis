@@ -25,6 +25,7 @@ import {hashHistory} from "react-router";
 import ButtonText from "../../../../components/button/ButtonText";
 import InvoiceDetailsAPI from "../../../../api/invoice/InvoiceDetailsAPI";
 import {fetchAdministrationDetails} from "../../../../actions/administration/AdministrationDetailsActions";
+import InvoiceListSetMultiplePaid from "./InvoiceListSetMultiplePaid";
 
 class InvoicesList extends Component {
     constructor(props) {
@@ -38,7 +39,9 @@ class InvoicesList extends Component {
             onlyPostInvoices: false,
             postInvoicesText: 'Selecteer preview post facturen',
             sendRemindersTextEmail: 'Selecteer e-mail herinneringen',
-            sendRemindersTextPost: 'Selecteer post herinneringen'
+            sendRemindersTextPost: 'Selecteer post herinneringen',
+            setInvoicesPaidText: 'Selecteer betaalde facturen',
+            showSetInvoicesPaid: false
         };
 
         if (!isEmpty(props.filter)) {
@@ -138,8 +141,7 @@ class InvoicesList extends Component {
                     default:
                         break;
                 }
-
-                this.props.fetchAdministrationDetails(this.props.administrationId);
+                this.props.fetchAdministrationDetails(nextProps.administrationId);
             }
             else {
                 this.props.clearFilterInvoices();
@@ -159,7 +161,9 @@ class InvoicesList extends Component {
                 onlyPostInvoices: false,
                 postInvoicesText: 'Selecteer preview post facturen',
                 sendRemindersTextEmail: 'Selecteer e-mail herinneringen',
-                sendRemindersTextPost: 'Selecteer post herinneringen'
+                sendRemindersTextPost: 'Selecteer post herinneringen',
+                setInvoicesPaidText: 'Selecteer betaalde facturen',
+                showSetInvoicesPaid: false
             });
         }
     }
@@ -275,6 +279,28 @@ class InvoicesList extends Component {
         this.setState({showSelectInvoicesToSend: !this.state.showSelectInvoicesToSend});
     };
 
+    toggleSetInvoicesPaid = () => {
+
+        this.setState({showSelectInvoicesToSend: !this.state.showSelectInvoicesToSend});
+
+        let setPaidInvoicesIds = [];
+
+        this.props.invoices.data.map((invoice) => ((invoice.checked === true) && setPaidInvoicesIds.push(invoice.id)));
+
+        if (setPaidInvoicesIds.length > 0) {
+            this.setState({
+                showSetInvoicesPaid: true,
+                setInvoicesPaidText: 'Selecteer betaalde facturen'
+            });
+        }
+        else {
+            this.setState({
+                showSetInvoicesPaid: false,
+                setInvoicesPaidText: 'Zet facturen betaald'
+            });
+        }
+    };
+
     resetInvoiceFilters = () => {
         this.props.clearFilterInvoices();
 
@@ -289,6 +315,10 @@ class InvoicesList extends Component {
             onlyEmailInvoices: false,
             onlyPostInvoices: false,
             postInvoicesText: 'Selecteer preview post facturen',
+            sendRemindersTextEmail: 'Selecteer e-mail herinneringen',
+            sendRemindersTextPost: 'Selecteer post herinneringen',
+            setInvoicesPaidText: 'Selecteer betaalde facturen',
+            showSetInvoicesPaid: false
         });
     };
 
@@ -356,6 +386,10 @@ class InvoicesList extends Component {
                             <ButtonText buttonText={this.state.sendRemindersTextPost}
                                         onClickAction={() => this.sendRemindersPost()}/>
                             }
+                            {((this.props.invoicesFilters.statusId.data == 'sent' || this.props.invoicesFilters.statusId.data == 'exported' || this.props.invoicesFilters.statusId.data == 'reminder' || this.props.invoicesFilters.statusId.data == 'to-remind' || this.props.invoicesFilters.statusId.data === 'reminder_1' || this.props.invoicesFilters.statusId.data === 'reminder_2' || this.props.invoicesFilters.statusId.data === 'reminder_3' || this.props.invoicesFilters.statusId.data === 'exhortation') && meta.total > 0) &&
+                            <ButtonText buttonText={this.state.setInvoicesPaidText}
+                                        onClickAction={() => this.toggleSetInvoicesPaid()}/>
+                            }
                         </div>
                     </div>
                     <div className="col-md-4"><h3 className="text-center table-title">Facturen</h3></div>
@@ -420,6 +454,14 @@ class InvoicesList extends Component {
                         />
                     </div>
                 </form>
+                {this.state.showSetInvoicesPaid &&
+                    <InvoiceListSetMultiplePaid
+                      invoices={this.props.invoices.data.filter((invoice) => invoice.checked === true)}
+                      administrationId={this.props.administrationId}
+                      closeModal={this.toggleSetInvoicesPaid}
+                    />
+
+                }
             </div>
         );
     }

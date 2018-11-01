@@ -71,6 +71,7 @@ class FinancialApp extends Component {
                         <FinancialForm
                         type={this.state.type}
                         filter={this.state.filter}
+                        administrationId={this.state.administrationId}
                         />
                     </div>
                 </div>

@@ -15,7 +15,7 @@ class InvoiceListSetPaid extends Component {
         this.state = {
             invoice: {
                 id: props.invoiceId,
-                datePaid: moment(),
+                datePaid: moment().format('Y-MM-DD'),
             },
             errors: {
                 datePaid: false,

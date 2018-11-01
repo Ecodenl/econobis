@@ -379,6 +379,7 @@ Route::namespace('Api')
         Route::post('invoice/invoice-product/{invoiceProduct}/delete', 'Invoice\InvoiceController@destroyInvoiceProduct');
         Route::post('invoice/send-notifications', 'Invoice\InvoiceController@sendNotifications');
         Route::post('invoice/send-notifications-post', 'Invoice\InvoiceController@sendNotificationsPost');
+        Route::post('invoice/set-multiple-paid', 'Invoice\InvoiceController@setMultiplePaid');
         Route::post('invoice/{invoice}', 'Invoice\InvoiceController@update');
         Route::post('invoice/{invoice}/irrecoverable', 'Invoice\InvoiceController@setIrrecoverable');
         Route::post('invoice/{invoice}/send', 'Invoice\InvoiceController@send');

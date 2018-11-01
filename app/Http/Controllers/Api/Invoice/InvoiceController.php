@@ -134,6 +134,18 @@ class InvoiceController extends ApiController
         return $this->show($invoice->fresh());
     }
 
+    public function setMultiplePaid(Request $request)
+    {
+        $this->authorize('manage', Invoice::class);
+
+        $invoices = Invoice::whereIn('id', $request->input('ids'))->get();
+
+        foreach ($invoices as $invoice) {
+            InvoiceHelper::saveInvoiceDatePaid($invoice, $request->input('datePaid'));
+        }
+
+    }
+
     public function newPayment(RequestInput $input, Invoice $invoice)
     {
         $this->authorize('manage', Invoice::class);

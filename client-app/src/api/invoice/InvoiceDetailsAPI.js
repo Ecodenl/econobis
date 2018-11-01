@@ -75,6 +75,28 @@ export default {
             });
     },
 
+    sendNotificationsPost: (invoiceIds) => {
+        const requestUrl = `${URL_INVOICE}/send-notifications-post`;
+        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
+        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
+
+        document.body.style.cursor='wait';
+        let response = axios.post(requestUrl, {'ids': invoiceIds} , {responseType: 'blob'});
+        document.body.style.cursor='default';
+        return response;
+    },
+
+    sendNotificationPost: (invoiceId) => {
+        const requestUrl = `${URL_INVOICE}/${invoiceId}/send-notification-post`;
+        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
+        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
+
+        document.body.style.cursor='wait';
+        let response = axios.post(requestUrl, {}, {responseType: 'blob'});
+        document.body.style.cursor='default';
+        return response;
+    },
+
     setIrrecoverable: (invoiceId) => {
         const requestUrl = `${URL_INVOICE}/${invoiceId}/irrecoverable`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');

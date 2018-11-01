@@ -158,6 +158,7 @@ class InvoicesListItem extends Component {
                             invoiceId={id}
                             fetchInvoicesData={this.props.fetchInvoicesData}
                             administrationId={this.props.administrationId}
+                            type={(emailToAddress === 'Geen e-mail bekend') ? 'post' : 'email'}
                         />
                     }
 

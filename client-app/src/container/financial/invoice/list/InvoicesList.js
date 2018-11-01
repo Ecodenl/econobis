@@ -37,7 +37,8 @@ class InvoicesList extends Component {
             onlyEmailInvoices: false,
             onlyPostInvoices: false,
             postInvoicesText: 'Selecteer preview post facturen',
-            sendRemindersText: 'Selecteer herinneringen'
+            sendRemindersTextEmail: 'Selecteer e-mail herinneringen',
+            sendRemindersTextPost: 'Selecteer post herinneringen'
         };
 
         if (!isEmpty(props.filter)) {
@@ -157,7 +158,8 @@ class InvoicesList extends Component {
                 onlyEmailInvoices: false,
                 onlyPostInvoices: false,
                 postInvoicesText: 'Selecteer preview post facturen',
-                sendRemindersText: 'Selecteer herinneringen'
+                sendRemindersTextEmail: 'Selecteer e-mail herinneringen',
+                sendRemindersTextPost: 'Selecteer post herinneringen'
             });
         }
     }
@@ -234,14 +236,37 @@ class InvoicesList extends Component {
         let sendRemindersInvoiceIds = [];
 
         this.setState({
-            sendRemindersText: 'Verstuur herinneringen'
+            sendRemindersTextEmail: 'Verstuur e-mail herinneringen',
+            onlyEmailInvoices: true,
         });
 
 
-        this.props.invoices.data.map((invoice) => ((invoice.checked === true) && sendRemindersInvoiceIds.push(invoice.id)));
+        this.props.invoices.data.map((invoice) => ((invoice.checked === true && invoice.emailToAddress !== 'Geen e-mail bekend') && sendRemindersInvoiceIds.push(invoice.id)));
 
         if(sendRemindersInvoiceIds.length > 0){
             InvoiceDetailsAPI.sendNotifications(sendRemindersInvoiceIds).then((payload) => {
+                this.props.fetchAdministrationDetails(this.props.administrationId);
+                this.fetchInvoicesData();
+            });
+        }
+
+        this.setState({showSelectInvoicesToSend: !this.state.showSelectInvoicesToSend});
+    };
+
+    sendRemindersPost = () => {
+        let sendRemindersInvoiceIds = [];
+
+        this.setState({
+            sendRemindersTextPost: 'Verstuur post herinneringen',
+            onlyPostInvoices: true,
+        });
+
+
+        this.props.invoices.data.map((invoice) => ((invoice.checked === true && invoice.emailToAddress === 'Geen e-mail bekend') && sendRemindersInvoiceIds.push(invoice.id)));
+
+        if(sendRemindersInvoiceIds.length > 0){
+            InvoiceDetailsAPI.sendNotificationsPost(sendRemindersInvoiceIds).then((payload) => {
+                fileDownload(payload.data, payload.headers['x-filename']);
                 this.props.fetchAdministrationDetails(this.props.administrationId);
                 this.fetchInvoicesData();
             });
@@ -323,9 +348,13 @@ class InvoicesList extends Component {
                             {((this.props.invoicesFilters.statusId.data == 'to-send' && this.props.invoicesFilters.paymentTypeId.data == 'transfer') && !this.state.onlyEmailInvoices && meta.total > 0) &&
                             <ButtonText buttonText={this.state.postInvoicesText} onClickAction={() => this.previewSendPost('overboeken')}/>
                             }
-                            {((this.props.invoicesFilters.statusId.data == 'reminder' || this.props.invoicesFilters.statusId.data == 'to-remind' || this.props.invoicesFilters.statusId.data === 'reminder_1' || this.props.invoicesFilters.statusId.data === 'remidner_2' || this.props.invoicesFilters.statusId.data === 'remidner_3') && meta.total > 0) &&
-                            <ButtonText buttonText={this.state.sendRemindersText}
+                            {((this.props.invoicesFilters.statusId.data == 'reminder' || this.props.invoicesFilters.statusId.data == 'to-remind' || this.props.invoicesFilters.statusId.data === 'reminder_1' || this.props.invoicesFilters.statusId.data === 'reminder_2' || this.props.invoicesFilters.statusId.data === 'reminder_3') && !this.state.onlyPostInvoices && meta.total > 0) &&
+                            <ButtonText buttonText={this.state.sendRemindersTextEmail}
                                         onClickAction={() => this.sendReminders()}/>
+                            }
+                            {((this.props.invoicesFilters.statusId.data == 'reminder' || this.props.invoicesFilters.statusId.data == 'to-remind' || this.props.invoicesFilters.statusId.data === 'reminder_1' || this.props.invoicesFilters.statusId.data === 'reminder_2' || this.props.invoicesFilters.statusId.data === 'reminder_3') && !this.state.onlyEmailInvoices && meta.total > 0) &&
+                            <ButtonText buttonText={this.state.sendRemindersTextPost}
+                                        onClickAction={() => this.sendRemindersPost()}/>
                             }
                         </div>
                     </div>

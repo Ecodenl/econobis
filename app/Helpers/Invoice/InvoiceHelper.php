@@ -214,10 +214,6 @@ class InvoiceHelper
         $orderController = new OrderController();
         $contactInfo = $orderController->getContactInfoForOrder($invoice->order->contact);
 
-        if($contactInfo['email'] === 'Geen e-mail bekend'){
-            return false;
-        }
-
         if($invoice->date_reminder_3){
             InvoiceHelper::sendNotificationEmail($invoice->order->emailTemplateExhortation, $invoice);
             $invoice->date_exhortation = Carbon::today();

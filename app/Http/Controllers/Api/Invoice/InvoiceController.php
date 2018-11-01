@@ -31,6 +31,8 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use iio\libmergepdf\Merger;
+
 
 class InvoiceController extends ApiController
 {
@@ -183,6 +185,18 @@ class InvoiceController extends ApiController
         return InvoiceHelper::sendNotification($invoice);
     }
 
+    public function sendNotificationPost(Invoice $invoice)
+    {
+      InvoiceHelper::sendNotification($invoice);
+
+        $filePath = Storage::disk('administrations')->getDriver()
+            ->getAdapter()->applyPathPrefix($invoice->document->filename);
+        header('Access-Control-Expose-Headers: X-Filename');
+        header('X-Filename:' . $invoice->document->name);
+
+        return response()->download($filePath, $invoice->document->name);
+    }
+
     public function sendNotifications(Request $request)
     {
         $invoices = Invoice::whereIn('id', $request->input('ids'))->get();
@@ -190,6 +204,33 @@ class InvoiceController extends ApiController
         foreach ($invoices as $invoice) {
             InvoiceHelper::sendNotification($invoice);
         }
+    }
+
+    public function sendNotificationsPost(Request $request)
+    {
+        $invoices = Invoice::whereIn('id', $request->input('ids'))->get();
+
+        $merger = new Merger;
+        foreach ($invoices as $invoice) {
+            InvoiceHelper::sendNotification($invoice);
+
+            if ($invoice->document) {
+                $filePath = Storage::disk('administrations')->getDriver()
+                    ->getAdapter()->applyPathPrefix($invoice->document->filename);
+
+                $merger->addFile($filePath);
+            }
+        }
+
+        $createdPdf = $merger->merge();
+
+        $name = 'Post-facturen-notificaties-' . Carbon::now()->format("Y-m-d-H-i-s") . '.pdf';
+
+        header('Access-Control-Expose-Headers: X-Filename');
+        header('X-Filename:' . $name);
+
+        return $createdPdf;
+
     }
 
     public function setIrrecoverable(Invoice $invoice)

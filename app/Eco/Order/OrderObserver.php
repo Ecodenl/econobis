@@ -32,6 +32,8 @@ class OrderObserver
     public function saved(Order $order){
         foreach ($order->invoicesToSend as $invoiceToSend) {
             $invoiceToSend->collection_frequency_id = $order->collection_frequency_id;
+            $invoiceToSend->subject = $order->subject;
+            $invoiceToSend->invoice_text = $order->invoice_text;
             $invoiceToSend->save();
             foreach ($invoiceToSend->invoiceProducts as $invoiceProductToSend) {
                 $price = 0;

@@ -8,7 +8,7 @@ import moment from "moment/moment";
 
 const InvoiceDetailsFormGeneralView = props => {
 
-    const { status, dateRequested, paymentType, paymentTypeId, order, totalPriceInclVatAndReduction,
+    const { status, dateRequested, paymentType, paymentTypeId, invoiceText, subject, order, totalPriceInclVatAndReduction,
         amountOpen, dateSent, datePaymentDue, datePaid,
         dateReminder1, dateReminder2, dateReminder3, dateExhortation,
         emailReminder1, emailReminder2, emailReminder3, emailExhortation, dateCollection, emailedTo } = props.invoiceDetails;
@@ -36,7 +36,7 @@ const InvoiceDetailsFormGeneralView = props => {
                         />
                         <ViewText
                             label={"Onderwerp"}
-                            value={order ? order.subject : ''}
+                            value={subject ? subject : ''}
                         />
                     </div>
 
@@ -53,7 +53,7 @@ const InvoiceDetailsFormGeneralView = props => {
                             <label htmlFor="invoiceText" className="col-sm-12">Opmerking</label>
                         </div>
                         <div className="col-sm-9" id="invoiceText">
-                            {order ? order.invoiceText : ''}
+                            {invoiceText ? invoiceText : ''}
                         </div>
                     </div>
 

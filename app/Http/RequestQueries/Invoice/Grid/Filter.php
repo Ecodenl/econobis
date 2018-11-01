@@ -31,7 +31,7 @@ class Filter extends RequestFilter
             'number' => 'invoices.number',
             'statusId' => 'invoices.status_id',
             'dateRequested' => 'invoices.date_requested',
-            'subject' => 'orders.subject',
+            'subject' => 'invoices.subject',
             'contact' => 'contacts.full_name',
             'paymentTypeId' => 'invoices.payment_type_id',
             'daysLastReminder' => 'invoices.days_last_reminder',
@@ -41,7 +41,6 @@ class Filter extends RequestFilter
     protected $joins
         = [
             'contact' => 'contact',
-            'subject' => 'order',
         ];
 
     protected $defaultTypes
@@ -63,6 +62,23 @@ class Filter extends RequestFilter
                     $q2->where('invoices.status_id', '!=', 'to-send')
                         ->where('invoices.date_sent', '<=',
                             $data);
+                });
+        });
+
+        return false;
+    }
+
+    protected function applySubjectFilter($query, $type, $data)
+    {
+        $query->join('orders', 'invoices.order_id', '=', 'orders.id');
+
+        $query->where(function ($q) use ($data) {
+            $q->orWhere(function ($q1) use ($data) {
+                $q1->where('invoices.status_id', 'to-send')
+                    ->where('orders.subject', 'LIKE', '%' . $data . '%');})
+                ->orWhere(function ($q2) use ($data) {
+                    $q2->where('invoices.status_id', '!=', 'to-send')
+                        ->where('invoices.subject', 'LIKE', '%' . $data . '%');
                 });
         });
 

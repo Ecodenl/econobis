@@ -101,9 +101,12 @@ class Order extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function emailTemplate()
-    {
-        return $this->belongsTo(EmailTemplate::class);
+    public function emailTemplateCollection(){
+        return $this->belongsTo(EmailTemplate::class, 'email_template_id_collection');
+    }
+
+    public function emailTemplateTransfer(){
+        return $this->belongsTo(EmailTemplate::class, 'email_template_id_transfer');
     }
 
     public function emailTemplateReminder()

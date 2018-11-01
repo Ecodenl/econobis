@@ -39,7 +39,8 @@ class AdministrationNewForm extends Component {
                 sepaCreditorId: '',
                 rsinNumber: '',
                 defaultPaymentTerm: '',
-                emailTemplateId: '',
+                emailTemplateIdCollection: '',
+                emailTemplateIdTransfer: '',
                 emailTemplateReminderId: '',
                 emailTemplateExhortationId: '',
                 attachment: ''
@@ -195,7 +196,8 @@ class AdministrationNewForm extends Component {
             data.append('sepaCreditorId', administration.sepaCreditorId);
             data.append('rsinNumber', administration.rsinNumber);
             data.append('defaultPaymentTerm', administration.defaultPaymentTerm);
-            data.append('emailTemplateId', administration.emailTemplateId);
+            data.append('emailTemplateIdCollection', administration.emailTemplateIdCollection);
+            data.append('emailTemplateIdTransfer', administration.emailTemplateIdTransfer);
             data.append('emailTemplateReminderId', administration.emailTemplateReminderId);
             data.append('emailTemplateExhortationId', administration.emailTemplateExhortationId);
             data.append('attachment', administration.attachment);
@@ -209,7 +211,7 @@ class AdministrationNewForm extends Component {
 
     render() {
         const { name, administrationNumber, address, postalCode, city, countryId, kvkNumber, btwNumber, IBAN, email, website, bic, sepaContractName, sepaCreditorId, rsinNumber, defaultPaymentTerm, attachment,
-            emailTemplateId, emailTemplateReminderId, emailTemplateExhortationId, ibanAttn} = this.state.administration;
+            emailTemplateIdCollection, emailTemplateIdTransfer, emailTemplateReminderId, emailTemplateExhortationId, ibanAttn} = this.state.administration;
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -332,10 +334,10 @@ class AdministrationNewForm extends Component {
 
                         <div className="row">
                             <InputReactSelect
-                                label={"E-mail template factuur"}
-                                name={"emailTemplateId"}
+                                label={"E-mail template factuur incasso"}
+                                name={"emailTemplateIdCollection"}
                                 options={this.state.emailTemplates}
-                                value={emailTemplateId}
+                                value={emailTemplateIdCollection}
                                 onChangeAction={this.handleReactSelectChange}
                                 isLoading={this.state.peekLoading.emailTemplates}
                                 multi={false}
@@ -351,10 +353,10 @@ class AdministrationNewForm extends Component {
 
                         <div className="row">
                             <InputReactSelect
-                                label={"E-mail template herinnering"}
-                                name={"emailTemplateReminderId"}
+                                label={"E-mail template factuur overboeken"}
+                                name={"emailTemplateIdTransfer"}
                                 options={this.state.emailTemplates}
-                                value={emailTemplateReminderId}
+                                value={emailTemplateIdTransfer}
                                 onChangeAction={this.handleReactSelectChange}
                                 isLoading={this.state.peekLoading.emailTemplates}
                                 multi={false}
@@ -369,10 +371,10 @@ class AdministrationNewForm extends Component {
 
                         <div className="row">
                             <InputReactSelect
-                                label={"E-mail template aanmaning"}
-                                name={"emailTemplateExhortationId"}
+                                label={"E-mail template herinnering"}
+                                name={"emailTemplateReminderId"}
                                 options={this.state.emailTemplates}
-                                value={emailTemplateExhortationId}
+                                value={emailTemplateReminderId}
                                 onChangeAction={this.handleReactSelectChange}
                                 isLoading={this.state.peekLoading.emailTemplates}
                                 multi={false}
@@ -385,6 +387,18 @@ class AdministrationNewForm extends Component {
                                 name={"defaultPaymentTerm"}
                                 value={defaultPaymentTerm}
                                 onChangeAction={this.handleInputChange}
+                            />
+                        </div>
+
+                        <div className="row">
+                            <InputReactSelect
+                                label={"E-mail template aanmaning"}
+                                name={"emailTemplateExhortationId"}
+                                options={this.state.emailTemplates}
+                                value={emailTemplateExhortationId}
+                                onChangeAction={this.handleReactSelectChange}
+                                isLoading={this.state.peekLoading.emailTemplates}
+                                multi={false}
                             />
                         </div>
 

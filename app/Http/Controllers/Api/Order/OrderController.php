@@ -73,7 +73,8 @@ class OrderController extends ApiController
             'invoicesPaidCollection',
             'invoicesPaidTransfer',
             'createdBy',
-            'emailTemplate',
+            'emailTemplateCollection',
+            'emailTemplateTransfer',
             'emailTemplateReminder',
             'emailTemplateExhortation',
         ]);
@@ -90,7 +91,8 @@ class OrderController extends ApiController
             ->integer('administrationId')->validate('required|exists:administrations,id')->alias('administration_id')->next()
             ->string('statusId')->validate('required')->alias('status_id')->next()
             ->string('subject')->validate('required')->next()
-            ->integer('emailTemplateId')->validate('nullable|exists:email_templates,id')->onEmpty(null)->whenMissing(null)->alias('email_template_id')->next()
+            ->integer('emailTemplateIdCollection')->validate('nullable|exists:email_templates,id')->onEmpty(null)->whenMissing(null)->alias('email_template_id_collection')->next()
+            ->integer('emailTemplateIdTransfer')->validate('nullable|exists:email_templates,id')->onEmpty(null)->whenMissing(null)->alias('email_template_id_transfer')->next()
             ->integer('emailTemplateReminderId')->validate('nullable|exists:email_templates,id')->onEmpty(null)->whenMissing(null)->alias('email_template_reminder_id')->next()
             ->integer('emailTemplateExhortationId')->validate('nullable|exists:email_templates,id')->onEmpty(null)->whenMissing(null)->alias('email_template_exhortation_id')->next()
             ->string('collectionFrequencyId')->onEmpty(null)->whenMissing(null)->alias('collection_frequency_id')->next()
@@ -120,7 +122,8 @@ class OrderController extends ApiController
             ->integer('administrationId')->validate('required|exists:administrations,id')->alias('administration_id')->next()
             ->string('statusId')->validate('required')->alias('status_id')->next()
             ->string('subject')->validate('required')->next()
-            ->integer('emailTemplateId')->validate('nullable|exists:email_templates,id')->onEmpty(null)->whenMissing(null)->alias('email_template_id')->next()
+            ->integer('emailTemplateIdCollection')->validate('nullable|exists:email_templates,id')->onEmpty(null)->whenMissing(null)->alias('email_template_id_collection')->next()
+            ->integer('emailTemplateIdTransfer')->validate('nullable|exists:email_templates,id')->onEmpty(null)->whenMissing(null)->alias('email_template_id_transfer')->next()
             ->integer('emailTemplateReminderId')->validate('nullable|exists:email_templates,id')->onEmpty(null)->whenMissing(null)->alias('email_template_reminder_id')->next()
             ->integer('emailTemplateExhortationId')->validate('nullable|exists:email_templates,id')->onEmpty(null)->whenMissing(null)->alias('email_template_exhortation_id')->next()
             ->string('collectionFrequencyId')->onEmpty(null)->whenMissing(null)->alias('collection_frequency_id')->next()
@@ -373,7 +376,7 @@ class OrderController extends ApiController
         $orders = Order::whereIn('id', $orderIds)->get();
 
         foreach ($orders as $order){
-            if($order->can_create_invoice) {
+            if($order->total_price_incl_vat >= 0 && $order->can_create_invoice) {
                 $invoice = new Invoice();
                 $invoice->status_id = 'to-send';
                 $invoice->date_requested = $order->date_next_invoice;

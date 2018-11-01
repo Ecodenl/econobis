@@ -152,10 +152,19 @@ class InvoiceHelper
         $htmlBody .= '<p></p>';
         $htmlBody .= $invoice->administration->name;
 
-        if ($invoice->order->emailTemplate) {
-            $subject = $invoice->order->emailTemplate->subject
-                ? $invoice->order->emailTemplate->subject : $subject;
-            $htmlBody = $invoice->order->emailTemplate->html_body;
+        $emailTemplate = null;
+
+        if($invoice->payment_type_id === 'collection'){
+            $emailTemplate = $invoice->order->emailTemplateCollection;
+        }
+        else{
+            $emailTemplate = $invoice->order->emailTemplateTransfer;
+        }
+
+        if ($emailTemplate) {
+            $subject = $emailTemplate->subject
+                ? $emailTemplate->subject : $subject;
+            $htmlBody = $emailTemplate->html_body;
 
         }
 

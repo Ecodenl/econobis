@@ -8,7 +8,7 @@ import moment from "moment/moment";
 
 const OrderDetailsFormGeneralView = props => {
 
-    const { contact, administration, status, subject, emailTemplate, emailTemplateReminder, emailTemplateExhortation, paymentType, collectionFrequency, IBAN, ibanAttn,
+    const { contact, administration, status, subject, emailTemplateCollection, emailTemplateTransfer, emailTemplateReminder, emailTemplateExhortation, paymentType, collectionFrequency, IBAN, ibanAttn,
         poNumber, invoiceText, dateRequested, totalPriceInclVatPerYear, dateNextInvoice } = props.orderDetails;
 
     return (
@@ -49,8 +49,8 @@ const OrderDetailsFormGeneralView = props => {
                     </div>
                     <div className="row">
                         <ViewText
-                            label={"E-mail template factuur"}
-                            value={emailTemplate ? emailTemplate.name : ''}
+                            label={"E-mail template factuur incasso"}
+                            value={emailTemplateCollection ? emailTemplateCollection.name : ''}
                         />
                         <ViewText
                             label={"Betaalwijze"}
@@ -59,8 +59,8 @@ const OrderDetailsFormGeneralView = props => {
                     </div>
                     <div className="row">
                         <ViewText
-                            label={"E-mail template herinnering"}
-                            value={emailTemplateReminder ? emailTemplateReminder.name : ''}
+                            label={"E-mail template factuur overboeken"}
+                            value={emailTemplateTransfer ? emailTemplateTransfer.name : ''}
                         />
                         <ViewText
                             label={"Factuur frequentie"}
@@ -69,14 +69,22 @@ const OrderDetailsFormGeneralView = props => {
                     </div>
                     <div className="row">
                         <ViewText
-                            label={"E-mail template aanmaning"}
-                            value={emailTemplateExhortation ? emailTemplateExhortation.name : ''}
+                            label={"E-mail template herinnering"}
+                            value={emailTemplateReminder ? emailTemplateReminder.name : ''}
                         />
                         <ViewText
                             label={"Opdracht nummer klant"}
                             value={poNumber}
                         />
                     </div>
+                    <div className="row">
+                        <ViewText
+                            label={"E-mail template aanmaning"}
+                            value={emailTemplateExhortation ? emailTemplateExhortation.name : ''}
+                        />
+                    </div>
+
+
                     <div className="row">
                         <ViewText
                             label={"IBAN"}
@@ -87,6 +95,7 @@ const OrderDetailsFormGeneralView = props => {
                             value={ibanAttn}
                         />
                     </div>
+
 
                     <div className="row">
                         <div className="col-sm-3">

@@ -1,21 +1,19 @@
 import React, {Component} from 'react';
 
-import Modal from '../../../../../components/modal/Modal';
-import InvoiceDetailsAPI from "../../../../../api/invoice/InvoiceDetailsAPI";
+import Modal from '../../../../components/modal/Modal';
+import InvoiceDetailsAPI from "../../../../api/invoice/InvoiceDetailsAPI";
 import moment from "moment/moment";
 import validator from "validator";
-import InputDate from "../../../../../components/form/InputDate";
-import {connect} from "react-redux";
-import {fetchInvoiceDetails} from "../../../../../actions/invoice/InvoiceDetailsActions";
+import InputDate from "../../../../components/form/InputDate";
+import {hashHistory} from "react-router";
 
-class InvoiceDetailsFormSetPaid extends Component {
+class InvoiceListSetMultiplePaid extends Component {
 
     constructor(props) {
         super(props);
 
         this.state = {
             invoice: {
-                id: props.invoiceId,
                 datePaid: moment().format('Y-MM-DD'),
             },
             errors: {
@@ -50,11 +48,14 @@ class InvoiceDetailsFormSetPaid extends Component {
 
         this.setState({...this.state, errors: errors});
 
+        let invoiceIds = [];
+
+        this.props.invoices.map((invoice) => (invoiceIds.push(invoice.id)));
+
         // If no errors send form
         if (!hasErrors) {
-            InvoiceDetailsAPI.updateInvoice(invoice).then((payload) => {
-                this.props.fetchInvoiceDetails(invoice.id);
-                this.props.closeModal();
+            InvoiceDetailsAPI.setInvoicesPaid(invoiceIds, invoice.datePaid).then((payload) => {
+                hashHistory.push(`/financieel/${this.props.administrationId}/facturen/betaald`);
             });
         }
     };
@@ -64,18 +65,15 @@ class InvoiceDetailsFormSetPaid extends Component {
 
         return (
             <Modal
-                buttonConfirmText="Factuur betalen"
+                buttonConfirmText="Facturen betalen"
                 closeModal={this.props.closeModal}
                 confirmAction={this.confirmAction}
-                title="Factuur betalen"
+                title="Facturen betalen"
             >
                 <div className="row">
                     <div className={'col-sm-12 margin-10-bottom'}>
                     <span>
-                    Wanneer de betaaldatum wordt ingevuld zal er een betaling aangemaakt worden met het openstaande bedrag(€{this.props.amountOpen.toLocaleString('nl', {
-                        minimumFractionDigits: 2,
-                        maximumFractionDigits: 2
-                    })}).
+                    Wanneer de betaaldatum wordt ingevuld zal er een betaling aangemaakt worden met het openstaande bedrag.
                     </span>
                     </div>
                 </div>
@@ -95,10 +93,4 @@ class InvoiceDetailsFormSetPaid extends Component {
     };
 }
 
-const mapDispatchToProps = dispatch => ({
-    fetchInvoiceDetails: (id) => {
-        dispatch(fetchInvoiceDetails(id));
-    },
-});
-
-export default connect(null, mapDispatchToProps)(InvoiceDetailsFormSetPaid);
+export default InvoiceListSetMultiplePaid;

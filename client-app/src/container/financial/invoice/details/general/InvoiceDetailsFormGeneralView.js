@@ -8,7 +8,7 @@ import moment from "moment/moment";
 
 const InvoiceDetailsFormGeneralView = props => {
 
-    const { status, dateRequested, paymentType, paymentTypeId, order, totalPriceInclVatAndReduction,
+    const { status, dateRequested, paymentType, paymentTypeId, invoiceText, subject, order, totalPriceInclVatAndReduction,
         amountOpen, dateSent, datePaymentDue, datePaid,
         dateReminder1, dateReminder2, dateReminder3, dateExhortation,
         emailReminder1, emailReminder2, emailReminder3, emailExhortation, dateCollection, emailedTo } = props.invoiceDetails;
@@ -31,20 +31,16 @@ const InvoiceDetailsFormGeneralView = props => {
 
                     <div className="row">
                         <ViewText
-                            label={"Geplande factuur datum"}
-                            value={dateRequested ? moment(dateRequested).format('DD-MM-Y') : ''}
-                        />
-                        <ViewText
                             label={"Betaalwijze"}
                             value={paymentType ? paymentType.name : ''}
+                        />
+                        <ViewText
+                            label={"Onderwerp"}
+                            value={subject ? subject : ''}
                         />
                     </div>
 
                     <div className="row">
-                        <ViewText
-                            label={"Onderwerp"}
-                            value={order ? order.subject : ''}
-                        />
                         <ViewText
                             label={"Order"}
                             value={order ? order.number : ''}
@@ -57,7 +53,7 @@ const InvoiceDetailsFormGeneralView = props => {
                             <label htmlFor="invoiceText" className="col-sm-12">Opmerking</label>
                         </div>
                         <div className="col-sm-9" id="invoiceText">
-                            {order ? order.invoiceText : ''}
+                            {invoiceText ? invoiceText : ''}
                         </div>
                     </div>
 
@@ -73,10 +69,18 @@ const InvoiceDetailsFormGeneralView = props => {
                     </div>
 
                     <div className="row">
-                        <ViewText
-                            label={"Factuur verstuurd"}
-                            value={dateSent ? moment(dateSent).format('DD-MM-Y') : ''}
-                        />
+                        {dateSent ?
+                            <ViewText
+                                label={"Factuur datum"}
+                                value={dateSent ? moment(dateSent).format('DD-MM-Y') : ''}
+                            />
+                            :
+                            <ViewText
+                                label={"Geplande factuur datum"}
+                                value={dateRequested ? moment(dateRequested).format('DD-MM-Y') : ''}
+                            />
+                        }
+
                         <ViewText
                             label={"Verstuurd naar"}
                             value={emailedTo ? emailedTo : ''}

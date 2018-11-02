@@ -132,9 +132,9 @@ class MailFetcher
 
         $textHtml = $textHtml?: '';
 
-        if(strlen($textHtml) > 50000){
-            $textHtml = substr($emailData->textHtml, 0, 50000);
-            $textHtml .= '<p>Deze mail is langer dan 50.000 karakters en hierdoor ingekort.</p>';
+        if(strlen($textHtml) > 250000){
+            $textHtml = substr($emailData->textHtml, 0, 250000);
+            $textHtml .= '<p>Deze mail is langer dan 250.000 karakters en hierdoor ingekort.</p>';
         }
 
         $email = new Email([

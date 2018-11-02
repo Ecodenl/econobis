@@ -24,6 +24,7 @@ class OrderCollectionFrequency extends EnumWithIdAndName
             new static('once', 'Eenmalig'),
             new static('monthly', 'Maandelijks'),
             new static('quarterly', 'Per kwartaal'),
+            new static('half-year', 'Per half jaar'),
             new static('yearly', 'Jaarlijks'),
         ];
     }

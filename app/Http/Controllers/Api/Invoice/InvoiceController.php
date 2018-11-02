@@ -31,6 +31,8 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use iio\libmergepdf\Merger;
+
 
 class InvoiceController extends ApiController
 {
@@ -131,6 +133,18 @@ class InvoiceController extends ApiController
         return $this->show($invoice->fresh());
     }
 
+    public function setMultiplePaid(Request $request)
+    {
+        $this->authorize('manage', Invoice::class);
+
+        $invoices = Invoice::whereIn('id', $request->input('ids'))->get();
+
+        foreach ($invoices as $invoice) {
+            InvoiceHelper::saveInvoiceDatePaid($invoice, $request->input('datePaid'));
+        }
+
+    }
+
     public function newPayment(RequestInput $input, Invoice $invoice)
     {
         $this->authorize('manage', Invoice::class);
@@ -182,6 +196,18 @@ class InvoiceController extends ApiController
         return InvoiceHelper::sendNotification($invoice);
     }
 
+    public function sendNotificationPost(Invoice $invoice)
+    {
+      InvoiceHelper::sendNotification($invoice);
+
+        $filePath = Storage::disk('administrations')->getDriver()
+            ->getAdapter()->applyPathPrefix($invoice->document->filename);
+        header('Access-Control-Expose-Headers: X-Filename');
+        header('X-Filename:' . $invoice->document->name);
+
+        return response()->download($filePath, $invoice->document->name);
+    }
+
     public function sendNotifications(Request $request)
     {
         $invoices = Invoice::whereIn('id', $request->input('ids'))->get();
@@ -189,6 +215,33 @@ class InvoiceController extends ApiController
         foreach ($invoices as $invoice) {
             InvoiceHelper::sendNotification($invoice);
         }
+    }
+
+    public function sendNotificationsPost(Request $request)
+    {
+        $invoices = Invoice::whereIn('id', $request->input('ids'))->get();
+
+        $merger = new Merger;
+        foreach ($invoices as $invoice) {
+            InvoiceHelper::sendNotification($invoice);
+
+            if ($invoice->document) {
+                $filePath = Storage::disk('administrations')->getDriver()
+                    ->getAdapter()->applyPathPrefix($invoice->document->filename);
+
+                $merger->addFile($filePath);
+            }
+        }
+
+        $createdPdf = $merger->merge();
+
+        $name = 'Post-facturen-notificaties-' . Carbon::now()->format("Y-m-d-H-i-s") . '.pdf';
+
+        header('Access-Control-Expose-Headers: X-Filename');
+        header('X-Filename:' . $name);
+
+        return $createdPdf;
+
     }
 
     public function setIrrecoverable(Invoice $invoice)
@@ -445,7 +498,44 @@ class InvoiceController extends ApiController
         $invoiceProduct = new InvoiceProduct($data);
 
         $product = Product::find($data['product_id']);
-        $invoiceProduct->price = $product->currentPrice ? $product->currentPrice->price : 0;
+        $invoice = Invoice::find($data['invoiceId']);
+
+        $price = 0;
+        if($product->currentPrice){
+            $price = $product->currentPrice->price;
+
+            switch ($product->invoice_frequency_id){
+                case 'monthly':
+                    $price = $price * 12;
+                    break;
+                case 'quarterly':
+                    $price = $price * 4;
+                    break;
+                case 'half-year':
+                    $price = $price * 2;
+                    break;
+                default:
+                    $price = $price;
+                    break;
+            }
+
+            switch ($invoice->collection_frequency_id) {
+                case 'monthly':
+                    $price = $price / 12;
+                    break;
+                case 'quarterly':
+                    $price = $price / 4;
+                    break;
+                case 'half-year':
+                    $price = $price / 2;
+                    break;
+                default:
+                    $price = $price;
+                    break;
+            }
+        }
+
+        $invoiceProduct->price = $price;
         $invoiceProduct->vat_percentage = $product->currentPrice ? $product->currentPrice->vat_percentage : 0;
         $invoiceProduct->product_code = $product->code;
         $invoiceProduct->product_name = $product->name;
@@ -489,14 +579,50 @@ class InvoiceController extends ApiController
 
         $product->payment_type_id = $invoice->payment_type_id;
 
-        DB::transaction(function () use ($product, $priceHistory, $invoiceProduct) {
+
+        DB::transaction(function () use ($product, $priceHistory, $invoiceProduct, $invoice) {
             $product->save();
 
             $priceHistory->product_id = $product->id;
             $priceHistory->save();
 
+            $price = 0;
+            if($product->currentPrice){
+                $price = $product->currentPrice->price;
+
+                switch ($product->invoice_frequency_id){
+                    case 'monthly':
+                        $price = $price * 12;
+                        break;
+                    case 'quarterly':
+                        $price = $price * 4;
+                        break;
+                    case 'half-year':
+                        $price = $price * 2;
+                        break;
+                    default:
+                        $price = $price;
+                        break;
+                }
+
+                switch ($invoice->collection_frequency_id) {
+                    case 'monthly':
+                        $price = $price / 12;
+                        break;
+                    case 'quarterly':
+                        $price = $price / 4;
+                        break;
+                    case 'half-year':
+                        $price = $price / 2;
+                        break;
+                    default:
+                        $price = $price;
+                        break;
+                }
+            }
+
             $invoiceProduct->product_id = $product->id;
-            $invoiceProduct->price = $product->currentPrice ? $product->currentPrice->price : 0;
+            $invoiceProduct->price = $price;
             $invoiceProduct->vat_percentage = $product->currentPrice ? $product->currentPrice->vat_percentage : 0;
             $invoiceProduct->product_code = $product->code;
             $invoiceProduct->product_name = $product->name;

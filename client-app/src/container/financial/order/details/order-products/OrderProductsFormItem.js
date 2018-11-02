@@ -217,7 +217,7 @@ class OrderProductsFormItem extends Component {
                     orderProduct={this.state.orderProduct}
                 />
                 {
-                    this.state.showEdit && this.props.permissions.manageFinancial &&
+                    this.state.showEdit && this.props.orderDetails.canEdit && this.props.permissions.manageFinancial &&
                     <OrderProductsFormEdit
                         orderDetails={this.props.orderDetails}
                         errors={this.state.errors}
@@ -231,7 +231,7 @@ class OrderProductsFormItem extends Component {
                     />
                 }
                 {
-                    this.state.showDelete && this.props.permissions.manageFinancial &&
+                    this.state.showDelete && this.props.orderDetails.canEdit && this.props.permissions.manageFinancial &&
                     <OrderProductsFormDelete
                         closeDeleteItemModal={this.toggleDelete}
                         id={this.state.orderProduct.id}

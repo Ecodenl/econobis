@@ -74,7 +74,7 @@ class InvoiceCSVHelper
             'total_price_incl_vat_and_reduction' => 'Factuurbedrag bruto',
             'total_price_ex_vat_incl_reduction' => 'Factuurbedrag netto',
             'date_collection' => 'Incassodatum',
-            'order.IBAN' => 'Ibannr',
+            'invoice.iban' => 'Ibannr',
         ], $headers);
             $headers = false;
         }

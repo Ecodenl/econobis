@@ -12,14 +12,13 @@ import InputSelect from "../../../../../components/form/InputSelect";
 import EmailTemplateAPI from "../../../../../api/email-template/EmailTemplateAPI";
 import InputDate from "../../../../../components/form/InputDate";
 import InputReactSelect from "../../../../../components/form/InputReactSelect";
-import moment from "moment/moment";
 
 class OrderDetailsFormGeneralEdit extends Component {
     constructor(props) {
         super(props);
 
         const {
-            id, statusId, subject, emailTemplateId, emailTemplateReminderId, emailTemplateExhortationId, paymentTypeId, collectionFrequencyId, IBAN, ibanAttn,
+            id, statusId, subject, emailTemplateIdCollection, emailTemplateIdTransfer , emailTemplateReminderId, emailTemplateExhortationId, paymentTypeId, collectionFrequencyId, IBAN, ibanAttn,
             poNumber, invoiceText, dateRequested, administrationId, dateNextInvoice
         } = props.orderDetails;
 
@@ -31,7 +30,8 @@ class OrderDetailsFormGeneralEdit extends Component {
                 statusId: statusId ? statusId : '',
                 administrationId: administrationId ? administrationId : '',
                 subject: subject ? subject : '',
-                emailTemplateId: emailTemplateId ? emailTemplateId : '',
+                emailTemplateIdCollection: emailTemplateIdCollection ? emailTemplateIdCollection : '',
+                emailTemplateIdTransfer: emailTemplateIdTransfer ? emailTemplateIdTransfer : '',
                 emailTemplateReminderId: emailTemplateReminderId ? emailTemplateReminderId : '',
                 emailTemplateExhortationId: emailTemplateExhortationId ? emailTemplateExhortationId : '',
                 paymentTypeId: paymentTypeId ? paymentTypeId : '',
@@ -138,7 +138,7 @@ class OrderDetailsFormGeneralEdit extends Component {
 
     render() {
         const {
-            statusId, subject, emailTemplateId, emailTemplateReminderId, emailTemplateExhortationId, paymentTypeId, collectionFrequencyId, IBAN, ibanAttn,
+            statusId, subject, emailTemplateIdCollection, emailTemplateIdTransfer, emailTemplateReminderId, emailTemplateExhortationId, paymentTypeId, collectionFrequencyId, IBAN, ibanAttn,
             poNumber, invoiceText, dateRequested, administrationId, dateNextInvoice
         } = this.state.order;
         const { invoiceCount } = this.props.orderDetails;
@@ -210,10 +210,10 @@ class OrderDetailsFormGeneralEdit extends Component {
 
                         <div className="row">
                             <InputReactSelect
-                                label={"E-mail template factuur"}
-                                name={"emailTemplateId"}
+                                label={"E-mail template factuur incasso"}
+                                name={"emailTemplateIdCollection"}
                                 options={this.state.emailTemplates}
-                                value={emailTemplateId}
+                                value={emailTemplateIdCollection}
                                 onChangeAction={this.handleReactSelectChange}
                                 isLoading={this.state.peekLoading.emailTemplates}
                                 multi={false}
@@ -229,10 +229,10 @@ class OrderDetailsFormGeneralEdit extends Component {
                         </div>
                         <div className="row">
                             <InputReactSelect
-                                label={"E-mail template herinnering"}
-                                name={"emailTemplateReminderId"}
+                                label={"E-mail template factuur overboeken"}
+                                name={"emailTemplateIdTransfer"}
                                 options={this.state.emailTemplates}
-                                value={emailTemplateReminderId}
+                                value={emailTemplateIdTransfer}
                                 onChangeAction={this.handleReactSelectChange}
                                 isLoading={this.state.peekLoading.emailTemplates}
                                 multi={false}
@@ -250,10 +250,10 @@ class OrderDetailsFormGeneralEdit extends Component {
 
                         <div className="row">
                             <InputReactSelect
-                                label={"E-mail template aanmaning"}
-                                name={"emailTemplateExhortationId"}
+                                label={"E-mail template herinnering"}
+                                name={"emailTemplateReminderId"}
                                 options={this.state.emailTemplates}
-                                value={emailTemplateExhortationId}
+                                value={emailTemplateReminderId}
                                 onChangeAction={this.handleReactSelectChange}
                                 isLoading={this.state.peekLoading.emailTemplates}
                                 multi={false}
@@ -263,6 +263,18 @@ class OrderDetailsFormGeneralEdit extends Component {
                                 name={"poNumber"}
                                 value={poNumber}
                                 onChangeAction={this.handleInputChange}
+                            />
+                        </div>
+
+                        <div className="row">
+                            <InputReactSelect
+                                label={"E-mail template aanmaning"}
+                                name={"emailTemplateExhortationId"}
+                                options={this.state.emailTemplates}
+                                value={emailTemplateExhortationId}
+                                onChangeAction={this.handleReactSelectChange}
+                                isLoading={this.state.peekLoading.emailTemplates}
+                                multi={false}
                             />
                         </div>
 

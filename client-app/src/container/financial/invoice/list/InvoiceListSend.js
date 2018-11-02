@@ -25,7 +25,7 @@ class InvoiceListSend extends Component {
     confirmAction = event => {
         event.preventDefault();
 
-        if(!this.props.canCreateInvoices['can']){
+        if (!this.props.canCreateInvoices['can']) {
             this.props.setError(412, this.props.canCreateInvoices['message']);
             this.props.closeModal();
             return;
@@ -33,7 +33,7 @@ class InvoiceListSend extends Component {
 
         let hasErrors = false;
 
-        if(this.props.paymentType === 'collection') {
+        if (this.props.paymentType === 'collection') {
             const {dateCollection} = this.state;
 
             // Validation
@@ -44,7 +44,7 @@ class InvoiceListSend extends Component {
                 hasErrors = true;
             }
 
-            if(moment().isAfter(moment(dateCollection))){
+            if (moment().isAfter(moment(dateCollection))) {
                 errors.dateCollection = true;
                 hasErrors = true;
             }
@@ -58,7 +58,7 @@ class InvoiceListSend extends Component {
             }
         }
 
-        else{
+        else {
             InvoiceDetailsAPI.send(this.props.invoiceId, null).then((payload) => {
                 hashHistory.push(`/financieel/${this.props.administrationId}/facturen/verzonden`);
             });
@@ -74,7 +74,7 @@ class InvoiceListSend extends Component {
 
 
     render() {
-        const { dateCollection } = this.state;
+        const {dateCollection} = this.state;
 
         return (
             <Modal
@@ -96,7 +96,20 @@ class InvoiceListSend extends Component {
                     />
                 </div>
                 }
-
+                {this.props.paymentType === 'collection' &&
+                <div className="row">
+                    <div className={'col-sm-12 margin-10-bottom'}>
+                    <span>
+                       De incasso datum moet minimaal x dagen later zijn dan de datum waarop je het sepa incasso bestand upload bij je bank. En maximaal x maanden na de upload datum. Informeer bij jou bank welke data zij handhaven.
+                     <br/>
+                     <br/>
+                        <ul>
+                        <li>Bij Triodos is dat minimaal 2 werkdagen en maximaal 2 maanden</li>
+                    </ul>
+                    </span>
+                    </div>
+                </div>
+                }
                 <div className="row">
                     <div className={'col-sm-12 margin-10-bottom'}>
                     <span>

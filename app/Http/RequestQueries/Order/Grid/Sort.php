@@ -17,7 +17,7 @@ class Sort extends RequestSort
     protected $fields = [
         'id',
         'number',
-        'dateRequested',
+        'dateNextInvoice',
         'subject',
         'contact',
         'paymentTypeId',
@@ -27,7 +27,7 @@ class Sort extends RequestSort
     protected $mapping = [
         'id' => 'orders.id',
         'number' => 'orders.number',
-        'dateRequested' => 'orders.date_requested',
+        'dateNextInvoice' => 'orders.date_next_invoice',
         'subject' => 'orders.subject',
         'contact' => 'contacts.full_name',
         'paymentTypeId' => 'orders.payment_type_id',

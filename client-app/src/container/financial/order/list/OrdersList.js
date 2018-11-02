@@ -114,7 +114,7 @@ class OrdersList extends Component {
                         break;
                 };
 
-                this.setState = {
+                this.setState({
                     showDeleteItem: false,
                     showSelectOrdersToCreate: false,
                     checkedAllCheckboxes: false,
@@ -123,7 +123,7 @@ class OrdersList extends Component {
                         id: '',
                         subject: '',
                     }
-                };
+                });
             }
             else {
                 this.props.clearFilterOrders();
@@ -169,7 +169,7 @@ class OrdersList extends Component {
 
         this.fetchOrdersData();
 
-        this.setState = {
+        this.setState({
             showDeleteItem: false,
             showSelectOrdersToCreate: false,
             checkedAllCheckboxes: false,
@@ -178,7 +178,7 @@ class OrdersList extends Component {
                 id: '',
                 subject: '',
             }
-        };
+        });
     };
 
     onSubmitFilter = () => {
@@ -252,7 +252,6 @@ class OrdersList extends Component {
             hashHistory.push(`/financieel/${this.props.administrationId}/orders/aanmaken`);
         }
         else{
-            console.log('test');
             this.setState({showSelectOrdersToCreate: !this.state.showSelectOrdersToCreate});
         }
 
@@ -270,7 +269,7 @@ class OrdersList extends Component {
                             <ButtonIcon iconName={"glyphicon-refresh"} onClickAction={this.resetOrderFilters} />
                             <ButtonIcon iconName={"glyphicon-download-alt"} onClickAction={this.getCSV} />
                             {this.props.ordersFilters.statusId.data == 'create' && meta.total > 0 &&
-                            <ButtonText buttonText={this.state.previewOrderText} onClickAction={() => this.previewOrders()}/>
+                            <ButtonText buttonText={this.state.previewOrderText} onClickAction={this.previewOrders}/>
                             }
                         </div>
                     </div>

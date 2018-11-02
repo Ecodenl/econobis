@@ -75,6 +75,14 @@ export default (state = filtersReducerDefaultState, action) => {
                     data: action.contact,
                 }
             };
+        case 'SET_SUBJECT_FILTER_INVOICES':
+            return {
+                ...state,
+                subject: {
+                    ...state.subject,
+                    data: action.subject,
+                }
+            };
         case 'SET_PAYMENT_TYPE_ID_FILTER_INVOICES':
             return {
                 ...state,

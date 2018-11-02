@@ -57,6 +57,10 @@ class FullInvoice extends Resource
                 'emailExhortation' => $this->email_exhortation,
                 'dateRequested' => $this->date_requested,
 
+                'subject' => $this->subject,
+                'invoiceText' => $this->invoice_text,
+                'iban' => $this->iban,
+
                 'daysToExpire' => $this->days_to_expire,
                 'daysLastReminder' => $this->days_last_reminder,
                 'totalPriceInclVatAndReduction' => $this->total_price_incl_vat_and_reduction,

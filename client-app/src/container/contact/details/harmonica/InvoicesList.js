@@ -21,7 +21,7 @@ const InvoicesList = ({relatedInvoices}) => {
                     return (
                         <tr key={i}>
                             <td className='col-xs-10 clickable'
-                                onClick={() => openItem(relatedInvoice.id)}> {relatedInvoice.number} - {relatedInvoice.status.name} - {moment(relatedInvoice.created_at).format('L')}</td>
+                                onClick={() => openItem(relatedInvoice.id)}> {relatedInvoice.number} - {relatedInvoice.order.subject} - {relatedInvoice.status.name} - {moment(relatedInvoice.created_at).format('L')}</td>
                         </tr>
                     )
                 })

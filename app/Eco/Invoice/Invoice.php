@@ -193,6 +193,34 @@ class Invoice extends Model
         return $vatInfo;
     }
 
+    public function getIbanAttribute(){
+        if($this->status_id === 'to-send'){
+            return $this->order->IBAN ? $this->order->IBAN : $this->order->contact->iban;
+        }
+        else{
+            return $this->attributes['iban'];
+        }
+    }
+
+    public function getSubjectAttribute(){
+        if($this->status_id === 'to-send'){
+            return $this->order->subject;
+        }
+        else{
+            return $this->attributes['subject'];
+        }
+    }
+
+    public function getInvoiceTextAttribute(){
+        if($this->status_id === 'to-send'){
+            return $this->order->invoice_text;
+        }
+        else{
+            return $this->attributes['invoice_text'];
+        }
+    }
+
+
     public function setDaysLastReminder(){
         $daysLastReminder = 0;
         if($this->date_exhortation){
@@ -244,6 +272,9 @@ class Invoice extends Model
                 break;
             case 'quarterly':
                 return $date->addQuarter();
+                break;
+            case 'half-year':
+                return $date->addMonth(6);
                 break;
             case 'yearly':
                 return $date->addYear();

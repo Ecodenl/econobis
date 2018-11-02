@@ -59,7 +59,7 @@ class ProductDetailsFormGeneralEdit extends Component {
                     {'id':  'monthly', name: 'Maand'},
                 ];
 
-                if(invoiceFrequencyId === 'quarterly' || invoiceFrequencyId === 'yearly'){
+                if(invoiceFrequencyId === 'quarterly' || invoiceFrequencyId === 'yearly' || invoiceFrequencyId === 'half-year'){
                     invoiceFrequencyId = 'monthly';
                 }
                 break;
@@ -69,7 +69,7 @@ class ProductDetailsFormGeneralEdit extends Component {
                     {'id':  'monthly', name: 'Maand'},
                     {'id':  'quarterly', name: 'Kwartaal'},
                 ];
-                if(invoiceFrequencyId === 'yearly'){
+                if(invoiceFrequencyId === 'yearly' || invoiceFrequencyId === 'half-year'){
                     invoiceFrequencyId = 'quarterly';
                 }
                 break;
@@ -78,9 +78,10 @@ class ProductDetailsFormGeneralEdit extends Component {
                     {'id':  'once', name: 'Eenmalig'},
                     {'id':  'monthly', name: 'Maand'},
                     {'id':  'quarterly', name: 'Kwartaal'},
+                    {'id':  'half-year', name: 'Half jaar'},
                 ];
                 if(invoiceFrequencyId === 'yearly'){
-                    invoiceFrequencyId = 'quarterly';
+                    invoiceFrequencyId = 'half-year';
                 }
                 break;
             default:
@@ -88,6 +89,7 @@ class ProductDetailsFormGeneralEdit extends Component {
                     {'id':  'once', name: 'Eenmalig'},
                     {'id':  'monthly', name: 'Maand'},
                     {'id':  'quarterly', name: 'Kwartaal'},
+                    {'id':  'half-year', name: 'Half jaar'},
                     {'id':  'yearly', name: 'Jaar'},
                 ];
                 break;
@@ -125,7 +127,7 @@ class ProductDetailsFormGeneralEdit extends Component {
                     {'id':  'monthly', name: 'Maand'},
                 ];
 
-                if(invoiceFrequencyId === 'quarterly' || invoiceFrequencyId === 'yearly'){
+                if(invoiceFrequencyId === 'quarterly' || invoiceFrequencyId === 'yearly' || invoiceFrequencyId === 'half-year'){
                     invoiceFrequencyId = 'monthly';
                 }
                 break;
@@ -135,7 +137,7 @@ class ProductDetailsFormGeneralEdit extends Component {
                     {'id':  'monthly', name: 'Maand'},
                     {'id':  'quarterly', name: 'Kwartaal'},
                 ];
-                if(invoiceFrequencyId === 'yearly'){
+                if(invoiceFrequencyId === 'yearly' || invoiceFrequencyId === 'half-year'){
                     invoiceFrequencyId = 'quarterly';
                 }
                 break;
@@ -144,9 +146,10 @@ class ProductDetailsFormGeneralEdit extends Component {
                     {'id':  'once', name: 'Eenmalig'},
                     {'id':  'monthly', name: 'Maand'},
                     {'id':  'quarterly', name: 'Kwartaal'},
+                    {'id':  'half-year', name: 'Half jaar'},
                 ];
                 if(invoiceFrequencyId === 'yearly'){
-                    invoiceFrequencyId = 'quarterly';
+                    invoiceFrequencyId = 'half-year';
                 }
                 break;
             default:
@@ -154,6 +157,7 @@ class ProductDetailsFormGeneralEdit extends Component {
                     {'id':  'once', name: 'Eenmalig'},
                     {'id':  'monthly', name: 'Maand'},
                     {'id':  'quarterly', name: 'Kwartaal'},
+                    {'id':  'half-year', name: 'Half jaar'},
                     {'id':  'yearly', name: 'Jaar'},
                 ];
                 break;

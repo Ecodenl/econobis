@@ -21,15 +21,6 @@ class OrderProduct extends Model
             'id'
         ];
 
-    protected $appends
-        = [
-            'total_price_incl_vat_and_reduction',
-            'total_price_ex_vat_incl_reduction',
-            'total_price_incl_vat_and_reduction_per_year',
-            'total_price_incl_vat_and_reduction_for_period',
-            'is_one_time_and_paid_product',
-        ];
-
     public function order()
     {
         return $this->belongsTo(Order::class);

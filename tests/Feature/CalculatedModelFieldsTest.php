@@ -134,8 +134,8 @@ class CalculatedModelFieldsTest extends TestCase
     public function assertInvoicesFields()
     {
         $invoice = Invoice::find(1);
-        $this->assertEquals(9910.72, $invoice->total_price_incl_vat_and_reduction);
-        $this->assertEquals(9890.72, $invoice->amount_open);
+        $this->assertEquals(109268.88, $invoice->total_price_incl_vat_and_reduction);
+        $this->assertEquals(109248.88, $invoice->amount_open);
         $this->assertEquals('2018-01-31', $invoice->date_payment_due->format('Y-m-d'));
     }
 
@@ -382,7 +382,7 @@ class CalculatedModelFieldsTest extends TestCase
         $pr->name = "Testje productje2";
         $pr->administration_id = 1;
         $pr->invoice_frequency_id = 'quarterly';
-        $pr->duration_id = 'none';
+        $pr->duration_id = 'month';
         $pr->created_by_id = 1;
         $pr->save();
 
@@ -399,7 +399,7 @@ class CalculatedModelFieldsTest extends TestCase
         $pr->administration_id = 1;
         $pr->invoice_frequency_id = 'monthly';
         $pr->created_by_id = 1;
-        $pr->duration_id = 'none';
+        $pr->duration_id = 'month';
         $pr->save();
 
         $ph = new PriceHistory();
@@ -412,7 +412,7 @@ class CalculatedModelFieldsTest extends TestCase
         $or = new Order();
         $or->contact_id = 1;
         $or->administration_id = 1;
-        $or->status_id = 'concept';
+        $or->status_id = 'active';
         $or->subject = 'Leuke order super!';
         $or->payment_type_id = 'transfer';
         $or->IBAN = 'IBN';
@@ -429,7 +429,6 @@ class CalculatedModelFieldsTest extends TestCase
         $op->percentage_reduction = 14;
         $op->date_start = '2018-01-01';
         $op->date_end = '2020-01-01';
-        $op->description = 'Niet gratis';
         $op->save();
 
         $op = new OrderProduct();
@@ -440,7 +439,6 @@ class CalculatedModelFieldsTest extends TestCase
         $op->percentage_reduction = 18;
         $op->date_start = '2018-01-01';
         $op->date_end = '2020-01-01';
-        $op->description = 'Niet gratis';
         $op->save();
     }
 

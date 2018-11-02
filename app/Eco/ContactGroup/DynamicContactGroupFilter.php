@@ -12,7 +12,6 @@ class DynamicContactGroupFilter extends Model
 {
     protected $table = 'dynamic_contact_group_filter';
     protected $guarded = ['id'];
-    protected $appends = ['dataName'];
 
     public function contactGroup()
     {

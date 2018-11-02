@@ -828,7 +828,6 @@ class ExternalWebformController extends Controller
             $orderProduct = OrderProduct::create([
                 'product_id' => $product->id,
                 'order_id' => $order->id,
-                'description' => $product->name,
                 'amount' => $amount,
                 'date_start' => $dateStart,
             ]);

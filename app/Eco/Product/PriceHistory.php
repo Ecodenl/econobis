@@ -13,10 +13,6 @@ class PriceHistory extends Model
 
     protected $table = 'price_history_product';
 
-    protected $appends
-        = [
-            'price_incl_vat',
-        ];
 
     public function product()
     {

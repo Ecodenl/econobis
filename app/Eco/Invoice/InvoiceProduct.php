@@ -21,13 +21,6 @@ class InvoiceProduct extends Model
             'id'
         ];
 
-    protected $appends
-        = [
-            'price_incl_vat_and_reduction',
-            'price_ex_vat_incl_reduction',
-            'amount_vat',
-        ];
-
     public function invoice()
     {
         return $this->belongsTo(Invoice::class);

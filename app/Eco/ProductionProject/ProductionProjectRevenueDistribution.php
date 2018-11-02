@@ -24,8 +24,6 @@ class ProductionProjectRevenueDistribution extends Model
         'id'
     ];
 
-    protected $appends = ['kwh_return'];
-
     public function participation()
     {
         return $this->belongsTo(ParticipantProductionProject::class,'participation_id');

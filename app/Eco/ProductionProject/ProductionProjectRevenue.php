@@ -21,11 +21,6 @@ class ProductionProjectRevenue extends Model
         'id'
     ];
 
-    protected $appends
-        = [
-            'kwh_result',
-        ];
-
     //relations
     public function productionProject(){
         return $this->belongsTo(ProductionProject::class);

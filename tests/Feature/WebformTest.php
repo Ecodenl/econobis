@@ -291,10 +291,9 @@ class WebformTest extends TestCase
         $this->assertEquals([
             'product_id' => 1,
             'order_id' => 1,
-            'description' => 'Testproduct',
             'amount' => '234',
             'date_start' => '2018-09-01',
-        ], array_intersect_key($orderProduct->toArray(), array_flip(['product_id', 'order_id', 'description', 'amount', 'date_start'])));
+        ], array_intersect_key($orderProduct->toArray(), array_flip(['product_id', 'order_id', 'amount', 'date_start'])));
 
         $task = Task::find(1);
         $this->assertEquals([

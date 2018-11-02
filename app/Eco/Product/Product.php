@@ -20,12 +20,6 @@ class Product extends Model
 
     protected $guarded = ['id'];
 
-    protected $appends
-        = [
-            'price_incl_vat',
-            'current_price',
-        ];
-
     protected static function boot()
     {
         parent::boot();

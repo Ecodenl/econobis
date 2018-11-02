@@ -65,6 +65,7 @@ class OrderController extends ApiController
         $order->load([
             'administration.products',
             'orderProducts.product',
+            'orderProducts',
             'contact',
             'tasks',
             'documents',

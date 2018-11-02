@@ -26,30 +26,6 @@ class Administration extends Model
         'IBAN'
     ];
 
-    protected $appends
-        = [
-            'total_orders',
-            'total_orders_concepts',
-            'total_orders_upcoming',
-            'total_orders_to_create_invoices',
-            'total_orders_to_send_invoices',
-            'total_orders_closed',
-            'total_invoices',
-            'total_invoices_to_send_collection',
-            'total_invoices_to_send_transfer',
-            'total_invoices_sent',
-            'total_invoices_exported',
-            'total_invoices_reminder',
-            'total_invoices_exhortation',
-            'total_invoices_paid',
-            'total_invoices_irrecoverable',
-            'total_payment_invoices',
-            'total_payment_invoices_sent',
-            'total_payment_invoices_not_paid',
-            'can_create_invoices',
-            'can_create_payment_invoices',
-        ];
-
     public function users()
     {
         return $this->belongsToMany(User::class);

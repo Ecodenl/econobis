@@ -27,14 +27,6 @@ class Order extends Model
             'IBAN'
         ];
 
-    protected $appends
-        = [
-            'total_price_incl_vat',
-            'total_price_ex_vat',
-            'total_price_incl_vat_per_year',
-            'can_create_invoice',
-        ];
-
     public function orderProducts()
     {
         return $this->hasMany(OrderProduct::class)->orderBy('date_start');

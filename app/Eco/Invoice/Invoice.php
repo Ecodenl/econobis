@@ -20,16 +20,6 @@ class Invoice extends Model
 
     protected $guarded = ['id'];
 
-    protected $appends
-        = [
-            'total_price_incl_vat_and_reduction',
-            'total_price_ex_vat_incl_reduction',
-            'total_vat',
-            'date_paid',
-            'date_payment_due',
-            'amount_open',
-        ];
-
     public function invoiceProducts()
     {
         return $this->hasMany(InvoiceProduct::class);

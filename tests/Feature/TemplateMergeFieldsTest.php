@@ -465,7 +465,6 @@ class TemplateMergeFieldsTest extends TestCase
         $op->percentage_reduction = 14;
         $op->date_start = '2018-01-01';
         $op->date_end = '2020-01-01';
-        $op->description = 'Niet gratis';
         $op->save();
     }
 

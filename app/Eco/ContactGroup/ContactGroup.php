@@ -34,13 +34,6 @@ class ContactGroup extends Model
             'updated_at',
         ];
 
-    protected $appends
-        = [
-            'dynamic_contacts',
-            'composed_contacts',
-            'all_contacts',
-            'is_used_in_composed_group'
-        ];
 
     //gebruikt om infinite loop te checken bij samengestelde groepen
     private $hasComposedIds = [];

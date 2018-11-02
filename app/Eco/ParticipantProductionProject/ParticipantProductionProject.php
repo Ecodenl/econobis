@@ -33,11 +33,6 @@ class ParticipantProductionProject extends Model
         'iban_payout'
     ];
 
-    protected $appends = [
-            'participations_worth_total',
-            'participations_current',
-        ];
-
     //relations
     public function contact()
     {

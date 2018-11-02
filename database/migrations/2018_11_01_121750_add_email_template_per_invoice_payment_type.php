@@ -43,11 +43,21 @@ class AddEmailTemplatePerInvoicePaymentType extends Migration
         }
 
         Schema::table('administrations', function (Blueprint $table) {
+            $table->dropForeign(['email_template_id']);
+            $table->dropIndex(['email_template_id']);
             $table->renameColumn('email_template_id', 'email_template_id_transfer');
+            $table->foreign('email_template_id_transfer')
+                ->references('id')->on('email_templates')
+                ->onDelete('restrict');
         });
 
         Schema::table('orders', function (Blueprint $table) {
+            $table->dropForeign(['email_template_id']);
+            $table->dropIndex(['email_template_id']);
             $table->renameColumn('email_template_id', 'email_template_id_transfer');
+            $table->foreign('email_template_id_transfer')
+                ->references('id')->on('email_templates')
+                ->onDelete('restrict');
         });
     }
 

@@ -3,9 +3,9 @@ export const setNumberFilterOrders = (number) => ({
     number,
 });
 
-export const setDateRequestedFilterOrders = (dateRequested) => ({
-    type: 'SET_DATE_REQUESTED_FILTER_ORDERS',
-    dateRequested,
+export const setDateNextInvoiceFilterOrders = (dateNextInvoice) => ({
+    type: 'SET_DATE_NEXT_INVOICE_FILTER_ORDERS',
+    dateNextInvoice,
 });
 
 export const setSubjectFilterOrders = (subject) => ({

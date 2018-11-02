@@ -83,8 +83,12 @@ class Administration extends Model
         return $this->belongsTo(Country::class);
     }
 
-    public function emailTemplate(){
-        return $this->belongsTo(EmailTemplate::class);
+    public function emailTemplateCollection(){
+        return $this->belongsTo(EmailTemplate::class, 'email_template_id_collection');
+    }
+
+    public function emailTemplateTransfer(){
+        return $this->belongsTo(EmailTemplate::class, 'email_template_id_transfer');
     }
 
     public function emailTemplateReminder(){
@@ -171,8 +175,7 @@ class Administration extends Model
             ->where(function ($q) {
                 $q->where(function ($q) {
                     $q->where('payment_type_id', 'transfer')
-                        ->where('date_sent', '>=',
-                            Carbon::today()->subMonth());
+                        ->where('days_to_expire', '>', '0');
                 })->orWhere(function ($q) {
                     $q->where('payment_type_id', '!=', 'transfer');
                 });})->where('status_id', 'sent')->whereNull('date_reminder_1')
@@ -182,12 +185,13 @@ class Administration extends Model
 
     public function getTotalInvoicesExportedAttribute()
     {
-        return $this->invoices()->where('status_id', 'exported')->whereNull('date_reminder_1')->whereNull('date_reminder_2')->whereNull('date_reminder_3')->whereNull('date_exhortation')->where('date_sent', '>=', Carbon::today()->subMonth())->count();
+        return $this->invoices()->where('status_id', 'exported')->whereNull('date_reminder_1')->whereNull('date_reminder_2')->whereNull('date_reminder_3')->whereNull('date_exhortation')->where('days_to_expire', '>', '0')->count();
     }
 
     public function getTotalInvoicesReminderAttribute()
     {
         return $this->invoices()
+
             ->where(function ($q)  {
                 $q->where(function ($q) {
                 $q->whereNotNull('invoices.date_reminder_1')
@@ -195,12 +199,13 @@ class Administration extends Model
             })
                 ->orWhere(function ($q) {
                     $q->where('invoices.status_id', 'exported')
-                        ->where('invoices.date_sent', '<', Carbon::today()->subMonth());
+                        ->where('invoices.days_to_expire', '<=', '0');
                 })->orWhere(function ($q) {
                     $q->where('invoices.status_id', 'sent')->where('invoices.payment_type_id', 'transfer')
-                        ->where('invoices.date_sent', '<', Carbon::today()->subMonth());
+                        ->where('invoices.days_to_expire', '<=', '0');
                 });})
                 ->whereNotIn('invoices.status_id', ['to-send', 'paid', 'irrecoverable'])->count();
+
     }
 
     public function getTotalInvoicesExhortationAttribute()

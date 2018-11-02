@@ -25,6 +25,44 @@ class ProductObserver
             $invoiceProductToSend->product_code = $product->code;
             $invoiceProductToSend->product_name = $product->name;
             $invoiceProductToSend->description = $product->invoice_text;
+
+            $price = 0;
+            if($product->currentPrice){
+                $price = $product->currentPrice->price;
+
+                switch ($product->invoice_frequency_id){
+                    case 'monthly':
+                        $price = $price * 12;
+                        break;
+                    case 'quarterly':
+                        $price = $price * 4;
+                        break;
+                    case 'half-year':
+                        $price = $price * 2;
+                        break;
+                    default:
+                        $price = $price;
+                        break;
+                }
+
+                switch ($invoiceProductToSend->invoice->collection_frequency_id) {
+                    case 'monthly':
+                        $price = $price / 12;
+                        break;
+                    case 'quarterly':
+                        $price = $price / 4;
+                        break;
+                    case 'half-year':
+                        $price = $price / 2;
+                        break;
+                    default:
+                        $price = $price;
+                        break;
+                }
+            }
+
+            $invoiceProductToSend->price = $price;
+
             $invoiceProductToSend->save();
         }
     }

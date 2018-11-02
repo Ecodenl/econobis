@@ -3,8 +3,8 @@ const filtersReducerDefaultState = {
         field: 'number',
         data: '',
     },
-    dateRequested: {
-        field: 'dateRequested',
+    dateNextInvoice: {
+        field: 'dateNextInvoice',
         data: '',
     },
     subject: {
@@ -35,12 +35,12 @@ export default (state = filtersReducerDefaultState, action) => {
                     data: action.number,
                 }
             };
-        case 'SET_DATE_REQUESTED_FILTER_ORDERS':
+        case 'SET_DATE_NEXT_INVOICE_FILTER_ORDERS':
             return {
                 ...state,
-                dateRequested: {
-                    ...state.dateRequested,
-                    data: action.dateRequested,
+                dateNextInvoice: {
+                    ...state.dateNextInvoice,
+                    data: action.dateNextInvoice,
                 }
             };
         case 'SET_SUBJECT_FILTER_ORDERS':

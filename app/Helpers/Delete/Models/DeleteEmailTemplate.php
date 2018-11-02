@@ -78,8 +78,13 @@ class DeleteEmailTemplate implements DeleteInterface
      */
     public function dissociateRelations()
     {
-        foreach (Administration::where('email_template_id', $this->emailTemplate->id)->get() as $administration) {
-            $administration->emailTemplate()->dissociate();
+        foreach (Administration::where('email_template_id_collection', $this->emailTemplate->id)->get() as $administration) {
+            $administration->emailTemplateCollection()->dissociate();
+            $administration->save();
+        }
+
+        foreach (Administration::where('email_template_id_transfer', $this->emailTemplate->id)->get() as $administration) {
+            $administration->emailTemplatTransfer()->dissociate();
             $administration->save();
         }
 
@@ -93,19 +98,24 @@ class DeleteEmailTemplate implements DeleteInterface
             $administration->save();
         }
 
-        foreach (Order::where('email_template_id', $this->emailTemplate->id)->get() as $administration) {
-            $administration->emailTemplate()->dissociate();
-            $administration->save();
+        foreach (Order::where('email_template_id_collection', $this->emailTemplate->id)->get() as $order) {
+            $order->emailTemplateCollection()->dissociate();
+            $order->save();
         }
 
-        foreach (Order::where('email_template_reminder_id', $this->emailTemplate->id)->get() as $administration){
-            $administration->emailTemplateReminder()->dissociate();
-            $administration->save();
+        foreach (Order::where('email_template_id_transfer', $this->emailTemplate->id)->get() as $order) {
+            $order->emailTemplateTransfer()->dissociate();
+            $order->save();
         }
 
-        foreach (Order::where('email_template_exhortation_id', $this->emailTemplate->id)->get() as $administration){
-            $administration->emailTemplateExhortation()->dissociate();
-            $administration->save();
+        foreach (Order::where('email_template_reminder_id', $this->emailTemplate->id)->get() as $order){
+            $order->emailTemplateReminder()->dissociate();
+            $order->save();
+        }
+
+        foreach (Order::where('email_template_exhortation_id', $this->emailTemplate->id)->get() as $order){
+            $order->emailTemplateExhortation()->dissociate();
+            $order->save();
         }
 
     }

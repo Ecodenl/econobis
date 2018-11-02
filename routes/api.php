@@ -378,11 +378,14 @@ Route::namespace('Api')
         Route::post('invoice/invoice-product/{invoiceProduct}/update', 'Invoice\InvoiceController@updateInvoiceProduct');
         Route::post('invoice/invoice-product/{invoiceProduct}/delete', 'Invoice\InvoiceController@destroyInvoiceProduct');
         Route::post('invoice/send-notifications', 'Invoice\InvoiceController@sendNotifications');
+        Route::post('invoice/send-notifications-post', 'Invoice\InvoiceController@sendNotificationsPost');
+        Route::post('invoice/set-multiple-paid', 'Invoice\InvoiceController@setMultiplePaid');
         Route::post('invoice/{invoice}', 'Invoice\InvoiceController@update');
         Route::post('invoice/{invoice}/irrecoverable', 'Invoice\InvoiceController@setIrrecoverable');
         Route::post('invoice/{invoice}/send', 'Invoice\InvoiceController@send');
         Route::post('invoice/{invoice}/send-post', 'Invoice\InvoiceController@sendPost');
         Route::post('invoice/{invoice}/send-notification', 'Invoice\InvoiceController@sendNotification');
+        Route::post('invoice/{invoice}/send-notification-post', 'Invoice\InvoiceController@sendNotificationPost');
         Route::post('invoice/{invoice}/payment/new', 'Invoice\InvoiceController@newPayment');
         Route::post('invoice/{invoicePayment}/payment/update', 'Invoice\InvoiceController@updatePayment');
         Route::post('invoice/payment/{invoicePayment}/delete', 'Invoice\InvoiceController@deletePayment');

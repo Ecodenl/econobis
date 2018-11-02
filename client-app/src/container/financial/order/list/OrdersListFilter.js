@@ -6,7 +6,7 @@ import moment from 'moment';
 import {
     setNumberFilterOrders,
     setContactFilterOrders,
-    setDateRequestedFilterOrders,
+    setDateNextInvoiceFilterOrders,
     setPaymentTypeIdFilterOrders,
     setStatusIdFilterOrders,
     setSubjectFilterOrders
@@ -18,11 +18,11 @@ const OrdersListFilter = props => {
         props.setNumberFilterOrders(e.target.value);
     };
 
-    const onDateRequestedChange = (selectedDay) => {
+    const onDateNextInvoiceChange = (selectedDay) => {
         if(selectedDay === undefined){
-            props.setDateRequestedFilterOrders('');
+            props.setDateNextInvoiceFilterOrders('');
         }else{
-            props.setDateRequestedFilterOrders(moment(selectedDay).format('Y-MM-DD'));
+            props.setDateNextInvoiceFilterOrders(moment(selectedDay).format('Y-MM-DD'));
         }
     };
 
@@ -53,7 +53,7 @@ const OrdersListFilter = props => {
         <tr className="thead-filter">
             { props.showSelectOrdersToCreate && <td><input type="checkbox"  onChange={props.selectAllCheckboxes} /></td> }
             <th><input type="text" className="form-control input-sm" value={ props.filters.number.data} onChange={onNumberChange} /></th>
-            <DataTableFilterDate value={ props.filters.dateRequested.data && props.filters.dateRequested.data } onChangeAction={onDateRequestedChange} />
+            <DataTableFilterDate value={ props.filters.dateNextInvoice.data && props.filters.dateNextInvoice.data } onChangeAction={onDateNextInvoiceChange} />
             <th><input type="text" className="form-control input-sm" value={ props.filters.subject.data} onChange={onSubjectChange} /></th>
             <th><input type="text" className="form-control input-sm" value={ props.filters.contact.data} onChange={onContactChange} /></th>
             <th/>
@@ -92,7 +92,7 @@ const mapDispatchToProps = (dispatch) => {
     return bindActionCreators({
         setNumberFilterOrders,
         setContactFilterOrders,
-        setDateRequestedFilterOrders,
+        setDateNextInvoiceFilterOrders,
         setPaymentTypeIdFilterOrders,
         setStatusIdFilterOrders,
         setSubjectFilterOrders

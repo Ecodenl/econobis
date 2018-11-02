@@ -31,13 +31,49 @@ class InvoiceHelper
             if($orderProduct->is_one_time_and_paid_product){
                 continue;
             }
+
+            $price = 0;
+            if($orderProduct->product->currentPrice){
+                $price = $orderProduct->product->currentPrice->price;
+
+                switch ($orderProduct->product->invoice_frequency_id){
+                    case 'monthly':
+                        $price = $price * 12;
+                        break;
+                    case 'quarterly':
+                        $price = $price * 4;
+                        break;
+                    case 'half-year':
+                        $price = $price * 2;
+                        break;
+                    default:
+                        $price = $price;
+                        break;
+                }
+
+                switch ($orderProduct->order->collection_frequency_id) {
+                    case 'monthly':
+                        $price = $price / 12;
+                        break;
+                    case 'quarterly':
+                        $price = $price / 4;
+                        break;
+                    case 'half-year':
+                        $price = $price / 2;
+                        break;
+                    default:
+                        $price = $price;
+                        break;
+                }
+            }
+
             $invoiceProduct = new InvoiceProduct();
             $invoiceProduct->product_id = $orderProduct->product_id;
             $invoiceProduct->invoice_id = $invoice->id;
             $invoiceProduct->amount = $orderProduct->amount;
             $invoiceProduct->amount_reduction = $orderProduct->amount_reduction;
             $invoiceProduct->percentage_reduction = $orderProduct->percentage_reduction;
-            $invoiceProduct->price = $orderProduct->product->currentPrice ? $orderProduct->product->currentPrice->price : 0;
+            $invoiceProduct->price = $price;
             $invoiceProduct->vat_percentage = $orderProduct->product->currentPrice ? $orderProduct->product->currentPrice->vat_percentage : 0;
             $invoiceProduct->product_code = $orderProduct->product->code;
             $invoiceProduct->product_name = $orderProduct->product->name;
@@ -116,10 +152,19 @@ class InvoiceHelper
         $htmlBody .= '<p></p>';
         $htmlBody .= $invoice->administration->name;
 
-        if ($invoice->order->emailTemplate) {
-            $subject = $invoice->order->emailTemplate->subject
-                ? $invoice->order->emailTemplate->subject : $subject;
-            $htmlBody = $invoice->order->emailTemplate->html_body;
+        $emailTemplate = null;
+
+        if($invoice->payment_type_id === 'collection'){
+            $emailTemplate = $invoice->order->emailTemplateCollection;
+        }
+        else{
+            $emailTemplate = $invoice->order->emailTemplateTransfer;
+        }
+
+        if ($emailTemplate) {
+            $subject = $emailTemplate->subject
+                ? $emailTemplate->subject : $subject;
+            $htmlBody = $emailTemplate->html_body;
 
         }
 
@@ -177,10 +222,6 @@ class InvoiceHelper
     public static function sendNotification(Invoice $invoice){
         $orderController = new OrderController();
         $contactInfo = $orderController->getContactInfoForOrder($invoice->order->contact);
-
-        if($contactInfo['email'] === 'Geen e-mail bekend'){
-            return false;
-        }
 
         if($invoice->date_reminder_3){
             InvoiceHelper::sendNotificationEmail($invoice->order->emailTemplateExhortation, $invoice);

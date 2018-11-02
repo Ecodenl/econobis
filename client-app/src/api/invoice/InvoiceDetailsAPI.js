@@ -47,6 +47,20 @@ export default {
             });
     },
 
+    setInvoicesPaid: (invoiceIds, datePaid) => {
+        const requestUrl = `${URL_INVOICE}/set-multiple-paid`;
+        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
+        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
+
+        document.body.style.cursor='wait';
+
+        let response = axios.post(requestUrl, {'ids': invoiceIds, 'datePaid': datePaid});
+
+        document.body.style.cursor='default';
+
+        return response;
+    },
+
     sendNotification: (invoiceId) => {
         const requestUrl = `${URL_INVOICE}/${invoiceId}/send-notification`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
@@ -73,6 +87,28 @@ export default {
             .catch(function (error) {
                 console.log(error);
             });
+    },
+
+    sendNotificationsPost: (invoiceIds) => {
+        const requestUrl = `${URL_INVOICE}/send-notifications-post`;
+        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
+        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
+
+        document.body.style.cursor='wait';
+        let response = axios.post(requestUrl, {'ids': invoiceIds} , {responseType: 'blob'});
+        document.body.style.cursor='default';
+        return response;
+    },
+
+    sendNotificationPost: (invoiceId) => {
+        const requestUrl = `${URL_INVOICE}/${invoiceId}/send-notification-post`;
+        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
+        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
+
+        document.body.style.cursor='wait';
+        let response = axios.post(requestUrl, {}, {responseType: 'blob'});
+        document.body.style.cursor='default';
+        return response;
     },
 
     setIrrecoverable: (invoiceId) => {

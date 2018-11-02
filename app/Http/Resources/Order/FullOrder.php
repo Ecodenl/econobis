@@ -39,8 +39,11 @@ class FullOrder extends Resource
 
                 'orderProducts' => FullOrderProduct::collection($this->whenLoaded('orderProducts')),
 
-                'emailTemplateId' => $this->email_template_id,
-                'emailTemplate' => FullEmailTemplate::make($this->whenLoaded('emailTemplate')),
+                'emailTemplateIdCollection' => $this->email_template_id_collection,
+                'emailTemplateCollection' => FullEmailTemplate::make($this->whenLoaded('emailTemplateCollection')),
+
+                'emailTemplateIdTransfer' => $this->email_template_id_transfer,
+                'emailTemplateTransfer' => FullEmailTemplate::make($this->whenLoaded('emailTemplateTransfer')),
 
                 'emailTemplateReminderId' => $this->email_template_reminder_id,
                 'emailTemplateReminder' => FullEmailTemplate::make($this->whenLoaded('emailTemplateReminder')),
@@ -86,7 +89,8 @@ class FullOrder extends Resource
                 'createdAt' => $this->created_at,
                 'updatedAt' => $this->updated_at,
 
-                'canCreateInvoice' => $this->can_create_invoice
+                'canCreateInvoice' => $this->can_create_invoice,
+                'canEdit' => !$this->invoices()->where('invoices.status_id', 'to-send')->exists()
             ];
     }
 }

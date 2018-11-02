@@ -64,6 +64,11 @@ class Order extends Model
         return $this->hasMany(Invoice::class)->orderBy('invoices.id', 'desc');
     }
 
+    public function invoicesToSend()
+    {
+        return $this->hasMany(Invoice::class)->where('invoices.status_id', 'to-send');
+    }
+
     public function invoicesPaidCollection()
     {
         return $this->hasMany(Invoice::class)->where('payment_type_id', 'collection')->where('status_id', 'paid')
@@ -96,9 +101,12 @@ class Order extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function emailTemplate()
-    {
-        return $this->belongsTo(EmailTemplate::class);
+    public function emailTemplateCollection(){
+        return $this->belongsTo(EmailTemplate::class, 'email_template_id_collection');
+    }
+
+    public function emailTemplateTransfer(){
+        return $this->belongsTo(EmailTemplate::class, 'email_template_id_transfer');
     }
 
     public function emailTemplateReminder()
@@ -216,6 +224,9 @@ class Order extends Model
                 break;
             case 'quarterly':
                 return $date->addQuarter();
+                break;
+            case 'half-year':
+                return $date->addMonth(6);
                 break;
             case 'yearly':
                 return $date->addYear();

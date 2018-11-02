@@ -27,27 +27,20 @@ class GridInvoice extends Resource
             $date = $this->date_sent;
         }
 
-        //iban eerst uit order halen, anders uit contact.
-        $iban = $this->order->IBAN;
-
-        if(!$iban){
-            $iban = $this->order->contact->iban;
-        }
-
         return [
             'id' => $this->id,
             'number' => $this->number,
             'date' => $date,
             'subject' => $this->subject,
 
-            'orderSubject' => $this->order->subject,
             'orderContactFullName' => $this->order->contact->full_name,
 
             'daysToExpire' => $this->days_to_expire,
             'daysLastReminder' => $this->days_last_reminder,
             'totalPriceInclVatAndReduction' => $this->total_price_incl_vat_and_reduction,
             'amountOpen' => $this->amount_open,
-            'iban' => $iban,
+
+            'iban' => $this->iban,
 
             'dateReminder1' => $this->date_reminder_1,
             'dateReminder2' => $this->date_reminder_2,

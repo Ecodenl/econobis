@@ -46,7 +46,7 @@ class OrderProductsForm extends Component {
                         <div className={"col-xs-10"}>
                             <span className="h5 text-bold">Orderregels</span>
                         </div>
-                        {this.props.permissions.manageFinancial &&
+                        {this.props.permissions.manageFinancial && this.props.orderDetails.canEdit &&
                         <div className={"col-xs-2"}>
                             <div className="pull-right">
                                 <span className="glyphicon glyphicon-plus" data-toggle="dropdown" role="button"/>
@@ -77,7 +77,8 @@ class OrderProductsForm extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        permissions: state.meDetails.permissions
+        permissions: state.meDetails.permissions,
+        orderDetails: state.orderDetails,
     }
 };
 

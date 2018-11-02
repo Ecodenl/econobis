@@ -52,6 +52,10 @@ class InvoiceObserver
         // Ook passen we de volgende factuur geplande factuur datum aan van de order
         if($invoice->status_id === 'sent' && $oldInvoiceStatusId === 'to-send'){
             $order = $invoice->order;
+
+            $invoice->subject =  $order->subject;
+            $invoice->invoice_text =  $order->invoice_text;
+            $invoice->iban =  $order->IBAN ? $order->IBAN : $order->contact->iban;
             foreach ($invoice->order->orderProducts as $orderProduct){
                 if($orderProduct->date_last_invoice){
                     $dateLastInvoice = $order->addDurationToDate(Carbon::parse($orderProduct->date_last_invoice));

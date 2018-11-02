@@ -13,11 +13,6 @@ use App\Helpers\RequestQuery\RequestJoiner;
 
 class Joiner extends RequestJoiner
 {
-    protected function applyOrderJoin($query)
-    {
-        $query->join('orders', 'invoices.order_id', '=', 'orders.id');
-    }
-
     protected function applyContactJoin($query)
     {
         $query->join('orders as orders2', 'invoices.order_id', '=', 'orders2.id');

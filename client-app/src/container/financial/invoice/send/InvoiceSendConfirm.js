@@ -105,7 +105,19 @@ class InvoiceSendConfirm extends Component {
                     />
                 </div>
                 }
-
+                {this.props.paymentType === 'incasso' &&
+                <div className="row">
+                    <div className={'col-sm-12 margin-10-bottom'}>
+                    <span>
+                       De incasso datum moet minimaal x dagen later zijn dan de datum waarop je het sepa incasso bestand upload bij je bank. En maximaal x maanden na de upload datum. Informeer bij jou bank welke data zij handhaven.
+                    <br/> <br/>
+                        <ul>
+                        <li>Bij Triodos is dat minimaal 2 werkdagen en maximaal 2 maanden</li>
+                    </ul>
+                    </span>
+                    </div>
+                </div>
+                }
                 <div className="row">
                     <div className={'col-sm-12 margin-10-bottom'}>
                     <span>

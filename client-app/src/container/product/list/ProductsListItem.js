@@ -48,7 +48,7 @@ class ProductsListItem extends Component {
                 <td>{ name }</td>
                 <td>{ currentPrice ? '€' + currentPrice.price.toLocaleString('nl',{ minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '' }</td>
                 <td>{ vatPercentage }</td>
-                <td>{ priceInclVat ? '€' + currentPrice.priceInclVat.toLocaleString('nl',{ minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '' }</td>
+                <td>{ priceInclVat ? '€' + priceInclVat.toLocaleString('nl',{ minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '' }</td>
                 <td>{ administration ? administration.name : ''}</td>
                 <td>
                     {(this.state.showActionButtons && this.props.permissions.manageFinancial ? <a role="button" onClick={() => this.openItem(id)}><span className="glyphicon glyphicon-pencil mybtn-success" /> </a> : '')}

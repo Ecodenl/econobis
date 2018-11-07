@@ -62,12 +62,12 @@ class LongFieldsToMediumText extends Migration
             $table->mediumText('tmp_html_body');
         });
 
-        $emails = App\Eco\Email\Email::withTrashed()->get();
-
-        foreach ($emails as $item) {
-            $item->tmp_html_body = $item->html_body;
-            $item->save();
-        }
+        App\Eco\Email\Email::withTrashed()->chunk(25, function($emails){
+            foreach ($emails as $item) {
+                $item->tmp_html_body = $item->html_body;
+                $item->save();
+            }
+        });
 
         Schema::table('emails', function (Blueprint $table) {
             $table->dropColumn('html_body');

@@ -24,10 +24,16 @@ class InvoiceSendToolbar extends Component {
                 <div className="col-md-4">
                     <div className="btn-group btn-group-flex margin-small" role="group">
                         <ButtonIcon iconName={"glyphicon-arrow-left"} onClickAction={browserHistory.goBack}/>
-                        {(this.props.amountOfInvoices > 0) && (this.props.type === 'email') &&
+                        {(this.props.amountOfInvoices > 0) && (this.props.type === 'email') && (this.props.paymentType === 'incasso') &&
+                        <ButtonText buttonText={"Facturen e-mailen en sepa bestand maken"} onClickAction={this.showSend}/>
+                        }
+                        {(this.props.amountOfInvoices > 0) && (this.props.type === 'email') && (this.props.paymentType === 'overboeken') &&
                         <ButtonText buttonText={"Facturen e-mailen"} onClickAction={this.showSend}/>
                         }
-                        {(this.props.amountOfInvoices > 0) && (this.props.type === 'post') &&
+                        {(this.props.amountOfInvoices > 0) && (this.props.type === 'post') && (this.props.paymentType === 'incasso') &&
+                        <ButtonText buttonText={"Facturen downloaden en sepa bestand maken"} onClickAction={this.showSend}/>
+                        }
+                        {(this.props.amountOfInvoices > 0) && (this.props.type === 'post') && (this.props.paymentType === 'overboeken') &&
                         <ButtonText buttonText={"Facturen downloaden"} onClickAction={this.showSend}/>
                         }
                     </div>

@@ -98,11 +98,11 @@ class InvoicesListItem extends Component {
     render() {
         let hideRowClass = '';
 
-        if(this.props.emailToAddress === 'Geen e-mail bekend' && this.props.onlyEmailInvoices){
+        if(this.props.onlyEmailInvoices && (this.props.emailToAddress === 'Geen e-mail bekend' || (!this.props.iban && this.props.paymentTypeId === 'collection'))){
             hideRowClass = 'hide';
         }
 
-        if(this.props.emailToAddress !== 'Geen e-mail bekend' && this.props.onlyPostInvoices){
+        if(this.props.onlyPostInvoices && (this.props.emailToAddress !== 'Geen e-mail bekend' || (!this.props.iban && this.props.paymentTypeId === 'collection')) ){
             hideRowClass = 'hide';
         }
 

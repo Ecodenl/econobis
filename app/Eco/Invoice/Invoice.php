@@ -211,21 +211,32 @@ class Invoice extends Model
     }
 
 
-    public function setDaysLastReminder(){
+    public function setDaysLastReminder()
+    {
         $daysLastReminder = 0;
-        if($this->date_exhortation){
-            $daysLastReminder = Carbon::today()->diffInDays($this->date_exhortation);
-        }
-        else if($this->date_reminder_3){
-            $daysLastReminder = Carbon::today()->diffInDays($this->date_reminder_3);
-        }
-        else if($this->date_reminder_2){
-            $daysLastReminder = Carbon::today()->diffInDays($this->date_reminder_2);
-        }
-        else if($this->date_reminder_1){
-            $daysLastReminder = Carbon::today()->diffInDays($this->date_reminder_1);
-        }
 
+        if ($this->status_id == 'paid'
+            || $this->status_id == 'irrecoverable'
+            || $this->status_id == 'to-send'
+        ) {
+            $daysLastReminder = 0;
+        } else {
+            if ($this->date_exhortation) {
+                $daysLastReminder = Carbon::today()->diffInDays($this->date_exhortation);
+            } else {
+                if ($this->date_reminder_3) {
+                    $daysLastReminder = Carbon::today()->diffInDays($this->date_reminder_3);
+                } else {
+                    if ($this->date_reminder_2) {
+                        $daysLastReminder = Carbon::today()->diffInDays($this->date_reminder_2);
+                    } else {
+                        if ($this->date_reminder_1) {
+                            $daysLastReminder = Carbon::today()->diffInDays($this->date_reminder_1);
+                        }
+                    }
+                }
+            }
+        }
         $this->days_last_reminder = $daysLastReminder;
     }
 

@@ -32,6 +32,7 @@ class OrderProductsFormNewProductOneTime extends Component {
                 percentageReduction: props.orderProduct.percentageReduction,
                 dateStart: props.orderProduct.dateStart,
                 dateEnd: props.orderProduct.dateEnd,
+                dateLastInvoice: props.orderProduct.dateLastInvoice,
             },
             product: {
                 id: props.product.id,
@@ -319,7 +320,7 @@ class OrderProductsFormNewProductOneTime extends Component {
 
     render() {
 
-        const {amount, amountReduction, percentageReduction, dateStart, dateEnd} = this.state.orderProduct;
+        const {amount, amountReduction, percentageReduction, dateStart, dateEnd, dateLastInvoice} = this.state.orderProduct;
         const {description, durationId, vatPercentage, price } = this.state.product;
 
         return (
@@ -448,6 +449,15 @@ class OrderProductsFormNewProductOneTime extends Component {
                                 value={dateEnd}
                                 onChangeAction={this.handleInputChangeDate}
                                 error={this.state.errors.dateEnd}
+                            />
+                        </div>
+
+                        <div className="row">
+                            <InputDate
+                                label="1ste factuur periode start op"
+                                name="dateLastInvoice"
+                                value={dateLastInvoice}
+                                onChangeAction={this.handleInputChangeDate}
                             />
                         </div>
 

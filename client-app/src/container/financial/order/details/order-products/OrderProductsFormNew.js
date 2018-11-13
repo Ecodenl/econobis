@@ -28,6 +28,7 @@ class OrderProductsFormNew extends Component {
                 percentageReduction: 0,
                 dateStart: moment().format('YYYY-MM-DD'),
                 dateEnd: '',
+                dateLastInvoice: '',
             },
             errors: {
                 productId: false,
@@ -234,7 +235,7 @@ class OrderProductsFormNew extends Component {
 
     render() {
 
-        const {productId, description, amount, amountReduction, percentageReduction, dateStart, dateEnd} = this.state.orderProduct;
+        const {productId, description, amount, amountReduction, percentageReduction, dateStart, dateEnd, dateLastInvoice} = this.state.orderProduct;
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -333,6 +334,15 @@ class OrderProductsFormNew extends Component {
                                 value={dateEnd}
                                 onChangeAction={this.handleInputChangeDate}
                                 error={this.state.errors.dateEnd}
+                            />
+                        </div>
+
+                        <div className="row">
+                            <InputDate
+                                label="1ste factuur periode start op"
+                                name="dateLastInvoice"
+                                value={dateLastInvoice}
+                                onChangeAction={this.handleInputChangeDate}
                             />
                         </div>
 

@@ -232,7 +232,7 @@ class OrderProductsFormItem extends Component {
                     />
                 }
                 {
-                    this.state.showEdit && this.props.orderDetails.canEdit && this.props.permissions.manageFinancial && this.state.orderProduct.product.isOneTime &&
+                    this.state.showEdit && this.props.orderDetails.canEdit && this.props.permissions.manageFinancial && (this.state.orderProduct.product.isOneTime == true) &&
                     <OrderProductsFormEditProductOneTime
                         orderProduct={this.state.orderProduct}
                         product={this.state.orderProduct.product}

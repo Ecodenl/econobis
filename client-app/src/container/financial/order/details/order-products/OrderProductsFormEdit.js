@@ -98,7 +98,6 @@ const OrderProductsFormEdit = props => {
                                 name="dateStart"
                                 value={dateStart}
                                 onChangeAction={props.handleInputChangeStartDate}
-                                readOnly={dateLastInvoice !== null}
                                 required={"required"}
                                 error={props.errors.dateStart}
                             />
@@ -109,6 +108,15 @@ const OrderProductsFormEdit = props => {
                                 value={dateEnd}
                                 onChangeAction={props.handleInputChangeDate}
                                 error={props.errors.dateEnd}
+                            />
+                        </div>
+
+                        <div className="row">
+                            <InputDate
+                                label="1ste factuur periode start op"
+                                name="dateLastInvoice"
+                                value={dateLastInvoice}
+                                onChangeAction={props.handleInputChangeDate}
                             />
                         </div>
 

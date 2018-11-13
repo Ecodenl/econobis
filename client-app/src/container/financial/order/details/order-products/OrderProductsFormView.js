@@ -4,7 +4,7 @@ import {connect} from "react-redux";
 moment.locale('nl');
 
 const OrderProductsFormView = props => {
-    const {product, description, amount, totalPriceInclVatAndReduction, dateStart, dateEnd, totalPriceInclVatAndReductionPerYear, isOneTimeAndPaidProduct, period } = props.orderProduct;
+    const {product, dateLastInvoice, amount, totalPriceInclVatAndReduction, dateStart, dateEnd, totalPriceInclVatAndReductionPerYear, isOneTimeAndPaidProduct, period } = props.orderProduct;
 
     const notActiveAnymore = moment(moment().format('YYYY-MM-DD')).isAfter(moment(dateEnd).format('YYYY-MM-DD'));
 
@@ -31,7 +31,7 @@ const OrderProductsFormView = props => {
                 <div className="col-sm-2">
                     { product.invoiceFrequency ? product.invoiceFrequency.name : ''}
                 </div>
-                <div className="col-sm-2">
+                <div className="col-sm-1">
                     { totalPriceInclVatAndReductionPerYear ? '€' + totalPriceInclVatAndReductionPerYear.toLocaleString('nl',{ minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '€0,00'}
                 </div>
                 <div className={`col-sm-1`}>
@@ -39,6 +39,9 @@ const OrderProductsFormView = props => {
                 </div>
                 <div className={`col-sm-1 ${classTextNotActiveAnymore}`}>
                     {dateEnd ? moment(dateEnd).format('L') : ''}
+                </div>
+                <div className={`col-sm-1`}>
+                    {dateLastInvoice ? moment(dateLastInvoice).format('L') : ''}
                 </div>
             </div>
             <div className="col-sm-1">

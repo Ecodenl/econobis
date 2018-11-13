@@ -356,6 +356,7 @@ Route::namespace('Api')
         Route::post('order/create-all', 'Order\OrderController@createAll');
         Route::post('order/order-product', 'Order\OrderController@storeOrderProduct');
         Route::post('order/product-and-order-product', 'Order\OrderController@storeProductAndOrderProduct');
+        Route::post('order/product-and-order-product/update', 'Order\OrderController@updateOneTimeProduct');
         Route::post('order/order-product/{orderProduct}/update', 'Order\OrderController@updateOrderProduct');
         Route::post('order/order-product/{orderProduct}/delete', 'Order\OrderController@destroyOrderProduct');
         Route::post('order/{order}', 'Order\OrderController@update');

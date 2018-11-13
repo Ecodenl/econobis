@@ -234,6 +234,38 @@ class OrderController extends ApiController
         });
     }
 
+    public function updateOneTimeProduct(Request $request)
+    {
+        $this->authorize('manage', Order::class);
+
+        $productData = $request->input('product');
+
+        $product = Product::withoutGlobalScopes()->find($productData['id']);
+        $product->invoice_text = $productData['description'];
+        $product->duration_id = $productData['durationId'];
+
+        $priceHistory = new PriceHistory();
+        $priceHistory->product_id = $product->id;
+        $priceHistory->date_start = Carbon::today();
+        $priceHistory->price = $productData['price'];
+        $priceHistory->vat_percentage = $productData['vatPercentage'] ? $productData['vatPercentage'] : null;
+
+        $orderProductData = $request->input('orderProduct');
+
+        $orderProduct = OrderProduct::find($orderProductData['id']);
+        $orderProduct->amount = $orderProductData['amount'];
+        $orderProduct->amount_reduction = $orderProductData['amountReduction'] ? $orderProductData['amountReduction'] : 0;
+        $orderProduct->percentage_reduction = $orderProductData['percentageReduction'] ? $orderProductData['percentageReduction'] : 0;
+        $orderProduct->date_start = $orderProductData['dateStart'];
+        $orderProduct->date_end = $orderProductData['dateEnd'] ? $orderProductData['dateEnd'] : null;
+
+        DB::transaction(function () use ($product, $priceHistory, $orderProduct) {
+            $product->save();
+            $priceHistory->save();
+            $orderProduct->save();
+        });
+    }
+
     public function updateOrderProduct(RequestInput $input, OrderProduct $orderProduct)
     {
         $this->authorize('manage', Order::class);

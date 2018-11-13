@@ -9,6 +9,7 @@ import {isEqual} from "lodash";
 import validator from "validator";
 import moment from "moment/moment";
 import OrderProductsFormDelete from "./OrderProductsFormDelete";
+import OrderProductsFormEditProductOneTime from "./OrderProductsFormEditProductOneTime";
 
 class OrderProductsFormItem extends Component {
     constructor(props) {
@@ -217,7 +218,7 @@ class OrderProductsFormItem extends Component {
                     orderProduct={this.state.orderProduct}
                 />
                 {
-                    this.state.showEdit && this.props.orderDetails.canEdit && this.props.permissions.manageFinancial &&
+                    this.state.showEdit && this.props.orderDetails.canEdit && this.props.permissions.manageFinancial && !this.state.orderProduct.product.isOneTime &&
                     <OrderProductsFormEdit
                         orderDetails={this.props.orderDetails}
                         errors={this.state.errors}
@@ -227,6 +228,14 @@ class OrderProductsFormItem extends Component {
                         handleInputChangeDate={this.handleInputChangeDate}
                         handleInputChangeStartDate={this.handleInputChangeStartDate}
                         handleSubmit={this.handleSubmit}
+                        cancelEdit={this.cancelEdit}
+                    />
+                }
+                {
+                    this.state.showEdit && this.props.orderDetails.canEdit && this.props.permissions.manageFinancial && this.state.orderProduct.product.isOneTime &&
+                    <OrderProductsFormEditProductOneTime
+                        orderProduct={this.state.orderProduct}
+                        product={this.state.orderProduct.product}
                         cancelEdit={this.cancelEdit}
                     />
                 }

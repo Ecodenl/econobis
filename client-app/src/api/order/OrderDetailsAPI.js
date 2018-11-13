@@ -71,6 +71,14 @@ export default {
         return axios.post(requestUrl, {'orderProduct': orderProduct, 'product': product});
     },
 
+    updateOrderProductOneTime: (orderProduct, product) => {
+        const requestUrl = `${URL_ORDER}/product-and-order-product/update`;
+        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
+        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
+
+        return axios.post(requestUrl, {'orderProduct': orderProduct, 'product': product});
+    },
+
     deleteOrderProduct: (orderProductId) => {
         const requestUrl = `${URL_ORDER}/order-product/${orderProductId}/delete`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');

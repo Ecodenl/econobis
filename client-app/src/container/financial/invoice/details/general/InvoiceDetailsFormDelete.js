@@ -1,12 +1,12 @@
 import React from 'react';
 
-import Modal from '../../../components/modal/Modal';
-import {deleteIntake} from "../../../actions/intake/IntakeDetailsActions";
+import Modal from '../../../../../components/modal/Modal';
+import {deleteInvoice} from "../../../../../actions/invoice/InvoiceDetailsActions";
 import {connect} from "react-redux";
 
-const IntakeDetailsDelete = (props) => {
+const InvoiceDetailsFormDelete = (props) => {
     const confirmAction = () => {
-        props.deleteIntake(props.id);
+        props.deleteInvoice(props.id);
 
         props.closeDeleteItemModal();
     };
@@ -19,15 +19,15 @@ const IntakeDetailsDelete = (props) => {
           confirmAction={() => confirmAction()}
           title="Verwijderen"
       >
-          <p>Verwijder intake: <strong> {`${props.fullStreet}?` } </strong></p>
+          <p>Verwijder factuur: <strong> {`${props.number}?` }</strong></p>
         </Modal>
     );
 };
 
 const mapDispatchToProps = dispatch => ({
-    deleteIntake: (id) => {
-        dispatch(deleteIntake(id));
+    deleteInvoice: (id) => {
+        dispatch(deleteInvoice(id));
     },
 });
 
-export default connect(null, mapDispatchToProps)(IntakeDetailsDelete);
+export default connect(null, mapDispatchToProps)(InvoiceDetailsFormDelete);

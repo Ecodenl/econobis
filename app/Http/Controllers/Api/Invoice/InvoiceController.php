@@ -14,6 +14,7 @@ use App\Eco\Invoice\InvoiceProduct;
 use App\Eco\Product\PriceHistory;
 use App\Eco\Product\Product;
 use App\Helpers\CSV\InvoiceCSVHelper;
+use App\Helpers\Delete\Models\DeleteInvoice;
 use App\Helpers\Invoice\InvoiceHelper;
 use App\Helpers\RequestInput\RequestInput;
 use App\Helpers\Sepa\SepaHelper;
@@ -30,6 +31,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use iio\libmergepdf\Merger;
 
@@ -649,6 +651,29 @@ class InvoiceController extends ApiController
         $invoiceProduct->save();
 
         return FullInvoiceProduct::make($invoiceProduct);
+    }
+
+    public function destroy(Invoice $invoice)
+    {
+        $this->authorize('manage', Invoice::class);
+
+        try {
+            DB::beginTransaction();
+
+            $deleteInvoice = new DeleteInvoice($invoice);
+            $result = $deleteInvoice->delete();
+
+            if(count($result) > 0){
+                DB::rollBack();
+                abort(412, implode(";", array_unique($result)));
+            }
+
+            DB::commit();
+        } catch (\PDOException $e) {
+            DB::rollBack();
+            Log::error($e->getMessage());
+            abort(501, 'Er is helaas een fout opgetreden.');
+        }
     }
 
     public function destroyInvoiceProduct(InvoiceProduct $invoiceProduct)

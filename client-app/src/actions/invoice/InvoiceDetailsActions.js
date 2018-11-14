@@ -4,3 +4,10 @@ export const fetchInvoiceDetails = (id) => {
         id,
     }
 };
+
+export const deleteInvoice = (id) => {
+    return {
+        type: 'DELETE_INVOICE',
+        id
+    }
+};

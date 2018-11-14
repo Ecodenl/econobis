@@ -285,4 +285,12 @@ export default {
         return axios.post(requestUrl, invoiceProduct);
     },
 
+    deleteInvoice: (id) => {
+        const requestUrl = `${URL_INVOICE}/${id}/delete`;
+        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
+        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
+
+        return axios.post(requestUrl);
+    },
+
 };

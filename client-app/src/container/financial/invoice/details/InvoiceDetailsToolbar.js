@@ -9,6 +9,7 @@ import InvoiceDetailsFormSetIrrecoverable from "./general/InvoiceDetailsFormSetI
 import fileDownload from "js-file-download";
 import InvoiceDetailsAPI from "../../../../api/invoice/InvoiceDetailsAPI";
 import {previewSend} from "../../../../actions/invoice/InvoicesActions";
+import InvoiceDetailsFormDelete from "./general/InvoiceDetailsFormDelete";
 
 class InvoiceToolbar extends Component {
     constructor(props) {
@@ -20,6 +21,7 @@ class InvoiceToolbar extends Component {
             showSendNotification: false,
             reminderText: '',
             showSetIrrecoverable: false,
+            showDelete: false,
         };
     };
 
@@ -79,6 +81,10 @@ class InvoiceToolbar extends Component {
         this.setState({showSetIrrecoverable: !this.state.showSetIrrecoverable});
     };
 
+    showDelete = () => {
+        this.setState({showDelete: !this.state.showDelete});
+    };
+
     view = () => {
         hashHistory.push(`/factuur/inzien/${this.props.invoiceDetails.id}`);
     };
@@ -106,6 +112,9 @@ class InvoiceToolbar extends Component {
                         <ButtonIcon iconName={"glyphicon-remove"} onClickAction={this.showSetIrrecoverable}/>
                         }
                         <ButtonIcon iconName={"glyphicon-download-alt"} onClickAction={this.download}/>
+                        {this.props.invoiceDetails.statusId === 'to-send' &&
+                        <ButtonIcon iconName={"glyphicon-trash"} onClickAction={this.showDelete}/>
+                        }
                     </div>
                 </div>
                 <div className="col-md-4"><h4
@@ -135,6 +144,14 @@ class InvoiceToolbar extends Component {
                     <InvoiceDetailsFormSetIrrecoverable
                         closeModal={this.showSetIrrecoverable}
                         invoiceId={this.props.invoiceDetails.id}
+                    />
+                }
+                {
+                    this.state.showDelete &&
+                    <InvoiceDetailsFormDelete
+                        number={this.props.invoiceDetails.number}
+                        id={this.props.invoiceDetails.id}
+                        closeDeleteItemModal={this.showDelete}
                     />
                 }
             </div>

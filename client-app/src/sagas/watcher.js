@@ -60,7 +60,7 @@ import { meDetailsSaga } from './general/MeDetailsSaga';
 import { systemDataSaga } from './general/SystemDataSaga';
 import { addProductPriceHistorySaga, fetchProductDetailsSaga, updateProductDetailsSaga } from './product/ProductDetailsSaga';
 import { deleteProductSaga, fetchProductsSaga } from './product/ProductsSaga';
-import { fetchInvoicesSaga } from './invoice/InvoicesSaga';
+import {deleteInvoiceFromGridSaga, fetchInvoicesSaga} from './invoice/InvoicesSaga';
 import {deleteInvoiceSaga, fetchInvoiceDetailsSaga} from './invoice/InvoiceDetailsSaga';
 import { fetchPaymentInvoicesSaga} from './payment-invoice/PaymentInvoicesSaga';
 import { fetchWebformsSaga, deleteWebformSaga } from './webform/WebformsSaga';
@@ -175,6 +175,7 @@ export default function* watchSagas() {
     yield takeLatest('FETCH_INVOICE_DETAILS', fetchInvoiceDetailsSaga);
     yield takeLatest('FETCH_INVOICES', fetchInvoicesSaga);
     yield takeLatest('DELETE_INVOICE', deleteInvoiceSaga);
+    yield takeLatest('DELETE_INVOICE_FROM_GRID', deleteInvoiceFromGridSaga);
     // Payment invoice
     yield takeLatest('FETCH_PAYMENT_INVOICES', fetchPaymentInvoicesSaga);
     // Task / notes

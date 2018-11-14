@@ -26,6 +26,7 @@ import ButtonText from "../../../../components/button/ButtonText";
 import InvoiceDetailsAPI from "../../../../api/invoice/InvoiceDetailsAPI";
 import {fetchAdministrationDetails} from "../../../../actions/administration/AdministrationDetailsActions";
 import InvoiceListSetMultiplePaid from "./InvoiceListSetMultiplePaid";
+import InvoiceListDeleteItem from "./InvoiceListDeleteItem";
 
 class InvoicesList extends Component {
     constructor(props) {
@@ -41,7 +42,11 @@ class InvoicesList extends Component {
             sendRemindersTextEmail: 'Selecteer e-mail herinneringen',
             sendRemindersTextPost: 'Selecteer post herinneringen',
             setInvoicesPaidText: 'Selecteer betaalde facturen',
-            showSetInvoicesPaid: false
+            showSetInvoicesPaid: false,
+            deleteItem: {
+                id: '',
+                fullName: ''
+            }
         };
 
         if (!isEmpty(props.filter)) {
@@ -163,7 +168,11 @@ class InvoicesList extends Component {
                 sendRemindersTextEmail: 'Selecteer e-mail herinneringen',
                 sendRemindersTextPost: 'Selecteer post herinneringen',
                 setInvoicesPaidText: 'Selecteer betaalde facturen',
-                showSetInvoicesPaid: false
+                showSetInvoicesPaid: false,
+                deleteItem: {
+                    id: '',
+                    fullName: ''
+                }
             });
         }
     }
@@ -318,7 +327,11 @@ class InvoicesList extends Component {
             sendRemindersTextEmail: 'Selecteer e-mail herinneringen',
             sendRemindersTextPost: 'Selecteer post herinneringen',
             setInvoicesPaidText: 'Selecteer betaalde facturen',
-            showSetInvoicesPaid: false
+            showSetInvoicesPaid: false,
+            deleteItem: {
+                id: '',
+                fullName: ''
+            }
         });
     };
 
@@ -352,6 +365,30 @@ class InvoicesList extends Component {
         });
 
         this.props.setCheckedInvoiceAll(!this.state.checkedAllCheckboxes);
+    };
+
+    showDeleteItemModal = (id, number) => {
+        this.setState({
+            ...this.state,
+            showDeleteItem: true,
+            deleteItem:{
+                ...this.state.deleteItem,
+                id: id,
+                number: number
+            }
+        });
+    };
+
+    closeDeleteItemModal = () => {
+        this.setState({
+            ...this.state,
+            showDeleteItem: false,
+            deleteItem:{
+                ...this.state.deleteItem,
+                id: '',
+                number: ''
+            }
+        });
     };
 
     render() {
@@ -460,7 +497,14 @@ class InvoicesList extends Component {
                       administrationId={this.props.administrationId}
                       closeModal={this.toggleSetInvoicesPaid}
                     />
-
+                }
+                {
+                    this.state.showDeleteItem &&
+                    <InvoiceListDeleteItem
+                        closeDeleteItemModal={this.closeDeleteItemModal}
+                        fetchInvoices={this.fetchInvoicesData}
+                        {...this.state.deleteItem}
+                    />
                 }
             </div>
         );

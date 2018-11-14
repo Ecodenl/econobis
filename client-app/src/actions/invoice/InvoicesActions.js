@@ -42,3 +42,9 @@ export const clearInvoices = () => {
     };
 };
 
+export const deleteInvoiceFromGrid = (id) => {
+    return {
+        type: 'DELETE_INVOICE_FROM_GRID',
+        id
+    }
+};

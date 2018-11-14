@@ -44,6 +44,8 @@ test('Fill out form order minimum', async (t) => {
     await t
         .click(newOrder.administrationId)
         .click(general.option.withExactText(vars.administrationName))
+        .click(newOrder.statusId)
+        .click(general.option.withExactText('Actief'))
         .typeText(newOrder.subject, vars.orderSubject)
         .click(general.save)
         .wait(constants.wait);

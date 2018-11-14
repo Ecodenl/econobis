@@ -9,9 +9,9 @@ export default class ModelDetailsOrder {
         this.description = Selector('input[name="description"]');
         this.amount = Selector('input[name="amount"]');
         this.dateStart = Selector('input[name="dateStart"]');
-        this.orderProductRows = Selector('span').withExactText('Orderregels').parent().parent().child().nth(1).child().child().child();
+        this.orderProductRows = Selector('span').withExactText('Orderregels').parent().parent().parent().parent().child().nth(1).child().child().child();
 
-        this.newInvoice = Selector('button').withExactText('Maak factuur');
+        this.newInvoice = Selector('button').withExactText('Preview factuur');
         this.dateCollection = Selector('input[name="dateCollection"]');
     }
 }

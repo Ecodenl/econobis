@@ -109,7 +109,8 @@ test('Open all harmonica\'s person', async (t) => {
         .click(general.cancel)
         .wait(constants.wait);
 
-    await t
+    //bug waarbij scherm freezed tijdens het testen?
+    // await t
         // .click(detailsPerson.documentHarmonica)
         // .click(detailsPerson.newDocument)
         // .wait(constants.wait);

@@ -508,7 +508,7 @@ class OrderProductsFormNewProduct extends Component {
 
                         <div className="row">
                             <InputDate
-                                label="1ste factuur periode start op"
+                                label="Factuurperiode start op"
                                 name="dateLastInvoice"
                                 value={dateLastInvoice}
                                 onChangeAction={this.handleInputChangeDate}

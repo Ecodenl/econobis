@@ -15,7 +15,7 @@ const OrderProductsFormList = props => {
                 <div className="col-sm-1">Prijs incl. BTW/jaar</div>
                 <div className="col-sm-1">Begin datum</div>
                 <div className="col-sm-1">Eind datum</div>
-                <div className="col-sm-1">1ste factuur periode start op</div>
+                <div className="col-sm-1">Factuurperiode start op</div>
                 <div className="col-sm-1"></div>
             </div>
             {

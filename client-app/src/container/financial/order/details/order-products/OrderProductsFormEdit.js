@@ -113,7 +113,7 @@ const OrderProductsFormEdit = props => {
 
                         <div className="row">
                             <InputDate
-                                label="1ste factuur periode start op"
+                                label="Factuurperiode start op"
                                 name="dateLastInvoice"
                                 value={dateLastInvoice}
                                 onChangeAction={props.handleInputChangeDate}

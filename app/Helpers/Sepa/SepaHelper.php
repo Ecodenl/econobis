@@ -107,7 +107,7 @@ class SepaHelper
         $xml .= "\n\t\t\t<PmtInfId>" . Carbon::now()->format('Ymd') . $batchNumber . "</PmtInfId>"; // Referentienummer
         $xml .= "\n\t\t\t<PmtMtd>DD</PmtMtd>"; // DD - Vaste waarde voor incasso
         $xml .= "\n\t\t\t<BtchBookg>false</BtchBookg>"; // true=dan worden de transacties binnen een batch als ��n betaling verwerkt, false = dan worden de transacties binnen een batch als individuele opdrachten in ��n bulkopdracht verwerkt
-        $xml .= "\n\t\t\t<NbOfTxs>" . $this->invoices->count() . "</NbOfTxs>"; // Aantal opdrachten in dit bestand
+        $xml .= "\n\t\t\t<NbOfTxs>" . $amountOfInvoices . "</NbOfTxs>"; // Aantal opdrachten in dit bestand
         $xml .= "\n\t\t\t<CtrlSum>" . $totalOpen . "</CtrlSum>"; // Totaalbedrag van alle opdrachten (punt als decimal teken)
 
         /// Payment Type Information

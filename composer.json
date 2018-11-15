@@ -18,6 +18,7 @@
         "laravel/tinker": "~1.0",
         "particle/validator": "^2.3",
         "php-imap/php-imap": "^3.0",
+        "php-twinfield/twinfield": "^2.0",
         "spatie/laravel-permission": "^2.7",
         "usmanhalalit/laracsv": "1.*@dev",
         "venturecraft/revisionable": "^1.28"

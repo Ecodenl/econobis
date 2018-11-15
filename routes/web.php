@@ -11,6 +11,20 @@
 |
 */
 
+use App\Eco\Contact\Contact;
+use App\Helpers\Twinfield\TwinfieldHelper;
+
+Route::get('/twinfield', function () {
+
+
+    $twinfieldHelper = new TwinfieldHelper("COM006123", "XXXX", "PROEF", 'NLA017551');
+
+
+    $response = $twinfieldHelper->createCustomer(Contact::find(3));
+
+    dd($response);
+});
+
 Route::get('/', function () {
     return view('welcome');
 });

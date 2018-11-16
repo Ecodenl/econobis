@@ -39,8 +39,8 @@ const OrderDetailsFormGeneralView = props => {
                     </div>
                     <div className="row">
                         <ViewText
-                            label={"Status"}
-                            value={status ? status.name : ''}
+                            label={"E-mail template factuur incasso"}
+                            value={emailTemplateCollection ? emailTemplateCollection.name : ''}
                         />
                         <ViewText
                             label={"Betreft"}
@@ -49,8 +49,8 @@ const OrderDetailsFormGeneralView = props => {
                     </div>
                     <div className="row">
                         <ViewText
-                            label={"E-mail template factuur incasso"}
-                            value={emailTemplateCollection ? emailTemplateCollection.name : ''}
+                            label={"E-mail template factuur overboeken"}
+                            value={emailTemplateTransfer ? emailTemplateTransfer.name : ''}
                         />
                         <ViewText
                             label={"Betaalwijze"}
@@ -59,8 +59,8 @@ const OrderDetailsFormGeneralView = props => {
                     </div>
                     <div className="row">
                         <ViewText
-                            label={"E-mail template factuur overboeken"}
-                            value={emailTemplateTransfer ? emailTemplateTransfer.name : ''}
+                            label={"E-mail template herinnering"}
+                            value={emailTemplateReminder ? emailTemplateReminder.name : ''}
                         />
                         <ViewText
                             label={"Factuur frequentie"}
@@ -69,27 +69,27 @@ const OrderDetailsFormGeneralView = props => {
                     </div>
                     <div className="row">
                         <ViewText
-                            label={"E-mail template herinnering"}
-                            value={emailTemplateReminder ? emailTemplateReminder.name : ''}
+                            label={"E-mail template aanmaning"}
+                            value={emailTemplateExhortation ? emailTemplateExhortation.name : ''}
+                        />
+                        <ViewText
+                            label={"Status"}
+                            value={status ? status.name : ''}
+                        />
+                    </div>
+                    <div className="row">
+                        <ViewText
+                            label={"IBAN"}
+                            value={IBAN}
                         />
                         <ViewText
                             label={"Opdracht nummer klant"}
                             value={poNumber}
                         />
                     </div>
-                    <div className="row">
-                        <ViewText
-                            label={"E-mail template aanmaning"}
-                            value={emailTemplateExhortation ? emailTemplateExhortation.name : ''}
-                        />
-                    </div>
 
 
                     <div className="row">
-                        <ViewText
-                            label={"IBAN"}
-                            value={IBAN}
-                        />
                         <ViewText
                             label={"IBAN t.n.v."}
                             value={ibanAttn}

@@ -358,18 +358,6 @@ class OrderProductsFormNewProductOneTime extends Component {
                         </div>
 
                         <div className="row">
-                            <InputSelect
-                                label={"Looptijd"}
-                                id="durationId"
-                                name={"durationId"}
-                                options={this.props.productDurations}
-                                value={durationId}
-                                onChangeAction={this.handleInputChangeProductDuration}
-                                emptyOption={false}
-                            />
-                        </div>
-
-                        <div className="row">
                             <div className={'panel-part panel-heading'}>
                                 <span className={'h5 text-bold'}>Orderregel</span>
                             </div>

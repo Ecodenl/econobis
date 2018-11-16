@@ -188,15 +188,14 @@ class OrderDetailsFormGeneralEdit extends Component {
                         </div>
 
                         <div className="row">
-                            <InputSelect
-                                label={"Status"}
-                                id="statusId"
-                                name={"statusId"}
-                                options={this.props.orderStatuses}
-                                value={statusId}
-                                onChangeAction={this.handleInputChange}
-                                required={'required'}
-                                error={this.state.errors.statusId}
+                            <InputReactSelect
+                                label={"E-mail template factuur incasso"}
+                                name={"emailTemplateIdCollection"}
+                                options={this.state.emailTemplates}
+                                value={emailTemplateIdCollection}
+                                onChangeAction={this.handleReactSelectChange}
+                                isLoading={this.state.peekLoading.emailTemplates}
+                                multi={false}
                             />
                             <InputText
                                 label="Betreft"
@@ -210,10 +209,10 @@ class OrderDetailsFormGeneralEdit extends Component {
 
                         <div className="row">
                             <InputReactSelect
-                                label={"E-mail template factuur incasso"}
-                                name={"emailTemplateIdCollection"}
+                                label={"E-mail template factuur overboeken"}
+                                name={"emailTemplateIdTransfer"}
                                 options={this.state.emailTemplates}
-                                value={emailTemplateIdCollection}
+                                value={emailTemplateIdTransfer}
                                 onChangeAction={this.handleReactSelectChange}
                                 isLoading={this.state.peekLoading.emailTemplates}
                                 multi={false}
@@ -229,10 +228,10 @@ class OrderDetailsFormGeneralEdit extends Component {
                         </div>
                         <div className="row">
                             <InputReactSelect
-                                label={"E-mail template factuur overboeken"}
-                                name={"emailTemplateIdTransfer"}
+                                label={"E-mail template herinnering"}
+                                name={"emailTemplateReminderId"}
                                 options={this.state.emailTemplates}
-                                value={emailTemplateIdTransfer}
+                                value={emailTemplateReminderId}
                                 onChangeAction={this.handleReactSelectChange}
                                 isLoading={this.state.peekLoading.emailTemplates}
                                 multi={false}
@@ -250,24 +249,6 @@ class OrderDetailsFormGeneralEdit extends Component {
 
                         <div className="row">
                             <InputReactSelect
-                                label={"E-mail template herinnering"}
-                                name={"emailTemplateReminderId"}
-                                options={this.state.emailTemplates}
-                                value={emailTemplateReminderId}
-                                onChangeAction={this.handleReactSelectChange}
-                                isLoading={this.state.peekLoading.emailTemplates}
-                                multi={false}
-                            />
-                            <InputText
-                                label="Opdracht nummer klant"
-                                name={"poNumber"}
-                                value={poNumber}
-                                onChangeAction={this.handleInputChange}
-                            />
-                        </div>
-
-                        <div className="row">
-                            <InputReactSelect
                                 label={"E-mail template aanmaning"}
                                 name={"emailTemplateExhortationId"}
                                 options={this.state.emailTemplates}
@@ -275,6 +256,16 @@ class OrderDetailsFormGeneralEdit extends Component {
                                 onChangeAction={this.handleReactSelectChange}
                                 isLoading={this.state.peekLoading.emailTemplates}
                                 multi={false}
+                            />
+                            <InputSelect
+                                label={"Status"}
+                                id="statusId"
+                                name={"statusId"}
+                                options={this.props.orderStatuses}
+                                value={statusId}
+                                onChangeAction={this.handleInputChange}
+                                required={'required'}
+                                error={this.state.errors.statusId}
                             />
                         </div>
 
@@ -286,6 +277,15 @@ class OrderDetailsFormGeneralEdit extends Component {
                                 onChangeAction={this.handleInputChange}
                                 error={this.state.errors.IBAN}
                             />
+                            <InputText
+                                label="Opdracht nummer klant"
+                                name={"poNumber"}
+                                value={poNumber}
+                                onChangeAction={this.handleInputChange}
+                            />
+                        </div>
+
+                        <div className="row">
                             <InputText
                                 label="IBAN t.n.v."
                                 name={"ibanAttn"}

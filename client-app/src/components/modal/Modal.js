@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import Draggable from 'react-draggable';
-import ReactDOM from 'react-dom'
+import ButtonTextNormalSize from "../button/ButtonTextNormalSize";
 
 class Modal extends Component {
     constructor(props) {
@@ -50,7 +50,7 @@ class Modal extends Component {
     render() {
         const {extraButtonLabel, extraButtonClass, extraButtonAction, modalClassName, modalMainClassName,
             buttonClassName, buttonCancelText, buttonConfirmText, children, closeModal, confirmAction, title,
-            draggableDisabled} = this.props;
+            draggableDisabled, loading} = this.props;
         const bounds = { left: this.state.offsetLeft, top: this.state.offsetTop,  right: this.state.offsetRight, bottom: this.state.offsetBottom };
 
         return (
@@ -66,15 +66,13 @@ class Modal extends Component {
                             </div>
                             <div className="modal-footer">
                                 { this.props.extraButtonLabel &&
-                                <button type="button" className={`btn ${extraButtonClass}`} onClick={extraButtonAction}>
-                                    {extraButtonLabel}
-                                </button>
+                                <ButtonTextNormalSize buttonClassName={extraButtonClass} onClickAction={extraButtonAction} buttonText={extraButtonLabel}
+                                />
                                 }
                                 <button type="button" className="btn btn-default" onClick={closeModal}>{buttonCancelText}</button>
                                 { this.props.showConfirmAction &&
-                                    <button type="button" className={`btn ${buttonClassName}`} onClick={confirmAction}>
-                                        {buttonConfirmText}
-                                    </button>
+                                <ButtonTextNormalSize buttonClassName={buttonClassName} onClickAction={confirmAction} buttonText={buttonConfirmText} loading={loading}
+                                />
                                 }
                             </div>
                         </div>
@@ -94,6 +92,7 @@ Modal.defaultProps = {
     showConfirmAction: true,
     confirmAction: () => {},
     draggableDisabled: false,
+    loading: false,
 };
 
 Modal.propTypes = {
@@ -111,6 +110,7 @@ Modal.propTypes = {
     extraButtonClass: PropTypes.string,
     extraButtonAction: PropTypes.func,
     draggableDisabled: PropTypes.bool,
+    loading: PropTypes.bool,
 };
 
 export default Modal;

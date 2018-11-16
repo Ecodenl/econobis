@@ -15,6 +15,7 @@ class InvoiceSendConfirmPost extends Component {
 
         this.state = {
             dateCollection: '',
+            loading: false,
             errors: {
                 dateCollection: false,
             }
@@ -45,6 +46,9 @@ class InvoiceSendConfirmPost extends Component {
             this.setState({...this.state, errors: errors});
 
             if (!hasErrors) {
+                this.setState({
+                    loading: true
+                });
                 InvoiceDetailsAPI.sendAllPost(this.props.invoiceIds, dateCollection).then((payload) => {
                     if (payload && payload.headers && payload.headers['x-filename']) {
                         fileDownload(payload.data, payload.headers['x-filename']);
@@ -68,6 +72,9 @@ class InvoiceSendConfirmPost extends Component {
 
 
         else{
+            this.setState({
+                loading: true
+            });
             InvoiceDetailsAPI.sendAllPost(this.props.invoiceIds, null).then((payload) => {
                 if (payload && payload.headers && payload.headers['x-filename']) {
                     fileDownload(payload.data, payload.headers['x-filename']);
@@ -88,7 +95,6 @@ class InvoiceSendConfirmPost extends Component {
             });
         }
 
-
     };
 
     handleInputChangeDate = (value, name) => {
@@ -107,6 +113,7 @@ class InvoiceSendConfirmPost extends Component {
                 confirmAction={this.confirmAction}
                 title="Factuur downloaden"
                 buttonConfirmText={"Downloaden"}
+                loading={this.state.loading}
             >
                 {this.props.paymentType === 'incasso' &&
                 <div className="row">

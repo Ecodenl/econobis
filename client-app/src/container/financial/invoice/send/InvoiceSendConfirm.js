@@ -17,6 +17,7 @@ class InvoiceSendConfirm extends Component {
 
         this.state = {
             dateCollection: '',
+            loading: false,
             errors: {
                 dateCollection: false,
             }
@@ -25,6 +26,9 @@ class InvoiceSendConfirm extends Component {
 
     confirmAction = event => {
         event.preventDefault();
+        this.setState({
+            loading: true
+        });
 
         if(!this.props.canCreateInvoices['can']){
             this.props.setError(412, this.props.canCreateInvoices['message']);
@@ -71,8 +75,6 @@ class InvoiceSendConfirm extends Component {
 
             hashHistory.push(`/financieel/${this.props.administrationId}/facturen/verzonden`);
         }
-
-
     };
 
     handleInputChangeDate = (value, name) => {
@@ -91,6 +93,7 @@ class InvoiceSendConfirm extends Component {
                 confirmAction={this.confirmAction}
                 title="Factuur verzenden"
                 buttonConfirmText={"Verzenden"}
+                loading={this.state.loading}
             >
                 {this.props.paymentType === 'incasso' &&
                 <div className="row">

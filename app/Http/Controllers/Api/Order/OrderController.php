@@ -180,7 +180,7 @@ class OrderController extends ApiController
             ->numeric('percentageReduction')->onEmpty(null)->whenMissing(null)->alias('percentage_reduction')->next()
             ->date('dateStart')->validate('required')->alias('date_start')->next()
             ->date('dateEnd')->validate('nullable|date')->onEmpty(null)->whenMissing(null)->alias('date_end')->next()
-            ->date('dateLastInvoice')->validate('nullable|date')->onEmpty(null)->whenMissing(null)->alias('date_last_invoice')->next()
+            ->date('datePeriodStartFirstInvoice')->validate('required')->alias('date_period_start_first_invoice')->next()
             ->get();
 
         $orderProduct = new OrderProduct($data);
@@ -219,7 +219,7 @@ class OrderController extends ApiController
         $orderProduct->percentage_reduction = $orderProductData['percentageReduction'] ? $orderProductData['percentageReduction'] : 0;
         $orderProduct->date_start = $orderProductData['dateStart'];
         $orderProduct->date_end = $orderProductData['dateEnd'] ? $orderProductData['dateEnd'] : null;
-        $orderProduct->date_last_invoice = $orderProductData['dateLastInvoice'] ? $orderProductData['dateLastInvoice'] : null;
+        $orderProduct->date_period_start_first_invoice = $orderProductData['datePeriodStartFirstInvoice'];
 
         $order = Order::find($orderProductData['orderId']);
 
@@ -260,7 +260,7 @@ class OrderController extends ApiController
         $orderProduct->percentage_reduction = $orderProductData['percentageReduction'] ? $orderProductData['percentageReduction'] : 0;
         $orderProduct->date_start = $orderProductData['dateStart'];
         $orderProduct->date_end = $orderProductData['dateEnd'] ? $orderProductData['dateEnd'] : null;
-        $orderProduct->date_last_invoice = $orderProductData['dateLastInvoice'] ? $orderProductData['dateLastInvoice'] : null;
+        $orderProduct->date_period_start_first_invoice = $orderProductData['datePeriodStartFirstInvoice'];
 
         DB::transaction(function () use ($product, $priceHistory, $orderProduct) {
             $product->save();
@@ -281,7 +281,7 @@ class OrderController extends ApiController
             ->numeric('percentageReduction')->onEmpty(null)->whenMissing(null)->alias('percentage_reduction')->next()
             ->date('dateStart')->validate('required')->alias('date_start')->next()
             ->date('dateEnd')->validate('nullable|date')->onEmpty(null)->whenMissing(null)->alias('date_end')->next()
-            ->date('dateLastInvoice')->validate('nullable|date')->onEmpty(null)->whenMissing(null)->alias('date_last_invoice')->next()
+            ->date('datePeriodStartFirstInvoice')->validate('required')->alias('date_period_start_first_invoice')->next()
             ->get();
 
         $orderProduct->fill($data);

@@ -10,7 +10,7 @@ import moment from "moment/moment";
 moment.locale('nl');
 
 const InvoiceProductsFormEdit = props => {
-    const {product, description, amount, amountReduction, percentageReduction, dateStart, dateLastInvoice} = props.invoiceProduct;
+    const {product, description, amount, amountReduction, percentageReduction, dateLastInvoice} = props.invoiceProduct;
 
     return (
         <div>

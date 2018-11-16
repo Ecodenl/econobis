@@ -78,7 +78,17 @@ class InvoiceHelper
             $invoiceProduct->product_code = $orderProduct->product->code;
             $invoiceProduct->product_name = $orderProduct->product->name;
             $invoiceProduct->description = $orderProduct->product->invoice_text;
-            $invoiceProduct->date_last_invoice = $orderProduct->date_last_invoice ? $orderProduct->date_last_invoice : $orderProduct->date_start;
+            if($orderProduct->date_last_invoice){
+                $dateLastInvoice = $orderProduct->date_last_invoice;
+            }
+            else if($orderProduct->date_period_start_first_invoice){
+                $dateLastInvoice = $orderProduct->date_period_start_first_invoice;
+            }
+            else{
+                $dateLastInvoice = $orderProduct->date_start;
+            }
+
+            $invoiceProduct->date_last_invoice = $dateLastInvoice;
             if(!$preview) {
                 $invoiceProduct->save();
             }

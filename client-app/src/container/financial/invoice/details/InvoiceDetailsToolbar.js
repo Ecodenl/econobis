@@ -108,7 +108,7 @@ class InvoiceToolbar extends Component {
                         {(this.props.invoiceDetails.statusId === 'sent' || this.props.invoiceDetails.statusId === 'exported') && !this.props.invoiceDetails.dateExhortation &&
                         <ButtonIcon iconName={"glyphicon-bullhorn"} onClickAction={this.showSendNotification}/>
                         }
-                        {(this.props.invoiceDetails.statusId !== 'paid' && this.props.invoiceDetails.statusId !== 'irrecoverable') &&
+                        {(this.props.invoiceDetails.statusId !== 'to-send' && this.props.invoiceDetails.statusId !== 'paid' && this.props.invoiceDetails.statusId !== 'irrecoverable') &&
                         <ButtonIcon iconName={"glyphicon-remove"} onClickAction={this.showSetIrrecoverable}/>
                         }
                         <ButtonIcon iconName={"glyphicon-download-alt"} onClickAction={this.download}/>

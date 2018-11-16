@@ -50,7 +50,7 @@ class FullInvoiceProduct extends Resource
                 'product' => FullProduct::make($this->whenLoaded('product')),
                 'period' => $period,
 
-                'dateLastInvoice' => $this->date_last_invoice
+                'dateLastInvoice' => $this->date_last_invoice,
             ];
     }
 }

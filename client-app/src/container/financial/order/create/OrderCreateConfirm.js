@@ -8,13 +8,25 @@ class OrderCreateConfirm extends Component {
 
     constructor(props) {
         super(props);
+
+        super(props);
+
+        this.state = {
+            loading: false,
+        };
+
     };
 
     confirmAction = event => {
+        this.setState({
+           loading: true
+        });
+
         event.preventDefault();
 
         OrderDetailsAPI.createAll(this.props.orderIds).then((payload) => {
-            hashHistory.push(`/financieel/${this.props.administrationId}/facturen/te-verzenden-incasso`);});
+            hashHistory.push(`/financieel/${this.props.administrationId}/facturen/te-verzenden-incasso`);
+        });
     };
 
 
@@ -26,6 +38,7 @@ class OrderCreateConfirm extends Component {
                 confirmAction={this.confirmAction}
                 title="Factuur aanmaken"
                 buttonConfirmText={"Aanmaken"}
+                loading={this.state.loading}
             >
                 <div className="row">
                     <div className={'col-sm-12 margin-10-bottom'}>

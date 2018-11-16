@@ -287,28 +287,6 @@ class OrderNewForm extends Component {
                                 isLoading={this.state.peekLoading.emailTemplates}
                                 multi={false}
                             />
-                            <InputSelect
-                                label={"Status"}
-                                id="statusId"
-                                name={"statusId"}
-                                options={this.props.orderStatuses}
-                                value={statusId}
-                                onChangeAction={this.handleInputChange}
-                                required={'required'}
-                                error={this.state.errors.statusId}
-                            />
-                        </div>
-
-                        <div className="row">
-                            <InputReactSelect
-                                label={"E-mail template factuur overboeken"}
-                                name={"emailTemplateIdTransfer"}
-                                options={this.state.emailTemplates}
-                                value={emailTemplateIdTransfer}
-                                onChangeAction={this.handleReactSelectChange}
-                                isLoading={this.state.peekLoading.emailTemplates}
-                                multi={false}
-                            />
                             <InputText
                                 label="Betreft"
                                 name={"subject"}
@@ -321,10 +299,10 @@ class OrderNewForm extends Component {
 
                         <div className="row">
                             <InputReactSelect
-                                label={"E-mail template herinnering"}
-                                name={"emailTemplateReminderId"}
+                                label={"E-mail template factuur overboeken"}
+                                name={"emailTemplateIdTransfer"}
                                 options={this.state.emailTemplates}
-                                value={emailTemplateReminderId}
+                                value={emailTemplateIdTransfer}
                                 onChangeAction={this.handleReactSelectChange}
                                 isLoading={this.state.peekLoading.emailTemplates}
                                 multi={false}
@@ -341,25 +319,14 @@ class OrderNewForm extends Component {
 
                         <div className="row">
                             <InputReactSelect
-                                label={"E-mail template aanmaning"}
-                                name={"emailTemplateExhortationId"}
+                                label={"E-mail template herinnering"}
+                                name={"emailTemplateReminderId"}
                                 options={this.state.emailTemplates}
-                                value={emailTemplateExhortationId}
+                                value={emailTemplateReminderId}
                                 onChangeAction={this.handleReactSelectChange}
                                 isLoading={this.state.peekLoading.emailTemplates}
                                 multi={false}
                             />
-                            <InputText
-                                label="IBAN"
-                                name={"IBAN"}
-                                value={IBAN}
-                                onChangeAction={this.handleInputChange}
-                                error={this.state.errors.IBAN}
-                            />
-
-                        </div>
-
-                        <div className="row">
                             <InputSelect
                                 label={"Factuur frequentie"}
                                 id="collectionFrequencyId"
@@ -369,19 +336,51 @@ class OrderNewForm extends Component {
                                 onChangeAction={this.handleInputChange}
                                 emptyOption={false}
                             />
+                        </div>
+
+                        <div className="row">
+                            <InputReactSelect
+                                label={"E-mail template aanmaning"}
+                                name={"emailTemplateExhortationId"}
+                                options={this.state.emailTemplates}
+                                value={emailTemplateExhortationId}
+                                onChangeAction={this.handleReactSelectChange}
+                                isLoading={this.state.peekLoading.emailTemplates}
+                                multi={false}
+                            />
+                            <InputSelect
+                                label={"Status"}
+                                id="statusId"
+                                name={"statusId"}
+                                options={this.props.orderStatuses}
+                                value={statusId}
+                                onChangeAction={this.handleInputChange}
+                                required={'required'}
+                                error={this.state.errors.statusId}
+                            />
+                        </div>
+
+                        <div className="row">
                             <InputText
-                                label="IBAN t.n.v."
-                                name={"ibanAttn"}
-                                value={ibanAttn}
+                                label="IBAN"
+                                name={"IBAN"}
+                                value={IBAN}
+                                onChangeAction={this.handleInputChange}
+                                error={this.state.errors.IBAN}
+                            />
+                            <InputText
+                                label="Opdracht nummer klant"
+                                name={"poNumber"}
+                                value={poNumber}
                                 onChangeAction={this.handleInputChange}
                             />
                         </div>
 
                         <div className="row">
                             <InputText
-                                label="PO nummer van de klant"
-                                name={"poNumber"}
-                                value={poNumber}
+                                label="IBAN t.n.v."
+                                name={"ibanAttn"}
+                                value={ibanAttn}
                                 onChangeAction={this.handleInputChange}
                             />
                         </div>

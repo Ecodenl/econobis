@@ -24,6 +24,10 @@ class FullOrderProduct extends Resource
                 $start = $this->date_last_invoice;
                 $end = $this->order->addDurationToDate(Carbon::parse($this->date_last_invoice));
             }
+            else if($this->date_period_start_first_invoice){
+                $start = $this->date_period_start_first_invoice;
+                $end = $this->order->addDurationToDate(Carbon::parse($this->date_period_start_first_invoice));
+            }
             else{
                 $start = $this->date_start;
                 $end = $this->order->addDurationToDate(Carbon::parse($this->date_start));
@@ -50,7 +54,8 @@ class FullOrderProduct extends Resource
                 'product' => FullProduct::make($this->whenLoaded('product')),
                 'isOneTimeAndPaidProduct' => $this->is_one_time_and_paid_product,
                 'period' => $period,
-                'dateLastInvoice' => $this->date_last_invoice
+                'dateLastInvoice' => $this->date_last_invoice,
+                'datePeriodStartFirstInvoice' => $this->date_period_start_first_invoice
             ];
     }
 }

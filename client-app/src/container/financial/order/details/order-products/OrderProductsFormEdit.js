@@ -10,7 +10,7 @@ import moment from "moment/moment";
 moment.locale('nl');
 
 const OrderProductsFormEdit = props => {
-    const {product, description, amount, amountReduction, percentageReduction, dateStart, dateEnd, dateLastInvoice} = props.orderProduct;
+    const {product, description, amount, amountReduction, percentageReduction, dateStart, dateEnd, dateLastInvoice, datePeriodStartFirstInvoice} = props.orderProduct;
 
     return (
         <div>
@@ -111,15 +111,17 @@ const OrderProductsFormEdit = props => {
                             />
                         </div>
 
-                        <div className="row">
-                            <InputDate
-                                label="Factuurperiode start op"
-                                name="dateLastInvoice"
-                                value={dateLastInvoice}
-                                onChangeAction={props.handleInputChangeDate}
-                            />
-                        </div>
+                        {!dateLastInvoice && product.durationId !== 'none' &&
+                            <div className="row">
+                                <InputDate
+                                    label="1ste factuurperiode start op"
+                                    name="datePeriodStartFirstInvoice"
+                                    value={datePeriodStartFirstInvoice}
+                                    onChangeAction={props.handleInputChangeDate}
+                                />
+                            </div>
 
+                        }
                         <div className="pull-right btn-group" role="group">
                             <ButtonText buttonClassName={"btn-default"} buttonText={"Annuleren"} onClickAction={props.cancelEdit}/>
                             <ButtonText buttonText={"Opslaan"} onClickAction={props.handleSubmit} type={"submit"} value={"Submit"}/>

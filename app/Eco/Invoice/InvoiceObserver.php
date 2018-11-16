@@ -60,6 +60,9 @@ class InvoiceObserver
                 if($orderProduct->date_last_invoice){
                     $dateLastInvoice = $order->addDurationToDate(Carbon::parse($orderProduct->date_last_invoice));
                 }
+                else if($orderProduct->date_period_start_first_invoice){
+                    $dateLastInvoice = $order->addDurationToDate(Carbon::parse($orderProduct->date_period_start_first_invoice));
+                }
                 else{
                     $dateLastInvoice = $order->addDurationToDate(Carbon::parse($orderProduct->date_start));
                 }

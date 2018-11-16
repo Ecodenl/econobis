@@ -32,7 +32,7 @@ class OrderProductsFormNewProduct extends Component {
                 percentageReduction: 0,
                 dateStart: moment().format('YYYY-MM-DD'),
                 dateEnd: '',
-                dateLastInvoice: '',
+                datePeriodStartFirstInvoice: moment().format('YYYY-MM-DD'),
             },
             product: {
                 code: '',
@@ -52,6 +52,7 @@ class OrderProductsFormNewProduct extends Component {
                 code: false,
                 name: false,
                 price: false,
+                datePeriodStartFirstInvoice: false,
             },
         };
 
@@ -277,13 +278,11 @@ class OrderProductsFormNewProduct extends Component {
             errors.amount = true;
             hasErrors = true;
         }
-        ;
 
         if (validator.isEmpty(orderProduct.dateStart + '')) {
             errors.dateStart = true;
             hasErrors = true;
         }
-        ;
 
         if (!validator.isEmpty(orderProduct.dateStart + '') && moment(orderProduct.dateEnd).isSameOrBefore(moment(orderProduct.dateStart))) {
             errors.dateEnd = true;
@@ -292,6 +291,11 @@ class OrderProductsFormNewProduct extends Component {
 
         if (!validator.isEmpty(orderProduct.dateEnd + '') && moment(orderProduct.dateStart).isSameOrAfter(moment(orderProduct.dateEnd))) {
             errors.dateStart = true;
+            hasErrors = true;
+        }
+
+        if (validator.isEmpty(orderProduct.datePeriodStartFirstInvoice + '')) {
+            errors.datePeriodStartFirstInvoice = true;
             hasErrors = true;
         }
 
@@ -354,7 +358,7 @@ class OrderProductsFormNewProduct extends Component {
 
     render() {
 
-        const {amount, amountReduction, percentageReduction, dateStart, dateEnd, dateLastInvoice} = this.state.orderProduct;
+        const {amount, amountReduction, percentageReduction, dateStart, dateEnd, datePeriodStartFirstInvoice} = this.state.orderProduct;
         const {description, code, name, durationId, vatPercentage, price } = this.state.product;
 
         return (
@@ -497,24 +501,29 @@ class OrderProductsFormNewProduct extends Component {
                                 required={"required"}
                                 error={this.state.errors.dateStart}
                             />
+
                             <InputDate
                                 label="Eind datum"
                                 name="dateEnd"
                                 value={dateEnd}
                                 onChangeAction={this.handleInputChangeDate}
                                 error={this.state.errors.dateEnd}
+                                readOnly={durationId === 'none'}
                             />
-                        </div>
 
+                        </div>
+                        {durationId !== 'none' &&
                         <div className="row">
                             <InputDate
-                                label="Factuurperiode start op"
-                                name="dateLastInvoice"
-                                value={dateLastInvoice}
+                                label="1ste factuurperiode start op"
+                                name="datePeriodStartFirstInvoice"
+                                value={datePeriodStartFirstInvoice}
                                 onChangeAction={this.handleInputChangeDate}
+                                error={this.state.errors.datePeriodStartFirstInvoice}
+                                required={"required"}
                             />
                         </div>
-
+                        }
                         {this.state.errorMessage &&
                         <div className="col-sm-10 col-md-offset-1 alert alert-danger">
                             {this.state.errorMessage}

@@ -19,6 +19,7 @@ class OrderProductsFormNew extends Component {
         this.state = {
             price: '0',
             totalPrice: '0',
+            durationId: 'none',
             orderProduct: {
                 orderId: this.props.orderDetails.id,
                 productId: '',
@@ -28,13 +29,14 @@ class OrderProductsFormNew extends Component {
                 percentageReduction: 0,
                 dateStart: moment().format('YYYY-MM-DD'),
                 dateEnd: '',
-                dateLastInvoice: '',
+                datePeriodStartFirstInvoice: moment().format('YYYY-MM-DD'),
             },
             errors: {
                 productId: false,
                 amount: false,
                 dateStart: false,
                 dateEnd: false,
+                datePeriodStartFirstInvoice: false,
             },
         };
 
@@ -175,6 +177,7 @@ class OrderProductsFormNew extends Component {
         this.setState({
             ...this.state,
             price: price,
+            durationId: durationId,
             orderProduct: {
                 ...this.state.orderProduct,
                 description: description,
@@ -199,19 +202,21 @@ class OrderProductsFormNew extends Component {
             errors.productId = true;
             hasErrors = true;
         }
-        ;
 
         if (validator.isEmpty(orderProduct.amount + '')) {
             errors.amount = true;
             hasErrors = true;
         }
-        ;
 
         if (validator.isEmpty(orderProduct.dateStart + '')) {
             errors.dateStart = true;
             hasErrors = true;
         }
-        ;
+
+        if (validator.isEmpty(orderProduct.datePeriodStartFirstInvoice + '')) {
+            errors.datePeriodStartFirstInvoice = true;
+            hasErrors = true;
+        }
 
         if (!validator.isEmpty(orderProduct.dateStart + '') && moment(orderProduct.dateEnd).isSameOrBefore(moment(orderProduct.dateStart))) {
             errors.dateEnd = true;
@@ -235,7 +240,7 @@ class OrderProductsFormNew extends Component {
 
     render() {
 
-        const {productId, description, amount, amountReduction, percentageReduction, dateStart, dateEnd, dateLastInvoice} = this.state.orderProduct;
+        const {productId, description, amount, amountReduction, percentageReduction, dateStart, dateEnd, datePeriodStartFirstInvoice} = this.state.orderProduct;
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -328,24 +333,28 @@ class OrderProductsFormNew extends Component {
                                 required={"required"}
                                 error={this.state.errors.dateStart}
                             />
-                            <InputDate
-                                label="Eind datum"
-                                name="dateEnd"
-                                value={dateEnd}
-                                onChangeAction={this.handleInputChangeDate}
-                                error={this.state.errors.dateEnd}
-                            />
+                                <InputDate
+                                    label="Eind datum"
+                                    name="dateEnd"
+                                    value={dateEnd}
+                                    onChangeAction={this.handleInputChangeDate}
+                                    error={this.state.errors.dateEnd}
+                                    readOnly={this.state.durationId === 'none'}
+                                />
                         </div>
 
+                        {this.state.durationId !== 'none' &&
                         <div className="row">
                             <InputDate
-                                label="Factuurperiode start op"
-                                name="dateLastInvoice"
-                                value={dateLastInvoice}
+                                label="1ste factuurperiode start op"
+                                name="datePeriodStartFirstInvoice"
+                                value={datePeriodStartFirstInvoice}
                                 onChangeAction={this.handleInputChangeDate}
+                                error={this.state.errors.datePeriodStartFirstInvoice}
+                                required={"required"}
                             />
                         </div>
-
+                        }
                         <div className="pull-right btn-group" role="group">
                             <ButtonText buttonClassName={"btn-default"} buttonText={"Annuleren"}
                                         onClickAction={this.props.toggleShowNew}/>

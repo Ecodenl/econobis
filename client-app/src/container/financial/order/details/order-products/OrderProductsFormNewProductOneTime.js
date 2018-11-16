@@ -32,7 +32,7 @@ class OrderProductsFormNewProductOneTime extends Component {
                 percentageReduction: 0,
                 dateStart: moment().format('YYYY-MM-DD'),
                 dateEnd: '',
-                dateLastInvoice: '',
+                datePeriodStartFirstInvoice: moment().format('YYYY-MM-DD'),
             },
             product: {
                 code: 'EMP',
@@ -50,6 +50,7 @@ class OrderProductsFormNewProductOneTime extends Component {
                 dateStart: false,
                 dateEnd: false,
                 price: false,
+                datePeriodStartFirstInvoice: false,
             },
         };
 
@@ -275,13 +276,11 @@ class OrderProductsFormNewProductOneTime extends Component {
             errors.amount = true;
             hasErrors = true;
         }
-        ;
 
         if (validator.isEmpty(orderProduct.dateStart + '')) {
             errors.dateStart = true;
             hasErrors = true;
         }
-        ;
 
         if (!validator.isEmpty(orderProduct.dateStart + '') && moment(orderProduct.dateEnd).isSameOrBefore(moment(orderProduct.dateStart))) {
             errors.dateEnd = true;
@@ -290,6 +289,11 @@ class OrderProductsFormNewProductOneTime extends Component {
 
         if (!validator.isEmpty(orderProduct.dateEnd + '') && moment(orderProduct.dateStart).isSameOrAfter(moment(orderProduct.dateEnd))) {
             errors.dateStart = true;
+            hasErrors = true;
+        }
+
+        if (validator.isEmpty(orderProduct.datePeriodStartFirstInvoice + '')) {
+            errors.datePeriodStartFirstInvoice = true;
             hasErrors = true;
         }
 
@@ -320,7 +324,7 @@ class OrderProductsFormNewProductOneTime extends Component {
 
     render() {
 
-        const {amount, amountReduction, percentageReduction, dateStart, dateEnd, dateLastInvoice} = this.state.orderProduct;
+        const {amount, amountReduction, percentageReduction, dateStart, dateEnd, datePeriodStartFirstInvoice} = this.state.orderProduct;
         const {description, durationId, vatPercentage, price } = this.state.product;
 
         return (
@@ -445,6 +449,7 @@ class OrderProductsFormNewProductOneTime extends Component {
                                 required={"required"}
                                 error={this.state.errors.dateStart}
                             />
+                            {durationId !== 'none' &&
                             <InputDate
                                 label="Eind datum"
                                 name="dateEnd"
@@ -452,17 +457,20 @@ class OrderProductsFormNewProductOneTime extends Component {
                                 onChangeAction={this.handleInputChangeDate}
                                 error={this.state.errors.dateEnd}
                             />
+                            }
                         </div>
-
+                        {durationId !== 'none' &&
                         <div className="row">
                             <InputDate
-                                label="Factuurperiode start op"
-                                name="dateLastInvoice"
-                                value={dateLastInvoice}
+                                label="1ste factuurperiode start op"
+                                name="datePeriodStartFirstInvoice"
+                                value={datePeriodStartFirstInvoice}
                                 onChangeAction={this.handleInputChangeDate}
+                                error={this.state.errors.datePeriodStartFirstInvoice}
+                                required={"required"}
                             />
                         </div>
-
+                        }
                         {this.state.errorMessage &&
                         <div className="col-sm-10 col-md-offset-1 alert alert-danger">
                             {this.state.errorMessage}

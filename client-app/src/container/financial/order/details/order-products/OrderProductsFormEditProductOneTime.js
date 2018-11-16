@@ -33,6 +33,7 @@ class OrderProductsFormNewProductOneTime extends Component {
                 dateStart: props.orderProduct.dateStart,
                 dateEnd: props.orderProduct.dateEnd,
                 dateLastInvoice: props.orderProduct.dateLastInvoice,
+                datePeriodStartFirstInvoice: props.orderProduct.datePeriodStartFirstInvoice,
             },
             product: {
                 id: props.product.id,
@@ -320,7 +321,7 @@ class OrderProductsFormNewProductOneTime extends Component {
 
     render() {
 
-        const {amount, amountReduction, percentageReduction, dateStart, dateEnd, dateLastInvoice} = this.state.orderProduct;
+        const {amount, amountReduction, percentageReduction, dateStart, dateEnd, dateLastInvoice, datePeriodStartFirstInvoice} = this.state.orderProduct;
         const {description, durationId, vatPercentage, price } = this.state.product;
 
         return (
@@ -447,20 +448,22 @@ class OrderProductsFormNewProductOneTime extends Component {
                                 label="Eind datum"
                                 name="dateEnd"
                                 value={dateEnd}
+                                readOnly={durationId === 'none'}
                                 onChangeAction={this.handleInputChangeDate}
                                 error={this.state.errors.dateEnd}
                             />
                         </div>
 
+                        {!dateLastInvoice && durationId !== 'none' &&
                         <div className="row">
                             <InputDate
-                                label="Factuurperiode start op"
-                                name="dateLastInvoice"
-                                value={dateLastInvoice}
+                                label="1ste factuurperiode start op"
+                                name="datePeriodStartFirstInvoice"
+                                value={datePeriodStartFirstInvoice}
                                 onChangeAction={this.handleInputChangeDate}
                             />
                         </div>
-
+                        }
                         {this.state.errorMessage &&
                         <div className="col-sm-10 col-md-offset-1 alert alert-danger">
                             {this.state.errorMessage}

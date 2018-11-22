@@ -13,7 +13,6 @@ use App\Eco\Contact\Contact;
 use App\Eco\ContactGroup\ContactGroup;
 use App\Eco\Email\Email;
 use App\Eco\Email\EmailAttachment;
-use App\Eco\Email\EmailGroupEmailAddress;
 use App\Eco\Email\Jobs\SendEmailsWithVariables;
 use App\Eco\Email\Jobs\StoreConceptEmail;
 use App\Eco\EmailAddress\EmailAddress;
@@ -84,7 +83,8 @@ class EmailController
     }
 
     public function getReply(Email $email){
-        $email->load('contacts', 'attachments');
+        //attachments niet laden!
+        $email->load('contacts');
 
         //Reply logic:
         //To -> from
@@ -123,7 +123,8 @@ class EmailController
     }
 
     public function getReplyAll(Email $email){
-        $email->load('contacts', 'attachments');
+        //attachments niet laden!
+        $email->load('contacts');
 
         //Reply all logic:
         //To -> (To without own email) + (From)

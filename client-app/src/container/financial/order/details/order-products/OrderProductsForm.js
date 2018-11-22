@@ -8,6 +8,7 @@ import PanelHeader from '../../../../../components/panel/PanelHeader';
 import {connect} from "react-redux";
 import OrderProductsFormNewProduct from "./OrderProductsFormNewProduct";
 import OrderProductsFormNewProductOneTime from "./OrderProductsFormNewProductOneTime";
+import {setError} from "../../../../../actions/general/ErrorActions";
 
 class OrderProductsForm extends Component {
     constructor(props) {
@@ -21,21 +22,38 @@ class OrderProductsForm extends Component {
     }
 
     toggleShowNew = () => {
-        this.setState({
-            showNew: !this.state.showNew,
-        })
+        if(this.props.orderDetails.canEdit) {
+            this.setState({
+                showNew: !this.state.showNew,
+            })
+        }
+        else{
+            this.props.setError(405, 'Een order met daar aan gekoppeld een factuur met de status “Te verzenden” kan niet worden aangepast(de order zit in de map “Order – Te verzenden”). Wil je deze order toch aanpassen? Verwijder dan eerst de “Te verzenden” factuur. Dan kom deze order weer in de “Order – te factureren”.  Pas de order aan en maak vervolgens opnieuw de factuur.');
+        }
+
     };
 
     toggleShowNewProduct = () => {
-        this.setState({
-            showNewProduct: !this.state.showNewProduct,
-        })
+        if(this.props.orderDetails.canEdit) {
+            this.setState({
+                showNewProduct: !this.state.showNewProduct,
+            })
+        }
+        else{
+            this.props.setError(405, 'Een order met daar aan gekoppeld een factuur met de status “Te verzenden” kan niet worden aangepast(de order zit in de map “Order – Te verzenden”). Wil je deze order toch aanpassen? Verwijder dan eerst de “Te verzenden” factuur. Dan kom deze order weer in de “Order – te factureren”.  Pas de order aan en maak vervolgens opnieuw de factuur.');
+        }
+
     };
 
     toggleShowNewProductOneTime = () => {
-        this.setState({
-            showNewProductOneTime: !this.state.showNewProductOneTime,
-        })
+        if(this.props.orderDetails.canEdit) {
+            this.setState({
+                showNewProductOneTime: !this.state.showNewProductOneTime,
+            })
+        }
+        else{
+            this.props.setError(405, 'Een order met daar aan gekoppeld een factuur met de status “Te verzenden” kan niet worden aangepast(de order zit in de map “Order – Te verzenden”). Wil je deze order toch aanpassen? Verwijder dan eerst de “Te verzenden” factuur. Dan kom deze order weer in de “Order – te factureren”.  Pas de order aan en maak vervolgens opnieuw de factuur.');
+        }
     };
 
     render() {
@@ -46,7 +64,7 @@ class OrderProductsForm extends Component {
                         <div className={"col-xs-10"}>
                             <span className="h5 text-bold">Orderregels</span>
                         </div>
-                        {this.props.permissions.manageFinancial && this.props.orderDetails.canEdit &&
+                        {this.props.permissions.manageFinancial &&
                         <div className={"col-xs-2"}>
                             <div className="pull-right">
                                 <span className="glyphicon glyphicon-plus" data-toggle="dropdown" role="button"/>
@@ -82,4 +100,10 @@ const mapStateToProps = (state) => {
     }
 };
 
-export default connect(mapStateToProps)(OrderProductsForm);
+const mapDispatchToProps = dispatch => ({
+    setError: (http_code, message) => {
+        dispatch(setError(http_code, message));
+    },
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(OrderProductsForm);

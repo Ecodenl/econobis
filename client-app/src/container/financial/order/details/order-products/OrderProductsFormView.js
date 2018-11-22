@@ -42,8 +42,8 @@ const OrderProductsFormView = props => {
                 </div>
             </div>
             <div className="col-sm-1">
-                {(props.showActionButtons && props.orderDetails.canEdit && props.permissions.manageFinancial ? <a role="button" onClick={props.openEdit}><span className="glyphicon glyphicon-pencil mybtn-success" /> </a> : '')}
-                {(props.showActionButtons&& props.orderDetails.canEdit  && props.permissions.manageFinancial ? <a role="button" onClick={props.toggleDelete}><span className="glyphicon glyphicon-trash mybtn-danger"  /> </a> : '')}
+                {(props.showActionButtons && props.permissions.manageFinancial ? <a role="button" onClick={props.openEdit}><span className="glyphicon glyphicon-pencil mybtn-success" /> </a> : '')}
+                {(props.showActionButtons && props.permissions.manageFinancial ? <a role="button" onClick={props.toggleDelete}><span className="glyphicon glyphicon-trash mybtn-danger"  /> </a> : '')}
                 </div>
             {period &&
             <div className="col-sm-12">

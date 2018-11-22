@@ -10,6 +10,7 @@ import validator from "validator";
 import moment from "moment/moment";
 import OrderProductsFormDelete from "./OrderProductsFormDelete";
 import OrderProductsFormEditProductOneTime from "./OrderProductsFormEditProductOneTime";
+import {setError} from "../../../../../actions/general/ErrorActions";
 
 class OrderProductsFormItem extends Component {
     constructor(props) {
@@ -47,7 +48,13 @@ class OrderProductsFormItem extends Component {
     };
 
     toggleDelete = () => {
-        this.setState({showDelete: !this.state.showDelete});
+        if(this.props.orderDetails.canEdit) {
+            this.setState({showDelete: !this.state.showDelete});
+        }
+        else{
+            this.props.setError(405, 'Een order met daar aan gekoppeld een factuur met de status “Te verzenden” kan niet worden aangepast(de order zit in de map “Order – Te verzenden”). Wil je deze order toch aanpassen? Verwijder dan eerst de “Te verzenden” factuur. Dan kom deze order weer in de “Order – te factureren”.  Pas de order aan en maak vervolgens opnieuw de factuur.');
+        }
+
     };
 
     onLineEnter = () => {
@@ -65,7 +72,14 @@ class OrderProductsFormItem extends Component {
     };
 
     openEdit = () => {
-        this.setState({showEdit: true});
+        if(this.props.orderDetails.canEdit) {
+            this.setState({
+                showEdit: true,
+            })
+        }
+        else{
+            this.props.setError(405, 'Een order met daar aan gekoppeld een factuur met de status “Te verzenden” kan niet worden aangepast(de order zit in de map “Order – Te verzenden”). Wil je deze order toch aanpassen? Verwijder dan eerst de “Te verzenden” factuur. Dan kom deze order weer in de “Order – te factureren”.  Pas de order aan en maak vervolgens opnieuw de factuur.');
+        }
     };
 
     closeEdit = () => {
@@ -262,6 +276,9 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = dispatch => ({
     fetchOrderDetails: (id) => {
         dispatch(fetchOrderDetails(id));
+    },
+    setError: (http_code, message) => {
+        dispatch(setError(http_code, message));
     },
 });
 

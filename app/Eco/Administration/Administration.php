@@ -231,10 +231,11 @@ class Administration extends Model
             $canCreateInvoices['can'] = false;
         }
 
-        if(empty($this->sepa_creditor_id)) {
-            $canCreateInvoices['requiredFields'][] = 'SEPA crediteur id';
-            $canCreateInvoices['can'] = false;
-        }
+        //22-11-2018 SEPA crediteur is alleen voor sepa's verplicht
+//        if(empty($this->sepa_creditor_id)) {
+//            $canCreateInvoices['requiredFields'][] = 'SEPA crediteur id';
+//            $canCreateInvoices['can'] = false;
+//        }
 
         if(!$canCreateInvoices['can']){
             $canCreateInvoices['message'] = 'Kan SEPA niet aanmaken. De velden ' . implode($canCreateInvoices['requiredFields'], ', ') . ' zijn verplicht.';

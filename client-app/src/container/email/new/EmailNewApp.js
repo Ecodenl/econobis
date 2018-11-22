@@ -34,7 +34,8 @@ class EmailNewApp extends Component {
                 subject: '',
                 htmlBody: '',
                 attachments: [],
-                quotationRequestId:  props.params.quotationRequestId ? props.params.quotationRequestId : ''
+                quotationRequestId:  props.params.quotationRequestId ? props.params.quotationRequestId : '',
+                intakeId:  props.params.intakeId ? props.params.intakeId : '',
             },
             errors: {
                 from: false,
@@ -301,6 +302,7 @@ class EmailNewApp extends Component {
             data.append('subject', email.subject);
             data.append('htmlBody', email.htmlBody);
             data.append('quotationRequestId', email.quotationRequestId);
+            data.append('intakeId', email.intakeId);
             email.attachments.map((file, key) => {
                 data.append('attachments[' +  key +  ']', file);
             });

@@ -207,6 +207,8 @@ class OrderController extends ApiController
         $product->invoice_text = $productData['description'];
         $product->administration_ledger_twinfield_id = $productData['administrationLedgerTwinfieldId'];
 
+        $product->administration_ledger_twinfield_id ?: $product->administration_ledger_twinfield_id = null;
+
         $priceHistory = new PriceHistory();
         $priceHistory->date_start = Carbon::today();
         $priceHistory->price = $productData['price'];
@@ -248,6 +250,7 @@ class OrderController extends ApiController
         $product->invoice_text = $productData['description'];
         $product->duration_id = $productData['durationId'];
         $product->administration_ledger_twinfield_id = $productData['administrationLedgerTwinfieldId'];
+        $product->administration_ledger_twinfield_id ?: $product->administration_ledger_twinfield_id = null;
 
         $priceHistory = new PriceHistory();
         $priceHistory->product_id = $product->id;

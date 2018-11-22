@@ -9,6 +9,7 @@ use App\Eco\Order\Order;
 use App\Eco\PaymentInvoice\PaymentInvoice;
 use App\Eco\Product\Product;
 use App\Eco\ProductionProject\ProductionProject;
+use App\Eco\Twinfield\TwinfieldCustomerNumber;
 use App\Eco\User\User;
 use App\Http\Traits\Encryptable;
 use Carbon\Carbon;
@@ -23,8 +24,20 @@ class Administration extends Model
     protected $guarded = ['id'];
 
     protected $encryptable = [
-        'IBAN'
+        'IBAN',
+        'twinfield_password'
     ];
+
+    //Per administratie heeft de contact een ander twinfield nummer
+    public function twinfieldNumbers()
+    {
+        return $this->hasMany(TwinfieldcustomerNumber::class);
+    }
+
+    public function ledgers()
+    {
+        return $this->hasMany(Ledger::class);
+    }
 
     public function users()
     {
@@ -161,8 +174,16 @@ class Administration extends Model
 
     public function getTotalInvoicesExportedAttribute()
     {
-        return $this->invoices()->where('status_id', 'exported')->whereNull('date_reminder_1')->whereNull('date_reminder_2')->whereNull('date_reminder_3')->whereNull('date_exhortation')->where('days_to_expire', '>', '0')->count();
-    }
+        return $this->invoices()
+            ->where(function ($q) {
+                $q->where(function ($q) {
+                    $q->where('payment_type_id', 'transfer')
+                        ->where('days_to_expire', '>', '0');
+                })->orWhere(function ($q) {
+                    $q->where('payment_type_id', '!=', 'transfer');
+                });})->where('status_id', 'exported')->whereNull('date_reminder_1')
+            ->whereNull('date_reminder_2')->whereNull('date_reminder_3')
+            ->whereNull('date_exhortation')->count();  }
 
     public function getTotalInvoicesReminderAttribute()
     {

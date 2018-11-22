@@ -8,6 +8,9 @@
 
 namespace App\Eco\Address;
 
+use App\Eco\Administration\Administration;
+use App\Helpers\Twinfield\TwinfieldCustomerHelper;
+
 class AddressObserver
 {
 
@@ -32,6 +35,11 @@ class AddressObserver
                 $oldPrimaryAddress->primary = false;
                 $oldPrimaryAddress->save();
             }
+        }
+
+        foreach (Administration::where('twinfield_is_valid')->where('uses_twinfield')->get() as $administration) {
+            $twinfieldCustomerHelper = new TwinfieldCustomerHelper($administration);
+            $twinfieldCustomerHelper->createCustomer($address->contact);
         }
     }
 }

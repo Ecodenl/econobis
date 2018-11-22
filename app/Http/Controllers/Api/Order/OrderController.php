@@ -64,6 +64,7 @@ class OrderController extends ApiController
     {
         $order->load([
             'administration.products',
+            'administration.ledgers',
             'orderProducts.product',
             'orderProducts',
             'contact',
@@ -204,6 +205,7 @@ class OrderController extends ApiController
         $product->invoice_frequency_id = $productData['invoiceFrequencyId'];
         $product->administration_id = $productData['administrationId'];
         $product->invoice_text = $productData['description'];
+        $product->administration_ledger_twinfield_id = $productData['administrationLedgerTwinfieldId'];
 
         $priceHistory = new PriceHistory();
         $priceHistory->date_start = Carbon::today();
@@ -245,6 +247,7 @@ class OrderController extends ApiController
         $product = Product::withoutGlobalScopes()->find($productData['id']);
         $product->invoice_text = $productData['description'];
         $product->duration_id = $productData['durationId'];
+        $product->administration_ledger_twinfield_id = $productData['administrationLedgerTwinfieldId'];
 
         $priceHistory = new PriceHistory();
         $priceHistory->product_id = $product->id;

@@ -8,70 +8,48 @@
 
 namespace App\Helpers\Twinfield;
 
-use App\Eco\Address\Address;
-use App\Eco\Contact\Contact;
-use App\Eco\ContactGroup\ContactGroup;
-use PhpTwinfield\ApiConnectors\CustomerApiConnector;
-use PhpTwinfield\Customer;
-use PhpTwinfield\CustomerAddress;
+
+use App\Eco\Administration\Administration;
+use Illuminate\Support\Facades\Log;
+use PhpTwinfield\ApiConnectors\OfficeApiConnector;
+use PhpTwinfield\Exception;
 use PhpTwinfield\Office;
 use PhpTwinfield\Secure\WebservicesAuthentication;
-use PhpTwinfield\Exception as PhpTwinfieldException;
 
 class TwinfieldHelper
 {
     private $connection;
     private $office;
 
-    public function __construct($username, $password, $organization, $officeCode)
+    /**
+     * TwinfieldCustomerHelper constructor.
+     *
+     * @param Administration $administration
+     */
+    public function __construct(Administration $administration)
     {
-        $this->connection = new WebservicesAuthentication($username, $password, $organization);
-        $this->office = Office::fromCode($officeCode);
+        $this->connection = new WebservicesAuthentication($administration->twinfield_username, $administration->twinfield_password, $administration->twinfield_organization_code);
+        $this->office = Office::fromCode($administration->twinfield_office_code);
     }
 
 
-    public function createCustomer(Contact $contact){
+    /**
+     * @return bool - true if the connection did succeed, false if connection failed
+     */
+    public function testConnection()
+    {
+        $officeApiConnector = new OfficeApiConnector($this->connection);
 
-        $customerApiConnector = new CustomerApiConnector($this->connection);
-
-        $customer = new Customer();
-
-        //Standaard customer informatie
-        $this->fillCustomerDimension($contact, $customer);
-
-        //Addressen meegeven
-        foreach ($contact->addresses as $address){
-            $this->fillCustomerAddress($address, $customer);
-        }
+        $result = true;
 
         try {
-            $response = $customerApiConnector->send($customer);
-            return $response;
+           $officeApiConnector->listAll();
         }
-        catch (PhpTwinfieldException $e){
-            return 'Error: ' . $e->getMessage();
+        catch(Exception $e){
+            Log::error($e->getMessage());
+            $result = false;
         }
-    }
 
-    public function fillCustomerDimension(Contact $contact, Customer $customer){
-        $customer
-            ->setCode('98')
-            ->setName($contact->full_name)
-            ->setOffice($this->office)
-            ->setEBilling(false);
-    }
-
-    public function fillCustomerAddress(Address $address, Customer $customer){
-        $customer_address = new CustomerAddress();
-        $customer_address
-            ->setType('invoice')
-            ->setDefault(false)
-            ->setPostcode('1212 AB')
-            ->setCity('TestCity')
-            ->setCountry('NL')
-            ->setTelephone('010-12345')
-            ->setFax('010-1234')
-            ->setEmail('johndoe@example.com');
-        $customer->addAddress($customer_address);
+        return $result;
     }
 }

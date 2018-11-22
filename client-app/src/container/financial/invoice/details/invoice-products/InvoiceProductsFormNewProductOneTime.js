@@ -11,6 +11,7 @@ import validator from "validator";
 import InputDate from "../../../../../components/form/InputDate";
 import moment from "moment/moment";
 import {fetchInvoiceDetails} from "../../../../../actions/invoice/InvoiceDetailsActions";
+import InputReactSelect from "../../../../../components/form/InputReactSelect";
 
 class InvoiceProductsFormNewProductOneTime extends Component {
     constructor(props) {
@@ -42,6 +43,7 @@ class InvoiceProductsFormNewProductOneTime extends Component {
                 vatPercentage: '',
                 price: '',
                 isOneTime: true,
+                administrationLedgerTwinfieldId: '',
             },
             errors: {
                 amount: false,
@@ -51,7 +53,18 @@ class InvoiceProductsFormNewProductOneTime extends Component {
             },
         };
 
+        this.handleReactSelectChange = this.handleReactSelectChange.bind(this);
         this.handleInputChangeDate = this.handleInputChangeDate.bind(this);
+    };
+
+    handleReactSelectChange(selectedOption, name) {
+        this.setState({
+            ...this.state,
+            product: {
+                ...this.state.product,
+                [name]: selectedOption
+            },
+        });
     };
 
     handleInputChange = event => {
@@ -228,7 +241,7 @@ class InvoiceProductsFormNewProductOneTime extends Component {
     render() {
 
         const {description, amount, amountReduction, percentageReduction, dateLastInvoice} = this.state.invoiceProduct;
-        const { vatPercentage, price } = this.state.product;
+        const { vatPercentage, price, administrationLedgerTwinfieldId } = this.state.product;
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -262,6 +275,19 @@ class InvoiceProductsFormNewProductOneTime extends Component {
                                 placeholder={"Geen"}
                             />
                         </div>
+
+                        {this.props.invoiceDetails.order.administration.usesTwinfield == true && this.props.invoiceDetails.order.administration.twinfieldIsValid == true &&
+                        <div className="row">
+                            <InputReactSelect
+                                label={"Groetboek"}
+                                name={"administrationLedgerTwinfieldId"}
+                                options={this.props.invoiceDetails.order.administration.ledgers}
+                                value={administrationLedgerTwinfieldId}
+                                onChangeAction={this.handleReactSelectChange}
+                                multi={false}
+                            />
+                        </div>
+                        }
 
                         <div className="row">
                             <div className={'panel-part panel-heading'}>

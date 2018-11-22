@@ -11,6 +11,7 @@ import PanelBody from '../../../../../components/panel/PanelBody';
 import validator from "validator";
 import InputDate from "../../../../../components/form/InputDate";
 import moment from "moment/moment";
+import InputReactSelect from "../../../../../components/form/InputReactSelect";
 
 class OrderProductsFormNewProduct extends Component {
     constructor(props) {
@@ -43,6 +44,7 @@ class OrderProductsFormNewProduct extends Component {
                 invoiceFrequencyId: this.props.orderDetails.collectionFrequencyId ? this.props.orderDetails.collectionFrequencyId : 'once',
                 vatPercentage: '',
                 price: '',
+                administrationLedgerTwinfieldId: '',
                 isOneTime: false
             },
             errors: {
@@ -56,6 +58,7 @@ class OrderProductsFormNewProduct extends Component {
             },
         };
 
+        this.handleReactSelectChange = this.handleReactSelectChange.bind(this);
         this.handleInputChangeDate = this.handleInputChangeDate.bind(this);
         this.handleInputChangeStartDate = this.handleInputChangeStartDate.bind(this);
     };
@@ -76,6 +79,16 @@ class OrderProductsFormNewProduct extends Component {
             this.updatePrice
         );
 
+    };
+
+    handleReactSelectChange(selectedOption, name) {
+        this.setState({
+            ...this.state,
+            product: {
+                ...this.state.product,
+                [name]: selectedOption
+            },
+        });
     };
 
     handleInputChangeProduct = event => {
@@ -359,7 +372,7 @@ class OrderProductsFormNewProduct extends Component {
     render() {
 
         const {amount, amountReduction, percentageReduction, dateStart, dateEnd, datePeriodStartFirstInvoice} = this.state.orderProduct;
-        const {description, code, name, durationId, vatPercentage, price } = this.state.product;
+        const {description, code, name, durationId, vatPercentage, price, administrationLedgerTwinfieldId } = this.state.product;
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -422,6 +435,16 @@ class OrderProductsFormNewProduct extends Component {
                                 onChangeAction={this.handleInputChangeProductDuration}
                                 emptyOption={false}
                             />
+                            {this.props.orderDetails.administration.usesTwinfield == true && this.props.orderDetails.administration.twinfieldIsValid == true &&
+                            <InputReactSelect
+                                label={"Groetboek"}
+                                name={"administrationLedgerTwinfieldId"}
+                                options={this.props.orderDetails.administration.ledgers}
+                                value={administrationLedgerTwinfieldId}
+                                onChangeAction={this.handleReactSelectChange}
+                                multi={false}
+                            />
+                            }
                         </div>
 
                         <div className="row">
@@ -546,7 +569,6 @@ class OrderProductsFormNewProduct extends Component {
 const mapStateToProps = (state) => {
     return {
         orderDetails: state.orderDetails,
-        administrationId: state.administrationDetails.id,
         productDurations: state.systemData.productDurations,
         productInvoiceFrequencies: state.systemData.productInvoiceFrequencies,
         productPaymentTypes: state.systemData.productPaymentTypes,

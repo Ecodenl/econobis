@@ -10,15 +10,19 @@ namespace App\Http\Controllers\Api\Administration;
 
 
 use App\Eco\Administration\Administration;
+use App\Eco\Administration\Ledger;
 use App\Eco\Administration\Sepa;
 use App\Eco\User\User;
 use App\Helpers\Delete\Models\DeleteAdministration;
 use App\Helpers\RequestInput\RequestInput;
+use App\Helpers\Twinfield\TwinfieldHelper;
+use App\Helpers\Twinfield\TwinfieldInvoiceHelper;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\RequestQueries\Administration\Grid\RequestQuery;
 use App\Http\Resources\Administration\AdministrationPeek;
 use App\Http\Resources\Administration\FullAdministration;
 use App\Http\Resources\Administration\GridAdministration;
+use App\Http\Resources\GenericResource;
 use App\Http\Resources\User\UserPeek;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -52,6 +56,7 @@ class AdministrationController extends ApiController
             'emailTemplateReminder',
             'emailTemplateExhortation',
             'sepas',
+            'ledgers',
         ]);
 
         return FullAdministration::make($administration);
@@ -83,9 +88,42 @@ class AdministrationController extends ApiController
             ->integer('emailTemplateIdTransfer')->validate('nullable|exists:email_templates,id')->onEmpty(null)->whenMissing(null)->alias('email_template_id_transfer')->next()
             ->integer('emailTemplateReminderId')->validate('nullable|exists:email_templates,id')->onEmpty(null)->whenMissing(null)->alias('email_template_reminder_id')->next()
             ->integer('emailTemplateExhortationId')->validate('nullable|exists:email_templates,id')->onEmpty(null)->whenMissing(null)->alias('email_template_exhortation_id')->next()
+            ->string('twinfieldUsername')->whenMissing(null)->onEmpty(null)->alias('twinfield_username')->next()
+            ->string('twinfieldPassword')->whenMissing(null)->onEmpty(null)->alias('twinfield_password')->next()
+            ->string('twinfieldOrganizationCode')->whenMissing(null)->onEmpty(null)->alias('twinfield_organization_code')->next()
+            ->string('twinfieldOfficeCode')->whenMissing(null)->onEmpty(null)->alias('twinfield_office_code')->next()
+            ->string('defaultInvoiceTemplate')->whenMissing(null)->onEmpty(null)->alias('default_invoice_template')->next()
+            ->string('btwCodeSales21')->whenMissing(null)->onEmpty(null)->alias('btw_code_sales_21')->next()
+            ->string('btwCodeSales6')->whenMissing(null)->onEmpty(null)->alias('btw_code_sales_6')->next()
+            ->string('btwCodeSales0')->whenMissing(null)->onEmpty(null)->alias('btw_code_sales_0')->next()
+            ->string('btwCodeSalesNull')->whenMissing(null)->onEmpty(null)->alias('btw_code_sales_null')->next()
+            ->string('btwCodePurchases21')->whenMissing(null)->onEmpty(null)->alias('btw_code_purchases_21')->next()
+            ->string('btwCodePurchases6')->whenMissing(null)->onEmpty(null)->alias('btw_code_purchases_6')->next()
+            ->string('btwCodePurchases0')->whenMissing(null)->onEmpty(null)->alias('btw_code_purchases_0')->next()
+            ->string('btwCodePurchasesNull')->whenMissing(null)->onEmpty(null)->alias('btw_code_purchases_null')->next()
             ->get();
 
+        //bool als string? waarschijnlijk door formdata
+        $usesTwinfield = $request->input('usesTwinfield');
+
+        if($usesTwinfield == 'false'){
+            $usesTwinfield = false;
+        }
+        if($usesTwinfield == 'true'){
+            $usesTwinfield = true;
+        }
+
+        $data['uses_twinfield'] = $usesTwinfield;
+
         $administration = new Administration($data);
+
+        if($administration->uses_twinfield) {
+            $twinfieldHelper = new TwinfieldHelper($administration);
+            $administration->twinfield_is_valid = $twinfieldHelper->testConnection();
+        }
+        else{
+            $administration->twinfield_is_valid = 0;
+        }
 
         $administration->save();
 
@@ -128,9 +166,41 @@ class AdministrationController extends ApiController
             ->integer('emailTemplateIdTransfer')->validate('nullable|exists:email_templates,id')->onEmpty(null)->whenMissing(null)->alias('email_template_id_transfer')->next()
             ->integer('emailTemplateReminderId')->validate('nullable|exists:email_templates,id')->onEmpty(null)->whenMissing(null)->alias('email_template_reminder_id')->next()
             ->integer('emailTemplateExhortationId')->validate('nullable|exists:email_templates,id')->onEmpty(null)->whenMissing(null)->alias('email_template_exhortation_id')->next()
+            ->string('twinfieldUsername')->whenMissing(null)->onEmpty(null)->alias('twinfield_username')->next()
+            ->string('twinfieldPassword')->whenMissing(null)->onEmpty(null)->alias('twinfield_password')->next()
+            ->string('twinfieldOrganizationCode')->whenMissing(null)->onEmpty(null)->alias('twinfield_organization_code')->next()
+            ->string('twinfieldOfficeCode')->whenMissing(null)->onEmpty(null)->alias('twinfield_office_code')->next()
+            ->string('defaultInvoiceTemplate')->whenMissing(null)->onEmpty(null)->alias('default_invoice_template')->next()
+            ->string('btwCodeSales21')->whenMissing(null)->onEmpty(null)->alias('btw_code_sales_21')->next()
+            ->string('btwCodeSales6')->whenMissing(null)->onEmpty(null)->alias('btw_code_sales_6')->next()
+            ->string('btwCodeSales0')->whenMissing(null)->onEmpty(null)->alias('btw_code_sales_0')->next()
+            ->string('btwCodeSalesNull')->whenMissing(null)->onEmpty(null)->alias('btw_code_sales_null')->next()
+            ->string('btwCodePurchases21')->whenMissing(null)->onEmpty(null)->alias('btw_code_purchases_21')->next()
+            ->string('btwCodePurchases6')->whenMissing(null)->onEmpty(null)->alias('btw_code_purchases_6')->next()
+            ->string('btwCodePurchases0')->whenMissing(null)->onEmpty(null)->alias('btw_code_purchases_0')->next()
+            ->string('btwCodePurchasesNull')->whenMissing(null)->onEmpty(null)->alias('btw_code_purchases_null')->next()
             ->get();
 
+        //bool als string? waarschijnlijk door formdata
+        $usesTwinfield = $request->input('usesTwinfield');
+
+        if($usesTwinfield == 'false'){
+            $usesTwinfield = false;
+        }
+        if($usesTwinfield == 'true'){
+            $usesTwinfield = true;
+        }
+        $data['uses_twinfield'] = $usesTwinfield;
+
         $administration->fill($data);
+
+        if($administration->uses_twinfield) {
+            $twinfieldHelper = new TwinfieldHelper($administration);
+            $administration->twinfield_is_valid = $twinfieldHelper->testConnection();
+        }
+        else{
+            $administration->twinfield_is_valid = 0;
+        }
 
         $administration->save();
 
@@ -229,4 +299,52 @@ class AdministrationController extends ApiController
         //soft delete
         $sepa->delete();
     }
+
+    public function syncSentInvoicesToTwinfield(Administration $administration){
+        $twinfieldInvoiceHelper = new TwinfieldInvoiceHelper($administration);
+        return $twinfieldInvoiceHelper->createAllInvoices();
+    }
+
+    public function syncSentInvoicesFromTwinfield(Administration $administration){
+        $twinfieldInvoiceHelper = new TwinfieldInvoiceHelper($administration);
+        return $twinfieldInvoiceHelper->processPaidInvoices();
+    }
+
+    public function storeLedger(RequestInput $requestInput)
+    {
+        $data = $requestInput
+            ->integer('administrationId')->validate('required|exists:administrations,id')->alias('administration_id')->next()
+            ->string('code')->validate('required')->alias('code')->next()
+            ->string('name')->validate('required')->alias('name')->next()
+            ->get();
+
+        $ledger = new Ledger();
+
+        $ledger->fill($data);
+
+        $ledger->save();
+
+        return GenericResource::make($ledger);
+    }
+
+    public function updateLedger(RequestInput $requestInput, Ledger $ledger)
+    {
+        $data = $requestInput
+            ->string('code')->validate('required')->alias('code')->next()
+            ->string('name')->validate('required')->alias('name')->next()
+            ->get();
+
+        $ledger->fill($data);
+
+        $ledger->save();
+
+        return GenericResource::make($ledger);
+    }
+
+    public function peekLedgers(Administration $administration){
+        $ledgers = $administration->ledgers;
+
+        return GenericResource::collection($ledgers);
+    }
+
 }

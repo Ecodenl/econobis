@@ -3,6 +3,7 @@
 namespace App\Eco\Product;
 
 use App\Eco\Administration\Administration;
+use App\Eco\Administration\Ledger;
 use App\Eco\Invoice\Invoice;
 use App\Eco\Invoice\InvoiceProduct;
 use App\Eco\Order\OrderProduct;
@@ -27,6 +28,10 @@ class Product extends Model
         static::addGlobalScope('is_not_one_time', function (Builder $builder) {
             $builder->where('is_one_time', false);
         });
+    }
+
+    public function ledger(){
+        return $this->belongsTo(Ledger::class, 'administration_ledger_twinfield_id');
     }
 
     public function priceHistory()

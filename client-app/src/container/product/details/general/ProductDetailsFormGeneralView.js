@@ -7,7 +7,7 @@ import PanelBody from "../../../../components/panel/PanelBody";
 
 const ProductDetailsFormGeneralView = props => {
 
-    const { code, name, invoiceText, duration, invoiceFrequency, paymentType, administration} = props.productDetails;
+    const { code, name, invoiceText, duration, invoiceFrequency, paymentType, administration, ledger} = props.productDetails;
 
     return (
         <div onClick={props.switchToEdit}>
@@ -55,6 +55,14 @@ const ProductDetailsFormGeneralView = props => {
                         />
                     </div>
 
+                    {administration.usesTwinfield == true && administration.twinfieldIsValid == true &&
+                        <div className="row">
+                            <ViewText
+                                label={"Groetboeknummer"}
+                                value={ledger ? ledger.name : ''}
+                            />
+                        </div>
+                    }
                 </PanelBody>
             </Panel>
         </div>

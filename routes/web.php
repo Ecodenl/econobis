@@ -11,18 +11,27 @@
 |
 */
 
+use App\Eco\Administration\Administration;
 use App\Eco\Contact\Contact;
-use App\Helpers\Twinfield\TwinfieldHelper;
+use App\Helpers\Twinfield\TwinfieldCustomerHelper;
+use Illuminate\Support\Facades\Log;
 
 Route::get('/twinfield', function () {
 
+    $contact = Contact::find(4);
 
-    $twinfieldHelper = new TwinfieldHelper("COM006123", "XXXX", "PROEF", 'NLA017551');
+    $twinfieldCustomerHelper = new TwinfieldCustomerHelper(Administration::find(1));
 
+    $response = $twinfieldCustomerHelper->createCustomer($contact);
 
-    $response = $twinfieldHelper->createCustomer(Contact::find(3));
+    if(class_basename($response) === 'Customer'){
+        $contact->twinfield_number = $response->getCode();
+        $contact->save();
+    }
+    else{
+        Log::error('Error:' . $response);
+    }
 
-    dd($response);
 });
 
 Route::get('/', function () {

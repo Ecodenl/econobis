@@ -8,7 +8,8 @@ import PanelBody from "../../../../components/panel/PanelBody";
 const AdministrationDetailsFormGeneralView = props => {
 
     const { name, administrationNumber, address, postalCode, emailTemplateCollection, emailTemplateTransfer, emailTemplateReminder, emailTemplateExhortation, city, country, kvkNumber, btwNumber, IBAN, ibanAttn,
-        email, website, bic, sepaContractName, sepaCreditorId, rsinNumber, defaultPaymentTerm, logoName} = props.administrationDetails;
+        email, website, bic, sepaContractName, sepaCreditorId, rsinNumber, defaultPaymentTerm, logoName, usesTwinfield, twinfieldUsername, twinfieldOrganizationCode,
+        twinfieldOfficeCode, defaultInvoiceTemplate, btwCodeSalesNull, btwCodeSales0, btwCodeSales6, btwCodeSales21, btwCodePurchasesNull, btwCodePurchases0, btwCodePurchases6, btwCodePurchases21} = props.administrationDetails;
 
     return (
         <div onClick={props.switchToEdit}>
@@ -129,6 +130,108 @@ const AdministrationDetailsFormGeneralView = props => {
                             value={logoName}
                         />
                     </div>
+
+                    {usesTwinfield == true &&
+                    <div className="row">
+                        <div className={'panel-part panel-heading'}>
+                            <span className={'h5 text-bold'}>Twinfield</span>
+                        </div>
+                    </div>
+                    }
+
+                    <div className="row">
+                        <ViewText
+                            label={"Gebruikt Twinfield"}
+                            value={usesTwinfield ? 'Ja' : 'Nee'}
+                        />
+                    </div>
+
+                    {usesTwinfield == true &&
+                    <div className="row">
+                        <ViewText
+                            label={"Gebruikersnaam"}
+                            value={twinfieldUsername}
+                        />
+                        <ViewText
+                            label={"Wachtwoord"}
+                            value='••••••••••'
+                        />
+                    </div>
+                    }
+
+                    {usesTwinfield == true &&
+                    <div className="row">
+                        <ViewText
+                            label={"Organisatiecode"}
+                            value={twinfieldOrganizationCode}
+                        />
+                        <ViewText
+                            label={"Administratiecode"}
+                            value={twinfieldOfficeCode}
+                        />
+                    </div>
+                    }
+
+                    {usesTwinfield == true &&
+                    <div className="row">
+                        <ViewText
+                            label={"Standaard factuurtemplate"}
+                            value={defaultInvoiceTemplate}
+                        />
+                    </div>
+                    }
+
+                    {usesTwinfield == true &&
+                    <div className="row">
+                        <ViewText
+                            label={"BTW code geen"}
+                            value={btwCodePurchasesNull}
+                        />
+                        <ViewText
+                            label={"BTW code verkoop geen"}
+                            value={btwCodeSalesNull}
+                        />
+                    </div>
+                    }
+
+                    {usesTwinfield == true &&
+                    <div className="row">
+                        <ViewText
+                            label={"BTW code 0%"}
+                            value={btwCodePurchases0}
+                        />
+                        <ViewText
+                            label={"BTW code verkoop 0%"}
+                            value={btwCodeSales0}
+                        />
+                    </div>
+                    }
+
+                    {usesTwinfield == true &&
+                    <div className="row">
+                        <ViewText
+                            label={"BTW code 6%"}
+                            value={btwCodePurchases6}
+                        />
+                        <ViewText
+                            label={"BTW code verkoop 6%"}
+                            value={btwCodeSales6}
+                        />
+                    </div>
+                    }
+
+                    {usesTwinfield == true &&
+                    <div className="row">
+                        <ViewText
+                            label={"BTW code 21%"}
+                            value={btwCodePurchases21}
+                        />
+                        <ViewText
+                            label={"BTW code verkoop 21%"}
+                            value={btwCodeSales21}
+                        />
+                    </div>
+                    }
                 </PanelBody>
             </Panel>
         </div>

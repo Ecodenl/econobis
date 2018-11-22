@@ -78,6 +78,8 @@ class InvoiceHelper
             $invoiceProduct->product_code = $orderProduct->product->code;
             $invoiceProduct->product_name = $orderProduct->product->name;
             $invoiceProduct->description = $orderProduct->product->invoice_text;
+            $invoiceProduct->twinfield_ledger_code = $orderProduct->product->twinfield_ledger_code;
+
             if($orderProduct->date_last_invoice){
                 $dateLastInvoice = $orderProduct->date_last_invoice;
             }
@@ -104,9 +106,6 @@ class InvoiceHelper
     public static function saveInvoiceStatus(Invoice $invoice){
         if($invoice->amount_open <= 0){
             $invoice->status_id = 'paid';
-        }
-        else{
-            $invoice->status_id = 'sent';
         }
 
         $invoice->save();

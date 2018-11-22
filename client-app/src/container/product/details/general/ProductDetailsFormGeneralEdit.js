@@ -7,14 +7,17 @@ import Panel from "../../../../components/panel/Panel";
 import PanelBody from "../../../../components/panel/PanelBody";
 import InputSelect from "../../../../components/form/InputSelect";
 import ProductDetailsFormGeneralEditConfirm from "./ProductDetailsFormGeneralEditConfirm";
+import InputReactSelect from "../../../../components/form/InputReactSelect";
+import AdministrationsAPI from "../../../../api/administration/AdministrationsAPI";
 
 class ProductDetailsFormGeneralEdit extends Component {
     constructor(props) {
         super(props);
 
-        const { id, code, name, invoiceText, durationId, invoiceFrequencyId, paymentTypeId, administrationId} = props.productDetails;
+        const { id, code, name, invoiceText, durationId, invoiceFrequencyId, paymentTypeId, administrationId, administrationLedgerTwinfieldId} = props.productDetails;
 
         this.state = {
+            ledgers: [],
             //beter uit systemdata, maar sommige combinaties zijn niet mogelijk
             invoiceFrequencies:[
                 {'id':  'once', name: 'Eenmalig'},
@@ -32,6 +35,7 @@ class ProductDetailsFormGeneralEdit extends Component {
                 invoiceFrequencyId: invoiceFrequencyId ? invoiceFrequencyId : 'once',
                 paymentTypeId: paymentTypeId ? paymentTypeId : '',
                 administrationId: administrationId ? administrationId : '',
+                administrationLedgerTwinfieldId: administrationLedgerTwinfieldId ? administrationLedgerTwinfieldId : '',
             },
             errors: {
                 code: false,
@@ -39,11 +43,17 @@ class ProductDetailsFormGeneralEdit extends Component {
                 administrationId: false,
             },
         };
+
+        this.handleReactSelectChange = this.handleReactSelectChange.bind(this);
     };
 
     componentDidMount() {
         let invoiceFrequencies = this.state.invoiceFrequencies;
         let invoiceFrequencyId = this.state.product.invoiceFrequencyId;
+        let ledgers = [];
+
+        AdministrationsAPI.peekLedgers(this.state.product.administrationId).then((payload) => {
+            ledgers = payload;
 
         switch (this.state.product.durationId) {
             case 'none':
@@ -98,11 +108,14 @@ class ProductDetailsFormGeneralEdit extends Component {
         this.setState({
             ...this.state,
             invoiceFrequencies,
+            ledgers,
             product: {
                 ...this.state.product,
                 invoiceFrequencyId
             },
+            });
         });
+
     };
 
     handleInputChangeDuration = event => {
@@ -252,8 +265,49 @@ class ProductDetailsFormGeneralEdit extends Component {
             });
     };
 
+    handleInputAdministrationIdChange = event => {
+        const target = event.target;
+        const value = target.type === 'checkbox' ? target.checked : target.value;
+        const name = target.name;
+
+        if (value) {
+            AdministrationsAPI.peekLedgers(value).then((payload) => {
+                this.setState({
+                    ...this.state,
+                    ledgers: payload,
+                    product: {
+                        ...this.state.product,
+                        administrationLedgerTwinfieldId: '',
+                        [name]: value
+                    },
+                });
+            });
+        }
+        else {
+            this.setState({
+                ...this.state,
+                ledgers: [],
+                product: {
+                    ...this.state.product,
+                    administrationLedgerTwinfieldId: '',
+                    [name]: value
+                },
+            });
+        }
+    };
+
+    handleReactSelectChange(selectedOption, name) {
+        this.setState({
+            ...this.state,
+            product: {
+                ...this.state.product,
+                [name]: selectedOption
+            },
+        });
+    };
+
     render() {
-        const { code, name, invoiceText, durationId, invoiceFrequencyId, paymentTypeId, administrationId} = this.state.product;
+        const { code, name, invoiceText, durationId, invoiceFrequencyId, paymentTypeId, administrationId, administrationLedgerTwinfieldId} = this.state.product;
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -328,11 +382,23 @@ class ProductDetailsFormGeneralEdit extends Component {
                                 name={"administrationId"}
                                 options={this.props.administrations}
                                 value={administrationId}
-                                onChangeAction={this.handleInputChange}
+                                onChangeAction={this.handleInputAdministrationIdChange}
                                 required={"required"}
                                 error={this.state.errors.administrationId}
                             />
                         </div>
+
+                        <div className={"row"}>
+                            <InputReactSelect
+                                label={"Groetboek"}
+                                name={"administrationLedgerTwinfieldId"}
+                                options={this.state.ledgers}
+                                value={administrationLedgerTwinfieldId}
+                                onChangeAction={this.handleReactSelectChange}
+                                multi={false}
+                            />
+                        </div>
+
                         {this.state.errorMessage &&
                         <div className="col-sm-10 col-md-offset-1 alert alert-danger">
                             {this.state.errorMessage}

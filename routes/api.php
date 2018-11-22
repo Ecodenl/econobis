@@ -330,7 +330,12 @@ Route::namespace('Api')
         Route::get('administration/sepa/{sepa}', 'Administration\AdministrationController@downloadSepa');
         Route::post('administration/sepa/{sepa}/delete', 'Administration\AdministrationController@deleteSepa');
         Route::post('administration', 'Administration\AdministrationController@store');
+        Route::post('administration/ledger', 'Administration\AdministrationController@storeLedger');
+        Route::post('administration/ledger/{ledger}/update', 'Administration\AdministrationController@updateLedger');
+        Route::post('administration/{administration}/ledger/peek', 'Administration\AdministrationController@peekLedgers');
         Route::post('administration/{administration}', 'Administration\AdministrationController@update');
+        Route::post('administration/{administration}/sync-invoices-to-twinfield', 'Administration\AdministrationController@syncSentInvoicesToTwinfield');
+        Route::post('administration/{administration}/sync-invoices-from-twinfield', 'Administration\AdministrationController@syncSentInvoicesFromTwinfield');
         Route::post('administration/{administration}/delete', 'Administration\AdministrationController@destroy');
         Route::post('administration/{administration}/{user}/attach', 'Administration\AdministrationController@attachUser');
         Route::post('administration/{administration}/{user}/detach', 'Administration\AdministrationController@detachUser');

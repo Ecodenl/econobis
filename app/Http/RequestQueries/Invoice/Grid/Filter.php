@@ -162,7 +162,15 @@ class Filter extends RequestFilter
                     });
                 }
                 if ($data === 'exported') {
-                    $query->where('invoices.days_to_expire', '>', '0');
+                    $query->where(function ($q) {
+                        $q->where(function ($q) {
+                            $q->where('invoices.payment_type_id', 'transfer')
+                                ->where('invoices.days_to_expire', '>',
+                                    '0');
+                        })->orWhere(function ($q) {
+                            $q->where('invoices.payment_type_id', '!=', 'transfer');
+                        });
+                    });
                 }
                 $query->whereNull('invoices.date_reminder_1')->whereNull('invoices.date_reminder_2')
                     ->whereNull('invoices.date_reminder_3')->whereNull('invoices.date_exhortation');

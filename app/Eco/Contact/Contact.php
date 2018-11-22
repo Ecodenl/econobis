@@ -23,6 +23,7 @@ use App\Eco\Person\Person;
 use App\Eco\PhoneNumber\PhoneNumber;
 use App\Eco\ProductionProject\ProductionProjectRevenueDistribution;
 use App\Eco\Task\Task;
+use App\Eco\Twinfield\TwinfieldCustomerNumber;
 use App\Eco\User\User;
 use App\Http\Resources\ContactGroup\GridContactGroup;
 use App\Http\Traits\Encryptable;
@@ -51,6 +52,12 @@ class Contact extends Model
     protected $encryptable = [
       'iban'
     ];
+
+    //Per administratie heeft het contact een ander twinfield nummer
+    public function twinfieldNumbers()
+    {
+        return $this->hasMany(TwinfieldcustomerNumber::class);
+    }
 
     public function addresses()
     {

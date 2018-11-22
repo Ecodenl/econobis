@@ -269,14 +269,16 @@ class EmailAnswerApp extends Component {
             data.append('subject', email.subject);
             data.append('htmlBody', email.htmlBody);
             data.append('oldEmailId', this.state.oldEmailId);
-            email.attachments.map((file, key) => {
-                if(file.id){
-                    data.append('oldAttachments[' + key + ']', JSON.stringify(file));
-                }
-                else {
-                    data.append('attachments[' + key + ']', file);
-                }
-            });
+            if(email.attachments) {
+                email.attachments.map((file, key) => {
+                    if (file.id) {
+                        data.append('oldAttachments[' + key + ']', JSON.stringify(file));
+                    }
+                    else {
+                        data.append('attachments[' + key + ']', file);
+                    }
+                });
+            }
 
             this.setButtonLoading();
 

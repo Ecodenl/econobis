@@ -5,7 +5,6 @@ import moment from 'moment';
 import validator from 'validator';
 
 import PersonAPI from '../../../api/contact/PersonAPI';
-import OrganisationAPI from '../../../api/contact/OrganisationAPI';
 import InputText from '../../../components/form/InputText';
 import InputSelect from '../../../components/form/InputSelect';
 import InputDate from '../../../components/form/InputDate';
@@ -17,7 +16,6 @@ import ContactNewFormAddress from "./ContactNewFormAddress";
 import ContactNewFormEmail from "./ContactNewFormEmail";
 import ContactNewFormPhone from "./ContactNewFormPhone";
 import AddressAPI from "../../../api/contact/AddressAPI";
-import validateNumber from "../../../helpers/ValidateNumber";
 import ContactNewFormPersonalDuplicateModal from "./ContactNewFormPersonalDuplicateModal";
 
 class ContactNewFormPersonal extends Component {
@@ -272,7 +270,7 @@ class ContactNewFormPersonal extends Component {
         let phoneErrors = {};
 
         if (!validator.isEmpty(phoneNumber.number)) {
-            if (validateNumber(phoneNumber.number)) {
+            if (validator.isEmpty(phoneNumber.number)) {
                 phoneErrors.number = true;
                 hasErrors = true;
             };

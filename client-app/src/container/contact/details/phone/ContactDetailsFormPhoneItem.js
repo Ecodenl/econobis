@@ -11,7 +11,6 @@ import {
 import ContactDetailsFormPhoneView from './ContactDetailsFormPhoneView';
 import ContactDetailsFormPhoneEdit from './ContactDetailsFormPhoneEdit';
 import ContactDetailsFormPhoneDelete from './ContactDetailsFormPhoneDelete';
-import validateNumber from "../../../../helpers/ValidateNumber";
 
 class ContactDetailFormPhoneItem extends Component {
     constructor(props) {
@@ -102,7 +101,7 @@ class ContactDetailFormPhoneItem extends Component {
         let errors = {};
         let hasErrors = false;
 
-        if(validateNumber(phoneNumber.number)){
+        if(validator.isEmpty(phoneNumber.number)){
             errors.number = true;
             hasErrors = true;
         };

@@ -77,11 +77,13 @@ class MailFetcher
             $this->imap->checkMailbox();
             if($mb->valid == false){
                 $mb->valid = true;
+                $mb->login_tries = 0;
                 $mb->save();
             }
         }
         catch(\Exception $e){
             $mb->valid = false;
+            $mb->login_tries = $mb->login_tries + 1;
             $mb->save();
         }
 

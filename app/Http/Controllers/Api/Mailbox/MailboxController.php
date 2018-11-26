@@ -90,6 +90,7 @@ class MailboxController extends Controller
             ->string('password')->alias('password')->next()
             ->get();
 
+        $mailbox->login_tries = 0;
         $mailbox->update($data);
         $mailbox->save();
 

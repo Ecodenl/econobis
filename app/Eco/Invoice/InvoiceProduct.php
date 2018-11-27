@@ -121,4 +121,23 @@ class InvoiceProduct extends Model
         return ($price * ($this->vat_percentage / 100));
 
     }
+
+    public function getPriceIncVatAttribute()
+    {
+        $price = $this->price;
+
+        if ($price === null) {
+            $price = 0;
+        }
+
+        $vat_percentage = $this->vat_percentage;
+
+        if($vat_percentage) {
+            $price = ($price + ($price
+                    * ($vat_percentage / 100)));
+        }
+
+        return $price;
+
+    }
 }

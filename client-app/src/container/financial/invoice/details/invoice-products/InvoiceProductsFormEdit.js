@@ -63,7 +63,7 @@ const InvoiceProductsFormEdit = props => {
                                 value={percentageReduction}
                                 onChangeAction={props.handleInputChange}
                             />
-                            {variablePrice !== null ?
+                            {props.productVariablePrice ?
                                 <InputText
                                     label={"Bedrag"}
                                     name={"variablePrice"}

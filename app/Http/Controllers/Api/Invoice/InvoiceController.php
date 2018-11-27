@@ -650,7 +650,7 @@ class InvoiceController extends ApiController
         });
     }
 
-    public function updateInvoiceProduct(RequestInput $input, InvoiceProduct $invoiceProduct)
+    public function updateInvoiceProduct(RequestInput $input, InvoiceProduct $invoiceProduct, Request $request)
     {
         $this->authorize('manage', Invoice::class);
 
@@ -665,6 +665,21 @@ class InvoiceController extends ApiController
             ->get();
 
         $invoiceProduct->fill($data);
+
+        if($invoiceProduct->product->currentPrice->has_variable_price) {
+            $price = $request->input('variablePrice') ? $request->input('variablePrice') : 0;
+
+            //BTW eraf halen
+            switch ($invoiceProduct->product->current_price->vat_percentage){
+                case 21:
+                    $price = $price / 1.21;
+                    break;
+                case 6:
+                    $price = $price / 1.06;
+                    break;
+            }
+            $invoiceProduct->price = $price;
+        }
 
         $invoiceProduct->save();
 

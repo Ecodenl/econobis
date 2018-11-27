@@ -62,7 +62,7 @@ class ProductController extends ApiController
             ->string('invoiceFrequencyId')->whenMissing(null)->onEmpty(null)->alias('invoice_frequency_id')->next()
             ->string('paymentTypeId')->whenMissing(null)->onEmpty(null)->alias('payment_type_id')->next()
             ->string('administrationId')->validate('required|exists:administrations,id')->alias('administration_id')->next()
-            ->string('administrationLedgerTwinfieldId')->validate('exists:administration_ledger_twinfield,id')->alias('administration_ledger_twinfield_id')->next()
+            ->string('administrationLedgerTwinfieldId')->validate('exists:administration_ledger_twinfield,id')->whenMissing(null)->onEmpty(null)->alias('administration_ledger_twinfield_id')->next()
             ->get();
 
         $product = new Product($data);
@@ -85,7 +85,7 @@ class ProductController extends ApiController
             ->string('invoiceFrequencyId')->whenMissing(null)->onEmpty(null)->alias('invoice_frequency_id')->next()
             ->string('paymentTypeId')->whenMissing(null)->onEmpty(null)->alias('payment_type_id')->next()
             ->string('administrationId')->validate('required|exists:administrations,id')->alias('administration_id')->next()
-            ->string('administrationLedgerTwinfieldId')->validate('exists:administration_ledger_twinfield,id')->alias('administration_ledger_twinfield_id')->next()
+            ->string('administrationLedgerTwinfieldId')->validate('exists:administration_ledger_twinfield,id')->alias('administration_ledger_twinfield_id')->whenMissing(null)->onEmpty(null)->next()
             ->get();
 
         $product = $product->fill($data);

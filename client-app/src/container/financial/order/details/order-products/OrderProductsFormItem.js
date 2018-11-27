@@ -219,6 +219,25 @@ class OrderProductsFormItem extends Component {
         });
     };
 
+    handleInputChangeVariablePrice = event => {
+        const target = event.target;
+        const value = target.type === 'checkbox' ? target.checked : target.value;
+        const name = target.name;
+
+        this.setState({
+                ...this.state,
+                price: value,
+                orderProduct: {
+                    ...this.state.orderProduct,
+                    [name]: value
+                },
+
+            },
+            this.updatePrice
+        );
+
+    };
+
     render() {
         return (
             <div>
@@ -243,6 +262,7 @@ class OrderProductsFormItem extends Component {
                         handleInputChangeStartDate={this.handleInputChangeStartDate}
                         handleSubmit={this.handleSubmit}
                         cancelEdit={this.cancelEdit}
+                        handleInputChangeVariablePrice={this.handleInputChangeVariablePrice}
                     />
                 }
                 {

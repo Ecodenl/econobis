@@ -35,8 +35,15 @@ class OrderProduct extends Model
     {
         $price = 0;
 
+        if($this->variable_price) {
+            $productPrice = $this->variable_price;
+        }
+        else{
+            $productPrice = $this->product->price_incl_vat;
+        }
+
         $price += ($this->amount
-            * $this->product->price_incl_vat);
+            * $productPrice);
 
         if ($this->percentage_reduction) {
             if ($this->percentage_reduction >= 100) {
@@ -60,8 +67,27 @@ class OrderProduct extends Model
 
         if(!$this->product->current_price) return 0;
 
+        if($this->variable_price) {
+
+
+            $productPrice = $this->variable_price;
+
+            //BTW eraf halen
+            switch ($this->product->current_price->vat_percentage){
+                case 21:
+                    $productPrice = $productPrice / 1.21;
+                    break;
+                case 6:
+                    $productPrice = $productPrice / 1.06;
+                    break;
+            }
+        }
+        else{
+            $productPrice = $this->product->current_price->price;
+        }
+
         $price += ($this->amount
-            * $this->product->current_price->price);
+            * $productPrice);
 
         if ($this->percentage_reduction) {
             if ($this->percentage_reduction >= 100) {

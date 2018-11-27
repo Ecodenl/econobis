@@ -181,6 +181,7 @@ class OrderController extends ApiController
             ->date('dateStart')->validate('required')->alias('date_start')->next()
             ->date('dateEnd')->validate('nullable|date')->onEmpty(null)->whenMissing(null)->alias('date_end')->next()
             ->date('datePeriodStartFirstInvoice')->validate('required')->alias('date_period_start_first_invoice')->next()
+            ->numeric('variablePrice')->onEmpty(null)->whenMissing(null)->alias('variable_price')->next()
             ->get();
 
         $orderProduct = new OrderProduct($data);
@@ -282,6 +283,7 @@ class OrderController extends ApiController
             ->date('dateStart')->validate('required')->alias('date_start')->next()
             ->date('dateEnd')->validate('nullable|date')->onEmpty(null)->whenMissing(null)->alias('date_end')->next()
             ->date('datePeriodStartFirstInvoice')->validate('required')->alias('date_period_start_first_invoice')->next()
+            ->numeric('variablePrice')->onEmpty(null)->whenMissing(null)->alias('variable_price')->next()
             ->get();
 
         $orderProduct->fill($data);

@@ -28,7 +28,7 @@ class MailboxesChecks extends Migration
     public function down()
     {
         Schema::table('mailboxes', function (Blueprint $table) {
-            $table->integer('login_tries');
+            $table->dropColumn('login_tries');
         });
     }
 }

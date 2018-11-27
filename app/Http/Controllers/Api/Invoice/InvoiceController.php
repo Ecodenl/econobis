@@ -486,7 +486,7 @@ class InvoiceController extends ApiController
     }
 
 
-    public function storeInvoiceProduct(RequestInput $input)
+    public function storeInvoiceProduct(RequestInput $input, Request $request)
     {
         $this->authorize('manage', Invoice::class);
 
@@ -503,11 +503,26 @@ class InvoiceController extends ApiController
         $invoiceProduct = new InvoiceProduct($data);
 
         $product = Product::find($data['product_id']);
-        $invoice = Invoice::find($data['invoiceId']);
+        $invoice = Invoice::find($data['invoice_id']);
 
         $price = 0;
         if($product->currentPrice){
-            $price = $product->currentPrice->price;
+            if($product->currentPrice->has_variable_price) {
+                $price = $request->input('variablePrice') ? $request->input('variablePrice') : 0;
+
+                //BTW eraf halen
+                switch ($product->current_price->vat_percentage){
+                    case 21:
+                        $price = $price / 1.21;
+                        break;
+                    case 6:
+                        $price = $price / 1.06;
+                        break;
+                }
+            }
+            else{
+                $price = $product->currentPrice->price;
+            }
 
             switch ($product->invoice_frequency_id){
                 case 'monthly':

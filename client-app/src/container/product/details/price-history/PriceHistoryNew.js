@@ -9,6 +9,7 @@ import InputSelect from "../../../../components/form/InputSelect";
 import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
 import InputDate from "../../../../components/form/InputDate";
+import InputToggle from "../../../../components/form/InputToggle";
 
 class PriceHistoryNew extends Component {
     constructor(props) {
@@ -25,6 +26,7 @@ class PriceHistoryNew extends Component {
                 dateStart: '',
                 price: '',
                 vatPercentage: null,
+                hasVariablePrice: props.hasVariablePrice === 'variable',
             },
             errors: {
                 dateStart: false,
@@ -74,10 +76,13 @@ class PriceHistoryNew extends Component {
             hasErrors = true;
         };
 
-        if(validator.isEmpty(priceHistory.price)){
-            errors.price = true;
-            hasErrors = true;
-        };
+        if(!priceHistory.hasVariablePrice) {
+            if (validator.isEmpty(priceHistory.price)) {
+                errors.price = true;
+                hasErrors = true;
+            }
+            ;
+        }
 
         this.setState({ ...this.state, errors: errors });
 
@@ -88,13 +93,25 @@ class PriceHistoryNew extends Component {
     };
 
     render() {
-        const {dateStart, price, vatPercentage } = this.state.priceHistory;
+        const {dateStart, price, vatPercentage, hasVariablePrice } = this.state.priceHistory;
 
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
                 <Panel className={'panel-grey'}>
                     <PanelBody>
+
+                        <div className={"row"}>
+                            {this.props.hasVariablePrice === 'none' &&
+                                <InputToggle
+                                    label={"Variabele prijs"}
+                                    name={"hasVariablePrice"}
+                                    value={hasVariablePrice}
+                                    onChangeAction={this.handleInputChange}
+                                />
+                            }
+                        </div>
+
                         <div className="row">
                             <InputText
                                 label={"Product"}
@@ -115,6 +132,16 @@ class PriceHistoryNew extends Component {
                         </div>
 
                         <div className="row">
+                            {this.props.hasVariablePrice === 'variable' || hasVariablePrice ?
+                                <InputText
+                                    label={"Prijs ex. BTW"}
+                                    id={"price"}
+                                    name={"price"}
+                                    value={"Variabel"}
+                                    readOnly={true}
+                                    required={"required"}
+                                />
+                           :
                             <InputText
                                 label={"Prijs ex. BTW"}
                                 id={"price"}
@@ -127,6 +154,7 @@ class PriceHistoryNew extends Component {
                                 required={"required"}
                                 error={this.state.errors.price}
                             />
+                            }
                             <InputSelect
                                 label={"BTW percentage"}
                                 name={"vatPercentage"}
@@ -152,6 +180,7 @@ const mapStateToProps = (state) => {
     return {
         productId: state.productDetails.id,
         productName: state.productDetails.name,
+        hasVariablePrice: state.productDetails.hasVariablePrice,
         users: state.systemData.users,
     };
 };

@@ -149,6 +149,25 @@ class InvoiceProductsFormItem extends Component {
         });
     };
 
+    handleInputChangeVariablePrice = event => {
+        const target = event.target;
+        const value = target.type === 'checkbox' ? target.checked : target.value;
+        const name = target.name;
+
+        this.setState({
+                ...this.state,
+                price: value,
+                invoiceProduct: {
+                    ...this.state.invoiceProduct,
+                    [name]: value
+                },
+
+            },
+            this.updatePrice
+        );
+
+    };
+
     render() {
         return (
             <div>
@@ -173,6 +192,7 @@ class InvoiceProductsFormItem extends Component {
                         handleInputChangeDate={this.handleInputChangeDate}
                         handleSubmit={this.handleSubmit}
                         cancelEdit={this.cancelEdit}
+                        handleInputChangeVariablePrice={this.handleInputChangeVariablePrice}
                     />
                 }
                 {

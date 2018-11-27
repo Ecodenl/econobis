@@ -46,9 +46,20 @@ class ProductsListItem extends Component {
             <tr className={this.state.highlightRow} onDoubleClick={() => this.openItem(id)} onMouseEnter={() => this.onRowEnter()} onMouseLeave={() => this.onRowLeave()}>
                 <td>{ code }</td>
                 <td>{ name }</td>
+                {currentPrice && currentPrice.hasVariablePrice ?
+                <td>Variabel</td>
+                    :
                 <td>{ currentPrice ? '€' + currentPrice.price.toLocaleString('nl',{ minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '' }</td>
+                    }
                 <td>{ vatPercentage }</td>
-                <td>{ priceInclVat ? '€' + priceInclVat.toLocaleString('nl',{ minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '' }</td>
+                {currentPrice && currentPrice.hasVariablePrice ?
+                    <td>Variabel</td>
+                    :
+                    <td>{priceInclVat ? '€' + priceInclVat.toLocaleString('nl', {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2
+                    }) : ''}</td>
+                }
                 <td>{ administration ? administration.name : ''}</td>
                 <td>
                     {(this.state.showActionButtons && this.props.permissions.manageFinancial ? <a role="button" onClick={() => this.openItem(id)}><span className="glyphicon glyphicon-pencil mybtn-success" /> </a> : '')}

@@ -20,6 +20,7 @@ class OrderProductsFormNew extends Component {
             price: '0',
             totalPrice: '0',
             durationId: 'none',
+            productHasVariablePrice: false,
             orderProduct: {
                 orderId: this.props.orderDetails.id,
                 productId: '',
@@ -30,6 +31,7 @@ class OrderProductsFormNew extends Component {
                 dateStart: moment().format('YYYY-MM-DD'),
                 dateEnd: '',
                 datePeriodStartFirstInvoice: moment().format('YYYY-MM-DD'),
+                variablePrice: 0,
             },
             errors: {
                 productId: false,
@@ -61,6 +63,26 @@ class OrderProductsFormNew extends Component {
         );
 
     };
+
+    handleInputChangeVariablePrice = event => {
+        const target = event.target;
+        const value = target.type === 'checkbox' ? target.checked : target.value;
+        const name = target.name;
+
+        this.setState({
+                ...this.state,
+                price: value,
+                orderProduct: {
+                    ...this.state.orderProduct,
+                    [name]: value
+                },
+
+            },
+            this.updatePrice
+        );
+
+    };
+
 
     updatePrice = () => {
         let price = validator.isFloat(this.state.price + '') ? this.state.price : 0;
@@ -140,12 +162,14 @@ class OrderProductsFormNew extends Component {
         let description = '';
         let durationId = false;
         let dateEnd = '';
+        let productHasVariablePrice = '';
 
         if (value) {
             let product = this.props.products.filter((product) => product.id == value);
             price = product[0].priceInclVat;
             description = product[0].invoiceText;
             durationId = product[0].durationId;
+            productHasVariablePrice = product[0].hasVariablePrice
         }
 
         if(durationId && this.state.orderProduct.dateStart){
@@ -175,15 +199,16 @@ class OrderProductsFormNew extends Component {
         }
 
         this.setState({
-            ...this.state,
-            price: price,
-            durationId: durationId,
-            orderProduct: {
-                ...this.state.orderProduct,
-                description: description,
-                dateEnd: dateEnd,
-                [name]: value
-            },
+                ...this.state,
+                price: price,
+                durationId: durationId,
+                productHasVariablePrice: productHasVariablePrice === 'variable',
+                orderProduct: {
+                    ...this.state.orderProduct,
+                    description: description,
+                    dateEnd: dateEnd,
+                    [name]: value
+                },
             },
             this.updatePrice
         );
@@ -226,6 +251,13 @@ class OrderProductsFormNew extends Component {
         if (!validator.isEmpty(orderProduct.dateEnd + '') && moment(orderProduct.dateStart).isSameOrAfter(moment(orderProduct.dateEnd))) {
             errors.dateStart = true;
             hasErrors = true;
+        }
+
+        if(this.state.productHasVariablePrice){
+            if (validator.isEmpty(orderProduct.variablePrice + '') || orderProduct.variablePrice === 0) {
+                errors.variablePrice = true;
+                hasErrors = true;
+            }
         }
 
         this.setState({...this.state, errors: errors});
@@ -293,15 +325,26 @@ class OrderProductsFormNew extends Component {
                                 value={percentageReduction}
                                 onChangeAction={this.handleInputChange}
                             />
-                            <InputText
-                                label={"Bedrag"}
-                                name={"price"}
-                                value={'€' + this.state.price.toLocaleString('nl', {
-                                    minimumFractionDigits: 2,
-                                    maximumFractionDigits: 2
-                                })}
-                                readOnly={true}
-                            />
+                            {this.state.productHasVariablePrice ?
+                                <InputText
+                                    label={"Bedrag"}
+                                    name={"variablePrice"}
+                                    value={this.state.price}
+                                    onChangeAction={this.handleInputChangeVariablePrice}
+                                    error={this.state.errors.variablePrice}
+                                    required={this.state.productHasVariablePrice && "required"}
+                                />
+                                :
+                                <InputText
+                                    label={"Bedrag"}
+                                    name={"price"}
+                                    value={'€' + this.state.price.toLocaleString('nl', {
+                                        minimumFractionDigits: 2,
+                                        maximumFractionDigits: 2
+                                    })}
+                                    readOnly={true}
+                                />
+                            }
                         </div>
 
                         <div className="row">

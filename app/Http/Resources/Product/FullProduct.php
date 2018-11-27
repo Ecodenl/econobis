@@ -42,6 +42,8 @@ class FullProduct extends Resource
                 'administrationId' => $this->administration_id,
                 'administration' => FullAdministration::make($this->whenLoaded('administration')),
 
+                'hasVariablePrice' => $this->has_variable_price,
+
                 'createdById' => $this->created_by_id,
                 'createdBy' => FullUser::make($this->whenLoaded('createdBy')),
                 'createdAt' => $this->created_at,

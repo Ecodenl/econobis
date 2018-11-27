@@ -55,7 +55,8 @@ class FullOrderProduct extends Resource
                 'isOneTimeAndPaidProduct' => $this->is_one_time_and_paid_product,
                 'period' => $period,
                 'dateLastInvoice' => $this->date_last_invoice,
-                'datePeriodStartFirstInvoice' => $this->date_period_start_first_invoice
+                'datePeriodStartFirstInvoice' => $this->date_period_start_first_invoice,
+                'variablePrice' => $this->variable_price,
             ];
     }
 }

@@ -293,6 +293,9 @@ class TemplateVariableHelper
             case 'email':
                 return $model->email;
                 break;
+            case 'functie':
+                return $model->occupation;
+                break;
             default:
                 return '';
                 break;

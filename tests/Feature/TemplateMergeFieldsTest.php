@@ -72,11 +72,11 @@ class TemplateMergeFieldsTest extends TestCase
 
     public function assertUserMergeFields()
     {
-        $html ='{user_voornaam}{user_achternaam}{user_telefoon}{user_email}';
+        $html ='{user_voornaam}{user_achternaam}{user_telefoon}{user_email}{user_functie}';
 
         $html = TemplateVariableHelper::replaceTemplateVariables($html, 'user', User::find(2));
 
-        $expectedHtml = 'Pietde Rood0687654321piet.rood@email.com';
+        $expectedHtml = 'Pietde Rood0687654321piet.rood@email.comdev';
 
         $this->assertEquals($expectedHtml, $html);
     }
@@ -256,6 +256,7 @@ class TemplateMergeFieldsTest extends TestCase
         $user->email = 'piet.rood@email.com';
         $user->password = 'NVT';
         $user->alfresco_password = 'NVT';
+        $user->occupation = 'dev';
         $user->save();
     }
 

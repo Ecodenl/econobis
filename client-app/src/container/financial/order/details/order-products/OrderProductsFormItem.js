@@ -29,6 +29,7 @@ class OrderProductsFormItem extends Component {
                 amount: false,
                 dateStart: false,
                 dateEnd: false,
+                variablePrice: false,
             },
         };
 
@@ -208,6 +209,14 @@ class OrderProductsFormItem extends Component {
             errors.dateStart = true;
             hasErrors = true;
         }
+
+        if(this.props.orderProduct.variablePrice !== null){
+            if (validator.isEmpty(orderProduct.variablePrice + '') || orderProduct.variablePrice === null) {
+                errors.variablePrice = true;
+                hasErrors = true;
+            }
+        }
+
 
         this.setState({...this.state, errors: errors});
 

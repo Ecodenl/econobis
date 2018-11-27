@@ -67,6 +67,8 @@ const OrderProductsFormEdit = props => {
                                     name={"variablePrice"}
                                     value={variablePrice}
                                     onChangeAction={props.handleInputChangeVariablePrice}
+                                    error={props.errors.variablePrice}
+                                    required={(variablePrice !== null) && "required"}
                                 />
                                 :
                                 <InputText

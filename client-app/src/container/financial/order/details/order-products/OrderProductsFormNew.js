@@ -31,7 +31,7 @@ class OrderProductsFormNew extends Component {
                 dateStart: moment().format('YYYY-MM-DD'),
                 dateEnd: '',
                 datePeriodStartFirstInvoice: moment().format('YYYY-MM-DD'),
-                variablePrice: 0,
+                variablePrice: null,
             },
             errors: {
                 productId: false,
@@ -39,6 +39,7 @@ class OrderProductsFormNew extends Component {
                 dateStart: false,
                 dateEnd: false,
                 datePeriodStartFirstInvoice: false,
+                variablePrice: false,
             },
         };
 
@@ -254,7 +255,7 @@ class OrderProductsFormNew extends Component {
         }
 
         if(this.state.productHasVariablePrice){
-            if (validator.isEmpty(orderProduct.variablePrice + '') || orderProduct.variablePrice === 0) {
+            if (validator.isEmpty(orderProduct.variablePrice + '') || orderProduct.variablePrice === null) {
                 errors.variablePrice = true;
                 hasErrors = true;
             }

@@ -207,6 +207,8 @@ class ParticipantCSVHelper
                     'phonenumber_3' => 'Telefoonnummer 3',
                     'energy_supplier_name' => 'Energieleverancier',
                     'contact.primaryContactEnergySupplier.es_number' => 'Klantnummer',
+                    'contact.primaryContactEnergySupplier.ean_electricity' => 'EAN electra',
+                    'contact.primaryContactEnergySupplier.ean_gas' => 'EAN gas',
                     'productionProject.code' => 'Productie project',
                     'productionProject.participation_worth' => 'Waarde per participatie',
                     'participations_requested' => 'Participaties aangevraagd',

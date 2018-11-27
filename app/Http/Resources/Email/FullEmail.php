@@ -69,6 +69,7 @@ class FullEmail extends Resource
             'responsibleTeam' => FullTeam::make($this->whenLoaded('responsibleTeam')),
             'closedById' => $this->closed_by_id,
             'closedBy' => FullUser::make($this->whenLoaded('closedBy')),
+            'contactGroupId' => $this->contact_group_id,
         ];
     }
 }

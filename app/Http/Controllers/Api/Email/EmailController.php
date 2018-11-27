@@ -391,7 +391,48 @@ class EmailController
 
     public function sendConcept(Email $email, Request $request){
         $email = $this->updateConcept($email, $request);
+
+        //Create relations with contact if needed
+        $this->createEmailContactRelations($email, $request);
+
+        //Email attachments
+        $this->checkStorageDir($email->mailbox->id);
+
+        //get attachments
+        $attachments = $request->file('attachments')
+            ? $request->file('attachments') : [];
+
+        $this->storeEmailAttachments($attachments, $email->mailbox->id,
+            $email->id);
+
+        //old attachments(forward,reply etc.)
+        $oldAttachments = $request->input('oldAttachments') ? $request->input('oldAttachments') : [];
+
+        //Gaat dit goed bij deleten attachment van oude mail?
+        foreach ($oldAttachments as $oldAttachment){
+            $oldAttachment = json_decode($oldAttachment);
+            $oldAttachment = EmailAttachment::find($oldAttachment->id);
+            $replicatedAttachment = $oldAttachment->replicate();
+            $replicatedAttachment->email_id = $email->id;
+            $replicatedAttachment->save();
+        }
+
+        $sanitizedData = $this->getEmailData($request);
+
+        //if we send to group we save in a pivot because they can have alot of members
+        if ($sanitizedData['contact_group_id']) {
+            $contactGroup = ContactGroup::find($sanitizedData['contact_group_id']);
+            foreach ($contactGroup->all_contacts as $contact) {
+                if ($contact->primaryEmailAddress) {
+                    $email->groupEmailAddresses()->attach($contact->primaryEmailAddress->id);
+
+                    $email->contacts()->attach($contact->id);
+                }
+            }
+        }
+
         (new SendEmailsWithVariables($email, json_decode($request['to'])))->handle();
+        
         return FullEmail::make($email);
     }
 

@@ -29,7 +29,7 @@ class AdministrationObserver
         }
 
         //Als er iets in de twinfield instelling veranderd is moeten we dit opnieuw synchroniseren
-        if(($administration->isDirty('twinfield_username') || $administration->isDirty('twinfield_organization_code') || $administration->isDirty('twinfield_office_code') && $administration->twinfield_is_valid)){
+        if(($administration->isDirty('twinfield_username') || $administration->isDirty('twinfield_organization_code') || $administration->isDirty('twinfield_office_code')) && $administration->twinfield_is_valid){
 
             //TODO moet dit?
             foreach ($administration->twinfieldNumbers as $twinfieldNumber) {

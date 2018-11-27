@@ -18,7 +18,7 @@ const NotesListHead = (props) => {
             <DataTableHeadTitleAndSort sortColumn={'createdAt'} title={'Datum'} width={'8%'} setSorts={setSorts} />
             <DataTableHeadTitleAndSort sortColumn={'typeName'} title={'Type taak'} width={'10%'} setSorts={setSorts} />
             <DataTableHeadTitleAndSort sortColumn={'note'} title={'Taak / notitie'} width={'20%'} setSorts={setSorts} />
-            <DataTableHeadTitleAndSort sortColumn={'contactName'} title={'Contact'} width={'17%'} setSorts={setSorts} />
+            <DataTableHeadTitleAndSort sortColumn={'contactFullName'} title={'Contact'} width={'17%'} setSorts={setSorts} />
             <DataTableHeadTitleAndSort sortColumn={'datePlannedStart'} title={'Datum afhandelen'} width={'8%'} setSorts={setSorts} />
             <DataTableHeadTitleAndSort sortColumn={'responsibleName'} title={'Verantwoordelijke'} width={'15%'} setSorts={setSorts} />
             <th width="5%" />

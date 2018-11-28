@@ -228,7 +228,7 @@ class PersonController extends ApiController
             'initials' => '',
             'firstName' => '',
             'lastName' => '',
-            'lastNamePrefixId' => 'exists:last_name_prefixes,id',
+            'lastNamePrefixId' => '',
             'titleId' => 'exists:titles,id',
             'organisationId' => 'exists:organisations,id',
             'typeId' => 'exists:person_types,id',
@@ -274,7 +274,12 @@ class PersonController extends ApiController
 
         $lnp = $person->last_name_prefix;
         if(isset($personData['lastNamePrefixId']) && $personData['lastNamePrefixId']){
-            $lnp = LastNamePrefix::where('id', $personData['lastNamePrefixId'])->pluck('name')[0];
+            if($personData['lastNamePrefixId'] === 'null') {
+                $lnp = '';
+            }
+            else{
+                $lnp = LastNamePrefix::where('id', $personData['lastNamePrefixId'])->pluck('name')[0];
+            }
         }
 
         $personData['lastNamePrefix'] = $lnp;

@@ -181,8 +181,38 @@ class ExtraFilter extends RequestExtraFilter
 
     protected function applyEnergySupplierFilter($query, $type, $data)
     {
-        $query->whereHas('primaryContactEnergySupplier', function($query) use ($data) {
-            $query->where('energy_supplier_id', $data);
-        });
+        if($type === 'eq' && $data === ''){
+            $query->whereDoesntHave('primaryContactEnergySupplier');
+            return false;
+        }
+
+        if($type === 'neq' && $data === ''){
+            $query->whereHas('primaryContactEnergySupplier');
+            return false;
+        }
+
+        if($type === 'nl'){
+            $query->whereDoesntHave('primaryContactEnergySupplier');
+            return false;
+        }
+
+        if($type === 'nnl'){
+            $query->whereHas('primaryContactEnergySupplier');
+            return false;
+        }
+
+        if($type === 'eq' && $data !== ''){
+            $query->whereHas('primaryContactEnergySupplier', function($query) use ($data) {
+                $query->where('energy_supplier_id', $data);
+            });
+            return false;
+        }
+
+        if($type === 'neq' && $data !== ''){
+            $query->whereDoesntHave('primaryContactEnergySupplier', function($query) use ($data) {
+                $query->where('energy_supplier_id', $data);
+            });
+            return false;
+        }
     }
 }

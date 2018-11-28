@@ -509,16 +509,6 @@ class InvoiceController extends ApiController
         if($product->currentPrice){
             if($product->currentPrice->has_variable_price) {
                 $price = $request->input('variablePrice') ? $request->input('variablePrice') : 0;
-
-                //BTW eraf halen
-                switch ($product->current_price->vat_percentage){
-                    case 21:
-                        $price = $price / 1.21;
-                        break;
-                    case 6:
-                        $price = $price / 1.06;
-                        break;
-                }
             }
             else{
                 $price = $product->currentPrice->price;
@@ -669,15 +659,6 @@ class InvoiceController extends ApiController
         if($invoiceProduct->product->currentPrice->has_variable_price) {
             $price = $request->input('variablePrice') ? $request->input('variablePrice') : 0;
 
-            //BTW eraf halen
-            switch ($invoiceProduct->product->current_price->vat_percentage){
-                case 21:
-                    $price = $price / 1.21;
-                    break;
-                case 6:
-                    $price = $price / 1.06;
-                    break;
-            }
             $invoiceProduct->price = $price;
         }
 

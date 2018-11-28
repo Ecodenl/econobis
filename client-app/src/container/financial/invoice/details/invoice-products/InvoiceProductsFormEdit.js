@@ -65,14 +65,15 @@ const InvoiceProductsFormEdit = props => {
                             />
                             {props.productVariablePrice ?
                                 <InputText
-                                    label={"Bedrag"}
+                                    label={"Prijs ex. BTW"}
+                                    type={'number'}
                                     name={"variablePrice"}
                                     value={variablePrice}
                                     onChangeAction={props.handleInputChangeVariablePrice}
                                 />
                                 :
                                 <InputText
-                                    label={"Bedrag"}
+                                    label={"Prijs incl. BTW"}
                                     name={"price"}
                                     value={'€' + props.invoiceProduct.product.priceInclVat.toLocaleString('nl', {
                                         minimumFractionDigits: 2,

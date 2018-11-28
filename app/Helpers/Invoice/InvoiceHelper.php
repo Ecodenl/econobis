@@ -36,16 +36,6 @@ class InvoiceHelper
             if($orderProduct->product->currentPrice){
                 if($orderProduct->product->currentPrice->has_variable_price) {
                     $price = $orderProduct->variable_price;
-
-                    //BTW eraf halen
-                    switch ($orderProduct->product->current_price->vat_percentage){
-                        case 21:
-                            $price = $price / 1.21;
-                            break;
-                        case 6:
-                            $price = $price / 1.06;
-                            break;
-                    }
                 }
                 else{
                     $price = $orderProduct->product->currentPrice->price;

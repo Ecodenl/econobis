@@ -63,8 +63,9 @@ const OrderProductsFormEdit = props => {
                             />
                             {variablePrice !== null ?
                                 <InputText
-                                    label={"Bedrag"}
+                                    label={"Prijs ex. BTW"}
                                     name={"variablePrice"}
+                                    type={'number'}
                                     value={variablePrice}
                                     onChangeAction={props.handleInputChangeVariablePrice}
                                     error={props.errors.variablePrice}
@@ -72,7 +73,7 @@ const OrderProductsFormEdit = props => {
                                 />
                                 :
                                 <InputText
-                                    label={"Bedrag"}
+                                    label={"Prijs incl. BTW"}
                                     name={"price"}
                                     value={'€' + props.orderProduct.product.priceInclVat.toLocaleString('nl', {
                                         minimumFractionDigits: 2,

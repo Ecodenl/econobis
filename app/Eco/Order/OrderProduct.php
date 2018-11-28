@@ -75,19 +75,7 @@ class OrderProduct extends Model
         if(!$this->product->current_price) return 0;
 
         if($this->variable_price) {
-
-
             $productPrice = $this->variable_price;
-
-            //BTW eraf halen
-            switch ($this->product->current_price->vat_percentage){
-                case 21:
-                    $productPrice = $productPrice / 1.21;
-                    break;
-                case 6:
-                    $productPrice = $productPrice / 1.06;
-                    break;
-            }
         }
         else{
             $productPrice = $this->product->current_price->price;

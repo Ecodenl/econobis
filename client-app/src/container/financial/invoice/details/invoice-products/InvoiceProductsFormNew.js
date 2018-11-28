@@ -234,14 +234,15 @@ class InvoiceProductsFormNew extends Component {
                             />
                             {this.state.productHasVariablePrice ?
                                 <InputText
-                                    label={"Bedrag"}
+                                    label={"Prijs ex. BTW"}
+                                    type={'number'}
                                     name={"variablePrice"}
                                     value={this.state.price}
                                     onChangeAction={this.handleInputChangeVariablePrice}
                                 />
                                 :
                                 <InputText
-                                    label={"Bedrag"}
+                                    label={"Prijs incl. BTW"}
                                     name={"price"}
                                     value={'€' + this.state.price.toLocaleString('nl', {
                                         minimumFractionDigits: 2,

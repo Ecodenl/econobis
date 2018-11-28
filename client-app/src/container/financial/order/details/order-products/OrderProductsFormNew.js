@@ -328,8 +328,9 @@ class OrderProductsFormNew extends Component {
                             />
                             {this.state.productHasVariablePrice ?
                                 <InputText
-                                    label={"Bedrag"}
+                                    label={"Prijs ex. BTW"}
                                     name={"variablePrice"}
+                                    type={'number'}
                                     value={this.state.price}
                                     onChangeAction={this.handleInputChangeVariablePrice}
                                     error={this.state.errors.variablePrice}
@@ -337,7 +338,7 @@ class OrderProductsFormNew extends Component {
                                 />
                                 :
                                 <InputText
-                                    label={"Bedrag"}
+                                    label={"Prijs incl. BTW"}
                                     name={"price"}
                                     value={'€' + this.state.price.toLocaleString('nl', {
                                         minimumFractionDigits: 2,

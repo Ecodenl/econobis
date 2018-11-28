@@ -15,6 +15,7 @@ const newOrder = new ModelNewOrder();
 const detailsOrder = new ModelDetailsOrder();
 const contactGrid = new ModelGridContact();
 const detailsPerson = new ModelDetailsPerson();
+const faker = require('faker');
 
 test('Fill out form order minimum', async (t) => {
 
@@ -55,16 +56,53 @@ test('Fill out form order minimum', async (t) => {
         .click(detailsOrder.newOrderProductExisting)
         .click(detailsOrder.product)
         .click(general.option.withExactText(vars.productName))
-        .typeText(detailsOrder.description, 'Ledlamp')
         .typeText(detailsOrder.amount, '2')
-        .pressKey('home delete')
-        //wordt nu automatisch ingevuld - 20181025
-        // .typeText(detailsOrder.dateStart, '01-01-2018')
-        // .pressKey('esc')
         .click(general.save)
         .wait(constants.wait);
 
     //header+row
     await t.expect(detailsOrder.orderProductRows.count).eql(2);
 
+    //Ook product met variabele prijs
+    await t
+        .click(detailsOrder.newOrderProduct)
+        .click(detailsOrder.newOrderProductExisting)
+        .click(detailsOrder.product)
+        .click(general.option.withExactText(vars.productNameVariable))
+        .typeText(detailsOrder.amount, '2')
+        .typeText(detailsOrder.variablePrice, '10')
+        .click(general.save)
+        .wait(constants.wait);
+
+    //header+row
+    await t.expect(detailsOrder.orderProductRows.count).eql(3);
+
+    //Ook product met variabele prijs
+    await t
+        .click(detailsOrder.newOrderProduct)
+        .click(detailsOrder.newOrderProductNew)
+        .typeText(detailsOrder.code, faker.random.word())
+        .typeText(detailsOrder.name, faker.random.word())
+        .typeText(detailsOrder.price, '10')
+        .typeText(detailsOrder.description, 'Nieuw product')
+        .typeText(detailsOrder.amount, '3')
+        .click(general.save)
+        .wait(constants.wait);
+
+    //header+row
+    await t.expect(detailsOrder.orderProductRows.count).eql(4);
+
+
+    //Nieuw eenmalig product
+    await t
+        .click(detailsOrder.newOrderProduct)
+        .click(detailsOrder.newOrderProductOneTime)
+        .typeText(detailsOrder.price, '1000')
+        .typeText(detailsOrder.description, 'Nieuw eenmalig product')
+        .typeText(detailsOrder.amount, '4')
+        .click(general.save)
+        .wait(constants.wait);
+
+    //header+row
+    await t.expect(detailsOrder.orderProductRows.count).eql(5);
 });

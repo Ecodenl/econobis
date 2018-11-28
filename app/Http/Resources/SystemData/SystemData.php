@@ -91,6 +91,34 @@ class SystemData extends Resource
             $users = FullUser::collection(User::orderBy('last_name', 'asc')->get());
         }
 
+        /*
+         * Energie leveranciers 2018-11-28 Op aanvraag René
+         *
+         * Kan je ze ook op alfabeth sorteren als je het klap menu opent
+         * Maar wel starten met
+         * OM
+         * Energie vanONS
+         * Greenchoice
+         *
+         * en dan de rest op alfabetische volgorde
+         */
+
+        $sortedEnergySuppliers = EnergySupplier::all()->sortBy(function ($energySupplier) {
+            if($energySupplier->name === 'OM'){
+                return 0;
+            }
+            if($energySupplier->name === 'Energie VanOns'){
+                return 1;
+            }
+            if($energySupplier->name === 'Greenchoice'){
+                return 2;
+            }
+            return 3 . $energySupplier->name;
+
+        });
+
+        $sortedEnergySuppliers = $sortedEnergySuppliers->values();
+
         return [
             'contactTypes' => FullEnumWithIdAndName::collection(ContactType::collection()),
             'addressTypes' => FullEnumWithIdAndName::collection(AddressType::collection()),
@@ -128,7 +156,7 @@ class SystemData extends Resource
             'energyLabelStatus' => FullEnumWithIdAndName::collection(EnergyLabelStatus::all()),
             'quotationRequestStatus' => FullEnumWithIdAndName::collection(QuotationRequestStatus::orderBy('order')->get()),
             'countries' => GenericResource::collection(Country::all()),
-            'energySuppliers' => GenericResource::collection(EnergySupplier::all()),
+            'energySuppliers' => GenericResource::collection($sortedEnergySuppliers),
             'contactEnergySupplierStatus' => GenericResource::collection(ContactEnergySupplierStatus::all()),
             'contactEnergySupplierTypes' => GenericResource::collection(ContactEnergySupplierType::all()),
             'productionProjectStatus' => GenericResource::collection(ProductionProjectStatus::all()),

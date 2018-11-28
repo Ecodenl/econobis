@@ -41,7 +41,7 @@ class IntakeDetailsHarmonica extends Component {
     };
 
     newEmail() {
-        hashHistory.push(`/email/nieuw/intake/${this.props.id}`);
+        hashHistory.push(`/email/nieuw/intake/${this.props.id}/contact/${this.props.intakeDetails.contact.id}`);
     };
 
     toggleShowList(name) {

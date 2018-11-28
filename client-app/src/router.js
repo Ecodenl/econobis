@@ -181,7 +181,7 @@ const Routes = () => {
                 <Route path="email/nieuw/contact/:contactId" component={EmailNewApp} />
                 <Route path="email/nieuw/document/:documentId" component={EmailNewApp} />
                 <Route path="email/nieuw/offerteverzoek/:quotationRequestId/:contactId" component={EmailNewApp} />
-                <Route path="email/nieuw/intake/:intakeId" component={EmailNewApp} />
+                <Route path="email/nieuw/intake/:intakeId/contact/:contactId" component={EmailNewApp} />
                 <Route path="email/:id" component={EmailDetailsApp} />
                 <Route path="email/:id/:type" component={EmailAnswerApp} />
                 /* Email templates */

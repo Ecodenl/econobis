@@ -129,6 +129,11 @@ class CalculatedModelFieldsTest extends TestCase
         $product = Product::find(2);
         $this->assertEquals(1000, $product->current_price->price);
         $this->assertEquals(1060, $product->price_incl_vat);
+
+        $order = Order::find(2);
+        $this->assertEquals(176.26, $order->total_price_incl_vat);
+        $this->assertEquals(2115.12, $order->total_price_incl_vat_per_year);
+
     }
 
     public function assertInvoicesFields()
@@ -440,6 +445,47 @@ class CalculatedModelFieldsTest extends TestCase
         $op->date_start = '2018-01-01';
         $op->date_end = '2020-01-01';
         $op->save();
+
+        //Order met product met een variabele prijs
+        $or = new Order();
+        $or->contact_id = 1;
+        $or->administration_id = 1;
+        $or->status_id = 'active';
+        $or->subject = 'Leuke order met variabele prijs!';
+        $or->payment_type_id = 'transfer';
+        $or->IBAN = 'IBN';
+        $or->date_requested = '2018-05-02';
+        $or->created_by_id = 1;
+        $or->collection_frequency_id = 'yearly';
+        $or->save();
+
+        $pr = new Product();
+        $pr->code = "VAR";
+        $pr->name = "Variabele prijs product";
+        $pr->administration_id = 1;
+        $pr->invoice_frequency_id = 'monthly';
+        $pr->created_by_id = 1;
+        $pr->duration_id = 'month';
+        $pr->save();
+
+        $ph = new PriceHistory();
+        $ph->product_id = 3;
+        $ph->date_start = '2018-01-01';
+        $ph->has_variable_price = true;
+        $ph->vat_percentage = 6;
+        $ph->save();
+
+        $op = new OrderProduct();
+        $op->product_id = 3;
+        $op->order_id = 2;
+        $op->amount = 10;
+        $op->amount_reduction = 5;
+        $op->percentage_reduction = 5;
+        $op->variable_price = 18;
+        $op->date_start = '2018-01-01';
+        $op->date_end = '2020-01-01';
+        $op->save();
+
     }
 
     public function insertInvoice(){

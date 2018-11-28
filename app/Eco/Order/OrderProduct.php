@@ -37,6 +37,13 @@ class OrderProduct extends Model
 
         if($this->variable_price) {
             $productPrice = $this->variable_price;
+
+            $vatPercentage = $this->product->currentPrice->vat_percentage;
+
+
+            if($vatPercentage !== null && $vatPercentage !== 0){
+                $productPrice = $productPrice + ($productPrice*($vatPercentage / 100));
+            }
         }
         else{
             $productPrice = $this->product->price_incl_vat;

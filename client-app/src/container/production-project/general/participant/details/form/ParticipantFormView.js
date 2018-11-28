@@ -8,8 +8,7 @@ import ViewText from '../../../../../../components/form/ViewText';
 const ParticipantFormView = props => {
     const {
         contact, status, productionProject, dateRegister, participationsRequested, participationsGranted, participationsSold, participationsCurrent,
-        participationsWorthTotal, participationsRestSale, dateContractSend, dateContractRetour, datePayed, ibanPayed, didAcceptAgreement,
-        ibanAttn, giftedByContact, ibanPayout, legalRepContact, ibanPayoutAttn, dateEnd, type, powerKwhConsumption
+        participationsWorthTotal, participationsRestSale, dateContractSend, dateContractRetour, datePayed, didAcceptAgreement, giftedByContact, ibanPayout, legalRepContact, ibanPayoutAttn, dateEnd, type, powerKwhConsumption
     } = props.participantProductionProject;
 
     return (
@@ -88,21 +87,8 @@ const ParticipantFormView = props => {
                     value={datePayed ? moment(datePayed).format('L') : ''}
                 />
                 <ViewText
-                    label={"IBAN betaald"}
-                    className={'col-xs-6 field-to-be-removed'}
-                    value={ibanPayed ? ibanPayed : ''}
-                />
-            </div>
-
-            <div className="row" onClick={props.switchToEdit}>
-                <ViewText
                     label={"Akkoord reglement"}
                     value={didAcceptAgreement ? 'Ja' : 'Nee'}
-                />
-                <ViewText
-                    label={"IBAN t.n.v."}
-                    className={'col-xs-6 field-to-be-removed'}
-                    value={ibanAttn ? ibanAttn : ''}
                 />
             </div>
 

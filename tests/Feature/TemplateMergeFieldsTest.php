@@ -104,7 +104,7 @@ class TemplateMergeFieldsTest extends TestCase
     {
         $html = '{ppp_contact_naam}{ppp_status}{ppp_productie_project}{ppp_inschrijf_datum}{ppp_aangevraagd}{ppp_toegekend}';
         $html .= '{ppp_verkocht}{ppp_huidig}{ppp_waarde_totaal}{ppp_restverkoop}{ppp_contract_verstuurd}{ppp_contract_retour}';
-        $html .= '{ppp_betaald_op}{ppp_iban_betaald}{ppp_akkoord_reglement}{ppp_iban_tnv}{ppp_geschonken_door}{ppp_geschonken_door_voornaam}{ppp_geschonken_door_achternaam}';
+        $html .= '{ppp_betaald_op}{ppp_akkoord_reglement}{ppp_geschonken_door}{ppp_geschonken_door_voornaam}{ppp_geschonken_door_achternaam}';
         $html .= '{ppp_wettelijke_vertegenwoordiger}{ppp_wettelijke_vertegenwoordiger_voornaam}{ppp_wettelijke_vertegenwoordiger_achternaam}{ppp_iban_uitkeren}{ppp_iban_uitkeren_tnv}{ppp_einddatum}{ppp_uitkeren_op}';
 
 
@@ -112,7 +112,7 @@ class TemplateMergeFieldsTest extends TestCase
 
         $expectedHtml = 'Vaak, Klaas deDefinitiefProject 107/03/2018109';
         $expectedHtml .= '810706/03/201805/03/2018';
-        $expectedHtml .= '04/03/2018iban123Neeiban1234Klaas de VaakKlaasde Vaak';
+        $expectedHtml .= '04/03/2018NeeKlaas de VaakKlaasde Vaak';
         $expectedHtml .= 'Klaas de VaakKlaasde Vaakiban12345Pietje03/03/2018Bijschrijven';
 
         $this->assertEquals($expectedHtml, $html);
@@ -302,8 +302,6 @@ class TemplateMergeFieldsTest extends TestCase
         $participant->date_contract_send = '2018-03-06';
         $participant->date_contract_retour = '2018-03-05';
         $participant->date_payed = '2018-03-04';
-        $participant->iban_payed = 'iban123';
-        $participant->iban_attn = 'iban1234';
         $participant->gifted_by_contact_id = 1;
         $participant->legal_rep_contact_id = 1;
         $participant->iban_payout = 'iban12345';

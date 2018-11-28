@@ -29,7 +29,6 @@ class ParticipantProductionProject extends Model
     ];
 
     protected $encryptable = [
-        'iban_payed',
         'iban_payout'
     ];
 

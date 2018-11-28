@@ -451,14 +451,8 @@ class TemplateVariableHelper
             case 'betaald_op':
                 return $model->date_payed ? Carbon::parse($model->date_payed)->format('d/m/Y') : null;
                 break;
-            case 'iban_betaald':
-                return $model->iban_payed;
-                break;
             case 'akkoord_reglement':
                 return $model->did_accept_agreement ? 'Ja' : 'Nee';
-                break;
-            case 'iban_tnv':
-                return $model->iban_attn;
                 break;
             case 'geschonken_door':
                 if($model->giftedByContact) {

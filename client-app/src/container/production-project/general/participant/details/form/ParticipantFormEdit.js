@@ -24,7 +24,7 @@ class ParticipantFormEdit extends Component {
 
         const {
             id, contact, statusId, productionProject, dateRegister, participationsRequested, participationsGranted, participationsSold, participationsRestSale,
-            dateContractSend, dateContractRetour, datePayed, ibanPayed, didAcceptAgreement, ibanAttn, giftedByContactId, ibanPayout, legalRepContactId, ibanPayoutAttn, dateEnd,
+            dateContractSend, dateContractRetour, datePayed, didAcceptAgreement, giftedByContactId, ibanPayout, legalRepContactId, ibanPayoutAttn, dateEnd,
             typeId, powerKwhConsumption
         } = props.participation;
 
@@ -44,9 +44,7 @@ class ParticipantFormEdit extends Component {
                 dateContractSend: dateContractSend ? dateContractSend : '',
                 dateContractRetour: dateContractRetour ? dateContractRetour : '',
                 datePayed: datePayed ? datePayed : '',
-                ibanPayed: ibanPayed ? ibanPayed : '',
                 didAcceptAgreement: !!didAcceptAgreement,
-                ibanAttn: ibanAttn ? ibanAttn : '',
                 giftedByContactId: giftedByContactId ? giftedByContactId : '',
                 ibanPayout: ibanPayout ? ibanPayout : '',
                 legalRepContactId: legalRepContactId ? legalRepContactId : '',
@@ -60,7 +58,6 @@ class ParticipantFormEdit extends Component {
                 statusId: false,
                 productionProjectId: false,
                 typeId: false,
-                ibanPayed: false,
                 ibanPayout: false,
             },
         };
@@ -131,13 +128,6 @@ class ParticipantFormEdit extends Component {
         }
         ;
 
-        if (!validator.isEmpty(participation.ibanPayed)) {
-            if (!ibantools.isValidIBAN(participation.ibanPayed)) {
-                errors.ibanPayed = true;
-                hasErrors = true;
-            }
-        }
-
         if (!validator.isEmpty(participation.ibanPayout)) {
             if (!ibantools.isValidIBAN(participation.ibanPayout)) {
                 errors.ibanPayout = true;
@@ -157,7 +147,7 @@ class ParticipantFormEdit extends Component {
     render() {
         const {
             contactName, statusId, productionProjectName, dateRegister, participationsRequested, participationsGranted, participationsSold, participationsRestSale,
-            dateContractSend, dateContractRetour, datePayed, ibanPayed, didAcceptAgreement, ibanAttn, giftedByContactId, ibanPayout, legalRepContactId, ibanPayoutAttn, dateEnd,
+            dateContractSend, dateContractRetour, datePayed, didAcceptAgreement, giftedByContactId, ibanPayout, legalRepContactId, ibanPayoutAttn, dateEnd,
             typeId, powerKwhConsumption
         }  = this.state.participation;
 
@@ -269,28 +259,10 @@ class ParticipantFormEdit extends Component {
                         value={datePayed}
                         onChangeAction={this.handleInputChangeDate}
                     />
-                    <InputText
-                        divClassName={'field-to-be-removed'}
-                        label={"IBAN betaald"}
-                        name={"ibanPayed"}
-                        value={ibanPayed}
-                        onChangeAction={this.handleInputChange}
-                        error={this.state.errors.ibanPayed}
-                    />
-                </div>
-
-                <div className="row">
                     <InputToggle
                         label={"Akkoord reglement"}
                         name={"didAcceptAgreement"}
                         value={didAcceptAgreement}
-                        onChangeAction={this.handleInputChange}
-                    />
-                    <InputText
-                        divClassName={'field-to-be-removed'}
-                        label={"IBAN t.n.v."}
-                        name={"ibanAttn"}
-                        value={ibanAttn}
                         onChangeAction={this.handleInputChange}
                     />
                 </div>

@@ -180,7 +180,7 @@ class OrderController extends ApiController
             ->numeric('percentageReduction')->onEmpty(null)->whenMissing(null)->alias('percentage_reduction')->next()
             ->date('dateStart')->validate('required')->alias('date_start')->next()
             ->date('dateEnd')->validate('nullable|date')->onEmpty(null)->whenMissing(null)->alias('date_end')->next()
-            ->date('datePeriodStartFirstInvoice')->validate('required')->alias('date_period_start_first_invoice')->next()
+            ->date('datePeriodStartFirstInvoice')->alias('date_period_start_first_invoice')->next()
             ->numeric('variablePrice')->alias('variable_price')->next()
             ->get();
 
@@ -282,7 +282,7 @@ class OrderController extends ApiController
             ->numeric('percentageReduction')->onEmpty(null)->whenMissing(null)->alias('percentage_reduction')->next()
             ->date('dateStart')->validate('required')->alias('date_start')->next()
             ->date('dateEnd')->validate('nullable|date')->onEmpty(null)->whenMissing(null)->alias('date_end')->next()
-            ->date('datePeriodStartFirstInvoice')->validate('required')->alias('date_period_start_first_invoice')->next()
+            ->date('datePeriodStartFirstInvoice')->alias('date_period_start_first_invoice')->next()
             ->numeric('variablePrice')->alias('variable_price')->next()
             ->get();
 

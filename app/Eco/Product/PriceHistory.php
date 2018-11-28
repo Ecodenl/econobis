@@ -13,6 +13,11 @@ class PriceHistory extends Model
 
     protected $table = 'price_history_product';
 
+    //blijven ivm generic resource
+    protected $appends
+        = [
+            'price_incl_vat',
+        ];
 
     public function product()
     {

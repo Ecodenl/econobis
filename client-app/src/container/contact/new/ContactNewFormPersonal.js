@@ -55,7 +55,7 @@ class ContactNewFormPersonal extends Component {
                 city: '',
                 typeId: 'visit',
                 primary: true,
-                countryId: 'NL',
+                countryId: '',
             },
             emailAddress: {
                 email: '',

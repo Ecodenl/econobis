@@ -51,6 +51,7 @@ test('Fill out form order minimum', async (t) => {
         .click(general.save)
         .wait(constants.wait);
 
+    //Nieuw product
     await t
         .click(detailsOrder.newOrderProduct)
         .click(detailsOrder.newOrderProductExisting)

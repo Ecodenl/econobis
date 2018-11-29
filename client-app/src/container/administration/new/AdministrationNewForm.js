@@ -55,10 +55,6 @@ class AdministrationNewForm extends Component {
                 btwCodeSales0: '',
                 btwCodeSales6: '',
                 btwCodeSales21: '',
-                btwCodePurchasesNull: '',
-                btwCodePurchases0: '',
-                btwCodePurchases6: '',
-                btwCodePurchases21: ''
             },
             errors: {
                 name: false,
@@ -257,10 +253,6 @@ class AdministrationNewForm extends Component {
             data.append('btwCodeSales0', administration.btwCodeSales0);
             data.append('btwCodeSales6', administration.btwCodeSales6);
             data.append('btwCodeSales21', administration.btwCodeSales21);
-            data.append('btwCodePurchasesNull', administration.btwCodePurchasesNull);
-            data.append('btwCodePurchases0', administration.btwCodePurchases0);
-            data.append('btwCodePurchases6', administration.btwCodePurchases6);
-            data.append('btwCodePurchases21', administration.btwCodePurchases21);
 
         AdministrationDetailsAPI.newAdministration(data).then((payload) => {
             hashHistory.push(`/administratie/${payload.data.id}`);
@@ -273,7 +265,7 @@ class AdministrationNewForm extends Component {
     render() {
         const { name, administrationNumber, address, postalCode, city, countryId, kvkNumber, btwNumber, IBAN, email, website, bic, sepaContractName, sepaCreditorId, rsinNumber, defaultPaymentTerm, attachment,
             emailTemplateIdCollection, emailTemplateIdTransfer, emailTemplateReminderId, emailTemplateExhortationId, ibanAttn, usesTwinfield, twinfieldUsername, twinfieldPassword, twinfieldOrganizationCode, twinfieldOfficeCode,
-            defaultInvoiceTemplate, btwCodeSalesNull, btwCodeSales0, btwCodeSales6, btwCodeSales21, btwCodePurchasesNull, btwCodePurchases0, btwCodePurchases6, btwCodePurchases21} = this.state.administration;
+            defaultInvoiceTemplate, btwCodeSalesNull, btwCodeSales0, btwCodeSales6, btwCodeSales21} = this.state.administration;
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -548,26 +540,9 @@ class AdministrationNewForm extends Component {
                         {usesTwinfield == true &&
                         <div className="row">
                             <InputText
-                                label="BTW code geen"
-                                name={"btwCodePurchasesNull"}
-                                value={btwCodePurchasesNull}
-                                onChangeAction={this.handleInputChange}
-                            />
-                            <InputText
                                 label="BTW code verkoop geen"
                                 name={"btwCodeSalesNull"}
                                 value={btwCodeSalesNull}
-                                onChangeAction={this.handleInputChange}
-                            />
-                        </div>
-                        }
-
-                        {usesTwinfield == true &&
-                        <div className="row">
-                            <InputText
-                                label="BTW code 0%"
-                                name={"btwCodePurchases0"}
-                                value={btwCodePurchases0}
                                 onChangeAction={this.handleInputChange}
                             />
                             <InputText
@@ -579,29 +554,13 @@ class AdministrationNewForm extends Component {
                         </div>
                         }
 
-                        {usesTwinfield == true &&
-                        <div className="row">
-                            <InputText
-                                label="BTW code 6%"
-                                name={"btwCodePurchases6"}
-                                value={btwCodePurchases6}
-                                onChangeAction={this.handleInputChange}
-                            />
-                            <InputText
-                                label="BTW code verkoop 6%"
-                                name={"btwCodeSales6"}
-                                value={btwCodeSales6}
-                                onChangeAction={this.handleInputChange}
-                            />
-                        </div>
-                        }
 
                         {usesTwinfield == true &&
                         <div className="row">
                             <InputText
-                                label="BTW code 21%"
-                                name={"btwCodePurchases21"}
-                                value={btwCodePurchases21}
+                                label="BTW code verkoop 6%"
+                                name={"btwCodeSales6"}
+                                value={btwCodeSales6}
                                 onChangeAction={this.handleInputChange}
                             />
                             <InputText

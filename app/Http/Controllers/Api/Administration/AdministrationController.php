@@ -97,10 +97,6 @@ class AdministrationController extends ApiController
             ->string('btwCodeSales6')->whenMissing(null)->onEmpty(null)->alias('btw_code_sales_6')->next()
             ->string('btwCodeSales0')->whenMissing(null)->onEmpty(null)->alias('btw_code_sales_0')->next()
             ->string('btwCodeSalesNull')->whenMissing(null)->onEmpty(null)->alias('btw_code_sales_null')->next()
-            ->string('btwCodePurchases21')->whenMissing(null)->onEmpty(null)->alias('btw_code_purchases_21')->next()
-            ->string('btwCodePurchases6')->whenMissing(null)->onEmpty(null)->alias('btw_code_purchases_6')->next()
-            ->string('btwCodePurchases0')->whenMissing(null)->onEmpty(null)->alias('btw_code_purchases_0')->next()
-            ->string('btwCodePurchasesNull')->whenMissing(null)->onEmpty(null)->alias('btw_code_purchases_null')->next()
             ->get();
 
         //bool als string? waarschijnlijk door formdata
@@ -175,10 +171,6 @@ class AdministrationController extends ApiController
             ->string('btwCodeSales6')->whenMissing(null)->onEmpty(null)->alias('btw_code_sales_6')->next()
             ->string('btwCodeSales0')->whenMissing(null)->onEmpty(null)->alias('btw_code_sales_0')->next()
             ->string('btwCodeSalesNull')->whenMissing(null)->onEmpty(null)->alias('btw_code_sales_null')->next()
-            ->string('btwCodePurchases21')->whenMissing(null)->onEmpty(null)->alias('btw_code_purchases_21')->next()
-            ->string('btwCodePurchases6')->whenMissing(null)->onEmpty(null)->alias('btw_code_purchases_6')->next()
-            ->string('btwCodePurchases0')->whenMissing(null)->onEmpty(null)->alias('btw_code_purchases_0')->next()
-            ->string('btwCodePurchasesNull')->whenMissing(null)->onEmpty(null)->alias('btw_code_purchases_null')->next()
             ->get();
 
         //bool als string? waarschijnlijk door formdata

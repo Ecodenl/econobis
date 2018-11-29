@@ -103,10 +103,6 @@ class FullAdministration extends Resource
                 'btwCodeSales0' => $this->btw_code_sales_0,
                 'btwCodeSales6' => $this->btw_code_sales_6,
                 'btwCodeSales21' => $this->btw_code_sales_21,
-                'btwCodePurchasesNull' => $this->btw_code_purchases_null,
-                'btwCodePurchases0' => $this->btw_code_purchases_0,
-                'btwCodePurchases6' => $this->btw_code_purchases_6,
-                'btwCodePurchases21' => $this->btw_code_purchases_21,
 
                 'createdAt' => $this->created_at,
                 'updatedAt' => $this->updated_at,

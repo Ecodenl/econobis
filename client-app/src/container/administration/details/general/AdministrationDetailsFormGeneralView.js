@@ -9,7 +9,7 @@ const AdministrationDetailsFormGeneralView = props => {
 
     const { name, administrationNumber, address, postalCode, emailTemplateCollection, emailTemplateTransfer, emailTemplateReminder, emailTemplateExhortation, city, country, kvkNumber, btwNumber, IBAN, ibanAttn,
         email, website, bic, sepaContractName, sepaCreditorId, rsinNumber, defaultPaymentTerm, logoName, usesTwinfield, twinfieldUsername, twinfieldOrganizationCode,
-        twinfieldOfficeCode, defaultInvoiceTemplate, btwCodeSalesNull, btwCodeSales0, btwCodeSales6, btwCodeSales21, btwCodePurchasesNull, btwCodePurchases0, btwCodePurchases6, btwCodePurchases21} = props.administrationDetails;
+        twinfieldOfficeCode, defaultInvoiceTemplate, btwCodeSalesNull, btwCodeSales0, btwCodeSales6, btwCodeSales21} = props.administrationDetails;
 
     return (
         <div onClick={props.switchToEdit}>
@@ -184,21 +184,8 @@ const AdministrationDetailsFormGeneralView = props => {
                     {usesTwinfield == true &&
                     <div className="row">
                         <ViewText
-                            label={"BTW code geen"}
-                            value={btwCodePurchasesNull}
-                        />
-                        <ViewText
                             label={"BTW code verkoop geen"}
                             value={btwCodeSalesNull}
-                        />
-                    </div>
-                    }
-
-                    {usesTwinfield == true &&
-                    <div className="row">
-                        <ViewText
-                            label={"BTW code 0%"}
-                            value={btwCodePurchases0}
                         />
                         <ViewText
                             label={"BTW code verkoop 0%"}
@@ -210,21 +197,8 @@ const AdministrationDetailsFormGeneralView = props => {
                     {usesTwinfield == true &&
                     <div className="row">
                         <ViewText
-                            label={"BTW code 6%"}
-                            value={btwCodePurchases6}
-                        />
-                        <ViewText
                             label={"BTW code verkoop 6%"}
                             value={btwCodeSales6}
-                        />
-                    </div>
-                    }
-
-                    {usesTwinfield == true &&
-                    <div className="row">
-                        <ViewText
-                            label={"BTW code 21%"}
-                            value={btwCodePurchases21}
                         />
                         <ViewText
                             label={"BTW code verkoop 21%"}

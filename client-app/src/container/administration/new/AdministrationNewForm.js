@@ -22,6 +22,8 @@ class AdministrationNewForm extends Component {
         this.state = {
             newLogo: false,
             emailTemplates: [],
+            isSaving: false,
+            loadingText: 'Aan het opslaan',
             administration: {
                 name: '',
                 administrationNumber: '',
@@ -219,6 +221,18 @@ class AdministrationNewForm extends Component {
 
         // If no errors send form
         if(!hasErrors) {
+
+            let loadingText = 'Aan het laden';
+
+            if(administration.usesTwinfield){
+                loadingText = 'De koppeling Econobis Twinfield wordt gemaakt. Dit kan enige tijd duren';
+            }
+            this.setState({
+                ...this.state,
+                loadingText: loadingText,
+                isSaving: true
+            });
+            
             const data = new FormData();
 
             data.append('name', administration.name);
@@ -500,6 +514,7 @@ class AdministrationNewForm extends Component {
                                 value={twinfieldPassword}
                                 onChangeAction={this.handleInputChange}
                                 error={this.state.errors.twinfieldPassword}
+                                required={"required"}
                             />
                         </div>
                         }
@@ -520,6 +535,7 @@ class AdministrationNewForm extends Component {
                                 value={twinfieldOfficeCode}
                                 onChangeAction={this.handleInputChange}
                                 error={this.state.errors.twinfieldOfficeCode}
+                                required={"required"}
                             />
                         </div>
                         }
@@ -580,7 +596,14 @@ class AdministrationNewForm extends Component {
 
                     <PanelBody>
                         <div className="pull-right btn-group" role="group">
-                            <ButtonText buttonText={"Opslaan"} onClickAction={this.handleSubmit} type={"submit"} value={"Submit"}/>
+                            <ButtonText
+                                loading={this.state.isSaving}
+                                loadText={this.state.loadingText}
+                                buttonText={"Opslaan"}
+                                onClickAction={this.handleSubmit}
+                                type={"submit"}
+                                value={"Submit"}
+                            />
                         </div>
                     </PanelBody>
                 </Panel>

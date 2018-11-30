@@ -102,10 +102,10 @@ class AdministrationController extends ApiController
         //bool als string? waarschijnlijk door formdata
         $usesTwinfield = $request->input('usesTwinfield');
 
-        if($usesTwinfield == 'false'){
+        if($usesTwinfield == 'false' || $usesTwinfield == '0'){
             $usesTwinfield = false;
         }
-        if($usesTwinfield == 'true'){
+        if($usesTwinfield == 'true' || $usesTwinfield == '1'){
             $usesTwinfield = true;
         }
 
@@ -176,12 +176,13 @@ class AdministrationController extends ApiController
         //bool als string? waarschijnlijk door formdata
         $usesTwinfield = $request->input('usesTwinfield');
 
-        if($usesTwinfield == 'false'){
+        if($usesTwinfield == 'false' || $usesTwinfield == '0'){
             $usesTwinfield = false;
         }
-        if($usesTwinfield == 'true'){
+        if($usesTwinfield == 'true' || $usesTwinfield == '1'){
             $usesTwinfield = true;
         }
+
         $data['uses_twinfield'] = $usesTwinfield;
 
         $administration->fill($data);

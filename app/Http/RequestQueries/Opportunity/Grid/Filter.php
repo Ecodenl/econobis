@@ -21,6 +21,7 @@ class Filter extends RequestFilter
         'measureCategory',
         'campaign',
         'statusId',
+        'amountOfQuotationRequests',
     ];
 
     protected $mapping = [
@@ -42,4 +43,11 @@ class Filter extends RequestFilter
         '*' => 'ct',
         'statusId' => 'eq',
     ];
+
+    protected function applyAmountOfQuotationRequestsFilter($query, $type, $data)
+    {
+        $query->has('quotationRequests', '=', $data);
+
+        return false;
+    }
 }

@@ -77,7 +77,7 @@ const OpportunitiesListFilter = props => {
                     }
                 </select>
             </th>
-            {/*<th><input type="text" className="form-control input-sm" value={ props.filters.amountOfQuotationRequests.data} onChange={onAmountOfQuotationRequestsChange} /></th>*/}
+            <th><input type="text" className="form-control input-sm" value={ props.filters.amountOfQuotationRequests.data} onChange={onAmountOfQuotationRequestsChange} /></th>
 
             <th/>
             <th/>
@@ -99,6 +99,7 @@ const mapDispatchToProps = (dispatch) => {
         setFilterOpportunityName,
         setFilterOpportunityNumber,
         setFilterOpportunityStatusId,
+        setFilterOpportunityAmountOfQuotationRequests,
     }, dispatch);
 };
 

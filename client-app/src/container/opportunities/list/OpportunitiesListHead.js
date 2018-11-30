@@ -22,7 +22,7 @@ const OpportunitiesListHead = (props) => {
             <DataTableHeadTitleAndSort sortColumn={'measureCategory'} title={'Maatregel categorie'} width={'17%'} setSorts={setSorts} />
             <DataTableHeadTitleAndSort sortColumn={'campaign'} title={'Campagne'} width={'10%'} setSorts={setSorts} />
             <DataTableHeadTitleAndSort sortColumn={'statusId'} title={'Status'} width={'10%'} setSorts={setSorts} />
-            <DataTableHeadTitle title={'Aantal offertes'} width={'7%'} />
+            <DataTableHeadTitleAndSort sortColumn={'amountOfQuotationRequests'} title={'Aantal offertes'} width={'7%'} setSorts={setSorts} />
             <th width="6%" />
         </tr>
     );

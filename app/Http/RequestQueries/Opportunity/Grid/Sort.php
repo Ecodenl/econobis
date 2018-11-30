@@ -31,13 +31,18 @@ class Sort extends RequestSort
         'measureCategory' => 'measure_categories.name',
         'campaign' => 'campaigns.name',
         'statusId'  => 'opportunities.status_id',
-        'amountOfQuotationRequests'  => 'quotation_requests.amount_of_quotation_requests',
     ];
 
     protected $joins = [
         'measureCategory' => 'measure_categories',
         'campaign' => 'campaigns',
-        'amountOfQuotationRequests' => 'quotation_requests',
         'name' => 'contacts',
     ];
+
+    protected function applyAmountOfQuotationRequestsSort($query, $data)
+    {
+        $query->withCount('quotationRequests')->orderBy('quotation_requests_count', $data);
+
+        return false;
+    }
 }

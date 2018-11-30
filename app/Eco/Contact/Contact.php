@@ -268,25 +268,7 @@ class Contact extends Model
         $emailAddresses = $this->emailAddresses->reverse();
 
         foreach($emailAddresses as $emailAddress) {
-            if ($emailAddress->type_id === 'invoice' && $emailAddress->primary) {
-                return $emailAddress;
-            }
-        }
-
-        foreach($emailAddresses as $emailAddress) {
             if ($emailAddress->type_id === 'invoice') {
-                return $emailAddress;
-            }
-        }
-
-        foreach($emailAddresses as $emailAddress) {
-            if ($emailAddress->type_id === 'administration' && $emailAddress->primary) {
-                return $emailAddress;
-            }
-        }
-
-        foreach($emailAddresses as $emailAddress) {
-            if ($emailAddress->type_id === 'administration') {
                 return $emailAddress;
             }
         }
@@ -295,10 +277,6 @@ class Contact extends Model
             if ($emailAddress->primary) {
                 return $emailAddress;
             }
-        }
-
-        foreach($emailAddresses as $emailAddress) {
-            return $emailAddress;
         }
 
         return null;

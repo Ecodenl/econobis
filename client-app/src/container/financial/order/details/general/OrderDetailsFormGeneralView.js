@@ -33,7 +33,7 @@ const OrderDetailsFormGeneralView = props => {
                             value={props.contactPerson}
                         />
                         <ViewText
-                            label="Contact persoon email"
+                            label="Contact persoon e-mail"
                             value={props.contactEmail}
                         />
                     </div>

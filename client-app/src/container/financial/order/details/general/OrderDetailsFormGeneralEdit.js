@@ -180,7 +180,7 @@ class OrderDetailsFormGeneralEdit extends Component {
                                 readOnly={true}
                             />
                             <InputText
-                                label="Contact persoon email"
+                                label="Contact persoon e-mail"
                                 value={this.props.contactEmail}
                                 name={'contactEmail'}
                                 readOnly={true}

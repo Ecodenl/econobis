@@ -309,13 +309,11 @@ class OrderController extends ApiController
     public function getContactInfoForOrder(Contact $contact)
     {
         //Get email/name based on priority:
-        //1 - organisation - administration email
-        //2 - contact person invoice + primary
-        //2 - contact person invoice
-        //2 - contact person administration + primary
-        //3 - contact person administration
-        //4 - contact person primary
-        //5 - contact person other
+        //1 - organisation - invoice(sort by created at)
+        //2 - organisation - primary
+        //3 - contact person - invoice(sort by created at)
+        //4 - contact person - primary
+
         $contactInfo = [
             'email' => 'Geen e-mail bekend',
             'contactPerson' => $contact->full_name,
@@ -324,7 +322,7 @@ class OrderController extends ApiController
         ];
 
         if($contact->isOrganisation()){
-            $email = $this->getOrganisationAdministrationEmailAddress($contact);
+            $email = $this->getOrganisationEmailAddressForOrder($contact);
 
             if (!$email && $contact->contactPerson()->exists())
             {
@@ -344,19 +342,17 @@ class OrderController extends ApiController
         return $contactInfo;
     }
 
-    protected function getOrganisationAdministrationEmailAddress(Contact $contact){
+    protected function getOrganisationEmailAddressForOrder(Contact $contact){
         $emailAddresses = $contact->emailAddresses->reverse();
 
         foreach($emailAddresses as $emailAddress) {
-            if ($emailAddress->type_id === 'administration' && $emailAddress->primary) {
+            if ($emailAddress->type_id === 'invoice') {
                 return $emailAddress;
             }
         }
 
-        foreach($emailAddresses as $emailAddress) {
-            if ($emailAddress->type_id === 'administration') {
-                return $emailAddress;
-            }
+        if($contact->primaryEmailAddress){
+            return $contact->primaryEmailAddress;
         }
 
         return null;

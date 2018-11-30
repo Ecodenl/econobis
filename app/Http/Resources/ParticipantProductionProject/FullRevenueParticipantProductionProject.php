@@ -33,7 +33,6 @@ class FullRevenueParticipantProductionProject extends Resource
                 'contactId' => $this->contact_id,
                 'contactType' => FullEnumWithIdAndName::make($this->contact->getType()),
                 'contactName' => $this->contact->full_name,
-                'contactStatus' => FullEnumWithIdAndName::make($this->contact->getStatus()),
                 'contactPrimaryAddress' => $this->contact->primaryAddress,
                 'contactPrimaryContactEnergySupplier' => $es,
                 'statusId' => $this->status_id,

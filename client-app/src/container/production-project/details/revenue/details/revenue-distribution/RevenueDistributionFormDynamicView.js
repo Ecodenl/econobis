@@ -3,7 +3,7 @@ import moment from "moment/moment";
 moment.locale('nl');
 
 const RevenueDistributionFormDynamicView = props => {
-    const { id, contactName, contactType, contactStatus, contactPrimaryContactEnergySupplier, participationsCurrent, type} = props.participation;
+    const { id, contactName, contactType, contactPrimaryContactEnergySupplier, participationsCurrent, type} = props.participation;
     const { datePayed, revenue, payPercentage, kwhStart, kwhEnd, payoutKwh } = props.productionProjectRevenue;
     const { currentParticipations } = props.productionProject;
 
@@ -23,9 +23,6 @@ const RevenueDistributionFormDynamicView = props => {
                 {contactName ? contactName : ''}
             </div>
             <div className="col-sm-1">
-                {contactStatus ? contactStatus.name : ''}
-            </div>
-            <div className="col-sm-1">
                 {participationsCurrent ? participationsCurrent : 0}
             </div>
             <div className="col-sm-1">
@@ -37,7 +34,7 @@ const RevenueDistributionFormDynamicView = props => {
             <div className="col-sm-1">
                 {datePayed ? moment(datePayed).format('L') : ''}
             </div>
-            <div className="col-sm-1">
+            <div className="col-sm-2">
                 {contactPrimaryContactEnergySupplier ? contactPrimaryContactEnergySupplier.name : ''}
             </div>
             <div className="col-sm-1">

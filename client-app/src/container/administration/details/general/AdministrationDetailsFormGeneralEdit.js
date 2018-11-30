@@ -511,7 +511,7 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                         {usesTwinfield == true &&
                         <div className="row">
                             <InputText
-                                label="Organisatiecode"
+                                label="Omgeving"
                                 name={"twinfieldOrganizationCode"}
                                 value={twinfieldOrganizationCode}
                                 onChangeAction={this.handleInputChange}
@@ -519,7 +519,7 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                                 error={this.state.errors.twinfieldOrganizationCode}
                             />
                             <InputText
-                                label="Administratiecode"
+                                label="Code"
                                 name={"twinfieldOfficeCode"}
                                 value={twinfieldOfficeCode}
                                 onChangeAction={this.handleInputChange}

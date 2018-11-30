@@ -8,12 +8,14 @@ import ButtonText from '../../../../components/button/ButtonText';
 import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
 import validator from "validator";
+import ErrorModal from "../../../../components/modal/ErrorModal";
 
 class AdministrationLedgerFormNew extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
+            ledgers: [],
             ledger: {
                 administrationId: this.props.id,
                 code: '',
@@ -24,6 +26,20 @@ class AdministrationLedgerFormNew extends Component {
                 name: false,
             },
         };
+    };
+
+    componentDidMount() {
+        AdministrationDetailsAPI.fetchLedgers(this.props.id).then(payload => {
+            this.setState({
+                ledgers: payload
+            });
+        });
+    }
+
+    toggleErrorModal = () => {
+        this.setState({
+            showModalError: !this.state.showModalError
+        });
     };
 
     handleInputChange = event => {
@@ -52,6 +68,19 @@ class AdministrationLedgerFormNew extends Component {
             errors.code = true;
             hasErrors = true;
         }
+        else{
+            if (this.state.ledgers.includes(ledger.code)) {
+                this.setState({
+                    showModalError: !this.state.showModalError,
+                    modalErrorTitle: 'Waarschuwing',
+                    modalErrorMessage: 'Dit grootboeknummer bestaat al.',
+                });
+
+                errors.code = true;
+                hasErrors = true;
+            }
+        }
+
 
         if(validator.isEmpty(ledger.name)){
             errors.name = true;
@@ -101,6 +130,14 @@ class AdministrationLedgerFormNew extends Component {
                             <ButtonText buttonClassName={"btn-default"} buttonText={"Annuleren"} onClickAction={this.props.toggleShowNew}/>
                             <ButtonText buttonText={"Opslaan"} onClickAction={this.handleSubmit} type={"submit"} value={"Submit"}/>
                         </div>
+
+                        { this.state.showModalError &&
+                        <ErrorModal
+                            closeModal={this.toggleErrorModal}
+                            title={this.state.modalErrorTitle}
+                            errorMessage={this.state.modalErrorMessage}
+                        />
+                        }
 
                     </PanelBody>
                 </Panel>

@@ -340,4 +340,10 @@ class AdministrationController extends ApiController
         return GenericResource::collection($ledgers);
     }
 
+    public function getLedgers(Administration $administration){
+        $ledgers = $administration->ledgers()->pluck('code')->toArray();
+
+        return $ledgers;
+    }
+
 }

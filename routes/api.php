@@ -310,7 +310,6 @@ Route::namespace('Api')
         Route::get('production-project/active', 'ProductionProject\ProductionProjectController@getActive');
         Route::get('production-project/chart-status/{productionProject}', 'ProductionProject\ProductionProjectController@getChartData');
         Route::get('production-project/chart-participations-status/{productionProject}', 'ProductionProject\ProductionProjectController@getChartDataParticipations');
-        Route::get('production-project/chart-participations-status/{productionProject}', 'ProductionProject\ProductionProjectController@getChartDataParticipations');
         Route::get('production-project/chart-contact-status/{productionProject}', 'ProductionProject\ProductionProjectController@getChartDataStatus');
         Route::get('production-project/{productionProject}', 'ProductionProject\ProductionProjectController@show');
         Route::get('production-project/{productionProject}/obligation-numbers', 'ProductionProject\ProductionProjectController@getObligationNumbers');
@@ -328,6 +327,7 @@ Route::namespace('Api')
         Route::get('administration/peek', 'Administration\AdministrationController@peek');
         Route::get('administration/{administration}', 'Administration\AdministrationController@show');
         Route::get('administration/sepa/{sepa}', 'Administration\AdministrationController@downloadSepa');
+        Route::get('administration/{administration}/ledgers', 'Administration\AdministrationController@getLedgers');
         Route::post('administration/sepa/{sepa}/delete', 'Administration\AdministrationController@deleteSepa');
         Route::post('administration', 'Administration\AdministrationController@store');
         Route::post('administration/ledger', 'Administration\AdministrationController@storeLedger');

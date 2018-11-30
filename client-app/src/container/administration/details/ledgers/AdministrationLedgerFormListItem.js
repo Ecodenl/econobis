@@ -7,12 +7,14 @@ import AdministrationLedgerFormView from './AdministrationLedgerFormView';
 import AdministrationLedgerFormEdit from './AdministrationLedgerFormEdit';
 import {isEqual} from "lodash";
 import validator from "validator";
+import ErrorModal from "../../../../components/modal/ErrorModal";
 
 class AdministrationLedgerFormListItem extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
+            ledgers: [],
             showActionButtons: false,
             highlightLine: '',
             showEdit: false,
@@ -24,6 +26,20 @@ class AdministrationLedgerFormListItem extends Component {
                 name: false,
             },
         };
+    };
+
+    componentDidMount() {
+        AdministrationDetailsAPI.fetchLedgers(this.props.id).then(payload => {
+            this.setState({
+                ledgers: payload
+            });
+        });
+    }
+
+    toggleErrorModal = () => {
+        this.setState({
+            showModalError: !this.state.showModalError
+        });
     };
 
     onLineEnter = () => {
@@ -84,6 +100,18 @@ class AdministrationLedgerFormListItem extends Component {
             errors.code = true;
             hasErrors = true;
         }
+        else{
+            if (this.state.ledgers.includes(ledger.code) && (ledger.code !== this.props.ledger.code)) {
+                this.setState({
+                    showModalError: !this.state.showModalError,
+                    modalErrorTitle: 'Waarschuwing',
+                    modalErrorMessage: 'Dit groetboeknummer bestaat al.',
+                });
+
+                errors.code = true;
+                hasErrors = true;
+            }
+        }
 
         if(validator.isEmpty(ledger.name)){
             errors.name = true;
@@ -121,6 +149,13 @@ class AdministrationLedgerFormListItem extends Component {
                         cancelEdit={this.cancelEdit}
                         errors={this.state.errors}
                     />
+                }
+                { this.state.showModalError &&
+                <ErrorModal
+                    closeModal={this.toggleErrorModal}
+                    title={this.state.modalErrorTitle}
+                    errorMessage={this.state.modalErrorMessage}
+                />
                 }
             </div>
         );

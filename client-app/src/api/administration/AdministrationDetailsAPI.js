@@ -136,4 +136,17 @@ export default {
                 return error.response;
             });
     },
+
+    fetchLedgers: (id) => {
+        const requestUrl = `${URL_ADMINISTRATION}/${id}/ledgers`;
+        const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
+        axios.defaults.headers.common.Authorization = AUTH_TOKEN;
+
+        return axios.get(requestUrl)
+            .then(response => response.data)
+            .catch((error) => {
+                    console.log(error);
+                },
+            );
+    },
 };

@@ -65,7 +65,7 @@ class QuotationRequestCSVHelper
 
             // person/$quotationRequest fields
             if ($quotationRequest->opportunity->intake->contact->type_id === 'person') {
-                $quotationRequest->title = $quotationRequest->opportunity->intake->contact->person->title->name;
+                $quotationRequest->title = $quotationRequest->opportunity->intake->contact->person->title;
                 $quotationRequest->initials = $quotationRequest->opportunity->intake->contact->person->initials;
                 $quotationRequest->first_name = $quotationRequest->opportunity->intake->contact->person->first_name;
                 $quotationRequest->last_name_prefix = $quotationRequest->opportunity->intake->contact->person->last_name_prefix;
@@ -83,7 +83,7 @@ class QuotationRequestCSVHelper
             'date_valid' => 'Offerte geldig tot',
             'quotation_text' => 'Offerte tekst',
             'opportunity.intake.contact.full_name' => 'Contact',
-            'title' => 'Persoon titel',
+            'title.name' => 'Persoon titel',
             'initials' => 'Persoon initialen',
             'first_name' => 'Persoon voornaam',
             'last_name_prefix' => 'Persoon tussenvoegsel',

@@ -67,7 +67,7 @@ class OpportunityCSVHelper
 
             // person/organisation fields
             if ($opportunity->intake->contact->type_id === 'person') {
-                $opportunity->title = $opportunity->intake->contact->person->title->name;
+                $opportunity->title = $opportunity->intake->contact->person->title;
                 $opportunity->initials = $opportunity->intake->contact->person->initials;
                 $opportunity->first_name = $opportunity->intake->contact->person->first_name;
                 $opportunity->last_name_prefix = $opportunity->intake->contact->person->last_name_prefix;
@@ -82,7 +82,7 @@ class OpportunityCSVHelper
         $csv = $this->csvExporter->build($chunk, [
             'number' => '#',
             'intake.contact.full_name' => 'Contact',
-            'title' => 'Persoon titel',
+            'title.name' => 'Persoon titel',
             'initials' => 'Persoon initialen',
             'first_name' => 'Persoon voornaam',
             'last_name_prefix' => 'Persoon tussenvoegsel',

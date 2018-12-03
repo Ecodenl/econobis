@@ -60,7 +60,7 @@ class ProductionProjectRevenueController extends ApiController
             $productionProjectRevenue = new RevenueDistributionCSVHelper($productionProjectRevenue->distribution);
         }
         else{
-            $productionProjectRevenue = new RevenueParticipantsCSVHelper($productionProjectRevenue->productionProject->participantsProductionProject);
+            $productionProjectRevenue = new RevenueParticipantsCSVHelper($productionProjectRevenue->productionProject->participantsProductionProject, $productionProjectRevenue);
         }
 
 

@@ -33,7 +33,7 @@ class OpportunityCSVHelper
         foreach ($this->opportunities->chunk(500) as $chunk) {
             $chunk->load([
                 'measureCategory',
-                'intake.contact',
+                'intake.contact.person.title',
                 'status',
                 'opportunityEvaluation',
                 'intake.campaign',

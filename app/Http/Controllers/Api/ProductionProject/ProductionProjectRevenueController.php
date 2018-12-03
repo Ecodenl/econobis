@@ -19,13 +19,14 @@ use App\Eco\ProductionProject\ProductionProjectRevenue;
 use App\Eco\ProductionProject\ProductionProjectRevenueDistribution;
 use App\Helpers\Alfresco\AlfrescoHelper;
 use App\Helpers\CSV\EnergySupplierCSVHelper;
+use App\Helpers\CSV\RevenueDistributionCSVHelper;
+use App\Helpers\CSV\RevenueParticipantsCSVHelper;
 use App\Helpers\RequestInput\RequestInput;
 use App\Helpers\Template\TemplateTableHelper;
 use App\Helpers\Template\TemplateVariableHelper;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\Controllers\Api\Order\OrderController;
 use App\Http\Controllers\Api\PaymentInvoice\PaymentInvoiceController;
-use App\Http\Resources\ParticipantProductionProject\FullParticipantProductionProject;
 use App\Http\Resources\ParticipantProductionProject\FullRevenueParticipantProductionProject;
 use App\Http\Resources\ParticipantProductionProject\Templates\ParticipantReportMail;
 use App\Http\Resources\ProductionProject\FullProductionProjectRevenue;
@@ -49,6 +50,21 @@ class ProductionProjectRevenueController extends ApiController
         ]);
 
         return FullProductionProjectRevenue::make($productionProjectRevenue);
+    }
+
+    public function csv(ProductionProjectRevenue $productionProjectRevenue)
+    {
+        set_time_limit(0);
+
+        if($productionProjectRevenue->confirmed) {
+            $productionProjectRevenue = new RevenueDistributionCSVHelper($productionProjectRevenue->distribution);
+        }
+        else{
+            $productionProjectRevenue = new RevenueParticipantsCSVHelper($productionProjectRevenue->productionProject->participantsProductionProject);
+        }
+
+
+        return $productionProjectRevenue->downloadCSV();
     }
 
     public function getRevenueDistribution(ProductionProjectRevenue $productionProjectRevenue, Request $request){

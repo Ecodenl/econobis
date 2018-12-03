@@ -11,6 +11,7 @@ const QuotationRequestsListToolbar = props => {
             <div className="col-md-4">
                 <div className="btn-group" role="group">
                     <ButtonIcon iconName={"glyphicon-refresh"} onClickAction={props.resetQuotationRequestFilters} />
+                    <ButtonIcon iconName={"glyphicon-download-alt"} onClickAction={props.getCSV} />
                 </div>
             </div>
             <div className="col-md-4"><h3 className="text-center table-title">Offerteverzoeken</h3></div>

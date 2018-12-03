@@ -142,6 +142,7 @@ Route::namespace('Api')
 
         Route::get('opportunity/grid', 'Opportunity\OpportunityController@grid');
         Route::get('opportunity/peek', 'Opportunity\OpportunityController@peek');
+        Route::get('opportunity/csv', 'Opportunity\OpportunityController@csv');
         Route::get('opportunity/amount-active', 'Opportunity\OpportunityController@getAmountOfActiveOpportunities');
         Route::get('opportunity/chart-data', 'Opportunity\OpportunityController@chartData');
         Route::get('opportunity/{opportunity}', 'Opportunity\OpportunityController@show');
@@ -264,6 +265,7 @@ Route::namespace('Api')
 
         Route::get('/quotation-request/grid', 'QuotationRequest\QuotationRequestController@grid');
         Route::get('/quotation-request/peek', 'QuotationRequest\QuotationRequestController@peek');
+        Route::get('/quotation-request/csv', 'QuotationRequest\QuotationRequestController@csv');
         Route::get('/quotation-request/amount-open', 'QuotationRequest\QuotationRequestController@getAmountOfOpenQuotationRequests');
         Route::get('/opportunity/{opportunity}/quotation-request', 'QuotationRequest\QuotationRequestController@getStore');
         Route::post('/quotation-request', 'QuotationRequest\QuotationRequestController@store');
@@ -276,6 +278,7 @@ Route::namespace('Api')
         Route::post('production-project/value-course/{productionProjectValueCourse}/delete', 'ProductionProject\ProductionProjectValueCourseController@destroy');
 
         Route::get('production-project/revenue/{productionProjectRevenue}', 'ProductionProject\ProductionProjectRevenueController@show');
+        Route::get('production-project/revenue/{productionProjectRevenue}/csv', 'ProductionProject\ProductionProjectRevenueController@csv');
         Route::post('production-project/revenue/{productionProjectRevenue}/distribution', 'ProductionProject\ProductionProjectRevenueController@getRevenueDistribution');
         Route::post('production-project/revenue/{productionProjectRevenue}/participants', 'ProductionProject\ProductionProjectRevenueController@getRevenueParticipants');
         Route::post('production-project/revenue/create-energy-supplier-report/{productionProjectRevenue}/{documentTemplate}/{energySupplier}', 'ProductionProject\ProductionProjectRevenueController@createEnergySupplierReport');

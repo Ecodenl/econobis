@@ -45,4 +45,17 @@ export default {
                 },
             );
     },
+
+    getCSV: ({ filters, sorts }) => {
+        const requestUrl = `${URL_API}/api/quotation-request/csv`;
+        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
+        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
+
+        return axios.get(requestUrl, {
+            params: {
+                filters: JSON.stringify(filters),
+                sorts: JSON.stringify(sorts),
+            },
+        });
+    },
 };

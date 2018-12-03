@@ -12,6 +12,7 @@ namespace App\Http\Controllers\Api\QuotationRequest;
 use App\Eco\Email\Email;
 use App\Eco\Opportunity\Opportunity;
 use App\Eco\QuotationRequest\QuotationRequest;
+use App\Helpers\CSV\QuotationRequestCSVHelper;
 use App\Helpers\Delete\Models\DeleteQuotationRequest;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\RequestQueries\QuotationRequest\Grid\RequestQuery;
@@ -63,6 +64,16 @@ class QuotationRequestController extends ApiController
         $quotationRequest->relatedEmailsSent = $this->getRelatedEmails($quotationRequest->id, 'sent');
 
         return FullQuotationRequest::make($quotationRequest);
+    }
+
+    public function csv(RequestQuery $requestQuery)
+    {
+        set_time_limit(0);
+        $quotationRequests = $requestQuery->getQueryNoPagination()->get();
+
+        $quotationRequestCSVHelper = new QuotationRequestCSVHelper($quotationRequests);
+
+        return $quotationRequestCSVHelper->downloadCSV();
     }
 
     /**

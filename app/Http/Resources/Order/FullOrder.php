@@ -9,7 +9,6 @@ use App\Http\Resources\Email\FullEmail;
 use App\Http\Resources\EmailTemplate\FullEmailTemplate;
 use App\Http\Resources\EnumWithIdAndName\FullEnumWithIdAndName;
 use App\Http\Resources\Invoice\FullInvoice;
-use App\Http\Resources\Invoice\InvoicePeek;
 use App\Http\Resources\Task\FullTask;
 use App\Http\Resources\User\FullUser;
 use Illuminate\Http\Resources\Json\Resource;

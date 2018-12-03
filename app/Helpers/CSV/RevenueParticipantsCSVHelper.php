@@ -35,7 +35,7 @@ class RevenueParticipantsCSVHelper
 
         ]);
 
-        $this->csvExporter->beforeEach(function ($order) {
+        $this->csvExporter->beforeEach(function ($participant) {
 
         });
 

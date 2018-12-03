@@ -35,7 +35,7 @@ class RevenueDistributionCSVHelper
 
         ]);
 
-        $this->csvExporter->beforeEach(function ($order) {
+        $this->csvExporter->beforeEach(function ($distribution) {
 
         });
 

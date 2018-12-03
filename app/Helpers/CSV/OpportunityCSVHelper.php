@@ -91,7 +91,7 @@ class OpportunityCSVHelper
             'street_number' => 'Nummer',
             'addition' => 'Toevoeging',
             'postal_code' => 'Postcode',
-            'city' => 'Stad',
+            'city' => 'Plaats',
             'country' => 'Land',
             'measureCategory.name' => 'Maatregel categorie',
             'intake.campaign.name' => 'Campagne',

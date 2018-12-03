@@ -84,7 +84,7 @@ class RevenueDistributionCSVHelper
                 'street_number' => 'Nummer',
                 'addition' => 'Toevoeging',
                 'postal_code' => 'Postcode',
-                'city' => 'Stad',
+                'city' => 'Plaats',
                 'country' => 'Land',
                 'updated_at_date' => 'Laatste update op',
                 'created_at_date' => 'Gemaakt op',

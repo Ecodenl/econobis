@@ -92,7 +92,7 @@ class QuotationRequestCSVHelper
             'street_number' => 'Nummer',
             'addition' => 'Toevoeging',
             'postal_code' => 'Postcode',
-            'city' => 'Stad',
+            'city' => 'Plaats',
             'country' => 'Land',
             'opportunity.measureCategory.name' => 'Maatregel categorie',
             'opportunity.intake.campaign.name' => 'Campagne',

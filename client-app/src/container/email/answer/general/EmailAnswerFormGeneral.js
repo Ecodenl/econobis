@@ -5,21 +5,24 @@ import InputMultiSelectCreate from "../../../../components/form/InputMultiSelect
 import InputMultiSelect from "../../../../components/form/InputMultiSelect";
 import InputTinyMCEUpdateable from "../../../../components/form/InputTinyMCEUpdateable";
 
-const EmailAnswerFormGeneral = ({email, emailAddresses, errors, hasLoaded, handleToIds, handleCcIds, handleBccIds, handleInputChange,
-                                    handleTextChange, emailTemplates, handleEmailTemplates}) => {
-    const { from, to, cc, bcc, subject, htmlBody, emailTemplateId } = email;
+const EmailAnswerFormGeneral = ({email, emailAddresses, mailboxAddresses, errors, hasLoaded, handleToIds, handleCcIds, handleBccIds, handleInputChange,
+                                    handleTextChange, emailTemplates, handleEmailTemplates, handleFromIds}) => {
+    const { mailboxId, to, cc, bcc, subject, htmlBody, emailTemplateId } = email;
 
     return (
             <PanelBody>
                 <div className="row">
-                    <div className="row">
-                        <div className="col-sm-3">
-                            <label htmlFor="description" className="col-sm-12">Van</label>
-                        </div>
-                        <div className="col-sm-9" id="from">
-                            {from}
-                        </div>
-                    </div>
+                    <InputMultiSelect
+                        label="Van selecteren"
+                        name={"mailboxId"}
+                        value={mailboxId}
+                        options={mailboxAddresses}
+                        optionName={"email"}
+                        onChangeAction={handleFromIds}
+                        required={"required"}
+                        error={errors.mailboxId}
+                        multi={false}
+                    />
                 </div>
                 <div className="row">
                     <InputMultiSelectCreate

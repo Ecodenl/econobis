@@ -52,6 +52,7 @@ class InputTinyMCEUpdateable extends Component {
                             plugins: 'link image code table textcolor contextmenu',
                             toolbar: 'undo redo | formatselect | bold italic forecolor | alignleft aligncenter alignright | bullist numlist outdent indent | table | link image | code',
                             height: "300",
+                            browser_spellcheck : true,
                         }}
                         onChange={onChangeAction}
                     />

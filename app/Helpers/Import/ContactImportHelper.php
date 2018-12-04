@@ -17,6 +17,8 @@ use App\Eco\Person\Person;
 use App\Eco\PhoneNumber\PhoneNumber;
 use App\Eco\Title\Title;
 use CMPayments\IBAN;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use InvalidArgumentException;
 use Particle\Validator\Validator;
 
@@ -298,6 +300,8 @@ class ContactImportHelper
             if ($header) {
                 $header = false;
             } else {
+                try {
+                DB::beginTransaction();
                 $contact = new Contact();
                 $contact->type_id = 'person';
                 $contact->status_id = 'interested';
@@ -363,6 +367,13 @@ class ContactImportHelper
                     $email->primary = 0;
                     $email->type_id = 'general';
                     $email->save();
+                }
+
+                DB::commit();
+                } catch (\PDOException $e) {
+                    DB::rollBack();
+                    Log::error('Error contat import: ' . $e->getMessage());
+                    abort(501, 'Er is helaas een fout opgetreden.');
                 }
             }
         }

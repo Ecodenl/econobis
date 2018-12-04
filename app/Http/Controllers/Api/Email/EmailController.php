@@ -592,6 +592,12 @@ class EmailController
     }
 
     public function setEmailStatus(Email $email, $emailStatusId){
+        //als hij van afgehandeld terug wordt gezet
+
+        if($email->status === 'closed' && $emailStatusId != 'closed'){
+            $email->closedBy()->dissociate();
+            $email->date_closed = null;
+        }
 
         $email->status = $emailStatusId;
 

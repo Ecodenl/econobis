@@ -289,7 +289,7 @@ class EmailFormEdit extends Component {
                     <ViewHtmlAsText label={"Tekst"} value={htmlBody}/>
                 </div>
 
-                {((folder == 'inbox' && status && status.id != 'closed') || (folder == 'inbox' && status == null)) &&
+                {((folder == 'inbox' && status) || (folder == 'inbox' && status == null)) &&
                 <div className="row">
                     <InputSelect
                         label={"Status"}

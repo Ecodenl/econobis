@@ -139,6 +139,7 @@ class SendEmailsWithVariables
                 if (!$ccBccSent) {
                     ($email->cc != []) ? $mail->cc($email->cc) : null;
                     ($email->bcc != []) ? $mail->bcc($email->bcc) : null;
+                    $ccBccSent = true;
                 } else {
                     $email->cc = [];
                     $email->bcc = [];
@@ -162,6 +163,14 @@ class SendEmailsWithVariables
         if($email->groupEmailAddresses){
             foreach($email->groupEmailAddresses as $emailAddress) {
                 $mail = Mail::to($emailAddress->email);
+                if (!$ccBccSent) {
+                    ($email->cc != []) ? $mail->cc($email->cc) : null;
+                    ($email->bcc != []) ? $mail->bcc($email->bcc) : null;
+                    $ccBccSent = true;
+                } else {
+                    $email->cc = [];
+                    $email->bcc = [];
+                }
 
                 $htmlBodyWithContactVariables = TemplateTableHelper::replaceTemplateTables($email->html_body, $emailAddress->contact);
                 $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables, 'contact' , $emailAddress->contact);

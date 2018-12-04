@@ -9,6 +9,9 @@ import 'tinymce/plugins/image';
 import 'tinymce/plugins/link';
 import 'tinymce/plugins/code';
 import 'tinymce/plugins/table';
+import 'tinymce/plugins/lists';
+import 'tinymce/plugins/advlist';
+import 'tinymce/plugins/paste';
 //import 'tinymce/plugins/forecolor';
 import 'tinymce/plugins/textcolor';
 import 'tinymce/plugins/contextmenu';
@@ -32,8 +35,8 @@ const InputTinyMCE = props => {
                         branding: false,
                         language: 'nl',
                         menubar: false,
-                        plugins: 'link image code table textcolor contextmenu',
-                        toolbar: 'undo redo | formatselect | bold italic forecolor | alignleft aligncenter alignright | bullist numlist outdent indent | table | link image | code',
+                        plugins: 'paste lists advlist link image code table textcolor contextmenu',
+                        toolbar: 'undo redo | formatselect fontselect | bold italic forecolor | alignleft aligncenter alignright | bullist numlist outdent indent | table | link image | code',
                         height: "300",
                         browser_spellcheck : true,
                     }}

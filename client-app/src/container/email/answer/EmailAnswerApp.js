@@ -8,7 +8,7 @@ import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
 import EmailAPI from '../../../api/email/EmailAPI';
 import EmailAddressAPI from '../../../api/contact/EmailAddressAPI';
-import {hashHistory} from "react-router";
+import {browserHistory, hashHistory} from "react-router";
 import EmailTemplateAPI from "../../../api/email-template/EmailTemplateAPI";
 import MailboxAPI from "../../../api/mailbox/MailboxAPI";
 
@@ -238,7 +238,7 @@ class EmailAnswerApp extends Component {
         });
     };
 
-    handleSubmit(event) {
+    handleSubmit(event, concept = false) {
         event.preventDefault();
 
         const { email } = this.state;
@@ -298,21 +298,28 @@ class EmailAnswerApp extends Component {
                 });
             }
 
-            this.setButtonLoading();
-
-            EmailAPI.newEmail(data, email.mailboxId).then(() => {
-                //close the email we reply/forward
-                if(this.state.oldEmailId) {
-                    EmailAPI.setStatus(this.state.oldEmailId, 'closed').then(() => {
+            if(concept) {
+                EmailAPI.newConcept(data, email.mailboxId).then(() => {
+                    hashHistory.push(`/emails/concept`);
+                }).catch(function (error) {
+                });
+            }
+            else{
+                this.setButtonLoading();
+                EmailAPI.newEmail(data, email.mailboxId).then(() => {
+                    //close the email we reply/forward
+                    if(this.state.oldEmailId) {
+                        EmailAPI.setStatus(this.state.oldEmailId, 'closed').then(() => {
+                            hashHistory.push(`/emails/inbox`);
+                        });
+                    }
+                    else{
                         hashHistory.push(`/emails/inbox`);
-                    });
-                }
-                else{
-                    hashHistory.push(`/emails/inbox`);
-                }
-            }).catch(function (error) {
-                console.log(error)
-            });
+                    }
+                }).catch(function (error) {
+                    console.log(error)
+                });
+            }
         }
     };
 

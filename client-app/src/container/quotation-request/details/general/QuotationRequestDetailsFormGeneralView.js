@@ -18,7 +18,7 @@ const QuotationRequestDetailsFormGeneralView = props => {
                 />
                 <ViewText
                     label={"Organisatie contactpersoon"}
-                    value={organisation.contact.contactPerson ? organisation.contact.contactPerson.contact.fullName : 'Onbekend'}
+                    value={organisation.contact.contactPerson ? organisation.contact.contactPerson.contact.fullName : ''}
                     link={organisation.contact.contactPerson ? 'contact/' + organisation.contact.contactPerson.contact.id : ''}
                 />
             </div>
@@ -48,7 +48,7 @@ const QuotationRequestDetailsFormGeneralView = props => {
             <div className="row">
                 <ViewText
                     label={"Datum opname"}
-                    value={dateRecorded ? moment(dateRecorded).format('L') : 'Onbekend'}
+                    value={dateRecorded ? moment(dateRecorded).format('L') : ''}
                 />
                 <ViewText
                     label={"Offerte status"}
@@ -59,11 +59,11 @@ const QuotationRequestDetailsFormGeneralView = props => {
             <div className="row">
                 <ViewText
                     label={"Offerte uitgebracht"}
-                    value={dateReleased ? moment(dateReleased).format('L') : 'Onbekend'}
+                    value={dateReleased ? moment(dateReleased).format('L') : ''}
                 />
                 <ViewText
                     label={"Offerte geldig tot"}
-                    value={dateValid ? moment(dateValid).format('L') : 'Onbekend'}
+                    value={dateValid ? moment(dateValid).format('L') : ''}
                 />
             </div>
 

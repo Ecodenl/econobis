@@ -14,7 +14,6 @@ import 'tinymce/plugins/advlist';
 import 'tinymce/plugins/paste';
 //import 'tinymce/plugins/forecolor';
 import 'tinymce/plugins/textcolor';
-import 'tinymce/plugins/contextmenu';
 
 import { Editor } from '@tinymce/tinymce-react';
 import InputText from "./InputText";
@@ -35,7 +34,7 @@ const InputTinyMCE = props => {
                         branding: false,
                         language: 'nl',
                         menubar: false,
-                        plugins: 'paste lists advlist link image code table textcolor contextmenu',
+                        plugins: 'paste lists advlist link image code table textcolor',
                         toolbar: 'undo redo | formatselect fontselect | bold italic forecolor | alignleft aligncenter alignright | bullist numlist outdent indent | table | link image | code',
                         height: "300",
                         browser_spellcheck : true,

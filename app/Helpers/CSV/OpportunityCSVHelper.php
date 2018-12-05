@@ -33,6 +33,7 @@ class OpportunityCSVHelper
         foreach ($this->opportunities->chunk(500) as $chunk) {
             $chunk->load([
                 'measureCategory',
+                'measures',
                 'intake.contact.person.title',
                 'status',
                 'opportunityEvaluation',
@@ -45,6 +46,18 @@ class OpportunityCSVHelper
         $this->csvExporter->beforeEach(function ($opportunity) {
             $opportunity->amount_of_quotation_requests = $opportunity->quotationRequests()->count();
             $opportunity->full_address = optional(optional($opportunity->intake->address)->present())->streetAndNumber();
+
+            $opportunity->measures_specific = '';
+
+            $measures = [];
+
+            foreach ($opportunity->measures as $measure){
+                array_push($measures, $measure->name);
+            }
+
+            if(count($measures) > 0){
+                $opportunity->measures_specific = implode($measures, ', ');
+            }
 
             $opportunity->desired_date = $this->formatDate($opportunity->desired_date);
             $opportunity->evaluation_agreed_date = $this->formatDate($opportunity->evaluation_agreed_date);
@@ -94,6 +107,7 @@ class OpportunityCSVHelper
             'city' => 'Plaats',
             'country' => 'Land',
             'measureCategory.name' => 'Maatregel categorie',
+            'measures_specific' => 'Maatregelen specifiek',
             'intake.campaign.name' => 'Campagne',
             'status.name' => 'Status',
             'amount_of_quotation_requests' => 'Aantal offertes',

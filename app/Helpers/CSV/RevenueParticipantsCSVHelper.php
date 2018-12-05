@@ -45,6 +45,9 @@ class RevenueParticipantsCSVHelper
             $participant->created_at_date = $participant->created_at->format('d-m-Y');
             $participant->updated_at_date = $participant->updated_at->format('d-m-Y');
 
+            $participant->period_start = $this->formatDate($this->productionProjectRevenue->date_begin);
+            $participant->period_end = $this->formatDate($this->productionProjectRevenue->date_end);
+
             $participant->type = $participant->contact->getType()->name;
 
             $address = $participant->contact->primaryAddress;
@@ -107,6 +110,8 @@ class RevenueParticipantsCSVHelper
             'postal_code' => 'Postcode',
             'city' => 'Plaats',
             'country' => 'Land',
+            'period_start' => 'Begin periode',
+            'period_end' => 'Eind periode',
             'updated_at_date' => 'Laatste update op',
             'created_at_date' => 'Gemaakt op',
         ], $headers);

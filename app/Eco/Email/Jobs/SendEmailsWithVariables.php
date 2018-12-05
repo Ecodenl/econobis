@@ -12,6 +12,7 @@ namespace App\Eco\Email\Jobs;
 use App\Eco\Contact\Contact;
 use App\Eco\ContactGroup\ContactGroup;
 use App\Eco\Email\Email;
+use App\Eco\EmailAddress\EmailAddress;
 use App\Eco\User\User;
 use App\Helpers\Template\TemplateTableHelper;
 use App\Helpers\Template\TemplateVariableHelper;
@@ -65,14 +66,9 @@ class SendEmailsWithVariables
 
         foreach ($tos as $to) {
             if (is_numeric($to)) {
-                $contact = Contact::find($to);
-                $contact->load('primaryEmailAddress');
-                if($contact->primaryEmailAddress) {
-                    $emailsToContact[] = $contact;
-                }
-            } elseif (substr($to, 0, 6) === "@user_") {
-                $user_id = str_replace("@user_", "", $to);
-                $emailsToUser[] = User::find($user_id);
+                $emailAddress = EmailAddress::find($to);
+                $emailsToContact[] = $emailAddress;
+
             }elseif (substr($to, 0, 7) === "@group_") {
               //niets doen
             } else {
@@ -105,7 +101,7 @@ class SendEmailsWithVariables
         //Send mail to all contacts
         if(!empty($emailsToContact)){
             foreach($emailsToContact as $emailToContact) {
-                $mail = Mail::to($emailToContact->primaryEmailAddress->email);
+                $mail = Mail::to($emailToContact->email);
                 if (!$ccBccSent) {
                     ($email->cc != []) ? $mail->cc($email->cc) : null;
                     ($email->bcc != []) ? $mail->bcc($email->bcc) : null;
@@ -114,8 +110,8 @@ class SendEmailsWithVariables
                     $email->cc = [];
                     $email->bcc = [];
                 }
-                $htmlBodyWithContactVariables = TemplateTableHelper::replaceTemplateTables($email->html_body, $emailToContact);
-                $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables, 'contact' ,$emailToContact);
+                $htmlBodyWithContactVariables = TemplateTableHelper::replaceTemplateTables($email->html_body, $emailAddress->contact);
+                $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables, 'contact' ,$emailAddress->contact);
                 $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables, 'ik', Auth::user());
                 if($email->quotationRequest){
                     $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables, 'offerteverzoek', $email->quotationRequest);
@@ -128,34 +124,6 @@ class SendEmailsWithVariables
                     $mergedHtmlBody = $htmlBodyWithContactVariables;
                 }
 
-            }
-        }
-
-
-        //Send mail to all users
-        if(!empty($emailsToUser)){
-            foreach($emailsToUser as $emailToUser) {
-                $mail = Mail::to($emailToUser->email);
-                if (!$ccBccSent) {
-                    ($email->cc != []) ? $mail->cc($email->cc) : null;
-                    ($email->bcc != []) ? $mail->bcc($email->bcc) : null;
-                    $ccBccSent = true;
-                } else {
-                    $email->cc = [];
-                    $email->bcc = [];
-                }
-
-                $htmlBodyWithUserVariables = TemplateTableHelper::replaceTemplateTables($email->html_body, $emailToUser);
-                $htmlBodyWithUserVariables = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithUserVariables, 'gebruiker' ,$emailToUser);
-                $htmlBodyWithUserVariables = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithUserVariables, 'ik', Auth::user());
-                $htmlBodyWithUserVariables = TemplateVariableHelper::stripRemainingVariableTags($htmlBodyWithUserVariables);
-
-                $mail->send(new GenericMail($email, $htmlBodyWithUserVariables));
-                $amounfOfEmailsSend++;
-
-                if($amounfOfEmailsSend === 1){
-                    $mergedHtmlBody = $htmlBodyWithUserVariables;
-                }
             }
         }
 

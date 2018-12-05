@@ -317,28 +317,28 @@ class EmailController
     }
 
     public function peek(){
-        $contacts = Contact::select('id', 'full_name')->with('primaryEmailAddress')->get();
-        $users = User::select('id', 'email', 'first_name', 'last_name')->get();
+        $contacts = Contact::select('id', 'full_name')->with('emailAddresses')->get();
 
-        foreach($contacts as $contact){
-            if($contact->primaryEmailAddress) {
-                $people[] = [
-                    'id' => $contact->id,
-                    'name' => $contact->full_name . ' (' . $contact->primaryEmailAddress->email . ')' ,
-                    'email' => $contact->primaryEmailAddress->email
-                ];
+        foreach($contacts as $contact) {
+            foreach ($contact->emailAddresses as $emailAddress) {
+                if ($emailAddress->primary) {
+                    $people[] = [
+                        'id' => $emailAddress->id,
+                        'name' => $contact->full_name . ' (' . $emailAddress->email . ')',
+                        'email' => $emailAddress->email
+                    ];
+                }
+            }
+            foreach ($contact->emailAddresses as $emailAddress) {
+                if (!$emailAddress->primary) {
+                    $people[] = [
+                        'id' => $emailAddress->id,
+                        'name' => $contact->full_name . ' (' . $emailAddress->email . ')',
+                        'email' => $emailAddress->email
+                    ];
+                }
             }
         }
-
-        //Id met @ omdat een email daar niet mee mag beginnen
-        foreach($users as $user){
-            $people[] = [
-                'id' => '@user_' . $user->id,
-                'name' => $user->present()->fullName() . ' (' . $user->email . ')',
-                'email' => $user->email
-            ];
-        }
-
         return $people;
     }
 
@@ -476,14 +476,7 @@ class EmailController
         foreach ($sendVariations as $sendVariation){
             foreach ($data[$sendVariation] as $emailData) {
                 if (is_numeric($emailData)){
-                    $primaryEmail = Contact::find($emailData)->primaryEmailAddress()->value('email');
-                    if($primaryEmail){
-                        $emails[$sendVariation][] = $primaryEmail;
-                    }
-                }
-                else if(substr($emailData, 0, 6 ) === "@user_"){
-                    $user_id = str_replace("@user_", "", $emailData);
-                    $emails[$sendVariation][] =  User::find($user_id)->email;
+                    $emails[$sendVariation][] = EmailAddress::find($emailData)->email;
                 }
                 else if(substr($emailData, 0, 7 ) === "@group_"){
                     $groupId = str_replace("@group_", "", $emailData);

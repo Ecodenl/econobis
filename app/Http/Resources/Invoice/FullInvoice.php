@@ -40,6 +40,7 @@ class FullInvoice extends Resource
                 'paymentType' => FullEnumWithIdAndName::make($this->getPaymentType()),
                 'statusId' => $this->status_id,
                 'status' => FullEnumWithIdAndName::make($this->getStatus()),
+                'subStatus' => $this->sub_status,
 
                 'amountOpen' => $this->amount_open,
                 'datePaid' => $this->date_paid,

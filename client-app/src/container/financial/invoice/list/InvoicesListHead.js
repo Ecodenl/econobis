@@ -28,6 +28,7 @@ const InvoicesListHead = (props) => {
             <DataTableHeadTitle title={'Bedrag incl. BTW'} width={'10%'}/>
             <DataTableHeadTitleAndSort sortColumn={'paymentTypeId'} title={'Betaalwijze'} width={'10%'} setSorts={setSorts} />
             <DataTableHeadTitleAndSort sortColumn={'statusId'} title={'Status'} width={'10%'} setSorts={setSorts} />
+            <DataTableHeadTitle title={'Substatus'} width={'10%'}/>
             <DataTableHeadTitle title={'IBAN'} width={'10%'}/>
             <th width="10%" />
         </tr>

@@ -101,6 +101,7 @@ class InvoiceCSVHelper
             'order.contact.primaryEmailAddress.email' => 'E-mail primair',
             'number' => 'Factuurnummer',
             'status' => 'Status',
+            'sub_status' => 'Substatus',
             'subject' => 'Onderwerp',
             'date_invoice' => 'Factuurdatum',
             'emailed_to' => 'Verstuurd naar',

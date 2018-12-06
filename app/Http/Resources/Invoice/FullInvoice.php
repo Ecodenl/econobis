@@ -47,6 +47,7 @@ class FullInvoice extends Resource
                 'datePaymentDue' => $this->date_payment_due,
                 'dateSent' => $this->date_sent,
                 'emailedTo' => $this->emailed_to,
+                'sentToName' => $this->sent_to_name,
                 'dateCollection' => $this->date_collection,
                 'dateReminder1' => $this->date_reminder_1,
                 'dateReminder2' => $this->date_reminder_2,

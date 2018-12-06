@@ -75,6 +75,7 @@ class InvoiceCSVHelper
             if($invoice->payment_type_id === 'collection'){
                 $invoice->collection_iban = $invoice->iban;
                 $invoice->date_collection_formatted = $this->formatDate($invoice->date_collection);
+                $invoice->collection_iban_attn = $invoice->iban_attn;
             }
 
             if($invoice->date_sent){
@@ -101,9 +102,17 @@ class InvoiceCSVHelper
             'order.contact.primaryEmailAddress.email' => 'E-mail primair',
             'number' => 'Factuurnummer',
             'status' => 'Status',
+            'sub_status' => 'Substatus',
             'subject' => 'Onderwerp',
             'date_invoice' => 'Factuurdatum',
-            'emailed_to' => 'Verstuurd naar',
+            'emailed_to' => 'Verstuurd naar e-mail',
+            'sent_to_name' => 'Verstuurd naar',
+            'sent_to_contact_number' => 'Verstuurd naar contactnummer',
+            'sent_to_street' => 'Straat',
+            'sent_to_street_number' => 'Nummer',
+            'sent_to_addition' => 'Toevoeging',
+            'sent_to_postal_code' => 'Postcode',
+            'sent_to_country' => 'Land',
             'date_reminder_1' => 'Herinnering 1 verstuurd',
             'email_reminder_1' => 'E-mail herinnering 1',
             'date_reminder_2' => 'Herinnering 2 verstuurd',
@@ -119,6 +128,7 @@ class InvoiceCSVHelper
             'payment_type' => 'Betaalwijze',
             'date_collection_formatted' => 'Incassodatum',
             'collection_iban' => 'Ibannr',
+            'collection_iban_attn' => 'Iban t.n.v.',
         ], $headers);
             $headers = false;
         }

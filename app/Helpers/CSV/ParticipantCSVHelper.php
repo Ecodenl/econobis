@@ -91,6 +91,9 @@ class ParticipantCSVHelper
                 }
 
                 $this->csvExporter->beforeEach(function ($participant) {
+
+                    $participant->iban_contact = $participant->contact->iban;
+                    $participant->iban_attn_contact = $participant->contact->iban_attn;
                     // person/organisation fields
                     if ($participant->contact->type_id === 'person') {
                         $participant->title = $participant->contact->person->title;
@@ -141,6 +144,8 @@ class ParticipantCSVHelper
                         // Reformat when supplier starts with equal sign (example '=om')
                         $participant->energy_supplier_name
                             = $participant->contact->primaryContactEnergySupplier->energySupplier->name;
+                        $participant->energy_supplier_member_since
+                            = $this->formatDate($participant->contact->primaryContactEnergySupplier->member_since);
                     }
 
                     //reformat bools
@@ -206,6 +211,7 @@ class ParticipantCSVHelper
                     'phonenumber_2' => 'Telefoonnummer 2',
                     'phonenumber_3' => 'Telefoonnummer 3',
                     'energy_supplier_name' => 'Energieleverancier',
+                    'energy_supplier_member_since' => 'Energieleverancier klant sinds',
                     'contact.primaryContactEnergySupplier.es_number' => 'Klantnummer',
                     'contact.primaryContactEnergySupplier.ean_electricity' => 'EAN electra',
                     'contact.primaryContactEnergySupplier.ean_gas' => 'EAN gas',
@@ -225,6 +231,8 @@ class ParticipantCSVHelper
                     'power_kwh_consumption' => 'Jaarlijks verbruik',
                     'iban_payout' => 'Iban uitkeren',
                     'iban_attn' => 'Iban uitkeren t.n.v.',
+                    'iban_contact' => 'Iban contact',
+                    'iban_attn_contact' => 'Iban contact uitkeren t.n.v.',
                     'participantProductionProjectStatus.name' => 'Status',
                     'date_register' => 'Inschrijfdatum',
                     'date_end' => 'Einddatum',
@@ -258,4 +266,9 @@ class ParticipantCSVHelper
             }
         return Reader::BOM_UTF8 . $csv->getCsv();
         }
+
+    private function formatDate($date) {
+        $formatDate = $date ? new Carbon($date) : false;
+        return $formatDate ? $formatDate->format('d-m-Y') : '';
+    }
 }

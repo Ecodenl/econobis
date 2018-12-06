@@ -37,6 +37,7 @@ class QuotationRequestCSVHelper
                 'opportunity.intake.contact.person.title',
                 'opportunity.intake.campaign',
                 'opportunity.measureCategory',
+                'opportunity.measures',
                 'updatedBy',
                 'updatedBy',
 
@@ -47,6 +48,17 @@ class QuotationRequestCSVHelper
             $quotationRequest->date_recorded = $this->formatDate($quotationRequest->date_recorded);
             $quotationRequest->date_released = $this->formatDate($quotationRequest->date_released);
             $quotationRequest->date_valid = $this->formatDate($quotationRequest->date_valid);
+
+            $quotationRequest->measures = '';
+
+            $measures = [];
+            foreach ($quotationRequest->opportunity->measures as $measure){
+                array_push($measures, $measure->name);
+            }
+
+            if(count($measures) > 0){
+                $quotationRequest->measures = implode($measures, ', ');
+            }
 
             $quotationRequest->updated_by = $quotationRequest->updatedBy->present()->fullName();
             $quotationRequest->created_by = $quotationRequest->createdBy->present()->fullName();
@@ -95,6 +107,7 @@ class QuotationRequestCSVHelper
             'city' => 'Plaats',
             'country' => 'Land',
             'opportunity.measureCategory.name' => 'Maatregel categorie',
+            'measures' => 'Maatregelen specifiek',
             'opportunity.intake.campaign.name' => 'Campagne',
             'updated_by' => 'Laatste update door',
             'created_at_date' => 'Gemaakt op',

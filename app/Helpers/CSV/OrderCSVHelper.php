@@ -43,9 +43,9 @@ class OrderCSVHelper
             'contact.organisation',
             'contact.contactPerson.contact',
             'contact.contactPerson.contact.person.title',
-            'contact.primaryEmailAddress.country',
+            'contact.primaryEmailAddress',
             'contact.primaryphoneNumber',
-            'contact.primaryAddress',
+            'contact.primaryAddress.country',
             'orderProducts.product',
         ]);
 

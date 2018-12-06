@@ -40,6 +40,9 @@ class RevenueDistributionCSVHelper
             $distribution->created_at_date = $distribution->created_at->format('d-m-Y');
             $distribution->updated_at_date = $distribution->updated_at->format('d-m-Y');
 
+            $distribution->period_start = $this->formatDate($distribution->revenue->date_begin);
+            $distribution->period_end = $this->formatDate($distribution->revenue->date_end);
+
             $distribution->type = $distribution->contact->getType()->name;
 
             $address = $distribution->contact->primaryAddress;
@@ -86,6 +89,8 @@ class RevenueDistributionCSVHelper
                 'postal_code' => 'Postcode',
                 'city' => 'Plaats',
                 'country' => 'Land',
+                'period_start' => 'Begin periode',
+                'period_end' => 'Eind periode',
                 'updated_at_date' => 'Laatste update op',
                 'created_at_date' => 'Gemaakt op',
             ], $headers);

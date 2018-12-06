@@ -284,4 +284,34 @@ class Invoice extends Model
                 return $date;
         }
     }
+
+    public function getSubStatusAttribute(){
+        if ($this->status_id == 'sent' || 'exported') {
+            if (($this->status_id == 'exported' && $this->days_to_expire <= 10) || ($this->status_id == 'sent' && $this->payment_type_id == 'transfer' && $this->days_to_expire <= 0) && !$this->date_reminder_1) {
+                return "Te herinneren";
+            }
+
+            if ($this->date_reminder_1 && !$this->date_reminder_2 && !$this->date_reminder_3
+                && !$this->date_exhortation
+            ) {
+                return "Herinnering 1";
+            }
+            if ($this->date_reminder_2 && !$this->date_reminder_3
+                && !$this->date_exhortation
+            ) {
+                return "Herinnering 2";
+            }
+            if ($this->date_reminder_3
+                && !$this->date_exhortation
+            ) {
+                return "Herinnering 3";
+            }
+            if ($this->date_exhortation
+            ) {
+                return "Aanmaning";
+            }
+        }
+
+        return '';
+    }
 }

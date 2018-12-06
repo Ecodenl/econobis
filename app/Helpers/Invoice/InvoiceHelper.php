@@ -218,6 +218,18 @@ class InvoiceHelper
                 $invoice->document->name));
 
             $invoice->emailed_to = $contactInfo['email'];
+            $invoice->sent_to_name = $contactInfo['contactPerson'];
+
+            $primaryAddress =  $contactInfo['primaryAddress'];
+
+            if($primaryAddress){
+                $invoice->sent_to_street = $primaryAddress->street ? $primaryAddress->street : '';
+                $invoice->sent_to_street_number = $primaryAddress->number ? $primaryAddress->number : '';
+                $invoice->sent_to_addition = $primaryAddress->addition ? $primaryAddress->addition : '';
+                $invoice->sent_to_postal_code = $primaryAddress->postal_code ? $primaryAddress->postal_code : '';
+                $invoice->sent_to_country = $primaryAddress->country_id ? $primaryAddress->country->name : '';
+            }
+
             $invoice->save();
         }
 

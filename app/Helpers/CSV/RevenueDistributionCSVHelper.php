@@ -64,6 +64,9 @@ class RevenueDistributionCSVHelper
             }
 
             $distribution->date_payout = $this->formatDate($distribution->date_payout);
+
+            $distribution->payout_formatted = $this->formatFinancial($distribution->payout);
+            $distribution->kwh_return_formatted = $this->formatFinancial($distribution->kwh_return);
         });
 
 
@@ -72,12 +75,12 @@ class RevenueDistributionCSVHelper
                 'type' => 'Type',
                 'contact.full_name' => 'Naam',
                 'participations_amount' => 'Participaties',
-                'payout' => 'Uit te keren bedrag',
+                'payout_formatted' => 'Uit te keren bedrag',
                 'payout_type' => 'Uitkeren op',
                 'date_payout' => 'Datum uitkering',
                 'energy_supplier_name' => 'Energieleverancier',
                 'delivered_total' => 'Geleverd totaal',
-                'kwh_return' => 'Teruggave energiebelasting',
+                'kwh_return_formatted' => 'Teruggave energiebelasting',
                 'title.name' => 'Persoon titel',
                 'initials' => 'Persoon initialen',
                 'first_name' => 'Persoon voornaam',
@@ -103,5 +106,9 @@ class RevenueDistributionCSVHelper
     private function formatDate($date) {
         $formatDate = $date ? new Carbon($date) : false;
         return $formatDate ? $formatDate->format('d-m-Y') : '';
+    }
+
+    private function formatFinancial($amount){
+        return number_format($amount, 2, ',', '');
     }
 }

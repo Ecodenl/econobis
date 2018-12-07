@@ -58,6 +58,17 @@ class InvoiceObserver
             $invoice->iban =  $order->IBAN ? $order->IBAN : $order->contact->iban;
             $invoice->iban_attn =  $order->iban_attn ? $order->iban_attn : $order->contact->iban_attn;
             $invoice->sent_to_contact_number = $order->contact->number ? $order->contact->number : '';
+            $invoice->sent_to_name = $order->contact->full_name;
+
+            if($order->contact->primaryAddress){
+                $primaryAddress = $order->contact->primaryAddress;
+                $invoice->sent_to_street = $primaryAddress->street ? $primaryAddress->street : '';
+                $invoice->sent_to_street_number = $primaryAddress->number ? $primaryAddress->number : '';
+                $invoice->sent_to_addition = $primaryAddress->addition ? $primaryAddress->addition : '';
+                $invoice->sent_to_postal_code = $primaryAddress->postal_code ? $primaryAddress->postal_code : '';
+                $invoice->sent_to_country = $primaryAddress->country_id ? $primaryAddress->country->name : '';
+            }
+
             foreach ($invoice->order->orderProducts as $orderProduct){
                 if($orderProduct->date_last_invoice){
                     $dateLastInvoice = $order->addDurationToDate(Carbon::parse($orderProduct->date_last_invoice));

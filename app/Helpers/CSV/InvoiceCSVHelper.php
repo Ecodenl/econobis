@@ -148,6 +148,6 @@ class InvoiceCSVHelper
     }
 
     private function formatFinancial($amount){
-        return number_format($amount, 2, ',', '.');
+        return number_format($amount, 2, ',', '');
     }
 }

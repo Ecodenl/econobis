@@ -96,6 +96,10 @@ class OrderCSVHelper
             $order->status = $order->getStatus()->name;
             $order->btw = $order->total_price_incl_vat - $order->total_price_ex_vat;
 
+            $order->btw_formatted = $this->formatFinancial($order->btw);
+            $order->total_price_incl_vat = $this->formatFinancial($order->total_price_incl_vat);
+            $order->total_price_ex_vat = $this->formatFinancial($order->total_price_ex_vat);
+
             foreach ($order->orderProducts as $k => $orderProduct){
                 $orderProductName = 'order_product_' . $k;
 
@@ -124,9 +128,9 @@ class OrderCSVHelper
                     'product' => $orderProduct->product->name,
                     'description' => $orderProduct->product->invoice_text,
                     'amount' => $orderProduct->amount,
-                    'total' => $orderProduct->total_price_incl_vat_and_reduction,
+                    'total' => $this->formatFinancial($orderProduct->total_price_incl_vat_and_reduction),
                     'percentage_reduction' => $orderProduct->percentage_reduction,
-                    'amount_reduction' => $orderProduct->amount_reduction,
+                    'amount_reduction' => $this->formatFinancial($orderProduct->amount_reduction),
                     'date_start' => $orderProduct->date_start,
                     'date_end' => $orderProduct->date_end,
                     'period' => $period,
@@ -160,9 +164,9 @@ class OrderCSVHelper
             'subject' => 'Betreft',
             'po_number' => 'Opdrachtnummer klant',
             'invoice_text' => 'Opmerking',
-            'total_price_ex_vat' => 'Orderbedrag excl. btw',
-            'btw' => 'BTW',
-            'total_price_incl_vat' => 'Orderbedrag incl. btw',
+            'total_price_ex_vat_formatted' => 'Orderbedrag excl. btw',
+            'btw_formatted' => 'Orderbedrag BTW',
+            'total_price_incl_vat_formatted' => 'Orderbedrag incl. btw',
             'collectionFrequency' => 'Factuurfrequentie',
             'date_next_invoice' => 'Volgende factuur datum',
             'payment_type' => 'Betaalwijze',
@@ -199,5 +203,9 @@ class OrderCSVHelper
     private function formatDate($date) {
         $formatDate = $date ? new Carbon($date) : false;
         return $formatDate ? $formatDate->format('d-m-Y') : '';
+    }
+
+    private function formatFinancial($amount){
+        return number_format($amount, 2, ',', '');
     }
 }

@@ -59,6 +59,8 @@ class MailboxController extends Controller
         $mailbox = new Mailbox($data);
         $mailbox->save();
 
+        $mailbox->users()->attach(Auth::user());
+        
         //Create a new mailfetcher. This will check if the mailbox is valid and set it in the db.
         new MailFetcher($mailbox);
 

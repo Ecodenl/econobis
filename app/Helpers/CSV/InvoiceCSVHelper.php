@@ -84,9 +84,15 @@ class InvoiceCSVHelper
             else{
                 $invoice->date_invoice = $this->formatDate($invoice->date_requested);
             }
+
+            //afronden
+            $invoice->total_price_incl_vat_and_reduction_formatted = $this->formatFinancial($invoice->total_price_incl_vat_and_reduction);
+            $invoice->total_price_ex_vat_incl_reduction_formatted = $this->formatFinancial($invoice->total_price_ex_vat_incl_reduction);
+            $invoice->total_vat_formatted = $this->formatFinancial($invoice->total_vat);
         });
 
         $csv = $this->csvExporter->build($chunk, [
+            'sent_to_contact_number' => 'Contactnummer',
             'organisation' => 'Organisatie',
             'initials' => 'Initialen',
             'first_name' => 'Voornaam',
@@ -106,13 +112,12 @@ class InvoiceCSVHelper
             'subject' => 'Onderwerp',
             'date_invoice' => 'Factuurdatum',
             'emailed_to' => 'Verstuurd naar e-mail',
-            'sent_to_name' => 'Verstuurd naar',
-            'sent_to_contact_number' => 'Verstuurd naar contactnummer',
-            'sent_to_street' => 'Straat',
-            'sent_to_street_number' => 'Nummer',
-            'sent_to_addition' => 'Toevoeging',
-            'sent_to_postal_code' => 'Postcode',
-            'sent_to_country' => 'Land',
+            'sent_to_name' => 'Factuur naam',
+            'sent_to_street' => 'Factuur straat',
+            'sent_to_street_number' => 'Factuur straat nummer',
+            'sent_to_addition' => 'Factuur toevoeging',
+            'sent_to_postal_code' => 'Factuur postcode',
+            'sent_to_country' => 'Factuur land',
             'date_reminder_1' => 'Herinnering 1 verstuurd',
             'email_reminder_1' => 'E-mail herinnering 1',
             'date_reminder_2' => 'Herinnering 2 verstuurd',
@@ -123,8 +128,9 @@ class InvoiceCSVHelper
             'email_exhortation' => 'E-mail aanmaning',
             'days_to_expire' => 'Verloopt over',
             'days_last_reminder' => 'Laatste herinnering',
-            'total_price_incl_vat_and_reduction' => 'Factuurbedrag bruto',
-            'total_price_ex_vat_incl_reduction' => 'Factuurbedrag netto',
+            'total_price_ex_vat_incl_reduction_formatted' => 'Factuurbedrag netto',
+            'total_vat_formatted' => 'Factuurbedrag BTW',
+            'total_price_incl_vat_and_reduction_formatted' => 'Factuurbedrag bruto',
             'payment_type' => 'Betaalwijze',
             'date_collection_formatted' => 'Incassodatum',
             'collection_iban' => 'Ibannr',
@@ -139,5 +145,9 @@ class InvoiceCSVHelper
     private function formatDate($date) {
         $formatDate = $date ? new Carbon($date) : false;
         return $formatDate ? $formatDate->format('d-m-Y') : '';
+    }
+
+    private function formatFinancial($amount){
+        return number_format($amount, 2, ',', '.');
     }
 }

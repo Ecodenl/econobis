@@ -38,6 +38,7 @@ const InputTinyMCE = props => {
                         toolbar: 'undo redo | formatselect fontselect | bold italic forecolor | alignleft aligncenter alignright | bullist numlist outdent indent | table | link image | code',
                         height: "300",
                         browser_spellcheck : true,
+                        font_formats: 'Courier New=courier new;Tahoma=tahoma;Times New Roman=times new roman;Verdana=verdana;'
                     }}
                     onChange={onChangeAction}
                 />

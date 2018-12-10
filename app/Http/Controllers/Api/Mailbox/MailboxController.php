@@ -12,6 +12,7 @@ namespace App\Http\Controllers\Api\Mailbox;
 use App\Eco\Email\Email;
 use App\Eco\Mailbox\ImapEncryptionType;
 use App\Eco\Mailbox\Mailbox;
+use App\Eco\Mailbox\MailboxIgnore;
 use App\Eco\Mailbox\MailFetcher;
 use App\Eco\Mailbox\MailValidator;
 use App\Eco\Mailbox\SmtpEncryptionType;
@@ -21,6 +22,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\Email\GridEmailTemplate;
 use App\Http\Resources\GenericResource;
 use App\Http\Resources\Mailbox\FullMailbox;
+use App\Http\Resources\Mailbox\FullMailboxIgnore;
 use App\Http\Resources\Mailbox\LoggedInEmailPeek;
 use App\Http\Resources\User\UserPeek;
 use App\Rules\EnumExists;
@@ -60,7 +62,7 @@ class MailboxController extends Controller
         $mailbox->save();
 
         $mailbox->users()->attach(Auth::user());
-        
+
         //Create a new mailfetcher. This will check if the mailbox is valid and set it in the db.
         new MailFetcher($mailbox);
 
@@ -71,7 +73,7 @@ class MailboxController extends Controller
     {
         $this->authorize('view', Mailbox::class);
 
-        $mailbox->load('users');
+        $mailbox->load(['users', 'mailboxIgnores']);
         return FullMailbox::make($mailbox);
     }
 
@@ -162,6 +164,29 @@ class MailboxController extends Controller
             $mailFetcher = new MailFetcher($mailbox);
             $mailFetcher->fetchNew();
         }
+    }
+
+    public function storeIgnore(RequestInput $input)
+    {
+        $this->authorize('create', Mailbox::class);
+
+        $data = $input
+            ->integer('mailboxId')->validate('required|exists:mailboxes,id')->alias('mailbox_id')->next()
+            ->string('value')->validate('required')->next()
+            ->string('typeId')->validate('required')->alias('type_id')->next()
+            ->get();
+
+        $mailboxIgnore = new MailboxIgnore($data);
+        $mailboxIgnore->save();
+
+        return FullMailboxIgnore::make($mailboxIgnore);
+    }
+
+    public function deleteIgnore(MailboxIgnore $mailboxIgnore)
+    {
+        $this->authorize('create', Mailbox::class);
+
+        $mailboxIgnore->delete();
     }
 
 }

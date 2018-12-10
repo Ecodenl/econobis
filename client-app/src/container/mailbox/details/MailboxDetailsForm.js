@@ -7,6 +7,7 @@ import MailboxDetailsFormGeneral from './general/MailboxDetailsFormGeneral';
 import MailboxDetailsUsers from './mailbox-users/MailboxDetailsUsers';
 import Panel from "../../../components/panel/Panel";
 import PanelHeader from "../../../components/panel/PanelHeader";
+import MailboxDetailsIgnores from "./mailbox-ignores/MailboxDetailsIgnores";
 
 class MailboxDetailsForm extends Component {
     constructor(props){
@@ -28,6 +29,7 @@ class MailboxDetailsForm extends Component {
                     }
                     <MailboxDetailsFormGeneral />
                     <MailboxDetailsUsers />
+                    <MailboxDetailsIgnores />
                 </div>
         );
     }

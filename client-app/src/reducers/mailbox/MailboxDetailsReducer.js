@@ -25,6 +25,21 @@ export default function (state= [], action) {
                 ...state,
                 users: state.users.filter((user) => user.id !== action.userId),
             };
+        case 'NEW_MAILBOX_IGNORE':
+            return {
+                ...state,
+                mailboxIgnores: [
+                    ...state.mailboxIgnores,
+                    {
+                        ...action.ignore,
+                    }
+                ]
+            };
+        case 'DELETE_MAILBOX_IGNORE_SUCCESS':
+            return {
+                ...state,
+                mailboxIgnores: state.mailboxIgnores.filter((ignore) => ignore.id !== action.ignoreId),
+            };
         default:
             return state;
     }

@@ -15,6 +15,7 @@ use App\Eco\EnergySupplier\ContactEnergySupplierType;
 use App\Eco\EnergySupplier\EnergySupplier;
 use App\Eco\HousingFile\EnergyLabelStatus;
 use App\Eco\HousingFile\RoofType;
+use App\Eco\Mailbox\MailboxIgnoreType;
 use App\Eco\Measure\MeasureCategory;
 use App\Eco\Opportunity\OpportunityStatus;
 use App\Eco\Order\OrderCollectionFrequency;
@@ -179,6 +180,7 @@ class SystemData extends Resource
             'contactGroupTypes' => FullEnumWithIdAndName::collection(ContactGroupType::collection()),
             'usesMailgun' =>  config('mail.driver') === 'mailgun' ? true : false,
             'mailgunDomain' => array((object)["id"=> config('mail.mailgun_domain'), "name" => config('mail.mailgun_domain')]),
+            'mailboxIgnoreTypes' => FullEnumWithIdAndName::collection(MailboxIgnoreType::collection()),
         ];
     }
 }

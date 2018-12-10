@@ -49,7 +49,7 @@ class CreateAllInvoices implements ShouldQueue
         Auth::setUser(User::find($this->userId));
 
         foreach ($this->orders as $order){
-            if($order->total_price_incl_vat >= 0 && $order->can_create_invoice) {
+            if($order->can_create_invoice) {
                 $invoice = new Invoice();
                 $invoice->status_id = 'to-send';
                 $invoice->date_requested = $order->date_next_invoice;

@@ -25,6 +25,8 @@ Route::namespace('Api')
     ->middleware('auth:api')
     ->group(function () {
 
+        Route::get('/jobs', 'Job\JobController@getLastJobs');
+
         Route::get('/me', 'User\UserController@me');
 
         Route::get('/system-data', 'SystemData\SystemDataController@get');

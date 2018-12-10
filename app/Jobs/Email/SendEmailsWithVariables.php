@@ -12,6 +12,7 @@ namespace App\Jobs\Email;
 use App\Eco\Email\Email;
 use App\Eco\EmailAddress\EmailAddress;
 use App\Eco\Jobs\JobsLog;
+use App\Eco\User\User;
 use App\Helpers\Template\TemplateTableHelper;
 use App\Helpers\Template\TemplateVariableHelper;
 use App\Http\Resources\Email\Templates\GenericMail;
@@ -52,6 +53,9 @@ class SendEmailsWithVariables implements ShouldQueue
     public function handle()
     {
         $this->validateRequest();
+
+        //user voor observer
+        Auth::setUser(User::find($this->userId));
 
         $config = Config::get('mail');
 
@@ -207,6 +211,8 @@ class SendEmailsWithVariables implements ShouldQueue
         $jobLog->value = 'E-mail versturen mislukt: ' . $exception->getMessage();
         $jobLog->user_id = $this->userId;
         $jobLog->save();
+
+        Log::error('E-mail maken mislukt:' . $exception->getMessage());
     }
 
     private function validateRequest()

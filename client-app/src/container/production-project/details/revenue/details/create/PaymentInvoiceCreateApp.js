@@ -50,23 +50,22 @@ class PaymentInvoiceCreateApp extends Component {
         ProductionProjectRevenueAPI.createPaymentInvoices(this.props.reportPreview.templateId, this.props.reportPreview.emailTemplateId, this.props.reportPreview.subject, this.props.reportPreview.distributionIds, createReport, createInvoice).then((payload) => {
             document.body.style.cursor='default';
             if (createInvoice) {
-                fileDownload(payload.data, payload.headers['x-filename']);
                 if (createReport) {
                     this.setState({
-                        successMessage: 'De rapporten zijn verzonden en de facturen gemaakt.',
-                        redirect: `/financieel/${payload.headers.administrationid}/uitkering-facturen/verzonden`,
+                        successMessage: 'De rapporten worden verzonden en de facturen gemaakt.',
+                        redirect: `/financieel/${payload.data}/uitkering-facturen/verzonden`,
                     });
                 }
                 else {
                     this.setState({
-                        successMessage: 'De facturen zijn gemaakt.',
-                        redirect: `/financieel/${payload.headers.administrationid}/uitkering-facturen/verzonden`,
+                        successMessage: 'De facturen worden gemaakt.',
+                        redirect: `/financieel/${payload.data}/uitkering-facturen/verzonden`,
                     });
                 }
             }
             else {
                 this.setState({
-                    successMessage: 'De rapporten zijn verzonden.',
+                    successMessage: 'De rapporten worden verzonden.',
                 });
             }
         });

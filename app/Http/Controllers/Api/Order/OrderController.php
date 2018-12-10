@@ -25,6 +25,7 @@ use App\Http\Resources\Order\FullOrder;
 use App\Http\Resources\Order\FullOrderProduct;
 use App\Http\Resources\Order\GridOrder;
 use App\Http\Resources\Order\OrderPeek;
+use App\Jobs\Order\CreateAllInvoices;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -402,26 +403,14 @@ class OrderController extends ApiController
 
     public function createAll(Request $request)
     {
-        set_time_limit(30);
+        set_time_limit(0);
         $this->authorize('manage', Order::class);
 
         $orderIds = $request->input('orderIds');
 
-
         $orders = Order::whereIn('id', $orderIds)->get();
 
-        foreach ($orders as $order){
-            if($order->total_price_incl_vat >= 0 && $order->can_create_invoice) {
-                $invoice = new Invoice();
-                $invoice->status_id = 'to-send';
-                $invoice->date_requested = $order->date_next_invoice;
-                $invoice->order_id = $order->id;
-                $invoice->collection_frequency_id = $order->collection_frequency_id;
-                $invoice->save();
-
-                InvoiceHelper::saveInvoiceProducts($invoice, $order);
-            }
-        }
+        CreateAllInvoices::dispatch($orders, Auth::id());
     }
 
     public function getEmailPreview(Order $order){

@@ -6,35 +6,47 @@
  * Time: 16:06
  */
 
-namespace App\Eco\Email\Jobs;
+namespace App\Jobs\Email;
 
 
-use App\Eco\Contact\Contact;
-use App\Eco\ContactGroup\ContactGroup;
 use App\Eco\Email\Email;
 use App\Eco\EmailAddress\EmailAddress;
-use App\Eco\User\User;
+use App\Eco\Jobs\JobsLog;
 use App\Helpers\Template\TemplateTableHelper;
 use App\Helpers\Template\TemplateVariableHelper;
 use App\Http\Resources\Email\Templates\GenericMail;
 use Carbon\Carbon;
 use Config;
+use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Mail;
 
-class SendEmailsWithVariables
+class SendEmailsWithVariables implements ShouldQueue
 {
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     /**
      * @var Email
      */
     private $email;
+    private $tos;
+    private $userId;
 
-    public function __construct(Email $email, $tos)
+    public function __construct(Email $email, $tos, $userId)
     {
         $this->email = $email;
         $this->tos = $tos;
+        $this->userId = $userId;
+
+        $jobLog = new JobsLog();
+        $jobLog->value = 'Start e-mail versturen';
+        $jobLog->user_id = $userId;
+        $jobLog->save();
     }
 
     public function handle()
@@ -44,6 +56,7 @@ class SendEmailsWithVariables
         $config = Config::get('mail');
 
         $email = $this->email;
+
         $mailbox = $email->mailbox;
 
         if(config('mail.driver') !== 'mailgun') {
@@ -181,6 +194,19 @@ class SendEmailsWithVariables
         $email->date_sent = new Carbon();
         $email->folder = 'sent';
         $email->save();
+
+        $jobLog = new JobsLog();
+        $jobLog->value = 'E-mails verstuurd';
+        $jobLog->user_id = $this->userId;
+        $jobLog->save();
+    }
+
+    public function failed(\Exception $exception)
+    {
+        $jobLog = new JobsLog();
+        $jobLog->value = 'E-mail versturen mislukt: ' . $exception->getMessage();
+        $jobLog->user_id = $this->userId;
+        $jobLog->save();
     }
 
     private function validateRequest()

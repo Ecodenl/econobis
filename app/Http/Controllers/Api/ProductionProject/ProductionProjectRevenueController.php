@@ -323,6 +323,9 @@ class ProductionProjectRevenueController extends ApiController
         $energySupplierHtml
             = TemplateVariableHelper::replaceTemplateVariables($energySupplierHtml,
             'ik', $user);
+        $energySupplierHtml
+            = TemplateVariableHelper::replaceTemplateVariables($energySupplierHtml,
+            'administratie', $productionProject->administration);
 
         $energySupplierHtml
             = TemplateVariableHelper::stripRemainingVariableTags($energySupplierHtml);

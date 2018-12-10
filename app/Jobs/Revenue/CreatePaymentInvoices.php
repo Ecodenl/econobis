@@ -53,7 +53,7 @@ class CreatePaymentInvoices implements ShouldQueue
         $this->userId = $userId;
 
         $jobLog = new JobsLog();
-        $jobLog->value = 'Start uitkering facturen';
+        $jobLog->value = 'Start uitkering facturen.';
         $jobLog->user_id = $userId;
         $jobLog->save();
     }
@@ -88,7 +88,7 @@ class CreatePaymentInvoices implements ShouldQueue
                 $paymentInvoiceController->generateSepaFile(collect($createdInvoices));
             } else {
                 $jobLog = new JobsLog();
-                $jobLog->value = 'Geen uitkering facturen gemaakt';
+                $jobLog->value = 'Geen uitkering facturen gemaakt.';
                 $jobLog->user_id = $this->userId;
                 $jobLog->save();
             }
@@ -102,7 +102,7 @@ class CreatePaymentInvoices implements ShouldQueue
         }
 
         $jobLog = new JobsLog();
-        $jobLog->value = 'Uitkering facturen verwerkt';
+        $jobLog->value = 'Uitkering facturen verwerkt.';
         $jobLog->user_id = $this->userId;
         $jobLog->save();
     }
@@ -110,7 +110,7 @@ class CreatePaymentInvoices implements ShouldQueue
     public function failed(\Exception $exception)
     {
         $jobLog = new JobsLog();
-        $jobLog->value = 'Uitkering facturen mislukt';
+        $jobLog->value = 'Uitkering facturen mislukt.';
         $jobLog->user_id = $this->userId;
         $jobLog->save();
 

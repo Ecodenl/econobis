@@ -38,7 +38,7 @@ class CreateAllInvoices implements ShouldQueue
         $this->userId = $userId;
 
         $jobLog = new JobsLog();
-        $jobLog->value = 'Start alle facturen aanmaken';
+        $jobLog->value = 'Start alle facturen aanmaken.';
         $jobLog->user_id = $userId;
         $jobLog->save();
     }
@@ -62,7 +62,7 @@ class CreateAllInvoices implements ShouldQueue
         }
 
         $jobLog = new JobsLog();
-        $jobLog->value = 'Alle facturen aangemaakt';
+        $jobLog->value = 'Alle facturen aangemaakt.';
         $jobLog->user_id = $this->userId;
         $jobLog->save();
     }
@@ -70,7 +70,7 @@ class CreateAllInvoices implements ShouldQueue
     public function failed(\Exception $exception)
     {
         $jobLog = new JobsLog();
-        $jobLog->value = 'Facturen maken mislukt';
+        $jobLog->value = 'Facturen maken mislukt.';
         $jobLog->user_id = $this->userId;
         $jobLog->save();
 

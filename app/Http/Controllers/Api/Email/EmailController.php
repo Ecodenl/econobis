@@ -249,6 +249,7 @@ class EmailController
 
     public function send(Mailbox $mailbox, Request $request)
     {
+        set_time_limit(0);
             $sanitizedData = $this->getEmailData($request);
 
             //add basic html tags for new emails
@@ -390,6 +391,7 @@ class EmailController
     }
 
     public function sendConcept(Email $email, Request $request){
+        set_time_limit(0);
         $email = $this->updateConcept($email, $request);
 
         //Create relations with contact if needed

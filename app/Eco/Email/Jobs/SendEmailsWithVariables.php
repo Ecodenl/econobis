@@ -20,6 +20,7 @@ use App\Http\Resources\Email\Templates\GenericMail;
 use Carbon\Carbon;
 use Config;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Mail;
 
 class SendEmailsWithVariables
@@ -60,7 +61,6 @@ class SendEmailsWithVariables
 
         //First see if the to's are contact, user or created option
         $emailsToContact = [];
-        $emailsToUser = [];
         $emailsToEmailAddress = [];
         $tos = $this->tos;
 
@@ -88,14 +88,22 @@ class SendEmailsWithVariables
             ($email->bcc != []) ? $mail->bcc($email->bcc) : null;
             $htmlBodyWithVariables = TemplateVariableHelper::replaceTemplateVariables($email->html_body, 'ik', Auth::user());
             $htmlBodyWithVariables = TemplateVariableHelper::stripRemainingVariableTags($htmlBodyWithVariables);
-            $mail->send(new GenericMail($email, $htmlBodyWithVariables));
-            $amounfOfEmailsSend++;
 
-            if($amounfOfEmailsSend === 1){
-                $mergedHtmlBody = $htmlBodyWithVariables;
+            try {
+                $mail->send(new GenericMail($email, $htmlBodyWithVariables));
+                $amounfOfEmailsSend++;
+
+                if($amounfOfEmailsSend === 1){
+                    $mergedHtmlBody = $htmlBodyWithVariables;
+                }
+
+                $ccBccSent = true;
+            }
+            catch(\Exception $e){
+                Log::error('Mail naar e-mailadres kon niet worden verzonden');
+                Log::error($e->getMessage());
             }
 
-            $ccBccSent = true;
         }
 
         //Send mail to all contacts
@@ -117,11 +125,17 @@ class SendEmailsWithVariables
                     $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables, 'offerteverzoek', $email->quotationRequest);
                 }
                 $htmlBodyWithContactVariables = TemplateVariableHelper::stripRemainingVariableTags($htmlBodyWithContactVariables);
+                try {
                 $mail->send(new GenericMail($email, $htmlBodyWithContactVariables));
                 $amounfOfEmailsSend++;
 
                 if($amounfOfEmailsSend === 1){
                     $mergedHtmlBody = $htmlBodyWithContactVariables;
+                }
+                }
+                catch(\Exception $e){
+                    Log::error('Mail naar contact kon niet worden verzonden');
+                    Log::error($e->getMessage());
                 }
 
             }
@@ -144,11 +158,17 @@ class SendEmailsWithVariables
                 $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables, 'contact' , $emailAddress->contact);
                 $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables, 'ik', Auth::user());
                 $htmlBodyWithContactVariables = TemplateVariableHelper::stripRemainingVariableTags($htmlBodyWithContactVariables);
+                try {
                 $mail->send(new GenericMail($email, $htmlBodyWithContactVariables));
                 $amounfOfEmailsSend++;
 
                 if($amounfOfEmailsSend === 1){
                     $mergedHtmlBody = $htmlBodyWithContactVariables;
+                }
+                }
+                catch(\Exception $e){
+                    Log::error('Mail naar groep e-mailadres kon niet worden verzonden');
+                    Log::error($e->getMessage());
                 }
 
             }

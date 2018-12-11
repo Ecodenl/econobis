@@ -533,7 +533,7 @@ class EmailController
         $data['bcc'] = json_decode($data['bcc']);
 
         //to, cc, bcc example data:
-        //1,2, fren.dehaan@xaris.nl, @user_1, @user_2, 3, rob.rollenberg@xaris.nl
+        //1,2, fren.dehaan@xaris.nl, 3, rob.rollenberg@xaris.nl
 
         $sendVariations = ['to'];
         if ($data['cc'] != '') {
@@ -546,7 +546,8 @@ class EmailController
         foreach ($sendVariations as $sendVariation) {
             foreach ($data[$sendVariation] as $emailData) {
                 if (is_numeric($emailData)) {
-                    array_push($contactIds, $emailData);
+                    $contactId = EmailAddress::find($emailData)->contact_id;
+                    array_push($contactIds, $contactId);
                 }
             }
         }

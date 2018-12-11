@@ -66,7 +66,7 @@ class ContactDetailsFormOrganisationEdit extends Component {
         let errors = {};
         let hasErrors = false;
 
-        if(!validator.isEmpty(organisation.iban + '')){
+        if(organisation.iban && !validator.isEmpty(organisation.iban + '')){
             if (!ibantools.isValidIBAN(organisation.iban)) {
                 errors.iban = true;
                 hasErrors = true;

@@ -1,7 +1,5 @@
 import axios from 'axios';
-import {hashHistory} from "react-router";
 
-const URL_API = process.env.URL_API;
 const AUTH_KEY = {
     grant_type: process.env.GRANT_TYPE,
     client_id: process.env.CLIENT_ID,

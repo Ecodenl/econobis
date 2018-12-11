@@ -1,6 +1,5 @@
 import axios from 'axios';
 
-const URL_API = process.env.URL_API;
 const URL_CONTACT_ENERGY_SUPPLIER = `${URL_API}/api/contact-energy-supplier`;
 
 export default {

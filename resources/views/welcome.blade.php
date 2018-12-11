@@ -10,6 +10,12 @@
 </head>
 <body>
 <script type="text/javascript" src="./js/polyfill.js"></script>
+
+<script type="text/javascript">
+    // Set some global JS variables
+    var URL_API ="{{ env('URL_API') }}"
+</script>
+
 <div id="root"></div>
-<script type="text/javascript" src="./js/vendors~bundle.33da30442147b561417f.js"></script><script type="text/javascript" src="./js/bundle.fd807026d6b5242ae1f8.js"></script></body>
+<script type="text/javascript" src="./js/vendors~bundle.67e26cfe97df259e6c02.js"></script><script type="text/javascript" src="./js/bundle.7a60480863dea2e51fca.js"></script></body>
 </html>

@@ -1,8 +1,5 @@
 import axios from 'axios';
-import {clearError} from "../../actions/general/ErrorActions";
-import {connect} from "react-redux";
 
-const URL_API = process.env.URL_API;
 const URL_DOCUMENT = `${URL_API}/api/document`;
 
 export default {

@@ -1,7 +1,5 @@
 import axios from 'axios';
 
-const URL_API = process.env.URL_API;
-
 export default {
     fetchQuotationRequests: ({ filters, sorts, pagination }) => {
         const requestUrl = `${URL_API}/api/quotation-request/grid`;

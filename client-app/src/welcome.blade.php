@@ -10,6 +10,12 @@
 </head>
 <body>
 <script type="text/javascript" src="./js/polyfill.js"></script>
+
+<script type="text/javascript">
+    // Set some global JS variables
+    var URL_API ="{{ env('URL_API') }}"
+</script>
+
 <div id="root"></div>
 </body>
 </html>

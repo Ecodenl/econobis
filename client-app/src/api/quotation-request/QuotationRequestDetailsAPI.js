@@ -1,6 +1,5 @@
 import axios from 'axios';
 
-const URL_API = process.env.URL_API;
 const URL_QUOTATION_REQUEST = `${URL_API}/api/quotation-request`;
 
 export default {

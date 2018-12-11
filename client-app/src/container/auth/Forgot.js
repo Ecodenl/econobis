@@ -15,7 +15,6 @@ class Forgot extends Component{
     onSubmit(e){
         e.preventDefault();
         const {email} = this.state;
-        const URL_API = process.env.URL_API;
 
         axios.post(`${URL_API}/api/password/email`, {
             email,

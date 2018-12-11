@@ -15,7 +15,6 @@ class ChangePassword extends Component {
     confirmAction = () => {
 
         const email = this.props.email;
-        const URL_API = process.env.URL_API;
 
         axios.post(`${URL_API}/api/password/email`, {
             email,

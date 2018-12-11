@@ -3,13 +3,11 @@ import axios from 'axios';
 import {hashHistory} from "react-router";
 import passwordValidator from "../../helpers/PasswordValidator";
 
-const BASE_URL = process.env.URL_API;
-
 class Reset extends Component{
 
  	constructor(props){
         super(props);
-        console.log(props.params);
+
         this.state = {
         	token: props.params.token,
             email : props.params.email,
@@ -22,7 +20,7 @@ class Reset extends Component{
         e.preventDefault();
         const {token, email, password, password_confirmation} = this.state;
 
-        const url = BASE_URL+'/api/password/reset' ;
+        const url = `${URL_API}/api/password/reset`;
         if(!passwordValidator(password)){
             this.setState({passwordError: true});
         }

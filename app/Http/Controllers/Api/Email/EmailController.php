@@ -13,11 +13,11 @@ use App\Eco\Contact\Contact;
 use App\Eco\ContactGroup\ContactGroup;
 use App\Eco\Email\Email;
 use App\Eco\Email\EmailAttachment;
-use App\Eco\Email\Jobs\SendEmailsWithVariables;
-use App\Eco\Email\Jobs\StoreConceptEmail;
 use App\Eco\EmailAddress\EmailAddress;
+use App\Eco\Jobs\JobsLog;
+use App\Jobs\Email\SendEmailsWithVariables;
+use App\Eco\Email\Jobs\StoreConceptEmail;
 use App\Eco\Mailbox\Mailbox;
-use App\Eco\User\User;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\RequestQueries\Email\Grid\RequestQuery;
 use App\Http\Resources\Email\FullEmail;
@@ -249,6 +249,7 @@ class EmailController
 
     public function send(Mailbox $mailbox, Request $request)
     {
+        set_time_limit(0);
             $sanitizedData = $this->getEmailData($request);
 
             //add basic html tags for new emails
@@ -298,7 +299,7 @@ class EmailController
             }
         }
 
-            (new SendEmailsWithVariables($email, json_decode($request['to'])))->handle();
+        SendEmailsWithVariables::dispatch($email, json_decode($request['to']), Auth::id());
     }
 
     public function storeConcept(Mailbox $mailbox, Request $request)
@@ -390,6 +391,7 @@ class EmailController
     }
 
     public function sendConcept(Email $email, Request $request){
+        set_time_limit(0);
         $email = $this->updateConcept($email, $request);
 
         //Create relations with contact if needed
@@ -431,7 +433,7 @@ class EmailController
             }
         }
 
-        (new SendEmailsWithVariables($email, json_decode($request['to'])))->handle();
+        SendEmailsWithVariables::dispatch($email, json_decode($request['to']), Auth::id());
         
         return FullEmail::make($email);
     }
@@ -453,7 +455,7 @@ class EmailController
         $data['bcc'] = json_decode($data['bcc']);
 
         //to, cc, bcc example data:
-        //1,2, fren.dehaan@xaris.nl, @user_1, @user_2, 3, rob.rollenberg@xaris.nl
+        //1,2, fren.dehaan@xaris.nl, @group_1, 3, rob.rollenberg@xaris.nl
 
         $emails = [];
         $groupId = null;

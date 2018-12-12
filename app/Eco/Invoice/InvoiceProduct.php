@@ -50,9 +50,6 @@ class InvoiceProduct extends Model
             * $price);
 
         if ($this->percentage_reduction) {
-            if ($this->percentage_reduction >= 100) {
-                return 0;
-            }
             $price = ($price * ((100 - $this->percentage_reduction)
                     / 100));
         }
@@ -77,9 +74,6 @@ class InvoiceProduct extends Model
             * $price);
 
         if ($this->percentage_reduction) {
-            if ($this->percentage_reduction >= 100) {
-                return 0;
-            }
             $price = ($price * ((100 - $this->percentage_reduction)
                     / 100));
         }
@@ -107,9 +101,6 @@ class InvoiceProduct extends Model
             * $price);
 
         if ($this->percentage_reduction) {
-            if ($this->percentage_reduction >= 100) {
-                return 0;
-            }
             $price = ($price * ((100 - $this->percentage_reduction)
                     / 100));
         }

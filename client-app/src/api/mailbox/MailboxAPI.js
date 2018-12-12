@@ -80,4 +80,28 @@ export default {
 
         return axios.get(requestUrl);
     },
+
+    newIgnore: (ignore) => {
+        const requestUrl = `${URL_MAILBOX}/ignore`;;
+        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
+        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
+
+        return axios.post(requestUrl, ignore);
+    },
+
+    updateIgnore: (ignore) => {
+        const requestUrl = `${URL_MAILBOX}/update-ignore/${ignore.id}`;
+        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
+        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
+
+        return axios.post(requestUrl, ignore);
+    },
+
+    deleteIgnore: (ignoreId) => {
+        const requestUrl = `${URL_MAILBOX}/delete-ignore/${ignoreId}`;
+        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
+        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
+
+        return axios.post(requestUrl);
+    },
 };

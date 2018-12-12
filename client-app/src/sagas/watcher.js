@@ -18,7 +18,7 @@ import { fetchDocumentDetailsSaga, deleteDocumentSaga } from './document/Documen
 import { fetchDocumentTemplatesSaga, fetchDocumentTemplateSaga, deleteDocumentTemplateSaga } from './document-template/DocumentTemplatesSaga';
 import { fetchEmailsSaga, fetchEmailSaga } from './email/EmailsSaga';
 import { fetchEmailTemplatesSaga, fetchEmailTemplateSaga, deleteEmailTemplateSaga } from './email-template/EmailTemplatesSaga';
-import { fetchMailboxDetailsSaga, deleteMailboxSaga, deleteMailboxUserSaga } from './mailbox/MailboxDetailsSaga';
+import { fetchMailboxDetailsSaga, deleteMailboxSaga, deleteMailboxUserSaga, deleteMailboxIgnoreSaga } from './mailbox/MailboxDetailsSaga';
 import { fetchMailboxesSaga } from './mailbox/MailboxesSaga';
 import { fetchMeasuresSaga } from './measure/MeasuresSaga';
 import { fetchMeasureSaga } from './measure/MeasureDetailsSaga';
@@ -136,6 +136,7 @@ export default function* watchSagas() {
     yield takeLatest('FETCH_MAILBOX_DETAILS', fetchMailboxDetailsSaga);
     yield takeLatest('DELETE_MAILBOX', deleteMailboxSaga);
     yield takeLatest('DELETE_MAILBOX_USER', deleteMailboxUserSaga);
+    yield takeLatest('DELETE_MAILBOX_IGNORE', deleteMailboxIgnoreSaga);
     // Measure
     yield takeLatest('FETCH_MEASURES', fetchMeasuresSaga);
     yield takeLatest('FETCH_MEASURE', fetchMeasureSaga);

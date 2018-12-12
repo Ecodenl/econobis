@@ -4,7 +4,7 @@ namespace App\Http\Resources\ParticipantProductionProject;
 
 use App\Http\Resources\Contact\FullParticipantContact;
 use App\Http\Resources\GenericResource;
-use App\Http\Resources\ProductionProject\GridProductionProject;
+use App\Http\Resources\ProductionProject\ProductionProjectPeek;
 use Illuminate\Http\Resources\Json\Resource;
 
 class GridParticipantProductionProject extends Resource
@@ -27,7 +27,7 @@ class GridParticipantProductionProject extends Resource
                 'status' => GenericResource::make($this->whenLoaded('participantProductionProjectStatus')),
                 'dateRegister' => $this->date_register,
                 'productionProjectId' => $this->production_project_id,
-                'productionProject' => GridProductionProject::make($this->whenLoaded('productionProject')),
+                'productionProject' => ProductionProjectPeek::make($this->whenLoaded('productionProject')),
             ];
     }
 }

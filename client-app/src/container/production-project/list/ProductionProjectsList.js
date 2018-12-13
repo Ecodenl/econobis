@@ -49,7 +49,23 @@ class ProductionProjectsList extends Component {
     };
 
     render() {
-        const { data = [], meta = {}, isLoading } = this.props.productionProjects;
+        const { data = [], meta = {} } = this.props.productionProjects;
+
+        let loadingText = '';
+        let loading = true;
+
+        if (this.props.hasError) {
+            loadingText = 'Fout bij het ophalen van productie projecten.';
+        }
+        else if (this.props.isLoading) {
+            loadingText = 'Gegevens aan het laden.';
+        }
+        else if (data.length === 0) {
+            loadingText = 'Geen productie projecten gevonden!';
+        }
+        else {
+            loading = false;
+        }
 
         return (
         <div>
@@ -68,9 +84,9 @@ class ProductionProjectsList extends Component {
                 </DataTableHead>
                 <DataTableBody>
                     {
-                        data.length === 0 ? (
+                        loading ? (
                             <tr>
-                                <td colSpan={9}>Geen productieprojecten gevonden!</td>
+                                <td colSpan={9}>{loadingText}</td>
                             </tr>
                         ) : (
                             data.map(productionProject => (
@@ -108,6 +124,8 @@ const mapStateToProps = (state) => {
     return {
         productionProjects: state.productionProjects.list,
         productionProjectsPagination: state.productionProjects.pagination,
+        isLoading: state.loadingData.isLoading,
+        hasError: state.loadingData.hasError,
     };
 };
 

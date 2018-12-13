@@ -5,10 +5,13 @@ import {hashHistory} from "react-router";
 
 export function* fetchProductsSaga() {
     try {
+        yield put({ type: 'IS_LOADING' });
         const products = yield call(ProductsAPI.fetchProducts);
         yield put({ type: 'FETCH_PRODUCTS_SUCCESS', products });
+        yield put({ type: 'IS_LOADING_COMPLETE' });
     } catch (error) {
         yield put({ type: 'FETCH_PRODUCTS_ERROR', error });
+        yield put({ type: 'LOADING_ERROR', error });
     }
 }
 

@@ -7,6 +7,7 @@ import HousingFilesListHead from './HousingFilesListHead';
 import HousingFilesListFilter from './HousingFilesListFilter';
 import HousingFilesListItem from './HousingFilesListItem';
 import DataTablePagination from "../../../components/dataTable/DataTablePagination";
+import {connect} from "react-redux";
 
 class HousingFilesList extends Component {
     constructor(props){
@@ -21,7 +22,23 @@ class HousingFilesList extends Component {
     };
 
     render() {
-        const { data = [], meta = {}, isLoading } = this.props.housingFiles;
+        const { data = [], meta = {} } = this.props.housingFiles;
+
+        let loadingText = '';
+        let loading = true;
+
+        if (this.props.hasError) {
+            loadingText = 'Fout bij het ophalen van woningdossiers.';
+        }
+        else if (this.props.isLoading) {
+            loadingText = 'Gegevens aan het laden.';
+        }
+        else if (data.length === 0) {
+            loadingText = 'Geen woningdossiers gevonden!';
+        }
+        else {
+            loading = false;
+        }
 
         return (
             <form onKeyUp={this.handleKeyUp}>
@@ -36,8 +53,8 @@ class HousingFilesList extends Component {
                     </DataTableHead>
                     <DataTableBody>
                         {
-                            data.length === 0 ? (
-                                <tr><td colSpan={6}>Geen woningdossiers gevonden!</td></tr>
+                            loading ? (
+                                <tr><td colSpan={6}>{loadingText}</td></tr>
                             ) : (
                                 data.map((housingFile) => {
                                     return <HousingFilesListItem
@@ -61,4 +78,11 @@ class HousingFilesList extends Component {
     };
 }
 
-export default HousingFilesList;
+const mapStateToProps = (state) => {
+    return {
+        isLoading: state.loadingData.isLoading,
+        hasError: state.loadingData.hasError,
+    };
+};
+
+export default connect(mapStateToProps)(HousingFilesList);

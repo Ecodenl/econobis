@@ -117,9 +117,11 @@ class InvoiceToolbar extends Component {
                         }
                     </div>
                 </div>
+                {!this.props.isLoading &&
                 <div className="col-md-4"><h4
                     className="text-center">Factuur: {this.props.invoiceDetails.order ? this.props.invoiceDetails.order.contact.fullName : ''} / {this.props.invoiceDetails.number}</h4>
                 </div>
+                }
                 <div className="col-md-4"/>
 
                 {
@@ -162,6 +164,7 @@ class InvoiceToolbar extends Component {
 const mapStateToProps = (state) => {
     return {
         invoiceDetails: state.invoiceDetails,
+        isLoading: state.loadingData.isLoading,
     };
 };
 

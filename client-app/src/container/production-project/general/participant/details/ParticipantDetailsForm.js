@@ -5,7 +5,6 @@ import { isEmpty } from 'lodash';
 import ParticipantFormGeneral from './form/ParticipantFormGeneral';
 import TransactionForm from './transaction/TransactionForm';
 import ObligationNumberForm from './obligation-number/ObligationNumberForm';
-import moment from "moment/moment";
 
 class ParticipantDetailsForm extends Component {
     constructor(props){
@@ -13,10 +12,25 @@ class ParticipantDetailsForm extends Component {
     };
 
     render() {
+        let loadingText = '';
+        let loading = true;
 
+        if (this.props.hasError) {
+            loadingText = 'Fout bij het ophalen van participanten.';
+        }
+        else if (this.props.isLoading) {
+            loadingText = 'Gegevens aan het laden.';
+        }
+        else if (isEmpty(this.props.participantProductionProject)) {
+            loadingText = 'Geen participanten gevonden!';
+        }
+        else {
+            loading = false;
+        }
         return (
-            isEmpty(this.props.participantProductionProject) ?
-                <div>Geen gegevens gevonden.</div>
+
+            loading ?
+                <div>{loadingText}</div>
                 :
                 <div>
                     <ParticipantFormGeneral />
@@ -30,6 +44,8 @@ class ParticipantDetailsForm extends Component {
 const mapStateToProps = (state) => {
     return {
         participantProductionProject: state.participantProductionProjectDetails,
+        isLoading: state.loadingData.isLoading,
+        hasError: state.loadingData.hasError,
     }
 };
 

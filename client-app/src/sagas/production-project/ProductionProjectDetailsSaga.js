@@ -6,11 +6,13 @@ import {hashHistory} from "react-router";
 
 export function* fetchProductionProjectSaga({ id }) {
     try {
+        yield put({ type: 'IS_LOADING' });
         const productionProject = yield call(ProductionProjectDetailsAPI.fetchProductionProject, id);
-
         yield put({ type: 'FETCH_PRODUCTION_PROJECT_SUCCESS', productionProject });
+        yield put({ type: 'IS_LOADING_COMPLETE' });
     } catch (error) {
         yield put({ type: 'FETCH_PRODUCTION_PROJECT_ERROR', error });
+        yield put({ type: 'LOADING_ERROR', error });
     }
 }
 

@@ -163,4 +163,27 @@ class ContactController extends Controller
 
         return $chartData;
     }
+
+    public function getPrimaryEmailAddressesId(Request $request)
+    {
+
+        $contactIds = $request->input('contactIds');
+        $emailIds = [];
+
+        if (is_array($contactIds)) {
+            foreach ($contactIds as $contactId) {
+                $contact = Contact::find($contactId);
+                if ($contact->primaryEmailAddress) {
+                    array_push($emailIds, $contact->primaryEmailAddress->id);
+                }
+            }
+        } else {
+            $contact = Contact::find($contactIds);
+            if ($contact->primaryEmailAddress) {
+                array_push($emailIds, $contact->primaryEmailAddress->id);
+            }
+        }
+
+        return array_unique($emailIds);
+    }
 }

@@ -34,6 +34,7 @@ Route::namespace('Api')
         Route::get('/contact/save-as-group', 'Contact\GridController@saveAsGroup');
         Route::get('/contact/peek', 'Contact\ContactController@peek');
         Route::get('/contact/chart-data', 'Contact\ContactController@chartData');
+        Route::get('/contact/get-primary-email-addresses-id', 'Contact\ContactController@getPrimaryEmailAddressesId');
         Route::post('/contacts/delete', 'Contact\ContactController@destroyContacts');
         Route::post('/contact/validate-import', 'Contact\ContactController@validateImport');
         Route::post('/contact/import', 'Contact\ContactController@import');

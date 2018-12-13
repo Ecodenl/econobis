@@ -149,7 +149,7 @@ class ContactDetailsHarmonica extends Component {
                 });
         }
         else {
-            hashHistory.push(`/email/nieuw/contact/${primaryEmail.id}`);
+            hashHistory.push(`/email/nieuw/contact/${this.props.contactDetails.id}`);
         }
     };
 

@@ -12,6 +12,7 @@ use App\Eco\Email\Email;
 use App\Eco\Opportunity\Opportunity;
 use App\Eco\Opportunity\OpportunityEvaluation;
 use App\Eco\Opportunity\OpportunityStatus;
+use App\Helpers\CSV\OpportunityCSVHelper;
 use App\Helpers\Delete\Models\DeleteOpportunity;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Api\ApiController;
@@ -61,6 +62,16 @@ class OpportunityController extends ApiController
         $opportunity->relatedEmailsSent = $this->getRelatedEmails($opportunity->id, 'sent');
 
         return FullOpportunity::make($opportunity);
+    }
+
+    public function csv(RequestQuery $requestQuery)
+    {
+        set_time_limit(0);
+        $opportunities = $requestQuery->getQueryNoPagination()->get();
+
+        $opportunityCSVHelper = new OpportunityCSVHelper($opportunities);
+
+        return $opportunityCSVHelper->downloadCSV();
     }
 
     public function store(Request $request, RequestInput $requestInput)
@@ -202,10 +213,6 @@ class OpportunityController extends ApiController
 
     public function getRelatedEmails($id, $folder)
     {
-        $user = Auth::user();
-
-        $mailboxIds = $user->mailboxes()->pluck('mailbox_id');
-
-        return Email::whereIn('mailbox_id', $mailboxIds)->where('opportunity_id', $id)->where('folder', $folder)->get();
+        return Email::where('opportunity_id', $id)->where('folder', $folder)->get();
     }
 }

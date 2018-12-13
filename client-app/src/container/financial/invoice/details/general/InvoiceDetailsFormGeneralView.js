@@ -11,7 +11,7 @@ const InvoiceDetailsFormGeneralView = props => {
     const { status, dateRequested, paymentType, paymentTypeId, invoiceText, subject, order, totalPriceInclVatAndReduction,
         amountOpen, dateSent, datePaymentDue, datePaid,
         dateReminder1, dateReminder2, dateReminder3, dateExhortation,
-        emailReminder1, emailReminder2, emailReminder3, emailExhortation, dateCollection, emailedTo } = props.invoiceDetails;
+        emailReminder1, emailReminder2, emailReminder3, emailExhortation, dateCollection, emailedTo, sentToName } = props.invoiceDetails;
 
     return (
         <div onClick={props.switchToEdit}>
@@ -80,13 +80,18 @@ const InvoiceDetailsFormGeneralView = props => {
                                 value={dateRequested ? moment(dateRequested).format('DD-MM-Y') : ''}
                             />
                         }
+                    </div>
 
+                    <div className="row">
                         <ViewText
                             label={"Verstuurd naar"}
+                            value={sentToName ? sentToName : ''}
+                        />
+                        <ViewText
+                            label={"Verstuurd naar e-mail"}
                             value={emailedTo ? emailedTo : ''}
                         />
                     </div>
-
                     <div className="row">
                         <ViewText
                             label={"Herinnering 1 verstuurd"}

@@ -145,11 +145,11 @@ class ContactDetailsHarmonica extends Component {
                 this.setState({
                     showModalError: !this.state.showModalError,
                     modalErrorTitle: 'Waarschuwing',
-                    modalErrorMessage: 'Dit contact heeft nog primair email adres.',
+                    modalErrorMessage: 'Dit contact heeft nog primair e-mail adres.',
                 });
         }
         else {
-            hashHistory.push(`/email/nieuw/contact/${this.props.contactDetails.id}`);
+            hashHistory.push(`/email/nieuw/contact/${primaryEmail.id}`);
         }
     };
 

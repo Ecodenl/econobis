@@ -19,6 +19,15 @@ class ContactDetailsFormGeneral extends Component {
         };
     }
 
+
+    componentWillReceiveProps(nextProps) {
+        if(this.props.contactDetails.id !== nextProps.contactDetails.id) {
+            this.setState({
+                showEdit: false,
+            });
+        }
+    }
+
     switchToEdit = () => {
         const { typeId } = this.props.contactDetails;
 

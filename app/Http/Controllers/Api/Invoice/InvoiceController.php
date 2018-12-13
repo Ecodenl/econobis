@@ -297,11 +297,14 @@ class InvoiceController extends ApiController
         $administration = $invoices->first()->administration;
         $paymentTypeId = $invoices->first()->payment_type_id;
 
-        if (!$administration->sepa_creditor_id || !$administration->bic || !$administration->IBAN) {
-            abort(412, 'Sepa crediteur ID, BIC en IBAN zijn verplichte velden.');
+        if (!$administration->bic || !$administration->IBAN) {
+            abort(412, 'BIC en IBAN zijn verplichte velden.');
         }
 
         if ($paymentTypeId === 'collection') {
+            if (empty($administration->sepa_creditor_id)) {
+                abort(412, 'Voor incasso facturen is SEPA crediteur id verplicht.');
+            }
             $validatedInvoices = $invoices->reject(function ($invoice) {
                 return (empty($invoice->order->IBAN) && empty($invoice->order->contact->iban));
             });
@@ -484,7 +487,7 @@ class InvoiceController extends ApiController
     }
 
 
-    public function storeInvoiceProduct(RequestInput $input)
+    public function storeInvoiceProduct(RequestInput $input, Request $request)
     {
         $this->authorize('manage', Invoice::class);
 
@@ -501,11 +504,16 @@ class InvoiceController extends ApiController
         $invoiceProduct = new InvoiceProduct($data);
 
         $product = Product::find($data['product_id']);
-        $invoice = Invoice::find($data['invoiceId']);
+        $invoice = Invoice::find($data['invoice_id']);
 
         $price = 0;
         if($product->currentPrice){
-            $price = $product->currentPrice->price;
+            if($product->currentPrice->has_variable_price) {
+                $price = $request->input('variablePrice') ? $request->input('variablePrice') : 0;
+            }
+            else{
+                $price = $product->currentPrice->price;
+            }
 
             switch ($product->invoice_frequency_id){
                 case 'monthly':
@@ -635,7 +643,7 @@ class InvoiceController extends ApiController
         });
     }
 
-    public function updateInvoiceProduct(RequestInput $input, InvoiceProduct $invoiceProduct)
+    public function updateInvoiceProduct(RequestInput $input, InvoiceProduct $invoiceProduct, Request $request)
     {
         $this->authorize('manage', Invoice::class);
 
@@ -650,6 +658,12 @@ class InvoiceController extends ApiController
             ->get();
 
         $invoiceProduct->fill($data);
+
+        if($invoiceProduct->product->currentPrice->has_variable_price) {
+            $price = $request->input('variablePrice') ? $request->input('variablePrice') : 0;
+
+            $invoiceProduct->price = $price;
+        }
 
         $invoiceProduct->save();
 

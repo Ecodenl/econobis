@@ -1,6 +1,5 @@
 import axios from 'axios';
 
-const URL_API = process.env.URL_API;
 const URL_CONTACT_GROUP = `${URL_API}/api/contact-group`;
 
 export default {

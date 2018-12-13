@@ -30,6 +30,6 @@ class Sort extends RequestSort
     ];
 
     protected $joins = [
-        'contactName' => 'contact',
+        'contactFullName' => 'contact',
     ];
 }

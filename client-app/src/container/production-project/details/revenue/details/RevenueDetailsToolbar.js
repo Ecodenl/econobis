@@ -1,13 +1,17 @@
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import { browserHistory } from 'react-router';
-import { hashHistory, Link } from 'react-router';
+import {  Link } from 'react-router';
 
 import Panel from '../../../../../components/panel/Panel';
 import PanelBody from '../../../../../components/panel/PanelBody';
 import ButtonIcon from '../../../../../components/button/ButtonIcon';
 import RevenueDetailsDelete from './RevenueDetailsDelete';
-
+import {blockUI, unblockUI} from '../../../../../actions/general/BlockUIActions';
+import {bindActionCreators} from "redux";
+import moment from "moment/moment";
+import fileDownload from "js-file-download";
+import ProductionProjectRevenueAPI from "../../../../../api/production-project/ProductionProjectRevenueAPI";
 
 class RevenueDetailsToolbar extends Component {
     constructor(props){
@@ -20,6 +24,18 @@ class RevenueDetailsToolbar extends Component {
 
     toggleDelete = () => {
         this.setState({showDelete: !this.state.showDelete});
+    };
+
+    getCSV = () => {
+        this.props.blockUI();
+        setTimeout(() => {
+            ProductionProjectRevenueAPI.getCSV(this.props.revenue.id).then((payload) => {
+                fileDownload(payload.data, 'Opbrengstverdeling-' + moment().format("YYYY-MM-DD HH:mm:ss") +  '.csv');
+                this.props.unblockUI();
+            }).catch((error) => {
+                this.props.unblockUI();
+            });
+        },100 );
     };
 
     render() {
@@ -49,6 +65,7 @@ class RevenueDetailsToolbar extends Component {
                                         </ul>
                                     </div>
                                     }
+                                    <ButtonIcon iconName={"glyphicon-download-alt"} onClickAction={this.getCSV} />
                                 </div>
                             </div>
                             <div className="col-md-8"><h4 className="text-center text-success margin-small">
@@ -81,4 +98,8 @@ const mapStateToProps = (state) => {
     }
 };
 
-export default connect(mapStateToProps)(RevenueDetailsToolbar);
+const mapDispatchToProps = (dispatch) => {
+    return bindActionCreators({ blockUI, unblockUI }, dispatch);
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(RevenueDetailsToolbar);

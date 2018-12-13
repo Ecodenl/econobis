@@ -20,6 +20,7 @@ class ContactDetailsFormPersonalEdit extends Component {
         const { status, number, createdAt, person, newsletter, didAgreeAvg } = props.contactDetails;
 
         this.state = {
+            lastNamePrefixes: props.lastNamePrefixes,
             organisationPeek: [
                 {
                     id: person.organisation ? person.organisation.id : '',
@@ -49,12 +50,30 @@ class ContactDetailsFormPersonalEdit extends Component {
     };
 
     componentDidMount() {
+        let lastNamePrefixes = this.state.lastNamePrefixes;
+
+        const hasNullObject = this.hasNullObject({id: 'null', name: ""}, lastNamePrefixes);
+        if(!hasNullObject) {
+            lastNamePrefixes.unshift({id: 'null', name: ""});
+        }
         OrganisationAPI.getOrganisationPeek().then(payload => {
             this.setState({
                 ...this.state,
                 organisationPeek: payload,
+                lastNamePrefixes: lastNamePrefixes
             })
-        })
+        });
+    };
+
+    hasNullObject = (obj, list) => {
+        let i;
+        for (i = 0; i < list.length; i++) {
+            if (list[i].id === 'null') {
+                return true;
+            }
+        }
+
+        return false;
     };
 
     handleInputChange = event => {
@@ -183,7 +202,7 @@ class ContactDetailsFormPersonalEdit extends Component {
                         label={"Tussenvoegsel"}
                         size={'col-xs-12'}
                         name={"lastNamePrefixId"}
-                        options={this.props.lastNamePrefixes}
+                        options={this.state.lastNamePrefixes}
                         value={lastNamePrefixId}
                         onChangeAction={this.handleInputChange}
                         placeholder={lastNamePrefix ? lastNamePrefix : ''}

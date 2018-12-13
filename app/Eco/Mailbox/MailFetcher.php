@@ -77,11 +77,13 @@ class MailFetcher
             $this->imap->checkMailbox();
             if($mb->valid == false){
                 $mb->valid = true;
+                $mb->login_tries = 0;
                 $mb->save();
             }
         }
         catch(\Exception $e){
             $mb->valid = false;
+            $mb->login_tries = $mb->login_tries + 1;
             $mb->save();
         }
 
@@ -173,6 +175,25 @@ class MailFetcher
     }
 
     public function addRelationToContacts(Email $email){
+
+        //soms niet koppelen
+        $mailboxIgnores = $email->mailbox->mailboxIgnores;
+
+        foreach ($mailboxIgnores as $ignore){
+            switch ($ignore->type_id) {
+                case 'e-mail':
+                   if($ignore->value === $email->from){
+                       return false;
+                   }
+                    break;
+                case 'domain':
+                    $domain = preg_replace( '!^.+?([^@]+)$!', '$1', $email->from);
+                    if ($ignore->value === $domain) {
+                        return false;
+                    }
+                    break;
+            }
+        }
 
         //Get emailaddresses with this email
         $emailAddressesIds = EmailAddress::where('email', $email->from)->pluck('contact_id')->toArray();

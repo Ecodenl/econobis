@@ -117,4 +117,21 @@ class Product extends Model
 
         return ($price_ex_vat + ($price_ex_vat*($vat_percentage / 100)));
     }
+
+    /**
+     * @return string 'none' for no price history, 'variable' for variable price, 'static' for static price.
+     */
+    public function getHasVariablePriceAttribute()
+    {
+        if($this->priceHistory()->exists()){
+            if($this->priceHistory()->first()->has_variable_price){
+                return 'variable';
+            }
+            else{
+                return 'static';
+            }
+        }
+
+        return 'none';
+    }
 }

@@ -1,6 +1,5 @@
 import axios from 'axios';
 
-const URL_API = process.env.URL_API;
 const URL_HOUSING_FILE = `${URL_API}/api/housing-file`;
 
 export default {

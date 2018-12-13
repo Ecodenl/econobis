@@ -70,6 +70,30 @@ class ConceptApp extends Component {
                 },
                 emailAddresses: [...this.state.emailAddresses, ...extraOptions],
                 hasLoaded: true,
+            }, () => {
+                if (payload.contactGroupId) {
+                    EmailAPI.fetchEmailGroup(payload.contactGroupId).then((name) => {
+
+                        let emailAddresses = this.state.emailAddresses;
+
+                        emailAddresses.push({id: '@group_' + payload.contactGroupId, name: name});
+
+                        let toString = '@group_' + payload.contactGroupId;
+
+                        if(payload.to.length > 0){
+                            toString = toString + ',' + payload.to.join(',');
+                        }
+
+                        this.setState({
+                            ...this.state,
+                            emailAddresses: emailAddresses,
+                            email: {
+                                ...this.state.email,
+                                to: toString
+                            },
+                        });
+                    });
+                }
             });
         });
     };

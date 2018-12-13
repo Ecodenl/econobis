@@ -45,6 +45,7 @@ class OpportunitiesListToolbar extends Component {
                             </ul>
                         </div>
                         <ButtonIcon iconName={"glyphicon-ok"} onClickAction={this.props.toggleShowCheckboxList}/>
+                        <ButtonIcon iconName={"glyphicon-download-alt"} onClickAction={this.props.getCSV} />
                     </div>
 
                 </div>

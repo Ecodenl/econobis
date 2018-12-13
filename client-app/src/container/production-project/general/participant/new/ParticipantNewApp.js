@@ -43,9 +43,7 @@ class ParticipantNewApp extends Component {
                 dateContractSend: '',
                 dateContractRetour: '',
                 datePayed: '',
-                ibanPayed: '',
                 didAcceptAgreement: false,
-                ibanAttn: '',
                 giftedByContactId: '',
                 ibanPayout: '',
                 legalRepContactId: '',
@@ -59,7 +57,6 @@ class ParticipantNewApp extends Component {
                 statusId: false,
                 productionProjectId: false,
                 typeId: false,
-                ibanPayed: false,
                 ibanPayout: false,
                 powerKwhConsumption: false,
             },
@@ -207,13 +204,6 @@ class ParticipantNewApp extends Component {
             hasErrors = true;
         }
         ;
-
-        if (!validator.isEmpty(participation.ibanPayed)) {
-            if (!ibantools.isValidIBAN(participation.ibanPayed)) {
-                errors.ibanPayed = true;
-                hasErrors = true;
-            }
-        }
 
         if (!validator.isEmpty(participation.ibanPayout)) {
             if (!ibantools.isValidIBAN(participation.ibanPayout)) {

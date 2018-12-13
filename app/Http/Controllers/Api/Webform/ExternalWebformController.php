@@ -694,8 +694,6 @@ class ExternalWebformController extends Controller
                 'participations_rest_sale' => 0,
                 'iban_payout' => $ibanPayout,
                 'iban_payout_attn' => $data['iban_payout_attn'],
-                'iban_payed' => '',
-                'iban_attn' => '',
                 'did_accept_agreement' => 0,
                 'type_id' => $type->id,
                 'power_kwh_consumption' => $data['power_kwh_consumption'] == '' ? 0 : $data['power_kwh_consumption'],

@@ -10,7 +10,7 @@ import moment from "moment/moment";
 moment.locale('nl');
 
 const OrderProductsFormEdit = props => {
-    const {product, description, amount, amountReduction, percentageReduction, dateStart, dateEnd, dateLastInvoice, datePeriodStartFirstInvoice} = props.orderProduct;
+    const {product, description, amount, amountReduction, percentageReduction, dateStart, dateEnd, dateLastInvoice, datePeriodStartFirstInvoice, variablePrice} = props.orderProduct;
 
     return (
         <div>
@@ -61,15 +61,27 @@ const OrderProductsFormEdit = props => {
                                 value={percentageReduction}
                                 onChangeAction={props.handleInputChange}
                             />
-                            <InputText
-                                label={"Bedrag"}
-                                name={"price"}
-                                value={'€' + props.orderProduct.product.priceInclVat.toLocaleString('nl', {
-                                    minimumFractionDigits: 2,
-                                    maximumFractionDigits: 2
-                                })}
-                                readOnly={true}
-                            />
+                            {variablePrice !== null ?
+                                <InputText
+                                    label={"Prijs ex. BTW"}
+                                    name={"variablePrice"}
+                                    type={'number'}
+                                    value={variablePrice}
+                                    onChangeAction={props.handleInputChangeVariablePrice}
+                                    error={props.errors.variablePrice}
+                                    required={(variablePrice !== null) && "required"}
+                                />
+                                :
+                                <InputText
+                                    label={"Prijs incl. BTW"}
+                                    name={"price"}
+                                    value={'€' + props.orderProduct.product.priceInclVat.toLocaleString('nl', {
+                                        minimumFractionDigits: 2,
+                                        maximumFractionDigits: 2
+                                    })}
+                                    readOnly={true}
+                                />
+                            }
                         </div>
 
                         <div className="row">

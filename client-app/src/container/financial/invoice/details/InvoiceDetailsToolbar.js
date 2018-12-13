@@ -57,14 +57,14 @@ class InvoiceToolbar extends Component {
     };
 
     showSend = () => {
-        let paymentType = this.props.invoiceDetails.paymentTypeId === 'collection' ? 'incasso' : 'overboeking';
+        let paymentType = this.props.invoiceDetails.paymentTypeId === 'collection' ? 'incasso' : 'overboeken';
 
         this.props.previewSend([this.props.invoiceDetails.id]);
         hashHistory.push(`/financieel/${this.props.invoiceDetails.order.administrationId}/facturen/te-verzenden/verzenden/email/${paymentType}`);
     };
 
     showSendPost = () => {
-        let paymentType = this.props.invoiceDetails.paymentTypeId === 'collection' ? 'incasso' : 'overboeking';
+        let paymentType = this.props.invoiceDetails.paymentTypeId === 'collection' ? 'incasso' : 'overboeken';
         this.props.previewSend([this.props.invoiceDetails.id]);
         hashHistory.push(`/financieel/${this.props.invoiceDetails.order.administrationId}/facturen/te-verzenden/verzenden/post/${paymentType}`);
     };

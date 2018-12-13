@@ -40,9 +40,8 @@ class EnergySupplierCSVHelper
             abort(403, 'Geen verdeling voor deze energiemaatschappij');
         }
         $this->csvExporter->beforeEach(function ($distribution) {
-            // Now notes field will have this value
-            $distribution->date_begin = Carbon::parse($this->productionProjectRevenue->date_begin)->format('d/m/Y');
-            $distribution->date_end = Carbon::parse($this->productionProjectRevenue->date_end)->format('d/m/Y');
+            $distribution->period_start = $this->formatDate($distribution->revenue->date_begin);
+            $distribution->period_end = $this->formatDate($distribution->revenue->date_end);
         });
 
         switch ($this->templateId) {
@@ -86,8 +85,8 @@ class EnergySupplierCSVHelper
                 'city' => 'Woonplaats',
                 'contact.primaryEmailAddress.email' => 'Emailadres',
                 'contact.primaryphoneNumber.number' => 'Telefoonnummer',
-                'date_begin' => 'Startdatum',
-                'date_end' => 'Einddatum',
+                'period_start' => 'Startdatum',
+                'period_end' => 'Einddatum',
                 'participations_amount' => 'Aantal kavels',
                 'contact.primaryContactEnergySupplier.es_number' => 'Eneco klantnr',
                 'delivered_total' => 'Opwek',
@@ -116,8 +115,8 @@ class EnergySupplierCSVHelper
             $csv = $this->csvExporter->build($chunk, [
                 'ean' => 'EanCode',
                 'postal_code' => 'Postcode',
-                'date_begin' => 'BeginDatum',
-                'date_end' => 'EindDatum',
+                'period_start' => 'BeginDatum',
+                'period_end' => 'EindDatum',
                 'delivered_total' => 'Productie',
                 'contact.primaryContactEnergySupplier.es_number' => 'KlantNummer',
                 'contact.full_name' => 'KlantNaam',
@@ -150,8 +149,8 @@ class EnergySupplierCSVHelper
             $csv = $this->csvExporter->build($chunk, [
                 'ean' => 'project ean',
                 'ean_manager' => 'project ean net',
-                'date_begin' => 'startdatum',
-                'date_end' => 'einddatum',
+                'period_start' => 'startdatum',
+                'period_end' => 'einddatum',
                 'contact.full_name' => 'participant',
                 'tax_referral' => 'referentie',
                 'postal_code' => 'Postcode',
@@ -162,5 +161,10 @@ class EnergySupplierCSVHelper
             $headers = false;
         }
         return Reader::BOM_UTF8 . $csv->getCsv();
+    }
+
+    private function formatDate($date) {
+        $formatDate = $date ? new Carbon($date) : false;
+        return $formatDate ? $formatDate->format('d-m-Y') : '';
     }
 }

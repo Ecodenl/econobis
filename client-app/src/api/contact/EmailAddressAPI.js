@@ -1,6 +1,5 @@
 import axios from 'axios';
 
-const URL_API = process.env.URL_API;
 const URL_EMAIL_ADDRESS = `${URL_API}/api/email-address`;
 
 export default {

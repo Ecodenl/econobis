@@ -1,6 +1,5 @@
 import axios from 'axios';
 
-const URL_API = process.env.URL_API;
 const URL_MEASURE = `${URL_API}/api/measure`;
 
 export default {

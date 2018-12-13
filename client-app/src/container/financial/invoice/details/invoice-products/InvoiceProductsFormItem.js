@@ -21,6 +21,7 @@ class InvoiceProductsFormItem extends Component {
             totalPrice: props.invoiceProduct.priceInclVatAndReduction,
             invoiceProduct: {
                 ...props.invoiceProduct,
+                variablePrice: props.invoiceProduct.priceIncVat ? (Math.round(props.invoiceProduct.priceIncVat * 100) / 100) : 0,
             },
             errors: {
                 amount: false,
@@ -36,8 +37,10 @@ class InvoiceProductsFormItem extends Component {
         if(!isEqual(this.state.invoiceProduct, nextProps.invoiceProduct)){
             this.setState({
                 ...this.state,
+                totalPrice: nextProps.invoiceProduct.priceInclVatAndReduction,
                 invoiceProduct: {
                     ...nextProps.invoiceProduct,
+                    variablePrice: nextProps.invoiceProduct.priceIncVat ? (Math.round(nextProps.invoiceProduct.priceIncVat * 100) / 100) : 0,
                 },
             });
         }
@@ -97,7 +100,13 @@ class InvoiceProductsFormItem extends Component {
     };
 
     updatePrice = () => {
-        let price = validator.isFloat(this.props.invoiceProduct.product.priceInclVat + '') ? this.props.invoiceProduct.product.priceInclVat : 0;
+        let price = 0;
+        if(this.state.invoiceProduct.variablePrice) {
+            price = validator.isFloat(this.state.invoiceProduct.variablePrice + '') ? this.state.invoiceProduct.variablePrice : 0;
+        }
+        else{
+            price = validator.isFloat(this.props.invoiceProduct.product.priceInclVat + '') ? this.props.invoiceProduct.product.priceInclVat : 0;
+        }
         let amount = validator.isFloat(this.state.invoiceProduct.amount + '') ? this.state.invoiceProduct.amount : 0;
         let percentageReduction = validator.isFloat(this.state.invoiceProduct.percentageReduction + '') ? this.state.invoiceProduct.percentageReduction : 0;
         let amountReduction = validator.isFloat(this.state.invoiceProduct.amountReduction + '') ? this.state.invoiceProduct.amountReduction : 0;
@@ -149,6 +158,25 @@ class InvoiceProductsFormItem extends Component {
         });
     };
 
+    handleInputChangeVariablePrice = event => {
+        const target = event.target;
+        const value = target.type === 'checkbox' ? target.checked : target.value;
+        const name = target.name;
+
+        this.setState({
+                ...this.state,
+                price: value,
+                invoiceProduct: {
+                    ...this.state.invoiceProduct,
+                    [name]: value
+                },
+
+            },
+            this.updatePrice
+        );
+
+    };
+
     render() {
         return (
             <div>
@@ -173,6 +201,8 @@ class InvoiceProductsFormItem extends Component {
                         handleInputChangeDate={this.handleInputChangeDate}
                         handleSubmit={this.handleSubmit}
                         cancelEdit={this.cancelEdit}
+                        handleInputChangeVariablePrice={this.handleInputChangeVariablePrice}
+                        productVariablePrice={this.state.invoiceProduct.product.hasVariablePrice === 'variable'}
                     />
                 }
                 {

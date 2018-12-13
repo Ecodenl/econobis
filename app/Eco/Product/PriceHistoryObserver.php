@@ -14,47 +14,50 @@ class PriceHistoryObserver
     {
         $product = $priceHistory->product;
 
-        foreach ($product->invoiceProductsToSend as $invoiceProductToSend){
+        if($product->hasVariablePrice === 'static') {
+            foreach ($product->invoiceProductsToSend as $invoiceProductToSend) {
 
-            $price = 0;
-            if($product->currentPrice){
-                $price = $product->currentPrice->price;
+                $price = 0;
+                if ($product->currentPrice) {
+                    $price = $product->currentPrice->price;
 
-                switch ($product->invoice_frequency_id){
-                    case 'monthly':
-                        $price = $price * 12;
-                        break;
-                    case 'quarterly':
-                        $price = $price * 4;
-                        break;
-                    case 'half-year':
-                        $price = $price * 2;
-                        break;
-                    default:
-                        $price = $price;
-                        break;
+                    switch ($product->invoice_frequency_id) {
+                        case 'monthly':
+                            $price = $price * 12;
+                            break;
+                        case 'quarterly':
+                            $price = $price * 4;
+                            break;
+                        case 'half-year':
+                            $price = $price * 2;
+                            break;
+                        default:
+                            $price = $price;
+                            break;
+                    }
+
+                    switch ($invoiceProductToSend->invoice->collection_frequency_id) {
+                        case 'monthly':
+                            $price = $price / 12;
+                            break;
+                        case 'quarterly':
+                            $price = $price / 4;
+                            break;
+                        case 'half-year':
+                            $price = $price / 2;
+                            break;
+                        default:
+                            $price = $price;
+                            break;
+                    }
                 }
 
-                switch ($invoiceProductToSend->invoice->collection_frequency_id) {
-                    case 'monthly':
-                        $price = $price / 12;
-                        break;
-                    case 'quarterly':
-                        $price = $price / 4;
-                        break;
-                    case 'half-year':
-                        $price = $price / 2;
-                        break;
-                    default:
-                        $price = $price;
-                        break;
-                }
+
+                $invoiceProductToSend->price = $price;
+                $invoiceProductToSend->vat_percentage = $product->currentPrice ? $product->currentPrice->vat_percentage
+                    : 0;
+                $invoiceProductToSend->save();
             }
-
-
-            $invoiceProductToSend->price = $price;
-            $invoiceProductToSend->vat_percentage = $product->currentPrice ? $product->currentPrice->vat_percentage : 0;
-            $invoiceProductToSend->save();
         }
     }
 }

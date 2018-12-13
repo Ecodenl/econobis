@@ -19,6 +19,7 @@ class InvoiceProductsFormNew extends Component {
         this.state = {
             price: '0',
             totalPrice: '0',
+            productHasVariablePrice: false,
             invoiceProduct: {
                 invoiceId: this.props.invoiceDetails.id,
                 productId: '',
@@ -27,6 +28,7 @@ class InvoiceProductsFormNew extends Component {
                 amountReduction: 0,
                 percentageReduction: 0,
                 dateLastInvoice: moment().format('YYYY-MM-DD'),
+                variablePrice: 0,
             },
             errors: {
                 productId: false,
@@ -46,6 +48,25 @@ class InvoiceProductsFormNew extends Component {
 
         this.setState({
                 ...this.state,
+                invoiceProduct: {
+                    ...this.state.invoiceProduct,
+                    [name]: value
+                },
+
+            },
+            this.updatePrice
+        );
+
+    };
+
+    handleInputChangeVariablePrice = event => {
+        const target = event.target;
+        const value = target.type === 'checkbox' ? target.checked : target.value;
+        const name = target.name;
+
+        this.setState({
+                ...this.state,
+                price: value,
                 invoiceProduct: {
                     ...this.state.invoiceProduct,
                     [name]: value
@@ -85,6 +106,7 @@ class InvoiceProductsFormNew extends Component {
         const target = event.target;
         const value = target.type === 'checkbox' ? target.checked : target.value;
         const name = target.name;
+        let productHasVariablePrice = '';
 
         let price = 0;
         let description = '';
@@ -93,11 +115,13 @@ class InvoiceProductsFormNew extends Component {
             let product = this.props.products.filter((product) => product.id == value);
             price = product[0].priceInclVat;
             description = product[0].invoiceText;
+            productHasVariablePrice = product[0].hasVariablePrice
         }
 
         this.setState({
             ...this.state,
                 price: price,
+                productHasVariablePrice: productHasVariablePrice === 'variable',
                 invoiceProduct: {
                 ...this.state.invoiceProduct,
                 description: description,
@@ -208,15 +232,25 @@ class InvoiceProductsFormNew extends Component {
                                 value={percentageReduction}
                                 onChangeAction={this.handleInputChange}
                             />
-                            <InputText
-                                label={"Bedrag"}
-                                name={"price"}
-                                value={'€' + this.state.price.toLocaleString('nl', {
-                                    minimumFractionDigits: 2,
-                                    maximumFractionDigits: 2
-                                })}
-                                readOnly={true}
-                            />
+                            {this.state.productHasVariablePrice ?
+                                <InputText
+                                    label={"Prijs ex. BTW"}
+                                    type={'number'}
+                                    name={"variablePrice"}
+                                    value={this.state.price}
+                                    onChangeAction={this.handleInputChangeVariablePrice}
+                                />
+                                :
+                                <InputText
+                                    label={"Prijs incl. BTW"}
+                                    name={"price"}
+                                    value={'€' + this.state.price.toLocaleString('nl', {
+                                        minimumFractionDigits: 2,
+                                        maximumFractionDigits: 2
+                                    })}
+                                    readOnly={true}
+                                />
+                            }
                         </div>
 
                         <div className="row">

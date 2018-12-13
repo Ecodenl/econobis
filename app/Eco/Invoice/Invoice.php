@@ -93,7 +93,7 @@ class Invoice extends Model
             $price += $invoiceProduct->price_incl_vat_and_reduction;
         }
 
-        return $price <= 0 ? 0 : $price;
+        return $price;
     }
 
     public function getTotalPriceExVatInclReductionAttribute()
@@ -104,7 +104,7 @@ class Invoice extends Model
             $price += $invoiceProduct->price_ex_vat_incl_reduction;
         }
 
-        return $price <= 0 ? 0 : $price;
+        return $price;
     }
 
     public function getTotalVatAttribute()
@@ -115,7 +115,7 @@ class Invoice extends Model
             $vat += $invoiceProduct->amount_vat;
         }
 
-        return $vat <= 0 ? 0 : $vat;
+        return $vat;
     }
 
     public function getDatePaidAttribute()
@@ -144,10 +144,6 @@ class Invoice extends Model
     public function getAmountOpenAttribute()
     {
         $amountOpen = $this->total_price_incl_vat_and_reduction;
-
-        if($amountOpen <= 0){
-            return 0;
-        }
 
         foreach($this->payments as $payment){
             $amountOpen -= $payment->amount;
@@ -283,5 +279,35 @@ class Invoice extends Model
             default:
                 return $date;
         }
+    }
+
+    public function getSubStatusAttribute(){
+        if ($this->status_id == 'sent' || 'exported') {
+            if (($this->status_id == 'exported' && $this->days_to_expire <= 10) || ($this->status_id == 'sent' && $this->payment_type_id == 'transfer' && $this->days_to_expire <= 0) && !$this->date_reminder_1) {
+                return "Te herinneren";
+            }
+
+            if ($this->date_reminder_1 && !$this->date_reminder_2 && !$this->date_reminder_3
+                && !$this->date_exhortation
+            ) {
+                return "Herinnering 1";
+            }
+            if ($this->date_reminder_2 && !$this->date_reminder_3
+                && !$this->date_exhortation
+            ) {
+                return "Herinnering 2";
+            }
+            if ($this->date_reminder_3
+                && !$this->date_exhortation
+            ) {
+                return "Herinnering 3";
+            }
+            if ($this->date_exhortation
+            ) {
+                return "Aanmaning";
+            }
+        }
+
+        return '';
     }
 }

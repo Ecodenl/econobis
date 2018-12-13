@@ -25,7 +25,7 @@ class ContactDetailsFormAddressNew extends Component {
                 city: '',
                 typeId: 'visit',
                 primary: false,
-                countryId: 'NL',
+                countryId: '',
             },
             errors: {
                 typeId: false,

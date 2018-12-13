@@ -42,51 +42,55 @@ const EmailFormView = props => {
                     value={cc && cc.map((cc) => cc).join(', ')}
                 />
                 <ViewText
-                    label={"Contacten"}
-                    value={ contacts && contacts.map((contact) => <span><Link to={`/contact/${contact.id}`} className="link-underline">{contact.fullName}</Link> </span>) }
+                    label={"Bcc"}
+                    value={bcc && bcc.map((cc) => bcc).join(', ')}
                 />
             </div>
 
             <div className="row" onClick={props.switchToEdit}>
+                <ViewText
+                    label={"Contacten"}
+                    value={ contacts && contacts.map((contact) => <span><Link to={`/contact/${contact.id}`} className="link-underline">{contact.fullName}</Link> </span>) }
+                />
                 <ViewText
                     label={"Intake"}
                     value={intake ? intake.name : ''}
                     link={intake ? 'intake/' + intake.id : ''}
                 />
+            </div>
+
+            <div className="row" onClick={props.switchToEdit}>
                 <ViewText
                     label={"Taak"}
                     value={task ? task.noteSummary : ''}
                     link={task ? 'taak/' + task.id : ''}
                 />
-            </div>
-
-            <div className="row" onClick={props.switchToEdit}>
                 <ViewText
                     label={"Offerteverzoek"}
                     value={quotationRequest ? quotationRequest.name : ''}
                     link={quotationRequest ? 'offerteverzoek/' + quotationRequest.id : ''}
                 />
+            </div>
+
+            <div className="row" onClick={props.switchToEdit}>
                 <ViewText
                     label={"Maatregel"}
                     value={measure ? measure.name : ''}
                     link={measure ? 'maatregel/' + measure.id : ''}
                 />
-            </div>
-
-            <div className="row" onClick={props.switchToEdit}>
                 <ViewText
                     label={"Kans"}
                     value={opportunity ? opportunity.name : ''}
                     link={opportunity ? 'kans/' + opportunity.id : ''}
                 />
+            </div>
+
+            <div className="row" onClick={props.switchToEdit}>
                 <ViewText
                     label={"Order"}
                     value={order ? order.name : ''}
                     link={order ? 'order/' + order.id : ''}
                 />
-            </div>
-
-            <div className="row" onClick={props.switchToEdit}>
                 <ViewText
                     label={"Factuur"}
                     value={invoice ? invoice.name : ''}

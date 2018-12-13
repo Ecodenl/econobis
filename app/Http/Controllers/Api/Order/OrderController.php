@@ -25,6 +25,7 @@ use App\Http\Resources\Order\FullOrder;
 use App\Http\Resources\Order\FullOrderProduct;
 use App\Http\Resources\Order\GridOrder;
 use App\Http\Resources\Order\OrderPeek;
+use App\Jobs\Order\CreateAllInvoices;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -181,7 +182,8 @@ class OrderController extends ApiController
             ->numeric('percentageReduction')->onEmpty(null)->whenMissing(null)->alias('percentage_reduction')->next()
             ->date('dateStart')->validate('required')->alias('date_start')->next()
             ->date('dateEnd')->validate('nullable|date')->onEmpty(null)->whenMissing(null)->alias('date_end')->next()
-            ->date('datePeriodStartFirstInvoice')->validate('required')->alias('date_period_start_first_invoice')->next()
+            ->date('datePeriodStartFirstInvoice')->alias('date_period_start_first_invoice')->next()
+            ->numeric('variablePrice')->alias('variable_price')->next()
             ->get();
 
         $orderProduct = new OrderProduct($data);
@@ -287,7 +289,8 @@ class OrderController extends ApiController
             ->numeric('percentageReduction')->onEmpty(null)->whenMissing(null)->alias('percentage_reduction')->next()
             ->date('dateStart')->validate('required')->alias('date_start')->next()
             ->date('dateEnd')->validate('nullable|date')->onEmpty(null)->whenMissing(null)->alias('date_end')->next()
-            ->date('datePeriodStartFirstInvoice')->validate('required')->alias('date_period_start_first_invoice')->next()
+            ->date('datePeriodStartFirstInvoice')->alias('date_period_start_first_invoice')->next()
+            ->numeric('variablePrice')->alias('variable_price')->next()
             ->get();
 
         $orderProduct->fill($data);
@@ -313,22 +316,20 @@ class OrderController extends ApiController
     public function getContactInfoForOrder(Contact $contact)
     {
         //Get email/name based on priority:
-        //1 - organisation - administration email
-        //2 - contact person invoice + primary
-        //2 - contact person invoice
-        //2 - contact person administration + primary
-        //3 - contact person administration
-        //4 - contact person primary
-        //5 - contact person other
+        //1 - organisation - invoice(sort by created at)
+        //2 - organisation - primary
+        //3 - contact person - invoice(sort by created at)
+        //4 - contact person - primary
+
         $contactInfo = [
             'email' => 'Geen e-mail bekend',
             'contactPerson' => $contact->full_name,
             'iban' => $contact->iban,
-            'ibanAttn' => $contact->iban_attn
+            'ibanAttn' => $contact->iban_attn,
         ];
 
         if($contact->isOrganisation()){
-            $email = $this->getOrganisationAdministrationEmailAddress($contact);
+            $email = $this->getOrganisationEmailAddressForOrder($contact);
 
             if (!$email && $contact->contactPerson()->exists())
             {
@@ -348,19 +349,17 @@ class OrderController extends ApiController
         return $contactInfo;
     }
 
-    protected function getOrganisationAdministrationEmailAddress(Contact $contact){
+    protected function getOrganisationEmailAddressForOrder(Contact $contact){
         $emailAddresses = $contact->emailAddresses->reverse();
 
         foreach($emailAddresses as $emailAddress) {
-            if ($emailAddress->type_id === 'administration' && $emailAddress->primary) {
+            if ($emailAddress->type_id === 'invoice') {
                 return $emailAddress;
             }
         }
 
-        foreach($emailAddresses as $emailAddress) {
-            if ($emailAddress->type_id === 'administration') {
-                return $emailAddress;
-            }
+        if($contact->primaryEmailAddress){
+            return $contact->primaryEmailAddress;
         }
 
         return null;
@@ -410,26 +409,14 @@ class OrderController extends ApiController
 
     public function createAll(Request $request)
     {
-        set_time_limit(30);
+        set_time_limit(0);
         $this->authorize('manage', Order::class);
 
         $orderIds = $request->input('orderIds');
 
-
         $orders = Order::whereIn('id', $orderIds)->get();
 
-        foreach ($orders as $order){
-            if($order->total_price_incl_vat >= 0 && $order->can_create_invoice) {
-                $invoice = new Invoice();
-                $invoice->status_id = 'to-send';
-                $invoice->date_requested = $order->date_next_invoice;
-                $invoice->order_id = $order->id;
-                $invoice->collection_frequency_id = $order->collection_frequency_id;
-                $invoice->save();
-
-                InvoiceHelper::saveInvoiceProducts($invoice, $order);
-            }
-        }
+        CreateAllInvoices::dispatch($orders, Auth::id());
     }
 
     public function getEmailPreview(Order $order){

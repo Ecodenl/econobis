@@ -209,7 +209,7 @@
     <table cellpadding=0 cellspacing=2>
         <tr>
             <td width="50%">
-                Factuurdatum: {{ Carbon\Carbon::parse($invoice->created_at)->formatLocalized('%e %B %Y') }}
+                Factuurdatum: {{ $invoice->date_sent ? Carbon\Carbon::parse($invoice->date_sent)->formatLocalized('%e %B %Y') : 'Nog niet bekend' }}
             </td>
             <td width="50%">
                 KvK {{ $invoice->administration->kvk_number }}

@@ -23,12 +23,11 @@ const RevenueDistributionFormList = props => {
 
                 <div className="col-sm-1">Type</div>
                 <div className="col-sm-2">Naam</div>
-                <div className="col-sm-1">Lid status</div>
                 <div className="col-sm-1">Participaties</div>
                 <div className="col-sm-1">Uit te keren bedrag</div>
                 <div className="col-sm-1">Uitkeren op</div>
                 <div className="col-sm-1">Datum uitkering</div>
-                <div className="col-sm-1">Energieleverancier</div>
+                <div className="col-sm-2">Energieleverancier</div>
                 <div className="col-sm-1">Geleverd totaal</div>
                 <div className="col-sm-1">Teruggave energiebelasting</div>
             </div>

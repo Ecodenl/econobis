@@ -38,6 +38,7 @@ class FullMailbox extends Resource
             'createdAt' => $this->created_at,
             'updatedAt' => $this->updated_at,
             'users' => UserPeek::collection($this->whenLoaded('users')),
+            'mailboxIgnores' => FullMailboxIgnore::collection($this->whenLoaded('mailboxIgnores')),
             'valid' => $this->valid,
         ];
     }

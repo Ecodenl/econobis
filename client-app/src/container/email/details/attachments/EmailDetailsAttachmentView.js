@@ -91,7 +91,7 @@ class EmailDetailsAttachmentView extends Component {
                     showConfirmAction={false}
                     buttonCancelText='Ok'
                 >
-                    <img src={this.state.item} alt={name}/>
+                    <img className={"img-responsive"} src={this.state.item} alt={name}/>
                 </Modal>
                 }
             </div>

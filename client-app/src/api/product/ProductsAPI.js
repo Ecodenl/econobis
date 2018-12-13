@@ -1,6 +1,5 @@
 import axios from 'axios';
 
-const URL_API = process.env.URL_API;
 const URL_PRODUCT = `${URL_API}/api/product`;
 
 export default {

@@ -2,6 +2,7 @@
 
 namespace App\Console;
 
+use App\Console\Commands\checkMailboxes;
 use App\Console\Commands\getAllEmail;
 use App\Console\Commands\processPaidInvoices;
 use App\Console\Commands\setDaysLastReminderInvoice;
@@ -21,6 +22,7 @@ class Kernel extends ConsoleKernel
         setDaysLastReminderInvoice::class,
         setDaysToExpireInvoice::class,
         processPaidInvoices::class,
+        checkMailboxes::class,
     ];
 
     /**
@@ -32,6 +34,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         $schedule->command('email:getAllEmail')->everyFiveMinutes();
+        $schedule->command('email:checkMailboxes')->everyThirtyMinutes();
         $schedule->command('invoice:setDaysLastReminder')->dailyAt('00:05');
         $schedule->command('invoice:setDaysToExpire')->dailyAt('00:10');
         $schedule->command('invoice:processPaidInvoices')->dailyAt('03:00');

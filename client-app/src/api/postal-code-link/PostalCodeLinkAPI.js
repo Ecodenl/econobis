@@ -1,6 +1,5 @@
 import axios from 'axios';
 
-const URL_API = process.env.URL_API;
 const URL_POSTAL_CODE_LINK = `${URL_API}/api/postal-code-link`;
 
 export default {

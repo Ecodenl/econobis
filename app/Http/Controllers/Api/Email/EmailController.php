@@ -13,12 +13,11 @@ use App\Eco\Contact\Contact;
 use App\Eco\ContactGroup\ContactGroup;
 use App\Eco\Email\Email;
 use App\Eco\Email\EmailAttachment;
-use App\Eco\Email\EmailGroupEmailAddress;
-use App\Eco\Email\Jobs\SendEmailsWithVariables;
-use App\Eco\Email\Jobs\StoreConceptEmail;
 use App\Eco\EmailAddress\EmailAddress;
+use App\Eco\Jobs\JobsLog;
+use App\Jobs\Email\SendEmailsWithVariables;
+use App\Eco\Email\Jobs\StoreConceptEmail;
 use App\Eco\Mailbox\Mailbox;
-use App\Eco\User\User;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\RequestQueries\Email\Grid\RequestQuery;
 use App\Http\Resources\Email\FullEmail;
@@ -77,14 +76,15 @@ class EmailController
     }
 
     public function show(Email $email){
-        $email->load('contacts', 'attachments', 'closedBy', 'intake', 'task', 'quotationRequest', 'measure', 'opportunity', 'order', 'invoice',   'responsibleUser',
+        $email->load('contacts', 'attachments', 'closedBy', 'intake', 'task', 'quotationRequest', 'measure', 'opportunity', 'order', 'invoice', 'responsibleUser',
             'responsibleTeam');
 
         return FullEmail::make($email);
     }
 
     public function getReply(Email $email){
-        $email->load('contacts', 'attachments');
+        //attachments niet laden!
+        $email->load('contacts');
 
         //Reply logic:
         //To -> from
@@ -123,7 +123,8 @@ class EmailController
     }
 
     public function getReplyAll(Email $email){
-        $email->load('contacts', 'attachments');
+        //attachments niet laden!
+        $email->load('contacts');
 
         //Reply all logic:
         //To -> (To without own email) + (From)
@@ -248,6 +249,7 @@ class EmailController
 
     public function send(Mailbox $mailbox, Request $request)
     {
+        set_time_limit(0);
             $sanitizedData = $this->getEmailData($request);
 
             //add basic html tags for new emails
@@ -297,7 +299,7 @@ class EmailController
             }
         }
 
-            (new SendEmailsWithVariables($email, json_decode($request['to'])))->handle();
+        SendEmailsWithVariables::dispatch($email, json_decode($request['to']), Auth::id());
     }
 
     public function storeConcept(Mailbox $mailbox, Request $request)
@@ -316,28 +318,28 @@ class EmailController
     }
 
     public function peek(){
-        $contacts = Contact::select('id', 'full_name')->with('primaryEmailAddress')->get();
-        $users = User::select('id', 'email', 'first_name', 'last_name')->get();
+        $contacts = Contact::select('id', 'full_name')->with('emailAddresses')->get();
 
-        foreach($contacts as $contact){
-            if($contact->primaryEmailAddress) {
-                $people[] = [
-                    'id' => $contact->id,
-                    'name' => $contact->full_name . ' (' . $contact->primaryEmailAddress->email . ')' ,
-                    'email' => $contact->primaryEmailAddress->email
-                ];
+        foreach($contacts as $contact) {
+            foreach ($contact->emailAddresses as $emailAddress) {
+                if ($emailAddress->primary) {
+                    $people[] = [
+                        'id' => $emailAddress->id,
+                        'name' => $contact->full_name . ' (' . $emailAddress->email . ')',
+                        'email' => $emailAddress->email
+                    ];
+                }
+            }
+            foreach ($contact->emailAddresses as $emailAddress) {
+                if (!$emailAddress->primary) {
+                    $people[] = [
+                        'id' => $emailAddress->id,
+                        'name' => $contact->full_name . ' (' . $emailAddress->email . ')',
+                        'email' => $emailAddress->email
+                    ];
+                }
             }
         }
-
-        //Id met @ omdat een email daar niet mee mag beginnen
-        foreach($users as $user){
-            $people[] = [
-                'id' => '@user_' . $user->id,
-                'name' => $user->present()->fullName() . ' (' . $user->email . ')',
-                'email' => $user->email
-            ];
-        }
-
         return $people;
     }
 
@@ -389,8 +391,50 @@ class EmailController
     }
 
     public function sendConcept(Email $email, Request $request){
+        set_time_limit(0);
         $email = $this->updateConcept($email, $request);
-        (new SendEmailsWithVariables($email, json_decode($request['to'])))->handle();
+
+        //Create relations with contact if needed
+        $this->createEmailContactRelations($email, $request);
+
+        //Email attachments
+        $this->checkStorageDir($email->mailbox->id);
+
+        //get attachments
+        $attachments = $request->file('attachments')
+            ? $request->file('attachments') : [];
+
+        $this->storeEmailAttachments($attachments, $email->mailbox->id,
+            $email->id);
+
+        //old attachments(forward,reply etc.)
+        $oldAttachments = $request->input('oldAttachments') ? $request->input('oldAttachments') : [];
+
+        //Gaat dit goed bij deleten attachment van oude mail?
+        foreach ($oldAttachments as $oldAttachment){
+            $oldAttachment = json_decode($oldAttachment);
+            $oldAttachment = EmailAttachment::find($oldAttachment->id);
+            $replicatedAttachment = $oldAttachment->replicate();
+            $replicatedAttachment->email_id = $email->id;
+            $replicatedAttachment->save();
+        }
+
+        $sanitizedData = $this->getEmailData($request);
+
+        //if we send to group we save in a pivot because they can have alot of members
+        if ($sanitizedData['contact_group_id']) {
+            $contactGroup = ContactGroup::find($sanitizedData['contact_group_id']);
+            foreach ($contactGroup->all_contacts as $contact) {
+                if ($contact->primaryEmailAddress) {
+                    $email->groupEmailAddresses()->attach($contact->primaryEmailAddress->id);
+
+                    $email->contacts()->attach($contact->id);
+                }
+            }
+        }
+
+        SendEmailsWithVariables::dispatch($email, json_decode($request['to']), Auth::id());
+        
         return FullEmail::make($email);
     }
 
@@ -403,6 +447,7 @@ class EmailController
             'subject' => '',
             'htmlBody' => '',
             'quotationRequestId' => '',
+            'intakeId' => '',
         ]);
 
         $data['to'] = json_decode($data['to']);
@@ -410,7 +455,7 @@ class EmailController
         $data['bcc'] = json_decode($data['bcc']);
 
         //to, cc, bcc example data:
-        //1,2, fren.dehaan@xaris.nl, @user_1, @user_2, 3, rob.rollenberg@xaris.nl
+        //1,2, fren.dehaan@xaris.nl, @group_1, 3, rob.rollenberg@xaris.nl
 
         $emails = [];
         $groupId = null;
@@ -433,14 +478,7 @@ class EmailController
         foreach ($sendVariations as $sendVariation){
             foreach ($data[$sendVariation] as $emailData) {
                 if (is_numeric($emailData)){
-                    $primaryEmail = Contact::find($emailData)->primaryEmailAddress()->value('email');
-                    if($primaryEmail){
-                        $emails[$sendVariation][] = $primaryEmail;
-                    }
-                }
-                else if(substr($emailData, 0, 6 ) === "@user_"){
-                    $user_id = str_replace("@user_", "", $emailData);
-                    $emails[$sendVariation][] =  User::find($user_id)->email;
+                    $emails[$sendVariation][] = EmailAddress::find($emailData)->email;
                 }
                 else if(substr($emailData, 0, 7 ) === "@group_"){
                     $groupId = str_replace("@group_", "", $emailData);
@@ -458,6 +496,14 @@ class EmailController
             $data['quotationRequestId'] = null;
         }
 
+        if(!array_key_exists('intakeId', $data)){
+            $data['intakeId'] = null;
+        }
+
+        if($data['intakeId'] == ''){
+            $data['intakeId'] = null;
+        }
+
         $sanitizedData = [
             'to' => $emails['to'],
             'cc' => $emails['cc'],
@@ -465,6 +511,7 @@ class EmailController
             'subject' => $data['subject'] ?: 'Econobis',
             'html_body' => $data['htmlBody'],
             'quotation_request_id' => $data['quotationRequestId'],
+            'intake_id' => $data['intakeId'],
             'contact_group_id' => $groupId ? $groupId : null
         ];
 
@@ -488,7 +535,7 @@ class EmailController
         $data['bcc'] = json_decode($data['bcc']);
 
         //to, cc, bcc example data:
-        //1,2, fren.dehaan@xaris.nl, @user_1, @user_2, 3, rob.rollenberg@xaris.nl
+        //1,2, fren.dehaan@xaris.nl, 3, rob.rollenberg@xaris.nl
 
         $sendVariations = ['to'];
         if ($data['cc'] != '') {
@@ -501,7 +548,8 @@ class EmailController
         foreach ($sendVariations as $sendVariation) {
             foreach ($data[$sendVariation] as $emailData) {
                 if (is_numeric($emailData)) {
-                    array_push($contactIds, $emailData);
+                    $contactId = EmailAddress::find($emailData)->contact_id;
+                    array_push($contactIds, $contactId);
                 }
             }
         }
@@ -540,6 +588,12 @@ class EmailController
     }
 
     public function setEmailStatus(Email $email, $emailStatusId){
+        //als hij van afgehandeld terug wordt gezet
+
+        if($email->status === 'closed' && $emailStatusId != 'closed'){
+            $email->closedBy()->dissociate();
+            $email->date_closed = null;
+        }
 
         $email->status = $emailStatusId;
 

@@ -48,3 +48,8 @@
 .dropdown-menu > li > a {
   text-align: left;
 }
+
+.btn-success:focus {
+  background-color: $brand-success !important;
+}
+

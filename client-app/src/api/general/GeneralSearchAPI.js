@@ -1,7 +1,5 @@
 import axios from 'axios';
 
-const URL_API = process.env.URL_API;
-
 export default {
     search: function (data) {
         const requestUrl = `${URL_API}/api/general-search`;

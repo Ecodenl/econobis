@@ -10,6 +10,7 @@ import validator from "validator";
 import moment from "moment/moment";
 import OrderProductsFormDelete from "./OrderProductsFormDelete";
 import OrderProductsFormEditProductOneTime from "./OrderProductsFormEditProductOneTime";
+import {setError} from "../../../../../actions/general/ErrorActions";
 
 class OrderProductsFormItem extends Component {
     constructor(props) {
@@ -28,6 +29,7 @@ class OrderProductsFormItem extends Component {
                 amount: false,
                 dateStart: false,
                 dateEnd: false,
+                variablePrice: false,
             },
         };
 
@@ -47,7 +49,13 @@ class OrderProductsFormItem extends Component {
     };
 
     toggleDelete = () => {
-        this.setState({showDelete: !this.state.showDelete});
+        if(this.props.orderDetails.canEdit) {
+            this.setState({showDelete: !this.state.showDelete});
+        }
+        else{
+            this.props.setError(405, 'Een order met daar aan gekoppeld een factuur met de status “Te verzenden” kan niet worden aangepast(de order zit in de map “Order – Te verzenden”). Wil je deze order toch aanpassen? Verwijder dan eerst de “Te verzenden” factuur. Dan kom deze order weer in de “Order – te factureren”.  Pas de order aan en maak vervolgens opnieuw de factuur.');
+        }
+
     };
 
     onLineEnter = () => {
@@ -65,7 +73,14 @@ class OrderProductsFormItem extends Component {
     };
 
     openEdit = () => {
-        this.setState({showEdit: true});
+        if(this.props.orderDetails.canEdit) {
+            this.setState({
+                showEdit: true,
+            })
+        }
+        else{
+            this.props.setError(405, 'Een order met daar aan gekoppeld een factuur met de status “Te verzenden” kan niet worden aangepast(de order zit in de map “Order – Te verzenden”). Wil je deze order toch aanpassen? Verwijder dan eerst de “Te verzenden” factuur. Dan kom deze order weer in de “Order – te factureren”.  Pas de order aan en maak vervolgens opnieuw de factuur.');
+        }
     };
 
     closeEdit = () => {
@@ -195,6 +210,14 @@ class OrderProductsFormItem extends Component {
             hasErrors = true;
         }
 
+        if(this.props.orderProduct.variablePrice !== null){
+            if (validator.isEmpty(orderProduct.variablePrice + '') || orderProduct.variablePrice === null) {
+                errors.variablePrice = true;
+                hasErrors = true;
+            }
+        }
+
+
         this.setState({...this.state, errors: errors});
 
         // If no errors send form
@@ -203,6 +226,25 @@ class OrderProductsFormItem extends Component {
             this.props.fetchOrderDetails(this.state.orderProduct.orderId);
             this.closeEdit();
         });
+    };
+
+    handleInputChangeVariablePrice = event => {
+        const target = event.target;
+        const value = target.type === 'checkbox' ? target.checked : target.value;
+        const name = target.name;
+
+        this.setState({
+                ...this.state,
+                price: value,
+                orderProduct: {
+                    ...this.state.orderProduct,
+                    [name]: value
+                },
+
+            },
+            this.updatePrice
+        );
+
     };
 
     render() {
@@ -229,6 +271,7 @@ class OrderProductsFormItem extends Component {
                         handleInputChangeStartDate={this.handleInputChangeStartDate}
                         handleSubmit={this.handleSubmit}
                         cancelEdit={this.cancelEdit}
+                        handleInputChangeVariablePrice={this.handleInputChangeVariablePrice}
                     />
                 }
                 {
@@ -262,6 +305,9 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = dispatch => ({
     fetchOrderDetails: (id) => {
         dispatch(fetchOrderDetails(id));
+    },
+    setError: (http_code, message) => {
+        dispatch(setError(http_code, message));
     },
 });
 

@@ -243,10 +243,6 @@ class TaskController extends Controller
 
     public function getRelatedEmails($id, $folder)
     {
-        $user = Auth::user();
-
-        $mailboxIds = $user->mailboxes()->pluck('mailbox_id');
-
-        return Email::whereIn('mailbox_id', $mailboxIds)->where('task_id', $id)->where('folder', $folder)->get();
+        return Email::where('task_id', $id)->where('folder', $folder)->get();
     }
 }

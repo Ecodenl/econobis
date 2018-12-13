@@ -4,6 +4,7 @@ import {connect} from 'react-redux';
 import OrderDetailsFormGeneralEdit from './OrderDetailsFormGeneralEdit';
 import OrderDetailsFormGeneralView from './OrderDetailsFormGeneralView';
 import OrderDetailsAPI from "../../../../../api/order/OrderDetailsAPI";
+import {setError} from "../../../../../actions/general/ErrorActions";
 
 class OrderDetailsFormGeneral extends Component {
     constructor(props) {
@@ -43,9 +44,14 @@ class OrderDetailsFormGeneral extends Component {
     };
 
     switchToEdit = () => {
-        this.setState({
-            showEdit: true,
-        })
+        if(this.props.orderDetails.canEdit) {
+            this.setState({
+                showEdit: true,
+            })
+        }
+        else{
+            this.props.setError(405, 'Een order met daar aan gekoppeld een factuur met de status “Te verzenden” kan niet worden aangepast(de order zit in de map “Order – Te verzenden”). Wil je deze order toch aanpassen? Verwijder dan eerst de “Te verzenden” factuur. Dan kom deze order weer in de “Order – te factureren”.  Pas de order aan en maak vervolgens opnieuw de factuur.');
+        }
     };
 
     switchToView = () => {
@@ -100,4 +106,11 @@ const mapStateToProps = (state) => {
     };
 };
 
-export default connect(mapStateToProps)(OrderDetailsFormGeneral);
+const mapDispatchToProps = dispatch => ({
+    setError: (http_code, message) => {
+        dispatch(setError(http_code, message));
+    },
+});
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(OrderDetailsFormGeneral);

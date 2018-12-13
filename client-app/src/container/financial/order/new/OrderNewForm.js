@@ -270,7 +270,7 @@ class OrderNewForm extends Component {
                                 readOnly={true}
                             />
                             <InputText
-                                label="Contact persoon email"
+                                label="Factuur wordt gemaild naar"
                                 value={this.state.contactEmail}
                                 name={'contactEmail'}
                                 readOnly={true}

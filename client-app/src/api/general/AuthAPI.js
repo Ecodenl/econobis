@@ -1,11 +1,10 @@
 import axios from 'axios';
-import {hashHistory} from "react-router";
 
-const URL_API = process.env.URL_API;
 const AUTH_KEY = {
     grant_type: process.env.GRANT_TYPE,
-    client_id: process.env.CLIENT_ID,
-    client_secret: process.env.CLIENT_SECRET
+    // CLIENT_ID and CLIENT_KEY is variabele from welcome.blade.php
+    client_id: CLIENT_ID,
+    client_secret: CLIENT_KEY,
 };
 
 export default {

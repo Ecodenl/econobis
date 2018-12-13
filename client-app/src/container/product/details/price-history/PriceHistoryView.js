@@ -8,9 +8,23 @@ const PriceHistoryView = props => {
     return (
         <div className={`row border ${props.highlightLine}`} onMouseEnter={() => props.onLineEnter()} onMouseLeave={() => props.onLineLeave()}>
             <div className="col-sm-3" > {dateStart ? moment(dateStart).format('L') : ''}</div>
-            <div className="col-sm-3" >{price ? '€' + price.toLocaleString('nl',{ minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''}</div>
+            {props.productHasVariablePrice === 'variable' ?
+                <div className="col-sm-3">Variabel</div>
+                :
+                <div className="col-sm-3">{price ? '€' + price.toLocaleString('nl', {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                }) : ''}</div>
+            }
             <div className="col-sm-2" >{(vatPercentage !== null) ? vatPercentage : 'Geen'}</div>
-            <div className="col-sm-2" >{priceInclVat ? '€' + priceInclVat.toLocaleString('nl',{ minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''}</div>
+            {props.productHasVariablePrice === 'variable' ?
+                <div className="col-sm-2">Variabel</div>
+                :
+                <div className="col-sm-2">{priceInclVat ? '€' + priceInclVat.toLocaleString('nl', {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                }) : ''}</div>
+            }
             <div className="col-sm-2">{(props.currentPrice &&id === props.currentPrice.id) ? 'Ja' : ''}</div>
         </div>
     );
@@ -18,7 +32,8 @@ const PriceHistoryView = props => {
 
 const mapStateToProps = (state) => {
     return {
-        currentPrice: state.productDetails.currentPrice
+        currentPrice: state.productDetails.currentPrice,
+        productHasVariablePrice: state.productDetails.hasVariablePrice
     }
 };
 

@@ -202,7 +202,6 @@ class WebformTest extends TestCase
             'title_id' => '1',
             'organisation_id' => '1',
             'date_of_birth' => '1993-01-01 00:00:00',
-            'primary' => false,
         ], array_intersect_key($person->toArray(), array_flip(['contact_id', 'initials', 'first_name', 'last_name', 'last_name_prefix', 'title_id', 'organisation_id', 'date_of_birth', 'primary'])));
 
         $occupationContact = OccupationContact::find(1);

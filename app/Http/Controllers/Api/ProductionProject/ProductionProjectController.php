@@ -206,11 +206,7 @@ class ProductionProjectController extends ApiController
 
     public function getRelatedEmails($id, $folder)
     {
-        $user = Auth::user();
-
-        $mailboxIds = $user->mailboxes()->pluck('mailbox_id');
-
-        return Email::whereIn('mailbox_id', $mailboxIds)->where('production_project_id', $id)->where('folder', $folder)->get();
+        return Email::where('production_project_id', $id)->where('folder', $folder)->get();
     }
 
     public function getActive(){

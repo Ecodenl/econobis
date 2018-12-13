@@ -1,6 +1,5 @@
 import axios from 'axios';
 
-const URL_API = process.env.URL_API;
 const URL_PARTICIPANT_TRANSACTION = `${URL_API}/api/production-project/participant/transaction`;
 
 export default {

@@ -10,6 +10,14 @@
 </head>
 <body>
 <script type="text/javascript" src="./js/polyfill.js"></script>
+
+<script type="text/javascript">
+    // Set some global JS variables
+    var URL_API ="{{ config('app.url_api') }}";
+    var CLIENT_ID ="{{ config('app.oauth_client_id') }}";
+    var CLIENT_KEY ="{{ $clientKey }}";
+</script>
+
 <div id="root"></div>
-<script type="text/javascript" src="./js/vendors~bundle.33da30442147b561417f.js"></script><script type="text/javascript" src="./js/bundle.fd807026d6b5242ae1f8.js"></script></body>
+<script type="text/javascript" src="./js/vendors~bundle.537478177bcb154b4711.js"></script><script type="text/javascript" src="./js/bundle.26b169ff2322a32da585.js"></script></body>
 </html>

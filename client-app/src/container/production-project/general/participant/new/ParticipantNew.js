@@ -13,7 +13,7 @@ import InputToggle from "../../../../../components/form/InputToggle";
 const ParticipantNew = props => {
     const {
         contactId, statusId, productionProjectId, dateRegister, participationsRequested, participationsGranted, participationsSold, participationsRestSale,
-        dateContractSend, dateContractRetour, datePayed, ibanPayed, didAcceptAgreement, ibanAttn, giftedByContactId, ibanPayout, legalRepContactId, ibanPayoutAttn, dateEnd,
+        dateContractSend, dateContractRetour, datePayed, didAcceptAgreement, giftedByContactId, ibanPayout, legalRepContactId, ibanPayoutAttn, dateEnd,
         typeId, powerKwhConsumption
     } = props.participation;
 
@@ -131,28 +131,10 @@ const ParticipantNew = props => {
                     value={datePayed}
                     onChangeAction={props.handleInputChangeDate}
                 />
-                <InputText
-                    divClassName={'field-to-be-removed'}
-                    label={"IBAN betaald"}
-                    name={"ibanPayed"}
-                    value={ibanPayed}
-                    onChangeAction={props.handleInputChange}
-                    error={props.errors.ibanPayed}
-                />
-            </div>
-
-            <div className="row">
                 <InputToggle
                     label={"Akkoord reglement"}
                     name={"didAcceptAgreement"}
                     value={didAcceptAgreement}
-                    onChangeAction={props.handleInputChange}
-                />
-                <InputText
-                    divClassName={'field-to-be-removed'}
-                    label={"IBAN t.n.v."}
-                    name={"ibanAttn"}
-                    value={ibanAttn}
                     onChangeAction={props.handleInputChange}
                 />
             </div>

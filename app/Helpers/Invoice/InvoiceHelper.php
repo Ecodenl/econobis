@@ -34,8 +34,12 @@ class InvoiceHelper
 
             $price = 0;
             if($orderProduct->product->currentPrice){
-                $price = $orderProduct->product->currentPrice->price;
-
+                if($orderProduct->product->currentPrice->has_variable_price) {
+                    $price = $orderProduct->variable_price;
+                }
+                else{
+                    $price = $orderProduct->product->currentPrice->price;
+                }
                 switch ($orderProduct->product->invoice_frequency_id){
                     case 'monthly':
                         $price = $price * 12;
@@ -213,6 +217,7 @@ class InvoiceHelper
                 $invoice->document->name));
 
             $invoice->emailed_to = $contactInfo['email'];
+
             $invoice->save();
         }
 

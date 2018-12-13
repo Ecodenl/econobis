@@ -13,6 +13,9 @@ class DynamicContactGroupFilter extends Model
     protected $table = 'dynamic_contact_group_filter';
     protected $guarded = ['id'];
 
+    //Niet weghalen! Deze model heeft zelf geen resource
+    protected $appends = ['dataName'];
+
     public function contactGroup()
     {
         return $this->belongsTo(ContactGroup::class);

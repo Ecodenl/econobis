@@ -144,11 +144,7 @@ class ContactController extends Controller
 
     public function getRelatedEmails(Contact $contact, $id, $folder)
     {
-        $user = Auth::user();
-
-        $mailboxIds = $user->mailboxes()->pluck('mailbox_id');
-
-        return $contact->emails()->whereIn('mailbox_id', $mailboxIds)->where('contact_id', $id)->where('folder', $folder)->get();
+        return $contact->emails()->where('contact_id', $id)->where('folder', $folder)->get();
     }
 
     // Data for dashboard chart

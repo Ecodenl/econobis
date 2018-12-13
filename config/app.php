@@ -5,7 +5,7 @@ return [
     //Version number displayed in the header, change this with every update
     'version_major' => '2',
     'version_minor' => '2',
-    'version_fix' => '0',
+    'version_fix' => '9',
 
     //Alfresco envs
     'ALFRESCO_ADMIN_USERNAME' => env('ALFRESCO_ADMIN_USERNAME'),
@@ -144,6 +144,22 @@ return [
     'log' => env('APP_LOG', 'single'),
 
     'log_level' => env('APP_LOG_LEVEL', 'debug'),
+
+    /*
+    |--------------------------------------------------------------------------
+    | API configuration
+    |--------------------------------------------------------------------------
+    |
+    | The url_api is the standard url which can be used as base url for
+    | api calls from a front-end application. The oauth_client_id
+    | is also needed as parameter when you call the api. Both settings are
+    | used to set as variable in the body of the homepage.
+    |
+    */
+
+    'url_api' => env('URL_API', env('APP_URL')),
+
+    'oauth_client_id' => env('OAUTH_CLIENT_ID', '2'),
 
     /*
     |--------------------------------------------------------------------------

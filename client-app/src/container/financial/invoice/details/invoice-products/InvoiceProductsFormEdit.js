@@ -10,7 +10,7 @@ import moment from "moment/moment";
 moment.locale('nl');
 
 const InvoiceProductsFormEdit = props => {
-    const {product, description, amount, amountReduction, percentageReduction, dateLastInvoice} = props.invoiceProduct;
+    const {product, description, amount, amountReduction, percentageReduction, dateLastInvoice, variablePrice} = props.invoiceProduct;
 
     return (
         <div>
@@ -63,15 +63,25 @@ const InvoiceProductsFormEdit = props => {
                                 value={percentageReduction}
                                 onChangeAction={props.handleInputChange}
                             />
-                            <InputText
-                                label={"Bedrag"}
-                                name={"price"}
-                                value={'€' + props.invoiceProduct.product.priceInclVat.toLocaleString('nl', {
-                                    minimumFractionDigits: 2,
-                                    maximumFractionDigits: 2
-                                })}
-                                readOnly={true}
-                            />
+                            {props.productVariablePrice ?
+                                <InputText
+                                    label={"Prijs ex. BTW"}
+                                    type={'number'}
+                                    name={"variablePrice"}
+                                    value={variablePrice}
+                                    onChangeAction={props.handleInputChangeVariablePrice}
+                                />
+                                :
+                                <InputText
+                                    label={"Prijs incl. BTW"}
+                                    name={"price"}
+                                    value={'€' + props.invoiceProduct.product.priceInclVat.toLocaleString('nl', {
+                                        minimumFractionDigits: 2,
+                                        maximumFractionDigits: 2
+                                    })}
+                                    readOnly={true}
+                                />
+                            }
                         </div>
 
                         <div className="row">

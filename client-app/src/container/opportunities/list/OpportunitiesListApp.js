@@ -1,13 +1,20 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
+import React, {Component} from 'react';
+import {connect} from 'react-redux';
+import {bindActionCreators} from 'redux';
 
-import { fetchOpportunities, clearOpportunities, setCheckedOpportunityAll } from '../../../actions/opportunity/OpportunitiesActions';
-import { setOpportunitiesPagination } from '../../../actions/opportunity/OpportunitiesPaginationActions';
-import { clearFilterOpportunity } from '../../../actions/opportunity/OpportunitiesFiltersActions';
+import {
+    clearOpportunities, fetchOpportunities,
+    setCheckedOpportunityAll
+} from '../../../actions/opportunity/OpportunitiesActions';
+import {setOpportunitiesPagination} from '../../../actions/opportunity/OpportunitiesPaginationActions';
+import {clearFilterOpportunity} from '../../../actions/opportunity/OpportunitiesFiltersActions';
 import OpportunitiesListToolbar from './OpportunitiesListToolbar';
 import OpportunitiesList from './OpportunitiesList';
 import filterHelper from "../../../helpers/FilterHelper";
+import moment from "moment/moment";
+import fileDownload from "js-file-download";
+import {blockUI, unblockUI} from '../../../actions/general/BlockUIActions';
+import OpportunitiesAPI from "../../../api/opportunity/OpportunitiesAPI";
 
 class OpportunitiesListApp extends Component {
     constructor(props){
@@ -21,6 +28,7 @@ class OpportunitiesListApp extends Component {
         this.fetchOpportunitiesData = this.fetchOpportunitiesData.bind(this);
         this.resetOpportunitiesFilters = this.resetOpportunitiesFilters.bind(this);
         this.handlePageClick = this.handlePageClick.bind(this);
+        this.getCSV = this.getCSV.bind(this);
     }
 
     componentDidMount() {
@@ -29,6 +37,21 @@ class OpportunitiesListApp extends Component {
 
     componentWillUnmount() {
         this.props.clearOpportunities();
+    };
+
+    getCSV = () => {
+        this.props.blockUI();
+        setTimeout(() => {
+            const filters = filterHelper(this.props.opportunitiesFilters);
+            const sorts = this.props.opportunitiesSorts;
+
+            OpportunitiesAPI.getCSV({filters, sorts}).then((payload) => {
+                fileDownload(payload.data, 'Kansen-' + moment().format("YYYY-MM-DD HH:mm:ss") +  '.csv');
+                this.props.unblockUI();
+            }).catch((error) => {
+                this.props.unblockUI();
+            });
+        },100 );
     };
 
     fetchOpportunitiesData() {
@@ -88,6 +111,7 @@ class OpportunitiesListApp extends Component {
                             <OpportunitiesListToolbar
                                 toggleShowCheckboxList={() => this.toggleShowCheckboxList()}
                                 resetOpportunitiesFilters={() => this.resetOpportunitiesFilters()}
+                                getCSV={this.getCSV}
                             />
                         </div>
                         <div className="col-md-12 margin-10-top">
@@ -119,7 +143,7 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = (dispatch) => {
-    return bindActionCreators({ fetchOpportunities, clearOpportunities, setOpportunitiesPagination, setCheckedOpportunityAll, clearFilterOpportunity }, dispatch);
+    return bindActionCreators({ fetchOpportunities, clearOpportunities, setOpportunitiesPagination, setCheckedOpportunityAll, clearFilterOpportunity, blockUI, unblockUI }, dispatch);
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(OpportunitiesListApp);

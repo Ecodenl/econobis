@@ -28,3 +28,12 @@ export function* deleteMailboxUserSaga({ mailboxId, userId }) {
         yield put({ type: 'DELETE_MAILBOX_USER_ERROR', error });
     }
 }
+
+export function* deleteMailboxIgnoreSaga({ ignoreId }) {
+    try {
+        yield call(MailboxAPI.deleteIgnore, ignoreId);
+        yield put({ type: 'DELETE_MAILBOX_IGNORE_SUCCESS', ignoreId });
+    } catch (error) {
+        yield put({ type: 'DELETE_MAILBOX_IGNORE_ERROR', error });
+    }
+}

@@ -104,6 +104,7 @@ const InvoicesListFilter = props => {
             </th>
             <th/>
             <th/>
+            <th/>
         </tr>
     );
 };

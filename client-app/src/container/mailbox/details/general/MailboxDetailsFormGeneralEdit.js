@@ -141,6 +141,7 @@ class MailboxDetailsFormGeneralEdit extends Component {
                                 error={this.state.errors.username}
                             />
                             <InputText
+                                type={"password"}
                                 label={"Wachtwoord"}
                                 name={"password"}
                                 value={password}

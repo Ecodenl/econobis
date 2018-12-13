@@ -35,13 +35,24 @@ class OrderProduct extends Model
     {
         $price = 0;
 
+        if($this->variable_price) {
+            $productPrice = $this->variable_price;
+
+            $vatPercentage = $this->product->currentPrice->vat_percentage;
+
+
+            if($vatPercentage !== null && $vatPercentage !== 0){
+                $productPrice = $productPrice + ($productPrice*($vatPercentage / 100));
+            }
+        }
+        else{
+            $productPrice = $this->product->price_incl_vat;
+        }
+
         $price += ($this->amount
-            * $this->product->price_incl_vat);
+            * $productPrice);
 
         if ($this->percentage_reduction) {
-            if ($this->percentage_reduction >= 100) {
-                return 0;
-            }
             $price = ($price * ((100 - $this->percentage_reduction)
                     / 100));
         }
@@ -60,13 +71,17 @@ class OrderProduct extends Model
 
         if(!$this->product->current_price) return 0;
 
+        if($this->variable_price) {
+            $productPrice = $this->variable_price;
+        }
+        else{
+            $productPrice = $this->product->current_price->price;
+        }
+
         $price += ($this->amount
-            * $this->product->current_price->price);
+            * $productPrice);
 
         if ($this->percentage_reduction) {
-            if ($this->percentage_reduction >= 100) {
-                return 0;
-            }
             $price = ($price * ((100 - $this->percentage_reduction)
                     / 100));
         }

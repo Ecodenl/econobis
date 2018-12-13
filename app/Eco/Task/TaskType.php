@@ -6,5 +6,4 @@ use Illuminate\Database\Eloquent\Model;
 
 class TaskType extends Model
 {
-    public $timestamps = false;
 }

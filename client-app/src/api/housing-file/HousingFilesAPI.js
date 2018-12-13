@@ -1,7 +1,5 @@
 import axios from 'axios';
 
-const URL_API = process.env.URL_API;
-
 export default {
     fetchHousingFiles: ({ filters, sorts, pagination }) => {
         const requestUrl = `${URL_API}/api/housing-file/grid`;

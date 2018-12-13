@@ -96,28 +96,7 @@ class EmailController
         $email->cc = [];
         $email->bcc = [];
 
-        $firstName = false;
-
-        //als er 1 contact gekoppeld is aanhef invullen
-        if($email->contacts()->count() === 1){
-            $contact = $email->contacts()->first();
-
-            if($contact->type_id == 'person'){
-                $firstName = $contact->person->first_name;
-            }
-            elseif($contact->type_id == 'organisation'){
-                $firstName = $contact->full_name;
-            }
-        }
-
-        //add extra data to html body
-        if($firstName){
-            $email->html_body = '<p>Beste ' . $firstName . ',<p></p><p></p></p><p></p><p>Oorspronkelijk bericht:</p> ' . $email->html_body;
-        }
-        else{
-            $email->html_body = '<p></p> <p>Oorspronkelijk bericht:</p> ' . $email->html_body;
-        }
-
+        $email->html_body = '<p></p><p>Oorspronkelijk bericht:</p> ' . $email->html_body;
 
         return FullEmail::make($email);
     }
@@ -157,27 +136,7 @@ class EmailController
         $email->cc = $cc;
         $email->bcc = [];
 
-        $firstName = false;
-
-        //als er 1 contact gekoppeld is aanhef invullen
-        if($email->contacts()->count() === 1){
-            $contact = $email->contacts()->first();
-
-            if($contact->type_id == 'person'){
-                $firstName = $contact->person->first_name;
-            }
-            elseif($contact->type_id == 'organisation'){
-                $firstName = $contact->full_name;
-            }
-        }
-
-        //add extra data to html body
-        if($firstName){
-            $email->html_body = '<p>Beste ' . $firstName . ',<p></p><p></p></p><p></p><p>Oorspronkelijk bericht:</p> ' . $email->html_body;
-        }
-        else{
-            $email->html_body = '<p></p><p>Oorspronkelijk bericht:</p> ' . $email->html_body;
-        }
+        $email->html_body = '<p></p><p>Oorspronkelijk bericht:</p> ' . $email->html_body;
 
         return FullEmail::make($email);
     }

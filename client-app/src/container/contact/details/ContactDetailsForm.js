@@ -34,10 +34,26 @@ class ContactDetailsForm extends Component {
 
     render() {
         const { typeId } = this.props.contactDetails;
+        let loadingText = '';
+        let loading = true;
+
+        if (this.props.hasError) {
+            loadingText = 'Fout bij het ophalen van contact.';
+        }
+        else if (this.props.isLoading) {
+            loadingText = 'Gegevens aan het laden.';
+        }
+        else if (isEmpty(this.props.contactDetails)) {
+            loadingText = 'Geen gegevens gevonden.';
+        }
+        else {
+            loading = false;
+        }
+
 
         return (
-            isEmpty(this.props.contactDetails) ?
-                <div>Geen gegevens gevonden.</div>
+            loading ?
+                <div>{loadingText}</div>
                 :
                 <div>
                     <ContactDetailsFormGeneral />
@@ -65,6 +81,8 @@ class ContactDetailsForm extends Component {
 const mapStateToProps = (state) => {
     return {
         contactDetails: state.contactDetails,
+        isLoading: state.loadingData.isLoading,
+        hasError: state.loadingData.hasError,
     };
 };
 

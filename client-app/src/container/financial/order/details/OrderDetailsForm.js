@@ -14,9 +14,26 @@ class OrderDetailsForm extends Component {
     };
 
     render() {
+
+        let loadingText = '';
+        let loading = true;
+
+        if (this.props.hasError) {
+            loadingText = 'Fout bij het ophalen van order.';
+        }
+        else if (this.props.isLoading) {
+            loadingText = 'Gegevens aan het laden.';
+        }
+        else if (isEmpty(this.props.orderDetails)) {
+            loadingText = 'Geen order gevonden!';
+        }
+        else {
+            loading = false;
+        }
+
         return (
-            isEmpty(this.props.orderDetails) ?
-                <div>Geen gegevens gevonden.</div>
+            loading ?
+                <div>{loadingText}</div>
                 :
                 <div>
                     <OrderDetailsFormGeneral />
@@ -30,6 +47,8 @@ class OrderDetailsForm extends Component {
 const mapStateToProps = (state) => {
     return {
         orderDetails: state.orderDetails,
+        isLoading: state.loadingData.isLoading,
+        hasError: state.loadingData.hasError,
     };
 };
 

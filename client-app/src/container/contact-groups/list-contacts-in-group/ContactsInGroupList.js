@@ -6,6 +6,7 @@ import DataTableBody from '../../../components/dataTable/DataTableBody';
 import ContactsInGroupListHead from './ContactsInGroupListHead';
 import ContactsInGroupListItem from './ContactsInGroupListItem';
 import ContactsInGroupDeleteItem from './ContactsInGroupDeleteItem';
+import {connect} from "react-redux";
 
 class ContactsInGroupList extends Component {
     constructor(props){
@@ -45,6 +46,23 @@ class ContactsInGroupList extends Component {
     };
 
     render() {
+
+        let loadingText = '';
+        let loading = true;
+
+        if (this.props.hasError) {
+            loadingText = 'Fout bij het ophalen van contact in groep.';
+        }
+        else if (this.props.isLoading) {
+            loadingText = 'Gegevens aan het laden.';
+        }
+        else if (this.props.contactsInGroup.length === 0) {
+            loadingText = 'Geen contact in groep gevonden!';
+        }
+        else {
+            loading = false;
+        }
+
         return (
             <div>
                 <div className="row">
@@ -62,8 +80,8 @@ class ContactsInGroupList extends Component {
                         </DataTableHead>
                         <DataTableBody>
                             {
-                                this.props.contactsInGroup.length === 0 ? (
-                                    <tr><td colSpan={11}>Geen contacten gevonden!</td></tr>
+                                loading ? (
+                                    <tr><td colSpan={11}>{loadingText}</td></tr>
                                 ) : (
                                     this.props.contactsInGroup.map((contactInGroup) => {
                                         return <ContactsInGroupListItem
@@ -90,4 +108,11 @@ class ContactsInGroupList extends Component {
     }
 };
 
-export default ContactsInGroupList;
+const mapStateToProps = (state) => {
+    return {
+        isLoading: state.loadingData.isLoading,
+        hasError: state.loadingData.hasError,
+    }
+};
+
+export default connect(mapStateToProps)(ContactsInGroupList);

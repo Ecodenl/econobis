@@ -6,6 +6,7 @@ import DataTableBody from '../../../components/dataTable/DataTableBody';
 import DataTableHeadTitle from '../../../components/dataTable/DataTableHeadTitle';
 import ProductsListItem from './ProductsListItem';
 import ProductDeleteItem from "./ProductDeleteItem";
+import {connect} from "react-redux";
 
 class ProductsList extends Component {
     constructor(props) {
@@ -45,6 +46,23 @@ class ProductsList extends Component {
     };
 
     render() {
+
+        let loadingText = '';
+        let loading = true;
+
+        if (this.props.hasError) {
+            loadingText = 'Fout bij het ophalen van producten.';
+        }
+        else if (this.props.isLoading) {
+            loadingText = 'Gegevens aan het laden.';
+        }
+        else if (this.props.products.length === 0) {
+            loadingText = 'Geen producten gevonden!';
+        }
+        else {
+            loading = false;
+        }
+
         return (
             <div>
                 <DataTable>
@@ -61,9 +79,9 @@ class ProductsList extends Component {
                     </DataTableHead>
                     <DataTableBody>
                         {
-                            this.props.products.length === 0 ? (
+                            loading ? (
                                 <tr>
-                                    <td colSpan={7}>Geen producten gevonden!</td>
+                                    <td colSpan={7}>{loadingText}</td>
                                 </tr>
                             ) : (
                                 this.props.products.map((product) => {
@@ -90,4 +108,11 @@ class ProductsList extends Component {
     }
 };
 
-export default ProductsList;
+const mapStateToProps = (state) => {
+    return {
+        isLoading: state.loadingData.isLoading,
+        hasError: state.loadingData.hasError,
+    }
+};
+
+export default connect(mapStateToProps)(ProductsList);

@@ -49,7 +49,23 @@ class CampaignsList extends Component {
     };
 
     render() {
-        const { data = [], meta = {}, isLoading } = this.props.campaigns;
+        const { data = [], meta = {} } = this.props.campaigns;
+
+        let loadingText = '';
+        let loading = true;
+
+        if (this.props.hasError) {
+            loadingText = 'Fout bij het ophalen van campagnes.';
+        }
+        else if (this.props.isLoading) {
+            loadingText = 'Gegevens aan het laden.';
+        }
+        else if (data.length === 0) {
+            loadingText = 'Geen campagnes gevonden!';
+        }
+        else {
+            loading = false;
+        }
 
         return (
         <div>
@@ -68,9 +84,9 @@ class CampaignsList extends Component {
                 </DataTableHead>
                 <DataTableBody>
                     {
-                        data.length === 0 ? (
+                        loading ? (
                             <tr>
-                                <td colSpan={9}>Geen campagnes gevonden!</td>
+                                <td colSpan={9}>{loadingText}</td>
                             </tr>
                         ) : (
                             data.map(campaign => (
@@ -108,6 +124,8 @@ const mapStateToProps = (state) => {
     return {
         campaigns: state.campaigns.list,
         campaignsPagination: state.campaigns.pagination,
+        isLoading: state.loadingData.isLoading,
+        hasError: state.loadingData.hasError,
     };
 };
 

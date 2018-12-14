@@ -12,9 +12,24 @@ class EmailTemplateDetailsForm extends Component {
     };
 
     render() {
+        let loadingText = '';
+        let loading = true;
+
+        if (this.props.hasError) {
+            loadingText = 'Fout bij het ophalen van e-mailtemplate.';
+        }
+        else if (this.props.isLoading) {
+            loadingText = 'Gegevens aan het laden.';
+        }
+        else if (isEmpty(this.props.emailTemplate)) {
+            loadingText = 'Geen e-mailtemplate gevonden!';
+        }
+        else {
+            loading = false;
+        }
         return (
-            isEmpty(this.props.emailTemplate) ?
-                <div>Geen gegevens gevonden.</div>
+            loading ?
+                <div>{loadingText}</div>
                 :
                 <div>
                     <EmailTemplateFormGeneral />
@@ -26,6 +41,8 @@ class EmailTemplateDetailsForm extends Component {
 const mapStateToProps = (state) => {
     return {
         emailTemplate: state.emailTemplate,
+        isLoading: state.loadingData.isLoading,
+        hasError: state.loadingData.hasError,
     };
 };
 

@@ -14,10 +14,24 @@ class OpportunityDetailsForm extends Component {
 
 
     render() {
+        let loadingText = '';
+        let loading = true;
 
+        if (this.props.hasError) {
+            loadingText = 'Fout bij het ophalen van kans.';
+        }
+        else if (this.props.isLoading) {
+            loadingText = 'Gegevens aan het laden.';
+        }
+        else if (isEmpty(this.props.opportunity)) {
+            loadingText = 'Geen kans gevonden!';
+        }
+        else {
+            loading = false;
+        }
         return (
-            isEmpty(this.props.opportunity) ?
-                <div>Geen gegevens gevonden.</div>
+            loading  ?
+                <div>{loadingText}</div>
                 :
                 <div>
                     <OpportunityFormGeneral />
@@ -32,6 +46,8 @@ class OpportunityDetailsForm extends Component {
 const mapStateToProps = (state) => {
     return {
         opportunity: state.opportunityDetails,
+        isLoading: state.loadingData.isLoading,
+        hasError: state.loadingData.hasError,
     }
 };
 

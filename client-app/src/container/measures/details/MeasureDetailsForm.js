@@ -15,10 +15,25 @@ class MeasureDetailsForm extends Component {
 
 
     render() {
+        let loadingText = '';
+        let loading = true;
+
+        if (this.props.hasError) {
+            loadingText = 'Fout bij het ophalen van maatregel.';
+        }
+        else if (this.props.isLoading) {
+            loadingText = 'Gegevens aan het laden.';
+        }
+        else if (isEmpty(this.props.measureDetails)) {
+            loadingText = 'Geen maatregel gevonden!';
+        }
+        else {
+            loading = false;
+        }
 
         return (
-            isEmpty(this.props.measureDetails) ?
-                <div>Geen gegevens gevonden.</div>
+            loading ?
+                <div>{loadingText}</div>
                 :
                 <div>
                     <MeasureFormGeneral />
@@ -33,6 +48,8 @@ class MeasureDetailsForm extends Component {
 const mapStateToProps = (state) => {
     return {
         measureDetails: state.measureDetails,
+        isLoading: state.loadingData.isLoading,
+        hasError: state.loadingData.hasError,
     }
 };
 

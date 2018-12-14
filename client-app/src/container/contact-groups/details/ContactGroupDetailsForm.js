@@ -10,9 +10,24 @@ class ContactGroupDetailsForm extends Component {
     };
 
     render() {
+        let loadingText = '';
+        let loading = true;
+
+        if (this.props.hasError) {
+            loadingText = 'Fout bij het ophalen van groep.';
+        }
+        else if (isEmpty(this.props.contactGroupDetails)) {
+            loadingText = 'Gegevens aan het laden.';
+        }
+        else if (isEmpty(this.props.contactGroupDetails)) {
+            loadingText = 'Geen groep gevonden!';
+        }
+        else {
+            loading = false;
+        }
         return (
-            isEmpty(this.props.contactGroupDetails) ?
-                <div>Geen gegevens gevonden.</div>
+            loading ?
+                <div>{loadingText}</div>
                 :
                 <div>
                     <ContactGroupDetailsFormGeneral
@@ -25,6 +40,8 @@ class ContactGroupDetailsForm extends Component {
 const mapStateToProps = (state) => {
     return {
         contactGroupDetails: state.contactGroupDetails,
+        isLoading: state.loadingData.isLoading,
+        hasError: state.loadingData.hasError,
     };
 };
 

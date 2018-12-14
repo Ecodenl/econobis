@@ -40,8 +40,9 @@ class ContactDetailsToolbar extends Component {
                                         <ButtonIcon iconName={"glyphicon-trash"} onClickAction={this.toggleDelete}/>
                                     }
                                 </div>
-                            </div>
+                            </div>{!this.props.isLoading &&
                             <div className="col-md-4"><h4 className="text-center text-success margin-small"><strong>{this.props.fullName || 'Nieuw'} ({type.name})</strong></h4></div>
+                               }
                             <div className="col-md-4" />
                         </PanelBody>
                     </Panel>
@@ -66,6 +67,7 @@ const mapStateToProps = (state) => {
         id: state.contactDetails.id,
         type: state.contactDetails.type,
         permissions: state.meDetails.permissions,
+        isLoading: state.loadingData.isLoading,
     }
 };
 

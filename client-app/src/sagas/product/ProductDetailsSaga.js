@@ -3,10 +3,13 @@ import ProductDetailsAPI from '../../api/product/ProductDetailsAPI';
 
 export function* fetchProductDetailsSaga({ id }) {
     try {
+        yield put({ type: 'IS_LOADING' });
         const productDetails = yield call(ProductDetailsAPI.fetchProductDetails, id);
         yield put({ type: 'FETCH_PRODUCT_DETAILS_SUCCESS',productDetails });
+        yield put({ type: 'IS_LOADING_COMPLETE' });
     } catch (error) {
         yield put({ type: 'FETCH_PRODUCT_DETAILS_ERROR', error });
+        yield put({ type: 'LOADING_ERROR', error });
     }
 }
 

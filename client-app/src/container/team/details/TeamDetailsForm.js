@@ -5,8 +5,6 @@ import { isEmpty } from 'lodash';
 import { fetchTeamDetails } from '../../../actions/team/TeamDetailsActions';
 import TeamDetailsFormGeneral from './general/TeamDetailsFormGeneral';
 import TeamDetailsUsers from './team-users/TeamDetailsUsers';
-import Panel from "../../../components/panel/Panel";
-import PanelHeader from "../../../components/panel/PanelHeader";
 
 class TeamDetailsForm extends Component {
     constructor(props){
@@ -14,9 +12,26 @@ class TeamDetailsForm extends Component {
     };
 
     render() {
+
+        let loadingText = '';
+        let loading = true;
+
+        if (this.props.hasError) {
+            loadingText = 'Fout bij het ophalen van team.';
+        }
+        else if (this.props.isLoading) {
+            loadingText = 'Gegevens aan het laden.';
+        }
+        else if (isEmpty(this.props.teamDetails)) {
+            loadingText = 'Geen team gevonden!';
+        }
+        else {
+            loading = false;
+        }
+
         return (
-            isEmpty(this.props.teamDetails) ?
-                <div>Geen gegevens gevonden.</div>
+            loading ?
+                <div>{loadingText}</div>
                 :
                 <div>
                     <TeamDetailsFormGeneral />
@@ -29,6 +44,8 @@ class TeamDetailsForm extends Component {
 const mapStateToProps = (state) => {
     return {
         teamDetails: state.teamDetails,
+        isLoading: state.loadingData.isLoading,
+        hasError: state.loadingData.hasError,
     };
 };
 

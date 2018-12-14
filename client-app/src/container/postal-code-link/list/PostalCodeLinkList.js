@@ -7,6 +7,7 @@ import DataTableHeadTitle from '../../../components/dataTable/DataTableHeadTitle
 import PostalCodeLinkListItem from './PostalCodeLinkListItem';
 import PostalCodeLinkDeleteItem from "./PostalCodeLinkDeleteItem";
 import PostalCodeLinkNewForm from "./PostalCodeLinkNewForm";
+import {connect} from "react-redux";
 
 class PostalCodeLinkList extends Component {
     constructor(props) {
@@ -49,6 +50,23 @@ class PostalCodeLinkList extends Component {
     };
 
     render() {
+
+        let loadingText = '';
+        let loading = true;
+
+        if (this.props.hasError) {
+            loadingText = 'Fout bij het ophalen van postcoderoos.';
+        }
+        else if (this.props.isLoading) {
+            loadingText = 'Gegevens aan het laden.';
+        }
+        else if (this.props.postalCodeLinks.length === 0) {
+            loadingText = 'Geen postcoderoos gevonden!';
+        }
+        else {
+            loading = false;
+        }
+
         return (
             <div>
                 {
@@ -70,9 +88,9 @@ class PostalCodeLinkList extends Component {
                     </DataTableHead>
                     <DataTableBody>
                         {
-                            this.props.postalCodeLinks.length === 0 ? (
+                            loading ? (
                                 <tr>
-                                    <td colSpan={11}>Geen postcodes gevonden!</td>
+                                    <td colSpan={11}>{loadingText}</td>
                                 </tr>
                             ) : (
                                 this.props.postalCodeLinks.map((postalCodeLink) => {
@@ -100,4 +118,11 @@ class PostalCodeLinkList extends Component {
     }
 };
 
-export default PostalCodeLinkList;
+const mapStateToProps = (state) => {
+    return {
+        isLoading: state.loadingData.isLoading,
+        hasError: state.loadingData.hasError,
+    }
+};
+
+export default connect(mapStateToProps)(PostalCodeLinkList);

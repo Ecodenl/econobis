@@ -7,7 +7,7 @@ import PanelBody from '../../../components/panel/PanelBody';
 import ButtonIcon from '../../../components/button/ButtonIcon';
 
 const MeasureDetailsToolbar = ({ measureDetails }) => {
-    const { measureCategory = {} } = measureDetails;
+    const { measureCategory } = measureDetails;
 
     return (
         <div className="row">

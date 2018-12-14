@@ -301,7 +301,7 @@
             @if($invoiceProduct->percentage_reduction)
                 <tr>
                     <td colspan="4">Korting {{ $invoiceProduct->percentage_reduction }}%</td>
-                    <td class="align-right"><span class="euro-sign">- €</span>{{ abs(number_format((($invoiceProduct->percentage_reduction/100) * ($invoiceProduct->price * $invoiceProduct->amount)), 2, ',', '.')) }}</td>
+                    <td class="align-right"><span class="euro-sign">- €</span>{{ number_format(abs((($invoiceProduct->percentage_reduction/100) * ($invoiceProduct->price * $invoiceProduct->amount))), 2, ',', '.') }}</td>
                 </tr>
             @endif
             <tr>

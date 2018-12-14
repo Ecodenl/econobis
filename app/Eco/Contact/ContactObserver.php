@@ -53,7 +53,8 @@ class ContactObserver
     }
 
     public function saved(Contact $contact){
-        foreach (Administration::where('twinfield_is_valid')->where('uses_twinfield')->get() as $administration) {
+        foreach (Administration::where('twinfield_is_valid', 1)->where('uses_twinfield', 1)->get() as $administration) {
+
             $twinfieldCustomerHelper = new TwinfieldCustomerHelper($administration);
             $twinfieldCustomerHelper->createCustomer($contact);
         }

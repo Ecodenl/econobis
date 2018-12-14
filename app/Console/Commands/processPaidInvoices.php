@@ -40,7 +40,7 @@ class processPaidInvoices extends Command
      */
     public function handle()
     {
-        foreach (Administration::where('twinfield_is_valid')->where('uses_twinfield')->get() as $administration) {
+        foreach (Administration::where('twinfield_is_valid', 1)->where('uses_twinfield', 1)->get() as $administration) {
             $twinfieldInvoiceHelper = new TwinfieldInvoiceHelper($administration);
             $twinfieldInvoiceHelper->processPaidInvoices();
         }

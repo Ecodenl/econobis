@@ -106,6 +106,10 @@ class InvoicesListItem extends Component {
             hideRowClass = 'hide';
         }
 
+        if((this.props.onlyEmailInvoices || this.props.onlyPostInvoices) && this.props.totalPriceInclVatAndReduction < 0 && this.props.paymentTypeId === 'collection'){
+            hideRowClass = 'hide';
+        }
+
         const { id, number, date, subject, orderContactFullName, paymentType, status, daysToExpire, daysLastReminder, totalPriceInclVatAndReduction, amountOpen, emailToAddress, checked, iban, subStatus } = this.props;
         return (
             <tr className={`${this.state.highlightRow} ${hideRowClass}`} onDoubleClick={() => this.openItem(id)} onMouseEnter={() => this.onRowEnter()} onMouseLeave={() => this.onRowLeave()}>

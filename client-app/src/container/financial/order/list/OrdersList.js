@@ -261,6 +261,22 @@ class OrdersList extends Component {
     render() {
         const { data = [], meta = {} } = this.props.orders;
 
+        let loadingText = '';
+        let loading = true;
+
+        if (this.props.hasError) {
+            loadingText = 'Fout bij het ophalen van orders.';
+        }
+        else if (this.props.isLoading) {
+            loadingText = 'Gegevens aan het laden.';
+        }
+        else if (data.length === 0) {
+            loadingText = 'Geen orders gevonden!';
+        }
+        else {
+            loading = false;
+        }
+
         return (
             <div>
                 <div className="row">
@@ -294,8 +310,8 @@ class OrdersList extends Component {
                         </DataTableHead>
                         <DataTableBody>
                             {
-                                data.length === 0 ? (
-                                    <tr><td colSpan={8}>Geen orders gevonden!</td></tr>
+                                loading ? (
+                                    <tr><td colSpan={8}>{loadingText}</td></tr>
                                 ) : (
                                     data.map((order) => {
                                         return <OrdersListItem
@@ -335,6 +351,8 @@ const mapStateToProps = (state) => {
         ordersFilters: state.orders.filters,
         ordersSorts: state.orders.sorts,
         ordersPagination: state.orders.pagination,
+        isLoading: state.loadingData.isLoading,
+        hasError: state.loadingData.hasError,
     };
 };
 

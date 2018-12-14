@@ -4,10 +4,13 @@ import {hashHistory} from "react-router";
 
 export function* fetchIntakeDetailsSaga({ payload }) {
     try {
+        yield put({ type: 'IS_LOADING' });
         const intakeDetails = yield call(IntakeDetailsAPI.fetchIntakeDetails, payload);
         yield put({ type: 'FETCH_INTAKE_DETAILS_SUCCESS', intakeDetails });
+        yield put({ type: 'IS_LOADING_COMPLETE' });
     } catch (error) {
         yield put({ type: 'FETCH_INTAKE_DETAILS_ERROR', error });
+        yield put({ type: 'LOADING_ERROR', error });
     }
 }
 

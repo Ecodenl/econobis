@@ -6,10 +6,13 @@ import {browserHistory, hashHistory} from "react-router";
 
 export function* fetchParticipantProductionProjectDetailsSaga({ payload }) {
     try {
+        yield put({ type: 'IS_LOADING' });
         const participantProductionProjectDetails = yield call(ParticipantProductionProjectDetailsAPI.fetchParticipantProductionProject, payload);
         yield put({ type: 'FETCH_PARTICIPANT_PRODUCTION_PROJECT_DETAILS_SUCCESS', participantProductionProjectDetails });
+        yield put({ type: 'IS_LOADING_COMPLETE' });
     } catch (error) {
         yield put({ type: 'FETCH_PARTICIPANT_PRODUCTION_PROJECT_DETAILS_ERROR', error });
+        yield put({ type: 'LOADING_ERROR', error });
     }
 }
 

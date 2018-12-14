@@ -7,6 +7,7 @@ import IntakesListHead from './IntakesListHead';
 import IntakesListFilter from './IntakesListFilter';
 import IntakesListItem from './IntakesListItem';
 import DataTablePagination from "../../../components/dataTable/DataTablePagination";
+import {connect} from "react-redux";
 
 class IntakesList extends Component {
     constructor(props){
@@ -21,7 +22,23 @@ class IntakesList extends Component {
     };
 
     render() {
-        const { data = [], meta = {}, isLoading } = this.props.intakes;
+        const { data = [], meta = {} } = this.props.intakes;
+
+        let loadingText = '';
+        let loading = true;
+
+        if (this.props.hasError) {
+            loadingText = 'Fout bij het ophalen van intakes.';
+        }
+        else if (this.props.isLoading) {
+            loadingText = 'Gegevens aan het laden.';
+        }
+        else if (data.length === 0) {
+            loadingText = 'Geen intakes gevonden!';
+        }
+        else {
+            loading = false;
+        }
 
         return (
             <form onKeyUp={this.handleKeyUp}>
@@ -39,8 +56,8 @@ class IntakesList extends Component {
                     </DataTableHead>
                     <DataTableBody>
                         {
-                            data.length === 0 ? (
-                                <tr><td colSpan={6}>Geen intakes gevonden!</td></tr>
+                            loading  ? (
+                                <tr><td colSpan={6}>{loadingText}</td></tr>
                             ) : (
                                 data.map((intake) => {
                                     return <IntakesListItem
@@ -66,4 +83,11 @@ class IntakesList extends Component {
     };
 }
 
-export default IntakesList;
+const mapStateToProps = (state) => {
+    return {
+        isLoading: state.loadingData.isLoading,
+        hasError: state.loadingData.hasError,
+    }
+};
+
+export default connect(mapStateToProps)(IntakesList);

@@ -29,11 +29,9 @@ const InvoiceProductsFormView = props => {
                     {(props.showActionButtons && props.permissions.manageFinancial && (props.invoiceDetails.statusId === 'to-send') ? <a role="button" onClick={props.toggleDelete}><span className="glyphicon glyphicon-trash mybtn-danger"  /> </a> : '')}
                 </div>
                 {period &&
-                <div onClick={props.openEdit}>
                     <div className="col-sm-12">
                         Periode { period }
                     </div>
-                </div>
                 }
             </div>
         </div>

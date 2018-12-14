@@ -15,9 +15,26 @@ class MailboxDetailsForm extends Component {
     };
 
     render() {
+
+        let loadingText = '';
+        let loading = true;
+
+        if (this.props.hasError) {
+            loadingText = 'Fout bij het ophalen van mailbox.';
+        }
+        else if (this.props.isLoading) {
+            loadingText = 'Gegevens aan het laden.';
+        }
+        else if (isEmpty(this.props.mailboxDetails)) {
+            loadingText = 'Geen mailbox gevonden!';
+        }
+        else {
+            loading = false;
+        }
+
         return (
-            isEmpty(this.props.mailboxDetails) ?
-                <div>Geen gegevens gevonden.</div>
+            loading ?
+                <div>{loadingText}</div>
                 :
                 <div>
                     {!this.props.mailboxDetails.valid &&
@@ -38,6 +55,8 @@ class MailboxDetailsForm extends Component {
 const mapStateToProps = (state) => {
     return {
         mailboxDetails: state.mailboxDetails,
+        isLoading: state.loadingData.isLoading,
+        hasError: state.loadingData.hasError,
     };
 };
 

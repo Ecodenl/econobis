@@ -5,10 +5,13 @@ import {browserHistory} from "react-router";
 
 export function* fetchOrdersSaga({filters,sorts, pagination, administrationId}) {
     try {
+        yield put({ type: 'IS_LOADING' });
         const orders = yield call(OrdersAPI.fetchOrders, {filters, sorts, pagination, administrationId});
         yield put({ type: 'FETCH_ORDERS_SUCCESS', orders });
+        yield put({ type: 'IS_LOADING_COMPLETE' });
     } catch (error) {
         yield put({ type: 'FETCH_ORDERS_ERROR', error });
+        yield put({ type: 'LOADING_ERROR', error });
     }
 }
 

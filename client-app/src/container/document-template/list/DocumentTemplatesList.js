@@ -6,6 +6,7 @@ import DataTableBody from '../../../components/dataTable/DataTableBody';
 import DataTableHeadTitle from '../../../components/dataTable/DataTableHeadTitle';
 import DocumentTemplatesItem from './DocumentTemplatesItem';
 import DocumentTemplatesDeleteItem from "./DocumentTemplatesDeleteItem";
+import {connect} from "react-redux";
 
 
 class DocumentTemplatesList extends Component {
@@ -47,6 +48,23 @@ class DocumentTemplatesList extends Component {
 
 
     render() {
+
+        let loadingText = '';
+        let loading = true;
+
+        if (this.props.hasError) {
+            loadingText = 'Fout bij het ophalen van document templates.';
+        }
+        else if (this.props.isLoading) {
+            loadingText = 'Gegevens aan het laden.';
+        }
+        else if (this.props.documentTemplates.length === 0) {
+            loadingText = 'Geen document templates gevonden!';
+        }
+        else {
+            loading = false;
+        }
+
         return (
             <div>
                 <DataTable>
@@ -62,9 +80,9 @@ class DocumentTemplatesList extends Component {
                     </DataTableHead>
                     <DataTableBody>
                         {
-                            this.props.documentTemplates.length === 0 ? (
+                            loading ? (
                                 <tr>
-                                    <td colSpan={6}>Geen document templates gevonden!</td>
+                                    <td colSpan={6}>{loadingText}</td>
                                 </tr>
                             ) : (
                                 this.props.documentTemplates.map((template) => {
@@ -93,4 +111,11 @@ class DocumentTemplatesList extends Component {
     };
 }
 
-export default DocumentTemplatesList;
+const mapStateToProps = (state) => {
+    return {
+        isLoading: state.loadingData.isLoading,
+        hasError: state.loadingData.hasError,
+    }
+};
+
+export default connect(mapStateToProps)(DocumentTemplatesList);

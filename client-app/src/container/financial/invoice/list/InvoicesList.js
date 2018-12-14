@@ -394,6 +394,22 @@ class InvoicesList extends Component {
     render() {
         const {data = [], meta = {}} = this.props.invoices;
 
+        let loadingText = '';
+        let loading = true;
+
+        if (this.props.hasError) {
+            loadingText = 'Fout bij het ophalen van facturen.';
+        }
+        else if (this.props.isLoading) {
+            loadingText = 'Gegevens aan het laden.';
+        }
+        else if (data.length === 0) {
+            loadingText = 'Geen facturen gevonden!';
+        }
+        else {
+            loading = false;
+        }
+
         return (
             <div>
                 <div className="row">
@@ -461,9 +477,9 @@ class InvoicesList extends Component {
                         </DataTableHead>
                         <DataTableBody>
                             {
-                                data.length === 0 ? (
+                                loading ? (
                                     <tr>
-                                        <td colSpan={12}>Geen facturen gevonden!</td>
+                                        <td colSpan={12}>{loadingText}</td>
                                     </tr>
                                 ) : (
                                     data.map((invoice) => {
@@ -517,6 +533,8 @@ const mapStateToProps = (state) => {
         invoicesFilters: state.invoices.filters,
         invoicesSorts: state.invoices.sorts,
         invoicesPagination: state.invoices.pagination,
+        isLoading: state.loadingData.isLoading,
+        hasError: state.loadingData.hasError,
     };
 };
 

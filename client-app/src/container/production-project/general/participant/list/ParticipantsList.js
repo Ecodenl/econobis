@@ -7,6 +7,7 @@ import ParticipantsListHead from './ParticipantsListHead';
 import ParticipantsListFilter from './ParticipantsListFilter';
 import ParticipantsListItem from './ParticipantsListItem';
 import DataTablePagination from "../../../../../components/dataTable/DataTablePagination";
+import {connect} from "react-redux";
 
 class ParticipantsList extends Component {
     constructor(props){
@@ -21,7 +22,23 @@ class ParticipantsList extends Component {
     };
 
     render() {
-        const { data = [], meta = {}, isLoading } = this.props.participantsProductionProject;
+        const { data = [], meta = {} } = this.props.participantsProductionProject;
+
+        let loadingText = '';
+        let loading = true;
+
+        if (this.props.hasError) {
+            loadingText = 'Fout bij het ophalen van participanten.';
+        }
+        else if (this.props.isLoading) {
+            loadingText = 'Gegevens aan het laden.';
+        }
+        else if (data.length === 0) {
+            loadingText = 'Geen participanten gevonden!';
+        }
+        else {
+            loading = false;
+        }
 
         return (
             <form onKeyUp={this.handleKeyUp}>
@@ -39,8 +56,8 @@ class ParticipantsList extends Component {
                     </DataTableHead>
                     <DataTableBody>
                         {
-                            data.length === 0 ? (
-                                <tr><td colSpan={11}>Geen participanten gevonden!</td></tr>
+                            loading ? (
+                                <tr><td colSpan={11}>{loadingText}</td></tr>
                             ) : (
                                 data.map((participantProductionProject) => {
                                     return <ParticipantsListItem
@@ -68,4 +85,11 @@ class ParticipantsList extends Component {
     };
 }
 
-export default ParticipantsList;
+const mapStateToProps = (state) => {
+    return {
+        isLoading: state.loadingData.isLoading,
+        hasError: state.loadingData.hasError,
+    };
+};
+
+export default connect(mapStateToProps)(ParticipantsList);

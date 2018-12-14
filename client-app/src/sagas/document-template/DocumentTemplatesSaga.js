@@ -4,24 +4,30 @@ import {hashHistory} from "react-router";
 
 export function* fetchDocumentTemplatesSaga() {
     try {
+        yield put({ type: 'IS_LOADING' });
         const documentTemplates = yield call(DocumentTemplateAPI.fetchDocumentTemplates);
 
         yield all([
             put({ type: 'FETCH_DOCUMENT_TEMPLATES_LOADING_SUCCESS'}),
             put({ type: 'FETCH_DOCUMENT_TEMPLATES_SUCCESS', documentTemplates }),
         ]);
+        yield put({ type: 'IS_LOADING_COMPLETE' });
     } catch (error) {
         yield put({ type: 'FETCH_DOCUMENT_TEMPLATES_ERROR', error });
+        yield put({ type: 'LOADING_ERROR', error });
     }
 }
 
 export function* fetchDocumentTemplateSaga({ id }) {
     try {
+        yield put({ type: 'IS_LOADING' });
         const documentTemplate = yield call(DocumentTemplateAPI.fetchDocumentTemplate, id);
 
         yield put({ type: 'FETCH_DOCUMENT_TEMPLATE_SUCCESS', documentTemplate });
+        yield put({ type: 'IS_LOADING_COMPLETE' });
     } catch (error) {
         yield put({ type: 'FETCH_DOCUMENT_TEMPLATE_ERROR', error });
+        yield put({ type: 'LOADING_ERROR', error });
     }
 }
 

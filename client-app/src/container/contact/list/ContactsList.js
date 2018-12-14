@@ -8,6 +8,8 @@ import ContactsListFilter from './ContactsListFilter';
 import ContactsListItem from './ContactsListItem';
 import ContactsDeleteItem from './ContactsDeleteItem';
 import DataTablePagination from "../../../components/dataTable/DataTablePagination";
+import {deleteContact} from "../../../actions/contact/ContactDetailsActions";
+import {connect} from "react-redux";
 
 class ContactsList extends Component {
     constructor(props){
@@ -54,7 +56,23 @@ class ContactsList extends Component {
     };
 
     render() {
-        const { data = [], meta = {}, isLoading } = this.props.contacts;
+        const { data = [], meta = {} } = this.props.contacts;
+
+        let loadingText = '';
+        let loading = true;
+
+        if (this.props.hasError) {
+            loadingText = 'Fout bij het ophalen van contacten.';
+        }
+        else if (this.props.isLoading) {
+            loadingText = 'Gegevens aan het laden.';
+        }
+        else if (data.length === 0) {
+            loadingText = 'Geen contacten gevonden!';
+        }
+        else {
+            loading = false;
+        }
 
         return (
             <div>
@@ -73,8 +91,8 @@ class ContactsList extends Component {
                         </DataTableHead>
                         <DataTableBody>
                             {
-                                data.length === 0 ? (
-                                    <tr><td colSpan={10}>Geen contacten gevonden!</td></tr>
+                                loading ? (
+                                    <tr><td colSpan={10}>{loadingText}</td></tr>
                                 ) : (
                                     data.map((contact) => {
                                         return <ContactsListItem
@@ -109,4 +127,12 @@ class ContactsList extends Component {
     }
 };
 
-export default ContactsList;
+const mapStateToProps = (state) => {
+    return {
+        isLoading: state.loadingData.isLoading,
+        hasError: state.loadingData.hasError,
+    }
+};
+
+
+export default connect(mapStateToProps)(ContactsList);

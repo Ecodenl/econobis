@@ -7,6 +7,7 @@ import AuditTrailListHead from './AuditTrailListHead';
 import AuditTrailListFilter from './AuditTrailListFilter';
 import AuditTrailListItem from './AuditTrailListItem';
 import DataTablePagination from "../../../components/dataTable/DataTablePagination";
+import {connect} from "react-redux";
 
 class AuditTrailList extends Component {
     constructor(props){
@@ -21,7 +22,23 @@ class AuditTrailList extends Component {
     };
 
     render() {
-        const { data = [], meta = {}, isLoading } = this.props.auditTrail;
+        const { data = [], meta = {} } = this.props.auditTrail;
+
+        let loadingText = '';
+        let loading = true;
+
+        if (this.props.hasError) {
+            loadingText = 'Fout bij het ophalen van audit trail.';
+        }
+        else if (this.props.isLoading) {
+            loadingText = 'Gegevens aan het laden.';
+        }
+        else if (data.length === 0) {
+            loadingText = 'Geen audit trail gevonden!';
+        }
+        else {
+            loading = false;
+        }
 
         return (
             <div>
@@ -38,8 +55,8 @@ class AuditTrailList extends Component {
                         </DataTableHead>
                         <DataTableBody>
                             {
-                                data.length === 0 ? (
-                                    <tr><td colSpan={7}>Geen audit trail gevonden!</td></tr>
+                                loading ? (
+                                    <tr><td colSpan={7}>{loadingText}</td></tr>
                                 ) : (
                                     data.map((auditTrail) => {
                                         return <AuditTrailListItem
@@ -64,4 +81,11 @@ class AuditTrailList extends Component {
     };
 }
 
-export default AuditTrailList;
+const mapStateToProps = (state) => {
+    return {
+        isLoading: state.loadingData.isLoading,
+        hasError: state.loadingData.hasError,
+    }
+};
+
+export default connect(mapStateToProps)(AuditTrailList);

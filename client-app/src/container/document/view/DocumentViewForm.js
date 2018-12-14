@@ -33,9 +33,27 @@ class DocumentViewForm extends Component {
     };
 
     render() {
+        let loadingText = '';
+        let loading = true;
+
+        if (this.props.hasError) {
+            loadingText = 'Fout bij het ophalen van document.';
+        }
+        else if (this.props.isLoading) {
+            loadingText = 'Gegevens aan het laden.';
+        }
+        else if (isEmpty(this.props.documentDetails)) {
+            loadingText = 'Geen document gevonden!';
+        }
+        else if(!this.state.file){
+            loadingText = 'Document van Alfresco halen.';
+        }
+        else {
+            loading = false;
+        }
         return (
-            isEmpty(this.props.documentDetails) || !this.state.file ?
-                <div>Geen gegevens gevonden.</div>
+            loading ?
+                <div>{loadingText}</div>
                 :
                 <div>
                     <PdfViewer
@@ -51,6 +69,8 @@ class DocumentViewForm extends Component {
 const mapStateToProps = (state) => {
     return {
         documentDetails: state.documentDetails,
+        isLoading: state.loadingData.isLoading,
+        hasError: state.loadingData.hasError,
     };
 };
 

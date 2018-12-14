@@ -358,7 +358,7 @@
         </div>
     @elseif($invoice->payment_type_id == 'transfer' && $invoice->total_price_incl_vat_and_reduction < 0)
         <br/><br/>
-        <div class="conclusion-text">Het bedrag zal aan u worden overgemaakt of verrekend worden met een openstaande factuur</div>
+        <div class="conclusion-text">Het bedrag zal aan u worden overgemaakt of verrekend worden met een openstaande factuur.</div>
     @else
         <br/><br/>
         <div class="conclusion-text">Betaling graag

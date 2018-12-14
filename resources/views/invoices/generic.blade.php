@@ -301,7 +301,7 @@
             @if($invoiceProduct->percentage_reduction)
                 <tr>
                     <td colspan="4">Korting {{ $invoiceProduct->percentage_reduction }}%</td>
-                    <td class="align-right"><span class="euro-sign">- €</span>{{ number_format((($invoiceProduct->percentage_reduction/100) * ($invoiceProduct->price * $invoiceProduct->amount)), 2, ',', '.') }}</td>
+                    <td class="align-right"><span class="euro-sign">- €</span>{{ abs(number_format((($invoiceProduct->percentage_reduction/100) * ($invoiceProduct->price * $invoiceProduct->amount)), 2, ',', '.')) }}</td>
                 </tr>
             @endif
             <tr>
@@ -356,7 +356,9 @@
             @elseif($invoice->order->contact->iban) Uw bankgegevens IBAN: {{ $invoice->order->contact->iban }}<br/> @endif
                 Incasso Mandaat ID (SEPA): {{ $invoice->order->number }}<br/>
         </div>
-
+    @elseif($invoice->payment_type_id == 'transfer' && $invoice->total_price_incl_vat_and_reduction < 0)
+        <br/><br/>
+        <div class="conclusion-text">Het bedrag zal aan u worden overgemaakt of verrekend worden met een openstaande factuur</div>
     @else
         <br/><br/>
         <div class="conclusion-text">Betaling graag

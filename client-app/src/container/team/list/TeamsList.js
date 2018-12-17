@@ -6,6 +6,7 @@ import DataTableBody from '../../../components/dataTable/DataTableBody';
 import DataTableHeadTitle from '../../../components/dataTable/DataTableHeadTitle';
 import TeamsListItem from './TeamsListItem';
 import TeamDeleteItem from "./TeamDeleteItem";
+import {connect} from "react-redux";
 
 class TeamsList extends Component {
     constructor(props) {
@@ -45,6 +46,23 @@ class TeamsList extends Component {
     };
 
     render() {
+
+        let loadingText = '';
+        let loading = true;
+
+        if (this.props.hasError) {
+            loadingText = 'Fout bij het ophalen van teams.';
+        }
+        else if (this.props.isLoading) {
+            loadingText = 'Gegevens aan het laden.';
+        }
+        else if (this.props.teams.length === 0) {
+            loadingText = 'Geen teams gevonden!';
+        }
+        else {
+            loading = false;
+        }
+
         return (
             <div>
                 <DataTable>
@@ -57,9 +75,9 @@ class TeamsList extends Component {
                     </DataTableHead>
                     <DataTableBody>
                         {
-                            this.props.teams.length === 0 ? (
+                            loading ? (
                                 <tr>
-                                    <td colSpan={3}>Geen teams gevonden!</td>
+                                    <td colSpan={3}>{loadingText}</td>
                                 </tr>
                             ) : (
                                 this.props.teams.map((team) => {
@@ -86,4 +104,11 @@ class TeamsList extends Component {
     }
 };
 
-export default TeamsList;
+const mapStateToProps = (state) => {
+    return {
+        isLoading: state.loadingData.isLoading,
+        hasError: state.loadingData.hasError,
+    }
+};
+
+export default connect(mapStateToProps)(TeamsList);

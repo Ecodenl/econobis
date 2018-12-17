@@ -64,6 +64,7 @@ import usersReducer from './user/UsersReducer';
 import PaymentInvoicesReducer from './payment-invoice/PaymentInvoicesReducer';
 import webformsReducer from './webform/WebformsReducer';
 import webformDetailsReducer from './webform/WebformDetailsReducer';
+import loadingReducer from './general/LoadingReducer';
 
 const rootReducer = combineReducers({
     // General
@@ -73,6 +74,7 @@ const rootReducer = combineReducers({
     systemData: systemDataReducer,
     toggleSidebar: sidebarReducer,
     blockUI: blockUIReducer,
+    loadingData: loadingReducer,
 
     //Audit trail
     auditTrail: auditTrailReducer,

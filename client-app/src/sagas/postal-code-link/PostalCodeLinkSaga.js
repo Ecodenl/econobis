@@ -3,10 +3,13 @@ import PostalCodeLinkAPI from '../../api/postal-code-link/PostalCodeLinkAPI';
 
 export function* fetchPostalCodeLinksSaga() {
     try {
+        yield put({ type: 'IS_LOADING' });
         const postalCodeLinks = yield call(PostalCodeLinkAPI.fetchPostalCodeLinks);
         yield put({ type: 'FETCH_POSTAL_CODE_LINKS_SUCCESS', postalCodeLinks });
+        yield put({ type: 'IS_LOADING_COMPLETE' });
     } catch (error) {
         yield put({ type: 'FETCH_POSTAL_CODE_LINKS_ERROR', error });
+        yield put({ type: 'LOADING_ERROR', error });
     }
 }
 

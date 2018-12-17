@@ -36,8 +36,8 @@ class CampaignsListItem extends Component {
         return (
           <tr className={this.state.highlightRow} onDoubleClick={() => this.openItem(id)} onMouseEnter={() => this.onRowEnter()} onMouseLeave={() => this.onRowLeave()}>
               <td>{ number }</td>
-              <td>{ startDate ? moment(startDate).format('L') : 'Onbekend'}</td>
-              <td>{ endDate ? moment(endDate).format('L') : 'Onbekend'}</td>
+              <td>{ startDate ? moment(startDate).format('L') : ''}</td>
+              <td>{ endDate ? moment(endDate).format('L') : ''}</td>
               <td>{ name }</td>
               <td>{ type }</td>
               <td>{ status }</td>

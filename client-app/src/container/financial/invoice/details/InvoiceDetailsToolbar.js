@@ -10,6 +10,7 @@ import fileDownload from "js-file-download";
 import InvoiceDetailsAPI from "../../../../api/invoice/InvoiceDetailsAPI";
 import {previewSend} from "../../../../actions/invoice/InvoicesActions";
 import InvoiceDetailsFormDelete from "./general/InvoiceDetailsFormDelete";
+import {setError} from "../../../../actions/general/ErrorActions";
 
 class InvoiceToolbar extends Component {
     constructor(props) {
@@ -58,9 +59,13 @@ class InvoiceToolbar extends Component {
 
     showSend = () => {
         let paymentType = this.props.invoiceDetails.paymentTypeId === 'collection' ? 'incasso' : 'overboeken';
-
-        this.props.previewSend([this.props.invoiceDetails.id]);
-        hashHistory.push(`/financieel/${this.props.invoiceDetails.order.administrationId}/facturen/te-verzenden/verzenden/email/${paymentType}`);
+        if(paymentType == "incasso" && this.props.invoiceDetails.totalPriceInclVatAndReduction < 0){
+            this.props.setError(405, 'Een factuur met een negatief bedrag kan geen incasso zijn. Wil je a.u.b. de betaalwijze van de order aanpassen in "Overboeken".');
+        }
+        else{
+            this.props.previewSend([this.props.invoiceDetails.id]);
+            hashHistory.push(`/financieel/${this.props.invoiceDetails.order.administrationId}/facturen/te-verzenden/verzenden/email/${paymentType}`);
+        }
     };
 
     showSendPost = () => {
@@ -117,9 +122,11 @@ class InvoiceToolbar extends Component {
                         }
                     </div>
                 </div>
+                {!this.props.isLoading &&
                 <div className="col-md-4"><h4
                     className="text-center">Factuur: {this.props.invoiceDetails.order ? this.props.invoiceDetails.order.contact.fullName : ''} / {this.props.invoiceDetails.number}</h4>
                 </div>
+                }
                 <div className="col-md-4"/>
 
                 {
@@ -162,6 +169,7 @@ class InvoiceToolbar extends Component {
 const mapStateToProps = (state) => {
     return {
         invoiceDetails: state.invoiceDetails,
+        isLoading: state.loadingData.isLoading,
     };
 };
 
@@ -169,6 +177,9 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = dispatch => ({
     previewSend: (ids) => {
         dispatch(previewSend(ids));
+    },
+    setError: (http_code, message) => {
+        dispatch(setError(http_code, message));
     },
 });
 

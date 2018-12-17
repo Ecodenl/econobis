@@ -5,12 +5,14 @@ import {hashHistory} from "react-router";
 
 export function* fetchOpportunitiesSaga({filters, sorts, pagination}) {
     try {
-        //yield call(authSaga);
+        yield put({ type: 'IS_LOADING' });
         yield put({ type: 'FETCH_OPPORTUNITIES_LOADING' });
         const opportunities = yield call(OpportunitiesAPI.fetchOpportunities, {filters, sorts, pagination});
         yield put({ type: 'FETCH_OPPORTUNITIES_SUCCESS', opportunities });
+        yield put({ type: 'IS_LOADING_COMPLETE' });
     } catch (error) {
         yield put({ type: 'FETCH_OPPORTUNITIES_ERROR', error });
+        yield put({ type: 'LOADING_ERROR', error });
     }
 }
 

@@ -120,8 +120,15 @@ class OrderProductsFormItem extends Component {
         let percentageReduction = validator.isFloat(this.state.orderProduct.percentageReduction + '') ? this.state.orderProduct.percentageReduction : 0;
         let amountReduction = validator.isFloat(this.state.orderProduct.amountReduction + '') ? this.state.orderProduct.amountReduction : 0;
 
-        let totalPrice = ((price * amount) * ((100 - percentageReduction) / 100)) - amountReduction;
+        let totalPrice = 0;
 
+        if(price < 0){
+            const reduction = parseFloat(100) + parseFloat(percentageReduction);
+            totalPrice = ((price * amount) * ((reduction) / 100)) - amountReduction;
+        }
+        else {
+            totalPrice = ((price * amount) * ((100 - percentageReduction) / 100)) - amountReduction;
+        }
         this.setState({
             ...this.state,
             totalPrice: totalPrice,

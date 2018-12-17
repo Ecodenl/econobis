@@ -8,6 +8,7 @@ import NotesListFilter from './NotesListFilter';
 import NotesListItem from './NotesListItem';
 import NotesDeleteItem from './NotesDeleteItem';
 import DataTablePagination from "../../../components/dataTable/DataTablePagination";
+import {connect} from "react-redux";
 
 class NotesList extends Component {
     constructor(props){
@@ -54,7 +55,23 @@ class NotesList extends Component {
     };
 
     render() {
-        const { data = [], meta = {}, isLoading } = this.props.notes;
+        const { data = [], meta = {} } = this.props.notes;
+
+        let loadingText = '';
+        let loading = true;
+
+        if (this.props.hasError) {
+            loadingText = 'Fout bij het ophalen van notities.';
+        }
+        else if (this.props.isLoading) {
+            loadingText = 'Gegevens aan het laden.';
+        }
+        else if (data.length === 0) {
+            loadingText = 'Geen notities gevonden!';
+        }
+        else {
+            loading = false;
+        }
 
         return (
             <div>
@@ -70,8 +87,8 @@ class NotesList extends Component {
                         </DataTableHead>
                         <DataTableBody>
                             {
-                                data.length === 0 ? (
-                                    <tr><td colSpan={7}>Geen notities gevonden!</td></tr>
+                                loading ? (
+                                    <tr><td colSpan={7}>{loadingText}</td></tr>
                                 ) : (
                                     data.map((task) => {
                                         return <NotesListItem
@@ -104,4 +121,11 @@ class NotesList extends Component {
     };
 }
 
-export default NotesList;
+const mapStateToProps = (state) => {
+    return {
+        isLoading: state.loadingData.isLoading,
+        hasError: state.loadingData.hasError,
+    }
+};
+
+export default connect(mapStateToProps)(NotesList);

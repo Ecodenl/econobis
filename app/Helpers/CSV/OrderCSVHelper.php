@@ -60,7 +60,7 @@ class OrderCSVHelper
             }
             else if($order->contact->type_id === 'organisation'){
                 $order->organisation = $order->contact->organisation->name;
-                if($order->contact->contactPerson->exists() && $order->contact->contactPerson->contact->type_id === 'person'){
+                if($order->contact->contactPerson && $order->contact->contactPerson->exists() && $order->contact->contactPerson->contact->type_id === 'person'){
                     $contactPerson = $order->contact->contactPerson->contact;
 
                     $order->title = $contactPerson->person->title ? $contactPerson->person->title->name : '';

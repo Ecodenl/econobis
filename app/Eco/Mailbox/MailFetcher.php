@@ -139,13 +139,19 @@ class MailFetcher
             $textHtml .= '<p>Deze mail is langer dan 250.000 karakters en hierdoor ingekort.</p>';
         }
 
+        $subject = $emailData->subject ? $emailData->subject : '';
+
+        if(strlen($subject) > 250){
+            $subject = substr($emailData->textHtml, 0, 249);
+        }
+
         $email = new Email([
             'mailbox_id' => $this->mailbox->id,
             'from' => $emailData->fromAddress,
             'to' => array_keys($emailData->to),
             'cc' => array_keys($emailData->cc),
             'bcc' => array_keys($emailData->bcc),
-            'subject' => $emailData->subject ?: '',
+            'subject' => $subject,
             'html_body' => $textHtml,
             'date_sent' => $emailData->date,
             'folder' => 'inbox',

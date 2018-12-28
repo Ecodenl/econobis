@@ -38,6 +38,14 @@ class OrderObserver
             foreach ($invoiceToSend->invoiceProducts as $invoiceProductToSend) {
                 $price = 0;
                 if ($invoiceProductToSend->product->currentPrice) {
+
+                    if($invoiceProductToSend->product->currentPrice->has_variable_price) {
+                        // Product heeft variabele prijs, deze zou al in de factuurregel opgeslagen moeten zijn.
+                        // Als de incasseer frequentie wijzigt zou dit bedrag misschien ook moeten wijzigen?
+                        // Voor nu doen we dat niet en skippen we deze regel dus.
+                        continue;
+                    }
+
                     $price = $invoiceProductToSend->product->currentPrice->price;
 
                     switch ($invoiceProductToSend->product->invoice_frequency_id) {

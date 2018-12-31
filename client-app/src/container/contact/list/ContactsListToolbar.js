@@ -57,7 +57,7 @@ class ContactsListToolbar extends Component {
                                             <li><Link to="contact/nieuw/organisatie">Organisatie</Link></li>
                                     }
                                 {permissions.manageGroup &&
-                                <li><Link onClick={this.props.toggleSaveAsGroup}>Groep</Link></li>
+                                <li><Link  role="button" onClick={this.props.toggleSaveAsGroup}>Groep</Link></li>
                                 }
                             </ul>
                         </div>
@@ -68,7 +68,7 @@ class ContactsListToolbar extends Component {
                                 <span className="glyphicon glyphicon-share-alt" />
                             </button>
                             <ul className="dropdown-menu">
-                                <li><a onClick={this.toggleAddContactsToGroup}>Voeg toe aan groep</a></li>
+                                <li><a role="button" onClick={this.toggleAddContactsToGroup}>Voeg toe aan groep</a></li>
                             </ul>
                         </div>
                         }

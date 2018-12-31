@@ -79,7 +79,6 @@ const RevenueDistributionFormList = props => {
 const mapStateToProps = (state) => {
     return {
         participations: state.productionProjectRevenue.participants,
-        participationsTotal: state.productionProjectRevenue.participants,
         productionProject: state.productionProjectRevenue.productionProject,
         productionProjectRevenue: state.productionProjectRevenue,
     };

@@ -18,7 +18,7 @@ class PriceHistoryNew extends Component {
         this.state = {
             vatPercentages:[
                 {'id':  '0', name: '0'},
-                {'id':  '6', name: '6'},
+                {'id':  '9', name: '9'},
                 {'id':  '21', name: '21'},
             ],
             priceHistory:{

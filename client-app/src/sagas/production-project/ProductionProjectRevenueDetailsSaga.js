@@ -18,6 +18,7 @@ export function* fetchProductionProjectRevenueParticipantsSaga(data) {
         document.body.style.cursor='default';
         yield put({ type: 'PRODUCTION_PROJECT_REVENUE_GET_PARTICIPANTS_SUCCESS', productionProjectRevenueParticipants });
     } catch (error) {
+        document.body.style.cursor='default';
         yield put({ type: 'PRODUCTION_PROJECT_REVENUE_GET_PARTICIPANTS_ERROR', error });
     }
 }
@@ -29,6 +30,7 @@ export function* fetchProductionProjectRevenueDistributionSaga(data) {
         document.body.style.cursor='default';
         yield put({ type: 'PRODUCTION_PROJECT_REVENUE_GET_DISTRIBUTION_SUCCESS', productionProjectRevenueDistribution });
     } catch (error) {
+        document.body.style.cursor='default';
         yield put({ type: 'PRODUCTION_PROJECT_REVENUE_GET_DISTRIBUTION_ERROR', error });
     }
 }

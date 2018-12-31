@@ -19,7 +19,7 @@ class OrderProductsFormNewProduct extends Component {
         this.state = {
             vatPercentages:[
                 {'id':  '0', name: '0'},
-                {'id':  '6', name: '6'},
+                {'id':  '9', name: '9'},
                 {'id':  '21', name: '21'},
             ],
             errorMessage: false,
@@ -150,6 +150,9 @@ class OrderProductsFormNewProduct extends Component {
         if(this.state.vatPercentage && this.state.vatPercentage.id == '6'){
             price = value * 1.06
         }
+        else if(this.state.vatPercentage && this.state.vatPercentage.id == '9'){
+            price = value * 1.09;
+        }
         else if(this.state.vatPercentage && this.state.vatPercentage.id == '21'){
             price = value * 1.21;
         }
@@ -179,6 +182,9 @@ class OrderProductsFormNewProduct extends Component {
 
         if(value == '6'){
             price = this.state.product.price * 1.06;
+        }
+        else if(value == '9'){
+            price = this.state.product.price * 1.09;
         }
         else if(value == '21'){
             price = this.state.product.price * 1.21;

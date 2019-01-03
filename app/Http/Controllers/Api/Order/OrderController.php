@@ -334,12 +334,15 @@ class OrderController extends ApiController
             if (!$email && $contact->contactPerson()->exists())
             {
                 $contactInfo['email'] = $contact->contactPerson->contact->getOrderEmail() ? $contact->contactPerson->contact->getOrderEmail()->email : 'Geen e-mail bekend';
-                $contactInfo['contactPerson'] = $contact->contactPerson->contact->full_name;
-                $contactInfo['iban'] = $contact->contactPerson->contact->iban;
-                $contactInfo['ibanAttn'] = $contact->contactPerson->contact->iban_attn;
             }
             else{
                 $contactInfo['email'] = $email ? $email->email : 'Geen e-mail bekend';
+            }
+
+            if($contact->contactPerson()->exists()){
+                $contactInfo['contactPerson'] = $contact->contactPerson->contact->full_name;
+                $contactInfo['iban'] = $contact->contactPerson->contact->iban;
+                $contactInfo['ibanAttn'] = $contact->contactPerson->contact->iban_attn;
             }
         }
         else{

@@ -169,7 +169,7 @@ class TemplateMergeFieldsTest extends TestCase
         $html = TemplateVariableHelper::replaceTemplateVariables($html, 'order', Order::find(1));
         $html = TemplateVariableHelper::stripRemainingVariableTags($html);
 
-        $expectedHtml = 'O2018-1Leuke order super!IBN1235.724942.8802/05/2018';
+        $expectedHtml = 'O' . Carbon::today()->format('Y') . '-1Leuke order super!IBN1235.724942.8802/05/2018';
         $expectedHtml .= Carbon::parse(Carbon::today())->format('d/m/Y') . 'ConceptIncassoJaarlijksKlaas de VaakKlaasde Vaak';
 
         $this->assertEquals($expectedHtml, $html);

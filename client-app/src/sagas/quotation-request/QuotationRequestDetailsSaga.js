@@ -4,10 +4,13 @@ import {hashHistory} from "react-router";
 
 export function* fetchQuotationRequestDetailsSaga({ payload }) {
     try {
+        yield put({ type: 'IS_LOADING' });
         const quotationRequestDetails = yield call(QuotationRequestDetailsAPI.fetchQuotationRequestDetails, payload);
         yield put({ type: 'FETCH_QUOTATION_REQUEST_DETAILS_SUCCESS', quotationRequestDetails });
+        yield put({ type: 'IS_LOADING_COMPLETE' });
     } catch (error) {
         yield put({ type: 'FETCH_QUOTATION_REQUEST_DETAILS_ERROR', error });
+        yield put({ type: 'LOADING_ERROR', error });
     }
 }
 

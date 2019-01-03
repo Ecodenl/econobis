@@ -3,10 +3,13 @@ import UserAPI from '../../api/user/UserAPI';
 
 export function* fetchUserDetailsSaga({ payload }) {
     try {
+        yield put({ type: 'IS_LOADING' });
         const userDetails = yield call(UserAPI.fetchUserDetails, payload);
         yield put({ type: 'FETCH_USER_DETAILS_SUCCESS', userDetails });
+        yield put({ type: 'IS_LOADING_COMPLETE' });
     } catch (error) {
         yield put({ type: 'FETCH_USER_DETAILS_ERROR', error });
+        yield put({ type: 'LOADING_ERROR', error });
     }
 }
 

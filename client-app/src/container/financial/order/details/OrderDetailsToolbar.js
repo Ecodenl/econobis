@@ -45,7 +45,11 @@ class OrderToolbar  extends Component {
                         <ButtonIcon iconName={"glyphicon-trash"} onClickAction={this.toggleDelete}/>
                     </div>
                 </div>
-                <div className="col-md-4"><h4 className="text-center">Order: {this.props.orderDetails.subject} / {this.props.orderDetails.number}</h4></div>
+                {!this.props.isLoading &&
+                <div className="col-md-4"><h4
+                    className="text-center">Order: {this.props.orderDetails.subject} / {this.props.orderDetails.number}</h4>
+                </div>
+                }
                 <div className="col-md-4"/>
                 {
                     this.state.showDelete &&
@@ -65,6 +69,7 @@ const mapStateToProps = (state) => {
     return {
         orderDetails: state.orderDetails,
         administrationId: state.orderDetails.administrationId,
+        isLoading: state.loadingData.isLoading,
     };
 };
 

@@ -9,6 +9,7 @@ import OpportunityDeleteItem from './OpportunityDeleteItem';
 import DataTablePagination from "../../../components/dataTable/DataTablePagination";
 import OpportunitiesListHead from "./OpportunitiesListHead";
 import OpportunitiesListFilter from "./OpportunitiesListFilter";
+import {connect} from "react-redux";
 
 class OpportunitiesList extends Component {
     constructor(props){
@@ -58,7 +59,23 @@ class OpportunitiesList extends Component {
     };
 
     render() {
-        const { data = [], meta = {}, isLoading } = this.props.opportunities;
+        const { data = [], meta = {} } = this.props.opportunities;
+
+        let loadingText = '';
+        let loading = true;
+
+        if (this.props.hasError) {
+            loadingText = 'Fout bij het ophalen van kansen.';
+        }
+        else if (this.props.isLoading) {
+            loadingText = 'Gegevens aan het laden.';
+        }
+        else if (data.length === 0) {
+            loadingText = 'Geen kansen gevonden!';
+        }
+        else {
+            loading = false;
+        }
 
         return (
         <div>
@@ -79,9 +96,9 @@ class OpportunitiesList extends Component {
                 </DataTableHead>
                 <DataTableBody>
                     {
-                        data.length === 0 ? (
+                        loading ? (
                             <tr>
-                                <td colSpan={8}>Geen kansen gevonden!</td>
+                                <td colSpan={8}>{loadingText}</td>
                             </tr>
                         ) : (
                             data.map(opportunities => (
@@ -118,5 +135,12 @@ class OpportunitiesList extends Component {
     }
 }
 
-export default OpportunitiesList;
+const mapStateToProps = (state) => {
+    return {
+        isLoading: state.loadingData.isLoading,
+        hasError: state.loadingData.hasError,
+    }
+};
+
+export default connect(mapStateToProps)(OpportunitiesList);
 

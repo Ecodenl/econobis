@@ -27,7 +27,7 @@ class EmailNewApp extends Component {
             emailTemplates: [],
             email: {
                 from: '',
-                to: props.params.contactId ? props.params.contactId : '',
+                to: '',
                 cc: '',
                 bcc: '',
                 templateId: '',
@@ -57,6 +57,19 @@ class EmailNewApp extends Component {
     };
 
     componentDidMount() {
+
+        if (this.props.params.contactId) {
+            EmailAddressAPI.fetchPrimaryEmailAddressId(this.props.params.contactId).then((payload) => {
+                this.setState({
+                    ...this.state,
+                    email: {
+                        ...this.state.email,
+                        to: payload.join(',')
+                    },
+                });
+            });
+        }
+
         EmailAddressAPI.fetchEmailAddressessPeek().then((payload) => {
             this.setState({
                 emailAddresses: payload,
@@ -94,24 +107,30 @@ class EmailNewApp extends Component {
         });
 
         if (this.props.params.type === 'bulk' && this.props.toIds) {
-            this.setState({
-                ...this.state,
-                email: {
-                    ...this.state.email,
-                    to: this.props.toIds.join(',')
-                },
+            EmailAddressAPI.fetchPrimaryEmailAddressId(this.props.toIds).then((payload) => {
+                this.setState({
+                    ...this.state,
+                    email: {
+                        ...this.state.email,
+                        to: payload.join(',')
+                    },
+                })
+                ;
             });
         }
         if (this.props.params.documentId) {
 
             DocumentDetailsAPI.fetchDocumentDetails(this.props.params.documentId).then((payload) => {
                 if(payload.data.data.contact){
-                    this.setState({
-                        ...this.state,
-                        email: {
-                            ...this.state.email,
-                            to: payload.data.data.contact.id + ''
-                        },
+                    EmailAddressAPI.fetchPrimaryEmailAddressId(payload.data.data.contact.id).then((payload) => {
+                        this.setState({
+                            ...this.state,
+                            email: {
+                                ...this.state.email,
+                                to: payload.join(',')
+                            },
+                        })
+                        ;
                     });
                 }
                 let filename = payload.data.data.filename ? payload.data.data.filename : 'bijlage.pdf';

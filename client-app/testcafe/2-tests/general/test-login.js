@@ -13,8 +13,8 @@ fixture `Log in`
 
 test('Login test', async t => {
     await t
-        .typeText(emailInput, 'info@xaris.nl')
-        .expect(emailInput.value).eql('info@xaris.nl')
+        .typeText(emailInput, 'support@econobis.nl')
+        .expect(emailInput.value).eql('support@econobis.nl')
         .typeText(passwordInput, 'secret')
         .click(submitButton);
 

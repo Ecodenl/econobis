@@ -57,7 +57,23 @@ class DocumentsList extends Component {
     };
 
     render() {
-        const { data = [], meta = {}, isLoading } = this.props.documents;
+        const { data = [], meta = {} } = this.props.documents;
+
+        let loadingText = '';
+        let loading = true;
+
+        if (this.props.hasError) {
+            loadingText = 'Fout bij het ophalen van documenten.';
+        }
+        else if (this.props.isLoading) {
+            loadingText = 'Gegevens aan het laden.';
+        }
+        else if (data.length === 0) {
+            loadingText = 'Geen documenten gevonden!';
+        }
+        else {
+            loading = false;
+        }
 
         return (
         <div>
@@ -73,9 +89,9 @@ class DocumentsList extends Component {
                 </DataTableHead>
                 <DataTableBody>
                     {
-                        data.length === 0 ? (
+                        loading ? (
                             <tr>
-                                <td colSpan={7}>Geen documenten gevonden!</td>
+                                <td colSpan={7}>{loadingText}</td>
                             </tr>
                         ) : (
                             data.map(document => (
@@ -114,6 +130,8 @@ const mapStateToProps = (state) => {
     return {
         documents: state.documents.list,
         documentsPagination: state.documents.pagination,
+        isLoading: state.loadingData.isLoading,
+        hasError: state.loadingData.hasError,
     };
 };
 

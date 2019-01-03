@@ -5,7 +5,6 @@ import { isEmpty } from 'lodash';
 import TaskDetailsFormGeneral from './general/TaskDetailsFormGeneral';
 import TaskDetailsFormProperties from './properties/TaskDetailsFormProperties';
 import TaskDetailsFormConclusion from "./conclusion/TaskDetailsFormConclusion";
-import moment from "moment/moment";
 
 class TaskDetailsForm extends Component {
     constructor(props){
@@ -13,9 +12,26 @@ class TaskDetailsForm extends Component {
     };
 
     render() {
+
+        let loadingText = '';
+        let loading = true;
+
+        if (this.props.hasError) {
+            loadingText = 'Fout bij het ophalen van gegevens.';
+        }
+        else if (this.props.isLoading) {
+            loadingText = 'Gegevens aan het laden.';
+        }
+        else if (isEmpty(this.props.taskDetails)) {
+            loadingText = 'Geen gegevens gevonden!';
+        }
+        else {
+            loading = false;
+        }
+
         return (
-            isEmpty(this.props.taskDetails) ?
-                <div>Geen gegevens gevonden.</div>
+            loading ?
+                <div>{loadingText}</div>
                 :
                 <div>
                     <TaskDetailsFormGeneral />
@@ -29,6 +45,8 @@ class TaskDetailsForm extends Component {
 const mapStateToProps = (state) => {
     return {
         taskDetails: state.taskDetails,
+        isLoading: state.loadingData.isLoading,
+        hasError: state.loadingData.hasError,
     };
 };
 

@@ -4,15 +4,17 @@ import {hashHistory} from "react-router";
 
 export function* fetchContactGroupsSaga({filters, sorts, pagination}) {
     try {
-        //yield call(authSaga);
+        yield put({ type: 'IS_LOADING' });
         yield put({ type: 'FETCH_CONTACT_GROUPS_LOADING' });
         const contactGroups = yield call(ContactGroupAPI.fetchContactGroups, {filters, sorts, pagination});
         yield all([
             put({ type: 'FETCH_CONTACT_GROUPS_LOADING_SUCCESS'}),
             put({ type: 'FETCH_CONTACT_GROUPS_SUCCESS', contactGroups }),
         ]);
+        yield put({ type: 'IS_LOADING_COMPLETE' });
     } catch (error) {
         yield put({ type: 'FETCH_CONTACT_GROUPS_ERROR', error });
+        yield put({ type: 'LOADING_ERROR', error });
     }
 }
 

@@ -39,7 +39,7 @@ test('Fill out form administration minimum', async (t) => {
     await t
         .click(detailsAdministration.newUser)
         .click(detailsAdministration.user)
-        .click(general.option.withExactText('Xaris, Admin'))
+        .click(general.option.withExactText('Econobis, Support'))
         .click(general.save)
         .wait(constants.wait);
 

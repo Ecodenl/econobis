@@ -3,10 +3,13 @@ import AdministrationDetailsAPI from '../../api/administration/AdministrationDet
 
 export function* fetchAdministrationDetailsSaga({ id }) {
     try {
+        yield put({ type: 'IS_LOADING' });
         const administrationDetails = yield call(AdministrationDetailsAPI.fetchAdministrationDetails, id);
         yield put({ type: 'FETCH_ADMINISTRATION_DETAILS_SUCCESS',administrationDetails });
+        yield put({ type: 'IS_LOADING_COMPLETE' });
     } catch (error) {
         yield put({ type: 'FETCH_ADMINISTRATION_DETAILS_ERROR', error });
+        yield put({ type: 'LOADING_ERROR', error });
     }
 }
 

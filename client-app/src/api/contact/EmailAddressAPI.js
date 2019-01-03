@@ -58,4 +58,23 @@ export default {
                 console.log(error);
             });
     },
+
+    fetchPrimaryEmailAddressId: (contactIds) => {
+        const requestUrl = `${URL_API}/api/contact/get-primary-email-addresses-id`;
+        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
+        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
+
+        return axios.get(requestUrl, {
+            params: {
+                contactIds: contactIds,
+            }})
+            .then(function (response) {
+                return response.data;
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+    },
+
+
 };

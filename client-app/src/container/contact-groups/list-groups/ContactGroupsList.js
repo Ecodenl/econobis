@@ -8,6 +8,7 @@ import ContactGroupsDeleteItem from './ContactGroupsDeleteItem';
 import ContactGroupsListHead from "./ContactGroupsListHead";
 import ContactGroupsListFilter from "./ContactGroupsListFilter";
 import DataTablePagination from "../../../components/dataTable/DataTablePagination";
+import {connect} from "react-redux";
 
 class ContactGroupsList extends Component {
     constructor(props){
@@ -55,7 +56,23 @@ class ContactGroupsList extends Component {
     };
 
     render() {
-        const { data = [], meta = {}, isLoading } = this.props.contactGroups;
+        const { data = [], meta = {} } = this.props.contactGroups;
+
+        let loadingText = '';
+        let loading = true;
+
+        if (this.props.hasError) {
+            loadingText = 'Fout bij het ophalen van groepen.';
+        }
+        else if (this.props.isLoading) {
+            loadingText = 'Gegevens aan het laden.';
+        }
+        else if (data.length === 0) {
+            loadingText = 'Geen groepen gevonden!';
+        }
+        else {
+            loading = false;
+        }
 
         return (
         <div>
@@ -71,9 +88,9 @@ class ContactGroupsList extends Component {
                 </DataTableHead>
                 <DataTableBody>
                     {
-                        data.length === 0 ? (
+                        loading ? (
                             <tr>
-                                <td colSpan={11}>Geen groepen gevonden!</td>
+                                <td colSpan={11}>{loadingText}</td>
                             </tr>
                         ) : (
                             data.map(contactGroup => (
@@ -108,4 +125,11 @@ class ContactGroupsList extends Component {
     }
 };
 
-export default ContactGroupsList;
+const mapStateToProps = (state) => {
+    return {
+        isLoading: state.loadingData.isLoading,
+        hasError: state.loadingData.hasError,
+    }
+};
+
+export default connect(mapStateToProps)(ContactGroupsList);

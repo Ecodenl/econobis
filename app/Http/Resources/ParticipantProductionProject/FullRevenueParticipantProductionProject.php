@@ -5,7 +5,6 @@ namespace App\Http\Resources\ParticipantProductionProject;
 use App\Http\Resources\Contact\FullContact;
 use App\Http\Resources\EnumWithIdAndName\FullEnumWithIdAndName;
 use App\Http\Resources\GenericResource;
-use App\Http\Resources\ProductionProject\FullProductionProject;
 use Illuminate\Http\Resources\Json\Resource;
 
 class FullRevenueParticipantProductionProject extends Resource
@@ -38,7 +37,6 @@ class FullRevenueParticipantProductionProject extends Resource
                 'statusId' => $this->status_id,
                 'status' => GenericResource::make($this->whenLoaded('participantProductionProjectStatus')),
                 'productionProjectId' => $this->production_project_id,
-                'productionProject' => FullProductionProject::make($this->whenLoaded('productionProject')),
                 'dateRegister' => $this->date_register,
                 'participationsRequested' => $this->participations_requested,
                 'participationsGranted' => $this->participations_granted,

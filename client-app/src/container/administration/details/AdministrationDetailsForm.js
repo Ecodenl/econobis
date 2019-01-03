@@ -18,9 +18,24 @@ class AdministrationDetailsForm extends Component {
     };
 
     render() {
+        let loadingText = '';
+        let loading = true;
+
+        if (this.props.hasError) {
+            loadingText = 'Fout bij het ophalen van administratie.';
+        }
+        else if (this.props.isLoading) {
+            loadingText = 'Gegevens aan het laden.';
+        }
+        else if (isEmpty(this.props.administrationDetails)) {
+            loadingText = 'Geen gegevens gevonden.';
+        }
+        else {
+            loading = false;
+        }
         return (
-            isEmpty(this.props.administrationDetails) ?
-                <div>Geen gegevens gevonden.</div>
+            loading ?
+                <div>{loadingText}</div>
                 :
                 <div>
                     {this.props.administrationDetails.twinfieldIsValid == false && this.props.administrationDetails.usesTwinfield == true &&
@@ -45,6 +60,8 @@ class AdministrationDetailsForm extends Component {
 const mapStateToProps = (state) => {
     return {
         administrationDetails: state.administrationDetails,
+        isLoading: state.loadingData.isLoading,
+        hasError: state.loadingData.hasError,
     };
 };
 

@@ -11,9 +11,24 @@ class QuotationRequestDetailsForm extends Component {
     };
 
     render() {
+        let loadingText = '';
+        let loading = true;
+
+        if (this.props.hasError) {
+            loadingText = 'Fout bij het ophalen van offerteverzoek.';
+        }
+        else if (this.props.isLoading) {
+            loadingText = 'Gegevens aan het laden.';
+        }
+        else if (isEmpty(this.props.quotationRequestDetails)) {
+            loadingText = 'Geen offerteverzoek gevonden!';
+        }
+        else {
+            loading = false;
+        }
         return (
-            isEmpty(this.props.quotationRequestDetails) ?
-                <div>Geen gegevens gevonden.</div>
+            loading ?
+                <div>{loadingText}</div>
                 :
                 <div>
                     <QuotationRequestDetailsFormGeneral />
@@ -26,6 +41,8 @@ class QuotationRequestDetailsForm extends Component {
 const mapStateToProps = (state) => {
     return {
         quotationRequestDetails: state.quotationRequestDetails,
+        isLoading: state.loadingData.isLoading,
+        hasError: state.loadingData.hasError,
     };
 };
 

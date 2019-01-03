@@ -8,11 +8,13 @@ import ContactEnergySupplierAPI from '../../api/contact/ContactEnergySupplierAPI
 
 export function* fetchContactDetailsSaga({ payload }) {
     try {
-        //yield call(authSaga);
+        yield put({ type: 'IS_LOADING' });
         const contactDetails = yield call(ContactDetailsAPI.getContactDetails, payload);
         yield put({ type: 'FETCH_CONTACT_DETAILS_SUCCESS', contactDetails });
+        yield put({ type: 'IS_LOADING_COMPLETE' });
     } catch (error) {
         yield put({ type: 'FETCH_CONTACT_DETAILS_ERROR', error });
+        yield put({ type: 'LOADING_ERROR', error });
     }
 }
 

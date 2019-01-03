@@ -8,6 +8,8 @@
 
 namespace App\Eco\Contact;
 
+use App\Eco\Administration\Administration;
+use App\Helpers\Twinfield\TwinfieldCustomerHelper;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 
@@ -48,6 +50,14 @@ class ContactObserver
     {
         $userId = Auth::id();
         $contact->updated_by_id = $userId;
+    }
+
+    public function saved(Contact $contact){
+        foreach (Administration::where('twinfield_is_valid', 1)->where('uses_twinfield', 1)->get() as $administration) {
+
+            $twinfieldCustomerHelper = new TwinfieldCustomerHelper($administration);
+            $twinfieldCustomerHelper->createCustomer($contact);
+        }
     }
 
 }

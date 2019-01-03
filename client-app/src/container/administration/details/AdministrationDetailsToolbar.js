@@ -4,6 +4,9 @@ import { browserHistory } from 'react-router';
 
 import ButtonIcon from '../../../components/button/ButtonIcon';
 import AdministrationDeleteItem from "./AdministrationDeleteItem";
+import ButtonText from "../../../components/button/ButtonText";
+import AdministrationDetailsAPI from "../../../api/administration/AdministrationDetailsAPI";
+import {setError} from "../../../actions/general/ErrorActions";
 
 class AdministrationToolbar  extends Component {
     constructor(props){
@@ -11,11 +14,29 @@ class AdministrationToolbar  extends Component {
 
         this.state = {
             showDelete: false,
+            syncingToInvoices: false,
+            syncingFromInvoices: false,
         }
     };
 
     toggleDelete = () => {
         this.setState({showDelete: !this.state.showDelete});
+    };
+
+    syncInvoicesToTwinfield = () => {
+        this.setState({syncingToInvoices: true});
+        AdministrationDetailsAPI.syncSentInvoicesToTwinfield(this.props.administrationDetails.id).then((payload) => {
+            this.setState({syncingToInvoices: false});
+            this.props.setError(200, payload.data);
+        });
+    };
+
+    syncInvoicesFromTwinfield = () => {
+        this.setState({syncingFromInvoices: true});
+        AdministrationDetailsAPI.syncSentInvoicesFromTwinfield(this.props.administrationDetails.id).then((payload) => {
+            this.setState({syncingFromInvoices: false});
+            this.props.setError(200, payload.data);
+        });
     };
 
     render() {
@@ -24,6 +45,18 @@ class AdministrationToolbar  extends Component {
                 <div className="col-md-4">
                     <div className="btn-group btn-group-flex margin-small" role="group">
                         <ButtonIcon iconName={"glyphicon-arrow-left"} onClickAction={browserHistory.goBack}/>
+                        {this.props.administrationDetails.usesTwinfield == true && this.props.administrationDetails.twinfieldIsValid == true &&
+                            <ButtonText loading={this.state.syncingInvoices}
+                                        loadText={'Aan het synchroniseren'}
+                                        buttonText={'Facturen naar Twinfield synchroniseren'}
+                                        onClickAction={this.syncInvoicesToTwinfield}/>
+                        }
+                        {this.props.administrationDetails.usesTwinfield == true && this.props.administrationDetails.twinfieldIsValid == true &&
+                        <ButtonText loading={this.state.syncingFromInvoices}
+                                    loadText={'Betalingen aan het ophalen'}
+                                    buttonText={'Betalingen van Twinfield ophalen'}
+                                    onClickAction={this.syncInvoicesFromTwinfield}/>
+                        }
                         <ButtonIcon iconName={"glyphicon-trash"} onClickAction={this.toggleDelete}/>
                     </div>
                 </div>
@@ -45,8 +78,15 @@ class AdministrationToolbar  extends Component {
 const mapStateToProps = (state) => {
     return {
         name: state.administrationDetails.name,
+        administrationDetails: state.administrationDetails,
         id: state.administrationDetails.id,
     };
 };
 
-export default connect(mapStateToProps, null)(AdministrationToolbar);
+const mapDispatchToProps = dispatch => ({
+    setError: (http_code, message) => {
+        dispatch(setError(http_code, message));
+    },
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(AdministrationToolbar);

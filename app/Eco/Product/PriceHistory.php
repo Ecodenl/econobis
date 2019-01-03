@@ -40,5 +40,4 @@ class PriceHistory extends Model
 
         return ($price_ex_vat + ($price_ex_vat*($vat_percentage / 100)));
     }
-
 }

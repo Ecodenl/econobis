@@ -30,6 +30,7 @@ class FullAdministration extends Resource
 
                 'countryId' => $this->country_id,
                 'country' => GenericResource::make($this->whenLoaded('country')),
+                'ledgers' => GenericResource::make($this->whenLoaded('ledgers')),
 
                 'emailTemplateIdCollection' => $this->email_template_id_collection,
                 'emailTemplateCollection' => FullEmailTemplate::make($this->whenLoaded('emailTemplateCollection')),
@@ -90,6 +91,18 @@ class FullAdministration extends Resource
 
                 'canCreateInvoices' => $this->can_create_invoices,
                 'canCreatePaymentInvoices' => $this->can_create_payment_invoices,
+
+                'usesTwinfield' => $this->uses_twinfield,
+                'twinfieldUsername' => $this->twinfield_username,
+                'twinfieldPassword' => $this->twinfield_password,
+                'twinfieldOrganizationCode' => $this->twinfield_organization_code,
+                'twinfieldOfficeCode' => $this->twinfield_office_code,
+                'twinfieldIsValid' => $this->twinfield_is_valid,
+                'defaultInvoiceTemplate' => $this->default_invoice_template,
+                'btwCodeSalesNull' => $this->btw_code_sales_null,
+                'btwCodeSales0' => $this->btw_code_sales_0,
+                'btwCodeSales6' => $this->btw_code_sales_6,
+                'btwCodeSales21' => $this->btw_code_sales_21,
 
                 'createdAt' => $this->created_at,
                 'updatedAt' => $this->updated_at,

@@ -13,6 +13,7 @@ import InputSelect from "../../../components/form/InputSelect";
 import AdministrationLogoNew from "./AdministrationLogoNew";
 import EmailTemplateAPI from "../../../api/email-template/EmailTemplateAPI";
 import InputReactSelect from "../../../components/form/InputReactSelect";
+import InputToggle from "../../../components/form/InputToggle";
 
 class AdministrationNewForm extends Component {
     constructor(props) {
@@ -21,6 +22,8 @@ class AdministrationNewForm extends Component {
         this.state = {
             newLogo: false,
             emailTemplates: [],
+            isSaving: false,
+            loadingText: 'Aan het opslaan',
             administration: {
                 name: '',
                 administrationNumber: '',
@@ -43,7 +46,17 @@ class AdministrationNewForm extends Component {
                 emailTemplateIdTransfer: '',
                 emailTemplateReminderId: '',
                 emailTemplateExhortationId: '',
-                attachment: ''
+                attachment: '',
+                usesTwinfield: false,
+                twinfieldUsername: '',
+                twinfieldPassword: '',
+                twinfieldOrganizationCode: '',
+                twinfieldOfficeCode: '',
+                defaultInvoiceTemplate: '',
+                btwCodeSalesNull: '',
+                btwCodeSales0: '',
+                btwCodeSales6: '',
+                btwCodeSales21: '',
             },
             errors: {
                 name: false,
@@ -53,6 +66,11 @@ class AdministrationNewForm extends Component {
                 IBAN: false,
                 email: false,
                 website: false,
+                twinfieldUsername: false,
+                twinfieldPassword: false,
+                twinfieldOrganizationCode: false,
+                twinfieldOfficeCode: false,
+                defaultInvoiceTemplate: false,
             },
             peekLoading: {
                 emailTemplates: true,
@@ -144,7 +162,6 @@ class AdministrationNewForm extends Component {
             }
         }
 
-
         if (!validator.isEmpty(administration.kvkNumber)) {
             if (!validator.isInt(administration.kvkNumber + '')) {
                 errors.kvkNumber = true;
@@ -173,10 +190,49 @@ class AdministrationNewForm extends Component {
             }
         }
 
+        if(administration.usesTwinfield){
+            if (validator.isEmpty(administration.twinfieldUsername + '')) {
+                errors.twinfieldUsername = true;
+                hasErrors = true;
+            }
+
+            if (validator.isEmpty(administration.twinfieldPassword + '')) {
+                errors.twinfieldPassword = true;
+                hasErrors = true;
+            }
+
+            if (validator.isEmpty(administration.twinfieldOfficeCode + '')) {
+                errors.twinfieldOfficeCode = true;
+                hasErrors = true;
+            }
+
+            if (validator.isEmpty(administration.twinfieldOrganizationCode + '')) {
+                errors.twinfieldOrganizationCode = true;
+                hasErrors = true;
+            }
+
+            if (validator.isEmpty(administration.defaultInvoiceTemplate + '')) {
+                errors.defaultInvoiceTemplate = true;
+                hasErrors = true;
+            }
+        }
+
         this.setState({...this.state, errors: errors});
 
         // If no errors send form
         if(!hasErrors) {
+
+            let loadingText = 'Aan het laden';
+
+            if(administration.usesTwinfield){
+                loadingText = 'De koppeling Econobis Twinfield wordt gemaakt. Dit kan enige tijd duren';
+            }
+            this.setState({
+                ...this.state,
+                loadingText: loadingText,
+                isSaving: true
+            });
+            
             const data = new FormData();
 
             data.append('name', administration.name);
@@ -200,7 +256,18 @@ class AdministrationNewForm extends Component {
             data.append('emailTemplateIdTransfer', administration.emailTemplateIdTransfer);
             data.append('emailTemplateReminderId', administration.emailTemplateReminderId);
             data.append('emailTemplateExhortationId', administration.emailTemplateExhortationId);
+            data.append('usesTwinfield', administration.usesTwinfield);
             data.append('attachment', administration.attachment);
+            data.append('twinfieldUsername', administration.twinfieldUsername);
+            data.append('twinfieldPassword', administration.twinfieldPassword);
+            data.append('twinfieldOrganizationCode', administration.twinfieldOrganizationCode);
+            data.append('twinfieldOfficeCode', administration.twinfieldOfficeCode);
+            data.append('defaultInvoiceTemplate', administration.defaultInvoiceTemplate);
+            data.append('btwCodeSalesNull', administration.btwCodeSalesNull);
+            data.append('btwCodeSales0', administration.btwCodeSales0);
+            data.append('btwCodeSales6', administration.btwCodeSales6);
+            data.append('btwCodeSales21', administration.btwCodeSales21);
+
         AdministrationDetailsAPI.newAdministration(data).then((payload) => {
             hashHistory.push(`/administratie/${payload.data.id}`);
         }).catch(function (error) {
@@ -211,7 +278,8 @@ class AdministrationNewForm extends Component {
 
     render() {
         const { name, administrationNumber, address, postalCode, city, countryId, kvkNumber, btwNumber, IBAN, email, website, bic, sepaContractName, sepaCreditorId, rsinNumber, defaultPaymentTerm, attachment,
-            emailTemplateIdCollection, emailTemplateIdTransfer, emailTemplateReminderId, emailTemplateExhortationId, ibanAttn} = this.state.administration;
+            emailTemplateIdCollection, emailTemplateIdTransfer, emailTemplateReminderId, emailTemplateExhortationId, ibanAttn, usesTwinfield, twinfieldUsername, twinfieldPassword, twinfieldOrganizationCode, twinfieldOfficeCode,
+            defaultInvoiceTemplate, btwCodeSalesNull, btwCodeSales0, btwCodeSales6, btwCodeSales21} = this.state.administration;
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -400,9 +468,6 @@ class AdministrationNewForm extends Component {
                                 isLoading={this.state.peekLoading.emailTemplates}
                                 multi={false}
                             />
-                        </div>
-
-                        <div className="row">
                             <div className="form-group col-sm-6">
                                 <label className="col-sm-6">Kies logo</label>
                                 <div className="col-sm-6">
@@ -416,6 +481,113 @@ class AdministrationNewForm extends Component {
                             </div>
                         </div>
 
+                        {usesTwinfield == true &&
+                        <div className="row">
+                            <div className={'panel-part panel-heading'}>
+                                <span className={'h5 text-bold'}>Twinfield</span>
+                            </div>
+                        </div>
+                        }
+
+                        <div className="row">
+                            <InputToggle
+                                label={"Gebruikt Twinfield"}
+                                name={"usesTwinfield"}
+                                value={usesTwinfield}
+                                onChangeAction={this.handleInputChange}
+                            />
+                        </div>
+
+                        {usesTwinfield == true &&
+                        <div className="row">
+                            <InputText
+                                label="Gebruikersnaam"
+                                name={"twinfieldUsername"}
+                                value={twinfieldUsername}
+                                onChangeAction={this.handleInputChange}
+                                required={"required"}
+                                error={this.state.errors.twinfieldUsername}
+                            />
+                            <InputText
+                                label="Wachtwoord"
+                                name={"twinfieldPassword"}
+                                value={twinfieldPassword}
+                                onChangeAction={this.handleInputChange}
+                                error={this.state.errors.twinfieldPassword}
+                                required={"required"}
+                            />
+                        </div>
+                        }
+
+                        {usesTwinfield == true &&
+                        <div className="row">
+                            <InputText
+                                label="Omgeving"
+                                name={"twinfieldOrganizationCode"}
+                                value={twinfieldOrganizationCode}
+                                onChangeAction={this.handleInputChange}
+                                required={"required"}
+                                error={this.state.errors.twinfieldOrganizationCode}
+                            />
+                            <InputText
+                                label="Code"
+                                name={"twinfieldOfficeCode"}
+                                value={twinfieldOfficeCode}
+                                onChangeAction={this.handleInputChange}
+                                error={this.state.errors.twinfieldOfficeCode}
+                                required={"required"}
+                            />
+                        </div>
+                        }
+
+                        {usesTwinfield == true &&
+                        <div className="row">
+                            <InputText
+                                label="Standaard factuurtemplate"
+                                name={"defaultInvoiceTemplate"}
+                                value={defaultInvoiceTemplate}
+                                onChangeAction={this.handleInputChange}
+                                required={"required"}
+                                error={this.state.errors.defaultInvoiceTemplate}
+                            />
+                        </div>
+                        }
+
+                        {usesTwinfield == true &&
+                        <div className="row">
+                            <InputText
+                                label="BTW code verkoop geen"
+                                name={"btwCodeSalesNull"}
+                                value={btwCodeSalesNull}
+                                onChangeAction={this.handleInputChange}
+                            />
+                            <InputText
+                                label="BTW code verkoop 0%"
+                                name={"btwCodeSales0"}
+                                value={btwCodeSales0}
+                                onChangeAction={this.handleInputChange}
+                            />
+                        </div>
+                        }
+
+
+                        {usesTwinfield == true &&
+                        <div className="row">
+                            <InputText
+                                label="BTW code verkoop 6%"
+                                name={"btwCodeSales6"}
+                                value={btwCodeSales6}
+                                onChangeAction={this.handleInputChange}
+                            />
+                            <InputText
+                                label="BTW code verkoop 21%"
+                                name={"btwCodeSales21"}
+                                value={btwCodeSales21}
+                                onChangeAction={this.handleInputChange}
+                            />
+                        </div>
+                        }
+
                         {this.state.newLogo &&
                         <AdministrationLogoNew toggleShowNew={this.toggleNewLogo}
                                                addAttachment={this.addAttachment}/>
@@ -424,7 +596,14 @@ class AdministrationNewForm extends Component {
 
                     <PanelBody>
                         <div className="pull-right btn-group" role="group">
-                            <ButtonText buttonText={"Opslaan"} onClickAction={this.handleSubmit} type={"submit"} value={"Submit"}/>
+                            <ButtonText
+                                loading={this.state.isSaving}
+                                loadText={this.state.loadingText}
+                                buttonText={"Opslaan"}
+                                onClickAction={this.handleSubmit}
+                                type={"submit"}
+                                value={"Submit"}
+                            />
                         </div>
                     </PanelBody>
                 </Panel>

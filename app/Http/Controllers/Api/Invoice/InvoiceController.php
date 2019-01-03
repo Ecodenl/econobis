@@ -86,6 +86,7 @@ class InvoiceController extends ApiController
             'emails',
             'document',
             'createdBy',
+            'order.administration.ledgers',
         ]);
 
         $orderController = new OrderController;
@@ -568,7 +569,9 @@ class InvoiceController extends ApiController
         $product->duration_id = $productData['durationId'];
         $product->invoice_frequency_id = $productData['invoiceFrequencyId'];
         $product->administration_id = $productData['administrationId'];
-
+        $product->administration_ledger_twinfield_id = $productData['administrationLedgerTwinfieldId'];
+        $product->administration_ledger_twinfield_id ?: $product->administration_ledger_twinfield_id = null;
+        
         $priceHistory = new PriceHistory();
         $priceHistory->date_start = Carbon::today();
         $priceHistory->price = $productData['price'];

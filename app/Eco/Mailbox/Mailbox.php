@@ -25,4 +25,9 @@ class Mailbox extends Model
     {
         return $this->belongsToMany(User::class);
     }
+
+    public function mailboxIgnores()
+    {
+        return $this->hasMany(MailboxIgnore::class);
+    }
 }

@@ -7,6 +7,7 @@ import QuotationRequestsListHead from './QuotationRequestsListHead';
 import QuotationRequestsListFilter from './QuotationRequestsListFilter';
 import QuotationRequestsListItem from './QuotationRequestsListItem';
 import DataTablePagination from "../../../components/dataTable/DataTablePagination";
+import {connect} from "react-redux";
 
 class QuotationRequestsList extends Component {
     constructor(props){
@@ -21,7 +22,23 @@ class QuotationRequestsList extends Component {
     };
 
     render() {
-        const { data = [], meta = {}, isLoading } = this.props.quotationRequests;
+        const { data = [], meta = {} } = this.props.quotationRequests;
+
+        let loadingText = '';
+        let loading = true;
+
+        if (this.props.hasError) {
+            loadingText = 'Fout bij het ophalen van offerteverzoeken.';
+        }
+        else if (this.props.isLoading) {
+            loadingText = 'Gegevens aan het laden.';
+        }
+        else if (data.length === 0) {
+            loadingText = 'Geen offerteverzoeken gevonden!';
+        }
+        else {
+            loading = false;
+        }
 
         return (
             <form onKeyUp={this.handleKeyUp}>
@@ -36,8 +53,8 @@ class QuotationRequestsList extends Component {
                     </DataTableHead>
                     <DataTableBody>
                         {
-                            data.length === 0 ? (
-                                <tr><td colSpan={10}>Geen offerteverzoeken gevonden!</td></tr>
+                            loading ? (
+                                <tr><td colSpan={10}>{loadingText}</td></tr>
                             ) : (
                                 data.map((quotationRequest) => {
                                     return <QuotationRequestsListItem
@@ -61,4 +78,11 @@ class QuotationRequestsList extends Component {
     };
 }
 
-export default QuotationRequestsList;
+const mapStateToProps = (state) => {
+    return {
+        isLoading: state.loadingData.isLoading,
+        hasError: state.loadingData.hasError,
+    }
+};
+
+export default connect(mapStateToProps)(QuotationRequestsList);

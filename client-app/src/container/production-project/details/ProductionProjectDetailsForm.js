@@ -13,10 +13,25 @@ class ProductionProjectDetailsForm extends Component {
     };
 
     render() {
+        let loadingText = '';
+        let loading = true;
+
+        if (this.props.hasError) {
+            loadingText = 'Fout bij het ophalen van productie project.';
+        }
+        else if (this.props.isLoading) {
+            loadingText = 'Gegevens aan het laden.';
+        }
+        else if (isEmpty(this.props.productionProject)) {
+            loadingText = 'Geen gegevens gevonden.';
+        }
+        else {
+            loading = false;
+        }
 
         return (
-            isEmpty(this.props.productionProject) ?
-                <div>Geen gegevens gevonden.</div>
+            loading ?
+                <div>{loadingText}</div>
                 :
                 <div>
                     <ProductionProjectFormGeneral />
@@ -31,6 +46,8 @@ class ProductionProjectDetailsForm extends Component {
 const mapStateToProps = (state) => {
     return {
         productionProject: state.productionProjectDetails,
+        isLoading: state.loadingData.isLoading,
+        hasError: state.loadingData.hasError,
     }
 };
 

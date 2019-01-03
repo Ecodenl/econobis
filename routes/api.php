@@ -25,6 +25,8 @@ Route::namespace('Api')
     ->middleware('auth:api')
     ->group(function () {
 
+        Route::get('/jobs', 'Job\JobController@getLastJobs');
+
         Route::get('/me', 'User\UserController@me');
 
         Route::get('/system-data', 'SystemData\SystemDataController@get');
@@ -198,8 +200,11 @@ Route::namespace('Api')
 
         Route::get('mailbox/grid', 'Mailbox\MailboxController@grid');
         Route::get('mailbox/logged-in/email-peek', 'Mailbox\MailboxController@loggedInEmailPeek');
-        Route::post('mailbox', 'Mailbox\MailboxController@store');
         Route::get('mailbox/{mailbox}', 'Mailbox\MailboxController@show');
+        Route::post('mailbox', 'Mailbox\MailboxController@store');
+        Route::post('mailbox/ignore', 'Mailbox\MailboxController@storeIgnore');
+        Route::post('mailbox/update-ignore/{mailboxIgnore}', 'Mailbox\MailboxController@updateIgnore');
+        Route::post('mailbox/delete-ignore/{mailboxIgnore}', 'Mailbox\MailboxController@deleteIgnore');
         Route::post('mailbox/{mailbox}', 'Mailbox\MailboxController@update');
         Route::post('mailbox/{mailbox}/users/add/{user}', 'Mailbox\MailboxController@addUser');
         Route::post('mailbox/{mailbox}/users/remove/{user}', 'Mailbox\MailboxController@removeUser');

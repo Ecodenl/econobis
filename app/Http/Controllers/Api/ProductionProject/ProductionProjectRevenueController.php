@@ -31,6 +31,7 @@ use App\Http\Resources\ParticipantProductionProject\FullRevenueParticipantProduc
 use App\Http\Resources\ParticipantProductionProject\Templates\ParticipantReportMail;
 use App\Http\Resources\ProductionProject\FullProductionProjectRevenue;
 use App\Http\Resources\ProductionProject\FullProductionProjectRevenueDistribution;
+use App\Jobs\Revenue\CreatePaymentInvoices;
 use Barryvdh\DomPDF\Facade as PDF;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -323,6 +324,9 @@ class ProductionProjectRevenueController extends ApiController
         $energySupplierHtml
             = TemplateVariableHelper::replaceTemplateVariables($energySupplierHtml,
             'ik', $user);
+        $energySupplierHtml
+            = TemplateVariableHelper::replaceTemplateVariables($energySupplierHtml,
+            'administratie', $productionProject->administration);
 
         $energySupplierHtml
             = TemplateVariableHelper::stripRemainingVariableTags($energySupplierHtml);
@@ -644,41 +648,14 @@ class ProductionProjectRevenueController extends ApiController
         set_time_limit(0);
         $createReport = $request->input('createReport');
         $createInvoice = $request->input('createInvoice');
+        $distributionIds = $request->input('distributionIds');
+        $subject = $request->input('subject');
+        $documentTemplateId = $request->input('documentTemplateId');
+        $emailTemplateId = $request->input('emailTemplateId');
 
+        CreatePaymentInvoices::dispatch($createReport, $createInvoice, $distributionIds, $subject, $documentTemplateId, $emailTemplateId, Auth::id());
 
-        if($createInvoice) {
-            //create invoices
-            $createdInvoices = $this->createInvoices(ProductionProjectRevenueDistribution::whereIn('id',
-                $request->input('distributionIds'))->get());
-
-            if ($createdInvoices) {
-                if($createReport) {
-                    $reportDistributionIds = [];
-                    //only send reports to the created ones
-                    foreach ($createdInvoices as $createdInvoice) {
-                        array_push($reportDistributionIds, $createdInvoice->revenue_distribution_id);
-                    }
-
-                    $this->createParticipantRevenueReport($request->input('subject'),
-                        $reportDistributionIds,
-                        DocumentTemplate::find($request->input('documentTemplateId')),
-                        EmailTemplate::find($request->input('emailTemplateId')));
-
-                }
-                $paymentInvoiceController = new PaymentInvoiceController();
-
-                return $paymentInvoiceController->generateSepaFile(collect($createdInvoices));
-            } else {
-                abort(400, 'Geen uitkering facturen aangemaakt.');
-            }
-        }
-
-        elseif ($createReport){
-            $this->createParticipantRevenueReport($request->input('subject'),
-                $request->input('distributionIds'),
-                DocumentTemplate::find($request->input('documentTemplateId')),
-                EmailTemplate::find($request->input('emailTemplateId')));
-        }
+        return ProductionProjectRevenueDistribution::find($distributionIds[0])->revenue->productionProject->administration_id;
     }
 
 }

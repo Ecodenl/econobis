@@ -8,6 +8,7 @@ import TasksListFilter from './TasksListFilter';
 import TasksListItem from './TasksListItem';
 import TasksDeleteItem from './TasksDeleteItem';
 import DataTablePagination from "../../../components/dataTable/DataTablePagination";
+import {connect} from "react-redux";
 
 class TasksList extends Component {
     constructor(props){
@@ -54,7 +55,23 @@ class TasksList extends Component {
     };
 
     render() {
-        const { data = [], meta = {}, isLoading } = this.props.tasks;
+        const { data = [], meta = {} } = this.props.tasks;
+
+        let loadingText = '';
+        let loading = true;
+
+        if (this.props.hasError) {
+            loadingText = 'Fout bij het ophalen van taken.';
+        }
+        else if (this.props.isLoading) {
+            loadingText = 'Gegevens aan het laden.';
+        }
+        else if (data.length === 0) {
+            loadingText = 'Geen taken gevonden!';
+        }
+        else {
+            loading = false;
+        }
 
         return (
             <div>
@@ -70,8 +87,8 @@ class TasksList extends Component {
                         </DataTableHead>
                         <DataTableBody>
                             {
-                                data.length === 0 ? (
-                                    <tr><td colSpan={7}>Geen taken gevonden!</td></tr>
+                                loading ? (
+                                    <tr><td colSpan={7}>{loadingText}</td></tr>
                                 ) : (
                                     data.map((task) => {
                                         return <TasksListItem
@@ -104,4 +121,11 @@ class TasksList extends Component {
     };
 }
 
-export default TasksList;
+const mapStateToProps = (state) => {
+    return {
+        isLoading: state.loadingData.isLoading,
+        hasError: state.loadingData.hasError,
+    }
+};
+
+export default connect(mapStateToProps)(TasksList);

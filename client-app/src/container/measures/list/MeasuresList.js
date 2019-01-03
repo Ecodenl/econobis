@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {Component} from 'react';
 import { connect } from 'react-redux';
 
 import DataTable from '../../../components/dataTable/DataTable';
@@ -8,7 +8,29 @@ import DataTableHeadTitle from '../../../components/dataTable/DataTableHeadTitle
 
 import MeasuresListItem from './MeasuresListItem';
 
-const MeasuresList = (props) => (
+class MeasuresList extends Component {
+    constructor(props){
+        super(props);
+    };
+
+    render() {
+        let loadingText = '';
+        let loading = true;
+
+        if (this.props.hasError) {
+            loadingText = 'Fout bij het ophalen van maatregelen.';
+        }
+        else if (this.props.isLoading) {
+            loadingText = 'Gegevens aan het laden.';
+        }
+        else if (this.props.measures.length === 0) {
+            loadingText = 'Geen maatregelen gevonden!';
+        }
+        else {
+            loading = false;
+        }
+
+        return (
     <div>
         <DataTable>
             <DataTableHead>
@@ -21,12 +43,12 @@ const MeasuresList = (props) => (
             </DataTableHead>
             <DataTableBody>
                 {
-                    props.measures.length === 0 ? (
+                    loading ? (
                         <tr>
-                            <td colSpan={4}>Geen maatregelen gevonden!</td>
+                            <td colSpan={4}>{loadingText}</td>
                         </tr>
                     ) : (
-                        props.measures.map(measure => (
+                        this.props.measures.map(measure => (
                             <MeasuresListItem
                                 key={measure.id}
                                 {...measure}
@@ -37,11 +59,15 @@ const MeasuresList = (props) => (
             </DataTableBody>
         </DataTable>
     </div>
-);
+        );
+    };
+}
 
 const mapStateToProps = (state) => {
     return {
         measures: state.measures,
+        isLoading: state.loadingData.isLoading,
+        hasError: state.loadingData.hasError,
     };
 };
 

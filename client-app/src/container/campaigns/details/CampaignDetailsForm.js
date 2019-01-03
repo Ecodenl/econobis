@@ -16,9 +16,25 @@ class CampaignDetailsForm extends Component {
 
     render() {
 
+        let loadingText = '';
+        let loading = true;
+
+        if (this.props.hasError) {
+            loadingText = 'Fout bij het ophalen van campagne.';
+        }
+        else if (this.props.isLoading) {
+            loadingText = 'Gegevens aan het laden.';
+        }
+        else if (isEmpty(this.props.campaign)) {
+            loadingText = 'Geen campagne gevonden!';
+        }
+        else {
+            loading = false;
+        }
+
         return (
-            isEmpty(this.props.campaign) ?
-                <div>Geen gegevens gevonden.</div>
+            loading ?
+                <div>{loadingText}</div>
                 :
                 <div>
                     <CampaignFormGeneral />
@@ -35,6 +51,8 @@ class CampaignDetailsForm extends Component {
 const mapStateToProps = (state) => {
     return {
         campaign: state.campaignDetails,
+        isLoading: state.loadingData.isLoading,
+        hasError: state.loadingData.hasError,
     }
 };
 

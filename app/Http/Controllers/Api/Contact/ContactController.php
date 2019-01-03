@@ -166,8 +166,10 @@ class ContactController extends Controller
 
     public function getPrimaryEmailAddressesId(Request $request)
     {
+
         $contactIds = $request->input('contactIds');
         $emailIds = [];
+
         if (is_array($contactIds)) {
             foreach ($contactIds as $contactId) {
                 $contact = Contact::find($contactId);
@@ -181,6 +183,7 @@ class ContactController extends Controller
                 array_push($emailIds, $contact->primaryEmailAddress->id);
             }
         }
+
         return array_unique($emailIds);
     }
 }

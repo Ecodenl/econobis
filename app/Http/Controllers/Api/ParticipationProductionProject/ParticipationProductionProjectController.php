@@ -512,6 +512,7 @@ class ParticipationProductionProjectController extends ApiController
             $revenueHtml = TemplateVariableHelper::replaceTemplateVariables($revenueHtml,'participant', $participant);
             $revenueHtml = TemplateVariableHelper::replaceTemplateVariables($revenueHtml,'productie_project', $productionProject);
             $revenueHtml = TemplateVariableHelper::replaceTemplateVariables($revenueHtml,'ik', $user);
+            $revenueHtml = TemplateVariableHelper::replaceTemplateVariables($revenueHtml,'administratie', $productionProject->administration);
 
             $revenueHtml = TemplateVariableHelper::stripRemainingVariableTags($revenueHtml);
 
@@ -573,6 +574,7 @@ class ParticipationProductionProjectController extends ApiController
                 $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables, 'ik', $user);
                 $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables,'participant', $participant);
                 $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables,'productie_project', $productionProject);
+                $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables,'administratie', $productionProject->administration);
                 $htmlBodyWithContactVariables = TemplateVariableHelper::stripRemainingVariableTags($htmlBodyWithContactVariables);
 
                 if ($previewEmail) {

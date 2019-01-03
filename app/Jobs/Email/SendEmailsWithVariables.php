@@ -6,43 +6,61 @@
  * Time: 16:06
  */
 
-namespace App\Eco\Email\Jobs;
+namespace App\Jobs\Email;
 
 
-use App\Eco\Contact\Contact;
-use App\Eco\ContactGroup\ContactGroup;
 use App\Eco\Email\Email;
 use App\Eco\EmailAddress\EmailAddress;
+use App\Eco\Jobs\JobsLog;
 use App\Eco\User\User;
 use App\Helpers\Template\TemplateTableHelper;
 use App\Helpers\Template\TemplateVariableHelper;
 use App\Http\Resources\Email\Templates\GenericMail;
 use Carbon\Carbon;
 use Config;
+use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Mail;
 
-class SendEmailsWithVariables
+class SendEmailsWithVariables implements ShouldQueue
 {
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     /**
      * @var Email
      */
     private $email;
+    private $tos;
+    private $userId;
 
-    public function __construct(Email $email, $tos)
+    public function __construct(Email $email, $tos, $userId)
     {
         $this->email = $email;
         $this->tos = $tos;
+        $this->userId = $userId;
+
+        $jobLog = new JobsLog();
+        $jobLog->value = 'Start e-mail(s) versturen.';
+        $jobLog->user_id = $userId;
+        $jobLog->save();
     }
 
     public function handle()
     {
         $this->validateRequest();
 
+        //user voor observer
+        Auth::setUser(User::find($this->userId));
+
         $config = Config::get('mail');
 
         $email = $this->email;
+
         $mailbox = $email->mailbox;
 
         if(config('mail.driver') !== 'mailgun') {
@@ -60,7 +78,6 @@ class SendEmailsWithVariables
 
         //First see if the to's are contact, user or created option
         $emailsToContact = [];
-        $emailsToUser = [];
         $emailsToEmailAddress = [];
         $tos = $this->tos;
 
@@ -88,14 +105,22 @@ class SendEmailsWithVariables
             ($email->bcc != []) ? $mail->bcc($email->bcc) : null;
             $htmlBodyWithVariables = TemplateVariableHelper::replaceTemplateVariables($email->html_body, 'ik', Auth::user());
             $htmlBodyWithVariables = TemplateVariableHelper::stripRemainingVariableTags($htmlBodyWithVariables);
-            $mail->send(new GenericMail($email, $htmlBodyWithVariables));
-            $amounfOfEmailsSend++;
 
-            if($amounfOfEmailsSend === 1){
-                $mergedHtmlBody = $htmlBodyWithVariables;
+            try {
+                $mail->send(new GenericMail($email, $htmlBodyWithVariables));
+                $amounfOfEmailsSend++;
+
+                if($amounfOfEmailsSend === 1){
+                    $mergedHtmlBody = $htmlBodyWithVariables;
+                }
+
+                $ccBccSent = true;
+            }
+            catch(\Exception $e){
+                Log::error('Mail naar e-mailadres kon niet worden verzonden');
+                Log::error($e->getMessage());
             }
 
-            $ccBccSent = true;
         }
 
         //Send mail to all contacts
@@ -117,11 +142,17 @@ class SendEmailsWithVariables
                     $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables, 'offerteverzoek', $email->quotationRequest);
                 }
                 $htmlBodyWithContactVariables = TemplateVariableHelper::stripRemainingVariableTags($htmlBodyWithContactVariables);
+                try {
                 $mail->send(new GenericMail($email, $htmlBodyWithContactVariables));
                 $amounfOfEmailsSend++;
 
                 if($amounfOfEmailsSend === 1){
                     $mergedHtmlBody = $htmlBodyWithContactVariables;
+                }
+                }
+                catch(\Exception $e){
+                    Log::error('Mail naar contact kon niet worden verzonden');
+                    Log::error($e->getMessage());
                 }
 
             }
@@ -144,11 +175,17 @@ class SendEmailsWithVariables
                 $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables, 'contact' , $emailAddress->contact);
                 $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables, 'ik', Auth::user());
                 $htmlBodyWithContactVariables = TemplateVariableHelper::stripRemainingVariableTags($htmlBodyWithContactVariables);
+                try {
                 $mail->send(new GenericMail($email, $htmlBodyWithContactVariables));
                 $amounfOfEmailsSend++;
 
                 if($amounfOfEmailsSend === 1){
                     $mergedHtmlBody = $htmlBodyWithContactVariables;
+                }
+                }
+                catch(\Exception $e){
+                    Log::error('Mail naar groep e-mailadres kon niet worden verzonden');
+                    Log::error($e->getMessage());
                 }
 
             }
@@ -161,6 +198,21 @@ class SendEmailsWithVariables
         $email->date_sent = new Carbon();
         $email->folder = 'sent';
         $email->save();
+
+        $jobLog = new JobsLog();
+        $jobLog->value = 'E-mail(s) verstuurd.';
+        $jobLog->user_id = $this->userId;
+        $jobLog->save();
+    }
+
+    public function failed(\Exception $exception)
+    {
+        $jobLog = new JobsLog();
+        $jobLog->value = 'E-mail(s) versturen mislukt.';
+        $jobLog->user_id = $this->userId;
+        $jobLog->save();
+
+        Log::error('E-mail maken mislukt:' . $exception->getMessage());
     }
 
     private function validateRequest()

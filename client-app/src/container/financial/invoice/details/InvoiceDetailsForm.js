@@ -15,9 +15,25 @@ class InvoiceDetailsForm extends Component {
     };
 
     render() {
+        let loadingText = '';
+        let loading = true;
+
+        if (this.props.hasError) {
+            loadingText = 'Fout bij het ophalen van factuur.';
+        }
+        else if (this.props.isLoading) {
+            loadingText = 'Gegevens aan het laden.';
+        }
+        else if (isEmpty(this.props.invoiceDetails)) {
+            loadingText = 'Geen factuur gevonden!';
+        }
+        else {
+            loading = false;
+        }
+
         return (
-            isEmpty(this.props.invoiceDetails) ?
-                <div>Geen gegevens gevonden.</div>
+            loading ?
+                <div>{loadingText}</div>
                 :
                 <div>
                     <InvoiceDetailsFormGeneral />
@@ -32,6 +48,8 @@ class InvoiceDetailsForm extends Component {
 const mapStateToProps = (state) => {
     return {
         invoiceDetails: state.invoiceDetails,
+        isLoading: state.loadingData.isLoading,
+        hasError: state.loadingData.hasError,
     };
 };
 

@@ -3,10 +3,13 @@ import DocumentDetailsAPI from "../../api/document/DocumentDetailsAPI";
 
 export function* fetchDocumentDetailsSaga({ id }) {
     try {
+        yield put({ type: 'IS_LOADING' });
         const documentDetails = yield call(DocumentDetailsAPI.fetchDocumentDetails, id);
         yield put({ type: 'FETCH_DOCUMENT_DETAILS_SUCCESS', documentDetails });
+        yield put({ type: 'IS_LOADING_COMPLETE' });
     } catch (error) {
         yield put({ type: 'FETCH_DOCUMENT_DETAILS_ERROR', error });
+        yield put({ type: 'LOADING_ERROR', error });
     }
 }
 

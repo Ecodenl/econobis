@@ -60,7 +60,7 @@ class OrderCSVHelper
             }
             else if($order->contact->type_id === 'organisation'){
                 $order->organisation = $order->contact->organisation->name;
-                if($order->contact->contactPerson->exists() && $order->contact->contactPerson->contact->type_id === 'person'){
+                if($order->contact->contactPerson && $order->contact->contactPerson->exists() && $order->contact->contactPerson->contact->type_id === 'person'){
                     $contactPerson = $order->contact->contactPerson->contact;
 
                     $order->title = $contactPerson->person->title ? $contactPerson->person->title->name : '';
@@ -97,8 +97,8 @@ class OrderCSVHelper
             $order->btw = $order->total_price_incl_vat - $order->total_price_ex_vat;
 
             $order->btw_formatted = $this->formatFinancial($order->btw);
-            $order->total_price_incl_vat = $this->formatFinancial($order->total_price_incl_vat);
-            $order->total_price_ex_vat = $this->formatFinancial($order->total_price_ex_vat);
+            $order->total_price_incl_vat_formatted = $this->formatFinancial($order->total_price_incl_vat);
+            $order->total_price_ex_vat_formatted = $this->formatFinancial($order->total_price_ex_vat);
 
             foreach ($order->orderProducts as $k => $orderProduct){
                 $orderProductName = 'order_product_' . $k;

@@ -6,6 +6,7 @@ import DataTableBody from '../../../components/dataTable/DataTableBody';
 import DataTableHeadTitle from '../../../components/dataTable/DataTableHeadTitle';
 import WebformsListItem from './WebformsListItem';
 import WebformDeleteItem from "./WebformDeleteItem";
+import {connect} from "react-redux";
 
 class WebformsList extends Component {
     constructor(props) {
@@ -45,6 +46,23 @@ class WebformsList extends Component {
     };
 
     render() {
+
+        let loadingText = '';
+        let loading = true;
+
+        if (this.props.hasError) {
+            loadingText = 'Fout bij het ophalen van webformulieren.';
+        }
+        else if (this.props.isLoading) {
+            loadingText = 'Gegevens aan het laden.';
+        }
+        else if (this.props.webforms.length === 0) {
+            loadingText = 'Geen webformulieren gevonden!';
+        }
+        else {
+            loading = false;
+        }
+
         return (
             <div>
                 <DataTable>
@@ -59,9 +77,9 @@ class WebformsList extends Component {
                     </DataTableHead>
                     <DataTableBody>
                         {
-                            this.props.webforms.length === 0 ? (
+                            loading ? (
                                 <tr>
-                                    <td colSpan={5}>Geen webformulieren gevonden!</td>
+                                    <td colSpan={5}>{loadingText}</td>
                                 </tr>
                             ) : (
                                 this.props.webforms.map((team) => {
@@ -88,4 +106,11 @@ class WebformsList extends Component {
     }
 };
 
-export default WebformsList;
+const mapStateToProps = (state) => {
+    return {
+        isLoading: state.loadingData.isLoading,
+        hasError: state.loadingData.hasError,
+    }
+};
+
+export default connect(mapStateToProps)(WebformsList);

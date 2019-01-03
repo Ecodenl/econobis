@@ -49,7 +49,7 @@ class PaymentInvoiceController extends ApiController
 
         $sepaPaymentHelper = new SepaPaymentHelper($administration, $validatedInvoices);
 
-        $sepa =  $sepaPaymentHelper->generateSepaFile();
+        $sepa = $sepaPaymentHelper->generateSepaFile();
 
         $setDatePayout = false;
         foreach ($validatedInvoices as $invoice){

@@ -4,10 +4,13 @@ import {hashHistory} from "react-router";
 
 export function* fetchHousingFileDetailsSaga({ payload }) {
     try {
+        yield put({ type: 'IS_LOADING' });
         const housingFileDetails = yield call(HousingFileDetailsAPI.fetchHousingFilesDetails, payload);
         yield put({ type: 'FETCH_HOUSING_FILE_DETAILS_SUCCESS', housingFileDetails });
+        yield put({ type: 'IS_LOADING_COMPLETE' });
     } catch (error) {
         yield put({ type: 'FETCH_HOUSING_FILE_DETAILS_ERROR', error });
+        yield put({ type: 'LOADING_ERROR', error });
     }
 }
 

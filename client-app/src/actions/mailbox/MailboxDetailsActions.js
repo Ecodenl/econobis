@@ -33,3 +33,17 @@ export const deleteMailboxUser = (mailboxId, userId) => {
         userId,
     };
 };
+
+export const newMailboxIgnore = (ignore) => {
+    return {
+        type: 'NEW_MAILBOX_IGNORE',
+        ignore,
+    };
+};
+
+export const deleteMailboxIgnore = (ignoreId) => {
+    return {
+        type: 'DELETE_MAILBOX_IGNORE',
+        ignoreId,
+    };
+};

@@ -1,12 +1,33 @@
-import React from 'react';
+import React, {Component} from 'react';
 
 import DataTable from '../../../components/dataTable/DataTable';
 import DataTableHead from '../../../components/dataTable/DataTableHead';
 import DataTableBody from '../../../components/dataTable/DataTableBody';
 import DataTableHeadTitle from '../../../components/dataTable/DataTableHeadTitle';
 import UsersListItem from './UsersListItem';
+import {connect} from "react-redux";
 
-const UsersList = props => {
+class UsersList extends Component {
+    constructor(props){
+        super(props);
+    };
+    render() {
+        let loadingText = '';
+        let loading = true;
+
+        if (this.props.hasError) {
+            loadingText = 'Fout bij het ophalen van gebruikers.';
+        }
+        else if (this.props.isLoading) {
+            loadingText = 'Gegevens aan het laden.';
+        }
+        else if (this.props.users.length === 0) {
+            loadingText = 'Geen gebruikers gevonden!';
+        }
+        else {
+            loading = false;
+        }
+
     return (
         <div>
                 <DataTable>
@@ -21,10 +42,10 @@ const UsersList = props => {
                     </DataTableHead>
                     <DataTableBody>
                         {
-                            props.users.length === 0 ? (
-                                <tr><td colSpan={11}>Geen gebruikers gevonden!</td></tr>
+                            loading ? (
+                                <tr><td colSpan={11}>{loadingText}</td></tr>
                             ) : (
-                                props.users.map((user) => {
+                                this.props.users.map((user) => {
                                     return <UsersListItem
                                         key={user.id}
                                         {...user}
@@ -36,6 +57,15 @@ const UsersList = props => {
                 </DataTable>
         </div>
     );
+    };
+}
+
+
+const mapStateToProps = (state) => {
+    return {
+        isLoading: state.loadingData.isLoading,
+        hasError: state.loadingData.hasError,
+    }
 };
 
-export default UsersList;
+export default connect(mapStateToProps)(UsersList);

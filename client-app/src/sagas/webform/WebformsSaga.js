@@ -3,10 +3,13 @@ import WebformsAPI from '../../api/webform/WebformsAPI';
 
 export function* fetchWebformsSaga() {
     try {
+        yield put({ type: 'IS_LOADING' });
         const webforms = yield call(WebformsAPI.fetchWebforms);
         yield put({ type: 'FETCH_WEBFORMS_SUCCESS', webforms });
+        yield put({ type: 'IS_LOADING_COMPLETE' });
     } catch (error) {
         yield put({ type: 'FETCH_WEBFORMS_ERROR', error });
+        yield put({ type: 'LOADING_ERROR', error });
     }
 }
 

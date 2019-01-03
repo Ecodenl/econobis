@@ -46,6 +46,7 @@ export const administrationName = faker.lorem.word();
 
 //product
 export const productName = faker.lorem.word();
+export const productNameVariable = faker.lorem.word();
 
 //order
 export const orderSubject = faker.lorem.word();

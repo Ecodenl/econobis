@@ -46,3 +46,36 @@ test('Fill out form product minimum', async (t) => {
     //header+row
     await t.expect(detailsProduct.priceHistoryRows.count).eql(2);
 });
+
+test('Fill out form product minimum', async (t) => {
+
+    await t
+        .useRole(superUser)
+        .navigateTo(constants.app_url + '#/product/nieuw')
+        .wait(constants.wait);
+
+    await t.expect(general.titleH4.innerText).eql('Nieuw product', 'Check element text', { timeout: 500 });
+
+    await t
+        .typeText(newProduct.code, faker.random.word())
+        .typeText(newProduct.name, vars.productNameVariable)
+        .click(newProduct.administrationId)
+        .click(general.option.withExactText(vars.administrationName))
+        .click(general.save)
+        .wait(constants.wait);
+
+    await t.expect(general.titleH4.innerText).eql('Product: ' + vars.productNameVariable, 'Check element text', { timeout: 500 });
+
+    await t
+        .click(detailsProduct.newPriceHistory)
+        .click(detailsProduct.hasVariablePrice)
+        .typeText(detailsProduct.dateStart, '01-01-2018')
+        .pressKey('esc')
+        .click(detailsProduct.vatPercentage)
+        .click(general.option.withExactText('6'))
+        .click(general.save)
+        .wait(constants.wait);
+
+    //header+row
+    await t.expect(detailsProduct.priceHistoryRows.count).eql(2);
+});

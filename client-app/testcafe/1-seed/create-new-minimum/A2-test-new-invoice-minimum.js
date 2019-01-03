@@ -16,7 +16,7 @@ const previewOrder = new ModelOrderPreviewInvoice();
 const sideMenu = new ModelSideMenu();
 const financial = new ModelFinancial();
 
-test('Fill out form invoice minimum, also send to test document creation', async (t) => {
+test('Fill out form invoice minimum', async (t) => {
 
     await t
         .useRole(superUser)

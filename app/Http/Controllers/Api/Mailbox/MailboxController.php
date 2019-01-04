@@ -56,6 +56,7 @@ class MailboxController extends Controller
             ->string('imapInboxPrefix')->whenMissing('')->onEmpty('')->alias('imap_inbox_prefix')->next()
             ->string('username')->whenMissing('')->onEmpty('')->alias('username')->next()
             ->string('password')->whenMissing('')->onEmpty('')->alias('password')->next()
+            ->integer('mailgunDomainId')->whenMissing(null)->onEmpty(null)->alias('mailgun_domain_id')->next()
             ->get();
 
         $mailbox = new Mailbox($data);
@@ -92,6 +93,7 @@ class MailboxController extends Controller
             ->string('imapInboxPrefix')->alias('imap_inbox_prefix')->next()
             ->string('username')->alias('username')->next()
             ->string('password')->alias('password')->next()
+            ->integer('mailgunDomainId')->whenMissing(null)->onEmpty(null)->alias('mailgun_domain_id')->next()
             ->get();
 
         $mailbox->login_tries = 0;

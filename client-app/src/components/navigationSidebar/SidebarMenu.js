@@ -180,6 +180,11 @@ class SidebarMenu extends Component {
                             <NavText><Link className="sidebar-link" to="mailboxen">Mailboxen</Link></NavText>
                         </Nav>
                         }
+                        {this.props.permissions.manageMailgunDomain &&
+                        <Nav id="mailboxes">
+                            <NavText><Link className="sidebar-link" to="mailgun-domeinen">Mailgun domeinen</Link></NavText>
+                        </Nav>
+                        }
                         {this.props.permissions.viewAuditTrail &&
                         <Nav id="audit-trail">
                             <NavText><Link className="sidebar-link" to="audit-trail">Audit trail</Link></NavText>

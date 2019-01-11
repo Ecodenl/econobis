@@ -52,6 +52,9 @@ import Logout from './container/auth/Logout';
 import MailboxDetailsApp from './container/mailbox/details/MailboxDetailsApp';
 import MailboxNewApp from './container/mailbox/new/MailboxNewApp';
 import MailboxesListApp from './container/mailbox/list/MailboxesListApp';
+import MailgunDomainsListApp from './container/mailgun-domain/list/MailgunDomainsListApp';
+import MailgunDomainNewApp from './container/mailgun-domain/new/MailgunDomainNewApp';
+import MailgunDomainDetailsApp from "./container/mailgun-domain/details/MailgunDomainDetailsApp";
 import Main from './container/global/Main';
 import MeasuresListApp from './container/measures/list/MeasuresListApp';
 import MeasureDetailsApp from './container/measures/details/MeasureDetailsApp';
@@ -278,6 +281,10 @@ const Routes = () => {
                 <Route path="webformulieren" component={WebformsListApp} />
                 <Route path="webformulier/nieuw" component={WebformNewApp} />
                 <Route path="webformulier/:id" component={WebformDetailsApp} />
+                /* Mailboxes */
+                <Route path="mailgun-domeinen" component={MailgunDomainsListApp} />
+                <Route path="mailgun-domein/nieuw" component={MailgunDomainNewApp} />
+                <Route path="mailgun-domein/:id" component={MailgunDomainDetailsApp} />
                 /* 404 route */
                 <Route path="*" component={ NotFoundedPage } />
             </Route>

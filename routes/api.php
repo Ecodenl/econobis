@@ -410,7 +410,7 @@ Route::namespace('Api')
         Route::post('webform/{webform}', 'Webform\WebformController@update');
         Route::post('webform/{webform}/delete', 'Webform\WebformController@delete');
 
-        Route::get('mailgun-domain/grid', 'Mailbox\MailgunDomainController@grid');
+        Route::get('mailgun-domain/jory', 'Mailbox\MailgunDomainController@jory');
         Route::post('mailgun-domain', 'Mailbox\MailgunDomainController@store');
         Route::post('mailgun-domain/{mailgunDomain}', 'Mailbox\MailgunDomainController@update');
     });

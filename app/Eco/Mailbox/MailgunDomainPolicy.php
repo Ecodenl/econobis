@@ -9,7 +9,7 @@ class MailgunDomainPolicy
 {
     use HandlesAuthorization;
 
-    public function store(User $user)
+    public function create(User $user)
     {
         return $user->hasPermissionTo('manage_mailgun_domain', 'api');
     }

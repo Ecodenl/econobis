@@ -7,18 +7,17 @@ use App\Eco\Mailbox\MailgunDomain;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\GenericResource;
+use Illuminate\Http\Request;
 
 class MailgunDomainController extends Controller
 {
 
-    public function grid()
+    public function jory(Request $request)
     {
-        $mailgunDomains = MailgunDomain::get();
-
-        return GenericResource::collection($mailgunDomains);
+        return MailgunDomain::jory()->applyRequest($request);
     }
 
-    public function store(RequestInput $input)
+    public function store(RequestInput $input, Request $request)
     {
         $this->authorize('create', MailgunDomain::class);
 
@@ -30,7 +29,7 @@ class MailgunDomainController extends Controller
         $mailgunDomain = new MailgunDomain($data);
         $mailgunDomain->save();
 
-        return GenericResource::make($mailgunDomain);
+        return MailgunDomain::jory()->onModel($mailgunDomain)->applyRequest($request);
     }
 
     public function update(RequestInput $input, MailgunDomain $mailgunDomain)

@@ -7,6 +7,7 @@ import ModelDetailsPerson from '../../pages/contact/model-details-person';
 import ModelDetailsOrganisation from '../../pages/contact/model-details-organisation';
 import ModelGeneral from '../../pages/model-general';
 const faker = require('faker');
+faker.locale = "nl";
 
 fixture `Create new address`;
 

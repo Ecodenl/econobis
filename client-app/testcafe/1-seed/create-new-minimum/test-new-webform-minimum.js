@@ -6,6 +6,7 @@ import ModelGeneral from "../../pages/model-general";
 import ModelNewWebform from "../../pages/webform/model-new-webform";
 
 const faker = require('faker');
+faker.locale = "nl";
 
 fixture `Create new webform minimum`;
 

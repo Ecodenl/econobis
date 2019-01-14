@@ -6,6 +6,7 @@ import ModelNewCampaign from "../../pages/campaign/model-new-campaign";
 import ModelGeneral from "../../pages/model-general";
 
 const faker = require('faker');
+faker.locale = "nl";
 
 fixture `Create new campaign minimum`;
 

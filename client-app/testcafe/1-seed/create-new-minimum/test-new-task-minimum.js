@@ -7,6 +7,7 @@ import ModelNewTask from "../../pages/task/model-new-task";
 import ModelDetailsTask from "../../pages/task/model-details-task";
 
 const faker = require('faker');
+faker.locale = "nl";
 
 fixture `Create new task minimum`;
 

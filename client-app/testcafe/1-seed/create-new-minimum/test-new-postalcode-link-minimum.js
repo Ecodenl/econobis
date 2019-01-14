@@ -4,6 +4,7 @@ import * as constants from '../../config/constants';
 import ModelGeneral from "../../pages/model-general";
 import ModelPostalcodeLink from "../../pages/postalcode-link/model-postalcode-link";
 const faker = require('faker');
+faker.locale = "nl";
 
 fixture `Create new postalcode link minimum`;
 

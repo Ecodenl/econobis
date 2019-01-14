@@ -8,6 +8,7 @@ import ModelDetailsInvoice from "../../pages/invoice/model-details-invoice";
 import ModelSideMenu from '../../pages/side-menu/model-side-menu';
 import ModelFinancial from '../../pages/financial/model-financial';
 const faker = require('faker');
+faker.locale = "nl";
 
 fixture `Create new invoice products minimum`;
 
@@ -55,7 +56,7 @@ test('Fill out form invoice products minimum', async (t) => {
         .wait(constants.wait);
 
     //header+row
-    await t.expect(detailsInvoice.invoiceProductRows.count).eql(6);
+    await t.expect(detailsInvoice.invoiceProductRows.count).eql(5);
 
     //Ook product met variabele prijs
     await t
@@ -70,7 +71,7 @@ test('Fill out form invoice products minimum', async (t) => {
         .wait(constants.wait);
 
     //header+row
-    await t.expect(detailsInvoice.invoiceProductRows.count).eql(7);
+    await t.expect(detailsInvoice.invoiceProductRows.count).eql(6);
 
     //Ook product met variabele prijs
     await t
@@ -85,7 +86,7 @@ test('Fill out form invoice products minimum', async (t) => {
         .wait(constants.wait);
 
     //header+row
-    await t.expect(detailsInvoice.invoiceProductRows.count).eql(8);
+    await t.expect(detailsInvoice.invoiceProductRows.count).eql(7);
 
 
     //Nieuw eenmalig product
@@ -99,5 +100,5 @@ test('Fill out form invoice products minimum', async (t) => {
         .wait(constants.wait);
 
     //header+row
-    await t.expect(detailsInvoice.invoiceProductRows.count).eql(9);
+    await t.expect(detailsInvoice.invoiceProductRows.count).eql(8);
 });

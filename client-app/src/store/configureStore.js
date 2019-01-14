@@ -13,7 +13,7 @@ export const configure = (initialState = {}) => {
 
         const lastActivity = moment(localStorage.getItem('last_activity'));
 
-        if (!localStorage.getItem('last_activity') || lastActivity.add('30', 'minutes') < moment().format()) {
+        if (!localStorage.getItem('last_activity') || lastActivity.add('30', 'minutes').format() < moment().format()) {
             if (window.location.hash !== '#/login' && window.location.hash !== '#/loguit') {
                 setTimeout(() => {
                     hashHistory.push(`/loguit`);

@@ -1,20 +1,18 @@
-import axios from 'axios';
+import axiosInstance from '../default-setup/AxiosInstance';
 
-const URL_MAILGUN_DOMAIN = `${URL_API}/api/mailgun-domain`;
+const URL_MAILGUN_DOMAIN = `mailgun-domain`;
 
 export default {
     fetchMailgunDomains: () => {
         const requestUrl = `${URL_MAILGUN_DOMAIN}/jory`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios.get(requestUrl, {
+        return axiosInstance.get(requestUrl, {
             params: {
                 jory: {
-                    'fld': [
+                    fld: [
                         'id',
                         'domain',
-                        'isVerified'
+                        'isVerified',
                     ],
                 }
             }

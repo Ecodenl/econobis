@@ -9,6 +9,7 @@ import InputText from '../../../../components/form/InputText';
 import ButtonText from '../../../../components/button/ButtonText';
 import Panel from "../../../../components/panel/Panel";
 import PanelBody from "../../../../components/panel/PanelBody";
+import InputToggle from '../../../../components/form/InputToggle';
 
 class MailgunDomainDetailsFormGeneralEdit extends Component {
     constructor(props) {
@@ -68,7 +69,7 @@ class MailgunDomainDetailsFormGeneralEdit extends Component {
     };
 
     render() {
-        const { name, apiKey, apiKeyDate, maxRequestsPerMinute, dateStart, dateEnd, responsible } = this.state.mailgunDomain;
+        const { domain, secret, isVerified  } = this.state.mailgunDomain;
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -76,7 +77,7 @@ class MailgunDomainDetailsFormGeneralEdit extends Component {
                     <PanelBody>
                         <div className="row">
                             <InputText
-                                label="Domein"
+                                label="Domesin"
                                 name={"domain"}
                                 value={domain}
                                 onChangeAction={this.handleInputChange}
@@ -93,24 +94,6 @@ class MailgunDomainDetailsFormGeneralEdit extends Component {
                             />
                         </div>
                         <div className="row">
-                            <InputText
-                                label="Aanvragen per minuut"
-                                type={"number"}
-                                name={"maxRequestsPerMinute"}
-                                value={maxRequestsPerMinute}
-                                onChangeAction={this.handleInputChange}
-                                required={"required"}
-                                error={this.state.errors.maxRequestsPerMinute}
-                            />
-                            <InputText
-                                label="Datum sleutel"
-                                name="apiKeyDate"
-                                value={moment(apiKeyDate).format('L')}
-                                onChangeAction={() => {}}
-                                readOnly={true}
-                            />
-                        </div>
-                        <div className="row">
                             <InputToggle
                                 label={"Geverifieerd"}
                                 name={"isVerified"}
@@ -123,7 +106,7 @@ class MailgunDomainDetailsFormGeneralEdit extends Component {
                     <PanelBody>
                         <div className="pull-right btn-group" role="group">
                             <ButtonText buttonClassName={"btn-default"} buttonText={"Sluiten"} onClickAction={this.props.switchToView}/>
-                            <ButtonText buttonText={"Opslaan"} onClickAction={this.handleSubmit} type={"submit"} value={"Submit"}/>
+                            <ButtonText buttonText={"Opslaan"} type={"submit"} value={"Submit"}/>
                         </div>
                     </PanelBody>
                 </Panel>
@@ -139,8 +122,8 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = dispatch => ({
-    updateMailgunDomain: (id, switchToView) => {
-        dispatch(updateMailgunDomain(id, switchToView));
+    updateMailgunDomain: (mailgunDomain, switchToView) => {
+        dispatch(updateMailgunDomain(mailgunDomain, switchToView));
     },
 });
 

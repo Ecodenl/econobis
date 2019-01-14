@@ -59,7 +59,7 @@ class MailgunDomainDetailsFormGeneral extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        teamDetails: state.teamDetails,
+        mailgunDomainDetails: state.mailgunDomainDetails,
         meDetails: state.meDetails,
         permissions: state.meDetails.permissions
     };

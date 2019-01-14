@@ -1,33 +1,42 @@
-import axios from 'axios';
+import axiosInstance from '../default-setup/AxiosInstance';
 
-const URL_MAILGUN_DOMAIN = `${URL_API}/api/mailgun-domain`;
+const URL_MAILGUN_DOMAIN = `mailgun-domain`;
 
 export default {
     fetchMailgunDomainDetails: (id) => {
-        const requestUrl = `${URL_MAILGUN_DOMAIN}/jory/${id}`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
+        const requestUrl = `${URL_MAILGUN_DOMAIN}/jory`;
 
-        return axios.get(requestUrl);
+        return axiosInstance.get(requestUrl, {
+            params: {
+                jory: {
+                    flt: {
+                      f: 'id',
+                      d: id,
+                    },
+                    fld: [
+                        'id',
+                        'domain',
+                        'secret',
+                        'isVerified',
+                    ],
+                },
+            }
+        });
     },
 
     newMailgunDomain: (mailgunDomain) => {
         const requestUrl = URL_MAILGUN_DOMAIN;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
         mailgunDomain.jory = JSON.stringify({
             fld: ['id'],
         });
 
-        return axios.post(requestUrl, mailgunDomain);
+        return axiosInstance.post(requestUrl, mailgunDomain);
     },
 
     updateMailgunDomain: (mailgunDomain) => {
         const requestUrl = `${URL_MAILGUN_DOMAIN}/${mailgunDomain.id}`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios.post(requestUrl, mailgunDomain);
+        return axiosInstance.post(requestUrl, mailgunDomain);
     },
 };

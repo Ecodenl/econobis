@@ -21,8 +21,6 @@ export function* updateMailgunDomainDetailsSaga({mailgunDomain, switchToView}) {
 
         yield put({type: 'UPDATE_MAILGUN_DOMAIN_SUCCESS', mailgunDomainDetails});
 
-        // Reload system data after updating mailgunDomain
-        yield put({type: 'FETCH_SYSTEM_DATA'});
         // Switch back to view callback fn
         yield switchToView();
     } catch (error) {

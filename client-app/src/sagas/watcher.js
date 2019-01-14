@@ -47,7 +47,7 @@ import {
 } from './mailbox/MailboxDetailsSaga';
 import {fetchMailboxesSaga} from './mailbox/MailboxesSaga';
 import {fetchMailgunDomainsSaga} from './mailgun-domains/MailgunDomainsSaga';
-import {fetchMailgunDomainDetailsSaga} from "./mailgun-domains/MailgunDomainDetailsSaga";
+import * as MailgunDomainDetailsSaga from "./mailgun-domains/MailgunDomainDetailsSaga";
 import {fetchMeasuresSaga} from './measure/MeasuresSaga';
 import {fetchMeasureSaga} from './measure/MeasureDetailsSaga';
 import {fetchOpportunitiesSaga, deleteOpportunitySaga} from './opportunity/OpportunitiesSaga';
@@ -253,5 +253,6 @@ export default function* watchSagas() {
 
     // Mailgun domains
     yield takeLatest('FETCH_MAILGUN_DOMAINS', fetchMailgunDomainsSaga);
-    yield takeLatest('FETCH_MAILGUN_DOMAIN_DETAILS', fetchMailgunDomainDetailsSaga);
+    yield takeLatest('FETCH_MAILGUN_DOMAIN_DETAILS', MailgunDomainDetailsSaga.fetchMailgunDomainDetailsSaga);
+    yield takeLatest('UPDATE_MAILGUN_DOMAIN', MailgunDomainDetailsSaga.updateMailgunDomainDetailsSaga);
 }

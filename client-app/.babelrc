@@ -1,13 +1,11 @@
 {
-  "presets": ["env", "react", "stage-1"],
+  "presets": [
+    "@babel/preset-env",
+    "@babel/preset-react"
+  ],
   "plugins": [
-    "transform-object-rest-spread",
-    [
-      "transform-runtime",
-      {
-        "polyfill": true,
-        "regenerator": true
-      }
-    ]
+    "@babel/plugin-proposal-object-rest-spread",
+    "@babel/plugin-transform-runtime",
+    "@babel/plugin-proposal-class-properties"
   ]
 }

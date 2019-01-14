@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React from 'react';
 import SvgIcon from 'react-icons-kit';
 import {connect} from "react-redux";
 
@@ -15,45 +15,38 @@ import { home } from 'react-icons-kit/icomoon/home';
 import { drawer } from 'react-icons-kit/icomoon/drawer';
 import { ic_business_center } from 'react-icons-kit/md/ic_business_center';
 
-class SidebarMenuSmall extends Component {
-    constructor(props) {
-        super(props);
-    }
-    render() {
-        return (
-            <div className="sidebar-menu-small">
-                {/* Dashboard */}
-                <div className="sidebar-menu-small-item"><SvgIcon size={20} icon={ic_dashboard}/></div>
-                {/* Contacten */}
-                <div className="sidebar-menu-small-item"><SvgIcon size={20} icon={ic_contacts}/></div>
-                {/* Projexts */}
-                <div className="sidebar-menu-small-item"><SvgIcon size={20} icon={drawer}/></div>
-                {/* Intakes */}
-                <div className="sidebar-menu-small-item"><SvgIcon size={20} icon={home}/></div>
-                {/* Groepen beheer */}
-                <div className="sidebar-menu-small-item"><SvgIcon size={20} icon={ic_aspect_ratio}/></div>
-                {/* Email */}
-                <div className="sidebar-menu-small-item"><SvgIcon size={20} icon={ic_email}/></div>
-                {/* Marketing */}
-                <div className="sidebar-menu-small-item"><SvgIcon size={20} icon={speech_bubbles}/></div>
-                {/* Taken */}
-                <div className="sidebar-menu-small-item"><SvgIcon size={20} icon={ic_business}/></div>
-                {/* Agenda */}
-                <div className="sidebar-menu-small-item"><SvgIcon size={20} icon={calendar}/></div>
-                {/* Documenten */}
-                {this.props.permissions.viewDocumentTemplate &&
-                <div className="sidebar-menu-small-item"><SvgIcon size={20} icon={documents}/></div>
-                }
-                {/* Administraties */}
-                {this.props.permissions.manageFinancial && this.props.administrations.length > 0 &&
-                <div className="sidebar-menu-small-item"><SvgIcon size={20} icon={ic_business_center}/></div>
-                }
-                {/* Instellingen */}
-                <div className="sidebar-menu-small-item"><SvgIcon size={20} icon={cog}/></div>
-            </div>
-        )
-    }
-};
+const SidebarMenuSmall = ({permissions, administrations}) => (
+    <div className="sidebar-menu-small">
+        {/* Dashboard */}
+        <div className="sidebar-menu-small-item"><SvgIcon size={20} icon={ic_dashboard}/></div>
+        {/* Contacten */}
+        <div className="sidebar-menu-small-item"><SvgIcon size={20} icon={ic_contacts}/></div>
+        {/* Projexts */}
+        <div className="sidebar-menu-small-item"><SvgIcon size={20} icon={drawer}/></div>
+        {/* Intakes */}
+        <div className="sidebar-menu-small-item"><SvgIcon size={20} icon={home}/></div>
+        {/* Groepen beheer */}
+        <div className="sidebar-menu-small-item"><SvgIcon size={20} icon={ic_aspect_ratio}/></div>
+        {/* Email */}
+        <div className="sidebar-menu-small-item"><SvgIcon size={20} icon={ic_email}/></div>
+        {/* Marketing */}
+        <div className="sidebar-menu-small-item"><SvgIcon size={20} icon={speech_bubbles}/></div>
+        {/* Taken */}
+        <div className="sidebar-menu-small-item"><SvgIcon size={20} icon={ic_business}/></div>
+        {/* Agenda */}
+        <div className="sidebar-menu-small-item"><SvgIcon size={20} icon={calendar}/></div>
+        {/* Documenten */}
+        {permissions.viewDocumentTemplate &&
+        <div className="sidebar-menu-small-item"><SvgIcon size={20} icon={documents}/></div>
+        }
+        {/* Administraties */}
+        {permissions.manageFinancial && administrations.length > 0 &&
+        <div className="sidebar-menu-small-item"><SvgIcon size={20} icon={ic_business_center}/></div>
+        }
+        {/* Instellingen */}
+        <div className="sidebar-menu-small-item"><SvgIcon size={20} icon={cog}/></div>
+    </div>
+);
 
 
 const mapStateToProps = (state) => {

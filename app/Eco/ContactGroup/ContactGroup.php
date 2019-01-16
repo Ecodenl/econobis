@@ -8,10 +8,10 @@ use App\Eco\Email\Email;
 use App\Eco\ParticipantProductionProject\ParticipantProductionProject;
 use App\Eco\Task\Task;
 use App\Eco\User\User;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Http\Request;
-use Illuminate\Support\Collection;
 use Laracasts\Presenter\PresentableTrait;
 
 class ContactGroup extends Model

@@ -291,7 +291,7 @@ class Contact extends Model
         $dynamicGroups = ContactGroup::where('show_contact_form', true)->where('type_id', 'dynamic')->get();
 
         $dynamicGroupsForContact = $dynamicGroups->filter(function ($dynamicGroup) {
-            foreach ($dynamicGroup->dynamic_contacts->get() as $dynamic_contact){
+            foreach ($dynamicGroup->all_contacts as $dynamic_contact){
                 if($dynamic_contact->id === $this->id){
                     return true;
                 }

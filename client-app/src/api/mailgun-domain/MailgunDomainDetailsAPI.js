@@ -4,15 +4,11 @@ const URL_MAILGUN_DOMAIN = `mailgun-domain`;
 
 export default {
     fetchMailgunDomainDetails: (id) => {
-        const requestUrl = `${URL_MAILGUN_DOMAIN}/jory`;
+        const requestUrl = `jory/mailgun-domain/${id}`;
 
         return axiosInstance.get(requestUrl, {
             params: {
                 jory: {
-                    flt: {
-                      f: 'id',
-                      d: id,
-                    },
                     fld: [
                         'id',
                         'domain',

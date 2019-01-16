@@ -1,10 +1,8 @@
 import axiosInstance from '../default-setup/AxiosInstance';
 
-const URL_MAILGUN_DOMAIN = `mailgun-domain`;
-
 export default {
     fetchMailgunDomains: () => {
-        const requestUrl = `${URL_MAILGUN_DOMAIN}/jory`;
+        const requestUrl = `jory/mailgun-domain`;
 
         return axiosInstance.get(requestUrl, {
             params: {

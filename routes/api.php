@@ -1,7 +1,6 @@
 <?php
 
-use App\Eco\User\User;
-use Illuminate\Http\Request;
+use JosKolenberg\LaravelJory\JoryBuilder;
 
 /*
 |--------------------------------------------------------------------------
@@ -413,6 +412,8 @@ Route::namespace('Api')
         Route::get('mailgun-domain/jory', 'Mailbox\MailgunDomainController@jory');
         Route::post('mailgun-domain', 'Mailbox\MailgunDomainController@store');
         Route::post('mailgun-domain/{mailgunDomain}', 'Mailbox\MailgunDomainController@update');
+
+        JoryBuilder::routes('jory');
     });
 
 Route::namespace('Api')

@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "5f3b30981d52d998891fa60e7149c457",
-    "content-hash": "514bff0f412d4e2d6e09e70dcab9a97a",
+    "hash": "12e2b92ddb87973e49146cfa95c6db04",
+    "content-hash": "655419c3d29f7ca55e996683f5a7a278",
     "packages": [
         {
             "name": "barryvdh/laravel-dompdf",
@@ -1180,16 +1180,16 @@
         },
         {
             "name": "joskolenberg/jory",
-            "version": "v0.6.1",
+            "version": "v0.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/joskolenberg/jory.git",
-                "reference": "1fbd91650f6eaa9f4f357d29abd0213f9e2ba629"
+                "reference": "10132f03ad44d592ac432c9da13d161add504cc0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/joskolenberg/jory/zipball/1fbd91650f6eaa9f4f357d29abd0213f9e2ba629",
-                "reference": "1fbd91650f6eaa9f4f357d29abd0213f9e2ba629",
+                "url": "https://api.github.com/repos/joskolenberg/jory/zipball/10132f03ad44d592ac432c9da13d161add504cc0",
+                "reference": "10132f03ad44d592ac432c9da13d161add504cc0",
                 "shasum": ""
             },
             "require": {
@@ -1220,24 +1220,24 @@
                 "json",
                 "query"
             ],
-            "time": "2018-12-18 22:05:48"
+            "time": "2019-01-15 19:22:05"
         },
         {
             "name": "joskolenberg/laravel-jory",
-            "version": "v0.7.1",
+            "version": "v0.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/joskolenberg/laravel-jory.git",
-                "reference": "5ca2b6370ba34434fc3fae587ee70bb4cc5b2629"
+                "reference": "e2534fd7cf53c8773edc011a38fb05734f17aad1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/joskolenberg/laravel-jory/zipball/5ca2b6370ba34434fc3fae587ee70bb4cc5b2629",
-                "reference": "5ca2b6370ba34434fc3fae587ee70bb4cc5b2629",
+                "url": "https://api.github.com/repos/joskolenberg/laravel-jory/zipball/e2534fd7cf53c8773edc011a38fb05734f17aad1",
+                "reference": "e2534fd7cf53c8773edc011a38fb05734f17aad1",
                 "shasum": ""
             },
             "require": {
-                "joskolenberg/jory": "^0.6",
+                "joskolenberg/jory": "^0.7",
                 "laravel/framework": "^5.5"
             },
             "require-dev": {
@@ -1273,7 +1273,7 @@
                 "laravel",
                 "query"
             ],
-            "time": "2019-01-07 14:01:51"
+            "time": "2019-01-15 19:39:23"
         },
         {
             "name": "laracasts/presenter",

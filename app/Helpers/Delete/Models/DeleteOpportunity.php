@@ -87,12 +87,12 @@ class DeleteOpportunity implements DeleteInterface
      */
     public function dissociateRelations()
     {
-        foreach ($this->opportunity->emails() as $email){
+        foreach ($this->opportunity->emails as $email){
             $email->opportunity()->dissociate();
             $email->save();
         }
 
-        foreach ($this->opportunity->documents() as $document){
+        foreach ($this->opportunity->documents as $document){
             $document->opportunity()->dissociate();
             $document->save();
         }

@@ -202,12 +202,12 @@ class Contact extends Model
 
     public function participationsGifted()
     {
-        return $this->hasMany(ParticipantProductionProject::class, 'participation_production_project.gifted_by_contact_id');
+        return $this->hasMany(ParticipantProductionProject::class, 'gifted_by_contact_id');
     }
 
     public function participationsLegalRep()
     {
-        return $this->hasMany(ParticipantProductionProject::class, 'participation_production_project.legal_rep_contact_id');
+        return $this->hasMany(ParticipantProductionProject::class, 'legal_rep_contact_id');
     }
 
     public function primaryOccupations()

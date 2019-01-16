@@ -87,12 +87,12 @@ class DeleteIntake implements DeleteInterface
      */
     public function dissociateRelations()
     {
-        foreach ($this->intake->emails() as $email){
+        foreach ($this->intake->emails as $email){
             $email->intake()->dissociate();
             $email->save();
         }
 
-        foreach ($this->intake->documents() as $document){
+        foreach ($this->intake->documents as $document){
             $document->intake()->dissociate();
             $document->save();
         }

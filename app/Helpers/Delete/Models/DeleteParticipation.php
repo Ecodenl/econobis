@@ -86,7 +86,7 @@ class DeleteParticipation implements DeleteInterface
      */
     public function dissociateRelations()
     {
-        foreach ($this->participation->documents() as $document){
+        foreach ($this->participation->documents as $document){
             $document->participant()->dissociate();
             $document->save();
         }

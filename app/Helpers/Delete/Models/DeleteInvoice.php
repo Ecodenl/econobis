@@ -75,12 +75,12 @@ class DeleteInvoice implements DeleteInterface
      */
     public function dissociateRelations()
     {
-        foreach ($this->invoice->emails() as $email){
+        foreach ($this->invoice->emails as $email){
             $email->invoice()->dissociate();
             $email->save();
         }
 
-        foreach ($this->invoice->documents() as $email){
+        foreach ($this->invoice->documents as $email){
             $email->invoice()->dissociate();
             $email->save();
         }

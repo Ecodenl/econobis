@@ -78,7 +78,7 @@ class DeleteCampaign implements DeleteInterface
      */
     public function dissociateRelations()
     {
-        foreach ($this->campaign->documents() as $document){
+        foreach ($this->campaign->documents as $document){
             $document->campaign()->dissociate();
             $document->save();
         }

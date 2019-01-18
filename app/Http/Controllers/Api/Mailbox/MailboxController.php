@@ -58,6 +58,7 @@ class MailboxController extends Controller
             ->string('password')->whenMissing('')->onEmpty('')->alias('password')->next()
             ->integer('mailgunDomainId')->whenMissing(null)->onEmpty(null)->alias('mailgun_domain_id')->next()
             ->string('outgoingServerType')->whenMissing('smtp')->onEmpty('smtp')->alias('outgoing_server_type')->next()
+            ->boolean('isActive')->whenMissing(true)->onEmpty(true)->alias('is_active')->next()
             ->get();
 
         $mailbox = new Mailbox($data);
@@ -96,6 +97,7 @@ class MailboxController extends Controller
             ->string('password')->alias('password')->next()
             ->integer('mailgunDomainId')->whenMissing(null)->onEmpty(null)->alias('mailgun_domain_id')->next()
             ->string('outgoingServerType')->alias('outgoing_server_type')->next()
+            ->boolean('isActive')->whenMissing(true)->onEmpty(true)->alias('is_active')->next()
             ->get();
 
         $mailbox->login_tries = 0;

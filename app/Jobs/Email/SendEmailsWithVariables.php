@@ -13,6 +13,7 @@ use App\Eco\Email\Email;
 use App\Eco\EmailAddress\EmailAddress;
 use App\Eco\Jobs\JobsLog;
 use App\Eco\User\User;
+use App\Helpers\Email\EmailHelper;
 use App\Helpers\Template\TemplateTableHelper;
 use App\Helpers\Template\TemplateVariableHelper;
 use App\Http\Resources\Email\Templates\GenericMail;
@@ -57,24 +58,11 @@ class SendEmailsWithVariables implements ShouldQueue
         //user voor observer
         Auth::setUser(User::find($this->userId));
 
-        $config = Config::get('mail');
-
         $email = $this->email;
 
         $mailbox = $email->mailbox;
 
-        if(config('mail.driver') !== 'mailgun') {
-            $config['driver'] = 'smtp';
-            $config['host'] = $mailbox->smtp_host;
-            $config['port'] = $mailbox->smtp_port;
-            $config['encryption'] = $mailbox->smtp_encryption;
-            $config['username'] = $mailbox->username;
-            $config['password'] = $mailbox->password;
-        }
-
-        $config['from'] = ['address' => $mailbox->email, 'name' => $mailbox->name];
-
-        Config::set('mail', $config);
+        (new EmailHelper())->setConfigToMailbox($mailbox);
 
         //First see if the to's are contact, user or created option
         $emailsToContact = [];

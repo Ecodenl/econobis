@@ -193,4 +193,17 @@ class MailboxController extends Controller
         $mailboxIgnore->delete();
     }
 
+    public function makePrimary(Mailbox $mailbox)
+    {
+        // Oude primary mailbox niet meer primary maken
+        foreach (Mailbox::where('primary', 1)->get() as $mb){
+            // Zal er eigenlijk altijd exact één moeten zijn, maar voor de zekerheid toch maar in een loop
+            $mb->primary = false;
+            $mb->save();
+        }
+
+        $mailbox->primary = true;
+        $mailbox->save();
+    }
+
 }

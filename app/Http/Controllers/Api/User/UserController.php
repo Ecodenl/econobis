@@ -61,13 +61,10 @@ class UserController extends Controller
         $user->assignRole(Role::findByName('Medewerker'));
 
         //Send link to set password
-        $forgotPassWordController = new ForgotPasswordController();
-
         // Emails moeten vanuit de default mailbox worden verstuurd ipv de mail instellingen in .env
         // Daarom hier eerst de emailconfiguratie overschrijven voordat we gaan verzenden.
         (new EmailHelper())->setConfigToDefaultMailbox();
-
-        $forgotPassWordController->sendResetLinkEmail($request);
+        (new ForgotPasswordController())->sendResetLinkEmail($request);
 
         return $this->show($user->fresh());
     }
@@ -113,5 +110,13 @@ class UserController extends Controller
         $this->authorize('update', $user);
 
         $user->removeRole($role);
+    }
+
+    public function sendResetLinkEmail(Request $request)
+    {
+        // Emails moeten vanuit de default mailbox worden verstuurd ipv de mail instellingen in .env
+        // Daarom hier eerst de emailconfiguratie overschrijven voordat we gaan verzenden.
+        (new EmailHelper())->setConfigToDefaultMailbox();
+        (new ForgotPasswordController())->sendResetLinkEmail($request);
     }
 }

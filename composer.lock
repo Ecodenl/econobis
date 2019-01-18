@@ -1224,16 +1224,16 @@
         },
         {
             "name": "joskolenberg/laravel-jory",
-            "version": "v0.8",
+            "version": "v0.8.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/joskolenberg/laravel-jory.git",
-                "reference": "e2534fd7cf53c8773edc011a38fb05734f17aad1"
+                "reference": "60e871428dad8030b1cc4f55e98452cf7b80eb1d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/joskolenberg/laravel-jory/zipball/e2534fd7cf53c8773edc011a38fb05734f17aad1",
-                "reference": "e2534fd7cf53c8773edc011a38fb05734f17aad1",
+                "url": "https://api.github.com/repos/joskolenberg/laravel-jory/zipball/60e871428dad8030b1cc4f55e98452cf7b80eb1d",
+                "reference": "60e871428dad8030b1cc4f55e98452cf7b80eb1d",
                 "shasum": ""
             },
             "require": {
@@ -1273,7 +1273,7 @@
                 "laravel",
                 "query"
             ],
-            "time": "2019-01-15 19:39:23"
+            "time": "2019-01-17 09:32:00"
         },
         {
             "name": "laracasts/presenter",

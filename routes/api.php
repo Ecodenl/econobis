@@ -13,7 +13,7 @@ use JosKolenberg\LaravelJory\JoryBuilder;
 |
 */
 
-Route::post('password/email', 'Auth\ForgotPasswordController@sendResetLinkEmail');
+Route::post('password/email', 'Api\User\UserController@sendResetLinkEmail');
 Route::post('password/reset', 'Auth\ResetPasswordController@reset');
 Route::get('password/reset/{token}', [
     'as' => 'password.reset',
@@ -414,8 +414,11 @@ Route::namespace('Api')
         Route::post('mailgun-domain', 'Mailbox\MailgunDomainController@store');
         Route::post('mailgun-domain/{mailgunDomain}', 'Mailbox\MailgunDomainController@update');
 
-        JoryBuilder::routes('jory');
     });
+
+// Todo; tijdelijk buiten de autorisatie gezet omdat de bearer token niet wordt meegestuurd vanuit react(?)
+JoryBuilder::routes('jory');
+
 
 Route::namespace('Api')
     ->group(function () {

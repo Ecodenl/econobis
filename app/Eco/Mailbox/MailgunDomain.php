@@ -2,12 +2,13 @@
 
 namespace App\Eco\Mailbox;
 
+use App\Http\Traits\Encryptable;
 use Illuminate\Database\Eloquent\Model;
 use JosKolenberg\LaravelJory\Traits\JoryTrait;
 
 class MailgunDomain extends Model
 {
-    use JoryTrait;
+    use JoryTrait, Encryptable;
 
     protected $guarded = ['id'];
 
@@ -18,5 +19,9 @@ class MailgunDomain extends Model
 
     protected $casts = [
         'is_verified' => 'boolean',
+    ];
+
+    protected $encryptable = [
+        'secret'
     ];
 }

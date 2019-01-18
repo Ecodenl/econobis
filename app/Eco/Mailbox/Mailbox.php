@@ -30,4 +30,14 @@ class Mailbox extends Model
     {
         return $this->hasMany(MailboxIgnore::class);
     }
+
+    public function mailgunDomain()
+    {
+        return $this->belongsTo(MailgunDomain::class);
+    }
+
+    public static function getDefault()
+    {
+        return static::where('primary', true)->first();
+    }
 }

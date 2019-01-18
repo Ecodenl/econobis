@@ -15,7 +15,7 @@ const MailboxDetailsFormGeneralView = props => {
                 <PanelBody>
                     <div className="row">
                         <ViewText
-                            label={"Naam"}
+                            label={"Weergavenaam"}
                             value={name}
                         />
                         <ViewText

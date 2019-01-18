@@ -35,7 +35,7 @@ class MailboxesList extends Component {
                 <DataTable>
                     <DataTableHead>
                         <tr className="thead-title">
-                            <DataTableHeadTitle title={'Naam'} width={"19%"}/>
+                            <DataTableHeadTitle title={'Weergavenaam'} width={"19%"}/>
                             <DataTableHeadTitle title={'E-mail'} width={"19%"}/>
                             <DataTableHeadTitle title={'Gebruikersnaam'} width={"19%"}/>
                             <DataTableHeadTitle title={'Ink.server'} width={"19%"}/>

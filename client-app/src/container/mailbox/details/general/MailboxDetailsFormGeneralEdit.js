@@ -115,7 +115,7 @@ class MailboxDetailsFormGeneralEdit extends Component {
                     <PanelBody>
                         <div className="row">
                             <InputText
-                                label="Naam"
+                                label="Weergavenaam"
                                 name={"name"}
                                 value={name}
                                 onChangeAction={this.handleInputChange}

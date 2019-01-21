@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 const InputText = props => {
-    const { label, type, className, size, id, placeholder, name, value, onChangeAction, required, readOnly, maxLength, error, min, max, errorMessage, divSize, divClassName } = props;
+    const { label, type, className, size, id, placeholder, name, value, onChangeAction, required, readOnly, maxLength, error, min, max, errorMessage, divSize, divClassName, autoComplete } = props;
 
     return (
         <div className={`form-group ${divSize} ${divClassName}`}>
@@ -20,6 +20,7 @@ const InputText = props => {
                     maxLength={ maxLength }
                     min={ min }
                     max={ max }
+                    autoComplete={autoComplete}
                 />
             </div>
             {error &&
@@ -45,6 +46,7 @@ InputText.defaultProps = {
     min: '',
     max: '',
     errorMessage: '',
+    autoComplete: 'off'
 };
 
 InputText.propTypes = {
@@ -68,6 +70,7 @@ InputText.propTypes = {
     min: PropTypes.string,
     max: PropTypes.string,
     errorMessage: PropTypes.string,
+    autoComplete: PropTypes.string,
 };
 
 export default InputText;

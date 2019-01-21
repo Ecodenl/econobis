@@ -35,6 +35,7 @@ use App\Eco\Contact\ContactType;
 use App\Eco\EmailAddress\EmailAddressType;
 use App\Eco\Industry\Industry;
 use App\Eco\LastNamePrefix\LastNamePrefix;
+use App\Eco\Mailbox\MailgunDomain;
 use App\Eco\Occupation\Occupation;
 use App\Eco\ParticipantProductionProject\ParticipantProductionProjectPayoutType;
 use App\Eco\ParticipantProductionProject\ParticipantProductionProjectStatus;
@@ -178,8 +179,7 @@ class SystemData extends Resource
             'paymentInvoiceStatuses' => FullEnumWithIdAndName::collection(PaymentInvoiceStatus::collection()),
             'products' => FullProduct::collection(Product::all()),
             'contactGroupTypes' => FullEnumWithIdAndName::collection(ContactGroupType::collection()),
-            'usesMailgun' =>  config('mail.driver') === 'mailgun' ? true : false,
-            'mailgunDomain' => array((object)["id"=> config('mail.mailgun_domain'), "name" => config('mail.mailgun_domain')]),
+            'mailgunDomain' => MailgunDomain::select(['id', 'domain'])->get(),
             'mailboxIgnoreTypes' => FullEnumWithIdAndName::collection(MailboxIgnoreType::collection()),
         ];
     }

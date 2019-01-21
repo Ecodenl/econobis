@@ -4,6 +4,7 @@ import validator from 'validator';
 
 import InputText from '../../../components/form/InputText';
 import InputSelect from '../../../components/form/InputSelect';
+import InputToggle from '../../../components/form/InputToggle';
 import ButtonText from '../../../components/button/ButtonText';
 import PanelBody from "../../../components/panel/PanelBody";
 import PanelHeader from "../../../components/panel/PanelHeader";
@@ -29,6 +30,9 @@ class MailboxNewForm extends Component {
                 imapPort: '',
                 imapEncryption: '',
                 imapInboxPrefix: '',
+                useMailgun: false,
+                outgoingServerType: 'smtp',
+                mailgunDomainId: '',
             },
             errors: {
                 name: false,
@@ -53,6 +57,20 @@ class MailboxNewForm extends Component {
             mailbox: {
                 ...this.state.mailbox,
                 [name]: value
+            },
+        });
+    };
+
+    handleInputUseMailgun = event => {
+        const target = event.target;
+        const checked = target.checked;
+
+        this.setState({
+            ...this.state,
+            mailbox: {
+                ...this.state.mailbox,
+                useMailgun: checked,
+                outgoingServerType: checked ? 'mailgun' : 'smtp',
             },
         });
     };
@@ -118,8 +136,8 @@ class MailboxNewForm extends Component {
     };
 
     render() {
-        const { name, email, smtpHost, smtpPort, smtpEncryption, imapHost, imapPort, imapEncryption, imapInboxPrefix, username, password } = this.state.mailbox;
-
+        const { name, email, smtpHost, smtpPort, smtpEncryption, imapHost, imapPort, imapEncryption, imapInboxPrefix, username, password, useMailgun, mailgunDomainId } = this.state.mailbox;
+        console.log(this.state)
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
                 <Panel>
@@ -160,6 +178,15 @@ class MailboxNewForm extends Component {
                                 error={this.state.errors.password}
                             />
                         </div>
+                        <div className="row">
+                            <InputToggle
+                                label="Gebruik mailgun"
+                                name={"useMailgun"}
+                                value={useMailgun}
+                                onChangeAction={this.handleInputUseMailgun}
+                                required={"required"}
+                            />
+                        </div>
                     </PanelBody>
 
                     <PanelHeader>
@@ -175,24 +202,25 @@ class MailboxNewForm extends Component {
                                 required={"required"}
                                 error={this.state.errors.imapHost}
                             />
-                            {this.props.usesMailgun ?
+                            {useMailgun ?
                                 <InputSelect
                                     label="Mailgun domein"
-                                    name={"smtpHost"}
-                                    value={smtpHost}
+                                    name={"mailgunDomainId"}
+                                    value={mailgunDomainId}
                                     options={this.props.mailgunDomain}
+                                    optionName={'domain'}
                                     onChangeAction={this.handleInputChange}
                                     error={this.state.errors.smtpHost}
                                 />
                                 :
-                            <InputText
-                                label="Uitgaande server"
-                                name={"smtpHost"}
-                                value={smtpHost}
-                                onChangeAction={this.handleInputChange}
-                                required={"required"}
-                                error={this.state.errors.smtpHost}
-                            />
+                                <InputText
+                                    label="Uitgaande server"
+                                    name={"smtpHost"}
+                                    value={smtpHost}
+                                    onChangeAction={this.handleInputChange}
+                                    required={"required"}
+                                    error={this.state.errors.smtpHost}
+                                />
                             }
 
                         </div>
@@ -261,7 +289,6 @@ class MailboxNewForm extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        usesMailgun: state.systemData.usesMailgun,
         mailgunDomain: state.systemData.mailgunDomain,
     };
 };

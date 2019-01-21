@@ -254,7 +254,6 @@ class MailboxDetailsFormGeneralEdit extends Component {
 const mapStateToProps = (state) => {
     return {
         mailboxDetails: state.mailboxDetails,
-        usesMailgun: state.systemData.usesMailgun,
         mailgunDomain: state.systemData.mailgunDomain,
     };
 };

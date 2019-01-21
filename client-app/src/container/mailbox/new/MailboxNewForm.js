@@ -30,7 +30,7 @@ class MailboxNewForm extends Component {
                 imapPort: '',
                 imapEncryption: '',
                 imapInboxPrefix: '',
-                useMailgun: false,
+                usesMailgun: false,
                 outgoingServerType: 'smtp',
                 mailgunDomainId: '',
             },
@@ -43,6 +43,7 @@ class MailboxNewForm extends Component {
                 smtpPort: false,
                 imapHost: false,
                 imapPort: false,
+                mailgunDomainId: false,
             },
         };
     };
@@ -61,7 +62,7 @@ class MailboxNewForm extends Component {
         });
     };
 
-    handleInputUseMailgun = event => {
+    handleInputUsesMailgun = event => {
         const target = event.target;
         const checked = target.checked;
 
@@ -69,7 +70,7 @@ class MailboxNewForm extends Component {
             ...this.state,
             mailbox: {
                 ...this.state.mailbox,
-                useMailgun: checked,
+                usesMailgun: checked,
                 outgoingServerType: checked ? 'mailgun' : 'smtp',
             },
         });
@@ -104,15 +105,22 @@ class MailboxNewForm extends Component {
             hasErrors = true;
         };
 
-        if(validator.isEmpty(mailbox.smtpHost)){
-            errors.smtpHost = true;
-            hasErrors = true;
-        };
+        if(mailbox.usesMailgun) {
+            if(validator.isEmpty(mailbox.mailgunDomainId.toString())){
+                errors.mailgunDomainId = true;
+                hasErrors = true;
+            };
+        } else {
+            if(validator.isEmpty(mailbox.smtpHost)){
+                errors.smtpHost = true;
+                hasErrors = true;
+            };
 
-        if(validator.isEmpty(mailbox.smtpPort)){
-            errors.smtpPort = true;
-            hasErrors = true;
-        };
+            if(validator.isEmpty(mailbox.smtpPort)){
+                errors.smtpPort = true;
+                hasErrors = true;
+            };
+        }
 
         if(validator.isEmpty(mailbox.imapHost)){
             errors.imapHost = true;
@@ -136,15 +144,15 @@ class MailboxNewForm extends Component {
     };
 
     render() {
-        const { name, email, smtpHost, smtpPort, smtpEncryption, imapHost, imapPort, imapEncryption, imapInboxPrefix, username, password, useMailgun, mailgunDomainId } = this.state.mailbox;
-        console.log(this.state)
+        const { name, email, smtpHost, smtpPort, smtpEncryption, imapHost, imapPort, imapEncryption, imapInboxPrefix, username, password, usesMailgun, mailgunDomainId } = this.state.mailbox;
+
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
                 <Panel>
                     <PanelBody>
                         <div className="row">
                             <InputText
-                                label="Naam"
+                                label="WeergaveNaam"
                                 name={"name"}
                                 value={name}
                                 onChangeAction={this.handleInputChange}
@@ -178,15 +186,6 @@ class MailboxNewForm extends Component {
                                 error={this.state.errors.password}
                             />
                         </div>
-                        <div className="row">
-                            <InputToggle
-                                label="Gebruik mailgun"
-                                name={"useMailgun"}
-                                value={useMailgun}
-                                onChangeAction={this.handleInputUseMailgun}
-                                required={"required"}
-                            />
-                        </div>
                     </PanelBody>
 
                     <PanelHeader>
@@ -202,19 +201,29 @@ class MailboxNewForm extends Component {
                                 required={"required"}
                                 error={this.state.errors.imapHost}
                             />
-                            {useMailgun ?
+                            <InputToggle
+                                label="Gebruikt mailgun"
+                                name={"usesMailgun"}
+                                value={usesMailgun}
+                                onChangeAction={this.handleInputUsesMailgun}
+                                required={"required"}
+                            />
+                        </div>
+                        <div className="row">
+                            <div className="form-group col-md-6"/>
+                            { usesMailgun ?
                                 <InputSelect
-                                    label="Mailgun domein"
+                                    label="Uitgaand"
                                     name={"mailgunDomainId"}
                                     value={mailgunDomainId}
                                     options={this.props.mailgunDomain}
                                     optionName={'domain'}
                                     onChangeAction={this.handleInputChange}
-                                    error={this.state.errors.smtpHost}
+                                    error={this.state.errors.mailgunDomainId}
                                 />
                                 :
                                 <InputText
-                                    label="Uitgaande server"
+                                    label="Uitgaand"
                                     name={"smtpHost"}
                                     value={smtpHost}
                                     onChangeAction={this.handleInputChange}
@@ -222,7 +231,6 @@ class MailboxNewForm extends Component {
                                     error={this.state.errors.smtpHost}
                                 />
                             }
-
                         </div>
                     </PanelBody>
 
@@ -239,14 +247,16 @@ class MailboxNewForm extends Component {
                                 required={"required"}
                                 error={this.state.errors.imapPort}
                             />
-                            <InputText
-                                label={"Smtp poort"}
-                                name={"smtpPort"}
-                                value={smtpPort}
-                                onChangeAction={this.handleInputChange}
-                                required={"required"}
-                                error={this.state.errors.smtpPort}
-                            />
+                            {!usesMailgun &&
+                                <InputText
+                                    label={"Smtp poort"}
+                                    name={"smtpPort"}
+                                    value={smtpPort}
+                                    onChangeAction={this.handleInputChange}
+                                    required={"required"}
+                                    error={this.state.errors.smtpPort}
+                                />
+                            }
                         </div>
 
                         <div className="row">
@@ -257,13 +267,15 @@ class MailboxNewForm extends Component {
                                 options={[{id: 'ssl', name: 'SSL'}, {id: 'tls', name: 'TLS'}]}
                                 onChangeAction={this.handleInputChange}
                             />
-                            <InputSelect
-                                label="Smtp versleutelde verbinding"
-                                name={"smtpEncryption"}
-                                value={smtpEncryption}
-                                options={[{id: 'ssl', name: 'SSL'}, {id: 'tls', name: 'TLS'}]}
-                                onChangeAction={this.handleInputChange}
-                            />
+                            {!usesMailgun &&
+                                <InputSelect
+                                    label="Smtp versleutelde verbinding"
+                                    name={"smtpEncryption"}
+                                    value={smtpEncryption}
+                                    options={[{id: 'ssl', name: 'SSL'}, {id: 'tls', name: 'TLS'}]}
+                                    onChangeAction={this.handleInputChange}
+                                />
+                            }
                         </div>
                         <div className="row">
                             <InputText

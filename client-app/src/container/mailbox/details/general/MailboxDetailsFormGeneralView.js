@@ -7,7 +7,8 @@ import PanelHeader from "../../../../components/panel/PanelHeader";
 import PanelBody from "../../../../components/panel/PanelBody";
 
 const MailboxDetailsFormGeneralView = props => {
-    const { name, email, smtpHost, smtpPort, smtpEncryption, imapHost, imapPort, imapEncryption, imapInboxPrefix, username, password } = props.mailboxDetails;
+    const { name, email, smtpHost, smtpPort, smtpEncryption, imapHost, imapPort, imapEncryption, imapInboxPrefix, username, outgoingServerType, mailgunDomain  } = props.mailboxDetails;
+    const usesMailgun = outgoingServerType === 'mailgun' ? true : false;
 
     return (
         <div onClick={props.switchToEdit}>
@@ -44,14 +45,21 @@ const MailboxDetailsFormGeneralView = props => {
                             label="Inkomende server"
                             value={imapHost}
                         />
-                        {props.usesMailgun ?
+                        <ViewText
+                            label={"Gebruikt mailgun"}
+                            value={props.mailboxDetails.outgoingServerType === 'mailgun' ? 'Ja' : 'Nee'}
+                        />
+                    </div>
+                    <div className="row">
+                        <div className="col-md-6"/>
+                        { usesMailgun ?
                             <ViewText
-                                label="Mailgun domein"
-                                value={smtpHost}
+                                label="Uitgaand"
+                                value={mailgunDomain}
                             />
                             :
                             <ViewText
-                                label="Uitgaande server"
+                                label="Uitgaand"
                                 value={smtpHost}
                             />
                         }
@@ -67,20 +75,24 @@ const MailboxDetailsFormGeneralView = props => {
                             label={"Imap poort"}
                             value={imapPort}
                         />
+                        {!usesMailgun &&
                         <ViewText
                             label="Smtp poort"
                             value={smtpPort}
                         />
+                        }
                     </div>
                     <div className="row">
                         <ViewText
                             label={"Imap versleutelde verbinding"}
                             value={imapEncryption}
                         />
-                        <ViewText
-                            label="Smtp versleutelde verbinding"
-                            value={smtpEncryption}
-                        />
+                        {!usesMailgun &&
+                            <ViewText
+                                label="Smtp versleutelde verbinding"
+                                value={smtpEncryption}
+                            />
+                        }
                     </div>
                     <div className="row">
                         <ViewText

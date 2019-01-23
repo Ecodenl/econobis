@@ -15,7 +15,6 @@ use App\Http\Traits\Encryptable;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use App\Eco\Mailbox\Mailbox;
 use Venturecraft\Revisionable\RevisionableTrait;
 
 class Administration extends Model
@@ -229,11 +228,6 @@ class Administration extends Model
     public function getTotalPaymentInvoicesNotPaidAttribute()
     {
         return $this->paymentInvoices()->where('status_id', 'not-paid')->count();
-    }
-
-    public function mailbox()
-    {
-        return $this->belongsTo(Mailbox::class);
     }
 
     public function getCanCreateInvoicesAttribute()

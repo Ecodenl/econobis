@@ -21,6 +21,12 @@ class Mailbox extends Model
         'password'
     ];
 
+    protected $casts = [
+        'is_active' => 'boolean',
+        'primary' => 'boolean',
+        'valid' => 'boolean',
+    ];
+
     public function users()
     {
         return $this->belongsToMany(User::class);

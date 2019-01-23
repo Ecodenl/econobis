@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import { fetchMailboxDetails } from '../../../actions/mailbox/MailboxDetailsActions';
@@ -8,13 +8,13 @@ import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
 
 class MailboxDetailsApp extends Component {
-    constructor(props){
+    constructor(props) {
         super(props);
-    };
+    }
 
     componentDidMount() {
         this.props.fetchMailboxDetails(this.props.params.id);
-    };
+    }
 
     render() {
         return (
@@ -22,8 +22,8 @@ class MailboxDetailsApp extends Component {
                 <div className="col-md-9">
                     <div className="col-md-12 margin-10-top">
                         <Panel>
-                            <PanelBody className={"panel-small"}>
-                                < MailboxDetailsToolbar />
+                            <PanelBody className={'panel-small'}>
+                                <MailboxDetailsToolbar />
                             </PanelBody>
                         </Panel>
                     </div>
@@ -34,20 +34,23 @@ class MailboxDetailsApp extends Component {
                 </div>
                 <div className="col-md-3" />
             </div>
-        )
+        );
     }
-};
+}
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         mailboxDetails: state.mailboxDetails,
     };
 };
 
 const mapDispatchToProps = dispatch => ({
-    fetchMailboxDetails: (id) => {
+    fetchMailboxDetails: id => {
         dispatch(fetchMailboxDetails(id));
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(MailboxDetailsApp);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(MailboxDetailsApp);

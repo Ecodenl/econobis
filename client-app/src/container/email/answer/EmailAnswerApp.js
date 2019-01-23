@@ -1,6 +1,6 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import validator from 'validator';
-import {union} from 'lodash';
+import { union } from 'lodash';
 
 import EmailAnswerForm from './EmailAnswerForm';
 import EmailAnswerToolbar from './EmailAnswerToolbar';
@@ -8,9 +8,9 @@ import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
 import EmailAPI from '../../../api/email/EmailAPI';
 import EmailAddressAPI from '../../../api/contact/EmailAddressAPI';
-import {browserHistory, hashHistory} from "react-router";
-import EmailTemplateAPI from "../../../api/email-template/EmailTemplateAPI";
-import MailboxAPI from "../../../api/mailbox/MailboxAPI";
+import { browserHistory, hashHistory } from 'react-router';
+import EmailTemplateAPI from '../../../api/email-template/EmailTemplateAPI';
+import MailboxAPI from '../../../api/mailbox/MailboxAPI';
 
 class EmailAnswerApp extends Component {
     constructor(props) {
@@ -21,7 +21,7 @@ class EmailAnswerApp extends Component {
             oldEmailId: null,
             emailAddresses: [],
             mailboxAddresses: [],
-            originalHtmlBody: "",
+            originalHtmlBody: '',
             emailTemplates: [],
             email: {
                 from: '',
@@ -50,10 +50,10 @@ class EmailAnswerApp extends Component {
         this.addAttachment = this.addAttachment.bind(this);
         this.deleteAttachment = this.deleteAttachment.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
-    };
+    }
 
     componentDidMount() {
-        EmailAddressAPI.fetchEmailAddressessPeek().then((payload) => {
+        EmailAddressAPI.fetchEmailAddressessPeek().then(payload => {
             this.setState({
                 emailAddresses: [...this.state.emailAddresses, ...payload],
             });
@@ -61,7 +61,7 @@ class EmailAnswerApp extends Component {
 
         let type = '';
 
-        switch(this.props.params.type) {
+        switch (this.props.params.type) {
             case 'beantwoorden':
                 type = 'reply';
                 break;
@@ -76,15 +76,15 @@ class EmailAnswerApp extends Component {
                 break;
             default:
                 type = 'reply';
-        };
+        }
 
-        EmailTemplateAPI.fetchEmailTemplatesPeek().then((payload) => {
+        EmailTemplateAPI.fetchEmailTemplatesPeek().then(payload => {
             this.setState({
                 emailTemplates: payload,
             });
         });
 
-        EmailAPI.fetchEmailByType(this.props.params.id, type).then((payload) => {
+        EmailAPI.fetchEmailByType(this.props.params.id, type).then(payload => {
             const extraOptions = this.createExtraOptions(payload.to, payload.cc, payload.bcc);
 
             this.setState({
@@ -105,55 +105,55 @@ class EmailAnswerApp extends Component {
             });
         });
 
-        MailboxAPI.fetchEmailsLoggedInUserPeek().then((payload) => {
+        MailboxAPI.fetchMailboxesLoggedInUserPeek().then(payload => {
             this.setState({
                 mailboxAddresses: payload,
             });
         });
-    };
+    }
 
     handleFromIds(selectedOption) {
         this.setState({
             ...this.state,
             email: {
                 ...this.state.email,
-                mailboxId: selectedOption
+                mailboxId: selectedOption,
             },
         });
-    };
+    }
 
     handleEmailTemplates(selectedOption) {
         this.setState({
             ...this.state,
             email: {
                 ...this.state.email,
-                emailTemplateId: selectedOption
+                emailTemplateId: selectedOption,
             },
         });
-        EmailTemplateAPI.fetchEmailTemplateWithUser(selectedOption).then((payload) => {
+        EmailTemplateAPI.fetchEmailTemplateWithUser(selectedOption).then(payload => {
             this.setState({
                 ...this.state,
                 email: {
                     ...this.state.email,
-                    htmlBody: payload.htmlBody ? (payload.htmlBody + this.state.originalHtmlBody) : this.state.email.htmlBody,
+                    htmlBody: payload.htmlBody
+                        ? payload.htmlBody + this.state.originalHtmlBody
+                        : this.state.email.htmlBody,
                 },
             });
         });
-
-
-    };
+    }
 
     createExtraOptions(to, cc, bcc) {
         const emailAddresses = union(to, cc, bcc);
 
         let options = [];
 
-        emailAddresses.map((emailAddress) => {
-            options.push({id: emailAddress, name: emailAddress});
+        emailAddresses.map(emailAddress => {
+            options.push({ id: emailAddress, name: emailAddress });
         });
 
         return options;
-    };
+    }
 
     handleInputChange(event) {
         const target = event.target;
@@ -164,77 +164,74 @@ class EmailAnswerApp extends Component {
             ...this.state,
             email: {
                 ...this.state.email,
-                [name]: value
+                [name]: value,
             },
         });
-    };
+    }
 
     handleToIds(selectedOption) {
         this.setState({
             ...this.state,
             email: {
                 ...this.state.email,
-                to: selectedOption
+                to: selectedOption,
             },
         });
-    };
+    }
 
     handleCcIds(selectedOption) {
         this.setState({
             ...this.state,
             email: {
                 ...this.state.email,
-                cc: selectedOption
+                cc: selectedOption,
             },
         });
-    };
+    }
 
     handleBccIds(selectedOption) {
         this.setState({
             ...this.state,
             email: {
                 ...this.state.email,
-                bcc: selectedOption
+                bcc: selectedOption,
             },
         });
-    };
+    }
 
     handleTextChange(event) {
         this.setState({
             ...this.state,
             email: {
                 ...this.state.email,
-                htmlBody: event.target.getContent(({format: 'raw'}))
+                htmlBody: event.target.getContent({ format: 'raw' }),
             },
         });
-    };
+    }
 
     addAttachment(files) {
         this.setState({
             ...this.state,
             email: {
                 ...this.state.email,
-                attachments: [
-                    ...this.state.email.attachments,
-                    ...files,
-                ]
+                attachments: [...this.state.email.attachments, ...files],
             },
         });
-    };
+    }
 
     deleteAttachment(attachmentName) {
         this.setState({
             ...this.state,
             email: {
                 ...this.state.email,
-                attachments: this.state.email.attachments.filter((attachment) => attachment.name !== attachmentName),
+                attachments: this.state.email.attachments.filter(attachment => attachment.name !== attachmentName),
             },
         });
-    };
+    }
 
     setButtonLoading = () => {
         this.setState({
-            buttonLoading: true
+            buttonLoading: true,
         });
     };
 
@@ -247,25 +244,25 @@ class EmailAnswerApp extends Component {
         let errors = {};
         let hasErrors = false;
 
-        if(validator.isEmpty(email.to)){
+        if (validator.isEmpty(email.to)) {
             errors.to = true;
             hasErrors = true;
-        };
+        }
 
-        if(validator.isEmpty('' + email.mailboxId) || email.mailboxId === null){
+        if (validator.isEmpty('' + email.mailboxId) || email.mailboxId === null) {
             errors.mailboxId = true;
             hasErrors = true;
-        };
+        }
 
-        if(validator.isEmpty('' + email.subject)){
+        if (validator.isEmpty('' + email.subject)) {
             errors.subject = true;
             hasErrors = true;
-        };
+        }
 
         this.setState({ ...this.state, errors: errors });
 
         // If no errors send form
-        if(!hasErrors) {
+        if (!hasErrors) {
             if (email.to.length > 0) {
                 email.to = email.to.split(',');
             }
@@ -278,7 +275,6 @@ class EmailAnswerApp extends Component {
                 email.bcc = email.bcc.split(',');
             }
 
-
             const data = new FormData();
 
             data.append('to', JSON.stringify(email.to));
@@ -287,41 +283,41 @@ class EmailAnswerApp extends Component {
             data.append('subject', email.subject);
             data.append('htmlBody', email.htmlBody);
             data.append('oldEmailId', this.state.oldEmailId);
-            if(email.attachments) {
+            if (email.attachments) {
                 email.attachments.map((file, key) => {
                     if (file.id) {
                         data.append('oldAttachments[' + key + ']', JSON.stringify(file));
-                    }
-                    else {
+                    } else {
                         data.append('attachments[' + key + ']', file);
                     }
                 });
             }
 
-            if(concept) {
-                EmailAPI.newConcept(data, email.mailboxId).then(() => {
-                    hashHistory.push(`/emails/concept`);
-                }).catch(function (error) {
-                });
-            }
-            else{
+            if (concept) {
+                EmailAPI.newConcept(data, email.mailboxId)
+                    .then(() => {
+                        hashHistory.push(`/emails/concept`);
+                    })
+                    .catch(function(error) {});
+            } else {
                 this.setButtonLoading();
-                EmailAPI.newEmail(data, email.mailboxId).then(() => {
-                    //close the email we reply/forward
-                    if(this.state.oldEmailId) {
-                        EmailAPI.setStatus(this.state.oldEmailId, 'closed').then(() => {
+                EmailAPI.newEmail(data, email.mailboxId)
+                    .then(() => {
+                        //close the email we reply/forward
+                        if (this.state.oldEmailId) {
+                            EmailAPI.setStatus(this.state.oldEmailId, 'closed').then(() => {
+                                hashHistory.push(`/emails/inbox`);
+                            });
+                        } else {
                             hashHistory.push(`/emails/inbox`);
-                        });
-                    }
-                    else{
-                        hashHistory.push(`/emails/inbox`);
-                    }
-                }).catch(function (error) {
-                    console.log(error)
-                });
+                        }
+                    })
+                    .catch(function(error) {
+                        console.log(error);
+                    });
             }
         }
-    };
+    }
 
     render() {
         return (
@@ -330,7 +326,11 @@ class EmailAnswerApp extends Component {
                     <div className="col-md-12 margin-10-top">
                         <Panel>
                             <PanelBody className="panel-small">
-                                <EmailAnswerToolbar loading={this.state.buttonLoading} handleSubmit={this.handleSubmit} type={this.props.params.type} />
+                                <EmailAnswerToolbar
+                                    loading={this.state.buttonLoading}
+                                    handleSubmit={this.handleSubmit}
+                                    type={this.props.params.type}
+                                />
                             </PanelBody>
                         </Panel>
                     </div>
@@ -354,13 +354,12 @@ class EmailAnswerApp extends Component {
                             mailboxAddresses={this.state.mailboxAddresses}
                             handleFromIds={this.handleFromIds}
                         />
-
                     </div>
                 </div>
-                <div className="col-md-3"/>
+                <div className="col-md-3" />
             </div>
-        )
+        );
     }
-};
+}
 
 export default EmailAnswerApp;

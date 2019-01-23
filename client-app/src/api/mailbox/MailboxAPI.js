@@ -9,50 +9,51 @@ export default {
         return axiosInstance.get(requestUrl);
     },
 
-    fetchMailboxDetails: (id) => {
+    fetchMailboxDetails: id => {
         const requestUrl = `${URL_MAILBOX}/${id}`;
 
         return axiosInstance.get(requestUrl);
     },
 
-    newMailbox: (mailbox) => {
+    newMailbox: mailbox => {
         const requestUrl = URL_MAILBOX;
 
         return axiosInstance.post(requestUrl, mailbox);
     },
 
-    updateMailbox: (mailbox) => {
+    updateMailbox: mailbox => {
         const requestUrl = `${URL_MAILBOX}/${mailbox.id}`;
 
         return axiosInstance.post(requestUrl, mailbox);
     },
 
-    deleteMailbox: (id) => {
+    deleteMailbox: id => {
         const requestUrl = `${URL_MAILBOX}/${id}/delete`;
 
         return axiosInstance.post(requestUrl);
     },
 
-    newMailboxUser: ({mailboxId, userId}) => {
+    newMailboxUser: ({ mailboxId, userId }) => {
         const requestUrl = `${URL_MAILBOX}/${mailboxId}/users/add/${userId}`;
 
         return axiosInstance.post(requestUrl);
     },
 
-    deleteMailboxUser: ({mailboxId, userId}) => {
+    deleteMailboxUser: ({ mailboxId, userId }) => {
         const requestUrl = `${URL_MAILBOX}/${mailboxId}/users/remove/${userId}`;
 
         return axiosInstance.post(requestUrl);
     },
 
-    fetchEmailsLoggedInUserPeek: () => {
+    fetchMailboxesLoggedInUserPeek: () => {
         const requestUrl = `${URL_MAILBOX}/logged-in/email-peek`;
 
-        return axiosInstance.get(requestUrl)
-            .then(function (response) {
+        return axiosInstance
+            .get(requestUrl)
+            .then(function(response) {
                 return response.data.data;
             })
-            .catch(function (error) {
+            .catch(function(error) {
                 console.log(error);
             });
     },
@@ -63,19 +64,19 @@ export default {
         return axiosInstance.get(requestUrl);
     },
 
-    newIgnore: (ignore) => {
-        const requestUrl = `${URL_MAILBOX}/ignore`;;
+    newIgnore: ignore => {
+        const requestUrl = `${URL_MAILBOX}/ignore`;
 
         return axiosInstance.post(requestUrl, ignore);
     },
 
-    updateIgnore: (ignore) => {
+    updateIgnore: ignore => {
         const requestUrl = `${URL_MAILBOX}/update-ignore/${ignore.id}`;
 
         return axiosInstance.post(requestUrl, ignore);
     },
 
-    deleteIgnore: (ignoreId) => {
+    deleteIgnore: ignoreId => {
         const requestUrl = `${URL_MAILBOX}/delete-ignore/${ignoreId}`;
 
         return axiosInstance.post(requestUrl);

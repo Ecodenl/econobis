@@ -14,6 +14,7 @@ use App\Http\Traits\Encryptable;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Eco\Mailbox\Mailbox;
 use Venturecraft\Revisionable\RevisionableTrait;
 
 class Administration extends Model
@@ -80,6 +81,9 @@ class Administration extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function mailbox(){
+        return $this->belongsTo(Mailbox::class);
+    }
 
     //appended fields
     public function getTotalOrdersAttribute()

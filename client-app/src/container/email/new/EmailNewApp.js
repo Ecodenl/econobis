@@ -1,5 +1,5 @@
-import React, {Component} from 'react';
-import {browserHistory, hashHistory} from 'react-router';
+import React, { Component } from 'react';
+import { browserHistory, hashHistory } from 'react-router';
 import validator from 'validator';
 
 import EmailNewForm from './EmailNewForm';
@@ -10,10 +10,10 @@ import EmailAPI from '../../../api/email/EmailAPI';
 import EmailAddressAPI from '../../../api/contact/EmailAddressAPI';
 import MailboxAPI from '../../../api/mailbox/MailboxAPI';
 import EmailTemplateAPI from '../../../api/email-template/EmailTemplateAPI';
-import {isEqual} from "lodash";
-import {connect} from "react-redux";
-import DocumentDetailsAPI from "../../../api/document/DocumentDetailsAPI";
-import Modal from "../../../components/modal/Modal";
+import { isEqual } from 'lodash';
+import { connect } from 'react-redux';
+import DocumentDetailsAPI from '../../../api/document/DocumentDetailsAPI';
+import Modal from '../../../components/modal/Modal';
 
 class EmailNewApp extends Component {
     constructor(props) {
@@ -34,8 +34,8 @@ class EmailNewApp extends Component {
                 subject: '',
                 htmlBody: '',
                 attachments: [],
-                quotationRequestId:  props.params.quotationRequestId ? props.params.quotationRequestId : '',
-                intakeId:  props.params.intakeId ? props.params.intakeId : '',
+                quotationRequestId: props.params.quotationRequestId ? props.params.quotationRequestId : '',
+                intakeId: props.params.intakeId ? props.params.intakeId : '',
             },
             errors: {
                 from: false,
@@ -54,94 +54,91 @@ class EmailNewApp extends Component {
         this.addAttachment = this.addAttachment.bind(this);
         this.deleteAttachment = this.deleteAttachment.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
-    };
+    }
 
     componentDidMount() {
-
         if (this.props.params.contactId) {
-            EmailAddressAPI.fetchPrimaryEmailAddressId(this.props.params.contactId).then((payload) => {
+            EmailAddressAPI.fetchPrimaryEmailAddressId(this.props.params.contactId).then(payload => {
                 this.setState({
                     ...this.state,
                     email: {
                         ...this.state.email,
-                        to: payload.join(',')
+                        to: payload.join(','),
                     },
                 });
             });
         }
 
-        EmailAddressAPI.fetchEmailAddressessPeek().then((payload) => {
-            this.setState({
-                emailAddresses: payload,
-            }, () => {
-                if (this.props.params.groupId && this.props.params.type) {
-                    EmailAPI.fetchEmailGroup(this.props.params.groupId).then((payload) => {
+        EmailAddressAPI.fetchEmailAddressessPeek().then(payload => {
+            this.setState(
+                {
+                    emailAddresses: payload,
+                },
+                () => {
+                    if (this.props.params.groupId && this.props.params.type) {
+                        EmailAPI.fetchEmailGroup(this.props.params.groupId).then(payload => {
+                            let emailAddresses = this.state.emailAddresses;
 
-                        let emailAddresses = this.state.emailAddresses;
+                            emailAddresses.push({ id: '@group_' + this.props.params.groupId, name: payload });
 
-                        emailAddresses.push({id: '@group_' + this.props.params.groupId, name: payload});
-
-                        this.setState({
-                            ...this.state,
-                            emailAddresses: emailAddresses,
-                            email: {
-                                ...this.state.email,
-                                [this.props.params.type]: '@group_' + this.props.params.groupId
-                            },
+                            this.setState({
+                                ...this.state,
+                                emailAddresses: emailAddresses,
+                                email: {
+                                    ...this.state.email,
+                                    [this.props.params.type]: '@group_' + this.props.params.groupId,
+                                },
+                            });
                         });
-                    });
+                    }
                 }
-            });
+            );
         });
 
-        MailboxAPI.fetchEmailsLoggedInUserPeek().then((payload) => {
+        MailboxAPI.fetchMailboxesLoggedInUserPeek().then(payload => {
             this.setState({
                 mailboxAddresses: payload,
             });
         });
 
-        EmailTemplateAPI.fetchEmailTemplatesPeek().then((payload) => {
+        EmailTemplateAPI.fetchEmailTemplatesPeek().then(payload => {
             this.setState({
                 emailTemplates: payload,
             });
         });
 
         if (this.props.params.type === 'bulk' && this.props.toIds) {
-            EmailAddressAPI.fetchPrimaryEmailAddressId(this.props.toIds).then((payload) => {
+            EmailAddressAPI.fetchPrimaryEmailAddressId(this.props.toIds).then(payload => {
                 this.setState({
                     ...this.state,
                     email: {
                         ...this.state.email,
-                        to: payload.join(',')
+                        to: payload.join(','),
                     },
-                })
-                ;
+                });
             });
         }
         if (this.props.params.documentId) {
-
-            DocumentDetailsAPI.fetchDocumentDetails(this.props.params.documentId).then((payload) => {
-                if(payload.data.data.contact){
-                    EmailAddressAPI.fetchPrimaryEmailAddressId(payload.data.data.contact.id).then((payload) => {
+            DocumentDetailsAPI.fetchDocumentDetails(this.props.params.documentId).then(payload => {
+                if (payload.data.data.contact) {
+                    EmailAddressAPI.fetchPrimaryEmailAddressId(payload.data.data.contact.id).then(payload => {
                         this.setState({
                             ...this.state,
                             email: {
                                 ...this.state.email,
-                                to: payload.join(',')
+                                to: payload.join(','),
                             },
-                        })
-                        ;
+                        });
                     });
                 }
                 let filename = payload.data.data.filename ? payload.data.data.filename : 'bijlage.pdf';
 
-                DocumentDetailsAPI.download(this.props.params.documentId).then((payload) => {
+                DocumentDetailsAPI.download(this.props.params.documentId).then(payload => {
                     this.addAttachment([new File([payload.data], filename)]);
                 });
             });
         }
     }
-
 
     handleInputChange(event) {
         const target = event.target;
@@ -152,30 +149,30 @@ class EmailNewApp extends Component {
             ...this.state,
             email: {
                 ...this.state.email,
-                [name]: value
+                [name]: value,
             },
         });
-    };
+    }
 
     handleFromIds(selectedOption) {
         this.setState({
             ...this.state,
             email: {
                 ...this.state.email,
-                from: selectedOption
+                from: selectedOption,
             },
         });
-    };
+    }
 
     handleToIds(selectedOption) {
         this.setState({
             ...this.state,
             email: {
                 ...this.state.email,
-                to: selectedOption
+                to: selectedOption,
             },
         });
-    };
+    }
 
     handleEmailTemplates(selectedOption) {
         // .setContent(content, {format : 'raw'})
@@ -183,10 +180,10 @@ class EmailNewApp extends Component {
             ...this.state,
             email: {
                 ...this.state.email,
-                emailTemplateId: selectedOption
+                emailTemplateId: selectedOption,
             },
         });
-        EmailTemplateAPI.fetchEmailTemplateWithUser(selectedOption).then((payload) => {
+        EmailTemplateAPI.fetchEmailTemplateWithUser(selectedOption).then(payload => {
             this.setState({
                 ...this.state,
                 email: {
@@ -196,76 +193,70 @@ class EmailNewApp extends Component {
                 },
             });
         });
-
-
-    };
+    }
 
     handleCcIds(selectedOption) {
         this.setState({
             ...this.state,
             email: {
                 ...this.state.email,
-                cc: selectedOption
+                cc: selectedOption,
             },
         });
-    };
+    }
 
     handleBccIds(selectedOption) {
         this.setState({
             ...this.state,
             email: {
                 ...this.state.email,
-                bcc: selectedOption
+                bcc: selectedOption,
             },
         });
-    };
+    }
 
     handleTextChange(event) {
         this.setState({
             ...this.state,
             email: {
                 ...this.state.email,
-                htmlBody: event.target.getContent(({format: 'raw'}))
+                htmlBody: event.target.getContent({ format: 'raw' }),
             },
         });
-    };
+    }
 
     addAttachment(files) {
         this.setState({
             ...this.state,
             email: {
                 ...this.state.email,
-                attachments: [
-                    ...this.state.email.attachments,
-                    ...files,
-                ]
+                attachments: [...this.state.email.attachments, ...files],
             },
         });
-    };
+    }
 
     deleteAttachment(attachmentName) {
         this.setState({
             ...this.state,
             email: {
                 ...this.state.email,
-                attachments: this.state.email.attachments.filter((attachment) => attachment.name !== attachmentName),
+                attachments: this.state.email.attachments.filter(attachment => attachment.name !== attachmentName),
             },
         });
-    };
+    }
 
     setButtonLoading = () => {
         this.setState({
-            buttonLoading: true
+            buttonLoading: true,
         });
     };
 
     goBack = () => {
-       if(this.state.email.htmlBody !== '' || this.state.email.subject !== ''){
-           this.toggleShowModal();
-       }
-       else {
-           browserHistory.goBack();
-       }
+        if (this.state.email.htmlBody !== '' || this.state.email.subject !== '') {
+            this.toggleShowModal();
+        } else {
+            browserHistory.goBack();
+        }
     };
 
     toggleShowModal = () => {
@@ -283,25 +274,25 @@ class EmailNewApp extends Component {
         let errors = {};
         let hasErrors = false;
 
-        if(validator.isEmpty('' + email.to)){
+        if (validator.isEmpty('' + email.to)) {
             errors.to = true;
             hasErrors = true;
-        };
+        }
 
-        if(validator.isEmpty('' + email.from)){
+        if (validator.isEmpty('' + email.from)) {
             errors.from = true;
             hasErrors = true;
-        };
+        }
 
-        if(validator.isEmpty('' + email.subject)){
+        if (validator.isEmpty('' + email.subject)) {
             errors.subject = true;
             hasErrors = true;
-        };
+        }
 
         this.setState({ ...this.state, errors: errors });
 
         // If no errors send form
-        if(!hasErrors) {
+        if (!hasErrors) {
             if (email.to.length > 0) {
                 email.to = email.to.split(',');
             }
@@ -323,26 +314,26 @@ class EmailNewApp extends Component {
             data.append('quotationRequestId', email.quotationRequestId);
             data.append('intakeId', email.intakeId);
             email.attachments.map((file, key) => {
-                data.append('attachments[' +  key +  ']', file);
+                data.append('attachments[' + key + ']', file);
             });
 
-            if(concept) {
-                EmailAPI.newConcept(data, email.from).then(() => {
-                    hashHistory.push(`/emails/concept`);
-                }).catch(function (error) {
-                });
-            }
-            else{
+            if (concept) {
+                EmailAPI.newConcept(data, email.from)
+                    .then(() => {
+                        hashHistory.push(`/emails/concept`);
+                    })
+                    .catch(function(error) {});
+            } else {
                 this.setButtonLoading();
 
-                EmailAPI.newEmail(data, email.from).then(() => {
-                    browserHistory.goBack();
-                }).catch(function (error) {
-                });
+                EmailAPI.newEmail(data, email.from)
+                    .then(() => {
+                        browserHistory.goBack();
+                    })
+                    .catch(function(error) {});
             }
         }
-    };
-
+    }
 
     render() {
         return (
@@ -351,7 +342,11 @@ class EmailNewApp extends Component {
                     <div className="col-md-12">
                         <Panel>
                             <PanelBody className="panel-small">
-                                <EmailNewToolbar loading={this.state.buttonLoading} handleSubmit={this.handleSubmit} goBack={this.goBack}/>
+                                <EmailNewToolbar
+                                    loading={this.state.buttonLoading}
+                                    handleSubmit={this.handleSubmit}
+                                    goBack={this.goBack}
+                                />
                             </PanelBody>
                         </Panel>
                     </div>
@@ -374,28 +369,26 @@ class EmailNewApp extends Component {
                             addAttachment={this.addAttachment}
                             deleteAttachment={this.deleteAttachment}
                         />
-
                     </div>
                 </div>
-                <div className="col-md-3"/>
+                <div className="col-md-3" />
 
-                {this.state.showModal &&
-                <Modal
-                    buttonConfirmText="Verlaten"
-                    closeModal={this.toggleShowModal}
-                    confirmAction={browserHistory.goBack}
-                    title="Bevestigen"
-                >
-                    <p>Weet u zeker dat u deze pagina wilt verlaten zonder deze e-mail op te slaan als concept?</p>
-                </Modal>
-                }
-
+                {this.state.showModal && (
+                    <Modal
+                        buttonConfirmText="Verlaten"
+                        closeModal={this.toggleShowModal}
+                        confirmAction={browserHistory.goBack}
+                        title="Bevestigen"
+                    >
+                        <p>Weet u zeker dat u deze pagina wilt verlaten zonder deze e-mail op te slaan als concept?</p>
+                    </Modal>
+                )}
             </div>
-        )
+        );
     }
-};
+}
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         toIds: state.bulkMailTo.toIds,
     };

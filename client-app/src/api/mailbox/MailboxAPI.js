@@ -1,70 +1,54 @@
-import axios from 'axios';
+import axiosInstance from '../default-setup/AxiosInstance';
 
-const URL_MAILBOX = `${URL_API}/api/mailbox`;
+const URL_MAILBOX = 'mailbox';
 
 export default {
     fetchMailboxes: () => {
         const requestUrl = `${URL_MAILBOX}/grid`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios.get(requestUrl);
+        return axiosInstance.get(requestUrl);
     },
 
     fetchMailboxDetails: (id) => {
         const requestUrl = `${URL_MAILBOX}/${id}`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios.get(requestUrl);
+        return axiosInstance.get(requestUrl);
     },
 
     newMailbox: (mailbox) => {
         const requestUrl = URL_MAILBOX;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios.post(requestUrl, mailbox);
+        return axiosInstance.post(requestUrl, mailbox);
     },
 
     updateMailbox: (mailbox) => {
         const requestUrl = `${URL_MAILBOX}/${mailbox.id}`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios.post(requestUrl, mailbox);
+        return axiosInstance.post(requestUrl, mailbox);
     },
 
     deleteMailbox: (id) => {
         const requestUrl = `${URL_MAILBOX}/${id}/delete`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios.post(requestUrl);
+        return axiosInstance.post(requestUrl);
     },
 
     newMailboxUser: ({mailboxId, userId}) => {
         const requestUrl = `${URL_MAILBOX}/${mailboxId}/users/add/${userId}`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios.post(requestUrl);
+        return axiosInstance.post(requestUrl);
     },
 
     deleteMailboxUser: ({mailboxId, userId}) => {
         const requestUrl = `${URL_MAILBOX}/${mailboxId}/users/remove/${userId}`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios.post(requestUrl);
+        return axiosInstance.post(requestUrl);
     },
 
     fetchEmailsLoggedInUserPeek: () => {
         const requestUrl = `${URL_MAILBOX}/logged-in/email-peek`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios.get(requestUrl)
+        return axiosInstance.get(requestUrl)
             .then(function (response) {
                 return response.data.data;
             })
@@ -75,33 +59,25 @@ export default {
 
     receiveMailFromMailboxesUser: () => {
         const requestUrl = `${URL_MAILBOX}/receive/from-mailboxes-user`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios.get(requestUrl);
+        return axiosInstance.get(requestUrl);
     },
 
     newIgnore: (ignore) => {
         const requestUrl = `${URL_MAILBOX}/ignore`;;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios.post(requestUrl, ignore);
+        return axiosInstance.post(requestUrl, ignore);
     },
 
     updateIgnore: (ignore) => {
         const requestUrl = `${URL_MAILBOX}/update-ignore/${ignore.id}`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios.post(requestUrl, ignore);
+        return axiosInstance.post(requestUrl, ignore);
     },
 
     deleteIgnore: (ignoreId) => {
         const requestUrl = `${URL_MAILBOX}/delete-ignore/${ignoreId}`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios.post(requestUrl);
+        return axiosInstance.post(requestUrl);
     },
 };

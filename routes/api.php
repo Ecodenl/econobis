@@ -1,6 +1,6 @@
 <?php
 
-use JosKolenberg\LaravelJory\JoryBuilder;
+use JosKolenberg\LaravelJory\Routes\JoryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -414,11 +414,14 @@ Route::namespace('Api')
         Route::post('mailgun-domain', 'Mailbox\MailgunDomainController@store');
         Route::post('mailgun-domain/{mailgunDomain}', 'Mailbox\MailgunDomainController@update');
 
+
+        // Jory routes voor ophalen data
+        Route::get( 'jory', '\\'.JoryController::class.'@multiple');
+        Route::get('jory/{uri}/count', '\\'.JoryController::class.'@count');
+        Route::get('jory/{uri}/{id}', '\\'.JoryController::class.'@show');
+        Route::get('jory/{uri}', '\\'.JoryController::class.'@index');
+
     });
-
-// Todo; tijdelijk buiten de autorisatie gezet omdat de bearer token niet wordt meegestuurd vanuit react(?)
-JoryBuilder::routes('jory');
-
 
 Route::namespace('Api')
     ->group(function () {

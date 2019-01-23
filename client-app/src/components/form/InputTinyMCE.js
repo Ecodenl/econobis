@@ -12,15 +12,14 @@ import 'tinymce/plugins/table';
 import 'tinymce/plugins/lists';
 import 'tinymce/plugins/advlist';
 import 'tinymce/plugins/paste';
-//import 'tinymce/plugins/forecolor';
+import 'tinymce/plugins/pagebreak';
 import 'tinymce/plugins/textcolor';
 
 import { Editor } from '@tinymce/tinymce-react';
-import InputText from "./InputText";
 
 const InputTinyMCE = props => {
 
-    const { label, className, size, value, onChangeAction, readOnly } = props;
+    const { label, value, onChangeAction } = props;
 
     return (
         <div>
@@ -34,8 +33,8 @@ const InputTinyMCE = props => {
                         branding: false,
                         language: 'nl',
                         menubar: false,
-                        plugins: 'paste lists advlist link image code table textcolor',
-                        toolbar: 'undo redo | formatselect fontselect | bold italic forecolor | alignleft aligncenter alignright | bullist numlist outdent indent | table | link image | code',
+                        plugins: 'paste lists advlist link image code table textcolor pagebreak',
+                        toolbar: 'undo redo | formatselect fontselect | bold italic forecolor | alignleft aligncenter alignright | pagebreak | bullist numlist outdent indent | table | link image | code',
                         height: "300",
                         browser_spellcheck : true,
                         font_formats: 'Courier New=courier new;Tahoma=tahoma;Times New Roman=times new roman;Verdana=verdana;'
@@ -48,23 +47,17 @@ const InputTinyMCE = props => {
 };
 
 InputTinyMCE.defaultProps = {
-    className: '',
-    size: 'col-sm-6',
     value: '',
-    readOnly: false,
     errorMessage: '',
 };
 
 InputTinyMCE.propTypes = {
     label: PropTypes.string.isRequired,
     type: PropTypes.string,
-    className: PropTypes.string,
-    size: PropTypes.string,
     id: PropTypes.string,
     placeholder: PropTypes.string,
     value: PropTypes.string,
     onChangeAction: PropTypes.func,
-    readOnly: PropTypes.bool,
 };
 
 export default InputTinyMCE;

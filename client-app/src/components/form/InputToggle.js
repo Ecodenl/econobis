@@ -1,20 +1,19 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Toggle from 'react-toggle'
+import Toggle from 'react-toggle';
 
 const InputToggle = props => {
-    const { label, size, id, name, value, onChangeAction, required, divSize, className } = props;
+    const { label, size, id, name, value, onChangeAction, required, divSize, className, disabled } = props;
 
     return (
         <div className={`form-group ${divSize} ${className}`}>
-            <div><label htmlFor={ id } className={`col-sm-6 ${required}`}>{ label }</label></div>
+            <div>
+                <label htmlFor={id} className={`col-sm-6 ${required}`}>
+                    {label}
+                </label>
+            </div>
             <div className={`${size}`}>
-                <Toggle
-                    id={id}
-                    name={name}
-                    onChange={onChangeAction}
-                    checked={value}
-                />
+                <Toggle id={id} name={name} onChange={onChangeAction} checked={value} disabled={disabled} />
             </div>
         </div>
     );
@@ -25,7 +24,7 @@ InputToggle.defaultProps = {
     size: 'col-sm-6',
     divSize: 'col-sm-6',
     required: '',
-    readOnly: false,
+    disabled: false,
     value: null,
 };
 
@@ -39,7 +38,7 @@ InputToggle.propTypes = {
     value: PropTypes.bool,
     onChangeAction: PropTypes.func,
     required: PropTypes.string,
-    error: PropTypes.bool,
+    disabled: PropTypes.bool,
 };
 
 export default InputToggle;

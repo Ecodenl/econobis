@@ -1,7 +1,7 @@
-import React, {Component} from 'react';
-import {connect} from 'react-redux';
-import {bindActionCreators} from 'redux';
-import {hashHistory} from 'react-router';
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { hashHistory } from 'react-router';
 import validator from 'validator';
 import moment from 'moment';
 
@@ -9,11 +9,10 @@ moment.locale('nl');
 
 import InputText from '../../../components/form/InputText';
 import ButtonText from '../../../components/button/ButtonText';
-import PanelBody from "../../../components/panel/PanelBody";
-import Panel from "../../../components/panel/Panel";
+import PanelBody from '../../../components/panel/PanelBody';
+import Panel from '../../../components/panel/Panel';
 import MailgunDomainDetailsAPI from '../../../api/mailgun-domain/MailgunDomainDetailsAPI';
-import InputToggle from "../../../components/form/InputToggle";
-import {fetchSystemData} from "../../../actions/general/SystemDataActions";
+import { fetchSystemData } from '../../../actions/general/SystemDataActions';
 
 class MailgunDomainNewForm extends Component {
     constructor(props) {
@@ -24,7 +23,6 @@ class MailgunDomainNewForm extends Component {
                 id: '',
                 domain: '',
                 secret: '',
-                isVerified: false,
             },
             errors: {
                 name: false,
@@ -36,7 +34,7 @@ class MailgunDomainNewForm extends Component {
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleInputChangeDate = this.handleInputChangeDate.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
-    };
+    }
 
     handleInputChange(event) {
         const target = event.target;
@@ -47,25 +45,25 @@ class MailgunDomainNewForm extends Component {
             ...this.state,
             mailgunDomain: {
                 ...this.state.mailgunDomain,
-                [name]: value
+                [name]: value,
             },
         });
-    };
+    }
 
     handleInputChangeDate(value, name) {
         this.setState({
             ...this.state,
             mailgunDomain: {
                 ...this.state.mailgunDomain,
-                [name]: value
+                [name]: value,
             },
         });
-    };
+    }
 
     handleSubmit(event) {
         event.preventDefault();
 
-        const {mailgunDomain} = this.state;
+        const { mailgunDomain } = this.state;
 
         // Validation
         let errors = {};
@@ -81,21 +79,23 @@ class MailgunDomainNewForm extends Component {
             hasErrors = true;
         }
 
-        this.setState({...this.state, errors: errors});
+        this.setState({ ...this.state, errors: errors });
 
         // If no errors send form
         !hasErrors &&
-        MailgunDomainDetailsAPI.newMailgunDomain(mailgunDomain).then((payload) => {
-            this.props.fetchSystemData();
+            MailgunDomainDetailsAPI.newMailgunDomain(mailgunDomain)
+                .then(payload => {
+                    this.props.fetchSystemData();
 
-            hashHistory.push(`/mailgun-domein/${payload.data.data.id}`);
-        }).catch(function (error) {
-            alert('Er is iets mis gegaan met opslaan!');
-        });
-    };
+                    hashHistory.push(`/mailgun-domein/${payload.data.data.id}`);
+                })
+                .catch(function(error) {
+                    alert('Er is iets mis gegaan met opslaan!');
+                });
+    }
 
     render() {
-        const {domain, secret, isVerified} = this.state.mailgunDomain;
+        const { domain, secret, isVerified } = this.state.mailgunDomain;
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -104,43 +104,42 @@ class MailgunDomainNewForm extends Component {
                         <div className="row">
                             <InputText
                                 label="Domein"
-                                name={"domain"}
+                                name={'domain'}
                                 value={domain}
                                 onChangeAction={this.handleInputChange}
-                                required={"required"}
+                                required={'required'}
                                 error={this.state.errors.domain}
                             />
                             <InputText
                                 label="Mailgun code"
-                                name={"secret"}
+                                name={'secret'}
                                 value={secret}
                                 onChangeAction={this.handleInputChange}
-                                required={"required"}
+                                required={'required'}
                                 error={this.state.errors.secret}
-                            />
-                        </div>
-                        <div className="row">
-                            <InputToggle
-                                label={"Geverifieerd"}
-                                name={"isVerified"}
-                                value={isVerified}
-                                onChangeAction={this.handleInputChange}
                             />
                         </div>
                     </PanelBody>
 
                     <PanelBody>
                         <div className="pull-right btn-group" role="group">
-                            <ButtonText buttonText={"Opslaan"} onClickAction={this.handleSubmit} type={"submit"}
-                                        value={"Submit"}/>
+                            <ButtonText
+                                buttonText={'Opslaan'}
+                                onClickAction={this.handleSubmit}
+                                type={'submit'}
+                                value={'Submit'}
+                            />
                         </div>
                     </PanelBody>
                 </Panel>
             </form>
         );
-    };
-};
+    }
+}
 
 const mapDispatchToProps = dispatch => bindActionCreators({ fetchSystemData }, dispatch);
 
-export default connect(null, mapDispatchToProps)(MailgunDomainNewForm);
+export default connect(
+    null,
+    mapDispatchToProps
+)(MailgunDomainNewForm);

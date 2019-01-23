@@ -43,6 +43,8 @@ class FullMailbox extends Resource
             'mailgunDomainId' => $this->mailgun_domain_id,
             'mailgunDomain' => $this->mailgunDomain ? $this->mailgunDomain->domain : '',
             'outgoingServerType' => $this->outgoing_server_type,
+            'isActive' => $this->is_active,
+            'primair' => $this->primair,
         ];
     }
 }

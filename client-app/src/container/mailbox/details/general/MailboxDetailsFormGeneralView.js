@@ -7,7 +7,7 @@ import PanelHeader from "../../../../components/panel/PanelHeader";
 import PanelBody from "../../../../components/panel/PanelBody";
 
 const MailboxDetailsFormGeneralView = props => {
-    const { name, email, smtpHost, smtpPort, smtpEncryption, imapHost, imapPort, imapEncryption, imapInboxPrefix, username, outgoingServerType, mailgunDomain  } = props.mailboxDetails;
+    const { name, email, smtpHost, smtpPort, smtpEncryption, imapHost, imapPort, imapEncryption, imapInboxPrefix, username, outgoingServerType, mailgunDomain, isActive, primary  } = props.mailboxDetails;
     const usesMailgun = outgoingServerType === 'mailgun' ? true : false;
 
     return (
@@ -34,6 +34,16 @@ const MailboxDetailsFormGeneralView = props => {
                             value='••••••••••'
                         />
                     </div>
+                    <div className="row">
+                        <ViewText
+                            label="Actief"
+                            value={isActive ? 'Ja' : 'Nee'}
+                        />
+                        <ViewText
+                            label={"Primair"}
+                            value={primary ? 'Ja' : 'Nee'}
+                        />
+                    </div>
                 </PanelBody>
 
                 <PanelHeader>
@@ -42,7 +52,7 @@ const MailboxDetailsFormGeneralView = props => {
                 <PanelBody>
                     <div className="row">
                         <ViewText
-                            label="Inkomende server"
+                            label="Inkomend"
                             value={imapHost}
                         />
                         <ViewText

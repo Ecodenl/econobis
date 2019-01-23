@@ -132,7 +132,7 @@ class MailboxDetailsFormGeneralEdit extends Component {
     };
 
     render() {
-        const { name, email, smtpHost, smtpPort, smtpEncryption, imapHost, imapPort, imapEncryption, imapInboxPrefix, username, password, usesMailgun, mailgunDomainId } = this.state.mailbox;
+        const { name, email, smtpHost, smtpPort, smtpEncryption, imapHost, imapPort, imapEncryption, imapInboxPrefix, username, password, usesMailgun, mailgunDomainId, primary, isActive } = this.state.mailbox;
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -175,6 +175,20 @@ class MailboxDetailsFormGeneralEdit extends Component {
                                 error={this.state.errors.password}
                             />
                         </div>
+                        <div className="row">
+                            <InputToggle
+                                label="Actief"
+                                name={"isActive"}
+                                value={isActive}
+                                onChangeAction={this.handleInputChange}
+                            />
+                            <InputToggle
+                                label="Primair"
+                                name={"primary"}
+                                value={primary}
+                                onChangeAction={this.handleInputChange}
+                            />
+                        </div>
                     </PanelBody>
 
                     <PanelHeader>
@@ -183,7 +197,7 @@ class MailboxDetailsFormGeneralEdit extends Component {
                     <PanelBody>
                         <div className="row">
                             <InputText
-                                label="Inkomende server"
+                                label="Inkomend"
                                 name={"imapHost"}
                                 value={imapHost}
                                 onChangeAction={this.handleInputChange}

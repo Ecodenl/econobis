@@ -24,10 +24,10 @@ class MailgunDomainController extends Controller
 
         $data = $input->string('domain')->whenMissing('')->onEmpty('')->next()
             ->string('secret')->whenMissing('')->onEmpty('')->next()
-            ->boolean('isVerified')->whenMissing(false)->onEmpty(false)->alias('is_verified')->next()
             ->get();
 
         $mailgunDomain = new MailgunDomain($data);
+        $mailgunDomain->is_verified = (new MailgunHelper())->checkCredentials($mailgunDomain->domain, $mailgunDomain->secret);
         $mailgunDomain->save();
 
         return MailgunDomain::jory()->onModel($mailgunDomain)->applyRequest($request);
@@ -39,20 +39,13 @@ class MailgunDomainController extends Controller
 
         $data = $input->string('domain')->whenMissing($mailgunDomain->domain)->onEmpty('')->next()
             ->string('secret')->whenMissing($mailgunDomain->secret)->onEmpty('')->next()
-            ->boolean('isVerified')->whenMissing($mailgunDomain->is_verified)->onEmpty(false)->alias('is_verified')->next()
             ->get();
 
         $mailgunDomain->fill($data);
+        $mailgunDomain->is_verified = (new MailgunHelper())->checkCredentials($mailgunDomain->domain, $mailgunDomain->secret);
         $mailgunDomain->save();
 
         return GenericResource::make($mailgunDomain);
-    }
-
-    public function validateMailgunDomain(MailgunDomain $mailgunDomain)
-    {
-        return [
-            'valid' => (new MailgunHelper())->checkCredentials($mailgunDomain->domain, $mailgunDomain->secret)
-        ];
     }
 
 }

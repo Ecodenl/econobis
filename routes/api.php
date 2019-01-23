@@ -413,7 +413,7 @@ Route::namespace('Api')
         Route::get('mailgun-domain/jory', 'Mailbox\MailgunDomainController@jory');
         Route::post('mailgun-domain', 'Mailbox\MailgunDomainController@store');
         Route::post('mailgun-domain/{mailgunDomain}', 'Mailbox\MailgunDomainController@update');
-
+        Route::get('mailgun-domain/{mailgunDomain}/validate', 'Mailbox\MailgunDomainController@validateMailgunDomain');
 
         // Jory routes voor ophalen data
         Route::get( 'jory', '\\'.JoryController::class.'@multiple');

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\Mailbox;
 
 
 use App\Eco\Mailbox\MailgunDomain;
+use App\Helpers\Mailgun\MailgunHelper;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\GenericResource;
@@ -45,6 +46,13 @@ class MailgunDomainController extends Controller
         $mailgunDomain->save();
 
         return GenericResource::make($mailgunDomain);
+    }
+
+    public function validateMailgunDomain(MailgunDomain $mailgunDomain)
+    {
+        return [
+            'valid' => (new MailgunHelper())->checkCredentials($mailgunDomain->domain, $mailgunDomain->secret)
+        ];
     }
 
 }

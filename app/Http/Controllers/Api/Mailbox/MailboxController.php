@@ -143,14 +143,15 @@ class MailboxController extends Controller
     {
         $this->authorize('view', Mailbox::class);
 
-        $mailFetcher = new MailFetcher($mailbox);
-
-        if($mailbox->valid) {
-            $mailFetcher->fetchNew();
+        if(!$mailbox->is_active){
+            return 'This mailbox is not active';
         }
-        else{
+        if(!$mailbox->valid){
             return 'This mailbox is invalid';
         }
+
+        $mailFetcher = new MailFetcher($mailbox);
+        $mailFetcher->fetchNew();
     }
 
     public function receiveMailFromMailboxesUser()
@@ -178,7 +179,7 @@ class MailboxController extends Controller
     //called by cronjob
     static public function receiveAllEmail()
     {
-        $mailboxes = Mailbox::where('valid', 1)->get();
+        $mailboxes = Mailbox::where('valid', 1)->where('is_active', 1)->get();
         foreach ($mailboxes as $mailbox) {
             $mailFetcher = new MailFetcher($mailbox);
             $mailFetcher->fetchNew();

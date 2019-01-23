@@ -35,15 +35,14 @@ class MailboxesList extends Component {
                 <DataTable>
                     <DataTableHead>
                         <tr className="thead-title">
-                            <DataTableHeadTitle title={'Weergavenaam'} width={"19%"}/>
-                            <DataTableHeadTitle title={'E-mail'} width={"19%"}/>
-                            <DataTableHeadTitle title={'Gebruikersnaam'} width={"19%"}/>
-                            <DataTableHeadTitle title={'Ink.server'} width={"19%"}/>
-                            {this.props.usesMailgun ?
-                                <DataTableHeadTitle title={'Mailgun domein'} width={"19%"}/>
-                                :
-                                <DataTableHeadTitle title={'Uitg.server'} width={"19%"}/>
-                            }
+                            <DataTableHeadTitle title={'Weergavenaam'} width={"15%"}/>
+                            <DataTableHeadTitle title={'E-mail'} width={"15%"}/>
+                            <DataTableHeadTitle title={'Gebruikersnaam'} width={"15%"}/>
+                            <DataTableHeadTitle title={'Inkomend'} width={"15%"}/>
+                            <DataTableHeadTitle title={'Gebruikt mailgun'} width={"10%"}/>
+                            <DataTableHeadTitle title={'Uitgaand'} width={"15%"}/>
+                            <DataTableHeadTitle title={'Primair'} width={"5%"}/>
+                            <DataTableHeadTitle title={'Actief'} width={"5%"}/>
                             <DataTableHeadTitle title={''} width={"5%"}/>
                         </tr>
                     </DataTableHead>
@@ -51,7 +50,7 @@ class MailboxesList extends Component {
                         {
                             loading ? (
                                 <tr>
-                                    <td colSpan={6}>{loadingText}</td>
+                                    <td colSpan={9}>{loadingText}</td>
                                 </tr>
                             ) : (
                                 this.props.mailboxes.map((mailbox) => {

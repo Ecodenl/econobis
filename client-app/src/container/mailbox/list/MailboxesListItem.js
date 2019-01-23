@@ -31,7 +31,8 @@ class MailboxesListItem extends Component {
     };
 
     render() {
-        const { id, name, email, username, imapHost, smtpHost, valid } = this.props;
+        const { id, name, email, username, imapHost, smtpHost, mailgunDomain, valid, outgoingServerType, primary, isActive } = this.props;
+        const usesMailgun = outgoingServerType === 'mailgun';
 
         return (
             <tr className={`${this.state.highlightRow}  ${valid ? '' : 'has-error'}`} onDoubleClick={() => this.openItem(id)} onMouseEnter={() => this.onRowEnter()} onMouseLeave={() => this.onRowLeave()}>
@@ -39,7 +40,10 @@ class MailboxesListItem extends Component {
                 <td>{ email }</td>
                 <td>{ username }</td>
                 <td>{ imapHost }</td>
-                <td>{ smtpHost }</td>
+                <td>{ usesMailgun ? 'Ja' : 'Nee' }</td>
+                <td>{ usesMailgun ? mailgunDomain : smtpHost }</td>
+                <td>{ primary ? 'Primair' : '' }</td>
+                <td>{ isActive ? 'Ja' : 'Nee' }</td>
                 <td>
                     {(this.state.showActionButtons ? <a role="button" onClick={() => this.openItem(id)}><span className="glyphicon glyphicon-pencil mybtn-success" /> </a> : '')}
                 </td>

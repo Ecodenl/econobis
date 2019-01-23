@@ -23,6 +23,7 @@ use App\Http\Resources\Email\GridEmailTemplate;
 use App\Http\Resources\GenericResource;
 use App\Http\Resources\Mailbox\FullMailbox;
 use App\Http\Resources\Mailbox\FullMailboxIgnore;
+use App\Http\Resources\Mailbox\GridMailbox;
 use App\Http\Resources\Mailbox\LoggedInEmailPeek;
 use App\Http\Resources\User\UserPeek;
 use App\Rules\EnumExists;
@@ -38,7 +39,9 @@ class MailboxController extends Controller
 
         $mailboxes = Mailbox::get();
 
-        return GenericResource::collection($mailboxes);
+        $mailboxes->load(['mailgunDomain']);
+
+        return GridMailbox::collection($mailboxes);
     }
 
     public function store(RequestInput $input)

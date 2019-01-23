@@ -59,10 +59,16 @@ class MailboxController extends Controller
             ->integer('mailgunDomainId')->whenMissing(null)->onEmpty(null)->alias('mailgun_domain_id')->next()
             ->string('outgoingServerType')->whenMissing('smtp')->onEmpty('smtp')->alias('outgoing_server_type')->next()
             ->boolean('isActive')->whenMissing(true)->onEmpty(true)->alias('is_active')->next()
+            ->boolean('primary')->whenMissing(false)->onEmpty(false)->next()
             ->get();
 
         $mailbox = new Mailbox($data);
         $mailbox->save();
+
+        // Als de mailbox als primair is gemarkeerd, functie aanroepen om te zorgen dat alle andere mailboxen niet meer primair zijn.
+        if($mailbox->primary){
+            $this->makePrimary($mailbox);
+        }
 
         $mailbox->users()->attach(Auth::user());
 
@@ -103,6 +109,11 @@ class MailboxController extends Controller
         $mailbox->login_tries = 0;
         $mailbox->update($data);
         $mailbox->save();
+
+        // Als de mailbox als primair is gemarkeerd, functie aanroepen om te zorgen dat alle andere mailboxen niet meer primair zijn.
+        if($mailbox->primary){
+            $this->makePrimary($mailbox);
+        }
 
         //Create a new mailfetcher. This will check if the mailbox is valid and set it in the db.
         new MailFetcher($mailbox);
@@ -198,7 +209,9 @@ class MailboxController extends Controller
     public function makePrimary(Mailbox $mailbox)
     {
         // Oude primary mailbox niet meer primary maken
-        foreach (Mailbox::where('primary', 1)->get() as $mb){
+        foreach (Mailbox::where('primary', 1)
+                     ->where('id', '<>', $mailbox->id) // Is onnodig voor huidige mailbox
+                     ->get() as $mb){
             // Zal er eigenlijk altijd exact één moeten zijn, maar voor de zekerheid toch maar in een loop
             $mb->primary = false;
             $mb->save();

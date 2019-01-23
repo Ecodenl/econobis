@@ -1,5 +1,5 @@
-import React, { Component} from 'react';
-import {connect} from 'react-redux';
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
 
 import MailboxDetailsFormGeneralEdit from './MailboxDetailsFormGeneralEdit';
 import MailboxDetailsFormGeneralView from './MailboxDetailsFormGeneralView';
@@ -17,47 +17,50 @@ class MailboxDetailsFormGeneral extends Component {
     switchToEdit = () => {
         this.setState({
             showEdit: true,
-        })
+        });
     };
 
     switchToView = () => {
         this.setState({
             showEdit: false,
             activeDiv: '',
-        })
+        });
     };
 
     onDivEnter() {
         this.setState({
             activeDiv: 'panel-grey',
         });
-    };
+    }
 
     onDivLeave() {
-        if(!this.state.showEdit) {
+        if (!this.state.showEdit) {
             this.setState({
                 activeDiv: '',
             });
         }
-    };
+    }
 
     render() {
         const { permissions = {} } = this.props.meDetails;
 
         return (
-            <div className={this.state.activeDiv} onMouseEnter={() => this.onDivEnter()} onMouseLeave={() => this.onDivLeave()}>
-                {
-                    this.state.showEdit && this.props.permissions.createMailbox ?
-                        <MailboxDetailsFormGeneralEdit switchToView={this.switchToView} />
-                        :
-                        <MailboxDetailsFormGeneralView switchToEdit={this.switchToEdit}/>
-                }
+            <div
+                className={this.state.activeDiv}
+                onMouseEnter={() => this.onDivEnter()}
+                onMouseLeave={() => this.onDivLeave()}
+            >
+                {this.state.showEdit && this.props.permissions.createMailbox ? (
+                    <MailboxDetailsFormGeneralEdit switchToView={this.switchToView} />
+                ) : (
+                    <MailboxDetailsFormGeneralView switchToEdit={this.switchToEdit} />
+                )}
             </div>
         );
     }
-};
+}
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         mailboxDetails: state.mailboxDetails,
         meDetails: state.meDetails,

@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
+import {bindActionCreators} from 'redux';
 import {hashHistory} from 'react-router';
 import validator from 'validator';
 import moment from 'moment';
@@ -12,6 +13,7 @@ import PanelBody from "../../../components/panel/PanelBody";
 import Panel from "../../../components/panel/Panel";
 import MailgunDomainDetailsAPI from '../../../api/mailgun-domain/MailgunDomainDetailsAPI';
 import InputToggle from "../../../components/form/InputToggle";
+import {fetchSystemData} from "../../../actions/general/SystemDataActions";
 
 class MailgunDomainNewForm extends Component {
     constructor(props) {
@@ -84,6 +86,8 @@ class MailgunDomainNewForm extends Component {
         // If no errors send form
         !hasErrors &&
         MailgunDomainDetailsAPI.newMailgunDomain(mailgunDomain).then((payload) => {
+            this.props.fetchSystemData();
+
             hashHistory.push(`/mailgun-domein/${payload.data.data.id}`);
         }).catch(function (error) {
             alert('Er is iets mis gegaan met opslaan!');
@@ -137,8 +141,6 @@ class MailgunDomainNewForm extends Component {
     };
 };
 
-const mapStateToProps = (state) => {
-    return {};
-};
+const mapDispatchToProps = dispatch => bindActionCreators({ fetchSystemData }, dispatch);
 
-export default connect(mapStateToProps, null)(MailgunDomainNewForm);
+export default connect(null, mapDispatchToProps)(MailgunDomainNewForm);

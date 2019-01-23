@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import { fetchAdministrationDetails } from '../../../actions/administration/AdministrationDetailsActions';
@@ -8,13 +8,13 @@ import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
 
 class AdministrationDetailsApp extends Component {
-    constructor(props){
+    constructor(props) {
         super(props);
-    };
+    }
 
     componentDidMount() {
         this.props.fetchAdministrationDetails(this.props.params.id);
-    };
+    }
 
     render() {
         return (
@@ -22,8 +22,8 @@ class AdministrationDetailsApp extends Component {
                 <div className="col-md-9">
                     <div className="col-md-12 margin-10-top">
                         <Panel>
-                            <PanelBody className={"panel-small"}>
-                                < AdministrationDetailsToolbar />
+                            <PanelBody className={'panel-small'}>
+                                <AdministrationDetailsToolbar />
                             </PanelBody>
                         </Panel>
                     </div>
@@ -34,20 +34,23 @@ class AdministrationDetailsApp extends Component {
                 </div>
                 <div className="col-md-3" />
             </div>
-        )
+        );
     }
-};
+}
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         administrationDetails: state.administrationDetails,
     };
 };
 
 const mapDispatchToProps = dispatch => ({
-    fetchAdministrationDetails: (id) => {
+    fetchAdministrationDetails: id => {
         dispatch(fetchAdministrationDetails(id));
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(AdministrationDetailsApp);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(AdministrationDetailsApp);

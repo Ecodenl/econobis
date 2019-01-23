@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Beheerder
- * Date: 04-01-2018
- * Time: 16:06
- */
 
 namespace App\Jobs\Email;
 
@@ -18,7 +12,6 @@ use App\Helpers\Template\TemplateTableHelper;
 use App\Helpers\Template\TemplateVariableHelper;
 use App\Http\Resources\Email\Templates\GenericMail;
 use Carbon\Carbon;
-use Config;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -74,8 +67,8 @@ class SendEmailsWithVariables implements ShouldQueue
                 $emailAddress = EmailAddress::find($to);
                 $emailsToContact[] = $emailAddress;
 
-            }elseif (substr($to, 0, 7) === "@group_") {
-              //niets doen
+            } elseif (substr($to, 0, 7) === "@group_") {
+                //niets doen
             } else {
                 $emailsToEmailAddress[] = $to;
             }
@@ -86,7 +79,7 @@ class SendEmailsWithVariables implements ShouldQueue
         $mergedHtmlBody = $email->html_body;
 
         //First send emails to all emails
-        if(!empty($emailsToEmailAddress)){
+        if (!empty($emailsToEmailAddress)) {
             $mail = Mail::to($emailsToEmailAddress);
 
             ($email->cc != []) ? $mail->cc($email->cc) : null;
@@ -98,13 +91,12 @@ class SendEmailsWithVariables implements ShouldQueue
                 $mail->send(new GenericMail($email, $htmlBodyWithVariables));
                 $amounfOfEmailsSend++;
 
-                if($amounfOfEmailsSend === 1){
+                if ($amounfOfEmailsSend === 1) {
                     $mergedHtmlBody = $htmlBodyWithVariables;
                 }
 
                 $ccBccSent = true;
-            }
-            catch(\Exception $e){
+            } catch (\Exception $e) {
                 Log::error('Mail naar e-mailadres kon niet worden verzonden');
                 Log::error($e->getMessage());
             }
@@ -112,8 +104,8 @@ class SendEmailsWithVariables implements ShouldQueue
         }
 
         //Send mail to all contacts
-        if(!empty($emailsToContact)){
-            foreach($emailsToContact as $emailToContact) {
+        if (!empty($emailsToContact)) {
+            foreach ($emailsToContact as $emailToContact) {
                 $mail = Mail::to($emailToContact->email);
                 if (!$ccBccSent) {
                     ($email->cc != []) ? $mail->cc($email->cc) : null;
@@ -124,21 +116,20 @@ class SendEmailsWithVariables implements ShouldQueue
                     $email->bcc = [];
                 }
                 $htmlBodyWithContactVariables = TemplateTableHelper::replaceTemplateTables($email->html_body, $emailAddress->contact);
-                $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables, 'contact' ,$emailAddress->contact);
+                $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables, 'contact', $emailAddress->contact);
                 $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables, 'ik', Auth::user());
-                if($email->quotationRequest){
+                if ($email->quotationRequest) {
                     $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables, 'offerteverzoek', $email->quotationRequest);
                 }
                 $htmlBodyWithContactVariables = TemplateVariableHelper::stripRemainingVariableTags($htmlBodyWithContactVariables);
                 try {
-                $mail->send(new GenericMail($email, $htmlBodyWithContactVariables));
-                $amounfOfEmailsSend++;
+                    $mail->send(new GenericMail($email, $htmlBodyWithContactVariables));
+                    $amounfOfEmailsSend++;
 
-                if($amounfOfEmailsSend === 1){
-                    $mergedHtmlBody = $htmlBodyWithContactVariables;
-                }
-                }
-                catch(\Exception $e){
+                    if ($amounfOfEmailsSend === 1) {
+                        $mergedHtmlBody = $htmlBodyWithContactVariables;
+                    }
+                } catch (\Exception $e) {
                     Log::error('Mail naar contact kon niet worden verzonden');
                     Log::error($e->getMessage());
                 }
@@ -147,8 +138,8 @@ class SendEmailsWithVariables implements ShouldQueue
         }
 
         //send mail to group contacts
-        if($email->groupEmailAddresses){
-            foreach($email->groupEmailAddresses as $emailAddress) {
+        if ($email->groupEmailAddresses) {
+            foreach ($email->groupEmailAddresses as $emailAddress) {
                 $mail = Mail::to($emailAddress->email);
                 if (!$ccBccSent) {
                     ($email->cc != []) ? $mail->cc($email->cc) : null;
@@ -160,18 +151,17 @@ class SendEmailsWithVariables implements ShouldQueue
                 }
 
                 $htmlBodyWithContactVariables = TemplateTableHelper::replaceTemplateTables($email->html_body, $emailAddress->contact);
-                $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables, 'contact' , $emailAddress->contact);
+                $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables, 'contact', $emailAddress->contact);
                 $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables, 'ik', Auth::user());
                 $htmlBodyWithContactVariables = TemplateVariableHelper::stripRemainingVariableTags($htmlBodyWithContactVariables);
                 try {
-                $mail->send(new GenericMail($email, $htmlBodyWithContactVariables));
-                $amounfOfEmailsSend++;
+                    $mail->send(new GenericMail($email, $htmlBodyWithContactVariables));
+                    $amounfOfEmailsSend++;
 
-                if($amounfOfEmailsSend === 1){
-                    $mergedHtmlBody = $htmlBodyWithContactVariables;
-                }
-                }
-                catch(\Exception $e){
+                    if ($amounfOfEmailsSend === 1) {
+                        $mergedHtmlBody = $htmlBodyWithContactVariables;
+                    }
+                } catch (\Exception $e) {
                     Log::error('Mail naar groep e-mailadres kon niet worden verzonden');
                     Log::error($e->getMessage());
                 }
@@ -179,7 +169,7 @@ class SendEmailsWithVariables implements ShouldQueue
             }
         }
 
-        if($amounfOfEmailsSend === 1){
+        if ($amounfOfEmailsSend === 1) {
             $email->html_body = $mergedHtmlBody;
         }
 
@@ -205,6 +195,6 @@ class SendEmailsWithVariables implements ShouldQueue
 
     private function validateRequest()
     {
-        if($this->email->from != $this->email->mailbox->email) throw new \Exception('A mail can only be send with the same address as the sending mailbox');
+        if ($this->email->from != $this->email->mailbox->email) throw new \Exception('A mail can only be send with the same address as the sending mailbox');
     }
 }

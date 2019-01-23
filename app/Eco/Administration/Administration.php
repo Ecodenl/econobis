@@ -5,6 +5,7 @@ namespace App\Eco\Administration;
 use App\Eco\Country\Country;
 use App\Eco\EmailTemplate\EmailTemplate;
 use App\Eco\Invoice\Invoice;
+use App\Eco\Mailbox\Mailbox;
 use App\Eco\Order\Order;
 use App\Eco\PaymentInvoice\PaymentInvoice;
 use App\Eco\Product\Product;
@@ -14,7 +15,6 @@ use App\Http\Traits\Encryptable;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use App\Eco\Mailbox\Mailbox;
 use Venturecraft\Revisionable\RevisionableTrait;
 
 class Administration extends Model
@@ -32,47 +32,58 @@ class Administration extends Model
         return $this->belongsToMany(User::class);
     }
 
-    public function products(){
+    public function products()
+    {
         return $this->hasMany(Product::class);
     }
 
-    public function orders(){
+    public function orders()
+    {
         return $this->hasMany(Order::class);
     }
 
-    public function sepas(){
-        return $this->hasMany(Sepa::class)->orderBy('created_at','desc');
+    public function sepas()
+    {
+        return $this->hasMany(Sepa::class)->orderBy('created_at', 'desc');
     }
 
-    public function productionProjects(){
+    public function productionProjects()
+    {
         return $this->hasMany(ProductionProject::class);
     }
 
-    public function invoices(){
+    public function invoices()
+    {
         return $this->hasMany(Invoice::class);
     }
 
-    public function paymentInvoices(){
+    public function paymentInvoices()
+    {
         return $this->hasMany(PaymentInvoice::class);
     }
 
-    public function country(){
+    public function country()
+    {
         return $this->belongsTo(Country::class);
     }
 
-    public function emailTemplateCollection(){
+    public function emailTemplateCollection()
+    {
         return $this->belongsTo(EmailTemplate::class, 'email_template_id_collection');
     }
 
-    public function emailTemplateTransfer(){
+    public function emailTemplateTransfer()
+    {
         return $this->belongsTo(EmailTemplate::class, 'email_template_id_transfer');
     }
 
-    public function emailTemplateReminder(){
+    public function emailTemplateReminder()
+    {
         return $this->belongsTo(EmailTemplate::class);
     }
 
-    public function emailTemplateExhortation(){
+    public function emailTemplateExhortation()
+    {
         return $this->belongsTo(EmailTemplate::class);
     }
 
@@ -158,7 +169,8 @@ class Administration extends Model
                         ->where('days_to_expire', '>', '0');
                 })->orWhere(function ($q) {
                     $q->where('payment_type_id', '!=', 'transfer');
-                });})->where('status_id', 'sent')->whereNull('date_reminder_1')
+                });
+            })->where('status_id', 'sent')->whereNull('date_reminder_1')
             ->whereNull('date_reminder_2')->whereNull('date_reminder_3')
             ->whereNull('date_exhortation')->count();
     }
@@ -171,27 +183,26 @@ class Administration extends Model
     public function getTotalInvoicesReminderAttribute()
     {
         return $this->invoices()
-
-            ->where(function ($q)  {
+            ->where(function ($q) {
                 $q->where(function ($q) {
-                $q->whereNotNull('invoices.date_reminder_1');
+                    $q->whereNotNull('invoices.date_reminder_1');
+                })
+                    ->orWhere(function ($q) {
+                        $q->where('invoices.status_id', 'exported')->where('invoices.payment_type_id', 'transfer')
+                            ->where('invoices.days_to_expire', '<=', '0');
+
+                    })->orWhere(function ($q) {
+                        $q->where('invoices.status_id', 'sent')->where('invoices.payment_type_id', 'transfer')
+                            ->where('invoices.days_to_expire', '<=', '0');
+                    });
             })
-                ->orWhere(function ($q) {
-                    $q->where('invoices.status_id', 'exported')->where('invoices.payment_type_id', 'transfer')
-                        ->where('invoices.days_to_expire', '<=', '0');
-
-                })->orWhere(function ($q) {
-                    $q->where('invoices.status_id', 'sent')->where('invoices.payment_type_id', 'transfer')
-                        ->where('invoices.days_to_expire', '<=', '0');
-                });})
-
-                ->whereNotIn('invoices.status_id', ['to-send', 'paid', 'irrecoverable'])->whereNull('invoices.date_exhortation')->count();
+            ->whereNotIn('invoices.status_id', ['to-send', 'paid', 'irrecoverable'])->whereNull('invoices.date_exhortation')->count();
 
     }
 
     public function getTotalInvoicesExhortationAttribute()
     {
-        return $this->invoices()->whereNotNull('date_exhortation')->whereNotIn('status_id', ['to-send', 'paid' ,'irrecoverable'])->count();
+        return $this->invoices()->whereNotNull('date_exhortation')->whereNotIn('status_id', ['to-send', 'paid', 'irrecoverable'])->count();
     }
 
     public function getTotalInvoicesPaidAttribute()
@@ -225,12 +236,12 @@ class Administration extends Model
         $canCreateInvoices['message'] = '';
         $canCreateInvoices['requiredFields'] = [];
 
-        if(empty($this->IBAN)) {
+        if (empty($this->IBAN)) {
             $canCreateInvoices['requiredFields'][] = 'IBAN';
             $canCreateInvoices['can'] = false;
         }
 
-        if(empty($this->bic)) {
+        if (empty($this->bic)) {
             $canCreateInvoices['requiredFields'][] = 'bic';
             $canCreateInvoices['can'] = false;
         }
@@ -241,7 +252,7 @@ class Administration extends Model
 //            $canCreateInvoices['can'] = false;
 //        }
 
-        if(!$canCreateInvoices['can']){
+        if (!$canCreateInvoices['can']) {
             $canCreateInvoices['message'] = 'Kan SEPA niet aanmaken. De velden ' . implode($canCreateInvoices['requiredFields'], ', ') . ' zijn verplicht.';
         }
 
@@ -254,18 +265,18 @@ class Administration extends Model
         $canCreatePaymentInvoices['message'] = '';
         $canCreatePaymentInvoices['requiredFields'] = [];
 
-        if(empty($this->IBAN)) {
+        if (empty($this->IBAN)) {
             $canCreatePaymentInvoices['requiredFields'][] = 'IBAN';
             $canCreatePaymentInvoices['can'] = false;
         }
 
 
-        if(empty($this->bic)) {
+        if (empty($this->bic)) {
             $canCreatePaymentInvoices['requiredFields'][] = 'bic';
             $canCreatePaymentInvoices['can'] = false;
         }
 
-        if(!$canCreatePaymentInvoices['can']){
+        if (!$canCreatePaymentInvoices['can']) {
             $canCreatePaymentInvoices['message'] = 'Kan SEPA niet aanmaken. De velden ' . implode($canCreatePaymentInvoices['requiredFields'], ', ') . ' zijn verplicht.';
         }
 

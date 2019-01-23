@@ -17,7 +17,7 @@ import { home } from 'react-icons-kit/icomoon/home';
 import { drawer } from 'react-icons-kit/icomoon/drawer';
 import { ic_business_center } from 'react-icons-kit/md/ic_business_center';
 
-const SidebarMenu = ({permissions, administrations}) => (
+const SidebarMenu = ({permissions, administrations, mailboxesInvalid}) => (
     <div className="sidebar-menu" style={{background: '$brand-primary', color: '#FFF', width: '240px'}}>
         <SideNav highlightColor="#FFF" highlightBgColor="#27AE60" defaultSelected="dashboard">
             <Nav id="dashboard">
@@ -138,7 +138,7 @@ const SidebarMenu = ({permissions, administrations}) => (
             }
             <Nav id="instellingen">
                 <NavIcon><SvgIcon size={20} icon={cog}/></NavIcon>
-                <NavText> Instellingen </NavText>
+                <NavText className={mailboxesInvalid ? "sidebar__alert" : ""}> Instellingen </NavText>
                 {permissions.manageFinancial &&
                 <Nav id="administration">
                     <NavText><Link className="sidebar-link" to="administraties">Administraties</Link></NavText>
@@ -172,11 +172,11 @@ const SidebarMenu = ({permissions, administrations}) => (
                 </Nav>
                 {permissions.viewMailbox &&
                 <Nav id="mailboxes">
-                    <NavText><Link className="sidebar-link" to="mailboxen">Mailboxen</Link></NavText>
+                    <NavText><Link className={`sidebar-link  ${mailboxesInvalid ? "sidebar__alert" : ""}`} to="mailboxen">Mailboxen</Link></NavText>
                 </Nav>
                 }
                 {permissions.manageMailgunDomain &&
-                <Nav id="mailboxes">
+                <Nav id="mailboxgun-domains">
                     <NavText><Link className="sidebar-link" to="mailgun-domeinen">Mailgun domeinen</Link></NavText>
                 </Nav>
                 }
@@ -197,6 +197,7 @@ const mapStateToProps = (state) => {
     return {
         permissions: state.meDetails.permissions,
         administrations: state.meDetails.administrations,
+        mailboxesInvalid: state.systemData.mailboxesInvalid,
     };
 };
 

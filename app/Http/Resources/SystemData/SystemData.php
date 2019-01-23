@@ -15,6 +15,7 @@ use App\Eco\EnergySupplier\ContactEnergySupplierType;
 use App\Eco\EnergySupplier\EnergySupplier;
 use App\Eco\HousingFile\EnergyLabelStatus;
 use App\Eco\HousingFile\RoofType;
+use App\Eco\Mailbox\Mailbox;
 use App\Eco\Mailbox\MailboxIgnoreType;
 use App\Eco\Measure\MeasureCategory;
 use App\Eco\Opportunity\OpportunityStatus;
@@ -181,6 +182,7 @@ class SystemData extends Resource
             'contactGroupTypes' => FullEnumWithIdAndName::collection(ContactGroupType::collection()),
             'mailgunDomain' => MailgunDomain::select(['id', 'domain'])->get(),
             'mailboxIgnoreTypes' => FullEnumWithIdAndName::collection(MailboxIgnoreType::collection()),
+            'mailboxesInvalid' => Mailbox::where('is_active', 1)->where('valid', 0)->count(),
         ];
     }
 }

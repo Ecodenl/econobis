@@ -9,7 +9,6 @@
 namespace App\Http\Controllers\Api\Mailbox;
 
 
-use App\Eco\Email\Email;
 use App\Eco\Mailbox\ImapEncryptionType;
 use App\Eco\Mailbox\Mailbox;
 use App\Eco\Mailbox\MailboxIgnore;
@@ -26,7 +25,6 @@ use App\Http\Resources\Mailbox\FullMailboxIgnore;
 use App\Http\Resources\Mailbox\GridMailbox;
 use App\Http\Resources\Mailbox\LoggedInEmailPeek;
 use App\Http\Resources\User\UserPeek;
-use App\Rules\EnumExists;
 use Doctrine\Common\Annotations\Annotation\Enum;
 use Illuminate\Support\Facades\Auth;
 
@@ -61,8 +59,8 @@ class MailboxController extends Controller
             ->string('password')->whenMissing('')->onEmpty('')->alias('password')->next()
             ->integer('mailgunDomainId')->whenMissing(null)->onEmpty(null)->alias('mailgun_domain_id')->next()
             ->string('outgoingServerType')->whenMissing('smtp')->onEmpty('smtp')->alias('outgoing_server_type')->next()
-            ->boolean('isActive')->whenMissing(true)->onEmpty(true)->alias('is_active')->next()
-            ->boolean('primary')->whenMissing(false)->onEmpty(false)->next()
+            ->boolean('isActive')->alias('is_active')->next()
+            ->boolean('primary')->next()
             ->get();
 
         $mailbox = new Mailbox($data);
@@ -106,7 +104,8 @@ class MailboxController extends Controller
             ->string('password')->alias('password')->next()
             ->integer('mailgunDomainId')->whenMissing(null)->onEmpty(null)->alias('mailgun_domain_id')->next()
             ->string('outgoingServerType')->alias('outgoing_server_type')->next()
-            ->boolean('isActive')->whenMissing(true)->onEmpty(true)->alias('is_active')->next()
+            ->boolean('isActive')->alias('is_active')->next()
+            ->boolean('primary')->next()
             ->get();
 
         $mailbox->login_tries = 0;

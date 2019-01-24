@@ -15,7 +15,7 @@ class AddPrimaryToMailboxes extends Migration
     {
         Schema::table('mailboxes', function (Blueprint $table) {
             $table->boolean('primary')->default(false);
-            $table->boolean('is_active')->default(false);
+            $table->boolean('is_active')->default(true);
         });
     }
 

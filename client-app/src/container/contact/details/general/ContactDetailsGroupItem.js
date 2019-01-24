@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 
 import ContactDetailsGroupView from './ContactDetailsGroupView';
 
@@ -13,7 +13,7 @@ class ContactDetailsGroupItem extends Component {
                 ...props.group,
             },
         };
-    };
+    }
 
     onLineEnter = () => {
         this.setState({
@@ -39,6 +39,6 @@ class ContactDetailsGroupItem extends Component {
             </div>
         );
     }
-};
+}
 
 export default ContactDetailsGroupItem;

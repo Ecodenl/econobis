@@ -6,6 +6,6 @@ export const fetchMailgunDomains = () => {
 
 export const clearMailgunDomains = () => {
     return {
-        type: 'CLEAR_MAILGUN_DOMAINS'
+        type: 'CLEAR_MAILGUN_DOMAINS',
     };
 };

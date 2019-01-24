@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { hashHistory } from 'react-router';
 import moment from 'moment';
@@ -9,9 +9,9 @@ import InputText from '../../../components/form/InputText';
 import InputSelect from '../../../components/form/InputSelect';
 import InputDate from '../../../components/form/InputDate';
 import ButtonText from '../../../components/button/ButtonText';
-import PanelFooter from "../../../components/panel/PanelFooter";
-import * as ibantools from "ibantools";
-import InputToggle from "../../../components/form/InputToggle";
+import PanelFooter from '../../../components/panel/PanelFooter';
+import * as ibantools from 'ibantools';
+import InputToggle from '../../../components/form/InputToggle';
 
 class ContactNewFormOrganisation extends Component {
     constructor(props) {
@@ -37,14 +37,14 @@ class ContactNewFormOrganisation extends Component {
                 squareMeters: '',
                 newsletter: false,
                 ownerId: props.userId,
-                didAgreeAvg: false
+                didAgreeAvg: false,
             },
             errors: {
                 name: false,
                 iban: false,
             },
-        }
-    };
+        };
+    }
 
     handleInputChange = event => {
         const target = event.target;
@@ -55,19 +55,19 @@ class ContactNewFormOrganisation extends Component {
             ...this.state,
             organisation: {
                 ...this.state.organisation,
-                [name]: value
+                [name]: value,
             },
         });
     };
 
-    handleChangeMemberSince = (date) => {
-        const formattedDate = (date ? moment(date).format('Y-MM-DD') : '');
+    handleChangeMemberSince = date => {
+        const formattedDate = date ? moment(date).format('Y-MM-DD') : '';
 
         this.setState({
             ...this.state,
             organisation: {
                 ...this.state.organisation,
-                memberSince: formattedDate
+                memberSince: formattedDate,
             },
         });
     };
@@ -75,72 +75,82 @@ class ContactNewFormOrganisation extends Component {
     handleSubmit = event => {
         event.preventDefault();
 
-        const { organisation }  = this.state;
+        const { organisation } = this.state;
 
         let errors = {};
         let hasErrors = false;
 
-        if(validator.isEmpty(organisation.name)){
+        if (validator.isEmpty(organisation.name)) {
             errors.name = true;
             hasErrors = true;
-        };
+        }
 
-        if(!validator.isEmpty(organisation.iban)){
+        if (!validator.isEmpty(organisation.iban)) {
             if (!ibantools.isValidIBAN(organisation.iban)) {
                 errors.iban = true;
                 hasErrors = true;
             }
         }
 
-        this.setState({ ...this.state, errors: errors })
+        this.setState({ ...this.state, errors: errors });
 
         // If no errors send form
         if (!hasErrors) {
-            if(this.state.buttonLoading){
+            if (this.state.buttonLoading) {
                 return false;
             }
             this.setState({
-                buttonLoading: true
+                buttonLoading: true,
             });
-            OrganisationAPI.newOrganisation(organisation).then((payload) => {
+            OrganisationAPI.newOrganisation(organisation).then(payload => {
                 hashHistory.push(`/contact/${payload.id}`);
             });
         }
     };
 
     render() {
-        const { typeId, statusId, name, chamberOfCommerceNumber, vatNumber, industryId, memberSince, newsletter, website, iban, ibanAttn, squareMeters, ownerId, didAgreeAvg } = this.state.organisation;
+        const {
+            typeId,
+            statusId,
+            name,
+            chamberOfCommerceNumber,
+            vatNumber,
+            industryId,
+            memberSince,
+            newsletter,
+            website,
+            iban,
+            ibanAttn,
+            squareMeters,
+            ownerId,
+            didAgreeAvg,
+        } = this.state.organisation;
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
                 <div className="row">
+                    <InputText label={'Contactnummer'} name={'number'} value={''} readOnly={true} />
                     <InputText
-                        label={"Contactnummer"}
-                        name={"number"}
-                        value={''}
-                        readOnly={ true }
-                    />
-                    <InputText
-                        label={"Gemaakt op"}
-                        name={"createdAt"}
-                        value={ moment().format('DD-MM-Y') }
-                        readOnly={ true }
+                        label={'Gemaakt op'}
+                        name={'createdAt'}
+                        value={moment().format('DD-MM-Y')}
+                        readOnly={true}
                     />
                 </div>
 
                 <div className="row">
                     <InputText
                         label="Naam"
-                        name={"name"}
+                        name={'name'}
                         value={name}
                         onChangeAction={this.handleInputChange}
-                        required={"required"}
+                        required={'required'}
                         error={this.state.errors.name}
                     />
                     <InputSelect
-                        label={"Status"}
-                        size={"col-sm-6"}
-                        name={"statusId"}
+                        label={'Status'}
+                        size={'col-sm-6'}
+                        name={'statusId'}
                         divClassName={'field-to-be-removed'}
                         options={this.props.contactStatuses}
                         value={statusId}
@@ -151,15 +161,15 @@ class ContactNewFormOrganisation extends Component {
                 <div className="row">
                     <InputText
                         label="KvK"
-                        size={"col-sm-6"}
+                        size={'col-sm-6'}
                         name="chamberOfCommerceNumber"
                         value={chamberOfCommerceNumber}
                         onChangeAction={this.handleInputChange}
                     />
                     <InputDate
-                        label={"Lid sinds"}
+                        label={'Lid sinds'}
                         name="memberSince"
-                        value={ memberSince }
+                        value={memberSince}
                         onChangeAction={this.handleChangeMemberSince}
                     />
                 </div>
@@ -171,12 +181,7 @@ class ContactNewFormOrganisation extends Component {
                         value={vatNumber}
                         onChangeAction={this.handleInputChange}
                     />
-                    <InputText
-                        label={"Opzegdatum"}
-                        name={"memberUntil"}
-                        value={ '' }
-                        readOnly={true}
-                    />
+                    <InputText label={'Opzegdatum'} name={'memberUntil'} value={''} readOnly={true} />
                 </div>
 
                 <div className="row">
@@ -197,15 +202,15 @@ class ContactNewFormOrganisation extends Component {
 
                 <div className="row">
                     <InputText
-                        label={"Website"}
-                        name={"website"}
+                        label={'Website'}
+                        name={'website'}
                         value={website}
                         onChangeAction={this.handleInputChange}
                     />
                     <InputSelect
-                        label={"Industrie"}
-                        size={"col-sm-6"}
-                        name={"industryId"}
+                        label={'Industrie'}
+                        size={'col-sm-6'}
+                        name={'industryId'}
                         divClassName={'field-to-be-removed'}
                         options={this.props.industries}
                         value={industryId}
@@ -215,21 +220,21 @@ class ContactNewFormOrganisation extends Component {
 
                 <div className="row">
                     <InputSelect
-                        label={"Soort contact"}
-                        size={"col-sm-6"}
-                        name={"typeId"}
+                        label={'Soort contact'}
+                        size={'col-sm-6'}
+                        name={'typeId'}
                         divClassName={'field-to-be-removed'}
                         options={this.props.organisationTypes}
                         value={typeId}
                         onChangeAction={this.handleInputChange}
                     />
                     <InputSelect
-                        label={"Eigenaar"}
-                        size={"col-sm-6"}
-                        name={"ownerId"}
+                        label={'Eigenaar'}
+                        size={'col-sm-6'}
+                        name={'ownerId'}
                         options={this.props.users}
                         value={ownerId}
-                        optionName={"fullName"}
+                        optionName={'fullName'}
                         onChangeAction={this.handleInputChange}
                     />
                 </div>
@@ -242,8 +247,8 @@ class ContactNewFormOrganisation extends Component {
                         onChangeAction={this.handleInputChange}
                     />
                     <InputToggle
-                        label={"Nieuwsbrief"}
-                        name={"newsletter"}
+                        label={'Nieuwsbrief'}
+                        name={'newsletter'}
                         value={newsletter}
                         className={'field-to-be-removed'}
                         onChangeAction={this.handleInputChange}
@@ -252,8 +257,8 @@ class ContactNewFormOrganisation extends Component {
 
                 <div className="row">
                     <InputToggle
-                        label={"Akkoord privacybeleid"}
-                        name={"didAgreeAvg"}
+                        label={'Akkoord privacybeleid'}
+                        name={'didAgreeAvg'}
                         value={didAgreeAvg}
                         onChangeAction={this.handleInputChange}
                     />
@@ -261,15 +266,20 @@ class ContactNewFormOrganisation extends Component {
 
                 <PanelFooter>
                     <div className="pull-right btn-group" role="group">
-                        <ButtonText loading={this.state.buttonLoading} loadText={"Organisatie wordt aangemaakt."} buttonText={"Opslaan"} onClickAction={this.handleSubmit}/>
+                        <ButtonText
+                            loading={this.state.buttonLoading}
+                            loadText={'Organisatie wordt aangemaakt.'}
+                            buttonText={'Opslaan'}
+                            onClickAction={this.handleSubmit}
+                        />
                     </div>
                 </PanelFooter>
             </form>
         );
-    };
-};
+    }
+}
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         organisationTypes: state.systemData.organisationTypes,
         contactStatuses: state.systemData.contactStatuses,

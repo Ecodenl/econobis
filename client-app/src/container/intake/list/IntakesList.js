@@ -6,16 +6,16 @@ import DataTableBody from '../../../components/dataTable/DataTableBody';
 import IntakesListHead from './IntakesListHead';
 import IntakesListFilter from './IntakesListFilter';
 import IntakesListItem from './IntakesListItem';
-import DataTablePagination from "../../../components/dataTable/DataTablePagination";
-import {connect} from "react-redux";
+import DataTablePagination from '../../../components/dataTable/DataTablePagination';
+import { connect } from 'react-redux';
 
 class IntakesList extends Component {
-    constructor(props){
+    constructor(props) {
         super(props);
-    };
+    }
 
     // On key Enter filter form will submit
-    handleKeyUp = (e) => {
+    handleKeyUp = e => {
         if (e.keyCode === 13) {
             this.props.onSubmitFilter();
         }
@@ -29,14 +29,11 @@ class IntakesList extends Component {
 
         if (this.props.hasError) {
             loadingText = 'Fout bij het ophalen van intakes.';
-        }
-        else if (this.props.isLoading) {
+        } else if (this.props.isLoading) {
             loadingText = 'Gegevens aan het laden.';
-        }
-        else if (data.length === 0) {
+        } else if (data.length === 0) {
             loadingText = 'Geen intakes gevonden!';
-        }
-        else {
+        } else {
             loading = false;
         }
 
@@ -55,20 +52,22 @@ class IntakesList extends Component {
                         />
                     </DataTableHead>
                     <DataTableBody>
-                        {
-                            loading  ? (
-                                <tr><td colSpan={6}>{loadingText}</td></tr>
-                            ) : (
-                                data.map((intake) => {
-                                    return <IntakesListItem
+                        {loading ? (
+                            <tr>
+                                <td colSpan={6}>{loadingText}</td>
+                            </tr>
+                        ) : (
+                            data.map(intake => {
+                                return (
+                                    <IntakesListItem
                                         key={intake.id}
                                         {...intake}
                                         showCheckbox={this.props.showCheckboxList}
                                         checkedAllCheckboxes={this.props.checkedAllCheckboxes}
                                     />
-                                })
-                            )
-                        }
+                                );
+                            })
+                        )}
                     </DataTableBody>
                 </DataTable>
                 <div className="col-md-4 col-md-offset-4">
@@ -80,14 +79,14 @@ class IntakesList extends Component {
                 </div>
             </form>
         );
-    };
+    }
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         isLoading: state.loadingData.isLoading,
         hasError: state.loadingData.hasError,
-    }
+    };
 };
 
 export default connect(mapStateToProps)(IntakesList);

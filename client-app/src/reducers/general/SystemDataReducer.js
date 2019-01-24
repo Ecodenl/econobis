@@ -1,5 +1,5 @@
-export default (state = {isLoaded: false, hasError: false}, action) => {
-    switch(action.type) {
+export default (state = { isLoaded: false, hasError: false }, action) => {
+    switch (action.type) {
         case 'FETCH_SYSTEM_DATA_SUCCESS':
             return {
                 ...state,
@@ -9,7 +9,6 @@ export default (state = {isLoaded: false, hasError: false}, action) => {
             return {
                 ...state,
                 isLoaded: true,
-
             };
         case 'FETCH_SYSTEM_DATA_ERROR':
             return {
@@ -19,4 +18,4 @@ export default (state = {isLoaded: false, hasError: false}, action) => {
         default:
             return state;
     }
-}
+};

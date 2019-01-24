@@ -1,13 +1,12 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment';
 
 import IntakeMeasuresRequestedView from './IntakeMeasuresRequestedView';
 import IntakeMeasuresRequestedDelete from './IntakeMeasuresRequestedDelete';
-import IntakeMeasuresRequestedEdit from "./IntakeMeasuresRequestedEdit";
-import IntakeDetailsAPI from "../../../../api/intake/IntakeDetailsAPI";
-import {isEqual} from "lodash";
-
+import IntakeMeasuresRequestedEdit from './IntakeMeasuresRequestedEdit';
+import IntakeDetailsAPI from '../../../../api/intake/IntakeDetailsAPI';
+import { isEqual } from 'lodash';
 
 class IntakeMeasuresRequestedItem extends Component {
     constructor(props) {
@@ -21,10 +20,10 @@ class IntakeMeasuresRequestedItem extends Component {
                 ...props.measureRequested,
             },
         };
-    };
+    }
 
     componentWillReceiveProps(nextProps) {
-        if(!isEqual(this.state.measureRequested, nextProps.measureRequested)){
+        if (!isEqual(this.state.measureRequested, nextProps.measureRequested)) {
             this.setState({
                 ...this.state,
                 measureRequested: {
@@ -32,7 +31,7 @@ class IntakeMeasuresRequestedItem extends Component {
                 },
             });
         }
-    };
+    }
 
     onLineEnter = () => {
         this.setState({
@@ -49,7 +48,7 @@ class IntakeMeasuresRequestedItem extends Component {
     };
 
     toggleDelete = () => {
-        this.setState({showDelete: !this.state.showDelete});
+        this.setState({ showDelete: !this.state.showDelete });
     };
 
     handleSubmit = event => {
@@ -60,37 +59,37 @@ class IntakeMeasuresRequestedItem extends Component {
         IntakeDetailsAPI.updateMeasureRequested(measureRequested).then(() => {
             this.closeEdit();
         });
-
     };
-
 
     render() {
         return (
             <div>
-              <IntakeMeasuresRequestedView
-                  highlightLine={this.state.highlightLine}
-                  showActionButtons={this.state.showActionButtons}
-                  onLineEnter={this.onLineEnter}
-                  onLineLeave={this.onLineLeave}
-                  toggleDelete={this.toggleDelete}
-                  measureRequested={this.state.measureRequested}
-              />
-                {
-                    this.state.showDelete &&
+                <IntakeMeasuresRequestedView
+                    highlightLine={this.state.highlightLine}
+                    showActionButtons={this.state.showActionButtons}
+                    onLineEnter={this.onLineEnter}
+                    onLineLeave={this.onLineLeave}
+                    toggleDelete={this.toggleDelete}
+                    measureRequested={this.state.measureRequested}
+                />
+                {this.state.showDelete && (
                     <IntakeMeasuresRequestedDelete
                         closeDeleteItemModal={this.toggleDelete}
                         {...this.props.measureRequested}
                     />
-                }
+                )}
             </div>
         );
     }
-};
+}
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
-        permissions: state.meDetails.permissions
+        permissions: state.meDetails.permissions,
     };
 };
 
-export default connect(mapStateToProps, null)(IntakeMeasuresRequestedItem);
+export default connect(
+    mapStateToProps,
+    null
+)(IntakeMeasuresRequestedItem);

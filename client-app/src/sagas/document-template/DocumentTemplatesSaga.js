@@ -1,6 +1,6 @@
 import { put, call, all } from 'redux-saga/effects';
 import DocumentTemplateAPI from '../../api/document-template/DocumentTemplateAPI';
-import {hashHistory} from "react-router";
+import { hashHistory } from 'react-router';
 
 export function* fetchDocumentTemplatesSaga() {
     try {
@@ -8,7 +8,7 @@ export function* fetchDocumentTemplatesSaga() {
         const documentTemplates = yield call(DocumentTemplateAPI.fetchDocumentTemplates);
 
         yield all([
-            put({ type: 'FETCH_DOCUMENT_TEMPLATES_LOADING_SUCCESS'}),
+            put({ type: 'FETCH_DOCUMENT_TEMPLATES_LOADING_SUCCESS' }),
             put({ type: 'FETCH_DOCUMENT_TEMPLATES_SUCCESS', documentTemplates }),
         ]);
         yield put({ type: 'IS_LOADING_COMPLETE' });

@@ -3,8 +3,8 @@ import React from 'react';
 import ContactDetailsToolbar from './ContactDetailsToolbar';
 import ContactDetailsForm from './ContactDetailsForm';
 import ContactDetailsHarmonica from './ContactDetailsHarmonica';
-import Panel from "../../../components/panel/Panel";
-import PanelBody from "../../../components/panel/PanelBody";
+import Panel from '../../../components/panel/Panel';
+import PanelBody from '../../../components/panel/PanelBody';
 
 const ContactDetailsApp = props => {
     return (
@@ -24,7 +24,7 @@ const ContactDetailsApp = props => {
                 </PanelBody>
             </Panel>
         </div>
-    )
+    );
 };
 
 export default ContactDetailsApp;

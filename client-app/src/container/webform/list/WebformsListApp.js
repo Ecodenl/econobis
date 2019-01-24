@@ -4,8 +4,8 @@ import { connect } from 'react-redux';
 import { fetchWebforms, clearWebforms } from '../../../actions/webform/WebformsActions';
 import WebformList from './WebformsList';
 import WebformsListToolbar from './WebformsListToolbar';
-import Panel from "../../../components/panel/Panel";
-import PanelBody from "../../../components/panel/PanelBody";
+import Panel from '../../../components/panel/Panel';
+import PanelBody from '../../../components/panel/PanelBody';
 
 class WebformsListApp extends Component {
     constructor(props) {
@@ -14,11 +14,11 @@ class WebformsListApp extends Component {
 
     componentDidMount() {
         this.props.fetchWebforms();
-    };
+    }
 
     componentWillUnmount() {
         this.props.clearWebforms();
-    };
+    }
 
     refreshWebformsData = () => {
         this.props.clearWebforms();
@@ -30,23 +30,19 @@ class WebformsListApp extends Component {
             <Panel>
                 <PanelBody>
                     <div className="col-md-12 margin-10-top">
-                        <WebformsListToolbar
-                            refreshWebformsData={() => this.refreshWebformsData()}
-                        />
+                        <WebformsListToolbar refreshWebformsData={() => this.refreshWebformsData()} />
                     </div>
 
                     <div className="col-md-12 margin-10-top">
-                        <WebformList
-                            webforms={this.props.webforms}
-                        />
+                        <WebformList webforms={this.props.webforms} />
                     </div>
                 </PanelBody>
             </Panel>
-        )
+        );
     }
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         webforms: state.webforms,
     };
@@ -61,4 +57,7 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(WebformsListApp);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(WebformsListApp);

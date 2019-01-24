@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { isEmpty } from 'lodash';
 
@@ -8,9 +8,9 @@ import ProductionProjectDetailsFormValueCourse from './value-course/ProductionPr
 import RevenuesListForm from './revenue/list/RevenuesListForm';
 
 class ProductionProjectDetailsForm extends Component {
-    constructor(props){
+    constructor(props) {
         super(props);
-    };
+    }
 
     render() {
         let loadingText = '';
@@ -18,37 +18,33 @@ class ProductionProjectDetailsForm extends Component {
 
         if (this.props.hasError) {
             loadingText = 'Fout bij het ophalen van productie project.';
-        }
-        else if (this.props.isLoading) {
+        } else if (this.props.isLoading) {
             loadingText = 'Gegevens aan het laden.';
-        }
-        else if (isEmpty(this.props.productionProject)) {
+        } else if (isEmpty(this.props.productionProject)) {
             loadingText = 'Geen gegevens gevonden.';
-        }
-        else {
+        } else {
             loading = false;
         }
 
-        return (
-            loading ?
-                <div>{loadingText}</div>
-                :
-                <div>
-                    <ProductionProjectFormGeneral />
-                    <ProductionProjectDetailsFormValueCourse />
-                    <RevenuesListForm productionProjectId={this.props.productionProject.id}/>
-                    <ProductionProjectDetailsFormConclusion />
-                </div>
+        return loading ? (
+            <div>{loadingText}</div>
+        ) : (
+            <div>
+                <ProductionProjectFormGeneral />
+                <ProductionProjectDetailsFormValueCourse />
+                <RevenuesListForm productionProjectId={this.props.productionProject.id} />
+                <ProductionProjectDetailsFormConclusion />
+            </div>
         );
     }
-};
+}
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         productionProject: state.productionProjectDetails,
         isLoading: state.loadingData.isLoading,
         hasError: state.loadingData.hasError,
-    }
+    };
 };
 
 export default connect(mapStateToProps)(ProductionProjectDetailsForm);

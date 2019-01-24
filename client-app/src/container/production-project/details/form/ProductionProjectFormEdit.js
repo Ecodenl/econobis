@@ -1,5 +1,5 @@
-import React, {Component} from 'react';
-import {connect} from 'react-redux';
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import moment from 'moment';
 moment.locale('nl');
 import validator from 'validator';
@@ -8,25 +8,51 @@ import InputText from '../../../../components/form/InputText';
 import InputSelect from '../../../../components/form/InputSelect';
 import InputDate from '../../../../components/form/InputDate';
 import ButtonText from '../../../../components/button/ButtonText';
-import PanelFooter from "../../../../components/panel/PanelFooter";
+import PanelFooter from '../../../../components/panel/PanelFooter';
 
 import ProductionProjectDetailsAPI from '../../../../api/production-project/ProductionProjectDetailsAPI';
 
 import { fetchProductionProject } from '../../../../actions/production-project/ProductionProjectDetailsActions';
-import InputToggle from "../../../../components/form/InputToggle";
-import ContactGroupAPI from "../../../../api/contact-group/ContactGroupAPI";
-import InputMultiSelect from "../../../../components/form/InputMultiSelect";
+import InputToggle from '../../../../components/form/InputToggle';
+import ContactGroupAPI from '../../../../api/contact-group/ContactGroupAPI';
+import InputMultiSelect from '../../../../components/form/InputMultiSelect';
 
 class ProductionProjectFormEdit extends Component {
     constructor(props) {
         super(props);
 
-        const {id, name, code, description, ownedById, productionProjectStatusId, dateStart,
-            dateProduction, dateStartRegistrations, dateEndRegistrations, productionProjectTypeId, postalCode, address,
-            city, ean, eanManager, warrantyOrigin, eanSupply,
-            participationWorth, powerKwAvailable, maxParticipations, taxReferral, maxParticipationsYouth,
-            totalParticipations, minParticipations, isMembershipRequired,
-            isParticipationTransferable, administrationId, postalcodeLink, requiresContactGroups} = props.productionProject;
+        const {
+            id,
+            name,
+            code,
+            description,
+            ownedById,
+            productionProjectStatusId,
+            dateStart,
+            dateProduction,
+            dateStartRegistrations,
+            dateEndRegistrations,
+            productionProjectTypeId,
+            postalCode,
+            address,
+            city,
+            ean,
+            eanManager,
+            warrantyOrigin,
+            eanSupply,
+            participationWorth,
+            powerKwAvailable,
+            maxParticipations,
+            taxReferral,
+            maxParticipationsYouth,
+            totalParticipations,
+            minParticipations,
+            isMembershipRequired,
+            isParticipationTransferable,
+            administrationId,
+            postalcodeLink,
+            requiresContactGroups,
+        } = props.productionProject;
 
         this.state = {
             contactGroups: [],
@@ -59,8 +85,10 @@ class ProductionProjectFormEdit extends Component {
                 minParticipations: minParticipations ? minParticipations : '',
                 isMembershipRequired: !!isMembershipRequired,
                 isParticipationTransferable: !!isParticipationTransferable,
-                postalcodeLink: postalcodeLink ? postalcodeLink: '',
-                contactGroupIds: requiresContactGroups && requiresContactGroups.map((requiresContactGroup) => requiresContactGroup.id).join(','),
+                postalcodeLink: postalcodeLink ? postalcodeLink : '',
+                contactGroupIds:
+                    requiresContactGroups &&
+                    requiresContactGroups.map(requiresContactGroup => requiresContactGroup.id).join(','),
             },
             errors: {
                 name: false,
@@ -69,15 +97,15 @@ class ProductionProjectFormEdit extends Component {
                 postalCode: false,
                 contactGroupIds: false,
             },
-        }
+        };
         this.handleInputChangeDate = this.handleInputChangeDate.bind(this);
-    };
+    }
 
     componentDidMount() {
-        ContactGroupAPI.peekContactGroups().then((payload) => {
-            this.setState({contactGroups: payload});
+        ContactGroupAPI.peekContactGroups().then(payload => {
+            this.setState({ contactGroups: payload });
         });
-    };
+    }
 
     handleInputChange = event => {
         const target = event.target;
@@ -88,7 +116,7 @@ class ProductionProjectFormEdit extends Component {
             ...this.state,
             productionProject: {
                 ...this.state.productionProject,
-                [name]: value
+                [name]: value,
             },
         });
     };
@@ -98,94 +126,130 @@ class ProductionProjectFormEdit extends Component {
             ...this.state,
             productionProject: {
                 ...this.state.productionProject,
-                [name]: value
+                [name]: value,
             },
         });
-    };
+    }
 
     handleSubmit = event => {
         event.preventDefault();
 
-        const {productionProject} = this.state;
+        const { productionProject } = this.state;
 
         let errors = {};
         let hasErrors = false;
 
-        if(validator.isEmpty(productionProject.name)){
+        if (validator.isEmpty(productionProject.name)) {
             errors.name = true;
             hasErrors = true;
-        };
+        }
 
-        if(validator.isEmpty('' + productionProject.code)){
+        if (validator.isEmpty('' + productionProject.code)) {
             errors.code = true;
             hasErrors = true;
-        };
+        }
 
-        if(validator.isEmpty('' + productionProject.ownedById)){
+        if (validator.isEmpty('' + productionProject.ownedById)) {
             errors.ownedById = true;
             hasErrors = true;
-        };
+        }
 
-        if(!validator.isEmpty('' + productionProject.postalCode) && !validator.isPostalCode(productionProject.postalCode, 'any')){
+        if (
+            !validator.isEmpty('' + productionProject.postalCode) &&
+            !validator.isPostalCode(productionProject.postalCode, 'any')
+        ) {
             errors.postalCode = true;
             hasErrors = true;
-        };
+        }
 
-        if(productionProject.isMembershipRequired && validator.isEmpty(productionProject.contactGroupIds)) {
+        if (productionProject.isMembershipRequired && validator.isEmpty(productionProject.contactGroupIds)) {
             errors.contactGroupIds = true;
             hasErrors = true;
-        };
+        }
 
         // If isMemberShipRequired is false, set contactGroupIds to empty string
-        if(!productionProject.isMembershipRequired) {
+        if (!productionProject.isMembershipRequired) {
             productionProject.contactGroupIds = '';
         }
 
         this.setState({ ...this.state, errors: errors });
 
         !hasErrors &&
-        ProductionProjectDetailsAPI.updateProductionProject(productionProject.id, productionProject).then(payload => {
-            this.props.fetchProductionProject(productionProject.id);
-            this.props.switchToView();
-        });
+            ProductionProjectDetailsAPI.updateProductionProject(productionProject.id, productionProject).then(
+                payload => {
+                    this.props.fetchProductionProject(productionProject.id);
+                    this.props.switchToView();
+                }
+            );
     };
 
-    handleContactGroupIds = (selectedOption) => {
+    handleContactGroupIds = selectedOption => {
         this.setState({
             ...this.state,
             productionProject: {
                 ...this.state.productionProject,
-                contactGroupIds: selectedOption
+                contactGroupIds: selectedOption,
             },
         });
     };
 
     render() {
-        const {name, code, description, ownedById, productionProjectStatusId, dateStart,
-            dateProduction, dateStartRegistrations, dateEndRegistrations, productionProjectTypeId, postalCode, address,
-            city, ean, eanManager, warrantyOrigin, eanSupply,
-            participationWorth, powerKwAvailable, maxParticipations, taxReferral, maxParticipationsYouth,
-            totalParticipations, minParticipations, isMembershipRequired,
-            isParticipationTransferable, postalcodeLink, administrationId, contactGroupIds} = this.state.productionProject;
-        const {issuedParticipations, participationsInOption, issuableParticipations, administration, hasPaymentInvoices}  = this.props.productionProject;
+        const {
+            name,
+            code,
+            description,
+            ownedById,
+            productionProjectStatusId,
+            dateStart,
+            dateProduction,
+            dateStartRegistrations,
+            dateEndRegistrations,
+            productionProjectTypeId,
+            postalCode,
+            address,
+            city,
+            ean,
+            eanManager,
+            warrantyOrigin,
+            eanSupply,
+            participationWorth,
+            powerKwAvailable,
+            maxParticipations,
+            taxReferral,
+            maxParticipationsYouth,
+            totalParticipations,
+            minParticipations,
+            isMembershipRequired,
+            isParticipationTransferable,
+            postalcodeLink,
+            administrationId,
+            contactGroupIds,
+        } = this.state.productionProject;
+        const {
+            issuedParticipations,
+            participationsInOption,
+            issuableParticipations,
+            administration,
+            hasPaymentInvoices,
+        } = this.props.productionProject;
 
         return (
             <form className="form-horizontal col-md-12" onSubmit={this.handleSubmit}>
                 <div className="row">
                     <InputText
-                        label={"Naam"}
-                        name={"name"}
+                        label={'Naam'}
+                        name={'name'}
                         value={name}
                         onChangeAction={this.handleInputChange}
-                        required={"required"}
+                        required={'required'}
                         error={this.state.errors.name}
                     />
                     <InputText
-                        label={"Projectcode"}
-                        name={"code"}
+                        label={'Projectcode'}
+                        name={'code'}
                         value={code}
                         onChangeAction={this.handleInputChange}
-                        required={"required"}
+                        required={'required'}
                         error={this.state.errors.code}
                     />
                 </div>
@@ -194,11 +258,17 @@ class ProductionProjectFormEdit extends Component {
                     <div className="form-group col-sm-12">
                         <div className="row">
                             <div className="col-sm-3">
-                                <label htmlFor="description" className="col-sm-12">Omschrijving</label>
+                                <label htmlFor="description" className="col-sm-12">
+                                    Omschrijving
+                                </label>
                             </div>
                             <div className="col-sm-8">
-                                <textarea name='description' value={description} onChange={this.handleInputChange}
-                                          className="form-control input-sm"/>
+                                <textarea
+                                    name="description"
+                                    value={description}
+                                    onChange={this.handleInputChange}
+                                    className="form-control input-sm"
+                                />
                             </div>
                         </div>
                     </div>
@@ -206,18 +276,18 @@ class ProductionProjectFormEdit extends Component {
 
                 <div className="row">
                     <InputSelect
-                        label={"Verantwoordelijke"}
-                        name={"ownedById"}
+                        label={'Verantwoordelijke'}
+                        name={'ownedById'}
                         options={this.props.users}
                         optionName={'fullName'}
                         value={ownedById}
                         onChangeAction={this.handleInputChange}
-                        required={"required"}
+                        required={'required'}
                         error={this.state.errors.ownedById}
                     />
                     <InputSelect
-                        label={"Status"}
-                        name={"productionProjectStatusId"}
+                        label={'Status'}
+                        name={'productionProjectStatusId'}
                         options={this.props.productionProjectStatus}
                         value={productionProjectStatusId}
                         onChangeAction={this.handleInputChange}
@@ -226,104 +296,93 @@ class ProductionProjectFormEdit extends Component {
 
                 <div className="row">
                     <InputDate
-                        label={"Start project"}
-                        name={"dateStart"}
-                        value={dateStart }
+                        label={'Start project'}
+                        name={'dateStart'}
+                        value={dateStart}
                         onChangeAction={this.handleInputChangeDate}
                     />
                     <InputDate
-                        label={"Datum productie"}
-                        name={"dateProduction"}
-                        value={ dateProduction }
+                        label={'Datum productie'}
+                        name={'dateProduction'}
+                        value={dateProduction}
                         onChangeAction={this.handleInputChangeDate}
                     />
                 </div>
 
                 <div className="row">
                     <InputDate
-                        label={"Start inschrijving"}
-                        name={"dateStartRegistrations"}
-                        value={ dateStartRegistrations }
+                        label={'Start inschrijving'}
+                        name={'dateStartRegistrations'}
+                        value={dateStartRegistrations}
                         onChangeAction={this.handleInputChangeDate}
                     />
                     <InputDate
-                        label={"Eind inschrijving"}
-                        name={"dateEndRegistrations"}
-                        value={ dateEndRegistrations }
+                        label={'Eind inschrijving'}
+                        name={'dateEndRegistrations'}
+                        value={dateEndRegistrations}
                         onChangeAction={this.handleInputChangeDate}
                     />
                 </div>
 
                 <div className="row">
                     <InputSelect
-                        label={"Type"}
-                        name={"productionProjectTypeId"}
+                        label={'Type'}
+                        name={'productionProjectTypeId'}
                         options={this.props.productionProjectTypes}
                         value={productionProjectTypeId}
                         onChangeAction={this.handleInputChange}
                     />
 
                     {/*Als er al facturen zijn gemaakt mag de administratie niet meer gewijzigd worden*/}
-                    {hasPaymentInvoices ?
+                    {hasPaymentInvoices ? (
                         <InputText
-                            label={"Administratie"}
-                            name={"administration"}
+                            label={'Administratie'}
+                            name={'administration'}
                             value={administration ? administration.name : ''}
                             readOnly={'true'}
                         />
-                        :
+                    ) : (
                         <InputSelect
-                            label={"Administratie"}
-                            name={"administrationId"}
+                            label={'Administratie'}
+                            name={'administrationId'}
                             options={this.props.administrations}
                             value={administrationId}
                             onChangeAction={this.handleInputChange}
                         />
-                    }
+                    )}
                 </div>
 
                 <div className="row">
                     <InputText
-                        label={"Postcode"}
-                        name={"postalCode"}
+                        label={'Postcode'}
+                        name={'postalCode'}
                         value={postalCode}
                         onChangeAction={this.handleInputChange}
                         error={this.state.errors.postalCode}
                     />
                     <InputText
-                        label={"Adres"}
-                        name={"address"}
+                        label={'Adres'}
+                        name={'address'}
                         value={address}
                         onChangeAction={this.handleInputChange}
                     />
                 </div>
 
                 <div className="row">
+                    <InputText label={'Plaats'} name={'city'} value={city} onChangeAction={this.handleInputChange} />
                     <InputText
-                        label={"Plaats"}
-                        name={"city"}
-                        value={city}
-                        onChangeAction={this.handleInputChange}
-                    />
-                    <InputText
-                        label={"Postcoderoos"}
-                        name={"postalcodeLink"}
+                        label={'Postcoderoos'}
+                        name={'postalcodeLink'}
                         value={postalcodeLink}
                         onChangeAction={this.handleInputChange}
                     />
-
                 </div>
 
                 <div className="row">
+                    <InputText label={'EAN'} name={'ean'} value={ean} onChangeAction={this.handleInputChange} />
                     <InputText
-                        label={"EAN"}
-                        name={"ean"}
-                        value={ean}
-                        onChangeAction={this.handleInputChange}
-                    />
-                    <InputText
-                        label={"EAN Netbeheer"}
-                        name={"eanManager"}
+                        label={'EAN Netbeheer'}
+                        name={'eanManager'}
                         value={eanManager}
                         onChangeAction={this.handleInputChange}
                     />
@@ -331,14 +390,14 @@ class ProductionProjectFormEdit extends Component {
 
                 <div className="row">
                     <InputText
-                        label={"Garantie van oorsprong"}
-                        name={"warrantyOrigin"}
+                        label={'Garantie van oorsprong'}
+                        name={'warrantyOrigin'}
                         value={warrantyOrigin}
                         onChangeAction={this.handleInputChange}
                     />
                     <InputText
-                        label={"EAN Levering"}
-                        name={"eanSupply"}
+                        label={'EAN Levering'}
+                        name={'eanSupply'}
                         value={eanSupply}
                         onChangeAction={this.handleInputChange}
                     />
@@ -346,16 +405,16 @@ class ProductionProjectFormEdit extends Component {
 
                 <div className="row">
                     <InputText
-                        type={"number"}
-                        label={"Waarde per participatie"}
-                        name={"participationWorth"}
+                        type={'number'}
+                        label={'Waarde per participatie'}
+                        name={'participationWorth'}
                         value={participationWorth}
                         onChangeAction={this.handleInputChange}
                     />
                     <InputText
-                        type={"number"}
-                        label={"Opgesteld vermogen kW"}
-                        name={"powerKwAvailable"}
+                        type={'number'}
+                        label={'Opgesteld vermogen kW'}
+                        name={'powerKwAvailable'}
                         value={powerKwAvailable}
                         onChangeAction={this.handleInputChange}
                     />
@@ -363,15 +422,15 @@ class ProductionProjectFormEdit extends Component {
 
                 <div className="row">
                     <InputText
-                        type={"number"}
-                        label={"Max aantal part. p/p"}
-                        name={"maxParticipations"}
+                        type={'number'}
+                        label={'Max aantal part. p/p'}
+                        name={'maxParticipations'}
                         value={maxParticipations}
                         onChangeAction={this.handleInputChange}
                     />
                     <InputText
-                        label={"Aanwijzing belastingdienst"}
-                        name={"taxReferral"}
+                        label={'Aanwijzing belastingdienst'}
+                        name={'taxReferral'}
                         value={taxReferral}
                         onChangeAction={this.handleInputChange}
                     />
@@ -379,16 +438,16 @@ class ProductionProjectFormEdit extends Component {
 
                 <div className="row">
                     <InputText
-                        type={"number"}
-                        label={"Max aantal part. jeugd"}
-                        name={"maxParticipationsYouth"}
+                        type={'number'}
+                        label={'Max aantal part. jeugd'}
+                        name={'maxParticipationsYouth'}
                         value={maxParticipationsYouth}
                         onChangeAction={this.handleInputChange}
                     />
                     <InputText
-                        type={"number"}
-                        label={"Totaal aantal participaties"}
-                        name={"totalParticipations"}
+                        type={'number'}
+                        label={'Totaal aantal participaties'}
+                        name={'totalParticipations'}
                         value={totalParticipations}
                         onChangeAction={this.handleInputChange}
                     />
@@ -396,15 +455,15 @@ class ProductionProjectFormEdit extends Component {
 
                 <div className="row">
                     <InputText
-                        type={"number"}
-                        label={"Min. aantal part. p/p"}
-                        name={"minParticipations"}
+                        type={'number'}
+                        label={'Min. aantal part. p/p'}
+                        name={'minParticipations'}
                         value={minParticipations}
                         onChangeAction={this.handleInputChange}
                     />
                     <InputText
-                        label={"Uitgegeven participaties"}
-                        name={"issuedParticipations"}
+                        label={'Uitgegeven participaties'}
+                        name={'issuedParticipations'}
                         value={issuedParticipations ? issuedParticipations : ''}
                         readOnly={true}
                     />
@@ -412,14 +471,14 @@ class ProductionProjectFormEdit extends Component {
 
                 <div className="row">
                     <InputToggle
-                        label={"Participaties overdraagbaar"}
-                        name={"isParticipationTransferable"}
+                        label={'Participaties overdraagbaar'}
+                        name={'isParticipationTransferable'}
                         value={isParticipationTransferable}
                         onChangeAction={this.handleInputChange}
                     />
                     <InputText
-                        label={"Participaties in optie"}
-                        name={"participationsInOption"}
+                        label={'Participaties in optie'}
+                        name={'participationsInOption'}
                         value={participationsInOption ? participationsInOption : ''}
                         readOnly={true}
                     />
@@ -427,59 +486,69 @@ class ProductionProjectFormEdit extends Component {
 
                 <div className="row">
                     <InputToggle
-                        label={"Deelname aan groep verplicht"}
-                        name={"isMembershipRequired"}
+                        label={'Deelname aan groep verplicht'}
+                        name={'isMembershipRequired'}
                         value={isMembershipRequired}
                         onChangeAction={this.handleInputChange}
                     />
                     <InputText
-                        label={"Uit te geven participaties"}
-                        name={"issuableParticipations"}
+                        label={'Uit te geven participaties'}
+                        name={'issuableParticipations'}
                         value={issuableParticipations ? issuableParticipations : ''}
                         readOnly={true}
                     />
                 </div>
-                {isMembershipRequired == true &&
-                <div className={'row'}>
-                    <InputMultiSelect
-                        label={"Onderdeel van groep"}
-                        name={"contactGroupsIds"}
-                        options={this.state.contactGroups}
-                        value={contactGroupIds}
-                        onChangeAction={this.handleContactGroupIds}
-                        error={this.state.errors.contactGroupIds}
-                        required={"required"}
-                    />
-                </div>
-                }
+                {isMembershipRequired == true && (
+                    <div className={'row'}>
+                        <InputMultiSelect
+                            label={'Onderdeel van groep'}
+                            name={'contactGroupsIds'}
+                            options={this.state.contactGroups}
+                            value={contactGroupIds}
+                            onChangeAction={this.handleContactGroupIds}
+                            error={this.state.errors.contactGroupIds}
+                            required={'required'}
+                        />
+                    </div>
+                )}
 
                 <PanelFooter>
                     <div className="pull-right btn-group" role="group">
-                        <ButtonText buttonClassName={"btn-default"} buttonText={"Annuleren"}
-                                    onClickAction={this.props.switchToView}/>
-                        <ButtonText buttonText={"Opslaan"} onClickAction={this.handleSubmit} type={"submit"}
-                                    value={"Submit"}/>
+                        <ButtonText
+                            buttonClassName={'btn-default'}
+                            buttonText={'Annuleren'}
+                            onClickAction={this.props.switchToView}
+                        />
+                        <ButtonText
+                            buttonText={'Opslaan'}
+                            onClickAction={this.handleSubmit}
+                            type={'submit'}
+                            value={'Submit'}
+                        />
                     </div>
                 </PanelFooter>
             </form>
         );
-    };
-};
+    }
+}
 
 const mapDispatchToProps = dispatch => ({
-    fetchProductionProject: (id) => {
+    fetchProductionProject: id => {
         dispatch(fetchProductionProject(id));
     },
 });
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         productionProject: state.productionProjectDetails,
         users: state.systemData.users,
         productionProjectStatus: state.systemData.productionProjectStatus,
         productionProjectTypes: state.systemData.productionProjectTypes,
         administrations: state.meDetails.administrations,
-    }
+    };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(ProductionProjectFormEdit);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(ProductionProjectFormEdit);

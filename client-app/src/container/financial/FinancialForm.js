@@ -1,24 +1,23 @@
-import React, {Component} from 'react';
-import {connect} from 'react-redux';
-import {isEmpty} from 'lodash';
-import OrdersList from "./order/list/OrdersList";
-import InvoicesList from "./invoice/list/InvoicesList";
-import Panel from "../../components/panel/Panel";
-import PanelBody from "../../components/panel/PanelBody";
-import PaymentInvoicesList from "./payment-invoice/list/PaymentInvoicesList";
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { isEmpty } from 'lodash';
+import OrdersList from './order/list/OrdersList';
+import InvoicesList from './invoice/list/InvoicesList';
+import Panel from '../../components/panel/Panel';
+import PanelBody from '../../components/panel/PanelBody';
+import PaymentInvoicesList from './payment-invoice/list/PaymentInvoicesList';
 
 class ProductDetailsForm extends Component {
     constructor(props) {
         super(props);
-    };
+    }
 
     render() {
-        return (
-            isEmpty(this.props.administrationDetails) ?
-                <div></div>
-                :
-                <div>
-                    {this.props.type === 'orders' &&
+        return isEmpty(this.props.administrationDetails) ? (
+            <div />
+        ) : (
+            <div>
+                {this.props.type === 'orders' && (
                     <Panel>
                         <PanelBody>
                             <OrdersList
@@ -27,8 +26,8 @@ class ProductDetailsForm extends Component {
                             />
                         </PanelBody>
                     </Panel>
-                    }
-                    {this.props.type === 'facturen' &&
+                )}
+                {this.props.type === 'facturen' && (
                     <Panel>
                         <PanelBody>
                             <InvoicesList
@@ -37,8 +36,8 @@ class ProductDetailsForm extends Component {
                             />
                         </PanelBody>
                     </Panel>
-                    }
-                    {this.props.type === 'uitkering-facturen' &&
+                )}
+                {this.props.type === 'uitkering-facturen' && (
                     <Panel>
                         <PanelBody>
                             <PaymentInvoicesList
@@ -47,16 +46,14 @@ class ProductDetailsForm extends Component {
                             />
                         </PanelBody>
                     </Panel>
-                    }
-                    {this.props.type === undefined &&
-                    <div>Selecteer orders of facturen.</div>
-                    }
-                </div>
+                )}
+                {this.props.type === undefined && <div>Selecteer orders of facturen.</div>}
+            </div>
         );
     }
-};
+}
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         administrationDetails: state.administrationDetails,
     };

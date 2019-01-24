@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import { fetchDocumentTemplates, clearDocumentTemplates } from '../../../actions/document-templates/DocumentTemplatesActions';
+import {
+    fetchDocumentTemplates,
+    clearDocumentTemplates,
+} from '../../../actions/document-templates/DocumentTemplatesActions';
 import DocumentTemplatesList from './DocumentTemplatesList';
 import DocumentTemplatesListToolbar from './DocumentTemplatesListToolbar';
 
@@ -12,11 +15,11 @@ class DocumentTemplatesListApp extends Component {
 
     componentDidMount() {
         this.props.fetchDocumentTemplates();
-    };
+    }
 
     componentWillUnmount() {
         this.props.clearDocumentTemplates();
-    };
+    }
 
     refreshDocumentTemplatesData = () => {
         this.props.clearDocumentTemplates();
@@ -43,11 +46,11 @@ class DocumentTemplatesListApp extends Component {
                     </div>
                 </div>
             </div>
-        )
+        );
     }
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         documentTemplates: state.documentTemplates,
     };
@@ -62,4 +65,7 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(DocumentTemplatesListApp);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(DocumentTemplatesListApp);

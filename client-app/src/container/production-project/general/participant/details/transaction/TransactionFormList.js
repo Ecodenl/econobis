@@ -1,7 +1,7 @@
 import React from 'react';
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 
-import TransactionFormListItem from "./TransactionFormListItem";
+import TransactionFormListItem from './TransactionFormListItem';
 
 const TransactionFormList = props => {
     return (
@@ -14,24 +14,25 @@ const TransactionFormList = props => {
                 <div className="col-sm-2">Kenmerk</div>
                 <div className="col-sm-1">Boekstuk</div>
                 <div className="col-sm-1">Boek datum</div>
-                <div className="col-sm-1"></div>
+                <div className="col-sm-1" />
             </div>
-            {
-                props.participantTransactions.length > 0 ?
-                    props.participantTransactions.map(participantTransaction => {
-                        return <TransactionFormListItem
+            {props.participantTransactions.length > 0 ? (
+                props.participantTransactions.map(participantTransaction => {
+                    return (
+                        <TransactionFormListItem
                             key={participantTransaction.id}
                             participantTransaction={participantTransaction}
-                        />;
-                    })
-                    :
-                    <div>Geen transacties bekend.</div>
-            }
+                        />
+                    );
+                })
+            ) : (
+                <div>Geen transacties bekend.</div>
+            )}
         </div>
     );
 };
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         participantTransactions: state.participantProductionProjectDetails.participantTransactions,
     };

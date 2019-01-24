@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { isEmpty } from 'lodash';
 
@@ -6,9 +6,9 @@ import { fetchWebformDetails } from '../../../actions/webform/WebformDetailsActi
 import WebformDetailsFormGeneral from './general/WebformDetailsFormGeneral';
 
 class WebformDetailsForm extends Component {
-    constructor(props){
+    constructor(props) {
         super(props);
-    };
+    }
 
     render() {
         let loadingText = '';
@@ -16,29 +16,25 @@ class WebformDetailsForm extends Component {
 
         if (this.props.hasError) {
             loadingText = 'Fout bij het ophalen van webformulier.';
-        }
-        else if (this.props.isLoading) {
+        } else if (this.props.isLoading) {
             loadingText = 'Gegevens aan het laden.';
-        }
-        else if (isEmpty(this.props.webformDetails)) {
+        } else if (isEmpty(this.props.webformDetails)) {
             loadingText = 'Geen webformulier gevonden!';
-        }
-        else {
+        } else {
             loading = false;
         }
 
-        return (
-            loading ?
-                <div>{loadingText}</div>
-                :
-                <div>
-                    <WebformDetailsFormGeneral />
-                </div>
+        return loading ? (
+            <div>{loadingText}</div>
+        ) : (
+            <div>
+                <WebformDetailsFormGeneral />
+            </div>
         );
-    };
+    }
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         webformDetails: state.webformDetails,
         isLoading: state.loadingData.isLoading,
@@ -47,9 +43,12 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = dispatch => ({
-    fetchWebformDetails: (id) => {
+    fetchWebformDetails: id => {
         dispatch(fetchWebformDetails(id));
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(WebformDetailsForm);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(WebformDetailsForm);

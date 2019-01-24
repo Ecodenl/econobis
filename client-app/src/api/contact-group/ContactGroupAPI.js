@@ -18,7 +18,7 @@ export default {
         });
     },
 
-    deleteContactGroup: (id) => {
+    deleteContactGroup: id => {
         const requestUrl = `${URL_CONTACT_GROUP}/${id}/delete`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
@@ -26,81 +26,86 @@ export default {
         return axios.post(requestUrl);
     },
 
-    fetchGroupsByContact: (contactId) => {
+    fetchGroupsByContact: contactId => {
         const requestUrl = `${URL_API}/api/contact/${contactId}/groups`;
         const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
         axios.defaults.headers.common.Authorization = AUTH_TOKEN;
 
-        return axios.get(requestUrl)
+        return axios
+            .get(requestUrl)
             .then(response => response.data)
-            .catch((error) => {
+            .catch(error => {
                 console.log(error);
-            },
-            );
+            });
     },
 
-    addContactToGroup: ({groupId, contactId}) => {
+    addContactToGroup: ({ groupId, contactId }) => {
         const requestUrl = `${URL_CONTACT_GROUP}/${groupId}/contacts/add/${contactId}`;
         const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
         axios.defaults.headers.common.Authorization = AUTH_TOKEN;
 
-        return axios.post(requestUrl)
+        return axios
+            .post(requestUrl)
             .then(response => response.data.data)
             .catch(error => error.response);
     },
 
-    newContactGroup: (contactGroup) => {
+    newContactGroup: contactGroup => {
         const requestUrl = `${URL_CONTACT_GROUP}`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios.post(requestUrl, contactGroup)
-            .then(function (response) {
+        return axios
+            .post(requestUrl, contactGroup)
+            .then(function(response) {
                 return response.data.data;
             })
-            .catch(function (error) {
+            .catch(function(error) {
                 console.log(error);
             });
     },
 
-    updateContactGroup: (contactGroup) => {
+    updateContactGroup: contactGroup => {
         const requestUrl = `${URL_CONTACT_GROUP}/${contactGroup.id}`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios.post(requestUrl, contactGroup)
-            .then(function (response) {
+        return axios
+            .post(requestUrl, contactGroup)
+            .then(function(response) {
                 return response.data.data;
             })
-            .catch(function (error) {
+            .catch(function(error) {
                 console.log(error);
             });
     },
 
-    fetchContactGroupDetails: (id) => {
+    fetchContactGroupDetails: id => {
         const requestUrl = `${URL_CONTACT_GROUP}/${id}`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios.get(requestUrl)
-            .then(function (response) {
+        return axios
+            .get(requestUrl)
+            .then(function(response) {
                 return response.data.data;
             })
-            .catch(function (error) {
+            .catch(function(error) {
                 console.log(error);
             });
     },
 
-    fetchContactGroup: (id) => {
+    fetchContactGroup: id => {
         const requestUrl = `${URL_CONTACT_GROUP}/${id}`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios.get(requestUrl)
-            .then(function (response) {
+        return axios
+            .get(requestUrl)
+            .then(function(response) {
                 return response.data.data;
             })
-            .catch(function (error) {
+            .catch(function(error) {
                 console.log(error);
             });
     },
@@ -110,11 +115,12 @@ export default {
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios.post(requestUrl)
-            .then(function (response) {
+        return axios
+            .post(requestUrl)
+            .then(function(response) {
                 return response.data;
             })
-            .catch(function (error) {
+            .catch(function(error) {
                 return error.response;
             });
     },
@@ -124,11 +130,12 @@ export default {
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios.post(requestUrl, contactIds)
-            .then(function (response) {
+        return axios
+            .post(requestUrl, contactIds)
+            .then(function(response) {
                 return response.data;
             })
-            .catch(function (error) {
+            .catch(function(error) {
                 return error.response;
             });
     },
@@ -138,14 +145,14 @@ export default {
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios.get(requestUrl)
-            .then(function (response) {
+        return axios
+            .get(requestUrl)
+            .then(function(response) {
                 return response.data.data;
             })
-            .catch(function (error) {
-                    console.log(error);
-                }
-            );
+            .catch(function(error) {
+                console.log(error);
+            });
     },
 
     peekStaticContactGroups: () => {
@@ -153,17 +160,17 @@ export default {
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios.get(requestUrl)
-            .then(function (response) {
+        return axios
+            .get(requestUrl)
+            .then(function(response) {
                 return response.data.data;
             })
-            .catch(function (error) {
-                    console.log(error);
-                }
-            );
+            .catch(function(error) {
+                console.log(error);
+            });
     },
 
-    getCsv: (groupId) => {
+    getCsv: groupId => {
         const requestUrl = `${URL_CONTACT_GROUP}/${groupId}/csv`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
@@ -171,22 +178,24 @@ export default {
         return axios.get(requestUrl);
     },
 
-    deleteComposedGroup: ({contactGroupId, contactGroupToDetachId}) => {
+    deleteComposedGroup: ({ contactGroupId, contactGroupToDetachId }) => {
         const requestUrl = `${URL_CONTACT_GROUP}/composed/${contactGroupId}/${contactGroupToDetachId}/detach`;
         const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
         axios.defaults.headers.common.Authorization = AUTH_TOKEN;
 
-        return axios.post(requestUrl)
+        return axios
+            .post(requestUrl)
             .then(response => response.data.data)
             .catch(error => error.response);
     },
 
-    attachComposedGroup: ({contactGroupId, contactGroupToAttachId}) => {
+    attachComposedGroup: ({ contactGroupId, contactGroupToAttachId }) => {
         const requestUrl = `${URL_CONTACT_GROUP}/composed/${contactGroupId}/${contactGroupToAttachId}/attach`;
         const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
         axios.defaults.headers.common.Authorization = AUTH_TOKEN;
 
-        return axios.post(requestUrl)
+        return axios
+            .post(requestUrl)
             .then(response => response.data.data)
             .catch(error => error.response);
     },

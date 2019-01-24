@@ -1,11 +1,11 @@
-import React, { Component} from 'react';
+import React, { Component } from 'react';
 
 import RevenuesListFormList from './RevenuesListFormList';
 import Panel from '../../../../../components/panel/Panel';
 import PanelBody from '../../../../../components/panel/PanelBody';
 import PanelHeader from '../../../../../components/panel/PanelHeader';
-import {hashHistory} from "react-router";
-import {connect} from "react-redux";
+import { hashHistory } from 'react-router';
+import { connect } from 'react-redux';
 
 class RevenuesListForm extends Component {
     constructor(props) {
@@ -17,27 +17,32 @@ class RevenuesListForm extends Component {
             <Panel>
                 <PanelHeader>
                     <span className="h5 text-bold">Opbrengsten</span>
-                    {this.props.permissions.manageFinancial &&
-                    <a role="button" className="pull-right"
-                       onClick={() => hashHistory.push(`/productie-project/opbrengst/nieuw/${this.props.productionProjectId}`)}><span
-                        className="glyphicon glyphicon-plus"/></a>
-                    }
+                    {this.props.permissions.manageFinancial && (
+                        <a
+                            role="button"
+                            className="pull-right"
+                            onClick={() =>
+                                hashHistory.push(`/productie-project/opbrengst/nieuw/${this.props.productionProjectId}`)
+                            }
+                        >
+                            <span className="glyphicon glyphicon-plus" />
+                        </a>
+                    )}
                 </PanelHeader>
                 <PanelBody>
                     <div className="col-md-12">
-                        <RevenuesListFormList/>
+                        <RevenuesListFormList />
                     </div>
                 </PanelBody>
             </Panel>
-
         );
     }
-};
+}
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         permissions: state.meDetails.permissions,
-    }
+    };
 };
 
 export default connect(mapStateToProps)(RevenuesListForm);

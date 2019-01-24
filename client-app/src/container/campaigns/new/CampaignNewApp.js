@@ -8,8 +8,8 @@ import CampaignNewToolbar from './CampaignNewToolbar';
 import CampaignNew from './CampaignNew';
 
 import CampaignDetailsAPI from '../../../api/campaign/CampaignDetailsAPI';
-import Panel from "../../../components/panel/Panel";
-import PanelBody from "../../../components/panel/PanelBody";
+import Panel from '../../../components/panel/Panel';
+import PanelBody from '../../../components/panel/PanelBody';
 
 class CampaignNewApp extends Component {
     constructor(props) {
@@ -29,8 +29,8 @@ class CampaignNewApp extends Component {
                 name: false,
                 type: false,
             },
-        }
-    };
+        };
+    }
 
     handleInputChange = event => {
         const target = event.target;
@@ -41,7 +41,7 @@ class CampaignNewApp extends Component {
             ...this.state,
             campaign: {
                 ...this.state.campaign,
-                [name]: value
+                [name]: value,
             },
         });
     };
@@ -51,17 +51,17 @@ class CampaignNewApp extends Component {
             ...this.state,
             campaign: {
                 ...this.state.campaign,
-                [name]: value
+                [name]: value,
             },
         });
     };
 
-    handleMeasureCategoryIds = (selectedOption) => {
+    handleMeasureCategoryIds = selectedOption => {
         this.setState({
             ...this.state,
             campaign: {
                 ...this.state.campaign,
-                measureCategoryIds: selectedOption
+                measureCategoryIds: selectedOption,
             },
         });
     };
@@ -69,27 +69,27 @@ class CampaignNewApp extends Component {
     handleSubmit = event => {
         event.preventDefault();
 
-        const {campaign} = this.state;
+        const { campaign } = this.state;
 
         let errors = {};
         let hasErrors = false;
 
-        if(validator.isEmpty(campaign.name)){
+        if (validator.isEmpty(campaign.name)) {
             errors.name = true;
             hasErrors = true;
-        };
+        }
 
-        if(validator.isEmpty('' + campaign.typeId)){
+        if (validator.isEmpty('' + campaign.typeId)) {
             errors.type = true;
             hasErrors = true;
-        };
+        }
 
         this.setState({ ...this.state, errors: errors });
 
         !hasErrors &&
-        CampaignDetailsAPI.storeCampaign(campaign).then(payload => {
-            hashHistory.push(`/campagne/${payload.id}`);
-        });
+            CampaignDetailsAPI.storeCampaign(campaign).then(payload => {
+                hashHistory.push(`/campagne/${payload.id}`);
+            });
     };
 
     render() {
@@ -117,10 +117,10 @@ class CampaignNewApp extends Component {
                         </Panel>
                     </div>
                 </div>
-                <div className="col-md-3"/>
+                <div className="col-md-3" />
             </div>
-        )
+        );
     }
-};
+}
 
 export default CampaignNewApp;

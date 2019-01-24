@@ -1,5 +1,5 @@
-import React, {Component} from 'react';
-import {connect} from 'react-redux';
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import moment from 'moment';
 moment.locale('nl');
 import validator from 'validator';
@@ -8,24 +8,41 @@ import InputText from '../../../../../../components/form/InputText';
 import InputSelect from '../../../../../../components/form/InputSelect';
 import InputDate from '../../../../../../components/form/InputDate';
 import ButtonText from '../../../../../../components/button/ButtonText';
-import PanelFooter from "../../../../../../components/panel/PanelFooter";
+import PanelFooter from '../../../../../../components/panel/PanelFooter';
 
 import ParticipantProductionProjectDetailsAPI from '../../../../../../api/participant-production-project/ParticipantProductionProjectDetailsAPI';
 
 import { fetchParticipantProductionProjectDetails } from '../../../../../../actions/participants-production-project/ParticipantProductionProjectDetailsActions';
-import InputToggle from "../../../../../../components/form/InputToggle";
-import ContactsAPI from "../../../../../../api/contact/ContactsAPI";
-import ProductionProjectsAPI from "../../../../../../api/production-project/ProductionProjectsAPI";
-import * as ibantools from "ibantools";
+import InputToggle from '../../../../../../components/form/InputToggle';
+import ContactsAPI from '../../../../../../api/contact/ContactsAPI';
+import ProductionProjectsAPI from '../../../../../../api/production-project/ProductionProjectsAPI';
+import * as ibantools from 'ibantools';
 
 class ParticipantFormEdit extends Component {
     constructor(props) {
         super(props);
 
         const {
-            id, contact, statusId, productionProject, dateRegister, participationsRequested, participationsGranted, participationsSold, participationsRestSale,
-            dateContractSend, dateContractRetour, datePayed, didAcceptAgreement, giftedByContactId, ibanPayout, legalRepContactId, ibanPayoutAttn, dateEnd,
-            typeId, powerKwhConsumption
+            id,
+            contact,
+            statusId,
+            productionProject,
+            dateRegister,
+            participationsRequested,
+            participationsGranted,
+            participationsSold,
+            participationsRestSale,
+            dateContractSend,
+            dateContractRetour,
+            datePayed,
+            didAcceptAgreement,
+            giftedByContactId,
+            ibanPayout,
+            legalRepContactId,
+            ibanPayoutAttn,
+            dateEnd,
+            typeId,
+            powerKwhConsumption,
         } = props.participation;
 
         this.state = {
@@ -62,12 +79,12 @@ class ParticipantFormEdit extends Component {
             },
         };
         this.handleInputChangeDate = this.handleInputChangeDate.bind(this);
-    };
+    }
 
     componentWillMount() {
         ContactsAPI.getContactsPeek().then(payload => {
             this.setState({
-                contacts: payload
+                contacts: payload,
             });
         });
     }
@@ -81,7 +98,7 @@ class ParticipantFormEdit extends Component {
             ...this.state,
             participation: {
                 ...this.state.participation,
-                [name]: value
+                [name]: value,
             },
         });
     };
@@ -91,15 +108,15 @@ class ParticipantFormEdit extends Component {
             ...this.state,
             participation: {
                 ...this.state.participation,
-                [name]: value
+                [name]: value,
             },
         });
-    };
+    }
 
     handleSubmit = event => {
         event.preventDefault();
 
-        const {participation} = this.state;
+        const { participation } = this.state;
 
         let errors = {};
         let hasErrors = false;
@@ -108,26 +125,18 @@ class ParticipantFormEdit extends Component {
             errors.contactId = true;
             hasErrors = true;
         }
-        ;
-
         if (validator.isEmpty(participation.statusId + '')) {
             errors.statusId = true;
             hasErrors = true;
         }
-        ;
-
         if (validator.isEmpty(participation.productionProjectId + '')) {
             errors.productionProjectId = true;
             hasErrors = true;
         }
-        ;
-
         if (validator.isEmpty(participation.typeId + '')) {
             errors.typeId = true;
             hasErrors = true;
         }
-        ;
-
         if (!validator.isEmpty(participation.ibanPayout)) {
             if (!ibantools.isValidIBAN(participation.ibanPayout)) {
                 errors.ibanPayout = true;
@@ -135,53 +144,66 @@ class ParticipantFormEdit extends Component {
             }
         }
 
-        this.setState({...this.state, errors: errors});
+        this.setState({ ...this.state, errors: errors });
 
         !hasErrors &&
-        ParticipantProductionProjectDetailsAPI.updateParticipantProductionProject(participation.id, participation).then(payload => {
-            this.props.fetchParticipantProductionProjectDetails(participation.id);
-            this.props.switchToView();
-        });
+            ParticipantProductionProjectDetailsAPI.updateParticipantProductionProject(
+                participation.id,
+                participation
+            ).then(payload => {
+                this.props.fetchParticipantProductionProjectDetails(participation.id);
+                this.props.switchToView();
+            });
     };
 
     render() {
         const {
-            contactName, statusId, productionProjectName, dateRegister, participationsRequested, participationsGranted, participationsSold, participationsRestSale,
-            dateContractSend, dateContractRetour, datePayed, didAcceptAgreement, giftedByContactId, ibanPayout, legalRepContactId, ibanPayoutAttn, dateEnd,
-            typeId, powerKwhConsumption
-        }  = this.state.participation;
-
+            contactName,
+            statusId,
+            productionProjectName,
+            dateRegister,
+            participationsRequested,
+            participationsGranted,
+            participationsSold,
+            participationsRestSale,
+            dateContractSend,
+            dateContractRetour,
+            datePayed,
+            didAcceptAgreement,
+            giftedByContactId,
+            ibanPayout,
+            legalRepContactId,
+            ibanPayoutAttn,
+            dateEnd,
+            typeId,
+            powerKwhConsumption,
+        } = this.state.participation;
 
         return (
             <form className="form-horizontal col-md-12" onSubmit={this.handleSubmit}>
                 <div className="row">
-                    <InputText
-                        label={"Contact"}
-                        name={"contactName"}
-                        value={contactName}
-                        readOnly={true}
-                    />
+                    <InputText label={'Contact'} name={'contactName'} value={contactName} readOnly={true} />
                     <InputSelect
-                        label={"Status"}
-                        name={"statusId"}
+                        label={'Status'}
+                        name={'statusId'}
                         options={this.props.participantProductionProjectStatuses}
                         value={statusId}
                         onChangeAction={this.handleInputChange}
-                        required={"required"}
+                        required={'required'}
                         error={this.state.errors.statusId}
                     />
                 </div>
 
                 <div className="row">
                     <InputText
-                        label={"Productieproject"}
-                        name={"productionProjectName"}
+                        label={'Productieproject'}
+                        name={'productionProjectName'}
                         value={productionProjectName}
                         readOnly={true}
                     />
                     <InputDate
-                        label={"Inschrijfdatum"}
-                        name={"dateRegister"}
+                        label={'Inschrijfdatum'}
+                        name={'dateRegister'}
                         value={dateRegister}
                         onChangeAction={this.handleInputChangeDate}
                     />
@@ -189,16 +211,16 @@ class ParticipantFormEdit extends Component {
 
                 <div className="row">
                     <InputText
-                        type={"number"}
-                        label={"Participaties aangevraagd"}
-                        name={"participationsRequested"}
+                        type={'number'}
+                        label={'Participaties aangevraagd'}
+                        name={'participationsRequested'}
                         value={participationsRequested}
                         onChangeAction={this.handleInputChange}
                     />
                     <InputText
-                        type={"number"}
-                        label={"Participaties toegekend"}
-                        name={"participationsGranted"}
+                        type={'number'}
+                        label={'Participaties toegekend'}
+                        name={'participationsGranted'}
                         value={participationsGranted}
                         onChangeAction={this.handleInputChange}
                     />
@@ -206,16 +228,16 @@ class ParticipantFormEdit extends Component {
 
                 <div className="row">
                     <InputText
-                        type={"number"}
-                        label={"Participaties overgedragen"}
-                        name={"participationsSold"}
+                        type={'number'}
+                        label={'Participaties overgedragen'}
+                        name={'participationsSold'}
                         value={participationsSold}
                         onChangeAction={this.handleInputChange}
                     />
                     <InputText
-                        type={"number"}
-                        label={"Huidig aantal participaties"}
-                        name={"participationsCurrent"}
+                        type={'number'}
+                        label={'Huidig aantal participaties'}
+                        name={'participationsCurrent'}
                         value={statusId == 2 ? participationsGranted - participationsSold : 0}
                         readOnly={true}
                     />
@@ -223,15 +245,19 @@ class ParticipantFormEdit extends Component {
 
                 <div className="row">
                     <InputText
-                        label={"Waarde participaties"}
-                        name={"totalWorthParticipations"}
-                        value={ statusId == 2 ? ((participationsGranted - participationsSold) * this.state.participationWorth) : 0}
+                        label={'Waarde participaties'}
+                        name={'totalWorthParticipations'}
+                        value={
+                            statusId == 2
+                                ? (participationsGranted - participationsSold) * this.state.participationWorth
+                                : 0
+                        }
                         readOnly={true}
                     />
                     <InputText
-                        type={"number"}
-                        label={"Restverkoop participaties"}
-                        name={"participationsRestSale"}
+                        type={'number'}
+                        label={'Restverkoop participaties'}
+                        name={'participationsRestSale'}
                         value={participationsRestSale}
                         onChangeAction={this.handleInputChange}
                     />
@@ -239,14 +265,14 @@ class ParticipantFormEdit extends Component {
 
                 <div className="row">
                     <InputDate
-                        label={"Contract verstuurd"}
-                        name={"dateContractSend"}
+                        label={'Contract verstuurd'}
+                        name={'dateContractSend'}
                         value={dateContractSend}
                         onChangeAction={this.handleInputChangeDate}
                     />
                     <InputDate
-                        label={"Contract retour"}
-                        name={"dateContractRetour"}
+                        label={'Contract retour'}
+                        name={'dateContractRetour'}
                         value={dateContractRetour}
                         onChangeAction={this.handleInputChangeDate}
                     />
@@ -254,14 +280,14 @@ class ParticipantFormEdit extends Component {
 
                 <div className="row">
                     <InputDate
-                        label={"Betaald op"}
-                        name={"datePayed"}
+                        label={'Betaald op'}
+                        name={'datePayed'}
                         value={datePayed}
                         onChangeAction={this.handleInputChangeDate}
                     />
                     <InputToggle
-                        label={"Akkoord reglement"}
-                        name={"didAcceptAgreement"}
+                        label={'Akkoord reglement'}
+                        name={'didAcceptAgreement'}
                         value={didAcceptAgreement}
                         onChangeAction={this.handleInputChange}
                     />
@@ -269,16 +295,16 @@ class ParticipantFormEdit extends Component {
 
                 <div className="row">
                     <InputSelect
-                        label={"Geschonken door"}
-                        name={"giftedByContactId"}
+                        label={'Geschonken door'}
+                        name={'giftedByContactId'}
                         options={this.state.contacts}
                         optionName={'fullName'}
                         value={giftedByContactId}
                         onChangeAction={this.handleInputChange}
                     />
                     <InputText
-                        label={"IBAN uitkeren"}
-                        name={"ibanPayout"}
+                        label={'IBAN uitkeren'}
+                        name={'ibanPayout'}
                         value={ibanPayout}
                         onChangeAction={this.handleInputChange}
                         error={this.state.errors.ibanPayout}
@@ -287,17 +313,17 @@ class ParticipantFormEdit extends Component {
 
                 <div className="row">
                     <InputSelect
-                        label={"Wettelijke vertegenwoordiger"}
+                        label={'Wettelijke vertegenwoordiger'}
                         divClassName={'field-to-be-removed'}
-                        name={"legalRepContactId"}
+                        name={'legalRepContactId'}
                         options={this.state.contacts}
                         optionName={'fullName'}
                         value={legalRepContactId}
                         onChangeAction={this.handleInputChange}
                     />
                     <InputText
-                        label={"IBAN uitkeren t.n.v."}
-                        name={"ibanPayoutAttn"}
+                        label={'IBAN uitkeren t.n.v.'}
+                        name={'ibanPayoutAttn'}
                         value={ibanPayoutAttn}
                         onChangeAction={this.handleInputChange}
                     />
@@ -305,58 +331,68 @@ class ParticipantFormEdit extends Component {
 
                 <div className="row">
                     <InputDate
-                        label={"Einddatum"}
-                        name={"dateEnd"}
+                        label={'Einddatum'}
+                        name={'dateEnd'}
                         value={dateEnd}
                         onChangeAction={this.handleInputChangeDate}
                     />
                     <InputSelect
-                        label={"Uitkeren op"}
-                        name={"typeId"}
+                        label={'Uitkeren op'}
+                        name={'typeId'}
                         options={this.props.participantProductionProjectPayoutTypes}
                         value={typeId}
                         onChangeAction={this.handleInputChange}
-                        required={"required"}
+                        required={'required'}
                         error={this.state.errors.typeId}
                     />
                 </div>
 
-                { this.props.participation.productionProject.typeId == 2 &&
-                <div className="row">
-                    <InputText
-                        label={"Jaarlijks verbruik"}
-                        name={"powerKwhConsumption"}
-                        value={powerKwhConsumption}
-                        onChangeAction={this.handleInputChange}
-                    />
-                </div>
-                }
+                {this.props.participation.productionProject.typeId == 2 && (
+                    <div className="row">
+                        <InputText
+                            label={'Jaarlijks verbruik'}
+                            name={'powerKwhConsumption'}
+                            value={powerKwhConsumption}
+                            onChangeAction={this.handleInputChange}
+                        />
+                    </div>
+                )}
 
                 <PanelFooter>
                     <div className="pull-right btn-group" role="group">
-                        <ButtonText buttonClassName={"btn-default"} buttonText={"Annuleren"}
-                                    onClickAction={this.props.switchToView}/>
-                        <ButtonText buttonText={"Opslaan"} onClickAction={this.handleSubmit} type={"submit"}
-                                    value={"Submit"}/>
+                        <ButtonText
+                            buttonClassName={'btn-default'}
+                            buttonText={'Annuleren'}
+                            onClickAction={this.props.switchToView}
+                        />
+                        <ButtonText
+                            buttonText={'Opslaan'}
+                            onClickAction={this.handleSubmit}
+                            type={'submit'}
+                            value={'Submit'}
+                        />
                     </div>
                 </PanelFooter>
             </form>
         );
-    };
-};
+    }
+}
 
 const mapDispatchToProps = dispatch => ({
-    fetchParticipantProductionProjectDetails: (id) => {
+    fetchParticipantProductionProjectDetails: id => {
         dispatch(fetchParticipantProductionProjectDetails(id));
     },
 });
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         participation: state.participantProductionProjectDetails,
         participantProductionProjectStatuses: state.systemData.participantProductionProjectStatus,
         participantProductionProjectPayoutTypes: state.systemData.participantProductionProjectPayoutTypes,
-    }
+    };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(ParticipantFormEdit);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(ParticipantFormEdit);

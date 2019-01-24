@@ -1,7 +1,7 @@
-import React, {Component} from 'react';
-import {hashHistory} from 'react-router';
+import React, { Component } from 'react';
+import { hashHistory } from 'react-router';
 
-import QuotationRequestsAPI from "../../../api/quotation-request/QuotationRequestsAPI";
+import QuotationRequestsAPI from '../../../api/quotation-request/QuotationRequestsAPI';
 
 class ButtonQuotationRequests extends Component {
     constructor(props) {
@@ -9,13 +9,13 @@ class ButtonQuotationRequests extends Component {
 
         this.state = {
             amountActiveQuotationsRequests: '-',
-        }
-    };
+        };
+    }
 
     componentWillMount() {
         QuotationRequestsAPI.getAmountActive().then(payload => {
             this.setState({
-                amountActiveQuotationsRequests: payload
+                amountActiveQuotationsRequests: payload,
             });
         });
     }
@@ -30,7 +30,7 @@ class ButtonQuotationRequests extends Component {
                     </div>
                 </div>
             </div>
-        )
+        );
     }
 }
 

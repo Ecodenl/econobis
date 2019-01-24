@@ -10,32 +10,32 @@ export const fetchOrders = (filters, sorts, pagination, administrationId) => {
 
 export const clearOrders = () => {
     return {
-        type: 'CLEAR_ORDERS'
+        type: 'CLEAR_ORDERS',
     };
 };
 
-export const deleteOrder = (id) => {
-    return  {
+export const deleteOrder = id => {
+    return {
         type: 'DELETE_ORDER',
         id,
     };
 };
 
-export const setCheckedOrderAll = (checkedValue) => {
-    return  {
+export const setCheckedOrderAll = checkedValue => {
+    return {
         type: 'SET_CHECKED_ORDER_ALL',
         checkedValue,
     };
 };
 
-export const setCheckedOrder = (id) => {
-    return  {
+export const setCheckedOrder = id => {
+    return {
         type: 'SET_CHECKED_ORDER',
         id,
     };
 };
 
-export const previewCreate = (data) => {
+export const previewCreate = data => {
     return {
         type: 'ORDER_PREVIEW_CREATE',
         data,
@@ -47,4 +47,3 @@ export const clearPreviewCreate = () => {
         type: 'CLEAR_ORDER_PREVIEW_CREATE',
     };
 };
-

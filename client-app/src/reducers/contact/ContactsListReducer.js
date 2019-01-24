@@ -1,4 +1,4 @@
-export default function (state= { isLoading: false }, action) {
+export default function(state = { isLoading: false }, action) {
     switch (action.type) {
         case 'FETCH_CONTACTS_LOADING':
             return {
@@ -23,37 +23,37 @@ export default function (state= { isLoading: false }, action) {
         case 'DELETE_CONTACT_SUCCESS':
             return {
                 ...state,
-                data: state.data.filter((contact) => contact.id !== action.id),
+                data: state.data.filter(contact => contact.id !== action.id),
                 meta: {
-                    total: state.meta.total - 1
+                    total: state.meta.total - 1,
                 },
             };
         case 'DELETE_SELECTED_CONTACTS':
             return {
                 ...state,
-                data: state.data.filter((contact) => contact.checked !== true),
+                data: state.data.filter(contact => contact.checked !== true),
             };
         case 'SET_CHECKED_CONTACT':
             return {
                 ...state,
-                data: state.data.map((contact) => {
+                data: state.data.map(contact => {
                     if (contact.id === action.id) {
                         return {
                             ...contact,
-                            checked: !contact.checked
+                            checked: !contact.checked,
                         };
                     } else {
                         return contact;
-                    };
+                    }
                 }),
             };
         case 'SET_CHECKED_CONTACT_ALL':
             return {
                 ...state,
-                data: state.data.map((contact) => {
+                data: state.data.map(contact => {
                     return {
                         ...contact,
-                        checked: action.checkedValue
+                        checked: action.checkedValue,
                     };
                 }),
             };

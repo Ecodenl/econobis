@@ -1,4 +1,4 @@
-export default function (state= [], action) {
+export default function(state = [], action) {
     switch (action.type) {
         case 'FETCH_ORDERS_SUCCESS':
             return {
@@ -16,24 +16,24 @@ export default function (state= [], action) {
         case 'SET_CHECKED_ORDER':
             return {
                 ...state,
-                data: state.data.map((order) => {
+                data: state.data.map(order => {
                     if (order.id === action.id) {
                         return {
                             ...order,
-                            checked: !order.checked
+                            checked: !order.checked,
                         };
                     } else {
                         return order;
-                    };
+                    }
                 }),
             };
         case 'SET_CHECKED_ORDER_ALL':
             return {
                 ...state,
-                data: state.data.map((order) => {
+                data: state.data.map(order => {
                     return {
                         ...order,
-                        checked: action.checkedValue
+                        checked: action.checkedValue,
                     };
                 }),
             };
@@ -41,7 +41,7 @@ export default function (state= [], action) {
         case 'DELETE_ORDER_SUCCESS':
             return {
                 ...state,
-                data: state.data.filter((order) => order.id !== action.id)
+                data: state.data.filter(order => order.id !== action.id),
             };
         default:
             return state;

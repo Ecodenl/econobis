@@ -6,16 +6,16 @@ import DataTableBody from '../../../components/dataTable/DataTableBody';
 import ParticipantsListHead from './ParticipantsListHead';
 import ParticipantsListFilter from './ParticipantsListFilter';
 import ParticipantsListItem from './ParticipantsListItem';
-import DataTablePagination from "../../../components/dataTable/DataTablePagination";
-import {connect} from "react-redux";
+import DataTablePagination from '../../../components/dataTable/DataTablePagination';
+import { connect } from 'react-redux';
 
 class ParticipantsList extends Component {
-    constructor(props){
+    constructor(props) {
         super(props);
-    };
+    }
 
     // On key Enter filter form will submit
-    handleKeyUp = (e) => {
+    handleKeyUp = e => {
         if (e.keyCode === 13) {
             this.props.onSubmitFilter();
         }
@@ -29,14 +29,11 @@ class ParticipantsList extends Component {
 
         if (this.props.hasError) {
             loadingText = 'Fout bij het ophalen van participanten.';
-        }
-        else if (this.props.isLoading) {
+        } else if (this.props.isLoading) {
             loadingText = 'Gegevens aan het laden.';
-        }
-        else if (data.length === 0) {
+        } else if (data.length === 0) {
             loadingText = 'Geen participanten gevonden!';
-        }
-        else {
+        } else {
             loading = false;
         }
 
@@ -45,7 +42,9 @@ class ParticipantsList extends Component {
                 <DataTable>
                     <DataTableHead>
                         <ParticipantsListHead
-                            refreshParticipantsProductionProjectData={() => this.props.refreshParticipantsProductionProjectData()}
+                            refreshParticipantsProductionProjectData={() =>
+                                this.props.refreshParticipantsProductionProjectData()
+                            }
                         />
                         <ParticipantsListFilter
                             onSubmitFilter={this.props.onSubmitFilter}
@@ -56,12 +55,14 @@ class ParticipantsList extends Component {
                         />
                     </DataTableHead>
                     <DataTableBody>
-                        {
-                            loading ? (
-                                <tr><td colSpan={12}>{loadingText}</td></tr>
-                            ) : (
-                                data.map((participantProductionProject) => {
-                                    return <ParticipantsListItem
+                        {loading ? (
+                            <tr>
+                                <td colSpan={12}>{loadingText}</td>
+                            </tr>
+                        ) : (
+                            data.map(participantProductionProject => {
+                                return (
+                                    <ParticipantsListItem
                                         key={participantProductionProject.id}
                                         showCheckboxList={this.props.showCheckboxList}
                                         checkedAll={this.props.checkedAll}
@@ -69,9 +70,9 @@ class ParticipantsList extends Component {
                                         toggleParticipantCheckNoEmail={this.props.toggleParticipantCheckNoEmail}
                                         {...participantProductionProject}
                                     />
-                                })
-                            )
-                        }
+                                );
+                            })
+                        )}
                     </DataTableBody>
                 </DataTable>
                 <div className="col-md-4 col-md-offset-4">
@@ -83,10 +84,10 @@ class ParticipantsList extends Component {
                 </div>
             </form>
         );
-    };
+    }
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         isLoading: state.loadingData.isLoading,
         hasError: state.loadingData.hasError,

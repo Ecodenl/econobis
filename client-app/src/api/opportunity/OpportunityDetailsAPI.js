@@ -3,17 +3,17 @@ import axios from 'axios';
 const URL_OPPORTUNITY = `${URL_API}/api/opportunity`;
 
 export default {
-    fetchOpportunity: (id) => {
+    fetchOpportunity: id => {
         const requestUrl = `${URL_OPPORTUNITY}/${id}`;
         const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
         axios.defaults.headers.common.Authorization = AUTH_TOKEN;
 
-        return axios.get(requestUrl)
+        return axios
+            .get(requestUrl)
             .then(response => response.data.data)
-            .catch((error) => {
-                    console.log(error);
-                },
-            );
+            .catch(error => {
+                console.log(error);
+            });
     },
 
     updateOpportunity: (id, data) => {
@@ -21,28 +21,28 @@ export default {
         const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
         axios.defaults.headers.common.Authorization = AUTH_TOKEN;
 
-        return axios.post(requestUrl, data)
+        return axios
+            .post(requestUrl, data)
             .then(response => response.data.data)
-            .catch((error) => {
-                    console.log(error);
-                },
-            );
+            .catch(error => {
+                console.log(error);
+            });
     },
 
-    storeOpportunity: (data) => {
+    storeOpportunity: data => {
         const requestUrl = `${URL_OPPORTUNITY}`;
         const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
         axios.defaults.headers.common.Authorization = AUTH_TOKEN;
 
-        return axios.post(requestUrl, data)
+        return axios
+            .post(requestUrl, data)
             .then(response => response.data.data)
-            .catch((error) => {
-                    console.log(error);
-                },
-            );
+            .catch(error => {
+                console.log(error);
+            });
     },
 
-    deleteOpportunity: (id) => {
+    deleteOpportunity: id => {
         const requestUrl = `${URL_OPPORTUNITY}/${id}/delete`;
         const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
         axios.defaults.headers.common.Authorization = AUTH_TOKEN;
@@ -50,29 +50,29 @@ export default {
         return axios.post(requestUrl);
     },
 
-    storeOpportunityEvaluation: (data) => {
+    storeOpportunityEvaluation: data => {
         const requestUrl = `${URL_OPPORTUNITY}/evaluation`;
         const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
         axios.defaults.headers.common.Authorization = AUTH_TOKEN;
 
-        return axios.post(requestUrl, data)
+        return axios
+            .post(requestUrl, data)
             .then(response => response.data.data)
-            .catch((error) => {
-                    console.log(error);
-                },
-            );
+            .catch(error => {
+                console.log(error);
+            });
     },
 
-    updateOpportunityEvaluation: (data) => {
+    updateOpportunityEvaluation: data => {
         const requestUrl = `${URL_OPPORTUNITY}/evaluation/${data.id}`;
         const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
         axios.defaults.headers.common.Authorization = AUTH_TOKEN;
 
-        return axios.post(requestUrl, data)
+        return axios
+            .post(requestUrl, data)
             .then(response => response.data.data)
-            .catch((error) => {
-                    console.log(error);
-                },
-            );
+            .catch(error => {
+                console.log(error);
+            });
     },
 };

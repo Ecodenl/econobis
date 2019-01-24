@@ -2,16 +2,16 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import ParticipantTransactionAPI from '../../../../../../api/participant-production-project/ParticipantTransactionAPI';
-import {newParticipationTransaction} from '../../../../../../actions/participants-production-project/ParticipantProductionProjectDetailsActions';
+import { newParticipationTransaction } from '../../../../../../actions/participants-production-project/ParticipantProductionProjectDetailsActions';
 import InputText from '../../../../../../components/form/InputText';
 import ButtonText from '../../../../../../components/button/ButtonText';
-import InputSelect from "../../../../../../components/form/InputSelect";
+import InputSelect from '../../../../../../components/form/InputSelect';
 import Panel from '../../../../../../components/panel/Panel';
 import PanelBody from '../../../../../../components/panel/PanelBody';
-import validator from "validator";
-import InputToggle from "../../../../../../components/form/InputToggle";
-import InputDate from "../../../../../../components/form/InputDate";
-import * as ibantools from "ibantools";
+import validator from 'validator';
+import InputToggle from '../../../../../../components/form/InputToggle';
+import InputDate from '../../../../../../components/form/InputDate';
+import * as ibantools from 'ibantools';
 
 class TransactionFormNew extends Component {
     constructor(props) {
@@ -37,7 +37,7 @@ class TransactionFormNew extends Component {
         };
 
         this.handleInputChangeDate = this.handleInputChangeDate.bind(this);
-    };
+    }
 
     handleInputChange = event => {
         const target = event.target;
@@ -48,7 +48,7 @@ class TransactionFormNew extends Component {
             ...this.state,
             participationTransaction: {
                 ...this.state.participationTransaction,
-                [name]: value
+                [name]: value,
             },
         });
     };
@@ -58,10 +58,10 @@ class TransactionFormNew extends Component {
             ...this.state,
             participationTransaction: {
                 ...this.state.participationTransaction,
-                [name]: value
+                [name]: value,
             },
         });
-    };
+    }
 
     handleSubmit = event => {
         event.preventDefault();
@@ -71,23 +71,22 @@ class TransactionFormNew extends Component {
         let errors = {};
         let hasErrors = false;
 
-
-        if(validator.isEmpty(participationTransaction.typeId)){
+        if (validator.isEmpty(participationTransaction.typeId)) {
             errors.typeId = true;
             hasErrors = true;
-        };
+        }
 
-        if(validator.isEmpty(participationTransaction.dateTransaction)){
+        if (validator.isEmpty(participationTransaction.dateTransaction)) {
             errors.dateTransaction = true;
             hasErrors = true;
-        };
+        }
 
-        if(validator.isEmpty(participationTransaction.amount)){
+        if (validator.isEmpty(participationTransaction.amount)) {
             errors.amount = true;
             hasErrors = true;
-        };
+        }
 
-        if(!validator.isEmpty(participationTransaction.iban)){
+        if (!validator.isEmpty(participationTransaction.iban)) {
             if (!ibantools.isValidIBAN(participationTransaction.iban)) {
                 errors.iban = true;
                 hasErrors = true;
@@ -98,29 +97,36 @@ class TransactionFormNew extends Component {
 
         // If no errors send form
         !hasErrors &&
-        ParticipantTransactionAPI.newParticipantTransaction(participationTransaction).then((payload) => {
+            ParticipantTransactionAPI.newParticipantTransaction(participationTransaction).then(payload => {
                 this.props.newParticipationTransaction(payload);
                 this.props.toggleShowNew();
             });
     };
 
     render() {
-        const {typeId, dateTransaction, amount, iban, referral, entry, dateBooking } = this.state.participationTransaction;
+        const {
+            typeId,
+            dateTransaction,
+            amount,
+            iban,
+            referral,
+            entry,
+            dateBooking,
+        } = this.state.participationTransaction;
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
                 <Panel className={'panel-grey'}>
                     <PanelBody>
-
                         <div className="row">
                             <InputSelect
-                                label={"Soort"}
+                                label={'Soort'}
                                 id="typeId"
-                                name={"typeId"}
+                                name={'typeId'}
                                 options={this.props.participantTransactionTypes}
                                 value={typeId}
                                 onChangeAction={this.handleInputChange}
-                                required={"required"}
+                                required={'required'}
                                 error={this.state.errors.typeId}
                             />
                             <InputDate
@@ -134,19 +140,19 @@ class TransactionFormNew extends Component {
 
                         <div className="row">
                             <InputText
-                                type={"number"}
-                                label={"Bedrag"}
-                                id={"amount"}
-                                name={"amount"}
+                                type={'number'}
+                                label={'Bedrag'}
+                                id={'amount'}
+                                name={'amount'}
                                 value={amount}
                                 onChangeAction={this.handleInputChange}
                                 required={'required'}
                                 error={this.state.errors.amount}
                             />
                             <InputText
-                                label={"IBAN"}
-                                id={"iban"}
-                                name={"iban"}
+                                label={'IBAN'}
+                                id={'iban'}
+                                name={'iban'}
                                 value={iban}
                                 onChangeAction={this.handleInputChange}
                                 error={this.state.errors.iban}
@@ -155,16 +161,16 @@ class TransactionFormNew extends Component {
 
                         <div className="row">
                             <InputText
-                                label={"Kenmerk"}
-                                id={"referral"}
-                                name={"referral"}
+                                label={'Kenmerk'}
+                                id={'referral'}
+                                name={'referral'}
                                 value={referral}
                                 onChangeAction={this.handleInputChange}
                             />
                             <InputText
-                                label={"Boekstuk"}
-                                id={"entry"}
-                                name={"entry"}
+                                label={'Boekstuk'}
+                                id={'entry'}
+                                name={'entry'}
                                 value={entry}
                                 onChangeAction={this.handleInputChange}
                             />
@@ -180,17 +186,26 @@ class TransactionFormNew extends Component {
                         </div>
 
                         <div className="pull-right btn-group" role="group">
-                            <ButtonText buttonClassName={"btn-default"} buttonText={"Annuleren"} onClickAction={this.props.toggleShowNew}/>
-                            <ButtonText buttonText={"Opslaan"} onClickAction={this.handleSubmit} type={"submit"} value={"Submit"}/>
+                            <ButtonText
+                                buttonClassName={'btn-default'}
+                                buttonText={'Annuleren'}
+                                onClickAction={this.props.toggleShowNew}
+                            />
+                            <ButtonText
+                                buttonText={'Opslaan'}
+                                onClickAction={this.handleSubmit}
+                                type={'submit'}
+                                value={'Submit'}
+                            />
                         </div>
                     </PanelBody>
                 </Panel>
             </form>
         );
     }
-};
+}
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         participantTransactionTypes: state.systemData.participantTransactionTypes,
         id: state.participantProductionProjectDetails.id,
@@ -198,9 +213,12 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = dispatch => ({
-    newParticipationTransaction: (participationTransaction) => {
+    newParticipationTransaction: participationTransaction => {
         dispatch(newParticipationTransaction(participationTransaction));
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(TransactionFormNew);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(TransactionFormNew);

@@ -1,10 +1,19 @@
 import React from 'react';
-import moment from "moment/moment";
-import {connect} from "react-redux";
+import moment from 'moment/moment';
+import { connect } from 'react-redux';
 moment.locale('nl');
 
 const OrderProductsFormView = props => {
-    const {product, amount, totalPriceInclVatAndReduction, dateStart, dateEnd, totalPriceInclVatAndReductionPerYear, isOneTimeAndPaidProduct, period } = props.orderProduct;
+    const {
+        product,
+        amount,
+        totalPriceInclVatAndReduction,
+        dateStart,
+        dateEnd,
+        totalPriceInclVatAndReductionPerYear,
+        isOneTimeAndPaidProduct,
+        period,
+    } = props.orderProduct;
 
     const notActiveAnymore = moment(moment().format('YYYY-MM-DD')).isAfter(moment(dateEnd).format('YYYY-MM-DD'));
 
@@ -14,51 +23,65 @@ const OrderProductsFormView = props => {
     const classTextNotActiveAnymore = notActiveAnymore ? 'not-active-anymore-text' : '';
 
     return (
-        <div className={`row border ${props.highlightLine} ${classRowIsPaid} ${classRowNotActiveAnymore}`}  onMouseEnter={() => props.onLineEnter()} onMouseLeave={() => props.onLineLeave()}>
+        <div
+            className={`row border ${props.highlightLine} ${classRowIsPaid} ${classRowNotActiveAnymore}`}
+            onMouseEnter={() => props.onLineEnter()}
+            onMouseLeave={() => props.onLineLeave()}
+        >
             <div onClick={props.openEdit}>
-                <div className="col-sm-1">
-                    { product && product.code }
-                </div>
+                <div className="col-sm-1">{product && product.code}</div>
+                <div className="col-sm-2">{product ? product.invoiceText : ''}</div>
+                <div className="col-sm-1">{amount ? amount : ''}</div>
                 <div className="col-sm-2">
-                    { product ? product.invoiceText : '' }
+                    {totalPriceInclVatAndReduction
+                        ? '€' +
+                          totalPriceInclVatAndReduction.toLocaleString('nl', {
+                              minimumFractionDigits: 2,
+                              maximumFractionDigits: 2,
+                          })
+                        : '€0,00'}
                 </div>
+                <div className="col-sm-2">{product.invoiceFrequency ? product.invoiceFrequency.name : ''}</div>
                 <div className="col-sm-1">
-                    {amount ? amount : ''}
+                    {totalPriceInclVatAndReductionPerYear
+                        ? '€' +
+                          totalPriceInclVatAndReductionPerYear.toLocaleString('nl', {
+                              minimumFractionDigits: 2,
+                              maximumFractionDigits: 2,
+                          })
+                        : '€0,00'}
                 </div>
-                <div className="col-sm-2">
-                    { totalPriceInclVatAndReduction ? '€' + totalPriceInclVatAndReduction.toLocaleString('nl',{ minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '€0,00'}
-                </div>
-                <div className="col-sm-2">
-                    { product.invoiceFrequency ? product.invoiceFrequency.name : ''}
-                </div>
-                <div className="col-sm-1">
-                    { totalPriceInclVatAndReductionPerYear ? '€' + totalPriceInclVatAndReductionPerYear.toLocaleString('nl',{ minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '€0,00'}
-                </div>
-                <div className={`col-sm-1`}>
-                    {dateStart ? moment(dateStart).format('L') : ''}
-                </div>
+                <div className={`col-sm-1`}>{dateStart ? moment(dateStart).format('L') : ''}</div>
                 <div className={`col-sm-1 ${classTextNotActiveAnymore}`}>
                     {dateEnd ? moment(dateEnd).format('L') : ''}
                 </div>
             </div>
             <div className="col-sm-1">
-                {(props.showActionButtons && props.permissions.manageFinancial ? <a role="button" onClick={props.openEdit}><span className="glyphicon glyphicon-pencil mybtn-success" /> </a> : '')}
-                {(props.showActionButtons && props.permissions.manageFinancial ? <a role="button" onClick={props.toggleDelete}><span className="glyphicon glyphicon-trash mybtn-danger"  /> </a> : '')}
-                </div>
-            {period &&
-            <div className="col-sm-12">
-                Periode {period}
+                {props.showActionButtons && props.permissions.manageFinancial ? (
+                    <a role="button" onClick={props.openEdit}>
+                        <span className="glyphicon glyphicon-pencil mybtn-success" />{' '}
+                    </a>
+                ) : (
+                    ''
+                )}
+                {props.showActionButtons && props.permissions.manageFinancial ? (
+                    <a role="button" onClick={props.toggleDelete}>
+                        <span className="glyphicon glyphicon-trash mybtn-danger" />{' '}
+                    </a>
+                ) : (
+                    ''
+                )}
             </div>
-            }
+            {period && <div className="col-sm-12">Periode {period}</div>}
         </div>
     );
 };
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         permissions: state.meDetails.permissions,
-        orderDetails: state.orderDetails
-    }
+        orderDetails: state.orderDetails,
+    };
 };
 
 export default connect(mapStateToProps)(OrderProductsFormView);

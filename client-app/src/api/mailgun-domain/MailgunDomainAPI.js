@@ -1,5 +1,5 @@
 import axiosInstance from '../default-setup/AxiosInstance';
-import axios from "axios";
+import axios from 'axios';
 
 export default {
     fetchMailgunDomains: () => {
@@ -11,13 +11,9 @@ export default {
         return axiosInstance.get(requestUrl, {
             params: {
                 jory: {
-                    fld: [
-                        'id',
-                        'domain',
-                        'isVerified',
-                    ],
-                }
-            }
+                    fld: ['id', 'domain', 'isVerified'],
+                },
+            },
         });
     },
 };

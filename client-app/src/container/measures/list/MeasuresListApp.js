@@ -6,7 +6,7 @@ import MeasuresListToolbar from './MeasuresListToolbar';
 import MeasuresList from './MeasuresList';
 
 class MeasuresListApp extends Component {
-    constructor(props){
+    constructor(props) {
         super(props);
     }
 
@@ -16,7 +16,7 @@ class MeasuresListApp extends Component {
 
     componentWillUnmount() {
         this.props.clearMeasures();
-    };
+    }
 
     render() {
         return (
@@ -24,17 +24,17 @@ class MeasuresListApp extends Component {
                 <div className="panel panel-default">
                     <div className="panel-body">
                         <div className="col-md-12 margin-10-top">
-                            <MeasuresListToolbar/>
+                            <MeasuresListToolbar />
                         </div>
                         <div className="col-md-12 margin-10-top">
-                            <MeasuresList/>
+                            <MeasuresList />
                         </div>
                     </div>
                 </div>
             </div>
-        )
+        );
     }
-};
+}
 
 const mapDispatchToProps = dispatch => ({
     fetchMeasures: () => {
@@ -44,4 +44,7 @@ const mapDispatchToProps = dispatch => ({
         dispatch(clearMeasures());
     },
 });
-export default connect(null, mapDispatchToProps)(MeasuresListApp);
+export default connect(
+    null,
+    mapDispatchToProps
+)(MeasuresListApp);

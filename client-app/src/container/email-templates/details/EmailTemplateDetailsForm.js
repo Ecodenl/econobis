@@ -1,15 +1,14 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { isEmpty } from 'lodash';
 
 import { fetchEmailTemplate } from '../../../actions/email-templates/EmailTemplateDetailsActions';
 import EmailTemplateFormGeneral from './general/EmailTemplateFormGeneral';
 
-
 class EmailTemplateDetailsForm extends Component {
-    constructor(props){
+    constructor(props) {
         super(props);
-    };
+    }
 
     render() {
         let loadingText = '';
@@ -17,28 +16,24 @@ class EmailTemplateDetailsForm extends Component {
 
         if (this.props.hasError) {
             loadingText = 'Fout bij het ophalen van e-mailtemplate.';
-        }
-        else if (this.props.isLoading) {
+        } else if (this.props.isLoading) {
             loadingText = 'Gegevens aan het laden.';
-        }
-        else if (isEmpty(this.props.emailTemplate)) {
+        } else if (isEmpty(this.props.emailTemplate)) {
             loadingText = 'Geen e-mailtemplate gevonden!';
-        }
-        else {
+        } else {
             loading = false;
         }
-        return (
-            loading ?
-                <div>{loadingText}</div>
-                :
-                <div>
-                    <EmailTemplateFormGeneral />
-                </div>
+        return loading ? (
+            <div>{loadingText}</div>
+        ) : (
+            <div>
+                <EmailTemplateFormGeneral />
+            </div>
         );
     }
-};
+}
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         emailTemplate: state.emailTemplate,
         isLoading: state.loadingData.isLoading,
@@ -47,9 +42,12 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = dispatch => ({
-    fetchEmailTemplate: (id) => {
+    fetchEmailTemplate: id => {
         dispatch(fetchEmailTemplate(id));
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(EmailTemplateDetailsForm);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(EmailTemplateDetailsForm);

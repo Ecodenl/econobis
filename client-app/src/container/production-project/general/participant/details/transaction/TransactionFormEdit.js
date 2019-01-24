@@ -3,15 +3,25 @@ import { connect } from 'react-redux';
 
 import InputText from '../../../../../../components/form/InputText';
 import ButtonText from '../../../../../../components/button/ButtonText';
-import InputSelect from "../../../../../../components/form/InputSelect";
+import InputSelect from '../../../../../../components/form/InputSelect';
 import Panel from '../../../../../../components/panel/Panel';
 import PanelBody from '../../../../../../components/panel/PanelBody';
-import InputDate from "../../../../../../components/form/InputDate";
-import moment from "moment/moment";
+import InputDate from '../../../../../../components/form/InputDate';
+import moment from 'moment/moment';
 moment.locale('nl');
 
 const TransactionFormEdit = props => {
-    const {type, dateTransaction, amount, iban, referral, entry, dateBooking, createdAt, createdBy } = props.participantTransaction;
+    const {
+        type,
+        dateTransaction,
+        amount,
+        iban,
+        referral,
+        entry,
+        dateBooking,
+        createdAt,
+        createdBy,
+    } = props.participantTransaction;
 
     return (
         <div>
@@ -19,13 +29,7 @@ const TransactionFormEdit = props => {
                 <Panel className={'panel-grey'}>
                     <PanelBody>
                         <div className="row">
-                            <InputText
-                                label={"Type"}
-                                id={"type"}
-                                name={"type"}
-                                value={type.name}
-                                readOnly={true}
-                            />
+                            <InputText label={'Type'} id={'type'} name={'type'} value={type.name} readOnly={true} />
                             <InputDate
                                 label="Transactie datum"
                                 name="dateTransaction"
@@ -37,19 +41,19 @@ const TransactionFormEdit = props => {
 
                         <div className="row">
                             <InputText
-                                type={"number"}
-                                label={"Bedrag"}
-                                id={"amount"}
-                                name={"amount"}
+                                type={'number'}
+                                label={'Bedrag'}
+                                id={'amount'}
+                                name={'amount'}
                                 value={amount}
                                 onChangeAction={props.handleInputChange}
                                 required={'required'}
                                 error={props.errors.amount}
                             />
                             <InputText
-                                label={"IBAN"}
-                                id={"iban"}
-                                name={"iban"}
+                                label={'IBAN'}
+                                id={'iban'}
+                                name={'iban'}
                                 value={iban ? iban : ''}
                                 onChangeAction={props.handleInputChange}
                                 error={props.errors.iban}
@@ -58,16 +62,16 @@ const TransactionFormEdit = props => {
 
                         <div className="row">
                             <InputText
-                                label={"Kenmerk"}
-                                id={"referral"}
-                                name={"referral"}
+                                label={'Kenmerk'}
+                                id={'referral'}
+                                name={'referral'}
                                 value={referral ? referral : ''}
                                 onChangeAction={props.handleInputChange}
                             />
                             <InputText
-                                label={"Boekstuk"}
-                                id={"entry"}
-                                name={"entry"}
+                                label={'Boekstuk'}
+                                id={'entry'}
+                                name={'entry'}
                                 value={entry ? entry : ''}
                                 onChangeAction={props.handleInputChange}
                             />
@@ -84,22 +88,31 @@ const TransactionFormEdit = props => {
 
                         <div className="row">
                             <InputText
-                                label={"Gemaakt op"}
-                                name={"createdAt"}
+                                label={'Gemaakt op'}
+                                name={'createdAt'}
                                 value={createdAt ? moment(createdAt.date).format('L') : ''}
                                 readOnly={true}
                             />
                             <InputText
-                                label={"Gemaakt door"}
-                                name={"createdBy"}
+                                label={'Gemaakt door'}
+                                name={'createdBy'}
                                 value={createdBy ? createdBy.fullName : ''}
                                 readOnly={true}
                             />
                         </div>
 
                         <div className="pull-right btn-group" role="group">
-                            <ButtonText buttonClassName={"btn-default"} buttonText={"Annuleren"} onClickAction={props.cancelEdit}/>
-                            <ButtonText buttonText={"Opslaan"} onClickAction={props.handleSubmit} type={"submit"} value={"Submit"}/>
+                            <ButtonText
+                                buttonClassName={'btn-default'}
+                                buttonText={'Annuleren'}
+                                onClickAction={props.cancelEdit}
+                            />
+                            <ButtonText
+                                buttonText={'Opslaan'}
+                                onClickAction={props.handleSubmit}
+                                type={'submit'}
+                                value={'Submit'}
+                            />
                         </div>
                     </PanelBody>
                 </Panel>
@@ -108,10 +121,13 @@ const TransactionFormEdit = props => {
     );
 };
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         participantTransactionTypes: state.systemData.participantTransactionTypes,
     };
 };
 
-export default connect(mapStateToProps, null)(TransactionFormEdit);
+export default connect(
+    mapStateToProps,
+    null
+)(TransactionFormEdit);

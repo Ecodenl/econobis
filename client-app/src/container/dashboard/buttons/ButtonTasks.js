@@ -1,7 +1,7 @@
-import React, {Component} from 'react';
-import {hashHistory} from 'react-router';
+import React, { Component } from 'react';
+import { hashHistory } from 'react-router';
 
-import TaskAPI from "../../../api/task/TasksAPI";
+import TaskAPI from '../../../api/task/TasksAPI';
 
 class ButtonTasks extends Component {
     constructor(props) {
@@ -9,13 +9,13 @@ class ButtonTasks extends Component {
 
         this.state = {
             amountActiveTasks: '-',
-        }
-    };
+        };
+    }
 
     componentWillMount() {
         TaskAPI.getAmountActive().then(payload => {
             this.setState({
-                amountActiveTasks: payload
+                amountActiveTasks: payload,
             });
         });
     }
@@ -30,7 +30,7 @@ class ButtonTasks extends Component {
                     </div>
                 </div>
             </div>
-        )
+        );
     }
 }
 

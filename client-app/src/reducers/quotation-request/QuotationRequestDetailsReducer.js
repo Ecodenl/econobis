@@ -1,5 +1,5 @@
-export default function (state= {}, action) {
-    switch(action.type) {
+export default function(state = {}, action) {
+    switch (action.type) {
         case 'FETCH_QUOTATION_REQUEST_DETAILS_SUCCESS':
             return {
                 ...state,

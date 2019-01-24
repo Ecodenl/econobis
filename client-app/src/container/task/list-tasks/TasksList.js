@@ -7,24 +7,24 @@ import TasksListHead from './TasksListHead';
 import TasksListFilter from './TasksListFilter';
 import TasksListItem from './TasksListItem';
 import TasksDeleteItem from './TasksDeleteItem';
-import DataTablePagination from "../../../components/dataTable/DataTablePagination";
-import {connect} from "react-redux";
+import DataTablePagination from '../../../components/dataTable/DataTablePagination';
+import { connect } from 'react-redux';
 
 class TasksList extends Component {
-    constructor(props){
+    constructor(props) {
         super(props);
 
         this.state = {
             showDeleteItem: false,
             deleteItem: {
                 id: '',
-                name: ''
-            }
+                name: '',
+            },
         };
-    };
+    }
 
     // On key Enter filter form will submit
-    handleKeyUp = (e) => {
+    handleKeyUp = e => {
         if (e.keyCode === 13) {
             this.props.onSubmitFilter();
         }
@@ -34,11 +34,11 @@ class TasksList extends Component {
         this.setState({
             ...this.state,
             showDeleteItem: true,
-            deleteItem:{
+            deleteItem: {
                 ...this.state.deleteItem,
                 id: id,
-                name: name
-            }
+                name: name,
+            },
         });
     };
 
@@ -46,11 +46,11 @@ class TasksList extends Component {
         this.setState({
             ...this.state,
             showDeleteItem: false,
-            deleteItem:{
+            deleteItem: {
                 ...this.state.deleteItem,
                 id: '',
-                name: ''
-            }
+                name: '',
+            },
         });
     };
 
@@ -62,14 +62,11 @@ class TasksList extends Component {
 
         if (this.props.hasError) {
             loadingText = 'Fout bij het ophalen van taken.';
-        }
-        else if (this.props.isLoading) {
+        } else if (this.props.isLoading) {
             loadingText = 'Gegevens aan het laden.';
-        }
-        else if (data.length === 0) {
+        } else if (data.length === 0) {
             loadingText = 'Geen taken gevonden!';
-        }
-        else {
+        } else {
             loading = false;
         }
 
@@ -78,27 +75,25 @@ class TasksList extends Component {
                 <form onKeyUp={this.handleKeyUp}>
                     <DataTable>
                         <DataTableHead>
-                            <TasksListHead
-                                fetchTasksData={() => this.props.fetchTasksData()}
-                            />
-                            <TasksListFilter
-                                onSubmitFilter={this.props.onSubmitFilter}
-                            />
+                            <TasksListHead fetchTasksData={() => this.props.fetchTasksData()} />
+                            <TasksListFilter onSubmitFilter={this.props.onSubmitFilter} />
                         </DataTableHead>
                         <DataTableBody>
-                            {
-                                loading ? (
-                                    <tr><td colSpan={7}>{loadingText}</td></tr>
-                                ) : (
-                                    data.map((task) => {
-                                        return <TasksListItem
+                            {loading ? (
+                                <tr>
+                                    <td colSpan={7}>{loadingText}</td>
+                                </tr>
+                            ) : (
+                                data.map(task => {
+                                    return (
+                                        <TasksListItem
                                             key={task.id}
                                             {...task}
                                             showDeleteItemModal={this.showDeleteItemModal}
                                         />
-                                    })
-                                )
-                            }
+                                    );
+                                })
+                            )}
                         </DataTableBody>
                     </DataTable>
                     <div className="col-md-6 col-md-offset-3">
@@ -109,23 +104,19 @@ class TasksList extends Component {
                         />
                     </div>
                 </form>
-                {
-                    this.state.showDeleteItem &&
-                    <TasksDeleteItem
-                        closeDeleteItemModal={this.closeDeleteItemModal}
-                        {...this.state.deleteItem}
-                    />
-                }
+                {this.state.showDeleteItem && (
+                    <TasksDeleteItem closeDeleteItemModal={this.closeDeleteItemModal} {...this.state.deleteItem} />
+                )}
             </div>
         );
-    };
+    }
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         isLoading: state.loadingData.isLoading,
         hasError: state.loadingData.hasError,
-    }
+    };
 };
 
 export default connect(mapStateToProps)(TasksList);

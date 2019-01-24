@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 
 import ContactDetailsCampaignView from './ContactDetailsCampaignView';
 
@@ -14,7 +14,7 @@ class ContactDetailsCampaignItem extends Component {
                 ...props.campaign,
             },
         };
-    };
+    }
 
     onLineEnter = () => {
         this.setState({
@@ -42,6 +42,6 @@ class ContactDetailsCampaignItem extends Component {
             </div>
         );
     }
-};
+}
 
 export default ContactDetailsCampaignItem;

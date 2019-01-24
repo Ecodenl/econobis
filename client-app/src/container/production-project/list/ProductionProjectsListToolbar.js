@@ -5,7 +5,7 @@ import { browserHistory } from 'react-router';
 
 import ButtonIcon from '../../../components/button/ButtonIcon';
 
-const ProductionProjectsListToolbar = (props) => {
+const ProductionProjectsListToolbar = props => {
     const newProductionProject = () => {
         hashHistory.push('productie-project/nieuw');
     };
@@ -17,27 +17,27 @@ const ProductionProjectsListToolbar = (props) => {
         <div className="row">
             <div className="col-md-4">
                 <div className="btn-group" role="group">
-                    <ButtonIcon iconName={"glyphicon-arrow-left"} onClickAction={browserHistory.goBack}/>
-                    {permissions.manageProductionProject &&
-                    <ButtonIcon iconName={'glyphicon-plus'} onClickAction={newProductionProject}/>
-                    }
+                    <ButtonIcon iconName={'glyphicon-arrow-left'} onClickAction={browserHistory.goBack} />
+                    {permissions.manageProductionProject && (
+                        <ButtonIcon iconName={'glyphicon-plus'} onClickAction={newProductionProject} />
+                    )}
                 </div>
-
             </div>
-            <div className="col-md-4"><h3 className="text-center table-title">Productieprojecten</h3></div>
             <div className="col-md-4">
-                <div className="pull-right">Resultaten: { meta.total || 0 }</div>
+                <h3 className="text-center table-title">Productieprojecten</h3>
+            </div>
+            <div className="col-md-4">
+                <div className="pull-right">Resultaten: {meta.total || 0}</div>
             </div>
         </div>
     );
 };
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         permissions: state.meDetails.permissions,
         productionProjects: state.productionProjects.list,
-    }
+    };
 };
 
 export default connect(mapStateToProps)(ProductionProjectsListToolbar);
-

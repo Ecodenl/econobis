@@ -6,6 +6,6 @@ export const fetchMeasures = () => {
 
 export const clearMeasures = () => {
     return {
-        type: 'CLEAR_MEASURES'
+        type: 'CLEAR_MEASURES',
     };
 };

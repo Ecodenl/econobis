@@ -1,46 +1,42 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 
-
-class Forgot extends Component{
-
-
-    constructor(props){
+class Forgot extends Component {
+    constructor(props) {
         super(props);
-        this.state =  {
-            email : '',
-        }
+        this.state = {
+            email: '',
+        };
     }
 
-    onSubmit(e){
+    onSubmit(e) {
         e.preventDefault();
-        const {email} = this.state;
+        const { email } = this.state;
 
-        axios.post(`${URL_API}/api/password/email`, {
-            email,
-        })
-            .then(response=> {
-                this.refs.email.value="";
-                this.setState({err: false});
+        axios
+            .post(`${URL_API}/api/password/email`, {
+                email,
             })
-            .catch(error=> {
-                this.setState({err: true});
-                this.refs.email.value="";
+            .then(response => {
+                this.refs.email.value = '';
+                this.setState({ err: false });
+            })
+            .catch(error => {
+                this.setState({ err: true });
+                this.refs.email.value = '';
             });
     }
 
-
-    onChange(e){
+    onChange(e) {
         const email = e.target.value;
-        this.setState({email : email});
+        this.setState({ email: email });
     }
 
-    render(){
-
-        let error = this.state.err ;
-        let msg = (!error) ? 'We hebben je een e-mail gestuurd met een wachtwoord reset link!' : 'E-mail bestaat niet.' ;
-        let name = (!error) ? 'alert alert-success' : 'alert alert-danger' ;
-        return(
+    render() {
+        let error = this.state.err;
+        let msg = !error ? 'We hebben je een e-mail gestuurd met een wachtwoord reset link!' : 'E-mail bestaat niet.';
+        let name = !error ? 'alert alert-success' : 'alert alert-danger';
+        return (
             <div>
                 <div className="container">
                     <div className="row">
@@ -49,14 +45,33 @@ class Forgot extends Component{
                                 <div className="panel-heading">Reset wachtwoord</div>
                                 <div className="panel-body">
                                     <div className="col-md-offset-2 col-md-8 col-md-offset-2">
-                                        {error != undefined && <div className={name} role="alert">{msg}</div>}
+                                        {error != undefined && (
+                                            <div className={name} role="alert">
+                                                {msg}
+                                            </div>
+                                        )}
                                     </div>
-                                    <form className="form-horizontal" role="form" method="POST" onSubmit={this.onSubmit.bind(this)}>
+                                    <form
+                                        className="form-horizontal"
+                                        role="form"
+                                        method="POST"
+                                        onSubmit={this.onSubmit.bind(this)}
+                                    >
                                         <div className="form-group">
-                                            <label htmlFor="email" className="col-md-4 control-label">E-mailadres</label>
+                                            <label htmlFor="email" className="col-md-4 control-label">
+                                                E-mailadres
+                                            </label>
 
                                             <div className="col-md-6">
-                                                <input id="email" type="email" ref= "email" className="form-control" name="email"  onChange={this.onChange.bind(this)} required />
+                                                <input
+                                                    id="email"
+                                                    type="email"
+                                                    ref="email"
+                                                    className="form-control"
+                                                    name="email"
+                                                    onChange={this.onChange.bind(this)}
+                                                    required
+                                                />
                                             </div>
                                         </div>
 
@@ -74,9 +89,8 @@ class Forgot extends Component{
                     </div>
                 </div>
             </div>
-
-        )
+        );
     }
 }
 
-export default Forgot
+export default Forgot;

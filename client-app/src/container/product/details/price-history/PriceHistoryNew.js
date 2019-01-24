@@ -1,27 +1,23 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import validator from "validator";
+import validator from 'validator';
 
 import { addProductPriceHistory } from '../../../../actions/product/ProductDetailsActions';
 import InputText from '../../../../components/form/InputText';
 import ButtonText from '../../../../components/button/ButtonText';
-import InputSelect from "../../../../components/form/InputSelect";
+import InputSelect from '../../../../components/form/InputSelect';
 import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
-import InputDate from "../../../../components/form/InputDate";
-import InputToggle from "../../../../components/form/InputToggle";
+import InputDate from '../../../../components/form/InputDate';
+import InputToggle from '../../../../components/form/InputToggle';
 
 class PriceHistoryNew extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            vatPercentages:[
-                {'id':  '0', name: '0'},
-                {'id':  '9', name: '9'},
-                {'id':  '21', name: '21'},
-            ],
-            priceHistory:{
+            vatPercentages: [{ id: '0', name: '0' }, { id: '9', name: '9' }, { id: '21', name: '21' }],
+            priceHistory: {
                 productId: props.productId,
                 dateStart: '',
                 price: '',
@@ -36,7 +32,7 @@ class PriceHistoryNew extends Component {
 
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
-    };
+    }
 
     handleInputChange = event => {
         const target = event.target;
@@ -47,7 +43,7 @@ class PriceHistoryNew extends Component {
             ...this.state,
             priceHistory: {
                 ...this.state.priceHistory,
-                [name]: value
+                [name]: value,
             },
         });
     };
@@ -57,7 +53,7 @@ class PriceHistoryNew extends Component {
             ...this.state,
             priceHistory: {
                 ...this.state.priceHistory,
-                [name]: value
+                [name]: value,
             },
         });
     };
@@ -65,58 +61,55 @@ class PriceHistoryNew extends Component {
     handleSubmit(event) {
         event.preventDefault();
 
-        const {priceHistory} = this.state;
+        const { priceHistory } = this.state;
 
         // Validation
         let errors = {};
         let hasErrors = false;
 
-        if(validator.isEmpty(priceHistory.dateStart)){
+        if (validator.isEmpty(priceHistory.dateStart)) {
             errors.dateStart = true;
             hasErrors = true;
-        };
+        }
 
-        if(!priceHistory.hasVariablePrice) {
+        if (!priceHistory.hasVariablePrice) {
             if (validator.isEmpty(priceHistory.price)) {
                 errors.price = true;
                 hasErrors = true;
             }
-            ;
         }
 
         this.setState({ ...this.state, errors: errors });
 
-        if(!hasErrors){
-               this.props.addProductPriceHistory(priceHistory);
-               this.props.toggleShowNew();
+        if (!hasErrors) {
+            this.props.addProductPriceHistory(priceHistory);
+            this.props.toggleShowNew();
         }
-    };
+    }
 
     render() {
-        const {dateStart, price, vatPercentage, hasVariablePrice } = this.state.priceHistory;
-
+        const { dateStart, price, vatPercentage, hasVariablePrice } = this.state.priceHistory;
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
                 <Panel className={'panel-grey'}>
                     <PanelBody>
-
-                        <div className={"row"}>
-                            {this.props.hasVariablePrice === 'none' &&
+                        <div className={'row'}>
+                            {this.props.hasVariablePrice === 'none' && (
                                 <InputToggle
-                                    label={"Variabele prijs"}
-                                    name={"hasVariablePrice"}
+                                    label={'Variabele prijs'}
+                                    name={'hasVariablePrice'}
                                     value={hasVariablePrice}
                                     onChangeAction={this.handleInputChange}
                                 />
-                            }
+                            )}
                         </div>
 
                         <div className="row">
                             <InputText
-                                label={"Product"}
-                                id={"name"}
-                                name={"name"}
+                                label={'Product'}
+                                id={'name'}
+                                name={'name'}
                                 value={this.props.productName}
                                 readOnly={true}
                             />
@@ -125,58 +118,66 @@ class PriceHistoryNew extends Component {
                                 name="dateStart"
                                 value={dateStart}
                                 onChangeAction={this.handleInputChangeDate}
-                                required={"required"}
+                                required={'required'}
                                 error={this.state.errors.dateStart}
                             />
-
                         </div>
 
                         <div className="row">
-                            {this.props.hasVariablePrice === 'variable' || hasVariablePrice ?
+                            {this.props.hasVariablePrice === 'variable' || hasVariablePrice ? (
                                 <InputText
-                                    label={"Prijs ex. BTW"}
-                                    id={"price"}
-                                    name={"price"}
-                                    value={"Variabel"}
+                                    label={'Prijs ex. BTW'}
+                                    id={'price'}
+                                    name={'price'}
+                                    value={'Variabel'}
                                     readOnly={true}
-                                    required={"required"}
+                                    required={'required'}
                                 />
-                           :
-                            <InputText
-                                label={"Prijs ex. BTW"}
-                                id={"price"}
-                                name={"price"}
-                                type={"number"}
-                                min={"0"}
-                                max={"1000000"}
-                                value={price}
-                                onChangeAction={this.handleInputChange}
-                                required={"required"}
-                                error={this.state.errors.price}
-                            />
-                            }
+                            ) : (
+                                <InputText
+                                    label={'Prijs ex. BTW'}
+                                    id={'price'}
+                                    name={'price'}
+                                    type={'number'}
+                                    min={'0'}
+                                    max={'1000000'}
+                                    value={price}
+                                    onChangeAction={this.handleInputChange}
+                                    required={'required'}
+                                    error={this.state.errors.price}
+                                />
+                            )}
                             <InputSelect
-                                label={"BTW percentage"}
-                                name={"vatPercentage"}
+                                label={'BTW percentage'}
+                                name={'vatPercentage'}
                                 options={this.state.vatPercentages}
                                 value={vatPercentage}
                                 onChangeAction={this.handleInputChange}
-                                placeholder={"Geen"}
+                                placeholder={'Geen'}
                             />
                         </div>
 
                         <div className="pull-right btn-group" role="group">
-                            <ButtonText buttonClassName={"btn-default"} buttonText={"Annuleren"} onClickAction={this.props.toggleShowNew}/>
-                            <ButtonText buttonText={"Opslaan"} onClickAction={this.handleSubmit} type={"submit"} value={"Submit"}/>
+                            <ButtonText
+                                buttonClassName={'btn-default'}
+                                buttonText={'Annuleren'}
+                                onClickAction={this.props.toggleShowNew}
+                            />
+                            <ButtonText
+                                buttonText={'Opslaan'}
+                                onClickAction={this.handleSubmit}
+                                type={'submit'}
+                                value={'Submit'}
+                            />
                         </div>
                     </PanelBody>
                 </Panel>
             </form>
         );
     }
-};
+}
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         productId: state.productDetails.id,
         productName: state.productDetails.name,
@@ -186,10 +187,12 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = dispatch => ({
-    addProductPriceHistory: (priceHistory) => {
+    addProductPriceHistory: priceHistory => {
         dispatch(addProductPriceHistory(priceHistory));
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(PriceHistoryNew);
-
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(PriceHistoryNew);

@@ -3,50 +3,52 @@ import axios from 'axios';
 const URL_INTAKE = `${URL_API}/api/intake`;
 
 export default {
-    fetchIntakeDetails: function (id) {
+    fetchIntakeDetails: function(id) {
         const requestUrl = `${URL_INTAKE}/${id}`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios.get(requestUrl)
-            .then(function (response) {
+        return axios
+            .get(requestUrl)
+            .then(function(response) {
                 return response.data.data;
             })
-            .catch(function (error) {
-                    console.log(error);
-                }
-            );
+            .catch(function(error) {
+                console.log(error);
+            });
     },
 
-    newIntake: (intake) => {
+    newIntake: intake => {
         const requestUrl = `${URL_API}/api/contact/intake`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios.post(requestUrl, intake)
-            .then(function (response) {
+        return axios
+            .post(requestUrl, intake)
+            .then(function(response) {
                 return response.data;
             })
-            .catch(function (error) {
+            .catch(function(error) {
                 console.log(error);
             });
     },
 
-    updateIntake: (intake) => {
+    updateIntake: intake => {
         const requestUrl = `${URL_INTAKE}/${intake.id}/update`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios.post(requestUrl, intake)
-            .then(function (response) {
+        return axios
+            .post(requestUrl, intake)
+            .then(function(response) {
                 return response.data.data;
             })
-            .catch(function (error) {
+            .catch(function(error) {
                 console.log(error);
             });
     },
 
-    deleteIntake: (id) => {
+    deleteIntake: id => {
         const requestUrl = `${URL_INTAKE}/${id}/delete`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
@@ -59,11 +61,12 @@ export default {
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios.post(requestUrl)
-            .then(function (response) {
+        return axios
+            .post(requestUrl)
+            .then(function(response) {
                 return response.data.data;
             })
-            .catch(function (error) {
+            .catch(function(error) {
                 return error;
             });
     },

@@ -1,19 +1,24 @@
-export default (state = [{
-    field: 'id',
-    order: 'desc',
-}], action) => {
-    switch(action.type) {
+export default (
+    state = [
+        {
+            field: 'id',
+            order: 'desc',
+        },
+    ],
+    action
+) => {
+    switch (action.type) {
         case 'SET_ORDERS_SORTS_FILTER':
-            if(state.length === 3) state.pop();
+            if (state.length === 3) state.pop();
 
-        return [
-            {
-                field: action.field,
-                order: action.order,
-            },
-            ...state,
-        ];
-    default:
-        return state;
+            return [
+                {
+                    field: action.field,
+                    order: action.order,
+                },
+                ...state,
+            ];
+        default:
+            return state;
     }
 };

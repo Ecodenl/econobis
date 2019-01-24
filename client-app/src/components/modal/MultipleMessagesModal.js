@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const Modal = (props) => {
-    const {buttonClassName, buttonCancelText, buttonConfirmText, children, closeModal, confirmAction, title} = props;
+const Modal = props => {
+    const { buttonClassName, buttonCancelText, buttonConfirmText, children, closeModal, confirmAction, title } = props;
     return (
         <div className="modal">
             <div className="modal-dialog">
@@ -12,20 +12,20 @@ const Modal = (props) => {
                     </div>
                     <div className="modal-body">
                         <ul>
-                            {
-                                children.map(function (child, i) {
-                                    return <li key={i}>{child}</li>
-                                })
-                            }
+                            {children.map(function(child, i) {
+                                return <li key={i}>{child}</li>;
+                            })}
                         </ul>
                     </div>
                     <div className="modal-footer">
-                        <button type="button" className="btn btn-default" onClick={closeModal}>{buttonCancelText}</button>
-                        { props.showConfirmAction &&
+                        <button type="button" className="btn btn-default" onClick={closeModal}>
+                            {buttonCancelText}
+                        </button>
+                        {props.showConfirmAction && (
                             <button type="button" className={`btn ${buttonClassName}`} onClick={confirmAction}>
                                 {buttonConfirmText}
                             </button>
-                        }
+                        )}
                     </div>
                 </div>
             </div>
@@ -44,10 +44,7 @@ Modal.defaultProps = {
 Modal.propTypes = {
     buttonCancelText: PropTypes.string,
     buttonConfirmText: PropTypes.string,
-    children: PropTypes.oneOfType([
-        PropTypes.element.isRequired,
-        PropTypes.array.isRequired
-    ]),
+    children: PropTypes.oneOfType([PropTypes.element.isRequired, PropTypes.array.isRequired]),
     closeModal: PropTypes.func.isRequired,
     confirmAction: PropTypes.func,
     showConfirmAction: PropTypes.bool,

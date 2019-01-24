@@ -18,18 +18,18 @@ const filtersReducerDefaultState = {
     energyLabelId: {
         field: 'energyLabelId',
         data: '',
-    }
+    },
 };
 
 export default (state = filtersReducerDefaultState, action) => {
-    switch(action.type) {
+    switch (action.type) {
         case 'SET_FILTER_HOUSING_FILE_DATE':
             return {
                 ...state,
                 createdAt: {
                     ...state.createdAt,
                     data: action.createdAt,
-                }
+                },
             };
         case 'SET_FILTER_HOUSING_FILE_FULL_NAME':
             return {
@@ -37,7 +37,7 @@ export default (state = filtersReducerDefaultState, action) => {
                 fullName: {
                     ...state.fullName,
                     data: action.fullName,
-                }
+                },
             };
         case 'SET_FILTER_HOUSING_FILE_ADDRESS':
             return {
@@ -45,7 +45,7 @@ export default (state = filtersReducerDefaultState, action) => {
                 address: {
                     ...state.address,
                     data: action.address,
-                }
+                },
             };
         case 'SET_FILTER_HOUSING_FILE_BUILDING_TYPE':
             return {
@@ -53,7 +53,7 @@ export default (state = filtersReducerDefaultState, action) => {
                 buildingTypeId: {
                     ...state.buildingTypeId,
                     data: action.buildingTypeId,
-                }
+                },
             };
         case 'SET_FILTER_HOUSING_FILE_ENERGY_LABEL':
             return {
@@ -61,7 +61,7 @@ export default (state = filtersReducerDefaultState, action) => {
                 energyLabelId: {
                     ...state.energyLabelId,
                     data: action.energyLabelId,
-                }
+                },
             };
         case 'CLEAR_FILTER_HOUSING_FILES':
             return {

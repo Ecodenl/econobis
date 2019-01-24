@@ -6,16 +6,16 @@ import DataTableBody from '../../../components/dataTable/DataTableBody';
 import QuotationRequestsListHead from './QuotationRequestsListHead';
 import QuotationRequestsListFilter from './QuotationRequestsListFilter';
 import QuotationRequestsListItem from './QuotationRequestsListItem';
-import DataTablePagination from "../../../components/dataTable/DataTablePagination";
-import {connect} from "react-redux";
+import DataTablePagination from '../../../components/dataTable/DataTablePagination';
+import { connect } from 'react-redux';
 
 class QuotationRequestsList extends Component {
-    constructor(props){
+    constructor(props) {
         super(props);
-    };
+    }
 
     // On key Enter filter form will submit
-    handleKeyUp = (e) => {
+    handleKeyUp = e => {
         if (e.keyCode === 13) {
             this.props.onSubmitFilter();
         }
@@ -29,14 +29,11 @@ class QuotationRequestsList extends Component {
 
         if (this.props.hasError) {
             loadingText = 'Fout bij het ophalen van offerteverzoeken.';
-        }
-        else if (this.props.isLoading) {
+        } else if (this.props.isLoading) {
             loadingText = 'Gegevens aan het laden.';
-        }
-        else if (data.length === 0) {
+        } else if (data.length === 0) {
             loadingText = 'Geen offerteverzoeken gevonden!';
-        }
-        else {
+        } else {
             loading = false;
         }
 
@@ -47,23 +44,18 @@ class QuotationRequestsList extends Component {
                         <QuotationRequestsListHead
                             refreshQuotationRequestsData={() => this.props.refreshQuotationRequestsData()}
                         />
-                        <QuotationRequestsListFilter
-                            onSubmitFilter={this.props.onSubmitFilter}
-                        />
+                        <QuotationRequestsListFilter onSubmitFilter={this.props.onSubmitFilter} />
                     </DataTableHead>
                     <DataTableBody>
-                        {
-                            loading ? (
-                                <tr><td colSpan={10}>{loadingText}</td></tr>
-                            ) : (
-                                data.map((quotationRequest) => {
-                                    return <QuotationRequestsListItem
-                                        key={quotationRequest.id}
-                                        {...quotationRequest}
-                                    />
-                                })
-                            )
-                        }
+                        {loading ? (
+                            <tr>
+                                <td colSpan={10}>{loadingText}</td>
+                            </tr>
+                        ) : (
+                            data.map(quotationRequest => {
+                                return <QuotationRequestsListItem key={quotationRequest.id} {...quotationRequest} />;
+                            })
+                        )}
                     </DataTableBody>
                 </DataTable>
                 <div className="col-md-4 col-md-offset-4">
@@ -75,14 +67,14 @@ class QuotationRequestsList extends Component {
                 </div>
             </form>
         );
-    };
+    }
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         isLoading: state.loadingData.isLoading,
         hasError: state.loadingData.hasError,
-    }
+    };
 };
 
 export default connect(mapStateToProps)(QuotationRequestsList);

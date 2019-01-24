@@ -26,14 +26,14 @@ const filtersReducerDefaultState = {
 };
 
 export default (state = filtersReducerDefaultState, action) => {
-    switch(action.type) {
+    switch (action.type) {
         case 'SET_FILTER_DOCUMENT_NUMBER':
             return {
                 ...state,
                 number: {
                     ...state.number,
                     data: action.number,
-                }
+                },
             };
         case 'SET_FILTER_DOCUMENT_DATE':
             return {
@@ -41,7 +41,7 @@ export default (state = filtersReducerDefaultState, action) => {
                 date: {
                     ...state.date,
                     data: action.date,
-                }
+                },
             };
         case 'SET_FILTER_DOCUMENT_FILENAME':
             return {
@@ -49,7 +49,7 @@ export default (state = filtersReducerDefaultState, action) => {
                 filename: {
                     ...state.filename,
                     data: action.filename,
-                }
+                },
             };
         case 'SET_FILTER_DOCUMENT_CONTACT':
             return {
@@ -57,7 +57,7 @@ export default (state = filtersReducerDefaultState, action) => {
                 contact: {
                     ...state.contact,
                     data: action.contact,
-                }
+                },
             };
         case 'SET_FILTER_DOCUMENT_DOCUMENT_TYPE':
             return {
@@ -65,7 +65,7 @@ export default (state = filtersReducerDefaultState, action) => {
                 documentType: {
                     ...state.documentType,
                     data: action.documentType,
-                }
+                },
             };
         case 'SET_FILTER_DOCUMENT_DOCUMENT_GROUP':
             return {
@@ -73,7 +73,7 @@ export default (state = filtersReducerDefaultState, action) => {
                 documentGroup: {
                     ...state.documentGroup,
                     data: action.documentGroup,
-                }
+                },
             };
         case 'CLEAR_FILTER_DOCUMENT':
             return {

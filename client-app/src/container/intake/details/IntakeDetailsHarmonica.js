@@ -1,14 +1,14 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import { hashHistory } from 'react-router';
 import { connect } from 'react-redux';
 
-import TaskHarmonica from "./harmonica/TaskHarmonica";
-import NoteHarmonica from "./harmonica/NoteHarmonica";
-import DocumentHarmonica from "./harmonica/DocumentHarmonica";
-import EmailHarmonica from "./harmonica/EmailHarmonica";
+import TaskHarmonica from './harmonica/TaskHarmonica';
+import NoteHarmonica from './harmonica/NoteHarmonica';
+import DocumentHarmonica from './harmonica/DocumentHarmonica';
+import EmailHarmonica from './harmonica/EmailHarmonica';
 
 class IntakeDetailsHarmonica extends Component {
-    constructor(props){
+    constructor(props) {
         super(props);
 
         this.state = {
@@ -26,23 +26,25 @@ class IntakeDetailsHarmonica extends Component {
         this.newDocument = this.newDocument.bind(this);
         this.newEmail = this.newEmail.bind(this);
         this.toggleShowList = this.toggleShowList.bind(this);
-    };
+    }
 
     newTask() {
         hashHistory.push(`/taak/nieuw/intake/${this.props.id}`);
-    };
+    }
 
     newNote() {
         hashHistory.push(`/taak/nieuw/afgehandeld/intake/${this.props.id}`);
-    };
+    }
 
     newDocument(type) {
-        hashHistory.push(`/document/nieuw/${type}/intake/${this.props.id}/contact/${this.props.intakeDetails.contact.id}`);
-    };
+        hashHistory.push(
+            `/document/nieuw/${type}/intake/${this.props.id}/contact/${this.props.intakeDetails.contact.id}`
+        );
+    }
 
     newEmail() {
         hashHistory.push(`/email/nieuw/intake/${this.props.id}/contact/${this.props.intakeDetails.contact.id}`);
-    };
+    }
 
     toggleShowList(name) {
         this.setState({
@@ -50,9 +52,9 @@ class IntakeDetailsHarmonica extends Component {
             toggleShowList: {
                 ...this.state.toggleShowList,
                 [name]: !this.state.toggleShowList[name],
-            }
+            },
         });
-    };
+    }
 
     render() {
         return (
@@ -82,11 +84,11 @@ class IntakeDetailsHarmonica extends Component {
                     emailCount={this.props.intakeDetails.emailSentCount}
                 />
             </div>
-        )
+        );
     }
-};
+}
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         intakeDetails: state.intakeDetails,
     };

@@ -18,13 +18,14 @@ import 'tinymce/plugins/textcolor';
 import { Editor } from '@tinymce/tinymce-react';
 
 const InputTinyMCE = props => {
-
     const { label, value, onChangeAction } = props;
 
     return (
         <div>
             <div className="col-sm-3">
-                <label htmlFor="quotationText" className="col-sm-12">{label}</label>
+                <label htmlFor="quotationText" className="col-sm-12">
+                    {label}
+                </label>
             </div>
             <div className="col-sm-9">
                 <Editor
@@ -34,10 +35,12 @@ const InputTinyMCE = props => {
                         language: 'nl',
                         menubar: false,
                         plugins: 'paste lists advlist link image code table textcolor pagebreak',
-                        toolbar: 'undo redo | formatselect fontselect | bold italic forecolor | alignleft aligncenter alignright | pagebreak | bullist numlist outdent indent | table | link image | code',
-                        height: "300",
-                        browser_spellcheck : true,
-                        font_formats: 'Courier New=courier new;Tahoma=tahoma;Times New Roman=times new roman;Verdana=verdana;'
+                        toolbar:
+                            'undo redo | formatselect fontselect | bold italic forecolor | alignleft aligncenter alignright | pagebreak | bullist numlist outdent indent | table | link image | code',
+                        height: '300',
+                        browser_spellcheck: true,
+                        font_formats:
+                            'Courier New=courier new;Tahoma=tahoma;Times New Roman=times new roman;Verdana=verdana;',
                     }}
                     onChange={onChangeAction}
                 />
@@ -61,4 +64,3 @@ InputTinyMCE.propTypes = {
 };
 
 export default InputTinyMCE;
-

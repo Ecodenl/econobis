@@ -1,44 +1,44 @@
-export const setFilterEmailDate = (date) => ({
+export const setFilterEmailDate = date => ({
     type: 'SET_FILTER_EMAIL_DATE',
     date,
 });
 
-export const setFilterEmailMailbox = (mailbox) => ({
+export const setFilterEmailMailbox = mailbox => ({
     type: 'SET_FILTER_EMAIL_MAILBOX',
     mailbox,
 });
 
-export const setFilterEmailSentBy = (sentBy) => ({
+export const setFilterEmailSentBy = sentBy => ({
     type: 'SET_FILTER_EMAIL_SENT_BY',
     sentBy,
 });
 
-export const setFilterEmailTo = (to) => ({
+export const setFilterEmailTo = to => ({
     type: 'SET_FILTER_EMAIL_TO',
     to,
 });
 
-export const setFilterEmailContact = (contact) => ({
+export const setFilterEmailContact = contact => ({
     type: 'SET_FILTER_EMAIL_CONTACT',
     contact,
 });
 
-export const setFilterEmailSubject = (subject) => ({
+export const setFilterEmailSubject = subject => ({
     type: 'SET_FILTER_EMAIL_SUBJECT',
     subject,
 });
 
-export const setFilterEmailStatusId = (statusId) => ({
+export const setFilterEmailStatusId = statusId => ({
     type: 'SET_FILTER_EMAIL_STATUS_ID',
     statusId,
 });
 
-export const setFilterResponsibleName = (responsibleName) => ({
+export const setFilterResponsibleName = responsibleName => ({
     type: 'SET_FILTER_EMAIL_RESPONSIBLE_NAME',
     responsibleName,
 });
 
-export const setFilterMe = (me) => ({
+export const setFilterMe = me => ({
     type: 'SET_FILTER_EMAIL_ME',
     me,
 });

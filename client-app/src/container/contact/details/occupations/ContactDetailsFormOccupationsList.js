@@ -1,7 +1,7 @@
 import React from 'react';
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 
-import ContactDetailsFormOccupationsItem from "./ContactDetailsFormOccupationsItem";
+import ContactDetailsFormOccupationsItem from './ContactDetailsFormOccupationsItem';
 
 const ContactDetailsFormOccupationsList = props => {
     return (
@@ -11,38 +11,39 @@ const ContactDetailsFormOccupationsList = props => {
                 <div className="col-sm-2">Verbinding</div>
                 <div className="col-sm-2">Begindatum</div>
                 <div className="col-sm-2">Einddatum</div>
-                <div className="col-sm-2"><span className="pull-right">Primair</span></div>
-                <div className="col-sm-1"></div>
+                <div className="col-sm-2">
+                    <span className="pull-right">Primair</span>
+                </div>
+                <div className="col-sm-1" />
             </div>
-            {
-                props.primaryOccupations.length > 0 &&
-                    props.primaryOccupations.map((primaryOccupation) => {
-                        return <ContactDetailsFormOccupationsItem
+            {props.primaryOccupations.length > 0 &&
+                props.primaryOccupations.map(primaryOccupation => {
+                    return (
+                        <ContactDetailsFormOccupationsItem
                             key={primaryOccupation.id}
                             occupation={primaryOccupation}
                             primaryOccupation={true}
-                        />;
-                    })
-            }
-            {
-                props.occupations.length > 0 &&
-                props.occupations.map((occupation) => {
-                    return <ContactDetailsFormOccupationsItem
-                        key={occupation.id}
-                        occupation={occupation}
-                        primaryOccupation={false}
-                    />;
-                })
-            }
-            {
-                props.primaryOccupations.length === 0 && props.occupations.length === 0 &&
+                        />
+                    );
+                })}
+            {props.occupations.length > 0 &&
+                props.occupations.map(occupation => {
+                    return (
+                        <ContactDetailsFormOccupationsItem
+                            key={occupation.id}
+                            occupation={occupation}
+                            primaryOccupation={false}
+                        />
+                    );
+                })}
+            {props.primaryOccupations.length === 0 && props.occupations.length === 0 && (
                 <div>Geen verbindingen bekend.</div>
-            }
+            )}
         </div>
     );
 };
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         primaryOccupations: state.contactDetails.primaryOccupations,
         occupations: state.contactDetails.occupations,

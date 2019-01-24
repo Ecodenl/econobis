@@ -1,14 +1,14 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import ParticipantTransactionAPI from '../../../../../../api/participant-production-project/ParticipantTransactionAPI';
-import {updateParticipationTransaction} from '../../../../../../actions/participants-production-project/ParticipantProductionProjectDetailsActions';
+import { updateParticipationTransaction } from '../../../../../../actions/participants-production-project/ParticipantProductionProjectDetailsActions';
 import TransactionFormView from './TransactionFormView';
 import TransactionFormEdit from './TransactionFormEdit';
 import TransactionFormDelete from './TransactionFormDelete';
-import {isEqual} from "lodash";
-import * as ibantools from "ibantools";
-import validator from "validator";
+import { isEqual } from 'lodash';
+import * as ibantools from 'ibantools';
+import validator from 'validator';
 
 class TransactionFormListItem extends Component {
     constructor(props) {
@@ -26,14 +26,14 @@ class TransactionFormListItem extends Component {
                 dateTransaction: false,
                 amount: false,
                 iban: false,
-            }
+            },
         };
 
         this.handleInputChangeDate = this.handleInputChangeDate.bind(this);
-    };
+    }
 
     componentWillReceiveProps(nextProps) {
-        if(!isEqual(this.state.participantTransaction, nextProps.participantTransaction)){
+        if (!isEqual(this.state.participantTransaction, nextProps.participantTransaction)) {
             this.setState({
                 ...this.state,
                 participantTransaction: {
@@ -41,7 +41,7 @@ class TransactionFormListItem extends Component {
                 },
             });
         }
-    };
+    }
 
     onLineEnter = () => {
         this.setState({
@@ -58,24 +58,24 @@ class TransactionFormListItem extends Component {
     };
 
     openEdit = () => {
-        this.setState({showEdit: true});
+        this.setState({ showEdit: true });
     };
 
     closeEdit = () => {
-        this.setState({showEdit: false});
+        this.setState({ showEdit: false });
     };
 
     cancelEdit = () => {
         this.setState({
             ...this.state,
-            participantTransaction: {...this.props.participantTransaction},
+            participantTransaction: { ...this.props.participantTransaction },
         });
 
         this.closeEdit();
     };
 
     toggleDelete = () => {
-        this.setState({showDelete: !this.state.showDelete});
+        this.setState({ showDelete: !this.state.showDelete });
     };
 
     handleInputChange = event => {
@@ -87,7 +87,7 @@ class TransactionFormListItem extends Component {
             ...this.state,
             participantTransaction: {
                 ...this.state.participantTransaction,
-                [name]: value
+                [name]: value,
             },
         });
     };
@@ -97,10 +97,10 @@ class TransactionFormListItem extends Component {
             ...this.state,
             participantTransaction: {
                 ...this.state.participantTransaction,
-                [name]: value
+                [name]: value,
             },
         });
-    };
+    }
 
     handleSubmit = event => {
         event.preventDefault();
@@ -108,19 +108,19 @@ class TransactionFormListItem extends Component {
         let errors = {};
         let hasErrors = false;
 
-        const {participantTransaction} = this.state;
+        const { participantTransaction } = this.state;
 
-        if(validator.isEmpty(participantTransaction.dateTransaction + '')){
+        if (validator.isEmpty(participantTransaction.dateTransaction + '')) {
             errors.dateTransaction = true;
             hasErrors = true;
-        };
+        }
 
-        if(validator.isEmpty(participantTransaction.amount  + '')){
+        if (validator.isEmpty(participantTransaction.amount + '')) {
             errors.amount = true;
             hasErrors = true;
-        };
+        }
 
-        if(participantTransaction.iban && !validator.isEmpty(participantTransaction.iban + '')){
+        if (participantTransaction.iban && !validator.isEmpty(participantTransaction.iban + '')) {
             if (!ibantools.isValidIBAN(participantTransaction.iban + '')) {
                 errors.iban = true;
                 hasErrors = true;
@@ -131,10 +131,10 @@ class TransactionFormListItem extends Component {
 
         // If no errors send form
         !hasErrors &&
-        ParticipantTransactionAPI.updateParticipantTransaction(participantTransaction).then((payload) => {
-            this.props.updateParticipationTransaction(payload);
-            this.closeEdit();
-        });
+            ParticipantTransactionAPI.updateParticipantTransaction(participantTransaction).then(payload => {
+                this.props.updateParticipationTransaction(payload);
+                this.closeEdit();
+            });
     };
 
     render() {
@@ -149,8 +149,7 @@ class TransactionFormListItem extends Component {
                     toggleDelete={this.toggleDelete}
                     participantTransaction={this.state.participantTransaction}
                 />
-                {
-                    this.state.showEdit && this.props.permissions.manageFinancial &&
+                {this.state.showEdit && this.props.permissions.manageFinancial && (
                     <TransactionFormEdit
                         participantTransaction={this.state.participantTransaction}
                         handleInputChange={this.handleInputChange}
@@ -159,29 +158,31 @@ class TransactionFormListItem extends Component {
                         cancelEdit={this.cancelEdit}
                         errors={this.state.errors}
                     />
-                }
-                {
-                    this.state.showDelete && this.props.permissions.manageFinancial &&
+                )}
+                {this.state.showDelete && this.props.permissions.manageFinancial && (
                     <TransactionFormDelete
                         closeDeleteItemModal={this.toggleDelete}
                         {...this.props.participantTransaction}
                     />
-                }
+                )}
             </div>
         );
     }
-};
+}
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         permissions: state.meDetails.permissions,
-    }
+    };
 };
 
 const mapDispatchToProps = dispatch => ({
-    updateParticipationTransaction: (participationTransaction) => {
+    updateParticipationTransaction: participationTransaction => {
         dispatch(updateParticipationTransaction(participationTransaction));
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(TransactionFormListItem);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(TransactionFormListItem);

@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import validator from 'validator';
 import uuid from 'uuid';
@@ -8,10 +8,10 @@ moment.locale('nl');
 import { updateWebform } from '../../../../actions/webform/WebformDetailsActions';
 import InputText from '../../../../components/form/InputText';
 import ButtonText from '../../../../components/button/ButtonText';
-import Panel from "../../../../components/panel/Panel";
-import PanelBody from "../../../../components/panel/PanelBody";
-import InputDate from "../../../../components/form/InputDate";
-import InputSelectGroup from "../../../../components/form/InputSelectGroup";
+import Panel from '../../../../components/panel/Panel';
+import PanelBody from '../../../../components/panel/PanelBody';
+import InputDate from '../../../../components/form/InputDate';
+import InputSelectGroup from '../../../../components/form/InputSelectGroup';
 
 class WebformDetailsFormGeneralEdit extends Component {
     constructor(props) {
@@ -20,7 +20,9 @@ class WebformDetailsFormGeneralEdit extends Component {
         this.state = {
             webform: {
                 ...props.webformDetails,
-                responsible: props.webformDetails.responsibleUserId ? 'user' + props.webformDetails.responsibleUserId : 'team' + props.webformDetails.responsibleTeamId,
+                responsible: props.webformDetails.responsibleUserId
+                    ? 'user' + props.webformDetails.responsibleUserId
+                    : 'team' + props.webformDetails.responsibleTeamId,
                 dateStart: props.webformDetails.dateStart ? props.webformDetails.dateStart.date : '',
                 dateEnd: props.webformDetails.dateEnd ? props.webformDetails.dateEnd.date : '',
                 apiKeyDate: props.webformDetails.apiKeyDate ? props.webformDetails.apiKeyDate.date : '',
@@ -34,7 +36,7 @@ class WebformDetailsFormGeneralEdit extends Component {
         this.handleInputChangeDate = this.handleInputChangeDate.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.refreshKey = this.refreshKey.bind(this);
-    };
+    }
 
     handleInputChange(event) {
         const target = event.target;
@@ -45,10 +47,10 @@ class WebformDetailsFormGeneralEdit extends Component {
             ...this.state,
             webform: {
                 ...this.state.webform,
-                [name]: value
+                [name]: value,
             },
         });
-    };
+    }
 
     refreshKey() {
         this.setState({
@@ -66,51 +68,50 @@ class WebformDetailsFormGeneralEdit extends Component {
             ...this.state,
             webform: {
                 ...this.state.webform,
-                [name]: value
+                [name]: value,
             },
         });
-    };
+    }
 
     handleSubmit(event) {
         event.preventDefault();
 
-        const { webform }  = this.state;
+        const { webform } = this.state;
 
         // Validation
         let errors = {};
         let hasErrors = false;
 
-        if(validator.isEmpty(webform.name)){
+        if (validator.isEmpty(webform.name)) {
             errors.name = true;
             hasErrors = true;
-        };
+        }
 
-        if(validator.isEmpty(webform.maxRequestsPerMinute.toString())){
+        if (validator.isEmpty(webform.maxRequestsPerMinute.toString())) {
             errors.maxRequestsPerMinute = true;
             hasErrors = true;
-        };
+        }
 
-        if(validator.isEmpty(webform.responsible)){
+        if (validator.isEmpty(webform.responsible)) {
             errors.responsible = true;
             hasErrors = true;
-        };
+        }
 
-        if(webform.responsible.search('user') >= 0 ) {
+        if (webform.responsible.search('user') >= 0) {
             webform.responsibleUserId = webform.responsible.replace('user', '');
             webform.responsibleTeamId = '';
-        };
+        }
 
-        if(webform.responsible.search("team") >= 0) {
+        if (webform.responsible.search('team') >= 0) {
             webform.responsibleUserId = '';
             webform.responsibleTeamId = webform.responsible.replace('team', '');
-        };
+        }
 
         this.setState({ ...this.state, errors: errors });
 
         // If no errors send form
-        !hasErrors &&
-            this.props.updateWebform(webform, this.props.switchToView);
-    };
+        !hasErrors && this.props.updateWebform(webform, this.props.switchToView);
+    }
 
     render() {
         const { name, apiKey, apiKeyDate, maxRequestsPerMinute, dateStart, dateEnd, responsible } = this.state.webform;
@@ -122,29 +123,35 @@ class WebformDetailsFormGeneralEdit extends Component {
                         <div className="row">
                             <InputText
                                 label="Naam"
-                                name={"name"}
+                                name={'name'}
                                 value={name}
                                 onChangeAction={this.handleInputChange}
-                                required={"required"}
+                                required={'required'}
                                 error={this.state.errors.name}
                             />
                             <InputText
                                 label="Sleutel"
-                                name={"apiKey"}
+                                name={'apiKey'}
                                 value={apiKey}
                                 onChangeAction={this.handleInputChange}
                                 readOnly={true}
                             />
-                            <span className="glyphicon glyphicon-refresh mybtn-success" style={{top: '5px'}} role="button" onClick={this.refreshKey} title={'Ververs sleutel'} />
+                            <span
+                                className="glyphicon glyphicon-refresh mybtn-success"
+                                style={{ top: '5px' }}
+                                role="button"
+                                onClick={this.refreshKey}
+                                title={'Ververs sleutel'}
+                            />
                         </div>
                         <div className="row">
                             <InputText
                                 label="Aanvragen per minuut"
-                                type={"number"}
-                                name={"maxRequestsPerMinute"}
+                                type={'number'}
+                                name={'maxRequestsPerMinute'}
                                 value={maxRequestsPerMinute}
                                 onChangeAction={this.handleInputChange}
-                                required={"required"}
+                                required={'required'}
                                 error={this.state.errors.maxRequestsPerMinute}
                             />
                             <InputText
@@ -170,14 +177,22 @@ class WebformDetailsFormGeneralEdit extends Component {
                             />
                         </div>
                         <div className="row">
-                           <InputSelectGroup
-                                label={"Verantwoordelijke"}
-                                size={"col-sm-6"}
-                                name={"responsible"}
-                                optionsInGroups={[{name: 'user', label: 'Gebruikers', options: this.props.users, optionName: 'fullName'}, {name: 'team', label: 'Team', options: this.props.teams}]}
+                            <InputSelectGroup
+                                label={'Verantwoordelijke'}
+                                size={'col-sm-6'}
+                                name={'responsible'}
+                                optionsInGroups={[
+                                    {
+                                        name: 'user',
+                                        label: 'Gebruikers',
+                                        options: this.props.users,
+                                        optionName: 'fullName',
+                                    },
+                                    { name: 'team', label: 'Team', options: this.props.teams },
+                                ]}
                                 value={responsible}
                                 onChangeAction={this.handleInputChange}
-                                required={"required"}
+                                required={'required'}
                                 error={this.state.errors.responsible}
                             />
                         </div>
@@ -185,17 +200,26 @@ class WebformDetailsFormGeneralEdit extends Component {
 
                     <PanelBody>
                         <div className="pull-right btn-group" role="group">
-                            <ButtonText buttonClassName={"btn-default"} buttonText={"Sluiten"} onClickAction={this.props.switchToView}/>
-                            <ButtonText buttonText={"Opslaan"} onClickAction={this.handleSubmit} type={"submit"} value={"Submit"}/>
+                            <ButtonText
+                                buttonClassName={'btn-default'}
+                                buttonText={'Sluiten'}
+                                onClickAction={this.props.switchToView}
+                            />
+                            <ButtonText
+                                buttonText={'Opslaan'}
+                                onClickAction={this.handleSubmit}
+                                type={'submit'}
+                                value={'Submit'}
+                            />
                         </div>
                     </PanelBody>
                 </Panel>
             </form>
         );
-    };
-};
+    }
+}
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         webformDetails: state.webformDetails,
         teams: state.systemData.teams,
@@ -209,4 +233,7 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(WebformDetailsFormGeneralEdit);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(WebformDetailsFormGeneralEdit);

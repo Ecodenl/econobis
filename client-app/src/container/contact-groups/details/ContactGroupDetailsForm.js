@@ -1,13 +1,13 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { isEmpty } from 'lodash';
 
 import ContactGroupDetailsFormGeneral from './general/ContactGroupDetailsFormGeneral';
 
 class ContactGroupDetailsForm extends Component {
-    constructor(props){
+    constructor(props) {
         super(props);
-    };
+    }
 
     render() {
         let loadingText = '';
@@ -15,29 +15,24 @@ class ContactGroupDetailsForm extends Component {
 
         if (this.props.hasError) {
             loadingText = 'Fout bij het ophalen van groep.';
-        }
-        else if (isEmpty(this.props.contactGroupDetails)) {
+        } else if (isEmpty(this.props.contactGroupDetails)) {
             loadingText = 'Gegevens aan het laden.';
-        }
-        else if (isEmpty(this.props.contactGroupDetails)) {
+        } else if (isEmpty(this.props.contactGroupDetails)) {
             loadingText = 'Geen groep gevonden!';
-        }
-        else {
+        } else {
             loading = false;
         }
-        return (
-            loading ?
-                <div>{loadingText}</div>
-                :
-                <div>
-                    <ContactGroupDetailsFormGeneral
-                    mode={this.props.mode}/>
-                </div>
+        return loading ? (
+            <div>{loadingText}</div>
+        ) : (
+            <div>
+                <ContactGroupDetailsFormGeneral mode={this.props.mode} />
+            </div>
         );
     }
-};
+}
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         contactGroupDetails: state.contactGroupDetails,
         isLoading: state.loadingData.isLoading,
@@ -45,4 +40,7 @@ const mapStateToProps = (state) => {
     };
 };
 
-export default connect(mapStateToProps, null)(ContactGroupDetailsForm);
+export default connect(
+    mapStateToProps,
+    null
+)(ContactGroupDetailsForm);

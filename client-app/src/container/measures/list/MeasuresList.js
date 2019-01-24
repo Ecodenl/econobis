@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import DataTable from '../../../components/dataTable/DataTable';
@@ -9,9 +9,9 @@ import DataTableHeadTitle from '../../../components/dataTable/DataTableHeadTitle
 import MeasuresListItem from './MeasuresListItem';
 
 class MeasuresList extends Component {
-    constructor(props){
+    constructor(props) {
         super(props);
-    };
+    }
 
     render() {
         let loadingText = '';
@@ -19,51 +19,41 @@ class MeasuresList extends Component {
 
         if (this.props.hasError) {
             loadingText = 'Fout bij het ophalen van maatregelen.';
-        }
-        else if (this.props.isLoading) {
+        } else if (this.props.isLoading) {
             loadingText = 'Gegevens aan het laden.';
-        }
-        else if (this.props.measures.length === 0) {
+        } else if (this.props.measures.length === 0) {
             loadingText = 'Geen maatregelen gevonden!';
-        }
-        else {
+        } else {
             loading = false;
         }
 
         return (
-    <div>
-        <DataTable>
-            <DataTableHead>
-                <tr className="thead-title-quaternary">
-                    <DataTableHeadTitle title={'Nummer'} width={'20%'}/>
-                    <DataTableHeadTitle title={'Maatregel categorie'} width={'37%'}/>
-                    <DataTableHeadTitle title={'Maatregel'} width={'37%'}/>
-                    <DataTableHeadTitle title={''} width={'6%'}/>
-                </tr>
-            </DataTableHead>
-            <DataTableBody>
-                {
-                    loading ? (
-                        <tr>
-                            <td colSpan={4}>{loadingText}</td>
+            <div>
+                <DataTable>
+                    <DataTableHead>
+                        <tr className="thead-title-quaternary">
+                            <DataTableHeadTitle title={'Nummer'} width={'20%'} />
+                            <DataTableHeadTitle title={'Maatregel categorie'} width={'37%'} />
+                            <DataTableHeadTitle title={'Maatregel'} width={'37%'} />
+                            <DataTableHeadTitle title={''} width={'6%'} />
                         </tr>
-                    ) : (
-                        this.props.measures.map(measure => (
-                            <MeasuresListItem
-                                key={measure.id}
-                                {...measure}
-                            />
-                        ))
-                    )
-                }
-            </DataTableBody>
-        </DataTable>
-    </div>
+                    </DataTableHead>
+                    <DataTableBody>
+                        {loading ? (
+                            <tr>
+                                <td colSpan={4}>{loadingText}</td>
+                            </tr>
+                        ) : (
+                            this.props.measures.map(measure => <MeasuresListItem key={measure.id} {...measure} />)
+                        )}
+                    </DataTableBody>
+                </DataTable>
+            </div>
         );
-    };
+    }
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         measures: state.measures,
         isLoading: state.loadingData.isLoading,
@@ -71,5 +61,7 @@ const mapStateToProps = (state) => {
     };
 };
 
-export default connect(mapStateToProps, null)(MeasuresList);
-
+export default connect(
+    mapStateToProps,
+    null
+)(MeasuresList);

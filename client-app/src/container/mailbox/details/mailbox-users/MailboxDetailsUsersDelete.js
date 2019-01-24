@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import Modal from '../../../../components/modal/Modal';
 import { deleteMailboxUser } from '../../../../actions/mailbox/MailboxDetailsActions';
 
-const MailboxDetailsUsersDelete = (props) => {
+const MailboxDetailsUsersDelete = props => {
     const confirmAction = () => {
         props.deleteMailboxUser(props.mailboxId, props.userId);
         props.toggleDelete();
@@ -19,12 +19,11 @@ const MailboxDetailsUsersDelete = (props) => {
             title="Verwijderen"
         >
             <p>Wil je deze gebruiker ontkoppelen van deze mailbox?</p>
-
         </Modal>
     );
 };
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         mailboxId: state.mailboxDetails.id,
     };
@@ -36,4 +35,7 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(MailboxDetailsUsersDelete);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(MailboxDetailsUsersDelete);

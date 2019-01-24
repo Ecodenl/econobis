@@ -6,16 +6,16 @@ import DataTableBody from '../../../components/dataTable/DataTableBody';
 import AuditTrailListHead from './AuditTrailListHead';
 import AuditTrailListFilter from './AuditTrailListFilter';
 import AuditTrailListItem from './AuditTrailListItem';
-import DataTablePagination from "../../../components/dataTable/DataTablePagination";
-import {connect} from "react-redux";
+import DataTablePagination from '../../../components/dataTable/DataTablePagination';
+import { connect } from 'react-redux';
 
 class AuditTrailList extends Component {
-    constructor(props){
+    constructor(props) {
         super(props);
-    };
+    }
 
     // On key Enter filter form will submit
-    handleKeyUp = (e) => {
+    handleKeyUp = e => {
         if (e.keyCode === 13) {
             this.props.onSubmitFilter();
         }
@@ -29,14 +29,11 @@ class AuditTrailList extends Component {
 
         if (this.props.hasError) {
             loadingText = 'Fout bij het ophalen van audit trail.';
-        }
-        else if (this.props.isLoading) {
+        } else if (this.props.isLoading) {
             loadingText = 'Gegevens aan het laden.';
-        }
-        else if (data.length === 0) {
+        } else if (data.length === 0) {
             loadingText = 'Geen audit trail gevonden!';
-        }
-        else {
+        } else {
             loading = false;
         }
 
@@ -45,27 +42,22 @@ class AuditTrailList extends Component {
                 <form onKeyUp={this.handleKeyUp}>
                     <DataTable>
                         <DataTableHead>
-                            <AuditTrailListHead
-                                fetchAuditTrailData={() => this.props.fetchAuditTrailData()}
-                            />
+                            <AuditTrailListHead fetchAuditTrailData={() => this.props.fetchAuditTrailData()} />
                             <AuditTrailListFilter
                                 onSubmitFilter={this.props.onSubmitFilter}
                                 models={this.props.models}
                             />
                         </DataTableHead>
                         <DataTableBody>
-                            {
-                                loading ? (
-                                    <tr><td colSpan={7}>{loadingText}</td></tr>
-                                ) : (
-                                    data.map((auditTrail) => {
-                                        return <AuditTrailListItem
-                                            key={auditTrail.id}
-                                            {...auditTrail}
-                                        />
-                                    })
-                                )
-                            }
+                            {loading ? (
+                                <tr>
+                                    <td colSpan={7}>{loadingText}</td>
+                                </tr>
+                            ) : (
+                                data.map(auditTrail => {
+                                    return <AuditTrailListItem key={auditTrail.id} {...auditTrail} />;
+                                })
+                            )}
                         </DataTableBody>
                     </DataTable>
                     <div className="col-md-6 col-md-offset-3">
@@ -78,14 +70,14 @@ class AuditTrailList extends Component {
                 </form>
             </div>
         );
-    };
+    }
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         isLoading: state.loadingData.isLoading,
         hasError: state.loadingData.hasError,
-    }
+    };
 };
 
 export default connect(mapStateToProps)(AuditTrailList);

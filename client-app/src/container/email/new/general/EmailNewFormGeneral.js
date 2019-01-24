@@ -1,14 +1,27 @@
 import React from 'react';
 
-import Panel from "../../../../components/panel/Panel";
-import PanelBody from "../../../../components/panel/PanelBody";
-import InputTinyMCE from "../../../../components/form/InputTinyMCE";
-import InputMultiSelectCreate from "../../../../components/form/InputMultiSelectCreate";
+import Panel from '../../../../components/panel/Panel';
+import PanelBody from '../../../../components/panel/PanelBody';
+import InputTinyMCE from '../../../../components/form/InputTinyMCE';
+import InputMultiSelectCreate from '../../../../components/form/InputMultiSelectCreate';
 
-import InputMultiSelect from "../../../../components/form/InputMultiSelect";
-import InputTinyMCEUpdateable from "../../../../components/form/InputTinyMCEUpdateable";
+import InputMultiSelect from '../../../../components/form/InputMultiSelect';
+import InputTinyMCEUpdateable from '../../../../components/form/InputTinyMCEUpdateable';
 
-const EmailNewFormGeneral = ({email, emailAddresses, mailboxAddresses, emailTemplates, errors,handleFromIds,  handleToIds, handleEmailTemplates, handleCcIds, handleBccIds, handleInputChange, handleTextChange}) => {
+const EmailNewFormGeneral = ({
+    email,
+    emailAddresses,
+    mailboxAddresses,
+    emailTemplates,
+    errors,
+    handleFromIds,
+    handleToIds,
+    handleEmailTemplates,
+    handleCcIds,
+    handleBccIds,
+    handleInputChange,
+    handleTextChange,
+}) => {
     const { from, to, cc, bcc, subject, htmlBody, emailTemplateId } = email;
 
     return (
@@ -17,12 +30,12 @@ const EmailNewFormGeneral = ({email, emailAddresses, mailboxAddresses, emailTemp
                 <div className="row">
                     <InputMultiSelect
                         label="Van selecteren"
-                        name={"from"}
+                        name={'from'}
                         value={from}
                         options={mailboxAddresses}
-                        optionName={"email"}
+                        optionName={'email'}
                         onChangeAction={handleFromIds}
-                        required={"required"}
+                        required={'required'}
                         error={errors.from}
                         multi={false}
                     />
@@ -30,40 +43,40 @@ const EmailNewFormGeneral = ({email, emailAddresses, mailboxAddresses, emailTemp
                 <div className="row">
                     <InputMultiSelectCreate
                         label="Aan selecteren"
-                        name={"to"}
+                        name={'to'}
                         value={to}
                         options={emailAddresses}
-                        optionName={"name"}
+                        optionName={'name'}
                         onChangeAction={handleToIds}
                         allowCreate={true}
-                        required={"required"}
+                        required={'required'}
                         error={errors.to}
                     />
                 </div>
                 <div className="row">
                     <InputMultiSelectCreate
                         label="Cc selecteren"
-                        name={"cc"}
+                        name={'cc'}
                         value={cc}
                         options={emailAddresses}
-                        optionName={"name"}
+                        optionName={'name'}
                         onChangeAction={handleCcIds}
                     />
                 </div>
                 <div className="row">
                     <InputMultiSelectCreate
                         label="Bcc selecteren"
-                        name={"bcc"}
+                        name={'bcc'}
                         value={bcc}
                         options={emailAddresses}
-                        optionName={"name"}
+                        optionName={'name'}
                         onChangeAction={handleBccIds}
                     />
                 </div>
                 <div className="row">
                     <InputMultiSelect
                         label="Template"
-                        name={"emailTemplateId"}
+                        name={'emailTemplateId'}
                         value={emailTemplateId}
                         options={emailTemplates}
                         onChangeAction={handleEmailTemplates}
@@ -77,13 +90,13 @@ const EmailNewFormGeneral = ({email, emailAddresses, mailboxAddresses, emailTemp
                                 <label className="col-sm-12 required">Onderwerp</label>
                             </div>
                             <div className="col-sm-9">
-                                    <input
-                                        type="text"
-                                        className={`form-control input-sm ${errors.subject ? 'has-error' : ''}`}
-                                        name="subject"
-                                        value={subject}
-                                        onChange={ handleInputChange }
-                                    />
+                                <input
+                                    type="text"
+                                    className={`form-control input-sm ${errors.subject ? 'has-error' : ''}`}
+                                    name="subject"
+                                    value={subject}
+                                    onChange={handleInputChange}
+                                />
                             </div>
                         </div>
                     </div>
@@ -92,7 +105,7 @@ const EmailNewFormGeneral = ({email, emailAddresses, mailboxAddresses, emailTemp
                     <div className="form-group col-sm-12">
                         <div className="row">
                             <InputTinyMCEUpdateable
-                                label={"Tekst"}
+                                label={'Tekst'}
                                 value={htmlBody}
                                 onChangeAction={handleTextChange}
                             />

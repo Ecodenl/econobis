@@ -3,7 +3,7 @@ import axios from 'axios';
 const URL_TASK = `${URL_API}/api/task`;
 
 export default {
-    fetchTaskDetails: (id) => {
+    fetchTaskDetails: id => {
         const requestUrl = `${URL_TASK}/${id}`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
@@ -11,7 +11,7 @@ export default {
         return axios.get(requestUrl);
     },
 
-    newTask: (task) => {
+    newTask: task => {
         const requestUrl = URL_TASK;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
@@ -19,7 +19,7 @@ export default {
         return axios.post(requestUrl, task);
     },
 
-    updateTask: (task) => {
+    updateTask: task => {
         const requestUrl = `${URL_TASK}/${task.id}`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
@@ -27,7 +27,7 @@ export default {
         return axios.post(requestUrl, task);
     },
 
-    duplicateTask: (id) => {
+    duplicateTask: id => {
         const requestUrl = `${URL_TASK}/${id}/duplicate`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
@@ -35,7 +35,7 @@ export default {
         return axios.post(requestUrl);
     },
 
-    deleteTask: (id) => {
+    deleteTask: id => {
         const requestUrl = `${URL_TASK}/${id}/delete`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
@@ -66,12 +66,11 @@ export default {
         return axios.post(requestUrl, file);
     },
 
-    downloadAttachment: (id) => {
+    downloadAttachment: id => {
         const requestUrl = `${URL_API}/api/task-attachment/${id}/download`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios.get(requestUrl, {responseType: 'blob'});
-    }
-
+        return axios.get(requestUrl, { responseType: 'blob' });
+    },
 };

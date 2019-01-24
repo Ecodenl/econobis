@@ -1,7 +1,7 @@
 import React from 'react';
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 
-import MeasureDetailsSupplierItem from "./MeasureDetailsSupplierItem";
+import MeasureDetailsSupplierItem from './MeasureDetailsSupplierItem';
 
 const MeasureDetailsSuppliersList = props => {
     return (
@@ -9,27 +9,22 @@ const MeasureDetailsSuppliersList = props => {
             <div className="row border header">
                 <div className="col-sm-5">Organisatie</div>
                 <div className="col-sm-6">Plaats</div>
-                <div className="col-sm-1"></div>
+                <div className="col-sm-1" />
             </div>
-            {
-                props.suppliers.length > 0 ?
-                    props.suppliers.map(supplier => {
-                        return <MeasureDetailsSupplierItem
-                            key={supplier.id}
-                            supplier={supplier}
-                        />;
-                    })
-                    :
-                    <div>Geen leveranciers bekend.</div>
-            }
+            {props.suppliers.length > 0 ? (
+                props.suppliers.map(supplier => {
+                    return <MeasureDetailsSupplierItem key={supplier.id} supplier={supplier} />;
+                })
+            ) : (
+                <div>Geen leveranciers bekend.</div>
+            )}
         </div>
     );
 };
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         suppliers: state.measureDetails.suppliers,
     };
 };
 export default connect(mapStateToProps)(MeasureDetailsSuppliersList);
-

@@ -9,6 +9,6 @@ export const fetchNotes = (filters, sorts, pagination) => {
 
 export const clearNotes = () => {
     return {
-        type: 'CLEAR_NOTES'
+        type: 'CLEAR_NOTES',
     };
 };

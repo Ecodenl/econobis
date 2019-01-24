@@ -1,19 +1,19 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import { hashHistory } from 'react-router';
 import validator from 'validator';
-import * as ibantools from "ibantools";
+import * as ibantools from 'ibantools';
 
 import InputText from '../../../../components/form/InputText';
 import ButtonText from '../../../../components/button/ButtonText';
-import PanelBody from "../../../../components/panel/PanelBody";
-import Panel from "../../../../components/panel/Panel";
+import PanelBody from '../../../../components/panel/PanelBody';
+import Panel from '../../../../components/panel/Panel';
 import OrderDetailsAPI from '../../../../api/order/OrderDetailsAPI';
-import {connect} from "react-redux";
-import InputSelect from "../../../../components/form/InputSelect";
-import ContactsAPI from "../../../../api/contact/ContactsAPI";
-import EmailTemplateAPI from "../../../../api/email-template/EmailTemplateAPI";
-import InputReactSelect from "../../../../components/form/InputReactSelect";
-import InputDate from "../../../../components/form/InputDate";
+import { connect } from 'react-redux';
+import InputSelect from '../../../../components/form/InputSelect';
+import ContactsAPI from '../../../../api/contact/ContactsAPI';
+import EmailTemplateAPI from '../../../../api/email-template/EmailTemplateAPI';
+import InputReactSelect from '../../../../components/form/InputReactSelect';
+import InputDate from '../../../../components/form/InputDate';
 import moment from 'moment';
 
 moment.locale('nl');
@@ -62,10 +62,10 @@ class OrderNewForm extends Component {
 
         this.handleReactSelectChange = this.handleReactSelectChange.bind(this);
         this.handleReactSelectContactIdChange = this.handleReactSelectContactIdChange.bind(this);
-    };
+    }
 
     componentWillMount() {
-        ContactsAPI.getContactsPeek().then((payload) => {
+        ContactsAPI.getContactsPeek().then(payload => {
             this.setState({
                 contacts: payload,
                 peekLoading: {
@@ -76,21 +76,21 @@ class OrderNewForm extends Component {
         });
 
         this.state.order.contactId &&
-        OrderDetailsAPI.fetchContactInfoForOrder(this.state.order.contactId).then((payload) => {
-            this.setState({
-                ...this.state,
-                contactPerson: payload.data.contactPerson,
-                contactEmail: payload.data.email,
-                order: {
-                    ...this.state.order,
-                    // Uitgezet 05-10-2018, is niet gewenst?
-                    // IBAN: payload.data.iban,
-                    // ibanAttn: payload.data.ibanAttn ? payload.data.ibanAttn : ''
-                },
+            OrderDetailsAPI.fetchContactInfoForOrder(this.state.order.contactId).then(payload => {
+                this.setState({
+                    ...this.state,
+                    contactPerson: payload.data.contactPerson,
+                    contactEmail: payload.data.email,
+                    order: {
+                        ...this.state.order,
+                        // Uitgezet 05-10-2018, is niet gewenst?
+                        // IBAN: payload.data.iban,
+                        // ibanAttn: payload.data.ibanAttn ? payload.data.ibanAttn : ''
+                    },
+                });
             });
-        });
 
-        EmailTemplateAPI.fetchEmailTemplatesPeek().then((payload) => {
+        EmailTemplateAPI.fetchEmailTemplatesPeek().then(payload => {
             this.setState({
                 emailTemplates: payload,
                 peekLoading: {
@@ -99,7 +99,7 @@ class OrderNewForm extends Component {
                 },
             });
         });
-    };
+    }
 
     handleInputChange = event => {
         const target = event.target;
@@ -110,7 +110,7 @@ class OrderNewForm extends Component {
             ...this.state,
             order: {
                 ...this.state.order,
-                [name]: value
+                [name]: value,
             },
         });
     };
@@ -121,17 +121,25 @@ class OrderNewForm extends Component {
 
         let administration;
 
-        administration = this.props.administrations.filter((administration) => administration.id == value);
+        administration = this.props.administrations.filter(administration => administration.id == value);
         administration = administration[0];
         this.setState({
             ...this.state,
             order: {
                 ...this.state.order,
                 administrationId: administration.id,
-                emailTemplateIdCollection: administration.emailTemplateIdCollection ? administration.emailTemplateIdCollection : '',
-                emailTemplateIdTransfer: administration.emailTemplateIdTransfer ? administration.emailTemplateIdTransfer : '',
-                emailTemplateReminderId: administration.emailTemplateReminderId ? administration.emailTemplateReminderId : '',
-                emailTemplateExhortationId: administration.emailTemplateExhortationId ? administration.emailTemplateExhortationId : '',
+                emailTemplateIdCollection: administration.emailTemplateIdCollection
+                    ? administration.emailTemplateIdCollection
+                    : '',
+                emailTemplateIdTransfer: administration.emailTemplateIdTransfer
+                    ? administration.emailTemplateIdTransfer
+                    : '',
+                emailTemplateReminderId: administration.emailTemplateReminderId
+                    ? administration.emailTemplateReminderId
+                    : '',
+                emailTemplateExhortationId: administration.emailTemplateExhortationId
+                    ? administration.emailTemplateExhortationId
+                    : '',
             },
         });
     };
@@ -141,14 +149,13 @@ class OrderNewForm extends Component {
             ...this.state,
             order: {
                 ...this.state.order,
-                [name]: value
+                [name]: value,
             },
         });
     };
 
-    handleReactSelectContactIdChange (selectedOption, name) {
-
-        OrderDetailsAPI.fetchContactInfoForOrder(selectedOption).then((payload) => {
+    handleReactSelectContactIdChange(selectedOption, name) {
+        OrderDetailsAPI.fetchContactInfoForOrder(selectedOption).then(payload => {
             this.setState({
                 ...this.state,
                 contactPerson: payload.data.contactPerson,
@@ -166,26 +173,25 @@ class OrderNewForm extends Component {
             ...this.state,
             order: {
                 ...this.state.order,
-                [name]: selectedOption
+                [name]: selectedOption,
             },
         });
-    };
+    }
 
-    handleReactSelectChange (selectedOption, name) {
+    handleReactSelectChange(selectedOption, name) {
         this.setState({
             ...this.state,
             order: {
                 ...this.state.order,
-                [name]: selectedOption
+                [name]: selectedOption,
             },
         });
-    };
-
+    }
 
     handleSubmit = event => {
         event.preventDefault();
 
-        const {order} = this.state;
+        const { order } = this.state;
 
         // Validation
         let errors = {};
@@ -218,21 +224,39 @@ class OrderNewForm extends Component {
             }
         }
 
-        this.setState({...this.state, errors: errors});
+        this.setState({ ...this.state, errors: errors });
 
         // If no errors send form
         if (!hasErrors) {
-            OrderDetailsAPI.newOrder(order).then((payload) => {
-                hashHistory.push(`/order/${payload.data.id}`);
-            }).catch(function (error) {
-                console.log(error)
-            });
+            OrderDetailsAPI.newOrder(order)
+                .then(payload => {
+                    hashHistory.push(`/order/${payload.data.id}`);
+                })
+                .catch(function(error) {
+                    console.log(error);
+                });
         }
     };
 
     render() {
-        const { contactId, administrationId, statusId, subject, emailTemplateIdCollection, emailTemplateIdTransfer, emailTemplateReminderId, emailTemplateExhortationId, paymentTypeId, collectionFrequencyId, IBAN, ibanAttn,
-            poNumber, invoiceText, dateRequested, dateNextInvoice } = this.state.order;
+        const {
+            contactId,
+            administrationId,
+            statusId,
+            subject,
+            emailTemplateIdCollection,
+            emailTemplateIdTransfer,
+            emailTemplateReminderId,
+            emailTemplateExhortationId,
+            paymentTypeId,
+            collectionFrequencyId,
+            IBAN,
+            ibanAttn,
+            poNumber,
+            invoiceText,
+            dateRequested,
+            dateNextInvoice,
+        } = this.state.order;
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -240,8 +264,8 @@ class OrderNewForm extends Component {
                     <PanelBody>
                         <div className="row">
                             <InputReactSelect
-                                label={"Order op naam van"}
-                                name={"contactId"}
+                                label={'Order op naam van'}
+                                name={'contactId'}
                                 options={this.state.contacts}
                                 value={contactId}
                                 onChangeAction={this.handleReactSelectContactIdChange}
@@ -251,9 +275,9 @@ class OrderNewForm extends Component {
                                 error={this.state.errors.contactId}
                             />
                             <InputSelect
-                                label={"Administratie"}
+                                label={'Administratie'}
                                 id="administrationId"
-                                name={"administrationId"}
+                                name={'administrationId'}
                                 options={this.props.administrations}
                                 value={administrationId}
                                 onChangeAction={this.handleInputChangeAdministration}
@@ -279,8 +303,8 @@ class OrderNewForm extends Component {
 
                         <div className="row">
                             <InputReactSelect
-                                label={"E-mail template factuur incasso"}
-                                name={"emailTemplateIdCollection"}
+                                label={'E-mail template factuur incasso'}
+                                name={'emailTemplateIdCollection'}
                                 options={this.state.emailTemplates}
                                 value={emailTemplateIdCollection}
                                 onChangeAction={this.handleReactSelectChange}
@@ -289,7 +313,7 @@ class OrderNewForm extends Component {
                             />
                             <InputText
                                 label="Betreft"
-                                name={"subject"}
+                                name={'subject'}
                                 value={subject}
                                 onChangeAction={this.handleInputChange}
                                 required={'required'}
@@ -299,8 +323,8 @@ class OrderNewForm extends Component {
 
                         <div className="row">
                             <InputReactSelect
-                                label={"E-mail template factuur overboeken"}
-                                name={"emailTemplateIdTransfer"}
+                                label={'E-mail template factuur overboeken'}
+                                name={'emailTemplateIdTransfer'}
                                 options={this.state.emailTemplates}
                                 value={emailTemplateIdTransfer}
                                 onChangeAction={this.handleReactSelectChange}
@@ -308,9 +332,9 @@ class OrderNewForm extends Component {
                                 multi={false}
                             />
                             <InputSelect
-                                label={"Betaalwijze"}
+                                label={'Betaalwijze'}
                                 id="paymentTypeId"
-                                name={"paymentTypeId"}
+                                name={'paymentTypeId'}
                                 options={this.props.orderPaymentTypes}
                                 value={paymentTypeId}
                                 onChangeAction={this.handleInputChange}
@@ -319,8 +343,8 @@ class OrderNewForm extends Component {
 
                         <div className="row">
                             <InputReactSelect
-                                label={"E-mail template herinnering"}
-                                name={"emailTemplateReminderId"}
+                                label={'E-mail template herinnering'}
+                                name={'emailTemplateReminderId'}
                                 options={this.state.emailTemplates}
                                 value={emailTemplateReminderId}
                                 onChangeAction={this.handleReactSelectChange}
@@ -328,9 +352,9 @@ class OrderNewForm extends Component {
                                 multi={false}
                             />
                             <InputSelect
-                                label={"Factuur frequentie"}
+                                label={'Factuur frequentie'}
                                 id="collectionFrequencyId"
-                                name={"collectionFrequencyId"}
+                                name={'collectionFrequencyId'}
                                 options={this.props.orderCollectionFrequencies}
                                 value={collectionFrequencyId}
                                 onChangeAction={this.handleInputChange}
@@ -340,8 +364,8 @@ class OrderNewForm extends Component {
 
                         <div className="row">
                             <InputReactSelect
-                                label={"E-mail template aanmaning"}
-                                name={"emailTemplateExhortationId"}
+                                label={'E-mail template aanmaning'}
+                                name={'emailTemplateExhortationId'}
                                 options={this.state.emailTemplates}
                                 value={emailTemplateExhortationId}
                                 onChangeAction={this.handleReactSelectChange}
@@ -349,9 +373,9 @@ class OrderNewForm extends Component {
                                 multi={false}
                             />
                             <InputSelect
-                                label={"Status"}
+                                label={'Status'}
                                 id="statusId"
-                                name={"statusId"}
+                                name={'statusId'}
                                 options={this.props.orderStatuses}
                                 value={statusId}
                                 onChangeAction={this.handleInputChange}
@@ -363,14 +387,14 @@ class OrderNewForm extends Component {
                         <div className="row">
                             <InputText
                                 label="IBAN"
-                                name={"IBAN"}
+                                name={'IBAN'}
                                 value={IBAN}
                                 onChangeAction={this.handleInputChange}
                                 error={this.state.errors.IBAN}
                             />
                             <InputText
                                 label="Opdracht nummer klant"
-                                name={"poNumber"}
+                                name={'poNumber'}
                                 value={poNumber}
                                 onChangeAction={this.handleInputChange}
                             />
@@ -379,7 +403,7 @@ class OrderNewForm extends Component {
                         <div className="row">
                             <InputText
                                 label="IBAN t.n.v."
-                                name={"ibanAttn"}
+                                name={'ibanAttn'}
                                 value={ibanAttn}
                                 onChangeAction={this.handleInputChange}
                             />
@@ -389,11 +413,17 @@ class OrderNewForm extends Component {
                             <div className="form-group col-sm-12">
                                 <div className="row">
                                     <div className="col-sm-3">
-                                        <label htmlFor="invoiceText" className="col-sm-12">Opmerking</label>
+                                        <label htmlFor="invoiceText" className="col-sm-12">
+                                            Opmerking
+                                        </label>
                                     </div>
                                     <div className="col-sm-8">
-                                <textarea name='invoiceText' value={invoiceText} onChange={this.handleInputChange}
-                                          className="form-control input-sm"/>
+                                        <textarea
+                                            name="invoiceText"
+                                            value={invoiceText}
+                                            onChange={this.handleInputChange}
+                                            className="form-control input-sm"
+                                        />
                                     </div>
                                 </div>
                             </div>
@@ -413,21 +443,25 @@ class OrderNewForm extends Component {
                                 onChangeAction={this.handleInputChangeDate}
                             />
                         </div>
-
                     </PanelBody>
 
                     <PanelBody>
                         <div className="pull-right btn-group" role="group">
-                            <ButtonText buttonText={"Opslaan"} onClickAction={this.handleSubmit} type={"submit"} value={"Submit"}/>
+                            <ButtonText
+                                buttonText={'Opslaan'}
+                                onClickAction={this.handleSubmit}
+                                type={'submit'}
+                                value={'Submit'}
+                            />
                         </div>
                     </PanelBody>
                 </Panel>
             </form>
         );
-    };
-};
+    }
+}
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         orderStatuses: state.systemData.orderStatuses,
         orderPaymentTypes: state.systemData.orderPaymentTypes,

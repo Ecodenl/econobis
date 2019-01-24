@@ -1,7 +1,7 @@
 export default (state = [], action) => {
-    switch(action.type) {
+    switch (action.type) {
         case 'SET_INTAKES_SORTS_FILTER':
-            if(state.length === 3) state.pop();
+            if (state.length === 3) state.pop();
 
             return [
                 {

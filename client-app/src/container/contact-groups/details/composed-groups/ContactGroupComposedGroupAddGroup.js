@@ -4,14 +4,15 @@ import validator from 'validator';
 import _ from 'lodash';
 
 import {
-    fetchContactGroupDetails, attachComposedGroup
+    fetchContactGroupDetails,
+    attachComposedGroup,
 } from '../../../../actions/contact-group/ContactGroupDetailsActions';
 import GroupAPI from '../../../../api/contact-group/ContactGroupAPI';
 import Modal from '../../../../components/modal/Modal';
 import InputSelect from '../../../../components/form/InputSelect';
 
 class ContactGroupComposedGroupAddGroup extends Component {
-    constructor(props){
+    constructor(props) {
         super(props);
 
         this.state = {
@@ -20,14 +21,14 @@ class ContactGroupComposedGroupAddGroup extends Component {
             errors: {
                 contactGroupToAttachId: false,
             },
-        }
+        };
     }
 
     componentDidMount() {
-        GroupAPI.peekContactGroups().then((payload) => {
-            this.setState({ contactGroups: payload })
+        GroupAPI.peekContactGroups().then(payload => {
+            this.setState({ contactGroups: payload });
         });
-    };
+    }
 
     handleInputChange = event => {
         const target = event.target;
@@ -35,7 +36,7 @@ class ContactGroupComposedGroupAddGroup extends Component {
         const name = target.name;
 
         this.setState({
-            [name]: value
+            [name]: value,
         });
     };
 
@@ -45,14 +46,14 @@ class ContactGroupComposedGroupAddGroup extends Component {
         let errors = {};
         let hasErrors = false;
 
-        if(validator.isEmpty(this.state.contactGroupToAttachId)){
+        if (validator.isEmpty(this.state.contactGroupToAttachId)) {
             errors.contactGroupToAttachId = true;
             hasErrors = true;
-        };
+        }
 
         this.setState({ ...this.state, errors: errors });
 
-        if(!hasErrors) {
+        if (!hasErrors) {
             this.props.attachComposedGroup(this.props.contactGroupId, this.state.contactGroupToAttachId);
             this.props.fetchContactGroupDetails(this.props.contactGroupId);
             this.props.toggleAddGroup();
@@ -77,22 +78,22 @@ class ContactGroupComposedGroupAddGroup extends Component {
             >
                 <div className="row">
                     <InputSelect
-                        size={"col-md-12"}
-                        label={"Groep"}
+                        size={'col-md-12'}
+                        label={'Groep'}
                         name="contactGroupToAttachId"
                         options={contactGroupOptions}
                         value={this.state.contactGroupToAttachId}
                         onChangeAction={this.handleInputChange}
-                        required={"required"}
+                        required={'required'}
                         error={this.state.errors.contactGroupToAttachId}
                     />
                 </div>
             </Modal>
         );
     }
-};
+}
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         composedGroups: state.contactGroupDetails.composedGroups,
     };
@@ -102,9 +103,12 @@ const mapDispatchToProps = dispatch => ({
     attachComposedGroup: (contactGroupId, contactGroupToAttachId) => {
         dispatch(attachComposedGroup(contactGroupId, contactGroupToAttachId));
     },
-    fetchContactGroupDetails: (id) => {
+    fetchContactGroupDetails: id => {
         dispatch(fetchContactGroupDetails(id));
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(ContactGroupComposedGroupAddGroup);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(ContactGroupComposedGroupAddGroup);

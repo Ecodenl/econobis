@@ -1,12 +1,12 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import { isEmpty } from 'lodash';
 
 import MeasureAPI from '../../../../api/measure/MeasureAPI';
 
 import MeasureDetailsFaqView from './MeasureDetailsFaqView';
-import MeasureDetailsFaqItemDelete from "./MeasureDetailsFaqItemDelete";
-import MeasureDetailsFaqEdit from "./MeasureDetailsFaqEdit";
-import {connect} from "react-redux";
+import MeasureDetailsFaqItemDelete from './MeasureDetailsFaqItemDelete';
+import MeasureDetailsFaqEdit from './MeasureDetailsFaqEdit';
+import { connect } from 'react-redux';
 
 class MeasureDetailsFaqItem extends Component {
     constructor(props) {
@@ -25,7 +25,7 @@ class MeasureDetailsFaqItem extends Component {
                 answer: false,
             },
         };
-    };
+    }
 
     onLineEnter = () => {
         this.setState({
@@ -42,17 +42,17 @@ class MeasureDetailsFaqItem extends Component {
     };
 
     toggleDelete = () => {
-        this.setState({showDelete: !this.state.showDelete});
+        this.setState({ showDelete: !this.state.showDelete });
     };
 
     openEdit = () => {
-        if(this.props.permissions.manageMeasure) {
-            this.setState({showEdit: true});
+        if (this.props.permissions.manageMeasure) {
+            this.setState({ showEdit: true });
         }
     };
 
     closeEdit = () => {
-        this.setState({showEdit: false});
+        this.setState({ showEdit: false });
     };
 
     cancelEdit = () => {
@@ -70,27 +70,25 @@ class MeasureDetailsFaqItem extends Component {
         this.closeEdit();
     };
 
-    setQuestion = (value) => {
+    setQuestion = value => {
         this.setState({
             ...this.state,
             faq: {
                 ...this.state.faq,
                 question: value,
-            }
-
+            },
         });
-    }
+    };
 
-    setAnswer = (value) => {
+    setAnswer = value => {
         this.setState({
             ...this.state,
             faq: {
                 ...this.state.faq,
                 answer: value,
-            }
-
+            },
         });
-    }
+    };
 
     handleSubmit = event => {
         event.preventDefault();
@@ -105,25 +103,21 @@ class MeasureDetailsFaqItem extends Component {
                     question: true,
                 },
             });
-        }
-        else if (isEmpty(faq.question)) {
+        } else if (isEmpty(faq.question)) {
             this.setState({
                 ...this.state,
                 errors: {
                     question: true,
                 },
             });
-        }
-        else if (isEmpty(faq.answer)) {
+        } else if (isEmpty(faq.answer)) {
             this.setState({
                 ...this.state,
                 errors: {
                     answer: true,
                 },
             });
-        }
-        else
-        {
+        } else {
             this.setState({
                 ...this.state,
                 errors: {
@@ -149,8 +143,7 @@ class MeasureDetailsFaqItem extends Component {
                     faq={this.state.faq}
                     openEdit={this.openEdit}
                 />
-                {
-                    this.state.showEdit &&
+                {this.state.showEdit && (
                     <MeasureDetailsFaqEdit
                         faq={this.state.faq}
                         setQuestion={this.setQuestion}
@@ -159,23 +152,19 @@ class MeasureDetailsFaqItem extends Component {
                         cancelEdit={this.cancelEdit}
                         errors={this.state.errors}
                     />
-                }
-                {
-                    this.state.showDelete &&
-                    <MeasureDetailsFaqItemDelete
-                        toggleDelete={this.toggleDelete}
-                        id={this.state.faq.id}
-                    />
-                }
+                )}
+                {this.state.showDelete && (
+                    <MeasureDetailsFaqItemDelete toggleDelete={this.toggleDelete} id={this.state.faq.id} />
+                )}
             </div>
         );
     }
-};
+}
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
-        permissions: state.meDetails.permissions
-    }
+        permissions: state.meDetails.permissions,
+    };
 };
 
 export default connect(mapStateToProps)(MeasureDetailsFaqItem);

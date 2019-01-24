@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import Modal from '../../../../components/modal/Modal';
 import { deleteValueCourse } from '../../../../actions/production-project/ProductionProjectDetailsActions';
 
-const ProductionProjectDetailsFormValueCourseDelete = (props) => {
+const ProductionProjectDetailsFormValueCourseDelete = props => {
     const confirmAction = () => {
         props.deleteValueCourse(props.id);
         props.closeDeleteItemModal();
@@ -12,22 +12,24 @@ const ProductionProjectDetailsFormValueCourseDelete = (props) => {
 
     return (
         <Modal
-        buttonConfirmText="Verwijder"
+            buttonConfirmText="Verwijder"
             buttonClassName={'btn-danger'}
             closeModal={props.closeDeleteItemModal}
             confirmAction={() => confirmAction()}
             title="Verwijderen"
-      >
+        >
             <p>Verwijder waardeverloop</p>
-
-      </Modal>
+        </Modal>
     );
 };
 
 const mapDispatchToProps = dispatch => ({
-    deleteValueCourse: (id) => {
+    deleteValueCourse: id => {
         dispatch(deleteValueCourse(id));
     },
 });
 
-export default connect(null, mapDispatchToProps)(ProductionProjectDetailsFormValueCourseDelete);
+export default connect(
+    null,
+    mapDispatchToProps
+)(ProductionProjectDetailsFormValueCourseDelete);

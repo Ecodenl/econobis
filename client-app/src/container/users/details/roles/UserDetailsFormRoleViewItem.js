@@ -6,7 +6,7 @@ class UserDetailsFormRoleViewItem extends Component {
     }
 
     render() {
-        const {name, hasRole } = this.props.role;
+        const { name, hasRole } = this.props.role;
 
         return (
             <div className="col-sm-6 border-bottom">

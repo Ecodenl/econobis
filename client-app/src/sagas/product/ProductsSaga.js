@@ -1,7 +1,7 @@
 import { put, call } from 'redux-saga/effects';
 import ProductsAPI from '../../api/product/ProductsAPI';
 import ProductDetailsAPI from '../../api/product/ProductDetailsAPI';
-import {hashHistory} from "react-router";
+import { hashHistory } from 'react-router';
 
 export function* fetchProductsSaga() {
     try {

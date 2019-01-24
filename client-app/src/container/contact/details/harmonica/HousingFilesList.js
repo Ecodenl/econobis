@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 import { hashHistory } from 'react-router';
 import moment from 'moment';
 moment.locale('nl');
@@ -14,57 +14,57 @@ class HousingFileList extends Component {
             housingFiles: '',
             loading: true,
         };
-    };
+    }
 
     componentDidMount() {
-        HousingFilesAPI.fetchHousingFilesByContact(this.props.contactDetailsId).then((payload) => {
-            this.setState({housingFiles: payload, loading: false});
+        HousingFilesAPI.fetchHousingFilesByContact(this.props.contactDetailsId).then(payload => {
+            this.setState({ housingFiles: payload, loading: false });
         });
     }
 
-    openItem = (id) => {
+    openItem = id => {
         hashHistory.push(`/woningdossier/${id}`);
     };
 
     render() {
-        const {housingFiles, loading} = this.state;
+        const { housingFiles, loading } = this.state;
 
         return (
             <div>
-                { loading &&
-                <div>Laden...</div>
-                }
+                {loading && <div>Laden...</div>}
 
-                {housingFiles == '' && !loading &&
-                <div>Geen woningdossiers bekend.</div>
-                }
+                {housingFiles == '' && !loading && <div>Geen woningdossiers bekend.</div>}
 
-                {housingFiles != '' && !loading &&
-
-                <table className="table">
-                    <tbody>
-                    {housingFiles.map((housingFile, i) => {
-                        return (
-                            <tr key={i} onClick={() => this.openItem(housingFile.id)}>
-                                <td className='col-xs-12 clickable'>
-                                    { housingFile.createdAt ? moment(housingFile.createdAt.date).format('DD-MM-Y') : '' } - {housingFile.addressName}
-                                </td>
-                            </tr>
-                        )
-                    })
-                    }
-                    </tbody>
-                </table>
-                }
+                {housingFiles != '' && !loading && (
+                    <table className="table">
+                        <tbody>
+                            {housingFiles.map((housingFile, i) => {
+                                return (
+                                    <tr key={i} onClick={() => this.openItem(housingFile.id)}>
+                                        <td className="col-xs-12 clickable">
+                                            {housingFile.createdAt
+                                                ? moment(housingFile.createdAt.date).format('DD-MM-Y')
+                                                : ''}{' '}
+                                            - {housingFile.addressName}
+                                        </td>
+                                    </tr>
+                                );
+                            })}
+                        </tbody>
+                    </table>
+                )}
             </div>
         );
     }
-};
+}
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         contactDetailsId: state.contactDetails.id,
     };
 };
 
-export default connect(mapStateToProps, null)(HousingFileList);
+export default connect(
+    mapStateToProps,
+    null
+)(HousingFileList);

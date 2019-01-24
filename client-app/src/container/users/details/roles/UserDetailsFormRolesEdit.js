@@ -1,4 +1,4 @@
-import React, { Component }from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import UserDetailsFormRoleEditItem from './UserDetailsFormRoleEditItem';
@@ -13,7 +13,7 @@ class UserDetailsFormRolesEdit extends Component {
     }
 
     render() {
-        const {id , roles = {} } = this.props.userDetails;
+        const { id, roles = {} } = this.props.userDetails;
 
         return (
             <div>
@@ -22,36 +22,38 @@ class UserDetailsFormRolesEdit extends Component {
                         <span className="h5 text-bold">Gebruikers rollen</span>
                     </PanelHeader>
                     <div className="row">
-                {
-                    roles.length === 0 ? (
-                        <tr><td colSpan={7}>Geen rollen beschikbaar!</td></tr>
-                    ) : (
-                        roles.map((role, i) => {
-
-                            return <UserDetailsFormRoleEditItem
-                                key={i}
-                                role={role}
-                                id={id}
-                            />
-                        })
-                    )
-                }
+                        {roles.length === 0 ? (
+                            <tr>
+                                <td colSpan={7}>Geen rollen beschikbaar!</td>
+                            </tr>
+                        ) : (
+                            roles.map((role, i) => {
+                                return <UserDetailsFormRoleEditItem key={i} role={role} id={id} />;
+                            })
+                        )}
                     </div>
                     <PanelFooter>
                         <div className="pull-right btn-group" role="group">
-                            <ButtonText buttonClassName={"btn-default"} buttonText={"Sluiten"} onClickAction={this.props.switchToView}/>
+                            <ButtonText
+                                buttonClassName={'btn-default'}
+                                buttonText={'Sluiten'}
+                                onClickAction={this.props.switchToView}
+                            />
                         </div>
                     </PanelFooter>
                 </PanelBody>
             </div>
         );
     }
-};
+}
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         userDetails: state.userDetails,
     };
 };
 
-export default connect(mapStateToProps, null)(UserDetailsFormRolesEdit);
+export default connect(
+    mapStateToProps,
+    null
+)(UserDetailsFormRolesEdit);

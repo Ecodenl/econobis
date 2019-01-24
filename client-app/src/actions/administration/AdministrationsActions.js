@@ -6,14 +6,13 @@ export const fetchAdministrations = () => {
 
 export const clearAdministrations = () => {
     return {
-        type: 'CLEAR_ADMINISTRATIONS'
+        type: 'CLEAR_ADMINISTRATIONS',
     };
 };
 
-export const deleteAdministration = (id) => {
-    return  {
+export const deleteAdministration = id => {
+    return {
         type: 'DELETE_ADMINISTRATION',
         id,
     };
 };
-

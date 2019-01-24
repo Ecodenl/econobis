@@ -1,4 +1,4 @@
-export default function (state = [], action) {
+export default function(state = [], action) {
     switch (action.type) {
         case 'FETCH_EMAILS_SUCCESS':
             return {
@@ -17,6 +17,5 @@ export default function (state = [], action) {
             };
         default:
             return state;
-
     }
 }

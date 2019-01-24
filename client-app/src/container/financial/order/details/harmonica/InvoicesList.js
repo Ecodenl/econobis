@@ -1,6 +1,6 @@
-import React, {Component} from 'react';
-import {hashHistory} from 'react-router';
-import {connect} from 'react-redux';
+import React, { Component } from 'react';
+import { hashHistory } from 'react-router';
+import { connect } from 'react-redux';
 import moment from 'moment';
 
 class InvoicesList extends Component {
@@ -11,38 +11,38 @@ class InvoicesList extends Component {
         };
     }
 
-    openItem = (id) => {
+    openItem = id => {
         hashHistory.push(`/factuur/${id}`);
     };
 
     render() {
-        const {relatedInvoices} = this.props;
+        const { relatedInvoices } = this.props;
         return (
             <div>
-                {relatedInvoices == '' &&
-                <div>Geen facturen gevonden.</div>
-                }
+                {relatedInvoices == '' && <div>Geen facturen gevonden.</div>}
 
-                {relatedInvoices != '' &&
-                <table className="table harmonica-table">
-                    <tbody>
-                    {relatedInvoices.map((relatedInvoice, i) => {
-                        return (
-                            <tr onClick={() => this.openItem(relatedInvoice.id)} key={i}>
-                                <td className='col-xs-12 clickable'>{moment(relatedInvoice.createdAt.date).format('L')} - {relatedInvoice.number}</td>
-                            </tr>
-                        )
-                    })
-                    }
-                    </tbody>
-                </table>
-                }
+                {relatedInvoices != '' && (
+                    <table className="table harmonica-table">
+                        <tbody>
+                            {relatedInvoices.map((relatedInvoice, i) => {
+                                return (
+                                    <tr onClick={() => this.openItem(relatedInvoice.id)} key={i}>
+                                        <td className="col-xs-12 clickable">
+                                            {moment(relatedInvoice.createdAt.date).format('L')} -{' '}
+                                            {relatedInvoice.number}
+                                        </td>
+                                    </tr>
+                                );
+                            })}
+                        </tbody>
+                    </table>
+                )}
             </div>
         );
-    };
+    }
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         relatedInvoices: state.orderDetails.relatedInvoices,
     };

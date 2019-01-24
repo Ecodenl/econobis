@@ -6,6 +6,6 @@ export const fetchDocumentTemplates = () => {
 
 export const clearDocumentTemplates = () => {
     return {
-        type: 'CLEAR_DOCUMENT_TEMPLATES'
+        type: 'CLEAR_DOCUMENT_TEMPLATES',
     };
 };

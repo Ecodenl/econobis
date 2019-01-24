@@ -3,13 +3,13 @@ import { connect } from 'react-redux';
 import validator from 'validator';
 
 import EmailAddressAPI from '../../../../api/contact/EmailAddressAPI';
-import {newEmailAddress, unsetPrimaryEmailAddresses} from '../../../../actions/contact/ContactDetailsActions';
+import { newEmailAddress, unsetPrimaryEmailAddresses } from '../../../../actions/contact/ContactDetailsActions';
 import InputText from '../../../../components/form/InputText';
 import ButtonText from '../../../../components/button/ButtonText';
-import InputSelect from "../../../../components/form/InputSelect";
+import InputSelect from '../../../../components/form/InputSelect';
 import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
-import InputToggle from "../../../../components/form/InputToggle";
+import InputToggle from '../../../../components/form/InputToggle';
 
 class ContactDetailsFormEmailNew extends Component {
     constructor(props) {
@@ -26,8 +26,8 @@ class ContactDetailsFormEmailNew extends Component {
                 typeId: false,
                 email: false,
             },
-        }
-    };
+        };
+    }
 
     handleInputChange = event => {
         const target = event.target;
@@ -38,7 +38,7 @@ class ContactDetailsFormEmailNew extends Component {
             ...this.state,
             emailAddress: {
                 ...this.state.emailAddress,
-                [name]: value
+                [name]: value,
             },
         });
     };
@@ -51,22 +51,22 @@ class ContactDetailsFormEmailNew extends Component {
         let errors = {};
         let hasErrors = false;
 
-        if(!validator.isEmail(emailAddress.email)){
+        if (!validator.isEmail(emailAddress.email)) {
             errors.email = true;
             hasErrors = true;
-        };
+        }
 
-        if(validator.isEmpty(emailAddress.typeId)){
+        if (validator.isEmpty(emailAddress.typeId)) {
             errors.typeId = true;
             hasErrors = true;
-        };
+        }
 
         this.setState({ ...this.state, errors: errors });
 
         // If no errors send form
         !hasErrors &&
-            EmailAddressAPI.newEmailAddress(emailAddress).then((payload) => {
-                if(emailAddress.primary) {
+            EmailAddressAPI.newEmailAddress(emailAddress).then(payload => {
+                if (emailAddress.primary) {
                     this.props.unsetPrimaryEmailAddresses();
                 }
                 this.props.newEmailAddress(payload);
@@ -75,7 +75,7 @@ class ContactDetailsFormEmailNew extends Component {
     };
 
     render() {
-        const {email, typeId, primary} = this.state.emailAddress;
+        const { email, typeId, primary } = this.state.emailAddress;
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -83,50 +83,59 @@ class ContactDetailsFormEmailNew extends Component {
                     <PanelBody>
                         <div className="row">
                             <InputText
-                                label={"E-mail"}
-                                id={"email"}
-                                size={"col-sm-6"}
-                                name={"email"}
+                                label={'E-mail'}
+                                id={'email'}
+                                size={'col-sm-6'}
+                                name={'email'}
                                 value={email}
                                 onChangeAction={this.handleInputChange}
-                                required={"required"}
+                                required={'required'}
                                 error={this.state.errors.email}
                             />
 
                             <InputSelect
-                                label={"Type"}
+                                label={'Type'}
                                 id="type"
-                                size={"col-sm-6"}
-                                name={"typeId"}
+                                size={'col-sm-6'}
+                                name={'typeId'}
                                 options={this.props.emailAddressTypes}
                                 value={typeId}
                                 onChangeAction={this.handleInputChange}
-                                required={"required"}
+                                required={'required'}
                                 error={this.state.errors.typeId}
                             />
                         </div>
 
                         <div className="row">
                             <InputToggle
-                                label={"Primair e-mailadres"}
-                                name={"primary"}
+                                label={'Primair e-mailadres'}
+                                name={'primary'}
                                 value={primary}
                                 onChangeAction={this.handleInputChange}
                             />
                         </div>
 
                         <div className="pull-right btn-group" role="group">
-                            <ButtonText buttonClassName={"btn-default"} buttonText={"Annuleren"} onClickAction={this.props.toggleShowNew}/>
-                            <ButtonText buttonText={"Opslaan"} onClickAction={this.handleSubmit} type={"submit"} value={"Submit"}/>
+                            <ButtonText
+                                buttonClassName={'btn-default'}
+                                buttonText={'Annuleren'}
+                                onClickAction={this.props.toggleShowNew}
+                            />
+                            <ButtonText
+                                buttonText={'Opslaan'}
+                                onClickAction={this.handleSubmit}
+                                type={'submit'}
+                                value={'Submit'}
+                            />
                         </div>
                     </PanelBody>
                 </Panel>
             </form>
         );
     }
-};
+}
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         emailAddressTypes: state.systemData.emailAddressTypes,
         id: state.contactDetails.id,
@@ -134,7 +143,7 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = dispatch => ({
-    newEmailAddress: (id) => {
+    newEmailAddress: id => {
         dispatch(newEmailAddress(id));
     },
     unsetPrimaryEmailAddresses: () => {
@@ -142,4 +151,7 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(ContactDetailsFormEmailNew);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(ContactDetailsFormEmailNew);

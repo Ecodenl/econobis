@@ -1,10 +1,10 @@
 import React from 'react';
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 
 import DataTableHeadTitleAndSort from '../../../../components/dataTable/DataTableHeadTitleAndSort';
-import {setPaymentInvoicesSortsFilter} from '../../../../actions/payment-invoice/PaymentInvoicesSortsActions';
+import { setPaymentInvoicesSortsFilter } from '../../../../actions/payment-invoice/PaymentInvoicesSortsActions';
 
-const PaymentInvoicesListHead = (props) => {
+const PaymentInvoicesListHead = props => {
     const setSorts = (field, order) => {
         props.setPaymentInvoicesSortsFilter(field, order);
 
@@ -30,4 +30,7 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(null, mapDispatchToProps)(PaymentInvoicesListHead);
+export default connect(
+    null,
+    mapDispatchToProps
+)(PaymentInvoicesListHead);

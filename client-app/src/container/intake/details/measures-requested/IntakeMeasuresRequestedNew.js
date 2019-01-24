@@ -5,7 +5,7 @@ import validator from 'validator';
 import IntakeDetailsAPI from '../../../../api/intake/IntakeDetailsAPI';
 import { newIntakeMeasureRequested } from '../../../../actions/intake/IntakeDetailsActions';
 import ButtonText from '../../../../components/button/ButtonText';
-import InputSelect from "../../../../components/form/InputSelect";
+import InputSelect from '../../../../components/form/InputSelect';
 import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
 
@@ -20,21 +20,21 @@ class IntakeMeasuresRequestedNew extends Component {
                 measureId: false,
             },
         };
-    };
+    }
 
-    componentDidMount(){
+    componentDidMount() {
         let measuresNoDups = [];
         let currentMeasureIds = [];
 
-        this.props.intakeMeasuresRequested.forEach(function (measure) {
+        this.props.intakeMeasuresRequested.forEach(function(measure) {
             currentMeasureIds.push(measure.id);
         });
 
         measuresNoDups = this.props.measureCategories;
 
-        measuresNoDups = measuresNoDups.filter((measure) => !currentMeasureIds.includes(measure.id));
+        measuresNoDups = measuresNoDups.filter(measure => !currentMeasureIds.includes(measure.id));
         this.setState({
-            measuresNoDups: measuresNoDups
+            measuresNoDups: measuresNoDups,
         });
     }
 
@@ -43,15 +43,14 @@ class IntakeMeasuresRequestedNew extends Component {
         const value = target.type === 'checkbox' ? target.checked : target.value;
 
         this.setState({
-            measureId: value
+            measureId: value,
         });
     };
-
 
     handleSubmit = event => {
         event.preventDefault();
 
-        const {measureId} = this.state;
+        const { measureId } = this.state;
 
         let errors = {};
         let hasErrors = false;
@@ -59,17 +58,19 @@ class IntakeMeasuresRequestedNew extends Component {
         if (validator.isEmpty(measureId)) {
             errors.measureId = true;
             hasErrors = true;
-        };
+        }
 
-        this.setState({ ...this.state, errors: errors })
+        this.setState({ ...this.state, errors: errors });
 
         !hasErrors &&
-            IntakeDetailsAPI.attachMeasureRequested(this.props.intakeId, measureId).then((payload) => {
-                this.props.newIntakeMeasureRequested(payload);
-                this.props.toggleShowNew();
-            }).catch(function (error) {
-                alert(error.response.data.message);
-            });
+            IntakeDetailsAPI.attachMeasureRequested(this.props.intakeId, measureId)
+                .then(payload => {
+                    this.props.newIntakeMeasureRequested(payload);
+                    this.props.toggleShowNew();
+                })
+                .catch(function(error) {
+                    alert(error.response.data.message);
+                });
     };
 
     render() {
@@ -81,30 +82,48 @@ class IntakeMeasuresRequestedNew extends Component {
                     <PanelBody>
                         <div className="row">
                             <div className={`form-group col-sm-8`}>
-                                <label className={`col-sm-4`}>{"Maatregel"}</label>
-                                <div className={"col-sm-8"}>
-                                    <select className={`form-control input-sm`} name={"measureId"} value={measureId} onChange={this.handleInputChange}>
-                                        <option value=''></option>
-                                        { this.state.measuresNoDups.map((option) => {
-                                            return <option key={ option.id } value={ option.id }>{ option['name'] }</option>
-                                        }) }
+                                <label className={`col-sm-4`}>{'Maatregel'}</label>
+                                <div className={'col-sm-8'}>
+                                    <select
+                                        className={`form-control input-sm`}
+                                        name={'measureId'}
+                                        value={measureId}
+                                        onChange={this.handleInputChange}
+                                    >
+                                        <option value="" />
+                                        {this.state.measuresNoDups.map(option => {
+                                            return (
+                                                <option key={option.id} value={option.id}>
+                                                    {option['name']}
+                                                </option>
+                                            );
+                                        })}
                                     </select>
                                 </div>
                             </div>
                         </div>
 
                         <div className="pull-right btn-group" role="group">
-                            <ButtonText buttonClassName={"btn-default"} buttonText={"Annuleren"} onClickAction={this.props.toggleShowNew}/>
-                            <ButtonText buttonText={"Opslaan"} onClickAction={this.handleSubmit} type={"submit"} value={"Submit"}/>
+                            <ButtonText
+                                buttonClassName={'btn-default'}
+                                buttonText={'Annuleren'}
+                                onClickAction={this.props.toggleShowNew}
+                            />
+                            <ButtonText
+                                buttonText={'Opslaan'}
+                                onClickAction={this.handleSubmit}
+                                type={'submit'}
+                                value={'Submit'}
+                            />
                         </div>
                     </PanelBody>
                 </Panel>
             </form>
         );
     }
-};
+}
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         measureCategories: state.systemData.measureCategories,
         energyLabels: state.systemData.energyLabels,
@@ -114,9 +133,12 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = dispatch => ({
-    newIntakeMeasureRequested: (measure) => {
+    newIntakeMeasureRequested: measure => {
         dispatch(newIntakeMeasureRequested(measure));
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(IntakeMeasuresRequestedNew);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(IntakeMeasuresRequestedNew);

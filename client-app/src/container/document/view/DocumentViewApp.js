@@ -1,17 +1,16 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import { fetchDocumentDetails } from '../../../actions/document/DocumentDetailsActions';
 import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
-import DocumentViewToolbar from "./DocumentViewToolbar";
-import DocumentViewForm from "./DocumentViewForm";
-import DocumentDetailsAPI from "../../../api/document/DocumentDetailsAPI";
-import fileDownload from "js-file-download";
-
+import DocumentViewToolbar from './DocumentViewToolbar';
+import DocumentViewForm from './DocumentViewForm';
+import DocumentDetailsAPI from '../../../api/document/DocumentDetailsAPI';
+import fileDownload from 'js-file-download';
 
 class DocumentViewApp extends Component {
-    constructor(props){
+    constructor(props) {
         super(props);
 
         this.state = {
@@ -19,26 +18,26 @@ class DocumentViewApp extends Component {
         };
 
         this.download = this.download.bind(this);
-    };
+    }
 
     componentDidMount() {
         this.props.fetchDocumentDetails(this.props.params.id);
-    };
+    }
 
     zoomIn = () => {
         this.setState({
-            scale: (this.state.scale + 0.2),
+            scale: this.state.scale + 0.2,
         });
     };
 
     zoomOut = () => {
         this.setState({
-            scale: (this.state.scale - 0.2),
+            scale: this.state.scale - 0.2,
         });
     };
 
     download() {
-        DocumentDetailsAPI.download(this.props.documentDetails.id).then((payload) => {
+        DocumentDetailsAPI.download(this.props.documentDetails.id).then(payload => {
             fileDownload(payload.data, this.props.documentDetails.filename);
         });
     }
@@ -49,36 +48,38 @@ class DocumentViewApp extends Component {
                 <div className="col-md-12">
                     <div className="col-md-12 margin-10-top">
                         <Panel>
-                            <PanelBody className={"panel-small"}>
+                            <PanelBody className={'panel-small'}>
                                 <DocumentViewToolbar
                                     zoomIn={this.zoomIn}
                                     zoomOut={this.zoomOut}
-                                    download={this.download}/>
+                                    download={this.download}
+                                />
                             </PanelBody>
                         </Panel>
                     </div>
 
                     <div className="col-md-12 margin-10-top">
-                        <DocumentViewForm
-                            documentId={this.props.params.id}
-                            scale={this.state.scale}/>
+                        <DocumentViewForm documentId={this.props.params.id} scale={this.state.scale} />
                     </div>
                 </div>
             </div>
-        )
+        );
     }
-};
+}
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         documentDetails: state.documentDetails,
     };
 };
 
 const mapDispatchToProps = dispatch => ({
-    fetchDocumentDetails: (id) => {
+    fetchDocumentDetails: id => {
         dispatch(fetchDocumentDetails(id));
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(DocumentViewApp);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(DocumentViewApp);

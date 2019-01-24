@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 
 import ContactDetailsQuotationView from './ContactDetailsQuotationView';
 
@@ -14,7 +14,7 @@ class ContactDetailsQuotationItem extends Component {
                 ...props.quotation,
             },
         };
-    };
+    }
 
     onLineEnter = () => {
         this.setState({
@@ -42,6 +42,6 @@ class ContactDetailsQuotationItem extends Component {
             </div>
         );
     }
-};
+}
 
 export default ContactDetailsQuotationItem;

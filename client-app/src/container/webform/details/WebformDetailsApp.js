@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import { fetchWebformDetails } from '../../../actions/webform/WebformDetailsActions';
@@ -8,13 +8,13 @@ import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
 
 class WebformDetailsApp extends Component {
-    constructor(props){
+    constructor(props) {
         super(props);
-    };
+    }
 
     componentDidMount() {
         this.props.fetchWebformDetails(this.props.params.id);
-    };
+    }
 
     render() {
         return (
@@ -22,8 +22,8 @@ class WebformDetailsApp extends Component {
                 <div className="col-md-9">
                     <div className="col-md-12 margin-10-top">
                         <Panel>
-                            <PanelBody className={"panel-small"}>
-                                < WebformDetailsToolbar />
+                            <PanelBody className={'panel-small'}>
+                                <WebformDetailsToolbar />
                             </PanelBody>
                         </Panel>
                     </div>
@@ -34,20 +34,23 @@ class WebformDetailsApp extends Component {
                 </div>
                 <div className="col-md-3" />
             </div>
-        )
+        );
     }
-};
+}
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         webformDetails: state.webformDetails,
     };
 };
 
 const mapDispatchToProps = dispatch => ({
-    fetchWebformDetails: (id) => {
+    fetchWebformDetails: id => {
         dispatch(fetchWebformDetails(id));
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(WebformDetailsApp);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(WebformDetailsApp);

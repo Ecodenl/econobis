@@ -1,24 +1,24 @@
-import React, {Component} from 'react';
-import {connect} from 'react-redux';
-import {browserHistory, hashHistory} from 'react-router';
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { browserHistory, hashHistory } from 'react-router';
 
 import ButtonIcon from '../../../../components/button/ButtonIcon';
-import OrderDeleteItem from "./OrderDeleteItem";
-import ButtonText from "../../../../components/button/ButtonText";
-import {previewCreate} from "../../../../actions/order/OrdersActions";
+import OrderDeleteItem from './OrderDeleteItem';
+import ButtonText from '../../../../components/button/ButtonText';
+import { previewCreate } from '../../../../actions/order/OrdersActions';
 
-class OrderToolbar  extends Component {
-    constructor(props){
+class OrderToolbar extends Component {
+    constructor(props) {
         super(props);
 
         this.state = {
             showDelete: false,
             showNewInvoice: false,
         };
-    };
+    }
 
     toggleDelete = () => {
-        this.setState({showDelete: !this.state.showDelete});
+        this.setState({ showDelete: !this.state.showDelete });
     };
 
     preview = () => {
@@ -35,37 +35,38 @@ class OrderToolbar  extends Component {
             <div className="row">
                 <div className="col-md-4">
                     <div className="btn-group btn-group-flex margin-small" role="group">
-                        <ButtonIcon iconName={"glyphicon-arrow-left"} onClickAction={browserHistory.goBack}/>
-                        {!this.props.orderDetails.canCreateInvoice &&
-                            <ButtonIcon iconName={"glyphicon-eye-open"} onClickAction={this.preview}/>
-                        }
-                        {this.props.orderDetails.canCreateInvoice &&
-                        <ButtonText buttonText={'Preview factuur'} onClickAction={this.newInvoice}/>
-                        }
-                        <ButtonIcon iconName={"glyphicon-trash"} onClickAction={this.toggleDelete}/>
+                        <ButtonIcon iconName={'glyphicon-arrow-left'} onClickAction={browserHistory.goBack} />
+                        {!this.props.orderDetails.canCreateInvoice && (
+                            <ButtonIcon iconName={'glyphicon-eye-open'} onClickAction={this.preview} />
+                        )}
+                        {this.props.orderDetails.canCreateInvoice && (
+                            <ButtonText buttonText={'Preview factuur'} onClickAction={this.newInvoice} />
+                        )}
+                        <ButtonIcon iconName={'glyphicon-trash'} onClickAction={this.toggleDelete} />
                     </div>
                 </div>
-                {!this.props.isLoading &&
-                <div className="col-md-4"><h4
-                    className="text-center">Order: {this.props.orderDetails.subject} / {this.props.orderDetails.number}</h4>
-                </div>
-                }
-                <div className="col-md-4"/>
-                {
-                    this.state.showDelete &&
+                {!this.props.isLoading && (
+                    <div className="col-md-4">
+                        <h4 className="text-center">
+                            Order: {this.props.orderDetails.subject} / {this.props.orderDetails.number}
+                        </h4>
+                    </div>
+                )}
+                <div className="col-md-4" />
+                {this.state.showDelete && (
                     <OrderDeleteItem
                         closeDeleteItemModal={this.toggleDelete}
                         subject={this.props.orderDetails.subject}
                         id={this.props.orderDetails.id}
                         administrationId={this.props.administrationId}
                     />
-                }
+                )}
             </div>
         );
     }
-};
+}
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         orderDetails: state.orderDetails,
         administrationId: state.orderDetails.administrationId,
@@ -74,10 +75,12 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = dispatch => ({
-    previewCreate: (ids) => {
+    previewCreate: ids => {
         dispatch(previewCreate(ids));
     },
 });
 
-
-export default connect(mapStateToProps, mapDispatchToProps)(OrderToolbar);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(OrderToolbar);

@@ -2,13 +2,13 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import ButtonText from '../../../../components/button/ButtonText';
-import InputSelect from "../../../../components/form/InputSelect";
+import InputSelect from '../../../../components/form/InputSelect';
 import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
-import InputDate from "../../../../components/form/InputDate";
-import moment from "moment/moment";
-import InputToggle from "../../../../components/form/InputToggle";
-import InputReactSelect from "../../../../components/form/InputReactSelect";
+import InputDate from '../../../../components/form/InputDate';
+import moment from 'moment/moment';
+import InputToggle from '../../../../components/form/InputToggle';
+import InputReactSelect from '../../../../components/form/InputReactSelect';
 moment.locale('nl');
 
 const ContactDetailsFormOccupationsEdit = props => {
@@ -20,10 +20,10 @@ const ContactDetailsFormOccupationsEdit = props => {
                 <Panel className={'panel-grey'}>
                     <PanelBody>
                         <div className="row">
-                            {props.primaryOccupation ?
+                            {props.primaryOccupation ? (
                                 <InputReactSelect
-                                    label={"Verbonden met"}
-                                    name={"contactId"}
+                                    label={'Verbonden met'}
+                                    name={'contactId'}
                                     options={props.contacts}
                                     value={contactId}
                                     onChangeAction={props.handleReactSelectChange}
@@ -31,10 +31,10 @@ const ContactDetailsFormOccupationsEdit = props => {
                                     multi={false}
                                     isLoading={props.peekLoading.contacts}
                                 />
-                                :
+                            ) : (
                                 <InputReactSelect
-                                    label={"Verbonden met"}
-                                    name={"primaryContactId"}
+                                    label={'Verbonden met'}
+                                    name={'primaryContactId'}
                                     options={props.contacts}
                                     value={primaryContactId}
                                     onChangeAction={props.handleReactSelectChange}
@@ -42,32 +42,32 @@ const ContactDetailsFormOccupationsEdit = props => {
                                     multi={false}
                                     isLoading={props.peekLoading.contacts}
                                 />
-                            }
+                            )}
                             <InputSelect
-                                label={"Rol"}
-                                size={"col-sm-6"}
-                                name={"occupationId"}
+                                label={'Rol'}
+                                size={'col-sm-6'}
+                                name={'occupationId'}
                                 optionName={'primaryOccupation'}
                                 options={props.occupations}
                                 value={occupationId}
                                 onChangeAction={props.handleInputChange}
-                                required={"required"}
+                                required={'required'}
                                 error={props.occupationIdError}
                             />
                         </div>
 
                         <div className="row">
                             <InputDate
-                                label={"Begindatum"}
-                                size={"col-sm-6"}
-                                name={"startDate"}
+                                label={'Begindatum'}
+                                size={'col-sm-6'}
+                                name={'startDate'}
                                 value={startDate}
                                 onChangeAction={props.handleStartDate}
                             />
                             <InputDate
-                                label={"Einddatum"}
-                                size={"col-sm-6"}
-                                name={"endDate"}
+                                label={'Einddatum'}
+                                size={'col-sm-6'}
+                                name={'endDate'}
                                 value={endDate}
                                 onChangeAction={props.handleEndDate}
                             />
@@ -75,16 +75,25 @@ const ContactDetailsFormOccupationsEdit = props => {
 
                         <div className="row">
                             <InputToggle
-                                label={"Primair"}
-                                name={"primary"}
+                                label={'Primair'}
+                                name={'primary'}
                                 value={primary}
                                 onChangeAction={props.handleInputChange}
                             />
                         </div>
 
                         <div className="pull-right btn-group" role="group">
-                            <ButtonText buttonClassName={"btn-default"} buttonText={"Annuleren"} onClickAction={props.cancelEdit}/>
-                            <ButtonText buttonText={"Opslaan"} onClickAction={props.handleSubmit} type={"submit"} value={"Submit"}/>
+                            <ButtonText
+                                buttonClassName={'btn-default'}
+                                buttonText={'Annuleren'}
+                                onClickAction={props.cancelEdit}
+                            />
+                            <ButtonText
+                                buttonText={'Opslaan'}
+                                onClickAction={props.handleSubmit}
+                                type={'submit'}
+                                value={'Submit'}
+                            />
                         </div>
                     </PanelBody>
                 </Panel>
@@ -93,10 +102,13 @@ const ContactDetailsFormOccupationsEdit = props => {
     );
 };
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
-        occupations: state.systemData.occupations
+        occupations: state.systemData.occupations,
     };
 };
 
-export default connect(mapStateToProps, null)(ContactDetailsFormOccupationsEdit);
+export default connect(
+    mapStateToProps,
+    null
+)(ContactDetailsFormOccupationsEdit);

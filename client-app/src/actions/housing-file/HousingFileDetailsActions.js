@@ -1,25 +1,25 @@
-export const fetchHousingFileDetails = (payload) => {
+export const fetchHousingFileDetails = payload => {
     return {
         type: 'FETCH_HOUSING_FILE_DETAILS',
-        payload
-    }
+        payload,
+    };
 };
 
-export const updateHousingFile = (housingFile) => {
+export const updateHousingFile = housingFile => {
     return {
         type: 'UPDATE_HOUSING_FILE',
-        housingFile
-    }
+        housingFile,
+    };
 };
 
-export const deleteHousingFile = (id) => {
+export const deleteHousingFile = id => {
     return {
         type: 'DELETE_HOUSING_FILE',
-        id
-    }
+        id,
+    };
 };
 
-export const newHousingFileMeasureTaken = (address) => {
+export const newHousingFileMeasureTaken = address => {
     return {
         type: 'NEW_HOUSING_FILE_MEASURE_TAKEN',
         address,
@@ -29,6 +29,7 @@ export const newHousingFileMeasureTaken = (address) => {
 export const deleteHousingFileMeasureTaken = (addressId, measureId) => {
     return {
         type: 'DELETE_HOUSING_FILE_MEASURE_TAKEN',
-        addressId, measureId,
+        addressId,
+        measureId,
     };
 };

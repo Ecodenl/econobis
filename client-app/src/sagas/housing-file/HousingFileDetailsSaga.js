@@ -1,6 +1,6 @@
 import { put, call } from 'redux-saga/effects';
 import HousingFileDetailsAPI from '../../api/housing-file/HousingFileDetailsAPI';
-import {hashHistory} from "react-router";
+import { hashHistory } from 'react-router';
 
 export function* fetchHousingFileDetailsSaga({ payload }) {
     try {

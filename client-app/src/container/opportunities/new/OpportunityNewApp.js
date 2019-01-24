@@ -6,10 +6,9 @@ import OpportunityNewToolbar from './OpportunityNewToolbar';
 import OpportunityNew from './OpportunityNew';
 import OpportunityDetailsAPI from '../../../api/opportunity/OpportunityDetailsAPI';
 import IntakeDetailsAPI from '../../../api/intake/IntakeDetailsAPI';
-import PanelBody from "../../../components/panel/PanelBody";
-import Panel from "../../../components/panel/Panel";
-import validator from "validator";
-
+import PanelBody from '../../../components/panel/PanelBody';
+import Panel from '../../../components/panel/Panel';
+import validator from 'validator';
 
 class OppportunitiesNewApp extends Component {
     constructor(props) {
@@ -29,14 +28,14 @@ class OppportunitiesNewApp extends Component {
             },
             errors: {
                 statusId: false,
-            }
+            },
         };
 
         this.handleInputChangeDate = this.handleInputChangeDate.bind(this);
-    };
+    }
 
-    componentWillMount(){
-        IntakeDetailsAPI.fetchIntakeDetails(this.props.params.intakeId).then((payload) => {
+    componentWillMount() {
+        IntakeDetailsAPI.fetchIntakeDetails(this.props.params.intakeId).then(payload => {
             this.setState({
                 ...this.state,
                 intake: payload,
@@ -53,10 +52,10 @@ class OppportunitiesNewApp extends Component {
             ...this.state,
             opportunity: {
                 ...this.state.opportunity,
-                [name]: value
+                [name]: value,
             },
         });
-    };
+    }
 
     handleInputChange = event => {
         const target = event.target;
@@ -67,7 +66,7 @@ class OppportunitiesNewApp extends Component {
             ...this.state,
             opportunity: {
                 ...this.state.opportunity,
-                [name]: value
+                [name]: value,
             },
         });
     };
@@ -75,31 +74,31 @@ class OppportunitiesNewApp extends Component {
     handleSubmit = event => {
         event.preventDefault();
 
-        const {opportunity} = this.state;
+        const { opportunity } = this.state;
 
         // Validation
         let errors = {};
         let hasErrors = false;
 
-        if(validator.isEmpty(opportunity.statusId)){
+        if (validator.isEmpty(opportunity.statusId)) {
             errors.statusId = true;
             hasErrors = true;
-        };
+        }
 
-        this.setState({ ...this.state, errors: errors })
+        this.setState({ ...this.state, errors: errors });
 
         !hasErrors &&
-        OpportunityDetailsAPI.storeOpportunity(opportunity).then(payload => {
-            hashHistory.push('/kans/' + payload.id);
-        });
+            OpportunityDetailsAPI.storeOpportunity(opportunity).then(payload => {
+                hashHistory.push('/kans/' + payload.id);
+            });
     };
 
-    handleMeasureIds = (selectedOption) => {
+    handleMeasureIds = selectedOption => {
         this.setState({
             ...this.state,
             opportunity: {
                 ...this.state.opportunity,
-                measureIds: selectedOption
+                measureIds: selectedOption,
             },
         });
     };
@@ -110,8 +109,8 @@ class OppportunitiesNewApp extends Component {
                 <div className="col-md-9">
                     <div className="col-md-12">
                         <Panel>
-                            <PanelBody className={"panel-small"}>
-                                <OpportunityNewToolbar/>
+                            <PanelBody className={'panel-small'}>
+                                <OpportunityNewToolbar />
                             </PanelBody>
                         </Panel>
                     </div>
@@ -132,10 +131,10 @@ class OppportunitiesNewApp extends Component {
                         </Panel>
                     </div>
                 </div>
-                <div className="col-md-3"/>
+                <div className="col-md-3" />
             </div>
-        )
+        );
     }
-};
+}
 
 export default OppportunitiesNewApp;

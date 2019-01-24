@@ -1,4 +1,4 @@
-export default function (state= { isLoading: false }, action) {
+export default function(state = { isLoading: false }, action) {
     switch (action.type) {
         case 'FETCH_OPPORTUNITIES_LOADING':
             return {
@@ -16,33 +16,33 @@ export default function (state= { isLoading: false }, action) {
         case 'SET_CHECKED_OPPORTUNITY':
             return {
                 ...state,
-                data: state.data.map((opportunity) => {
+                data: state.data.map(opportunity => {
                     if (opportunity.id === action.id) {
                         return {
                             ...opportunity,
-                            checked: !opportunity.checked
+                            checked: !opportunity.checked,
                         };
                     } else {
                         return opportunity;
-                    };
+                    }
                 }),
             };
         case 'SET_CHECKED_OPPORTUNITY_ALL':
             return {
                 ...state,
-                data: state.data.map((opportunity) => {
+                data: state.data.map(opportunity => {
                     return {
                         ...opportunity,
-                        checked: action.checkedValue
+                        checked: action.checkedValue,
                     };
                 }),
             };
         case 'DELETE_OPPORTUNITY_SUCCESS':
             return {
                 ...state,
-                data: state.data.filter((opportunity) => opportunity.id !== action.id),
+                data: state.data.filter(opportunity => opportunity.id !== action.id),
                 meta: {
-                    total: state.meta.total - 1
+                    total: state.meta.total - 1,
                 },
             };
         case 'CLEAR_OPPORTUNITIES':

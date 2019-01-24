@@ -3,9 +3,9 @@ import { connect } from 'react-redux';
 
 import Modal from '../../../../components/modal/Modal';
 import { fetchCampaign } from '../../../../actions/campaign/CampaignDetailsActions';
-import CampaignDetailsAPI from "../../../../api/campaign/CampaignDetailsAPI";
+import CampaignDetailsAPI from '../../../../api/campaign/CampaignDetailsAPI';
 
-const CampaignDetailsReponseItemDelete = (props) => {
+const CampaignDetailsReponseItemDelete = props => {
     const confirmAction = () => {
         CampaignDetailsAPI.detachResponse(props.campaignId, props.contactId).then(() => {
             props.fetchCampaign(props.campaignId);
@@ -22,23 +22,23 @@ const CampaignDetailsReponseItemDelete = (props) => {
             title="Verwijderen"
         >
             <p>Wil je deze response ontkoppelen van deze campagne?</p>
-
-
-
         </Modal>
     );
 };
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         campaignId: state.campaignDetails.id,
     };
 };
 
 const mapDispatchToProps = dispatch => ({
-    fetchCampaign: (id) => {
+    fetchCampaign: id => {
         dispatch(fetchCampaign(id));
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(CampaignDetailsReponseItemDelete);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(CampaignDetailsReponseItemDelete);

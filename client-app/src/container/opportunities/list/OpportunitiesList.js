@@ -6,13 +6,13 @@ import DataTableBody from '../../../components/dataTable/DataTableBody';
 
 import OpportunitiesListItem from './OpportunitiesListItem';
 import OpportunityDeleteItem from './OpportunityDeleteItem';
-import DataTablePagination from "../../../components/dataTable/DataTablePagination";
-import OpportunitiesListHead from "./OpportunitiesListHead";
-import OpportunitiesListFilter from "./OpportunitiesListFilter";
-import {connect} from "react-redux";
+import DataTablePagination from '../../../components/dataTable/DataTablePagination';
+import OpportunitiesListHead from './OpportunitiesListHead';
+import OpportunitiesListFilter from './OpportunitiesListFilter';
+import { connect } from 'react-redux';
 
 class OpportunitiesList extends Component {
-    constructor(props){
+    constructor(props) {
         super(props);
 
         this.state = {
@@ -20,13 +20,13 @@ class OpportunitiesList extends Component {
             deleteItem: {
                 id: '',
                 contactName: '',
-                measureCategoryName: ''
-            }
+                measureCategoryName: '',
+            },
         };
     }
 
     // On key Enter filter form will submit
-    handleKeyUp = (e) => {
+    handleKeyUp = e => {
         if (e.keyCode === 13) {
             this.props.onSubmitFilter();
         }
@@ -36,12 +36,12 @@ class OpportunitiesList extends Component {
         this.setState({
             ...this.state,
             showDeleteItem: true,
-            deleteItem:{
+            deleteItem: {
                 ...this.state.deleteItem,
                 id: id,
                 contactName: contactName,
-                measureCategoryName: measureCategoryName
-            }
+                measureCategoryName: measureCategoryName,
+            },
         });
     };
 
@@ -49,12 +49,12 @@ class OpportunitiesList extends Component {
         this.setState({
             ...this.state,
             showDeleteItem: false,
-            deleteItem:{
+            deleteItem: {
                 ...this.state.deleteItem,
                 id: '',
                 contactName: '',
-                measureCategoryName: ''
-            }
+                measureCategoryName: '',
+            },
         });
     };
 
@@ -66,81 +66,71 @@ class OpportunitiesList extends Component {
 
         if (this.props.hasError) {
             loadingText = 'Fout bij het ophalen van kansen.';
-        }
-        else if (this.props.isLoading) {
+        } else if (this.props.isLoading) {
             loadingText = 'Gegevens aan het laden.';
-        }
-        else if (data.length === 0) {
+        } else if (data.length === 0) {
             loadingText = 'Geen kansen gevonden!';
-        }
-        else {
+        } else {
             loading = false;
         }
 
         return (
-        <div>
-            <form onKeyUp={this.handleKeyUp}>
-            <DataTable>
-                <DataTableHead>
-                    <OpportunitiesListHead
-                        fetchOpportunitiesData={() => this.props.fetchOpportunitiesData()}
-                    />
+            <div>
+                <form onKeyUp={this.handleKeyUp}>
+                    <DataTable>
+                        <DataTableHead>
+                            <OpportunitiesListHead fetchOpportunitiesData={() => this.props.fetchOpportunitiesData()} />
 
-                    <OpportunitiesListFilter
-                        onSubmitFilter={this.props.onSubmitFilter}
-                        showCheckboxList={this.props.showCheckboxList}
-                        checkedAllCheckboxes={this.props.checkedAllCheckboxes}
-                        selectAllCheckboxes={this.props.selectAllCheckboxes}
-                    />
-
-                </DataTableHead>
-                <DataTableBody>
-                    {
-                        loading ? (
-                            <tr>
-                                <td colSpan={8}>{loadingText}</td>
-                            </tr>
-                        ) : (
-                            data.map(opportunities => (
-                                <OpportunitiesListItem
-                                    key={opportunities.id}
-                                    {...opportunities}
-                                    showDeleteItemModal={this.showDeleteItemModal}
-                                    showCheckbox={this.props.showCheckboxList}
-                                    checkedAllCheckboxes={this.props.checkedAllCheckboxes}
-                                />
-                            ))
-                        )
-                    }
-                </DataTableBody>
-            </DataTable>
-            <div className="col-md-6 col-md-offset-3">
-                <DataTablePagination
-                    onPageChangeAction={this.props.handlePageClick}
-                    totalRecords={meta.total}
-                    initialPage={this.props.opportunitiesPagination.page}
-                />
+                            <OpportunitiesListFilter
+                                onSubmitFilter={this.props.onSubmitFilter}
+                                showCheckboxList={this.props.showCheckboxList}
+                                checkedAllCheckboxes={this.props.checkedAllCheckboxes}
+                                selectAllCheckboxes={this.props.selectAllCheckboxes}
+                            />
+                        </DataTableHead>
+                        <DataTableBody>
+                            {loading ? (
+                                <tr>
+                                    <td colSpan={8}>{loadingText}</td>
+                                </tr>
+                            ) : (
+                                data.map(opportunities => (
+                                    <OpportunitiesListItem
+                                        key={opportunities.id}
+                                        {...opportunities}
+                                        showDeleteItemModal={this.showDeleteItemModal}
+                                        showCheckbox={this.props.showCheckboxList}
+                                        checkedAllCheckboxes={this.props.checkedAllCheckboxes}
+                                    />
+                                ))
+                            )}
+                        </DataTableBody>
+                    </DataTable>
+                    <div className="col-md-6 col-md-offset-3">
+                        <DataTablePagination
+                            onPageChangeAction={this.props.handlePageClick}
+                            totalRecords={meta.total}
+                            initialPage={this.props.opportunitiesPagination.page}
+                        />
+                    </div>
+                    {this.state.showDeleteItem && (
+                        <OpportunityDeleteItem
+                            closeDeleteItemModal={this.closeDeleteItemModal}
+                            fetchOpportunitiesData={this.props.fetchOpportunitiesData}
+                            {...this.state.deleteItem}
+                        />
+                    )}
+                </form>
             </div>
-            {
-                this.state.showDeleteItem &&
-                <OpportunityDeleteItem
-                    closeDeleteItemModal={this.closeDeleteItemModal}
-                    fetchOpportunitiesData={this.props.fetchOpportunitiesData}
-                    {...this.state.deleteItem}
-                />
-            }
-            </form>
-        </div>
-        )
+        );
     }
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         isLoading: state.loadingData.isLoading,
         hasError: state.loadingData.hasError,
-    }
+    };
 };
 
 export default connect(mapStateToProps)(OpportunitiesList);
-

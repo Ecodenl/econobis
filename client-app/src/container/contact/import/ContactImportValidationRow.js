@@ -1,16 +1,16 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 
 class ContactImportValidationRow extends Component {
     constructor(props) {
         super(props);
-    };
+    }
 
     render() {
         let extraClass = '';
-        if(this.props.data.prio === 1){
+        if (this.props.data.prio === 1) {
             extraClass = 'error-row';
         }
-        if(this.props.data.prio === 2){
+        if (this.props.data.prio === 2) {
             extraClass = 'warning-row';
         }
         return (
@@ -22,7 +22,6 @@ class ContactImportValidationRow extends Component {
             </tr>
         );
     }
-};
-
+}
 
 export default ContactImportValidationRow;

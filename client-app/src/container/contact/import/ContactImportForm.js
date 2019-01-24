@@ -5,7 +5,7 @@ import ContactImportFormGeneral from './ContactImportFormGeneral';
 const ContactImportForm = props => {
     return (
         <div>
-            <ContactImportFormGeneral/>
+            <ContactImportFormGeneral />
         </div>
     );
 };

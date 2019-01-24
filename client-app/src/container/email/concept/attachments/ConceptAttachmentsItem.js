@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 
 import ConceptAttachmentsView from './ConceptAttachmentsView';
 import EmailAttachmentsItemDelete from './ConceptAttachmentsDelete';
@@ -12,7 +12,7 @@ class ConceptAttachmentsItem extends Component {
             highlightLine: '',
             showDelete: false,
         };
-    };
+    }
 
     onLineEnter = () => {
         this.setState({
@@ -29,9 +29,8 @@ class ConceptAttachmentsItem extends Component {
     };
 
     toggleDelete = () => {
-        this.setState({showDelete: !this.state.showDelete});
+        this.setState({ showDelete: !this.state.showDelete });
     };
-
 
     render() {
         return (
@@ -44,17 +43,16 @@ class ConceptAttachmentsItem extends Component {
                     toggleDelete={this.toggleDelete}
                     attachment={this.props.attachment}
                 />
-                {
-                    this.state.showDelete &&
+                {this.state.showDelete && (
                     <EmailAttachmentsItemDelete
                         toggleDelete={this.toggleDelete}
                         attachment={this.props.attachment}
                         deleteAttachment={this.props.deleteAttachment}
                     />
-                }
+                )}
             </div>
         );
     }
-};
+}
 
 export default ConceptAttachmentsItem;

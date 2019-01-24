@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 
 import ContactDetailsCampaignsList from './ContactDetailsCampaignsList';
 import Panel from '../../../../components/panel/Panel';
@@ -18,13 +18,12 @@ class ContactDetailsCampaigns extends Component {
                 </PanelHeader>
                 <PanelBody>
                     <div className="col-md-12">
-                        <ContactDetailsCampaignsList/>
+                        <ContactDetailsCampaignsList />
                     </div>
                 </PanelBody>
             </Panel>
         );
     }
 }
-
 
 export default ContactDetailsCampaigns;

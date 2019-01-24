@@ -3,16 +3,14 @@ import { connect } from 'react-redux';
 
 import Modal from '../../../../../components/modal/Modal';
 import { fetchInvoiceDetails } from '../../../../../actions/invoice/InvoiceDetailsActions';
-import InvoiceDetailsAPI from "../../../../../api/invoice/InvoiceDetailsAPI";
+import InvoiceDetailsAPI from '../../../../../api/invoice/InvoiceDetailsAPI';
 
-const InvoicePaymentsFormDelete = (props) => {
-
+const InvoicePaymentsFormDelete = props => {
     const confirmAction = () => {
-        InvoiceDetailsAPI.deletePayment(props.id).then((payload) => {
+        InvoiceDetailsAPI.deletePayment(props.id).then(payload => {
             props.fetchInvoiceDetails(props.invoiceId);
             props.closeDeleteItemModal();
         });
-
     };
 
     return (
@@ -24,15 +22,17 @@ const InvoicePaymentsFormDelete = (props) => {
             title="Verwijderen"
         >
             <p>Verwijder betaling?</p>
-
         </Modal>
     );
 };
 
 const mapDispatchToProps = dispatch => ({
-    fetchInvoiceDetails: (id) => {
+    fetchInvoiceDetails: id => {
         dispatch(fetchInvoiceDetails(id));
     },
 });
 
-export default connect(null, mapDispatchToProps)(InvoicePaymentsFormDelete);
+export default connect(
+    null,
+    mapDispatchToProps
+)(InvoicePaymentsFormDelete);

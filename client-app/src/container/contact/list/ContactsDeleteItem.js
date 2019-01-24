@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import Modal from '../../../components/modal/Modal';
 import { deleteContact } from '../../../actions/contact/ContactsActions';
 
-const ContactsDeleteItem = (props) => {
+const ContactsDeleteItem = props => {
     const confirmAction = () => {
         props.deleteContact(props.id);
         props.closeDeleteItemModal();
@@ -12,21 +12,24 @@ const ContactsDeleteItem = (props) => {
 
     return (
         <Modal
-        buttonConfirmText="Verwijder"
+            buttonConfirmText="Verwijder"
             buttonClassName={'btn-danger'}
             closeModal={props.closeDeleteItemModal}
             confirmAction={() => confirmAction()}
             title="Verwijderen"
-      >
-            Verwijder contact: <strong> { props.fullName } </strong>
-      </Modal>
+        >
+            Verwijder contact: <strong> {props.fullName} </strong>
+        </Modal>
     );
 };
 
 const mapDispatchToProps = dispatch => ({
-    deleteContact: (id) => {
+    deleteContact: id => {
         dispatch(deleteContact(id));
     },
 });
 
-export default connect(null, mapDispatchToProps)(ContactsDeleteItem);
+export default connect(
+    null,
+    mapDispatchToProps
+)(ContactsDeleteItem);

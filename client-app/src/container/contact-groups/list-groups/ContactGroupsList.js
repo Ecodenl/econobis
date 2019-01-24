@@ -5,26 +5,26 @@ import DataTableHead from '../../../components/dataTable/DataTableHead';
 import DataTableBody from '../../../components/dataTable/DataTableBody';
 import ContactGroupsListItem from './ContactGroupsListItem';
 import ContactGroupsDeleteItem from './ContactGroupsDeleteItem';
-import ContactGroupsListHead from "./ContactGroupsListHead";
-import ContactGroupsListFilter from "./ContactGroupsListFilter";
-import DataTablePagination from "../../../components/dataTable/DataTablePagination";
-import {connect} from "react-redux";
+import ContactGroupsListHead from './ContactGroupsListHead';
+import ContactGroupsListFilter from './ContactGroupsListFilter';
+import DataTablePagination from '../../../components/dataTable/DataTablePagination';
+import { connect } from 'react-redux';
 
 class ContactGroupsList extends Component {
-    constructor(props){
+    constructor(props) {
         super(props);
 
         this.state = {
             showDeleteItem: false,
             deleteItem: {
                 id: '',
-                name: ''
-            }
+                name: '',
+            },
         };
     }
 
     // On key Enter filter form will submit
-    handleKeyUp = (e) => {
+    handleKeyUp = e => {
         e.preventDefault();
         if (e.keyCode === 13) {
             this.props.onSubmitFilter();
@@ -35,11 +35,11 @@ class ContactGroupsList extends Component {
         this.setState({
             ...this.state,
             showDeleteItem: true,
-            deleteItem:{
+            deleteItem: {
                 ...this.state.deleteItem,
                 id: id,
-                name: name
-            }
+                name: name,
+            },
         });
     };
 
@@ -47,11 +47,11 @@ class ContactGroupsList extends Component {
         this.setState({
             ...this.state,
             showDeleteItem: false,
-            deleteItem:{
+            deleteItem: {
                 ...this.state.deleteItem,
                 id: '',
-                name: ''
-            }
+                name: '',
+            },
         });
     };
 
@@ -63,73 +63,63 @@ class ContactGroupsList extends Component {
 
         if (this.props.hasError) {
             loadingText = 'Fout bij het ophalen van groepen.';
-        }
-        else if (this.props.isLoading) {
+        } else if (this.props.isLoading) {
             loadingText = 'Gegevens aan het laden.';
-        }
-        else if (data.length === 0) {
+        } else if (data.length === 0) {
             loadingText = 'Geen groepen gevonden!';
-        }
-        else {
+        } else {
             loading = false;
         }
 
         return (
-        <div>
-            <form onKeyUp={this.handleKeyUp} onSubmit={this.handleKeyUp}>
-            <DataTable>
-                <DataTableHead>
-                    <ContactGroupsListHead
-                        fetchContactGroupsData={() => this.props.fetchContactGroupsData()}
-                    />
-                    <ContactGroupsListFilter
-                        onSubmitFilter={this.props.onSubmitFilter}
-                    />
-                </DataTableHead>
-                <DataTableBody>
-                    {
-                        loading ? (
-                            <tr>
-                                <td colSpan={11}>{loadingText}</td>
-                            </tr>
-                        ) : (
-                            data.map(contactGroup => (
-                                <ContactGroupsListItem
-                                key={contactGroup.id}
-                                {...contactGroup}
-                                showDeleteItemModal={this.showDeleteItemModal}
-                            />
-                            ))
-                        )
-                    }
-                </DataTableBody>
-            </DataTable>
-                <div className="col-md-6 col-md-offset-3">
-                    <DataTablePagination
-                        onPageChangeAction={this.props.handlePageClick}
-                        totalRecords={meta.total}
-                        initialPage={this.props.contactGroupsPagination.page}
-                    />
-                </div>
-            {
-                this.state.showDeleteItem &&
-                <ContactGroupsDeleteItem
-                    closeDeleteItemModal={this.closeDeleteItemModal}
-                    {...this.state.deleteItem}
-                    resetContactGroupsFilters={() => this.props.resetContactGroupsFilters() }
-                />
-            }
-            </form>
-        </div>
-        )
+            <div>
+                <form onKeyUp={this.handleKeyUp} onSubmit={this.handleKeyUp}>
+                    <DataTable>
+                        <DataTableHead>
+                            <ContactGroupsListHead fetchContactGroupsData={() => this.props.fetchContactGroupsData()} />
+                            <ContactGroupsListFilter onSubmitFilter={this.props.onSubmitFilter} />
+                        </DataTableHead>
+                        <DataTableBody>
+                            {loading ? (
+                                <tr>
+                                    <td colSpan={11}>{loadingText}</td>
+                                </tr>
+                            ) : (
+                                data.map(contactGroup => (
+                                    <ContactGroupsListItem
+                                        key={contactGroup.id}
+                                        {...contactGroup}
+                                        showDeleteItemModal={this.showDeleteItemModal}
+                                    />
+                                ))
+                            )}
+                        </DataTableBody>
+                    </DataTable>
+                    <div className="col-md-6 col-md-offset-3">
+                        <DataTablePagination
+                            onPageChangeAction={this.props.handlePageClick}
+                            totalRecords={meta.total}
+                            initialPage={this.props.contactGroupsPagination.page}
+                        />
+                    </div>
+                    {this.state.showDeleteItem && (
+                        <ContactGroupsDeleteItem
+                            closeDeleteItemModal={this.closeDeleteItemModal}
+                            {...this.state.deleteItem}
+                            resetContactGroupsFilters={() => this.props.resetContactGroupsFilters()}
+                        />
+                    )}
+                </form>
+            </div>
+        );
     }
-};
+}
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         isLoading: state.loadingData.isLoading,
         hasError: state.loadingData.hasError,
-    }
+    };
 };
 
 export default connect(mapStateToProps)(ContactGroupsList);

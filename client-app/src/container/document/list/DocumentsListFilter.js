@@ -10,33 +10,32 @@ import {
     setFilterDocumentFilename,
     setFilterDocumentContact,
     setFilterDocumentDocumentType,
-    setFilterDocumentDocumentGroup
+    setFilterDocumentDocumentGroup,
 } from '../../../actions/document/DocumentFiltersActions';
-import DataTableFilterDate from "../../../components/dataTable/DataTableFilterDate";
+import DataTableFilterDate from '../../../components/dataTable/DataTableFilterDate';
 
 const DocumentsListFilter = props => {
-
-    const onNumberChange = (e) => {
+    const onNumberChange = e => {
         props.setFilterDocumentNumber(e.target.value);
     };
 
-    const onDateChange = (selectedDay) => {
-        if(selectedDay === undefined){
+    const onDateChange = selectedDay => {
+        if (selectedDay === undefined) {
             props.setFilterDocumentDate('');
-        }else{
+        } else {
             props.setFilterDocumentDate(moment(selectedDay).format('Y-MM-DD'));
         }
     };
 
-    const onFilenameChange = (e) => {
+    const onFilenameChange = e => {
         props.setFilterDocumentFilename(e.target.value);
     };
 
-    const onContactChange = (e) => {
+    const onContactChange = e => {
         props.setFilterDocumentContact(e.target.value);
     };
 
-    const onDocumentTypeChange = (e) => {
+    const onDocumentTypeChange = e => {
         props.setFilterDocumentDocumentType(e.target.value);
 
         setTimeout(() => {
@@ -44,7 +43,7 @@ const DocumentsListFilter = props => {
         }, 100);
     };
 
-    const onDocumentGroupChange = (e) => {
+    const onDocumentGroupChange = e => {
         props.setFilterDocumentDocumentGroup(e.target.value);
 
         setTimeout(() => {
@@ -54,57 +53,97 @@ const DocumentsListFilter = props => {
 
     return (
         <tr className="thead-filter">
+            <th>
+                <input
+                    type="text"
+                    className="form-control input-sm"
+                    value={props.filters.number.data}
+                    onChange={onNumberChange}
+                />
+            </th>
 
-            <th><input type="text" className="form-control input-sm" value={ props.filters.number.data} onChange={onNumberChange} /></th>
-
-            <DataTableFilterDate value={ props.filters.date.data && props.filters.date.data } onChangeAction={onDateChange} />
-
-            <th><input type="text" className="form-control input-sm" value={ props.filters.filename.data} onChange={onFilenameChange} /></th>
-            <th><input type="text" className="form-control input-sm" value={ props.filters.contact.data} onChange={onContactChange} /></th>
+            <DataTableFilterDate
+                value={props.filters.date.data && props.filters.date.data}
+                onChangeAction={onDateChange}
+            />
 
             <th>
-                <select className="form-control input-sm" value={ props.filters.documentType.data } onChange={onDocumentTypeChange}>
-                    <option/>
-                    {
-                        props.documentTypes.map((documentType) => {
-                            return <option key={documentType.id } value={ documentType.id }>{ documentType.name }</option>
-                        })
-                    }
+                <input
+                    type="text"
+                    className="form-control input-sm"
+                    value={props.filters.filename.data}
+                    onChange={onFilenameChange}
+                />
+            </th>
+            <th>
+                <input
+                    type="text"
+                    className="form-control input-sm"
+                    value={props.filters.contact.data}
+                    onChange={onContactChange}
+                />
+            </th>
+
+            <th>
+                <select
+                    className="form-control input-sm"
+                    value={props.filters.documentType.data}
+                    onChange={onDocumentTypeChange}
+                >
+                    <option />
+                    {props.documentTypes.map(documentType => {
+                        return (
+                            <option key={documentType.id} value={documentType.id}>
+                                {documentType.name}
+                            </option>
+                        );
+                    })}
                 </select>
             </th>
 
             <th>
-                <select className="form-control input-sm" value={ props.filters.documentGroup.data } onChange={onDocumentGroupChange}>
-                    <option/>
-                    {
-                        props.documentGroups.map((documentGroup) => {
-                            return <option key={documentGroup.id } value={ documentGroup.id }>{ documentGroup.name }</option>
-                        })
-                    }
+                <select
+                    className="form-control input-sm"
+                    value={props.filters.documentGroup.data}
+                    onChange={onDocumentGroupChange}
+                >
+                    <option />
+                    {props.documentGroups.map(documentGroup => {
+                        return (
+                            <option key={documentGroup.id} value={documentGroup.id}>
+                                {documentGroup.name}
+                            </option>
+                        );
+                    })}
                 </select>
             </th>
 
-
-            <th/>
+            <th />
         </tr>
     );
 };
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = state => ({
     filters: state.documents.filters,
     documentTypes: state.systemData.documentTypes,
     documentGroups: state.systemData.documentGroups,
 });
 
-const mapDispatchToProps = (dispatch) => {
-    return bindActionCreators({
-        setFilterDocumentNumber,
-        setFilterDocumentDate,
-        setFilterDocumentFilename,
-        setFilterDocumentContact,
-        setFilterDocumentDocumentType,
-        setFilterDocumentDocumentGroup
-    }, dispatch);
+const mapDispatchToProps = dispatch => {
+    return bindActionCreators(
+        {
+            setFilterDocumentNumber,
+            setFilterDocumentDate,
+            setFilterDocumentFilename,
+            setFilterDocumentContact,
+            setFilterDocumentDocumentType,
+            setFilterDocumentDocumentGroup,
+        },
+        dispatch
+    );
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(DocumentsListFilter);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(DocumentsListFilter);

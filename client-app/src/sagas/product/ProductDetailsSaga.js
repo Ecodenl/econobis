@@ -5,7 +5,7 @@ export function* fetchProductDetailsSaga({ id }) {
     try {
         yield put({ type: 'IS_LOADING' });
         const productDetails = yield call(ProductDetailsAPI.fetchProductDetails, id);
-        yield put({ type: 'FETCH_PRODUCT_DETAILS_SUCCESS',productDetails });
+        yield put({ type: 'FETCH_PRODUCT_DETAILS_SUCCESS', productDetails });
         yield put({ type: 'IS_LOADING_COMPLETE' });
     } catch (error) {
         yield put({ type: 'FETCH_PRODUCT_DETAILS_ERROR', error });
@@ -15,7 +15,7 @@ export function* fetchProductDetailsSaga({ id }) {
 
 export function* updateProductDetailsSaga({ product, switchToView }) {
     try {
-        const payload = yield call(ProductDetailsAPI.updateProduct, {product});
+        const payload = yield call(ProductDetailsAPI.updateProduct, { product });
         const productDetails = payload.data.data;
 
         yield put({ type: 'UPDATE_PRODUCT_SUCCESS', productDetails });
@@ -32,8 +32,7 @@ export function* addProductPriceHistorySaga({ priceHistory }) {
 
         //Because there are sorts and current price we reload whole product
         const productDetails = yield call(ProductDetailsAPI.fetchProductDetails, priceHistory.productId);
-        yield put({ type: 'FETCH_PRODUCT_DETAILS_SUCCESS',productDetails });
-
+        yield put({ type: 'FETCH_PRODUCT_DETAILS_SUCCESS', productDetails });
     } catch (error) {
         yield put({ type: 'ADD_PRODUCT_PRICE_HISTORY_ERROR', error });
     }

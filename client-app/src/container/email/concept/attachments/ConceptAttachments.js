@@ -4,7 +4,7 @@ import ConceptAttachmentsList from './ConceptAttachmentsList';
 import ConceptAttachmentsNew from './ConceptAttachmentsNew';
 import PanelBody from '../../../../components/panel/PanelBody';
 import PanelHeader from '../../../../components/panel/PanelHeader';
-import {connect} from "react-redux";
+import { connect } from 'react-redux';
 
 class ConceptAttachments extends Component {
     constructor(props) {
@@ -18,7 +18,7 @@ class ConceptAttachments extends Component {
     toggleShowNew = () => {
         this.setState({
             showNew: !this.state.showNew,
-        })
+        });
     };
 
     render() {
@@ -26,17 +26,24 @@ class ConceptAttachments extends Component {
             <div>
                 <PanelHeader>
                     <span className="h5 text-bold">Bijlages</span>
-                    <a role="button" className="pull-right" onClick={this.toggleShowNew}><span
-                        className="glyphicon glyphicon-plus"/>
+                    <a role="button" className="pull-right" onClick={this.toggleShowNew}>
+                        <span className="glyphicon glyphicon-plus" />
                     </a>
                 </PanelHeader>
                 <PanelBody>
                     <div className="col-md-12">
-                        <ConceptAttachmentsList attachments={this.props.attachments} deleteAttachment={this.props.deleteAttachment}/>
+                        <ConceptAttachmentsList
+                            attachments={this.props.attachments}
+                            deleteAttachment={this.props.deleteAttachment}
+                        />
                     </div>
                     <div className="col-md-12 margin-10-top">
-                        {this.state.showNew &&
-                        <ConceptAttachmentsNew toggleShowNew={this.toggleShowNew} addAttachment={this.props.addAttachment}/>}
+                        {this.state.showNew && (
+                            <ConceptAttachmentsNew
+                                toggleShowNew={this.toggleShowNew}
+                                addAttachment={this.props.addAttachment}
+                            />
+                        )}
                     </div>
                 </PanelBody>
             </div>
@@ -44,10 +51,10 @@ class ConceptAttachments extends Component {
     }
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
-        permissions: state.meDetails.permissions
-    }
+        permissions: state.meDetails.permissions,
+    };
 };
 
 export default connect(mapStateToProps)(ConceptAttachments);

@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import UserAPI from "../../../../api/user/UserAPI";
+import UserAPI from '../../../../api/user/UserAPI';
 
 import { updateRole } from '../../../../actions/user/UserDetailsActions';
-import InputToggle from "../../../../components/form/InputToggle";
+import InputToggle from '../../../../components/form/InputToggle';
 
 class UserDetailsFormRoleListItem extends Component {
     constructor(props) {
@@ -16,27 +16,30 @@ class UserDetailsFormRoleListItem extends Component {
 
     handleInputChange = event => {
         const target = event.target;
-        if(!target.checked) {
-            UserAPI.removeRole(this.props.id, this.state.id).then(() => {
-                this.setState({
-                    ...this.state,
-                    hasRole: !this.state.hasRole
+        if (!target.checked) {
+            UserAPI.removeRole(this.props.id, this.state.id)
+                .then(() => {
+                    this.setState({
+                        ...this.state,
+                        hasRole: !this.state.hasRole,
+                    });
+                    this.props.updateRole(target.id, false);
+                })
+                .catch(function() {
+                    alert('Je hebt niet de rechten om deze rol toe te kennen');
                 });
-                this.props.updateRole(target.id, false);
-            }).catch(function () {
-                alert('Je hebt niet de rechten om deze rol toe te kennen');
-            });
-        }
-        else{
-            UserAPI.addRole(this.props.id, this.state.id).then(() => {
-                this.setState({
-                    ...this.state,
-                    hasRole: !this.state.hasRole
+        } else {
+            UserAPI.addRole(this.props.id, this.state.id)
+                .then(() => {
+                    this.setState({
+                        ...this.state,
+                        hasRole: !this.state.hasRole,
+                    });
+                    this.props.updateRole(target.id, true);
+                })
+                .catch(function() {
+                    alert('Je hebt niet de rechten om deze rol toe te kennen');
                 });
-                this.props.updateRole(target.id, true);
-            }).catch(function () {
-                alert('Je hebt niet de rechten om deze rol toe te kennen');
-            });
         }
     };
 
@@ -44,13 +47,7 @@ class UserDetailsFormRoleListItem extends Component {
         const { id, name, hasRole } = this.state;
 
         return (
-                <InputToggle
-                    label={name}
-                    id={id}
-                    name={"name"}
-                    value={hasRole}
-                    onChangeAction={this.handleInputChange}
-                />
+            <InputToggle label={name} id={id} name={'name'} value={hasRole} onChangeAction={this.handleInputChange} />
         );
     }
 }
@@ -61,4 +58,7 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(null, mapDispatchToProps)(UserDetailsFormRoleListItem);
+export default connect(
+    null,
+    mapDispatchToProps
+)(UserDetailsFormRoleListItem);

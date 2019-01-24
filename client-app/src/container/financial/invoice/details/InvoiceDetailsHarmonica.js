@@ -1,13 +1,12 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import TaskHarmonica from "./harmonica/TaskHarmonica";
-import EmailHarmonica from "./harmonica/EmailHarmonica";
-import {hashHistory} from "react-router";
-
+import TaskHarmonica from './harmonica/TaskHarmonica';
+import EmailHarmonica from './harmonica/EmailHarmonica';
+import { hashHistory } from 'react-router';
 
 class InvoiceDetailsHarmonica extends Component {
-    constructor(props){
+    constructor(props) {
         super(props);
 
         this.state = {
@@ -18,18 +17,18 @@ class InvoiceDetailsHarmonica extends Component {
         };
 
         this.toggleShowList = this.toggleShowList.bind(this);
-    };
+    }
 
     componentWillReceiveProps(nextProps) {
-        if(this.props.id !== nextProps.id) {
+        if (this.props.id !== nextProps.id) {
             this.setState({
                 toggleShowList: {
                     tasks: false,
                     emails: false,
                 },
-            })
+            });
         }
-    };
+    }
 
     toggleShowList(name) {
         this.setState({
@@ -37,11 +36,11 @@ class InvoiceDetailsHarmonica extends Component {
             toggleShowList: {
                 ...this.state.toggleShowList,
                 [name]: !this.state.toggleShowList[name],
-            }
+            },
         });
-    };
+    }
 
-    newTask = (type) => {
+    newTask = type => {
         hashHistory.push(`/taak/nieuw/${type}/factuur/${this.props.invoiceDetails.id}`);
     };
 
@@ -65,15 +64,18 @@ class InvoiceDetailsHarmonica extends Component {
                     emailCount={this.props.invoiceDetails.emailCount}
                 />
             </div>
-        )
-    };
-};
+        );
+    }
+}
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         invoiceDetails: state.invoiceDetails,
-        permissions: state.meDetails.permissions
+        permissions: state.meDetails.permissions,
     };
 };
 
-export default connect(mapStateToProps, null)(InvoiceDetailsHarmonica);
+export default connect(
+    mapStateToProps,
+    null
+)(InvoiceDetailsHarmonica);

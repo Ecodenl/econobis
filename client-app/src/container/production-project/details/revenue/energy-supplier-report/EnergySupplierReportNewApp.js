@@ -7,9 +7,9 @@ import EnergySupplierReportNewToolbar from './EnergySupplierReportNewToolbar';
 import EnergySupplierReportNew from './EnergySupplierReportNew';
 
 import ProductionProjectRevenueAPI from '../../../../../api/production-project/ProductionProjectRevenueAPI';
-import Panel from "../../../../../components/panel/Panel";
-import PanelBody from "../../../../../components/panel/PanelBody";
-import DocumentTemplateAPI from "../../../../../api/document-template/DocumentTemplateAPI";
+import Panel from '../../../../../components/panel/Panel';
+import PanelBody from '../../../../../components/panel/PanelBody';
+import DocumentTemplateAPI from '../../../../../api/document-template/DocumentTemplateAPI';
 
 class EnergySupplierReportNewApp extends Component {
     constructor(props) {
@@ -29,15 +29,15 @@ class EnergySupplierReportNewApp extends Component {
                 documentName: false,
             },
         };
-    };
+    }
 
     componentDidMount() {
-        DocumentTemplateAPI.fetchDocumentTemplatesPeekGeneral().then((payload) => {
+        DocumentTemplateAPI.fetchDocumentTemplatesPeekGeneral().then(payload => {
             let templates = [];
 
-            payload.forEach(function (template) {
+            payload.forEach(function(template) {
                 if (template.group == 'revenue') {
-                    templates.push({id: template.id, name: template.name});
+                    templates.push({ id: template.id, name: template.name });
                 }
             });
 
@@ -56,7 +56,7 @@ class EnergySupplierReportNewApp extends Component {
             ...this.state,
             report: {
                 ...this.state.report,
-                [name]: value
+                [name]: value,
             },
         });
     };
@@ -64,32 +64,37 @@ class EnergySupplierReportNewApp extends Component {
     handleSubmit = event => {
         event.preventDefault();
 
-        const {report} = this.state;
+        const { report } = this.state;
 
         let errors = {};
         let hasErrors = false;
 
-        if(validator.isEmpty(report.templateId + '')){
+        if (validator.isEmpty(report.templateId + '')) {
             errors.templateId = true;
             hasErrors = true;
-        };
+        }
 
-        if(validator.isEmpty(report.energySupplierId + '')){
+        if (validator.isEmpty(report.energySupplierId + '')) {
             errors.energySupplierId = true;
             hasErrors = true;
-        };
+        }
 
-        if(validator.isEmpty(report.documentName + '')){
+        if (validator.isEmpty(report.documentName + '')) {
             errors.documentName = true;
             hasErrors = true;
-        };
+        }
 
         this.setState({ ...this.state, errors: errors });
 
         !hasErrors &&
-        ProductionProjectRevenueAPI.createEnergySupplierReport(report.revenueId, report.templateId, report.energySupplierId, report.documentName).then(payload => {
-            hashHistory.push(`/documenten`);
-        });
+            ProductionProjectRevenueAPI.createEnergySupplierReport(
+                report.revenueId,
+                report.templateId,
+                report.energySupplierId,
+                report.documentName
+            ).then(payload => {
+                hashHistory.push(`/documenten`);
+            });
     };
 
     render() {
@@ -116,10 +121,10 @@ class EnergySupplierReportNewApp extends Component {
                         </Panel>
                     </div>
                 </div>
-                <div className="col-md-3"/>
+                <div className="col-md-3" />
             </div>
-        )
+        );
     }
-};
+}
 
 export default EnergySupplierReportNewApp;

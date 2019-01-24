@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 
 import CampaignDetailsIntakeView from './CampaignDetailsIntakeView';
 
@@ -13,7 +13,7 @@ class CampaignDetailsIntakeItem extends Component {
                 ...props.intake,
             },
         };
-    };
+    }
 
     onLineEnter = () => {
         this.setState({
@@ -39,6 +39,6 @@ class CampaignDetailsIntakeItem extends Component {
             </div>
         );
     }
-};
+}
 
 export default CampaignDetailsIntakeItem;

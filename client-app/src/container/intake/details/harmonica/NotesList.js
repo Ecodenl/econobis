@@ -1,40 +1,37 @@
 import React from 'react';
-import {hashHistory} from 'react-router';
+import { hashHistory } from 'react-router';
 import { connect } from 'react-redux';
 import moment from 'moment';
 
-const NotesList = ({relatedNotes}) => {
+const NotesList = ({ relatedNotes }) => {
     function openItem(id) {
         hashHistory.push(`/taak/${id}`);
-    };
+    }
 
     return (
         <div>
-            {
-                relatedNotes == '' &&
-                <div>Geen notities gevonden.</div>
-            }
+            {relatedNotes == '' && <div>Geen notities gevonden.</div>}
 
-            {
-                relatedNotes != '' &&
+            {relatedNotes != '' && (
                 <table className="table harmonica-table">
                     <tbody>
-                    {relatedNotes.map((relatedNotes, i) => {
-                        return (
-                            <tr onClick={() => openItem(relatedNotes.id)} key={i}>
-                                <td className='col-xs-12 clickable'>{moment(relatedNotes.createdAt.date).format('L')} - {relatedNotes.noteSummary}</td>
-                            </tr>
-                        )
-                    })
-                }
-                </tbody>
-            </table>
-            }
+                        {relatedNotes.map((relatedNotes, i) => {
+                            return (
+                                <tr onClick={() => openItem(relatedNotes.id)} key={i}>
+                                    <td className="col-xs-12 clickable">
+                                        {moment(relatedNotes.createdAt.date).format('L')} - {relatedNotes.noteSummary}
+                                    </td>
+                                </tr>
+                            );
+                        })}
+                    </tbody>
+                </table>
+            )}
         </div>
     );
-}
+};
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         relatedNotes: state.intakeDetails.relatedNotes,
     };

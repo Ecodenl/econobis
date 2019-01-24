@@ -19,11 +19,7 @@ class Logout extends Component {
     }
 
     render() {
-        return (
-          <div>
-            U bent nu uitgelogd.
-          </div>
-        );
+        return <div>U bent nu uitgelogd.</div>;
     }
 }
 
@@ -33,4 +29,7 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(null, mapDispatchToProps)(Logout);
+export default connect(
+    null,
+    mapDispatchToProps
+)(Logout);

@@ -7,9 +7,9 @@ import RevenueNewToolbar from './RevenueNewToolbar';
 import RevenueNew from './RevenueNew';
 
 import ProductionProjectRevenueAPI from '../../../../../api/production-project/ProductionProjectRevenueAPI';
-import Panel from "../../../../../components/panel/Panel";
-import PanelBody from "../../../../../components/panel/PanelBody";
-import moment from "moment";
+import Panel from '../../../../../components/panel/Panel';
+import PanelBody from '../../../../../components/panel/PanelBody';
+import moment from 'moment';
 
 class RevenueNewApp extends Component {
     constructor(props) {
@@ -45,7 +45,7 @@ class RevenueNewApp extends Component {
         };
         this.handleInputChangeDate = this.handleInputChangeDate.bind(this);
         this.handleInputChangeDateConfirmed = this.handleInputChangeDateConfirmed.bind(this);
-    };
+    }
 
     handleInputChange = event => {
         const target = event.target;
@@ -61,8 +61,12 @@ class RevenueNewApp extends Component {
         });
 
         setTimeout(() => {
-            const kwhStart = (this.state.revenue.kwhStartLow ? parseFloat(this.state.revenue.kwhStartLow) : 0) + (this.state.revenue.kwhStartHigh ? parseFloat(this.state.revenue.kwhStartHigh) : 0);
-            const kwhEnd = (this.state.revenue.kwhEndLow ? parseFloat(this.state.revenue.kwhEndLow) : 0) + (this.state.revenue.kwhEndHigh ? parseFloat( this.state.revenue.kwhEndHigh) : 0);
+            const kwhStart =
+                (this.state.revenue.kwhStartLow ? parseFloat(this.state.revenue.kwhStartLow) : 0) +
+                (this.state.revenue.kwhStartHigh ? parseFloat(this.state.revenue.kwhStartHigh) : 0);
+            const kwhEnd =
+                (this.state.revenue.kwhEndLow ? parseFloat(this.state.revenue.kwhEndLow) : 0) +
+                (this.state.revenue.kwhEndHigh ? parseFloat(this.state.revenue.kwhEndHigh) : 0);
 
             this.setState({
                 ...this.state,
@@ -73,7 +77,6 @@ class RevenueNewApp extends Component {
                 },
             });
         }, 200);
-
     };
 
     handleInputChangeDate(value, name) {
@@ -81,68 +84,67 @@ class RevenueNewApp extends Component {
             ...this.state,
             revenue: {
                 ...this.state.revenue,
-                [name]: value
+                [name]: value,
             },
         });
-    };
+    }
 
     handleInputChangeDateConfirmed(value, name) {
-        if(value) {
+        if (value) {
             this.setState({
                 ...this.state,
                 revenue: {
                     ...this.state.revenue,
                     [name]: value,
-                    confirmed: true
+                    confirmed: true,
                 },
             });
-        }
-        else{
+        } else {
             this.setState({
                 ...this.state,
                 revenue: {
                     ...this.state.revenue,
                     [name]: value,
-                    confirmed: false
+                    confirmed: false,
                 },
             });
         }
-    };
+    }
 
     handleSubmit = event => {
         event.preventDefault();
 
-        const {revenue} = this.state;
+        const { revenue } = this.state;
 
         let errors = {};
         let hasErrors = false;
 
-        if(validator.isEmpty(revenue.categoryId + '')){
+        if (validator.isEmpty(revenue.categoryId + '')) {
             errors.categoryId = true;
             hasErrors = true;
-        };
+        }
 
-        if(validator.isEmpty(revenue.dateBegin + '')){
+        if (validator.isEmpty(revenue.dateBegin + '')) {
             errors.dateBegin = true;
             hasErrors = true;
-        };
+        }
 
-        if(validator.isEmpty(revenue.dateEnd + '')){
+        if (validator.isEmpty(revenue.dateEnd + '')) {
             errors.dateEnd = true;
             hasErrors = true;
-        };
+        }
 
-        if(validator.isEmpty(revenue.dateEntry + '')){
+        if (validator.isEmpty(revenue.dateEntry + '')) {
             errors.dateEntry = true;
             hasErrors = true;
-        };
+        }
 
         this.setState({ ...this.state, errors: errors });
 
         !hasErrors &&
-        ProductionProjectRevenueAPI.storeProductionProjectRevenue(revenue).then(payload => {
-            hashHistory.push(`/productie-project/opbrengst/${payload.id}`);
-        });
+            ProductionProjectRevenueAPI.storeProductionProjectRevenue(revenue).then(payload => {
+                hashHistory.push(`/productie-project/opbrengst/${payload.id}`);
+            });
     };
 
     render() {
@@ -170,10 +172,10 @@ class RevenueNewApp extends Component {
                         </Panel>
                     </div>
                 </div>
-                <div className="col-md-3"/>
+                <div className="col-md-3" />
             </div>
-        )
+        );
     }
-};
+}
 
 export default RevenueNewApp;

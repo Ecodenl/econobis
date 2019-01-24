@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { isEmpty } from 'lodash';
 
@@ -8,10 +8,9 @@ import OpportunityDetailsConclusionForm from './conclusion/OpportunityDetailsCon
 import OpportunityDetailsQuotationRequests from './quotation-request/OpportunityDetailsQuotationRequests';
 
 class OpportunityDetailsForm extends Component {
-    constructor(props){
+    constructor(props) {
         super(props);
-    };
-
+    }
 
     render() {
         let loadingText = '';
@@ -19,36 +18,32 @@ class OpportunityDetailsForm extends Component {
 
         if (this.props.hasError) {
             loadingText = 'Fout bij het ophalen van kans.';
-        }
-        else if (this.props.isLoading) {
+        } else if (this.props.isLoading) {
             loadingText = 'Gegevens aan het laden.';
-        }
-        else if (isEmpty(this.props.opportunity)) {
+        } else if (isEmpty(this.props.opportunity)) {
             loadingText = 'Geen kans gevonden!';
-        }
-        else {
+        } else {
             loading = false;
         }
-        return (
-            loading  ?
-                <div>{loadingText}</div>
-                :
-                <div>
-                    <OpportunityFormGeneral />
-                    <OpportunityDetailsQuotationRequests />
-                    <OpportunityEvaluationFormGeneral />
-                    <OpportunityDetailsConclusionForm />
-                </div>
+        return loading ? (
+            <div>{loadingText}</div>
+        ) : (
+            <div>
+                <OpportunityFormGeneral />
+                <OpportunityDetailsQuotationRequests />
+                <OpportunityEvaluationFormGeneral />
+                <OpportunityDetailsConclusionForm />
+            </div>
         );
     }
-};
+}
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         opportunity: state.opportunityDetails,
         isLoading: state.loadingData.isLoading,
         hasError: state.loadingData.hasError,
-    }
+    };
 };
 
 export default connect(mapStateToProps)(OpportunityDetailsForm);

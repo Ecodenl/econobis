@@ -1,18 +1,18 @@
-import React, {Component} from 'react';
-import {browserHistory, hashHistory} from 'react-router';
+import React, { Component } from 'react';
+import { browserHistory, hashHistory } from 'react-router';
 
 import Panel from '../../../../../../components/panel/Panel';
 import PanelBody from '../../../../../../components/panel/PanelBody';
-import PaymentInvoiceCreateList from "./PaymentInvoiceCreateList";
-import ProductionProjectsAPI from "../../../../../../api/production-project/ProductionProjectsAPI";
-import PaymentInvoiceCreateViewPdf from "./PaymentInvoiceCreateViewPdf";
-import PaymentInvoiceCreateViewEmail from "./PaymentInvoiceCreateViewEmail";
-import PaymentInvoiceCreateToolbar from "./PaymentInvoiceCreateToolbar";
-import {connect} from "react-redux";
-import {clearPreviewReport} from "../../../../../../actions/production-project/ProductionProjectDetailsActions";
-import ProductionProjectRevenueAPI from "../../../../../../api/production-project/ProductionProjectRevenueAPI";
-import fileDownload from "js-file-download";
-import Modal from "../../../../../../components/modal/Modal";
+import PaymentInvoiceCreateList from './PaymentInvoiceCreateList';
+import ProductionProjectsAPI from '../../../../../../api/production-project/ProductionProjectsAPI';
+import PaymentInvoiceCreateViewPdf from './PaymentInvoiceCreateViewPdf';
+import PaymentInvoiceCreateViewEmail from './PaymentInvoiceCreateViewEmail';
+import PaymentInvoiceCreateToolbar from './PaymentInvoiceCreateToolbar';
+import { connect } from 'react-redux';
+import { clearPreviewReport } from '../../../../../../actions/production-project/ProductionProjectDetailsActions';
+import ProductionProjectRevenueAPI from '../../../../../../api/production-project/ProductionProjectRevenueAPI';
+import fileDownload from 'js-file-download';
+import Modal from '../../../../../../components/modal/Modal';
 
 class PaymentInvoiceCreateApp extends Component {
     constructor(props) {
@@ -23,47 +23,52 @@ class PaymentInvoiceCreateApp extends Component {
             successMessage: '',
             redirect: '',
         };
-    };
+    }
 
     componentDidMount() {
-        ProductionProjectsAPI.peekDistributionsById(this.props.reportPreview.distributionIds).then((payload) => {
+        ProductionProjectsAPI.peekDistributionsById(this.props.reportPreview.distributionIds).then(payload => {
             let distributionTypeId = payload.data[0].revenue.typeId;
             this.setState({
                 distributions: payload.data,
                 distributionTypeId: distributionTypeId,
             });
         });
-    };
+    }
 
-    componentWillUnmount(){
+    componentWillUnmount() {
         this.props.clearPreviewReport();
     }
 
-    changeDistribution = (distributionId) => {
+    changeDistribution = distributionId => {
         this.setState({
-            distributionId: distributionId
+            distributionId: distributionId,
         });
     };
 
     createPaymentInvoices = (createReport, createInvoice) => {
-        document.body.style.cursor='wait';
-        ProductionProjectRevenueAPI.createPaymentInvoices(this.props.reportPreview.templateId, this.props.reportPreview.emailTemplateId, this.props.reportPreview.subject, this.props.reportPreview.distributionIds, createReport, createInvoice).then((payload) => {
-            document.body.style.cursor='default';
+        document.body.style.cursor = 'wait';
+        ProductionProjectRevenueAPI.createPaymentInvoices(
+            this.props.reportPreview.templateId,
+            this.props.reportPreview.emailTemplateId,
+            this.props.reportPreview.subject,
+            this.props.reportPreview.distributionIds,
+            createReport,
+            createInvoice
+        ).then(payload => {
+            document.body.style.cursor = 'default';
             if (createInvoice) {
                 if (createReport) {
                     this.setState({
                         successMessage: 'De rapporten worden verzonden en de facturen gemaakt.',
                         redirect: `/financieel/${payload.data}/uitkering-facturen/verzonden`,
                     });
-                }
-                else {
+                } else {
                     this.setState({
                         successMessage: 'De facturen worden gemaakt.',
                         redirect: `/financieel/${payload.data}/uitkering-facturen/verzonden`,
                     });
                 }
-            }
-            else {
+            } else {
                 this.setState({
                     successMessage: 'De rapporten worden verzonden.',
                 });
@@ -72,10 +77,10 @@ class PaymentInvoiceCreateApp extends Component {
     };
 
     redirect = () => {
-      if(this.state.redirect){
-          hashHistory.push(this.state.redirect);
-      }else{
-          browserHistory.goBack();
+        if (this.state.redirect) {
+            hashHistory.push(this.state.redirect);
+        } else {
+            browserHistory.goBack();
         }
     };
     render() {
@@ -85,10 +90,12 @@ class PaymentInvoiceCreateApp extends Component {
                     <div className="col-md-12 margin-10-top">
                         <div className="col-md-12 margin-10-top">
                             <Panel>
-                                <PanelBody className={"panel-small"}>
+                                <PanelBody className={'panel-small'}>
                                     <PaymentInvoiceCreateToolbar
                                         createPaymentInvoices={this.createPaymentInvoices}
-                                        amountOfDistributions={this.state.distributions ? this.state.distributions.length : 0}
+                                        amountOfDistributions={
+                                            this.state.distributions ? this.state.distributions.length : 0
+                                        }
                                         administrationId={this.props.params.id}
                                         distributionTypeId={this.state.distributionTypeId}
                                     />
@@ -97,54 +104,67 @@ class PaymentInvoiceCreateApp extends Component {
                         </div>
                     </div>
                 </div>
-            <div className="row">
-                <div className="col-md-2">
-                    <div className="col-md-12 margin-10-top">
-                        <Panel>
-                            <PanelBody className={'panel-invoice-payments-list'}>
-                                <PaymentInvoiceCreateList distributions={this.state.distributions} changeDistribution={this.changeDistribution}/>
-                            </PanelBody>
-                        </Panel>
+                <div className="row">
+                    <div className="col-md-2">
+                        <div className="col-md-12 margin-10-top">
+                            <Panel>
+                                <PanelBody className={'panel-invoice-payments-list'}>
+                                    <PaymentInvoiceCreateList
+                                        distributions={this.state.distributions}
+                                        changeDistribution={this.changeDistribution}
+                                    />
+                                </PanelBody>
+                            </Panel>
+                        </div>
+                    </div>
+                    <div className="col-md-5">
+                        <div className="col-md-12 margin-10-top">
+                            <Panel>
+                                <PanelBody>
+                                    <PaymentInvoiceCreateViewPdf
+                                        subject={this.props.reportPreview.subject}
+                                        documentTemplateId={this.props.reportPreview.templateId}
+                                        emailTemplateId={this.props.reportPreview.emailTemplateId}
+                                        distributionId={this.state.distributionId}
+                                    />
+                                </PanelBody>
+                            </Panel>
+                        </div>
+                    </div>
+                    <div className="col-md-5">
+                        <div className="col-md-12 margin-10-top">
+                            <Panel>
+                                <PanelBody>
+                                    <PaymentInvoiceCreateViewEmail
+                                        subject={this.props.reportPreview.subject}
+                                        documentTemplateId={this.props.reportPreview.templateId}
+                                        emailTemplateId={this.props.reportPreview.emailTemplateId}
+                                        distributionId={this.state.distributionId}
+                                    />
+                                </PanelBody>
+                            </Panel>
+                        </div>
                     </div>
                 </div>
-                <div className="col-md-5">
-                    <div className="col-md-12 margin-10-top">
-                        <Panel>
-                            <PanelBody>
-                                <PaymentInvoiceCreateViewPdf subject={this.props.reportPreview.subject} documentTemplateId={this.props.reportPreview.templateId} emailTemplateId={this.props.reportPreview.emailTemplateId} distributionId={this.state.distributionId}/>
-                            </PanelBody>
-                        </Panel>
-                    </div>
-                </div>
-                <div className="col-md-5">
-                    <div className="col-md-12 margin-10-top">
-                        <Panel>
-                            <PanelBody>
-                                <PaymentInvoiceCreateViewEmail subject={this.props.reportPreview.subject} documentTemplateId={this.props.reportPreview.templateId} emailTemplateId={this.props.reportPreview.emailTemplateId} distributionId={this.state.distributionId}/>
-                            </PanelBody>
-                        </Panel>
-                    </div>
-                </div>
+                {this.state.successMessage && (
+                    <Modal
+                        closeModal={this.redirect}
+                        buttonCancelText={'Ok'}
+                        showConfirmAction={false}
+                        title={'Succes'}
+                    >
+                        {this.state.successMessage}
+                    </Modal>
+                )}
             </div>
-                {this.state.successMessage &&
-               <Modal
-               closeModal={this.redirect}
-               buttonCancelText={"Ok"}
-               showConfirmAction={false}
-               title={'Succes'}
-               >
-                   {this.state.successMessage}
-               </Modal>
-                }
-            </div>
-        )
+        );
     }
-};
+}
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         reportPreview: state.productionProjectRevenueReportPreview,
-    }
+    };
 };
 
 const mapDispatchToProps = dispatch => ({
@@ -153,4 +173,7 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(PaymentInvoiceCreateApp);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(PaymentInvoiceCreateApp);

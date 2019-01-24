@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import Modal from '../../../../components/modal/Modal';
 import { deletePhoneNumber } from '../../../../actions/contact/ContactDetailsActions';
 
-const ContactDetailsPhoneDelete = (props) => {
+const ContactDetailsPhoneDelete = props => {
     const confirmAction = () => {
         props.deletePhoneNumber(props.id);
         props.closeDeleteItemModal();
@@ -12,23 +12,32 @@ const ContactDetailsPhoneDelete = (props) => {
 
     return (
         <Modal
-        buttonConfirmText="Verwijder"
+            buttonConfirmText="Verwijder"
             buttonClassName={'btn-danger'}
             closeModal={props.closeDeleteItemModal}
             confirmAction={() => confirmAction()}
             title="Verwijderen"
-      >
-            <p>Verwijder telefoonnummer: <strong> {`${props.number}` } </strong></p>
+        >
+            <p>
+                Verwijder telefoonnummer: <strong> {`${props.number}`} </strong>
+            </p>
 
-            { props.primary && <p className={'text-danger'}><strong>Let op!</strong> Dit is een primair telefoonnummer</p> }
-      </Modal>
+            {props.primary && (
+                <p className={'text-danger'}>
+                    <strong>Let op!</strong> Dit is een primair telefoonnummer
+                </p>
+            )}
+        </Modal>
     );
 };
 
 const mapDispatchToProps = dispatch => ({
-    deletePhoneNumber: (id) => {
+    deletePhoneNumber: id => {
         dispatch(deletePhoneNumber(id));
     },
 });
 
-export default connect(null, mapDispatchToProps)(ContactDetailsPhoneDelete);
+export default connect(
+    null,
+    mapDispatchToProps
+)(ContactDetailsPhoneDelete);

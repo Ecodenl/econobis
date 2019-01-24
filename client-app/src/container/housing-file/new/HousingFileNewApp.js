@@ -12,10 +12,10 @@ class HousingFileNewApp extends Component {
     }
 
     componentDidMount() {
-        if(isEmpty(this.props.contactDetails)) {
+        if (isEmpty(this.props.contactDetails)) {
             this.props.fetchContactDetails(this.props.params.contactId);
         }
-    };
+    }
 
     render() {
         return (
@@ -26,25 +26,31 @@ class HousingFileNewApp extends Component {
                     </div>
 
                     <div className="col-md-12 margin-10-top">
-                        <HousingFileNewForm contactId={this.props.params.contactId} addressId={this.props.params.addressId}/>
+                        <HousingFileNewForm
+                            contactId={this.props.params.contactId}
+                            addressId={this.props.params.addressId}
+                        />
                     </div>
                 </div>
                 <div className="col-md-3" />
             </div>
-        )
+        );
     }
-};
+}
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         contactDetails: state.contactDetails,
     };
 };
 
 const mapDispatchToProps = dispatch => ({
-    fetchContactDetails: (id) => {
+    fetchContactDetails: id => {
         dispatch(fetchContactDetails(id));
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(HousingFileNewApp);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(HousingFileNewApp);

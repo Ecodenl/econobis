@@ -22,7 +22,7 @@ class RevenuesListForm extends Component {
                             role="button"
                             className="pull-right"
                             onClick={() =>
-                                hashHistory.push(`/productie-project/opbrengst/nieuw/${this.props.productionProjectId}`)
+                                hashHistory.push(`/project/opbrengst/nieuw/${this.props.productionProjectId}`)
                             }
                         >
                             <span className="glyphicon glyphicon-plus" />

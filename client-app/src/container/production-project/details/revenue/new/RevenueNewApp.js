@@ -143,7 +143,7 @@ class RevenueNewApp extends Component {
 
         !hasErrors &&
             ProductionProjectRevenueAPI.storeProductionProjectRevenue(revenue).then(payload => {
-                hashHistory.push(`/productie-project/opbrengst/${payload.id}`);
+                hashHistory.push(`/project/opbrengst/${payload.id}`);
             });
     };
 

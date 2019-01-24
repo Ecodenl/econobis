@@ -45,7 +45,7 @@ const ParticipantFormView = props => {
                 <ViewText
                     label={'Productieproject'}
                     value={productionProject ? productionProject.name : ''}
-                    link={productionProject ? 'productie-project/' + productionProject.id : ''}
+                    link={productionProject ? 'project/' + productionProject.id : ''}
                 />
                 <ViewText label={'Inschrijfdatum'} value={dateRegister ? moment(dateRegister).format('L') : ''} />
             </div>

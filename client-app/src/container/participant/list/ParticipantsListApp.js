@@ -339,7 +339,7 @@ class ParticipantsListApp extends Component {
                 subject: this.state.subject,
                 participantIds: this.state.participantIds,
             });
-            hashHistory.push(`/productie-project/preview-rapportage`);
+            hashHistory.push(`/project/preview-rapportage`);
         }
     };
 

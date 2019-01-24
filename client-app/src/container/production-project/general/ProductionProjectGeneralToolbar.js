@@ -29,7 +29,7 @@ class ProductionProjectGeneralToolbar extends Component {
                                     <ButtonText
                                         buttonText={`Open detailformulier`}
                                         onClickAction={() =>
-                                            hashHistory.push(`/productie-project/details/${this.props.id}`)
+                                            hashHistory.push(`/project/details/${this.props.id}`)
                                         }
                                     />
                                 </div>

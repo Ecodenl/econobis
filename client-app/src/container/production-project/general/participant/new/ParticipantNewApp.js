@@ -214,13 +214,13 @@ class ParticipantNewApp extends Component {
                         modalText: payload.data.message,
                     });
                     this.setState({
-                        modalRedirectTask: `/taak/nieuw/contact/${participation.contactId}/productie-project/${
+                        modalRedirectTask: `/taak/nieuw/contact/${participation.contactId}/project/${
                             participation.productionProjectId
                         }/participant/${payload.data.id}`,
-                        modalRedirectParticipation: `/productie-project/participant/${payload.data.id}`,
+                        modalRedirectParticipation: `/project/participant/${payload.data.id}`,
                     });
                 } else {
-                    hashHistory.push(`/productie-project/participant/${payload.data.id}`);
+                    hashHistory.push(`/project/participant/${payload.data.id}`);
                 }
             });
     };

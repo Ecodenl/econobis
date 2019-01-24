@@ -34,11 +34,11 @@ class ProductionProjectDetailsHarmonica extends Component {
     }
 
     newTask = () => {
-        hashHistory.push(`/taak/nieuw/productie-project/${this.props.productionProject.id}`);
+        hashHistory.push(`/taak/nieuw/project/${this.props.productionProject.id}`);
     };
 
     newDocument = type => {
-        hashHistory.push(`/document/nieuw/${type}/productie-project/${this.props.productionProject.id}`);
+        hashHistory.push(`/document/nieuw/${type}/project/${this.props.productionProject.id}`);
     };
 
     newEmail = () => {

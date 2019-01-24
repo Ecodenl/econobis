@@ -12,7 +12,7 @@ class Participationslist extends Component {
     }
 
     openItem = id => {
-        hashHistory.push(`/productie-project/participant/${id}`);
+        hashHistory.push(`/project/participant/${id}`);
     };
 
     render() {

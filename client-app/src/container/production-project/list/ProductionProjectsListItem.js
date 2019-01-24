@@ -27,7 +27,7 @@ class ProductionProjectsListItem extends Component {
     }
 
     openItem(id) {
-        hashHistory.push(`productie-project/${id}`);
+        hashHistory.push(`project/${id}`);
     }
 
     render() {

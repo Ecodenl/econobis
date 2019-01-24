@@ -21,7 +21,7 @@ const RevenuesListFormView = props => {
             <div className="col-sm-1">{kwhResult ? kwhResult : ''}</div>
             <div className="col-sm-1">
                 {props.showActionButtons ? (
-                    <a role="button" onClick={() => hashHistory.push(`/productie-project/opbrengst/${id}`)}>
+                    <a role="button" onClick={() => hashHistory.push(`/project/opbrengst/${id}`)}>
                         <span
                             className={`glyphicon ${
                                 confirmed ? 'glyphicon-eye-open' : 'glyphicon-pencil'

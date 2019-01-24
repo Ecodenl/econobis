@@ -26,7 +26,7 @@ test('Fill out form new production project -> participant -> value course', asyn
 
     await t
         .useRole(superUser)
-        .navigateTo(constants.app_url + '#/productie-project/nieuw')
+        .navigateTo(constants.app_url + '#/project/nieuw')
         .wait(constants.wait);
 
     await t.expect(general.titleH3.innerText).eql('Nieuw productieproject', 'Check element text', { timeout: 500 });

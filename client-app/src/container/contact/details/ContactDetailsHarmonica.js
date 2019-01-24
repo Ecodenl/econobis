@@ -128,7 +128,7 @@ class ContactDetailsHarmonica extends Component {
     };
 
     newParticipation = () => {
-        hashHistory.push(`/productie-project/participant/nieuw/contact/${this.props.contactDetails.id}`);
+        hashHistory.push(`/project/participant/nieuw/contact/${this.props.contactDetails.id}`);
     };
 
     newEmail = () => {

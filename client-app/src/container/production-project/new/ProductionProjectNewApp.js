@@ -138,7 +138,7 @@ class ProductionProjectNewApp extends Component {
 
         !hasErrors &&
             ProductionProjectDetailsAPI.storeProductionProject(productionProject).then(payload => {
-                hashHistory.push(`/productie-project/${payload.id}`);
+                hashHistory.push(`/project/${payload.id}`);
             });
     };
 

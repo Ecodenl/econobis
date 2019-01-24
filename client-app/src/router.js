@@ -172,9 +172,9 @@ const Routes = () => {
                 <Route path="document/nieuw/:type/order/:orderId" component={DocumentNewApp} />
                 <Route path="document/nieuw/:type/woningdossier/:housingFileId" component={DocumentNewApp} />
                 <Route path="document/nieuw/:type/offerteverzoek/:quotationRequestId" component={DocumentNewApp} />
-                <Route path="document/nieuw/:type/productie-project/:productionProjectId" component={DocumentNewApp} />
+                <Route path="document/nieuw/:type/project/:productionProjectId" component={DocumentNewApp} />
                 <Route
-                    path="document/nieuw/:type/productie-project/:productionProjectId/participant/:participantId/contact/:contactId"
+                    path="document/nieuw/:type/project/:productionProjectId/participant/:participantId/contact/:contactId"
                     component={DocumentNewApp}
                 />
                 <Route path="document/:id" component={DocumentDetailsApp} />
@@ -259,34 +259,25 @@ const Routes = () => {
                 <Route path="producten" component={ProductsListApp} />
                 <Route path="product/nieuw" component={ProductNewApp} />
                 <Route path="product/:id" component={ProductDetailsApp} />
-                /* Production project */
-                <Route path="productie-project/nieuw" component={ProductionProjectNewApp} />
+                /* Project */
+                <Route path="project/nieuw" component={ProductionProjectNewApp} />
+                <Route path="project/opbrengst/nieuw/:productionProjectId" component={ProductionProjectRevenueNewApp} />
                 <Route
-                    path="productie-project/opbrengst/nieuw/:productionProjectId"
-                    component={ProductionProjectRevenueNewApp}
-                />
-                <Route
-                    path="productie-project/opbrengst/:revenueId/energieleverancier-rapport"
+                    path="project/opbrengst/:revenueId/energieleverancier-rapport"
                     component={EnergySupplierReportNewApp}
                 />
-                <Route
-                    path="productie-project/opbrengst/:revenueId/energieleverancier-csv"
-                    component={EnergySupplierCSVNewApp}
-                />
-                <Route path="productie-project/details/:id" component={ProductionProjectDetailsApp} />
-                <Route path="productie-project/opbrengst/:id" component={RevenueDetailsApp} />
-                <Route path="productie-project/opbrengst/:id/facturen" component={PaymentInvoiceCreateApp} />
-                <Route path="productie-project/preview-rapportage" component={ParticipantReportCreateApp} />
-                <Route path="productie-project/:id" component={ProductionProjectGeneralApp} />
-                <Route path="productie-projecten" component={ProductionProjectsListApp} />
+                <Route path="project/opbrengst/:revenueId/energieleverancier-csv" component={EnergySupplierCSVNewApp} />
+                <Route path="project/details/:id" component={ProductionProjectDetailsApp} />
+                <Route path="project/opbrengst/:id" component={RevenueDetailsApp} />
+                <Route path="project/opbrengst/:id/facturen" component={PaymentInvoiceCreateApp} />
+                <Route path="project/preview-rapportage" component={ParticipantReportCreateApp} />
+                <Route path="project/:id" component={ProductionProjectGeneralApp} />
+                <Route path="projecten" component={ProductionProjectsListApp} />
                 <Route path="participanten" component={ParticipantListApp} />
-                <Route
-                    path="productie-project/participant/:participationId/overdragen"
-                    component={ParticipationTransferApp}
-                />
-                <Route path="productie-project/participant/nieuw/:productionProjectId" component={ParticipantNewApp} />
-                <Route path="productie-project/participant/nieuw/contact/:contactId" component={ParticipantNewApp} />
-                <Route path="productie-project/participant/:id" component={ParticipantDetailsApp} />
+                <Route path="project/participant/:participationId/overdragen" component={ParticipationTransferApp} />
+                <Route path="project/participant/nieuw/:productionProjectId" component={ParticipantNewApp} />
+                <Route path="project/participant/nieuw/contact/:contactId" component={ParticipantNewApp} />
+                <Route path="project/participant/:id" component={ParticipantDetailsApp} />
                 /* Task / notes */
                 <Route path="taak/nieuw" component={TaskNewApp} />
                 <Route path="taak/nieuw/:closed" component={TaskNewApp} />
@@ -296,7 +287,7 @@ const Routes = () => {
                 <Route path="taak/nieuw/:type/:id" component={TaskNewApp} />
                 <Route path="taak/nieuw/kans/:opportunityId/contact/:contactId" component={TaskNewApp} />
                 <Route
-                    path="taak/nieuw/contact/:contactId/productie-project/:productionProjectId/participant/:participantId"
+                    path="taak/nieuw/contact/:contactId/project/:productionProjectId/participant/:participantId"
                     component={TaskNewApp}
                 />
                 <Route path="taken" component={TasksListApp} />

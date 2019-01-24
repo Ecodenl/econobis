@@ -42,8 +42,8 @@ class RevenueDetailsToolbar extends Component {
 
     render() {
         const { revenue } = this.props;
-        const pdfLink = `productie-project/opbrengst/${this.props.revenue.id}/energieleverancier-rapport`;
-        const csvLink = `productie-project/opbrengst/${this.props.revenue.id}/energieleverancier-csv`;
+        const pdfLink = `project/opbrengst/${this.props.revenue.id}/energieleverancier-rapport`;
+        const csvLink = `project/opbrengst/${this.props.revenue.id}/energieleverancier-csv`;
 
         return (
             <div className="row">

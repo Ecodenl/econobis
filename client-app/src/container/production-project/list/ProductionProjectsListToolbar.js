@@ -7,7 +7,7 @@ import ButtonIcon from '../../../components/button/ButtonIcon';
 
 const ProductionProjectsListToolbar = props => {
     const newProductionProject = () => {
-        hashHistory.push('productie-project/nieuw');
+        hashHistory.push('project/nieuw');
     };
 
     const { permissions = {} } = props;

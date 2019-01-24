@@ -50,9 +50,7 @@ class ParticipantDetailsToolbar extends Component {
                                             buttonText={`Participaties overdragen`}
                                             onClickAction={() =>
                                                 hashHistory.push(
-                                                    `/productie-project/participant/${
-                                                        participantProductionProject.id
-                                                    }/overdragen`
+                                                    `/project/participant/${participantProductionProject.id}/overdragen`
                                                 )
                                             }
                                         />

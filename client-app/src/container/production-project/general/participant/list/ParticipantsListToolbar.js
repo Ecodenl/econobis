@@ -20,7 +20,7 @@ const ParticipantsListToolbar = props => {
                         <ButtonIcon
                             iconName={'glyphicon-plus'}
                             onClickAction={() =>
-                                hashHistory.push(`/productie-project/participant/nieuw/${props.productionProject.id}`)
+                                hashHistory.push(`/project/participant/nieuw/${props.productionProject.id}`)
                             }
                         />
                     )}

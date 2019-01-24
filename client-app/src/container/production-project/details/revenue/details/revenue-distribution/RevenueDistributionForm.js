@@ -268,7 +268,7 @@ class RevenueDistributionForm extends Component {
                     subject: this.state.subject,
                     distributionIds: this.state.distributionIds,
                 });
-                hashHistory.push(`/productie-project/opbrengst/${this.props.productionProjectRevenue.id}/facturen`);
+                hashHistory.push(`/project/opbrengst/${this.props.productionProjectRevenue.id}/facturen`);
             }
         }
     };

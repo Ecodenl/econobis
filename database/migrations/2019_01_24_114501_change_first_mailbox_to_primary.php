@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddPrimaryToMailboxes extends Migration
+class ChangeFirstMailboxToPrimary extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,9 @@ class AddPrimaryToMailboxes extends Migration
      */
     public function up()
     {
-        Schema::table('mailboxes', function (Blueprint $table) {
-            $table->boolean('primary')->default(false);
-            $table->boolean('is_active')->default(true);
-        });
+        $mailbox = \App\Eco\Mailbox\Mailbox::first();
+        $mailbox->primary = true;
+        $mailbox->save();
     }
 
     /**

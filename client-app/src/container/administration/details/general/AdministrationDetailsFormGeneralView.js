@@ -103,7 +103,7 @@ const AdministrationDetailsFormGeneralView = props => {
                         <ViewText label={'Logo'} value={logoName} />
                     </div>
                     <div className="row">
-                        <ViewText label={'Rapportages en facturen worden verstuurd vanaf'} value={mailboxEmail} />
+                        <ViewText label={'Afzender van Rapportages en facturen is e-mail adres'} value={mailboxEmail} />
                     </div>
                 </PanelBody>
             </Panel>

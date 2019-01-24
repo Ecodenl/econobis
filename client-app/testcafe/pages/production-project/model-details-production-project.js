@@ -1,6 +1,6 @@
 import { Selector } from 'testcafe';
 
-export default class ModelDetailsProductionProject {
+export default class ModelDetailsProject {
     constructor () {
         this.newValueCourse = Selector('span').withExactText('Waardeverloop participaties').parent().child('a');
         this.dayPicker = Selector('.DayPickerInput').nth(0).child('input');

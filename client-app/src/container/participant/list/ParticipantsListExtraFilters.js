@@ -5,7 +5,7 @@ import axios from 'axios';
 import Modal from '../../../components/modal/Modal';
 import DataTableCustomFilter from '../../../components/dataTable/DataTableCustomFilter';
 import ButtonText from '../../../components/button/ButtonText';
-import ProductionProjectsAPI from '../../../api/production-project/ProductionProjectsAPI';
+import ProjectsAPI from '../../../api/project/ProjectsAPI';
 import ContactsAPI from '../../../api/contact/ContactsAPI';
 
 class ParticipantsListExtraFilters extends Component {
@@ -26,7 +26,7 @@ class ParticipantsListExtraFilters extends Component {
                     name: 'Nee',
                 },
             ],
-            productionProjects: [],
+            projects: [],
             contacts: [],
         };
 
@@ -40,10 +40,10 @@ class ParticipantsListExtraFilters extends Component {
     }
 
     componentDidMount() {
-        axios.all([ProductionProjectsAPI.peekProductionProjects(), ContactsAPI.getContactsPeek()]).then(
-            axios.spread((productionProjects, contacts) => {
+        axios.all([ProjectsAPI.peekProjects(), ContactsAPI.getContactsPeek()]).then(
+            axios.spread((projects, contacts) => {
                 this.setState({
-                    productionProjects,
+                    projects,
                     contacts,
                 });
             })
@@ -151,16 +151,16 @@ class ParticipantsListExtraFilters extends Component {
             participationStatusId: {
                 name: 'Participaties status',
                 type: 'dropdown',
-                dropDownOptions: this.props.participantProductionProjectStatus,
+                dropDownOptions: this.props.participantProjectStatus,
             },
             contactBirthday: {
                 name: 'Contact geboortedatum',
                 type: 'date',
             },
-            productionProjectId: {
+            projectId: {
                 name: 'Productieproject',
                 type: 'dropdownHas',
-                dropDownOptions: this.state.productionProjects,
+                dropDownOptions: this.state.projects,
             },
             dateContractSend: {
                 name: 'Datum contract verzonden',
@@ -272,7 +272,7 @@ class ParticipantsListExtraFilters extends Component {
 }
 
 const mapStateToProps = state => ({
-    participantProductionProjectStatus: state.systemData.participantProductionProjectStatus,
+    participantProjectStatus: state.systemData.participantProjectStatus,
     contactStatuses: state.systemData.contactStatuses,
 });
 

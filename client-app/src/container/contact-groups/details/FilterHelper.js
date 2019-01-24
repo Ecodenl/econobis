@@ -54,7 +54,7 @@ export default (type, field) => {
                     return 'Datum betaald';
                 case 'contactBirthday':
                     return 'Contact geboortedatum';
-                case 'productionProjectId':
+                case 'projectId':
                     return 'Productieproject';
                 case 'dateOfBirth':
                     return 'Geboortedatum';

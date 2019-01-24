@@ -108,10 +108,10 @@ test('Fill out form task all, task will be a note', async (t) => {
         .typeText(newTask.reactSelect.nth(5), vars.personStreet + ' ' + vars.personNumber)
         .pressKey('enter')
 
-        .typeText(newTask.reactSelect.nth(6), vars.productionProjectName)
+        .typeText(newTask.reactSelect.nth(6), vars.projectName)
         .pressKey('enter')
 
-        .typeText(newTask.reactSelect.nth(7), vars.personLastName + ', ' + vars.personFirstName + ' ' + vars.productionProjectName)
+        .typeText(newTask.reactSelect.nth(7), vars.personLastName + ', ' + vars.personFirstName + ' ' + vars.projectName)
         .pressKey('enter')
 
         .click(general.save);

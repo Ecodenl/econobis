@@ -22,7 +22,7 @@ class ParticipantsList extends Component {
     };
 
     render() {
-        const { data = [], meta = {} } = this.props.participantsProductionProject;
+        const { data = [], meta = {} } = this.props.participantsProject;
 
         let loadingText = '';
         let loading = true;
@@ -42,8 +42,8 @@ class ParticipantsList extends Component {
                 <DataTable>
                     <DataTableHead>
                         <ParticipantsListHead
-                            refreshParticipantsProductionProjectData={() =>
-                                this.props.refreshParticipantsProductionProjectData()
+                            refreshParticipantsProjectData={() =>
+                                this.props.refreshParticipantsProjectData()
                             }
                         />
                         <ParticipantsListFilter
@@ -51,7 +51,7 @@ class ParticipantsList extends Component {
                             toggleCheckedAll={this.props.toggleCheckedAll}
                             showCheckboxList={this.props.showCheckboxList}
                             checkedAll={this.props.checkedAll}
-                            productionProjects={this.props.productionProjects}
+                            projects={this.props.projects}
                         />
                     </DataTableHead>
                     <DataTableBody>
@@ -60,15 +60,15 @@ class ParticipantsList extends Component {
                                 <td colSpan={12}>{loadingText}</td>
                             </tr>
                         ) : (
-                            data.map(participantProductionProject => {
+                            data.map(participantProject => {
                                 return (
                                     <ParticipantsListItem
-                                        key={participantProductionProject.id}
+                                        key={participantProject.id}
                                         showCheckboxList={this.props.showCheckboxList}
                                         checkedAll={this.props.checkedAll}
                                         toggleParticipantCheck={this.props.toggleParticipantCheck}
                                         toggleParticipantCheckNoEmail={this.props.toggleParticipantCheckNoEmail}
-                                        {...participantProductionProject}
+                                        {...participantProject}
                                     />
                                 );
                             })
@@ -79,7 +79,7 @@ class ParticipantsList extends Component {
                     <DataTablePagination
                         onPageChangeAction={this.props.handlePageClick}
                         totalRecords={meta.total}
-                        initialPage={this.props.participantsProductionProjectPagination.page}
+                        initialPage={this.props.participantsProjectPagination.page}
                     />
                 </div>
             </form>

@@ -15,8 +15,8 @@ import IntakesAPI from '../../../api/intake/IntakesAPI';
 import ContactGroupAPI from '../../../api/contact-group/ContactGroupAPI';
 import OpportunitiesAPI from '../../../api/opportunity/OpportunitiesAPI';
 import HousingFilesAPI from '../../../api/housing-file/HousingFilesAPI';
-import ProductionProjectsAPI from '../../../api/production-project/ProductionProjectsAPI';
-import ParticipantsProductionProjectAPI from '../../../api/participant-production-project/ParticipantsProductionProjectAPI';
+import ProjectsAPI from '../../../api/project/ProjectsAPI';
+import ParticipantsProjectAPI from '../../../api/participant-project/ParticipantsProjectAPI';
 import OrdersAPI from '../../../api/order/OrdersAPI';
 import InvoicesAPI from '../../../api/invoice/InvoicesAPI';
 
@@ -31,7 +31,7 @@ class TaskNewApp extends Component {
             opportunities: [],
             campaigns: [],
             housingFiles: [],
-            productionProjects: [],
+            projects: [],
             participants: [],
             orders: [],
             invoices: [],
@@ -45,7 +45,7 @@ class TaskNewApp extends Component {
                 opportunityId: '',
                 contactGroupId: '',
                 housingFileId: '',
-                productionProjectId: '',
+                projectId: '',
                 participantId: '',
                 orderId: '',
                 invoiceId: '',
@@ -70,7 +70,7 @@ class TaskNewApp extends Component {
                 opportunities: true,
                 campaigns: true,
                 housingFiles: true,
-                productionProjects: true,
+                projects: true,
                 participants: true,
                 orders: true,
                 invoices: true,
@@ -151,17 +151,17 @@ class TaskNewApp extends Component {
             });
         });
 
-        ProductionProjectsAPI.peekProductionProjects().then(payload => {
+        ProjectsAPI.peekProjects().then(payload => {
             this.setState({
-                productionProjects: payload,
+                projects: payload,
                 peekLoading: {
                     ...this.state.peekLoading,
-                    productionProjects: false,
+                    projects: false,
                 },
             });
         });
 
-        ParticipantsProductionProjectAPI.peekParticipantsProductionProjects().then(payload => {
+        ParticipantsProjectAPI.peekParticipantsProjects().then(payload => {
             this.setState({
                 participants: payload,
                 peekLoading: {
@@ -214,7 +214,7 @@ class TaskNewApp extends Component {
                 });
             }
 
-            if (params.contactId && params.productionProjectId && params.participantId) {
+            if (params.contactId && params.projectId && params.participantId) {
                 this.setState({
                     ...this.state,
                     task: {
@@ -225,7 +225,7 @@ class TaskNewApp extends Component {
                         intakeId: '',
                         contactGroupId: '',
                         opportunityId: '',
-                        productionProjectId: params.productionProjectId,
+                        projectId: params.projectId,
                         participantId: params.participantId,
                         orderId: '',
                         invoiceId: '',
@@ -242,7 +242,7 @@ class TaskNewApp extends Component {
                         intakeId: '',
                         contactGroupId: '',
                         opportunityId: params.opportunityId,
-                        productionProjectId: '',
+                        projectId: '',
                         participantId: '',
                         orderId: '',
                         invoiceId: '',
@@ -261,7 +261,7 @@ class TaskNewApp extends Component {
                                 intakeId: '',
                                 contactGroupId: '',
                                 opportunityId: '',
-                                productionProjectId: '',
+                                projectId: '',
                                 participantId: '',
                                 orderId: '',
                                 invoiceId: '',
@@ -279,7 +279,7 @@ class TaskNewApp extends Component {
                                 intakeId: params.id,
                                 contactGroupId: '',
                                 opportunityId: '',
-                                productionProjectId: '',
+                                projectId: '',
                                 participantId: '',
                                 orderId: '',
                                 invoiceId: '',
@@ -297,7 +297,7 @@ class TaskNewApp extends Component {
                                 intakeId: '',
                                 contactGroupId: params.id,
                                 opportunityId: '',
-                                productionProjectId: '',
+                                projectId: '',
                                 participantId: '',
                                 orderId: '',
                                 invoiceId: '',
@@ -315,7 +315,7 @@ class TaskNewApp extends Component {
                                 intakeId: '',
                                 contactGroupId: '',
                                 opportunityId: params.id,
-                                productionProjectId: '',
+                                projectId: '',
                                 participantId: '',
                                 orderId: '',
                                 invoiceId: '',
@@ -333,7 +333,7 @@ class TaskNewApp extends Component {
                                 intakeId: '',
                                 contactGroupId: '',
                                 opportunityId: '',
-                                productionProjectId: '',
+                                projectId: '',
                                 participantId: '',
                                 orderId: '',
                                 invoiceId: '',
@@ -351,7 +351,7 @@ class TaskNewApp extends Component {
                                 intakeId: '',
                                 contactGroupId: '',
                                 opportunityId: '',
-                                productionProjectId: params.id,
+                                projectId: params.id,
                                 participantId: '',
                                 orderId: '',
                                 invoiceId: '',
@@ -369,7 +369,7 @@ class TaskNewApp extends Component {
                                 intakeId: '',
                                 contactGroupId: '',
                                 opportunityId: '',
-                                productionProjectId: '',
+                                projectId: '',
                                 participantId: params.id,
                                 orderId: '',
                                 invoiceId: '',
@@ -387,7 +387,7 @@ class TaskNewApp extends Component {
                                 intakeId: '',
                                 contactGroupId: '',
                                 opportunityId: '',
-                                productionProjectId: '',
+                                projectId: '',
                                 participantId: '',
                                 orderId: params.id,
                                 invoiceId: '',
@@ -405,7 +405,7 @@ class TaskNewApp extends Component {
                                 intakeId: '',
                                 contactGroupId: '',
                                 opportunityId: '',
-                                productionProjectId: '',
+                                projectId: '',
                                 participantId: '',
                                 orderId: '',
                                 invoiceId: params.id,
@@ -423,7 +423,7 @@ class TaskNewApp extends Component {
                                 intakeId: '',
                                 contactGroupId: '',
                                 opportunityId: '',
-                                productionProjectId: '',
+                                projectId: '',
                                 participantId: '',
                                 orderId: '',
                                 invoiceId: '',
@@ -549,7 +549,7 @@ class TaskNewApp extends Component {
                                         opportunities={this.state.opportunities}
                                         campaigns={this.state.campaigns}
                                         housingFiles={this.state.housingFiles}
-                                        productionProjects={this.state.productionProjects}
+                                        projects={this.state.projects}
                                         participants={this.state.participants}
                                         orders={this.state.orders}
                                         invoices={this.state.invoices}

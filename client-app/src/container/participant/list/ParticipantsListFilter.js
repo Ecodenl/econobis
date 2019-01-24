@@ -4,29 +4,29 @@ import { bindActionCreators } from 'redux';
 import moment from 'moment';
 
 import {
-    clearFilterParticipantsProductionProject,
-    setFilterParticipantProductionProjectAddress,
-    setFilterParticipantProductionProjectCity,
-    setFilterParticipantProductionProjectContactType,
-    setFilterParticipantProductionProjectCurrentParticipations,
-    setFilterParticipantProductionProjectDateRegister,
-    setFilterParticipantProductionProjectEnergySupplierId,
-    setFilterParticipantProductionProjectId,
-    setFilterParticipantProductionProjectName,
-    setFilterParticipantProductionProjectParticipationStatusId,
-    setFilterParticipantProductionProjectPostalCode,
-    setFilterParticipantProductionProjectStatusId,
-    setFilterProductionProjectId,
-} from '../../../actions/participants-production-project/ParticipantsProductionProjectFiltersActions';
+    clearFilterParticipantsProject,
+    setFilterParticipantProjectAddress,
+    setFilterParticipantProjectCity,
+    setFilterParticipantProjectContactType,
+    setFilterParticipantProjectCurrentParticipations,
+    setFilterParticipantProjectDateRegister,
+    setFilterParticipantProjectEnergySupplierId,
+    setFilterParticipantProjectId,
+    setFilterParticipantProjectName,
+    setFilterParticipantProjectParticipationStatusId,
+    setFilterParticipantProjectPostalCode,
+    setFilterParticipantProjectStatusId,
+    setFilterProjectId,
+} from '../../../actions/participants-project/ParticipantsProjectFiltersActions';
 import DataTableFilterDate from '../../../components/dataTable/DataTableFilterDate';
 
 const ParticipantsListFilter = props => {
     const onIdChange = e => {
-        props.setFilterParticipantProductionProjectId(e.target.value);
+        props.setFilterParticipantProjectId(e.target.value);
     };
 
     const onContactTypeChange = e => {
-        props.setFilterParticipantProductionProjectContactType(e.target.value);
+        props.setFilterParticipantProjectContactType(e.target.value);
 
         setTimeout(() => {
             props.onSubmitFilter();
@@ -34,23 +34,23 @@ const ParticipantsListFilter = props => {
     };
 
     const onNameChange = e => {
-        props.setFilterParticipantProductionProjectName(e.target.value);
+        props.setFilterParticipantProjectName(e.target.value);
     };
 
     const onAddressChange = e => {
-        props.setFilterParticipantProductionProjectAddress(e.target.value);
+        props.setFilterParticipantProjectAddress(e.target.value);
     };
 
     const onPostalCodeChange = e => {
-        props.setFilterParticipantProductionProjectPostalCode(e.target.value);
+        props.setFilterParticipantProjectPostalCode(e.target.value);
     };
 
     const onCityChange = e => {
-        props.setFilterParticipantProductionProjectCity(e.target.value);
+        props.setFilterParticipantProjectCity(e.target.value);
     };
 
-    const onProductionProjectIdChange = e => {
-        props.setFilterProductionProjectId(e.target.value);
+    const onProjectIdChange = e => {
+        props.setFilterProjectId(e.target.value);
 
         setTimeout(() => {
             props.onSubmitFilter();
@@ -58,11 +58,11 @@ const ParticipantsListFilter = props => {
     };
 
     const onCurrentParticipationsChange = e => {
-        props.setFilterParticipantProductionProjectCurrentParticipations(e.target.value);
+        props.setFilterParticipantProjectCurrentParticipations(e.target.value);
     };
 
     const onParticipationStatusIdChange = e => {
-        props.setFilterParticipantProductionProjectParticipationStatusId(e.target.value);
+        props.setFilterParticipantProjectParticipationStatusId(e.target.value);
 
         setTimeout(() => {
             props.onSubmitFilter();
@@ -71,14 +71,14 @@ const ParticipantsListFilter = props => {
 
     const onDateRegisterChange = selectedDay => {
         if (selectedDay === undefined) {
-            props.setFilterParticipantProductionProjectDateRegister('');
+            props.setFilterParticipantProjectDateRegister('');
         } else {
-            props.setFilterParticipantProductionProjectDateRegister(moment(selectedDay).format('Y-MM-DD'));
+            props.setFilterParticipantProjectDateRegister(moment(selectedDay).format('Y-MM-DD'));
         }
     };
 
     const onEnergySupplierIdChange = e => {
-        props.setFilterParticipantProductionProjectEnergySupplierId(e.target.value);
+        props.setFilterParticipantProjectEnergySupplierId(e.target.value);
 
         setTimeout(() => {
             props.onSubmitFilter();
@@ -157,14 +157,14 @@ const ParticipantsListFilter = props => {
             <th>
                 <select
                     className="form-control input-sm"
-                    value={props.filters.productionProjectId.data}
-                    onChange={onProductionProjectIdChange}
+                    value={props.filters.projectId.data}
+                    onChange={onProjectIdChange}
                 >
                     <option />
-                    {props.productionProjects.map(productionProject => {
+                    {props.projects.map(project => {
                         return (
-                            <option key={productionProject.id} value={productionProject.id}>
-                                {productionProject.name}
+                            <option key={project.id} value={project.id}>
+                                {project.name}
                             </option>
                         );
                     })}
@@ -187,13 +187,13 @@ const ParticipantsListFilter = props => {
                     onChange={onParticipationStatusIdChange}
                 >
                     <option />
-                    {props.participantProductionProjectStatuses.map(participantProductionProjectStatus => {
+                    {props.participantProjectStatuses.map(participantProjectStatus => {
                         return (
                             <option
-                                key={participantProductionProjectStatus.id}
-                                value={participantProductionProjectStatus.id}
+                                key={participantProjectStatus.id}
+                                value={participantProjectStatus.id}
                             >
-                                {participantProductionProjectStatus.name}
+                                {participantProjectStatus.name}
                             </option>
                         );
                     })}
@@ -228,29 +228,29 @@ const ParticipantsListFilter = props => {
 };
 
 const mapStateToProps = state => ({
-    filters: state.participantsProductionProject.filters,
+    filters: state.participantsProject.filters,
     contactTypes: state.systemData.contactTypes,
     contactStatuses: state.systemData.contactStatuses,
-    participantProductionProjectStatuses: state.systemData.participantProductionProjectStatus,
+    participantProjectStatuses: state.systemData.participantProjectStatus,
     energySuppliers: state.systemData.energySuppliers,
 });
 
 const mapDispatchToProps = dispatch => {
     return bindActionCreators(
         {
-            clearFilterParticipantsProductionProject,
-            setFilterParticipantProductionProjectAddress,
-            setFilterParticipantProductionProjectCity,
-            setFilterParticipantProductionProjectContactType,
-            setFilterParticipantProductionProjectCurrentParticipations,
-            setFilterParticipantProductionProjectDateRegister,
-            setFilterParticipantProductionProjectEnergySupplierId,
-            setFilterParticipantProductionProjectId,
-            setFilterParticipantProductionProjectName,
-            setFilterParticipantProductionProjectParticipationStatusId,
-            setFilterParticipantProductionProjectPostalCode,
-            setFilterParticipantProductionProjectStatusId,
-            setFilterProductionProjectId,
+            clearFilterParticipantsProject,
+            setFilterParticipantProjectAddress,
+            setFilterParticipantProjectCity,
+            setFilterParticipantProjectContactType,
+            setFilterParticipantProjectCurrentParticipations,
+            setFilterParticipantProjectDateRegister,
+            setFilterParticipantProjectEnergySupplierId,
+            setFilterParticipantProjectId,
+            setFilterParticipantProjectName,
+            setFilterParticipantProjectParticipationStatusId,
+            setFilterParticipantProjectPostalCode,
+            setFilterParticipantProjectStatusId,
+            setFilterProjectId,
         },
         dispatch
     );

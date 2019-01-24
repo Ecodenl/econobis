@@ -18,8 +18,8 @@ import HousingFileAPI from '../../../../api/housing-file/HousingFilesAPI';
 import MeasureAPI from '../../../../api/measure/MeasureAPI';
 import CampaignAPI from '../../../../api/campaign/CampaignsAPI';
 import QuotationRequestsAPI from '../../../../api/quotation-request/QuotationRequestsAPI';
-import ParticipantsProductionProjectAPI from '../../../../api/participant-production-project/ParticipantsProductionProjectAPI';
-import ProductionProjectsAPI from '../../../../api/production-project/ProductionProjectsAPI';
+import ParticipantsProjectAPI from '../../../../api/participant-project/ParticipantsProjectAPI';
+import ProjectsAPI from '../../../../api/project/ProjectsAPI';
 import OrdersAPI from '../../../../api/order/OrdersAPI';
 
 class DocumentFormEdit extends Component {
@@ -29,7 +29,7 @@ class DocumentFormEdit extends Component {
         const {
             id,
             orderId,
-            productionProjectId,
+            projectId,
             participantId,
             contactId,
             contactGroupId,
@@ -57,7 +57,7 @@ class DocumentFormEdit extends Component {
             measures: [],
             tasks: [],
             participants: [],
-            productionProjects: [],
+            projects: [],
             orders: [],
             document: {
                 id: id,
@@ -70,7 +70,7 @@ class DocumentFormEdit extends Component {
                 quotationRequestId: quotationRequestId || '',
                 measureId: measureId || '',
                 taskId: taskId || '',
-                productionProjectId: productionProjectId || '',
+                projectId: projectId || '',
                 participantId: participantId || '',
                 orderId: orderId || '',
                 documentType: documentType && documentType.id,
@@ -124,11 +124,11 @@ class DocumentFormEdit extends Component {
             this.setState({ measures: payload });
         });
 
-        ProductionProjectsAPI.peekProductionProjects().then(payload => {
-            this.setState({ productionProjects: payload });
+        ProjectsAPI.peekProjects().then(payload => {
+            this.setState({ projects: payload });
         });
 
-        ParticipantsProductionProjectAPI.peekParticipantsProductionProjects().then(payload => {
+        ParticipantsProjectAPI.peekParticipantsProjects().then(payload => {
             this.setState({ participants: payload });
         });
 
@@ -166,7 +166,7 @@ class DocumentFormEdit extends Component {
             validator.isEmpty(document.opportunityId + '') &&
             validator.isEmpty(document.orderId + '') &&
             validator.isEmpty(document.participantId + '') &&
-            validator.isEmpty(document.productionProjectId + '')
+            validator.isEmpty(document.projectId + '')
         ) {
             errors.docLinkedAtAny = true;
             hasErrors = true;
@@ -196,7 +196,7 @@ class DocumentFormEdit extends Component {
             quotationRequests,
             measures,
             tasks,
-            productionProjects,
+            projects,
             participants,
         } = this.state;
         const {
@@ -213,7 +213,7 @@ class DocumentFormEdit extends Component {
             documentType,
             description,
             participantId,
-            productionProjectId,
+            projectId,
         } = document;
         const oneOfFieldRequired =
             contactId === '' &&
@@ -225,7 +225,7 @@ class DocumentFormEdit extends Component {
             quotationRequestId === '' &&
             housingFileId === '' &&
             participantId === '' &&
-            productionProjectId === '';
+            projectId === '';
 
         return (
             <div>
@@ -314,9 +314,9 @@ class DocumentFormEdit extends Component {
                     <div className="row">
                         <InputSelect
                             label="Productieproject"
-                            name={'productionProjectId'}
-                            value={productionProjectId}
-                            options={productionProjects}
+                            name={'projectId'}
+                            value={projectId}
+                            options={projects}
                             onChangeAction={this.handleInputChange}
                             required={oneOfFieldRequired && 'required'}
                             error={errors.docLinkedAtAny}

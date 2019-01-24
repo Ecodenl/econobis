@@ -1,6 +1,6 @@
 import { Selector } from 'testcafe';
 
-export default class ModelNewProductionProject {
+export default class ModelNewProject {
     constructor () {
         this.name = Selector('input[name="name"]');
         this.code = Selector('input[name="code"]');

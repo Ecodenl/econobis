@@ -10,7 +10,7 @@ const TaskDetailsFormGeneralEditExtraConnections = ({
     contactGroups,
     opportunities,
     housingFiles,
-    productionProjects,
+    projects,
     participants,
     orders,
     handleReactSelectChange,
@@ -22,7 +22,7 @@ const TaskDetailsFormGeneralEditExtraConnections = ({
         opportunityId,
         campaignId,
         housingFileId,
-        productionProjectId,
+        projectId,
         participantId,
         orderId,
         invoiceId,
@@ -89,12 +89,12 @@ const TaskDetailsFormGeneralEditExtraConnections = ({
                 <InputReactSelect
                     label={'Productieproject'}
                     size={'col-sm-6'}
-                    name={'productionProjectId'}
-                    options={productionProjects}
-                    value={productionProjectId}
+                    name={'projectId'}
+                    options={projects}
+                    value={projectId}
                     onChangeAction={handleReactSelectChange}
                     multi={false}
-                    isLoading={peekLoading.productionProjects}
+                    isLoading={peekLoading.projects}
                 />
             </div>
             <div className="row">

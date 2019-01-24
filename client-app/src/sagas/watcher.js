@@ -58,25 +58,25 @@ import { fetchOpportunitySaga } from './opportunity/OpportunityDetailsSaga';
 import { fetchOrdersSaga, deleteOrderSaga } from './order/OrdersSaga';
 import { fetchOrderDetailsSaga, updateOrderDetailsSaga } from './order/OrderDetailsSaga';
 import { fetchPostalCodeLinksSaga, deletePostalCodeLinkSaga } from './postal-code-link/PostalCodeLinkSaga';
-import { fetchProductionProjectsSaga } from './production-project/ProductionProjectsSaga';
+import { fetchProjectsSaga } from './project/ProjectsSaga';
 import {
-    fetchProductionProjectSaga,
+    fetchProjectSaga,
     deleteValueCourseSaga,
     deleteRevenueSaga,
-    deleteProductionProjectSaga,
-} from './production-project/ProductionProjectDetailsSaga';
+    deleteProjectSaga,
+} from './project/ProjectDetailsSaga';
 import {
-    fetchProductionProjectRevenueSaga,
-    fetchProductionProjectRevenueDistributionSaga,
-    fetchProductionProjectRevenueParticipantsSaga,
-} from './production-project/ProductionProjectRevenueDetailsSaga';
-import { fetchParticipantsProductionProjectSaga } from './participant-production-project/ParticipantsProductionProjectSaga';
+    fetchProjectRevenueSaga,
+    fetchProjectRevenueDistributionSaga,
+    fetchProjectRevenueParticipantsSaga,
+} from './project/ProjectRevenueDetailsSaga';
+import { fetchParticipantsProjectSaga } from './participant-project/ParticipantsProjectSaga';
 import {
-    fetchParticipantProductionProjectDetailsSaga,
-    deleteParticipantProductionProjectSaga,
+    fetchParticipantProjectDetailsSaga,
+    deleteParticipantProjectSaga,
     deleteParticipationTransactionSaga,
     deleteObligationNumberSaga,
-} from './participant-production-project/ParticipantProductionProjectDetailsSaga';
+} from './participant-project/ParticipantProjectDetailsSaga';
 import { fetchIntakeDetailsSaga, deleteIntakeMeasureRequestedSaga, deleteIntakeSaga } from './intake/IntakeDetailsSaga';
 import { fetchIntakesSaga } from './intake/IntakesSaga';
 import {
@@ -197,19 +197,19 @@ export default function* watchSagas() {
     // Postal code links
     yield takeLatest('FETCH_POSTAL_CODE_LINKS', fetchPostalCodeLinksSaga);
     yield takeLatest('DELETE_POSTAL_CODE_LINK', deletePostalCodeLinkSaga);
-    // Participant production project
-    yield takeLatest('FETCH_PARTICIPANTS_PRODUCTION_PROJECT', fetchParticipantsProductionProjectSaga);
-    yield takeLatest('FETCH_PARTICIPANT_PRODUCTION_PROJECT_DETAILS', fetchParticipantProductionProjectDetailsSaga);
-    yield takeLatest('DELETE_PARTICIPANT_PRODUCTION_PROJECT', deleteParticipantProductionProjectSaga);
+    // Participant project
+    yield takeLatest('FETCH_PARTICIPANTS_PROJECT', fetchParticipantsProjectSaga);
+    yield takeLatest('FETCH_PARTICIPANT_PROJECT_DETAILS', fetchParticipantProjectDetailsSaga);
+    yield takeLatest('DELETE_PARTICIPANT_PROJECT', deleteParticipantProjectSaga);
     yield takeLatest('DELETE_PARTICIPATION_TRANSACTION', deleteParticipationTransactionSaga);
     yield takeLatest('DELETE_OBLIGATION_NUMBER', deleteObligationNumberSaga);
-    // Production project
-    yield takeLatest('FETCH_PRODUCTION_PROJECTS', fetchProductionProjectsSaga);
-    yield takeLatest('FETCH_PRODUCTION_PROJECT', fetchProductionProjectSaga);
-    yield takeLatest('DELETE_PRODUCTION_PROJECT', deleteProductionProjectSaga);
-    yield takeLatest('FETCH_PRODUCTION_PROJECT_REVENUE', fetchProductionProjectRevenueSaga);
-    yield takeLatest('PRODUCTION_PROJECT_REVENUE_GET_PARTICIPANTS', fetchProductionProjectRevenueParticipantsSaga);
-    yield takeLatest('PRODUCTION_PROJECT_REVENUE_GET_DISTRIBUTION', fetchProductionProjectRevenueDistributionSaga);
+    // Project
+    yield takeLatest('FETCH_PROJECTS', fetchProjectsSaga);
+    yield takeLatest('FETCH_PROJECT', fetchProjectSaga);
+    yield takeLatest('DELETE_PROJECT', deleteProjectSaga);
+    yield takeLatest('FETCH_PROJECT_REVENUE', fetchProjectRevenueSaga);
+    yield takeLatest('PROJECT_REVENUE_GET_PARTICIPANTS', fetchProjectRevenueParticipantsSaga);
+    yield takeLatest('PROJECT_REVENUE_GET_DISTRIBUTION', fetchProjectRevenueDistributionSaga);
     yield takeLatest('DELETE_VALUE_COURSE', deleteValueCourseSaga);
     yield takeLatest('DELETE_REVENUE', deleteRevenueSaga);
     // Intake

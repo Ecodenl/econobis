@@ -5,7 +5,7 @@ import ButtonIcon from '../../../components/button/ButtonIcon';
 import ButtonText from '../../../components/button/ButtonText';
 
 const ParticipantsListToolbar = props => {
-    const { meta = {} } = props.participantsProductionProject;
+    const { meta = {} } = props.participantsProject;
 
     return (
         <div className="row">
@@ -13,7 +13,7 @@ const ParticipantsListToolbar = props => {
                 <div className="btn-group btn-group-flex" role="group">
                     <ButtonIcon
                         iconName="glyphicon-refresh"
-                        onClickAction={props.resetParticipantProductionProjectFilters}
+                        onClickAction={props.resetParticipantProjectFilters}
                     />
                     <ButtonIcon iconName="glyphicon-filter" onClickAction={props.toggleShowExtraFilters} />
                     <ButtonIcon iconName="glyphicon-download-alt" onClickAction={props.getCSV} />
@@ -31,7 +31,7 @@ const ParticipantsListToolbar = props => {
 };
 
 const mapStateToProps = state => ({
-    participantsProductionProject: state.participantsProductionProject.list,
+    participantsProject: state.participantsProject.list,
     permissions: state.meDetails.permissions,
 });
 

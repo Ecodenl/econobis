@@ -2,13 +2,13 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import { previewParticipantReport } from '../../../actions/production-project/ProductionProjectDetailsActions';
+import { previewParticipantReport } from '../../../actions/project/ProjectDetailsActions';
 import {
-    clearParticipantsProductionProject,
-    fetchParticipantsProductionProject,
-} from '../../../actions/participants-production-project/ParticipantsProductionProjectActions';
-import { clearFilterParticipantsProductionProject } from '../../../actions/participants-production-project/ParticipantsProductionProjectFiltersActions';
-import { setParticipantsProductionProjectPagination } from '../../../actions/participants-production-project/ParticipantsProductionProjectPaginationActions';
+    clearParticipantsProject,
+    fetchParticipantsProject,
+} from '../../../actions/participants-project/ParticipantsProjectActions';
+import { clearFilterParticipantsProject } from '../../../actions/participants-project/ParticipantsProjectFiltersActions';
+import { setParticipantsProjectPagination } from '../../../actions/participants-project/ParticipantsProjectPaginationActions';
 import { blockUI, unblockUI } from '../../../actions/general/BlockUIActions';
 import ParticipantsList from './ParticipantsList';
 import ParticipantsListToolbar from './ParticipantsListToolbar';
@@ -25,12 +25,12 @@ import InputText from '../../../components/form/InputText';
 import InputSelect from '../../../components/form/InputSelect';
 import PanelFooter from '../../../components/panel/PanelFooter';
 import ViewText from '../../../components/form/ViewText';
-import ParticipantsProductionProjectAPI from '../../../api/participant-production-project/ParticipantsProductionProjectAPI';
+import ParticipantsProjectAPI from '../../../api/participant-project/ParticipantsProjectAPI';
 import fileDownload from 'js-file-download';
 import moment from 'moment/moment';
 import ParticipantsListExtraFilters from './ParticipantsListExtraFilters';
 import axios from 'axios';
-import ProductionProjectsAPI from '../../../api/production-project/ProductionProjectsAPI';
+import ProjectsAPI from '../../../api/project/ProjectsAPI';
 import ContactsAPI from '../../../api/contact/ContactsAPI';
 
 class ParticipantsListApp extends Component {
@@ -56,7 +56,7 @@ class ParticipantsListApp extends Component {
             filterType: 'and',
             amountOfFilters: 0,
             extraFilters: [],
-            productionProjects: [],
+            projects: [],
         };
 
         this.handleInputChange = this.handleInputChange.bind(this);
@@ -70,7 +70,7 @@ class ParticipantsListApp extends Component {
     }
 
     componentDidMount() {
-        this.fetchParticipantsProductionProjectData();
+        this.fetchParticipantsProjectData();
 
         DocumentTemplateAPI.fetchDocumentTemplatesPeekGeneral().then(payload => {
             let templates = [];
@@ -92,10 +92,10 @@ class ParticipantsListApp extends Component {
             });
         });
 
-        axios.all([ProductionProjectsAPI.peekProductionProjects(), ContactsAPI.getContactsPeek()]).then(
-            axios.spread((productionProjects, contacts) => {
+        axios.all([ProjectsAPI.peekProjects(), ContactsAPI.getContactsPeek()]).then(
+            axios.spread((projects, contacts) => {
                 this.setState({
-                    productionProjects: productionProjects,
+                    projects: projects,
                     contacts: contacts,
                 });
             })
@@ -103,31 +103,24 @@ class ParticipantsListApp extends Component {
     }
 
     componentWillUnmount() {
-        this.props.clearParticipantsProductionProject();
+        this.props.clearParticipantsProject();
     }
 
-    fetchParticipantsProductionProjectData = () => {
+    fetchParticipantsProjectData = () => {
         setTimeout(() => {
             const extraFilters = this.state.extraFilters;
-            const filters = filterHelper(this.props.participantsProductionProjectFilters);
-            const sorts = this.props.participantsProductionProjectSorts;
-            const pagination = { limit: 20, offset: this.props.participantsProductionProjectPagination.offset };
+            const filters = filterHelper(this.props.participantsProjectFilters);
+            const sorts = this.props.participantsProjectSorts;
+            const pagination = { limit: 20, offset: this.props.participantsProjectPagination.offset };
             const filterType = this.state.filterType;
-            const fetchFromProductionProject = false;
+            const fetchFromProject = false;
 
-            this.props.fetchParticipantsProductionProject(
-                filters,
-                extraFilters,
-                sorts,
-                pagination,
-                filterType,
-                fetchFromProductionProject
-            );
+            this.props.fetchParticipantsProject(filters, extraFilters, sorts, pagination, filterType, fetchFromProject);
         }, 100);
     };
 
-    resetParticipantProductionProjectFilters = () => {
-        this.props.clearFilterParticipantsProductionProject();
+    resetParticipantProjectFilters = () => {
+        this.props.clearFilterParticipantsProject();
 
         this.setState({
             filterType: 'and',
@@ -135,14 +128,14 @@ class ParticipantsListApp extends Component {
             extraFilters: [],
         });
 
-        this.fetchParticipantsProductionProjectData();
+        this.fetchParticipantsProjectData();
     };
 
     onSubmitFilter() {
-        this.props.setParticipantsProductionProjectPagination({ page: 0, offset: 0 });
+        this.props.setParticipantsProjectPagination({ page: 0, offset: 0 });
 
         setTimeout(() => {
-            this.fetchParticipantsProductionProjectData();
+            this.fetchParticipantsProjectData();
         }, 100);
     }
 
@@ -150,10 +143,10 @@ class ParticipantsListApp extends Component {
         let page = data.selected;
         let offset = Math.ceil(page * 20);
 
-        this.props.setParticipantsProductionProjectPagination({ page, offset });
+        this.props.setParticipantsProjectPagination({ page, offset });
 
         setTimeout(() => {
-            this.fetchParticipantsProductionProjectData();
+            this.fetchParticipantsProjectData();
         }, 100);
     }
 
@@ -198,10 +191,10 @@ class ParticipantsListApp extends Component {
             extraFilters: extraFilters,
         });
 
-        this.props.setParticipantsProductionProjectPagination({ page: 0, offset: 0 });
+        this.props.setParticipantsProjectPagination({ page: 0, offset: 0 });
 
         setTimeout(() => {
-            this.fetchParticipantsProductionProjectData();
+            this.fetchParticipantsProjectData();
         }, 100);
     }
 
@@ -301,7 +294,7 @@ class ParticipantsListApp extends Component {
         let participantIds = [];
 
         if (this.state.checkedAll) {
-            this.props.participantsProductionProject.data.forEach(function(participant) {
+            this.props.participantsProject.data.forEach(function(participant) {
                 participantIds.push(participant.id);
             });
 
@@ -346,11 +339,11 @@ class ParticipantsListApp extends Component {
     getCSV = () => {
         this.props.blockUI();
         setTimeout(() => {
-            const filters = filterHelper(this.props.participantsProductionProjectFilters);
+            const filters = filterHelper(this.props.participantsProjectFilters);
             const extraFilters = this.state.extraFilters;
-            const sorts = this.props.participantsProductionProjectSorts;
+            const sorts = this.props.participantsProjectSorts;
 
-            ParticipantsProductionProjectAPI.getCsv(filters, extraFilters, sorts)
+            ParticipantsProjectAPI.getCsv(filters, extraFilters, sorts)
                 .then(payload => {
                     fileDownload(payload.data, 'Participanten-' + moment().format('YYYY-MM-DD HH:mm:ss') + '.csv');
                     this.props.unblockUI();
@@ -363,14 +356,14 @@ class ParticipantsListApp extends Component {
 
     saveAsGroup = () => {
         const extraFilters = this.state.extraFilters;
-        const filters = filterHelper(this.props.participantsProductionProjectFilters);
+        const filters = filterHelper(this.props.participantsProjectFilters);
         const filterType = this.state.filterType;
-        const saveFromProductionProject = false;
-        ParticipantsProductionProjectAPI.saveAsGroup({
+        const saveFromProject = false;
+        ParticipantsProjectAPI.saveAsGroup({
             filters,
             extraFilters,
             filterType,
-            saveFromProductionProject,
+            saveFromProject,
         }).then(payload => {
             hashHistory.push(`/contact-groep/${payload.data.data.id}/edit`);
         });
@@ -404,9 +397,7 @@ class ParticipantsListApp extends Component {
                 <PanelBody>
                     <div className="col-md-12 margin-10-top">
                         <ParticipantsListToolbar
-                            resetParticipantProductionProjectFilters={() =>
-                                this.resetParticipantProductionProjectFilters()
-                            }
+                            resetParticipantProjectFilters={() => this.resetParticipantProjectFilters()}
                             toggleShowCheckboxList={this.toggleShowCheckboxList}
                             handleExtraFiltersChange={this.handleExtraFiltersChange}
                             getCSV={this.getCSV}
@@ -417,19 +408,17 @@ class ParticipantsListApp extends Component {
 
                     <div className="col-md-12 margin-10-top">
                         <ParticipantsList
-                            participantsProductionProject={this.props.participantsProductionProject}
-                            participantsProductionProjectPagination={this.props.participantsProductionProjectPagination}
+                            participantsProject={this.props.participantsProject}
+                            participantsProjectPagination={this.props.participantsProjectPagination}
                             onSubmitFilter={() => this.onSubmitFilter()}
-                            refreshParticipantsProductionProjectData={() =>
-                                this.fetchParticipantsProductionProjectData()
-                            }
+                            refreshParticipantsProjectData={() => this.fetchParticipantsProjectData()}
                             handlePageClick={this.handlePageClick}
                             showCheckboxList={this.state.showCheckboxList}
                             checkedAll={this.state.checkedAll}
                             toggleParticipantCheck={this.toggleParticipantCheck}
                             toggleParticipantCheckNoEmail={this.toggleParticipantCheckNoEmail}
                             toggleCheckedAll={this.toggleCheckedAll}
-                            productionProjects={this.state.productionProjects}
+                            projects={this.state.projects}
                         />
                     </div>
                 </PanelBody>
@@ -510,10 +499,10 @@ class ParticipantsListApp extends Component {
 
 const mapStateToProps = state => {
     return {
-        participantsProductionProject: state.participantsProductionProject.list,
-        participantsProductionProjectFilters: state.participantsProductionProject.filters,
-        participantsProductionProjectSorts: state.participantsProductionProject.sorts,
-        participantsProductionProjectPagination: state.participantsProductionProject.pagination,
+        participantsProject: state.participantsProject.list,
+        participantsProjectFilters: state.participantsProject.filters,
+        participantsProjectSorts: state.participantsProject.sorts,
+        participantsProjectPagination: state.participantsProject.pagination,
     };
 };
 
@@ -523,10 +512,10 @@ const mapDispatchToProps = dispatch => {
             blockUI,
             unblockUI,
             previewParticipantReport,
-            fetchParticipantsProductionProject,
-            clearParticipantsProductionProject,
-            setParticipantsProductionProjectPagination,
-            clearFilterParticipantsProductionProject,
+            fetchParticipantsProject,
+            clearParticipantsProject,
+            setParticipantsProjectPagination,
+            clearFilterParticipantsProject,
         },
         dispatch
     );

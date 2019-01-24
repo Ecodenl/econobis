@@ -2,15 +2,15 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import DataTableHeadTitleAndSort from '../../../components/dataTable/DataTableHeadTitleAndSort';
-import { setParticipantsProductionProjectSortsFilter } from '../../../actions/participants-production-project/ParticipantsProductionProjectSortsActions';
+import { setParticipantsProjectSortsFilter } from '../../../actions/participants-project/ParticipantsProjectSortsActions';
 import DataTableHeadTitle from '../../../components/dataTable/DataTableHeadTitle';
 
 const ParticipantsListHead = props => {
     const setSorts = (field, order) => {
-        props.setParticipantsProductionProjectSortsFilter(field, order);
+        props.setParticipantsProjectSortsFilter(field, order);
 
         setTimeout(() => {
-            props.refreshParticipantsProductionProjectData();
+            props.refreshParticipantsProjectData();
         }, 100);
     };
 
@@ -48,8 +48,8 @@ const ParticipantsListHead = props => {
 };
 
 const mapDispatchToProps = dispatch => ({
-    setParticipantsProductionProjectSortsFilter: (field, order) => {
-        dispatch(setParticipantsProductionProjectSortsFilter(field, order));
+    setParticipantsProjectSortsFilter: (field, order) => {
+        dispatch(setParticipantsProjectSortsFilter(field, order));
     },
 });
 

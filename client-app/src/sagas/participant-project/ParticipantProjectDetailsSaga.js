@@ -1,0 +1,49 @@
+import { put, call } from 'redux-saga/effects';
+import ParticipantProjectDetailsAPI from '../../api/participant-project/ParticipantProjectDetailsAPI';
+import ParticipantTransactionAPI from '../../api/participant-project/ParticipantTransactionAPI';
+import ParticipantObligationNumberAPI from '../../api/participant-project/ParticipantObligationNumberAPI';
+import { browserHistory, hashHistory } from 'react-router';
+
+export function* fetchParticipantProjectDetailsSaga({ payload }) {
+    try {
+        yield put({ type: 'IS_LOADING' });
+        const participantProjectDetails = yield call(ParticipantProjectDetailsAPI.fetchParticipantProject, payload);
+        yield put({
+            type: 'FETCH_PARTICIPANT_PROJECT_DETAILS_SUCCESS',
+            participantProjectDetails,
+        });
+        yield put({ type: 'IS_LOADING_COMPLETE' });
+    } catch (error) {
+        yield put({ type: 'FETCH_PARTICIPANT_PROJECT_DETAILS_ERROR', error });
+        yield put({ type: 'LOADING_ERROR', error });
+    }
+}
+
+export function* deleteParticipantProjectSaga({ id }) {
+    try {
+        yield call(ParticipantProjectDetailsAPI.deleteParticipantProject, id);
+        yield put({ type: 'DELETE_PARTICIPANT_PROJECT_SUCCESS', id });
+        browserHistory.goBack();
+    } catch (error) {
+        yield put({ type: 'SET_ERROR', http_code: error.response.status, message: error.response.data.message });
+        yield put({ type: 'DELETE_PARTICIPANT_PROJECT_ERROR', error });
+    }
+}
+
+export function* deleteParticipationTransactionSaga({ id }) {
+    try {
+        yield call(ParticipantTransactionAPI.deleteParticipantTransaction, id);
+        yield put({ type: 'DELETE_PARTICIPATION_TRANSACTION_SUCCESS', id });
+    } catch (error) {
+        yield put({ type: 'DELETE_PARTICIPATION_TRANSACTION_ERROR', error });
+    }
+}
+
+export function* deleteObligationNumberSaga({ id }) {
+    try {
+        yield call(ParticipantObligationNumberAPI.deleteObligationNumber, id);
+        yield put({ type: 'DELETE_OBLIGATION_NUMBER_SUCCESS', id });
+    } catch (error) {
+        yield put({ type: 'DELETE_OBLIGATION_NUMBER_ERROR', error });
+    }
+}

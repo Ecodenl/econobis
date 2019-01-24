@@ -31,7 +31,7 @@ class Participationslist extends Component {
                                             {moment(item.createdAt.date).format('L')}
                                         </td>
                                         <td className="col-xs-6 clickable">
-                                            {item.participationsCurrent} in {item.productionProject.name}{' '}
+                                            {item.participationsCurrent} in {item.project.name}{' '}
                                         </td>
                                     </tr>
                                 );

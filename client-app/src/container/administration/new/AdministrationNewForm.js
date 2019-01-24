@@ -442,7 +442,7 @@ class AdministrationNewForm extends Component {
 
                         <div className="row">
                             <InputSelect
-                                label={'Rapportages en facturen worden verstuurd vanaf'}
+                                label={'Afzender van Rapportages en facturen is e-mail adres'}
                                 id="mailboxId"
                                 size={'col-sm-6'}
                                 name={'mailboxId'}

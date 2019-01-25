@@ -54,11 +54,11 @@ class ProjectsList extends Component {
         let loading = true;
 
         if (this.props.hasError) {
-            loadingText = 'Fout bij het ophalen van productie projecten.';
+            loadingText = 'Fout bij het ophalen van projecten.';
         } else if (this.props.isLoading) {
             loadingText = 'Gegevens aan het laden.';
         } else if (data.length === 0) {
-            loadingText = 'Geen productie projecten gevonden!';
+            loadingText = 'Geen projecten gevonden!';
         } else {
             loading = false;
         }
@@ -70,10 +70,10 @@ class ProjectsList extends Component {
                         <tr className="thead-title-quaternary">
                             <DataTableHeadTitle title={'Projectcode'} width={'15%'} />
                             <DataTableHeadTitle title={'Naam'} width={'20%'} />
-                            <DataTableHeadTitle title={'Aantal participaties'} width={'10%'} />
+                            <DataTableHeadTitle title={'Aantal deelnames'} width={'10%'} />
                             <DataTableHeadTitle title={'Capaciteit kW'} width={'15%'} />
-                            <DataTableHeadTitle title={'Uitgegeven participaties'} width={'10%'} />
-                            <DataTableHeadTitle title={'Participaties beschikbaar'} width={'10%'} />
+                            <DataTableHeadTitle title={'Uitgegeven deelnames'} width={'10%'} />
+                            <DataTableHeadTitle title={'Deelnames beschikbaar'} width={'10%'} />
                             <DataTableHeadTitle title={'Percentage uitgegeven'} width={'14%'} />
                             <DataTableHeadTitle title={''} width={'6%'} />
                         </tr>

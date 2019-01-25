@@ -125,7 +125,7 @@ const Routes = () => {
                     component={PermissionHelper(DashboardFinancialApp, 'manageFinancial')}
                 />
                 <Route
-                    path="dashboard/participaties"
+                    path="dashboard/deelnames"
                     component={PermissionHelper(DashboardParticipationsApp, 'manageParticipation')}
                 />
                 /* Administrations */
@@ -273,7 +273,7 @@ const Routes = () => {
                 <Route path="project/preview-rapportage" component={ParticipantReportCreateApp} />
                 <Route path="project/:id" component={ProjectGeneralApp} />
                 <Route path="projecten" component={ProjectsListApp} />
-                <Route path="participanten" component={ParticipantListApp} />
+                <Route path="deelnemers" component={ParticipantListApp} />
                 <Route path="project/participant/:participationId/overdragen" component={ParticipationTransferApp} />
                 <Route path="project/participant/nieuw/:projectId" component={ParticipantNewApp} />
                 <Route path="project/participant/nieuw/contact/:contactId" component={ParticipantNewApp} />

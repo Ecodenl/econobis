@@ -29,7 +29,7 @@ class ProjectFormEdit extends Component {
             ownedById,
             projectStatusId,
             dateStart,
-            date,
+            dateProduction,
             dateStartRegistrations,
             dateEndRegistrations,
             projectTypeId,
@@ -65,7 +65,7 @@ class ProjectFormEdit extends Component {
                 ownedById: ownedById,
                 projectStatusId: projectStatusId ? projectStatusId : '',
                 dateStart: dateStart ? dateStart : '',
-                date: date ? date : '',
+                dateProduction: dateProduction ? dateProduction : '',
                 dateStartRegistrations: dateStartRegistrations ? dateStartRegistrations : '',
                 dateEndRegistrations: dateEndRegistrations ? dateEndRegistrations : '',
                 projectTypeId: projectTypeId ? projectTypeId : '',
@@ -196,7 +196,7 @@ class ProjectFormEdit extends Component {
             ownedById,
             projectStatusId,
             dateStart,
-            date,
+            dateProduction,
             dateStartRegistrations,
             dateEndRegistrations,
             projectTypeId,
@@ -298,8 +298,8 @@ class ProjectFormEdit extends Component {
                     />
                     <InputDate
                         label={'Datum productie'}
-                        name={'date'}
-                        value={date}
+                        name={'dateProduction'}
+                        value={dateProduction}
                         onChangeAction={this.handleInputChangeDate}
                     />
                 </div>
@@ -401,7 +401,7 @@ class ProjectFormEdit extends Component {
                 <div className="row">
                     <InputText
                         type={'number'}
-                        label={'Waarde per participatie'}
+                        label={'Waarde per deelname'}
                         name={'participationWorth'}
                         value={participationWorth}
                         onChangeAction={this.handleInputChange}
@@ -441,7 +441,7 @@ class ProjectFormEdit extends Component {
                     />
                     <InputText
                         type={'number'}
-                        label={'Totaal aantal participaties'}
+                        label={'Totaal aantal deelnames'}
                         name={'totalParticipations'}
                         value={totalParticipations}
                         onChangeAction={this.handleInputChange}
@@ -457,7 +457,7 @@ class ProjectFormEdit extends Component {
                         onChangeAction={this.handleInputChange}
                     />
                     <InputText
-                        label={'Uitgegeven participaties'}
+                        label={'Uitgegeven deelnames'}
                         name={'issuedParticipations'}
                         value={issuedParticipations ? issuedParticipations : ''}
                         readOnly={true}
@@ -466,13 +466,13 @@ class ProjectFormEdit extends Component {
 
                 <div className="row">
                     <InputToggle
-                        label={'Participaties overdraagbaar'}
+                        label={'Deelnames overdraagbaar'}
                         name={'isParticipationTransferable'}
                         value={isParticipationTransferable}
                         onChangeAction={this.handleInputChange}
                     />
                     <InputText
-                        label={'Participaties in optie'}
+                        label={'Deelnames in optie'}
                         name={'participationsInOption'}
                         value={participationsInOption ? participationsInOption : ''}
                         readOnly={true}
@@ -487,7 +487,7 @@ class ProjectFormEdit extends Component {
                         onChangeAction={this.handleInputChange}
                     />
                     <InputText
-                        label={'Uit te geven participaties'}
+                        label={'Uit te geven deelnames'}
                         name={'issuableParticipations'}
                         value={issuableParticipations ? issuableParticipations : ''}
                         readOnly={true}

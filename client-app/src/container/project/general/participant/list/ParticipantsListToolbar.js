@@ -12,16 +12,11 @@ const ParticipantsListToolbar = props => {
         <div className="row">
             <div className="col-md-2">
                 <div className="btn-group btn-group-flex" role="group">
-                    <ButtonIcon
-                        iconName={'glyphicon-refresh'}
-                        onClickAction={props.resetParticipantProjectFilters}
-                    />
+                    <ButtonIcon iconName={'glyphicon-refresh'} onClickAction={props.resetParticipantProjectFilters} />
                     {props.permissions.manageParticipation && (
                         <ButtonIcon
                             iconName={'glyphicon-plus'}
-                            onClickAction={() =>
-                                hashHistory.push(`/project/participant/nieuw/${props.project.id}`)
-                            }
+                            onClickAction={() => hashHistory.push(`/project/participant/nieuw/${props.project.id}`)}
                         />
                     )}
                     <ButtonIcon iconName={'glyphicon-filter'} onClickAction={props.toggleShowExtraFilters} />
@@ -31,7 +26,7 @@ const ParticipantsListToolbar = props => {
             </div>
             <div className="col-md-8">
                 <h4 className="text-center table-title">
-                    Participanten productieproject {props.project ? props.project.name : ''}
+                    Deelnemers project {props.project ? props.project.name : ''}
                 </h4>
             </div>
             <div className="col-md-2">

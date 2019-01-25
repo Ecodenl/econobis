@@ -137,7 +137,7 @@ class ParticipantsListExtraFilters extends Component {
                 type: 'number',
             },
             currentParticipations: {
-                name: 'Huidig aantal participaties',
+                name: 'Huidig aantal deelnames',
                 type: 'number',
             },
             dateRegister: {
@@ -149,7 +149,7 @@ class ParticipantsListExtraFilters extends Component {
                 type: 'date',
             },
             participationStatusId: {
-                name: 'Participatie status',
+                name: 'Deelname status',
                 type: 'dropdown',
                 dropDownOptions: this.props.participantProjectStatus,
             },
@@ -158,7 +158,7 @@ class ParticipantsListExtraFilters extends Component {
                 type: 'date',
             },
             projectId: {
-                name: 'Productieproject',
+                name: 'Project',
                 type: 'dropdownHas',
                 dropDownOptions: this.state.projects,
             },
@@ -181,7 +181,7 @@ class ParticipantsListExtraFilters extends Component {
                 optionName: 'fullName',
             },
             participationsSold: {
-                name: 'Participaties overgedragen',
+                name: 'Deelnames overgedragen',
                 type: 'number',
             },
             didAcceptAgreement: {
@@ -190,7 +190,7 @@ class ParticipantsListExtraFilters extends Component {
                 dropDownOptions: this.state.yesNoOptions,
             },
             participationsRequested: {
-                name: 'Participaties aangevraagd',
+                name: 'Deelnames aangevraagd',
                 type: 'number',
             },
         };

@@ -340,7 +340,7 @@ class TaskNewApp extends Component {
                             },
                         });
                         break;
-                    case 'productie-project':
+                    case 'project':
                         this.setState({
                             ...this.state,
                             task: {

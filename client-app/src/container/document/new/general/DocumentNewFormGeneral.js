@@ -127,7 +127,7 @@ const DocumentNewFormGeneral = ({
 
             <div className="row">
                 <InputSelect
-                    label="Productieproject"
+                    label="Project"
                     name={'projectId'}
                     value={projectId}
                     options={projects}
@@ -136,7 +136,7 @@ const DocumentNewFormGeneral = ({
                     error={errors.docLinkedAtAny}
                 />
                 <InputSelect
-                    label="Participant productieproject"
+                    label="Deelnemer project"
                     name={'participantId'}
                     value={participantId}
                     options={participants}

@@ -102,7 +102,7 @@ class DashboardChartContactsPerProject extends Component {
 
         return (
             <div>
-                <h4>Participanten contact status in project {this.state.code}</h4>
+                <h4>Deelnemers contact status in project {this.state.code}</h4>
                 <div>
                     {amountOfDataPoints === 0 ? (
                         <span>Geen contacten gevonden.</span>

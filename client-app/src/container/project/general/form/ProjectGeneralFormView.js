@@ -25,32 +25,26 @@ const ProjectGeneralFormView = props => {
             </div>
 
             <div className="row">
-                <ViewText label={'Totaal aantal participaties'} value={totalParticipations && totalParticipations} />
+                <ViewText label={'Totaal aantal deelnames'} value={totalParticipations && totalParticipations} />
                 <ViewText label={'Startdatum'} value={dateStart ? moment(dateStart).format('L') : ''} />
             </div>
 
             <div className="row">
-                <ViewText label={'Uitgegeven participaties'} value={issuedParticipations && issuedParticipations} />
-                <ViewText
-                    label={'Waarde per participatie'}
-                    value={participationWorth ? '€ ' + participationWorth : ''}
-                />
+                <ViewText label={'Uitgegeven deelnames'} value={issuedParticipations && issuedParticipations} />
+                <ViewText label={'Waarde per deelname'} value={participationWorth ? '€ ' + participationWorth : ''} />
             </div>
 
             <div className="row">
-                <ViewText label={'Participaties in optie'} value={participationsInOption && participationsInOption} />
+                <ViewText label={'Deelnames in optie'} value={participationsInOption && participationsInOption} />
                 <ViewText
-                    label={'Waarde participaties totaal'}
+                    label={'Waarde deelnames totaal'}
                     value={participationsWorthTotal ? '€ ' + participationsWorthTotal : ''}
                 />
             </div>
 
             <div className="row">
-                <ViewText
-                    label={'Uit te geven participaties'}
-                    value={issuableParticipations && issuableParticipations}
-                />
-                <ViewText label={'Aantal participanten'} value={amountOfParticipants && amountOfParticipants} />
+                <ViewText label={'Uit te geven deelnames'} value={issuableParticipations && issuableParticipations} />
+                <ViewText label={'Aantal deelnemers'} value={amountOfParticipants && amountOfParticipants} />
             </div>
         </div>
     );

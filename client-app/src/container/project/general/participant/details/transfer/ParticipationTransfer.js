@@ -46,7 +46,7 @@ const ParticipantNew = props => {
 
             <div className="row">
                 <InputText
-                    label={'Productieproject'}
+                    label={'Project'}
                     name={'projectName'}
                     value={participation.project ? participation.project.name : ''}
                     readOnly={true}
@@ -55,7 +55,7 @@ const ParticipantNew = props => {
                     type={'number'}
                     min={'0'}
                     max={participation.participationsCurrent + ''}
-                    label={'Aantal participaties overdragen'}
+                    label={'Aantal deelnames overdragen'}
                     name={'participationsAmount'}
                     value={participationsAmount}
                     onChangeAction={props.handleInputChange}
@@ -66,7 +66,7 @@ const ParticipantNew = props => {
 
             <div className="row">
                 <InputText
-                    label={'Huidig aantal participaties'}
+                    label={'Huidig aantal deelnames'}
                     name={'participationsCurrent'}
                     value={participation.participationsCurrent}
                     readOnly={true}
@@ -74,7 +74,7 @@ const ParticipantNew = props => {
                 <InputText
                     type={'number'}
                     min={'0'}
-                    label={'Waarde per participatie'}
+                    label={'Waarde per deelname'}
                     name={'participationWorth'}
                     value={participationWorth}
                     onChangeAction={props.handleInputChange}
@@ -85,7 +85,7 @@ const ParticipantNew = props => {
 
             <div className="row">
                 <InputText
-                    label={'Waarde over te dragen participaties'}
+                    label={'Waarde over te dragen deelnames'}
                     name={'participationsWorthTotal'}
                     value={participationsAmount * participationWorth}
                     readOnly={true}

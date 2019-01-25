@@ -34,7 +34,7 @@ class ProjectGeneralToolbar extends Component {
                             </div>
                             <div className="col-md-8">
                                 <h4 className="text-center text-success margin-small">
-                                    <strong>Productieproject {project ? project.name : ''}</strong>
+                                    <strong>Project {project ? project.name : ''}</strong>
                                 </h4>
                             </div>
                             <div className="col-md-2" />

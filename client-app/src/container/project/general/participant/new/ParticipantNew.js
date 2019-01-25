@@ -59,7 +59,7 @@ const ParticipantNew = props => {
 
             <div className="row">
                 <InputSelect
-                    label={'Productieproject'}
+                    label={'Project'}
                     name={'projectId'}
                     options={props.projects}
                     value={projectId}
@@ -78,14 +78,14 @@ const ParticipantNew = props => {
             <div className="row">
                 <InputText
                     type={'number'}
-                    label={'Participaties aangevraagd'}
+                    label={'Deelnames aangevraagd'}
                     name={'participationsRequested'}
                     value={participationsRequested}
                     onChangeAction={props.handleInputChange}
                 />
                 <InputText
                     type={'number'}
-                    label={'Participaties toegekend'}
+                    label={'Deelnames toegekend'}
                     name={'participationsGranted'}
                     value={participationsGranted}
                     onChangeAction={props.handleInputChange}
@@ -95,14 +95,14 @@ const ParticipantNew = props => {
             <div className="row">
                 <InputText
                     type={'number'}
-                    label={'Participaties overgedragen'}
+                    label={'Deelnames overgedragen'}
                     name={'participationsSold'}
                     value={participationsSold}
                     onChangeAction={props.handleInputChange}
                 />
                 <InputText
                     type={'number'}
-                    label={'Huidig aantal participaties'}
+                    label={'Huidig aantal deelnames'}
                     name={'participationsCurrent'}
                     value={statusId == 2 ? participationsGranted - participationsSold : 0}
                     readOnly={true}
@@ -111,14 +111,14 @@ const ParticipantNew = props => {
 
             <div className="row">
                 <InputText
-                    label={'Waarde participaties'}
+                    label={'Waarde deelnames'}
                     name={'totalWorthParticipations'}
                     value={statusId == 2 ? (participationsGranted - participationsSold) * props.participationWorth : 0}
                     readOnly={true}
                 />
                 <InputText
                     type={'number'}
-                    label={'Restverkoop participaties'}
+                    label={'Restverkoop deelnames'}
                     name={'participationsRestSale'}
                     value={participationsRestSale}
                     onChangeAction={props.handleInputChange}

@@ -18,7 +18,7 @@ const ParticipantDetailsDelete = props => {
             confirmAction={() => confirmAction()}
             title="Verwijderen"
         >
-            <p>Weet u zeker dat u deze participatie wilt verwijderen?</p>
+            <p>Weet u zeker dat u deze deelname wilt verwijderen?</p>
         </Modal>
     );
 };

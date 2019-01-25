@@ -25,7 +25,7 @@ class ProjectNewToolbar extends Component {
                                 </div>
                             </div>
                             <div className="col-md-4">
-                                <h3 className="text-center table-title">Nieuw productieproject</h3>
+                                <h3 className="text-center table-title">Nieuw project</h3>
                             </div>
                             <div className="col-md-4" />
                         </PanelBody>

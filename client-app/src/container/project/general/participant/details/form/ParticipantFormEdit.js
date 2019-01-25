@@ -191,7 +191,7 @@ class ParticipantFormEdit extends Component {
                 </div>
 
                 <div className="row">
-                    <InputText label={'Productieproject'} name={'projectName'} value={projectName} readOnly={true} />
+                    <InputText label={'Project'} name={'projectName'} value={projectName} readOnly={true} />
                     <InputDate
                         label={'Inschrijfdatum'}
                         name={'dateRegister'}
@@ -203,14 +203,14 @@ class ParticipantFormEdit extends Component {
                 <div className="row">
                     <InputText
                         type={'number'}
-                        label={'Participaties aangevraagd'}
+                        label={'Deelnames aangevraagd'}
                         name={'participationsRequested'}
                         value={participationsRequested}
                         onChangeAction={this.handleInputChange}
                     />
                     <InputText
                         type={'number'}
-                        label={'Participaties toegekend'}
+                        label={'Deelnames toegekend'}
                         name={'participationsGranted'}
                         value={participationsGranted}
                         onChangeAction={this.handleInputChange}
@@ -220,14 +220,14 @@ class ParticipantFormEdit extends Component {
                 <div className="row">
                     <InputText
                         type={'number'}
-                        label={'Participaties overgedragen'}
+                        label={'Deelnames overgedragen'}
                         name={'participationsSold'}
                         value={participationsSold}
                         onChangeAction={this.handleInputChange}
                     />
                     <InputText
                         type={'number'}
-                        label={'Huidig aantal participaties'}
+                        label={'Huidig aantal deelnames'}
                         name={'participationsCurrent'}
                         value={statusId == 2 ? participationsGranted - participationsSold : 0}
                         readOnly={true}
@@ -236,7 +236,7 @@ class ParticipantFormEdit extends Component {
 
                 <div className="row">
                     <InputText
-                        label={'Waarde participaties'}
+                        label={'Waarde deelnames'}
                         name={'totalWorthParticipations'}
                         value={
                             statusId == 2
@@ -247,7 +247,7 @@ class ParticipantFormEdit extends Component {
                     />
                     <InputText
                         type={'number'}
-                        label={'Restverkoop participaties'}
+                        label={'Restverkoop deelnames'}
                         name={'participationsRestSale'}
                         value={participationsRestSale}
                         onChangeAction={this.handleInputChange}

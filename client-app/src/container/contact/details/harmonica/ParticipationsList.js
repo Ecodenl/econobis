@@ -12,14 +12,14 @@ class Participationslist extends Component {
     }
 
     openItem = id => {
-        hashHistory.push(`/project/participant/${id}`);
+        hashHistory.push(`/project/deelnemer/${id}`);
     };
 
     render() {
         const { relatedParticipations } = this.props;
         return (
             <div>
-                {relatedParticipations == '' && <div>Geen participaties gevonden.</div>}
+                {relatedParticipations == '' && <div>Geen deelnames gevonden.</div>}
 
                 {relatedParticipations != '' && (
                     <table className="table harmonica-table">

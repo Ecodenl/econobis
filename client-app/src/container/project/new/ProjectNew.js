@@ -223,7 +223,7 @@ const ProjectNew = props => {
             <div className="row">
                 <InputText
                     type={'number'}
-                    label={'Waarde per participatie'}
+                    label={'Waarde per deelname'}
                     name={'participationWorth'}
                     value={participationWorth}
                     onChangeAction={props.handleInputChange}
@@ -247,7 +247,7 @@ const ProjectNew = props => {
                 />
                 <InputText
                     type={'number'}
-                    label={'Totaal aantal participaties'}
+                    label={'Totaal aantal deelnames'}
                     name={'totalParticipations'}
                     value={totalParticipations}
                     onChangeAction={props.handleInputChange}
@@ -279,7 +279,7 @@ const ProjectNew = props => {
                     onChangeAction={props.handleInputChange}
                 />
                 <InputToggle
-                    label={'Participaties overdraagbaar'}
+                    label={'Deelnames overdraagbaar'}
                     name={'isParticipationTransferable'}
                     value={isParticipationTransferable}
                     onChangeAction={props.handleInputChange}

@@ -26,7 +26,7 @@ class ProjectDetailsFormValueCourse extends Component {
         return (
             <Panel>
                 <PanelHeader>
-                    <span className="h5 text-bold">Waardeverloop participaties</span>
+                    <span className="h5 text-bold">Waardeverloop deelnames</span>
                     {this.props.permissions.manageFinancial && (
                         <a role="button" className="pull-right" onClick={this.toggleShowNew}>
                             <span className="glyphicon glyphicon-plus" />

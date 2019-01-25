@@ -314,8 +314,8 @@ class ParticipantsListApp extends Component {
         } else if (!error) {
             this.setState({
                 showModal: true,
-                modalText: 'Er zijn geen participanten geselecteerd.',
-                buttonConfirmText: 'Voeg participanten toe',
+                modalText: 'Er zijn geen deelnemers geselecteerd.',
+                buttonConfirmText: 'Voeg deelnemers toe',
             });
         }
     };
@@ -345,7 +345,7 @@ class ParticipantsListApp extends Component {
 
             ParticipantsProjectAPI.getCsv(filters, extraFilters, sorts)
                 .then(payload => {
-                    fileDownload(payload.data, 'Participanten-' + moment().format('YYYY-MM-DD HH:mm:ss') + '.csv');
+                    fileDownload(payload.data, 'Deelnemers-' + moment().format('YYYY-MM-DD HH:mm:ss') + '.csv');
                     this.props.unblockUI();
                 })
                 .catch(error => {

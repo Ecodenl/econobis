@@ -41,8 +41,8 @@ const SidebarMenu = ({ permissions, administrations, mailboxesInvalid }) => (
                 {permissions.manageParticipation && (
                     <Nav id="dashboard-participations">
                         <NavText>
-                            <Link className="sidebar-link" to="dashboard/participaties">
-                                Participaties
+                            <Link className="sidebar-link" to="dashboard/deelnames">
+                                Deelnames
                             </Link>
                         </NavText>
                     </Nav>
@@ -95,10 +95,10 @@ const SidebarMenu = ({ permissions, administrations, mailboxesInvalid }) => (
                         </Link>
                     </NavText>
                 </Nav>
-                <Nav id="participanten">
+                <Nav id="deelnemers">
                     <NavText>
-                        <Link className="sidebar-link" to="participanten">
-                            Participanten
+                        <Link className="sidebar-link" to="deelnemers">
+                            Deelnemers
                         </Link>
                     </NavText>
                 </Nav>

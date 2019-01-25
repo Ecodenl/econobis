@@ -17,7 +17,7 @@ class ProjectDetailsForm extends Component {
         let loading = true;
 
         if (this.props.hasError) {
-            loadingText = 'Fout bij het ophalen van productie project.';
+            loadingText = 'Fout bij het ophalen van project.';
         } else if (this.props.isLoading) {
             loadingText = 'Gegevens aan het laden.';
         } else if (isEmpty(this.props.project)) {

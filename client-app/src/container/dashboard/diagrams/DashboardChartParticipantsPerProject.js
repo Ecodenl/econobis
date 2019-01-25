@@ -102,10 +102,10 @@ class DashboardChartParticipantsPerProject extends Component {
 
         return (
             <div>
-                <h4>Participanten status in project {this.state.code}</h4>
+                <h4>Deelnemers status in project {this.state.code}</h4>
                 <div>
                     {amountOfDataPoints === 0 ? (
-                        <span>Geen participanten gevonden.</span>
+                        <span>Geen deelnemers gevonden.</span>
                     ) : (
                         <Pie data={data} options={options} width={250} height={250} />
                     )}

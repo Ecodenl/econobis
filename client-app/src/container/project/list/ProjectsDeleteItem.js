@@ -19,7 +19,7 @@ const ProjectsDeleteItem = props => {
             confirmAction={() => confirmAction()}
             title="Verwijderen"
         >
-            Verwijder productieproject <strong>{props.code}</strong>?
+            Verwijder project <strong>{props.code}</strong>?
         </Modal>
     );
 };

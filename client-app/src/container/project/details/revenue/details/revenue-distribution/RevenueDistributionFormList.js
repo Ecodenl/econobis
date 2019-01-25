@@ -27,7 +27,7 @@ const RevenueDistributionFormList = props => {
 
                 <div className="col-sm-1">Type</div>
                 <div className="col-sm-2">Naam</div>
-                <div className="col-sm-1">Participaties</div>
+                <div className="col-sm-1">Deelnames</div>
                 <div className="col-sm-1">Uit te keren bedrag</div>
                 <div className="col-sm-1">Uitkeren op</div>
                 <div className="col-sm-1">Datum uitkering</div>
@@ -36,8 +36,7 @@ const RevenueDistributionFormList = props => {
                 <div className="col-sm-1">Teruggave energiebelasting</div>
             </div>
             {props.projectRevenue.confirmed ? (
-                props.projectRevenue.distribution &&
-                props.projectRevenue.distribution.data.length > 0 ? (
+                props.projectRevenue.distribution && props.projectRevenue.distribution.data.length > 0 ? (
                     props.projectRevenue.distribution.data.map(participation => {
                         return (
                             <RevenueDistributionFormStaticView
@@ -51,7 +50,7 @@ const RevenueDistributionFormList = props => {
                         );
                     })
                 ) : (
-                    <div>Geen participanten bekend.</div>
+                    <div>Geen deelnemers bekend.</div>
                 )
             ) : props.participations && props.participations.data.length > 0 ? (
                 props.participations.data.map(participation => {
@@ -65,7 +64,7 @@ const RevenueDistributionFormList = props => {
                     );
                 })
             ) : (
-                <div>Geen participanten bekend.</div>
+                <div>Geen deelnemers bekend.</div>
             )}
             <DataTablePagination
                 initialPage={0}
@@ -73,10 +72,8 @@ const RevenueDistributionFormList = props => {
                 recordsPerPage={100}
                 totalRecords={
                     props.projectRevenue.confirmed
-                        ? props.projectRevenue.distribution &&
-                          props.projectRevenue.distribution.meta.total
-                        : props.projectRevenue.participants &&
-                          props.projectRevenue.participants.meta.total
+                        ? props.projectRevenue.distribution && props.projectRevenue.distribution.meta.total
+                        : props.projectRevenue.participants && props.projectRevenue.participants.meta.total
                 }
             />
         </div>

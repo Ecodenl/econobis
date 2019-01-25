@@ -13,7 +13,7 @@ const ProjectFormView = props => {
         ownedBy,
         projectStatus,
         dateStart,
-        date,
+        dateProduction,
         dateStartRegistrations,
         dateEndRegistrations,
         projectType,
@@ -66,7 +66,7 @@ const ProjectFormView = props => {
 
             <div className="row" onClick={props.switchToEdit}>
                 <ViewText label={'Start project'} value={dateStart ? moment(dateStart).format('L') : ''} />
-                <ViewText label={'Datum productie'} value={date ? moment(date).format('L') : ''} />
+                <ViewText label={'Datum productie'} value={dateProduction ? moment(dateProduction).format('L') : ''} />
             </div>
 
             <div className="row" onClick={props.switchToEdit}>
@@ -106,10 +106,7 @@ const ProjectFormView = props => {
             </div>
 
             <div className="row" onClick={props.switchToEdit}>
-                <ViewText
-                    label={'Waarde per participatie'}
-                    value={participationWorth ? '€ ' + participationWorth : ''}
-                />
+                <ViewText label={'Waarde per deelname'} value={participationWorth ? '€ ' + participationWorth : ''} />
                 <ViewText label={'Opgesteld vermogen kW'} value={powerKwAvailable ? powerKwAvailable : ''} />
             </div>
 
@@ -123,25 +120,22 @@ const ProjectFormView = props => {
                     label={'Max aantal part. jeugd'}
                     value={maxParticipationsYouth ? maxParticipationsYouth : ''}
                 />
-                <ViewText label={'Totaal aantal participaties'} value={totalParticipations && totalParticipations} />
+                <ViewText label={'Totaal aantal deelnames'} value={totalParticipations && totalParticipations} />
             </div>
 
             <div className="row" onClick={props.switchToEdit}>
                 <ViewText label={'Min. aantal part. p/p'} value={minParticipations ? minParticipations : ''} />
-                <ViewText label={'Uitgegeven participaties'} value={issuedParticipations && issuedParticipations} />
+                <ViewText label={'Uitgegeven deelanmes'} value={issuedParticipations && issuedParticipations} />
             </div>
 
             <div className="row" onClick={props.switchToEdit}>
-                <ViewText label={'Participaties overdraagbaar'} value={isParticipationTransferable ? 'Ja' : 'Nee'} />
-                <ViewText label={'Participaties in optie'} value={participationsInOption && participationsInOption} />
+                <ViewText label={'Deelnames overdraagbaar'} value={isParticipationTransferable ? 'Ja' : 'Nee'} />
+                <ViewText label={'Deelnames in optie'} value={participationsInOption && participationsInOption} />
             </div>
 
             <div className="row" onClick={props.switchToEdit}>
                 <ViewText label={'Deelname aan groep verplicht'} value={isMembershipRequired ? 'Ja' : 'Nee'} />
-                <ViewText
-                    label={'Uit te geven participaties'}
-                    value={issuableParticipations && issuableParticipations}
-                />
+                <ViewText label={'Uit te geven deelanmes'} value={issuableParticipations && issuableParticipations} />
             </div>
             {isMembershipRequired == true && (
                 <div className="row" onClick={props.switchToEdit}>

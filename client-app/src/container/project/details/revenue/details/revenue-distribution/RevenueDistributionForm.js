@@ -238,8 +238,8 @@ class RevenueDistributionForm extends Component {
         } else if (!error) {
             this.setState({
                 showModal: true,
-                modalText: 'Er zijn geen participanten geselecteerd.',
-                buttonConfirmText: 'Voeg participanten toe',
+                modalText: 'Er zijn geen deelnemers geselecteerd.',
+                buttonConfirmText: 'Voeg deelnemers toe',
             });
         }
     };
@@ -253,9 +253,7 @@ class RevenueDistributionForm extends Component {
             if (!this.props.projectRevenue.project.administration.canCreatePaymentInvoices['can']) {
                 this.props.setError(
                     412,
-                    this.props.projectRevenue.project.administration.canCreatePaymentInvoices[
-                        'message'
-                    ]
+                    this.props.projectRevenue.project.administration.canCreatePaymentInvoices['message']
                 );
                 this.setState({
                     showModal: false,
@@ -281,12 +279,10 @@ class RevenueDistributionForm extends Component {
         return (
             <Panel>
                 <PanelHeader>
-                    <span className="h5 text-bold">Opbrengstverdeling participanten</span>
+                    <span className="h5 text-bold">Opbrengstverdeling deelnemers</span>
                     <div className="btn-group pull-right">
                         {this.props.projectRevenue.confirmed == 1 &&
-                            administrationIds.includes(
-                                this.props.projectRevenue.project.administrationId
-                            ) && (
+                            administrationIds.includes(this.props.projectRevenue.project.administrationId) && (
                                 <ButtonText
                                     buttonText={'Rapportage maken'}
                                     onClickAction={this.toggleShowCheckboxList}

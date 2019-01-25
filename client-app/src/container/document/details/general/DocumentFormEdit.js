@@ -313,7 +313,7 @@ class DocumentFormEdit extends Component {
 
                     <div className="row">
                         <InputSelect
-                            label="Productieproject"
+                            label="Project"
                             name={'projectId'}
                             value={projectId}
                             options={projects}
@@ -322,7 +322,7 @@ class DocumentFormEdit extends Component {
                             error={errors.docLinkedAtAny}
                         />
                         <InputSelect
-                            label="Participant productieproject"
+                            label="Deelnemer project"
                             name={'participantId'}
                             value={participantId}
                             options={participants}

@@ -28,11 +28,11 @@ class ParticipantsList extends Component {
         let loading = true;
 
         if (this.props.hasError) {
-            loadingText = 'Fout bij het ophalen van participanten.';
+            loadingText = 'Fout bij het ophalen van deelnemers.';
         } else if (this.props.isLoading) {
             loadingText = 'Gegevens aan het laden.';
         } else if (data.length === 0) {
-            loadingText = 'Geen participanten gevonden!';
+            loadingText = 'Geen deelnemers gevonden!';
         } else {
             loading = false;
         }
@@ -42,9 +42,7 @@ class ParticipantsList extends Component {
                 <DataTable>
                     <DataTableHead>
                         <ParticipantsListHead
-                            refreshParticipantsProjectData={() =>
-                                this.props.refreshParticipantsProjectData()
-                            }
+                            refreshParticipantsProjectData={() => this.props.refreshParticipantsProjectData()}
                         />
                         <ParticipantsListFilter
                             onSubmitFilter={this.props.onSubmitFilter}

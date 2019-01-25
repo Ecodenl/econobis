@@ -160,7 +160,7 @@ class ContactsListExtraFilters extends Component {
                 type: 'date',
             },
             currentParticipations: {
-                name: 'Huidig aantal participaties',
+                name: 'Huidig aantal deelnames',
                 type: 'number',
             },
             occupation: {

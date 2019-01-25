@@ -47,7 +47,7 @@ class ParticipantDetailsToolbar extends Component {
                                     )}
                                     {isTransferable ? (
                                         <ButtonText
-                                            buttonText={`Participaties overdragen`}
+                                            buttonText={`Deelnames overdragen`}
                                             onClickAction={() =>
                                                 hashHistory.push(
                                                     `/project/participant/${participantProject.id}/overdragen`
@@ -55,7 +55,7 @@ class ParticipantDetailsToolbar extends Component {
                                             }
                                         />
                                     ) : (
-                                        <ButtonText buttonText={`Participaties niet overdraagbaar`} />
+                                        <ButtonText buttonText={`Deelnames niet overdraagbaar`} />
                                     )}
                                 </div>
                             </div>

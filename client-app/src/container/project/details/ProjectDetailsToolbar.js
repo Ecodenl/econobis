@@ -41,7 +41,7 @@ class ProjectDetailsToolbar extends Component {
                             </div>
                             <div className="col-md-8">
                                 <h4 className="text-center text-success margin-small">
-                                    <strong>Productieproject {project ? project.name : ''}</strong>
+                                    <strong>Project {project ? project.name : ''}</strong>
                                 </h4>
                             </div>
                             <div className="col-md-2" />
@@ -50,10 +50,7 @@ class ProjectDetailsToolbar extends Component {
                 </div>
 
                 {this.state.showDelete && (
-                    <ProjectDetailsDelete
-                        closeDeleteItemModal={this.toggleDelete}
-                        id={project.id}
-                    />
+                    <ProjectDetailsDelete closeDeleteItemModal={this.toggleDelete} id={project.id} />
                 )}
             </div>
         );

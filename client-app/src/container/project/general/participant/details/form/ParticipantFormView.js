@@ -43,7 +43,7 @@ const ParticipantFormView = props => {
 
             <div className="row" onClick={props.switchToEdit}>
                 <ViewText
-                    label={'Productieproject'}
+                    label={'Project'}
                     value={project ? project.name : ''}
                     link={project ? 'project/' + project.id : ''}
                 />
@@ -52,30 +52,24 @@ const ParticipantFormView = props => {
 
             <div className="row" onClick={props.switchToEdit}>
                 <ViewText
-                    label={'Participaties aangevraagd'}
+                    label={'Deelnames aangevraagd'}
                     value={participationsRequested ? participationsRequested : ''}
                 />
-                <ViewText
-                    label={'Participaties toegekend'}
-                    value={participationsGranted ? participationsGranted : ''}
-                />
+                <ViewText label={'Deelnames toegekend'} value={participationsGranted ? participationsGranted : ''} />
             </div>
 
             <div className="row" onClick={props.switchToEdit}>
-                <ViewText label={'Participaties overgedragen'} value={participationsSold ? participationsSold : ''} />
+                <ViewText label={'Deelnames overgedragen'} value={participationsSold ? participationsSold : ''} />
                 <ViewText
-                    label={'Huidig aantal participaties'}
+                    label={'Huidig aantal deelnames'}
                     value={participationsCurrent ? participationsCurrent : ''}
                 />
             </div>
 
             <div className="row" onClick={props.switchToEdit}>
+                <ViewText label={'Waarde deelnames'} value={participationsWorthTotal ? participationsWorthTotal : ''} />
                 <ViewText
-                    label={'Waarde participaties'}
-                    value={participationsWorthTotal ? participationsWorthTotal : ''}
-                />
-                <ViewText
-                    label={'Restverkoop participaties'}
+                    label={'Restverkoop deelnames'}
                     value={participationsRestSale ? participationsRestSale : ''}
                 />
             </div>

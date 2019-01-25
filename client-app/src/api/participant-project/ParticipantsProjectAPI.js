@@ -1,6 +1,6 @@
 import axiosInstance from '../default-setup/AxiosInstance';
 
-const URL_PARTICIPANT_PROJECT = `production-project/participant`;
+const URL_PARTICIPANT_PROJECT = `project/participant`;
 
 export default {
     fetchParticipantsProject: ({ filters, extraFilters, sorts, pagination, filterType, fetchFromProject }) => {

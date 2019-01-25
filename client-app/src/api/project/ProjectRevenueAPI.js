@@ -1,6 +1,6 @@
 import axiosInstance from '../default-setup/AxiosInstance';
 
-const URL_REVENUE = `production-project/revenue`;
+const URL_REVENUE = `project/revenue`;
 
 export default {
     fetchProjectRevenue: id => {

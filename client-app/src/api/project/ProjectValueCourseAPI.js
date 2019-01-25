@@ -1,6 +1,6 @@
 import axiosInstance from '../default-setup/AxiosInstance';
 
-const URL_VALUE_COURSE = `production-project/value-course`;
+const URL_VALUE_COURSE = `project/value-course`;
 
 export default {
     updateProjectValueCourse: (id, data) => {

@@ -1,6 +1,6 @@
 import axiosInstance from '../default-setup/AxiosInstance';
 
-const URL_PROJECT = `production-project`;
+const URL_PROJECT = `project`;
 
 export default {
     fetchProjects: ({ pagination }) => {
@@ -41,7 +41,7 @@ export default {
     },
 
     peekParticipantsById: participantIds => {
-        const requestUrl = `production-project/participant/peek-by-ids`;
+        const requestUrl = `project/participant/peek-by-ids`;
 
         return axiosInstance
             .post(requestUrl, { ids: participantIds })

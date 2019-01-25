@@ -74,6 +74,12 @@ class AlterProductionProjectTables extends Migration
             $table->renameColumn('participation_production_project_id', 'participation_project_id');
         });
 
+        // Permissions
+        DB::table('permissions')
+            ->where('name','manage_production_project')
+            ->update([
+                "name" => "manage_project"
+            ]);
     }
 
     /**
@@ -137,5 +143,12 @@ class AlterProductionProjectTables extends Migration
             $table->renameColumn('project_id', 'production_project_id');
             $table->renameColumn('participation_project_id', 'participation_production_project_id');
         });
+
+        // Permissions
+        DB::table('permissions')
+            ->where('name','manage_project')
+            ->update([
+                "name" => "manage_production_project"
+            ]);
     }
 }

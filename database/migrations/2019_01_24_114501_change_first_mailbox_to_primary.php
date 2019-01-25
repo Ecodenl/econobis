@@ -14,8 +14,11 @@ class ChangeFirstMailboxToPrimary extends Migration
     public function up()
     {
         $mailbox = \App\Eco\Mailbox\Mailbox::first();
-        $mailbox->primary = true;
-        $mailbox->save();
+
+        if($mailbox) {
+            $mailbox->primary = true;
+            $mailbox->save();
+        }
     }
 
     /**

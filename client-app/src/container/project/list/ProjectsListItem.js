@@ -35,8 +35,8 @@ class ProjectsListItem extends Component {
             id,
             code,
             name,
+            projectType,
             totalParticipations,
-            powerKwAvailable,
             issuedParticipations,
             issuableParticipations,
             issuedParticipationsPercentage,
@@ -50,11 +50,14 @@ class ProjectsListItem extends Component {
             >
                 <td>{code}</td>
                 <td>{name}</td>
+                <td>{projectType}</td>
                 <td>{totalParticipations}</td>
-                <td>{powerKwAvailable}</td>
                 <td>{issuedParticipations}</td>
                 <td>{issuableParticipations}</td>
-                <td>{issuedParticipationsPercentage.toLocaleString('nl', { maximumFractionDigits: 2 })}</td>
+                <td>{'lening'}</td>
+                <td>{''}</td>
+                <td>{''}</td>
+                <td>{`${issuedParticipationsPercentage.toLocaleString('nl', { maximumFractionDigits: 2 })}%`}</td>
                 <td>
                     {this.state.showActionButtons ? (
                         <a role="button" onClick={() => this.openItem(id)}>

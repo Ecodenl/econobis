@@ -69,11 +69,14 @@ class ProjectsList extends Component {
                     <DataTableHead>
                         <tr className="thead-title-quaternary">
                             <DataTableHeadTitle title={'Projectcode'} width={'15%'} />
-                            <DataTableHeadTitle title={'Naam'} width={'20%'} />
-                            <DataTableHeadTitle title={'Aantal deelnames'} width={'10%'} />
-                            <DataTableHeadTitle title={'Capaciteit kW'} width={'15%'} />
+                            <DataTableHeadTitle title={'Project'} width={'20%'} />
+                            <DataTableHeadTitle title={'Type project'} width={'20%'} />
+                            <DataTableHeadTitle title={'# deelnames nodig'} width={'10%'} />
                             <DataTableHeadTitle title={'Uitgegeven deelnames'} width={'10%'} />
-                            <DataTableHeadTitle title={'Deelnames beschikbaar'} width={'10%'} />
+                            <DataTableHeadTitle title={'Uit te geven deelnames'} width={'10%'} />
+                            <DataTableHeadTitle title={'Lening nodig'} width={'10%'} />
+                            <DataTableHeadTitle title={'Lening opgehaald'} width={'10%'} />
+                            <DataTableHeadTitle title={'Lening uit te geven'} width={'10%'} />
                             <DataTableHeadTitle title={'Percentage uitgegeven'} width={'14%'} />
                             <DataTableHeadTitle title={''} width={'6%'} />
                         </tr>
@@ -81,7 +84,7 @@ class ProjectsList extends Component {
                     <DataTableBody>
                         {loading ? (
                             <tr>
-                                <td colSpan={9}>{loadingText}</td>
+                                <td colSpan={11}>{loadingText}</td>
                             </tr>
                         ) : (
                             data.map(project => (

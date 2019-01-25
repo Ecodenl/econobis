@@ -31,6 +31,10 @@ class ProjectController extends ApiController
     {
         $projects = $requestQuery->get();
 
+        $projects->load([
+            'projectType',
+        ]);
+
         return GridProject::collection($projects)
             ->additional(['meta' => [
             'total' => $requestQuery->total(),

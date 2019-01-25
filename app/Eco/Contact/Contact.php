@@ -18,10 +18,10 @@ use App\Eco\Opportunity\Opportunity;
 use App\Eco\Order\Order;
 use App\Eco\Order\OrderProduct;
 use App\Eco\Organisation\Organisation;
-use App\Eco\ParticipantProductionProject\ParticipantProductionProject;
+use App\Eco\ParticipantProject\ParticipantProject;
 use App\Eco\Person\Person;
 use App\Eco\PhoneNumber\PhoneNumber;
-use App\Eco\ProductionProject\ProductionProjectRevenueDistribution;
+use App\Eco\Project\ProjectRevenueDistribution;
 use App\Eco\Task\Task;
 use App\Eco\User\User;
 use App\Http\Resources\ContactGroup\GridContactGroup;
@@ -175,9 +175,9 @@ class Contact extends Model
         return $this->hasMany(Document::class)->orderBy('documents.id', 'desc');
     }
 
-    public function productionProjectRevenueDistributions()
+    public function projectRevenueDistributions()
     {
-        return $this->hasMany(ProductionProjectRevenueDistribution::class);
+        return $this->hasMany(ProjectRevenueDistribution::class);
     }
 
     public function housingFiles()
@@ -197,17 +197,17 @@ class Contact extends Model
 
     public function participations()
     {
-        return $this->hasMany(ParticipantProductionProject::class)->orderBy('participation_production_project.id', 'desc');
+        return $this->hasMany(ParticipantProject::class)->orderBy('participation_project.id', 'desc');
     }
 
     public function participationsGifted()
     {
-        return $this->hasMany(ParticipantProductionProject::class, 'gifted_by_contact_id');
+        return $this->hasMany(ParticipantProject::class, 'gifted_by_contact_id');
     }
 
     public function participationsLegalRep()
     {
-        return $this->hasMany(ParticipantProductionProject::class, 'legal_rep_contact_id');
+        return $this->hasMany(ParticipantProject::class, 'legal_rep_contact_id');
     }
 
     public function primaryOccupations()

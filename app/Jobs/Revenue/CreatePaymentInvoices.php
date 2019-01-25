@@ -14,11 +14,11 @@ use App\Eco\Email\Email;
 use App\Eco\EmailTemplate\EmailTemplate;
 use App\Eco\Invoice\Invoice;
 use App\Eco\Jobs\JobsLog;
-use App\Eco\ProductionProject\ProductionProjectRevenueDistribution;
+use App\Eco\Project\ProjectRevenueDistribution;
 use App\Eco\User\User;
 use App\Helpers\Invoice\InvoiceHelper;
 use App\Http\Controllers\Api\PaymentInvoice\PaymentInvoiceController;
-use App\Http\Controllers\Api\ProductionProject\ProductionProjectRevenueController;
+use App\Http\Controllers\Api\Project\ProjectRevenueController;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -63,10 +63,10 @@ class CreatePaymentInvoices implements ShouldQueue
         //user voor observer
         Auth::setUser(User::find($this->userId));
 
-        $productionProjectRevenueController = new ProductionProjectRevenueController();
+        $productionProjectRevenueController = new ProjectRevenueController();
         if($this->createInvoice) {
             //create invoices
-            $createdInvoices = $productionProjectRevenueController->createInvoices(ProductionProjectRevenueDistribution::whereIn('id',
+            $createdInvoices = $productionProjectRevenueController->createInvoices(ProjectRevenueDistribution::whereIn('id',
                 $this->distributionIds)->get());
 
             if ($createdInvoices) {

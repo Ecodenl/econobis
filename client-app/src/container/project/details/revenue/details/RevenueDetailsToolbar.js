@@ -80,8 +80,7 @@ class RevenueDetailsToolbar extends Component {
                             <div className="col-md-8">
                                 <h4 className="text-center text-success margin-small">
                                     <strong>
-                                        Opbrengst productieproject{' '}
-                                        {revenue.project ? revenue.project.name : ''}
+                                        Opbrengst productieproject {revenue.project ? revenue.project.name : ''}
                                     </strong>
                                 </h4>
                             </div>

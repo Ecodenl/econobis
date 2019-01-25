@@ -60,7 +60,7 @@ class TaskController extends Controller
             'contactGroup',
             'campaign',
             'housingFile',
-            'productionProject',
+            'project',
             'participant',
             'responsibleUser',
             'responsibleTeam',
@@ -104,8 +104,8 @@ class TaskController extends Controller
             ->integer('finishedById')->validate('exists:users,id')->whenMissing(null)->onEmpty(null)->alias('finished_by_id')->next()
             ->integer('opportunityId')->validate('exists:opportunities,id')->onEmpty(null)->alias('opportunity_id')->next()
             ->integer('housingFileId')->validate('exists:housing_files,id')->onEmpty(null)->alias('housing_file_id')->next()
-            ->integer('productionProjectId')->validate('exists:production_projects,id')->onEmpty(null)->alias('production_project_id')->next()
-            ->integer('participantId')->validate('exists:participation_production_project,id')->onEmpty(null)->alias('participation_production_project_id')->next()
+            ->integer('projectId')->validate('exists:projects,id')->onEmpty(null)->alias('project_id')->next()
+            ->integer('participantId')->validate('exists:participation_project,id')->onEmpty(null)->alias('participation_project_id')->next()
             ->integer('orderId')->validate('exists:orders,id')->onEmpty(null)->alias('order_id')->next()
             ->integer('invoiceId')->validate('exists:invoices,id')->onEmpty(null)->alias('invoice_id')->next()
             ->get();
@@ -142,8 +142,8 @@ class TaskController extends Controller
             ->integer('finishedById')->validate('exists:users,id')->onEmpty(null)->alias('finished_by_id')->next()
             ->integer('opportunityId')->validate('exists:opportunities,id')->onEmpty(null)->alias('opportunity_id')->next()
             ->integer('housingFileId')->validate('exists:housing_files,id')->onEmpty(null)->alias('housing_file_id')->next()
-            ->integer('productionProjectId')->validate('exists:production_projects,id')->onEmpty(null)->alias('production_project_id')->next()
-            ->integer('participantId')->validate('exists:participation_production_project,id')->onEmpty(null)->alias('participation_production_project_id')->next()
+            ->integer('projectId')->validate('exists:projects,id')->onEmpty(null)->alias('project_id')->next()
+            ->integer('participantId')->validate('exists:participation_project,id')->onEmpty(null)->alias('participation_project_id')->next()
             ->integer('orderId')->validate('exists:orders,id')->onEmpty(null)->alias('order_id')->next()
             ->integer('invoiceId')->validate('exists:invoices,id')->onEmpty(null)->alias('invoice_id')->next()
             ->get();

@@ -1,10 +1,10 @@
 export default function(state = [], action) {
     switch (action.type) {
-        case 'FETCH_PRODUCTION_PROJECT_SUCCESS':
+        case 'FETCH_PROJECT_SUCCESS':
             return {
                 ...action.project,
             };
-        case 'CLEAR_PRODUCTION_PROJECT':
+        case 'CLEAR_PROJECT':
             return (state.project = []);
         case 'NEW_VALUE_COURSE':
             return {

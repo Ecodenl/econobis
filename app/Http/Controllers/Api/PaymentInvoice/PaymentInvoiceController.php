@@ -45,7 +45,7 @@ class PaymentInvoiceController extends ApiController
             return (empty($invoice->revenueDistribution->address) || empty($invoice->revenueDistribution->postal_code) || empty($invoice->revenueDistribution->city) || (empty($invoice->revenueDistribution->participation->iban_payout) && empty($invoice->revenueDistribution->contact->iban)));
         });
 
-        $administration = $invoices->first()->revenueDistribution->revenue->productionProject->administration;
+        $administration = $invoices->first()->revenueDistribution->revenue->project->administration;
 
         $sepaPaymentHelper = new SepaPaymentHelper($administration, $validatedInvoices);
 

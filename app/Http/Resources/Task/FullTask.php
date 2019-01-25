@@ -19,8 +19,8 @@ use App\Http\Resources\Invoice\InvoicePeek;
 use App\Http\Resources\Opportunity\FullOpportunity;
 use App\Http\Resources\Intake\FullIntake;
 use App\Http\Resources\Order\OrderPeek;
-use App\Http\Resources\ParticipantProductionProject\FullParticipantProductionProject;
-use App\Http\Resources\ProductionProject\FullProductionProject;
+use App\Http\Resources\ParticipantProject\FullParticipantProject;
+use App\Http\Resources\Project\FullProject;
 use App\Http\Resources\Team\FullTeam;
 use App\Http\Resources\User\FullUser;
 use Illuminate\Http\Resources\Json\Resource;
@@ -55,10 +55,10 @@ class FullTask extends Resource
                 'campaign' => FullCampaign::make($this->whenLoaded('campaign')),
                 'housingFileId' => $this->housing_file_id,
                 'housingFile' => FullHousingFile::make($this->whenLoaded('housingFile')),
-                'productionProjectId' => $this->production_project_id,
-                'productionProject' => FullProductionProject::make($this->whenLoaded('productionProject')),
-                'participantId' => $this->participation_production_project_id,
-                'participant' => FullParticipantProductionProject::make($this->whenLoaded('participant')),
+                'projectId' => $this->project_id,
+                'project' => FullProject::make($this->whenLoaded('project')),
+                'participantId' => $this->participation_project_id,
+                'participant' => FullParticipantProject::make($this->whenLoaded('participant')),
                 'orderId' => $this->order_id,
                 'order' => OrderPeek::make($this->whenLoaded('order')),
                 'invoiceId' => $this->invoice_id,

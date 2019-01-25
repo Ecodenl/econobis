@@ -7,10 +7,7 @@ import ProjectDetailsHarmonica from './ProjectDetailsHarmonica';
 import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
 
-import {
-    fetchProject,
-    clearProject,
-} from '../../../actions/project/ProjectDetailsActions';
+import { fetchProject, clearProject } from '../../../actions/project/ProjectDetailsActions';
 
 class ProjectDetailsApp extends Component {
     constructor(props) {

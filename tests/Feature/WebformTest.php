@@ -16,11 +16,11 @@ use App\Eco\Occupation\OccupationContact;
 use App\Eco\Order\Order;
 use App\Eco\Order\OrderProduct;
 use App\Eco\Organisation\Organisation;
-use App\Eco\ParticipantProductionProject\ParticipantProductionProject;
+use App\Eco\ParticipantProject\ParticipantProject;
 use App\Eco\Person\Person;
 use App\Eco\PhoneNumber\PhoneNumber;
 use App\Eco\Product\Product;
-use App\Eco\ProductionProject\ProductionProject;
+use App\Eco\Project\Project;
 use App\Eco\Task\Task;
 use App\Eco\Webform\Webform;
 use Carbon\Carbon;
@@ -261,17 +261,17 @@ class WebformTest extends TestCase
         $this->assertEquals([2, 4, 5], $intake->reasons()->pluck('id')->toArray());
         $this->assertEquals([2, 5, 11, 19], $intake->measuresRequested()->pluck('measure_categories.id')->toArray());
 
-        $participationProductionProject = ParticipantProductionProject::find(1);
+        $participationProject = ParticipantProject::find(1);
         $this->assertEquals([
             'contact_id' => 1,
             'status_id' => 2,
-            'production_project_id' => 1,
+            'project_id' => 1,
             'date_register' => '2018-01-02',
             'iban_payout' => 'NL96 RABO 0317 3716 57',
             'iban_payout_attn' => 'Xaris BV',
             'type_id' => 3,
             'power_kwh_consumption' => 500,
-        ], array_intersect_key($participationProductionProject->toArray(), array_flip(['contact_id', 'status_id', 'production_project_id', 'date_register', 'iban_payout', 'iban_payout_attn', 'type_id', 'power_kwh_consumption'])));
+        ], array_intersect_key($participationProject->toArray(), array_flip(['contact_id', 'status_id', 'project_id', 'date_register', 'iban_payout', 'iban_payout_attn', 'type_id', 'power_kwh_consumption'])));
 
         $order = Order::find(1);
         $this->assertEquals([
@@ -305,10 +305,10 @@ class WebformTest extends TestCase
             'date_planned_start' => Carbon::today()->format('Y-m-d H:i:s'),
             'responsible_user_id' => 1,
             'responsible_team_id' => null,
-            'production_project_id' => 1,
-            'participation_production_project_id' => 1,
+            'project_id' => 1,
+            'participation_project_id' => 1,
             'order_id' => 1,
-        ], array_intersect_key($task->toArray(), array_flip(['note', 'type_id', 'contact_id', 'intake_id', 'contact_group_id', 'finished', 'date_planned_start', 'responsible_user_id', 'responsible_team_id', 'production_project_id', 'participation_production_project_id', 'order_id'])));
+        ], array_intersect_key($task->toArray(), array_flip(['note', 'type_id', 'contact_id', 'intake_id', 'contact_group_id', 'finished', 'date_planned_start', 'responsible_user_id', 'responsible_team_id', 'project_id', 'participation_project_id', 'order_id'])));
     }
 
     protected function insertData()
@@ -357,17 +357,17 @@ class WebformTest extends TestCase
             $reason->save();
         }
 
-        ProductionProject::create([
+        Project::create([
             'name' => 'Testproject',
             'code' => 'P001',
             'description' => 'Project for testing',
             'owned_by_id' => 1,
-            'production_project_status_id' => 2,
+            'project_status_id' => 2,
             'date_start' => Carbon::today()->subWeek(),
             'date_production' => Carbon::today()->subWeek(),
             'date_start_registrations' => Carbon::today()->subWeek(),
             'date_end_registrations' => Carbon::today()->addWeek(),
-            'production_project_type_id' => 3,
+            'project_type_id' => 3,
             'postal_code' => '1234 AB',
             'address' => 'Teststreet',
             'city' => 'Testcity',

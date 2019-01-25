@@ -19,8 +19,8 @@ use App\Http\Resources\Measure\FullMeasure;
 use App\Http\Resources\Opportunity\FullOpportunity;
 use App\Http\Resources\Intake\FullIntake;
 use App\Http\Resources\Order\OrderPeek;
-use App\Http\Resources\ParticipantProductionProject\ParticipantProductionProjectPeek;
-use App\Http\Resources\ProductionProject\ProductionProjectPeek;
+use App\Http\Resources\ParticipantProject\ParticipantProjectPeek;
+use App\Http\Resources\Project\ProjectPeek;
 use App\Http\Resources\QuotationRequest\FullQuotationRequest;
 use App\Http\Resources\Task\FullTask;
 use App\Http\Resources\User\FullUser;
@@ -58,10 +58,10 @@ class FullDocument extends Resource
             'measure' => FullMeasure::make($this->whenLoaded('measure')),
             'taskId' => $this->task_id,
             'task' => FullTask::make($this->whenLoaded('task')),
-            'productionProjectId' => $this->production_project_id,
-            'productionProject' => ProductionProjectPeek::make($this->whenLoaded('productionProject')),
-            'participantId' => $this->participation_production_project_id,
-            'participant' => ParticipantProductionProjectPeek::make($this->whenLoaded('participant')),
+            'projectId' => $this->project_id,
+            'project' => ProjectPeek::make($this->whenLoaded('project')),
+            'participantId' => $this->participation_project_id,
+            'participant' => ParticipantProjectPeek::make($this->whenLoaded('participant')),
             'orderId' => $this->order_id,
             'order' => OrderPeek::make($this->whenLoaded('order')),
             'sentBy' => FullUser::make($this->whenLoaded('sentBy')),

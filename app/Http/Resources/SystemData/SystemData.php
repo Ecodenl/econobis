@@ -38,8 +38,8 @@ use App\Eco\Industry\Industry;
 use App\Eco\LastNamePrefix\LastNamePrefix;
 use App\Eco\Mailbox\MailgunDomain;
 use App\Eco\Occupation\Occupation;
-use App\Eco\ParticipantProductionProject\ParticipantProductionProjectPayoutType;
-use App\Eco\ParticipantProductionProject\ParticipantProductionProjectStatus;
+use App\Eco\ParticipantProject\ParticipantProjectPayoutType;
+use App\Eco\ParticipantProject\ParticipantProjectStatus;
 use App\Eco\ParticipantTransaction\ParticipantTransactionType;
 use App\Eco\PaymentInvoice\PaymentInvoiceStatus;
 use App\Eco\PersonType\PersonType;
@@ -48,10 +48,10 @@ use App\Eco\Product\Product;
 use App\Eco\Product\ProductDuration;
 use App\Eco\Product\ProductInvoiceFrequency;
 use App\Eco\Product\ProductPaymentType;
-use App\Eco\ProductionProject\ProductionProjectRevenueCategory;
-use App\Eco\ProductionProject\ProductionProjectRevenueType;
-use App\Eco\ProductionProject\ProductionProjectStatus;
-use App\Eco\ProductionProject\ProductionProjectType;
+use App\Eco\Project\ProjectRevenueCategory;
+use App\Eco\Project\ProjectRevenueType;
+use App\Eco\Project\ProjectStatus;
+use App\Eco\Project\ProjectType;
 use App\Eco\QuotationRequest\QuotationRequestStatus;
 use App\Eco\Task\TaskProperty;
 use App\Eco\Task\TaskType;
@@ -162,13 +162,13 @@ class SystemData extends Resource
             'energySuppliers' => GenericResource::collection($sortedEnergySuppliers),
             'contactEnergySupplierStatus' => GenericResource::collection(ContactEnergySupplierStatus::all()),
             'contactEnergySupplierTypes' => GenericResource::collection(ContactEnergySupplierType::all()),
-            'projectStatus' => GenericResource::collection(ProductionProjectStatus::all()),
-            'projectTypes' => GenericResource::collection(ProductionProjectType::all()),
-            'participantProjectStatus' => GenericResource::collection(ParticipantProductionProjectStatus::all()),
-            'participantProjectPayoutTypes' => GenericResource::collection(ParticipantProductionProjectPayoutType::all()),
+            'projectStatus' => GenericResource::collection(ProjectStatus::all()),
+            'projectTypes' => GenericResource::collection(ProjectType::all()),
+            'participantProjectStatus' => GenericResource::collection(ParticipantProjectStatus::all()),
+            'participantProjectPayoutTypes' => GenericResource::collection(ParticipantProjectPayoutType::all()),
             'participantTransactionTypes' => GenericResource::collection(ParticipantTransactionType::all()),
-            'projectRevenueTypes' => GenericResource::collection(ProductionProjectRevenueType::all()),
-            'projectRevenueCategories' => GenericResource::collection(ProductionProjectRevenueCategory::all()),
+            'projectRevenueTypes' => GenericResource::collection(ProjectRevenueType::all()),
+            'projectRevenueCategories' => GenericResource::collection(ProjectRevenueCategory::all()),
             'versionNumber' => 'Versie: ' . config('app.version_major') . '.' . config('app.version_minor') . '.' . config('app.version_fix'),
             'appName' => config('app.name'),
             'productDurations' => FullEnumWithIdAndName::collection(ProductDuration::collection()),

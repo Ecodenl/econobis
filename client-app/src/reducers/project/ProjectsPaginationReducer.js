@@ -1,6 +1,6 @@
 export default function(state = { page: 0, offset: 0 }, action) {
     switch (action.type) {
-        case 'SET_PRODUCTION_PROJECTS_PAGINATION':
+        case 'SET_PROJECTS_PAGINATION':
             return {
                 ...state,
                 offset: action.pagination.offset,

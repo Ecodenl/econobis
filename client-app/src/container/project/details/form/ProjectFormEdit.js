@@ -154,10 +154,7 @@ class ProjectFormEdit extends Component {
             hasErrors = true;
         }
 
-        if (
-            !validator.isEmpty('' + project.postalCode) &&
-            !validator.isPostalCode(project.postalCode, 'any')
-        ) {
+        if (!validator.isEmpty('' + project.postalCode) && !validator.isPostalCode(project.postalCode, 'any')) {
             errors.postalCode = true;
             hasErrors = true;
         }
@@ -175,12 +172,10 @@ class ProjectFormEdit extends Component {
         this.setState({ ...this.state, errors: errors });
 
         !hasErrors &&
-            ProjectDetailsAPI.updateProject(project.id, project).then(
-                payload => {
-                    this.props.fetchProject(project.id);
-                    this.props.switchToView();
-                }
-            );
+            ProjectDetailsAPI.updateProject(project.id, project).then(payload => {
+                this.props.fetchProject(project.id);
+                this.props.switchToView();
+            });
     };
 
     handleContactGroupIds = selectedOption => {

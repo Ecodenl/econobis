@@ -48,9 +48,9 @@ class ParticipantCSVHelper
                 'contact.primaryContactEnergySupplier.energySupplier',
                 'giftedByContact',
                 'legalRepContact',
-                'productionProject',
-                'participantProductionProjectStatus',
-                'participantProductionProjectPayoutType'
+                'project',
+                'participantProjectStatus',
+                'participantProjectPayoutType'
             ]);
 
             foreach ($chunk as $participant) {
@@ -169,7 +169,7 @@ class ParticipantCSVHelper
                     'id' => '#',
                     'contact.id' => 'Contact id',
                     'contact.number' => 'Contactnummer',
-                    'productionProject.name' => 'Productie project naam',
+                    'project.name' => 'Productie project naam',
                     'contact.full_name' => 'Naam',
                     'contact.organisation.name' => 'Organisatie',
                     'title.name' => 'Aanspreektitel',
@@ -215,8 +215,8 @@ class ParticipantCSVHelper
                     'contact.primaryContactEnergySupplier.es_number' => 'Klantnummer',
                     'contact.primaryContactEnergySupplier.ean_electricity' => 'EAN electra',
                     'contact.primaryContactEnergySupplier.ean_gas' => 'EAN gas',
-                    'productionProject.code' => 'Productie project',
-                    'productionProject.participation_worth' => 'Waarde per participatie',
+                    'project.code' => 'Productie project',
+                    'project.participation_worth' => 'Waarde per participatie',
                     'participations_requested' => 'Participaties aangevraagd',
                     'participations_granted' => 'Participaties toegekend',
                     'participations_rest_sale' => 'Participaties restverkoop',
@@ -233,10 +233,10 @@ class ParticipantCSVHelper
                     'iban_attn' => 'Iban uitkeren t.n.v.',
                     'iban_contact' => 'Iban contact',
                     'iban_attn_contact' => 'Iban contact uitkeren t.n.v.',
-                    'participantProductionProjectStatus.name' => 'Status',
+                    'participantProjectStatus.name' => 'Status',
                     'date_register' => 'Inschrijfdatum',
                     'date_end' => 'Einddatum',
-                    'participantProductionProjectPayoutType.name' => 'Uitkeren op',
+                    'participantProjectPayoutType.name' => 'Uitkeren op',
                     'cpStartDate' => 'Contactpersoon startdatum',
                     'cpEndDate' => 'Contactpersoon einddatum',
                     'cpOccupation' => 'Contactpersoon rol',

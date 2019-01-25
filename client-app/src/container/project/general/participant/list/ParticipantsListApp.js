@@ -52,9 +52,7 @@ class ParticipantsListApp extends Component {
             showExtraFilters: false,
             filterType: 'and',
             amountOfFilters: 1,
-            extraFilters: [
-                { field: 'projectId', type: 'eq', data: props.projectId + '', readOnly: true },
-            ],
+            extraFilters: [{ field: 'projectId', type: 'eq', data: props.projectId + '', readOnly: true }],
         };
 
         this.handleInputChange = this.handleInputChange.bind(this);
@@ -104,14 +102,7 @@ class ParticipantsListApp extends Component {
             const filterType = this.state.filterType;
             const fetchFromProject = true;
 
-            this.props.fetchParticipantsProject(
-                filters,
-                extraFilters,
-                sorts,
-                pagination,
-                filterType,
-                fetchFromProject
-            );
+            this.props.fetchParticipantsProject(filters, extraFilters, sorts, pagination, filterType, fetchFromProject);
         }, 100);
     };
 
@@ -139,9 +130,7 @@ class ParticipantsListApp extends Component {
         this.setState({
             filterType: 'and',
             amountOfFilters: 1,
-            extraFilters: [
-                { field: 'projectId', type: 'eq', data: this.props.projectId + '', readOnly: true },
-            ],
+            extraFilters: [{ field: 'projectId', type: 'eq', data: this.props.projectId + '', readOnly: true }],
         });
 
         this.fetchParticipantsProjectData();
@@ -382,9 +371,7 @@ class ParticipantsListApp extends Component {
                 <PanelBody>
                     <div className="col-md-12 margin-10-top">
                         <ParticipantsListToolbar
-                            resetParticipantProjectFilters={() =>
-                                this.resetParticipantProjectFilters()
-                            }
+                            resetParticipantProjectFilters={() => this.resetParticipantProjectFilters()}
                             toggleShowCheckboxList={this.toggleShowCheckboxList}
                             handleExtraFiltersChange={this.handleExtraFiltersChange}
                             toggleShowExtraFilters={this.toggleShowExtraFilters}
@@ -401,9 +388,7 @@ class ParticipantsListApp extends Component {
                             participantsProject={this.props.participantsProject}
                             participantsProjectPagination={this.props.participantsProjectPagination}
                             onSubmitFilter={() => this.onSubmitFilter()}
-                            refreshParticipantsProjectData={() =>
-                                this.fetchParticipantsProjectData()
-                            }
+                            refreshParticipantsProjectData={() => this.fetchParticipantsProjectData()}
                             handlePageClick={this.handlePageClick}
                             showCheckboxList={this.state.showCheckboxList}
                             checkedAll={this.state.checkedAll}

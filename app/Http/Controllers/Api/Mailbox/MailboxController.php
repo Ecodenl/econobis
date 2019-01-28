@@ -171,7 +171,7 @@ class MailboxController extends Controller
     {
         $user = Auth::user();
 
-        $mailboxes = $user->mailboxes()->select('mailbox_id', 'email')->get();
+        $mailboxes = $user->mailboxes()->select('mailbox_id', 'email')->where('is_active', 1)->get();
 
         return LoggedInEmailPeek::collection($mailboxes);
     }

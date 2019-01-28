@@ -181,12 +181,14 @@ class MailboxDetailsFormGeneralEdit extends Component {
                                 name={"isActive"}
                                 value={isActive}
                                 onChangeAction={this.handleInputChange}
+                                disabled={primary}
                             />
                             <InputToggle
                                 label="Primair"
                                 name={"primary"}
                                 value={primary}
                                 onChangeAction={this.handleInputChange}
+                                disabled={!isActive || primary}
                             />
                         </div>
                     </PanelBody>

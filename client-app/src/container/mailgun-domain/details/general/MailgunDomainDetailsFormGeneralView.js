@@ -18,7 +18,7 @@ const MailgunDomainDetailsFormGeneralView = props => {
                             value={domain}
                         />
                         <ViewText
-                            label={"Mailgun code"}
+                            label={"Mailgun API Key"}
                             value={secret}
                         />
                     </div>

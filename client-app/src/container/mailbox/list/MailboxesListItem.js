@@ -35,7 +35,7 @@ class MailboxesListItem extends Component {
         const usesMailgun = outgoingServerType === 'mailgun';
 
         return (
-            <tr className={`${this.state.highlightRow}  ${isActive && !valid ? 'has-error' : ''}`} onDoubleClick={() => this.openItem(id)} onMouseEnter={() => this.onRowEnter()} onMouseLeave={() => this.onRowLeave()}>
+            <tr className={`${this.state.highlightRow}  ${valid ? '' : 'has-error'}`} onDoubleClick={() => this.openItem(id)} onMouseEnter={() => this.onRowEnter()} onMouseLeave={() => this.onRowLeave()}>
                 <td>{ name }</td>
                 <td>{ email }</td>
                 <td>{ username }</td>

@@ -31,6 +31,7 @@ class MailboxDetailsFormGeneralEdit extends Component {
                 imapHost: false,
                 imapPort: false,
             },
+            loading: false,
         };
 
         this.handleInputChange = this.handleInputChange.bind(this);
@@ -125,9 +126,11 @@ class MailboxDetailsFormGeneralEdit extends Component {
 
         // If no errors send form
         !hasErrors &&
-            MailboxAPI.updateMailbox(mailbox).then((payload) => {
-                this.props.updateMailbox(payload);
-                this.props.switchToView();
+            this.setState(currentState => ({ loading: !currentState.loading }), () => {
+                MailboxAPI.updateMailbox(mailbox).then((payload) => {
+                    this.props.updateMailbox(payload);
+                    this.props.switchToView();
+                });
             });
     };
 
@@ -296,7 +299,7 @@ class MailboxDetailsFormGeneralEdit extends Component {
                     <PanelBody>
                         <div className="pull-right btn-group" role="group">
                             <ButtonText buttonClassName={"btn-default"} buttonText={"Sluiten"} onClickAction={this.props.switchToView}/>
-                            <ButtonText buttonText={"Opslaan"} onClickAction={this.handleSubmit} type={"submit"} value={"Submit"}/>
+                            <ButtonText buttonText={"Opslaan"} onClickAction={this.handleSubmit} type={"submit"} value={"Submit"} loading={this.state.loading} />
                         </div>
                     </PanelBody>
                 </Panel>

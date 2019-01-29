@@ -47,6 +47,7 @@ class MailboxNewForm extends Component {
                 imapPort: false,
                 mailgunDomainId: false,
             },
+            loading: false,
         };
     }
 
@@ -138,13 +139,16 @@ class MailboxNewForm extends Component {
 
         // If no errors send form
         !hasErrors &&
-            MailboxAPI.newMailbox(mailbox)
-                .then(payload => {
-                    hashHistory.push(`/mailbox/${payload.data.data.id}`);
-                })
-                .catch(function(error) {
-                    console.log(error);
-                });
+            this.setState(currentState => ({ loading: !currentState.loading }), () => {
+                MailboxAPI.newMailbox(mailbox)
+                    .then(payload => {
+                        hashHistory.push(`/mailbox/${payload.data.data.id}`);
+                    })
+                    .catch(function(error) {
+                        console.log(error);
+                        alert('Er is iets misgegaan bij het opslaan. Herlaad de pagina.')
+                    });
+            });
     };
 
     render() {
@@ -330,6 +334,7 @@ class MailboxNewForm extends Component {
                                 onClickAction={this.handleSubmit}
                                 type={'submit'}
                                 value={'Submit'}
+                                loading={this.state.loading}
                             />
                         </div>
                     </PanelBody>

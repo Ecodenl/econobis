@@ -120,7 +120,7 @@ class MailboxController extends Controller
         //Create a new mailfetcher. This will check if the mailbox is valid and set it in the db.
         new MailFetcher($mailbox);
 
-        return GenericResource::make($mailbox);
+        return $this->show($mailbox);
     }
 
     public function addUser(Mailbox $mailbox, User $user)

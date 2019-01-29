@@ -172,13 +172,14 @@ class MailboxDetailsFormGeneralEdit extends Component {
                                 error={this.state.errors.username}
                             />
                             <InputText
-                                type={"password"}
+                                type={"text"}
                                 label={"Wachtwoord"}
                                 name={"password"}
                                 value={password}
                                 onChangeAction={this.handleInputChange}
                                 required={"required"}
                                 error={this.state.errors.password}
+                                className={'numeric-password'}
                             />
                         </div>
                         <div className="row">

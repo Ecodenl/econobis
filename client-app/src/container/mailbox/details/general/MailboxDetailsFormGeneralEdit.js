@@ -1,9 +1,11 @@
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import validator from 'validator';
+import { bindActionCreators } from 'redux';
 
 import MailboxAPI from '../../../../api/mailbox/MailboxAPI';
 import { updateMailbox } from '../../../../actions/mailbox/MailboxDetailsActions';
+import { fetchSystemData } from '../../../../actions/general/SystemDataActions';
 import InputText from '../../../../components/form/InputText';
 import InputSelect from '../../../../components/form/InputSelect';
 import ButtonText from '../../../../components/button/ButtonText';
@@ -31,6 +33,7 @@ class MailboxDetailsFormGeneralEdit extends Component {
                 imapHost: false,
                 imapPort: false,
             },
+            loading: false,
         };
 
         this.handleInputChange = this.handleInputChange.bind(this);
@@ -125,9 +128,12 @@ class MailboxDetailsFormGeneralEdit extends Component {
 
         // If no errors send form
         !hasErrors &&
-            MailboxAPI.updateMailbox(mailbox).then((payload) => {
-                this.props.updateMailbox(payload);
-                this.props.switchToView();
+            this.setState(currentState => ({ loading: !currentState.loading }), () => {
+                MailboxAPI.updateMailbox(mailbox).then((payload) => {
+                    this.props.updateMailbox(payload);
+                    this.props.fetchSystemData();
+                    this.props.switchToView();
+                });
             });
     };
 
@@ -166,13 +172,14 @@ class MailboxDetailsFormGeneralEdit extends Component {
                                 error={this.state.errors.username}
                             />
                             <InputText
-                                type={"password"}
+                                type={"text"}
                                 label={"Wachtwoord"}
                                 name={"password"}
                                 value={password}
                                 onChangeAction={this.handleInputChange}
                                 required={"required"}
                                 error={this.state.errors.password}
+                                className={'numeric-password'}
                             />
                         </div>
                         <div className="row">
@@ -184,7 +191,7 @@ class MailboxDetailsFormGeneralEdit extends Component {
                                 disabled={primary}
                             />
                             <InputToggle
-                                label="Primair"
+                                label="Primair (verzend wachtwoord mails)"
                                 name={"primary"}
                                 value={primary}
                                 onChangeAction={this.handleInputChange}
@@ -296,7 +303,7 @@ class MailboxDetailsFormGeneralEdit extends Component {
                     <PanelBody>
                         <div className="pull-right btn-group" role="group">
                             <ButtonText buttonClassName={"btn-default"} buttonText={"Sluiten"} onClickAction={this.props.switchToView}/>
-                            <ButtonText buttonText={"Opslaan"} onClickAction={this.handleSubmit} type={"submit"} value={"Submit"}/>
+                            <ButtonText buttonText={"Opslaan"} onClickAction={this.handleSubmit} type={"submit"} value={"Submit"} loading={this.state.loading} />
                         </div>
                     </PanelBody>
                 </Panel>
@@ -312,10 +319,6 @@ const mapStateToProps = (state) => {
     };
 };
 
-const mapDispatchToProps = dispatch => ({
-    updateMailbox: (id) => {
-        dispatch(updateMailbox(id));
-    },
-});
+const mapDispatchToProps = dispatch => bindActionCreators({ updateMailbox, fetchSystemData }, dispatch);
 
 export default connect(mapStateToProps, mapDispatchToProps)(MailboxDetailsFormGeneralEdit);

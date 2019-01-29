@@ -111,7 +111,7 @@ class MailgunDomainNewForm extends Component {
                                 error={this.state.errors.domain}
                             />
                             <InputText
-                                label="Mailgun code"
+                                label="Mailgun API Key"
                                 name={'secret'}
                                 value={secret}
                                 onChangeAction={this.handleInputChange}

@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import { hashHistory } from 'react-router';
 import validator from 'validator';
 
@@ -10,7 +12,7 @@ import PanelBody from '../../../components/panel/PanelBody';
 import PanelHeader from '../../../components/panel/PanelHeader';
 import Panel from '../../../components/panel/Panel';
 import MailboxAPI from '../../../api/mailbox/MailboxAPI';
-import { connect } from 'react-redux';
+import { fetchSystemData } from '../../../actions/general/SystemDataActions';
 
 class MailboxNewForm extends Component {
     constructor(props) {
@@ -47,6 +49,7 @@ class MailboxNewForm extends Component {
                 imapPort: false,
                 mailgunDomainId: false,
             },
+            loading: false,
         };
     }
 
@@ -138,13 +141,17 @@ class MailboxNewForm extends Component {
 
         // If no errors send form
         !hasErrors &&
-            MailboxAPI.newMailbox(mailbox)
-                .then(payload => {
-                    hashHistory.push(`/mailbox/${payload.data.data.id}`);
-                })
-                .catch(function(error) {
-                    console.log(error);
-                });
+            this.setState(currentState => ({ loading: !currentState.loading }), () => {
+                MailboxAPI.newMailbox(mailbox)
+                    .then(payload => {
+                        this.props.fetchSystemData();
+                        hashHistory.push(`/mailbox/${payload.data.data.id}`);
+                    })
+                    .catch(function(error) {
+                        console.log(error);
+                        alert('Er is iets misgegaan bij het opslaan. Herlaad de pagina.')
+                    });
+            });
     };
 
     render() {
@@ -215,7 +222,7 @@ class MailboxNewForm extends Component {
                                 disabled={primary}
                             />
                             <InputToggle
-                                label="Primair"
+                                label="Primair (verzend wachtwoord mails)"
                                 name={'primary'}
                                 value={primary}
                                 onChangeAction={this.handleInputChange}
@@ -330,6 +337,7 @@ class MailboxNewForm extends Component {
                                 onClickAction={this.handleSubmit}
                                 type={'submit'}
                                 value={'Submit'}
+                                loading={this.state.loading}
                             />
                         </div>
                     </PanelBody>
@@ -345,4 +353,7 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps)(MailboxNewForm);
+const mapDispatchToProps = dispatch => bindActionCreators({ fetchSystemData }, dispatch);
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(MailboxNewForm);

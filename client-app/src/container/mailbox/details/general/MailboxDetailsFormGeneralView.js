@@ -40,7 +40,7 @@ const MailboxDetailsFormGeneralView = props => {
                             value={isActive ? 'Ja' : 'Nee'}
                         />
                         <ViewText
-                            label={"Primair"}
+                            label={"Primair (verzend wachtwoord mails)"}
                             value={primary ? 'Ja' : 'Nee'}
                         />
                     </div>

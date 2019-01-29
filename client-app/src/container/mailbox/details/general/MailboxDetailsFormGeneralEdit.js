@@ -191,7 +191,7 @@ class MailboxDetailsFormGeneralEdit extends Component {
                                 disabled={primary}
                             />
                             <InputToggle
-                                label="Primair"
+                                label="Primair (verzend wachtwoord mails)"
                                 name={"primary"}
                                 value={primary}
                                 onChangeAction={this.handleInputChange}

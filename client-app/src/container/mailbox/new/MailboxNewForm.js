@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import { hashHistory } from 'react-router';
 import validator from 'validator';
 
@@ -10,7 +12,7 @@ import PanelBody from '../../../components/panel/PanelBody';
 import PanelHeader from '../../../components/panel/PanelHeader';
 import Panel from '../../../components/panel/Panel';
 import MailboxAPI from '../../../api/mailbox/MailboxAPI';
-import { connect } from 'react-redux';
+import { fetchSystemData } from '../../../actions/general/SystemDataActions';
 
 class MailboxNewForm extends Component {
     constructor(props) {
@@ -142,6 +144,7 @@ class MailboxNewForm extends Component {
             this.setState(currentState => ({ loading: !currentState.loading }), () => {
                 MailboxAPI.newMailbox(mailbox)
                     .then(payload => {
+                        this.props.fetchSystemData();
                         hashHistory.push(`/mailbox/${payload.data.data.id}`);
                     })
                     .catch(function(error) {
@@ -350,4 +353,7 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps)(MailboxNewForm);
+const mapDispatchToProps = dispatch => bindActionCreators({ fetchSystemData }, dispatch);
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(MailboxNewForm);

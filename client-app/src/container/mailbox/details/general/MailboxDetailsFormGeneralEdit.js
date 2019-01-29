@@ -1,9 +1,11 @@
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import validator from 'validator';
+import { bindActionCreators } from 'redux';
 
 import MailboxAPI from '../../../../api/mailbox/MailboxAPI';
 import { updateMailbox } from '../../../../actions/mailbox/MailboxDetailsActions';
+import { fetchSystemData } from '../../../../actions/general/SystemDataActions';
 import InputText from '../../../../components/form/InputText';
 import InputSelect from '../../../../components/form/InputSelect';
 import ButtonText from '../../../../components/button/ButtonText';
@@ -129,6 +131,7 @@ class MailboxDetailsFormGeneralEdit extends Component {
             this.setState(currentState => ({ loading: !currentState.loading }), () => {
                 MailboxAPI.updateMailbox(mailbox).then((payload) => {
                     this.props.updateMailbox(payload);
+                    this.props.fetchSystemData();
                     this.props.switchToView();
                 });
             });
@@ -315,10 +318,6 @@ const mapStateToProps = (state) => {
     };
 };
 
-const mapDispatchToProps = dispatch => ({
-    updateMailbox: (id) => {
-        dispatch(updateMailbox(id));
-    },
-});
+const mapDispatchToProps = dispatch => bindActionCreators({ updateMailbox, fetchSystemData }, dispatch);
 
 export default connect(mapStateToProps, mapDispatchToProps)(MailboxDetailsFormGeneralEdit);

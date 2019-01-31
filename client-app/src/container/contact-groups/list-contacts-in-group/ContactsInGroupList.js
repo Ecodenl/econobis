@@ -81,7 +81,7 @@ class ContactsInGroupList extends Component {
                         <DataTableBody>
                             {
                                 loading ? (
-                                    <tr><td colSpan={11}>{loadingText}</td></tr>
+                                    <tr><td colSpan={10}>{loadingText}</td></tr>
                                 ) : (
                                     this.props.contactsInGroup.map((contactInGroup) => {
                                         return <ContactsInGroupListItem

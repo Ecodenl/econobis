@@ -17,7 +17,7 @@ class ContactDetailsFormPersonalEdit extends Component {
     constructor(props) {
         super(props);
 
-        const { status, number, createdAt, person, newsletter, didAgreeAvg } = props.contactDetails;
+        const { number, createdAt, person, newsletter, didAgreeAvg } = props.contactDetails;
 
         this.state = {
             lastNamePrefixes: props.lastNamePrefixes,
@@ -37,8 +37,6 @@ class ContactDetailsFormPersonalEdit extends Component {
                 lastNamePrefixId: person.lastNamePrefixId ? person.lastNamePrefixId : '',
                 lastNamePrefix: person.lastNamePrefix ? person.lastNamePrefix : '',
                 lastName: person.lastName,
-                statusId: status? status.id : "",
-                typeId: person.type ? person.type.id : '',
                 dateOfBirth: person.dateOfBirth ? moment(person.dateOfBirth.date).format('Y-MM-DD') : '',
                 newsletter: newsletter,
                 didAgreeAvg: didAgreeAvg,
@@ -127,7 +125,7 @@ class ContactDetailsFormPersonalEdit extends Component {
     };
 
     render() {
-        const {statusId, number, createdAt, titleId, typeId, initials, firstName, lastNamePrefixId, lastName, dateOfBirth, newsletter, didAgreeAvg, lastNamePrefix} = this.state.person;
+        const { number, createdAt, titleId, initials, firstName, lastNamePrefixId, lastName, dateOfBirth, newsletter, didAgreeAvg, lastNamePrefix} = this.state.person;
 
         return (
             <form className="form-horizontal col-md-12" onSubmit={this.handleSubmit}>
@@ -164,18 +162,6 @@ class ContactDetailsFormPersonalEdit extends Component {
                 </div>
 
                 <div className="row">
-                    <InputSelect
-                        label={"Status"}
-                        size={"col-xs-12"}
-                        name={"statusId"}
-                        divClassName={'field-to-be-removed'}
-                        options={this.props.contactStatuses}
-                        value={statusId}
-                        onChangeAction={this.handleInputChange}
-                    />
-                </div>
-
-                <div className="row">
                     <InputText
                         label="Voorletters"
                         divSize={'col-xs-12'}
@@ -206,18 +192,6 @@ class ContactDetailsFormPersonalEdit extends Component {
                         value={lastNamePrefixId}
                         onChangeAction={this.handleInputChange}
                         placeholder={lastNamePrefix ? lastNamePrefix : ''}
-                    />
-                </div>
-
-                <div className="row">
-                    <InputSelect
-                        label={"Soort contact"}
-                        size={'col-xs-12'}
-                        divClassName={'field-to-be-removed'}
-                        name={"typeId"}
-                        options={this.props.personTypes}
-                        value={typeId}
-                        onChangeAction={this.handleInputChange}
                     />
                 </div>
 
@@ -279,8 +253,6 @@ const mapStateToProps = (state) => {
     return {
         contactDetails: state.contactDetails,
         lastNamePrefixes: state.systemData.lastNamePrefixes,
-        personTypes: state.systemData.personTypes,
-        contactStatuses: state.systemData.contactStatuses,
         titles: state.systemData.titles,
     };
 };

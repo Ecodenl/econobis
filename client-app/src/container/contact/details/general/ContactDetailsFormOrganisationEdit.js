@@ -7,7 +7,6 @@ import { updateOrganisation } from '../../../../actions/contact/ContactDetailsAc
 import OrganisationAPI from '../../../../api/contact/OrganisationAPI';
 import InputText from '../../../../components/form/InputText';
 import InputSelect from '../../../../components/form/InputSelect';
-import InputDate from '../../../../components/form/InputDate';
 import ButtonText from '../../../../components/button/ButtonText';
 import PanelFooter from "../../../../components/panel/PanelFooter";
 import * as ibantools from "ibantools";
@@ -17,7 +16,7 @@ class ContactDetailsFormOrganisationEdit extends Component {
     constructor(props) {
         super(props);
 
-        const { number, organisation, status, iban, ibanAttn, createdAt, newsletter, didAgreeAvg } = props.contactDetails;
+        const { number, organisation, iban, ibanAttn, createdAt, newsletter, didAgreeAvg } = props.contactDetails;
 
         this.state = {
             organisation: {
@@ -28,12 +27,9 @@ class ContactDetailsFormOrganisationEdit extends Component {
                 chamberOfCommerceNumber: organisation.chamberOfCommerceNumber,
                 vatNumber: organisation.vatNumber,
                 industryId: organisation.industryId ? organisation.industryId : '',
-                statusId: status ? status.id : '',
-                typeId: organisation.type ? organisation.type.id : '',
                 website: organisation.website,
                 iban: iban,
                 ibanAttn: ibanAttn ? ibanAttn : '',
-                squareMeters: organisation.squareMeters,
                 newsletter: newsletter,
                 didAgreeAvg: didAgreeAvg,
             },
@@ -88,7 +84,7 @@ class ContactDetailsFormOrganisationEdit extends Component {
     };
 
     render() {
-        const { number, typeId, statusId, name, chamberOfCommerceNumber, vatNumber, industryId, createdAt, newsletter, didAgreeAvg, website, iban, ibanAttn, squareMeters } = this.state.organisation;
+        const { number, name, chamberOfCommerceNumber, vatNumber, createdAt, newsletter, didAgreeAvg, website, iban, ibanAttn } = this.state.organisation;
 
         return (
             <form className="form-horizontal col-md-12" onSubmit={this.handleSubmit}>
@@ -121,18 +117,6 @@ class ContactDetailsFormOrganisationEdit extends Component {
                         onChangeAction={this.handleInputChange}
                         required={"required"}
                         error={this.state.errors.name}
-                    />
-                </div>
-
-                <div className="row">
-                    <InputSelect
-                        label={"Status"}
-                        size={"col-xs-12"}
-                        name={"statusId"}
-                        divClassName={'field-to-be-removed'}
-                        options={this.props.contactStatuses}
-                        value={statusId}
-                        onChangeAction={this.handleInputChange}
                     />
                 </div>
 
@@ -188,41 +172,6 @@ class ContactDetailsFormOrganisationEdit extends Component {
                 </div>
 
                 <div className="row">
-                    <InputSelect
-                        label={"Industrie"}
-                        size={"col-xs-12"}
-                        name={"industryId"}
-                        divClassName={'field-to-be-removed'}
-                        options={this.props.industries}
-                        value={industryId}
-                        onChangeAction={this.handleInputChange}
-                    />
-                </div>
-
-                <div className="row">
-                    <InputSelect
-                        label={"Soort contact"}
-                        size={"col-xs-12"}
-                        name={"typeId"}
-                        divClassName={'field-to-be-removed'}
-                        options={this.props.organisationTypes}
-                        value={typeId}
-                        onChangeAction={this.handleInputChange}
-                    />
-                </div>
-
-                <div className="row">
-                    <InputText
-                        label="Oppervlakte"
-                        divSize={'col-xs-12'}
-                        name="squareMeters"
-                        value={squareMeters}
-                        divClassName={'field-to-be-removed'}
-                        onChangeAction={this.handleInputChange}
-                    />
-                </div>
-
-                <div className="row">
                     <InputToggle
                         className={'field-to-be-removed'}
                         label={"Nieuwsbrief"}
@@ -257,9 +206,6 @@ class ContactDetailsFormOrganisationEdit extends Component {
 const mapStateToProps = (state) => {
     return {
         contactDetails: state.contactDetails,
-        organisationTypes: state.systemData.organisationTypes,
-        contactStatuses: state.systemData.contactStatuses,
-        industries: state.systemData.industries,
     };
 };
 

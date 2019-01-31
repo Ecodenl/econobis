@@ -34,7 +34,7 @@ class ContactsInGroupListItem extends Component {
     };
 
     render() {
-        const { id, number, typeName, fullName, streetAndNumber, postalCode, city, emailAddress, phoneNumber, statusName, createdAt, permissions } = this.props;
+        const { id, number, typeName, fullName, streetAndNumber, postalCode, city, emailAddress, phoneNumber, createdAt, permissions } = this.props;
         return (
             <tr className={this.state.highlightRow} onDoubleClick={() => this.openItem(id)} onMouseEnter={() => this.onRowEnter()} onMouseLeave={() => this.onRowLeave()}>
                 <td className="hidden-xs">{number}</td>
@@ -45,7 +45,6 @@ class ContactsInGroupListItem extends Component {
                 <td className="hidden-xs">{city}</td>
                 <td className="hidden-xs">{emailAddress}</td>
                 <td>{phoneNumber}</td>
-                <td className="hidden-xs hidden-sm">{statusName}</td>
                 <td className="hidden-xs hidden-sm">{ moment(createdAt.date).format('DD-MM-Y') }</td>
                 <td>
                     {(this.state.showActionButtons ? <a role="button" onClick={() => this.openItem(id)}><span className="glyphicon glyphicon-pencil mybtn-success" /> </a> : '')}

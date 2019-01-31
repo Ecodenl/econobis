@@ -5,7 +5,7 @@ import moment from 'moment';
 import ViewText from '../../../../components/form/ViewText';
 
 const ContactDetailsFormPersonalView = props => {
-    const { number, createdAt, person, status, newsletter, didAgreeAvg } = props.contactDetails;
+    const { number, createdAt, person, newsletter, didAgreeAvg } = props.contactDetails;
 
     return (
         <div>
@@ -35,14 +35,6 @@ const ContactDetailsFormPersonalView = props => {
 
             <div className="row">
                 <ViewText
-                    label="Status"
-                    value={ status && status.name}
-                    className={'col-xs-12 field-to-be-removed'}
-                />
-            </div>
-
-            <div className="row">
-                <ViewText
                     label="Voorletters"
                     value={ person.initials }
                     className={'col-xs-12'}
@@ -62,14 +54,6 @@ const ContactDetailsFormPersonalView = props => {
                     label="Tussenvoegsel"
                     value={ person.lastNamePrefix }
                     className={'col-xs-12'}
-                />
-            </div>
-
-            <div className="row">
-                <ViewText
-                    label="Soort contact"
-                    value={person.type && person.type.name}
-                    className={'col-xs-12 field-to-be-removed'}
                 />
             </div>
 

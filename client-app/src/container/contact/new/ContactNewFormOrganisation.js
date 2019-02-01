@@ -26,15 +26,11 @@ class ContactNewFormOrganisation extends Component {
                 name: '',
                 chamberOfCommerceNumber: '',
                 vatNumber: '',
-                industryId: '',
-                statusId: 'interested',
                 memberSince: '',
                 memberUntil: '',
-                typeId: '',
                 website: '',
                 iban: '',
                 ibanAttn: '',
-                squareMeters: '',
                 newsletter: false,
                 ownerId: props.userId,
                 didAgreeAvg: false
@@ -109,7 +105,7 @@ class ContactNewFormOrganisation extends Component {
     };
 
     render() {
-        const { typeId, statusId, name, chamberOfCommerceNumber, vatNumber, industryId, memberSince, newsletter, website, iban, ibanAttn, squareMeters, ownerId, didAgreeAvg } = this.state.organisation;
+        const { name, chamberOfCommerceNumber, vatNumber, memberSince, newsletter, website, iban, ibanAttn, ownerId, didAgreeAvg } = this.state.organisation;
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -137,25 +133,6 @@ class ContactNewFormOrganisation extends Component {
                         required={"required"}
                         error={this.state.errors.name}
                     />
-                    <InputSelect
-                        label={"Status"}
-                        size={"col-sm-6"}
-                        name={"statusId"}
-                        divClassName={'field-to-be-removed'}
-                        options={this.props.contactStatuses}
-                        value={statusId}
-                        onChangeAction={this.handleInputChange}
-                    />
-                </div>
-
-                <div className="row">
-                    <InputText
-                        label="KvK"
-                        size={"col-sm-6"}
-                        name="chamberOfCommerceNumber"
-                        value={chamberOfCommerceNumber}
-                        onChangeAction={this.handleInputChange}
-                    />
                     <InputDate
                         label={"Lid sinds"}
                         name="memberSince"
@@ -166,9 +143,10 @@ class ContactNewFormOrganisation extends Component {
 
                 <div className="row">
                     <InputText
-                        label="Btw nummer"
-                        name="vatNumber"
-                        value={vatNumber}
+                        label="KvK"
+                        size={"col-sm-6"}
+                        name="chamberOfCommerceNumber"
+                        value={chamberOfCommerceNumber}
                         onChangeAction={this.handleInputChange}
                     />
                     <InputText
@@ -181,12 +159,25 @@ class ContactNewFormOrganisation extends Component {
 
                 <div className="row">
                     <InputText
+                        label="Btw nummer"
+                        name="vatNumber"
+                        value={vatNumber}
+                        onChangeAction={this.handleInputChange}
+                    />
+
+                </div>
+
+                <div className="row">
+                    <InputText
                         label="IBAN"
                         name="iban"
                         value={iban}
                         onChangeAction={this.handleInputChange}
                         error={this.state.errors.iban}
                     />
+                </div>
+
+                <div className="row">
                     <InputText
                         label="IBAN t.n.v."
                         name="ibanAttn"
@@ -202,27 +193,9 @@ class ContactNewFormOrganisation extends Component {
                         value={website}
                         onChangeAction={this.handleInputChange}
                     />
-                    <InputSelect
-                        label={"Industrie"}
-                        size={"col-sm-6"}
-                        name={"industryId"}
-                        divClassName={'field-to-be-removed'}
-                        options={this.props.industries}
-                        value={industryId}
-                        onChangeAction={this.handleInputChange}
-                    />
                 </div>
 
                 <div className="row">
-                    <InputSelect
-                        label={"Soort contact"}
-                        size={"col-sm-6"}
-                        name={"typeId"}
-                        divClassName={'field-to-be-removed'}
-                        options={this.props.organisationTypes}
-                        value={typeId}
-                        onChangeAction={this.handleInputChange}
-                    />
                     <InputSelect
                         label={"Eigenaar"}
                         size={"col-sm-6"}
@@ -234,13 +207,6 @@ class ContactNewFormOrganisation extends Component {
                     />
                 </div>
                 <div className="row">
-                    <InputText
-                        label="Oppervlakte"
-                        name="squareMeters"
-                        divClassName={'field-to-be-removed'}
-                        value={squareMeters}
-                        onChangeAction={this.handleInputChange}
-                    />
                     <InputToggle
                         label={"Nieuwsbrief"}
                         name={"newsletter"}
@@ -271,9 +237,6 @@ class ContactNewFormOrganisation extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        organisationTypes: state.systemData.organisationTypes,
-        contactStatuses: state.systemData.contactStatuses,
-        industries: state.systemData.industries,
         users: state.systemData.users,
         userId: state.meDetails.id,
     };

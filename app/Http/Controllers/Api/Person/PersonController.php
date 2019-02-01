@@ -36,7 +36,7 @@ class PersonController extends ApiController
 
         Validator::make($request['person'],
             [
-                'statusId' => new EnumExists(ContactStatus::class),
+//                'statusId' => new EnumExists(ContactStatus::class),
                 'newsletter' => 'boolean',
                 'ownerId' => 'exists:users,id',
                 'didAgreeAvg' => 'boolean',
@@ -45,7 +45,7 @@ class PersonController extends ApiController
                 'lastName' => '',
                 'lastNamePrefixId' => 'exists:last_name_prefixes,id',
                 'titleId' => 'exists:titles,id',
-                'typeId' => 'exists:person_types,id',
+//                'typeId' => 'exists:person_types,id',
                 'dateOfBirth' => 'date',
             ]);
 
@@ -64,7 +64,7 @@ class PersonController extends ApiController
 
         $contactArray =
             [
-                'status_id' => $contactData['status_id'],
+//                'status_id' => $contactData['status_id'],
                 'newsletter' => $contactData['newsletter'],
                 'owner_id' => $contactData['owner_id'],
                 'did_agree_avg' => $contactData['did_agree_avg'],
@@ -82,7 +82,7 @@ class PersonController extends ApiController
                 'last_name' => $contactData['last_name'],
                 'last_name_prefix' => $lnp,
                 'title_id' => $contactData['title_id'],
-                'type_id' => $contactData['type_id'],
+//                'type_id' => $contactData['type_id'],
                 'date_of_birth' => $contactData['date_of_birth'],
             ];
 
@@ -212,7 +212,7 @@ class PersonController extends ApiController
         $this->authorize('update', $person);
 
         $contactData = $request->validate([
-            'statusId' => new EnumExists(ContactStatus::class),
+//            'statusId' => new EnumExists(ContactStatus::class),
             'memberSince' => 'date',
             'memberUntil' => 'date',
             'newsletter' => 'boolean',

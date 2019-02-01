@@ -34,14 +34,12 @@ class ContactNewFormPersonal extends Component {
                 number: '',
                 createdAt: '',
                 titleId: '',
-                statusId: 'interested',
                 initials: '',
                 firstName: '',
                 lastNamePrefixId: '',
                 lastName: '',
                 memberSince: '',
                 memberUntil: '',
-                typeId: '',
                 dateOfBirth: '',
                 newsletter: false,
                 ownerId: props.userId,
@@ -328,7 +326,7 @@ class ContactNewFormPersonal extends Component {
     };
 
     render() {
-        const {typeId, statusId, titleId, initials, firstName, lastNamePrefixId, lastName, memberSince, dateOfBirth, newsletter, ownerId, didAgreeAvg} = this.state.person;
+        const { titleId, initials, firstName, lastNamePrefixId, lastName, memberSince, dateOfBirth, newsletter, ownerId, didAgreeAvg} = this.state.person;
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -355,14 +353,11 @@ class ContactNewFormPersonal extends Component {
                         value={titleId}
                         onChangeAction={this.handleInputChange}
                     />
-                    <InputSelect
-                        label={"Status"}
-                        size={"col-sm-6"}
-                        name={"statusId"}
-                        divClassName={'field-to-be-removed'}
-                        options={this.props.contactStatuses}
-                        value={statusId}
-                        onChangeAction={this.handleInputChange}
+                    <InputDate
+                        label={"Lid sinds"}
+                        name="memberSince"
+                        value={memberSince}
+                        onChangeAction={this.handleChangeMemberSince}
                     />
                 </div>
 
@@ -374,11 +369,11 @@ class ContactNewFormPersonal extends Component {
                         value={initials}
                         onChangeAction={this.handleInputChange}
                     />
-                    <InputDate
-                        label={"Lid sinds"}
-                        name="memberSince"
-                        value={memberSince}
-                        onChangeAction={this.handleChangeMemberSince}
+                    <InputText
+                        label={"Opzegdatum"}
+                        name={"memberUntil"}
+                        value={''}
+                        readOnly={true}
                     />
                 </div>
 
@@ -392,11 +387,11 @@ class ContactNewFormPersonal extends Component {
                         required={lastName === '' && "required"}
                         error={this.state.errors.name}
                     />
-                    <InputText
-                        label={"Opzegdatum"}
-                        name={"memberUntil"}
-                        value={''}
-                        readOnly={true}
+                    <InputDate
+                        label={"Geboortedatum"}
+                        name={"dateOfBirth"}
+                        value={dateOfBirth}
+                        onChangeAction={this.handleChangeDateOfBirth}
                     />
                 </div>
 
@@ -406,15 +401,6 @@ class ContactNewFormPersonal extends Component {
                         name="lastNamePrefixId"
                         options={this.props.lastNamePrefixes}
                         value={lastNamePrefixId}
-                        onChangeAction={this.handleInputChange}
-                    />
-                    <InputSelect
-                        label={"Soort contact"}
-                        size={"col-sm-6"}
-                        name={"typeId"}
-                        divClassName={'field-to-be-removed'}
-                        options={this.props.personTypes}
-                        value={typeId}
                         onChangeAction={this.handleInputChange}
                     />
                 </div>
@@ -428,12 +414,6 @@ class ContactNewFormPersonal extends Component {
                         onChangeAction={this.handleInputChange}
                         required={firstName === '' && "required"}
                         error={this.state.errors.name}
-                    />
-                    <InputDate
-                        label={"Geboortedatum"}
-                        name={"dateOfBirth"}
-                        value={dateOfBirth}
-                        onChangeAction={this.handleChangeDateOfBirth}
                     />
                 </div>
 
@@ -556,8 +536,6 @@ class ContactNewFormPersonal extends Component {
 const mapStateToProps = (state) => {
     return {
         lastNamePrefixes: state.systemData.lastNamePrefixes,
-        personTypes: state.systemData.personTypes,
-        contactStatuses: state.systemData.contactStatuses,
         occupations: state.systemData.occupations,
         users: state.systemData.users,
         titles: state.systemData.titles,

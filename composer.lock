@@ -1323,16 +1323,16 @@
         },
         {
             "name": "laravel/framework",
-            "version": "v5.5.43",
+            "version": "v5.5.45",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/framework.git",
-                "reference": "84f4ed02ec6eb4a56629fb6acbee1df56891e3c7"
+                "reference": "52c79ecf54b6168a54730ccb6c4c9f3561732a80"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/framework/zipball/84f4ed02ec6eb4a56629fb6acbee1df56891e3c7",
-                "reference": "84f4ed02ec6eb4a56629fb6acbee1df56891e3c7",
+                "url": "https://api.github.com/repos/laravel/framework/zipball/52c79ecf54b6168a54730ccb6c4c9f3561732a80",
+                "reference": "52c79ecf54b6168a54730ccb6c4c9f3561732a80",
                 "shasum": ""
             },
             "require": {
@@ -1343,7 +1343,7 @@
                 "league/flysystem": "^1.0.8",
                 "monolog/monolog": "~1.12",
                 "mtdowling/cron-expression": "~1.0",
-                "nesbot/carbon": "^1.24.1",
+                "nesbot/carbon": "^1.26.0",
                 "php": ">=7.0",
                 "psr/container": "~1.0",
                 "psr/simple-cache": "^1.0",
@@ -1453,7 +1453,7 @@
                 "framework",
                 "laravel"
             ],
-            "time": "2018-09-02 11:45:05"
+            "time": "2019-01-28 20:53:19"
         },
         {
             "name": "laravel/passport",

@@ -16,7 +16,8 @@ class MailgunHelper
     public function checkCredentials($domain, $secret)
     {
         // Deze url geeft een 401 terug als de logingegevens niet kloppen
-        $url = 'https://api:' . $secret . '@api.mailgun.net/v3/' . $domain . '/log';
+        $endpoint = config('services.mailgun.endpoint');
+        $url = 'https://api:' . $secret . '@' . $endpoint . '/v3/' . $domain . '/log';
 
         $curl = curl_init($url);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);

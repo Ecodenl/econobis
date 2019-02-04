@@ -4,18 +4,19 @@ import moment from 'moment';
 moment.locale('nl');
 import validator from 'validator';
 
-import InputText from '../../../../components/form/InputText';
-import InputSelect from '../../../../components/form/InputSelect';
-import InputDate from '../../../../components/form/InputDate';
-import ButtonText from '../../../../components/button/ButtonText';
-import PanelFooter from '../../../../components/panel/PanelFooter';
+import InputText from '../../../../../components/form/InputText';
+import InputSelect from '../../../../../components/form/InputSelect';
+import InputDate from '../../../../../components/form/InputDate';
+import ButtonText from '../../../../../components/button/ButtonText';
+import PanelFooter from '../../../../../components/panel/PanelFooter';
 
-import ProjectDetailsAPI from '../../../../api/project/ProjectDetailsAPI';
+import ProjectDetailsAPI from '../../../../../api/project/ProjectDetailsAPI';
 
-import { fetchProject } from '../../../../actions/project/ProjectDetailsActions';
-import InputToggle from '../../../../components/form/InputToggle';
-import ContactGroupAPI from '../../../../api/contact-group/ContactGroupAPI';
-import InputMultiSelect from '../../../../components/form/InputMultiSelect';
+import { fetchProject } from '../../../../../actions/project/ProjectDetailsActions';
+import InputToggle from '../../../../../components/form/InputToggle';
+import ContactGroupAPI from '../../../../../api/contact-group/ContactGroupAPI';
+import InputMultiSelect from '../../../../../components/form/InputMultiSelect';
+import ProjectFormEditGeneral from './ProjectFormEditGeneral';
 
 class ProjectFormEdit extends Component {
     constructor(props) {
@@ -29,6 +30,7 @@ class ProjectFormEdit extends Component {
             ownedById,
             projectStatusId,
             dateStart,
+            dateEnd,
             dateProduction,
             dateStartRegistrations,
             dateEndRegistrations,
@@ -65,6 +67,7 @@ class ProjectFormEdit extends Component {
                 ownedById: ownedById,
                 projectStatusId: projectStatusId ? projectStatusId : '',
                 dateStart: dateStart ? dateStart : '',
+                dateEnd: dateEnd ? dateEnd : '',
                 dateProduction: dateProduction ? dateProduction : '',
                 dateStartRegistrations: dateStartRegistrations ? dateStartRegistrations : '',
                 dateEndRegistrations: dateEndRegistrations ? dateEndRegistrations : '',
@@ -190,19 +193,7 @@ class ProjectFormEdit extends Component {
 
     render() {
         const {
-            name,
-            code,
-            description,
-            ownedById,
-            projectStatusId,
-            dateStart,
             dateProduction,
-            dateStartRegistrations,
-            dateEndRegistrations,
-            projectTypeId,
-            postalCode,
-            address,
-            city,
             ean,
             eanManager,
             warrantyOrigin,
@@ -217,159 +208,43 @@ class ProjectFormEdit extends Component {
             isMembershipRequired,
             isParticipationTransferable,
             postalcodeLink,
-            administrationId,
-            contactGroupIds,
         } = this.state.project;
-        const {
-            issuedParticipations,
-            participationsInOption,
-            issuableParticipations,
-            administration,
-            hasPaymentInvoices,
-        } = this.props.project;
+        const { issuedParticipations, participationsInOption, issuableParticipations } = this.props.project;
 
         return (
             <form className="form-horizontal col-md-12" onSubmit={this.handleSubmit}>
-                <div className="row">
-                    <InputText
-                        label={'Naam'}
-                        name={'name'}
-                        value={name}
-                        onChangeAction={this.handleInputChange}
-                        required={'required'}
-                        error={this.state.errors.name}
-                    />
-                    <InputText
-                        label={'Projectcode'}
-                        name={'code'}
-                        value={code}
-                        onChangeAction={this.handleInputChange}
-                        required={'required'}
-                        error={this.state.errors.code}
-                    />
-                </div>
-
-                <div className="row">
-                    <div className="form-group col-sm-12">
-                        <div className="row">
-                            <div className="col-sm-3">
-                                <label htmlFor="description" className="col-sm-12">
-                                    Omschrijving
-                                </label>
-                            </div>
-                            <div className="col-sm-8">
-                                <textarea
-                                    name="description"
-                                    value={description}
-                                    onChange={this.handleInputChange}
-                                    className="form-control input-sm"
-                                />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div className="row">
-                    <InputSelect
-                        label={'Verantwoordelijke'}
-                        name={'ownedById'}
-                        options={this.props.users}
-                        optionName={'fullName'}
-                        value={ownedById}
-                        onChangeAction={this.handleInputChange}
-                        required={'required'}
-                        error={this.state.errors.ownedById}
-                    />
-                    <InputSelect
-                        label={'Status'}
-                        name={'projectStatusId'}
-                        options={this.props.projectStatus}
-                        value={projectStatusId}
-                        onChangeAction={this.handleInputChange}
-                    />
-                </div>
+                <ProjectFormEditGeneral
+                    name={this.state.project.name}
+                    code={this.state.project.code}
+                    description={this.state.project.description}
+                    projectStatusId={this.state.project.projectStatusId}
+                    projectTypeId={this.state.project.projectTypeId}
+                    address={this.state.project.address}
+                    postalCode={this.state.project.postalCode}
+                    dateStartRegistrations={this.state.project.dateStartRegistrations}
+                    dateEndRegistrations={this.state.project.dateEndRegistrations}
+                    ownedById={this.state.project.ownedById}
+                    administrationId={this.state.project.administrationId}
+                    administration={this.props.project && this.props.project.administration}
+                    hasPaymentInvoices={this.props.project && this.props.project.hasPaymentInvoices}
+                    dateStart={this.state.project.dateStart}
+                    dateEnd={this.state.project.dateEnd}
+                    dateProduction={this.state.project.dateProduction}
+                    contactGroupIds={this.state.project.contactGroupIds}
+                    isMembershipRequired={this.state.project.isMembershipRequired}
+                    handleInputChange={this.handleInputChange}
+                    handleInputChangeDate={this.handleInputChangeDate}
+                    handleContactGroupIds={this.handleContactGroupIds}
+                    errors={this.state.errors}
+                    contactGroups={this.state.contactGroups}
+                />
 
                 <div className="row">
                     <InputDate
-                        label={'Start project'}
-                        name={'dateStart'}
-                        value={dateStart}
-                        onChangeAction={this.handleInputChangeDate}
-                    />
-                    <InputDate
-                        label={'Datum productie'}
+                        label={'Start productie'}
                         name={'dateProduction'}
                         value={dateProduction}
                         onChangeAction={this.handleInputChangeDate}
-                    />
-                </div>
-
-                <div className="row">
-                    <InputDate
-                        label={'Start inschrijving'}
-                        name={'dateStartRegistrations'}
-                        value={dateStartRegistrations}
-                        onChangeAction={this.handleInputChangeDate}
-                    />
-                    <InputDate
-                        label={'Eind inschrijving'}
-                        name={'dateEndRegistrations'}
-                        value={dateEndRegistrations}
-                        onChangeAction={this.handleInputChangeDate}
-                    />
-                </div>
-
-                <div className="row">
-                    <InputSelect
-                        label={'Type'}
-                        name={'projectTypeId'}
-                        options={this.props.projectTypes}
-                        value={projectTypeId}
-                        onChangeAction={this.handleInputChange}
-                    />
-
-                    {/*Als er al facturen zijn gemaakt mag de administratie niet meer gewijzigd worden*/}
-                    {hasPaymentInvoices ? (
-                        <InputText
-                            label={'Administratie'}
-                            name={'administration'}
-                            value={administration ? administration.name : ''}
-                            readOnly={'true'}
-                        />
-                    ) : (
-                        <InputSelect
-                            label={'Administratie'}
-                            name={'administrationId'}
-                            options={this.props.administrations}
-                            value={administrationId}
-                            onChangeAction={this.handleInputChange}
-                        />
-                    )}
-                </div>
-
-                <div className="row">
-                    <InputText
-                        label={'Postcode'}
-                        name={'postalCode'}
-                        value={postalCode}
-                        onChangeAction={this.handleInputChange}
-                        error={this.state.errors.postalCode}
-                    />
-                    <InputText
-                        label={'Adres'}
-                        name={'address'}
-                        value={address}
-                        onChangeAction={this.handleInputChange}
-                    />
-                </div>
-
-                <div className="row">
-                    <InputText label={'Plaats'} name={'city'} value={city} onChangeAction={this.handleInputChange} />
-                    <InputText
-                        label={'Postcoderoos'}
-                        name={'postalcodeLink'}
-                        value={postalcodeLink}
-                        onChangeAction={this.handleInputChange}
                     />
                 </div>
 
@@ -465,6 +340,12 @@ class ProjectFormEdit extends Component {
                 </div>
 
                 <div className="row">
+                    <InputText
+                        label={'Postcoderoos'}
+                        name={'postalcodeLink'}
+                        value={postalcodeLink}
+                        onChangeAction={this.handleInputChange}
+                    />
                     <InputToggle
                         label={'Deelnames overdraagbaar'}
                         name={'isParticipationTransferable'}
@@ -480,12 +361,6 @@ class ProjectFormEdit extends Component {
                 </div>
 
                 <div className="row">
-                    <InputToggle
-                        label={'Deelname aan groep verplicht'}
-                        name={'isMembershipRequired'}
-                        value={isMembershipRequired}
-                        onChangeAction={this.handleInputChange}
-                    />
                     <InputText
                         label={'Uit te geven deelnames'}
                         name={'issuableParticipations'}
@@ -493,19 +368,6 @@ class ProjectFormEdit extends Component {
                         readOnly={true}
                     />
                 </div>
-                {isMembershipRequired == true && (
-                    <div className={'row'}>
-                        <InputMultiSelect
-                            label={'Onderdeel van groep'}
-                            name={'contactGroupsIds'}
-                            options={this.state.contactGroups}
-                            value={contactGroupIds}
-                            onChangeAction={this.handleContactGroupIds}
-                            error={this.state.errors.contactGroupIds}
-                            required={'required'}
-                        />
-                    </div>
-                )}
 
                 <PanelFooter>
                     <div className="pull-right btn-group" role="group">
@@ -536,10 +398,6 @@ const mapDispatchToProps = dispatch => ({
 const mapStateToProps = state => {
     return {
         project: state.projectDetails,
-        users: state.systemData.users,
-        projectStatus: state.systemData.projectStatus,
-        projectTypes: state.systemData.projectTypes,
-        administrations: state.meDetails.administrations,
     };
 };
 

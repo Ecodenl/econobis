@@ -32,6 +32,7 @@ class FullProject extends Resource
                 'projectStatusId' => $this->project_status_id,
                 'projectStatus' => GenericResource::make($this->whenLoaded('projectStatus')),
                 'dateStart' => $this->date_start,
+                'dateEnd' => $this->date_end,
                 'dateProduction' => $this->date_production,
                 'dateStartRegistrations' => $this->date_start_registrations,
                 'dateEndRegistrations' => $this->date_end_registrations,

@@ -54,9 +54,9 @@ class ProjectsListItem extends Component {
                 <td>{totalParticipations}</td>
                 <td>{issuedParticipations}</td>
                 <td>{issuableParticipations}</td>
-                <td>{'lening'}</td>
-                <td>{''}</td>
-                <td>{''}</td>
+                <td>{'lening nodig'}</td>
+                <td>{'lening opgehaald'}</td>
+                <td>{'lening uit te geven'}</td>
                 <td>{`${issuedParticipationsPercentage.toLocaleString('nl', { maximumFractionDigits: 2 })}%`}</td>
                 <td>
                     {this.state.showActionButtons ? (

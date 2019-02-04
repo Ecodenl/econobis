@@ -34,7 +34,6 @@ class GridProject extends Resource
                 'name' => $this->name,
                 'projectType' => optional($this->projectType)->name,
                 'totalParticipations' => $this->total_participations,
-                'powerKwAvailable' => $this->power_kw_available,
                 'issuedParticipations' => $this->getIssuedParticipations(),
                 'issuableParticipations' => $this->getIssuableParticipations(),
                 'issuedParticipationsPercentage' => $this->getIssuedParticipationsPercentage(),

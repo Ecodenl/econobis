@@ -68,16 +68,16 @@ class ProjectsList extends Component {
                 <DataTable>
                     <DataTableHead>
                         <tr className="thead-title-quaternary">
-                            <DataTableHeadTitle title={'Projectcode'} width={'15%'} />
-                            <DataTableHeadTitle title={'Project'} width={'20%'} />
-                            <DataTableHeadTitle title={'Type project'} width={'20%'} />
-                            <DataTableHeadTitle title={'# deelnames nodig'} width={'10%'} />
-                            <DataTableHeadTitle title={'Uitgegeven deelnames'} width={'10%'} />
-                            <DataTableHeadTitle title={'Uit te geven deelnames'} width={'10%'} />
-                            <DataTableHeadTitle title={'Lening nodig'} width={'10%'} />
-                            <DataTableHeadTitle title={'Lening opgehaald'} width={'10%'} />
-                            <DataTableHeadTitle title={'Lening uit te geven'} width={'10%'} />
-                            <DataTableHeadTitle title={'Percentage uitgegeven'} width={'14%'} />
+                            <DataTableHeadTitle title={'Projectcode'} width={'10%'} />
+                            <DataTableHeadTitle title={'Project'} width={'18%'} />
+                            <DataTableHeadTitle title={'Type project'} width={'10%'} />
+                            <DataTableHeadTitle title={'# deelnames nodig'} width={'8%'} />
+                            <DataTableHeadTitle title={'Uitgegeven deelnames'} width={'8%'} />
+                            <DataTableHeadTitle title={'Uit te geven deelnames'} width={'8%'} />
+                            <DataTableHeadTitle title={'Lening nodig'} width={'8%'} />
+                            <DataTableHeadTitle title={'Lening opgehaald'} width={'8%'} />
+                            <DataTableHeadTitle title={'Lening uit te geven'} width={'8%'} />
+                            <DataTableHeadTitle title={'Percentage uitgegeven'} width={'8%'} />
                             <DataTableHeadTitle title={''} width={'6%'} />
                         </tr>
                     </DataTableHead>

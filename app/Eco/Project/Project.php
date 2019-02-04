@@ -43,7 +43,7 @@ class Project extends Model
     }
 
     public function projectType(){
-        return $this->belongsTo(ProjectType::class);
+        return $this->belongsTo(ProjectType::class)->withTrashed();
     }
 
     public function tasks()

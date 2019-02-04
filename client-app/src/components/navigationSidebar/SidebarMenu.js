@@ -91,7 +91,7 @@ const SidebarMenu = ({ permissions, administrations, mailboxesInvalid }) => (
                 <Nav id="projecten">
                     <NavText>
                         <Link className="sidebar-link" to="projecten">
-                            Projecten
+                            Deelnames
                         </Link>
                     </NavText>
                 </Nav>

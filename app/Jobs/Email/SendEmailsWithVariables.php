@@ -182,7 +182,6 @@ class SendEmailsWithVariables implements ShouldQueue
                 $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables, 'ik', Auth::user());
                 $htmlBodyWithContactVariables = TemplateVariableHelper::stripRemainingVariableTags($htmlBodyWithContactVariables);
                 try {
-//                    if($emailAddress->email === 'gustaaf.jansen@kpnmail.nl') throw new \Exception('Fout mailadres. Test!!!');
                     $mail->send(new GenericMail($email, $htmlBodyWithContactVariables));
                     $amounfOfEmailsSend++;
 

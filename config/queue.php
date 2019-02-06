@@ -82,4 +82,21 @@ return [
         'table' => 'failed_jobs',
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Email Chunk Size
+    |--------------------------------------------------------------------------
+    |
+    | Stel hier het aantal te verzenden emails per Job in
+    | als er emails naar een contactgroep worden verstuurd.
+    |
+    | Een Job kan bij een te hoog aantal in een timeout raken
+    | als er veel contacten in de groep zitten.
+    |
+    */
+
+    'email' => [
+        'chunk_size' => env('EMAIL_JOB_CHUNK_SIZE', 100),
+    ],
+
 ];

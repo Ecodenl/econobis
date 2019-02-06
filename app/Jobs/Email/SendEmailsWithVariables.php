@@ -20,6 +20,8 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Mail;
+use Config;
+use mysql_xdevapi\Exception;
 
 class SendEmailsWithVariables implements ShouldQueue
 {
@@ -32,21 +34,37 @@ class SendEmailsWithVariables implements ShouldQueue
     private $tos;
     private $userId;
 
-    public function __construct(Email $email, $tos, $userId)
+    /**
+     * Variabele om te bepalen of dit de eerste aanroep
+     * is of een opvolgende van een batch.
+     *
+     * @var bool
+     */
+    private $firstCall;
+
+    public function __construct(Email $email, $tos, $userId, $firstCall = true)
     {
         $this->email = $email;
         $this->tos = $tos;
         $this->userId = $userId;
+        $this->firstCall = $firstCall;
 
-        $jobLog = new JobsLog();
-        $jobLog->value = 'Start e-mail(s) versturen.';
-        $jobLog->user_id = $userId;
-        $jobLog->save();
+        if ($firstCall) {
+            $jobLog = new JobsLog();
+            $jobLog->value = 'Start e-mail(s) versturen.';
+            $jobLog->user_id = $userId;
+            $jobLog->save();
+        }
     }
 
     public function handle()
     {
         $this->validateRequest();
+
+        // Variabele om vast te leggen of een email helemaal is verwerkt
+        // Groupsmails worden in chunks verzonden, als een mail nog niet helemaal is verwerkt
+        // kan deze variabele op false worden gezet zodat de mail niet naar "verzonden" wordt verplaatst.
+        $didFinishEmail = true;
 
         //user voor observer
         Auth::setUser(User::find($this->userId));
@@ -73,7 +91,9 @@ class SendEmailsWithVariables implements ShouldQueue
                 $emailsToEmailAddress[] = $to;
             }
         }
-        $ccBccSent = false;
+
+        // Als dit een volgende aanroep in een batch is zijn de cc's  en bcc's al verzonden
+        $ccBccSent = !$this->firstCall;
 
         $amounfOfEmailsSend = 0;
         $mergedHtmlBody = $email->html_body;
@@ -106,6 +126,7 @@ class SendEmailsWithVariables implements ShouldQueue
         //Send mail to all contacts
         if (!empty($emailsToContact)) {
             foreach ($emailsToContact as $emailToContact) {
+
                 $mail = Mail::to($emailToContact->email);
                 if (!$ccBccSent) {
                     ($email->cc != []) ? $mail->cc($email->cc) : null;
@@ -138,8 +159,14 @@ class SendEmailsWithVariables implements ShouldQueue
         }
 
         //send mail to group contacts
-        if ($email->groupEmailAddresses) {
-            foreach ($email->groupEmailAddresses as $emailAddress) {
+        // We versturen er een max aantal per keer om een timeout te voorkomen
+        $groupEmailAdresses = $email->groupEmailAddresses()
+            ->limit(Config::get('queue.email.chunk_size'))
+            ->get();
+
+        if ($groupEmailAdresses) {
+            foreach ($groupEmailAdresses as $emailAddress) {
+
                 $mail = Mail::to($emailAddress->email);
                 if (!$ccBccSent) {
                     ($email->cc != []) ? $mail->cc($email->cc) : null;
@@ -155,32 +182,43 @@ class SendEmailsWithVariables implements ShouldQueue
                 $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables, 'ik', Auth::user());
                 $htmlBodyWithContactVariables = TemplateVariableHelper::stripRemainingVariableTags($htmlBodyWithContactVariables);
                 try {
+//                    if($emailAddress->email === 'gustaaf.jansen@kpnmail.nl') throw new \Exception('Fout mailadres. Test!!!');
                     $mail->send(new GenericMail($email, $htmlBodyWithContactVariables));
                     $amounfOfEmailsSend++;
 
                     if ($amounfOfEmailsSend === 1) {
                         $mergedHtmlBody = $htmlBodyWithContactVariables;
                     }
+
+                    $email->groupEmailAddresses()->detach($emailAddress->id);
                 } catch (\Exception $e) {
                     Log::error('Mail naar groep e-mailadres kon niet worden verzonden');
                     Log::error($e->getMessage());
                 }
-
             }
+
+            if ($email->groupEmailAddresses()->exists()) {
+                // Er zijn nog meer groepEmailAdressen om naar te versturen; nieuwe Job aanmaken om deze op te pikken
+                $didFinishEmail = false;
+                self::dispatch($email, [], $this->userId, false);
+            }
+
         }
 
         if ($amounfOfEmailsSend === 1) {
             $email->html_body = $mergedHtmlBody;
         }
 
-        $email->date_sent = new Carbon();
-        $email->folder = 'sent';
-        $email->save();
+        if ($didFinishEmail) {
+            $email->date_sent = new Carbon();
+            $email->folder = 'sent';
+            $email->save();
 
-        $jobLog = new JobsLog();
-        $jobLog->value = 'E-mail(s) verstuurd.';
-        $jobLog->user_id = $this->userId;
-        $jobLog->save();
+            $jobLog = new JobsLog();
+            $jobLog->value = 'E-mail(s) verstuurd.';
+            $jobLog->user_id = $this->userId;
+            $jobLog->save();
+        }
     }
 
     public function failed(\Exception $exception)

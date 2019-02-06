@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
 
-import ProjectFormEdit from './ProjectFormEdit';
+import ProjectFormEdit from './edit/ProjectFormEdit';
 import ProjectFormView from './ProjectFormView';
 
 class ProjectFormGeneral extends Component {
@@ -12,7 +12,7 @@ class ProjectFormGeneral extends Component {
         super(props);
 
         this.state = {
-            showEdit: false,
+            showEdit: true,
             activeDiv: '',
         };
     }

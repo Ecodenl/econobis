@@ -5,8 +5,6 @@ moment.locale('nl');
 import validator from 'validator';
 
 import InputText from '../../../../../components/form/InputText';
-import InputSelect from '../../../../../components/form/InputSelect';
-import InputDate from '../../../../../components/form/InputDate';
 import ButtonText from '../../../../../components/button/ButtonText';
 import PanelFooter from '../../../../../components/panel/PanelFooter';
 
@@ -15,8 +13,8 @@ import ProjectDetailsAPI from '../../../../../api/project/ProjectDetailsAPI';
 import { fetchProject } from '../../../../../actions/project/ProjectDetailsActions';
 import InputToggle from '../../../../../components/form/InputToggle';
 import ContactGroupAPI from '../../../../../api/contact-group/ContactGroupAPI';
-import InputMultiSelect from '../../../../../components/form/InputMultiSelect';
 import ProjectFormEditGeneral from './ProjectFormEditGeneral';
+import ProjectFormEditLoan from './ProjectFormEditLoan';
 
 class ProjectFormEdit extends Component {
     constructor(props) {
@@ -193,7 +191,6 @@ class ProjectFormEdit extends Component {
 
     render() {
         const {
-            dateProduction,
             ean,
             eanManager,
             warrantyOrigin,
@@ -205,7 +202,6 @@ class ProjectFormEdit extends Component {
             maxParticipationsYouth,
             totalParticipations,
             minParticipations,
-            isMembershipRequired,
             isParticipationTransferable,
             postalcodeLink,
         } = this.state.project;
@@ -238,16 +234,10 @@ class ProjectFormEdit extends Component {
                     errors={this.state.errors}
                     contactGroups={this.state.contactGroups}
                 />
+                <ProjectFormEditLoan handleInputChange={this.handleInputChange} />
 
-                <div className="row">
-                    <InputDate
-                        label={'Start productie'}
-                        name={'dateProduction'}
-                        value={dateProduction}
-                        onChangeAction={this.handleInputChangeDate}
-                    />
-                </div>
-
+                <h4>Obligatie, Kapitaal en Postcoderoos</h4>
+                <h4>Postcoderoos kapitaal</h4>
                 <div className="row">
                     <InputText label={'EAN'} name={'ean'} value={ean} onChangeAction={this.handleInputChange} />
                     <InputText
@@ -257,7 +247,6 @@ class ProjectFormEdit extends Component {
                         onChangeAction={this.handleInputChange}
                     />
                 </div>
-
                 <div className="row">
                     <InputText
                         label={'Garantie van oorsprong'}
@@ -272,7 +261,6 @@ class ProjectFormEdit extends Component {
                         onChangeAction={this.handleInputChange}
                     />
                 </div>
-
                 <div className="row">
                     <InputText
                         type={'number'}
@@ -289,7 +277,6 @@ class ProjectFormEdit extends Component {
                         onChangeAction={this.handleInputChange}
                     />
                 </div>
-
                 <div className="row">
                     <InputText
                         type={'number'}
@@ -305,7 +292,6 @@ class ProjectFormEdit extends Component {
                         onChangeAction={this.handleInputChange}
                     />
                 </div>
-
                 <div className="row">
                     <InputText
                         type={'number'}
@@ -322,7 +308,6 @@ class ProjectFormEdit extends Component {
                         onChangeAction={this.handleInputChange}
                     />
                 </div>
-
                 <div className="row">
                     <InputText
                         type={'number'}
@@ -338,7 +323,6 @@ class ProjectFormEdit extends Component {
                         readOnly={true}
                     />
                 </div>
-
                 <div className="row">
                     <InputText
                         label={'Postcoderoos'}
@@ -359,7 +343,6 @@ class ProjectFormEdit extends Component {
                         readOnly={true}
                     />
                 </div>
-
                 <div className="row">
                     <InputText
                         label={'Uit te geven deelnames'}
@@ -368,7 +351,6 @@ class ProjectFormEdit extends Component {
                         readOnly={true}
                     />
                 </div>
-
                 <PanelFooter>
                     <div className="pull-right btn-group" role="group">
                         <ButtonText

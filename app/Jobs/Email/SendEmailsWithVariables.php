@@ -189,11 +189,12 @@ class SendEmailsWithVariables implements ShouldQueue
                         $mergedHtmlBody = $htmlBodyWithContactVariables;
                     }
 
-                    $email->groupEmailAddresses()->detach($emailAddress->id);
                 } catch (\Exception $e) {
-                    Log::error('Mail naar groep e-mailadres kon niet worden verzonden');
+                    Log::error('Mail ' . $email->id . ' vanuit groep kon niet worden verzonden naar e-mailadres ' . $emailAddress->email);
                     Log::error($e->getMessage());
                 }
+                // Email always detach from table otherwise the jobs can stay in a loop when error occur in try/catch while sending
+                $email->groupEmailAddresses()->detach($emailAddress->id);
             }
 
             if ($email->groupEmailAddresses()->exists()) {

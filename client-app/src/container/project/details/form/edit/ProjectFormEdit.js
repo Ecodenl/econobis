@@ -4,92 +4,31 @@ import moment from 'moment';
 moment.locale('nl');
 import validator from 'validator';
 
-import InputText from '../../../../../components/form/InputText';
 import ButtonText from '../../../../../components/button/ButtonText';
 import PanelFooter from '../../../../../components/panel/PanelFooter';
 
 import ProjectDetailsAPI from '../../../../../api/project/ProjectDetailsAPI';
 
 import { fetchProject } from '../../../../../actions/project/ProjectDetailsActions';
-import InputToggle from '../../../../../components/form/InputToggle';
 import ContactGroupAPI from '../../../../../api/contact-group/ContactGroupAPI';
 import ProjectFormEditGeneral from './ProjectFormEditGeneral';
 import ProjectFormEditLoan from './ProjectFormEditLoan';
+import ProjectFormEditObligation from './ProjectFormEditObligation';
+import ProjectFormEditPostalcodeAreaCapital from './ProjectFormEditPostalcodeAreaCapital';
 
 class ProjectFormEdit extends Component {
     constructor(props) {
         super(props);
 
-        const {
-            id,
-            name,
-            code,
-            description,
-            ownedById,
-            projectStatusId,
-            dateStart,
-            dateEnd,
-            dateProduction,
-            dateStartRegistrations,
-            dateEndRegistrations,
-            projectTypeId,
-            postalCode,
-            address,
-            city,
-            ean,
-            eanManager,
-            warrantyOrigin,
-            eanSupply,
-            participationWorth,
-            powerKwAvailable,
-            maxParticipations,
-            taxReferral,
-            maxParticipationsYouth,
-            totalParticipations,
-            minParticipations,
-            isMembershipRequired,
-            isParticipationTransferable,
-            administrationId,
-            postalcodeLink,
-            requiresContactGroups,
-        } = props.project;
-
         this.state = {
             contactGroups: [],
             project: {
-                id,
-                name: name,
-                administrationId: administrationId,
-                code: code,
-                description: description ? description : '',
-                ownedById: ownedById,
-                projectStatusId: projectStatusId ? projectStatusId : '',
-                dateStart: dateStart ? dateStart : '',
-                dateEnd: dateEnd ? dateEnd : '',
-                dateProduction: dateProduction ? dateProduction : '',
-                dateStartRegistrations: dateStartRegistrations ? dateStartRegistrations : '',
-                dateEndRegistrations: dateEndRegistrations ? dateEndRegistrations : '',
-                projectTypeId: projectTypeId ? projectTypeId : '',
-                postalCode: postalCode ? postalCode : '',
-                address: address ? address : '',
-                city: city ? city : '',
-                ean: ean ? ean : '',
-                eanManager: eanManager ? eanManager : '',
-                warrantyOrigin: warrantyOrigin ? warrantyOrigin : '',
-                eanSupply: eanSupply ? eanSupply : '',
-                participationWorth: participationWorth ? participationWorth : '',
-                powerKwAvailable: powerKwAvailable ? powerKwAvailable : '',
-                maxParticipations: maxParticipations ? maxParticipations : '',
-                taxReferral: taxReferral ? taxReferral : '',
-                maxParticipationsYouth: maxParticipationsYouth ? maxParticipationsYouth : '',
-                totalParticipations: totalParticipations ? totalParticipations : '',
-                minParticipations: minParticipations ? minParticipations : '',
-                isMembershipRequired: !!isMembershipRequired,
-                isParticipationTransferable: !!isParticipationTransferable,
-                postalcodeLink: postalcodeLink ? postalcodeLink : '',
+                ...props.project,
+                isMembershipRequired: Boolean(props.project.isMembershipRequired),
+                isParticipationTransferable: Boolean(props.project.isParticipationTransferable),
                 contactGroupIds:
-                    requiresContactGroups &&
-                    requiresContactGroups.map(requiresContactGroup => requiresContactGroup.id).join(','),
+                    props.project.requiresContactGroups &&
+                    props.project.requiresContactGroups.map(requiresContactGroup => requiresContactGroup.id).join(','),
             },
             errors: {
                 name: false,
@@ -191,6 +130,22 @@ class ProjectFormEdit extends Component {
 
     render() {
         const {
+            name,
+            code,
+            description,
+            projectStatusId,
+            projectTypeId,
+            address,
+            postalCode,
+            dateStartRegistrations,
+            dateEndRegistrations,
+            ownedById,
+            administrationId,
+            dateStart,
+            dateEnd,
+            dateProduction,
+            contactGroupIds,
+            isMembershipRequired,
             ean,
             eanManager,
             warrantyOrigin,
@@ -205,152 +160,90 @@ class ProjectFormEdit extends Component {
             isParticipationTransferable,
             postalcodeLink,
         } = this.state.project;
-        const { issuedParticipations, participationsInOption, issuableParticipations } = this.props.project;
+        const {
+            issuedParticipations,
+            participationsInOption,
+            issuableParticipations,
+            administration,
+            hasPaymentInvoices,
+        } = this.props.project;
+
+        const showEditLoan =
+            this.props.projectTypes.find(projectType => projectType.codeRef === 'loan').id == projectTypeId;
+
+        const checkEditObligationIds = [];
+        this.props.projectTypes.map(projectType => {
+            if (
+                projectType.codeRef === 'obligation' ||
+                projectType.codeRef === 'capital' ||
+                projectType.codeRef === 'postalcode_area_capital'
+            ) {
+                checkEditObligationIds.push(projectType.id);
+            }
+        });
+        const showEditObligation = checkEditObligationIds.includes(Number(projectTypeId));
+
+        const showEditPostalcodeAreaCapital =
+            this.props.projectTypes.find(projectType => projectType.codeRef === 'postalcode_area_capital').id ==
+            projectTypeId;
 
         return (
             <form className="form-horizontal col-md-12" onSubmit={this.handleSubmit}>
                 <ProjectFormEditGeneral
-                    name={this.state.project.name}
-                    code={this.state.project.code}
-                    description={this.state.project.description}
-                    projectStatusId={this.state.project.projectStatusId}
-                    projectTypeId={this.state.project.projectTypeId}
-                    address={this.state.project.address}
-                    postalCode={this.state.project.postalCode}
-                    dateStartRegistrations={this.state.project.dateStartRegistrations}
-                    dateEndRegistrations={this.state.project.dateEndRegistrations}
-                    ownedById={this.state.project.ownedById}
-                    administrationId={this.state.project.administrationId}
-                    administration={this.props.project && this.props.project.administration}
-                    hasPaymentInvoices={this.props.project && this.props.project.hasPaymentInvoices}
-                    dateStart={this.state.project.dateStart}
-                    dateEnd={this.state.project.dateEnd}
-                    dateProduction={this.state.project.dateProduction}
-                    contactGroupIds={this.state.project.contactGroupIds}
-                    isMembershipRequired={this.state.project.isMembershipRequired}
+                    name={name}
+                    code={code}
+                    description={description}
+                    projectStatusId={projectStatusId}
+                    projectTypeId={projectTypeId}
+                    address={address}
+                    postalCode={postalCode}
+                    dateStartRegistrations={dateStartRegistrations}
+                    dateEndRegistrations={dateEndRegistrations}
+                    ownedById={ownedById}
+                    administrationId={administrationId}
+                    administration={administration}
+                    hasPaymentInvoices={hasPaymentInvoices}
+                    dateStart={dateStart}
+                    dateEnd={dateEnd}
+                    dateProduction={dateProduction}
+                    contactGroupIds={contactGroupIds}
+                    isMembershipRequired={isMembershipRequired}
                     handleInputChange={this.handleInputChange}
                     handleInputChangeDate={this.handleInputChangeDate}
                     handleContactGroupIds={this.handleContactGroupIds}
                     errors={this.state.errors}
                     contactGroups={this.state.contactGroups}
                 />
-                <ProjectFormEditLoan handleInputChange={this.handleInputChange} />
 
-                <h4>Obligatie, Kapitaal en Postcoderoos</h4>
-                <h4>Postcoderoos kapitaal</h4>
-                <div className="row">
-                    <InputText label={'EAN'} name={'ean'} value={ean} onChangeAction={this.handleInputChange} />
-                    <InputText
-                        label={'EAN Netbeheer'}
-                        name={'eanManager'}
-                        value={eanManager}
-                        onChangeAction={this.handleInputChange}
+                {showEditLoan && <ProjectFormEditLoan handleInputChange={this.handleInputChange} />}
+
+                {showEditObligation && (
+                    <ProjectFormEditObligation
+                        participationWorth={participationWorth}
+                        issuedParticipations={issuedParticipations}
+                        participationsInOption={participationsInOption}
+                        issuableParticipations={issuableParticipations}
+                        totalParticipations={totalParticipations}
+                        powerKwAvailable={powerKwAvailable}
+                        minParticipations={minParticipations}
+                        maxParticipations={maxParticipations}
+                        maxParticipationsYouth={maxParticipationsYouth}
+                        isParticipationTransferable={isParticipationTransferable}
+                        handleInputChange={this.handleInputChange}
                     />
-                </div>
-                <div className="row">
-                    <InputText
-                        label={'Garantie van oorsprong'}
-                        name={'warrantyOrigin'}
-                        value={warrantyOrigin}
-                        onChangeAction={this.handleInputChange}
+                )}
+
+                {showEditPostalcodeAreaCapital && (
+                    <ProjectFormEditPostalcodeAreaCapital
+                        postalcodeLink={postalcodeLink}
+                        ean={ean}
+                        taxReferral={taxReferral}
+                        eanManager={eanManager}
+                        warrantyOrigin={warrantyOrigin}
+                        eanSupply={eanSupply}
+                        handleInputChange={this.handleInputChange}
                     />
-                    <InputText
-                        label={'EAN Levering'}
-                        name={'eanSupply'}
-                        value={eanSupply}
-                        onChangeAction={this.handleInputChange}
-                    />
-                </div>
-                <div className="row">
-                    <InputText
-                        type={'number'}
-                        label={'Waarde per deelname'}
-                        name={'participationWorth'}
-                        value={participationWorth}
-                        onChangeAction={this.handleInputChange}
-                    />
-                    <InputText
-                        type={'number'}
-                        label={'Opgesteld vermogen kW'}
-                        name={'powerKwAvailable'}
-                        value={powerKwAvailable}
-                        onChangeAction={this.handleInputChange}
-                    />
-                </div>
-                <div className="row">
-                    <InputText
-                        type={'number'}
-                        label={'Max aantal part. p/p'}
-                        name={'maxParticipations'}
-                        value={maxParticipations}
-                        onChangeAction={this.handleInputChange}
-                    />
-                    <InputText
-                        label={'Aanwijzing belastingdienst'}
-                        name={'taxReferral'}
-                        value={taxReferral}
-                        onChangeAction={this.handleInputChange}
-                    />
-                </div>
-                <div className="row">
-                    <InputText
-                        type={'number'}
-                        label={'Max aantal part. jeugd'}
-                        name={'maxParticipationsYouth'}
-                        value={maxParticipationsYouth}
-                        onChangeAction={this.handleInputChange}
-                    />
-                    <InputText
-                        type={'number'}
-                        label={'Totaal aantal deelnames'}
-                        name={'totalParticipations'}
-                        value={totalParticipations}
-                        onChangeAction={this.handleInputChange}
-                    />
-                </div>
-                <div className="row">
-                    <InputText
-                        type={'number'}
-                        label={'Min. aantal part. p/p'}
-                        name={'minParticipations'}
-                        value={minParticipations}
-                        onChangeAction={this.handleInputChange}
-                    />
-                    <InputText
-                        label={'Uitgegeven deelnames'}
-                        name={'issuedParticipations'}
-                        value={issuedParticipations ? issuedParticipations : ''}
-                        readOnly={true}
-                    />
-                </div>
-                <div className="row">
-                    <InputText
-                        label={'Postcoderoos'}
-                        name={'postalcodeLink'}
-                        value={postalcodeLink}
-                        onChangeAction={this.handleInputChange}
-                    />
-                    <InputToggle
-                        label={'Deelnames overdraagbaar'}
-                        name={'isParticipationTransferable'}
-                        value={isParticipationTransferable}
-                        onChangeAction={this.handleInputChange}
-                    />
-                    <InputText
-                        label={'Deelnames in optie'}
-                        name={'participationsInOption'}
-                        value={participationsInOption ? participationsInOption : ''}
-                        readOnly={true}
-                    />
-                </div>
-                <div className="row">
-                    <InputText
-                        label={'Uit te geven deelnames'}
-                        name={'issuableParticipations'}
-                        value={issuableParticipations ? issuableParticipations : ''}
-                        readOnly={true}
-                    />
-                </div>
+                )}
                 <PanelFooter>
                     <div className="pull-right btn-group" role="group">
                         <ButtonText
@@ -380,6 +273,7 @@ const mapDispatchToProps = dispatch => ({
 const mapStateToProps = state => {
     return {
         project: state.projectDetails,
+        projectTypes: state.systemData.projectTypes,
     };
 };
 

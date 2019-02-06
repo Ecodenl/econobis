@@ -26,7 +26,7 @@ class AlterProjectTypeTable extends Migration
         }
 
         // Create new types
-        $new_project_types = [
+        $newProjectTypes = [
             'Lening',
             'Obligatie',
             'Kapitaal',
@@ -34,10 +34,10 @@ class AlterProjectTypeTable extends Migration
         ];
 
         foreach (
-            $new_project_types as $project_type
+            $newProjectTypes as $projectType
         ) {
             DB::table('project_type')->insert([
-                    'name' => $project_type
+                    'name' => $projectType
                 ]
             );
         }

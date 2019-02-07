@@ -9,8 +9,9 @@ const ProjectDetailsFormValueCourseList = props => {
             <div className="row header">
                 <div className="col-sm-3">Project</div>
                 <div className="col-sm-2">Datum</div>
-                <div className="col-sm-3">Boekwaarde</div>
-                <div className="col-sm-3">Overdrachtswaarde</div>
+                <div className="col-sm-2">Boekwaarde</div>
+                <div className="col-sm-2">Overdrachtswaarde</div>
+                <div className="col-sm-2">Actief</div>
                 <div className="col-sm-1" />
             </div>
             {props.valueCourses.length > 0 ? (

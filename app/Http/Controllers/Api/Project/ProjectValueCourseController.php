@@ -24,6 +24,7 @@ class ProjectValueCourseController extends ApiController
             ->date('date')->validate('required|date')->next()
             ->double('bookWorth')->validate('required')->alias('book_worth')->next()
             ->double('transferWorth')->onEmpty(null)->alias('transfer_worth')->next()
+            ->boolean('active')->next()
             ->get();
 
         $data['book_worth'] = round($data['book_worth'], 2);
@@ -37,6 +38,11 @@ class ProjectValueCourseController extends ApiController
         $projectValueCourse->fill($data);
 
         $projectValueCourse->save();
+
+        // If project value course is active, call function that turn other project value courses into not active
+        if($projectValueCourse->active) {
+            $this->makeActive($projectValueCourse);
+        }
 
         $projectValueCourse->load('createdBy', 'project');
 
@@ -52,6 +58,7 @@ class ProjectValueCourseController extends ApiController
             ->date('date')->validate('required|date')->next()
             ->double('bookWorth')->validate('required')->alias('book_worth')->next()
             ->double('transferWorth')->onEmpty(null)->alias('transfer_worth')->next()
+            ->boolean('active')->next()
             ->get();
 
         $data['book_worth'] = round($data['book_worth'], 2);
@@ -64,6 +71,11 @@ class ProjectValueCourseController extends ApiController
 
         $projectValueCourse->save();
 
+        // If project value course is active, call function that turn other project value courses into not active
+        if($projectValueCourse->active) {
+            $this->makeActive($projectValueCourse);
+        }
+
         return FullProjectValueCourse::collection(ProjectValueCourse::where('project_id', $projectValueCourse->project_id)->with('createdBy', 'project')->orderBy('date')->get());
     }
 
@@ -72,5 +84,19 @@ class ProjectValueCourseController extends ApiController
         $this->authorize('manage', ProjectValueCourse::class);
         
         $projectValueCourse->forceDelete();
+    }
+
+    public function makeActive(ProjectValueCourse $projectValueCourse)
+    {
+        // Make other active project value course inactive
+        foreach (ProjectValueCourse::where('active', 1)
+                     ->where('id', '<>', $projectValueCourse->id) // Exclude this project value course
+            ->get() as $pvc){
+            $pvc->active = false;
+            $pvc->save();
+        }
+
+        $projectValueCourse->active = true;
+        $projectValueCourse->save();
     }
 }

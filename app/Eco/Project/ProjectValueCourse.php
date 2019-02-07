@@ -21,6 +21,10 @@ class ProjectValueCourse extends Model
         'id'
     ];
 
+    protected $casts = [
+        'active' => 'boolean',
+    ];
+
     //relations
     public function project(){
         return $this->belongsTo(Project::class);

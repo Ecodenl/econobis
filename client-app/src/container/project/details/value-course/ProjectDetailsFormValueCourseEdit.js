@@ -7,12 +7,20 @@ import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
 import InputDate from '../../../../components/form/InputDate';
 import moment from 'moment/moment';
+import InputToggle from '../../../../components/form/InputToggle';
 
-const ProjectDetailsFormValueCourseEdit = props => {
-    const { project, date, bookWorth, transferWorth, createdAt, createdBy } = props.valueCourse;
+const ProjectDetailsFormValueCourseEdit = ({
+    valueCourse,
+    handleInputChangeDate,
+    handleInputChange,
+    handleSubmit,
+    cancelEdit,
+    bookWorthError,
+}) => {
+    const { project, date, bookWorth, transferWorth, active, createdAt, createdBy } = valueCourse;
 
     return (
-        <form className="form-horizontal" onSubmit={props.handleSubmit}>
+        <form className="form-horizontal" onSubmit={handleSubmit}>
             <Panel className={'panel-grey'}>
                 <PanelBody>
                     <div className="row">
@@ -29,7 +37,7 @@ const ProjectDetailsFormValueCourseEdit = props => {
                             id="date"
                             name={'date'}
                             value={date}
-                            onChangeAction={props.handleInputChangeDate}
+                            onChangeAction={handleInputChangeDate}
                             required={'required'}
                         />
                     </div>
@@ -40,16 +48,25 @@ const ProjectDetailsFormValueCourseEdit = props => {
                             id={'bookWorth'}
                             name={'bookWorth'}
                             value={bookWorth}
-                            onChangeAction={props.handleInputChange}
+                            onChangeAction={handleInputChange}
                             required={'required'}
-                            error={props.bookWorthError}
+                            error={bookWorthError}
                         />
                         <InputText
                             label={'Overdrachtswaarde'}
                             id={'transferWorth'}
                             name={'transferWorth'}
                             value={transferWorth ? transferWorth : ''}
-                            onChangeAction={props.handleInputChange}
+                            onChangeAction={handleInputChange}
+                        />
+                    </div>
+
+                    <div className="row">
+                        <InputToggle
+                            label={'Actief'}
+                            name={'active'}
+                            value={active}
+                            onChangeAction={handleInputChange}
                         />
                     </div>
 
@@ -72,11 +89,11 @@ const ProjectDetailsFormValueCourseEdit = props => {
                         <ButtonText
                             buttonClassName={'btn-default'}
                             buttonText={'Annuleren'}
-                            onClickAction={props.cancelEdit}
+                            onClickAction={cancelEdit}
                         />
                         <ButtonText
                             buttonText={'Opslaan'}
-                            onClickAction={props.handleSubmit}
+                            onClickAction={handleSubmit}
                             type={'submit'}
                             value={'Submit'}
                         />

@@ -86,16 +86,17 @@ const ProjectFormView = props => {
                 maxParticipationsYouth={maxParticipationsYouth}
                 isParticipationTransferable={isParticipationTransferable}
                 valueCourses={valueCourses}
-                projectTypeId={projectType.id}
+                projectTypeId={projectType && projectType.id}
             />
 
             <ProjectFormViewPostalcodeLinkCapital
+                postalcodeLink={postalcodeLink}
                 ean={ean}
                 taxReferral={taxReferral}
                 eanManager={eanManager}
                 warrantyOrigin={warrantyOrigin}
                 eanSupply={eanSupply}
-                projectTypeId={projectType.id}
+                projectTypeId={projectType && projectType.id}
             />
         </section>
     );

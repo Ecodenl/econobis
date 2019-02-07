@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import ViewText from '../../../../../components/form/ViewText';
 
-const ProjectFormViewPostalcodeAreaCapital = ({
+const ProjectFormViewPostalcodeLinkCapital = ({
     postalcodeLink,
     taxReferral,
     eanManager,
@@ -13,10 +13,10 @@ const ProjectFormViewPostalcodeAreaCapital = ({
     projectTypes,
     projectTypeId,
 }) => {
-    const showViewPostalcodeAreaCapital =
+    const showViewPostalcodeLinkCapital =
         projectTypes.find(projectType => projectType.codeRef === 'postalcode_area_capital').id == projectTypeId;
 
-    if (showViewPostalcodeAreaCapital) {
+    if (showViewPostalcodeLinkCapital) {
         return (
             <React.Fragment>
                 <hr style={{ margin: '10px 0' }} />
@@ -44,4 +44,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps)(ProjectFormViewPostalcodeAreaCapital);
+export default connect(mapStateToProps)(ProjectFormViewPostalcodeLinkCapital);

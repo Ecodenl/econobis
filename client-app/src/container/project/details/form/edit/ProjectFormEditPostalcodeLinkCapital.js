@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import InputText from '../../../../../components/form/InputText';
 
-const ProjectFormEditPostalcodeAreaCapital = ({
+const ProjectFormEditPostalcodeLinkCapital = ({
     postalcodeLink,
     taxReferral,
     eanManager,
@@ -13,10 +13,10 @@ const ProjectFormEditPostalcodeAreaCapital = ({
     projectTypes,
     projectTypeId,
 }) => {
-    const showEditPostalcodeAreaCapital =
+    const showEditPostalcodeLinkCapital =
         projectTypes.find(projectType => projectType.codeRef === 'postalcode_area_capital').id == projectTypeId;
 
-    if (showEditPostalcodeAreaCapital) {
+    if (showEditPostalcodeLinkCapital) {
         return (
             <React.Fragment>
                 <hr style={{ margin: '10px 0' }} />
@@ -74,4 +74,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps)(ProjectFormEditPostalcodeAreaCapital);
+export default connect(mapStateToProps)(ProjectFormEditPostalcodeLinkCapital);

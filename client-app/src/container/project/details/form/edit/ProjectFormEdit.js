@@ -147,6 +147,7 @@ class ProjectFormEdit extends Component {
             dateProduction,
             contactGroupIds,
             isMembershipRequired,
+            amountOfLoanNeeded,
             ean,
             eanManager,
             warrantyOrigin,
@@ -199,7 +200,11 @@ class ProjectFormEdit extends Component {
                     contactGroups={this.state.contactGroups}
                 />
 
-                <ProjectFormEditLoan handleInputChange={this.handleInputChange} projectTypeId={projectTypeId} />
+                <ProjectFormEditLoan
+                    amountOfLoanNeeded={amountOfLoanNeeded}
+                    handleInputChange={this.handleInputChange}
+                    projectTypeId={projectTypeId}
+                />
 
                 <ProjectFormEditObligation
                     participationWorth={participationWorth}

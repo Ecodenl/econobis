@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import InputText from '../../../../../components/form/InputText';
 
-const ProjectFormEditLoan = ({ handleInputChange, projectTypes, projectTypeId }) => {
+const ProjectFormEditLoan = ({ amountOfLoanNeeded, handleInputChange, projectTypes, projectTypeId }) => {
     const showEditLoan = projectTypes.find(projectType => projectType.codeRef === 'loan').id == projectTypeId;
 
     if (showEditLoan) {
@@ -13,39 +13,21 @@ const ProjectFormEditLoan = ({ handleInputChange, projectTypes, projectTypeId })
                 <div className="row">
                     <InputText
                         label={'Lening nodig'}
-                        name={'loan_needed'}
-                        value={'Database eerst aanpassen'}
+                        name={'amountOfLoanNeeded'}
+                        value={amountOfLoanNeeded}
                         onChangeAction={handleInputChange}
                     />
-                    <InputText
-                        label={'Lening opgehaald'}
-                        name={'code'}
-                        value={''}
-                        onChangeAction={() => {}}
-                        readOnly={true}
-                    />
+                    <InputText label={'Lening opgehaald'} name={'code'} value={'Nog maken'} readOnly={true} />
                 </div>
 
                 <div className="row">
                     <div className={'form-group col-md-6'} />
-                    <InputText
-                        label={'Lening opgehaald in optie'}
-                        name={'code'}
-                        value={''}
-                        onChangeAction={() => {}}
-                        readOnly={true}
-                    />
+                    <InputText label={'Lening opgehaald in optie'} name={'code'} value={'Nog maken'} readOnly={true} />
                 </div>
 
                 <div className="row">
                     <div className={'form-group col-md-6'} />
-                    <InputText
-                        label={'Lening uit te geven'}
-                        name={'code'}
-                        value={''}
-                        onChangeAction={() => {}}
-                        readOnly={true}
-                    />
+                    <InputText label={'Lening uit te geven'} name={'code'} value={'Nog maken'} readOnly={true} />
                 </div>
             </React.Fragment>
         );

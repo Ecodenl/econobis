@@ -101,6 +101,7 @@ class ProjectController extends ApiController
             ->integer('minParticipations')->alias('min_participations')->next()
             ->boolean('isMembershipRequired')->alias('is_membership_required')->next()
             ->boolean('isParticipationTransferable')->alias('is_participation_transferable')->next()
+            ->integer('amountOfLoanNeeded')->alias('amount_of_loan_needed')->next()
             ->get();
 
         $project = new Project();
@@ -155,6 +156,7 @@ class ProjectController extends ApiController
             ->integer('minParticipations')->alias('min_participations')->next()
             ->boolean('isMembershipRequired')->alias('is_membership_required')->next()
             ->boolean('isParticipationTransferable')->alias('is_participation_transferable')->next()
+            ->integer('amountOfLoanNeeded')->alias('amount_of_loan_needed')->next()
             ->get();
 
         $project->fill($data);

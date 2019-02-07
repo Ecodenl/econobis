@@ -14,7 +14,7 @@ import ContactGroupAPI from '../../../../../api/contact-group/ContactGroupAPI';
 import ProjectFormEditGeneral from './ProjectFormEditGeneral';
 import ProjectFormEditLoan from './ProjectFormEditLoan';
 import ProjectFormEditObligation from './ProjectFormEditObligation';
-import ProjectFormEditPostalcodeAreaCapital from './ProjectFormEditPostalcodeAreaCapital';
+import ProjectFormEditPostalcodeLinkCapital from './ProjectFormEditPostalcodeLinkCapital';
 
 class ProjectFormEdit extends Component {
     constructor(props) {
@@ -222,7 +222,7 @@ class ProjectFormEdit extends Component {
                     projectTypeId={projectTypeId}
                 />
 
-                <ProjectFormEditPostalcodeAreaCapital
+                <ProjectFormEditPostalcodeLinkCapital
                     postalcodeLink={postalcodeLink}
                     ean={ean}
                     taxReferral={taxReferral}

@@ -7,8 +7,7 @@ import ViewText from '../../../../../components/form/ViewText';
 import ProjectFormViewGeneral from './ProjectFormViewGeneral';
 import ProjectFormViewLoan from './ProjectFormViewLoan';
 import ProjectFormViewObligation from './ProjectFormViewObligation';
-import ProjectFormViewPostalcodeAreaCapital from './ProjectFormViewPostalcodeAreaCapital';
-import ProjectFormEditObligation from '../edit/ProjectFormEdit';
+import ProjectFormViewPostalcodeLinkCapital from './ProjectFormViewPostalcodeLinkCapital';
 
 const ProjectFormView = props => {
     const {
@@ -91,8 +90,7 @@ const ProjectFormView = props => {
                 projectTypeId={projectType.id}
             />
 
-            <ProjectFormViewPostalcodeAreaCapital
-                postalcodeLink={postalcodeLink}
+            <ProjectFormViewPostalcodeLinkCapital
                 ean={ean}
                 taxReferral={taxReferral}
                 eanManager={eanManager}

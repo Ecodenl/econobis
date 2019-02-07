@@ -21,7 +21,7 @@ class ProjectDetailsFormValueCourseNew extends Component {
                 date: '',
                 bookWorth: '',
                 transferWorth: '',
-                active: '',
+                active: false,
             },
             errors: {
                 bookWorth: false,

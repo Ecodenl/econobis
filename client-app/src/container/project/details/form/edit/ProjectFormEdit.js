@@ -170,25 +170,6 @@ class ProjectFormEdit extends Component {
             valueCourses,
         } = this.props.project;
 
-        const showEditLoan =
-            this.props.projectTypes.find(projectType => projectType.codeRef === 'loan').id == projectTypeId;
-
-        const checkEditObligationIds = [];
-        this.props.projectTypes.map(projectType => {
-            if (
-                projectType.codeRef === 'obligation' ||
-                projectType.codeRef === 'capital' ||
-                projectType.codeRef === 'postalcode_area_capital'
-            ) {
-                checkEditObligationIds.push(projectType.id);
-            }
-        });
-        const showEditObligation = checkEditObligationIds.includes(Number(projectTypeId));
-
-        const showEditPostalcodeAreaCapital =
-            this.props.projectTypes.find(projectType => projectType.codeRef === 'postalcode_area_capital').id ==
-            projectTypeId;
-
         return (
             <form className="form-horizontal col-md-12" onSubmit={this.handleSubmit}>
                 <ProjectFormEditGeneral
@@ -218,36 +199,35 @@ class ProjectFormEdit extends Component {
                     contactGroups={this.state.contactGroups}
                 />
 
-                {showEditLoan && <ProjectFormEditLoan handleInputChange={this.handleInputChange} />}
+                <ProjectFormEditLoan handleInputChange={this.handleInputChange} projectTypeId={projectTypeId} />
 
-                {showEditObligation && (
-                    <ProjectFormEditObligation
-                        participationWorth={participationWorth}
-                        issuedParticipations={issuedParticipations}
-                        participationsInOption={participationsInOption}
-                        issuableParticipations={issuableParticipations}
-                        totalParticipations={totalParticipations}
-                        powerKwAvailable={powerKwAvailable}
-                        minParticipations={minParticipations}
-                        maxParticipations={maxParticipations}
-                        maxParticipationsYouth={maxParticipationsYouth}
-                        isParticipationTransferable={isParticipationTransferable}
-                        valueCourses={valueCourses}
-                        handleInputChange={this.handleInputChange}
-                    />
-                )}
+                <ProjectFormEditObligation
+                    participationWorth={participationWorth}
+                    issuedParticipations={issuedParticipations}
+                    participationsInOption={participationsInOption}
+                    issuableParticipations={issuableParticipations}
+                    totalParticipations={totalParticipations}
+                    powerKwAvailable={powerKwAvailable}
+                    minParticipations={minParticipations}
+                    maxParticipations={maxParticipations}
+                    maxParticipationsYouth={maxParticipationsYouth}
+                    isParticipationTransferable={isParticipationTransferable}
+                    valueCourses={valueCourses}
+                    handleInputChange={this.handleInputChange}
+                    projectTypeId={projectTypeId}
+                />
 
-                {showEditPostalcodeAreaCapital && (
-                    <ProjectFormEditPostalcodeAreaCapital
-                        postalcodeLink={postalcodeLink}
-                        ean={ean}
-                        taxReferral={taxReferral}
-                        eanManager={eanManager}
-                        warrantyOrigin={warrantyOrigin}
-                        eanSupply={eanSupply}
-                        handleInputChange={this.handleInputChange}
-                    />
-                )}
+                <ProjectFormEditPostalcodeAreaCapital
+                    postalcodeLink={postalcodeLink}
+                    ean={ean}
+                    taxReferral={taxReferral}
+                    eanManager={eanManager}
+                    warrantyOrigin={warrantyOrigin}
+                    eanSupply={eanSupply}
+                    handleInputChange={this.handleInputChange}
+                    projectTypeId={projectTypeId}
+                />
+
                 <PanelFooter>
                     <div className="pull-right btn-group" role="group">
                         <ButtonText

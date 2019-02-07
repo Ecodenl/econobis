@@ -5,14 +5,14 @@ import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
 
 import ProjectFormEdit from './edit/ProjectFormEdit';
-import ProjectFormView from './ProjectFormView';
+import ProjectFormView from './view/ProjectFormView';
 
 class ProjectFormGeneral extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            showEdit: true,
+            showEdit: false,
             activeDiv: '',
         };
     }

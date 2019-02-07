@@ -1,6 +1,7 @@
 import React from 'react';
 import moment from 'moment/moment';
 import { connect } from 'react-redux';
+import MoneyPresenter from '../../../../helpers/MoneyPresenter';
 
 const ProjectDetailsFormValueCourseView = props => {
     const { project, date, bookWorth, transferWorth, active } = props.valueCourse;
@@ -14,8 +15,8 @@ const ProjectDetailsFormValueCourseView = props => {
             <div onClick={props.openEdit}>
                 <div className="col-sm-3">{project ? project.name : ''}</div>
                 <div className="col-sm-2">{date ? moment(date).format('L') : ''}</div>
-                <div className="col-sm-2">{`€${bookWorth}`}</div>
-                <div className="col-sm-2">{transferWorth ? `€${transferWorth}` : ''}</div>
+                <div className="col-sm-2">{MoneyPresenter(bookWorth)}</div>
+                <div className="col-sm-2">{MoneyPresenter(transferWorth)}</div>
                 <div className="col-sm-2">{active ? 'Ja' : ''}</div>
             </div>
             <div className="col-sm-1">

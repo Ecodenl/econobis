@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import validator from 'validator';
 import { isEqual } from 'lodash';
 
 import ProjectValueCourseAPI from '../../../../api/project/ProjectValueCourseAPI';
@@ -18,23 +17,10 @@ class ProjectDetailsFormValueCourseItem extends Component {
             highlightLine: '',
             showEdit: false,
             showDelete: false,
-            valueCourse: {
-                ...props.valueCourse,
-                bookWorth: props.valueCourse.bookWorth
-                    ? props.valueCourse.bookWorth.toLocaleString('nl', {
-                          minimumFractionDigits: 2,
-                          maximumFractionDigits: 2,
-                      })
-                    : '',
-                transferWorth: props.valueCourse.transferWorth
-                    ? props.valueCourse.transferWorth.toLocaleString('nl', {
-                          minimumFractionDigits: 2,
-                          maximumFractionDigits: 2,
-                      })
-                    : '',
-            },
+            valueCourse: props.valueCourse,
             errors: {
                 bookWorth: false,
+                date: false,
             },
         };
         this.handleInputChangeDate = this.handleInputChangeDate.bind(this);
@@ -44,21 +30,7 @@ class ProjectDetailsFormValueCourseItem extends Component {
         if (!isEqual(this.state.valueCourse, nextProps.valueCourse)) {
             this.setState({
                 ...this.state,
-                valueCourse: {
-                    ...nextProps.valueCourse,
-                    bookWorth: nextProps.valueCourse.bookWorth
-                        ? nextProps.valueCourse.bookWorth.toLocaleString('nl', {
-                              minimumFractionDigits: 2,
-                              maximumFractionDigits: 2,
-                          })
-                        : '',
-                    transferWorth: nextProps.valueCourse.transferWorth
-                        ? nextProps.valueCourse.transferWorth.toLocaleString('nl', {
-                              minimumFractionDigits: 2,
-                              maximumFractionDigits: 2,
-                          })
-                        : '',
-                },
+                valueCourse: nextProps.valueCourse,
             });
         }
     }
@@ -88,21 +60,7 @@ class ProjectDetailsFormValueCourseItem extends Component {
     cancelEdit = () => {
         this.setState({
             ...this.state,
-            valueCourse: {
-                ...this.props.valueCourse,
-                bookWorth: this.props.valueCourse.bookWorth
-                    ? this.props.valueCourse.bookWorth.toLocaleString('nl', {
-                          minimumFractionDigits: 2,
-                          maximumFractionDigits: 2,
-                      })
-                    : '',
-                transferWorth: this.props.valueCourse.transferWorth
-                    ? this.props.valueCourse.transferWorth.toLocaleString('nl', {
-                          minimumFractionDigits: 2,
-                          maximumFractionDigits: 2,
-                      })
-                    : '',
-            },
+            valueCourse: this.props.valueCourse,
         });
 
         this.closeEdit();
@@ -145,18 +103,25 @@ class ProjectDetailsFormValueCourseItem extends Component {
         let errors = {};
         let hasErrors = false;
 
-        if (validator.isEmpty(valueCourse.bookWorth + '')) {
+        if (valueCourse.bookWorth) {
+            if (isNaN(valueCourse.bookWorth)) {
+                valueCourse.bookWorth = valueCourse.bookWorth.replace(/,/g, '.');
+            }
+        } else {
             errors.bookWorth = true;
             hasErrors = true;
-        } else {
-            valueCourse.bookWorth = valueCourse.bookWorth.replace(/,/g, '.');
         }
 
-        if (!validator.isEmpty(valueCourse.transferWorth + '')) {
+        if (!valueCourse.date) {
+            errors.date = true;
+            hasErrors = true;
+        }
+
+        if (isNaN(valueCourse.transferWorth)) {
             valueCourse.transferWorth = valueCourse.transferWorth.replace(/,/g, '.');
         }
 
-        this.setState({ ...this.state, errors: errors });
+        this.setState({ errors });
 
         // If no errors send form
         !hasErrors &&
@@ -184,7 +149,7 @@ class ProjectDetailsFormValueCourseItem extends Component {
                         handleInputChange={this.handleInputChange}
                         handleInputChangeDate={this.handleInputChangeDate}
                         handleSubmit={this.handleSubmit}
-                        bookWorthError={this.state.errors.bookWorth}
+                        errors={this.state.errors}
                         cancelEdit={this.cancelEdit}
                     />
                 )}

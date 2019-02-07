@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import validator from 'validator';
 
 import ProjectValueCourseAPI from '../../../../api/project/ProjectValueCourseAPI';
 import { newValueCourse } from '../../../../actions/project/ProjectDetailsActions';
@@ -24,6 +23,7 @@ class ProjectDetailsFormValueCourseNew extends Component {
             },
             errors: {
                 bookWorth: false,
+                date: false,
             },
         };
         this.handleInputChangeDate = this.handleInputChangeDate.bind(this);
@@ -61,18 +61,25 @@ class ProjectDetailsFormValueCourseNew extends Component {
         let errors = {};
         let hasErrors = false;
 
-        if (validator.isEmpty(valueCourse.bookWorth)) {
+        if (valueCourse.bookWorth) {
+            if (isNaN(valueCourse.bookWorth)) {
+                valueCourse.bookWorth = valueCourse.bookWorth.replace(/,/g, '.');
+            }
+        } else {
             errors.bookWorth = true;
             hasErrors = true;
-        } else {
-            valueCourse.bookWorth = valueCourse.bookWorth.replace(/,/g, '.');
         }
 
-        if (!validator.isEmpty(valueCourse.transferWorth)) {
+        if (isNaN(valueCourse.transferWorth)) {
             valueCourse.transferWorth = valueCourse.transferWorth.replace(/,/g, '.');
         }
 
-        this.setState({ ...this.state, errors: errors });
+        if (!valueCourse.date) {
+            errors.date = true;
+            hasErrors = true;
+        }
+
+        this.setState({ errors });
 
         // If no errors send form
         !hasErrors &&
@@ -102,6 +109,7 @@ class ProjectDetailsFormValueCourseNew extends Component {
                                 value={date}
                                 onChangeAction={this.handleInputChangeDate}
                                 required={'required'}
+                                error={this.state.errors.date}
                             />
                         </div>
 

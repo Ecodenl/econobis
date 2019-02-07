@@ -15,7 +15,7 @@ const ProjectDetailsFormValueCourseEdit = ({
     handleInputChange,
     handleSubmit,
     cancelEdit,
-    bookWorthError,
+    errors,
 }) => {
     const { project, date, bookWorth, transferWorth, active, createdAt, createdBy } = valueCourse;
 
@@ -39,6 +39,7 @@ const ProjectDetailsFormValueCourseEdit = ({
                             value={date}
                             onChangeAction={handleInputChangeDate}
                             required={'required'}
+                            error={errors.date}
                         />
                     </div>
 
@@ -50,7 +51,7 @@ const ProjectDetailsFormValueCourseEdit = ({
                             value={bookWorth}
                             onChangeAction={handleInputChange}
                             required={'required'}
-                            error={bookWorthError}
+                            error={errors.bookWorthError}
                         />
                         <InputText
                             label={'Overdrachtswaarde'}

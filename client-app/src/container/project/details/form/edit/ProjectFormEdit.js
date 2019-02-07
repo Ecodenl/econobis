@@ -166,6 +166,7 @@ class ProjectFormEdit extends Component {
             issuableParticipations,
             administration,
             hasPaymentInvoices,
+            valueCourses,
         } = this.props.project;
 
         const showEditLoan =
@@ -229,6 +230,7 @@ class ProjectFormEdit extends Component {
                         maxParticipations={maxParticipations}
                         maxParticipationsYouth={maxParticipationsYouth}
                         isParticipationTransferable={isParticipationTransferable}
+                        valueCourses={valueCourses}
                         handleInputChange={this.handleInputChange}
                     />
                 )}

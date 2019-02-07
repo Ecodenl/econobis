@@ -26,11 +26,11 @@ class ProjectDetailsFormValueCourseItem extends Component {
         this.handleInputChangeDate = this.handleInputChangeDate.bind(this);
     }
 
-    componentWillReceiveProps(nextProps) {
-        if (!isEqual(this.state.valueCourse, nextProps.valueCourse)) {
+    componentDidUpdate(prevProps) {
+        if (!isEqual(prevProps.valueCourse, this.props.valueCourse)) {
             this.setState({
                 ...this.state,
-                valueCourse: nextProps.valueCourse,
+                valueCourse: this.props.valueCourse,
             });
         }
     }

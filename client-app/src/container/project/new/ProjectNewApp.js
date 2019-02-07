@@ -3,13 +3,18 @@ import validator from 'validator';
 import { hashHistory } from 'react-router';
 
 import ProjectNewToolbar from './ProjectNewToolbar';
-import ProjectNew from './ProjectNew';
 
 import ProjectDetailsAPI from '../../../api/project/ProjectDetailsAPI';
 import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
 import { connect } from 'react-redux';
 import ContactGroupAPI from '../../../api/contact-group/ContactGroupAPI';
+import PanelFooter from '../../../components/panel/PanelFooter';
+import ButtonText from '../../../components/button/ButtonText';
+import ProjectFormNewGeneral from './form/ProjectNewGeneral';
+import ProjectFormNewPostalcodeLinkCapital from './form/ProjectNewPostalcodeLinkCapital';
+import ProjectFormNewObligation from './form/ProjectNewObligation';
+import ProjectFormNewLoan from './form/ProjectFormNewLoan';
 
 class ProjectNewApp extends Component {
     constructor(props) {
@@ -25,6 +30,7 @@ class ProjectNewApp extends Component {
                 ownedById: '',
                 projectStatusId: '',
                 dateStart: '',
+                dateEnd: '',
                 dateProduction: '',
                 dateStartRegistrations: '',
                 dateEndRegistrations: '',
@@ -48,6 +54,7 @@ class ProjectNewApp extends Component {
                 isParticipationTransferable: false,
                 postalcodeLink: '',
                 contactGroupIds: '',
+                amountOfLoanNeeded: '',
             },
             errors: {
                 name: false,
@@ -153,6 +160,40 @@ class ProjectNewApp extends Component {
     };
 
     render() {
+        const {
+            name,
+            code,
+            description,
+            ownedById,
+            projectStatusId,
+            dateStart,
+            dateEnd,
+            dateProduction,
+            dateStartRegistrations,
+            dateEndRegistrations,
+            projectTypeId,
+            postalCode,
+            address,
+            city,
+            ean,
+            eanManager,
+            warrantyOrigin,
+            eanSupply,
+            participationWorth,
+            powerKwAvailable,
+            maxParticipations,
+            taxReferral,
+            maxParticipationsYouth,
+            totalParticipations,
+            minParticipations,
+            isMembershipRequired,
+            isParticipationTransferable,
+            administrationId,
+            postalcodeLink,
+            contactGroupIds,
+            amountOfLoanNeeded,
+        } = this.state.project;
+
         return (
             <div className="row">
                 <div className="col-md-9">
@@ -163,20 +204,72 @@ class ProjectNewApp extends Component {
                     <div className="col-md-12">
                         <Panel>
                             <PanelBody>
-                                <div className="col-md-12">
-                                    <ProjectNew
-                                        administrations={this.props.administrations}
-                                        contactGroups={this.state.contactGroups}
-                                        project={this.state.project}
-                                        errors={this.state.errors}
+                                <form className="form-horizontal col-md-12" onSubmit={this.handleSubmit}>
+                                    <ProjectFormNewGeneral
+                                        name={name}
+                                        code={code}
+                                        description={description}
+                                        projectStatusId={projectStatusId}
+                                        projectTypeId={projectTypeId}
+                                        address={address}
+                                        postalCode={postalCode}
+                                        city={city}
+                                        dateStartRegistrations={dateStartRegistrations}
+                                        dateEndRegistrations={dateEndRegistrations}
+                                        ownedById={ownedById}
+                                        administrationId={administrationId}
+                                        dateStart={dateStart}
+                                        dateEnd={dateEnd}
+                                        dateProduction={dateProduction}
+                                        contactGroupIds={contactGroupIds}
+                                        isMembershipRequired={isMembershipRequired}
                                         handleInputChange={this.handleInputChange}
                                         handleInputChangeDate={this.handleInputChangeDate}
                                         handleContactGroupIds={this.handleContactGroupIds}
-                                        handleSubmit={this.handleSubmit}
-                                        toggleShowPostalCodeLinkFields={this.toggleShowPostalCodeLinkFields}
-                                        showPostalCodeLinkFields={this.state.showPostalCodeLinkFields}
+                                        errors={this.state.errors}
+                                        contactGroups={this.state.contactGroups}
                                     />
-                                </div>
+
+                                    <ProjectFormNewLoan
+                                        amountOfLoanNeeded={amountOfLoanNeeded}
+                                        handleInputChange={this.handleInputChange}
+                                        projectTypeId={projectTypeId}
+                                    />
+
+                                    <ProjectFormNewObligation
+                                        participationWorth={participationWorth}
+                                        totalParticipations={totalParticipations}
+                                        powerKwAvailable={powerKwAvailable}
+                                        minParticipations={minParticipations}
+                                        maxParticipations={maxParticipations}
+                                        maxParticipationsYouth={maxParticipationsYouth}
+                                        isParticipationTransferable={isParticipationTransferable}
+                                        handleInputChange={this.handleInputChange}
+                                        projectTypeId={projectTypeId}
+                                    />
+
+                                    <ProjectFormNewPostalcodeLinkCapital
+                                        postalcodeLink={postalcodeLink}
+                                        ean={ean}
+                                        taxReferral={taxReferral}
+                                        eanManager={eanManager}
+                                        warrantyOrigin={warrantyOrigin}
+                                        eanSupply={eanSupply}
+                                        handleInputChange={this.handleInputChange}
+                                        projectTypeId={projectTypeId}
+                                    />
+
+                                    <PanelFooter>
+                                        <div className="pull-right btn-group" role="group">
+                                            <ButtonText
+                                                buttonText={'Opslaan'}
+                                                onClickAction={this.handleSubmit}
+                                                type={'submit'}
+                                                value={'Submit'}
+                                            />
+                                        </div>
+                                    </PanelFooter>
+                                </form>
                             </PanelBody>
                         </Panel>
                     </div>

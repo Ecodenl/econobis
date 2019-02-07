@@ -8,6 +8,7 @@ import ButtonText from '../../../../components/button/ButtonText';
 import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
 import InputDate from '../../../../components/form/InputDate';
+import InputToggle from '../../../../components/form/InputToggle';
 
 class ProjectDetailsFormValueCourseNew extends Component {
     constructor(props) {
@@ -20,6 +21,7 @@ class ProjectDetailsFormValueCourseNew extends Component {
                 date: '',
                 bookWorth: '',
                 transferWorth: '',
+                active: '',
             },
             errors: {
                 bookWorth: false,
@@ -90,7 +92,7 @@ class ProjectDetailsFormValueCourseNew extends Component {
     };
 
     render() {
-        const { date, bookWorth, transferWorth } = this.state.valueCourse;
+        const { date, bookWorth, transferWorth, active } = this.state.valueCourse;
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -126,6 +128,15 @@ class ProjectDetailsFormValueCourseNew extends Component {
                                 label={'Overdrachtswaarde'}
                                 name={'transferWorth'}
                                 value={transferWorth}
+                                onChangeAction={this.handleInputChange}
+                            />
+                        </div>
+
+                        <div className="row">
+                            <InputToggle
+                                label={'Actief'}
+                                name={'active'}
+                                value={active}
                                 onChangeAction={this.handleInputChange}
                             />
                         </div>

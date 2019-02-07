@@ -21,8 +21,6 @@ const ProjectFormEditObligation = ({
     projectTypes,
     projectTypeId,
 }) => {
-    const activeValueCourse = valueCourses.find(valueCourse => valueCourse.active);
-
     const checkEditObligationIds = [];
     projectTypes.map(projectType => {
         if (
@@ -41,6 +39,8 @@ const ProjectFormEditObligation = ({
             : 'participatie';
 
     if (showEditObligation) {
+        const activeValueCourse = valueCourses.find(valueCourse => valueCourse.active);
+
         return (
             <React.Fragment>
                 <hr style={{ margin: '10px 0' }} />
@@ -64,7 +64,7 @@ const ProjectFormEditObligation = ({
                     <InputText
                         label={'Huidige boekwaarde'}
                         name={'activeBookWorth'}
-                        value={MoneyPresenter(activeValueCourse.bookWorth)}
+                        value={activeValueCourse && MoneyPresenter(activeValueCourse.bookWorth)}
                         readOnly={true}
                     />
                     <InputText
@@ -78,7 +78,7 @@ const ProjectFormEditObligation = ({
                     <InputText
                         label={'Huidige overdrachtswaarde'}
                         name={'activeTransferWorth'}
-                        value={MoneyPresenter(activeValueCourse.transferWorth)}
+                        value={activeValueCourse && MoneyPresenter(activeValueCourse.transferWorth)}
                         readOnly={true}
                     />
                     <InputText

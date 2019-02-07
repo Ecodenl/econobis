@@ -137,6 +137,7 @@ class ProjectFormEdit extends Component {
             projectTypeId,
             address,
             postalCode,
+            city,
             dateStartRegistrations,
             dateEndRegistrations,
             ownedById,
@@ -198,6 +199,7 @@ class ProjectFormEdit extends Component {
                     projectTypeId={projectTypeId}
                     address={address}
                     postalCode={postalCode}
+                    city={city}
                     dateStartRegistrations={dateStartRegistrations}
                     dateEndRegistrations={dateEndRegistrations}
                     ownedById={ownedById}

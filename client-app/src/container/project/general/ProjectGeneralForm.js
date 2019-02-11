@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { isEmpty } from 'lodash';
 
-import ProjectGeneralFormGeneral from './form/ProjectGeneralFormGeneral';
+import ProjectGeneralFormView from './form/ProjectGeneralFormView';
 import ParticipantsListApp from './participant/list/ParticipantsListApp';
 
 class ProjectGeneralForm extends Component {
@@ -15,7 +15,7 @@ class ProjectGeneralForm extends Component {
             <div>Geen gegevens gevonden.</div>
         ) : (
             <div>
-                <ProjectGeneralFormGeneral />
+                <ProjectGeneralFormView />
                 <ParticipantsListApp />
             </div>
         );

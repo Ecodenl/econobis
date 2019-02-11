@@ -2,57 +2,63 @@ import React from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment';
 moment.locale('nl');
+import { startCase } from 'lodash';
 
 import ViewText from '../../../../components/form/ViewText';
+import Panel from '../../../../components/panel/Panel';
+import PanelBody from '../../../../components/panel/PanelBody';
 
-const ProjectGeneralFormView = props => {
+const ProjectGeneralFormView = ({ project, projectTypes }) => {
     const {
         name,
         dateStart,
-        participationWorth,
-        totalParticipations,
+        projectStatus,
         issuedParticipations,
         participationsInOption,
         issuableParticipations,
-        participationsWorthTotal,
-        amountOfParticipants,
-    } = props.project;
+        projectTypeId,
+    } = project;
+
+    const formatParticipation =
+        projectTypes.find(projectType => projectType.codeRef === 'obligation').id == projectTypeId
+            ? 'obligatie'
+            : 'participatie';
 
     return (
-        <div>
-            <div className="row">
-                <ViewText label={'Naam'} value={name} />
-            </div>
+        <Panel>
+            <PanelBody>
+                <div className="row">
+                    <ViewText label={'Project'} value={name} />
+                    <ViewText
+                        label={`Uitgegeven ${formatParticipation}s`}
+                        value={issuedParticipations && issuedParticipations}
+                    />
+                </div>
 
-            <div className="row">
-                <ViewText label={'Totaal aantal deelnames'} value={totalParticipations && totalParticipations} />
-                <ViewText label={'Startdatum'} value={dateStart ? moment(dateStart).format('L') : ''} />
-            </div>
+                <div className="row">
+                    <ViewText label={'Status'} value={projectStatus && projectStatus.name} />
+                    <ViewText
+                        label={`${startCase(formatParticipation)}s in optie`}
+                        value={participationsInOption && participationsInOption}
+                    />
+                </div>
 
-            <div className="row">
-                <ViewText label={'Uitgegeven deelnames'} value={issuedParticipations && issuedParticipations} />
-                <ViewText label={'Waarde per deelname'} value={participationWorth ? '€ ' + participationWorth : ''} />
-            </div>
-
-            <div className="row">
-                <ViewText label={'Deelnames in optie'} value={participationsInOption && participationsInOption} />
-                <ViewText
-                    label={'Waarde deelnames totaal'}
-                    value={participationsWorthTotal ? '€ ' + participationsWorthTotal : ''}
-                />
-            </div>
-
-            <div className="row">
-                <ViewText label={'Uit te geven deelnames'} value={issuableParticipations && issuableParticipations} />
-                <ViewText label={'Aantal deelnemers'} value={amountOfParticipants && amountOfParticipants} />
-            </div>
-        </div>
+                <div className="row">
+                    <ViewText label={'Start project'} value={dateStart ? moment(dateStart).format('L') : ''} />
+                    <ViewText
+                        label={`Uit te geven ${formatParticipation}s`}
+                        value={issuableParticipations && issuableParticipations}
+                    />
+                </div>
+            </PanelBody>
+        </Panel>
     );
 };
 
 const mapStateToProps = state => {
     return {
         project: state.projectDetails,
+        projectTypes: state.systemData.projectTypes,
     };
 };
 

@@ -109,6 +109,10 @@ class ProjectFormEdit extends Component {
             project.contactGroupIds = '';
         }
 
+        if (isNaN(project.amountOfLoanNeeded)) {
+            project.amountOfLoanNeeded = project.amountOfLoanNeeded.replace(/,/g, '.');
+        }
+
         this.setState({ ...this.state, errors: errors });
 
         !hasErrors &&

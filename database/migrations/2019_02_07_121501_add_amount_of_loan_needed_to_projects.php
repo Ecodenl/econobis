@@ -14,7 +14,7 @@ class AddAmountOfLoanNeededToProjects extends Migration
     public function up()
     {
         Schema::table('projects', function (Blueprint $table) {
-            $table->integer('amount_of_loan_needed')->nullable()->after('is_participation_transferable');
+            $table->double('amount_of_loan_needed', 11, 2)->nullable()->after('is_participation_transferable');
         });
     }
 

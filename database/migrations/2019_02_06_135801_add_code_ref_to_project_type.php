@@ -30,7 +30,7 @@ class AddCodeRefToProjectType extends Migration
         $projectTypeCapital->save();
 
         $projectTypePostal = \App\Eco\Project\ProjectType::where('name', 'Postcoderoos kapitaal')->first();
-        $projectTypePostal->code_ref = 'postalcode_area_capital';
+        $projectTypePostal->code_ref = 'postalcode_link_capital';
         $projectTypePostal->save();
     }
 

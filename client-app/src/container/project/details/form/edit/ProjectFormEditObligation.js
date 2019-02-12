@@ -26,7 +26,7 @@ const ProjectFormEditObligation = ({
         if (
             projectType.codeRef === 'obligation' ||
             projectType.codeRef === 'capital' ||
-            projectType.codeRef === 'postalcode_area_capital'
+            projectType.codeRef === 'postalcode_link_capital'
         ) {
             checkEditObligationIds.push(projectType.id);
         }

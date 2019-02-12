@@ -24,7 +24,7 @@ const ProjectFormViewObligation = ({
         if (
             projectType.codeRef === 'obligation' ||
             projectType.codeRef === 'capital' ||
-            projectType.codeRef === 'postalcode_area_capital'
+            projectType.codeRef === 'postalcode_link_capital'
         ) {
             checkViewObligationIds.push(projectType.id);
         }

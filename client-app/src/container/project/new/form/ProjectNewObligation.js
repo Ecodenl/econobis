@@ -26,7 +26,7 @@ const ProjectFormNewObligation = ({
         if (
             projectType.codeRef === 'obligation' ||
             projectType.codeRef === 'capital' ||
-            projectType.codeRef === 'postalcode_area_capital'
+            projectType.codeRef === 'postalcode_link_capital'
         ) {
             checkNewObligationIds.push(projectType.id);
         }

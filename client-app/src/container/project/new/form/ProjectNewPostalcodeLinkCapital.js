@@ -14,7 +14,7 @@ const ProjectFormNewPostalcodeLinkCapital = ({
     projectTypeId,
 }) => {
     const showNewPostalcodeLinkCapital =
-        projectTypes.find(projectType => projectType.codeRef === 'postalcode_area_capital').id == projectTypeId;
+        projectTypes.find(projectType => projectType.codeRef === 'postalcode_link_capital').id == projectTypeId;
 
     if (showNewPostalcodeLinkCapital) {
         return (

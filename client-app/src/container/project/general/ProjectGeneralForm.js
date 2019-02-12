@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { isEmpty } from 'lodash';
 
 import ProjectGeneralFormView from './form/ProjectGeneralFormView';
-import ParticipantsListApp from './participant/list/ParticipantsListApp';
+import ParticipantsListApp from '../../participant-project/list/ParticipantsListApp';
 
 class ProjectGeneralForm extends Component {
     constructor(props) {

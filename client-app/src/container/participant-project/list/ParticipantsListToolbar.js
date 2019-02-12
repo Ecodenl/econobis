@@ -16,7 +16,7 @@ const ParticipantsListToolbar = props => {
                     {props.permissions.manageParticipation && (
                         <ButtonIcon
                             iconName={'glyphicon-plus'}
-                            onClickAction={() => hashHistory.push(`/project/participant/nieuw/${props.project.id}`)}
+                            onClickAction={() => hashHistory.push(`/project/deelnemer/nieuw/${props.project.id}`)}
                         />
                     )}
                     <ButtonIcon iconName={'glyphicon-filter'} onClickAction={props.toggleShowExtraFilters} />

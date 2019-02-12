@@ -174,7 +174,7 @@ const Routes = () => {
                 <Route path="document/nieuw/:type/offerteverzoek/:quotationRequestId" component={DocumentNewApp} />
                 <Route path="document/nieuw/:type/project/:projectId" component={DocumentNewApp} />
                 <Route
-                    path="document/nieuw/:type/project/:projectId/participant/:participantId/contact/:contactId"
+                    path="document/nieuw/:type/project/:projectId/deelnemer/:participantId/contact/:contactId"
                     component={DocumentNewApp}
                 />
                 <Route path="document/:id" component={DocumentDetailsApp} />
@@ -274,10 +274,10 @@ const Routes = () => {
                 <Route path="project/:id" component={ProjectGeneralApp} />
                 <Route path="projecten" component={ProjectsListApp} />
                 <Route path="deelnemers" component={ParticipantListApp} />
-                <Route path="project/participant/:participationId/overdragen" component={ParticipationTransferApp} />
-                <Route path="project/participant/nieuw/:projectId" component={ParticipantNewApp} />
-                <Route path="project/participant/nieuw/contact/:contactId" component={ParticipantNewApp} />
-                <Route path="project/participant/:id" component={ParticipantDetailsApp} />
+                <Route path="project/deelnemer/:participationId/overdragen" component={ParticipationTransferApp} />
+                <Route path="project/deelnemer/nieuw/:projectId" component={ParticipantNewApp} />
+                <Route path="project/deelnemer/nieuw/contact/:contactId" component={ParticipantNewApp} />
+                <Route path="project/deelnemer/:id" component={ParticipantDetailsApp} />
                 /* Task / notes */
                 <Route path="taak/nieuw" component={TaskNewApp} />
                 <Route path="taak/nieuw/:closed" component={TaskNewApp} />
@@ -287,7 +287,7 @@ const Routes = () => {
                 <Route path="taak/nieuw/:type/:id" component={TaskNewApp} />
                 <Route path="taak/nieuw/kans/:opportunityId/contact/:contactId" component={TaskNewApp} />
                 <Route
-                    path="taak/nieuw/contact/:contactId/project/:projectId/participant/:participantId"
+                    path="taak/nieuw/contact/:contactId/project/:projectId/deelnemer/:participantId"
                     component={TaskNewApp}
                 />
                 <Route path="taken" component={TasksListApp} />

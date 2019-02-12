@@ -149,7 +149,7 @@ class ParticipationTransferApp extends Component {
 
         !hasErrors &&
             ParticipantProjectDetailsAPI.transferParticipation(participationTransfer).then(payload => {
-                hashHistory.push(`/project/participant/${participationTransfer.participationId}`);
+                hashHistory.push(`/project/deelnemer/${participationTransfer.participationId}`);
             });
     };
 

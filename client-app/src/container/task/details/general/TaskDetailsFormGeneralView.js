@@ -153,7 +153,7 @@ const TaskDetailsFormGeneralView = props => {
                             <ViewText
                                 label={'Participant project'}
                                 value={participant && participant.name}
-                                link={participant ? 'project/participant/' + participant.id : ''}
+                                link={participant ? 'project/deelnemer/' + participant.id : ''}
                             />
                             <ViewText
                                 label={'Order'}

@@ -28,7 +28,7 @@ class ParticipantsListItem extends Component {
     }
 
     openItem(id) {
-        hashHistory.push(`/project/participant/${id}`);
+        hashHistory.push(`/project/deelnemer/${id}`);
     }
 
     render() {

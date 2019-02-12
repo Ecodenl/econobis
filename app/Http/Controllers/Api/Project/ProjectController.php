@@ -199,7 +199,11 @@ class ProjectController extends ApiController
 
     public function peek()
     {
-        return ProjectPeek::collection(Project::orderBy('id')->get());
+        $projects = Project::orderBy('id')->get();
+
+        $projects->load(['projectType']);
+
+        return ProjectPeek::collection($projects);
     }
 
     public function getObligationNumbers(Project $project){

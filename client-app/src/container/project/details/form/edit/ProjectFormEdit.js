@@ -33,6 +33,7 @@ class ProjectFormEdit extends Component {
             errors: {
                 name: false,
                 code: false,
+                projectTypeId: false,
                 ownedById: false,
                 postalCode: false,
                 contactGroupIds: false,
@@ -86,6 +87,11 @@ class ProjectFormEdit extends Component {
 
         if (validator.isEmpty('' + project.code)) {
             errors.code = true;
+            hasErrors = true;
+        }
+
+        if (!project.projectTypeId) {
+            errors.projectTypeId = true;
             hasErrors = true;
         }
 

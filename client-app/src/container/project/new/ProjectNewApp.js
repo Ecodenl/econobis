@@ -59,6 +59,7 @@ class ProjectNewApp extends Component {
             errors: {
                 name: false,
                 code: false,
+                projectTypeId: false,
                 ownedById: false,
                 postalCode: false,
                 contactGroupIds: false,
@@ -114,6 +115,11 @@ class ProjectNewApp extends Component {
 
         if (validator.isEmpty('' + project.code)) {
             errors.code = true;
+            hasErrors = true;
+        }
+
+        if (!project.projectTypeId) {
+            errors.projectTypeId = true;
             hasErrors = true;
         }
 

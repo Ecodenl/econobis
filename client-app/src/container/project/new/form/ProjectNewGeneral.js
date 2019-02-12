@@ -64,6 +64,8 @@ const ProjectFormNewGeneral = ({
                 options={projectTypes}
                 value={projectTypeId}
                 onChangeAction={handleInputChange}
+                required={'required'}
+                error={errors.projectTypeId}
             />
             <InputSelect
                 label={'Status'}

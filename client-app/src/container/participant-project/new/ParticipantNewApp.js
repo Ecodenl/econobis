@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import validator from 'validator';
-import { hashHistory } from 'react-router';
+import { browserHistory, hashHistory } from 'react-router';
 
 import ParticipantNewToolbar from './ParticipantNewToolbar';
-import ParticipantNew from './ParticipantNew';
-import { setError } from '../../..//actions/general/ErrorActions';
+import ParticipantFormDefaultGeneral from '../form-default/ParticipantFormDefaultGeneral';
+import { setError } from '../../../actions/general/ErrorActions';
 
 import ParticipantProjectDetailsAPI from '../../../api/participant-project/ParticipantProjectDetailsAPI';
 import Panel from '../../../components/panel/Panel';
@@ -14,6 +14,7 @@ import ContactsAPI from '../../../api/contact/ContactsAPI';
 import ProjectsAPI from '../../../api/project/ProjectsAPI';
 import { connect } from 'react-redux';
 import MultipleMessagesModal from '../../../components/modal/MultipleMessagesModal';
+import moment from 'moment';
 
 class ParticipantNewApp extends Component {
     constructor(props) {
@@ -28,27 +29,25 @@ class ParticipantNewApp extends Component {
             contacts: [],
             projects: [],
             participationWorth: 0,
-            isPCR: false,
+            projectTypeCodeRef: '',
             participation: {
                 contactId: props.params.contactId || '',
                 statusId: 1,
                 projectId: props.params.projectId || '',
                 dateRegister: '',
-                participationsRequested: '',
-                participationsGranted: '',
-                participationsSold: '',
-                participationsRestSale: '',
                 dateContractSend: '',
                 dateContractRetour: '',
                 datePayed: '',
                 didAcceptAgreement: false,
                 giftedByContactId: '',
                 ibanPayout: '',
-                legalRepContactId: '',
                 ibanPayoutAttn: '',
+                date: moment(),
                 dateEnd: '',
                 typeId: '',
                 powerKwhConsumption: '',
+                participationsRequested: '',
+                participationsGranted: '',
             },
             errors: {
                 contactId: false,
@@ -59,10 +58,9 @@ class ParticipantNewApp extends Component {
                 powerKwhConsumption: false,
             },
         };
-        this.handleInputChangeDate = this.handleInputChangeDate.bind(this);
     }
 
-    componentWillMount() {
+    componentDidMount() {
         ContactsAPI.getContactsPeek().then(payload => {
             this.setState({
                 contacts: payload,
@@ -75,20 +73,18 @@ class ParticipantNewApp extends Component {
             });
 
             if (this.props.params.projectId) {
-                const id = this.props.params.projectId;
+                const projectId = this.props.params.projectId;
 
-                let project = payload.find(project => project.id == id);
-                let isPCR = false;
+                let project = payload.find(project => project.id == projectId);
 
-                if (project.typeId == 2) {
-                    //pcr
-                    isPCR = true;
+                if (project.codeRef == 'postalcode_link_capital') {
                     this.setState({
                         ...this.state,
                         participation: {
                             ...this.state.participation,
                             typeId: 3, //energieleverancier
                         },
+                        projectTypeCodeRef: project.codeRef,
                     });
                 } else {
                     this.setState({
@@ -97,13 +93,13 @@ class ParticipantNewApp extends Component {
                             ...this.state.participation,
                             typeId: 1, //op rekening
                         },
+                        projectTypeCodeRef: project.codeRef,
                     });
                 }
 
                 this.setState({
                     ...this.state,
                     participationWorth: project.participationWorth,
-                    isPCR: isPCR,
                 });
             }
         });
@@ -124,16 +120,10 @@ class ParticipantNewApp extends Component {
 
         let selectedProject = this.state.projects.find(project => project.id == value);
 
-        let isPCR = false;
-
-        if (selectedProject.typeId == 2) {
-            isPCR = true;
-        }
-
         this.setState({
             ...this.state,
-            isPCR: isPCR,
             participationWorth: selectedProject.participationWorth,
+            projectTypeCodeRef: selectedProject.codeRef,
             participation: {
                 ...this.state.participation,
                 [name]: value,
@@ -155,7 +145,7 @@ class ParticipantNewApp extends Component {
         });
     };
 
-    handleInputChangeDate(value, name) {
+    handleInputChangeDate = (value, name) => {
         this.setState({
             ...this.state,
             participation: {
@@ -163,7 +153,7 @@ class ParticipantNewApp extends Component {
                 [name]: value,
             },
         });
-    }
+    };
 
     handleSubmit = event => {
         event.preventDefault();
@@ -189,10 +179,6 @@ class ParticipantNewApp extends Component {
             errors.typeId = true;
             hasErrors = true;
         }
-        if (validator.isEmpty(participation.powerKwhConsumption + '') && this.state.isPCR) {
-            errors.powerKwhConsumption = true;
-            hasErrors = true;
-        }
         if (!validator.isEmpty(participation.ibanPayout)) {
             if (!ibantools.isValidIBAN(participation.ibanPayout)) {
                 errors.ibanPayout = true;
@@ -212,11 +198,11 @@ class ParticipantNewApp extends Component {
                     this.setState({
                         modalRedirectTask: `/taak/nieuw/contact/${participation.contactId}/project/${
                             participation.projectId
-                        }/participant/${payload.data.id}`,
-                        modalRedirectParticipation: `/project/participant/${payload.data.id}`,
+                        }/deelnemer/${payload.data.id}`,
+                        modalRedirectParticipation: `/project/deelnemer/${payload.data.id}`,
                     });
                 } else {
-                    hashHistory.push(`/project/participant/${payload.data.id}`);
+                    hashHistory.push(`/project/deelnemer/${payload.data.id}`);
                 }
             });
     };
@@ -233,17 +219,18 @@ class ParticipantNewApp extends Component {
                         <Panel>
                             <PanelBody>
                                 <div className="col-md-12">
-                                    <ParticipantNew
+                                    <ParticipantFormDefaultGeneral
                                         participation={this.state.participation}
                                         errors={this.state.errors}
                                         handleInputChange={this.handleInputChange}
                                         handleInputChangeDate={this.handleInputChangeDate}
+                                        handleCancel={browserHistory.goBack}
                                         handleSubmit={this.handleSubmit}
                                         contacts={this.state.contacts}
                                         projects={this.state.projects}
                                         participationWorth={this.state.participationWorth}
                                         handleProjectChange={this.handleProjectChange}
-                                        isPCR={this.state.isPCR}
+                                        projectTypeCodeRef={this.state.projectTypeCodeRef}
                                     />
                                 </div>
                             </PanelBody>
@@ -255,10 +242,11 @@ class ParticipantNewApp extends Component {
                     <MultipleMessagesModal
                         closeModal={this.redirectParticipation}
                         buttonCancelText={'Ga naar deelname'}
-                        children={this.state.modalText}
                         confirmAction={this.redirectTask}
                         buttonConfirmText={'Maak taak aan'}
-                    />
+                    >
+                        {this.state.modalText}
+                    </MultipleMessagesModal>
                 )}
             </div>
         );

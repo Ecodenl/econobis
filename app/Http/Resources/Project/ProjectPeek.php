@@ -21,7 +21,7 @@ class ProjectPeek extends Resource
                 'name' => $this->name,
                 'participationWorth' => $this->participation_worth,
                 'typeId' => $this->project_type_id,
-                'codeRef' => $this->projectType->code_ref,
+                'typeCodeRef' => $this->projectType->code_ref,
             ];
     }
 }

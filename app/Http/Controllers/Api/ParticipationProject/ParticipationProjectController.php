@@ -154,7 +154,7 @@ class ParticipationProjectController extends ApiController
     {
         $participantProject->load([
             'contact',
-            'project',
+            'project.projectType',
             'participantProjectStatus',
             'participantProjectPayoutType',
             'giftedByContact',

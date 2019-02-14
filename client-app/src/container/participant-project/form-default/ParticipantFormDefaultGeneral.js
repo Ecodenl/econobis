@@ -10,11 +10,13 @@ import ButtonText from '../../../components/button/ButtonText';
 import PanelFooter from '../../../components/panel/PanelFooter';
 import InputText from '../../../components/form/InputText';
 import InputToggle from '../../../components/form/InputToggle';
+import ParticipantFormDefaultObligation from './ParticipantFormDefaultObligation';
+import ParticipantFormDefaultCapital from './ParticipantFormDefaultCapital';
 
 const ParticipantFormDefaultGeneral = ({
+    editForm,
     participation,
     errors,
-    readOnlyFields,
     handleInputChange,
     handleInputChangeDate,
     handleProjectChange,
@@ -28,18 +30,22 @@ const ParticipantFormDefaultGeneral = ({
 }) => {
     const {
         contactId,
+        contactName,
         statusId,
         projectId,
+        projectName,
         dateRegister,
         participationsRequested,
         participationsGranted,
+        participationsSold,
+        participationWorth,
         dateContractSend,
         dateContractRetour,
         didAcceptAgreement,
         giftedByContactId,
         ibanPayout,
         ibanPayoutAttn,
-        date,
+        updatedAt,
         dateEnd,
         typeId,
     } = participation;
@@ -47,20 +53,32 @@ const ParticipantFormDefaultGeneral = ({
     return (
         <form className="form-horizontal col-md-12" onSubmit={handleSubmit}>
             <div className="row">
-                <InputSelect
-                    label={'Contact'}
-                    name={'contactId'}
-                    options={contacts}
-                    optionName={'fullName'}
-                    value={contactId}
-                    onChangeAction={handleInputChange}
-                    required={'required'}
-                    error={errors.contactId}
-                    readOnly={readOnlyFields.contactId}
-                />
+                {editForm ? (
+                    <InputText
+                        label={'Contact'}
+                        name={'contactName'}
+                        id={'contactName'}
+                        value={contactName}
+                        onChangeAction={() => {}}
+                        readOnly={true}
+                    />
+                ) : (
+                    <InputSelect
+                        label={'Contact'}
+                        name={'contactId'}
+                        id={'contactId'}
+                        options={contacts}
+                        optionName={'fullName'}
+                        value={contactId}
+                        onChangeAction={handleInputChange}
+                        required={'required'}
+                        error={errors.contactId}
+                    />
+                )}
                 <InputSelect
                     label={'Status'}
                     name={'statusId'}
+                    id={'statusId'}
                     options={participantProjectStatuses}
                     value={statusId}
                     onChangeAction={handleInputChange}
@@ -70,29 +88,49 @@ const ParticipantFormDefaultGeneral = ({
             </div>
 
             <div className="row">
-                <InputSelect
-                    label={'Project'}
-                    name={'projectId'}
-                    options={projects}
-                    value={projectId}
-                    onChangeAction={handleProjectChange}
-                    required={'required'}
-                    error={errors.projectId}
-                    readOnly={readOnlyFields.contactId}
-                />
+                {editForm ? (
+                    <InputText
+                        label={'Project'}
+                        name={'projectName'}
+                        id={'projectName'}
+                        value={projectName}
+                        onChangeAction={() => {}}
+                        readOnly={true}
+                    />
+                ) : (
+                    <InputSelect
+                        label={'Project'}
+                        name={'projectId'}
+                        id={'projectId'}
+                        options={projects}
+                        value={projectId}
+                        onChangeAction={handleProjectChange}
+                        required={'required'}
+                        error={errors.projectId}
+                    />
+                )}
                 <InputDate
                     label={'Contract verstuurd'}
                     name={'dateContractSend'}
+                    id={'dateContractSend'}
                     value={dateContractSend}
                     onChangeAction={handleInputChangeDate}
                 />
             </div>
 
             <div className="row">
-                <InputText label={'Datum'} name={'date'} value={date && moment(date).format('L')} readOnly={true} />
+                <InputText
+                    label={'Datum'}
+                    name={'updatedAt'}
+                    id={'updatedAt'}
+                    value={updatedAt && moment(updatedAt.date).format('L')}
+                    onChangeAction={() => {}}
+                    readOnly={true}
+                />
                 <InputDate
                     label={'Contract retour'}
                     name={'dateContractRetour'}
+                    id={'dateContractRetour'}
                     value={dateContractRetour}
                     onChangeAction={handleInputChangeDate}
                 />
@@ -103,6 +141,7 @@ const ParticipantFormDefaultGeneral = ({
                 <InputDate
                     label={'Einddatum'}
                     name={'dateEnd'}
+                    id={'dateEnd'}
                     value={dateEnd}
                     onChangeAction={handleInputChangeDate}
                 />
@@ -112,12 +151,14 @@ const ParticipantFormDefaultGeneral = ({
                 <InputToggle
                     label={'Akkoord reglement'}
                     name={'didAcceptAgreement'}
+                    id={'didAcceptAgreement'}
                     value={didAcceptAgreement}
                     onChangeAction={handleInputChange}
                 />
                 <InputDate
                     label={'Inschrijfdatum'}
                     name={'dateRegister'}
+                    id={'dateRegister'}
                     value={dateRegister}
                     onChangeAction={handleInputChangeDate}
                 />
@@ -127,6 +168,7 @@ const ParticipantFormDefaultGeneral = ({
                 <InputSelect
                     label={'Schenker'}
                     name={'giftedByContactId'}
+                    id={'giftedByContactId'}
                     options={contacts}
                     optionName={'fullName'}
                     value={giftedByContactId}
@@ -135,6 +177,7 @@ const ParticipantFormDefaultGeneral = ({
                 <InputText
                     label={'IBAN uitkeren'}
                     name={'ibanPayout'}
+                    id={'ibanPayout'}
                     value={ibanPayout}
                     onChangeAction={handleInputChange}
                     error={errors.ibanPayout}
@@ -145,6 +188,7 @@ const ParticipantFormDefaultGeneral = ({
                 <InputText
                     label={`Huidige saldo ${projectTypeCodeRef === 'loan' ? 'lening' : 'kapitaal'} rekening`}
                     name={'totalWorthParticipations'}
+                    id={'totalWorthParticipations'}
                     value={statusId == 2 ? (participationsGranted - participationsSold) * participationWorth : 0}
                     onChangeAction={() => {}}
                     readOnly={true}
@@ -152,6 +196,7 @@ const ParticipantFormDefaultGeneral = ({
                 <InputText
                     label={'IBAN uitkeren t.n.v.'}
                     name={'ibanPayoutAttn'}
+                    id={'ibanPayoutAttn'}
                     value={ibanPayoutAttn}
                     onChangeAction={handleInputChange}
                 />
@@ -161,12 +206,15 @@ const ParticipantFormDefaultGeneral = ({
                 <InputText
                     label={'Totale opbrengsten'}
                     name={'totalWorthParticipations'}
+                    id={'totalWorthParticipations'}
                     value={statusId == 2 ? (participationsGranted - participationsSold) * participationWorth : 0}
                     readOnly={true}
+                    onChangeAction={() => {}}
                 />
                 <InputSelect
                     label={'Uitkeren op'}
                     name={'typeId'}
+                    id={'typeId'}
                     options={participantProjectPayoutTypes}
                     value={typeId}
                     onChangeAction={handleInputChange}
@@ -176,53 +224,19 @@ const ParticipantFormDefaultGeneral = ({
             </div>
 
             {projectTypeCodeRef === 'obligation' ? (
-                <React.Fragment>
-                    <hr style={{ margin: '10px 0' }} />
-                    <h4>Obligaties</h4>
-                    <div className="row">
-                        <InputText
-                            type={'number'}
-                            label={'Obligaties aangevraagd'}
-                            name={'participationsRequested'}
-                            value={participationsRequested}
-                            onChangeAction={handleInputChange}
-                        />
-                    </div>
-                    <div className="row">
-                        <InputText
-                            type={'number'}
-                            label={'Obligaties toegekend'}
-                            name={'participationsGranted'}
-                            value={participationsGranted}
-                            onChangeAction={handleInputChange}
-                        />
-                    </div>
-                </React.Fragment>
+                <ParticipantFormDefaultObligation
+                    participationsRequested={participationsRequested}
+                    participationsGranted={participationsGranted}
+                    handleInputChange={handleInputChange}
+                />
             ) : null}
 
             {projectTypeCodeRef === 'capital' ? (
-                <React.Fragment>
-                    <hr style={{ margin: '10px 0' }} />
-                    <h4>Kapitaal</h4>
-                    <div className="row">
-                        <InputText
-                            type={'number'}
-                            label={'Participaties aangevraagd'}
-                            name={'participationsRequested'}
-                            value={participationsRequested}
-                            onChangeAction={handleInputChange}
-                        />
-                    </div>
-                    <div className="row">
-                        <InputText
-                            type={'number'}
-                            label={'Participaties toegekend'}
-                            name={'participationsGranted'}
-                            value={participationsGranted}
-                            onChangeAction={handleInputChange}
-                        />
-                    </div>
-                </React.Fragment>
+                <ParticipantFormDefaultCapital
+                    participationsRequested={participationsRequested}
+                    participationsGranted={participationsGranted}
+                    handleInputChange={handleInputChange}
+                />
             ) : null}
 
             {projectTypeCodeRef === 'postalcode_link_capital' ? (
@@ -243,21 +257,22 @@ const ParticipantFormDefaultGeneral = ({
 };
 
 ParticipantFormDefaultGeneral.defaultProps = {
+    editForm: false,
     errors: {},
-    readOnlyFields: {},
     handleProjectChange: () => {},
     contacts: [],
+    projects: [],
     projectTypeCodeRef: '',
 };
 
 ParticipantFormDefaultGeneral.propTypes = {
+    editForm: PropTypes.bool,
     buttonClassName: PropTypes.string,
     iconName: PropTypes.string.isRequired,
     onClickAction: PropTypes.func,
     title: PropTypes.string,
     participation: PropTypes.object.isRequired,
     errors: PropTypes.object,
-    readOnlyFields: PropTypes.object,
     handleInputChange: PropTypes.func.isRequired,
     handleInputChangeDate: PropTypes.func.isRequired,
     handleProjectChange: PropTypes.func,

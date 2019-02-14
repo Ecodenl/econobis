@@ -4,6 +4,8 @@ import moment from 'moment';
 moment.locale('nl');
 
 import ViewText from '../../../../components/form/ViewText';
+import ParticipantFormViewObligation from './view/ParticipantFormViewObligation';
+import ParticipantFormViewCapital from './view/ParticipantFormViewCapital';
 
 const ParticipantFormView = props => {
     const {
@@ -17,18 +19,18 @@ const ParticipantFormView = props => {
         participationsCurrent,
         participationsWorthTotal,
         participationsRestSale,
+        updatedAt,
         dateContractSend,
         dateContractRetour,
-        datePayed,
         didAcceptAgreement,
         giftedByContact,
         ibanPayout,
-        legalRepContact,
         ibanPayoutAttn,
         dateEnd,
         type,
-        powerKwhConsumption,
     } = props.participantProject;
+
+    const projectTypeCodeRef = props.participantProject.project.projectType.codeRef;
 
     return (
         <div>
@@ -47,38 +49,14 @@ const ParticipantFormView = props => {
                     value={project ? project.name : ''}
                     link={project ? 'project/' + project.id : ''}
                 />
-                <ViewText label={'Inschrijfdatum'} value={dateRegister ? moment(dateRegister).format('L') : ''} />
-            </div>
-
-            <div className="row" onClick={props.switchToEdit}>
-                <ViewText
-                    label={'Deelnames aangevraagd'}
-                    value={participationsRequested ? participationsRequested : ''}
-                />
-                <ViewText label={'Deelnames toegekend'} value={participationsGranted ? participationsGranted : ''} />
-            </div>
-
-            <div className="row" onClick={props.switchToEdit}>
-                <ViewText label={'Deelnames overgedragen'} value={participationsSold ? participationsSold : ''} />
-                <ViewText
-                    label={'Huidig aantal deelnames'}
-                    value={participationsCurrent ? participationsCurrent : ''}
-                />
-            </div>
-
-            <div className="row" onClick={props.switchToEdit}>
-                <ViewText label={'Waarde deelnames'} value={participationsWorthTotal ? participationsWorthTotal : ''} />
-                <ViewText
-                    label={'Restverkoop deelnames'}
-                    value={participationsRestSale ? participationsRestSale : ''}
-                />
-            </div>
-
-            <div className="row" onClick={props.switchToEdit}>
                 <ViewText
                     label={'Contract verstuurd'}
                     value={dateContractSend ? moment(dateContractSend).format('L') : ''}
                 />
+            </div>
+
+            <div className="row" onClick={props.switchToEdit}>
+                <ViewText label={'Datum'} value={updatedAt ? moment(updatedAt.date).format('L') : ''} />
                 <ViewText
                     label={'Contract retour'}
                     value={dateContractRetour ? moment(dateContractRetour).format('L') : ''}
@@ -86,33 +64,49 @@ const ParticipantFormView = props => {
             </div>
 
             <div className="row" onClick={props.switchToEdit}>
-                <ViewText label={'Betaald op'} value={datePayed ? moment(datePayed).format('L') : ''} />
-                <ViewText label={'Akkoord reglement'} value={didAcceptAgreement ? 'Ja' : 'Nee'} />
+                <ViewText label={'Administratie'} value={'???'} />
+                <ViewText label={'Einddatum'} value={dateEnd ? moment(dateEnd.date).format('L') : ''} />
             </div>
 
             <div className="row" onClick={props.switchToEdit}>
-                <ViewText label={'Geschonken door'} value={giftedByContact ? giftedByContact.fullName : ''} />
+                <ViewText label={'Akkoord reglement'} value={didAcceptAgreement ? 'Ja' : 'Nee'} />
+                <ViewText label={'Inschrijfdatum'} value={dateRegister ? moment(dateRegister).format('L') : ''} />
+            </div>
+            <div className="row" onClick={props.switchToEdit}>
+                <ViewText label={'Schenker'} value={giftedByContact ? giftedByContact.fullName : ''} />
                 <ViewText label={'IBAN uitkeren'} value={ibanPayout ? ibanPayout : ''} />
             </div>
-
             <div className="row" onClick={props.switchToEdit}>
-                <ViewText
-                    label={'Wettelijke vertegenwoordiger'}
-                    className={'col-xs-6 field-to-be-removed'}
-                    value={legalRepContact ? legalRepContact.fullName : ''}
-                />
+                <ViewText label={'Huidige saldo kapitaal rekening'} value={'????'} />
                 <ViewText label={'IBAN uitkeren t.n.v.'} value={ibanPayoutAttn ? ibanPayoutAttn : ''} />
             </div>
-
             <div className="row" onClick={props.switchToEdit}>
-                <ViewText label={'Einddatum'} value={dateEnd ? moment(dateEnd).format('L') : ''} />
+                <ViewText label={'Totale opbrengsten'} value={'????'} />
                 <ViewText label={'Uitkeren op'} value={type ? type.name : ''} />
             </div>
-            {props.participantProject.project.typeId == 2 && (
-                <div className="row" onClick={props.switchToEdit}>
-                    <ViewText label={'Jaarlijks verbruik'} value={powerKwhConsumption && powerKwhConsumption} />
-                </div>
-            )}
+
+            {projectTypeCodeRef === 'obligation' ? (
+                <ParticipantFormViewObligation
+                    onClick={props.switchToEdit}
+                    participationsRequested={participationsRequested}
+                    participationsGranted={participationsGranted}
+                />
+            ) : null}
+
+            {projectTypeCodeRef === 'capital' ? (
+                <ParticipantFormViewCapital
+                    onClick={props.switchToEdit}
+                    participationsRequested={participationsRequested}
+                    participationsGranted={participationsGranted}
+                />
+            ) : null}
+
+            {projectTypeCodeRef === 'postalcode_link_capital' ? (
+                <React.Fragment>
+                    <hr style={{ margin: '10px 0' }} />
+                    <h4>Postcoderoos</h4>
+                </React.Fragment>
+            ) : null}
         </div>
     );
 };

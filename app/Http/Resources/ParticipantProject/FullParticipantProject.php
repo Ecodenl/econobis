@@ -52,6 +52,7 @@ class FullParticipantProject extends Resource
                 'type' => GenericResource::make($this->whenLoaded('participantProjectPayoutType')),
                 'powerKwhConsumption' => $this->power_kwh_consumption,
                 'createdAt' => $this->created_at,
+                'updatedAt' => $this->updated_at,
                 'participantTransactions' => FullParticipantTransaction::collection($this->whenLoaded('transactions')),
                 'obligationNumbers' => GenericResource::collection($this->whenLoaded('obligationNumbers')),
                 'documentCount' => $this->documents()->count(),

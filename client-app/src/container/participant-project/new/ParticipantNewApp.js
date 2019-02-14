@@ -42,7 +42,7 @@ class ParticipantNewApp extends Component {
                 giftedByContactId: '',
                 ibanPayout: '',
                 ibanPayoutAttn: '',
-                date: moment(),
+                updatedAt: moment(),
                 dateEnd: '',
                 typeId: '',
                 powerKwhConsumption: '',
@@ -77,14 +77,14 @@ class ParticipantNewApp extends Component {
 
                 let project = payload.find(project => project.id == projectId);
 
-                if (project.codeRef == 'postalcode_link_capital') {
+                if (project.typeCodeRef == 'postalcode_link_capital') {
                     this.setState({
                         ...this.state,
                         participation: {
                             ...this.state.participation,
                             typeId: 3, //energieleverancier
                         },
-                        projectTypeCodeRef: project.codeRef,
+                        projectTypeCodeRef: project.typeCodeRef,
                     });
                 } else {
                     this.setState({
@@ -93,7 +93,7 @@ class ParticipantNewApp extends Component {
                             ...this.state.participation,
                             typeId: 1, //op rekening
                         },
-                        projectTypeCodeRef: project.codeRef,
+                        projectTypeCodeRef: project.typeCodeRef,
                     });
                 }
 
@@ -123,7 +123,7 @@ class ParticipantNewApp extends Component {
         this.setState({
             ...this.state,
             participationWorth: selectedProject.participationWorth,
-            projectTypeCodeRef: selectedProject.codeRef,
+            projectTypeCodeRef: selectedProject.typeCodeRef,
             participation: {
                 ...this.state.participation,
                 [name]: value,
@@ -220,6 +220,7 @@ class ParticipantNewApp extends Component {
                             <PanelBody>
                                 <div className="col-md-12">
                                     <ParticipantFormDefaultGeneral
+                                        editForm={false}
                                         participation={this.state.participation}
                                         errors={this.state.errors}
                                         handleInputChange={this.handleInputChange}

@@ -5,7 +5,7 @@ import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
 import ButtonIcon from '../../../components/button/ButtonIcon';
 
-const ParticipantNewToolbar = () => (
+const ParticipantNewToolbar = ({ projectTypeName }) => (
     <div className="row">
         <div className="col-sm-12">
             <Panel>

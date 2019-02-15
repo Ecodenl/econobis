@@ -9,7 +9,7 @@ import InputDate from '../../../../components/form/InputDate';
 import moment from 'moment/moment';
 moment.locale('nl');
 
-const TransactionFormEdit = props => {
+const MutationFormEdit = props => {
     const {
         type,
         dateTransaction,
@@ -20,7 +20,7 @@ const TransactionFormEdit = props => {
         dateBooking,
         createdAt,
         createdBy,
-    } = props.participantTransaction;
+    } = props.participantMutation;
 
     return (
         <div>
@@ -30,7 +30,7 @@ const TransactionFormEdit = props => {
                         <div className="row">
                             <InputText label={'Type'} id={'type'} name={'type'} value={type.name} readOnly={true} />
                             <InputDate
-                                label="Transactie datum"
+                                label="M datum"
                                 name="dateTransaction"
                                 value={dateTransaction}
                                 onChangeAction={props.handleInputChangeDate}
@@ -122,11 +122,11 @@ const TransactionFormEdit = props => {
 
 const mapStateToProps = state => {
     return {
-        participantTransactionTypes: state.systemData.participantTransactionTypes,
+        participantMutationTypes: state.systemData.participantMutationTypes,
     };
 };
 
 export default connect(
     mapStateToProps,
     null
-)(TransactionFormEdit);
+)(MutationFormEdit);

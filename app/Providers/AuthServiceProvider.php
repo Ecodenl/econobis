@@ -40,8 +40,8 @@ use App\Eco\ParticipantProject\ObligationNumber;
 use App\Eco\ParticipantProject\ObligationNumberPolicy;
 use App\Eco\ParticipantProject\ParticipantProject;
 use App\Eco\ParticipantProject\ParticipantProjectPolicy;
-use App\Eco\ParticipantTransaction\ParticipantTransaction;
-use App\Eco\ParticipantTransaction\ParticipantTransactionPolicy;
+use App\Eco\ParticipantMutation\ParticipantMutation;
+use App\Eco\ParticipantMutation\ParticipantMutationPolicy;
 use App\Eco\Person\Person;
 use App\Eco\Person\PersonPolicy;
 use App\Eco\PhoneNumber\PhoneNumber;
@@ -106,7 +106,7 @@ class AuthServiceProvider extends ServiceProvider
         ProjectValueCourse::class => ProjectValueCoursePolicy::class,
         ParticipantProject::class => ParticipantProjectPolicy::class,
         ObligationNumber::class => ObligationNumberPolicy::class,
-        ParticipantTransaction::class => ParticipantTransactionPolicy::class,
+        ParticipantMutation::class => ParticipantMutationPolicy::class,
         Administration::class => AdministrationPolicy::class,
         Product::class => ProductPolicy::class,
         Order::class => OrderPolicy::class,

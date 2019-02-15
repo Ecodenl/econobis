@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import ParticipantTransactionAPI from '../../../../api/participant-project/ParticipantTransactionAPI';
-import { newParticipationTransaction } from '../../../../actions/participants-project/ParticipantProjectDetailsActions';
+import ParticipantMutationAPI from '../../../../api/participant-project/ParticipantMutationAPI';
+import { newParticipationMutation } from '../../../../actions/participants-project/ParticipantProjectDetailsActions';
 import InputText from '../../../../components/form/InputText';
 import ButtonText from '../../../../components/button/ButtonText';
 import InputSelect from '../../../../components/form/InputSelect';
@@ -12,15 +12,15 @@ import validator from 'validator';
 import InputDate from '../../../../components/form/InputDate';
 import * as ibantools from 'ibantools';
 
-class TransactionFormNew extends Component {
+class MutationFormNew extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            participationTransaction: {
+            participationMutation: {
                 participationId: this.props.id,
                 typeId: '',
-                dateTransaction: '',
+                dateMutation: '',
                 amount: '',
                 iban: '',
                 referral: '',
@@ -29,7 +29,7 @@ class TransactionFormNew extends Component {
             },
             errors: {
                 typeId: false,
-                dateTransaction: false,
+                dateMutation: false,
                 amount: false,
                 iban: false,
             },
@@ -45,8 +45,8 @@ class TransactionFormNew extends Component {
 
         this.setState({
             ...this.state,
-            participationTransaction: {
-                ...this.state.participationTransaction,
+            participationMutation: {
+                ...this.state.participationMutation,
                 [name]: value,
             },
         });
@@ -55,8 +55,8 @@ class TransactionFormNew extends Component {
     handleInputChangeDate(value, name) {
         this.setState({
             ...this.state,
-            participationTransaction: {
-                ...this.state.participationTransaction,
+            participationMutation: {
+                ...this.state.participationMutation,
                 [name]: value,
             },
         });
@@ -65,28 +65,28 @@ class TransactionFormNew extends Component {
     handleSubmit = event => {
         event.preventDefault();
 
-        const { participationTransaction } = this.state;
+        const { participationMutation } = this.state;
 
         let errors = {};
         let hasErrors = false;
 
-        if (validator.isEmpty(participationTransaction.typeId)) {
+        if (validator.isEmpty(participationMutation.typeId)) {
             errors.typeId = true;
             hasErrors = true;
         }
 
-        if (validator.isEmpty(participationTransaction.dateTransaction)) {
-            errors.dateTransaction = true;
+        if (validator.isEmpty(participationMutation.dateMutation)) {
+            errors.dateMutation = true;
             hasErrors = true;
         }
 
-        if (validator.isEmpty(participationTransaction.amount)) {
+        if (validator.isEmpty(participationMutation.amount)) {
             errors.amount = true;
             hasErrors = true;
         }
 
-        if (!validator.isEmpty(participationTransaction.iban)) {
-            if (!ibantools.isValidIBAN(participationTransaction.iban)) {
+        if (!validator.isEmpty(participationMutation.iban)) {
+            if (!ibantools.isValidIBAN(participationMutation.iban)) {
                 errors.iban = true;
                 hasErrors = true;
             }
@@ -96,22 +96,14 @@ class TransactionFormNew extends Component {
 
         // If no errors send form
         !hasErrors &&
-            ParticipantTransactionAPI.newParticipantTransaction(participationTransaction).then(payload => {
-                this.props.newParticipationTransaction(payload);
+            ParticipantMutationAPI.newParticipantMutation(participationMutation).then(payload => {
+                this.props.newParticipationMutation(payload);
                 this.props.toggleShowNew();
             });
     };
 
     render() {
-        const {
-            typeId,
-            dateTransaction,
-            amount,
-            iban,
-            referral,
-            entry,
-            dateBooking,
-        } = this.state.participationTransaction;
+        const { typeId, dateMutation, amount, iban, referral, entry, dateBooking } = this.state.participationMutation;
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -122,7 +114,7 @@ class TransactionFormNew extends Component {
                                 label={'Soort'}
                                 id="typeId"
                                 name={'typeId'}
-                                options={this.props.participantTransactionTypes}
+                                options={this.props.participantMutationTypes}
                                 value={typeId}
                                 onChangeAction={this.handleInputChange}
                                 required={'required'}
@@ -130,8 +122,8 @@ class TransactionFormNew extends Component {
                             />
                             <InputDate
                                 label="Transactie datum"
-                                name="dateTransaction"
-                                value={dateTransaction}
+                                name="dateMutation"
+                                value={dateMutation}
                                 onChangeAction={this.handleInputChangeDate}
                                 required={'required'}
                             />
@@ -206,18 +198,18 @@ class TransactionFormNew extends Component {
 
 const mapStateToProps = state => {
     return {
-        participantTransactionTypes: state.systemData.participantTransactionTypes,
+        participantMutationTypes: state.systemData.participantMutationTypes,
         id: state.participantProjectDetails.id,
     };
 };
 
 const mapDispatchToProps = dispatch => ({
-    newParticipationTransaction: participationTransaction => {
-        dispatch(newParticipationTransaction(participationTransaction));
+    newParticipationMutation: participationMutation => {
+        dispatch(newParticipationMutation(participationMutation));
     },
 });
 
 export default connect(
     mapStateToProps,
     mapDispatchToProps
-)(TransactionFormNew);
+)(MutationFormNew);

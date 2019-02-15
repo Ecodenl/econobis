@@ -1,16 +1,16 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import ParticipantTransactionAPI from '../../../../api/participant-project/ParticipantTransactionAPI';
-import { updateParticipationTransaction } from '../../../../actions/participants-project/ParticipantProjectDetailsActions';
-import TransactionFormView from './TransactionFormView';
-import TransactionFormEdit from './TransactionFormEdit';
-import TransactionFormDelete from './TransactionFormDelete';
+import ParticipantMutationAPI from '../../../../api/participant-project/ParticipantMutationAPI';
+import { updateParticipationMutation } from '../../../../actions/participants-project/ParticipantProjectDetailsActions';
+import MutationFormView from './MutationFormView';
+import MutationFormEdit from './MutationFormEdit';
+import MutationFormDelete from './MutationFormDelete';
 import { isEqual } from 'lodash';
 import * as ibantools from 'ibantools';
 import validator from 'validator';
 
-class TransactionFormListItem extends Component {
+class MutationFormListItem extends Component {
     constructor(props) {
         super(props);
 
@@ -19,11 +19,11 @@ class TransactionFormListItem extends Component {
             highlightLine: '',
             showEdit: false,
             showDelete: false,
-            participantTransaction: {
-                ...props.participantTransaction,
+            participantMutation: {
+                ...props.participantMutation,
             },
             errors: {
-                dateTransaction: false,
+                dateMutation: false,
                 amount: false,
                 iban: false,
             },
@@ -33,11 +33,11 @@ class TransactionFormListItem extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        if (!isEqual(this.state.participantTransaction, nextProps.participantTransaction)) {
+        if (!isEqual(this.state.participantMutation, nextProps.participantMutation)) {
             this.setState({
                 ...this.state,
-                participantTransaction: {
-                    ...nextProps.participantTransaction,
+                participantMutation: {
+                    ...nextProps.participantMutation,
                 },
             });
         }
@@ -68,7 +68,7 @@ class TransactionFormListItem extends Component {
     cancelEdit = () => {
         this.setState({
             ...this.state,
-            participantTransaction: { ...this.props.participantTransaction },
+            participantMutation: { ...this.props.participantMutation },
         });
 
         this.closeEdit();
@@ -85,8 +85,8 @@ class TransactionFormListItem extends Component {
 
         this.setState({
             ...this.state,
-            participantTransaction: {
-                ...this.state.participantTransaction,
+            participantMutation: {
+                ...this.state.participantMutation,
                 [name]: value,
             },
         });
@@ -95,8 +95,8 @@ class TransactionFormListItem extends Component {
     handleInputChangeDate(value, name) {
         this.setState({
             ...this.state,
-            participantTransaction: {
-                ...this.state.participantTransaction,
+            participantMutation: {
+                ...this.state.participantMutation,
                 [name]: value,
             },
         });
@@ -108,20 +108,20 @@ class TransactionFormListItem extends Component {
         let errors = {};
         let hasErrors = false;
 
-        const { participantTransaction } = this.state;
+        const { participantMutation } = this.state;
 
-        if (validator.isEmpty(participantTransaction.dateTransaction + '')) {
-            errors.dateTransaction = true;
+        if (validator.isEmpty(participantMutation.dateMutation + '')) {
+            errors.dateMutation = true;
             hasErrors = true;
         }
 
-        if (validator.isEmpty(participantTransaction.amount + '')) {
+        if (validator.isEmpty(participantMutation.amount + '')) {
             errors.amount = true;
             hasErrors = true;
         }
 
-        if (participantTransaction.iban && !validator.isEmpty(participantTransaction.iban + '')) {
-            if (!ibantools.isValidIBAN(participantTransaction.iban + '')) {
+        if (participantMutation.iban && !validator.isEmpty(participantMutation.iban + '')) {
+            if (!ibantools.isValidIBAN(participantMutation.iban + '')) {
                 errors.iban = true;
                 hasErrors = true;
             }
@@ -131,8 +131,8 @@ class TransactionFormListItem extends Component {
 
         // If no errors send form
         !hasErrors &&
-            ParticipantTransactionAPI.updateParticipantTransaction(participantTransaction).then(payload => {
-                this.props.updateParticipationTransaction(payload);
+            ParticipantMutationAPI.updateParticipantMutation(participantMutation).then(payload => {
+                this.props.updateParticipationMutation(payload);
                 this.closeEdit();
             });
     };
@@ -140,18 +140,18 @@ class TransactionFormListItem extends Component {
     render() {
         return (
             <div>
-                <TransactionFormView
+                <MutationFormView
                     highlightLine={this.state.highlightLine}
                     showActionButtons={this.state.showActionButtons}
                     onLineEnter={this.onLineEnter}
                     onLineLeave={this.onLineLeave}
                     openEdit={this.openEdit}
                     toggleDelete={this.toggleDelete}
-                    participantTransaction={this.state.participantTransaction}
+                    participantMutation={this.state.participantMutation}
                 />
                 {this.state.showEdit && this.props.permissions.manageFinancial && (
-                    <TransactionFormEdit
-                        participantTransaction={this.state.participantTransaction}
+                    <MutationFormEdit
+                        participantMutation={this.state.participantMutation}
                         handleInputChange={this.handleInputChange}
                         handleInputChangeDate={this.handleInputChangeDate}
                         handleSubmit={this.handleSubmit}
@@ -160,10 +160,7 @@ class TransactionFormListItem extends Component {
                     />
                 )}
                 {this.state.showDelete && this.props.permissions.manageFinancial && (
-                    <TransactionFormDelete
-                        closeDeleteItemModal={this.toggleDelete}
-                        {...this.props.participantTransaction}
-                    />
+                    <MutationFormDelete closeDeleteItemModal={this.toggleDelete} {...this.props.participantMutation} />
                 )}
             </div>
         );
@@ -177,12 +174,12 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => ({
-    updateParticipationTransaction: participationTransaction => {
-        dispatch(updateParticipationTransaction(participationTransaction));
+    updateParticipationMutation: participationMutation => {
+        dispatch(updateParticipationMutation(participationMutation));
     },
 });
 
 export default connect(
     mapStateToProps,
     mapDispatchToProps
-)(TransactionFormListItem);
+)(MutationFormListItem);

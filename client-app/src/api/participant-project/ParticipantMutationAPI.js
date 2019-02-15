@@ -1,15 +1,15 @@
 import axios from 'axios';
 
-const URL_PARTICIPANT_TRANSACTION = `${URL_API}/api/project/participant/transaction`;
+const URL_PARTICIPANT_MUTATION = `${URL_API}/api/project/participant/mutation`;
 
 export default {
-    newParticipantTransaction: participantTransaction => {
-        const requestUrl = `${URL_PARTICIPANT_TRANSACTION}`;
+    newParticipantMutation: participantMutation => {
+        const requestUrl = `${URL_PARTICIPANT_MUTATION}`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
         return axios
-            .post(requestUrl, participantTransaction)
+            .post(requestUrl, participantMutation)
             .then(function(response) {
                 return response.data.data;
             })
@@ -18,13 +18,13 @@ export default {
             });
     },
 
-    updateParticipantTransaction: participantTransaction => {
-        const requestUrl = `${URL_PARTICIPANT_TRANSACTION}/${participantTransaction.id}`;
+    updateParticipantMutation: participantMutation => {
+        const requestUrl = `${URL_PARTICIPANT_MUTATION}/${participantMutation.id}`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
         return axios
-            .post(requestUrl, participantTransaction)
+            .post(requestUrl, participantMutation)
             .then(function(response) {
                 return response.data.data;
             })
@@ -33,8 +33,8 @@ export default {
             });
     },
 
-    deleteParticipantTransaction: id => {
-        const requestUrl = `${URL_PARTICIPANT_TRANSACTION}/${id}/delete`;
+    deleteParticipantMutation: id => {
+        const requestUrl = `${URL_PARTICIPANT_MUTATION}/${id}/delete`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 

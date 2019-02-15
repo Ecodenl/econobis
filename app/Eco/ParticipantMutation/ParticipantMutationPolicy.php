@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Eco\ParticipantTransaction;
+namespace App\Eco\ParticipantMutation;
 
 use App\Eco\User\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
-class ParticipantTransactionPolicy
+class ParticipantMutationPolicy
 {
     use HandlesAuthorization;
 

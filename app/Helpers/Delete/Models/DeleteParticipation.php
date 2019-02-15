@@ -58,7 +58,7 @@ class DeleteParticipation implements DeleteInterface
      */
     public function canDelete()
     {
-        if($this->participation->transactions()->count() > 0){
+        if($this->participation->mutations()->count() > 0){
             array_push($this->errorMessage, "Er is al een financiële transactie.");
         }
 

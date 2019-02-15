@@ -3,17 +3,8 @@ import moment from 'moment/moment';
 import { connect } from 'react-redux';
 moment.locale('nl');
 
-const TransactionFormView = props => {
-    const {
-        type,
-        dateTransaction,
-        amount,
-        iban,
-        referral,
-        entry,
-        dateBooking,
-        deletedAt,
-    } = props.participantTransaction;
+const MutationFormView = props => {
+    const { type, dateMutation, amount, iban, referral, entry, dateBooking, deletedAt } = props.participantMutation;
 
     return (
         <div
@@ -31,7 +22,7 @@ const TransactionFormView = props => {
                         type.name
                     )}
                 </div>
-                <div className="col-sm-2">{dateTransaction ? moment(dateTransaction).format('L') : ''}</div>
+                <div className="col-sm-2">{dateMutation ? moment(dateMutation).format('L') : ''}</div>
                 <div className="col-sm-2">{amount}</div>
                 <div className="col-sm-2">{iban}</div>
                 <div className="col-sm-2">{referral}</div>
@@ -66,4 +57,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps)(TransactionFormView);
+export default connect(mapStateToProps)(MutationFormView);

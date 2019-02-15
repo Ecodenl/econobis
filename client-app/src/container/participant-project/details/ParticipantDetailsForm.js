@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { isEmpty } from 'lodash';
 
 import ParticipantFormGeneral from './form/ParticipantFormGeneral';
-import TransactionForm from './transaction/TransactionForm';
+import MutationForm from './mutation/MutationForm';
 import ObligationNumberForm from './obligation-number/ObligationNumberForm';
 
 class ParticipantDetailsForm extends Component {
@@ -30,7 +30,7 @@ class ParticipantDetailsForm extends Component {
         ) : (
             <div>
                 <ParticipantFormGeneral />
-                <TransactionForm />
+                <MutationForm />
 
                 {projectTypeCodeRef === 'obligation' ? <ObligationNumberForm /> : null}
             </div>

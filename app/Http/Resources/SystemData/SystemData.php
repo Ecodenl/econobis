@@ -40,7 +40,7 @@ use App\Eco\Mailbox\MailgunDomain;
 use App\Eco\Occupation\Occupation;
 use App\Eco\ParticipantProject\ParticipantProjectPayoutType;
 use App\Eco\ParticipantProject\ParticipantProjectStatus;
-use App\Eco\ParticipantTransaction\ParticipantTransactionType;
+use App\Eco\ParticipantMutation\ParticipantMutationType;
 use App\Eco\PaymentInvoice\PaymentInvoiceStatus;
 use App\Eco\PersonType\PersonType;
 use App\Eco\PhoneNumber\PhoneNumberType;
@@ -166,7 +166,7 @@ class SystemData extends Resource
             'projectTypes' => GenericResource::collection(ProjectType::all()),
             'participantProjectStatus' => GenericResource::collection(ParticipantProjectStatus::all()),
             'participantProjectPayoutTypes' => GenericResource::collection(ParticipantProjectPayoutType::all()),
-            'participantTransactionTypes' => GenericResource::collection(ParticipantTransactionType::all()),
+            'participantMutationTypes' => GenericResource::collection(ParticipantMutationType::all()),
             'projectRevenueTypes' => GenericResource::collection(ProjectRevenueType::all()),
             'projectRevenueCategories' => GenericResource::collection(ProjectRevenueCategory::all()),
             'versionNumber' => 'Versie: ' . config('app.version_major') . '.' . config('app.version_minor') . '.' . config('app.version_fix'),

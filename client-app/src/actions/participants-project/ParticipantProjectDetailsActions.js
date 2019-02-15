@@ -25,23 +25,23 @@ export const deleteParticipantProject = id => {
     };
 };
 
-export const newParticipationTransaction = participationTransactions => {
+export const newParticipationMutation = participationMutations => {
     return {
-        type: 'NEW_PARTICIPATION_TRANSACTION',
-        participationTransactions,
+        type: 'NEW_PARTICIPATION_MUTATION',
+        participationMutations,
     };
 };
 
-export const updateParticipationTransaction = participationTransactions => {
+export const updateParticipationMutation = participationMutations => {
     return {
-        type: 'UPDATE_PARTICIPATION_TRANSACTION',
-        participationTransactions,
+        type: 'UPDATE_PARTICIPATION_MUTATION',
+        participationMutations,
     };
 };
 
-export const deleteParticipationTransaction = id => {
+export const deleteParticipationMutation = id => {
     return {
-        type: 'DELETE_PARTICIPATION_TRANSACTION',
+        type: 'DELETE_PARTICIPATION_MUTATION',
         id,
     };
 };

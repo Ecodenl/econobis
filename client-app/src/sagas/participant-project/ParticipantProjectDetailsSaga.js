@@ -1,6 +1,6 @@
 import { put, call } from 'redux-saga/effects';
 import ParticipantProjectDetailsAPI from '../../api/participant-project/ParticipantProjectDetailsAPI';
-import ParticipantTransactionAPI from '../../api/participant-project/ParticipantTransactionAPI';
+import ParticipantMutationAPI from '../../api/participant-project/ParticipantMutationAPI';
 import ParticipantObligationNumberAPI from '../../api/participant-project/ParticipantObligationNumberAPI';
 import { browserHistory, hashHistory } from 'react-router';
 
@@ -30,12 +30,12 @@ export function* deleteParticipantProjectSaga({ id }) {
     }
 }
 
-export function* deleteParticipationTransactionSaga({ id }) {
+export function* deleteParticipationMutationSaga({ id }) {
     try {
-        yield call(ParticipantTransactionAPI.deleteParticipantTransaction, id);
-        yield put({ type: 'DELETE_PARTICIPATION_TRANSACTION_SUCCESS', id });
+        yield call(ParticipantMutationAPI.deleteParticipantMutation, id);
+        yield put({ type: 'DELETE_PARTICIPATION_MUTATION_SUCCESS', id });
     } catch (error) {
-        yield put({ type: 'DELETE_PARTICIPATION_TRANSACTION_ERROR', error });
+        yield put({ type: 'DELETE_PARTICIPATION_MUTATION_ERROR', error });
     }
 }
 

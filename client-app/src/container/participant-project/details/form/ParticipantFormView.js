@@ -64,7 +64,7 @@ const ParticipantFormView = props => {
             </div>
 
             <div className="row" onClick={props.switchToEdit}>
-                <ViewText label={'Administratie'} value={'???'} />
+                <ViewText label={'Administratie'} value={project.administration ? project.administration.name : ''} />
                 <ViewText label={'Einddatum'} value={dateEnd ? moment(dateEnd.date).format('L') : ''} />
             </div>
 

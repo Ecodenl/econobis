@@ -65,6 +65,7 @@ const ProjectFormEditGeneral = ({
                 value={projectTypeId}
                 onChangeAction={handleInputChange}
                 required={'required'}
+                readOnly={true}
                 error={errors.projectTypeId}
             />
             <InputSelect

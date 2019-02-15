@@ -48,6 +48,7 @@ class ParticipantFormEdit extends Component {
                 contactName: contact.fullName,
                 statusId,
                 projectName: project.name,
+                projectAdministrationName: project.administration ? project.administration.name : '',
                 dateRegister: dateRegister ? dateRegister : '',
                 participationsRequested: participationsRequested ? participationsRequested : '',
                 participationsGranted: participationsGranted ? participationsGranted : '',

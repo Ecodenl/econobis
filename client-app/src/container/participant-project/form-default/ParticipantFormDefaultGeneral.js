@@ -34,6 +34,7 @@ const ParticipantFormDefaultGeneral = ({
         statusId,
         projectId,
         projectName,
+        projectAdministrationName,
         dateRegister,
         participationsRequested,
         participationsGranted,
@@ -137,7 +138,7 @@ const ParticipantFormDefaultGeneral = ({
             </div>
 
             <div className="row">
-                <InputText label={'Administratie'} name={'administration'} value={'???'} />
+                <InputText label={'Administratie'} name={'administration'} value={projectAdministrationName} readOnly={true} onChangeAction={()=>{}}/>
                 <InputDate
                     label={'Einddatum'}
                     name={'dateEnd'}

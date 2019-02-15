@@ -34,6 +34,7 @@ class ParticipantNewApp extends Component {
                 contactId: props.params.contactId || '',
                 statusId: 1,
                 projectId: props.params.projectId || '',
+                projectAdministrationName: '',
                 dateRegister: '',
                 dateContractSend: '',
                 dateContractRetour: '',
@@ -42,7 +43,7 @@ class ParticipantNewApp extends Component {
                 giftedByContactId: '',
                 ibanPayout: '',
                 ibanPayoutAttn: '',
-                updatedAt: moment(),
+                updatedAt: { date: moment() },
                 dateEnd: '',
                 typeId: '',
                 powerKwhConsumption: '',
@@ -82,7 +83,7 @@ class ParticipantNewApp extends Component {
                         ...this.state,
                         participation: {
                             ...this.state.participation,
-                            typeId: 3, //energieleverancier
+                            typeId: 3, //energieleverancier,
                         },
                         projectTypeCodeRef: project.typeCodeRef,
                     });

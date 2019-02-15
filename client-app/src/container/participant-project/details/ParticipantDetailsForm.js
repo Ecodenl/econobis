@@ -10,6 +10,11 @@ class ParticipantDetailsForm extends Component {
     render() {
         let loadingText = '';
         let loading = true;
+        let projectTypeCodeRef = '';
+
+        if (this.props.participantProject.project) {
+            projectTypeCodeRef = this.props.participantProject.project.projectType.codeRef;
+        }
 
         if (this.props.hasError) {
             loadingText = 'Fout bij het ophalen van deelnemers.';
@@ -26,7 +31,8 @@ class ParticipantDetailsForm extends Component {
             <div>
                 <ParticipantFormGeneral />
                 <TransactionForm />
-                <ObligationNumberForm />
+
+                {projectTypeCodeRef === 'obligation' ? <ObligationNumberForm /> : null}
             </div>
         );
     }

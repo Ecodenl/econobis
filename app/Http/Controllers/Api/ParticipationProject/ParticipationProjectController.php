@@ -21,7 +21,7 @@ use App\Http\Resources\Contact\ContactPeek;
 use App\Http\Resources\ContactGroup\FullContactGroup;
 use Barryvdh\DomPDF\Facade as PDF;
 use App\Eco\ParticipantProject\ParticipantProject;
-use App\Eco\ParticipantMutation\ParticipantMutation;
+use App\Eco\ParticipantTransaction\ParticipantTransaction;
 use App\Eco\PostalCodeLink\PostalCodeLink;
 use App\Eco\Project\Project;
 use App\Helpers\Delete\Models\DeleteParticipation;
@@ -160,8 +160,8 @@ class ParticipationProjectController extends ApiController
             'participantProjectPayoutType',
             'giftedByContact',
             'legalRepContact',
-            'mutations.type',
-            'mutations.createdBy',
+            'transactions.type',
+            'transactions.createdBy',
             'obligationNumbers',
             'documents',
         ]);
@@ -321,25 +321,25 @@ class ParticipationProjectController extends ApiController
                 $participationReceiving->save();
             }
 
-            //create new mutation for receiving
-            $mutationReceiving = new ParticipantMutation();
-            $mutationReceiving->participation_id = $participationReceiving->id;
-            $mutationReceiving->type_id = 1;//Inleg
-            $mutationReceiving->date_mutation = new Carbon;
-            $mutationReceiving->amount = $data['participations_amount'] * $data['participation_worth'];
-            $mutationReceiving->date_booking = $data['date_book'] ;
-            $mutationReceiving->save();
+            //create new transaction for receiving
+            $transactionReceiving = new ParticipantTransaction();
+            $transactionReceiving->participation_id = $participationReceiving->id;
+            $transactionReceiving->type_id = 1;//Inleg
+            $transactionReceiving->date_transaction = new Carbon;
+            $transactionReceiving->amount = $data['participations_amount'] * $data['participation_worth'];
+            $transactionReceiving->date_booking = $data['date_book'] ;
+            $transactionReceiving->save();
 
         }
 
-        //create mutation for sending
-        $mutationSending = new ParticipantMutation();
-        $mutationSending->participation_id = $participation->id;
-        $mutationSending->type_id = 3;//Inleg
-        $mutationSending->date_mutation = new Carbon;
-        $mutationSending->amount = $data['participations_amount'] * $data['participation_worth'];
-        $mutationSending->date_booking = $data['date_book'] ;
-        $mutationSending->save();
+        //create transaction for sending
+        $transactionSending = new ParticipantTransaction();
+        $transactionSending->participation_id = $participation->id;
+        $transactionSending->type_id = 3;//Inleg
+        $transactionSending->date_transaction = new Carbon;
+        $transactionSending->amount = $data['participations_amount'] * $data['participation_worth'];
+        $transactionSending->date_booking = $data['date_book'] ;
+        $transactionSending->save();
 
         return $this->show($participation);
     }

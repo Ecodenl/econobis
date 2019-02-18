@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Http\Resources\ParticipantMutation;
+namespace App\Http\Resources\ParticipantTransaction;
 
 use App\Http\Resources\GenericResource;
 use App\Http\Resources\ParticipantProject\FullParticipantProject;
 use App\Http\Resources\User\FullUser;
 use Illuminate\Http\Resources\Json\Resource;
 
-class FullParticipantMutation extends Resource
+class FullParticipantTransaction extends Resource
 {
     /**
      * Transform the resource into an array.
@@ -25,7 +25,7 @@ class FullParticipantMutation extends Resource
                 'participation' => FullParticipantProject::make($this->whenLoaded('participation')),
                 'typeId' => $this->type_id,
                 'type' => GenericResource::make($this->whenLoaded('type')),
-                'dateMutation' => $this->date_mutation,
+                'dateTransaction' => $this->date_transaction,
                 'amount' => $this->amount,
                 'iban' => $this->iban,
                 'referral' => $this->referral,

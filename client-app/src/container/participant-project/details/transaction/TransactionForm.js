@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 
-import MutationFormList from './MutationFormList';
-import MutationFormNew from './MutationFormNew';
+import TransactionFormList from './TransactionFormList';
+import TransactionFormNew from './TransactionFormNew';
 import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
 import PanelHeader from '../../../../components/panel/PanelHeader';
 import { connect } from 'react-redux';
 
-class MutationForm extends Component {
+class TransactionForm extends Component {
     constructor(props) {
         super(props);
 
@@ -26,7 +26,7 @@ class MutationForm extends Component {
         return (
             <Panel>
                 <PanelHeader>
-                    <span className="h5 text-bold">Mutaties</span>
+                    <span className="h5 text-bold">Financiële transacties</span>
                     {this.props.permissions.manageFinancial && (
                         <a role="button" className="pull-right" onClick={this.toggleShowNew}>
                             <span className="glyphicon glyphicon-plus" />
@@ -35,10 +35,10 @@ class MutationForm extends Component {
                 </PanelHeader>
                 <PanelBody>
                     <div className="col-md-12">
-                        <MutationFormList />
+                        <TransactionFormList />
                     </div>
                     <div className="col-md-12 margin-10-top">
-                        {this.state.showNew && <MutationFormNew toggleShowNew={this.toggleShowNew} />}
+                        {this.state.showNew && <TransactionFormNew toggleShowNew={this.toggleShowNew} />}
                     </div>
                 </PanelBody>
             </Panel>
@@ -52,4 +52,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps)(MutationForm);
+export default connect(mapStateToProps)(TransactionForm);

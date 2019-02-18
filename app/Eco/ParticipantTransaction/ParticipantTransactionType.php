@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Eco\ParticipantMutation;
+namespace App\Eco\ParticipantTransaction;
 
 use Illuminate\Database\Eloquent\Model;
 use Venturecraft\Revisionable\RevisionableTrait;
 
-class ParticipantMutationType extends Model
+class ParticipantTransactionType extends Model
 {
-    protected $table = 'participant_mutation_type';
+    protected $table = 'participant_transaction_type';
 
     use RevisionableTrait;
 
@@ -20,8 +20,8 @@ class ParticipantMutationType extends Model
         'id', 'name'
     ];
 
-    public function participantMutations()
+    public function participantTransactions()
     {
-        return $this->hasMany(ParticipantMutation::class);
+        return $this->hasMany(ParticipantTransaction::class);
     }
 }

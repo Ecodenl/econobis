@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Eco\ParticipantMutation;
+namespace App\Eco\ParticipantTransaction;
 
 use App\Eco\ParticipantProject\ParticipantProject;
 use App\Eco\User\User;
@@ -9,9 +9,9 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Venturecraft\Revisionable\RevisionableTrait;
 
-class ParticipantMutation extends Model
+class ParticipantTransaction extends Model
 {
-    protected $table = 'participant_mutations';
+    protected $table = 'participant_transactions';
 
     use RevisionableTrait, Encryptable;
 
@@ -28,7 +28,7 @@ class ParticipantMutation extends Model
 
     public function type()
     {
-        return $this->belongsTo(ParticipantMutationType::class);
+        return $this->belongsTo(ParticipantTransactionType::class);
     }
 
     public function createdBy(){

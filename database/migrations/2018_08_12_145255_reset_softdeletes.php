@@ -5,7 +5,7 @@ use App\Eco\Administration\Administration;
 use App\Eco\Contact\Contact;
 use App\Eco\Order\Order;
 use App\Eco\Organisation\Organisation;
-use App\Eco\ParticipantMutation\ParticipantMutation;
+use App\Eco\ParticipantTransaction\ParticipantTransaction;
 use App\Eco\Person\Person;
 use App\Eco\Product\Product;
 use App\Eco\Task\Task;
@@ -77,7 +77,7 @@ class ResetSoftdeletes extends Migration
             $mailContent .=('<li>Administratie met id: '. $item->id . ', ' . $item->name . ' Teruggezet!' . '</li>');
         }
 
-        foreach (ParticipantMutation::whereNotNull('deleted_at')->get() as $item){
+        foreach (ParticipantTransaction::whereNotNull('deleted_at')->get() as $item){
             $didResetSomething = true;
             $mailContent .=('<li>Participant transactie '. $item->id . ' verwijderd!' . '</li>');
             $item->delete();

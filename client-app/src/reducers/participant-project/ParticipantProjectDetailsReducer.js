@@ -12,21 +12,21 @@ export default function(state = {}, action) {
                 ...state,
                 ...action.participantProjectDetails,
             };
-        case 'NEW_PARTICIPATION_MUTATION':
+        case 'NEW_PARTICIPATION_TRANSACTION':
             return {
                 ...state,
-                participantMutations: action.participationMutations,
+                participantTransactions: action.participationTransactions,
             };
-        case 'UPDATE_PARTICIPATION_MUTATION':
+        case 'UPDATE_PARTICIPATION_TRANSACTION':
             return {
                 ...state,
-                participantMutations: action.participationMutations,
+                participantTransactions: action.participationTransactions,
             };
-        case 'DELETE_PARTICIPATION_MUTATION':
+        case 'DELETE_PARTICIPATION_TRANSACTION':
             return {
                 ...state,
-                participantMutations: state.participantMutations.filter(
-                    participantMutation => participantMutation.id !== action.id
+                participantTransactions: state.participantTransactions.filter(
+                    participantTransaction => participantTransaction.id !== action.id
                 ),
             };
         case 'NEW_OBLIGATION_NUMBER':

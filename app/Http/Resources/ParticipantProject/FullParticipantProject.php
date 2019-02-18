@@ -5,7 +5,7 @@ namespace App\Http\Resources\ParticipantProject;
 use App\Http\Resources\Contact\FullContact;
 use App\Http\Resources\Document\FullDocument;
 use App\Http\Resources\GenericResource;
-use App\Http\Resources\ParticipantMutation\FullParticipantMutation;
+use App\Http\Resources\ParticipantTransaction\FullParticipantTransaction;
 use App\Http\Resources\Project\FullProject;
 use Illuminate\Http\Resources\Json\Resource;
 
@@ -53,7 +53,7 @@ class FullParticipantProject extends Resource
                 'powerKwhConsumption' => $this->power_kwh_consumption,
                 'createdAt' => $this->created_at,
                 'updatedAt' => $this->updated_at,
-                'participantMutations' => FullParticipantMutation::collection($this->whenLoaded('mutations')),
+                'participantTransactions' => FullParticipantTransaction::collection($this->whenLoaded('transactions')),
                 'obligationNumbers' => GenericResource::collection($this->whenLoaded('obligationNumbers')),
                 'documentCount' => $this->documents()->count(),
                 'relatedDocuments' => FullDocument::collection($this->whenLoaded('documents')),

@@ -2,11 +2,11 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import Modal from '../../../../components/modal/Modal';
-import { deleteParticipationMutation } from '../../../../actions/participants-project/ParticipantProjectDetailsActions';
+import { deleteParticipationTransaction } from '../../../../actions/participants-project/ParticipantProjectDetailsActions';
 
-const MutationFormDelete = props => {
+const TransactionFormDelete = props => {
     const confirmAction = () => {
-        props.deleteParticipationMutation(props.id);
+        props.deleteParticipationTransaction(props.id);
         props.closeDeleteItemModal();
     };
 
@@ -18,18 +18,18 @@ const MutationFormDelete = props => {
             confirmAction={() => confirmAction()}
             title="Verwijderen"
         >
-            <p>Verwijder mutatie?</p>
+            <p>Verwijder transactie?</p>
         </Modal>
     );
 };
 
 const mapDispatchToProps = dispatch => ({
-    deleteParticipationMutation: id => {
-        dispatch(deleteParticipationMutation(id));
+    deleteParticipationTransaction: id => {
+        dispatch(deleteParticipationTransaction(id));
     },
 });
 
 export default connect(
     null,
     mapDispatchToProps
-)(MutationFormDelete);
+)(TransactionFormDelete);

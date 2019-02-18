@@ -47,3 +47,12 @@ export function* deleteObligationNumberSaga({ id }) {
         yield put({ type: 'DELETE_OBLIGATION_NUMBER_ERROR', error });
     }
 }
+
+export function* deleteParticipationMutationSaga({ id }) {
+    try {
+        yield call(ParticipantTransactionAPI.deleteParticipantMutation, id);
+        yield put({ type: 'DELETE_PARTICIPATION_MUTATION_SUCCESS', id });
+    } catch (error) {
+        yield put({ type: 'DELETE_PARTICIPATION_MUTATION_ERROR', error });
+    }
+}

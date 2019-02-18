@@ -5,6 +5,7 @@ import { isEmpty } from 'lodash';
 import ParticipantFormGeneral from './form/ParticipantFormGeneral';
 import TransactionForm from './transaction/TransactionForm';
 import ObligationNumberForm from './obligation-number/ObligationNumberForm';
+import MutationForm from './mutation/MutationForm';
 
 class ParticipantDetailsForm extends Component {
     render() {
@@ -30,6 +31,7 @@ class ParticipantDetailsForm extends Component {
         ) : (
             <div>
                 <ParticipantFormGeneral />
+                <MutationForm />
                 <TransactionForm />
 
                 {projectTypeCodeRef === 'obligation' ? <ObligationNumberForm /> : null}

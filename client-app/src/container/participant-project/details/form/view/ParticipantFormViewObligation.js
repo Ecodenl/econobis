@@ -13,7 +13,7 @@ function ParticipantFormViewObligation({ participationsRequested, participations
             </div>
             <div className="row" onClick={onClick}>
                 <ViewText label={'Nominale waarde per obligatie'} value={'????'} />
-                <ViewText label={'Obligaties toegekend'} value={participationsGranted} />
+                {/*<ViewText label={'Obligaties toegekend'} value={participationsGranted} />*/}
             </div>
         </React.Fragment>
     );

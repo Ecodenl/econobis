@@ -58,6 +58,23 @@ export default function(state = {}, action) {
                     obligationNumber => obligationNumber.id !== action.id
                 ),
             };
+        case 'NEW_PARTICIPATION_MUTATION':
+            return {
+                ...state,
+                participantMutations: action.participationMutations,
+            };
+        case 'UPDATE_PARTICIPATION_MUTATION':
+            return {
+                ...state,
+                participantMutations: action.participationMutations,
+            };
+        case 'DELETE_PARTICIPATION_MUTATION':
+            return {
+                ...state,
+                participantMutations: state.participantMutations.filter(
+                    participantMutation => participantMutation.id !== action.id
+                ),
+            };
         default:
             return state;
     }

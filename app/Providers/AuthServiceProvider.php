@@ -36,6 +36,8 @@ use App\Eco\ContactNote\ContactNote;
 use App\Eco\ContactNote\ContactNotePolicy;
 use App\Eco\EmailAddress\EmailAddress;
 use App\Eco\EmailAddress\EmailAddressPolicy;
+use App\Eco\ParticipantMutation\ParticipantMutation;
+use App\Eco\ParticipantMutation\ParticipantMutationPolicy;
 use App\Eco\ParticipantProject\ObligationNumber;
 use App\Eco\ParticipantProject\ObligationNumberPolicy;
 use App\Eco\ParticipantProject\ParticipantProject;
@@ -107,6 +109,7 @@ class AuthServiceProvider extends ServiceProvider
         ParticipantProject::class => ParticipantProjectPolicy::class,
         ObligationNumber::class => ObligationNumberPolicy::class,
         ParticipantTransaction::class => ParticipantTransactionPolicy::class,
+        ParticipantMutation::class => ParticipantMutationPolicy::class,
         Administration::class => AdministrationPolicy::class,
         Product::class => ProductPolicy::class,
         Order::class => OrderPolicy::class,

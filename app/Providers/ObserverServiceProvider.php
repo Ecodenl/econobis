@@ -40,6 +40,8 @@ use App\Eco\ContactNote\ContactNote;
 use App\Eco\ContactNote\ContactNoteObserver;
 use App\Eco\EmailAddress\EmailAddress;
 use App\Eco\EmailAddress\EmailAddressObserver;
+use App\Eco\ParticipantMutation\ParticipantMutation;
+use App\Eco\ParticipantMutation\ParticipantMutationObserver;
 use App\Eco\ParticipantProject\ParticipantProject;
 use App\Eco\ParticipantProject\ParticipantProjectObserver;
 use App\Eco\ParticipantTransaction\ParticipantTransaction;
@@ -100,6 +102,7 @@ class ObserverServiceProvider extends ServiceProvider
         ProjectValueCourse::observe(ProjectValueCourseObserver::class);
         ProjectRevenue::observe(ProjectRevenueObserver::class);
         ParticipantTransaction::observe(ParticipantTransactionObserver::class);
+        ParticipantMutation::observe(ParticipantMutationObserver::class);
         Administration::observe(AdministrationObserver::class);
         Product::observe(ProductObserver::class);
         PriceHistory::observe(PriceHistoryObserver::class);

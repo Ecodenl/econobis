@@ -33,7 +33,7 @@ class FullParticipantMutation extends Resource
                 'returns' => $this->returns,
                 'payoutKwh' => $this->payout_kwh,
                 'indicationOfRestitutionEnergyTax' => $this->indication_of_restitution_energy_tax,
-                'paid_on' => $this->paid_on,
+                'paidOn' => $this->paid_on,
                 'createdById' => $this->created_by_id,
                 'createdBy' => FullUser::make($this->whenLoaded('createdBy')),
                 'createdAt' => $this->created_at,

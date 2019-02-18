@@ -13,7 +13,7 @@ function ParticipantFormViewCapital({ participationsRequested, participationsGra
             </div>
             <div className="row" onClick={onClick}>
                 <ViewText label={'Nominale waarde per participatie'} value={'????'} />
-                <ViewText label={'Participaties toegekend'} value={participationsGranted} />
+                {/*<ViewText label={'Participaties toegekend'} value={participationsGranted} />*/}
             </div>
             <div className="row" onClick={onClick}>
                 <ViewText label={'Boekwaarde per participatie'} value={'????'} />

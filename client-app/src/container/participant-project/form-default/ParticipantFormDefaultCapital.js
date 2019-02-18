@@ -37,14 +37,14 @@ function ParticipantFormDefaultCapital({ participationsRequested, participations
                     onChangeAction={() => {}}
                     readOnly={true}
                 />
-                <InputText
-                    type={'number'}
-                    label={'Participaties toegekend'}
-                    name={'participationsGranted'}
-                    id={'participationsGranted'}
-                    value={participationsGranted}
-                    onChangeAction={handleInputChange}
-                />
+                {/*<InputText*/}
+                {/*type={'number'}*/}
+                {/*label={'Participaties toegekend'}*/}
+                {/*name={'participationsGranted'}*/}
+                {/*id={'participationsGranted'}*/}
+                {/*value={participationsGranted}*/}
+                {/*onChangeAction={handleInputChange}*/}
+                {/*/>*/}
             </div>
             <div className="row">
                 <InputText

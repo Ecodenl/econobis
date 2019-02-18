@@ -77,10 +77,14 @@ const ParticipantFormView = props => {
                 <ViewText label={'IBAN uitkeren'} value={ibanPayout ? ibanPayout : ''} />
             </div>
             <div className="row" onClick={props.switchToEdit}>
-                <ViewText
-                    label={`Huidige saldo ${projectTypeCodeRef === 'loan' ? 'lening' : 'kapitaal'} rekening`}
-                    value={'????'}
-                />
+                {projectTypeCodeRef === 'obligation' ? (
+                    <div className="col-md-6" />
+                ) : (
+                    <ViewText
+                        label={`Huidige saldo ${projectTypeCodeRef === 'loan' ? 'lening' : 'kapitaal'} rekening`}
+                        value={'????'}
+                    />
+                )}
                 <ViewText label={'IBAN uitkeren t.n.v.'} value={ibanPayoutAttn ? ibanPayoutAttn : ''} />
             </div>
             <div className="row" onClick={props.switchToEdit}>

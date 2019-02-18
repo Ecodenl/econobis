@@ -192,14 +192,18 @@ const ParticipantFormDefaultGeneral = ({
             </div>
 
             <div className="row">
-                <InputText
-                    label={`Huidige saldo ${projectTypeCodeRef === 'loan' ? 'lening' : 'kapitaal'} rekening`}
-                    name={'totalWorthParticipations'}
-                    id={'totalWorthParticipations'}
-                    value={statusId == 2 ? (participationsGranted - participationsSold) * participationWorth : 0}
-                    onChangeAction={() => {}}
-                    readOnly={true}
-                />
+                {projectTypeCodeRef === 'obligation' ? (
+                    <div className={'form-group col-md-6'} />
+                ) : (
+                    <InputText
+                        label={`Huidige saldo ${projectTypeCodeRef === 'loan' ? 'lening' : 'kapitaal'} rekening`}
+                        name={'totalWorthParticipations'}
+                        id={'totalWorthParticipations'}
+                        value={statusId == 2 ? (participationsGranted - participationsSold) * participationWorth : 0}
+                        onChangeAction={() => {}}
+                        readOnly={true}
+                    />
+                )}
                 <InputText
                     label={'IBAN uitkeren t.n.v.'}
                     name={'ibanPayoutAttn'}

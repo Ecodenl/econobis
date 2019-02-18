@@ -21,11 +21,11 @@ class ParticipantMutationController extends ApiController
 
         $data = $requestInput
             ->integer('participationId')->validate('required|exists:participation_project,id')->alias('participation_id')->next()
-            ->integer('typeId')->validate('required|exists:participant_transaction_type,id')->alias('type_id')->next()
+            ->integer('typeId')->validate('required|exists:participant_mutation_type,id')->alias('type_id')->next()
             ->date('dateCreation')->validate('required|date')->alias('date_creation')->next()
-            ->integer('entry')->onEmpty(null)->next()
+            ->string('entry')->onEmpty('')->next()
             ->date('datePayment')->validate('nullable|date')->onEmpty(null)->alias('date_payment')->next()
-            ->text('description')->onEmpty(null)->next()
+            ->string('description')->onEmpty(null)->next()
             ->double('account')->onEmpty(null)->next()
             ->integer('quantity')->onEmpty(null)->next()
             ->double('returns')->onEmpty(null)->next()
@@ -40,7 +40,7 @@ class ParticipantMutationController extends ApiController
 
         $participantMutation->save();
 
-        return FullParticipantMutation::collection(ParticipantMutation::where('participation_id', $participantMutation->participation_id)->orderBy('date_transaction', 'desc')->with('createdBy', 'type')->get());
+        return FullParticipantMutation::collection(ParticipantMutation::where('participation_id', $participantMutation->participation_id)->orderBy('date_creation', 'desc')->with('createdBy', 'type')->get());
     }
 
     public function update(RequestInput $requestInput, ParticipantMutation $participantMutation)
@@ -48,12 +48,11 @@ class ParticipantMutationController extends ApiController
         $this->authorize('manage', ParticipantMutation::class);
 
         $data = $requestInput
-            ->integer('typeId')->validate('required|exists:participant_transaction_type,id')->alias('type_id')->next()
-            ->integer('typeId')->validate('required|exists:participant_transaction_type,id')->alias('type_id')->next()
+            ->integer('typeId')->validate('required|exists:participant_mutation_type,id')->alias('type_id')->next()
             ->date('dateCreation')->validate('required|date')->alias('date_creation')->next()
-            ->integer('entry')->onEmpty(null)->next()
+            ->string('entry')->onEmpty('')->next()
             ->date('datePayment')->validate('nullable|date')->onEmpty(null)->alias('date_payment')->next()
-            ->text('description')->onEmpty(null)->next()
+            ->string('description')->onEmpty(null)->next()
             ->double('account')->onEmpty(null)->next()
             ->integer('quantity')->onEmpty(null)->next()
             ->double('returns')->onEmpty(null)->next()
@@ -67,7 +66,7 @@ class ParticipantMutationController extends ApiController
 
         $participantMutation->save();
 
-        return FullParticipantMutation::collection(ParticipantMutation::where('participation_id', $participantMutation->participation_id)->orderBy('date_transaction', 'desc')->with('createdBy', 'type')->get());
+        return FullParticipantMutation::collection(ParticipantMutation::where('participation_id', $participantMutation->participation_id)->orderBy('date_creation', 'desc')->with('createdBy', 'type')->get());
     }
 
     public function destroy(ParticipantMutation $participantMutation)

@@ -37,14 +37,14 @@ function ParticipantFormDefaultObligation({ participationsRequested, participati
                     onChangeAction={() => {}}
                     readOnly={true}
                 />
-                <InputText
-                    type={'number'}
-                    label={'Obligaties toegekend'}
-                    name={'participationsGranted'}
-                    id={'participationsGranted'}
-                    value={participationsGranted}
-                    onChangeAction={handleInputChange}
-                />
+                {/*<InputText*/}
+                {/*type={'number'}*/}
+                {/*label={'Obligaties toegekend'}*/}
+                {/*name={'participationsGranted'}*/}
+                {/*id={'participationsGranted'}*/}
+                {/*value={participationsGranted}*/}
+                {/*onChangeAction={handleInputChange}*/}
+                {/*/>*/}
             </div>
         </React.Fragment>
     );

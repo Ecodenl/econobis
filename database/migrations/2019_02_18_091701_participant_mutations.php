@@ -107,22 +107,22 @@ class ParticipantMutations extends Migration
                 ->onDelete('restrict');
 
             $table->date('date_creation');
-            $table->string('entry')->nullable(false)->default('');
+            $table->string('entry')->default('');
 
             $table->unsignedInteger('type_id');
             $table->foreign('type_id')
-                ->references('id')->on('participant_transaction_type')
+                ->references('id')->on('participant_mutation_type')
                 ->onDelete('restrict');
 
-            $table->date('date_payment');
+            $table->date('date_payment')->nullable();
             $table->text('description')->nullable();
 
-            $table->double('account', 8, 2);
-            $table->integer('quantity');
+            $table->double('account', 8, 2)->nullable();
+            $table->integer('quantity')->nullable();
 
-            $table->double('returns', 8, 2);
+            $table->double('returns', 8, 2)->nullable();
             $table->double('payout_kwh')->nullable();
-            $table->double('indication_of_restitution_energy_tax', 8, 2);
+            $table->double('indication_of_restitution_energy_tax', 8, 2)->nullable();
 
             $table->text('paid_on')->nullable();
 
@@ -143,5 +143,6 @@ class ParticipantMutations extends Migration
     {
         Schema::dropIfExists('participant_mutations');
         Schema::dropIfExists('participant_mutation_type');
+        Schema::dropIfExists('participant_mutation_type_group');
     }
 }

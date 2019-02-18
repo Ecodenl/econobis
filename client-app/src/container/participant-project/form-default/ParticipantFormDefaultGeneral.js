@@ -138,7 +138,13 @@ const ParticipantFormDefaultGeneral = ({
             </div>
 
             <div className="row">
-                <InputText label={'Administratie'} name={'administration'} value={projectAdministrationName} readOnly={true} onChangeAction={()=>{}}/>
+                <InputText
+                    label={'Administratie'}
+                    name={'administration'}
+                    value={projectAdministrationName}
+                    readOnly={true}
+                    onChangeAction={() => {}}
+                />
                 <InputDate
                     label={'Einddatum'}
                     name={'dateEnd'}

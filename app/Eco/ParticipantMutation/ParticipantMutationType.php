@@ -24,4 +24,9 @@ class ParticipantMutationType extends Model
     {
         return $this->hasMany(ParticipantMutation::class);
     }
+
+    public function participantMutationTypeGroup()
+    {
+        return $this->hasOne(ParticipantMutationTypeGroup::class, 'id', 'group_id');
+    }
 }

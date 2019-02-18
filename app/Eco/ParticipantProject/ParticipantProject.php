@@ -4,6 +4,7 @@ namespace App\Eco\ParticipantProject;
 
 use App\Eco\Contact\Contact;
 use App\Eco\Document\Document;
+use App\Eco\ParticipantMutation\ParticipantMutation;
 use App\Eco\ParticipantTransaction\ParticipantTransaction;
 use App\Eco\Project\Project;
 use App\Eco\Project\ProjectRevenueDistribution;
@@ -71,6 +72,11 @@ class ParticipantProject extends Model
     public function transactions()
     {
         return $this->hasMany(ParticipantTransaction::class, 'participation_id')->orderBy('date_transaction', 'desc');
+    }
+
+    public function mutations()
+    {
+        return $this->hasMany(ParticipantMutation::class, 'participation_id')->orderBy('date_creation', 'desc');
     }
 
     public function obligationNumbers()

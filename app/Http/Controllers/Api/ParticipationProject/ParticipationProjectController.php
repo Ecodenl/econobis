@@ -162,6 +162,8 @@ class ParticipationProjectController extends ApiController
             'legalRepContact',
             'transactions.type',
             'transactions.createdBy',
+            'mutations.type',
+            'mutations.createdBy',
             'obligationNumbers',
             'documents',
         ]);

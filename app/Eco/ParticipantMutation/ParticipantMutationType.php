@@ -7,7 +7,7 @@ use Venturecraft\Revisionable\RevisionableTrait;
 
 class ParticipantMutationType extends Model
 {
-    protected $table = 'participant_transaction_type';
+    protected $table = 'participant_mutation_type';
 
     use RevisionableTrait;
 

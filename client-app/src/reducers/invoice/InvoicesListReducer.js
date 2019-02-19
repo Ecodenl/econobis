@@ -1,4 +1,4 @@
-export default function (state= [], action) {
+export default function(state = [], action) {
     switch (action.type) {
         case 'FETCH_INVOICES_SUCCESS':
             return {
@@ -11,24 +11,24 @@ export default function (state= [], action) {
         case 'SET_CHECKED_INVOICE':
             return {
                 ...state,
-                data: state.data.map((invoice) => {
+                data: state.data.map(invoice => {
                     if (invoice.id === action.id) {
                         return {
                             ...invoice,
-                            checked: !invoice.checked
+                            checked: !invoice.checked,
                         };
                     } else {
                         return invoice;
-                    };
+                    }
                 }),
             };
         case 'SET_CHECKED_INVOICE_ALL':
             return {
                 ...state,
-                data: state.data.map((invoice) => {
+                data: state.data.map(invoice => {
                     return {
                         ...invoice,
-                        checked: action.checkedValue
+                        checked: action.checkedValue,
                     };
                 }),
             };

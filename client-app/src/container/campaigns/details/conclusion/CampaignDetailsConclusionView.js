@@ -12,27 +12,24 @@ const CampaignDetailsFormConclusionView = props => {
         <div>
             <div className="row" onClick={props.switchToEdit}>
                 <ViewText
-                    label={"Gemaakt door"}
-                    value={createdBy ? createdBy.fullName: 'Onbekend'}
+                    label={'Gemaakt door'}
+                    value={createdBy ? createdBy.fullName : 'Onbekend'}
                     link={createdBy ? 'gebruiker/' + createdBy.id : ''}
                 />
                 <ViewText
-                    label={"Verantwoordelijke"}
-                    value={ownedBy ? ownedBy.fullName: 'Onbekend'}
+                    label={'Verantwoordelijke'}
+                    value={ownedBy ? ownedBy.fullName : 'Onbekend'}
                     link={ownedBy ? 'gebruiker/' + ownedBy.id : ''}
                 />
             </div>
             <div className="row" onClick={props.switchToEdit}>
-                <ViewText
-                    label={"Gemaakt op"}
-                    value={createdAt ? moment(createdAt.date).format('L') : 'Onbekend'}
-                />
+                <ViewText label={'Gemaakt op'} value={createdAt ? moment(createdAt.date).format('L') : 'Onbekend'} />
             </div>
         </div>
     );
 };
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         campaign: state.campaignDetails,
     };

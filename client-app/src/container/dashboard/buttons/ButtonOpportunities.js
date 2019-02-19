@@ -1,5 +1,5 @@
-import React, {Component} from 'react';
-import {hashHistory} from 'react-router';
+import React, { Component } from 'react';
+import { hashHistory } from 'react-router';
 
 import OpportunitiesAPI from '../../../api/opportunity/OpportunitiesAPI';
 
@@ -9,13 +9,13 @@ class ButtonOpportunities extends Component {
 
         this.state = {
             amountActiveOpportunities: '-',
-        }
-    };
+        };
+    }
 
     componentWillMount() {
         OpportunitiesAPI.getAmountActive().then(payload => {
             this.setState({
-                amountActiveOpportunities: payload
+                amountActiveOpportunities: payload,
             });
         });
     }
@@ -30,7 +30,7 @@ class ButtonOpportunities extends Component {
                     </div>
                 </div>
             </div>
-        )
+        );
     }
 }
 

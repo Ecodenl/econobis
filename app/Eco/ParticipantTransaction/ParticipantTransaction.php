@@ -2,7 +2,7 @@
 
 namespace App\Eco\ParticipantTransaction;
 
-use App\Eco\ParticipantProductionProject\ParticipantProductionProject;
+use App\Eco\ParticipantProject\ParticipantProject;
 use App\Eco\User\User;
 use App\Http\Traits\Encryptable;
 use Illuminate\Database\Eloquent\Model;
@@ -23,7 +23,7 @@ class ParticipantTransaction extends Model
 
     public function participation()
     {
-        return $this->belongsTo(ParticipantProductionProject::class, 'id', 'participation_id');
+        return $this->belongsTo(ParticipantProject::class, 'id', 'participation_id');
     }
 
     public function type()

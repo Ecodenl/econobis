@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import { hashHistory } from 'react-router';
 import { connect } from 'react-redux';
 
@@ -8,7 +8,7 @@ import DocumentHarmonica from './harmonica/DocumentHarmonica';
 import EmailSentHarmonica from './harmonica/EmailSentHarmonica';
 
 class OpportunityDetailsHarmonica extends Component {
-    constructor(props){
+    constructor(props) {
         super(props);
 
         this.state = {
@@ -25,7 +25,7 @@ class OpportunityDetailsHarmonica extends Component {
         this.newNote = this.newNote.bind(this);
         this.newDocument = this.newDocument.bind(this);
         this.newEmail = this.newEmail.bind(this);
-    };
+    }
 
     toggleShowList(name) {
         this.setState({
@@ -33,37 +33,45 @@ class OpportunityDetailsHarmonica extends Component {
             toggleShowList: {
                 ...this.state.toggleShowList,
                 [name]: !this.state.toggleShowList[name],
-            }
+            },
         });
-    };
+    }
 
     newTask() {
-        if(this.props.opportunityDetails.intake) {
-        hashHistory.push(`/taak/nieuw/kans/${this.props.id}/contact/${this.props.opportunityDetails.intake.contact.id}`);
-        }
-        else{
+        if (this.props.opportunityDetails.intake) {
+            hashHistory.push(
+                `/taak/nieuw/kans/${this.props.id}/contact/${this.props.opportunityDetails.intake.contact.id}`
+            );
+        } else {
             hashHistory.push(`/taak/nieuw/kans/${this.props.id}`);
         }
-    };
+    }
 
     newNote() {
-        if(this.props.opportunityDetails.intake) {
-            hashHistory.push(`/taak/nieuw/afgehandeld/kans/${this.props.id}/contact/${this.props.opportunityDetails.intake.contact.id}`);
-        }
-        else{
+        if (this.props.opportunityDetails.intake) {
+            hashHistory.push(
+                `/taak/nieuw/afgehandeld/kans/${this.props.id}/contact/${
+                    this.props.opportunityDetails.intake.contact.id
+                }`
+            );
+        } else {
             hashHistory.push(`/taak/nieuw/afgehandeld/kans/${this.props.id}`);
         }
-    };
+    }
 
     newDocument(type) {
-        hashHistory.push(`/document/nieuw/${type}/kans/${this.props.id}/intake/${this.props.opportunityDetails.intake.id}/contact/${this.props.opportunityDetails.intake.contact.id}`);
-    };
+        hashHistory.push(
+            `/document/nieuw/${type}/kans/${this.props.id}/intake/${this.props.opportunityDetails.intake.id}/contact/${
+                this.props.opportunityDetails.intake.contact.id
+            }`
+        );
+    }
 
     newEmail() {
         hashHistory.push(`/email/nieuw`);
-    };
+    }
 
-    render(){
+    render() {
         return (
             <div className="margin-10-top">
                 <TaskHarmonica
@@ -93,16 +101,15 @@ class OpportunityDetailsHarmonica extends Component {
                     newEmail={this.newEmail}
                     emailSentCount={this.props.opportunityDetails.emailSentCount}
                 />
-
             </div>
-        )
+        );
     }
-};
+}
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         opportunityDetails: state.opportunityDetails,
-        permissions: state.meDetails.permissions
+        permissions: state.meDetails.permissions,
     };
 };
 

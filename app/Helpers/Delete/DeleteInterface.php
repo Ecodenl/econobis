@@ -8,7 +8,7 @@
 
 namespace App\Helpers\Delete;
 
-use App\Eco\ProductionProject\ProductionProject;
+use App\Eco\Project\Project;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Log;

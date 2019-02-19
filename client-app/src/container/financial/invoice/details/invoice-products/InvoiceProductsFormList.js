@@ -1,7 +1,7 @@
 import React from 'react';
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 
-import InvoiceProductsFormItem from "./InvoiceProductsFormItem";
+import InvoiceProductsFormItem from './InvoiceProductsFormItem';
 
 const InvoiceProductsFormList = props => {
     return (
@@ -13,22 +13,18 @@ const InvoiceProductsFormList = props => {
                 <div className="col-sm-2">Aantal</div>
                 <div className="col-sm-2">Prijs incl. BTW</div>
             </div>
-            {
-                props.invoiceProducts.length > 0 ?
-                    props.invoiceProducts.map(invoiceProduct => {
-                        return <InvoiceProductsFormItem
-                            key={invoiceProduct.id}
-                            invoiceProduct={invoiceProduct}
-                        />;
-                    })
-                    :
-                    <div>Geen factuurregels bekend.</div>
-            }
+            {props.invoiceProducts.length > 0 ? (
+                props.invoiceProducts.map(invoiceProduct => {
+                    return <InvoiceProductsFormItem key={invoiceProduct.id} invoiceProduct={invoiceProduct} />;
+                })
+            ) : (
+                <div>Geen factuurregels bekend.</div>
+            )}
         </div>
     );
 };
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         invoiceProducts: state.invoiceDetails.invoiceProducts,
     };

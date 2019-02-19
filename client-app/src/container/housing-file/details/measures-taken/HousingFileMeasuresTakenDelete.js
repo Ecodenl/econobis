@@ -2,9 +2,12 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import Modal from '../../../../components/modal/Modal';
-import { deleteHousingFileMeasureTaken, fetchHousingFileDetails } from '../../../../actions/housing-file/HousingFileDetailsActions';
+import {
+    deleteHousingFileMeasureTaken,
+    fetchHousingFileDetails,
+} from '../../../../actions/housing-file/HousingFileDetailsActions';
 
-const HousingFileMeasuresTakenDelete = (props) => {
+const HousingFileMeasuresTakenDelete = props => {
     const confirmAction = () => {
         props.deleteHousingFileMeasureTaken(props.addressId, props.id);
         props.closeDeleteItemModal();
@@ -18,13 +21,14 @@ const HousingFileMeasuresTakenDelete = (props) => {
             confirmAction={() => confirmAction()}
             title="Verwijderen"
         >
-          <p>Verwijder maatregel genomen: <strong> {`${props.name}` } </strong></p>
-
+            <p>
+                Verwijder maatregel genomen: <strong> {`${props.name}`} </strong>
+            </p>
         </Modal>
     );
 };
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         addressId: state.housingFileDetails.address.id,
         housingFileId: state.housingFileDetails.id,
@@ -37,4 +41,7 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(HousingFileMeasuresTakenDelete);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(HousingFileMeasuresTakenDelete);

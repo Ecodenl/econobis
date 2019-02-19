@@ -1,19 +1,19 @@
-import React, {Component} from 'react';
-import {connect} from 'react-redux';
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import validator from 'validator';
 
 import InputText from '../../../../components/form/InputText';
 import InputSelect from '../../../../components/form/InputSelect';
 import InputDate from '../../../../components/form/InputDate';
 import ButtonText from '../../../../components/button/ButtonText';
-import PanelFooter from "../../../../components/panel/PanelFooter";
+import PanelFooter from '../../../../components/panel/PanelFooter';
 
 import OpportunityDetailsAPI from '../../../../api/opportunity/OpportunityDetailsAPI';
 
 import { fetchOpportunity } from '../../../../actions/opportunity/OpportunityDetailsActions';
-import InputTextArea from "../../../../components/form/InputTextarea";
-import InputMultiSelect from "../../../../components/form/InputMultiSelect";
-import MeasuresOfCategory from "../../../../selectors/MeasuresOfCategory";
+import InputTextArea from '../../../../components/form/InputTextarea';
+import InputMultiSelect from '../../../../components/form/InputMultiSelect';
+import MeasuresOfCategory from '../../../../selectors/MeasuresOfCategory';
 
 class OpportunityFormEdit extends Component {
     constructor(props) {
@@ -24,7 +24,7 @@ class OpportunityFormEdit extends Component {
         this.state = {
             opportunity: {
                 id,
-                measureIds: measures && measures.map((measure) => measure.id).join(','),
+                measureIds: measures && measures.map(measure => measure.id).join(','),
                 statusId: status ? status.id : '',
                 quotationText: quotationText,
                 evaluationAgreedDate: evaluationAgreedDate ? evaluationAgreedDate : '',
@@ -37,7 +37,7 @@ class OpportunityFormEdit extends Component {
 
         this.handleReactSelectChange = this.handleReactSelectChange.bind(this);
         this.handleInputChangeDate = this.handleInputChangeDate.bind(this);
-    };
+    }
 
     handleInputChange = event => {
         const target = event.target;
@@ -48,7 +48,7 @@ class OpportunityFormEdit extends Component {
             ...this.state,
             opportunity: {
                 ...this.state.opportunity,
-                [name]: value
+                [name]: value,
             },
         });
     };
@@ -58,27 +58,27 @@ class OpportunityFormEdit extends Component {
             ...this.state,
             opportunity: {
                 ...this.state.opportunity,
-                [name]: selectedOption
+                [name]: selectedOption,
             },
         });
-    };
+    }
 
     handleInputChangeDate(value, name) {
         this.setState({
             ...this.state,
             opportunity: {
                 ...this.state.opportunity,
-                [name]: value
+                [name]: value,
             },
         });
-    };
+    }
 
-    handleMeasureIds = (selectedOption) => {
+    handleMeasureIds = selectedOption => {
         this.setState({
             ...this.state,
             opportunity: {
                 ...this.state.opportunity,
-                measureIds: selectedOption
+                measureIds: selectedOption,
             },
         });
     };
@@ -86,23 +86,23 @@ class OpportunityFormEdit extends Component {
     handleSubmit = event => {
         event.preventDefault();
 
-        const {opportunity} = this.state;
+        const { opportunity } = this.state;
 
         let errors = {};
         let hasErrors = false;
 
-        if(validator.isEmpty('' + opportunity.statusId)){
+        if (validator.isEmpty('' + opportunity.statusId)) {
             errors.statusId = true;
             hasErrors = true;
-        };
+        }
 
         this.setState({ ...this.state, errors: errors });
 
         !hasErrors &&
-        OpportunityDetailsAPI.updateOpportunity(opportunity.id, opportunity).then(payload => {
-            this.props.fetchOpportunity(opportunity.id);
-            this.props.switchToView();
-        });
+            OpportunityDetailsAPI.updateOpportunity(opportunity.id, opportunity).then(payload => {
+                this.props.fetchOpportunity(opportunity.id);
+                this.props.switchToView();
+            });
     };
 
     render() {
@@ -113,38 +113,28 @@ class OpportunityFormEdit extends Component {
         return (
             <form className="form-horizontal col-md-12" onSubmit={this.handleSubmit}>
                 <div className="row">
-                    <InputText
-                        label={"Contact"}
-                        name={""}
-                        value={intake && intake.contact.fullName}
-                        readOnly={true}
-                    />
-                    <InputText
-                        label={"Adres"}
-                        name={""}
-                        value={intake && intake.fullAddress}
-                        readOnly={true}
-                    />
+                    <InputText label={'Contact'} name={''} value={intake && intake.contact.fullName} readOnly={true} />
+                    <InputText label={'Adres'} name={''} value={intake && intake.fullAddress} readOnly={true} />
                 </div>
 
                 <div className="row">
                     <InputText
-                        label={"Maatregel - categorie"}
-                        name={"measureCategory"}
+                        label={'Maatregel - categorie'}
+                        name={'measureCategory'}
                         value={measureCategory ? measureCategory.name : ''}
                         readOnly={true}
                     />
                     <InputText
-                        label={"Campagne"}
-                        name={"campaign"}
-                        value={(intake && intake.campaign) ? intake.campaign.name : ''}
+                        label={'Campagne'}
+                        name={'campaign'}
+                        value={intake && intake.campaign ? intake.campaign.name : ''}
                         readOnly={true}
                     />
                 </div>
 
                 <div className="row">
                     <InputMultiSelect
-                        label={"Maatregel - specifiek"}
+                        label={'Maatregel - specifiek'}
                         name="measureIds"
                         value={measureIds}
                         options={measuresMatchToCategory}
@@ -152,19 +142,24 @@ class OpportunityFormEdit extends Component {
                     />
 
                     <InputSelect
-                        label={"Status"}
-                        size={"col-sm-6"}
-                        name={"statusId"}
+                        label={'Status'}
+                        size={'col-sm-6'}
+                        name={'statusId'}
                         options={this.props.status}
                         value={statusId}
                         onChangeAction={this.handleInputChange}
-                        required={"required"}
+                        required={'required'}
                         error={this.state.errors.statusId}
                     />
                 </div>
 
                 <div className="row">
-                    <InputTextArea label={"Toelichting op maatregel"} name={"quotationText"} value={quotationText} onChangeAction={this.handleInputChange} />
+                    <InputTextArea
+                        label={'Toelichting op maatregel'}
+                        name={'quotationText'}
+                        value={quotationText}
+                        onChangeAction={this.handleInputChange}
+                    />
                 </div>
 
                 <div className="row">
@@ -184,29 +179,39 @@ class OpportunityFormEdit extends Component {
 
                 <PanelFooter>
                     <div className="pull-right btn-group" role="group">
-                        <ButtonText buttonClassName={"btn-default"} buttonText={"Annuleren"}
-                                    onClickAction={this.props.switchToView}/>
-                        <ButtonText buttonText={"Opslaan"} onClickAction={this.handleSubmit} type={"submit"}
-                                    value={"Submit"}/>
+                        <ButtonText
+                            buttonClassName={'btn-default'}
+                            buttonText={'Annuleren'}
+                            onClickAction={this.props.switchToView}
+                        />
+                        <ButtonText
+                            buttonText={'Opslaan'}
+                            onClickAction={this.handleSubmit}
+                            type={'submit'}
+                            value={'Submit'}
+                        />
                     </div>
                 </PanelFooter>
             </form>
         );
-    };
-};
+    }
+}
 
 const mapDispatchToProps = dispatch => ({
-    fetchOpportunity: (id) => {
+    fetchOpportunity: id => {
         dispatch(fetchOpportunity(id));
     },
 });
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         opportunity: state.opportunityDetails,
         status: state.systemData.opportunityStatus,
         measures: state.systemData.measures,
-    }
+    };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(OpportunityFormEdit);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(OpportunityFormEdit);

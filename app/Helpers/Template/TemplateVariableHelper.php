@@ -107,17 +107,17 @@ class TemplateVariableHelper
             case 'Intake':
                 return TemplateVariableHelper::getIntakeVar($model, $varname);
                 break;
-            case 'ProductionProject':
-                return TemplateVariableHelper::getProductionProjectVar($model, $varname);
+            case 'Project':
+                return TemplateVariableHelper::getProjectVar($model, $varname);
                 break;
-            case 'ParticipantProductionProject':
-                return TemplateVariableHelper::getParticipantProductionProjectVar($model, $varname);
+            case 'ParticipantProject':
+                return TemplateVariableHelper::getParticipantProjectVar($model, $varname);
                 break;
-            case 'ProductionProjectRevenue':
-                return TemplateVariableHelper::getProductionProjectRevenueVar($model, $varname);
+            case 'ProjectRevenue':
+                return TemplateVariableHelper::getProjectRevenueVar($model, $varname);
                 break;
-            case 'ProductionProjectRevenueDistribution':
-                return TemplateVariableHelper::getProductionProjectRevenueDistributionVar($model, $varname);
+            case 'ProjectRevenueDistribution':
+                return TemplateVariableHelper::getProjectRevenueDistributionVar($model, $varname);
                 break;
             case 'Campaign':
                 return '';
@@ -330,7 +330,7 @@ class TemplateVariableHelper
         }
     }
 
-    public static function getProductionProjectVar($model, $varname){
+    public static function getProjectVar($model, $varname){
         switch ($varname) {
             case 'naam':
                 return $model->name;
@@ -399,7 +399,7 @@ class TemplateVariableHelper
                 return $model->getIssuableParticipations();
                 break;
             case 'aantal_participanten':
-                return $model->participantsProductionProject->count();
+                return $model->participantsProject->count();
                 break;
             case 'postcoderoos':
                 return $model->postalcode_link;
@@ -410,16 +410,16 @@ class TemplateVariableHelper
         }
     }
 
-    public static function getParticipantProductionProjectVar($model, $varname){
+    public static function getParticipantProjectVar($model, $varname){
         switch ($varname) {
             case 'contact_naam':
                 return $model->contact->full_name;
                 break;
             case 'status':
-                return $model->participantProductionProjectStatus->name;
+                return $model->participantProjectStatus->name;
                 break;
             case 'productie_project':
-                return $model->productionProject->name;
+                return $model->project->name;
                 break;
             case 'inschrijf_datum':
                 return $model->date_register ? Carbon::parse($model->date_register)->format('d/m/Y') : null;
@@ -546,7 +546,7 @@ class TemplateVariableHelper
                 return $model->date_end ? Carbon::parse($model->date_end)->format('d/m/Y') : null;
                 break;
             case 'uitkeren_op':
-                return $model->participantProductionProjectPayoutType->name;
+                return $model->participantProjectPayoutType->name;
                 break;
             default:
                 return '';
@@ -554,7 +554,7 @@ class TemplateVariableHelper
         }
     }
 
-    public static function getProductionProjectRevenueVar($model, $varname){
+    public static function getProjectRevenueVar($model, $varname){
         switch ($varname) {
             case 'kwh_start':
                 return $model->kwh_start;
@@ -595,7 +595,7 @@ class TemplateVariableHelper
         }
     }
 
-    public static function getProductionProjectRevenueDistributionVar($model, $varname){
+    public static function getProjectRevenueDistributionVar($model, $varname){
         switch ($varname) {
             case 'adres':
                 return $model->address;
@@ -848,7 +848,7 @@ class TemplateVariableHelper
 
     public static function replaceDocumentTemplateVariables(Document $document, $html){
         //load relations
-        $document->load('contact', 'order', 'contactGroup', 'opportunity', 'intake', 'sentBy', 'campaign', 'housingFile', 'quotationRequest', 'measure', 'task', 'productionProject', 'participant');
+        $document->load('contact', 'order', 'contactGroup', 'opportunity', 'intake', 'sentBy', 'campaign', 'housingFile', 'quotationRequest', 'measure', 'task', 'project', 'participant');
 
         //Eerst alle {tabel_} vervangen
         $html = TemplateTableHelper::replaceTemplateTables($html, $document);
@@ -865,7 +865,7 @@ class TemplateVariableHelper
         $html = TemplateVariableHelper::replaceTemplateVariables($html, 'offerteverzoek', $document->quotationRequest);
         $html = TemplateVariableHelper::replaceTemplateVariables($html, 'maatregel', $document->measure);
         $html = TemplateVariableHelper::replaceTemplateVariables($html, 'taak', $document->task);
-        $html = TemplateVariableHelper::replaceTemplateVariables($html, 'productie_project', $document->productionProject);
+        $html = TemplateVariableHelper::replaceTemplateVariables($html, 'productie_project', $document->project);
         $html = TemplateVariableHelper::replaceTemplateVariables($html, 'participant', $document->participant);
         $html = TemplateVariableHelper::replaceTemplateVariables($html, 'order', $document->order);
 

@@ -1,6 +1,6 @@
-import React, {Component} from 'react';
-import {connect} from 'react-redux';
-import {hashHistory} from 'react-router';
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { hashHistory } from 'react-router';
 import moment from 'moment';
 
 moment.locale('nl');
@@ -8,8 +8,8 @@ moment.locale('nl');
 import HousingFileDetailsAPI from '../../../api/housing-file/HousingFileDetailsAPI';
 import InputSelect from '../../../components/form/InputSelect';
 import ButtonText from '../../../components/button/ButtonText';
-import InputText from "../../../components/form/InputText";
-import InputToggle from "../../../components/form/InputToggle";
+import InputText from '../../../components/form/InputText';
+import InputToggle from '../../../components/form/InputToggle';
 
 class HousingFileNewFormGeneral extends Component {
     constructor(props) {
@@ -28,8 +28,8 @@ class HousingFileNewFormGeneral extends Component {
                 energyLabelStatusId: '',
                 isMonument: false,
             },
-        }
-    };
+        };
+    }
 
     handleInputChange = event => {
         const target = event.target;
@@ -40,7 +40,7 @@ class HousingFileNewFormGeneral extends Component {
             ...this.state,
             housingFile: {
                 ...this.state.housingFile,
-                [name]: value
+                [name]: value,
             },
         });
     };
@@ -48,39 +48,56 @@ class HousingFileNewFormGeneral extends Component {
     handleSubmit = event => {
         event.preventDefault();
 
-        const {housingFile} = this.state;
+        const { housingFile } = this.state;
 
-        HousingFileDetailsAPI.newHousingFile(housingFile).then((payload) => {
+        HousingFileDetailsAPI.newHousingFile(housingFile).then(payload => {
             hashHistory.push(`/woningdossier/${payload.data.id}`);
         });
-
     };
 
     render() {
-        const {addressId, buildingTypeId, buildYear, surface, roofTypeId, energyLabelId, floors, energyLabelStatusId, isMonument} = this.state.housingFile;
-        const {addresses = [], fullName} = this.props.contactDetails;
+        const {
+            addressId,
+            buildingTypeId,
+            buildYear,
+            surface,
+            roofTypeId,
+            energyLabelId,
+            floors,
+            energyLabelStatusId,
+            isMonument,
+        } = this.state.housingFile;
+        const { addresses = [], fullName } = this.props.contactDetails;
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
                 <div className="row">
                     <InputText
                         label={'Contact'}
-                        name={"fullName"}
+                        name={'fullName'}
                         value={fullName}
-                        onChange={ () => {} }
+                        onChange={() => {}}
                         readOnly={true}
                     />
                     <div className="form-group col-sm-6">
-                        <label htmlFor="addressId" className="col-sm-6">Adres</label>
-                        <div className='col-sm-6'>
-                            <select className="form-control input-sm" id="addressId" name="addressId" value={addressId} onChange={this.handleInputChange}>
-                                    {
-                                        addresses.map((address, i) => {
-                                            return <option key={i}
-                                               value={address.id}>{ `${address.street} ${address.number}` }
-                                               </option>
-                                        })
-                                    }
+                        <label htmlFor="addressId" className="col-sm-6">
+                            Adres
+                        </label>
+                        <div className="col-sm-6">
+                            <select
+                                className="form-control input-sm"
+                                id="addressId"
+                                name="addressId"
+                                value={addressId}
+                                onChange={this.handleInputChange}
+                            >
+                                {addresses.map((address, i) => {
+                                    return (
+                                        <option key={i} value={address.id}>
+                                            {`${address.street} ${address.number}`}
+                                        </option>
+                                    );
+                                })}
                             </select>
                         </div>
                     </div>
@@ -88,36 +105,36 @@ class HousingFileNewFormGeneral extends Component {
 
                 <div className="row">
                     <InputSelect
-                        label={"Woningtype"}
-                        size={"col-sm-6"}
+                        label={'Woningtype'}
+                        size={'col-sm-6'}
                         name="buildingTypeId"
                         value={buildingTypeId}
                         options={this.props.buildingTypes}
                         onChangeAction={this.handleInputChange}
                     />
                     <InputText
-                        type={"number"}
+                        type={'number'}
                         label={'Bouwjaar'}
                         name={'buildYear'}
                         value={buildYear}
                         min={'1901'}
                         max={'3000'}
                         onChangeAction={this.handleInputChange}
-                        />
+                    />
                 </div>
 
                 <div className="row">
                     <InputText
-                        type={"number"}
-                        label={"Gebruiksoppervlakte"}
+                        type={'number'}
+                        label={'Gebruiksoppervlakte'}
                         name="surface"
                         value={surface}
                         min={'0'}
                         onChangeAction={this.handleInputChange}
                     />
                     <InputSelect
-                        label={"Daktype"}
-                        size={"col-sm-6"}
+                        label={'Daktype'}
+                        size={'col-sm-6'}
                         name="roofTypeId"
                         value={roofTypeId}
                         options={this.props.roofTypes}
@@ -127,15 +144,15 @@ class HousingFileNewFormGeneral extends Component {
 
                 <div className="row">
                     <InputSelect
-                        label={"Energielabel"}
-                        size={"col-sm-6"}
+                        label={'Energielabel'}
+                        size={'col-sm-6'}
                         name="energyLabelId"
                         value={energyLabelId}
                         options={this.props.energyLabels}
                         onChangeAction={this.handleInputChange}
                     />
                     <InputText
-                        type={"number"}
+                        type={'number'}
                         label={'Aantal bouwlagen'}
                         name={'floors'}
                         value={floors}
@@ -146,16 +163,16 @@ class HousingFileNewFormGeneral extends Component {
 
                 <div className="row">
                     <InputSelect
-                        label={"Status energielabel"}
-                        size={"col-sm-6"}
+                        label={'Status energielabel'}
+                        size={'col-sm-6'}
                         name="energyLabelStatusId"
                         value={energyLabelStatusId}
                         options={this.props.energyLabelStatus}
                         onChangeAction={this.handleInputChange}
                     />
                     <InputToggle
-                        label={"Monument"}
-                        name={"isMonument"}
+                        label={'Monument'}
+                        name={'isMonument'}
                         value={isMonument}
                         onChangeAction={this.handleInputChange}
                     />
@@ -163,15 +180,15 @@ class HousingFileNewFormGeneral extends Component {
 
                 <div className="panel-footer">
                     <div className="pull-right btn-group" role="group">
-                        <ButtonText buttonText={"Opslaan"} onClickAction={this.handleSubmit}/>
+                        <ButtonText buttonText={'Opslaan'} onClickAction={this.handleSubmit} />
                     </div>
                 </div>
             </form>
         );
-    };
-};
+    }
+}
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         buildingTypes: state.systemData.buildingTypes,
         roofTypes: state.systemData.roofTypes,
@@ -181,4 +198,7 @@ const mapStateToProps = (state) => {
     };
 };
 
-export default connect(mapStateToProps, null)(HousingFileNewFormGeneral);
+export default connect(
+    mapStateToProps,
+    null
+)(HousingFileNewFormGeneral);

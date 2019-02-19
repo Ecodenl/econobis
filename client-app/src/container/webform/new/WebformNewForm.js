@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { hashHistory } from 'react-router';
 import validator from 'validator';
@@ -8,11 +8,11 @@ moment.locale('nl');
 
 import InputText from '../../../components/form/InputText';
 import ButtonText from '../../../components/button/ButtonText';
-import PanelBody from "../../../components/panel/PanelBody";
-import Panel from "../../../components/panel/Panel";
+import PanelBody from '../../../components/panel/PanelBody';
+import Panel from '../../../components/panel/Panel';
 import WebformDetailsAPI from '../../../api/webform/WebformDetailsAPI';
-import InputSelectGroup from "../../../components/form/InputSelectGroup";
-import InputDate from "../../../components/form/InputDate";
+import InputSelectGroup from '../../../components/form/InputSelectGroup';
+import InputDate from '../../../components/form/InputDate';
 
 class WebformNewForm extends Component {
     constructor(props) {
@@ -38,7 +38,7 @@ class WebformNewForm extends Component {
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleInputChangeDate = this.handleInputChangeDate.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
-    };
+    }
 
     handleInputChange(event) {
         const target = event.target;
@@ -49,66 +49,68 @@ class WebformNewForm extends Component {
             ...this.state,
             webform: {
                 ...this.state.webform,
-                [name]: value
+                [name]: value,
             },
         });
-    };
+    }
 
     handleInputChangeDate(value, name) {
         this.setState({
             ...this.state,
             webform: {
                 ...this.state.webform,
-                [name]: value
+                [name]: value,
             },
         });
-    };
+    }
 
     handleSubmit(event) {
         event.preventDefault();
 
-        const { webform }  = this.state;
+        const { webform } = this.state;
 
         // Validation
         let errors = {};
         let hasErrors = false;
 
-        if(validator.isEmpty(webform.name)){
+        if (validator.isEmpty(webform.name)) {
             errors.name = true;
             hasErrors = true;
-        };
+        }
 
-        if(validator.isEmpty(webform.maxRequestsPerMinute)){
+        if (validator.isEmpty(webform.maxRequestsPerMinute)) {
             errors.maxRequestsPerMinute = true;
             hasErrors = true;
-        };
+        }
 
-        if(validator.isEmpty(webform.responsible)){
+        if (validator.isEmpty(webform.responsible)) {
             errors.responsible = true;
             hasErrors = true;
-        };
+        }
 
-        if(webform.responsible.search('user') >= 0 ) {
+        if (webform.responsible.search('user') >= 0) {
             webform.responsibleUserId = webform.responsible.replace('user', '');
             webform.responsibleTeamId = '';
-        };
+        }
 
-        if(webform.responsible.search("team") >= 0) {
+        if (webform.responsible.search('team') >= 0) {
             webform.responsibleUserId = '';
             webform.responsibleTeamId = webform.responsible.replace('team', '');
-        };
+        }
 
         this.setState({ ...this.state, errors: errors });
 
         // If no errors send form
         !hasErrors &&
-            WebformDetailsAPI.newWebform(webform).then((payload) => {
-                hashHistory.push(`/webformulier/${payload.data.data.id}`);
-            }).catch(function (error) {
-                console.log(error);
-                alert('Er is iets mis gegaan met opslaan!');
-            });
-    };
+            WebformDetailsAPI.newWebform(webform)
+                .then(payload => {
+                    hashHistory.push(`/webformulier/${payload.data.data.id}`);
+                })
+                .catch(function(error) {
+                    console.log(error);
+                    alert('Er is iets mis gegaan met opslaan!');
+                });
+    }
 
     render() {
         const { name, apiKey, maxRequestsPerMinute, dateStart, dateEnd, responsible } = this.state.webform;
@@ -120,15 +122,15 @@ class WebformNewForm extends Component {
                         <div className="row">
                             <InputText
                                 label="Naam"
-                                name={"name"}
+                                name={'name'}
                                 value={name}
                                 onChangeAction={this.handleInputChange}
-                                required={"required"}
+                                required={'required'}
                                 error={this.state.errors.name}
                             />
                             <InputText
                                 label="Sleutel"
-                                name={"apiKey"}
+                                name={'apiKey'}
                                 value={apiKey}
                                 onChangeAction={this.handleInputChange}
                                 readOnly={true}
@@ -137,11 +139,11 @@ class WebformNewForm extends Component {
                         <div className="row">
                             <InputText
                                 label="Aanvragen per minuut"
-                                type={"number"}
-                                name={"maxRequestsPerMinute"}
+                                type={'number'}
+                                name={'maxRequestsPerMinute'}
                                 value={maxRequestsPerMinute}
                                 onChangeAction={this.handleInputChange}
-                                required={"required"}
+                                required={'required'}
                                 error={this.state.errors.maxRequestsPerMinute}
                             />
                             <InputText
@@ -168,13 +170,21 @@ class WebformNewForm extends Component {
                         </div>
                         <div className="row">
                             <InputSelectGroup
-                                label={"Verantwoordelijke"}
-                                size={"col-sm-6"}
-                                name={"responsible"}
-                                optionsInGroups={[{name: 'user', label: 'Gebruikers', options: this.props.users, optionName: 'fullName'}, {name: 'team', label: 'Team', options: this.props.teams}]}
+                                label={'Verantwoordelijke'}
+                                size={'col-sm-6'}
+                                name={'responsible'}
+                                optionsInGroups={[
+                                    {
+                                        name: 'user',
+                                        label: 'Gebruikers',
+                                        options: this.props.users,
+                                        optionName: 'fullName',
+                                    },
+                                    { name: 'team', label: 'Team', options: this.props.teams },
+                                ]}
                                 value={responsible}
                                 onChangeAction={this.handleInputChange}
-                                required={"required"}
+                                required={'required'}
                                 error={this.state.errors.responsible}
                             />
                         </div>
@@ -182,20 +192,28 @@ class WebformNewForm extends Component {
 
                     <PanelBody>
                         <div className="pull-right btn-group" role="group">
-                            <ButtonText buttonText={"Opslaan"} onClickAction={this.handleSubmit} type={"submit"} value={"Submit"}/>
+                            <ButtonText
+                                buttonText={'Opslaan'}
+                                onClickAction={this.handleSubmit}
+                                type={'submit'}
+                                value={'Submit'}
+                            />
                         </div>
                     </PanelBody>
                 </Panel>
             </form>
         );
-    };
-};
+    }
+}
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         teams: state.systemData.teams,
         users: state.systemData.users,
     };
 };
 
-export default connect(mapStateToProps, null)(WebformNewForm);
+export default connect(
+    mapStateToProps,
+    null
+)(WebformNewForm);

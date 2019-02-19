@@ -22,7 +22,7 @@ export function* updateUserDetailsSaga({ user, switchToView }) {
         yield put({ type: 'UPDATE_USER_SUCCESS', userDetails });
 
         // Reload system data after updating user
-        yield put({ type: 'FETCH_SYSTEM_DATA'});
+        yield put({ type: 'FETCH_SYSTEM_DATA' });
         // Switch back to view callback fn
         yield switchToView();
     } catch (error) {

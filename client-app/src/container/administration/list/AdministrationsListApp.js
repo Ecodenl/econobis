@@ -4,8 +4,8 @@ import { connect } from 'react-redux';
 import { fetchAdministrations, clearAdministrations } from '../../../actions/administration/AdministrationsActions';
 import AdministrationsList from './AdministrationsList';
 import AdministrationsListToolbar from './AdministrationsListToolbar';
-import Panel from "../../../components/panel/Panel";
-import PanelBody from "../../../components/panel/PanelBody";
+import Panel from '../../../components/panel/Panel';
+import PanelBody from '../../../components/panel/PanelBody';
 
 class AdministrationsListApp extends Component {
     constructor(props) {
@@ -14,11 +14,11 @@ class AdministrationsListApp extends Component {
 
     componentDidMount() {
         this.props.fetchAdministrations();
-    };
+    }
 
     componentWillUnmount() {
         this.props.clearAdministrations();
-    };
+    }
 
     refreshAdministrationsData = () => {
         this.props.clearAdministrations();
@@ -36,17 +36,15 @@ class AdministrationsListApp extends Component {
                     </div>
 
                     <div className="col-md-12 margin-10-top">
-                        <AdministrationsList
-                            administrations={this.props.administrations}
-                        />
+                        <AdministrationsList administrations={this.props.administrations} />
                     </div>
                 </PanelBody>
             </Panel>
-        )
+        );
     }
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         administrations: state.administrations,
     };
@@ -61,4 +59,7 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(AdministrationsListApp);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(AdministrationsListApp);

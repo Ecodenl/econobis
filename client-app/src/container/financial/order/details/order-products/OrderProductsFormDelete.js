@@ -3,16 +3,14 @@ import { connect } from 'react-redux';
 
 import Modal from '../../../../../components/modal/Modal';
 import { fetchOrderDetails } from '../../../../../actions/order/OrderDetailsActions';
-import OrderDetailsAPI from "../../../../../api/order/OrderDetailsAPI";
+import OrderDetailsAPI from '../../../../../api/order/OrderDetailsAPI';
 
-const OrderProductsFormDelete = (props) => {
-
+const OrderProductsFormDelete = props => {
     const confirmAction = () => {
-        OrderDetailsAPI.deleteOrderProduct(props.id).then((payload) => {
+        OrderDetailsAPI.deleteOrderProduct(props.id).then(payload => {
             props.fetchOrderDetails(props.orderId);
             props.closeDeleteItemModal();
         });
-
     };
 
     return (
@@ -24,15 +22,17 @@ const OrderProductsFormDelete = (props) => {
             title="Verwijderen"
         >
             <p>Verwijder orderregel?</p>
-
         </Modal>
     );
 };
 
 const mapDispatchToProps = dispatch => ({
-    fetchOrderDetails: (id) => {
+    fetchOrderDetails: id => {
         dispatch(fetchOrderDetails(id));
     },
 });
 
-export default connect(null, mapDispatchToProps)(OrderProductsFormDelete);
+export default connect(
+    null,
+    mapDispatchToProps
+)(OrderProductsFormDelete);

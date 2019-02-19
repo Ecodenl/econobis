@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import { hashHistory } from 'react-router';
 import { connect } from 'react-redux';
 
@@ -6,7 +6,7 @@ import TaskHarmonica from './harmonica/TaskHarmonica';
 import DocumentHarmonica from './harmonica/DocumentHarmonica';
 
 class IntakeDetailsHarmonica extends Component {
-    constructor(props){
+    constructor(props) {
         super(props);
 
         this.state = {
@@ -17,7 +17,7 @@ class IntakeDetailsHarmonica extends Component {
         };
 
         this.toggleShowList = this.toggleShowList.bind(this);
-    };
+    }
 
     toggleShowList(name) {
         this.setState({
@@ -25,19 +25,19 @@ class IntakeDetailsHarmonica extends Component {
             toggleShowList: {
                 ...this.state.toggleShowList,
                 [name]: !this.state.toggleShowList[name],
-            }
+            },
         });
-    };
+    }
 
     newTask = () => {
         hashHistory.push(`/taak/nieuw/contact-groep/${this.props.id}`);
     };
 
-    newDocument = (type) => {
+    newDocument = type => {
         hashHistory.push(`/document/nieuw/${type}/contact-groep/${this.props.id}`);
     };
 
-    render(){
+    render() {
         const { permissions = {} } = this.props;
         return (
             <div className="margin-10-top">
@@ -54,16 +54,15 @@ class IntakeDetailsHarmonica extends Component {
                     newDocument={this.newDocument}
                     documentCount={this.props.contactGroupDetails.documentCount}
                 />
-
             </div>
-        )
+        );
     }
-};
+}
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         contactGroupDetails: state.contactGroupDetails,
-        permissions: state.meDetails.permissions
+        permissions: state.meDetails.permissions,
     };
 };
 

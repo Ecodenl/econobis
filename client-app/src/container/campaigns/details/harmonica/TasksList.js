@@ -1,5 +1,5 @@
-import React, {Component} from 'react';
-import {hashHistory} from 'react-router';
+import React, { Component } from 'react';
+import { hashHistory } from 'react-router';
 import { connect } from 'react-redux';
 import moment from 'moment';
 
@@ -11,38 +11,37 @@ class TaskList extends Component {
         };
     }
 
-    openItem = (id) => {
+    openItem = id => {
         hashHistory.push(`/taak/${id}`);
     };
 
     render() {
-        const {relatedTasks} = this.props;
+        const { relatedTasks } = this.props;
         return (
             <div>
-                {relatedTasks == '' &&
-                <div>Geen taken gevonden.</div>
-                }
+                {relatedTasks == '' && <div>Geen taken gevonden.</div>}
 
-                {relatedTasks != '' &&
-                <table className="table harmonica-table">
-                    <tbody>
-                    {relatedTasks.map((relatedTask, i) => {
-                        return (
-                            <tr onClick={() => this.openItem(relatedTask.id)} key={i}>
-                                <td className='col-xs-12 clickable'>{moment(relatedTask.createdAt.date).format('L')} - {relatedTask.noteSummary}</td>
-                            </tr>
-                        )
-                    })
-                    }
-                    </tbody>
-                </table>
-                }
+                {relatedTasks != '' && (
+                    <table className="table harmonica-table">
+                        <tbody>
+                            {relatedTasks.map((relatedTask, i) => {
+                                return (
+                                    <tr onClick={() => this.openItem(relatedTask.id)} key={i}>
+                                        <td className="col-xs-12 clickable">
+                                            {moment(relatedTask.createdAt.date).format('L')} - {relatedTask.noteSummary}
+                                        </td>
+                                    </tr>
+                                );
+                            })}
+                        </tbody>
+                    </table>
+                )}
             </div>
         );
-    };
+    }
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         relatedTasks: state.campaignDetails.relatedTasks,
     };

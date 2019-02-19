@@ -1,9 +1,9 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 
 import Modal from '../../../components/modal/Modal';
-import DataTableCustomFilter from "../../../components/dataTable/DataTableCustomFilter";
-import ButtonText from "../../../components/button/ButtonText";
-import {connect} from "react-redux";
+import DataTableCustomFilter from '../../../components/dataTable/DataTableCustomFilter';
+import ButtonText from '../../../components/button/ButtonText';
+import { connect } from 'react-redux';
 
 class ContactsListExtraFilters extends Component {
     constructor(props) {
@@ -22,27 +22,27 @@ class ContactsListExtraFilters extends Component {
         this.handleFilterValueChange = this.handleFilterValueChange.bind(this);
         this.addFilterRow = this.addFilterRow.bind(this);
         this.deleteFilterRow = this.deleteFilterRow.bind(this);
-    };
+    }
 
     closeModal() {
         this.props.toggleShowExtraFilters();
-    };
+    }
 
     confirmAction() {
         this.props.handleExtraFiltersChange(this.state.filters, this.state.amountOfFilters, this.state.filterType);
-    };
+    }
 
     handleFilterFieldChange(data, filterNumber) {
         let filters = this.state.filters;
         let amountOfFilters = this.state.amountOfFilters;
 
-        if(filters[filterNumber].field === 'product') {
+        if (filters[filterNumber].field === 'product') {
             filters = filters.filter(filter => filter.connectedTo !== filters[filterNumber].connectName);
             delete filters[filterNumber].connectName;
             amountOfFilters = filters.length;
         }
 
-        if(data === 'product') {
+        if (data === 'product') {
             filters[filterNumber] = {
                 field: 'product',
                 type: 'eq',
@@ -55,24 +55,21 @@ class ContactsListExtraFilters extends Component {
                 type: 'eq',
                 data: '',
                 connectedTo: data + filterNumber,
-                }
-            );
+            });
 
             filters.splice(filterNumber + 2, 0, {
-                    field: 'dateFinish',
-                    type: 'eq',
-                    data: '',
-                    connectedTo: data + filterNumber,
-                }
-            );
+                field: 'dateFinish',
+                type: 'eq',
+                data: '',
+                connectedTo: data + filterNumber,
+            });
 
             filters.splice(filterNumber + 3, 0, {
-                    field: 'orderStatus',
-                    type: 'eq',
-                    data: '',
-                    connectedTo: data + filterNumber,
-                }
-            );
+                field: 'orderStatus',
+                type: 'eq',
+                data: '',
+                connectedTo: data + filterNumber,
+            });
 
             amountOfFilters = filters.length;
         } else {
@@ -85,14 +82,14 @@ class ContactsListExtraFilters extends Component {
             filters,
             amountOfFilters,
         });
-    };
+    }
 
     handleFilterTypeChange(type) {
         this.setState({
             ...this.state,
             filterType: type,
         });
-    };
+    }
 
     handleFilterValueChange(field, data, filterNumber) {
         let filters = this.state.filters;
@@ -103,17 +100,16 @@ class ContactsListExtraFilters extends Component {
             ...this.state,
             filters,
         });
-    };
+    }
 
     addFilterRow() {
         let filters = this.state.filters;
 
-        filters[this.state.amountOfFilters] =
-            {
-                field: 'name',
-                type: 'eq',
-                data: ''
-            };
+        filters[this.state.amountOfFilters] = {
+            field: 'name',
+            type: 'eq',
+            data: '',
+        };
 
         setTimeout(() => {
             this.setState({
@@ -127,12 +123,12 @@ class ContactsListExtraFilters extends Component {
                 amountOfFilters: this.state.amountOfFilters + 1,
             });
         }, 300);
-    };
+    }
 
     deleteFilterRow(filterNumber) {
         let newFilters = this.state.filters;
 
-        if(newFilters[filterNumber].field === 'product') {
+        if (newFilters[filterNumber].field === 'product') {
             newFilters = newFilters.filter(filter => filter.connectedTo !== newFilters[filterNumber].connectName);
         }
 
@@ -143,7 +139,7 @@ class ContactsListExtraFilters extends Component {
             filters: newFilters,
             amountOfFilters: newFilters.length,
         });
-    };
+    }
 
     render() {
         const fields = {
@@ -164,7 +160,7 @@ class ContactsListExtraFilters extends Component {
                 type: 'date',
             },
             currentParticipations: {
-                name: 'Huidig aantal participaties',
+                name: 'Huidig aantal deelnames',
                 type: 'number',
             },
             occupation: {
@@ -197,11 +193,11 @@ class ContactsListExtraFilters extends Component {
         const customProductFields = {
             dateStart: {
                 name: 'Begin datum',
-                type: 'date'
+                type: 'date',
             },
             dateFinish: {
                 name: 'Eind datum',
-                type: 'date'
+                type: 'date',
             },
             orderStatus: {
                 name: 'Order status',
@@ -226,55 +222,71 @@ class ContactsListExtraFilters extends Component {
                         <div className={'col-xs-6'}>
                             <input
                                 onChange={() => this.handleFilterTypeChange('and')}
-                                type="radio" name='type' value="and" id='and'
-                                checked={this.state.filterType === 'and'}/>
-                            <label htmlFor='and'>Alle extra filters zijn "EN"</label>
+                                type="radio"
+                                name="type"
+                                value="and"
+                                id="and"
+                                checked={this.state.filterType === 'and'}
+                            />
+                            <label htmlFor="and">Alle extra filters zijn "EN"</label>
                         </div>
                         <div className={'col-xs-6'}>
                             <input
                                 onChange={() => this.handleFilterTypeChange('or')}
-                                type="radio" name='type' value="or" id='or'
-                                checked={this.state.filterType === 'or'}/>
-                            <label htmlFor='or'>Alle extra filters zijn "OF"</label>
+                                type="radio"
+                                name="type"
+                                value="or"
+                                id="or"
+                                checked={this.state.filterType === 'or'}
+                            />
+                            <label htmlFor="or">Alle extra filters zijn "OF"</label>
                         </div>
                     </h5>
                 </div>
                 <table className="table">
                     <thead>
-                    <tr>
-                        <th className="col-md-4">Zoekveld</th>
-                        <th className="col-md-3" />
-                        <th className="col-md-4">Waarde</th>
-                        <th className="col-md-1" />
-                    </tr>
+                        <tr>
+                            <th className="col-md-4">Zoekveld</th>
+                            <th className="col-md-3" />
+                            <th className="col-md-4">Waarde</th>
+                            <th className="col-md-1" />
+                        </tr>
                     </thead>
                     <tbody>
-                    {
-                        this.state.filters.length === 0 ? (
-                            <tr><td colSpan={4}>Geen filters gezet.</td></tr>
+                        {this.state.filters.length === 0 ? (
+                            <tr>
+                                <td colSpan={4}>Geen filters gezet.</td>
+                            </tr>
                         ) : (
                             this.state.filters.map((filter, i) => {
-                                return <DataTableCustomFilter key={i} filter={filter} filterNumber={i} fields={{...fields, ...customProductFields}}
-                                                       handleFilterFieldChange={this.handleFilterFieldChange} deleteFilterRow={this.deleteFilterRow}
-                                                       handleFilterValueChange={this.handleFilterValueChange} />
+                                return (
+                                    <DataTableCustomFilter
+                                        key={i}
+                                        filter={filter}
+                                        filterNumber={i}
+                                        fields={{ ...fields, ...customProductFields }}
+                                        handleFilterFieldChange={this.handleFilterFieldChange}
+                                        deleteFilterRow={this.deleteFilterRow}
+                                        handleFilterValueChange={this.handleFilterValueChange}
+                                    />
+                                );
                             })
-                        )
-                    }
+                        )}
                     </tbody>
                 </table>
-                <div className='row'>
-                    <div className='col-xs-12 text-right'>
-                        <ButtonText buttonText={'Extra filter'} onClickAction={this.addFilterRow}/>
+                <div className="row">
+                    <div className="col-xs-12 text-right">
+                        <ButtonText buttonText={'Extra filter'} onClickAction={this.addFilterRow} />
                     </div>
                 </div>
             </Modal>
-        )
+        );
     }
-};
+}
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
-        participantProductionProjectStatus: state.systemData.participantProductionProjectStatus,
+        participantProjectStatus: state.systemData.participantProjectStatus,
         contactStatuses: state.systemData.contactStatuses,
         occupations: state.systemData.occupations,
         measureCategories: state.systemData.measureCategories,

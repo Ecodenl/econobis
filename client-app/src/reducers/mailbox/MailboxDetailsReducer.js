@@ -1,4 +1,4 @@
-export default function (state= [], action) {
+export default function(state = [], action) {
     switch (action.type) {
         case 'FETCH_MAILBOX_DETAILS_SUCCESS':
             return {
@@ -17,13 +17,13 @@ export default function (state= [], action) {
                     ...state.users,
                     {
                         ...action.mailboxUser,
-                    }
-                ]
+                    },
+                ],
             };
         case 'DELETE_MAILBOX_USER_SUCCESS':
             return {
                 ...state,
-                users: state.users.filter((user) => user.id !== action.userId),
+                users: state.users.filter(user => user.id !== action.userId),
             };
         case 'NEW_MAILBOX_IGNORE':
             return {
@@ -32,13 +32,13 @@ export default function (state= [], action) {
                     ...state.mailboxIgnores,
                     {
                         ...action.ignore,
-                    }
-                ]
+                    },
+                ],
             };
         case 'DELETE_MAILBOX_IGNORE_SUCCESS':
             return {
                 ...state,
-                mailboxIgnores: state.mailboxIgnores.filter((ignore) => ignore.id !== action.ignoreId),
+                mailboxIgnores: state.mailboxIgnores.filter(ignore => ignore.id !== action.ignoreId),
             };
         default:
             return state;

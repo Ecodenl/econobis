@@ -1,71 +1,64 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 
 import DataTable from '../../../components/dataTable/DataTable';
 import DataTableHead from '../../../components/dataTable/DataTableHead';
 import DataTableBody from '../../../components/dataTable/DataTableBody';
 import DataTableHeadTitle from '../../../components/dataTable/DataTableHeadTitle';
 import UsersListItem from './UsersListItem';
-import {connect} from "react-redux";
+import { connect } from 'react-redux';
 
 class UsersList extends Component {
-    constructor(props){
+    constructor(props) {
         super(props);
-    };
+    }
     render() {
         let loadingText = '';
         let loading = true;
 
         if (this.props.hasError) {
             loadingText = 'Fout bij het ophalen van gebruikers.';
-        }
-        else if (this.props.isLoading) {
+        } else if (this.props.isLoading) {
             loadingText = 'Gegevens aan het laden.';
-        }
-        else if (this.props.users.length === 0) {
+        } else if (this.props.users.length === 0) {
             loadingText = 'Geen gebruikers gevonden!';
-        }
-        else {
+        } else {
             loading = false;
         }
 
-    return (
-        <div>
+        return (
+            <div>
                 <DataTable>
                     <DataTableHead>
                         <tr className="thead-title">
-                            <DataTableHeadTitle title={'Voornaam'} width={"30%"}/>
-                            <DataTableHeadTitle title={'Achternaam'} width={"25%"} />
-                            <DataTableHeadTitle title={'E-mail'} width={"30%"} />
-                            <DataTableHeadTitle title={'Status'} width={"10%"} />
-                            <DataTableHeadTitle title={''} width={"5%"} />
+                            <DataTableHeadTitle title={'Voornaam'} width={'30%'} />
+                            <DataTableHeadTitle title={'Achternaam'} width={'25%'} />
+                            <DataTableHeadTitle title={'E-mail'} width={'30%'} />
+                            <DataTableHeadTitle title={'Status'} width={'10%'} />
+                            <DataTableHeadTitle title={''} width={'5%'} />
                         </tr>
                     </DataTableHead>
                     <DataTableBody>
-                        {
-                            loading ? (
-                                <tr><td colSpan={11}>{loadingText}</td></tr>
-                            ) : (
-                                this.props.users.map((user) => {
-                                    return <UsersListItem
-                                        key={user.id}
-                                        {...user}
-                                    />
-                                })
-                            )
-                        }
+                        {loading ? (
+                            <tr>
+                                <td colSpan={11}>{loadingText}</td>
+                            </tr>
+                        ) : (
+                            this.props.users.map(user => {
+                                return <UsersListItem key={user.id} {...user} />;
+                            })
+                        )}
                     </DataTableBody>
                 </DataTable>
-        </div>
-    );
-    };
+            </div>
+        );
+    }
 }
 
-
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         isLoading: state.loadingData.isLoading,
         hasError: state.loadingData.hasError,
-    }
+    };
 };
 
 export default connect(mapStateToProps)(UsersList);

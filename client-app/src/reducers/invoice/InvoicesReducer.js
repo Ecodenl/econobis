@@ -1,9 +1,9 @@
 import { combineReducers } from 'redux';
 
-import invoicesListReducer from "./InvoicesListReducer";
-import invoicesPaginationReducer from "./InvoicesPaginationReducer";
-import invoicesFiltersReducer from "./InvoicesFiltersReducer";
-import invoicesSortsReducer from "./InvoicesSortsReducer";
+import invoicesListReducer from './InvoicesListReducer';
+import invoicesPaginationReducer from './InvoicesPaginationReducer';
+import invoicesFiltersReducer from './InvoicesFiltersReducer';
+import invoicesSortsReducer from './InvoicesSortsReducer';
 
 const invoicesReducer = combineReducers({
     list: invoicesListReducer,

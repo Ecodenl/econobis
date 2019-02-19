@@ -1,7 +1,7 @@
 import React from 'react';
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 
-import ContactDetailsCampaignItem from "./ContactDetailsCampaignItem";
+import ContactDetailsCampaignItem from './ContactDetailsCampaignItem';
 
 const ContactDetailsCampaignsList = props => {
     return (
@@ -13,25 +13,20 @@ const ContactDetailsCampaignsList = props => {
                 <div className="col-sm-3">Einddatum</div>
                 <div className="col-sm-1">Taken</div>
             </div>
-            {
-                props.campaigns.length > 0 ?
-                    props.campaigns.map(campaign => {
-                        return <ContactDetailsCampaignItem
-                            key={campaign.id}
-                            campaign={campaign}
-                        />;
-                    })
-                    :
-                    <div>Geen campagnes bekend.</div>
-            }
+            {props.campaigns.length > 0 ? (
+                props.campaigns.map(campaign => {
+                    return <ContactDetailsCampaignItem key={campaign.id} campaign={campaign} />;
+                })
+            ) : (
+                <div>Geen campagnes bekend.</div>
+            )}
         </div>
     );
 };
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         campaigns: state.contactDetails.organisation.campaigns,
     };
 };
 export default connect(mapStateToProps)(ContactDetailsCampaignsList);
-

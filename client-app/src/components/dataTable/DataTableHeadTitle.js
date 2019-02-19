@@ -2,13 +2,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 const DataTableHeadTitle = props => {
-    const {RowClassName, title, width } = props;
+    const { RowClassName, title, width } = props;
 
     return (
         <th className={RowClassName} width={width}>
             {title}
         </th>
-    )
+    );
 };
 
 DataTableHeadTitle.defaultProps = {

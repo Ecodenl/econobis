@@ -13,26 +13,30 @@ const AdministrationsListToolbar = props => {
         <div className="row">
             <div className="col-md-4">
                 <div className="btn-group" role="group">
-                    <ButtonIcon iconName={"glyphicon-refresh"} onClickAction={props.refreshAdministrationsData} />
-                    {
-                        props.permissions.manageFinancial &&
-                        <ButtonIcon iconName={"glyphicon-plus"} onClickAction={newAdministration}/>
-                    }
+                    <ButtonIcon iconName={'glyphicon-refresh'} onClickAction={props.refreshAdministrationsData} />
+                    {props.permissions.manageFinancial && (
+                        <ButtonIcon iconName={'glyphicon-plus'} onClickAction={newAdministration} />
+                    )}
                 </div>
             </div>
-            <div className="col-md-4"><h3 className="text-center table-title">Administraties</h3></div>
             <div className="col-md-4">
-                <div className="pull-right">Resultaten: { props.administrations ? props.administrations.length : 0 }</div>
+                <h3 className="text-center table-title">Administraties</h3>
+            </div>
+            <div className="col-md-4">
+                <div className="pull-right">Resultaten: {props.administrations ? props.administrations.length : 0}</div>
             </div>
         </div>
     );
 };
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         permissions: state.meDetails.permissions,
-        administrations: state.administrations
+        administrations: state.administrations,
     };
 };
 
-export default connect(mapStateToProps, null)(AdministrationsListToolbar);
+export default connect(
+    mapStateToProps,
+    null
+)(AdministrationsListToolbar);

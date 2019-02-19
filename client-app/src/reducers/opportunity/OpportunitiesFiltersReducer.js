@@ -30,14 +30,14 @@ const filtersReducerDefaultState = {
 };
 
 export default (state = filtersReducerDefaultState, action) => {
-    switch(action.type) {
+    switch (action.type) {
         case 'SET_FILTER_OPPORTUNITY_NUMBER':
             return {
                 ...state,
                 number: {
                     ...state.number,
                     data: action.number,
-                }
+                },
             };
         case 'SET_FILTER_OPPORTUNITY_CREATED_AT':
             return {
@@ -45,7 +45,7 @@ export default (state = filtersReducerDefaultState, action) => {
                 createdAt: {
                     ...state.createdAt,
                     data: action.createdAt,
-                }
+                },
             };
         case 'SET_FILTER_OPPORTUNITY_NAME':
             return {
@@ -53,7 +53,7 @@ export default (state = filtersReducerDefaultState, action) => {
                 name: {
                     ...state.name,
                     data: action.name,
-                }
+                },
             };
         case 'SET_FILTER_OPPORTUNITY_MEASURE_CATEGORY':
             return {
@@ -61,7 +61,7 @@ export default (state = filtersReducerDefaultState, action) => {
                 measureCategory: {
                     ...state.measureCategory,
                     data: action.measureCategory,
-                }
+                },
             };
         case 'SET_FILTER_OPPORTUNITY_CAMPAIGN':
             return {
@@ -69,7 +69,7 @@ export default (state = filtersReducerDefaultState, action) => {
                 campaign: {
                     ...state.campaign,
                     data: action.campaign,
-                }
+                },
             };
         case 'SET_FILTER_OPPORTUNITY_STATUS_ID':
             return {
@@ -77,7 +77,7 @@ export default (state = filtersReducerDefaultState, action) => {
                 statusId: {
                     ...state.statusId,
                     data: action.statusId,
-                }
+                },
             };
         case 'SET_FILTER_OPPORTUNITY_AMOUNT_OF_QUOTATION_REQUESTS':
             return {
@@ -85,7 +85,7 @@ export default (state = filtersReducerDefaultState, action) => {
                 amountOfQuotationRequests: {
                     ...state.amountOfQuotationRequests,
                     data: action.amountOfQuotationRequests,
-                }
+                },
             };
         case 'CLEAR_FILTER_OPPORTUNITY':
             return {

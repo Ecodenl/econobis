@@ -1,22 +1,21 @@
 import { Selector, Role } from 'testcafe';
 import superUser from '../../auth/UserRoles';
 import * as constants from '../../config/constants';
-import * as vars from "../../config/random-models";
-import ModelGeneral from "../../pages/model-general";
-import ModelNewProduct from "../../pages/product/model-new-product";
-import ModelDetailsProduct from "../../pages/product/model-details-product";
+import * as vars from '../../config/random-models';
+import ModelGeneral from '../../pages/model-general';
+import ModelNewProduct from '../../pages/product/model-new-product';
+import ModelDetailsProduct from '../../pages/product/model-details-product';
 
 const faker = require('faker');
-faker.locale = "nl";
+faker.locale = 'nl';
 
-fixture `Create new product minimum`;
+fixture`Create new product minimum`;
 
 const general = new ModelGeneral();
 const newProduct = new ModelNewProduct();
 const detailsProduct = new ModelDetailsProduct();
 
-test('Fill out form product minimum', async (t) => {
-
+test('Fill out form product minimum', async t => {
     await t
         .useRole(superUser)
         .navigateTo(constants.app_url + '#/product/nieuw')
@@ -32,7 +31,9 @@ test('Fill out form product minimum', async (t) => {
         .click(general.save)
         .wait(constants.wait);
 
-    await t.expect(general.titleH4.innerText).eql('Product: ' + vars.productName, 'Check element text', { timeout: 500 });
+    await t
+        .expect(general.titleH4.innerText)
+        .eql('Product: ' + vars.productName, 'Check element text', { timeout: 500 });
 
     await t
         .click(detailsProduct.newPriceHistory)
@@ -48,8 +49,7 @@ test('Fill out form product minimum', async (t) => {
     await t.expect(detailsProduct.priceHistoryRows.count).eql(2);
 });
 
-test('Fill out form product minimum', async (t) => {
-
+test('Fill out form product minimum', async t => {
     await t
         .useRole(superUser)
         .navigateTo(constants.app_url + '#/product/nieuw')
@@ -65,7 +65,9 @@ test('Fill out form product minimum', async (t) => {
         .click(general.save)
         .wait(constants.wait);
 
-    await t.expect(general.titleH4.innerText).eql('Product: ' + vars.productNameVariable, 'Check element text', { timeout: 500 });
+    await t
+        .expect(general.titleH4.innerText)
+        .eql('Product: ' + vars.productNameVariable, 'Check element text', { timeout: 500 });
 
     await t
         .click(detailsProduct.newPriceHistory)

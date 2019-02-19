@@ -4,8 +4,8 @@ import { connect } from 'react-redux';
 import { fetchMailboxes, clearMailboxes } from '../../../actions/mailbox/MailboxesActions';
 import MailboxesList from './MailboxesList';
 import MailboxesListToolbar from './MailboxesListToolbar';
-import Panel from "../../../components/panel/Panel";
-import PanelBody from "../../../components/panel/PanelBody";
+import Panel from '../../../components/panel/Panel';
+import PanelBody from '../../../components/panel/PanelBody';
 
 class MailboxesListApp extends Component {
     constructor(props) {
@@ -14,11 +14,11 @@ class MailboxesListApp extends Component {
 
     componentDidMount() {
         this.props.fetchMailboxes();
-    };
+    }
 
     componentWillUnmount() {
         this.props.clearMailboxes();
-    };
+    }
 
     refreshData = () => {
         this.props.clearMailboxes();
@@ -27,24 +27,20 @@ class MailboxesListApp extends Component {
 
     render() {
         return (
-                <Panel className="col-md-12">
-                    <PanelBody>
-                        <div className="col-md-12 margin-10-top">
-                            <MailboxesListToolbar
-                                refreshData={() => this.refreshData()}
-                            />
-                        </div>
+            <Panel className="col-md-12">
+                <PanelBody>
+                    <div className="col-md-12 margin-10-top">
+                        <MailboxesListToolbar refreshData={() => this.refreshData()} />
+                    </div>
 
-                        <div className="col-md-12 margin-10-top">
-                            <MailboxesList />
-                        </div>
-                    </PanelBody>
-                </Panel>
-        )
+                    <div className="col-md-12 margin-10-top">
+                        <MailboxesList />
+                    </div>
+                </PanelBody>
+            </Panel>
+        );
     }
 }
-
-
 
 const mapDispatchToProps = dispatch => ({
     fetchMailboxes: () => {
@@ -55,4 +51,7 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(null, mapDispatchToProps)(MailboxesListApp);
+export default connect(
+    null,
+    mapDispatchToProps
+)(MailboxesListApp);

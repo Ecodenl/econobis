@@ -6,72 +6,54 @@ moment.locale('nl');
 import ViewText from '../../../../components/form/ViewText';
 
 const HousingFileDetailsFormGeneralView = props => {
-    const { address, fullAddress, buildingType, buildYear, surface, roofType, energyLabel, floors, energyLabelStatus, isMonument } = props.housingFileDetails;
+    const {
+        address,
+        fullAddress,
+        buildingType,
+        buildYear,
+        surface,
+        roofType,
+        energyLabel,
+        floors,
+        energyLabelStatus,
+        isMonument,
+    } = props.housingFileDetails;
 
     return (
         <div onClick={props.switchToEdit}>
             <div className="row">
                 <ViewText
-                    label={"Contact"}
+                    label={'Contact'}
                     value={address && address.contact.fullName}
                     link={address ? 'contact/' + address.contact.id : ''}
                 />
-                <ViewText
-                    label={"Adres"}
-                    value={fullAddress && fullAddress}
-                />
-            </div>
-
-
-            <div className="row">
-                <ViewText
-                    label="Woningtype"
-                    value={ buildingType && buildingType.name }
-                />
-                <ViewText
-                    label="Bouwjaar"
-                    value={buildYear && buildYear}
-                />
+                <ViewText label={'Adres'} value={fullAddress && fullAddress} />
             </div>
 
             <div className="row">
-                <ViewText
-                    label="Gebruiksoppervlakte"
-                    value={ surface && surface }
-                />
-                <ViewText
-                    label="Daktype"
-                    value={roofType && roofType.name}
-                />
+                <ViewText label="Woningtype" value={buildingType && buildingType.name} />
+                <ViewText label="Bouwjaar" value={buildYear && buildYear} />
             </div>
 
             <div className="row">
-                <ViewText
-                    label="Energielabel"
-                    value={ energyLabel && energyLabel.name }
-                />
-                <ViewText
-                    label="Aantal bouwlagen"
-                    value={floors && floors}
-                />
+                <ViewText label="Gebruiksoppervlakte" value={surface && surface} />
+                <ViewText label="Daktype" value={roofType && roofType.name} />
             </div>
 
             <div className="row">
-                <ViewText
-                    label="Status energielabel"
-                    value={ energyLabelStatus && energyLabelStatus.name }
-                />
-                <ViewText
-                    label="Monument"
-                    value={isMonument ? 'Ja' : 'Nee'}
-                />
+                <ViewText label="Energielabel" value={energyLabel && energyLabel.name} />
+                <ViewText label="Aantal bouwlagen" value={floors && floors} />
             </div>
 
+            <div className="row">
+                <ViewText label="Status energielabel" value={energyLabelStatus && energyLabelStatus.name} />
+                <ViewText label="Monument" value={isMonument ? 'Ja' : 'Nee'} />
+            </div>
         </div>
     );
 };
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         housingFileDetails: state.housingFileDetails,
     };

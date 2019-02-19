@@ -20,7 +20,7 @@ class ParticipantTransactionController extends ApiController
         $this->authorize('manage', ParticipantTransaction::class);
 
         $data = $requestInput
-            ->integer('participationId')->validate('required|exists:participation_production_project,id')->alias('participation_id')->next()
+            ->integer('participationId')->validate('required|exists:participation_project,id')->alias('participation_id')->next()
             ->integer('typeId')->validate('required|exists:participant_transaction_type,id')->alias('type_id')->next()
             ->date('dateTransaction')->validate('required|date')->alias('date_transaction')->next()
             ->integer('amount')->validate('required')->next()

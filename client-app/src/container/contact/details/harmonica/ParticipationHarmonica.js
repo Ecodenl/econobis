@@ -1,35 +1,45 @@
 import React from 'react';
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 
-import Panel from "../../../../components/panel/Panel";
-import PanelBody from "../../../../components/panel/PanelBody";
+import Panel from '../../../../components/panel/Panel';
+import PanelBody from '../../../../components/panel/PanelBody';
 import ParticipationsList from './ParticipationsList';
 
-const ParticipationHarmonica = ({toggleShowList, showParticipationsList, newParticipation, participationCount, permissions}) => {
+const ParticipationHarmonica = ({
+    toggleShowList,
+    showParticipationsList,
+    newParticipation,
+    participationCount,
+    permissions,
+}) => {
     return (
-        <Panel className={"harmonica-button"}>
+        <Panel className={'harmonica-button'}>
             <PanelBody>
                 <div className="col-sm-10" onClick={toggleShowList} role="button">
-                    <span className="">PARTICIPATIES <span className="badge">{ participationCount }</span></span>
+                    <span className="">
+                        DEELNAMES <span className="badge">{participationCount}</span>
+                    </span>
                 </div>
                 <div className="col-sm-2">
-                    {permissions.manageParticipation &&
-                    <a role="button" className="pull-right" onClick={newParticipation}><span
-                        className="glyphicon glyphicon-plus glyphicon-white"/></a>
-                    }
+                    {permissions.manageParticipation && (
+                        <a role="button" className="pull-right" onClick={newParticipation}>
+                            <span className="glyphicon glyphicon-plus glyphicon-white" />
+                        </a>
+                    )}
                 </div>
-                <div className="col-sm-12">
-                    { showParticipationsList && <ParticipationsList /> }
-                </div>
+                <div className="col-sm-12">{showParticipationsList && <ParticipationsList />}</div>
             </PanelBody>
         </Panel>
     );
 };
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
-        permissions: state.meDetails.permissions
+        permissions: state.meDetails.permissions,
     };
 };
 
-export default connect(mapStateToProps, null)(ParticipationHarmonica);
+export default connect(
+    mapStateToProps,
+    null
+)(ParticipationHarmonica);

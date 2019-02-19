@@ -16,14 +16,14 @@ const filtersReducerDefaultState = {
 };
 
 export default (state = filtersReducerDefaultState, action) => {
-    switch(action.type) {
+    switch (action.type) {
         case 'SET_FILTER_CONTACT_GROUP_NAME':
             return {
                 ...state,
                 name: {
                     ...state.name,
                     data: action.name,
-                }
+                },
             };
         case 'SET_FILTER_CONTACT_GROUP_STATUS':
             return {
@@ -31,7 +31,7 @@ export default (state = filtersReducerDefaultState, action) => {
                 status: {
                     ...state.status,
                     data: action.status,
-                }
+                },
             };
         case 'SET_FILTER_CONTACT_GROUP_TYPE_ID':
             return {
@@ -39,7 +39,7 @@ export default (state = filtersReducerDefaultState, action) => {
                 typeId: {
                     ...state.typeId,
                     data: action.typeId,
-                }
+                },
             };
         case 'CLEAR_FILTER_CONTACT_GROUPS':
             return {

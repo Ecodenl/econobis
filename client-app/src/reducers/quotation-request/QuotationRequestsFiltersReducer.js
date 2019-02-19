@@ -38,14 +38,14 @@ const filtersReducerDefaultState = {
 };
 
 export default (state = filtersReducerDefaultState, action) => {
-    switch(action.type) {
+    switch (action.type) {
         case 'SET_FILTER_QUOTATION_REQUEST_ORGANISATION':
             return {
                 ...state,
                 organisation: {
                     ...state.organisation,
                     data: action.organisation,
-                }
+                },
             };
         case 'SET_FILTER_QUOTATION_REQUEST_CONTACT':
             return {
@@ -53,7 +53,7 @@ export default (state = filtersReducerDefaultState, action) => {
                 contact: {
                     ...state.contact,
                     data: action.contact,
-                }
+                },
             };
         case 'SET_FILTER_QUOTATION_REQUEST_ADDRESS':
             return {
@@ -61,7 +61,7 @@ export default (state = filtersReducerDefaultState, action) => {
                 address: {
                     ...state.address,
                     data: action.address,
-                }
+                },
             };
         case 'SET_FILTER_QUOTATION_REQUEST_MEASURE':
             return {
@@ -69,7 +69,7 @@ export default (state = filtersReducerDefaultState, action) => {
                 measure: {
                     ...state.measure,
                     data: action.measure,
-                }
+                },
             };
         case 'SET_FILTER_QUOTATION_REQUEST_CREATED_AT':
             return {
@@ -77,7 +77,7 @@ export default (state = filtersReducerDefaultState, action) => {
                 createdAt: {
                     ...state.createdAt,
                     data: action.createdAt,
-                }
+                },
             };
         case 'SET_FILTER_QUOTATION_REQUEST_DATE_RECORDED':
             return {
@@ -85,7 +85,7 @@ export default (state = filtersReducerDefaultState, action) => {
                 dateRecorded: {
                     ...state.dateRecorded,
                     data: action.dateRecorded,
-                }
+                },
             };
         case 'SET_FILTER_QUOTATION_REQUEST_STATUS':
             return {
@@ -93,7 +93,7 @@ export default (state = filtersReducerDefaultState, action) => {
                 statusId: {
                     ...state.statusId,
                     data: action.statusId,
-                }
+                },
             };
         case 'SET_FILTER_QUOTATION_REQUEST_DATE_RELEASED':
             return {
@@ -101,7 +101,7 @@ export default (state = filtersReducerDefaultState, action) => {
                 dateReleased: {
                     ...state.dateReleased,
                     data: action.dateReleased,
-                }
+                },
             };
         case 'SET_FILTER_QUOTATION_REQUEST_DATE_VALID':
             return {
@@ -109,7 +109,7 @@ export default (state = filtersReducerDefaultState, action) => {
                 dateValid: {
                     ...state.dateValid,
                     data: action.dateValid,
-                }
+                },
             };
         case 'CLEAR_FILTER_QUOTATION_REQUESTS':
             return {

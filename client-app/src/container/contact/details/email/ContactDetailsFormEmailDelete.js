@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import Modal from '../../../../components/modal/Modal';
 import { deleteEmailAddress } from '../../../../actions/contact/ContactDetailsActions';
 
-const ContactDetailsEmailDelete = (props) => {
+const ContactDetailsEmailDelete = props => {
     const confirmAction = () => {
         props.deleteEmailAddress(props.id);
         props.closeDeleteItemModal();
@@ -12,23 +12,32 @@ const ContactDetailsEmailDelete = (props) => {
 
     return (
         <Modal
-        buttonConfirmText="Verwijder"
+            buttonConfirmText="Verwijder"
             buttonClassName={'btn-danger'}
             closeModal={props.closeDeleteItemModal}
             confirmAction={() => confirmAction()}
             title="Verwijderen"
-      >
-            <p>Verwijder e-mailadres: <strong> {`${props.email}` } </strong></p>
+        >
+            <p>
+                Verwijder e-mailadres: <strong> {`${props.email}`} </strong>
+            </p>
 
-            { props.primary && <p className={'text-danger'}><strong>Let op!</strong> Dit is een primair e-mailadres</p> }
-      </Modal>
+            {props.primary && (
+                <p className={'text-danger'}>
+                    <strong>Let op!</strong> Dit is een primair e-mailadres
+                </p>
+            )}
+        </Modal>
     );
 };
 
 const mapDispatchToProps = dispatch => ({
-    deleteEmailAddress: (id) => {
+    deleteEmailAddress: id => {
         dispatch(deleteEmailAddress(id));
     },
 });
 
-export default connect(null, mapDispatchToProps)(ContactDetailsEmailDelete);
+export default connect(
+    null,
+    mapDispatchToProps
+)(ContactDetailsEmailDelete);

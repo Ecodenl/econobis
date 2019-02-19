@@ -11,7 +11,7 @@ export default {
         return axios.get(requestUrl);
     },
 
-    newPostalCodeLink: (postalCodeLink) => {
+    newPostalCodeLink: postalCodeLink => {
         const requestUrl = URL_POSTAL_CODE_LINK;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
@@ -19,7 +19,7 @@ export default {
         return axios.post(requestUrl, postalCodeLink);
     },
 
-    updatePostalCodeLink: (postalCodeLink) => {
+    updatePostalCodeLink: postalCodeLink => {
         const requestUrl = `${URL_POSTAL_CODE_LINK}/${postalCodeLink.id}`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
@@ -27,7 +27,7 @@ export default {
         return axios.post(requestUrl, postalCodeLink);
     },
 
-    deletePostalCodeLink: (id) => {
+    deletePostalCodeLink: id => {
         const requestUrl = `${URL_POSTAL_CODE_LINK}/${id}/delete`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;

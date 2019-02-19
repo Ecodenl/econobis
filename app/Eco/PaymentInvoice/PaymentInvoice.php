@@ -4,7 +4,7 @@ namespace App\Eco\PaymentInvoice;
 
 use App\Eco\Administration\Administration;
 use App\Eco\Administration\Sepa;
-use App\Eco\ProductionProject\ProductionProjectRevenueDistribution;
+use App\Eco\Project\ProjectRevenueDistribution;
 use App\Eco\User\User;
 use Illuminate\Database\Eloquent\Model;
 use Venturecraft\Revisionable\RevisionableTrait;
@@ -22,7 +22,7 @@ class PaymentInvoice extends Model
 
     public function revenueDistribution()
     {
-        return $this->belongsTo(ProductionProjectRevenueDistribution::class, 'revenue_distribution_id');
+        return $this->belongsTo(ProjectRevenueDistribution::class, 'revenue_distribution_id');
     }
 
     public function sepa()

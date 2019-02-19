@@ -7,15 +7,15 @@ export const fetchIntakes = (filters, sorts, pagination) => {
     };
 };
 
-export const setCheckedIntake = (id) => {
-    return  {
+export const setCheckedIntake = id => {
+    return {
         type: 'SET_CHECKED_INTAKE',
         id,
     };
 };
 
-export const setCheckedIntakeAll = (checkedValue) => {
-    return  {
+export const setCheckedIntakeAll = checkedValue => {
+    return {
         type: 'SET_CHECKED_INTAKE_ALL',
         checkedValue,
     };
@@ -23,6 +23,6 @@ export const setCheckedIntakeAll = (checkedValue) => {
 
 export const clearIntakes = () => {
     return {
-        type: 'CLEAR_INTAKES'
+        type: 'CLEAR_INTAKES',
     };
 };

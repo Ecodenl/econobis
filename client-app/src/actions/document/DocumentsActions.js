@@ -9,12 +9,12 @@ export const fetchDocuments = (filters, sorts, pagination) => {
 
 export const clearDocuments = () => {
     return {
-        type: 'CLEAR_DOCUMENTS'
+        type: 'CLEAR_DOCUMENTS',
     };
 };
 
-export const deleteDocument = (id) => {
-    return  {
+export const deleteDocument = id => {
+    return {
         type: 'DELETE_DOCUMENT',
         id,
     };

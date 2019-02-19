@@ -1,7 +1,7 @@
 import React from 'react';
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 
-import CampaignDetailsResponseItem from "./CampaignDetailsResponseItem";
+import CampaignDetailsResponseItem from './CampaignDetailsResponseItem';
 
 const CampaignDetailsResponseList = props => {
     return (
@@ -14,27 +14,22 @@ const CampaignDetailsResponseList = props => {
                 <div className="col-sm-1">Postcode</div>
                 <div className="col-sm-2">Plaats</div>
                 <div className="col-sm-2">Gereageerd op</div>
-                <div className="col-sm-1"></div>
+                <div className="col-sm-1" />
             </div>
-            {
-                props.responses.length > 0 ?
-                    props.responses.map(response => {
-                        return <CampaignDetailsResponseItem
-                            key={response.id}
-                            response={response}
-                        />;
-                    })
-                    :
-                    <div>Geen responses bekend.</div>
-            }
+            {props.responses.length > 0 ? (
+                props.responses.map(response => {
+                    return <CampaignDetailsResponseItem key={response.id} response={response} />;
+                })
+            ) : (
+                <div>Geen responses bekend.</div>
+            )}
         </div>
     );
 };
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         responses: state.campaignDetails.responses,
     };
 };
 export default connect(mapStateToProps)(CampaignDetailsResponseList);
-

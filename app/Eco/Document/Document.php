@@ -11,8 +11,8 @@ use App\Eco\Measure\Measure;
 use App\Eco\Opportunity\Opportunity;
 use App\Eco\Intake\Intake;
 use App\Eco\Order\Order;
-use App\Eco\ParticipantProductionProject\ParticipantProductionProject;
-use App\Eco\ProductionProject\ProductionProject;
+use App\Eco\ParticipantProject\ParticipantProject;
+use App\Eco\Project\Project;
 use App\Eco\QuotationRequest\QuotationRequest;
 use App\Eco\Task\Task;
 use App\Eco\User\User;
@@ -99,11 +99,11 @@ class Document extends Model
         return $this->belongsTo(QuotationRequest::class);
     }
 
-    public function productionProject(){
-        return $this->belongsTo(ProductionProject::class);
+    public function project(){
+        return $this->belongsTo(Project::class);
     }
 
     public function participant(){
-        return $this->belongsTo(ParticipantProductionProject::class, 'participation_production_project_id', 'id');
+        return $this->belongsTo(ParticipantProject::class, 'participation_project_id', 'id');
     }
 }

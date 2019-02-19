@@ -1,19 +1,18 @@
 import { Selector, Role } from 'testcafe';
 import superUser from '../../auth/UserRoles';
 import * as constants from '../../config/constants';
-import * as vars from "../../config/random-models";
-import ModelGeneral from "../../pages/model-general";
-import ModelNewDocumentTemplate from "../../pages/document-template/model-new-document-template";
+import * as vars from '../../config/random-models';
+import ModelGeneral from '../../pages/model-general';
+import ModelNewDocumentTemplate from '../../pages/document-template/model-new-document-template';
 const faker = require('faker');
-faker.locale = "nl";
+faker.locale = 'nl';
 
-fixture `Create new document template minimum`;
+fixture`Create new document template minimum`;
 
 const general = new ModelGeneral();
 const newDocumentTemplate = new ModelNewDocumentTemplate();
 
-test('Fill out form document template minimum', async (t) => {
-
+test('Fill out form document template minimum', async t => {
     await t
         .useRole(superUser)
         .navigateTo(constants.app_url + '#/document-template/nieuw')
@@ -30,5 +29,7 @@ test('Fill out form document template minimum', async (t) => {
         .click(general.save)
         .wait(constants.wait);
 
-    await t.expect(general.titleH4.innerText).eql('Document template: ' + vars.documentTemplateName, 'Check element text', { timeout: 500 });
+    await t
+        .expect(general.titleH4.innerText)
+        .eql('Document template: ' + vars.documentTemplateName, 'Check element text', { timeout: 500 });
 });

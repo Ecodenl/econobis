@@ -10,7 +10,6 @@ export const fetchPaymentInvoices = (filters, sorts, pagination, administrationI
 
 export const clearPaymentInvoices = () => {
     return {
-        type: 'CLEAR_PAYMENT_INVOICES'
+        type: 'CLEAR_PAYMENT_INVOICES',
     };
 };
-

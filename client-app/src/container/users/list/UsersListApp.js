@@ -12,11 +12,11 @@ class UsersListApp extends Component {
 
     componentDidMount() {
         this.props.fetchUsers();
-    };
+    }
 
     componentWillUnmount() {
         this.props.clearUsers();
-    };
+    }
 
     refreshContactsData = () => {
         this.props.clearUsers();
@@ -29,24 +29,20 @@ class UsersListApp extends Component {
                 <div className="panel panel-default">
                     <div className="panel-body">
                         <div className="col-md-12 margin-10-top">
-                            <UsersListToolbar
-                                refreshContactsData={() => this.refreshContactsData()}
-                            />
+                            <UsersListToolbar refreshContactsData={() => this.refreshContactsData()} />
                         </div>
 
                         <div className="col-md-12 margin-10-top">
-                            <UsersList
-                                users={this.props.users}
-                            />
+                            <UsersList users={this.props.users} />
                         </div>
                     </div>
                 </div>
             </div>
-        )
+        );
     }
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         users: state.users,
     };
@@ -61,4 +57,7 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(UsersListApp);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(UsersListApp);

@@ -4,13 +4,13 @@ import rootSaga from '../sagas';
 
 import reducers from '../reducers';
 import moment from 'moment';
-import {hashHistory} from 'react-router';
+import { hashHistory } from 'react-router';
 
 export const configure = (initialState = {}) => {
-    const sagaMiddleware = typeof createSagaMiddleware === 'function' ? createSagaMiddleware() : createSagaMiddleware.default();
+    const sagaMiddleware =
+        typeof createSagaMiddleware === 'function' ? createSagaMiddleware() : createSagaMiddleware.default();
 
     const checkTokenExpirationMiddleware = store => next => action => {
-
         const lastActivity = moment(localStorage.getItem('last_activity'));
 
         if (!localStorage.getItem('last_activity') || lastActivity.add('30', 'minutes').format() < moment().format()) {
@@ -19,19 +19,22 @@ export const configure = (initialState = {}) => {
                     hashHistory.push(`/loguit`);
                 }, 200);
             }
-        }
-        else{
+        } else {
             localStorage.setItem('last_activity', moment().format());
         }
         next(action);
     };
 
-
-    const store = createStore(reducers, initialState, compose(
-        applyMiddleware(checkTokenExpirationMiddleware, sagaMiddleware),
-        process.env.NODE_ENV !== 'production' &&
-        window.__REDUX_DEVTOOLS_EXTENSION__ ? window.__REDUX_DEVTOOLS_EXTENSION__() : f => f,
-    ));
+    const store = createStore(
+        reducers,
+        initialState,
+        compose(
+            applyMiddleware(checkTokenExpirationMiddleware, sagaMiddleware),
+            process.env.NODE_ENV !== 'production' && window.__REDUX_DEVTOOLS_EXTENSION__
+                ? window.__REDUX_DEVTOOLS_EXTENSION__()
+                : f => f
+        )
+    );
 
     sagaMiddleware.run(rootSaga);
 

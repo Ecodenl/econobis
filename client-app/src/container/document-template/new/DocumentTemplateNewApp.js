@@ -8,7 +8,7 @@ import DocumentTemplateNewToolbar from './DocumentTemplateNewToolbar';
 import DocumentTemplateNew from './DocumentTemplateNew';
 
 import DocumentTemplateAPI from '../../../api/document-template/DocumentTemplateAPI';
-import {connect} from "react-redux";
+import { connect } from 'react-redux';
 
 class DocumentTemplateNewApp extends Component {
     constructor(props) {
@@ -20,8 +20,8 @@ class DocumentTemplateNewApp extends Component {
             baseTemplates: [],
             documentTemplate: {
                 name: '',
-                documentGroupId:'',
-                documentTemplateTypeId:'',
+                documentGroupId: '',
+                documentTemplateTypeId: '',
                 roleIds: '',
                 characteristic: '',
                 htmlBody: '',
@@ -39,24 +39,21 @@ class DocumentTemplateNewApp extends Component {
         };
 
         this.handleTextChange = this.handleTextChange.bind(this);
-
-    };
+    }
 
     componentDidMount() {
-        DocumentTemplateAPI.fetchDocumentTemplatesPeekNotGeneral().then((payload) => {
+        DocumentTemplateAPI.fetchDocumentTemplatesPeekNotGeneral().then(payload => {
             let footerTemplates = [];
             let headerTemplates = [];
             let baseTemplates = [];
 
-            payload.forEach(function (template) {
+            payload.forEach(function(template) {
                 if (template.type === 'footer') {
-                    footerTemplates.push({id: template.id, name: template.name});
-                }
-                else if (template.type === 'header') {
-                    headerTemplates.push({id: template.id, name: template.name});
-                }
-                else if (template.type === 'base') {
-                    baseTemplates.push({id: template.id, name: template.name});
+                    footerTemplates.push({ id: template.id, name: template.name });
+                } else if (template.type === 'header') {
+                    headerTemplates.push({ id: template.id, name: template.name });
+                } else if (template.type === 'base') {
+                    baseTemplates.push({ id: template.id, name: template.name });
                 }
             });
 
@@ -66,7 +63,7 @@ class DocumentTemplateNewApp extends Component {
                 baseTemplates: baseTemplates,
             });
         });
-    };
+    }
 
     handleInputChange = event => {
         const target = event.target;
@@ -77,7 +74,7 @@ class DocumentTemplateNewApp extends Component {
             ...this.state,
             documentTemplate: {
                 ...this.state.documentTemplate,
-                [name]: value
+                [name]: value,
             },
         });
     };
@@ -86,17 +83,16 @@ class DocumentTemplateNewApp extends Component {
         const target = event.target;
         const value = target.type === 'checkbox' ? target.checked : target.value;
 
-        if(value === 'general'){
+        if (value === 'general') {
             this.setState({
                 ...this.state,
                 isGeneral: true,
                 documentTemplate: {
                     ...this.state.documentTemplate,
-                    documentTemplateTypeId: value
+                    documentTemplateTypeId: value,
                 },
             });
-        }
-        else{
+        } else {
             this.setState({
                 ...this.state,
                 isGeneral: false,
@@ -110,59 +106,56 @@ class DocumentTemplateNewApp extends Component {
                 },
             });
         }
-
     };
-
 
     handleTextChange(event) {
         this.setState({
             ...this.state,
             documentTemplate: {
                 ...this.state.documentTemplate,
-                htmlBody: event.target.getContent(({format: 'raw'}))
+                htmlBody: event.target.getContent({ format: 'raw' }),
             },
         });
-    };
+    }
 
-    handleRoleIds = (selectedOption) => {
+    handleRoleIds = selectedOption => {
         this.setState({
             ...this.state,
             documentTemplate: {
                 ...this.state.documentTemplate,
-                roleIds: selectedOption
+                roleIds: selectedOption,
             },
         });
     };
 
-
     handleSubmit = event => {
         event.preventDefault();
 
-        const {documentTemplate} = this.state;
+        const { documentTemplate } = this.state;
 
         let errors = {};
         let hasErrors = false;
 
-        if(validator.isEmpty(documentTemplate.name)){
+        if (validator.isEmpty(documentTemplate.name)) {
             errors.name = true;
             hasErrors = true;
-        };
-        if(validator.isEmpty(documentTemplate.documentGroupId)){
+        }
+        if (validator.isEmpty(documentTemplate.documentGroupId)) {
             errors.group = true;
             hasErrors = true;
-        };
+        }
 
-        if(validator.isEmpty(documentTemplate.documentTemplateTypeId)){
+        if (validator.isEmpty(documentTemplate.documentTemplateTypeId)) {
             errors.type = true;
             hasErrors = true;
-        };
+        }
 
         this.setState({ ...this.state, errors: errors });
 
         !hasErrors &&
-        DocumentTemplateAPI.storeDocumentTemplate(documentTemplate).then(payload => {
-            hashHistory.push(`/document-template/${payload.id}`);
-        });
+            DocumentTemplateAPI.storeDocumentTemplate(documentTemplate).then(payload => {
+                hashHistory.push(`/document-template/${payload.id}`);
+            });
     };
 
     render() {
@@ -171,7 +164,7 @@ class DocumentTemplateNewApp extends Component {
                 <div className="panel panel-default">
                     <div className="panel-body">
                         <div className="col-md-12 margin-10-top">
-                            <DocumentTemplateNewToolbar/>
+                            <DocumentTemplateNewToolbar />
                         </div>
                         <div className="col-md-12 margin-10-top">
                             <DocumentTemplateNew
@@ -194,16 +187,16 @@ class DocumentTemplateNewApp extends Component {
                     </div>
                 </div>
             </div>
-        )
+        );
     }
-};
+}
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         documentGroups: state.systemData.documentGroups,
         documentTemplateTypes: state.systemData.documentTemplateTypes,
         roles: state.systemData.roles,
-    }
+    };
 };
 
 export default connect(mapStateToProps)(DocumentTemplateNewApp);

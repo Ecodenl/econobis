@@ -1,9 +1,9 @@
 import React from 'react';
 
-import Calendar from "./Calendar";
-import Panel from "../../components/panel/Panel";
-import PanelBody from "../../components/panel/PanelBody";
-import CalendarToolbar from "./CalendarToolbar";
+import Calendar from './Calendar';
+import Panel from '../../components/panel/Panel';
+import PanelBody from '../../components/panel/PanelBody';
+import CalendarToolbar from './CalendarToolbar';
 
 const CalendarApp = props => {
     return (

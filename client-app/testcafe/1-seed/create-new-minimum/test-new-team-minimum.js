@@ -1,19 +1,18 @@
 import { Selector, Role } from 'testcafe';
 import superUser from '../../auth/UserRoles';
 import * as constants from '../../config/constants';
-import * as vars from "../../config/random-models";
-import ModelGeneral from "../../pages/model-general";
-import ModelNewTeam from "../../pages/team/model-new-team";
+import * as vars from '../../config/random-models';
+import ModelGeneral from '../../pages/model-general';
+import ModelNewTeam from '../../pages/team/model-new-team';
 
 const faker = require('faker');
 
-fixture `Create new team minimum`;
+fixture`Create new team minimum`;
 
 const general = new ModelGeneral();
 const newTeam = new ModelNewTeam();
 
-test('Fill out form team minimum', async (t) => {
-
+test('Fill out form team minimum', async t => {
     await t
         .useRole(superUser)
         .navigateTo(constants.app_url + '#/team/nieuw')

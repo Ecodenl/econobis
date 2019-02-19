@@ -2,9 +2,9 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import Modal from '../../../components/modal/Modal';
-import {deleteProduct} from "../../../actions/product/ProductsActions";
+import { deleteProduct } from '../../../actions/product/ProductsActions';
 
-const ProductDeleteItem = (props) => {
+const ProductDeleteItem = props => {
     const confirmAction = () => {
         props.deleteProduct(props.id);
         props.closeDeleteItemModal();
@@ -24,9 +24,12 @@ const ProductDeleteItem = (props) => {
 };
 
 const mapDispatchToProps = dispatch => ({
-    deleteProduct: (id) => {
+    deleteProduct: id => {
         dispatch(deleteProduct(id));
     },
 });
 
-export default connect(null, mapDispatchToProps)(ProductDeleteItem);
+export default connect(
+    null,
+    mapDispatchToProps
+)(ProductDeleteItem);

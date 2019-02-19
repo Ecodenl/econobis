@@ -1,6 +1,6 @@
 import { put, call } from 'redux-saga/effects';
 import QuotationRequestDetailsAPI from '../../api/quotation-request/QuotationRequestDetailsAPI';
-import {hashHistory} from "react-router";
+import { hashHistory } from 'react-router';
 
 export function* fetchQuotationRequestDetailsSaga({ payload }) {
     try {

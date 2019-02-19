@@ -5,7 +5,7 @@ export function* fetchAdministrationDetailsSaga({ id }) {
     try {
         yield put({ type: 'IS_LOADING' });
         const administrationDetails = yield call(AdministrationDetailsAPI.fetchAdministrationDetails, id);
-        yield put({ type: 'FETCH_ADMINISTRATION_DETAILS_SUCCESS',administrationDetails });
+        yield put({ type: 'FETCH_ADMINISTRATION_DETAILS_SUCCESS', administrationDetails });
         yield put({ type: 'IS_LOADING_COMPLETE' });
     } catch (error) {
         yield put({ type: 'FETCH_ADMINISTRATION_DETAILS_ERROR', error });
@@ -15,11 +15,11 @@ export function* fetchAdministrationDetailsSaga({ id }) {
 
 export function* updateAdministrationDetailsSaga({ administration, administrationId, switchToView }) {
     try {
-        const payload = yield call(AdministrationDetailsAPI.updateAdministration, {administration, administrationId});
+        const payload = yield call(AdministrationDetailsAPI.updateAdministration, { administration, administrationId });
         const administrationDetails = payload.data.data;
 
         // Reload me details after updating administration
-        yield put({ type: 'FETCH_ME_DETAILS'});
+        yield put({ type: 'FETCH_ME_DETAILS' });
 
         yield put({ type: 'UPDATE_ADMINISTRATION_SUCCESS', administrationDetails });
 
@@ -29,14 +29,14 @@ export function* updateAdministrationDetailsSaga({ administration, administratio
     }
 }
 
-export function* addAdministrationUserSaga({administrationUser}) {
+export function* addAdministrationUserSaga({ administrationUser }) {
     try {
         const payload = yield call(AdministrationDetailsAPI.attachUser, administrationUser);
 
         const administrationUserPayload = payload.data.data;
 
         // Reload me details after updating administration
-        yield put({ type: 'FETCH_ME_DETAILS'});
+        yield put({ type: 'FETCH_ME_DETAILS' });
 
         yield put({ type: 'ADD_ADMINISTRATION_USER_SUCCESS', administrationUserPayload });
     } catch (error) {
@@ -44,16 +44,16 @@ export function* addAdministrationUserSaga({administrationUser}) {
     }
 }
 
-export function* deleteAdministrationUserSaga({administrationId, userId }) {
+export function* deleteAdministrationUserSaga({ administrationId, userId }) {
     try {
-        yield call(AdministrationDetailsAPI.detachUser, {administrationId, userId });
+        yield call(AdministrationDetailsAPI.detachUser, { administrationId, userId });
         yield put({ type: 'DELETE_ADMINISTRATION_USER_SUCCESS', userId });
     } catch (error) {
         yield put({ type: 'DELETE_ADMINISTRATION_USER_ERROR', error });
     }
 }
 
-export function* deleteAdministrationSepaSaga({sepaId}) {
+export function* deleteAdministrationSepaSaga({ sepaId }) {
     try {
         yield call(AdministrationDetailsAPI.deleteSepa, sepaId);
         yield put({ type: 'DELETE_ADMINISTRATION_SEPA_SUCCESS', sepaId });

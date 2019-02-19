@@ -7,32 +7,49 @@ import 'react-virtualized/styles.css';
 import 'react-virtualized-select/styles.css';
 
 const InputReactSelect = props => {
-    const { label, className, size, id, name, value, options, optionId, optionName, onChangeAction, required, multi, error, isLoading} = props;
+    const {
+        label,
+        className,
+        size,
+        id,
+        name,
+        value,
+        options,
+        optionId,
+        optionName,
+        onChangeAction,
+        required,
+        multi,
+        error,
+        isLoading,
+    } = props;
 
-    const onChange = (selectedOption) => {
+    const onChange = selectedOption => {
         onChangeAction(selectedOption || '', name);
     };
 
     return (
         <div className="form-group col-sm-6">
-            <label htmlFor={ id } className={`col-sm-6 ${required}`}>{label}</label>
+            <label htmlFor={id} className={`col-sm-6 ${required}`}>
+                {label}
+            </label>
             <div className={`${size}`}>
                 <VirtualizedSelect
-                        id={ id }
-                        name={name}
-                        value={value}
-                        onChange={onChange}
-                        options={options}
-                        valueKey={optionId}
-                        labelKey={optionName}
-                        placeholder={""}
-                        noResultsText={"Geen resultaat gevonden"}
-                        multi={multi}
-                        simpleValue
-                        removeSelected
-                        className={error ? ' has-error' : ''}
-                        isLoading={isLoading}
-                        />
+                    id={id}
+                    name={name}
+                    value={value}
+                    onChange={onChange}
+                    options={options}
+                    valueKey={optionId}
+                    labelKey={optionName}
+                    placeholder={''}
+                    noResultsText={'Geen resultaat gevonden'}
+                    multi={multi}
+                    simpleValue
+                    removeSelected
+                    className={error ? ' has-error' : ''}
+                    isLoading={isLoading}
+                />
             </div>
         </div>
     );
@@ -60,10 +77,7 @@ InputReactSelect.propTypes = {
     options: PropTypes.array.isRequired,
     optionId: PropTypes.string,
     optionName: PropTypes.string,
-    value: PropTypes.oneOfType([
-        PropTypes.string,
-        PropTypes.number
-    ]),
+    value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     onChangeAction: PropTypes.func,
     onBlurAction: PropTypes.func,
     required: PropTypes.string,
@@ -71,7 +85,6 @@ InputReactSelect.propTypes = {
     error: PropTypes.bool,
     multi: PropTypes.bool,
     isLoading: PropTypes.bool,
-
 };
 
 export default InputReactSelect;

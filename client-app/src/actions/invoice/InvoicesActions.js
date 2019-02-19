@@ -8,21 +8,21 @@ export const fetchInvoices = (filters, sorts, pagination, administrationId) => {
     };
 };
 
-export const setCheckedInvoiceAll = (checkedValue) => {
-    return  {
+export const setCheckedInvoiceAll = checkedValue => {
+    return {
         type: 'SET_CHECKED_INVOICE_ALL',
         checkedValue,
     };
 };
 
-export const setCheckedInvoice = (id) => {
-    return  {
+export const setCheckedInvoice = id => {
+    return {
         type: 'SET_CHECKED_INVOICE',
         id,
     };
 };
 
-export const previewSend = (data) => {
+export const previewSend = data => {
     return {
         type: 'INVOICE_PREVIEW_SEND',
         data,
@@ -35,16 +35,15 @@ export const clearPreviewSend = () => {
     };
 };
 
-
 export const clearInvoices = () => {
     return {
-        type: 'CLEAR_INVOICES'
+        type: 'CLEAR_INVOICES',
     };
 };
 
-export const deleteInvoiceFromGrid = (id) => {
+export const deleteInvoiceFromGrid = id => {
     return {
         type: 'DELETE_INVOICE_FROM_GRID',
-        id
-    }
+        id,
+    };
 };

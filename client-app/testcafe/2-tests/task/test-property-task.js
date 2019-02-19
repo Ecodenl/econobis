@@ -1,25 +1,21 @@
 import { Selector, Role } from 'testcafe';
 import superUser from '../../auth/UserRoles';
 import * as constants from '../../config/constants';
-import * as vars from "../../config/random-models";
+import * as vars from '../../config/random-models';
 const faker = require('faker');
-faker.locale = "nl";
+faker.locale = 'nl';
 import ModelDetailsTask from '../../pages/task/model-details-task';
 import ModelGridTask from '../../pages/task/model-grid-task';
-import ModelGeneral from "../../pages/model-general";
+import ModelGeneral from '../../pages/model-general';
 
-fixture `Create new properties for task`;
+fixture`Create new properties for task`;
 
 const general = new ModelGeneral();
 const detailsTask = new ModelDetailsTask();
 const gridTask = new ModelGridTask();
 
-
-test('Fill out form task->property', async (t) => {
-
-    await t
-        .useRole(superUser)
-        .navigateTo(constants.app_url + '#/taken');
+test('Fill out form task->property', async t => {
+    await t.useRole(superUser).navigateTo(constants.app_url + '#/taken');
 
     await t.expect(general.titleH3.innerText).eql('Taken', 'Check element text', { timeout: 500 });
 
@@ -29,9 +25,7 @@ test('Fill out form task->property', async (t) => {
         .pressKey('enter')
         .wait(constants.wait);
 
-    await t
-        .doubleClick(general.firstRow)
-        .wait(constants.wait);
+    await t.doubleClick(general.firstRow).wait(constants.wait);
 
     await t.expect(general.titleH3.innerText).eql('Taak', 'Check element text', { timeout: 500 });
 

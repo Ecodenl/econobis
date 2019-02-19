@@ -1,4 +1,4 @@
-import React, { Component }from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import UserDetailsFormRoleViewItem from './UserDetailsFormRoleViewItem';
@@ -11,7 +11,7 @@ class UserDetailsFormRolesView extends Component {
     }
 
     render() {
-        const {roles = {} } = this.props.userDetails;
+        const { roles = {} } = this.props.userDetails;
 
         return (
             <div onClick={this.props.switchToEdit}>
@@ -20,26 +20,23 @@ class UserDetailsFormRolesView extends Component {
                         <span className="h5 text-bold">Gebruikers rollen</span>
                     </PanelHeader>
                     <div className="row">
-                {
-                    roles.length === 0 ? (
-                        <tr><td colSpan={7}>Geen rollen beschikbaar!</td></tr>
-                    ) : (
-                        roles.map((role, i) => {
-                            return <UserDetailsFormRoleViewItem
-                                key={i}
-                                role={role}
-                            />
-                        })
-                    )
-                }
+                        {roles.length === 0 ? (
+                            <tr>
+                                <td colSpan={7}>Geen rollen beschikbaar!</td>
+                            </tr>
+                        ) : (
+                            roles.map((role, i) => {
+                                return <UserDetailsFormRoleViewItem key={i} role={role} />;
+                            })
+                        )}
                     </div>
                 </PanelBody>
             </div>
         );
     }
-};
+}
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         userDetails: state.userDetails,
     };

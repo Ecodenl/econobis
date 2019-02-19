@@ -13,7 +13,7 @@ use App\Eco\EmailAddress\EmailAddressType;
 use App\Eco\EnergySupplier\EnergySupplier;
 use App\Eco\Occupation\Occupation;
 use App\Eco\PhoneNumber\PhoneNumberType;
-use App\Eco\ProductionProject\ProductionProjectRevenue;
+use App\Eco\Project\ProjectRevenue;
 use Carbon\Carbon;
 use League\Csv\Reader;
 

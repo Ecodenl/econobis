@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import DataTableHeadTitleAndSort from '../../../components/dataTable/DataTableHeadTitleAndSort';
 import { setAuditTrailSortsFilter } from '../../../actions/audit-trail/AuditTrailSortsActions';
 
-const AuditTrailListHead = (props) => {
+const AuditTrailListHead = props => {
     const setSorts = (field, order) => {
         props.setAuditTrailSortsFilter(field, order);
 
@@ -18,10 +18,30 @@ const AuditTrailListHead = (props) => {
             <DataTableHeadTitleAndSort sortColumn={'model'} title={'Type record'} width={'15%'} setSorts={setSorts} />
             <DataTableHeadTitleAndSort sortColumn={'revisionable_id'} title={'Id'} width={'10%'} setSorts={setSorts} />
             <DataTableHeadTitleAndSort sortColumn={'field'} title={'Veldnaam'} width={'15%'} setSorts={setSorts} />
-            <DataTableHeadTitleAndSort sortColumn={'oldValue'} title={'Oude waarde'} width={'15%'} setSorts={setSorts} />
-            <DataTableHeadTitleAndSort sortColumn={'newValue'} title={'Nieuwe waarde'} width={'15%'} setSorts={setSorts} />
-            <DataTableHeadTitleAndSort sortColumn={'changedById'} title={'Gewijzigd door'} width={'15%'} setSorts={setSorts} />
-            <DataTableHeadTitleAndSort sortColumn={'updatedAt'} title={'Gewijzigd op'} width={'15%'} setSorts={setSorts} />
+            <DataTableHeadTitleAndSort
+                sortColumn={'oldValue'}
+                title={'Oude waarde'}
+                width={'15%'}
+                setSorts={setSorts}
+            />
+            <DataTableHeadTitleAndSort
+                sortColumn={'newValue'}
+                title={'Nieuwe waarde'}
+                width={'15%'}
+                setSorts={setSorts}
+            />
+            <DataTableHeadTitleAndSort
+                sortColumn={'changedById'}
+                title={'Gewijzigd door'}
+                width={'15%'}
+                setSorts={setSorts}
+            />
+            <DataTableHeadTitleAndSort
+                sortColumn={'updatedAt'}
+                title={'Gewijzigd op'}
+                width={'15%'}
+                setSorts={setSorts}
+            />
         </tr>
     );
 };
@@ -32,4 +52,7 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(null, mapDispatchToProps)(AuditTrailListHead);
+export default connect(
+    null,
+    mapDispatchToProps
+)(AuditTrailListHead);

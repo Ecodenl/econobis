@@ -1,16 +1,15 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import TaskHarmonica from "./harmonica/TaskHarmonica";
-import NoteHarmonica from "./harmonica/NoteHarmonica";
-import EmailInboxHarmonica from "./harmonica/EmailInboxHarmonica";
-import EmailSentHarmonica from "./harmonica/EmailSentHarmonica";
-import DocumentHarmonica from "./harmonica/DocumentHarmonica";
-import {hashHistory} from "react-router";
-
+import TaskHarmonica from './harmonica/TaskHarmonica';
+import NoteHarmonica from './harmonica/NoteHarmonica';
+import EmailInboxHarmonica from './harmonica/EmailInboxHarmonica';
+import EmailSentHarmonica from './harmonica/EmailSentHarmonica';
+import DocumentHarmonica from './harmonica/DocumentHarmonica';
+import { hashHistory } from 'react-router';
 
 class TaskDetailsHarmonica extends Component {
-    constructor(props){
+    constructor(props) {
         super(props);
 
         this.state = {
@@ -24,10 +23,10 @@ class TaskDetailsHarmonica extends Component {
         };
 
         this.toggleShowList = this.toggleShowList.bind(this);
-    };
+    }
 
     componentWillReceiveProps(nextProps) {
-        if(this.props.id !== nextProps.id) {
+        if (this.props.id !== nextProps.id) {
             this.setState({
                 toggleShowList: {
                     tasks: false,
@@ -36,9 +35,9 @@ class TaskDetailsHarmonica extends Component {
                     emailsSent: false,
                     documents: false,
                 },
-            })
+            });
         }
-    };
+    }
 
     toggleShowList(name) {
         this.setState({
@@ -46,15 +45,15 @@ class TaskDetailsHarmonica extends Component {
             toggleShowList: {
                 ...this.state.toggleShowList,
                 [name]: !this.state.toggleShowList[name],
-            }
+            },
         });
-    };
+    }
 
     newEmail = () => {
         hashHistory.push(`/email/nieuw`);
     };
 
-    newDocument = (type) => {
+    newDocument = type => {
         hashHistory.push(`/document/nieuw/${type}/taak/${this.props.taskDetails.id}`);
     };
 
@@ -94,15 +93,18 @@ class TaskDetailsHarmonica extends Component {
                     documentCount={this.props.taskDetails.documentCount}
                 />
             </div>
-        )
-    };
-};
+        );
+    }
+}
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         taskDetails: state.taskDetails,
-        permissions: state.meDetails.permissions
+        permissions: state.meDetails.permissions,
     };
 };
 
-export default connect(mapStateToProps, null)(TaskDetailsHarmonica);
+export default connect(
+    mapStateToProps,
+    null
+)(TaskDetailsHarmonica);

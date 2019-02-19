@@ -38,8 +38,9 @@ use App\Eco\Industry\Industry;
 use App\Eco\LastNamePrefix\LastNamePrefix;
 use App\Eco\Mailbox\MailgunDomain;
 use App\Eco\Occupation\Occupation;
-use App\Eco\ParticipantProductionProject\ParticipantProductionProjectPayoutType;
-use App\Eco\ParticipantProductionProject\ParticipantProductionProjectStatus;
+use App\Eco\ParticipantMutation\ParticipantMutationType;
+use App\Eco\ParticipantProject\ParticipantProjectPayoutType;
+use App\Eco\ParticipantProject\ParticipantProjectStatus;
 use App\Eco\ParticipantTransaction\ParticipantTransactionType;
 use App\Eco\PaymentInvoice\PaymentInvoiceStatus;
 use App\Eco\PersonType\PersonType;
@@ -48,23 +49,24 @@ use App\Eco\Product\Product;
 use App\Eco\Product\ProductDuration;
 use App\Eco\Product\ProductInvoiceFrequency;
 use App\Eco\Product\ProductPaymentType;
-use App\Eco\ProductionProject\ProductionProjectRevenueCategory;
-use App\Eco\ProductionProject\ProductionProjectRevenueType;
-use App\Eco\ProductionProject\ProductionProjectStatus;
-use App\Eco\ProductionProject\ProductionProjectType;
+use App\Eco\Project\ProjectRevenueCategory;
+use App\Eco\Project\ProjectRevenueType;
+use App\Eco\Project\ProjectStatus;
+use App\Eco\Project\ProjectType;
 use App\Eco\QuotationRequest\QuotationRequestStatus;
 use App\Eco\Task\TaskProperty;
 use App\Eco\Task\TaskType;
 use App\Eco\Team\Team;
 use App\Eco\User\User;
 use App\Http\Resources\GenericResource;
+use App\Http\Resources\LastNamePrefix\FullLastNamePrefix;
 use App\Http\Resources\Measure\MeasurePeek;
 use App\Http\Resources\OrganisationType\FullOrganisationType;
 use App\Eco\Title\Title;
 use App\Http\Resources\EnumWithIdAndName\FullEnumWithIdAndName;
 use App\Http\Resources\Industry\FullIndustry;
-use App\Http\Resources\LastNamePrefix\FullLastNamePrefix;
 use App\Http\Resources\Occupation\FullOccupation;
+use App\Http\Resources\ParticipantMutationType\FullParticipantMutationType;
 use App\Http\Resources\PersonType\FullPersonType;
 use App\Http\Resources\Product\FullProduct;
 use App\Http\Resources\Team\FullTeam;
@@ -162,13 +164,14 @@ class SystemData extends Resource
             'energySuppliers' => GenericResource::collection($sortedEnergySuppliers),
             'contactEnergySupplierStatus' => GenericResource::collection(ContactEnergySupplierStatus::all()),
             'contactEnergySupplierTypes' => GenericResource::collection(ContactEnergySupplierType::all()),
-            'productionProjectStatus' => GenericResource::collection(ProductionProjectStatus::all()),
-            'productionProjectTypes' => GenericResource::collection(ProductionProjectType::all()),
-            'participantProductionProjectStatus' => GenericResource::collection(ParticipantProductionProjectStatus::all()),
-            'participantProductionProjectPayoutTypes' => GenericResource::collection(ParticipantProductionProjectPayoutType::all()),
+            'projectStatus' => GenericResource::collection(ProjectStatus::orderBy('order')->get()),
+            'projectTypes' => GenericResource::collection(ProjectType::all()),
+            'participantProjectStatus' => GenericResource::collection(ParticipantProjectStatus::all()),
+            'participantProjectPayoutTypes' => GenericResource::collection(ParticipantProjectPayoutType::all()),
             'participantTransactionTypes' => GenericResource::collection(ParticipantTransactionType::all()),
-            'productionProjectRevenueTypes' => GenericResource::collection(ProductionProjectRevenueType::all()),
-            'productionProjectRevenueCategories' => GenericResource::collection(ProductionProjectRevenueCategory::all()),
+            'participantMutationTypes' => FullParticipantMutationType::collection(ParticipantMutationType::all()),
+            'projectRevenueTypes' => GenericResource::collection(ProjectRevenueType::all()),
+            'projectRevenueCategories' => GenericResource::collection(ProjectRevenueCategory::all()),
             'versionNumber' => 'Versie: ' . config('app.version_major') . '.' . config('app.version_minor') . '.' . config('app.version_fix'),
             'appName' => config('app.name'),
             'productDurations' => FullEnumWithIdAndName::collection(ProductDuration::collection()),

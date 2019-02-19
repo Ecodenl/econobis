@@ -13,7 +13,7 @@ export function* fetchContactsInGroupSaga({ contactGroup }) {
     }
 }
 
-export function* deleteContactInGroupSaga({contactGroup, id}) {
+export function* deleteContactInGroupSaga({ contactGroup, id }) {
     try {
         yield call(ContactsInGroupAPI.deleteContactInGroup, contactGroup, id);
         yield put({ type: 'DELETE_CONTACT_IN_GROUP_SUCCESS', id });

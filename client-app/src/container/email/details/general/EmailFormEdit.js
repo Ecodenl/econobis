@@ -1,43 +1,56 @@
-import React, {Component} from 'react';
-import {connect} from 'react-redux';
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import moment from 'moment';
 
 import InputSelect from '../../../../components/form/InputSelect';
 import ViewHtmlAsText from '../../../../components/form/ViewHtmlAsText';
 import ButtonText from '../../../../components/button/ButtonText';
-import PanelFooter from "../../../../components/panel/PanelFooter";
+import PanelFooter from '../../../../components/panel/PanelFooter';
 import ViewText from '../../../../components/form/ViewText';
 import ContactsAPI from '../../../../api/contact/ContactsAPI';
 import EmailAPI from '../../../../api/email/EmailAPI';
 
 import { fetchEmail } from '../../../../actions/email/EmailDetailsActions';
-import QuotationRequestsAPI from "../../../../api/quotation-request/QuotationRequestsAPI";
-import TasksAPI from "../../../../api/task/TasksAPI";
-import MeasureAPI from "../../../../api/measure/MeasureAPI";
-import IntakesAPI from "../../../../api/intake/IntakesAPI";
-import OpportunitiesAPI from "../../../../api/opportunity/OpportunitiesAPI";
-import InputReactSelect from "../../../../components/form/InputReactSelect";
-import OrdersAPI from "../../../../api/order/OrdersAPI";
-import InvoicesAPI from "../../../../api/invoice/InvoicesAPI";
-import InputSelectGroup from "../../../../components/form/InputSelectGroup";
-import validator from "validator";
+import QuotationRequestsAPI from '../../../../api/quotation-request/QuotationRequestsAPI';
+import TasksAPI from '../../../../api/task/TasksAPI';
+import MeasureAPI from '../../../../api/measure/MeasureAPI';
+import IntakesAPI from '../../../../api/intake/IntakesAPI';
+import OpportunitiesAPI from '../../../../api/opportunity/OpportunitiesAPI';
+import InputReactSelect from '../../../../components/form/InputReactSelect';
+import OrdersAPI from '../../../../api/order/OrdersAPI';
+import InvoicesAPI from '../../../../api/invoice/InvoicesAPI';
+import InputSelectGroup from '../../../../components/form/InputSelectGroup';
+import validator from 'validator';
 
 class EmailFormEdit extends Component {
     constructor(props) {
         super(props);
 
-        const {id, responsibleUserId, responsibleTeamId, contacts, intake, task, quotationRequest, measure, opportunity, order, invoice, status} = props.email;
+        const {
+            id,
+            responsibleUserId,
+            responsibleTeamId,
+            contacts,
+            intake,
+            task,
+            quotationRequest,
+            measure,
+            opportunity,
+            order,
+            invoice,
+            status,
+        } = props.email;
         let responsible = '';
-        if(responsibleUserId){
+        if (responsibleUserId) {
             responsible = 'user' + responsibleUserId;
         }
-        if(responsibleTeamId){
-            responsible =  'team' + responsibleTeamId;
+        if (responsibleTeamId) {
+            responsible = 'team' + responsibleTeamId;
         }
         this.state = {
             email: {
                 id,
-                contactIds: contacts && contacts.map((contact) => contact.id).join(','),
+                contactIds: contacts && contacts.map(contact => contact.id).join(','),
                 intakeId: intake ? intake.id : '',
                 taskId: task ? task.id : '',
                 quotationRequestId: quotationRequest ? quotationRequest.id : '',
@@ -61,11 +74,11 @@ class EmailFormEdit extends Component {
             peekLoading: {
                 contacts: true,
             },
-        }
-    };
+        };
+    }
 
     componentWillMount() {
-        ContactsAPI.getContactsPeek().then((payload) => {
+        ContactsAPI.getContactsPeek().then(payload => {
             this.setState({
                 contacts: payload,
                 peekLoading: {
@@ -75,31 +88,31 @@ class EmailFormEdit extends Component {
             });
         });
 
-        QuotationRequestsAPI.peekQuotationRequests().then((payload) => {
+        QuotationRequestsAPI.peekQuotationRequests().then(payload => {
             this.setState({ quotationRequests: payload });
         });
 
-        TasksAPI.peekTasks().then((payload) => {
+        TasksAPI.peekTasks().then(payload => {
             this.setState({ tasks: payload });
         });
 
-        MeasureAPI.peekMeasures().then((payload) => {
+        MeasureAPI.peekMeasures().then(payload => {
             this.setState({ measures: payload });
         });
 
-        IntakesAPI.peekIntakes().then((payload) => {
+        IntakesAPI.peekIntakes().then(payload => {
             this.setState({ intakes: payload });
         });
 
-        OpportunitiesAPI.peekOpportunities().then((payload) => {
+        OpportunitiesAPI.peekOpportunities().then(payload => {
             this.setState({ opportunities: payload });
         });
 
-        OrdersAPI.peekOrders().then((payload) => {
+        OrdersAPI.peekOrders().then(payload => {
             this.setState({ orders: payload });
         });
 
-        InvoicesAPI.peekInvoices().then((payload) => {
+        InvoicesAPI.peekInvoices().then(payload => {
             this.setState({ invoices: payload });
         });
     }
@@ -113,17 +126,17 @@ class EmailFormEdit extends Component {
             ...this.state,
             email: {
                 ...this.state.email,
-                [name]: value
+                [name]: value,
             },
         });
     };
 
-    handleContactIds = (selectedOption) => {
+    handleContactIds = selectedOption => {
         this.setState({
             ...this.state,
             email: {
                 ...this.state.email,
-                contactIds: selectedOption
+                contactIds: selectedOption,
             },
         });
     };
@@ -131,28 +144,28 @@ class EmailFormEdit extends Component {
     handleSubmit = event => {
         event.preventDefault();
 
-        const {email} = this.state;
+        const { email } = this.state;
 
-        if(email.statusId){
+        if (email.statusId) {
             EmailAPI.setStatus(email.id, email.statusId).then(payload => {
                 this.props.fetchEmail(email.id);
             });
         }
 
-        if(validator.isEmpty(email.responsible.toString())){
+        if (validator.isEmpty(email.responsible.toString())) {
             email.responsibleUserId = '';
             email.responsibleTeamId = '';
-        };
+        }
 
-        if(email.responsible.search('user') >= 0 ) {
+        if (email.responsible.search('user') >= 0) {
             email.responsibleUserId = email.responsible.replace('user', '');
             email.responsibleTeamId = '';
-        };
+        }
 
-        if(email.responsible.search("team") >= 0) {
+        if (email.responsible.search('team') >= 0) {
             email.responsibleUserId = '';
             email.responsibleTeamId = email.responsible.replace('team', '');
-        };
+        }
 
         EmailAPI.updateEmail(email).then(payload => {
             this.props.fetchEmail(email.id);
@@ -162,40 +175,44 @@ class EmailFormEdit extends Component {
     };
 
     render() {
-        const {contactIds, statusId, intakeId, taskId, quotationRequestId, measureId, opportunityId, orderId, invoiceId, responsible} = this.state.email;
-        const {from, toWithGroup, cc, bcc, subject, htmlBody, createdAt, dateSent, folder, status} = this.props.email;
+        const {
+            contactIds,
+            statusId,
+            intakeId,
+            taskId,
+            quotationRequestId,
+            measureId,
+            opportunityId,
+            orderId,
+            invoiceId,
+            responsible,
+        } = this.state.email;
+        const { from, toWithGroup, cc, bcc, subject, htmlBody, createdAt, dateSent, folder, status } = this.props.email;
 
         return (
             <div>
                 <div className="row">
+                    <ViewText label={'Van'} value={from} />
                     <ViewText
-                        label={"Van"}
-                        value={from}
-                    />
-                    <ViewText
-                        label={"Ontvangen datum tijd"}
+                        label={'Ontvangen datum tijd'}
                         value={createdAt ? moment(createdAt.date).format('DD-MM-YYYY HH:mm') : ''}
                     />
-
                 </div>
                 <div className="row">
                     <ViewText
-                        label={"Aan"}
-                        value={toWithGroup && toWithGroup.map((toWithGroup) => toWithGroup).join(', ')}
+                        label={'Aan'}
+                        value={toWithGroup && toWithGroup.map(toWithGroup => toWithGroup).join(', ')}
                     />
                     <ViewText
-                        label={"Verzonden datum tijd"}
+                        label={'Verzonden datum tijd'}
                         value={dateSent ? moment(dateSent.date).format('DD-MM-YYYY HH:mm') : ''}
                     />
                 </div>
                 <div className="row">
-                    <ViewText
-                        label={"Cc"}
-                        value={cc && cc.map((cc) => cc).join(', ')}
-                    />
+                    <ViewText label={'Cc'} value={cc && cc.map(cc => cc).join(', ')} />
                     <InputReactSelect
-                        label={"Contact"}
-                        name={"contactIds"}
+                        label={'Contact'}
+                        name={'contactIds'}
                         options={this.state.contacts}
                         value={contactIds}
                         onChangeAction={this.handleContactIds}
@@ -206,17 +223,17 @@ class EmailFormEdit extends Component {
 
                 <div className="row">
                     <InputSelect
-                        label={"Intake"}
-                        size={"col-sm-6"}
-                        name={"intakeId"}
+                        label={'Intake'}
+                        size={'col-sm-6'}
+                        name={'intakeId'}
                         options={this.state.intakes}
                         value={intakeId}
                         onChangeAction={this.handleInputChange}
                     />
                     <InputSelect
-                        label={"Taak"}
-                        size={"col-sm-6"}
-                        name={"taskId"}
+                        label={'Taak'}
+                        size={'col-sm-6'}
+                        name={'taskId'}
                         options={this.state.tasks}
                         value={taskId}
                         onChangeAction={this.handleInputChange}
@@ -225,17 +242,17 @@ class EmailFormEdit extends Component {
 
                 <div className="row">
                     <InputSelect
-                        label={"Offerteverzoek"}
-                        size={"col-sm-6"}
-                        name={"quotationRequestId"}
+                        label={'Offerteverzoek'}
+                        size={'col-sm-6'}
+                        name={'quotationRequestId'}
                         options={this.state.quotationRequests}
                         value={quotationRequestId}
                         onChangeAction={this.handleInputChange}
                     />
                     <InputSelect
-                        label={"Maatregel"}
-                        size={"col-sm-6"}
-                        name={"measureId"}
+                        label={'Maatregel'}
+                        size={'col-sm-6'}
+                        name={'measureId'}
                         options={this.state.measures}
                         value={measureId}
                         onChangeAction={this.handleInputChange}
@@ -244,17 +261,17 @@ class EmailFormEdit extends Component {
 
                 <div className="row">
                     <InputSelect
-                        label={"Kans"}
-                        size={"col-sm-6"}
-                        name={"opportunityId"}
+                        label={'Kans'}
+                        size={'col-sm-6'}
+                        name={'opportunityId'}
                         options={this.state.opportunities}
                         value={opportunityId}
                         onChangeAction={this.handleInputChange}
                     />
                     <InputSelect
-                        label={"Order"}
-                        size={"col-sm-6"}
-                        name={"orderId"}
+                        label={'Order'}
+                        size={'col-sm-6'}
+                        name={'orderId'}
                         options={this.state.orders}
                         value={orderId}
                         onChangeAction={this.handleInputChange}
@@ -263,9 +280,9 @@ class EmailFormEdit extends Component {
 
                 <div className="row">
                     <InputSelect
-                        label={"Factuur"}
-                        size={"col-sm-6"}
-                        name={"invoiceId"}
+                        label={'Factuur'}
+                        size={'col-sm-6'}
+                        name={'invoiceId'}
                         options={this.state.invoices}
                         value={invoiceId}
                         onChangeAction={this.handleInputChange}
@@ -273,78 +290,90 @@ class EmailFormEdit extends Component {
                 </div>
 
                 <div className="row margin-10-top">
-                    <div className='col-sm-12'>
+                    <div className="col-sm-12">
                         <div className="row">
                             <div className="col-sm-3">
                                 <label className="col-sm-12">Onderwerp</label>
                             </div>
-                            <div className="col-sm-9">
-                                {subject}
-                            </div>
+                            <div className="col-sm-9">{subject}</div>
                         </div>
                     </div>
                 </div>
 
                 <div className="row">
-                    <ViewHtmlAsText label={"Tekst"} value={htmlBody}/>
+                    <ViewHtmlAsText label={'Tekst'} value={htmlBody} />
                 </div>
 
-                {((folder == 'inbox' && status) || (folder == 'inbox' && status == null)) &&
-                <div className="row">
-                    <InputSelect
-                        label={"Status"}
-                        size={"col-sm-6"}
-                        name={"statusId"}
-                        options={this.props.emailStatuses}
-                        value={statusId}
-                        onChangeAction={this.handleInputChange}
-                    />
-                </div>
-                }
+                {((folder == 'inbox' && status) || (folder == 'inbox' && status == null)) && (
+                    <div className="row">
+                        <InputSelect
+                            label={'Status'}
+                            size={'col-sm-6'}
+                            name={'statusId'}
+                            options={this.props.emailStatuses}
+                            value={statusId}
+                            onChangeAction={this.handleInputChange}
+                        />
+                    </div>
+                )}
 
-                {folder == 'inbox' &&
-                <div className="row">
-                    <InputSelectGroup
-                        label={"Verantwoordelijke"}
-                        size={"col-sm-6"}
-                        name={"responsible"}
-                        optionsInGroups={[
-                            {name: 'user', label: 'Gebruikers', options: this.props.users, optionName: 'fullName'},
-                            {name: 'team', label: 'Teams', options: this.props.teams}
-                        ]}
-                        value = {responsible}
-                        onChangeAction={this.handleInputChange}
-                    />
-                </div>
-                }
+                {folder == 'inbox' && (
+                    <div className="row">
+                        <InputSelectGroup
+                            label={'Verantwoordelijke'}
+                            size={'col-sm-6'}
+                            name={'responsible'}
+                            optionsInGroups={[
+                                {
+                                    name: 'user',
+                                    label: 'Gebruikers',
+                                    options: this.props.users,
+                                    optionName: 'fullName',
+                                },
+                                { name: 'team', label: 'Teams', options: this.props.teams },
+                            ]}
+                            value={responsible}
+                            onChangeAction={this.handleInputChange}
+                        />
+                    </div>
+                )}
 
                 <PanelFooter>
                     <div className="pull-right btn-group" role="group">
-                        <ButtonText buttonClassName={"btn-default"} buttonText={"Annuleren"}
-                                    onClickAction={this.props.switchToView}/>
-                        <ButtonText buttonText={"Opslaan"} onClickAction={this.handleSubmit} type={"submit"}
-                                    value={"Submit"}/>
+                        <ButtonText
+                            buttonClassName={'btn-default'}
+                            buttonText={'Annuleren'}
+                            onClickAction={this.props.switchToView}
+                        />
+                        <ButtonText
+                            buttonText={'Opslaan'}
+                            onClickAction={this.handleSubmit}
+                            type={'submit'}
+                            value={'Submit'}
+                        />
                     </div>
                 </PanelFooter>
-
             </div>
         );
-    };
-};
+    }
+}
 
 const mapDispatchToProps = dispatch => ({
-    fetchEmail: (id) => {
+    fetchEmail: id => {
         dispatch(fetchEmail(id));
     },
 });
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         email: state.email,
         emailStatuses: state.systemData.emailStatuses,
         teams: state.systemData.teams,
         users: state.systemData.users,
-    }
+    };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(EmailFormEdit);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(EmailFormEdit);

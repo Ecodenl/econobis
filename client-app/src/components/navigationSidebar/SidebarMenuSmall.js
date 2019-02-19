@@ -1,6 +1,6 @@
 import React from 'react';
 import SvgIcon from 'react-icons-kit';
-import {connect} from "react-redux";
+import { connect } from 'react-redux';
 
 import { ic_aspect_ratio } from 'react-icons-kit/md/ic_aspect_ratio';
 import { ic_dashboard } from 'react-icons-kit/md/ic_dashboard';
@@ -15,45 +15,68 @@ import { home } from 'react-icons-kit/icomoon/home';
 import { drawer } from 'react-icons-kit/icomoon/drawer';
 import { ic_business_center } from 'react-icons-kit/md/ic_business_center';
 
-const SidebarMenuSmall = ({permissions, administrations}) => (
+const SidebarMenuSmall = ({ permissions, administrations }) => (
     <div className="sidebar-menu-small">
         {/* Dashboard */}
-        <div className="sidebar-menu-small-item"><SvgIcon size={20} icon={ic_dashboard}/></div>
+        <div className="sidebar-menu-small-item">
+            <SvgIcon size={20} icon={ic_dashboard} />
+        </div>
         {/* Contacten */}
-        <div className="sidebar-menu-small-item"><SvgIcon size={20} icon={ic_contacts}/></div>
+        <div className="sidebar-menu-small-item">
+            <SvgIcon size={20} icon={ic_contacts} />
+        </div>
         {/* Projexts */}
-        <div className="sidebar-menu-small-item"><SvgIcon size={20} icon={drawer}/></div>
+        <div className="sidebar-menu-small-item">
+            <SvgIcon size={20} icon={drawer} />
+        </div>
         {/* Intakes */}
-        <div className="sidebar-menu-small-item"><SvgIcon size={20} icon={home}/></div>
+        <div className="sidebar-menu-small-item">
+            <SvgIcon size={20} icon={home} />
+        </div>
         {/* Groepen beheer */}
-        <div className="sidebar-menu-small-item"><SvgIcon size={20} icon={ic_aspect_ratio}/></div>
+        <div className="sidebar-menu-small-item">
+            <SvgIcon size={20} icon={ic_aspect_ratio} />
+        </div>
         {/* Email */}
-        <div className="sidebar-menu-small-item"><SvgIcon size={20} icon={ic_email}/></div>
+        <div className="sidebar-menu-small-item">
+            <SvgIcon size={20} icon={ic_email} />
+        </div>
         {/* Marketing */}
-        <div className="sidebar-menu-small-item"><SvgIcon size={20} icon={speech_bubbles}/></div>
+        <div className="sidebar-menu-small-item">
+            <SvgIcon size={20} icon={speech_bubbles} />
+        </div>
         {/* Taken */}
-        <div className="sidebar-menu-small-item"><SvgIcon size={20} icon={ic_business}/></div>
+        <div className="sidebar-menu-small-item">
+            <SvgIcon size={20} icon={ic_business} />
+        </div>
         {/* Agenda */}
-        <div className="sidebar-menu-small-item"><SvgIcon size={20} icon={calendar}/></div>
+        <div className="sidebar-menu-small-item">
+            <SvgIcon size={20} icon={calendar} />
+        </div>
         {/* Documenten */}
-        {permissions.viewDocumentTemplate &&
-        <div className="sidebar-menu-small-item"><SvgIcon size={20} icon={documents}/></div>
-        }
+        {permissions.viewDocumentTemplate && (
+            <div className="sidebar-menu-small-item">
+                <SvgIcon size={20} icon={documents} />
+            </div>
+        )}
         {/* Administraties */}
-        {permissions.manageFinancial && administrations.length > 0 &&
-        <div className="sidebar-menu-small-item"><SvgIcon size={20} icon={ic_business_center}/></div>
-        }
+        {permissions.manageFinancial && administrations.length > 0 && (
+            <div className="sidebar-menu-small-item">
+                <SvgIcon size={20} icon={ic_business_center} />
+            </div>
+        )}
         {/* Instellingen */}
-        <div className="sidebar-menu-small-item"><SvgIcon size={20} icon={cog}/></div>
+        <div className="sidebar-menu-small-item">
+            <SvgIcon size={20} icon={cog} />
+        </div>
     </div>
 );
 
-
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         permissions: state.meDetails.permissions,
         administrations: state.meDetails.administrations,
-    }
+    };
 };
 
 export default connect(mapStateToProps)(SidebarMenuSmall);

@@ -5,7 +5,7 @@ import { Link } from 'react-router';
 import Logo from '../logo/Logo';
 import NavSearch from './NavSearch';
 
-const NavHeader = (props) => {
+const NavHeader = props => {
     const heightLogo = '44px';
 
     return (
@@ -13,11 +13,11 @@ const NavHeader = (props) => {
             <div className="fluid-container row-eq-height">
                 <div className="col-xs-2 col-md-1 nav-item">
                     <a className="btn btn-sm" onClick={props.toggleMenuStuck}>
-                        {props.menuStuck ?
-                            <span className="glyphicon glyphicon-option-vertical close-menu-option-vertical"/>
-                            :
-                            <span className="glyphicon glyphicon-menu-hamburger"/>
-                        }
+                        {props.menuStuck ? (
+                            <span className="glyphicon glyphicon-option-vertical close-menu-option-vertical" />
+                        ) : (
+                            <span className="glyphicon glyphicon-menu-hamburger" />
+                        )}
                     </a>
                 </div>
                 <div className="col-md-2 hidden-xs hidden-sm">
@@ -30,13 +30,21 @@ const NavHeader = (props) => {
                     <ul className="nav navbar-nav">
                         <li className="dropdown">
                             <a href="#" className="dropdown-toggle" data-toggle="dropdown" role="button">
-                                { props.meDetails.fullName } <span className="caret" />
+                                {props.meDetails.fullName} <span className="caret" />
                             </a>
                             <ul className="dropdown-menu">
-                                <li><Link to="loguit">Uitloggen</Link></li>
-                                <li onClick={props.toggleChangePassword}><Link>Wachtwoord wijzigen</Link></li>
-                                <li><Link>{props.versionNumber}</Link></li>
-                                <li onClick={props.toggleAboutUs}><Link>Over ons</Link></li>
+                                <li>
+                                    <Link to="loguit">Uitloggen</Link>
+                                </li>
+                                <li onClick={props.toggleChangePassword}>
+                                    <Link>Wachtwoord wijzigen</Link>
+                                </li>
+                                <li>
+                                    <Link>{props.versionNumber}</Link>
+                                </li>
+                                <li onClick={props.toggleAboutUs}>
+                                    <Link>Over ons</Link>
+                                </li>
                             </ul>
                         </li>
                     </ul>
@@ -53,4 +61,7 @@ function mapStateToProps(state) {
     };
 }
 
-export default connect(mapStateToProps, null)(NavHeader);
+export default connect(
+    mapStateToProps,
+    null
+)(NavHeader);

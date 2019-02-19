@@ -1,8 +1,8 @@
-export const fetchAdministrationDetails = (id) => {
+export const fetchAdministrationDetails = id => {
     return {
         type: 'FETCH_ADMINISTRATION_DETAILS',
         id,
-    }
+    };
 };
 
 export const updateAdministration = (administration, administrationId, switchToView) => {
@@ -11,10 +11,10 @@ export const updateAdministration = (administration, administrationId, switchToV
         administration,
         administrationId,
         switchToView,
-    }
+    };
 };
 
-export const addAdministrationUser = (administrationUser) => {
+export const addAdministrationUser = administrationUser => {
     return {
         type: 'ADD_ADMINISTRATION_USER',
         administrationUser,
@@ -29,7 +29,7 @@ export const deleteAdministrationUser = (administrationId, userId) => {
     };
 };
 
-export const deleteAdministrationSepa = (sepaId) => {
+export const deleteAdministrationSepa = sepaId => {
     return {
         type: 'DELETE_ADMINISTRATION_SEPA',
         sepaId,

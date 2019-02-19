@@ -5,9 +5,9 @@ import { browserHistory } from 'react-router';
 import ButtonIcon from '../../../components/button/ButtonIcon';
 import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
-import ButtonText from "../../../components/button/ButtonText";
+import ButtonText from '../../../components/button/ButtonText';
 import { hashHistory } from 'react-router';
-import ContactGroupDetailsDelete from "./ContactGroupDetailsDelete";
+import ContactGroupDetailsDelete from './ContactGroupDetailsDelete';
 
 class UserDetailsToolbar extends Component {
     constructor(props) {
@@ -15,23 +15,21 @@ class UserDetailsToolbar extends Component {
 
         this.state = {
             showDelete: false,
-        }
-    };
+        };
+    }
 
     toggleDelete = () => {
-        this.setState({showDelete: !this.state.showDelete});
+        this.setState({ showDelete: !this.state.showDelete });
     };
 
     render() {
-        const {id, name, numberOfContacts = 0, composedOf} = this.props.contactGroup;
+        const { id, name, numberOfContacts = 0, composedOf } = this.props.contactGroup;
         let composedOfType = '';
-        if(composedOf === 'contacts'){
+        if (composedOf === 'contacts') {
             composedOfType = '(Contacten)';
-        }
-        else if(composedOf === 'participants'){
-            composedOfType = '(Participanten)';
-        }
-        else if(composedOf === 'both'){
+        } else if (composedOf === 'participants') {
+            composedOfType = '(Deelnemers)';
+        } else if (composedOf === 'both') {
             composedOfType = '(Samengesteld)';
         }
 
@@ -39,41 +37,52 @@ class UserDetailsToolbar extends Component {
             <div className="row">
                 <div className="col-sm-12">
                     <Panel>
-                        <PanelBody className={"panel-small"}>
+                        <PanelBody className={'panel-small'}>
                             <div className="col-md-2">
                                 <div className="btn-group" role="group">
-                                    <ButtonIcon iconName={"glyphicon-arrow-left"}
-                                                onClickAction={browserHistory.goBack}/>
-                                    {this.props.permissions.manageGroup && !this.props.contactGroup.isUsedInComposedGroup &&
-                                    <ButtonIcon iconName={"glyphicon-trash"} onClickAction={this.toggleDelete}/>
-                                    }
-                                    <ButtonText buttonText={`Open lijst (${numberOfContacts})`}
-                                                onClickAction={() => hashHistory.push(`/contacten-in-groep/${id}`)}/>
+                                    <ButtonIcon
+                                        iconName={'glyphicon-arrow-left'}
+                                        onClickAction={browserHistory.goBack}
+                                    />
+                                    {this.props.permissions.manageGroup &&
+                                        !this.props.contactGroup.isUsedInComposedGroup && (
+                                            <ButtonIcon
+                                                iconName={'glyphicon-trash'}
+                                                onClickAction={this.toggleDelete}
+                                            />
+                                        )}
+                                    <ButtonText
+                                        buttonText={`Open lijst (${numberOfContacts})`}
+                                        onClickAction={() => hashHistory.push(`/contacten-in-groep/${id}`)}
+                                    />
                                 </div>
                             </div>
-                            <div className="col-md-8"><h4 className="text-center">{name}{composedOfType}</h4></div>
-                            <div className="col-md-2"/>
+                            <div className="col-md-8">
+                                <h4 className="text-center">
+                                    {name}
+                                    {composedOfType}
+                                </h4>
+                            </div>
+                            <div className="col-md-2" />
                         </PanelBody>
                     </Panel>
                 </div>
-                {
-                    this.state.showDelete &&
-                    <ContactGroupDetailsDelete
-                        closeDeleteItemModal={this.toggleDelete}
-                        name={name}
-                        id={id}
-                    />
-                }
+                {this.state.showDelete && (
+                    <ContactGroupDetailsDelete closeDeleteItemModal={this.toggleDelete} name={name} id={id} />
+                )}
             </div>
         );
-    };
-};
+    }
+}
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         contactGroup: state.contactGroupDetails,
         permissions: state.meDetails.permissions,
     };
 };
 
-export default connect(mapStateToProps, null)(UserDetailsToolbar);
+export default connect(
+    mapStateToProps,
+    null
+)(UserDetailsToolbar);

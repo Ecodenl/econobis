@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { hashHistory } from 'react-router';
 import validator from 'validator';
@@ -7,9 +7,9 @@ import UserAPI from '../../../api/user/UserAPI';
 import InputText from '../../../components/form/InputText';
 import InputSelect from '../../../components/form/InputSelect';
 import ButtonText from '../../../components/button/ButtonText';
-import PanelFooter from "../../../components/panel/PanelFooter";
-import {setError} from "../../../actions/general/ErrorActions";
-import {fetchSystemData} from "../../../actions/general/SystemDataActions";
+import PanelFooter from '../../../components/panel/PanelFooter';
+import { setError } from '../../../actions/general/ErrorActions';
+import { fetchSystemData } from '../../../actions/general/SystemDataActions';
 
 class UserNewForm extends Component {
     constructor(props) {
@@ -33,7 +33,7 @@ class UserNewForm extends Component {
                 lastName: false,
             },
         };
-    };
+    }
 
     handleInputChange = event => {
         const target = event.target;
@@ -44,7 +44,7 @@ class UserNewForm extends Component {
             ...this.state,
             user: {
                 ...this.state.user,
-                [name]: value
+                [name]: value,
             },
         });
     };
@@ -52,74 +52,87 @@ class UserNewForm extends Component {
     handleSubmit = event => {
         event.preventDefault();
 
-        const { user }  = this.state;
+        const { user } = this.state;
 
         // Validation
         let errors = {};
         let hasErrors = false;
 
-        if(!validator.isEmail(user.email)){
+        if (!validator.isEmail(user.email)) {
             errors.email = true;
             hasErrors = true;
-        };
+        }
 
-        if(validator.isEmpty(user.firstName)){
+        if (validator.isEmpty(user.firstName)) {
             errors.firstName = true;
             hasErrors = true;
-        };
+        }
 
-        if(validator.isEmpty(user.lastName)){
+        if (validator.isEmpty(user.lastName)) {
             errors.lastName = true;
             hasErrors = true;
-        };
+        }
 
         this.setState({ ...this.state, errors: errors });
 
         // If no errors send form
         !hasErrors &&
-            UserAPI.newUser(user).then((payload) => {
-                this.props.fetchSystemData();
-                if(payload.data.data.hasAlfrescoAccount) {
-                    this.props.setError(200, 'Alfresco account voor deze gebruiker bestaat al. Er wordt alleen een nieuw account aangemaakt voor Econobis');
-                }
-                hashHistory.push(`/gebruiker/${payload.data.data.id}`);
-            }).catch(function (error) {
-                if(error.response.data.errors && typeof error.response.data.errors.email !== 'undefined'){
-                    errors.email = true;
-                    this.setState({ ...this.state, errors: errors });
-                    this.setState({ ...this.state, backendEmailError: 'Dit email adres is al in gebruik.' });
-                }
-                else{
-                    if(typeof error.response.data.message !== 'undefined'){
-                        this.props.setError(error.response.status, error.response.data.message);
+            UserAPI.newUser(user)
+                .then(payload => {
+                    this.props.fetchSystemData();
+                    if (payload.data.data.hasAlfrescoAccount) {
+                        this.props.setError(
+                            200,
+                            'Alfresco account voor deze gebruiker bestaat al. Er wordt alleen een nieuw account aangemaakt voor Econobis'
+                        );
                     }
-                    else{
-                        this.props.setError(error.response.status, null);
-                    }
-
-                }
-            }.bind(this));
+                    hashHistory.push(`/gebruiker/${payload.data.data.id}`);
+                })
+                .catch(
+                    function(error) {
+                        if (error.response.data.errors && typeof error.response.data.errors.email !== 'undefined') {
+                            errors.email = true;
+                            this.setState({ ...this.state, errors: errors });
+                            this.setState({ ...this.state, backendEmailError: 'Dit email adres is al in gebruik.' });
+                        } else {
+                            if (typeof error.response.data.message !== 'undefined') {
+                                this.props.setError(error.response.status, error.response.data.message);
+                            } else {
+                                this.props.setError(error.response.status, null);
+                            }
+                        }
+                    }.bind(this)
+                );
     };
 
     render() {
-        const { email, titleId, firstName, lastNamePrefixId, lastName, phoneNumber, mobileNumber, occupation } = this.state.user;
+        const {
+            email,
+            titleId,
+            firstName,
+            lastNamePrefixId,
+            lastName,
+            phoneNumber,
+            mobileNumber,
+            occupation,
+        } = this.state.user;
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
                 <div className="row">
                     <InputSelect
                         label="Aanspreektitel"
-                        name={"titleId"}
+                        name={'titleId'}
                         options={this.props.titles}
                         value={titleId}
                         onChangeAction={this.handleInputChange}
                     />
                     <InputText
-                        label={"E-mail"}
-                        name={"email"}
+                        label={'E-mail'}
+                        name={'email'}
                         value={email}
                         onChangeAction={this.handleInputChange}
-                        required={"required"}
+                        required={'required'}
                         error={this.state.errors.email}
                         errorMessage={this.state.backendEmailError}
                     />
@@ -127,16 +140,16 @@ class UserNewForm extends Component {
 
                 <div className="row">
                     <InputText
-                        label={"Voornaam"}
-                        name={"firstName"}
+                        label={'Voornaam'}
+                        name={'firstName'}
                         value={firstName}
                         onChangeAction={this.handleInputChange}
-                        required={"required"}
+                        required={'required'}
                         error={this.state.errors.firstName}
                     />
                     <InputText
-                        label={"Telefoonnummer"}
-                        size={"col-sm-6"}
+                        label={'Telefoonnummer'}
+                        size={'col-sm-6'}
                         name="phoneNumber"
                         value={phoneNumber}
                         onChangeAction={this.handleInputChange}
@@ -152,8 +165,8 @@ class UserNewForm extends Component {
                         onChangeAction={this.handleInputChange}
                     />
                     <InputText
-                        label={"Mobiel nummer"}
-                        size={"col-sm-6"}
+                        label={'Mobiel nummer'}
+                        size={'col-sm-6'}
                         name="mobileNumber"
                         value={mobileNumber}
                         onChangeAction={this.handleInputChange}
@@ -163,16 +176,16 @@ class UserNewForm extends Component {
                 <div className="row">
                     <InputText
                         label="Achternaam"
-                        size={"col-sm-6"}
+                        size={'col-sm-6'}
                         name="lastName"
                         value={lastName}
                         onChangeAction={this.handleInputChange}
-                        required={"required"}
+                        required={'required'}
                         error={this.state.errors.lastName}
                     />
                     <InputText
                         label="Functie"
-                        size={"col-sm-6"}
+                        size={'col-sm-6'}
                         name="occupation"
                         value={occupation}
                         onChangeAction={this.handleInputChange}
@@ -181,15 +194,20 @@ class UserNewForm extends Component {
 
                 <PanelFooter>
                     <div className="pull-right btn-group" role="group">
-                        <ButtonText buttonText={"Opslaan"} onClickAction={this.handleSubmit} type={"submit"} value={"Submit"}/>
+                        <ButtonText
+                            buttonText={'Opslaan'}
+                            onClickAction={this.handleSubmit}
+                            type={'submit'}
+                            value={'Submit'}
+                        />
                     </div>
                 </PanelFooter>
             </form>
         );
-    };
-};
+    }
+}
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         lastNamePrefixes: state.systemData.lastNamePrefixes,
         titles: state.systemData.titles,
@@ -205,4 +223,7 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(UserNewForm);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(UserNewForm);

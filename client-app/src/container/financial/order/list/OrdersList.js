@@ -8,31 +8,25 @@ import OrdersListHead from './OrdersListHead';
 import OrdersListFilter from './OrdersListFilter';
 import OrdersListItem from './OrdersListItem';
 import OrdersDeleteItem from './OrdersDeleteItem';
-import DataTablePagination from "../../../../components/dataTable/DataTablePagination";
-import {bindActionCreators} from "redux";
-import {connect} from "react-redux";
-import {
-    fetchOrders, clearOrders,
-    setCheckedOrderAll, previewCreate
-} from '../../../../actions/order/OrdersActions';
+import DataTablePagination from '../../../../components/dataTable/DataTablePagination';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import { fetchOrders, clearOrders, setCheckedOrderAll, previewCreate } from '../../../../actions/order/OrdersActions';
 import { clearFilterOrders } from '../../../../actions/order/OrdersFiltersActions';
 import { setOrdersPagination } from '../../../../actions/order/OrdersPaginationActions';
 import filterHelper from '../../../../helpers/FilterHelper';
-import ButtonIcon from "../../../../components/button/ButtonIcon";
+import ButtonIcon from '../../../../components/button/ButtonIcon';
 import { blockUI, unblockUI } from '../../../../actions/general/BlockUIActions';
 
-import {
-    setPaymentTypeIdFilterOrders,
-    setStatusIdFilterOrders,
-} from '../../../../actions/order/OrdersFiltersActions';
-import OrdersAPI from "../../../../api/order/OrdersAPI";
-import fileDownload from "js-file-download";
-import moment from "moment/moment";
-import {hashHistory} from "react-router";
-import ButtonText from "../../../../components/button/ButtonText";
+import { setPaymentTypeIdFilterOrders, setStatusIdFilterOrders } from '../../../../actions/order/OrdersFiltersActions';
+import OrdersAPI from '../../../../api/order/OrdersAPI';
+import fileDownload from 'js-file-download';
+import moment from 'moment/moment';
+import { hashHistory } from 'react-router';
+import ButtonText from '../../../../components/button/ButtonText';
 
 class OrdersList extends Component {
-    constructor(props){
+    constructor(props) {
         super(props);
 
         if (!isEmpty(props.filter)) {
@@ -59,7 +53,7 @@ class OrdersList extends Component {
                     break;
                 default:
                     break;
-            };
+            }
         } else {
             this.props.clearFilterOrders();
         }
@@ -72,7 +66,7 @@ class OrdersList extends Component {
             deleteItem: {
                 id: '',
                 subject: '',
-            }
+            },
         };
 
         this.handlePageClick = this.handlePageClick.bind(this);
@@ -80,15 +74,15 @@ class OrdersList extends Component {
 
     componentDidMount() {
         this.fetchOrdersData();
-    };
+    }
 
     componentWillUnmount() {
         this.props.clearOrders();
-    };
+    }
 
     componentWillReceiveProps(nextProps) {
-        if(this.props.filter !== nextProps.filter){
-            if(!isEmpty(nextProps.filter)) {
+        if (this.props.filter !== nextProps.filter) {
+            if (!isEmpty(nextProps.filter)) {
                 switch (nextProps.filter) {
                     case 'concepten':
                         this.props.clearFilterOrders();
@@ -112,7 +106,7 @@ class OrdersList extends Component {
                         break;
                     default:
                         break;
-                };
+                }
 
                 this.setState({
                     showDeleteItem: false,
@@ -122,10 +116,9 @@ class OrdersList extends Component {
                     deleteItem: {
                         id: '',
                         subject: '',
-                    }
+                    },
                 });
-            }
-            else {
+            } else {
                 this.props.clearFilterOrders();
             }
 
@@ -145,7 +138,7 @@ class OrdersList extends Component {
             const administrationId = this.props.administrationId;
 
             this.props.fetchOrders(filters, sorts, pagination, administrationId);
-        },100 );
+        }, 100);
     };
 
     getCSV = () => {
@@ -155,13 +148,15 @@ class OrdersList extends Component {
             const sorts = this.props.ordersSorts;
             const administrationId = this.props.administrationId;
 
-            OrdersAPI.getCSV({filters, sorts, administrationId}).then((payload) => {
-                fileDownload(payload.data, 'Orders-' + moment().format("YYYY-MM-DD HH:mm:ss") +  '.csv');
-                this.props.unblockUI();
-            }).catch((error) => {
-                this.props.unblockUI();
-            });
-        },100 );
+            OrdersAPI.getCSV({ filters, sorts, administrationId })
+                .then(payload => {
+                    fileDownload(payload.data, 'Orders-' + moment().format('YYYY-MM-DD HH:mm:ss') + '.csv');
+                    this.props.unblockUI();
+                })
+                .catch(error => {
+                    this.props.unblockUI();
+                });
+        }, 100);
     };
 
     resetOrderFilters = () => {
@@ -177,14 +172,14 @@ class OrdersList extends Component {
             deleteItem: {
                 id: '',
                 subject: '',
-            }
+            },
         });
     };
 
     onSubmitFilter = () => {
         this.props.clearOrders();
 
-        this.props.setOrdersPagination({page: 0, offset: 0});
+        this.props.setOrdersPagination({ page: 0, offset: 0 });
 
         this.fetchOrdersData();
     };
@@ -193,13 +188,13 @@ class OrdersList extends Component {
         let page = data.selected;
         let offset = Math.ceil(page * 20);
 
-        this.props.setOrdersPagination({page, offset});
+        this.props.setOrdersPagination({ page, offset });
 
         this.fetchOrdersData();
-    };
+    }
 
     // On key Enter filter form will submit
-    handleKeyUp = (e) => {
+    handleKeyUp = e => {
         if (e.keyCode === 13) {
             this.onSubmitFilter();
         }
@@ -209,11 +204,11 @@ class OrdersList extends Component {
         this.setState({
             ...this.state,
             showDeleteItem: true,
-            deleteItem:{
+            deleteItem: {
                 ...this.state.deleteItem,
                 id: id,
-                subject: name
-            }
+                subject: name,
+            },
         });
     };
 
@@ -221,17 +216,17 @@ class OrdersList extends Component {
         this.setState({
             ...this.state,
             showDeleteItem: false,
-            deleteItem:{
+            deleteItem: {
                 ...this.state.deleteItem,
                 id: '',
-                subject: ''
-            }
+                subject: '',
+            },
         });
     };
 
     selectAllCheckboxes = () => {
         this.setState({
-            checkedAllCheckboxes: !this.state.checkedAllCheckboxes
+            checkedAllCheckboxes: !this.state.checkedAllCheckboxes,
         });
 
         this.props.setCheckedOrderAll(!this.state.checkedAllCheckboxes);
@@ -244,19 +239,15 @@ class OrdersList extends Component {
             previewOrderText: 'Preview facturen',
         });
 
+        this.props.orders.data.map(order => order.checked === true && createOrderIds.push(order.id));
 
-        this.props.orders.data.map((order) => (order.checked === true  && createOrderIds.push(order.id)));
-
-        if(createOrderIds.length > 0){
+        if (createOrderIds.length > 0) {
             this.props.previewCreate(createOrderIds);
             hashHistory.push(`/financieel/${this.props.administrationId}/orders/aanmaken`);
+        } else {
+            this.setState({ showSelectOrdersToCreate: !this.state.showSelectOrdersToCreate });
         }
-        else{
-            this.setState({showSelectOrdersToCreate: !this.state.showSelectOrdersToCreate});
-        }
-
     };
-
 
     render() {
         const { data = [], meta = {} } = this.props.orders;
@@ -266,14 +257,11 @@ class OrdersList extends Component {
 
         if (this.props.hasError) {
             loadingText = 'Fout bij het ophalen van orders.';
-        }
-        else if (this.props.isLoading) {
+        } else if (this.props.isLoading) {
             loadingText = 'Gegevens aan het laden.';
-        }
-        else if (data.length === 0) {
+        } else if (data.length === 0) {
             loadingText = 'Geen orders gevonden!';
-        }
-        else {
+        } else {
             loading = false;
         }
 
@@ -282,16 +270,21 @@ class OrdersList extends Component {
                 <div className="row">
                     <div className="col-md-4">
                         <div className="btn-group" role="group">
-                            <ButtonIcon iconName={"glyphicon-refresh"} onClickAction={this.resetOrderFilters} />
-                            <ButtonIcon iconName={"glyphicon-download-alt"} onClickAction={this.getCSV} />
-                            {this.props.ordersFilters.statusId.data == 'create' && meta.total > 0 &&
-                            <ButtonText buttonText={this.state.previewOrderText} onClickAction={this.previewOrders}/>
-                            }
+                            <ButtonIcon iconName={'glyphicon-refresh'} onClickAction={this.resetOrderFilters} />
+                            <ButtonIcon iconName={'glyphicon-download-alt'} onClickAction={this.getCSV} />
+                            {this.props.ordersFilters.statusId.data == 'create' && meta.total > 0 && (
+                                <ButtonText
+                                    buttonText={this.state.previewOrderText}
+                                    onClickAction={this.previewOrders}
+                                />
+                            )}
                         </div>
                     </div>
-                    <div className="col-md-4"><h3 className="text-center table-title">Orders</h3></div>
                     <div className="col-md-4">
-                        <div className="pull-right">Resultaten: { meta.total || 0 }</div>
+                        <h3 className="text-center table-title">Orders</h3>
+                    </div>
+                    <div className="col-md-4">
+                        <div className="pull-right">Resultaten: {meta.total || 0}</div>
                     </div>
                 </div>
 
@@ -309,20 +302,22 @@ class OrdersList extends Component {
                             />
                         </DataTableHead>
                         <DataTableBody>
-                            {
-                                loading ? (
-                                    <tr><td colSpan={8}>{loadingText}</td></tr>
-                                ) : (
-                                    data.map((order) => {
-                                        return <OrdersListItem
+                            {loading ? (
+                                <tr>
+                                    <td colSpan={8}>{loadingText}</td>
+                                </tr>
+                            ) : (
+                                data.map(order => {
+                                    return (
+                                        <OrdersListItem
                                             showSelectOrdersToCreate={this.state.showSelectOrdersToCreate}
                                             key={order.id}
                                             {...order}
                                             showDeleteItemModal={this.showDeleteItemModal}
                                         />
-                                    })
-                                )
-                            }
+                                    );
+                                })
+                            )}
                         </DataTableBody>
                     </DataTable>
                     <div className="col-md-6 col-md-offset-3">
@@ -333,19 +328,15 @@ class OrdersList extends Component {
                         />
                     </div>
                 </form>
-                {
-                    this.state.showDeleteItem &&
-                        <OrdersDeleteItem
-                            closeDeleteItemModal={this.closeDeleteItemModal}
-                            {...this.state.deleteItem}
-                        />
-                }
+                {this.state.showDeleteItem && (
+                    <OrdersDeleteItem closeDeleteItemModal={this.closeDeleteItemModal} {...this.state.deleteItem} />
+                )}
             </div>
         );
     }
-};
+}
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         orders: state.orders.list,
         ordersFilters: state.orders.filters,
@@ -356,8 +347,25 @@ const mapStateToProps = (state) => {
     };
 };
 
-const mapDispatchToProps = (dispatch) => {
-    return bindActionCreators({ previewCreate, setCheckedOrderAll, blockUI, unblockUI, fetchOrders, clearOrders, clearFilterOrders, setOrdersPagination, setPaymentTypeIdFilterOrders, setStatusIdFilterOrders }, dispatch);
+const mapDispatchToProps = dispatch => {
+    return bindActionCreators(
+        {
+            previewCreate,
+            setCheckedOrderAll,
+            blockUI,
+            unblockUI,
+            fetchOrders,
+            clearOrders,
+            clearFilterOrders,
+            setOrdersPagination,
+            setPaymentTypeIdFilterOrders,
+            setStatusIdFilterOrders,
+        },
+        dispatch
+    );
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(OrdersList);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(OrdersList);

@@ -1,64 +1,63 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 
-import Panel from "../../../../components/panel/Panel";
-import PanelBody from "../../../../components/panel/PanelBody";
-import ProductionProjectsAPI from "../../../../api/production-project/ProductionProjectsAPI";
-import DashboardChartParticipantsPerProject from "../../diagrams/DashboardChartParticipantsPerProject";
-import DashboardChartContactsPerProject from "../../diagrams/DashboardChartContactsPerProject";
-import DashboardChartParticipationsPerProject from "../../diagrams/DashboardChartParticipationsPerProject";
+import Panel from '../../../../components/panel/Panel';
+import PanelBody from '../../../../components/panel/PanelBody';
+import ProjectsAPI from '../../../../api/project/ProjectsAPI';
+import DashboardChartParticipantsPerProject from '../../diagrams/DashboardChartParticipantsPerProject';
+import DashboardChartContactsPerProject from '../../diagrams/DashboardChartContactsPerProject';
+import DashboardChartParticipationsPerProject from '../../diagrams/DashboardChartParticipationsPerProject';
 
 class DashboardParticipationsMain extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            activeProductionProjectsIds: [],
+            activeProjectsIds: [],
         };
-    };
+    }
 
     componentWillMount() {
-        ProductionProjectsAPI.getActive().then(payload => {
+        ProjectsAPI.getActive().then(payload => {
             this.setState({
-                activeProductionProjectsIds: payload
+                activeProjectsIds: payload,
             });
         });
     }
 
     render() {
-        const {activeProductionProjectsIds} = this.state;
+        const { activeProjectsIds } = this.state;
 
-        return (<div className="row">
-                {
-                    activeProductionProjectsIds.map((activeProductionProjectsId) => {
-                        return (
-                            <div>
-                                <div className="col-md-4">
-                                    <Panel>
-                                        <PanelBody>
-                                            <DashboardChartParticipantsPerProject id={activeProductionProjectsId}/>
-                                        </PanelBody>
-                                    </Panel>
-                                </div>
-                                <div className="col-md-4">
-                                    <Panel>
-                                        <PanelBody>
-                                            <DashboardChartParticipationsPerProject id={activeProductionProjectsId}/>
-                                        </PanelBody>
-                                    </Panel>
-                                </div>
-                                <div className="col-md-4">
-                                    <Panel>
-                                        <PanelBody>
-                                            <DashboardChartContactsPerProject id={activeProductionProjectsId}/>
-                                        </PanelBody>
-                                    </Panel>
-                                </div>
+        return (
+            <div className="row">
+                {activeProjectsIds.map(activeProjectsId => {
+                    return (
+                        <div>
+                            <div className="col-md-4">
+                                <Panel>
+                                    <PanelBody>
+                                        <DashboardChartParticipantsPerProject id={activeProjectsId} />
+                                    </PanelBody>
+                                </Panel>
                             </div>
-                        )
-                    })
-                }
+                            <div className="col-md-4">
+                                <Panel>
+                                    <PanelBody>
+                                        <DashboardChartParticipationsPerProject id={activeProjectsId} />
+                                    </PanelBody>
+                                </Panel>
+                            </div>
+                            <div className="col-md-4">
+                                <Panel>
+                                    <PanelBody>
+                                        <DashboardChartContactsPerProject id={activeProjectsId} />
+                                    </PanelBody>
+                                </Panel>
+                            </div>
+                        </div>
+                    );
+                })}
             </div>
-        )
+        );
     }
 }
 

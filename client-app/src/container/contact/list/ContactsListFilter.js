@@ -13,16 +13,16 @@ import {
     setEmailAddressFilter,
     setPhoneNumberFilter,
     setStatusFilter,
-    setCreatedAtFilter
+    setCreatedAtFilter,
 } from '../../../actions/contact/ContactsFiltersActions';
-import DataTableFilterDate from "../../../components/dataTable/DataTableFilterDate";
+import DataTableFilterDate from '../../../components/dataTable/DataTableFilterDate';
 
 const ContactsListFilter = props => {
-    const onNumberChange = (e) => {
+    const onNumberChange = e => {
         props.setNumberFilter(e.target.value);
     };
 
-    const onTypeChange = (e) => {
+    const onTypeChange = e => {
         props.setTypeFilter(e.target.value);
 
         setTimeout(() => {
@@ -30,31 +30,31 @@ const ContactsListFilter = props => {
         }, 100);
     };
 
-    const onFullNameChange = (e) => {
+    const onFullNameChange = e => {
         props.setFullNameFilter(e.target.value);
     };
 
-    const onStreetAndNumberChange = (e) => {
+    const onStreetAndNumberChange = e => {
         props.setStreetAndNumberFilter(e.target.value);
     };
 
-    const onPostalCodeChange = (e) => {
+    const onPostalCodeChange = e => {
         props.setPostalCodeFilter(e.target.value);
     };
 
-    const onCityChange = (e) => {
+    const onCityChange = e => {
         props.setCityFilter(e.target.value);
     };
 
-    const onEmailAddressChange = (e) => {
+    const onEmailAddressChange = e => {
         props.setEmailAddressFilter(e.target.value);
     };
 
-    const onPhoneNumberChange = (e) => {
+    const onPhoneNumberChange = e => {
         props.setPhoneNumberFilter(e.target.value);
     };
 
-    const onStatusChange = (e) => {
+    const onStatusChange = e => {
         props.setStatusFilter(e.target.value);
 
         setTimeout(() => {
@@ -62,57 +62,123 @@ const ContactsListFilter = props => {
         }, 100);
     };
 
-    const onCreatedAtChange = (selectedDay) => {
-        if(selectedDay === undefined){
+    const onCreatedAtChange = selectedDay => {
+        if (selectedDay === undefined) {
             props.setCreatedAtFilter('');
-        }else{
+        } else {
             props.setCreatedAtFilter(moment(selectedDay).format('Y-MM-DD'));
         }
     };
 
     return (
         <tr className="thead-filter">
-            { props.showCheckbox && <td><input type="checkbox" value={ props.checkedAllCheckboxes } onChange={props.selectAllCheckboxes} /></td> }
-            <th className="hidden-xs"><input type="text" className="form-control input-sm" value={ props.filters.number.data } onChange={onNumberChange} /></th>
+            {props.showCheckbox && (
+                <td>
+                    <input type="checkbox" value={props.checkedAllCheckboxes} onChange={props.selectAllCheckboxes} />
+                </td>
+            )}
+            <th className="hidden-xs">
+                <input
+                    type="text"
+                    className="form-control input-sm"
+                    value={props.filters.number.data}
+                    onChange={onNumberChange}
+                />
+            </th>
             <th className="hidden-xs hidden-sm">
-                <select className="form-control input-sm" value={ props.filters.typeId.data } onChange={onTypeChange}>
-                    <option/>
-                    { props.contactTypes.map((contactType) => {
-                        return <option key={ contactType.id } value={ contactType.id }>{ contactType.name }</option>
-                    }) }
+                <select className="form-control input-sm" value={props.filters.typeId.data} onChange={onTypeChange}>
+                    <option />
+                    {props.contactTypes.map(contactType => {
+                        return (
+                            <option key={contactType.id} value={contactType.id}>
+                                {contactType.name}
+                            </option>
+                        );
+                    })}
                 </select>
             </th>
-            <th><input type="text" className="form-control input-sm" value={ props.filters.fullName.data} onChange={onFullNameChange} /></th>
-            <th className="hidden-xs"><input type="text" className="form-control input-sm" value={ props.filters.streetAndNumber.data } onChange={onStreetAndNumberChange} /></th>
-            <th className="hidden-xs"><input type="text" className="form-control input-sm" value={ props.filters.postalCode.data } onChange={onPostalCodeChange} /></th>
-            <th className="hidden-xs"><input type="text" className="form-control input-sm" value={ props.filters.city.data } onChange={onCityChange} /></th>
-            <th className="hidden-xs"><input type="text" className="form-control input-sm" value={ props.filters.emailAddress.data } onChange={onEmailAddressChange} /></th>
-            <th><input type="text" className="form-control input-sm" value={ props.filters.phoneNumber.data } onChange={onPhoneNumberChange} /></th>
-            <DataTableFilterDate value={ props.filters.createdAt.data && props.filters.createdAt.data } onChangeAction={onCreatedAtChange} />
-            <th/>
+            <th>
+                <input
+                    type="text"
+                    className="form-control input-sm"
+                    value={props.filters.fullName.data}
+                    onChange={onFullNameChange}
+                />
+            </th>
+            <th className="hidden-xs">
+                <input
+                    type="text"
+                    className="form-control input-sm"
+                    value={props.filters.streetAndNumber.data}
+                    onChange={onStreetAndNumberChange}
+                />
+            </th>
+            <th className="hidden-xs">
+                <input
+                    type="text"
+                    className="form-control input-sm"
+                    value={props.filters.postalCode.data}
+                    onChange={onPostalCodeChange}
+                />
+            </th>
+            <th className="hidden-xs">
+                <input
+                    type="text"
+                    className="form-control input-sm"
+                    value={props.filters.city.data}
+                    onChange={onCityChange}
+                />
+            </th>
+            <th className="hidden-xs">
+                <input
+                    type="text"
+                    className="form-control input-sm"
+                    value={props.filters.emailAddress.data}
+                    onChange={onEmailAddressChange}
+                />
+            </th>
+            <th>
+                <input
+                    type="text"
+                    className="form-control input-sm"
+                    value={props.filters.phoneNumber.data}
+                    onChange={onPhoneNumberChange}
+                />
+            </th>
+            <DataTableFilterDate
+                value={props.filters.createdAt.data && props.filters.createdAt.data}
+                onChangeAction={onCreatedAtChange}
+            />
+            <th />
         </tr>
     );
 };
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = state => ({
     filters: state.contacts.filters,
     contactStatuses: state.systemData.contactStatuses,
     contactTypes: state.systemData.contactTypes,
 });
 
-const mapDispatchToProps = (dispatch) => {
-    return bindActionCreators({
-        setNumberFilter,
-        setTypeFilter,
-        setFullNameFilter,
-        setStreetAndNumberFilter,
-        setPostalCodeFilter,
-        setCityFilter,
-        setEmailAddressFilter,
-        setPhoneNumberFilter,
-        setStatusFilter,
-        setCreatedAtFilter
-    }, dispatch);
+const mapDispatchToProps = dispatch => {
+    return bindActionCreators(
+        {
+            setNumberFilter,
+            setTypeFilter,
+            setFullNameFilter,
+            setStreetAndNumberFilter,
+            setPostalCodeFilter,
+            setCityFilter,
+            setEmailAddressFilter,
+            setPhoneNumberFilter,
+            setStatusFilter,
+            setCreatedAtFilter,
+        },
+        dispatch
+    );
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(ContactsListFilter);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(ContactsListFilter);

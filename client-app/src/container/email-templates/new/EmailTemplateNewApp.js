@@ -23,11 +23,10 @@ class EmailTemplateNewApp extends Component {
                 name: false,
                 hasErrors: false,
             },
-        }
+        };
 
         this.handleTextChange = this.handleTextChange.bind(this);
-
-    };
+    }
 
     handleInputChange = event => {
         const target = event.target;
@@ -38,7 +37,7 @@ class EmailTemplateNewApp extends Component {
             ...this.state,
             emailTemplate: {
                 ...this.state.emailTemplate,
-                [name]: value
+                [name]: value,
             },
         });
     };
@@ -48,31 +47,30 @@ class EmailTemplateNewApp extends Component {
             ...this.state,
             emailTemplate: {
                 ...this.state.emailTemplate,
-                htmlBody: event.target.getContent(({format: 'raw'}))
+                htmlBody: event.target.getContent({ format: 'raw' }),
             },
         });
-    };
+    }
 
     handleSubmit = event => {
         event.preventDefault();
 
-        const {emailTemplate} = this.state;
+        const { emailTemplate } = this.state;
 
         let errors = {};
         let hasErrors = false;
 
-        if(validator.isEmpty(emailTemplate.name)){
+        if (validator.isEmpty(emailTemplate.name)) {
             errors.name = true;
             hasErrors = true;
-        };
-
+        }
 
         this.setState({ ...this.state, errors: errors });
 
         !hasErrors &&
-        EmailTemplateAPI.storeEmailTemplate(emailTemplate).then(payload => {
-            hashHistory.push(`/email-template/${payload.id}`);
-        });
+            EmailTemplateAPI.storeEmailTemplate(emailTemplate).then(payload => {
+                hashHistory.push(`/email-template/${payload.id}`);
+            });
     };
 
     render() {
@@ -81,7 +79,7 @@ class EmailTemplateNewApp extends Component {
                 <div className="panel panel-default">
                     <div className="panel-body">
                         <div className="col-md-12 margin-10-top">
-                            <EmailTemplateNewToolbar/>
+                            <EmailTemplateNewToolbar />
                         </div>
                         <div className="col-md-12 margin-10-top">
                             <EmailTemplateNew
@@ -95,8 +93,8 @@ class EmailTemplateNewApp extends Component {
                     </div>
                 </div>
             </div>
-        )
+        );
     }
-};
+}
 
 export default EmailTemplateNewApp;

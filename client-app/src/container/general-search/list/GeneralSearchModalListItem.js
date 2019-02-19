@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {hashHistory} from "react-router";
+import { hashHistory } from 'react-router';
 
 class GeneralSearchModalListItem extends Component {
     constructor(props) {
@@ -15,31 +15,36 @@ class GeneralSearchModalListItem extends Component {
             showActionButtons: true,
             highlightRow: 'highlight-row',
         });
-    };
+    }
 
     onRowLeave() {
         this.setState({
             showActionButtons: false,
             highlightRow: '',
         });
-    };
+    }
 
-    redirect(){
+    redirect() {
         hashHistory.push(this.props.redirect);
         this.props.closeModal();
     }
 
     render() {
-        const {relation, found_in, found_value} = this.props;
+        const { relation, found_in, found_value } = this.props;
 
         return (
-            <tr className={this.state.highlightRow} onMouseEnter={() => this.onRowEnter()}
-                onMouseLeave={() => this.onRowLeave()}>
-                <td className="link-underline" onClick={() => this.redirect()}> {relation} </td>
+            <tr
+                className={this.state.highlightRow}
+                onMouseEnter={() => this.onRowEnter()}
+                onMouseLeave={() => this.onRowLeave()}
+            >
+                <td className="link-underline" onClick={() => this.redirect()}>
+                    {' '}
+                    {relation}{' '}
+                </td>
                 <td>{found_in}</td>
                 <td>{found_value}</td>
             </tr>
-
         );
     }
 }

@@ -1,7 +1,7 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 
 import EmailAttachmentsView from './EmailAttachmentsView';
-import EmailAttachmentsItemDelete from "./EmailAttachmentsDelete";
+import EmailAttachmentsItemDelete from './EmailAttachmentsDelete';
 
 class EmailAttachmentsItem extends Component {
     constructor(props) {
@@ -12,7 +12,7 @@ class EmailAttachmentsItem extends Component {
             highlightLine: '',
             showDelete: false,
         };
-    };
+    }
 
     onLineEnter = () => {
         this.setState({
@@ -29,7 +29,7 @@ class EmailAttachmentsItem extends Component {
     };
 
     toggleDelete = () => {
-        this.setState({showDelete: !this.state.showDelete});
+        this.setState({ showDelete: !this.state.showDelete });
     };
 
     render() {
@@ -43,17 +43,16 @@ class EmailAttachmentsItem extends Component {
                     toggleDelete={this.toggleDelete}
                     attachment={this.props.attachment}
                 />
-                {
-                    this.state.showDelete &&
+                {this.state.showDelete && (
                     <EmailAttachmentsItemDelete
                         toggleDelete={this.toggleDelete}
                         attachment={this.props.attachment}
                         deleteAttachment={this.props.deleteAttachment}
                     />
-                }
+                )}
             </div>
         );
     }
-};
+}
 
 export default EmailAttachmentsItem;

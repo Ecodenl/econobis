@@ -1,13 +1,13 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import { hashHistory } from 'react-router';
 import { connect } from 'react-redux';
 
-import TaskHarmonica from "./harmonica/TaskHarmonica";
-import NoteHarmonica from "./harmonica/NoteHarmonica";
-import DocumentHarmonica from "./harmonica/DocumentHarmonica";
+import TaskHarmonica from './harmonica/TaskHarmonica';
+import NoteHarmonica from './harmonica/NoteHarmonica';
+import DocumentHarmonica from './harmonica/DocumentHarmonica';
 
 class CampaignDetailsHarmonica extends Component {
-    constructor(props){
+    constructor(props) {
         super(props);
 
         this.state = {
@@ -21,7 +21,7 @@ class CampaignDetailsHarmonica extends Component {
         };
 
         this.toggleShowList = this.toggleShowList.bind(this);
-    };
+    }
 
     toggleShowList(name) {
         this.setState({
@@ -29,9 +29,9 @@ class CampaignDetailsHarmonica extends Component {
             toggleShowList: {
                 ...this.state.toggleShowList,
                 [name]: !this.state.toggleShowList[name],
-            }
+            },
         });
-    };
+    }
 
     newTask = () => {
         hashHistory.push(`/taak/nieuw/campagne/${this.props.campaign.id}`);
@@ -41,11 +41,11 @@ class CampaignDetailsHarmonica extends Component {
         hashHistory.push(`/taak/nieuw/afgehandeld/campagne/${this.props.campaign.id}`);
     };
 
-    newDocument = (type) => {
+    newDocument = type => {
         hashHistory.push(`/document/nieuw/${type}/campagne/${this.props.campaign.id}`);
     };
 
-    render(){
+    render() {
         return (
             <div className="margin-10-top">
                 <TaskHarmonica
@@ -69,11 +69,11 @@ class CampaignDetailsHarmonica extends Component {
                     documentCount={this.props.campaign.documentCount}
                 />
             </div>
-        )
+        );
     }
-};
+}
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         campaign: state.campaignDetails,
     };

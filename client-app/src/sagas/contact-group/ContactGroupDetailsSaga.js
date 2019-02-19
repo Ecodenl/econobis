@@ -1,7 +1,7 @@
 import { put, call } from 'redux-saga/effects';
 import ContactGroupAPI from '../../api/contact-group/ContactGroupAPI';
 
-export function* fetchContactGroupDetailsSaga({id}) {
+export function* fetchContactGroupDetailsSaga({ id }) {
     try {
         yield put({ type: 'IS_LOADING' });
         const contactGroupDetails = yield call(ContactGroupAPI.fetchContactGroupDetails, id);
@@ -13,7 +13,7 @@ export function* fetchContactGroupDetailsSaga({id}) {
     }
 }
 
-export function* updateContactGroupDetailsSaga({contactGroup}) {
+export function* updateContactGroupDetailsSaga({ contactGroup }) {
     try {
         const contactGroupDetails = yield call(ContactGroupAPI.updateContactGroup, contactGroup);
         yield put({ type: 'UPDATE_CONTACT_GROUP_DETAILS_SUCCESS', contactGroupDetails });

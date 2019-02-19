@@ -1,18 +1,17 @@
-import React, {Component} from 'react';
-import {updateProduct} from "../../../../actions/product/ProductDetailsActions";
-import {connect} from 'react-redux';
+import React, { Component } from 'react';
+import { updateProduct } from '../../../../actions/product/ProductDetailsActions';
+import { connect } from 'react-redux';
 import Modal from '../../../../components/modal/Modal';
 
 class ProductDetailsFormGeneralEditConfirm extends Component {
     constructor(props) {
         super(props);
-    };
+    }
 
     confirmAction = event => {
         this.props.updateProduct(this.props.product, this.props.switchToView);
         this.props.closeModal();
     };
-
 
     render() {
         return (
@@ -21,18 +20,19 @@ class ProductDetailsFormGeneralEditConfirm extends Component {
                 closeModal={this.props.closeModal}
                 confirmAction={this.confirmAction}
                 title="Product wijzigen"
-                buttonConfirmText={"Opslaan"}
+                buttonConfirmText={'Opslaan'}
             >
                 <div className="row">
                     <div className={'col-sm-12 margin-10-bottom'}>
-                    <span>
-                  Let op. Een wijziging in een product kan grote gevolgen hebben op je lopende facturering. Dus bedenk goed wat je wilt voordat je een wijziging doorvoert.
-                    </span>
+                        <span>
+                            Let op. Een wijziging in een product kan grote gevolgen hebben op je lopende facturering.
+                            Dus bedenk goed wat je wilt voordat je een wijziging doorvoert.
+                        </span>
                     </div>
                 </div>
             </Modal>
         );
-    };
+    }
 }
 
 const mapDispatchToProps = dispatch => ({
@@ -41,4 +41,7 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(null, mapDispatchToProps)(ProductDetailsFormGeneralEditConfirm);
+export default connect(
+    null,
+    mapDispatchToProps
+)(ProductDetailsFormGeneralEditConfirm);

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 import { hashHistory } from 'react-router';
 import moment from 'moment';
 moment.locale('nl');
@@ -14,60 +14,55 @@ class IntakesList extends Component {
             intakes: '',
             loading: true,
         };
-    };
+    }
 
     componentDidMount() {
-        IntakesAPI.fetchIntakesByContact(this.props.contactDetailsId).then((payload) => {
-            this.setState({intakes: payload, loading: false});
+        IntakesAPI.fetchIntakesByContact(this.props.contactDetailsId).then(payload => {
+            this.setState({ intakes: payload, loading: false });
         });
     }
 
-    openItem = (id) => {
+    openItem = id => {
         hashHistory.push(`/intake/${id}`);
     };
 
     render() {
-        const {intakes, loading} = this.state;
+        const { intakes, loading } = this.state;
 
         return (
             <div>
-                { loading &&
-                <div>Laden...</div>
-                }
+                {loading && <div>Laden...</div>}
 
-                {intakes == '' && !loading &&
-                <div>Geen intakes bekend.</div>
-                }
+                {intakes == '' && !loading && <div>Geen intakes bekend.</div>}
 
-                {intakes != '' && !loading &&
-
-                <table className="table">
-                    <tbody>
-                    {intakes.map((intake, i) => {
-                        return (
-                            <tr key={i} onClick={() => this.openItem(intake.id)}>
-                                <td className='col-xs-4 clickable'>
-                                    { intake.createdAt ? moment(intake.createdAt.date).format('DD-MM-Y') : '' }
-                                </td>
-                                <td className='col-xs-8 clickable'>
-                                    {intake.addressName}
-                                </td>
-                            </tr>
-                        )
-                    })
-                    }
-                    </tbody>
-                </table>
-                }
+                {intakes != '' && !loading && (
+                    <table className="table">
+                        <tbody>
+                            {intakes.map((intake, i) => {
+                                return (
+                                    <tr key={i} onClick={() => this.openItem(intake.id)}>
+                                        <td className="col-xs-4 clickable">
+                                            {intake.createdAt ? moment(intake.createdAt.date).format('DD-MM-Y') : ''}
+                                        </td>
+                                        <td className="col-xs-8 clickable">{intake.addressName}</td>
+                                    </tr>
+                                );
+                            })}
+                        </tbody>
+                    </table>
+                )}
             </div>
         );
     }
-};
+}
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         contactDetailsId: state.contactDetails.id,
     };
 };
 
-export default connect(mapStateToProps, null)(IntakesList);
+export default connect(
+    mapStateToProps,
+    null
+)(IntakesList);

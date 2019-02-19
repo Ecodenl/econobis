@@ -6,18 +6,18 @@ import DataTableBody from '../../../components/dataTable/DataTableBody';
 import ContactsInGroupListHead from './ContactsInGroupListHead';
 import ContactsInGroupListItem from './ContactsInGroupListItem';
 import ContactsInGroupDeleteItem from './ContactsInGroupDeleteItem';
-import {connect} from "react-redux";
+import { connect } from 'react-redux';
 
 class ContactsInGroupList extends Component {
-    constructor(props){
+    constructor(props) {
         super(props);
 
         this.state = {
             showDeleteItem: false,
             deleteItem: {
                 id: '',
-                fullName: ''
-            }
+                fullName: '',
+            },
         };
     }
 
@@ -25,11 +25,11 @@ class ContactsInGroupList extends Component {
         this.setState({
             ...this.state,
             showDeleteItem: true,
-            deleteItem:{
+            deleteItem: {
                 ...this.state.deleteItem,
                 id: id,
-                fullName: name
-            }
+                fullName: name,
+            },
         });
     };
 
@@ -37,29 +37,25 @@ class ContactsInGroupList extends Component {
         this.setState({
             ...this.state,
             showDeleteItem: false,
-            deleteItem:{
+            deleteItem: {
                 ...this.state.deleteItem,
                 id: '',
-                fullName: ''
-            }
+                fullName: '',
+            },
         });
     };
 
     render() {
-
         let loadingText = '';
         let loading = true;
 
         if (this.props.hasError) {
             loadingText = 'Fout bij het ophalen van contact in groep.';
-        }
-        else if (this.props.isLoading) {
+        } else if (this.props.isLoading) {
             loadingText = 'Gegevens aan het laden.';
-        }
-        else if (this.props.contactsInGroup.length === 0) {
+        } else if (this.props.contactsInGroup.length === 0) {
             loadingText = 'Geen contact in groep gevonden!';
-        }
-        else {
+        } else {
             loading = false;
         }
 
@@ -67,7 +63,9 @@ class ContactsInGroupList extends Component {
             <div>
                 <div className="row">
                     <div className="col-xs-12">
-                        <span>Totaal leden in groep: <strong>{this.props.contactsInGroup.length}</strong></span>
+                        <span>
+                            Totaal leden in groep: <strong>{this.props.contactsInGroup.length}</strong>
+                        </span>
                     </div>
                 </div>
                 <form onKeyUp={this.handleKeyUp}>
@@ -79,40 +77,41 @@ class ContactsInGroupList extends Component {
                             />
                         </DataTableHead>
                         <DataTableBody>
-                            {
-                                loading ? (
-                                    <tr><td colSpan={10}>{loadingText}</td></tr>
-                                ) : (
-                                    this.props.contactsInGroup.map((contactInGroup) => {
-                                        return <ContactsInGroupListItem
+                            {loading ? (
+                                <tr>
+                                    <td colSpan={11}>{loadingText}</td>
+                                </tr>
+                            ) : (
+                                this.props.contactsInGroup.map(contactInGroup => {
+                                    return (
+                                        <ContactsInGroupListItem
                                             key={contactInGroup.id}
                                             {...contactInGroup}
                                             showDeleteItemModal={this.showDeleteItemModal}
                                         />
-                                    })
-                                )
-                            }
+                                    );
+                                })
+                            )}
                         </DataTableBody>
                     </DataTable>
                 </form>
-                {
-                    this.state.showDeleteItem &&
-                        <ContactsInGroupDeleteItem
-                            closeDeleteItemModal={this.closeDeleteItemModal}
-                            groupId = {this.props.groupId}
-                            {...this.state.deleteItem}
-                        />
-                }
+                {this.state.showDeleteItem && (
+                    <ContactsInGroupDeleteItem
+                        closeDeleteItemModal={this.closeDeleteItemModal}
+                        groupId={this.props.groupId}
+                        {...this.state.deleteItem}
+                    />
+                )}
             </div>
         );
     }
-};
+}
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         isLoading: state.loadingData.isLoading,
         hasError: state.loadingData.hasError,
-    }
+    };
 };
 
 export default connect(mapStateToProps)(ContactsInGroupList);

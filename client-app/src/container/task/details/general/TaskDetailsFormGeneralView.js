@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import moment from 'moment';
 
 import ViewText from '../../../../components/form/ViewText';
-import PanelHeader from "../../../../components/panel/PanelHeader";
+import PanelHeader from '../../../../components/panel/PanelHeader';
 
 const TaskDetailsFormGeneralView = props => {
     const {
@@ -18,7 +18,7 @@ const TaskDetailsFormGeneralView = props => {
         invoice,
         campaign,
         housingFile,
-        productionProject,
+        project,
         participant,
         datePlannedStart,
         datePlannedFinish,
@@ -29,22 +29,21 @@ const TaskDetailsFormGeneralView = props => {
         responsibleTeam,
         finishedBy,
         opportunityId,
-        opportunityName
+        opportunityName,
     } = props.taskDetails;
 
     return (
         <div>
             <div onClick={props.switchToEdit}>
                 <div className="row">
-                    <ViewText
-                        label="Type"
-                        value={type && type.name}
-                    />
+                    <ViewText label="Type" value={type && type.name} />
                 </div>
 
                 <div className="row">
                     <div className="col-sm-3">
-                        <label htmlFor="description" className="col-sm-12">Taak / notitie</label>
+                        <label htmlFor="description" className="col-sm-12">
+                            Taak / notitie
+                        </label>
                     </div>
                     <div className="col-sm-9" id="description">
                         {note}
@@ -53,45 +52,39 @@ const TaskDetailsFormGeneralView = props => {
 
                 <div className="row margin-20-top">
                     <ViewText
-                        label={"Datum afhandelen"}
+                        label={'Datum afhandelen'}
                         value={datePlannedStart && moment(datePlannedStart.date).format('L')}
                     />
 
                     <ViewText
-                        label={"Start tijd"}
-                        value={startTimePlanned && moment('1900-01-01 ' + startTimePlanned).format("HH:mm")}
+                        label={'Start tijd'}
+                        value={startTimePlanned && moment('1900-01-01 ' + startTimePlanned).format('HH:mm')}
                     />
                 </div>
 
                 <div className="row">
                     <ViewText
-                        label={"Einddatum"}
+                        label={'Einddatum'}
                         value={datePlannedFinish && moment(datePlannedFinish.date).format('L')}
                     />
 
                     <ViewText
-                        label={"Eind tijd"}
-                        value={endTimePlanned && moment('1900-01-01 ' + endTimePlanned).format("HH:mm")}
+                        label={'Eind tijd'}
+                        value={endTimePlanned && moment('1900-01-01 ' + endTimePlanned).format('HH:mm')}
                     />
                 </div>
 
                 <div className="row">
+                    <ViewText label={'Afgehandeld?'} value={finished ? 'Ja' : 'Nee'} />
                     <ViewText
-                        label={"Afgehandeld?"}
-                        value={finished ? 'Ja' : 'Nee'}
-                    />
-                    <ViewText
-                        label={"Verantwoordelijke"}
+                        label={'Verantwoordelijke'}
                         value={responsibleUser ? responsibleUser.fullName : responsibleTeam.name}
                         link={responsibleUser ? 'gebruiker/' + responsibleUser.id : 'team/' + responsibleTeam.id}
                     />
                 </div>
 
                 <div className="row">
-                    <ViewText
-                        label={"Datum gereed"}
-                        value={dateFinished && moment(dateFinished.date).format('L')}
-                    />
+                    <ViewText label={'Datum gereed'} value={dateFinished && moment(dateFinished.date).format('L')} />
                     <ViewText
                         label="Afgerond door"
                         value={finishedBy && finishedBy.fullName}
@@ -101,7 +94,7 @@ const TaskDetailsFormGeneralView = props => {
 
                 <div className="row margin-20-top">
                     <ViewText
-                        label={"Contact"}
+                        label={'Contact'}
                         value={contact && contact.fullName}
                         link={contact ? 'contact/' + contact.id : ''}
                     />
@@ -111,40 +104,33 @@ const TaskDetailsFormGeneralView = props => {
             <div className="margin-10-top">
                 <PanelHeader>
                     <div className="row" onClick={props.toggleExtraConnections}>
-                        {
-                            props.showExtraConnections ?
-                                <span className="glyphicon glyphicon-menu-down"/>
-                                :
-                                <span className="glyphicon glyphicon-menu-right" />
-                        }
+                        {props.showExtraConnections ? (
+                            <span className="glyphicon glyphicon-menu-down" />
+                        ) : (
+                            <span className="glyphicon glyphicon-menu-right" />
+                        )}
                         <span className="h5">Overige koppelingen</span>
                     </div>
                 </PanelHeader>
-                {
-                    props.showExtraConnections &&
+                {props.showExtraConnections && (
                     <div>
                         <div className="row">
                             <ViewText
-                                label={"Campagne"}
+                                label={'Campagne'}
                                 value={campaign && campaign.name}
                                 link={campaign ? 'campagne/' + campaign.id : ''}
                             />
-                            <ViewText
-                                label={"Intake"}
-                                value={intakeName}
-                                link={intakeId ? 'intake/' + intakeId : ''}
-                            />
-
+                            <ViewText label={'Intake'} value={intakeName} link={intakeId ? 'intake/' + intakeId : ''} />
                         </div>
 
                         <div className="row">
                             <ViewText
-                                label={"Groep"}
+                                label={'Groep'}
                                 value={contactGroup && contactGroup.name}
                                 link={contactGroup ? 'contact-groep/' + contactGroup.id : ''}
                             />
                             <ViewText
-                                label={"Kans"}
+                                label={'Kans'}
                                 value={opportunityName}
                                 link={opportunityId ? 'kans/' + opportunityId : ''}
                             />
@@ -152,25 +138,25 @@ const TaskDetailsFormGeneralView = props => {
 
                         <div className="row">
                             <ViewText
-                                label={"Woningdossier"}
+                                label={'Woningdossier'}
                                 value={housingFile && housingFile.id}
                                 link={housingFile ? 'woningdossier/' + housingFile.id : ''}
                             />
                             <ViewText
-                                label={"Productieproject"}
-                                value={productionProject && productionProject.name}
-                                link={productionProject ? 'productie-project/' + productionProject.id : ''}
+                                label={'Project'}
+                                value={project && project.name}
+                                link={project ? 'project/' + project.id : ''}
                             />
                         </div>
 
                         <div className="row">
                             <ViewText
-                                label={"Participant productieproject"}
+                                label={'Participant project'}
                                 value={participant && participant.name}
-                                link={participant ? 'productie-project/participant/' + participant.id : ''}
+                                link={participant ? 'project/deelnemer/' + participant.id : ''}
                             />
                             <ViewText
-                                label={"Order"}
+                                label={'Order'}
                                 value={order && order.name}
                                 link={order ? 'order/' + order.id : ''}
                             />
@@ -178,20 +164,19 @@ const TaskDetailsFormGeneralView = props => {
 
                         <div className="row">
                             <ViewText
-                                label={"Factuur"}
+                                label={'Factuur'}
                                 value={invoice && invoice.name}
                                 link={invoice ? 'factuur/' + invoice.id : ''}
                             />
                         </div>
-
                     </div>
-                }
+                )}
             </div>
         </div>
     );
 };
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         taskDetails: state.taskDetails,
     };

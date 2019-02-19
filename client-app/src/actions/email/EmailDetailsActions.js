@@ -1,4 +1,4 @@
-export const fetchEmail = (id) => {
+export const fetchEmail = id => {
     return {
         type: 'FETCH_EMAIL',
         id,
@@ -7,6 +7,6 @@ export const fetchEmail = (id) => {
 
 export const clearEmail = () => {
     return {
-        type: 'CLEAR_EMAIL'
+        type: 'CLEAR_EMAIL',
     };
 };

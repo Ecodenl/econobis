@@ -41,8 +41,8 @@ class Joiner extends RequestJoiner
 
     protected function applyParticipationsJoin($query)
     {
-        $query->leftJoin('participation_production_project', function ($join) {
-            $join->on('participation_production_project.contact_id', '=',
+        $query->leftJoin('participation_project', function ($join) {
+            $join->on('participation_project.contact_id', '=',
                 'contacts.id');
         });
     }

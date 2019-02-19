@@ -13,26 +13,30 @@ const ProductsListToolbar = props => {
         <div className="row">
             <div className="col-md-4">
                 <div className="btn-group" role="group">
-                    <ButtonIcon iconName={"glyphicon-refresh"} onClickAction={props.refreshProductsData} />
-                    {
-                        props.permissions.manageFinancial &&
-                        <ButtonIcon iconName={"glyphicon-plus"} onClickAction={newProduct}/>
-                    }
+                    <ButtonIcon iconName={'glyphicon-refresh'} onClickAction={props.refreshProductsData} />
+                    {props.permissions.manageFinancial && (
+                        <ButtonIcon iconName={'glyphicon-plus'} onClickAction={newProduct} />
+                    )}
                 </div>
             </div>
-            <div className="col-md-4"><h3 className="text-center table-title">Producten</h3></div>
             <div className="col-md-4">
-                <div className="pull-right">Resultaten: { props.products ? props.products.length : 0 }</div>
+                <h3 className="text-center table-title">Producten</h3>
+            </div>
+            <div className="col-md-4">
+                <div className="pull-right">Resultaten: {props.products ? props.products.length : 0}</div>
             </div>
         </div>
     );
 };
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         permissions: state.meDetails.permissions,
-        products: state.products
+        products: state.products,
     };
 };
 
-export default connect(mapStateToProps, null)(ProductsListToolbar);
+export default connect(
+    mapStateToProps,
+    null
+)(ProductsListToolbar);

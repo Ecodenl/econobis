@@ -1,8 +1,8 @@
-export default (rawFilter) => {
+export default rawFilter => {
     const filterArray = [];
 
     for (let key in rawFilter) {
-        if(rawFilter[key].data !== ''){
+        if (rawFilter[key].data !== '') {
             filterArray.push(rawFilter[key]);
         }
     }

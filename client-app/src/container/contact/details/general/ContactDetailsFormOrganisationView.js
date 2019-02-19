@@ -5,97 +5,68 @@ import moment from 'moment';
 import ViewText from '../../../../components/form/ViewText';
 
 const ContactDetailsFormOrganisationView = props => {
-    const {number, organisation, iban, ibanAttn, createdAt, newsletter, didAgreeAvg} = props.contactDetails;
+    const { number, organisation, iban, ibanAttn, createdAt, newsletter, didAgreeAvg } = props.contactDetails;
 
     return (
         <div>
             <div className="row">
-                <ViewText
-                    className={'col-xs-12'}
-                    label={"Contactnummer"}
-                    value={ number }
-                />
+                <ViewText className={'col-xs-12'} label={'Contactnummer'} value={number} />
             </div>
 
             <div className="row">
                 <ViewText
                     className={'col-xs-12'}
-                    label={"Gemaakt op"}
-                    value={ createdAt && moment(createdAt.date).format('DD-MM-Y') }
+                    label={'Gemaakt op'}
+                    value={createdAt && moment(createdAt.date).format('DD-MM-Y')}
                 />
             </div>
 
             <div className="row">
-                <ViewText
-                    className={'col-xs-12'}
-                    label="Naam"
-                    value={ organisation.name }
-                />
+                <ViewText className={'col-xs-12'} label="Naam" value={organisation.name} />
             </div>
 
             <div className="row">
-                <ViewText
-                    className={'col-xs-12'}
-                    label="KvK"
-                    value={ organisation.chamberOfCommerceNumber }
-                />
+                <ViewText className={'col-xs-12'} label="KvK" value={organisation.chamberOfCommerceNumber} />
             </div>
 
             <div className="row">
-                <ViewText
-                    className={'col-xs-12'}
-                    label="Btw nummer"
-                    value={ organisation.vatNumber }
-                />
+                <ViewText className={'col-xs-12'} label="Btw nummer" value={organisation.vatNumber} />
             </div>
 
             <div className="row">
-                <ViewText
-                    className={'col-xs-12'}
-                    label="IBAN"
-                    value={ iban }
-                />
+                <ViewText className={'col-xs-12'} label="IBAN" value={iban} />
             </div>
 
             <div className="row">
-                <ViewText
-                    className={'col-xs-12'}
-                    label="IBAN t.n.v."
-                    value={ ibanAttn }
-                />
+                <ViewText className={'col-xs-12'} label="IBAN t.n.v." value={ibanAttn} />
             </div>
 
             <div className="row">
-                <ViewText
-                    className={'col-xs-12'}
-                    label="Website"
-                    value={ organisation.website}
-                />
+                <ViewText className={'col-xs-12'} label="Website" value={organisation.website} />
             </div>
 
             <div className="row">
                 <ViewText
                     className={'col-xs-12 field-to-be-removed'}
                     label="Nieuwsbrief"
-                    value={ (newsletter ? 'Ja' : 'Nee') }
+                    value={newsletter ? 'Ja' : 'Nee'}
                 />
             </div>
 
             <div className="row">
-                <ViewText
-                    className={'col-xs-12'}
-                    label="Akkoord privacybeleid"
-                    value={(didAgreeAvg ? 'Ja' : 'Nee')}
-                />
+                <ViewText className={'col-xs-12'} label="Akkoord privacybeleid" value={didAgreeAvg ? 'Ja' : 'Nee'} />
             </div>
         </div>
     );
 };
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         contactDetails: state.contactDetails,
     };
 };
 
-export default connect(mapStateToProps, null)(ContactDetailsFormOrganisationView);
+export default connect(
+    mapStateToProps,
+    null
+)(ContactDetailsFormOrganisationView);

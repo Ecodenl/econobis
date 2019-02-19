@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import CampaignDetailsToolbar from './CampaignDetailsToolbar';
 import CampaignDetailsForm from './CampaignDetailsForm';
 import CampaignDetailsHarmonica from './CampaignDetailsHarmonica';
-import Panel from "../../../components/panel/Panel";
+import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
 
 import { fetchCampaign, clearCampaign } from '../../../actions/campaign/CampaignDetailsActions';
@@ -20,32 +20,32 @@ class CampaignDetailsApp extends Component {
 
     componentWillUnmount() {
         this.props.clearCampaign();
-    };
+    }
 
     render() {
         return (
             <div className="row">
                 <div className="col-md-9">
                     <div className="col-md-12">
-                        <CampaignDetailsToolbar/>
+                        <CampaignDetailsToolbar />
                     </div>
 
                     <div className="col-md-12">
-                        <CampaignDetailsForm/>
+                        <CampaignDetailsForm />
                     </div>
                 </div>
                 <Panel className="col-md-3">
                     <PanelBody>
-                        <CampaignDetailsHarmonica id={this.props.params.id}/>
+                        <CampaignDetailsHarmonica id={this.props.params.id} />
                     </PanelBody>
                 </Panel>
             </div>
-        )
+        );
     }
-};
+}
 
 const mapDispatchToProps = dispatch => ({
-    fetchCampaign: (id) => {
+    fetchCampaign: id => {
         dispatch(fetchCampaign(id));
     },
     clearCampaign: () => {
@@ -53,4 +53,7 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(null, mapDispatchToProps)(CampaignDetailsApp);
+export default connect(
+    null,
+    mapDispatchToProps
+)(CampaignDetailsApp);

@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import Modal from '../../../../components/modal/Modal';
 import { deleteMailboxIgnore } from '../../../../actions/mailbox/MailboxDetailsActions';
 
-const MailboxDetailsIgnoresDelete = (props) => {
+const MailboxDetailsIgnoresDelete = props => {
     const confirmAction = () => {
         props.deleteMailboxIgnore(props.ignoreId);
         props.toggleDelete();
@@ -19,16 +19,17 @@ const MailboxDetailsIgnoresDelete = (props) => {
             title="Verwijderen"
         >
             <p>Wil je deze regel verwijderen van deze mailbox?</p>
-
         </Modal>
     );
 };
 
-
 const mapDispatchToProps = dispatch => ({
-    deleteMailboxIgnore: (ignoreId) => {
+    deleteMailboxIgnore: ignoreId => {
         dispatch(deleteMailboxIgnore(ignoreId));
     },
 });
 
-export default connect(null, mapDispatchToProps)(MailboxDetailsIgnoresDelete);
+export default connect(
+    null,
+    mapDispatchToProps
+)(MailboxDetailsIgnoresDelete);

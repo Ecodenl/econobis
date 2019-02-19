@@ -1,23 +1,33 @@
 import React from 'react';
-import {connect} from "react-redux";
+import { connect } from 'react-redux';
 
 const EmailAttachmentsView = props => {
-    const {name} = props.attachment;
+    const { name } = props.attachment;
 
     return (
-        <div className={`row border ${props.highlightLine}`} onMouseEnter={() => props.onLineEnter()} onMouseLeave={() => props.onLineLeave()}>
-            <div className="col-sm-11" >{name}</div>
+        <div
+            className={`row border ${props.highlightLine}`}
+            onMouseEnter={() => props.onLineEnter()}
+            onMouseLeave={() => props.onLineLeave()}
+        >
+            <div className="col-sm-11">{name}</div>
             <div className="col-sm-1">
-                {(props.showActionButtons ? <a role="button" onClick={props.toggleDelete}><span className="glyphicon glyphicon-trash mybtn-danger"  /> </a> : '')}
+                {props.showActionButtons ? (
+                    <a role="button" onClick={props.toggleDelete}>
+                        <span className="glyphicon glyphicon-trash mybtn-danger" />{' '}
+                    </a>
+                ) : (
+                    ''
+                )}
             </div>
         </div>
     );
 };
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
-        permissions: state.meDetails.permissions
-    }
+        permissions: state.meDetails.permissions,
+    };
 };
 
 export default connect(mapStateToProps)(EmailAttachmentsView);

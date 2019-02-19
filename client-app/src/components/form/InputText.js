@@ -2,32 +2,54 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 const InputText = props => {
-    const { label, type, className, size, id, placeholder, name, value, onChangeAction, required, readOnly, maxLength, error, min, max, errorMessage, divSize, divClassName, autoComplete } = props;
+    const {
+        label,
+        type,
+        className,
+        size,
+        id,
+        placeholder,
+        name,
+        value,
+        onChangeAction,
+        required,
+        readOnly,
+        maxLength,
+        error,
+        min,
+        max,
+        errorMessage,
+        divSize,
+        divClassName,
+        autoComplete,
+    } = props;
 
     return (
         <div className={`form-group ${divSize} ${divClassName}`}>
-            <label htmlFor={ id } className={`col-sm-6 ${required}`}>{ label }</label>
+            <label htmlFor={id} className={`col-sm-6 ${required}`}>
+                {label}
+            </label>
             <div className={`${size}`}>
                 <input
-                    type={ type }
+                    type={type}
                     className={`form-control input-sm ${className}` + (error ? 'has-error' : '')}
-                    id={ id }
-                    placeholder={ placeholder }
-                    name= { name }
-                    value={ value }
-                    onChange={ onChangeAction }
-                    readOnly={ readOnly }
-                    maxLength={ maxLength }
-                    min={ min }
-                    max={ max }
+                    id={id}
+                    placeholder={placeholder}
+                    name={name}
+                    value={value}
+                    onChange={onChangeAction}
+                    readOnly={readOnly}
+                    maxLength={maxLength}
+                    min={min}
+                    max={max}
                     autoComplete={autoComplete}
                 />
             </div>
-            {error &&
+            {error && (
                 <div className="col-sm-offset-6 col-sm-6">
-            <span className='has-error-message'> { errorMessage }</span>
+                    <span className="has-error-message"> {errorMessage}</span>
                 </div>
-            }
+            )}
         </div>
     );
 };
@@ -46,7 +68,7 @@ InputText.defaultProps = {
     min: '',
     max: '',
     errorMessage: '',
-    autoComplete: 'off'
+    autoComplete: 'off',
 };
 
 InputText.propTypes = {
@@ -58,10 +80,7 @@ InputText.propTypes = {
     id: PropTypes.string,
     placeholder: PropTypes.string,
     name: PropTypes.string.isRequired,
-    value: PropTypes.oneOfType([
-        PropTypes.string,
-        PropTypes.number
-    ]),
+    value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     onChangeAction: PropTypes.func,
     required: PropTypes.string,
     readOnly: PropTypes.bool,

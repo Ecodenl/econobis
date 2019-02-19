@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 
 import ContactGroupExtraFiltersList from './ContactGroupExtraFiltersList';
 import Panel from '../../../../components/panel/Panel';
@@ -18,13 +18,12 @@ class ContactGroupExtraFilters extends Component {
                 </PanelHeader>
                 <PanelBody>
                     <div className="col-md-12">
-                        <ContactGroupExtraFiltersList/>
+                        <ContactGroupExtraFiltersList />
                     </div>
                 </PanelBody>
             </Panel>
         );
     }
 }
-
 
 export default ContactGroupExtraFilters;

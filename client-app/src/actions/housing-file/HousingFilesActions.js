@@ -9,6 +9,6 @@ export const fetchHousingFiles = (filters, sorts, pagination) => {
 
 export const clearHousingFiles = () => {
     return {
-        type: 'CLEAR_HOUSING_FILES'
+        type: 'CLEAR_HOUSING_FILES',
     };
 };

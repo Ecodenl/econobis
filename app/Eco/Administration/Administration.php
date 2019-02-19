@@ -9,7 +9,7 @@ use App\Eco\Mailbox\Mailbox;
 use App\Eco\Order\Order;
 use App\Eco\PaymentInvoice\PaymentInvoice;
 use App\Eco\Product\Product;
-use App\Eco\ProductionProject\ProductionProject;
+use App\Eco\Project\Project;
 use App\Eco\User\User;
 use App\Http\Traits\Encryptable;
 use Carbon\Carbon;
@@ -47,9 +47,9 @@ class Administration extends Model
         return $this->hasMany(Sepa::class)->orderBy('created_at', 'desc');
     }
 
-    public function productionProjects()
+    public function projects()
     {
-        return $this->hasMany(ProductionProject::class);
+        return $this->hasMany(Project::class);
     }
 
     public function invoices()

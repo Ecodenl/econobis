@@ -2,10 +2,10 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import Modal from '../../../components/modal/Modal';
-import {deleteWebform} from "../../../actions/webform/WebformsActions";
-import {hashHistory} from "react-router";
+import { deleteWebform } from '../../../actions/webform/WebformsActions';
+import { hashHistory } from 'react-router';
 
-const WebformDetailsDelete = (props) => {
+const WebformDetailsDelete = props => {
     const confirmAction = () => {
         props.deleteWebform(props.id);
         props.closeDeleteItemModal();
@@ -20,15 +20,18 @@ const WebformDetailsDelete = (props) => {
             confirmAction={() => confirmAction()}
             title="Verwijderen"
         >
-            Verwijder webformulier: <strong> { props.name } </strong>
+            Verwijder webformulier: <strong> {props.name} </strong>
         </Modal>
     );
 };
 
 const mapDispatchToProps = dispatch => ({
-    deleteWebform: (id) => {
+    deleteWebform: id => {
         dispatch(deleteWebform(id));
     },
 });
 
-export default connect(null, mapDispatchToProps)(WebformDetailsDelete);
+export default connect(
+    null,
+    mapDispatchToProps
+)(WebformDetailsDelete);

@@ -1,7 +1,7 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 
 import OpportunityDetailsQuotationRequestsView from './OpportunityDetailsQuotationRequestsView';
-import {connect} from "react-redux";
+import { connect } from 'react-redux';
 
 class OpportunityDetailsQuotationRequestsItem extends Component {
     constructor(props) {
@@ -10,7 +10,7 @@ class OpportunityDetailsQuotationRequestsItem extends Component {
         this.state = {
             highlightLine: '',
         };
-    };
+    }
 
     onLineEnter = () => {
         this.setState({
@@ -36,12 +36,12 @@ class OpportunityDetailsQuotationRequestsItem extends Component {
             </div>
         );
     }
-};
+}
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
-        permissions: state.meDetails.permissions
-    }
+        permissions: state.meDetails.permissions,
+    };
 };
 
 export default connect(mapStateToProps)(OpportunityDetailsQuotationRequestsItem);

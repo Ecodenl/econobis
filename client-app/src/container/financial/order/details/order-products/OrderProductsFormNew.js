@@ -1,16 +1,16 @@
-import React, {Component} from 'react';
-import {connect} from 'react-redux';
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
 
 import OrderDetailsAPI from '../../../../../api/order/OrderDetailsAPI';
-import {fetchOrderDetails} from '../../../../../actions/order/OrderDetailsActions';
+import { fetchOrderDetails } from '../../../../../actions/order/OrderDetailsActions';
 import InputText from '../../../../../components/form/InputText';
 import ButtonText from '../../../../../components/button/ButtonText';
-import InputSelect from "../../../../../components/form/InputSelect";
+import InputSelect from '../../../../../components/form/InputSelect';
 import Panel from '../../../../../components/panel/Panel';
 import PanelBody from '../../../../../components/panel/PanelBody';
-import validator from "validator";
-import InputDate from "../../../../../components/form/InputDate";
-import moment from "moment/moment";
+import validator from 'validator';
+import InputDate from '../../../../../components/form/InputDate';
+import moment from 'moment/moment';
 
 class OrderProductsFormNew extends Component {
     constructor(props) {
@@ -45,24 +45,23 @@ class OrderProductsFormNew extends Component {
 
         this.handleInputChangeDate = this.handleInputChangeDate.bind(this);
         this.handleInputChangeStartDate = this.handleInputChangeStartDate.bind(this);
-    };
+    }
 
     handleInputChange = event => {
         const target = event.target;
         const value = target.type === 'checkbox' ? target.checked : target.value;
         const name = target.name;
 
-        this.setState({
+        this.setState(
+            {
                 ...this.state,
                 orderProduct: {
                     ...this.state.orderProduct,
-                    [name]: value
+                    [name]: value,
                 },
-
             },
             this.updatePrice
         );
-
     };
 
     handleInputChangeVariablePrice = event => {
@@ -70,35 +69,36 @@ class OrderProductsFormNew extends Component {
         const value = target.type === 'checkbox' ? target.checked : target.value;
         const name = target.name;
 
-        this.setState({
+        this.setState(
+            {
                 ...this.state,
                 price: value,
                 orderProduct: {
                     ...this.state.orderProduct,
-                    [name]: value
+                    [name]: value,
                 },
-
             },
             this.updatePrice
         );
-
     };
-
 
     updatePrice = () => {
         let price = validator.isFloat(this.state.price + '') ? this.state.price : 0;
         let amount = validator.isFloat(this.state.orderProduct.amount + '') ? this.state.orderProduct.amount : 0;
-        let percentageReduction = validator.isFloat(this.state.orderProduct.percentageReduction + '') ? this.state.orderProduct.percentageReduction : 0;
-        let amountReduction = validator.isFloat(this.state.orderProduct.amountReduction + '') ? this.state.orderProduct.amountReduction : 0;
+        let percentageReduction = validator.isFloat(this.state.orderProduct.percentageReduction + '')
+            ? this.state.orderProduct.percentageReduction
+            : 0;
+        let amountReduction = validator.isFloat(this.state.orderProduct.amountReduction + '')
+            ? this.state.orderProduct.amountReduction
+            : 0;
 
         let totalPrice = 0;
 
-        if(price < 0){
+        if (price < 0) {
             const reduction = parseFloat(100) + parseFloat(percentageReduction);
-            totalPrice = ((price * amount) * ((reduction) / 100)) - amountReduction;
-        }
-        else {
-            totalPrice = ((price * amount) * ((100 - percentageReduction) / 100)) - amountReduction;
+            totalPrice = price * amount * (reduction / 100) - amountReduction;
+        } else {
+            totalPrice = price * amount * ((100 - percentageReduction) / 100) - amountReduction;
         }
 
         this.setState({
@@ -112,19 +112,19 @@ class OrderProductsFormNew extends Component {
             ...this.state,
             orderProduct: {
                 ...this.state.orderProduct,
-                [name]: value
+                [name]: value,
             },
         });
-    };
+    }
 
     handleInputChangeStartDate(value, name) {
         let dateEnd = '';
 
-        if(this.state.orderProduct.dateStart && this.state.orderProduct.productId){
+        if (this.state.orderProduct.dateStart && this.state.orderProduct.productId) {
             let durationId;
 
             if (value) {
-                let product = this.props.products.filter((product) => product.id == this.state.orderProduct.productId);
+                let product = this.props.products.filter(product => product.id == this.state.orderProduct.productId);
                 durationId = product[0].durationId;
             }
 
@@ -133,22 +133,30 @@ class OrderProductsFormNew extends Component {
                     dateEnd = '';
                     break;
                 case 'month':
-                    dateEnd = moment(value).add(1, 'M').format('YYYY-MM-DD');
+                    dateEnd = moment(value)
+                        .add(1, 'M')
+                        .format('YYYY-MM-DD');
                     break;
                 case 'quarter':
-                    dateEnd = moment(value).add(1, 'Q').format('YYYY-MM-DD');
+                    dateEnd = moment(value)
+                        .add(1, 'Q')
+                        .format('YYYY-MM-DD');
                     break;
                 case 'half_year':
-                    dateEnd = moment(value).add(6, 'M').format('YYYY-MM-DD');
+                    dateEnd = moment(value)
+                        .add(6, 'M')
+                        .format('YYYY-MM-DD');
                     break;
                 case 'year':
-                    dateEnd = moment(value).add(1, 'y').format('YYYY-MM-DD');
+                    dateEnd = moment(value)
+                        .add(1, 'y')
+                        .format('YYYY-MM-DD');
                     break;
                 case 'until_cancellation':
                     dateEnd = '';
                     break;
                 default:
-                    dateEnd = ''
+                    dateEnd = '';
             }
         }
 
@@ -157,10 +165,10 @@ class OrderProductsFormNew extends Component {
             orderProduct: {
                 ...this.state.orderProduct,
                 [name]: value,
-                dateEnd: dateEnd
+                dateEnd: dateEnd,
             },
         });
-    };
+    }
 
     handleChangeProduct = event => {
         const target = event.target;
@@ -174,40 +182,48 @@ class OrderProductsFormNew extends Component {
         let productHasVariablePrice = '';
 
         if (value) {
-            let product = this.props.products.filter((product) => product.id == value);
+            let product = this.props.products.filter(product => product.id == value);
             price = product[0].priceInclVat;
             description = product[0].invoiceText;
             durationId = product[0].durationId;
-            productHasVariablePrice = product[0].hasVariablePrice
+            productHasVariablePrice = product[0].hasVariablePrice;
         }
 
-        if(durationId && this.state.orderProduct.dateStart){
-
+        if (durationId && this.state.orderProduct.dateStart) {
             switch (durationId) {
                 case 'none':
                     dateEnd = '';
                     break;
                 case 'month':
-                    dateEnd = moment(this.state.orderProduct.dateStart).add(1, 'M').format('YYYY-MM-DD');
+                    dateEnd = moment(this.state.orderProduct.dateStart)
+                        .add(1, 'M')
+                        .format('YYYY-MM-DD');
                     break;
                 case 'quarter':
-                    dateEnd = moment(this.state.orderProduct.dateStart).add(1, 'Q').format('YYYY-MM-DD');
+                    dateEnd = moment(this.state.orderProduct.dateStart)
+                        .add(1, 'Q')
+                        .format('YYYY-MM-DD');
                     break;
                 case 'half_year':
-                    dateEnd = moment(this.state.orderProduct.dateStart).add(6, 'M').format('YYYY-MM-DD');
+                    dateEnd = moment(this.state.orderProduct.dateStart)
+                        .add(6, 'M')
+                        .format('YYYY-MM-DD');
                     break;
                 case 'year':
-                    dateEnd = moment(this.state.orderProduct.dateStart).add(1, 'y').format('YYYY-MM-DD');
+                    dateEnd = moment(this.state.orderProduct.dateStart)
+                        .add(1, 'y')
+                        .format('YYYY-MM-DD');
                     break;
                 case 'until_cancellation':
                     dateEnd = '';
                     break;
                 default:
-                    dateEnd = ''
+                    dateEnd = '';
             }
         }
 
-        this.setState({
+        this.setState(
+            {
                 ...this.state,
                 price: price,
                 durationId: durationId,
@@ -216,7 +232,7 @@ class OrderProductsFormNew extends Component {
                     ...this.state.orderProduct,
                     description: description,
                     dateEnd: dateEnd,
-                    [name]: value
+                    [name]: value,
                 },
             },
             this.updatePrice
@@ -226,11 +242,10 @@ class OrderProductsFormNew extends Component {
     handleSubmit = event => {
         event.preventDefault();
 
-        const {orderProduct} = this.state;
+        const { orderProduct } = this.state;
 
         let errors = {};
         let hasErrors = false;
-
 
         if (validator.isEmpty(orderProduct.productId + '')) {
             errors.productId = true;
@@ -252,36 +267,50 @@ class OrderProductsFormNew extends Component {
             hasErrors = true;
         }
 
-        if (!validator.isEmpty(orderProduct.dateStart + '') && moment(orderProduct.dateEnd).isSameOrBefore(moment(orderProduct.dateStart))) {
+        if (
+            !validator.isEmpty(orderProduct.dateStart + '') &&
+            moment(orderProduct.dateEnd).isSameOrBefore(moment(orderProduct.dateStart))
+        ) {
             errors.dateEnd = true;
             hasErrors = true;
         }
 
-        if (!validator.isEmpty(orderProduct.dateEnd + '') && moment(orderProduct.dateStart).isSameOrAfter(moment(orderProduct.dateEnd))) {
+        if (
+            !validator.isEmpty(orderProduct.dateEnd + '') &&
+            moment(orderProduct.dateStart).isSameOrAfter(moment(orderProduct.dateEnd))
+        ) {
             errors.dateStart = true;
             hasErrors = true;
         }
 
-        if(this.state.productHasVariablePrice){
+        if (this.state.productHasVariablePrice) {
             if (validator.isEmpty(orderProduct.variablePrice + '') || orderProduct.variablePrice === null) {
                 errors.variablePrice = true;
                 hasErrors = true;
             }
         }
 
-        this.setState({...this.state, errors: errors});
+        this.setState({ ...this.state, errors: errors });
 
         // If no errors send form
         !hasErrors &&
-        OrderDetailsAPI.newOrderProduct(orderProduct).then((payload) => {
-            this.props.fetchOrderDetails(orderProduct.orderId);
-            this.props.toggleShowNew();
-        });
+            OrderDetailsAPI.newOrderProduct(orderProduct).then(payload => {
+                this.props.fetchOrderDetails(orderProduct.orderId);
+                this.props.toggleShowNew();
+            });
     };
 
     render() {
-
-        const {productId, description, amount, amountReduction, percentageReduction, dateStart, dateEnd, datePeriodStartFirstInvoice} = this.state.orderProduct;
+        const {
+            productId,
+            description,
+            amount,
+            amountReduction,
+            percentageReduction,
+            dateStart,
+            dateEnd,
+            datePeriodStartFirstInvoice,
+        } = this.state.orderProduct;
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -289,90 +318,96 @@ class OrderProductsFormNew extends Component {
                     <PanelBody>
                         <div className="row">
                             <InputText
-                                label={"Order nummer"}
-                                name={"orderId"}
+                                label={'Order nummer'}
+                                name={'orderId'}
                                 value={this.props.orderDetails.number}
                                 readOnly={true}
                             />
                             <InputSelect
-                                label={"Product"}
+                                label={'Product'}
                                 id="productId"
-                                name={"productId"}
+                                name={'productId'}
                                 options={this.props.products}
                                 value={productId}
                                 onChangeAction={this.handleChangeProduct}
-                                required={"required"}
+                                required={'required'}
                                 error={this.state.errors.productId}
                             />
                         </div>
                         <div className="row">
                             <InputText
-                                label={"Omschrijving"}
-                                id={"description"}
-                                name={"description"}
+                                label={'Omschrijving'}
+                                id={'description'}
+                                name={'description'}
                                 value={description}
                                 readOnly={true}
                             />
                             <InputText
-                                label={"Aantal"}
+                                label={'Aantal'}
                                 type={'number'}
-                                id={"amount"}
-                                name={"amount"}
+                                id={'amount'}
+                                name={'amount'}
                                 value={amount}
                                 onChangeAction={this.handleInputChange}
-                                required={"required"}
+                                required={'required'}
                                 error={this.state.errors.amount}
                             />
                         </div>
 
                         <div className="row">
                             <InputText
-                                label={"Kortingspercentage"}
+                                label={'Kortingspercentage'}
                                 type={'number'}
-                                id={"percentageReduction"}
-                                name={"percentageReduction"}
+                                id={'percentageReduction'}
+                                name={'percentageReduction'}
                                 value={percentageReduction}
                                 onChangeAction={this.handleInputChange}
                             />
-                            {this.state.productHasVariablePrice ?
+                            {this.state.productHasVariablePrice ? (
                                 <InputText
-                                    label={"Prijs ex. BTW"}
-                                    name={"variablePrice"}
+                                    label={'Prijs ex. BTW'}
+                                    name={'variablePrice'}
                                     type={'number'}
                                     value={this.state.price}
                                     onChangeAction={this.handleInputChangeVariablePrice}
                                     error={this.state.errors.variablePrice}
-                                    required={this.state.productHasVariablePrice && "required"}
+                                    required={this.state.productHasVariablePrice && 'required'}
                                 />
-                                :
+                            ) : (
                                 <InputText
-                                    label={"Prijs incl. BTW"}
-                                    name={"price"}
-                                    value={'€' + this.state.price.toLocaleString('nl', {
-                                        minimumFractionDigits: 2,
-                                        maximumFractionDigits: 2
-                                    })}
+                                    label={'Prijs incl. BTW'}
+                                    name={'price'}
+                                    value={
+                                        '€' +
+                                        this.state.price.toLocaleString('nl', {
+                                            minimumFractionDigits: 2,
+                                            maximumFractionDigits: 2,
+                                        })
+                                    }
                                     readOnly={true}
                                 />
-                            }
+                            )}
                         </div>
 
                         <div className="row">
                             <InputText
-                                label={"Kortingsbedrag"}
+                                label={'Kortingsbedrag'}
                                 type={'number'}
-                                id={"amountReduction"}
-                                name={"amountReduction"}
+                                id={'amountReduction'}
+                                name={'amountReduction'}
                                 value={amountReduction}
                                 onChangeAction={this.handleInputChange}
                             />
                             <InputText
-                                label={"Totaalbedrag"}
-                                name={"totalPrice"}
-                                value={'€' + this.state.totalPrice.toLocaleString('nl', {
-                                    minimumFractionDigits: 2,
-                                    maximumFractionDigits: 2
-                                })}
+                                label={'Totaalbedrag'}
+                                name={'totalPrice'}
+                                value={
+                                    '€' +
+                                    this.state.totalPrice.toLocaleString('nl', {
+                                        minimumFractionDigits: 2,
+                                        maximumFractionDigits: 2,
+                                    })
+                                }
                                 readOnly={true}
                             />
                         </div>
@@ -383,45 +418,52 @@ class OrderProductsFormNew extends Component {
                                 name="dateStart"
                                 value={dateStart}
                                 onChangeAction={this.handleInputChangeStartDate}
-                                required={"required"}
+                                required={'required'}
                                 error={this.state.errors.dateStart}
                             />
-                                <InputDate
-                                    label="Eind datum"
-                                    name="dateEnd"
-                                    value={dateEnd}
-                                    onChangeAction={this.handleInputChangeDate}
-                                    error={this.state.errors.dateEnd}
-                                    readOnly={this.state.durationId === 'none'}
-                                />
-                        </div>
-
-                        {this.state.durationId !== 'none' &&
-                        <div className="row">
                             <InputDate
-                                label="1ste factuurperiode start op"
-                                name="datePeriodStartFirstInvoice"
-                                value={datePeriodStartFirstInvoice}
+                                label="Eind datum"
+                                name="dateEnd"
+                                value={dateEnd}
                                 onChangeAction={this.handleInputChangeDate}
-                                error={this.state.errors.datePeriodStartFirstInvoice}
-                                required={"required"}
+                                error={this.state.errors.dateEnd}
+                                readOnly={this.state.durationId === 'none'}
                             />
                         </div>
-                        }
+
+                        {this.state.durationId !== 'none' && (
+                            <div className="row">
+                                <InputDate
+                                    label="1ste factuurperiode start op"
+                                    name="datePeriodStartFirstInvoice"
+                                    value={datePeriodStartFirstInvoice}
+                                    onChangeAction={this.handleInputChangeDate}
+                                    error={this.state.errors.datePeriodStartFirstInvoice}
+                                    required={'required'}
+                                />
+                            </div>
+                        )}
                         <div className="pull-right btn-group" role="group">
-                            <ButtonText buttonClassName={"btn-default"} buttonText={"Annuleren"}
-                                        onClickAction={this.props.toggleShowNew}/>
-                            <ButtonText buttonText={"Opslaan"} onClickAction={this.handleSubmit} type={"submit"}
-                                        value={"Submit"}/>
+                            <ButtonText
+                                buttonClassName={'btn-default'}
+                                buttonText={'Annuleren'}
+                                onClickAction={this.props.toggleShowNew}
+                            />
+                            <ButtonText
+                                buttonText={'Opslaan'}
+                                onClickAction={this.handleSubmit}
+                                type={'submit'}
+                                value={'Submit'}
+                            />
                         </div>
                     </PanelBody>
                 </Panel>
             </form>
         );
     }
-};
+}
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         orderDetails: state.orderDetails,
         products: state.systemData.products,
@@ -429,9 +471,12 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = dispatch => ({
-    fetchOrderDetails: (id) => {
+    fetchOrderDetails: id => {
         dispatch(fetchOrderDetails(id));
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(OrderProductsFormNew);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(OrderProductsFormNew);

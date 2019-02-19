@@ -9,7 +9,7 @@ import NotesList from './NotesList';
 import NotesListToolbar from './NotesListToolbar';
 import filterHelper from '../../../helpers/FilterHelper';
 import Panel from '../../../components/panel/Panel';
-import PanelBody from "../../../components/panel/PanelBody";
+import PanelBody from '../../../components/panel/PanelBody';
 
 class NotesListApp extends Component {
     constructor(props) {
@@ -22,11 +22,11 @@ class NotesListApp extends Component {
 
     componentDidMount() {
         this.fetchNotesData();
-    };
+    }
 
     componentWillUnmount() {
         this.props.clearNotes();
-    };
+    }
 
     fetchNotesData() {
         setTimeout(() => {
@@ -36,40 +36,38 @@ class NotesListApp extends Component {
 
             //this.props.clearContacts();
             this.props.fetchNotes(filters, sorts, pagination);
-        },100 );
-    };
+        }, 100);
+    }
 
     resetNoteFilters() {
         this.props.clearFilterNotes();
 
         this.fetchNotesData();
-    };
+    }
 
     onSubmitFilter() {
         this.props.clearNotes();
 
-        this.props.setNotesPagination({page: 0, offset: 0});
+        this.props.setNotesPagination({ page: 0, offset: 0 });
 
         this.fetchNotesData();
-    };
+    }
 
     handlePageClick(data) {
         let page = data.selected;
         let offset = Math.ceil(page * 20);
 
-        this.props.setNotesPagination({page, offset});
+        this.props.setNotesPagination({ page, offset });
 
         this.fetchNotesData();
-    };
+    }
 
     render() {
         return (
             <Panel>
                 <PanelBody>
                     <div className="col-md-12 margin-10-top">
-                        <NotesListToolbar
-                            resetNoteFilters={() => this.resetNoteFilters()}
-                        />
+                        <NotesListToolbar resetNoteFilters={() => this.resetNoteFilters()} />
                     </div>
 
                     <div className="col-md-12 margin-10-top">
@@ -83,11 +81,11 @@ class NotesListApp extends Component {
                     </div>
                 </PanelBody>
             </Panel>
-        )
+        );
     }
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         notes: state.notes.list,
         notesFilters: state.notes.filters,
@@ -96,8 +94,11 @@ const mapStateToProps = (state) => {
     };
 };
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = dispatch => {
     return bindActionCreators({ fetchNotes, clearNotes, clearFilterNotes, setNotesPagination }, dispatch);
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(NotesListApp);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(NotesListApp);

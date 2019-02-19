@@ -30,14 +30,14 @@ const filtersReducerDefaultState = {
 };
 
 export default (state = filtersReducerDefaultState, action) => {
-    switch(action.type) {
+    switch (action.type) {
         case 'SET_FILTER_AUDIT_TRAIL_MODEL':
             return {
                 ...state,
                 model: {
                     ...state.model,
                     data: action.model,
-                }
+                },
             };
         case 'SET_FILTER_AUDIT_TRAIL_REVISIONABLE_ID':
             return {
@@ -45,7 +45,7 @@ export default (state = filtersReducerDefaultState, action) => {
                 revisionableId: {
                     ...state.revisionableId,
                     data: action.revisionableId,
-                }
+                },
             };
         case 'SET_FILTER_AUDIT_TRAIL_FIELD':
             return {
@@ -53,7 +53,7 @@ export default (state = filtersReducerDefaultState, action) => {
                 field: {
                     ...state.field,
                     data: action.field,
-                }
+                },
             };
         case 'SET_FILTER_AUDIT_TRAIL_OLD_VALUE':
             return {
@@ -61,7 +61,7 @@ export default (state = filtersReducerDefaultState, action) => {
                 oldValue: {
                     ...state.oldValue,
                     data: action.oldValue,
-                }
+                },
             };
         case 'SET_FILTER_AUDIT_TRAIL_NEW_VALUE':
             return {
@@ -69,7 +69,7 @@ export default (state = filtersReducerDefaultState, action) => {
                 newValue: {
                     ...state.newValue,
                     data: action.newValue,
-                }
+                },
             };
         case 'SET_FILTER_AUDIT_TRAIL_CHANGED_BY_ID':
             return {
@@ -77,7 +77,7 @@ export default (state = filtersReducerDefaultState, action) => {
                 changedById: {
                     ...state.changedById,
                     data: action.changedById,
-                }
+                },
             };
         case 'SET_FILTER_AUDIT_TRAIL_UPDATED_AT':
             return {
@@ -85,7 +85,7 @@ export default (state = filtersReducerDefaultState, action) => {
                 updatedAt: {
                     ...state.updatedAt,
                     data: action.updatedAt,
-                }
+                },
             };
         case 'CLEAR_FILTER_AUDIT_TRAIL':
             return {

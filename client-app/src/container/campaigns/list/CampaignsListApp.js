@@ -7,37 +7,37 @@ import CampaignsListToolbar from './CampaignsListToolbar';
 import CampaignsList from './CampaignsList';
 
 class CampaignsListApp extends Component {
-    constructor(props){
+    constructor(props) {
         super(props);
 
         this.fetchCampaignsData = this.fetchCampaignsData.bind(this);
         this.handlePageClick = this.handlePageClick.bind(this);
-    };
+    }
 
     componentDidMount() {
         this.fetchCampaignsData();
-    };
+    }
 
     componentWillUnmount() {
         this.props.clearCampaigns();
-    };
+    }
 
     fetchCampaignsData() {
         setTimeout(() => {
             const pagination = { limit: 20, offset: this.props.campaignsPagination.offset };
 
             this.props.fetchCampaigns(pagination);
-        },100 );
-    };
+        }, 100);
+    }
 
     handlePageClick(data) {
         let page = data.selected;
         let offset = Math.ceil(page * 20);
 
-        this.props.setCampaignsPagination({page, offset});
+        this.props.setCampaignsPagination({ page, offset });
 
         this.fetchCampaignsData();
-    };
+    }
 
     render() {
         return (
@@ -45,36 +45,40 @@ class CampaignsListApp extends Component {
                 <div className="panel panel-default col-md-12">
                     <div className="panel-body">
                         <div className="col-md-12 margin-10-top">
-                            <CampaignsListToolbar/>
+                            <CampaignsListToolbar />
                         </div>
                         <div className="col-md-12 margin-10-top">
                             <CampaignsList
-                                handlePageClick={this.handlePageClick} fetchCampaignsData={this.fetchCampaignsData}
+                                handlePageClick={this.handlePageClick}
+                                fetchCampaignsData={this.fetchCampaignsData}
                             />
                         </div>
                     </div>
                 </div>
             </div>
-        )
+        );
     }
-};
+}
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         campaignsPagination: state.campaigns.pagination,
     };
 };
 
 const mapDispatchToProps = dispatch => ({
-    fetchCampaigns: (pagination) => {
+    fetchCampaigns: pagination => {
         dispatch(fetchCampaigns(pagination));
     },
     clearCampaigns: () => {
         dispatch(clearCampaigns());
     },
-    setCampaignsPagination: (pagination) => {
+    setCampaignsPagination: pagination => {
         dispatch(setCampaignsPagination(pagination));
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(CampaignsListApp);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(CampaignsListApp);

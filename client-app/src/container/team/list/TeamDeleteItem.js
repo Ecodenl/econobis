@@ -2,9 +2,9 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import Modal from '../../../components/modal/Modal';
-import {deleteTeam} from "../../../actions/team/TeamsActions";
+import { deleteTeam } from '../../../actions/team/TeamsActions';
 
-const TeamDeleteItem = (props) => {
+const TeamDeleteItem = props => {
     const confirmAction = () => {
         props.deleteTeam(props.id);
         props.closeDeleteItemModal();
@@ -18,15 +18,18 @@ const TeamDeleteItem = (props) => {
             confirmAction={() => confirmAction()}
             title="Verwijderen"
         >
-            Verwijder team: <strong> { props.name } </strong>
+            Verwijder team: <strong> {props.name} </strong>
         </Modal>
     );
 };
 
 const mapDispatchToProps = dispatch => ({
-    deleteTeam: (id) => {
+    deleteTeam: id => {
         dispatch(deleteTeam(id));
     },
 });
 
-export default connect(null, mapDispatchToProps)(TeamDeleteItem);
+export default connect(
+    null,
+    mapDispatchToProps
+)(TeamDeleteItem);

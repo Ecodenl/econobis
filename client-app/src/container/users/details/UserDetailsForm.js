@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { isEmpty } from 'lodash';
 
@@ -8,9 +8,9 @@ import UserDetailsFormLog from './log/UserDetailsFormLog';
 import UserDetailsFormRoles from './roles/UserDetailsFormRoles';
 
 class UserDetailsForm extends Component {
-    constructor(props){
+    constructor(props) {
         super(props);
-    };
+    }
 
     render() {
         let loadingText = '';
@@ -18,31 +18,27 @@ class UserDetailsForm extends Component {
 
         if (this.props.hasError) {
             loadingText = 'Fout bij het ophalen van gebruiker.';
-        }
-        else if (this.props.isLoading) {
+        } else if (this.props.isLoading) {
             loadingText = 'Gegevens aan het laden.';
-        }
-        else if (isEmpty(this.props.userDetails)) {
+        } else if (isEmpty(this.props.userDetails)) {
             loadingText = 'Geen gebruiker gevonden!';
-        }
-        else {
+        } else {
             loading = false;
         }
 
-        return (
-            loading ?
-                <div>{loadingText}</div>
-                :
-                <div>
-                    <UserDetailsFormGeneral />
-                    <UserDetailsFormRoles/>
-                    <UserDetailsFormLog />
-                </div>
+        return loading ? (
+            <div>{loadingText}</div>
+        ) : (
+            <div>
+                <UserDetailsFormGeneral />
+                <UserDetailsFormRoles />
+                <UserDetailsFormLog />
+            </div>
         );
     }
-};
+}
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         userDetails: state.userDetails,
         isLoading: state.loadingData.isLoading,
@@ -51,9 +47,12 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = dispatch => ({
-    fetchUserDetails: (id) => {
+    fetchUserDetails: id => {
         dispatch(fetchUserDetails(id));
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(UserDetailsForm);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(UserDetailsForm);

@@ -1,12 +1,12 @@
 import { put, call } from 'redux-saga/effects';
 import OrdersAPI from '../../api/order/OrdersAPI';
 import OrderDetailsAPI from '../../api/order/OrderDetailsAPI';
-import {browserHistory} from "react-router";
+import { browserHistory } from 'react-router';
 
-export function* fetchOrdersSaga({filters,sorts, pagination, administrationId}) {
+export function* fetchOrdersSaga({ filters, sorts, pagination, administrationId }) {
     try {
         yield put({ type: 'IS_LOADING' });
-        const orders = yield call(OrdersAPI.fetchOrders, {filters, sorts, pagination, administrationId});
+        const orders = yield call(OrdersAPI.fetchOrders, { filters, sorts, pagination, administrationId });
         yield put({ type: 'FETCH_ORDERS_SUCCESS', orders });
         yield put({ type: 'IS_LOADING_COMPLETE' });
     } catch (error) {

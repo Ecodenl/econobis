@@ -1,112 +1,147 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import InputSelect from "../../../../components/form/InputSelect";
-import InputText from "../../../../components/form/InputText";
+import InputSelect from '../../../../components/form/InputSelect';
+import InputText from '../../../../components/form/InputText';
 
-const DocumentNewFormGeneral = ({document, errors, contacts = [], contactGroups = [], intakes = [], opportunities = [], tasks = [], quotationRequests = [], housingFiles = [], productionProjects = [], participants = [], orders = [], handleInputChange, documentTypes}) => {
-    const { contactId, contactGroupId, intakeId, opportunityId, documentType, description, taskId, quotationRequestId, housingFileId, productionProjectId,  participantId, orderId} = document;
-    const documentTypeName = documentTypes.find((item) => {return item.id == documentType}).name;
-    const oneOfFieldRequired = contactId === '' && contactGroupId === '' && intakeId === '' && opportunityId === '' && taskId === '' && quotationRequestId === '' && housingFileId === '' && productionProjectId === '' && participantId === '' && orderId === '';
+const DocumentNewFormGeneral = ({
+    document,
+    errors,
+    contacts = [],
+    contactGroups = [],
+    intakes = [],
+    opportunities = [],
+    tasks = [],
+    quotationRequests = [],
+    housingFiles = [],
+    projects = [],
+    participants = [],
+    orders = [],
+    handleInputChange,
+    documentTypes,
+}) => {
+    const {
+        contactId,
+        contactGroupId,
+        intakeId,
+        opportunityId,
+        documentType,
+        description,
+        taskId,
+        quotationRequestId,
+        housingFileId,
+        projectId,
+        participantId,
+        orderId,
+    } = document;
+    const documentTypeName = documentTypes.find(item => {
+        return item.id == documentType;
+    }).name;
+    const oneOfFieldRequired =
+        contactId === '' &&
+        contactGroupId === '' &&
+        intakeId === '' &&
+        opportunityId === '' &&
+        taskId === '' &&
+        quotationRequestId === '' &&
+        housingFileId === '' &&
+        projectId === '' &&
+        participantId === '' &&
+        orderId === '';
 
     return (
         <div className={'margin-30-bottom'}>
             <div className="row">
                 <InputSelect
                     label="Contact"
-                    name={"contactId"}
+                    name={'contactId'}
                     value={contactId}
                     options={contacts}
                     optionName={'fullName'}
                     onChangeAction={handleInputChange}
-                    required={oneOfFieldRequired && "required"}
+                    required={oneOfFieldRequired && 'required'}
                     error={errors.docLinkedAtAny}
                 />
-                <InputText
-                    label="Type"
-                    name={"documentTypeName"}
-                    value={documentTypeName}
-                    readOnly={true}
-                />
+                <InputText label="Type" name={'documentTypeName'} value={documentTypeName} readOnly={true} />
             </div>
             <div className="row">
                 <InputSelect
                     label="Groep"
-                    name={"contactGroupId"}
+                    name={'contactGroupId'}
                     value={contactGroupId}
                     options={contactGroups}
                     onChangeAction={handleInputChange}
-                    required={oneOfFieldRequired && "required"}
+                    required={oneOfFieldRequired && 'required'}
                     error={errors.docLinkedAtAny}
                 />
                 <InputSelect
                     label="Intake"
-                    name={"intakeId"}
+                    name={'intakeId'}
                     value={intakeId}
                     options={intakes}
                     onChangeAction={handleInputChange}
-                    required={oneOfFieldRequired && "required"}
+                    required={oneOfFieldRequired && 'required'}
                     error={errors.docLinkedAtAny}
                 />
             </div>
             <div className="row">
                 <InputSelect
                     label="Kans"
-                    name={"opportunityId"}
+                    name={'opportunityId'}
                     value={opportunityId}
                     options={opportunities}
                     onChangeAction={handleInputChange}
-                    required={oneOfFieldRequired && "required"}
+                    required={oneOfFieldRequired && 'required'}
                     error={errors.docLinkedAtAny}
                 />
                 <InputSelect
                     label="Taak"
-                    name={"taskId"}
+                    name={'taskId'}
                     value={taskId}
                     options={tasks}
                     onChangeAction={handleInputChange}
-                    required={oneOfFieldRequired && "required"}
+                    required={oneOfFieldRequired && 'required'}
                     error={errors.docLinkedAtAny}
                 />
             </div>
             <div className="row">
                 <InputSelect
                     label="Offerteverzoek"
-                    name={"quotationRequestId"}
+                    name={'quotationRequestId'}
                     value={quotationRequestId}
                     options={quotationRequests}
                     onChangeAction={handleInputChange}
-                    required={oneOfFieldRequired && "required"}
+                    required={oneOfFieldRequired && 'required'}
                     error={errors.docLinkedAtAny}
                 />
                 <InputSelect
                     label="Woningdossier"
-                    name={"housingFileId"}
+                    name={'housingFileId'}
                     value={housingFileId}
                     options={housingFiles}
                     onChangeAction={handleInputChange}
-                    required={oneOfFieldRequired && "required"}
+                    required={oneOfFieldRequired && 'required'}
                     error={errors.docLinkedAtAny}
                 />
             </div>
 
             <div className="row">
                 <InputSelect
-                    label="Productieproject"
-                    name={"productionProjectId"}
-                    value={productionProjectId}
-                    options={productionProjects}
+                    label="Project"
+                    name={'projectId'}
+                    value={projectId}
+                    options={projects}
                     onChangeAction={handleInputChange}
-                    required={oneOfFieldRequired && "required"}
+                    required={oneOfFieldRequired && 'required'}
                     error={errors.docLinkedAtAny}
                 />
                 <InputSelect
-                    label="Participant productieproject"
-                    name={"participantId"}
+                    label="Deelnemer project"
+                    name={'participantId'}
                     value={participantId}
                     options={participants}
                     onChangeAction={handleInputChange}
-                    required={oneOfFieldRequired && "required"}
+                    required={oneOfFieldRequired && 'required'}
                     error={errors.docLinkedAtAny}
                 />
             </div>
@@ -114,11 +149,11 @@ const DocumentNewFormGeneral = ({document, errors, contacts = [], contactGroups 
             <div className="row">
                 <InputSelect
                     label="Order"
-                    name={"orderId"}
+                    name={'orderId'}
                     value={orderId}
                     options={orders}
                     onChangeAction={handleInputChange}
-                    required={oneOfFieldRequired && "required"}
+                    required={oneOfFieldRequired && 'required'}
                     error={errors.docLinkedAtAny}
                 />
             </div>
@@ -135,7 +170,7 @@ const DocumentNewFormGeneral = ({document, errors, contacts = [], contactGroups 
                                 className="form-control input-sm"
                                 name="description"
                                 value={description}
-                                onChange={ handleInputChange }
+                                onChange={handleInputChange}
                             />
                         </div>
                     </div>
@@ -145,10 +180,13 @@ const DocumentNewFormGeneral = ({document, errors, contacts = [], contactGroups 
     );
 };
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         documentTypes: state.systemData.documentTypes,
     };
 };
 
-export default connect(mapStateToProps, null)(DocumentNewFormGeneral);
+export default connect(
+    mapStateToProps,
+    null
+)(DocumentNewFormGeneral);

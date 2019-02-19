@@ -1,14 +1,14 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { isEmpty } from 'lodash';
 
 import DocumentFormGeneral from './general/DocumentFormGeneral';
-import DocumentDetailsFormConclusion from "./conclusion/DocumentDetailsFormConclusion";
+import DocumentDetailsFormConclusion from './conclusion/DocumentDetailsFormConclusion';
 
 class DocumentDetailsForm extends Component {
-    constructor(props){
+    constructor(props) {
         super(props);
-    };
+    }
 
     render() {
         let loadingText = '';
@@ -16,30 +16,26 @@ class DocumentDetailsForm extends Component {
 
         if (this.props.hasError) {
             loadingText = 'Fout bij het ophalen van document.';
-        }
-        else if (this.props.isLoading) {
+        } else if (this.props.isLoading) {
             loadingText = 'Gegevens aan het laden.';
-        }
-        else if (isEmpty(this.props.documentDetails)) {
+        } else if (isEmpty(this.props.documentDetails)) {
             loadingText = 'Geen document gevonden!';
-        }
-        else {
+        } else {
             loading = false;
         }
 
-        return (
-            loading ?
-                <div>{loadingText}</div>
-                :
-                <div>
-                    <DocumentFormGeneral />
-                    <DocumentDetailsFormConclusion />
-                </div>
+        return loading ? (
+            <div>{loadingText}</div>
+        ) : (
+            <div>
+                <DocumentFormGeneral />
+                <DocumentDetailsFormConclusion />
+            </div>
         );
     }
-};
+}
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         documentDetails: state.documentDetails,
         isLoading: state.loadingData.isLoading,
@@ -47,4 +43,7 @@ const mapStateToProps = (state) => {
     };
 };
 
-export default connect(mapStateToProps, null)(DocumentDetailsForm);
+export default connect(
+    mapStateToProps,
+    null
+)(DocumentDetailsForm);

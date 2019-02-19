@@ -2,8 +2,7 @@ import React from 'react';
 
 import Modal from '../../../../components/modal/Modal';
 
-
-const EmailDetailsAttachmentsDelete = (props) => {
+const EmailDetailsAttachmentsDelete = props => {
     const confirmAction = () => {
         props.deleteAttachment(props.attachment.name, props.attachment.id);
         props.toggleDelete();
@@ -18,7 +17,6 @@ const EmailDetailsAttachmentsDelete = (props) => {
             title="Verwijderen"
         >
             <p>Wil je deze bijlage verwijderen?</p>
-
         </Modal>
     );
 };

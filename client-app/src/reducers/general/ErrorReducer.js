@@ -1,4 +1,4 @@
-export default function (state = {}, action) {
+export default function(state = {}, action) {
     switch (action.type) {
         case 'SET_ERROR':
             return {
@@ -6,7 +6,7 @@ export default function (state = {}, action) {
                 message: action.message,
             };
         case 'CLEAR_ERROR':
-            return state.error = {};
+            return (state.error = {});
         default:
             return state;
     }

@@ -1,8 +1,8 @@
-export const fetchMailgunDomainDetails = (id) => {
+export const fetchMailgunDomainDetails = id => {
     return {
         type: 'FETCH_MAILGUN_DOMAIN_DETAILS',
         id,
-    }
+    };
 };
 
 export const updateMailgunDomain = (mailgunDomain, switchToView) => {
@@ -10,5 +10,5 @@ export const updateMailgunDomain = (mailgunDomain, switchToView) => {
         type: 'UPDATE_MAILGUN_DOMAIN',
         mailgunDomain,
         switchToView,
-    }
+    };
 };

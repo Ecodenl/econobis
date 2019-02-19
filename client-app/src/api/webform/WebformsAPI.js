@@ -11,7 +11,7 @@ export default {
         return axios.get(requestUrl);
     },
 
-    deleteWebform: (id) => {
+    deleteWebform: id => {
         const requestUrl = `${URL_WEBFORM}/${id}/delete`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;

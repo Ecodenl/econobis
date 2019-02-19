@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import validator from 'validator';
 
@@ -6,8 +6,8 @@ import { updateUser } from '../../../../actions/user/UserDetailsActions';
 import InputText from '../../../../components/form/InputText';
 import InputSelect from '../../../../components/form/InputSelect';
 import ButtonText from '../../../../components/button/ButtonText';
-import PanelFooter from "../../../../components/panel/PanelFooter";
-import InputToggle from "../../../../components/form/InputToggle";
+import PanelFooter from '../../../../components/panel/PanelFooter';
+import InputToggle from '../../../../components/form/InputToggle';
 
 class UserDetailsFormGeneralEdit extends Component {
     constructor(props) {
@@ -25,8 +25,8 @@ class UserDetailsFormGeneralEdit extends Component {
                 firstName: false,
                 lastName: false,
             },
-        }
-    };
+        };
+    }
 
     handleInputChange = event => {
         const target = event.target;
@@ -37,7 +37,7 @@ class UserDetailsFormGeneralEdit extends Component {
             ...this.state,
             user: {
                 ...this.state.user,
-                [name]: value
+                [name]: value,
             },
         });
     };
@@ -45,69 +45,78 @@ class UserDetailsFormGeneralEdit extends Component {
     handleSubmit = event => {
         event.preventDefault();
 
-        const { user }  = this.state;
+        const { user } = this.state;
 
         // Validation
         let errors = {};
         let hasErrors = false;
 
-        if(!validator.isEmail(user.email)){
+        if (!validator.isEmail(user.email)) {
             errors.email = true;
             hasErrors = true;
-        };
+        }
 
-        if(validator.isEmpty(user.firstName)){
+        if (validator.isEmpty(user.firstName)) {
             errors.firstName = true;
             hasErrors = true;
-        };
+        }
 
-        if(validator.isEmpty(user.lastName)){
+        if (validator.isEmpty(user.lastName)) {
             errors.lastName = true;
             hasErrors = true;
-        };
+        }
 
-        this.setState({ ...this.state, errors: errors })
+        this.setState({ ...this.state, errors: errors });
 
         // If no errors send form
-        !hasErrors &&
-            this.props.updateUser(user, this.props.switchToView);
+        !hasErrors && this.props.updateUser(user, this.props.switchToView);
     };
 
     render() {
-        const { email, titleId, firstName, lastNamePrefixId, lastName, phoneNumber, mobile, occupation, active } = this.state.user;
+        const {
+            email,
+            titleId,
+            firstName,
+            lastNamePrefixId,
+            lastName,
+            phoneNumber,
+            mobile,
+            occupation,
+            active,
+        } = this.state.user;
 
         return (
             <form className="form-horizontal col-md-12" onSubmit={this.handleSubmit}>
                 <div className="row">
                     <InputSelect
                         label="Aanspreektitel"
-                        name={"titleId"}
+                        name={'titleId'}
                         options={this.props.titles}
                         value={titleId}
                         onChangeAction={this.handleInputChange}
                     />
                     <InputText
-                        label={"E-mail"}
-                        name={"email"}
+                        label={'E-mail'}
+                        name={'email'}
                         value={email}
                         onChangeAction={this.handleInputChange}
-                        required={"required"}
+                        required={'required'}
                         error={this.state.errors.email}
                     />
                 </div>
 
                 <div className="row">
                     <InputText
-                        label={"Voornaam"}
-                        name={"firstName"}
+                        label={'Voornaam'}
+                        name={'firstName'}
                         value={firstName}
                         onChangeAction={this.handleInputChange}
-                        required={"required"}
+                        required={'required'}
                         error={this.state.errors.firstName}
                     />
                     <InputText
-                        label={"Telefoonnummer"}
-                        size={"col-sm-6"}
+                        label={'Telefoonnummer'}
+                        size={'col-sm-6'}
                         name="phoneNumber"
                         value={phoneNumber}
                         onChangeAction={this.handleInputChange}
@@ -123,8 +132,8 @@ class UserDetailsFormGeneralEdit extends Component {
                         onChangeAction={this.handleInputChange}
                     />
                     <InputText
-                        label={"Mobiel nummer"}
-                        size={"col-sm-6"}
+                        label={'Mobiel nummer'}
+                        size={'col-sm-6'}
                         name="mobile"
                         value={mobile}
                         onChangeAction={this.handleInputChange}
@@ -134,16 +143,16 @@ class UserDetailsFormGeneralEdit extends Component {
                 <div className="row">
                     <InputText
                         label="Achternaam"
-                        size={"col-sm-6"}
+                        size={'col-sm-6'}
                         name="lastName"
                         value={lastName}
                         onChangeAction={this.handleInputChange}
-                        required={"required"}
+                        required={'required'}
                         error={this.state.errors.lastName}
                     />
                     <InputText
                         label="Functie"
-                        size={"col-sm-6"}
+                        size={'col-sm-6'}
                         name="occupation"
                         value={occupation}
                         onChangeAction={this.handleInputChange}
@@ -152,8 +161,8 @@ class UserDetailsFormGeneralEdit extends Component {
 
                 <div className="row">
                     <InputToggle
-                        label={"Actief"}
-                        name={"active"}
+                        label={'Actief'}
+                        name={'active'}
                         value={active}
                         onChangeAction={this.handleInputChange}
                     />
@@ -161,16 +170,25 @@ class UserDetailsFormGeneralEdit extends Component {
 
                 <PanelFooter>
                     <div className="pull-right btn-group" role="group">
-                        <ButtonText buttonClassName={"btn-default"} buttonText={"Sluiten"} onClickAction={this.props.switchToView}/>
-                        <ButtonText buttonText={"Opslaan"} onClickAction={this.handleSubmit} type={"submit"} value={"Submit"}/>
+                        <ButtonText
+                            buttonClassName={'btn-default'}
+                            buttonText={'Sluiten'}
+                            onClickAction={this.props.switchToView}
+                        />
+                        <ButtonText
+                            buttonText={'Opslaan'}
+                            onClickAction={this.handleSubmit}
+                            type={'submit'}
+                            value={'Submit'}
+                        />
                     </div>
                 </PanelFooter>
             </form>
         );
-    };
-};
+    }
+}
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         userDetails: state.userDetails,
         lastNamePrefixes: state.systemData.lastNamePrefixes,
@@ -184,4 +202,7 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(UserDetailsFormGeneralEdit);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(UserDetailsFormGeneralEdit);

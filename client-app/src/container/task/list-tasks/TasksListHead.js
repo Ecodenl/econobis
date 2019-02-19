@@ -3,9 +3,9 @@ import { connect } from 'react-redux';
 
 import DataTableHeadTitleAndSort from '../../../components/dataTable/DataTableHeadTitleAndSort';
 import { setTasksSortsFilter } from '../../../actions/task/TasksSortsActions';
-import DataTableHeadTitle from "../../../components/dataTable/DataTableHeadTitle";
+import DataTableHeadTitle from '../../../components/dataTable/DataTableHeadTitle';
 
-const TasksListHead = (props) => {
+const TasksListHead = props => {
     const setSorts = (field, order) => {
         props.setTasksSortsFilter(field, order);
 
@@ -19,8 +19,18 @@ const TasksListHead = (props) => {
             <DataTableHeadTitleAndSort sortColumn={'createdAt'} title={'Datum'} width={'8%'} setSorts={setSorts} />
             <DataTableHeadTitleAndSort sortColumn={'typeName'} title={'Type taak'} width={'10%'} setSorts={setSorts} />
             <DataTableHeadTitleAndSort sortColumn={'note'} title={'Taak / notitie'} width={'20%'} setSorts={setSorts} />
-            <DataTableHeadTitleAndSort sortColumn={'contactFullName'} title={'Contact'} width={'17%'} setSorts={setSorts} />
-            <DataTableHeadTitleAndSort sortColumn={'datePlannedStart'} title={'Datum afhandelen'} width={'8%'} setSorts={setSorts} />
+            <DataTableHeadTitleAndSort
+                sortColumn={'contactFullName'}
+                title={'Contact'}
+                width={'17%'}
+                setSorts={setSorts}
+            />
+            <DataTableHeadTitleAndSort
+                sortColumn={'datePlannedStart'}
+                title={'Datum afhandelen'}
+                width={'8%'}
+                setSorts={setSorts}
+            />
             <DataTableHeadTitle title={'Verantwoordelijke'} width={'15%'} />
             <th width="5%" />
         </tr>
@@ -33,4 +43,7 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(null, mapDispatchToProps)(TasksListHead);
+export default connect(
+    null,
+    mapDispatchToProps
+)(TasksListHead);

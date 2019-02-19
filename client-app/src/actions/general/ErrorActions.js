@@ -8,6 +8,6 @@ export const setError = (http_code, message) => {
 
 export const clearError = () => {
     return {
-        type: 'CLEAR_ERROR'
+        type: 'CLEAR_ERROR',
     };
 };

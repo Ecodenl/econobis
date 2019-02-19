@@ -13,7 +13,6 @@ import LoadingPage from './LoadingPage';
 import ErrorPage from './ErrorPage';
 import Content from './Content';
 
-
 class Main extends Component {
     constructor(props) {
         super(props);
@@ -84,42 +83,54 @@ class Main extends Component {
     }
 
     render() {
-        const contentClass = (this.state.menuActive ? 'content open' : 'content');
+        const contentClass = this.state.menuActive ? 'content open' : 'content';
 
         return (
-          <div>
-              {
-                    this.props.systemDataHasError || this.props.meDetailsHasError ?
-                      <ErrorPage />
-                        :
-                        this.props.systemDataLoaded && this.props.meDetailsLoaded ?
-                            <BlockUi tag="div" blocking={this.props.blockUI} className={"full-screen-loading"} message={"Moment geduld, de gegevens worden opgehaald"}>
-                                <div className="wrapper">
-                                    <div>
-                                        <NavHeader menuStuck={this.state.menuStuck} toggleMenuStuck={this.toggleMenuStuck} toggleChangePassword={this.toggleChangePassword} toggleAboutUs={this.toggleAboutUs}/>
-                                        <Sidebar onMenuEnter={this.onMenuEnter} onMenuLeave={this.onMenuLeave} menuActive={this.state.menuActive} menuStuck={this.state.menuStuck} />
-                                    </div>
+            <div>
+                {this.props.systemDataHasError || this.props.meDetailsHasError ? (
+                    <ErrorPage />
+                ) : this.props.systemDataLoaded && this.props.meDetailsLoaded ? (
+                    <BlockUi
+                        tag="div"
+                        blocking={this.props.blockUI}
+                        className={'full-screen-loading'}
+                        message={'Moment geduld, de gegevens worden opgehaald'}
+                    >
+                        <div className="wrapper">
+                            <div>
+                                <NavHeader
+                                    menuStuck={this.state.menuStuck}
+                                    toggleMenuStuck={this.toggleMenuStuck}
+                                    toggleChangePassword={this.toggleChangePassword}
+                                    toggleAboutUs={this.toggleAboutUs}
+                                />
+                                <Sidebar
+                                    onMenuEnter={this.onMenuEnter}
+                                    onMenuLeave={this.onMenuLeave}
+                                    menuActive={this.state.menuActive}
+                                    menuStuck={this.state.menuStuck}
+                                />
+                            </div>
 
-                                    <div className={ contentClass }>
-                                        <div className="container-fluid">
-                                            <div className="col-md-12">
-                                                <Content
-                                                    children={this.props.children}
-                                                    toggleChangePassword={this.toggleChangePassword}
-                                                    changePasswordActive={this.state.changePasswordActive}
-                                                    toggleAboutUs={this.toggleAboutUs}
-                                                    showAboutUs={this.state.showAboutUs}
-                                                />
-                                            </div>
-                                        </div>
+                            <div className={contentClass}>
+                                <div className="container-fluid">
+                                    <div className="col-md-12">
+                                        <Content
+                                            children={this.props.children}
+                                            toggleChangePassword={this.toggleChangePassword}
+                                            changePasswordActive={this.state.changePasswordActive}
+                                            toggleAboutUs={this.toggleAboutUs}
+                                            showAboutUs={this.state.showAboutUs}
+                                        />
                                     </div>
                                 </div>
-                            </BlockUi>
-                            :
-                          <LoadingPage />
-                }
+                            </div>
+                        </div>
+                    </BlockUi>
+                ) : (
+                    <LoadingPage />
+                )}
             </div>
-
         );
     }
 }
@@ -136,6 +147,10 @@ function mapStateToProps(state) {
     };
 }
 
-const mapDispatchToProps = dispatch => bindActionCreators({ fetchMeDetails, fetchSystemData, toggleSidebarClose, toggleSidebarOpen }, dispatch);
+const mapDispatchToProps = dispatch =>
+    bindActionCreators({ fetchMeDetails, fetchSystemData, toggleSidebarClose, toggleSidebarOpen }, dispatch);
 
-export default connect(mapStateToProps, mapDispatchToProps)(Main);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(Main);

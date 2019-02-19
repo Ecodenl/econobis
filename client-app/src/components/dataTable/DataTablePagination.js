@@ -8,15 +8,15 @@ const DataTablePagination = props => {
     return (
         <ReactPaginate
             onPageChange={onPageChangeAction}
-            pageCount={ Math.ceil(totalRecords / recordsPerPage) || 1 }
+            pageCount={Math.ceil(totalRecords / recordsPerPage) || 1}
             pageRangeDisplayed={5}
             marginPagesDisplayed={2}
             breakLabel={<a>...</a>}
-            breakClassName={"break-me"}
-            containerClassName={"pagination"}
-            activeClassName={"active"}
+            breakClassName={'break-me'}
+            containerClassName={'pagination'}
+            activeClassName={'active'}
             previousLabel={<span aria-hidden="true">&laquo;</span>}
-            nextLabel={<span aria-hidden='true'>&raquo;</span>}
+            nextLabel={<span aria-hidden="true">&raquo;</span>}
             initialPage={initialPage || 0}
             forcePage={initialPage}
             disableInitialCallback={true}

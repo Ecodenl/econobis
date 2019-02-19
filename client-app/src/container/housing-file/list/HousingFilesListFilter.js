@@ -9,20 +9,20 @@ import {
     setFilterFullName,
     setFilterHousingFileAddress,
     setFilterHousingFileEnergyLabel,
-    setHousingFileDateFilter
+    setHousingFileDateFilter,
 } from '../../../actions/housing-file/HousingFilesFiltersActions';
-import DataTableFilterDate from "../../../components/dataTable/DataTableFilterDate";
+import DataTableFilterDate from '../../../components/dataTable/DataTableFilterDate';
 
 const HousingFilesListFilter = props => {
-    const onHousingFileDateChange = (selectedDay) => {
-        if(selectedDay === undefined){
+    const onHousingFileDateChange = selectedDay => {
+        if (selectedDay === undefined) {
             props.setHousingFileDateFilter('');
-        }else{
+        } else {
             props.setHousingFileDateFilter(moment(selectedDay).format('Y-MM-DD'));
         }
     };
 
-    const onAddressChange = (e) => {
+    const onAddressChange = e => {
         props.setFilterHousingFileAddress(e.target.value);
 
         setTimeout(() => {
@@ -30,12 +30,11 @@ const HousingFilesListFilter = props => {
         }, 100);
     };
 
-
-    const onFullNameChange = (e) => {
+    const onFullNameChange = e => {
         props.setFilterFullName(e.target.value);
     };
 
-    const onBuildingTypeChange = (e) => {
+    const onBuildingTypeChange = e => {
         props.setFilterBuildingType(e.target.value);
 
         setTimeout(() => {
@@ -43,7 +42,7 @@ const HousingFilesListFilter = props => {
         }, 100);
     };
 
-    const onEnergyLabelChange = (e) => {
+    const onEnergyLabelChange = e => {
         props.setFilterHousingFileEnergyLabel(e.target.value);
 
         setTimeout(() => {
@@ -53,54 +52,88 @@ const HousingFilesListFilter = props => {
 
     return (
         <tr className="thead-filter">
-
-            <DataTableFilterDate value={ props.filters.createdAt.data && props.filters.createdAt.data } onChangeAction={onHousingFileDateChange} />
-
-            <th><input type="text" className="form-control input-sm" value={ props.filters.address.data} onChange={onAddressChange} /></th>
-            <th><input type="text" className="form-control input-sm" value={ props.filters.fullName.data} onChange={onFullNameChange} /></th>
+            <DataTableFilterDate
+                value={props.filters.createdAt.data && props.filters.createdAt.data}
+                onChangeAction={onHousingFileDateChange}
+            />
 
             <th>
-                <select className="form-control input-sm" value={ props.filters.buildingTypeId.data } onChange={onBuildingTypeChange}>
-                    <option/>
-                    {
-                        props.buildingTypes.map((buildingType) => {
-                            return <option key={buildingType.id } value={ buildingType.id }>{ buildingType.name }</option>
-                        })
-                    }
+                <input
+                    type="text"
+                    className="form-control input-sm"
+                    value={props.filters.address.data}
+                    onChange={onAddressChange}
+                />
+            </th>
+            <th>
+                <input
+                    type="text"
+                    className="form-control input-sm"
+                    value={props.filters.fullName.data}
+                    onChange={onFullNameChange}
+                />
+            </th>
+
+            <th>
+                <select
+                    className="form-control input-sm"
+                    value={props.filters.buildingTypeId.data}
+                    onChange={onBuildingTypeChange}
+                >
+                    <option />
+                    {props.buildingTypes.map(buildingType => {
+                        return (
+                            <option key={buildingType.id} value={buildingType.id}>
+                                {buildingType.name}
+                            </option>
+                        );
+                    })}
                 </select>
             </th>
 
             <th>
-                <select className="form-control input-sm" value={ props.filters.energyLabelId.data } onChange={onEnergyLabelChange}>
-                    <option/>
-                    {
-                        props.energyLabels.map((energyLabel) => {
-                            return <option key={energyLabel.id } value={ energyLabel.id }>{ energyLabel.name }</option>
-                        })
-                    }
+                <select
+                    className="form-control input-sm"
+                    value={props.filters.energyLabelId.data}
+                    onChange={onEnergyLabelChange}
+                >
+                    <option />
+                    {props.energyLabels.map(energyLabel => {
+                        return (
+                            <option key={energyLabel.id} value={energyLabel.id}>
+                                {energyLabel.name}
+                            </option>
+                        );
+                    })}
                 </select>
             </th>
 
-            <th/>
+            <th />
         </tr>
     );
 };
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = state => ({
     filters: state.housingFiles.filters,
     energyLabels: state.systemData.energyLabels,
     buildingTypes: state.systemData.buildingTypes,
 });
 
-const mapDispatchToProps = (dispatch) => {
-    return bindActionCreators({
-        setFilterBuildingType,
-        clearFilterHousingFiles,
-        setFilterFullName,
-        setFilterHousingFileAddress,
-        setFilterHousingFileEnergyLabel,
-        setHousingFileDateFilter
-    }, dispatch);
+const mapDispatchToProps = dispatch => {
+    return bindActionCreators(
+        {
+            setFilterBuildingType,
+            clearFilterHousingFiles,
+            setFilterFullName,
+            setFilterHousingFileAddress,
+            setFilterHousingFileEnergyLabel,
+            setHousingFileDateFilter,
+        },
+        dispatch
+    );
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(HousingFilesListFilter);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(HousingFilesListFilter);

@@ -42,7 +42,7 @@ const ProjectFormViewObligation = ({
         return (
             <React.Fragment>
                 <hr style={{ margin: '10px 0' }} />
-                <h4>Obligatie, kapitaal en postcoderoos</h4>
+                <h4>Obligatie, Kapitaal of Postcoderoos kapitaal</h4>
                 <div className="row">
                     <ViewText label={`Nominale waarde ${formatParticipation}`} value={participationWorth} />
                     <ViewText

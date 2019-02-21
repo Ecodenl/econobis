@@ -51,3 +51,7 @@ textarea {
 .numeric-password::placeholder {
   font-family: initial;
 }
+
+.form-control[disabled], .form-control[readonly], fieldset[disabled] .form-control {
+  background-color: #e5e5e5;
+}

@@ -14,16 +14,12 @@ const MutationFormDefault = ({
     editForm,
     typeId,
     type,
+    statusId,
+    status,
     dateCreation,
-    entry,
     datePayment,
-    description,
     account,
     quantity,
-    returns,
-    payoutKwh,
-    indicationOfRestitutionEnergyTax,
-    paidOn,
     createdAt,
     createdBy,
     toggleShow,
@@ -46,16 +42,6 @@ const MutationFormDefault = ({
                             onChangeAction={handleInputChangeDate}
                             required={'required'}
                         />
-                        <InputText
-                            label={'Boekstuk'}
-                            id={'entry'}
-                            name={'entry'}
-                            value={entry}
-                            onChangeAction={handleInputChange}
-                        />
-                    </div>
-
-                    <div className="row">
                         {editForm ? (
                             <InputText label={'Type'} id={'type'} name={'type'} value={type.name} readOnly={true} />
                         ) : (
@@ -70,6 +56,22 @@ const MutationFormDefault = ({
                                 error={errors.typeId}
                             />
                         )}
+                    </div>
+
+                    <div className="row">
+                        <InputSelect
+                            label={'Status'}
+                            id="statusId"
+                            name={'statusId'}
+                            options={[
+                                { id: 1, name: 'Interesse' },
+                                { id: 2, name: 'Aangevraagd' },
+                                { id: 3, name: 'Toegekend' },
+                                { id: 4, name: 'Definitief' },
+                            ]}
+                            value={statusId}
+                            onChangeAction={handleInputChange}
+                        />
                         <InputDate
                             label="Betaal datum"
                             name="datePayment"
@@ -82,34 +84,11 @@ const MutationFormDefault = ({
                         <React.Fragment>
                             <div className="row">
                                 <InputText
-                                    label={'Omschrijving'}
-                                    id={'description'}
-                                    name={'description'}
-                                    value={description}
-                                    onChangeAction={handleInputChange}
-                                />
-                                <InputText
                                     type={'number'}
                                     label={'Lening rekening'}
                                     id={'account'}
                                     name={'account'}
                                     value={account}
-                                    onChangeAction={handleInputChange}
-                                />
-                            </div>
-                            <div className="row">
-                                <InputText
-                                    label={'Opbrengst'}
-                                    id={'returns'}
-                                    name={'returns'}
-                                    value={returns}
-                                    onChangeAction={handleInputChange}
-                                />
-                                <InputText
-                                    label={'Uitgekeerd op of via'}
-                                    id={'paidOn'}
-                                    name={'paidOn'}
-                                    value={paidOn}
                                     onChangeAction={handleInputChange}
                                 />
                             </div>
@@ -120,34 +99,11 @@ const MutationFormDefault = ({
                         <React.Fragment>
                             <div className="row">
                                 <InputText
-                                    label={'Omschrijving'}
-                                    id={'description'}
-                                    name={'description'}
-                                    value={description}
-                                    onChangeAction={handleInputChange}
-                                />
-                                <InputText
                                     type={'number'}
                                     label={'Obligaties'}
                                     id={'quantity'}
                                     name={'quantity'}
                                     value={quantity}
-                                    onChangeAction={handleInputChange}
-                                />
-                            </div>
-                            <div className="row">
-                                <InputText
-                                    label={'Opbrengst'}
-                                    id={'returns'}
-                                    name={'returns'}
-                                    value={returns}
-                                    onChangeAction={handleInputChange}
-                                />
-                                <InputText
-                                    label={'Uitgekeerd op of via'}
-                                    id={'paidOn'}
-                                    name={'paidOn'}
-                                    value={paidOn}
                                     onChangeAction={handleInputChange}
                                 />
                             </div>
@@ -158,13 +114,6 @@ const MutationFormDefault = ({
                         <React.Fragment>
                             <div className="row">
                                 <InputText
-                                    label={'Omschrijving'}
-                                    id={'description'}
-                                    name={'description'}
-                                    value={description}
-                                    onChangeAction={handleInputChange}
-                                />
-                                <InputText
                                     type={'number'}
                                     label={'Kapitaal rekening'}
                                     id={'account'}
@@ -172,30 +121,12 @@ const MutationFormDefault = ({
                                     value={account}
                                     onChangeAction={handleInputChange}
                                 />
-                            </div>
-                            <div className="row">
                                 <InputText
                                     type={'number'}
                                     label={'Participaties'}
                                     id={'quantity'}
                                     name={'quantity'}
                                     value={quantity}
-                                    onChangeAction={handleInputChange}
-                                />
-                                <InputText
-                                    label={'Opbrengst'}
-                                    id={'returns'}
-                                    name={'returns'}
-                                    value={returns}
-                                    onChangeAction={handleInputChange}
-                                />
-                            </div>
-                            <div className="row">
-                                <InputText
-                                    label={'Uitgekeerd op of via'}
-                                    id={'paidOn'}
-                                    name={'paidOn'}
-                                    value={paidOn}
                                     onChangeAction={handleInputChange}
                                 />
                             </div>
@@ -206,13 +137,6 @@ const MutationFormDefault = ({
                         <React.Fragment>
                             <div className="row">
                                 <InputText
-                                    label={'Omschrijving'}
-                                    id={'description'}
-                                    name={'description'}
-                                    value={description}
-                                    onChangeAction={handleInputChange}
-                                />
-                                <InputText
                                     type={'number'}
                                     label={'Kapitaal rekening'}
                                     id={'account'}
@@ -220,47 +144,12 @@ const MutationFormDefault = ({
                                     value={account}
                                     onChangeAction={handleInputChange}
                                 />
-                            </div>
-                            <div className="row">
                                 <InputText
                                     type={'number'}
                                     label={'Participaties'}
                                     id={'quantity'}
                                     name={'quantity'}
                                     value={quantity}
-                                    onChangeAction={handleInputChange}
-                                />
-                                <InputText
-                                    label={'Opbrengst'}
-                                    id={'returns'}
-                                    name={'returns'}
-                                    value={returns}
-                                    onChangeAction={handleInputChange}
-                                />
-                            </div>
-                            <div className="row">
-                                <InputText
-                                    type={'number'}
-                                    label={'kWh'}
-                                    id={'payoutKwh'}
-                                    name={'payoutKwh'}
-                                    value={payoutKwh}
-                                    onChangeAction={handleInputChange}
-                                />
-                                <InputText
-                                    label={'Indicatie teruggave EB €'}
-                                    id={'indicationOfRestitutionEnergyTax'}
-                                    name={'indicationOfRestitutionEnergyTax'}
-                                    value={indicationOfRestitutionEnergyTax}
-                                    onChangeAction={handleInputChange}
-                                />
-                            </div>
-                            <div className="row">
-                                <InputText
-                                    label={'Uitgekeerd op of via'}
-                                    id={'paidOn'}
-                                    name={'paidOn'}
-                                    value={paidOn}
                                     onChangeAction={handleInputChange}
                                 />
                             </div>
@@ -306,9 +195,8 @@ const MutationFormDefault = ({
 MutationFormDefault.defaultProps = {
     editForm: false,
     type: {},
+    status: {},
     account: '',
-    payoutKwh: '',
-    indicationOfRestitutionEnergyTax: '',
     participantMutationTypes: [],
     createdAt: {},
     createdBy: {},
@@ -318,16 +206,12 @@ MutationFormDefault.propTypes = {
     editForm: PropTypes.bool,
     typeId: PropTypes.number.isRequired,
     type: PropTypes.object,
+    statusId: PropTypes.number.isRequired,
+    status: PropTypes.object,
     dateCreation: PropTypes.string.isRequired,
-    entry: PropTypes.string.isRequired,
     datePayment: PropTypes.string.isRequired,
-    description: PropTypes.string.isRequired,
     account: PropTypes.number,
     quantity: PropTypes.number,
-    returns: PropTypes.number.isRequired,
-    payoutKwh: PropTypes.number,
-    indicationOfRestitutionEnergyTax: PropTypes.number,
-    paidOn: PropTypes.string.isRequired,
     createdAt: PropTypes.object.isRequired,
     createdBy: PropTypes.object.isRequired,
     toggleShow: PropTypes.func.isRequired,

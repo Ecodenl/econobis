@@ -17,16 +17,12 @@ class MutationFormNew extends Component {
                 participationId: this.props.id,
                 typeId: '',
                 dateCreation: moment().format('Y-MM-DD'),
-                entry: '',
                 typeId: '',
+                statusId: '',
                 datePayment: '',
-                description: '',
                 account: '',
                 quantity: '',
                 returns: '',
-                payoutKwh: '',
-                indicationOfRestitutionEnergyTax: '',
-                paidOn: '',
             },
             errors: {
                 typeId: false,
@@ -99,19 +95,7 @@ class MutationFormNew extends Component {
     };
 
     render() {
-        const {
-            dateCreation,
-            entry,
-            typeId,
-            datePayment,
-            description,
-            account,
-            quantity,
-            returns,
-            payoutKwh,
-            indicationOfRestitutionEnergyTax,
-            paidOn,
-        } = this.state.participationMutation;
+        const { dateCreation, typeId, datePayment, account, quantity, returns } = this.state.participationMutation;
 
         const projectTypeCodeRef =
             this.props.projectTypeCodeRef === 'postalcode_link_capital' ? 'capital' : this.props.projectTypeCodeRef;
@@ -125,15 +109,10 @@ class MutationFormNew extends Component {
                 editForm={false}
                 typeId={typeId}
                 dateCreation={dateCreation}
-                entry={entry}
                 datePayment={datePayment}
-                description={description}
                 account={account}
                 quantity={quantity}
                 returns={returns}
-                payoutKwh={payoutKwh}
-                indicationOfRestitutionEnergyTax={indicationOfRestitutionEnergyTax}
-                paidOn={paidOn}
                 errors={this.state.errors}
                 participantMutationTypes={participantMutationTypes}
                 handleSubmit={this.handleSubmit}

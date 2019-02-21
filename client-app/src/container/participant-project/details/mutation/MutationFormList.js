@@ -9,7 +9,8 @@ const MutationFormList = ({ projectTypeCodeRef, participantMutations }) => {
             <div className="row border header">
                 <div className="col-sm-1">Aanmaak- datum</div>
                 <div className="col-sm-1">Boekstuk</div>
-                <div className="col-sm-2">Type</div>
+                <div className="col-sm-1">Type</div>
+                <div className="col-sm-1">Status</div>
                 <div className="col-sm-1">Betaal datum</div>
                 <div className="col-sm-2">Omschrijving</div>
                 {projectTypeCodeRef === 'loan' && <div className="col-sm-1">Lening rekening</div>}
@@ -34,7 +35,7 @@ const MutationFormList = ({ projectTypeCodeRef, participantMutations }) => {
                     );
                 })
             ) : (
-                <div>Geen transacties bekend.</div>
+                <div>Geen mutaties bekend.</div>
             )}
         </div>
     );

@@ -5,7 +5,7 @@ import moment from 'moment';
 moment.locale('nl');
 import InputText from '../../../components/form/InputText';
 
-function ParticipantFormDefaultCapital({ participationsRequested, participationsGranted, handleInputChange }) {
+function ParticipantFormDefaultCapital({ participationWorth, participationsRequested, participationsGranted }) {
     return (
         <React.Fragment>
             <hr style={{ margin: '10px 0' }} />
@@ -19,14 +19,14 @@ function ParticipantFormDefaultCapital({ participationsRequested, participations
                     onChangeAction={() => {}}
                     readOnly={true}
                 />
-                <InputText
-                    type={'number'}
-                    label={'Participaties aangevraagd'}
-                    name={'participationsRequested'}
-                    id={'participationsRequested'}
-                    value={participationsRequested}
-                    onChangeAction={handleInputChange}
-                />
+                {/*<InputText*/}
+                {/*type={'number'}*/}
+                {/*label={'Participaties aangevraagd'}*/}
+                {/*name={'participationsRequested'}*/}
+                {/*id={'participationsRequested'}*/}
+                {/*value={participationsRequested}*/}
+                {/*onChangeAction={handleInputChange}*/}
+                {/*/>*/}
             </div>
             <div className="row">
                 <InputText
@@ -49,11 +49,21 @@ function ParticipantFormDefaultCapital({ participationsRequested, participations
             <div className="row">
                 <InputText
                     type={'number'}
-                    label={'Boekwaarde per participatie'}
+                    label={'Huidige boekwaarde per participatie'}
                     name={'participationsGranted'}
                     id={'participationsGranted'}
+                    value={participationWorth}
+                    onChangeAction={() => {}}
+                />
+            </div>
+            <div className="row">
+                <InputText
+                    label={'Huidige totale waarde'}
+                    name={'currentValueParticipation'}
+                    id={'currentValueParticipation'}
                     value={'???'}
-                    onChangeAction={handleInputChange}
+                    onChangeAction={() => {}}
+                    readOnly={true}
                 />
             </div>
         </React.Fragment>

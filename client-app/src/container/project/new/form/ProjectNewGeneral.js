@@ -73,6 +73,8 @@ const ProjectFormNewGeneral = ({
                 options={projectStatus}
                 value={projectStatusId}
                 onChangeAction={handleInputChange}
+                required={'required'}
+                error={errors.projectStatusId}
             />
         </div>
 

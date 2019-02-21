@@ -12,9 +12,10 @@ import ProjectDetailsAPI from '../../../../../api/project/ProjectDetailsAPI';
 import { fetchProject } from '../../../../../actions/project/ProjectDetailsActions';
 import ContactGroupAPI from '../../../../../api/contact-group/ContactGroupAPI';
 import ProjectFormEditGeneral from './ProjectFormEditGeneral';
-import ProjectFormEditLoan from './ProjectFormEditLoan';
-import ProjectFormEditObligation from './ProjectFormEditObligation';
-import ProjectFormEditPostalcodeLinkCapital from './ProjectFormEditPostalcodeLinkCapital';
+import ProjectFormDefaultLoan from '../../../form-default/ProjectFormDefaultLoan';
+import ProjectFormDefaultObligation from '../../../form-default/ProjectFormDefaultObligation';
+import ProjectFormDefaultCapital from '../../../form-default/ProjectFormDefaultCapital';
+import ProjectFormDefaultPostalcodeLinkCapital from '../../../form-default/ProjectFormDefaultPostalcodeLinkCapital';
 
 class ProjectFormEdit extends Component {
     constructor(props) {
@@ -33,7 +34,7 @@ class ProjectFormEdit extends Component {
             errors: {
                 name: false,
                 code: false,
-                projectTypeId: false,
+                projectStatusId: false,
                 ownedById: false,
                 postalCode: false,
                 contactGroupIds: false,
@@ -90,8 +91,8 @@ class ProjectFormEdit extends Component {
             hasErrors = true;
         }
 
-        if (!project.projectTypeId) {
-            errors.projectTypeId = true;
+        if (!project.projectStatusId) {
+            errors.projectStatusId = true;
             hasErrors = true;
         }
 
@@ -145,6 +146,7 @@ class ProjectFormEdit extends Component {
             description,
             projectStatusId,
             projectTypeId,
+            projectType,
             address,
             postalCode,
             city,
@@ -188,7 +190,7 @@ class ProjectFormEdit extends Component {
                     code={code}
                     description={description}
                     projectStatusId={projectStatusId}
-                    projectTypeId={projectTypeId}
+                    projectType={projectType}
                     address={address}
                     postalCode={postalCode}
                     city={city}
@@ -210,38 +212,62 @@ class ProjectFormEdit extends Component {
                     contactGroups={this.state.contactGroups}
                 />
 
-                <ProjectFormEditLoan
-                    amountOfLoanNeeded={amountOfLoanNeeded}
-                    handleInputChange={this.handleInputChange}
-                    projectTypeId={projectTypeId}
-                />
+                {projectType && projectType.codeRef === 'loan' ? (
+                    <ProjectFormDefaultLoan
+                        amountOfLoanNeeded={amountOfLoanNeeded}
+                        handleInputChange={this.handleInputChange}
+                    />
+                ) : null}
 
-                <ProjectFormEditObligation
-                    participationWorth={participationWorth}
-                    issuedParticipations={issuedParticipations}
-                    participationsInOption={participationsInOption}
-                    issuableParticipations={issuableParticipations}
-                    totalParticipations={totalParticipations}
-                    powerKwAvailable={powerKwAvailable}
-                    minParticipations={minParticipations}
-                    maxParticipations={maxParticipations}
-                    maxParticipationsYouth={maxParticipationsYouth}
-                    isParticipationTransferable={isParticipationTransferable}
-                    valueCourses={valueCourses}
-                    handleInputChange={this.handleInputChange}
-                    projectTypeId={projectTypeId}
-                />
+                {projectType && projectType.codeRef === 'obligation' ? (
+                    <ProjectFormDefaultObligation
+                        participationWorth={participationWorth}
+                        issuedParticipations={issuedParticipations}
+                        participationsInOption={participationsInOption}
+                        issuableParticipations={issuableParticipations}
+                        totalParticipations={totalParticipations}
+                        powerKwAvailable={powerKwAvailable}
+                        minParticipations={minParticipations}
+                        maxParticipations={maxParticipations}
+                        maxParticipationsYouth={maxParticipationsYouth}
+                        isParticipationTransferable={isParticipationTransferable}
+                        valueCourses={valueCourses}
+                        handleInputChange={this.handleInputChange}
+                        projectTypeId={projectTypeId}
+                    />
+                ) : null}
 
-                <ProjectFormEditPostalcodeLinkCapital
-                    postalcodeLink={postalcodeLink}
-                    ean={ean}
-                    taxReferral={taxReferral}
-                    eanManager={eanManager}
-                    warrantyOrigin={warrantyOrigin}
-                    eanSupply={eanSupply}
-                    handleInputChange={this.handleInputChange}
-                    projectTypeId={projectTypeId}
-                />
+                {(projectType && projectType.codeRef === 'capital') ||
+                (projectType && projectType.codeRef === 'postalcode_link_capital') ? (
+                    <ProjectFormDefaultCapital
+                        participationWorth={participationWorth}
+                        issuedParticipations={issuedParticipations}
+                        participationsInOption={participationsInOption}
+                        issuableParticipations={issuableParticipations}
+                        totalParticipations={totalParticipations}
+                        powerKwAvailable={powerKwAvailable}
+                        minParticipations={minParticipations}
+                        maxParticipations={maxParticipations}
+                        maxParticipationsYouth={maxParticipationsYouth}
+                        isParticipationTransferable={isParticipationTransferable}
+                        valueCourses={valueCourses}
+                        handleInputChange={this.handleInputChange}
+                        projectTypeId={projectTypeId}
+                    />
+                ) : null}
+
+                {projectType && projectType.codeRef === 'postalcode_link_capital' ? (
+                    <ProjectFormDefaultPostalcodeLinkCapital
+                        postalcodeLink={postalcodeLink}
+                        ean={ean}
+                        taxReferral={taxReferral}
+                        eanManager={eanManager}
+                        warrantyOrigin={warrantyOrigin}
+                        eanSupply={eanSupply}
+                        handleInputChange={this.handleInputChange}
+                        projectTypeId={projectTypeId}
+                    />
+                ) : null}
 
                 <PanelFooter>
                     <div className="pull-right btn-group" role="group">

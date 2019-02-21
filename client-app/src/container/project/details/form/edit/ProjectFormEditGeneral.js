@@ -11,7 +11,7 @@ const ProjectFormEditGeneral = ({
     code,
     description,
     projectStatusId,
-    projectTypeId,
+    projectType,
     postalCode,
     address,
     city,
@@ -28,7 +28,6 @@ const ProjectFormEditGeneral = ({
     handleInputChange,
     handleInputChangeDate,
     handleContactGroupIds,
-    projectTypes,
     projectStatus,
     administrations,
     hasPaymentInvoices,
@@ -58,11 +57,10 @@ const ProjectFormEditGeneral = ({
         </div>
 
         <div className="row">
-            <InputSelect
+            <InputText
                 label={'Type project'}
                 name={'projectTypeId'}
-                options={projectTypes}
-                value={projectTypeId}
+                value={projectType && projectType.name}
                 onChangeAction={handleInputChange}
                 required={'required'}
                 readOnly={true}
@@ -74,6 +72,8 @@ const ProjectFormEditGeneral = ({
                 options={projectStatus}
                 value={projectStatusId}
                 onChangeAction={handleInputChange}
+                required={'required'}
+                error={errors.projectStatusId}
             />
         </div>
 
@@ -209,7 +209,6 @@ const ProjectFormEditGeneral = ({
 const mapStateToProps = state => {
     return {
         projectStatus: state.systemData.projectStatus,
-        projectTypes: state.systemData.projectTypes,
         administrations: state.meDetails.administrations,
         users: state.systemData.users,
     };

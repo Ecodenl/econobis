@@ -32,9 +32,7 @@ class ParticipantDetailsForm extends Component {
             <div>
                 <ParticipantFormGeneral />
                 <MutationForm />
-                { this.props.keyUserRole && this.props.keyUserRole.hasRole &&
-                    <TransactionForm/>
-                }
+                {this.props.keyUserRole && this.props.keyUserRole.hasRole && <TransactionForm />}
                 {projectTypeCodeRef === 'obligation' ? <ObligationNumberForm /> : null}
             </div>
         );

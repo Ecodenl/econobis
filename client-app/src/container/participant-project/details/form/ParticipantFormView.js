@@ -95,6 +95,7 @@ const ParticipantFormView = props => {
             {projectTypeCodeRef === 'obligation' ? (
                 <ParticipantFormViewObligation
                     onClick={props.switchToEdit}
+                    participationWorth={project.participationWorth ? project.participationWorth : ''}
                     participationsRequested={participationsRequested}
                     participationsGranted={participationsGranted}
                 />
@@ -103,6 +104,7 @@ const ParticipantFormView = props => {
             {projectTypeCodeRef === 'capital' ? (
                 <ParticipantFormViewCapital
                     onClick={props.switchToEdit}
+                    participationWorth={project.participationWorth ? project.participationWorth : ''}
                     participationsRequested={participationsRequested}
                     participationsGranted={participationsGranted}
                 />

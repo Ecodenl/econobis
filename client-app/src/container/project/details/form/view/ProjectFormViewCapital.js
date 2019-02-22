@@ -2,7 +2,7 @@ import React from 'react';
 import ViewText from '../../../../../components/form/ViewText';
 import MoneyPresenter from '../../../../../helpers/MoneyPresenter';
 
-const ProjectFormViewObligation = ({
+const ProjectFormViewCapital = ({
     participationWorth,
     issuedParticipations,
     participationsInOption,
@@ -22,15 +22,18 @@ const ProjectFormViewObligation = ({
             <hr style={{ margin: '10px 0' }} />
             <h4>Obligatie, Kapitaal of Postcoderoos kapitaal</h4>
             <div className="row">
-                <ViewText label={'Nominale waarde obligatie'} value={participationWorth} />
-                <ViewText label={'Uitgegeven obligaties'} value={issuedParticipations ? issuedParticipations : ''} />
+                <ViewText label={'Nominale waarde participatie'} value={participationWorth} />
+                <ViewText label={'Uitgegeven participaties'} value={issuedParticipations ? issuedParticipations : ''} />
             </div>
             <div className="row">
                 <ViewText
                     label={'Huidige boekwaarde'}
                     value={activeValueCourse && MoneyPresenter(activeValueCourse.bookWorth)}
                 />
-                <ViewText label={'Obligaties in optie'} value={participationsInOption ? participationsInOption : ''} />
+                <ViewText
+                    label={'Participaties in optie'}
+                    value={participationsInOption ? participationsInOption : ''}
+                />
             </div>
             <div className="row">
                 <ViewText
@@ -38,28 +41,28 @@ const ProjectFormViewObligation = ({
                     value={activeValueCourse && MoneyPresenter(activeValueCourse.transferWorth)}
                 />
                 <ViewText
-                    label={'Uit te geven obligaties'}
+                    label={'Uit te geven participaties'}
                     value={issuableParticipations ? issuableParticipations : ''}
                 />
             </div>
             <div className="row">
-                <ViewText label={'Aantal obligaties nodig'} value={totalParticipations} />
+                <ViewText label={'Aantal participaties nodig'} value={totalParticipations} />
                 <ViewText label={'Opgesteld vermogen kWh'} value={powerKwAvailable} />
             </div>
             <div className="row">
-                <ViewText label={'Minimaal aantal obligaties p/p'} value={minParticipations} />
+                <ViewText label={'Minimaal aantal participaties p/p'} value={minParticipations} />
             </div>
             <div className="row">
-                <ViewText label={'Max aantal obligaties p/p'} value={maxParticipations} />
+                <ViewText label={'Max aantal participaties p/p'} value={maxParticipations} />
             </div>
             <div className="row">
-                <ViewText label={'Max aantal obligaties jeugd'} value={maxParticipationsYouth} />
+                <ViewText label={'Max aantal participaties jeugd'} value={maxParticipationsYouth} />
             </div>
             <div className="row">
-                <ViewText label={'Obligaties overdraagbaar'} value={isParticipationTransferable} />
+                <ViewText label={'Participaties overdraagbaar'} value={isParticipationTransferable} />
             </div>
         </React.Fragment>
     );
 };
 
-export default ProjectFormViewObligation;
+export default ProjectFormViewCapital;

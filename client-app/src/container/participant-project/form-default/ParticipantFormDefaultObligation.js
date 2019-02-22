@@ -5,7 +5,12 @@ import moment from 'moment';
 moment.locale('nl');
 import InputText from '../../../components/form/InputText';
 
-function ParticipantFormDefaultObligation({ participationsRequested, participationsGranted, handleInputChange }) {
+function ParticipantFormDefaultObligation({
+    participationWorth,
+    participationsRequested,
+    participationsGranted,
+    handleInputChange,
+}) {
     return (
         <React.Fragment>
             <hr style={{ margin: '10px 0' }} />
@@ -19,21 +24,21 @@ function ParticipantFormDefaultObligation({ participationsRequested, participati
                     onChangeAction={() => {}}
                     readOnly={true}
                 />
-                <InputText
-                    type={'number'}
-                    label={'Obligaties aangevraagd'}
-                    name={'participationsRequested'}
-                    id={'participationsRequested'}
-                    value={participationsRequested}
-                    onChangeAction={handleInputChange}
-                />
+                {/*<InputText*/}
+                {/*type={'number'}*/}
+                {/*label={'Obligaties aangevraagd'}*/}
+                {/*name={'participationsRequested'}*/}
+                {/*id={'participationsRequested'}*/}
+                {/*value={participationsRequested}*/}
+                {/*onChangeAction={handleInputChange}*/}
+                {/*/>*/}
             </div>
             <div className="row">
                 <InputText
                     label={'Nominale waarde per obligatie'}
                     name={'currentValueParticipation'}
                     id={'currentValueParticipation'}
-                    value={'???'}
+                    value={participationWorth}
                     onChangeAction={() => {}}
                     readOnly={true}
                 />
@@ -45,6 +50,26 @@ function ParticipantFormDefaultObligation({ participationsRequested, participati
                 {/*value={participationsGranted}*/}
                 {/*onChangeAction={handleInputChange}*/}
                 {/*/>*/}
+            </div>
+            <div className="row">
+                <InputText
+                    label={'Huidige boekwaarde per participatie'}
+                    name={'currentValueParticipation'}
+                    id={'currentValueParticipation'}
+                    value={'???'}
+                    onChangeAction={() => {}}
+                    readOnly={true}
+                />
+            </div>
+            <div className="row">
+                <InputText
+                    label={'Huidige totale waarde'}
+                    name={'currentValueParticipation'}
+                    id={'currentValueParticipation'}
+                    value={'???'}
+                    onChangeAction={() => {}}
+                    readOnly={true}
+                />
             </div>
         </React.Fragment>
     );

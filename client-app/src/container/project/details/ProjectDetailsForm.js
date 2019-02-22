@@ -31,7 +31,12 @@ class ProjectDetailsForm extends Component {
         ) : (
             <div>
                 <ProjectFormGeneral />
-                <ProjectDetailsFormValueCourse />
+
+                {/* Shows value course only when project type is not equal to loan */}
+                {this.props.project.type && this.props.project.type.codeRef !== 'loan' ? (
+                    <ProjectDetailsFormValueCourse />
+                ) : null}
+
                 <RevenuesListForm projectId={this.props.project.id} />
                 <ProjectDetailsFormConclusion />
             </div>

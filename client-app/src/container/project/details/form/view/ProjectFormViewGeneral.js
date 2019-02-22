@@ -21,10 +21,6 @@ const ProjectFormViewGeneral = ({
     contactGroupIds,
     dateProduction,
     isMembershipRequired,
-    handleInputChange,
-    handleInputChangeDate,
-    handleContactGroupIds,
-    projectTypes,
     administrations,
     hasPaymentInvoices,
     requiresContactGroups,
@@ -104,8 +100,6 @@ const ProjectFormViewGeneral = ({
 
 const mapStateToProps = state => {
     return {
-        projectStatus: state.systemData.projectStatus,
-        projectTypes: state.systemData.projectTypes,
         administrations: state.meDetails.administrations,
         users: state.systemData.users,
     };

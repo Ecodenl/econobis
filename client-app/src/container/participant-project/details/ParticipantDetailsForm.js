@@ -32,8 +32,7 @@ class ParticipantDetailsForm extends Component {
             <div>
                 <ParticipantFormGeneral />
                 <MutationForm />
-                <TransactionForm />
-
+                {this.props.keyUserRole && this.props.keyUserRole.hasRole && <TransactionForm />}
                 {projectTypeCodeRef === 'obligation' ? <ObligationNumberForm /> : null}
             </div>
         );
@@ -45,6 +44,7 @@ const mapStateToProps = state => {
         participantProject: state.participantProjectDetails,
         isLoading: state.loadingData.isLoading,
         hasError: state.loadingData.hasError,
+        keyUserRole: state.meDetails.roles.find(role => role.name === 'Key user'),
     };
 };
 

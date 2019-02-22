@@ -7,6 +7,7 @@ import ProjectFormViewGeneral from './ProjectFormViewGeneral';
 import ProjectFormViewLoan from './ProjectFormViewLoan';
 import ProjectFormViewObligation from './ProjectFormViewObligation';
 import ProjectFormViewPostalcodeLinkCapital from './ProjectFormViewPostalcodeLinkCapital';
+import ProjectFormViewCapital from './ProjectFormViewCapital';
 
 const ProjectFormView = props => {
     const {
@@ -69,35 +70,53 @@ const ProjectFormView = props => {
                 requiresContactGroups={requiresContactGroups}
             />
 
-            <ProjectFormViewLoan
-                amountOfLoanNeeded={amountOfLoanNeeded}
-                projectTypeId={projectType && projectType.id}
-            />
+            {projectType && projectType.codeRef === 'loan' ? (
+                <ProjectFormViewLoan amountOfLoanNeeded={amountOfLoanNeeded} />
+            ) : null}
 
-            <ProjectFormViewObligation
-                participationWorth={participationWorth}
-                issuedParticipations={issuedParticipations}
-                participationsInOption={participationsInOption}
-                issuableParticipations={issuableParticipations}
-                totalParticipations={totalParticipations}
-                powerKwAvailable={powerKwAvailable}
-                minParticipations={minParticipations}
-                maxParticipations={maxParticipations}
-                maxParticipationsYouth={maxParticipationsYouth}
-                isParticipationTransferable={isParticipationTransferable}
-                valueCourses={valueCourses}
-                projectTypeId={projectType && projectType.id}
-            />
+            {projectType && projectType.codeRef === 'obligation' ? (
+                <ProjectFormViewObligation
+                    participationWorth={participationWorth}
+                    issuedParticipations={issuedParticipations}
+                    participationsInOption={participationsInOption}
+                    issuableParticipations={issuableParticipations}
+                    totalParticipations={totalParticipations}
+                    powerKwAvailable={powerKwAvailable}
+                    minParticipations={minParticipations}
+                    maxParticipations={maxParticipations}
+                    maxParticipationsYouth={maxParticipationsYouth}
+                    isParticipationTransferable={isParticipationTransferable}
+                    valueCourses={valueCourses}
+                />
+            ) : null}
 
-            <ProjectFormViewPostalcodeLinkCapital
-                postalcodeLink={postalcodeLink}
-                ean={ean}
-                taxReferral={taxReferral}
-                eanManager={eanManager}
-                warrantyOrigin={warrantyOrigin}
-                eanSupply={eanSupply}
-                projectTypeId={projectType && projectType.id}
-            />
+            {(projectType && projectType.codeRef === 'capital') ||
+            (projectType && projectType.codeRef === 'postalcode_link_capital') ? (
+                <ProjectFormViewCapital
+                    participationWorth={participationWorth}
+                    issuedParticipations={issuedParticipations}
+                    participationsInOption={participationsInOption}
+                    issuableParticipations={issuableParticipations}
+                    totalParticipations={totalParticipations}
+                    powerKwAvailable={powerKwAvailable}
+                    minParticipations={minParticipations}
+                    maxParticipations={maxParticipations}
+                    maxParticipationsYouth={maxParticipationsYouth}
+                    isParticipationTransferable={isParticipationTransferable}
+                    valueCourses={valueCourses}
+                />
+            ) : null}
+
+            {projectType && projectType.codeRef === 'postalcode_link_capital' ? (
+                <ProjectFormViewPostalcodeLinkCapital
+                    postalcodeLink={postalcodeLink}
+                    ean={ean}
+                    taxReferral={taxReferral}
+                    eanManager={eanManager}
+                    warrantyOrigin={warrantyOrigin}
+                    eanSupply={eanSupply}
+                />
+            ) : null}
         </section>
     );
 };

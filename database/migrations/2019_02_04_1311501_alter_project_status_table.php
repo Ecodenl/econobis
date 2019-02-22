@@ -14,13 +14,9 @@ class AlterProjectStatusTable extends Migration
      */
     public function up()
     {
-        // Change name existing projectStatus
-        $projectStatus = \App\Eco\Project\ProjectStatus::where('name', 'In productie')->first();
-
-        if($projectStatus) {
-            $projectStatus->name = 'Actief';
-            $projectStatus->save();
-        }
+        DB::table('project_status')
+            ->where('name', 'In productie')
+            ->update(['name' => 'Actief']);
     }
 
     /**

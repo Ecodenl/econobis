@@ -17,21 +17,21 @@ class AddCodeRefToProjectType extends Migration
             $table->string('code_ref')->default('')->after('name');
         });
 
-        $projectTypeLoan = \App\Eco\Project\ProjectType::where('name', 'Lening')->first();
-        $projectTypeLoan->code_ref = 'loan';
-        $projectTypeLoan->save();
+        DB::table('project_type')
+            ->where('name', 'Lening')
+            ->update(['code_ref' => 'loan']);
 
-        $projectTypeObligation = \App\Eco\Project\ProjectType::where('name', 'Obligatie')->first();
-        $projectTypeObligation->code_ref = 'obligation';
-        $projectTypeObligation->save();
+        DB::table('project_type')
+            ->where('name', 'Obligatie')
+            ->update(['code_ref' => 'obligation']);
 
-        $projectTypeCapital = \App\Eco\Project\ProjectType::where('name', 'Kapitaal')->first();
-        $projectTypeCapital->code_ref = 'capital';
-        $projectTypeCapital->save();
+        DB::table('project_type')
+            ->where('name', 'Kapitaal')
+            ->update(['code_ref' => 'capital']);
 
-        $projectTypePostal = \App\Eco\Project\ProjectType::where('name', 'Postcoderoos kapitaal')->first();
-        $projectTypePostal->code_ref = 'postalcode_link_capital';
-        $projectTypePostal->save();
+        DB::table('project_type')
+            ->where('name', 'Postcoderoos kapitaal')
+            ->update(['code_ref' => 'postalcode_link_capital']);
     }
 
     /**
@@ -39,7 +39,8 @@ class AddCodeRefToProjectType extends Migration
      *
      * @return void
      */
-    public function down()
+    public
+    function down()
     {
         //
     }

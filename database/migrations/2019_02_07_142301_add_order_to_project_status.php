@@ -16,22 +16,21 @@ class AddOrderToProjectStatus extends Migration
         Schema::table('project_status', function (Blueprint $table) {
             $table->integer('order')->nullable()->after('name');
         });
+        DB::table('project_status')
+            ->where('name', 'Voorbereiding')
+            ->update(['order' => 1]);
 
-        $ProjectStatus = \App\Eco\Project\ProjectStatus::where('name', 'Voorbereiding')->first();
-        $ProjectStatus->order = 1;
-        $ProjectStatus->save();
+        DB::table('project_status')
+            ->where('name', 'Actief')
+            ->update(['order' => 2]);
 
-        $ProjectStatus = \App\Eco\Project\ProjectStatus::where('name', 'Actief')->first();
-        $ProjectStatus->order = 2;
-        $ProjectStatus->save();
+        DB::table('project_status')
+            ->where('name', 'Gerealiseerd')
+            ->update(['order' => 3]);
 
-        $ProjectStatus = \App\Eco\Project\ProjectStatus::where('name', 'Gerealiseerd')->first();
-        $ProjectStatus->order = 3;
-        $ProjectStatus->save();
-
-        $ProjectStatus = \App\Eco\Project\ProjectStatus::where('name', 'Beëindigd')->first();
-        $ProjectStatus->order = 4;
-        $ProjectStatus->save();
+        DB::table('project_status')
+            ->where('name', 'Beëindigd')
+            ->update(['order' => 4]);
 
     }
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Resources\ParticipantMutationType;
+namespace App\Http\Resources\ParticipantMutation;
 
 use Illuminate\Http\Resources\Json\Resource;
 
@@ -17,7 +17,7 @@ class FullParticipantMutationType extends Resource
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'groupName' => $this->participantMutationTypeGroup->name,
+            'projectTypeCodeRef' => $this->projectType->code_ref,
         ];
     }
 }

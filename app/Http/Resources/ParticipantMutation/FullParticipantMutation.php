@@ -27,17 +27,16 @@ class FullParticipantMutation extends Resource
                 'typeId' => $this->type_id,
                 'type' => GenericResource::make($this->whenLoaded('type')),
                 'datePayment' => $this->date_payment,
-                'description' => $this->description,
+                'statusId' => $this->status_id,
+                'status' => GenericResource::make($this->whenLoaded('status')),
                 'account' => $this->account,
                 'quantity' => $this->quantity,
                 'returns' => $this->returns,
                 'payoutKwh' => $this->payout_kwh,
                 'indicationOfRestitutionEnergyTax' => $this->indication_of_restitution_energy_tax,
                 'paidOn' => $this->paid_on,
-                'createdById' => $this->created_by_id,
-                'createdBy' => FullUser::make($this->whenLoaded('createdBy')),
-                'createdAt' => $this->created_at,
                 'updatedAt' => $this->updated_at,
+                'updatedBy' => FullUser::make($this->whenLoaded('updatedBy')),
             ];
     }
 }

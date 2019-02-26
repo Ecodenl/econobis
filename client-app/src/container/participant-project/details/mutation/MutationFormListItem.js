@@ -7,7 +7,6 @@ import MutationFormView from './MutationFormView';
 import MutationFormEdit from './MutationFormEdit';
 import MutationFormDelete from './MutationFormDelete';
 import { isEqual } from 'lodash';
-import * as ibantools from 'ibantools';
 import validator from 'validator';
 
 class MutationFormListItem extends Component {
@@ -76,7 +75,15 @@ class MutationFormListItem extends Component {
     cancelEdit = () => {
         this.setState({
             ...this.state,
-            participantMutation: { ...this.props.participantMutation },
+            participantMutation: {
+                ...this.props.participantMutation,
+                dateCreation: this.props.participantMutation.dateCreation
+                    ? this.props.participantMutation.dateCreation.date
+                    : '',
+                datePayment: this.props.participantMutation.datePayment
+                    ? this.props.participantMutation.datePayment.date
+                    : '',
+            },
         });
 
         this.closeEdit();

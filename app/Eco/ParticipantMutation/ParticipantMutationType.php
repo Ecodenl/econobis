@@ -2,12 +2,13 @@
 
 namespace App\Eco\ParticipantMutation;
 
+use App\Eco\Project\ProjectType;
 use Illuminate\Database\Eloquent\Model;
 use Venturecraft\Revisionable\RevisionableTrait;
 
 class ParticipantMutationType extends Model
 {
-    protected $table = 'participant_mutation_type';
+    protected $table = 'participant_mutation_types';
 
     use RevisionableTrait;
 
@@ -25,8 +26,8 @@ class ParticipantMutationType extends Model
         return $this->hasMany(ParticipantMutation::class);
     }
 
-    public function participantMutationTypeGroup()
+    public function projectType()
     {
-        return $this->hasOne(ParticipantMutationTypeGroup::class, 'id', 'group_id');
+        return $this->hasOne(ProjectType::class, 'id', 'project_type_id');
     }
 }

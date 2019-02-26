@@ -1,6 +1,7 @@
 import React from 'react';
 import * as PropTypes from 'prop-types';
 import moment from 'moment';
+import { connect } from 'react-redux';
 
 import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
@@ -8,21 +9,20 @@ import InputText from '../../../../components/form/InputText';
 import ButtonText from '../../../../components/button/ButtonText';
 import InputSelect from '../../../../components/form/InputSelect';
 import InputDate from '../../../../components/form/InputDate';
-import { connect } from 'react-redux';
 
 const MutationFormDefault = ({
     editForm,
     typeId,
     type,
     statusId,
-    status,
     dateCreation,
     datePayment,
     account,
     quantity,
-    createdAt,
-    createdBy,
+    updatedAt,
+    updatedBy,
     toggleShow,
+    participantMutationStatuses,
     participantMutationTypes,
     errors,
     handleSubmit,
@@ -63,12 +63,7 @@ const MutationFormDefault = ({
                             label={'Status'}
                             id="statusId"
                             name={'statusId'}
-                            options={[
-                                { id: 1, name: 'Interesse' },
-                                { id: 2, name: 'Aangevraagd' },
-                                { id: 3, name: 'Toegekend' },
-                                { id: 4, name: 'Definitief' },
-                            ]}
+                            options={participantMutationStatuses}
                             value={statusId}
                             onChangeAction={handleInputChange}
                         />
@@ -159,15 +154,15 @@ const MutationFormDefault = ({
                     {editForm && (
                         <div className="row">
                             <InputText
-                                label={'Gemaakt op'}
-                                name={'createdAt'}
-                                value={createdAt ? moment(createdAt.date).format('L') : ''}
+                                label={'Gewijzigd op'}
+                                name={'updatedAt'}
+                                value={updatedAt ? moment(updatedAt.date).format('L') : ''}
                                 readOnly={true}
                             />
                             <InputText
-                                label={'Gemaakt door'}
-                                name={'createdBy'}
-                                value={createdBy ? createdBy.fullName : ''}
+                                label={'Gewijzigd door'}
+                                name={'updatedBy'}
+                                value={updatedBy ? updatedBy.fullName : ''}
                                 readOnly={true}
                             />
                         </div>
@@ -197,9 +192,10 @@ MutationFormDefault.defaultProps = {
     type: {},
     status: {},
     account: '',
+    participantMutationStatuses: [],
     participantMutationTypes: [],
-    createdAt: {},
-    createdBy: {},
+    updatedAt: {},
+    updatedBy: {},
 };
 
 MutationFormDefault.propTypes = {
@@ -212,9 +208,10 @@ MutationFormDefault.propTypes = {
     datePayment: PropTypes.string.isRequired,
     account: PropTypes.number,
     quantity: PropTypes.number,
-    createdAt: PropTypes.object.isRequired,
-    createdBy: PropTypes.object.isRequired,
+    updatedAt: PropTypes.object,
+    updatedBy: PropTypes.object,
     toggleShow: PropTypes.func.isRequired,
+    participantMutationStatuses: PropTypes.array,
     participantMutationTypes: PropTypes.array,
     errors: PropTypes.object.isRequired,
     handleSubmit: PropTypes.func.isRequired,
@@ -223,13 +220,4 @@ MutationFormDefault.propTypes = {
     projectTypeCodeRef: PropTypes.string.isRequired,
 };
 
-const mapStateToProps = state => {
-    return {
-        projectTypeCodeRef: state.participantProjectDetails.project.projectType.codeRef,
-    };
-};
-
-export default connect(
-    mapStateToProps,
-    null
-)(MutationFormDefault);
+export default MutationFormDefault;

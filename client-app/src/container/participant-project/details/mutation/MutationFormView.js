@@ -18,9 +18,8 @@ const MutationFormView = ({
         type,
         dateCreation,
         entry,
-        typeId,
+        status,
         datePayment,
-        description,
         account,
         quantity,
         returns,
@@ -37,19 +36,12 @@ const MutationFormView = ({
             onMouseLeave={() => onLineLeave()}
         >
             <div onClick={openEdit}>
-                <div className="col-sm-1">{dateCreation ? moment(dateCreation.date).format('L') : ''}</div>
+                <div className="col-sm-1">{dateCreation ? moment(dateCreation).format('L') : ''}</div>
                 <div className="col-sm-1">{entry}</div>
-                <div className="col-sm-2">
-                    {deletedAt ? (
-                        <span className="h5" style={{ color: '#e64a4a' }}>
-                            <strong>Verwijderd</strong>
-                        </span>
-                    ) : (
-                        type.name
-                    )}
-                </div>
-                <div className="col-sm-1">{datePayment ? moment(datePayment.date).format('L') : ''}</div>
-                <div className="col-sm-2">{description}</div>
+                <div className="col-sm-1">{type.name}</div>
+                <div className="col-sm-1">{status.name}</div>
+                <div className="col-sm-1">{datePayment ? moment(datePayment).format('L') : ''}</div>
+                <div className="col-sm-2">{type.description}</div>
                 {(projectTypeCodeRef === 'loan' ||
                     projectTypeCodeRef === 'capital' ||
                     projectTypeCodeRef === 'postalcode_link_capital') && <div className="col-sm-1">{account}</div>}

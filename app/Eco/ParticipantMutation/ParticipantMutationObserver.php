@@ -17,5 +17,12 @@ class ParticipantMutationObserver
     {
         $userId = Auth::id();
         $participantMutation->created_by_id = $userId;
+        $participantMutation->updated_by_id = $userId;
+    }
+
+    public function updating(ParticipantMutation $participantMutation)
+    {
+        $userId = Auth::id();
+        $participantMutation->updated_by_id = $userId;
     }
 }

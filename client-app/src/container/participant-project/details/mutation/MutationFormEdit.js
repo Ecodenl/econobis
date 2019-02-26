@@ -2,34 +2,37 @@ import React from 'react';
 import moment from 'moment/moment';
 moment.locale('nl');
 import MutationFormDefault from './MutationFormDefault';
+import { connect } from 'react-redux';
 
 const MutationFormEdit = props => {
     const {
         type,
         dateCreation,
-        typeId,
+        statusId,
         datePayment,
         account,
         quantity,
         returns,
-        createdAt,
-        createdBy,
+        updatedAt,
+        updatedBy,
     } = props.participantMutation;
 
     return (
         <div>
             <MutationFormDefault
                 editForm={true}
-                typeId={type.id}
+                projectTypeCodeRef={props.projectTypeCodeRef}
                 type={type}
+                statusId={statusId}
                 dateCreation={dateCreation}
                 datePayment={datePayment}
                 account={account}
                 quantity={quantity}
                 returns={returns}
-                createdAt={createdAt}
-                createdBy={createdBy}
+                updatedAt={updatedAt}
+                updatedBy={updatedBy}
                 errors={props.errors}
+                participantMutationStatuses={props.participantMutationStatuses}
                 handleSubmit={props.handleSubmit}
                 handleInputChange={props.handleInputChange}
                 handleInputChangeDate={props.handleInputChangeDate}
@@ -39,4 +42,11 @@ const MutationFormEdit = props => {
     );
 };
 
-export default MutationFormEdit;
+const mapStateToProps = state => {
+    return {
+        participantMutationStatuses: state.systemData.participantMutationStatuses,
+        projectTypeCodeRef: state.participantProjectDetails.project.projectType.codeRef,
+    };
+};
+
+export default connect(mapStateToProps)(MutationFormEdit);

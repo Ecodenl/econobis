@@ -15,7 +15,6 @@ class MutationFormNew extends Component {
         this.state = {
             participationMutation: {
                 participationId: this.props.id,
-                typeId: '',
                 dateCreation: moment().format('Y-MM-DD'),
                 typeId: '',
                 statusId: '',
@@ -26,7 +25,7 @@ class MutationFormNew extends Component {
             },
             errors: {
                 typeId: false,
-                dateMutation: false,
+                dateCreation: false,
                 amount: false,
                 iban: false,
             },
@@ -95,19 +94,28 @@ class MutationFormNew extends Component {
     };
 
     render() {
-        const { dateCreation, typeId, datePayment, account, quantity, returns } = this.state.participationMutation;
+        const {
+            dateCreation,
+            typeId,
+            statusId,
+            datePayment,
+            account,
+            quantity,
+            returns,
+        } = this.state.participationMutation;
 
-        const projectTypeCodeRef =
-            this.props.projectTypeCodeRef === 'postalcode_link_capital' ? 'capital' : this.props.projectTypeCodeRef;
+        const { participantMutationStatuses, projectTypeCodeRef } = this.props;
 
         const participantMutationTypes = this.props.participantMutationTypes.filter(
-            participantMutationType => participantMutationType.groupName === projectTypeCodeRef
+            participantMutationType => participantMutationType.projectTypeCodeRef === projectTypeCodeRef
         );
 
         return (
             <MutationFormDefault
                 editForm={false}
+                projectTypeCodeRef={projectTypeCodeRef}
                 typeId={typeId}
+                statusId={statusId}
                 dateCreation={dateCreation}
                 datePayment={datePayment}
                 account={account}
@@ -115,6 +123,7 @@ class MutationFormNew extends Component {
                 returns={returns}
                 errors={this.state.errors}
                 participantMutationTypes={participantMutationTypes}
+                participantMutationStatuses={participantMutationStatuses}
                 handleSubmit={this.handleSubmit}
                 handleInputChange={this.handleInputChange}
                 handleInputChangeDate={this.handleInputChangeDate}
@@ -127,6 +136,7 @@ class MutationFormNew extends Component {
 const mapStateToProps = state => {
     return {
         participantMutationTypes: state.systemData.participantMutationTypes,
+        participantMutationStatuses: state.systemData.participantMutationStatuses,
         id: state.participantProjectDetails.id,
         projectTypeCodeRef: state.participantProjectDetails.project.projectType.codeRef,
     };

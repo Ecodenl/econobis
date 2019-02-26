@@ -1,5 +1,6 @@
 <?php
 
+use App\Eco\Project\ProjectType;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
@@ -14,86 +15,158 @@ class ParticipantMutations extends Migration
      */
     public function up()
     {
-        Schema::create('participant_mutation_type_group', function (Blueprint $table) {
+        Schema::create('participant_mutation_types', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
-            $table->timestamps();
-        });
-
-        // Types for loan
-        $participant_mutation_type_groups = [
-            'loan',
-            'obligation',
-            'capital',
-        ];
-
-        foreach (
-            $participant_mutation_type_groups as $participant_mutation_type_group
-        ) {
-            DB::table('participant_mutation_type_group')->insert([
-                    'name' => $participant_mutation_type_group,
-                ]
-            );
-        }
-
-        Schema::create('participant_mutation_type', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('name');
-            $table->integer('group_id');
+            $table->string('description');
+            $table->integer('project_type_id');
             $table->timestamps();
         });
 
         // Types for loan
         $participant_mutation_types = [
-            'Lening afsluiten',
-            'Bijstorten',
-            'Aflossing',
-            'Rente',
+            [
+                'name' => 'Lening afsluiten',
+                'description' => 'Inleg'
+            ],
+            [
+                'name' => 'Bijstorten',
+                'description' => 'Inleg'
+            ],
+            [
+                'name' => 'Aflossing',
+                'description' => 'Opname'
+            ],
+            [
+                'name' => 'Rente',
+                'description' => 'Resultaat'
+            ],
         ];
 
         foreach (
             $participant_mutation_types as $participant_mutation_type
         ) {
-            DB::table('participant_mutation_type')->insert([
-                    'name' => $participant_mutation_type,
-                    'group_id' => 1
+            DB::table('participant_mutation_types')->insert([
+                    'name' => $participant_mutation_type['name'],
+                    'description' => $participant_mutation_type['description'],
+                    'project_type_id' => ProjectType::where('code_ref', 'loan')->first()->id,
                 ]
             );
         }
 
         // Types for obligation
         $participant_mutation_types = [
-            'Uitgifte obligatie',
-            'Terugbetaling',
-            'Rente',
+            [
+                'name' => 'Uitgifte obligatie',
+                'description' => 'Inleg'
+            ],
+            [
+                'name' => 'Terugbetaling',
+                'description' => 'Opname'
+            ],
+            [
+                'name' => 'Rente',
+                'description' => 'Resultaat'
+            ],
         ];
 
         foreach (
             $participant_mutation_types as $participant_mutation_type
         ) {
-            DB::table('participant_mutation_type')->insert([
-                    'name' => $participant_mutation_type,
-                    'group_id' => 2
+            DB::table('participant_mutation_types')->insert([
+                    'name' => $participant_mutation_type['name'],
+                    'description' => $participant_mutation_type['description'],
+                    'project_type_id' => ProjectType::where('code_ref', 'obligation')->first()->id,
                 ]
             );
         }
 
         // Types for capital
         $participant_mutation_types = [
-            'Kapitaalstoring',
-            'Teruggave EB',
-            'Kapitaal terugbetaling',
-            'Resultaat',
-            'Boekwaarde aanpassing',
-            'Verkoop',
+            [
+                'name' => 'Kapitaalstoring',
+                'description' => 'Inleg'
+            ],
+            [
+                'name' => 'Kapitaal terugbetaling',
+                'description' => 'Opname'
+            ],
+            [
+                'name' => 'Resultaat',
+                'description' => 'Resultaat'
+            ],
+            [
+                'name' => 'Boekwaarde aanpassing',
+                'description' => 'Boekwaarde'
+            ],
+            [
+                'name' => 'Verkoop',
+                'description' => 'Verkoop'
+            ],
         ];
 
         foreach (
             $participant_mutation_types as $participant_mutation_type
         ) {
-            DB::table('participant_mutation_type')->insert([
-                    'name' => $participant_mutation_type,
-                    'group_id' => 3
+            DB::table('participant_mutation_types')->insert([
+                    'name' => $participant_mutation_type['name'],
+                    'description' => $participant_mutation_type['description'],
+                    'project_type_id' => ProjectType::where('code_ref', 'capital')->first()->id,
+                ]
+            );
+        }
+
+        // Types for postal code link capital
+        $participant_mutation_types = [
+            [
+                'name' => 'Kapitaalstoring',
+                'description' => 'Inleg'
+            ],
+            [
+                'name' => 'Teruggave EB',
+                'description' => 'Indicatie teruggave EB'
+            ],
+            [
+                'name' => 'Kapitaal terugbetaling',
+                'description' => 'Opname'
+            ],
+            [
+                'name' => 'Resultaat',
+                'description' => 'Resultaat'
+            ],
+            [
+                'name' => 'Boekwaarde aanpassing',
+                'description' => 'Boekwaarde'
+            ],
+            [
+                'name' => 'Verkoop',
+                'description' => 'Verkoop'
+            ],
+        ];
+
+        foreach (
+            $participant_mutation_types as $participant_mutation_type
+        ) {
+            DB::table('participant_mutation_types')->insert([
+                    'name' => $participant_mutation_type['name'],
+                    'description' => $participant_mutation_type['description'],
+                    'project_type_id' => ProjectType::where('code_ref', 'postalcode_link_capital')->first()->id,
+                ]
+            );
+        }
+
+        Schema::create('participant_mutation_statuses', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('name');
+            $table->timestamps();
+        });
+
+        // Types for obligation
+        $participant_mutation_statuses = ['Interesse', 'Aangevraagd', 'Toegekend', 'Definitief'];
+
+        foreach($participant_mutation_statuses as $participant_mutation_status) {
+            DB::table('participant_mutation_statuses')->insert([
+                    'name' => $participant_mutation_status,
                 ]
             );
         }
@@ -111,11 +184,15 @@ class ParticipantMutations extends Migration
 
             $table->unsignedInteger('type_id');
             $table->foreign('type_id')
-                ->references('id')->on('participant_mutation_type')
+                ->references('id')->on('participant_mutation_types')
+                ->onDelete('restrict');
+
+            $table->unsignedInteger('status_id')->nullable();
+            $table->foreign('status_id')
+                ->references('id')->on('participant_mutation_statuses')
                 ->onDelete('restrict');
 
             $table->date('date_payment')->nullable();
-            $table->text('description')->nullable();
 
             $table->double('account', 8, 2)->nullable();
             $table->integer('quantity')->nullable();
@@ -128,6 +205,9 @@ class ParticipantMutations extends Migration
 
             $table->integer('created_by_id')->unsigned();
             $table->foreign('created_by_id')->references('id')->on('users');
+
+            $table->integer('updated_by_id')->unsigned();
+            $table->foreign('updated_by_id')->references('id')->on('users');
 
             $table->timestamps();
         });

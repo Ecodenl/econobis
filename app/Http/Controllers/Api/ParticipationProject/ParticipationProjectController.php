@@ -163,7 +163,8 @@ class ParticipationProjectController extends ApiController
             'transactions.type',
             'transactions.createdBy',
             'mutations.type',
-            'mutations.createdBy',
+            'mutations.status',
+            'mutations.updatedBy',
             'obligationNumbers',
             'documents',
         ]);

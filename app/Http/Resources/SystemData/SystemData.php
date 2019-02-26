@@ -38,6 +38,7 @@ use App\Eco\Industry\Industry;
 use App\Eco\LastNamePrefix\LastNamePrefix;
 use App\Eco\Mailbox\MailgunDomain;
 use App\Eco\Occupation\Occupation;
+use App\Eco\ParticipantMutation\ParticipantMutationStatus;
 use App\Eco\ParticipantMutation\ParticipantMutationType;
 use App\Eco\ParticipantProject\ParticipantProjectPayoutType;
 use App\Eco\ParticipantProject\ParticipantProjectStatus;
@@ -66,7 +67,8 @@ use App\Eco\Title\Title;
 use App\Http\Resources\EnumWithIdAndName\FullEnumWithIdAndName;
 use App\Http\Resources\Industry\FullIndustry;
 use App\Http\Resources\Occupation\FullOccupation;
-use App\Http\Resources\ParticipantMutationType\FullParticipantMutationType;
+use App\Http\Resources\ParticipantMutation\FullParticipantMutationStatus;
+use App\Http\Resources\ParticipantMutation\FullParticipantMutationType;
 use App\Http\Resources\PersonType\FullPersonType;
 use App\Http\Resources\Product\FullProduct;
 use App\Http\Resources\Team\FullTeam;
@@ -170,6 +172,7 @@ class SystemData extends Resource
             'participantProjectPayoutTypes' => GenericResource::collection(ParticipantProjectPayoutType::all()),
             'participantTransactionTypes' => GenericResource::collection(ParticipantTransactionType::all()),
             'participantMutationTypes' => FullParticipantMutationType::collection(ParticipantMutationType::all()),
+            'participantMutationStatuses' => FullParticipantMutationStatus::collection(ParticipantMutationStatus::all()),
             'projectRevenueTypes' => GenericResource::collection(ProjectRevenueType::all()),
             'projectRevenueCategories' => GenericResource::collection(ProjectRevenueCategory::all()),
             'versionNumber' => 'Versie: ' . config('app.version_major') . '.' . config('app.version_minor') . '.' . config('app.version_fix'),

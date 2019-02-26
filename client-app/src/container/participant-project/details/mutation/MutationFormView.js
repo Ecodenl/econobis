@@ -1,7 +1,23 @@
 import React from 'react';
 import moment from 'moment/moment';
 import { connect } from 'react-redux';
+import styled from '@emotion/styled';
 moment.locale('nl');
+
+const StyledContainer = styled.div`
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-around;
+`;
+
+const StyledColumn = styled.div`
+    width: ${props => (props.columnWidth ? props.columnWidth : '8%')};
+    position: relative;
+    min-height: 1px;
+    padding-right: 15px;
+    padding-left: 15px;
+    float: left;
+`;
 
 const MutationFormView = ({
     highlightLine,
@@ -35,44 +51,44 @@ const MutationFormView = ({
             onMouseEnter={() => onLineEnter()}
             onMouseLeave={() => onLineLeave()}
         >
-            <div onClick={openEdit}>
-                <div className="col-sm-1">{dateCreation ? moment(dateCreation).format('L') : ''}</div>
-                <div className="col-sm-1">{entry}</div>
-                <div className="col-sm-1">{type.name}</div>
-                <div className="col-sm-1">{status.name}</div>
-                <div className="col-sm-1">{datePayment ? moment(datePayment).format('L') : ''}</div>
-                <div className="col-sm-2">{type.description}</div>
+            <StyledContainer onClick={openEdit}>
+                <StyledColumn columnWidth={'8.5%'}>{dateCreation ? moment(dateCreation).format('L') : ''}</StyledColumn>
+                <StyledColumn>{entry}</StyledColumn>
+                <StyledColumn columnWidth={'12%'}>{type.name}</StyledColumn>
+                <StyledColumn columnWidth={'10%'}>{status.name}</StyledColumn>
+                <StyledColumn columnWidth={'8.5%'}>{datePayment ? moment(datePayment).format('L') : ''}</StyledColumn>
+                <StyledColumn columnWidth={'10%'}>{type.description}</StyledColumn>
                 {(projectTypeCodeRef === 'loan' ||
                     projectTypeCodeRef === 'capital' ||
-                    projectTypeCodeRef === 'postalcode_link_capital') && <div className="col-sm-1">{account}</div>}
+                    projectTypeCodeRef === 'postalcode_link_capital') && <StyledColumn>{account}</StyledColumn>}
                 {(projectTypeCodeRef === 'obligation' ||
                     projectTypeCodeRef === 'capital' ||
-                    projectTypeCodeRef === 'postalcode_link_capital') && <div className="col-sm-1">{quantity}</div>}
-                <div className="col-sm-1">{returns}</div>
-                {projectTypeCodeRef === 'postalcode_link_capital' && <div className="col-sm-1">{payoutKwh}</div>}
+                    projectTypeCodeRef === 'postalcode_link_capital') && <StyledColumn>{quantity}</StyledColumn>}
+                <StyledColumn>{returns}</StyledColumn>
+                {projectTypeCodeRef === 'postalcode_link_capital' && <StyledColumn>{payoutKwh}</StyledColumn>}
                 {projectTypeCodeRef === 'postalcode_link_capital' && (
-                    <div className="col-sm-1">{indicationOfRestitutionEnergyTax}</div>
+                    <StyledColumn>{indicationOfRestitutionEnergyTax}</StyledColumn>
                 )}
-                <div className="col-sm-2">{paidOn}</div>
-            </div>
-            {!deletedAt && (
-                <div className="col-sm-1">
-                    {showActionButtons && permissions.manageFinancial ? (
-                        <a role="button" onClick={openEdit}>
-                            <span className="glyphicon glyphicon-pencil mybtn-success" />{' '}
-                        </a>
-                    ) : (
-                        ''
-                    )}
-                    {showActionButtons && permissions.manageFinancial ? (
-                        <a role="button" onClick={toggleDelete}>
-                            <span className="glyphicon glyphicon-trash mybtn-danger" />{' '}
-                        </a>
-                    ) : (
-                        ''
-                    )}
-                </div>
-            )}
+                <StyledColumn>{paidOn}</StyledColumn>
+                {!deletedAt && (
+                    <StyledColumn columnWidth={'6%'}>
+                        {showActionButtons && permissions.manageFinancial ? (
+                            <a role="button" onClick={openEdit}>
+                                <span className="glyphicon glyphicon-pencil mybtn-success" />{' '}
+                            </a>
+                        ) : (
+                            ''
+                        )}
+                        {showActionButtons && permissions.manageFinancial ? (
+                            <a role="button" onClick={toggleDelete}>
+                                <span className="glyphicon glyphicon-trash mybtn-danger" />{' '}
+                            </a>
+                        ) : (
+                            ''
+                        )}
+                    </StyledColumn>
+                )}
+            </StyledContainer>
         </div>
     );
 };

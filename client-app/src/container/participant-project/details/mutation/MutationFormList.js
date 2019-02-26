@@ -1,33 +1,50 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import styled from '@emotion/styled';
 
 import MutationFormListItem from './MutationFormListItem';
+
+const StyledContainer = styled.div`
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-around;
+`;
+
+const StyledColumn = styled.div`
+    width: ${props => (props.columnWidth ? props.columnWidth : '8%')};
+    position: relative;
+    min-height: 1px;
+    padding-right: 15px;
+    padding-left: 15px;
+    float: left;
+`;
 
 const MutationFormList = ({ projectTypeCodeRef, participantMutations }) => {
     return (
         <div>
-            <div className="row border header">
-                <div className="col-sm-1">Aanmaak- datum</div>
-                <div className="col-sm-1">Boekstuk</div>
-                <div className="col-sm-1">Type</div>
-                <div className="col-sm-1">Status</div>
-                <div className="col-sm-1">Betaal datum</div>
-                <div className="col-sm-2">Omschrijving</div>
-                {projectTypeCodeRef === 'loan' && <div className="col-sm-1">Lening rekening</div>}
+            <StyledContainer className="row border header">
+                <StyledColumn columnWidth={'8.5%'}>Aanmaak- datum</StyledColumn>
+                <StyledColumn>Boekstuk</StyledColumn>
+                <StyledColumn columnWidth={'12%'}>Type</StyledColumn>
+                <StyledColumn columnWidth={'10%'}>Status</StyledColumn>
+                <StyledColumn columnWidth={'8.5%'}>Betaal datum</StyledColumn>
+                <StyledColumn columnWidth={'10%'}>Omschrijving</StyledColumn>
+                {projectTypeCodeRef === 'loan' && <StyledColumn>Lening rekening</StyledColumn>}
                 {(projectTypeCodeRef === 'capital' || projectTypeCodeRef === 'postalcode_link_capital') && (
-                    <div className="col-sm-1">Kapitaal rekening</div>
+                    <StyledColumn>Kapitaal rekening</StyledColumn>
                 )}
-                {projectTypeCodeRef === 'obligation' && <div className="col-sm-1">Obligaties</div>}
+                {projectTypeCodeRef === 'obligation' && <StyledColumn>Obligaties</StyledColumn>}
                 {(projectTypeCodeRef === 'capital' || projectTypeCodeRef === 'postalcode_link_capital') && (
-                    <div className="col-sm-1">Participaties</div>
+                    <StyledColumn>Partici- paties</StyledColumn>
                 )}
-                <div className="col-sm-1">Opbrengst</div>
-                {projectTypeCodeRef === 'postalcode_link_capital' && <div className="col-sm-1">kWh</div>}
+                <StyledColumn>Opbrengst</StyledColumn>
+                {projectTypeCodeRef === 'postalcode_link_capital' && <StyledColumn>kWh</StyledColumn>}
                 {projectTypeCodeRef === 'postalcode_link_capital' && (
-                    <div className="col-sm-1">Indicatie teruggave EB €</div>
+                    <StyledColumn>Indicatie teruggave EB €</StyledColumn>
                 )}
-                <div className="col-sm-2">Uitgekeerd op of via</div>
-            </div>
+                <StyledColumn>Uitgekeerd op of via</StyledColumn>
+                <StyledColumn columnWidth={'6%'}>&nbsp;</StyledColumn>
+            </StyledContainer>
             {participantMutations.length > 0 ? (
                 participantMutations.map(participantMutation => {
                     return (

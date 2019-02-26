@@ -6,6 +6,7 @@ moment.locale('nl');
 import ViewText from '../../../../components/form/ViewText';
 import ParticipantFormViewObligation from './view/ParticipantFormViewObligation';
 import ParticipantFormViewCapital from './view/ParticipantFormViewCapital';
+import ParticipantFormViewPostalcodeLinkCapital from './view/ParticipantFormViewPostalcodeLinkCapital';
 
 const ParticipantFormView = props => {
     const {
@@ -28,6 +29,7 @@ const ParticipantFormView = props => {
         ibanPayoutAttn,
         dateEnd,
         type,
+        powerKwhConsumption,
     } = props.participantProject;
 
     const projectTypeCodeRef = props.participantProject.project.projectType.codeRef;
@@ -111,10 +113,13 @@ const ParticipantFormView = props => {
             ) : null}
 
             {projectTypeCodeRef === 'postalcode_link_capital' ? (
-                <React.Fragment>
-                    <hr style={{ margin: '10px 0' }} />
-                    <h4>Postcoderoos</h4>
-                </React.Fragment>
+                <ParticipantFormViewPostalcodeLinkCapital
+                    onClick={props.switchToEdit}
+                    participationWorth={project.participationWorth ? project.participationWorth : ''}
+                    participationsGranted={participationsGranted}
+                    participationsWorthTotal={participationsWorthTotal}
+                    powerKwhConsumption={powerKwhConsumption}
+                />
             ) : null}
         </div>
     );

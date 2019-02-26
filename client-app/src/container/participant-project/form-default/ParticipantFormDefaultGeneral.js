@@ -12,6 +12,7 @@ import InputText from '../../../components/form/InputText';
 import InputToggle from '../../../components/form/InputToggle';
 import ParticipantFormDefaultObligation from './ParticipantFormDefaultObligation';
 import ParticipantFormDefaultCapital from './ParticipantFormDefaultCapital';
+import ParticipantFormDefaultPostalcodeLinkCapital from './ParticipantFormDefaultPostalcodeLinkCapital';
 
 const ParticipantFormDefaultGeneral = ({
     editForm,
@@ -50,6 +51,7 @@ const ParticipantFormDefaultGeneral = ({
         updatedAt,
         dateEnd,
         typeId,
+        powerKwhConsumption,
     } = participation;
 
     return (
@@ -252,10 +254,13 @@ const ParticipantFormDefaultGeneral = ({
             ) : null}
 
             {projectTypeCodeRef === 'postalcode_link_capital' ? (
-                <React.Fragment>
-                    <hr style={{ margin: '10px 0' }} />
-                    <h4>Postcoderoos</h4>
-                </React.Fragment>
+                <ParticipantFormDefaultPostalcodeLinkCapital
+                    participationWorth={participationWorth}
+                    participationsGranted={participationsGranted}
+                    participationsWorthTotal={participationsWorthTotal}
+                    powerKwhConsumption={powerKwhConsumption}
+                    handleInputChange={handleInputChange}
+                />
             ) : null}
 
             <PanelFooter>

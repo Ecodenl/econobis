@@ -26,11 +26,13 @@ class TransactionForm extends Component {
         return (
             <Panel>
                 <PanelHeader>
-                    <span className="h5 text-bold">Financiële transacties <em>(Tijdelijk zichtbaar tijdens migratie)</em></span>
+                    <span className="h5 text-bold">
+                        Financiële transacties <em>(Tijdelijk zichtbaar tijdens migratie)</em>
+                    </span>
                     {/*{this.props.permissions.manageFinancial && (*/}
-                        {/*<a role="button" className="pull-right" onClick={this.toggleShowNew}>*/}
-                            {/*<span className="glyphicon glyphicon-plus" />*/}
-                        {/*</a>*/}
+                    {/*<a role="button" className="pull-right" onClick={this.toggleShowNew}>*/}
+                    {/*<span className="glyphicon glyphicon-plus" />*/}
+                    {/*</a>*/}
                     {/*)}*/}
                 </PanelHeader>
                 <PanelBody>

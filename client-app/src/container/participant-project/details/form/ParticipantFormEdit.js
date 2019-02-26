@@ -26,6 +26,7 @@ class ParticipantFormEdit extends Component {
             participationsGranted,
             participationsSold,
             participationsRestSale,
+            participationsWorthTotal,
             dateContractSend,
             dateContractRetour,
             datePayed,
@@ -42,7 +43,6 @@ class ParticipantFormEdit extends Component {
 
         this.state = {
             contacts: [],
-            participationWorth: project.participationWorth ? project.participationWorth : 0,
             participation: {
                 id,
                 contactName: contact.fullName,
@@ -54,6 +54,7 @@ class ParticipantFormEdit extends Component {
                 participationsGranted: participationsGranted ? participationsGranted : '',
                 participationsSold: participationsSold ? participationsSold : '',
                 participationsRestSale: participationsRestSale ? participationsRestSale : '',
+                participationsWorthTotal: participationsWorthTotal ? participationsWorthTotal : '',
                 dateContractSend: dateContractSend ? dateContractSend : '',
                 dateContractRetour: dateContractRetour ? dateContractRetour : '',
                 datePayed: datePayed ? datePayed : '',
@@ -161,7 +162,7 @@ class ParticipantFormEdit extends Component {
                 handleInputChangeDate={this.handleInputChangeDate}
                 handleCancel={this.props.switchToView}
                 handleSubmit={this.handleSubmit}
-                participationWorth={this.state.participationWorth}
+                participationWorth={this.props.participation.project.participationWorth}
                 handleProjectChange={this.handleProjectChange}
                 projectTypeCodeRef={this.props.participation.project.projectType.codeRef}
             />

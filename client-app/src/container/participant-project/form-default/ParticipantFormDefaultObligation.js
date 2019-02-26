@@ -5,12 +5,7 @@ import moment from 'moment';
 moment.locale('nl');
 import InputText from '../../../components/form/InputText';
 
-function ParticipantFormDefaultObligation({
-    participationWorth,
-    participationsRequested,
-    participationsGranted,
-    handleInputChange,
-}) {
+function ParticipantFormDefaultObligation({ participationWorth, participationsWorthTotal, participationsGranted }) {
     return (
         <React.Fragment>
             <hr style={{ margin: '10px 0' }} />
@@ -18,10 +13,9 @@ function ParticipantFormDefaultObligation({
             <div className="row">
                 <InputText
                     label={'Huidig aantal obligaties'}
-                    name={'participationsCurrent'}
-                    id={'participationsCurrent'}
-                    value={'???'}
-                    onChangeAction={() => {}}
+                    name={'participationsGranted'}
+                    id={'participationsGranted'}
+                    value={participationsGranted}
                     readOnly={true}
                 />
                 {/*<InputText*/}
@@ -36,10 +30,9 @@ function ParticipantFormDefaultObligation({
             <div className="row">
                 <InputText
                     label={'Nominale waarde per obligatie'}
-                    name={'currentValueParticipation'}
-                    id={'currentValueParticipation'}
+                    name={'participationWorth'}
+                    id={'participationWorth'}
                     value={participationWorth}
-                    onChangeAction={() => {}}
                     readOnly={true}
                 />
                 {/*<InputText*/}
@@ -57,17 +50,15 @@ function ParticipantFormDefaultObligation({
                     name={'currentValueParticipation'}
                     id={'currentValueParticipation'}
                     value={'???'}
-                    onChangeAction={() => {}}
                     readOnly={true}
                 />
             </div>
             <div className="row">
                 <InputText
                     label={'Huidige totale waarde'}
-                    name={'currentValueParticipation'}
-                    id={'currentValueParticipation'}
-                    value={'???'}
-                    onChangeAction={() => {}}
+                    name={'participationsWorthTotal'}
+                    id={'participationsWorthTotal'}
+                    value={participationsWorthTotal}
                     readOnly={true}
                 />
             </div>
@@ -76,9 +67,9 @@ function ParticipantFormDefaultObligation({
 }
 
 ParticipantFormDefaultObligation.propTypes = {
-    participationsRequested: PropTypes.number.isRequired,
+    participationWorth: PropTypes.number.isRequired,
     participationsGranted: PropTypes.number.isRequired,
-    handleInputChange: PropTypes.func.isRequired,
+    participationsWorthTotal: PropTypes.number.isRequired,
 };
 
 export default ParticipantFormDefaultObligation;

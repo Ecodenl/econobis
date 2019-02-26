@@ -49,6 +49,8 @@ class ParticipantNewApp extends Component {
                 powerKwhConsumption: '',
                 participationsRequested: '',
                 participationsGranted: '',
+                participationsWorth: '',
+                participationsWorthTotal: '',
             },
             errors: {
                 contactId: false,

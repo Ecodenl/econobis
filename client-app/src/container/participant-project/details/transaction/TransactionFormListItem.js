@@ -150,20 +150,20 @@ class TransactionFormListItem extends Component {
                     participantTransaction={this.state.participantTransaction}
                 />
                 {/*{this.state.showEdit && this.props.permissions.manageFinancial && (*/}
-                    {/*<TransactionFormEdit*/}
-                        {/*participantTransaction={this.state.participantTransaction}*/}
-                        {/*handleInputChange={this.handleInputChange}*/}
-                        {/*handleInputChangeDate={this.handleInputChangeDate}*/}
-                        {/*handleSubmit={this.handleSubmit}*/}
-                        {/*cancelEdit={this.cancelEdit}*/}
-                        {/*errors={this.state.errors}*/}
-                    {/*/>*/}
+                {/*<TransactionFormEdit*/}
+                {/*participantTransaction={this.state.participantTransaction}*/}
+                {/*handleInputChange={this.handleInputChange}*/}
+                {/*handleInputChangeDate={this.handleInputChangeDate}*/}
+                {/*handleSubmit={this.handleSubmit}*/}
+                {/*cancelEdit={this.cancelEdit}*/}
+                {/*errors={this.state.errors}*/}
+                {/*/>*/}
                 {/*)}*/}
                 {/*{this.state.showDelete && this.props.permissions.manageFinancial && (*/}
-                    {/*<TransactionFormDelete*/}
-                        {/*closeDeleteItemModal={this.toggleDelete}*/}
-                        {/*{...this.props.participantTransaction}*/}
-                    {/*/>*/}
+                {/*<TransactionFormDelete*/}
+                {/*closeDeleteItemModal={this.toggleDelete}*/}
+                {/*{...this.props.participantTransaction}*/}
+                {/*/>*/}
                 {/*)}*/}
             </div>
         );

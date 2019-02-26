@@ -16,6 +16,7 @@ import ParticipantFormDefaultCapital from './ParticipantFormDefaultCapital';
 const ParticipantFormDefaultGeneral = ({
     editForm,
     participation,
+    participationWorth,
     errors,
     handleInputChange,
     handleInputChangeDate,
@@ -39,7 +40,7 @@ const ParticipantFormDefaultGeneral = ({
         participationsRequested,
         participationsGranted,
         participationsSold,
-        participationWorth,
+        participationsWorthTotal,
         dateContractSend,
         dateContractRetour,
         didAcceptAgreement,
@@ -236,17 +237,17 @@ const ParticipantFormDefaultGeneral = ({
 
             {projectTypeCodeRef === 'obligation' ? (
                 <ParticipantFormDefaultObligation
-                    participationsRequested={participationsRequested}
+                    participationWorth={participationWorth}
                     participationsGranted={participationsGranted}
-                    handleInputChange={handleInputChange}
+                    participationsWorthTotal={participationsWorthTotal}
                 />
             ) : null}
 
             {projectTypeCodeRef === 'capital' ? (
                 <ParticipantFormDefaultCapital
-                    participationsRequested={participationsRequested}
+                    participationWorth={participationWorth}
                     participationsGranted={participationsGranted}
-                    handleInputChange={handleInputChange}
+                    participationsWorthTotal={participationsWorthTotal}
                 />
             ) : null}
 
@@ -283,6 +284,7 @@ ParticipantFormDefaultGeneral.propTypes = {
     onClickAction: PropTypes.func,
     title: PropTypes.string,
     participation: PropTypes.object.isRequired,
+    participationWorth: PropTypes.number.isRequired,
     errors: PropTypes.object,
     handleInputChange: PropTypes.func.isRequired,
     handleInputChangeDate: PropTypes.func.isRequired,

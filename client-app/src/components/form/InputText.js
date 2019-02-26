@@ -69,6 +69,7 @@ InputText.defaultProps = {
     max: '',
     errorMessage: '',
     autoComplete: 'off',
+    onChangeAction: () => {},
 };
 
 InputText.propTypes = {

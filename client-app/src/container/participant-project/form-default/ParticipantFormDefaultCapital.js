@@ -5,7 +5,7 @@ import moment from 'moment';
 moment.locale('nl');
 import InputText from '../../../components/form/InputText';
 
-function ParticipantFormDefaultCapital({ participationWorth, participationsRequested, participationsGranted }) {
+function ParticipantFormDefaultCapital({ participationWorth, participationsWorthTotal, participationsGranted }) {
     return (
         <React.Fragment>
             <hr style={{ margin: '10px 0' }} />
@@ -13,10 +13,9 @@ function ParticipantFormDefaultCapital({ participationWorth, participationsReque
             <div className="row">
                 <InputText
                     label={'Huidig aantal participaties'}
-                    name={'participationsCurrent'}
-                    id={'participationsCurrent'}
-                    value={'???'}
-                    onChangeAction={() => {}}
+                    name={'participationsGranted'}
+                    id={'participationsGranted'}
+                    value={participationsGranted}
                     readOnly={true}
                 />
                 {/*<InputText*/}
@@ -31,10 +30,9 @@ function ParticipantFormDefaultCapital({ participationWorth, participationsReque
             <div className="row">
                 <InputText
                     label={'Nominale waarde per participatie'}
-                    name={'currentValueParticipation'}
-                    id={'currentValueParticipation'}
-                    value={'???'}
-                    onChangeAction={() => {}}
+                    name={'participationWorth'}
+                    id={'participationWorth'}
+                    value={participationWorth}
                     readOnly={true}
                 />
                 {/*<InputText*/}
@@ -52,17 +50,16 @@ function ParticipantFormDefaultCapital({ participationWorth, participationsReque
                     label={'Huidige boekwaarde per participatie'}
                     name={'participationsGranted'}
                     id={'participationsGranted'}
-                    value={participationWorth}
-                    onChangeAction={() => {}}
+                    value={'???'}
+                    readOnly={true}
                 />
             </div>
             <div className="row">
                 <InputText
                     label={'Huidige totale waarde'}
-                    name={'currentValueParticipation'}
-                    id={'currentValueParticipation'}
-                    value={'???'}
-                    onChangeAction={() => {}}
+                    name={'participationsWorthTotal'}
+                    id={'participationsWorthTotal'}
+                    value={participationsWorthTotal}
                     readOnly={true}
                 />
             </div>
@@ -71,9 +68,9 @@ function ParticipantFormDefaultCapital({ participationWorth, participationsReque
 }
 
 ParticipantFormDefaultCapital.propTypes = {
-    participationsRequested: PropTypes.number.isRequired,
+    participationWorth: PropTypes.number.isRequired,
     participationsGranted: PropTypes.number.isRequired,
-    handleInputChange: PropTypes.func.isRequired,
+    participationsWorthTotal: PropTypes.number.isRequired,
 };
 
 export default ParticipantFormDefaultCapital;

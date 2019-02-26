@@ -96,8 +96,8 @@ const ParticipantFormView = props => {
                 <ParticipantFormViewObligation
                     onClick={props.switchToEdit}
                     participationWorth={project.participationWorth ? project.participationWorth : ''}
-                    participationsRequested={participationsRequested}
                     participationsGranted={participationsGranted}
+                    participationsWorthTotal={participationsWorthTotal}
                 />
             ) : null}
 
@@ -105,8 +105,8 @@ const ParticipantFormView = props => {
                 <ParticipantFormViewCapital
                     onClick={props.switchToEdit}
                     participationWorth={project.participationWorth ? project.participationWorth : ''}
-                    participationsRequested={participationsRequested}
                     participationsGranted={participationsGranted}
+                    participationsWorthTotal={participationsWorthTotal}
                 />
             ) : null}
 

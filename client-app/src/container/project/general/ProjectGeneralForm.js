@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { isEmpty } from 'lodash';
 
-import ProjectGeneralFormView from './form/ProjectGeneralFormView';
+import ProjectGeneralFormViewOther from './form/ProjectGeneralFormViewOther';
+import ProjectGeneralFormViewLoan from './form/ProjectGeneralFormViewLoan';
 import ParticipantsListApp from '../../participant-project/list/ParticipantsListApp';
 
 class ProjectGeneralForm extends Component {
@@ -15,7 +16,11 @@ class ProjectGeneralForm extends Component {
             <div>Geen gegevens gevonden.</div>
         ) : (
             <div>
-                <ProjectGeneralFormView />
+                {this.props.project.projectType.codeRef === 'loan' ? (
+                    <ProjectGeneralFormViewLoan />
+                ) : (
+                    <ProjectGeneralFormViewOther />
+                )}
                 <ParticipantsListApp />
             </div>
         );

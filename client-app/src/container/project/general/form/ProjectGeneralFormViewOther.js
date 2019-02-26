@@ -8,7 +8,7 @@ import ViewText from '../../../../components/form/ViewText';
 import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
 
-const ProjectGeneralFormView = ({ project, projectTypes }) => {
+const ProjectGeneralFormViewOther = ({ project, projectTypes }) => {
     const {
         name,
         dateStart,
@@ -62,4 +62,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps)(ProjectGeneralFormView);
+export default connect(mapStateToProps)(ProjectGeneralFormViewOther);

@@ -24,6 +24,7 @@ class ProjectNewApp extends Component {
         this.state = {
             contactGroups: [],
             showPostalCodeLinkFields: false,
+            confirmSubmit: false,
             project: {
                 name: '',
                 code: '',
@@ -101,6 +102,10 @@ class ProjectNewApp extends Component {
             },
         });
     }
+
+    toggleConfirmSubmit = () => {
+        this.setState(prevState => ({ confirmSubmit: !prevState.confirmSubmit }));
+    };
 
     handleSubmit = event => {
         event.preventDefault();
@@ -295,14 +300,34 @@ class ProjectNewApp extends Component {
                                     ) : null}
 
                                     <PanelFooter>
-                                        <div className="pull-right btn-group" role="group">
-                                            <ButtonText
-                                                buttonText={'Opslaan'}
-                                                onClickAction={this.handleSubmit}
-                                                type={'submit'}
-                                                value={'Submit'}
-                                            />
-                                        </div>
+                                        {this.state.confirmSubmit ? (
+                                            <div className="pull-right">
+                                                <span style={{ marginRight: '10px' }}>
+                                                    Het type project kan maar één keer worden ingesteld. Weet u zeker
+                                                    dat u dit type project wilt aanmaken?
+                                                </span>
+                                                <div className="btn-group" role="group">
+                                                    <ButtonText
+                                                        buttonText={'Ja'}
+                                                        onClickAction={this.handleSubmit}
+                                                        type={'submit'}
+                                                        value={'Submit'}
+                                                    />
+                                                    <ButtonText
+                                                        buttonText={'Nee'}
+                                                        buttonClassName={'btn-default'}
+                                                        onClickAction={this.toggleConfirmSubmit}
+                                                    />
+                                                </div>
+                                            </div>
+                                        ) : (
+                                            <div className="pull-right btn-group" role="group">
+                                                <ButtonText
+                                                    buttonText={'Opslaan'}
+                                                    onClickAction={this.toggleConfirmSubmit}
+                                                />
+                                            </div>
+                                        )}
                                     </PanelFooter>
                                 </form>
                             </PanelBody>

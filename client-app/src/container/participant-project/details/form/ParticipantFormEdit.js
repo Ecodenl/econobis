@@ -163,6 +163,7 @@ class ParticipantFormEdit extends Component {
                 handleCancel={this.props.switchToView}
                 handleSubmit={this.handleSubmit}
                 participationWorth={this.props.participation.project.participationWorth}
+                valueCourses={this.props.participation.project.valueCourses}
                 handleProjectChange={this.handleProjectChange}
                 projectTypeCodeRef={this.props.participation.project.projectType.codeRef}
             />

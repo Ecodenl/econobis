@@ -156,6 +156,7 @@ class ParticipationProjectController extends ApiController
             'contact',
             'project.projectType',
             'project.administration',
+            'project.projectValueCourses',
             'participantProjectStatus',
             'participantProjectPayoutType',
             'giftedByContact',

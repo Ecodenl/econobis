@@ -5,7 +5,14 @@ import moment from 'moment';
 moment.locale('nl');
 import InputText from '../../../components/form/InputText';
 
-function ParticipantFormDefaultCapital({ participationWorth, participationsWorthTotal, participationsGranted }) {
+function ParticipantFormDefaultCapital({
+    participationWorth,
+    participationsWorthTotal,
+    participationsGranted,
+    valueCourses,
+}) {
+    const activeValueCourse = valueCourses ? valueCourses.find(valueCourse => valueCourse.active) : [];
+
     return (
         <React.Fragment>
             <hr style={{ margin: '10px 0' }} />
@@ -46,11 +53,10 @@ function ParticipantFormDefaultCapital({ participationWorth, participationsWorth
             </div>
             <div className="row">
                 <InputText
-                    type={'number'}
                     label={'Huidige boekwaarde per participatie'}
-                    name={'participationsGranted'}
-                    id={'participationsGranted'}
-                    value={'???'}
+                    name={'valueCourseBookWorth'}
+                    id={'valueCourseBookWorth'}
+                    value={activeValueCourse && activeValueCourse.bookWorth}
                     readOnly={true}
                 />
             </div>

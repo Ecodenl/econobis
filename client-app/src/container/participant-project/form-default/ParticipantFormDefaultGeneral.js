@@ -18,6 +18,7 @@ const ParticipantFormDefaultGeneral = ({
     editForm,
     participation,
     participationWorth,
+    valueCourses,
     errors,
     handleInputChange,
     handleInputChangeDate,
@@ -242,6 +243,7 @@ const ParticipantFormDefaultGeneral = ({
                     participationWorth={participationWorth}
                     participationsGranted={participationsGranted}
                     participationsWorthTotal={participationsWorthTotal}
+                    valueCourses={valueCourses}
                 />
             ) : null}
 
@@ -250,6 +252,7 @@ const ParticipantFormDefaultGeneral = ({
                     participationWorth={participationWorth}
                     participationsGranted={participationsGranted}
                     participationsWorthTotal={participationsWorthTotal}
+                    valueCourses={valueCourses}
                 />
             ) : null}
 
@@ -258,6 +261,7 @@ const ParticipantFormDefaultGeneral = ({
                     participationWorth={participationWorth}
                     participationsGranted={participationsGranted}
                     participationsWorthTotal={participationsWorthTotal}
+                    valueCourses={valueCourses}
                     powerKwhConsumption={powerKwhConsumption}
                     handleInputChange={handleInputChange}
                 />

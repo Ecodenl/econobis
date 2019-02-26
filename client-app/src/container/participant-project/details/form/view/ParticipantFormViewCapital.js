@@ -3,7 +3,15 @@ import * as PropTypes from 'prop-types';
 import ViewText from '../../../../../components/form/ViewText';
 import moneyPresenter from '../../../../../helpers/MoneyPresenter';
 
-function ParticipantFormViewCapital({ participationWorth, participationsGranted, participationsWorthTotal, onClick }) {
+function ParticipantFormViewCapital({
+    participationWorth,
+    participationsGranted,
+    participationsWorthTotal,
+    valueCourses,
+    onClick,
+}) {
+    const activeValueCourse = valueCourses ? valueCourses.find(valueCourse => valueCourse.active) : [];
+
     return (
         <React.Fragment>
             <hr style={{ margin: '10px 0' }} />
@@ -15,7 +23,10 @@ function ParticipantFormViewCapital({ participationWorth, participationsGranted,
                 <ViewText label={'Nominale waarde per participatie'} value={moneyPresenter(participationWorth)} />
             </div>
             <div className="row" onClick={onClick}>
-                <ViewText label={'Huidige boekwaarde per participatie'} value={'????'} />
+                <ViewText
+                    label={'Huidige boekwaarde per participatie'}
+                    value={activeValueCourse && moneyPresenter(activeValueCourse.bookWorth)}
+                />
             </div>
             <div className="row" onClick={onClick}>
                 <ViewText label={'Huidige totale waarde'} value={moneyPresenter(participationsWorthTotal)} />

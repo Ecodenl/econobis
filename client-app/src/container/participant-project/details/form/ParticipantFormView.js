@@ -100,6 +100,7 @@ const ParticipantFormView = props => {
                     participationWorth={project.participationWorth ? project.participationWorth : ''}
                     participationsGranted={participationsGranted}
                     participationsWorthTotal={participationsWorthTotal}
+                    valueCourses={project.valueCourses}
                 />
             ) : null}
 
@@ -109,6 +110,7 @@ const ParticipantFormView = props => {
                     participationWorth={project.participationWorth ? project.participationWorth : ''}
                     participationsGranted={participationsGranted}
                     participationsWorthTotal={participationsWorthTotal}
+                    valueCourses={project.valueCourses}
                 />
             ) : null}
 
@@ -118,6 +120,7 @@ const ParticipantFormView = props => {
                     participationWorth={project.participationWorth ? project.participationWorth : ''}
                     participationsGranted={participationsGranted}
                     participationsWorthTotal={participationsWorthTotal}
+                    valueCourses={project.valueCourses}
                     powerKwhConsumption={powerKwhConsumption}
                 />
             ) : null}

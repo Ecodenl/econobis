@@ -33,7 +33,7 @@ class ProjectDetailsForm extends Component {
                 <ProjectFormGeneral />
 
                 {/* Shows value course only when project type is not equal to loan */}
-                {this.props.project.type && this.props.project.type.codeRef !== 'loan' ? (
+                {this.props.project.projectType && this.props.project.projectType.codeRef !== 'loan' ? (
                     <ProjectDetailsFormValueCourse />
                 ) : null}
 

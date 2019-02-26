@@ -15,14 +15,14 @@ const ProjectFormViewObligation = ({
     isParticipationTransferable,
     valueCourses,
 }) => {
-    const activeValueCourse = valueCourses.find(valueCourse => valueCourse.active);
+    const activeValueCourse = valueCourses ? valueCourses.find(valueCourse => valueCourse.active) : [];
 
     return (
         <React.Fragment>
             <hr style={{ margin: '10px 0' }} />
             <h4>Obligatie, Kapitaal of Postcoderoos kapitaal</h4>
             <div className="row">
-                <ViewText label={'Nominale waarde obligatie'} value={participationWorth} />
+                <ViewText label={'Nominale waarde obligatie'} value={MoneyPresenter(participationWorth)} />
                 <ViewText label={'Uitgegeven obligaties'} value={issuedParticipations ? issuedParticipations : ''} />
             </div>
             <div className="row">

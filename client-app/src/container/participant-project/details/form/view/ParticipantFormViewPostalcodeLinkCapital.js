@@ -8,8 +8,11 @@ function ParticipantFormViewPostalcodeLinkCapital({
     participationsGranted,
     participationsWorthTotal,
     powerKwhConsumption,
+    valueCourses,
     onClick,
 }) {
+    const activeValueCourse = valueCourses ? valueCourses.find(valueCourse => valueCourse.active) : [];
+
     return (
         <React.Fragment>
             <hr style={{ margin: '10px 0' }} />
@@ -21,7 +24,10 @@ function ParticipantFormViewPostalcodeLinkCapital({
                 <ViewText label={'Nominale waarde per participatie'} value={moneyPresenter(participationWorth)} />
             </div>
             <div className="row" onClick={onClick}>
-                <ViewText label={'Huidige boekwaarde per participatie'} value={'????'} />
+                <ViewText
+                    label={'Huidige boekwaarde per participatie'}
+                    value={activeValueCourse && moneyPresenter(activeValueCourse.bookWorth)}
+                />
             </div>
             <div className="row" onClick={onClick}>
                 <ViewText label={'Huidige totale waarde'} value={moneyPresenter(participationsWorthTotal)} />

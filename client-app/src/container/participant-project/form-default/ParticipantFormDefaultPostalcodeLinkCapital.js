@@ -9,9 +9,12 @@ function ParticipantFormDefaultPostalcodeLinkCapital({
     participationWorth,
     participationsWorthTotal,
     participationsGranted,
+    valueCourses,
     powerKwhConsumption,
     handleInputChange,
 }) {
+    const activeValueCourse = valueCourses ? valueCourses.find(valueCourse => valueCourse.active) : [];
+
     return (
         <React.Fragment>
             <hr style={{ margin: '10px 0' }} />
@@ -52,11 +55,10 @@ function ParticipantFormDefaultPostalcodeLinkCapital({
             </div>
             <div className="row">
                 <InputText
-                    type={'number'}
                     label={'Huidige boekwaarde per participatie'}
-                    name={'participationsGranted'}
-                    id={'participationsGranted'}
-                    value={'???'}
+                    name={'valueCourseBookWorth'}
+                    id={'valueCourseBookWorth'}
+                    value={activeValueCourse && activeValueCourse.bookWorth}
                     readOnly={true}
                 />
             </div>

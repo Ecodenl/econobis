@@ -22,7 +22,7 @@ const ProjectFormViewCapital = ({
             <hr style={{ margin: '10px 0' }} />
             <h4>Obligatie, Kapitaal of Postcoderoos kapitaal</h4>
             <div className="row">
-                <ViewText label={'Nominale waarde participatie'} value={participationWorth} />
+                <ViewText label={'Nominale waarde participatie'} value={MoneyPresenter(participationWorth)} />
                 <ViewText label={'Uitgegeven participaties'} value={issuedParticipations ? issuedParticipations : ''} />
             </div>
             <div className="row">

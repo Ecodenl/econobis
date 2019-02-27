@@ -60,6 +60,8 @@ class FullRevenueParticipantProject extends Resource
                 'participationsDefinitive' => $this->participations_definitive,
                 'participationsDefinitiveWorth' => $this->participations_definitive_worth,
                 'participationsOptioned' => $this->participations_optioned,
+                'amountDefinitive' => $this->amount_definitive,
+                'amountOptioned' => $this->amount_optioned,
             ];
     }
 }

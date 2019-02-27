@@ -83,6 +83,8 @@ class FullProject extends Resource
                 'amountOfLoanNeeded' => $this->amount_of_loan_needed,
                 'participationsDefinitive' => $this->participations_definitive,
                 'participationsOptioned' => $this->participations_optioned,
+                'amountDefinitive' => $this->amount_definitive,
+                'amountOptioned' => $this->amount_optioned,
             ];
     }
 }

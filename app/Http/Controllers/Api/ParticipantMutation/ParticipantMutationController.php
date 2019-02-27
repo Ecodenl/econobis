@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Fren
- * Date: 20-10-2017
- * Time: 9:35
- */
 
 namespace App\Http\Controllers\Api\ParticipantMutation;
 
@@ -27,7 +21,7 @@ class ParticipantMutationController extends ApiController
             ->date('dateCreation')->validate('required|date')->alias('date_creation')->next()
             ->string('entry')->onEmpty('')->next()
             ->date('datePayment')->validate('nullable|date')->onEmpty(null)->alias('date_payment')->next()
-            ->double('account')->onEmpty(null)->next()
+            ->double('amount')->onEmpty(null)->next()
             ->integer('quantity')->onEmpty(null)->next()
             ->double('returns')->onEmpty(null)->next()
             ->double('payoutKwh')->onEmpty(null)->alias('payout_kwh')->next()
@@ -42,16 +36,11 @@ class ParticipantMutationController extends ApiController
         DB::transaction(function () use ($participantMutation) {
             $participantMutation->save();
 
-            $participantProject = $participantMutation->participation;
-            $participantProject->participations_definitive = $participantProject->calculator()->participationsDefinitive();
-            $participantProject->participations_definitive_worth = $participantProject->calculator()->participationsDefinitiveWorth();
-            $participantProject->participations_optioned = $participantProject->calculator()->participationsOptioned();
-            $participantProject->save();
+            // Herbereken de afhankelijke gegevens op het participantProject
+            $participantMutation->participation->calculator()->run()->save();
 
-            $project = $participantProject->project;
-            $project->participations_definitive = $project->calculator()->participationsDefinitive();
-            $project->participations_optioned = $project->calculator()->participationsOptioned();
-            $project->save();
+            // Herbereken de afhankelijke gegevens op het project
+            $participantMutation->participation->project->calculator()->run()->save();
         });
 
         return FullParticipantMutation::collection(ParticipantMutation::where('participation_id', $participantMutation->participation_id)
@@ -71,7 +60,7 @@ class ParticipantMutationController extends ApiController
             ->date('dateCreation')->validate('required|date')->alias('date_creation')->next()
             ->string('entry')->onEmpty('')->next()
             ->date('datePayment')->validate('nullable|date')->onEmpty(null)->alias('date_payment')->next()
-            ->double('account')->onEmpty(null)->next()
+            ->double('amount')->onEmpty(null)->next()
             ->integer('quantity')->onEmpty(null)->next()
             ->double('returns')->onEmpty(null)->next()
             ->double('payoutKwh')->onEmpty(null)->alias('payout_kwh')->next()
@@ -85,16 +74,11 @@ class ParticipantMutationController extends ApiController
         DB::transaction(function () use ($participantMutation) {
             $participantMutation->save();
 
-            $participantProject = $participantMutation->participation;
-            $participantProject->participations_definitive = $participantProject->calculator()->participationsDefinitive();
-            $participantProject->participations_definitive_worth = $participantProject->calculator()->participationsDefinitiveWorth();
-            $participantProject->participations_optioned = $participantProject->calculator()->participationsOptioned();
-            $participantProject->save();
+            // Herbereken de afhankelijke gegevens op het participantProject
+            $participantMutation->participation->calculator()->run()->save();
 
-            $project = $participantProject->project;
-            $project->participations_definitive = $project->calculator()->participationsDefinitive();
-            $project->participations_optioned = $project->calculator()->participationsOptioned();
-            $project->save();
+            // Herbereken de afhankelijke gegevens op het project
+            $participantMutation->participation->project->calculator()->run()->save();
         });
 
         return FullParticipantMutation::collection(ParticipantMutation::where('participation_id', $participantMutation->participation_id)
@@ -113,15 +97,11 @@ class ParticipantMutationController extends ApiController
 
             $participantMutation->delete();
 
-            $participantProject->participations_definitive = $participantProject->calculator()->participationsDefinitive();
-            $participantProject->participations_definitive_worth = $participantProject->calculator()->participationsDefinitiveWorth();
-            $participantProject->participations_optioned = $participantProject->calculator()->participationsOptioned();
-            $participantProject->save();
+            // Herbereken de afhankelijke gegevens op het participantProject
+            $participantProject->calculator()->run()->save();
 
-            $project = $participantProject->project;
-            $project->participations_definitive = $project->calculator()->participationsDefinitive();
-            $project->participations_optioned = $project->calculator()->participationsOptioned();
-            $project->save();
+            // Herbereken de afhankelijke gegevens op het project
+            $participantProject->project->calculator()->run()->save();
         });
 
     }

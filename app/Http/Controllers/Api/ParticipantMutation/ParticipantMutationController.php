@@ -12,6 +12,7 @@ use App\Eco\ParticipantMutation\ParticipantMutation;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\Resources\ParticipantMutation\FullParticipantMutation;
+use Illuminate\Support\Facades\DB;
 
 class ParticipantMutationController extends ApiController
 {
@@ -38,7 +39,20 @@ class ParticipantMutationController extends ApiController
 
         $participantMutation->fill($data);
 
-        $participantMutation->save();
+        DB::transaction(function () use ($participantMutation) {
+            $participantMutation->save();
+
+            $participantProject = $participantMutation->participation;
+            $participantProject->participations_definitive = $participantProject->calculator()->participationsDefinitive();
+            $participantProject->participations_definitive_worth = $participantProject->calculator()->participationsDefinitiveWorth();
+            $participantProject->participations_optioned = $participantProject->calculator()->participationsOptioned();
+            $participantProject->save();
+
+            $project = $participantProject->project;
+            $project->participations_definitive = $project->calculator()->participationsDefinitive();
+            $project->participations_optioned = $project->calculator()->participationsOptioned();
+            $project->save();
+        });
 
         return FullParticipantMutation::collection(ParticipantMutation::where('participation_id', $participantMutation->participation_id)
             ->orderBy('date_creation', 'desc')
@@ -68,7 +82,20 @@ class ParticipantMutationController extends ApiController
 
         $participantMutation->fill($data);
 
-        $participantMutation->save();
+        DB::transaction(function () use ($participantMutation) {
+            $participantMutation->save();
+
+            $participantProject = $participantMutation->participation;
+            $participantProject->participations_definitive = $participantProject->calculator()->participationsDefinitive();
+            $participantProject->participations_definitive_worth = $participantProject->calculator()->participationsDefinitiveWorth();
+            $participantProject->participations_optioned = $participantProject->calculator()->participationsOptioned();
+            $participantProject->save();
+
+            $project = $participantProject->project;
+            $project->participations_definitive = $project->calculator()->participationsDefinitive();
+            $project->participations_optioned = $project->calculator()->participationsOptioned();
+            $project->save();
+        });
 
         return FullParticipantMutation::collection(ParticipantMutation::where('participation_id', $participantMutation->participation_id)
             ->orderBy('date_creation', 'desc')
@@ -81,6 +108,21 @@ class ParticipantMutationController extends ApiController
     {
         $this->authorize('manage', ParticipantMutation::class);
 
-        $participantMutation->delete();
+        DB::transaction(function () use ($participantMutation) {
+            $participantProject = $participantMutation->participation;
+
+            $participantMutation->delete();
+
+            $participantProject->participations_definitive = $participantProject->calculator()->participationsDefinitive();
+            $participantProject->participations_definitive_worth = $participantProject->calculator()->participationsDefinitiveWorth();
+            $participantProject->participations_optioned = $participantProject->calculator()->participationsOptioned();
+            $participantProject->save();
+
+            $project = $participantProject->project;
+            $project->participations_definitive = $project->calculator()->participationsDefinitive();
+            $project->participations_optioned = $project->calculator()->participationsOptioned();
+            $project->save();
+        });
+
     }
 }

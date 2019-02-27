@@ -91,7 +91,7 @@ class ProjectController extends ApiController
             ->string('eanManager')->alias('ean_manager')->next()
             ->string('warrantyOrigin')->alias('warranty_origin')->next()
             ->string('eanSupply')->alias('ean_supply')->next()
-            ->double('participationWorth')->alias('participation_worth')->next()
+            ->double('participationWorth')->alias('participation_worth')->onEmpty('0.00')->next()
             ->integer('powerKwAvailable')->alias('power_kw_available')->next()
             ->integer('maxParticipations')->alias('max_participations')->next()
             ->string('taxReferral')->alias('tax_referral')->next()
@@ -161,15 +161,25 @@ class ProjectController extends ApiController
 
         $project->fill($data);
 
-        $project->save();
+        DB::transaction(function () use ($request, $project) {
+            $participationWorthChanged = $project->isDirty(['participation_worth']);
 
-        $contactGroupIds = explode(',', $request->contactGroupIds);
+            $project->save();
+            if($participationWorthChanged){
+                foreach ($project->participantsProject as $participantProject){
+                    $participantProject->participations_definitive_worth = $participantProject->calculator()->participationsDefinitiveWorth();
+                    $participantProject->save();
+                }
+            }
 
-        if ($contactGroupIds[0] == '') {
-            $contactGroupIds = [];
-        }
+            $contactGroupIds = explode(',', $request->contactGroupIds);
 
-        $project->requiresContactGroups()->sync($contactGroupIds);
+            if ($contactGroupIds[0] == '') {
+                $contactGroupIds = [];
+            }
+
+            $project->requiresContactGroups()->sync($contactGroupIds);
+        });
 
         return $this->show($project);
     }

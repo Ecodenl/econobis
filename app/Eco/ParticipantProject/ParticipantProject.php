@@ -109,4 +109,9 @@ class ParticipantProject extends Model
             return 0;
         }
     }
+
+    public function calculator()
+    {
+        return new ParticipantProjectCalculator($this);
+    }
 }

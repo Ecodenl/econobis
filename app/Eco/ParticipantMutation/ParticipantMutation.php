@@ -30,7 +30,7 @@ class ParticipantMutation extends Model
 
     public function participation()
     {
-        return $this->belongsTo(ParticipantProject::class, 'id', 'participation_id');
+        return $this->belongsTo(ParticipantProject::class);
     }
 
     public function type()

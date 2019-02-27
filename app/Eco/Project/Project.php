@@ -9,6 +9,7 @@ use App\Eco\ContactGroup\ContactGroup;
 use App\Eco\Document\Document;
 use App\Eco\Email\Email;
 use App\Eco\Measure\Measure;
+use App\Eco\ParticipantMutation\ParticipantMutation;
 use App\Eco\ParticipantProject\ParticipantProject;
 use App\Eco\Task\Task;
 use App\Eco\User\User;
@@ -152,5 +153,15 @@ class Project extends Model
         }
 
         return false;
+    }
+
+    public function participantMutations()
+    {
+        return $this->hasManyThrough(ParticipantMutation::class ,ParticipantProject::class, 'project_id', 'participation_id');
+    }
+
+    public function calculator()
+    {
+        return new ProjectCalculator($this);
     }
 }

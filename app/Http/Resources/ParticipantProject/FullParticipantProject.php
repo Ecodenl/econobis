@@ -59,6 +59,9 @@ class FullParticipantProject extends Resource
                 'obligationNumbers' => GenericResource::collection($this->whenLoaded('obligationNumbers')),
                 'documentCount' => $this->documents()->count(),
                 'relatedDocuments' => FullDocument::collection($this->whenLoaded('documents')),
+                'participationsDefinitive' => $this->participations_definitive,
+                'participationsDefinitiveWorth' => $this->participations_definitive_worth,
+                'participationsOptioned' => $this->participations_optioned,
             ];
     }
 }

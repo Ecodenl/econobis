@@ -57,6 +57,9 @@ class FullRevenueParticipantProject extends Resource
                 'dateEnd' => $this->date_end,
                 'typeId' => $this->type_id,
                 'type' => GenericResource::make($this->whenLoaded('participantProjectPayoutType')),
+                'participationsDefinitive' => $this->participations_definitive,
+                'participationsDefinitiveWorth' => $this->participations_definitive_worth,
+                'participationsOptioned' => $this->participations_optioned,
             ];
     }
 }

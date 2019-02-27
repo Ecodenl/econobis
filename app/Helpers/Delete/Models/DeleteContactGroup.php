@@ -75,12 +75,12 @@ class DeleteContactGroup implements DeleteInterface
      */
     public function dissociateRelations()
     {
-        foreach ($this->contactGroup->documents() as $document){
+        foreach ($this->contactGroup->documents as $document){
             $document->contactGroup()->dissociate();
             $document->save();
         }
 
-        foreach ($this->contactGroup->emails() as $email){
+        foreach ($this->contactGroup->emails as $email){
             $email->contactGroup()->dissociate();
             $email->save();
         }

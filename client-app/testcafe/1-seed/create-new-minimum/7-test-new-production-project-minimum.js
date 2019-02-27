@@ -9,6 +9,7 @@ import ModelGeneralProductionProject from "../../pages/production-project/model-
 import ModelDetailsProductionProject from "../../pages/production-project/model-details-production-project";
 
 const faker = require('faker');
+faker.locale = "nl";
 
 fixture `Create new production project -> participant -> value course`;
 

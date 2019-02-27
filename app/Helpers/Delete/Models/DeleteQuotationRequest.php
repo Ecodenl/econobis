@@ -71,12 +71,12 @@ class DeleteQuotationRequest implements DeleteInterface
      */
     public function dissociateRelations()
     {
-        foreach ($this->quotationRequest->emails() as $email){
+        foreach ($this->quotationRequest->emails as $email){
             $email->quotationRequest()->dissociate();
             $email->save();
         }
 
-        foreach ($this->quotationRequest->documents() as $document){
+        foreach ($this->quotationRequest->documents as $document){
             $document->quotationRequest()->dissociate();
             $document->save();
         }

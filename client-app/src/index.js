@@ -13,7 +13,7 @@ const store = require('./store/configureStore').configure();
 
 const token = localStorage.getItem('access_token');
 
-if(token) {
+if (token) {
     store.dispatch(authActions.authSuccess());
 }
 

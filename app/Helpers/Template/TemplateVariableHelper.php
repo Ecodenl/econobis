@@ -613,7 +613,7 @@ class TemplateVariableHelper
                 return $model->participations_amount;
                 break;
             case 'bedrag':
-                return $model->payout;
+                return number_format($model->payout, 2, ',', '');
                 break;
             case 'kwh':
                 return $model->delivered_total;

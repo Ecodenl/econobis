@@ -15,6 +15,7 @@ use App\Eco\EnergySupplier\ContactEnergySupplierType;
 use App\Eco\EnergySupplier\EnergySupplier;
 use App\Eco\HousingFile\EnergyLabelStatus;
 use App\Eco\HousingFile\RoofType;
+use App\Eco\Mailbox\Mailbox;
 use App\Eco\Mailbox\MailboxIgnoreType;
 use App\Eco\Measure\MeasureCategory;
 use App\Eco\Opportunity\OpportunityStatus;
@@ -35,6 +36,7 @@ use App\Eco\Contact\ContactType;
 use App\Eco\EmailAddress\EmailAddressType;
 use App\Eco\Industry\Industry;
 use App\Eco\LastNamePrefix\LastNamePrefix;
+use App\Eco\Mailbox\MailgunDomain;
 use App\Eco\Occupation\Occupation;
 use App\Eco\ParticipantProductionProject\ParticipantProductionProjectPayoutType;
 use App\Eco\ParticipantProductionProject\ParticipantProductionProjectStatus;
@@ -178,9 +180,9 @@ class SystemData extends Resource
             'paymentInvoiceStatuses' => FullEnumWithIdAndName::collection(PaymentInvoiceStatus::collection()),
             'products' => FullProduct::collection(Product::all()),
             'contactGroupTypes' => FullEnumWithIdAndName::collection(ContactGroupType::collection()),
-            'usesMailgun' =>  config('mail.driver') === 'mailgun' ? true : false,
-            'mailgunDomain' => array((object)["id"=> config('mail.mailgun_domain'), "name" => config('mail.mailgun_domain')]),
+            'mailgunDomain' => MailgunDomain::select(['id', 'domain'])->get(),
             'mailboxIgnoreTypes' => FullEnumWithIdAndName::collection(MailboxIgnoreType::collection()),
+            'mailboxesInvalid' => Mailbox::where('is_active', 1)->where('valid', 0)->count(),
         ];
     }
 }

@@ -1,7 +1,6 @@
 <?php
 
-use App\Eco\User\User;
-use Illuminate\Http\Request;
+use JosKolenberg\LaravelJory\Routes\JoryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,7 +13,7 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::post('password/email', 'Auth\ForgotPasswordController@sendResetLinkEmail');
+Route::post('password/email', 'Api\User\UserController@sendResetLinkEmail');
 Route::post('password/reset', 'Auth\ResetPasswordController@reset');
 Route::get('password/reset/{token}', [
     'as' => 'password.reset',
@@ -210,6 +209,7 @@ Route::namespace('Api')
         Route::post('mailbox/{mailbox}/users/remove/{user}', 'Mailbox\MailboxController@removeUser');
         Route::get('mailbox/{mailbox}/receive', 'Mailbox\MailboxController@receive');
         Route::get('mailbox/receive/from-mailboxes-user', 'Mailbox\MailboxController@receiveMailFromMailboxesUser');
+        Route::get('mailbox/{mailbox}/make-primary', 'Mailbox\MailboxController@makePrimary');
 
         Route::get('email/grid/in-folder/{folder}', 'Email\EmailController@grid');
         Route::get('email/new/peek', 'Email\EmailController@peek');
@@ -414,6 +414,17 @@ Route::namespace('Api')
         Route::get('webform/{webform}', 'Webform\WebformController@show');
         Route::post('webform/{webform}', 'Webform\WebformController@update');
         Route::post('webform/{webform}/delete', 'Webform\WebformController@delete');
+
+        Route::get('mailgun-domain/jory', 'Mailbox\MailgunDomainController@jory');
+        Route::post('mailgun-domain', 'Mailbox\MailgunDomainController@store');
+        Route::post('mailgun-domain/{mailgunDomain}', 'Mailbox\MailgunDomainController@update');
+
+        // Jory routes voor ophalen data
+        Route::get( 'jory', '\\'.JoryController::class.'@multiple');
+        Route::get('jory/{uri}/count', '\\'.JoryController::class.'@count');
+        Route::get('jory/{uri}/{id}', '\\'.JoryController::class.'@show');
+        Route::get('jory/{uri}', '\\'.JoryController::class.'@index');
+
     });
 
 Route::namespace('Api')

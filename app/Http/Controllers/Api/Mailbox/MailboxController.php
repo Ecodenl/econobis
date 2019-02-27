@@ -9,7 +9,6 @@
 namespace App\Http\Controllers\Api\Mailbox;
 
 
-use App\Eco\Email\Email;
 use App\Eco\Mailbox\ImapEncryptionType;
 use App\Eco\Mailbox\Mailbox;
 use App\Eco\Mailbox\MailboxIgnore;
@@ -23,9 +22,9 @@ use App\Http\Resources\Email\GridEmailTemplate;
 use App\Http\Resources\GenericResource;
 use App\Http\Resources\Mailbox\FullMailbox;
 use App\Http\Resources\Mailbox\FullMailboxIgnore;
+use App\Http\Resources\Mailbox\GridMailbox;
 use App\Http\Resources\Mailbox\LoggedInEmailPeek;
 use App\Http\Resources\User\UserPeek;
-use App\Rules\EnumExists;
 use Doctrine\Common\Annotations\Annotation\Enum;
 use Illuminate\Support\Facades\Auth;
 
@@ -38,7 +37,9 @@ class MailboxController extends Controller
 
         $mailboxes = Mailbox::get();
 
-        return GenericResource::collection($mailboxes);
+        $mailboxes->load(['mailgunDomain']);
+
+        return GridMailbox::collection($mailboxes);
     }
 
     public function store(RequestInput $input)
@@ -56,10 +57,19 @@ class MailboxController extends Controller
             ->string('imapInboxPrefix')->whenMissing('')->onEmpty('')->alias('imap_inbox_prefix')->next()
             ->string('username')->whenMissing('')->onEmpty('')->alias('username')->next()
             ->string('password')->whenMissing('')->onEmpty('')->alias('password')->next()
+            ->integer('mailgunDomainId')->whenMissing(null)->onEmpty(null)->alias('mailgun_domain_id')->next()
+            ->string('outgoingServerType')->whenMissing('smtp')->onEmpty('smtp')->alias('outgoing_server_type')->next()
+            ->boolean('isActive')->alias('is_active')->next()
+            ->boolean('primary')->next()
             ->get();
 
         $mailbox = new Mailbox($data);
         $mailbox->save();
+
+        // Als de mailbox als primair is gemarkeerd, functie aanroepen om te zorgen dat alle andere mailboxen niet meer primair zijn.
+        if($mailbox->primary){
+            $this->makePrimary($mailbox);
+        }
 
         $mailbox->users()->attach(Auth::user());
 
@@ -92,16 +102,25 @@ class MailboxController extends Controller
             ->string('imapInboxPrefix')->alias('imap_inbox_prefix')->next()
             ->string('username')->alias('username')->next()
             ->string('password')->alias('password')->next()
+            ->integer('mailgunDomainId')->whenMissing(null)->onEmpty(null)->alias('mailgun_domain_id')->next()
+            ->string('outgoingServerType')->alias('outgoing_server_type')->next()
+            ->boolean('isActive')->alias('is_active')->next()
+            ->boolean('primary')->next()
             ->get();
 
         $mailbox->login_tries = 0;
         $mailbox->update($data);
         $mailbox->save();
 
+        // Als de mailbox als primair is gemarkeerd, functie aanroepen om te zorgen dat alle andere mailboxen niet meer primair zijn.
+        if($mailbox->primary){
+            $this->makePrimary($mailbox);
+        }
+
         //Create a new mailfetcher. This will check if the mailbox is valid and set it in the db.
         new MailFetcher($mailbox);
 
-        return GenericResource::make($mailbox);
+        return $this->show($mailbox);
     }
 
     public function addUser(Mailbox $mailbox, User $user)
@@ -124,14 +143,15 @@ class MailboxController extends Controller
     {
         $this->authorize('view', Mailbox::class);
 
-        $mailFetcher = new MailFetcher($mailbox);
-
-        if($mailbox->valid) {
-            $mailFetcher->fetchNew();
+        if(!$mailbox->is_active){
+            return 'This mailbox is not active';
         }
-        else{
+        if(!$mailbox->valid){
             return 'This mailbox is invalid';
         }
+
+        $mailFetcher = new MailFetcher($mailbox);
+        $mailFetcher->fetchNew();
     }
 
     public function receiveMailFromMailboxesUser()
@@ -151,7 +171,7 @@ class MailboxController extends Controller
     {
         $user = Auth::user();
 
-        $mailboxes = $user->mailboxes()->select('mailbox_id', 'email')->get();
+        $mailboxes = $user->mailboxes()->select('mailbox_id', 'email')->where('is_active', 1)->get();
 
         return LoggedInEmailPeek::collection($mailboxes);
     }
@@ -159,7 +179,7 @@ class MailboxController extends Controller
     //called by cronjob
     static public function receiveAllEmail()
     {
-        $mailboxes = Mailbox::where('valid', 1)->get();
+        $mailboxes = Mailbox::where('valid', 1)->where('is_active', 1)->get();
         foreach ($mailboxes as $mailbox) {
             $mailFetcher = new MailFetcher($mailbox);
             $mailFetcher->fetchNew();
@@ -187,6 +207,21 @@ class MailboxController extends Controller
         $this->authorize('create', Mailbox::class);
 
         $mailboxIgnore->delete();
+    }
+
+    public function makePrimary(Mailbox $mailbox)
+    {
+        // Oude primary mailbox niet meer primary maken
+        foreach (Mailbox::where('primary', 1)
+                     ->where('id', '<>', $mailbox->id) // Is onnodig voor huidige mailbox
+                     ->get() as $mb){
+            // Zal er eigenlijk altijd exact één moeten zijn, maar voor de zekerheid toch maar in een loop
+            $mb->primary = false;
+            $mb->save();
+        }
+
+        $mailbox->primary = true;
+        $mailbox->save();
     }
 
 }

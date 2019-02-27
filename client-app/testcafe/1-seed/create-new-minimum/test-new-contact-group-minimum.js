@@ -6,6 +6,7 @@ import ModelGeneral from "../../pages/model-general";
 import ModelNewContactGroup from "../../pages/contact-group/model-new-contact-group";
 
 const faker = require('faker');
+faker.locale = "nl";
 
 fixture `Create new contact group`;
 

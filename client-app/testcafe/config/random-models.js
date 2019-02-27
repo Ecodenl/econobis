@@ -1,4 +1,5 @@
 const faker = require('faker');
+faker.locale = "nl";
 
 //person
 export const personFirstName = faker.name.firstName();

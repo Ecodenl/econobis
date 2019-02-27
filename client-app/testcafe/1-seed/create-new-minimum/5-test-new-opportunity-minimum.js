@@ -7,6 +7,7 @@ import ModelIntakeGrid from "../../pages/intake/model-grid-intake";
 import ModelOpportunityNew from "../../pages/opportunity/model-new-opportunity";
 import * as vars from "../../config/random-models";
 const faker = require('faker');
+faker.locale = "nl";
 
 fixture `Create new opportunity`;
 

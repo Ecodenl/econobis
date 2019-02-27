@@ -7,7 +7,8 @@ import PanelHeader from "../../../../components/panel/PanelHeader";
 import PanelBody from "../../../../components/panel/PanelBody";
 
 const MailboxDetailsFormGeneralView = props => {
-    const { name, email, smtpHost, smtpPort, smtpEncryption, imapHost, imapPort, imapEncryption, imapInboxPrefix, username, password } = props.mailboxDetails;
+    const { name, email, smtpHost, smtpPort, smtpEncryption, imapHost, imapPort, imapEncryption, imapInboxPrefix, username, outgoingServerType, mailgunDomain, isActive, primary  } = props.mailboxDetails;
+    const usesMailgun = outgoingServerType === 'mailgun' ? true : false;
 
     return (
         <div onClick={props.switchToEdit}>
@@ -15,7 +16,7 @@ const MailboxDetailsFormGeneralView = props => {
                 <PanelBody>
                     <div className="row">
                         <ViewText
-                            label={"Naam"}
+                            label={"Weergavenaam"}
                             value={name}
                         />
                         <ViewText
@@ -33,6 +34,16 @@ const MailboxDetailsFormGeneralView = props => {
                             value='••••••••••'
                         />
                     </div>
+                    <div className="row">
+                        <ViewText
+                            label="Actief"
+                            value={isActive ? 'Ja' : 'Nee'}
+                        />
+                        <ViewText
+                            label={"Primair (verzend wachtwoord mails)"}
+                            value={primary ? 'Ja' : 'Nee'}
+                        />
+                    </div>
                 </PanelBody>
 
                 <PanelHeader>
@@ -41,17 +52,24 @@ const MailboxDetailsFormGeneralView = props => {
                 <PanelBody>
                     <div className="row">
                         <ViewText
-                            label="Inkomende server"
+                            label="Inkomend"
                             value={imapHost}
                         />
-                        {props.usesMailgun ?
+                        <ViewText
+                            label={"Gebruikt mailgun"}
+                            value={props.mailboxDetails.outgoingServerType === 'mailgun' ? 'Ja' : 'Nee'}
+                        />
+                    </div>
+                    <div className="row">
+                        <div className="col-md-6"/>
+                        { usesMailgun ?
                             <ViewText
-                                label="Mailgun domein"
-                                value={smtpHost}
+                                label="Uitgaand"
+                                value={mailgunDomain}
                             />
                             :
                             <ViewText
-                                label="Uitgaande server"
+                                label="Uitgaand"
                                 value={smtpHost}
                             />
                         }
@@ -67,20 +85,24 @@ const MailboxDetailsFormGeneralView = props => {
                             label={"Imap poort"}
                             value={imapPort}
                         />
+                        {!usesMailgun &&
                         <ViewText
                             label="Smtp poort"
                             value={smtpPort}
                         />
+                        }
                     </div>
                     <div className="row">
                         <ViewText
                             label={"Imap versleutelde verbinding"}
                             value={imapEncryption}
                         />
-                        <ViewText
-                            label="Smtp versleutelde verbinding"
-                            value={smtpEncryption}
-                        />
+                        {!usesMailgun &&
+                            <ViewText
+                                label="Smtp versleutelde verbinding"
+                                value={smtpEncryption}
+                            />
+                        }
                     </div>
                     <div className="row">
                         <ViewText

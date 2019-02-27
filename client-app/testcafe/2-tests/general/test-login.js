@@ -13,9 +13,9 @@ fixture `Log in`
 
 test('Login test', async t => {
     await t
-        .typeText(emailInput, 'support@econobis.nl')
-        .expect(emailInput.value).eql('support@econobis.nl')
-        .typeText(passwordInput, 'secret')
+        .typeText(emailInput, constants.email)
+        .expect(emailInput.value).eql(constants.email)
+        .typeText(passwordInput, constants.password)
         .click(submitButton);
 
     const location = await t.eval(() => window.location);
@@ -29,8 +29,8 @@ test('Login test with wrong credentials', async t => {
         .expect(emailInput.value).eql('verkeerdelogin@xaris.nl');
 
     await t
-        .typeText(passwordInput, 'secret')
-        .expect(passwordInput.value).eql('secret');
+        .typeText(passwordInput, 'verkeerde_wachtwoord')
+        .expect(passwordInput.value).eql('verkeerde_wachtwoord');
 
     await t
         .click(submitButton);

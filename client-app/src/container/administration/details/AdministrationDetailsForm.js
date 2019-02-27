@@ -1,21 +1,21 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { isEmpty } from 'lodash';
 
 import AdministrationDetailsFormGeneral from './general/AdministrationDetailsFormGeneral';
 import AdministrationDetailsUsers from './administration-users/AdministrationDetailsUsers';
-import moment from "moment/moment";
-import AdministrationDetailsFormConclusion from "./conclusion/AdministrationDetailsFormConclusion";
-import AdministrationDetailsSepas from "./sepas/AdministrationDetailsSepas";
+import moment from 'moment/moment';
+import AdministrationDetailsFormConclusion from './conclusion/AdministrationDetailsFormConclusion';
+import AdministrationDetailsSepas from './sepas/AdministrationDetailsSepas';
 import Panel from "../../../components/panel/Panel";
 import PanelHeader from "../../../components/panel/PanelHeader";
 import AdministrationLedgerForm from "./ledgers/AdministrationLedgerForm";
 moment.locale('nl');
 
 class AdministrationDetailsForm extends Component {
-    constructor(props){
+    constructor(props) {
         super(props);
-    };
+    }
 
     render() {
         let loadingText = '';
@@ -23,14 +23,11 @@ class AdministrationDetailsForm extends Component {
 
         if (this.props.hasError) {
             loadingText = 'Fout bij het ophalen van administratie.';
-        }
-        else if (this.props.isLoading) {
+        } else if (this.props.isLoading) {
             loadingText = 'Gegevens aan het laden.';
-        }
-        else if (isEmpty(this.props.administrationDetails)) {
+        } else if (isEmpty(this.props.administrationDetails)) {
             loadingText = 'Geen gegevens gevonden.';
-        }
-        else {
+        } else {
             loading = false;
         }
         return (
@@ -55,9 +52,9 @@ class AdministrationDetailsForm extends Component {
                 </div>
         );
     }
-};
+}
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         administrationDetails: state.administrationDetails,
         isLoading: state.loadingData.isLoading,

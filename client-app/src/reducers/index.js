@@ -27,6 +27,8 @@ import housingFileDetailsReducer from './housing-file/HousingFileDetailsReducer'
 import housingFilesReducer from './housing-file/HousingFilesReducer';
 import mailboxDetailsReducer from './mailbox/MailboxDetailsReducer';
 import mailboxesReducer from './mailbox/MailboxesReducer';
+import mailgunDomainsReducer from './mailgun-domain/MailgunDomainReducer';
+import MailgunDomainDetailsReducer from './mailgun-domain/MailgunDomainDetailsReducer';
 import measuresReducer from './measure/MeasuresReducer';
 import measureDetailsReducer from './measure/MeasureDetailsReducer';
 import meDetailsReducer from './general/MeDetailsReducer';
@@ -144,6 +146,9 @@ const rootReducer = combineReducers({
     // Mailbox
     mailboxes: mailboxesReducer,
     mailboxDetails: mailboxDetailsReducer,
+    // Mailgundomain
+    mailgunDomains: mailgunDomainsReducer,
+    mailgunDomainDetails: MailgunDomainDetailsReducer,
     // Measures
     measures: measuresReducer,
     measureDetails: measureDetailsReducer,

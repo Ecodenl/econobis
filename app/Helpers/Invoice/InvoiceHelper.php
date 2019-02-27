@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: StagiarSoftware
- * Date: 19-1-2018
- * Time: 11:55
- */
 
 namespace App\Helpers\Invoice;
 
@@ -13,7 +7,9 @@ use App\Eco\Invoice\Invoice;
 use App\Eco\Invoice\InvoiceDocument;
 use App\Eco\Invoice\InvoicePayment;
 use App\Eco\Invoice\InvoiceProduct;
+use App\Eco\Mailbox\Mailbox;
 use App\Eco\Order\Order;
+use App\Helpers\Email\EmailHelper;
 use App\Helpers\Template\TemplateVariableHelper;
 use App\Http\Controllers\Api\Order\OrderController;
 use App\Http\Resources\Invoice\Templates\InvoiceMail;
@@ -25,22 +21,22 @@ use Illuminate\Support\Facades\Storage;
 
 class InvoiceHelper
 {
-    public static function saveInvoiceProducts(Invoice &$invoice, Order $order, $preview = false){
+    public static function saveInvoiceProducts(Invoice &$invoice, Order $order, $preview = false)
+    {
 
-        foreach ($order->activeOrderProducts as $orderProduct){
-            if($orderProduct->is_one_time_and_paid_product){
+        foreach ($order->activeOrderProducts as $orderProduct) {
+            if ($orderProduct->is_one_time_and_paid_product) {
                 continue;
             }
 
             $price = 0;
-            if($orderProduct->product->currentPrice){
-                if($orderProduct->product->currentPrice->has_variable_price) {
+            if ($orderProduct->product->currentPrice) {
+                if ($orderProduct->product->currentPrice->has_variable_price) {
                     $price = $orderProduct->variable_price;
-                }
-                else{
+                } else {
                     $price = $orderProduct->product->currentPrice->price;
                 }
-                switch ($orderProduct->product->invoice_frequency_id){
+                switch ($orderProduct->product->invoice_frequency_id) {
                     case 'monthly':
                         $price = $price * 12;
                         break;
@@ -86,19 +82,16 @@ class InvoiceHelper
 
             if($orderProduct->date_last_invoice){
                 $dateLastInvoice = $orderProduct->date_last_invoice;
-            }
-            else if($orderProduct->date_period_start_first_invoice){
+            } else if ($orderProduct->date_period_start_first_invoice) {
                 $dateLastInvoice = $orderProduct->date_period_start_first_invoice;
-            }
-            else{
+            } else {
                 $dateLastInvoice = $orderProduct->date_start;
             }
 
             $invoiceProduct->date_last_invoice = $dateLastInvoice;
-            if(!$preview) {
+            if (!$preview) {
                 $invoiceProduct->save();
-            }
-            else{
+            } else {
                 $invoice->invoiceProducts->add($invoiceProduct);
             }
         }
@@ -107,22 +100,24 @@ class InvoiceHelper
 
     }
 
-    public static function saveInvoiceStatus(Invoice $invoice){
-        if($invoice->amount_open == 0){
+    public static function saveInvoiceStatus(Invoice $invoice)
+    {
+        if ($invoice->amount_open == 0) {
             $invoice->status_id = 'paid';
         }
 
         $invoice->save();
     }
 
-    public static function saveInvoiceDatePaid(Invoice $invoice, $datePaid){
+    public static function saveInvoiceDatePaid(Invoice $invoice, $datePaid)
+    {
         $invoicePayment = new InvoicePayment();
         $invoicePayment->date_paid = $datePaid;
         $invoicePayment->amount = $invoice->amount_open;
         $invoicePayment->invoice_id = $invoice->id;
         $invoicePayment->save();
 
-        if($invoice->amount_open == 0){
+        if ($invoice->amount_open == 0) {
             $invoice->status_id = 'paid';
         }
 
@@ -131,9 +126,11 @@ class InvoiceHelper
         return $invoice;
     }
 
-    public static function send(Invoice $invoice, $preview = false){
+    public static function send(Invoice $invoice, $preview = false)
+    {
+        self::setMailConfigByInvoice($invoice);
 
-        if(!$preview) {
+        if (!$preview) {
             $invoice->status_id = 'sent';
             $invoice->date_sent = Carbon::today();
             $invoice->save();
@@ -166,10 +163,9 @@ class InvoiceHelper
 
         $emailTemplate = null;
 
-        if($invoice->payment_type_id === 'collection'){
+        if ($invoice->payment_type_id === 'collection') {
             $emailTemplate = $invoice->order->emailTemplateCollection;
-        }
-        else{
+        } else {
             $emailTemplate = $invoice->order->emailTemplateTransfer;
         }
 
@@ -221,7 +217,7 @@ class InvoiceHelper
         }
 
 
-        if($preview){
+        if ($preview) {
             return [
                 'to' => 'Factuur zal per post moeten worden verstuurd',
                 'subject' => 'Factuur zal per post moeten worden verstuurd',
@@ -232,26 +228,24 @@ class InvoiceHelper
         return $invoice;
     }
 
-    public static function sendNotification(Invoice $invoice){
+    public static function sendNotification(Invoice $invoice)
+    {
         $orderController = new OrderController();
         $contactInfo = $orderController->getContactInfoForOrder($invoice->order->contact);
 
-        if($invoice->date_reminder_3){
+        if ($invoice->date_reminder_3) {
             InvoiceHelper::sendNotificationEmail($invoice->order->emailTemplateExhortation, $invoice);
             $invoice->date_exhortation = Carbon::today();
             $invoice->email_exhortation = $contactInfo['email'];
-        }
-        elseif($invoice->date_reminder_2){
+        } elseif ($invoice->date_reminder_2) {
             InvoiceHelper::sendNotificationEmail($invoice->order->emailTemplateReminder, $invoice);
             $invoice->date_reminder_3 = Carbon::today();
             $invoice->email_reminder_3 = $contactInfo['email'];
-        }
-        elseif($invoice->date_reminder_1){
+        } elseif ($invoice->date_reminder_1) {
             InvoiceHelper::sendNotificationEmail($invoice->order->emailTemplateReminder, $invoice);
             $invoice->date_reminder_2 = Carbon::today();
             $invoice->email_reminder_2 = $contactInfo['email'];
-        }
-        else{
+        } else {
             InvoiceHelper::sendNotificationEmail($invoice->order->emailTemplateReminder, $invoice);
             $invoice->date_reminder_1 = Carbon::today();
             $invoice->email_reminder_1 = $contactInfo['email'];
@@ -262,11 +256,14 @@ class InvoiceHelper
         return $invoice;
     }
 
-    public static function sendNotificationEmail(EmailTemplate $emailTemplate = null, Invoice $invoice){
+    public static function sendNotificationEmail(EmailTemplate $emailTemplate = null, Invoice $invoice)
+    {
+        self::setMailConfigByInvoice($invoice);
+
         $orderController = new OrderController();
         $contactInfo = $orderController->getContactInfoForOrder($invoice->order->contact);
 
-        if($contactInfo['email'] === 'Geen e-mail bekend'){
+        if ($contactInfo['email'] === 'Geen e-mail bekend') {
             return false;
         }
 
@@ -274,7 +271,7 @@ class InvoiceHelper
 
         $subject = 'Betalingsherinnering';
 
-        if(!$emailTemplate){
+        if (!$emailTemplate) {
             $htmlBody = 'Beste ' . $contactInfo['contactPerson'] . ',';
             $htmlBody .= '<p>&nbsp;</p>';
             $htmlBody .= 'Uw heeft nog een openstaand factuur: ' . $invoice->number . '.';
@@ -282,8 +279,7 @@ class InvoiceHelper
             $htmlBody .= 'Met vriendelijke groet,';
             $htmlBody .= '<p></p>';
             $htmlBody .= $invoice->administration->name;
-        }
-        else{
+        } else {
             $subject = $emailTemplate->subject ? $emailTemplate->subject : $subject;
             $htmlBody = $emailTemplate->html_body;
         }
@@ -313,12 +309,13 @@ class InvoiceHelper
         return true;
     }
 
-    public static function createInvoiceDocument(Invoice $invoice, $preview = false){
+    public static function createInvoiceDocument(Invoice $invoice, $preview = false)
+    {
 
 
         $img = '';
-        if($invoice->administration->logo_filename) {
-            $path = storage_path('app' .  DIRECTORY_SEPARATOR . 'administrations' . DIRECTORY_SEPARATOR . $invoice->administration->logo_filename);
+        if ($invoice->administration->logo_filename) {
+            $path = storage_path('app' . DIRECTORY_SEPARATOR . 'administrations' . DIRECTORY_SEPARATOR . $invoice->administration->logo_filename);
             $logo = file_get_contents($path);
 
             $src = 'data:' . mime_content_type($path)
@@ -332,17 +329,16 @@ class InvoiceHelper
         $orderController = new OrderController();
         $contactPerson = $orderController->getContactInfoForOrder($invoice->order->contact)['contactPerson'];
 
-        if($invoice->order->contact->full_name === $contactPerson){
+        if ($invoice->order->contact->full_name === $contactPerson) {
             $contactPerson = null;
         }
 
         $contactName = null;
 
-        if($invoice->order->contact->type_id == 'person'){
+        if ($invoice->order->contact->type_id == 'person') {
             $prefix = $invoice->order->contact->person->last_name_prefix;
             $contactName = $prefix ? $invoice->order->contact->person->first_name . ' ' . $prefix . ' ' . $invoice->order->contact->person->last_name : $invoice->order->contact->person->first_name . ' ' . $invoice->order->contact->person->last_name;
-        }
-        elseif($invoice->order->contact->type_id == 'organisation'){
+        } elseif ($invoice->order->contact->type_id == 'organisation') {
             $contactName = $invoice->order->contact->full_name;
         }
 
@@ -353,7 +349,7 @@ class InvoiceHelper
             'logo' => $img,
         ]);
 
-        if($preview){
+        if ($preview) {
             return $pdf->output();
         }
 
@@ -373,7 +369,8 @@ class InvoiceHelper
         $invoiceDocument->save();
     }
 
-    public static function checkStorageDir($administration_id){
+    public static function checkStorageDir($administration_id)
+    {
         //Check if storage map exists
         $storageDir = Storage::disk('administrations')->getDriver()->getAdapter()->getPathPrefix() . DIRECTORY_SEPARATOR . 'administration_' . $administration_id . DIRECTORY_SEPARATOR . 'invoices';
 
@@ -382,5 +379,20 @@ class InvoiceHelper
         }
     }
 
+    public static function setMailConfigByInvoice(Invoice $invoice)
+    {
+        // Standaard vanuit primaire mailbox mailen
+        $mailboxToSendFrom = Mailbox::where('primary', 1)->first();
+
+        // Als er een mailbox aan de administratie is gekoppeld, dan deze gebruiken
+        if ($invoice->administration->mailbox) {
+            $mailboxToSendFrom = $invoice->administration->mailbox;
+        }
+
+        // Configuratie instellen als er een mailbox is gevonden
+        if ($mailboxToSendFrom) {
+            (new EmailHelper())->setConfigToMailbox($mailboxToSendFrom);
+        }
+    }
 
 }

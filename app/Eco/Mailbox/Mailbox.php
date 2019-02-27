@@ -21,6 +21,12 @@ class Mailbox extends Model
         'password'
     ];
 
+    protected $casts = [
+        'is_active' => 'boolean',
+        'primary' => 'boolean',
+        'valid' => 'boolean',
+    ];
+
     public function users()
     {
         return $this->belongsToMany(User::class);
@@ -29,5 +35,15 @@ class Mailbox extends Model
     public function mailboxIgnores()
     {
         return $this->hasMany(MailboxIgnore::class);
+    }
+
+    public function mailgunDomain()
+    {
+        return $this->belongsTo(MailgunDomain::class);
+    }
+
+    public static function getDefault()
+    {
+        return static::where('primary', true)->first();
     }
 }

@@ -5,6 +5,7 @@ import * as vars from "../../config/random-models";
 import ModelGeneral from "../../pages/model-general";
 import ModelNewDocumentTemplate from "../../pages/document-template/model-new-document-template";
 const faker = require('faker');
+faker.locale = "nl";
 
 fixture `Create new document template minimum`;
 

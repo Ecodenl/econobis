@@ -107,6 +107,8 @@ class FullAdministration extends Resource
                 'createdAt' => $this->created_at,
                 'updatedAt' => $this->updated_at,
 
+                'mailboxId' => $this->mailbox_id,
+                'mailboxEmail' => optional($this->mailbox)->email,
             ];
     }
 }

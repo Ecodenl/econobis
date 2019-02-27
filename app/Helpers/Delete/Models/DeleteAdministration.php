@@ -84,7 +84,7 @@ class DeleteAdministration implements DeleteInterface
      */
     public function dissociateRelations()
     {
-        foreach ($this->administration->products() as $product){
+        foreach ($this->administration->products as $product){
             $product->administration()->dissociate();
             $product->save();
         }

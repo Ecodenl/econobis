@@ -83,12 +83,12 @@ class DeleteTask implements DeleteInterface
      */
     public function dissociateRelations()
     {
-        foreach ($this->task->emails() as $email){
+        foreach ($this->task->emails as $email){
             $email->task()->dissociate();
             $email->save();
         }
 
-        foreach ($this->task->documents() as $document){
+        foreach ($this->task->documents as $document){
             $document->task()->dissociate();
             $document->save();
         }

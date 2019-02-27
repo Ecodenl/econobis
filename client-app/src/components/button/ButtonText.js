@@ -6,7 +6,7 @@ const ButtonText = (props) => {
 
     if(loading){
         return (
-            <button type={type} className={`btn btn-sm btn-loading ${buttonClassName}`} value={value}>
+            <button type={type} className={`btn btn-sm btn-loading ${buttonClassName}`} value={value} disabled={loading}>
                 <span className="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span> {loadText}
             </button>
         );

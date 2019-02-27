@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\User;
 
 use App\Eco\User\User;
 use App\Helpers\Alfresco\AlfrescoHelper;
+use App\Helpers\Email\EmailHelper;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Resources\User\FullUser;
@@ -60,8 +61,10 @@ class UserController extends Controller
         $user->assignRole(Role::findByName('Medewerker'));
 
         //Send link to set password
-        $forgotPassWordController = new ForgotPasswordController();
-        $forgotPassWordController->sendResetLinkEmail($request);
+        // Emails moeten vanuit de default mailbox worden verstuurd ipv de mail instellingen in .env
+        // Daarom hier eerst de emailconfiguratie overschrijven voordat we gaan verzenden.
+        (new EmailHelper())->setConfigToDefaultMailbox();
+        (new ForgotPasswordController())->sendResetLinkEmail($request);
 
         return $this->show($user->fresh());
     }
@@ -89,7 +92,8 @@ class UserController extends Controller
         return $this->show($user->fresh());
     }
 
-    public function withPermission(Permission $permission){
+    public function withPermission(Permission $permission)
+    {
         $users = User::permission($permission)->with(['lastNamePrefix', 'title'])->where('id', '!=', '1')->get();
         return FullUser::collection($users);
     }
@@ -106,5 +110,13 @@ class UserController extends Controller
         $this->authorize('update', $user);
 
         $user->removeRole($role);
+    }
+
+    public function sendResetLinkEmail(Request $request)
+    {
+        // Emails moeten vanuit de default mailbox worden verstuurd ipv de mail instellingen in .env
+        // Daarom hier eerst de emailconfiguratie overschrijven voordat we gaan verzenden.
+        (new EmailHelper())->setConfigToDefaultMailbox();
+        (new ForgotPasswordController())->sendResetLinkEmail($request);
     }
 }

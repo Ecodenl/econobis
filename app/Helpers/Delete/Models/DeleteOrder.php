@@ -79,12 +79,12 @@ class DeleteOrder implements DeleteInterface
      */
     public function dissociateRelations()
     {
-        foreach ($this->order->emails() as $email){
+        foreach ($this->order->emails as $email){
             $email->order()->dissociate();
             $email->save();
         }
 
-        foreach ($this->order->documents() as $document){
+        foreach ($this->order->documents as $document){
             $document->order()->dissociate();
             $document->save();
         }

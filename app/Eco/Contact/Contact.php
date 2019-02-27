@@ -209,12 +209,12 @@ class Contact extends Model
 
     public function participationsGifted()
     {
-        return $this->hasMany(ParticipantProductionProject::class, 'participation_production_project.gifted_by_contact_id');
+        return $this->hasMany(ParticipantProductionProject::class, 'gifted_by_contact_id');
     }
 
     public function participationsLegalRep()
     {
-        return $this->hasMany(ParticipantProductionProject::class, 'participation_production_project.legal_rep_contact_id');
+        return $this->hasMany(ParticipantProductionProject::class, 'legal_rep_contact_id');
     }
 
     public function primaryOccupations()
@@ -298,7 +298,7 @@ class Contact extends Model
         $dynamicGroups = ContactGroup::where('show_contact_form', true)->where('type_id', 'dynamic')->get();
 
         $dynamicGroupsForContact = $dynamicGroups->filter(function ($dynamicGroup) {
-            foreach ($dynamicGroup->dynamic_contacts->get() as $dynamic_contact){
+            foreach ($dynamicGroup->all_contacts as $dynamic_contact){
                 if($dynamic_contact->id === $this->id){
                     return true;
                 }

@@ -3,6 +3,7 @@ import superUser from '../../auth/UserRoles';
 import * as constants from '../../config/constants';
 import * as vars from "../../config/random-models";
 const faker = require('faker');
+faker.locale = "nl";
 
 import ModelGridContact from '../../pages/contact/model-grid-contact';
 import ModelGeneral from '../../pages/model-general';

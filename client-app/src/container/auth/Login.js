@@ -40,7 +40,7 @@ class Login extends Component {
             if (payload.status == 200) {
                 localStorage.setItem('access_token', payload.data.access_token);
                 localStorage.setItem('refresh_token', payload.data.refresh_token);
-                localStorage.setItem('last_activity', moment());
+                localStorage.setItem('last_activity', moment().format());
 
                 this.props.authSuccess();
 

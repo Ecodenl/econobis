@@ -16,6 +16,7 @@ const detailsOrder = new ModelDetailsOrder();
 const contactGrid = new ModelGridContact();
 const detailsPerson = new ModelDetailsPerson();
 const faker = require('faker');
+faker.locale = "nl";
 
 test('Fill out form order minimum', async (t) => {
 
@@ -67,20 +68,6 @@ test('Fill out form order minimum', async (t) => {
     //Ook product met variabele prijs
     await t
         .click(detailsOrder.newOrderProduct)
-        .click(detailsOrder.newOrderProductExisting)
-        .click(detailsOrder.product)
-        .click(general.option.withExactText(vars.productNameVariable))
-        .typeText(detailsOrder.amount, '2')
-        .typeText(detailsOrder.variablePrice, '10')
-        .click(general.save)
-        .wait(constants.wait);
-
-    //header+row
-    await t.expect(detailsOrder.orderProductRows.count).eql(3);
-
-    //Ook product met variabele prijs
-    await t
-        .click(detailsOrder.newOrderProduct)
         .click(detailsOrder.newOrderProductNew)
         .typeText(detailsOrder.code, faker.random.word())
         .typeText(detailsOrder.name, faker.random.word())
@@ -91,7 +78,7 @@ test('Fill out form order minimum', async (t) => {
         .wait(constants.wait);
 
     //header+row
-    await t.expect(detailsOrder.orderProductRows.count).eql(4);
+    await t.expect(detailsOrder.orderProductRows.count).eql(3);
 
 
     //Nieuw eenmalig product
@@ -105,5 +92,5 @@ test('Fill out form order minimum', async (t) => {
         .wait(constants.wait);
 
     //header+row
-    await t.expect(detailsOrder.orderProductRows.count).eql(5);
+    await t.expect(detailsOrder.orderProductRows.count).eql(4);
 });

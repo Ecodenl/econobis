@@ -81,12 +81,12 @@ class DeleteProductionProject implements DeleteInterface
      */
     public function dissociateRelations()
     {
-        foreach ($this->productionProject->emails() as $email){
+        foreach ($this->productionProject->emails as $email){
             $email->productionProject()->dissociate();
             $email->save();
         }
 
-        foreach ($this->productionProject->documents() as $document){
+        foreach ($this->productionProject->documents as $document){
             $document->productionProject()->dissociate();
             $document->save();
         }

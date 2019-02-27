@@ -127,17 +127,17 @@ class DeleteContact implements DeleteInterface
      */
     public function dissociateRelations()
     {
-        foreach ($this->contact->participationsGifted() as $participation){
+        foreach ($this->contact->participationsGifted as $participation){
             $participation->giftedByContact()->dissociate();
             $participation->save();
         }
 
-        foreach ($this->contact->participationsLegalRep() as $participation){
+        foreach ($this->contact->participationsLegalRep as $participation){
             $participation->legalRepContact()->dissociate();
             $participation->save();
         }
 
-        foreach ($this->contact->documents() as $document){
+        foreach ($this->contact->documents as $document){
             $document->contact()->dissociate();
             $document->save();
         }

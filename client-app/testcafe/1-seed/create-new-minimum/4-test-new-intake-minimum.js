@@ -6,6 +6,7 @@ import ModelDetailsPerson from "../../pages/contact/model-details-person";
 import ModelGeneral from "../../pages/model-general";
 import * as vars from "../../config/random-models";
 const faker = require('faker');
+faker.locale = "nl";
 
 fixture `Create new intake`;
 

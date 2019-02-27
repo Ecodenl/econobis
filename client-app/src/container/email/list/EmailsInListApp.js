@@ -6,13 +6,13 @@ import { setEmailsPagination } from '../../../actions/email/EmailsPaginationActi
 import { blockUI, unblockUI } from '../../../actions/general/BlockUIActions';
 import EmailsInList from './EmailsInList';
 import EmailsInListToolbar from './EmailsInListToolbar';
-import Panel from "../../../components/panel/Panel";
-import PanelBody from "../../../components/panel/PanelBody";
+import Panel from '../../../components/panel/Panel';
+import PanelBody from '../../../components/panel/PanelBody';
 import { isEmpty } from 'lodash';
 import MailboxAPI from '../../../api/mailbox/MailboxAPI';
-import filterHelper from "../../../helpers/FilterHelper";
-import {bindActionCreators} from "redux";
-import {clearFilterEmail} from "../../../actions/email/EmailFiltersActions";
+import filterHelper from '../../../helpers/FilterHelper';
+import { bindActionCreators } from 'redux';
+import { clearFilterEmail } from '../../../actions/email/EmailFiltersActions';
 import { setFilterMe } from '../../../actions/email/EmailFiltersActions';
 
 class EmailsInListApp extends Component {
@@ -20,7 +20,7 @@ class EmailsInListApp extends Component {
         super(props);
 
         if (!isEmpty(props.params)) {
-            if(props.params.type === 'eigen'){
+            if (props.params.type === 'eigen') {
                 this.props.setFilterMe(true);
             }
         } else {
@@ -33,34 +33,33 @@ class EmailsInListApp extends Component {
 
     componentDidMount() {
         this.fetchEmailsData();
-    };
+    }
 
     componentWillUnmount() {
         this.props.clearEmails();
-    };
+    }
 
     componentWillReceiveProps(nextProps) {
-        if(this.props.params.folder !== nextProps.params.folder) {
+        if (this.props.params.folder !== nextProps.params.folder) {
             if (!isEmpty(nextProps.params.folder)) {
                 this.props.clearFilterEmail();
-                this.props.setEmailsPagination({page: 0, offset: 0});
+                this.props.setEmailsPagination({ page: 0, offset: 0 });
                 this.props.clearEmails();
                 this.fetchEmailsData();
-                }
             }
+        }
 
         if (this.props.params.type !== nextProps.params.type) {
             if (!isEmpty(nextProps.params)) {
                 if (nextProps.params.type === 'eigen') {
                     this.props.setFilterMe(true);
-                }
-                else {
+                } else {
                     this.props.clearFilterEmail();
                 }
             }
 
             setTimeout(() => {
-                this.props.setEmailsPagination({page: 0, offset: 0});
+                this.props.setEmailsPagination({ page: 0, offset: 0 });
                 this.props.clearEmails();
                 this.fetchEmailsData();
             }, 100);
@@ -71,15 +70,15 @@ class EmailsInListApp extends Component {
         this.props.clearFilterEmail();
 
         this.fetchEmailsData();
-    };
+    }
 
     onSubmitFilter() {
         this.props.clearEmails();
 
-        this.props.setEmailsPagination({page: 0, offset: 0});
+        this.props.setEmailsPagination({ page: 0, offset: 0 });
 
         this.fetchEmailsData();
-    };
+    }
 
     fetchEmailsData() {
         setTimeout(() => {
@@ -88,8 +87,8 @@ class EmailsInListApp extends Component {
             const pagination = { limit: 20, offset: this.props.emailsPagination.offset };
 
             this.props.fetchEmails(this.props.params.folder, filters, sorts, pagination);
-        },100 );
-    };
+        }, 100);
+    }
 
     refreshData() {
         this.props.blockUI();
@@ -107,55 +106,50 @@ class EmailsInListApp extends Component {
         let page = data.selected;
         let offset = Math.ceil(page * 20);
 
-        this.props.setEmailsPagination({page, offset});
+        this.props.setEmailsPagination({ page, offset });
 
         this.fetchEmailsData();
-    };
+    }
 
     render() {
         let folder = 'ontvangen';
 
-        if(this.props.params.folder == 'removed'){
+        if (this.props.params.folder == 'removed') {
             folder = 'verwijderd';
-        }
-        else if(this.props.params.folder == 'sent'){
+        } else if (this.props.params.folder == 'sent') {
             folder = 'verzonden';
         }
 
         let me = false;
 
-        if(this.props.params.type == 'eigen'){
+        if (this.props.params.type == 'eigen') {
             me = true;
         }
 
         return (
-                <Panel className="col-lg-12">
-                    <PanelBody>
-                        <div className="col-md-12 margin-10-top">
-                            <EmailsInListToolbar
-                                refreshData={this.refreshData}
-                                folder={folder}
-                                me={me}
-                            />
-                        </div>
+            <Panel className="col-lg-12">
+                <PanelBody>
+                    <div className="col-md-12 margin-10-top">
+                        <EmailsInListToolbar refreshData={this.refreshData} folder={folder} me={me} />
+                    </div>
 
-                        <div className="col-md-12 margin-10-top">
-                            <EmailsInList
-                                folder={folder}
-                                handlePageClick={this.handlePageClick}
-                                emails={this.props.emails}
-                                emailsPagination={this.props.emailsPagination}
-                                onSubmitFilter={() => this.onSubmitFilter()}
-                                fetchEmailsData={() => this.fetchEmailsData()}
-                               />
-                        </div>
-                    </PanelBody>
-                </Panel>
-        )
+                    <div className="col-md-12 margin-10-top">
+                        <EmailsInList
+                            folder={folder}
+                            handlePageClick={this.handlePageClick}
+                            emails={this.props.emails}
+                            emailsPagination={this.props.emailsPagination}
+                            onSubmitFilter={() => this.onSubmitFilter()}
+                            fetchEmailsData={() => this.fetchEmailsData()}
+                        />
+                    </div>
+                </PanelBody>
+            </Panel>
+        );
     }
-};
+}
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         emails: state.emails.list,
         emailsPagination: state.emails.pagination,
@@ -164,8 +158,14 @@ const mapStateToProps = (state) => {
     };
 };
 
-const mapDispatchToProps = (dispatch) => {
-    return bindActionCreators({ fetchEmails, clearEmails, clearFilterEmail, setEmailsPagination, blockUI, unblockUI, setFilterMe }, dispatch);
+const mapDispatchToProps = dispatch => {
+    return bindActionCreators(
+        { fetchEmails, clearEmails, clearFilterEmail, setEmailsPagination, blockUI, unblockUI, setFilterMe },
+        dispatch
+    );
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(EmailsInListApp);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(EmailsInListApp);

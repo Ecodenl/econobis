@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Fren
- * Date: 20-10-2017
- * Time: 9:35
- */
 
 namespace App\Http\Controllers\Api\Invoice;
 
@@ -45,13 +39,13 @@ class InvoiceController extends ApiController
 
         $invoices->load(['order.contact']);
 
-        foreach ($invoices as $invoice){
+        foreach ($invoices as $invoice) {
             $orderController = new OrderController;
             $invoice->emailToAddress = $orderController->getContactInfoForOrder($invoice->order->contact)['email'];
         }
 
         $totalPrice = 0;
-        foreach($invoices as $invoice){
+        foreach ($invoices as $invoice) {
             $totalPrice += $invoice->total_price_incl_vat_and_reduction;
         }
 
@@ -129,7 +123,7 @@ class InvoiceController extends ApiController
         $datePaid = $input
             ->date('datePaid')->validate('nullable|date')->whenMissing(null)->onEmpty(null)->alias('date_paid')->next()->get();
 
-        if($datePaid['date_paid']){
+        if ($datePaid['date_paid']) {
             InvoiceHelper::saveInvoiceDatePaid($invoice, $datePaid['date_paid']);
         }
 
@@ -201,7 +195,7 @@ class InvoiceController extends ApiController
 
     public function sendNotificationPost(Invoice $invoice)
     {
-      InvoiceHelper::sendNotification($invoice);
+        InvoiceHelper::sendNotification($invoice);
 
         $filePath = Storage::disk('administrations')->getDriver()
             ->getAdapter()->applyPathPrefix($invoice->document->filename);
@@ -262,10 +256,9 @@ class InvoiceController extends ApiController
         $orderController = new OrderController;
         $emailTo = $orderController->getContactInfoForOrder($invoice->order->contact)['email'];
 
-        if($emailTo === 'Geen e-mail bekend') {
+        if ($emailTo === 'Geen e-mail bekend') {
             abort(404, 'Geen e-mail bekend');
-        }
-        else{
+        } else {
             return InvoiceHelper::send($invoice);
         }
     }
@@ -308,16 +301,15 @@ class InvoiceController extends ApiController
             $validatedInvoices = $invoices->reject(function ($invoice) {
                 return (empty($invoice->order->IBAN) && empty($invoice->order->contact->iban));
             });
-        }
-        else{
+        } else {
             $validatedInvoices = $invoices;
         }
 
-        if($validatedInvoices->count() > 0) {
-            foreach ($validatedInvoices as $invoice){
+        if ($validatedInvoices->count() > 0) {
+            foreach ($validatedInvoices as $invoice) {
                 array_push($response, $this->send($invoice, $request));
             }
-            if($paymentTypeId === 'collection') {
+            if ($paymentTypeId === 'collection') {
                 $sepaHelper = new SepaHelper($administration, $validatedInvoices);
 
                 $sepa = $sepaHelper->generateSepaFile();
@@ -343,24 +335,23 @@ class InvoiceController extends ApiController
 }
 </style>';
 
-        foreach ($invoices as $k => $invoice){
+        foreach ($invoices as $k => $invoice) {
             $invoice->date_collection = $request->input('dateCollection');
             $invoice->save();
 
             $emailTo = $orderController->getContactInfoForOrder($invoice->order->contact)['email'];
             $contactPerson = $orderController->getContactInfoForOrder($invoice->order->contact)['contactPerson'];
 
-            if($invoice->order->contact->full_name === $contactPerson){
+            if ($invoice->order->contact->full_name === $contactPerson) {
                 $contactPerson = null;
             }
 
             $contactName = null;
 
-            if($invoice->order->contact->type_id == 'person'){
+            if ($invoice->order->contact->type_id == 'person') {
                 $prefix = $invoice->order->contact->person->last_name_prefix;
                 $contactName = $prefix ? $invoice->order->contact->person->first_name . ' ' . $prefix . ' ' . $invoice->order->contact->person->last_name : $invoice->order->contact->person->first_name . ' ' . $invoice->order->contact->person->last_name;
-            }
-            elseif($invoice->order->contact->type_id == 'organisation'){
+            } elseif ($invoice->order->contact->type_id == 'organisation') {
                 $contactName = $invoice->order->contact->full_name;
             }
 
@@ -404,7 +395,8 @@ class InvoiceController extends ApiController
         return $pdfOutput->output();
     }
 
-    public function download(Invoice $invoice){
+    public function download(Invoice $invoice)
+    {
 
         $this->authorize('manage', Invoice::class);
 
@@ -423,14 +415,16 @@ class InvoiceController extends ApiController
         return response()->download($filePath, $invoice->document->name);
     }
 
-    public function getEmailPreview(Invoice $invoice){
+    public function getEmailPreview(Invoice $invoice)
+    {
 
         return InvoiceHelper::send($invoice, true);
 
     }
 
 
-    public function getAmountUnpaid(){
+    public function getAmountUnpaid()
+    {
 
         $this->authorize('manage', Invoice::class);
 
@@ -438,8 +432,8 @@ class InvoiceController extends ApiController
 
         $total = 0;
 
-        foreach($user->administrations as $administration){
-            $total +=  $administration->invoices()->whereIn('status_id', ['sent','exported'])->count();
+        foreach ($user->administrations as $administration) {
+            $total += $administration->invoices()->whereIn('status_id', ['sent', 'exported'])->count();
         }
 
         return $total;
@@ -451,7 +445,7 @@ class InvoiceController extends ApiController
 
         $invoices = Invoice::whereIn('id', $request->input('ids'))->with('order.contact')->get();
 
-        foreach ($invoices as $invoice){
+        foreach ($invoices as $invoice) {
             $orderController = new OrderController;
             $invoice->emailToAddress = $orderController->getContactInfoForOrder($invoice->order->contact)['email'];
         }
@@ -459,7 +453,8 @@ class InvoiceController extends ApiController
         return SendInvoice::collection($invoices);
     }
 
-    public function createSepaForInvoiceIds(Request $request){
+    public function createSepaForInvoiceIds(Request $request)
+    {
 
         $invoices = Invoice::whereIn('id', $request->input('ids'))->with(['order.contact', 'administration'])->get();
 
@@ -467,7 +462,7 @@ class InvoiceController extends ApiController
 
         $administration = $invoices->first()->administration;
 
-        if(!$administration->sepa_creditor_id || !$administration->bic || !$administration->IBAN){
+        if (!$administration->sepa_creditor_id || !$administration->bic || !$administration->IBAN) {
             abort(412, 'Sepa crediteur ID, BIC en IBAN zijn verplichte velden.');
         }
 
@@ -475,7 +470,7 @@ class InvoiceController extends ApiController
             return (empty($invoice->order->IBAN) && empty($invoice->order->contact->iban));
         });
 
-        if($validatedInvoices->count() > 0) {
+        if ($validatedInvoices->count() > 0) {
             $sepaHelper = new SepaHelper($administration, $validatedInvoices);
 
             $sepa = $sepaHelper->generateSepaFile();
@@ -507,15 +502,14 @@ class InvoiceController extends ApiController
         $invoice = Invoice::find($data['invoice_id']);
 
         $price = 0;
-        if($product->currentPrice){
-            if($product->currentPrice->has_variable_price) {
+        if ($product->currentPrice) {
+            if ($product->currentPrice->has_variable_price) {
                 $price = $request->input('variablePrice') ? $request->input('variablePrice') : 0;
-            }
-            else{
+            } else {
                 $price = $product->currentPrice->price;
             }
 
-            switch ($product->invoice_frequency_id){
+            switch ($product->invoice_frequency_id) {
                 case 'monthly':
                     $price = $price * 12;
                     break;
@@ -600,10 +594,10 @@ class InvoiceController extends ApiController
             $priceHistory->save();
 
             $price = 0;
-            if($product->currentPrice){
+            if ($product->currentPrice) {
                 $price = $product->currentPrice->price;
 
-                switch ($product->invoice_frequency_id){
+                switch ($product->invoice_frequency_id) {
                     case 'monthly':
                         $price = $price * 12;
                         break;
@@ -659,7 +653,7 @@ class InvoiceController extends ApiController
 
         $invoiceProduct->fill($data);
 
-        if($invoiceProduct->product->currentPrice->has_variable_price) {
+        if ($invoiceProduct->product->currentPrice->has_variable_price) {
             $price = $request->input('variablePrice') ? $request->input('variablePrice') : 0;
 
             $invoiceProduct->price = $price;
@@ -680,7 +674,7 @@ class InvoiceController extends ApiController
             $deleteInvoice = new DeleteInvoice($invoice);
             $result = $deleteInvoice->delete();
 
-            if(count($result) > 0){
+            if (count($result) > 0) {
                 DB::rollBack();
                 abort(412, implode(";", array_unique($result)));
             }

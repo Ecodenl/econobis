@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Fren
- * Date: 20-10-2017
- * Time: 9:35
- */
 
 namespace App\Http\Controllers\Api\ProductionProject;
 
@@ -13,6 +7,7 @@ use App\Eco\Document\Document;
 use App\Eco\DocumentTemplate\DocumentTemplate;
 use App\Eco\EmailTemplate\EmailTemplate;
 use App\Eco\EnergySupplier\EnergySupplier;
+use App\Eco\Mailbox\Mailbox;
 use App\Eco\Occupation\OccupationContact;
 use App\Eco\PaymentInvoice\PaymentInvoice;
 use App\Eco\ProductionProject\ProductionProjectRevenue;
@@ -21,12 +16,12 @@ use App\Helpers\Alfresco\AlfrescoHelper;
 use App\Helpers\CSV\EnergySupplierCSVHelper;
 use App\Helpers\CSV\RevenueDistributionCSVHelper;
 use App\Helpers\CSV\RevenueParticipantsCSVHelper;
+use App\Helpers\Email\EmailHelper;
 use App\Helpers\RequestInput\RequestInput;
 use App\Helpers\Template\TemplateTableHelper;
 use App\Helpers\Template\TemplateVariableHelper;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\Controllers\Api\Order\OrderController;
-use App\Http\Controllers\Api\PaymentInvoice\PaymentInvoiceController;
 use App\Http\Resources\ParticipantProductionProject\FullRevenueParticipantProductionProject;
 use App\Http\Resources\ParticipantProductionProject\Templates\ParticipantReportMail;
 use App\Http\Resources\ProductionProject\FullProductionProjectRevenue;
@@ -57,10 +52,9 @@ class ProductionProjectRevenueController extends ApiController
     {
         set_time_limit(0);
 
-        if($productionProjectRevenue->confirmed) {
+        if ($productionProjectRevenue->confirmed) {
             $productionProjectRevenue = new RevenueDistributionCSVHelper($productionProjectRevenue->distribution);
-        }
-        else{
+        } else {
             $productionProjectRevenue = new RevenueParticipantsCSVHelper($productionProjectRevenue->productionProject->participantsProductionProject, $productionProjectRevenue);
         }
 
@@ -68,7 +62,8 @@ class ProductionProjectRevenueController extends ApiController
         return $productionProjectRevenue->downloadCSV();
     }
 
-    public function getRevenueDistribution(ProductionProjectRevenue $productionProjectRevenue, Request $request){
+    public function getRevenueDistribution(ProductionProjectRevenue $productionProjectRevenue, Request $request)
+    {
         $limit = 100;
         $offset = $request->input('page') ? $request->input('page') * $limit : 0;
 
@@ -83,7 +78,8 @@ class ProductionProjectRevenueController extends ApiController
 
     }
 
-    public function getRevenueParticipants(ProductionProjectRevenue $productionProjectRevenue, Request $request){
+    public function getRevenueParticipants(ProductionProjectRevenue $productionProjectRevenue, Request $request)
+    {
         $limit = 100;
         $offset = $request->input('page') ? $request->input('page') * $limit : 0;
 
@@ -161,7 +157,8 @@ class ProductionProjectRevenueController extends ApiController
     public function update(
         RequestInput $requestInput,
         ProductionProjectRevenue $productionProjectRevenue
-    ) {
+    )
+    {
         $this->authorize('manage', ProductionProjectRevenue::class);
 
         $data = $requestInput
@@ -212,7 +209,8 @@ class ProductionProjectRevenueController extends ApiController
 
     public function saveDistribution(
         ProductionProjectRevenue $productionProjectRevenue
-    ) {
+    )
+    {
 
         $productionProjectRevenue->save();
 
@@ -290,7 +288,8 @@ class ProductionProjectRevenueController extends ApiController
         ProductionProjectRevenue $productionProjectRevenue,
         DocumentTemplate $documentTemplate,
         EnergySupplier $energySupplier
-    ) {
+    )
+    {
         $documentName = $request->input('documentName');
 
         //get current logged in user
@@ -363,7 +362,8 @@ class ProductionProjectRevenueController extends ApiController
         Request $request,
         ProductionProjectRevenue $productionProjectRevenue,
         EnergySupplier $energySupplier
-    ) {
+    )
+    {
         $documentName = $request->input('documentName');
         $templateId = $request->input('templateId');
 
@@ -411,7 +411,8 @@ class ProductionProjectRevenueController extends ApiController
 
     public function createInvoices(
         $distributions
-    ) {
+    )
+    {
 
         $createdInvoices = [];
 
@@ -452,14 +453,16 @@ class ProductionProjectRevenueController extends ApiController
         return FullProductionProjectRevenueDistribution::collection($distribution);
     }
 
-    public function downloadPreview(Request $request, ProductionProjectRevenueDistribution $distribution) {
+    public function downloadPreview(Request $request, ProductionProjectRevenueDistribution $distribution)
+    {
         return $this->createParticipantRevenueReport($request->input('subject'),
             [$distribution->id],
             DocumentTemplate::find($request->input('documentTemplateId')),
             EmailTemplate::find($request->input('emailTemplateId')), true);
     }
 
-    public function previewEmail(Request $request, ProductionProjectRevenueDistribution $distribution) {
+    public function previewEmail(Request $request, ProductionProjectRevenueDistribution $distribution)
+    {
         return $this->createParticipantRevenueReport($request->input('subject'),
             [$distribution->id],
             DocumentTemplate::find($request->input('documentTemplateId')),
@@ -467,7 +470,8 @@ class ProductionProjectRevenueController extends ApiController
             true);
     }
 
-    public function createParticipantRevenueReport($subject, $distributionIds, DocumentTemplate $documentTemplate, EmailTemplate $emailTemplate, $previewPDF = false, $previewEmail = false) {
+    public function createParticipantRevenueReport($subject, $distributionIds, DocumentTemplate $documentTemplate, EmailTemplate $emailTemplate, $previewPDF = false, $previewEmail = false)
+    {
         //get current logged in user
         $user = Auth::user();
 
@@ -514,7 +518,7 @@ class ProductionProjectRevenueController extends ApiController
                     'contact', $contact);
 
                 //wettelijk vertegenwoordiger
-                if(OccupationContact::where('contact_id', $contact->id)->where('occupation_id', 7)->exists()){
+                if (OccupationContact::where('contact_id', $contact->id)->where('occupation_id', 7)->exists()) {
                     $wettelijkVertegenwoordiger = OccupationContact::where('contact_id', $contact->id)->where('occupation_id', 7)->first()->primaryContact;
                     $revenueHtml
                         = TemplateVariableHelper::replaceTemplateVariables($revenueHtml,
@@ -585,6 +589,7 @@ class ProductionProjectRevenueController extends ApiController
 
             //send email
             if ($primaryEmailAddress) {
+                $this->setMailConfigByDistribution($distribution);
 
                 $email = Mail::to($primaryEmailAddress->email);
                 if (!$subject) {
@@ -599,26 +604,26 @@ class ProductionProjectRevenueController extends ApiController
                     . $emailTemplate->html_body . '</html>';
 
                 $htmlBodyWithContactVariables = TemplateTableHelper::replaceTemplateTables($email->html_body, $contact);
-                $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables,'contact', $contact);
-                $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables,'ik', $user);
+                $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables, 'contact', $contact);
+                $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables, 'ik', $user);
 
                 //wettelijk vertegenwoordiger
-                if(OccupationContact::where('contact_id', $contact->id)->where('occupation_id', 7)->exists()){
+                if (OccupationContact::where('contact_id', $contact->id)->where('occupation_id', 7)->exists()) {
                     $wettelijkVertegenwoordiger = OccupationContact::where('contact_id', $contact->id)->where('occupation_id', 7)->first()->primaryContact;
                     $htmlBodyWithContactVariables
                         = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables,
                         'wettelijk_vertegenwoordiger', $wettelijkVertegenwoordiger);
                 }
 
-                $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables,'participant', $distribution->participation);
-                $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables,'administratie', $administration);
-                $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables,'verdeling', $distribution);
-                $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables,'opbrengst', $revenue);
-                $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables,'productie_project', $productionProject);
+                $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables, 'participant', $distribution->participation);
+                $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables, 'administratie', $administration);
+                $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables, 'verdeling', $distribution);
+                $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables, 'opbrengst', $revenue);
+                $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables, 'productie_project', $productionProject);
                 $htmlBodyWithContactVariables = TemplateVariableHelper::stripRemainingVariableTags($htmlBodyWithContactVariables);
                 $subject = str_replace('{contactpersoon}', $contactInfo['contactPerson'], $subject);
                 $htmlBodyWithContactVariables = str_replace('{contactpersoon}', $contactInfo['contactPerson'], $htmlBodyWithContactVariables);
-                
+
                 if ($previewEmail) {
                     return [
                         'to' => $primaryEmailAddress->email,
@@ -644,7 +649,8 @@ class ProductionProjectRevenueController extends ApiController
         }
     }
 
-    public function createPaymentInvoices(Request $request){
+    public function createPaymentInvoices(Request $request)
+    {
         set_time_limit(0);
         $createReport = $request->input('createReport');
         $createInvoice = $request->input('createInvoice');
@@ -656,6 +662,24 @@ class ProductionProjectRevenueController extends ApiController
         CreatePaymentInvoices::dispatch($createReport, $createInvoice, $distributionIds, $subject, $documentTemplateId, $emailTemplateId, Auth::id());
 
         return ProductionProjectRevenueDistribution::find($distributionIds[0])->revenue->productionProject->administration_id;
+    }
+
+    protected function setMailConfigByDistribution(ProductionProjectRevenueDistribution $distribution)
+    {
+        // Standaard vanuit primaire mailbox mailen
+        $mailboxToSendFrom = Mailbox::where('primary', 1)->first();
+
+        // Als er een mailbox aan de administratie is gekoppeld, dan deze gebruiken
+        $productionProject = $distribution->revenue->productionProject;
+
+        if ($productionProject->administration && $productionProject->administration->mailbox) {
+            $mailboxToSendFrom = $productionProject->administration->mailbox;
+        }
+
+        // Configuratie instellen als er een mailbox is gevonden
+        if ($mailboxToSendFrom) {
+            (new EmailHelper())->setConfigToMailbox($mailboxToSendFrom);
+        }
     }
 
 }

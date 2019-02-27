@@ -7,6 +7,7 @@ import ModelNewProduct from "../../pages/product/model-new-product";
 import ModelDetailsProduct from "../../pages/product/model-details-product";
 
 const faker = require('faker');
+faker.locale = "nl";
 
 fixture `Create new product minimum`;
 
@@ -72,7 +73,7 @@ test('Fill out form product minimum', async (t) => {
         .typeText(detailsProduct.dateStart, '01-01-2018')
         .pressKey('esc')
         .click(detailsProduct.vatPercentage)
-        .click(general.option.withExactText('6'))
+        .click(general.option.withExactText('9'))
         .click(general.save)
         .wait(constants.wait);
 

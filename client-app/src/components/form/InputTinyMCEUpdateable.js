@@ -12,21 +12,17 @@ import 'tinymce/plugins/table';
 import 'tinymce/plugins/lists';
 import 'tinymce/plugins/advlist';
 import 'tinymce/plugins/paste';
-//import 'tinymce/plugins/forecolor';
+import 'tinymce/plugins/pagebreak';
 import 'tinymce/plugins/textcolor';
 import { Editor } from '@tinymce/tinymce-react';
 import {isEqual} from "lodash";
 
 class InputTinyMCEUpdateable extends Component {
-    constructor(props) {
-        super(props);
-    };
-
-    componentWillReceiveProps(nextProps) {
-        if(this.props.value !== nextProps.value) {
+    componentDidUpdate(prevProps) {
+        if(this.props.value !== prevProps.value) {
             const editor = window.tinymce.EditorManager.get('tinyMCEUpdateable');
-            if (nextProps.value && !isEqual(editor.getContent({format: 'raw'}), nextProps.value)) {
-                editor.setContent(nextProps.value);
+            if (this.props.value && !isEqual(editor.getContent({format: 'raw'}), this.props.value)) {
+                editor.setContent(this.props.value);
                 editor.selection.select(editor.getBody(), true);
                 editor.selection.collapse(false);
             }
@@ -34,7 +30,7 @@ class InputTinyMCEUpdateable extends Component {
     };
 
     render() {
-        const {label, className, size, value, onChangeAction, readOnly} = this.props;
+        const {label, value, onChangeAction} = this.props;
 
         return (
             <div>
@@ -46,12 +42,11 @@ class InputTinyMCEUpdateable extends Component {
                         id={'tinyMCEUpdateable'}
                         initialValue={value}
                         init={{
-                            // images_upload_url : 'youruploadscript.php',
                             branding: false,
                             language: 'nl',
                             menubar: false,
-                            plugins: 'paste lists advlist link image code table textcolor',
-                            toolbar: 'undo redo | formatselect fontselect | bold italic forecolor | alignleft aligncenter alignright | bullist numlist outdent indent | table | link image | code',
+                            plugins: 'paste lists advlist link image code table textcolor pagebreak',
+                            toolbar: 'undo redo | formatselect fontselect | bold italic forecolor | alignleft aligncenter alignright | pagebreak | bullist numlist outdent indent | table | link image | code',
                             height: "300",
                             browser_spellcheck : true,
                             font_formats: 'Courier New=courier new;Tahoma=tahoma;Times New Roman=times new roman;Verdana=verdana;'
@@ -65,23 +60,17 @@ class InputTinyMCEUpdateable extends Component {
 }
 
 InputTinyMCEUpdateable.defaultProps = {
-    className: '',
-    size: 'col-sm-6',
     value: '',
-    readOnly: false,
     errorMessage: '',
 };
 
 InputTinyMCEUpdateable.propTypes = {
     label: PropTypes.string.isRequired,
     type: PropTypes.string,
-    className: PropTypes.string,
-    size: PropTypes.string,
     id: PropTypes.string,
     placeholder: PropTypes.string,
     value: PropTypes.string,
     onChangeAction: PropTypes.func,
-    readOnly: PropTypes.bool,
 };
 
 export default InputTinyMCEUpdateable;

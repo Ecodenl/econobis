@@ -7,6 +7,7 @@ import ModelNewAdministration from "../../pages/administration/model-new-adminis
 import ModelDetailsAdministration from "../../pages/administration/model-details-administration";
 
 const faker = require('faker');
+faker.locale = "nl";
 
 fixture `Create new administration minimum`;
 
@@ -39,7 +40,7 @@ test('Fill out form administration minimum', async (t) => {
     await t
         .click(detailsAdministration.newUser)
         .click(detailsAdministration.user)
-        .click(general.option.withExactText('Econobis, Support'))
+        .click(general.option.withExactText(constants.name))
         .click(general.save)
         .wait(constants.wait);
 

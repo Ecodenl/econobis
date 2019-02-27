@@ -1,17 +1,19 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import validator from 'validator';
 
 import { updateAdministration } from '../../../../actions/administration/AdministrationDetailsActions';
 import InputText from '../../../../components/form/InputText';
 import ButtonText from '../../../../components/button/ButtonText';
-import Panel from "../../../../components/panel/Panel";
-import PanelBody from "../../../../components/panel/PanelBody";
-import * as ibantools from "ibantools";
-import AdministrationLogoNew from "../../new/AdministrationLogoNew";
-import InputSelect from "../../../../components/form/InputSelect";
-import EmailTemplateAPI from "../../../../api/email-template/EmailTemplateAPI";
-import InputReactSelect from "../../../../components/form/InputReactSelect";
+import Panel from '../../../../components/panel/Panel';
+import PanelBody from '../../../../components/panel/PanelBody';
+import * as ibantools from 'ibantools';
+import AdministrationLogoNew from '../../new/AdministrationLogoNew';
+import InputSelect from '../../../../components/form/InputSelect';
+import EmailTemplateAPI from '../../../../api/email-template/EmailTemplateAPI';
+import InputReactSelect from '../../../../components/form/InputReactSelect';
+import axios from 'axios';
+import MailboxAPI from '../../../../api/mailbox/MailboxAPI';
 import InputToggle from "../../../../components/form/InputToggle";
 
 class AdministrationDetailsFormGeneralEdit extends Component {
@@ -19,12 +21,13 @@ class AdministrationDetailsFormGeneralEdit extends Component {
         super(props);
 
         const { id, name, administrationNumber, address, emailTemplateIdCollection, emailTemplateIdTransfer, emailTemplateReminderId, emailTemplateExhortationId, postalCode, city, countryId, kvkNumber, btwNumber, IBAN, email, website, bic, sepaContractName,
-            sepaCreditorId, rsinNumber, defaultPaymentTerm, logoName, ibanAttn, usesTwinfield, twinfieldUsername, twinfieldPassword, twinfieldOrganizationCode, twinfieldOfficeCode,
+            sepaCreditorId, rsinNumber, defaultPaymentTerm, logoName, ibanAttn, mailboxId, usesTwinfield, twinfieldUsername, twinfieldPassword, twinfieldOrganizationCode, twinfieldOfficeCode,
             defaultInvoiceTemplate, btwCodeSalesNull, btwCodeSales0, btwCodeSales6, btwCodeSales21} = props.administrationDetails;
 
         this.state = {
             newLogo: false,
             emailTemplates: [],
+            mailboxAddresses: [],
             isSaving: false,
             loadingText: 'Aan het opslaan',
             administration: {
@@ -51,6 +54,8 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                 emailTemplateIdTransfer: emailTemplateIdTransfer ? emailTemplateIdTransfer : '',
                 emailTemplateReminderId: emailTemplateReminderId ? emailTemplateReminderId : '',
                 emailTemplateExhortationId: emailTemplateExhortationId ? emailTemplateExhortationId : '',
+                attachment: '',
+                mailboxId: mailboxId,
                 usesTwinfield: usesTwinfield,
                 twinfieldUsername: twinfieldUsername ? twinfieldUsername : '',
                 twinfieldPassword: twinfieldPassword ? twinfieldPassword : '',
@@ -83,28 +88,30 @@ class AdministrationDetailsFormGeneralEdit extends Component {
             },
         };
         this.handleReactSelectChange = this.handleReactSelectChange.bind(this);
-    };
+    }
 
-
-    componentWillMount() {
-        EmailTemplateAPI.fetchEmailTemplatesPeek().then((payload) => {
-            this.setState({
-                emailTemplates: payload,
-                peekLoading: {
-                    ...this.state.peekLoading,
-                    emailTemplates: false,
-                },
-            });
-        });
-    };
+    componentDidMount() {
+        axios.all([EmailTemplateAPI.fetchEmailTemplatesPeek(), MailboxAPI.fetchMailboxesLoggedInUserPeek()]).then(
+            axios.spread((emailTemplates, mailboxAddresses) => {
+                this.setState({
+                    emailTemplates,
+                    mailboxAddresses,
+                    peekLoading: {
+                        ...this.state.peekLoading,
+                        emailTemplates: false,
+                    },
+                });
+            })
+        );
+    }
 
     toggleNewLogo = () => {
         this.setState({
             newLogo: !this.state.newLogo,
-        })
+        });
     };
 
-    addAttachment = (file) =>  {
+    addAttachment = file => {
         this.setState({
             ...this.state,
             administration: {
@@ -120,10 +127,10 @@ class AdministrationDetailsFormGeneralEdit extends Component {
             ...this.state,
             administration: {
                 ...this.state.administration,
-                [name]: selectedOption
+                [name]: selectedOption,
             },
         });
-    };
+    }
 
     handleInputChange = event => {
         const target = event.target;
@@ -134,7 +141,7 @@ class AdministrationDetailsFormGeneralEdit extends Component {
             ...this.state,
             administration: {
                 ...this.state.administration,
-                [name]: value
+                [name]: value,
             },
         });
     };
@@ -142,7 +149,7 @@ class AdministrationDetailsFormGeneralEdit extends Component {
     handleSubmit = event => {
         event.preventDefault();
 
-        const {administration} = this.state;
+        const { administration } = this.state;
 
         // Validation
         let errors = {};
@@ -225,7 +232,7 @@ class AdministrationDetailsFormGeneralEdit extends Component {
         this.setState({...this.state, errors: errors});
 
         // If no errors send form
-        if(!hasErrors) {
+        if (!hasErrors) {
 
             let loadingText = 'Aan het laden';
 
@@ -263,6 +270,7 @@ class AdministrationDetailsFormGeneralEdit extends Component {
             data.append('emailTemplateReminderId', administration.emailTemplateReminderId);
             data.append('emailTemplateExhortationId', administration.emailTemplateExhortationId);
             data.append('attachment', administration.attachment);
+            data.append('mailboxId', administration.mailboxId);
             data.append('usesTwinfield', administration.usesTwinfield);
             data.append('twinfieldUsername', administration.twinfieldUsername);
             data.append('twinfieldPassword', administration.twinfieldPassword);
@@ -280,7 +288,7 @@ class AdministrationDetailsFormGeneralEdit extends Component {
 
     render() {
         const { name, administrationNumber, emailTemplateIdCollection, emailTemplateIdTransfer, emailTemplateReminderId, emailTemplateExhortationId, address, postalCode, city, countryId, kvkNumber, btwNumber, IBAN, email, website, bic, sepaContractName,
-            sepaCreditorId, rsinNumber, defaultPaymentTerm, attachment, logoName, ibanAttn, usesTwinfield, twinfieldUsername, twinfieldPassword, twinfieldOrganizationCode, twinfieldOfficeCode,
+            sepaCreditorId, rsinNumber, defaultPaymentTerm, attachment, logoName, ibanAttn, mailboxId, usesTwinfield, twinfieldUsername, twinfieldPassword, twinfieldOrganizationCode, twinfieldOfficeCode,
             defaultInvoiceTemplate, btwCodeSalesNull, btwCodeSales0, btwCodeSales6, btwCodeSales21} = this.state.administration;
 
         return (
@@ -290,15 +298,15 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                         <div className="row">
                             <InputText
                                 label="Naam"
-                                name={"name"}
+                                name={'name'}
                                 value={name}
                                 onChangeAction={this.handleInputChange}
-                                required={"required"}
+                                required={'required'}
                                 error={this.state.errors.name}
                             />
                             <InputText
                                 label="Administratie nummer"
-                                name={"administrationNumber"}
+                                name={'administrationNumber'}
                                 value={administrationNumber}
                                 onChangeAction={this.handleInputChange}
                                 error={this.state.errors.administrationNumber}
@@ -308,13 +316,13 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                         <div className="row">
                             <InputText
                                 label="Adres"
-                                name={"address"}
+                                name={'address'}
                                 value={address}
                                 onChangeAction={this.handleInputChange}
                             />
                             <InputText
                                 label="Postcode"
-                                name={"postalCode"}
+                                name={'postalCode'}
                                 value={postalCode}
                                 onChangeAction={this.handleInputChange}
                                 error={this.state.errors.postalCode}
@@ -324,15 +332,15 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                         <div className="row">
                             <InputText
                                 label="Plaats"
-                                name={"city"}
+                                name={'city'}
                                 value={city}
                                 onChangeAction={this.handleInputChange}
                             />
                             <InputSelect
-                                label={"Land"}
+                                label={'Land'}
                                 id="countryId"
-                                size={"col-sm-6"}
-                                name={"countryId"}
+                                size={'col-sm-6'}
+                                name={'countryId'}
                                 options={this.props.countries}
                                 value={countryId}
                                 onChangeAction={this.handleInputChange}
@@ -342,14 +350,14 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                         <div className="row">
                             <InputText
                                 label="KvK"
-                                name={"kvkNumber"}
+                                name={'kvkNumber'}
                                 value={kvkNumber}
                                 onChangeAction={this.handleInputChange}
                                 error={this.state.errors.kvkNumber}
                             />
                             <InputText
                                 label="BTW nummer"
-                                name={"btwNumber"}
+                                name={'btwNumber'}
                                 value={btwNumber}
                                 onChangeAction={this.handleInputChange}
                             />
@@ -358,14 +366,14 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                         <div className="row">
                             <InputText
                                 label="IBAN"
-                                name={"IBAN"}
+                                name={'IBAN'}
                                 value={IBAN}
                                 onChangeAction={this.handleInputChange}
                                 error={this.state.errors.IBAN}
                             />
                             <InputText
                                 label="IBAN t.n.v."
-                                name={"ibanAttn"}
+                                name={'ibanAttn'}
                                 value={ibanAttn}
                                 onChangeAction={this.handleInputChange}
                             />
@@ -374,29 +382,24 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                         <div className="row">
                             <InputText
                                 label="Website"
-                                name={"website"}
+                                name={'website'}
                                 value={website}
                                 onChangeAction={this.handleInputChange}
                                 error={this.state.errors.website}
                             />
-                            <InputText
-                                label="Bic"
-                                name={"bic"}
-                                value={bic}
-                                onChangeAction={this.handleInputChange}
-                            />
+                            <InputText label="Bic" name={'bic'} value={bic} onChangeAction={this.handleInputChange} />
                         </div>
 
                         <div className="row">
                             <InputText
                                 label="Sepa contractnaam"
-                                name={"sepaContractName"}
+                                name={'sepaContractName'}
                                 value={sepaContractName}
                                 onChangeAction={this.handleInputChange}
                             />
                             <InputText
                                 label="Sepa crediteur id"
-                                name={"sepaCreditorId"}
+                                name={'sepaCreditorId'}
                                 value={sepaCreditorId}
                                 onChangeAction={this.handleInputChange}
                             />
@@ -404,8 +407,8 @@ class AdministrationDetailsFormGeneralEdit extends Component {
 
                         <div className="row">
                             <InputReactSelect
-                                label={"E-mail template factuur incasso"}
-                                name={"emailTemplateIdCollection"}
+                                label={'E-mail template factuur incasso'}
+                                name={'emailTemplateIdCollection'}
                                 options={this.state.emailTemplates}
                                 value={emailTemplateIdCollection}
                                 onChangeAction={this.handleReactSelectChange}
@@ -414,7 +417,7 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                             />
                             <InputText
                                 label="E-mail"
-                                name={"email"}
+                                name={'email'}
                                 value={email}
                                 onChangeAction={this.handleInputChange}
                                 error={this.state.errors.email}
@@ -423,8 +426,8 @@ class AdministrationDetailsFormGeneralEdit extends Component {
 
                         <div className="row">
                             <InputReactSelect
-                                label={"E-mail template factuur overboeken"}
-                                name={"emailTemplateIdTransfer"}
+                                label={'E-mail template factuur overboeken'}
+                                name={'emailTemplateIdTransfer'}
                                 options={this.state.emailTemplates}
                                 value={emailTemplateIdTransfer}
                                 onChangeAction={this.handleReactSelectChange}
@@ -433,7 +436,7 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                             />
                             <InputText
                                 label="RSIN nummer"
-                                name={"rsinNumber"}
+                                name={'rsinNumber'}
                                 value={rsinNumber}
                                 onChangeAction={this.handleInputChange}
                             />
@@ -441,8 +444,8 @@ class AdministrationDetailsFormGeneralEdit extends Component {
 
                         <div className="row">
                             <InputReactSelect
-                                label={"E-mail template herinnering"}
-                                name={"emailTemplateReminderId"}
+                                label={'E-mail template herinnering'}
+                                name={'emailTemplateReminderId'}
                                 options={this.state.emailTemplates}
                                 value={emailTemplateReminderId}
                                 onChangeAction={this.handleReactSelectChange}
@@ -451,10 +454,10 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                             />
                             <InputText
                                 label="Standaard betalingstermijn(dagen)"
-                                type={"number"}
+                                type={'number'}
                                 min={'0'}
                                 max={'9999'}
-                                name={"defaultPaymentTerm"}
+                                name={'defaultPaymentTerm'}
                                 value={defaultPaymentTerm}
                                 onChangeAction={this.handleInputChange}
                             />
@@ -462,8 +465,8 @@ class AdministrationDetailsFormGeneralEdit extends Component {
 
                         <div className="row">
                             <InputReactSelect
-                                label={"E-mail template aanmaning"}
-                                name={"emailTemplateExhortationId"}
+                                label={'E-mail template aanmaning'}
+                                name={'emailTemplateExhortationId'}
                                 options={this.state.emailTemplates}
                                 value={emailTemplateExhortationId}
                                 onChangeAction={this.handleReactSelectChange}
@@ -477,14 +480,33 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                                     <input
                                         type="text"
                                         className="form-control input-sm col-sm-6"
-                                        value={attachment ? attachment.name : logoName }
+                                        value={attachment ? attachment.name : logoName}
                                         onClick={this.toggleNewLogo}
-                                        onChange={()=>{}}
+                                        onChange={() => {}}
                                     />
                                 </div>
                             </div>
                         </div>
 
+                        <div className="row">
+                            <InputSelect
+                                label={'Afzender van Rapportages en facturen is e-mail adres'}
+                                id="mailboxId"
+                                size={'col-sm-6'}
+                                name={'mailboxId'}
+                                options={this.state.mailboxAddresses}
+                                optionName={'email'}
+                                value={mailboxId}
+                                onChangeAction={this.handleInputChange}
+                            />
+                        </div>
+
+                        {this.state.newLogo && (
+                            <AdministrationLogoNew
+                                toggleShowNew={this.toggleNewLogo}
+                                addAttachment={this.addAttachment}
+                            />
+                        )}
                         {usesTwinfield == true &&
                         <div className="row">
                             <div className={'panel-part panel-heading'}>
@@ -613,10 +635,10 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                 </Panel>
             </form>
         );
-    };
-};
+    }
+}
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         countries: state.systemData.countries,
         administrationDetails: state.administrationDetails,
@@ -629,4 +651,7 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(AdministrationDetailsFormGeneralEdit);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(AdministrationDetailsFormGeneralEdit);

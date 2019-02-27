@@ -40,6 +40,11 @@ class FullMailbox extends Resource
             'users' => UserPeek::collection($this->whenLoaded('users')),
             'mailboxIgnores' => FullMailboxIgnore::collection($this->whenLoaded('mailboxIgnores')),
             'valid' => $this->valid,
+            'mailgunDomainId' => $this->mailgun_domain_id,
+            'mailgunDomain' => $this->mailgunDomain ? $this->mailgunDomain->domain : '',
+            'outgoingServerType' => $this->outgoing_server_type,
+            'isActive' => $this->is_active,
+            'primary' => $this->primary,
         ];
     }
 }

@@ -78,7 +78,7 @@ class DeleteHousingFile implements DeleteInterface
      */
     public function dissociateRelations()
     {
-        foreach ($this->housingFile->documents() as $document){
+        foreach ($this->housingFile->documents as $document){
             $document->housingFile()->dissociate();
             $document->save();
         }

@@ -7,7 +7,7 @@ export function* fetchMailboxesSaga() {
         const mailboxes = yield call(MailboxAPI.fetchMailboxes);
 
         yield all([
-            put({ type: 'FETCH_MAILBOXES_LOADING_SUCCESS'}),
+            put({ type: 'FETCH_MAILBOXES_LOADING_SUCCESS' }),
             put({ type: 'FETCH_MAILBOXES_SUCCESS', mailboxes }),
         ]);
         yield put({ type: 'IS_LOADING_COMPLETE' });

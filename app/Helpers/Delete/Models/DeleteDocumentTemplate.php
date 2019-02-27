@@ -83,7 +83,7 @@ class DeleteDocumentTemplate implements DeleteInterface
      */
     public function deleteRelations()
     {
-        foreach ($this->documentTemplate->documents() as $document){
+        foreach ($this->documentTemplate->documents as $document){
             $document->template()->dissociate();
             $document->save();
         }

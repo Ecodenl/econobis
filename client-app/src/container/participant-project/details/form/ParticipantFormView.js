@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment';
 moment.locale('nl');
-
+import moneyPresenter from '../../../../helpers/MoneyPresenter';
 import ViewText from '../../../../components/form/ViewText';
 import ParticipantFormViewObligation from './view/ParticipantFormViewObligation';
 import ParticipantFormViewCapital from './view/ParticipantFormViewCapital';
@@ -15,11 +15,12 @@ const ParticipantFormView = props => {
         project,
         dateRegister,
         participationsRequested,
-        participationsGranted,
+        participationsDefinitive,
         participationsSold,
         participationsCurrent,
-        participationsWorthTotal,
+        participationsDefinitiveWorth,
         participationsRestSale,
+        amountDefinitive,
         updatedAt,
         dateContractSend,
         dateContractRetour,
@@ -83,8 +84,8 @@ const ParticipantFormView = props => {
                     <div className="col-md-6" />
                 ) : (
                     <ViewText
-                        label={`Huidige saldo ${projectTypeCodeRef === 'loan' ? 'lening' : 'kapitaal'} rekening`}
-                        value={'????'}
+                        label={`Huidig saldo ${projectTypeCodeRef === 'loan' ? 'lening' : 'kapitaal'} rekening`}
+                        value={amountDefinitive && moneyPresenter(amountDefinitive)}
                     />
                 )}
                 <ViewText label={'IBAN uitkeren t.n.v.'} value={ibanPayoutAttn ? ibanPayoutAttn : ''} />
@@ -98,8 +99,8 @@ const ParticipantFormView = props => {
                 <ParticipantFormViewObligation
                     onClick={props.switchToEdit}
                     participationWorth={project.participationWorth ? project.participationWorth : ''}
-                    participationsGranted={participationsGranted}
-                    participationsWorthTotal={participationsWorthTotal}
+                    participationsDefinitive={participationsDefinitive}
+                    participationsDefinitiveWorth={participationsDefinitiveWorth}
                     valueCourses={project.valueCourses}
                 />
             ) : null}
@@ -108,8 +109,8 @@ const ParticipantFormView = props => {
                 <ParticipantFormViewCapital
                     onClick={props.switchToEdit}
                     participationWorth={project.participationWorth ? project.participationWorth : ''}
-                    participationsGranted={participationsGranted}
-                    participationsWorthTotal={participationsWorthTotal}
+                    participationsDefinitive={participationsDefinitive}
+                    participationsDefinitiveWorth={participationsDefinitiveWorth}
                     valueCourses={project.valueCourses}
                 />
             ) : null}
@@ -118,8 +119,8 @@ const ParticipantFormView = props => {
                 <ParticipantFormViewPostalcodeLinkCapital
                     onClick={props.switchToEdit}
                     participationWorth={project.participationWorth ? project.participationWorth : ''}
-                    participationsGranted={participationsGranted}
-                    participationsWorthTotal={participationsWorthTotal}
+                    participationsDefinitive={participationsDefinitive}
+                    participationsDefinitiveWorth={participationsDefinitiveWorth}
                     valueCourses={project.valueCourses}
                     powerKwhConsumption={powerKwhConsumption}
                 />

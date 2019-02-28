@@ -3,6 +3,7 @@ import moment from 'moment/moment';
 import { connect } from 'react-redux';
 import styled from '@emotion/styled';
 moment.locale('nl');
+import moneyPresenter from '../../../../helpers/MoneyPresenter';
 
 const StyledContainer = styled.div`
     display: flex;
@@ -36,7 +37,7 @@ const MutationFormView = ({
         entry,
         status,
         datePayment,
-        account,
+        amount,
         quantity,
         returns,
         payoutKwh,
@@ -60,7 +61,9 @@ const MutationFormView = ({
                 <StyledColumn columnWidth={'10%'}>{type.description}</StyledColumn>
                 {(projectTypeCodeRef === 'loan' ||
                     projectTypeCodeRef === 'capital' ||
-                    projectTypeCodeRef === 'postalcode_link_capital') && <StyledColumn>{account}</StyledColumn>}
+                    projectTypeCodeRef === 'postalcode_link_capital') && (
+                    <StyledColumn>{amount && moneyPresenter(amount)}</StyledColumn>
+                )}
                 {(projectTypeCodeRef === 'obligation' ||
                     projectTypeCodeRef === 'capital' ||
                     projectTypeCodeRef === 'postalcode_link_capital') && <StyledColumn>{quantity}</StyledColumn>}

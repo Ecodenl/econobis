@@ -2,9 +2,8 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import ParticipantMutationAPI from '../../../../api/participant-project/ParticipantMutationAPI';
-import { newParticipationMutation } from '../../../../actions/participants-project/ParticipantProjectDetailsActions';
+import { fetchParticipantProjectDetails } from '../../../../actions/participants-project/ParticipantProjectDetailsActions';
 import validator from 'validator';
-import * as ibantools from 'ibantools';
 import MutationFormDefault from './MutationFormDefault';
 import moment from 'moment';
 
@@ -19,7 +18,7 @@ class MutationFormNew extends Component {
                 typeId: '',
                 statusId: '',
                 datePayment: '',
-                account: '',
+                amount: '',
                 quantity: '',
                 returns: '',
             },
@@ -76,19 +75,12 @@ class MutationFormNew extends Component {
             hasErrors = true;
         }
 
-        // if (!validator.isEmpty(participationMutation.iban)) {
-        //     if (!ibantools.isValidIBAN(participationMutation.iban)) {
-        //         errors.iban = true;
-        //         hasErrors = true;
-        //     }
-        // }
-
         this.setState({ ...this.state, errors: errors });
 
         // If no errors send form
         !hasErrors &&
             ParticipantMutationAPI.newParticipantMutation(participationMutation).then(payload => {
-                this.props.newParticipationMutation(payload);
+                this.props.fetchParticipantProjectDetails(this.props.id);
                 this.props.toggleShowNew();
             });
     };
@@ -99,7 +91,7 @@ class MutationFormNew extends Component {
             typeId,
             statusId,
             datePayment,
-            account,
+            amount,
             quantity,
             returns,
         } = this.state.participationMutation;
@@ -118,7 +110,7 @@ class MutationFormNew extends Component {
                 statusId={statusId}
                 dateCreation={dateCreation}
                 datePayment={datePayment}
-                account={account}
+                amount={amount}
                 quantity={quantity}
                 returns={returns}
                 errors={this.state.errors}
@@ -143,8 +135,8 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => ({
-    newParticipationMutation: participationMutation => {
-        dispatch(newParticipationMutation(participationMutation));
+    fetchParticipantProjectDetails: id => {
+        dispatch(fetchParticipantProjectDetails(id));
     },
 });
 

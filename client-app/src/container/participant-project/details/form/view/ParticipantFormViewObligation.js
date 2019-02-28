@@ -5,8 +5,8 @@ import moneyPresenter from '../../../../../helpers/MoneyPresenter';
 
 function ParticipantFormViewObligation({
     participationWorth,
-    participationsGranted,
-    participationsWorthTotal,
+    participationsDefinitive,
+    participationsDefinitiveWorth,
     valueCourses,
     onClick,
 }) {
@@ -17,7 +17,7 @@ function ParticipantFormViewObligation({
             <hr style={{ margin: '10px 0' }} />
             <h4>Obligaties</h4>
             <div className="row" onClick={onClick}>
-                <ViewText label={'Huidige aantal obligaties'} value={participationsGranted} />
+                <ViewText label={'Huidige aantal obligaties'} value={participationsDefinitive} />
             </div>
             <div className="row" onClick={onClick}>
                 <ViewText label={'Nominale waarde per obligatie'} value={moneyPresenter(participationWorth)} />
@@ -29,7 +29,7 @@ function ParticipantFormViewObligation({
                 />
             </div>
             <div className="row" onClick={onClick}>
-                <ViewText label={'Huidige totale waarde'} value={moneyPresenter(participationsWorthTotal)} />
+                <ViewText label={'Huidige totale waarde'} value={moneyPresenter(participationsDefinitiveWorth)} />
             </div>
         </React.Fragment>
     );
@@ -38,8 +38,8 @@ function ParticipantFormViewObligation({
 ParticipantFormViewObligation.propTypes = {
     onClick: PropTypes.func.isRequired,
     participationWorth: PropTypes.number.isRequired,
-    participationsGranted: PropTypes.number.isRequired,
-    participationsWorthTotal: PropTypes.number.isRequired,
+    participationsDefinitive: PropTypes.number.isRequired,
+    participationsDefinitiveWorth: PropTypes.number.isRequired,
 };
 
 export default ParticipantFormViewObligation;

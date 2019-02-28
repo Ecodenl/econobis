@@ -7,8 +7,8 @@ import InputText from '../../../components/form/InputText';
 
 function ParticipantFormDefaultObligation({
     participationWorth,
-    participationsWorthTotal,
-    participationsGranted,
+    participationsDefinitiveWorth,
+    participationsDefinitive,
     valueCourses,
 }) {
     const activeValueCourse = valueCourses ? valueCourses.find(valueCourse => valueCourse.active) : [];
@@ -20,9 +20,9 @@ function ParticipantFormDefaultObligation({
             <div className="row">
                 <InputText
                     label={'Huidig aantal obligaties'}
-                    name={'participationsGranted'}
-                    id={'participationsGranted'}
-                    value={participationsGranted}
+                    name={'participationsDefinitive'}
+                    id={'participationsDefinitive'}
+                    value={participationsDefinitive}
                     readOnly={true}
                 />
                 {/*<InputText*/}
@@ -45,15 +45,15 @@ function ParticipantFormDefaultObligation({
                 {/*<InputText*/}
                 {/*type={'number'}*/}
                 {/*label={'Obligaties toegekend'}*/}
-                {/*name={'participationsGranted'}*/}
-                {/*id={'participationsGranted'}*/}
-                {/*value={participationsGranted}*/}
+                {/*name={'participationsDefinitive'}*/}
+                {/*id={'participationsDefinitive'}*/}
+                {/*value={participationsDefinitive}*/}
                 {/*onChangeAction={handleInputChange}*/}
                 {/*/>*/}
             </div>
             <div className="row">
                 <InputText
-                    label={'Huidige boekwaarde per participatie'}
+                    label={'Huidige boekwaarde per obligatie'}
                     name={'valueCourseBookWorth'}
                     id={'valueCourseBookWorth'}
                     value={activeValueCourse && activeValueCourse.bookWorth}
@@ -63,9 +63,9 @@ function ParticipantFormDefaultObligation({
             <div className="row">
                 <InputText
                     label={'Huidige totale waarde'}
-                    name={'participationsWorthTotal'}
-                    id={'participationsWorthTotal'}
-                    value={participationsWorthTotal}
+                    name={'participationsDefinitiveWorth'}
+                    id={'participationsDefinitiveWorth'}
+                    value={participationsDefinitiveWorth}
                     readOnly={true}
                 />
             </div>
@@ -75,8 +75,8 @@ function ParticipantFormDefaultObligation({
 
 ParticipantFormDefaultObligation.propTypes = {
     participationWorth: PropTypes.number.isRequired,
-    participationsGranted: PropTypes.number.isRequired,
-    participationsWorthTotal: PropTypes.number.isRequired,
+    participationsDefinitive: PropTypes.number.isRequired,
+    participationsDefinitiveWorth: PropTypes.number.isRequired,
 };
 
 export default ParticipantFormDefaultObligation;

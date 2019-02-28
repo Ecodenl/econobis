@@ -19,7 +19,7 @@ class ParticipantDetailsForm extends Component {
 
         if (this.props.hasError) {
             loadingText = 'Fout bij het ophalen van deelnemers.';
-        } else if (this.props.isLoading) {
+        } else if (this.props.isLoading && !this.props.participantProject.id) {
             loadingText = 'Gegevens aan het laden.';
         } else if (isEmpty(this.props.participantProject)) {
             loadingText = 'Geen deelnemers gevonden!';

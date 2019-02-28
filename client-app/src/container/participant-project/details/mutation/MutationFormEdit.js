@@ -10,7 +10,7 @@ const MutationFormEdit = props => {
         dateCreation,
         statusId,
         datePayment,
-        account,
+        amount,
         quantity,
         returns,
         updatedAt,
@@ -26,7 +26,7 @@ const MutationFormEdit = props => {
                 statusId={statusId}
                 dateCreation={dateCreation}
                 datePayment={datePayment}
-                account={account}
+                amount={amount}
                 quantity={quantity}
                 returns={returns}
                 updatedAt={updatedAt}

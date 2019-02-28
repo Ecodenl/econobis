@@ -81,9 +81,10 @@ export const updateParticipationMutation = participationMutations => {
     };
 };
 
-export const deleteParticipationMutation = id => {
+export const deleteParticipationMutation = (id, participationId) => {
     return {
         type: 'DELETE_PARTICIPATION_MUTATION',
         id,
+        participationId,
     };
 };

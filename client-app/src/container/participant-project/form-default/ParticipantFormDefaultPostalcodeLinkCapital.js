@@ -7,8 +7,8 @@ import InputText from '../../../components/form/InputText';
 
 function ParticipantFormDefaultPostalcodeLinkCapital({
     participationWorth,
-    participationsWorthTotal,
-    participationsGranted,
+    participationsDefinitiveWorth,
+    participationsDefinitive,
     valueCourses,
     powerKwhConsumption,
     handleInputChange,
@@ -22,9 +22,9 @@ function ParticipantFormDefaultPostalcodeLinkCapital({
             <div className="row">
                 <InputText
                     label={'Huidig aantal participaties'}
-                    name={'participationsGranted'}
-                    id={'participationsGranted'}
-                    value={participationsGranted}
+                    name={'participationsDefinitive'}
+                    id={'participationsDefinitive'}
+                    value={participationsDefinitive}
                     readOnly={true}
                 />
                 {/*<InputText*/}
@@ -47,9 +47,9 @@ function ParticipantFormDefaultPostalcodeLinkCapital({
                 {/*<InputText*/}
                 {/*type={'number'}*/}
                 {/*label={'Participaties toegekend'}*/}
-                {/*name={'participationsGranted'}*/}
-                {/*id={'participationsGranted'}*/}
-                {/*value={participationsGranted}*/}
+                {/*name={'participationsDefinitive'}*/}
+                {/*id={'participationsDefinitive'}*/}
+                {/*value={participationsDefinitive}*/}
                 {/*onChangeAction={handleInputChange}*/}
                 {/*/>*/}
             </div>
@@ -65,9 +65,9 @@ function ParticipantFormDefaultPostalcodeLinkCapital({
             <div className="row">
                 <InputText
                     label={'Huidige totale waarde'}
-                    name={'participationsWorthTotal'}
-                    id={'participationsWorthTotal'}
-                    value={participationsWorthTotal}
+                    name={'participationsDefinitiveWorth'}
+                    id={'participationsDefinitiveWorth'}
+                    value={participationsDefinitiveWorth}
                     readOnly={true}
                 />
             </div>
@@ -76,8 +76,8 @@ function ParticipantFormDefaultPostalcodeLinkCapital({
             <div className="row">
                 <InputText
                     label={'Total opbrengsten kWh'}
-                    name={'participationsGranted'}
-                    id={'participationsGranted'}
+                    name={'participationsDefinitive'}
+                    id={'participationsDefinitive'}
                     value={'???'}
                     readOnly={true}
                 />
@@ -101,9 +101,9 @@ function ParticipantFormDefaultPostalcodeLinkCapital({
                 {/*<InputText*/}
                 {/*type={'number'}*/}
                 {/*label={'Participaties toegekend'}*/}
-                {/*name={'participationsGranted'}*/}
-                {/*id={'participationsGranted'}*/}
-                {/*value={participationsGranted}*/}
+                {/*name={'participationsDefinitive'}*/}
+                {/*id={'participationsDefinitive'}*/}
+                {/*value={participationsDefinitive}*/}
                 {/*onChangeAction={handleInputChange}*/}
                 {/*/>*/}
             </div>
@@ -123,8 +123,8 @@ function ParticipantFormDefaultPostalcodeLinkCapital({
 
 ParticipantFormDefaultPostalcodeLinkCapital.propTypes = {
     participationWorth: PropTypes.number.isRequired,
-    participationsGranted: PropTypes.number.isRequired,
-    participationsWorthTotal: PropTypes.number.isRequired,
+    participationsDefinitive: PropTypes.number.isRequired,
+    participationsDefinitiveWorth: PropTypes.number.isRequired,
     powerKwhConsumption: PropTypes.number.isRequired,
     handleInputChange: PropTypes.func.isRequired,
 };

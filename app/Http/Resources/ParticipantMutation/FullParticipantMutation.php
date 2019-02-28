@@ -29,7 +29,7 @@ class FullParticipantMutation extends Resource
                 'datePayment' => $this->date_payment,
                 'statusId' => $this->status_id,
                 'status' => GenericResource::make($this->whenLoaded('status')),
-                'account' => $this->account,
+                'amount' => $this->amount,
                 'quantity' => $this->quantity,
                 'returns' => $this->returns,
                 'payoutKwh' => $this->payout_kwh,

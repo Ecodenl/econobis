@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import ParticipantMutationAPI from '../../../../api/participant-project/ParticipantMutationAPI';
-import { updateParticipationMutation } from '../../../../actions/participants-project/ParticipantProjectDetailsActions';
+import { fetchParticipantProjectDetails } from '../../../../actions/participants-project/ParticipantProjectDetailsActions';
 import MutationFormView from './MutationFormView';
 import MutationFormEdit from './MutationFormEdit';
 import MutationFormDelete from './MutationFormDelete';
@@ -25,7 +25,6 @@ class MutationFormListItem extends Component {
             },
             errors: {
                 dateMutation: false,
-                amount: false,
                 iban: false,
             },
         };
@@ -130,19 +129,12 @@ class MutationFormListItem extends Component {
             hasErrors = true;
         }
 
-        // if (participantMutation.iban && !validator.isEmpty(participantMutation.iban + '')) {
-        //     if (!ibantools.isValidIBAN(participantMutation.iban + '')) {
-        //         errors.iban = true;
-        //         hasErrors = true;
-        //     }
-        // }
-
         this.setState({ ...this.state, errors: errors });
 
         // If no errors send form
         !hasErrors &&
             ParticipantMutationAPI.updateParticipantMutation(participantMutation).then(payload => {
-                this.props.updateParticipationMutation(payload);
+                this.props.fetchParticipantProjectDetails(this.props.id);
                 this.closeEdit();
             });
     };
@@ -180,12 +172,13 @@ class MutationFormListItem extends Component {
 const mapStateToProps = state => {
     return {
         permissions: state.meDetails.permissions,
+        id: state.participantProjectDetails.id,
     };
 };
 
 const mapDispatchToProps = dispatch => ({
-    updateParticipationMutation: participationMutation => {
-        dispatch(updateParticipationMutation(participationMutation));
+    fetchParticipantProjectDetails: id => {
+        dispatch(fetchParticipantProjectDetails(id));
     },
 });
 

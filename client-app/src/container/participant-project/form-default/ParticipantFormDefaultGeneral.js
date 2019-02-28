@@ -40,9 +40,9 @@ const ParticipantFormDefaultGeneral = ({
         projectAdministrationName,
         dateRegister,
         participationsRequested,
-        participationsGranted,
+        participationsDefinitive,
         participationsSold,
-        participationsWorthTotal,
+        participationsDefinitiveWorth,
         dateContractSend,
         dateContractRetour,
         didAcceptAgreement,
@@ -200,10 +200,10 @@ const ParticipantFormDefaultGeneral = ({
                     <div className={'form-group col-md-6'} />
                 ) : (
                     <InputText
-                        label={`Huidige saldo ${projectTypeCodeRef === 'loan' ? 'lening' : 'kapitaal'} rekening`}
+                        label={`Huidig saldo ${projectTypeCodeRef === 'loan' ? 'lening' : 'kapitaal'} rekening`}
                         name={'totalWorthParticipations'}
                         id={'totalWorthParticipations'}
-                        value={statusId == 2 ? (participationsGranted - participationsSold) * participationWorth : 0}
+                        value={amountDefinitive}
                         onChangeAction={() => {}}
                         readOnly={true}
                     />
@@ -222,7 +222,7 @@ const ParticipantFormDefaultGeneral = ({
                     label={'Totale opbrengsten'}
                     name={'totalWorthParticipations'}
                     id={'totalWorthParticipations'}
-                    value={statusId == 2 ? (participationsGranted - participationsSold) * participationWorth : 0}
+                    value={'???'}
                     readOnly={true}
                     onChangeAction={() => {}}
                 />
@@ -241,8 +241,8 @@ const ParticipantFormDefaultGeneral = ({
             {projectTypeCodeRef === 'obligation' ? (
                 <ParticipantFormDefaultObligation
                     participationWorth={participationWorth}
-                    participationsGranted={participationsGranted}
-                    participationsWorthTotal={participationsWorthTotal}
+                    participationsDefinitive={participationsDefinitive}
+                    participationsDefinitiveWorth={participationsDefinitiveWorth}
                     valueCourses={valueCourses}
                 />
             ) : null}
@@ -250,8 +250,8 @@ const ParticipantFormDefaultGeneral = ({
             {projectTypeCodeRef === 'capital' ? (
                 <ParticipantFormDefaultCapital
                     participationWorth={participationWorth}
-                    participationsGranted={participationsGranted}
-                    participationsWorthTotal={participationsWorthTotal}
+                    participationsDefinitive={participationsDefinitive}
+                    participationsDefinitiveWorth={participationsDefinitiveWorth}
                     valueCourses={valueCourses}
                 />
             ) : null}
@@ -259,8 +259,8 @@ const ParticipantFormDefaultGeneral = ({
             {projectTypeCodeRef === 'postalcode_link_capital' ? (
                 <ParticipantFormDefaultPostalcodeLinkCapital
                     participationWorth={participationWorth}
-                    participationsGranted={participationsGranted}
-                    participationsWorthTotal={participationsWorthTotal}
+                    participationsDefinitive={participationsDefinitive}
+                    participationsDefinitiveWorth={participationsDefinitiveWorth}
                     valueCourses={valueCourses}
                     powerKwhConsumption={powerKwhConsumption}
                     handleInputChange={handleInputChange}

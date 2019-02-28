@@ -5,8 +5,8 @@ import moneyPresenter from '../../../../../helpers/MoneyPresenter';
 
 function ParticipantFormViewPostalcodeLinkCapital({
     participationWorth,
-    participationsGranted,
-    participationsWorthTotal,
+    participationsDefinitive,
+    participationsDefinitiveWorth,
     powerKwhConsumption,
     valueCourses,
     onClick,
@@ -18,7 +18,7 @@ function ParticipantFormViewPostalcodeLinkCapital({
             <hr style={{ margin: '10px 0' }} />
             <h4>Postcoderoos kapitaal</h4>
             <div className="row" onClick={onClick}>
-                <ViewText label={'Huidige aantal participaties'} value={participationsGranted} />
+                <ViewText label={'Huidige aantal participaties'} value={participationsDefinitive} />
             </div>
             <div className="row" onClick={onClick}>
                 <ViewText label={'Nominale waarde per participatie'} value={moneyPresenter(participationWorth)} />
@@ -30,7 +30,7 @@ function ParticipantFormViewPostalcodeLinkCapital({
                 />
             </div>
             <div className="row" onClick={onClick}>
-                <ViewText label={'Huidige totale waarde'} value={moneyPresenter(participationsWorthTotal)} />
+                <ViewText label={'Huidige totale waarde'} value={moneyPresenter(participationsDefinitiveWorth)} />
             </div>
             <hr style={{ margin: '10px 0' }} />
             <h4>Postcoderoos</h4>
@@ -50,8 +50,8 @@ function ParticipantFormViewPostalcodeLinkCapital({
 ParticipantFormViewPostalcodeLinkCapital.propTypes = {
     onClick: PropTypes.func.isRequired,
     participationWorth: PropTypes.number.isRequired,
-    participationsGranted: PropTypes.number.isRequired,
-    participationsWorthTotal: PropTypes.number.isRequired,
+    participationsDefinitive: PropTypes.number.isRequired,
+    participationsDefinitiveWorth: PropTypes.number.isRequired,
     powerKwhConsumption: PropTypes.number.isRequired,
 };
 

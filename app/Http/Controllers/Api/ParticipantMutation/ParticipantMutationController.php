@@ -42,12 +42,6 @@ class ParticipantMutationController extends ApiController
             // Herbereken de afhankelijke gegevens op het project
             $participantMutation->participation->project->calculator()->run()->save();
         });
-
-        return FullParticipantMutation::collection(ParticipantMutation::where('participation_id', $participantMutation->participation_id)
-            ->orderBy('date_creation', 'desc')
-            ->orderBy('id', 'desc')
-            ->with('updatedBy', 'type', 'status')
-            ->get());
     }
 
     public function update(RequestInput $requestInput, ParticipantMutation $participantMutation)
@@ -80,12 +74,6 @@ class ParticipantMutationController extends ApiController
             // Herbereken de afhankelijke gegevens op het project
             $participantMutation->participation->project->calculator()->run()->save();
         });
-
-        return FullParticipantMutation::collection(ParticipantMutation::where('participation_id', $participantMutation->participation_id)
-            ->orderBy('date_creation', 'desc')
-            ->orderBy('id', 'desc')
-            ->with('updatedBy', 'type', 'status')
-            ->get());
     }
 
     public function destroy(ParticipantMutation $participantMutation)

@@ -17,7 +17,7 @@ const MutationFormDefault = ({
     statusId,
     dateCreation,
     datePayment,
-    account,
+    amount,
     quantity,
     updatedAt,
     updatedBy,
@@ -80,10 +80,10 @@ const MutationFormDefault = ({
                             <div className="row">
                                 <InputText
                                     type={'number'}
-                                    label={'Lening rekening'}
-                                    id={'account'}
-                                    name={'account'}
-                                    value={account}
+                                    label={'Bedrag'}
+                                    id={'amount'}
+                                    name={'amount'}
+                                    value={amount}
                                     onChangeAction={handleInputChange}
                                 />
                             </div>
@@ -95,7 +95,7 @@ const MutationFormDefault = ({
                             <div className="row">
                                 <InputText
                                     type={'number'}
-                                    label={'Obligaties'}
+                                    label={'Obligatie'}
                                     id={'quantity'}
                                     name={'quantity'}
                                     value={quantity}
@@ -110,15 +110,15 @@ const MutationFormDefault = ({
                             <div className="row">
                                 <InputText
                                     type={'number'}
-                                    label={'Kapitaal rekening'}
-                                    id={'account'}
-                                    name={'account'}
-                                    value={account}
+                                    label={'Bedrag'}
+                                    id={'amount'}
+                                    name={'amount'}
+                                    value={amount}
                                     onChangeAction={handleInputChange}
                                 />
                                 <InputText
                                     type={'number'}
-                                    label={'Participaties'}
+                                    label={'Participatie'}
                                     id={'quantity'}
                                     name={'quantity'}
                                     value={quantity}
@@ -133,15 +133,15 @@ const MutationFormDefault = ({
                             <div className="row">
                                 <InputText
                                     type={'number'}
-                                    label={'Kapitaal rekening'}
-                                    id={'account'}
-                                    name={'account'}
-                                    value={account}
+                                    label={'Bedrag'}
+                                    id={'amount'}
+                                    name={'amount'}
+                                    value={amount}
                                     onChangeAction={handleInputChange}
                                 />
                                 <InputText
                                     type={'number'}
-                                    label={'Participaties'}
+                                    label={'Participatie'}
                                     id={'quantity'}
                                     name={'quantity'}
                                     value={quantity}
@@ -191,7 +191,7 @@ MutationFormDefault.defaultProps = {
     editForm: false,
     type: {},
     status: {},
-    account: '',
+    amount: '',
     participantMutationStatuses: [],
     participantMutationTypes: [],
     updatedAt: {},
@@ -206,7 +206,7 @@ MutationFormDefault.propTypes = {
     status: PropTypes.object,
     dateCreation: PropTypes.string.isRequired,
     datePayment: PropTypes.string.isRequired,
-    account: PropTypes.number,
+    amount: PropTypes.number,
     quantity: PropTypes.number,
     updatedAt: PropTypes.object,
     updatedBy: PropTypes.object,

@@ -49,10 +49,11 @@ export function* deleteObligationNumberSaga({ id }) {
     }
 }
 
-export function* deleteParticipationMutationSaga({ id }) {
+export function* deleteParticipationMutationSaga({ id, participationId }) {
     try {
         yield call(ParticipantMutationAPI.deleteParticipantMutation, id);
         yield put({ type: 'DELETE_PARTICIPATION_MUTATION_SUCCESS', id });
+        yield put({ type: 'FETCH_PARTICIPANT_PROJECT_DETAILS', payload: participationId });
     } catch (error) {
         yield put({ type: 'DELETE_PARTICIPATION_MUTATION_ERROR', error });
     }

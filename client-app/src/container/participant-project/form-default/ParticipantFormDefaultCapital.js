@@ -7,8 +7,8 @@ import InputText from '../../../components/form/InputText';
 
 function ParticipantFormDefaultCapital({
     participationWorth,
-    participationsWorthTotal,
-    participationsGranted,
+    participationsDefinitiveWorth,
+    participationsDefinitive,
     valueCourses,
 }) {
     const activeValueCourse = valueCourses ? valueCourses.find(valueCourse => valueCourse.active) : [];
@@ -20,9 +20,9 @@ function ParticipantFormDefaultCapital({
             <div className="row">
                 <InputText
                     label={'Huidig aantal participaties'}
-                    name={'participationsGranted'}
-                    id={'participationsGranted'}
-                    value={participationsGranted}
+                    name={'participationsDefinitive'}
+                    id={'participationsDefinitive'}
+                    value={participationsDefinitive}
                     readOnly={true}
                 />
                 {/*<InputText*/}
@@ -45,9 +45,9 @@ function ParticipantFormDefaultCapital({
                 {/*<InputText*/}
                 {/*type={'number'}*/}
                 {/*label={'Participaties toegekend'}*/}
-                {/*name={'participationsGranted'}*/}
-                {/*id={'participationsGranted'}*/}
-                {/*value={participationsGranted}*/}
+                {/*name={'participationsDefinitive'}*/}
+                {/*id={'participationsDefinitive'}*/}
+                {/*value={participationsDefinitive}*/}
                 {/*onChangeAction={handleInputChange}*/}
                 {/*/>*/}
             </div>
@@ -63,9 +63,9 @@ function ParticipantFormDefaultCapital({
             <div className="row">
                 <InputText
                     label={'Huidige totale waarde'}
-                    name={'participationsWorthTotal'}
-                    id={'participationsWorthTotal'}
-                    value={participationsWorthTotal}
+                    name={'participationsDefinitiveWorth'}
+                    id={'participationsDefinitiveWorth'}
+                    value={participationsDefinitiveWorth}
                     readOnly={true}
                 />
             </div>
@@ -75,8 +75,8 @@ function ParticipantFormDefaultCapital({
 
 ParticipantFormDefaultCapital.propTypes = {
     participationWorth: PropTypes.number.isRequired,
-    participationsGranted: PropTypes.number.isRequired,
-    participationsWorthTotal: PropTypes.number.isRequired,
+    participationsDefinitive: PropTypes.number.isRequired,
+    participationsDefinitiveWorth: PropTypes.number.isRequired,
 };
 
 export default ParticipantFormDefaultCapital;

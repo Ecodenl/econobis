@@ -6,7 +6,7 @@ import { deleteParticipationMutation } from '../../../../actions/participants-pr
 
 const MutationFormDelete = props => {
     const confirmAction = () => {
-        props.deleteParticipationMutation(props.id);
+        props.deleteParticipationMutation(props.id, props.participationId);
         props.closeDeleteItemModal();
     };
 
@@ -24,8 +24,8 @@ const MutationFormDelete = props => {
 };
 
 const mapDispatchToProps = dispatch => ({
-    deleteParticipationMutation: id => {
-        dispatch(deleteParticipationMutation(id));
+    deleteParticipationMutation: (id, participationId) => {
+        dispatch(deleteParticipationMutation(id, participationId));
     },
 });
 

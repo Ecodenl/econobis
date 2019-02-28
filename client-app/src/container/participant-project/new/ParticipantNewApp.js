@@ -48,9 +48,9 @@ class ParticipantNewApp extends Component {
                 typeId: '',
                 powerKwhConsumption: '',
                 participationsRequested: '',
-                participationsGranted: '',
+                participationsDefinitive: '',
                 participationsWorth: '',
-                participationsWorthTotal: '',
+                participationsDefinitiveWorth: '',
             },
             errors: {
                 contactId: false,

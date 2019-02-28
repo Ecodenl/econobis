@@ -153,6 +153,12 @@ class ParticipationProjectController extends ApiController
     public function show(ParticipantProject $participantProject)
     {
         $participantProject->load([
+            'mutations' => function($query){
+                $query->orderBy('date_creation', 'desc')
+                    ->orderBy('id', 'desc');
+            }
+        ]);
+        $participantProject->load([
             'contact',
             'project.projectType',
             'project.administration',

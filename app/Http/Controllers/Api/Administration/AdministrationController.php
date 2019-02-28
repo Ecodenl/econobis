@@ -17,6 +17,7 @@ use App\Helpers\Delete\Models\DeleteAdministration;
 use App\Helpers\RequestInput\RequestInput;
 use App\Helpers\Twinfield\TwinfieldHelper;
 use App\Helpers\Twinfield\TwinfieldInvoiceHelper;
+use App\Helpers\Twinfield\TwinfieldSalesTransactionHelper;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\RequestQueries\Administration\Grid\RequestQuery;
 use App\Http\Resources\Administration\AdministrationPeek;
@@ -295,9 +296,13 @@ class AdministrationController extends ApiController
         $sepa->delete();
     }
 
+//    public function syncSentInvoicesToTwinfield(Administration $administration){
+//        $twinfieldInvoiceHelper = new TwinfieldInvoiceHelper($administration);
+//        return $twinfieldInvoiceHelper->createAllInvoices();
+//    }
     public function syncSentInvoicesToTwinfield(Administration $administration){
-        $twinfieldInvoiceHelper = new TwinfieldInvoiceHelper($administration);
-        return $twinfieldInvoiceHelper->createAllInvoices();
+        $twinfieldInvoiceHelper = new TwinfieldSalesTransactionHelper($administration);
+        return $twinfieldInvoiceHelper->createAllSalesTransactions();
     }
 
     public function syncSentInvoicesFromTwinfield(Administration $administration){

@@ -8,6 +8,7 @@ import ProjectFormViewLoan from './ProjectFormViewLoan';
 import ProjectFormViewObligation from './ProjectFormViewObligation';
 import ProjectFormViewPostalcodeLinkCapital from './ProjectFormViewPostalcodeLinkCapital';
 import ProjectFormViewCapital from './ProjectFormViewCapital';
+import ProjectFormDefaultLoan from '../edit/ProjectFormEdit';
 
 const ProjectFormView = props => {
     const {
@@ -36,16 +37,17 @@ const ProjectFormView = props => {
         maxParticipationsYouth,
         totalParticipations,
         minParticipations,
-        issuedParticipations,
         isMembershipRequired,
-        participationsInOption,
         isParticipationTransferable,
-        issuableParticipations,
         administration,
         postalcodeLink,
         requiresContactGroups,
         amountOfLoanNeeded,
         valueCourses,
+        participationsDefinitive,
+        participationsOptioned,
+        amountDefinitive,
+        amountOptioned,
     } = props.project;
 
     return (
@@ -71,16 +73,19 @@ const ProjectFormView = props => {
             />
 
             {projectType && projectType.codeRef === 'loan' ? (
-                <ProjectFormViewLoan amountOfLoanNeeded={amountOfLoanNeeded} />
+                <ProjectFormViewLoan
+                    amountOfLoanNeeded={amountOfLoanNeeded}
+                    amountDefinitive={amountDefinitive}
+                    amountOptioned={amountOptioned}
+                />
             ) : null}
 
             {projectType && projectType.codeRef === 'obligation' ? (
                 <ProjectFormViewObligation
                     participationWorth={participationWorth}
-                    issuedParticipations={issuedParticipations}
-                    participationsInOption={participationsInOption}
-                    issuableParticipations={issuableParticipations}
                     totalParticipations={totalParticipations}
+                    participationsDefinitive={participationsDefinitive}
+                    participationsOptioned={participationsOptioned}
                     powerKwAvailable={powerKwAvailable}
                     minParticipations={minParticipations}
                     maxParticipations={maxParticipations}
@@ -94,10 +99,9 @@ const ProjectFormView = props => {
             (projectType && projectType.codeRef === 'postalcode_link_capital') ? (
                 <ProjectFormViewCapital
                     participationWorth={participationWorth}
-                    issuedParticipations={issuedParticipations}
-                    participationsInOption={participationsInOption}
-                    issuableParticipations={issuableParticipations}
                     totalParticipations={totalParticipations}
+                    participationsDefinitive={participationsDefinitive}
+                    participationsOptioned={participationsOptioned}
                     powerKwAvailable={powerKwAvailable}
                     minParticipations={minParticipations}
                     maxParticipations={maxParticipations}

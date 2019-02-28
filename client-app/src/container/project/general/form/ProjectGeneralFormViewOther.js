@@ -16,6 +16,9 @@ const ProjectGeneralFormViewOther = ({ project, projectTypes }) => {
         issuedParticipations,
         participationsInOption,
         issuableParticipations,
+        participationsDefinitive,
+        participationsOptioned,
+        totalParticipations,
         projectTypeId,
     } = project;
 
@@ -24,31 +27,24 @@ const ProjectGeneralFormViewOther = ({ project, projectTypes }) => {
             ? 'obligatie'
             : 'participatie';
 
+    const participationsAvailable = totalParticipations - participationsDefinitive;
+
     return (
         <Panel>
             <PanelBody>
                 <div className="row">
                     <ViewText label={'Project'} value={name} />
-                    <ViewText
-                        label={`Uitgegeven ${formatParticipation}s`}
-                        value={issuedParticipations && issuedParticipations}
-                    />
+                    <ViewText label={`Uitgegeven ${formatParticipation}s`} value={participationsDefinitive} />
                 </div>
 
                 <div className="row">
                     <ViewText label={'Status'} value={projectStatus && projectStatus.name} />
-                    <ViewText
-                        label={`${startCase(formatParticipation)}s in optie`}
-                        value={participationsInOption && participationsInOption}
-                    />
+                    <ViewText label={`${startCase(formatParticipation)}s in optie`} value={participationsOptioned} />
                 </div>
 
                 <div className="row">
                     <ViewText label={'Start project'} value={dateStart ? moment(dateStart).format('L') : ''} />
-                    <ViewText
-                        label={`Uit te geven ${formatParticipation}s`}
-                        value={issuableParticipations && issuableParticipations}
-                    />
+                    <ViewText label={`Uit te geven ${formatParticipation}s`} value={participationsAvailable} />
                 </div>
             </PanelBody>
         </Panel>

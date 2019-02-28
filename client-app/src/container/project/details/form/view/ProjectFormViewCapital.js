@@ -4,10 +4,9 @@ import MoneyPresenter from '../../../../../helpers/MoneyPresenter';
 
 const ProjectFormViewCapital = ({
     participationWorth,
-    issuedParticipations,
-    participationsInOption,
-    issuableParticipations,
     totalParticipations,
+    participationsDefinitive,
+    participationsOptioned,
     powerKwAvailable,
     minParticipations,
     maxParticipations,
@@ -16,6 +15,7 @@ const ProjectFormViewCapital = ({
     valueCourses,
 }) => {
     const activeValueCourse = valueCourses.find(valueCourse => valueCourse.active);
+    const participationsAvailable = totalParticipations - participationsDefinitive;
 
     return (
         <React.Fragment>
@@ -23,7 +23,10 @@ const ProjectFormViewCapital = ({
             <h4>Obligatie, Kapitaal of Postcoderoos kapitaal</h4>
             <div className="row">
                 <ViewText label={'Nominale waarde participatie'} value={MoneyPresenter(participationWorth)} />
-                <ViewText label={'Uitgegeven participaties'} value={issuedParticipations ? issuedParticipations : ''} />
+                <ViewText
+                    label={'Uitgegeven participaties'}
+                    value={participationsDefinitive ? participationsDefinitive : ''}
+                />
             </div>
             <div className="row">
                 <ViewText
@@ -32,7 +35,7 @@ const ProjectFormViewCapital = ({
                 />
                 <ViewText
                     label={'Participaties in optie'}
-                    value={participationsInOption ? participationsInOption : ''}
+                    value={participationsOptioned ? participationsOptioned : ''}
                 />
             </div>
             <div className="row">
@@ -42,7 +45,7 @@ const ProjectFormViewCapital = ({
                 />
                 <ViewText
                     label={'Uit te geven participaties'}
-                    value={issuableParticipations ? issuableParticipations : ''}
+                    value={participationsAvailable ? participationsAvailable : ''}
                 />
             </div>
             <div className="row">

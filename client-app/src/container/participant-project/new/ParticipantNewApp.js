@@ -51,6 +51,7 @@ class ParticipantNewApp extends Component {
                 participationsDefinitive: '',
                 participationsWorth: '',
                 participationsDefinitiveWorth: '',
+                amountDefinitive: null,
             },
             errors: {
                 contactId: false,

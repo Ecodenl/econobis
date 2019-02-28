@@ -175,9 +175,10 @@ class ProjectFormEdit extends Component {
             postalcodeLink,
         } = this.state.project;
         const {
-            issuedParticipations,
-            participationsInOption,
-            issuableParticipations,
+            participationsDefinitive,
+            participationsOptioned,
+            amountDefinitive,
+            amountOptioned,
             administration,
             hasPaymentInvoices,
             valueCourses,
@@ -215,6 +216,8 @@ class ProjectFormEdit extends Component {
                 {projectType && projectType.codeRef === 'loan' ? (
                     <ProjectFormDefaultLoan
                         amountOfLoanNeeded={amountOfLoanNeeded}
+                        amountDefinitive={amountDefinitive}
+                        amountOptioned={amountOptioned}
                         handleInputChange={this.handleInputChange}
                     />
                 ) : null}
@@ -222,10 +225,9 @@ class ProjectFormEdit extends Component {
                 {projectType && projectType.codeRef === 'obligation' ? (
                     <ProjectFormDefaultObligation
                         participationWorth={participationWorth}
-                        issuedParticipations={issuedParticipations}
-                        participationsInOption={participationsInOption}
-                        issuableParticipations={issuableParticipations}
                         totalParticipations={totalParticipations}
+                        participationsDefinitive={participationsDefinitive}
+                        participationsOptioned={participationsOptioned}
                         powerKwAvailable={powerKwAvailable}
                         minParticipations={minParticipations}
                         maxParticipations={maxParticipations}
@@ -241,10 +243,9 @@ class ProjectFormEdit extends Component {
                 (projectType && projectType.codeRef === 'postalcode_link_capital') ? (
                     <ProjectFormDefaultCapital
                         participationWorth={participationWorth}
-                        issuedParticipations={issuedParticipations}
-                        participationsInOption={participationsInOption}
-                        issuableParticipations={issuableParticipations}
                         totalParticipations={totalParticipations}
+                        participationsDefinitive={participationsDefinitive}
+                        participationsOptioned={participationsOptioned}
                         powerKwAvailable={powerKwAvailable}
                         minParticipations={minParticipations}
                         maxParticipations={maxParticipations}

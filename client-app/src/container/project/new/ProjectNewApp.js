@@ -56,7 +56,11 @@ class ProjectNewApp extends Component {
                 isParticipationTransferable: false,
                 postalcodeLink: '',
                 contactGroupIds: '',
-                amountOfLoanNeeded: '',
+                amountOfLoanNeeded: null,
+                amountDefinitive: null,
+                amountOptioned: null,
+                participationsDefinitive: null,
+                participationsOptioned: null,
             },
             errors: {
                 name: false,
@@ -210,6 +214,10 @@ class ProjectNewApp extends Component {
             postalcodeLink,
             contactGroupIds,
             amountOfLoanNeeded,
+            amountDefinitive,
+            amountOptioned,
+            participationsDefinitive,
+            participationsOptioned,
         } = this.state.project;
 
         const projectType = this.props.projectTypes.find(projectType => projectType.id == projectTypeId);
@@ -253,6 +261,8 @@ class ProjectNewApp extends Component {
                                     {projectType && projectType.codeRef === 'loan' ? (
                                         <ProjectFormDefaultLoan
                                             amountOfLoanNeeded={amountOfLoanNeeded}
+                                            amountDefinitive={amountDefinitive}
+                                            amountOptioned={amountOptioned}
                                             handleInputChange={this.handleInputChange}
                                         />
                                     ) : null}
@@ -261,6 +271,8 @@ class ProjectNewApp extends Component {
                                         <ProjectFormDefaultObligation
                                             participationWorth={participationWorth}
                                             totalParticipations={totalParticipations}
+                                            participationsDefinitive={participationsDefinitive}
+                                            participationsOptioned={participationsOptioned}
                                             powerKwAvailable={powerKwAvailable}
                                             minParticipations={minParticipations}
                                             maxParticipations={maxParticipations}
@@ -276,6 +288,8 @@ class ProjectNewApp extends Component {
                                         <ProjectFormDefaultCapital
                                             participationWorth={participationWorth}
                                             totalParticipations={totalParticipations}
+                                            participationsDefinitive={participationsDefinitive}
+                                            participationsOptioned={participationsOptioned}
                                             powerKwAvailable={powerKwAvailable}
                                             minParticipations={minParticipations}
                                             maxParticipations={maxParticipations}

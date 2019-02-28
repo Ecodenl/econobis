@@ -53,6 +53,7 @@ const ParticipantFormDefaultGeneral = ({
         dateEnd,
         typeId,
         powerKwhConsumption,
+        amountDefinitive,
     } = participation;
 
     return (
@@ -201,8 +202,8 @@ const ParticipantFormDefaultGeneral = ({
                 ) : (
                     <InputText
                         label={`Huidig saldo ${projectTypeCodeRef === 'loan' ? 'lening' : 'kapitaal'} rekening`}
-                        name={'totalWorthParticipations'}
-                        id={'totalWorthParticipations'}
+                        name={'amountDefinitive'}
+                        id={'amountDefinitive'}
                         value={amountDefinitive}
                         onChangeAction={() => {}}
                         readOnly={true}

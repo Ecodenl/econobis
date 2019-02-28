@@ -4,10 +4,9 @@ import MoneyPresenter from '../../../../../helpers/MoneyPresenter';
 
 const ProjectFormViewObligation = ({
     participationWorth,
-    issuedParticipations,
-    participationsInOption,
-    issuableParticipations,
     totalParticipations,
+    participationsDefinitive,
+    participationsOptioned,
     powerKwAvailable,
     minParticipations,
     maxParticipations,
@@ -16,6 +15,7 @@ const ProjectFormViewObligation = ({
     valueCourses,
 }) => {
     const activeValueCourse = valueCourses ? valueCourses.find(valueCourse => valueCourse.active) : [];
+    const participationsAvailable = totalParticipations - participationsDefinitive;
 
     return (
         <React.Fragment>
@@ -23,14 +23,17 @@ const ProjectFormViewObligation = ({
             <h4>Obligatie, Kapitaal of Postcoderoos kapitaal</h4>
             <div className="row">
                 <ViewText label={'Nominale waarde obligatie'} value={MoneyPresenter(participationWorth)} />
-                <ViewText label={'Uitgegeven obligaties'} value={issuedParticipations ? issuedParticipations : ''} />
+                <ViewText
+                    label={'Uitgegeven obligaties'}
+                    value={participationsDefinitive ? participationsDefinitive : ''}
+                />
             </div>
             <div className="row">
                 <ViewText
                     label={'Huidige boekwaarde'}
                     value={activeValueCourse && MoneyPresenter(activeValueCourse.bookWorth)}
                 />
-                <ViewText label={'Obligaties in optie'} value={participationsInOption ? participationsInOption : ''} />
+                <ViewText label={'Obligaties in optie'} value={participationsOptioned ? participationsOptioned : ''} />
             </div>
             <div className="row">
                 <ViewText
@@ -39,7 +42,7 @@ const ProjectFormViewObligation = ({
                 />
                 <ViewText
                     label={'Uit te geven obligaties'}
-                    value={issuableParticipations ? issuableParticipations : ''}
+                    value={participationsAvailable ? participationsAvailable : ''}
                 />
             </div>
             <div className="row">

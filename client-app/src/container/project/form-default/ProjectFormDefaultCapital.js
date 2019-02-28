@@ -5,10 +5,9 @@ import MoneyPresenter from '../../../helpers/MoneyPresenter';
 
 const ProjectFormDefaultCapital = ({
     participationWorth,
-    issuedParticipations,
-    participationsInOption,
-    issuableParticipations,
     totalParticipations,
+    participationsDefinitive,
+    participationsOptioned,
     powerKwAvailable,
     minParticipations,
     maxParticipations,
@@ -18,6 +17,7 @@ const ProjectFormDefaultCapital = ({
     handleInputChange,
 }) => {
     const activeValueCourse = valueCourses && valueCourses.find(valueCourse => valueCourse.active);
+    const participationsAvailable = totalParticipations - participationsDefinitive;
 
     return (
         <React.Fragment>
@@ -33,8 +33,8 @@ const ProjectFormDefaultCapital = ({
                 />
                 <InputText
                     label={'Uitgegeven participaties'}
-                    name={'issuedParticipations'}
-                    value={issuedParticipations ? issuedParticipations : ''}
+                    name={'participationsDefinitive'}
+                    value={participationsDefinitive ? participationsDefinitive : ''}
                     readOnly={true}
                 />
             </div>
@@ -47,8 +47,8 @@ const ProjectFormDefaultCapital = ({
                 />
                 <InputText
                     label={'Participaties in optie'}
-                    name={'participationsInOption'}
-                    value={participationsInOption ? participationsInOption : ''}
+                    name={'participationsOptioned'}
+                    value={participationsOptioned ? participationsOptioned : ''}
                     readOnly={true}
                 />
             </div>
@@ -61,8 +61,8 @@ const ProjectFormDefaultCapital = ({
                 />
                 <InputText
                     label={'Uit te geven participaties'}
-                    name={'issuableParticipations'}
-                    value={issuableParticipations ? issuableParticipations : ''}
+                    name={'participationsAvailable'}
+                    value={participationsAvailable ? participationsAvailable : ''}
                     readOnly={true}
                 />
             </div>

@@ -36,11 +36,27 @@ class ProjectsListItem extends Component {
             code,
             name,
             projectType,
+            projectTypeCodeRef,
             totalParticipations,
-            issuedParticipations,
-            issuableParticipations,
-            issuedParticipationsPercentage,
+            participationsDefinitive,
+            amountOfLoanNeeded,
+            amountDefinitive,
         } = this.props;
+        const participationsAvailable = totalParticipations - participationsDefinitive;
+        const amountAvailable = amountOfLoanNeeded - amountDefinitive;
+
+        // Calculate percentage issued
+        let definitiveIssuedPercentage = 0;
+        if (projectTypeCodeRef === 'loan') {
+            if (amountOfLoanNeeded && amountDefinitive) {
+                definitiveIssuedPercentage = (amountDefinitive / amountOfLoanNeeded) * 100;
+            }
+        } else {
+            if (totalParticipations && participationsDefinitive) {
+                definitiveIssuedPercentage = (participationsDefinitive / totalParticipations) * 100;
+            }
+        }
+
         return (
             <tr
                 className={this.state.highlightRow}
@@ -51,13 +67,13 @@ class ProjectsListItem extends Component {
                 <td>{code}</td>
                 <td>{name}</td>
                 <td>{projectType}</td>
-                <td>{totalParticipations}</td>
-                <td>{issuedParticipations}</td>
-                <td>{issuableParticipations}</td>
-                <td>{'lening nodig'}</td>
-                <td>{'lening opgehaald'}</td>
-                <td>{'lening uit te geven'}</td>
-                <td>{`${issuedParticipationsPercentage.toLocaleString('nl', { maximumFractionDigits: 2 })}%`}</td>
+                <td>{projectTypeCodeRef !== 'loan' ? totalParticipations : '-'}</td>
+                <td>{projectTypeCodeRef !== 'loan' ? participationsDefinitive : '-'}</td>
+                <td>{projectTypeCodeRef !== 'loan' ? participationsAvailable : '-'}</td>
+                <td>{projectTypeCodeRef === 'loan' ? amountOfLoanNeeded : '-'}</td>
+                <td>{projectTypeCodeRef === 'loan' ? amountDefinitive : '-'}</td>
+                <td>{projectTypeCodeRef === 'loan' ? amountAvailable : '-'}</td>
+                <td>{`${definitiveIssuedPercentage.toLocaleString('nl', { maximumFractionDigits: 2 })}%`}</td>
                 <td>
                     {this.state.showActionButtons ? (
                         <a role="button" onClick={() => this.openItem(id)}>

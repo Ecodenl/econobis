@@ -32,7 +32,7 @@ class ParticipantsListItem extends Component {
     }
 
     render() {
-        const { id, contact, participationsCurrent, status, dateRegister } = this.props;
+        const { id, contact, participationsDefinitive, status, dateRegister } = this.props;
         const primaryAddress = contact.primaryAddress;
         let street = '';
         let number = '';
@@ -66,7 +66,7 @@ class ParticipantsListItem extends Component {
                 <td>{primaryAddress ? street + ' ' + number + addition : ''}</td>
                 <td>{contact.primaryAddress ? contact.primaryAddress.postalCode : ''}</td>
                 <td>{contact.primaryAddress ? contact.primaryAddress.city : ''}</td>
-                <td>{participationsCurrent ? participationsCurrent : ''}</td>
+                <td>{participationsDefinitive ? participationsDefinitive : ''}</td>
                 <td>{status ? status.name : ''}</td>
                 <td>{dateRegister ? moment(dateRegister).format('L') : ''}</td>
                 <td>

@@ -220,7 +220,7 @@ class ParticipantCSVHelper
                     'participations_requested' => 'Deelnames aangevraagd',
                     'participations_granted' => 'Deelnames toegekend',
                     'participations_rest_sale' => 'Deelnames restverkoop',
-                    'participations_current' => 'Deelnames huidig',
+                    'participations_definitive' => 'Deelnames huidig',
                     'participations_worth_total' => 'Hudige waarde',
                     'date_contract_send' => 'Contract verstuurd',
                     'date_contract_retour' => 'Contract retour',

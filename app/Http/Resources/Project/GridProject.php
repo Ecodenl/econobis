@@ -33,10 +33,11 @@ class GridProject extends Resource
                 'code' => $this->code,
                 'name' => $this->name,
                 'projectType' => optional($this->projectType)->name,
+                'projectTypeCodeRef' => optional($this->projectType)->code_ref,
                 'totalParticipations' => $this->total_participations,
-                'issuedParticipations' => $this->getIssuedParticipations(),
-                'issuableParticipations' => $this->getIssuableParticipations(),
-                'issuedParticipationsPercentage' => $this->getIssuedParticipationsPercentage(),
+                'participationsDefinitive' => $this->participations_definitive,
+                'amountOfLoanNeeded' => $this->amount_of_loan_needed,
+                'amountDefinitive' => $this->amount_definitive,
             ];
     }
 }

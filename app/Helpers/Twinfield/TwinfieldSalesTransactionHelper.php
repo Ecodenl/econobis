@@ -28,8 +28,6 @@ class TwinfieldSalesTransactionHelper
     private $office;
     private $administration;
     private $transactionApiConnector;
-    const VRK_CODE = "VRK";
-    const VRK_DEBITEUREN_CODE = "1300";
     private $currency;
 
     /**
@@ -39,16 +37,23 @@ class TwinfieldSalesTransactionHelper
      */
     public function __construct(Administration $administration)
     {
-        $this->connection = new WebservicesAuthentication($administration->twinfield_username, $administration->twinfield_password, $administration->twinfield_organization_code);
+        $this->connection = new WebservicesAuthentication($administration->twinfield_username,
+            $administration->twinfield_password, $administration->twinfield_organization_code);
         $this->office = Office::fromCode($administration->twinfield_office_code);
         $this->administration = $administration;
         $this->transactionApiConnector = new TransactionApiConnector($this->connection);
-        $this->currency = new Currency("EUR");
+        $this->dagboekCode = config('services.twinfield.verkoop_dagboek_code');
+        $this->currency = config('services.twinfield.verkoop_default_currency');
+        $this->grootboekDebiteuren = config('services.twinfield.verkoop_grootboek_debiteuren');
+        $this->grootboekOmzetGeen = config('services.twinfield.verkoop_grootboek_omzet_geen');
+        $this->grootboekOmzetLaag = config('services.twinfield.verkoop_grootboek_omzet_laag');
+        $this->grootboekOmzetHoog = config('services.twinfield.verkoop_grootboek_omzet_hoog');
+        $this->grootboekBtwLaag = config('services.twinfield.verkoop_grootboek_btw_laag');
+        $this->grootboekBtwHoog = config('services.twinfield.verkoop_grootboek_btw_hoog');
     }
 
     public function createAllSalesTransactions(){
         set_time_limit(0);
-
         $messages = [];
 
         foreach ($this->administration->invoices()->where('status_id', 'sent')->get() as $invoice){
@@ -100,7 +105,7 @@ class TwinfieldSalesTransactionHelper
         $twinfieldSalesTransaction
             ->setDestiny(Destiny::FINAL())
             ->setRaiseWarning(false )
-            ->setCode(self::VRK_CODE)
+            ->setCode($this->dagboekCode)
             ->setCurrency($this->currency)
             ->setDate($dateInvoice)
             ->setInvoiceNumber($invoice->number)
@@ -115,7 +120,7 @@ class TwinfieldSalesTransactionHelper
         $twinfieldTransactionLineTotal
             ->setId($idTeller)
             ->setLineType(LineType::TOTAL())
-            ->setDim1(self::VRK_DEBITEUREN_CODE)
+            ->setDim1($this->grootboekDebiteuren)
             ->setDim2($twinfieldCustomer->getCode())
             ->setValue($totaalBedragIncl)
             ->setDebitCredit($totaalBedragIncl->lessThan(new Money(0, $this->currency )) ? DebitCredit::CREDIT() : DebitCredit::DEBIT() )
@@ -158,13 +163,13 @@ class TwinfieldSalesTransactionHelper
             switch ($code) {
                 case $this->administration->btw_code_sales_null:
                 case $this->administration->btw_code_sales_0:
-                    $omzetStandaardGrootBoek = "8000";
+                    $omzetStandaardGrootBoek = $this->grootboekOmzetGeen;
                     break;
                 case $this->administration->btw_code_sales_6:
-                    $omzetStandaardGrootBoek = "8010";
+                    $omzetStandaardGrootBoek = $this->grootboekOmzetLaag;
                     break;
                 case $this->administration->btw_code_sales_21:
-                    $omzetStandaardGrootBoek = "8020";
+                    $omzetStandaardGrootBoek = $this->grootboekOmzetHoog;
                     break;
             }
 
@@ -188,10 +193,10 @@ class TwinfieldSalesTransactionHelper
                 case $this->administration->btw_code_sales_null:
                 case $this->administration->btw_code_sales_0:
                 case $this->administration->btw_code_sales_6:
-                    $omzetStandaardGrootBoek = "1520";
+                    $omzetStandaardGrootBoek = $this->grootboekBtwLaag;
                     break;
                 case $this->administration->btw_code_sales_21:
-                    $omzetStandaardGrootBoek = "1530";
+                    $omzetStandaardGrootBoek = $this->grootboekBtwHoog;
                     break;
             }
 

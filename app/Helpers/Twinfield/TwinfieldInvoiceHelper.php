@@ -9,17 +9,12 @@
 namespace App\Helpers\Twinfield;
 
 use App\Eco\Administration\Administration;
-use App\Eco\Invoice\Invoice;
 use App\Eco\Invoice\InvoicePayment;
-use App\Eco\Invoice\InvoiceProduct;
 use Illuminate\Support\Facades\Log;
 use PhpTwinfield\ApiConnectors\InvoiceApiConnector;
 use PhpTwinfield\ApiConnectors\BrowseDataApiConnector;
 use PhpTwinfield\BrowseColumn;
-use PhpTwinfield\BrowseSortField;
-use PhpTwinfield\Enums\BrowseColumnOperator;
 use PhpTwinfield\Exception as PhpTwinfieldException;
-use PhpTwinfield\InvoiceLine;
 use PhpTwinfield\Office;
 use PhpTwinfield\Secure\WebservicesAuthentication;
 
@@ -43,103 +38,12 @@ class TwinfieldInvoiceHelper
         $this->invoiceApiConnector = new InvoiceApiConnector($this->connection);
     }
 
-    public function createAllInvoices(){
-        set_time_limit(0);
-
-        $messages = [];
-
-        foreach ($this->administration->invoices()->where('status_id', 'sent')->get() as $invoice){
-            $response = $this->createInvoice($invoice);
-
-            if($response === true){
-                array_push($messages, 'Factuur ' . $invoice->number . ' succesvol gesynchroniseerd.');
-            }
-            else{
-                //soms zitten in de error message van Twinfield // voor de melding.
-                $response = str_replace('//', '', $response);
-                array_push($messages, 'Factuur ' . $invoice->number . ' gaf de volgende foutmelding: ' . $response);
-            }
-        }
-
-        if(count($messages) == 0){
-            array_push($messages, 'Geen facturen om te synchroniseren gevonden.');
-        }
-
-        return implode(';', $messages);
-    }
-
-    public function createInvoice(Invoice $invoice){
-        $twinfieldCustomerHelper = new TwinfieldCustomerHelper($this->administration);
-        $twinfieldCustomer = $twinfieldCustomerHelper->createCustomer($invoice->order->contact);
-
-        $twinfieldInvoice = new \PhpTwinfield\Invoice();
-
-        $twinfieldInvoice
-            ->setInvoiceType($this->administration->default_invoice_template)
-            ->setCustomer($twinfieldCustomer)
-            ->setStatus('final')
-            ->setPaymentMethod('bank');
-
-        foreach($invoice->invoiceProducts as $invoiceProduct){
-            $this->addInvoiceLine($twinfieldInvoice, $invoiceProduct);
-        }
-
-
-        try {
-            $response = $this->invoiceApiConnector->send($twinfieldInvoice);
-
-            if($invoice->status_id === 'sent'){
-                $invoice->status_id = 'exported';
-
-            }
-            $invoice->twinfield_number = $response->getInvoiceNumber();
-
-            $invoice->save();
-
-            return true;
-
-        } catch (PhpTwinfieldException $e) {
-            Log::error($e->getMessage());
-            return $e->getMessage() ? $e->getMessage() : 'Er is een fout opgetreden.';
-        }
-
-
-    }
-
-    public function addInvoiceLine(\PhpTwinfield\Invoice $invoice, InvoiceProduct $invoiceProduct){
-        $twinfieldInvoiceLine = new InvoiceLine();
-
-        $vatCode = '';
-
-        switch ($invoiceProduct->vat_percentage) {
-            case null:
-                $vatCode = $this->administration->btw_code_sales_null;
-                break;
-            case '0':
-                $vatCode = $this->administration->btw_code_sales_0;
-                break;
-            case '6':
-                $vatCode = $this->administration->btw_code_sales_6;
-                break;
-            case '21':
-                $vatCode = $this->administration->btw_code_sales_21;
-                break;
-        }
-
-        $twinfieldInvoiceLine
-            ->setQuantity($invoiceProduct->amount)
-            ->setUnitsPriceExcl($invoiceProduct->price_ex_vat_incl_reduction)
-            ->setVatCode($vatCode)
-            ->setDim1($invoiceProduct->twinfield_ledger_code)
-            ->setArticle(0)
-            ->setDescription($invoiceProduct->product_name);
-
-        $invoice->addLine($twinfieldInvoiceLine);
-    }
-
     public function processPaidInvoices(){
         set_time_limit(0);
         $browseDataApiConnector = new BrowseDataApiConnector($this->connection);
+
+        //Deze function kan je gebruiken om te kijken wel browseDefinition fields er zijn voor een bepaald code
+        //$this->readBrowseDefinition($browseDataApiConnector);
 
         $messages = [];
 
@@ -152,40 +56,70 @@ class TwinfieldInvoiceHelper
                 $columns[] = (new BrowseColumn())
                     ->setField('fin.trs.head.code')
                     ->setLabel('Transactie type')
-                    ->setVisible(true);
-
+                    ->setVisible(true)
+                    ->setAsk(true);
+//                    ->setOperator(BrowseColumnOperator::EQUAL())
+//                    ->setFrom("VRK")
+//                    ->setTo("");
                 $columns[] = (new BrowseColumn())
-                    ->setField('fin.trs.head.date')
-                    ->setLabel('Invoerdatum')
-                    ->setVisible(true);
+                    ->setField('fin.trs.line.matchstatus')
+                    ->setLabel('Betaalstatus')
+                    ->setVisible(true)
+                    ->setAsk(true);
+//ToDo Testboeking eruit uiteraard!
+                $columns[] = (new BrowseColumn())
+                    ->setField('fin.trs.head.number')
+                    ->setLabel('Twinfield number')
+                    ->setVisible(true)
+                    ->setAsk(true);
+//                    ->setOperator(BrowseColumnOperator::EQUAL())
+//                    ->setOperator(BrowseColumnOperator::BETWEEN())
+//                    ->setFrom( "201900002" )
+//                    ->setTo( "201900002" );
+//                    ->setFrom( $invoiceToBeChecked->twinfield_number )
+//                    ->setTo( $invoiceToBeChecked->twinfield_number );
 
+//                $columns[] = (new BrowseColumn())
+//                    ->setField('fin.trs.line.matchdate')
+//                    ->setLabel('Betaaldatum')
+//                    ->setVisible(true)
+//                    ->setOperator(BrowseColumnOperator::BETWEEN())
+//                    ->setFrom( '00000000' )
+//                    ->setTo( '99991231' );
                 $columns[] = (new BrowseColumn())
                     ->setField('fin.trs.line.basevaluesigned')
-                    ->setLabel('Euro')
+                    ->setLabel('Bedrag')
                     ->setVisible(true);
-
                 $columns[] = (new BrowseColumn())
-                    ->setField('fin.trs.line.invnumber')
-                    ->setLabel('Factuurnr.')
-                    ->setOperator(BrowseColumnOperator::EQUAL())
-                    ->setFrom($invoiceToBeChecked->twinfield_number)
+                    ->setField('fin.trs.line.openbasevaluesigned')
+                    ->setLabel('Openstaand bedrag')
+                    ->setVisible(true);
+                $columns[] = (new BrowseColumn())
+                    ->setField('fin.trs.line.matchnumber')
+                    ->setLabel('Betaalnr.')
                     ->setVisible(true);
 
-                $sortFields[] = new BrowseSortField('fin.trs.head.code');
+//                $sortFields[] = new BrowseSortField('fin.trs.head.number');
 
-                $twinfieldInvoiceTransactions = $browseDataApiConnector->getBrowseData('020', $columns, $sortFields);
+                $twinfieldInvoiceTransactions = $browseDataApiConnector->getBrowseData('100', $columns );
+//                dd($twinfieldInvoiceTransactions); die();
 
                 foreach($twinfieldInvoiceTransactions->getRows() as $row){
-
+                    // 1e cell (0) bevat code
                     $type = ($row->getCells()[0]->getValue());
+                    // 2e cell (1) bevat matchstatus
+                    // 3e cell (2) bevat twinfieldnummer
 
                     //VRK is de verkoop factuur
-                    if($type !== 'VRK' ){
-                        $dateInput = $row->getCells()[1]->getValue(); //datetime
-
+                    if($type === 'VRK' ){
+                        //4e cell (3) bevat betaaldatum
+                        $dateInput = $row->getCells()[3]->getValue(); //datetime
                         $dateInput = date_format($dateInput, 'Y-m-d');
 
-                        $amount = $row->getCells()[2]->getValue();
+                        //5e cell (4) bevat bedrag (neem aan factuurbedrag en niet betaald bedrag ??)
+                        $amount = $row->getCells()[4]->getValue();
+                        //6e cell (5) bevat bedrag openstaand
+                        $amountOpen = $row->getCells()[5]->getValue();
 
                         //-100 op debiteur is dus 100 betaald
                         $amount = $amount * -1;
@@ -213,4 +147,20 @@ class TwinfieldInvoiceHelper
 
         return implode(';', $messages);
     }
+
+    public function readBrowseDefinition(BrowseDataApiConnector $browseDataApiConnector){
+
+        // Code 020 = Transaction list
+        // Code 100 = Customer transactionsPer
+        try {
+//            $browseDefinitions = $browseDataApiConnector->getBrowseDefinition('020');
+//            $browseDefinitions = $browseDataApiConnector->getBrowseDefinition('100');
+            $browseDefinitions = $browseDataApiConnector->getBrowseFields();
+        } catch (PhpTwinfieldException $e) {
+            Log::error($e->getMessage());
+            return $e->getMessage() ? $e->getMessage() : 'Er is een fout opgetreden.';
+        }
+        dd($browseDefinitions); die();
+    }
+
 }

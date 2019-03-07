@@ -18,10 +18,12 @@ use PhpTwinfield\ApiConnectors\CustomerApiConnector;
 use PhpTwinfield\Customer;
 use PhpTwinfield\CustomerAddress;
 use PhpTwinfield\CustomerBank;
+use PhpTwinfield\Enums\Services;
 use PhpTwinfield\Exception as PhpTwinfieldException;
 use PhpTwinfield\Exception;
 use PhpTwinfield\Office;
 use PhpTwinfield\Secure\WebservicesAuthentication;
+use PhpTwinfield\Services\FinderService;
 
 class TwinfieldCustomerHelper
 {
@@ -52,12 +54,61 @@ class TwinfieldCustomerHelper
         }
     }
 
+    public function updateCustomer(Contact $contact){
+
+        // Check of contact / administratie al koppeling heeft met Twinfield
+        $twinfieldCustomerNumber = $contact->twinfieldNumbers()->where('administration_id', $this->administration->id)->first();
+        if($twinfieldCustomerNumber)
+        {
+            $customer = $this->getTwinfieldCustomerByCode($twinfieldCustomerNumber->twinfield_number);
+            if($customer)
+            {
+                $this->fillCustomerDimension($contact, $customer);
+
+                if($contact->primaryAddress) {
+                    $this->fillCustomerAddress($contact->primaryAddress, $customer);
+                }
+
+                if($contact->iban) {
+                    $this->fillCustomerBank($contact, $customer);
+                }
+
+                try {
+                    // Synchroniseren contact naar Twinfield customer
+                    $response = $this->customerApiConnector->send($customer);
+                    return $response;
+
+                } catch (PhpTwinfieldException $e) {
+                    Log::error('Error: ' . $e->getMessage());
+                    return 'Error: ' . $e->getMessage();
+                }
+            }
+        }
+
+    }
+
     public function createCustomer(Contact $contact){
+// Check of Customer al bestaat in Twinfield. We doen hier nog niets mee.
+//        if( $this->checkIfCustomerNameExists($contact) )
+//        {
+//            return 'Error: Contact naam komt al voor bij TwinField' ;
+//        };
+//        if( $this->checkIfCustomerIbanExists($contact) );
+//        {
+//            return 'Error: Iban komt al voor bij TwinField' ;
+//        };
 
-            $this->checkIfCustomerExists($contact);
-
+        // Check of contact / administratie al koppeling heeft met Twinfield
+        $twinfieldCustomerNumber = $contact->twinfieldNumbers()->where('administration_id', $this->administration->id)->first();
+        // Nog geen koppeling, dan aanmaken
+        if(!$twinfieldCustomerNumber)
+        {
+            $customer = new Customer();
+        }else{
+            // Wel koppeling, check toch even of hij echt bestaat
+            // Zo niet, dan nieuw aanmaken ?
             try {
-                $customer = $this->getTwinfieldCustomerByCode($contact->twinfieldNumbers()->where('administration_id', $this->administration->id)->first()->twinfield_number);
+                $customer = $this->getTwinfieldCustomerByCode($twinfieldCustomerNumber->twinfield_number);
             }
             catch(Exception $e){
                 $customer = new Customer();
@@ -65,32 +116,38 @@ class TwinfieldCustomerHelper
             catch(ErrorException $e){
                 $customer = new Customer();
             }
+        }
 
-            $this->fillCustomerDimension($contact, $customer);
+        $this->fillCustomerDimension($contact, $customer);
 
-            if($contact->primaryAddress) {
-                $this->fillCustomerAddress($contact->primaryAddress, $customer);
-            }
+        if($contact->primaryAddress) {
+            $this->fillCustomerAddress($contact->primaryAddress, $customer);
+        }
 
-            if($contact->iban) {
-                $this->fillCustomerBank($contact, $customer);
-            }
+        if($contact->iban) {
+            $this->fillCustomerBank($contact, $customer);
+        }
 
-            try {
-                $response = $this->customerApiConnector->send($customer);
-
+        try {
+            // Synchroniseren contact naar Twinfield customer
+//            if($response->assertSuccessful())
+            $response = $this->customerApiConnector->send($customer);
+            // Bij nieuwe koppeling, ook nieuw TwinfieldCustomerNumber aanmaken (twinfield nummer per contact/administratie
+            if(!$twinfieldCustomerNumber)
+            {
                 $twinfieldCustomerNumber = new TwinfieldCustomerNumber();
                 $twinfieldCustomerNumber->administration_id = $this->administration->id;
                 $twinfieldCustomerNumber->contact_id = $contact->id;
                 $twinfieldCustomerNumber->twinfield_number = $response->getCode();
                 $twinfieldCustomerNumber->save();
-
-                return $response;
-
-            } catch (PhpTwinfieldException $e) {
-                Log::error('Error: ' . $e->getMessage());
-                return 'Error: ' . $e->getMessage();
             }
+
+            return $response;
+
+        } catch (PhpTwinfieldException $e) {
+            Log::error('Error: ' . $e->getMessage());
+            return 'Error: ' . $e->getMessage();
+        }
     }
 
     public function fillCustomerDimension(Contact $contact, Customer $customer){
@@ -108,6 +165,7 @@ class TwinfieldCustomerHelper
             ->setType('invoice')
             ->setDefault(true)
             ->setPostcode($address->postal_code)
+            ->setField2($address->present()->streetAndNumber())
             ->setCity($address->city)
             ->setCountry($address->country_id)
             ->setContact($address->contact->full_name);
@@ -128,19 +186,54 @@ class TwinfieldCustomerHelper
         $customer->addBank($customer_bank);
     }
 
-    /**
-     * @param Contact $contact
-     *
-     * @return bool - if customer already exists in twinfield return true.
-     */
-    public function checkIfCustomerExists(Contact $contact){
-        //todo
-        //Kijken op een aantal waardes(naam + postcode?)
-        //Als hij al bestaat twinfield debiteuren nummer opslaan.
-        return false;
-    }
 
     public function getTwinfieldCustomerByCode($code){
         return $this->customerApiConnector->get($code, $this->office);
+    }
+
+    public function checkIfCustomerNameExists(Contact $contact){
+        //Kijken of Customer al bestaat met zelfde naam
+        $searchValue  = '*'.$contact->full_name.'*';
+        $field        = 2;
+        return $this->checkIfCustomerExists($searchValue, $field);
+    }
+
+    /**
+     * todo Bij Twinfield kan je volgens alleen nog maar zoeken op "oude" bankrekeningnummer en niet op hele IBAN
+     * Bij NL20INGB0001234567 slaat Twinfield dus 1234567 op als bankrekeningnummer, daar zou je nu evt. wel op
+     * op kunnen zoeken
+     */
+    public function checkIfCustomerIbanExists(Contact $contact){
+        //Kijken of Customer al bestaat met zelfde iban
+        //Mmm. field 3 = (bank) accountnumber, niet iban !!? voor iban zie ik in API geen field id?
+//        $searchValue = $contact->iban;
+//        $field       = 3;
+//        return $this->checkIfCustomerExists($searchValue, $field);
+          return false;
+    }
+
+    /**
+     * @param Contact $contact
+     *        String $searchValue
+     *        int field 	Fields searched
+     *        0             code and name
+     *        1         	code
+     *        2 	        name
+     *        3 	        bank account number
+     *        4 	        address fields
+     * @return bool - if customer already exists with specific searchvalue in twinfield return true.
+     */
+    public function checkIfCustomerExists($searchValue, $field){
+        $pattern  = $searchValue;
+        $field    = $field;
+        $firstRow = 1;
+        $maxRows  = 1;
+        $options  = ["office"=>$this->office, "matchtype"=>'DEB'];
+
+        $response = $this->connection->getAuthenticatedClient(Services::FINDER())->searchFinder(FinderService::TYPE_DIMENSIONS_FINANCIALS, $pattern, $field, $firstRow, $maxRows, $options);
+
+//        dd($response); die();
+
+        return $response->data->TotalRows>0;
     }
 }

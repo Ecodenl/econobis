@@ -37,9 +37,15 @@ class AddressObserver
             }
         }
 
-        foreach (Administration::where('twinfield_is_valid', 1)->where('uses_twinfield', 1)->get() as $administration) {
-            $twinfieldCustomerHelper = new TwinfieldCustomerHelper($administration);
-            $twinfieldCustomerHelper->createCustomer($address->contact);
+        // Twinfield customer hoeven we vanuit hier (contact) alleen bij te werken als er een koppeling is.
+        // Nieuw aanmaken gebeurt vooralsnog alleen vanuit synchroniseren facturen
+        if($address->contact->twinfieldNumbers()) {
+            foreach (
+                Administration::where('twinfield_is_valid', 1)->where('uses_twinfield', 1)->get() as $administration
+            ) {
+                $twinfieldCustomerHelper = new TwinfieldCustomerHelper($administration);
+                $twinfieldCustomerHelper->updateCustomer($address->contact);
+            }
         }
     }
 }

@@ -43,7 +43,7 @@ class TwinfieldSalesTransactionHelper
         $this->administration = $administration;
         $this->transactionApiConnector = new TransactionApiConnector($this->connection);
         $this->dagboekCode = config('services.twinfield.verkoop_dagboek_code');
-        $this->currency = config('services.twinfield.verkoop_default_currency');
+        $this->currency = new Currency( config('services.twinfield.verkoop_default_currency') );
         $this->grootboekDebiteuren = config('services.twinfield.verkoop_grootboek_debiteuren');
         $this->grootboekOmzetGeen = config('services.twinfield.verkoop_grootboek_omzet_geen');
         $this->grootboekOmzetLaag = config('services.twinfield.verkoop_grootboek_omzet_laag');
@@ -65,7 +65,7 @@ class TwinfieldSalesTransactionHelper
             else{
                 //soms zitten in de error message van Twinfield // voor de melding.
                 $response = str_replace('//', '', $response);
-                array_push($messages, 'Syncronisatie transactie factuur ' . $invoice->number . ' gaf de volgende foutmelding: ' . $response);
+                array_push($messages, 'Synchronisatie transactie factuur ' . $invoice->number . ' gaf de volgende foutmelding: ' . $response);
             }
         }
 
@@ -78,7 +78,17 @@ class TwinfieldSalesTransactionHelper
 
     public function createSalesTransation(Invoice $invoice){
         $twinfieldCustomerHelper = new TwinfieldCustomerHelper($this->administration);
-        $twinfieldCustomer = $twinfieldCustomerHelper->createCustomer($invoice->order->contact);
+        $twinfieldNumbers = $invoice->order->contact->twinfieldNumbers;
+        $twinfieldNumber  = $twinfieldNumbers->where('administration_id', '=', $this->administration->id)->first();
+        $twinfieldCustomer = null;
+        if($twinfieldNumber && $twinfieldNumber->twinfield_number)
+        {
+            $twinfieldCustomer = $twinfieldCustomerHelper->getTwinfieldCustomerByCode($twinfieldNumber->twinfield_number);
+        }
+        if(!$twinfieldCustomer)
+        {
+            $twinfieldCustomer = $twinfieldCustomerHelper->createCustomer($invoice->order->contact);
+        }
 
         //Invoice datum
         $dateInvoice = new \DateTime($invoice->date_sent);
@@ -86,11 +96,12 @@ class TwinfieldSalesTransactionHelper
         if ($invoice->payment_type_id === 'transfer') {
             if ( $invoice->days_to_expire && $invoice->days_to_expire > 0 ){
                 $daysToAdd = new \DateInterval('P' . $invoice->days_to_expire . 'D');
-                $dueDateInvoice = $dateInvoice->add( $daysToAdd);
+                $dueDateInvoice = new \DateTime($invoice->date_sent); ;
+                $dueDateInvoice->add( $daysToAdd);
             }else {
                 $datePaymentDue = $invoice->getDatePaymentDueAttribute();
                 if ($dueDateInvoice = 0) {
-                    $dueDateInvoice = $dateInvoice;
+                    $dueDateInvoice = new \DateTime($invoice->date_sent); ;
                 } else {
                     $dueDateInvoice = new \DateTime($datePaymentDue);
                 }
@@ -115,7 +126,9 @@ class TwinfieldSalesTransactionHelper
 
         //Salestransaction - Total line maken
         $idTeller = 1;
-        $totaalBedragIncl = new Money($invoice->getTotalPriceInclVatAndReductionAttribute()*100, $this->currency );
+        $totaalBedragExcl = $invoice->getTotalPriceExVatInclReductionAttribute();
+        $totaalBedragBtw  = $invoice->getTotalVatAttribute();
+        $totaalBedragIncl = new Money(($totaalBedragExcl + $totaalBedragBtw )*100, $this->currency );
         $twinfieldTransactionLineTotal = new SalesTransactionLine();
         $twinfieldTransactionLineTotal
             ->setId($idTeller)
@@ -123,7 +136,7 @@ class TwinfieldSalesTransactionHelper
             ->setDim1($this->grootboekDebiteuren)
             ->setDim2($twinfieldCustomer->getCode())
             ->setValue($totaalBedragIncl)
-            ->setDebitCredit($totaalBedragIncl->lessThan(new Money(0, $this->currency )) ? DebitCredit::CREDIT() : DebitCredit::DEBIT() )
+            ->setDebitCredit(DebitCredit::DEBIT() )
             ->setDescription($twinfieldCustomer ? $twinfieldCustomer->getName() : '' ." / ". $invoice->number );
         $twinfieldSalesTransaction->addLine($twinfieldTransactionLineTotal);
 
@@ -182,7 +195,7 @@ class TwinfieldSalesTransactionHelper
                 ->setDim1($omzetStandaardGrootBoek)
                 ->setVatCode($code)
                 ->setValue($invoiceDetailExcl)
-                ->setDebitCredit($invoiceDetailExcl->lessThan(new Money(0, $this->currency )) ? DebitCredit::DEBIT() : DebitCredit::CREDIT() );
+                ->setDebitCredit(DebitCredit::CREDIT() );
             $twinfieldSalesTransaction->addLine($twinfieldTransactionLineVat);
         }
 
@@ -209,7 +222,7 @@ class TwinfieldSalesTransactionHelper
                 ->setDim1($omzetStandaardGrootBoek)
                 ->setVatCode($code)
                 ->setValue($invoiceDetailExcl)
-                ->setDebitCredit($invoiceDetailExcl->lessThan(new Money(0, $this->currency )) ? DebitCredit::DEBIT() : DebitCredit::CREDIT() );
+                ->setDebitCredit(DebitCredit::CREDIT() );
             $twinfieldSalesTransaction->addLine($twinfieldTransactionLineVat);
         }
 

@@ -97,7 +97,6 @@ class TwinfieldCustomerHelper
 //        {
 //            return 'Error: Iban komt al voor bij TwinField' ;
 //        };
-
         // Check of contact / administratie al koppeling heeft met Twinfield
         $twinfieldCustomerNumber = $contact->twinfieldNumbers()->where('administration_id', $this->administration->id)->first();
         // Nog geen koppeling, dan aanmaken
@@ -152,6 +151,7 @@ class TwinfieldCustomerHelper
 
     public function fillCustomerDimension(Contact $contact, Customer $customer){
         $customer
+            ->setCode("D".$contact->number)
             ->setName($contact->full_name)
             ->setOffice($this->office);
     }

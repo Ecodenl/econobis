@@ -313,7 +313,7 @@ class ProductNewForm extends Component {
 
                         <div className={"row"}>
                             <InputReactSelect
-                                label={"Groetboek"}
+                                label={"Grootboek"}
                                 name={"administrationLedgerTwinfieldId"}
                                 options={this.state.ledgers}
                                 value={administrationLedgerTwinfieldId}

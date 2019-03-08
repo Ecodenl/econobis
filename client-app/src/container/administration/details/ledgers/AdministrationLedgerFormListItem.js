@@ -105,7 +105,7 @@ class AdministrationLedgerFormListItem extends Component {
                 this.setState({
                     showModalError: !this.state.showModalError,
                     modalErrorTitle: 'Waarschuwing',
-                    modalErrorMessage: 'Dit groetboeknummer bestaat al.',
+                    modalErrorMessage: 'Dit grootboeknummer bestaat al.',
                 });
 
                 errors.code = true;

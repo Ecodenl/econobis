@@ -14,8 +14,10 @@ use Illuminate\Support\Facades\Log;
 use PhpTwinfield\ApiConnectors\InvoiceApiConnector;
 use PhpTwinfield\ApiConnectors\BrowseDataApiConnector;
 use PhpTwinfield\BrowseColumn;
+use PhpTwinfield\Enums\BrowseColumnOperator;
 use PhpTwinfield\Exception as PhpTwinfieldException;
 use PhpTwinfield\Office;
+use PhpTwinfield\Request\BrowseData;
 use PhpTwinfield\Secure\WebservicesAuthentication;
 
 class TwinfieldInvoiceHelper
@@ -57,10 +59,10 @@ class TwinfieldInvoiceHelper
                     ->setField('fin.trs.head.code')
                     ->setLabel('Transactie type')
                     ->setVisible(true)
-                    ->setAsk(true);
-//                    ->setOperator(BrowseColumnOperator::EQUAL())
-//                    ->setFrom("VRK")
-//                    ->setTo("");
+                    ->setAsk(true)
+                    ->setOperator(BrowseColumnOperator::EQUAL())
+                    ->setFrom("VRK")
+                    ->setTo("");
                 $columns[] = (new BrowseColumn())
                     ->setField('fin.trs.line.matchstatus')
                     ->setLabel('Betaalstatus')
@@ -71,18 +73,18 @@ class TwinfieldInvoiceHelper
                     ->setField('fin.trs.head.number')
                     ->setLabel('Twinfield number')
                     ->setVisible(true)
-                    ->setAsk(true);
-//                    ->setOperator(BrowseColumnOperator::EQUAL())
-//                    ->setOperator(BrowseColumnOperator::BETWEEN())
+                    ->setAsk(true)
+                    ->setOperator(BrowseColumnOperator::BETWEEN())
 //                    ->setFrom( "201900002" )
 //                    ->setTo( "201900002" );
-//                    ->setFrom( $invoiceToBeChecked->twinfield_number )
-//                    ->setTo( $invoiceToBeChecked->twinfield_number );
+                    ->setFrom( $invoiceToBeChecked->twinfield_number )
+                    ->setTo( $invoiceToBeChecked->twinfield_number );
 
 //                $columns[] = (new BrowseColumn())
 //                    ->setField('fin.trs.line.matchdate')
 //                    ->setLabel('Betaaldatum')
 //                    ->setVisible(true)
+//                    ->setAsk(true);
 //                    ->setOperator(BrowseColumnOperator::BETWEEN())
 //                    ->setFrom( '00000000' )
 //                    ->setTo( '99991231' );
@@ -101,8 +103,12 @@ class TwinfieldInvoiceHelper
 
 //                $sortFields[] = new BrowseSortField('fin.trs.head.number');
 
+//                $requestBrowseData = new BrowseData('100', $columns, []);
+//                dd($requestBrowseData->saveXML());
+
                 $twinfieldInvoiceTransactions = $browseDataApiConnector->getBrowseData('100', $columns );
-//                dd($twinfieldInvoiceTransactions); die();
+
+                //                dd($twinfieldInvoiceTransactions); die();
 
                 foreach($twinfieldInvoiceTransactions->getRows() as $row){
                     // 1e cell (0) bevat code

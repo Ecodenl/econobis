@@ -140,60 +140,45 @@ class TwinfieldSalesTransactionHelper
             ->setDescription($twinfieldCustomer ? $twinfieldCustomer->getName() : '' ." / ". $invoice->number );
         $twinfieldSalesTransaction->addLine($twinfieldTransactionLineTotal);
 
-        //Vanuit details bedragen per btw code bepalen (bedragen omzet en bedragen BTW)
-        $invoiceDetailsAmountExcl = array();
+        //Vanuit invoice products bedragen per product (omzet) / bedragen per btw code alvast doortellen voor VAT regels hierna
+        //Salestransaction - Detail lines maken (omzet regels)
         $invoiceDetailsAmountVat = array();
         foreach($invoice->invoiceProducts as $invoiceProduct){
             $vatCode   = "";
-            $exclAmount = $invoiceProduct->getPriceExVatInclReductionAttribute();
+            $ledgerCode = "";
             $vatAmount = $invoiceProduct->getAmountVatAttribute();
             switch ($invoiceProduct->vat_percentage) {
                 case null:
                     $vatCode   = $this->administration->btw_code_sales_null;
+                    $ledgerCode = $invoiceProduct->twinfield_ledger_code ? $invoiceProduct->twinfield_ledger_code :  $this->grootboekOmzetGeen;
                     break;
                 case '0':
                     $vatCode   = $this->administration->btw_code_sales_0;
+                    $ledgerCode = $invoiceProduct->twinfield_ledger_code ? $invoiceProduct->twinfield_ledger_code :  $this->grootboekOmzetGeen;
                     break;
                 case '6':
                 case '9':
                     $vatCode   = $this->administration->btw_code_sales_6;
+                    $ledgerCode = $invoiceProduct->twinfield_ledger_code ? $invoiceProduct->twinfield_ledger_code :  $this->grootboekOmzetLaag;
                     $vatAmountOld = key_exists($vatCode, $invoiceDetailsAmountVat) ? $invoiceDetailsAmountVat[$vatCode] : 0;
                     $invoiceDetailsAmountVat[$vatCode] = $vatAmountOld + $vatAmount;
                     break;
                 case '21':
                     $vatCode   = $this->administration->btw_code_sales_21;
+                    $ledgerCode = $invoiceProduct->twinfield_ledger_code ? $invoiceProduct->twinfield_ledger_code :  $this->grootboekOmzetHoog;
                     $vatAmountOld = key_exists($vatCode, $invoiceDetailsAmountVat) ? $invoiceDetailsAmountVat[$vatCode] : 0;
                     $invoiceDetailsAmountVat[$vatCode] = $vatAmountOld + $vatAmount;
                     break;
             }
-            $exclAmountOld = key_exists($vatCode, $invoiceDetailsAmountExcl) ? $invoiceDetailsAmountExcl[$vatCode] : 0;
-            $invoiceDetailsAmountExcl[$vatCode] = $exclAmountOld + $exclAmount;
-        }
-
-        //Salestransaction - Detail lines maken (omzet per btw code)
-        foreach($invoiceDetailsAmountExcl as $code => $invoiceDetail) {
-            $omzetStandaardGrootBoek = "";
-            switch ($code) {
-                case $this->administration->btw_code_sales_null:
-                case $this->administration->btw_code_sales_0:
-                    $omzetStandaardGrootBoek = $this->grootboekOmzetGeen;
-                    break;
-                case $this->administration->btw_code_sales_6:
-                    $omzetStandaardGrootBoek = $this->grootboekOmzetLaag;
-                    break;
-                case $this->administration->btw_code_sales_21:
-                    $omzetStandaardGrootBoek = $this->grootboekOmzetHoog;
-                    break;
-            }
-
-            $invoiceDetailExcl = new Money($invoiceDetail*100, $this->currency );
+            $exclAmount = $invoiceProduct->getPriceExVatInclReductionAttribute();
+            $invoiceDetailExcl = new Money($exclAmount*100, $this->currency );
             $twinfieldTransactionLineVat = new SalesTransactionLine();
             $idTeller++;
             $twinfieldTransactionLineVat
                 ->setId($idTeller)
                 ->setLineType(LineType::DETAIL())
-                ->setDim1($omzetStandaardGrootBoek)
-                ->setVatCode($code)
+                ->setDim1($ledgerCode)
+                ->setVatCode($vatCode)
                 ->setValue($invoiceDetailExcl)
                 ->setDebitCredit(DebitCredit::CREDIT() );
             $twinfieldSalesTransaction->addLine($twinfieldTransactionLineVat);

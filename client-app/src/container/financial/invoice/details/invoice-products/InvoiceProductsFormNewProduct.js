@@ -345,7 +345,7 @@ class InvoiceProductsFormNewProduct extends Component {
                         {this.props.invoiceDetails.order.administration.usesTwinfield == true && this.props.invoiceDetails.order.administration.twinfieldIsValid == true &&
                         <div className="row">
                             <InputReactSelect
-                                label={"Groetboek"}
+                                label={"Grootboek"}
                                 name={"administrationLedgerTwinfieldId"}
                                 options={this.props.invoiceDetails.order.administration.ledgers}
                                 value={administrationLedgerTwinfieldId}

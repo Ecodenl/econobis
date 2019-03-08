@@ -58,7 +58,7 @@ const ProductDetailsFormGeneralView = props => {
                     {administration.usesTwinfield == true && administration.twinfieldIsValid == true &&
                         <div className="row">
                             <ViewText
-                                label={"Groetboeknummer"}
+                                label={"Grootboeknummer"}
                                 value={ledger ? ledger.name : ''}
                             />
                         </div>

@@ -498,6 +498,7 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                                 optionName={'email'}
                                 value={mailboxId}
                                 onChangeAction={this.handleInputChange}
+                                required={"required"}
                             />
                         </div>
 
@@ -599,7 +600,7 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                         {usesTwinfield == true &&
                         <div className="row">
                             <InputText
-                                label="BTW code verkoop 6%"
+                                label="BTW code verkoop 9%"
                                 name={"btwCodeSales6"}
                                 value={btwCodeSales6}
                                 onChangeAction={this.handleInputChange}

@@ -595,7 +595,7 @@ class AdministrationNewForm extends Component {
                         {usesTwinfield == true &&
                         <div className="row">
                             <InputText
-                                label="BTW code verkoop 6%"
+                                label="BTW code verkoop 9%"
                                 name={"btwCodeSales6"}
                                 value={btwCodeSales6}
                                 onChangeAction={this.handleInputChange}

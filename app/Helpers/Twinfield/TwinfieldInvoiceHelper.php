@@ -61,33 +61,30 @@ class TwinfieldInvoiceHelper
                     ->setVisible(true)
                     ->setAsk(true)
                     ->setOperator(BrowseColumnOperator::EQUAL())
-                    ->setFrom("VRK")
-                    ->setTo("");
+                    ->setFrom("VRK");
                 $columns[] = (new BrowseColumn())
                     ->setField('fin.trs.line.matchstatus')
                     ->setLabel('Betaalstatus')
                     ->setVisible(true)
                     ->setAsk(true);
-//ToDo Testboeking eruit uiteraard!
+                $columns[] = (new BrowseColumn())
+                    ->setField('fin.trs.line.invnumber')
+                    ->setLabel('Factuurnr.')
+                    ->setVisible(true)
+                    ->setAsk(true)
+                    ->setOperator(BrowseColumnOperator::EQUAL())
+                    ->setFrom( $invoiceToBeChecked->number );
                 $columns[] = (new BrowseColumn())
                     ->setField('fin.trs.head.number')
                     ->setLabel('Twinfield number')
                     ->setVisible(true)
-                    ->setAsk(true)
-                    ->setOperator(BrowseColumnOperator::BETWEEN())
-//                    ->setFrom( "201900002" )
-//                    ->setTo( "201900002" );
-                    ->setFrom( $invoiceToBeChecked->twinfield_number )
-                    ->setTo( $invoiceToBeChecked->twinfield_number );
+                    ->setAsk(true);
 
-//                $columns[] = (new BrowseColumn())
-//                    ->setField('fin.trs.line.matchdate')
-//                    ->setLabel('Betaaldatum')
-//                    ->setVisible(true)
-//                    ->setAsk(true);
-//                    ->setOperator(BrowseColumnOperator::BETWEEN())
-//                    ->setFrom( '00000000' )
-//                    ->setTo( '99991231' );
+                $columns[] = (new BrowseColumn())
+                    ->setField('fin.trs.line.matchdate')
+                    ->setLabel('Betaaldatum')
+                    ->setVisible(true)
+                    ->setAsk(false);
                 $columns[] = (new BrowseColumn())
                     ->setField('fin.trs.line.basevaluesigned')
                     ->setLabel('Bedrag')
@@ -101,31 +98,25 @@ class TwinfieldInvoiceHelper
                     ->setLabel('Betaalnr.')
                     ->setVisible(true);
 
-//                $sortFields[] = new BrowseSortField('fin.trs.head.number');
-
-//                $requestBrowseData = new BrowseData('100', $columns, []);
-//                dd($requestBrowseData->saveXML());
-
                 $twinfieldInvoiceTransactions = $browseDataApiConnector->getBrowseData('100', $columns );
-
-                //                dd($twinfieldInvoiceTransactions); die();
 
                 foreach($twinfieldInvoiceTransactions->getRows() as $row){
                     // 1e cell (0) bevat code
                     $type = ($row->getCells()[0]->getValue());
                     // 2e cell (1) bevat matchstatus
-                    // 3e cell (2) bevat twinfieldnummer
+                    // 3e cell (2) bevat invoicenumber
+                    // 4e cell (3) bevat twinfieldnummer
 
                     //VRK is de verkoop factuur
                     if($type === 'VRK' ){
-                        //4e cell (3) bevat betaaldatum
-                        $dateInput = $row->getCells()[3]->getValue(); //datetime
+                        //5e cell (4) bevat betaaldatum
+                        $dateInput = $row->getCells()[4]->getValue(); //datetime
                         $dateInput = date_format($dateInput, 'Y-m-d');
 
-                        //5e cell (4) bevat bedrag (neem aan factuurbedrag en niet betaald bedrag ??)
-                        $amount = $row->getCells()[4]->getValue();
-                        //6e cell (5) bevat bedrag openstaand
-                        $amountOpen = $row->getCells()[5]->getValue();
+                        //6e cell (5) bevat bedrag (neem aan factuurbedrag en niet betaald bedrag ??)
+                        $amount = $row->getCells()[5]->getValue();
+                        //7e cell (6) bevat bedrag openstaand
+                        $amountOpen = $row->getCells()[6]->getValue();
 
                         //-100 op debiteur is dus 100 betaald
                         $amount = $amount * -1;

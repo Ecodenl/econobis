@@ -181,7 +181,7 @@ const AdministrationDetailsFormGeneralView = props => {
                     {usesTwinfield == true &&
                     <div className="row">
                         <ViewText
-                            label={"BTW code verkoop 6%"}
+                            label={"BTW code verkoop 9%"}
                             value={btwCodeSales6}
                         />
                         <ViewText

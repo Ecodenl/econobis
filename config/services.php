@@ -45,6 +45,6 @@ return [
         'verkoop_grootboek_omzet_laag' => '8010',
         'verkoop_grootboek_omzet_hoog' => '8020',
         'verkoop_grootboek_btw_laag'   => '1520',
-        'verkoop_grootboek_btw_hoog'   => '1520',
+        'verkoop_grootboek_btw_hoog'   => '1530',
     ],
 ];

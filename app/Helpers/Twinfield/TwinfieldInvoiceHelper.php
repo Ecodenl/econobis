@@ -101,6 +101,7 @@ class TwinfieldInvoiceHelper
                 $twinfieldInvoiceTransactions = $browseDataApiConnector->getBrowseData('100', $columns );
 
                 foreach($twinfieldInvoiceTransactions->getRows() as $row){
+
                     // 1e cell (0) bevat code
                     $type = ($row->getCells()[0]->getValue());
                     // 2e cell (1) bevat matchstatus
@@ -114,12 +115,12 @@ class TwinfieldInvoiceHelper
                         $dateInput = date_format($dateInput, 'Y-m-d');
 
                         //6e cell (5) bevat bedrag (neem aan factuurbedrag en niet betaald bedrag ??)
-                        $amount = $row->getCells()[5]->getValue();
+                        $amountInvoice = $row->getCells()[5]->getValue();
                         //7e cell (6) bevat bedrag openstaand
                         $amountOpen = $row->getCells()[6]->getValue();
 
                         //-100 op debiteur is dus 100 betaald
-                        $amount = $amount * -1;
+                        $amount = ($amountInvoice-$amountOpen) * -1;
 
                         if(!InvoicePayment::where('invoice_id', $invoiceToBeChecked->id)->where('amount', $amount)->where('date_paid', $dateInput)->exists()){
                             $invoicePayment = new InvoicePayment();

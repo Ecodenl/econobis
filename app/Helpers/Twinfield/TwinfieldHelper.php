@@ -22,7 +22,7 @@ class TwinfieldHelper
     private $office;
 
     /**
-     * TwinfieldCustomerHelper constructor.
+     * TwinfieldHelper constructor.
      *
      * @param Administration $administration
      */

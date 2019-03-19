@@ -43,7 +43,7 @@ class AddressObserver
             foreach (
                 Administration::where('twinfield_is_valid', 1)->where('uses_twinfield', 1)->get() as $administration
             ) {
-                $twinfieldCustomerHelper = new TwinfieldCustomerHelper($administration);
+                $twinfieldCustomerHelper = new TwinfieldCustomerHelper($administration, null);
                 $twinfieldCustomerHelper->updateCustomer($address->contact);
             }
         }

@@ -48,7 +48,7 @@ class AdministrationObserver
             }
 
             //alle contacten als klanten in Twinfield zetten
-            $twinfieldCustomerHelper = new TwinfieldCustomerHelper($administration);
+            $twinfieldCustomerHelper = new TwinfieldCustomerHelper($administration, null);
             $twinfieldCustomerHelper->createAllCustomers();
         }
     }

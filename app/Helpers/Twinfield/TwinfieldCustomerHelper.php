@@ -35,11 +35,17 @@ class TwinfieldCustomerHelper
     /**
      * TwinfieldCustomerHelper constructor.
      *
-     * @param Administration $administration
+     * @param Administration $administration, WebservicesAuthentication $webservicesAuthentication
      */
-    public function __construct(Administration $administration)
+    public function __construct(Administration $administration, $webservicesAuthentication)
     {
-        $this->connection = new WebservicesAuthentication($administration->twinfield_username, $administration->twinfield_password, $administration->twinfield_organization_code);
+        //Indien we al een connection hebben gemaakt (bijv. vanuit TwinfieldSalsTransaction), dan gebruiken we die, anders nieuwe maken.
+        if($webservicesAuthentication)
+        {
+            $this->connection = $webservicesAuthentication;
+        }else{
+            $this->connection = new WebservicesAuthentication($administration->twinfield_username, $administration->twinfield_password, $administration->twinfield_organization_code);
+        }
         $this->office = Office::fromCode($administration->twinfield_office_code);
         $this->administration = $administration;
         $this->customerApiConnector = new CustomerApiConnector($this->connection);

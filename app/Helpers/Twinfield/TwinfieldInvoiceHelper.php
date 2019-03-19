@@ -28,7 +28,7 @@ class TwinfieldInvoiceHelper
     private $invoiceApiConnector;
 
     /**
-     * TwinfieldCustomerHelper constructor.
+     * TwinfieldInvoiceHelper constructor.
      *
      * @param Administration $administration
      */

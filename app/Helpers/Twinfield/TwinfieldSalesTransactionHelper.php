@@ -31,7 +31,7 @@ class TwinfieldSalesTransactionHelper
     private $currency;
 
     /**
-     * TwinfieldCustomerHelper constructor.
+     * TwinfieldSalesTransactionHelper constructor.
      *
      * @param Administration $administration
      */
@@ -77,7 +77,8 @@ class TwinfieldSalesTransactionHelper
     }
 
     public function createSalesTransation(Invoice $invoice){
-        $twinfieldCustomerHelper = new TwinfieldCustomerHelper($this->administration);
+        // connection van hier kunnen we ook gebruiken in TwinfieldcustomerHelper
+        $twinfieldCustomerHelper = new TwinfieldCustomerHelper($this->administration, $this->connection);
         $twinfieldNumbers = $invoice->order->contact->twinfieldNumbers;
         $twinfieldNumber  = $twinfieldNumbers->where('administration_id', '=', $this->administration->id)->first();
         $twinfieldCustomer = null;

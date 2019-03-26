@@ -34,7 +34,7 @@ const VatCodesLists = ({ vatCodes, hasError, isLoading }) => {
                 <DataTableBody>
                     {loading ? (
                         <tr>
-                            <td colSpan={3}>{loadingText}</td>
+                            <td colSpan={4}>{loadingText}</td>
                         </tr>
                     ) : (
                         vatCodes.map(vatCode => {

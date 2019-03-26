@@ -20,30 +20,35 @@ class AddedDefaultVatCodes extends Migration
                 'description' => 'IC leveringen binnen EU naam',
                 'percentage' => '0.00',
                 'twinfield_code' => 'ICP',
+                'twinfield_ledger_code' => '',
             ],
             [
                 'start_date' => '2019-01-01',
                 'description' => 'Verkoop laag',
                 'percentage' => '9.00',
                 'twinfield_code' => 'VL',
+                'twinfield_ledger_code' => '1520',
             ],
             [
                 'start_date' => '2012-10-01',
                 'description' => 'BTW Hoog naam',
                 'percentage' => '21.00',
                 'twinfield_code' => 'VH',
+                'twinfield_ledger_code' => '1530',
             ],
             [
                 'start_date' => '2000-01-01',
                 'description' => 'BTW 0% naam',
                 'percentage' => '0.00',
                 'twinfield_code' => 'VN',
+                'twinfield_ledger_code' => '',
             ],
             [
                 'start_date' => '2000-01-01',
                 'description' => 'Export Buiten EU naam',
                 'percentage' => '0.00',
                 'twinfield_code' => 'EXP-BUI-EU',
+                'twinfield_ledger_code' => '',
             ],
         ];
         foreach (
@@ -54,6 +59,7 @@ class AddedDefaultVatCodes extends Migration
                     'description' => $defaultVatCode['description'],
                     'percentage' => $defaultVatCode['percentage'],
                     'twinfield_code' => $defaultVatCode['twinfield_code'],
+                    'twinfield_ledger_code' => $defaultVatCode['twinfield_ledger_code'],
                     'created_at' => \Carbon\Carbon::now(),
                 ]
             );

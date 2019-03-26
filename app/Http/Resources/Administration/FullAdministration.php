@@ -104,6 +104,8 @@ class FullAdministration extends Resource
 
                 'mailboxId' => $this->mailbox_id,
                 'mailboxEmail' => optional($this->mailbox)->email,
+
+                'usesVat' => $this->uses_vat,
             ];
     }
 }

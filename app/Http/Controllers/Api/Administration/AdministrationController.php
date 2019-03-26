@@ -106,6 +106,18 @@ class AdministrationController extends ApiController
 
         $data['uses_twinfield'] = $usesTwinfield;
 
+        //bool als string? waarschijnlijk door formdata
+        $usesVat = $request->input('usesVat');
+
+        if($usesVat == 'false' || $usesVat == '0'){
+            $usesVat = false;
+        }
+        if($usesVat == 'true' || $usesVat == '1'){
+            $usesVat = true;
+        }
+
+        $data['uses_vat'] = $usesVat;
+
         $administration = new Administration($data);
 
         if($administration->uses_twinfield) {
@@ -175,6 +187,18 @@ class AdministrationController extends ApiController
         }
 
         $data['uses_twinfield'] = $usesTwinfield;
+
+        //bool als string? waarschijnlijk door formdata
+        $usesVat = $request->input('usesVat');
+
+        if($usesVat == 'false' || $usesVat == '0'){
+            $usesVat = false;
+        }
+        if($usesVat == 'true' || $usesVat == '1'){
+            $usesVat = true;
+        }
+
+        $data['uses_vat'] = $usesVat;
 
         $administration->fill($data);
 

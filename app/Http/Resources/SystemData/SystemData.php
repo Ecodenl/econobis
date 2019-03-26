@@ -15,6 +15,7 @@ use App\Eco\EnergySupplier\ContactEnergySupplierType;
 use App\Eco\EnergySupplier\EnergySupplier;
 use App\Eco\HousingFile\EnergyLabelStatus;
 use App\Eco\HousingFile\RoofType;
+use App\Eco\Ledger\Ledger;
 use App\Eco\Mailbox\Mailbox;
 use App\Eco\Mailbox\MailboxIgnoreType;
 use App\Eco\Measure\MeasureCategory;
@@ -57,6 +58,7 @@ use App\Eco\Task\TaskProperty;
 use App\Eco\Task\TaskType;
 use App\Eco\Team\Team;
 use App\Eco\User\User;
+use App\Eco\VatCode\VatCode;
 use App\Http\Resources\GenericResource;
 use App\Http\Resources\Measure\MeasurePeek;
 use App\Http\Resources\OrganisationType\FullOrganisationType;
@@ -183,6 +185,8 @@ class SystemData extends Resource
             'mailgunDomain' => MailgunDomain::select(['id', 'domain'])->get(),
             'mailboxIgnoreTypes' => FullEnumWithIdAndName::collection(MailboxIgnoreType::collection()),
             'mailboxesInvalid' => Mailbox::where('is_active', 1)->where('valid', 0)->count(),
+            'ledgers' => Ledger::select(['id', 'description'])->get(),
+            'vatCodes' => VatCode::select(['id', 'description'])->get(),
         ];
     }
 }

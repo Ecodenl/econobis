@@ -43,7 +43,7 @@ class InvoiceProductsFormNewProductOneTime extends Component {
                 vatPercentage: '',
                 price: '',
                 isOneTime: true,
-                administrationLedgerTwinfieldId: '',
+                ledgerId: '',
             },
             errors: {
                 amount: false,
@@ -255,7 +255,7 @@ class InvoiceProductsFormNewProductOneTime extends Component {
     render() {
 
         const {description, amount, amountReduction, percentageReduction, dateLastInvoice} = this.state.invoiceProduct;
-        const { vatPercentage, price, administrationLedgerTwinfieldId } = this.state.product;
+        const { vatPercentage, price, ledgerId } = this.state.product;
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -294,9 +294,10 @@ class InvoiceProductsFormNewProductOneTime extends Component {
                         <div className="row">
                             <InputReactSelect
                                 label={"Grootboek"}
-                                name={"administrationLedgerTwinfieldId"}
-                                options={this.props.invoiceDetails.order.administration.ledgers}
-                                value={administrationLedgerTwinfieldId}
+                                name={"ledgerId"}
+                                options={this.props.ledgers}
+                                optionName={'description'}
+                                value={ledgerId}
                                 onChangeAction={this.handleReactSelectChange}
                                 multi={false}
                             />
@@ -409,6 +410,7 @@ const mapStateToProps = (state) => {
         productInvoiceFrequencies: state.systemData.productInvoiceFrequencies,
         productPaymentTypes: state.systemData.productPaymentTypes,
         products: state.systemData.products,
+        ledgers: state.systemData.ledgers,
     };
 };
 

@@ -44,7 +44,7 @@ class OrderProductsFormNewProduct extends Component {
                 invoiceFrequencyId: this.props.orderDetails.collectionFrequencyId ? this.props.orderDetails.collectionFrequencyId : 'once',
                 vatPercentage: '',
                 price: '',
-                administrationLedgerTwinfieldId: '',
+                ledgerId: '',
                 isOneTime: false
             },
             errors: {
@@ -386,7 +386,7 @@ class OrderProductsFormNewProduct extends Component {
     render() {
 
         const {amount, amountReduction, percentageReduction, dateStart, dateEnd, datePeriodStartFirstInvoice} = this.state.orderProduct;
-        const {description, code, name, durationId, vatPercentage, price, administrationLedgerTwinfieldId } = this.state.product;
+        const {description, code, name, durationId, vatPercentage, price, ledgerId } = this.state.product;
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -452,9 +452,10 @@ class OrderProductsFormNewProduct extends Component {
                             {this.props.orderDetails.administration.usesTwinfield == true && this.props.orderDetails.administration.twinfieldIsValid == true &&
                             <InputReactSelect
                                 label={"Grootboek"}
-                                name={"administrationLedgerTwinfieldId"}
-                                options={this.props.orderDetails.administration.ledgers}
-                                value={administrationLedgerTwinfieldId}
+                                name={"ledgerId"}
+                                options={this.props.ledgers}
+                                optionName={'description'}
+                                value={ledgerId}
                                 onChangeAction={this.handleReactSelectChange}
                                 multi={false}
                             />
@@ -587,6 +588,7 @@ const mapStateToProps = (state) => {
         productInvoiceFrequencies: state.systemData.productInvoiceFrequencies,
         productPaymentTypes: state.systemData.productPaymentTypes,
         products: state.systemData.products,
+        ledgers: state.systemData.ledgers,
     };
 };
 

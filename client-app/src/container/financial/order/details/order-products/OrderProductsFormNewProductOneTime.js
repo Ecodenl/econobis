@@ -44,7 +44,7 @@ class OrderProductsFormNewProductOneTime extends Component {
                 invoiceFrequencyId: this.props.orderDetails.collectionFrequencyId ? this.props.orderDetails.collectionFrequencyId : 'once',
                 vatPercentage: '',
                 price: '',
-                administrationLedgerTwinfieldId: '',
+                ledgerId: '',
                 isOneTime: true
             },
             errors: {
@@ -352,7 +352,7 @@ class OrderProductsFormNewProductOneTime extends Component {
     render() {
 
         const {amount, amountReduction, percentageReduction, dateStart, dateEnd, datePeriodStartFirstInvoice} = this.state.orderProduct;
-        const {description, durationId, vatPercentage, price, administrationLedgerTwinfieldId  } = this.state.product;
+        const {description, durationId, vatPercentage, price, ledgerId  } = this.state.product;
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -391,9 +391,10 @@ class OrderProductsFormNewProductOneTime extends Component {
                         <div className="row">
                             <InputReactSelect
                                 label={"Grootboek"}
-                                name={"administrationLedgerTwinfieldId"}
-                                options={this.props.orderDetails.administration.ledgers}
-                                value={administrationLedgerTwinfieldId}
+                                name={"ledgerId"}
+                                options={this.props.ledgers}
+                                optionName={'description'}
+                                value={ledgerId}
                                 onChangeAction={this.handleReactSelectChange}
                                 multi={false}
                             />
@@ -526,6 +527,7 @@ const mapStateToProps = (state) => {
         productInvoiceFrequencies: state.systemData.productInvoiceFrequencies,
         productPaymentTypes: state.systemData.productPaymentTypes,
         products: state.systemData.products,
+        ledgers: state.systemData.ledgers,
     };
 };
 

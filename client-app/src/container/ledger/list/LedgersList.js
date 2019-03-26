@@ -4,18 +4,18 @@ import DataTable from '../../../components/dataTable/DataTable';
 import DataTableHead from '../../../components/dataTable/DataTableHead';
 import DataTableBody from '../../../components/dataTable/DataTableBody';
 import DataTableHeadTitle from '../../../components/dataTable/DataTableHeadTitle';
-import VatCodesListItem from './VatCodesListItem';
+import LedgersListItem from './LedgersListItem';
 
-const VatCodesLists = ({ vatCodes, hasError, isLoading }) => {
+const VatCodesLists = ({ ledgers, hasError, isLoading }) => {
     let loadingText = '';
     let loading = true;
 
     if (hasError) {
-        loadingText = 'Fout bij het ophalen van btw codes.';
+        loadingText = 'Fout bij het ophalen van grootboekrekeningen.';
     } else if (isLoading) {
         loadingText = 'Gegevens aan het laden.';
-    } else if (vatCodes.length === 0) {
-        loadingText = 'Geen btw codes gevonden!';
+    } else if (ledgers.length === 0) {
+        loadingText = 'Geen grootboekrekeningen gevonden!';
     } else {
         loading = false;
     }
@@ -25,20 +25,19 @@ const VatCodesLists = ({ vatCodes, hasError, isLoading }) => {
             <DataTable>
                 <DataTableHead>
                     <tr className="thead-title">
-                        <DataTableHeadTitle title={'Startdatum'} width={'20%'} />
                         <DataTableHeadTitle title={'Omschrijving'} width={'35%'} />
-                        <DataTableHeadTitle title={'Percentage'} width={'40%'} />
+                        <DataTableHeadTitle title={'BTW code'} width={'60%'} />
                         <DataTableHeadTitle title={''} width={'5%'} />
                     </tr>
                 </DataTableHead>
                 <DataTableBody>
                     {loading ? (
                         <tr>
-                            <td colSpan={4}>{loadingText}</td>
+                            <td colSpan={5}>{loadingText}</td>
                         </tr>
                     ) : (
-                        vatCodes.map(vatCode => {
-                            return <VatCodesListItem key={vatCode.id} {...vatCode} />;
+                        ledgers.map(ledger => {
+                            return <LedgersListItem key={ledger.id} {...ledger} />;
                         })
                     )}
                 </DataTableBody>

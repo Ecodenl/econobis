@@ -16,6 +16,8 @@ use App\Eco\HousingFile\HousingFile;
 use App\Eco\HousingFile\HousingFilePolicy;
 use App\Eco\Invoice\Invoice;
 use App\Eco\Invoice\InvoicePolicy;
+use App\Eco\Ledger\Ledger;
+use App\Eco\Ledger\LedgerPolicy;
 use App\Eco\Mailbox\Mailbox;
 use App\Eco\Mailbox\MailboxPolicy;
 use App\Eco\Mailbox\MailgunDomain;
@@ -116,6 +118,7 @@ class AuthServiceProvider extends ServiceProvider
         Webform::class => WebformPolicy::class,
         MailgunDomain::class => MailgunDomainPolicy::class,
         VatCode::class => VatCodePolicy::class,
+        Ledger::class => LedgerPolicy::class,
     ];
 
     /**

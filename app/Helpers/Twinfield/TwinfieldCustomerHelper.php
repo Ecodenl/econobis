@@ -18,6 +18,7 @@ use PhpTwinfield\ApiConnectors\CustomerApiConnector;
 use PhpTwinfield\Customer;
 use PhpTwinfield\CustomerAddress;
 use PhpTwinfield\CustomerBank;
+use PhpTwinfield\CustomerCollectMandate;
 use PhpTwinfield\Enums\Services;
 use PhpTwinfield\Exception as PhpTwinfieldException;
 use PhpTwinfield\Exception;
@@ -74,6 +75,9 @@ class TwinfieldCustomerHelper
                 if($contact->primaryAddress) {
                     $this->fillCustomerAddress($contact->primaryAddress, $customer);
                 }
+                if($contact->is_collect_mandate) {
+                    $this->fillCustomerFinancials($contact, $customer);
+                }
 
                 if($contact->iban) {
                     $this->fillCustomerBank($contact, $customer);
@@ -129,6 +133,10 @@ class TwinfieldCustomerHelper
             $this->fillCustomerAddress($contact->primaryAddress, $customer);
         }
 
+        if($contact->is_collect_mandate) {
+            $this->fillCustomerFinancials($contact, $customer);
+        }
+
         if($contact->iban) {
             $this->fillCustomerBank($contact, $customer);
         }
@@ -177,6 +185,21 @@ class TwinfieldCustomerHelper
             ->setContact($address->contact->full_name);
 
         $customer->addAddress($customer_address);
+    }
+
+    public function fillCustomerFinancials(Contact $contact, Customer $customer){
+
+        $customer_collect_mandate = new CustomerCollectMandate();
+
+        $customer_collect_mandate
+            ->setID($contact->collect_mandate_code)
+            ->setSignatureDate(new \DateTime( $contact->collect_mandate_signature_date) )
+            ->setFirstRunDate(new \DateTime( $contact->collect_mandate_first_run_date) );
+
+        $customer
+            ->setPayAvailable(true)
+            ->setPayCode('SEPANLDD')
+            ->setCollectMandate($customer_collect_mandate);
     }
 
     public function fillCustomerBank(Contact $contact, Customer $customer){

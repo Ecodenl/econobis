@@ -11,6 +11,8 @@ import PanelBody from '../../../../components/panel/PanelBody';
 import VatCodeDetailsAPI from '../../../../api/vat-code/VatCodeDetailsAPI';
 import InputSelect from '../../../../components/form/InputSelect';
 import LedgerDetailsAPI from '../../../../api/ledger/LedgerDetailsAPI';
+import { bindActionCreators } from 'redux';
+import { fetchSystemData } from '../../../../actions/general/SystemDataActions';
 
 class LedgerDetailsFormGeneralEdit extends Component {
     constructor(props) {
@@ -67,6 +69,7 @@ class LedgerDetailsFormGeneralEdit extends Component {
             LedgerDetailsAPI.updateLedger(ledger)
                 .then(payload => {
                     this.props.updateState(ledger);
+                    this.props.fetchSystemData();
                     this.props.switchToView();
                 })
                 .catch(error => {
@@ -127,4 +130,9 @@ class LedgerDetailsFormGeneralEdit extends Component {
     }
 }
 
-export default LedgerDetailsFormGeneralEdit;
+const mapDispatchToProps = dispatch => bindActionCreators({ fetchSystemData }, dispatch);
+
+export default connect(
+    null,
+    mapDispatchToProps
+)(LedgerDetailsFormGeneralEdit);

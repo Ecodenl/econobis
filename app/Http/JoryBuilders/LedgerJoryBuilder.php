@@ -16,6 +16,8 @@ class LedgerJoryBuilder extends JoryBuilder
         $config->field('twinfield_ledger_code')->filterable()->sortable();
         $config->field('created_at')->filterable()->sortable();
         $config->field('updated_at')->filterable()->sortable();
-    }
 
+        // Relations
+        $config->relation('vatCode');
+    }
 }

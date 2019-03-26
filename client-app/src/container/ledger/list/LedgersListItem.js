@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
 import { hashHistory } from 'react-router';
 import { connect } from 'react-redux';
-import moment from 'moment';
 
-class VatCodesListItem extends Component {
+class LedgersListItem extends Component {
     constructor(props) {
         super(props);
 
@@ -28,11 +27,11 @@ class VatCodesListItem extends Component {
     }
 
     openItem(id) {
-        hashHistory.push(`/btw-code/${id}`);
+        hashHistory.push(`/grootboekrekening/${id}`);
     }
 
     render() {
-        const { id, startDate, description, percentage, permissions } = this.props;
+        const { id, description, vatCode, permissions } = this.props;
 
         return (
             <tr
@@ -41,9 +40,8 @@ class VatCodesListItem extends Component {
                 onMouseEnter={() => this.onRowEnter()}
                 onMouseLeave={() => this.onRowLeave()}
             >
-                <td>{startDate && moment(startDate.date).format('L')}</td>
                 <td>{description}</td>
-                <td>{percentage}%</td>
+                <td>{vatCode && vatCode.description}</td>
                 <td>
                     {this.state.showActionButtons && permissions.manageFinancial ? (
                         <a role="button" onClick={() => this.openItem(id)}>
@@ -64,4 +62,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps)(VatCodesListItem);
+export default connect(mapStateToProps)(LedgersListItem);

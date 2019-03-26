@@ -423,6 +423,10 @@ Route::namespace('Api')
         Route::post('vat-code', 'VatCode\VatCodeController@store');
         Route::post('vat-code/{vatCode}', 'VatCode\VatCodeController@update');
 
+        Route::get('ledger/jory', 'Ledger\LedgerController@jory');
+        Route::post('ledger', 'Ledger\LedgerController@store');
+        Route::post('ledger/{ledger}', 'Ledger\LedgerController@update');
+
         // Jory routes voor ophalen data
         Route::get( 'jory', '\\'.JoryController::class.'@multiple');
         Route::get('jory/{uri}/count', '\\'.JoryController::class.'@count');

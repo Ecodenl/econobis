@@ -17,8 +17,8 @@ class Ledger extends Model
         'updated_at',
     ];
 
-    public function vatCode(){
+    public function vatCode()
+    {
         return $this->belongsTo(VatCode::class);
     }
-
 }

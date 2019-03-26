@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Api\Ledger;
 
-
+use App\Eco\Ledger\Ledger;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\GenericResource;
@@ -21,8 +21,7 @@ class LedgerController extends Controller
         $this->authorize('create', Ledger::class);
 
         $data = $input->string('description')->whenMissing('')->onEmpty('')->next()
-            ->integer('vatCodeIid')->next()
-            ->integer('vatCodeId')->validate('nullable|exists:vatcodes,id')->onEmpty(null)->whenMissing(null)->alias('vat_code_id')->next()
+            ->integer('vatCodeId')->validate('nullable|exists:vat_codes,id')->onEmpty(null)->whenMissing(null)->alias('vat_code_id')->next()
             ->string('twinfieldLedgerCode')->whenMissing('')->onEmpty('')->alias('twinfield_ledger_code')->next()
             ->get();
 
@@ -37,8 +36,7 @@ class LedgerController extends Controller
         $this->authorize('update', Ledger::class);
 
         $data = $input->string('description')->whenMissing('')->onEmpty('')->next()
-            ->integer('vatCodeIid')->next()
-            ->integer('vatCodeId')->validate('nullable|exists:vatcodes,id')->onEmpty(null)->whenMissing(null)->alias('vat_code_id')->next()
+            ->integer('vatCodeId')->validate('nullable|exists:vat_codes,id')->onEmpty(null)->whenMissing(null)->alias('vat_code_id')->next()
             ->string('twinfieldLedgerCode')->whenMissing('')->onEmpty('')->alias('twinfield_ledger_code')->next()
             ->get();
 

@@ -10,7 +10,6 @@ namespace App\Http\Controllers\Api\Administration;
 
 
 use App\Eco\Administration\Administration;
-use App\Eco\Administration\Ledger;
 use App\Eco\Administration\Sepa;
 use App\Eco\User\User;
 use App\Helpers\Delete\Models\DeleteAdministration;
@@ -57,7 +56,6 @@ class AdministrationController extends ApiController
             'emailTemplateReminder',
             'emailTemplateExhortation',
             'sepas',
-            'ledgers',
         ]);
 
         return FullAdministration::make($administration);
@@ -308,49 +306,6 @@ class AdministrationController extends ApiController
     public function syncSentInvoicesFromTwinfield(Administration $administration){
         $twinfieldInvoiceHelper = new TwinfieldInvoiceHelper($administration);
         return $twinfieldInvoiceHelper->processPaidInvoices();
-    }
-
-    public function storeLedger(RequestInput $requestInput)
-    {
-        $data = $requestInput
-            ->integer('administrationId')->validate('required|exists:administrations,id')->alias('administration_id')->next()
-            ->string('code')->validate('required')->alias('code')->next()
-            ->string('name')->validate('required')->alias('name')->next()
-            ->get();
-
-        $ledger = new Ledger();
-
-        $ledger->fill($data);
-
-        $ledger->save();
-
-        return GenericResource::make($ledger);
-    }
-
-    public function updateLedger(RequestInput $requestInput, Ledger $ledger)
-    {
-        $data = $requestInput
-            ->string('code')->validate('required')->alias('code')->next()
-            ->string('name')->validate('required')->alias('name')->next()
-            ->get();
-
-        $ledger->fill($data);
-
-        $ledger->save();
-
-        return GenericResource::make($ledger);
-    }
-
-    public function peekLedgers(Administration $administration){
-        $ledgers = $administration->ledgers;
-
-        return GenericResource::collection($ledgers);
-    }
-
-    public function getLedgers(Administration $administration){
-        $ledgers = $administration->ledgers()->pluck('code')->toArray();
-
-        return $ledgers;
     }
 
 }

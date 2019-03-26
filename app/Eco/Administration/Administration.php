@@ -35,11 +35,6 @@ class Administration extends Model
         return $this->hasMany(TwinfieldcustomerNumber::class);
     }
 
-    public function ledgers()
-    {
-        return $this->hasMany(Ledger::class);
-    }
-
     public function users()
     {
         return $this->belongsToMany(User::class);

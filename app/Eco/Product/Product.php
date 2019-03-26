@@ -3,9 +3,9 @@
 namespace App\Eco\Product;
 
 use App\Eco\Administration\Administration;
-use App\Eco\Administration\Ledger;
 use App\Eco\Invoice\Invoice;
 use App\Eco\Invoice\InvoiceProduct;
+use App\Eco\Ledger\Ledger;
 use App\Eco\Order\OrderProduct;
 use App\Eco\User\User;
 use App\Scopes\NotOneTimeProductScope;
@@ -31,7 +31,7 @@ class Product extends Model
     }
 
     public function ledger(){
-        return $this->belongsTo(Ledger::class, 'administration_ledger_twinfield_id');
+        return $this->belongsTo(Ledger::class);
     }
 
     public function priceHistory()

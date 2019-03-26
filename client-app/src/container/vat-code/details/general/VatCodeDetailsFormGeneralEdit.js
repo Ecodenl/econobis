@@ -10,6 +10,8 @@ import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
 import VatCodeDetailsAPI from '../../../../api/vat-code/VatCodeDetailsAPI';
 import InputDate from '../../../../components/form/InputDate';
+import { bindActionCreators } from 'redux';
+import { fetchSystemData } from '../../../../actions/general/SystemDataActions';
 
 class VatCodeDetailsFormGeneralEdit extends Component {
     constructor(props) {
@@ -82,6 +84,7 @@ class VatCodeDetailsFormGeneralEdit extends Component {
             VatCodeDetailsAPI.updateVatCode(vatCode)
                 .then(payload => {
                     this.props.updateState(vatCode);
+                    this.props.fetchSystemData();
                     this.props.switchToView();
                 })
                 .catch(error => {
@@ -157,4 +160,9 @@ class VatCodeDetailsFormGeneralEdit extends Component {
     }
 }
 
-export default VatCodeDetailsFormGeneralEdit;
+const mapDispatchToProps = dispatch => bindActionCreators({ fetchSystemData }, dispatch);
+
+export default connect(
+    null,
+    mapDispatchToProps
+)(VatCodeDetailsFormGeneralEdit);

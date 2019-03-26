@@ -14,14 +14,44 @@ import EmailTemplateAPI from '../../../../api/email-template/EmailTemplateAPI';
 import InputReactSelect from '../../../../components/form/InputReactSelect';
 import axios from 'axios';
 import MailboxAPI from '../../../../api/mailbox/MailboxAPI';
-import InputToggle from "../../../../components/form/InputToggle";
+import InputToggle from '../../../../components/form/InputToggle';
 
 class AdministrationDetailsFormGeneralEdit extends Component {
     constructor(props) {
         super(props);
 
-        const { id, name, administrationNumber, address, emailTemplateIdCollection, emailTemplateIdTransfer, emailTemplateReminderId, emailTemplateExhortationId, postalCode, city, countryId, kvkNumber, btwNumber, IBAN, email, website, bic, sepaContractName,
-            sepaCreditorId, rsinNumber, defaultPaymentTerm, logoName, ibanAttn, mailboxId, usesTwinfield, twinfieldUsername, twinfieldPassword, twinfieldOrganizationCode, twinfieldOfficeCode} = props.administrationDetails;
+        const {
+            id,
+            name,
+            administrationNumber,
+            address,
+            emailTemplateIdCollection,
+            emailTemplateIdTransfer,
+            emailTemplateReminderId,
+            emailTemplateExhortationId,
+            postalCode,
+            city,
+            countryId,
+            kvkNumber,
+            btwNumber,
+            IBAN,
+            email,
+            website,
+            bic,
+            sepaContractName,
+            sepaCreditorId,
+            rsinNumber,
+            defaultPaymentTerm,
+            logoName,
+            ibanAttn,
+            mailboxId,
+            usesTwinfield,
+            twinfieldUsername,
+            twinfieldPassword,
+            twinfieldOrganizationCode,
+            twinfieldOfficeCode,
+            usesVat,
+        } = props.administrationDetails;
 
         this.state = {
             newLogo: false,
@@ -54,14 +84,14 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                 emailTemplateReminderId: emailTemplateReminderId ? emailTemplateReminderId : '',
                 emailTemplateExhortationId: emailTemplateExhortationId ? emailTemplateExhortationId : '',
                 attachment: '',
-                mailboxId: mailboxId,
+                mailboxId: mailboxId ? mailboxId : '',
                 usesTwinfield: usesTwinfield,
                 twinfieldUsername: twinfieldUsername ? twinfieldUsername : '',
                 twinfieldPassword: twinfieldPassword ? twinfieldPassword : '',
                 twinfieldOrganizationCode: twinfieldOrganizationCode ? twinfieldOrganizationCode : '',
                 twinfieldOfficeCode: twinfieldOfficeCode ? twinfieldOfficeCode : '',
                 attachment: '',
-
+                usesVat: usesVat,
             },
             errors: {
                 name: false,
@@ -75,6 +105,7 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                 twinfieldPassword: false,
                 twinfieldOrganizationCode: false,
                 twinfieldOfficeCode: false,
+                mailboxId: false,
             },
             peekLoading: {
                 emailTemplates: true,
@@ -195,7 +226,7 @@ class AdministrationDetailsFormGeneralEdit extends Component {
             }
         }
 
-        if(administration.usesTwinfield){
+        if (administration.usesTwinfield) {
             if (validator.isEmpty(administration.twinfieldUsername + '')) {
                 errors.twinfieldUsername = true;
                 hasErrors = true;
@@ -215,23 +246,21 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                 errors.twinfieldOrganizationCode = true;
                 hasErrors = true;
             }
-
         }
 
-        this.setState({...this.state, errors: errors});
+        this.setState({ ...this.state, errors: errors });
 
         // If no errors send form
         if (!hasErrors) {
-
             let loadingText = 'Aan het laden';
 
-            if(administration.usesTwinfield){
+            if (administration.usesTwinfield) {
                 loadingText = 'De koppeling Econobis Twinfield wordt gemaakt. Dit kan enige tijd duren';
             }
             this.setState({
                 ...this.state,
                 loadingText: loadingText,
-                isSaving: true
+                isSaving: true,
             });
 
             const data = new FormData();
@@ -265,14 +294,45 @@ class AdministrationDetailsFormGeneralEdit extends Component {
             data.append('twinfieldPassword', administration.twinfieldPassword);
             data.append('twinfieldOrganizationCode', administration.twinfieldOrganizationCode);
             data.append('twinfieldOfficeCode', administration.twinfieldOfficeCode);
+            data.append('usesVat', administration.usesVat);
 
             this.props.updateAdministration(data, administration.id, this.props.switchToView);
         }
     };
 
     render() {
-        const { name, administrationNumber, emailTemplateIdCollection, emailTemplateIdTransfer, emailTemplateReminderId, emailTemplateExhortationId, address, postalCode, city, countryId, kvkNumber, btwNumber, IBAN, email, website, bic, sepaContractName,
-            sepaCreditorId, rsinNumber, defaultPaymentTerm, attachment, logoName, ibanAttn, mailboxId, usesTwinfield, twinfieldUsername, twinfieldPassword, twinfieldOrganizationCode, twinfieldOfficeCode} = this.state.administration;
+        const {
+            name,
+            administrationNumber,
+            emailTemplateIdCollection,
+            emailTemplateIdTransfer,
+            emailTemplateReminderId,
+            emailTemplateExhortationId,
+            address,
+            postalCode,
+            city,
+            countryId,
+            kvkNumber,
+            btwNumber,
+            IBAN,
+            email,
+            website,
+            bic,
+            sepaContractName,
+            sepaCreditorId,
+            rsinNumber,
+            defaultPaymentTerm,
+            attachment,
+            logoName,
+            ibanAttn,
+            mailboxId,
+            usesTwinfield,
+            twinfieldUsername,
+            twinfieldPassword,
+            twinfieldOrganizationCode,
+            twinfieldOfficeCode,
+            usesVat,
+        } = this.state.administration;
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -456,7 +516,25 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                                 isLoading={this.state.peekLoading.emailTemplates}
                                 multi={false}
                             />
+                            <InputToggle
+                                label={'Gebruikt BTW'}
+                                name={'usesVat'}
+                                value={usesVat}
+                                onChangeAction={this.handleInputChange}
+                            />
+                        </div>
 
+                        <div className="row">
+                            <InputSelect
+                                label={'Afzender van Rapportages en facturen is e-mail adres'}
+                                id="mailboxId"
+                                size={'col-sm-6'}
+                                name={'mailboxId'}
+                                options={this.state.mailboxAddresses}
+                                optionName={'email'}
+                                value={mailboxId}
+                                onChangeAction={this.handleInputChange}
+                            />
                             <div className="form-group col-sm-6">
                                 <label className="col-sm-6">Kies logo</label>
                                 <div className="col-sm-6">
@@ -471,19 +549,68 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                             </div>
                         </div>
 
+                        {this.state.newLogo && (
+                            <AdministrationLogoNew
+                                toggleShowNew={this.toggleNewLogo}
+                                addAttachment={this.addAttachment}
+                            />
+                        )}
+
                         <div className="row">
-                            <InputSelect
-                                label={'Afzender van Rapportages en facturen is e-mail adres'}
-                                id="mailboxId"
-                                size={'col-sm-6'}
-                                name={'mailboxId'}
-                                options={this.state.mailboxAddresses}
-                                optionName={'email'}
-                                value={mailboxId}
+                            <div className={'panel-part panel-heading'}>
+                                <span className={'h5 text-bold'}>Twinfield</span>
+                            </div>
+                        </div>
+
+                        <div className="row">
+                            <InputToggle
+                                label={'Gebruikt Twinfield'}
+                                name={'usesTwinfield'}
+                                value={usesTwinfield}
                                 onChangeAction={this.handleInputChange}
-                                required={"required"}
                             />
                         </div>
+
+                        {usesTwinfield == true && (
+                            <React.Fragment>
+                                <div className="row">
+                                    <InputText
+                                        label="Gebruikersnaam"
+                                        name={'twinfieldUsername'}
+                                        value={twinfieldUsername}
+                                        onChangeAction={this.handleInputChange}
+                                        required={'required'}
+                                        error={this.state.errors.twinfieldUsername}
+                                    />
+                                    <InputText
+                                        label="Wachtwoord"
+                                        name={'twinfieldPassword'}
+                                        value={twinfieldPassword}
+                                        onChangeAction={this.handleInputChange}
+                                        error={this.state.errors.twinfieldPassword}
+                                        required={'required'}
+                                    />
+                                </div>
+                                <div className="row">
+                                    <InputText
+                                        label="Omgeving"
+                                        name={'twinfieldOrganizationCode'}
+                                        value={twinfieldOrganizationCode}
+                                        onChangeAction={this.handleInputChange}
+                                        required={'required'}
+                                        error={this.state.errors.twinfieldOrganizationCode}
+                                    />
+                                    <InputText
+                                        label="Code"
+                                        name={'twinfieldOfficeCode'}
+                                        value={twinfieldOfficeCode}
+                                        onChangeAction={this.handleInputChange}
+                                        error={this.state.errors.twinfieldOfficeCode}
+                                        required={'required'}
+                                    />
+                                </div>
+                            </React.Fragment>
+                        )}
 
                         {this.state.newLogo && (
                             <AdministrationLogoNew
@@ -491,81 +618,22 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                                 addAttachment={this.addAttachment}
                             />
                         )}
-                        {usesTwinfield == true &&
-                        <div className="row">
-                            <div className={'panel-part panel-heading'}>
-                                <span className={'h5 text-bold'}>Twinfield</span>
-                            </div>
-                        </div>
-                        }
-
-                        <div className="row">
-                            <InputToggle
-                                label={"Gebruikt Twinfield"}
-                                name={"usesTwinfield"}
-                                value={usesTwinfield}
-                                onChangeAction={this.handleInputChange}
-                            />
-                        </div>
-
-                        {usesTwinfield == true &&
-                        <div className="row">
-                            <InputText
-                                label="Gebruikersnaam"
-                                name={"twinfieldUsername"}
-                                value={twinfieldUsername}
-                                onChangeAction={this.handleInputChange}
-                                required={"required"}
-                                error={this.state.errors.twinfieldUsername}
-                            />
-                            <InputText
-                                label="Wachtwoord"
-                                name={"twinfieldPassword"}
-                                value={twinfieldPassword}
-                                onChangeAction={this.handleInputChange}
-                                error={this.state.errors.twinfieldPassword}
-                                required={"required"}
-                            />
-                        </div>
-                        }
-
-                        {usesTwinfield == true &&
-                        <div className="row">
-                            <InputText
-                                label="Omgeving"
-                                name={"twinfieldOrganizationCode"}
-                                value={twinfieldOrganizationCode}
-                                onChangeAction={this.handleInputChange}
-                                required={"required"}
-                                error={this.state.errors.twinfieldOrganizationCode}
-                            />
-                            <InputText
-                                label="Code"
-                                name={"twinfieldOfficeCode"}
-                                value={twinfieldOfficeCode}
-                                onChangeAction={this.handleInputChange}
-                                error={this.state.errors.twinfieldOfficeCode}
-                                required={"required"}
-                            />
-                        </div>
-                        }
-
-                        {this.state.newLogo &&
-                        <AdministrationLogoNew toggleShowNew={this.toggleNewLogo}
-                                               addAttachment={this.addAttachment}/>
-                        }
                     </PanelBody>
 
                     <PanelBody>
                         <div className="pull-right btn-group" role="group">
-                            <ButtonText buttonClassName={"btn-default"} buttonText={"Sluiten"} onClickAction={this.props.switchToView}/>
+                            <ButtonText
+                                buttonClassName={'btn-default'}
+                                buttonText={'Sluiten'}
+                                onClickAction={this.props.switchToView}
+                            />
                             <ButtonText
                                 loading={this.state.isSaving}
                                 loadText={this.state.loadingText}
-                                buttonText={"Opslaan"}
+                                buttonText={'Opslaan'}
                                 onClickAction={this.handleSubmit}
-                                type={"submit"}
-                                value={"Submit"}
+                                type={'submit'}
+                                value={'Submit'}
                             />
                         </div>
                     </PanelBody>

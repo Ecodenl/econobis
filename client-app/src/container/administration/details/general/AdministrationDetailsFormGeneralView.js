@@ -34,11 +34,6 @@ const AdministrationDetailsFormGeneralView = props => {
         twinfieldUsername,
         twinfieldOrganizationCode,
         twinfieldOfficeCode,
-        defaultInvoiceTemplate,
-        btwCodeSalesNull,
-        btwCodeSales0,
-        btwCodeSales6,
-        btwCodeSales21
     } = props.administrationDetails;
 
     return (
@@ -156,40 +151,6 @@ const AdministrationDetailsFormGeneralView = props => {
                     </div>
                     }
 
-                    {usesTwinfield == true &&
-                    <div className="row">
-                        <ViewText
-                            label={"Standaard factuurtemplate"}
-                            value={defaultInvoiceTemplate}
-                        />
-                    </div>
-                    }
-
-                    {usesTwinfield == true &&
-                    <div className="row">
-                        <ViewText
-                            label={"BTW code verkoop geen"}
-                            value={btwCodeSalesNull}
-                        />
-                        <ViewText
-                            label={"BTW code verkoop 0%"}
-                            value={btwCodeSales0}
-                        />
-                    </div>
-                    }
-
-                    {usesTwinfield == true &&
-                    <div className="row">
-                        <ViewText
-                            label={"BTW code verkoop 9%"}
-                            value={btwCodeSales6}
-                        />
-                        <ViewText
-                            label={"BTW code verkoop 21%"}
-                            value={btwCodeSales21}
-                        />
-                    </div>
-                    }
                 </PanelBody>
             </Panel>
         </div>

@@ -57,11 +57,6 @@ class AdministrationNewForm extends Component {
                 twinfieldPassword: '',
                 twinfieldOrganizationCode: '',
                 twinfieldOfficeCode: '',
-                defaultInvoiceTemplate: '',
-                btwCodeSalesNull: '',
-                btwCodeSales0: '',
-                btwCodeSales6: '',
-                btwCodeSales21: '',
             },
             errors: {
                 name: false,
@@ -75,7 +70,6 @@ class AdministrationNewForm extends Component {
                 twinfieldPassword: false,
                 twinfieldOrganizationCode: false,
                 twinfieldOfficeCode: false,
-                defaultInvoiceTemplate: false,
             },
             peekLoading: {
                 emailTemplates: true,
@@ -218,10 +212,6 @@ class AdministrationNewForm extends Component {
                 hasErrors = true;
             }
 
-            if (validator.isEmpty(administration.defaultInvoiceTemplate + '')) {
-                errors.defaultInvoiceTemplate = true;
-                hasErrors = true;
-            }
         }
 
         this.setState({...this.state, errors: errors});
@@ -269,11 +259,6 @@ class AdministrationNewForm extends Component {
             data.append('twinfieldPassword', administration.twinfieldPassword);
             data.append('twinfieldOrganizationCode', administration.twinfieldOrganizationCode);
             data.append('twinfieldOfficeCode', administration.twinfieldOfficeCode);
-            data.append('defaultInvoiceTemplate', administration.defaultInvoiceTemplate);
-            data.append('btwCodeSalesNull', administration.btwCodeSalesNull);
-            data.append('btwCodeSales0', administration.btwCodeSales0);
-            data.append('btwCodeSales6', administration.btwCodeSales6);
-            data.append('btwCodeSales21', administration.btwCodeSales21);
 
         AdministrationDetailsAPI.newAdministration(data).then((payload) => {
             hashHistory.push(`/administratie/${payload.data.id}`);
@@ -285,8 +270,7 @@ class AdministrationNewForm extends Component {
 
     render() {
         const { name, administrationNumber, address, postalCode, city, countryId, kvkNumber, btwNumber, IBAN, email, website, bic, sepaContractName, sepaCreditorId, rsinNumber, defaultPaymentTerm, attachment,
-            emailTemplateIdCollection, emailTemplateIdTransfer, emailTemplateReminderId, emailTemplateExhortationId, ibanAttn, mailboxId, usesTwinfield, twinfieldUsername, twinfieldPassword, twinfieldOrganizationCode, twinfieldOfficeCode,
-            defaultInvoiceTemplate, btwCodeSalesNull, btwCodeSales0, btwCodeSales6, btwCodeSales21} = this.state.administration;
+            emailTemplateIdCollection, emailTemplateIdTransfer, emailTemplateReminderId, emailTemplateExhortationId, ibanAttn, mailboxId, usesTwinfield, twinfieldUsername, twinfieldPassword, twinfieldOrganizationCode, twinfieldOfficeCode} = this.state.administration;
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -557,54 +541,6 @@ class AdministrationNewForm extends Component {
                                 onChangeAction={this.handleInputChange}
                                 error={this.state.errors.twinfieldOfficeCode}
                                 required={"required"}
-                            />
-                        </div>
-                        }
-
-                        {usesTwinfield == true &&
-                        <div className="row">
-                            <InputText
-                                label="Standaard factuurtemplate"
-                                name={"defaultInvoiceTemplate"}
-                                value={defaultInvoiceTemplate}
-                                onChangeAction={this.handleInputChange}
-                                required={"required"}
-                                error={this.state.errors.defaultInvoiceTemplate}
-                            />
-                        </div>
-                        }
-
-                        {usesTwinfield == true &&
-                        <div className="row">
-                            <InputText
-                                label="BTW code verkoop geen"
-                                name={"btwCodeSalesNull"}
-                                value={btwCodeSalesNull}
-                                onChangeAction={this.handleInputChange}
-                            />
-                            <InputText
-                                label="BTW code verkoop 0%"
-                                name={"btwCodeSales0"}
-                                value={btwCodeSales0}
-                                onChangeAction={this.handleInputChange}
-                            />
-                        </div>
-                        }
-
-
-                        {usesTwinfield == true &&
-                        <div className="row">
-                            <InputText
-                                label="BTW code verkoop 9%"
-                                name={"btwCodeSales6"}
-                                value={btwCodeSales6}
-                                onChangeAction={this.handleInputChange}
-                            />
-                            <InputText
-                                label="BTW code verkoop 21%"
-                                name={"btwCodeSales21"}
-                                value={btwCodeSales21}
-                                onChangeAction={this.handleInputChange}
                             />
                         </div>
                         }

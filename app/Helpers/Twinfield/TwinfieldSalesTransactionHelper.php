@@ -146,27 +146,29 @@ class TwinfieldSalesTransactionHelper
         $invoiceDetailsAmountVat = array();
         foreach($invoice->invoiceProducts as $invoiceProduct){
             $vatCode   = "";
-            $ledgerCode = "";
+            //todo twinfield_code in invoiceProduct opnemen?!
+//                $vatCode   = $invoiceProduct->twinfield_code;
+            $ledgerCode = $invoiceProduct->twinfield_ledger_code ? $invoiceProduct->twinfield_ledger_code :  "";
             $vatAmount = $invoiceProduct->getAmountVatAttribute();
+            //todo nog anders: hier per twinfield_code juiste grootboek bepalen (obv twinfield_code in invoiceProduct)
+//               $vatAmountOld = key_exists($vatCode, $invoiceDetailsAmountVat) ? $invoiceDetailsAmountVat[$vatCode] : 0;
+//                $invoiceDetailsAmountVat[$vatCode] = $vatAmountOld + $vatAmount;
+            // en dan kan switch hieronder weg
             switch ($invoiceProduct->vat_percentage) {
                 case null:
-                    $vatCode   = $this->administration->btw_code_sales_null;
-                    $ledgerCode = $invoiceProduct->twinfield_ledger_code ? $invoiceProduct->twinfield_ledger_code :  $this->grootboekOmzetGeen;
+                    $vatCode   = "VN";
                     break;
                 case '0':
-                    $vatCode   = $this->administration->btw_code_sales_0;
-                    $ledgerCode = $invoiceProduct->twinfield_ledger_code ? $invoiceProduct->twinfield_ledger_code :  $this->grootboekOmzetGeen;
+                    $vatCode   = "VN";
                     break;
                 case '6':
                 case '9':
-                    $vatCode   = $this->administration->btw_code_sales_6;
-                    $ledgerCode = $invoiceProduct->twinfield_ledger_code ? $invoiceProduct->twinfield_ledger_code :  $this->grootboekOmzetLaag;
+                    $vatCode   = "VL";
                     $vatAmountOld = key_exists($vatCode, $invoiceDetailsAmountVat) ? $invoiceDetailsAmountVat[$vatCode] : 0;
                     $invoiceDetailsAmountVat[$vatCode] = $vatAmountOld + $vatAmount;
                     break;
                 case '21':
-                    $vatCode   = $this->administration->btw_code_sales_21;
-                    $ledgerCode = $invoiceProduct->twinfield_ledger_code ? $invoiceProduct->twinfield_ledger_code :  $this->grootboekOmzetHoog;
+                    $vatCode   = "VH";
                     $vatAmountOld = key_exists($vatCode, $invoiceDetailsAmountVat) ? $invoiceDetailsAmountVat[$vatCode] : 0;
                     $invoiceDetailsAmountVat[$vatCode] = $vatAmountOld + $vatAmount;
                     break;
@@ -188,13 +190,12 @@ class TwinfieldSalesTransactionHelper
         //Salestransaction - Vat lines maken (btw bedrag per btw code)
         foreach($invoiceDetailsAmountVat as $code => $invoiceDetail) {
             $omzetStandaardGrootBoek = "";
+            //todo nog anders: hier lusje over vat_codes en dan per twinfield_code juiste grootboek bepalen
             switch ($code) {
-                case $this->administration->btw_code_sales_null:
-                case $this->administration->btw_code_sales_0:
-                case $this->administration->btw_code_sales_6:
+                case "VL":
                     $omzetStandaardGrootBoek = $this->grootboekBtwLaag;
                     break;
-                case $this->administration->btw_code_sales_21:
+                case "VH":
                     $omzetStandaardGrootBoek = $this->grootboekBtwHoog;
                     break;
             }

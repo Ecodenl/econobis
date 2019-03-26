@@ -92,11 +92,6 @@ class AdministrationController extends ApiController
             ->string('twinfieldPassword')->whenMissing(null)->onEmpty(null)->alias('twinfield_password')->next()
             ->string('twinfieldOrganizationCode')->whenMissing(null)->onEmpty(null)->alias('twinfield_organization_code')->next()
             ->string('twinfieldOfficeCode')->whenMissing(null)->onEmpty(null)->alias('twinfield_office_code')->next()
-            ->string('defaultInvoiceTemplate')->whenMissing(null)->onEmpty(null)->alias('default_invoice_template')->next()
-            ->string('btwCodeSales21')->whenMissing(null)->onEmpty(null)->alias('btw_code_sales_21')->next()
-            ->string('btwCodeSales6')->whenMissing(null)->onEmpty(null)->alias('btw_code_sales_6')->next()
-            ->string('btwCodeSales0')->whenMissing(null)->onEmpty(null)->alias('btw_code_sales_0')->next()
-            ->string('btwCodeSalesNull')->whenMissing(null)->onEmpty(null)->alias('btw_code_sales_null')->next()
             ->get();
 
         //bool als string? waarschijnlijk door formdata
@@ -167,11 +162,6 @@ class AdministrationController extends ApiController
             ->string('twinfieldPassword')->whenMissing(null)->onEmpty(null)->alias('twinfield_password')->next()
             ->string('twinfieldOrganizationCode')->whenMissing(null)->onEmpty(null)->alias('twinfield_organization_code')->next()
             ->string('twinfieldOfficeCode')->whenMissing(null)->onEmpty(null)->alias('twinfield_office_code')->next()
-            ->string('defaultInvoiceTemplate')->whenMissing(null)->onEmpty(null)->alias('default_invoice_template')->next()
-            ->string('btwCodeSales21')->whenMissing(null)->onEmpty(null)->alias('btw_code_sales_21')->next()
-            ->string('btwCodeSales6')->whenMissing(null)->onEmpty(null)->alias('btw_code_sales_6')->next()
-            ->string('btwCodeSales0')->whenMissing(null)->onEmpty(null)->alias('btw_code_sales_0')->next()
-            ->string('btwCodeSalesNull')->whenMissing(null)->onEmpty(null)->alias('btw_code_sales_null')->next()
             ->get();
 
         //bool als string? waarschijnlijk door formdata

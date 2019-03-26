@@ -98,11 +98,6 @@ class FullAdministration extends Resource
                 'twinfieldOrganizationCode' => $this->twinfield_organization_code,
                 'twinfieldOfficeCode' => $this->twinfield_office_code,
                 'twinfieldIsValid' => $this->twinfield_is_valid,
-                'defaultInvoiceTemplate' => $this->default_invoice_template,
-                'btwCodeSalesNull' => $this->btw_code_sales_null,
-                'btwCodeSales0' => $this->btw_code_sales_0,
-                'btwCodeSales6' => $this->btw_code_sales_6,
-                'btwCodeSales21' => $this->btw_code_sales_21,
 
                 'createdAt' => $this->created_at,
                 'updatedAt' => $this->updated_at,

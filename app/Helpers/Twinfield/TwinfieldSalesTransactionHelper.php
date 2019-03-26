@@ -10,6 +10,7 @@ namespace App\Helpers\Twinfield;
 
 use App\Eco\Administration\Administration;
 use App\Eco\Invoice\Invoice;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 use Money\Currency;
 use Money\Money;
@@ -143,36 +144,19 @@ class TwinfieldSalesTransactionHelper
 
         //Vanuit invoice products bedragen per product (omzet) / bedragen per btw code alvast doortellen voor VAT regels hierna
         //Salestransaction - Detail lines maken (omzet regels)
-        $invoiceDetailsAmountVat = array();
+//        $invoiceDetailsAmountVatXXXXXXXX = array();
+        $vatData = new Collection();
         foreach($invoice->invoiceProducts as $invoiceProduct){
-            $vatCode   = "";
-            //todo twinfield_code in invoiceProduct opnemen?!
-//                $vatCode   = $invoiceProduct->twinfield_code;
+            $vatCodeTwinfield   = $invoiceProduct->product->ledger->vatCode->twinfield_code;
+            $vatLedgerCodeTwinfield   = $invoiceProduct->product->ledger->vatCode->twinfield_ledger_code;
             $ledgerCode = $invoiceProduct->twinfield_ledger_code ? $invoiceProduct->twinfield_ledger_code :  "";
             $vatAmount = $invoiceProduct->getAmountVatAttribute();
-            //todo nog anders: hier per twinfield_code juiste grootboek bepalen (obv twinfield_code in invoiceProduct)
-//               $vatAmountOld = key_exists($vatCode, $invoiceDetailsAmountVat) ? $invoiceDetailsAmountVat[$vatCode] : 0;
-//                $invoiceDetailsAmountVat[$vatCode] = $vatAmountOld + $vatAmount;
-            // en dan kan switch hieronder weg
-            switch ($invoiceProduct->vat_percentage) {
-                case null:
-                    $vatCode   = "VN";
-                    break;
-                case '0':
-                    $vatCode   = "VN";
-                    break;
-                case '6':
-                case '9':
-                    $vatCode   = "VL";
-                    $vatAmountOld = key_exists($vatCode, $invoiceDetailsAmountVat) ? $invoiceDetailsAmountVat[$vatCode] : 0;
-                    $invoiceDetailsAmountVat[$vatCode] = $vatAmountOld + $vatAmount;
-                    break;
-                case '21':
-                    $vatCode   = "VH";
-                    $vatAmountOld = key_exists($vatCode, $invoiceDetailsAmountVat) ? $invoiceDetailsAmountVat[$vatCode] : 0;
-                    $invoiceDetailsAmountVat[$vatCode] = $vatAmountOld + $vatAmount;
-                    break;
-            }
+
+            $vatAmountOld  = key_exists( $vatCodeTwinfield, $vatData) ? $vatData[$vatCodeTwinfield]->get('vatAmount') : 0;
+//            $vatAmountOldXXXXXXXX = key_exists($vatCodeTwinfield, $invoiceDetailsAmountVatXXXXXXXX) ? $invoiceDetailsAmountVatXXXXXXXX[$vatCodeTwinfield] : 0;
+//            $invoiceDetailsAmountVat[$vatCodeTwinfield] = $vatAmountOldXXXXXXXX + $vatAmount;
+            $vatData[$vatCodeTwinfield] = ['vatLedgerCode' => $vatLedgerCodeTwinfield, 'vatAmount' => $vatAmountOld + $vatAmount];
+
             $exclAmount = $invoiceProduct->getPriceExVatInclReductionAttribute();
             $invoiceDetailExcl = new Money($exclAmount*100, $this->currency );
             $twinfieldTransactionLineVat = new SalesTransactionLine();
@@ -181,32 +165,21 @@ class TwinfieldSalesTransactionHelper
                 ->setId($idTeller)
                 ->setLineType(LineType::DETAIL())
                 ->setDim1($ledgerCode)
-                ->setVatCode($vatCode)
+                ->setVatCode($vatCodeTwinfield)
                 ->setValue($invoiceDetailExcl)
                 ->setDebitCredit(DebitCredit::CREDIT() );
             $twinfieldSalesTransaction->addLine($twinfieldTransactionLineVat);
         }
 
         //Salestransaction - Vat lines maken (btw bedrag per btw code)
-        foreach($invoiceDetailsAmountVat as $code => $invoiceDetail) {
-            $omzetStandaardGrootBoek = "";
-            //todo nog anders: hier lusje over vat_codes en dan per twinfield_code juiste grootboek bepalen
-            switch ($code) {
-                case "VL":
-                    $omzetStandaardGrootBoek = $this->grootboekBtwLaag;
-                    break;
-                case "VH":
-                    $omzetStandaardGrootBoek = $this->grootboekBtwHoog;
-                    break;
-            }
-
-            $invoiceDetailExcl = new Money($invoiceDetail*100, $this->currency );
+        foreach($vatData as $code => $vatDataDetail) {
+            $invoiceDetailExcl = new Money($vatDataDetail->get('vatAmount')*100, $this->currency );
             $twinfieldTransactionLineVat = new SalesTransactionLine();
             $idTeller++;
             $twinfieldTransactionLineVat
                 ->setId($idTeller)
                 ->setLineType(LineType::VAT())
-                ->setDim1($omzetStandaardGrootBoek)
+                ->setDim1($vatDataDetail->get('vatLedgerCode'))
                 ->setVatCode($code)
                 ->setValue($invoiceDetailExcl)
                 ->setDebitCredit(DebitCredit::CREDIT() );

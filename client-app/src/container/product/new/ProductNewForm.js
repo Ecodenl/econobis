@@ -17,7 +17,6 @@ class ProductNewForm extends Component {
         super(props);
 
         this.state = {
-            ledgers: [],
             errorMessage: false,
             //beter uit systemdata, maar sommige combinaties zijn niet mogelijk
             invoiceFrequencies:[
@@ -31,7 +30,7 @@ class ProductNewForm extends Component {
                 invoiceFrequencyId: 'once',
                 paymentTypeId: '',
                 administrationId: '',
-                administrationLedgerTwinfieldId: '',
+                ledgerId: '',
             },
             errors: {
                 code: false,
@@ -55,37 +54,6 @@ class ProductNewForm extends Component {
                 [name]: value
             },
         });
-    };
-
-    handleInputAdministrationIdChange = event => {
-        const target = event.target;
-        const value = target.type === 'checkbox' ? target.checked : target.value;
-        const name = target.name;
-
-        if (value) {
-            AdministrationsAPI.peekLedgers(value).then((payload) => {
-                this.setState({
-                    ...this.state,
-                    ledgers: payload,
-                    product: {
-                        ...this.state.product,
-                        administrationLedgerTwinfieldId: '',
-                        [name]: value
-                    },
-                });
-            });
-        }
-        else {
-            this.setState({
-                ...this.state,
-                ledgers: [],
-                product: {
-                    ...this.state.product,
-                    administrationLedgerTwinfieldId: '',
-                    [name]: value
-                },
-            });
-        }
     };
 
     handleInputChangeDuration = event => {
@@ -230,7 +198,7 @@ class ProductNewForm extends Component {
     };
 
     render() {
-        const { code, name, invoiceText, durationId, invoiceFrequencyId, paymentTypeId, administrationId, administrationLedgerTwinfieldId } = this.state.product;
+        const { code, name, invoiceText, durationId, invoiceFrequencyId, paymentTypeId, administrationId, ledgerId } = this.state.product;
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -305,7 +273,7 @@ class ProductNewForm extends Component {
                                 name={"administrationId"}
                                 options={this.props.administrations}
                                 value={administrationId}
-                                onChangeAction={this.handleInputAdministrationIdChange}
+                                onChangeAction={this.handleInputChange}
                                 required={"required"}
                                 error={this.state.errors.administrationId}
                             />
@@ -314,9 +282,10 @@ class ProductNewForm extends Component {
                         <div className={"row"}>
                             <InputReactSelect
                                 label={"Grootboek"}
-                                name={"administrationLedgerTwinfieldId"}
-                                options={this.state.ledgers}
-                                value={administrationLedgerTwinfieldId}
+                                name={"ledgerId"}
+                                options={this.props.ledgers}
+                                optionName={'description'}
+                                value={ledgerId}
                                 onChangeAction={this.handleReactSelectChange}
                                 multi={false}
                             />
@@ -347,6 +316,7 @@ const mapStateToProps = (state) => {
         productPaymentTypes: state.systemData.productPaymentTypes,
         administrations: state.meDetails.administrations,
         products: state.systemData.products,
+        ledgers: state.systemData.ledgers,
     };
 };
 

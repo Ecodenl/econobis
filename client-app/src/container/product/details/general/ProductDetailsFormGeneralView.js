@@ -59,7 +59,7 @@ const ProductDetailsFormGeneralView = props => {
                         <div className="row">
                             <ViewText
                                 label={"Grootboeknummer"}
-                                value={ledger ? ledger.name : ''}
+                                value={ledger ? ledger.description : ''}
                             />
                         </div>
                     }

@@ -14,10 +14,9 @@ class ProductDetailsFormGeneralEdit extends Component {
     constructor(props) {
         super(props);
 
-        const { id, code, name, invoiceText, durationId, invoiceFrequencyId, paymentTypeId, administrationId, administrationLedgerTwinfieldId} = props.productDetails;
+        const { id, code, name, invoiceText, durationId, invoiceFrequencyId, paymentTypeId, administrationId, ledgerId} = props.productDetails;
 
         this.state = {
-            ledgers: [],
             //beter uit systemdata, maar sommige combinaties zijn niet mogelijk
             invoiceFrequencies:[
                 {'id':  'once', name: 'Eenmalig'},
@@ -35,7 +34,7 @@ class ProductDetailsFormGeneralEdit extends Component {
                 invoiceFrequencyId: invoiceFrequencyId ? invoiceFrequencyId : 'once',
                 paymentTypeId: paymentTypeId ? paymentTypeId : '',
                 administrationId: administrationId ? administrationId : '',
-                administrationLedgerTwinfieldId: administrationLedgerTwinfieldId ? administrationLedgerTwinfieldId : '',
+                ledgerId: ledgerId ? ledgerId : '',
             },
             errors: {
                 code: false,
@@ -50,10 +49,6 @@ class ProductDetailsFormGeneralEdit extends Component {
     componentDidMount() {
         let invoiceFrequencies = this.state.invoiceFrequencies;
         let invoiceFrequencyId = this.state.product.invoiceFrequencyId;
-        let ledgers = [];
-
-        AdministrationsAPI.peekLedgers(this.state.product.administrationId).then((payload) => {
-            ledgers = payload;
 
         switch (this.state.product.durationId) {
             case 'none':
@@ -108,12 +103,10 @@ class ProductDetailsFormGeneralEdit extends Component {
         this.setState({
             ...this.state,
             invoiceFrequencies,
-            ledgers,
             product: {
                 ...this.state.product,
                 invoiceFrequencyId
             },
-            });
         });
 
     };
@@ -265,37 +258,6 @@ class ProductDetailsFormGeneralEdit extends Component {
             });
     };
 
-    handleInputAdministrationIdChange = event => {
-        const target = event.target;
-        const value = target.type === 'checkbox' ? target.checked : target.value;
-        const name = target.name;
-
-        if (value) {
-            AdministrationsAPI.peekLedgers(value).then((payload) => {
-                this.setState({
-                    ...this.state,
-                    ledgers: payload,
-                    product: {
-                        ...this.state.product,
-                        administrationLedgerTwinfieldId: '',
-                        [name]: value
-                    },
-                });
-            });
-        }
-        else {
-            this.setState({
-                ...this.state,
-                ledgers: [],
-                product: {
-                    ...this.state.product,
-                    administrationLedgerTwinfieldId: '',
-                    [name]: value
-                },
-            });
-        }
-    };
-
     handleReactSelectChange(selectedOption, name) {
         this.setState({
             ...this.state,
@@ -307,7 +269,7 @@ class ProductDetailsFormGeneralEdit extends Component {
     };
 
     render() {
-        const { code, name, invoiceText, durationId, invoiceFrequencyId, paymentTypeId, administrationId, administrationLedgerTwinfieldId} = this.state.product;
+        const { code, name, invoiceText, durationId, invoiceFrequencyId, paymentTypeId, administrationId, ledgerId} = this.state.product;
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -382,7 +344,7 @@ class ProductDetailsFormGeneralEdit extends Component {
                                 name={"administrationId"}
                                 options={this.props.administrations}
                                 value={administrationId}
-                                onChangeAction={this.handleInputAdministrationIdChange}
+                                onChangeAction={this.handleInputChange}
                                 required={"required"}
                                 error={this.state.errors.administrationId}
                             />
@@ -391,9 +353,10 @@ class ProductDetailsFormGeneralEdit extends Component {
                         <div className={"row"}>
                             <InputReactSelect
                                 label={"Grootboek"}
-                                name={"administrationLedgerTwinfieldId"}
-                                options={this.state.ledgers}
-                                value={administrationLedgerTwinfieldId}
+                                name={"ledgerId"}
+                                options={this.props.ledgers}
+                                optionName={'description'}
+                                value={ledgerId}
                                 onChangeAction={this.handleReactSelectChange}
                                 multi={false}
                             />
@@ -433,6 +396,7 @@ const mapStateToProps = (state) => {
         productDetails: state.productDetails,
         administrations: state.meDetails.administrations,
         products: state.systemData.products,
+        ledgers: state.systemData.ledgers,
     };
 };
 

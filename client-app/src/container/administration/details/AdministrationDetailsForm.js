@@ -9,7 +9,6 @@ import AdministrationDetailsFormConclusion from './conclusion/AdministrationDeta
 import AdministrationDetailsSepas from './sepas/AdministrationDetailsSepas';
 import Panel from "../../../components/panel/Panel";
 import PanelHeader from "../../../components/panel/PanelHeader";
-import AdministrationLedgerForm from "./ledgers/AdministrationLedgerForm";
 moment.locale('nl');
 
 class AdministrationDetailsForm extends Component {
@@ -43,9 +42,6 @@ class AdministrationDetailsForm extends Component {
                     </Panel>
                     }
                     <AdministrationDetailsFormGeneral />
-                    {this.props.administrationDetails.twinfieldIsValid == true && this.props.administrationDetails.usesTwinfield == true &&
-                    <AdministrationLedgerForm/>
-                    }
                     <AdministrationDetailsUsers />
                     <AdministrationDetailsSepas />
                     <AdministrationDetailsFormConclusion />

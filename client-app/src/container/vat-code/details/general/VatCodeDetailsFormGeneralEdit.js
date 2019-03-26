@@ -70,7 +70,7 @@ class VatCodeDetailsFormGeneralEdit extends Component {
             hasErrors = true;
         }
 
-        if (!vatCode.percentage) {
+        if (validator.isEmpty(vatCode.percentage.toString())) {
             errors.percentage = true;
             hasErrors = true;
         }

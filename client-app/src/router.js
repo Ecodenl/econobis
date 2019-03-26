@@ -106,6 +106,7 @@ import WebformNewApp from './container/webform/new/WebformNewApp';
 import WebformDetailsApp from './container/webform/details/WebformDetailsApp';
 import VatCodesListApp from './container/vat-code/list/VatCodesListApp';
 import VatCodeNewApp from './container/vat-code/new/VatCodeNewApp';
+import VatCodeDetailsApp from './container/vat-code/details/VatCodeDetailsApp';
 
 const Routes = () => {
     return (
@@ -312,7 +313,7 @@ const Routes = () => {
                 /* Vat codes */
                 <Route path="btw-codes" component={VatCodesListApp} />
                 <Route path="btw-code/nieuw" component={VatCodeNewApp} />
-                {/*<Route path="btw-code/:id" component={VatcodeDetailsApp} />*/}
+                <Route path="btw-code/:id" component={VatCodeDetailsApp} />
                 /* Webforms */
                 <Route path="webformulieren" component={WebformsListApp} />
                 <Route path="webformulier/nieuw" component={WebformNewApp} />

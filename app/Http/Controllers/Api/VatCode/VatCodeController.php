@@ -33,7 +33,7 @@ class VatCodeController extends Controller
         return VatCode::jory()->onModel($vatcode)->applyRequest($request);
     }
 
-    public function update(RequestInput $input, VatCode $vatcode)
+    public function update(RequestInput $input, VatCode $vatCode)
     {
         $this->authorize('update', VatCode::class);
 
@@ -44,10 +44,10 @@ class VatCodeController extends Controller
             ->string('twinfieldLedgerCode')->whenMissing('')->onEmpty('')->alias('twinfield_ledger_code')->next()
             ->get();
 
-        $vatcode->fill($data);
-        $vatcode->save();
+        $vatCode->fill($data);
+        $vatCode->save();
 
-        return GenericResource::make($vatcode);
+        return GenericResource::make($vatCode);
     }
 
 }

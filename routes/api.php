@@ -421,6 +421,7 @@ Route::namespace('Api')
 
         Route::get('vat-code/jory', 'VatCode\VatCodeController@jory');
         Route::post('vat-code', 'VatCode\VatCodeController@store');
+        Route::post('vat-code/{vatCode}', 'VatCode\VatCodeController@update');
 
         // Jory routes voor ophalen data
         Route::get( 'jory', '\\'.JoryController::class.'@multiple');

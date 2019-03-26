@@ -1,31 +1,23 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
-import { hashHistory } from 'react-router';
 import validator from 'validator';
 import moment from 'moment';
-
 moment.locale('nl');
 
-import InputText from '../../../components/form/InputText';
-import ButtonText from '../../../components/button/ButtonText';
-import PanelBody from '../../../components/panel/PanelBody';
-import Panel from '../../../components/panel/Panel';
-import VatCodeDetailsAPI from '../../../api/vat-code/VatCodeDetailsAPI';
-import { fetchSystemData } from '../../../actions/general/SystemDataActions';
-import InputDate from '../../../components/form/InputDate';
+import InputText from '../../../../components/form/InputText';
+import ButtonText from '../../../../components/button/ButtonText';
+import Panel from '../../../../components/panel/Panel';
+import PanelBody from '../../../../components/panel/PanelBody';
+import VatCodeDetailsAPI from '../../../../api/vat-code/VatCodeDetailsAPI';
+import InputDate from '../../../../components/form/InputDate';
 
-class VatCodeNewForm extends Component {
+class VatCodeDetailsFormGeneralEdit extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
             vatCode: {
-                startDate: '',
-                description: '',
-                percentage: '',
-                twinfieldCode: '',
-                twinfieldLedgerCode: '',
+                ...props.vatCode,
             },
             errors: {
                 startDate: false,
@@ -33,10 +25,6 @@ class VatCodeNewForm extends Component {
                 percentage: false,
             },
         };
-
-        this.handleInputChange = this.handleInputChange.bind(this);
-        this.handleInputChangeDate = this.handleInputChangeDate.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
     }
 
     handleInputChange = event => {
@@ -91,14 +79,13 @@ class VatCodeNewForm extends Component {
 
         // If no errors send form
         !hasErrors &&
-            VatCodeDetailsAPI.newVatCode(vatCode)
+            VatCodeDetailsAPI.updateVatCode(vatCode)
                 .then(payload => {
-                    this.props.fetchSystemData();
-
-                    hashHistory.push(`/btw-code/${payload.data.data.id}`);
+                    this.props.updateState(vatCode);
+                    this.props.switchToView();
                 })
-                .catch(function(error) {
-                    alert('Er is iets mis gegaan met opslaan!');
+                .catch(error => {
+                    alert('Er is iets misgegaan bij opslaan. Herlaad de pagina en probeer het nogmaals.');
                 });
     };
 
@@ -157,11 +144,11 @@ class VatCodeNewForm extends Component {
                     <PanelBody>
                         <div className="pull-right btn-group" role="group">
                             <ButtonText
-                                buttonText={'Opslaan'}
-                                onClickAction={this.handleSubmit}
-                                type={'submit'}
-                                value={'Submit'}
+                                buttonClassName={'btn-default'}
+                                buttonText={'Sluiten'}
+                                onClickAction={this.props.switchToView}
                             />
+                            <ButtonText buttonText={'Opslaan'} type={'submit'} value={'Submit'} />
                         </div>
                     </PanelBody>
                 </Panel>
@@ -170,9 +157,4 @@ class VatCodeNewForm extends Component {
     }
 }
 
-const mapDispatchToProps = dispatch => bindActionCreators({ fetchSystemData }, dispatch);
-
-export default connect(
-    null,
-    mapDispatchToProps
-)(VatCodeNewForm);
+export default VatCodeDetailsFormGeneralEdit;

@@ -22,13 +22,13 @@ class VatCodesListApp extends Component {
     }
 
     callFetchVatCodesData = () => {
-        this.setState({ loading: false, hasError: false });
+        this.setState({ isLoading: true, hasError: false });
         VatCodeAPI.fetchVatCodes()
             .then(payload => {
-                this.setState({ loading: false, vatCodes: payload.data.data });
+                this.setState({ isLoading: false, vatCodes: payload.data.data });
             })
             .catch(error => {
-                this.setState({ loading: false, hasError: true });
+                this.setState({ isLoading: false, hasError: true });
             });
     };
 
@@ -37,13 +37,16 @@ class VatCodesListApp extends Component {
             <Panel>
                 <PanelBody>
                     <div className="col-md-12 margin-10-top">
-                        <VatCodesListToolbar refreshVatCodesData={this.callFetchVatCodesData} />
+                        <VatCodesListToolbar
+                            vatCodesCount={this.state.vatCodes ? this.state.vatCodes.length : 0}
+                            refreshVatCodesData={this.callFetchVatCodesData}
+                        />
                     </div>
 
                     <div className="col-md-12 margin-10-top">
                         <VatCodesList
                             vatCodes={this.state.vatCodes}
-                            loading={this.state.loading}
+                            isLoading={this.state.isLoading}
                             hasError={this.state.hasError}
                         />
                     </div>

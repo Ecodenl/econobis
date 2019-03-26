@@ -13,6 +13,7 @@ import PanelBody from '../../../components/panel/PanelBody';
 import Panel from '../../../components/panel/Panel';
 import VatCodeDetailsAPI from '../../../api/vat-code/VatCodeDetailsAPI';
 import { fetchSystemData } from '../../../actions/general/SystemDataActions';
+import InputDate from '../../../components/form/InputDate';
 
 class VatCodeNewForm extends Component {
     constructor(props) {
@@ -106,7 +107,7 @@ class VatCodeNewForm extends Component {
                 .then(payload => {
                     this.props.fetchSystemData();
 
-                    hashHistory.push(`/mailgun-domein/${payload.data.data.id}`);
+                    hashHistory.push(`/btw-code/${payload.data.data.id}`);
                 })
                 .catch(function(error) {
                     alert('Er is iets mis gegaan met opslaan!');
@@ -121,11 +122,11 @@ class VatCodeNewForm extends Component {
                 <Panel>
                     <PanelBody>
                         <div className="row">
-                            <InputText
+                            <InputDate
                                 label="Startdatum"
                                 name={'startDate'}
                                 value={startDate}
-                                onChangeAction={this.handleInputChange}
+                                onChangeAction={this.handleInputChangeDate}
                                 required={'required'}
                                 error={this.state.errors.startDate}
                             />

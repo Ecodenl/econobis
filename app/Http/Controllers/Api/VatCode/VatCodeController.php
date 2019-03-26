@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Api\VatCode;
 
-
 use App\Eco\VatCode\VatCode;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Controller;

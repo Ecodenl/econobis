@@ -11,6 +11,7 @@ class VatCodeJoryBuilder extends JoryBuilder
     protected function config(Config $config): void
     {
         $config->field('id')->filterable()->sortable();
+        $config->field('start_date')->filterable()->sortable();
         $config->field('description')->filterable()->sortable();
         $config->field('percentage')->filterable()->sortable();
         $config->field('twinfield_code')->filterable()->sortable();

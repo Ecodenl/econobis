@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { hashHistory } from 'react-router';
 import { connect } from 'react-redux';
+import moment from 'moment';
 
 class VatCodesListItem extends Component {
     constructor(props) {
@@ -40,9 +41,9 @@ class VatCodesListItem extends Component {
                 onMouseEnter={() => this.onRowEnter()}
                 onMouseLeave={() => this.onRowLeave()}
             >
-                <td>{startDate}</td>
+                <td>{startDate && moment(startDate.date).format('L')}</td>
                 <td>{description}</td>
-                <td>{percentage}</td>
+                <td>{percentage}%</td>
                 <td>
                     {this.state.showActionButtons ? (
                         <a role="button" onClick={() => this.openItem(id)}>

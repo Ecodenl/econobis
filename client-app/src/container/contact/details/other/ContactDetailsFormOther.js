@@ -1,5 +1,5 @@
-import React, { Component} from 'react';
-import {connect} from 'react-redux';
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
 
 import ContactDetailsFormOtherEdit from './ContactDetailsFormOtherEdit';
 import ContactDetailsFormOtherView from './ContactDetailsFormOtherView';
@@ -20,53 +20,59 @@ class ContactDetailsFormOther extends Component {
     switchToEdit = () => {
         this.setState({
             showEdit: true,
-        })
+        });
     };
 
     switchToView = () => {
         this.setState({
             showEdit: false,
             activeDiv: '',
-        })
+        });
     };
 
     onDivEnter() {
         this.setState({
             activeDiv: 'panel-grey',
         });
-    };
+    }
 
     onDivLeave() {
-        if(!this.state.showEdit) {
+        if (!this.state.showEdit) {
             this.setState({
                 activeDiv: '',
             });
         }
-    };
+    }
 
     render() {
         return (
-            <Panel className={this.state.activeDiv} onMouseEnter={() => this.onDivEnter()} onMouseLeave={() => this.onDivLeave()}>
+            <Panel
+                className={this.state.activeDiv}
+                onMouseEnter={() => this.onDivEnter()}
+                onMouseLeave={() => this.onDivLeave()}
+            >
                 <PanelHeader>
                     <span className="h5 text-bold">Overige gegevens</span>
                 </PanelHeader>
                 <PanelBody>
-                        {
-                            this.state.showEdit ?
-                                <ContactDetailsFormOtherEdit switchToView={this.switchToView} />
-                                :
-                               <ContactDetailsFormOtherView switchToEdit={this.switchToEdit}/>
-                        }
+                    {this.state.showEdit ? (
+                        <ContactDetailsFormOtherEdit switchToView={this.switchToView} />
+                    ) : (
+                        <ContactDetailsFormOtherView switchToEdit={this.switchToEdit} />
+                    )}
                 </PanelBody>
             </Panel>
         );
     }
-};
+}
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         typeId: state.contactDetails.typeId,
     };
 };
 
-export default connect(mapStateToProps, null)(ContactDetailsFormOther);
+export default connect(
+    mapStateToProps,
+    null
+)(ContactDetailsFormOther);

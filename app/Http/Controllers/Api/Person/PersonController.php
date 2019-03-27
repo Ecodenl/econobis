@@ -36,7 +36,6 @@ class PersonController extends ApiController
 
         Validator::make($request['person'],
             [
-//                'statusId' => new EnumExists(ContactStatus::class),
                 'newsletter' => 'boolean',
                 'ownerId' => 'exists:users,id',
                 'didAgreeAvg' => 'boolean',
@@ -45,8 +44,9 @@ class PersonController extends ApiController
                 'lastName' => '',
                 'lastNamePrefixId' => 'exists:last_name_prefixes,id',
                 'titleId' => 'exists:titles,id',
-//                'typeId' => 'exists:person_types,id',
                 'dateOfBirth' => 'date',
+                'collectMandateSignatureDate' => 'date',
+                'collectMandateFirstRunDate' => 'date',
             ]);
 
         $contactData = $this->sanitizeData($request['person'], [
@@ -58,16 +58,23 @@ class PersonController extends ApiController
             'titleId' => 'nullable',
             'typeId' => 'nullable',
             'dateOfBirth' => 'nullable',
+            'isCollectMandate' => 'boolean',
+            'collectMandateSignatureDate' => 'nullable',
+            'collectMandateFirstRunDate' => 'nullable',
         ]);
 
         $contactData = $this->arrayKeysToSnakeCase($contactData);
 
         $contactArray =
             [
-//                'status_id' => $contactData['status_id'],
                 'newsletter' => $contactData['newsletter'],
                 'owner_id' => $contactData['owner_id'],
                 'did_agree_avg' => $contactData['did_agree_avg'],
+                'is_collect_mandate' => $contactData['is_collect_mandate'],
+                'collect_mandate_code' => $contactData['collect_mandate_code'],
+                'collect_mandate_signature_date' => $contactData['collect_mandate_signature_date'],
+                'collect_mandate_first_run_date' => $contactData['collect_mandate_first_run_date'],
+                'collect_mandate_collection_schema' => $contactData['collect_mandate_collection_schema'],
             ];
 
         $lnp = null;
@@ -82,7 +89,6 @@ class PersonController extends ApiController
                 'last_name' => $contactData['last_name'],
                 'last_name_prefix' => $lnp,
                 'title_id' => $contactData['title_id'],
-//                'type_id' => $contactData['type_id'],
                 'date_of_birth' => $contactData['date_of_birth'],
             ];
 
@@ -212,7 +218,6 @@ class PersonController extends ApiController
         $this->authorize('update', $person);
 
         $contactData = $request->validate([
-//            'statusId' => new EnumExists(ContactStatus::class),
             'memberSince' => 'date',
             'memberUntil' => 'date',
             'newsletter' => 'boolean',
@@ -222,6 +227,11 @@ class PersonController extends ApiController
             'liabilityAmount' => 'numeric',
             'ownerId' => 'exists:users,id',
             'didAgreeAvg' => 'boolean',
+            'isCollectMandate' => 'boolean',
+            'collectMandateCode' => '',
+            'collectMandateSignatureDate' => 'date',
+            'collectMandateFirstRunDate' => 'date',
+            'collectMandateCollectionSchema' => '',
         ]);
 
         $personData = $request->validate([
@@ -249,6 +259,7 @@ class PersonController extends ApiController
             'memberUntil' => 'nullable',
             'newsletter' => 'boolean',
             'liable' => 'boolean',
+            'isCollectMandate' => 'boolean'
         ]);
 
         if(array_key_exists('iban', $contactData) && $contact->iban != $contactData['iban']) $this->authorize('updateIban', $contact);

@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import MeasureDetailsToolbar from './MeasureDetailsToolbar';
 import MeasureDetailsForm from './MeasureDetailsForm';
 import MeasureDetailsHarmonica from './MeasureDetailsHarmonica';
-import Panel from "../../../components/panel/Panel";
+import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
 
 import { fetchMeasure, clearMeasure } from '../../../actions/measure/MeasureDetailsActions';
@@ -20,31 +20,31 @@ class MeasureDetailsApp extends Component {
 
     componentWillUnmount() {
         this.props.clearMeasure();
-    };
+    }
     render() {
         return (
             <div className="row">
                 <div className="col-md-9">
                     <div className="col-md-12">
-                        <MeasureDetailsToolbar/>
+                        <MeasureDetailsToolbar />
                     </div>
 
                     <div className="col-md-12">
-                        <MeasureDetailsForm/>
+                        <MeasureDetailsForm />
                     </div>
                 </div>
                 <Panel className="col-md-3">
                     <PanelBody>
-                        <MeasureDetailsHarmonica id={this.props.params.id}/>
+                        <MeasureDetailsHarmonica id={this.props.params.id} />
                     </PanelBody>
                 </Panel>
             </div>
-        )
+        );
     }
-};
+}
 
 const mapDispatchToProps = dispatch => ({
-    fetchMeasure: (id) => {
+    fetchMeasure: id => {
         dispatch(fetchMeasure(id));
     },
     clearMeasure: () => {
@@ -52,4 +52,7 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(null, mapDispatchToProps)(MeasureDetailsApp);
+export default connect(
+    null,
+    mapDispatchToProps
+)(MeasureDetailsApp);

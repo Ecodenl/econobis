@@ -3,27 +3,20 @@ import axios from 'axios';
 const URL_PERSON = `${URL_API}/api/person`;
 
 export default {
-    newPerson: (person) => {
+    newPerson: person => {
         const requestUrl = `${URL_PERSON}`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
         return axios.post(requestUrl, person);
-
     },
 
-    updatePerson: (person) => {
+    updatePerson: person => {
         const requestUrl = `${URL_PERSON}/${person.id}`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios.post(requestUrl, person)
-            .then(function (response) {
-                return response.data.data;
-            })
-            .catch(function (error) {
-                console.log(error);
-            });
+        return axios.post(requestUrl, person);
     },
 
     getPersonPeek: () => {
@@ -31,26 +24,28 @@ export default {
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios.get(requestUrl)
-            .then(function (response) {
+        return axios
+            .get(requestUrl)
+            .then(function(response) {
                 return response.data.data;
             })
-            .catch(function (error) {
+            .catch(function(error) {
                 console.log(error);
             });
     },
 
-    makePrimary: (person) => {
+    makePrimary: person => {
         const requestUrl = `${URL_PERSON}/${person.id}`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios.post(requestUrl, person)
-            .then(function (response) {
+        return axios
+            .post(requestUrl, person)
+            .then(function(response) {
                 return response.data.data;
             })
-            .catch(function (error) {
+            .catch(function(error) {
                 console.log(error);
             });
-    }
+    },
 };

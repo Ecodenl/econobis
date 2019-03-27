@@ -48,7 +48,6 @@ class FullPerson extends Resource
             'firstNamePartner' => $this->first_name_partner,
             'lastNamePartner' => $this->last_name_partner,
             'dateOfBirthPartner' => $this->date_of_birth_partner,
-            'primary' => $this->primary,
         ];
     }
 }

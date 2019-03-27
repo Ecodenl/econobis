@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import validator from 'validator';
@@ -10,8 +10,8 @@ import InputText from '../../../../components/form/InputText';
 import InputSelect from '../../../../components/form/InputSelect';
 import InputDate from '../../../../components/form/InputDate';
 import ButtonText from '../../../../components/button/ButtonText';
-import PanelFooter from "../../../../components/panel/PanelFooter";
-import InputToggle from "../../../../components/form/InputToggle";
+import PanelFooter from '../../../../components/panel/PanelFooter';
+import InputToggle from '../../../../components/form/InputToggle';
 
 class ContactDetailsFormPersonalEdit extends Component {
     constructor(props) {
@@ -25,7 +25,7 @@ class ContactDetailsFormPersonalEdit extends Component {
                 {
                     id: person.organisation ? person.organisation.id : '',
                     name: person.organisation ? person.organisation.name : '',
-                }
+                },
             ],
             person: {
                 id: person.id,
@@ -44,24 +44,24 @@ class ContactDetailsFormPersonalEdit extends Component {
             errors: {
                 name: false,
             },
-        }
-    };
+        };
+    }
 
     componentDidMount() {
         let lastNamePrefixes = this.state.lastNamePrefixes;
 
-        const hasNullObject = this.hasNullObject({id: 'null', name: ""}, lastNamePrefixes);
-        if(!hasNullObject) {
-            lastNamePrefixes.unshift({id: 'null', name: ""});
+        const hasNullObject = this.hasNullObject({ id: 'null', name: '' }, lastNamePrefixes);
+        if (!hasNullObject) {
+            lastNamePrefixes.unshift({ id: 'null', name: '' });
         }
         OrganisationAPI.getOrganisationPeek().then(payload => {
             this.setState({
                 ...this.state,
                 organisationPeek: payload,
-                lastNamePrefixes: lastNamePrefixes
-            })
+                lastNamePrefixes: lastNamePrefixes,
+            });
         });
-    };
+    }
 
     hasNullObject = (obj, list) => {
         let i;
@@ -83,19 +83,19 @@ class ContactDetailsFormPersonalEdit extends Component {
             ...this.state,
             person: {
                 ...this.state.person,
-                [name]: value
+                [name]: value,
             },
         });
     };
 
-    handleChangeDateOfBirth = (date) => {
-        const formattedDate = (date ? moment(date).format('Y-MM-DD') : '');
+    handleChangeDateOfBirth = date => {
+        const formattedDate = date ? moment(date).format('Y-MM-DD') : '';
 
         this.setState({
             ...this.state,
             person: {
                 ...this.state.person,
-                dateOfBirth: formattedDate
+                dateOfBirth: formattedDate,
             },
         });
     };
@@ -103,58 +103,75 @@ class ContactDetailsFormPersonalEdit extends Component {
     handleSubmit = event => {
         event.preventDefault();
 
-        const { person }  = this.state;
+        const { person } = this.state;
 
         // Validation
         let errors = {};
         let hasErrors = false;
 
-        if(validator.isEmpty(person.firstName) && validator.isEmpty(person.lastName)){
+        if (validator.isEmpty(person.firstName) && validator.isEmpty(person.lastName)) {
             errors.name = true;
             hasErrors = true;
-        };
+        }
 
-        this.setState({ ...this.state, errors: errors })
+        this.setState({ ...this.state, errors: errors });
 
         // If no errors send form
         !hasErrors &&
-        PersonAPI.updatePerson(person).then((payload) => {
-            this.props.updatePerson(payload);
-            this.props.switchToView();
-        });
+            PersonAPI.updatePerson(person)
+                .then(payload => {
+                    this.props.updatePerson(payload.data.data);
+                    this.props.switchToView();
+                })
+                .catch(function(error) {
+                    console.log(error);
+                    alert('Er is iets misgegaan bij opslaan. Herlaad de pagina en probeer het opnieuw.');
+                });
     };
 
     render() {
-        const { number, createdAt, titleId, initials, firstName, lastNamePrefixId, lastName, dateOfBirth, newsletter, didAgreeAvg, lastNamePrefix} = this.state.person;
+        const {
+            number,
+            createdAt,
+            titleId,
+            initials,
+            firstName,
+            lastNamePrefixId,
+            lastName,
+            dateOfBirth,
+            newsletter,
+            didAgreeAvg,
+            lastNamePrefix,
+        } = this.state.person;
 
         return (
             <form className="form-horizontal col-md-12" onSubmit={this.handleSubmit}>
                 <div className="row">
                     <InputText
-                        label={"Contactnummer"}
+                        label={'Contactnummer'}
                         divSize={'col-xs-12'}
-                        name={"number"}
-                        readOnly={ true }
+                        name={'number'}
+                        readOnly={true}
                         value={number}
                     />
                 </div>
 
                 <div className="row">
                     <InputText
-                        label={"Gemaakt op"}
+                        label={'Gemaakt op'}
                         divSize={'col-xs-12'}
-                        id={"created_at"}
-                        name={"createdAt"}
-                        value={ moment(createdAt).format('DD-MM-Y') }
-                        readOnly={ true }
+                        id={'created_at'}
+                        name={'createdAt'}
+                        value={moment(createdAt).format('DD-MM-Y')}
+                        readOnly={true}
                     />
                 </div>
 
                 <div className="row">
                     <InputSelect
-                        label={"Aanspreektitel"}
+                        label={'Aanspreektitel'}
                         size={'col-xs-12'}
-                        name={"titleId"}
+                        name={'titleId'}
                         options={this.props.titles}
                         value={titleId}
                         onChangeAction={this.handleInputChange}
@@ -165,7 +182,7 @@ class ContactDetailsFormPersonalEdit extends Component {
                     <InputText
                         label="Voorletters"
                         divSize={'col-xs-12'}
-                        name={"initials"}
+                        name={'initials'}
                         value={initials}
                         onChangeAction={this.handleInputChange}
                     />
@@ -175,19 +192,19 @@ class ContactDetailsFormPersonalEdit extends Component {
                     <InputText
                         label="Voornaam"
                         divSize={'col-xs-12'}
-                        name={"firstName"}
+                        name={'firstName'}
                         value={firstName}
                         onChangeAction={this.handleInputChange}
-                        required={lastName === '' && "required"}
+                        required={lastName === '' && 'required'}
                         error={this.state.errors.name}
                     />
                 </div>
 
                 <div className="row">
                     <InputSelect
-                        label={"Tussenvoegsel"}
+                        label={'Tussenvoegsel'}
                         size={'col-xs-12'}
-                        name={"lastNamePrefixId"}
+                        name={'lastNamePrefixId'}
                         options={this.state.lastNamePrefixes}
                         value={lastNamePrefixId}
                         onChangeAction={this.handleInputChange}
@@ -197,32 +214,32 @@ class ContactDetailsFormPersonalEdit extends Component {
 
                 <div className="row">
                     <InputText
-                        label={"Achternaam"}
+                        label={'Achternaam'}
                         divSize={'col-xs-12'}
                         name="lastName"
                         value={lastName}
                         onChangeAction={this.handleInputChange}
-                        required={firstName === '' && "required"}
+                        required={firstName === '' && 'required'}
                         error={this.state.errors.name}
                     />
                 </div>
 
                 <div className="row">
                     <InputDate
-                        label={"Geboortedatum"}
+                        label={'Geboortedatum'}
                         divSize={'col-xs-12'}
-                        name={"dateOfBirth"}
-                        value={ dateOfBirth }
+                        name={'dateOfBirth'}
+                        value={dateOfBirth}
                         onChangeAction={this.handleChangeDateOfBirth}
                     />
                 </div>
 
                 <div className="row">
                     <InputToggle
-                        label={"Nieuwsbrief"}
+                        label={'Nieuwsbrief'}
                         divSize={'col-xs-12'}
                         className={'field-to-be-removed'}
-                        name={"newsletter"}
+                        name={'newsletter'}
                         value={newsletter}
                         onChangeAction={this.handleInputChange}
                     />
@@ -240,16 +257,25 @@ class ContactDetailsFormPersonalEdit extends Component {
 
                 <PanelFooter>
                     <div className="pull-right btn-group" role="group">
-                        <ButtonText buttonClassName={"btn-default"} buttonText={"Annuleren"} onClickAction={this.props.switchToView}/>
-                        <ButtonText buttonText={"Opslaan"} onClickAction={this.handleSubmit} type={"submit"} value={"Submit"}/>
+                        <ButtonText
+                            buttonClassName={'btn-default'}
+                            buttonText={'Annuleren'}
+                            onClickAction={this.props.switchToView}
+                        />
+                        <ButtonText
+                            buttonText={'Opslaan'}
+                            onClickAction={this.handleSubmit}
+                            type={'submit'}
+                            value={'Submit'}
+                        />
                     </div>
                 </PanelFooter>
             </form>
         );
-    };
-};
+    }
+}
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         contactDetails: state.contactDetails,
         lastNamePrefixes: state.systemData.lastNamePrefixes,
@@ -258,9 +284,12 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = dispatch => ({
-    updatePerson: (id) => {
+    updatePerson: id => {
         dispatch(updatePerson(id));
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(ContactDetailsFormPersonalEdit);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(ContactDetailsFormPersonalEdit);

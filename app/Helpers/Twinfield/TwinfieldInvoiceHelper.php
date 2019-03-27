@@ -54,202 +54,82 @@ class TwinfieldInvoiceHelper
                 Log::error('Factuur ' . $invoiceToBeChecked->id . ' met nummer ' . $invoiceToBeChecked->number . ' heeft status geexporteerd maar heeft geen Twinfield nummer.');
             }
             else {
-//  - 0
-                $columns[] = (new BrowseColumn())
-                    ->setField('fin.trs.head.yearperiod')
-                    ->setLabel('Periode')
-                    ->setVisible(true)
-                    ->setAsk(true)
-                    ->setOperator(BrowseColumnOperator::BETWEEN())
-                    ->setFrom( '2018/00' )
-                    ->setTo( '2019/55' );
-//0 - 1
-                $columns[] = (new BrowseColumn())
-                    ->setField('fin.trs.head.code')
-                    ->setLabel('Dagboek')
-                    ->setVisible(true)
-                    ->setAsk(true)
-                    ->setOperator(BrowseColumnOperator::EQUAL());
-//                    ->setFrom("VRK");
-//                <finderparam>hidden=1</finderparam>
-//  - 2
-                $columns[] = (new BrowseColumn())
-                    ->setField('fin.trs.head.shortname')
-                    ->setLabel('Naam')
-                    ->setVisible(true)
-                    ->setAsk(false);
-//3 - 3
-                $columns[] = (new BrowseColumn())
-                    ->setField('fin.trs.head.number')
-                    ->setLabel('Boekst.nr.')
-                    ->setVisible(true)
-                    ->setAsk(true)
-                    ->setOperator(BrowseColumnOperator::BETWEEN());
-//  - 4
-                $columns[] = (new BrowseColumn())
-                    ->setField('fin.trs.head.status')
-                    ->setLabel('Status')
-                    ->setVisible(true)
-                    ->setAsk(true);
-//  - 5
-                $columns[] = (new BrowseColumn())
-                    ->setField('fin.trs.head.date')
-                    ->setLabel('Boekdatum')
-                    ->setVisible(true)
-                    ->setAsk(false);
-//  - 6
-                $columns[] = (new BrowseColumn())
-                    ->setField('fin.trs.line.dim2')
-                    ->setLabel('Debiteur')
-                    ->setVisible(true)
-                    ->setAsk(true)
-                    ->setOperator(BrowseColumnOperator::BETWEEN());
-//                <finderparam>dimtype=DEB</finderparam>
-//  - 7
-                $columns[] = (new BrowseColumn())
-                    ->setField('fin.trs.line.dim2name')
-                    ->setLabel('Naam')
-                    ->setVisible(true)
-                    ->setAsk(false);
-//  - 8
-                $columns[] = (new BrowseColumn())
-                    ->setField('fin.trs.head.curcode')
-                    ->setLabel('Valuta')
-                    ->setVisible(true)
-                    ->setAsk(true)
-                    ->setOperator(BrowseColumnOperator::EQUAL());
-//  - 9
-                $columns[] = (new BrowseColumn())
-                    ->setField('fin.trs.line.valuesigned')
-                    ->setLabel('Bedrag')
-                    ->setVisible(true)
-                    ->setAsk(true)
-                    ->setOperator(BrowseColumnOperator::BETWEEN());
-//5 - 10
-                $columns[] = (new BrowseColumn())
-                    ->setField('fin.trs.line.basevaluesigned')
-                    ->setLabel('EuroK')
-                    ->setVisible(true)
-                    ->setAsk(true)
-                    ->setOperator(BrowseColumnOperator::BETWEEN());
-//  - 11
-                $columns[] = (new BrowseColumn())
-                    ->setField('fin.trs.line.repvaluesigned')
-                    ->setLabel('XXX')
-                    ->setVisible(false)
-                    ->setAsk(false)
-                    ->setOperator(BrowseColumnOperator::BETWEEN());
-//6 - 12
-                $columns[] = (new BrowseColumn())
-                    ->setField('fin.trs.line.openbasevaluesigned')
-                    ->setLabel('Openstaand bedrag')
-                    ->setVisible(true)
-                    ->setAsk(false);
-//2 - 13
-                $columns[] = (new BrowseColumn())
-                    ->setField('fin.trs.line.invnumber')
-                    ->setLabel('Factuurnr.')
-                    ->setVisible(true)
-                    ->setAsk(true)
-                    ->setOperator(BrowseColumnOperator::EQUAL());
-//                    ->setFrom( $invoiceToBeChecked->number );
-//  - 14
-                $columns[] = (new BrowseColumn())
-                    ->setField('fin.trs.line.datedue')
-                    ->setLabel('Vervaldatum')
-                    ->setVisible(true)
-                    ->setAsk(false);
-//1 - 15
-                $columns[] = (new BrowseColumn())
-                    ->setField('fin.trs.line.matchstatus')
-                    ->setLabel('Betaalstatus')
-                    ->setVisible(true)
-                    ->setAsk(true)
-                    ->setOperator(BrowseColumnOperator::EQUAL());
-//7 - 16
-                $columns[] = (new BrowseColumn())
-                    ->setField('fin.trs.line.matchnumber')
-                    ->setLabel('Betaalnr.')
-                    ->setVisible(true)
-                    ->setAsk(false);
-//4 - 17
-                $columns[] = (new BrowseColumn())
-                    ->setField('fin.trs.line.matchdate')
-                    ->setLabel('Betaaldatum')
-                    ->setVisible(true)
-                    ->setAsk(true)
-                    ->setOperator(BrowseColumnOperator::BETWEEN())
-                    ->setFrom('19800101')
-                    ->setTo('20391201');
-//  - 18
-                $columns[] = (new BrowseColumn())
-                    ->setField('fin.trs.line.openvaluesigned')
-                    ->setLabel('Openstaand bedrag transactievaluta')
-                    ->setVisible(false)
-                    ->setAsk(false);
-//  - 19
-                $columns[] = (new BrowseColumn())
-                    ->setField('fin.trs.line.availableforpayruns')
-                    ->setLabel('Beschikbaar voor betaalrun')
-                    ->setVisible(false)
-                    ->setAsk(false);
-//  - 20
-                $columns[] = (new BrowseColumn())
-                    ->setField('fin.trs.line.modified')
-                    ->setLabel('Wijzigingsdatum')
-                    ->setVisible(true)
-                    ->setAsk(true)
-                    ->setOperator(BrowseColumnOperator::BETWEEN());
 
-//                dd($this->office);
+                $columnsSalesTransaction = $this->getSalesTransaction($invoiceToBeChecked);
+                //Salestransaction - ophalen van Twinfield
+                try {
+                    $twinfieldInvoiceTransactions = $browseDataApiConnector->getBrowseData('100', $columnsSalesTransaction);
+                } catch (PhpTwinfieldException $e) {
+                    Log::error($e->getMessage());
+                    return $e->getMessage() ? $e->getMessage() : 'Er is een fout opgetreden bij ophalen verkoopgegevens factuurnr. ' . $invoiceToBeChecked->number . '.';
+                }
 
-                $twinfieldInvoiceTransactions = $browseDataApiConnector->getBrowseData('100', $columns );
-dd($twinfieldInvoiceTransactions);
+                $getPaidData = false;
 
                 foreach($twinfieldInvoiceTransactions->getRows() as $row){
-//0 - 1  V
-//3 - 3
-//5 - 10 V
-//6 - 12 V
-//2 - 13
-//1 - 15
-//7 - 16
-//4 - 17 V
 
-                    // 1e cell (0) bevat code
-                    $type = ($row->getCells()[1]->getValue());
-                    // 2e cell (1) bevat matchstatus
-                    // 3e cell (2) bevat invoicenumber
-                    // 4e cell (3) bevat twinfieldnummer
+                    // [1] - Dagboek (VRK)
+                    // [3] - Matchstatus
+                    // [4] - Matchnumber
+                    $dagBoek     = ($row->getCells()[1]->getValue());
+                    $matchStatus = ($row->getCells()[3]->getValue());
+                    $matchNumber = ($row->getCells()[4]->getValue());
 
                     //VRK is de verkoop factuur
-                    if($type !== 'VRK' ){
-                        //5e cell (4) bevat betaaldatum
-                        $dateInput = $row->getCells()[17]->getValue(); //datetime
-                        $dateInput = date_format($dateInput, 'Y-m-d');
-
-                        //6e cell (5) bevat bedrag (neem aan factuurbedrag en niet betaald bedrag ??)
-                        $amountInvoice = $row->getCells()[10]->getValue();
-                        //7e cell (6) bevat bedrag openstaand
-                        $amountOpen = $row->getCells()[12]->getValue();
-
-                        //-100 op debiteur is dus 100 betaald
-                        $amount = ($amountInvoice-$amountOpen) * -1;
-
-                        if(!InvoicePayment::where('invoice_id', $invoiceToBeChecked->id)->where('amount', $amount)->where('date_paid', $dateInput)->exists()){
-                            $invoicePayment = new InvoicePayment();
-                            $invoicePayment->invoice_id = $invoiceToBeChecked->id;
-                            $invoicePayment->amount = $amount;
-                            $invoicePayment->type_id = $type;
-                            $invoicePayment->date_paid = $dateInput;
-
-                            $invoicePayment->save();
-
-                            Log::info('Betaling van ' . $amount . ' toegevoegd via twinfield voor factuur ' . $invoiceToBeChecked->number);
-                            array_push($messages, 'Betaling van €' . $amount . ' toegevoegd via Twinfield voor factuur ' . $invoiceToBeChecked->number . '.');
-                        }
+                    if($dagBoek === 'VRK' && ($matchStatus=='matched' || !empty($matchNumber) ) )
+                    {
+                        $getPaidData = true;
                     }
                 };
+
+                if($getPaidData)
+                {
+                    $columnsPaidInfo = $this->getPaidInfo($invoiceToBeChecked);
+                    //Paid info - ophalen van Twinfield
+                    try {
+                        $twinfieldInvoiceTransactions = $browseDataApiConnector->getBrowseData('100', $columnsPaidInfo);
+                    } catch (PhpTwinfieldException $e) {
+                        Log::error($e->getMessage());
+                        return $e->getMessage() ? $e->getMessage() : 'Er is een fout opgetreden bij ophalen betaalgegevens factuurnr. ' . $invoiceToBeChecked->number . '.';
+                    }
+//                dd($twinfieldInvoiceTransactions);
+
+                    foreach($twinfieldInvoiceTransactions->getRows() as $row){
+
+                        // [1] - Dagboek (VRK)
+                        // [3] - Factuurbedrag
+                        // [4] - Openstaand bedrag
+                        // [5] - Betaaldatum
+
+                        $dagBoek     = ($row->getCells()[1]->getValue());
+                        $amountInvoice = $row->getCells()[3]->getValue();
+                        $amountOpen = $row->getCells()[4]->getValue();
+                        $dateInput = $row->getCells()[5]->getValue(); //datetime
+                        $dateInput = date_format($dateInput, 'Y-m-d');
+
+                        //VRK is de verkoop factuur, die slaan we nu over
+                        if($dagBoek !== 'VRK')
+                        {
+                            //-100 op debiteur is dus 100 betaald
+                            $amount = ($amountInvoice-$amountOpen) * -1;
+
+                            if(!InvoicePayment::where('invoice_id', $invoiceToBeChecked->id)->where('amount', $amount)->where('date_paid', $dateInput)->exists()){
+                                $invoicePayment = new InvoicePayment();
+                                $invoicePayment->invoice_id = $invoiceToBeChecked->id;
+                                $invoicePayment->amount = $amount;
+                                $invoicePayment->type_id = $dagBoek;
+                                $invoicePayment->date_paid = $dateInput;
+
+                                $invoicePayment->save();
+
+                                Log::info('Betaling van ' . $amount . ' toegevoegd via twinfield voor factuur ' . $invoiceToBeChecked->number);
+                                array_push($messages, 'Betaling van €' . $amount . ' toegevoegd via Twinfield voor factuur ' . $invoiceToBeChecked->number . '.');
+                            }
+                        }
+                    };
+
+                }
+
             }
         }
 
@@ -258,6 +138,108 @@ dd($twinfieldInvoiceTransactions);
         }
 
         return implode(';', $messages);
+    }
+
+    public function getSalesTransaction($invoiceToBeChecked){
+
+        $columns = [];
+
+        // [0] - Filter Office (code)
+        $columns[] = (new BrowseColumn())
+            ->setField('fin.trs.head.office')
+            ->setLabel('Office code')
+            ->setVisible(true)
+            ->setAsk(true)
+            ->setOperator(BrowseColumnOperator::EQUAL())
+            ->setFrom( $this->office );
+        // [1] - Dagboek (VRK)
+        $columns[] = (new BrowseColumn())
+            ->setField('fin.trs.head.code')
+            ->setLabel('Dagboek')
+            ->setVisible(true)
+            ->setAsk(true)
+            ->setOperator(BrowseColumnOperator::EQUAL())
+            ->setFrom("VRK");
+        // [2] - Factuurnr.
+        $columns[] = (new BrowseColumn())
+            ->setField('fin.trs.line.invnumber')
+            ->setLabel('Factuurnr.')
+            ->setVisible(true)
+            ->setAsk(true)
+            ->setOperator(BrowseColumnOperator::EQUAL())
+            ->setFrom( $invoiceToBeChecked->number );
+        // [3] - Matchstatus
+        $columns[] = (new BrowseColumn())
+            ->setField('fin.trs.line.matchstatus')
+            ->setLabel('Betaalstatus')
+            ->setVisible(true)
+            ->setAsk(true);
+//            ->setOperator(BrowseColumnOperator::EQUAL());
+        // [4] - Matchnumber
+        $columns[] = (new BrowseColumn())
+            ->setField('fin.trs.line.matchnumber')
+            ->setLabel('Betaalnr.')
+            ->setVisible(true)
+            ->setAsk(false);
+//            ->setOperator(BrowseColumnOperator::BETWEEN());
+
+        return $columns;
+
+    }
+
+    public function getPaidInfo($invoiceToBeChecked){
+
+        $columns = [];
+
+        // [0] - Filter Office (code)
+        $columns[] = (new BrowseColumn())
+            ->setField('fin.trs.head.office')
+            ->setLabel('Office code')
+            ->setVisible(true)
+            ->setAsk(true)
+            ->setOperator(BrowseColumnOperator::EQUAL())
+            ->setFrom( $this->office );
+        // [1] - Dagboek (alles)
+        $columns[] = (new BrowseColumn())
+            ->setField('fin.trs.head.code')
+            ->setLabel('Dagboek')
+            ->setVisible(true)
+            ->setAsk(true)
+            ->setOperator(BrowseColumnOperator::EQUAL());
+//            ->setFrom("VRK");
+        // [2] - Factuurnr.
+        $columns[] = (new BrowseColumn())
+            ->setField('fin.trs.line.invnumber')
+            ->setLabel('Factuurnr.')
+            ->setVisible(true)
+            ->setAsk(true)
+            ->setOperator(BrowseColumnOperator::EQUAL())
+            ->setFrom( $invoiceToBeChecked->number );
+        // [3] - Factuurbedrag in EUR
+        $columns[] = (new BrowseColumn())
+            ->setField('fin.trs.line.basevaluesigned')
+            ->setLabel('Bedrag in administratie valuta')
+            ->setVisible(true)
+            ->setAsk(true)
+            ->setOperator(BrowseColumnOperator::BETWEEN());
+        // [4] - Openstaand bedrag
+        $columns[] = (new BrowseColumn())
+            ->setField('fin.trs.line.openbasevaluesigned')
+            ->setLabel('Openstaand bedrag')
+            ->setVisible(true)
+            ->setAsk(false);
+        // [5] - Betaaldatum
+        $columns[] = (new BrowseColumn())
+            ->setField('fin.trs.line.matchdate')
+            ->setLabel('Betaaldatum')
+            ->setVisible(true)
+            ->setAsk(true)
+            ->setOperator(BrowseColumnOperator::BETWEEN());
+        //                    ->setFrom('19800101')
+        //                    ->setTo('20391201');
+
+        return $columns;
+
     }
 
     public function readBrowseDefinition(BrowseDataApiConnector $browseDataApiConnector){
@@ -276,3 +258,160 @@ dd($twinfieldInvoiceTransactions);
     }
 
 }
+
+// Beschikbare browse columns
+////0 - 0
+//$columns[] = (new BrowseColumn())
+//    ->setField('fin.trs.head.office')
+//    ->setLabel('Office code')
+//    ->setVisible(true)
+//    ->setAsk(true)
+//    ->setOperator(BrowseColumnOperator::EQUAL())
+//    ->setFrom( $this->office );
+////1 - 1
+//$columns[] = (new BrowseColumn())
+//    ->setField('fin.trs.head.yearperiod')
+//    ->setLabel('Periode')
+//    ->setVisible(true)
+//    ->setAsk(true)
+//    ->setOperator(BrowseColumnOperator::BETWEEN())
+//    ->setFrom( '2018/00' )
+//    ->setTo( '2019/55' );
+////2 - 2
+//$columns[] = (new BrowseColumn())
+//    ->setField('fin.trs.head.code')
+//    ->setLabel('Dagboek')
+//    ->setVisible(true)
+//    ->setAsk(true)
+//    ->setOperator(BrowseColumnOperator::EQUAL());
+////3 - 3
+//$columns[] = (new BrowseColumn())
+//    ->setField('fin.trs.head.shortname')
+//    ->setLabel('Naam')
+//    ->setVisible(true)
+//    ->setAsk(false);
+////4 - 4
+//$columns[] = (new BrowseColumn())
+//    ->setField('fin.trs.head.number')
+//    ->setLabel('Boekst.nr.')
+//    ->setVisible(true)
+//    ->setAsk(true)
+//    ->setOperator(BrowseColumnOperator::BETWEEN());
+////5 - 5
+//$columns[] = (new BrowseColumn())
+//    ->setField('fin.trs.head.status')
+//    ->setLabel('Status')
+//    ->setVisible(true)
+//    ->setAsk(true);
+////6 - 6
+//$columns[] = (new BrowseColumn())
+//    ->setField('fin.trs.head.date')
+//    ->setLabel('Boekdatum')
+//    ->setVisible(true)
+//    ->setAsk(false);
+////7 - 7
+//$columns[] = (new BrowseColumn())
+//    ->setField('fin.trs.line.dim2')
+//    ->setLabel('Debiteurnummer')
+//    ->setVisible(true)
+//    ->setAsk(true)
+//    ->setOperator(BrowseColumnOperator::BETWEEN());
+////8 - 8
+//$columns[] = (new BrowseColumn())
+//    ->setField('fin.trs.line.dim2name')
+//    ->setLabel('Naam debiteur')
+//    ->setVisible(true)
+//    ->setAsk(false);
+////9 - 9
+//$columns[] = (new BrowseColumn())
+//    ->setField('fin.trs.head.curcode')
+//    ->setLabel('Valuta')
+//    ->setVisible(true)
+//    ->setAsk(true)
+//    ->setOperator(BrowseColumnOperator::EQUAL());
+////10 - 10
+//$columns[] = (new BrowseColumn())
+//    ->setField('fin.trs.line.valuesigned')
+//    ->setLabel('Bedrag')
+//    ->setVisible(true)
+//    ->setAsk(true)
+//    ->setOperator(BrowseColumnOperator::BETWEEN());
+////11 - 11
+//$columns[] = (new BrowseColumn())
+//    ->setField('fin.trs.line.basevaluesigned')
+//    ->setLabel('Bedrag in administratie valuta')
+//    ->setVisible(true)
+//    ->setAsk(true)
+//    ->setOperator(BrowseColumnOperator::BETWEEN());
+////12 - 12
+//$columns[] = (new BrowseColumn())
+//    ->setField('fin.trs.line.repvaluesigned')
+//    ->setLabel('Bedrag in rapportage valuta')
+//    ->setVisible(true)
+//    ->setAsk(false);
+//    ->setOperator(BrowseColumnOperator::BETWEEN());
+////13 - 13
+//$columns[] = (new BrowseColumn())
+//    ->setField('fin.trs.line.openbasevaluesigned')
+//    ->setLabel('Openstaand bedrag')
+//    ->setVisible(true)
+//    ->setAsk(false);
+////14 - 14
+//$columns[] = (new BrowseColumn())
+//    ->setField('fin.trs.line.invnumber')
+//    ->setLabel('Factuurnr.')
+//    ->setVisible(true)
+//    ->setAsk(true)
+//    ->setOperator(BrowseColumnOperator::EQUAL());
+////                    ->setFrom( $invoiceToBeChecked->number );
+////15 - 15
+//$columns[] = (new BrowseColumn())
+//    ->setField('fin.trs.line.datedue')
+//    ->setLabel('Vervaldatum')
+//    ->setVisible(true)
+//    ->setAsk(false);
+////16 - 16
+//$columns[] = (new BrowseColumn())
+//    ->setField('fin.trs.line.matchstatus')
+//    ->setLabel('Betaalstatus')
+//    ->setVisible(true)
+//    ->setAsk(true)
+//    ->setOperator(BrowseColumnOperator::EQUAL())
+//    ->setFrom('matched');
+////17 - 17
+//$columns[] = (new BrowseColumn())
+//    ->setField('fin.trs.line.matchnumber')
+//    ->setLabel('Betaalnr.')
+//    ->setVisible(true)
+//    ->setAsk(false)
+//    ->setOperator(BrowseColumnOperator::BETWEEN());
+////18 - 18
+//$columns[] = (new BrowseColumn())
+//    ->setField('fin.trs.line.matchdate')
+//    ->setLabel('Betaaldatum')
+//    ->setVisible(true)
+//    ->setAsk(true)
+//    ->setOperator(BrowseColumnOperator::BETWEEN());
+////                    ->setFrom('19800101')
+////                    ->setTo('20391201');
+////19 - 19
+//$columns[] = (new BrowseColumn())
+//    ->setField('fin.trs.line.openvaluesigned')
+//    ->setLabel('Openstaand bedrag transactievaluta')
+//    ->setVisible(true)
+//    ->setAsk(false);
+////20 - 20
+//$columns[] = (new BrowseColumn())
+//    ->setField('fin.trs.line.availableforpayruns')
+//    ->setLabel('Beschikbaar voor betaalrun')
+//    ->setVisible(true)
+//    ->setAsk(true);
+////21 - 21
+//$columns[] = (new BrowseColumn())
+//    ->setField('fin.trs.line.modified')
+//    ->setLabel('Wijzigingsdatum')
+//    ->setVisible(true)
+//    ->setAsk(true)
+//    ->setOperator(BrowseColumnOperator::BETWEEN());
+//
+

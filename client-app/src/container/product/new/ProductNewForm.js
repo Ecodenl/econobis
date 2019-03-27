@@ -1,16 +1,16 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import { hashHistory } from 'react-router';
 import validator from 'validator';
 
 import InputText from '../../../components/form/InputText';
 import ButtonText from '../../../components/button/ButtonText';
-import PanelBody from "../../../components/panel/PanelBody";
-import Panel from "../../../components/panel/Panel";
+import PanelBody from '../../../components/panel/PanelBody';
+import Panel from '../../../components/panel/Panel';
 import ProductDetailsAPI from '../../../api/product/ProductDetailsAPI';
-import {connect} from "react-redux";
-import InputSelect from "../../../components/form/InputSelect";
-import AdministrationsAPI from "../../../api/administration/AdministrationsAPI";
-import InputReactSelect from "../../../components/form/InputReactSelect";
+import { connect } from 'react-redux';
+import InputSelect from '../../../components/form/InputSelect';
+import AdministrationsAPI from '../../../api/administration/AdministrationsAPI';
+import InputReactSelect from '../../../components/form/InputReactSelect';
 
 class ProductNewForm extends Component {
     constructor(props) {
@@ -19,9 +19,7 @@ class ProductNewForm extends Component {
         this.state = {
             errorMessage: false,
             //beter uit systemdata, maar sommige combinaties zijn niet mogelijk
-            invoiceFrequencies:[
-                {'id':  'once', name: 'Eenmalig'},
-            ],
+            invoiceFrequencies: [{ id: 'once', name: 'Eenmalig' }],
             product: {
                 code: '',
                 name: '',
@@ -36,11 +34,12 @@ class ProductNewForm extends Component {
                 code: false,
                 name: false,
                 administrationId: false,
-            }
+                ledgerId: false,
+            },
         };
 
         this.handleReactSelectChange = this.handleReactSelectChange.bind(this);
-    };
+    }
 
     handleInputChange = event => {
         const target = event.target;
@@ -51,7 +50,7 @@ class ProductNewForm extends Component {
             ...this.state,
             product: {
                 ...this.state.product,
-                [name]: value
+                [name]: value,
             },
         });
     };
@@ -66,50 +65,49 @@ class ProductNewForm extends Component {
 
         switch (value) {
             case 'none':
-                invoiceFrequencies = [
-                    {'id':  'once', name: 'Eenmalig'},
-                ];
+                invoiceFrequencies = [{ id: 'once', name: 'Eenmalig' }];
 
                 invoiceFrequencyId = 'once';
                 break;
             case 'month':
-                invoiceFrequencies = [
-                    {'id':  'once', name: 'Eenmalig'},
-                    {'id':  'monthly', name: 'Maand'},
-                ];
+                invoiceFrequencies = [{ id: 'once', name: 'Eenmalig' }, { id: 'monthly', name: 'Maand' }];
 
-                if(invoiceFrequencyId === 'quarterly' || invoiceFrequencyId === 'yearly' || invoiceFrequencyId === 'half-year'){
+                if (
+                    invoiceFrequencyId === 'quarterly' ||
+                    invoiceFrequencyId === 'yearly' ||
+                    invoiceFrequencyId === 'half-year'
+                ) {
                     invoiceFrequencyId = 'monthly';
                 }
                 break;
             case 'quarter':
                 invoiceFrequencies = [
-                    {'id':  'once', name: 'Eenmalig'},
-                    {'id':  'monthly', name: 'Maand'},
-                    {'id':  'quarterly', name: 'Kwartaal'},
+                    { id: 'once', name: 'Eenmalig' },
+                    { id: 'monthly', name: 'Maand' },
+                    { id: 'quarterly', name: 'Kwartaal' },
                 ];
-                if(invoiceFrequencyId === 'yearly'  || invoiceFrequencyId === 'half-year'){
+                if (invoiceFrequencyId === 'yearly' || invoiceFrequencyId === 'half-year') {
                     invoiceFrequencyId = 'quarterly';
                 }
                 break;
             case 'half_year':
                 invoiceFrequencies = [
-                    {'id':  'once', name: 'Eenmalig'},
-                    {'id':  'monthly', name: 'Maand'},
-                    {'id':  'quarterly', name: 'Kwartaal'},
-                    {'id':  'half-year', name: 'Half jaar'},
+                    { id: 'once', name: 'Eenmalig' },
+                    { id: 'monthly', name: 'Maand' },
+                    { id: 'quarterly', name: 'Kwartaal' },
+                    { id: 'half-year', name: 'Half jaar' },
                 ];
-                if(invoiceFrequencyId === 'yearly'){
+                if (invoiceFrequencyId === 'yearly') {
                     invoiceFrequencyId = 'half-year';
                 }
                 break;
             default:
                 invoiceFrequencies = [
-                    {'id':  'once', name: 'Eenmalig'},
-                    {'id':  'monthly', name: 'Maand'},
-                    {'id':  'quarterly', name: 'Kwartaal'},
-                    {'id':  'half-year', name: 'Half jaar'},
-                    {'id':  'yearly', name: 'Jaar'},
+                    { id: 'once', name: 'Eenmalig' },
+                    { id: 'monthly', name: 'Maand' },
+                    { id: 'quarterly', name: 'Kwartaal' },
+                    { id: 'half-year', name: 'Half jaar' },
+                    { id: 'yearly', name: 'Jaar' },
                 ];
                 break;
         }
@@ -120,7 +118,7 @@ class ProductNewForm extends Component {
             product: {
                 ...this.state.product,
                 [name]: value,
-                invoiceFrequencyId
+                invoiceFrequencyId,
             },
         });
     };
@@ -130,15 +128,15 @@ class ProductNewForm extends Component {
             ...this.state,
             product: {
                 ...this.state.product,
-                [name]: selectedOption
+                [name]: selectedOption,
             },
         });
-    };
+    }
 
     handleSubmit = event => {
         event.preventDefault();
 
-        const {product} = this.state;
+        const { product } = this.state;
 
         // Validation
         let errors = {};
@@ -146,10 +144,12 @@ class ProductNewForm extends Component {
         let hasErrors = false;
 
         let productCodeNotUnique = false;
-        this.props.products.map((existingProduct) => ((existingProduct.code == product.code) && (productCodeNotUnique = true)));
+        this.props.products.map(
+            existingProduct => existingProduct.code == product.code && (productCodeNotUnique = true)
+        );
 
         if (productCodeNotUnique) {
-            errorMessage = "Productcode moet uniek zijn.";
+            errorMessage = 'Productcode moet uniek zijn.';
             errors.code = true;
             hasErrors = true;
         }
@@ -159,17 +159,26 @@ class ProductNewForm extends Component {
             hasErrors = true;
         }
 
+        if (this.props.usesTwinfield) {
+            if (validator.isEmpty(String(product.ledgerId))) {
+                errors.ledgerId = true;
+                hasErrors = true;
+            }
+        }
+
         let productNameNotUnique = false;
-        this.props.products.map((existingProduct) => ((existingProduct.name == product.name) && (productNameNotUnique = true)));
+        this.props.products.map(
+            existingProduct => existingProduct.name == product.name && (productNameNotUnique = true)
+        );
 
         if (productNameNotUnique) {
-            errorMessage = "Productnaam moet uniek zijn.";
+            errorMessage = 'Productnaam moet uniek zijn.';
             errors.name = true;
             hasErrors = true;
         }
 
-        if(productCodeNotUnique && productNameNotUnique){
-            errorMessage = "Productcode en productnaam moeten uniek zijn.";
+        if (productCodeNotUnique && productNameNotUnique) {
+            errorMessage = 'Productcode en productnaam moeten uniek zijn.';
         }
 
         if (validator.isEmpty(product.name + '')) {
@@ -182,23 +191,31 @@ class ProductNewForm extends Component {
             hasErrors = true;
         }
 
-        this.setState({...this.state,
-               errors: errors,
-               errorMessage: errorMessage,
-        });
+        this.setState({ ...this.state, errors: errors, errorMessage: errorMessage });
 
         // If no errors send form
-        if(!hasErrors) {
-        ProductDetailsAPI.newProduct(product).then((payload) => {
-            hashHistory.push(`/product/${payload.data.id}`);
-        }).catch(function (error) {
-            console.log(error)
-        });
-    }
+        if (!hasErrors) {
+            ProductDetailsAPI.newProduct(product)
+                .then(payload => {
+                    hashHistory.push(`/product/${payload.data.id}`);
+                })
+                .catch(function(error) {
+                    console.log(error);
+                });
+        }
     };
 
     render() {
-        const { code, name, invoiceText, durationId, invoiceFrequencyId, paymentTypeId, administrationId, ledgerId } = this.state.product;
+        const {
+            code,
+            name,
+            invoiceText,
+            durationId,
+            invoiceFrequencyId,
+            paymentTypeId,
+            administrationId,
+            ledgerId,
+        } = this.state.product;
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -207,18 +224,18 @@ class ProductNewForm extends Component {
                         <div className="row">
                             <InputText
                                 label="Productcode"
-                                name={"code"}
+                                name={'code'}
                                 value={code}
                                 onChangeAction={this.handleInputChange}
-                                required={"required"}
+                                required={'required'}
                                 error={this.state.errors.code}
                             />
                             <InputText
                                 label="Naam"
-                                name={"name"}
+                                name={'name'}
                                 value={name}
                                 onChangeAction={this.handleInputChange}
-                                required={"required"}
+                                required={'required'}
                                 error={this.state.errors.name}
                             />
                         </div>
@@ -227,11 +244,17 @@ class ProductNewForm extends Component {
                             <div className="form-group col-sm-12">
                                 <div className="row">
                                     <div className="col-sm-3">
-                                        <label htmlFor="invoiceText" className="col-sm-12">Omschrijving</label>
+                                        <label htmlFor="invoiceText" className="col-sm-12">
+                                            Omschrijving
+                                        </label>
                                     </div>
                                     <div className="col-sm-8">
-                                <textarea name='invoiceText' value={invoiceText} onChange={this.handleInputChange}
-                                          className="form-control input-sm"/>
+                                        <textarea
+                                            name="invoiceText"
+                                            value={invoiceText}
+                                            onChange={this.handleInputChange}
+                                            className="form-control input-sm"
+                                        />
                                     </div>
                                 </div>
                             </div>
@@ -239,18 +262,18 @@ class ProductNewForm extends Component {
 
                         <div className="row">
                             <InputSelect
-                                label={"Looptijd"}
+                                label={'Looptijd'}
                                 id="durationId"
-                                name={"durationId"}
+                                name={'durationId'}
                                 options={this.props.productDurations}
                                 value={durationId}
                                 onChangeAction={this.handleInputChangeDuration}
                                 emptyOption={false}
                             />
                             <InputSelect
-                                label={"Prijs per"}
+                                label={'Prijs per'}
                                 id="invoiceFrequencyId"
-                                name={"invoiceFrequencyId"}
+                                name={'invoiceFrequencyId'}
                                 options={this.state.invoiceFrequencies}
                                 value={invoiceFrequencyId}
                                 onChangeAction={this.handleInputChange}
@@ -260,63 +283,70 @@ class ProductNewForm extends Component {
 
                         <div className="row">
                             <InputSelect
-                                label={"Betaalwijze"}
+                                label={'Betaalwijze'}
                                 id="paymentTypeId"
-                                name={"paymentTypeId"}
+                                name={'paymentTypeId'}
                                 options={this.props.productPaymentTypes}
                                 value={paymentTypeId}
                                 onChangeAction={this.handleInputChange}
                             />
                             <InputSelect
-                                label={"Administratie"}
+                                label={'Administratie'}
                                 id="administrationId"
-                                name={"administrationId"}
+                                name={'administrationId'}
                                 options={this.props.administrations}
                                 value={administrationId}
                                 onChangeAction={this.handleInputChange}
-                                required={"required"}
+                                required={'required'}
                                 error={this.state.errors.administrationId}
                             />
                         </div>
 
-                        <div className={"row"}>
+                        <div className={'row'}>
                             <InputReactSelect
-                                label={"Grootboek"}
-                                name={"ledgerId"}
+                                label={'Grootboek'}
+                                name={'ledgerId'}
                                 options={this.props.ledgers}
                                 optionName={'description'}
                                 value={ledgerId}
                                 onChangeAction={this.handleReactSelectChange}
                                 multi={false}
+                                required={this.props.usesTwinfield ? 'required' : ''}
+                                error={this.state.errors.ledgerId}
                             />
                         </div>
 
-                        {this.state.errorMessage &&
-                        <div className="col-sm-10 col-md-offset-1 alert alert-danger">
-                            {this.state.errorMessage}
-                        </div>
-                        }
+                        {this.state.errorMessage && (
+                            <div className="col-sm-10 col-md-offset-1 alert alert-danger">
+                                {this.state.errorMessage}
+                            </div>
+                        )}
                     </PanelBody>
 
                     <PanelBody>
                         <div className="pull-right btn-group" role="group">
-                            <ButtonText buttonText={"Opslaan"} onClickAction={this.handleSubmit} type={"submit"} value={"Submit"}/>
+                            <ButtonText
+                                buttonText={'Opslaan'}
+                                onClickAction={this.handleSubmit}
+                                type={'submit'}
+                                value={'Submit'}
+                            />
                         </div>
                     </PanelBody>
-
                 </Panel>
             </form>
         );
-    };
-};
+    }
+}
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         productDurations: state.systemData.productDurations,
         productPaymentTypes: state.systemData.productPaymentTypes,
         administrations: state.meDetails.administrations,
         products: state.systemData.products,
         ledgers: state.systemData.ledgers,
+        usesTwinfield: state.systemData.usesTwinfield,
     };
 };
 

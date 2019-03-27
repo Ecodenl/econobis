@@ -102,8 +102,16 @@ class InvoiceHelper
 
     public static function saveInvoiceStatus(Invoice $invoice)
     {
-        if ($invoice->amount_open == 0) {
-            $invoice->status_id = 'paid';
+        if($invoice->status_id === 'paid'){
+            if($invoice->twinfield_number){
+                $invoice->status_id = 'exported';
+            }else{
+                $invoice->status_id = 'sent';
+            }
+        }else{
+            if ($invoice->amount_open == 0) {
+                $invoice->status_id = 'paid';
+            }
         }
 
         $invoice->save();

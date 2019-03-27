@@ -354,7 +354,7 @@
                 (datum nog niet bekend) @endif van uw rekening afgeschreven.<br/>
             @if($invoice->order->IBAN) Uw bankgegevens IBAN: {{ $invoice->order->IBAN }}<br/>
             @elseif($invoice->order->contact->iban) Uw bankgegevens IBAN: {{ $invoice->order->contact->iban }}<br/> @endif
-                Incasso Mandaat ID (SEPA): {{ $invoice->order->number }}<br/>
+                Incasso Mandaat ID (SEPA): {{ $invoice->order->contact->collect_mandate_code }}<br/>
         </div>
     @elseif($invoice->payment_type_id == 'transfer' && $invoice->total_price_incl_vat_and_reduction < 0)
         <br/><br/>

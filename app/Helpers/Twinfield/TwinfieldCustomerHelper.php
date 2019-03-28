@@ -72,9 +72,26 @@ class TwinfieldCustomerHelper
             {
                 $this->fillCustomerDimension($contact, $customer);
 
-                if($contact->primaryAddress) {
-                    $this->fillCustomerAddress($contact->primaryAddress, $customer);
+                $idTeller = 1;
+                if( Address::where('contact_id', $contact->id)->where('type_id', 'visit')->exists() )
+                {
+                    $visitAddress   = Address::where('contact_id', $contact->id)->where('type_id', 'visit')->first();
+                    $this->fillCustomerAddress($visitAddress, $customer, $idTeller,'contact');
+                    $idTeller++;
                 }
+                if( Address::where('contact_id', $contact->id)->where('type_id', 'invoice')->exists() )
+                {
+                    $invoiceAddress = Address::where('contact_id', $contact->id)->where('type_id', 'invoice')->first();
+                    $this->fillCustomerAddress($invoiceAddress, $customer, $idTeller, 'invoice');
+                    $idTeller++;
+                }
+                if( Address::where('contact_id', $contact->id)->where('type_id', 'postal')->exists() )
+                {
+                    $postAddress    = Address::where('contact_id', $contact->id)->where('type_id', 'postal')->first();
+                    $this->fillCustomerAddress($postAddress, $customer, $idTeller, 'postal');
+                    $idTeller++;
+                }
+
                 if($contact->is_collect_mandate) {
                     $this->fillCustomerFinancials($contact, $customer);
                 }
@@ -129,8 +146,24 @@ class TwinfieldCustomerHelper
 
         $this->fillCustomerDimension($contact, $customer);
 
-        if($contact->primaryAddress) {
-            $this->fillCustomerAddress($contact->primaryAddress, $customer);
+        $idTeller = 1;
+        if( Address::where('contact_id', $contact->id)->where('type_id', 'visit')->exists() )
+        {
+            $visitAddress   = Address::where('contact_id', $contact->id)->where('type_id', 'visit')->first();
+            $this->fillCustomerAddress($visitAddress, $customer, $idTeller,'contact');
+            $idTeller++;
+        }
+        if( Address::where('contact_id', $contact->id)->where('type_id', 'invoice')->exists() )
+        {
+            $invoiceAddress = Address::where('contact_id', $contact->id)->where('type_id', 'invoice')->first();
+            $this->fillCustomerAddress($invoiceAddress, $customer, $idTeller, 'invoice');
+            $idTeller++;
+        }
+        if( Address::where('contact_id', $contact->id)->where('type_id', 'postal')->exists() )
+        {
+            $postAddress    = Address::where('contact_id', $contact->id)->where('type_id', 'postal')->first();
+            $this->fillCustomerAddress($postAddress, $customer, $idTeller, 'postal');
+            $idTeller++;
         }
 
         if($contact->is_collect_mandate) {
@@ -170,14 +203,14 @@ class TwinfieldCustomerHelper
             ->setOffice($this->office);
     }
 
-    public function fillCustomerAddress(Address $address, Customer $customer){
+    public function fillCustomerAddress(Address $address, Customer $customer, $idTeller, $type){
 
         $customer_address = new CustomerAddress();
 
         $customer_address
-            ->setID(1)
-            ->setType('invoice')
-            ->setDefault(true)
+            ->setID($idTeller)
+            ->setType($type)
+            ->setDefault($address->primary)
             ->setPostcode($address->postal_code)
             ->setField2($address->present()->streetAndNumber())
             ->setCity($address->city)

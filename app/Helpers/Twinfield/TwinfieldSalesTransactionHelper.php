@@ -57,7 +57,8 @@ class TwinfieldSalesTransactionHelper
         set_time_limit(0);
         $messages = [];
 
-        foreach ($this->administration->invoices()->where('status_id', 'sent')->get() as $invoice){
+        // todo ingangsdatum voor welke facturen naar twinfield moeten, hier wellicht per een administratieveld nog van maken?
+        foreach ($this->administration->invoices()->where('status_id', 'sent')->where('date_sent', '>', '20190301')->get() as $invoice){
             $response = $this->createSalesTransation($invoice);
 
             if($response === true){

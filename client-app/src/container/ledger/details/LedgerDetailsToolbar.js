@@ -11,7 +11,7 @@ const VatCodeDetailsToolbar = ({ description }) => (
             </div>
         </div>
         <div className="col-md-4">
-            <h4 className="text-center">BTW code: {description}</h4>
+            <h4 className="text-center">Grootboekrekening: {description}</h4>
         </div>
         <div className="col-md-4" />
     </div>

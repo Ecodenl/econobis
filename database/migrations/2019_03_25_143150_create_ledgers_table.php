@@ -24,9 +24,6 @@ class CreateLedgersTable extends Migration
             $table->dropForeign('products_administration_ledger_twinfield_id_foreign');
             $table->dropColumn('administration_ledger_twinfield_id');
             $table->unsignedInteger('ledger_id')->nullable();
-            $table->foreign('ledger_id')
-                ->references('id')->on('ledgers')
-                ->onDelete('restrict');
         });
 
         Schema::dropIfExists('administration_ledger_twinfield');
@@ -41,6 +38,13 @@ class CreateLedgersTable extends Migration
             $table->string('twinfield_ledger_code')->nullable(false)->default('');
             $table->timestamps();
         });
+
+        Schema::table('products', function (Blueprint $table) {
+            $table->foreign('ledger_id')
+                ->references('id')->on('ledgers')
+                ->onDelete('restrict');
+        });
+
     }
 
     /**

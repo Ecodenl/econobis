@@ -35,12 +35,12 @@ class AddedDefaultLedgers extends Migration
                 'twinfield_ledger_code' => '8020',
             ],
             [
-                'description' => 'Omzet hoog buiten de EU',
+                'description' => 'Omzet buiten de EU',
                 'vat_code_id' => $vatCodeGeen,
                 'twinfield_ledger_code' => '8022',
             ],
             [
-                'description' => 'Omzet hoog binnen de EU',
+                'description' => 'Omzet binnen de EU',
                 'vat_code_id' => $vatCodeGeen,
                 'twinfield_ledger_code' => '8024',
             ],

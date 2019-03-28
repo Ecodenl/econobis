@@ -33,39 +33,14 @@ class InvoiceProduct extends Model
 
     public function getPriceInclVatAndReductionAttribute()
     {
-        $price = $this->price;
-
-        if ($price === null) {
-            $price = 0;
-        }
+        $price = $this->getPriceExVatInclReductionAttribute();
 
         $vat_percentage = $this->vat_percentage;
-
         if($vat_percentage) {
-            $price = ($price + ($price
-                    * ($vat_percentage / 100)));
-        }
-
-        $price = ($this->amount
-            * $price);
-
-        if ($this->percentage_reduction) {
-            if($price < 0){
-                $price = ($price * ((100 + $this->percentage_reduction)
-                        / 100));
-            }
-            else {
-                $price = ($price * ((100 - $this->percentage_reduction)
-                        / 100));
-            }
-        }
-
-        if ($this->amount_reduction) {
-            $price -= $this->amount_reduction;
+            $price = ($price + ($price * ($vat_percentage / 100)));
         }
 
         return $price;
-
     }
 
     public function getPriceExVatInclReductionAttribute()
@@ -103,32 +78,9 @@ class InvoiceProduct extends Model
         if($this->vat_percentage == 0 || $this->vat_percentage == null){
             return 0;
         }
-        $price = $this->price;
-
-        if ($price === null) {
-            $price = 0;
-        }
-
-        $price = ($this->amount
-            * $price);
-
-        if ($this->percentage_reduction) {
-            if($price < 0){
-                $price = ($price * ((100 + $this->percentage_reduction)
-                        / 100));
-            }
-            else {
-                $price = ($price * ((100 - $this->percentage_reduction)
-                        / 100));
-            }
-        }
-
-        if ($this->amount_reduction) {
-            $price -= $this->amount_reduction;
-        }
+        $price = $this->getPriceExVatInclReductionAttribute();
 
         return ($price * ($this->vat_percentage / 100));
-
     }
 
     public function getPriceIncVatAttribute()

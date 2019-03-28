@@ -44,7 +44,7 @@ class ProductController extends ApiController
             'priceHistory',
             'createdBy',
             'administration',
-            'ledger',
+            'ledger.vatCode',
         ]);
 
         return FullProduct::make($product);

@@ -61,6 +61,7 @@ use App\Eco\Team\Team;
 use App\Eco\User\User;
 use App\Eco\VatCode\VatCode;
 use App\Http\Resources\GenericResource;
+use App\Http\Resources\Ledger\FullLedger;
 use App\Http\Resources\Measure\MeasurePeek;
 use App\Http\Resources\OrganisationType\FullOrganisationType;
 use App\Eco\Title\Title;
@@ -151,7 +152,7 @@ class SystemData extends Resource
             'intakeSources' => IntakeSource::select(['id', 'name'])->get(),
             'intakeStatuses' => IntakeStatus::select(['id', 'name'])->get(),
             'lastNamePrefixes' => FullLastNamePrefix::collection(LastNamePrefix::all()),
-            'ledgers' => Ledger::select(['id', 'description'])->get(),
+            'ledgers' => FullLedger::collection(Ledger::all()),
             'mailboxesInvalid' => Mailbox::where('is_active', 1)->where('valid', 0)->count(),
             'mailboxIgnoreTypes' => FullEnumWithIdAndName::collection(MailboxIgnoreType::collection()),
             'mailgunDomain' => MailgunDomain::select(['id', 'domain'])->get(),
@@ -187,7 +188,7 @@ class SystemData extends Resource
             'titles' => FullTitle::collection(Title::all()),
             'users' => $users,
             'usesTwinfield' => Administration::whereUsesTwinfield(1)->count() > 0 ? true : false,
-            'vatCodes' => VatCode::select(['id', 'description'])->get(),
+            'vatCodes' => VatCode::select(['id', 'description', 'percentage'])->get(),
             'versionNumber' => 'Versie: ' . config('app.version_major') . '.' . config('app.version_minor') . '.' . config('app.version_fix'),
         ];
     }

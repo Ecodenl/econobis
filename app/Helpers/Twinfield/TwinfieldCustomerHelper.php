@@ -70,35 +70,7 @@ class TwinfieldCustomerHelper
             $customer = $this->getTwinfieldCustomerByCode($twinfieldCustomerNumber->twinfield_number);
             if($customer)
             {
-                $this->fillCustomerDimension($contact, $customer);
-
-                $idTeller = 1;
-                if( Address::where('contact_id', $contact->id)->where('type_id', 'visit')->exists() )
-                {
-                    $visitAddress   = Address::where('contact_id', $contact->id)->where('type_id', 'visit')->first();
-                    $this->fillCustomerAddress($visitAddress, $customer, $idTeller,'contact');
-                    $idTeller++;
-                }
-                if( Address::where('contact_id', $contact->id)->where('type_id', 'invoice')->exists() )
-                {
-                    $invoiceAddress = Address::where('contact_id', $contact->id)->where('type_id', 'invoice')->first();
-                    $this->fillCustomerAddress($invoiceAddress, $customer, $idTeller, 'invoice');
-                    $idTeller++;
-                }
-                if( Address::where('contact_id', $contact->id)->where('type_id', 'postal')->exists() )
-                {
-                    $postAddress    = Address::where('contact_id', $contact->id)->where('type_id', 'postal')->first();
-                    $this->fillCustomerAddress($postAddress, $customer, $idTeller, 'postal');
-                    $idTeller++;
-                }
-
-                if($contact->is_collect_mandate) {
-                    $this->fillCustomerFinancials($contact, $customer);
-                }
-
-                if($contact->iban) {
-                    $this->fillCustomerBank($contact, $customer);
-                }
+                $this->fillCustomer($contact, $customer);
 
                 try {
                     // Synchroniseren contact naar Twinfield customer
@@ -144,39 +116,10 @@ class TwinfieldCustomerHelper
             }
         }
 
-        $this->fillCustomerDimension($contact, $customer);
-
-        $idTeller = 1;
-        if( Address::where('contact_id', $contact->id)->where('type_id', 'visit')->exists() )
-        {
-            $visitAddress   = Address::where('contact_id', $contact->id)->where('type_id', 'visit')->first();
-            $this->fillCustomerAddress($visitAddress, $customer, $idTeller,'contact');
-            $idTeller++;
-        }
-        if( Address::where('contact_id', $contact->id)->where('type_id', 'invoice')->exists() )
-        {
-            $invoiceAddress = Address::where('contact_id', $contact->id)->where('type_id', 'invoice')->first();
-            $this->fillCustomerAddress($invoiceAddress, $customer, $idTeller, 'invoice');
-            $idTeller++;
-        }
-        if( Address::where('contact_id', $contact->id)->where('type_id', 'postal')->exists() )
-        {
-            $postAddress    = Address::where('contact_id', $contact->id)->where('type_id', 'postal')->first();
-            $this->fillCustomerAddress($postAddress, $customer, $idTeller, 'postal');
-            $idTeller++;
-        }
-
-        if($contact->is_collect_mandate) {
-            $this->fillCustomerFinancials($contact, $customer);
-        }
-
-        if($contact->iban) {
-            $this->fillCustomerBank($contact, $customer);
-        }
+        $this->fillCustomer($contact, $customer);
 
         try {
             // Synchroniseren contact naar Twinfield customer
-//            if($response->assertSuccessful())
             $response = $this->customerApiConnector->send($customer);
             // Bij nieuwe koppeling, ook nieuw TwinfieldCustomerNumber aanmaken (twinfield nummer per contact/administratie
             if(!$twinfieldCustomerNumber)
@@ -297,5 +240,45 @@ class TwinfieldCustomerHelper
 //        dd($response); die();
 
         return $response->data->TotalRows>0;
+    }
+
+    /**
+     * @param Contact  $contact
+     * @param Customer $customer
+     */
+    private function fillCustomer(Contact $contact, Customer $customer)
+    {
+        $this->fillCustomerDimension($contact, $customer);
+
+        $idTeller = 1;
+        if (Address::where('contact_id', $contact->id)->where('type_id', 'visit')->exists()) {
+            $visitAddresses = Address::where('contact_id', $contact->id)->where('type_id', 'visit')->get();
+            foreach ($visitAddresses as $visitAddress) {
+                $this->fillCustomerAddress($visitAddress, $customer, $idTeller, 'contact');
+                $idTeller++;
+            }
+        }
+        if (Address::where('contact_id', $contact->id)->where('type_id', 'invoice')->exists()) {
+            $invoiceAddresses = Address::where('contact_id', $contact->id)->where('type_id', 'invoice')->get();
+            foreach ($invoiceAddresses as $invoiceAddress) {
+                $this->fillCustomerAddress($invoiceAddress, $customer, $idTeller, 'invoice');
+                $idTeller++;
+            }
+        }
+        if (Address::where('contact_id', $contact->id)->where('type_id', 'postal')->exists()) {
+            $postAddresses = Address::where('contact_id', $contact->id)->where('type_id', 'postal')->get();
+            foreach ($postAddresses as $postAddress) {
+                $this->fillCustomerAddress($postAddress, $customer, $idTeller, 'postal');
+                $idTeller++;
+            }
+        }
+
+        if ($contact->is_collect_mandate) {
+            $this->fillCustomerFinancials($contact, $customer);
+        }
+
+        if ($contact->iban) {
+            $this->fillCustomerBank($contact, $customer);
+        }
     }
 }

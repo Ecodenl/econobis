@@ -99,34 +99,48 @@ class TwinfieldInvoiceHelper
 
                     foreach($twinfieldInvoiceTransactions->getRows() as $row){
 
-                        // [1] - Dagboek (VRK)
+                        // [1] - Dagboek (alle)
                         // [3] - Factuurbedrag
                         // [4] - Openstaand bedrag
                         // [5] - Betaaldatum
+                        // [6] - Twinfieldnumber
 
                         $dagBoek     = ($row->getCells()[1]->getValue());
                         $amountInvoice = $row->getCells()[3]->getValue();
                         $amountOpen = $row->getCells()[4]->getValue();
                         $dateInput = $row->getCells()[5]->getValue(); //datetime
                         $dateInput = date_format($dateInput, 'Y-m-d');
+                        $twinfieldNumber = ($row->getCells()[6]->getValue());
 
                         //VRK is de verkoop factuur, die slaan we nu over
                         if($dagBoek !== 'VRK')
                         {
                             //-100 op debiteur is dus 100 betaald
                             $amount = ($amountInvoice-$amountOpen) * -1;
-
-                            if(!InvoicePayment::where('invoice_id', $invoiceToBeChecked->id)->where('amount', $amount)->where('date_paid', $dateInput)->exists()){
+                            $invoicePaymentCheck = InvoicePayment::where('invoice_id', $invoiceToBeChecked->id)->where('twinfield_number', $twinfieldNumber);
+                            // InvoicePayment bestaat nog niet, dan nieuw aanmaken
+                            if(!$invoicePaymentCheck->exists())
+                            {
                                 $invoicePayment = new InvoicePayment();
                                 $invoicePayment->invoice_id = $invoiceToBeChecked->id;
+                                $invoicePayment->twinfield_number = $twinfieldNumber;
                                 $invoicePayment->amount = $amount;
                                 $invoicePayment->type_id = $dagBoek;
                                 $invoicePayment->date_paid = $dateInput;
-
                                 $invoicePayment->save();
-
                                 Log::info('Betaling van ' . $amount . ' toegevoegd via twinfield voor factuur ' . $invoiceToBeChecked->number);
                                 array_push($messages, 'Betaling van €' . $amount . ' toegevoegd via Twinfield voor factuur ' . $invoiceToBeChecked->number . '.');
+                            // anders bijwerken
+                            }else{
+                                $invoicePayment = $invoicePaymentCheck->first();
+                                if($invoicePayment->amount <> $amount || $invoicePayment->date_paid <> $dateInput )
+                                {
+                                    $data = ['amount'=>$amount, 'date_paid'=>$dateInput];
+                                    $invoicePayment->fill($data);
+                                    $invoicePayment->save();
+                                    Log::info('Betaling van ' . $amount . ' aangepast via twinfield voor factuur ' . $invoiceToBeChecked->number);
+                                    array_push($messages, 'Betaling van €' . $amount . ' aangepast via Twinfield voor factuur ' . $invoiceToBeChecked->number . '.');
+                                }
                             }
                         }
                     };
@@ -175,16 +189,16 @@ class TwinfieldInvoiceHelper
         $columns[] = (new BrowseColumn())
             ->setField('fin.trs.line.matchstatus')
             ->setLabel('Betaalstatus')
-            ->setVisible(true)
-            ->setAsk(true);
-//            ->setOperator(BrowseColumnOperator::EQUAL());
+            ->setVisible(true);
+//            ->setAsk(true)
+//            ->setOperator(BrowseColumnOperator::EQUAL())
+//            ->setFrom( "matched" );
         // [4] - Matchnumber
         $columns[] = (new BrowseColumn())
             ->setField('fin.trs.line.matchnumber')
             ->setLabel('Betaalnr.')
             ->setVisible(true)
             ->setAsk(false);
-//            ->setOperator(BrowseColumnOperator::BETWEEN());
 
         return $columns;
 
@@ -209,7 +223,6 @@ class TwinfieldInvoiceHelper
             ->setVisible(true)
             ->setAsk(true)
             ->setOperator(BrowseColumnOperator::EQUAL());
-//            ->setFrom("VRK");
         // [2] - Factuurnr.
         $columns[] = (new BrowseColumn())
             ->setField('fin.trs.line.invnumber')
@@ -237,9 +250,15 @@ class TwinfieldInvoiceHelper
             ->setLabel('Betaaldatum')
             ->setVisible(true)
             ->setAsk(true)
-            ->setOperator(BrowseColumnOperator::BETWEEN());
-        //                    ->setFrom('19800101')
-        //                    ->setTo('20391201');
+            ->setOperator(BrowseColumnOperator::BETWEEN())
+            ->setFrom('19800101')
+            ->setTo('20391201');
+        // [6] - Twinfield nr.
+        $columns[] = (new BrowseColumn())
+            ->setField('fin.trs.head.number')
+            ->setLabel('Boekst.nr.')
+            ->setVisible(true)
+            ->setAsk(true);
 
         return $columns;
 

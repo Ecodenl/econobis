@@ -86,6 +86,7 @@ class TwinfieldSalesTransactionHelper
         if(!$twinfieldCustomer)
         {
             $twinfieldCustomer = $twinfieldCustomerHelper->createCustomer($invoice->order->contact);
+            $twinfieldCustomerHelper->updateCustomer($invoice->order->contact);
         }
 
         //Invoice datum

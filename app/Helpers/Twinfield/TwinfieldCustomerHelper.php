@@ -14,6 +14,7 @@ use App\Eco\Contact\Contact;
 use App\Eco\Twinfield\TwinfieldCustomerNumber;
 use ErrorException;
 use Illuminate\Support\Facades\Log;
+use phpDocumentor\Reflection\Types\Boolean;
 use PhpTwinfield\ApiConnectors\CustomerApiConnector;
 use PhpTwinfield\Customer;
 use PhpTwinfield\CustomerAddress;
@@ -61,31 +62,6 @@ class TwinfieldCustomerHelper
         }
     }
 
-    public function updateCustomer(Contact $contact){
-
-        // Check of contact / administratie al koppeling heeft met Twinfield
-        $twinfieldCustomerNumber = $contact->twinfieldNumbers()->where('administration_id', $this->administration->id)->first();
-        if($twinfieldCustomerNumber)
-        {
-            $customer = $this->getTwinfieldCustomerByCode($twinfieldCustomerNumber->twinfield_number);
-            if($customer)
-            {
-                $this->fillCustomer($contact, $customer);
-
-                try {
-                    // Synchroniseren contact naar Twinfield customer
-                    $response = $this->customerApiConnector->send($customer);
-                    return $response;
-
-                } catch (PhpTwinfieldException $e) {
-                    Log::error('Error: ' . $e->getMessage());
-                    return 'Error: ' . $e->getMessage();
-                }
-            }
-        }
-
-    }
-
     public function createCustomer(Contact $contact){
 // Check of Customer al bestaat in Twinfield. We doen hier nog niets mee.
 //        if( $this->checkIfCustomerNameExists($contact) )
@@ -118,6 +94,13 @@ class TwinfieldCustomerHelper
 
         $this->fillCustomer($contact, $customer);
 
+        if ($contact->iban) {
+            $this->fillCustomerBank($contact, $customer, null);
+        }
+        if ($contact->is_collect_mandate) {
+            $this->fillCustomerFinancials($contact, $customer);
+        }
+
         try {
             // Synchroniseren contact naar Twinfield customer
             $response = $this->customerApiConnector->send($customer);
@@ -137,6 +120,37 @@ class TwinfieldCustomerHelper
             Log::error('Error: ' . $e->getMessage());
             return 'Error: ' . $e->getMessage();
         }
+    }
+
+    public function updateCustomer(Contact $contact){
+
+        // Check of contact / administratie al koppeling heeft met Twinfield
+        $twinfieldCustomerNumber = $contact->twinfieldNumbers()->where('administration_id', $this->administration->id)->first();
+        if($twinfieldCustomerNumber)
+        {
+            $customer = $this->getTwinfieldCustomerByCode($twinfieldCustomerNumber->twinfield_number);
+            if($customer)
+            {
+                $this->fillCustomer($contact, $customer);
+                if ($contact->iban) {
+                    $this->fillCustomerBank($contact, $customer, 1);
+                }
+                if ($contact->is_collect_mandate) {
+                    $this->fillCustomerFinancials($contact, $customer);
+                }
+
+                try {
+                    // Synchroniseren contact naar Twinfield customer
+                    $response = $this->customerApiConnector->send($customer);
+                    return $response;
+
+                } catch (PhpTwinfieldException $e) {
+                    Log::error('Error: ' . $e->getMessage());
+                    return 'Error: ' . $e->getMessage();
+                }
+            }
+        }
+
     }
 
     public function fillCustomerDimension(Contact $contact, Customer $customer){
@@ -178,12 +192,16 @@ class TwinfieldCustomerHelper
             ->setCollectMandate($customer_collect_mandate);
     }
 
-    public function fillCustomerBank(Contact $contact, Customer $customer){
+    public function fillCustomerBank(Contact $contact, Customer $customer, $bankId){
 
         $customer_bank = new CustomerBank();
 
+        if($bankId)
+        {
+            $customer_bank
+                ->setID($bankId);
+        }
         $customer_bank
-            ->setId(1)
             ->setDefault(true)
             ->setIban($contact->iban)
             ->setAscription($contact->iban_attn ? $contact->iban_attn : $contact->full_name);
@@ -271,14 +289,6 @@ class TwinfieldCustomerHelper
                 $this->fillCustomerAddress($postAddress, $customer, $idTeller, 'postal');
                 $idTeller++;
             }
-        }
-
-        if ($contact->is_collect_mandate) {
-            $this->fillCustomerFinancials($contact, $customer);
-        }
-
-        if ($contact->iban) {
-            $this->fillCustomerBank($contact, $customer);
         }
     }
 }

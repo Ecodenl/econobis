@@ -46,11 +46,6 @@ class TwinfieldSalesTransactionHelper
         $this->dagboekCode = config('services.twinfield.verkoop_dagboek_code');
         $this->currency = new Currency( config('services.twinfield.verkoop_default_currency') );
         $this->grootboekDebiteuren = config('services.twinfield.verkoop_grootboek_debiteuren');
-        $this->grootboekOmzetGeen = config('services.twinfield.verkoop_grootboek_omzet_geen');
-        $this->grootboekOmzetLaag = config('services.twinfield.verkoop_grootboek_omzet_laag');
-        $this->grootboekOmzetHoog = config('services.twinfield.verkoop_grootboek_omzet_hoog');
-        $this->grootboekBtwLaag = config('services.twinfield.verkoop_grootboek_btw_laag');
-        $this->grootboekBtwHoog = config('services.twinfield.verkoop_grootboek_btw_hoog');
     }
 
     public function createAllSalesTransactions(){

@@ -41,10 +41,5 @@ return [
         'verkoop_dagboek_code'         => 'VRK',
         'verkoop_default_currency'     => 'EUR',
         'verkoop_grootboek_debiteuren' => '1300',
-        'verkoop_grootboek_omzet_geen' => '8000',
-        'verkoop_grootboek_omzet_laag' => '8010',
-        'verkoop_grootboek_omzet_hoog' => '8020',
-        'verkoop_grootboek_btw_laag'   => '1520',
-        'verkoop_grootboek_btw_hoog'   => '1530',
     ],
 ];

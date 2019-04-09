@@ -15,6 +15,7 @@ import InputReactSelect from '../../../../components/form/InputReactSelect';
 import axios from 'axios';
 import MailboxAPI from '../../../../api/mailbox/MailboxAPI';
 import InputToggle from '../../../../components/form/InputToggle';
+import ViewText from '../../../../components/form/ViewText';
 
 class AdministrationDetailsFormGeneralEdit extends Component {
     constructor(props) {
@@ -90,7 +91,6 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                 twinfieldPassword: twinfieldPassword ? twinfieldPassword : '',
                 twinfieldOrganizationCode: twinfieldOrganizationCode ? twinfieldOrganizationCode : '',
                 twinfieldOfficeCode: twinfieldOfficeCode ? twinfieldOfficeCode : '',
-                attachment: '',
                 usesVat: usesVat,
             },
             errors: {
@@ -294,7 +294,6 @@ class AdministrationDetailsFormGeneralEdit extends Component {
             data.append('twinfieldPassword', administration.twinfieldPassword);
             data.append('twinfieldOrganizationCode', administration.twinfieldOrganizationCode);
             data.append('twinfieldOfficeCode', administration.twinfieldOfficeCode);
-            data.append('usesVat', administration.usesVat);
 
             this.props.updateAdministration(data, administration.id, this.props.switchToView);
         }
@@ -516,12 +515,7 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                                 isLoading={this.state.peekLoading.emailTemplates}
                                 multi={false}
                             />
-                            <InputToggle
-                                label={'Gebruikt BTW'}
-                                name={'usesVat'}
-                                value={usesVat}
-                                onChangeAction={this.handleInputChange}
-                            />
+                            <ViewText label={'Gebruikt BTW'} value={usesVat ? 'Ja' : 'Nee'} className={'col-sm-6 form-group'}/>
                         </div>
 
                         <div className="row">

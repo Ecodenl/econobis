@@ -144,27 +144,39 @@ class TwinfieldSalesTransactionHelper
         //Salestransaction - Detail lines maken (omzet regels)
         $vatData = new Collection();
         foreach($invoice->invoiceProducts as $invoiceProduct){
-            $vatCodeTwinfield   = $invoiceProduct->product->ledger->vatCode->twinfield_code;
-            $vatLedgerCodeTwinfield   = $invoiceProduct->product->ledger->vatCode->twinfield_ledger_code;
+            $vatCode   = $invoiceProduct->product->ledger->vatCode;
+            $vatCodeTwinfield   = "";
+            if($vatCode && $vatCode->id>0)
+            {
+                $vatCodeTwinfield   = $vatCode->twinfield_code;
+                $vatLedgerCodeTwinfield   = $vatCode->twinfield_ledger_code;
+            }
             $ledgerCode = $invoiceProduct->twinfield_ledger_code ? $invoiceProduct->twinfield_ledger_code :  "";
 
-            $vatAmount = $invoiceProduct->getAmountVatAttribute();
-
-            $vatAmountOld  = key_exists( $vatCodeTwinfield, $vatData) ? $vatData[$vatCodeTwinfield]->get('vatAmount') : 0;
-            $vatData[$vatCodeTwinfield] = ['vatLedgerCode' => $vatLedgerCodeTwinfield, 'vatAmount' => $vatAmountOld + $vatAmount];
+            if($vatCode && $vatCode->id>0)
+            {
+                $vatAmount = $invoiceProduct->getAmountVatAttribute();
+                $vatAmountOld  = key_exists( $vatCodeTwinfield, $vatData) ? $vatData[$vatCodeTwinfield]->get('vatAmount') : 0;
+                $vatData[$vatCodeTwinfield] = ['vatLedgerCode' => $vatLedgerCodeTwinfield, 'vatAmount' => $vatAmountOld + $vatAmount];
+            }
 
             $exclAmount = $invoiceProduct->getPriceExVatInclReductionAttribute();
             $invoiceDetailExcl = new Money($exclAmount*100, $this->currency );
-            $twinfieldTransactionLineVat = new SalesTransactionLine();
+            $twinfieldTransactionLineDetail = new SalesTransactionLine();
             $idTeller++;
-            $twinfieldTransactionLineVat
+            $twinfieldTransactionLineDetail
                 ->setId($idTeller)
                 ->setLineType(LineType::DETAIL())
                 ->setDim1($ledgerCode)
-                ->setVatCode($vatCodeTwinfield)
                 ->setValue($invoiceDetailExcl)
                 ->setDebitCredit(DebitCredit::CREDIT() );
-            $twinfieldSalesTransaction->addLine($twinfieldTransactionLineVat);
+            if($vatCode && $vatCode->id>0)
+            {
+                $twinfieldTransactionLineDetail
+                    ->setVatCode($vatCodeTwinfield);
+            }
+
+            $twinfieldSalesTransaction->addLine($twinfieldTransactionLineDetail);
         }
 
 
@@ -182,7 +194,6 @@ class TwinfieldSalesTransactionHelper
                 ->setDebitCredit(DebitCredit::CREDIT() );
             $twinfieldSalesTransaction->addLine($twinfieldTransactionLineVat);
         }
-
         //Salestransaction - versturen naar Twinfield
         try {
             $response = $this->transactionApiConnector->send($twinfieldSalesTransaction);

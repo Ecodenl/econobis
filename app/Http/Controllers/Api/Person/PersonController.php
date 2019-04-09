@@ -301,10 +301,16 @@ class PersonController extends ApiController
             foreach (Administration::where('twinfield_is_valid', 1)->where('uses_twinfield', 1)->get() as $administration) {
 
                 $twinfieldCustomerHelper = new TwinfieldCustomerHelper($administration, null);
-                $messagesIn = $twinfieldCustomerHelper->updateCustomer($contact);
-                array_push($messages, $messagesIn);
+                $errorMessages = $twinfieldCustomerHelper->updateCustomer($contact);
+                if($errorMessages)
+                {
+                    array_push($messages, $errorMessages);
+                }
             }
-            abort(412, implode(';', $messages));
+            if( !empty($messages) )
+            {
+                abort(412, implode(';', $messages));
+            }
         }
         // Contact exact zo teruggeven als bij het openen van een bestaand contact
         // Dus kan hier gebruik maken van bestaande controller

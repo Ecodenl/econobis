@@ -144,7 +144,7 @@ class TwinfieldCustomerHelper
                         // Synchroniseren contact naar Twinfield customer
                         $response = $this->customerApiConnector->send($customer);
                         array_push($messages, 'Contact ' . $contact->number . ' ' .  $contact->full_name . ' succesvol gesynchroniseerd.');
-                    return implode(';', $messages);
+                    return null;
 
                 } catch (PhpTwinfieldException $e) {
                     Log::error('Error: ' . $e->getMessage());

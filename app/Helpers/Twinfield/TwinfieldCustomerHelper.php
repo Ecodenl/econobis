@@ -124,6 +124,7 @@ class TwinfieldCustomerHelper
 
     public function updateCustomer(Contact $contact){
 
+        $messages = [];
         // Check of contact / administratie al koppeling heeft met Twinfield
         $twinfieldCustomerNumber = $contact->twinfieldNumbers()->where('administration_id', $this->administration->id)->first();
         if($twinfieldCustomerNumber)
@@ -140,13 +141,15 @@ class TwinfieldCustomerHelper
                 }
 
                 try {
-                    // Synchroniseren contact naar Twinfield customer
-                    $response = $this->customerApiConnector->send($customer);
-                    return $response;
+                        // Synchroniseren contact naar Twinfield customer
+                        $response = $this->customerApiConnector->send($customer);
+                        array_push($messages, 'Contact ' . $contact->number . ' ' .  $contact->full_name . ' succesvol gesynchroniseerd.');
+                    return implode(';', $messages);
 
                 } catch (PhpTwinfieldException $e) {
                     Log::error('Error: ' . $e->getMessage());
-                    return 'Error: ' . $e->getMessage();
+                    array_push($messages, 'Synchronisatie contact gaf de volgende foutmelding: ' . $e->getMessage());
+                    return implode(';', $messages);
                 }
             }
         }

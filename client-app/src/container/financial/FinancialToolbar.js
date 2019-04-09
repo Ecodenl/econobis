@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { browserHistory } from 'react-router';
+import { browserHistory, hashHistory } from 'react-router';
 
 import ButtonIcon from '../../components/button/ButtonIcon';
 import AdministrationDetailsAPI from "../../api/administration/AdministrationDetailsAPI";
@@ -22,7 +22,13 @@ class FinancialToolbar extends Component {
         AdministrationDetailsAPI.syncSentInvoicesToTwinfield(this.props.administrationDetails.id).then((payload) => {
             this.setState({syncingToInvoices: false});
             this.props.setError(200, payload.data);
-        });
+            hashHistory.push(`/financieel/${this.props.administrationDetails.id}/facturen/geexporteerd`);
+        }).catch(error => {
+            this.setState({syncingToInvoices: false});
+            console.log(error);
+            alert('Er is iets misgegaan met synchroniseren van de gegevens. Probeer het later opnieuw');
+            }
+        );
     };
 
     syncInvoicesFromTwinfield = () => {
@@ -30,7 +36,12 @@ class FinancialToolbar extends Component {
         AdministrationDetailsAPI.syncSentInvoicesFromTwinfield(this.props.administrationDetails.id).then((payload) => {
             this.setState({syncingFromInvoices: false});
             this.props.setError(200, payload.data);
-        });
+        }).catch(error => {
+                this.setState({syncingFromInvoices: false});
+                console.log(error);
+                alert('Er is iets misgegaan met synchroniseren van de gegevens. Probeer het later opnieuw');
+            }
+        );
     };
 
     render() {

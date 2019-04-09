@@ -34,18 +34,10 @@ class ContactNewFormOrganisation extends Component {
                 newsletter: false,
                 ownerId: props.userId,
                 didAgreeAvg: false,
-                isCollectMandate: false,
-                collectMandateCode: '',
-                collectMandateSignatureDate: '',
-                collectMandateFirstRunDate: '',
-                collectMandateCollectionSchema: 'b2b',
             },
             errors: {
                 name: false,
                 iban: false,
-                collectMandateCode: false,
-                collectMandateSignatureDate: false,
-                collectMandateFirstRunDate: false,
             },
         };
     }
@@ -94,23 +86,6 @@ class ContactNewFormOrganisation extends Component {
             }
         }
 
-        if (organisation.isCollectMandate) {
-            if (validator.isEmpty(organisation.collectMandateCode)) {
-                errors.collectMandateCode = true;
-                hasErrors = true;
-            }
-
-            if (validator.isEmpty(organisation.collectMandateSignatureDate)) {
-                errors.collectMandateSignatureDate = true;
-                hasErrors = true;
-            }
-
-            if (validator.isEmpty(organisation.collectMandateFirstRunDate)) {
-                errors.collectMandateFirstRunDate = true;
-                hasErrors = true;
-            }
-        }
-
         this.setState({ ...this.state, errors: errors });
 
         // If no errors send form
@@ -139,11 +114,6 @@ class ContactNewFormOrganisation extends Component {
             ibanAttn,
             ownerId,
             didAgreeAvg,
-            isCollectMandate,
-            collectMandateCode,
-            collectMandateSignatureDate,
-            collectMandateFirstRunDate,
-            collectMandateCollectionSchema,
         } = this.state.organisation;
 
         return (
@@ -252,61 +222,6 @@ class ContactNewFormOrganisation extends Component {
                         onChangeAction={this.handleInputChange}
                     />
                 </div>
-
-                <div className="row">
-                    <InputToggle
-                        label={'Ingesteld op incasso'}
-                        name={'isCollectMandate'}
-                        value={isCollectMandate}
-                        onChangeAction={this.handleInputChange}
-                    />
-                </div>
-
-                {isCollectMandate ? (
-                    <React.Fragment>
-                        <div className="row">
-                            <InputText
-                                label={'Machtigingskenmerk'}
-                                name={'collectMandateCode'}
-                                value={collectMandateCode}
-                                onChangeAction={this.handleInputChange}
-                                required={'required'}
-                                error={this.state.errors.collectMandateCode}
-                            />
-                        </div>
-                        <div className="row">
-                            <InputDate
-                                label={'Datum van ondertekening'}
-                                name={'collectMandateSignatureDate'}
-                                value={collectMandateSignatureDate}
-                                onChangeAction={this.handleInputChangeDate}
-                                required={'required'}
-                                error={this.state.errors.collectMandateSignatureDate}
-                            />
-                        </div>
-                        <div className="row">
-                            <InputDate
-                                label={'Datum eerste incassoronde'}
-                                name={'collectMandateFirstRunDate'}
-                                value={collectMandateFirstRunDate}
-                                onChangeAction={this.handleInputChangeDate}
-                                required={'required'}
-                                error={this.state.errors.collectMandateFirstRunDate}
-                            />
-                        </div>
-                        <div className="row">
-                            <InputSelect
-                                label={'Incassoschema'}
-                                name={'collectMandateCollectionSchema'}
-                                value={collectMandateCollectionSchema}
-                                options={[{ id: 'core', name: 'Core' }, { id: 'b2b', name: 'B2B' }]}
-                                onChangeAction={this.handleInputChange}
-                                emptyOption={false}
-                                required={'required'}
-                            />
-                        </div>
-                    </React.Fragment>
-                ) : null}
 
                 <PanelFooter>
                     <div className="pull-right btn-group" role="group">

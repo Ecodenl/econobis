@@ -45,8 +45,6 @@ class PersonController extends ApiController
                 'lastNamePrefixId' => 'exists:last_name_prefixes,id',
                 'titleId' => 'exists:titles,id',
                 'dateOfBirth' => 'date',
-                'collectMandateSignatureDate' => 'date',
-                'collectMandateFirstRunDate' => 'date',
             ]);
 
         $contactData = $this->sanitizeData($request['person'], [
@@ -58,9 +56,6 @@ class PersonController extends ApiController
             'titleId' => 'nullable',
             'typeId' => 'nullable',
             'dateOfBirth' => 'nullable',
-            'isCollectMandate' => 'boolean',
-            'collectMandateSignatureDate' => 'nullable',
-            'collectMandateFirstRunDate' => 'nullable',
         ]);
 
         $contactData = $this->arrayKeysToSnakeCase($contactData);
@@ -70,11 +65,6 @@ class PersonController extends ApiController
                 'newsletter' => $contactData['newsletter'],
                 'owner_id' => $contactData['owner_id'],
                 'did_agree_avg' => $contactData['did_agree_avg'],
-                'is_collect_mandate' => $contactData['is_collect_mandate'],
-                'collect_mandate_code' => $contactData['collect_mandate_code'],
-                'collect_mandate_signature_date' => $contactData['collect_mandate_signature_date'],
-                'collect_mandate_first_run_date' => $contactData['collect_mandate_first_run_date'],
-                'collect_mandate_collection_schema' => $contactData['collect_mandate_collection_schema'],
             ];
 
         $lnp = null;
@@ -259,7 +249,9 @@ class PersonController extends ApiController
             'memberUntil' => 'nullable',
             'newsletter' => 'boolean',
             'liable' => 'boolean',
-            'isCollectMandate' => 'boolean'
+            'isCollectMandate' => 'boolean',
+            'collectMandateSignatureDate' => 'nullable',
+            'collectMandateFirstRunDate' => 'nullable',
         ]);
 
         if(array_key_exists('iban', $contactData) && $contact->iban != $contactData['iban']) $this->authorize('updateIban', $contact);

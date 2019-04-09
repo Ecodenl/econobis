@@ -27,11 +27,6 @@ class OrganisationController extends ApiController
             'liabilityAmount' => 'numeric',
             'ownerId' => 'exists:users,id',
             'didAgreeAvg' => 'boolean',
-            'isCollectMandate' => 'boolean',
-            'collectMandateCode' => '',
-            'collectMandateSignatureDate' => 'date',
-            'collectMandateFirstRunDate' => 'date',
-            'collectMandateCollectionSchema' => '',
         ]);
 
         $organisationData = $request->validate([
@@ -48,7 +43,6 @@ class OrganisationController extends ApiController
             'ownerId' => 'nullable',
             'newsletter' => 'boolean',
             'liable' => 'boolean',
-            'isCollectMandate' => 'boolean'
         ]);
         $contact = new Contact($this->arrayKeysToSnakeCase($contactData));
 
@@ -102,7 +96,9 @@ class OrganisationController extends ApiController
             'ownerId' => 'nullable',
             'newsletter' => 'boolean',
             'liable' => 'boolean',
-            'isCollectMandate' => 'boolean'
+            'isCollectMandate' => 'boolean',
+            'collectMandateSignatureDate' => 'nullable',
+            'collectMandateFirstRunDate' => 'nullable',
         ]);
 
         $contact = $organisation->contact;

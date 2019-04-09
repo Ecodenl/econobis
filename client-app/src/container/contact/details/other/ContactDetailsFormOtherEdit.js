@@ -104,6 +104,11 @@ class ContactDetailsFormOtherEdit extends Component {
         }
 
         if (other.isCollectMandate) {
+            if (validator.isEmpty(other.iban)) {
+                errors.iban = true;
+                hasErrors = true;
+            }
+
             if (validator.isEmpty(other.collectMandateCode)) {
                 errors.collectMandateCode = true;
                 hasErrors = true;
@@ -161,6 +166,7 @@ class ContactDetailsFormOtherEdit extends Component {
                         onChangeAction={this.handleInputChange}
                         readOnly={!this.props.permissions.updateContactIban}
                         error={this.state.errors.iban}
+                        required={isCollectMandate ? 'required' : ''}
                     />
                     <InputText
                         label="Voornaam partner"

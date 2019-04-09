@@ -111,6 +111,11 @@ class ContactDetailsFormOrganisationEdit extends Component {
         }
 
         if (organisation.isCollectMandate) {
+            if (validator.isEmpty(organisation.iban)) {
+                errors.iban = true;
+                hasErrors = true;
+            }
+
             if (validator.isEmpty(organisation.collectMandateCode)) {
                 errors.collectMandateCode = true;
                 hasErrors = true;
@@ -222,6 +227,7 @@ class ContactDetailsFormOrganisationEdit extends Component {
                         value={iban}
                         onChangeAction={this.handleInputChange}
                         error={this.state.errors.iban}
+                        required={isCollectMandate ? 'required' : ''}
                     />
                 </div>
 

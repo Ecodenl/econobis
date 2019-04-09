@@ -57,11 +57,6 @@ class LedgerDetailsFormGeneralEdit extends Component {
             hasErrors = true;
         }
 
-        if (validator.isEmpty(ledger.vatCodeId.toString())) {
-            errors.vatCodeId = true;
-            hasErrors = true;
-        }
-
         this.setState({ ...this.state, errors: errors });
 
         // If no errors send form
@@ -100,8 +95,7 @@ class LedgerDetailsFormGeneralEdit extends Component {
                                 options={this.props.vatCodes}
                                 optionName={'description'}
                                 onChangeAction={this.handleInputChange}
-                                required={'required'}
-                                error={this.state.errors.vatCodeId}
+                                placeholder={'Geen'}
                             />
                         </div>
                         <div className="row">

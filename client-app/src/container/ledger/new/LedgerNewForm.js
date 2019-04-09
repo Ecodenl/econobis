@@ -13,7 +13,6 @@ import PanelBody from '../../../components/panel/PanelBody';
 import Panel from '../../../components/panel/Panel';
 import LedgerDetailsAPI from '../../../api/ledger/LedgerDetailsAPI';
 import { fetchSystemData } from '../../../actions/general/SystemDataActions';
-import InputDate from '../../../components/form/InputDate';
 import InputSelect from '../../../components/form/InputSelect';
 
 class LedgerNewForm extends Component {
@@ -71,11 +70,6 @@ class LedgerNewForm extends Component {
             hasErrors = true;
         }
 
-        if (validator.isEmpty(ledger.vatCodeId.toString())) {
-            errors.vatCodeId = true;
-            hasErrors = true;
-        }
-
         this.setState({ ...this.state, errors: errors });
 
         // If no errors send form
@@ -114,6 +108,7 @@ class LedgerNewForm extends Component {
                                 options={this.props.vatCodes}
                                 optionName={'description'}
                                 onChangeAction={this.handleInputChange}
+                                placeholder={'Geen'}
                             />
                         </div>
                         <div className="row">

@@ -297,7 +297,13 @@ class ProductDetailsFormGeneralEdit extends Component {
         // If product has pricehistory ledgerOptions limited to same vat percentage ledgers
         if (this.props.usesTwinfield && currentPrice) {
             ledgerOptions = this.props.ledgers.filter(
-                ledger => ledger.vatCode.percentage === currentPrice.vatPercentage
+                ledger => {
+                    if(!ledger.vatCode) {
+                        return ledger.vatCode === currentPrice.vatPercentage
+                    } else {
+                        return ledger.vatCode.percentage === currentPrice.vatPercentage
+                    }
+                }
             );
         }
 

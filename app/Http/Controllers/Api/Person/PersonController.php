@@ -11,6 +11,7 @@ namespace App\Http\Controllers\Api\Person;
 
 use App\Eco\Address\Address;
 use App\Eco\Address\AddressType;
+use App\Eco\Administration\Administration;
 use App\Eco\Contact\Contact;
 use App\Eco\Contact\ContactStatus;
 use App\Eco\EmailAddress\EmailAddress;
@@ -19,6 +20,7 @@ use App\Eco\LastNamePrefix\LastNamePrefix;
 use App\Eco\Person\Person;
 use App\Eco\PhoneNumber\PhoneNumber;
 use App\Eco\PhoneNumber\PhoneNumberType;
+use App\Helpers\Twinfield\TwinfieldCustomerHelper;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\Controllers\Api\Contact\ContactController;
 use App\Http\Resources\Person\PersonPeek;
@@ -291,6 +293,19 @@ class PersonController extends ApiController
         $person->fill($this->arrayKeysToSnakeCase($personData));
         $person->save();
 
+        // Twinfield customer hoeven we vanuit hier (contact) alleen bij te werken als er een koppeling is.
+        // Nieuw aanmaken gebeurt vooralsnog alleen vanuit synchroniseren facturen
+        if($contact->twinfieldNumbers())
+        {
+            $messages = [];
+            foreach (Administration::where('twinfield_is_valid', 1)->where('uses_twinfield', 1)->get() as $administration) {
+
+                $twinfieldCustomerHelper = new TwinfieldCustomerHelper($administration, null);
+                $messagesIn = $twinfieldCustomerHelper->updateCustomer($contact);
+                array_push($messages, $messagesIn);
+            }
+            abort(412, implode(';', $messages));
+        }
         // Contact exact zo teruggeven als bij het openen van een bestaand contact
         // Dus kan hier gebruik maken van bestaande controller
         return (new ContactController())->show($contact->fresh(), $request);

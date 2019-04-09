@@ -53,16 +53,6 @@ class ContactObserver
     }
 
     public function saved(Contact $contact){
-        // Twinfield customer hoeven we vanuit hier (contact) alleen bij te werken als er een koppeling is.
-        // Nieuw aanmaken gebeurt vooralsnog alleen vanuit synchroniseren facturen
-        if($contact->twinfieldNumbers())
-        {
-            foreach (Administration::where('twinfield_is_valid', 1)->where('uses_twinfield', 1)->get() as $administration) {
-
-                $twinfieldCustomerHelper = new TwinfieldCustomerHelper($administration, null);
-                $twinfieldCustomerHelper->updateCustomer($contact);
-            }
-        }
     }
 
 }

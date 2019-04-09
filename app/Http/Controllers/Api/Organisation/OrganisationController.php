@@ -117,6 +117,19 @@ class OrganisationController extends ApiController
         $organisation->fill($this->arrayKeysToSnakeCase($organisationData));
         $organisation->save();
 
+        // Twinfield customer hoeven we vanuit hier (contact) alleen bij te werken als er een koppeling is.
+        // Nieuw aanmaken gebeurt vooralsnog alleen vanuit synchroniseren facturen
+        if($contact->twinfieldNumbers())
+        {
+            $messages = [];
+            foreach (Administration::where('twinfield_is_valid', 1)->where('uses_twinfield', 1)->get() as $administration) {
+
+                $twinfieldCustomerHelper = new TwinfieldCustomerHelper($administration, null);
+                $messagesIn = $twinfieldCustomerHelper->updateCustomer($contact);
+                array_push($messages, $messagesIn);
+            }
+            abort(412, implode(';', $messages));
+        }
         // Contact exact zo teruggeven als bij het openen van een bestaand contact
         // Dus kan hier gebruik maken van bestaande controller
         return (new ContactController())->show($contact->fresh(), $request);

@@ -12,6 +12,7 @@ import ButtonText from '../../../../components/button/ButtonText';
 import PanelFooter from '../../../../components/panel/PanelFooter';
 import * as ibantools from 'ibantools';
 import InputToggle from '../../../../components/form/InputToggle';
+import ErrorModal from '../../../../components/modal/ErrorModal';
 
 class ContactDetailsFormOrganisationEdit extends Component {
     constructor(props) {
@@ -63,6 +64,8 @@ class ContactDetailsFormOrganisationEdit extends Component {
                 collectMandateSignatureDate: false,
                 collectMandateFirstRunDate: false,
             },
+            showErrorModal: false,
+            modalErrorMessage: '',
         };
     }
 
@@ -140,10 +143,24 @@ class ContactDetailsFormOrganisationEdit extends Component {
                     this.props.updateOrganisation(payload.data.data);
                     this.props.switchToView();
                 })
-                .catch(function(error) {
-                    console.log(error);
-                    alert('Er is iets misgegaan bij opslaan. Herlaad de pagina en probeer het opnieuw.');
+                .catch(error => {
+                    let errorObject = JSON.parse(JSON.stringify(error));
+
+                    let errorMessage = 'Er is iets misgegaan bij opslaan. Probeer het opnieuw.';
+
+                    if(errorObject.response.status !== 500) {
+                        errorMessage = errorObject.response.data.message;
+                    }
+
+                    this.setState({
+                        showErrorModal: true,
+                        modalErrorMessage: errorMessage,
+                    })
                 });
+    };
+
+    closeErrorModal = () => {
+        this.setState({showErrorModal: false, modalErrorMessage: '',})
     };
 
     render() {
@@ -166,183 +183,193 @@ class ContactDetailsFormOrganisationEdit extends Component {
         } = this.state.organisation;
 
         return (
-            <form className="form-horizontal col-md-12" onSubmit={this.handleSubmit}>
-                <div className="row">
-                    <InputText
-                        label={'Contactnummer'}
-                        divSize={'col-xs-12'}
-                        name={'number'}
-                        value={number}
-                        readOnly={true}
-                    />
-                </div>
-
-                <div className="row">
-                    <InputText
-                        label={'Gemaakt op'}
-                        divSize={'col-xs-12'}
-                        name={'createdAt'}
-                        value={moment(createdAt).format('DD-MM-Y')}
-                        readOnly={true}
-                    />
-                </div>
-
-                <div className="row">
-                    <InputText
-                        label="Naam"
-                        divSize={'col-xs-12'}
-                        name={'name'}
-                        value={name}
-                        onChangeAction={this.handleInputChange}
-                        required={'required'}
-                        error={this.state.errors.name}
-                    />
-                </div>
-
-                <div className="row">
-                    <InputText
-                        label="KvK"
-                        divSize={'col-xs-12'}
-                        name="chamberOfCommerceNumber"
-                        value={chamberOfCommerceNumber}
-                        onChangeAction={this.handleInputChange}
-                    />
-                </div>
-
-                <div className="row">
-                    <InputText
-                        label="Btw nummer"
-                        divSize={'col-xs-12'}
-                        name="vatNumber"
-                        value={vatNumber}
-                        onChangeAction={this.handleInputChange}
-                    />
-                </div>
-
-                <div className="row">
-                    <InputText
-                        label="IBAN"
-                        divSize={'col-xs-12'}
-                        name="iban"
-                        value={iban}
-                        onChangeAction={this.handleInputChange}
-                        error={this.state.errors.iban}
-                        required={isCollectMandate ? 'required' : ''}
-                    />
-                </div>
-
-                <div className="row">
-                    <InputText
-                        label="IBAN t.n.v."
-                        divSize={'col-xs-12'}
-                        name="ibanAttn"
-                        value={ibanAttn}
-                        onChangeAction={this.handleInputChange}
-                    />
-                </div>
-
-                <div className="row">
-                    <InputText
-                        label={'Website'}
-                        divSize={'col-xs-12'}
-                        name={'website'}
-                        value={website}
-                        onChangeAction={this.handleInputChange}
-                    />
-                </div>
-
-                <div className="row">
-                    <InputToggle
-                        className={'field-to-be-removed'}
-                        label={'Nieuwsbrief'}
-                        divSize={'col-xs-12'}
-                        name={'newsletter'}
-                        value={newsletter}
-                        onChangeAction={this.handleInputChange}
-                    />
-                </div>
-
-                <div className="row">
-                    <InputToggle
-                        label="Akkoord privacybeleid"
-                        divSize={'col-xs-12'}
-                        name="didAgreeAvg"
-                        value={didAgreeAvg}
-                        onChangeAction={this.handleInputChange}
-                    />
-                </div>
-
-                <div className="row">
-                    <InputToggle
-                        divSize={'col-xs-12'}
-                        label={'Ingesteld op incasso'}
-                        name={'isCollectMandate'}
-                        value={isCollectMandate}
-                        onChangeAction={this.handleInputChange}
-                    />
-                </div>
-
-                {isCollectMandate ? (
-                    <React.Fragment>
-                        <div className="row">
-                            <InputText
-                                divSize={'col-xs-12'}
-                                label={'Machtigingskenmerk'}
-                                name={'collectMandateCode'}
-                                value={collectMandateCode}
-                                onChangeAction={this.handleInputChange}
-                                required={'required'}
-                                error={this.state.errors.collectMandateCode}
-                            />
-                        </div>
-                        <div className="row">
-                            <InputDate
-                                divSize={'col-xs-12'}
-                                label={'Datum van ondertekening'}
-                                name={'collectMandateSignatureDate'}
-                                value={collectMandateSignatureDate}
-                                onChangeAction={this.handleInputChangeDate}
-                                required={'required'}
-                                error={this.state.errors.collectMandateSignatureDate}
-                            />
-                        </div>
-                        <div className="row">
-                            <InputDate
-                                divSize={'col-xs-12'}
-                                label={'Datum eerste incassoronde'}
-                                name={'collectMandateFirstRunDate'}
-                                value={collectMandateFirstRunDate}
-                                onChangeAction={this.handleInputChangeDate}
-                                required={'required'}
-                                error={this.state.errors.collectMandateFirstRunDate}
-                            />
-                        </div>
-                        <div className="row">
-                            <InputSelect
-                                size={'col-xs-12'}
-                                label={'Incassoschema'}
-                                name={'collectMandateCollectionSchema'}
-                                value={collectMandateCollectionSchema}
-                                options={[{ id: 'core', name: 'Core' }, { id: 'b2b', name: 'B2B' }]}
-                                onChangeAction={this.handleInputChange}
-                                emptyOption={false}
-                                required={'required'}
-                            />
-                        </div>
-                    </React.Fragment>
-                ) : null}
-
-                <PanelFooter>
-                    <div className="pull-right btn-group" role="group">
-                        <ButtonText
-                            buttonClassName={'btn-default'}
-                            buttonText={'Annuleren'}
-                            onClickAction={this.props.switchToView}
+            <React.Fragment>
+                <form className="form-horizontal col-md-12" onSubmit={this.handleSubmit}>
+                    <div className="row">
+                        <InputText
+                            label={'Contactnummer'}
+                            divSize={'col-xs-12'}
+                            name={'number'}
+                            value={number}
+                            readOnly={true}
                         />
-                        <ButtonText buttonText={'Opslaan'} onClickAction={this.handleSubmit} />
                     </div>
-                </PanelFooter>
-            </form>
+
+                    <div className="row">
+                        <InputText
+                            label={'Gemaakt op'}
+                            divSize={'col-xs-12'}
+                            name={'createdAt'}
+                            value={moment(createdAt).format('DD-MM-Y')}
+                            readOnly={true}
+                        />
+                    </div>
+
+                    <div className="row">
+                        <InputText
+                            label="Naam"
+                            divSize={'col-xs-12'}
+                            name={'name'}
+                            value={name}
+                            onChangeAction={this.handleInputChange}
+                            required={'required'}
+                            error={this.state.errors.name}
+                        />
+                    </div>
+
+                    <div className="row">
+                        <InputText
+                            label="KvK"
+                            divSize={'col-xs-12'}
+                            name="chamberOfCommerceNumber"
+                            value={chamberOfCommerceNumber}
+                            onChangeAction={this.handleInputChange}
+                        />
+                    </div>
+
+                    <div className="row">
+                        <InputText
+                            label="Btw nummer"
+                            divSize={'col-xs-12'}
+                            name="vatNumber"
+                            value={vatNumber}
+                            onChangeAction={this.handleInputChange}
+                        />
+                    </div>
+
+                    <div className="row">
+                        <InputText
+                            label="IBAN"
+                            divSize={'col-xs-12'}
+                            name="iban"
+                            value={iban}
+                            onChangeAction={this.handleInputChange}
+                            error={this.state.errors.iban}
+                            required={isCollectMandate ? 'required' : ''}
+                        />
+                    </div>
+
+                    <div className="row">
+                        <InputText
+                            label="IBAN t.n.v."
+                            divSize={'col-xs-12'}
+                            name="ibanAttn"
+                            value={ibanAttn}
+                            onChangeAction={this.handleInputChange}
+                        />
+                    </div>
+
+                    <div className="row">
+                        <InputText
+                            label={'Website'}
+                            divSize={'col-xs-12'}
+                            name={'website'}
+                            value={website}
+                            onChangeAction={this.handleInputChange}
+                        />
+                    </div>
+
+                    <div className="row">
+                        <InputToggle
+                            className={'field-to-be-removed'}
+                            label={'Nieuwsbrief'}
+                            divSize={'col-xs-12'}
+                            name={'newsletter'}
+                            value={newsletter}
+                            onChangeAction={this.handleInputChange}
+                        />
+                    </div>
+
+                    <div className="row">
+                        <InputToggle
+                            label="Akkoord privacybeleid"
+                            divSize={'col-xs-12'}
+                            name="didAgreeAvg"
+                            value={didAgreeAvg}
+                            onChangeAction={this.handleInputChange}
+                        />
+                    </div>
+
+                    <div className="row">
+                        <InputToggle
+                            divSize={'col-xs-12'}
+                            label={'Ingesteld op incasso'}
+                            name={'isCollectMandate'}
+                            value={isCollectMandate}
+                            onChangeAction={this.handleInputChange}
+                        />
+                    </div>
+
+                    {isCollectMandate ? (
+                        <React.Fragment>
+                            <div className="row">
+                                <InputText
+                                    divSize={'col-xs-12'}
+                                    label={'Machtigingskenmerk'}
+                                    name={'collectMandateCode'}
+                                    value={collectMandateCode}
+                                    onChangeAction={this.handleInputChange}
+                                    required={'required'}
+                                    error={this.state.errors.collectMandateCode}
+                                />
+                            </div>
+                            <div className="row">
+                                <InputDate
+                                    divSize={'col-xs-12'}
+                                    label={'Datum van ondertekening'}
+                                    name={'collectMandateSignatureDate'}
+                                    value={collectMandateSignatureDate}
+                                    onChangeAction={this.handleInputChangeDate}
+                                    required={'required'}
+                                    error={this.state.errors.collectMandateSignatureDate}
+                                />
+                            </div>
+                            <div className="row">
+                                <InputDate
+                                    divSize={'col-xs-12'}
+                                    label={'Datum eerste incassoronde'}
+                                    name={'collectMandateFirstRunDate'}
+                                    value={collectMandateFirstRunDate}
+                                    onChangeAction={this.handleInputChangeDate}
+                                    required={'required'}
+                                    error={this.state.errors.collectMandateFirstRunDate}
+                                />
+                            </div>
+                            <div className="row">
+                                <InputSelect
+                                    size={'col-xs-12'}
+                                    label={'Incassoschema'}
+                                    name={'collectMandateCollectionSchema'}
+                                    value={collectMandateCollectionSchema}
+                                    options={[{ id: 'core', name: 'Core' }, { id: 'b2b', name: 'B2B' }]}
+                                    onChangeAction={this.handleInputChange}
+                                    emptyOption={false}
+                                    required={'required'}
+                                />
+                            </div>
+                        </React.Fragment>
+                    ) : null}
+
+                    <PanelFooter>
+                        <div className="pull-right btn-group" role="group">
+                            <ButtonText
+                                buttonClassName={'btn-default'}
+                                buttonText={'Annuleren'}
+                                onClickAction={this.props.switchToView}
+                            />
+                            <ButtonText buttonText={'Opslaan'} onClickAction={this.handleSubmit} />
+                        </div>
+                    </PanelFooter>
+                </form>
+
+                { this.state.showErrorModal &&
+                <ErrorModal
+                    closeModal={this.closeErrorModal}
+                    title={'Fout bij opslaan'}
+                    errorMessage={this.state.modalErrorMessage}
+                />
+                }
+            </React.Fragment>
         );
     }
 }

@@ -294,6 +294,7 @@ class AdministrationDetailsFormGeneralEdit extends Component {
             data.append('twinfieldPassword', administration.twinfieldPassword);
             data.append('twinfieldOrganizationCode', administration.twinfieldOrganizationCode);
             data.append('twinfieldOfficeCode', administration.twinfieldOfficeCode);
+            data.append('usesVat', administration.usesVat);
 
             this.props.updateAdministration(data, administration.id, this.props.switchToView);
         }

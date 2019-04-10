@@ -20,6 +20,7 @@ use PhpTwinfield\Enums\Destiny;
 use PhpTwinfield\Enums\LineType;
 use PhpTwinfield\Exception as PhpTwinfieldException;
 use PhpTwinfield\Office;
+use PhpTwinfield\SalesTransaction;
 use PhpTwinfield\SalesTransactionLine;
 use PhpTwinfield\Secure\WebservicesAuthentication;
 
@@ -30,6 +31,7 @@ class TwinfieldSalesTransactionHelper
     private $administration;
     private $transactionApiConnector;
     private $currency;
+    private $messages;
 
     /**
      * TwinfieldSalesTransactionHelper constructor.
@@ -46,31 +48,39 @@ class TwinfieldSalesTransactionHelper
         $this->dagboekCode = config('services.twinfield.verkoop_dagboek_code');
         $this->currency = new Currency( config('services.twinfield.verkoop_default_currency') );
         $this->grootboekDebiteuren = config('services.twinfield.verkoop_grootboek_debiteuren');
+        $this->messages = [];
+
     }
 
     public function createAllSalesTransactions(){
         set_time_limit(0);
-        $messages = [];
 
         // todo ingangsdatum voor welke facturen naar twinfield moeten, hier wellicht per een administratieveld nog van maken?
         foreach ($this->administration->invoices()->where('status_id', 'sent')->where('date_sent', '>', '20190301')->get() as $invoice){
             $response = $this->createSalesTransation($invoice);
 
             if($response === true){
-                array_push($messages, 'Transactie factuur ' . $invoice->number . ' succesvol gesynchroniseerd.');
+                array_push($this->messages, 'Transactie factuur ' . $invoice->number . ' succesvol gesynchroniseerd.');
             }
             else{
                 //soms zitten in de error message van Twinfield // voor de melding.
                 $response = str_replace('//', '', $response);
-                array_push($messages, 'Synchronisatie transactie factuur ' . $invoice->number . ' gaf de volgende foutmelding: ' . $response);
+                array_push($this->messages, 'Synchronisatie transactie factuur ' . $invoice->number . ' gaf de volgende foutmelding: ' . $response);
+            }
+
+            // Indien contact ingesteld op Incasso, maar factuur is gekenmerkt voor Overboeking, dan blokkeer voor betaal/incasso run in Twinfield
+            $contact = $invoice->order->contact;
+            if($contact->is_collect_mandate && $invoice->payment_type_id=='transfer')
+            {
+                $this->setPayStatusNo($invoice);
             }
         }
 
-        if(count($messages) == 0){
-            array_push($messages, 'Geen facturen om te synchroniseren gevonden.');
+        if(count($this->messages) == 0){
+            array_push($this->messages, 'Geen facturen om te synchroniseren gevonden.');
         }
 
-        return implode(';', $messages);
+        return implode(';', $this->messages);
     }
 
     public function createSalesTransation(Invoice $invoice){
@@ -209,5 +219,29 @@ class TwinfieldSalesTransactionHelper
             return $e->getMessage() ? $e->getMessage() : 'Er is een fout opgetreden.';
         }
     }
+
+    public function setPayStatusNo(Invoice $invoice){
+        $twinfieldSalesTransaction = new ChangPayStatusTransaction();
+        $twinfieldSalesTransaction
+        ->setCode($this->dagboekCode)
+        ->setOffice($this->office)
+        ->setNumber($invoice->twinfield_number)
+        ->setPayStatus('N');
+
+            //Salestransaction - versturen naar Twinfield
+        try {
+        $testConnector = new ChangPayStatusTransactionApiConnector($this->connection);
+        $response = $testConnector->send($twinfieldSalesTransaction);
+        array_push($this->messages, 'Transactie factuur ' . $invoice->number . ' geblokkeerd voor betaalrun.');
+        return true;
+
+        return implode(';', $messages);
+        } catch (PhpTwinfieldException $e) {
+            Log::error($e->getMessage());
+            array_push($this->messages, 'Blokkeren voor betaalrun (factuur ' . $invoice->number . ') gaf de volgende foutmelding: ' . $e->getMessage());
+        }
+
+    }
+
 
 }

@@ -362,25 +362,9 @@ class OrderNewForm extends Component {
 
                         <div className="row">
                             <InputText
-                                label="IBAN"
-                                name={"IBAN"}
-                                value={IBAN}
-                                onChangeAction={this.handleInputChange}
-                                error={this.state.errors.IBAN}
-                            />
-                            <InputText
                                 label="Opdracht nummer klant"
                                 name={"poNumber"}
                                 value={poNumber}
-                                onChangeAction={this.handleInputChange}
-                            />
-                        </div>
-
-                        <div className="row">
-                            <InputText
-                                label="IBAN t.n.v."
-                                name={"ibanAttn"}
-                                value={ibanAttn}
                                 onChangeAction={this.handleInputChange}
                             />
                         </div>

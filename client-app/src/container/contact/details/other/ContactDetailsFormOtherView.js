@@ -63,12 +63,6 @@ const ContactDetailsFormOtherView = props => {
                             value={collectMandateFirstRunDate && moment(collectMandateFirstRunDate).format('L')}
                         />
                     </div>
-                    <div className="row">
-                        <ViewText
-                            label={'Incassoschema'}
-                            value={collectMandateCollectionSchema === 'core' ? 'Core' : 'B2B'}
-                        />
-                    </div>
                 </React.Fragment>
             ) : null}
         </div>

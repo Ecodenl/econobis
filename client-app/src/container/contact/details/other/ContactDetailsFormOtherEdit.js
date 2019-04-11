@@ -275,14 +275,10 @@ class ContactDetailsFormOtherEdit extends Component {
                                 />
                             </div>
                             <div className="row">
-                                <InputSelect
-                                    label={'Incassoschema'}
+                                <InputText
+                                    type={'hidden'}
                                     name={'collectMandateCollectionSchema'}
                                     value={collectMandateCollectionSchema}
-                                    options={[{ id: 'core', name: 'Core' }, { id: 'b2b', name: 'B2B' }]}
-                                    onChangeAction={this.handleInputChange}
-                                    emptyOption={false}
-                                    required={'required'}
                                 />
                             </div>
                         </React.Fragment>

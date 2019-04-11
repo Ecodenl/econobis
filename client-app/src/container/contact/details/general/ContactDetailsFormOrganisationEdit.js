@@ -55,7 +55,7 @@ class ContactDetailsFormOrganisationEdit extends Component {
                 collectMandateFirstRunDate: collectMandateFirstRunDate
                     ? moment(collectMandateFirstRunDate).format('Y-MM-DD')
                     : '',
-                collectMandateCollectionSchema: collectMandateCollectionSchema ? collectMandateCollectionSchema : 'b2b',
+                collectMandateCollectionSchema: collectMandateCollectionSchema ? collectMandateCollectionSchema : 'core',
             },
             errors: {
                 name: false,
@@ -336,15 +336,10 @@ class ContactDetailsFormOrganisationEdit extends Component {
                                 />
                             </div>
                             <div className="row">
-                                <InputSelect
-                                    size={'col-xs-12'}
-                                    label={'Incassoschema'}
+                                <InputText
+                                    type={'hidden'}
                                     name={'collectMandateCollectionSchema'}
                                     value={collectMandateCollectionSchema}
-                                    options={[{ id: 'core', name: 'Core' }, { id: 'b2b', name: 'B2B' }]}
-                                    onChangeAction={this.handleInputChange}
-                                    emptyOption={false}
-                                    required={'required'}
                                 />
                             </div>
                         </React.Fragment>

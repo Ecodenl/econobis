@@ -36,7 +36,7 @@ class OrderNewForm extends Component {
                 emailTemplateIdTransfer: '',
                 emailTemplateReminderId: '',
                 emailTemplateExhortationId: '',
-                paymentTypeId: 'collection',
+                paymentTypeId: '',
                 collectionFrequencyId: 'once',
                 IBAN: '',
                 ibanAttn: '',
@@ -201,6 +201,11 @@ class OrderNewForm extends Component {
             hasErrors = true;
         }
 
+        if (validator.isEmpty(order.paymentTypeId + '')) {
+            errors.paymentTypeId = true;
+            hasErrors = true;
+        }
+
         if (validator.isEmpty(order.statusId + '')) {
             errors.statusId = true;
             hasErrors = true;
@@ -231,7 +236,7 @@ class OrderNewForm extends Component {
     };
 
     render() {
-        const { contactId, administrationId, statusId, subject, emailTemplateIdCollection, emailTemplateIdTransfer, emailTemplateReminderId, emailTemplateExhortationId, paymentTypeId, collectionFrequencyId, IBAN, ibanAttn,
+        const { contactId, administrationId, statusId, subject, emailTemplateIdCollection, emailTemplateIdTransfer, emailTemplateReminderId, emailTemplateExhortationId, paymentTypeId, collectionFrequencyId,
             poNumber, invoiceText, dateRequested, dateNextInvoice } = this.state.order;
 
         return (
@@ -314,6 +319,8 @@ class OrderNewForm extends Component {
                                 options={this.props.orderPaymentTypes}
                                 value={paymentTypeId}
                                 onChangeAction={this.handleInputChange}
+                                required={'required'}
+                                error={this.state.errors.paymentTypeId}
                             />
                         </div>
 

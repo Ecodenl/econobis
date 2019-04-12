@@ -111,6 +111,11 @@ class OrderDetailsFormGeneralEdit extends Component {
         let errors = {};
         let hasErrors = false;
 
+        if (validator.isEmpty(order.paymentTypeId + '')) {
+            errors.paymentTypeId = true;
+            hasErrors = true;
+        }
+
         if (validator.isEmpty(order.statusId + '')) {
             errors.statusId = true;
             hasErrors = true;
@@ -138,7 +143,7 @@ class OrderDetailsFormGeneralEdit extends Component {
 
     render() {
         const {
-            statusId, subject, emailTemplateIdCollection, emailTemplateIdTransfer, emailTemplateReminderId, emailTemplateExhortationId, paymentTypeId, collectionFrequencyId, IBAN, ibanAttn,
+            statusId, subject, emailTemplateIdCollection, emailTemplateIdTransfer, emailTemplateReminderId, emailTemplateExhortationId, paymentTypeId, collectionFrequencyId,
             poNumber, invoiceText, dateRequested, administrationId, dateNextInvoice
         } = this.state.order;
         const { invoiceCount } = this.props.orderDetails;
@@ -224,6 +229,8 @@ class OrderDetailsFormGeneralEdit extends Component {
                                 options={this.props.orderPaymentTypes}
                                 value={paymentTypeId}
                                 onChangeAction={this.handleInputChange}
+                                required={'required'}
+                                error={this.state.errors.paymentTypeId}
                             />
                         </div>
                         <div className="row">

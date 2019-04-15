@@ -171,7 +171,7 @@ class AdministrationController extends ApiController
             ->integer('emailTemplateExhortationId')->validate('nullable|exists:email_templates,id')->onEmpty(null)->whenMissing(null)->alias('email_template_exhortation_id')->next()
             ->integer('mailboxId')->validate('nullable|exists:mailboxes,id')->onEmpty(null)->whenMissing(null)->alias('mailbox_id')->next()
             ->string('twinfieldUsername')->whenMissing(null)->onEmpty(null)->alias('twinfield_username')->next()
-            ->string('twinfieldPassword')->whenMissing(null)->onEmpty(null)->alias('twinfield_password')->next()
+            ->string('twinfieldPassword')->whenMissing($administration->twinfield_password)->onEmpty($administration->twinfield_password)->alias('twinfield_password')->next()
             ->string('twinfieldOrganizationCode')->whenMissing(null)->onEmpty(null)->alias('twinfield_organization_code')->next()
             ->string('twinfieldOfficeCode')->whenMissing(null)->onEmpty(null)->alias('twinfield_office_code')->next()
             ->get();

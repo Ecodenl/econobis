@@ -94,7 +94,7 @@ class FullAdministration extends Resource
 
                 'usesTwinfield' => $this->uses_twinfield,
                 'twinfieldUsername' => $this->twinfield_username,
-                'twinfieldPassword' => $this->twinfield_password,
+                'twinfieldPassword' => '',
                 'twinfieldOrganizationCode' => $this->twinfield_organization_code,
                 'twinfieldOfficeCode' => $this->twinfield_office_code,
                 'twinfieldIsValid' => $this->twinfield_is_valid,

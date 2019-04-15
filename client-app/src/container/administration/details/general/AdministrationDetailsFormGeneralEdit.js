@@ -49,6 +49,7 @@ class AdministrationDetailsFormGeneralEdit extends Component {
             usesTwinfield,
             twinfieldUsername,
             twinfieldPassword,
+            twinfieldPasswordChange,
             twinfieldOrganizationCode,
             twinfieldOfficeCode,
             usesVat,
@@ -89,6 +90,7 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                 usesTwinfield: usesTwinfield,
                 twinfieldUsername: twinfieldUsername ? twinfieldUsername : '',
                 twinfieldPassword: twinfieldPassword ? twinfieldPassword : '',
+                twinfieldPasswordChange: twinfieldPasswordChange ? twinfieldPasswordChange : false,
                 twinfieldOrganizationCode: twinfieldOrganizationCode ? twinfieldOrganizationCode : '',
                 twinfieldOfficeCode: twinfieldOfficeCode ? twinfieldOfficeCode : '',
                 usesVat: usesVat,
@@ -232,9 +234,11 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                 hasErrors = true;
             }
 
-            if (validator.isEmpty(administration.twinfieldPassword + '')) {
-                errors.twinfieldPassword = true;
-                hasErrors = true;
+            if (administration.twinfieldPasswordChange) {
+                if (validator.isEmpty(administration.twinfieldPassword + '')) {
+                    errors.twinfieldPassword = true;
+                    hasErrors = true;
+                }
             }
 
             if (validator.isEmpty(administration.twinfieldOfficeCode + '')) {
@@ -291,7 +295,10 @@ class AdministrationDetailsFormGeneralEdit extends Component {
             data.append('mailboxId', administration.mailboxId);
             data.append('usesTwinfield', administration.usesTwinfield);
             data.append('twinfieldUsername', administration.twinfieldUsername);
-            data.append('twinfieldPassword', administration.twinfieldPassword);
+            // twinfield password alleen toevoegen indien ingevuld op scherm.
+            if (administration.twinfieldPasswordChange) {
+                data.append('twinfieldPassword', administration.twinfieldPassword);
+            }
             data.append('twinfieldOrganizationCode', administration.twinfieldOrganizationCode);
             data.append('twinfieldOfficeCode', administration.twinfieldOfficeCode);
             data.append('usesVat', administration.usesVat);
@@ -329,6 +336,7 @@ class AdministrationDetailsFormGeneralEdit extends Component {
             usesTwinfield,
             twinfieldUsername,
             twinfieldPassword,
+            twinfieldPasswordChange,
             twinfieldOrganizationCode,
             twinfieldOfficeCode,
             usesVat,
@@ -581,9 +589,19 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                                         label="Wachtwoord"
                                         name={'twinfieldPassword'}
                                         value={twinfieldPassword}
+                                        placeholder="**********"
                                         onChangeAction={this.handleInputChange}
                                         error={this.state.errors.twinfieldPassword}
                                         required={'required'}
+                                    />
+                                </div>
+                                <div className="row">
+                                    <InputToggle
+                                        label={'Wijzig wachtwoord'}
+                                        name={'twinfieldPasswordChange'}
+                                        value={twinfieldPasswordChange}
+                                        onChangeAction={this.handleInputChange}
+                                        className={'col-sm-push-6 col-sm-6'}
                                     />
                                 </div>
                                 <div className="row">

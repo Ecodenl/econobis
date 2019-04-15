@@ -127,7 +127,7 @@ const AdministrationDetailsFormGeneralView = props => {
                     {usesTwinfield == true && (
                         <div className="row">
                             <ViewText label={'Gebruikersnaam'} value={twinfieldUsername} />
-                            <ViewText label={'Wachtwoord'} value="����������" />
+                            <ViewText label={'Wachtwoord'} value="**********" />
                         </div>
                     )}
 

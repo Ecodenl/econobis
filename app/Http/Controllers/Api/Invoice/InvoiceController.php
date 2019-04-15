@@ -249,6 +249,10 @@ class InvoiceController extends ApiController
 
     public function send(Invoice $invoice, Request $request)
     {
+        if(!$this->isInvoiceOkForSending($invoice))
+        {
+            return false;
+        }
         $invoice->date_collection = $request->input('dateCollection');
         $invoice->save();
 
@@ -264,6 +268,10 @@ class InvoiceController extends ApiController
 
     public function sendPost(Invoice $invoice, Request $request)
     {
+        if(!$this->isInvoiceOkForSending($invoice))
+        {
+            return false;
+        }
         $invoice->date_collection = $request->input('dateCollection');
         $invoice->save();
         InvoiceHelper::createInvoiceDocument($invoice);
@@ -335,6 +343,11 @@ class InvoiceController extends ApiController
 </style>';
 
         foreach ($invoices as $k => $invoice) {
+            if(!$this->isInvoiceOkForSending($invoice))
+            {
+                return false;
+            }
+
             $invoice->date_collection = $request->input('dateCollection');
             $invoice->save();
 
@@ -436,6 +449,16 @@ class InvoiceController extends ApiController
         }
 
         return $total;
+    }
+
+
+    public function isInvoiceOkForSending(Invoice $invoice)
+    {
+        if( $invoice->administration->uses_twinfield && $invoice->invoiceProducts()->whereNull('twinfield_ledger_code')->exists() )
+        {
+            return false;
+        }
+        return true;
     }
 
     public function getInvoicesForSending(Request $request)

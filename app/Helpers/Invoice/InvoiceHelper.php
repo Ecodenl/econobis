@@ -78,7 +78,10 @@ class InvoiceHelper
             $invoiceProduct->product_code = $orderProduct->product->code;
             $invoiceProduct->product_name = $orderProduct->product->name;
             $invoiceProduct->description = $orderProduct->product->invoice_text;
-            $invoiceProduct->twinfield_ledger_code = $orderProduct->product->ledger->twinfield_ledger_code;
+            if($orderProduct->product->ledger)
+            {
+                $invoiceProduct->twinfield_ledger_code = $orderProduct->product->ledger->twinfield_ledger_code;
+            }
 
             if($orderProduct->date_last_invoice){
                 $dateLastInvoice = $orderProduct->date_last_invoice;

@@ -2,13 +2,26 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { isEmpty } from 'lodash';
 
-import ProjectGeneralFormViewOther from './form/ProjectGeneralFormViewOther';
-import ProjectGeneralFormViewLoan from './form/ProjectGeneralFormViewLoan';
+import ProjectGeneralFormViewLoan from './summary/ProjectGeneralFormViewLoan';
 import ParticipantsListApp from '../../participant-project/list/ParticipantsListApp';
+import ProjectGeneralFormViewObligation from './summary/ProjectGeneralFormViewObligation';
+import ProjectGeneralFormViewCapital from './summary/ProjectGeneralFormViewCapital';
+import ProjectGeneralFormViewPostalcodeLinkCapital from './summary/ProjectGeneralFormViewPostalcodeLinkCapital';
 
 class ProjectGeneralForm extends Component {
-    constructor(props) {
-        super(props);
+    renderProjectSummary() {
+        switch (this.props.project.projectType.codeRef) {
+            case 'loan':
+                return <ProjectGeneralFormViewLoan />;
+            case 'obligation':
+                return <ProjectGeneralFormViewObligation />;
+            case 'capital':
+                return <ProjectGeneralFormViewCapital />;
+            case 'postalcode_link_capital':
+                return <ProjectGeneralFormViewPostalcodeLinkCapital />;
+            default:
+                return <div>Geen type project gevonden.</div>;
+        }
     }
 
     render() {
@@ -16,11 +29,7 @@ class ProjectGeneralForm extends Component {
             <div>Geen gegevens gevonden.</div>
         ) : (
             <div>
-                {this.props.project.projectType.codeRef === 'loan' ? (
-                    <ProjectGeneralFormViewLoan />
-                ) : (
-                    <ProjectGeneralFormViewOther />
-                )}
+                {this.renderProjectSummary()}
                 <ParticipantsListApp />
             </div>
         );

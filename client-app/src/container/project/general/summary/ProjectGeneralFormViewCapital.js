@@ -2,30 +2,21 @@ import React from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment';
 moment.locale('nl');
-import { startCase } from 'lodash';
 
 import ViewText from '../../../../components/form/ViewText';
 import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
 
-const ProjectGeneralFormViewOther = ({ project, projectTypes }) => {
+const ProjectGeneralFormViewCapital = ({ project, projectTypes }) => {
     const {
         name,
         dateStart,
         projectStatus,
-        issuedParticipations,
-        participationsInOption,
-        issuableParticipations,
         participationsDefinitive,
         participationsOptioned,
         totalParticipations,
-        projectTypeId,
+        projectType,
     } = project;
-
-    const formatParticipation =
-        projectTypes.find(projectType => projectType.codeRef === 'obligation').id == projectTypeId
-            ? 'obligatie'
-            : 'participatie';
 
     const participationsAvailable = totalParticipations - participationsDefinitive;
 
@@ -34,17 +25,21 @@ const ProjectGeneralFormViewOther = ({ project, projectTypes }) => {
             <PanelBody>
                 <div className="row">
                     <ViewText label={'Project'} value={name} />
-                    <ViewText label={`Uitgegeven ${formatParticipation}s`} value={participationsDefinitive} />
+                    <ViewText label={'Uitgegeven participaties'} value={participationsDefinitive} />
+                </div>
+
+                <div className="row">
+                    <ViewText label={'Type project'} value={projectType && projectType.name} />
+                    <ViewText label={'Participaties in optie'} value={participationsOptioned} />
                 </div>
 
                 <div className="row">
                     <ViewText label={'Status'} value={projectStatus && projectStatus.name} />
-                    <ViewText label={`${startCase(formatParticipation)}s in optie`} value={participationsOptioned} />
+                    <ViewText label={'Uit te geven participaties'} value={participationsAvailable} />
                 </div>
 
                 <div className="row">
                     <ViewText label={'Start project'} value={dateStart ? moment(dateStart).format('L') : ''} />
-                    <ViewText label={`Uit te geven ${formatParticipation}s`} value={participationsAvailable} />
                 </div>
             </PanelBody>
         </Panel>
@@ -54,8 +49,7 @@ const ProjectGeneralFormViewOther = ({ project, projectTypes }) => {
 const mapStateToProps = state => {
     return {
         project: state.projectDetails,
-        projectTypes: state.systemData.projectTypes,
     };
 };
 
-export default connect(mapStateToProps)(ProjectGeneralFormViewOther);
+export default connect(mapStateToProps)(ProjectGeneralFormViewCapital);

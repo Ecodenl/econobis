@@ -1,9 +1,9 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import ButtonIcon from '../../../components/button/ButtonIcon';
+import ButtonIcon from '../../../../components/button/ButtonIcon';
 import { hashHistory } from 'react-router';
-import ButtonText from '../../../components/button/ButtonText';
+import ButtonText from '../../../../components/button/ButtonText';
 
 const ParticipantsListToolbar = props => {
     const { meta = {} } = props.participantsProject;

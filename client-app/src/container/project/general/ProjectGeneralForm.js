@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { isEmpty } from 'lodash';
 
 import ProjectGeneralFormViewLoan from './summary/ProjectGeneralFormViewLoan';
-import ParticipantsListApp from '../../participant-project/list/ParticipantsListApp';
+import ParticipantsListApp from './list-participants/ParticipantsListApp';
 import ProjectGeneralFormViewObligation from './summary/ProjectGeneralFormViewObligation';
 import ProjectGeneralFormViewCapital from './summary/ProjectGeneralFormViewCapital';
 import ProjectGeneralFormViewPostalcodeLinkCapital from './summary/ProjectGeneralFormViewPostalcodeLinkCapital';

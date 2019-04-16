@@ -2,30 +2,30 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import { previewParticipantReport } from '../../../actions/project/ProjectDetailsActions';
+import { previewParticipantReport } from '../../../../actions/project/ProjectDetailsActions';
 import {
     clearParticipantsProject,
     fetchParticipantsProject,
-} from '../../../actions/participants-project/ParticipantsProjectActions';
-import { clearFilterParticipantsProject } from '../../../actions/participants-project/ParticipantsProjectFiltersActions';
-import { setParticipantsProjectPagination } from '../../../actions/participants-project/ParticipantsProjectPaginationActions';
-import { blockUI, unblockUI } from '../../../actions/general/BlockUIActions';
+} from '../../../../actions/participants-project/ParticipantsProjectActions';
+import { clearFilterParticipantsProject } from '../../../../actions/participants-project/ParticipantsProjectFiltersActions';
+import { setParticipantsProjectPagination } from '../../../../actions/participants-project/ParticipantsProjectPaginationActions';
+import { blockUI, unblockUI } from '../../../../actions/general/BlockUIActions';
 import ParticipantsList from './ParticipantsList';
 import ParticipantsListToolbar from './ParticipantsListToolbar';
-import filterHelper from '../../../helpers/FilterHelper';
-import Panel from '../../../components/panel/Panel';
-import PanelBody from '../../../components/panel/PanelBody';
-import EmailTemplateAPI from '../../../api/email-template/EmailTemplateAPI';
-import DocumentTemplateAPI from '../../../api/document-template/DocumentTemplateAPI';
+import filterHelper from '../../../../helpers/FilterHelper';
+import Panel from '../../../../components/panel/Panel';
+import PanelBody from '../../../../components/panel/PanelBody';
+import EmailTemplateAPI from '../../../../api/email-template/EmailTemplateAPI';
+import DocumentTemplateAPI from '../../../../api/document-template/DocumentTemplateAPI';
 import { hashHistory } from 'react-router';
 import validator from 'validator';
-import Modal from '../../../components/modal/Modal';
-import ButtonText from '../../../components/button/ButtonText';
-import InputText from '../../../components/form/InputText';
-import InputSelect from '../../../components/form/InputSelect';
-import PanelFooter from '../../../components/panel/PanelFooter';
-import ViewText from '../../../components/form/ViewText';
-import ParticipantsProjectAPI from '../../../api/participant-project/ParticipantsProjectAPI';
+import Modal from '../../../../components/modal/Modal';
+import ButtonText from '../../../../components/button/ButtonText';
+import InputText from '../../../../components/form/InputText';
+import InputSelect from '../../../../components/form/InputSelect';
+import PanelFooter from '../../../../components/panel/PanelFooter';
+import ViewText from '../../../../components/form/ViewText';
+import ParticipantsProjectAPI from '../../../../api/participant-project/ParticipantsProjectAPI';
 import fileDownload from 'js-file-download';
 import moment from 'moment/moment';
 import ParticipantsListExtraFilters from './ParticipantsListExtraFilters';
@@ -395,6 +395,7 @@ class ParticipantsListApp extends Component {
                             toggleParticipantCheck={this.toggleParticipantCheck}
                             toggleParticipantCheckNoEmail={this.toggleParticipantCheckNoEmail}
                             toggleCheckedAll={this.toggleCheckedAll}
+                            projectTypeRef={this.props.projectTypeRef}
                         />
                     </div>
                 </PanelBody>
@@ -476,6 +477,7 @@ class ParticipantsListApp extends Component {
 const mapStateToProps = state => {
     return {
         projectId: state.projectDetails.id,
+        projectTypeRef: state.projectDetails.projectType.codeRef,
         participantsProject: state.participantsProject.list,
         participantsProjectFilters: state.participantsProject.filters,
         participantsProjectSorts: state.participantsProject.sorts,

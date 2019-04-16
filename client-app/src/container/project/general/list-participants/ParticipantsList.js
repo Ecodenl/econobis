@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 
-import DataTable from '../../../components/dataTable/DataTable';
-import DataTableHead from '../../../components/dataTable/DataTableHead';
-import DataTableBody from '../../../components/dataTable/DataTableBody';
+import DataTable from '../../../../components/dataTable/DataTable';
+import DataTableHead from '../../../../components/dataTable/DataTableHead';
+import DataTableBody from '../../../../components/dataTable/DataTableBody';
 import ParticipantsListHead from './ParticipantsListHead';
 import ParticipantsListFilter from './ParticipantsListFilter';
 import ParticipantsListItem from './ParticipantsListItem';
-import DataTablePagination from '../../../components/dataTable/DataTablePagination';
+import DataTablePagination from '../../../../components/dataTable/DataTablePagination';
 import { connect } from 'react-redux';
 
 class ParticipantsList extends Component {
@@ -43,18 +43,22 @@ class ParticipantsList extends Component {
                     <DataTableHead>
                         <ParticipantsListHead
                             refreshParticipantsProjectData={() => this.props.refreshParticipantsProjectData()}
+                            projectTypeRef={this.props.projectTypeRef}
                         />
                         <ParticipantsListFilter
                             onSubmitFilter={this.props.onSubmitFilter}
                             toggleCheckedAll={this.props.toggleCheckedAll}
                             showCheckboxList={this.props.showCheckboxList}
                             checkedAll={this.props.checkedAll}
+                            projectTypeRef={this.props.projectTypeRef}
                         />
                     </DataTableHead>
                     <DataTableBody>
                         {loading ? (
                             <tr>
-                                <td colSpan={11}>{loadingText}</td>
+                                <td colSpan={this.props.projectTypeRef === 'postalcode_link_capital' ? 11 : 10}>
+                                    {loadingText}
+                                </td>
                             </tr>
                         ) : (
                             data.map(participantProject => {
@@ -65,6 +69,7 @@ class ParticipantsList extends Component {
                                         checkedAll={this.props.checkedAll}
                                         toggleParticipantCheck={this.props.toggleParticipantCheck}
                                         toggleParticipantCheckNoEmail={this.props.toggleParticipantCheckNoEmail}
+                                        projectTypeRef={this.props.projectTypeRef}
                                         {...participantProject}
                                     />
                                 );

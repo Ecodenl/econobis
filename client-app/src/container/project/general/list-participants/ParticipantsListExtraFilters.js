@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 
-import Modal from '../../../components/modal/Modal';
-import DataTableCustomFilter from '../../../components/dataTable/DataTableCustomFilter';
-import ButtonText from '../../../components/button/ButtonText';
+import Modal from '../../../../components/modal/Modal';
+import DataTableCustomFilter from '../../../../components/dataTable/DataTableCustomFilter';
+import ButtonText from '../../../../components/button/ButtonText';
 import { connect } from 'react-redux';
-import axios from 'axios';
-import ProjectsAPI from '../../../api/project/ProjectsAPI';
-import ContactsAPI from '../../../api/contact/ContactsAPI';
+import axios from 'axios/index';
+import ProjectsAPI from '../../../../api/project/ProjectsAPI';
+import ContactsAPI from '../../../../api/contact/ContactsAPI';
 
 class ParticipantsListExtraFilters extends Component {
     constructor(props) {

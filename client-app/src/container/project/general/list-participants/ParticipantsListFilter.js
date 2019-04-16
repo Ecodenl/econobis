@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import moment from 'moment';
+import moment from 'moment/moment';
 
 import {
     clearFilterParticipantsProject,
@@ -16,8 +16,8 @@ import {
     setFilterParticipantProjectParticipationStatusId,
     setFilterParticipantProjectPostalCode,
     setFilterParticipantProjectStatusId,
-} from '../../../actions/participants-project/ParticipantsProjectFiltersActions';
-import DataTableFilterDate from '../../../components/dataTable/DataTableFilterDate';
+} from '../../../../actions/participants-project/ParticipantsProjectFiltersActions';
+import DataTableFilterDate from '../../../../components/dataTable/DataTableFilterDate';
 
 const ParticipantsListFilter = props => {
     const onIdChange = e => {
@@ -92,14 +92,6 @@ const ParticipantsListFilter = props => {
                 )}
                 {props.showCheckboxList && !props.checkedAll && (
                     <input type="checkbox" onChange={props.toggleCheckedAll} />
-                )}
-                {!props.showCheckboxList && (
-                    <input
-                        type="text"
-                        className="form-control input-sm"
-                        value={props.filters.id.data}
-                        onChange={onIdChange}
-                    />
                 )}
             </th>
 
@@ -183,23 +175,24 @@ const ParticipantsListFilter = props => {
                 value={props.filters.dateRegister.data && props.filters.dateRegister.data}
                 onChangeAction={onDateRegisterChange}
             />
-
-            <th>
-                <select
-                    className="form-control input-sm"
-                    value={props.filters.energySupplierId.data}
-                    onChange={onEnergySupplierIdChange}
-                >
-                    <option />
-                    {props.energySuppliers.map(energySupplier => {
-                        return (
-                            <option key={energySupplier.id} value={energySupplier.id}>
-                                {energySupplier.name}
-                            </option>
-                        );
-                    })}
-                </select>
-            </th>
+            {props.projectTypeRef === 'postalcode_link_capital' ? (
+                <th>
+                    <select
+                        className="form-control input-sm"
+                        value={props.filters.energySupplierId.data}
+                        onChange={onEnergySupplierIdChange}
+                    >
+                        <option />
+                        {props.energySuppliers.map(energySupplier => {
+                            return (
+                                <option key={energySupplier.id} value={energySupplier.id}>
+                                    {energySupplier.name}
+                                </option>
+                            );
+                        })}
+                    </select>
+                </th>
+            ) : null}
 
             <th />
         </tr>

@@ -5,6 +5,7 @@ import InputSelect from '../../../../../components/form/InputSelect';
 import InputDate from '../../../../../components/form/InputDate';
 import InputToggle from '../../../../../components/form/InputToggle';
 import InputMultiSelect from '../../../../../components/form/InputMultiSelect';
+import ViewText from '../../../../../components/form/ViewText';
 
 const ProjectFormEditGeneral = ({
     name,
@@ -57,14 +58,10 @@ const ProjectFormEditGeneral = ({
         </div>
 
         <div className="row">
-            <InputText
+            <ViewText
                 label={'Type project'}
-                name={'projectTypeId'}
                 value={projectType && projectType.name}
-                onChangeAction={handleInputChange}
-                required={'required'}
-                readOnly={true}
-                error={errors.projectTypeId}
+                className={'form-group col-sm-6'}
             />
             <InputSelect
                 label={'Status'}

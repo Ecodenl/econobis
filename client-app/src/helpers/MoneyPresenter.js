@@ -1,5 +1,5 @@
 export default amount => {
-    if (!amount) return '';
+    if (!amount) amount = 0;
 
     amount = parseFloat(amount);
 

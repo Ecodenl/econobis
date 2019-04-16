@@ -2,6 +2,7 @@ import React from 'react';
 import InputText from '../../../components/form/InputText';
 import InputToggle from '../../../components/form/InputToggle';
 import MoneyPresenter from '../../../helpers/MoneyPresenter';
+import ViewText from '../../../components/form/ViewText';
 
 const ProjectFormEditObligation = ({
     participationWorth,
@@ -31,39 +32,34 @@ const ProjectFormEditObligation = ({
                     value={participationWorth}
                     onChangeAction={handleInputChange}
                 />
-                <InputText
+                <ViewText
                     label={'Uitgegeven obligaties'}
-                    name={'participationsDefinitive'}
-                    value={participationsDefinitive ? participationsDefinitive : ''}
-                    readOnly={true}
+                    value={participationsDefinitive || 0}
+                    className={'form-group col-sm-6'}
                 />
             </div>
             <div className="row">
-                <InputText
+                <ViewText
                     label={'Huidige boekwaarde'}
-                    name={'activeBookWorth'}
-                    value={activeValueCourse && MoneyPresenter(activeValueCourse.bookWorth)}
-                    readOnly={true}
+                    value={activeValueCourse ? MoneyPresenter(activeValueCourse.bookWorth) : MoneyPresenter(0)}
+                    className={'form-group col-sm-6'}
                 />
-                <InputText
+                <ViewText
                     label={'Obligaties in optie'}
-                    name={'participationsOptioned'}
-                    value={participationsOptioned ? participationsOptioned : ''}
-                    readOnly={true}
+                    value={participationsOptioned || 0}
+                    className={'form-group col-sm-6'}
                 />
             </div>
             <div className="row">
-                <InputText
+                <ViewText
                     label={'Huidige overdrachtswaarde'}
-                    name={'activeTransferWorth'}
-                    value={activeValueCourse && MoneyPresenter(activeValueCourse.transferWorth)}
-                    readOnly={true}
+                    value={activeValueCourse ? MoneyPresenter(activeValueCourse.transferWorth) : MoneyPresenter(0)}
+                    className={'form-group col-sm-6'}
                 />
-                <InputText
+                <ViewText
                     label={'Uit te geven obligaties'}
-                    name={'participationsAvailable'}
-                    value={participationsAvailable ? participationsAvailable : ''}
-                    readOnly={true}
+                    value={participationsAvailable || 0}
+                    className={'form-group col-sm-6'}
                 />
             </div>
             <div className="row">

@@ -21,7 +21,7 @@ const ParticipantsListToolbar = props => {
                             title={
                                 props.project.projectStatus.codeRef !== 'active'
                                     ? 'Deelnemer kan alleen bij status actief worden toegevoegd'
-                                    : ''
+                                    : 'Deelnemer toevoegen'
                             }
                         />
                     )}

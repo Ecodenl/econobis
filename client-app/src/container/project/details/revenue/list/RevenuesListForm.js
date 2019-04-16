@@ -6,6 +6,7 @@ import PanelBody from '../../../../../components/panel/PanelBody';
 import PanelHeader from '../../../../../components/panel/PanelHeader';
 import { hashHistory } from 'react-router';
 import { connect } from 'react-redux';
+import ButtonIcon from '../../../../../components/button/ButtonIcon';
 
 class RevenuesListForm extends Component {
     constructor(props) {
@@ -18,13 +19,17 @@ class RevenuesListForm extends Component {
                 <PanelHeader>
                     <span className="h5 text-bold">Opbrengsten</span>
                     {this.props.permissions.manageFinancial && (
-                        <a
-                            role="button"
-                            className="pull-right"
-                            onClick={() => hashHistory.push(`/project/opbrengst/nieuw/${this.props.projectId}`)}
-                        >
-                            <span className="glyphicon glyphicon-plus" />
-                        </a>
+                        <ButtonIcon
+                            buttonClassName={'pull-right btn btn-link'}
+                            onClickAction={() => hashHistory.push(`/project/opbrengst/nieuw/${this.props.projectId}`)}
+                            disabled={this.props.projectStatus.codeRef !== 'active'}
+                            title={
+                                this.props.projectStatus.codeRef !== 'active'
+                                    ? 'Opbrengst verdeling kan alleen bij status actief worden toegevoegd'
+                                    : 'Nieuwe opbrengst verdeling maken'
+                            }
+                            iconName={'glyphicon-plus'}
+                        />
                     )}
                 </PanelHeader>
                 <PanelBody>
@@ -40,6 +45,7 @@ class RevenuesListForm extends Component {
 const mapStateToProps = state => {
     return {
         permissions: state.meDetails.permissions,
+        projectStatus: state.projectDetails.projectStatus,
     };
 };
 

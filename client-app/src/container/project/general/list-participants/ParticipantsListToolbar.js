@@ -17,6 +17,12 @@ const ParticipantsListToolbar = props => {
                         <ButtonIcon
                             iconName={'glyphicon-plus'}
                             onClickAction={() => hashHistory.push(`/project/deelnemer/nieuw/${props.project.id}`)}
+                            disabled={props.project.projectStatus.codeRef !== 'active'}
+                            title={
+                                props.project.projectStatus.codeRef !== 'active'
+                                    ? 'Deelnemer kan alleen bij status actief worden toegevoegd'
+                                    : ''
+                            }
                         />
                     )}
                     <ButtonIcon iconName={'glyphicon-filter'} onClickAction={props.toggleShowExtraFilters} />

@@ -53,16 +53,16 @@ const ProjectFormViewCapital = ({
                 <ViewText label={'Opgesteld vermogen kWh'} value={powerKwAvailable} />
             </div>
             <div className="row">
-                <ViewText label={'Minimaal aantal participaties p/p'} value={minParticipations} />
+                <ViewText label={'Min. aantal participaties p/p'} value={minParticipations} />
             </div>
             <div className="row">
-                <ViewText label={'Max aantal participaties p/p'} value={maxParticipations} />
+                <ViewText label={'Max. aantal participaties p/p'} value={maxParticipations} />
             </div>
             <div className="row">
-                <ViewText label={'Max aantal participaties jeugd'} value={maxParticipationsYouth} />
+                <ViewText label={'Max. aantal participaties jeugd'} value={maxParticipationsYouth} />
             </div>
             <div className="row">
-                <ViewText label={'Participaties overdraagbaar'} value={isParticipationTransferable} />
+                <ViewText label={'Participaties overdraagbaar'} value={isParticipationTransferable ? 'Ja' : 'Nee'} />
             </div>
         </React.Fragment>
     );

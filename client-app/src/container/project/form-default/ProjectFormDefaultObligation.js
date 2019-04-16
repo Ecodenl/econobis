@@ -85,7 +85,7 @@ const ProjectFormEditObligation = ({
             <div className="row">
                 <InputText
                     type={'number'}
-                    label={'Minimaal aantal obligaties p/p'}
+                    label={'Min. aantal obligaties p/p'}
                     name={'minParticipations'}
                     value={minParticipations}
                     onChangeAction={handleInputChange}
@@ -94,7 +94,7 @@ const ProjectFormEditObligation = ({
             <div className="row">
                 <InputText
                     type={'number'}
-                    label={'Max aantal obligaties p/p'}
+                    label={'Max. aantal obligaties p/p'}
                     name={'maxParticipations'}
                     value={maxParticipations}
                     onChangeAction={handleInputChange}
@@ -103,7 +103,7 @@ const ProjectFormEditObligation = ({
             <div className="row">
                 <InputText
                     type={'number'}
-                    label={'Max aantal obligaties jeugd'}
+                    label={'Max. aantal obligaties jeugd'}
                     name={'maxParticipationsYouth'}
                     value={maxParticipationsYouth}
                     onChangeAction={handleInputChange}

@@ -85,7 +85,7 @@ const ProjectFormDefaultCapital = ({
             <div className="row">
                 <InputText
                     type={'number'}
-                    label={'Minimaal aantal participaties p/p'}
+                    label={'Min. aantal participaties p/p'}
                     name={'minParticipations'}
                     value={minParticipations}
                     onChangeAction={handleInputChange}
@@ -94,7 +94,7 @@ const ProjectFormDefaultCapital = ({
             <div className="row">
                 <InputText
                     type={'number'}
-                    label={'Max aantal participaties p/p'}
+                    label={'Max. aantal participaties p/p'}
                     name={'maxParticipations'}
                     value={maxParticipations}
                     onChangeAction={handleInputChange}
@@ -103,7 +103,7 @@ const ProjectFormDefaultCapital = ({
             <div className="row">
                 <InputText
                     type={'number'}
-                    label={'Max aantal participaties jeugd'}
+                    label={'Max. aantal participaties jeugd'}
                     name={'maxParticipationsYouth'}
                     value={maxParticipationsYouth}
                     onChangeAction={handleInputChange}

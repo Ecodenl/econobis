@@ -35,8 +35,9 @@ class EnergySupplierCSVNewApp extends Component {
         let templates = [];
 
         templates.push({id: 1, name: 'Eneco'});
-        templates.push({id: 2, name: 'GC'});
+        templates.push({id: 2, name: 'Greenchoice'});
         templates.push({id: 3, name: 'Oxxio'});
+        templates.push({id: 4, name: 'Nuon'});
 
         this.setState({
             templates: templates,

@@ -16,6 +16,7 @@ const ProjectDetailsFormValueCourseEdit = ({
     handleSubmit,
     cancelEdit,
     errors,
+    projectType,
 }) => {
     const { project, date, bookWorth, transferWorth, active, createdAt, createdBy } = valueCourse;
 
@@ -44,15 +45,17 @@ const ProjectDetailsFormValueCourseEdit = ({
                     </div>
 
                     <div className="row">
-                        <InputText
-                            label={'Boekwaarde'}
-                            id={'bookWorth'}
-                            name={'bookWorth'}
-                            value={bookWorth}
-                            onChangeAction={handleInputChange}
-                            required={'required'}
-                            error={errors.bookWorthError}
-                        />
+                        {projectType.codeRef !== 'obligation' ? (
+                            <InputText
+                                label={'Boekwaarde'}
+                                id={'bookWorth'}
+                                name={'bookWorth'}
+                                value={bookWorth}
+                                onChangeAction={handleInputChange}
+                                required={'required'}
+                                error={errors.bookWorthError}
+                            />
+                        ) : null}
                         <InputText
                             label={'Overdrachtswaarde'}
                             id={'transferWorth'}
@@ -108,6 +111,7 @@ const ProjectDetailsFormValueCourseEdit = ({
 const mapStateToProps = state => {
     return {
         phoneNumberTypes: state.systemData.phoneNumberTypes,
+        projectType: state.projectDetails.projectType,
     };
 };
 

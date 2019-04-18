@@ -30,27 +30,21 @@ const ProjectFormViewObligation = ({
             </div>
             <div className="row">
                 <ViewText
-                    label={'Huidige boekwaarde'}
-                    value={activeValueCourse && MoneyPresenter(activeValueCourse.bookWorth)}
+                    label={'Huidige overdrachtswaarde'}
+                    value={activeValueCourse && MoneyPresenter(activeValueCourse.transferWorth)}
                 />
                 <ViewText label={'Obligaties in optie'} value={participationsOptioned ? participationsOptioned : ''} />
             </div>
             <div className="row">
-                <ViewText
-                    label={'Huidige overdrachtswaarde'}
-                    value={activeValueCourse && MoneyPresenter(activeValueCourse.transferWorth)}
-                />
+                <ViewText label={'Aantal obligaties nodig'} value={totalParticipations} />
                 <ViewText
                     label={'Uit te geven obligaties'}
                     value={participationsAvailable ? participationsAvailable : ''}
                 />
             </div>
             <div className="row">
-                <ViewText label={'Aantal obligaties nodig'} value={totalParticipations} />
-                <ViewText label={'Opgesteld vermogen kWh'} value={powerKwAvailable} />
-            </div>
-            <div className="row">
                 <ViewText label={'Min. obligaties p/p'} value={minParticipations} />
+                <ViewText label={'Opgesteld vermogen kWh'} value={powerKwAvailable} />
             </div>
             <div className="row">
                 <ViewText label={'Max. aantal obligaties p/p'} value={maxParticipations} />

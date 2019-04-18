@@ -12,6 +12,7 @@ use App\Eco\Contact\ContactStatus;
 use App\Eco\Email\Email;
 use App\Eco\ParticipantProject\ParticipantProjectStatus;
 use App\Eco\Project\Project;
+use App\Eco\Project\ProjectValueCourse;
 use App\Helpers\Delete\Models\DeleteProject;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Api\ApiController;
@@ -19,6 +20,7 @@ use App\Http\RequestQueries\Project\Grid\RequestQuery;
 use App\Http\Resources\Project\FullProject;
 use App\Http\Resources\Project\GridProject;
 use App\Http\Resources\Project\ProjectPeek;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -110,6 +112,23 @@ class ProjectController extends ApiController
 
         $project->save();
 
+        // Create project valuecourse if participationWorth is > 0
+        // Only if project type is capital or postal code link capital
+        if($project->participation_worth > 0) {
+            if($project->projectType->code_ref == 'capital' || $project->projectType->code_ref == 'postalcode_link_capital') {
+                $projectValueCourse = new ProjectValueCourse();
+
+                $projectValueCourse->fill([
+                    'project_id' => $project->id,
+                    'date' => Carbon::now(),
+                    'book_worth' => $project->participation_worth,
+                    'active' => true,
+                ]);
+
+                $projectValueCourse->save();
+            }
+        }
+
         $contactGroupIds = explode(',', $request->contactGroupIds);
 
         if ($contactGroupIds[0] == '') {
@@ -169,6 +188,25 @@ class ProjectController extends ApiController
                 foreach ($project->participantsProject as $participantProject){
                     $participantProject->participations_definitive_worth = $participantProject->calculator()->participationsDefinitiveWorth();
                     $participantProject->save();
+                }
+
+                // Create project valuecourse if participationWorth changed and no valuecourse with bookworth is filled out
+                // Only if project type is capital or postal code link capital
+                if($project->projectType->code_ref == 'capital' || $project->projectType->code_ref == 'postalcode_link_capital') {
+                    $projectValueCourseWithBookWorthCount = $project->projectValueCourses->where('book_worth', '>', '0')->count();
+
+                    if($projectValueCourseWithBookWorthCount === 0) {
+                        $projectValueCourse = new ProjectValueCourse();
+
+                        $projectValueCourse->fill([
+                            'project_id' => $project->id,
+                            'date' => Carbon::now(),
+                            'book_worth' => $project->participation_worth,
+                            'active' => true,
+                        ]);
+
+                        $projectValueCourse->save();
+                    }
                 }
             }
 

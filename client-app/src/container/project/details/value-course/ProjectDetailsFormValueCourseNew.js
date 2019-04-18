@@ -63,13 +63,15 @@ class ProjectDetailsFormValueCourseNew extends Component {
         let errors = {};
         let hasErrors = false;
 
-        if (valueCourse.bookWorth) {
-            if (isNaN(valueCourse.bookWorth)) {
-                valueCourse.bookWorth = valueCourse.bookWorth.replace(/,/g, '.');
+        if (this.props.projectType.codeRef !== 'obligation') {
+            if (valueCourse.bookWorth) {
+                if (isNaN(valueCourse.bookWorth)) {
+                    valueCourse.bookWorth = valueCourse.bookWorth.replace(/,/g, '.');
+                }
+            } else {
+                errors.bookWorth = true;
+                hasErrors = true;
             }
-        } else {
-            errors.bookWorth = true;
-            hasErrors = true;
         }
 
         if (isNaN(valueCourse.transferWorth)) {
@@ -116,14 +118,16 @@ class ProjectDetailsFormValueCourseNew extends Component {
                         </div>
 
                         <div className="row">
-                            <InputText
-                                label={'Boekwaarde'}
-                                name={'bookWorth'}
-                                value={bookWorth}
-                                onChangeAction={this.handleInputChange}
-                                required={'required'}
-                                error={this.state.errors.bookWorth}
-                            />
+                            {this.props.projectType.codeRef !== 'obligation' ? (
+                                <InputText
+                                    label={'Boekwaarde'}
+                                    name={'bookWorth'}
+                                    value={bookWorth}
+                                    onChangeAction={this.handleInputChange}
+                                    required={'required'}
+                                    error={this.state.errors.bookWorth}
+                                />
+                            ) : null}
                             <InputText
                                 label={'Overdrachtswaarde'}
                                 name={'transferWorth'}
@@ -165,6 +169,7 @@ const mapStateToProps = state => {
     return {
         id: state.projectDetails.id,
         name: state.projectDetails.name,
+        projectType: state.projectDetails.projectType,
     };
 };
 

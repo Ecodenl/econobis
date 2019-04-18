@@ -40,25 +40,13 @@ const ProjectFormEditObligation = ({
             </div>
             <div className="row">
                 <ViewText
-                    label={'Huidige boekwaarde'}
-                    value={activeValueCourse ? MoneyPresenter(activeValueCourse.bookWorth) : MoneyPresenter(0)}
-                    className={'form-group col-sm-6'}
-                />
-                <ViewText
-                    label={'Obligaties in optie'}
-                    value={participationsOptioned || 0}
-                    className={'form-group col-sm-6'}
-                />
-            </div>
-            <div className="row">
-                <ViewText
                     label={'Huidige overdrachtswaarde'}
                     value={activeValueCourse ? MoneyPresenter(activeValueCourse.transferWorth) : MoneyPresenter(0)}
                     className={'form-group col-sm-6'}
                 />
                 <ViewText
-                    label={'Uit te geven obligaties'}
-                    value={participationsAvailable || 0}
+                    label={'Obligaties in optie'}
+                    value={participationsOptioned || 0}
                     className={'form-group col-sm-6'}
                 />
             </div>
@@ -70,12 +58,10 @@ const ProjectFormEditObligation = ({
                     value={totalParticipations}
                     onChangeAction={handleInputChange}
                 />
-                <InputText
-                    type={'number'}
-                    label={'Opgesteld vermogen kW'}
-                    name={'powerKwAvailable'}
-                    value={powerKwAvailable}
-                    onChangeAction={handleInputChange}
+                <ViewText
+                    label={'Uit te geven obligaties'}
+                    value={participationsAvailable || 0}
+                    className={'form-group col-sm-6'}
                 />
             </div>
             <div className="row">
@@ -84,6 +70,13 @@ const ProjectFormEditObligation = ({
                     label={'Min. aantal obligaties p/p'}
                     name={'minParticipations'}
                     value={minParticipations}
+                    onChangeAction={handleInputChange}
+                />
+                <InputText
+                    type={'number'}
+                    label={'Opgesteld vermogen kW'}
+                    name={'powerKwAvailable'}
+                    value={powerKwAvailable}
                     onChangeAction={handleInputChange}
                 />
             </div>

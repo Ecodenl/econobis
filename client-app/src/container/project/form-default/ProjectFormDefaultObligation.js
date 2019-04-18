@@ -2,6 +2,7 @@ import React from 'react';
 import InputText from '../../../components/form/InputText';
 import InputToggle from '../../../components/form/InputToggle';
 import MoneyPresenter from '../../../helpers/MoneyPresenter';
+import ViewText from '../../../components/form/ViewText';
 
 const ProjectFormEditObligation = ({
     participationWorth,
@@ -31,39 +32,22 @@ const ProjectFormEditObligation = ({
                     value={participationWorth}
                     onChangeAction={handleInputChange}
                 />
-                <InputText
+                <ViewText
                     label={'Uitgegeven obligaties'}
-                    name={'participationsDefinitive'}
-                    value={participationsDefinitive ? participationsDefinitive : ''}
-                    readOnly={true}
+                    value={participationsDefinitive || 0}
+                    className={'form-group col-sm-6'}
                 />
             </div>
             <div className="row">
-                <InputText
-                    label={'Huidige boekwaarde'}
-                    name={'activeBookWorth'}
-                    value={activeValueCourse && MoneyPresenter(activeValueCourse.bookWorth)}
-                    readOnly={true}
-                />
-                <InputText
-                    label={'Obligaties in optie'}
-                    name={'participationsOptioned'}
-                    value={participationsOptioned ? participationsOptioned : ''}
-                    readOnly={true}
-                />
-            </div>
-            <div className="row">
-                <InputText
+                <ViewText
                     label={'Huidige overdrachtswaarde'}
-                    name={'activeTransferWorth'}
-                    value={activeValueCourse && MoneyPresenter(activeValueCourse.transferWorth)}
-                    readOnly={true}
+                    value={activeValueCourse ? MoneyPresenter(activeValueCourse.transferWorth) : MoneyPresenter(0)}
+                    className={'form-group col-sm-6'}
                 />
-                <InputText
-                    label={'Uit te geven obligaties'}
-                    name={'participationsAvailable'}
-                    value={participationsAvailable ? participationsAvailable : ''}
-                    readOnly={true}
+                <ViewText
+                    label={'Obligaties in optie'}
+                    value={participationsOptioned || 0}
+                    className={'form-group col-sm-6'}
                 />
             </div>
             <div className="row">
@@ -72,6 +56,20 @@ const ProjectFormEditObligation = ({
                     label={'Aantal obligaties nodig'}
                     name={'totalParticipations'}
                     value={totalParticipations}
+                    onChangeAction={handleInputChange}
+                />
+                <ViewText
+                    label={'Uit te geven obligaties'}
+                    value={participationsAvailable || 0}
+                    className={'form-group col-sm-6'}
+                />
+            </div>
+            <div className="row">
+                <InputText
+                    type={'number'}
+                    label={'Min. aantal obligaties p/p'}
+                    name={'minParticipations'}
+                    value={minParticipations}
                     onChangeAction={handleInputChange}
                 />
                 <InputText
@@ -85,16 +83,7 @@ const ProjectFormEditObligation = ({
             <div className="row">
                 <InputText
                     type={'number'}
-                    label={'Minimaal aantal obligaties p/p'}
-                    name={'minParticipations'}
-                    value={minParticipations}
-                    onChangeAction={handleInputChange}
-                />
-            </div>
-            <div className="row">
-                <InputText
-                    type={'number'}
-                    label={'Max aantal obligaties p/p'}
+                    label={'Max. aantal obligaties p/p'}
                     name={'maxParticipations'}
                     value={maxParticipations}
                     onChangeAction={handleInputChange}
@@ -103,7 +92,7 @@ const ProjectFormEditObligation = ({
             <div className="row">
                 <InputText
                     type={'number'}
-                    label={'Max aantal obligaties jeugd'}
+                    label={'Max. aantal obligaties jeugd'}
                     name={'maxParticipationsYouth'}
                     value={maxParticipationsYouth}
                     onChangeAction={handleInputChange}

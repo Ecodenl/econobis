@@ -103,13 +103,15 @@ class ProjectDetailsFormValueCourseItem extends Component {
         let errors = {};
         let hasErrors = false;
 
-        if (valueCourse.bookWorth) {
-            if (isNaN(valueCourse.bookWorth)) {
-                valueCourse.bookWorth = valueCourse.bookWorth.replace(/,/g, '.');
+        if (this.props.projectType.codeRef !== 'obligation') {
+            if (valueCourse.bookWorth) {
+                if (isNaN(valueCourse.bookWorth)) {
+                    valueCourse.bookWorth = valueCourse.bookWorth.replace(/,/g, '.');
+                }
+            } else {
+                errors.bookWorth = true;
+                hasErrors = true;
             }
-        } else {
-            errors.bookWorth = true;
-            hasErrors = true;
         }
 
         if (!valueCourse.date) {
@@ -167,6 +169,7 @@ class ProjectDetailsFormValueCourseItem extends Component {
 const mapStateToProps = state => {
     return {
         permissions: state.meDetails.permissions,
+        projectType: state.projectDetails.projectType,
     };
 };
 

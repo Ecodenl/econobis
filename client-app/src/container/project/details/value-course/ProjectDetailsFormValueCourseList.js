@@ -3,19 +3,19 @@ import { connect } from 'react-redux';
 
 import ProjectDetailsFormValueCourseItem from './ProjectDetailsFormValueCourseItem';
 
-const ProjectDetailsFormValueCourseList = props => {
+const ProjectDetailsFormValueCourseList = ({ projectType, valueCourses }) => {
     return (
         <div>
             <div className="row header">
                 <div className="col-sm-3">Project</div>
                 <div className="col-sm-2">Datum</div>
-                <div className="col-sm-2">Boekwaarde</div>
+                {projectType.codeRef !== 'obligation' ? <div className="col-sm-2">Boekwaarde</div> : null}
                 <div className="col-sm-2">Overdrachtswaarde</div>
                 <div className="col-sm-2">Actief</div>
                 <div className="col-sm-1" />
             </div>
-            {props.valueCourses.length > 0 ? (
-                props.valueCourses.map(valueCourse => {
+            {valueCourses.length > 0 ? (
+                valueCourses.map(valueCourse => {
                     return <ProjectDetailsFormValueCourseItem key={valueCourse.id} valueCourse={valueCourse} />;
                 })
             ) : (
@@ -28,6 +28,7 @@ const ProjectDetailsFormValueCourseList = props => {
 const mapStateToProps = state => {
     return {
         valueCourses: state.projectDetails.valueCourses,
+        projectType: state.projectDetails.projectType,
     };
 };
 

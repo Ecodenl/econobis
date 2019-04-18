@@ -1,9 +1,9 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import ButtonIcon from '../../../components/button/ButtonIcon';
+import ButtonIcon from '../../../../components/button/ButtonIcon';
 import { hashHistory } from 'react-router';
-import ButtonText from '../../../components/button/ButtonText';
+import ButtonText from '../../../../components/button/ButtonText';
 
 const ParticipantsListToolbar = props => {
     const { meta = {} } = props.participantsProject;
@@ -17,6 +17,12 @@ const ParticipantsListToolbar = props => {
                         <ButtonIcon
                             iconName={'glyphicon-plus'}
                             onClickAction={() => hashHistory.push(`/project/deelnemer/nieuw/${props.project.id}`)}
+                            disabled={props.project.projectStatus.codeRef !== 'active'}
+                            title={
+                                props.project.projectStatus.codeRef !== 'active'
+                                    ? 'Deelnemer kan alleen bij status actief worden toegevoegd'
+                                    : 'Deelnemer toevoegen'
+                            }
                         />
                     )}
                     <ButtonIcon iconName={'glyphicon-filter'} onClickAction={props.toggleShowExtraFilters} />

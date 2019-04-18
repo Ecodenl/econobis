@@ -28,12 +28,7 @@ export default {
     storeProject: data => {
         const requestUrl = `${URL_PROJECT}`;
 
-        return axiosInstance
-            .post(requestUrl, data)
-            .then(response => response.data.data)
-            .catch(error => {
-                console.log(error);
-            });
+        return axiosInstance.post(requestUrl, data);
     },
 
     deleteProject: id => {

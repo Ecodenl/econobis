@@ -2,6 +2,7 @@ import React from 'react';
 import InputText from '../../../components/form/InputText';
 import InputToggle from '../../../components/form/InputToggle';
 import MoneyPresenter from '../../../helpers/MoneyPresenter';
+import ViewText from '../../../components/form/ViewText';
 
 const ProjectFormDefaultCapital = ({
     participationWorth,
@@ -31,39 +32,34 @@ const ProjectFormDefaultCapital = ({
                     value={participationWorth}
                     onChangeAction={handleInputChange}
                 />
-                <InputText
+                <ViewText
                     label={'Uitgegeven participaties'}
-                    name={'participationsDefinitive'}
-                    value={participationsDefinitive ? participationsDefinitive : ''}
-                    readOnly={true}
+                    value={participationsDefinitive || 0}
+                    className={'form-group col-sm-6'}
                 />
             </div>
             <div className="row">
-                <InputText
+                <ViewText
                     label={'Huidige boekwaarde'}
-                    name={'activeBookWorth'}
-                    value={activeValueCourse && MoneyPresenter(activeValueCourse.bookWorth)}
-                    readOnly={true}
+                    value={activeValueCourse ? MoneyPresenter(activeValueCourse.bookWorth) : MoneyPresenter(0)}
+                    className={'form-group col-sm-6'}
                 />
-                <InputText
+                <ViewText
                     label={'Participaties in optie'}
-                    name={'participationsOptioned'}
-                    value={participationsOptioned ? participationsOptioned : ''}
-                    readOnly={true}
+                    value={participationsOptioned || 0}
+                    className={'form-group col-sm-6'}
                 />
             </div>
             <div className="row">
-                <InputText
+                <ViewText
                     label={'Huidige overdrachtswaarde'}
-                    name={'activeTransferWorth'}
-                    value={activeValueCourse && MoneyPresenter(activeValueCourse.transferWorth)}
-                    readOnly={true}
+                    value={activeValueCourse ? MoneyPresenter(activeValueCourse.transferWorth) : MoneyPresenter(0)}
+                    className={'form-group col-sm-6'}
                 />
-                <InputText
+                <ViewText
                     label={'Uit te geven participaties'}
-                    name={'participationsAvailable'}
-                    value={participationsAvailable ? participationsAvailable : ''}
-                    readOnly={true}
+                    value={participationsAvailable || 0}
+                    className={'form-group col-sm-6'}
                 />
             </div>
             <div className="row">
@@ -85,7 +81,7 @@ const ProjectFormDefaultCapital = ({
             <div className="row">
                 <InputText
                     type={'number'}
-                    label={'Minimaal aantal participaties p/p'}
+                    label={'Min. aantal participaties p/p'}
                     name={'minParticipations'}
                     value={minParticipations}
                     onChangeAction={handleInputChange}
@@ -94,7 +90,7 @@ const ProjectFormDefaultCapital = ({
             <div className="row">
                 <InputText
                     type={'number'}
-                    label={'Max aantal participaties p/p'}
+                    label={'Max. aantal participaties p/p'}
                     name={'maxParticipations'}
                     value={maxParticipations}
                     onChangeAction={handleInputChange}
@@ -103,7 +99,7 @@ const ProjectFormDefaultCapital = ({
             <div className="row">
                 <InputText
                     type={'number'}
-                    label={'Max aantal participaties jeugd'}
+                    label={'Max. aantal participaties jeugd'}
                     name={'maxParticipationsYouth'}
                     value={maxParticipationsYouth}
                     onChangeAction={handleInputChange}

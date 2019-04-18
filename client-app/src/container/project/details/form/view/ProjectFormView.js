@@ -51,7 +51,11 @@ const ProjectFormView = props => {
     } = props.project;
 
     return (
-        <section onClick={props.switchToEdit}>
+        <section
+            onClick={
+                projectStatus.codeRef === 'concept' || projectStatus.codeRef === 'active' ? props.switchToEdit : null
+            }
+        >
             <ProjectFormViewGeneral
                 name={name}
                 code={code}

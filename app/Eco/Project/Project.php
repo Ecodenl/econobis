@@ -40,7 +40,7 @@ class Project extends Model
     }
 
     public function projectStatus(){
-        return $this->belongsTo(ProjectStatus::class);
+        return $this->belongsTo(ProjectStatus::class)->withTrashed();
     }
 
     public function projectType(){
@@ -68,6 +68,10 @@ class Project extends Model
 
     public function createdBy()
     {
+        return $this->belongsTo(User::class);
+    }
+
+    public function updatedBy(){
         return $this->belongsTo(User::class);
     }
 

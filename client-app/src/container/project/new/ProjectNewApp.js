@@ -71,6 +71,7 @@ class ProjectNewApp extends Component {
                 postalCode: false,
                 contactGroupIds: false,
             },
+            loading: false,
         };
         this.handleInputChangeDate = this.handleInputChangeDate.bind(this);
         this.toggleShowPostalCodeLinkFields = this.toggleShowPostalCodeLinkFields.bind(this);
@@ -161,10 +162,19 @@ class ProjectNewApp extends Component {
 
         this.setState({ ...this.state, errors: errors });
 
-        !hasErrors &&
-            ProjectDetailsAPI.storeProject(project).then(payload => {
-                hashHistory.push(`/project/${payload.id}`);
-            });
+        if (!hasErrors) {
+            this.setState({ loading: true });
+            ProjectDetailsAPI.storeProject(project)
+                .then(payload => {
+                    this.setState({ loading: false });
+                    hashHistory.push(`/project/${payload.data.data.id}`);
+                })
+                .catch(error => {
+                    console.log(error);
+                    alert('Er is iets misgegaan bij opslaan. Herlaad de pagina en probeer het nogmaals.');
+                    this.setState({ loading: false });
+                });
+        }
     };
 
     toggleShowPostalCodeLinkFields() {
@@ -326,6 +336,8 @@ class ProjectNewApp extends Component {
                                                         onClickAction={this.handleSubmit}
                                                         type={'submit'}
                                                         value={'Submit'}
+                                                        loading={this.state.loading}
+                                                        loadText={'Project wordt aangemaakt'}
                                                     />
                                                     <ButtonText
                                                         buttonText={'Nee'}

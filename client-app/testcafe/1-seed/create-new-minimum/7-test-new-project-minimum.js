@@ -34,10 +34,17 @@ test('Fill out form new production project -> participant -> value course', asyn
         .typeText(newProject.name, vars.projectName)
         .typeText(newProject.code, vars.projectCode)
 
+        .click(newProject.projectTypeId)
+        .click(general.option.withText('Kapitaal'))
+
+        .click(newProject.projectStatusId)
+        .click(general.option.withText('Actief'))
+
         .click(newProject.ownedById)
-        .click(general.option.filter('[value="1"]'))
+        .click(general.option.withText(constants.name))
 
         .click(general.save)
+        .click(Selector('button').withExactText('Ja'))
         .wait(constants.wait);
 
     await t

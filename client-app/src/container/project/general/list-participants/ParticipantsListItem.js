@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { hashHistory } from 'react-router';
-import moment from 'moment';
+import moment from 'moment/moment';
 moment.locale('nl');
 
 class ParticipantsListItem extends Component {
@@ -59,7 +59,6 @@ class ParticipantsListItem extends Component {
                     {this.props.showCheckboxList && !this.props.checkedAll && !contact.primaryEmailAddress && (
                         <input type="checkbox" name={id} onChange={this.props.toggleParticipantCheckNoEmail} />
                     )}
-                    {!this.props.showCheckboxList && <span>{id}</span>}
                 </td>
                 <td>{contact.type ? contact.type.name : ''}</td>
                 <td>{contact.fullName}</td>
@@ -69,11 +68,13 @@ class ParticipantsListItem extends Component {
                 <td>{participationsDefinitive ? participationsDefinitive : ''}</td>
                 <td>{status ? status.name : ''}</td>
                 <td>{dateRegister ? moment(dateRegister).format('L') : ''}</td>
-                <td>
-                    {contact.primaryContactEnergySupplier
-                        ? contact.primaryContactEnergySupplier.energySupplier.name
-                        : ''}
-                </td>
+                {this.props.projectTypeRef === 'postalcode_link_capital' ? (
+                    <td>
+                        {contact.primaryContactEnergySupplier
+                            ? contact.primaryContactEnergySupplier.energySupplier.name
+                            : ''}
+                    </td>
+                ) : null}
                 <td>
                     {this.state.showActionButtons ? (
                         <a role="button" onClick={() => this.openItem(id)}>

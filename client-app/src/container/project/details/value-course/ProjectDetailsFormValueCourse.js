@@ -6,6 +6,7 @@ import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
 import PanelHeader from '../../../../components/panel/PanelHeader';
 import { connect } from 'react-redux';
+import ButtonIcon from '../../../../components/button/ButtonIcon';
 
 class ProjectDetailsFormValueCourse extends Component {
     constructor(props) {
@@ -28,9 +29,11 @@ class ProjectDetailsFormValueCourse extends Component {
                 <PanelHeader>
                     <span className="h5 text-bold">Waardeverloop deelnames</span>
                     {this.props.permissions.manageFinancial && (
-                        <a role="button" className="pull-right" onClick={this.toggleShowNew}>
-                            <span className="glyphicon glyphicon-plus" />
-                        </a>
+                        <ButtonIcon
+                            buttonClassName={'pull-right btn btn-link'}
+                            onClickAction={this.toggleShowNew}
+                            iconName={'glyphicon-plus'}
+                        />
                     )}
                 </PanelHeader>
                 <PanelBody>

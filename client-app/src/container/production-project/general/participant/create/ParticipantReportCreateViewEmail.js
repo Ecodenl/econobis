@@ -38,6 +38,18 @@ class ParticipantReportCreateViewEmail extends Component {
                         <div className='col-sm-12'>
                             <div className="row">
                                 <div className="col-sm-3">
+                                    <label className="col-sm-12">From</label>
+                                </div>
+                                <div className="col-sm-9">
+                                    {this.state.email.from}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="row margin-10-top">
+                        <div className='col-sm-12'>
+                            <div className="row">
+                                <div className="col-sm-3">
                                     <label className="col-sm-12">Aan</label>
                                 </div>
                                 <div className="col-sm-9">

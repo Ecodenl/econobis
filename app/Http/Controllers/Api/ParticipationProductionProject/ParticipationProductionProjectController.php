@@ -14,6 +14,7 @@ use App\Eco\ContactGroup\DynamicContactGroupFilter;
 use App\Eco\Document\Document;
 use App\Eco\DocumentTemplate\DocumentTemplate;
 use App\Eco\EmailTemplate\EmailTemplate;
+use App\Eco\Mailbox\Mailbox;
 use App\Helpers\Alfresco\AlfrescoHelper;
 use App\Helpers\CSV\ParticipantCSVHelper;
 use App\Helpers\Template\TemplateTableHelper;
@@ -577,20 +578,24 @@ class ParticipationProductionProjectController extends ApiController
                 $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables,'administratie', $productionProject->administration);
                 $htmlBodyWithContactVariables = TemplateVariableHelper::stripRemainingVariableTags($htmlBodyWithContactVariables);
 
+                $primaryMailbox = Mailbox::getDefault();
+
                 if ($previewEmail) {
                     return [
+                        'from' => $primaryMailbox->email,
                         'to' => $primaryEmailAddress->email,
                         'subject' => $subject,
                         'htmlBody' => $htmlBodyWithContactVariables
                     ];
                 }else {
-                    $email->send(new ParticipantReportMail($email,
+                    $email->send(new ParticipantReportMail($email, $primaryMailbox->email, $primaryMailbox->name,
                         $htmlBodyWithContactVariables, $document));
                 }
 
             }
             else{
                 return [
+                    'from' => 'Geen e-mail bekend.',
                     'to' => 'Geen e-mail bekend.',
                     'subject' => 'Geen e-mail bekend.',
                     'htmlBody' => 'Geen e-mail bekend.'

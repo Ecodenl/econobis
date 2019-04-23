@@ -122,7 +122,9 @@ class ProductController extends ApiController
         $data = $input
             ->string('productId')->validate('required|exists:products,id')->alias('product_id')->next()
             ->string('dateStart')->validate('required|date')->alias('date_start')->next()
+            ->boolean('inputInclPrice')->alias('input_incl_vat')->onEmpty(false)->whenMissing(false)->next()
             ->numeric('price')->onEmpty(null)->whenMissing(null)->next()
+            ->numeric('priceInclVat')->alias('price_incl_vat')->onEmpty(null)->whenMissing(null)->next()
             ->integer('vatPercentage')->alias('vat_percentage')->next()
             ->boolean('hasVariablePrice')->alias('has_variable_price')->onEmpty(false)->whenMissing(false)->next()
             ->get();
@@ -131,6 +133,7 @@ class ProductController extends ApiController
 
         if($priceHistory->has_variable_price){
             $priceHistory->price = null;
+            $priceHistory->price_incl_vat = null;
         }
 
         $priceHistory->save();

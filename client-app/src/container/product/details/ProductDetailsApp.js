@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import { fetchProductDetails } from '../../../actions/product/ProductDetailsActions';
@@ -8,13 +8,13 @@ import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
 
 class ProductDetailsApp extends Component {
-    constructor(props){
+    constructor(props) {
         super(props);
-    };
+    }
 
     componentDidMount() {
         this.props.fetchProductDetails(this.props.params.id);
-    };
+    }
 
     render() {
         return (
@@ -22,8 +22,8 @@ class ProductDetailsApp extends Component {
                 <div className="col-md-9">
                     <div className="col-md-12 margin-10-top">
                         <Panel>
-                            <PanelBody className={"panel-small"}>
-                                < ProductDetailsToolbar />
+                            <PanelBody className={'panel-small'}>
+                                <ProductDetailsToolbar />
                             </PanelBody>
                         </Panel>
                     </div>
@@ -34,20 +34,23 @@ class ProductDetailsApp extends Component {
                 </div>
                 <div className="col-md-3" />
             </div>
-        )
+        );
     }
-};
+}
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         productDetails: state.productDetails,
     };
 };
 
 const mapDispatchToProps = dispatch => ({
-    fetchProductDetails: (id) => {
+    fetchProductDetails: id => {
         dispatch(fetchProductDetails(id));
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(ProductDetailsApp);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(ProductDetailsApp);

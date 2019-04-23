@@ -19,17 +19,19 @@ class EnergySupplierCSVHelper
     private $energySupplier;
     private $productionProjectRevenue;
     private $distributions;
+    private $counter;
 
     public function __construct(
         EnergySupplier $energySupplier,
         ProductionProjectRevenue $productionProjectRevenue,
-        $templateId
+        $templateId, $fileName
     ) {
         $this->csvExporter = new Export();
         $this->csvExporter->getCsv()->setDelimiter(';');
         $this->energySupplier = $energySupplier;
         $this->productionProjectRevenue = $productionProjectRevenue;
         $this->templateId = $templateId;
+        $this->fileName = $fileName;
         $this->distributions = $productionProjectRevenue->distribution()->where('es_id', $energySupplier->id)->get();
     }
 
@@ -39,10 +41,6 @@ class EnergySupplierCSVHelper
         if($this->distributions->count() === 0){
             abort(403, 'Geen verdeling voor deze energiemaatschappij');
         }
-        $this->csvExporter->beforeEach(function ($distribution) {
-            $distribution->period_start = $this->formatDate($distribution->revenue->date_begin);
-            $distribution->period_end = $this->formatDate($distribution->revenue->date_end);
-        });
 
         switch ($this->templateId) {
             case '1':
@@ -53,6 +51,9 @@ class EnergySupplierCSVHelper
                 break;
             case '3':
                 $csv = $this->getOxxioCsv();
+                break;
+            case '4':
+                $csv = $this->getNuonCsv();
                 break;
             default:
                 break;
@@ -69,27 +70,56 @@ class EnergySupplierCSVHelper
         foreach ($this->distributions->chunk(500) as $chunk) {
             $chunk->load([
                 'contact.person',
-                'contact.person',
                 'contact.primaryEmailAddress',
                 'contact.primaryphoneNumber',
                 'revenue',
                 'contact.primaryContactEnergySupplier',
             ]);
 
+            $this->csvExporter->beforeEach(function ($distribution) {
+                // Now notes field will have this value
+                if (strlen($distribution->postal_code)>3) {
+                    echo "more than 140";
+                }
+                $distribution->empty_column_account_number = '';
+                $distribution->empty_column_proximity_rate = '';
+                $distribution->empty_column_power_total = '';
+                $distribution->empty_column_EB_discount_total_excl_vat = '';
+                $distribution->empty_column_customer_receives_excl_vat = '';
+                $distribution->empty_column_customer_receives_incl_vat = '';
+                $distribution->empty_column_eb_year = '';
+                $distribution->empty_column_settle_date = '';
+                $distribution->postal_code_numbers = strlen($distribution->postal_code)>3 ? substr($distribution->postal_code, 0, 4) : '';
+                $distribution->postal_code_letters = strlen($distribution->postal_code)>5 ? substr($distribution->postal_code, 5) : '';
+                $distribution->period_start = $this->formatDate($distribution->revenue->date_begin);
+                $distribution->period_end   = $this->formatDate($distribution->revenue->date_end);
+            });
+
             $csv = $this->csvExporter->build($chunk, [
                 'contact.full_name' => 'Naam',
                 'contact.person.initials' => 'Voorletters',
                 'contact.person.last_name_prefix' => 'Tussenvoegsel',
                 'address' => 'Adres',
-                'postal_code' => 'Postcode',
+                'postal_code_numbers' => 'Postcode cijfers',
+                'postal_code_letters' => 'Postcode letters',
                 'city' => 'Woonplaats',
+                'energy_supplier_ean_electricity' => 'Ean-code leveringsadres',
                 'contact.primaryEmailAddress.email' => 'Emailadres',
                 'contact.primaryphoneNumber.number' => 'Telefoonnummer',
                 'period_start' => 'Startdatum',
+                'empty_column_reading_on_3112' => 'Stand op 31-12',
                 'period_end' => 'Einddatum',
                 'participations_amount' => 'Aantal kavels',
                 'contact.primaryContactEnergySupplier.es_number' => 'Eneco klantnr',
+                'empty_column_account_number' => 'Accountnr',
                 'delivered_total' => 'Opwek',
+                'empty_column_proximity_rate' => 'Nabijheids-tarief',
+                'empty_column_power_total' => 'Stroom Totaal',
+                'empty_column_EB_discount_total_excl_vat' => 'EB Korting Totaal Excl. BTW',
+                'empty_column_customer_receives_excl_vat' => 'Klant Ontvangt Excl. BTW',
+                'empty_column_customer_receives_incl_vat' => 'Klant Ontvangt Incl. BTW',
+                'empty_column_eb_year' => 'EB <jaartal>',
+                'empty_column_settle_date' => 'Afrekendatum',
             ], $headers);
             $headers = false;
         }
@@ -100,26 +130,38 @@ class EnergySupplierCSVHelper
     {
         $csv = '';
         $headers = true;
+        $this->counter = 0;
 
         foreach ($this->distributions->chunk(500) as $chunk) {
             $chunk->load([
                 'revenue',
                 'contact.primaryContactEnergySupplier',
             ]);
-
             $this->csvExporter->beforeEach(function ($distribution) {
                 // Now notes field will have this value
+                ++$this->counter;
+                $distribution->seq_nr = $this->counter;
                 $distribution->ean = $this->productionProjectRevenue->productionProject->ean;
+                $distribution->registration_date = $this->formatDate(new Carbon('now'));
+                $distribution->period_start = $this->formatDate($distribution->revenue->date_begin);
+                $distribution->period_end   = $this->formatDate($distribution->revenue->date_end);
+                $distribution->empty_column_expected_revenue = '';
+                $distribution->file_name = $this->fileName;
             });
 
             $csv = $this->csvExporter->build($chunk, [
-                'ean' => 'EanCode',
+                'seq_nr' => 'Volgnr',
+                'contact.full_name' => 'KlantNaam',
                 'postal_code' => 'Postcode',
+                'contact.primaryContactEnergySupplier.es_number' => 'KlantNummer',
+                'ean' => 'EanCode',
+                'registration_date' => 'OntvangstDatum',
                 'period_start' => 'BeginDatum',
                 'period_end' => 'EindDatum',
-                'delivered_total' => 'Productie',
-                'contact.primaryContactEnergySupplier.es_number' => 'KlantNummer',
-                'contact.full_name' => 'KlantNaam',
+                'participations_amount' => 'Aantal participaties',
+                'empty_column_expected_revenue' => 'Verwachte opbrengst',
+                'delivered_total' => 'ProductieHoeveelheid',
+                'file_name' => 'BestandsNaam',
             ], $headers);
             $headers = false;
         }
@@ -144,6 +186,8 @@ class EnergySupplierCSVHelper
                 $distribution->ean = $this->productionProjectRevenue->productionProject->ean;
                 $distribution->ean_manager = $this->productionProjectRevenue->productionProject->ean_manager;
                 $distribution->tax_referral = $this->productionProjectRevenue->productionProject->tax_referral;
+                $distribution->period_start = $this->formatDate($distribution->revenue->date_begin);
+                $distribution->period_end   = $this->formatDate($distribution->revenue->date_end);
             });
 
             $csv = $this->csvExporter->build($chunk, [
@@ -161,6 +205,53 @@ class EnergySupplierCSVHelper
             $headers = false;
         }
         return Reader::BOM_UTF8 . $csv->getCsv();
+    }
+
+    private function getNuonCsv()
+    {
+        $csv = '';
+        $headers = true;
+
+        foreach ($this->distributions->chunk(500) as $chunk) {
+            $chunk->load([
+                'contact.person',
+                'contact.primaryEmailAddress',
+                'contact.primaryphoneNumber',
+                'revenue',
+                'contact.primaryContactEnergySupplier',
+            ]);
+
+            $this->csvExporter->beforeEach(function ($distribution) {
+                // Now notes field will have this value
+                $distribution->empty_column_certificates_amount = '';
+                $distribution->empty_column_unit_kwh = '';
+                $distribution->period_start = $this->formatDate($distribution->revenue->date_begin);
+                $distribution->period_end   = $this->formatDate($distribution->revenue->date_end);
+            });
+
+            $csv = $this->csvExporter->build($chunk, [
+                'contact.number' => 'Interne Ref.nr.',
+                'contact.person.title.name' => 'Aanspreektitel',
+                'contact.person.first_name' => 'Voornaam',
+                'contact.person.last_name_prefix' => 'Tussenvoegsel',
+                'contact.person.last_name' => 'Achternaam',
+                'address' => 'Adres Aansluiting',
+                'postal_code' => 'Postcode Aansluiting',
+                'city' => 'Woonplaats',
+                'energy_supplier_name' => 'Leverancier',
+                'contact.primaryContactEnergySupplier.es_number' => 'Klantnummer',
+                'contact.iban' => 'Contractrekening',
+                'energy_supplier_ean_electricity' => 'EAN aansluiting',
+                'empty_column_certificates_amount' => 'Aantal certificaten',
+                'period_start' => 'Startdatum',
+                'period_end' => 'Stopdatum',
+                'delivered_total' => 'Toegerekende productie',
+                'empty_column_unit_kwh' => 'Eenheid (kWh)',
+
+            ], $headers);
+            $headers = false;
+        }
+        return $csv->getCsv();
     }
 
     private function formatDate($date) {

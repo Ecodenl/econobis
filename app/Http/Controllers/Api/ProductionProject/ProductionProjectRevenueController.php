@@ -365,6 +365,7 @@ class ProductionProjectRevenueController extends ApiController
     )
     {
         $documentName = $request->input('documentName');
+        $fileName = $documentName . '.csv';
         $templateId = $request->input('templateId');
 
         //get current logged in user
@@ -373,7 +374,7 @@ class ProductionProjectRevenueController extends ApiController
         if ($templateId) {
             set_time_limit(0);
             $csvHelper = new EnergySupplierCSVHelper($energySupplier,
-                $productionProjectRevenue, $templateId);
+                $productionProjectRevenue, $templateId, $fileName);
             $csv = $csvHelper->getCSV();
         }
 
@@ -381,11 +382,11 @@ class ProductionProjectRevenueController extends ApiController
         $document->document_type = 'internal';
         $document->document_group = 'revenue';
 
-        $document->filename = $documentName . '.csv';
+        $document->filename = $fileName;
 
         $document->save();
 
-        $filePath = (storage_path('app' . DIRECTORY_SEPARATOR . 'documents/'
+        $filePath = (storage_path('app' . DIRECTORY_SEPARATOR . 'documents' . DIRECTORY_SEPARATOR
             . $document->filename));
         file_put_contents($filePath, $csv);
 

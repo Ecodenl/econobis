@@ -222,7 +222,6 @@ class EnergySupplierCSVHelper
 
             $this->csvExporter->beforeEach(function ($distribution) {
                 // Now notes field will have this value
-                $distribution->empty_column_certificates_amount = '';
                 $distribution->empty_column_unit_kwh = '';
                 $distribution->period_start = $this->formatDate($distribution->revenue->date_begin);
                 $distribution->period_end   = $this->formatDate($distribution->revenue->date_end);
@@ -241,7 +240,7 @@ class EnergySupplierCSVHelper
                 'contact.primaryContactEnergySupplier.es_number' => 'Klantnummer',
                 'contact.iban' => 'Contractrekening',
                 'contact.primaryContactEnergySupplier.ean_electricity' => 'EanCode',
-                'empty_column_certificates_amount' => 'Aantal certificaten',
+                'participations_amount' => 'Aantal certificaten',
                 'period_start' => 'Startdatum',
                 'period_end' => 'Einddatum',
                 'delivered_total' => 'Toegerekende productie',

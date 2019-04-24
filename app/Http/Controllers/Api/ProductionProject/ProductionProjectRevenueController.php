@@ -626,16 +626,24 @@ class ProductionProjectRevenueController extends ApiController
                 $htmlBodyWithContactVariables = str_replace('{contactpersoon}', $contactInfo['contactPerson'], $htmlBodyWithContactVariables);
 
                 $primaryMailbox = Mailbox::getDefault();
+                if($primaryMailbox)
+                {
+                    $fromEmail = $primaryMailbox->email;
+                    $fromName = $primaryMailbox->name;
+                }else{
+                    $fromEmail = \Config::get('mail.from.address');
+                    $fromName = \Config::get('mail.from.name');
+                }
 
                 if ($previewEmail) {
                     return [
-                        'from' => $primaryMailbox->email,
+                        'from' => $fromEmail,
                         'to' => $primaryEmailAddress->email,
                         'subject' => $subject,
                         'htmlBody' => $htmlBodyWithContactVariables
                     ];
                 } else {
-                    $email->send(new ParticipantReportMail($email, $primaryMailbox->email, $primaryMailbox->name,
+                    $email->send(new ParticipantReportMail($email, $fromEmail, $fromName,
                         $htmlBodyWithContactVariables, $document));
                 }
             } else {

@@ -47,7 +47,7 @@ class EnergySupplierCSVHelper
                 $csv = $this->getEnecoCsv();
                 break;
             case '2':
-                $csv = $this->getGCCsv();
+                $csv = $this->getGreenchoiceCsv();
                 break;
             case '3':
                 $csv = $this->getOxxioCsv();
@@ -103,7 +103,7 @@ class EnergySupplierCSVHelper
                 'postal_code_numbers' => 'Postcode cijfers',
                 'postal_code_letters' => 'Postcode letters',
                 'city' => 'Woonplaats',
-                'energy_supplier_ean_electricity' => 'Ean-code leveringsadres',
+                'contact.primaryContactEnergySupplier.ean_electricity' => 'Ean-code leveringsadres',
                 'contact.primaryEmailAddress.email' => 'Emailadres',
                 'contact.primaryphoneNumber.number' => 'Telefoonnummer',
                 'period_start' => 'Startdatum',
@@ -126,7 +126,7 @@ class EnergySupplierCSVHelper
         return $csv->getCsv();
     }
 
-    private function getGCCsv()
+    private function getGreenchoiceCsv()
     {
         $csv = '';
         $headers = true;
@@ -141,7 +141,6 @@ class EnergySupplierCSVHelper
                 // Now notes field will have this value
                 ++$this->counter;
                 $distribution->seq_nr = $this->counter;
-                $distribution->ean = $this->productionProjectRevenue->productionProject->ean;
                 $distribution->registration_date = $this->formatDate(new Carbon('now'));
                 $distribution->period_start = $this->formatDate($distribution->revenue->date_begin);
                 $distribution->period_end   = $this->formatDate($distribution->revenue->date_end);
@@ -154,7 +153,7 @@ class EnergySupplierCSVHelper
                 'contact.full_name' => 'KlantNaam',
                 'postal_code' => 'Postcode',
                 'contact.primaryContactEnergySupplier.es_number' => 'KlantNummer',
-                'ean' => 'EanCode',
+                'contact.primaryContactEnergySupplier.ean_electricity' => 'EanCode',
                 'registration_date' => 'OntvangstDatum',
                 'period_start' => 'BeginDatum',
                 'period_end' => 'EindDatum',
@@ -237,14 +236,14 @@ class EnergySupplierCSVHelper
                 'contact.person.last_name' => 'Achternaam',
                 'address' => 'Adres Aansluiting',
                 'postal_code' => 'Postcode Aansluiting',
-                'city' => 'Woonplaats',
+                'city' => 'Woonplaats Aansluiting',
                 'energy_supplier_name' => 'Leverancier',
                 'contact.primaryContactEnergySupplier.es_number' => 'Klantnummer',
                 'contact.iban' => 'Contractrekening',
-                'energy_supplier_ean_electricity' => 'EAN aansluiting',
+                'contact.primaryContactEnergySupplier.ean_electricity' => 'EanCode',
                 'empty_column_certificates_amount' => 'Aantal certificaten',
                 'period_start' => 'Startdatum',
-                'period_end' => 'Stopdatum',
+                'period_end' => 'Einddatum',
                 'delivered_total' => 'Toegerekende productie',
                 'empty_column_unit_kwh' => 'Eenheid (kWh)',
 

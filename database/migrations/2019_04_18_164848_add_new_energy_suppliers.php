@@ -15,8 +15,20 @@ class AddNewEnergySuppliers extends Migration
     public function up()
     {
         //
-        $newEs = ['Delta Energie', 'Agem', 'Anode Energie', 'Budget Energie', 'De Groene Stroomfabriek', 'Delta energie', 'Energie Van Ons',
-            'Huismerk Energie', 'HVC Kringloop Energie', 'Sepa Green', 'Servicehouse', 'Holthausen Clean Energy (HCE)', 'Total', 'Fenor energie', 'Power peers', 'Delta energie', 'Energyhouse'];
+        $newEs = [
+            'Delta Energie',
+            'Agem',
+            'Anode Energie',
+            'De Groene Stroomfabriek',
+            'Energie Van Ons',
+            'HVC Kringloop Energie',
+            'Sepa Green',
+            'Servicehouse',
+            'Holthausen Clean Energy (HCE)',
+            'Total',
+            'Fenor energie',
+            'Power peers',
+            'Energyhouse'];
 
         foreach ($newEs as $name) {
             $es = new EnergySupplier();

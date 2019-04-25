@@ -68,14 +68,13 @@ class ProductsListItem extends Component {
                     <td>Variabel</td>
                 ) : (
                     <td>
-                        {/*todo dit nog werkend maken.*/}
-                        {/*{currentPrice*/}
-                        {/*? '€' +*/}
-                        {/*currentPrice.priceInclVat.toLocaleString('nl', {*/}
-                        {/*minimumFractionDigits: 2,*/}
-                        {/*maximumFractionDigits: 2,*/}
-                        {/*})*/}
-                        {/*: ''}*/}
+                        {currentPrice
+                        ? '€' +
+                        currentPrice.priceInclVat.toLocaleString('nl', {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2,
+                        })
+                        : ''}
                     </td>
                 )}
                 <td>{administration ? administration.name : ''}</td>

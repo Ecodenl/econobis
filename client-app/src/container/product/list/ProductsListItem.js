@@ -31,7 +31,7 @@ class ProductsListItem extends Component {
     }
 
     render() {
-        const { id, code, name, currentPrice, priceInclVat, administration } = this.props;
+        const { id, code, name, currentPrice, administration } = this.props;
         let vatPercentage = '';
 
         if (currentPrice) {
@@ -68,13 +68,14 @@ class ProductsListItem extends Component {
                     <td>Variabel</td>
                 ) : (
                     <td>
-                        {priceInclVat
-                            ? '€' +
-                              priceInclVat.toLocaleString('nl', {
-                                  minimumFractionDigits: 2,
-                                  maximumFractionDigits: 2,
-                              })
-                            : ''}
+                        {/*todo dit nog werkend maken.*/}
+                        {/*{currentPrice*/}
+                        {/*? '€' +*/}
+                        {/*currentPrice.priceInclVat.toLocaleString('nl', {*/}
+                        {/*minimumFractionDigits: 2,*/}
+                        {/*maximumFractionDigits: 2,*/}
+                        {/*})*/}
+                        {/*: ''}*/}
                     </td>
                 )}
                 <td>{administration ? administration.name : ''}</td>

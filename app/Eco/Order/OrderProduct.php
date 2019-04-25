@@ -46,7 +46,7 @@ class OrderProduct extends Model
             }
         }
         else{
-            $productPrice = $this->product->price_incl_vat;
+            $productPrice = $this->product->currentPrice->price_incl_vat;
         }
 
         $price += ($this->amount

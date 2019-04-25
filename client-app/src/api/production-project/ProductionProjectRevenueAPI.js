@@ -3,17 +3,17 @@ import axios from 'axios';
 const URL_REVENUE = `${URL_API}/api/production-project/revenue`;
 
 export default {
-    fetchProductionProjectRevenue: (id) => {
+    fetchProductionProjectRevenue: id => {
         const requestUrl = `${URL_REVENUE}/${id}`;
         const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
         axios.defaults.headers.common.Authorization = AUTH_TOKEN;
 
-        return axios.get(requestUrl)
+        return axios
+            .get(requestUrl)
             .then(response => response.data.data)
-            .catch((error) => {
-                    console.log(error);
-                },
-            );
+            .catch(error => {
+                console.log(error);
+            });
     },
 
     updateProductionProjectRevenue: (id, data) => {
@@ -21,38 +21,38 @@ export default {
         const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
         axios.defaults.headers.common.Authorization = AUTH_TOKEN;
 
-        return axios.post(requestUrl, data)
+        return axios
+            .post(requestUrl, data)
             .then(response => response.data.data)
-            .catch((error) => {
-                    console.log(error);
-                },
-            );
+            .catch(error => {
+                console.log(error);
+            });
     },
 
-    storeProductionProjectRevenue: (data) => {
+    storeProductionProjectRevenue: data => {
         const requestUrl = `${URL_REVENUE}`;
         const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
         axios.defaults.headers.common.Authorization = AUTH_TOKEN;
 
-        return axios.post(requestUrl, data)
+        return axios
+            .post(requestUrl, data)
             .then(response => response.data.data)
-            .catch((error) => {
-                    console.log(error);
-                },
-            );
+            .catch(error => {
+                console.log(error);
+            });
     },
 
-    deleteProductionProjectRevenue: (id) => {
+    deleteProductionProjectRevenue: id => {
         const requestUrl = `${URL_REVENUE}/${id}/delete`;
         const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
         axios.defaults.headers.common.Authorization = AUTH_TOKEN;
 
-        return axios.post(requestUrl)
+        return axios
+            .post(requestUrl)
             .then(response => response.data.data)
-            .catch((error) => {
-                    console.log(error);
-                },
-            );
+            .catch(error => {
+                console.log(error);
+            });
     },
 
     createPaymentInvoices: (templateId, emailTemplateId, subject, distributionIds, createReport, createInvoice) => {
@@ -60,12 +60,19 @@ export default {
         const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
         axios.defaults.headers.common.Authorization = AUTH_TOKEN;
 
-        return axios.post(requestUrl, {documentTemplateId: templateId, emailTemplateId: emailTemplateId, distributionIds: distributionIds, subject: subject, createReport: createReport, createInvoice: createInvoice})
+        return axios
+            .post(requestUrl, {
+                documentTemplateId: templateId,
+                emailTemplateId: emailTemplateId,
+                distributionIds: distributionIds,
+                subject: subject,
+                createReport: createReport,
+                createInvoice: createInvoice,
+            })
             .then(response => response)
-            .catch((error) => {
-                    console.log(error);
-                },
-            );
+            .catch(error => {
+                console.log(error);
+            });
     },
 
     createEnergySupplierReport: (revenueId, templateId, energySupplierId, documentName) => {
@@ -73,12 +80,12 @@ export default {
         const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
         axios.defaults.headers.common.Authorization = AUTH_TOKEN;
 
-        return axios.post(requestUrl, {documentName: documentName})
+        return axios
+            .post(requestUrl, { documentName: documentName })
             .then(response => response.data.data)
-            .catch((error) => {
-                    console.log(error);
-                },
-            );
+            .catch(error => {
+                console.log(error);
+            });
     },
 
     createEnergySupplierCsv: (revenueId, templateId, energySupplierId, documentName) => {
@@ -86,12 +93,12 @@ export default {
         const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
         axios.defaults.headers.common.Authorization = AUTH_TOKEN;
 
-        return axios.post(requestUrl, {documentName: documentName, templateId: templateId})
+        return axios
+            .post(requestUrl, { documentName: documentName, templateId: templateId })
             .then(response => response.data.data)
-            .catch((error) => {
-                    console.log(error);
-                },
-            );
+            .catch(error => {
+                console.log(error);
+            });
     },
 
     downloadPreview: (id, subject, documentTemplateId, emailTemplateId) => {
@@ -99,7 +106,11 @@ export default {
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios.post(requestUrl, {'subject': subject, 'documentTemplateId' : documentTemplateId,'emailTemplateId' :emailTemplateId}, {responseType: 'blob'});
+        return axios.post(
+            requestUrl,
+            { subject: subject, documentTemplateId: documentTemplateId, emailTemplateId: emailTemplateId },
+            { responseType: 'blob' }
+        );
     },
 
     previewEmail: (id, subject, documentTemplateId, emailTemplateId) => {
@@ -107,7 +118,11 @@ export default {
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios.post(requestUrl, {'subject': subject, 'documentTemplateId' : documentTemplateId,'emailTemplateId' :emailTemplateId});
+        return axios.post(requestUrl, {
+            subject: subject,
+            documentTemplateId: documentTemplateId,
+            emailTemplateId: emailTemplateId,
+        });
     },
 
     fetchProductionProjectRevenueDistribution: (id, page) => {
@@ -115,7 +130,7 @@ export default {
         const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
         axios.defaults.headers.common.Authorization = AUTH_TOKEN;
 
-        return axios.post(requestUrl, {'page': page});
+        return axios.post(requestUrl, { page: page });
     },
 
     fetchProductionProjectRevenueParticipants: (id, page) => {
@@ -123,10 +138,10 @@ export default {
         const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
         axios.defaults.headers.common.Authorization = AUTH_TOKEN;
 
-        return axios.post(requestUrl, {'page': page});
+        return axios.post(requestUrl, { page: page });
     },
 
-    getCSV: (id) => {
+    getCSV: id => {
         const requestUrl = `${URL_REVENUE}/${id}/csv`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;

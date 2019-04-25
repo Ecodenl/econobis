@@ -1,8 +1,8 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 
 import MailboxDetailsIgnoresView from './MailboxDetailsIgnoresView';
-import MailboxDetailsIgnoresItemDelete from "./MailboxDetailsIgnoresDelete";
-import {connect} from "react-redux";
+import MailboxDetailsIgnoresItemDelete from './MailboxDetailsIgnoresDelete';
+import { connect } from 'react-redux';
 
 class MailboxDetailsIgnoresItem extends Component {
     constructor(props) {
@@ -15,7 +15,7 @@ class MailboxDetailsIgnoresItem extends Component {
 
             ignore: props.ignore,
         };
-    };
+    }
 
     onLineEnter = () => {
         this.setState({
@@ -32,7 +32,7 @@ class MailboxDetailsIgnoresItem extends Component {
     };
 
     toggleDelete = () => {
-        this.setState({showDelete: !this.state.showDelete});
+        this.setState({ showDelete: !this.state.showDelete });
     };
 
     render() {
@@ -46,22 +46,18 @@ class MailboxDetailsIgnoresItem extends Component {
                     toggleDelete={this.toggleDelete}
                     ignore={this.state.ignore}
                 />
-                {
-                    this.state.showDelete && this.props.permissions.createMailbox &&
-                    <MailboxDetailsIgnoresItemDelete
-                        toggleDelete={this.toggleDelete}
-                        ignoreId={this.state.ignore.id}
-                    />
-                }
+                {this.state.showDelete && this.props.permissions.createMailbox && (
+                    <MailboxDetailsIgnoresItemDelete toggleDelete={this.toggleDelete} ignoreId={this.state.ignore.id} />
+                )}
             </div>
         );
     }
-};
+}
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
-        permissions: state.meDetails.permissions
-    }
+        permissions: state.meDetails.permissions,
+    };
 };
 
 export default connect(mapStateToProps)(MailboxDetailsIgnoresItem);

@@ -1,7 +1,7 @@
 import React from 'react';
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 
-import PriceHistoryItem from "./PriceHistoryItem";
+import PriceHistoryItem from './PriceHistoryItem';
 
 const PriceHistoryList = props => {
     return (
@@ -13,25 +13,20 @@ const PriceHistoryList = props => {
                 <div className="col-sm-2">Prijs incl. BTW</div>
                 <div className="col-sm-2">Actief</div>
             </div>
-            {
-                props.priceHistory.length > 0 ?
-                    props.priceHistory.map(price => {
-                        return <PriceHistoryItem
-                            key={price.id}
-                            price={price}
-                        />;
-                    })
-                    :
-                    <div>Geen prijshistorie bekend.</div>
-            }
+            {props.priceHistory.length > 0 ? (
+                props.priceHistory.map(price => {
+                    return <PriceHistoryItem key={price.id} price={price} />;
+                })
+            ) : (
+                <div>Geen prijshistorie bekend.</div>
+            )}
         </div>
     );
 };
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         priceHistory: state.productDetails.priceHistory,
     };
 };
 export default connect(mapStateToProps)(PriceHistoryList);
-

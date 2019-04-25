@@ -1,17 +1,16 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import TaskHarmonica from "./harmonica/TaskHarmonica";
-import EmailHarmonica from "./harmonica/EmailHarmonica";
-import DocumentHarmonica from "./harmonica/DocumentHarmonica";
-import {hashHistory} from "react-router";
-import InvoiceHarmonica from "./harmonica/InvoiceHarmonica";
-import InvoicePaidCollectionHarmonica from "./harmonica/InvoicePaidCollectionHarmonica";
-import InvoicePaidTransferHarmonica from "./harmonica/InvoicePaidTransferHarmonica";
-
+import TaskHarmonica from './harmonica/TaskHarmonica';
+import EmailHarmonica from './harmonica/EmailHarmonica';
+import DocumentHarmonica from './harmonica/DocumentHarmonica';
+import { hashHistory } from 'react-router';
+import InvoiceHarmonica from './harmonica/InvoiceHarmonica';
+import InvoicePaidCollectionHarmonica from './harmonica/InvoicePaidCollectionHarmonica';
+import InvoicePaidTransferHarmonica from './harmonica/InvoicePaidTransferHarmonica';
 
 class OrderDetailsHarmonica extends Component {
-    constructor(props){
+    constructor(props) {
         super(props);
 
         this.state = {
@@ -26,10 +25,10 @@ class OrderDetailsHarmonica extends Component {
         };
 
         this.toggleShowList = this.toggleShowList.bind(this);
-    };
+    }
 
     componentWillReceiveProps(nextProps) {
-        if(this.props.id !== nextProps.id) {
+        if (this.props.id !== nextProps.id) {
             this.setState({
                 toggleShowList: {
                     tasks: false,
@@ -39,9 +38,9 @@ class OrderDetailsHarmonica extends Component {
                     invoicesPaidCollection: false,
                     invoicesPaidTransfer: false,
                 },
-            })
+            });
         }
-    };
+    }
 
     toggleShowList(name) {
         this.setState({
@@ -49,11 +48,11 @@ class OrderDetailsHarmonica extends Component {
             toggleShowList: {
                 ...this.state.toggleShowList,
                 [name]: !this.state.toggleShowList[name],
-            }
+            },
         });
-    };
+    }
 
-    newTask = (type) => {
+    newTask = type => {
         hashHistory.push(`/taak/nieuw/${type}/order/${this.props.orderDetails.id}`);
     };
 
@@ -61,7 +60,7 @@ class OrderDetailsHarmonica extends Component {
         hashHistory.push(`/email/nieuw`);
     };
 
-    newDocument = (type) => {
+    newDocument = type => {
         hashHistory.push(`/document/nieuw/${type}/order/${this.props.orderDetails.id}`);
     };
 
@@ -91,30 +90,32 @@ class OrderDetailsHarmonica extends Component {
                     showInvoicesList={this.state.toggleShowList.invoices}
                     invoiceCount={this.props.orderDetails.invoiceCount}
                 />
-                {this.props.orderDetails.paymentTypeId === 'collection'
-                ?
+                {this.props.orderDetails.paymentTypeId === 'collection' ? (
                     <InvoicePaidCollectionHarmonica
                         toggleShowList={() => this.toggleShowList('invoicesPaidCollection')}
                         showInvoicesPaidCollectionList={this.state.toggleShowList.invoicesPaidCollection}
                         invoicePaidCollectionCount={this.props.orderDetails.invoicePaidCollectionCount}
                     />
-                :
+                ) : (
                     <InvoicePaidTransferHarmonica
                         toggleShowList={() => this.toggleShowList('invoicesPaidTransfer')}
                         showInvoicesPaidTransferList={this.state.toggleShowList.invoicesPaidTransfer}
                         invoicePaidTransferCount={this.props.orderDetails.invoicePaidTransferCount}
                     />
-                }
+                )}
             </div>
-        )
-    };
-};
+        );
+    }
+}
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         orderDetails: state.orderDetails,
-        permissions: state.meDetails.permissions
+        permissions: state.meDetails.permissions,
     };
 };
 
-export default connect(mapStateToProps, null)(OrderDetailsHarmonica);
+export default connect(
+    mapStateToProps,
+    null
+)(OrderDetailsHarmonica);

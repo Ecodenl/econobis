@@ -1,4 +1,4 @@
-export default function (state = { page: 0, offset: 0 }, action) {
+export default function(state = { page: 0, offset: 0 }, action) {
     switch (action.type) {
         case 'SET_CAMPAIGNS_PAGINATION':
             return {

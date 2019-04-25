@@ -1,8 +1,8 @@
 import { put, call } from 'redux-saga/effects';
 import ProductionProjectDetailsAPI from '../../api/production-project/ProductionProjectDetailsAPI';
-import ProductionProjectValueCourseAPI from "../../api/production-project/ProductionProjectValueCourseAPI";
-import ProductionProjectRevenueAPI from "../../api/production-project/ProductionProjectRevenueAPI";
-import {hashHistory} from "react-router";
+import ProductionProjectValueCourseAPI from '../../api/production-project/ProductionProjectValueCourseAPI';
+import ProductionProjectRevenueAPI from '../../api/production-project/ProductionProjectRevenueAPI';
+import { hashHistory } from 'react-router';
 
 export function* fetchProductionProjectSaga({ id }) {
     try {

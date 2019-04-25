@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import Modal from '../../../../components/modal/Modal';
 import { deleteAdministrationUser } from '../../../../actions/administration/AdministrationDetailsActions';
 
-const AdministrationDetailsUsersDelete = (props) => {
+const AdministrationDetailsUsersDelete = props => {
     const confirmAction = () => {
         props.deleteAdministrationUser(props.administrationId, props.userId);
         props.toggleDelete();
@@ -19,12 +19,11 @@ const AdministrationDetailsUsersDelete = (props) => {
             title="Verwijderen"
         >
             <p>Wil je deze gebruiker ontkoppelen van deze administratie?</p>
-
         </Modal>
     );
 };
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         administrationId: state.administrationDetails.id,
     };
@@ -36,4 +35,7 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(AdministrationDetailsUsersDelete);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(AdministrationDetailsUsersDelete);

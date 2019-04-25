@@ -10,7 +10,7 @@ import ViewText from '../../../../components/form/ViewText';
 import InputSelect from '../../../../components/form/InputSelect';
 
 class AddContactToGroup extends Component {
-    constructor(props){
+    constructor(props) {
         super(props);
 
         this.state = {
@@ -18,16 +18,16 @@ class AddContactToGroup extends Component {
             contactId: props.contactDetails.id,
             groupId: '',
             errors: {
-              groupId: false,
+                groupId: false,
             },
-        }
+        };
     }
 
     componentDidMount() {
-        GroupAPI.peekStaticContactGroups().then((payload) => {
-            this.setState({ contactGroups: payload })
+        GroupAPI.peekStaticContactGroups().then(payload => {
+            this.setState({ contactGroups: payload });
         });
-    };
+    }
 
     handleInputChange = event => {
         const target = event.target;
@@ -35,7 +35,7 @@ class AddContactToGroup extends Component {
         const name = target.name;
 
         this.setState({
-            [name]: value
+            [name]: value,
         });
     };
 
@@ -50,14 +50,14 @@ class AddContactToGroup extends Component {
         let errors = {};
         let hasErrors = false;
 
-        if(validator.isEmpty(contact.groupId)){
+        if (validator.isEmpty(contact.groupId)) {
             errors.groupId = true;
             hasErrors = true;
-        };
+        }
 
         this.setState({ ...this.state, errors: errors });
 
-        if(!hasErrors) {
+        if (!hasErrors) {
             this.props.addContactToGroup(contact);
             this.props.toggleGroup();
             this.props.fetchContactDetails(contact.contactId);
@@ -74,41 +74,40 @@ class AddContactToGroup extends Component {
                 title="Contact toevoegen aan groep"
             >
                 <div className="row">
-                    <ViewText
-                        className={"col-md-12"}
-                        label={"Contact"}
-                        value={this.props.contactDetails.fullName}
-                    />
+                    <ViewText className={'col-md-12'} label={'Contact'} value={this.props.contactDetails.fullName} />
 
                     <InputSelect
-                        size={"col-md-12"}
-                        label={"Groep"}
+                        size={'col-md-12'}
+                        label={'Groep'}
                         name="groupId"
                         options={this.state.contactGroups}
                         value={this.state.groupId}
                         onChangeAction={this.handleInputChange}
-                        required={"required"}
+                        required={'required'}
                         error={this.state.errors.groupId}
                     />
                 </div>
             </Modal>
         );
     }
-};
+}
 
 const mapStateToProps = state => {
     return {
         contactDetails: state.contactDetails,
-    }
+    };
 };
 
 const mapDispatchToProps = dispatch => ({
-    addContactToGroup: (contact) => {
+    addContactToGroup: contact => {
         dispatch(addContactToGroup(contact));
     },
-    fetchContactDetails: (id) => {
+    fetchContactDetails: id => {
         dispatch(fetchContactDetails(id));
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(AddContactToGroup);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(AddContactToGroup);

@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import validator from 'validator';
 import { bindActionCreators } from 'redux';
@@ -9,9 +9,9 @@ import { fetchSystemData } from '../../../../actions/general/SystemDataActions';
 import InputText from '../../../../components/form/InputText';
 import InputSelect from '../../../../components/form/InputSelect';
 import ButtonText from '../../../../components/button/ButtonText';
-import Panel from "../../../../components/panel/Panel";
-import PanelHeader from "../../../../components/panel/PanelHeader";
-import PanelBody from "../../../../components/panel/PanelBody";
+import Panel from '../../../../components/panel/Panel';
+import PanelHeader from '../../../../components/panel/PanelHeader';
+import PanelBody from '../../../../components/panel/PanelBody';
 import InputToggle from '../../../../components/form/InputToggle';
 
 class MailboxDetailsFormGeneralEdit extends Component {
@@ -38,7 +38,7 @@ class MailboxDetailsFormGeneralEdit extends Component {
 
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
-    };
+    }
 
     handleInputChange(event) {
         const target = event.target;
@@ -49,10 +49,10 @@ class MailboxDetailsFormGeneralEdit extends Component {
             ...this.state,
             mailbox: {
                 ...this.state.mailbox,
-                [name]: value
+                [name]: value,
             },
         });
-    };
+    }
 
     handleInputUsesMailgun = event => {
         const target = event.target;
@@ -77,68 +77,87 @@ class MailboxDetailsFormGeneralEdit extends Component {
         let errors = {};
         let hasErrors = false;
 
-        if(validator.isEmpty(mailbox.name)){
+        if (validator.isEmpty(mailbox.name)) {
             errors.name = true;
             hasErrors = true;
-        };
-
-        if(!validator.isEmail(mailbox.email)){
-            errors.email = true;
-            hasErrors = true;
-        };
-
-        if(validator.isEmpty(mailbox.username)){
-            errors.username = true;
-            hasErrors = true;
-        };
-
-        if(validator.isEmpty(mailbox.password)){
-            errors.password = true;
-            hasErrors = true;
-        };
-
-        if(mailbox.usesMailgun) {
-            if(validator.isEmpty(mailbox.mailgunDomainId.toString())){
-                errors.mailgunDomainId = true;
-                hasErrors = true;
-            };
-        } else {
-            if(validator.isEmpty(mailbox.smtpHost)){
-                errors.smtpHost = true;
-                hasErrors = true;
-            };
-
-            if(validator.isEmpty(mailbox.smtpPort)){
-                errors.smtpPort = true;
-                hasErrors = true;
-            };
         }
 
-        if(validator.isEmpty(mailbox.imapHost)){
+        if (!validator.isEmail(mailbox.email)) {
+            errors.email = true;
+            hasErrors = true;
+        }
+
+        if (validator.isEmpty(mailbox.username)) {
+            errors.username = true;
+            hasErrors = true;
+        }
+
+        if (validator.isEmpty(mailbox.password)) {
+            errors.password = true;
+            hasErrors = true;
+        }
+
+        if (mailbox.usesMailgun) {
+            if (validator.isEmpty(mailbox.mailgunDomainId.toString())) {
+                errors.mailgunDomainId = true;
+                hasErrors = true;
+            }
+        } else {
+            if (validator.isEmpty(mailbox.smtpHost)) {
+                errors.smtpHost = true;
+                hasErrors = true;
+            }
+
+            if (validator.isEmpty(mailbox.smtpPort)) {
+                errors.smtpPort = true;
+                hasErrors = true;
+            }
+        }
+
+        if (validator.isEmpty(mailbox.imapHost)) {
             errors.imapHost = true;
             hasErrors = true;
-        };
+        }
 
-        if(validator.isEmpty(mailbox.imapPort)){
+        if (validator.isEmpty(mailbox.imapPort)) {
             errors.imapPort = true;
             hasErrors = true;
-        };
+        }
 
         this.setState({ ...this.state, errors: errors });
 
         // If no errors send form
         !hasErrors &&
-            this.setState(currentState => ({ loading: !currentState.loading }), () => {
-                MailboxAPI.updateMailbox(mailbox).then((payload) => {
-                    this.props.updateMailbox(payload);
-                    this.props.fetchSystemData();
-                    this.props.switchToView();
-                });
-            });
-    };
+            this.setState(
+                currentState => ({ loading: !currentState.loading }),
+                () => {
+                    MailboxAPI.updateMailbox(mailbox).then(payload => {
+                        this.props.updateMailbox(payload);
+                        this.props.fetchSystemData();
+                        this.props.switchToView();
+                    });
+                }
+            );
+    }
 
     render() {
-        const { name, email, smtpHost, smtpPort, smtpEncryption, imapHost, imapPort, imapEncryption, imapInboxPrefix, username, password, usesMailgun, mailgunDomainId, primary, isActive } = this.state.mailbox;
+        const {
+            name,
+            email,
+            smtpHost,
+            smtpPort,
+            smtpEncryption,
+            imapHost,
+            imapPort,
+            imapEncryption,
+            imapInboxPrefix,
+            username,
+            password,
+            usesMailgun,
+            mailgunDomainId,
+            primary,
+            isActive,
+        } = this.state.mailbox;
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -147,37 +166,37 @@ class MailboxDetailsFormGeneralEdit extends Component {
                         <div className="row">
                             <InputText
                                 label="Weergavenaam"
-                                name={"name"}
+                                name={'name'}
                                 value={name}
                                 onChangeAction={this.handleInputChange}
-                                required={"required"}
+                                required={'required'}
                                 error={this.state.errors.name}
                             />
                             <InputText
-                                label={"E-mail"}
-                                name={"email"}
+                                label={'E-mail'}
+                                name={'email'}
                                 value={email}
                                 onChangeAction={this.handleInputChange}
-                                required={"required"}
+                                required={'required'}
                                 error={this.state.errors.email}
                             />
                         </div>
                         <div className="row">
                             <InputText
                                 label="Gebruikersnaam"
-                                name={"username"}
+                                name={'username'}
                                 value={username}
                                 onChangeAction={this.handleInputChange}
-                                required={"required"}
+                                required={'required'}
                                 error={this.state.errors.username}
                             />
                             <InputText
-                                type={"text"}
-                                label={"Wachtwoord"}
-                                name={"password"}
+                                type={'text'}
+                                label={'Wachtwoord'}
+                                name={'password'}
                                 value={password}
                                 onChangeAction={this.handleInputChange}
-                                required={"required"}
+                                required={'required'}
                                 error={this.state.errors.password}
                                 className={'numeric-password'}
                             />
@@ -185,14 +204,14 @@ class MailboxDetailsFormGeneralEdit extends Component {
                         <div className="row">
                             <InputToggle
                                 label="Actief"
-                                name={"isActive"}
+                                name={'isActive'}
                                 value={isActive}
                                 onChangeAction={this.handleInputChange}
                                 disabled={primary}
                             />
                             <InputToggle
                                 label="Primair (verzend wachtwoord mails)"
-                                name={"primary"}
+                                name={'primary'}
                                 value={primary}
                                 onChangeAction={this.handleInputChange}
                                 disabled={!isActive || primary}
@@ -207,42 +226,42 @@ class MailboxDetailsFormGeneralEdit extends Component {
                         <div className="row">
                             <InputText
                                 label="Inkomend"
-                                name={"imapHost"}
+                                name={'imapHost'}
                                 value={imapHost}
                                 onChangeAction={this.handleInputChange}
-                                required={"required"}
+                                required={'required'}
                                 error={this.state.errors.imapHost}
                             />
                             <InputToggle
                                 label="Gebruikt mailgun"
-                                name={"usesMailgun"}
+                                name={'usesMailgun'}
                                 value={usesMailgun}
                                 onChangeAction={this.handleInputUsesMailgun}
-                                required={"required"}
+                                required={'required'}
                             />
                         </div>
                         <div className="row">
-                            <div className="form-group col-md-6"/>
-                            { usesMailgun ?
+                            <div className="form-group col-md-6" />
+                            {usesMailgun ? (
                                 <InputSelect
                                     label="Uitgaand"
-                                    name={"mailgunDomainId"}
+                                    name={'mailgunDomainId'}
                                     value={mailgunDomainId}
                                     options={this.props.mailgunDomain}
                                     optionName={'domain'}
                                     onChangeAction={this.handleInputChange}
                                     error={this.state.errors.mailgunDomainId}
                                 />
-                                :
+                            ) : (
                                 <InputText
                                     label="Uitgaand"
-                                    name={"smtpHost"}
+                                    name={'smtpHost'}
                                     value={smtpHost}
                                     onChangeAction={this.handleInputChange}
-                                    required={"required"}
+                                    required={'required'}
                                     error={this.state.errors.smtpHost}
                                 />
-                            }
+                            )}
                         </div>
                     </PanelBody>
 
@@ -252,47 +271,47 @@ class MailboxDetailsFormGeneralEdit extends Component {
                     <PanelBody>
                         <div className="row">
                             <InputText
-                                label={"Imap poort"}
-                                name={"imapPort"}
+                                label={'Imap poort'}
+                                name={'imapPort'}
                                 value={imapPort}
                                 onChangeAction={this.handleInputChange}
-                                required={"required"}
+                                required={'required'}
                                 error={this.state.errors.imapPort}
                             />
-                            { !usesMailgun &&
-                            <InputText
-                                label={"Smtp poort"}
-                                name={"smtpPort"}
-                                value={smtpPort}
-                                onChangeAction={this.handleInputChange}
-                                required={"required"}
-                                error={this.state.errors.smtpPort}
-                            />
-                            }
+                            {!usesMailgun && (
+                                <InputText
+                                    label={'Smtp poort'}
+                                    name={'smtpPort'}
+                                    value={smtpPort}
+                                    onChangeAction={this.handleInputChange}
+                                    required={'required'}
+                                    error={this.state.errors.smtpPort}
+                                />
+                            )}
                         </div>
 
                         <div className="row">
                             <InputSelect
                                 label="Imap versleutelde verbinding"
-                                name={"imapEncryption"}
+                                name={'imapEncryption'}
                                 value={imapEncryption}
-                                options={[{id: 'ssl', name: 'SSL'}, {id: 'tls', name: 'TLS'}]}
+                                options={[{ id: 'ssl', name: 'SSL' }, { id: 'tls', name: 'TLS' }]}
                                 onChangeAction={this.handleInputChange}
                             />
-                            {!usesMailgun &&
-                            <InputSelect
-                                label="Smtp versleutelde verbinding"
-                                name={"smtpEncryption"}
-                                value={smtpEncryption}
-                                options={[{id: 'ssl', name: 'SSL'}, {id: 'tls', name: 'TLS'}]}
-                                onChangeAction={this.handleInputChange}
-                            />
-                            }
+                            {!usesMailgun && (
+                                <InputSelect
+                                    label="Smtp versleutelde verbinding"
+                                    name={'smtpEncryption'}
+                                    value={smtpEncryption}
+                                    options={[{ id: 'ssl', name: 'SSL' }, { id: 'tls', name: 'TLS' }]}
+                                    onChangeAction={this.handleInputChange}
+                                />
+                            )}
                         </div>
                         <div className="row">
                             <InputText
-                                label={"Inbox prefix"}
-                                name={"imapInboxPrefix"}
+                                label={'Inbox prefix'}
+                                name={'imapInboxPrefix'}
                                 value={imapInboxPrefix}
                                 onChangeAction={this.handleInputChange}
                                 error={this.state.errors.imapInboxPrefix}
@@ -302,17 +321,27 @@ class MailboxDetailsFormGeneralEdit extends Component {
 
                     <PanelBody>
                         <div className="pull-right btn-group" role="group">
-                            <ButtonText buttonClassName={"btn-default"} buttonText={"Sluiten"} onClickAction={this.props.switchToView}/>
-                            <ButtonText buttonText={"Opslaan"} onClickAction={this.handleSubmit} type={"submit"} value={"Submit"} loading={this.state.loading} />
+                            <ButtonText
+                                buttonClassName={'btn-default'}
+                                buttonText={'Sluiten'}
+                                onClickAction={this.props.switchToView}
+                            />
+                            <ButtonText
+                                buttonText={'Opslaan'}
+                                onClickAction={this.handleSubmit}
+                                type={'submit'}
+                                value={'Submit'}
+                                loading={this.state.loading}
+                            />
                         </div>
                     </PanelBody>
                 </Panel>
             </form>
         );
-    };
-};
+    }
+}
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         mailboxDetails: state.mailboxDetails,
         mailgunDomain: state.systemData.mailgunDomain,
@@ -321,4 +350,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = dispatch => bindActionCreators({ updateMailbox, fetchSystemData }, dispatch);
 
-export default connect(mapStateToProps, mapDispatchToProps)(MailboxDetailsFormGeneralEdit);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(MailboxDetailsFormGeneralEdit);

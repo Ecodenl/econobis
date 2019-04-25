@@ -1,7 +1,7 @@
 import React from 'react';
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 
-import ContactDetailFormPhoneItem from "./ContactDetailsFormPhoneItem";
+import ContactDetailFormPhoneItem from './ContactDetailsFormPhoneItem';
 
 const ContactDetailsFormPhoneList = props => {
     return (
@@ -9,25 +9,23 @@ const ContactDetailsFormPhoneList = props => {
             <div className="row header">
                 <div className="col-sm-2">Type</div>
                 <div className="col-sm-7">Telefoonnummers</div>
-                <div className="col-sm-2"><span className="pull-right">Primair</span></div>
-                <div className="col-sm-1"></div>
+                <div className="col-sm-2">
+                    <span className="pull-right">Primair</span>
+                </div>
+                <div className="col-sm-1" />
             </div>
-            {
-                props.phoneNumbers.length > 0 ?
-                    props.phoneNumbers.map(phoneNumber => {
-                        return <ContactDetailFormPhoneItem
-                            key={phoneNumber.id}
-                            phoneNumber={phoneNumber}
-                        />;
-                    })
-                    :
-                    <div>Geen telefoonnummers bekend.</div>
-            }
+            {props.phoneNumbers.length > 0 ? (
+                props.phoneNumbers.map(phoneNumber => {
+                    return <ContactDetailFormPhoneItem key={phoneNumber.id} phoneNumber={phoneNumber} />;
+                })
+            ) : (
+                <div>Geen telefoonnummers bekend.</div>
+            )}
         </div>
     );
 };
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         phoneNumbers: state.contactDetails.phoneNumbers,
     };

@@ -1,15 +1,15 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 
 import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
-import InvoiceSendList from "./InvoiceSendList";
-import InvoicesAPI from "../../../../api/invoice/InvoicesAPI";
-import InvoiceSendViewPdf from "./InvoiceSendViewPdf";
-import InvoiceSendViewEmail from "./InvoiceSendViewEmail";
-import InvoiceSendToolbar from "./InvoiceSendToolbar";
-import {clearPreviewSend} from "../../../../actions/invoice/InvoicesActions";
-import {connect} from "react-redux";
-import {fetchAdministrationDetails} from "../../../../actions/administration/AdministrationDetailsActions";
+import InvoiceSendList from './InvoiceSendList';
+import InvoicesAPI from '../../../../api/invoice/InvoicesAPI';
+import InvoiceSendViewPdf from './InvoiceSendViewPdf';
+import InvoiceSendViewEmail from './InvoiceSendViewEmail';
+import InvoiceSendToolbar from './InvoiceSendToolbar';
+import { clearPreviewSend } from '../../../../actions/invoice/InvoicesActions';
+import { connect } from 'react-redux';
+import { fetchAdministrationDetails } from '../../../../actions/administration/AdministrationDetailsActions';
 
 class InvoiceSendApp extends Component {
     constructor(props) {
@@ -18,24 +18,24 @@ class InvoiceSendApp extends Component {
             invoices: [],
             invoiceId: '',
         };
-    };
+    }
 
-    componentWillUnmount(){
+    componentWillUnmount() {
         this.props.clearPreviewSend();
     }
 
     componentDidMount() {
         this.props.fetchAdministrationDetails(this.props.params.id);
-        InvoicesAPI.getInvoicesForSending(this.props.invoicePreviewSend).then((payload) => {
+        InvoicesAPI.getInvoicesForSending(this.props.invoicePreviewSend).then(payload => {
             this.setState({
                 invoices: payload.data,
             });
         });
-    };
+    }
 
-    changeInvoice = (invoiceId) => {
+    changeInvoice = invoiceId => {
         this.setState({
-            invoiceId: invoiceId
+            invoiceId: invoiceId,
         });
     };
 
@@ -46,65 +46,72 @@ class InvoiceSendApp extends Component {
                     <div className="col-md-12 margin-10-top">
                         <div className="col-md-12 margin-10-top">
                             <Panel>
-                                <PanelBody className={"panel-small"}>
+                                <PanelBody className={'panel-small'}>
                                     <InvoiceSendToolbar
                                         type={this.props.params.type}
                                         paymentType={this.props.params.paymentType}
                                         invoiceIds={this.props.invoicePreviewSend}
                                         amountOfInvoices={this.state.invoices ? this.state.invoices.length : 0}
-                                        administrationId={this.props.params.id}/>
+                                        administrationId={this.props.params.id}
+                                    />
                                 </PanelBody>
                             </Panel>
                         </div>
                     </div>
                 </div>
-            <div className="row">
-                <div className="col-md-2">
-                    <div className="col-md-12 margin-10-top">
-                        <Panel>
-                            <PanelBody className={'panel-invoices-list'}>
-                                <InvoiceSendList invoices={this.state.invoices} changeInvoice={this.changeInvoice}/>
-                            </PanelBody>
-                        </Panel>
+                <div className="row">
+                    <div className="col-md-2">
+                        <div className="col-md-12 margin-10-top">
+                            <Panel>
+                                <PanelBody className={'panel-invoices-list'}>
+                                    <InvoiceSendList
+                                        invoices={this.state.invoices}
+                                        changeInvoice={this.changeInvoice}
+                                    />
+                                </PanelBody>
+                            </Panel>
+                        </div>
                     </div>
-                </div>
-                <div className="col-md-5">
-                    <div className="col-md-12 margin-10-top">
-                        <Panel>
-                            <PanelBody>
-                                <InvoiceSendViewPdf invoiceId={this.state.invoiceId}/>
-                            </PanelBody>
-                        </Panel>
+                    <div className="col-md-5">
+                        <div className="col-md-12 margin-10-top">
+                            <Panel>
+                                <PanelBody>
+                                    <InvoiceSendViewPdf invoiceId={this.state.invoiceId} />
+                                </PanelBody>
+                            </Panel>
+                        </div>
                     </div>
-                </div>
-                <div className="col-md-5">
-                    <div className="col-md-12 margin-10-top">
-                        <Panel>
-                            <PanelBody>
-                                <InvoiceSendViewEmail invoiceId={this.state.invoiceId}/>
-                            </PanelBody>
-                        </Panel>
+                    <div className="col-md-5">
+                        <div className="col-md-12 margin-10-top">
+                            <Panel>
+                                <PanelBody>
+                                    <InvoiceSendViewEmail invoiceId={this.state.invoiceId} />
+                                </PanelBody>
+                            </Panel>
+                        </div>
                     </div>
                 </div>
             </div>
-            </div>
-        )
+        );
     }
-};
+}
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         invoicePreviewSend: state.invoicePreviewSend,
-    }
+    };
 };
 
 const mapDispatchToProps = dispatch => ({
     clearPreviewSend: () => {
         dispatch(clearPreviewSend());
     },
-    fetchAdministrationDetails: (id) => {
+    fetchAdministrationDetails: id => {
         dispatch(fetchAdministrationDetails(id));
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(InvoiceSendApp);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(InvoiceSendApp);

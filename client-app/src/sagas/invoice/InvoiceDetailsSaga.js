@@ -1,12 +1,12 @@
 import { put, call } from 'redux-saga/effects';
 import InvoiceDetailsAPI from '../../api/invoice/InvoiceDetailsAPI';
-import {browserHistory} from "react-router";
+import { browserHistory } from 'react-router';
 
 export function* fetchInvoiceDetailsSaga({ id }) {
     try {
         yield put({ type: 'IS_LOADING' });
         const invoiceDetails = yield call(InvoiceDetailsAPI.fetchInvoiceDetails, id);
-        yield put({ type: 'FETCH_INVOICE_DETAILS_SUCCESS',invoiceDetails });
+        yield put({ type: 'FETCH_INVOICE_DETAILS_SUCCESS', invoiceDetails });
         yield put({ type: 'IS_LOADING_COMPLETE' });
     } catch (error) {
         yield put({ type: 'FETCH_INVOICE_DETAILS_ERROR', error });

@@ -9,32 +9,32 @@ import {
     setDateNextInvoiceFilterOrders,
     setPaymentTypeIdFilterOrders,
     setStatusIdFilterOrders,
-    setSubjectFilterOrders
+    setSubjectFilterOrders,
 } from '../../../../actions/order/OrdersFiltersActions';
-import DataTableFilterDate from "../../../../components/dataTable/DataTableFilterDate";
+import DataTableFilterDate from '../../../../components/dataTable/DataTableFilterDate';
 
 const OrdersListFilter = props => {
-    const onNumberChange = (e) => {
+    const onNumberChange = e => {
         props.setNumberFilterOrders(e.target.value);
     };
 
-    const onDateNextInvoiceChange = (selectedDay) => {
-        if(selectedDay === undefined){
+    const onDateNextInvoiceChange = selectedDay => {
+        if (selectedDay === undefined) {
             props.setDateNextInvoiceFilterOrders('');
-        }else{
+        } else {
             props.setDateNextInvoiceFilterOrders(moment(selectedDay).format('Y-MM-DD'));
         }
     };
 
-    const onSubjectChange = (e) => {
+    const onSubjectChange = e => {
         props.setSubjectFilterOrders(e.target.value);
     };
 
-    const onContactChange = (e) => {
+    const onContactChange = e => {
         props.setContactFilterOrders(e.target.value);
     };
 
-    const onPaymentTypeChange = (e) => {
+    const onPaymentTypeChange = e => {
         props.setPaymentTypeIdFilterOrders(e.target.value);
 
         setTimeout(() => {
@@ -42,7 +42,7 @@ const OrdersListFilter = props => {
         }, 100);
     };
 
-    const onStatusChange = (e) => {
+    const onStatusChange = e => {
         props.setStatusIdFilterOrders(e.target.value);
 
         setTimeout(() => {
@@ -51,53 +51,102 @@ const OrdersListFilter = props => {
     };
     return (
         <tr className="thead-filter">
-            { props.showSelectOrdersToCreate && <td><input type="checkbox"  onChange={props.selectAllCheckboxes} /></td> }
-            <th><input type="text" className="form-control input-sm" value={ props.filters.number.data} onChange={onNumberChange} /></th>
-            <DataTableFilterDate value={ props.filters.dateNextInvoice.data && props.filters.dateNextInvoice.data } onChangeAction={onDateNextInvoiceChange} />
-            <th><input type="text" className="form-control input-sm" value={ props.filters.subject.data} onChange={onSubjectChange} /></th>
-            <th><input type="text" className="form-control input-sm" value={ props.filters.contact.data} onChange={onContactChange} /></th>
-            <th/>
+            {props.showSelectOrdersToCreate && (
+                <td>
+                    <input type="checkbox" onChange={props.selectAllCheckboxes} />
+                </td>
+            )}
             <th>
-                <select className="form-control input-sm" value={ props.filters.paymentTypeId.data } onChange={onPaymentTypeChange}>
-                    <option/>
-                    {
-                        props.orderPaymentTypes.map((orderPaymentType) => {
-                            return <option key={orderPaymentType.id } value={ orderPaymentType.id }>{ orderPaymentType.name }</option>
-                        })
-                    }
+                <input
+                    type="text"
+                    className="form-control input-sm"
+                    value={props.filters.number.data}
+                    onChange={onNumberChange}
+                />
+            </th>
+            <DataTableFilterDate
+                value={props.filters.dateNextInvoice.data && props.filters.dateNextInvoice.data}
+                onChangeAction={onDateNextInvoiceChange}
+            />
+            <th>
+                <input
+                    type="text"
+                    className="form-control input-sm"
+                    value={props.filters.subject.data}
+                    onChange={onSubjectChange}
+                />
+            </th>
+            <th>
+                <input
+                    type="text"
+                    className="form-control input-sm"
+                    value={props.filters.contact.data}
+                    onChange={onContactChange}
+                />
+            </th>
+            <th />
+            <th>
+                <select
+                    className="form-control input-sm"
+                    value={props.filters.paymentTypeId.data}
+                    onChange={onPaymentTypeChange}
+                >
+                    <option />
+                    {props.orderPaymentTypes.map(orderPaymentType => {
+                        return (
+                            <option key={orderPaymentType.id} value={orderPaymentType.id}>
+                                {orderPaymentType.name}
+                            </option>
+                        );
+                    })}
                 </select>
             </th>
             <th>
                 <select className="form-control input-sm" value={props.filters.statusId.data} onChange={onStatusChange}>
-                    <option/>
-                    <option key={'concept'} value={'concept'}>{'Concept'}</option>
-                    <option key={'upcoming'} value={'upcoming'}>{'Aankomende'}</option>
-                    <option key={'to-create'} value={'create'}>{'Te factureren'}</option>
-                    <option key={'to-send'} value={'send'}>{'Te verzenden'}</option>
-                    <option key={'closed'} value={'closed'}>{'Beëindigd'}</option>
+                    <option />
+                    <option key={'concept'} value={'concept'}>
+                        {'Concept'}
+                    </option>
+                    <option key={'upcoming'} value={'upcoming'}>
+                        {'Aankomende'}
+                    </option>
+                    <option key={'to-create'} value={'create'}>
+                        {'Te factureren'}
+                    </option>
+                    <option key={'to-send'} value={'send'}>
+                        {'Te verzenden'}
+                    </option>
+                    <option key={'closed'} value={'closed'}>
+                        {'Beëindigd'}
+                    </option>
                 </select>
             </th>
-            <th/>
+            <th />
         </tr>
     );
 };
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = state => ({
     filters: state.orders.filters,
     orderStatuses: state.systemData.orderStatuses,
     orderPaymentTypes: state.systemData.orderPaymentTypes,
 });
 
-const mapDispatchToProps = (dispatch) => {
-    return bindActionCreators({
-        setNumberFilterOrders,
-        setContactFilterOrders,
-        setDateNextInvoiceFilterOrders,
-        setPaymentTypeIdFilterOrders,
-        setStatusIdFilterOrders,
-        setSubjectFilterOrders
-
-    }, dispatch);
+const mapDispatchToProps = dispatch => {
+    return bindActionCreators(
+        {
+            setNumberFilterOrders,
+            setContactFilterOrders,
+            setDateNextInvoiceFilterOrders,
+            setPaymentTypeIdFilterOrders,
+            setStatusIdFilterOrders,
+            setSubjectFilterOrders,
+        },
+        dispatch
+    );
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(OrdersListFilter);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(OrdersListFilter);

@@ -1,7 +1,7 @@
 import React from 'react';
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 
-import ContactGroupExtraFilterItem from "./ContactGroupExtraFilterItem";
+import ContactGroupExtraFilterItem from './ContactGroupExtraFilterItem';
 
 const ContactGroupExtraFiltersList = props => {
     return (
@@ -11,25 +11,20 @@ const ContactGroupExtraFiltersList = props => {
                 <div className="col-sm-3">Type</div>
                 <div className="col-sm-3">Waarde</div>
             </div>
-            {
-                props.extraFilters.length > 0 ?
-                    props.extraFilters.map(extraFilter => {
-                        return <ContactGroupExtraFilterItem
-                            key={extraFilter.id}
-                            extraFilter={extraFilter}
-                        />;
-                    })
-                    :
-                    <div>Geen extra filters bekend.</div>
-            }
+            {props.extraFilters.length > 0 ? (
+                props.extraFilters.map(extraFilter => {
+                    return <ContactGroupExtraFilterItem key={extraFilter.id} extraFilter={extraFilter} />;
+                })
+            ) : (
+                <div>Geen extra filters bekend.</div>
+            )}
         </div>
     );
 };
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         extraFilters: state.contactGroupDetails.extraFilters,
     };
 };
 export default connect(mapStateToProps)(ContactGroupExtraFiltersList);
-

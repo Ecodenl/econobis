@@ -7,12 +7,12 @@ import DataTableBody from '../../../components/dataTable/DataTableBody';
 
 import DocumentsListItem from './DocumentsListItem';
 import DocumentsDeleteItem from './DocumentsDeleteItem';
-import DataTablePagination from "../../../components/dataTable/DataTablePagination";
-import DocumentsListHead from "./DocumentsListHead";
-import DocumentsListFilter from "./DocumentsListFilter";
+import DataTablePagination from '../../../components/dataTable/DataTablePagination';
+import DocumentsListHead from './DocumentsListHead';
+import DocumentsListFilter from './DocumentsListFilter';
 
 class DocumentsList extends Component {
-    constructor(props){
+    constructor(props) {
         super(props);
 
         this.state = {
@@ -20,13 +20,12 @@ class DocumentsList extends Component {
             deleteItem: {
                 id: '',
                 filename: '',
-            }
+            },
         };
-
     }
 
     // On key Enter filter form will submit
-    handleKeyUp = (e) => {
+    handleKeyUp = e => {
         if (e.keyCode === 13) {
             this.props.onSubmitFilter();
         }
@@ -36,11 +35,11 @@ class DocumentsList extends Component {
         this.setState({
             ...this.state,
             showDeleteItem: true,
-            deleteItem:{
+            deleteItem: {
                 ...this.state.deleteItem,
                 id,
-                filename
-            }
+                filename,
+            },
         });
     };
 
@@ -48,11 +47,11 @@ class DocumentsList extends Component {
         this.setState({
             ...this.state,
             showDeleteItem: false,
-            deleteItem:{
+            deleteItem: {
                 ...this.state.deleteItem,
                 id: '',
                 filename: '',
-            }
+            },
         });
     };
 
@@ -64,69 +63,55 @@ class DocumentsList extends Component {
 
         if (this.props.hasError) {
             loadingText = 'Fout bij het ophalen van documenten.';
-        }
-        else if (this.props.isLoading) {
+        } else if (this.props.isLoading) {
             loadingText = 'Gegevens aan het laden.';
-        }
-        else if (data.length === 0) {
+        } else if (data.length === 0) {
             loadingText = 'Geen documenten gevonden!';
-        }
-        else {
+        } else {
             loading = false;
         }
 
         return (
-        <div>
-            <form onKeyUp={this.handleKeyUp}>
-            <DataTable>
-                <DataTableHead>
-                    <DocumentsListHead
-                        fetchDocumentsData={() => this.props.fetchDocumentsData()}
-                    />
-                    <DocumentsListFilter
-                        onSubmitFilter={this.props.onSubmitFilter}
-                    />
-                </DataTableHead>
-                <DataTableBody>
-                    {
-                        loading ? (
-                            <tr>
-                                <td colSpan={7}>{loadingText}</td>
-                            </tr>
-                        ) : (
-                            data.map(document => (
-                                <DocumentsListItem
-                                    key={document.id}
-                                    {...document}
-                                    showDeleteItemModal={this.showDeleteItemModal}
-                                />
-                            ))
-                        )
-                    }
-                </DataTableBody>
-            </DataTable>
-            <div className="col-md-6 col-md-offset-3">
-                <DataTablePagination
-                    onPageChangeAction={this.props.handlePageClick}
-                    totalRecords={meta.total}
-                    initialPage={this.props.documentsPagination.page}
-                />
+            <div>
+                <form onKeyUp={this.handleKeyUp}>
+                    <DataTable>
+                        <DataTableHead>
+                            <DocumentsListHead fetchDocumentsData={() => this.props.fetchDocumentsData()} />
+                            <DocumentsListFilter onSubmitFilter={this.props.onSubmitFilter} />
+                        </DataTableHead>
+                        <DataTableBody>
+                            {loading ? (
+                                <tr>
+                                    <td colSpan={7}>{loadingText}</td>
+                                </tr>
+                            ) : (
+                                data.map(document => (
+                                    <DocumentsListItem
+                                        key={document.id}
+                                        {...document}
+                                        showDeleteItemModal={this.showDeleteItemModal}
+                                    />
+                                ))
+                            )}
+                        </DataTableBody>
+                    </DataTable>
+                    <div className="col-md-6 col-md-offset-3">
+                        <DataTablePagination
+                            onPageChangeAction={this.props.handlePageClick}
+                            totalRecords={meta.total}
+                            initialPage={this.props.documentsPagination.page}
+                        />
+                    </div>
+                </form>
+                {this.state.showDeleteItem && (
+                    <DocumentsDeleteItem closeDeleteItemModal={this.closeDeleteItemModal} {...this.state.deleteItem} />
+                )}
             </div>
-            </form>
-            {
-                this.state.showDeleteItem &&
-                <DocumentsDeleteItem
-                    closeDeleteItemModal={this.closeDeleteItemModal}
-                    {...this.state.deleteItem}
-                />
-            }
-
-        </div>
-        )
+        );
     }
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         documents: state.documents.list,
         documentsPagination: state.documents.pagination,
@@ -135,5 +120,7 @@ const mapStateToProps = (state) => {
     };
 };
 
-export default connect(mapStateToProps, null)(DocumentsList);
-
+export default connect(
+    mapStateToProps,
+    null
+)(DocumentsList);

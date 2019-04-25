@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 export default {
-    fetchContacts: ({ filters, extraFilters, sorts, pagination, filterType}) => {
+    fetchContacts: ({ filters, extraFilters, sorts, pagination, filterType }) => {
         const requestUrl = `${URL_API}/api/contact/grid`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
@@ -18,7 +18,7 @@ export default {
         });
     },
 
-    deleteContact: (id) => {
+    deleteContact: id => {
         const requestUrl = `${URL_API}/api/contact/${id}/delete`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
@@ -26,16 +26,17 @@ export default {
         return axios.post(requestUrl);
     },
 
-    deleteContacts: (ids) => {
+    deleteContacts: ids => {
         const requestUrl = `${URL_API}/api/contacts/delete`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios.post(requestUrl, {ids: ids})
-            .then(function (response) {
+        return axios
+            .post(requestUrl, { ids: ids })
+            .then(function(response) {
                 return response.data.data;
             })
-            .catch(function (error) {
+            .catch(function(error) {
                 return error.response;
             });
     },
@@ -45,11 +46,12 @@ export default {
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios.get(requestUrl)
-            .then(function (response) {
+        return axios
+            .get(requestUrl)
+            .then(function(response) {
                 return response.data.data;
             })
-            .catch(function (error) {
+            .catch(function(error) {
                 console.log(error);
             });
     },
@@ -59,11 +61,12 @@ export default {
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios.get(requestUrl)
-            .then(function (response) {
+        return axios
+            .get(requestUrl)
+            .then(function(response) {
                 return response.data.data;
             })
-            .catch(function (error) {
+            .catch(function(error) {
                 console.log(error);
             });
     },
@@ -96,7 +99,7 @@ export default {
         });
     },
 
-    validateImport: (csv) => {
+    validateImport: csv => {
         const requestUrl = `${URL_API}/api/contact/validate-import`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
@@ -104,7 +107,7 @@ export default {
         return axios.post(requestUrl, csv);
     },
 
-    import: (csv) => {
+    import: csv => {
         const requestUrl = `${URL_API}/api/contact/import`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
@@ -118,5 +121,5 @@ export default {
         axios.defaults.headers.common.Authorization = AUTH_TOKEN;
 
         return axios.get(requestUrl);
-    }
+    },
 };

@@ -10,6 +10,7 @@ import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
 import InputDate from '../../../../components/form/InputDate';
 import InputToggle from '../../../../components/form/InputToggle';
+import moment from '../../../financial/order/details/order-products/OrderProductsFormEditProductOneTime';
 
 class PriceHistoryNew extends Component {
     constructor(props) {
@@ -41,14 +42,18 @@ class PriceHistoryNew extends Component {
         const target = event.target;
         const value = target.type === 'checkbox' ? target.checked : target.value;
         const name = target.name;
+        console.log(name);
 
-        this.setState({
-            ...this.state,
-            priceHistory: {
-                ...this.state.priceHistory,
-                [name]: value,
+        this.setState(
+            {
+                ...this.state,
+                priceHistory: {
+                    ...this.state.priceHistory,
+                    [name]: value,
+                },
             },
-        });
+            this.updatePrice
+        );
     };
 
     handleInputChangeDate = (value, name) => {
@@ -59,6 +64,38 @@ class PriceHistoryNew extends Component {
                 [name]: value,
             },
         });
+    };
+
+    updatePrice = () => {
+        let inputInclVat = this.state.priceHistory.inputInclVat ? this.state.priceHistory.inputInclVat : false;
+        let price = validator.isFloat(this.state.priceHistory.price + '') ? this.state.priceHistory.price : 0;
+        let priceInclVat = validator.isFloat(this.state.priceHistory.priceInclVat + '')
+            ? this.state.priceHistory.priceInclVat
+            : 0;
+        let vatPercentage = validator.isFloat(this.state.priceHistory.vatPercentage + '')
+            ? this.state.priceHistory.vatPercentage
+            : 0;
+        const vatFactor = (parseFloat(100) + parseFloat(vatPercentage)) / 100;
+
+        if (inputInclVat) {
+            price = priceInclVat / vatFactor;
+            this.setState({
+                ...this.state,
+                priceHistory: {
+                    ...this.state.priceHistory,
+                    price: parseFloat(price).toFixed(2),
+                },
+            });
+        } else {
+            priceInclVat = price * vatFactor;
+            this.setState({
+                ...this.state,
+                priceHistory: {
+                    ...this.state.priceHistory,
+                    priceInclVat: parseFloat(priceInclVat).toFixed(2),
+                },
+            });
+        }
     };
 
     handleSubmit(event) {
@@ -196,6 +233,7 @@ class PriceHistoryNew extends Component {
                                                 type={'number'}
                                                 min={'0'}
                                                 max={'1000000'}
+                                                step={'0.01'}
                                                 value={priceInclVat}
                                                 onChangeAction={this.handleInputChange}
                                                 required={'required'}
@@ -211,6 +249,7 @@ class PriceHistoryNew extends Component {
                                                 type={'number'}
                                                 min={'0'}
                                                 max={'1000000'}
+                                                step={'0.01'}
                                                 value={price}
                                                 onChangeAction={this.handleInputChange}
                                                 required={'required'}
@@ -220,7 +259,7 @@ class PriceHistoryNew extends Component {
                                                 label={'Prijs incl. BTW'}
                                                 id={'priceInclVat'}
                                                 name={'priceInclVat'}
-                                                value={price}
+                                                value={priceInclVat}
                                                 readOnly={true}
                                                 required={'required'}
                                             />

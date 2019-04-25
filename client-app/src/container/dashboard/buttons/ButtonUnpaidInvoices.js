@@ -1,6 +1,6 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 
-import InvoicesAPI from "../../../api/invoice/InvoicesAPI";
+import InvoicesAPI from '../../../api/invoice/InvoicesAPI';
 
 class ButtonUnpaidInvoices extends Component {
     constructor(props) {
@@ -8,13 +8,13 @@ class ButtonUnpaidInvoices extends Component {
 
         this.state = {
             amountUnpaidInvoices: '-',
-        }
-    };
+        };
+    }
 
     componentWillMount() {
         InvoicesAPI.getUnpaidInvoices().then(payload => {
             this.setState({
-                amountUnpaidInvoices: payload
+                amountUnpaidInvoices: payload,
             });
         });
     }
@@ -29,7 +29,7 @@ class ButtonUnpaidInvoices extends Component {
                     </div>
                 </div>
             </div>
-        )
+        );
     }
 }
 

@@ -1,5 +1,5 @@
-export default function (state= {}, action) {
-    switch(action.type) {
+export default function(state = {}, action) {
+    switch (action.type) {
         case 'FETCH_CONTACT_GROUP_DETAILS_SUCCESS':
             return {
                 ...state,

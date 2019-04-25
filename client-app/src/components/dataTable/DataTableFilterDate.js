@@ -8,20 +8,18 @@ moment.locale('nl');
 const DataTableFilterDate = props => {
     const { className, value, onChangeAction, placeholder } = props;
 
-    const formattedDate = value
-        ? moment(value).format('L')
-        : '';
+    const formattedDate = value ? moment(value).format('L') : '';
 
     return (
         <th className={`DayPicker-overflow ${className}`}>
             <DayPickerInput
-                value={ formattedDate }
+                value={formattedDate}
                 onDayChange={onChangeAction}
                 formatDate={formatDate}
                 parseDate={parseDate}
                 dayPickerProps={{
                     showWeekNumbers: true,
-                    locale: "nl",
+                    locale: 'nl',
                     firstDayOfWeek: 1,
                     localeUtils: MomentLocaleUtils,
                 }}
@@ -29,7 +27,7 @@ const DataTableFilterDate = props => {
                     className: 'form-control input-sm',
                     placeholder: placeholder,
                 }}
-                placeholder={""}
+                placeholder={''}
             />
         </th>
     );
@@ -43,10 +41,7 @@ DataTableFilterDate.defaultProps = {
 
 DataTableFilterDate.propTypes = {
     className: PropTypes.string,
-    value: PropTypes.oneOfType([
-        PropTypes.string,
-        PropTypes.object
-    ]),
+    value: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
     onChangeAction: PropTypes.func,
     placeholder: PropTypes.string,
 };

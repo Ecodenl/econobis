@@ -1,20 +1,34 @@
 import React from 'react';
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 import moment from 'moment';
 
 moment.locale('nl');
 import InputSelect from '../../../../../components/form/InputSelect';
 import InputDate from '../../../../../components/form/InputDate';
 import ButtonText from '../../../../../components/button/ButtonText';
-import PanelFooter from "../../../../../components/panel/PanelFooter";
-import InputText from "../../../../../components/form/InputText";
-import InputToggle from "../../../../../components/form/InputToggle";
+import PanelFooter from '../../../../../components/panel/PanelFooter';
+import InputText from '../../../../../components/form/InputText';
+import InputToggle from '../../../../../components/form/InputToggle';
 
 const RevenueNew = props => {
-
     const {
-        typeId, confirmed, dateBegin, dateEnd, dateEntry, dateConfirmed, kwhStart, kwhEnd, kwhStartHigh, kwhEndHigh,
-        kwhStartLow, kwhEndLow, revenue, datePayed, payPercentage, categoryId, payoutKwh
+        typeId,
+        confirmed,
+        dateBegin,
+        dateEnd,
+        dateEntry,
+        dateConfirmed,
+        kwhStart,
+        kwhEnd,
+        kwhStartHigh,
+        kwhEndHigh,
+        kwhStartLow,
+        kwhEndLow,
+        revenue,
+        datePayed,
+        payPercentage,
+        categoryId,
+        payoutKwh,
     } = props.revenue;
 
     return (
@@ -26,34 +40,29 @@ const RevenueNew = props => {
             </div>
             <div className="row">
                 <InputSelect
-                    label={"Soort"}
-                    name={"categoryId"}
+                    label={'Soort'}
+                    name={'categoryId'}
                     options={props.productionProjectRevenueCategories}
                     value={categoryId}
                     onChangeAction={props.handleInputChange}
-                    required={"required"}
+                    required={'required'}
                     error={props.errors.categoryId}
                 />
-                <InputText
-                    label={"Definitief"}
-                    name={"confirmed"}
-                    value={confirmed ?  'Ja' : 'Nee'}
-                    readOnly={true}
-                />
+                <InputText label={'Definitief'} name={'confirmed'} value={confirmed ? 'Ja' : 'Nee'} readOnly={true} />
             </div>
 
             <div className="row">
                 <InputDate
-                    label={"Begin periode"}
-                    name={"dateBegin"}
+                    label={'Begin periode'}
+                    name={'dateBegin'}
                     value={dateBegin}
                     onChangeAction={props.handleInputChangeDate}
                     required={'required'}
                     error={props.errors.dateBegin}
                 />
                 <InputDate
-                    label={"Eind periode"}
-                    name={"dateEnd"}
+                    label={'Eind periode'}
+                    name={'dateEnd'}
                     value={dateEnd}
                     onChangeAction={props.handleInputChangeDate}
                     required={'required'}
@@ -63,16 +72,16 @@ const RevenueNew = props => {
 
             <div className="row">
                 <InputDate
-                    label={"Datum invoer"}
-                    name={"dateEntry"}
+                    label={'Datum invoer'}
+                    name={'dateEntry'}
                     value={dateEntry}
                     onChangeAction={props.handleInputChangeDate}
                     required={'required'}
                     error={props.errors.dateEntry}
                 />
                 <InputDate
-                    label={"Datum definitief"}
-                    name={"dateConfirmed"}
+                    label={'Datum definitief'}
+                    name={'dateConfirmed'}
                     value={dateConfirmed}
                     onChangeAction={props.handleInputChangeDateConfirmed}
                 />
@@ -80,15 +89,15 @@ const RevenueNew = props => {
 
             <div className="row">
                 <InputSelect
-                    label={"Type opbrengst"}
-                    name={"typeId"}
+                    label={'Type opbrengst'}
+                    name={'typeId'}
                     options={props.productionProjectRevenueTypes}
                     value={typeId}
                     onChangeAction={props.handleInputChange}
                 />
                 <InputDate
-                    label={"Uitgekeerd op"}
-                    name={"datePayed"}
+                    label={'Uitgekeerd op'}
+                    name={'datePayed'}
                     value={datePayed}
                     onChangeAction={props.handleInputChangeDate}
                 />
@@ -102,16 +111,16 @@ const RevenueNew = props => {
 
             <div className="row">
                 <InputText
-                    type={"number"}
-                    label={"Beginstand kWh hoog"}
-                    name={"kwhStartHigh"}
+                    type={'number'}
+                    label={'Beginstand kWh hoog'}
+                    name={'kwhStartHigh'}
                     value={kwhStartHigh}
                     onChangeAction={props.handleInputChange}
                 />
                 <InputText
-                    type={"number"}
-                    label={"Eindstand kWh hoog"}
-                    name={"kwhEndHigh"}
+                    type={'number'}
+                    label={'Eindstand kWh hoog'}
+                    name={'kwhEndHigh'}
                     value={kwhEndHigh}
                     onChangeAction={props.handleInputChange}
                 />
@@ -119,16 +128,16 @@ const RevenueNew = props => {
 
             <div className="row">
                 <InputText
-                    type={"number"}
-                    label={"Beginstand kWh laag"}
-                    name={"kwhStartLow"}
+                    type={'number'}
+                    label={'Beginstand kWh laag'}
+                    name={'kwhStartLow'}
                     value={kwhStartLow}
                     onChangeAction={props.handleInputChange}
                 />
                 <InputText
-                    type={"number"}
-                    label={"Eindstand kWh laag"}
-                    name={"kwhEndLow"}
+                    type={'number'}
+                    label={'Eindstand kWh laag'}
+                    name={'kwhEndLow'}
                     value={kwhEndLow}
                     onChangeAction={props.handleInputChange}
                 />
@@ -136,27 +145,24 @@ const RevenueNew = props => {
 
             <div className="row">
                 <InputText
-                    type={"number"}
-                    label={"Beginstand kWh"}
-                    name={"kwhStart"}
+                    type={'number'}
+                    label={'Beginstand kWh'}
+                    name={'kwhStart'}
                     value={kwhStart}
                     readOnly={true}
                 />
-                <InputText
-                    type={"number"}
-                    label={"Eindstand kWh"}
-                    name={"kwhEnd"}
-                    value={kwhEnd}
-                    readOnly={true}
-                />
+                <InputText type={'number'} label={'Eindstand kWh'} name={'kwhEnd'} value={kwhEnd} readOnly={true} />
             </div>
 
             <div className="row">
                 <InputText
-                    type={"number"}
-                    label={"Opbrengst kWh €"}
-                    name={"payoutKwh"}
-                    value={payoutKwh && payoutKwh.toLocaleString('nl',{ minimumFractionDigits: 3, maximumFractionDigits: 3 })}
+                    type={'number'}
+                    label={'Opbrengst kWh €'}
+                    name={'payoutKwh'}
+                    value={
+                        payoutKwh &&
+                        payoutKwh.toLocaleString('nl', { minimumFractionDigits: 3, maximumFractionDigits: 3 })
+                    }
                     onChangeAction={props.handleInputChange}
                 />
             </div>
@@ -168,16 +174,16 @@ const RevenueNew = props => {
             </div>
             <div className="row">
                 <InputText
-                    type={"number"}
-                    label={"Uitkering %"}
-                    name={"payPercentage"}
+                    type={'number'}
+                    label={'Uitkering %'}
+                    name={'payPercentage'}
                     value={payPercentage}
                     onChangeAction={props.handleInputChange}
                 />
                 <InputText
-                    type={"number"}
-                    label={"Euro opbrengst"}
-                    name={"revenue"}
+                    type={'number'}
+                    label={'Euro opbrengst'}
+                    name={'revenue'}
                     value={revenue}
                     onChangeAction={props.handleInputChange}
                 />
@@ -185,19 +191,23 @@ const RevenueNew = props => {
 
             <PanelFooter>
                 <div className="pull-right btn-group" role="group">
-                    <ButtonText buttonText={"Opslaan"} onClickAction={props.handleSubmit} type={"submit"}
-                                value={"Submit"}/>
+                    <ButtonText
+                        buttonText={'Opslaan'}
+                        onClickAction={props.handleSubmit}
+                        type={'submit'}
+                        value={'Submit'}
+                    />
                 </div>
             </PanelFooter>
         </form>
     );
 };
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         productionProjectRevenueTypes: state.systemData.productionProjectRevenueTypes,
         productionProjectRevenueCategories: state.systemData.productionProjectRevenueCategories,
-    }
+    };
 };
 
 export default connect(mapStateToProps)(RevenueNew);

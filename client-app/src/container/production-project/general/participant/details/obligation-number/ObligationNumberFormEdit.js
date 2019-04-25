@@ -4,7 +4,7 @@ import InputText from '../../../../../../components/form/InputText';
 import ButtonText from '../../../../../../components/button/ButtonText';
 import Panel from '../../../../../../components/panel/Panel';
 import PanelBody from '../../../../../../components/panel/PanelBody';
-import moment from "moment/moment";
+import moment from 'moment/moment';
 moment.locale('nl');
 
 const ObligationNumberFormEdit = props => {
@@ -17,9 +17,9 @@ const ObligationNumberFormEdit = props => {
                     <PanelBody>
                         <div className="row">
                             <InputText
-                                label={"Nummer"}
-                                id={"number"}
-                                name={"number"}
+                                label={'Nummer'}
+                                id={'number'}
+                                name={'number'}
                                 value={number}
                                 onChangeAction={props.handleInputChange}
                                 required={'required'}
@@ -28,8 +28,17 @@ const ObligationNumberFormEdit = props => {
                         </div>
 
                         <div className="pull-right btn-group" role="group">
-                            <ButtonText buttonClassName={"btn-default"} buttonText={"Annuleren"} onClickAction={props.cancelEdit}/>
-                            <ButtonText buttonText={"Opslaan"} onClickAction={props.handleSubmit} type={"submit"} value={"Submit"}/>
+                            <ButtonText
+                                buttonClassName={'btn-default'}
+                                buttonText={'Annuleren'}
+                                onClickAction={props.cancelEdit}
+                            />
+                            <ButtonText
+                                buttonText={'Opslaan'}
+                                onClickAction={props.handleSubmit}
+                                type={'submit'}
+                                value={'Submit'}
+                            />
                         </div>
                     </PanelBody>
                 </Panel>

@@ -1,4 +1,11 @@
-export const fetchParticipantsProductionProject = (filters, extraFilters, sorts, pagination, filterType, fetchFromProductionProject) => {
+export const fetchParticipantsProductionProject = (
+    filters,
+    extraFilters,
+    sorts,
+    pagination,
+    filterType,
+    fetchFromProductionProject
+) => {
     return {
         type: 'FETCH_PARTICIPANTS_PRODUCTION_PROJECT',
         filters,
@@ -6,12 +13,12 @@ export const fetchParticipantsProductionProject = (filters, extraFilters, sorts,
         sorts,
         pagination,
         filterType,
-        fetchFromProductionProject
+        fetchFromProductionProject,
     };
 };
 
 export const clearParticipantsProductionProject = () => {
     return {
-        type: 'CLEAR_PARTICIPANTS_PRODUCTION_PROJECT'
+        type: 'CLEAR_PARTICIPANTS_PRODUCTION_PROJECT',
     };
 };

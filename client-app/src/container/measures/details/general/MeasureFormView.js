@@ -1,5 +1,5 @@
 import React from 'react';
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 
 import ViewText from '../../../../components/form/ViewText';
 
@@ -9,26 +9,19 @@ const MeasureFormView = props => {
     return (
         <div>
             <div className="row" onClick={props.switchToEdit}>
-                <ViewText
-                    label={"Maatregel categorie"}
-                    value={measureCategory.name}
-                />
-                <ViewText
-                    label={"Nummer"}
-                    value={number}
-                />
+                <ViewText label={'Maatregel categorie'} value={measureCategory.name} />
+                <ViewText label={'Nummer'} value={number} />
             </div>
 
             <div className="row" onClick={props.switchToEdit}>
-                <ViewText
-                    label={"Maatregel specifiek"}
-                    value={name}
-                />
+                <ViewText label={'Maatregel specifiek'} value={name} />
             </div>
 
             <div className="row" onClick={props.switchToEdit}>
                 <div className="col-sm-3">
-                    <label htmlFor="description" className="col-sm-12">Beschrijving</label>
+                    <label htmlFor="description" className="col-sm-12">
+                        Beschrijving
+                    </label>
                 </div>
                 <div className="col-sm-9" id="description">
                     {description}
@@ -38,10 +31,10 @@ const MeasureFormView = props => {
     );
 };
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         measureDetails: state.measureDetails,
-    }
+    };
 };
 
 export default connect(mapStateToProps)(MeasureFormView);

@@ -1,4 +1,4 @@
-export default function (state= [], action) {
+export default function(state = [], action) {
     switch (action.type) {
         case 'FETCH_MAILGUN_DOMAIN_DETAILS_SUCCESS':
             return {

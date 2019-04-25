@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { isEmpty } from 'lodash';
 
@@ -7,41 +7,36 @@ import TeamDetailsFormGeneral from './general/TeamDetailsFormGeneral';
 import TeamDetailsUsers from './team-users/TeamDetailsUsers';
 
 class TeamDetailsForm extends Component {
-    constructor(props){
+    constructor(props) {
         super(props);
-    };
+    }
 
     render() {
-
         let loadingText = '';
         let loading = true;
 
         if (this.props.hasError) {
             loadingText = 'Fout bij het ophalen van team.';
-        }
-        else if (this.props.isLoading) {
+        } else if (this.props.isLoading) {
             loadingText = 'Gegevens aan het laden.';
-        }
-        else if (isEmpty(this.props.teamDetails)) {
+        } else if (isEmpty(this.props.teamDetails)) {
             loadingText = 'Geen team gevonden!';
-        }
-        else {
+        } else {
             loading = false;
         }
 
-        return (
-            loading ?
-                <div>{loadingText}</div>
-                :
-                <div>
-                    <TeamDetailsFormGeneral />
-                    <TeamDetailsUsers />
-                </div>
+        return loading ? (
+            <div>{loadingText}</div>
+        ) : (
+            <div>
+                <TeamDetailsFormGeneral />
+                <TeamDetailsUsers />
+            </div>
         );
     }
-};
+}
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         teamDetails: state.teamDetails,
         isLoading: state.loadingData.isLoading,
@@ -50,9 +45,12 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = dispatch => ({
-    fetchTeamDetails: (id) => {
+    fetchTeamDetails: id => {
         dispatch(fetchTeamDetails(id));
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(TeamDetailsForm);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(TeamDetailsForm);

@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment';
 moment.locale('nl');
@@ -15,7 +15,7 @@ class IntakeDetailsFormGeneralEdit extends Component {
     constructor(props) {
         super(props);
 
-        const { id, contact, address = {}, reasons, campaign, sources, status, note} = props.intakeDetails;
+        const { id, contact, address = {}, reasons, campaign, sources, status, note } = props.intakeDetails;
 
         this.state = {
             campaigns: [],
@@ -25,20 +25,20 @@ class IntakeDetailsFormGeneralEdit extends Component {
                 address: address ? address : '',
                 campaignId: campaign && campaign.id,
                 statusId: status ? status.id : '',
-                sourceIds: sources && sources.map((source) => source.id).join(','),
-                intakeReasonIds: reasons && reasons.map((reason) => reason.id).join(','),
+                sourceIds: sources && sources.map(source => source.id).join(','),
+                intakeReasonIds: reasons && reasons.map(reason => reason.id).join(','),
                 note: note && note,
             },
-        }
-    };
+        };
+    }
 
     componentWillMount() {
-        CampaignsAPI.peekCampaigns().then((payload) => {
+        CampaignsAPI.peekCampaigns().then(payload => {
             this.setState({
                 campaigns: payload,
             });
         });
-    };
+    }
 
     handleInputChange = event => {
         const target = event.target;
@@ -49,27 +49,27 @@ class IntakeDetailsFormGeneralEdit extends Component {
             ...this.state,
             intake: {
                 ...this.state.intake,
-                [name]: value
+                [name]: value,
             },
         });
     };
 
-    handleSourceIds = (selectedOption) => {
+    handleSourceIds = selectedOption => {
         this.setState({
             ...this.state,
             intake: {
                 ...this.state.intake,
-                sourceIds: selectedOption
+                sourceIds: selectedOption,
             },
         });
     };
 
-    handleIntakeReasonsIds = (selectedOption) => {
+    handleIntakeReasonsIds = selectedOption => {
         this.setState({
             ...this.state,
             intake: {
                 ...this.state.intake,
-                intakeReasonIds: selectedOption
+                intakeReasonIds: selectedOption,
             },
         });
     };
@@ -77,13 +77,13 @@ class IntakeDetailsFormGeneralEdit extends Component {
     handleSubmit = event => {
         event.preventDefault();
 
-        const { intake }  = this.state;
+        const { intake } = this.state;
 
-        if(intake.intakeReasonIds.length > 0){
+        if (intake.intakeReasonIds.length > 0) {
             intake.intakeReasonIds = intake.intakeReasonIds.split(',');
         }
 
-        if(intake.sourceIds.length > 0){
+        if (intake.sourceIds.length > 0) {
             intake.sourceIds = intake.sourceIds.split(',');
         }
 
@@ -99,14 +99,9 @@ class IntakeDetailsFormGeneralEdit extends Component {
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
                 <div className="row">
+                    <InputText label={'Contact'} name={'contact'} value={contact} readOnly />
                     <InputText
-                        label={"Contact"}
-                        name={'contact'}
-                        value={contact}
-                        readOnly
-                    />
-                    <InputText
-                        label={"Adres"}
+                        label={'Adres'}
                         name={'address'}
                         value={address && address.street + ' ' + address.number}
                         readOnly
@@ -122,8 +117,8 @@ class IntakeDetailsFormGeneralEdit extends Component {
                         onChangeAction={this.handleInputChange}
                     />
                     <InputSelect
-                        label={"Status"}
-                        size={"col-sm-6"}
+                        label={'Status'}
+                        size={'col-sm-6'}
                         name="statusId"
                         value={statusId}
                         options={this.props.intakeStatuses}
@@ -152,11 +147,17 @@ class IntakeDetailsFormGeneralEdit extends Component {
                     <div className="form-group col-sm-12">
                         <div className="row">
                             <div className="col-sm-3">
-                                <label htmlFor="note" className="col-sm-12">Opmerkingen bewoner</label>
+                                <label htmlFor="note" className="col-sm-12">
+                                    Opmerkingen bewoner
+                                </label>
                             </div>
                             <div className="col-sm-8">
-                                <textarea name='note' value={note} onChange={this.handleInputChange}
-                                          className="form-control input-sm"/>
+                                <textarea
+                                    name="note"
+                                    value={note}
+                                    onChange={this.handleInputChange}
+                                    className="form-control input-sm"
+                                />
                             </div>
                         </div>
                     </div>
@@ -164,16 +165,20 @@ class IntakeDetailsFormGeneralEdit extends Component {
 
                 <div className="panel-footer">
                     <div className="pull-right btn-group" role="group">
-                        <ButtonText buttonClassName={"btn-default"} buttonText={"Sluiten"} onClickAction={this.props.switchToView}/>
-                        <ButtonText buttonText={"Opslaan"} onClickAction={this.handleSubmit}/>
+                        <ButtonText
+                            buttonClassName={'btn-default'}
+                            buttonText={'Sluiten'}
+                            onClickAction={this.props.switchToView}
+                        />
+                        <ButtonText buttonText={'Opslaan'} onClickAction={this.handleSubmit} />
                     </div>
                 </div>
             </form>
         );
-    };
-};
+    }
+}
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         intakeDetails: state.intakeDetails,
         intakeStatuses: state.systemData.intakeStatuses,
@@ -185,9 +190,12 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = dispatch => ({
-    fetchIntakeDetails: (id) => {
+    fetchIntakeDetails: id => {
         dispatch(fetchIntakeDetails(id));
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(IntakeDetailsFormGeneralEdit);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(IntakeDetailsFormGeneralEdit);

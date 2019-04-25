@@ -22,14 +22,14 @@ const filtersReducerDefaultState = {
 };
 
 export default (state = filtersReducerDefaultState, action) => {
-    switch(action.type) {
+    switch (action.type) {
         case 'SET_FILTER_INTAKE_DATE':
             return {
                 ...state,
                 createdAt: {
                     ...state.createdAt,
                     data: action.createdAt,
-                }
+                },
             };
         case 'SET_FILTER_INTAKE_FULL_NAME':
             return {
@@ -37,7 +37,7 @@ export default (state = filtersReducerDefaultState, action) => {
                 fullName: {
                     ...state.fullName,
                     data: action.fullName,
-                }
+                },
             };
         case 'SET_FILTER_INTAKE_ADDRESS':
             return {
@@ -45,7 +45,7 @@ export default (state = filtersReducerDefaultState, action) => {
                 address: {
                     ...state.address,
                     data: action.address,
-                }
+                },
             };
         case 'SET_FILTER_INTAKE_MEASURE_REQUESTED':
             return {
@@ -53,7 +53,7 @@ export default (state = filtersReducerDefaultState, action) => {
                 measureRequested: {
                     ...state.measureRequested,
                     data: action.measureRequested,
-                }
+                },
             };
         case 'SET_FILTER_INTAKE_STATUS':
             return {
@@ -61,7 +61,7 @@ export default (state = filtersReducerDefaultState, action) => {
                 statusId: {
                     ...state.statusId,
                     data: action.statusId,
-                }
+                },
             };
         case 'CLEAR_FILTER_INTAKES':
             return {

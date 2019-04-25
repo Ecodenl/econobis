@@ -1,5 +1,5 @@
-import React, {Component} from 'react';
-import {hashHistory} from 'react-router';
+import React, { Component } from 'react';
+import { hashHistory } from 'react-router';
 
 import EmailAPI from './../../../api/email/EmailAPI';
 
@@ -9,13 +9,13 @@ class ButtonEmails extends Component {
 
         this.state = {
             amountOpenEmails: '-',
-        }
-    };
+        };
+    }
 
     componentWillMount() {
         EmailAPI.getAmountOpen().then(payload => {
             this.setState({
-                amountOpenEmails: payload
+                amountOpenEmails: payload,
             });
         });
     }
@@ -30,7 +30,7 @@ class ButtonEmails extends Component {
                     </div>
                 </div>
             </div>
-        )
+        );
     }
 }
 

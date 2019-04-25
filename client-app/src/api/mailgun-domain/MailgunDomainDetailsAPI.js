@@ -1,10 +1,10 @@
 import axiosInstance from '../default-setup/AxiosInstance';
-import axios from "axios";
+import axios from 'axios';
 
 const URL_MAILGUN_DOMAIN = `mailgun-domain`;
 
 export default {
-    fetchMailgunDomainDetails: (id) => {
+    fetchMailgunDomainDetails: id => {
         const requestUrl = `jory/mailgun-domain/${id}`;
 
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
@@ -13,18 +13,13 @@ export default {
         return axiosInstance.get(requestUrl, {
             params: {
                 jory: {
-                    fld: [
-                        'id',
-                        'domain',
-                        'secret',
-                        'isVerified',
-                    ],
+                    fld: ['id', 'domain', 'secret', 'isVerified'],
                 },
-            }
+            },
         });
     },
 
-    newMailgunDomain: (mailgunDomain) => {
+    newMailgunDomain: mailgunDomain => {
         const requestUrl = URL_MAILGUN_DOMAIN;
 
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
@@ -37,7 +32,7 @@ export default {
         return axiosInstance.post(requestUrl, mailgunDomain);
     },
 
-    updateMailgunDomain: (mailgunDomain) => {
+    updateMailgunDomain: mailgunDomain => {
         const requestUrl = `${URL_MAILGUN_DOMAIN}/${mailgunDomain.id}`;
 
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');

@@ -1,4 +1,4 @@
-export const setInvoicesPagination  = (pagination) => ({
+export const setInvoicesPagination = pagination => ({
     type: 'SET_INVOICES_PAGINATION',
     pagination,
 });

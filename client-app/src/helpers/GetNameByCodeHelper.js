@@ -2,15 +2,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 const GetNameByCodeHelper = ({ code, items }) => {
-    let result = items.find((item) => {
+    let result = items.find(item => {
         return item.code == code;
     });
 
-    if(result === undefined) result = { name: 'Onbekend'};
+    if (result === undefined) result = { name: 'Onbekend' };
 
-    return (
-        <span> { result.name } </span>
-    )
+    return <span> {result.name} </span>;
 };
 
 GetNameByCodeHelper.propTypes = {

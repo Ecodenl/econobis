@@ -1,13 +1,13 @@
 import { put, call } from 'redux-saga/effects';
 import OpportunitiesAPI from '../../api/opportunity/OpportunitiesAPI';
 import OpportunityDetailsAPI from '../../api/opportunity/OpportunityDetailsAPI';
-import {hashHistory} from "react-router";
+import { hashHistory } from 'react-router';
 
-export function* fetchOpportunitiesSaga({filters, sorts, pagination}) {
+export function* fetchOpportunitiesSaga({ filters, sorts, pagination }) {
     try {
         yield put({ type: 'IS_LOADING' });
         yield put({ type: 'FETCH_OPPORTUNITIES_LOADING' });
-        const opportunities = yield call(OpportunitiesAPI.fetchOpportunities, {filters, sorts, pagination});
+        const opportunities = yield call(OpportunitiesAPI.fetchOpportunities, { filters, sorts, pagination });
         yield put({ type: 'FETCH_OPPORTUNITIES_SUCCESS', opportunities });
         yield put({ type: 'IS_LOADING_COMPLETE' });
     } catch (error) {

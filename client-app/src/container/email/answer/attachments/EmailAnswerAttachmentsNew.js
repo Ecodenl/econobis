@@ -11,44 +11,44 @@ class EmailAnswerAttachmentsNew extends Component {
             error: false,
             errorMaxSize: false,
         };
-    };
+    }
 
     onDropAccepted(files) {
         this.props.addAttachment(files);
         this.props.toggleShowNew();
-    };
+    }
 
     onDropRejected() {
         this.setState({
             errorMaxSize: true,
         });
-    };
+    }
 
     render() {
         return (
-            <Modal
-                closeModal={this.props.toggleShowNew}
-                showConfirmAction={false}
-                title="Upload bestand"
-            >
+            <Modal closeModal={this.props.toggleShowNew} showConfirmAction={false} title="Upload bestand">
                 <div className="upload-file-content">
-                    <Dropzone className="dropzone" onDropAccepted={this.onDropAccepted.bind(this)} onDropRejected={this.onDropRejected.bind(this)} maxSize={6000000}>
+                    <Dropzone
+                        className="dropzone"
+                        onDropAccepted={this.onDropAccepted.bind(this)}
+                        onDropRejected={this.onDropRejected.bind(this)}
+                        maxSize={6000000}
+                    >
                         <p>Klik hier voor het uploaden van een bestand</p>
-                        <p><strong>of</strong> sleep het bestand hierheen</p>
+                        <p>
+                            <strong>of</strong> sleep het bestand hierheen
+                        </p>
                     </Dropzone>
                 </div>
-                {
-                    this.state.error && <p className="has-error-message">Uploaden mislukt. Probeer nogmaals een bestand te uploaden.</p>
-                }
-                {
-                    this.state.errorMaxSize && <p className="has-error-message">Uploaden mislukt. Het bestand mag maximaal 6MB groot zijn.</p>
-                }
+                {this.state.error && (
+                    <p className="has-error-message">Uploaden mislukt. Probeer nogmaals een bestand te uploaden.</p>
+                )}
+                {this.state.errorMaxSize && (
+                    <p className="has-error-message">Uploaden mislukt. Het bestand mag maximaal 6MB groot zijn.</p>
+                )}
             </Modal>
         );
     }
-};
-
-
+}
 
 export default EmailAnswerAttachmentsNew;
-

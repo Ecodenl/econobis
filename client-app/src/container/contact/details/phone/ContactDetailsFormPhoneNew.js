@@ -1,15 +1,15 @@
-import React, {Component} from 'react';
-import {connect} from 'react-redux';
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import validator from 'validator';
 
 import PhoneNumberApi from '../../../../api/contact/PhoneNumberAPI';
-import {newPhoneNumber, unsetPrimaryPhoneNumbers} from '../../../../actions/contact/ContactDetailsActions';
+import { newPhoneNumber, unsetPrimaryPhoneNumbers } from '../../../../actions/contact/ContactDetailsActions';
 import InputText from '../../../../components/form/InputText';
 import ButtonText from '../../../../components/button/ButtonText';
-import InputSelect from "../../../../components/form/InputSelect";
+import InputSelect from '../../../../components/form/InputSelect';
 import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
-import InputToggle from "../../../../components/form/InputToggle";
+import InputToggle from '../../../../components/form/InputToggle';
 
 class ContactDetailsFormPhoneNew extends Component {
     constructor(props) {
@@ -26,8 +26,8 @@ class ContactDetailsFormPhoneNew extends Component {
                 typeId: false,
                 number: false,
             },
-        }
-    };
+        };
+    }
 
     handleInputChange = event => {
         const target = event.target;
@@ -38,7 +38,7 @@ class ContactDetailsFormPhoneNew extends Component {
             ...this.state,
             phoneNumber: {
                 ...this.state.phoneNumber,
-                [name]: value
+                [name]: value,
             },
         });
     };
@@ -51,22 +51,22 @@ class ContactDetailsFormPhoneNew extends Component {
         let errors = {};
         let hasErrors = false;
 
-        if(validator.isEmpty(phoneNumber.number)){
+        if (validator.isEmpty(phoneNumber.number)) {
             errors.number = true;
             hasErrors = true;
-        };
+        }
 
-        if(validator.isEmpty(phoneNumber.typeId)){
+        if (validator.isEmpty(phoneNumber.typeId)) {
             errors.typeId = true;
             hasErrors = true;
-        };
+        }
 
         this.setState({ ...this.state, errors: errors });
 
         // If no errors send form
         !hasErrors &&
-            PhoneNumberApi.newPhoneNumber(phoneNumber).then((payload) => {
-                if(phoneNumber.primary){
+            PhoneNumberApi.newPhoneNumber(phoneNumber).then(payload => {
+                if (phoneNumber.primary) {
                     this.props.unsetPrimaryPhoneNumbers();
                 }
                 this.props.newPhoneNumber(payload);
@@ -75,7 +75,7 @@ class ContactDetailsFormPhoneNew extends Component {
     };
 
     render() {
-        const {number, typeId, primary} = this.state.phoneNumber;
+        const { number, typeId, primary } = this.state.phoneNumber;
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -83,49 +83,57 @@ class ContactDetailsFormPhoneNew extends Component {
                     <PanelBody>
                         <div className="row">
                             <InputText
-                                label={"Nummer"}
-                                size={"col-sm-6"}
-                                name={"number"}
+                                label={'Nummer'}
+                                size={'col-sm-6'}
+                                name={'number'}
                                 value={number}
                                 onChangeAction={this.handleInputChange}
-                                required={"required"}
+                                required={'required'}
                                 error={this.state.errors.number}
                             />
 
                             <InputSelect
-                                label={"Type"}
-                                size={"col-sm-6"}
-                                name={"typeId"}
+                                label={'Type'}
+                                size={'col-sm-6'}
+                                name={'typeId'}
                                 options={this.props.phoneNumberTypes}
                                 value={typeId}
                                 onChangeAction={this.handleInputChange}
-                                required={"required"}
+                                required={'required'}
                                 error={this.state.errors.typeId}
                             />
                         </div>
 
-
                         <div className="row">
                             <InputToggle
-                                label={"Primair telefoonnummer"}
-                                name={"primary"}
+                                label={'Primair telefoonnummer'}
+                                name={'primary'}
                                 value={primary}
                                 onChangeAction={this.handleInputChange}
                             />
                         </div>
 
                         <div className="pull-right btn-group" role="group">
-                            <ButtonText buttonClassName={"btn-default"} buttonText={"Annuleren"} onClickAction={this.props.toggleShowNew}/>
-                            <ButtonText buttonText={"Opslaan"} onClickAction={this.handleSubmit} type={"submit"} value={"Submit"}/>
+                            <ButtonText
+                                buttonClassName={'btn-default'}
+                                buttonText={'Annuleren'}
+                                onClickAction={this.props.toggleShowNew}
+                            />
+                            <ButtonText
+                                buttonText={'Opslaan'}
+                                onClickAction={this.handleSubmit}
+                                type={'submit'}
+                                value={'Submit'}
+                            />
                         </div>
                     </PanelBody>
                 </Panel>
             </form>
         );
     }
-};
+}
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         phoneNumberTypes: state.systemData.phoneNumberTypes,
         id: state.contactDetails.id,
@@ -133,7 +141,7 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = dispatch => ({
-    newPhoneNumber: (id) => {
+    newPhoneNumber: id => {
         dispatch(newPhoneNumber(id));
     },
     unsetPrimaryPhoneNumbers: () => {
@@ -141,4 +149,7 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(ContactDetailsFormPhoneNew);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(ContactDetailsFormPhoneNew);

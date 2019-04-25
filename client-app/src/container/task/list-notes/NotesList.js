@@ -7,24 +7,24 @@ import NotesListHead from './NotesListHead';
 import NotesListFilter from './NotesListFilter';
 import NotesListItem from './NotesListItem';
 import NotesDeleteItem from './NotesDeleteItem';
-import DataTablePagination from "../../../components/dataTable/DataTablePagination";
-import {connect} from "react-redux";
+import DataTablePagination from '../../../components/dataTable/DataTablePagination';
+import { connect } from 'react-redux';
 
 class NotesList extends Component {
-    constructor(props){
+    constructor(props) {
         super(props);
 
         this.state = {
             showDeleteItem: false,
             deleteItem: {
                 id: '',
-                name: ''
-            }
+                name: '',
+            },
         };
-    };
+    }
 
     // On key Enter filter form will submit
-    handleKeyUp = (e) => {
+    handleKeyUp = e => {
         if (e.keyCode === 13) {
             this.props.onSubmitFilter();
         }
@@ -34,11 +34,11 @@ class NotesList extends Component {
         this.setState({
             ...this.state,
             showDeleteItem: true,
-            deleteItem:{
+            deleteItem: {
                 ...this.state.deleteItem,
                 id: id,
-                name: name
-            }
+                name: name,
+            },
         });
     };
 
@@ -46,11 +46,11 @@ class NotesList extends Component {
         this.setState({
             ...this.state,
             showDeleteItem: false,
-            deleteItem:{
+            deleteItem: {
                 ...this.state.deleteItem,
                 id: '',
-                name: ''
-            }
+                name: '',
+            },
         });
     };
 
@@ -62,14 +62,11 @@ class NotesList extends Component {
 
         if (this.props.hasError) {
             loadingText = 'Fout bij het ophalen van notities.';
-        }
-        else if (this.props.isLoading) {
+        } else if (this.props.isLoading) {
             loadingText = 'Gegevens aan het laden.';
-        }
-        else if (data.length === 0) {
+        } else if (data.length === 0) {
             loadingText = 'Geen notities gevonden!';
-        }
-        else {
+        } else {
             loading = false;
         }
 
@@ -78,27 +75,25 @@ class NotesList extends Component {
                 <form onKeyUp={this.handleKeyUp}>
                     <DataTable>
                         <DataTableHead>
-                            <NotesListHead
-                                fetchNotesData={() => this.props.fetchNotesData()}
-                            />
-                            <NotesListFilter
-                                onSubmitFilter={this.props.onSubmitFilter}
-                            />
+                            <NotesListHead fetchNotesData={() => this.props.fetchNotesData()} />
+                            <NotesListFilter onSubmitFilter={this.props.onSubmitFilter} />
                         </DataTableHead>
                         <DataTableBody>
-                            {
-                                loading ? (
-                                    <tr><td colSpan={7}>{loadingText}</td></tr>
-                                ) : (
-                                    data.map((task) => {
-                                        return <NotesListItem
+                            {loading ? (
+                                <tr>
+                                    <td colSpan={7}>{loadingText}</td>
+                                </tr>
+                            ) : (
+                                data.map(task => {
+                                    return (
+                                        <NotesListItem
                                             key={task.id}
                                             {...task}
                                             showDeleteItemModal={this.showDeleteItemModal}
                                         />
-                                    })
-                                )
-                            }
+                                    );
+                                })
+                            )}
                         </DataTableBody>
                     </DataTable>
                     <div className="col-md-6 col-md-offset-3">
@@ -109,23 +104,19 @@ class NotesList extends Component {
                         />
                     </div>
                 </form>
-                {
-                    this.state.showDeleteItem &&
-                    <NotesDeleteItem
-                        closeDeleteItemModal={this.closeDeleteItemModal}
-                        {...this.state.deleteItem}
-                    />
-                }
+                {this.state.showDeleteItem && (
+                    <NotesDeleteItem closeDeleteItemModal={this.closeDeleteItemModal} {...this.state.deleteItem} />
+                )}
             </div>
         );
-    };
+    }
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         isLoading: state.loadingData.isLoading,
         hasError: state.loadingData.hasError,
-    }
+    };
 };
 
 export default connect(mapStateToProps)(NotesList);

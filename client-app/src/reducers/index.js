@@ -1,4 +1,4 @@
-import {combineReducers} from 'redux';
+import { combineReducers } from 'redux';
 
 import administrationsReducer from './administration/AdministrationsReducer';
 import administrationDetailsReducer from './administration/AdministrationDetailsReducer';
@@ -126,7 +126,7 @@ const rootReducer = combineReducers({
     participantsProductionProject: participantsProductionProjectReducer,
     participantProductionProjectDetails: participantProductionProjectDetailsReducer,
     // Postal code links
-    postalCodeLinks : PostalCodeLinkReducer,
+    postalCodeLinks: PostalCodeLinkReducer,
     // Products
     products: productsReducer,
     productDetails: productDetailsReducer,

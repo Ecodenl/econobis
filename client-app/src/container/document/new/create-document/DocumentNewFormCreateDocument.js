@@ -1,9 +1,17 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import InputSelect from "../../../../components/form/InputSelect";
+import InputSelect from '../../../../components/form/InputSelect';
 
-const DocumentNewFormCreateDocument = ({document, templates, errors, handleInputChange, handleDocumentGroupChange, documentGroups, users}) => {
+const DocumentNewFormCreateDocument = ({
+    document,
+    templates,
+    errors,
+    handleInputChange,
+    handleDocumentGroupChange,
+    documentGroups,
+    users,
+}) => {
     const { documentGroup, templateId, freeText1, freeText2, filename, sentById } = document;
 
     return (
@@ -11,20 +19,20 @@ const DocumentNewFormCreateDocument = ({document, templates, errors, handleInput
             <div className="row">
                 <InputSelect
                     label="Documentgroep"
-                    name={"documentGroup"}
+                    name={'documentGroup'}
                     value={documentGroup}
                     options={documentGroups}
                     onChangeAction={handleDocumentGroupChange}
-                    required={"required"}
+                    required={'required'}
                     error={errors.documentGroup}
                 />
                 <InputSelect
                     label="Template"
-                    name={"templateId"}
+                    name={'templateId'}
                     value={templateId}
                     options={templates}
                     onChangeAction={handleInputChange}
-                    required={"required"}
+                    required={'required'}
                     error={errors.templateId}
                 />
             </div>
@@ -40,7 +48,7 @@ const DocumentNewFormCreateDocument = ({document, templates, errors, handleInput
                                 className="form-control input-sm"
                                 name="freeText1"
                                 value={freeText1}
-                                onChange={ handleInputChange }
+                                onChange={handleInputChange}
                             />
                         </div>
                     </div>
@@ -56,7 +64,7 @@ const DocumentNewFormCreateDocument = ({document, templates, errors, handleInput
                                 className="form-control input-sm"
                                 name="freeText2"
                                 value={freeText2}
-                                onChange={ handleInputChange }
+                                onChange={handleInputChange}
                             />
                         </div>
                     </div>
@@ -65,7 +73,7 @@ const DocumentNewFormCreateDocument = ({document, templates, errors, handleInput
             <div className="row">
                 <InputSelect
                     label="Afzender"
-                    name={"sentById"}
+                    name={'sentById'}
                     value={sentById}
                     options={users}
                     optionName={'fullName'}
@@ -76,11 +84,14 @@ const DocumentNewFormCreateDocument = ({document, templates, errors, handleInput
     );
 };
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         documentGroups: state.systemData.documentGroups,
         users: state.systemData.users,
     };
 };
 
-export default connect(mapStateToProps, null)(DocumentNewFormCreateDocument);
+export default connect(
+    mapStateToProps,
+    null
+)(DocumentNewFormCreateDocument);

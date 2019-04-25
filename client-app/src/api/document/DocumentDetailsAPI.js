@@ -3,7 +3,7 @@ import axios from 'axios';
 const URL_DOCUMENT = `${URL_API}/api/document`;
 
 export default {
-    fetchDocumentDetails: (id) => {
+    fetchDocumentDetails: id => {
         const requestUrl = `${URL_DOCUMENT}/${id}`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
@@ -11,7 +11,7 @@ export default {
         return axios.get(requestUrl);
     },
 
-    newDocument: (data) => {
+    newDocument: data => {
         const requestUrl = `${URL_DOCUMENT}`;
         const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
         axios.defaults.headers.common.Authorization = AUTH_TOKEN;
@@ -19,7 +19,7 @@ export default {
         return axios.post(requestUrl, data);
     },
 
-    updateDocument: (document) => {
+    updateDocument: document => {
         const requestUrl = `${URL_DOCUMENT}/${document.id}`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
@@ -27,7 +27,7 @@ export default {
         return axios.post(requestUrl, document);
     },
 
-    deleteDocument: (id) => {
+    deleteDocument: id => {
         const requestUrl = `${URL_DOCUMENT}/${id}/delete`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
@@ -35,11 +35,11 @@ export default {
         return axios.post(requestUrl);
     },
 
-    download: (id) => {
+    download: id => {
         const requestUrl = `${URL_DOCUMENT}/${id}/download`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios.get(requestUrl, {responseType: 'blob'});
+        return axios.get(requestUrl, { responseType: 'blob' });
     },
 };

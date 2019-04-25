@@ -1,13 +1,13 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import validator from 'validator';
 
 import AddressAPI from '../../../../api/contact/AddressAPI';
-import {unsetPrimaryAddresses, updateAddress} from '../../../../actions/contact/ContactDetailsActions';
+import { unsetPrimaryAddresses, updateAddress } from '../../../../actions/contact/ContactDetailsActions';
 import ContactDetailsFormAddressView from './ContactDetailsFormAddressView';
 import ContactDetailsFormAddressEdit from './ContactDetailsFormAddressEdit';
 import ContactDetailsFormAddressDelete from './ContactDetailsFormAddressDelete';
-import {isEqual} from "lodash";
+import { isEqual } from 'lodash';
 
 class ContactDetailFormAddressItem extends Component {
     constructor(props) {
@@ -27,10 +27,10 @@ class ContactDetailFormAddressItem extends Component {
                 number: false,
             },
         };
-    };
+    }
 
     componentWillReceiveProps(nextProps) {
-        if(!isEqual(this.state.address, nextProps.address)){
+        if (!isEqual(this.state.address, nextProps.address)) {
             this.setState({
                 ...this.state,
                 address: {
@@ -38,7 +38,7 @@ class ContactDetailFormAddressItem extends Component {
                 },
             });
         }
-    };
+    }
 
     onLineEnter = () => {
         this.setState({
@@ -55,24 +55,24 @@ class ContactDetailFormAddressItem extends Component {
     };
 
     openEdit = () => {
-        this.setState({showEdit: true});
+        this.setState({ showEdit: true });
     };
 
     closeEdit = () => {
-        this.setState({showEdit: false});
+        this.setState({ showEdit: false });
     };
 
     cancelEdit = () => {
         this.setState({
             ...this.state,
-            address: {...this.props.address},
+            address: { ...this.props.address },
         });
 
         this.closeEdit();
     };
 
     toggleDelete = () => {
-        this.setState({showDelete: !this.state.showDelete});
+        this.setState({ showDelete: !this.state.showDelete });
     };
 
     handleInputChange = event => {
@@ -84,7 +84,7 @@ class ContactDetailFormAddressItem extends Component {
             ...this.state,
             address: {
                 ...this.state.address,
-                [name]: value
+                [name]: value,
             },
         });
     };
@@ -100,27 +100,27 @@ class ContactDetailFormAddressItem extends Component {
         let errors = {};
         let hasErrors = false;
 
-        if(!validator.isPostalCode(address.postalCode, 'any')){
+        if (!validator.isPostalCode(address.postalCode, 'any')) {
             errors.postalCode = true;
             hasErrors = true;
-        };
+        }
 
-        if(validator.isEmpty(address.number + '')){
+        if (validator.isEmpty(address.number + '')) {
             errors.number = true;
             hasErrors = true;
-        };
+        }
 
-        if(validator.isEmpty(address.typeId + '')){
+        if (validator.isEmpty(address.typeId + '')) {
             errors.typeId = true;
             hasErrors = true;
-        };
+        }
 
         this.setState({ ...this.state, errors: errors });
 
         // If no errors send form
         !hasErrors &&
-            AddressAPI.updateAddress(address).then((payload) => {
-                if(address.primary){
+            AddressAPI.updateAddress(address).then(payload => {
+                if (address.primary) {
                     this.props.unsetPrimaryAddresses();
                 }
                 this.props.updateAddress(payload);
@@ -140,8 +140,7 @@ class ContactDetailFormAddressItem extends Component {
                     toggleDelete={this.toggleDelete}
                     address={this.state.address}
                 />
-                {
-                    this.state.showEdit &&
+                {this.state.showEdit && (
                     <ContactDetailsFormAddressEdit
                         address={this.state.address}
                         handleInputChange={this.handleInputChange}
@@ -151,21 +150,17 @@ class ContactDetailFormAddressItem extends Component {
                         numberError={this.state.errors.number}
                         cancelEdit={this.cancelEdit}
                     />
-                }
-                {
-                    this.state.showDelete &&
-                    <ContactDetailsFormAddressDelete
-                        closeDeleteItemModal={this.toggleDelete}
-                        {...this.props.address}
-                    />
-                }
+                )}
+                {this.state.showDelete && (
+                    <ContactDetailsFormAddressDelete closeDeleteItemModal={this.toggleDelete} {...this.props.address} />
+                )}
             </div>
         );
     }
-};
+}
 
 const mapDispatchToProps = dispatch => ({
-    updateAddress: (id) => {
+    updateAddress: id => {
         dispatch(updateAddress(id));
     },
     unsetPrimaryAddresses: () => {
@@ -173,4 +168,7 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(null, mapDispatchToProps)(ContactDetailFormAddressItem);
+export default connect(
+    null,
+    mapDispatchToProps
+)(ContactDetailFormAddressItem);

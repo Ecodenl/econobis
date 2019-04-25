@@ -1,6 +1,6 @@
 import { put, call } from 'redux-saga/effects';
 import IntakeDetailsAPI from '../../api/intake/IntakeDetailsAPI';
-import {hashHistory} from "react-router";
+import { hashHistory } from 'react-router';
 
 export function* fetchIntakeDetailsSaga({ payload }) {
     try {

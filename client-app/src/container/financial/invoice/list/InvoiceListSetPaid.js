@@ -1,14 +1,13 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 
 import Modal from '../../../../components/modal/Modal';
-import InvoiceDetailsAPI from "../../../../api/invoice/InvoiceDetailsAPI";
-import moment from "moment/moment";
-import validator from "validator";
-import InputDate from "../../../../components/form/InputDate";
-import {hashHistory} from "react-router";
+import InvoiceDetailsAPI from '../../../../api/invoice/InvoiceDetailsAPI';
+import moment from 'moment/moment';
+import validator from 'validator';
+import InputDate from '../../../../components/form/InputDate';
+import { hashHistory } from 'react-router';
 
 class InvoiceListSetPaid extends Component {
-
     constructor(props) {
         super(props);
 
@@ -19,16 +18,16 @@ class InvoiceListSetPaid extends Component {
             },
             errors: {
                 datePaid: false,
-            }
+            },
         };
-    };
+    }
 
     handleInputChangeDate = (value, name) => {
         this.setState({
             ...this.state,
             invoice: {
                 ...this.state.invoice,
-                [name]: value
+                [name]: value,
             },
         });
     };
@@ -36,7 +35,7 @@ class InvoiceListSetPaid extends Component {
     confirmAction = event => {
         event.preventDefault();
 
-        const {invoice} = this.state;
+        const { invoice } = this.state;
 
         // Validation
         let errors = {};
@@ -47,18 +46,18 @@ class InvoiceListSetPaid extends Component {
             hasErrors = true;
         }
 
-        this.setState({...this.state, errors: errors});
+        this.setState({ ...this.state, errors: errors });
 
         // If no errors send form
         if (!hasErrors) {
-            InvoiceDetailsAPI.updateInvoice(invoice).then((payload) => {
+            InvoiceDetailsAPI.updateInvoice(invoice).then(payload => {
                 hashHistory.push(`/financieel/${this.props.administrationId}/facturen/betaald`);
             });
         }
     };
 
     render() {
-        const {datePaid} = this.state.invoice;
+        const { datePaid } = this.state.invoice;
 
         return (
             <Modal
@@ -69,12 +68,15 @@ class InvoiceListSetPaid extends Component {
             >
                 <div className="row">
                     <div className={'col-sm-12 margin-10-bottom'}>
-                    <span>
-                    Wanneer de betaaldatum wordt ingevuld zal er een betaling aangemaakt worden met het openstaande bedrag(€{this.props.amountOpen.toLocaleString('nl', {
-                        minimumFractionDigits: 2,
-                        maximumFractionDigits: 2
-                    })}).
-                    </span>
+                        <span>
+                            Wanneer de betaaldatum wordt ingevuld zal er een betaling aangemaakt worden met het
+                            openstaande bedrag(€
+                            {this.props.amountOpen.toLocaleString('nl', {
+                                minimumFractionDigits: 2,
+                                maximumFractionDigits: 2,
+                            })}
+                            ).
+                        </span>
                     </div>
                 </div>
                 <div className="row">
@@ -90,7 +92,7 @@ class InvoiceListSetPaid extends Component {
                 </div>
             </Modal>
         );
-    };
+    }
 }
 
 export default InvoiceListSetPaid;

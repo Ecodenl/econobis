@@ -1,5 +1,5 @@
-import React, {Component} from 'react';
-import {hashHistory} from 'react-router';
+import React, { Component } from 'react';
+import { hashHistory } from 'react-router';
 import { connect } from 'react-redux';
 import moment from 'moment';
 
@@ -11,39 +11,38 @@ class DocumentsList extends Component {
         };
     }
 
-    openItem = (id) => {
+    openItem = id => {
         hashHistory.push(`/document/${id}`);
     };
 
     render() {
-        const {relatedDocuments} = this.props;
+        const { relatedDocuments } = this.props;
         return (
             <div>
-                {relatedDocuments == '' &&
-                <div>Geen documenten gevonden.</div>
-                }
+                {relatedDocuments == '' && <div>Geen documenten gevonden.</div>}
 
-                {relatedDocuments != '' &&
-                <table className="table harmonica-table">
-                    <tbody>
-                    {relatedDocuments.map((item, i) => {
-                        return (
-                            <tr onClick={() => this.openItem(item.id)} key={i}>
-                                <td className='col-xs-5 clickable'>{moment(item.createdAt.date).format('L')}</td>
-                                <td className='col-xs-6 clickable'>{item.filename}</td>
-                            </tr>
-                        )
-                    })
-                    }
-                    </tbody>
-                </table>
-                }
+                {relatedDocuments != '' && (
+                    <table className="table harmonica-table">
+                        <tbody>
+                            {relatedDocuments.map((item, i) => {
+                                return (
+                                    <tr onClick={() => this.openItem(item.id)} key={i}>
+                                        <td className="col-xs-5 clickable">
+                                            {moment(item.createdAt.date).format('L')}
+                                        </td>
+                                        <td className="col-xs-6 clickable">{item.filename}</td>
+                                    </tr>
+                                );
+                            })}
+                        </tbody>
+                    </table>
+                )}
             </div>
         );
-    };
+    }
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         relatedDocuments: state.participantProductionProjectDetails.relatedDocuments,
     };

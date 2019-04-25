@@ -1,10 +1,17 @@
-import { fetchContacts, clearContacts, setCheckedContact, setCheckedContactAll, deleteContact, deleteSelectedContacts } from '../../actions/contact/ContactsActions';
+import {
+    fetchContacts,
+    clearContacts,
+    setCheckedContact,
+    setCheckedContactAll,
+    deleteContact,
+    deleteSelectedContacts,
+} from '../../actions/contact/ContactsActions';
 
 test('should get contacts', () => {
     const action = fetchContacts();
 
     expect(action).toEqual({
-        type: 'FETCH_CONTACTS'
+        type: 'FETCH_CONTACTS',
     });
 });
 
@@ -12,7 +19,7 @@ test('should clear contacts', () => {
     const action = clearContacts();
 
     expect(action).toEqual({
-        type: 'CLEAR_CONTACTS'
+        type: 'CLEAR_CONTACTS',
     });
 });
 
@@ -22,7 +29,7 @@ test('should set checked contact', () => {
 
     expect(action).toEqual({
         type: 'SET_CHECKED_CONTACT',
-        id
+        id,
     });
 });
 
@@ -32,7 +39,7 @@ test('should set checked all contacts', () => {
 
     expect(action).toEqual({
         type: 'SET_CHECKED_CONTACT_ALL',
-        checkedValue
+        checkedValue,
     });
 });
 
@@ -42,7 +49,7 @@ test('should delete contact', () => {
 
     expect(action).toEqual({
         type: 'DELETE_CONTACT',
-        id
+        id,
     });
 });
 

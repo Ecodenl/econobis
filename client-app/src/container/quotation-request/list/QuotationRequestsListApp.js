@@ -1,22 +1,22 @@
-import React, {Component} from 'react';
-import {connect} from 'react-redux';
-import {bindActionCreators} from 'redux';
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 
 import {
     clearQuotationRequests,
-    fetchQuotationRequests
+    fetchQuotationRequests,
 } from '../../../actions/quotation-request/QuotationRequestsActions';
-import {clearFilterQuotationRequests} from '../../../actions/quotation-request/QuotationRequestsFiltersActions';
-import {setQuotationRequestsPagination} from '../../../actions/quotation-request/QuotationRequestsPaginationActions';
+import { clearFilterQuotationRequests } from '../../../actions/quotation-request/QuotationRequestsFiltersActions';
+import { setQuotationRequestsPagination } from '../../../actions/quotation-request/QuotationRequestsPaginationActions';
 import QuotationRequestsList from './QuotationRequestsList';
 import QuotationRequestsListToolbar from './QuotationRequestsListToolbar';
 import filterHelper from '../../../helpers/FilterHelper';
 import Panel from '../../../components/panel/Panel';
-import PanelBody from "../../../components/panel/PanelBody";
-import moment from "moment/moment";
-import fileDownload from "js-file-download";
-import QuotationRequestAPI from "../../../api/quotation-request/QuotationRequestsAPI";
-import {blockUI, unblockUI} from '../../../actions/general/BlockUIActions';
+import PanelBody from '../../../components/panel/PanelBody';
+import moment from 'moment/moment';
+import fileDownload from 'js-file-download';
+import QuotationRequestAPI from '../../../api/quotation-request/QuotationRequestsAPI';
+import { blockUI, unblockUI } from '../../../actions/general/BlockUIActions';
 
 class QuotationRequestsListApp extends Component {
     constructor(props) {
@@ -28,11 +28,11 @@ class QuotationRequestsListApp extends Component {
 
     componentDidMount() {
         this.fetchQuotationRequestsData();
-    };
+    }
 
     componentWillUnmount() {
         this.props.clearQuotationRequests();
-    };
+    }
 
     getCSV = () => {
         this.props.blockUI();
@@ -40,13 +40,15 @@ class QuotationRequestsListApp extends Component {
             const filters = filterHelper(this.props.quotationRequestsFilters);
             const sorts = this.props.quotationRequestsSorts;
 
-            QuotationRequestAPI.getCSV({filters, sorts}).then((payload) => {
-                fileDownload(payload.data, 'Offerteverzoeken-' + moment().format("YYYY-MM-DD HH:mm:ss") +  '.csv');
-                this.props.unblockUI();
-            }).catch((error) => {
-                this.props.unblockUI();
-            });
-        },100 );
+            QuotationRequestAPI.getCSV({ filters, sorts })
+                .then(payload => {
+                    fileDownload(payload.data, 'Offerteverzoeken-' + moment().format('YYYY-MM-DD HH:mm:ss') + '.csv');
+                    this.props.unblockUI();
+                })
+                .catch(error => {
+                    this.props.unblockUI();
+                });
+        }, 100);
     };
 
     fetchQuotationRequestsData = () => {
@@ -56,7 +58,7 @@ class QuotationRequestsListApp extends Component {
             const pagination = { limit: 20, offset: this.props.quotationRequestsPagination.offset };
 
             this.props.fetchQuotationRequests(filters, sorts, pagination);
-        },100 );
+        }, 100);
     };
 
     resetQuotationRequestFilters = () => {
@@ -69,23 +71,23 @@ class QuotationRequestsListApp extends Component {
         const filters = filterHelper(this.props.quotationRequestsFilters);
         const sorts = this.props.quotationRequestsSorts;
 
-        this.props.setQuotationRequestsPagination({page: 0, offset: 0});
+        this.props.setQuotationRequestsPagination({ page: 0, offset: 0 });
 
         setTimeout(() => {
             this.fetchQuotationRequestsData();
-        },100 );
-    };
+        }, 100);
+    }
 
     handlePageClick(data) {
         let page = data.selected;
         let offset = Math.ceil(page * 20);
 
-        this.props.setQuotationRequestsPagination({page, offset});
+        this.props.setQuotationRequestsPagination({ page, offset });
 
         setTimeout(() => {
             this.fetchQuotationRequestsData();
-        },100 );
-    };
+        }, 100);
+    }
 
     render() {
         return (
@@ -109,11 +111,11 @@ class QuotationRequestsListApp extends Component {
                     </div>
                 </PanelBody>
             </Panel>
-        )
+        );
     }
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         quotationRequests: state.quotationRequests.list,
         quotationRequestsFilters: state.quotationRequests.filters,
@@ -122,8 +124,21 @@ const mapStateToProps = (state) => {
     };
 };
 
-const mapDispatchToProps = (dispatch) => {
-    return bindActionCreators({ fetchQuotationRequests, clearQuotationRequests, setQuotationRequestsPagination, clearFilterQuotationRequests, blockUI, unblockUI }, dispatch);
+const mapDispatchToProps = dispatch => {
+    return bindActionCreators(
+        {
+            fetchQuotationRequests,
+            clearQuotationRequests,
+            setQuotationRequestsPagination,
+            clearFilterQuotationRequests,
+            blockUI,
+            unblockUI,
+        },
+        dispatch
+    );
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(QuotationRequestsListApp);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(QuotationRequestsListApp);

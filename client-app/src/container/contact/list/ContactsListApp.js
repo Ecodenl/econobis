@@ -14,10 +14,10 @@ import ContactsList from './ContactsList';
 import ContactsListToolbar from './ContactsListToolbar';
 import filterHelper from '../../../helpers/FilterHelper';
 import ContactsAPI from '../../../api/contact/ContactsAPI';
-import fileDownload from "js-file-download";
-import {hashHistory} from "react-router";
-import ContactsListSaveAsGroup from "./ContactsListSaveAsGroup";
-import ContactsListExtraFilters from "./ContactsListExtraFilters";
+import fileDownload from 'js-file-download';
+import { hashHistory } from 'react-router';
+import ContactsListSaveAsGroup from './ContactsListSaveAsGroup';
+import ContactsListExtraFilters from './ContactsListExtraFilters';
 
 class ContactsListApp extends Component {
     constructor(props) {
@@ -30,7 +30,7 @@ class ContactsListApp extends Component {
                     break;
                 default:
                     break;
-            };
+            }
         }
 
         this.state = {
@@ -51,21 +51,20 @@ class ContactsListApp extends Component {
 
     componentDidMount() {
         this.fetchContactsData();
-    };
+    }
 
     componentWillReceiveProps(nextProps) {
-        if(this.props.params.value !== nextProps.params.value){
-            if(!isEmpty(nextProps.params)) {
-                switch(nextProps.params.filter){
+        if (this.props.params.value !== nextProps.params.value) {
+            if (!isEmpty(nextProps.params)) {
+                switch (nextProps.params.filter) {
                     case 'type':
                         this.props.clearFilterContacts();
                         this.props.setTypeFilter(nextProps.params.value);
                         break;
                     default:
                         break;
-                };
-            }
-            else {
+                }
+            } else {
                 this.props.clearFilterContacts();
             }
 
@@ -77,7 +76,7 @@ class ContactsListApp extends Component {
 
     componentWillUnmount() {
         this.props.clearContacts();
-    };
+    }
 
     fetchContactsData = () => {
         setTimeout(() => {
@@ -88,7 +87,7 @@ class ContactsListApp extends Component {
             const filterType = this.state.filterType;
 
             this.props.fetchContacts(filters, extraFilters, sorts, pagination, filterType);
-        },100 );
+        }, 100);
     };
 
     saveAsGroup = () => {
@@ -96,14 +95,14 @@ class ContactsListApp extends Component {
         const filters = filterHelper(this.props.contactsFilters);
         const filterType = this.state.filterType;
 
-        ContactsAPI.saveAsGroup({filters, extraFilters, filterType}).then((payload) => {
+        ContactsAPI.saveAsGroup({ filters, extraFilters, filterType }).then(payload => {
             hashHistory.push(`/contact-groep/${payload.data.data.id}/edit`);
         });
     };
 
     toggleSaveAsGroup = () => {
         this.setState({
-            showSaveAsGroup: !this.state.showSaveAsGroup
+            showSaveAsGroup: !this.state.showSaveAsGroup,
         });
     };
 
@@ -114,13 +113,15 @@ class ContactsListApp extends Component {
             const filters = filterHelper(this.props.contactsFilters);
             const sorts = this.props.contactsSorts;
 
-                ContactsAPI.getCSV({filters, extraFilters, sorts}).then((payload) => {
-                    fileDownload(payload.data, 'Contacten-' + moment().format("YYYY-MM-DD HH:mm:ss") +  '.csv');
+            ContactsAPI.getCSV({ filters, extraFilters, sorts })
+                .then(payload => {
+                    fileDownload(payload.data, 'Contacten-' + moment().format('YYYY-MM-DD HH:mm:ss') + '.csv');
                     this.props.unblockUI();
-                }).catch((error) => {
+                })
+                .catch(error => {
                     this.props.unblockUI();
-              });
-        },100 );
+                });
+        }, 100);
     };
 
     resetContactFilters = () => {
@@ -138,29 +139,29 @@ class ContactsListApp extends Component {
     onSubmitFilter() {
         this.props.clearContacts();
 
-        this.props.setContactsPagination({page: 0, offset: 0});
+        this.props.setContactsPagination({ page: 0, offset: 0 });
 
         this.fetchContactsData();
-    };
+    }
 
     handlePageClick(data) {
         let page = data.selected;
         let offset = Math.ceil(page * 20);
 
-        this.props.setContactsPagination({page, offset});
+        this.props.setContactsPagination({ page, offset });
 
         this.fetchContactsData();
-    };
+    }
 
     toggleShowCheckboxList = () => {
         this.setState({
-            showCheckboxList: !this.state.showCheckboxList
+            showCheckboxList: !this.state.showCheckboxList,
         });
     };
 
     selectAllCheckboxes = () => {
         this.setState({
-            checkedAllCheckboxes: !this.state.checkedAllCheckboxes
+            checkedAllCheckboxes: !this.state.checkedAllCheckboxes,
         });
 
         this.props.setCheckedContactAll(!this.state.checkedAllCheckboxes);
@@ -170,37 +171,37 @@ class ContactsListApp extends Component {
         this.setState({
             filterType: filterType,
             amountOfFilters: extraFilters,
-            extraFilters: extraFilters
+            extraFilters: extraFilters,
         });
 
-        this.props.setContactsPagination({page: 0, offset: 0});
+        this.props.setContactsPagination({ page: 0, offset: 0 });
 
         setTimeout(() => {
             this.fetchContactsData();
-        },100 );
+        }, 100);
     }
 
     prefillExtraFilter() {
         this.setState({
             filterType: 'and',
             amountOfFilters: 1,
-            extraFilters:  [{
-                field: 'name',
-                type: 'eq',
-                data: '',
-            }],
+            extraFilters: [
+                {
+                    field: 'name',
+                    type: 'eq',
+                    data: '',
+                },
+            ],
         });
-    };
+    }
 
     toggleShowExtraFilters() {
-        this.state.extraFilters.length === 0 &&
-        !this.state.showExtraFilters &&
-        this.prefillExtraFilter();
+        this.state.extraFilters.length === 0 && !this.state.showExtraFilters && this.prefillExtraFilter();
 
         this.setState({
             showExtraFilters: !this.state.showExtraFilters,
         });
-    };
+    }
 
     render() {
         return (
@@ -234,14 +235,13 @@ class ContactsListApp extends Component {
                         </div>
                     </div>
                 </div>
-                {this.state.showSaveAsGroup &&
-                <ContactsListSaveAsGroup
-                 saveAsGroup={this.saveAsGroup}
-                 closeDeleteItemModal={this.toggleSaveAsGroup}
-                />
-                }
-                {
-                    this.state.showExtraFilters &&
+                {this.state.showSaveAsGroup && (
+                    <ContactsListSaveAsGroup
+                        saveAsGroup={this.saveAsGroup}
+                        closeDeleteItemModal={this.toggleSaveAsGroup}
+                    />
+                )}
+                {this.state.showExtraFilters && (
                     <ContactsListExtraFilters
                         saveAsGroup={this.saveAsGroup}
                         filterType={this.state.filterType}
@@ -250,13 +250,13 @@ class ContactsListApp extends Component {
                         extraFilters={this.state.extraFilters}
                         amountOfFilters={this.state.amountOfFilters}
                     />
-                }
+                )}
             </div>
-        )
+        );
     }
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         contacts: state.contacts.list,
         contactsFilters: state.contacts.filters,
@@ -265,8 +265,23 @@ const mapStateToProps = (state) => {
     };
 };
 
-const mapDispatchToProps = (dispatch) => {
-    return bindActionCreators({ fetchContacts, clearContacts, setCheckedContactAll, setTypeFilter, clearFilterContacts, setContactsPagination, blockUI, unblockUI }, dispatch);
+const mapDispatchToProps = dispatch => {
+    return bindActionCreators(
+        {
+            fetchContacts,
+            clearContacts,
+            setCheckedContactAll,
+            setTypeFilter,
+            clearFilterContacts,
+            setContactsPagination,
+            blockUI,
+            unblockUI,
+        },
+        dispatch
+    );
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(ContactsListApp);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(ContactsListApp);

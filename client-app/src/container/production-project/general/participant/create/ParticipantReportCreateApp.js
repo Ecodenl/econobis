@@ -1,16 +1,16 @@
-import React, {Component} from 'react';
-import {browserHistory} from 'react-router';
+import React, { Component } from 'react';
+import { browserHistory } from 'react-router';
 
 import Panel from '../../../../../components/panel/Panel';
 import PanelBody from '../../../../../components/panel/PanelBody';
-import ParticipantReportCreateList from "./ParticipantReportCreateList";
-import ProductionProjectsAPI from "../../../../../api/production-project/ProductionProjectsAPI";
-import ParticipantReportCreateViewPdf from "./ParticipantReportCreateViewPdf";
-import ParticipantReportCreateViewEmail from "./ParticipantReportCreateViewEmail";
-import ParticipantReportCreateToolbar from "./ParticipantReportCreateToolbar";
-import {connect} from "react-redux";
-import {clearPreviewParticipantReport} from "../../../../../actions/production-project/ProductionProjectDetailsActions";
-import ParticipantsProductionProjectAPI from "../../../../../api/participant-production-project/ParticipantsProductionProjectAPI";
+import ParticipantReportCreateList from './ParticipantReportCreateList';
+import ProductionProjectsAPI from '../../../../../api/production-project/ProductionProjectsAPI';
+import ParticipantReportCreateViewPdf from './ParticipantReportCreateViewPdf';
+import ParticipantReportCreateViewEmail from './ParticipantReportCreateViewEmail';
+import ParticipantReportCreateToolbar from './ParticipantReportCreateToolbar';
+import { connect } from 'react-redux';
+import { clearPreviewParticipantReport } from '../../../../../actions/production-project/ProductionProjectDetailsActions';
+import ParticipantsProductionProjectAPI from '../../../../../api/participant-production-project/ParticipantsProductionProjectAPI';
 
 class ParticipantReportCreateApp extends Component {
     constructor(props) {
@@ -19,28 +19,33 @@ class ParticipantReportCreateApp extends Component {
             participants: [],
             participantId: '',
         };
-    };
+    }
 
     componentDidMount() {
-        ProductionProjectsAPI.peekParticipantsById(this.props.reportPreview.participantIds).then((payload) => {
+        ProductionProjectsAPI.peekParticipantsById(this.props.reportPreview.participantIds).then(payload => {
             this.setState({
                 participants: payload.data,
             });
         });
-    };
+    }
 
-    componentWillUnmount(){
+    componentWillUnmount() {
         this.props.clearPreviewParticipantReport();
     }
 
-    changeParticipant = (participantId) => {
+    changeParticipant = participantId => {
         this.setState({
-            participantId: participantId
+            participantId: participantId,
         });
     };
 
     createParticipantReports = () => {
-        ParticipantsProductionProjectAPI.createParticipantReport(this.props.reportPreview.templateId, this.props.reportPreview.emailTemplateId, this.props.reportPreview.subject, this.props.reportPreview.participantIds).then((payload) => {
+        ParticipantsProductionProjectAPI.createParticipantReport(
+            this.props.reportPreview.templateId,
+            this.props.reportPreview.emailTemplateId,
+            this.props.reportPreview.subject,
+            this.props.reportPreview.participantIds
+        ).then(payload => {
             browserHistory.goBack();
         });
     };
@@ -52,51 +57,70 @@ class ParticipantReportCreateApp extends Component {
                     <div className="col-md-12 margin-10-top">
                         <div className="col-md-12 margin-10-top">
                             <Panel>
-                                <PanelBody className={"panel-small"}>
-                                    <ParticipantReportCreateToolbar createParticipantReports={this.createParticipantReports} amountOfParticipants={this.state.participants ? this.state.participants.length : 0} administrationId={this.props.params.id}/>
+                                <PanelBody className={'panel-small'}>
+                                    <ParticipantReportCreateToolbar
+                                        createParticipantReports={this.createParticipantReports}
+                                        amountOfParticipants={
+                                            this.state.participants ? this.state.participants.length : 0
+                                        }
+                                        administrationId={this.props.params.id}
+                                    />
                                 </PanelBody>
                             </Panel>
                         </div>
                     </div>
                 </div>
-            <div className="row">
-                <div className="col-md-2">
-                    <div className="col-md-12 margin-10-top">
-                        <Panel>
-                            <PanelBody className={'panel-invoice-payments-list'}>
-                                <ParticipantReportCreateList participants={this.state.participants} changeParticipant={this.changeParticipant}/>
-                            </PanelBody>
-                        </Panel>
+                <div className="row">
+                    <div className="col-md-2">
+                        <div className="col-md-12 margin-10-top">
+                            <Panel>
+                                <PanelBody className={'panel-invoice-payments-list'}>
+                                    <ParticipantReportCreateList
+                                        participants={this.state.participants}
+                                        changeParticipant={this.changeParticipant}
+                                    />
+                                </PanelBody>
+                            </Panel>
+                        </div>
                     </div>
-                </div>
-                <div className="col-md-5">
-                    <div className="col-md-12 margin-10-top">
-                        <Panel>
-                            <PanelBody>
-                                <ParticipantReportCreateViewPdf subject={this.props.reportPreview.subject} documentTemplateId={this.props.reportPreview.templateId} emailTemplateId={this.props.reportPreview.emailTemplateId} participantId={this.state.participantId}/>
-                            </PanelBody>
-                        </Panel>
+                    <div className="col-md-5">
+                        <div className="col-md-12 margin-10-top">
+                            <Panel>
+                                <PanelBody>
+                                    <ParticipantReportCreateViewPdf
+                                        subject={this.props.reportPreview.subject}
+                                        documentTemplateId={this.props.reportPreview.templateId}
+                                        emailTemplateId={this.props.reportPreview.emailTemplateId}
+                                        participantId={this.state.participantId}
+                                    />
+                                </PanelBody>
+                            </Panel>
+                        </div>
                     </div>
-                </div>
-                <div className="col-md-5">
-                    <div className="col-md-12 margin-10-top">
-                        <Panel>
-                            <PanelBody>
-                                <ParticipantReportCreateViewEmail subject={this.props.reportPreview.subject} documentTemplateId={this.props.reportPreview.templateId} emailTemplateId={this.props.reportPreview.emailTemplateId} participantId={this.state.participantId}/>
-                            </PanelBody>
-                        </Panel>
+                    <div className="col-md-5">
+                        <div className="col-md-12 margin-10-top">
+                            <Panel>
+                                <PanelBody>
+                                    <ParticipantReportCreateViewEmail
+                                        subject={this.props.reportPreview.subject}
+                                        documentTemplateId={this.props.reportPreview.templateId}
+                                        emailTemplateId={this.props.reportPreview.emailTemplateId}
+                                        participantId={this.state.participantId}
+                                    />
+                                </PanelBody>
+                            </Panel>
+                        </div>
                     </div>
                 </div>
             </div>
-            </div>
-        )
+        );
     }
-};
+}
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         reportPreview: state.productionProjectParticipantReportPreview,
-    }
+    };
 };
 
 const mapDispatchToProps = dispatch => ({
@@ -105,4 +129,7 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(ParticipantReportCreateApp);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(ParticipantReportCreateApp);

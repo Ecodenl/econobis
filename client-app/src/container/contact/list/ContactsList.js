@@ -7,25 +7,25 @@ import ContactsListHead from './ContactsListHead';
 import ContactsListFilter from './ContactsListFilter';
 import ContactsListItem from './ContactsListItem';
 import ContactsDeleteItem from './ContactsDeleteItem';
-import DataTablePagination from "../../../components/dataTable/DataTablePagination";
-import {deleteContact} from "../../../actions/contact/ContactDetailsActions";
-import {connect} from "react-redux";
+import DataTablePagination from '../../../components/dataTable/DataTablePagination';
+import { deleteContact } from '../../../actions/contact/ContactDetailsActions';
+import { connect } from 'react-redux';
 
 class ContactsList extends Component {
-    constructor(props){
+    constructor(props) {
         super(props);
 
         this.state = {
             showDeleteItem: false,
             deleteItem: {
                 id: '',
-                fullName: ''
-            }
+                fullName: '',
+            },
         };
     }
 
     // On key Enter filter form will submit
-    handleKeyUp = (e) => {
+    handleKeyUp = e => {
         if (e.keyCode === 13) {
             this.props.onSubmitFilter();
         }
@@ -35,11 +35,11 @@ class ContactsList extends Component {
         this.setState({
             ...this.state,
             showDeleteItem: true,
-            deleteItem:{
+            deleteItem: {
                 ...this.state.deleteItem,
                 id: id,
-                fullName: name
-            }
+                fullName: name,
+            },
         });
     };
 
@@ -47,11 +47,11 @@ class ContactsList extends Component {
         this.setState({
             ...this.state,
             showDeleteItem: false,
-            deleteItem:{
+            deleteItem: {
                 ...this.state.deleteItem,
                 id: '',
-                fullName: ''
-            }
+                fullName: '',
+            },
         });
     };
 
@@ -63,14 +63,11 @@ class ContactsList extends Component {
 
         if (this.props.hasError) {
             loadingText = 'Fout bij het ophalen van contacten.';
-        }
-        else if (this.props.isLoading) {
+        } else if (this.props.isLoading) {
             loadingText = 'Gegevens aan het laden.';
-        }
-        else if (data.length === 0) {
+        } else if (data.length === 0) {
             loadingText = 'Geen contacten gevonden!';
-        }
-        else {
+        } else {
             loading = false;
         }
 
@@ -90,21 +87,23 @@ class ContactsList extends Component {
                             />
                         </DataTableHead>
                         <DataTableBody>
-                            {
-                                loading ? (
-                                    <tr><td colSpan={10}>{loadingText}</td></tr>
-                                ) : (
-                                    data.map((contact) => {
-                                        return <ContactsListItem
+                            {loading ? (
+                                <tr>
+                                    <td colSpan={10}>{loadingText}</td>
+                                </tr>
+                            ) : (
+                                data.map(contact => {
+                                    return (
+                                        <ContactsListItem
                                             key={contact.id}
                                             {...contact}
                                             showCheckbox={this.props.showCheckboxList}
                                             checkedAllCheckboxes={this.props.checkedAllCheckboxes}
                                             showDeleteItemModal={this.showDeleteItemModal}
                                         />
-                                    })
-                                )
-                            }
+                                    );
+                                })
+                            )}
                         </DataTableBody>
                     </DataTable>
                     <div className="col-md-6 col-md-offset-3">
@@ -115,24 +114,19 @@ class ContactsList extends Component {
                         />
                     </div>
                 </form>
-                {
-                    this.state.showDeleteItem &&
-                        <ContactsDeleteItem
-                            closeDeleteItemModal={this.closeDeleteItemModal}
-                            {...this.state.deleteItem}
-                        />
-                }
+                {this.state.showDeleteItem && (
+                    <ContactsDeleteItem closeDeleteItemModal={this.closeDeleteItemModal} {...this.state.deleteItem} />
+                )}
             </div>
         );
     }
-};
+}
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         isLoading: state.loadingData.isLoading,
         hasError: state.loadingData.hasError,
-    }
+    };
 };
-
 
 export default connect(mapStateToProps)(ContactsList);

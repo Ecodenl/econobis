@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment';
 moment.locale('nl');
@@ -8,13 +8,25 @@ import { fetchHousingFileDetails } from '../../../../actions/housing-file/Housin
 import InputText from '../../../../components/form/InputText';
 import InputSelect from '../../../../components/form/InputSelect';
 import ButtonText from '../../../../components/button/ButtonText';
-import InputToggle from "../../../../components/form/InputToggle";
+import InputToggle from '../../../../components/form/InputToggle';
 
 class HousingFileDetailsFormGeneralEdit extends Component {
     constructor(props) {
         super(props);
 
-        const { id, address, fullAddress, buildingType, buildYear, surface, roofType, energyLabel, floors, energyLabelStatus, isMonument} = props.housingFileDetails;
+        const {
+            id,
+            address,
+            fullAddress,
+            buildingType,
+            buildYear,
+            surface,
+            roofType,
+            energyLabel,
+            floors,
+            energyLabelStatus,
+            isMonument,
+        } = props.housingFileDetails;
 
         this.state = {
             housingFile: {
@@ -31,8 +43,8 @@ class HousingFileDetailsFormGeneralEdit extends Component {
                 energyLabelStatusId: energyLabelStatus ? energyLabelStatus.id : '',
                 isMonument: isMonument ? isMonument : false,
             },
-        }
-    };
+        };
+    }
 
     handleInputChange = event => {
         const target = event.target;
@@ -43,7 +55,7 @@ class HousingFileDetailsFormGeneralEdit extends Component {
             ...this.state,
             housingFile: {
                 ...this.state.housingFile,
-                [name]: value
+                [name]: value,
             },
         });
     };
@@ -51,7 +63,7 @@ class HousingFileDetailsFormGeneralEdit extends Component {
     handleSubmit = event => {
         event.preventDefault();
 
-        const { housingFile }  = this.state;
+        const { housingFile } = this.state;
 
         HousingFileDetailsAPI.updateHousingFile(housingFile).then(() => {
             this.props.fetchHousingFileDetails(housingFile.id);
@@ -60,8 +72,19 @@ class HousingFileDetailsFormGeneralEdit extends Component {
     };
 
     render() {
-        const {fullAddress, fullName, buildingTypeId, buildYear, surface, roofTypeId, energyLabelId, floors, energyLabelStatusId, isMonument} = this.state.housingFile;
-        const {addresses = []} = this.props.contactDetails;
+        const {
+            fullAddress,
+            fullName,
+            buildingTypeId,
+            buildYear,
+            surface,
+            roofTypeId,
+            energyLabelId,
+            floors,
+            energyLabelStatusId,
+            isMonument,
+        } = this.state.housingFile;
+        const { addresses = [] } = this.props.contactDetails;
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -85,8 +108,8 @@ class HousingFileDetailsFormGeneralEdit extends Component {
 
                 <div className="row">
                     <InputSelect
-                        label={"Woningtype"}
-                        size={"col-sm-6"}
+                        label={'Woningtype'}
+                        size={'col-sm-6'}
                         name="buildingTypeId"
                         value={buildingTypeId}
                         options={this.props.buildingTypes}
@@ -104,15 +127,15 @@ class HousingFileDetailsFormGeneralEdit extends Component {
 
                 <div className="row">
                     <InputText
-                        label={"Gebruiksoppervlakte"}
+                        label={'Gebruiksoppervlakte'}
                         name="surface"
                         value={surface}
                         min={0}
                         onChangeAction={this.handleInputChange}
                     />
                     <InputSelect
-                        label={"Daktype"}
-                        size={"col-sm-6"}
+                        label={'Daktype'}
+                        size={'col-sm-6'}
                         name="roofTypeId"
                         value={roofTypeId}
                         options={this.props.roofTypes}
@@ -122,8 +145,8 @@ class HousingFileDetailsFormGeneralEdit extends Component {
 
                 <div className="row">
                     <InputSelect
-                        label={"Energielabel"}
-                        size={"col-sm-6"}
+                        label={'Energielabel'}
+                        size={'col-sm-6'}
                         name="energyLabelId"
                         value={energyLabelId}
                         options={this.props.energyLabels}
@@ -140,16 +163,16 @@ class HousingFileDetailsFormGeneralEdit extends Component {
 
                 <div className="row">
                     <InputSelect
-                        label={"Status energielabel"}
-                        size={"col-sm-6"}
+                        label={'Status energielabel'}
+                        size={'col-sm-6'}
                         name="energyLabelStatusId"
                         value={energyLabelStatusId}
                         options={this.props.energyLabelStatus}
                         onChangeAction={this.handleInputChange}
                     />
                     <InputToggle
-                        label={"Monument"}
-                        name={"isMonument"}
+                        label={'Monument'}
+                        name={'isMonument'}
                         value={isMonument}
                         onChangeAction={this.handleInputChange}
                     />
@@ -157,15 +180,15 @@ class HousingFileDetailsFormGeneralEdit extends Component {
 
                 <div className="panel-footer">
                     <div className="pull-right btn-group" role="group">
-                        <ButtonText buttonText={"Opslaan"} onClickAction={this.handleSubmit}/>
+                        <ButtonText buttonText={'Opslaan'} onClickAction={this.handleSubmit} />
                     </div>
                 </div>
             </form>
         );
-    };
-};
+    }
+}
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         housingFileDetails: state.housingFileDetails,
         buildingTypes: state.systemData.buildingTypes,
@@ -177,9 +200,12 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = dispatch => ({
-    fetchHousingFileDetails: (id) => {
+    fetchHousingFileDetails: id => {
         dispatch(fetchHousingFileDetails(id));
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(HousingFileDetailsFormGeneralEdit);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(HousingFileDetailsFormGeneralEdit);

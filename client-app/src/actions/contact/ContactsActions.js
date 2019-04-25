@@ -5,39 +5,39 @@ export const fetchContacts = (filters, extraFilters, sorts, pagination, filterTy
         extraFilters,
         sorts,
         pagination,
-        filterType
+        filterType,
     };
 };
 
 export const clearContacts = () => {
     return {
-        type: 'CLEAR_CONTACTS'
+        type: 'CLEAR_CONTACTS',
     };
 };
 
-export const setCheckedContact = (id) => {
-    return  {
+export const setCheckedContact = id => {
+    return {
         type: 'SET_CHECKED_CONTACT',
         id,
     };
 };
 
-export const setCheckedContactAll = (checkedValue) => {
-    return  {
+export const setCheckedContactAll = checkedValue => {
+    return {
         type: 'SET_CHECKED_CONTACT_ALL',
         checkedValue,
     };
 };
 
-export const deleteContact = (id) => {
-    return  {
+export const deleteContact = id => {
+    return {
         type: 'DELETE_CONTACT',
         id,
     };
 };
 
-export const deleteSelectedContacts = (contactIds) => {
-    return  {
+export const deleteSelectedContacts = contactIds => {
+    return {
         type: 'DELETE_SELECTED_CONTACTS',
         contactIds,
     };

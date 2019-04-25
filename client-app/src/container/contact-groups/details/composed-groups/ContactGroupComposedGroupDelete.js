@@ -2,9 +2,12 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import Modal from '../../../../components/modal/Modal';
-import { deleteComposedGroup, fetchContactGroupDetails } from '../../../../actions/contact-group/ContactGroupDetailsActions';
+import {
+    deleteComposedGroup,
+    fetchContactGroupDetails,
+} from '../../../../actions/contact-group/ContactGroupDetailsActions';
 
-const ContactGroupComposedGroupDelete = (props) => {
+const ContactGroupComposedGroupDelete = props => {
     const confirmAction = () => {
         props.deleteComposedGroup(props.contactGroupId, props.composedGroup.id);
         props.fetchContactGroupDetails(props.contactGroupId);
@@ -13,14 +16,16 @@ const ContactGroupComposedGroupDelete = (props) => {
 
     return (
         <Modal
-        buttonConfirmText="Verwijder"
+            buttonConfirmText="Verwijder"
             buttonClassName={'btn-danger'}
             closeModal={props.closeDeleteItemModal}
             confirmAction={() => confirmAction()}
             title="Verwijderen"
-      >
-            <p>Ontkoppel groep: <strong> {`${props.composedGroup.name}` } </strong></p>
-      </Modal>
+        >
+            <p>
+                Ontkoppel groep: <strong> {`${props.composedGroup.name}`} </strong>
+            </p>
+        </Modal>
     );
 };
 
@@ -28,9 +33,12 @@ const mapDispatchToProps = dispatch => ({
     deleteComposedGroup: (contactGroupId, contactGroupToDetachId) => {
         dispatch(deleteComposedGroup(contactGroupId, contactGroupToDetachId));
     },
-    fetchContactGroupDetails: (id) => {
+    fetchContactGroupDetails: id => {
         dispatch(fetchContactGroupDetails(id));
     },
 });
 
-export default connect(null, mapDispatchToProps)(ContactGroupComposedGroupDelete);
+export default connect(
+    null,
+    mapDispatchToProps
+)(ContactGroupComposedGroupDelete);

@@ -1,4 +1,4 @@
-export default function (state= [], action) {
+export default function(state = [], action) {
     switch (action.type) {
         case 'FETCH_TEAM_DETAILS_SUCCESS':
             return {
@@ -17,13 +17,13 @@ export default function (state= [], action) {
                     ...state.users,
                     {
                         ...action.teamUser,
-                    }
-                ]
+                    },
+                ],
             };
         case 'DELETE_TEAM_USER_SUCCESS':
             return {
                 ...state,
-                users: state.users.filter((user) => user.id !== action.userId),
+                users: state.users.filter(user => user.id !== action.userId),
             };
         default:
             return state;

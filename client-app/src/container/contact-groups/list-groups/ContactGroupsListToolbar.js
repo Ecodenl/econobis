@@ -4,7 +4,7 @@ import { hashHistory } from 'react-router';
 
 import ButtonIcon from '../../../components/button/ButtonIcon';
 
-const ContactGroupsListToolbar = (props) => {
+const ContactGroupsListToolbar = props => {
     const newContactGroup = () => {
         hashHistory.push('/contact-groep/nieuw');
     };
@@ -13,31 +13,30 @@ const ContactGroupsListToolbar = (props) => {
     const { meta = {} } = props.contactGroups;
 
     return (
-      <div className="row">
-          <div className="col-md-4">
-          <div className="btn-group" role="group">
-                  <ButtonIcon iconName={'glyphicon-refresh'} onClickAction={props.resetContactGroupsFilters} />
-              {
-                  permissions.manageGroup &&
-                  <ButtonIcon iconName={'glyphicon-plus'} onClickAction={newContactGroup} />
-              }
-
+        <div className="row">
+            <div className="col-md-4">
+                <div className="btn-group" role="group">
+                    <ButtonIcon iconName={'glyphicon-refresh'} onClickAction={props.resetContactGroupsFilters} />
+                    {permissions.manageGroup && (
+                        <ButtonIcon iconName={'glyphicon-plus'} onClickAction={newContactGroup} />
+                    )}
                 </div>
             </div>
-          <div className="col-md-4"><h3 className="text-center table-title">Groepen</h3></div>
-          <div className="col-md-4">
-              <div className="pull-right">Resultaten: { meta.total || 0 }</div>
-          </div>
+            <div className="col-md-4">
+                <h3 className="text-center table-title">Groepen</h3>
+            </div>
+            <div className="col-md-4">
+                <div className="pull-right">Resultaten: {meta.total || 0}</div>
+            </div>
         </div>
     );
 };
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         permissions: state.meDetails.permissions,
         contactGroups: state.contactGroups.list,
-    }
+    };
 };
 
 export default connect(mapStateToProps)(ContactGroupsListToolbar);
-

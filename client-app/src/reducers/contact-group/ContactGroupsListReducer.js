@@ -1,4 +1,4 @@
-export default function (state = {isLoading: false}, action) {
+export default function(state = { isLoading: false }, action) {
     switch (action.type) {
         case 'FETCH_CONTACT_GROUPS_LOADING':
             return {
@@ -16,7 +16,7 @@ export default function (state = {isLoading: false}, action) {
         case 'DELETE_CONTACT_GROUP_SUCCESS':
             return {
                 ...state,
-                data: state.data.filter((contactGroup) => contactGroup.id !== action.id),
+                data: state.data.filter(contactGroup => contactGroup.id !== action.id),
             };
         case 'CLEAR_CONTACT_GROUPS':
             return {

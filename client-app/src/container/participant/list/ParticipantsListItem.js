@@ -18,18 +18,18 @@ class ParticipantsListItem extends Component {
             showActionButtons: true,
             highlightRow: 'highlight-row',
         });
-    };
+    }
 
     onRowLeave() {
         this.setState({
             showActionButtons: false,
             highlightRow: '',
         });
-    };
+    }
 
     openItem(id) {
         hashHistory.push(`/productie-project/participant/${id}`);
-    };
+    }
 
     render() {
         const { id, contact, participationsCurrent, status, dateRegister, productionProject } = this.props;
@@ -45,25 +45,44 @@ class ParticipantsListItem extends Component {
         }
 
         return (
-            <tr className={this.state.highlightRow} onDoubleClick={() => this.openItem(id)} onMouseEnter={() => this.onRowEnter()} onMouseLeave={() => this.onRowLeave()}>
+            <tr
+                className={this.state.highlightRow}
+                onDoubleClick={() => this.openItem(id)}
+                onMouseEnter={() => this.onRowEnter()}
+                onMouseLeave={() => this.onRowLeave()}
+            >
                 <td>
-                    { this.props.showCheckboxList && this.props.checkedAll && <input type="checkbox" checked/> }
-                    { this.props.showCheckboxList && !this.props.checkedAll && contact.primaryEmailAddress && <input type="checkbox" name={id} onChange={this.props.toggleParticipantCheck}/> }
-                    { this.props.showCheckboxList && !this.props.checkedAll && !contact.primaryEmailAddress && <input type="checkbox" name={id} onChange={this.props.toggleParticipantCheckNoEmail}/> }
-                    { !this.props.showCheckboxList && <span>{id}</span> }
+                    {this.props.showCheckboxList && this.props.checkedAll && <input type="checkbox" checked />}
+                    {this.props.showCheckboxList && !this.props.checkedAll && contact.primaryEmailAddress && (
+                        <input type="checkbox" name={id} onChange={this.props.toggleParticipantCheck} />
+                    )}
+                    {this.props.showCheckboxList && !this.props.checkedAll && !contact.primaryEmailAddress && (
+                        <input type="checkbox" name={id} onChange={this.props.toggleParticipantCheckNoEmail} />
+                    )}
+                    {!this.props.showCheckboxList && <span>{id}</span>}
                 </td>
-                <td>{ contact.type ? contact.type.name : '' }</td>
-                <td>{ contact.fullName }</td>
-                <td>{ primaryAddress ? street + ' ' + number + addition : ''}</td>
-                <td>{ contact.primaryAddress ? contact.primaryAddress.postalCode : '' }</td>
-                <td>{ contact.primaryAddress ? contact.primaryAddress.city : '' }</td>
-                <td>{ productionProject ? productionProject.name  : '' }</td>
-                <td>{ participationsCurrent ? participationsCurrent : '' }</td>
-                <td>{ status ? status.name : '' }</td>
-                <td>{ dateRegister ? moment(dateRegister).format('L') : '' }</td>
-                <td>{ contact.primaryContactEnergySupplier ? contact.primaryContactEnergySupplier.energySupplier.name : '' }</td>
+                <td>{contact.type ? contact.type.name : ''}</td>
+                <td>{contact.fullName}</td>
+                <td>{primaryAddress ? street + ' ' + number + addition : ''}</td>
+                <td>{contact.primaryAddress ? contact.primaryAddress.postalCode : ''}</td>
+                <td>{contact.primaryAddress ? contact.primaryAddress.city : ''}</td>
+                <td>{productionProject ? productionProject.name : ''}</td>
+                <td>{participationsCurrent ? participationsCurrent : ''}</td>
+                <td>{status ? status.name : ''}</td>
+                <td>{dateRegister ? moment(dateRegister).format('L') : ''}</td>
                 <td>
-                    {(this.state.showActionButtons ? <a role="button" onClick={() => this.openItem(id)}><span className="glyphicon glyphicon-pencil mybtn-success" /> </a> : '')}
+                    {contact.primaryContactEnergySupplier
+                        ? contact.primaryContactEnergySupplier.energySupplier.name
+                        : ''}
+                </td>
+                <td>
+                    {this.state.showActionButtons ? (
+                        <a role="button" onClick={() => this.openItem(id)}>
+                            <span className="glyphicon glyphicon-pencil mybtn-success" />{' '}
+                        </a>
+                    ) : (
+                        ''
+                    )}
                 </td>
             </tr>
         );

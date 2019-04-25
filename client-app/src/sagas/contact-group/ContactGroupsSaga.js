@@ -1,14 +1,14 @@
-import {put, call, all} from 'redux-saga/effects';
+import { put, call, all } from 'redux-saga/effects';
 import ContactGroupAPI from '../../api/contact-group/ContactGroupAPI';
-import {hashHistory} from "react-router";
+import { hashHistory } from 'react-router';
 
-export function* fetchContactGroupsSaga({filters, sorts, pagination}) {
+export function* fetchContactGroupsSaga({ filters, sorts, pagination }) {
     try {
         yield put({ type: 'IS_LOADING' });
         yield put({ type: 'FETCH_CONTACT_GROUPS_LOADING' });
-        const contactGroups = yield call(ContactGroupAPI.fetchContactGroups, {filters, sorts, pagination});
+        const contactGroups = yield call(ContactGroupAPI.fetchContactGroups, { filters, sorts, pagination });
         yield all([
-            put({ type: 'FETCH_CONTACT_GROUPS_LOADING_SUCCESS'}),
+            put({ type: 'FETCH_CONTACT_GROUPS_LOADING_SUCCESS' }),
             put({ type: 'FETCH_CONTACT_GROUPS_SUCCESS', contactGroups }),
         ]);
         yield put({ type: 'IS_LOADING_COMPLETE' });
@@ -40,7 +40,7 @@ export function* addContactToGroupSaga({ contact }) {
 
 export function* deleteComposedGroupSaga({ contactGroupId, contactGroupToDetachId }) {
     try {
-        yield call(ContactGroupAPI.deleteComposedGroup, {contactGroupId, contactGroupToDetachId});
+        yield call(ContactGroupAPI.deleteComposedGroup, { contactGroupId, contactGroupToDetachId });
         yield put({ type: 'DELETE_COMPOSED_GROUP_SUCCESS', contactGroupToDetachId });
     } catch (error) {
         yield put({ type: 'DELETE_COMPOSED_GROUP_ERROR', error });
@@ -49,7 +49,7 @@ export function* deleteComposedGroupSaga({ contactGroupId, contactGroupToDetachI
 
 export function* attachComposedGroupSaga({ contactGroupId, contactGroupToAttachId }) {
     try {
-        yield call(ContactGroupAPI.attachComposedGroup, {contactGroupId, contactGroupToAttachId});
+        yield call(ContactGroupAPI.attachComposedGroup, { contactGroupId, contactGroupToAttachId });
         yield put({ type: 'ATTACH_COMPOSED_GROUP_SUCCESS', contactGroupId });
     } catch (error) {
         yield put({ type: 'ATTACH_COMPOSED_GROUP_ERROR', error });

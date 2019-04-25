@@ -1,4 +1,4 @@
-export const setTasksPagination  = (pagination) => ({
+export const setTasksPagination = pagination => ({
     type: 'SET_TASKS_PAGINATION',
     pagination,
 });

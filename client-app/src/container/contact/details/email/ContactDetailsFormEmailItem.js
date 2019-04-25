@@ -1,16 +1,17 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import validator from 'validator';
 
 import EmailAddressAPI from '../../../../api/contact/EmailAddressAPI';
 import {
-    unsetPrimaryAddresses, unsetPrimaryEmailAddresses,
-    updateEmailAddress
+    unsetPrimaryAddresses,
+    unsetPrimaryEmailAddresses,
+    updateEmailAddress,
 } from '../../../../actions/contact/ContactDetailsActions';
 import ContactDetailsFormEmailView from './ContactDetailsFormEmailView';
 import ContactDetailsFormEmailEdit from './ContactDetailsFormEmailEdit';
 import ContactDetailsFormEmailDelete from './ContactDetailsFormEmailDelete';
-import {isEqual} from "lodash";
+import { isEqual } from 'lodash';
 
 class ContactDetailFormEmailItem extends Component {
     constructor(props) {
@@ -31,10 +32,10 @@ class ContactDetailFormEmailItem extends Component {
                 email: false,
             },
         };
-    };
+    }
 
     componentWillReceiveProps(nextProps) {
-        if(!isEqual(this.state.emailAddress, nextProps.emailAddress)){
+        if (!isEqual(this.state.emailAddress, nextProps.emailAddress)) {
             this.setState({
                 ...this.state,
                 emailAddress: {
@@ -42,7 +43,7 @@ class ContactDetailFormEmailItem extends Component {
                 },
             });
         }
-    };
+    }
 
     onLineEnter = () => {
         this.setState({
@@ -59,24 +60,24 @@ class ContactDetailFormEmailItem extends Component {
     };
 
     openEdit = () => {
-        this.setState({showEdit: true});
+        this.setState({ showEdit: true });
     };
 
     closeEdit = () => {
-        this.setState({showEdit: false});
+        this.setState({ showEdit: false });
     };
 
     cancelEdit = () => {
         this.setState({
             ...this.state,
-            emailAddress: {...this.props.emailAddress}
+            emailAddress: { ...this.props.emailAddress },
         });
 
         this.closeEdit();
     };
 
     toggleDelete = () => {
-        this.setState({showDelete: !this.state.showDelete});
+        this.setState({ showDelete: !this.state.showDelete });
     };
 
     handleInputChange = event => {
@@ -88,7 +89,7 @@ class ContactDetailFormEmailItem extends Component {
             ...this.state,
             emailAddress: {
                 ...this.state.emailAddress,
-                [name]: value
+                [name]: value,
             },
         });
     };
@@ -101,22 +102,22 @@ class ContactDetailFormEmailItem extends Component {
         let errors = {};
         let hasErrors = false;
 
-        if(!validator.isEmail(emailAddress.email)){
+        if (!validator.isEmail(emailAddress.email)) {
             errors.email = true;
             hasErrors = true;
-        };
+        }
 
-        if(validator.isEmpty(emailAddress.typeId)){
+        if (validator.isEmpty(emailAddress.typeId)) {
             errors.typeId = true;
             hasErrors = true;
-        };
+        }
 
         this.setState({ ...this.state, errors: errors });
 
         // If no errors send form
         !hasErrors &&
-            EmailAddressAPI.updateEmailAddress(emailAddress).then((payload) => {
-                if(emailAddress.primary){
+            EmailAddressAPI.updateEmailAddress(emailAddress).then(payload => {
+                if (emailAddress.primary) {
                     this.props.unsetPrimaryEmailAddresses();
                 }
                 this.props.updateEmailAddress(payload);
@@ -136,8 +137,7 @@ class ContactDetailFormEmailItem extends Component {
                     toggleDelete={this.toggleDelete}
                     emailAddress={this.state.emailAddress}
                 />
-                {
-                    this.state.showEdit &&
+                {this.state.showEdit && (
                     <ContactDetailsFormEmailEdit
                         emailAddress={this.state.emailAddress}
                         handleInputChange={this.handleInputChange}
@@ -146,21 +146,20 @@ class ContactDetailFormEmailItem extends Component {
                         emailError={this.state.errors.email}
                         cancelEdit={this.cancelEdit}
                     />
-                }
-                {
-                    this.state.showDelete &&
+                )}
+                {this.state.showDelete && (
                     <ContactDetailsFormEmailDelete
                         closeDeleteItemModal={this.toggleDelete}
                         {...this.props.emailAddress}
                     />
-                }
+                )}
             </div>
         );
     }
-};
+}
 
 const mapDispatchToProps = dispatch => ({
-    updateEmailAddress: (id) => {
+    updateEmailAddress: id => {
         dispatch(updateEmailAddress(id));
     },
     unsetPrimaryEmailAddresses: () => {
@@ -168,4 +167,7 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(null, mapDispatchToProps)(ContactDetailFormEmailItem);
+export default connect(
+    null,
+    mapDispatchToProps
+)(ContactDetailFormEmailItem);

@@ -1,7 +1,7 @@
 import React from 'react';
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 
-import RevenuesListFormItem from "./RevenuesListFormItem";
+import RevenuesListFormItem from './RevenuesListFormItem';
 
 const RevenuesListFormList = props => {
     return (
@@ -14,24 +14,20 @@ const RevenuesListFormList = props => {
                 <div className="col-sm-2">Type opbrengst</div>
                 <div className="col-sm-1">Bedrag</div>
                 <div className="col-sm-1">kWh</div>
-                <div className="col-sm-1"></div>
+                <div className="col-sm-1" />
             </div>
-            {
-                props.revenues.length > 0 ?
-                    props.revenues.map(revenue => {
-                        return <RevenuesListFormItem
-                            key={revenue.id}
-                            revenue={revenue}
-                        />;
-                    })
-                    :
-                    <div>Geen opbrengsten bekend.</div>
-            }
+            {props.revenues.length > 0 ? (
+                props.revenues.map(revenue => {
+                    return <RevenuesListFormItem key={revenue.id} revenue={revenue} />;
+                })
+            ) : (
+                <div>Geen opbrengsten bekend.</div>
+            )}
         </div>
     );
 };
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         revenues: state.productionProjectDetails.revenues,
     };

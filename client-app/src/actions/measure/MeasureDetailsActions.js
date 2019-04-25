@@ -1,4 +1,4 @@
-export const fetchMeasure = (id) => {
+export const fetchMeasure = id => {
     return {
         type: 'FETCH_MEASURE',
         id,
@@ -7,7 +7,6 @@ export const fetchMeasure = (id) => {
 
 export const clearMeasure = () => {
     return {
-        type: 'CLEAR_MEASURE'
+        type: 'CLEAR_MEASURE',
     };
 };
-

@@ -4,8 +4,8 @@ import { connect } from 'react-redux';
 import { fetchProducts, clearProducts } from '../../../actions/product/ProductsActions';
 import ProductsList from './ProductsList';
 import ProductsListToolbar from './ProductsListToolbar';
-import Panel from "../../../components/panel/Panel";
-import PanelBody from "../../../components/panel/PanelBody";
+import Panel from '../../../components/panel/Panel';
+import PanelBody from '../../../components/panel/PanelBody';
 
 class ProductsListApp extends Component {
     constructor(props) {
@@ -14,11 +14,11 @@ class ProductsListApp extends Component {
 
     componentDidMount() {
         this.props.fetchProducts();
-    };
+    }
 
     componentWillUnmount() {
         this.props.clearProducts();
-    };
+    }
 
     refreshProductsData = () => {
         this.props.clearProducts();
@@ -30,23 +30,19 @@ class ProductsListApp extends Component {
             <Panel>
                 <PanelBody>
                     <div className="col-md-12 margin-10-top">
-                        <ProductsListToolbar
-                            refreshProductsData={() => this.refreshProductsData()}
-                        />
+                        <ProductsListToolbar refreshProductsData={() => this.refreshProductsData()} />
                     </div>
 
                     <div className="col-md-12 margin-10-top">
-                        <ProductsList
-                            products={this.props.products}
-                        />
+                        <ProductsList products={this.props.products} />
                     </div>
                 </PanelBody>
             </Panel>
-        )
+        );
     }
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         products: state.products,
     };
@@ -61,4 +57,7 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(ProductsListApp);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(ProductsListApp);

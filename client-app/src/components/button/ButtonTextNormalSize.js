@@ -1,17 +1,16 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const ButtonTextNormalSize = (props) => {
-    const {buttonClassName, buttonText, onClickAction, type, value, loading, loadText} = props;
+const ButtonTextNormalSize = props => {
+    const { buttonClassName, buttonText, onClickAction, type, value, loading, loadText } = props;
 
-    if(loading){
+    if (loading) {
         return (
             <button type={type} className={`btn btn-loading ${buttonClassName}`} value={value}>
-                <span className="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span> {loadText}
+                <span className="glyphicon glyphicon-refresh glyphicon-refresh-animate" /> {loadText}
             </button>
         );
-    }
-    else{
+    } else {
         return (
             <button type={type} className={`btn ${buttonClassName}`} onClick={onClickAction} value={value}>
                 {buttonText}
@@ -25,7 +24,7 @@ ButtonTextNormalSize.defaultProps = {
     type: 'button',
     value: '',
     loading: false,
-    loadText: 'Aan het laden'
+    loadText: 'Aan het laden',
 };
 
 ButtonTextNormalSize.propTypes = {

@@ -6,16 +6,16 @@ import { hashHistory } from 'react-router';
 
 import ParticipantNewToolbar from './ParticipantNewToolbar';
 import ParticipantNew from './ParticipantNew';
-import {setError} from "../../../../../actions/general/ErrorActions";
+import { setError } from '../../../../../actions/general/ErrorActions';
 
 import ParticipantProductionProjectDetailsAPI from '../../../../../api/participant-production-project/ParticipantProductionProjectDetailsAPI';
-import Panel from "../../../../../components/panel/Panel";
-import PanelBody from "../../../../../components/panel/PanelBody";
-import * as ibantools from "ibantools";
-import ContactsAPI from "../../../../../api/contact/ContactsAPI";
-import ProductionProjectsAPI from "../../../../../api/production-project/ProductionProjectsAPI";
-import {connect} from "react-redux";
-import MultipleMessagesModal from "../../../../../components/modal/MultipleMessagesModal";
+import Panel from '../../../../../components/panel/Panel';
+import PanelBody from '../../../../../components/panel/PanelBody';
+import * as ibantools from 'ibantools';
+import ContactsAPI from '../../../../../api/contact/ContactsAPI';
+import ProductionProjectsAPI from '../../../../../api/production-project/ProductionProjectsAPI';
+import { connect } from 'react-redux';
+import MultipleMessagesModal from '../../../../../components/modal/MultipleMessagesModal';
 
 class ParticipantNewApp extends Component {
     constructor(props) {
@@ -62,42 +62,42 @@ class ParticipantNewApp extends Component {
             },
         };
         this.handleInputChangeDate = this.handleInputChangeDate.bind(this);
-    };
+    }
 
     componentWillMount() {
         ContactsAPI.getContactsPeek().then(payload => {
             this.setState({
-                contacts: payload
+                contacts: payload,
             });
         });
 
         ProductionProjectsAPI.peekProductionProjects().then(payload => {
             this.setState({
-                productionProjects: payload
+                productionProjects: payload,
             });
 
-            if(this.props.params.productionProjectId){
+            if (this.props.params.productionProjectId) {
                 const id = this.props.params.productionProjectId;
 
-                let productionProject = payload.find((productionProject) => productionProject.id == id);
+                let productionProject = payload.find(productionProject => productionProject.id == id);
                 let isPCR = false;
 
-                if(productionProject.typeId == 2){//pcr
+                if (productionProject.typeId == 2) {
+                    //pcr
                     isPCR = true;
                     this.setState({
                         ...this.state,
                         participation: {
                             ...this.state.participation,
-                            typeId: 3//energieleverancier
+                            typeId: 3, //energieleverancier
                         },
                     });
-                }
-                else{
+                } else {
                     this.setState({
                         ...this.state,
                         participation: {
                             ...this.state.participation,
-                            typeId: 1//op rekening
+                            typeId: 1, //op rekening
                         },
                     });
                 }
@@ -124,11 +124,13 @@ class ParticipantNewApp extends Component {
         const value = target.type === 'checkbox' ? target.checked : target.value;
         const name = target.name;
 
-        let selectedProductionProject = this.state.productionProjects.find((productionProject) => productionProject.id == value);
+        let selectedProductionProject = this.state.productionProjects.find(
+            productionProject => productionProject.id == value
+        );
 
         let isPCR = false;
 
-        if(selectedProductionProject.typeId == 2){
+        if (selectedProductionProject.typeId == 2) {
             isPCR = true;
         }
 
@@ -138,7 +140,7 @@ class ParticipantNewApp extends Component {
             participationWorth: selectedProductionProject.participationWorth,
             participation: {
                 ...this.state.participation,
-                [name]: value
+                [name]: value,
             },
         });
     };
@@ -152,7 +154,7 @@ class ParticipantNewApp extends Component {
             ...this.state,
             participation: {
                 ...this.state.participation,
-                [name]: value
+                [name]: value,
             },
         });
     };
@@ -162,15 +164,15 @@ class ParticipantNewApp extends Component {
             ...this.state,
             participation: {
                 ...this.state.participation,
-                [name]: value
+                [name]: value,
             },
         });
-    };
+    }
 
     handleSubmit = event => {
         event.preventDefault();
 
-        const {participation} = this.state;
+        const { participation } = this.state;
 
         let errors = {};
         let hasErrors = false;
@@ -179,32 +181,22 @@ class ParticipantNewApp extends Component {
             errors.contactId = true;
             hasErrors = true;
         }
-        ;
-
         if (validator.isEmpty(participation.statusId + '')) {
             errors.statusId = true;
             hasErrors = true;
         }
-        ;
-
         if (validator.isEmpty(participation.productionProjectId + '')) {
             errors.productionProjectId = true;
             hasErrors = true;
         }
-        ;
-
         if (validator.isEmpty(participation.typeId + '')) {
             errors.typeId = true;
             hasErrors = true;
         }
-        ;
-
         if (validator.isEmpty(participation.powerKwhConsumption + '') && this.state.isPCR) {
             errors.powerKwhConsumption = true;
             hasErrors = true;
         }
-        ;
-
         if (!validator.isEmpty(participation.ibanPayout)) {
             if (!ibantools.isValidIBAN(participation.ibanPayout)) {
                 errors.ibanPayout = true;
@@ -212,26 +204,26 @@ class ParticipantNewApp extends Component {
             }
         }
 
-        this.setState({...this.state, errors: errors});
+        this.setState({ ...this.state, errors: errors });
 
         !hasErrors &&
-        ParticipantProductionProjectDetailsAPI.storeParticipantProductionProject(participation).then(payload => {
-            if (payload.data.message !== undefined && payload.data.message.length > 0) {
-                this.setState({
-                    showModal: true,
-                    modalText: payload.data.message,
-                });
-                this.setState({
-                    modalRedirectTask: `/taak/nieuw/contact/${participation.contactId}/productie-project/${participation.productionProjectId}/participant/${payload.data.id}`,
-                    modalRedirectParticipation: `/productie-project/participant/${payload.data.id}`,
-                });
-            }
-            else {
-                hashHistory.push(`/productie-project/participant/${payload.data.id}`);
-            }
-        })
+            ParticipantProductionProjectDetailsAPI.storeParticipantProductionProject(participation).then(payload => {
+                if (payload.data.message !== undefined && payload.data.message.length > 0) {
+                    this.setState({
+                        showModal: true,
+                        modalText: payload.data.message,
+                    });
+                    this.setState({
+                        modalRedirectTask: `/taak/nieuw/contact/${participation.contactId}/productie-project/${
+                            participation.productionProjectId
+                        }/participant/${payload.data.id}`,
+                        modalRedirectParticipation: `/productie-project/participant/${payload.data.id}`,
+                    });
+                } else {
+                    hashHistory.push(`/productie-project/participant/${payload.data.id}`);
+                }
+            });
     };
-
 
     render() {
         return (
@@ -262,20 +254,20 @@ class ParticipantNewApp extends Component {
                         </Panel>
                     </div>
                 </div>
-                <div className="col-md-3"/>
-                {this.state.showModal &&
-                <MultipleMessagesModal
-                    closeModal={this.redirectParticipation}
-                    buttonCancelText={'Ga naar participatie'}
-                    children={this.state.modalText}
-                    confirmAction={this.redirectTask}
-                    buttonConfirmText={"Maak taak aan"}
-                />
-                }
+                <div className="col-md-3" />
+                {this.state.showModal && (
+                    <MultipleMessagesModal
+                        closeModal={this.redirectParticipation}
+                        buttonCancelText={'Ga naar participatie'}
+                        children={this.state.modalText}
+                        confirmAction={this.redirectTask}
+                        buttonConfirmText={'Maak taak aan'}
+                    />
+                )}
             </div>
-        )
+        );
     }
-};
+}
 
 const mapDispatchToProps = dispatch => ({
     setError: (http_code, message) => {
@@ -283,4 +275,7 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(null, mapDispatchToProps)(ParticipantNewApp);
+export default connect(
+    null,
+    mapDispatchToProps
+)(ParticipantNewApp);

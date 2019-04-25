@@ -6,7 +6,6 @@ export const fetchUsers = () => {
 
 export const clearUsers = () => {
     return {
-        type: 'CLEAR_USERS'
+        type: 'CLEAR_USERS',
     };
 };
-

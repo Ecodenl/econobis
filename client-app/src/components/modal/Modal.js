@@ -1,7 +1,7 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Draggable from 'react-draggable';
-import ButtonTextNormalSize from "../button/ButtonTextNormalSize";
+import ButtonTextNormalSize from '../button/ButtonTextNormalSize';
 
 class Modal extends Component {
     constructor(props) {
@@ -20,16 +20,20 @@ class Modal extends Component {
         this.updateWindowDimensions = this.updateWindowDimensions.bind(this);
         this.onStart = this.onStart.bind(this);
         this.onStop = this.onStop.bind(this);
-    };
+    }
 
     componentDidMount() {
         this.updateWindowDimensions();
         window.addEventListener('resize', this.updateWindowDimensions);
-    };
+    }
 
     updateWindowDimensions() {
-        const offsetTop = Number(`-${this.divModalDialog.current.offsetParent.offsetTop + this.divModalDialog.current.offsetTop}`);
-        const offsetBottom = this.divModalDialog.current.offsetParent.clientHeight - (this.divModalDialog.current.offsetHeight - offsetTop);
+        const offsetTop = Number(
+            `-${this.divModalDialog.current.offsetParent.offsetTop + this.divModalDialog.current.offsetTop}`
+        );
+        const offsetBottom =
+            this.divModalDialog.current.offsetParent.clientHeight -
+            (this.divModalDialog.current.offsetHeight - offsetTop);
 
         this.setState({
             offsetTop,
@@ -37,51 +41,82 @@ class Modal extends Component {
             offsetLeft: Number(`-${this.divModalDialog.current.offsetLeft}`),
             offsetRight: this.divModalDialog.current.offsetLeft,
         });
-    };
+    }
 
     onStart() {
-        this.setState({activeDrags: ++this.state.activeDrags});
-    };
+        this.setState({ activeDrags: ++this.state.activeDrags });
+    }
 
     onStop() {
-        this.setState({activeDrags: --this.state.activeDrags});
-    };
+        this.setState({ activeDrags: --this.state.activeDrags });
+    }
 
     render() {
-        const {extraButtonLabel, extraButtonClass, extraButtonAction, modalClassName, modalMainClassName,
-            buttonClassName, buttonCancelText, buttonConfirmText, children, closeModal, confirmAction, title,
-            draggableDisabled, loading} = this.props;
-        const bounds = { left: this.state.offsetLeft, top: this.state.offsetTop,  right: this.state.offsetRight, bottom: this.state.offsetBottom };
+        const {
+            extraButtonLabel,
+            extraButtonClass,
+            extraButtonAction,
+            modalClassName,
+            modalMainClassName,
+            buttonClassName,
+            buttonCancelText,
+            buttonConfirmText,
+            children,
+            closeModal,
+            confirmAction,
+            title,
+            draggableDisabled,
+            loading,
+        } = this.props;
+        const bounds = {
+            left: this.state.offsetLeft,
+            top: this.state.offsetTop,
+            right: this.state.offsetRight,
+            bottom: this.state.offsetBottom,
+        };
 
         return (
-            <Draggable handle=".modal-header" onStart={this.onStart} onStop={this.onStop} disabled={draggableDisabled} bounds={bounds}>
+            <Draggable
+                handle=".modal-header"
+                onStart={this.onStart}
+                onStop={this.onStop}
+                disabled={draggableDisabled}
+                bounds={bounds}
+            >
                 <div className={`modal ${modalMainClassName}`}>
                     <div className={`modal-dialog ${modalClassName}`} ref={this.divModalDialog}>
                         <div className="modal-content">
                             <div className={`modal-header` + (draggableDisabled ? '' : ' draggable-header')}>
                                 <h4 className="modal-title">{title}</h4>
                             </div>
-                            <div className="modal-body">
-                                {children}
-                            </div>
+                            <div className="modal-body">{children}</div>
                             <div className="modal-footer">
-                                { this.props.extraButtonLabel &&
-                                <ButtonTextNormalSize buttonClassName={extraButtonClass} onClickAction={extraButtonAction} buttonText={extraButtonLabel}
-                                />
-                                }
-                                <button type="button" className="btn btn-default" onClick={closeModal}>{buttonCancelText}</button>
-                                { this.props.showConfirmAction &&
-                                <ButtonTextNormalSize buttonClassName={buttonClassName} onClickAction={confirmAction} buttonText={buttonConfirmText} loading={loading}
-                                />
-                                }
+                                {this.props.extraButtonLabel && (
+                                    <ButtonTextNormalSize
+                                        buttonClassName={extraButtonClass}
+                                        onClickAction={extraButtonAction}
+                                        buttonText={extraButtonLabel}
+                                    />
+                                )}
+                                <button type="button" className="btn btn-default" onClick={closeModal}>
+                                    {buttonCancelText}
+                                </button>
+                                {this.props.showConfirmAction && (
+                                    <ButtonTextNormalSize
+                                        buttonClassName={buttonClassName}
+                                        onClickAction={confirmAction}
+                                        buttonText={buttonConfirmText}
+                                        loading={loading}
+                                    />
+                                )}
                             </div>
                         </div>
                     </div>
                 </div>
             </Draggable>
-        )
-    };
-};
+        );
+    }
+}
 
 Modal.defaultProps = {
     buttonClassName: 'btn-success',
@@ -98,10 +133,7 @@ Modal.defaultProps = {
 Modal.propTypes = {
     buttonCancelText: PropTypes.string,
     buttonConfirmText: PropTypes.string,
-    children: PropTypes.oneOfType([
-        PropTypes.element.isRequired,
-        PropTypes.array.isRequired
-    ]),
+    children: PropTypes.oneOfType([PropTypes.element.isRequired, PropTypes.array.isRequired]),
     closeModal: PropTypes.func.isRequired,
     confirmAction: PropTypes.func,
     showConfirmAction: PropTypes.bool,

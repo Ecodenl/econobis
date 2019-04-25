@@ -11,43 +11,43 @@ export default {
         return axios.get(requestUrl);
     },
 
-    fetchDocumentTemplate: (id) => {
+    fetchDocumentTemplate: id => {
         const requestUrl = `${URL_DOCUMENT_TEMPLATE}/${id}`;
         const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
         axios.defaults.headers.common.Authorization = AUTH_TOKEN;
 
-        return axios.get(requestUrl)
+        return axios
+            .get(requestUrl)
             .then(response => response.data.data)
-            .catch((error) => {
-                    console.log(error);
-                },
-            );
+            .catch(error => {
+                console.log(error);
+            });
     },
 
-    storeDocumentTemplate: (data) => {
+    storeDocumentTemplate: data => {
         const requestUrl = `${URL_DOCUMENT_TEMPLATE}`;
         const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
         axios.defaults.headers.common.Authorization = AUTH_TOKEN;
 
-        return axios.post(requestUrl, data)
+        return axios
+            .post(requestUrl, data)
             .then(response => response.data.data)
-            .catch((error) => {
-                    console.log(error);
-                },
-            );
+            .catch(error => {
+                console.log(error);
+            });
     },
 
-    updateDocumentTemplate: (data) => {
+    updateDocumentTemplate: data => {
         const requestUrl = `${URL_DOCUMENT_TEMPLATE}/${data.id}`;
         const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
         axios.defaults.headers.common.Authorization = AUTH_TOKEN;
 
-        return axios.post(requestUrl, data)
+        return axios
+            .post(requestUrl, data)
             .then(response => response.data.data)
-            .catch((error) => {
-                    console.log(error);
-                },
-            );
+            .catch(error => {
+                console.log(error);
+            });
     },
 
     fetchDocumentTemplatesPeekGeneral: () => {
@@ -55,45 +55,44 @@ export default {
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios.get(requestUrl)
-            .then(function (response) {
+        return axios
+            .get(requestUrl)
+            .then(function(response) {
                 return response.data.data;
             })
-            .catch(function (error) {
+            .catch(function(error) {
                 console.log(error);
             });
     },
-
 
     fetchDocumentTemplatesPeekNotGeneral: () => {
         const requestUrl = `${URL_DOCUMENT_TEMPLATE}/peekNotGeneral`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios.get(requestUrl)
-            .then(function (response) {
+        return axios
+            .get(requestUrl)
+            .then(function(response) {
                 return response.data.data;
             })
-            .catch(function (error) {
+            .catch(function(error) {
                 console.log(error);
             });
     },
 
-    deleteDocumentTemplate: (id) => {
+    deleteDocumentTemplate: id => {
         const requestUrl = `${URL_DOCUMENT_TEMPLATE}/${id}/delete`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
-
-        return axios.post(requestUrl)
-    },
-
-    duplicateTemplate: (id) => {
-        const requestUrl = `${URL_DOCUMENT_TEMPLATE}/${id}/duplicate`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
         return axios.post(requestUrl);
     },
 
-};
+    duplicateTemplate: id => {
+        const requestUrl = `${URL_DOCUMENT_TEMPLATE}/${id}/duplicate`;
+        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
+        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
+        return axios.post(requestUrl);
+    },
+};

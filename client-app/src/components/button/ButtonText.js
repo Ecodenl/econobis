@@ -1,17 +1,21 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const ButtonText = (props) => {
-    const {buttonClassName, buttonText, onClickAction, type, value, loading, loadText} = props;
+const ButtonText = props => {
+    const { buttonClassName, buttonText, onClickAction, type, value, loading, loadText } = props;
 
-    if(loading){
+    if (loading) {
         return (
-            <button type={type} className={`btn btn-sm btn-loading ${buttonClassName}`} value={value} disabled={loading}>
-                <span className="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span> {loadText}
+            <button
+                type={type}
+                className={`btn btn-sm btn-loading ${buttonClassName}`}
+                value={value}
+                disabled={loading}
+            >
+                <span className="glyphicon glyphicon-refresh glyphicon-refresh-animate" /> {loadText}
             </button>
         );
-    }
-    else{
+    } else {
         return (
             <button type={type} className={`btn btn-sm ${buttonClassName}`} onClick={onClickAction} value={value}>
                 {buttonText}
@@ -25,7 +29,7 @@ ButtonText.defaultProps = {
     type: 'button',
     value: '',
     loading: false,
-    loadText: 'Aan het laden'
+    loadText: 'Aan het laden',
 };
 
 ButtonText.propTypes = {

@@ -1,8 +1,21 @@
 import React from 'react';
 
-import InputReactSelect from "../../../../components/form/InputReactSelect";
+import InputReactSelect from '../../../../components/form/InputReactSelect';
 
-const TaskNewFormExtraConnections = ({task, campaigns, intakes, contactGroups, opportunities, housingFiles, productionProjects, participants, orders, invoices, handleReactSelectChange, peekLoading}) => {
+const TaskNewFormExtraConnections = ({
+    task,
+    campaigns,
+    intakes,
+    contactGroups,
+    opportunities,
+    housingFiles,
+    productionProjects,
+    participants,
+    orders,
+    invoices,
+    handleReactSelectChange,
+    peekLoading,
+}) => {
     const {
         intakeId,
         contactGroupId,
@@ -19,8 +32,8 @@ const TaskNewFormExtraConnections = ({task, campaigns, intakes, contactGroups, o
         <div>
             <div className="row">
                 <InputReactSelect
-                    label={"Campagne"}
-                    name={"campaignId"}
+                    label={'Campagne'}
+                    name={'campaignId'}
                     options={campaigns}
                     value={campaignId}
                     onChangeAction={handleReactSelectChange}
@@ -28,9 +41,9 @@ const TaskNewFormExtraConnections = ({task, campaigns, intakes, contactGroups, o
                     isLoading={peekLoading.campaigns}
                 />
                 <InputReactSelect
-                    label={"Intake"}
-                    size={"col-sm-6"}
-                    name={"intakeId"}
+                    label={'Intake'}
+                    size={'col-sm-6'}
+                    name={'intakeId'}
                     options={intakes}
                     value={intakeId}
                     onChangeAction={handleReactSelectChange}
@@ -41,9 +54,9 @@ const TaskNewFormExtraConnections = ({task, campaigns, intakes, contactGroups, o
 
             <div className="row">
                 <InputReactSelect
-                    label={"Groep"}
-                    size={"col-sm-6"}
-                    name={"contactGroupId"}
+                    label={'Groep'}
+                    size={'col-sm-6'}
+                    name={'contactGroupId'}
                     options={contactGroups}
                     value={contactGroupId}
                     onChangeAction={handleReactSelectChange}
@@ -51,9 +64,9 @@ const TaskNewFormExtraConnections = ({task, campaigns, intakes, contactGroups, o
                     isLoading={peekLoading.contactGroups}
                 />
                 <InputReactSelect
-                    label={"Kans"}
-                    size={"col-sm-6"}
-                    name={"opportunityId"}
+                    label={'Kans'}
+                    size={'col-sm-6'}
+                    name={'opportunityId'}
                     options={opportunities}
                     value={opportunityId}
                     onChangeAction={handleReactSelectChange}
@@ -63,9 +76,9 @@ const TaskNewFormExtraConnections = ({task, campaigns, intakes, contactGroups, o
             </div>
             <div className="row">
                 <InputReactSelect
-                    label={"Woningdossier"}
-                    size={"col-sm-6"}
-                    name={"housingFileId"}
+                    label={'Woningdossier'}
+                    size={'col-sm-6'}
+                    name={'housingFileId'}
                     options={housingFiles}
                     value={housingFileId}
                     onChangeAction={handleReactSelectChange}
@@ -73,9 +86,9 @@ const TaskNewFormExtraConnections = ({task, campaigns, intakes, contactGroups, o
                     isLoading={peekLoading.housingFiles}
                 />
                 <InputReactSelect
-                    label={"Productieproject"}
-                    size={"col-sm-6"}
-                    name={"productionProjectId"}
+                    label={'Productieproject'}
+                    size={'col-sm-6'}
+                    name={'productionProjectId'}
                     options={productionProjects}
                     value={productionProjectId}
                     onChangeAction={handleReactSelectChange}
@@ -85,9 +98,9 @@ const TaskNewFormExtraConnections = ({task, campaigns, intakes, contactGroups, o
             </div>
             <div className="row">
                 <InputReactSelect
-                    label={"Participant productieproject"}
-                    size={"col-sm-6"}
-                    name={"participantId"}
+                    label={'Participant productieproject'}
+                    size={'col-sm-6'}
+                    name={'participantId'}
                     options={participants}
                     value={participantId}
                     onChangeAction={handleReactSelectChange}
@@ -95,9 +108,9 @@ const TaskNewFormExtraConnections = ({task, campaigns, intakes, contactGroups, o
                     isLoading={peekLoading.participants}
                 />
                 <InputReactSelect
-                    label={"Order"}
-                    size={"col-sm-6"}
-                    name={"orderId"}
+                    label={'Order'}
+                    size={'col-sm-6'}
+                    name={'orderId'}
                     options={orders}
                     value={orderId}
                     onChangeAction={handleReactSelectChange}
@@ -107,9 +120,9 @@ const TaskNewFormExtraConnections = ({task, campaigns, intakes, contactGroups, o
             </div>
             <div className="row">
                 <InputReactSelect
-                    label={"Factuur"}
-                    size={"col-sm-6"}
-                    name={"invoiceId"}
+                    label={'Factuur'}
+                    size={'col-sm-6'}
+                    name={'invoiceId'}
                     options={invoices}
                     value={invoiceId}
                     onChangeAction={handleReactSelectChange}
@@ -118,7 +131,7 @@ const TaskNewFormExtraConnections = ({task, campaigns, intakes, contactGroups, o
                 />
             </div>
         </div>
-    )
+    );
 };
 
 export default TaskNewFormExtraConnections;

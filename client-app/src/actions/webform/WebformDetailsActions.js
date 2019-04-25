@@ -1,8 +1,8 @@
-export const fetchWebformDetails = (id) => {
+export const fetchWebformDetails = id => {
     return {
         type: 'FETCH_WEBFORM_DETAILS',
         id,
-    }
+    };
 };
 
 export const updateWebform = (webform, switchToView) => {
@@ -10,5 +10,5 @@ export const updateWebform = (webform, switchToView) => {
         type: 'UPDATE_WEBFORM',
         webform,
         switchToView,
-    }
+    };
 };

@@ -1,7 +1,7 @@
 import React from 'react';
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 
-import IntakeDetailsOpportunityItem from "./IntakeDetailsOpportunityItem";
+import IntakeDetailsOpportunityItem from './IntakeDetailsOpportunityItem';
 
 const IntakeDetailsOpportunitiesList = props => {
     return (
@@ -13,26 +13,21 @@ const IntakeDetailsOpportunitiesList = props => {
                 <div className="col-sm-2">Status</div>
                 <div className="col-sm-2">Aantal offertes</div>
             </div>
-            {
-                props.opportunities.length > 0 ?
-                    props.opportunities.map(opportunity => {
-                        return <IntakeDetailsOpportunityItem
-                            key={opportunity.id}
-                            opportunity={opportunity}
-                        />;
-                    })
-                    :
-                    <div>Geen kansen bekend.</div>
-            }
+            {props.opportunities.length > 0 ? (
+                props.opportunities.map(opportunity => {
+                    return <IntakeDetailsOpportunityItem key={opportunity.id} opportunity={opportunity} />;
+                })
+            ) : (
+                <div>Geen kansen bekend.</div>
+            )}
         </div>
     );
 };
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         opportunities: state.intakeDetails.opportunities,
     };
 };
 
 export default connect(mapStateToProps)(IntakeDetailsOpportunitiesList);
-

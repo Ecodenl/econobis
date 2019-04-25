@@ -1,18 +1,18 @@
 export default [
     {
         id: 1,
-        name: 'Belangstellenden'
+        name: 'Belangstellenden',
     },
     {
         id: 2,
-        name: 'Aspirant leden'
+        name: 'Aspirant leden',
     },
     {
         id: 3,
-        name: 'Leden'
+        name: 'Leden',
     },
     {
         id: 4,
-        name: 'Afgehaakte personen'
-    }
+        name: 'Afgehaakte personen',
+    },
 ];

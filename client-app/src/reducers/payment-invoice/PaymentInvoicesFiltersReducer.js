@@ -18,14 +18,14 @@ const filtersReducerDefaultState = {
 };
 
 export default (state = filtersReducerDefaultState, action) => {
-    switch(action.type) {
+    switch (action.type) {
         case 'SET_NUMBER_FILTER_PAYMENT_INVOICES':
             return {
                 ...state,
                 number: {
                     ...state.number,
                     data: action.number,
-                }
+                },
             };
         case 'SET_CONTACT_FILTER_PAYMENT_INVOICES':
             return {
@@ -33,7 +33,7 @@ export default (state = filtersReducerDefaultState, action) => {
                 contact: {
                     ...state.contact,
                     data: action.contact,
-                }
+                },
             };
         case 'SET_PAYOUT_FILTER_PAYMENT_INVOICES':
             return {
@@ -41,7 +41,7 @@ export default (state = filtersReducerDefaultState, action) => {
                 payout: {
                     ...state.payout,
                     data: action.payout,
-                }
+                },
             };
         case 'SET_STATUS_ID_FILTER_PAYMENT_INVOICES':
             return {
@@ -49,7 +49,7 @@ export default (state = filtersReducerDefaultState, action) => {
                 statusId: {
                     ...state.statusId,
                     data: action.statusId,
-                }
+                },
             };
         case 'CLEAR_FILTER_PAYMENT_INVOICES':
             return {

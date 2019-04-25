@@ -17,7 +17,7 @@ class ContactListAddPersonToGroup extends Component {
             },
         };
         this.handleReactSelectChange = this.handleReactSelectChange.bind(this);
-    };
+    }
 
     componentDidMount() {
         contactAPI.getPerson().then(payload => {
@@ -28,16 +28,16 @@ class ContactListAddPersonToGroup extends Component {
                     ...this.state.peekLoading,
                     people: false,
                 },
-            })
-        })
-    };
+            });
+        });
+    }
 
     handleReactSelectChange(selectedOption) {
         this.setState({
             ...this.state,
-            personId: selectedOption
+            personId: selectedOption,
         });
-    };
+    }
 
     render() {
         return (
@@ -46,22 +46,21 @@ class ContactListAddPersonToGroup extends Component {
                 closeModal={this.props.closeModalAddToGroup}
                 confirmAction={() => this.props.addPersonToGroup(this.state.personId)}
                 title={`Contact toevoegen aan groep: ${this.props.groupName}`}
-
             >
                 <form className="form-horizontal" onSubmit={this.handleSubmit}>
                     <div className="row">
                         <div className="col-sm-6">Voeg bestaand contact toe</div>
                         <div className="col-sm-6">
                             <VirtualizedSelect
-                                id={"personId"}
-                                name={"personId"}
+                                id={'personId'}
+                                name={'personId'}
                                 value={this.state.personId}
                                 onChange={this.handleReactSelectChange}
                                 options={this.state.people}
                                 valueKey={'id'}
                                 labelKey={'fullName'}
-                                placeholder={""}
-                                noResultsText={"Geen resultaat gevonden"}
+                                placeholder={''}
+                                noResultsText={'Geen resultaat gevonden'}
                                 multi={false}
                                 simpleValue
                                 removeSelected
@@ -73,18 +72,21 @@ class ContactListAddPersonToGroup extends Component {
             </Modal>
         );
     }
-};
+}
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         id: state.contactDetails.id,
     };
 };
 
 const mapDispatchToProps = dispatch => ({
-    fetchContactDetails: (id) => {
+    fetchContactDetails: id => {
         dispatch(fetchContactDetails(id));
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(ContactListAddPersonToGroup);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(ContactListAddPersonToGroup);

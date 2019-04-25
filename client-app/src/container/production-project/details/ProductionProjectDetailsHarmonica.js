@@ -1,14 +1,14 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import { hashHistory } from 'react-router';
 import { connect } from 'react-redux';
 
-import TaskHarmonica from "./harmonica/TaskHarmonica";
-import DocumentHarmonica from "./harmonica/DocumentHarmonica";
-import EmailInboxHarmonica from "./harmonica/EmailInboxHarmonica";
-import EmailSentHarmonica from "./harmonica/EmailSentHarmonica";
+import TaskHarmonica from './harmonica/TaskHarmonica';
+import DocumentHarmonica from './harmonica/DocumentHarmonica';
+import EmailInboxHarmonica from './harmonica/EmailInboxHarmonica';
+import EmailSentHarmonica from './harmonica/EmailSentHarmonica';
 
 class ProductionProjectDetailsHarmonica extends Component {
-    constructor(props){
+    constructor(props) {
         super(props);
 
         this.state = {
@@ -21,7 +21,7 @@ class ProductionProjectDetailsHarmonica extends Component {
         };
 
         this.toggleShowList = this.toggleShowList.bind(this);
-    };
+    }
 
     toggleShowList(name) {
         this.setState({
@@ -29,15 +29,15 @@ class ProductionProjectDetailsHarmonica extends Component {
             toggleShowList: {
                 ...this.state.toggleShowList,
                 [name]: !this.state.toggleShowList[name],
-            }
+            },
         });
-    };
+    }
 
     newTask = () => {
         hashHistory.push(`/taak/nieuw/productie-project/${this.props.productionProject.id}`);
     };
 
-    newDocument = (type) => {
+    newDocument = type => {
         hashHistory.push(`/document/nieuw/${type}/productie-project/${this.props.productionProject.id}`);
     };
 
@@ -45,7 +45,7 @@ class ProductionProjectDetailsHarmonica extends Component {
         hashHistory.push(`/email/nieuw`);
     };
 
-    render(){
+    render() {
         return (
             <div className="margin-10-top">
                 <TaskHarmonica
@@ -76,11 +76,11 @@ class ProductionProjectDetailsHarmonica extends Component {
                     emailSentCount={this.props.productionProject.emailSentCount}
                 />
             </div>
-        )
+        );
     }
-};
+}
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         productionProject: state.productionProjectDetails,
     };

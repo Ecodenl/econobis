@@ -7,16 +7,15 @@ import PanelBody from '../../../components/panel/PanelBody';
 
 const ContactNewFormGeneral = props => {
     return (
-        <Panel className={"panel-grey"}>
+        <Panel className={'panel-grey'}>
             <PanelBody>
                 <div className="col-md-12">
-                    { props.type === 'persoon' && <ContactNewFormPersonal/> }
-                    { props.type === 'organisatie' && <ContactNewFormOrganisation /> }
+                    {props.type === 'persoon' && <ContactNewFormPersonal />}
+                    {props.type === 'organisatie' && <ContactNewFormOrganisation />}
                 </div>
             </PanelBody>
         </Panel>
     );
 };
-
 
 export default ContactNewFormGeneral;

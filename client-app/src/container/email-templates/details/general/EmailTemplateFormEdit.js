@@ -1,21 +1,20 @@
-import React, {Component} from 'react';
-import {connect} from 'react-redux';
-import {Link} from 'react-router';
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { Link } from 'react-router';
 
 import ButtonText from '../../../../components/button/ButtonText';
-import PanelFooter from "../../../../components/panel/PanelFooter";
+import PanelFooter from '../../../../components/panel/PanelFooter';
 
 import { fetchEmailTemplate } from '../../../../actions/email-templates/EmailTemplateDetailsActions';
-import InputTinyMCE from "../../../../components/form/InputTinyMCE";
-import validator from "validator";
-import EmailTemplateAPI from "../../../../api/email-template/EmailTemplateAPI";
-
+import InputTinyMCE from '../../../../components/form/InputTinyMCE';
+import validator from 'validator';
+import EmailTemplateAPI from '../../../../api/email-template/EmailTemplateAPI';
 
 class EmailTemplateFormEdit extends Component {
     constructor(props) {
         super(props);
 
-        const {id, name, subject, htmlBody} = props.emailTemplate;
+        const { id, name, subject, htmlBody } = props.emailTemplate;
 
         this.state = {
             emailTemplate: {
@@ -29,9 +28,8 @@ class EmailTemplateFormEdit extends Component {
             },
         };
 
-
         this.handleTextChange = this.handleTextChange.bind(this);
-    };
+    }
 
     handleInputChange = event => {
         const target = event.target;
@@ -42,7 +40,7 @@ class EmailTemplateFormEdit extends Component {
             ...this.state,
             emailTemplate: {
                 ...this.state.emailTemplate,
-                [name]: value
+                [name]: value,
             },
         });
     };
@@ -52,37 +50,36 @@ class EmailTemplateFormEdit extends Component {
             ...this.state,
             emailTemplate: {
                 ...this.state.emailTemplate,
-                htmlBody: event.target.getContent(({format: 'raw'}))
+                htmlBody: event.target.getContent({ format: 'raw' }),
             },
         });
-    };
+    }
 
     handleSubmit = event => {
         event.preventDefault();
 
-        const {emailTemplate} = this.state;
+        const { emailTemplate } = this.state;
 
         let errors = {};
         let hasErrors = false;
 
-        if(validator.isEmpty(emailTemplate.name)){
+        if (validator.isEmpty(emailTemplate.name)) {
             errors.name = true;
             hasErrors = true;
-        };
-
+        }
 
         this.setState({ ...this.state, errors: errors });
 
         !hasErrors &&
-        EmailTemplateAPI.updateEmailTemplate(emailTemplate).then(payload => {
-            this.props.fetchEmailTemplate(payload.id);
-            this.props.switchToView();
-        });
+            EmailTemplateAPI.updateEmailTemplate(emailTemplate).then(payload => {
+                this.props.fetchEmailTemplate(payload.id);
+                this.props.switchToView();
+            });
     };
 
     render() {
-        const {name, subject, htmlBody} = this.state.emailTemplate;
-        const {createdBy} = this.props.emailTemplate;
+        const { name, subject, htmlBody } = this.state.emailTemplate;
+        const { createdBy } = this.props.emailTemplate;
         return (
             <div>
                 <div className="row">
@@ -124,23 +121,21 @@ class EmailTemplateFormEdit extends Component {
                 <div className="row">
                     <div className="form-group col-sm-12">
                         <div className="row">
-                                <InputTinyMCE
-                                    label={"Tekst"}
-                                    value={htmlBody}
-                                    onChangeAction={this.handleTextChange}
-                                />
+                            <InputTinyMCE label={'Tekst'} value={htmlBody} onChangeAction={this.handleTextChange} />
                         </div>
                     </div>
                 </div>
 
                 <div className="row margin-10-top" onClick={this.props.switchToEdit}>
-                    <div className='col-sm-12'>
+                    <div className="col-sm-12">
                         <div className="row">
                             <div className="col-sm-3">
                                 <label className="col-sm-12">Gemaakt door</label>
                             </div>
                             <div className="col-sm-9">
-                                <Link to={createdBy ? 'gebruiker/' + createdBy.id : ''} className="link-underline">{createdBy ? createdBy.fullName: ''}</Link>
+                                <Link to={createdBy ? 'gebruiker/' + createdBy.id : ''} className="link-underline">
+                                    {createdBy ? createdBy.fullName : ''}
+                                </Link>
                             </div>
                         </div>
                     </div>
@@ -148,28 +143,37 @@ class EmailTemplateFormEdit extends Component {
 
                 <PanelFooter>
                     <div className="pull-right btn-group" role="group">
-                        <ButtonText buttonClassName={"btn-default"} buttonText={"Annuleren"}
-                                    onClickAction={this.props.switchToView}/>
-                        <ButtonText buttonText={"Opslaan"} onClickAction={this.handleSubmit} type={"submit"}
-                                    value={"Submit"}/>
+                        <ButtonText
+                            buttonClassName={'btn-default'}
+                            buttonText={'Annuleren'}
+                            onClickAction={this.props.switchToView}
+                        />
+                        <ButtonText
+                            buttonText={'Opslaan'}
+                            onClickAction={this.handleSubmit}
+                            type={'submit'}
+                            value={'Submit'}
+                        />
                     </div>
                 </PanelFooter>
-
             </div>
         );
-    };
-};
+    }
+}
 
 const mapDispatchToProps = dispatch => ({
-    fetchEmailTemplate: (id) => {
+    fetchEmailTemplate: id => {
         dispatch(fetchEmailTemplate(id));
     },
 });
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         emailTemplate: state.emailTemplate,
-    }
+    };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(EmailTemplateFormEdit);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(EmailTemplateFormEdit);

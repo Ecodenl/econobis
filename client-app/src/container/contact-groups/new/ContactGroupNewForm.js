@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { hashHistory } from 'react-router';
 import validator from 'validator';
@@ -9,8 +9,8 @@ import ContactGroupAPI from '../../../api/contact-group/ContactGroupAPI';
 import InputText from '../../../components/form/InputText';
 import InputDate from '../../../components/form/InputDate';
 import ButtonText from '../../../components/button/ButtonText';
-import InputToggle from "../../../components/form/InputToggle";
-import InputMultiSelect from "../../../components/form/InputMultiSelect";
+import InputToggle from '../../../components/form/InputToggle';
+import InputMultiSelect from '../../../components/form/InputMultiSelect';
 
 class ContactGroupNewForm extends Component {
     constructor(props) {
@@ -31,26 +31,28 @@ class ContactGroupNewForm extends Component {
                 showPortal: false,
                 editPortal: false,
                 contactGroupIds: '',
-                contactGroupComposedType: ''
+                contactGroupComposedType: '',
             },
             errors: {
                 name: false,
                 nameUnique: false,
             },
-        }
-    };
+        };
+    }
 
     componentDidMount() {
         const { permissions } = this.props;
 
-        UsersAPI.fetchUsersWithPermission(permissions.find((permission) => permission.name === 'manage_group').id).then((payload) => {
-            this.setState({ contactsWithPermission: payload });
-        });
+        UsersAPI.fetchUsersWithPermission(permissions.find(permission => permission.name === 'manage_group').id).then(
+            payload => {
+                this.setState({ contactsWithPermission: payload });
+            }
+        );
 
-        ContactGroupAPI.peekContactGroups().then((payload) => {
-            this.setState({contactGroups: payload});
+        ContactGroupAPI.peekContactGroups().then(payload => {
+            this.setState({ contactGroups: payload });
         });
-    };
+    }
 
     handleInputChange = event => {
         const target = event.target;
@@ -61,7 +63,7 @@ class ContactGroupNewForm extends Component {
             ...this.state,
             contactGroup: {
                 ...this.state.contactGroup,
-                [name]: value
+                [name]: value,
             },
         });
     };
@@ -69,95 +71,105 @@ class ContactGroupNewForm extends Component {
     handleSubmit = event => {
         event.preventDefault();
 
-        const { contactGroup }  = this.state;
+        const { contactGroup } = this.state;
 
         // Validation
         let errors = {};
         let hasErrors = false;
         let errorMessage = false;
 
-        if(validator.isEmpty(contactGroup.name)){
-            errors.name = true;
-            hasErrors = true;
-        };
-
-        let nameNotUnique = false;
-        this.state.contactGroups.map((existingContactGroup) => ((existingContactGroup.name == contactGroup.name) && (nameNotUnique = true)));
-
-        if (nameNotUnique) {
-            errorMessage = "Naam moet uniek zijn.";
+        if (validator.isEmpty(contactGroup.name)) {
             errors.name = true;
             hasErrors = true;
         }
 
-        this.setState({ ...this.state,
-            errors,
-            errorMessage
-        });
+        let nameNotUnique = false;
+        this.state.contactGroups.map(
+            existingContactGroup => existingContactGroup.name == contactGroup.name && (nameNotUnique = true)
+        );
+
+        if (nameNotUnique) {
+            errorMessage = 'Naam moet uniek zijn.';
+            errors.name = true;
+            hasErrors = true;
+        }
+
+        this.setState({ ...this.state, errors, errorMessage });
 
         // If no errors send form
         !hasErrors &&
-            ContactGroupAPI.newContactGroup(contactGroup).then((payload) => {
-                hashHistory.push("/contact-groep/" + payload.id);
+            ContactGroupAPI.newContactGroup(contactGroup).then(payload => {
+                hashHistory.push('/contact-groep/' + payload.id);
             });
     };
 
-    handleChangeStartedDate = (date) => {
-        const formattedDate = (date ? moment(date).format('Y-MM-DD') : '');
+    handleChangeStartedDate = date => {
+        const formattedDate = date ? moment(date).format('Y-MM-DD') : '';
 
         this.setState({
             ...this.state,
             contactGroup: {
                 ...this.state.contactGroup,
-                dateStarted: formattedDate
+                dateStarted: formattedDate,
             },
         });
     };
 
-    handleChangeFinishedDate = (date) => {
-        const formattedDate = (date ? moment(date).format('Y-MM-DD') : '');
+    handleChangeFinishedDate = date => {
+        const formattedDate = date ? moment(date).format('Y-MM-DD') : '';
 
         this.setState({
             ...this.state,
             contactGroup: {
                 ...this.state.contactGroup,
-                dateFinished: formattedDate
+                dateFinished: formattedDate,
             },
         });
     };
 
-    handleContactGroupIds = (selectedOption) => {
+    handleContactGroupIds = selectedOption => {
         this.setState({
             ...this.state,
             contactGroup: {
                 ...this.state.contactGroup,
-                contactGroupIds: selectedOption
+                contactGroupIds: selectedOption,
             },
         });
     };
 
-    handleChangeComposedGroupType = (type) => {
+    handleChangeComposedGroupType = type => {
         this.setState({
             ...this.state,
             contactGroup: {
                 ...this.state.contactGroup,
-                contactGroupComposedType: type
+                contactGroupComposedType: type,
             },
         });
     };
 
     render() {
-        const { name, description, responsibleUserId, closed, dateStarted, dateFinished, showPortal, editPortal, showContactForm, contactGroupIds } = this.state.contactGroup;
+        const {
+            name,
+            description,
+            responsibleUserId,
+            closed,
+            dateStarted,
+            dateFinished,
+            showPortal,
+            editPortal,
+            showContactForm,
+            contactGroupIds,
+        } = this.state.contactGroup;
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
                 <div className="row">
                     <InputText
                         label="Naam"
-                        name={"name"}
+                        name={'name'}
                         value={name}
                         onChangeAction={this.handleInputChange}
-                        required={"required"}
+                        required={'required'}
                         error={this.state.errors.name}
                     />
                 </div>
@@ -166,31 +178,49 @@ class ContactGroupNewForm extends Component {
                     <div className="form-group col-sm-12">
                         <div className="row">
                             <div className="col-sm-3">
-                                <label htmlFor="description" className="col-sm-12">Omschrijving</label>
+                                <label htmlFor="description" className="col-sm-12">
+                                    Omschrijving
+                                </label>
                             </div>
                             <div className="col-sm-9">
-                                <textarea name='description' value={description} onChange={this.handleInputChange}
-                                          className="form-control input-sm"/>
+                                <textarea
+                                    name="description"
+                                    value={description}
+                                    onChange={this.handleInputChange}
+                                    className="form-control input-sm"
+                                />
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <div className="row">
-                    <div className='form-group col-sm-6'>
-                        <label htmlFor='responsibleUserId' className='col-sm-6'>Verantwoordelijke</label>
-                        <div className={"col-sm-6"}>
-                            <select className='form-control input-sm' id='responsibleUserId' name='responsibleUserId' value={responsibleUserId} onChange={this.handleInputChange} >
-                                <option value=''></option>
-                                { this.state.contactsWithPermission.map((option) => {
-                                    return <option key={ option.id } value={ option.id }>{ option.fullName }</option>
-                                }) }
+                    <div className="form-group col-sm-6">
+                        <label htmlFor="responsibleUserId" className="col-sm-6">
+                            Verantwoordelijke
+                        </label>
+                        <div className={'col-sm-6'}>
+                            <select
+                                className="form-control input-sm"
+                                id="responsibleUserId"
+                                name="responsibleUserId"
+                                value={responsibleUserId}
+                                onChange={this.handleInputChange}
+                            >
+                                <option value="" />
+                                {this.state.contactsWithPermission.map(option => {
+                                    return (
+                                        <option key={option.id} value={option.id}>
+                                            {option.fullName}
+                                        </option>
+                                    );
+                                })}
                             </select>
                         </div>
                     </div>
                     <InputToggle
-                        label={"Gesloten"}
-                        name={"closed"}
+                        label={'Gesloten'}
+                        name={'closed'}
                         value={closed}
                         onChangeAction={this.handleInputChange}
                     />
@@ -199,15 +229,14 @@ class ContactGroupNewForm extends Component {
                 <div className="row">
                     <InputDate
                         label="Startdatum"
-                        size={"col-sm-6"}
+                        size={'col-sm-6'}
                         name="dateStarted"
                         value={dateStarted}
                         onChangeAction={this.handleChangeStartedDate}
-
                     />
                     <InputDate
                         label="Datum gereed"
-                        size={"col-sm-6"}
+                        size={'col-sm-6'}
                         name="dateFinished"
                         value={dateFinished}
                         onChangeAction={this.handleChangeFinishedDate}
@@ -216,14 +245,14 @@ class ContactGroupNewForm extends Component {
 
                 <div className="row">
                     <InputToggle
-                        label={"Zichtbaar op portaal"}
-                        name={"showPortal"}
+                        label={'Zichtbaar op portaal'}
+                        name={'showPortal'}
                         value={showPortal}
                         onChangeAction={this.handleInputChange}
                     />
                     <InputToggle
-                        label={"Veranderen op portaal"}
-                        name={"editPortal"}
+                        label={'Veranderen op portaal'}
+                        name={'editPortal'}
                         value={editPortal}
                         onChangeAction={this.handleInputChange}
                     />
@@ -231,8 +260,8 @@ class ContactGroupNewForm extends Component {
 
                 <div className="row">
                     <InputToggle
-                        label={"Zichtbaar bij contact"}
-                        name={"showContactForm"}
+                        label={'Zichtbaar bij contact'}
+                        name={'showContactForm'}
                         value={showContactForm}
                         onChangeAction={this.handleInputChange}
                     />
@@ -240,67 +269,71 @@ class ContactGroupNewForm extends Component {
 
                 <div className="row">
                     <InputText
-                        label={"Gemaakt op"}
-                        name={"createdAt"}
-                        value={ moment().format('DD-MM-Y') }
+                        label={'Gemaakt op'}
+                        name={'createdAt'}
+                        value={moment().format('DD-MM-Y')}
                         readOnly={true}
                     />
                     <InputText
-                        label={"Gemaakt door"}
-                        name={"createdBy"}
-                        value={ this.props.meDetails.fullName}
+                        label={'Gemaakt door'}
+                        name={'createdBy'}
+                        value={this.props.meDetails.fullName}
                         readOnly={true}
                     />
                 </div>
 
                 <div className={'row'}>
                     <InputMultiSelect
-                        label={"Samengesteld uit"}
-                        name={"contactGroupsIds"}
+                        label={'Samengesteld uit'}
+                        name={'contactGroupsIds'}
                         options={this.state.contactGroups}
                         value={contactGroupIds}
                         onChangeAction={this.handleContactGroupIds}
                     />
-                    {contactGroupIds &&
-                    <div className={'col-xs-6'}>
-                        <div className={'row'}>
-                            <div className={'col-xs-6'}>
-                                <input
-                                    onChange={() => this.handleChangeComposedGroupType('one')}
-                                    type="radio" name='composedGroupType' value="one"
-                                    defaultChecked={true}/>
-                                In één van de groepen
-                            </div>
-                            <div className={'col-xs-6'}>
-                                <input
-                                    onChange={() => this.handleChangeComposedGroupType('all')}
-                                    type="radio" name='composedGroupType' value="all"/>
-                                In alle groepen
+                    {contactGroupIds && (
+                        <div className={'col-xs-6'}>
+                            <div className={'row'}>
+                                <div className={'col-xs-6'}>
+                                    <input
+                                        onChange={() => this.handleChangeComposedGroupType('one')}
+                                        type="radio"
+                                        name="composedGroupType"
+                                        value="one"
+                                        defaultChecked={true}
+                                    />
+                                    In één van de groepen
+                                </div>
+                                <div className={'col-xs-6'}>
+                                    <input
+                                        onChange={() => this.handleChangeComposedGroupType('all')}
+                                        type="radio"
+                                        name="composedGroupType"
+                                        value="all"
+                                    />
+                                    In alle groepen
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    }
+                    )}
                 </div>
 
-                {this.state.errorMessage &&
-                <div className={'row'}>
-                    <div className="col-sm-10 col-md-offset-1 alert alert-danger">
-                        {this.state.errorMessage}
+                {this.state.errorMessage && (
+                    <div className={'row'}>
+                        <div className="col-sm-10 col-md-offset-1 alert alert-danger">{this.state.errorMessage}</div>
                     </div>
-                </div>
-                }
+                )}
 
                 <div className="panel-footer">
                     <div className="pull-right btn-group" role="group">
-                        <ButtonText buttonText={"Opslaan"} onClickAction={this.handleSubmit}/>
+                        <ButtonText buttonText={'Opslaan'} onClickAction={this.handleSubmit} />
                     </div>
                 </div>
             </form>
         );
-    };
-};
+    }
+}
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         meDetails: state.meDetails,
         permissions: state.systemData.permissions,

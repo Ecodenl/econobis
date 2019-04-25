@@ -4,8 +4,8 @@ import { connect } from 'react-redux';
 import { fetchTeams, clearTeams } from '../../../actions/team/TeamsActions';
 import TeamsList from './TeamsList';
 import TeamsListToolbar from './TeamsListToolbar';
-import Panel from "../../../components/panel/Panel";
-import PanelBody from "../../../components/panel/PanelBody";
+import Panel from '../../../components/panel/Panel';
+import PanelBody from '../../../components/panel/PanelBody';
 
 class TeamsListApp extends Component {
     constructor(props) {
@@ -14,11 +14,11 @@ class TeamsListApp extends Component {
 
     componentDidMount() {
         this.props.fetchTeams();
-    };
+    }
 
     componentWillUnmount() {
         this.props.clearTeams();
-    };
+    }
 
     refreshTeamsData = () => {
         this.props.clearTeams();
@@ -30,23 +30,19 @@ class TeamsListApp extends Component {
             <Panel>
                 <PanelBody>
                     <div className="col-md-12 margin-10-top">
-                        <TeamsListToolbar
-                            refreshTeamsData={() => this.refreshTeamsData()}
-                        />
+                        <TeamsListToolbar refreshTeamsData={() => this.refreshTeamsData()} />
                     </div>
 
                     <div className="col-md-12 margin-10-top">
-                        <TeamsList
-                            teams={this.props.teams}
-                        />
+                        <TeamsList teams={this.props.teams} />
                     </div>
                 </PanelBody>
             </Panel>
-        )
+        );
     }
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         teams: state.teams,
     };
@@ -61,4 +57,7 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(TeamsListApp);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(TeamsListApp);

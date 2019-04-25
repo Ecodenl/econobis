@@ -4,21 +4,21 @@ import { connect } from 'react-redux';
 import Modal from '../../../components/modal/Modal';
 import { deleteContactGroup } from '../../../actions/contact/ContactGroupsActions';
 
-const ContactGroupsDeleteItem = (props) => {
+const ContactGroupsDeleteItem = props => {
     const confirmAction = () => {
         props.deleteContactGroup(props.id, props.resetContactGroupsFilters);
         props.closeDeleteItemModal();
     };
 
     return (
-      <Modal
-          buttonConfirmText="Verwijder"
-          buttonClassName={'btn-danger'}
-          closeModal={props.closeDeleteItemModal}
-          confirmAction={() => confirmAction()}
-          title="Verwijderen"
-      >
-            Verwijder groep: <strong> { props.name } </strong>
+        <Modal
+            buttonConfirmText="Verwijder"
+            buttonClassName={'btn-danger'}
+            closeModal={props.closeDeleteItemModal}
+            confirmAction={() => confirmAction()}
+            title="Verwijderen"
+        >
+            Verwijder groep: <strong> {props.name} </strong>
         </Modal>
     );
 };
@@ -29,4 +29,7 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(null, mapDispatchToProps)(ContactGroupsDeleteItem);
+export default connect(
+    null,
+    mapDispatchToProps
+)(ContactGroupsDeleteItem);

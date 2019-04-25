@@ -4,8 +4,8 @@ import { connect } from 'react-redux';
 import { fetchPostalCodeLinks, clearPostalCodeLinks } from '../../../actions/postal-code-link/PostalCodeLinkActions';
 import PostalCodeLinkList from './PostalCodeLinkList';
 import PostalCodeLinkListToolbar from './PostalCodeLinkListToolbar';
-import Panel from "../../../components/panel/Panel";
-import PanelBody from "../../../components/panel/PanelBody";
+import Panel from '../../../components/panel/Panel';
+import PanelBody from '../../../components/panel/PanelBody';
 
 class PostalCodeLinkListApp extends Component {
     constructor(props) {
@@ -14,16 +14,15 @@ class PostalCodeLinkListApp extends Component {
         this.state = {
             showNew: false,
         };
-
     }
 
     componentDidMount() {
         this.props.fetchPostalCodeLinks();
-    };
+    }
 
     componentWillUnmount() {
         this.props.clearPostalCodeLinks();
-    };
+    }
 
     refreshPostalCodeLinksData = () => {
         this.props.clearPostalCodeLinks();
@@ -33,7 +32,7 @@ class PostalCodeLinkListApp extends Component {
     toggleShowNew = () => {
         this.setState({
             showNew: !this.state.showNew,
-        })
+        });
     };
 
     render() {
@@ -57,11 +56,11 @@ class PostalCodeLinkListApp extends Component {
                     </div>
                 </PanelBody>
             </Panel>
-        )
+        );
     }
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         postalCodeLinks: state.postalCodeLinks,
     };
@@ -76,4 +75,7 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(PostalCodeLinkListApp);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(PostalCodeLinkListApp);

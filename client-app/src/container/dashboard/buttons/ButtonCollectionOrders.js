@@ -1,6 +1,6 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 
-import OrdersAPI from "../../../api/order/OrdersAPI";
+import OrdersAPI from '../../../api/order/OrdersAPI';
 
 class ButtonCollectionOrders extends Component {
     constructor(props) {
@@ -8,13 +8,13 @@ class ButtonCollectionOrders extends Component {
 
         this.state = {
             amountCollectionOrders: '-',
-        }
-    };
+        };
+    }
 
     componentWillMount() {
         OrdersAPI.getCollectionOrders().then(payload => {
             this.setState({
-                amountCollectionOrders: payload
+                amountCollectionOrders: payload,
             });
         });
     }
@@ -29,7 +29,7 @@ class ButtonCollectionOrders extends Component {
                     </div>
                 </div>
             </div>
-        )
+        );
     }
 }
 

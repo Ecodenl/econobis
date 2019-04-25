@@ -3,13 +3,13 @@ import { connect } from 'react-redux';
 
 import ParticipantObligationNumberAPI from '../../../../../../api/participant-production-project/ParticipantObligationNumberAPI';
 import ProductionProjectDetailsAPI from '../../../../../../api/production-project/ProductionProjectDetailsAPI';
-import {newObligationNumber} from '../../../../../../actions/participants-production-project/ParticipantProductionProjectDetailsActions';
+import { newObligationNumber } from '../../../../../../actions/participants-production-project/ParticipantProductionProjectDetailsActions';
 import InputText from '../../../../../../components/form/InputText';
 import ButtonText from '../../../../../../components/button/ButtonText';
 import Panel from '../../../../../../components/panel/Panel';
 import PanelBody from '../../../../../../components/panel/PanelBody';
-import validator from "validator";
-import ErrorModal from "../../../../../../components/modal/ErrorModal";
+import validator from 'validator';
+import ErrorModal from '../../../../../../components/modal/ErrorModal';
 
 class ObligationNumberFormNew extends Component {
     constructor(props) {
@@ -25,19 +25,19 @@ class ObligationNumberFormNew extends Component {
                 number: false,
             },
         };
-    };
+    }
 
     componentDidMount() {
         ProductionProjectDetailsAPI.fetchObligationNumbers(this.props.productionProjectId).then(payload => {
             this.setState({
-                obligationNumbers: payload
+                obligationNumbers: payload,
             });
         });
     }
 
     toggleErrorModal = () => {
         this.setState({
-            showModalError: !this.state.showModalError
+            showModalError: !this.state.showModalError,
         });
     };
 
@@ -50,7 +50,7 @@ class ObligationNumberFormNew extends Component {
             ...this.state,
             obligationNumber: {
                 ...this.state.obligationNumber,
-                [name]: value
+                [name]: value,
             },
         });
     };
@@ -63,11 +63,10 @@ class ObligationNumberFormNew extends Component {
         let errors = {};
         let hasErrors = false;
 
-        if(validator.isEmpty(obligationNumber.number)){
+        if (validator.isEmpty(obligationNumber.number)) {
             errors.number = true;
             hasErrors = true;
-        }
-        else{
+        } else {
             if (this.state.obligationNumbers.includes(obligationNumber.number)) {
                 this.setState({
                     showModalError: !this.state.showModalError,
@@ -84,7 +83,7 @@ class ObligationNumberFormNew extends Component {
 
         // If no errors send form
         !hasErrors &&
-        ParticipantObligationNumberAPI.newObligationNumber(obligationNumber).then((payload) => {
+            ParticipantObligationNumberAPI.newObligationNumber(obligationNumber).then(payload => {
                 this.props.newObligationNumber(payload);
                 this.props.toggleShowNew();
             });
@@ -97,12 +96,11 @@ class ObligationNumberFormNew extends Component {
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
                 <Panel className={'panel-grey'}>
                     <PanelBody>
-
                         <div className="row">
                             <InputText
-                                label={"Nummer"}
-                                id={"number"}
-                                name={"number"}
+                                label={'Nummer'}
+                                id={'number'}
+                                name={'number'}
                                 value={number}
                                 onChangeAction={this.handleInputChange}
                                 required={'required'}
@@ -111,26 +109,34 @@ class ObligationNumberFormNew extends Component {
                         </div>
 
                         <div className="pull-right btn-group" role="group">
-                            <ButtonText buttonClassName={"btn-default"} buttonText={"Annuleren"} onClickAction={this.props.toggleShowNew}/>
-                            <ButtonText buttonText={"Opslaan"} onClickAction={this.handleSubmit} type={"submit"} value={"Submit"}/>
+                            <ButtonText
+                                buttonClassName={'btn-default'}
+                                buttonText={'Annuleren'}
+                                onClickAction={this.props.toggleShowNew}
+                            />
+                            <ButtonText
+                                buttonText={'Opslaan'}
+                                onClickAction={this.handleSubmit}
+                                type={'submit'}
+                                value={'Submit'}
+                            />
                         </div>
 
-                        { this.state.showModalError &&
-                        <ErrorModal
-                            closeModal={this.toggleErrorModal}
-                            title={this.state.modalErrorTitle}
-                            errorMessage={this.state.modalErrorMessage}
-                        />
-                        }
-
+                        {this.state.showModalError && (
+                            <ErrorModal
+                                closeModal={this.toggleErrorModal}
+                                title={this.state.modalErrorTitle}
+                                errorMessage={this.state.modalErrorMessage}
+                            />
+                        )}
                     </PanelBody>
                 </Panel>
             </form>
         );
     }
-};
+}
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         id: state.participantProductionProjectDetails.id,
         productionProjectId: state.participantProductionProjectDetails.productionProjectId,
@@ -138,9 +144,12 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = dispatch => ({
-    newObligationNumber: (obligationNumber) => {
+    newObligationNumber: obligationNumber => {
         dispatch(newObligationNumber(obligationNumber));
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(ObligationNumberFormNew);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(ObligationNumberFormNew);

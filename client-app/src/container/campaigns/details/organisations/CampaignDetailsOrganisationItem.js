@@ -1,7 +1,7 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 
 import CampaignDetailsOrganisationView from './CampaignDetailsOrganisationView';
-import CampaignDetailsOrganisationItemDelete from "./CampaignDetailsOrganisationItemDelete";
+import CampaignDetailsOrganisationItemDelete from './CampaignDetailsOrganisationItemDelete';
 
 class CampaignDetailsOrganisationNew extends Component {
     constructor(props) {
@@ -16,7 +16,7 @@ class CampaignDetailsOrganisationNew extends Component {
                 ...props.organisation,
             },
         };
-    };
+    }
 
     onLineEnter = () => {
         this.setState({
@@ -33,7 +33,7 @@ class CampaignDetailsOrganisationNew extends Component {
     };
 
     toggleDelete = () => {
-        this.setState({showDelete: !this.state.showDelete});
+        this.setState({ showDelete: !this.state.showDelete });
     };
 
     render() {
@@ -47,16 +47,15 @@ class CampaignDetailsOrganisationNew extends Component {
                     toggleDelete={this.toggleDelete}
                     organisation={this.state.organisation}
                 />
-                {
-                    this.state.showDelete &&
+                {this.state.showDelete && (
                     <CampaignDetailsOrganisationItemDelete
                         toggleDelete={this.toggleDelete}
                         organisationId={this.state.organisation.id}
                     />
-                }
+                )}
             </div>
         );
     }
-};
+}
 
 export default CampaignDetailsOrganisationNew;

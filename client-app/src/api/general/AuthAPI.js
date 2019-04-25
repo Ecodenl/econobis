@@ -8,33 +8,33 @@ const AUTH_KEY = {
 };
 
 export default {
-    loginUser: (loginCredentials) => {
+    loginUser: loginCredentials => {
         const requestUrl = `${URL_API}/oauth/token`;
         delete axios.defaults.headers.common['Authorization'];
 
-        return axios.post(requestUrl, {...AUTH_KEY, ...loginCredentials})
-            .then(function (response) {
+        return axios
+            .post(requestUrl, { ...AUTH_KEY, ...loginCredentials })
+            .then(function(response) {
                 return response;
             })
-            .catch(function (error) {
-                    // Error meldingen uitlezen en juiste error melding teruggeven.
-                    return {error: 'Geen juiste login gegevens ingevuld'};
-                }
-            );
+            .catch(function(error) {
+                // Error meldingen uitlezen en juiste error melding teruggeven.
+                return { error: 'Geen juiste login gegevens ingevuld' };
+            });
     },
 
     refreshToken: () => {
         const request = {
-                grant_type: 'refresh_token',
-                refresh_token: localStorage.getItem('refresh_token'),
-                client_id: process.env.CLIENT_ID,
-                client_secret: process.env.CLIENT_SECRET,
+            grant_type: 'refresh_token',
+            refresh_token: localStorage.getItem('refresh_token'),
+            client_id: process.env.CLIENT_ID,
+            client_secret: process.env.CLIENT_SECRET,
         };
 
         const requestUrl = `${URL_API}/oauth/token`;
 
         return axios.post(requestUrl, request);
-            /*.then(function (response) {
+        /*.then(function (response) {
                 localStorage.setItem('access_token', response.data.access_token);
                 localStorage.setItem('refresh_token', response.data.refresh_token);
             })
@@ -45,5 +45,5 @@ export default {
                 hashHistory.push('/loguit');
                 }
             );*/
-    }
+    },
 };

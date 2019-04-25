@@ -9,7 +9,7 @@ import IntakesList from './IntakesList';
 import IntakesListToolbar from './IntakesListToolbar';
 import filterHelper from '../../../helpers/FilterHelper';
 import Panel from '../../../components/panel/Panel';
-import PanelBody from "../../../components/panel/PanelBody";
+import PanelBody from '../../../components/panel/PanelBody';
 
 class IntakesListApp extends Component {
     constructor(props) {
@@ -25,11 +25,11 @@ class IntakesListApp extends Component {
 
     componentDidMount() {
         this.fetchIntakesData();
-    };
+    }
 
     componentWillUnmount() {
         this.props.clearIntakes();
-    };
+    }
 
     fetchIntakesData = () => {
         setTimeout(() => {
@@ -38,7 +38,7 @@ class IntakesListApp extends Component {
             const pagination = { limit: 20, offset: this.props.intakesPagination.offset };
 
             this.props.fetchIntakes(filters, sorts, pagination);
-        },100 );
+        }, 100);
     };
 
     resetIntakeFilters = () => {
@@ -51,33 +51,33 @@ class IntakesListApp extends Component {
         const filters = filterHelper(this.props.intakesFilters);
         const sorts = this.props.intakesSorts;
 
-        this.props.setIntakesPagination({page: 0, offset: 0});
+        this.props.setIntakesPagination({ page: 0, offset: 0 });
 
         setTimeout(() => {
             this.fetchIntakesData();
-        },100 );
-    };
+        }, 100);
+    }
 
     handlePageClick(data) {
         let page = data.selected;
         let offset = Math.ceil(page * 20);
 
-        this.props.setIntakesPagination({page, offset});
+        this.props.setIntakesPagination({ page, offset });
 
         setTimeout(() => {
             this.fetchIntakesData();
-        },100 );
-    };
+        }, 100);
+    }
 
     toggleShowCheckboxList = () => {
         this.setState({
-            showCheckboxList: !this.state.showCheckboxList
+            showCheckboxList: !this.state.showCheckboxList,
         });
     };
 
     selectAllCheckboxes = () => {
         this.setState({
-            checkedAllCheckboxes: !this.state.checkedAllCheckboxes
+            checkedAllCheckboxes: !this.state.checkedAllCheckboxes,
         });
 
         this.props.setCheckedIntakeAll(!this.state.checkedAllCheckboxes);
@@ -108,11 +108,11 @@ class IntakesListApp extends Component {
                     </div>
                 </PanelBody>
             </Panel>
-        )
+        );
     }
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         intakes: state.intakes.list,
         intakesFilters: state.intakes.filters,
@@ -121,8 +121,14 @@ const mapStateToProps = (state) => {
     };
 };
 
-const mapDispatchToProps = (dispatch) => {
-    return bindActionCreators({ fetchIntakes, clearIntakes, setIntakesPagination, clearFilterIntakes, setCheckedIntakeAll }, dispatch);
+const mapDispatchToProps = dispatch => {
+    return bindActionCreators(
+        { fetchIntakes, clearIntakes, setIntakesPagination, clearFilterIntakes, setCheckedIntakeAll },
+        dispatch
+    );
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(IntakesListApp);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(IntakesListApp);

@@ -2,8 +2,8 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import ViewText from '../../../../components/form/ViewText';
-import Panel from "../../../../components/panel/Panel";
-import PanelBody from "../../../../components/panel/PanelBody";
+import Panel from '../../../../components/panel/Panel';
+import PanelBody from '../../../../components/panel/PanelBody';
 
 const TeamDetailsFormGeneralView = props => {
     const { name } = props.teamDetails;
@@ -13,10 +13,7 @@ const TeamDetailsFormGeneralView = props => {
             <Panel>
                 <PanelBody>
                     <div className="row">
-                        <ViewText
-                            label={"Naam"}
-                            value={name}
-                        />
+                        <ViewText label={'Naam'} value={name} />
                     </div>
                 </PanelBody>
             </Panel>
@@ -24,7 +21,7 @@ const TeamDetailsFormGeneralView = props => {
     );
 };
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         teamDetails: state.teamDetails,
     };

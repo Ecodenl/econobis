@@ -1,17 +1,17 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 
 import InputText from '../../../../components/form/InputText';
 import InputSelect from '../../../../components/form/InputSelect';
 import ButtonText from '../../../../components/button/ButtonText';
 import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
-import {connect} from "react-redux";
+import { connect } from 'react-redux';
 
 class TaskDetailsFormPropertyEdit extends Component {
     constructor(props) {
         super(props);
 
-        const {id, value} = props.property;
+        const { id, value } = props.property;
 
         this.state = {
             property: {
@@ -20,12 +20,11 @@ class TaskDetailsFormPropertyEdit extends Component {
             },
 
             errors: {
-               property: false,
-               value: false,
+                property: false,
+                value: false,
             },
         };
-    };
-
+    }
 
     handleInputPropertyChange = event => {
         const target = event.target;
@@ -36,7 +35,7 @@ class TaskDetailsFormPropertyEdit extends Component {
             ...this.state,
             property: {
                 ...this.state.property,
-                [name]: value
+                [name]: value,
             },
         });
 
@@ -48,7 +47,7 @@ class TaskDetailsFormPropertyEdit extends Component {
         const { property } = this.props;
         let hasError = false;
 
-        if(property.value == '' && property.propertyId == ''){
+        if (property.value == '' && property.propertyId == '') {
             hasError = true;
             this.setState({
                 ...this.state,
@@ -58,7 +57,7 @@ class TaskDetailsFormPropertyEdit extends Component {
                     propertyId: true,
                 },
             });
-        }else if(property.value == '' && property.propertyId != ''){
+        } else if (property.value == '' && property.propertyId != '') {
             hasError = true;
             this.setState({
                 ...this.state,
@@ -68,8 +67,7 @@ class TaskDetailsFormPropertyEdit extends Component {
                     propertyId: false,
                 },
             });
-        }
-        else if(property.value != '' && property.propertyId == ''){
+        } else if (property.value != '' && property.propertyId == '') {
             hasError = true;
             this.setState({
                 ...this.state,
@@ -79,8 +77,7 @@ class TaskDetailsFormPropertyEdit extends Component {
                     propertyId: true,
                 },
             });
-        }
-        else if(property.value != '' && property.propertyId != ''){
+        } else if (property.value != '' && property.propertyId != '') {
             hasError = false;
             this.setState({
                 ...this.state,
@@ -92,13 +89,13 @@ class TaskDetailsFormPropertyEdit extends Component {
             });
         }
 
-        if(!hasError){
+        if (!hasError) {
             this.props.handleSubmit();
         }
     };
 
     render() {
-        const {propertyId, value} = this.props.property;
+        const { propertyId, value } = this.props.property;
         return (
             <div>
                 <form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -106,30 +103,37 @@ class TaskDetailsFormPropertyEdit extends Component {
                         <PanelBody>
                             <div className="row">
                                 <InputSelect
-                                    label={"Kenmerk"}
-                                    size={"col-sm-6"}
-                                    name={"propertyId"}
+                                    label={'Kenmerk'}
+                                    size={'col-sm-6'}
+                                    name={'propertyId'}
                                     options={this.props.properties}
                                     value={propertyId}
                                     onChangeAction={this.handleInputPropertyChange}
-                                    required={"required"}
+                                    required={'required'}
                                     error={this.state.errors.propertyId}
                                 />
                                 <InputText
-                                    label={"Waarde"}
-                                    name={"value"}
+                                    label={'Waarde'}
+                                    name={'value'}
                                     value={value}
                                     onChangeAction={this.props.handleInputChange}
-                                    required={"required"}
+                                    required={'required'}
                                     error={this.state.errors.value}
                                 />
                             </div>
 
                             <div className="pull-right btn-group" role="group">
-                                <ButtonText buttonClassName={"btn-default"} buttonText={"Annuleren"}
-                                            onClickAction={this.props.cancelEdit}/>
-                                <ButtonText buttonText={"Opslaan"} onClickAction={this.handleSubmit}
-                                            type={"submit"} value={"Submit"}/>
+                                <ButtonText
+                                    buttonClassName={'btn-default'}
+                                    buttonText={'Annuleren'}
+                                    onClickAction={this.props.cancelEdit}
+                                />
+                                <ButtonText
+                                    buttonText={'Opslaan'}
+                                    onClickAction={this.handleSubmit}
+                                    type={'submit'}
+                                    value={'Submit'}
+                                />
                             </div>
                         </PanelBody>
                     </Panel>
@@ -139,9 +143,9 @@ class TaskDetailsFormPropertyEdit extends Component {
     }
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
-        properties: state.systemData.taskProperties
+        properties: state.systemData.taskProperties,
     };
 };
 

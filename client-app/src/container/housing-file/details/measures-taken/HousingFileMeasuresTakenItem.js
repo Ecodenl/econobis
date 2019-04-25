@@ -1,11 +1,10 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import HousingFileMeasuresTakenView from './HousingFileMeasuresTakenView';
 import HousingFileMeasuresTakenDelete from './HousingFileMeasuresTakenDelete';
-import HousingFileDetailsAPI from "../../../../api/housing-file/HousingFileDetailsAPI";
-import {isEqual} from "lodash";
-
+import HousingFileDetailsAPI from '../../../../api/housing-file/HousingFileDetailsAPI';
+import { isEqual } from 'lodash';
 
 class HousingFileMeasuresTakenItem extends Component {
     constructor(props) {
@@ -19,10 +18,10 @@ class HousingFileMeasuresTakenItem extends Component {
                 ...props.measureTaken,
             },
         };
-    };
+    }
 
     componentWillReceiveProps(nextProps) {
-        if(!isEqual(this.state.measureTaken, nextProps.measureTaken)){
+        if (!isEqual(this.state.measureTaken, nextProps.measureTaken)) {
             this.setState({
                 ...this.state,
                 measureTaken: {
@@ -30,7 +29,7 @@ class HousingFileMeasuresTakenItem extends Component {
                 },
             });
         }
-    };
+    }
     onLineEnter = () => {
         this.setState({
             showActionButtons: true,
@@ -46,36 +45,38 @@ class HousingFileMeasuresTakenItem extends Component {
     };
 
     toggleDelete = () => {
-        this.setState({showDelete: !this.state.showDelete});
+        this.setState({ showDelete: !this.state.showDelete });
     };
 
     render() {
         return (
             <div>
-              <HousingFileMeasuresTakenView
-                  highlightLine={this.state.highlightLine}
-                  showActionButtons={this.state.showActionButtons}
-                  onLineEnter={this.onLineEnter}
-                  onLineLeave={this.onLineLeave}
-                  toggleDelete={this.toggleDelete}
-                  measureTaken={this.state.measureTaken}
-              />
-                {
-                    this.state.showDelete &&
+                <HousingFileMeasuresTakenView
+                    highlightLine={this.state.highlightLine}
+                    showActionButtons={this.state.showActionButtons}
+                    onLineEnter={this.onLineEnter}
+                    onLineLeave={this.onLineLeave}
+                    toggleDelete={this.toggleDelete}
+                    measureTaken={this.state.measureTaken}
+                />
+                {this.state.showDelete && (
                     <HousingFileMeasuresTakenDelete
                         closeDeleteItemModal={this.toggleDelete}
                         {...this.props.measureTaken}
                     />
-                }
+                )}
             </div>
         );
     }
-};
+}
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
-        permissions: state.meDetails.permissions
+        permissions: state.meDetails.permissions,
     };
 };
 
-export default connect(mapStateToProps, null)(HousingFileMeasuresTakenItem);
+export default connect(
+    mapStateToProps,
+    null
+)(HousingFileMeasuresTakenItem);

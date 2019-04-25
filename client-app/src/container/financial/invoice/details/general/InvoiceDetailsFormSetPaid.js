@@ -1,15 +1,14 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 
 import Modal from '../../../../../components/modal/Modal';
-import InvoiceDetailsAPI from "../../../../../api/invoice/InvoiceDetailsAPI";
-import moment from "moment/moment";
-import validator from "validator";
-import InputDate from "../../../../../components/form/InputDate";
-import {connect} from "react-redux";
-import {fetchInvoiceDetails} from "../../../../../actions/invoice/InvoiceDetailsActions";
+import InvoiceDetailsAPI from '../../../../../api/invoice/InvoiceDetailsAPI';
+import moment from 'moment/moment';
+import validator from 'validator';
+import InputDate from '../../../../../components/form/InputDate';
+import { connect } from 'react-redux';
+import { fetchInvoiceDetails } from '../../../../../actions/invoice/InvoiceDetailsActions';
 
 class InvoiceDetailsFormSetPaid extends Component {
-
     constructor(props) {
         super(props);
 
@@ -20,16 +19,16 @@ class InvoiceDetailsFormSetPaid extends Component {
             },
             errors: {
                 datePaid: false,
-            }
+            },
         };
-    };
+    }
 
     handleInputChangeDate = (value, name) => {
         this.setState({
             ...this.state,
             invoice: {
                 ...this.state.invoice,
-                [name]: value
+                [name]: value,
             },
         });
     };
@@ -37,7 +36,7 @@ class InvoiceDetailsFormSetPaid extends Component {
     confirmAction = event => {
         event.preventDefault();
 
-        const {invoice} = this.state;
+        const { invoice } = this.state;
 
         // Validation
         let errors = {};
@@ -48,11 +47,11 @@ class InvoiceDetailsFormSetPaid extends Component {
             hasErrors = true;
         }
 
-        this.setState({...this.state, errors: errors});
+        this.setState({ ...this.state, errors: errors });
 
         // If no errors send form
         if (!hasErrors) {
-            InvoiceDetailsAPI.updateInvoice(invoice).then((payload) => {
+            InvoiceDetailsAPI.updateInvoice(invoice).then(payload => {
                 this.props.fetchInvoiceDetails(invoice.id);
                 this.props.closeModal();
             });
@@ -60,7 +59,7 @@ class InvoiceDetailsFormSetPaid extends Component {
     };
 
     render() {
-        const {datePaid} = this.state.invoice;
+        const { datePaid } = this.state.invoice;
 
         return (
             <Modal
@@ -71,12 +70,15 @@ class InvoiceDetailsFormSetPaid extends Component {
             >
                 <div className="row">
                     <div className={'col-sm-12 margin-10-bottom'}>
-                    <span>
-                    Wanneer de betaaldatum wordt ingevuld zal er een betaling aangemaakt worden met het openstaande bedrag(€{this.props.amountOpen.toLocaleString('nl', {
-                        minimumFractionDigits: 2,
-                        maximumFractionDigits: 2
-                    })}).
-                    </span>
+                        <span>
+                            Wanneer de betaaldatum wordt ingevuld zal er een betaling aangemaakt worden met het
+                            openstaande bedrag(€
+                            {this.props.amountOpen.toLocaleString('nl', {
+                                minimumFractionDigits: 2,
+                                maximumFractionDigits: 2,
+                            })}
+                            ).
+                        </span>
                     </div>
                 </div>
                 <div className="row">
@@ -92,13 +94,16 @@ class InvoiceDetailsFormSetPaid extends Component {
                 </div>
             </Modal>
         );
-    };
+    }
 }
 
 const mapDispatchToProps = dispatch => ({
-    fetchInvoiceDetails: (id) => {
+    fetchInvoiceDetails: id => {
         dispatch(fetchInvoiceDetails(id));
     },
 });
 
-export default connect(null, mapDispatchToProps)(InvoiceDetailsFormSetPaid);
+export default connect(
+    null,
+    mapDispatchToProps
+)(InvoiceDetailsFormSetPaid);

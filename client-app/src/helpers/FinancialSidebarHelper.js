@@ -1,12 +1,12 @@
-export default (currentRouteParams) => {
+export default currentRouteParams => {
     let activeMenuItem = 'orders';
     let activeParent = null;
 
-    switch(currentRouteParams.type) {
+    switch (currentRouteParams.type) {
         case 'orders':
-            if(currentRouteParams.filter) {
+            if (currentRouteParams.filter) {
                 activeParent = 'orders';
-                switch(currentRouteParams.filter) {
+                switch (currentRouteParams.filter) {
                     case 'concepten':
                         activeMenuItem = 'orders/concepts';
                         break;
@@ -29,9 +29,9 @@ export default (currentRouteParams) => {
             }
             break;
         case 'facturen':
-            if(currentRouteParams.filter) {
+            if (currentRouteParams.filter) {
                 activeParent = 'invoices';
-                switch(currentRouteParams.filter) {
+                switch (currentRouteParams.filter) {
                     case 'te-verzenden-incasso':
                         activeMenuItem = 'invoices/to-send-collection';
                         break;
@@ -63,9 +63,9 @@ export default (currentRouteParams) => {
             }
             break;
         case 'uitkering-facturen':
-            if(currentRouteParams.filter) {
+            if (currentRouteParams.filter) {
                 activeParent = 'payment-invoices';
-                switch(currentRouteParams.filter) {
+                switch (currentRouteParams.filter) {
                     case 'verzonden':
                         activeMenuItem = 'payment-invoices/sent';
                         break;
@@ -80,5 +80,5 @@ export default (currentRouteParams) => {
             break;
     }
 
-    return {activeMenuItem, activeParent};
+    return { activeMenuItem, activeParent };
 };

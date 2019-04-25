@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import Modal from '../../../../components/modal/Modal';
 import { deleteTeamUser } from '../../../../actions/team/TeamDetailsActions';
 
-const TeamDetailsUsersDelete = (props) => {
+const TeamDetailsUsersDelete = props => {
     const confirmAction = () => {
         props.deleteTeamUser(props.teamId, props.userId);
         props.toggleDelete();
@@ -19,12 +19,11 @@ const TeamDetailsUsersDelete = (props) => {
             title="Verwijderen"
         >
             <p>Wil je deze gebruiker ontkoppelen van dit team?</p>
-
         </Modal>
     );
 };
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         teamId: state.teamDetails.id,
     };
@@ -36,4 +35,7 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(TeamDetailsUsersDelete);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(TeamDetailsUsersDelete);

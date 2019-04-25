@@ -9,6 +9,6 @@ export const fetchQuotationRequests = (filters, sorts, pagination) => {
 
 export const clearQuotationRequests = () => {
     return {
-        type: 'CLEAR_QUOTATION_REQUESTS'
+        type: 'CLEAR_QUOTATION_REQUESTS',
     };
 };

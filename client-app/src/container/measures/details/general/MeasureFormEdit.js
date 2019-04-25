@@ -1,30 +1,30 @@
-import React, {Component} from 'react';
-import {connect} from 'react-redux';
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
 
 import validator from 'validator';
 
 import InputText from '../../../../components/form/InputText';
 import ButtonText from '../../../../components/button/ButtonText';
-import PanelFooter from "../../../../components/panel/PanelFooter";
+import PanelFooter from '../../../../components/panel/PanelFooter';
 
 import MeasureAPI from '../../../../api/measure/MeasureAPI';
 
 import { fetchMeasure } from '../../../../actions/measure/MeasureDetailsActions';
-import InputTextArea from "../../../../components/form/InputTextarea";
+import InputTextArea from '../../../../components/form/InputTextarea';
 
 class MeasureFormEdit extends Component {
     constructor(props) {
         super(props);
 
-        const {id, description} = props.measureDetails;
+        const { id, description } = props.measureDetails;
 
         this.state = {
             measure: {
                 id,
                 description: description ? description : '',
-            }
-        }
-    };
+            },
+        };
+    }
 
     handleInputChange = event => {
         const target = event.target;
@@ -35,16 +35,15 @@ class MeasureFormEdit extends Component {
             ...this.state,
             measure: {
                 ...this.state.measure,
-                [name]: value
+                [name]: value,
             },
         });
     };
 
-
     handleSubmit = event => {
         event.preventDefault();
 
-        const {measure} = this.state;
+        const { measure } = this.state;
 
         MeasureAPI.updateMeasure(measure.id, measure).then(payload => {
             this.props.fetchMeasure(measure.id);
@@ -53,31 +52,26 @@ class MeasureFormEdit extends Component {
     };
 
     render() {
-        const { description}  = this.state.measure;
+        const { description } = this.state.measure;
         const { name, number, measureCategory = {} } = this.props.measureDetails;
 
         return (
             <form className="form-horizontal col-md-12" onSubmit={this.handleSubmit}>
                 <div className="row">
                     <InputText
-                        label={"Maatregel categorie"}
-                        name={"measureCategory"}
+                        label={'Maatregel categorie'}
+                        name={'measureCategory'}
                         value={measureCategory.name}
                         onChangeAction={() => {}}
                         readOnly={true}
                     />
-                    <InputText
-                        label={"Nummer"}
-                        name={"number"}
-                        value={number}
-                        readOnly={true}
-                    />
+                    <InputText label={'Nummer'} name={'number'} value={number} readOnly={true} />
                 </div>
 
                 <div className="row">
                     <InputText
-                        label={"Maatregel specifiek"}
-                        name={"name"}
+                        label={'Maatregel specifiek'}
+                        name={'name'}
                         value={name}
                         onChangeAction={() => {}}
                         readOnly={true}
@@ -86,8 +80,8 @@ class MeasureFormEdit extends Component {
 
                 <div className="row">
                     <InputTextArea
-                        label={"Beschrijving"}
-                        name={"description"}
+                        label={'Beschrijving'}
+                        name={'description'}
                         value={description}
                         onChangeAction={this.handleInputChange}
                     />
@@ -95,27 +89,37 @@ class MeasureFormEdit extends Component {
 
                 <PanelFooter>
                     <div className="pull-right btn-group" role="group">
-                        <ButtonText buttonClassName={"btn-default"} buttonText={"Annuleren"}
-                                    onClickAction={this.props.switchToView}/>
-                        <ButtonText buttonText={"Opslaan"} onClickAction={this.handleSubmit} type={"submit"}
-                                    value={"Submit"}/>
+                        <ButtonText
+                            buttonClassName={'btn-default'}
+                            buttonText={'Annuleren'}
+                            onClickAction={this.props.switchToView}
+                        />
+                        <ButtonText
+                            buttonText={'Opslaan'}
+                            onClickAction={this.handleSubmit}
+                            type={'submit'}
+                            value={'Submit'}
+                        />
                     </div>
                 </PanelFooter>
             </form>
         );
-    };
-};
+    }
+}
 
 const mapDispatchToProps = dispatch => ({
-    fetchMeasure: (id) => {
+    fetchMeasure: id => {
         dispatch(fetchMeasure(id));
     },
 });
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         measureDetails: state.measureDetails,
-    }
+    };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(MeasureFormEdit);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(MeasureFormEdit);

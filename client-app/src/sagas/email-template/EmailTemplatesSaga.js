@@ -1,13 +1,13 @@
 import { put, call, all } from 'redux-saga/effects';
 import EmailTemplateAPI from '../../api/email-template/EmailTemplateAPI';
-import {hashHistory} from "react-router";
+import { hashHistory } from 'react-router';
 
 export function* fetchEmailTemplatesSaga() {
     try {
         yield put({ type: 'IS_LOADING' });
         const emailTemplates = yield call(EmailTemplateAPI.fetchEmailTemplates);
         yield all([
-            put({ type: 'FETCH_EMAIL_TEMPLATES_LOADING_SUCCESS'}),
+            put({ type: 'FETCH_EMAIL_TEMPLATES_LOADING_SUCCESS' }),
             put({ type: 'FETCH_EMAIL_TEMPLATES_SUCCESS', emailTemplates }),
         ]);
         yield put({ type: 'IS_LOADING_COMPLETE' });

@@ -1,9 +1,9 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 
 import TaskDetailsAPI from '../../../../api/task/TaskDetailsAPI';
 import TaskDetailsFormPropertiesView from './TaskDetailsFormPropertiesView';
 import TaskDetailsFormPropertyEdit from './TaskDetailsFormPropertyEdit';
-import {connect} from "react-redux";
+import { connect } from 'react-redux';
 
 class TaskDetailsFormPropertyItem extends Component {
     constructor(props) {
@@ -18,7 +18,7 @@ class TaskDetailsFormPropertyItem extends Component {
                 ...props.property,
             },
         };
-    };
+    }
 
     onLineEnter = () => {
         this.setState({
@@ -35,13 +35,13 @@ class TaskDetailsFormPropertyItem extends Component {
     };
 
     openEdit = () => {
-        if(this.props.permissions.manageTask) {
-            this.setState({showEdit: true});
+        if (this.props.permissions.manageTask) {
+            this.setState({ showEdit: true });
         }
     };
 
     closeEdit = () => {
-        this.setState({showEdit: false});
+        this.setState({ showEdit: false });
     };
 
     cancelEdit = () => {
@@ -49,7 +49,8 @@ class TaskDetailsFormPropertyItem extends Component {
             ...this.state,
             property: {
                 ...this.props.property,
-        }});
+            },
+        });
 
         this.closeEdit();
     };
@@ -63,7 +64,7 @@ class TaskDetailsFormPropertyItem extends Component {
             ...this.state,
             property: {
                 ...this.state.property,
-                [name]: value
+                [name]: value,
             },
         });
     };
@@ -77,9 +78,9 @@ class TaskDetailsFormPropertyItem extends Component {
                 property: {
                     ...this.state.property,
                     id,
-                    name
-                }
-            }
+                    name,
+                },
+            },
         });
     };
 
@@ -103,8 +104,7 @@ class TaskDetailsFormPropertyItem extends Component {
                     openEdit={this.openEdit}
                     updateTaskProperty={this.state.property}
                 />
-                {
-                    this.state.showEdit &&
+                {this.state.showEdit && (
                     <TaskDetailsFormPropertyEdit
                         property={this.state.property}
                         handleSubmit={this.handleSubmit}
@@ -112,16 +112,16 @@ class TaskDetailsFormPropertyItem extends Component {
                         handleInputChange={this.handleInputChange}
                         setPropertyIdAndName={this.setPropertyIdAndName}
                     />
-                }
+                )}
             </div>
         );
     }
-};
+}
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
-        permissions: state.meDetails.permissions
-    }
+        permissions: state.meDetails.permissions,
+    };
 };
 
 export default connect(mapStateToProps)(TaskDetailsFormPropertyItem);

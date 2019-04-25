@@ -4,13 +4,13 @@ import InputText from '../../../../../components/form/InputText';
 import ButtonText from '../../../../../components/button/ButtonText';
 import Panel from '../../../../../components/panel/Panel';
 import PanelBody from '../../../../../components/panel/PanelBody';
-import InputDate from "../../../../../components/form/InputDate";
-import moment from "moment/moment";
+import InputDate from '../../../../../components/form/InputDate';
+import moment from 'moment/moment';
 
 moment.locale('nl');
 
 const InvoicePaymentsFormEdit = props => {
-    const {amount, datePaid} = props.payment;
+    const { amount, datePaid } = props.payment;
 
     return (
         <div>
@@ -19,12 +19,12 @@ const InvoicePaymentsFormEdit = props => {
                     <PanelBody>
                         <div className="row">
                             <InputText
-                                label={"Bedrag"}
-                                id={"amount"}
-                                name={"amount"}
+                                label={'Bedrag'}
+                                id={'amount'}
+                                name={'amount'}
                                 value={amount}
                                 onChangeAction={props.handleInputChange}
-                                required={"required"}
+                                required={'required'}
                                 error={props.errors.amount}
                             />
                             <InputDate
@@ -32,14 +32,23 @@ const InvoicePaymentsFormEdit = props => {
                                 name="datePaid"
                                 value={datePaid}
                                 onChangeAction={props.handleInputChangeDate}
-                                required={"required"}
+                                required={'required'}
                                 error={props.errors.datePaid}
                             />
                         </div>
 
                         <div className="pull-right btn-group" role="group">
-                            <ButtonText buttonClassName={"btn-default"} buttonText={"Annuleren"} onClickAction={props.cancelEdit}/>
-                            <ButtonText buttonText={"Opslaan"} onClickAction={props.handleSubmit} type={"submit"} value={"Submit"}/>
+                            <ButtonText
+                                buttonClassName={'btn-default'}
+                                buttonText={'Annuleren'}
+                                onClickAction={props.cancelEdit}
+                            />
+                            <ButtonText
+                                buttonText={'Opslaan'}
+                                onClickAction={props.handleSubmit}
+                                type={'submit'}
+                                value={'Submit'}
+                            />
                         </div>
                     </PanelBody>
                 </Panel>

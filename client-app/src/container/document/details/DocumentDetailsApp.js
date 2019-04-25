@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import { fetchDocumentDetails } from '../../../actions/document/DocumentDetailsActions';
@@ -6,22 +6,22 @@ import DocumentDetailsToolbar from './DocumentDetailsToolbar';
 import DocumentDetailsForm from './DocumentDetailsForm';
 import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
-import DocumentDetailsAPI from "../../../api/document/DocumentDetailsAPI";
-import fileDownload from "js-file-download";
+import DocumentDetailsAPI from '../../../api/document/DocumentDetailsAPI';
+import fileDownload from 'js-file-download';
 
 class DocumentDetailsApp extends Component {
-    constructor(props){
+    constructor(props) {
         super(props);
 
         this.download = this.download.bind(this);
-    };
+    }
 
     componentDidMount() {
         this.props.fetchDocumentDetails(this.props.params.id);
-    };
+    }
 
     download() {
-        DocumentDetailsAPI.download(this.props.documentDetails.id).then((payload) => {
+        DocumentDetailsAPI.download(this.props.documentDetails.id).then(payload => {
             fileDownload(payload.data, this.props.documentDetails.filename);
         });
     }
@@ -32,9 +32,8 @@ class DocumentDetailsApp extends Component {
                 <div className="col-md-9">
                     <div className="col-md-12 margin-10-top">
                         <Panel>
-                            <PanelBody className={"panel-small"}>
-                                <DocumentDetailsToolbar
-                                download={this.download}/>
+                            <PanelBody className={'panel-small'}>
+                                <DocumentDetailsToolbar download={this.download} />
                             </PanelBody>
                         </Panel>
                     </div>
@@ -45,20 +44,23 @@ class DocumentDetailsApp extends Component {
                 </div>
                 <div className="col-md-3" />
             </div>
-        )
+        );
     }
-};
+}
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         documentDetails: state.documentDetails,
     };
 };
 
 const mapDispatchToProps = dispatch => ({
-    fetchDocumentDetails: (id) => {
+    fetchDocumentDetails: id => {
         dispatch(fetchDocumentDetails(id));
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(DocumentDetailsApp);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(DocumentDetailsApp);

@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 
 import ViewText from '../../../../components/form/ViewText';
 import Panel from '../../../../components/panel/Panel';
-import PanelBody from "../../../../components/panel/PanelBody";
+import PanelBody from '../../../../components/panel/PanelBody';
 
 const MailgunDomainDetailsFormGeneralView = props => {
     const { domain, secret, isVerified } = props.mailgunDomainDetails;
@@ -13,30 +13,20 @@ const MailgunDomainDetailsFormGeneralView = props => {
             <Panel>
                 <PanelBody>
                     <div className="row">
-                        <ViewText
-                            label={"Domein"}
-                            value={domain}
-                        />
-                        <ViewText
-                            label={"Mailgun API Key"}
-                            value={secret}
-                        />
+                        <ViewText label={'Domein'} value={domain} />
+                        <ViewText label={'Mailgun API Key'} value={secret} />
                     </div>
 
                     <div className="row">
-                        <ViewText
-                            label={"Geverifieerd"}
-                            value={isVerified ? 'Ja' : 'Nee'}
-                        />
+                        <ViewText label={'Geverifieerd'} value={isVerified ? 'Ja' : 'Nee'} />
                     </div>
-
                 </PanelBody>
             </Panel>
         </div>
     );
 };
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         mailgunDomainDetails: state.mailgunDomainDetails,
     };

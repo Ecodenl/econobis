@@ -1,12 +1,9 @@
-export default function (state= [], action) {
+export default function(state = [], action) {
     switch (action.type) {
         case 'FETCH_USERS_SUCCESS':
-            return [
-                ...state,
-                ...action.users
-            ];
+            return [...state, ...action.users];
         case 'CLEAR_USERS':
-            return state.users = [];
+            return (state.users = []);
         default:
             return state;
     }

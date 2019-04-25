@@ -12,11 +12,11 @@ class EmailTemplatesListApp extends Component {
 
     componentDidMount() {
         this.props.fetchEmailTemplates();
-    };
+    }
 
     componentWillUnmount() {
         this.props.clearEmailTemplates();
-    };
+    }
 
     refreshEmailTemplatesData = () => {
         this.props.clearEmailTemplates();
@@ -35,18 +35,16 @@ class EmailTemplatesListApp extends Component {
                         </div>
 
                         <div className="col-md-12 margin-10-top">
-                            <EmailTemplatesList
-                                emailTemplates={this.props.emailTemplates}
-                            />
+                            <EmailTemplatesList emailTemplates={this.props.emailTemplates} />
                         </div>
                     </div>
                 </div>
             </div>
-        )
+        );
     }
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         emailTemplates: state.emailTemplates,
     };
@@ -61,4 +59,7 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(EmailTemplatesListApp);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(EmailTemplatesListApp);

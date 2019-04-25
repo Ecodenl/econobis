@@ -1,12 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const ButtonIcon = (props) => {
-    const {buttonClassName, iconName, onClickAction, title} = props;
+const ButtonIcon = props => {
+    const { buttonClassName, iconName, onClickAction, title } = props;
 
     return (
         <button type="button" className={`btn ${buttonClassName}`} onClick={onClickAction}>
-            <span className={`glyphicon ${iconName}`} title={title}/>
+            <span className={`glyphicon ${iconName}`} title={title} />
         </button>
     );
 };

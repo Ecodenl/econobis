@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import { fetchEmailTemplate } from '../../../actions/email-templates/EmailTemplateDetailsActions';
@@ -8,13 +8,13 @@ import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
 
 class EmailTemplateDetailsApp extends Component {
-    constructor(props){
+    constructor(props) {
         super(props);
-    };
+    }
 
     componentDidMount() {
         this.props.fetchEmailTemplate(this.props.params.id);
-    };
+    }
 
     render() {
         return (
@@ -22,8 +22,8 @@ class EmailTemplateDetailsApp extends Component {
                 <div className="col-md-9">
                     <div className="col-md-12 margin-10-top">
                         <Panel>
-                            <PanelBody className={"panel-small"}>
-                                < EmailTemplateDetailsToolbar />
+                            <PanelBody className={'panel-small'}>
+                                <EmailTemplateDetailsToolbar />
                             </PanelBody>
                         </Panel>
                     </div>
@@ -34,20 +34,23 @@ class EmailTemplateDetailsApp extends Component {
                 </div>
                 <div className="col-md-3" />
             </div>
-        )
+        );
     }
-};
+}
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         emailTemplateDetails: state.emailTemplateDetails,
     };
 };
 
 const mapDispatchToProps = dispatch => ({
-    fetchEmailTemplate: (id) => {
+    fetchEmailTemplate: id => {
         dispatch(fetchEmailTemplate(id));
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(EmailTemplateDetailsApp);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(EmailTemplateDetailsApp);

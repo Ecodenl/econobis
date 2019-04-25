@@ -1,17 +1,16 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const ErrorModal = (props) => {
-    const {title, closeModal, buttonText, error} = props;
+const ErrorModal = props => {
+    const { title, closeModal, buttonText, error } = props;
     let { errorMessage } = props;
 
-    if(error.message){
-        if(error.message.includes(';')){
+    if (error.message) {
+        if (error.message.includes(';')) {
             error.message = error.message.split(';');
         }
         errorMessage = error.message;
-    }
-    else if(error.httpCode){
+    } else if (error.httpCode) {
         switch (error.httpCode) {
             case 400:
                 errorMessage = 'Foute aanvraag';
@@ -124,17 +123,19 @@ const ErrorModal = (props) => {
                         <h4 className="modal-title">{title}</h4>
                     </div>
                     <div className="modal-body">
-                        {typeof errorMessage === 'string' &&
-                        errorMessage
-                        }
-                        {typeof errorMessage === 'object' &&
+                        {typeof errorMessage === 'string' && errorMessage}
+                        {typeof errorMessage === 'object' && (
                             <ul>
-                                { errorMessage.map((message) => <li>{message}</li>) }
+                                {errorMessage.map(message => (
+                                    <li>{message}</li>
+                                ))}
                             </ul>
-                        }
+                        )}
                     </div>
                     <div className="modal-footer">
-                        <button type="button" className="btn btn-default" onClick={closeModal}>{buttonText}</button>
+                        <button type="button" className="btn btn-default" onClick={closeModal}>
+                            {buttonText}
+                        </button>
                     </div>
                 </div>
             </div>
@@ -146,7 +147,7 @@ ErrorModal.defaultProps = {
     buttonText: 'Ok',
     title: 'Waarschuwing',
     errorMessage: 'Er is een onbekende fout opgetreden',
-    error: {}
+    error: {},
 };
 
 ErrorModal.propTypes = {

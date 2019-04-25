@@ -15,9 +15,7 @@ const ProjectDetailsFormValueCourseView = props => {
             <div onClick={props.openEdit}>
                 <div className="col-sm-3">{project ? project.name : ''}</div>
                 <div className="col-sm-2">{date ? moment(date).format('L') : ''}</div>
-                {props.projectType.codeRef !== 'obligation' ? (
-                    <div className="col-sm-2">{MoneyPresenter(bookWorth)}</div>
-                ) : null}
+                <div className="col-sm-2">{MoneyPresenter(bookWorth)}</div>
                 <div className="col-sm-2">{MoneyPresenter(transferWorth)}</div>
                 <div className="col-sm-2">{active ? 'Ja' : ''}</div>
             </div>

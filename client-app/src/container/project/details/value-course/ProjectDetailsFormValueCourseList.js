@@ -9,7 +9,7 @@ const ProjectDetailsFormValueCourseList = ({ projectType, valueCourses }) => {
             <div className="row header">
                 <div className="col-sm-3">Project</div>
                 <div className="col-sm-2">Datum</div>
-                {projectType.codeRef !== 'obligation' ? <div className="col-sm-2">Boekwaarde</div> : null}
+                <div className="col-sm-2">{projectType.codeRef === 'obligation' ? 'Hoofdsom' : 'Boekwaarde'}</div>
                 <div className="col-sm-2">Overdrachtswaarde</div>
                 <div className="col-sm-2">Actief</div>
                 <div className="col-sm-1" />

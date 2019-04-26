@@ -117,8 +117,8 @@ class OrderProductsFormItem extends Component {
     };
 
     updatePrice = () => {
-        let price = validator.isFloat(this.props.orderProduct.product.priceInclVat + '')
-            ? this.props.orderProduct.product.priceInclVat
+        let price = validator.isFloat(this.props.orderProduct.product.currentPrice.priceInclVat + '')
+            ? this.props.orderProduct.product.currentPrice.priceInclVat
             : 0;
         let amount = validator.isFloat(this.state.orderProduct.amount + '') ? this.state.orderProduct.amount : 0;
         let percentageReduction = validator.isFloat(this.state.orderProduct.percentageReduction + '')

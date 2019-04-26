@@ -34,59 +34,73 @@ class InvoiceProduct extends Model
     public function getPriceInclVatAndReductionAttribute()
     {
         $price = $this->price;
-
+        $priceInclVat = $this->price_incl_vat;
+        $inputInclVat = false;
+        if ($this->product->currentPrice) {
+            $inputInclVat = $this->product->currentPrice->input_incl_vat;
+        }
         if ($price === null) {
             $price = 0;
         }
+        if ($priceInclVat === null) {
+            $priceInclVat = 0;
+        }
 
         $vat_percentage = $this->vat_percentage;
+        $price = ($this->amount * $price);
+        $priceInclVat = ($this->amount * $priceInclVat);
 
-        if($vat_percentage) {
-            $price = ($price + ($price
-                    * ($vat_percentage / 100)));
-        }
-
-        $price = ($this->amount
-            * $price);
-
-        if ($this->percentage_reduction) {
-            if($price < 0){
-                $price = ($price * ((100 + $this->percentage_reduction)
-                        / 100));
+        if($inputInclVat)
+        {
+            //indien invoer prijs incl. BTW is geweest, dan kortingsbedragen ook incl. BTW bepalen en eraf halen
+            if ($this->percentage_reduction) {
+                if($priceInclVat < 0){
+                    $priceInclVat = ($priceInclVat * ((100 + $this->percentage_reduction) / 100));
+                }
+                else {
+                    $priceInclVat = ($priceInclVat * ((100 - $this->percentage_reduction) / 100));
+                }
             }
-            else {
-                $price = ($price * ((100 - $this->percentage_reduction)
-                        / 100));
+            if ($this->amount_reduction) {
+                $priceInclVat -= $this->amount_reduction;
             }
+
+        } else {
+            //indien invoer prijs excl. BTW is geweest, dan kortingsbedragen over excl. BTW bepalen en resultaat incl. BTW
+            if ($this->percentage_reduction) {
+                if($price < 0){
+                    $price = ($price * ((100 + $this->percentage_reduction) / 100));
+                }
+                else {
+                    $price = ($price * ((100 - $this->percentage_reduction) / 100));
+                }
+            }
+            if ($this->amount_reduction) {
+                $price -= $this->amount_reduction;
+            }
+            if($vat_percentage) {
+                $priceInclVat = ($price + ($price * ($vat_percentage / 100)));
+            }
+
         }
 
-        if ($this->amount_reduction) {
-            $price -= $this->amount_reduction;
-        }
-
-        return $price;
-
+        return $priceInclVat;
     }
 
     public function getPriceExVatInclReductionAttribute()
     {
         $price = $this->price;
-
         if ($price === null) {
             $price = 0;
         }
-
-        $price = ($this->amount
-            * $price);
+        $price = ($this->amount * $price);
 
         if ($this->percentage_reduction) {
             if($price < 0){
-                $price = ($price * ((100 + $this->percentage_reduction)
-                        / 100));
+                $price = ($price * ((100 + $this->percentage_reduction) / 100));
             }
             else {
-                $price = ($price * ((100 - $this->percentage_reduction)
-                        / 100));
+                $price = ($price * ((100 - $this->percentage_reduction) / 100));
             }
         }
 
@@ -100,53 +114,7 @@ class InvoiceProduct extends Model
 
     public function getAmountVatAttribute()
     {
-        if($this->vat_percentage == 0 || $this->vat_percentage == null){
-            return 0;
-        }
-        $price = $this->price;
-
-        if ($price === null) {
-            $price = 0;
-        }
-
-        $price = ($this->amount
-            * $price);
-
-        if ($this->percentage_reduction) {
-            if($price < 0){
-                $price = ($price * ((100 + $this->percentage_reduction)
-                        / 100));
-            }
-            else {
-                $price = ($price * ((100 - $this->percentage_reduction)
-                        / 100));
-            }
-        }
-
-        if ($this->amount_reduction) {
-            $price -= $this->amount_reduction;
-        }
-
-        return ($price * ($this->vat_percentage / 100));
-
+        return ($this->getPriceInclVatAndReductionAttribute() - $this->getPriceExVatInclReductionAttribute() );
     }
 
-    public function getPriceIncVatAttribute()
-    {
-        $price = $this->price;
-
-        if ($price === null) {
-            $price = 0;
-        }
-
-        $vat_percentage = $this->vat_percentage;
-
-        if($vat_percentage) {
-            $price = ($price + ($price
-                    * ($vat_percentage / 100)));
-        }
-
-        return $price;
-
-    }
 }

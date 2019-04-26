@@ -84,14 +84,27 @@ const OrderProductsFormEdit = props => {
                                 />
                             ) : (
                                 <InputText
-                                    label={'Prijs incl. BTW'}
+                                    label={
+                                        props.orderProduct.product.currentPrice.inputInclVat
+                                            ? 'Prijs incl. BTW'
+                                            : 'Prijs excl. BTW'
+                                    }
                                     name={'price'}
                                     value={
-                                        '€' +
-                                        props.orderProduct.product.priceInclVat.toLocaleString('nl', {
-                                            minimumFractionDigits: 2,
-                                            maximumFractionDigits: 2,
-                                        })
+                                        props.orderProduct.product.currentPrice.inputInclVat
+                                            ? '€' +
+                                              props.orderProduct.product.currentPrice.priceInclVat.toLocaleString(
+                                                  'nl',
+                                                  {
+                                                      minimumFractionDigits: 2,
+                                                      maximumFractionDigits: 2,
+                                                  }
+                                              )
+                                            : '€' +
+                                              props.orderProduct.product.currentPrice.price.toLocaleString('nl', {
+                                                  minimumFractionDigits: 2,
+                                                  maximumFractionDigits: 2,
+                                              })
                                     }
                                     readOnly={true}
                                 />

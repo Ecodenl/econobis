@@ -122,7 +122,7 @@ class ProductController extends ApiController
         $data = $input
             ->string('productId')->validate('required|exists:products,id')->alias('product_id')->next()
             ->string('dateStart')->validate('required|date')->alias('date_start')->next()
-            ->boolean('inputInclPrice')->alias('input_incl_vat')->onEmpty(false)->whenMissing(false)->next()
+            ->boolean('inputInclVat')->alias('input_incl_vat')->onEmpty(false)->whenMissing(false)->next()
             ->numeric('price')->onEmpty(null)->whenMissing(null)->next()
             ->numeric('priceInclVat')->alias('price_incl_vat')->onEmpty(null)->whenMissing(null)->next()
             ->integer('vatPercentage')->alias('vat_percentage')->next()

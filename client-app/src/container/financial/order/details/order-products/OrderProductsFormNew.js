@@ -183,7 +183,7 @@ class OrderProductsFormNew extends Component {
 
         if (value) {
             let product = this.props.products.filter(product => product.id == value);
-            price = product[0].priceInclVat;
+            price = product[0].currentPrice.priceInclVat;
             description = product[0].invoiceText;
             durationId = product[0].durationId;
             productHasVariablePrice = product[0].hasVariablePrice;
@@ -365,7 +365,7 @@ class OrderProductsFormNew extends Component {
                             />
                             {this.state.productHasVariablePrice ? (
                                 <InputText
-                                    label={'Prijs ex. BTW'}
+                                    label={'Prijs excl. BTW'}
                                     name={'variablePrice'}
                                     type={'number'}
                                     value={this.state.price}

@@ -209,7 +209,9 @@ class OrderController extends ApiController
 
         $priceHistory = new PriceHistory();
         $priceHistory->date_start = Carbon::today();
+        $priceHistory->input_incl_vat = $productData['inputInclVat'];
         $priceHistory->price = $productData['price'];
+        $priceHistory->price_incl_vat = $productData['priceInclVat'];
         $priceHistory->vat_percentage = $productData['vatPercentage'] ? $productData['vatPercentage'] : null;
 
         $orderProductData = $request->input('orderProduct');
@@ -251,7 +253,9 @@ class OrderController extends ApiController
         $priceHistory = new PriceHistory();
         $priceHistory->product_id = $product->id;
         $priceHistory->date_start = Carbon::today();
+        $priceHistory->input_incl_vat = $productData['inputInclVat'];
         $priceHistory->price = $productData['price'];
+        $priceHistory->price_incl_vat = $productData['priceInclVat'];
         $priceHistory->vat_percentage = $productData['vatPercentage'] ? $productData['vatPercentage'] : null;
 
         $orderProductData = $request->input('orderProduct');

@@ -161,9 +161,12 @@ class SepaHelper
         foreach($this->invoices AS $invoice){
 
             $iban = $invoice->order->IBAN;
-
             if(!$iban){
                 $iban = $invoice->order->contact->iban;
+            }
+            $iban_attn = $invoice->order->iban_attn;
+            if(!$iban_attn){
+                $iban_attn = $invoice->order->contact->full_name;
             }
 
             if($invoice->amount_open <=0 ){
@@ -195,7 +198,7 @@ class SepaHelper
 
             // Debtor
             $xml .= "\n\t\t\t\t<Dbtr>";
-            $xml .= "\n\t\t\t\t\t<Nm>" .  $invoice->order->contact->full_name . "</Nm>"; // Naam van geincasseerde
+            $xml .= "\n\t\t\t\t\t<Nm>" . $iban_attn . "</Nm>"; // Naam van geincasseerde
             $xml .= "\n\t\t\t\t</Dbtr>";
 
             // Debtor Account

@@ -168,7 +168,7 @@ class SystemData extends Resource
             'contactEnergySupplierTypes' => GenericResource::collection(ContactEnergySupplierType::all()),
             'projectStatus' => GenericResource::collection(ProjectStatus::orderBy('order')->get()),
             'projectTypes' => GenericResource::collection(ProjectType::all()),
-            'participantProjectStatus' => GenericResource::collection(ParticipantProjectStatus::all()),
+            'participantProjectStatus' => GenericResource::collection(ParticipantProjectStatus::orderBy('order')->get()),
             'participantProjectPayoutTypes' => GenericResource::collection(ParticipantProjectPayoutType::all()),
             'participantTransactionTypes' => GenericResource::collection(ParticipantTransactionType::all()),
             'participantMutationTypes' => FullParticipantMutationType::collection(ParticipantMutationType::all()),

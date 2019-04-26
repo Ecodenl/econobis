@@ -10,11 +10,13 @@ import { connect } from 'react-redux';
 import InputSelect from '../../../components/form/InputSelect';
 import ButtonText from '../../../components/button/ButtonText';
 import PanelFooter from '../../../components/panel/PanelFooter';
+import InputText from '../../../components/form/InputText';
 
 const validationSchema = Yup.object().shape({
     contactId: Yup.number().required(),
     statusId: Yup.number().required(),
     projectId: Yup.number().required(),
+    amount: Yup.number().required(),
 });
 
 const ParticipantNewForm = ({ contacts, contactId, projects, projectId, participantProjectStatuses, handleSubmit }) => {
@@ -22,6 +24,8 @@ const ParticipantNewForm = ({ contacts, contactId, projects, projectId, particip
         contactId: contactId,
         statusId: null,
         projectId: projectId,
+        amount: 0,
+        optionDate: null,
     };
 
     return (
@@ -37,7 +41,12 @@ const ParticipantNewForm = ({ contacts, contactId, projects, projectId, particip
                                 actions.setSubmitting(true);
                                 handleSubmit(values);
                             }}
-                            render={({ errors, touched, setFieldValue, isSubmitting }) => {
+                            render={({ errors, touched, setFieldValue, isSubmitting, values }) => {
+                                const status = participantProjectStatuses.find(
+                                    participantProjectStatus => participantProjectStatus.id == values.statusId
+                                );
+                                const statusCodeRef = status ? status.codeRef : null;
+
                                 return (
                                     <React.Fragment>
                                         <Form className="form-horizontal col-md-12">
@@ -94,6 +103,26 @@ const ParticipantNewForm = ({ contacts, contactId, projects, projectId, particip
                                                         />
                                                     )}
                                                 />
+                                            </div>
+
+                                            <div className="row">
+                                                {statusCodeRef === 'option' ? (
+                                                    <Field
+                                                        name="amount"
+                                                        render={({ field /* _form */ }) => (
+                                                            <InputText
+                                                                label={'Aantal obligaties'}
+                                                                name={field.name}
+                                                                id={'amount'}
+                                                                value={field.value}
+                                                                onChangeAction={field.onChange}
+                                                                onBlurAction={field.onBlur}
+                                                                required={'required'}
+                                                                error={Boolean(errors.amount)}
+                                                            />
+                                                        )}
+                                                    />
+                                                ) : null}
                                             </div>
 
                                             <PanelFooter>

@@ -12,6 +12,7 @@ const InputText = props => {
         name,
         value,
         onChangeAction,
+        onBlurAction,
         required,
         readOnly,
         maxLength,
@@ -39,6 +40,7 @@ const InputText = props => {
                     name={name}
                     value={value}
                     onChange={onChangeAction}
+                    onBlur={onBlurAction}
                     readOnly={readOnly}
                     maxLength={maxLength}
                     min={min}
@@ -85,6 +87,7 @@ InputText.propTypes = {
     name: PropTypes.string.isRequired,
     value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     onChangeAction: PropTypes.func,
+    onBlurAction: PropTypes.func,
     required: PropTypes.string,
     readOnly: PropTypes.bool,
     maxLength: PropTypes.string,

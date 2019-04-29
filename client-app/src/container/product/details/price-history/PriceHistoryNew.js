@@ -42,7 +42,6 @@ class PriceHistoryNew extends Component {
         const target = event.target;
         const value = target.type === 'checkbox' ? target.checked : target.value;
         const name = target.name;
-        console.log(name);
 
         this.setState(
             {
@@ -62,6 +61,20 @@ class PriceHistoryNew extends Component {
             priceHistory: {
                 ...this.state.priceHistory,
                 [name]: value,
+            },
+        });
+    };
+
+    handleBlurProductPrice = event => {
+        const target = event.target;
+        const value = target.type === 'checkbox' ? target.checked : target.value;
+        const name = target.name;
+
+        this.setState({
+            ...this.state,
+            priceHistory: {
+                ...this.state.priceHistory,
+                [name]: parseFloat(value).toFixed(2),
             },
         });
     };
@@ -236,6 +249,7 @@ class PriceHistoryNew extends Component {
                                                 step={'0.01'}
                                                 value={priceInclVat}
                                                 onChangeAction={this.handleInputChange}
+                                                onBlurAction={this.handleBlurProductPrice}
                                                 required={'required'}
                                                 error={this.state.errors.priceInclVat}
                                             />
@@ -252,6 +266,7 @@ class PriceHistoryNew extends Component {
                                                 step={'0.01'}
                                                 value={price}
                                                 onChangeAction={this.handleInputChange}
+                                                onBlurAction={this.handleBlurProductPrice}
                                                 required={'required'}
                                                 error={this.state.errors.price}
                                             />

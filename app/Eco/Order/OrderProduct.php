@@ -38,14 +38,12 @@ class OrderProduct extends Model
         if ($this->product->currentPrice) {
             $inputInclVat = $this->product->currentPrice->input_incl_vat;
         }
-
         $vat_percentage = $this->product->currentPrice->vat_percentage;
 
         if($inputInclVat){
-        //indien invoer prijs incl. BTW is geweest, dan kortingsbedragen ook incl. BTW
+            $productPrice = $this->product->currentPrice->price_incl_vat;
+            $priceInclVat = ($this->amount * $productPrice);
             if ($this->percentage_reduction) {
-                $productPrice = $this->product->currentPrice->price_incl_vat;
-                $priceInclVat = ($this->amount * $productPrice);
                 if($priceInclVat < 0){
                     $priceInclVat = ($priceInclVat * ((100 + $this->percentage_reduction) / 100));
                 }
@@ -54,12 +52,11 @@ class OrderProduct extends Model
                 }
             }
             if ($this->amount_reduction) {
-                $priceInclVat -= $this->amount_reduction;
+                $priceInclVat = $priceInclVat - $this->amount_reduction;
             }
 
         } else {
             //indien invoer prijs excl. BTW is geweest, dan kortingsbedragen over excl. BTW bepalen en resultaat incl. BTW
-
             if ($this->variable_price) {
                 //Indien variabele prijs (is ook excl.)
                 $productPrice = $this->variable_price;
@@ -83,7 +80,6 @@ class OrderProduct extends Model
                 $priceInclVat = ($price + ($price * ($vat_percentage / 100)));
             }
         }
-
 
         return $priceInclVat;
 

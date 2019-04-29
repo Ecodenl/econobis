@@ -164,7 +164,10 @@ class SepaHelper
             if(!$iban){
                 $iban = $invoice->order->contact->iban;
             }
-            $iban_attn = $invoice->order->iban_attn;
+            $iban_attn = $invoice->order->iban_att;
+            if(!$iban_attn){
+                $iban_attn = $invoice->order->contact->iban_attn;
+            }
             if(!$iban_attn){
                 $iban_attn = $invoice->order->contact->full_name;
             }

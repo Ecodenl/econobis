@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { hashHistory } from 'react-router';
+import validator from 'validator';
+import { browserHistory, hashHistory } from 'react-router';
 
 import ParticipantNewToolbar from './ParticipantNewToolbar';
 import { setError } from '../../../actions/general/ErrorActions';
@@ -12,12 +13,9 @@ import ContactsAPI from '../../../api/contact/ContactsAPI';
 import ProjectsAPI from '../../../api/project/ProjectsAPI';
 import { connect } from 'react-redux';
 import MultipleMessagesModal from '../../../components/modal/MultipleMessagesModal';
-import moment from 'moment';
-import InputSelect from '../../../components/form/InputSelect';
-import ButtonText from '../../../components/button/ButtonText';
-import PanelFooter from '../../../components/panel/PanelFooter';
-import ParticipantNew from '../details/transfer/ParticipationTransfer';
 import ParticipantNewForm from './ParticipantNewForm';
+import ParticipantSubmitHelper from './ParticipantSubmitHelper';
+import ParticipantValidateForm from './ParticipantValidateForm';
 
 class ParticipantNewApp extends Component {
     constructor(props) {
@@ -28,11 +26,36 @@ class ParticipantNewApp extends Component {
             modalText: [],
             modalRedirectTask: '',
             modalRedirectParticipation: '',
-
             contacts: [],
             projects: [],
             participationWorth: 0,
             projectTypeCodeRef: '',
+            participation: {
+                contactId: props.params.contactId || '',
+                statusId: '',
+                projectId: props.params.projectId || '',
+                amountOption: 0,
+                dateOption: null,
+                amountGranted: 0,
+                dateGranted: null,
+                amountFinal: 0,
+                dateContractRetour: null,
+                datePayment: null,
+                startingDate: null,
+            },
+            errors: {
+                contactId: false,
+                statusId: false,
+                projectId: false,
+                amountOption: false,
+                dateOption: false,
+                amountGranted: false,
+                dateGranted: false,
+                amountFinal: false,
+                dateContractRetour: false,
+                datePayment: false,
+                startingDate: false,
+            },
         };
     }
 
@@ -49,33 +72,11 @@ class ParticipantNewApp extends Component {
             });
 
             if (this.props.params.projectId) {
-                const projectId = this.props.params.projectId;
-
-                let project = payload.find(project => project.id == projectId);
-
-                if (project.typeCodeRef == 'postalcode_link_capital') {
-                    this.setState({
-                        ...this.state,
-                        participation: {
-                            ...this.state.participation,
-                            typeId: 3, //energieleverancier,
-                        },
-                        projectTypeCodeRef: project.typeCodeRef,
-                    });
-                } else {
-                    this.setState({
-                        ...this.state,
-                        participation: {
-                            ...this.state.participation,
-                            typeId: 1, //op rekening
-                        },
-                        projectTypeCodeRef: project.typeCodeRef,
-                    });
-                }
+                let project = payload.find(project => project.id == this.props.params.projectId);
 
                 this.setState({
                     ...this.state,
-                    participationWorth: project.participationWorth,
+                    projectTypeCodeRef: project.typeCodeRef,
                 });
             }
         });
@@ -89,29 +90,67 @@ class ParticipantNewApp extends Component {
         hashHistory.push(this.state.modalRedirectParticipation);
     };
 
-    handleSubmit = values => {
-        ParticipantProjectDetailsAPI.storeParticipantProject(values)
-            .then(payload => {
-                console.log(payload);
-                // if (payload.data.message !== undefined && payload.data.message.length > 0) {
-                //     this.setState({
-                //         showModal: true,
-                //         modalText: payload.data.message,
-                //     });
-                //     this.setState({
-                //         modalRedirectTask: `/taak/nieuw/contact/${participation.contactId}/project/${
-                //             participation.projectId
-                //         }/deelnemer/${payload.data.id}`,
-                //         modalRedirectParticipation: `/project/deelnemer/${payload.data.id}`,
-                //     });
-                // } else {
-                //     hashHistory.push(`/project/deelnemer/${payload.data.id}`);
-                // }
-            })
-            .catch(error => {
-                console.log(error);
-                alert('Er is een onbekende fout opgetreden. Probeer het nogmaals.');
+    handleInputChange = event => {
+        const target = event.target;
+        const value = target.type === 'checkbox' ? target.checked : target.value;
+        const name = target.name;
+
+        this.setState({
+            ...this.state,
+            participation: {
+                ...this.state.participation,
+                [name]: value,
+            },
+        });
+    };
+
+    handleInputChangeDate = (value, name) => {
+        this.setState({
+            ...this.state,
+            participation: {
+                ...this.state.participation,
+                [name]: value,
+            },
+        });
+    };
+
+    handleSubmit = event => {
+        event.preventDefault();
+
+        const { participation } = this.state;
+
+        let errors = {};
+        let hasErrors = false;
+
+        const status = this.props.participantMutationStatuses.find(
+            participantMutationStatuses => participantMutationStatuses.id == participation.statusId
+        );
+        const statusCodeRef = status ? status.codeRef : null;
+
+        const validatedForm = ParticipantValidateForm(participation, errors, hasErrors, statusCodeRef);
+
+        this.setState({ ...this.state, errors: validatedForm.errors });
+
+        if (!validatedForm.hasErrors) {
+            const values = ParticipantSubmitHelper(participation, statusCodeRef);
+
+            ParticipantProjectDetailsAPI.storeParticipantProject(values).then(payload => {
+                if (payload.data.message !== undefined && payload.data.message.length > 0) {
+                    this.setState({
+                        showModal: true,
+                        modalText: payload.data.message,
+                    });
+                    this.setState({
+                        modalRedirectTask: `/taak/nieuw/contact/${participation.contactId}/project/${
+                            participation.projectId
+                        }/deelnemer/${payload.data.id}`,
+                        modalRedirectParticipation: `/project/deelnemer/${payload.data.id}`,
+                    });
+                } else {
+                    hashHistory.push(`/project/deelnemer/${payload.data.id}`);
+                }
             });
+        }
     };
 
     render() {
@@ -121,13 +160,28 @@ class ParticipantNewApp extends Component {
                     <div className="col-md-12">
                         <ParticipantNewToolbar />
                     </div>
-                    <ParticipantNewForm
-                        contacts={this.state.contacts}
-                        projects={this.state.projects}
-                        contactId={this.props.params.contactId || null}
-                        projectId={this.props.params.projectId || null}
-                        handleSubmit={this.handleSubmit}
-                    />
+
+                    <div className="col-md-12">
+                        <Panel>
+                            <PanelBody>
+                                <div className="col-md-12">
+                                    <ParticipantNewForm
+                                        editForm={false}
+                                        participation={this.state.participation}
+                                        errors={this.state.errors}
+                                        handleInputChange={this.handleInputChange}
+                                        handleInputChangeDate={this.handleInputChangeDate}
+                                        handleSubmit={this.handleSubmit}
+                                        contacts={this.state.contacts}
+                                        projects={this.state.projects}
+                                        handleProjectChange={this.handleProjectChange}
+                                        projectTypeCodeRef={this.state.projectTypeCodeRef}
+                                        participantMutationStatuses={this.props.participantMutationStatuses}
+                                    />
+                                </div>
+                            </PanelBody>
+                        </Panel>
+                    </div>
                 </div>
                 <div className="col-md-3" />
                 {this.state.showModal && (
@@ -145,6 +199,12 @@ class ParticipantNewApp extends Component {
     }
 }
 
+const mapStateToProps = state => {
+    return {
+        participantMutationStatuses: state.systemData.participantMutationStatuses,
+    };
+};
+
 const mapDispatchToProps = dispatch => ({
     setError: (http_code, message) => {
         dispatch(setError(http_code, message));
@@ -152,6 +212,6 @@ const mapDispatchToProps = dispatch => ({
 });
 
 export default connect(
-    null,
+    mapStateToProps,
     mapDispatchToProps
 )(ParticipantNewApp);

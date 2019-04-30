@@ -43,7 +43,7 @@ class InvoiceProduct extends Model
             {
                 $vatPercentage = $this->vat_percentage;
                 $vatFactor = (100 + $vatPercentage) / 100;
-                $amountReduction = $amountReduction / $vatFactor;
+                number_format( $amountReduction = $amountReduction / $vatFactor, 2);
             }
         }
         return $amountReduction;
@@ -66,17 +66,17 @@ class InvoiceProduct extends Model
                     $priceInclVat = 0;
                 }
                 $priceInclVat = ($this->amount * $priceInclVat);
-                $amountReduction = ($priceInclVat * ($this->percentage_reduction / 100) );
+                $amountReduction = number_format( ($priceInclVat * ($this->percentage_reduction / 100) ), 2) ;
                 $vatPercentage = $this->vat_percentage;
                 $vatFactor = (100 + $vatPercentage) / 100;
-                $amountReduction = $amountReduction / $vatFactor;
+                $amountReduction = number_format( $amountReduction / $vatFactor, 2);
             }else {
                 $price = $this->price;
                 if ($price === null) {
                     $price = 0;
                 }
                 $price = ($this->amount * $price);
-                $amountReduction = ($price * ($this->percentage_reduction) / 100);
+                $amountReduction = number_format( ($price * ($this->percentage_reduction) / 100), 2) ;
             }
         }
     return $amountReduction;
@@ -100,9 +100,9 @@ class InvoiceProduct extends Model
             //indien invoer prijs incl. BTW is geweest, dan kortingsbedragen ook incl. BTW bepalen en eraf halen
             if ($this->percentage_reduction) {
                 if ($priceInclVat < 0) {
-                    $priceInclVat = ($priceInclVat * ((100 + $this->percentage_reduction) / 100));
+                    $priceInclVat = number_format( ($priceInclVat * ((100 + $this->percentage_reduction) / 100)), 2) ;
                 } else {
-                    $priceInclVat = ($priceInclVat * ((100 - $this->percentage_reduction) / 100));
+                    $priceInclVat = number_format( ($priceInclVat * ((100 - $this->percentage_reduction) / 100)), 2) ;
                 }
             }
             if ($this->amount_reduction) {
@@ -113,7 +113,7 @@ class InvoiceProduct extends Model
             $vatPercentage = $this->vat_percentage;
             $vatFactor = (100 + $vatPercentage) / 100;
             $priceExclVat = $this->getPriceExVatInclReductionAttribute();
-            $priceInclVat = $priceExclVat * $vatFactor;
+            $priceInclVat = number_format( $priceExclVat * $vatFactor, 2) ;
         }
         return $priceInclVat;
     }
@@ -133,9 +133,9 @@ class InvoiceProduct extends Model
             $priceExclVat = ($this->amount * $priceExclVat);
             if ($this->percentage_reduction) {
                 if ($priceExclVat < 0) {
-                    $priceExclVat = ($priceExclVat * ((100 + $this->percentage_reduction) / 100));
+                    $priceExclVat = number_format( ($priceExclVat * ((100 + $this->percentage_reduction) / 100)), 2) ;
                 } else {
-                    $priceExclVat = ($priceExclVat * ((100 - $this->percentage_reduction) / 100));
+                    $priceExclVat = number_format( ($priceExclVat * ((100 - $this->percentage_reduction) / 100)), 2) ;
                 }
             }
             if ($this->amount_reduction) {
@@ -145,7 +145,7 @@ class InvoiceProduct extends Model
             $vatPercentage = $this->vat_percentage;
             $vatFactor = (100 + $vatPercentage) / 100;
             $priceInclVat = $this->getPriceInclVatAndReductionAttribute();
-            $priceExclVat = $priceInclVat / $vatFactor;
+            $priceExclVat = number_format( $priceInclVat / $vatFactor, 2) ;
         }
         return $priceExclVat;
 

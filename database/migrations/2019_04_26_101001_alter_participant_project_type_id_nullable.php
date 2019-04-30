@@ -20,8 +20,14 @@ class AlterParticipantProjectTypeIdNullable extends Migration
             }catch (\Exception $e){
                 // Voor het geval de foreign key niet bestaat
             }
-            $table->integer('type_id')->nullable()->default(null)->change();
-            $table->foreign('type_id')
+        });
+
+        Schema::table('participation_project', function (Blueprint $table) {
+            $table->integer('type_id')->nullable()->default(null)->unsigned()->change();
+        });
+
+        Schema::table('participation_project', function (Blueprint $table) {
+            $table->foreign('type_id', 'participation_project_type_id_foreign')
                 ->references('id')->on('participant_project_payout_type')
                 ->onDelete('restrict');
         });

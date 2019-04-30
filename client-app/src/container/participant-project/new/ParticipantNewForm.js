@@ -1,30 +1,41 @@
 import React from 'react';
-import { Formik, Form, Field, ErrorMessage } from 'formik';
+import { connect } from 'react-redux';
+import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 
 import { setError } from '../../../actions/general/ErrorActions';
 
 import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
-import { connect } from 'react-redux';
 import InputSelect from '../../../components/form/InputSelect';
 import ButtonText from '../../../components/button/ButtonText';
 import PanelFooter from '../../../components/panel/PanelFooter';
 import InputText from '../../../components/form/InputText';
+import InputDate from '../../../components/form/InputDate';
 
 const validationSchema = Yup.object().shape({
-    contactId: Yup.number().required(),
-    statusId: Yup.number().required(),
-    projectId: Yup.number().required(),
-    amount: Yup.number().required(),
+    contactId: Yup.number().required(true),
+    statusId: Yup.number().required(true),
+    projectId: Yup.number().required(true),
+    amountOption: Yup.number()
+        .moreThan(0)
+        .required(true),
+    optionDate: Yup.string().required(true),
 });
 
-const ParticipantNewForm = ({ contacts, contactId, projects, projectId, participantProjectStatuses, handleSubmit }) => {
+const ParticipantNewForm = ({
+    contacts,
+    contactId,
+    projects,
+    projectId,
+    participantMutationStatuses,
+    handleSubmit,
+}) => {
     const initialValues = {
         contactId: contactId,
         statusId: null,
         projectId: projectId,
-        amount: 0,
+        amountOption: 0,
         optionDate: null,
     };
 
@@ -42,8 +53,8 @@ const ParticipantNewForm = ({ contacts, contactId, projects, projectId, particip
                                 handleSubmit(values);
                             }}
                             render={({ errors, touched, setFieldValue, isSubmitting, values }) => {
-                                const status = participantProjectStatuses.find(
-                                    participantProjectStatus => participantProjectStatus.id == values.statusId
+                                const status = participantMutationStatuses.find(
+                                    participantMutationStatus => participantMutationStatus.id == values.statusId
                                 );
                                 const statusCodeRef = status ? status.codeRef : null;
 
@@ -64,7 +75,7 @@ const ParticipantNewForm = ({ contacts, contactId, projects, projectId, particip
                                                             onChangeAction={field.onChange}
                                                             onBlurAction={field.onBlur}
                                                             required={'required'}
-                                                            error={Boolean(errors.contactId)}
+                                                            error={errors.contactId}
                                                         />
                                                     )}
                                                 />
@@ -75,12 +86,12 @@ const ParticipantNewForm = ({ contacts, contactId, projects, projectId, particip
                                                             label={'Status'}
                                                             name={field.name}
                                                             id={'statusId'}
-                                                            options={participantProjectStatuses}
+                                                            options={participantMutationStatuses}
                                                             value={field.value}
                                                             onChangeAction={field.onChange}
                                                             onBlurAction={field.onBlur}
                                                             required={'required'}
-                                                            error={Boolean(errors.statusId)}
+                                                            error={errors.statusId}
                                                         />
                                                     )}
                                                 />
@@ -99,31 +110,81 @@ const ParticipantNewForm = ({ contacts, contactId, projects, projectId, particip
                                                             onChangeAction={field.onChange}
                                                             onBlurAction={field.onBlur}
                                                             required={'required'}
-                                                            error={Boolean(errors.projectId)}
+                                                            error={errors.projectId}
                                                         />
                                                     )}
                                                 />
                                             </div>
 
-                                            <div className="row">
-                                                {statusCodeRef === 'option' ? (
+                                            {statusCodeRef === 'option' ? (
+                                                <div className="row">
                                                     <Field
-                                                        name="amount"
+                                                        name="amountOption"
                                                         render={({ field /* _form */ }) => (
                                                             <InputText
-                                                                label={'Aantal obligaties'}
+                                                                label={'Aantal optie'}
                                                                 name={field.name}
-                                                                id={'amount'}
+                                                                id={'amountOption'}
                                                                 value={field.value}
                                                                 onChangeAction={field.onChange}
                                                                 onBlurAction={field.onBlur}
                                                                 required={'required'}
-                                                                error={Boolean(errors.amount)}
+                                                                error={errors.amountOption}
                                                             />
                                                         )}
                                                     />
-                                                ) : null}
-                                            </div>
+                                                    <Field
+                                                        name="optionDate"
+                                                        render={({ field /* _form */ }) => (
+                                                            <InputDate
+                                                                label={'Optiedatum'}
+                                                                name={field.name}
+                                                                id={'optionDate'}
+                                                                value={field.value}
+                                                                onChangeAction={field.onChange}
+                                                                onBlurAction={field.onBlur}
+                                                                required={'required'}
+                                                                error={errors.optionDate}
+                                                            />
+                                                        )}
+                                                    />
+                                                </div>
+                                            ) : null}
+
+                                            {statusCodeRef === 'granted' ? (
+                                                <div className="row">
+                                                    <Field
+                                                        name="amountOption"
+                                                        render={({ field /* _form */ }) => (
+                                                            <InputText
+                                                                label={'Aantal optie'}
+                                                                name={field.name}
+                                                                id={'amountOption'}
+                                                                value={field.value}
+                                                                onChangeAction={field.onChange}
+                                                                onBlurAction={field.onBlur}
+                                                                required={'required'}
+                                                                error={errors.amountOption}
+                                                            />
+                                                        )}
+                                                    />
+                                                    <Field
+                                                        name="optionDate"
+                                                        render={({ field /* _form */ }) => (
+                                                            <InputDate
+                                                                label={'Optiedatum'}
+                                                                name={field.name}
+                                                                id={'optionDate'}
+                                                                value={field.value}
+                                                                onChangeAction={field.onChange}
+                                                                onBlurAction={field.onBlur}
+                                                                required={'required'}
+                                                                error={errors.optionDate}
+                                                            />
+                                                        )}
+                                                    />
+                                                </div>
+                                            ) : null}
 
                                             <PanelFooter>
                                                 <div className="pull-right btn-group" role="group">
@@ -149,7 +210,7 @@ const ParticipantNewForm = ({ contacts, contactId, projects, projectId, particip
 
 const mapStateToProps = state => {
     return {
-        participantProjectStatuses: state.systemData.participantProjectStatus,
+        participantMutationStatuses: state.systemData.participantMutationStatuses,
     };
 };
 

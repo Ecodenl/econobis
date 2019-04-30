@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
-import validator from 'validator';
-import { browserHistory, hashHistory } from 'react-router';
+import { hashHistory } from 'react-router';
 
 import ParticipantNewToolbar from './ParticipantNewToolbar';
 import { setError } from '../../../actions/general/ErrorActions';

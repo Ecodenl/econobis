@@ -17,6 +17,7 @@ class FullParticipantMutationStatus extends Resource
         return [
             'id' => $this->id,
             'name' => $this->name,
+            'codeRef' => $this->code_ref,
         ];
     }
 }
